@@ -1,0 +1,147 @@
+import { palette } from '@/theme';
+import type {
+  ShellPack,
+  CallRecord,
+  HomeModule,
+  MembershipPlan,
+  MemoryItem,
+  Moment,
+  ScheduleItem,
+} from '@/types';
+import { dayKey, daysAgo, hoursAgo, minutesAgo } from './time';
+
+/** The Home launcher grid. `tile` is a key into the Rafti tile art (assets/brand). */
+export const homeModules: HomeModule[] = [
+  { key: 'store', labelKey: 'shellStore', route: '/store/shell', tile: 'store' },
+  { key: 'dating', labelKey: 'dating', route: '/dating', tile: 'dating' },
+  { key: 'diary', labelKey: 'heartbeatDiary', route: '/diary', tile: 'diary' },
+  { key: 'photo', labelKey: 'photoBooth', route: '/photo-booth', tile: 'photo' },
+  { key: 'contacts', labelKey: 'myContacts', route: '/contacts', tile: 'contacts' },
+  { key: 'radio', labelKey: 'radio', route: '/radio', tile: 'radio' },
+  { key: 'gifts', labelKey: 'freeGifts', route: '/gifts', tile: 'gifts' },
+  { key: 'calls', labelKey: 'callHistory', route: '/call-history', tile: 'calls' },
+  { key: 'board', labelKey: 'bulletinBoard', route: '/board', tile: 'board' },
+  { key: 'bedtime', labelKey: 'bedtime', route: '/bedtime', tile: 'bedtime' },
+];
+
+/** Mirrors the reference store: 50 / 300 / 500 / 1200. */
+export const shellPacks: ShellPack[] = [
+  { id: 'sh_50', shells: 50, bonus: 0, price: '$0.99' },
+  { id: 'sh_300', shells: 300, bonus: 20, price: '$4.99' },
+  { id: 'sh_500', shells: 500, bonus: 60, price: '$6.99', best: true },
+  { id: 'sh_1200', shells: 1200, bonus: 200, price: '$14.99' },
+];
+
+export const membershipPlans: MembershipPlan[] = [
+  { id: 'basic', price: '$9.99', days: 30, perks: ['unlimitedChat', 'noAds'] },
+  {
+    id: 'pro',
+    price: '$29.99',
+    days: 30,
+    perks: ['unlimitedChat', 'noAds', 'longerMemory', 'priorityVoice'],
+    highlight: true,
+  },
+  { id: 'quarterly', price: '$24.99', days: 90, perks: ['unlimitedChat', 'noAds', 'saveMore'] },
+];
+
+/**
+ * What each interaction costs. Sending a message is the metered action; listening,
+ * voice replies and calls are free, like the reference app. Members chat for free.
+ */
+export const shellCosts = {
+  textMessage: 1,
+  voiceMessage: 1,
+  voiceReply: 0,
+  callPerMinute: 0,
+  photoBooth: 8,
+  secretNote: 3,
+  characterVoiceClone: 60,
+} as const;
+
+/** "Log in daily to unlock surprise shells" — day 1 is the advertised 60. */
+export const DAILY_CHECK_IN = [60, 60, 70, 70, 80, 80, 120] as const;
+
+export const AD_REWARD = 10;
+export const MAX_ADS_PER_DAY = 5;
+export const FREE_SPINS_PER_DAY = 1;
+
+/** Lucky Wheel segments, clockwise from the pointer. */
+export const WHEEL_SEGMENTS = [5, 20, 10, 50, 5, 30, 10, 100] as const;
+/** Relative odds per segment — the big prizes are rare. */
+export const WHEEL_WEIGHTS = [22, 12, 20, 5, 22, 8, 10, 1] as const;
+
+export const callHistory: CallRecord[] = [
+  { id: 'call_1', characterId: 'c_theo', startedAt: minutesAgo(20), durationSec: 247, direction: 'outgoing', missed: false },
+  { id: 'call_2', characterId: 'c_oppa', startedAt: hoursAgo(6), durationSec: 63, direction: 'incoming', missed: false },
+  { id: 'call_3', characterId: 'c_seren', startedAt: hoursAgo(26), durationSec: 0, direction: 'incoming', missed: true },
+  { id: 'call_4', characterId: 'c_castor', startedAt: daysAgo(2), durationSec: 512, direction: 'outgoing', missed: false },
+  { id: 'call_5', characterId: 'c_theo', startedAt: daysAgo(4), durationSec: 128, direction: 'incoming', missed: false },
+];
+
+export const memories: MemoryItem[] = [
+  { id: 'mem_1', characterId: 'c_theo', text: 'Their exam week ends on Friday - they get nervous about the oral part.', source: 'diary', createdAt: daysAgo(1), pinned: true },
+  { id: 'mem_2', characterId: 'c_theo', text: 'Hates being called by their full name.', source: 'chat', createdAt: daysAgo(3), pinned: false },
+  { id: 'mem_3', characterId: 'c_theo', text: 'Drinks peach tea, never coffee after 6pm.', source: 'chat', createdAt: daysAgo(5), pinned: false },
+  { id: 'mem_4', characterId: 'c_theo', text: 'Walked home in the rain and liked it.', source: 'diary', createdAt: hoursAgo(3), pinned: false },
+  { id: 'mem_5', characterId: 'c_theo', text: 'Said my voice is easier to fall asleep to than the radio.', source: 'call', createdAt: daysAgo(4), pinned: true },
+];
+
+/** Seed for the [Us] timeline. */
+export const moments: Moment[] = [
+  { id: 'mo_1', characterId: 'c_theo', kind: 'met', createdAt: daysAgo(25) },
+  { id: 'mo_2', characterId: 'c_theo', kind: 'levelUp', createdAt: daysAgo(9), params: { level: 2, title: 'Acquaintance' } },
+  { id: 'mo_3', characterId: 'c_theo', kind: 'call', createdAt: daysAgo(4), params: { duration: '2:08' } },
+  { id: 'mo_4', characterId: 'c_theo', kind: 'diary', createdAt: hoursAgo(2) },
+  { id: 'mo_5', characterId: 'c_seren', kind: 'met', createdAt: daysAgo(96) },
+  { id: 'mo_6', characterId: 'c_seren', kind: 'secretNote', createdAt: daysAgo(1) },
+  { id: 'mo_7', characterId: 'c_oppa', kind: 'met', createdAt: daysAgo(180) },
+  { id: 'mo_8', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(12), params: { level: 6, title: 'Crush' } },
+];
+
+export const schedules: ScheduleItem[] = [
+  {
+    id: 'sch_1',
+    characterId: 'c_theo',
+    title: 'Oral exam',
+    date: dayKey(new Date(Date.now() + 86_400_000)),
+    createdAt: daysAgo(1),
+    reminded: false,
+  },
+];
+
+/** Chat wallpapers offered by "Change Background". */
+export const chatBackgrounds: {
+  id: string;
+  nameKey: string;
+  colors: readonly [string, string];
+  dark?: boolean;
+}[] = [
+  { id: 'bg_blossom', nameKey: 'blossom', colors: ['#FFF4E8', '#FFE4CC'] as const },
+  { id: 'bg_dusk', nameKey: 'dusk', colors: ['#E6F6F3', '#DDEBFA'] as const },
+  { id: 'bg_room', nameKey: 'room', colors: ['#F6EFE6', '#EADFD2'] as const },
+  { id: 'bg_night', nameKey: 'night', colors: ['#1E2A55', '#2E3B6B'] as const, dark: true },
+  { id: 'bg_tea', nameKey: 'tea', colors: ['#F2F5E8', '#E2EBD6'] as const },
+  { id: 'bg_plain', nameKey: 'plain', colors: [palette.gray50, palette.white] as const },
+];
+
+export const backgroundsById = Object.fromEntries(
+  chatBackgrounds.map((b) => [b.id, b]),
+) as Record<string, (typeof chatBackgrounds)[number]>;
+
+/** Ambient tracks for Radio / Bedtime. */
+export const radioTracks = [
+  { id: 'r_rain', titleKey: 'rain', emoji: '\u{1F327}\u{FE0F}', minutes: 45 },
+  { id: 'r_fire', titleKey: 'fireplace', emoji: '\u{1F525}', minutes: 60 },
+  { id: 'r_waves', titleKey: 'waves', emoji: '\u{1F30A}', minutes: 30 },
+  { id: 'r_cafe', titleKey: 'cafe', emoji: '\u{2615}', minutes: 40 },
+  { id: 'r_lullaby', titleKey: 'lullaby', emoji: '\u{1F319}', minutes: 20 },
+];
+
+/** Dating scenario cards. */
+export const dateScenarios = [
+  { id: 'ds_aquarium', titleKey: 'aquarium', emoji: '\u{1F41F}', cost: 12, levelRequired: 2 },
+  { id: 'ds_festival', titleKey: 'festival', emoji: '\u{1F386}', cost: 15, levelRequired: 3 },
+  { id: 'ds_rain', titleKey: 'rainyWalk', emoji: '\u{2614}', cost: 10, levelRequired: 1 },
+  { id: 'ds_studio', titleKey: 'lateStudio', emoji: '\u{1F3A7}', cost: 18, levelRequired: 4 },
+  { id: 'ds_rooftop', titleKey: 'rooftop', emoji: '\u{1F30C}', cost: 20, levelRequired: 5 },
+];

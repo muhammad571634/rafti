@@ -1,0 +1,409 @@
+{
+  "app": {
+    "name": "Rafti",
+    "tagline": "With Your Favorite Character"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "done": "Done",
+    "next": "Next",
+    "back": "Back",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "confirm": "Confirm",
+    "retry": "Retry",
+    "seeAll": "See all",
+    "loading": "Loading...",
+    "thinking": "Thinking...",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "now": "now",
+    "shells": "Shells",
+    "free": "Free",
+    "unlock": "Unlock",
+    "comingSoon": "Coming soon",
+    "on": "On",
+    "off": "Off"
+  },
+  "tabs": {
+    "home": "Home",
+    "chat": "Chat",
+    "us": "Us",
+    "find": "Find"
+  },
+  "home": {
+    "greetingBanner": "Add some contacts!",
+    "greetingBannerWithFriends": "They are waiting for you~",
+    "modules": {
+      "shellStore": "Shell Store",
+      "dating": "Dating",
+      "heartbeatDiary": "Heartbeat Diary",
+      "photoBooth": "Photo Booth",
+      "myContacts": "My Contacts",
+      "radio": "Radio",
+      "freeGifts": "Free Gifts",
+      "callHistory": "Call History",
+      "bulletinBoard": "Bulletin Board",
+      "bedtime": "Bedtime"
+    }
+  },
+  "dailyReward": {
+    "title": "Daily check-in",
+    "body": "Thanks for coming back! Here are today's shells.",
+    "day": "Day {{day}} of 7",
+    "collect": "Collect"
+  },
+  "find": {
+    "title": "Add Friend",
+    "searchPlaceholder": "Search",
+    "categories": {
+      "school": "Campus",
+      "fantasy": "Fantasy",
+      "idol": "Idols",
+      "daily": "Everyday",
+      "original": "Original Character"
+    },
+    "category": "Category",
+    "voiceReady": "Voice ready",
+    "voiceTraining": "Voice training",
+    "createCharacter": "Create character",
+    "noResults": "No characters match that search yet.",
+    "noResultsHint": "Try another name, or create them yourself."
+  },
+  "characterProfile": {
+    "addFriend": "Add Friend",
+    "chat": "Chat",
+    "call": "Voice Call",
+    "secretNote": "Secret Note",
+    "friends": "Friends since {{date}}",
+    "voiceTraining": "Their voice is still training - calls unlock when it's ready."
+  },
+  "chatList": {
+    "title": "Chat",
+    "empty": "No conversations yet",
+    "emptyHint": "Find a character and say hi first.",
+    "pinned": "Pinned",
+    "muted": "Muted"
+  },
+  "chat": {
+    "inputPlaceholder": "I have something to...",
+    "streak_one": "Chatted for {{count}} consecutive day",
+    "streak_other": "Chatted for {{count}} consecutive days",
+    "streakNone": "Say hi to start a streak",
+    "read": "Read",
+    "sending": "Sending",
+    "tapToPlay": "Tap to play · hold for text",
+    "callDuration": "Voice call · {{duration}}",
+    "callMissed": "Missed call",
+    "callBack": "Call back",
+    "attachments": {
+      "voice": "Voice",
+      "photo": "Photo",
+      "gift": "Gift",
+      "secretNote": "Secret Note",
+      "date": "Date",
+      "diary": "Diary"
+    },
+    "voice": {
+      "title": "Voice message",
+      "hold": "Hold to talk",
+      "release": "Release to send",
+      "tooShort": "Hold a little longer"
+    },
+    "cost": "{{count}} shell per message"
+  },
+  "paywall": {
+    "title": "Out of shells",
+    "body": "You need {{count}} shells for that.",
+    "chatBody": "Each message costs 1 shell. You get free shells every day - or top up and keep talking now.",
+    "topUp": "Top up",
+    "earnFree": "Get free shells",
+    "member": "Chat unlimited with Membership"
+  },
+  "levelUp": {
+    "title": "Ta-da~ Your relationship has moved up a level!",
+    "subtitle": "{{name}} feels a little closer to you.",
+    "levelLabel": "Level {{level}} · {{title}}"
+  },
+  "call": {
+    "connecting": "connecting...",
+    "calling": "is calling you...",
+    "morning": "Good-morning call",
+    "night": "Good-night call",
+    "accept": "Accept",
+    "decline": "Decline",
+    "incoming": "Incoming",
+    "outgoing": "Outgoing",
+    "missed": "Missed",
+    "free": "Calls are free",
+    "shareMessage": "I'm on a call with {{name}} on Rafti~"
+  },
+  "callHistory": {
+    "title": "Call History",
+    "empty": "No calls yet",
+    "emptyHint": "Call a character and it will show up here."
+  },
+  "characterSettings": {
+    "title": "SETTINGS",
+    "anniversary": "Anniversary: {{date}}",
+    "voiceCall": "Voice Call",
+    "characterMemories": "Character Memories",
+    "characterSettings": "Character Settings",
+    "chatSettings": "Chat Settings",
+    "searchHistory": "Search History",
+    "changeBackground": "Change Background",
+    "clearChat": "Clear Chat",
+    "reset": "Reset",
+    "clearChatConfirm": "Delete every message in this chat? Memories are kept.",
+    "resetConfirm": "Reset this relationship? Level, streak, memories and moments all go back to zero.",
+    "nickname": "What do you call them?",
+    "nicknameHint": "Only you see this name.",
+    "voiceReplies": "Voice replies",
+    "voiceRepliesHint": "They answer with a voice note as well as text.",
+    "messagesFirst": "Let them reach out",
+    "messagesFirstHint": "Morning and night greetings, calls and reminders.",
+    "chatAnimation": "Chat animations"
+  },
+  "search": {
+    "title": "Search History",
+    "placeholder": "Search this chat",
+    "empty": "Nothing found",
+    "hint": "Type a word you remember from the chat."
+  },
+  "memories": {
+    "title": "Character Memories",
+    "subtitle": "What {{name}} remembers about you.",
+    "empty": "No memories yet",
+    "emptyHint": "Keep chatting - plans, diary pages and little details get saved here.",
+    "addManual": "Add a memory",
+    "sources": {
+      "chat": "From chat",
+      "diary": "From diary",
+      "call": "From a call",
+      "manual": "Added by you"
+    }
+  },
+  "background": {
+    "title": "Change Background",
+    "blossom": "Blossom",
+    "dusk": "Dusk",
+    "room": "Room",
+    "night": "Night",
+    "tea": "Tea House",
+    "plain": "Plain"
+  },
+  "diary": {
+    "title": "Heartbeat Diary",
+    "myDiary": "My Diary",
+    "writePlaceholder": "Write down what made your heart flutter - maybe someone you care about will read it...",
+    "shareTitle": "Who can read this page?",
+    "shareWith": "Let {{name}} read it",
+    "shareWithNobody": "Keep it private",
+    "mood": "Today's mood",
+    "replyTitle": "{{name}} wrote back",
+    "empty": "Nothing written yet",
+    "emptyHint": "The first page is always the hardest.",
+    "write": "Write",
+    "info": "About the diary",
+    "infoBody": "Pages you share are read by that character. They write back, remember what matters, and it may come up in your chats later.",
+    "pages_one": "{{count}} page",
+    "pages_other": "{{count}} pages",
+    "moods": {
+      "happy": "Happy",
+      "soft": "Soft",
+      "blue": "Blue",
+      "excited": "Excited",
+      "tired": "Tired"
+    }
+  },
+  "secretNote": {
+    "title": "Secret Note",
+    "theirNote": "{{name}}'s Note",
+    "myNote": "{{name}}'s Note",
+    "placeholder": "Type your idea...",
+    "exchange": "Exchange",
+    "thinking": "Thinking...",
+    "sealed": "Their note is ready and sealed. Write yours, then exchange to open both.",
+    "counter": "{{count}}/400",
+    "newQuestion": "New question",
+    "exchanged": "Exchanged!"
+  },
+  "store": {
+    "title": "Shell Store",
+    "balance": "Balance",
+    "bonus": "+{{count}} bonus",
+    "best": "Best",
+    "membership": "Membership",
+    "memberUntil": "Member until {{date}}",
+    "subscribe": "Subscribe",
+    "active": "Active",
+    "plans": {
+      "basic": "Basic",
+      "pro": "Pro",
+      "quarterly": "Quarterly"
+    },
+    "periods": {
+      "basic": "/ month",
+      "pro": "/ month",
+      "quarterly": "/ 3 months"
+    },
+    "perks": {
+      "unlimitedChat": "Unlimited messages",
+      "noAds": "No ads",
+      "longerMemory": "Longer, sharper memory",
+      "priorityVoice": "Priority voice replies",
+      "saveMore": "Save 17% vs monthly"
+    },
+    "restore": "Restore purchases",
+    "costs": "What things cost",
+    "costTextMessage": "Sending a message",
+    "costListen": "Voice replies & listening",
+    "costCall": "Voice calls",
+    "costPhotoBooth": "Photo Booth shot",
+    "costSecretNote": "Secret Note exchange",
+    "costVoiceClone": "Voice cloning",
+    "purchased": "+{{count}} shells",
+    "welcomeMember": "Welcome to {{plan}}!"
+  },
+  "gifts": {
+    "title": "Free Gifts",
+    "dailyCheckIn": "Daily check-in",
+    "checkInHint": "Come back every day - day 7 is the big one.",
+    "day": "Day {{count}}",
+    "wheel": "Lucky Wheel",
+    "spin": "SPIN",
+    "freeSpin": "1 free spin every day",
+    "adSpin": "Watch a video to spin again",
+    "noSpins": "Come back tomorrow for more spins",
+    "won": "You won {{count}} shells!",
+    "watchAd": "Watch a short video",
+    "watchAdReward": "+{{count}} shells · {{left}} left today",
+    "adsDone": "All videos watched today",
+    "watch": "Watch",
+    "reward": "+{{count}} shells"
+  },
+  "contacts": {
+    "title": "My Contacts",
+    "addOne": "Add one",
+    "all": "All",
+    "createdByYou": "Created by you",
+    "empty": "No contacts yet",
+    "emptyHint": "Everyone you talk to shows up here."
+  },
+  "createCharacter": {
+    "title": "ADD CHARACTER",
+    "name": "Name",
+    "namePlaceholder": "Who are they?",
+    "uploadVoices": "Upload Voices",
+    "uploadVoicesHint": "Sound quality greatly affects the final outcome, no noisy & short samples.",
+    "uploadVoicesBox": "Upload 3-5 video or audio clips of the character, with a total length of at least 1min, and no more than 3min. Each file less than 10MB.",
+    "samples": "Samples ({{count}}/5)",
+    "uploadImage": "Upload Image",
+    "uploadImageBox": "Upload a picture of the character, with the file less than 2MB. Recommend size: 800*1500",
+    "persona": "Personality",
+    "personaPlaceholder": "How do they talk? What do they care about?",
+    "greeting": "First message",
+    "greetingPlaceholder": "What do they say when the chat opens?",
+    "visibility": "Visibility",
+    "private": "Only me",
+    "public": "Share in Find",
+    "create": "Create · {{count}} shells",
+    "creating": "Cloning voice...",
+    "tooLarge": "{{name}} is over 10MB",
+    "imageTooLarge": "That picture is over 2MB",
+    "needs": "Add a name, 3+ voice samples and a picture"
+  },
+  "dating": {
+    "title": "Dating",
+    "subtitle": "Spend a scene together and see where it goes.",
+    "locked": "Reach level {{level}} to unlock",
+    "scenarios": {
+      "aquarium": "Aquarium at closing time",
+      "festival": "Summer festival",
+      "rainyWalk": "Walk in the rain",
+      "lateStudio": "Late night in the studio",
+      "rooftop": "Rooftop, no stars"
+    }
+  },
+  "photoBooth": {
+    "title": "Photo Booth",
+    "subtitle": "Take a picture together.",
+    "shoot": "Shoot",
+    "styles": "Style",
+    "empty": "Add a friend first"
+  },
+  "radio": {
+    "title": "Radio",
+    "subtitle": "Something soft in the background.",
+    "stop": "Stop",
+    "minutes": "{{count}} min",
+    "tracks": {
+      "rain": "Rain on the window",
+      "fireplace": "Fireplace",
+      "waves": "Slow waves",
+      "cafe": "Quiet cafe",
+      "lullaby": "Lullaby"
+    }
+  },
+  "bedtime": {
+    "title": "Bedtime",
+    "subtitle": "Fall asleep to whispers and soft white noise.",
+    "setTimer": "Sleep timer",
+    "start": "Sleep together",
+    "remaining": "{{time}} left"
+  },
+  "board": {
+    "title": "Bulletin Board",
+    "subtitle": "Little notes from everyone you talk to.",
+    "empty": "The board is empty"
+  },
+  "us": {
+    "title": "Us",
+    "level": "Level {{level}}",
+    "intimacy": "{{count}} intimacy",
+    "streak": "{{count}} day streak",
+    "daysTogether": "{{count}} days together",
+    "toNext": "{{count}} to next level",
+    "upcoming": "Coming up",
+    "upcomingHint": "Mention a plan in chat and it shows up here.",
+    "moments": "Our moments",
+    "noMoments": "Your moments together will be recorded here.",
+    "noRelationships": "No one yet",
+    "noRelationshipsHint": "Start a chat and your bond will grow here.",
+    "momentText": {
+      "met": "You became friends",
+      "levelUp": "Reached level {{level}} · {{title}}",
+      "call": "Talked on the phone for {{duration}}",
+      "diary": "Read your diary and wrote back",
+      "secretNote": "Exchanged secret notes",
+      "dating": "Date: {{title}}",
+      "photo": "Took a photo together"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language",
+    "greetings": "They reach out",
+    "morningGreeting": "Morning messages",
+    "eveningGreeting": "Night messages",
+    "morningCall": "Good-morning call",
+    "nightCall": "Good-night call",
+    "chatAnimation": "Chat animations",
+    "membership": "Membership",
+    "notMember": "Not a member",
+    "account": "Account",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "about": "About",
+    "version": "Version {{version}}"
+  },
+  "errors": {
+    "generic": "Something went wrong.",
+    "network": "No connection.",
+    "notFound": "Not found."
+  }
+}
