@@ -1,0 +1,283 @@
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { PaywallSheet } from '@/components/paywall-sheet';
+import {
+  ShellBadge,
+  CharacterAvatar,
+  IconButton,
+  PressableScale,
+  Screen,
+  Sheet,
+  Txt,
+} from '@/components/ui';
+import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
+import { displayName, useAppStore } from '@/store/use-app-store';
+import { colors, hitSlop, radius, space } from '@/theme';
+import type { Message } from '@/types';
+
+type Attachment = {
+  key: 'voice' | 'photo' | 'secretNote' | 'date' | 'diary';
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+};
+
+const ATTACHMENTS: Attachment[] = [
+  { key: 'voice', icon: 'mic-outline' },
+  { key: 'photo', icon: 'image-outline' },
+  { key: 'secretNote', icon: 'mail-unread-outline' },
+  { key: 'date', icon: 'heart-outline' },
+  { key: 'diary', icon: 'book-outline' },
+];
+
+export default function ChatRoomScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const conversationId = Array.isArray(id) ? id[0] : id;
+
+  const { t } = useTranslation();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const listRef = useRef<FlatList<Message>>(null);
+
+  const conversation = useAppStore((s) => s.conversations.find((c) => c.id === conversationId));
+  const character = useAppStore((s) => s.characters.find((c) => c.id === conversation?.characterId));
+  const messages = useAppStore((s) => (conversationId ? s.messages[conversationId] : undefined));
+  const relationship = useAppStore((s) => (conversation ? s.relationships[conversation.characterId] : undefined));
+  const typing = useAppStore((s) => (conversationId ? !!s.typing[conversationId] : false));
+  const levelUp = useAppStore((s) => s.levelUp);
+  const user = useAppStore((s) => s.user);
+  const shells = useAppStore((s) => s.wallet.shells);
+  const animations = useAppStore((s) => s.settings.chatAnimation);
+  const missedToday = useAppStore((s) =>
+    s.calls.some(
+      (c) => c.characterId === conversation?.characterId && c.missed && dayKey(c.startedAt) === todayKey(),
+    ),
+  );
+
+  const sendText = useAppStore((s) => s.sendText);
+  const sendVoice = useAppStore((s) => s.sendVoice);
+  const sendImage = useAppStore((s) => s.sendImage);
+  const setActiveConversation = useAppStore((s) => s.setActiveConversation);
+  const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
+
+  const [attachOpen, setAttachOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [paywall, setPaywall] = useState<number | null>(null);
+
+  // Replies that land while this chat is on screen are read, not unread.
+  useFocusEffect(
+    useCallback(() => {
+      if (!conversationId) return;
+      setActiveConversation(conversationId);
+      return () => setActiveConversation(null);
+    }, [conversationId, setActiveConversation]),
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 80);
+    return () => clearTimeout(timer);
+  }, [messages?.length, typing]);
+
+  const wallpaper = backgroundsById[relationship?.backgroundId ?? 'bg_blossom'];
+  const background = wallpaper?.colors ?? [colors.bg, colors.surface];
+  const data = useMemo(() => messages ?? [], [messages]);
+
+  if (!conversation || !character) {
+    return (
+      <Screen>
+        <Txt style={styles.missing}>{t('errors.notFound')}</Txt>
+      </Screen>
+    );
+  }
+
+  const outOfShells = (cost: number) => {
+    setPaywall(cost);
+    return false;
+  };
+
+  const send = (text: string) =>
+    sendText(conversation.id, text) === 'noShells' ? outOfShells(shellCosts.textMessage) : true;
+
+  const pickPhoto = async () => {
+    setAttachOpen(false);
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
+    const uri = result.canceled ? undefined : result.assets[0]?.uri;
+    if (uri && sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
+  const attach = (key: Attachment['key']) => {
+    setAttachOpen(false);
+    switch (key) {
+      case 'voice':
+        return setVoiceOpen(true);
+      case 'photo':
+        return pickPhoto();
+      case 'secretNote':
+        return router.push(`/secret-note/${character.id}`);
+      case 'date':
+        return router.push('/dating');
+      case 'diary':
+        return router.push('/diary/write');
+    }
+  };
+
+  const name = displayName(character, relationship);
+  const streak = relationship?.streakDays ?? 0;
+  const dark = !!wallpaper?.dark;
+
+  return (
+    <Screen background={background as readonly [string, string]} statusBarStyle="dark">
+      <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
+        <PressableScale onPress={() => router.back()} hitSlop={hitSlop} scaleTo={0.88}>
+          <Ionicons name="chevron-back" size={27} color={colors.text} />
+        </PressableScale>
+
+        <PressableScale
+          style={styles.identity}
+          scaleTo={0.98}
+          onPress={() => router.push(`/character/${character.id}`)}>
+          <CharacterAvatar character={character} size={36} />
+          <View style={styles.identityText}>
+            <View style={styles.nameRow}>
+              <Txt variant="title" lines={1} style={styles.name}>
+                {name}
+              </Txt>
+              <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+            </View>
+            <Txt variant="tiny" color={colors.primary} lines={1}>
+              {streak > 0 ? `${t('chat.streak', { count: streak })} \u{1F9E1}` : t('chat.streakNone')}
+            </Txt>
+          </View>
+        </PressableScale>
+
+        <IconButton
+          icon="call-outline"
+          size={22}
+          dot={missedToday}
+          style={styles.headerIcon}
+          onPress={() => router.push(`/call/${character.id}`)}
+        />
+        <IconButton
+          icon="menu"
+          size={24}
+          style={styles.headerIcon}
+          onPress={() => router.push(`/character/${character.id}/settings`)}
+        />
+      </View>
+
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={insets.top + 56}>
+        <View style={styles.flex}>
+          <ChatWallpaper hidden={dark} />
+          <FlatList
+            ref={listRef}
+            data={data}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <MessageBubble
+                message={item}
+                character={character}
+                user={user}
+                animate={animations}
+                showAvatar={
+                  index === 0 ||
+                  data[index - 1]?.author !== item.author ||
+                  data[index - 1]?.kind === 'call' ||
+                  data[index - 1]?.kind === 'system'
+                }
+                onCallBack={() => router.push(`/call/${character.id}`)}
+              />
+            )}
+            ListFooterComponent={typing ? <TypingRow character={character} /> : null}
+            onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+          />
+        </View>
+
+        <ChatInput onSend={send} onAttach={() => setAttachOpen(true)} onGallery={pickPhoto} />
+      </KeyboardAvoidingView>
+
+      <LevelUpModal
+        event={levelUp?.characterId === character.id ? levelUp : null}
+        characterName={name}
+        onClose={dismissLevelUp}
+      />
+
+      <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
+        <View style={styles.attachGrid}>
+          {ATTACHMENTS.map((item) => (
+            <PressableScale key={item.key} style={styles.attachItem} scaleTo={0.92} onPress={() => attach(item.key)}>
+              <View style={styles.attachIcon}>
+                <Ionicons name={item.icon} size={24} color={colors.primary} />
+              </View>
+              <Txt variant="caption" color={colors.textSecondary}>
+                {t(`chat.attachments.${item.key}`)}
+              </Txt>
+            </PressableScale>
+          ))}
+        </View>
+        <Txt variant="caption" color={colors.textFaint} center style={styles.costHint}>
+          {t('chat.cost', { count: shellCosts.textMessage })}
+        </Txt>
+      </Sheet>
+
+      <VoiceSheet
+        visible={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        onSend={(seconds) => {
+          setVoiceOpen(false);
+          if (sendVoice(conversation.id, seconds, '(voice message)') === 'noShells') {
+            outOfShells(shellCosts.voiceMessage);
+          }
+        }}
+      />
+
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  missing: { padding: space.xl },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    paddingHorizontal: space.md,
+    paddingBottom: space.sm,
+    backgroundColor: colors.surface,
+    borderBottomLeftRadius: radius.xl,
+    borderBottomRightRadius: radius.xl,
+    zIndex: 2,
+  },
+  headerIcon: { width: 34 },
+  identity: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  identityText: { flex: 1, gap: 2 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  name: { flexShrink: 1 },
+  list: { paddingVertical: space.lg },
+  attachGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    rowGap: space.xl,
+  },
+  attachItem: { width: '33.3%', alignItems: 'center', gap: space.xs },
+  attachIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    backgroundColor: colors.primarySofter,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  costHint: { marginTop: space.xl },
+});
