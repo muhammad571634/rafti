@@ -5,7 +5,7 @@ Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizch
 ## Hozirgi holat (2026-09-29)
 - Expo SDK 57 ilova (BIMOBIMO — Beemo/BIMOBIMO ilovasiga o'xshash AI kompanion).
   Mantiq, iqtisod, qo'ng'iroqlar va boshqa bo'limlar tayyor, tavsif — `README.md`.
-- Hech narsa commit qilinmagan (foydalanuvchi so'ramagan).
+- Git: `rafti-app` branch'ida (butun ilova + Rafti rebrend). Remote: https://github.com/muhammad571634/rafti.
 - Brauzerda tekshirish: `.claude/launch.json` → `bimobimo-web` (port 8081).
 
 ## Yangi brend (foydalanuvchi tasdiqlagan)
@@ -120,9 +120,8 @@ Promptlar va jadval oldingi javobda edi: 4 ta ikonka, banner, muqova, app icon.
   Café uchun avatar_adrian. Oppa va Luna — "My Creations" misoli, monogramma bilan qoldi.
 
 ## Keyingi ishlar
-1. Birinchi commit (foydalanuvchi so'rasa).
-2. Ixtiyoriy: Oppa va Luna uchun ham portret (hozir monogramma).
-3. Nashrdan oldin: "Rafti" nomi bo'yicha tovar belgisi tekshiruvi (WIPO / USPTO / EUIPO).
+1. Ixtiyoriy: Oppa va Luna uchun ham portret (hozir monogramma).
+2. Nashrdan oldin: "Rafti" nomi bo'yicha tovar belgisi tekshiruvi (WIPO / USPTO / EUIPO).
 
 ## Ochiq savollar
 - ✅ Hal bo'ldi: anime, Genshin va K-pop personajlari original personajlar bilan almashtirildi.
