@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -81,12 +81,18 @@ export default function DiaryScreen() {
             <IconButton
               icon="swap-vertical"
               size={20}
+              accessibilityLabel={t('a11y.sortPages')}
               onPress={() => {
                 setNewestFirst((v) => !v);
                 setIndex(0);
               }}
             />
-            <IconButton icon="information-circle-outline" size={21} onPress={() => setInfoOpen(true)} />
+            <IconButton
+              icon="information-circle-outline"
+              size={21}
+              onPress={() => setInfoOpen(true)}
+              accessibilityLabel={t('a11y.about')}
+            />
           </View>
         }
       />
@@ -184,10 +190,14 @@ export default function DiaryScreen() {
       </Sheet>
 
       <Sheet visible={datesOpen} onClose={() => setDatesOpen(false)} title={t('diary.pages', { count: entries.length })}>
-        <ScrollView style={styles.entryScroll}>
-          {entries.map((entry, i) => (
+        {/* One page per day adds up fast: a virtualised list, not a mapped ScrollView. */}
+        <FlatList
+          style={styles.entryScroll}
+          data={entries}
+          keyExtractor={(entry) => entry.id}
+          initialNumToRender={12}
+          renderItem={({ item: entry, index: i }) => (
             <PressableScale
-              key={entry.id}
               style={styles.dateRow}
               onPress={() => {
                 setIndex(i);
@@ -204,8 +214,8 @@ export default function DiaryScreen() {
               </View>
               {i === index ? <Ionicons name="checkmark" size={18} color={colors.primary} /> : null}
             </PressableScale>
-          ))}
-        </ScrollView>
+          )}
+        />
       </Sheet>
 
       <Sheet visible={infoOpen} onClose={() => setInfoOpen(false)} title={t('diary.info')}>

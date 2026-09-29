@@ -166,11 +166,20 @@ export default function DiaryWriteScreen() {
             />
             <ToolButton label="S" active={marks.includes('strike')} onPress={() => toggleMark('strike')} strike />
             <ToolButton label="I" active={marks.includes('italic')} onPress={() => toggleMark('italic')} italic />
-            <PressableScale style={styles.tool} scaleTo={0.88} onPress={addImage}>
+            <PressableScale
+              style={styles.tool}
+              scaleTo={0.88}
+              hitSlop={4}
+              accessibilityLabel={t('a11y.addPhoto')}
+              onPress={addImage}>
               <Ionicons name="image-outline" size={21} color={colors.text} />
             </PressableScale>
           </View>
-          <PressableScale style={[styles.collapse, shadows.card]} scaleTo={0.88} onPress={Keyboard.dismiss}>
+          <PressableScale
+            style={[styles.collapse, shadows.card]}
+            scaleTo={0.88}
+            accessibilityLabel={t('a11y.hideKeyboard')}
+            onPress={Keyboard.dismiss}>
             <Ionicons name="chevron-up" size={22} color={colors.text} />
           </PressableScale>
         </View>

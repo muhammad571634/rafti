@@ -57,7 +57,14 @@ export default function MemoriesScreen() {
       <Header
         title={t('memories.title')}
         subtitle={character ? t('memories.subtitle', { name: character.name }) : undefined}
-        right={<IconButton icon="add" onPress={() => setAdding(true)} color={colors.primary} />}
+        right={
+          <IconButton
+            icon="add"
+            onPress={() => setAdding(true)}
+            color={colors.primary}
+            accessibilityLabel={t('a11y.addMemory')}
+          />
+        }
       />
 
       {mine.length === 0 ? (
@@ -129,8 +136,15 @@ function MemoryCard({
             size={17}
             color={memory.pinned ? colors.primary : colors.textFaint}
             onPress={onPin}
+            accessibilityLabel={memory.pinned ? t('a11y.unpin') : t('a11y.pin')}
           />
-          <IconButton icon="trash-outline" size={17} color={colors.textFaint} onPress={onDelete} />
+          <IconButton
+            icon="trash-outline"
+            size={17}
+            color={colors.textFaint}
+            onPress={onDelete}
+            accessibilityLabel={t('a11y.deleteMemory')}
+          />
         </View>
       </View>
 

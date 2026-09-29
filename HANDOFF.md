@@ -119,6 +119,23 @@ Promptlar va jadval oldingi javobda edi: 4 ta ikonka, banner, muqova, app icon.
   Campus va Ezra uchun avatar_kai, Moonlit uchun avatar_aurelian, qolgan NEON TIDE uchun avatar_ezra,
   Café uchun avatar_adrian. Oppa va Luna — "My Creations" misoli, monogramma bilan qoldi.
 
+## Qilingan ishlar (2026-09-30): mobil UX auditi (/mobile-design)
+- Chat: `MessageBubble` endi `memo` qilingan, `renderItem`/`onCallBack` barqaror.
+  Faqat chat ochilgandan keyin kelgan xabarlar animatsiya bilan chiqadi.
+- Accessibility: `PressableScale` standart `accessibilityRole="button"` oladi.
+  Barcha ikonka-tugmalarga nom berildi (`a11y.*` kalitlari, en.json). `IconButton` endi
+  `accessibilityLabel` qabul qiladi.
+- Ichma-ich tugmalar ajratildi: chat sarlavhasidagi ShellBadge va Call History'dagi qo'ng'iroq tugmasi.
+  Qoida: tugma ichiga tugma qo'yilmaydi (VoiceOver yetib bormaydi, vebda `<button>` ichida `<button>`).
+- Tegish maydonlari ≥44pt (`hitSlop`): Chip, ShellBadge, Home profil tugmasi, Shell Store'dagi Free,
+  Us'dagi reja o'chirish, qidiruvni tozalash, klipni o'chirish, diary tool.
+- `src/app/_layout.tsx`: root `ErrorBoundary` ("Rafti tripped over a pebble" + Retry), sinab ko'rildi.
+- Us → Moments sahifalab ko'rsatiladi (20 tadan, "Show N more"). Diary sana ro'yxati `FlatList`da.
+- Tekshirildi: 23 ekranda nomsiz yoki ichma-ich tugma yo'q (DOM tekshiruvi), `tsc` toza.
+- Eslatma: `git checkout` fayllarni vaqtincha o'chirsa, Metro fayl-xaritasi eskirib qoladi
+  ("Unable to resolve module"). Yechim: dev serverni to'xtatish, `%TEMP%\metro-cache` va
+  `%TEMP%\metro-file-map-*`ni o'chirish, qayta ishga tushirish.
+
 ## Keyingi ishlar
 1. Ixtiyoriy: Oppa va Luna uchun ham portret (hozir monogramma).
 2. Nashrdan oldin: "Rafti" nomi bo'yicha tovar belgisi tekshiruvi (WIPO / USPTO / EUIPO).

@@ -26,6 +26,9 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
       disabled={!onPress}
       dimOnPress={false}
       scaleTo={0.94}
+      // 34pt pill, 44pt target.
+      hitSlop={{ top: 5, bottom: 5 }}
+      accessibilityState={{ selected: !!active }}
       style={[
         styles.base,
         active

@@ -108,6 +108,7 @@ export default function FindScreen() {
         style={[styles.fab, shadows.fab]}
         scaleTo={0.9}
         haptic
+        accessibilityLabel={t('a11y.createCharacter')}
         onPress={() => router.push('/create-character')}>
         <LinearGradient colors={gradients.fab} style={styles.fabFill}>
           <Ionicons name="add" size={30} color={colors.white} />

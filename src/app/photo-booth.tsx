@@ -95,6 +95,8 @@ export default function PhotoBoothScreen() {
               key={character.id}
               style={styles.partner}
               scaleTo={0.93}
+              accessibilityLabel={character.name}
+              accessibilityState={{ selected: character.id === partnerId }}
               onPress={() => setPartnerId(character.id)}>
               <CharacterAvatar character={character}
                 size={46}

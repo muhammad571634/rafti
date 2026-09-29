@@ -64,32 +64,41 @@ function CallRow({
   const tint = call.missed ? colors.danger : colors.textMuted;
 
   return (
-    <PressableScale style={styles.row} onPress={onOpen} scaleTo={0.99}>
-      <CharacterAvatar character={character} size={46} />
+    // The call-back button sits beside the row's tap area, not inside it.
+    <View style={styles.row}>
+      <PressableScale style={styles.rowTap} onPress={onOpen} scaleTo={0.99}>
+        <CharacterAvatar character={character} size={46} />
 
-      <View style={styles.body}>
-        <Txt variant="bodyStrong" color={call.missed ? colors.danger : colors.text} lines={1}>
-          {character.name}
-        </Txt>
-        <View style={styles.meta}>
-          <Ionicons
-            name={call.missed ? 'call-outline' : call.direction === 'incoming' ? 'arrow-down' : 'arrow-up'}
-            size={12}
-            color={tint}
-          />
-          <Txt variant="caption" color={colors.textMuted}>
-            {call.missed
-              ? t('call.missed')
-              : `${t(`call.${call.direction}`)} · ${fmtDuration(call.durationSec)}`}
+        <View style={styles.body}>
+          <Txt variant="bodyStrong" color={call.missed ? colors.danger : colors.text} lines={1}>
+            {character.name}
           </Txt>
+          <View style={styles.meta}>
+            <Ionicons
+              name={call.missed ? 'call-outline' : call.direction === 'incoming' ? 'arrow-down' : 'arrow-up'}
+              size={12}
+              color={tint}
+            />
+            <Txt variant="caption" color={colors.textMuted}>
+              {call.missed
+                ? t('call.missed')
+                : `${t(`call.${call.direction}`)} · ${fmtDuration(call.durationSec)}`}
+            </Txt>
+          </View>
         </View>
-      </View>
 
-      <Txt variant="caption" color={colors.textFaint}>
-        {relativeStamp(call.startedAt)}
-      </Txt>
-      <IconButton icon="call" size={18} color={colors.primary} onPress={onCall} />
-    </PressableScale>
+        <Txt variant="caption" color={colors.textFaint}>
+          {relativeStamp(call.startedAt)}
+        </Txt>
+      </PressableScale>
+      <IconButton
+        icon="call"
+        size={18}
+        color={colors.primary}
+        onPress={onCall}
+        accessibilityLabel={t('a11y.callBack')}
+      />
+    </View>
   );
 }
 
@@ -103,6 +112,7 @@ const styles = StyleSheet.create({
     paddingVertical: space.md,
     backgroundColor: colors.surface,
   },
+  rowTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md },
   body: { flex: 1, gap: 2 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   separator: {

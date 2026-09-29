@@ -22,6 +22,8 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, palette, radius, shadows, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
+const MOMENT_PAGE = 20;
+
 const MOMENT_ICON: Record<MomentKind, IconName> = {
   met: 'sparkles',
   levelUp: 'growing-heart',
@@ -56,6 +58,9 @@ export default function UsScreen() {
 
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
+  // Moments pile up for as long as a bond lasts; render them a page at a time.
+  const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
+  const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
 
   const timeline = useMemo(
     () =>
@@ -173,7 +178,11 @@ export default function UsScreen() {
                     {item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
                   </Txt>
                 </View>
-                <PressableScale hitSlop={8} scaleTo={0.85} onPress={() => removeSchedule(item.id)}>
+                <PressableScale
+                  hitSlop={12}
+                  scaleTo={0.85}
+                  accessibilityLabel={t('a11y.removePlan')}
+                  onPress={() => removeSchedule(item.id)}>
                   <Ionicons name="close-circle" size={20} color={colors.textFaint} />
                 </PressableScale>
               </View>
@@ -191,13 +200,13 @@ export default function UsScreen() {
               {t('us.noMoments')}
             </Txt>
           ) : (
-            timeline.map((moment, i) => (
+            timeline.slice(0, visibleMoments).map((moment, i, shown) => (
               <View key={moment.id} style={styles.momentRow}>
                 <View style={styles.rail}>
                   <View style={styles.momentIcon}>
                     <Icon3D name={MOMENT_ICON[moment.kind]} size={22} />
                   </View>
-                  {i < timeline.length - 1 ? <View style={styles.railLine} /> : null}
+                  {i < shown.length - 1 ? <View style={styles.railLine} /> : null}
                 </View>
                 <View style={[styles.flex, styles.momentBody]}>
                   <Txt variant="body">{t(`us.momentText.${moment.kind}`, moment.params ?? {})}</Txt>
@@ -208,6 +217,18 @@ export default function UsScreen() {
               </View>
             ))
           )}
+          {timeline.length > visibleMoments ? (
+            <PressableScale
+              style={styles.showMore}
+              scaleTo={0.97}
+              onPress={() =>
+                setMomentLimit({ id: selected?.character.id, count: visibleMoments + MOMENT_PAGE })
+              }>
+              <Txt variant="smallStrong" color={colors.primary}>
+                {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
+              </Txt>
+            </PressableScale>
+          ) : null}
         </Card>
       </ScrollView>
     </Screen>
@@ -262,6 +283,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   momentRow: { flexDirection: 'row', gap: space.md },
+  showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
   rail: { alignItems: 'center', width: 36 },
   momentIcon: {
     width: 36,

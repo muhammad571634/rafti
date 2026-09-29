@@ -32,11 +32,21 @@ export function ChatInput({ onSend, onAttach, onGallery }: ChatInputProps) {
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.sm) }]}>
-      <PressableScale onPress={onAttach} hitSlop={hitSlop} scaleTo={0.85} style={styles.iconBtn}>
+      <PressableScale
+        onPress={onAttach}
+        hitSlop={hitSlop}
+        scaleTo={0.85}
+        style={styles.iconBtn}
+        accessibilityLabel={t('a11y.attach')}>
         <Ionicons name="add" size={28} color={colors.text} />
       </PressableScale>
 
-      <PressableScale onPress={onGallery} hitSlop={hitSlop} scaleTo={0.85} style={styles.iconBtn}>
+      <PressableScale
+        onPress={onGallery}
+        hitSlop={hitSlop}
+        scaleTo={0.85}
+        style={styles.iconBtn}
+        accessibilityLabel={t('a11y.gallery')}>
         <Ionicons name="image-outline" size={24} color={colors.text} />
       </PressableScale>
 
@@ -56,7 +66,7 @@ export function ChatInput({ onSend, onAttach, onGallery }: ChatInputProps) {
           blurOnSubmit={Platform.OS === 'web' ? true : undefined}
           returnKeyType="send"
         />
-        <PressableScale hitSlop={hitSlop} scaleTo={0.85}>
+        <PressableScale hitSlop={hitSlop} scaleTo={0.85} accessibilityLabel={t('a11y.emoji')}>
           <Ionicons name="happy-outline" size={21} color={colors.textMuted} />
         </PressableScale>
       </View>
@@ -67,7 +77,7 @@ export function ChatInput({ onSend, onAttach, onGallery }: ChatInputProps) {
         hitSlop={hitSlop}
         scaleTo={0.85}
         haptic
-        accessibilityLabel="Send"
+        accessibilityLabel={t('a11y.send')}
         style={styles.iconBtn}>
         <Ionicons name={canSend ? 'send' : 'send-outline'} size={22} color={canSend ? colors.primary : colors.text} />
       </PressableScale>

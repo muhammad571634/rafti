@@ -64,6 +64,7 @@ export default function CharacterProfileScreen() {
             <IconButton
               icon="ellipsis-horizontal"
               color={colors.textSecondary}
+              accessibilityLabel={t('a11y.more')}
               onPress={() => router.push(`/character/${character.id}/settings`)}
             />
           ) : null

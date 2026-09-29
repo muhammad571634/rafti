@@ -382,7 +382,8 @@
       "secretNote": "Exchanged secret notes",
       "dating": "Date: {{title}}",
       "photo": "Took a photo together"
-    }
+    },
+    "showMore": "Show {{count}} more"
   },
   "profile": {
     "title": "Profile",
@@ -404,6 +405,32 @@
   "errors": {
     "generic": "Something went wrong.",
     "network": "No connection.",
-    "notFound": "Not found."
+    "notFound": "Not found.",
+    "crashTitle": "Rafti tripped over a pebble",
+    "crashBody": "Something went wrong on this screen. Your chats and shells are safe."
+  },
+  "a11y": {
+    "back": "Back",
+    "call": "Call",
+    "callBack": "Call back",
+    "chatSettings": "Chat settings",
+    "more": "More options",
+    "attach": "Attach",
+    "gallery": "Send a photo",
+    "emoji": "Emoji",
+    "send": "Send",
+    "createCharacter": "Create a character",
+    "share": "Share",
+    "addMemory": "Add a memory",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "deleteMemory": "Delete memory",
+    "removeClip": "Remove voice clip",
+    "sortPages": "Change page order",
+    "about": "About",
+    "addPhoto": "Add a photo",
+    "hideKeyboard": "Hide keyboard",
+    "clearSearch": "Clear search",
+    "removePlan": "Remove plan"
   }
 }

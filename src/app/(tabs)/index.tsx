@@ -37,7 +37,11 @@ export default function HomeScreen() {
           <Mascot size={26} bob />
         </View>
 
-        <PressableScale style={styles.userPill} scaleTo={0.94} onPress={() => router.push('/profile')}>
+        <PressableScale
+          style={styles.userPill}
+          scaleTo={0.94}
+          hitSlop={6}
+          onPress={() => router.push('/profile')}>
           <UserAvatar user={user} size={24} />
           <Txt variant="smallStrong" color={colors.textSecondary} lines={1}>
             {user.displayName}

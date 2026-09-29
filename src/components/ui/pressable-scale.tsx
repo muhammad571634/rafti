@@ -26,6 +26,8 @@ export function PressableScale({
   onPressIn,
   onPressOut,
   disabled,
+  accessibilityRole = 'button',
+  accessibilityState,
   children,
   ...rest
 }: PressableScaleProps) {
@@ -39,6 +41,8 @@ export function PressableScale({
   return (
     <AnimatedPressable
       disabled={disabled}
+      accessibilityRole={accessibilityRole}
+      accessibilityState={{ disabled: !!disabled, ...accessibilityState }}
       onPressIn={(e) => {
         pressed.value = withSpring(1, { damping: 22, stiffness: 420 });
         if (haptic && Platform.OS !== 'web') {

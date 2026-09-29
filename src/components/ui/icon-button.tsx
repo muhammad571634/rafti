@@ -18,6 +18,8 @@ export interface IconButtonProps {
   badge?: number;
   /** Red dot with no number. */
   dot?: boolean;
+  /** What a screen reader says — the icon alone says nothing. */
+  accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -29,6 +31,7 @@ export function IconButton({
   background,
   badge,
   dot,
+  accessibilityLabel,
   style,
 }: IconButtonProps) {
   const box = size + space.lg;
@@ -38,6 +41,7 @@ export function IconButton({
       onPress={onPress}
       hitSlop={8}
       scaleTo={0.88}
+      accessibilityLabel={accessibilityLabel}
       style={[
         styles.base,
         { width: box, height: box, borderRadius: box / 2 },

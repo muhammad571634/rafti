@@ -99,7 +99,12 @@ export default function CallScreen() {
       backdrop={<BlurBackdrop source={characterImage(character)} dim={0.22} blur={50} />}>
       <LinearGradient colors={['rgba(0,0,0,0.18)', 'transparent']} style={styles.topScrim} />
 
-      <PressableScale style={styles.share} hitSlop={10} scaleTo={0.88} onPress={share}>
+      <PressableScale
+        style={styles.share}
+        hitSlop={10}
+        scaleTo={0.88}
+        accessibilityLabel={t('a11y.share')}
+        onPress={share}>
         <Ionicons name="arrow-redo" size={26} color={colors.white} />
       </PressableScale>
 

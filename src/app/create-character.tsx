@@ -160,8 +160,9 @@ export default function CreateCharacterScreen() {
                       </Txt>
                     ) : null}
                     <PressableScale
-                      hitSlop={8}
+                      hitSlop={14}
                       scaleTo={0.85}
+                      accessibilityLabel={t('a11y.removeClip')}
                       onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
                       <Ionicons name="trash-outline" size={17} color={dark.muted} />
                     </PressableScale>

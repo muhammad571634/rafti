@@ -62,7 +62,11 @@ export default function ShellStoreScreen() {
               {wallet.shells}
             </Txt>
           </View>
-          <PressableScale style={styles.freeBtn} scaleTo={0.94} onPress={() => router.push('/gifts')}>
+          <PressableScale
+            style={styles.freeBtn}
+            scaleTo={0.94}
+            hitSlop={{ top: 7, bottom: 7 }}
+            onPress={() => router.push('/gifts')}>
             <Ionicons name="gift" size={15} color={colors.primary} />
             <Txt variant="caption" color={colors.primary}>
               {t('common.free')}
