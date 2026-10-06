@@ -37,6 +37,8 @@ export const type = {
   tiny: { fontSize: 10, fontWeight: weight.medium } as Variant,
   /** Home grid tile labels — two lines, tight */
   tile: { fontSize: 11, fontWeight: weight.semibold, lineHeight: 13 } as Variant,
+  /** A playful figure inside a row: shell counts on the store packs */
+  figure: { fontSize: 22, fontFamily: fonts.display, lineHeight: 26 } as Variant,
 } as const;
 
 export type TypeVariant = keyof typeof type;

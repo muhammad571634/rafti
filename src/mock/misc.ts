@@ -26,10 +26,10 @@ export const homeModules: HomeModule[] = [
 
 /** Mirrors the reference store: 50 / 300 / 500 / 1200. */
 export const shellPacks: ShellPack[] = [
-  { id: 'sh_50', shells: 50, bonus: 0, price: '$0.99' },
-  { id: 'sh_300', shells: 300, bonus: 20, price: '$4.99' },
-  { id: 'sh_500', shells: 500, bonus: 60, price: '$6.99', best: true },
-  { id: 'sh_1200', shells: 1200, bonus: 200, price: '$14.99' },
+  { id: 'sh_50', shells: 50, bonus: 0, price: '$0.99', amount: 0.99 },
+  { id: 'sh_300', shells: 300, bonus: 20, price: '$4.99', amount: 4.99 },
+  { id: 'sh_500', shells: 500, bonus: 60, price: '$6.99', amount: 6.99, popular: true },
+  { id: 'sh_1200', shells: 1200, bonus: 200, price: '$14.99', amount: 14.99 },
 ];
 
 export const membershipPlans: MembershipPlan[] = [

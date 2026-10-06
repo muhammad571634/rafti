@@ -238,7 +238,39 @@
   - 375×812 o'lchamda to'rttala ekran prototipga mos chiqdi. Qidiruvda "cas" yozilsa Castor va Lancaster topiladi,
     "zzz" yozilsa "Nothing matches" chiqadi.
   - "+" menyusi narxlarni to'g'ri ko'rsatadi.
-- Keyingi qadam: 2-bosqich (Find, Us, Profile/sozlamalar, Shell Store). Avval prototip.
+- 0 va 1-bosqich `redesign` branch'iga commit qilindi (`77e07ae`), hali push qilinmagan.
+
+## Qilingan ishlar (2026-10-06): redesign 2-bosqich — TAYYOR (commit qilinmagan)
+- Bu safar workflow emas, o'zim yozdim (ultracode o'chiq edi).
+- `ListRow`ga `right` slot qo'shildi (Switch yoki kichik tugma uchun).
+- `Toggle` endi ink rangda, oq thumb bilan. U hamma joyda ishlatiladi.
+- Yangi `type.figure`: 22pt Fredoka.
+- `find.tsx`:
+  - FAB olib tashlandi, uning o'rniga sarlavhada "+" turadi.
+  - Kategoriyalar tagiga chizilgan tablar ko'rinishida.
+  - Dunyo nomi ostida `ListRow` ro'yxati, yonida "Add" (`addFriend`, ekran o'zgarmaydi) yoki "✓ Friends".
+  - "Add" qator tugmasining ICHIDA emas, YONIDA turadi (ichma-ich tugma bo'lmasligi uchun).
+- `us.tsx`:
+  - Gradient o'rniga outlined kartochka: kun soni Fredoka'da, yalpiz progress va 3 ta stat
+    (intimacy, streak, first met "Apr 9").
+  - "Coming up" bo'limida `DateTile`. "Moments" chiziqli ikonkali ro'yxat.
+- `profile.tsx`:
+  - Bo'limlar: Account, They reach out, Chat, About.
+  - "Chat animations" QOLDI, chunki u xabarlar animatsiyasini haqiqatan boshqaradi. Prototipda xato
+    "ishlamaydi" deb yozgandim, foydalanuvchiga aytildi.
+- `store/shell.tsx` — halol "value framing", hamma narx ochiq:
+  - Paketlar kattadan kichikka tartiblangan (langar). `popular` paket oldindan tanlangan va "Most popular" yorlig'iga ega.
+  - "Best value" va tejash foizlari haqiqiy narxdan hisoblanadi (`buildOffers`). 100 chig'anoq narxi
+    ko'rsatiladi, bonus yalpiz rangda "N free".
+  - Pastda bitta "Get N shells · $X" tugmasi, platformaga qarab "paid through the App Store/Google Play".
+  - `ShellPack.best` → `popular` deb qayta nomlandi, `amount` (son narx) qo'shildi.
+- Tekshirildi:
+  - `tsc` toza, konsolda xato yo'q.
+  - Paket tanlanganda tugma o'zgaradi, `aria-checked` to'g'ri ishlaydi.
+  - Xarid: balans +320. "Add" bosilganda Kai "Friends" bo'ldi.
+  - Bu sinovlar vebdagi localStorage'ni o'zgartirdi, telefonga ta'sir qilmaydi.
+- Keyingi qadam: 3-bosqich (Diary, Secret Note, Gifts, Dating, Photo booth, Radio, Bedtime, qo'ng'iroqlar,
+  Create character, Memories, Call history, character settings). Avval prototip.
 
 ## BIMOBIMO raqobat tahlili (2026-10-05, xulosa)
 - BIMOBIMO: App Store (US) 4.9 / ~5.5K baho; kuchi — ovoz va "haqiqiyday" suhbat.

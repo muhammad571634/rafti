@@ -90,8 +90,8 @@
     "collect": "Collect"
   },
   "find": {
-    "title": "Add Friend",
-    "searchPlaceholder": "Search",
+    "title": "Find",
+    "searchPlaceholder": "Search characters",
     "categories": {
       "school": "Campus",
       "fantasy": "Fantasy",
@@ -104,7 +104,9 @@
     "voiceTraining": "Voice training",
     "createCharacter": "Create character",
     "noResults": "No characters match that search yet.",
-    "noResultsHint": "Try another name, or create them yourself."
+    "noResultsHint": "Try another name, or create them yourself.",
+    "add": "Add",
+    "friends": "Friends"
   },
   "characterProfile": {
     "addFriend": "Add friend",
@@ -273,9 +275,6 @@
   },
   "store": {
     "title": "Shell Store",
-    "balance": "Balance",
-    "bonus": "+{{count}} bonus",
-    "best": "Best",
     "membership": "Membership",
     "memberUntil": "Member until {{date}}",
     "subscribe": "Subscribe",
@@ -306,7 +305,23 @@
     "costSecretNote": "Secret Note exchange",
     "costVoiceClone": "Voice cloning",
     "purchased": "+{{count}} shells",
-    "welcomeMember": "Welcome to {{plan}}!"
+    "welcomeMember": "Welcome to {{plan}}!",
+    "balanceHint_one": "Enough for about {{count}} message",
+    "balanceHint_other": "Enough for about {{count}} messages",
+    "balanceMember": "Messages are free while you are a member",
+    "choose": "Choose a pack",
+    "bestValue": "Best value · save {{percent}}%",
+    "popular": "Most popular",
+    "save": "Save {{percent}}%",
+    "saveLower": "save {{percent}}%",
+    "bonusFree": "{{count}} free",
+    "topUp": "A little top-up",
+    "per100": "{{price}} / 100",
+    "shellsUnit": "shells",
+    "shellCount": "{{amount}} shells",
+    "buy": "Get {{amount}} shells · {{price}}",
+    "paidApple": "One-time purchase · paid through the App Store",
+    "paidGoogle": "One-time purchase · paid through Google Play"
   },
   "gifts": {
     "title": "Free Gifts",
@@ -422,7 +437,13 @@
       "dating": "Date: {{title}}",
       "photo": "Took a photo together"
     },
-    "showMore": "Show {{count}} more"
+    "showMore": "Show {{count}} more",
+    "daysLabel_one": "day together",
+    "daysLabel_other": "days together",
+    "statIntimacy": "intimacy",
+    "statStreak": "day streak",
+    "statMet": "first met",
+    "nothingPlanned": "Nothing planned yet"
   },
   "profile": {
     "title": "Profile",
@@ -439,7 +460,10 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "about": "About",
-    "version": "Version {{version}}"
+    "version": "Version {{version}}",
+    "sectionAccount": "Account",
+    "sectionChat": "Chat",
+    "sectionAbout": "About"
   },
   "errors": {
     "generic": "Something went wrong.",

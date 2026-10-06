@@ -17,6 +17,8 @@ export interface ListRowProps {
   meta?: string;
   /** Small element at the end of the subtitle line: a CountBadge, a muted icon. */
   trailing?: React.ReactNode;
+  /** A control at the row's right edge, vertically centred: a Switch, a small Button. */
+  right?: React.ReactNode;
   /** The › affordance for rows that open another screen. */
   chevron?: boolean;
   onPress?: () => void;
@@ -35,6 +37,7 @@ export function ListRow({
   titleAccessory,
   meta,
   trailing,
+  right,
   chevron,
   onPress,
   accessibilityLabel,
@@ -65,6 +68,7 @@ export function ListRow({
           </View>
         ) : null}
       </View>
+      {right}
       {chevron ? <Ionicons name="chevron-forward" size={18} color={colors.textFaint} /> : null}
     </>
   );
