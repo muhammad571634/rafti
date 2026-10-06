@@ -20,6 +20,8 @@ export interface IconButtonProps {
   dot?: boolean;
   /** What a screen reader says — the icon alone says nothing. */
   accessibilityLabel?: string;
+  /** A light tap on press, for actions that matter (e.g. send). */
+  haptic?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -32,6 +34,7 @@ export function IconButton({
   badge,
   dot,
   accessibilityLabel,
+  haptic,
   style,
 }: IconButtonProps) {
   const box = size + space.lg;
@@ -41,6 +44,7 @@ export function IconButton({
       onPress={onPress}
       hitSlop={8}
       scaleTo={0.88}
+      haptic={haptic}
       accessibilityLabel={accessibilityLabel}
       style={[
         styles.base,

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,14 +11,17 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   ShellBadge,
   CharacterAvatar,
+  Divider,
   IconButton,
+  IconTile,
+  ListRow,
   PressableScale,
   Screen,
   Sheet,
   Txt,
 } from '@/components/ui';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
 
@@ -30,10 +33,13 @@ type Attachment = {
 const ATTACHMENTS: Attachment[] = [
   { key: 'voice', icon: 'mic-outline' },
   { key: 'photo', icon: 'image-outline' },
-  { key: 'secretNote', icon: 'mail-unread-outline' },
-  { key: 'date', icon: 'heart-outline' },
+  { key: 'secretNote', icon: 'mail-outline' },
+  { key: 'date', icon: 'cafe-outline' },
   { key: 'diary', icon: 'book-outline' },
 ];
+
+/** Leading tile size in the "+" sheet; the dividers inset by it to meet the row text. */
+const ATTACH_TILE = 38;
 
 export default function ChatRoomScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,6 +58,7 @@ export default function ChatRoomScreen() {
   const levelUp = useAppStore((s) => s.levelUp);
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
+  const member = useAppStore((s) => memberActive(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
   const missedToday = useAppStore((s) =>
     s.calls.some(
@@ -154,6 +161,23 @@ export default function ChatRoomScreen() {
     }
   };
 
+  // The price shown on each "+" row. Members send voice and photos free; the
+  // date row opens its own screen, so it carries a chevron instead.
+  const attachMeta = (key: Attachment['key']) => {
+    switch (key) {
+      case 'voice':
+        return member ? undefined : t('chat.shellCost', { count: shellCosts.voiceMessage });
+      case 'photo':
+        return member ? undefined : t('chat.shellCost', { count: shellCosts.textMessage });
+      case 'secretNote':
+        return t('chat.shellCost', { count: shellCosts.secretNote });
+      case 'diary':
+        return t('common.free');
+      case 'date':
+        return undefined;
+    }
+  };
+
   const name = displayName(character, relationship);
   const streak = relationship?.streakDays ?? 0;
   const dark = !!wallpaper?.dark;
@@ -224,7 +248,12 @@ export default function ChatRoomScreen() {
           />
         </View>
 
-        <ChatInput onSend={send} onAttach={() => setAttachOpen(true)} onGallery={pickPhoto} />
+        <ChatInput
+          placeholder={t('chat.inputPlaceholder', { name })}
+          onSend={send}
+          onAttach={() => setAttachOpen(true)}
+          onVoice={() => setVoiceOpen(true)}
+        />
       </KeyboardAvoidingView>
 
       <LevelUpModal
@@ -234,21 +263,25 @@ export default function ChatRoomScreen() {
       />
 
       <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
-        <View style={styles.attachGrid}>
-          {ATTACHMENTS.map((item) => (
-            <PressableScale key={item.key} style={styles.attachItem} scaleTo={0.92} onPress={() => attach(item.key)}>
-              <View style={styles.attachIcon}>
-                <Ionicons name={item.icon} size={24} color={colors.primary} />
-              </View>
-              <Txt variant="caption" color={colors.textSecondary}>
-                {t(`chat.attachments.${item.key}`)}
-              </Txt>
-            </PressableScale>
-          ))}
+        <View style={styles.attachList}>
+          {ATTACHMENTS.map((item, index) => {
+            const title = t(`chat.attachments.${item.key}`);
+            const meta = attachMeta(item.key);
+            return (
+              <Fragment key={item.key}>
+                {index > 0 ? <Divider inset={space.lg + ATTACH_TILE + space.md} /> : null}
+                <ListRow
+                  title={title}
+                  left={<IconTile icon={item.icon} size={ATTACH_TILE} />}
+                  meta={meta}
+                  chevron={item.key === 'date'}
+                  accessibilityLabel={meta ? `${title}, ${meta}` : title}
+                  onPress={() => attach(item.key)}
+                />
+              </Fragment>
+            );
+          })}
         </View>
-        <Txt variant="caption" color={colors.textFaint} center style={styles.costHint}>
-          {t('chat.cost', { count: shellCosts.textMessage })}
-        </Txt>
       </Sheet>
 
       <VoiceSheet
@@ -286,19 +319,6 @@ const styles = StyleSheet.create({
   identityTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
   identityText: { flex: 1, gap: 2 },
   list: { paddingVertical: space.lg },
-  attachGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    rowGap: space.xl,
-  },
-  attachItem: { width: '33.3%', alignItems: 'center', gap: space.xs },
-  attachIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: colors.primarySofter,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  costHint: { marginTop: space.xl },
+  // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
+  attachList: { marginHorizontal: -space.xl },
 });

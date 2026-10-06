@@ -1,6 +1,4 @@
-import { BlurView } from 'expo-blur';
-import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, radius, shadows, space } from '@/theme';
@@ -17,23 +15,20 @@ export interface SheetProps {
   dismissable?: boolean;
 }
 
+/**
+ * Bottom sheet (or centred card) over a light scrim. It appears and leaves at
+ * once: no slide, spring or fade, so it never "jumps" at you.
+ */
 export function Sheet({ visible, onClose, title, children, center, dismissable = true }: SheetProps) {
   const insets = useSafeAreaInsets();
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <Animated.View entering={FadeIn.duration(180)} exiting={FadeOut.duration(140)} style={styles.fill}>
-        {Platform.OS === 'web' ? (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.overlay }]} />
-        ) : (
-          <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-        )}
-        <Pressable style={StyleSheet.absoluteFill} onPress={dismissable ? onClose : undefined} />
+      <View style={styles.fill}>
+        <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={dismissable ? onClose : undefined} />
 
         <View style={[styles.fill, center ? styles.centerWrap : styles.bottomWrap]} pointerEvents="box-none">
-          <Animated.View
-            entering={center ? FadeIn.duration(220) : SlideInDown.springify().damping(20)}
-            exiting={center ? FadeOut.duration(160) : SlideOutDown.duration(180)}
+          <View
             style={[
               center ? styles.centerCard : styles.bottomCard,
               !center && { paddingBottom: insets.bottom + space.xl },
@@ -46,15 +41,16 @@ export function Sheet({ visible, onClose, title, children, center, dismissable =
               </Txt>
             ) : null}
             {children}
-          </Animated.View>
+          </View>
         </View>
-      </Animated.View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  scrim: { backgroundColor: colors.scrim },
   bottomWrap: { justifyContent: 'flex-end' },
   centerWrap: { alignItems: 'center', justifyContent: 'center', padding: space.xxl },
   bottomCard: {

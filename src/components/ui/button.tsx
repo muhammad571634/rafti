@@ -1,12 +1,15 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, gradients, radius, shadows, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
-export type ButtonVariant = 'primary' | 'accent' | 'soft' | 'ghost' | 'danger';
+/**
+ * `primary` is the one solid apricot action on a screen; `secondary` is the quiet
+ * white button beside it. No gradients or glow: colour alone marks the main action.
+ */
+export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'soft' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps {
@@ -22,7 +25,7 @@ export interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 52 };
+const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 48 };
 
 export function Button({
   label,
@@ -36,58 +39,47 @@ export function Button({
   right,
   style,
 }: ButtonProps) {
-  const height = heights[size];
-  const textVariant = size === 'sm' ? 'smallStrong' : 'bodyStrong';
-
-  const body = (
-    <View style={styles.row}>
-      {loading ? (
-        <ActivityIndicator size="small" color={variant === 'primary' ? colors.white : colors.primary} />
-      ) : (
-        <>
-          {left}
-          <Txt variant={textVariant} color={foreground(variant)}>
-            {label}
-          </Txt>
-          {right}
-        </>
-      )}
-    </View>
-  );
-
-  const shell: StyleProp<ViewStyle> = [
-    styles.base,
-    { height, borderRadius: radius.pill, paddingHorizontal: size === 'sm' ? space.lg : space.xxl },
-    full && styles.full,
-    style,
-  ];
-
-  if (variant === 'primary') {
-    return (
-      <PressableScale onPress={onPress} disabled={disabled || loading} style={[shell, shadows.fab]}>
-        <LinearGradient
-          colors={gradients.fab}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radius.pill }]}
-        />
-        {body}
-      </PressableScale>
-    );
-  }
+  const fg = foreground(variant);
 
   return (
     <PressableScale
       onPress={onPress}
       disabled={disabled || loading}
-      style={[shell, { backgroundColor: background(variant) }, variant === 'ghost' && styles.ghost]}>
-      {body}
+      style={[
+        styles.base,
+        {
+          height: heights[size],
+          borderRadius: size === 'sm' ? radius.sm : radius.md,
+          paddingHorizontal: size === 'sm' ? space.md : space.xl,
+          backgroundColor: background(variant),
+        },
+        bordered(variant) && styles.border,
+        full && styles.full,
+        style,
+      ]}>
+      <View style={styles.row}>
+        {loading ? (
+          <ActivityIndicator size="small" color={fg} />
+        ) : (
+          <>
+            {left}
+            <Txt variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'} color={fg}>
+              {label}
+            </Txt>
+            {right}
+          </>
+        )}
+      </View>
     </PressableScale>
   );
 }
 
 function background(variant: ButtonVariant) {
   switch (variant) {
+    case 'primary':
+      return colors.primary;
+    case 'secondary':
+      return colors.surface;
     case 'accent':
       return colors.accent;
     case 'soft':
@@ -102,9 +94,10 @@ function background(variant: ButtonVariant) {
 function foreground(variant: ButtonVariant) {
   switch (variant) {
     case 'primary':
-      return colors.white;
     case 'accent':
-      return colors.white;
+      return colors.textOnPrimary;
+    case 'secondary':
+      return colors.text;
     case 'soft':
       return colors.primary;
     case 'danger':
@@ -114,17 +107,19 @@ function foreground(variant: ButtonVariant) {
   }
 }
 
+const bordered = (variant: ButtonVariant) => variant === 'secondary' || variant === 'ghost';
+
 const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  full: { alignSelf: 'stretch' },
-  ghost: {
+  border: {
     borderWidth: 1,
     borderColor: colors.border,
   },
+  full: { alignSelf: 'stretch' },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

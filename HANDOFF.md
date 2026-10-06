@@ -1,47 +1,40 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizcha.
+## Ish qoidalari (foydalanuvchi bilan)
+- Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizcha.
+- `AGENTS.md`: Expo SDK 57 — kod yozishdan oldin https://docs.expo.dev/versions/v57.0.0/ ga qarash.
+- Commit/push faqat so'ralganda. Yangi ish yangi branch'da, `main`ga PR orqali
+  (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
+- Repo PUBLIC: https://github.com/muhammad571634/rafti (foydalanuvchi ataylab shunday tanlagan).
+  Bu repoda git muallifi lokal sozlangan: `muhammad571634 <jorayevmuhammad496@gmail.com>`.
+- Rasmlarni foydalanuvchi Gemini'da o'zi chizadi: promptni BITTADAN ber, u "avatar"/tayyor
+  deb yozganda papkani tekshir, rasmni ko'r, yaroqli bo'lsa `python scripts/build-brand-art.py`.
+- Har o'zgarishdan keyin: `npx tsc --noEmit` + brauzerda tekshirish
+  (`.claude/launch.json` → `bimobimo-web`, port 8081, mobil o'lcham 375×812).
+- Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
+  `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-09-29)
-- Expo SDK 57 ilova (BIMOBIMO — Beemo/BIMOBIMO ilovasiga o'xshash AI kompanion).
-  Mantiq, iqtisod, qo'ng'iroqlar va boshqa bo'limlar tayyor, tavsif — `README.md`.
-- Git: `rafti-app` branch'ida (butun ilova + Rafti rebrend). Remote: https://github.com/muhammad571634/rafti.
-- Brauzerda tekshirish: `.claude/launch.json` → `bimobimo-web` (port 8081).
+## Hozirgi holat (2026-10-05)
+- **Rafti** — AI kompanion ilova (BIMOBIMO/Beemo'dan ilhomlangan, lekin o'z brendi va IP'si).
+  Expo SDK 57 / RN 0.86 / expo-router / zustand. Tavsif — `README.md`.
+- UI, iqtisod (chig'anoq), qo'ng'iroqlar, diary, secret note va boshqalar ishlaydi.
+  **AI hali mock** (`src/store/use-app-store.ts` + `src/mock/*`), backend yo'q.
+- Maskot: **Rafti** — yalpiz sharfli suv samuri (eski nomi "Popo", nemis/ispan tilidagi
+  ma'nosi sabab almashtirildi). Valyuta: **shells** (chig'anoq).
+- Personajlar: 16 ta original, kattalar (18+), 4 dunyo, 2D anime portretlar (`assets/avatars`).
+- Git:
+  - `main` = PR #1 merge qilingan (butun ilova + rebrend).
+  - `mobile-ux-audit` branch push qilingan, **PR hali ochilmagan**:
+    https://github.com/muhammad571634/rafti/pull/new/mobile-ux-audit
+- Foydalanuvchi telefonda Expo Go orqali sinab ko'rgan — ishlagan.
 
-## Yangi brend (foydalanuvchi tasdiqlagan)
-- Pushti mushuk va Beemo palitrasidan voz kechildi.
-- Maskot: **Popo** — krem yuzli, karamel rangli, yalpiz sharfli suv samuri,
-  yumshoq 3D "loy o'yinchoq" uslubida.
-  - To'g'ri namuna: `C:\Users\joray\BIMOBIMOdesignraw\_refs\ref_popo_square.png`.
-  - `mascot_main.png` ISHLATILMAYDI: yuzi jigarrang, boshqa dizayn.
-- Palitra "Kakao va yalpiz":
-  | Rol | Rang |
-  |---|---|
-  | O'rik | `#FF9F5A` |
-  | Yalpiz | `#3CCFB4` |
-  | Osmon | `#6BB8FF` |
-  | Krem fon | `#FFF7EC` |
-  | Karamel | `#C98B5E` |
-  | Matn | `#2A2E45` |
-
-## Rasmlar: `C:\Users\joray\BIMOBIMOdesignraw\`
-Nuqta: har bir `*.png` aslida PAPKA, ichida Gemini'dan olingan `.jpg` bor.
-Bir papkada bir nechta rasm bo'lsa, ENG YANGISI olinadi.
-
-| Rasm | Holat |
-|---|---|
-| 10 ta icon_*, reward_daily, empty_state, bedtime, sticker_call, levelup, diary_cover, app_icon | ✅ Ilovaga ulangan |
-| icon_diary | ✅ Burni tuzatilgan nusxasi: `_fixed\icon_diary.png` |
-| banner_home | ✅ Qayta chizildi (22:17), Popo o'ngda va katta. 1024×572 — ekranda yetarli |
-| currency_shell | ✅ Chizildi (22:21), ko'k fondan rang tusi bo'yicha kesiladi (`key_out_sky`) |
-
-- Kanvaslar: `_refs\canvas_1x1.png`, `canvas_3x4_vertical.png`, `canvas_wide_banner.png`.
-- Nano Banana natijani yuklangan rasm proporsiyasida chiqaradi. Shuning uchun har safar
-  3 ta rasm yuklanadi: namuna + uslub (`icon_gifts`) + kanvas.
-
-## Tanlangan yo'l: B
-Foydalanuvchi rasmlarni Gemini'da o'zi chizadi. Unga BIR MARTADA BITTA prompt ber.
-Promptlar va jadval oldingi javobda edi: 4 ta ikonka, banner, muqova, app icon.
+## Brend
+- Palitra "Kakao va yalpiz": o'rik `#FF9F5A`, yalpiz `#3CCFB4`, osmon `#6BB8FF`,
+  krem fon `#FFF7EC`, karamel `#C98B5E`, matn `#2A2E45` (`src/theme/colors.ts`).
+- Xom rasmlar: `C:\Users\joray\BIMOBIMOdesignraw\` — har bir `*.png` aslida PAPKA,
+  ichida Gemini `.jpg`; eng yangisi olinadi. Namuna: `_refs\ref_popo_square.png`,
+  kanvaslar `_refs\canvas_1x1.png`, `canvas_3x4_vertical.png`, `canvas_wide_banner.png`.
+  `mascot_main.png` ISHLATILMAYDI.
 
 ## Qilingan ishlar (2026-09-29, 2-sessiya)
 - `scripts/build-brand-art.py`: xom rasmlardan `assets/brand/` fayllarini yasaydi. Rasm
@@ -136,9 +129,137 @@ Promptlar va jadval oldingi javobda edi: 4 ta ikonka, banner, muqova, app icon.
   ("Unable to resolve module"). Yechim: dev serverni to'xtatish, `%TEMP%\metro-cache` va
   `%TEMP%\metro-file-map-*`ni o'chirish, qayta ishga tushirish.
 
-## Keyingi ishlar
-1. Ixtiyoriy: Oppa va Luna uchun ham portret (hozir monogramma).
-2. Nashrdan oldin: "Rafti" nomi bo'yicha tovar belgisi tekshiruvi (WIPO / USPTO / EUIPO).
+## Qilingan ishlar (2026-10-05): store `merge` tuzatildi
+- `merge` endi `user`, `wallet`, `daily`, `settings` obyektlarini standart qiymatlar
+  bilan birlashtiradi. Keyin qo'shilgan yangi kalit (masalan, dark mode uchun `settings.theme`)
+  eski saqlangan holati bor qurilmalarda `undefined` bo'lib qolmaydi. Bu redesign'dan oldin shart edi.
+- Brauzerda sinaldi: `chatAnimation` va `spinsUsed` yo'q eski holat yuklanganda ular standart qiymat
+  bilan to'ldi, foydalanuvchi tanlovi (`morningCall: false`) va balans saqlanib qoldi. `tsc` toza.
+- Keyinga qoldirildi: `clearChat`dan keyin keladigan javob (backend ulanganda so'rovni bekor qilish
+  bilan hal bo'ladi) va `app.json` (bundle ID, ruxsat matnlari, `supportsTablet`) — nashrdan oldin.
 
-## Ochiq savollar
-- ✅ Hal bo'ldi: anime, Genshin va K-pop personajlari original personajlar bilan almashtirildi.
+## 2026-10-05/06: pastki 4 tez tugma (Voice, Photo, Secret Note, Memory) — QAYTARILDI
+- Qo'shilgan edi, foydalanuvchi telefonda ko'rdi va rad etdi: "UI UX dizaynni buzib turibdi".
+  Hamma fayllar `HEAD` holatiga qaytarildi: `chat-quick-actions.tsx`, `voice.png` va `memory.png` o'chirildi,
+  `ChatInput` yana "+", galereya, emoji va yuborish tugmalari bilan. Bu yo'nalishni qayta taklif qilma.
+- Saqlab qolingan: `Sheet` animatsiyasiz (pastda) va store `merge` tuzatishi.
+## Qilingan ishlar (2026-10-06): yozish paneli redesign — A varianti (ChatGPT uslubi)
+- Foydalanuvchi ish tartibi: avval maket rasmi (`show_widget`), tasdiqlangach kod. A va B taklif qilindi,
+  A tanlandi (B — Gemini uslubidagi ikki qavatli kartochka edi).
+- `src/components/chat/chat-input.tsx` qayta yozildi:
+  - To'liq kenglikdagi oq panel o'rniga chat foni ustida suzuvchi oq pill bo'ldi
+    (`radius.xxl`, `colors.border`, `shadows.card`, chetlardan 12pt).
+  - Ichida: "+" (`IconButton`, `surfaceAlt` fon), matn maydoni va bitta asosiy o'rik tugma.
+    Bo'sh maydonda tugma `mic` (`onVoice` → VoiceSheet), matn yozilganda `arrow-up` (yuborish, haptic).
+    Almashish animatsiyasiz.
+  - Galereya va emoji tugmalari olib tashlandi: Photo "+" oynasida bor, emoji tugmasi hech narsa qilmasdi.
+  - Matn maydoni bitta qatorda tugmalar bilan bir tekisda turadi, 5 qatorgacha o'sadi.
+    Webda `rows: 1` (react-native-web aks holda 2 qatorli textarea chizadi).
+- API: `ChatInput({ placeholder, onSend, onAttach, onVoice })`. Yozuv chat ekranidan
+  `t('chat.inputPlaceholder', { name })` orqali beriladi: "Message {{name}}…".
+- `IconButton`ga `haptic` prop qo'shildi.
+- `en.json`: `a11y.gallery` va `a11y.emoji` o'chirildi, `a11y.voiceMessage` qo'shildi.
+- Tekshirildi (375×812, `tsc` toza, konsolda xato yo'q):
+  - Bo'sh holat: + / Message Seren… / mikrofon. Yozilganda "Send" tugmasi chiqdi.
+  - Yuborilgan xabar ro'yxatga tushdi, Seren javob berdi, balans 128 → 127.
+  - Mikrofon VoiceSheet'ni ochdi, "+" esa Voice, Photo, Secret Note, Date va Diary'ni ko'rsatdi.
+
+## Qilingan ishlar (2026-10-05): oynalar endi sakramaydi
+- Foydalanuvchi talabi: chatdagi va boshqa joylardagi "sakrab chiqadigan oyna" animatsiyasi
+  olib tashlansin, oyna yengil va toza chiqsin.
+- **Boshqa animatsiyalar QOLADI:** "yozyapti" nuqtalari, ovoz to'lqini, xabarlarning kirishi,
+  tugma bosilishi, maskot va konfetti BIMOBIMO'dagidek qoladi, ularga tegilmasin.
+  Avval hammasini o'chira boshlagandim, foydalanuvchi to'xtatdi: "faqat oynalar".
+- `src/components/ui/sheet.tsx`: FadeIn, `SlideInDown.springify()`, FadeOut va SlideOutDown olib tashlandi.
+  Modal `animationType="none"`: oyna darhol chiqadi va darhol yo'qoladi.
+  Orqa fon endi qorong'i blur (native) va `colors.overlay` (web) o'rniga hamma platformada yengil `colors.scrim`.
+  `colors.overlay` endi ishlatilmaydi.
+- Ilovadagi barcha popup'lar (17 joy) shu bitta `Sheet` orqali ochiladi, shuning uchun hammasiga ta'sir qiladi.
+  Ekranlar orasidagi o'tishlar (`_layout.tsx` dagi native stack) o'zgarmadi.
+- Tekshirildi: `tsc` toza. Brauzerda Voice va "+" oynalari darhol joyida chiqdi (`getAnimations()` bo'sh),
+  yopilganda darhol yo'qoldi.
+
+## Redesign rejasi (2026-10-06, taklif — foydalanuvchi tasdig'ini kutmoqda)
+- Maqsad: ilova "AI chizgan" emas, senior dizayner qilgandek ko'rinsin. Uslub ChatGPT kabi zamonaviy
+  minimal, lekin Rafti'ning o'z dizayni (BIMOBIMO nusxasi emas).
+- Hozirgi "AI belgilari": har narsa soyali kartochkada, gradientlar (Us, Store, tugmalar),
+  3 xil ikonka uslubi (3D emoji, to'ldirilgan to'q sariq, chiziqli), o'rik rang hamma joyda,
+  Home'da maskot 10 marta takrorlanadi.
+- Dizayn tili:
+  - Fon `gray50` #FCF9F5.
+  - Ajratish soya bilan emas, ingichka chiziq (`gray200`) va bo'shliq bilan qilinadi.
+  - O'rik rang faqat asosiy harakat va o'qilmagan xabarlar uchun.
+  - Yalpiz rang faqat munosabat (level, progress) uchun.
+  - Bitta chiziqli ikonka oilasi, rang ink.
+  - Shriftlar: tizim shrifti va Fredoka. Fredoka faqat wordmark va katta raqamlarda.
+  - Maskot faqat 3 joyda: logo, bo'sh ekranlar, bayram lahzalari.
+- Bosqichlar:
+  - 0 — umumiy komponentlar: ListRow, Section, SheetList, Button turlari, TabBar, Switch rangi.
+  - 1 — Home ("Today"), Chats ro'yxati, personaj profili, chatdagi "+" menyusi.
+    Prototip `show_widget` bilan ko'rsatilgan.
+  - 2 — Find, Us, Profile/sozlamalar, Shell Store.
+  - 3 — qolgan ekranlar: Diary, Secret Note, Gifts, Dating, Photo booth, Radio, Bedtime,
+    qo'ng'iroqlar, Create character, Memories, Call history.
+- Ish tartibi: har bosqichda avval prototip, tasdiqdan keyin kod, keyin `tsc`, brauzer va telefonda tekshirish.
+
+## Qilingan ishlar (2026-10-06): redesign 0 va 1-bosqich — TAYYOR (telefonda ko'rib chiqish kutilmoqda)
+- 0-bosqich, umumiy komponentlar (`src/components/ui`):
+  - `ListRow`: left, `titleAccessory`, meta, trailing, chevron.
+  - `IconTile`: chiziqli ikonka, iliq kulrang squircle ichida, `dot` bilan.
+  - `Divider`, `SectionLabel`, `CountBadge`.
+  - `Button`: primary endi gradientsiz, yaxlit o'rik rang, `radius.md`. Yangi `secondary` (oq, hairline) varianti qo'shildi.
+    Bu o'zgarish hamma ekranlarga ta'sir qiladi.
+  - Ranglar: `colors.bond` va `bondText` (yalpiz, faqat munosabat uchun). `tabActive` endi ink, `tabInactive` esa gray500.
+  - Pastki tablar: yassi oq panel va hairline, ikonkalar chatbubble va compass. O'qilmagan xabarlar son bilan emas, bitta o'rik nuqta bilan.
+    Tab nomi "Chats".
+- 1-bosqich ekranlari (workflow: quruvchi agent, 2 tekshiruvchi — dizayn va to'g'rilik — keyin tuzatuvchi):
+  - `(tabs)/index.tsx` — "Today" hubi:
+    - Salomlashish soatga qarab o'zgaradi. Ostida kutayotganlar qatori.
+    - Kartochkada o'qilmagan chatlar (bo'lmasa, oxirgi 2 ta chat).
+    - Today bo'limi: bepul spin va tayyor secret note'lar.
+    - Explore: 10 modul, 4 ustunli `IconTile` panjarasi.
+    - Banner va otter plitkalari olib tashlandi. `TILES` endi faqat `gifts.tsx`da ishlatiladi,
+      qolgan `assets/brand/tile-*.png` fayllari ishlatilmaydi (o'chirilmadi).
+  - `(tabs)/chat.tsx`: katta "Chats" sarlavhasi, "New chat" tugmasi (Find'ga o'tadi) va qidiruv
+    (ism yoki xabar matni bo'yicha, natija bo'lmasa xabar chiqadi). `ListRow` qatorlari: to'g'nag'ich, vaqt,
+    `CountBadge`, muted ikonka.
+  - `character/[id]/index.tsx`:
+    - Blur va gradient olib tashlandi. Markazda 92pt avatar, "Voice ready" yalpiz rangda.
+    - Tugmalar: primary "Message", secondary "Voice call" va "Secret note".
+    - Level kartochkasi: yalpiz progress chizig'i.
+    - Qatorlar: Memories (son faqat >0 bo'lsa ko'rinadi) va Chat settings.
+  - `chat/[id].tsx`: "+" menyusi 3 ustunli panjara o'rniga ro'yxat bo'ldi: ikonka, nom va narx
+    (a'zolar uchun voice va photo narxi ko'rsatilmaydi).
+- `en.json`: yangi kalitlar qo'shildi (`home.greeting/*`, `home.todo/*`, `home.short/*`,
+  `characterProfile.*`, `chat.shellCost`, `a11y.unreadTab`, `a11y.profile`). Ishlatilmay qolgan
+  `home.greetingBanner*` va `chat.cost` o'chirildi.
+- Tekshirildi:
+  - `tsc` toza, konsolda xato yo'q.
+  - 375×812 o'lchamda to'rttala ekran prototipga mos chiqdi. Qidiruvda "cas" yozilsa Castor va Lancaster topiladi,
+    "zzz" yozilsa "Nothing matches" chiqadi.
+  - "+" menyusi narxlarni to'g'ri ko'rsatadi.
+- Keyingi qadam: 2-bosqich (Find, Us, Profile/sozlamalar, Shell Store). Avval prototip.
+
+## BIMOBIMO raqobat tahlili (2026-10-05, xulosa)
+- BIMOBIMO: App Store (US) 4.9 / ~5.5K baho; kuchi — ovoz va "haqiqiyday" suhbat.
+- Sharhlardagi asosiy shikoyatlar: xotira (unutadi), takroriy iboralar, acorn devori
+  ("hamma narsa pullik"), rasmni tanimaydi, til xatolari, rus tili yo'q, widget/qo'ng'iroq buglari.
+- Rafti'ning ajralib turish yo'li: (1) ko'rinadigan va boshqariladigan xotira (Memories ekrani bor),
+  (2) adolatli iqtisod — qo'ng'iroqlar bepul, javob o'rtada kesilmaydi, (3) rus/o'zbek/turkiy tillar,
+  (4) original "tirik dunyo" (voqealar, guruh chati — NEON TIDE), (5) rasmni tushunish,
+  (6) xavfsizlik (yosh tekshiruvi, AI ekanini oshkor qilish, inqiroz yordami).
+- Arxitektura xavflari: barcha xabarlar bitta AsyncStorage kalitida (Android ~2MB qator
+  chegarasi) → `expo-sqlite`; hisob/sinxron yo'q; balans faqat qurilmada; push yo'q;
+  store ~1000 qator monolit; test/analitika/Sentry yo'q; dark mode yo'q; faqat ingliz tili.
+
+## Keyingi ishlar (tavsiya etilgan tartib)
+1. `mobile-ux-audit` PR'ini ochish va merge qilish (foydalanuvchi).
+2. **Backend arxitekturasini rejalashtirish** (birinchi navbatdagi ish): server, auth, LLM,
+   TTS/ovoz klonlash, STT, xotira tizimi, xarajat hisobi. README'dagi
+   "Where the backend plugs in" jadvali — ulanish nuqtalari.
+3. Xabarlarni `expo-sqlite`ga ko'chirish + sahifalash.
+4. Push bildirishnomalar (VoIP/CallKit qo'ng'iroqlar uchun), Sentry, analitika.
+5. Xavfsizlik: yosh tekshiruvi, AI disclosure, moderatsiya, UGC shikoyat, ovoz klonlash roziligi.
+6. Tillar: rus, o'zbek (i18n tayyor — har til bitta JSON).
+7. Keyin: dark mode, widget, guruh chati, dunyo voqealari, rasmlarni WebP'ga o'tkazish.
+8. Ixtiyoriy: Oppa va Luna portretlari. Nashrdan oldin "Rafti" tovar belgisi tekshiruvi.

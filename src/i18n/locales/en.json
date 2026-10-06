@@ -31,13 +31,11 @@
   },
   "tabs": {
     "home": "Home",
-    "chat": "Chat",
+    "chat": "Chats",
     "us": "Us",
     "find": "Find"
   },
   "home": {
-    "greetingBanner": "Add some contacts!",
-    "greetingBannerWithFriends": "They are waiting for you~",
     "modules": {
       "shellStore": "Shell Store",
       "dating": "Dating",
@@ -48,6 +46,40 @@
       "freeGifts": "Free Gifts",
       "callHistory": "Call History",
       "bulletinBoard": "Bulletin Board",
+      "bedtime": "Bedtime"
+    },
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}",
+      "night": "Still up, {{name}}?"
+    },
+    "waitingOne": "{{name}} is waiting for you",
+    "waitingTwo": "{{first}} and {{second}} are waiting for you",
+    "waitingMany": "{{first}}, {{second}} and {{count}} more are waiting for you",
+    "caughtUp": "You're all caught up",
+    "noFriends": "Find someone to talk to",
+    "recent": "Pick up where you left off",
+    "today": "Today",
+    "explore": "Explore",
+    "todo": {
+      "spin": "Your free spin is ready",
+      "spinHint": "Free gifts",
+      "note": "{{name}} sealed a note for you",
+      "noteHint": "Secret note",
+      "meet": "Meet someone new",
+      "meetHint": "Browse characters on Find"
+    },
+    "short": {
+      "store": "Shells",
+      "dating": "Dating",
+      "diary": "Diary",
+      "photo": "Photo booth",
+      "contacts": "Contacts",
+      "radio": "Radio",
+      "gifts": "Gifts",
+      "calls": "Calls",
+      "board": "Board",
       "bedtime": "Bedtime"
     }
   },
@@ -75,22 +107,28 @@
     "noResultsHint": "Try another name, or create them yourself."
   },
   "characterProfile": {
-    "addFriend": "Add Friend",
-    "chat": "Chat",
-    "call": "Voice Call",
-    "secretNote": "Secret Note",
+    "addFriend": "Add friend",
+    "chat": "Message",
+    "call": "Voice call",
+    "secretNote": "Secret note",
     "friends": "Friends since {{date}}",
-    "voiceTraining": "Their voice is still training - calls unlock when it's ready."
+    "voiceTraining": "Their voice is still training - calls unlock when it's ready.",
+    "memories": "Memories",
+    "settings": "Chat settings",
+    "levelLine": "Level {{level}} · {{title}}",
+    "progress": "{{current}} / {{next}}"
   },
   "chatList": {
-    "title": "Chat",
+    "title": "Chats",
     "empty": "No conversations yet",
     "emptyHint": "Find a character and say hi first.",
     "pinned": "Pinned",
-    "muted": "Muted"
+    "muted": "Muted",
+    "newChat": "New chat",
+    "noResults": "Nothing matches \"{{query}}\""
   },
   "chat": {
-    "inputPlaceholder": "I have something to...",
+    "inputPlaceholder": "Message {{name}}…",
     "streak_one": "Chatted for {{count}} consecutive day",
     "streak_other": "Chatted for {{count}} consecutive days",
     "streakNone": "Say hi to start a streak",
@@ -101,12 +139,12 @@
     "callMissed": "Missed call",
     "callBack": "Call back",
     "attachments": {
-      "voice": "Voice",
+      "voice": "Voice message",
       "photo": "Photo",
       "gift": "Gift",
-      "secretNote": "Secret Note",
-      "date": "Date",
-      "diary": "Diary"
+      "secretNote": "Secret note",
+      "date": "Plan a date",
+      "diary": "Write in your diary"
     },
     "voice": {
       "title": "Voice message",
@@ -114,7 +152,8 @@
       "release": "Release to send",
       "tooShort": "Hold a little longer"
     },
-    "cost": "{{count}} shell per message"
+    "shellCost_one": "{{count}} shell",
+    "shellCost_other": "{{count}} shells"
   },
   "paywall": {
     "title": "Out of shells",
@@ -416,9 +455,8 @@
     "chatSettings": "Chat settings",
     "more": "More options",
     "attach": "Attach",
-    "gallery": "Send a photo",
-    "emoji": "Emoji",
     "send": "Send",
+    "voiceMessage": "Record a voice message",
     "createCharacter": "Create a character",
     "share": "Share",
     "addMemory": "Add a memory",
@@ -431,6 +469,8 @@
     "addPhoto": "Add a photo",
     "hideKeyboard": "Hide keyboard",
     "clearSearch": "Clear search",
-    "removePlan": "Remove plan"
+    "removePlan": "Remove plan",
+    "unreadTab": "{{label}}, {{count}} unread",
+    "profile": "Your profile"
   }
 }

@@ -1,41 +1,100 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
+import {
+  CharacterAvatar,
+  CountBadge,
+  Divider,
+  EmptyState,
+  IconButton,
+  ListRow,
+  Screen,
+  SearchBar,
+  Txt,
+} from '@/components/ui';
 import { relativeStamp } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, Conversation } from '@/types';
+
+const AVATAR = 48;
+
+/** A conversation joined with its character and the name the user knows them by. */
+interface ChatItem {
+  conversation: Conversation;
+  character: Character;
+  name: string;
+}
 
 export default function ChatListScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const [query, setQuery] = useState('');
 
   const conversations = useAppStore((s) => s.conversations);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
 
-  const sorted = useMemo(
-    () =>
-      [...conversations].sort((a, b) => {
+  /** Pinned chats first, then most recent; chats whose character is gone are dropped. */
+  const items = useMemo<ChatItem[]>(() => {
+    const byId = new Map(characters.map((c) => [c.id, c]));
+    return [...conversations]
+      .sort((a, b) => {
         if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
         return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
-      }),
-    [conversations],
+      })
+      .flatMap((conversation) => {
+        const character = byId.get(conversation.characterId);
+        if (!character) return [];
+        return [{ conversation, character, name: displayName(character, relationships[character.id]) }];
+      });
+  }, [conversations, characters, relationships]);
+
+  const needle = query.trim().toLowerCase();
+  const visible = useMemo(
+    () =>
+      needle
+        ? items.filter(
+            ({ conversation, name }) =>
+              name.toLowerCase().includes(needle) ||
+              conversation.lastMessagePreview.toLowerCase().includes(needle),
+          )
+        : items,
+    [items, needle],
   );
 
-  const characterFor = (id: string) => characters.find((c) => c.id === id);
+  /** The pin, mute and unread marks are icons only, so the row's label spells them out. */
+  const rowLabel = ({ conversation, name }: ChatItem) =>
+    [
+      conversation.unreadCount > 0
+        ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
+        : name,
+      conversation.pinned ? t('chatList.pinned') : null,
+      conversation.muted ? t('chatList.muted') : null,
+      relativeStamp(conversation.lastMessageAt),
+      conversation.lastMessagePreview,
+    ]
+      .filter(Boolean)
+      .join(', ');
 
   return (
     <Screen background={colors.bgPlain}>
       <View style={styles.head}>
-        <Txt variant="h1">{t('chatList.title')}</Txt>
+        <Txt variant="h1" accessibilityRole="header" style={styles.title}>
+          {t('chatList.title')}
+        </Txt>
+        <IconButton
+          icon="create-outline"
+          accessibilityLabel={t('chatList.newChat')}
+          onPress={() => router.push('/(tabs)/find')}
+          style={styles.compose}
+        />
       </View>
 
-      {sorted.length === 0 ? (
+      {items.length === 0 ? (
         <EmptyState
           title={t('chatList.empty')}
           hint={t('chatList.emptyHint')}
@@ -43,109 +102,75 @@ export default function ChatListScreen() {
           onAction={() => router.push('/(tabs)/find')}
         />
       ) : (
-        <FlatList
-          data={sorted}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          renderItem={({ item }) => {
-            const character = characterFor(item.characterId);
-            if (!character) return null;
-            return (
-              <ConversationRow
-                conversation={item}
-                character={character}
-                name={displayName(character, relationships[character.id])}
-                onPress={() => router.push(`/chat/${item.id}`)}
-              />
-            );
-          }}
-        />
+        <>
+          <SearchBar
+            value={query}
+            onChangeText={setQuery}
+            placeholder={t('common.search')}
+            style={styles.search}
+          />
+
+          <FlatList
+            data={visible}
+            keyExtractor={(item) => item.conversation.id}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            contentContainerStyle={styles.list}
+            ItemSeparatorComponent={RowDivider}
+            ListEmptyComponent={
+              <Txt variant="small" color={colors.textMuted} center style={styles.noResults}>
+                {t('chatList.noResults', { query: query.trim() })}
+              </Txt>
+            }
+            renderItem={({ item }) => {
+              const { conversation, character, name } = item;
+              return (
+                <ListRow
+                  left={<CharacterAvatar character={character} size={AVATAR} />}
+                  title={name}
+                  titleAccessory={
+                    conversation.pinned ? (
+                      <Ionicons name="pin-outline" size={13} color={colors.textFaint} />
+                    ) : undefined
+                  }
+                  meta={relativeStamp(conversation.lastMessageAt)}
+                  subtitle={conversation.lastMessagePreview}
+                  trailing={
+                    conversation.muted ? (
+                      <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
+                    ) : (
+                      <CountBadge count={conversation.unreadCount} />
+                    )
+                  }
+                  accessibilityLabel={rowLabel(item)}
+                  onPress={() => router.push(`/chat/${conversation.id}`)}
+                />
+              );
+            }}
+          />
+        </>
       )}
     </Screen>
   );
 }
 
-function ConversationRow({
-  conversation,
-  character,
-  name,
-  onPress,
-}: {
-  conversation: Conversation;
-  character: Character;
-  name: string;
-  onPress: () => void;
-}) {
-  return (
-    <PressableScale style={styles.row} onPress={onPress} scaleTo={0.99}>
-      <CharacterAvatar character={character} size={52} />
-
-      <View style={styles.body}>
-        <View style={styles.titleRow}>
-          {conversation.pinned ? (
-            <Ionicons name="pin" size={13} color={colors.primary} style={styles.pin} />
-          ) : null}
-          <Txt variant="bodyStrong" lines={1} style={styles.name}>
-            {name}
-          </Txt>
-          <Txt variant="caption" color={colors.textFaint}>
-            {relativeStamp(conversation.lastMessageAt)}
-          </Txt>
-        </View>
-
-        <View style={styles.previewRow}>
-          <Txt
-            variant="small"
-            color={conversation.unreadCount > 0 ? colors.textSecondary : colors.textMuted}
-            lines={1}
-            style={styles.preview}>
-            {conversation.lastMessagePreview}
-          </Txt>
-          {conversation.muted ? (
-            <Ionicons name="notifications-off" size={13} color={colors.textFaint} />
-          ) : null}
-          {conversation.unreadCount > 0 ? (
-            <View style={styles.unread}>
-              <Txt variant="tiny" color={colors.white}>
-                {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
-              </Txt>
-            </View>
-          ) : null}
-        </View>
-      </View>
-    </PressableScale>
-  );
+/** Inset so the line starts under the name, not under the avatar. */
+function RowDivider() {
+  return <Divider inset={space.lg + AVATAR + space.md} />;
 }
 
 const styles = StyleSheet.create({
-  head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md },
-  row: {
+  head: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
     paddingHorizontal: space.lg,
-    paddingVertical: space.md,
-    backgroundColor: colors.surface,
+    paddingTop: space.sm,
+    paddingBottom: space.sm,
   },
-  body: { flex: 1, gap: 3 },
-  titleRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  pin: { marginRight: -space.xs },
-  name: { flex: 1 },
-  previewRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  preview: { flex: 1 },
-  unread: {
-    minWidth: 18,
-    height: 18,
-    paddingHorizontal: 5,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.divider,
-    marginLeft: space.lg + 52 + space.md,
-  },
+  title: { flex: 1 },
+  // Pull the button's padding into the gutter so the glyph lines up with the search bar's edge.
+  compose: { marginRight: -space.sm },
+  search: { marginHorizontal: space.lg, marginBottom: space.sm },
+  list: { paddingBottom: TAB_BAR_HEIGHT + space.xxl },
+  noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
 });
