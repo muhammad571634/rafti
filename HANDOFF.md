@@ -14,7 +14,24 @@
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-05)
+## Hozirgi holat (2026-10-06) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+- Chat redesign va to'liq ilova redesign'i (0–3-bosqich) TUGADI, `redesign` branch'ida:
+  `77e07ae` (0–1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
+  shuning uchun PR `main`ga ikkala ishni ham olib kiradi.
+  PR havolasi: https://github.com/muhammad571634/rafti/pull/new/redesign (push tugagach).
+- Dizayn qoidalari (har yangi ekranda shu qoidalarga amal qil):
+  - Fon `colors.bgPlain`. Kartochka va soya o'rniga `ListRow` va `Divider` ishlatiladi.
+  - Bitta o'rik `Button primary`. Yalpiz (`colors.bond`/`bondText`) faqat munosabat uchun.
+  - Chiziqli Ionicons va `IconTile`. Matn sentence case'da. Gradient yo'q.
+  - Komponentlar: `src/components/ui` (ListRow, IconTile, Divider, SectionLabel, CountBadge, Button secondary).
+- Foydalanuvchi qoidalari:
+  - Avval rasm yoki prototip (`show_widget`), tasdiqdan keyin kod.
+  - Faqat ko'rsatilgan animatsiyani o'zgartir (popup'lar animatsiyasiz, qolganlari qoladi).
+- Bash'da heredoc ichida `'` bilan murakkab buyruqlar yiqiladi. i18n uchun skript:
+  JSON patch'ni faylga yoz, keyin `python scripts/i18n_set.py "$(cat patch.json)" [o'chiriladigan.kalit]`.
+  Skript CRLF va 2 bo'shliqli formatni saqlaydi.
+
+## Oldingi holat (2026-10-05)
 - **Rafti** — AI kompanion ilova (BIMOBIMO/Beemo'dan ilhomlangan, lekin o'z brendi va IP'si).
   Expo SDK 57 / RN 0.86 / expo-router / zustand. Tavsif — `README.md`.
 - UI, iqtisod (chig'anoq), qo'ng'iroqlar, diary, secret note va boshqalar ishlaydi.
@@ -311,7 +328,8 @@
   store ~1000 qator monolit; test/analitika/Sentry yo'q; dark mode yo'q; faqat ingliz tili.
 
 ## Keyingi ishlar (tavsiya etilgan tartib)
-1. `mobile-ux-audit` PR'ini ochish va merge qilish (foydalanuvchi).
+1. `redesign` PR'ini ochish va merge qilish (foydalanuvchi). U `mobile-ux-audit`ni ham o'z ichiga oladi.
+   Foydalanuvchi telefonda 3-bosqichni hali ko'rmagan.
 2. **Backend arxitekturasini rejalashtirish** (birinchi navbatdagi ish): server, auth, LLM,
    TTS/ovoz klonlash, STT, xotira tizimi, xarajat hisobi. README'dagi
    "Where the backend plugs in" jadvali — ulanish nuqtalari.
