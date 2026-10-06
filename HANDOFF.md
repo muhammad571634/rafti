@@ -14,7 +14,18 @@
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-06) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+## Hozirgi holat (2026-10-06, kechroq) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+- PR #3 (`redesign`) `main`ga merge qilindi (`4625509`). `redesign` branch'i `main`ga tenglashtirildi.
+- **Backend rejasi yozildi: `docs/backend-plan.md`** — foydalanuvchi tasdig'ini kutmoqda.
+  - Tavsiya: Supabase (Postgres + pgvector, Auth, Storage, Realtime) + o'z serverimiz
+    (Node + Hono + pg-boss, Fly.io), Claude API, RevenueCat, AdMob SSV, keyin LiveKit.
+  - Bosqichlar B0–B6. B0 — poydevor, B1 — haqiqiy chat.
+  - Muhim topilma: hozirgi iqtisodda bepul chig'anoq ko'p (kuniga ~130 xabar) va "unlimited" a'zolik
+    LLM xarajatini qoplamasligi mumkin. Raqamlar rejaning 9-bo'limida.
+  - B1'dan boshlab Expo Go yetmaydi, EAS development build kerak.
+  - Ochiq savollar (12-bo'lim): stack, chat modeli, server kodi shu repodami yoki private repoda, hisoblar.
+
+## Oldingi holat (2026-10-06)
 - Chat redesign va to'liq ilova redesign'i (0–3-bosqich) TUGADI, `redesign` branch'ida:
   `77e07ae` (0–1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
   shuning uchun PR `main`ga ikkala ishni ham olib kiradi.
@@ -328,11 +339,9 @@
   store ~1000 qator monolit; test/analitika/Sentry yo'q; dark mode yo'q; faqat ingliz tili.
 
 ## Keyingi ishlar (tavsiya etilgan tartib)
-1. `redesign` PR'ini ochish va merge qilish (foydalanuvchi). U `mobile-ux-audit`ni ham o'z ichiga oladi.
-   Foydalanuvchi telefonda 3-bosqichni hali ko'rmagan.
-2. **Backend arxitekturasini rejalashtirish** (birinchi navbatdagi ish): server, auth, LLM,
-   TTS/ovoz klonlash, STT, xotira tizimi, xarajat hisobi. README'dagi
-   "Where the backend plugs in" jadvali — ulanish nuqtalari.
+1. ✅ `redesign` PR'i merge qilindi (#3).
+2. ✅ Backend rejasi yozildi (`docs/backend-plan.md`). Keyingi qadam: 12-bo'limdagi savollarga
+   javob olish, keyin B0 (poydevor).
 3. Xabarlarni `expo-sqlite`ga ko'chirish + sahifalash.
 4. Push bildirishnomalar (VoIP/CallKit qo'ng'iroqlar uchun), Sentry, analitika.
 5. Xavfsizlik: yosh tekshiruvi, AI disclosure, moderatsiya, UGC shikoyat, ovoz klonlash roziligi.
