@@ -1,4 +1,4 @@
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { colors, radius, space } from '@/theme';
 
@@ -14,31 +14,41 @@ export interface ChipProps {
   tone?: 'primary' | 'accent' | 'neutral';
 }
 
-/** The category pills on Find — white when idle, tinted fill when selected. */
+/**
+ * A pill: white when idle, ink when selected (the `accent` and `neutral` tones keep
+ * their tints). Without `onPress` it is a plain label, not a disabled button.
+ */
 export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipProps) {
-  const activeBg =
-    tone === 'accent' ? colors.accentSoft : tone === 'neutral' ? colors.surfaceAlt : colors.primarySoft;
-  const activeFg = tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.primary;
+  const activeBg = tone === 'accent' ? colors.accentSoft : tone === 'neutral' ? colors.surfaceAlt : colors.text;
+  const activeFg =
+    tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnPrimary;
+  const activeBorder = tone === 'primary' ? colors.text : activeFg;
+
+  const pillStyle = [
+    styles.base,
+    active
+      ? { backgroundColor: activeBg, borderColor: activeBorder }
+      : { backgroundColor: colors.surface, borderColor: colors.border },
+    style,
+  ];
+  const text = (
+    <Txt variant="smallStrong" color={active ? activeFg : colors.textSecondary}>
+      {label}
+    </Txt>
+  );
+
+  if (!onPress) return <View style={pillStyle}>{text}</View>;
 
   return (
     <PressableScale
       onPress={onPress}
-      disabled={!onPress}
       dimOnPress={false}
       scaleTo={0.94}
       // 34pt pill, 44pt target.
       hitSlop={{ top: 5, bottom: 5 }}
       accessibilityState={{ selected: !!active }}
-      style={[
-        styles.base,
-        active
-          ? { backgroundColor: activeBg, borderColor: activeFg }
-          : { backgroundColor: colors.surface, borderColor: colors.border },
-        style,
-      ]}>
-      <Txt variant="smallStrong" color={active ? activeFg : colors.textSecondary}>
-        {label}
-      </Txt>
+      style={pillStyle}>
+      {text}
     </PressableScale>
   );
 }

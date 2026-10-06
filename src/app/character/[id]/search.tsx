@@ -6,7 +6,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, SearchBar, Txt, UserAvatar } from '@/components/ui';
 import { relativeStamp } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Message } from '@/types';
 
 /** "Search History": find a line in this chat — text, transcripts of voice notes included. */
@@ -110,7 +110,7 @@ function ResultRow({
         </View>
         <Txt variant="small" color={colors.textSecondary} lines={2}>
           {before.length > 40 ? `…${before.slice(-40)}` : before}
-          <Txt variant="smallStrong" color={colors.primary}>
+          <Txt variant="smallStrong" color={colors.text} style={styles.hit}>
             {hit}
           </Txt>
           {after}
@@ -122,14 +122,15 @@ function ResultRow({
 
 const styles = StyleSheet.create({
   searchWrap: { paddingHorizontal: space.lg, paddingBottom: space.md },
-  list: { paddingHorizontal: space.lg, paddingBottom: space.huge, gap: space.sm },
+  list: { paddingHorizontal: space.lg, paddingBottom: space.huge, gap: 0 },
   row: {
     flexDirection: 'row',
     gap: space.md,
-    padding: space.md,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surface,
+    paddingVertical: space.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
+  hit: { backgroundColor: colors.surfaceAlt },
   body: { flex: 1, gap: 2 },
   head: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
 });

@@ -6,7 +6,7 @@ import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
 
 import { CharacterAvatar, Chip, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 
 const COLUMNS = 3;
 
@@ -54,8 +54,8 @@ export default function ContactsScreen() {
               style={[styles.addTile, { width: tileWidth, height: tileWidth * 1.3 }]}
               scaleTo={0.94}
               onPress={() => router.push('/create-character')}>
-              <Ionicons name="add" size={28} color={colors.primary} />
-              <Txt variant="caption" color={colors.primary}>
+              <Ionicons name="add" size={28} color={colors.text} />
+              <Txt variant="caption" color={colors.textSecondary}>
                 {t('contacts.addOne')}
               </Txt>
             </PressableScale>
@@ -68,7 +68,7 @@ export default function ContactsScreen() {
                   style={{ width: tileWidth }}
                   scaleTo={0.94}
                   onPress={() => router.push(`/character/${character.id}`)}>
-                  <View style={[styles.tile, { height: tileWidth * 1.3 }, shadows.card]}>
+                  <View style={[styles.tile, { height: tileWidth * 1.3 }]}>
                     <CharacterAvatar character={character}
                       size={tileWidth * 0.52}
                       verified={character.voiceReady}
@@ -77,7 +77,7 @@ export default function ContactsScreen() {
                       {character.name}
                     </Txt>
                     {relationship ? (
-                      <Txt variant="tiny" color={colors.accent}>
+                      <Txt variant="tiny" color={colors.bondText}>
                         Lv.{relationship.level}
                       </Txt>
                     ) : null}
@@ -99,6 +99,8 @@ const styles = StyleSheet.create({
   tile: {
     borderRadius: radius.lg,
     backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.xs,
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: colors.primarySoft,
+    borderColor: colors.borderStrong,
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.xs,

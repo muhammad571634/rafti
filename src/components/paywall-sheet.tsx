@@ -46,7 +46,7 @@ export function PaywallSheet({
 
       <View style={styles.actions}>
         <Button label={t('paywall.topUp')} onPress={() => go('/store/shell')} full />
-        <Button label={t('paywall.earnFree')} variant="soft" onPress={() => go('/gifts')} full />
+        <Button label={t('paywall.earnFree')} variant="secondary" onPress={() => go('/gifts')} full />
         {chat ? (
           <Button label={t('paywall.member')} variant="ghost" onPress={() => go('/store/shell')} full />
         ) : null}

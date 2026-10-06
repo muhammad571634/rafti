@@ -1,15 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { ShellIcon, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, Divider, Header, ListRow, PressableScale, Screen, SectionLabel, Txt } from '@/components/ui';
 import { dateScenarios } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, radius, shadows, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 
 export default function DatingScreen() {
   const { t } = useTranslation();
@@ -43,7 +42,7 @@ export default function DatingScreen() {
   };
 
   return (
-    <Screen>
+    <Screen background={colors.bgPlain}>
       <Header title={t('dating.title')} subtitle={t('dating.subtitle')} />
 
       <ScrollView
@@ -60,11 +59,12 @@ export default function DatingScreen() {
             <CharacterAvatar character={character}
               size={52}
               ring={character.id === partnerId}
+              ringColor={colors.text}
             />
             <Txt
               variant="tiny"
               lines={1}
-              color={character.id === partnerId ? colors.primary : colors.textMuted}>
+              color={character.id === partnerId ? colors.text : colors.textMuted}>
               {character.name}
             </Txt>
           </PressableScale>
@@ -72,44 +72,29 @@ export default function DatingScreen() {
       </ScrollView>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        <SectionLabel title={t('dating.pick')} />
         {dateScenarios.map((scenario, index) => {
           const locked = level < scenario.levelRequired;
-          const tint = avatarGradients[index % avatarGradients.length];
-
           return (
-            <PressableScale
-              key={scenario.id}
-              scaleTo={0.98}
-              disabled={locked}
-              onPress={() => start(scenario)}>
-              <LinearGradient colors={tint} style={[styles.scenario, shadows.card]}>
-                <Txt style={styles.scenarioEmoji}>{scenario.emoji}</Txt>
-
-                <View style={styles.scenarioBody}>
-                  <Txt variant="title" color={colors.white} lines={2}>
-                    {t(`dating.scenarios.${scenario.titleKey}`)}
-                  </Txt>
-                  {locked ? (
-                    <Txt variant="caption" color="rgba(255,255,255,0.85)">
-                      {t('dating.locked', { level: scenario.levelRequired })}
-                    </Txt>
-                  ) : (
-                    <View style={styles.cost}>
-                      <ShellIcon size={14} />
-                      <Txt variant="caption" color={colors.white}>
-                        {scenario.cost}
-                      </Txt>
-                    </View>
-                  )}
-                </View>
-
-                <Ionicons
-                  name={locked ? 'lock-closed' : 'chevron-forward'}
-                  size={20}
-                  color={colors.white}
-                />
-              </LinearGradient>
-            </PressableScale>
+            <View key={scenario.id}>
+              {index > 0 ? <Divider inset={space.lg + SCENE + space.md} /> : null}
+              <ListRow
+                title={t(`dating.scenarios.${scenario.titleKey}`)}
+                subtitle={
+                  locked
+                    ? t('dating.locked', { level: scenario.levelRequired })
+                    : t('chat.shellCost', { count: scenario.cost })
+                }
+                left={
+                  <View style={styles.scene}>
+                    <Txt style={styles.sceneEmoji}>{scenario.emoji}</Txt>
+                  </View>
+                }
+                right={locked ? <Ionicons name="lock-closed-outline" size={18} color={colors.textFaint} /> : null}
+                chevron={!locked}
+                onPress={locked ? undefined : () => start(scenario)}
+              />
+            </View>
           );
         })}
       </ScrollView>
@@ -119,19 +104,21 @@ export default function DatingScreen() {
   );
 }
 
+const SCENE = 44;
+
 const styles = StyleSheet.create({
   partnerRow: { flexGrow: 0 },
-  partners: { paddingHorizontal: space.lg, gap: space.lg, paddingBottom: space.md },
+  partners: { paddingHorizontal: space.lg, gap: space.lg, paddingBottom: space.sm },
   partner: { alignItems: 'center', gap: space.xs, width: 60 },
-  scroll: { padding: space.lg, gap: space.md, paddingBottom: space.huge },
-  scenario: {
-    flexDirection: 'row',
+  scroll: { paddingBottom: space.huge },
+  // The scene's own emoji, on the same soft squircle as an IconTile.
+  scene: {
+    width: SCENE,
+    height: SCENE,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
-    gap: space.md,
-    padding: space.lg,
-    borderRadius: radius.lg,
+    justifyContent: 'center',
   },
-  scenarioEmoji: { fontSize: 32 },
-  scenarioBody: { flex: 1, gap: 2 },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  sceneEmoji: { fontSize: 22, lineHeight: 28 },
 });

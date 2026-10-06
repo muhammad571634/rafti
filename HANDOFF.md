@@ -269,8 +269,34 @@
   - Paket tanlanganda tugma o'zgaradi, `aria-checked` to'g'ri ishlaydi.
   - Xarid: balans +320. "Add" bosilganda Kai "Friends" bo'ldi.
   - Bu sinovlar vebdagi localStorage'ni o'zgartirdi, telefonga ta'sir qilmaydi.
-- Keyingi qadam: 3-bosqich (Diary, Secret Note, Gifts, Dating, Photo booth, Radio, Bedtime, qo'ng'iroqlar,
-  Create character, Memories, Call history, character settings). Avval prototip.
+- 2-bosqich commit qilindi (`e352a8e`).
+
+## Qilingan ishlar (2026-10-06): redesign 3-bosqich — TAYYOR (commit qilinmagan)
+- Diary:
+  - Har sahifada takrorlangan otter muqovasi o'rniga sahifaning o'zi: katta sana (Fredoka), sarlavha,
+    matndan parcha va "X wrote back".
+  - Sahifalarni surish (pan gesture) saqlandi. FAB o'rniga "Write today's page" tugmasi.
+- Secret note: markazda kunning savoli, muhrlangan xat yalpiz qulf bilan, pastda "Swap notes · 3".
+- Gifts: 7 kunlik doiralar qatori, g'ildirak tinch ranglarda (jackpot yalpiz, "Spin" o'rik).
+  Aylanish animatsiyasi qoldi. Video ko'rish pastki qator.
+- Qo'ng'iroq: Mute, End va Speaker tugmalari, yozuvlari bir qatorda.
+  Mute va Speaker hozircha faqat holatni ko'rsatadi (expo-audio yo'q). Theme'ga `onMedia*` tokenlari qo'shildi.
+  Kiruvchi qo'ng'iroq va Bedtime ataylab o'zgartirilmadi (to'liq portret va tungi sahna).
+- Ro'yxatga o'tganlar: Memories, Call history, Dating, Radio, personaj sozlamalari
+  (bo'limlar: This chat, Character, Manage). Contacts, Board, Background, Search va Photo booth'da
+  soyalar ingichka chiziqqa almashtirildi.
+- Create character endi yorug': lokal `dark` palitra o'rniga `form` (theme tokenlari).
+  Diary write'dagi daftar qog'ozi qoldi.
+- **Muhim tuzatish, `PressableScale`:** Reanimated'ning animatsion uslubi `opacity`ni bosib ketardi, shuning uchun
+  o'chirilgan tugmalar butun ilovada yoqilgandek ko'rinardi. Endi `disabled` holatda oddiy `Pressable`
+  0.45 opacity bilan chiziladi. Natijada `onPress`siz `Chip` xira bo'lib qolardi, shuning uchun
+  bunday Chip endi oddiy `View` bo'lib chiziladi.
+- Matnlar sentence case'ga o'tkazildi ("ADD CHARACTER" → "New character", Settings va boshqalar).
+  Mahsulot nomlari (Shell Store, Heartbeat Diary, Photo Booth, Bulletin Board) bosh harfda qoldi.
+- Tekshirildi: `tsc` toza, 18 ta ekran xatosiz render bo'ldi (iframe orqali). Mute toggle'i ishlaydi.
+  Bo'sh xatda Swap tugmasi 0.45, yozilgandan keyin 1.
+- Konsoldagi "shadows is not defined" va "useEffect is not defined" xatolari ESKI: ular tahrir o'rtasidagi
+  HMR'dan qolgan, hozirgi kodda yo'q.
 
 ## BIMOBIMO raqobat tahlili (2026-10-05, xulosa)
 - BIMOBIMO: App Store (US) 4.9 / ~5.5K baho; kuchi — ovoz va "haqiqiyday" suhbat.

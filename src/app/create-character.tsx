@@ -11,7 +11,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { Anim, Button, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, palette, radius, space, type } from '@/theme';
+import { colors, radius, space, type } from '@/theme';
 import type { CharacterCategory } from '@/types';
 
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
@@ -21,13 +21,14 @@ const MAX_SAMPLE_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
 /** The reference "ADD CHARACTER" form is dark; so is this one. */
-const dark = {
-  bg: '#0E0E11',
-  field: '#1C1C21',
-  line: '#2E2E36',
-  text: '#FFFFFF',
-  muted: '#9A9AA6',
-  faint: '#6C6C78',
+/** The form's palette, from the theme: fields are white on the warm canvas. */
+const form = {
+  bg: colors.bgPlain,
+  field: colors.surface,
+  line: colors.border,
+  text: colors.text,
+  muted: colors.textSecondary,
+  faint: colors.textFaint,
 };
 
 interface Sample {
@@ -113,8 +114,8 @@ export default function CreateCharacterScreen() {
   };
 
   return (
-    <Screen background={dark.bg} statusBarStyle="light">
-      <Header title={t('createCharacter.title')} center tint={dark.text} />
+    <Screen background={form.bg}>
+      <Header title={t('createCharacter.title')} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -129,7 +130,7 @@ export default function CreateCharacterScreen() {
               value={name}
               onChangeText={setName}
               placeholder={t('createCharacter.namePlaceholder')}
-              placeholderTextColor={dark.faint}
+              placeholderTextColor={form.faint}
               style={styles.input}
               maxLength={40}
             />
@@ -137,25 +138,25 @@ export default function CreateCharacterScreen() {
 
           <Field label={t('createCharacter.uploadVoices')} required hint={t('createCharacter.uploadVoicesHint')}>
             <PressableScale style={styles.dropzone} onPress={pickSamples} scaleTo={0.98}>
-              <Anim name="voiceWave" size={40} tint={dark.text} />
-              <Txt variant="small" color={dark.muted} center style={styles.dropText}>
+              <Anim name="voiceWave" size={40} tint={form.text} />
+              <Txt variant="small" color={form.muted} center style={styles.dropText}>
                 {t('createCharacter.uploadVoicesBox')}
               </Txt>
             </PressableScale>
 
             {samples.length > 0 ? (
               <View style={styles.samples}>
-                <Txt variant="smallStrong" color={dark.text}>
+                <Txt variant="smallStrong" color={form.text}>
                   {t('createCharacter.samples', { count: samples.length })}
                 </Txt>
                 {samples.map((sample, index) => (
                   <View key={`${sample.uri}-${index}`} style={styles.sampleRow}>
-                    <Ionicons name="musical-note" size={15} color={palette.apricot400} />
-                    <Txt variant="small" color={dark.text} lines={1} style={styles.flex}>
+                    <Ionicons name="musical-note-outline" size={15} color={form.muted} />
+                    <Txt variant="small" color={form.text} lines={1} style={styles.flex}>
                       {sample.name}
                     </Txt>
                     {sample.size ? (
-                      <Txt variant="tiny" color={dark.faint}>
+                      <Txt variant="tiny" color={form.faint}>
                         {(sample.size / 1024 / 1024).toFixed(1)}MB
                       </Txt>
                     ) : null}
@@ -164,7 +165,7 @@ export default function CreateCharacterScreen() {
                       scaleTo={0.85}
                       accessibilityLabel={t('a11y.removeClip')}
                       onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
-                      <Ionicons name="trash-outline" size={17} color={dark.muted} />
+                      <Ionicons name="trash-outline" size={17} color={form.muted} />
                     </PressableScale>
                   </View>
                 ))}
@@ -178,8 +179,8 @@ export default function CreateCharacterScreen() {
                 <Image source={{ uri: imageUri }} style={styles.preview} contentFit="cover" />
               ) : (
                 <>
-                  <Ionicons name="image-outline" size={32} color={dark.text} />
-                  <Txt variant="small" color={dark.muted} center style={styles.dropText}>
+                  <Ionicons name="image-outline" size={32} color={form.text} />
+                  <Txt variant="small" color={form.muted} center style={styles.dropText}>
                     {t('createCharacter.uploadImageBox')}
                   </Txt>
                 </>
@@ -192,7 +193,7 @@ export default function CreateCharacterScreen() {
               value={persona}
               onChangeText={setPersona}
               placeholder={t('createCharacter.personaPlaceholder')}
-              placeholderTextColor={dark.faint}
+              placeholderTextColor={form.faint}
               style={[styles.input, styles.multiline]}
               multiline
               textAlignVertical="top"
@@ -204,7 +205,7 @@ export default function CreateCharacterScreen() {
               value={greeting}
               onChangeText={setGreeting}
               placeholder={t('createCharacter.greetingPlaceholder')}
-              placeholderTextColor={dark.faint}
+              placeholderTextColor={form.faint}
               style={[styles.input, styles.multiline]}
               multiline
               textAlignVertical="top"
@@ -214,7 +215,7 @@ export default function CreateCharacterScreen() {
           <Field label={t('find.category')}>
             <View style={styles.chips}>
               {CATEGORIES.map((key) => (
-                <DarkChip
+                <FormChip
                   key={key}
                   label={t(`find.categories.${key}`)}
                   active={category === key}
@@ -226,13 +227,13 @@ export default function CreateCharacterScreen() {
 
           <Field label={t('createCharacter.visibility')}>
             <View style={styles.chips}>
-              <DarkChip label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
-              <DarkChip label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
+              <FormChip label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
+              <FormChip label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
             </View>
           </Field>
 
           {error ? (
-            <Txt variant="small" color={palette.apricot400} center>
+            <Txt variant="small" color={colors.danger} center>
               {error}
             </Txt>
           ) : null}
@@ -270,7 +271,7 @@ function Field({
   return (
     <View style={styles.field}>
       <View style={styles.labelRow}>
-        <Txt variant="bodyStrong" color={dark.text}>
+        <Txt variant="bodyStrong" color={form.text}>
           {label}
         </Txt>
         {required ? (
@@ -280,7 +281,7 @@ function Field({
         ) : null}
       </View>
       {hint ? (
-        <Txt variant="caption" color={dark.muted}>
+        <Txt variant="caption" color={form.muted}>
           {hint}
         </Txt>
       ) : null}
@@ -289,14 +290,14 @@ function Field({
   );
 }
 
-function DarkChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function FormChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <PressableScale
       onPress={onPress}
       scaleTo={0.94}
       dimOnPress={false}
       style={[styles.chip, active && styles.chipActive]}>
-      <Txt variant="smallStrong" color={active ? colors.white : dark.muted}>
+      <Txt variant="smallStrong" color={active ? colors.textOnPrimary : form.muted}>
         {label}
       </Txt>
     </PressableScale>
@@ -313,8 +314,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingVertical: space.sm,
     borderRadius: radius.md,
-    backgroundColor: dark.field,
-    color: dark.text,
+    borderWidth: 1,
+    borderColor: form.line,
+    backgroundColor: form.field,
+    color: form.text,
     ...type.body,
   },
   multiline: { minHeight: 88 },
@@ -323,8 +326,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: dark.line,
-    backgroundColor: dark.field,
+    borderColor: form.line,
+    backgroundColor: form.field,
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.sm,
@@ -342,7 +345,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingVertical: space.sm + 2,
     borderRadius: radius.sm,
-    backgroundColor: dark.field,
+    borderWidth: 1,
+    borderColor: form.line,
+    backgroundColor: form.field,
   },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   chip: {
@@ -350,10 +355,11 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: dark.line,
+    borderColor: form.line,
+    backgroundColor: form.field,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  chipActive: { backgroundColor: colors.text, borderColor: colors.text },
   dim: { opacity: 0.55 },
 });

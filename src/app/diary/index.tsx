@@ -8,9 +8,9 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { BRAND } from '@/assets/brand/registry';
 import {
   Anim,
+  Button,
   CharacterAvatar,
   EmptyState,
   Header,
@@ -21,8 +21,9 @@ import {
   Txt,
 } from '@/components/ui';
 import { diaryDate, relativeStamp } from '@/lib/format';
+import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, gradients, radius, shadows, space } from '@/theme';
+import { avatarGradients, colors, palette, radius, space } from '@/theme';
 import type { DiaryEntry } from '@/types';
 
 const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
@@ -37,7 +38,7 @@ const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
 const FLIP_AT = 80;
 
 export default function DiaryScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
 
@@ -60,7 +61,7 @@ export default function DiaryScreen() {
   );
 
   const current = entries[Math.min(index, entries.length - 1)];
-  const cardWidth = Math.min(280, width * 0.7);
+  const cardWidth = Math.min(300, width * 0.78);
   const replyAuthor = open?.reply ? characters.find((c) => c.id === open.reply?.characterId) : undefined;
 
   const step = (delta: number) =>
@@ -72,12 +73,17 @@ export default function DiaryScreen() {
     : [];
 
   return (
-    <Screen background={gradients.diary}>
+    <Screen background={colors.bgPlain}>
       <Header
         title={t('diary.title')}
-        center
         right={
           <View style={styles.headerRight}>
+            <IconButton
+              icon="calendar-outline"
+              size={20}
+              accessibilityLabel={t('diary.pages', { count: entries.length })}
+              onPress={() => setDatesOpen(true)}
+            />
             <IconButton
               icon="swap-vertical"
               size={20}
@@ -98,11 +104,14 @@ export default function DiaryScreen() {
       />
 
       {current ? (
-        <PressableScale style={styles.datePill} scaleTo={0.96} onPress={() => setDatesOpen(true)}>
-          <Txt variant="smallStrong" color={colors.textSecondary}>
-            {diaryDate(current.date)}
+        <PressableScale style={styles.month} scaleTo={1} onPress={() => setDatesOpen(true)}>
+          <Txt variant="display">
+            {dateFromKey(current.date).toLocaleDateString(i18n.language, { month: 'long' })}
           </Txt>
-          <Ionicons name="chevron-down" size={15} color={colors.textMuted} />
+          <Txt variant="small" color={colors.textMuted}>
+            {' · '}
+            {t('diary.pages', { count: entries.length })}
+          </Txt>
         </PressableScale>
       ) : null}
 
@@ -122,6 +131,7 @@ export default function DiaryScreen() {
                 <DiaryCard
                   key={`${entry.id}-${depth}`}
                   entry={entry}
+                  sharedWith={characters.find((c) => c.id === entry.sharedWithCharacterId)?.name}
                   width={cardWidth}
                   depth={depth}
                   onOpen={() => setOpen(entry)}
@@ -131,19 +141,22 @@ export default function DiaryScreen() {
             })}
           </View>
           <Txt variant="caption" color={colors.textMuted} style={styles.counter}>
-            {index + 1} / {entries.length}
+            {t('diary.swipeHint', { index: index + 1, count: entries.length })}
           </Txt>
         </View>
       )}
 
-      <PressableScale
-        style={[styles.fab, shadows.raised]}
-        scaleTo={0.9}
-        haptic
-        accessibilityLabel={t('diary.write')}
-        onPress={() => router.push('/diary/write')}>
-        <Ionicons name="add" size={30} color={colors.text} />
-      </PressableScale>
+      {entries.length ? (
+        <View style={styles.footer}>
+          <Button
+            label={t('diary.writeToday')}
+            size="lg"
+            full
+            left={<Ionicons name="pencil-outline" size={18} color={colors.textOnPrimary} />}
+            onPress={() => router.push('/diary/write')}
+          />
+        </View>
+      ) : null}
 
       <Sheet visible={!!open} onClose={() => setOpen(null)} title={open?.title}>
         {open ? (
@@ -166,7 +179,7 @@ export default function DiaryScreen() {
               <View style={styles.reply}>
                 <View style={styles.replyHead}>
                   <CharacterAvatar character={replyAuthor} size={26} />
-                  <Txt variant="smallStrong" color={colors.primary} style={styles.flex}>
+                  <Txt variant="smallStrong" style={styles.flex}>
                     {t('diary.replyTitle', { name: replyAuthor.name })}
                   </Txt>
                   <Txt variant="tiny" color={colors.textFaint}>
@@ -212,7 +225,7 @@ export default function DiaryScreen() {
                   {diaryDate(entry.date)}
                 </Txt>
               </View>
-              {i === index ? <Ionicons name="checkmark" size={18} color={colors.primary} /> : null}
+              {i === index ? <Ionicons name="checkmark" size={18} color={colors.text} /> : null}
             </PressableScale>
           )}
         />
@@ -229,20 +242,24 @@ export default function DiaryScreen() {
 
 function DiaryCard({
   entry,
+  sharedWith,
   width,
   depth,
   onOpen,
   onFlip,
 }: {
   entry: DiaryEntry;
+  /** Name of the character the page was shared with, if any. */
+  sharedWith?: string;
   width: number;
   depth: number;
   onOpen: () => void;
   onFlip: (delta: number) => void;
 }) {
-  const { t } = useTranslation();
-  const tint = avatarGradients[(entry.accentIndex + depth * 2) % avatarGradients.length];
+  const { t, i18n } = useTranslation();
+  const tint = avatarGradients[entry.accentIndex % avatarGradients.length];
   const front = depth === 0;
+  const date = dateFromKey(entry.date);
 
   const dx = useSharedValue(0);
 
@@ -278,33 +295,46 @@ function DiaryCard({
           width,
           zIndex: 10 - depth,
           transform: [
-            { translateX: depth * (depth % 2 === 0 ? -12 : 12) },
-            { translateY: depth * -7 },
-            { rotate: `${depth * (depth % 2 === 0 ? -4.5 : 4.5)}deg` },
-            { scale: 1 - depth * 0.03 },
+            { translateX: depth * (depth % 2 === 0 ? -10 : 10) },
+            { translateY: depth * 6 },
+            { rotate: `${depth * (depth % 2 === 0 ? -3.5 : 3.5)}deg` },
           ],
         },
       ]}>
       <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
-        <Animated.View style={[styles.card, shadows.raised, front && dragStyle]}>
-          {/* Every page shares Rafti's cover; the ribbon tells them apart. */}
-          <Image source={BRAND.diaryCover} style={StyleSheet.absoluteFill} contentFit="cover" />
-          <View style={[styles.ribbon, { backgroundColor: tint[1] }]} />
-          <View style={styles.cardDate}>
-            <Txt variant="tiny" color={colors.textSecondary}>
-              {entry.date.slice(5).replace('-', '.')}
-            </Txt>
-          </View>
-          <Txt variant="title" color={colors.paperText} center style={styles.cardTitle} lines={2}>
-            {entry.title || t('diary.myDiary')}
-          </Txt>
-          {entry.sharedWithCharacterId ? (
-            <Ionicons
-              name={entry.reply ? 'mail-open' : 'mail'}
-              size={18}
-              color={colors.primary}
-              style={styles.cardMail}
-            />
+        {/* The page itself, not a cover: date, title, the first lines, who wrote back.
+            Pages behind it stay blank paper, so only one page reads at a time. */}
+        <Animated.View style={[styles.card, front && styles.cardFront, front && dragStyle]}>
+          {front ? (
+            <>
+              <View style={styles.cardHead}>
+                <Txt variant="display">{String(date.getDate()).padStart(2, '0')}</Txt>
+                <Txt variant="small" color={colors.textMuted} style={styles.flex}>
+                  {date.toLocaleDateString(i18n.language, { weekday: 'long' })}
+                </Txt>
+                <View style={[styles.ribbon, { backgroundColor: tint[0] }]} />
+              </View>
+              <Txt variant="h3" lines={2} style={styles.cardTitle}>
+                {entry.title || t('diary.myDiary')}
+              </Txt>
+              <Txt variant="body" color={colors.textSecondary} lines={6} style={styles.cardBody}>
+                {entry.body}
+              </Txt>
+              {sharedWith ? (
+                <View style={styles.cardFoot}>
+                  <Ionicons
+                    name={entry.reply ? 'mail-open-outline' : 'mail-outline'}
+                    size={16}
+                    color={colors.textSecondary}
+                  />
+                  <Txt variant="small" color={colors.textSecondary}>
+                    {entry.reply
+                      ? t('diary.replyTitle', { name: sharedWith })
+                      : t('diary.waitingFor', { name: sharedWith })}
+                  </Txt>
+                </View>
+              ) : null}
+            </>
           ) : null}
         </Animated.View>
       </GestureDetector>
@@ -315,67 +345,35 @@ function DiaryCard({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   headerRight: { flexDirection: 'row' },
-  datePill: {
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.lg,
-    height: 34,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.75)',
-    ...shadows.card,
-  },
-  stackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: space.huge },
+  month: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: space.lg },
+  stackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   stack: { alignItems: 'center', justifyContent: 'center' },
   counter: { marginTop: space.xxl },
   cardPos: { position: 'absolute' },
   card: {
     aspectRatio: 0.76,
     borderRadius: radius.xl,
-    overflow: 'hidden',
-    borderWidth: 3,
-    borderColor: 'rgba(255,255,255,0.85)',
-    backgroundColor: colors.paper,
-  },
-  ribbon: {
-    position: 'absolute',
-    top: 0,
-    right: space.xl,
-    width: 14,
-    height: 44,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-  },
-  cardDate: {
-    position: 'absolute',
-    top: space.md,
-    left: space.md,
-    paddingHorizontal: space.sm,
-    paddingVertical: 2,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-  },
-  // The cover art keeps its top third clear for the title.
-  cardTitle: {
-    position: 'absolute',
-    top: '14%',
-    left: space.lg,
-    right: space.lg,
-    fontStyle: 'italic',
-  },
-  cardMail: { position: 'absolute', right: space.md, bottom: space.lg },
-  fab: {
-    position: 'absolute',
-    right: space.xl,
-    bottom: space.xxxl,
-    width: 58,
-    height: 58,
-    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
     backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: space.xl,
+    overflow: 'hidden',
   },
+  cardFront: { backgroundColor: palette.cream100 },
+  cardHead: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
+  ribbon: { width: 8, height: 22, borderRadius: radius.xs / 2, alignSelf: 'flex-start' },
+  cardTitle: { marginTop: space.lg },
+  cardBody: { marginTop: space.sm },
+  cardFoot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    marginTop: 'auto',
+    paddingTop: space.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  footer: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl },
   entryScroll: { maxHeight: 440 },
   entryBody: { marginTop: space.md, lineHeight: 22 },
   images: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md },
@@ -384,7 +382,7 @@ const styles = StyleSheet.create({
     marginTop: space.xl,
     padding: space.md,
     borderRadius: radius.md,
-    backgroundColor: colors.primarySofter,
+    backgroundColor: colors.surfaceAlt,
     gap: space.sm,
   },
   replyHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },

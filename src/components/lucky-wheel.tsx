@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
@@ -6,10 +7,11 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, palette, radius, shadows } from '@/theme';
+import { colors, fonts, palette, radius } from '@/theme';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
-const FILLS = [palette.apricot100, palette.white, palette.mint100, palette.white];
+/** Calm alternating slices; only the jackpot gets colour (mint). */
+const FILLS = [palette.gray100, palette.white];
 const SPIN_MS = 3600;
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
@@ -37,6 +39,7 @@ export function LuckyWheel({
   onSpin: () => number | null;
   onStop: (index: number) => void;
 }) {
+  const { t } = useTranslation();
   const rotation = useSharedValue(0);
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
@@ -70,7 +73,7 @@ export function LuckyWheel({
     <View style={{ width: size, height: size + 14, alignItems: 'center' }}>
       <Animated.View style={[{ width: size, height: size, marginTop: 14 }, wheelStyle]}>
         <Svg width={size} height={size}>
-          <Circle cx={r} cy={r} r={r} fill={palette.apricot400} />
+          <Circle cx={r} cy={r} r={r - 1} fill={palette.white} stroke={palette.gray200} strokeWidth={1} />
           <G>
             {WHEEL_SEGMENTS.map((value, i) => {
               const from = -90 + i * SEGMENT;
@@ -82,15 +85,15 @@ export function LuckyWheel({
               return (
                 <G key={i}>
                   <Path
-                    d={slice(r, r, r - 8, from, from + SEGMENT)}
-                    fill={jackpot ? '#FFE08A' : FILLS[i % FILLS.length]}
-                    stroke={palette.apricot200}
-                    strokeWidth={1.5}
+                    d={slice(r, r, r - 1, from, from + SEGMENT)}
+                    fill={jackpot ? palette.mint50 : FILLS[i % FILLS.length]}
+                    stroke={palette.gray200}
+                    strokeWidth={1}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
-                    fill={jackpot ? '#B8610E' : palette.apricot700}
+                    fill={jackpot ? palette.mint600 : palette.gray900}
                     fontSize={size * 0.075}
                     fontFamily={fonts.display}
                     fontWeight="700"
@@ -103,25 +106,12 @@ export function LuckyWheel({
               );
             })}
           </G>
-          {/* bulbs around the rim */}
-          {Array.from({ length: 16 }, (_, i) => {
-            const a = (i * 22.5 * Math.PI) / 180;
-            return (
-              <Circle
-                key={i}
-                cx={r + (r - 4) * Math.cos(a)}
-                cy={r + (r - 4) * Math.sin(a)}
-                r={2.6}
-                fill={i % 2 ? '#FFFFFF' : '#FFE08A'}
-              />
-            );
-          })}
         </Svg>
       </Animated.View>
 
       {/* pointer */}
       <Svg width={30} height={30} style={styles.pointer}>
-        <Path d="M15 28 L4 6 Q15 0 26 6 Z" fill={colors.primary} stroke={colors.white} strokeWidth={2} />
+        <Path d="M15 28 L4 6 Q15 0 26 6 Z" fill={colors.text} stroke={colors.white} strokeWidth={2} />
       </Svg>
 
       <PressableScale
@@ -132,11 +122,10 @@ export function LuckyWheel({
         style={[
           styles.hub,
           { top: 14 + r - 34 },
-          shadows.fab,
           (spinning || disabled) && styles.hubDisabled,
         ]}>
-        <Txt color={colors.white} style={styles.hubText}>
-          SPIN
+        <Txt variant="bodyStrong" color={colors.textOnPrimary}>
+          {t('gifts.spin')}
         </Txt>
       </PressableScale>
     </View>
@@ -157,5 +146,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   hubDisabled: { backgroundColor: palette.gray400 },
-  hubText: { fontFamily: fonts.display, fontSize: 16, letterSpacing: 1 },
 });

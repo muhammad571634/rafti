@@ -8,7 +8,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { ShellIcon, Anim, Button, CharacterAvatar, Chip, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, radius, shadows, space } from '@/theme';
+import { avatarGradients, colors, radius, space } from '@/theme';
 
 const STYLES = ['polaroid', 'film', 'studio', 'street'] as const;
 
@@ -55,8 +55,8 @@ export default function PhotoBoothScreen() {
         subtitle={t('photoBooth.subtitle')}
         right={
           <View style={styles.film}>
-            <Ionicons name="film-outline" size={14} color={colors.primary} />
-            <Txt variant="caption" color={colors.primary}>
+            <Ionicons name="film-outline" size={14} color={colors.text} />
+            <Txt variant="caption" color={colors.text}>
               {wallet.film}
             </Txt>
           </View>
@@ -64,9 +64,9 @@ export default function PhotoBoothScreen() {
       />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={[styles.frame, { height: frameWidth * 1.15 }, shadows.card]}>
+        <View style={[styles.frame, { height: frameWidth * 1.15 }]}>
           {shooting ? (
-            <Anim name="typing" size={48} tint={colors.primary} />
+            <Anim name="typing" size={48} tint={colors.textMuted} />
           ) : partner ? (
             <LinearGradient
               colors={avatarGradients[partner.accentIndex % avatarGradients.length]}
@@ -101,6 +101,7 @@ export default function PhotoBoothScreen() {
               <CharacterAvatar character={character}
                 size={46}
                 ring={character.id === partnerId}
+                ringColor={colors.text}
               />
             </PressableScale>
           ))}
@@ -134,7 +135,7 @@ export default function PhotoBoothScreen() {
         {shots.length > 0 ? (
           <View style={styles.gallery}>
             {shots.map((shot, index) => (
-              <View key={shot} style={[styles.thumb, shadows.card]}>
+              <View key={shot} style={styles.thumb}>
                 <LinearGradient
                   colors={avatarGradients[index % avatarGradients.length]}
                   style={styles.thumbFill}
@@ -159,12 +160,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     height: 26,
     borderRadius: radius.pill,
-    backgroundColor: colors.primarySoft,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     marginRight: space.sm,
   },
   scroll: { padding: space.lg, gap: space.lg, paddingBottom: space.huge },
   frame: {
     borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
