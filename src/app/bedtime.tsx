@@ -72,7 +72,12 @@ export default function BedtimeScreen() {
           style={styles.readerRow}
           contentContainerStyle={styles.readers}>
           {known.map((character) => (
-            <PressableScale key={character.id} scaleTo={0.93} onPress={() => setReaderId(character.id)}>
+            <PressableScale
+              key={character.id}
+              scaleTo={0.93}
+              accessibilityLabel={character.name}
+              accessibilityState={{ selected: character.id === readerId }}
+              onPress={() => setReaderId(character.id)}>
               <CharacterAvatar
                 character={character}
                 size={50}

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -22,7 +22,18 @@ export interface MessageBubbleProps {
 
 const AVATAR = 34;
 
-export function MessageBubble({ message, character, user, showAvatar, animate = true, onCallBack }: MessageBubbleProps) {
+/**
+ * Memoised: a long history re-renders only the rows whose message or run position
+ * changed, not every bubble on each new message or typing flip.
+ */
+export const MessageBubble = memo(function MessageBubble({
+  message,
+  character,
+  user,
+  showAvatar,
+  animate = true,
+  onCallBack,
+}: MessageBubbleProps) {
   const mine = message.author === 'me';
 
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
@@ -59,7 +70,7 @@ export function MessageBubble({ message, character, user, showAvatar, animate = 
       ) : null}
     </Animated.View>
   );
-}
+});
 
 function TextBubble({ message, mine, first }: { message: Message; mine: boolean; first: boolean }) {
   const muted = message.muted;

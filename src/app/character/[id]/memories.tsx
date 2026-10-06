@@ -6,7 +6,7 @@ import { FlatList, StyleSheet, TextInput, View } from 'react-native';
 
 import {
   Button,
-  Card,
+  Divider,
   EmptyState,
   Header,
   IconButton,
@@ -53,11 +53,17 @@ export default function MemoriesScreen() {
   };
 
   return (
-    <Screen>
+    <Screen background={colors.bgPlain}>
       <Header
         title={t('memories.title')}
         subtitle={character ? t('memories.subtitle', { name: character.name }) : undefined}
-        right={<IconButton icon="add" onPress={() => setAdding(true)} color={colors.primary} />}
+        right={
+          <IconButton
+            icon="add"
+            onPress={() => setAdding(true)}
+            accessibilityLabel={t('a11y.addMemory')}
+          />
+        }
       />
 
       {mine.length === 0 ? (
@@ -73,6 +79,7 @@ export default function MemoriesScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <Divider inset={space.lg} />}
           renderItem={({ item }) => (
             <MemoryCard
               memory={item}
@@ -111,14 +118,10 @@ function MemoryCard({
   const { t } = useTranslation();
 
   return (
-    <Card style={styles.card}>
+    <View style={styles.card}>
       <View style={styles.cardHead}>
         <View style={styles.source}>
-          <Ionicons
-            name={memory.pinned ? 'bookmark' : 'ellipse-outline'}
-            size={13}
-            color={memory.pinned ? colors.primary : colors.textFaint}
-          />
+          {memory.pinned ? <Ionicons name="bookmark" size={13} color={colors.text} /> : null}
           <Txt variant="caption" color={colors.textMuted}>
             {t(`memories.sources.${memory.source}`)} {'·'} {relativeStamp(memory.createdAt)}
           </Txt>
@@ -127,21 +130,29 @@ function MemoryCard({
           <IconButton
             icon={memory.pinned ? 'bookmark' : 'bookmark-outline'}
             size={17}
-            color={memory.pinned ? colors.primary : colors.textFaint}
+            color={memory.pinned ? colors.text : colors.textFaint}
             onPress={onPin}
+            accessibilityLabel={memory.pinned ? t('a11y.unpin') : t('a11y.pin')}
           />
-          <IconButton icon="trash-outline" size={17} color={colors.textFaint} onPress={onDelete} />
+          <IconButton
+            icon="trash-outline"
+            size={17}
+            color={colors.textFaint}
+            onPress={onDelete}
+            accessibilityLabel={t('a11y.deleteMemory')}
+          />
         </View>
       </View>
 
       <Txt variant="body">{memory.text}</Txt>
-    </Card>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  list: { padding: space.lg, gap: space.md, paddingBottom: space.huge },
-  card: { gap: space.sm },
+  list: { paddingBottom: space.huge },
+  // Memories sit on the canvas as a plain list; the hairline between them is enough.
+  card: { gap: space.xs, paddingHorizontal: space.lg, paddingVertical: space.md },
   cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   source: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   cardActions: { flexDirection: 'row', marginRight: -space.sm },

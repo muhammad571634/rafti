@@ -34,7 +34,7 @@ export default function BoardScreen() {
   );
 
   return (
-    <Screen>
+    <Screen background={colors.bgPlain}>
       <Header title={t('board.title')} subtitle={t('board.subtitle')} />
 
       {notes.length === 0 ? (
@@ -44,6 +44,7 @@ export default function BoardScreen() {
           {notes.map(({ conversation, character }) => (
             <Card
               key={conversation.id}
+              variant="outlined"
               onPress={() => router.push(`/chat/${conversation.id}`)}
               style={styles.card}>
               <View style={styles.head}>

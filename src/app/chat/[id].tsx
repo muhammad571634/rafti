@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
@@ -11,14 +11,17 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   ShellBadge,
   CharacterAvatar,
+  Divider,
   IconButton,
+  IconTile,
+  ListRow,
   PressableScale,
   Screen,
   Sheet,
   Txt,
 } from '@/components/ui';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
 
@@ -30,10 +33,13 @@ type Attachment = {
 const ATTACHMENTS: Attachment[] = [
   { key: 'voice', icon: 'mic-outline' },
   { key: 'photo', icon: 'image-outline' },
-  { key: 'secretNote', icon: 'mail-unread-outline' },
-  { key: 'date', icon: 'heart-outline' },
+  { key: 'secretNote', icon: 'mail-outline' },
+  { key: 'date', icon: 'cafe-outline' },
   { key: 'diary', icon: 'book-outline' },
 ];
+
+/** Leading tile size in the "+" sheet; the dividers inset by it to meet the row text. */
+const ATTACH_TILE = 38;
 
 export default function ChatRoomScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,6 +58,7 @@ export default function ChatRoomScreen() {
   const levelUp = useAppStore((s) => s.levelUp);
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
+  const member = useAppStore((s) => memberActive(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
   const missedToday = useAppStore((s) =>
     s.calls.some(
@@ -86,6 +93,34 @@ export default function ChatRoomScreen() {
   const wallpaper = backgroundsById[relationship?.backgroundId ?? 'bg_blossom'];
   const background = wallpaper?.colors ?? [colors.bg, colors.surface];
   const data = useMemo(() => messages ?? [], [messages]);
+
+  // Only messages that arrive while the chat is open animate in. History, and rows
+  // the list re-mounts when you scroll back up, appear without replaying it.
+  const [openedAt] = useState(() => Date.now());
+  const characterId = character?.id;
+  const callBack = useCallback(() => {
+    if (characterId) router.push(`/call/${characterId}`);
+  }, [characterId, router]);
+
+  const renderItem = useCallback(
+    ({ item, index }: ListRenderItemInfo<Message>) =>
+      character ? (
+        <MessageBubble
+          message={item}
+          character={character}
+          user={user}
+          animate={animations && Date.parse(item.createdAt) > openedAt}
+          showAvatar={
+            index === 0 ||
+            data[index - 1]?.author !== item.author ||
+            data[index - 1]?.kind === 'call' ||
+            data[index - 1]?.kind === 'system'
+          }
+          onCallBack={callBack}
+        />
+      ) : null,
+    [character, user, animations, openedAt, data, callBack],
+  );
 
   if (!conversation || !character) {
     return (
@@ -126,6 +161,23 @@ export default function ChatRoomScreen() {
     }
   };
 
+  // The price shown on each "+" row. Members send voice and photos free; the
+  // date row opens its own screen, so it carries a chevron instead.
+  const attachMeta = (key: Attachment['key']) => {
+    switch (key) {
+      case 'voice':
+        return member ? undefined : t('chat.shellCost', { count: shellCosts.voiceMessage });
+      case 'photo':
+        return member ? undefined : t('chat.shellCost', { count: shellCosts.textMessage });
+      case 'secretNote':
+        return t('chat.shellCost', { count: shellCosts.secretNote });
+      case 'diary':
+        return t('common.free');
+      case 'date':
+        return undefined;
+    }
+  };
+
   const name = displayName(character, relationship);
   const streak = relationship?.streakDays ?? 0;
   const dark = !!wallpaper?.dark;
@@ -133,39 +185,47 @@ export default function ChatRoomScreen() {
   return (
     <Screen background={background as readonly [string, string]} statusBarStyle="dark">
       <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
-        <PressableScale onPress={() => router.back()} hitSlop={hitSlop} scaleTo={0.88}>
+        <PressableScale
+          onPress={() => router.back()}
+          hitSlop={hitSlop}
+          scaleTo={0.88}
+          accessibilityLabel={t('a11y.back')}>
           <Ionicons name="chevron-back" size={27} color={colors.text} />
         </PressableScale>
 
-        <PressableScale
-          style={styles.identity}
-          scaleTo={0.98}
-          onPress={() => router.push(`/character/${character.id}`)}>
-          <CharacterAvatar character={character} size={36} />
-          <View style={styles.identityText}>
-            <View style={styles.nameRow}>
-              <Txt variant="title" lines={1} style={styles.name}>
+        {/* Siblings, not nested: a button inside a button is unreachable for
+            VoiceOver/TalkBack and invalid HTML on web. */}
+        <View style={styles.identity}>
+          <PressableScale
+            style={styles.identityTap}
+            scaleTo={0.98}
+            onPress={() => router.push(`/character/${character.id}`)}>
+            <CharacterAvatar character={character} size={36} />
+            <View style={styles.identityText}>
+              <Txt variant="title" lines={1}>
                 {name}
               </Txt>
-              <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+              <Txt variant="tiny" color={colors.primary} lines={1}>
+                {streak > 0 ? `${t('chat.streak', { count: streak })} \u{1F9E1}` : t('chat.streakNone')}
+              </Txt>
             </View>
-            <Txt variant="tiny" color={colors.primary} lines={1}>
-              {streak > 0 ? `${t('chat.streak', { count: streak })} \u{1F9E1}` : t('chat.streakNone')}
-            </Txt>
-          </View>
-        </PressableScale>
+          </PressableScale>
+          <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+        </View>
 
         <IconButton
           icon="call-outline"
           size={22}
           dot={missedToday}
           style={styles.headerIcon}
+          accessibilityLabel={t('a11y.call')}
           onPress={() => router.push(`/call/${character.id}`)}
         />
         <IconButton
           icon="menu"
           size={24}
           style={styles.headerIcon}
+          accessibilityLabel={t('a11y.chatSettings')}
           onPress={() => router.push(`/character/${character.id}/settings`)}
         />
       </View>
@@ -182,27 +242,18 @@ export default function ChatRoomScreen() {
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <MessageBubble
-                message={item}
-                character={character}
-                user={user}
-                animate={animations}
-                showAvatar={
-                  index === 0 ||
-                  data[index - 1]?.author !== item.author ||
-                  data[index - 1]?.kind === 'call' ||
-                  data[index - 1]?.kind === 'system'
-                }
-                onCallBack={() => router.push(`/call/${character.id}`)}
-              />
-            )}
+            renderItem={renderItem}
             ListFooterComponent={typing ? <TypingRow character={character} /> : null}
             onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
           />
         </View>
 
-        <ChatInput onSend={send} onAttach={() => setAttachOpen(true)} onGallery={pickPhoto} />
+        <ChatInput
+          placeholder={t('chat.inputPlaceholder', { name })}
+          onSend={send}
+          onAttach={() => setAttachOpen(true)}
+          onVoice={() => setVoiceOpen(true)}
+        />
       </KeyboardAvoidingView>
 
       <LevelUpModal
@@ -212,21 +263,25 @@ export default function ChatRoomScreen() {
       />
 
       <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
-        <View style={styles.attachGrid}>
-          {ATTACHMENTS.map((item) => (
-            <PressableScale key={item.key} style={styles.attachItem} scaleTo={0.92} onPress={() => attach(item.key)}>
-              <View style={styles.attachIcon}>
-                <Ionicons name={item.icon} size={24} color={colors.primary} />
-              </View>
-              <Txt variant="caption" color={colors.textSecondary}>
-                {t(`chat.attachments.${item.key}`)}
-              </Txt>
-            </PressableScale>
-          ))}
+        <View style={styles.attachList}>
+          {ATTACHMENTS.map((item, index) => {
+            const title = t(`chat.attachments.${item.key}`);
+            const meta = attachMeta(item.key);
+            return (
+              <Fragment key={item.key}>
+                {index > 0 ? <Divider inset={space.lg + ATTACH_TILE + space.md} /> : null}
+                <ListRow
+                  title={title}
+                  left={<IconTile icon={item.icon} size={ATTACH_TILE} />}
+                  meta={meta}
+                  chevron={item.key === 'date'}
+                  accessibilityLabel={meta ? `${title}, ${meta}` : title}
+                  onPress={() => attach(item.key)}
+                />
+              </Fragment>
+            );
+          })}
         </View>
-        <Txt variant="caption" color={colors.textFaint} center style={styles.costHint}>
-          {t('chat.cost', { count: shellCosts.textMessage })}
-        </Txt>
       </Sheet>
 
       <VoiceSheet
@@ -261,23 +316,9 @@ const styles = StyleSheet.create({
   },
   headerIcon: { width: 34 },
   identity: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  identityTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
   identityText: { flex: 1, gap: 2 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  name: { flexShrink: 1 },
   list: { paddingVertical: space.lg },
-  attachGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    rowGap: space.xl,
-  },
-  attachItem: { width: '33.3%', alignItems: 'center', gap: space.xs },
-  attachIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: colors.primarySofter,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  costHint: { marginTop: space.xl },
+  // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
+  attachList: { marginHorizontal: -space.xl },
 });

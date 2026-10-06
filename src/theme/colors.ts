@@ -104,6 +104,15 @@ export const colors = {
   accentSoft: palette.mint100,
   accentBorder: palette.mint200,
 
+  // On a photo or blurred portrait (call screens)
+  onMedia: palette.white,
+  onMediaMuted: 'rgba(255,255,255,0.75)',
+  onMediaGlass: 'rgba(255,255,255,0.16)',
+
+  // Bond: the only place mint carries meaning (level progress, "voice ready").
+  bond: palette.mint400,
+  bondText: palette.mint600,
+
   // Diary
   paper: palette.cream200,
   paperLine: palette.cream300,
@@ -118,8 +127,8 @@ export const colors = {
   bubbleTranscriptText: palette.gray600,
 
   // Nav
-  tabActive: palette.apricot600,
-  tabInactive: palette.gray400,
+  tabActive: palette.gray900,
+  tabInactive: palette.gray500,
 
   // Status
   danger: palette.red,

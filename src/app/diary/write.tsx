@@ -29,7 +29,7 @@ import {
 import { diaryDate } from '@/lib/format';
 import { dayKey, dayKeyFromToday, dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, palette, radius, shadows, space, type } from '@/theme';
+import { colors, palette, radius, space, type } from '@/theme';
 import type { DiaryMood } from '@/types';
 
 type Mark = 'bold' | 'underline' | 'strike' | 'italic';
@@ -104,7 +104,7 @@ export default function DiaryWriteScreen() {
       />
 
       <View style={styles.datePillRow} pointerEvents="box-none">
-        <PressableScale style={[styles.datePill, shadows.card]} scaleTo={0.96} onPress={() => setDatesOpen(true)}>
+        <PressableScale style={[styles.datePill, styles.hairline]} scaleTo={0.96} onPress={() => setDatesOpen(true)}>
           <Txt variant="smallStrong" color={colors.paperText}>
             {diaryDate(dateFromKey(date).toISOString())}
           </Txt>
@@ -156,7 +156,7 @@ export default function DiaryWriteScreen() {
         </ScrollView>
 
         <View style={styles.toolbarRow}>
-          <View style={[styles.toolbar, shadows.card]}>
+          <View style={[styles.toolbar, styles.hairline]}>
             <ToolButton label="B" active={marks.includes('bold')} onPress={() => toggleMark('bold')} bold />
             <ToolButton
               label="U"
@@ -166,11 +166,20 @@ export default function DiaryWriteScreen() {
             />
             <ToolButton label="S" active={marks.includes('strike')} onPress={() => toggleMark('strike')} strike />
             <ToolButton label="I" active={marks.includes('italic')} onPress={() => toggleMark('italic')} italic />
-            <PressableScale style={styles.tool} scaleTo={0.88} onPress={addImage}>
+            <PressableScale
+              style={styles.tool}
+              scaleTo={0.88}
+              hitSlop={4}
+              accessibilityLabel={t('a11y.addPhoto')}
+              onPress={addImage}>
               <Ionicons name="image-outline" size={21} color={colors.text} />
             </PressableScale>
           </View>
-          <PressableScale style={[styles.collapse, shadows.card]} scaleTo={0.88} onPress={Keyboard.dismiss}>
+          <PressableScale
+            style={[styles.collapse, styles.hairline]}
+            scaleTo={0.88}
+            accessibilityLabel={t('a11y.hideKeyboard')}
+            onPress={Keyboard.dismiss}>
             <Ionicons name="chevron-up" size={22} color={colors.text} />
           </PressableScale>
         </View>
@@ -219,7 +228,7 @@ export default function DiaryWriteScreen() {
             <Txt variant="body" style={styles.flex}>
               {diaryDate(dateFromKey(key).toISOString())}
             </Txt>
-            {key === date ? <Ionicons name="checkmark" size={18} color={colors.primary} /> : null}
+            {key === date ? <Ionicons name="checkmark" size={18} color={colors.text} /> : null}
           </PressableScale>
         ))}
       </Sheet>
@@ -247,7 +256,7 @@ function ShareRow({
       <Ionicons
         name={selected ? 'radio-button-on' : 'radio-button-off'}
         size={20}
-        color={selected ? colors.primary : colors.textFaint}
+        color={selected ? colors.text : colors.textFaint}
       />
     </PressableScale>
   );
@@ -291,7 +300,7 @@ function ToolButton({
     <PressableScale style={[styles.tool, active && styles.toolActive]} onPress={onPress} scaleTo={0.88}>
       <Txt
         variant="h3"
-        color={active ? colors.primary : colors.text}
+        color={colors.text}
         style={[
           styles.toolLabel,
           bold && styles.bold,
@@ -382,7 +391,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  toolActive: { backgroundColor: colors.primarySoft },
+  toolActive: { backgroundColor: colors.surfaceAlt },
+  hairline: { borderWidth: 1, borderColor: colors.border },
   toolLabel: { fontWeight: '500' },
   collapse: {
     width: 52,

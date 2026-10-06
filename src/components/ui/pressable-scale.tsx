@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import { Pressable, PressableProps, Platform, StyleProp, ViewStyle } from 'react-native';
+import { Pressable, PressableProps, Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -26,6 +26,8 @@ export function PressableScale({
   onPressIn,
   onPressOut,
   disabled,
+  accessibilityRole = 'button',
+  accessibilityState,
   children,
   ...rest
 }: PressableScaleProps) {
@@ -36,9 +38,24 @@ export function PressableScale({
     opacity: dimOnPress ? 1 - pressed.value * 0.15 : 1,
   }));
 
+  const a11y = {
+    accessibilityRole,
+    accessibilityState: { disabled: !!disabled, ...accessibilityState },
+  };
+
+  // A disabled control renders as a plain Pressable: the animated style owns opacity
+  // and would paint over a static fade, leaving a disabled button looking enabled.
+  if (disabled) {
+    return (
+      <Pressable disabled {...a11y} style={[style, styles.disabled]} {...rest}>
+        {children}
+      </Pressable>
+    );
+  }
+
   return (
     <AnimatedPressable
-      disabled={disabled}
+      {...a11y}
       onPressIn={(e) => {
         pressed.value = withSpring(1, { damping: 22, stiffness: 420 });
         if (haptic && Platform.OS !== 'web') {
@@ -50,9 +67,13 @@ export function PressableScale({
         pressed.value = withTiming(0, { duration: 140 });
         onPressOut?.(e);
       }}
-      style={[style, animatedStyle, disabled && { opacity: 0.45 }]}
+      style={[style, animatedStyle]}
       {...rest}>
       {children as React.ReactNode}
     </AnimatedPressable>
   );
 }
+
+const styles = StyleSheet.create({
+  disabled: { opacity: 0.45 },
+});

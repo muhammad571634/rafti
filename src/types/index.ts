@@ -209,8 +209,12 @@ export interface ShellPack {
   id: string;
   shells: number;
   bonus: number;
+  /** Display price from the store; real builds take it localized from StoreKit / Play Billing. */
   price: string;
-  best?: boolean;
+  /** The same price as a number, for per-shell value maths. */
+  amount: number;
+  /** The pack most people pick: pre-selected in the store. */
+  popular?: boolean;
 }
 
 export interface MembershipPlan {

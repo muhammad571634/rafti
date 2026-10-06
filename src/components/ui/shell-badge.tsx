@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { colors, palette, radius, space } from '@/theme';
@@ -18,6 +19,7 @@ export interface ShellBadgeProps {
 
 /** The shell + balance pill: wallet on Home, Gifts and the chat header. */
 export function ShellBadge({ count, onPress, showAdd, style, tone = 'light' }: ShellBadgeProps) {
+  const { t } = useTranslation();
   const dark = tone === 'dark';
   const fg = dark ? colors.white : palette.shellText;
 
@@ -39,7 +41,13 @@ export function ShellBadge({ count, onPress, showAdd, style, tone = 'light' }: S
   if (!onPress) return content;
 
   return (
-    <PressableScale onPress={onPress} scaleTo={0.92} dimOnPress={false} hitSlop={6}>
+    // 22pt pill, 44pt target.
+    <PressableScale
+      onPress={onPress}
+      scaleTo={0.92}
+      dimOnPress={false}
+      hitSlop={{ top: 11, bottom: 11, left: 8, right: 8 }}
+      accessibilityLabel={`${count} ${t('common.shells')}`}>
       {content}
     </PressableScale>
   );

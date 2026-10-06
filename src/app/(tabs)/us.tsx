@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,31 +7,39 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Card,
   CharacterAvatar,
+  Divider,
   EmptyState,
-  Icon3D,
+  IconTile,
+  ListRow,
   PressableScale,
   Screen,
+  SectionLabel,
   Txt,
   UserAvatar,
 } from '@/components/ui';
-import type { IconName } from '@/components/ui';
 import { daysBetween, relativeStamp } from '@/lib/format';
 import { dateFromKey, levelForIntimacy, todayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, palette, radius, shadows, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
-const MOMENT_ICON: Record<MomentKind, IconName> = {
-  met: 'sparkles',
-  levelUp: 'growing-heart',
-  call: 'call',
-  diary: 'diary',
-  secretNote: 'secret-note',
-  dating: 'dating',
-  photo: 'photo-booth',
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+
+const MOMENT_PAGE = 20;
+const ROW_ICON = 38;
+const ROW_INSET = space.lg + ROW_ICON + space.md;
+
+const MOMENT_ICON: Record<MomentKind, IoniconName> = {
+  met: 'sparkles-outline',
+  levelUp: 'heart-outline',
+  call: 'call-outline',
+  diary: 'book-outline',
+  secretNote: 'mail-outline',
+  dating: 'cafe-outline',
+  photo: 'camera-outline',
 };
 
-/** [Us]: every sweet moment with each character, plus the plans they'll remind you of. */
+/** [Us]: one bond at a time — how long, how close, what's next and what you've shared. */
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -56,6 +63,9 @@ export default function UsScreen() {
 
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
+  // Moments pile up for as long as a bond lasts; render them a page at a time.
+  const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
+  const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
 
   const timeline = useMemo(
     () =>
@@ -76,10 +86,10 @@ export default function UsScreen() {
 
   if (!selected) {
     return (
-      <Screen background={gradients.home}>
-        <View style={styles.head}>
-          <Txt variant="h1">{t('us.title')}</Txt>
-        </View>
+      <Screen background={colors.bgPlain}>
+        <Txt variant="h1" style={styles.head}>
+          {t('us.title')}
+        </Txt>
         <EmptyState
           title={t('us.noRelationships')}
           hint={t('us.noRelationshipsHint')}
@@ -93,23 +103,35 @@ export default function UsScreen() {
   const { character, relationship } = selected;
   const { progress } = levelForIntimacy(relationship.intimacy);
   const conversation = conversations.find((c) => c.characterId === character.id);
+  const days = daysBetween(relationship.anniversary) + 1;
+  const shownMoments = timeline.slice(0, visibleMoments);
 
   return (
-    <Screen background={gradients.home}>
-      <View style={styles.head}>
-        <Txt variant="h1">{t('us.title')}</Txt>
-      </View>
+    <Screen background={colors.bgPlain}>
+      <Txt variant="h1" style={styles.head}>
+        {t('us.title')}
+      </Txt>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.scroll, { paddingBottom: TAB_BAR_HEIGHT + space.xxl }]}>
+        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>
           {bonds.map(({ character: c, relationship: r }) => {
             const active = c.id === character.id;
             return (
-              <PressableScale key={c.id} style={styles.pick} scaleTo={0.92} onPress={() => setSelectedId(c.id)}>
-                <CharacterAvatar character={c} size={active ? 56 : 48} ring={active} />
-                <Txt variant="tiny" lines={1} color={active ? colors.primary : colors.textMuted}>
+              <PressableScale
+                key={c.id}
+                style={styles.pick}
+                scaleTo={0.94}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                onPress={() => setSelectedId(c.id)}>
+                <CharacterAvatar character={c} size={50} ring={active} ringColor={colors.text} />
+                <Txt
+                  variant="tiny"
+                  lines={1}
+                  color={active ? colors.text : colors.textMuted}
+                  style={active && styles.pickActive}>
                   {displayName(c, r)}
                 </Txt>
               </PressableScale>
@@ -117,98 +139,99 @@ export default function UsScreen() {
           })}
         </ScrollView>
 
-        <PressableScale
-          scaleTo={0.985}
-          onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
-          <LinearGradient colors={gradients.banner} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadows.card]}>
+        <Card
+          variant="outlined"
+          style={styles.hero}
+          onPress={conversation ? () => router.push(`/chat/${conversation.id}`) : undefined}>
+          <View style={styles.together}>
             <View style={styles.pair}>
-              <UserAvatar user={user} size={60} />
-              <Icon3D name="growing-heart" size={40} style={styles.heart} />
-              <CharacterAvatar character={character} size={60} ring ringColor={colors.white} />
+              <UserAvatar user={user} size={40} />
+              <CharacterAvatar character={character} size={40} ring ringColor={colors.surface} style={styles.overlap} />
             </View>
-            <Txt variant="display" color={colors.white} center>
-              {t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}
-            </Txt>
-            <View style={styles.levelRow}>
-              <Txt variant="smallStrong" color={colors.white}>
-                {t('us.level', { level: relationship.level })} · {relationship.levelTitle}
-              </Txt>
-              <Txt variant="caption" color="rgba(255,255,255,0.85)">
-                {t('us.toNext', { count: Math.max(0, relationship.nextLevelAt - relationship.intimacy) })}
-              </Txt>
-            </View>
-            <View style={styles.track}>
-              <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
-            </View>
-            <View style={styles.stats}>
-              <Stat icon="heart" label={t('us.intimacy', { count: relationship.intimacy })} />
-              <Stat icon="flame" label={t('us.streak', { count: relationship.streakDays })} />
-            </View>
-          </LinearGradient>
-        </PressableScale>
-
-        <Card style={styles.section}>
-          <View style={styles.sectionHead}>
-            <Icon3D name="calendar" size={24} />
-            <Txt variant="title">{t('us.upcoming')}</Txt>
-          </View>
-          {upcoming.length === 0 ? (
+            <Txt variant="display">{days}</Txt>
             <Txt variant="small" color={colors.textMuted}>
-              {t('us.upcomingHint')}
+              {t('us.daysLabel', { count: days })}
             </Txt>
-          ) : (
-            upcoming.map((item) => (
-              <View key={item.id} style={styles.scheduleRow}>
-                <View style={styles.dateBadge}>
-                  <Txt variant="tiny" color={colors.primary}>
-                    {dateFromKey(item.date).toLocaleDateString(i18n.language, { month: 'short' })}
-                  </Txt>
-                  <Txt variant="title" color={colors.primary}>
-                    {dateFromKey(item.date).getDate()}
-                  </Txt>
-                </View>
-                <View style={styles.flex}>
-                  <Txt variant="bodyStrong">{item.title}</Txt>
-                  <Txt variant="caption" color={colors.textMuted}>
-                    {item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
-                  </Txt>
-                </View>
-                <PressableScale hitSlop={8} scaleTo={0.85} onPress={() => removeSchedule(item.id)}>
-                  <Ionicons name="close-circle" size={20} color={colors.textFaint} />
-                </PressableScale>
-              </View>
-            ))
-          )}
+          </View>
+
+          <View style={styles.levelRow}>
+            <Txt variant="smallStrong" style={styles.grow}>
+              {t('characterProfile.levelLine', { level: relationship.level, title: relationship.levelTitle })}
+            </Txt>
+            <Txt variant="caption" color={colors.textMuted}>
+              {t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
+            </Txt>
+          </View>
+          <View style={styles.track}>
+            <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
+          </View>
+
+          <View style={styles.stats}>
+            <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
+            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
+            <Stat
+              value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
+              label={t('us.statMet')}
+            />
+          </View>
         </Card>
 
-        <Card style={styles.section}>
-          <View style={styles.sectionHead}>
-            <Icon3D name="sparkles" size={24} />
-            <Txt variant="title">{t('us.moments')}</Txt>
-          </View>
-          {timeline.length === 0 ? (
-            <Txt variant="small" color={colors.textMuted}>
-              {t('us.noMoments')}
+        <SectionLabel title={t('us.upcoming')} />
+        {upcoming.length === 0 ? (
+          <ListRow
+            title={t('us.nothingPlanned')}
+            subtitle={t('us.upcomingHint')}
+            left={<IconTile icon="calendar-outline" size={ROW_ICON} />}
+          />
+        ) : (
+          upcoming.map((item, i) => (
+            <View key={item.id}>
+              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
+              <ListRow
+                title={item.title}
+                subtitle={item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
+                left={<DateTile dateKey={item.date} locale={i18n.language} />}
+                right={
+                  <PressableScale
+                    hitSlop={hitSlop}
+                    scaleTo={0.85}
+                    accessibilityLabel={t('a11y.removePlan')}
+                    onPress={() => removeSchedule(item.id)}>
+                    <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
+                  </PressableScale>
+                }
+              />
+            </View>
+          ))
+        )}
+
+        <SectionLabel title={t('us.moments')} />
+        {timeline.length === 0 ? (
+          <Txt variant="small" color={colors.textMuted} style={styles.hint}>
+            {t('us.noMoments')}
+          </Txt>
+        ) : (
+          shownMoments.map((moment, i) => (
+            <View key={moment.id}>
+              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
+              <ListRow
+                title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+                meta={relativeStamp(moment.createdAt)}
+                left={<IconTile icon={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
+              />
+            </View>
+          ))
+        )}
+        {timeline.length > visibleMoments ? (
+          <PressableScale
+            style={styles.showMore}
+            scaleTo={1}
+            onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
+            <Txt variant="smallStrong" color={colors.textSecondary}>
+              {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
             </Txt>
-          ) : (
-            timeline.map((moment, i) => (
-              <View key={moment.id} style={styles.momentRow}>
-                <View style={styles.rail}>
-                  <View style={styles.momentIcon}>
-                    <Icon3D name={MOMENT_ICON[moment.kind]} size={22} />
-                  </View>
-                  {i < timeline.length - 1 ? <View style={styles.railLine} /> : null}
-                </View>
-                <View style={[styles.flex, styles.momentBody]}>
-                  <Txt variant="body">{t(`us.momentText.${moment.kind}`, moment.params ?? {})}</Txt>
-                  <Txt variant="caption" color={colors.textFaint}>
-                    {relativeStamp(moment.createdAt)}
-                  </Txt>
-                </View>
-              </View>
-            ))
-          )}
-        </Card>
+          </PressableScale>
+        ) : null}
       </ScrollView>
     </Screen>
   );
@@ -220,11 +243,24 @@ function relativeDay(key: string, t: (k: string) => string, locale: string) {
   return dateFromKey(key).toLocaleDateString(locale, { weekday: 'long' });
 }
 
-function Stat({ icon, label }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }) {
+/** A plan's date as a small calendar leaf, the same size as an IconTile. */
+function DateTile({ dateKey, locale }: { dateKey: string; locale: string }) {
+  const date = dateFromKey(dateKey);
   return (
-    <View style={styles.stat}>
-      <Ionicons name={icon} size={13} color={colors.white} />
-      <Txt variant="caption" color={colors.white}>
+    <View style={styles.dateTile}>
+      <Txt variant="tiny" color={colors.textMuted}>
+        {date.toLocaleDateString(locale, { month: 'short' })}
+      </Txt>
+      <Txt variant="title">{date.getDate()}</Txt>
+    </View>
+  );
+}
+
+function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
+  return (
+    <View style={[styles.stat, divided && styles.statDivided]}>
+      <Txt variant="bodyStrong">{value}</Txt>
+      <Txt variant="caption" color={colors.textMuted}>
         {label}
       </Txt>
     </View>
@@ -232,45 +268,35 @@ function Stat({ icon, label }: { icon: React.ComponentProps<typeof Ionicons>['na
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  grow: { flex: 1 },
   head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  scroll: { paddingHorizontal: space.lg, gap: space.lg },
-  picker: { gap: space.md, paddingVertical: space.xs, alignItems: 'flex-end' },
-  pick: { alignItems: 'center', gap: space.xs, width: 62 },
-  hero: { borderRadius: radius.xxl, padding: space.xl, gap: space.md },
-  pair: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.md },
-  heart: { marginHorizontal: -space.xs },
-  levelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  picker: { gap: space.lg, paddingHorizontal: space.lg, paddingVertical: space.xs },
+  pick: { alignItems: 'center', gap: space.xs, width: 56 },
+  pickActive: { fontWeight: '600' },
+  hero: { marginHorizontal: space.lg, marginTop: space.md },
+  together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  pair: { flexDirection: 'row', marginRight: space.xs },
+  overlap: { marginLeft: -space.md },
+  levelRow: { flexDirection: 'row', alignItems: 'center', marginTop: space.lg },
   track: {
-    height: 8,
+    height: 4,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.35)',
+    backgroundColor: colors.border,
     overflow: 'hidden',
+    marginTop: space.md,
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.white },
-  stats: { flexDirection: 'row', gap: space.lg },
-  stat: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  section: { gap: space.md },
-  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  scheduleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  dateBadge: {
-    width: 44,
-    height: 48,
-    borderRadius: radius.md,
-    backgroundColor: colors.primarySofter,
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
+  stats: { flexDirection: 'row', marginTop: space.lg },
+  stat: { flex: 1, alignItems: 'center', gap: 2 },
+  statDivided: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
+  dateTile: {
+    width: ROW_ICON,
+    height: ROW_ICON,
+    borderRadius: radius.sm + 2,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  momentRow: { flexDirection: 'row', gap: space.md },
-  rail: { alignItems: 'center', width: 36 },
-  momentIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.pill,
-    backgroundColor: palette.apricot50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  railLine: { flex: 1, width: 2, backgroundColor: palette.apricot100, marginVertical: 2 },
-  momentBody: { paddingBottom: space.lg, gap: 2, paddingTop: space.xs },
+  hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
+  showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
 });

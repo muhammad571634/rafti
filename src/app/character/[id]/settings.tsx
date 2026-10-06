@@ -1,25 +1,26 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import {
-  BlurBackdrop,
   Button,
   CharacterAvatar,
+  Divider,
   Header,
-  PressableScale,
+  IconButton,
+  IconTile,
+  ListRow,
   Screen,
+  SectionLabel,
   Sheet,
   Toggle,
   Txt,
-  characterImage,
 } from '@/components/ui';
 import { shortDate } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space, type } from '@/theme';
+import { colors, radius, space, type } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -33,16 +34,34 @@ type ActionKey =
   | 'clearChat'
   | 'reset';
 
-const ACTIONS: { key: ActionKey; icon: IoniconName }[] = [
-  { key: 'voiceCall', icon: 'call' },
-  { key: 'characterMemories', icon: 'reader' },
-  { key: 'characterSettings', icon: 'people' },
-  { key: 'chatSettings', icon: 'chatbubbles' },
-  { key: 'searchHistory', icon: 'search' },
-  { key: 'changeBackground', icon: 'image' },
-  { key: 'clearChat', icon: 'trash' },
-  { key: 'reset', icon: 'refresh' },
+/** Grouped like Profile: what you do in this chat, who they are, then the destructive two. */
+const GROUPS: { title: string; actions: { key: ActionKey; icon: IoniconName }[] }[] = [
+  {
+    title: 'sectionChat',
+    actions: [
+      { key: 'voiceCall', icon: 'call-outline' },
+      { key: 'chatSettings', icon: 'chatbubbles-outline' },
+      { key: 'searchHistory', icon: 'search-outline' },
+      { key: 'changeBackground', icon: 'image-outline' },
+    ],
+  },
+  {
+    title: 'sectionCharacter',
+    actions: [
+      { key: 'characterMemories', icon: 'bookmark-outline' },
+      { key: 'characterSettings', icon: 'person-outline' },
+    ],
+  },
+  {
+    title: 'sectionManage',
+    actions: [
+      { key: 'clearChat', icon: 'trash-outline' },
+      { key: 'reset', icon: 'refresh-outline' },
+    ],
+  },
 ];
+
+const ROW_ICON = 34;
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -79,7 +98,7 @@ export default function CharacterSettingsScreen() {
 
   if (!character) {
     return (
-      <Screen>
+      <Screen background={colors.bgPlain}>
         <Header title={t('errors.notFound')} />
       </Screen>
     );
@@ -121,49 +140,50 @@ export default function CharacterSettingsScreen() {
   };
 
   return (
-    <Screen
-      background={gradients.call}
-      statusBarStyle="light"
-      backdrop={<BlurBackdrop source={characterImage(character)} dim={0.3} blur={45} />}>
-      <Header title={t('characterSettings.title')} center tint={colors.white} />
+    <Screen background={colors.bgPlain}>
+      <Header title={t('characterSettings.title')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.identity}>
-          <CharacterAvatar character={character} size={104} ring ringColor="rgba(255,255,255,0.85)" />
-          <PressableScale
-            style={styles.nameRow}
-            scaleTo={0.97}
+          <CharacterAvatar character={character} size={56} />
+          <View style={styles.flex}>
+            <Txt variant="h3" lines={1}>
+              {name}
+            </Txt>
+            {relationship ? (
+              <Txt variant="small" color={colors.textMuted}>
+                {t('characterSettings.anniversary', { date: shortDate(relationship.anniversary) })}
+              </Txt>
+            ) : null}
+          </View>
+          <IconButton
+            icon="pencil-outline"
+            size={19}
+            accessibilityLabel={t('characterSettings.nickname')}
             onPress={() => {
               setDraftName(relationship?.nickname ?? '');
               setRenaming(true);
-            }}>
-            <Txt variant="h2" color={colors.white}>
-              {name}
-            </Txt>
-            <Ionicons name="pencil" size={16} color="rgba(255,255,255,0.75)" />
-          </PressableScale>
-          {relationship ? (
-            <Txt variant="caption" color="rgba(255,255,255,0.8)">
-              {t('characterSettings.anniversary', { date: shortDate(relationship.anniversary) })}
-            </Txt>
-          ) : null}
+            }}
+          />
         </View>
 
-        <View style={styles.grid}>
-          {ACTIONS.map((action) => (
-            <PressableScale key={action.key} style={styles.action} scaleTo={0.92} onPress={() => run(action.key)}>
-              <View style={styles.actionIcon}>
-                <Ionicons name={action.icon} size={28} color={colors.white} />
+        {GROUPS.map((group) => (
+          <View key={group.title}>
+            <SectionLabel title={t(`characterSettings.${group.title}`)} />
+            {group.actions.map((action, i) => (
+              <View key={action.key}>
+                {i > 0 ? <Divider inset={space.lg + ROW_ICON + space.md} /> : null}
+                <ListRow
+                  title={t(`characterSettings.${action.key}`)}
+                  left={<IconTile icon={action.icon} size={ROW_ICON} />}
+                  chevron
+                  onPress={() => run(action.key)}
+                />
               </View>
-              <Txt variant="small" center lines={2} color="rgba(255,255,255,0.95)">
-                {t(`characterSettings.${action.key}`)}
-              </Txt>
-            </PressableScale>
-          ))}
-        </View>
+            ))}
+          </View>
+        ))}
       </ScrollView>
-
-      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.18)']} style={styles.bottomScrim} pointerEvents="none" />
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')}>
         <TextInput
@@ -245,18 +265,15 @@ function ToggleRow({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scroll: { paddingHorizontal: space.xl, paddingBottom: space.huge },
-  identity: { alignItems: 'center', gap: space.xs, paddingVertical: space.xl },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm },
-  grid: {
+  scroll: { paddingBottom: space.huge },
+  identity: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    rowGap: space.xxxl,
-    marginTop: space.xl,
+    alignItems: 'center',
+    gap: space.md,
+    paddingLeft: space.lg,
+    paddingRight: space.sm,
+    paddingTop: space.sm,
   },
-  action: { width: '33.3%', alignItems: 'center', gap: space.xs },
-  actionIcon: { height: 38, alignItems: 'center', justifyContent: 'center' },
-  bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 90 },
   input: {
     height: 48,
     paddingHorizontal: space.md,

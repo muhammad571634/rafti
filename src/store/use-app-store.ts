@@ -847,6 +847,12 @@ export const useAppStore = create<AppState>()(
         return {
           ...current,
           ...saved,
+          // A field added after the save (e.g. a new setting) would otherwise be
+          // missing on devices that already have data, so defaults fill the gaps.
+          user: { ...current.user, ...saved.user },
+          wallet: { ...current.wallet, ...saved.wallet },
+          daily: { ...current.daily, ...saved.daily },
+          settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
         };
       },

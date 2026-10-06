@@ -1,12 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { TILES } from '@/assets/brand/registry';
 import { LuckyWheel } from '@/components/lucky-wheel';
-import { Anim, Button, Card, Header, Screen, ShellBadge, ShellIcon, Sheet, Txt } from '@/components/ui';
+import { Anim, Button, Header, IconTile, ListRow, Screen, SectionLabel, ShellBadge, ShellIcon, Sheet, Txt } from '@/components/ui';
 import {
   AD_REWARD,
   DAILY_CHECK_IN,
@@ -16,7 +14,7 @@ import {
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, gradients, palette, radius, space } from '@/theme';
+import { colors, palette, radius, space } from '@/theme';
 
 /** How long the stand-in "ad" plays before paying out. */
 const AD_MS = 1800;
@@ -56,84 +54,81 @@ export default function GiftsScreen() {
   };
 
   return (
-    <Screen background={gradients.home}>
+    <Screen background={colors.bgPlain}>
       <Header title={t('gifts.title')} right={<ShellBadge count={shells} style={styles.balance} />} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <Card style={styles.card}>
-          <View style={styles.cardHead}>
-            <Txt variant="h3">{t('gifts.dailyCheckIn')}</Txt>
-            <Txt variant="caption" color={colors.textMuted}>
-              {t('gifts.checkInHint')}
-            </Txt>
-          </View>
+        <SectionLabel
+          title={t('gifts.checkInLabel', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
+        />
+        <View style={styles.days}>
+          {DAILY_CHECK_IN.map((amount, index) => {
+            const day = index + 1;
+            const claimed = day <= daily.checkInDay;
+            const isToday = checkedInToday && day === daily.checkInDay;
+            const last = index === DAILY_CHECK_IN.length - 1;
 
-          <View style={styles.days}>
-            {DAILY_CHECK_IN.map((amount, index) => {
-              const day = index + 1;
-              const claimed = day <= daily.checkInDay;
-              const isToday = checkedInToday && day === daily.checkInDay;
-              const last = index === DAILY_CHECK_IN.length - 1;
-
-              return (
-                <View
-                  key={day}
-                  style={[styles.day, last && styles.dayBig, claimed && styles.dayClaimed, isToday && styles.dayToday]}>
-                  <Txt variant="tiny" color={isToday ? colors.primary : colors.textSecondary}>
-                    {isToday ? t('common.today') : t('gifts.day', { count: day })}
-                  </Txt>
+            return (
+              <View
+                key={day}
+                style={styles.day}
+                accessible
+                accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, +${amount}`}>
+                <View style={[styles.dayDot, claimed && styles.dayClaimed, last && !claimed && styles.dayBig]}>
                   {claimed ? (
-                    <Ionicons name="checkmark-circle" size={22} color={isToday ? colors.primary : colors.success} />
+                    <Ionicons name="checkmark" size={16} color={colors.textOnPrimary} />
                   ) : (
-                    <ShellIcon size={last ? 30 : 22} />
+                    <Txt variant="smallStrong" color={last ? colors.primary : colors.text}>
+                      {day}
+                    </Txt>
                   )}
-                  <Txt variant="tiny" color={claimed ? colors.textFaint : palette.shellText}>
-                    +{amount}
-                  </Txt>
                 </View>
-              );
-            })}
-          </View>
-        </Card>
+                <Txt
+                  variant="caption"
+                  color={last && !claimed ? colors.primary : colors.textMuted}>
+                  {amount}
+                </Txt>
+              </View>
+            );
+          })}
+        </View>
+        <Txt variant="caption" color={colors.textMuted} style={styles.hint}>
+          {t('gifts.checkInHint')}
+        </Txt>
 
-        <Card style={[styles.card, styles.wheelCard]}>
-          <View style={styles.wheelHead}>
-            <Image source={TILES.gifts} style={styles.wheelArt} />
-            <View style={styles.flex}>
-              <Txt variant="h3">{t('gifts.wheel')}</Txt>
-              <Txt variant="caption" color={colors.textMuted}>
-                {freeSpinLeft ? t('gifts.freeSpin') : adsLeft ? t('gifts.adSpin') : t('gifts.noSpins')}
-              </Txt>
-            </View>
-          </View>
-
+        <SectionLabel
+          title={`${t('gifts.wheel')} · ${
+            freeSpinLeft ? t('gifts.freeSpin') : adsLeft ? t('gifts.adSpin') : t('gifts.noSpins')
+          }`}
+        />
+        <View style={styles.wheel}>
           <LuckyWheel
             size={264}
             disabled={!canSpin}
             onSpin={() => spinWheel()?.index ?? null}
             onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
           />
-        </Card>
+        </View>
+      </ScrollView>
 
-        <Card style={styles.card}>
-          <View style={styles.adRow}>
-            <Anim name="giftBox" size={56} />
-            <View style={styles.flex}>
-              <Txt variant="title">{t('gifts.watchAd')}</Txt>
-              <Txt variant="small" color={colors.textMuted}>
-                {adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
-              </Txt>
-            </View>
+      {/* A row, not a pressable: the Watch button beside it is the only control. */}
+      <View style={styles.adBar}>
+        <ListRow
+          title={t('gifts.watchAd')}
+          subtitle={adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
+          left={<IconTile icon="play-outline" />}
+          right={
             <Button
               label={t('gifts.watch')}
               size="sm"
+              variant="secondary"
               onPress={playAd}
               loading={watching}
               disabled={!adsLeft}
             />
-          </View>
-        </Card>
-      </ScrollView>
+          }
+        />
+      </View>
 
       <Sheet visible={reward != null} onClose={() => setReward(null)} center>
         <View style={styles.success}>
@@ -156,30 +151,25 @@ export default function GiftsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
   balance: { marginRight: space.sm },
-  scroll: { padding: space.lg, gap: space.lg, paddingBottom: space.huge },
-  card: { gap: space.md },
-  cardHead: { gap: 2 },
-  days: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, justifyContent: 'space-between' },
-  day: {
-    width: '22.5%',
-    height: 78,
-    borderRadius: radius.md,
-    backgroundColor: palette.shellSoft,
+  scroll: { paddingBottom: space.xl },
+  days: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: space.lg, paddingTop: space.xs },
+  day: { alignItems: 'center', gap: space.xs },
+  dayDot: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
   },
-  dayBig: { width: '48%', backgroundColor: '#FFF0C8' },
-  dayClaimed: { backgroundColor: colors.surfaceAlt },
-  dayToday: { borderColor: colors.primary, backgroundColor: colors.primarySofter },
-  wheelCard: { alignItems: 'center' },
-  wheelHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, alignSelf: 'stretch' },
-  wheelArt: { width: 58, height: 58 },
-  adRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  dayClaimed: { backgroundColor: colors.text, borderColor: colors.text },
+  dayBig: { borderColor: colors.primary },
+  hint: { paddingHorizontal: space.lg, marginTop: space.md },
+  wheel: { alignItems: 'center', paddingTop: space.sm },
+  adBar: { borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface, paddingBottom: space.md },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -60 },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },

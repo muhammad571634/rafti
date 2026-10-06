@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { chatBackgrounds } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 
 export default function ChangeBackgroundScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,7 +23,7 @@ export default function ChangeBackgroundScreen() {
   const tileWidth = (width - space.lg * 2 - space.md) / 2;
 
   return (
-    <Screen>
+    <Screen background={colors.bgPlain}>
       <Header title={t('background.title')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
@@ -46,11 +46,10 @@ export default function ChangeBackgroundScreen() {
                     styles.tile,
                     { height: tileWidth * 1.5 },
                     selected && styles.tileSelected,
-                    shadows.card,
                   ]}>
                   {selected ? (
                     <View style={styles.check}>
-                      <Ionicons name="checkmark" size={15} color={colors.white} />
+                      <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} />
                     </View>
                   ) : null}
                 </LinearGradient>
@@ -71,17 +70,17 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md },
   tile: {
     borderRadius: radius.lg,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.border,
     padding: space.sm,
     alignItems: 'flex-end',
   },
-  tileSelected: { borderColor: colors.primary },
+  tileSelected: { borderWidth: 2, borderColor: colors.text },
   check: {
     width: 22,
     height: 22,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.text,
     alignItems: 'center',
     justifyContent: 'center',
   },

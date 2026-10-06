@@ -4,25 +4,30 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
-  BlurBackdrop,
   Button,
   Card,
   CharacterAvatar,
-  Chip,
+  Divider,
   Header,
   IconButton,
+  IconTile,
+  ListRow,
   Screen,
   Txt,
-  characterImage,
 } from '@/components/ui';
 import { daysBetween, shortDate } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
+import type { Relationship } from '@/types';
+
+/** Leading tile size for the profile's link rows; the divider inset follows it. */
+const ROW_TILE = 34;
 
 /**
- * Discovery -> profile -> "Add Friend" is the reference app's way in: adding a
- * character opens a chat that starts with their greeting.
+ * Discovery -> profile -> "Add friend" is the reference app's way in: adding a
+ * character opens a chat that starts with their greeting. The profile sits on the
+ * plain canvas: a centred portrait, one apricot action, and quiet rows below.
  */
 export default function CharacterProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -34,18 +39,21 @@ export default function CharacterProfileScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
+  const memoryCount = useAppStore(
+    (s) => s.memories.filter((m) => m.characterId === characterId).length,
+  );
   const addFriend = useAppStore((s) => s.addFriend);
 
   if (!character) {
     return (
-      <Screen>
+      <Screen background={colors.bgPlain}>
         <Header title={t('errors.notFound')} />
       </Screen>
     );
   }
 
   const isFriend = !!conversation;
-  const progress = relationship ? levelForIntimacy(relationship.intimacy).progress : 0;
+  const voiceReady = character.voiceReady;
 
   const openChat = () => {
     const conversationId = conversation?.id ?? addFriend(character.id);
@@ -53,17 +61,13 @@ export default function CharacterProfileScreen() {
   };
 
   return (
-    <Screen
-      background={gradients.home}
-      backdrop={
-        <BlurBackdrop source={characterImage(character)} blur={60} overlay="rgba(255,247,236,0.72)" />
-      }>
+    <Screen background={colors.bgPlain}>
       <Header
         right={
           isFriend ? (
             <IconButton
               icon="ellipsis-horizontal"
-              color={colors.textSecondary}
+              accessibilityLabel={t('a11y.more')}
               onPress={() => router.push(`/character/${character.id}/settings`)}
             />
           ) : null
@@ -72,135 +76,164 @@ export default function CharacterProfileScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.hero}>
-          <CharacterAvatar character={character} size={128} ring ringColor={colors.white} />
-          <Txt variant="h2" style={styles.name}>
+          <CharacterAvatar character={character} size={92} />
+          <Txt variant="h2" center style={styles.name}>
             {displayName(character, relationship)}
           </Txt>
-          <Txt variant="small" color={colors.textMuted}>
+          <Txt variant="small" color={colors.textMuted} center style={styles.handle}>
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
-          {character.voiceReady ? (
-            <View style={styles.voicePill}>
-              <Ionicons name="checkmark-circle" size={14} color={colors.success} />
-              <Txt variant="caption" color={colors.success}>
+          {voiceReady ? (
+            <View style={styles.voice}>
+              <View style={styles.voiceDot} />
+              <Txt variant="caption" color={colors.bondText}>
                 {t('find.voiceReady')}
               </Txt>
             </View>
           ) : null}
-        </View>
-
-        <Card>
-          <Txt variant="body" color={colors.textSecondary}>
+          <Txt variant="body" color={colors.textSecondary} center style={styles.bio}>
             {character.bio}
           </Txt>
-          <View style={styles.tags}>
-            {character.tags.map((tag) => (
-              <Chip key={tag} label={`#${tag}`} tone="neutral" />
-            ))}
-          </View>
-        </Card>
-
-        {relationship && isFriend ? (
-          <Card style={styles.bond}>
-            <View style={styles.bondHead}>
-              <Txt variant="title">{t('us.level', { level: relationship.level })}</Txt>
-              <Txt variant="smallStrong" color={colors.accent}>
-                {relationship.levelTitle}
-              </Txt>
-            </View>
-            <View style={styles.track}>
-              <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
-            </View>
-            <View style={styles.bondStats}>
-              <Stat icon="heart" label={t('us.intimacy', { count: relationship.intimacy })} />
-              <Stat icon="flame" label={t('us.streak', { count: relationship.streakDays })} />
-              <Stat
-                icon="calendar"
-                label={t('us.daysTogether', { count: daysBetween(relationship.anniversary) })}
-              />
-            </View>
-            <Txt variant="caption" color={colors.textFaint}>
-              {t('characterProfile.friends', { date: shortDate(relationship.anniversary) })}
+          {character.tags.length > 0 ? (
+            <Txt variant="small" color={colors.textMuted} center style={styles.tags}>
+              {character.tags.join(' · ')}
             </Txt>
-          </Card>
-        ) : null}
+          ) : null}
+        </View>
 
         <View style={styles.actions}>
           <Button
             label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
-            onPress={openChat}
+            variant="primary"
+            size="lg"
             full
+            onPress={openChat}
             left={
-              <Ionicons name={isFriend ? 'chatbubble' : 'person-add'} size={16} color={colors.white} />
+              <Ionicons
+                name={isFriend ? 'chatbubble-outline' : 'person-add-outline'}
+                size={18}
+                color={colors.textOnPrimary}
+              />
             }
           />
           {isFriend ? (
-            <>
+            <View style={styles.pair}>
               <Button
                 label={t('characterProfile.call')}
-                variant="soft"
-                disabled={!character.voiceReady}
+                variant="secondary"
+                disabled={!voiceReady}
                 onPress={() => router.push(`/call/${character.id}`)}
-                full
-                left={<Ionicons name="call" size={16} color={colors.primary} />}
+                left={<Ionicons name="call-outline" size={17} color={colors.text} />}
+                style={styles.half}
               />
               <Button
                 label={t('characterProfile.secretNote')}
-                variant="ghost"
+                variant="secondary"
                 onPress={() => router.push(`/secret-note/${character.id}`)}
-                full
-                left={<Ionicons name="mail-unread-outline" size={16} color={colors.textSecondary} />}
+                left={<Ionicons name="mail-outline" size={17} color={colors.text} />}
+                style={styles.half}
               />
-            </>
+            </View>
           ) : null}
-          {!character.voiceReady ? (
+          {!voiceReady ? (
             <Txt variant="caption" color={colors.textMuted} center>
               {t('characterProfile.voiceTraining')}
             </Txt>
           ) : null}
         </View>
+
+        {isFriend && relationship ? <BondCard relationship={relationship} /> : null}
+
+        {isFriend ? (
+          <View style={styles.list}>
+            <ListRow
+              left={<IconTile icon="bookmark-outline" size={ROW_TILE} />}
+              title={t('characterProfile.memories')}
+              meta={memoryCount > 0 ? String(memoryCount) : undefined}
+              chevron
+              onPress={() => router.push(`/character/${character.id}/memories`)}
+              accessibilityLabel={
+                memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')
+              }
+            />
+            <Divider inset={space.lg + ROW_TILE + space.md} />
+            <ListRow
+              left={<IconTile icon="settings-outline" size={ROW_TILE} />}
+              title={t('characterProfile.settings')}
+              chevron
+              onPress={() => router.push(`/character/${character.id}/settings`)}
+            />
+          </View>
+        ) : null}
       </ScrollView>
     </Screen>
   );
 }
 
-function Stat({ icon, label }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }) {
+/** Level, progress to the next one and how long you have known each other; mint marks the bond. */
+function BondCard({ relationship }: { relationship: Relationship }) {
+  const { t } = useTranslation();
+  const progress = levelForIntimacy(relationship.intimacy).progress;
+  // Intimacy keeps growing past the last threshold, so the top level shows a plain total.
+  const maxed = relationship.intimacy >= relationship.nextLevelAt;
+
   return (
-    <View style={styles.stat}>
-      <Ionicons name={icon} size={13} color={colors.primary} />
-      <Txt variant="caption" color={colors.textSecondary}>
-        {label}
+    <Card variant="outlined" style={styles.bond}>
+      <View style={styles.bondHead}>
+        <Txt variant="smallStrong" lines={1} style={styles.grow}>
+          {t('characterProfile.levelLine', {
+            level: relationship.level,
+            title: relationship.levelTitle,
+          })}
+        </Txt>
+        <Txt variant="caption" color={colors.textMuted}>
+          {maxed
+            ? t('us.intimacy', { count: relationship.intimacy })
+            : t('characterProfile.progress', {
+                current: relationship.intimacy,
+                next: relationship.nextLevelAt,
+              })}
+        </Txt>
+      </View>
+      <View style={styles.track}>
+        <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
+      </View>
+      <Txt variant="caption" color={colors.textMuted}>
+        {t('us.streak', { count: relationship.streakDays })}
+        {' · '}
+        {t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}
       </Txt>
-    </View>
+      <Txt variant="caption" color={colors.textFaint} style={styles.since}>
+        {t('characterProfile.friends', { date: shortDate(relationship.anniversary) })}
+      </Txt>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge, gap: space.lg },
-  hero: { alignItems: 'center', gap: space.xs, paddingBottom: space.sm },
+  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
+  hero: { alignItems: 'center', paddingTop: space.sm },
   name: { marginTop: space.md },
-  voicePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs,
-    marginTop: space.xs,
-    paddingHorizontal: space.md,
-    paddingVertical: 3,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(62,208,126,0.12)',
-  },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md },
-  bond: { gap: space.md },
-  bondHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  handle: { marginTop: space.xxs },
+  voice: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm },
+  voiceDot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.bond },
+  bio: { marginTop: space.md },
+  tags: { marginTop: space.sm },
+  actions: { marginTop: space.xl, gap: space.sm },
+  pair: { flexDirection: 'row', gap: space.sm },
+  half: { flex: 1 },
+  bond: { marginTop: space.xl },
+  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  grow: { flex: 1 },
   track: {
-    height: 8,
+    height: 4,
+    marginVertical: space.md,
     borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: colors.border,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.primary },
-  bondStats: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md },
-  stat: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  actions: { gap: space.sm, marginTop: space.xs },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
+  since: { marginTop: space.xs },
+  list: { marginTop: space.lg, marginHorizontal: -space.lg },
 });

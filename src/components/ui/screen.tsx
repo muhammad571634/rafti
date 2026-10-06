@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { StatusBar } from 'expo-status-bar';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -74,6 +75,7 @@ export function Header({
   large,
 }: HeaderProps) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const goBack = () => {
     if (onBack) return onBack();
@@ -84,7 +86,12 @@ export function Header({
     <View style={[styles.header, large && styles.headerLarge, style]}>
       <View style={styles.headerSide}>
         {back ? (
-          <PressableScale onPress={goBack} hitSlop={hitSlop} style={styles.iconBtn} scaleTo={0.88}>
+          <PressableScale
+            onPress={goBack}
+            hitSlop={hitSlop}
+            style={styles.iconBtn}
+            scaleTo={0.88}
+            accessibilityLabel={t('a11y.back')}>
             <Ionicons name="chevron-back" size={26} color={tint} />
           </PressableScale>
         ) : (

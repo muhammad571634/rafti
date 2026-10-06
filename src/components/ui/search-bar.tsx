@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native';
 
 import { colors, radius, space, type } from '@/theme';
@@ -25,6 +26,8 @@ export function SearchBar({
   autoFocus,
   tone = 'filled',
 }: SearchBarProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={[styles.base, tone === 'light' && styles.light, style]}>
       <Ionicons name="search" size={17} color={colors.textFaint} />
@@ -40,7 +43,11 @@ export function SearchBar({
         autoCorrect={false}
       />
       {value.length > 0 ? (
-        <PressableScale onPress={() => onChangeText('')} scaleTo={0.85} hitSlop={8}>
+        <PressableScale
+          onPress={() => onChangeText('')}
+          scaleTo={0.85}
+          hitSlop={14}
+          accessibilityLabel={t('a11y.clearSearch')}>
           <Ionicons name="close-circle" size={17} color={colors.textFaint} />
         </PressableScale>
       ) : null}
