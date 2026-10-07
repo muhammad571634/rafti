@@ -15,6 +15,7 @@ export const AVATARS: Record<string, number> = {
   c_kiro: require('./c_kiro.png'),
   c_lucas: require('./c_lucas.png'),
   c_minu: require('./c_minu.png'),
+  c_rowan: require('./c_rowan.png'),
   c_seraphine: require('./c_seraphine.png'),
   c_seren: require('./c_seren.png'),
   c_sol: require('./c_sol.png'),

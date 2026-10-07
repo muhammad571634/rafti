@@ -551,27 +551,33 @@ def build_sticker_derivatives():
     save(mono, os.path.join(IMAGES, 'android-icon-monochrome.png'), optimize=True)
 
 
+def square_portrait(img):
+    """Portraits are framed head-and-shoulders; keep the top of a tall render."""
+    side = min(img.size)
+    left = (img.width - side) // 2
+    top = 0 if img.height > img.width else (img.height - side) // 2
+    return img.crop((left, top, left + side, top + side)).resize((512, 512), Image.LANCZOS)
+
+
 def build_avatars():
     """
-    Seed character portraits: `avatar_<name>.png/` render folders become
-    assets/avatars/c_<name>.png (square, 512px) and the registry is rewritten
-    to list exactly the portraits that exist.
+    Seed character portraits become assets/avatars/c_<name>.png (square, 512px):
+    `avatar_<name>.png/` render folders in RAW (the local Windows layout) and plain
+    files in assets/raw/avatars/c_<name>.png|jpg (the cloud layout). The registry is
+    rewritten to list every portrait in assets/avatars, built now or before.
     """
     folder = os.path.join(ROOT, 'assets', 'avatars')
     os.makedirs(folder, exist_ok=True)
-    names = []
     for raw in sorted(glob.glob(os.path.join(RAW, 'avatar_*.png'))):
         if not os.path.isdir(raw):
             continue
         name = os.path.basename(raw)[len('avatar_'):-len('.png')]
-        img = Image.open(newest('avatar_' + name)).convert('RGB')
-        # Portraits are framed head-and-shoulders; keep the top of a tall render.
-        side = min(img.size)
-        left = (img.width - side) // 2
-        top = 0 if img.height > img.width else (img.height - side) // 2
-        square = img.crop((left, top, left + side, top + side)).resize((512, 512), Image.LANCZOS)
+        square = square_portrait(Image.open(newest('avatar_' + name)).convert('RGB'))
         save(square, os.path.join(folder, f'c_{name}.png'), optimize=True)
-        names.append(name)
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'avatars', 'c_*.*'))):
+        name = os.path.splitext(os.path.basename(raw))[0][len('c_'):]
+        save(square_portrait(Image.open(raw).convert('RGB')), os.path.join(folder, f'c_{name}.png'), optimize=True)
+    names = sorted(os.path.basename(p)[len('c_'):-len('.png')] for p in glob.glob(os.path.join(folder, 'c_*.png')))
 
     lines = ''.join(f"  c_{n}: require('./c_{n}.png'),\n" for n in names)
     registry = f"""/**
@@ -595,14 +601,18 @@ def build_heroes():
     """
     folder = os.path.join(ROOT, 'assets', 'heroes')
     os.makedirs(folder, exist_ok=True)
-    names = []
     for raw in sorted(glob.glob(os.path.join(RAW, 'hero_*.png'))):
         if not os.path.isdir(raw):
             continue
         name = os.path.basename(raw)[len('hero_'):-len('.png')]
         scene = fit(Image.open(newest('hero_' + name)).convert('RGB'), 1600)
         save(scene, os.path.join(folder, f'c_{name}.jpg'), quality=84, optimize=True, progressive=True)
-        names.append(name)
+    # The cloud layout: plain files in assets/raw/heroes/c_<name>.png|jpg.
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'heroes', 'c_*.*'))):
+        name = os.path.splitext(os.path.basename(raw))[0][len('c_'):]
+        scene = fit(Image.open(raw).convert('RGB'), 1600)
+        save(scene, os.path.join(folder, f'c_{name}.jpg'), quality=84, optimize=True, progressive=True)
+    names = sorted(os.path.basename(p)[len('c_'):-len('.jpg')] for p in glob.glob(os.path.join(folder, 'c_*.jpg')))
 
     lines = ''.join(f"  c_{n}: require('./c_{n}.jpg'),\n" for n in names)
     registry = f"""/**
@@ -656,8 +666,12 @@ def main():
 
 
 if __name__ == '__main__':
-    # `python scripts/build-brand-art.py icons` rebuilds only the 3D icons.
+    # `python scripts/build-brand-art.py icons` rebuilds only the 3D icons;
+    # `... characters` only the portraits and hero scenes.
     if sys.argv[1:] == ['icons']:
         print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
+    elif sys.argv[1:] == ['characters']:
+        print(f'avatars {", ".join(build_avatars())}')
+        print(f'heroes  {", ".join(build_heroes())}')
     else:
         main()

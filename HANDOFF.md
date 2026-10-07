@@ -54,8 +54,13 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      Everyone / Him / Her filtri (BIMOBIMO'da bunday filtr yo'q, katalogi deyarli faqat erkaklar).
      Rasmlar kutilmoqda: birinchi sinovda bo'sh `{...}` li umumiy prompt ikki namuna bilan berilib, Kai chiqdi —
      endi tayyor promptlar bor (portretga faqat `c_kai.png`, sahnaga yangi portret + `c_sol.jpg`).
-     Rasm kelganda: `assets/raw/avatars/c_<id>.png` → `build_avatars` hozir `RAW/avatar_<name>.png/` papkalarini
-     o'qiydi, `assets/raw/avatars/` fayllarini ham o'qiydigan qilish kerak.
+     Rasm kelganda: `assets/raw/avatars/c_<id>.png|jpg` (sahna: `assets/raw/heroes/`) ga qo'ying va
+     `python scripts/build-brand-art.py characters` — portret 512px bo'lib `assets/avatars/` ga tushadi, registry
+     o'zi yangilanadi. Rowan (`c_rowan`) birinchi bo'lib ulandi, sinov muvaffaqiyatli.
+   - **Kontent qoidalari (18+):** [`docs/content-policy.md`](docs/content-policy.md) — ochiq, lekin chegaralari bor
+     (romantika va kuchli xarakterlar ha; aniq jinsiy kontent "fade to black", voyaga yetmaganlar, real odamlar,
+     zo'ravonlikni romantika qilish yo'q). Qurish kerak: chatda Report, personajni bloklash, support havolasi,
+     inqiroz kartasi, profilda "AI" belgisi. Foydalanuvchi tasdig'ini kutmoqda.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
 5. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
    ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
