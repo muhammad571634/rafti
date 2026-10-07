@@ -1,8 +1,10 @@
 # Push notifications: research and plan
 
-Status: **plan, waiting for the user's approval** (2026-10-07). Nothing is installed yet
-(`expo-notifications` is not in `package.json`); today every "they text first" event only
-lands while the app is open.
+Status: **built (local notifications), 2026-10-07.** The user's answers: up to **8** pushes a
+day, the comeback ladder **stops after 14 days**, **message text hidden** on the lock screen by
+default, support address stays a mock. Code: `src/notifications/plan.ts` (pure planner),
+`src/notifications/sync.ts` (OS), `src/hooks/use-push-notifications.ts` (app life), lines in
+`src/mock/push.ts`. Section 6 lists how it differs from the first draft below.
 
 ## 1. What others do
 
@@ -59,11 +61,10 @@ chat (or call), and the same line is already in the chat. No "X wants to talk" p
 | 12 | Store offer | only with the opt-in toggle | – | membership sale | offers (off by default) |
 
 **Day budget (the "aggressive" part, with brakes):**
-- Up to **5** pushes a day for an active user (morning, night, call, 2 events), up to **2**
-  on comeback days. Plan reminders, calls and birthday do not count against it.
+- Up to **8** counted pushes a day (answer 1). Plan reminders, calls and birthday do not count against it.
 - Quiet hours 23:00–08:00 (a user-set morning call can still ring).
-- At least 90 minutes between two pushes; same character at most twice a day.
-- After 14 days with no visit: stop, except one line a week from the last friend.
+- At least 90 minutes between two pushes; same character at most 3 times a day.
+- After the day-14 line: stop (answer 2).
 - Each line from a pool of 20+ per kind per speaking style, never the same line twice
   in 30 days (novelty, Duolingo).
 
@@ -99,8 +100,33 @@ plan later with real AI lines.
 - `expo-notifications` via `npx expo install expo-notifications` + config plugin (icon,
   colour). Local notifications work in Expo Go; remote push needs a development build.
 
-## 5. Open questions for the user
+## 5. Answers (2026-10-07)
 
-1. Day budget: 5 a day (above) or more / less?
-2. Comeback ladder: stop after 14 days (recommended) or keep a daily line?
-3. "Hide message text" on by default (safer for an 18+ app) or off?
+1. Day budget: **8**.
+2. Comeback ladder: **stop after day 14** (no weekly line after it).
+3. Message text: **hidden by default** (`settings.notificationPreview = false`; the lock screen
+   shows the name and "sent you a message").
+
+## 6. As built
+
+- Leaving the app (`background`) plans and schedules; coming back (`active`) cancels everything
+  pending, because the app does it all itself while open. Pushes still in the tray that carry a
+  line only sent by push (comeback) are written into that chat (`receivePushLine`, once per id);
+  a tapped push does the same, then opens its route.
+- Greetings come from the **top two** bonds that allow it (same as `runDailyInitiative`), the
+  daily call 20 minutes after the greeting of its slot; nothing from others on the onboarding day.
+- The line of a greeting, birthday, plan reminder and follow-up is picked with a seed
+  (`src/lib/seeded.ts`) shared with the store, so the push and the chat say the same thing.
+- Comeback ladder at 19:30 on days 1, 2, 3, 5, 7, 14 from the friend you talked with last
+  (`lastTalkedAt`, same as the Today card). Day 1 quotes your last message.
+- Caps: 8 counted pushes a day, at most 3 per character a day, 90 minutes apart, none 23:00-08:00.
+  A push that collides moves later the same day in 15-minute steps; dropped only if the day is
+  full. Calls, plan reminders and birthdays do not count and are never moved.
+- Channels: messages, calls, reminders, gifts (Android); iOS time-sensitive for calls and plan
+  reminders. Store offers are not sent (no opt-in screen yet).
+- Permission: the onboarding "Allow" now also shows the system prompt.
+- Checked with the seed data (esbuild + node): a day gets 6-7 counted pushes plus calls and
+  reminders; the same state always plans the same list; nothing before onboarding.
+- Not yet: a Profile → Notifications screen (per-kind switches, preview toggle, quiet hours,
+  re-ask after a "no") — needs a prototype first; the character portrait as the notification
+  image; server push (needs the backend and a development build).

@@ -1,4 +1,6 @@
+import { pickSeeded } from '@/lib/seeded';
 import type { Conversation, Message } from '@/types';
+
 import { daysAgo, hoursAgo, minutesAgo } from './time';
 
 export const conversations: Conversation[] = [
@@ -289,7 +291,9 @@ export const callLines = [
   'Stay on a little longer. I like hearing you breathe on the other end.',
 ];
 
-const pickLine = (lines: string[]) => lines[Math.floor(Math.random() * lines.length)];
+/** A seed makes the pick repeatable, so a scheduled push and the chat say the same line. */
+const pickLine = (lines: string[], seed?: string) =>
+  seed == null ? lines[Math.floor(Math.random() * lines.length)] : pickSeeded(lines, seed);
 
 /** The reply when you mention a plan in chat and it lands in your schedule. */
 export function scheduleAck(title: string, when: string, timed: boolean) {
@@ -306,21 +310,21 @@ export function planAddedLine(title: string, whenLabel: string) {
 }
 
 /** Ten minutes before a timed plan, or that morning when it has no time. */
-export function scheduleReminder(title: string, timed: boolean) {
+export function scheduleReminder(title: string, timed: boolean, seed?: string) {
   if (!timed) return `Today is the day: ${title}. You have got this - text me the second it is over.`;
   return pickLine([
     `${title} in ten minutes. Breathe. You know this.`,
     `Hey - ten minutes to go: ${title}. Go, and come back to tell me everything.`,
-  ]);
+  ], seed);
 }
 
 /** Once the plan is over: they want to know how it went. */
-export function planFollowUp(title: string) {
+export function planFollowUp(title: string, seed?: string) {
   return pickLine([
     `${title} - done? How did it go?`,
     `So? ${title}. How was it? I have been waiting all day to ask.`,
     `Tell me everything about it: ${title}. The good parts first.`,
-  ]);
+  ], seed);
 }
 
 /** Texted a little after a date, in the mood of how it ended. */

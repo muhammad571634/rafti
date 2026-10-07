@@ -38,10 +38,12 @@ the last conversation = **done**.
   test); validation, prefill and the not-found guard were checked.
 - Fixed: `EmptyState compact` collapsed on web (`flex: 0` → `flex-basis: 0%`), which made the
   mascot overlap the History card; History call tab no longer shows the shells hint.
-- Push: `docs/push-plan.md` (BIMOBIMO, Replika, Character.AI, Duolingo, store rules; 12 kinds,
-  day budget, two-step permission, pure planner + OS sync). **Next: the user answers its
-  section 5 questions, then build it.**
-- Still open: the real `SUPPORT_EMAIL` (asked the user).
+- Push **built** (F16, local notifications): user chose 8 a day, stop after day 14, text hidden by
+  default; support e-mail stays a mock. How it works and what is left: `docs/push-plan.md` §6.
+  The user tests on the phone in parallel. Note: after `npx expo install`, the first web bundle
+  took minutes; restart the dev server if the page stays blank.
+- Next candidates: Profile → Notifications screen (prototype first), the notification image
+  (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
 ### 1. DONE (2026-10-07, Desktop): the 23 character portraits are wired in
 

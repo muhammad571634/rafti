@@ -4,6 +4,7 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
+import { pickSeeded } from '@/lib/seeded';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
@@ -207,6 +208,11 @@ interface AppState {
     firstAsk: string;
   }) => string;
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
+  /**
+   * A line that reached the user only as a notification (the comeback ladder) lands in
+   * the chat once the app sees it. Written once per notification id.
+   */
+  receivePushLine: (push: { id: string; characterId: string; text: string; at: string }) => void;
   /** Edits a character the user made; seed characters are not editable. */
   updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
   resetRelationship: (characterId: string) => void;
@@ -668,6 +674,20 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ characters: [{ ...character, id: characterId }, ...s.characters] }));
         const conversationId = get().addFriend(characterId);
         return { characterId, conversationId };
+      },
+
+      receivePushLine: ({ id, characterId, text, at }) => {
+        const conversation = get().conversations.find((c) => c.characterId === characterId);
+        if (!conversation) return;
+        const messageId = `m_push_${id}`;
+        if (get().messages[conversation.id]?.some((m) => m.id === messageId)) return;
+        appendMessage(
+          set,
+          get,
+          conversation.id,
+          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at },
+          { countUnread: true },
+        );
       },
 
       updateCharacter: (characterId, patch) =>
@@ -1175,7 +1195,10 @@ export const useAppStore = create<AppState>()(
         steps.forEach(({ item, step }) => {
           if ((step !== 'remind' && step !== 'followUp') || !exists(item.characterId)) return;
           const conversationId = get().addFriend(item.characterId);
-          const line = step === 'remind' ? scheduleReminder(item.title, !!item.time) : planFollowUp(item.title);
+          const line =
+            step === 'remind'
+              ? scheduleReminder(item.title, !!item.time, `${item.id}:remind`)
+              : planFollowUp(item.title, `${item.id}:followUp`);
           appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
         });
         if (steps.length) {
@@ -1297,7 +1320,9 @@ export const useAppStore = create<AppState>()(
         if (isBirthday(user, now) && user.birthdayWishedYear !== now.getFullYear() && hour >= 7) {
           bonds.slice(0, 3).forEach((bond) => {
             const conversationId = get().addFriend(bond.characterId);
-            appendMessage(set, get, conversationId, themText(conversationId, pick(birthdayLines)(user.displayName)), {
+            // Seeded like the 07:00 push (src/notifications/plan.ts), so both say the same line.
+            const wish = pickSeeded(birthdayLines, `${now.getFullYear()}:${bond.characterId}`)(user.displayName);
+            appendMessage(set, get, conversationId, themText(conversationId, wish), {
               countUnread: true,
             });
           });
@@ -1312,7 +1337,8 @@ export const useAppStore = create<AppState>()(
         if (greet && !daily.greetedSlots.includes(slotKey)) {
           bonds.slice(0, 2).forEach((bond) => {
             const conversationId = get().addFriend(bond.characterId);
-            const line = pick(slot === 'morning' ? morningGreetings : eveningGreetings);
+            // Seeded like the scheduled push for this slot, so the notification and the chat agree.
+            const line = pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${bond.characterId}`);
             appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
           });
           set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));

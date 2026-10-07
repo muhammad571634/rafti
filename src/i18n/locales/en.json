@@ -956,5 +956,16 @@
     "unblock": "Unblock",
     "support": "Support",
     "ai": "AI"
+  },
+  "push": {
+    "hidden": "sent you a message",
+    "incomingCall": "Incoming call",
+    "spins": "Your free spin is waiting. It resets at midnight.",
+    "channels": {
+      "messages": "Messages",
+      "calls": "Calls",
+      "reminders": "Plan reminders",
+      "gifts": "Gifts and spins"
+    }
   }
 }

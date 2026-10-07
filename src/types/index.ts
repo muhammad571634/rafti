@@ -354,6 +354,8 @@ export interface AppSettings {
   /** Who places the daily calls; the closest friend with a voice when unset */
   callerId?: string;
   chatAnimation: boolean;
+  /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */
+  notificationPreview: boolean;
 }
 
 export interface HomeModule {

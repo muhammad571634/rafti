@@ -19,6 +19,7 @@ import { BrandArt, Button, CharacterAvatar, PressableScale, Screen, Sheet, Shell
 import { setLocale, SUPPORTED_LOCALES } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { morningGreetings } from '@/mock';
+import { requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { colors, fonts, palette, radius, space, type } from '@/theme';
 
@@ -108,6 +109,8 @@ export default function OnboardingScreen() {
               full
               onPress={() => {
                 setNotifications(true);
+                // Step two of the ask: the system prompt, right after the user said yes here.
+                void requestPushPermission();
                 next();
               }}
             />

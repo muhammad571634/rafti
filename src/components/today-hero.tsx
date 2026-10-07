@@ -8,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 import { HEROES } from '@/assets/heroes/registry';
 import { characterImage, PressableScale, Txt } from '@/components/ui';
 import { daysBetween } from '@/lib/format';
+import { lastTalkedAt } from '@/lib/talk';
 import { displayName } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, radius, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
@@ -26,21 +27,6 @@ export interface HeroFriend {
   /** A wide scene from assets/heroes, else the portrait. */
   image: string | number;
   scene: boolean;
-}
-
-/**
- * When you last talked with someone in this chat: your newest message, or the newest
- * call that connected (either way round). Their own first texts (good morning, a
- * birthday wish) do not count, so the hero follows you, not the notifications.
- */
-export function lastTalkedAt(messages: readonly Message[] | undefined): number {
-  if (!messages) return 0;
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const m = messages[i];
-    if (m.pending) continue;
-    if (m.author === 'me' || (m.kind === 'call' && !m.missed)) return Date.parse(m.createdAt) || 0;
-  }
-  return 0;
 }
 
 /**

@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { PressableScale, Txt } from '@/components/ui';
 import { useCharacterInitiative } from '@/hooks/use-character-initiative';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 
@@ -28,6 +29,7 @@ const ICONS: Record<string, Icon> = {
 
 export default function TabsLayout() {
   useCharacterInitiative();
+  usePushNotifications();
   const hydrated = useAppStore((s) => s.hydrated);
   const onboarded = useAppStore((s) => !!s.user.onboardedAt);
 
