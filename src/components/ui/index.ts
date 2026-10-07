@@ -12,6 +12,8 @@ export { EmptyState } from './empty-state';
 export { Icon3D, ShellIcon } from './icon-3d';
 export type { IconName } from './icon-3d';
 export { IconButton } from './icon-button';
+export { ClayIcon } from './clay-icon';
+export type { ClayIconName } from './clay-icon';
 export { IconTile } from './icon-tile';
 export type { TileIcon } from './icon-tile';
 export { ListRow } from './list-row';

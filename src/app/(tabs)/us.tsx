@@ -35,6 +35,7 @@ const MOMENT_PAGE = 20;
 const ROW_ICON = 38;
 const ROW_INSET = space.lg + ROW_ICON + space.md;
 
+// Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 7.
 const MOMENT_ICON: Record<MomentKind, IoniconName> = {
   met: 'sparkles-outline',
   levelUp: 'heart-outline',

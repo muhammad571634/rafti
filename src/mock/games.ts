@@ -15,6 +15,7 @@ export interface QuizPack {
   questions: QuizQuestion[];
 }
 
+// The emoji are placeholders for 3D clay icons, see docs/icons-3d.md step 6.
 export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_first_date',

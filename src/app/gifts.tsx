@@ -168,6 +168,7 @@ export default function GiftsScreen() {
           />
         </View>
 
+        {/* Next: 3D clay icons for invite, share and the ad row, see docs/icons-3d.md step 4. */}
         <SectionLabel title={t('gifts.invite', { count: INVITE_REWARD })} />
         <View style={styles.invite}>
           <View style={styles.codeRow}>

@@ -1,12 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
-import { CoffeeIcon } from 'phosphor-react-native/src/icons/Coffee';
-import { DiceFiveIcon } from 'phosphor-react-native/src/icons/DiceFive';
-import { EnvelopeSimpleIcon } from 'phosphor-react-native/src/icons/EnvelopeSimple';
-import { HeartbeatIcon } from 'phosphor-react-native/src/icons/Heartbeat';
-import { ImageIcon } from 'phosphor-react-native/src/icons/Image';
-import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
-import { PhoneCallIcon } from 'phosphor-react-native/src/icons/PhoneCall';
 import * as Clipboard from 'expo-clipboard';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -26,8 +18,8 @@ import {
   Button,
   ShellBadge,
   CharacterAvatar,
+  ClayIcon,
   IconButton,
-  IconTile,
   ListRow,
   PressableScale,
   Screen,
@@ -37,27 +29,25 @@ import {
 import { callClock, shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
 import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, moduleTints, radius, space } from '@/theme';
+import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
-import type { TileIcon } from '@/components/ui';
+import type { ClayIconName } from '@/components/ui';
 
 type Attachment = {
   key: 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
-  icon: TileIcon;
-  /** `moduleTints` key: the same tinted duotone tiles as the Explore grid */
-  tint: string;
+  icon: ClayIconName;
 };
 
-/** The "+" sheet: four to a row, as on the Explore grid. */
+/** The "+" sheet: four to a row, each a 3D clay icon (the app-wide icon style). */
 const ATTACHMENTS: Attachment[] = [
-  { key: 'voice', icon: MicrophoneIcon, tint: 'voice' },
-  { key: 'photo', icon: ImageIcon, tint: 'photo' },
-  { key: 'secretNote', icon: EnvelopeSimpleIcon, tint: 'secretNote' },
-  { key: 'quiz', icon: HeartbeatIcon, tint: 'quiz' },
-  { key: 'truthOrDare', icon: DiceFiveIcon, tint: 'truthOrDare' },
-  { key: 'date', icon: CoffeeIcon, tint: 'dating' },
-  { key: 'dailyCalls', icon: PhoneCallIcon, tint: 'calls' },
-  { key: 'diary', icon: BookOpenTextIcon, tint: 'diary' },
+  { key: 'voice', icon: 'voice' },
+  { key: 'photo', icon: 'photo' },
+  { key: 'secretNote', icon: 'secretNote' },
+  { key: 'quiz', icon: 'quiz' },
+  { key: 'truthOrDare', icon: 'truthOrDare' },
+  { key: 'date', icon: 'date' },
+  { key: 'dailyCalls', icon: 'calls' },
+  { key: 'diary', icon: 'diary' },
 ];
 
 const ATTACH_TILE = 60;
@@ -303,7 +293,6 @@ export default function ChatRoomScreen() {
       <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
         <View style={styles.attachGrid}>
           {ATTACHMENTS.map((item) => {
-            const tint = moduleTints[item.tint];
             return (
               <PressableScale
                 key={item.key}
@@ -311,15 +300,7 @@ export default function ChatRoomScreen() {
                 scaleTo={0.94}
                 accessibilityLabel={t(`chat.attachments.${item.key}`)}
                 onPress={() => attach(item.key)}>
-                <IconTile
-                  icon={item.icon}
-                  size={ATTACH_TILE}
-                  radius={radius.lg}
-                  glyphSize={32}
-                  weight="duotone"
-                  color={tint?.fg}
-                  background={tint?.bg}
-                />
+                <ClayIcon name={item.icon} size={ATTACH_TILE} />
                 <Txt variant="smallStrong" center lines={2}>
                   {t(`chat.attachments.${item.key}`)}
                 </Txt>

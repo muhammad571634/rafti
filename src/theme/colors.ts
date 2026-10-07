@@ -162,11 +162,6 @@ export const moduleTints: Record<string, { bg: string; fg: string }> = {
   bedtime: { bg: '#E3E5FA', fg: '#4E56B8' },
   radio: { bg: '#FFF0CC', fg: '#B07A00' },
   board: { bg: '#F6E8D7', fg: palette.caramel700 },
-  // Chat "+" sheet
-  voice: { bg: '#E3EEFF', fg: '#3D72C4' },
-  secretNote: { bg: palette.mint100, fg: palette.mint600 },
-  quiz: { bg: '#FFE3EC', fg: '#D23F6E' },
-  truthOrDare: { bg: '#EDE6FB', fg: '#6B4BC4' },
 };
 
 export const gradients = {

@@ -9,6 +9,7 @@ import { colors, space } from '@/theme';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
 
+// Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 3.
 const OPTIONS: { kind: PublishKind; icon: TileIcon }[] = [
   { kind: 'plan', icon: CalendarPlusIcon },
   { kind: 'diary', icon: BookOpenTextIcon },

@@ -54,7 +54,10 @@ const MODULE_RADIUS = radius.lg;
 const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
 const TODO_INSET = space.lg + ROW_ICON + space.md;
 
-/** One duotone glyph per Explore module, keyed by `HomeModule.key`. */
+/**
+ * One duotone glyph per Explore module, keyed by `HomeModule.key`.
+ * Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 1; Today rows are step 2.
+ */
 const MODULE_ICONS: Record<string, TileIcon> = {
   store: ShoppingBagOpenIcon,
   dating: CoffeeIcon,

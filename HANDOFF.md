@@ -18,6 +18,10 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
    6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
    7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
    8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
+3. **Ikonkalar (2026-10-07, foydalanuvchi tanlovi):** butun ilovada funksiya kirish nuqtalari uchun **3D clay
+   ikonkalar** (Nano Banana). Chat "+" paneli tayyor (`ClayIcon`, `CLAY_ICONS`). Qolgan joylar tartibi, qaysi rasm
+   bor va qaysi biri yangi to'plamda chiziladi, 2-to'plam prompti: [`docs/icons-3d.md`](docs/icons-3d.md).
+   Kesish: `python scripts/build-brand-art.py icons`. Mayda UI belgilari (orqaga, yopish, tablar) chiziqli qoladi.
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.

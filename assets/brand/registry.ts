@@ -37,6 +37,28 @@ export const TILES = {
 
 export type TileName = keyof typeof TILES;
 
+/**
+ * Soft 3D clay icons (transparent), cut from one Nano Banana sheet by the build
+ * script. The app's icon style for feature entry points; see docs/icons-3d.md for
+ * where each one goes next.
+ */
+export const CLAY_ICONS = {
+  voice: require('./icon3d-voice.png'),
+  photo: require('./icon3d-photo.png'),
+  secretNote: require('./icon3d-secret-note.png'),
+  quiz: require('./icon3d-quiz.png'),
+  truthOrDare: require('./icon3d-truth-or-dare.png'),
+  date: require('./icon3d-date.png'),
+  calls: require('./icon3d-calls.png'),
+  diary: require('./icon3d-diary.png'),
+  ball: require('./icon3d-ball.png'),
+  planner: require('./icon3d-planner.png'),
+  play: require('./icon3d-play.png'),
+  playStack: require('./icon3d-play-stack.png'),
+} as const;
+
+export type ClayIconName = keyof typeof CLAY_ICONS;
+
 /** Rafti reaction stickers, in menu order. Cut from one sheet by the build script. */
 export const REACTION_STICKERS = {
   love: require('./reaction-love.png'),

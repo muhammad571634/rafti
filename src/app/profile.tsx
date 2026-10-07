@@ -32,6 +32,7 @@ const ROW_INSET = space.lg + ROW_ICON + space.md;
 /** The on/off settings; call times and the caller live in the chat's Daily calls sheet. */
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
+// Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 8.
 const REACH_OUT: { key: SwitchKey; icon: IoniconName }[] = [
   { key: 'morningGreeting', icon: 'sunny-outline' },
   { key: 'eveningGreeting', icon: 'moon-outline' },

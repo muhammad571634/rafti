@@ -378,6 +378,99 @@ def build_reactions():
         save(sticker, os.path.join(OUT, f'reaction-{name}.png'), optimize=True)
 
 
+# 3D clay icons: one Nano Banana sheet, 4 columns x 3 rows on flat light grey.
+# Names row by row; the last row is spare art kept for later screens.
+ICON_SHEET = os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet.jpg')
+ICONS_3D = [
+    'voice', 'photo', 'secret-note', 'quiz',
+    'truth-or-dare', 'date', 'calls', 'diary',
+    'ball', 'planner', 'play', 'play-stack',
+]
+# Row bands of the sheet (fractions of its height): the rows are not evenly spaced.
+ICON_ROWS = [(0.10, 0.40), (0.40, 0.65), (0.65, 0.93)]
+
+
+def drop_edge_scraps(solid):
+    """
+    Bits of a neighbouring icon poke into a cell at its side. A piece touching the
+    border stays only if it reaches the middle third of the cell, where this cell's
+    own icon sits; loose bits inside (steam, sparkles) never touch it and stay.
+    """
+    h, w = solid.shape
+    middle = np.zeros((h, w), bool)
+    middle[:, w // 3 : 2 * w // 3] = True
+    seen = np.zeros((h, w), bool)
+    for y, x in zip(*np.nonzero(solid & _edge(h, w))):
+        if seen[y, x]:
+            continue
+        piece = np.zeros((h, w), bool)
+        piece[y, x] = True
+        while True:
+            grown = piece.copy()
+            grown[1:] |= piece[:-1]
+            grown[:-1] |= piece[1:]
+            grown[:, 1:] |= piece[:, :-1]
+            grown[:, :-1] |= piece[:, 1:]
+            grown &= solid
+            if (grown == piece).all():
+                break
+            piece = grown
+        seen |= piece
+        if not (piece & middle).any():
+            solid = solid & ~piece
+    return solid
+
+
+def cut_icon(cell):
+    """Flood the grey backdrop and the grey drop shadow in from the border; colour stops it."""
+    a = np.asarray(cell).astype(int)
+    h, w, _ = a.shape
+    chroma = a.max(axis=2) - a.min(axis=2)
+    candidate = (chroma < 12) & (a.min(axis=2) > 165)
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = fill_holes(~reach)
+    solid = drop_edge_scraps(solid)
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    # One pixel in from the cut: the sheet's light rim must not show on darker tiles.
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    alpha = alpha.filter(ImageFilter.GaussianBlur(0.9))
+    out = cell.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+def build_icons_3d():
+    if not os.path.exists(ICON_SHEET):
+        return []
+    sheet = Image.open(ICON_SHEET).convert('RGB')
+    w, h = sheet.size
+    col = w / 4
+    names = []
+    for i, name in enumerate(ICONS_3D):
+        top, bottom = ICON_ROWS[i // 4]
+        c = i % 4
+        # Cells overlap a little so no icon is clipped; the neighbour's scraps are dropped.
+        box = (max(0, round(c * col) - 16), round(top * h), min(w, round((c + 1) * col) + 16), round(bottom * h))
+        icon = fit(cut_icon(sheet.crop(box)), 192)
+        save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
+        names.append(name)
+    return names
+
+
 def build_sticker_derivatives():
     sticker = Image.open(os.path.join(OUT, 'rafti-sticker.png'))
     # Splash: the sticker centred on transparent, sized by expo-splash-screen.
@@ -492,7 +585,12 @@ def main():
     build_sticker_derivatives()
     build_reactions()
     print(f'app icon done, android background {edge}')
+    print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
 
 
 if __name__ == '__main__':
-    main()
+    # `python scripts/build-brand-art.py icons` rebuilds only the 3D icons.
+    if sys.argv[1:] == ['icons']:
+        print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
+    else:
+        main()

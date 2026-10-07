@@ -28,6 +28,7 @@ export interface DatePlace {
   rounds: DateRound[];
 }
 
+// The emoji are placeholders for 3D clay icons, see docs/icons-3d.md step 5.
 export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_rain',
