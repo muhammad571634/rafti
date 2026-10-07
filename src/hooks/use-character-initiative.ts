@@ -9,6 +9,8 @@ import { useAppStore, type CallSlot } from '@/store/use-app-store';
 const CALL_DELAY_MS = 6000;
 /** Breathing room between closing the daily-reward card and the phone ringing. */
 const AFTER_REWARD_MS = 1500;
+/** How often due plan reminders and board answers are checked while the app is open. */
+const TIMER_TICK_MS = 30_000;
 
 type PendingCall = { callFrom: string; slot?: CallSlot };
 
@@ -35,6 +37,8 @@ export function useCharacterInitiative() {
     const run = () => {
       const store = useAppStore.getState();
       store.claimDailyLogin();
+      // Plans belong to the friend they were made with, so they run on the first day too.
+      store.runTimers();
       // The first day belongs to the friend the user just met: nobody else calls yet.
       const firstDay = !!store.user.onboardedAt && dayKey(store.user.onboardedAt) === todayKey();
       if (firstDay) return;
@@ -53,10 +57,13 @@ export function useCharacterInitiative() {
     const sub = AppState.addEventListener('change', (state) => {
       if (state === 'active') run();
     });
+    // Plan reminders are due to the minute (ten minutes before), so check while the app is open.
+    const timers = setInterval(() => useAppStore.getState().runTimers(), TIMER_TICK_MS);
 
     return () => {
       sub.remove();
       clearTimeout(timer);
+      clearInterval(timers);
     };
   }, [hydrated, onboarded]);
 

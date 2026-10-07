@@ -152,7 +152,7 @@ export interface MemoryItem {
 }
 
 /** The [Us] timeline: every sweet moment with a character is recorded. */
-export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo';
+export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board';
 
 export interface Moment {
   id: string;
@@ -163,15 +163,40 @@ export interface Moment {
   params?: Record<string, string | number>;
 }
 
-/** Plans you mentioned in chat ("exam tomorrow") — the character reminds you on the day. */
+/**
+ * A plan with a friend: mentioned in chat ("exam tomorrow at 3pm") or added in [Us].
+ * The character texts ten minutes before (or that morning when there is no time)
+ * and asks how it went afterwards.
+ */
 export interface ScheduleItem {
   id: string;
   characterId: string;
   title: string;
   /** Day key, e.g. "2026-09-28" */
   date: string;
+  /** "HH:MM", 24-hour; missing for "any time that day" */
+  time?: string;
   createdAt: string;
   reminded: boolean;
+  /** The "how did it go?" message has been sent (or its moment has passed). */
+  followedUp?: boolean;
+  source?: 'chat' | 'manual';
+}
+
+export type BoardStyleId = 'cloud' | 'gingham' | 'stripes' | 'heart' | 'kraft' | 'notebook' | 'pinned';
+
+/** A note the user pinned on the message board for one friend; they answer it in chat. */
+export interface BoardPost {
+  id: string;
+  characterId: string;
+  text: string;
+  style: BoardStyleId;
+  createdAt: string;
+  /** Their answer, kept with the note once it has arrived */
+  reply?: string;
+  /** When the answer lands; it is held back to feel read rather than instant */
+  replyAt: string;
+  replied: boolean;
 }
 
 export type MemberPlan = 'basic' | 'pro' | 'quarterly';
@@ -188,6 +213,7 @@ export type LedgerReason =
   | 'voice'
   | 'photo'
   | 'note'
+  | 'board'
   | 'date'
   | 'photoBooth'
   | 'voiceClone'

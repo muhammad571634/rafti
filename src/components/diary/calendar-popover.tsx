@@ -5,10 +5,10 @@ import { Modal, Pressable, StyleSheet, useWindowDimensions, View } from 'react-n
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Button, PressableScale, Txt } from '@/components/ui';
+import { monthCells, startOfMonth, WEEK, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
 import { colors, radius, shadows, space } from '@/theme';
 
-const WEEK = 7;
 const PAD = space.lg;
 
 export interface CalendarPopoverProps {
@@ -47,14 +47,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
   const cell = Math.floor((cardWidth - PAD * 2) / WEEK);
 
   const cells = useMemo(() => monthCells(month), [month]);
-  const weekdays = useMemo(
-    // 2024-01-01 was a Monday; the grid starts on Monday.
-    () =>
-      Array.from({ length: WEEK }, (_, i) =>
-        new Date(2024, 0, 1 + i).toLocaleDateString(i18n.language, { weekday: 'short' }),
-      ),
-    [i18n.language],
-  );
+  const weekdays = useMemo(() => weekdayNames(i18n.language), [i18n.language]);
 
   const atCurrentMonth = month.getTime() >= startOfMonth(new Date()).getTime();
   const shift = (delta: number) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
@@ -149,23 +142,6 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
       </View>
     </Modal>
   );
-}
-
-function startOfMonth(d: Date) {
-  return new Date(d.getFullYear(), d.getMonth(), 1);
-}
-
-/** Whole weeks, Monday first, padded with the neighbouring months' days. */
-function monthCells(month: Date): { key: string; inMonth: boolean }[] {
-  const y = month.getFullYear();
-  const m = month.getMonth();
-  const lead = (month.getDay() + 6) % WEEK;
-  const days = new Date(y, m + 1, 0).getDate();
-  const total = Math.ceil((lead + days) / WEEK) * WEEK;
-  return Array.from({ length: total }, (_, i) => {
-    const d = new Date(y, m, i - lead + 1);
-    return { key: dayKey(d), inMonth: d.getMonth() === m };
-  });
 }
 
 const styles = StyleSheet.create({

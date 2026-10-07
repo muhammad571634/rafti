@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
-import { detectPlan } from '@/lib/schedule';
+import { detectPlan, planStep } from '@/lib/schedule';
 import {
   AD_REWARD,
   DAILY_CHECK_IN,
@@ -39,6 +39,9 @@ import {
   rollCheckIn,
   scheduleAck,
   scheduleReminder,
+  planAddedLine,
+  planFollowUp,
+  boardReply,
   schedules as seedSchedules,
   secretNotePrompts,
   secretNotes as seedNotes,
@@ -48,6 +51,8 @@ import {
 import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
+  BoardPost,
+  BoardStyleId,
   CallRecord,
   Character,
   Conversation,
@@ -78,7 +83,11 @@ const INTIMACY = {
   secretNote: 8,
   date: 10,
   photo: 6,
+  boardNote: 6,
 } as const;
+
+/** A board note is answered after a short pause, as if it was just found. */
+const BOARD_REPLY_MS = 8000;
 
 export interface LevelUpEvent {
   characterId: string;
@@ -129,6 +138,8 @@ interface AppState {
   calls: CallRecord[];
   moments: Moment[];
   schedules: ScheduleItem[];
+  /** Notes the user pinned on the message board, oldest first */
+  boardPosts: BoardPost[];
   daily: DailyState;
   settings: AppSettings;
 
@@ -216,6 +227,12 @@ interface AppState {
   toggleMemoryPin: (id: string) => void;
   deleteMemory: (id: string) => void;
   removeSchedule: (id: string) => void;
+  /** A plan added by hand in [Us]; the character acknowledges it in chat. */
+  addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string }) => void;
+  /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
+  runTimers: () => void;
+  /** Pins a note on the board for one friend; they answer in chat a moment later. */
+  postBoardNote: (characterId: string, text: string, style: BoardStyleId) => SpendResult | 'empty';
 
   /** What the characters do on their own when the app opens: greet, remind, call. */
   runDailyInitiative: () => { callFrom?: string; slot?: CallSlot };
@@ -238,6 +255,7 @@ type PersistedKeys =
   | 'calls'
   | 'moments'
   | 'schedules'
+  | 'boardPosts'
   | 'daily'
   | 'settings';
 
@@ -343,6 +361,7 @@ export const useAppStore = create<AppState>()(
       calls: seedCalls,
       moments: seedMoments,
       schedules: seedSchedules,
+      boardPosts: [],
       daily: initialDaily,
       settings: initialSettings,
 
@@ -383,13 +402,16 @@ export const useAppStore = create<AppState>()(
                 characterId: conversation.characterId,
                 title: plan.title,
                 date: plan.date,
+                time: plan.time,
                 createdAt: new Date().toISOString(),
                 reminded: false,
+                source: 'chat',
               },
             ],
           }));
           get().addMemory(conversation.characterId, `${plan.title} - ${plan.when}.`, 'chat');
-          reply = scheduleAck(plan.title, plan.when);
+          addMoment(set, conversation.characterId, 'plan', { title: plan.title });
+          reply = scheduleAck(plan.title, plan.when, !!plan.time);
         }
 
         scheduleReply(set, get, conversationId, { text: reply, gain: INTIMACY.text });
@@ -917,6 +939,95 @@ export const useAppStore = create<AppState>()(
 
       removeSchedule: (id) => set((s) => ({ schedules: s.schedules.filter((x) => x.id !== id) })),
 
+      addSchedule: ({ characterId, title, date, time, whenLabel }) => {
+        const clean = title.trim();
+        if (!clean) return;
+        set((s) => ({
+          schedules: [
+            ...s.schedules,
+            {
+              id: uid('sch'),
+              characterId,
+              title: clean,
+              date,
+              time,
+              createdAt: new Date().toISOString(),
+              reminded: false,
+              source: 'manual',
+            },
+          ],
+        }));
+        addMoment(set, characterId, 'plan', { title: clean });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, themText(conversationId, planAddedLine(clean, whenLabel)), {
+          countUnread: true,
+        });
+      },
+
+      runTimers: () => {
+        const now = new Date();
+        const exists = (id: string) => get().characters.some((c) => c.id === id);
+
+        const steps = get()
+          .schedules.map((item) => ({ item, step: planStep(item, now) }))
+          .filter((x) => x.step);
+        steps.forEach(({ item, step }) => {
+          if ((step !== 'remind' && step !== 'followUp') || !exists(item.characterId)) return;
+          const conversationId = get().addFriend(item.characterId);
+          const line = step === 'remind' ? scheduleReminder(item.title, !!item.time) : planFollowUp(item.title);
+          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+        });
+        if (steps.length) {
+          const byId = new Map(steps.map((x) => [x.item.id, x.step]));
+          set((s) => ({
+            schedules: s.schedules.map((x) => {
+              const step = byId.get(x.id);
+              if (step === 'remind' || step === 'skipRemind') return { ...x, reminded: true };
+              if (step === 'followUp' || step === 'skipFollowUp') return { ...x, followedUp: true };
+              return x;
+            }),
+          }));
+        }
+
+        const answered = get().boardPosts.filter((p) => !p.replied && new Date(p.replyAt).getTime() <= now.getTime());
+        answered.forEach((post) => {
+          if (!exists(post.characterId)) return;
+          const conversationId = get().addFriend(post.characterId);
+          const line = post.reply ?? boardReply(post.text);
+          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+        });
+        if (answered.length) {
+          const ids = new Set(answered.map((p) => p.id));
+          set((s) => ({ boardPosts: s.boardPosts.map((p) => (ids.has(p.id) ? { ...p, replied: true } : p)) }));
+        }
+      },
+
+      postBoardNote: (characterId, text, style) => {
+        const clean = text.trim();
+        if (!clean) return 'empty';
+        if (!get().spendShells(shellCosts.boardNote, 'board', characterId)) return 'noShells';
+        const createdAt = new Date();
+        set((s) => ({
+          boardPosts: [
+            ...s.boardPosts,
+            {
+              id: uid('bp'),
+              characterId,
+              text: clean,
+              style,
+              createdAt: createdAt.toISOString(),
+              reply: boardReply(clean),
+              replyAt: new Date(createdAt.getTime() + BOARD_REPLY_MS).toISOString(),
+              replied: false,
+            },
+          ],
+        }));
+        get().addIntimacy(characterId, INTIMACY.boardNote);
+        addMoment(set, characterId, 'board');
+        setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
+        return 'ok';
+      },
+
       /* ── character initiative ─────────────────────────────────────────── */
 
       runDailyInitiative: () => {
@@ -933,19 +1044,8 @@ export const useAppStore = create<AppState>()(
           .filter((r) => r.messagesFirst && characters.some((c) => c.id === r.characterId))
           .sort((a, b) => b.intimacy - a.intimacy);
 
-        // 1. Due reminders from plans mentioned in chat.
-        const due = get().schedules.filter((x) => x.date <= today && !x.reminded);
-        if (due.length) {
-          due.forEach((item) => {
-            const conversationId = get().addFriend(item.characterId);
-            appendMessage(set, get, conversationId, themText(conversationId, scheduleReminder(item.title)), {
-              countUnread: true,
-            });
-          });
-          set((s) => ({
-            schedules: s.schedules.map((x) => (due.some((d) => d.id === x.id) ? { ...x, reminded: true } : x)),
-          }));
-        }
+        // 1. Plan reminders, "how did it go?" and board answers that came due.
+        get().runTimers();
 
         if (!slot) return {};
         const slotKey = `${today}:${slot}`;
@@ -1042,6 +1142,7 @@ export const useAppStore = create<AppState>()(
         calls: s.calls,
         moments: s.moments,
         schedules: s.schedules,
+        boardPosts: s.boardPosts,
         daily: s.daily,
         settings: s.settings,
       }),

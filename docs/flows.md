@@ -19,8 +19,8 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F5 Store and history | done | Ledger for every shell, free daily shells expire at midnight, History screen (Shells / Call time) | #2-#8 |
 | F7 Closeness v2 | done | Levels 0-100 in 5 stages, relationship labels, "How closeness works" sheet | #21-#23, #41 |
 | F6 Calls | done | Call time balance, 15-minute trial, time left on the call screen, text after a missed call | #8, #29, #40, #46 |
-| **F9 Us and calendar** | **next** | Feed exists. To build: month calendar of plans made in chat, reminder 10 minutes before, "how did it go?" after | #49-#55, video B 35-37s |
-| F10 Free gifts | partial | Ladder and wheel exist. To build: invite code +50, daily share +6 | #26-#28, video B 13-14s |
+| F9 Us and calendar | done | Month calendar of plans in Us, "+" for plan / diary / board, times parsed from chat, reminder 10 minutes before, "how did it go?" after, moment filters, message board with 7 papers | #49-#55, video B 35-37s |
+| **F10 Free gifts** | **next** | Ladder and wheel exist. To build: invite code +50, daily share +6 | #26-#28, video B 13-14s |
 | F11 Dates | partial | Exists. To build: map, rounds of choices, polaroid at the end, diary "date" page | #9-#12, video A 13-21s |
 | F12 Chat "+" games | partial | Secret note, bedtime exist. To build: couple quiz, truth or dare, daily call times | #42-#48 |
 | F13 Find and profile | partial | Exists. To improve: grouped list, search | #56-#132 |

@@ -174,7 +174,10 @@ export default function HomeScreen() {
       key: plan.id,
       icon: character,
       title: t('home.todo.plan', { title: plan.title }),
-      subtitle: t('home.todo.planHint', { name: shortName(displayName(character, relationships[character.id])) }),
+      subtitle: t(plan.time ? 'home.todo.planAt' : 'home.todo.planHint', {
+        name: shortName(displayName(character, relationships[character.id])),
+        time: plan.time,
+      }),
       onPress: () => conversation && router.push(`/chat/${conversation.id}`),
     });
   }

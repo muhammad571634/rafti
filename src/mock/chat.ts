@@ -275,13 +275,47 @@ export const callLines = [
   'Stay on a little longer. I like hearing you breathe on the other end.',
 ];
 
+const pickLine = (lines: string[]) => lines[Math.floor(Math.random() * lines.length)];
+
 /** The reply when you mention a plan in chat and it lands in your schedule. */
-export function scheduleAck(title: string, when: string) {
-  return `Wait - ${title.toLowerCase()} ${when}? Noted. I will remind you on the day, so you do not get to forget it.`;
+export function scheduleAck(title: string, when: string, timed: boolean) {
+  const promise = timed ? 'I will text you ten minutes before' : 'I will remind you on the day';
+  return `Wait - ${title.toLowerCase()} ${when}? Noted. ${promise}, so you do not get to forget it.`;
 }
 
-/** Sent on the morning a scheduled plan comes due. */
-export function scheduleReminder(title: string) {
-  return `Today is the day: ${title}. You have got this - text me the second it is over.`;
+/** Sent when you add a plan yourself in [Us]: they saw it land in your calendar. */
+export function planAddedLine(title: string, whenLabel: string) {
+  return pickLine([
+    `I saw it in our calendar: ${title}, ${whenLabel}. I am holding you to it.`,
+    `${title}, ${whenLabel}? Got it. I will be the one nudging you.`,
+  ]);
+}
+
+/** Ten minutes before a timed plan, or that morning when it has no time. */
+export function scheduleReminder(title: string, timed: boolean) {
+  if (!timed) return `Today is the day: ${title}. You have got this - text me the second it is over.`;
+  return pickLine([
+    `${title} in ten minutes. Breathe. You know this.`,
+    `Hey - ten minutes to go: ${title}. Go, and come back to tell me everything.`,
+  ]);
+}
+
+/** Once the plan is over: they want to know how it went. */
+export function planFollowUp(title: string) {
+  return pickLine([
+    `${title} - done? How did it go?`,
+    `So? ${title}. How was it? I have been waiting all day to ask.`,
+    `Tell me everything about it: ${title}. The good parts first.`,
+  ]);
+}
+
+/** Their answer to a note you pinned on the message board. */
+export function boardReply(text: string) {
+  const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
+  return pickLine([
+    `I found your note on the board: "${quote}" I read it three times. Keeping it.`,
+    `You left me a note! "${quote}" ...okay, now I am smiling at my phone.`,
+    `"${quote}" - I saw it on the board. Say it to me again sometime?`,
+  ]);
 }
 

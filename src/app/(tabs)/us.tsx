@@ -7,6 +7,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Card,
   CharacterAvatar,
+  Chip,
   Divider,
   EmptyState,
   IconTile,
@@ -17,8 +18,13 @@ import {
   Txt,
   UserAvatar,
 } from '@/components/ui';
+import { PlanCalendar } from '@/components/us/plan-calendar';
+import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
+import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
+import { useDayKey } from '@/hooks/use-day-key';
 import { daysBetween, relativeStamp } from '@/lib/format';
-import { dateFromKey, levelForIntimacy, todayKey } from '@/mock';
+import { reminderAt } from '@/lib/schedule';
+import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
@@ -37,7 +43,19 @@ const MOMENT_ICON: Record<MomentKind, IoniconName> = {
   secretNote: 'mail-outline',
   dating: 'cafe-outline',
   photo: 'camera-outline',
+  plan: 'calendar-outline',
+  board: 'pin-outline',
 };
+
+/** Moment filters; a chip shows only when the bond has moments of that kind. */
+const FILTERS = {
+  plans: ['plan'],
+  dates: ['dating', 'photo'],
+  calls: ['call'],
+  notes: ['secretNote', 'board'],
+  diary: ['diary'],
+} satisfies Record<string, MomentKind[]>;
+type FilterKey = keyof typeof FILTERS | 'all';
 
 /** [Us]: one bond at a time — how long, how close, what's next and what you've shared. */
 export default function UsScreen() {
@@ -51,6 +69,13 @@ export default function UsScreen() {
   const moments = useAppStore((s) => s.moments);
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
+  const addSchedule = useAppStore((s) => s.addSchedule);
+
+  const today = useDayKey();
+  const [day, setDay] = useState(today);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterKey>('all');
 
   const bonds = useMemo(
     () =>
@@ -67,22 +92,45 @@ export default function UsScreen() {
   const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
   const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
 
-  const timeline = useMemo(
+  const allMoments = useMemo(
     () =>
       moments
         .filter((m) => m.characterId === selected?.character.id)
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     [moments, selected],
   );
-
-  const today = todayKey();
-  const upcoming = useMemo(
-    () =>
-      schedules
-        .filter((x) => x.characterId === selected?.character.id && x.date >= today)
-        .sort((a, b) => a.date.localeCompare(b.date)),
-    [schedules, selected, today],
+  const filters = (Object.keys(FILTERS) as (keyof typeof FILTERS)[]).filter((key) =>
+    allMoments.some((m) => (FILTERS[key] as MomentKind[]).includes(m.kind)),
   );
+  const activeFilter: FilterKey = filter !== 'all' && filters.includes(filter) ? filter : 'all';
+  const timeline =
+    activeFilter === 'all'
+      ? allMoments
+      : allMoments.filter((m) => (FILTERS[activeFilter] as MomentKind[]).includes(m.kind));
+
+  const plans = useMemo(
+    () => schedules.filter((x) => x.characterId === selected?.character.id),
+    [schedules, selected],
+  );
+  const planDays = useMemo(() => new Set(plans.map((x) => x.date)), [plans]);
+  const dayPlans = useMemo(
+    () => plans.filter((x) => x.date === day).sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '')),
+    [plans, day],
+  );
+
+  const pickPublish = (kind: PublishKind) => {
+    setPublishOpen(false);
+    if (kind === 'plan') setPlanOpen(true);
+    else if (kind === 'diary') router.push('/diary/write');
+    else if (selected) router.push({ pathname: '/board/write', params: { characterId: selected.character.id } });
+  };
+
+  const submitPlan = (plan: NewPlan) => {
+    if (!selected) return;
+    addSchedule({ characterId: selected.character.id, ...plan });
+    setPlanOpen(false);
+    setDay(plan.date);
+  };
 
   if (!selected) {
     return (
@@ -176,36 +224,59 @@ export default function UsScreen() {
           </View>
         </Card>
 
-        <SectionLabel title={t('us.upcoming')} />
-        {upcoming.length === 0 ? (
+        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} onAdd={() => setPublishOpen(true)} />
+
+        <SectionLabel title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
+        {dayPlans.length === 0 ? (
           <ListRow
             title={t('us.nothingPlanned')}
-            subtitle={t('us.upcomingHint')}
             left={<IconTile icon="calendar-outline" size={ROW_ICON} />}
+            onPress={() => setPlanOpen(true)}
           />
         ) : (
-          upcoming.map((item, i) => (
-            <View key={item.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={item.title}
-                subtitle={item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
-                left={<DateTile dateKey={item.date} locale={i18n.language} />}
-                right={
-                  <PressableScale
-                    hitSlop={hitSlop}
-                    scaleTo={0.85}
-                    accessibilityLabel={t('a11y.removePlan')}
-                    onPress={() => removeSchedule(item.id)}>
-                    <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
-                  </PressableScale>
-                }
-              />
-            </View>
-          ))
+          dayPlans.map((item, i) => {
+            const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
+            return (
+              <View key={item.id}>
+                {i > 0 ? <Divider inset={ROW_INSET} /> : null}
+                <ListRow
+                  title={item.title}
+                  left={<TimeTile time={item.time} />}
+                  right={
+                    <View style={styles.planRight}>
+                      {pending ? (
+                        <View style={styles.remind}>
+                          <Ionicons name="notifications-outline" size={13} color={colors.textMuted} />
+                          <Txt variant="caption" color={colors.textMuted}>
+                            {clock(reminderAt(item))}
+                          </Txt>
+                        </View>
+                      ) : item.followedUp ? (
+                        <Ionicons name="checkmark-circle" size={18} color={colors.textFaint} />
+                      ) : null}
+                      <PressableScale
+                        hitSlop={hitSlop}
+                        scaleTo={0.85}
+                        accessibilityLabel={t('a11y.removePlan')}
+                        onPress={() => removeSchedule(item.id)}>
+                        <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
+                      </PressableScale>
+                    </View>
+                  }
+                />
+              </View>
+            );
+          })
         )}
 
         <SectionLabel title={t('us.moments')} />
+        {filters.length > 1 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+            {(['all', ...filters] as FilterKey[]).map((key) => (
+              <Chip key={key} label={t(`us.filter.${key}`)} active={activeFilter === key} onPress={() => setFilter(key)} />
+            ))}
+          </ScrollView>
+        ) : null}
         {timeline.length === 0 ? (
           <Txt variant="small" color={colors.textMuted} style={styles.hint}>
             {t('us.noMoments')}
@@ -233,25 +304,27 @@ export default function UsScreen() {
           </PressableScale>
         ) : null}
       </ScrollView>
+
+      <PublishSheet visible={publishOpen} onClose={() => setPublishOpen(false)} onPick={pickPublish} />
+      <PlanSheet visible={planOpen} onClose={() => setPlanOpen(false)} day={day} onSubmit={submitPlan} />
     </Screen>
   );
 }
 
-function relativeDay(key: string, t: (k: string) => string, locale: string) {
-  const days = Math.round((dateFromKey(key).getTime() - dateFromKey(todayKey()).getTime()) / 86_400_000);
-  if (days === 1) return t('common.tomorrow');
-  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'long' });
+const clock = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+function dayTitle(key: string, locale: string) {
+  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-/** A plan's date as a small calendar leaf, the same size as an IconTile. */
-function DateTile({ dateKey, locale }: { dateKey: string; locale: string }) {
-  const date = dateFromKey(dateKey);
+/** A plan's time as a small leaf beside the title; a calendar glyph when it has none. */
+function TimeTile({ time }: { time?: string }) {
+  if (!time) return <IconTile icon="calendar-outline" size={ROW_ICON} />;
   return (
-    <View style={styles.dateTile}>
-      <Txt variant="tiny" color={colors.textMuted}>
-        {date.toLocaleDateString(locale, { month: 'short' })}
+    <View style={styles.timeTile}>
+      <Txt variant="smallStrong" style={styles.tabular}>
+        {time}
       </Txt>
-      <Txt variant="title">{date.getDate()}</Txt>
     </View>
   );
 }
@@ -289,14 +362,18 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', marginTop: space.lg },
   stat: { flex: 1, alignItems: 'center', gap: 2 },
   statDivided: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
-  dateTile: {
-    width: ROW_ICON,
+  timeTile: {
+    width: ROW_ICON + 14,
     height: ROW_ICON,
     borderRadius: radius.sm + 2,
     backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tabular: { fontVariant: ['tabular-nums'] },
+  planRight: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  filters: { gap: space.sm, paddingHorizontal: space.lg, paddingBottom: space.sm },
   hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
   showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
 });

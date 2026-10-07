@@ -65,7 +65,8 @@
       "diary": "{{name}} wrote about you",
       "diaryHint": "A new page in their diary",
       "plan": "{{title}}",
-      "planHint": "{{name}} will remind you"
+      "planHint": "{{name}} will remind you",
+      "planAt": "{{time}} · {{name}} will remind you"
     },
     "short": {
       "store": "Store",
@@ -516,9 +517,23 @@
     "remaining": "{{time}} left"
   },
   "board": {
-    "title": "Bulletin Board",
-    "subtitle": "Little notes from everyone you talk to.",
-    "empty": "The board is empty"
+    "title": "Message board",
+    "empty": "The board is empty",
+    "write": "Write a note",
+    "to": "To:",
+    "changeRecipient": "Change who the note is for",
+    "placeholder": "Write a message",
+    "clear": "Clear",
+    "post": "Pin it",
+    "style": {
+      "cloud": "Cloud",
+      "gingham": "Gingham",
+      "stripes": "Night stripes",
+      "heart": "Heart",
+      "kraft": "Kraft paper",
+      "notebook": "Notebook",
+      "pinned": "Paper clips"
+    }
   },
   "us": {
     "title": "Us",
@@ -527,8 +542,6 @@
     "streak": "{{count}} day streak",
     "daysTogether": "{{count}} days together",
     "toNext": "{{count}} to next level",
-    "upcoming": "Coming up",
-    "upcomingHint": "Mention a plan in chat and it shows up here.",
     "moments": "Our moments",
     "noMoments": "Your moments together will be recorded here.",
     "noRelationships": "No one yet",
@@ -540,7 +553,9 @@
       "diary": "Read your diary and wrote back",
       "secretNote": "Exchanged secret notes",
       "dating": "Date: {{title}}",
-      "photo": "Took a photo together"
+      "photo": "Took a photo together",
+      "plan": "Planned: {{title}}",
+      "board": "Pinned a note on the board"
     },
     "showMore": "Show {{count}} more",
     "daysLabel_one": "day together",
@@ -548,7 +563,29 @@
     "statIntimacy": "intimacy",
     "statStreak": "day streak",
     "statMet": "first met",
-    "nothingPlanned": "Nothing planned yet"
+    "nothingPlanned": "Nothing planned",
+    "add": "Add",
+    "publish": "Add to us",
+    "publishKind": {
+      "plan": "Plan",
+      "diary": "Diary",
+      "board": "Board"
+    },
+    "newPlan": "New plan",
+    "planPlaceholder": "What is the plan?",
+    "anyTime": "Any time",
+    "atTime": "At a time",
+    "earlier": "15 minutes earlier",
+    "later": "15 minutes later",
+    "addPlan": "Add plan",
+    "filter": {
+      "all": "All",
+      "plans": "Plans",
+      "dates": "Dates",
+      "calls": "Calls",
+      "notes": "Notes",
+      "diary": "Diary"
+    }
   },
   "profile": {
     "title": "Profile",
@@ -661,6 +698,7 @@
       "voice": "Voice message to {{name}}",
       "photo": "Photo to {{name}}",
       "note": "Secret note with {{name}}",
+      "board": "Board note to {{name}}",
       "date": "Date with {{name}}",
       "photoBooth": "Photo booth",
       "voiceClone": "Character voice",

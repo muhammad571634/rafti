@@ -4,8 +4,8 @@
 Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
 o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 
-1. **Hozirgi oqim: F9 Us va kalendar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F8 tayyor. F9 dan keyin F10, F11, F12, F13, F14, F15.
+1. **Hozirgi oqim: F10 Bepul sovg'alar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F9 tayyor. F10 dan keyin F11, F12, F13, F14, F15.
 2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -21,12 +21,14 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F9 uchun boshlang'ich ma'lumot:**
-   - chatda aytilgan rejalar allaqachon `schedules` ga tushadi (`detectPlan` → `ScheduleItem`), Home'da
-     "bugungi rejalar" qatori bor;
-   - `src/components/diary/calendar-popover.tsx` dagi oy kalendarini qayta ishlatish mumkin;
-   - qilinadi: Us tabida oy kalendari (rejalar nuqta bilan), reja vaqtidan 10 daqiqa oldin personaj
-     eslatmasi, reja o'tgach "qanday o'tdi?" xabari; BIMOBIMO #49-#55, video B 35-37s.
+4. **F10 uchun boshlang'ich ma'lumot:**
+   - `src/app/gifts.tsx` da 7 kunlik zinapoya va g'ildirak bor; ledger (`log()`) har chig'anoqni yozadi;
+   - qilinadi: taklif kodi (+50, ikkala tomonga), kunlik ulashish (+6, kuniga bir marta), reklama limiti
+     ko'rinadi; BIMOBIMO #26-#28, video B 13-14s. Ulashish uchun F9 doskasidagi eslatma yoki F11 polaroidi
+     ulashiladigan narsa bo'lishi mumkin.
+5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
+   `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
+   eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
 
 
 ## Ish qoidalari (foydalanuvchi bilan)
@@ -122,7 +124,27 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     - tarix ekrani ikki bo'limli: Shells | Call time (`LedgerEntry.unit = 'seconds'`);
     - javob berilmagan qo'ng'iroqdan keyin personaj chatga yozadi (`missedCallLines`); vaqt bo'lmasa personaj
       qo'ng'iroq qilmaydi.
-  - Navbat: F9 kalendar va eslatma (#49-#55), F10 bepul sovg'alar (taklif kodi +50, ulashish +6).
+  - **F9 Us va kalendar — kodda tayyor** (BIMOBIMO #49-#55; prototip tasdiqlangan:
+    https://claude.ai/artifact/VFqxdBJ4mnTbzLtQh6zXu3):
+    - Us tabida "Coming up" o'rniga oy kalendari (`src/components/us/plan-calendar.tsx`): reja bor kunda nuqta,
+      kun bosilsa pastda o'sha kunning rejalari (vaqt, eslatma vaqti, bajarilgani);
+    - "+" → `PublishSheet`: Plan (`plan-sheet.tsx`: nom, kun, ixtiyoriy vaqt ±15 daq), Diary (`/diary/write`),
+      Board (`/board/write`). Qo'lda qo'shilgan reja haqida personaj chatda yozadi (`planAddedLine`);
+    - chatdagi `detectPlan` endi vaqtni ham oladi ("at 3pm", "15:30", "at 7" = 19:00); `ScheduleItem.time`,
+      `followedUp`, `source`;
+    - `runTimers()` (store): vaqtli rejada 10 daqiqa oldin, vaqtsizda ertalab 8:00 da eslatma; tugagach
+      (vaqtli: +2 soat, vaqtsiz: 20:00) "how did it go?" xabari, 36 soatdan keyin so'ramaydi
+      (`src/lib/schedule.ts` → `planStep`). Ilova ochiq bo'lsa har 30 soniyada, ochilganda va foreground'da chaqiriladi.
+      Push bildirishnoma hali yo'q (`expo-notifications` o'rnatilmagan);
+    - "Our moments" filtri: All / Plans / Dates / Calls / Notes / Diary (faqat bor turlar). Yangi moment turlari
+      `plan`, `board`;
+    - **Message board** (BIMOBIMO doskasi tuzilishida, rasmlarsiz): `src/app/board/write.tsx` — kimga (sheet),
+      300 belgi, Clear, 7 ta qog'oz uslubi (`src/components/board/stationery.tsx`, hammasi SVG + Phosphor bilan
+      kodda chizilgan), "Pin it" 2 chig'anoq (`shellCosts.boardNote`, ledger `board`). 8 soniyadan keyin personaj
+      chatda javob beradi, +6 intimacy. `src/app/board/index.tsx` — ilingan eslatmalar panjarasi (eski "oxirgi
+      xabarlar" doskasi o'rniga). Store'da `boardPosts` (persist);
+    - Home'dagi bugungi reja qatorida vaqt: "15:00 · Theo will remind you".
+  - Navbat: F10 bepul sovg'alar (taklif kodi +50, ulashish +6).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

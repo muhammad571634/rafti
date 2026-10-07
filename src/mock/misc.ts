@@ -56,6 +56,7 @@ export const shellCosts = {
   callPerMinute: 0,
   photoBooth: 8,
   secretNote: 3,
+  boardNote: 2,
   characterVoiceClone: 60,
 } as const;
 
@@ -120,8 +121,10 @@ export const schedules: ScheduleItem[] = [
     characterId: 'c_theo',
     title: 'Oral exam',
     date: dayKey(new Date(Date.now() + 86_400_000)),
+    time: '15:00',
     createdAt: daysAgo(1),
     reminded: false,
+    source: 'chat',
   },
 ];
 
