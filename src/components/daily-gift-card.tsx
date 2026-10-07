@@ -29,6 +29,7 @@ export function DailyGiftCard() {
   const { t } = useTranslation();
   const daily = useAppStore((s) => s.daily);
   const claim = useAppStore((s) => s.claimDailyLogin);
+  const free = useAppStore((s) => s.wallet.free);
 
   const today = useDayKey();
   const { day, claimed } = checkInStatus(daily, today);
@@ -101,6 +102,10 @@ export function DailyGiftCard() {
           <CheckIcon size={14} color={colors.bondText} weight="bold" />
           <Txt variant="small" color={colors.textSecondary}>
             {t('home.gift.claimed', { count: claimedAmount })}
+            {' · '}
+            {free && free.day === today && free.amount > 0
+              ? t('home.gift.freeLeft', { count: free.amount })
+              : t('home.gift.freeUsed')}
           </Txt>
         </View>
       ) : (

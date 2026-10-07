@@ -90,7 +90,7 @@ export default function CreateCharacterScreen() {
 
   const create = () => {
     if (!canCreate) return setError(t('createCharacter.needs'));
-    if (!spendShells(shellCosts.characterVoiceClone)) return setPaywall(shellCosts.characterVoiceClone);
+    if (!spendShells(shellCosts.characterVoiceClone, 'voiceClone')) return setPaywall(shellCosts.characterVoiceClone);
 
     setCreating(true);
     // Stands in for the voice-cloning job that runs before the character goes live.

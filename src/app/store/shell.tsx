@@ -12,6 +12,7 @@ import {
   Divider,
   Header,
   Icon3D,
+  IconButton,
   ListRow,
   PressableScale,
   Screen,
@@ -93,7 +94,17 @@ export default function ShellStoreScreen() {
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('store.title')} />
+      <Header
+        title={t('store.title')}
+        right={
+          <IconButton
+            icon="receipt-outline"
+            size={21}
+            accessibilityLabel={t('ledger.open')}
+            onPress={() => router.push('/store/ledger')}
+          />
+        }
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.balance}>
