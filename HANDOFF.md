@@ -23,7 +23,14 @@ npx tsc --noEmit                # must be clean
 `../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
 `AGENT-START.md` section 6 is out of date (says F9) — this file wins.
 
-### 1. The task right now: wire in the 23 character portraits
+### 1. DONE (2026-10-07, Desktop): the 23 character portraits are wired in
+
+All 40 characters now have a portrait (`assets/avatars/c_<id>.png`, raws in
+`assets/raw/avatars/c_<id>.jpg`); checked in Find, a world list and a profile at 375x812.
+Nadia had two takes; the user picked `802fb1e0…` (the unused one stays untracked in
+`assets/images/`). Next: offer the section 2 options below (and, optionally, hero scenes).
+
+The original instructions, kept for reference:
 
 The user has **finished all portraits in Nano Banana** and will hand them over (in chat or as files).
 
