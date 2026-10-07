@@ -108,6 +108,9 @@ Not asked for yet — offer, don't do.
   (on Windows also delete `%TEMP%\metro-cache` and `%TEMP%\metro-file-map-*`).
 - Expo typed routes can go stale and break `tsc`: delete `.expo/types/router.d.ts` and restart.
 - Approved screens are not to be redesigned (Diary, Onboarding, Home).
+- Android Expo Go cannot run `expo-notifications` (throws on import). Never import it at the top
+  level; use `notificationsModule()` from `src/notifications/native.ts`. Real push testing needs a
+  development build (`npx expo run:android` over USB; the Android SDK is installed on this PC).
 
 ---
 
