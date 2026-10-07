@@ -43,6 +43,13 @@
   - Ma'lumot: `CharacterDiaryPage` turi, `mock/diary.ts` dagi `characterDiaryPages` (keyin server yozadi),
     store'da `characterDiary` (persist qilinmaydi) va `diaryPagesRead` (persist).
   - Yangi paket: `@expo-google-fonts/caveat` (`fonts.hand`, `type.hand`, `type.handTitle`).
+- **Zanjir (2026-10-07):** ilova bitta kunlik halqa sifatida quriladi. Xarita va har oqim holati:
+  https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
+  - Ulangan: kecha suhbat/uchrashuv bo'lsa, ertalab personaj kundalik yozadi (`src/mock/diary-writer.ts`,
+    store'da `writeDueDiaryPages`, ilova ochilganda va Diary ekraniga kirilganda chaqiriladi).
+  - **F1 Onboarding prototipi foydalanuvchi tasdig'ini kutyapti:** https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF
+    (salom → 18+ yil → ism → birinchi do'st (4 dunyodan) → bildirishnoma → +100 → birinchi chat).
+  - Navbat: F2 (Today'da "X wrote about you" va bugungi rejalar), F5 hisob tarixi, F7 munosabat v2.
 - **Keyingi ish:**
   - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);
   - shu uslubdagi Secret note, Gifts va Date qoida oynalari;
