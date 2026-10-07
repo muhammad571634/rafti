@@ -1,19 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
-import { CameraIcon } from 'phosphor-react-native/src/icons/Camera';
 import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
-import { CoffeeIcon } from 'phosphor-react-native/src/icons/Coffee';
-import { CompassIcon } from 'phosphor-react-native/src/icons/Compass';
-import { EnvelopeSimpleIcon } from 'phosphor-react-native/src/icons/EnvelopeSimple';
-import { GiftIcon } from 'phosphor-react-native/src/icons/Gift';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
-import { MoonStarsIcon } from 'phosphor-react-native/src/icons/MoonStars';
-import { PhoneIcon } from 'phosphor-react-native/src/icons/Phone';
-import { PushPinIcon } from 'phosphor-react-native/src/icons/PushPin';
-import { RadioIcon } from 'phosphor-react-native/src/icons/Radio';
-import { ShoppingBagOpenIcon } from 'phosphor-react-native/src/icons/ShoppingBagOpen';
-import { UsersThreeIcon } from 'phosphor-react-native/src/icons/UsersThree';
 import { Fragment, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -24,9 +12,9 @@ import { useDayKey } from '@/hooks/use-day-key';
 import {
   Card,
   CharacterAvatar,
+  ClayIcon,
   CountBadge,
   Divider,
-  IconTile,
   ListRow,
   Mascot,
   PressableScale,
@@ -35,40 +23,36 @@ import {
   ShellBadge,
   Txt,
   UserAvatar,
-  type TileIcon,
+  type ClayIconName,
 } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, moduleTints, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
+import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
 import type { Character, Conversation, HomeModule, Relationship } from '@/types';
 
 const CHAT_AVATAR = 44;
 /** Tile size of the Today and "meet" rows; their divider inset follows it. */
 const ROW_ICON = 38;
-/** Explore tiles: iOS home-screen size, a 32pt duotone glyph, five to a row. */
+/** Explore tiles: iOS home-screen size, a clay icon, five to a row. */
 const MODULE_TILE = 60;
-const MODULE_GLYPH = 32;
 const MODULE_RADIUS = radius.lg;
 /** Row dividers start under the row text, past the leading avatar or icon. */
 const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
 const TODO_INSET = space.lg + ROW_ICON + space.md;
 
-/**
- * One duotone glyph per Explore module, keyed by `HomeModule.key`.
- * Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 1; Today rows are step 2.
- */
-const MODULE_ICONS: Record<string, TileIcon> = {
-  store: ShoppingBagOpenIcon,
-  dating: CoffeeIcon,
-  diary: BookOpenTextIcon,
-  photo: CameraIcon,
-  contacts: UsersThreeIcon,
-  gifts: GiftIcon,
-  calls: PhoneIcon,
-  bedtime: MoonStarsIcon,
-  radio: RadioIcon,
-  board: PushPinIcon,
+/** One 3D clay icon per Explore module, keyed by `HomeModule.key` (docs/icons-3d.md). */
+const MODULE_ICONS: Record<string, ClayIconName> = {
+  store: 'store',
+  dating: 'date',
+  diary: 'diary',
+  photo: 'camera',
+  contacts: 'contacts',
+  gifts: 'gift',
+  calls: 'calls',
+  bedtime: 'bedtime',
+  radio: 'radio',
+  board: 'board',
 };
 
 /** A conversation joined with its character, bond and the name the user knows them by. */
@@ -82,8 +66,8 @@ interface ChatItem {
 /** A small thing the user can do today, shown as a row under "Today". */
 interface TodoItem {
   key: string;
-  /** A friend's face for things they did; a glyph tile for everything else */
-  icon: TileIcon | Character;
+  /** A friend's face for things they did; a clay icon for everything else */
+  icon: ClayIconName | Character;
   title: string;
   subtitle?: string;
   /** Marks something new since the last visit */
@@ -194,7 +178,7 @@ export default function HomeScreen() {
     noteSenders.add(character.id);
     todos.push({
       key: note.id,
-      icon: EnvelopeSimpleIcon,
+      icon: 'secretNote',
       // First name only: the row stays one short line.
       title: t('home.todo.note', { name: shortName(displayName(character, relationships[character.id])) }),
       onPress: () => router.push(`/secret-note/${character.id}`),
@@ -203,7 +187,7 @@ export default function HomeScreen() {
   if (spinReady) {
     todos.push({
       key: 'spin',
-      icon: GiftIcon,
+      icon: 'gift',
       title: t('home.todo.spin'),
       onPress: () => router.push('/gifts'),
     });
@@ -261,7 +245,7 @@ export default function HomeScreen() {
                     isCharacter(todo.icon) ? (
                       <CharacterAvatar character={todo.icon} size={ROW_ICON} />
                     ) : (
-                      <IconTile icon={todo.icon} size={ROW_ICON} />
+                      <ClayIcon name={todo.icon} size={ROW_ICON} />
                     )
                   }
                   title={todo.title}
@@ -305,7 +289,7 @@ export default function HomeScreen() {
             ))
           ) : (
             <ListRow
-              left={<IconTile icon={CompassIcon} size={ROW_ICON} />}
+              left={<ClayIcon name="compass" size={ROW_ICON} />}
               title={t('home.todo.meet')}
               chevron
               onPress={() => router.push('/(tabs)/find')}
@@ -330,7 +314,7 @@ export default function HomeScreen() {
 }
 
 function isCharacter(icon: TodoItem['icon']): icon is Character {
-  return typeof icon === 'object' && icon !== null && 'bio' in icon;
+  return typeof icon === 'object';
 }
 
 /**
@@ -387,7 +371,7 @@ function BondChip({ level }: { level: number }) {
   );
 }
 
-/** One Explore module: tinted glyph tile over a short name; the label carries the full name. */
+/** One Explore module: a clay icon tile over a short name; the label carries the full name. */
 function ModuleCell({
   module,
   dot,
@@ -398,7 +382,6 @@ function ModuleCell({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
-  const tint = moduleTints[module.key];
 
   return (
     <PressableScale
@@ -406,16 +389,7 @@ function ModuleCell({
       scaleTo={0.94}
       accessibilityLabel={t(`home.modules.${module.labelKey}`)}
       onPress={onPress}>
-      <IconTile
-        size={MODULE_TILE}
-        radius={MODULE_RADIUS}
-        glyphSize={MODULE_GLYPH}
-        icon={MODULE_ICONS[module.key]}
-        weight="duotone"
-        color={tint?.fg}
-        background={tint?.bg}
-        dot={dot}
-      />
+      <ClayIcon name={MODULE_ICONS[module.key]} size={MODULE_TILE} radius={MODULE_RADIUS} dot={dot} />
       <Txt variant="chip" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
         {t(`home.short.${module.key}`)}
       </Txt>

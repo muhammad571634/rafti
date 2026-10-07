@@ -9,14 +9,15 @@ import {
   CharacterAvatar,
   Chip,
   Divider,
+  ClayIcon,
   EmptyState,
-  IconTile,
   ListRow,
   PressableScale,
   Screen,
   SectionLabel,
   Txt,
   UserAvatar,
+  type ClayIconName,
 } from '@/components/ui';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
@@ -29,24 +30,22 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
-
 const MOMENT_PAGE = 20;
 const ROW_ICON = 38;
 const ROW_INSET = space.lg + ROW_ICON + space.md;
 
-// Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 7.
-const MOMENT_ICON: Record<MomentKind, IoniconName> = {
-  met: 'sparkles-outline',
-  levelUp: 'heart-outline',
-  call: 'call-outline',
-  diary: 'book-outline',
-  secretNote: 'mail-outline',
-  dating: 'cafe-outline',
-  photo: 'camera-outline',
-  plan: 'calendar-outline',
-  board: 'pin-outline',
-  quiz: 'heart-circle-outline',
+/** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
+const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
+  met: 'contacts',
+  levelUp: 'gift',
+  call: 'calls',
+  diary: 'diary',
+  secretNote: 'secretNote',
+  dating: 'date',
+  photo: 'camera',
+  plan: 'calendar',
+  board: 'board',
+  quiz: 'quiz',
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */
@@ -233,7 +232,7 @@ export default function UsScreen() {
         {dayPlans.length === 0 ? (
           <ListRow
             title={t('us.nothingPlanned')}
-            left={<IconTile icon="calendar-outline" size={ROW_ICON} />}
+            left={<ClayIcon name="calendar" size={ROW_ICON} />}
             onPress={() => setPlanOpen(true)}
           />
         ) : (
@@ -291,7 +290,7 @@ export default function UsScreen() {
               <ListRow
                 title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
                 meta={relativeStamp(moment.createdAt)}
-                left={<IconTile icon={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
+                left={<ClayIcon name={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
               />
             </View>
           ))
@@ -328,7 +327,7 @@ function dayTitle(key: string, locale: string) {
 
 /** A plan's time as a small leaf beside the title; a calendar glyph when it has none. */
 function TimeTile({ time }: { time?: string }) {
-  if (!time) return <IconTile icon="calendar-outline" size={ROW_ICON} />;
+  if (!time) return <ClayIcon name="calendar" size={ROW_ICON} />;
   return (
     <View style={styles.timeTile}>
       <Txt variant="smallStrong" style={styles.tabular}>

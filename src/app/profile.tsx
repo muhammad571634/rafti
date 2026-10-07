@@ -9,6 +9,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { CompletionMeter } from '@/components/profile/completion-meter';
 import {
   Button,
+  ClayIcon,
   Divider,
   Header,
   IconTile,
@@ -21,6 +22,7 @@ import {
   Toggle,
   Txt,
   UserAvatar,
+  type ClayIconName,
 } from '@/components/ui';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
 import { shortDate } from '@/lib/format';
@@ -39,12 +41,12 @@ const ROW_INSET = space.lg + ROW_ICON + space.md;
 /** The on/off settings; call times and the caller live in the chat's Daily calls sheet. */
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
-// Next: 3D clay icons (`ClayIcon`), see docs/icons-3d.md step 8.
-const REACH_OUT: { key: SwitchKey; icon: IoniconName }[] = [
-  { key: 'morningGreeting', icon: 'sunny-outline' },
-  { key: 'eveningGreeting', icon: 'moon-outline' },
-  { key: 'morningCall', icon: 'call-outline' },
-  { key: 'nightCall', icon: 'call-outline' },
+/** Who reaches out and when: clay icons, like the places they lead to (docs/icons-3d.md). */
+const REACH_OUT: { key: SwitchKey; icon: ClayIconName }[] = [
+  { key: 'morningGreeting', icon: 'date' },
+  { key: 'eveningGreeting', icon: 'bedtime' },
+  { key: 'morningCall', icon: 'calls' },
+  { key: 'nightCall', icon: 'calls' },
 ];
 
 /**
@@ -87,10 +89,10 @@ export default function ProfileScreen() {
   const member = memberActive(wallet);
   const icon = (name: IoniconName) => <IconTile icon={name} size={ROW_ICON} />;
 
-  const toggle = (key: SwitchKey, label: string, iconName: IoniconName) => (
+  const toggle = (key: SwitchKey, label: string, left: React.ReactNode) => (
     <ListRow
       title={label}
-      left={icon(iconName)}
+      left={left}
       right={<Toggle value={settings[key]} onChange={(v) => setSetting(key, v)} accessibilityLabel={label} />}
     />
   );
@@ -193,12 +195,12 @@ export default function ProfileScreen() {
         {REACH_OUT.map(({ key, icon: iconName }, index) => (
           <View key={key}>
             {index > 0 ? <Divider inset={ROW_INSET} /> : null}
-            {toggle(key, t(`profile.${key}`), iconName)}
+            {toggle(key, t(`profile.${key}`), <ClayIcon name={iconName} size={ROW_ICON} />)}
           </View>
         ))}
 
         <SectionLabel title={t('profile.sectionChat')} />
-        {toggle('chatAnimation', t('profile.chatAnimation'), 'sparkles-outline')}
+        {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}
 
         <SectionLabel title={t('profile.sectionAbout')} />
         <ListRow title={t('profile.account')} left={icon('person-circle-outline')} />

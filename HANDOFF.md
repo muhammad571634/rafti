@@ -6,8 +6,8 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 (pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
 
 1. **F1-F14 tayyor (F14 Profil 2026-10-07, bulut sessiyasida).** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15 yoki (b) original personajlar, va 3D ikonkalar
-   2-to'plami (foydalanuvchida tayyor, so'ralganda beradi). Pastdagi 4-bandga qarang.
+   3D ikonkalar 2-to'plami ham ulandi. Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15 yoki
+   (b) original personajlar; 3-to'plam ikonkalar (date xaritasi, quiz). Pastdagi 4-bandga qarang.
 2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -35,9 +35,11 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      tugaydi (`interestLines`). Server AI bo'lganda profil promptga beriladi.
    - Bulutda Metro fayl o'zgarishini ko'rmay qolishi mumkin: `npx expo start --web --clear` bilan qayta ishga tushiring.
 4. **Ochiq ishlar (foydalanuvchi bilan kelishilgan, unutmang):**
-   - **3D clay ikonkalar** — butun ilova uchun yangi ikonka uslubi. Chat "+" tayyor. Keyingi joylar tartibi,
-     2-to'plam prompti: [`docs/icons-3d.md`](docs/icons-3d.md). Foydalanuvchi 2-to'plamni chizib `assets/raw/` ga
-     qo'yadi → `python scripts/build-brand-art.py icons` → Home Explore'dan boshlab ulanadi.
+   - **3D clay ikonkalar — 2-to'plam ulandi (2026-10-07):** `assets/raw/icons-3d-sheet-2.jpg` (sovg'a, do'kon,
+     do'stlar, radio, igna, oy, kamera, kalendar, lupa, kompas, nota, qulf). Skript endi bir nechta varaqni
+     o'qiydi (`ICON_SHEETS`). Ulangan joylar: Home Explore (10 tasi), Home Today qatorlari, Us "+" va momentlar,
+     Free gifts, Profil "They reach out"; `ClayIcon` ga `dot` va `radius` qo'shildi. Date xaritasi va quiz
+     to'plamlari hali emoji — 3-to'plam kerak, prompt va qolgan ro'yxat: [`docs/icons-3d.md`](docs/icons-3d.md).
    - **Personajlar katalogi** (foydalanuvchi so'ragan, 2026-10-07): BIMOBIMO'dagi real idol/franchise personajlar
      bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
      personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga

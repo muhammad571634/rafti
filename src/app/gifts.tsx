@@ -9,7 +9,7 @@ import {
   Anim,
   Button,
   Header,
-  IconTile,
+  ClayIcon,
   ListRow,
   PressableScale,
   Screen,
@@ -38,6 +38,8 @@ import { colors, fonts, hitSlop, palette, radius, space } from '@/theme';
 
 /** How long the stand-in "ad" plays before paying out. */
 const AD_MS = 1800;
+const ROW_ICON = 38;
+const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'contacts' } as const;
 
 /**
  * Free shells, three ways — the reference's daily login, roulette wheel and
@@ -168,7 +170,6 @@ export default function GiftsScreen() {
           />
         </View>
 
-        {/* Next: 3D clay icons for invite, share and the ad row, see docs/icons-3d.md step 4. */}
         <SectionLabel title={t('gifts.invite', { count: INVITE_REWARD })} />
         <View style={styles.invite}>
           <View style={styles.codeRow}>
@@ -224,7 +225,7 @@ export default function GiftsScreen() {
         />
         <ListRow
           title={t('gifts.shareReward', { count: SHARE_REWARD })}
-          left={<IconTile icon="share-social-outline" />}
+          left={<ClayIcon name="gift" size={ROW_ICON} />}
           right={
             <Button
               label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')}
@@ -242,7 +243,7 @@ export default function GiftsScreen() {
         <ListRow
           title={t('gifts.watchAd')}
           subtitle={adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
-          left={<IconTile icon="play-outline" />}
+          left={<ClayIcon name="play" size={ROW_ICON} />}
           right={
             <Button
               label={t('gifts.watch')}
@@ -292,7 +293,7 @@ export default function GiftsScreen() {
             <ListRow
               key={way}
               title={t(`gifts.shareWays.${way}`)}
-              left={<IconTile icon={way === 'call' ? 'call-outline' : way === 'board' ? 'pin-outline' : 'person-add-outline'} />}
+              left={<ClayIcon name={SHARE_WAY_ICONS[way]} size={ROW_ICON} />}
             />
           ))}
           <Txt variant="caption" color={colors.textMuted} center>

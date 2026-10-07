@@ -378,17 +378,30 @@ def build_reactions():
         save(sticker, os.path.join(OUT, f'reaction-{name}.png'), optimize=True)
 
 
-# 3D clay icons: one Nano Banana sheet, 4 columns x 3 rows on flat light grey.
-# Names row by row; the last row is spare art kept for later screens.
-ICON_SHEET = os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet.jpg')
-ICONS_3D = [
-    'voice', 'photo', 'secret-note', 'quiz',
-    'truth-or-dare', 'date', 'calls', 'diary',
-    'ball', 'planner', 'play', 'play-stack',
+# 3D clay icons: Nano Banana sheets, 4 columns x 3 rows on flat light grey.
+# Per sheet: its file, the names row by row, and the row bands (fractions of its
+# height; the rows are not evenly spaced).
+ICON_SHEETS = [
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet.jpg'),
+        [
+            'voice', 'photo', 'secret-note', 'quiz',
+            'truth-or-dare', 'date', 'calls', 'diary',
+            # Spare art kept for later screens.
+            'ball', 'planner', 'play', 'play-stack',
+        ],
+        [(0.10, 0.40), (0.40, 0.65), (0.65, 0.93)],
+    ),
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-2.jpg'),
+        [
+            'gift', 'store', 'contacts', 'radio',
+            'board', 'bedtime', 'camera', 'calendar',
+            'search', 'compass', 'music', 'lock',
+        ],
+        [(0.10, 0.375), (0.38, 0.635), (0.64, 0.92)],
+    ),
 ]
-# Row bands of the sheet (fractions of its height): the rows are not evenly spaced.
-ICON_ROWS = [(0.10, 0.40), (0.40, 0.65), (0.65, 0.93)]
-
 
 def drop_edge_scraps(solid):
     """
@@ -454,22 +467,22 @@ def cut_icon(cell):
 
 
 def build_icons_3d():
-    if not os.path.exists(ICON_SHEET):
-        return []
-    sheet = Image.open(ICON_SHEET).convert('RGB')
-    w, h = sheet.size
-    col = w / 4
     names = []
-    for i, name in enumerate(ICONS_3D):
-        top, bottom = ICON_ROWS[i // 4]
-        c = i % 4
-        # Cells overlap a little so no icon is clipped; the neighbour's scraps are dropped.
-        box = (max(0, round(c * col) - 16), round(top * h), min(w, round((c + 1) * col) + 16), round(bottom * h))
-        icon = fit(cut_icon(sheet.crop(box)), 192)
-        save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
-        names.append(name)
+    for path, sheet_names, rows in ICON_SHEETS:
+        if not os.path.exists(path):
+            continue
+        sheet = Image.open(path).convert('RGB')
+        w, h = sheet.size
+        col = w / 4
+        for i, name in enumerate(sheet_names):
+            top, bottom = rows[i // 4]
+            c = i % 4
+            # Cells overlap a little so no icon is clipped; the neighbour's scraps are dropped.
+            box = (max(0, round(c * col) - 16), round(top * h), min(w, round((c + 1) * col) + 16), round(bottom * h))
+            icon = fit(cut_icon(sheet.crop(box)), 192)
+            save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
+            names.append(name)
     return names
-
 
 def build_sticker_derivatives():
     sticker = Image.open(os.path.join(OUT, 'rafti-sticker.png'))
