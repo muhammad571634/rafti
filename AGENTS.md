@@ -16,6 +16,9 @@ Rules:
 - Reply to the user in Uzbek; code comments in English.
 - Prototype (image or HTML mockup) first; write code only after the user approves.
 - Change only what the user asked. Do not remove animations on your own.
+- Never redesign or rewrite a screen the user already approved (see `HANDOFF.md`, e.g. the
+  Heartbeat diary in `src/app/diary/`) unless the user asks for that exact change.
+  On a merge conflict in such a file, keep the approved version and ask.
 - Keep the current Rafti design system (`src/theme`, `src/components/ui`).
   Explore uses variant B (Phosphor duotone icons).
 - Take only structure and logic from BIMOBIMO, never its images or text.
