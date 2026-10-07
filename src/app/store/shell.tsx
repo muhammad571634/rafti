@@ -9,7 +9,6 @@ import {
   Anim,
   Button,
   Card,
-  Divider,
   Header,
   Icon3D,
   IconButton,
@@ -126,7 +125,7 @@ export default function ShellStoreScreen() {
           />
         </View>
 
-        <SectionLabel title={t('store.choose')} style={styles.chooseLabel} />
+        <SectionLabel tone="title" title={t('store.choose')} style={styles.chooseLabel} />
         <View style={styles.packs} accessibilityRole="radiogroup">
           {offers.map((offer) => (
             <PackCard
@@ -139,6 +138,7 @@ export default function ShellStoreScreen() {
         </View>
 
         <SectionLabel
+          tone="title"
           title={t('store.membership')}
           right={
             isMember && wallet.memberUntil ? (
@@ -183,17 +183,12 @@ export default function ShellStoreScreen() {
           })}
         </View>
 
-        <SectionLabel title={t('store.costs')} />
+        <SectionLabel tone="title" title={t('store.costs')} />
         <CostRow label={t('store.costTextMessage')} value={isMember ? 0 : shellCosts.textMessage} />
-        <Divider inset={space.lg} />
         <CostRow label={t('store.costListen')} value={shellCosts.voiceReply} />
-        <Divider inset={space.lg} />
         <CostRow label={t('store.costCall')} value={shellCosts.callPerMinute} />
-        <Divider inset={space.lg} />
         <CostRow label={t('store.costSecretNote')} value={shellCosts.secretNote} />
-        <Divider inset={space.lg} />
         <CostRow label={t('store.costPhotoBooth')} value={shellCosts.photoBooth} />
-        <Divider inset={space.lg} />
         <CostRow label={t('store.costVoiceClone')} value={shellCosts.characterVoiceClone} />
 
         <Button label={t('store.restore')} variant="ghost" full style={styles.restore} />

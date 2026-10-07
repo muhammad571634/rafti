@@ -54,6 +54,12 @@ the last conversation = **done**.
   no grey tiles (`ListRow size="large"`, clay art `tile={false}`). The Daily gift card left Home
   (deleted; the gift claims itself on launch and the 7-day ladder lives on Gifts, whose icon gets a
   dot while today's gift waits). Today lists only plans still ahead, soonest first.
+- **House style since 2026-10-07 (user's wish, "ChatGPT-like"):** no cards, shadows or divider
+  lines on screens; sections get bold ink headings (`SectionLabel tone="title"`), rows are
+  `ListRow size="large"` on the bare canvas, icons bare (`ClayIcon tile={false}`, `IconTile
+  background="transparent"`). Done: Today, Chats, Find, world list, Us, Profile, character profile
+  and settings, Store (pack/plan cards keep a thin border: they are choices). Not touched: Diary,
+  Onboarding (approved), the chat thread, sheets.
 - Next candidates: the notification image
   (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
