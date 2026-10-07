@@ -686,6 +686,9 @@
     "statStreak": "day streak",
     "statMet": "first met",
     "nothingPlanned": "Nothing planned",
+    "plan": "Plan",
+    "calendarMore": "Show the whole month",
+    "calendarLess": "Show one week",
     "add": "Add",
     "publish": "Add to us",
     "publishKind": {

@@ -21,7 +21,7 @@ import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
-import { daysBetween, relativeStamp } from '@/lib/format';
+import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -30,6 +30,9 @@ import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
 const ROW_ICON = 40;
+/** Story-row avatar and the moment art: the top is generous, the timeline light. */
+const STORY = 58;
+const MOMENT_ICON_SIZE = 30;
 
 /** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
 const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
@@ -173,13 +176,16 @@ export default function UsScreen() {
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 onPress={() => setSelectedId(c.id)}>
-                <CharacterAvatar character={c} size={50} ring={active} ringColor={colors.text} />
+                {/* A story-style ring with air around the face marks the bond on screen. */}
+                <View style={[styles.ring, active && styles.ringOn]}>
+                  <CharacterAvatar character={c} size={STORY} />
+                </View>
                 <Txt
-                  variant="tiny"
+                  variant="caption"
                   lines={1}
                   color={active ? colors.text : colors.textMuted}
                   style={active && styles.pickActive}>
-                  {displayName(c, r)}
+                  {shortName(displayName(c, r))}
                 </Txt>
               </PressableScale>
             );
@@ -229,12 +235,18 @@ export default function UsScreen() {
 
         <SectionLabel tone="title" title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
         {dayPlans.length === 0 ? (
-          <ListRow
-            size="large"
-            title={t('us.nothingPlanned')}
-            left={<ClayIcon name="calendar" size={ROW_ICON} tile={false} />}
-            onPress={() => setPlanOpen(true)}
-          />
+          // A quiet line, not a row: the day is free, and one tap plans something.
+          <View style={styles.free}>
+            <Txt variant="body" color={colors.textMuted} style={styles.grow}>
+              {t('us.nothingPlanned')}
+            </Txt>
+            <PressableScale style={styles.planPill} scaleTo={0.94} onPress={() => setPlanOpen(true)}>
+              <Ionicons name="add" size={16} color={colors.brandText} />
+              <Txt variant="smallStrong" color={colors.brandText}>
+                {t('us.plan')}
+              </Txt>
+            </PressableScale>
+          </View>
         ) : (
           dayPlans.map((item) => {
             const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
@@ -285,12 +297,11 @@ export default function UsScreen() {
           </Txt>
         ) : (
           shownMoments.map((moment) => (
-            <ListRow
+            <MomentRow
               key={moment.id}
-              size="large"
-              title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-              meta={relativeStamp(moment.createdAt)}
-              left={<ClayIcon name={MOMENT_ICON[moment.kind]} size={ROW_ICON} tile={false} />}
+              icon={MOMENT_ICON[moment.kind]}
+              text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+              when={relativeStamp(moment.createdAt)}
             />
           ))
         )}
@@ -336,6 +347,21 @@ function TimeTile({ time }: { time?: string }) {
   );
 }
 
+/** One moment in the timeline: small art, a light line of text, when it happened. */
+function MomentRow({ icon, text, when }: { icon: ClayIconName; text: string; when: string }) {
+  return (
+    <View style={styles.moment}>
+      <ClayIcon name={icon} size={MOMENT_ICON_SIZE} tile={false} />
+      <Txt variant="body" lines={1} style={styles.grow}>
+        {text}
+      </Txt>
+      <Txt variant="caption" color={colors.textMuted}>
+        {when}
+      </Txt>
+    </View>
+  );
+}
+
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <View style={styles.stat}>
@@ -350,8 +376,10 @@ function Stat({ value, label }: { value: string; label: string }) {
 const styles = StyleSheet.create({
   grow: { flex: 1 },
   head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  picker: { gap: space.lg, paddingHorizontal: space.lg, paddingVertical: space.xs },
-  pick: { alignItems: 'center', gap: space.xs, width: 56 },
+  picker: { gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm },
+  pick: { alignItems: 'center', gap: space.xs, width: STORY + 10 },
+  ring: { padding: 2, borderRadius: radius.pill, borderWidth: 2, borderColor: 'transparent' },
+  ringOn: { borderColor: colors.primary },
   pickActive: { fontWeight: '600' },
   hero: { paddingHorizontal: space.lg, paddingTop: space.xl },
   together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
@@ -374,5 +402,17 @@ const styles = StyleSheet.create({
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   filters: { gap: space.sm, paddingHorizontal: space.lg, paddingBottom: space.sm },
   hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
+  free: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingVertical: space.sm },
+  planPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    height: 34,
+    paddingLeft: space.sm,
+    paddingRight: space.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySofter,
+  },
+  moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 48, paddingHorizontal: space.lg },
   showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
 });

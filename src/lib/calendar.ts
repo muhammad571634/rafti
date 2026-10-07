@@ -23,3 +23,12 @@ export function monthCells(month: Date): { key: string; inMonth: boolean }[] {
 export function weekdayNames(locale: string) {
   return Array.from({ length: WEEK }, (_, i) => new Date(2024, 0, 1 + i).toLocaleDateString(locale, { weekday: 'short' }));
 }
+
+/** The Monday-first week that holds `date`. */
+export function weekCells(date: Date): { key: string; inMonth: boolean }[] {
+  const lead = (date.getDay() + 6) % WEEK;
+  return Array.from({ length: WEEK }, (_, i) => {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate() - lead + i);
+    return { key: dayKey(d), inMonth: true };
+  });
+}
