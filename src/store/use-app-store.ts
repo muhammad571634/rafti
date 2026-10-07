@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
+import { isBirthday } from '@/lib/profile';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
   AD_REWARD,
@@ -17,6 +18,8 @@ import {
   callHistory as seedCalls,
   callLines,
   replyBursts,
+  birthdayLines,
+  interestLines,
   characterDiaryPages as seedCharacterDiary,
   characters as seedCharacters,
   conversations as seedConversations,
@@ -248,6 +251,11 @@ interface AppState {
   /** The one-time note about the free call trial has been shown. */
   markCallIntroSeen: () => void;
 
+  /* profile */
+  updateProfile: (patch: ProfilePatch) => void;
+  /** Wipes everything on this device and starts over at onboarding. */
+  deleteAccount: () => void;
+
   /* modules */
   /** Pays for a date at a place on the map; the rounds play on the date screen. */
   beginDate: (characterId: string, placeId: string) => SpendResult;
@@ -279,6 +287,11 @@ interface AppState {
   setSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
 }
 
+/** The fields the profile screen edits. */
+export type ProfilePatch = Partial<
+  Pick<User, 'displayName' | 'avatarUri' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about'>
+>;
+
 type PersistedKeys =
   | 'user'
   | 'wallet'
@@ -304,6 +317,12 @@ const uid = (prefix: string) =>
   `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)];
+
+/** Now and then a free reply ends by asking about one of the user's interests. */
+function withInterest(lines: string[], interests: string[] | undefined) {
+  if (!interests?.length || Math.random() > 0.2) return lines;
+  return [...lines, pick(interestLines)(pick(interests))];
+}
 
 /** Whether `hour` falls in the few hours after a "HH:MM" call time (wrapping past midnight). */
 function inWindow(hour: number, time = '08:00') {
@@ -935,6 +954,17 @@ export const useAppStore = create<AppState>()(
 
       markCallIntroSeen: () => set((s) => ({ user: { ...s.user, callIntroSeen: true } })),
 
+      /* ── profile ──────────────────────────────────────────────────────── */
+
+      updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
+
+      deleteAccount: () => {
+        // Replies and timers still in flight must not write into the fresh state.
+        replyingUntil.clear();
+        // The server deletes the account later; here the device starts over.
+        useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
+      },
+
       addCall: (record) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
 
@@ -1183,6 +1213,18 @@ export const useAppStore = create<AppState>()(
 
         // 1. Plan reminders, "how did it go?" and board answers that came due.
         get().runTimers();
+
+        // Birthday: the closest bonds text first thing, once a year.
+        const { user } = get();
+        if (isBirthday(user, now) && user.birthdayWishedYear !== now.getFullYear() && hour >= 7) {
+          bonds.slice(0, 3).forEach((bond) => {
+            const conversationId = get().addFriend(bond.characterId);
+            appendMessage(set, get, conversationId, themText(conversationId, pick(birthdayLines)(user.displayName)), {
+              countUnread: true,
+            });
+          });
+          set((s) => ({ user: { ...s.user, birthdayWishedYear: now.getFullYear() } }));
+        }
 
         if (!slot) return {};
         const slotKey = `${today}:${slot}`;
@@ -1455,7 +1497,7 @@ function scheduleReply(
   }));
 
   // A scripted line (a plan's acknowledgement) is one text; a free reply comes as a burst.
-  const lines = text ? [text] : pick(replyBursts);
+  const lines = text ? [text] : withInterest(pick(replyBursts), get().user.interests);
   const bond = get().relationships[conversation.characterId];
   const character = get().characters.find((c) => c.id === conversation.characterId);
   const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;

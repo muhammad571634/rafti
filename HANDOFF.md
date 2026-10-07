@@ -5,8 +5,9 @@ Foydalanuvchi lokal Claude Desktop'dan (Windows, `C:\Users\joray\BIMOBIMO`) **bu
 Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham shu faylga ko'chirildi
 (pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
 
-1. **Hozirgi oqim: F14 Profil va sozlamalar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F13 tayyor. F14 dan keyin F15. Oxirgi commit: `9f25328` (3D clay ikonkalar).
+1. **F1-F14 tayyor (F14 Profil 2026-10-07, bulut sessiyasida).** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15 yoki (b) original personajlar, va 3D ikonkalar
+   2-to'plami (foydalanuvchida tayyor, so'ralganda beradi). Pastdagi 4-bandga qarang.
 2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -19,11 +20,20 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
    6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
    7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
    8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
-3. **F14 uchun boshlang'ich ma'lumot:**
-   - `src/app/profile.tsx` bor (sozlamalar, "They reach out" o'chirgichlari); BIMOBIMO #130, #131, #133;
-   - qilinadi: profil to'ldirilganlik foizi, qiziqishlar, taklif kodi (F10 dagi `inviteCodeFor`), hisobni
-     o'chirish (tasdiq bilan). Til tanlash hozircha yashirin (bitta til). Profil allaqachon bor ekran —
-     kengaytirish, lekin yangi bo'limlar ko'p bo'lsa avval prototip ko'rsating.
+3. **F14 Profil — kodda tayyor** (BIMOBIMO #130, #131, #133). Foydalanuvchi "to'liq tayyorla" dedi, prototipsiz qurildi:
+   - `src/app/profile.tsx`: katta avatar va ism, "Edit profile" kartasi foiz chizig'i bilan, taklif kodi kartasi
+     (nusxa + "+50 ›" → Free gifts, u yerda qoidalar va "Have a code?"), Account: Membership, Free gifts;
+     til qatori faqat 2+ til bo'lsa ko'rinadi; eng pastda "Delete account" → markaziy tasdiq oynasi →
+     `deleteAccount()` store'ni boshlang'ich holatga qaytaradi (`getInitialState`) va `/onboarding` ga o'tadi
+     (server hisobni keyin o'chiradi);
+   - `src/app/edit-profile.tsx`: rasm (image picker, 2 MB gacha), Name, Pronouns, Birthday (oy+kun; yil 18+
+     javobidan, o'zgarmaydi), Job, Interests (24 tadan 10 tagacha), About me (150). Har qator o'z sheet'ida
+     saqlanadi, "Save changes" yo'q. Sheet'lar: `src/components/profile/field-sheets.tsx`, foiz chizig'i
+     `completion-meter.tsx`, qoidalar va ro'yxat `src/lib/profile.ts` (`profileCompletion`: 7 qism);
+   - zanjir: tug'ilgan kunda ertalab (7:00 dan) eng yaqin 3 do'st tabrik yozadi, yiliga bir marta
+     (`birthdayLines`, `user.birthdayWishedYear`); erkin javoblarning ~20% qiziqishlardan biri haqida savol bilan
+     tugaydi (`interestLines`). Server AI bo'lganda profil promptga beriladi.
+   - Bulutda Metro fayl o'zgarishini ko'rmay qolishi mumkin: `npx expo start --web --clear` bilan qayta ishga tushiring.
 4. **Ochiq ishlar (foydalanuvchi bilan kelishilgan, unutmang):**
    - **3D clay ikonkalar** — butun ilova uchun yangi ikonka uslubi. Chat "+" tayyor. Keyingi joylar tartibi,
      2-to'plam prompti: [`docs/icons-3d.md`](docs/icons-3d.md). Foydalanuvchi 2-to'plamni chizib `assets/raw/` ga
@@ -232,7 +242,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
       belgi o'zgarmadi);
     - qidiruv kartalarni olib tashlab, barcha dunyolardan tekis "N found" ro'yxatini ko'rsatadi;
     - `CharacterRow` umumiy komponentga chiqdi (`src/components/character-row.tsx`).
-  - Navbat: F14 Profil va sozlamalar.
+  - **F14 Profil — kodda tayyor** (tafsilot eng tepadagi KEYINGI QADAM 3-bandida).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

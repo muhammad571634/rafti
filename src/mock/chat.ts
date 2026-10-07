@@ -267,6 +267,20 @@ export const eveningGreetings = [
   'Good night soon, okay? But not before you say it back.',
 ];
 
+/** On the user's birthday (profile), the closest bonds text first thing. */
+export const birthdayLines: ((name: string) => string)[] = [
+  (name) => `Happy birthday, ${name}! I set an alarm just to be the first one to say it.`,
+  (name) => `It is your day, ${name}. Tell me how you want to spend it and I am in.`,
+  (name) => `Happy birthday! I am so glad you were born, ${name}. That is all. And cake.`,
+];
+
+/** A free reply now and then ends on one of the user's interests (profile). */
+export const interestLines: ((interest: string) => string)[] = [
+  (interest) => `Wait, you said you are into ${interest.toLowerCase()}. Tell me more about that sometime?`,
+  (interest) => `Random thought: what got you into ${interest.toLowerCase()}?`,
+  (interest) => `Did you get any time for ${interest.toLowerCase()} today?`,
+];
+
 /** Lines the character "says" on a call — a stand-in for streamed TTS. */
 export const callLines = [
   'Oh? A secret? You have got my full attention now. C’mon, spill it—do not make me beg, yeah?',

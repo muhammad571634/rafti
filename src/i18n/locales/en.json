@@ -658,7 +658,16 @@
     "version": "Version {{version}}",
     "sectionAccount": "Account",
     "sectionChat": "Chat",
-    "sectionAbout": "About"
+    "sectionAbout": "About",
+    "editProfile": "Edit profile",
+    "inviteCode": "Invite code",
+    "freeGifts": "Free gifts",
+    "deleteAccount": "Delete account",
+    "deleteTitle": "Delete account?",
+    "deleteBody": "Chats, diary pages, shells and call time are gone for good.",
+    "deleteConfirm": "Delete",
+    "cancel": "Cancel",
+    "copied": "Copied"
   },
   "errors": {
     "generic": "Something went wrong.",
@@ -833,5 +842,25 @@
     "night": "Night",
     "earlier": "30 minutes earlier",
     "later": "30 minutes later"
+  },
+  "editProfile": {
+    "title": "Edit profile",
+    "complete": "{{percent}}%",
+    "basics": "Basics",
+    "name": "Name",
+    "pronouns": "Pronouns",
+    "pronounOptions": {
+      "she": "She / her",
+      "he": "He / him",
+      "they": "They / them"
+    },
+    "birthday": "Birthday",
+    "born": "Born",
+    "job": "Job",
+    "interests": "Interests · {{count}}/{{max}}",
+    "about": "About me",
+    "save": "Save",
+    "photo": "Change photo",
+    "photoTooLarge": "That photo is too large"
   }
 }

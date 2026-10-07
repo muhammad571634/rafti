@@ -1,15 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { CompletionMeter } from '@/components/profile/completion-meter';
 import {
+  Button,
   Divider,
   Header,
   IconTile,
   ListRow,
+  PressableScale,
   Screen,
   SectionLabel,
   ShellBadge,
@@ -20,8 +24,11 @@ import {
 } from '@/components/ui';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
 import { shortDate } from '@/lib/format';
+import { inviteCodeFor } from '@/lib/invite';
+import { profileCompletion } from '@/lib/profile';
+import { INVITE_REWARD } from '@/mock';
 import { memberActive, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 import type { AppSettings } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -40,7 +47,10 @@ const REACH_OUT: { key: SwitchKey; icon: IoniconName }[] = [
   { key: 'nightCall', icon: 'call-outline' },
 ];
 
-/** Grouped settings on the canvas: account, how characters reach out, chat, about. */
+/**
+ * Who you are (photo, name, how full the profile is, invite code), then grouped
+ * settings: account, how characters reach out, chat, about; delete at the very end.
+ */
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -49,8 +59,29 @@ export default function ProfileScreen() {
   const wallet = useAppStore((s) => s.wallet);
   const settings = useAppStore((s) => s.settings);
   const setSetting = useAppStore((s) => s.setSetting);
+  const deleteAccount = useAppStore((s) => s.deleteAccount);
 
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const code = inviteCodeFor(user);
+  const percent = profileCompletion(user);
+  // One language for now: the picker shows up once there is a second one.
+  const canPickLanguage = SUPPORTED_LOCALES.length > 1;
+
+  const copyCode = async () => {
+    await Clipboard.setStringAsync(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
+
+  const confirmDelete = () => {
+    setDeleteOpen(false);
+    deleteAccount();
+    if (router.canDismiss()) router.dismissAll();
+    router.replace('/onboarding');
+  };
 
   const currentLocale = SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? i18n.language;
   const member = memberActive(wallet);
@@ -70,9 +101,11 @@ export default function ProfileScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.identity}>
-          <UserAvatar user={user} size={56} />
+          <PressableScale scaleTo={0.95} onPress={() => router.push('/edit-profile')}>
+            <UserAvatar user={user} size={64} />
+          </PressableScale>
           <View style={styles.flex}>
-            <Txt variant="h3" lines={1}>
+            <Txt variant="h2" lines={1}>
               {user.displayName}
             </Txt>
             <Txt variant="small" color={colors.textMuted} lines={1}>
@@ -80,6 +113,48 @@ export default function ProfileScreen() {
             </Txt>
           </View>
           <ShellBadge count={wallet.shells} showAdd onPress={() => router.push('/store/shell')} />
+        </View>
+
+        <PressableScale
+          scaleTo={0.98}
+          onPress={() => router.push('/edit-profile')}
+          accessibilityLabel={t('profile.editProfile')}
+          style={styles.card}>
+          <View style={styles.cardTop}>
+            <Txt variant="title">{t('profile.editProfile')}</Txt>
+            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+          </View>
+          <CompletionMeter percent={percent} />
+        </PressableScale>
+
+        <View style={[styles.card, styles.invite]}>
+          <View style={styles.flex}>
+            <Txt variant="caption" color={colors.textMuted}>
+              {t('profile.inviteCode')}
+            </Txt>
+            <Txt variant="figure" selectable>
+              {code}
+            </Txt>
+          </View>
+          <PressableScale
+            scaleTo={0.88}
+            hitSlop={8}
+            onPress={() => void copyCode()}
+            accessibilityLabel={copied ? t('profile.copied') : t('gifts.copyCode')}
+            style={styles.copy}>
+            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={18} color={colors.text} />
+          </PressableScale>
+          {/* The rules, the weekly progress and "Have a code?" live on Free gifts. */}
+          <PressableScale
+            scaleTo={0.94}
+            onPress={() => router.push('/gifts')}
+            accessibilityLabel={t('profile.freeGifts')}
+            style={styles.reward}>
+            <Txt variant="chip" color={colors.brandText}>
+              +{INVITE_REWARD}
+            </Txt>
+            <Ionicons name="chevron-forward" size={14} color={colors.brandText} />
+          </PressableScale>
         </View>
 
         <SectionLabel title={t('profile.sectionAccount')} />
@@ -96,12 +171,23 @@ export default function ProfileScreen() {
         />
         <Divider inset={ROW_INSET} />
         <ListRow
-          title={t('profile.language')}
-          left={icon('language-outline')}
-          meta={currentLocale}
+          title={t('profile.freeGifts')}
+          left={icon('gift-outline')}
           chevron
-          onPress={() => setLanguageOpen(true)}
+          onPress={() => router.push('/gifts')}
         />
+        {canPickLanguage ? (
+          <>
+            <Divider inset={ROW_INSET} />
+            <ListRow
+              title={t('profile.language')}
+              left={icon('language-outline')}
+              meta={currentLocale}
+              chevron
+              onPress={() => setLanguageOpen(true)}
+            />
+          </>
+        ) : null}
 
         <SectionLabel title={t('profile.greetings')} />
         {REACH_OUT.map(({ key, icon: iconName }, index) => (
@@ -126,7 +212,23 @@ export default function ProfileScreen() {
           left={icon('information-circle-outline')}
           meta={t('profile.version', { version: Constants.expoConfig?.version ?? '1.0.0' })}
         />
+
+        <PressableScale scaleTo={0.96} onPress={() => setDeleteOpen(true)} style={styles.delete}>
+          <Txt variant="smallStrong" color={colors.textMuted}>
+            {t('profile.deleteAccount')}
+          </Txt>
+        </PressableScale>
       </ScrollView>
+
+      <Sheet visible={deleteOpen} onClose={() => setDeleteOpen(false)} title={t('profile.deleteTitle')} center>
+        <Txt variant="body" color={colors.textSecondary} center style={styles.deleteBody}>
+          {t('profile.deleteBody')}
+        </Txt>
+        <View style={styles.deleteActions}>
+          <Button label={t('profile.deleteConfirm')} variant="danger" size="lg" full onPress={confirmDelete} />
+          <Button label={t('profile.cancel')} variant="ghost" size="lg" full onPress={() => setDeleteOpen(false)} />
+        </View>
+      </Sheet>
 
       <Sheet visible={languageOpen} onClose={() => setLanguageOpen(false)} title={t('profile.language')}>
         <View style={styles.sheetList}>
@@ -161,6 +263,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
+  card: {
+    marginHorizontal: space.lg,
+    marginTop: space.lg,
+    padding: space.lg,
+    gap: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+  },
+  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  invite: { flexDirection: 'row', alignItems: 'center', marginTop: space.md },
+  copy: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceAlt,
+  },
+  reward: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    marginLeft: space.sm,
+    paddingLeft: space.md,
+    paddingRight: space.sm,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySoft,
+  },
+  delete: { alignSelf: 'center', marginTop: space.xxl, padding: space.md },
+  deleteBody: { marginBottom: space.xl },
+  deleteActions: { gap: space.sm },
   // The sheet card pads its content; rows bring their own gutter.
   sheetList: { marginHorizontal: -space.xl },
 });

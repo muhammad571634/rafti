@@ -16,6 +16,8 @@ export {
   planFollowUp,
   boardReply,
   afterDateLine,
+  birthdayLines,
+  interestLines,
 } from './chat';
 export { characterDiaryPages, diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {

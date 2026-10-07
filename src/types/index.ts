@@ -280,7 +280,18 @@ export interface User {
   redeemedInvite?: string;
   /** When friends joined with this user's code (credited by the server later) */
   inviteCredits?: string[];
+  /** Profile details the characters can use; all optional, see `profileCompletion`. */
+  pronouns?: Pronouns;
+  /** "MM-DD": the year stays the one from the 18+ gate. */
+  birthday?: string;
+  job?: string;
+  interests?: string[];
+  about?: string;
+  /** Year of the last birthday the characters already celebrated. */
+  birthdayWishedYear?: number;
 }
+
+export type Pronouns = 'she' | 'he' | 'they';
 
 /** Once-a-day bookkeeping: login reward, greetings, calls, ads, wheel. */
 export interface DailyState {

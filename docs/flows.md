@@ -24,7 +24,7 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F11 Dates | done | Map of 5 places (level-locked), partner picker, 5 rounds of 3 answers with hearts, polaroid at the end (share +6), "Our dates" album, text after the date, diary page next morning | #9-#12, video A 13-21s |
 | F12 Chat "+" games | done | "+" grid of eight tinted icons, couple quiz (3 packs, live reveal, score card in chat), truth or dare wheel, daily calls (who and when) | #42-#48 |
 | F13 Find and profile | done | "All" first, a card per world with pages of three and page dots, world page, green phone badge for callable characters, flat search results | #56-#132 |
-| **F14 Profile and settings** | **next** | Exists. To build: completion %, invite code, language, delete account | #130-#133 |
-| F15 Create character | partial | Exists. To build: moderation, voice consent, no real people | #57-#58 |
+| F14 Profile and settings | done | Edit profile (photo, name, pronouns, birthday, job, 10 interests, about) with a completion meter, invite code card, free gifts row, delete account; birthday wishes and interest questions in chat; language row hidden while there is one language | #130-#133 |
+| **F15 Create character** | **next (user picks: catalogue path a or b)** | Exists. To build: moderation, voice consent, no real people | #57-#58 |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
