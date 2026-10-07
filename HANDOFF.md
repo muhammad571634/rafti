@@ -23,6 +23,26 @@ npx tsc --noEmit                # must be clean
 `../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
 `AGENT-START.md` section 6 is out of date (says F9) — this file wins.
 
+### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
+
+User's answers to the options: 1 Backend = **not now** (frontend design not finished);
+2 Edit character = **done**; 3 fixes = **done** (clean, in the shared component);
+4 Push = **research + plan written, waiting for approval**; plus the Today card must follow
+the last conversation = **done**.
+
+- Today hero: the character you last wrote to / spoke with on a call (`lastTalkedAt`,
+  `featuredFriend`); rules and the chain in `docs/today-hero.md`. 24 characters have no wide
+  scene yet: ready prompts in `docs/nano-banana-heroes.md` (user makes them in Nano Banana).
+- Edit character: Settings → Edit character (own creations only) → `/create-character?id=`.
+  Not clicked through with a real photo on web (the web image picker could not be fed in the
+  test); validation, prefill and the not-found guard were checked.
+- Fixed: `EmptyState compact` collapsed on web (`flex: 0` → `flex-basis: 0%`), which made the
+  mascot overlap the History card; History call tab no longer shows the shells hint.
+- Push: `docs/push-plan.md` (BIMOBIMO, Replika, Character.AI, Duolingo, store rules; 12 kinds,
+  day budget, two-step permission, pure planner + OS sync). **Next: the user answers its
+  section 5 questions, then build it.**
+- Still open: the real `SUPPORT_EMAIL` (asked the user).
+
 ### 1. DONE (2026-10-07, Desktop): the 23 character portraits are wired in
 
 All 40 characters now have a portrait (`assets/avatars/c_<id>.png`, raws in
