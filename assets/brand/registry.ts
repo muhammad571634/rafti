@@ -95,6 +95,20 @@ export const CLAY_ICONS = {
 
 export type ClayIconName = keyof typeof CLAY_ICONS;
 
+/**
+ * Bottom tab bar art, keyed by route name: the clay icon for the current tab and the
+ * same art in soft grey (`off`) for the others. Built by the script from
+ * assets/raw/icons-3d/tab-*.png.
+ */
+export const TAB_ICONS = {
+  index: { on: require('./icon3d-tab-home.png'), off: require('./icon3d-tab-home-off.png') },
+  chat: { on: require('./icon3d-tab-chat.png'), off: require('./icon3d-tab-chat-off.png') },
+  us: { on: require('./icon3d-tab-us.png'), off: require('./icon3d-tab-us-off.png') },
+  find: { on: require('./icon3d-tab-find.png'), off: require('./icon3d-tab-find-off.png') },
+} as const;
+
+export type TabIconName = keyof typeof TAB_ICONS;
+
 /** Rafti reaction stickers, in menu order. Cut from one sheet by the build script. */
 export const REACTION_STICKERS = {
   love: require('./reaction-love.png'),

@@ -80,3 +80,7 @@ board) were redrawn one by one with Grok Image 2.0 on Higgsfield (~$0.08 each), 
 light grey, references: the approved store render + `icons-3d-sheet.jpg`. Raws live in
 `assets/raw/icons-3d/<name>.png`; `python scripts/build-brand-art.py icons` cuts them and they
 replace the sheet cut of the same name everywhere the icon is used.
+
+Tab bar (2026-10-07): `tab-home`, `tab-chat`, `tab-us`, `tab-find` drawn the same way. The build
+script also writes `icon3d-tab-*-off.png` (the art in soft grey) for tabs that are not current;
+`TAB_ICONS` in `assets/brand/registry.ts`, 44px in `src/app/(tabs)/_layout.tsx`.

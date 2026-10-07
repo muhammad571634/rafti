@@ -1,13 +1,10 @@
+import { Image } from 'expo-image';
 import { Redirect, Tabs } from 'expo-router';
-import type { Icon } from 'phosphor-react-native';
-import { ChatsCircleIcon } from 'phosphor-react-native/src/icons/ChatsCircle';
-import { CompassIcon } from 'phosphor-react-native/src/icons/Compass';
-import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
-import { HouseIcon } from 'phosphor-react-native/src/icons/House';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { TAB_ICONS, type TabIconName } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { PressableScale, Txt } from '@/components/ui';
 import { useCharacterInitiative } from '@/hooks/use-character-initiative';
@@ -18,14 +15,8 @@ import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-const TAB_ICON = 25;
-/** One Phosphor glyph per tab: filled when current, outline otherwise. */
-const ICONS: Record<string, Icon> = {
-  index: HouseIcon,
-  chat: ChatsCircleIcon,
-  us: HeartIcon,
-  find: CompassIcon,
-};
+/** Clay tab art: a step down from the Home module icons (68), well above a line glyph. */
+const TAB_ICON = 44;
 
 export default function TabsLayout() {
   useCharacterInitiative();
@@ -51,8 +42,9 @@ export default function TabsLayout() {
 }
 
 /**
- * A flat white bar under a hairline. The current tab is ink with a filled glyph;
- * unread chats show as one small apricot dot rather than a number.
+ * The tab bar sits on the canvas with no line or fill. The current tab shows its clay
+ * icon in colour, the rest the same art in soft grey; unread chats show as one small
+ * apricot dot rather than a number.
  */
 function TabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
@@ -63,7 +55,7 @@ function TabBar({ state, navigation }: TabBarProps) {
     <View style={[styles.bar, { paddingBottom: insets.bottom || space.sm }]}>
       {state.routes.map((route, index) => {
         const focused = state.index === index;
-        const Glyph = ICONS[route.name] ?? ICONS.index;
+        const art = TAB_ICONS[(route.name in TAB_ICONS ? route.name : 'index') as TabIconName];
         const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
         const hasUnread = route.name === 'chat' && unread > 0;
         const tint = focused ? colors.tabActive : colors.tabInactive;
@@ -82,7 +74,7 @@ function TabBar({ state, navigation }: TabBarProps) {
               if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
             }}>
             <View>
-              <Glyph size={TAB_ICON} color={tint} weight={focused ? 'fill' : 'regular'} />
+              <Image source={focused ? art.on : art.off} style={styles.icon} contentFit="contain" />
               {hasUnread ? <View style={styles.dot} /> : null}
             </View>
             <Txt variant="tiny" color={tint} style={focused && styles.labelActive}>
@@ -103,27 +95,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     minHeight: TAB_BAR_HEIGHT,
-    paddingTop: space.sm,
-    backgroundColor: colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    paddingTop: space.xs,
+    backgroundColor: colors.bgPlain,
   },
+  icon: { width: TAB_ICON, height: TAB_ICON },
   item: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
+    gap: 1,
   },
   labelActive: { fontWeight: '600' },
   dot: {
     position: 'absolute',
-    top: -1,
-    right: -4,
+    top: 2,
+    right: 0,
     width: 8,
     height: 8,
     borderRadius: radius.pill,
     backgroundColor: colors.primary,
     borderWidth: 1.5,
-    borderColor: colors.surface,
+    borderColor: colors.bgPlain,
   },
 });

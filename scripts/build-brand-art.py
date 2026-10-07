@@ -520,6 +520,14 @@ def cut_icon(cell, glass=False):
 GLASS_ICONS = {'jar', 'hourglass'}
 
 
+def muted(icon):
+    """The resting tab: the same art in soft grey, so only the current tab has colour."""
+    grey = icon.convert('L').point(lambda v: round(105 + v * 0.45))
+    out = Image.merge('RGB', (grey, grey, grey))
+    out.putalpha(icon.getchannel('A'))
+    return out
+
+
 def build_icons_3d():
     names = []
     for path, sheet_names, rows in ICON_SHEETS:
@@ -544,6 +552,9 @@ def build_icons_3d():
         save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
         if name not in names:
             names.append(name)
+        # Tab bar icons also get the resting look for tabs that are not current.
+        if name.startswith('tab-'):
+            save(muted(icon), os.path.join(OUT, f'icon3d-{name}-off.png'), optimize=True)
     return names
 
 def build_sticker_derivatives():
