@@ -264,6 +264,7 @@
     "voiceCall": "Voice call",
     "characterMemories": "Memories",
     "characterSettings": "Character profile",
+    "editCharacter": "Edit character",
     "chatSettings": "Chat settings",
     "searchHistory": "Search messages",
     "changeBackground": "Chat background",
@@ -494,6 +495,8 @@
   },
   "createCharacter": {
     "title": "New character",
+    "editTitle": "Edit character",
+    "save": "Save",
     "name": "Name",
     "namePlaceholder": "Who are they?",
     "uploadVoicesBox": "3-5 clean clips, 1-3 minutes in total, under 10MB each",

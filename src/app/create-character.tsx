@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -17,6 +17,7 @@ import {
   MAX_SAMPLES,
   MAX_TRAITS,
   NAME_MAX,
+  reviewAfterEdit,
   ROLES,
   STYLES,
   TRAITS,
@@ -26,7 +27,16 @@ import {
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
-import type { CharacterCategory, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
+import type {
+  Character,
+  CharacterCategory,
+  CharacterGender,
+  CharacterRole,
+  SpeakingStyle,
+  VoicePreset,
+} from '@/types';
+
+const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
 const MAX_SAMPLE_BYTES = 10 * 1024 * 1024;
@@ -46,36 +56,71 @@ interface Sample {
  * speaking style, what they are to you, and a stock voice when there are no clips.
  * Every creation is an adult; the photo and a cloned voice need the creator's word
  * that they have the right to use them. Public ones wait for review.
+ *
+ * `?id=<character>` opens the same form to edit a character the user made: every field
+ * starts filled, the rights already given stand until the photo or the voice clips
+ * change, keeping a cloned voice costs nothing, and a public character goes back to
+ * review when what others see changes.
  */
 export default function CreateCharacterScreen() {
   const { t } = useTranslation();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const editId = Array.isArray(id) ? id[0] : id;
+  const editing = useAppStore((s) => (editId ? s.characters.find((c) => c.id === editId && !c.isOfficial) : undefined));
+
+  if (editId && !editing) {
+    return (
+      <Screen background={colors.bgPlain}>
+        <Header title={t('errors.notFound')} />
+      </Screen>
+    );
+  }
+  // Keyed so the form starts again from the stored character if it changes underneath.
+  return <CharacterForm key={editing?.id ?? 'new'} editing={editing} />;
+}
+
+function CharacterForm({ editing }: { editing?: Character }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const addCharacter = useAppStore((s) => s.addCharacter);
+  const updateCharacter = useAppStore((s) => s.updateCharacter);
   const spendShells = useAppStore((s) => s.spendShells);
 
-  const [imageUri, setImageUri] = useState<string | undefined>();
-  const [photoRights, setPhotoRights] = useState(false);
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState<CharacterGender | undefined>();
-  const [age, setAge] = useState('');
-  const [category, setCategory] = useState<CharacterCategory>('original');
-  const [traits, setTraits] = useState<string[]>([]);
-  const [style, setStyle] = useState<SpeakingStyle>('casual');
-  const [role, setRole] = useState<CharacterRole>('friend');
-  const [bio, setBio] = useState('');
-  const [greeting, setGreeting] = useState('');
-  const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>('preset');
-  const [preset, setPreset] = useState<VoicePreset | undefined>();
+  /** The character already has a cloned voice (made with clips, not a stock voice). */
+  const hasTrainedVoice = !!editing && !editing.voicePreset;
+  /** Tags the form has no chip for (seed or server tags): kept as they are on save. */
+  const [otherTags] = useState(() => (editing?.tags ?? []).filter((tag) => !isTrait(tag)));
+
+  const [imageUri, setImageUri] = useState<string | undefined>(editing?.avatarUri);
+  const [photoRights, setPhotoRights] = useState(!!editing?.avatarUri);
+  const [name, setName] = useState(editing?.name ?? '');
+  const [gender, setGender] = useState<CharacterGender | undefined>(editing?.gender);
+  const [age, setAge] = useState(editing?.age != null ? String(editing.age) : '');
+  const [category, setCategory] = useState<CharacterCategory>(editing?.category ?? 'original');
+  const [traits, setTraits] = useState<string[]>(() => (editing?.tags ?? []).filter(isTrait));
+  const [style, setStyle] = useState<SpeakingStyle>(editing?.speakingStyle ?? 'casual');
+  const [role, setRole] = useState<CharacterRole>(editing?.role ?? 'friend');
+  const [bio, setBio] = useState(editing?.bio ?? '');
+  const [greeting, setGreeting] = useState(editing?.greeting ?? '');
+  const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>(hasTrainedVoice ? 'clone' : 'preset');
+  const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
   const [samples, setSamples] = useState<Sample[]>([]);
-  const [voiceConsent, setVoiceConsent] = useState(false);
-  const [isPublic, setIsPublic] = useState(false);
+  const [voiceConsent, setVoiceConsent] = useState(hasTrainedVoice);
+  const [isPublic, setIsPublic] = useState(editing?.visibility === 'public');
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);
 
-  const voice: VoiceChoice | null =
-    voiceMode === 'clone' ? { kind: 'clone', samples: samples.length } : preset ? { kind: 'preset', preset } : null;
-  const cost = voiceMode === 'clone' ? shellCosts.characterVoiceClone : 0;
+  const keepsTrainedVoice = voiceMode === 'clone' && hasTrainedVoice && samples.length === 0;
+  const voice: VoiceChoice | null = keepsTrainedVoice
+    ? { kind: 'trained' }
+    : voiceMode === 'clone'
+      ? { kind: 'clone', samples: samples.length }
+      : preset
+        ? { kind: 'preset', preset }
+        : null;
+  // Only a new clone is paid for.
+  const cost = voiceMode === 'clone' && !keepsTrainedVoice ? shellCosts.characterVoiceClone : 0;
   const problems = checkCreation({
     name,
     age,
@@ -108,6 +153,8 @@ export default function CreateCharacterScreen() {
       .filter((a) => (a.size ?? 0) <= MAX_SAMPLE_BYTES)
       .map((a) => ({ name: a.name, uri: a.uri, size: a.size }));
     setSamples((prev) => [...prev, ...accepted].slice(0, MAX_SAMPLES));
+    // New clips make a new voice; the word given for the old one does not cover them.
+    if (editing && accepted.length > 0) setVoiceConsent(false);
   };
 
   const pickImage = async () => {
@@ -122,46 +169,68 @@ export default function CreateCharacterScreen() {
     if ((asset.fileSize ?? 0) > MAX_IMAGE_BYTES) return setError(t('createCharacter.imageTooLarge'));
     setError(null);
     setImageUri(asset.uri);
+    // A new picture needs its own rights check.
+    if (editing) setPhotoRights(false);
   };
 
-  const create = () => {
+  /** What the form says about the character; creating and saving write the same fields. */
+  const fields = () => {
+    const clean = name.trim();
+    return {
+      name: clean,
+      bio: bio.trim() || t('createCharacter.defaultBio', { traits: traits.join(', ') || t('createCharacter.styles.casual') }),
+      category,
+      gender,
+      avatarUri: imageUri,
+      greeting: greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
+      tags: [...traits, ...otherTags],
+      age: Number(age),
+      speakingStyle: style,
+      role,
+      voicePreset: voiceMode === 'preset' ? preset : undefined,
+      visibility: isPublic ? ('public' as const) : ('private' as const),
+    };
+  };
+
+  const save = (character: Character) => {
+    const next = fields();
+    const seenByOthers =
+      next.name !== character.name ||
+      next.bio !== character.bio ||
+      next.greeting !== character.greeting ||
+      next.avatarUri !== character.avatarUri;
+    updateCharacter(character.id, { ...next, review: reviewAfterEdit(character, isPublic, seenByOthers) });
+    setCreating(false);
+    router.back();
+  };
+
+  const submit = () => {
     if (problems.length > 0) return setError(t(`createCharacter.problems.${problems[0]}`));
     if (cost > 0 && !spendShells(cost, 'voiceClone')) return setPaywall(cost);
 
     setCreating(true);
     const finish = () => {
-      const clean = name.trim();
+      if (editing) return save(editing);
       const { conversationId } = addCharacter({
-        name: clean,
+        ...fields(),
         handle: '@you',
-        bio: bio.trim() || t('createCharacter.defaultBio', { traits: traits.join(', ') || t('createCharacter.styles.casual') }),
-        category,
-        gender,
         series: 'My Creations',
-        avatarUri: imageUri,
         accentIndex: Math.floor(Math.random() * 6),
         voiceReady: true,
         isOfficial: false,
-        greeting: greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
-        tags: traits,
-        age: Number(age),
-        speakingStyle: style,
-        role,
-        voicePreset: voiceMode === 'preset' ? preset : undefined,
-        visibility: isPublic ? 'public' : 'private',
         review: isPublic ? 'pending' : undefined,
       });
       setCreating(false);
       router.replace(`/chat/${conversationId}`);
     };
-    // A cloned voice trains first (a server job later); a stock voice is ready now.
-    if (voiceMode === 'clone') setTimeout(finish, CLONE_MS);
+    // A new cloned voice trains first (a server job later); anything else is ready now.
+    if (cost > 0) setTimeout(finish, CLONE_MS);
     else finish();
   };
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('createCharacter.title')} />
+      <Header title={t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -389,12 +458,14 @@ export default function CreateCharacterScreen() {
             label={
               creating
                 ? t('createCharacter.creating')
-                : cost > 0
+                : editing && cost === 0
+                  ? t('createCharacter.save')
+                  : cost > 0
                   ? t('createCharacter.create', { count: cost })
                   : t('createCharacter.createFree')
             }
             size="lg"
-            onPress={create}
+            onPress={submit}
             loading={creating}
             full
             style={problems.length > 0 && styles.dim}

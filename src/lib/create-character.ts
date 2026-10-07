@@ -1,4 +1,4 @@
-import type { CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
+import type { Character, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
 
 /**
  * F15 "create your own character": the choices on the form and the checks that run
@@ -39,7 +39,11 @@ export const ROLES: CharacterRole[] = ['friend', 'crush', 'partner', 'mentor', '
 export const VOICES: VoicePreset[] = ['warm', 'bright', 'soft', 'deep', 'calm', 'lively'];
 export const GENDERS: CharacterGender[] = ['male', 'female'];
 
-export type VoiceChoice = { kind: 'preset'; preset: VoicePreset } | { kind: 'clone'; samples: number };
+/** `trained`: a voice cloned earlier, kept as it is while editing. */
+export type VoiceChoice =
+  | { kind: 'preset'; preset: VoicePreset }
+  | { kind: 'clone'; samples: number }
+  | { kind: 'trained' };
 
 export interface CreationInput {
   name: string;
@@ -98,4 +102,19 @@ export function checkCreation(input: CreationInput): CreationProblem[] {
   if (hits(MINOR, text)) problems.push('minors');
   if (hits(EXPLICIT, text)) problems.push('explicit');
   return problems;
+}
+
+/**
+ * Review state after an edit. Private characters need none. A public one goes back to
+ * review when it was just made public or something others see changed; otherwise it
+ * keeps the verdict it had.
+ */
+export function reviewAfterEdit(
+  before: Pick<Character, 'visibility' | 'review'>,
+  isPublic: boolean,
+  seenByOthersChanged: boolean,
+): Character['review'] {
+  if (!isPublic) return undefined;
+  if (before.visibility !== 'public' || seenByOthersChanged) return 'pending';
+  return before.review;
 }

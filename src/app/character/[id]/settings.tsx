@@ -25,6 +25,7 @@ import { shortDate, shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
+import type { Character } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -32,6 +33,7 @@ type ActionKey =
   | 'voiceCall'
   | 'characterMemories'
   | 'characterSettings'
+  | 'editCharacter'
   | 'chatSettings'
   | 'searchHistory'
   | 'changeBackground'
@@ -56,6 +58,8 @@ const GROUPS: { title: string; actions: { key: ActionKey; clay?: ClayIconName; i
     actions: [
       { key: 'characterMemories', clay: 'jar' },
       { key: 'characterSettings', clay: 'wand' },
+      // Only on characters the user made (see `visible`).
+      { key: 'editCharacter', clay: 'pencil' },
     ],
   },
   {
@@ -69,6 +73,9 @@ const GROUPS: { title: string; actions: { key: ActionKey; clay?: ClayIconName; i
 ];
 
 const ROW_ICON = 34;
+
+/** Seed characters cannot be edited; the user's own creations can. */
+const visible = (key: ActionKey, character: Character) => key !== 'editCharacter' || !character.isOfficial;
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -125,6 +132,8 @@ export default function CharacterSettingsScreen() {
         return router.push(`/character/${character.id}/memories`);
       case 'characterSettings':
         return router.push(`/character/${character.id}`);
+      case 'editCharacter':
+        return router.push({ pathname: '/create-character', params: { id: character.id } });
       case 'chatSettings':
         return setChatSettingsOpen(true);
       case 'searchHistory':
@@ -204,7 +213,7 @@ export default function CharacterSettingsScreen() {
         {GROUPS.map((group) => (
           <View key={group.title}>
             <SectionLabel title={t(`characterSettings.${group.title}`)} />
-            {group.actions.map((action, i) => (
+            {group.actions.filter((action) => visible(action.key, character)).map((action, i) => (
               <View key={action.key}>
                 {i > 0 ? <Divider inset={space.lg + ROW_ICON + space.md} /> : null}
                 <ListRow

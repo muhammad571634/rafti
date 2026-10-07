@@ -207,6 +207,8 @@ interface AppState {
     firstAsk: string;
   }) => string;
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
+  /** Edits a character the user made; seed characters are not editable. */
+  updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
   resetRelationship: (characterId: string) => void;
   setBackground: (characterId: string, backgroundId: string) => void;
   setNickname: (characterId: string, nickname: string) => void;
@@ -667,6 +669,11 @@ export const useAppStore = create<AppState>()(
         const conversationId = get().addFriend(characterId);
         return { characterId, conversationId };
       },
+
+      updateCharacter: (characterId, patch) =>
+        set((s) => ({
+          characters: s.characters.map((c) => (c.id === characterId && !c.isOfficial ? { ...c, ...patch } : c)),
+        })),
 
       resetRelationship: (characterId) =>
         set((s) => {
