@@ -1,6 +1,8 @@
 # Nano Banana: Today hero scenes, ready to copy
 
-## Redo (2026-10-07): 10 scenes
+## Redo (2026-10-07): 10 scenes — done, all 40 characters have a scene
+
+Kept as a record of the single-reference prompt, which worked where two references did not.
 
 14 scenes are in the app (Rowan, Jun, Felix, Vesper, Rhys, Lyra, Orin, Haze, Dex, Juno, Marco,
 Gideon, Hugo, Cole). In 8 others Nano Banana drew **Sol from the second reference** instead of

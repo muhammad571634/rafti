@@ -43,9 +43,8 @@ immediately; there is nothing to refresh.
 Name, "N days together" (the day you met is day 1), the bond level chip. The whole card
 opens that chat.
 
-## Pictures still missing
+## Pictures
 
-40 characters have portraits; 30 have wide scenes. The other 10 (Noah, Tessa, Kael, Corvin,
-Ari, Cass, Ivy, Ren, Nadia, Rio) use the cropped portrait until their scene is redone: prompts at
-the top of `docs/nano-banana-heroes.md`,
-files go to `assets/raw/heroes/c_<id>.png`, then `python scripts/build-brand-art.py characters`.
+All 40 characters have a portrait and a wide scene (2026-10-07). A created character uses its
+photo. New scenes: prompts in `docs/nano-banana-heroes.md` (attach the portrait only), files to
+`assets/raw/heroes/c_<id>.png`, then `python scripts/build-brand-art.py characters`.

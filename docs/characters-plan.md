@@ -3,7 +3,7 @@
 Status: **approved and in the app** (2026-10-07): all 24 are in `src/mock/characters.ts`
 with a `gender` field (Find has an Everyone / Him / Her filter). Portraits: **all 24 done**
 (Nano Banana, wired 2026-10-07; raw files in `assets/raw/avatars/`). Hero scenes for the new 24:
-14 in the app (2026-10-07); 10 to redo, see `docs/nano-banana-heroes.md` (the portrait is used meanwhile).
+all 24 in the app (2026-10-07); every character has a portrait and a scene.
 
 Each of the four worlds grows to 10 characters. Every character is an adult (age given),
 an original Rafti creation: no real person, no idol, actor or character from another

@@ -45,9 +45,8 @@ the last conversation = **done**.
 - Profile → Notifications screen built from the approved prototype (artifact
   https://claude.ai/artifact/1Zm9bcWHmJ1XXNr8kCtypx). Gemini is building the Android dev build
   (`docs/agent-tasks/android-dev-build.md`; its result goes at the end of that file).
-- Hero scenes: 14 of 24 wired (30 of 40 total). 10 to redo with single-reference prompts
-  (`docs/nano-banana-heroes.md` top); unused files sit untracked in `assets/raw/heroes-review/`
-  and `assets/raw/heroes-rejected/`.
+- Hero scenes: all 40 characters have one. Unused renders sit untracked in
+  `assets/raw/heroes-review/` and `assets/raw/heroes-rejected/` (the user's to keep or delete).
 - Next candidates: the notification image
   (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
