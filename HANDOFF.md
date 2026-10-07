@@ -1,37 +1,64 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-## ▶ KEYINGI QADAM — shu yerdan boshlang (2026-10-07)
-Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
-o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
+## ▶ KEYINGI QADAM — shu yerdan boshlang (2026-10-07, bulutga o'tish)
+Foydalanuvchi lokal Claude Desktop'dan (Windows, `C:\Users\joray\BIMOBIMO`) **bulutdagi Claude Code**'ga o'tdi.
+Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham shu faylga ko'chirildi
+(pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
 
 1. **Hozirgi oqim: F14 Profil va sozlamalar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F13 tayyor. F14 dan keyin F15.
-2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
+   F1-F13 tayyor. F14 dan keyin F15. Oxirgi commit: `9f25328` (3D clay ikonkalar).
+2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
    2. Ilovadagi mavjud kodni ko'ring, nima bor va nima yo'qligini ajrating.
-   3. Butunlay yangi ekran bo'lsa, avval HTML prototip ko'rsating va tasdiq oling. Mavjud ekranni
-      kengaytirish bo'lsa, foydalanuvchi to'g'ridan-to'g'ri kodga ruxsat bergan ("next" = davom et).
+   3. Butunlay yangi ekran bo'lsa, avval HTML prototip (claude.ai Artifact) ko'rsating va tasdiq oling.
+      Mavjud ekranni kengaytirish bo'lsa, to'g'ridan-to'g'ri kodga ruxsat bor ("next" = davom et).
    4. Kod yozing. Mantiq zanjirga ulanadi: oqim avvalgi va keyingi oqimga ta'sir qiladi
-      (masalan, chat → kundalik, qo'ng'iroq → yaqinlik, reja → eslatma).
+      (chat → kundalik, uchrashuv → yaqinlik + ertasi kundalik, reja → eslatma, ulashish → +6).
    5. `npx tsc --noEmit` toza o'tadi; `npx expo start --web` va brauzerda 375×812 tekshiriladi.
    6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
    7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
    8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
-3. **Ikonkalar (2026-10-07, foydalanuvchi tanlovi):** butun ilovada funksiya kirish nuqtalari uchun **3D clay
-   ikonkalar** (Nano Banana). Chat "+" paneli tayyor (`ClayIcon`, `CLAY_ICONS`). Qolgan joylar tartibi, qaysi rasm
-   bor va qaysi biri yangi to'plamda chiziladi, 2-to'plam prompti: [`docs/icons-3d.md`](docs/icons-3d.md).
-   Kesish: `python scripts/build-brand-art.py icons`. Mayda UI belgilari (orqaga, yopish, tablar) chiziqli qoladi.
-3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
-   qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
-   munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F14 uchun boshlang'ich ma'lumot:**
-   - `src/app/profile.tsx` bor (sozlamalar, til, "They reach out" o'chirgichlari); BIMOBIMO #130, #131, #133;
-   - qilinadi: profil to'ldirilganlik foizi, qiziqishlar, taklif kodi (F10 dagi `inviteCodeFor` ni ko'rsatish),
-     hisobni o'chirish (tasdiq bilan). Til tanlash hozircha yashirin (bitta til).
-5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
-   `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
-   eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
+3. **F14 uchun boshlang'ich ma'lumot:**
+   - `src/app/profile.tsx` bor (sozlamalar, "They reach out" o'chirgichlari); BIMOBIMO #130, #131, #133;
+   - qilinadi: profil to'ldirilganlik foizi, qiziqishlar, taklif kodi (F10 dagi `inviteCodeFor`), hisobni
+     o'chirish (tasdiq bilan). Til tanlash hozircha yashirin (bitta til). Profil allaqachon bor ekran —
+     kengaytirish, lekin yangi bo'limlar ko'p bo'lsa avval prototip ko'rsating.
+4. **Ochiq ishlar (foydalanuvchi bilan kelishilgan, unutmang):**
+   - **3D clay ikonkalar** — butun ilova uchun yangi ikonka uslubi. Chat "+" tayyor. Keyingi joylar tartibi,
+     2-to'plam prompti: [`docs/icons-3d.md`](docs/icons-3d.md). Foydalanuvchi 2-to'plamni chizib `assets/raw/` ga
+     qo'yadi → `python scripts/build-brand-art.py icons` → Home Explore'dan boshlab ulanadi.
+   - **Personajlar katalogi** (foydalanuvchi so'ragan, 2026-10-07): BIMOBIMO'dagi real idol/franchise personajlar
+     bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
+     personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga
+     oshirish (har dunyoda 8-10), rasmlarni foydalanuvchi Nano Banana'da chizadi, bio'ni agent yozadi.
+     Foydalanuvchi hali qaysi biridan boshlashni tanlamagan — F14 dan keyin so'rang.
+   - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
+5. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
+   ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
+   to'q sariq tugma; mint faqat munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
+   Yozish maydoni bor sheet'larda `Sheet avoidKeyboard`, maydonga `autoFocus` qo'ymang.
+6. **Muhit (bulut):**
+   - Repo: `muhammad571634/rafti` (public), branch **`local-work`**. Strategiya hujjatlari: private
+     `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown` — repo yonidagi `../rafti-research/` ga
+     klon qilinadi (agar ruxsat bo'lmasa, foydalanuvchidan GitHub kirishini so'rang). `#100`, `#102-#133`
+     skrinshotlari `muhammad571634/rafti-research-2` da.
+   - Expo typed routes ba'zan eskirib `tsc` yiqiladi (`/board/index` yoki yangi marshrut ko'rinmaydi): dev serverni
+     to'xtatib, Metro keshi (`$TMPDIR/metro-cache`, `metro-file-map-*`) va `.expo/types/router.d.ts` ni o'chirib,
+     qayta ishga tushiring. Marshrutga o'tishda `{ pathname: '/x/[id]', params }` shakli bunga chidamliroq.
+   - `package-lock.json` lokalda o'zgargan holda qolgan edi, commit qilinmagan (foydalanuvchiniki emas, tegmang).
+
+## Foydalanuvchi afzalliklari (lokal xotiradan ko'chirildi, 2026-10-07)
+- **Animatsiya:** popup/sheet'lar animatsiyasiz darhol chiqadi; yozyapti nuqtalari, ovoz to'lqini va boshqa
+  harakatlar qoladi. "Animatsiyani o'zgartir" desa — faqat ko'rsatilganini o'zgartiring, qolganini so'rang.
+- **Minimal matn:** ekranlarda faqat sarlavha, ism, raqam, ikonka. Qoida tushuntirish kerak bo'lsa — ikonka
+  ortidagi info sheet'da, qisqa. Tugma matnlari qisqa ("Claim +60").
+- **Rasmlar:** foydalanuvchi Gemini (Nano Banana) da o'zi chizadi — prompt bering, uslub namunasini biriktirishni
+  ayting. Alternativa: Higgsfield API (`HF_CREDENTIALS` env, `xai/grok-imagine-image-2.0`, ~$0.08/rasm; foydalanuvchi
+  uni "Hugging Face" deb ataydi). Qoida: bitta sinov rasm, ko'rsating, keyin soni va narxi aytilgan to'plam.
+- **Animatsiya fayllari:** faqat LottieFiles (HyperFrames rad etilgan). Web uchun `@lottiefiles/dotlottie-react` kerak.
+- **Personajlar:** real odamlar va boshqa kompaniya qahramonlari yo'q; hamma personaj kattalar (18+).
+- **Javob uslubi:** o'zbekcha, qisqa; tugagach "nima qilindi / BIMOBIMO'dan farqi / keyingi qadam".
 
 
 ## Ish qoidalari (foydalanuvchi bilan)
