@@ -174,8 +174,39 @@ export interface ScheduleItem {
 
 export type MemberPlan = 'basic' | 'pro' | 'quarterly';
 
+/** Why the shell balance moved; drives the line in the account history. */
+export type LedgerReason =
+  | 'welcome'
+  | 'daily'
+  | 'expired'
+  | 'ad'
+  | 'spin'
+  | 'purchase'
+  | 'chat'
+  | 'voice'
+  | 'photo'
+  | 'note'
+  | 'date'
+  | 'photoBooth'
+  | 'voiceClone'
+  | 'other';
+
+/** One line in the shell history. Positive amounts are credits. */
+export interface LedgerEntry {
+  id: string;
+  at: string;
+  amount: number;
+  reason: LedgerReason;
+  characterId?: string;
+}
+
 export interface Wallet {
   shells: number;
+  /**
+   * The part of `shells` that came from today's check-in. It is spent first and
+   * whatever is left expires at midnight; bought shells never expire.
+   */
+  free?: { day: string; amount: number };
   /** Photo Booth currency */
   film: number;
   isMember: boolean;

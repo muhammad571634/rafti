@@ -65,7 +65,17 @@
     - xabarni uzoq bosish menyusi: 6 reaksiya, Copy (`expo-clipboard`), Delete for me; reaksiya pufak burchagida;
     - xabar yuborilganda chig'anoq belgisidan "-1" ko'tarilib yo'qoladi (narx ko'rinadi);
     - ro'yxatdan o'tilgan kuni boshqa personajlar o'zi qo'ng'iroq qilmaydi (birinchi kun yangi do'stniki).
-  - Navbat: F4/F5 chig'anoq tugashi va hisob tarixi, F7 munosabat v2.
+  - **F4/F5 — kodda tayyor** (BIMOBIMO #2-#8):
+    - har bir chig'anoq harakati tarixga yoziladi (`ledger`, `LedgerEntry`, store'dagi `log()`; 6 oy saqlanadi);
+    - kunlik check-in chig'anoqlari (`wallet.free`) birinchi sarflanadi va yarim tunda tugaydi, tarixda
+      "Unused free shells expired" bo'lib yoziladi; sotib olinganlar tugamaydi (`expireFreeShells`);
+    - `/store/ledger` ekrani: kunlar bo'yicha, bir kunda bitta personaj bilan xabarlar bitta qatorga yig'iladi;
+      do'kon sarlavhasidagi chek belgisi orqali ochiladi; Home'dagi sovg'a kartasida "N free left · gone at midnight";
+    - paywall: reklama (+10) va g'ildirak chatdan chiqmasdan; yozilgan matn saqlanadi;
+    - ketma-ket yuborilgan xabarlarga javoblar navbat bilan keladi, aralashmaydi (`replyingUntil`).
+  - **Rafti reaksiya stikerlari:** foydalanuvchi Nano Banana'da 3x3 varaq chizdi (love, laugh, wow, sad, hyped,
+    thumbs up). Fayl hali repoda yo'q: kelganda kesib, `assets/brand/` ga qo'yib, chat menyusidagi emoji o'rniga ulash.
+  - Navbat: F7 munosabat v2 (5 bosqich), F6 qo'ng'iroq daqiqalari.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

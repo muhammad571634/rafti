@@ -51,6 +51,8 @@ import type {
   DailyState,
   CharacterDiaryPage,
   DiaryEntry,
+  LedgerEntry,
+  LedgerReason,
   MemberPlan,
   MemoryItem,
   MemorySource,
@@ -117,6 +119,8 @@ interface AppState {
   /** Ids of character pages the user has opened, for the "New page" mark. */
   diaryPagesRead: string[];
   notes: SecretNote[];
+  /** Shell history, newest first */
+  ledger: LedgerEntry[];
   calls: CallRecord[];
   moments: Moment[];
   schedules: ScheduleItem[];
@@ -165,8 +169,10 @@ interface AppState {
   dismissLevelUp: () => void;
 
   /* economy */
-  spendShells: (amount: number) => boolean;
-  addShells: (amount: number) => void;
+  spendShells: (amount: number, reason?: LedgerReason, characterId?: string) => boolean;
+  addShells: (amount: number, reason?: LedgerReason) => void;
+  /** Removes yesterday's unspent check-in shells. Safe to call often. */
+  expireFreeShells: () => void;
   claimDailyLogin: () => number;
   dismissDailyReward: () => void;
   watchAd: () => number;
@@ -219,6 +225,7 @@ type PersistedKeys =
   | 'characterDiary'
   | 'diaryPagesRead'
   | 'notes'
+  | 'ledger'
   | 'calls'
   | 'moments'
   | 'schedules'
@@ -323,6 +330,7 @@ export const useAppStore = create<AppState>()(
       characterDiary: seedCharacterDiary,
       diaryPagesRead: [],
       notes: seedNotes,
+      ledger: [],
       calls: seedCalls,
       moments: seedMoments,
       schedules: seedSchedules,
@@ -342,7 +350,7 @@ export const useAppStore = create<AppState>()(
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage)) return 'noShells';
+        if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -382,7 +390,7 @@ export const useAppStore = create<AppState>()(
       sendVoice: (conversationId, durationSec, transcript) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.voiceMessage)) return 'noShells';
+        if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -401,7 +409,7 @@ export const useAppStore = create<AppState>()(
       sendImage: (conversationId, imageUri) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage)) return 'noShells';
+        if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -506,9 +514,9 @@ export const useAppStore = create<AppState>()(
       completeOnboarding: ({ name, birthYear, characterId, notifications, firstAsk }) => {
         set((s) => ({
           user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
-          wallet: { ...s.wallet, shells: s.wallet.shells + WELCOME_SHELLS },
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
+        get().addShells(WELCOME_SHELLS, 'welcome');
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });
@@ -594,27 +602,57 @@ export const useAppStore = create<AppState>()(
 
       /* ── economy ──────────────────────────────────────────────────────── */
 
-      spendShells: (amount) => {
+      spendShells: (amount, reason = 'other', characterId) => {
+        get().expireFreeShells();
         const { wallet } = get();
         if (wallet.shells < amount) return false;
-        set({ wallet: { ...wallet, shells: wallet.shells - amount } });
+        const today = todayKey();
+        // Today's free shells go first, so bought ones last longer.
+        const free =
+          wallet.free && wallet.free.day === today
+            ? { ...wallet.free, amount: Math.max(0, wallet.free.amount - amount) }
+            : wallet.free;
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells - amount, free },
+          ledger: log(s.ledger, -amount, reason, characterId),
+        }));
         return true;
       },
 
-      addShells: (amount) => set((s) => ({ wallet: { ...s.wallet, shells: s.wallet.shells + amount } })),
+      addShells: (amount, reason = 'purchase') =>
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells + amount },
+          ledger: log(s.ledger, amount, reason),
+        })),
+
+      expireFreeShells: () => {
+        const { wallet } = get();
+        const free = wallet.free;
+        if (!free || free.day >= todayKey()) return;
+        const gone = Math.min(free.amount, wallet.shells);
+        // Booked at the midnight they ran out, so the history reads in order.
+        const midnight = dateFromKey(free.day);
+        midnight.setDate(midnight.getDate() + 1);
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells - gone, free: undefined },
+          ledger: gone > 0 ? log(s.ledger, -gone, 'expired', undefined, midnight.toISOString()) : s.ledger,
+        }));
+      },
 
       claimDailyLogin: () => {
+        get().expireFreeShells();
         const today = todayKey();
-        const { daily, wallet } = get();
+        const { daily } = get();
         const { day, claimed } = checkInStatus(daily, today);
         if (claimed) return 0;
 
         const amount = rollCheckIn(day);
-        set({
-          daily: { ...daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
-          wallet: { ...wallet, shells: wallet.shells + amount },
+        set((s) => ({
+          daily: { ...s.daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
+          wallet: { ...s.wallet, shells: s.wallet.shells + amount, free: { day: today, amount } },
+          ledger: log(s.ledger, amount, 'daily'),
           dailyReward: { amount, day },
-        });
+        }));
         return amount;
       },
 
@@ -630,6 +668,7 @@ export const useAppStore = create<AppState>()(
         set((s) => ({
           daily: { ...s.daily, adsDay: today, adsWatched: watched + 1 },
           wallet: { ...s.wallet, shells: s.wallet.shells + AD_REWARD },
+          ledger: log(s.ledger, AD_REWARD, 'ad'),
         }));
         return AD_REWARD;
       },
@@ -655,6 +694,7 @@ export const useAppStore = create<AppState>()(
             ...(free ? {} : { adsDay: today, adsWatched: adsWatched + 1 }),
           },
           wallet: { ...s.wallet, shells: s.wallet.shells + reward },
+          ledger: log(s.ledger, reward, 'spin'),
         }));
         return { index, reward };
       },
@@ -731,7 +771,7 @@ export const useAppStore = create<AppState>()(
       exchangeNote: (noteId) => {
         const note = get().notes.find((n) => n.id === noteId);
         if (!note || note.status !== 'ready' || !note.myNote.trim()) return 'notReady';
-        if (!get().spendShells(shellCosts.secretNote)) return 'noShells';
+        if (!get().spendShells(shellCosts.secretNote, 'note', note.characterId)) return 'noShells';
 
         set((s) => ({
           notes: s.notes.map((n) => (n.id === noteId ? { ...n, status: 'exchanged' } : n)),
@@ -802,7 +842,7 @@ export const useAppStore = create<AppState>()(
       startDate: (characterId, cost, levelRequired, title) => {
         const bond = get().relationships[characterId];
         if (!bond || bond.level < levelRequired) return 'locked';
-        if (!get().spendShells(cost)) return 'noShells';
+        if (!get().spendShells(cost, 'date', characterId)) return 'noShells';
 
         const conversationId = get().addFriend(characterId);
         appendMessage(set, get, conversationId, {
@@ -823,7 +863,7 @@ export const useAppStore = create<AppState>()(
       },
 
       takePhoto: (characterId) => {
-        if (!get().spendShells(shellCosts.photoBooth)) return 'noShells';
+        if (!get().spendShells(shellCosts.photoBooth, 'photoBooth', characterId)) return 'noShells';
         get().addIntimacy(characterId, INTIMACY.photo);
         addMoment(set, characterId, 'photo');
         return 'ok';
@@ -956,6 +996,7 @@ export const useAppStore = create<AppState>()(
         characterDiary: s.characterDiary,
         diaryPagesRead: s.diaryPagesRead,
         notes: s.notes,
+        ledger: s.ledger,
         calls: s.calls,
         moments: s.moments,
         schedules: s.schedules,
@@ -969,6 +1010,7 @@ export const useAppStore = create<AppState>()(
         diary
           .filter((d) => d.sharedWithCharacterId && !d.reply)
           .forEach((d) => answerDiary(useAppStore.setState, d.id));
+        useAppStore.getState().expireFreeShells();
         useAppStore.getState().writeDueDiaryPages();
         useAppStore.setState({ hydrated: true });
       },
@@ -1004,9 +1046,24 @@ type Getter = () => AppState;
 type RawSetter = (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void;
 
 /** Members chat for free; everyone else spends shells per message. */
-function chargeMessage(get: Getter, cost: number) {
+function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
   if (memberActive(get().wallet)) return true;
-  return get().spendShells(cost);
+  const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+  return get().spendShells(cost, reason, characterId);
+}
+
+/** History is kept for six months; older lines drop off. */
+const LEDGER_DAYS = 183;
+
+function log(
+  ledger: LedgerEntry[],
+  amount: number,
+  reason: LedgerReason,
+  characterId?: string,
+  at = new Date().toISOString(),
+): LedgerEntry[] {
+  const cutoff = Date.now() - LEDGER_DAYS * 86_400_000;
+  return [{ id: uid('l'), at, amount, reason, characterId }, ...ledger.filter((e) => Date.parse(e.at) >= cutoff)];
 }
 
 function appendMessage(
@@ -1112,7 +1169,9 @@ function scheduleReply(
   const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
 
   // Each line waits roughly as long as it takes to type, with "typing..." shown between.
-  let at = 900 + Math.random() * 600;
+  // A burst never starts while the last one is still arriving, so two replies never interleave.
+  const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
+  let at = busy + 900 + Math.random() * 600;
   lines.forEach((line, i) => {
     const last = i === lines.length - 1;
     setTimeout(() => {
@@ -1135,7 +1194,11 @@ function scheduleReply(
     }, at);
     at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
   });
+  replyingUntil.set(conversationId, Date.now() + at);
 }
+
+/** When each chat's current reply burst finishes; replies queue behind it. */
+const replyingUntil = new Map<string, number>();
 
 function answerDiary(set: RawSetter, entryId: string) {
   set((s) => ({

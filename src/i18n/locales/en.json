@@ -99,7 +99,9 @@
       "cellToday": "Today, day {{day}}, {{amount}} shells",
       "cellLater": "Day {{day}}, {{amount}} shells",
       "claimed": "Claimed +{{count}}",
-      "claim": "Claim +{{count}}"
+      "claim": "Claim +{{count}}",
+      "freeLeft": "{{count}} free left · gone at midnight",
+      "freeUsed": "Today's free shells are used up"
     },
     "chats": "Chats"
   },
@@ -186,10 +188,16 @@
   "paywall": {
     "title": "Out of shells",
     "body": "You need {{count}} shells for that.",
-    "chatBody": "Each message costs 1 shell. You get free shells every day - or top up and keep talking now.",
+    "chatBody": "Each message costs 1 shell. Your message is kept, so you can send it as soon as you have shells.",
     "topUp": "Top up",
     "earnFree": "Get free shells",
-    "member": "Chat unlimited with Membership"
+    "member": "Chat unlimited with Membership",
+    "freeNow": "Free right now",
+    "watchAd": "Watch an ad",
+    "watchAdMeta": "+{{count}} · {{left}} left today",
+    "spin": "Free spin",
+    "spinMeta": "Up to +{{count}}",
+    "earned": "+{{count}} shells added"
   },
   "levelUp": {
     "title": "Ta-da~ Your relationship has moved up a level!",
@@ -605,5 +613,37 @@
     "sayHi": "Say hi to {{name}}",
     "firstAsk": "So, {{name}}, how was your day?",
     "step": "Step {{index}} of {{count}}"
+  },
+  "ledger": {
+    "title": "Shell history",
+    "open": "Shell history",
+    "rule": "Free daily shells are spent first and expire at midnight. Shells you buy never expire.",
+    "freeLeft_one": "{{count}} free shell left today",
+    "freeLeft_other": "{{count}} free shells left today",
+    "freeNone": "No free shells left today",
+    "empty": "No shell activity yet",
+    "emptyHint": "Every shell you get or spend will show up here.",
+    "footer": "Showing the last 6 months.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "messages_one": "{{count}} message",
+    "messages_other": "{{count}} messages",
+    "reason": {
+      "welcome": "Welcome gift",
+      "daily": "Daily check-in",
+      "expired": "Unused free shells expired",
+      "ad": "Watched an ad",
+      "spin": "Free spin",
+      "purchase": "Shell pack",
+      "chat": "Chat with {{name}}",
+      "voice": "Voice message to {{name}}",
+      "photo": "Photo to {{name}}",
+      "note": "Secret note with {{name}}",
+      "date": "Date with {{name}}",
+      "photoBooth": "Photo booth",
+      "voiceClone": "Character voice",
+      "other": "Other",
+      "someone": "a friend"
+    }
   }
 }
