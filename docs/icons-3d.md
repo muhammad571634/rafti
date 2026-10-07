@@ -72,3 +72,11 @@ Prompt style for any further sheet (attach the latest sheet as the reference):
 > colours (apricot, mint, lilac, sky blue, cream), gentle top-left light, soft shadow,
 > no text, no faces, no outlines, consistent size and angle, generous space between
 > icons, nothing touching the edge of its cell. Row 1: ... Row 2: ... Row 3: ...
+
+## Single-icon renders (2026-10-07)
+
+The ten Home module icons (store, date, diary, camera, contacts, gift, calls, bedtime, radio,
+board) were redrawn one by one with Grok Image 2.0 on Higgsfield (~$0.08 each), one object on
+light grey, references: the approved store render + `icons-3d-sheet.jpg`. Raws live in
+`assets/raw/icons-3d/<name>.png`; `python scripts/build-brand-art.py icons` cuts them and they
+replace the sheet cut of the same name everywhere the icon is used.

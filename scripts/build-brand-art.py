@@ -536,6 +536,14 @@ def build_icons_3d():
             icon = fit(cut_icon(sheet.crop(box), glass=name in GLASS_ICONS), 192)
             save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
             names.append(name)
+    # Single-icon renders (one object on light grey, e.g. Grok Image 2.0 on Higgsfield) in
+    # assets/raw/icons-3d/<name>.png replace the sheet cut of the same name.
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'icons-3d', '*.png'))):
+        name = os.path.splitext(os.path.basename(raw))[0]
+        icon = fit(cut_icon(Image.open(raw).convert('RGB'), glass=name in GLASS_ICONS), 192)
+        save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
+        if name not in names:
+            names.append(name)
     return names
 
 def build_sticker_derivatives():
