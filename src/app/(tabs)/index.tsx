@@ -1,9 +1,26 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Fragment, useMemo, type ComponentProps } from 'react';
+import { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
+import { CameraIcon } from 'phosphor-react-native/src/icons/Camera';
+import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
+import { CoffeeIcon } from 'phosphor-react-native/src/icons/Coffee';
+import { CompassIcon } from 'phosphor-react-native/src/icons/Compass';
+import { EnvelopeSimpleIcon } from 'phosphor-react-native/src/icons/EnvelopeSimple';
+import { GiftIcon } from 'phosphor-react-native/src/icons/Gift';
+import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
+import { MoonStarsIcon } from 'phosphor-react-native/src/icons/MoonStars';
+import { PhoneIcon } from 'phosphor-react-native/src/icons/Phone';
+import { PushPinIcon } from 'phosphor-react-native/src/icons/PushPin';
+import { RadioIcon } from 'phosphor-react-native/src/icons/Radio';
+import { ShoppingBagOpenIcon } from 'phosphor-react-native/src/icons/ShoppingBagOpen';
+import { UsersThreeIcon } from 'phosphor-react-native/src/icons/UsersThree';
+import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { DailyGiftCard } from '@/components/daily-gift-card';
+import { featuredFriend, TodayHero } from '@/components/today-hero';
+import { useDayKey } from '@/hooks/use-day-key';
 import {
   Card,
   CharacterAvatar,
@@ -18,42 +35,44 @@ import {
   ShellBadge,
   Txt,
   UserAvatar,
+  type TileIcon,
 } from '@/components/ui';
 import { relativeStamp } from '@/lib/format';
-import { FREE_SPINS_PER_DAY, homeModules, todayKey } from '@/mock';
+import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, Conversation, HomeModule } from '@/types';
+import { colors, hitSlop, moduleTints, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
+import type { Character, Conversation, HomeModule, Relationship } from '@/types';
 
-type TileIcon = ComponentProps<typeof IconTile>['icon'];
-
-const COLUMNS = 4;
 const CHAT_AVATAR = 44;
 /** Tile size of the Today and "meet" rows; their divider inset follows it. */
 const ROW_ICON = 38;
-const MODULE_ICON = 48;
+/** Explore tiles: iOS home-screen size, a 32pt duotone glyph, five to a row. */
+const MODULE_TILE = 60;
+const MODULE_GLYPH = 32;
+const MODULE_RADIUS = radius.lg;
 /** Row dividers start under the row text, past the leading avatar or icon. */
 const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
 const TODO_INSET = space.lg + ROW_ICON + space.md;
 
-/** One outline glyph per Explore module, keyed by `HomeModule.key`. */
+/** One duotone glyph per Explore module, keyed by `HomeModule.key`. */
 const MODULE_ICONS: Record<string, TileIcon> = {
-  store: 'bag-handle-outline',
-  dating: 'cafe-outline',
-  diary: 'book-outline',
-  photo: 'camera-outline',
-  contacts: 'people-outline',
-  radio: 'radio-outline',
-  gifts: 'gift-outline',
-  calls: 'call-outline',
-  board: 'clipboard-outline',
-  bedtime: 'moon-outline',
+  store: ShoppingBagOpenIcon,
+  dating: CoffeeIcon,
+  diary: BookOpenTextIcon,
+  photo: CameraIcon,
+  contacts: UsersThreeIcon,
+  gifts: GiftIcon,
+  calls: PhoneIcon,
+  bedtime: MoonStarsIcon,
+  radio: RadioIcon,
+  board: PushPinIcon,
 };
 
-/** A conversation joined with its character and the name the user knows them by. */
+/** A conversation joined with its character, bond and the name the user knows them by. */
 interface ChatItem {
   conversation: Conversation;
   character: Character;
+  relationship?: Relationship;
   name: string;
 }
 
@@ -62,7 +81,6 @@ interface TodoItem {
   key: string;
   icon: TileIcon;
   title: string;
-  subtitle: string;
   onPress: () => void;
 }
 
@@ -75,13 +93,12 @@ function greetingSlot(hour: number) {
 }
 
 /**
- * The "Today" hub: who is waiting, what is ready, and every module one tap away.
- * Content sits straight on the canvas; only the conversation block is grouped.
+ * The "Today" hub: the closest friend, today's gift, who is waiting, what is ready,
+ * and every module one tap away.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { width } = useWindowDimensions();
 
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
@@ -89,11 +106,16 @@ export default function HomeScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
+  const today = useDayKey();
   const spinReady = useAppStore(
-    (s) => s.daily.spinDay !== todayKey() || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
+    (s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
   );
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
+  const hero = useMemo(
+    () => featuredFriend(characters, relationships, conversations),
+    [characters, relationships, conversations],
+  );
 
   /** Newest first; chats whose character is gone are dropped. */
   const chats = useMemo<ChatItem[]>(
@@ -103,7 +125,8 @@ export default function HomeScreen() {
         .flatMap((conversation) => {
           const character = charactersById.get(conversation.characterId);
           if (!character) return [];
-          return [{ conversation, character, name: displayName(character, relationships[character.id]) }];
+          const relationship = relationships[character.id];
+          return [{ conversation, character, relationship, name: displayName(character, relationship) }];
         }),
     [conversations, charactersById, relationships],
   );
@@ -111,28 +134,8 @@ export default function HomeScreen() {
 
   /** Unread chats take the block; otherwise the two most recent invite a return. */
   const shown = unread.length > 0 ? unread.slice(0, 3) : chats.slice(0, 2);
-  const showRecentLabel = unread.length === 0 && chats.length > 0;
-
-  const waitingLine = () => {
-    const [first, second] = unread;
-    if (unread.length === 1) return t('home.waitingOne', { name: first.name });
-    if (unread.length === 2) return t('home.waitingTwo', { first: first.name, second: second.name });
-    if (unread.length > 2) {
-      return t('home.waitingMany', { first: first.name, second: second.name, count: unread.length - 2 });
-    }
-    return chats.length > 0 ? t('home.caughtUp') : t('home.noFriends');
-  };
 
   const todos: TodoItem[] = [];
-  if (spinReady) {
-    todos.push({
-      key: 'spin',
-      icon: 'gift-outline',
-      title: t('home.todo.spin'),
-      subtitle: t('home.todo.spinHint'),
-      onPress: () => router.push('/gifts'),
-    });
-  }
   // A note opens per character, so one row per sender is enough.
   const noteSenders = new Set<string>();
   for (const note of notes) {
@@ -142,14 +145,20 @@ export default function HomeScreen() {
     noteSenders.add(character.id);
     todos.push({
       key: note.id,
-      icon: 'mail-outline',
-      title: t('home.todo.note', { name: displayName(character, relationships[character.id]) }),
-      subtitle: t('home.todo.noteHint'),
+      icon: EnvelopeSimpleIcon,
+      // First name only: the row stays one short line.
+      title: t('home.todo.note', { name: displayName(character, relationships[character.id]).split(' ')[0] }),
       onPress: () => router.push(`/secret-note/${character.id}`),
     });
   }
-
-  const cellWidth = (Math.min(width, 520) - space.lg * 2) / COLUMNS;
+  if (spinReady) {
+    todos.push({
+      key: 'spin',
+      icon: GiftIcon,
+      title: t('home.todo.spin'),
+      onPress: () => router.push('/gifts'),
+    });
+  }
 
   return (
     <Screen background={colors.bgPlain}>
@@ -181,16 +190,33 @@ export default function HomeScreen() {
           <Txt variant="h2" accessibilityRole="header">
             {t(`home.greeting.${greetingSlot(new Date().getHours())}`, { name: user.displayName })}
           </Txt>
-          <Txt variant="small" color={colors.textSecondary}>
-            {waitingLine()}
-          </Txt>
         </View>
 
-        {showRecentLabel ? <SectionLabel title={t('home.recent')} /> : null}
+        {hero ? (
+          <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
+        ) : null}
+
+        <DailyGiftCard />
+
+        {chats.length > 0 ? (
+          <SectionLabel
+            title={t('home.chats')}
+            right={
+              <PressableScale
+                style={styles.more}
+                scaleTo={0.94}
+                accessibilityRole="link"
+                accessibilityLabel={t('home.allChats')}
+                onPress={() => router.navigate('/(tabs)/chat')}>
+                <CaretRightIcon size={18} color={colors.textMuted} />
+              </PressableScale>
+            }
+          />
+        ) : null}
         <Card
           variant="outlined"
           padded={false}
-          style={[styles.chats, showRecentLabel && styles.chatsUnderLabel]}>
+          style={[styles.chats, chats.length === 0 && styles.chatsAlone]}>
           {shown.length > 0 ? (
             shown.map((item, i) => (
               <Fragment key={item.conversation.id}>
@@ -200,9 +226,8 @@ export default function HomeScreen() {
             ))
           ) : (
             <ListRow
-              left={<IconTile icon="compass-outline" size={ROW_ICON} />}
+              left={<IconTile icon={CompassIcon} size={ROW_ICON} />}
               title={t('home.todo.meet')}
-              subtitle={t('home.todo.meetHint')}
               chevron
               onPress={() => router.push('/(tabs)/find')}
             />
@@ -214,11 +239,15 @@ export default function HomeScreen() {
             <SectionLabel title={t('home.today')} />
             {todos.map((todo, i) => (
               <Fragment key={todo.key}>
-                {i > 0 ? <Divider inset={TODO_INSET} /> : null}
+                {i > 0 ? (
+                  // Plain rows sit on the canvas, so the line stops short of the edge too.
+                  <View style={styles.todoDivider}>
+                    <Divider inset={TODO_INSET} />
+                  </View>
+                ) : null}
                 <ListRow
                   left={<IconTile icon={todo.icon} size={ROW_ICON} />}
                   title={todo.title}
-                  subtitle={todo.subtitle}
                   chevron
                   onPress={todo.onPress}
                 />
@@ -233,7 +262,6 @@ export default function HomeScreen() {
             <ModuleCell
               key={module.key}
               module={module}
-              width={cellWidth}
               dot={module.key === 'gifts' && spinReady}
               onPress={() => router.push(module.route as never)}
             />
@@ -246,16 +274,19 @@ export default function HomeScreen() {
 
 /**
  * A conversation row, marked like the Chats tab: a muted chat shows a quiet bell
- * instead of the unread badge. Both marks are visual only, so the label spells them out.
+ * instead of the unread badge. A small mint chip after the name carries the bond
+ * level. The marks are visual only, so the label spells them out.
  */
 function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
   const { t } = useTranslation();
-  const { conversation, character, name } = item;
+  const { conversation, character, relationship, name } = item;
   const stamp = relativeStamp(conversation.lastMessageAt);
+  const level = relationship && relationship.level >= 1 ? relationship.level : null;
   const label = [
     conversation.unreadCount > 0
       ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
       : name,
+    level != null ? t('home.bondLevel', { level }) : null,
     conversation.muted ? t('chatList.muted') : null,
     stamp,
     conversation.lastMessagePreview,
@@ -267,6 +298,7 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
     <ListRow
       left={<CharacterAvatar character={character} size={CHAT_AVATAR} />}
       title={name}
+      titleAfter={level != null ? <BondChip level={level} /> : undefined}
       meta={stamp}
       subtitle={conversation.lastMessagePreview}
       trailing={
@@ -282,28 +314,48 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
   );
 }
 
-/** One Explore module: glyph tile over a short name; the label carries the full name. */
+/** Mint heart and level: how close you are, at a glance. */
+function BondChip({ level }: { level: number }) {
+  return (
+    <View style={styles.bond}>
+      <HeartIcon size={10} color={colors.bond} weight="fill" />
+      <Txt variant="tiny" color={colors.bondText} style={styles.bondText}>
+        {level}
+      </Txt>
+    </View>
+  );
+}
+
+/** One Explore module: tinted glyph tile over a short name; the label carries the full name. */
 function ModuleCell({
   module,
-  width,
   dot,
   onPress,
 }: {
   module: HomeModule;
-  width: number;
   dot: boolean;
   onPress: () => void;
 }) {
   const { t } = useTranslation();
+  const tint = moduleTints[module.key];
 
   return (
     <PressableScale
-      style={[styles.cell, { width }]}
+      style={styles.cell}
       scaleTo={0.94}
       accessibilityLabel={t(`home.modules.${module.labelKey}`)}
       onPress={onPress}>
-      <IconTile size={MODULE_ICON} icon={MODULE_ICONS[module.key]} dot={dot} />
-      <Txt variant="caption" color={colors.textSecondary} center lines={1}>
+      <IconTile
+        size={MODULE_TILE}
+        radius={MODULE_RADIUS}
+        glyphSize={MODULE_GLYPH}
+        icon={MODULE_ICONS[module.key]}
+        weight="duotone"
+        color={tint?.fg}
+        background={tint?.bg}
+        dot={dot}
+      />
+      <Txt variant="chip" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
         {t(`home.short.${module.key}`)}
       </Txt>
     </PressableScale>
@@ -334,15 +386,31 @@ const styles = StyleSheet.create({
     paddingTop: space.lg,
     gap: space.xs,
   },
-  chats: { marginHorizontal: space.lg, marginTop: space.lg },
+  // A full-size target for the small chevron beside the section title.
+  more: { width: 44, height: 44, marginVertical: -space.md, alignItems: 'center', justifyContent: 'center' },
   // The section label above already opens the gap.
-  chatsUnderLabel: { marginTop: space.xs },
+  chats: { marginHorizontal: space.lg, marginTop: space.xs },
+  chatsAlone: { marginTop: space.xl },
+  todoDivider: { paddingRight: space.lg },
+  bond: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xxs,
+    paddingLeft: space.xs + 1,
+    paddingRight: space.xs + 2,
+    paddingVertical: 1,
+    borderRadius: radius.pill,
+    backgroundColor: colors.bondSoft,
+  },
+  bondText: { fontWeight: weight.bold },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    rowGap: space.lg,
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
+    rowGap: space.xl,
+    paddingHorizontal: space.sm,
+    paddingTop: space.xs,
   },
-  cell: { alignItems: 'center', gap: space.sm },
+  // A fifth of the row, so rounding never pushes the fifth tile onto a new line.
+  cell: { width: '20%', alignItems: 'center', gap: space.sm },
+  cellLabel: { fontWeight: weight.medium },
 });

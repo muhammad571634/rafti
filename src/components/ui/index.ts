@@ -13,6 +13,7 @@ export { Icon3D, ShellIcon } from './icon-3d';
 export type { IconName } from './icon-3d';
 export { IconButton } from './icon-button';
 export { IconTile } from './icon-tile';
+export type { TileIcon } from './icon-tile';
 export { ListRow } from './list-row';
 export type { ListRowProps } from './list-row';
 export { BrandArt, Mascot } from './mascot';

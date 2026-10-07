@@ -34,11 +34,16 @@ export const type = {
   small: { fontSize: 13, fontWeight: weight.regular, lineHeight: 18 } as Variant,
   smallStrong: { fontSize: 13, fontWeight: weight.semibold, lineHeight: 18 } as Variant,
   caption: { fontSize: 11, fontWeight: weight.medium, letterSpacing: 0.1 } as Variant,
+  /** Short labels on chips and small cells */
+  chip: { fontSize: 12, fontWeight: weight.semibold } as Variant,
   tiny: { fontSize: 10, fontWeight: weight.medium } as Variant,
   /** Home grid tile labels — two lines, tight */
   tile: { fontSize: 11, fontWeight: weight.semibold, lineHeight: 13 } as Variant,
   /** A playful figure inside a row: shell counts on the store packs */
   figure: { fontSize: 22, fontFamily: fonts.display, lineHeight: 26 } as Variant,
+  /** The big day count on the Today hero, and its unit word beside it */
+  heroFigure: { fontSize: 44, fontFamily: fonts.displaySemi, lineHeight: 48 } as Variant,
+  heroUnit: { fontSize: 20, fontFamily: fonts.displaySemi, lineHeight: 26 } as Variant,
 } as const;
 
 export type TypeVariant = keyof typeof type;

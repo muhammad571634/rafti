@@ -177,6 +177,8 @@ export interface DailyState {
   lastLoginDay?: string;
   /** 1..7, the position in the check-in week */
   checkInDay: number;
+  /** Shells paid by the latest check-in (day 7 is a random roll, so it is kept). */
+  checkInAmount?: number;
   /** e.g. "2026-09-27:morning" — greetings already delivered */
   greetedSlots: string[];
   /** e.g. "2026-09-27:night" — calls already placed */

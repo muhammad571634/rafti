@@ -8,6 +8,7 @@ import { Anim, Button, Header, IconTile, ListRow, Screen, SectionLabel, ShellBad
 import {
   AD_REWARD,
   DAILY_CHECK_IN,
+  DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
   MAX_ADS_PER_DAY,
   WHEEL_SEGMENTS,
@@ -67,13 +68,21 @@ export default function GiftsScreen() {
             const claimed = day <= daily.checkInDay;
             const isToday = checkedInToday && day === daily.checkInDay;
             const last = index === DAILY_CHECK_IN.length - 1;
+            // The surprise day shows its floor ("80+") until it is rolled.
+            const shown = last
+              ? isToday
+                ? String(daily.checkInAmount ?? amount)
+                : t('common.atLeast', { count: amount })
+              : String(amount);
+            const worth =
+              last && !isToday ? t('common.range', { min: amount, max: DAILY_CHECK_IN_TOP }) : `+${shown}`;
 
             return (
               <View
                 key={day}
                 style={styles.day}
                 accessible
-                accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, +${amount}`}>
+                accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                 <View style={[styles.dayDot, claimed && styles.dayClaimed, last && !claimed && styles.dayBig]}>
                   {claimed ? (
                     <Ionicons name="checkmark" size={16} color={colors.textOnPrimary} />
@@ -86,7 +95,7 @@ export default function GiftsScreen() {
                 <Txt
                   variant="caption"
                   color={last && !claimed ? colors.primary : colors.textMuted}>
-                  {amount}
+                  {shown}
                 </Txt>
               </View>
             );

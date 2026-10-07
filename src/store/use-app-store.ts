@@ -17,6 +17,8 @@ import {
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
+  dateFromKey,
+  dayKey,
   dayKeyFromToday,
   diaryEntries as seedDiary,
   eveningGreetings,
@@ -30,6 +32,7 @@ import {
   morningGreetings,
   newRelationship,
   relationships as seedRelationships,
+  rollCheckIn,
   scheduleAck,
   scheduleReminder,
   schedules as seedSchedules,
@@ -532,14 +535,12 @@ export const useAppStore = create<AppState>()(
       claimDailyLogin: () => {
         const today = todayKey();
         const { daily, wallet } = get();
-        if (daily.lastLoginDay === today) return 0;
+        const { day, claimed } = checkInStatus(daily, today);
+        if (claimed) return 0;
 
-        const consecutive = daily.lastLoginDay === dayKeyFromToday(-1);
-        const day = consecutive ? (daily.checkInDay % DAILY_CHECK_IN.length) + 1 : 1;
-        const amount = DAILY_CHECK_IN[day - 1];
-
+        const amount = rollCheckIn(day);
         set({
-          daily: { ...daily, lastLoginDay: today, checkInDay: day },
+          daily: { ...daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
           wallet: { ...wallet, shells: wallet.shells + amount },
           dailyReward: { amount, day },
         });
@@ -889,6 +890,18 @@ export const useAppStore = create<AppState>()(
 
 export const memberActive = (wallet: Wallet) =>
   wallet.isMember && !!wallet.memberUntil && new Date(wallet.memberUntil).getTime() > Date.now();
+
+/**
+ * Where today falls in the 7-day check-in week, and whether it is collected yet.
+ * A missed day restarts the week. The claim and the Today card share this rule.
+ */
+export function checkInStatus(daily: DailyState, today = todayKey()) {
+  if (daily.lastLoginDay === today) return { day: Math.max(1, daily.checkInDay), claimed: true };
+  const yesterday = dateFromKey(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const consecutive = daily.lastLoginDay === dayKey(yesterday);
+  return { day: consecutive ? (daily.checkInDay % DAILY_CHECK_IN.length) + 1 : 1, claimed: false };
+}
 
 /** The name to show for a character: your nickname for them, else theirs. */
 export const displayName = (character: Character, relationship?: Relationship) =>

@@ -17,11 +17,11 @@ export const homeModules: HomeModule[] = [
   { key: 'diary', labelKey: 'heartbeatDiary', route: '/diary', tile: 'diary' },
   { key: 'photo', labelKey: 'photoBooth', route: '/photo-booth', tile: 'photo' },
   { key: 'contacts', labelKey: 'myContacts', route: '/contacts', tile: 'contacts' },
-  { key: 'radio', labelKey: 'radio', route: '/radio', tile: 'radio' },
   { key: 'gifts', labelKey: 'freeGifts', route: '/gifts', tile: 'gifts' },
   { key: 'calls', labelKey: 'callHistory', route: '/call-history', tile: 'calls' },
-  { key: 'board', labelKey: 'bulletinBoard', route: '/board', tile: 'board' },
   { key: 'bedtime', labelKey: 'bedtime', route: '/bedtime', tile: 'bedtime' },
+  { key: 'radio', labelKey: 'radio', route: '/radio', tile: 'radio' },
+  { key: 'board', labelKey: 'bulletinBoard', route: '/board', tile: 'board' },
 ];
 
 /** Mirrors the reference store: 50 / 300 / 500 / 1200. */
@@ -58,8 +58,23 @@ export const shellCosts = {
   characterVoiceClone: 60,
 } as const;
 
-/** "Log in daily to unlock surprise shells" — day 1 is the advertised 60. */
-export const DAILY_CHECK_IN = [60, 60, 70, 70, 80, 80, 120] as const;
+/**
+ * The 7-day check-in ladder ("Log in daily to unlock surprise shells"): shells for
+ * days 1-7. Day 7 is a surprise: its entry is the floor, and the roll goes up to
+ * `DAILY_CHECK_IN_TOP`.
+ */
+export const DAILY_CHECK_IN = [60, 70, 80, 60, 60, 60, 80] as const;
+export const DAILY_CHECK_IN_TOP = 120;
+
+/** True for the last day of the week, the one with the random reward. */
+export const isSurpriseDay = (day: number) => day === DAILY_CHECK_IN.length;
+
+/** Shells paid for check-in `day` (1-based): fixed, except the surprise day's roll. */
+export function rollCheckIn(day: number) {
+  const base = DAILY_CHECK_IN[Math.min(Math.max(day, 1), DAILY_CHECK_IN.length) - 1];
+  if (!isSurpriseDay(day)) return base;
+  return base + Math.floor(Math.random() * (DAILY_CHECK_IN_TOP - base + 1));
+}
 
 export const AD_REWARD = 10;
 export const MAX_ADS_PER_DAY = 5;

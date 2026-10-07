@@ -27,10 +27,12 @@
     "unlock": "Unlock",
     "comingSoon": "Coming soon",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "atLeast": "{{count}}+",
+    "range": "{{min}} to {{max}}"
   },
   "tabs": {
-    "home": "Home",
+    "home": "Today",
     "chat": "Chats",
     "us": "Us",
     "find": "Find"
@@ -54,34 +56,48 @@
       "evening": "Good evening, {{name}}",
       "night": "Still up, {{name}}?"
     },
-    "waitingOne": "{{name}} is waiting for you",
-    "waitingTwo": "{{first}} and {{second}} are waiting for you",
-    "waitingMany": "{{first}}, {{second}} and {{count}} more are waiting for you",
-    "caughtUp": "You're all caught up",
-    "noFriends": "Find someone to talk to",
-    "recent": "Pick up where you left off",
     "today": "Today",
     "explore": "Explore",
     "todo": {
-      "spin": "Your free spin is ready",
-      "spinHint": "Free gifts",
-      "note": "{{name}} sealed a note for you",
-      "noteHint": "Secret note",
-      "meet": "Meet someone new",
-      "meetHint": "Browse characters on Find"
+      "spin": "Free spin",
+      "note": "{{name}}'s note",
+      "meet": "Meet someone new"
     },
     "short": {
-      "store": "Shells",
-      "dating": "Dating",
+      "store": "Store",
+      "dating": "Date",
       "diary": "Diary",
-      "photo": "Photo booth",
+      "photo": "Photos",
       "contacts": "Contacts",
       "radio": "Radio",
       "gifts": "Gifts",
       "calls": "Calls",
       "board": "Board",
-      "bedtime": "Bedtime"
-    }
+      "bedtime": "Sleep"
+    },
+    "allChats": "All chats",
+    "bondLevel": "bond level {{level}}",
+    "hero": {
+      "days_one": "day",
+      "days_other": "days",
+      "together_one": "together {{count}} day",
+      "together_other": "together {{count}} days",
+      "level": "Lv {{level}}",
+      "open": "Open chat with {{name}}"
+    },
+    "gift": {
+      "title": "Daily gift",
+      "progress": "{{day}}/{{total}}",
+      "plus": "+{{count}}",
+      "claimSurprise": "Open surprise",
+      "cellClaimed_one": "Day {{day}}, collected, {{count}} shell",
+      "cellClaimed_other": "Day {{day}}, collected, {{count}} shells",
+      "cellToday": "Today, day {{day}}, {{amount}} shells",
+      "cellLater": "Day {{day}}, {{amount}} shells",
+      "claimed": "Claimed +{{count}}",
+      "claim": "Claim +{{count}}"
+    },
+    "chats": "Chats"
   },
   "dailyReward": {
     "title": "Daily check-in",

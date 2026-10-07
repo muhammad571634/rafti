@@ -11,6 +11,8 @@ export interface ListRowProps {
   subtitle?: string;
   /** Leading visual: an avatar or an IconTile. */
   left?: React.ReactNode;
+  /** Small mark right after the title text, e.g. a bond level chip beside a name. */
+  titleAfter?: React.ReactNode;
   /** Small mark just before `meta` on the title line, e.g. a pin for a pinned chat. */
   titleAccessory?: React.ReactNode;
   /** Short muted text on the title line's right edge: a time, a price. */
@@ -34,6 +36,7 @@ export function ListRow({
   title,
   subtitle,
   left,
+  titleAfter,
   titleAccessory,
   meta,
   trailing,
@@ -48,9 +51,19 @@ export function ListRow({
       {left}
       <View style={styles.text}>
         <View style={styles.line}>
-          <Txt variant="bodyStrong" lines={1} style={styles.grow}>
-            {title}
-          </Txt>
+          {titleAfter ? (
+            // The mark hugs the name; the name gives way first when space runs out.
+            <View style={[styles.grow, styles.titleGroup]}>
+              <Txt variant="bodyStrong" lines={1} style={styles.shrink}>
+                {title}
+              </Txt>
+              {titleAfter}
+            </View>
+          ) : (
+            <Txt variant="bodyStrong" lines={1} style={styles.grow}>
+              {title}
+            </Txt>
+          )}
           {titleAccessory}
           {meta ? (
             <Txt variant="caption" color={colors.textMuted}>
@@ -98,4 +111,6 @@ const styles = StyleSheet.create({
   text: { flex: 1, gap: 2 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   grow: { flex: 1 },
+  titleGroup: { flexDirection: 'row', alignItems: 'center', gap: space.xs + 2 },
+  shrink: { flexShrink: 1 },
 });

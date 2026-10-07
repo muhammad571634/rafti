@@ -1,5 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import type { Icon } from 'phosphor-react-native';
+import { ChatsCircleIcon } from 'phosphor-react-native/src/icons/ChatsCircle';
+import { CompassIcon } from 'phosphor-react-native/src/icons/Compass';
+import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
+import { HouseIcon } from 'phosphor-react-native/src/icons/House';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,15 +14,16 @@ import { useCharacterInitiative } from '@/hooks/use-character-initiative';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-const ICONS: Record<string, { active: IoniconName; idle: IoniconName }> = {
-  index: { active: 'home', idle: 'home-outline' },
-  chat: { active: 'chatbubble', idle: 'chatbubble-outline' },
-  us: { active: 'heart', idle: 'heart-outline' },
-  find: { active: 'compass', idle: 'compass-outline' },
+const TAB_ICON = 25;
+/** One Phosphor glyph per tab: filled when current, outline otherwise. */
+const ICONS: Record<string, Icon> = {
+  index: HouseIcon,
+  chat: ChatsCircleIcon,
+  us: HeartIcon,
+  find: CompassIcon,
 };
 
 export default function TabsLayout() {
@@ -50,7 +55,7 @@ function TabBar({ state, navigation }: TabBarProps) {
     <View style={[styles.bar, { paddingBottom: insets.bottom || space.sm }]}>
       {state.routes.map((route, index) => {
         const focused = state.index === index;
-        const icon = ICONS[route.name] ?? ICONS.index;
+        const Glyph = ICONS[route.name] ?? ICONS.index;
         const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
         const hasUnread = route.name === 'chat' && unread > 0;
         const tint = focused ? colors.tabActive : colors.tabInactive;
@@ -69,7 +74,7 @@ function TabBar({ state, navigation }: TabBarProps) {
               if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
             }}>
             <View>
-              <Ionicons name={focused ? icon.active : icon.idle} size={23} color={tint} />
+              <Glyph size={TAB_ICON} color={tint} weight={focused ? 'fill' : 'regular'} />
               {hasUnread ? <View style={styles.dot} /> : null}
             </View>
             <Txt variant="tiny" color={tint} style={focused && styles.labelActive}>

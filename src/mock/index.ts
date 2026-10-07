@@ -15,6 +15,7 @@ export { diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {
   AD_REWARD,
   DAILY_CHECK_IN,
+  DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
   MAX_ADS_PER_DAY,
   WHEEL_SEGMENTS,
@@ -26,7 +27,9 @@ export {
   chatBackgrounds,
   dateScenarios,
   homeModules,
+  isSurpriseDay,
   membershipPlans,
+  rollCheckIn,
   memories,
   moments,
   radioTracks,
