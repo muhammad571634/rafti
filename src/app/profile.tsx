@@ -96,10 +96,14 @@ export default function ProfileScreen() {
 
   const currentLocale = SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? i18n.language;
   const member = memberActive(wallet);
-  const icon = (name: IoniconName) => <IconTile icon={name} size={ROW_ICON} />;
+  // Line icons sit bare on the canvas, like the clay art: no grey tile behind them.
+  const icon = (name: IoniconName) => (
+    <IconTile icon={name} size={ROW_ICON} background="transparent" glyphSize={24} />
+  );
 
   const toggle = (key: SwitchKey, label: string, left: React.ReactNode) => (
     <ListRow
+      size="large"
       title={label}
       left={left}
       right={<Toggle value={settings[key]} onChange={(v) => setSetting(key, v)} accessibilityLabel={label} />}
@@ -168,8 +172,9 @@ export default function ProfileScreen() {
           </PressableScale>
         </View>
 
-        <SectionLabel title={t('profile.sectionAccount')} />
+        <SectionLabel tone="title" title={t('profile.sectionAccount')} />
         <ListRow
+          size="large"
           title={t('profile.membership')}
           left={icon('diamond-outline')}
           meta={
@@ -180,26 +185,26 @@ export default function ProfileScreen() {
           chevron
           onPress={() => router.push('/store/shell')}
         />
-        <Divider inset={ROW_INSET} />
         <ListRow
+          size="large"
           title={t('profile.freeGifts')}
           left={icon('gift-outline')}
           chevron
           onPress={() => router.push('/gifts')}
         />
-        <Divider inset={ROW_INSET} />
         {/* Who reaches out, previews and quiet hours live on their own screen. */}
         <ListRow
+          size="large"
           title={t('notifications.title')}
-          left={<ClayIcon name="alarm" size={ROW_ICON} />}
+          left={<ClayIcon name="alarm" size={ROW_ICON} tile={false} />}
           meta={pushStatus === 'granted' ? t('notifications.on') : blockedPushes ? t('notifications.offShort') : undefined}
           chevron
           onPress={() => router.push('/notifications')}
         />
         {canPickLanguage ? (
           <>
-            <Divider inset={ROW_INSET} />
-            <ListRow
+                <ListRow
+                  size="large"
               title={t('profile.language')}
               left={icon('language-outline')}
               meta={currentLocale}
@@ -209,14 +214,15 @@ export default function ProfileScreen() {
           </>
         ) : null}
 
-        <SectionLabel title={t('profile.sectionChat')} />
+        <SectionLabel tone="title" title={t('profile.sectionChat')} />
         {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}
 
         {/* Development builds only: fire the planned pushes now, a few seconds apart. */}
         {__DEV__ ? (
           <>
-            <SectionLabel title={t('profile.sectionDev')} />
+            <SectionLabel tone="title" title={t('profile.sectionDev')} />
             <ListRow
+              size="large"
               title={t('profile.testPushes')}
               left={icon('notifications-outline')}
               meta={testResult}
@@ -225,33 +231,31 @@ export default function ProfileScreen() {
           </>
         ) : null}
 
-        <SectionLabel title={t('profile.sectionAbout')} />
+        <SectionLabel tone="title" title={t('profile.sectionAbout')} />
         {blocked.length > 0 ? (
           <>
             <ListRow
+              size="large"
               title={t('safety.blocked')}
               left={icon('ban-outline')}
               meta={String(blocked.length)}
               chevron
               onPress={() => setBlockedOpen(true)}
             />
-            <Divider inset={ROW_INSET} />
-          </>
+              </>
         ) : null}
         <ListRow
+          size="large"
           title={t('safety.support')}
           left={icon('mail-outline')}
           chevron
           onPress={() => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`)}
         />
-        <Divider inset={ROW_INSET} />
-        <ListRow title={t('profile.account')} left={icon('person-circle-outline')} />
-        <Divider inset={ROW_INSET} />
-        <ListRow title={t('profile.privacy')} left={icon('shield-checkmark-outline')} />
-        <Divider inset={ROW_INSET} />
-        <ListRow title={t('profile.terms')} left={icon('document-text-outline')} />
-        <Divider inset={ROW_INSET} />
+        <ListRow size="large" title={t('profile.account')} left={icon('person-circle-outline')} />
+        <ListRow size="large" title={t('profile.privacy')} left={icon('shield-checkmark-outline')} />
+        <ListRow size="large" title={t('profile.terms')} left={icon('document-text-outline')} />
         <ListRow
+          size="large"
           title={t('profile.about')}
           left={icon('information-circle-outline')}
           meta={t('profile.version', { version: Constants.expoConfig?.version ?? '1.0.0' })}
@@ -332,16 +336,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
+  // Plain blocks on the canvas: no card fill, border or shadow.
   card: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    padding: space.lg,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xl,
     gap: space.md,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surface,
   },
   cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  invite: { flexDirection: 'row', alignItems: 'center', marginTop: space.md },
+  invite: { flexDirection: 'row', alignItems: 'center' },
   copy: {
     width: 36,
     height: 36,
