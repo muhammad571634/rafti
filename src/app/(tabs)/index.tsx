@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
 import { CameraIcon } from 'phosphor-react-native/src/icons/Camera';
 import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
@@ -14,7 +14,7 @@ import { PushPinIcon } from 'phosphor-react-native/src/icons/PushPin';
 import { RadioIcon } from 'phosphor-react-native/src/icons/Radio';
 import { ShoppingBagOpenIcon } from 'phosphor-react-native/src/icons/ShoppingBagOpen';
 import { UsersThreeIcon } from 'phosphor-react-native/src/icons/UsersThree';
-import { Fragment, useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -37,7 +37,7 @@ import {
   UserAvatar,
   type TileIcon,
 } from '@/components/ui';
-import { relativeStamp } from '@/lib/format';
+import { relativeStamp, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, moduleTints, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
@@ -79,8 +79,12 @@ interface ChatItem {
 /** A small thing the user can do today, shown as a row under "Today". */
 interface TodoItem {
   key: string;
-  icon: TileIcon;
+  /** A friend's face for things they did; a glyph tile for everything else */
+  icon: TileIcon | Character;
   title: string;
+  subtitle?: string;
+  /** Marks something new since the last visit */
+  fresh?: boolean;
   onPress: () => void;
 }
 
@@ -106,6 +110,10 @@ export default function HomeScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
+  const diaryPages = useAppStore((s) => s.characterDiary);
+  const pagesRead = useAppStore((s) => s.diaryPagesRead);
+  const schedules = useAppStore((s) => s.schedules);
+  const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
   const today = useDayKey();
   const spinReady = useAppStore(
     (s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
@@ -135,7 +143,42 @@ export default function HomeScreen() {
   /** Unread chats take the block; otherwise the two most recent invite a return. */
   const shown = unread.length > 0 ? unread.slice(0, 3) : chats.slice(0, 2);
 
+  // Coming back in the morning: pages written overnight should be waiting here.
+  useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
+
   const todos: TodoItem[] = [];
+
+  // New diary pages first: the reason to come back this morning.
+  for (const page of diaryPages) {
+    if (page.date !== today || pagesRead.includes(page.id)) continue;
+    const character = charactersById.get(page.characterId);
+    if (!character) continue;
+    todos.push({
+      key: page.id,
+      icon: character,
+      title: t('home.todo.diary', { name: shortName(displayName(character, relationships[character.id])) }),
+      subtitle: t('home.todo.diaryHint'),
+      fresh: true,
+      onPress: () =>
+        router.push({ pathname: '/diary/page/[characterId]', params: { characterId: character.id, date: page.date } }),
+    });
+  }
+
+  // Plans made in chat for today, with the friend who will check in.
+  for (const plan of schedules) {
+    if (plan.date !== today) continue;
+    const character = charactersById.get(plan.characterId);
+    if (!character) continue;
+    const conversation = conversations.find((c) => c.characterId === character.id);
+    todos.push({
+      key: plan.id,
+      icon: character,
+      title: t('home.todo.plan', { title: plan.title }),
+      subtitle: t('home.todo.planHint', { name: shortName(displayName(character, relationships[character.id])) }),
+      onPress: () => conversation && router.push(`/chat/${conversation.id}`),
+    });
+  }
+
   // A note opens per character, so one row per sender is enough.
   const noteSenders = new Set<string>();
   for (const note of notes) {
@@ -147,7 +190,7 @@ export default function HomeScreen() {
       key: note.id,
       icon: EnvelopeSimpleIcon,
       // First name only: the row stays one short line.
-      title: t('home.todo.note', { name: displayName(character, relationships[character.id]).split(' ')[0] }),
+      title: t('home.todo.note', { name: shortName(displayName(character, relationships[character.id])) }),
       onPress: () => router.push(`/secret-note/${character.id}`),
     });
   }
@@ -187,13 +230,43 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
         <View style={styles.greeting}>
-          <Txt variant="h2" accessibilityRole="header">
+          <Txt variant="h1" accessibilityRole="header">
             {t(`home.greeting.${greetingSlot(new Date().getHours())}`, { name: user.displayName })}
           </Txt>
         </View>
 
         {hero ? (
           <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
+        ) : null}
+
+        {todos.length > 0 ? (
+          <>
+            <SectionLabel title={t('home.today')} />
+            {todos.map((todo, i) => (
+              <Fragment key={todo.key}>
+                {i > 0 ? (
+                  // Plain rows sit on the canvas, so the line stops short of the edge too.
+                  <View style={styles.todoDivider}>
+                    <Divider inset={TODO_INSET} />
+                  </View>
+                ) : null}
+                <ListRow
+                  left={
+                    isCharacter(todo.icon) ? (
+                      <CharacterAvatar character={todo.icon} size={ROW_ICON} />
+                    ) : (
+                      <IconTile icon={todo.icon} size={ROW_ICON} />
+                    )
+                  }
+                  title={todo.title}
+                  subtitle={todo.subtitle}
+                  trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
+                  chevron
+                  onPress={todo.onPress}
+                />
+              </Fragment>
+            ))}
+          </>
         ) : null}
 
         <DailyGiftCard />
@@ -234,28 +307,6 @@ export default function HomeScreen() {
           )}
         </Card>
 
-        {todos.length > 0 ? (
-          <>
-            <SectionLabel title={t('home.today')} />
-            {todos.map((todo, i) => (
-              <Fragment key={todo.key}>
-                {i > 0 ? (
-                  // Plain rows sit on the canvas, so the line stops short of the edge too.
-                  <View style={styles.todoDivider}>
-                    <Divider inset={TODO_INSET} />
-                  </View>
-                ) : null}
-                <ListRow
-                  left={<IconTile icon={todo.icon} size={ROW_ICON} />}
-                  title={todo.title}
-                  chevron
-                  onPress={todo.onPress}
-                />
-              </Fragment>
-            ))}
-          </>
-        ) : null}
-
         <SectionLabel title={t('home.explore')} />
         <View style={styles.grid}>
           {homeModules.map((module) => (
@@ -270,6 +321,10 @@ export default function HomeScreen() {
       </ScrollView>
     </Screen>
   );
+}
+
+function isCharacter(icon: TodoItem['icon']): icon is Character {
+  return typeof icon === 'object' && icon !== null && 'bio' in icon;
 }
 
 /**
@@ -392,6 +447,7 @@ const styles = StyleSheet.create({
   chats: { marginHorizontal: space.lg, marginTop: space.xs },
   chatsAlone: { marginTop: space.xl },
   todoDivider: { paddingRight: space.lg },
+  freshDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
   bond: {
     flexDirection: 'row',
     alignItems: 'center',

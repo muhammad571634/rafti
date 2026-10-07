@@ -61,7 +61,11 @@
     "todo": {
       "spin": "Free spin",
       "note": "{{name}}'s note",
-      "meet": "Meet someone new"
+      "meet": "Meet someone new",
+      "diary": "{{name}} wrote about you",
+      "diaryHint": "A new page in their diary",
+      "plan": "{{title}}",
+      "planHint": "{{name}} will remind you"
     },
     "short": {
       "store": "Store",

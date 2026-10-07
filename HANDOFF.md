@@ -56,7 +56,13 @@
   - `shortName()` (`src/lib/format.ts`): "Prince Aurelian" → "Aurelian". Gaplarda ism uchun shuni ishlating.
 - **Til qarori (2026-10-07):** butun interfeys hozircha faqat ingliz tilida (asosiy til). Boshqa tillar keyin
   `src/i18n/locales/` orqali qo'shiladi; til tanlash tugmasi bitta til bo'lganda ko'rinmaydi.
-  - Navbat: F2 (Today'da "X wrote about you" va bugungi rejalar), F5 hisob tarixi, F7 munosabat v2.
+  - **F2 Home — kodda tayyor:** "Today" bo'limi hero kartadan keyin darhol turadi. Unda bugun yozilgan, hali
+    o'qilmagan kundalik sahifalar ("Theo wrote about you", to'q sariq nuqta bilan), chatda aytilgan bugungi
+    rejalar, maxfiy xatlar va g'ildirak bor. Home ochilganda navbatdagi kundalik sahifalar yoziladi.
+  - Navbat: F3 chat yadrosi (#33-#39), F5 hisob tarixi, F7 munosabat v2.
+- **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
+  zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
+  h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.
 - **Keyingi ish:**
   - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);
   - shu uslubdagi Secret note, Gifts va Date qoida oynalari;
