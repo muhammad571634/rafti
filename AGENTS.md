@@ -4,7 +4,8 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 
 # Rafti — any agent (Claude, Gemini/Antigravity, Codex) starts here
 
-1. Read `HANDOFF.md` in this repo.
+1. Read `HANDOFF.md` in this repo — its top block says exactly what to do next.
+   Flow order and status: `docs/flows.md`.
 2. Read `AGENT-START.md` in the sibling strategy repo `rafti-research`
    (`../rafti-research/`, branch `claude/bimobimo-teardown`). It gives the reading
    order, the per-flow workflow and where we stopped.
@@ -25,5 +26,6 @@ Rules:
   No real people or copyrighted characters.
 - Generate images sparingly: one test image, show it, then a batch with count stated.
 - Never write API keys into chat or files; use environment variables only.
-- Before finishing code: `npx tsc --noEmit` must pass. Add a short note to `HANDOFF.md`.
-  Commit and push only when the user asks.
+- Before finishing code: `npx tsc --noEmit` must pass. Add a short note to `HANDOFF.md` and
+  update `docs/flows.md`. The user has given standing permission to commit and push each
+  finished flow to `local-work`; anything else, ask first.

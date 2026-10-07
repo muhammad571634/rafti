@@ -1,14 +1,44 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+## ▶ KEYINGI QADAM — shu yerdan boshlang (2026-10-07)
+Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
+o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
+
+1. **Hozirgi oqim: F9 Us va kalendar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F8 tayyor. F9 dan keyin F10, F11, F12, F13, F14, F15.
+2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
+   1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
+      `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
+   2. Ilovadagi mavjud kodni ko'ring, nima bor va nima yo'qligini ajrating.
+   3. Butunlay yangi ekran bo'lsa, avval HTML prototip ko'rsating va tasdiq oling. Mavjud ekranni
+      kengaytirish bo'lsa, foydalanuvchi to'g'ridan-to'g'ri kodga ruxsat bergan ("next" = davom et).
+   4. Kod yozing. Mantiq zanjirga ulanadi: oqim avvalgi va keyingi oqimga ta'sir qiladi
+      (masalan, chat → kundalik, qo'ng'iroq → yaqinlik, reja → eslatma).
+   5. `npx tsc --noEmit` toza o'tadi; `npx expo start --web` va brauzerda 375×812 tekshiriladi.
+   6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
+   7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
+   8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
+3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
+   qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
+   munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
+4. **F9 uchun boshlang'ich ma'lumot:**
+   - chatda aytilgan rejalar allaqachon `schedules` ga tushadi (`detectPlan` → `ScheduleItem`), Home'da
+     "bugungi rejalar" qatori bor;
+   - `src/components/diary/calendar-popover.tsx` dagi oy kalendarini qayta ishlatish mumkin;
+   - qilinadi: Us tabida oy kalendari (rejalar nuqta bilan), reja vaqtidan 10 daqiqa oldin personaj
+     eslatmasi, reja o'tgach "qanday o'tdi?" xabari; BIMOBIMO #49-#55, video B 35-37s.
+
+
 ## Ish qoidalari (foydalanuvchi bilan)
 - Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizcha.
 - `AGENTS.md`: Expo SDK 57 — kod yozishdan oldin https://docs.expo.dev/versions/v57.0.0/ ga qarash.
-- Commit/push faqat so'ralganda. Yangi ish yangi branch'da, `main`ga PR orqali
-  (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
+- Ish branch'i `local-work`. Har tugagan oqimdan keyin commit va push (foydalanuvchining doimiy ruxsati).
+  `main`ga PR keyinroq (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
 - Repo PUBLIC: https://github.com/muhammad571634/rafti (foydalanuvchi ataylab shunday tanlagan).
   Bu repoda git muallifi lokal sozlangan: `muhammad571634 <jorayevmuhammad496@gmail.com>`.
-- Rasmlarni foydalanuvchi Gemini'da o'zi chizadi: promptni BITTADAN ber, u "avatar"/tayyor
-  deb yozganda papkani tekshir, rasmni ko'r, yaroqli bo'lsa `python scripts/build-brand-art.py`.
+- Rasmlarni foydalanuvchi Gemini (Nano Banana) da o'zi chizadi: promptni ber, Rafti stikerini uslub
+  namunasi qilib biriktirishini ayt. Tayyor rasm `../BIMOBIMOdesignraw/<name>.png/` papkasiga yoki repodagi
+  `assets/raw/` ga tushadi; ko'rib, yaroqli bo'lsa `python scripts/build-brand-art.py`.
 - Har o'zgarishdan keyin: `npx tsc --noEmit` + brauzerda tekshirish
   (`.claude/launch.json` → `bimobimo-web`, port 8081, mobil o'lcham 375×812).
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
