@@ -14,6 +14,7 @@ import {
   callHistory as seedCalls,
   callLines,
   cannedReplies,
+  characterDiaryPages as seedCharacterDiary,
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
@@ -47,6 +48,7 @@ import type {
   Character,
   Conversation,
   DailyState,
+  CharacterDiaryPage,
   DiaryEntry,
   MemberPlan,
   MemoryItem,
@@ -107,6 +109,10 @@ interface AppState {
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
   diary: DiaryEntry[];
+  /** Pages characters wrote about the user. Written by the server; seeded until then. */
+  characterDiary: CharacterDiaryPage[];
+  /** Ids of character pages the user has opened, for the "New page" mark. */
+  diaryPagesRead: string[];
   notes: SecretNote[];
   calls: CallRecord[];
   moments: Moment[];
@@ -155,6 +161,7 @@ interface AppState {
   /* diary */
   addDiaryEntry: (entry: Omit<DiaryEntry, 'id'>) => string;
   deleteDiaryEntry: (id: string) => void;
+  markDiaryPageRead: (id: string) => void;
 
   /* secret note */
   ensureSecretNote: (characterId: string) => void;
@@ -192,6 +199,7 @@ type PersistedKeys =
   | 'relationships'
   | 'memories'
   | 'diary'
+  | 'diaryPagesRead'
   | 'notes'
   | 'calls'
   | 'moments'
@@ -294,6 +302,8 @@ export const useAppStore = create<AppState>()(
       relationships: Object.fromEntries(seedRelationships.map((r) => [r.characterId, r])),
       memories: seedMemories,
       diary: seedDiary,
+      characterDiary: seedCharacterDiary,
+      diaryPagesRead: [],
       notes: seedNotes,
       calls: seedCalls,
       moments: seedMoments,
@@ -618,6 +628,9 @@ export const useAppStore = create<AppState>()(
 
       deleteDiaryEntry: (id) => set((s) => ({ diary: s.diary.filter((d) => d.id !== id) })),
 
+      markDiaryPageRead: (id) =>
+        set((s) => (s.diaryPagesRead.includes(id) ? s : { diaryPagesRead: [...s.diaryPagesRead, id] })),
+
       /* ── secret note ──────────────────────────────────────────────────── */
 
       ensureSecretNote: (characterId) => {
@@ -866,6 +879,7 @@ export const useAppStore = create<AppState>()(
         relationships: s.relationships,
         memories: s.memories,
         diary: s.diary,
+        diaryPagesRead: s.diaryPagesRead,
         notes: s.notes,
         calls: s.calls,
         moments: s.moments,

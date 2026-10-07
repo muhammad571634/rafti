@@ -8,6 +8,8 @@ export const fonts = {
   display: 'Fredoka_700Bold',
   displaySemi: 'Fredoka_600SemiBold',
   body: Platform.select({ ios: 'System', default: 'sans-serif' }),
+  /** Caveat (OFL): the handwriting on diary pages and diary covers. */
+  hand: 'Caveat_600SemiBold',
 } as const;
 
 export const weight = {
@@ -44,6 +46,10 @@ export const type = {
   /** The big day count on the Today hero, and its unit word beside it */
   heroFigure: { fontSize: 44, fontFamily: fonts.displaySemi, lineHeight: 48 } as Variant,
   heroUnit: { fontSize: 20, fontFamily: fonts.displaySemi, lineHeight: 26 } as Variant,
+  /** Handwriting on a diary page; the line height is the ruled-line pitch. */
+  hand: { fontSize: 23, fontFamily: fonts.hand, lineHeight: 32 } as Variant,
+  /** A diary's name on its cover */
+  handTitle: { fontSize: 30, fontFamily: fonts.hand, lineHeight: 32 } as Variant,
 } as const;
 
 export type TypeVariant = keyof typeof type;

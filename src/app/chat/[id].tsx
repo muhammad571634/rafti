@@ -42,7 +42,7 @@ const ATTACHMENTS: Attachment[] = [
 const ATTACH_TILE = 38;
 
 export default function ChatRoomScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, draft } = useLocalSearchParams<{ id: string; draft?: string }>();
   const conversationId = Array.isArray(id) ? id[0] : id;
 
   const { t } = useTranslation();
@@ -253,6 +253,7 @@ export default function ChatRoomScreen() {
           onSend={send}
           onAttach={() => setAttachOpen(true)}
           onVoice={() => setVoiceOpen(true)}
+          initialValue={typeof draft === 'string' ? draft : undefined}
         />
       </KeyboardAvoidingView>
 

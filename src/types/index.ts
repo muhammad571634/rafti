@@ -93,6 +93,24 @@ export interface DiaryEntry {
 }
 
 /**
+ * A page a character writes in their own diary about the user. It is written the
+ * morning after a chat or a date with them, so a quiet day leaves no page.
+ */
+export interface CharacterDiaryPage {
+  id: string;
+  characterId: string;
+  /** Day key of the morning it was written */
+  date: string;
+  /** ISO time it was written */
+  writtenAt: string;
+  mood: DiaryMood;
+  /** Paragraphs, in the character's voice */
+  body: string[];
+  /** What it was written after */
+  source: 'chat' | 'date';
+}
+
+/**
  * composing -> the character is still writing theirs ("Thinking...")
  * ready     -> theirs is sealed; write yours and exchange to open both
  * exchanged -> both notes are visible

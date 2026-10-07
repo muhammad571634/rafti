@@ -28,12 +28,25 @@
   - dizayn va oqimlar rejasi: `spec/design-plan.md`.
 
   **Har bir yangi dizayn ishi shu hujjatlardan boshlanadi.**
-- **Keyingi ish:** Heartbeat Diary.
-  - personajlar kundaligi kartalari karuseli;
-  - pastdan chiqadigan "How their diary works" qoida oynasi, tepada Rafti lahza rasmi bilan;
-  - keyin shu uslubdagi Secret note, Gifts va Date qoida oynalari.
-
-  Prototip foydalanuvchi bilan kelishilgan, `design-plan.md` dagi F8 oqimi.
+- **F8 Heartbeat Diary — kodda tayyor (2026-10-07).** Prototip foydalanuvchi tomonidan tasdiqlangan:
+  https://claude.ai/artifact/DtV8DUHfbUTYjf5RMiWD2T
+  - `src/app/diary/index.tsx`: muqovalar karuseli ("My diary" birinchi, keyin suhbati bor personajlar),
+    orqa fon oldingi muqovaning xira rasmi, "New page" belgisi, sahifasi yo'q personaj kulrang + "No page yet",
+    pastdagi bitta tugma kartaga qarab o'zgaradi (Write / Read / Open last page / Chat with X), saralash.
+  - Sana tugmasi kichik kalendar oynasini ochadi (`src/components/diary/calendar-popover.tsx`, foydalanuvchi yuborgan BIMOBIMO kundalik
+    kalendari tuzilishida: Cancel + Confirm, qo'shni oy kunlari xira; sahifa bor kunlarda nuqta). Tanlangan kun
+    kartalarni o'sha kunga qarab ko'rsatadi.
+  - `src/app/diary/page/[characterId].tsx`: personaj sahifasi (Caveat qo'lyozma, chiziqli qog'oz, kayfiyat, qaysi
+    suhbatdan keyin yozilgani, sahifalar orasida o'tish, "Reply to X in chat" → chat `draft` parametri bilan ochiladi).
+  - `src/app/diary/mine.tsx`: foydalanuvchining o'z sahifalari (avvalgi `diary/index` shu yerga ko'chdi).
+  - `src/components/diary/rules-sheet.tsx`: "How their diary works" oynasi. Rasm hozircha Rafti stikeri.
+  - Ma'lumot: `CharacterDiaryPage` turi, `mock/diary.ts` dagi `characterDiaryPages` (keyin server yozadi),
+    store'da `characterDiary` (persist qilinmaydi) va `diaryPagesRead` (persist).
+  - Yangi paket: `@expo-google-fonts/caveat` (`fonts.hand`, `type.hand`, `type.handTitle`).
+- **Keyingi ish:**
+  - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);
+  - shu uslubdagi Secret note, Gifts va Date qoida oynalari;
+  - keyin `design-plan.md` dagi P0 oqimlari (F1–F5).
 - **Higgsfield API** (bulut muhitida `HF_CREDENTIALS` environment variable bor):
   - `GET https://api.higgsfield.ai/models` modellar ro'yxatini beradi (84 ta, 17 tasi rasm);
   - `POST https://api.higgsfield.ai/<slug>`, header `Authorization: Key $HF_CREDENTIALS`;

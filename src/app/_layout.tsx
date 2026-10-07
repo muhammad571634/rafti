@@ -1,3 +1,4 @@
+import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -15,7 +16,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
-  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold });
+  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
 

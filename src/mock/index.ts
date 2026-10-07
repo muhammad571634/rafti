@@ -11,7 +11,7 @@ export {
   scheduleAck,
   scheduleReminder,
 } from './chat';
-export { diaryEntries, secretNotePrompts, secretNotes } from './diary';
+export { characterDiaryPages, diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {
   AD_REWARD,
   DAILY_CHECK_IN,

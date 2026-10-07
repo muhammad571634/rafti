@@ -22,6 +22,8 @@ export interface ChatInputProps {
   onSend: (text: string) => boolean;
   onAttach: () => void;
   onVoice: () => void;
+  /** Text already in the field when the chat opens (e.g. replying to a diary page). */
+  initialValue?: string;
 }
 
 /**
@@ -29,10 +31,10 @@ export interface ChatInputProps {
  * text field, and one primary button that records a voice message while the field
  * is empty and sends once there is text. The swap is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '' }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(initialValue);
   const inputRef = useRef<TextInput>(null);
 
   const hasText = value.trim().length > 0;
