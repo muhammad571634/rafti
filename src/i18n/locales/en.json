@@ -443,7 +443,33 @@
     "adsDone": "All videos watched today",
     "watch": "Watch",
     "reward": "+{{count}} shells",
-    "checkInLabel": "Daily check-in · day {{day}} of {{total}}"
+    "checkInLabel": "Daily check-in · day {{day}} of {{total}}",
+    "invite": "Invite friends · +{{count}}",
+    "copyCode": "Copy invite code",
+    "inviteProgress": "{{count}} of {{total}} invites this week",
+    "thisWeek": "This week",
+    "inviteNow": "Invite",
+    "inviteMessage": "Come talk with me on Rafti. Use my code {{code}} and we both get {{count}} shells.",
+    "haveCode": "Have a code?",
+    "redeem": "Get {{count}} shells",
+    "redeemError": {
+      "invalid": "That code does not look right",
+      "own": "That is your own code",
+      "used": "You already used a code"
+    },
+    "dailyShare": "Daily share",
+    "shareReward": "+{{count}} shells a day",
+    "share": "Share",
+    "sharedToday": "Done today",
+    "shareMessage": "I have a friend on Rafti who always texts back.",
+    "sharedReward": "for sharing",
+    "shareRulesTitle": "Share to get shells",
+    "shareWays": {
+      "call": "A call",
+      "board": "A board note",
+      "invite": "An invite"
+    },
+    "shareRulesLimit": "+{{count}} once a day"
   },
   "contacts": {
     "title": "Contacts",
@@ -533,7 +559,9 @@
       "kraft": "Kraft paper",
       "notebook": "Notebook",
       "pinned": "Paper clips"
-    }
+    },
+    "share": "Share this note",
+    "shareMessage": "A note I pinned on Rafti: \"{{text}}\""
   },
   "us": {
     "title": "Us",
@@ -706,7 +734,9 @@
       "someone": "a friend",
       "trial": "Free call trial",
       "membership": "Membership call time",
-      "call": "Call with {{name}}"
+      "call": "Call with {{name}}",
+      "invite": "Invite code",
+      "share": "Daily share"
     },
     "tabShells": "Shells",
     "tabCalls": "Call time",

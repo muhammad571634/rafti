@@ -20,8 +20,8 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F7 Closeness v2 | done | Levels 0-100 in 5 stages, relationship labels, "How closeness works" sheet | #21-#23, #41 |
 | F6 Calls | done | Call time balance, 15-minute trial, time left on the call screen, text after a missed call | #8, #29, #40, #46 |
 | F9 Us and calendar | done | Month calendar of plans in Us, "+" for plan / diary / board, times parsed from chat, reminder 10 minutes before, "how did it go?" after, moment filters, message board with 7 papers | #49-#55, video B 35-37s |
-| **F10 Free gifts** | **next** | Ladder and wheel exist. To build: invite code +50, daily share +6 | #26-#28, video B 13-14s |
-| F11 Dates | partial | Exists. To build: map, rounds of choices, polaroid at the end, diary "date" page | #9-#12, video A 13-21s |
+| F10 Free gifts | done | Invite code +50 (copy, share, enter a friend's code once, 0/6 a week), daily share +6 from calls, board notes or invites, "+6 for sharing" banner | #26-#28, video B 13-14s |
+| **F11 Dates** | **next** | Exists. To build: map, rounds of choices, polaroid at the end, diary "date" page | #9-#12, video A 13-21s |
 | F12 Chat "+" games | partial | Secret note, bedtime exist. To build: couple quiz, truth or dare, daily call times | #42-#48 |
 | F13 Find and profile | partial | Exists. To improve: grouped list, search | #56-#132 |
 | F14 Profile and settings | partial | Exists. To build: completion %, invite code, language, delete account | #130-#133 |

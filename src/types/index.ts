@@ -214,6 +214,8 @@ export type LedgerReason =
   | 'photo'
   | 'note'
   | 'board'
+  | 'invite'
+  | 'share'
   | 'date'
   | 'photoBooth'
   | 'voiceClone'
@@ -262,6 +264,10 @@ export interface User {
   onboardedAt?: string;
   /** The free-trial call note was shown once */
   callIntroSeen?: boolean;
+  /** A friend's invite code entered here; it can be used only once */
+  redeemedInvite?: string;
+  /** When friends joined with this user's code (credited by the server later) */
+  inviteCredits?: string[];
 }
 
 /** Once-a-day bookkeeping: login reward, greetings, calls, ads, wheel. */
@@ -279,6 +285,8 @@ export interface DailyState {
   adsWatched: number;
   spinDay?: string;
   spinsUsed: number;
+  /** The day the share reward was last paid */
+  shareDay?: string;
 }
 
 export interface AppSettings {

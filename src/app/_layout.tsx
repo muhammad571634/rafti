@@ -8,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ShareRewardBanner } from '@/components/share-reward-banner';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
 import { colors, space } from '@/theme';
@@ -51,6 +52,7 @@ export default function RootLayout() {
           <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
         </Stack>
+        <ShareRewardBanner />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

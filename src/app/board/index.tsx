@@ -7,6 +7,7 @@ import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { boardStyle, Stationery } from '@/components/board/stationery';
 import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
+import { shareForReward } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, space } from '@/theme';
 
@@ -53,16 +54,14 @@ export default function BoardScreen() {
             const ink = boardStyle(post.style);
             const conversation = conversations.find((c) => c.characterId === character!.id);
             return (
-              <PressableScale
-                key={post.id}
-                style={{ width: cardW }}
-                scaleTo={0.97}
-                onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
-                <Stationery id={post.style} width={cardW} height={cardH}>
-                  <Txt variant="small" color={ink.ink} lines={post.style === 'heart' ? 3 : 6}>
-                    {post.text}
-                  </Txt>
-                </Stationery>
+              <View key={post.id} style={{ width: cardW }}>
+                <PressableScale scaleTo={0.97} onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
+                  <Stationery id={post.style} width={cardW} height={cardH}>
+                    <Txt variant="small" color={ink.ink} lines={post.style === 'heart' ? 3 : 6}>
+                      {post.text}
+                    </Txt>
+                  </Stationery>
+                </PressableScale>
                 <View style={styles.meta}>
                   <CharacterAvatar character={character!} size={22} />
                   <Txt variant="caption" lines={1} style={styles.flex}>
@@ -74,8 +73,15 @@ export default function BoardScreen() {
                   <Txt variant="tiny" color={colors.textFaint}>
                     {relativeStamp(post.createdAt)}
                   </Txt>
+                  <PressableScale
+                    hitSlop={hitSlop}
+                    scaleTo={0.85}
+                    accessibilityLabel={t('board.share')}
+                    onPress={() => void shareForReward(t('board.shareMessage', { text: post.text }))}>
+                    <Ionicons name="share-outline" size={16} color={colors.textSecondary} />
+                  </PressableScale>
                 </View>
-              </PressableScale>
+              </View>
             );
           })}
         </ScrollView>

@@ -2,9 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
+import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
   AD_REWARD,
+  INVITE_REWARD,
+  SHARE_REWARD,
   DAILY_CHECK_IN,
   FREE_SPINS_PER_DAY,
   MAX_ADS_PER_DAY,
@@ -153,6 +156,8 @@ interface AppState {
   activeConversationId: string | null;
   incomingCall: IncomingCall | null;
   dailyReward: DailyRewardEvent | null;
+  /** Shells just paid for a share; a small banner shows it and clears it. */
+  shareReward: number | null;
 
   /* chat */
   sendText: (conversationId: string, text: string) => SendResult;
@@ -194,6 +199,11 @@ interface AppState {
   claimDailyLogin: () => number;
   dismissDailyReward: () => void;
   watchAd: () => number;
+  /** Pays the daily share reward once a day; returns what was paid (0 when already paid today). */
+  claimShareReward: () => number;
+  dismissShareReward: () => void;
+  /** Enters a friend's invite code: both sides get shells once. */
+  redeemInvite: (code: string) => 'ok' | 'invalid' | 'own' | 'used';
   spinWheel: () => { index: number; reward: number } | null;
   subscribe: (plan: MemberPlan) => void;
 
@@ -371,6 +381,7 @@ export const useAppStore = create<AppState>()(
       activeConversationId: null,
       incomingCall: null,
       dailyReward: null,
+      shareReward: null,
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
@@ -709,6 +720,35 @@ export const useAppStore = create<AppState>()(
           ledger: log(s.ledger, AD_REWARD, 'ad'),
         }));
         return AD_REWARD;
+      },
+
+      claimShareReward: () => {
+        const today = todayKey();
+        if (get().daily.shareDay === today) return 0;
+        set((s) => ({
+          daily: { ...s.daily, shareDay: today },
+          wallet: { ...s.wallet, shells: s.wallet.shells + SHARE_REWARD },
+          ledger: log(s.ledger, SHARE_REWARD, 'share'),
+          shareReward: SHARE_REWARD,
+        }));
+        return SHARE_REWARD;
+      },
+
+      dismissShareReward: () => set({ shareReward: null }),
+
+      redeemInvite: (input) => {
+        const { user } = get();
+        const code = normalizeInviteCode(input);
+        if (!code) return 'invalid';
+        if (user.redeemedInvite) return 'used';
+        if (code === inviteCodeFor(user)) return 'own';
+        // The server checks the code exists and credits the friend who sent it.
+        set((s) => ({
+          user: { ...s.user, redeemedInvite: code },
+          wallet: { ...s.wallet, shells: s.wallet.shells + INVITE_REWARD },
+          ledger: log(s.ledger, INVITE_REWARD, 'invite'),
+        }));
+        return 'ok';
       },
 
       spinWheel: () => {

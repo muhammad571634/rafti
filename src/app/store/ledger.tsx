@@ -180,6 +180,8 @@ const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']>
   photo: 'image-outline',
   note: 'mail-outline',
   board: 'pin-outline',
+  invite: 'person-add-outline',
+  share: 'share-social-outline',
   date: 'cafe-outline',
   photoBooth: 'camera-outline',
   voiceClone: 'mic-circle-outline',

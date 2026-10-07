@@ -79,6 +79,12 @@ export function rollCheckIn(day: number) {
 }
 
 export const AD_REWARD = 10;
+/** Paid to both sides when a friend joins with an invite code. */
+export const INVITE_REWARD = 50;
+/** Invites that pay out per week (Monday to Sunday). */
+export const INVITES_PER_WEEK = 6;
+/** Sharing a call, a board note or an invite: once a day. */
+export const SHARE_REWARD = 6;
 export const MAX_ADS_PER_DAY = 5;
 export const FREE_SPINS_PER_DAY = 1;
 

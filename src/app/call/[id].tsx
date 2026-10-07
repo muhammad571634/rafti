@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Share, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import {
@@ -17,6 +17,7 @@ import {
   characterImage,
 } from '@/components/ui';
 import { callClock, shortName } from '@/lib/format';
+import { shareForReward } from '@/lib/share';
 import { callScript, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
 
@@ -104,7 +105,8 @@ export default function CallScreen() {
   hangUpRef.current = hangUp;
 
   const share = () => {
-    Share.share({ message: t('call.shareMessage', { name }) }).catch(() => {});
+    // Sharing a call counts as the day's share.
+    void shareForReward(t('call.shareMessage', { name }));
   };
 
   return (

@@ -4,8 +4,8 @@
 Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
 o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 
-1. **Hozirgi oqim: F10 Bepul sovg'alar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F9 tayyor. F10 dan keyin F11, F12, F13, F14, F15.
+1. **Hozirgi oqim: F11 Date.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F10 tayyor. F11 dan keyin F12, F13, F14, F15.
 2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -21,11 +21,11 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F10 uchun boshlang'ich ma'lumot:**
-   - `src/app/gifts.tsx` da 7 kunlik zinapoya va g'ildirak bor; ledger (`log()`) har chig'anoqni yozadi;
-   - qilinadi: taklif kodi (+50, ikkala tomonga), kunlik ulashish (+6, kuniga bir marta), reklama limiti
-     ko'rinadi; BIMOBIMO #26-#28, video B 13-14s. Ulashish uchun F9 doskasidagi eslatma yoki F11 polaroidi
-     ulashiladigan narsa bo'lishi mumkin.
+4. **F11 uchun boshlang'ich ma'lumot:**
+   - `src/app/dating.tsx` va `dateScenarios` (darajalar 1/3/6/10/16) bor; `startDate` store'da;
+   - qilinadi: joylar xaritasi, raundlar (tanlovlar), yakunda polaroid, kundalikda "date" sahifasi;
+     BIMOBIMO #9-#12, video A 13-21s. Polaroidni ulashish `shareForReward()` (`src/lib/share.ts`) orqali
+     kunlik +6 ga ulanadi; uchrashuv rejasi F9 kalendariga tushishi mumkin.
 5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
    `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
    eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
@@ -144,7 +144,20 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
       chatda javob beradi, +6 intimacy. `src/app/board/index.tsx` — ilingan eslatmalar panjarasi (eski "oxirgi
       xabarlar" doskasi o'rniga). Store'da `boardPosts` (persist);
     - Home'dagi bugungi reja qatorida vaqt: "15:00 · Theo will remind you".
-  - Navbat: F10 bepul sovg'alar (taklif kodi +50, ulashish +6).
+  - **F10 Bepul sovg'alar — kodda tayyor** (BIMOBIMO #26-#28):
+    - Free gifts ekranida "Invite friends · +50": o'z kodi (`src/lib/invite.ts`, 6 belgi, 0/O/1/I yo'q,
+      akkauntdan hosil qilinadi; server keyin haqiqiy kod beradi), nusxa olish, haftalik progress 0/6
+      (`user.inviteCredits`, server to'ldiradi), "Invite" ulashish oynasini ochadi;
+    - "Have a code?": do'st kodini bir marta kiritish, +50 (`redeemInvite`: invalid / own / used), ledger `invite`;
+    - "Daily share": +6 kuniga bir marta (`claimShareReward`, `daily.shareDay`, ledger `share`). Hisoblanadi:
+      qo'ng'iroqni ulashish (call ekrani), doska eslatmasini ulashish (board kartasidagi belgi), taklif.
+      Hammasi `shareForReward()` orqali; webda share oynasi bo'lmasa matn nusxalanadi;
+    - har qayerda ulashilganda tepada "+6 for sharing" banneri (`share-reward-banner.tsx`, root layout'da);
+    - Discord/Instagram/TikTok qatorlari qo'shilmadi: Rafti'ning rasmiy akkauntlari hali yo'q.
+    - Diqqat: `board/index.tsx` tahrir qilinganda Expo typed routes ba'zan `/board/index` deb yozadi va tsc
+      yiqiladi. Tuzatish: serverni to'xtatish, `%TEMP%\metro-cache`, `metro-file-map-*` va
+      `.expo/types/router.d.ts` ni o'chirish, qayta ishga tushirish.
+  - Navbat: F11 Date (xarita, raundlar, polaroid).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.
