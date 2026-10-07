@@ -1,6 +1,7 @@
 import type { TileName } from '@/assets/brand/registry';
 
 export type CharacterCategory = 'school' | 'fantasy' | 'idol' | 'daily' | 'original';
+export type CharacterGender = 'male' | 'female';
 
 export interface Character {
   id: string;
@@ -9,6 +10,8 @@ export interface Character {
   handle: string;
   bio: string;
   category: CharacterCategory;
+  /** For the Find filter and the server prompt; user creations may leave it out. */
+  gender?: CharacterGender;
   /** World used to group cards on the Find screen */
   series?: string;
   /** Picked from the gallery; bundled seed art is looked up by `id` in assets/avatars. */

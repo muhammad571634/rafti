@@ -115,6 +115,11 @@
   "find": {
     "title": "Find",
     "searchPlaceholder": "Search characters",
+    "who": {
+      "everyone": "Everyone",
+      "male": "Him",
+      "female": "Her"
+    },
     "categories": {
       "school": "Campus",
       "fantasy": "Fantasy",

@@ -13,6 +13,7 @@ import {
 
 import { CHARACTER_ROW_AVATAR as AVATAR, CharacterRow } from '@/components/character-row';
 import {
+  Chip,
   Divider,
   EmptyState,
   IconButton,
@@ -25,10 +26,13 @@ import {
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, CharacterCategory } from '@/types';
+import type { Character, CharacterCategory, CharacterGender } from '@/types';
 
 type Tab = CharacterCategory | 'all';
 const TABS: Tab[] = ['all', 'school', 'fantasy', 'idol', 'daily', 'original'];
+/** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
+type Who = CharacterGender | 'everyone';
+const WHO: Who[] = ['everyone', 'male', 'female'];
 /** Rows per page inside a world card. */
 const PAGE = 3;
 
@@ -45,14 +49,19 @@ export default function FindScreen() {
 
   const [query, setQuery] = useState('');
   const [tab, setTab] = useState<Tab>('all');
+  const [who, setWho] = useState<Who>('everyone');
 
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
   const q = query.trim().toLowerCase();
+  const shown = useMemo(
+    () => (who === 'everyone' ? characters : characters.filter((c) => c.gender === who)),
+    [characters, who],
+  );
 
   const results = useMemo(
     () =>
       q
-        ? characters.filter(
+        ? shown.filter(
             (c) =>
               c.name.toLowerCase().includes(q) ||
               c.handle.toLowerCase().includes(q) ||
@@ -60,12 +69,12 @@ export default function FindScreen() {
               c.tags.some((tag) => tag.includes(q)),
           )
         : [],
-    [characters, q],
+    [shown, q],
   );
 
   const groups = useMemo(
-    () => groupBySeries(characters.filter((c) => tab === 'all' || c.category === tab)),
-    [characters, tab],
+    () => groupBySeries(shown.filter((c) => tab === 'all' || c.category === tab)),
+    [shown, tab],
   );
 
   const row = (character: Character) => (
@@ -92,6 +101,12 @@ export default function FindScreen() {
       </View>
 
       <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.search} />
+
+      <View style={styles.who}>
+        {WHO.map((key) => (
+          <Chip key={key} label={t(`find.who.${key}`)} active={who === key} onPress={() => setWho(key)} />
+        ))}
+      </View>
 
       {q ? null : (
         <View style={styles.tabsWrap}>
@@ -233,6 +248,7 @@ const styles = StyleSheet.create({
   },
   title: { flex: 1 },
   search: { marginHorizontal: space.lg, marginTop: space.sm },
+  who: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, marginTop: space.md },
   tabsWrap: { borderBottomWidth: 1, borderBottomColor: colors.border, marginTop: space.sm },
   tabs: { paddingHorizontal: space.lg, gap: space.xl },
   tab: {

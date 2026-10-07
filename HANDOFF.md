@@ -6,8 +6,8 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 (pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
 
 1. **F1-F14 tayyor (F14 Profil 2026-10-07, bulut sessiyasida).** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   3D ikonkalar 2-, 3- va 4-to'plami ulandi. Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15
-   yoki (b) original personajlar. Pastdagi 4-bandga qarang.
+   3D ikonkalar 2-, 3- va 4-to'plami ulandi. Personajlar katalogi (b): 40 ta personaj kodda, portretlar
+   kutilmoqda (Rowan sinovi birinchi). Pastdagi 4-bandga qarang.
 2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -49,7 +49,13 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
      personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga
      oshirish (har dunyoda 8-10), rasmlarni foydalanuvchi Nano Banana'da chizadi, bio'ni agent yozadi.
-     Foydalanuvchi hali qaysi biridan boshlashni tanlamagan — F14 dan keyin so'rang.
+     **(b) tanlandi va kodda (2026-10-07):** 24 yangi personaj, har dunyo 10 tadan, jami 40
+     (`src/mock/characters.ts`, reja va promptlar `docs/characters-plan.md`). `Character.gender` qo'shildi, Find'da
+     Everyone / Him / Her filtri (BIMOBIMO'da bunday filtr yo'q, katalogi deyarli faqat erkaklar).
+     Rasmlar kutilmoqda: birinchi sinovda bo'sh `{...}` li umumiy prompt ikki namuna bilan berilib, Kai chiqdi —
+     endi tayyor promptlar bor (portretga faqat `c_kai.png`, sahnaga yangi portret + `c_sol.jpg`).
+     Rasm kelganda: `assets/raw/avatars/c_<id>.png` → `build_avatars` hozir `RAW/avatar_<name>.png/` papkalarini
+     o'qiydi, `assets/raw/avatars/` fayllarini ham o'qiydigan qilish kerak.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
 5. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
    ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
