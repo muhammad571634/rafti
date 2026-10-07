@@ -42,6 +42,7 @@ import {
   todayKey,
   wallet as seedWallet,
 } from '@/mock';
+import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
   CallRecord,
@@ -109,7 +110,7 @@ interface AppState {
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
   diary: DiaryEntry[];
-  /** Pages characters wrote about the user. Written by the server; seeded until then. */
+  /** Pages characters wrote about the user: the morning after a day spent together. */
   characterDiary: CharacterDiaryPage[];
   /** Ids of character pages the user has opened, for the "New page" mark. */
   diaryPagesRead: string[];
@@ -162,6 +163,8 @@ interface AppState {
   addDiaryEntry: (entry: Omit<DiaryEntry, 'id'>) => string;
   deleteDiaryEntry: (id: string) => void;
   markDiaryPageRead: (id: string) => void;
+  /** Writes the pages owed for yesterday's chats and dates. Safe to call often. */
+  writeDueDiaryPages: () => void;
 
   /* secret note */
   ensureSecretNote: (characterId: string) => void;
@@ -199,6 +202,7 @@ type PersistedKeys =
   | 'relationships'
   | 'memories'
   | 'diary'
+  | 'characterDiary'
   | 'diaryPagesRead'
   | 'notes'
   | 'calls'
@@ -631,6 +635,12 @@ export const useAppStore = create<AppState>()(
       markDiaryPageRead: (id) =>
         set((s) => (s.diaryPagesRead.includes(id) ? s : { diaryPagesRead: [...s.diaryPagesRead, id] })),
 
+      writeDueDiaryPages: () => {
+        const { conversations, messages, moments, characterDiary } = get();
+        const fresh = duePages(daysTogether(conversations, messages, moments), characterDiary);
+        if (fresh.length) set((s) => ({ characterDiary: [...s.characterDiary, ...fresh] }));
+      },
+
       /* ── secret note ──────────────────────────────────────────────────── */
 
       ensureSecretNote: (characterId) => {
@@ -868,6 +878,11 @@ export const useAppStore = create<AppState>()(
           daily: { ...current.daily, ...saved.daily },
           settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
+          // Seed pages come from code; pages written on this device are kept.
+          characterDiary: [
+            ...seedCharacterDiary,
+            ...(saved.characterDiary ?? []).filter((p) => !seedCharacterDiary.some((seed) => seed.id === p.id)),
+          ],
         };
       },
       partialize: (s): Pick<AppState, PersistedKeys> => ({
@@ -879,6 +894,7 @@ export const useAppStore = create<AppState>()(
         relationships: s.relationships,
         memories: s.memories,
         diary: s.diary,
+        characterDiary: s.characterDiary,
         diaryPagesRead: s.diaryPagesRead,
         notes: s.notes,
         calls: s.calls,
@@ -894,6 +910,7 @@ export const useAppStore = create<AppState>()(
         diary
           .filter((d) => d.sharedWithCharacterId && !d.reply)
           .forEach((d) => answerDiary(useAppStore.setState, d.id));
+        useAppStore.getState().writeDueDiaryPages();
         useAppStore.setState({ hydrated: true });
       },
     },

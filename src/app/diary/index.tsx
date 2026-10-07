@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
@@ -61,6 +61,10 @@ export default function DiaryScreen() {
   const pages = useAppStore((s) => s.characterDiary);
   const read = useAppStore((s) => s.diaryPagesRead);
   const myDiary = useAppStore((s) => s.diary);
+  const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
+
+  // A new morning may have brought pages for yesterday's chats.
+  useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
 
   const today = dayKey();
   const [day, setDay] = useState(today);
