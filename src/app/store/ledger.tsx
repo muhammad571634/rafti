@@ -106,7 +106,8 @@ export default function LedgerScreen() {
         ListEmptyComponent={
           <EmptyState
             title={tab === 'shells' ? t('ledger.empty') : t('ledger.emptyCalls')}
-            hint={t('ledger.emptyHint')}
+            // The hint is about shells; the call tab keeps just its title.
+            hint={tab === 'shells' ? t('ledger.emptyHint') : undefined}
             compact
           />
         }

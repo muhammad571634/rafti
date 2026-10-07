@@ -26,7 +26,7 @@ export function EmptyState({
   icon,
 }: EmptyStateProps) {
   return (
-    <View style={[styles.root, compact && styles.compact]}>
+    <View style={[styles.root, compact ? styles.compact : styles.fill]}>
       {icon ? (
         <ClayIcon name={icon} size={compact ? 88 : 120} tile={false} />
       ) : (
@@ -49,17 +49,16 @@ export function EmptyState({
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.xxxl,
     paddingVertical: space.huge,
     gap: space.xs,
   },
-  compact: {
-    flex: 0,
-    paddingVertical: space.xxl,
-  },
+  // Full-screen states fill their parent. Compact ones size to their content: `flex: 0`
+  // would become `flex-basis: 0%` on web, collapse the box and let the art spill upward.
+  fill: { flex: 1 },
+  compact: { paddingVertical: space.xxl },
   title: { marginTop: space.md },
   action: { marginTop: space.lg },
 });

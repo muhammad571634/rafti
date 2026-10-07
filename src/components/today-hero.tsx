@@ -10,7 +10,7 @@ import { characterImage, PressableScale, Txt } from '@/components/ui';
 import { daysBetween } from '@/lib/format';
 import { displayName } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, radius, space } from '@/theme';
-import type { Character, Conversation, Relationship } from '@/types';
+import type { Character, Conversation, Message, Relationship } from '@/types';
 
 const HEIGHT = 204;
 const ACTION = 44;
@@ -29,27 +29,44 @@ export interface HeroFriend {
 }
 
 /**
- * The friend the Today hero features: the closest bond that has a hero scene, else
- * the closest bond with a portrait. A friend is a character you have a bond and a
- * chat with, the same rule as the Us tab. Undefined when there is no one to show.
+ * When you last talked with someone in this chat: your newest message, or the newest
+ * call that connected (either way round). Their own first texts (good morning, a
+ * birthday wish) do not count, so the hero follows you, not the notifications.
+ */
+export function lastTalkedAt(messages: readonly Message[] | undefined): number {
+  if (!messages) return 0;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.pending) continue;
+    if (m.author === 'me' || (m.kind === 'call' && !m.missed)) return Date.parse(m.createdAt) || 0;
+  }
+  return 0;
+}
+
+/**
+ * The friend the Today hero features: the one you talked with last (docs/today-hero.md).
+ * Before your first conversation it is the closest bond. A friend is a character you
+ * have a bond and a chat with, the same rule as the Us tab. The picture is their wide
+ * scene when one exists, else their portrait. Undefined when there is no one to show.
  */
 export function featuredFriend(
   characters: Character[],
   relationships: Record<string, Relationship>,
   conversations: Conversation[],
+  messages: Record<string, Message[]>,
 ): HeroFriend | undefined {
   const friends = characters
     .flatMap((character) => {
       const relationship = relationships[character.id];
       const conversation = conversations.find((c) => c.characterId === character.id);
-      return relationship && conversation ? [{ character, relationship, conversation }] : [];
+      if (!relationship || !conversation) return [];
+      return [{ character, relationship, conversation, talkedAt: lastTalkedAt(messages[conversation.id]) }];
     })
-    .sort((a, b) => b.relationship.intimacy - a.relationship.intimacy);
+    .sort((a, b) => b.talkedAt - a.talkedAt || b.relationship.intimacy - a.relationship.intimacy);
 
-  const withScene = friends.find((f) => HEROES[f.character.id] != null);
-  if (withScene) return { ...withScene, image: HEROES[withScene.character.id], scene: true };
-
-  for (const friend of friends) {
+  for (const { talkedAt: _, ...friend } of friends) {
+    const scene = HEROES[friend.character.id];
+    if (scene != null) return { ...friend, image: scene, scene: true };
     const portrait = characterImage(friend.character);
     if (portrait != null) return { ...friend, image: portrait, scene: false };
   }

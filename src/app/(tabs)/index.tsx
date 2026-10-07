@@ -94,6 +94,7 @@ export default function HomeScreen() {
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
   const conversations = useAppStore((s) => s.conversations);
+  const messages = useAppStore((s) => s.messages);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
@@ -108,8 +109,8 @@ export default function HomeScreen() {
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
   const hero = useMemo(
-    () => featuredFriend(characters, relationships, conversations),
-    [characters, relationships, conversations],
+    () => featuredFriend(characters, relationships, conversations, messages),
+    [characters, relationships, conversations, messages],
   );
 
   /** Newest first; chats whose character is gone are dropped. */
