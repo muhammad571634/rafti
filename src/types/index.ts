@@ -188,6 +188,10 @@ export interface User {
   avatarUri?: string;
   accentIndex: number;
   locale: string;
+  /** Only the year is kept, for the 18+ gate. */
+  birthYear?: number;
+  /** Set when the first-launch flow is finished; until then the app opens on it. */
+  onboardedAt?: string;
 }
 
 /** Once-a-day bookkeeping: login reward, greetings, calls, ads, wheel. */

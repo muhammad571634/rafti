@@ -42,6 +42,7 @@ export default function RootLayout() {
             animation: 'slide_from_right',
           }}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
           <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
           <Stack.Screen
             name="call/incoming/[id]"

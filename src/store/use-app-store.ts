@@ -91,6 +91,8 @@ export interface IncomingCall {
 }
 
 const STALE_RING_MS = 45_000;
+/** The welcome gift at the end of the first launch. */
+export const WELCOME_SHELLS = 100;
 
 export interface DailyRewardEvent {
   amount: number;
@@ -142,6 +144,15 @@ interface AppState {
 
   /* bonds */
   addFriend: (characterId: string) => string;
+  /** Finishes the first launch: who the user is, their first friend and the welcome gift. Returns the chat. */
+  completeOnboarding: (input: {
+    name: string;
+    birthYear: number;
+    characterId: string;
+    notifications: boolean;
+    /** The friend's first question, in the user's language */
+    firstAsk: string;
+  }) => string;
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
   resetRelationship: (characterId: string) => void;
   setBackground: (characterId: string, backgroundId: string) => void;
@@ -464,6 +475,27 @@ export const useAppStore = create<AppState>()(
             : { ...s.relationships, [characterId]: newRelationship(characterId) },
         }));
         addMoment(set, characterId, 'met');
+        return conversationId;
+      },
+
+      completeOnboarding: ({ name, birthYear, characterId, notifications, firstAsk }) => {
+        set((s) => ({
+          user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
+          wallet: { ...s.wallet, shells: s.wallet.shells + WELCOME_SHELLS },
+          settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
+        }));
+        // Day one of the check-in week is part of the welcome, not a popup over the first chat.
+        get().claimDailyLogin();
+        set({ dailyReward: null });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'them',
+          kind: 'text',
+          text: firstAsk,
+          createdAt: new Date().toISOString(),
+        });
         return conversationId;
       },
 
@@ -850,7 +882,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 3,
+      version: 4,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: Wallet & { acorns?: number } };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -860,6 +892,8 @@ export const useAppStore = create<AppState>()(
         }
         // v3: the licensed seed cast was replaced by Rafti's originals.
         if (version < 3) state = recastSeed(state);
+        // v4: first-launch flow. Anyone who already has data has been through the app.
+        if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),

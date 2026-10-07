@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DiaryRulesSheet } from '@/components/diary';
 import { Button, CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { shortName } from '@/lib/format';
 import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, palette, radius, space, type } from '@/theme';
@@ -57,7 +58,7 @@ export default function CharacterDiaryPageScreen() {
     );
   }
 
-  const name = character.name.split(' ')[0];
+  const name = shortName(character.name);
   const fmt = (key: string, opts: Intl.DateTimeFormatOptions) => dateFromKey(key).toLocaleDateString(i18n.language, opts);
   const dayBefore = (key: string) => {
     const d = dateFromKey(key);

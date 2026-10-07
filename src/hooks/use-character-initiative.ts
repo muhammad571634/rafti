@@ -19,6 +19,8 @@ type PendingCall = { callFrom: string; slot?: CallSlot };
 export function useCharacterInitiative() {
   const router = useRouter();
   const hydrated = useAppStore((s) => s.hydrated);
+  // Nobody calls or writes first while the user is still on the first-launch flow.
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
   const incoming = useAppStore((s) => s.incomingCall);
   const dailyReward = useAppStore((s) => s.dailyReward);
   const shownCall = useRef<string | null>(null);
@@ -26,7 +28,7 @@ export function useCharacterInitiative() {
   const pending = useRef<PendingCall | null>(null);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !onboarded) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const run = () => {
@@ -52,7 +54,7 @@ export function useCharacterInitiative() {
       sub.remove();
       clearTimeout(timer);
     };
-  }, [hydrated]);
+  }, [hydrated, onboarded]);
 
   // Never ring over the reward card: wait for it to close, then call.
   useEffect(() => {

@@ -47,8 +47,15 @@
   https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
   - Ulangan: kecha suhbat/uchrashuv bo'lsa, ertalab personaj kundalik yozadi (`src/mock/diary-writer.ts`,
     store'da `writeDueDiaryPages`, ilova ochilganda va Diary ekraniga kirilganda chaqiriladi).
-  - **F1 Onboarding prototipi foydalanuvchi tasdig'ini kutyapti:** https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF
-    (salom → 18+ yil → ism → birinchi do'st (4 dunyodan) → bildirishnoma → +100 → birinchi chat).
+  - **F1 Onboarding — kodda tayyor** (prototip tasdiqlangan: https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF):
+    `src/app/onboarding.tsx`. Salom → 18+ yil → ism → birinchi do'st (Kai, Aurelian, Sol, Seren) → bildirishnoma
+    → +100 (`WELCOME_SHELLS`) → birinchi chat (personaj ismingiz bilan savol beradi). `(tabs)/_layout` onboarding
+    tugamaguncha `/onboarding` ga yo'naltiradi; store v4 migratsiyasi eski foydalanuvchilarni o'tkazib yuboradi.
+    1-kun check-in onboarding ichida jim beriladi; personajlar tashabbusi (qo'ng'iroq, salom) onboarding'dan keyin.
+    Bildirishnoma hozircha faqat sozlama (`expo-notifications` hali o'rnatilmagan).
+  - `shortName()` (`src/lib/format.ts`): "Prince Aurelian" → "Aurelian". Gaplarda ism uchun shuni ishlating.
+- **Til qarori (2026-10-07):** butun interfeys hozircha faqat ingliz tilida (asosiy til). Boshqa tillar keyin
+  `src/i18n/locales/` orqali qo'shiladi; til tanlash tugmasi bitta til bo'lganda ko'rinmaydi.
   - Navbat: F2 (Today'da "X wrote about you" va bugungi rejalar), F5 hisob tarixi, F7 munosabat v2.
 - **Keyingi ish:**
   - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);

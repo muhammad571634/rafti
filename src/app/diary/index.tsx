@@ -21,6 +21,7 @@ import { BRAND } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
 import { BrandArt, Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, HEADER_HEIGHT, palette, radius, shadows, space } from '@/theme';
@@ -154,7 +155,7 @@ export default function DiaryScreen() {
 
   const act = (card: Card) => (card.kind === 'mine' ? router.push('/diary/write') : open(card));
 
-  const firstName = (c: Character) => c.name.split(' ')[0];
+  const firstName = (c: Character) => shortName(c.name);
 
   const line = (card: Card) => {
     if (card.kind === 'mine') {
@@ -328,7 +329,7 @@ function CoverCard({
 
   const locked = card.kind === 'character' && !card.last;
   const source = coverSource(card);
-  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: card.character.name.split(' ')[0] });
+  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: shortName(card.character.name) });
   const meta =
     card.kind === 'mine'
       ? t('diary.onlyYou')

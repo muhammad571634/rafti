@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import type { Icon } from 'phosphor-react-native';
 import { ChatsCircleIcon } from 'phosphor-react-native/src/icons/ChatsCircle';
 import { CompassIcon } from 'phosphor-react-native/src/icons/Compass';
@@ -28,6 +28,12 @@ const ICONS: Record<string, Icon> = {
 
 export default function TabsLayout() {
   useCharacterInitiative();
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+
+  // Saved data decides whether this is a first launch, so wait for it.
+  if (!hydrated) return null;
+  if (!onboarded) return <Redirect href="/onboarding" />;
 
   return (
     <>
