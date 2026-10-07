@@ -297,6 +297,87 @@ def build_app_icons(src):
     return '#%02X%02X%02X' % edge
 
 
+# Rafti reaction stickers: one 3x3 Nano Banana sheet; (row, col) per reaction.
+REACTION_SHEET = os.path.join(ROOT, 'assets', 'raw', 'reactions-sheet.jpg')
+REACTIONS = {
+    'love': (0, 0),
+    'laugh': (0, 1),
+    'wow': (0, 2),
+    'sad': (1, 0),
+    'hyped': (2, 1),
+    'thumbs': (2, 2),
+}
+
+
+def cut_sticker(cell):
+    """The paper backdrop is grey and grainy; the die-cut rim is pure white, so the flood stops there."""
+    a = np.asarray(cell).astype(int)
+    h, w, _ = a.shape
+    grey = (a.max(axis=2) - a.min(axis=2)) < 14
+    candidate = grey & (a.min(axis=2) < 250)
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = ~reach
+    # Bits of a neighbouring sticker poke into the cell at its edge. Each piece that
+    # touches the edge is grown on its own and dropped only if it is small.
+    total = solid.sum()
+    seen = np.zeros((h, w), bool)
+    for y, x in zip(*np.nonzero(solid & ~seen & _edge(h, w))):
+        if seen[y, x]:
+            continue
+        piece = np.zeros((h, w), bool)
+        piece[y, x] = True
+        while True:
+            grown = piece.copy()
+            grown[1:] |= piece[:-1]
+            grown[:-1] |= piece[1:]
+            grown[:, 1:] |= piece[:, :-1]
+            grown[:, :-1] |= piece[:, 1:]
+            grown &= solid
+            if (grown == piece).all():
+                break
+            piece = grown
+        seen |= piece
+        if piece.sum() < total * 0.05:
+            solid &= ~piece
+
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
+    out = cell.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+def _edge(h, w):
+    edge = np.zeros((h, w), bool)
+    edge[0, :] = edge[-1, :] = edge[:, 0] = edge[:, -1] = True
+    return edge
+
+
+def build_reactions():
+    if not os.path.exists(REACTION_SHEET):
+        return
+    sheet = Image.open(REACTION_SHEET).convert('RGB')
+    step = sheet.width / 3
+    for name, (row, col) in REACTIONS.items():
+        box = (round(col * step), round(row * step), round((col + 1) * step), round((row + 1) * step))
+        sticker = fit(cut_sticker(sheet.crop(box)), 240)
+        save(sticker, os.path.join(OUT, f'reaction-{name}.png'), optimize=True)
+
+
 def build_sticker_derivatives():
     sticker = Image.open(os.path.join(OUT, 'rafti-sticker.png'))
     # Splash: the sticker centred on transparent, sized by expo-splash-screen.
@@ -409,6 +490,7 @@ def main():
 
     edge = build_app_icons(newest('app_icon'))
     build_sticker_derivatives()
+    build_reactions()
     print(f'app icon done, android background {edge}')
 
 

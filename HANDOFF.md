@@ -73,8 +73,10 @@
       do'kon sarlavhasidagi chek belgisi orqali ochiladi; Home'dagi sovg'a kartasida "N free left · gone at midnight";
     - paywall: reklama (+10) va g'ildirak chatdan chiqmasdan; yozilgan matn saqlanadi;
     - ketma-ket yuborilgan xabarlarga javoblar navbat bilan keladi, aralashmaydi (`replyingUntil`).
-  - **Rafti reaksiya stikerlari:** foydalanuvchi Nano Banana'da 3x3 varaq chizdi (love, laugh, wow, sad, hyped,
-    thumbs up). Fayl hali repoda yo'q: kelganda kesib, `assets/brand/` ga qo'yib, chat menyusidagi emoji o'rniga ulash.
+  - **Rafti reaksiya stikerlari — ulandi:** xom varaq `assets/raw/reactions-sheet.jpg` (Nano Banana, 3x3).
+    `scripts/build-brand-art.py` dagi `build_reactions()` 6 tasini kesadi (fon kulrang qog'oz, oq die-cut chegara
+    saqlanadi) → `assets/brand/reaction-{love,laugh,wow,sad,hyped,thumbs}.png`, registry'da `REACTION_STICKERS`.
+    Chat menyusi va pufak burchagidagi reaksiya shu stikerlar.
   - Navbat: F7 munosabat v2 (5 bosqich), F6 qo'ng'iroq daqiqalari.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,

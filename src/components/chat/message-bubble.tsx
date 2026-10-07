@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { Anim, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { colors, radius, shadows, space } from '@/theme';
@@ -68,10 +69,12 @@ export const MessageBubble = memo(function MessageBubble({
           ) : (
             <TextBubble message={message} mine={mine} first={showAvatar} />
           )}
-          {message.reaction ? (
-            <View style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs, shadows.card]}>
-              <Txt variant="small">{message.reaction}</Txt>
-            </View>
+          {message.reaction && message.reaction in REACTION_STICKERS ? (
+            <Image
+              source={REACTION_STICKERS[message.reaction as ReactionName]}
+              style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+              contentFit="contain"
+            />
           ) : null}
         </PressableScale>
       )}
@@ -237,20 +240,9 @@ const styles = StyleSheet.create({
   holdable: { flexShrink: 1, maxWidth: '72%' },
   fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
-  withReaction: { marginBottom: space.md },
-  reaction: {
-    position: 'absolute',
-    bottom: -space.md - 2,
-    minWidth: 28,
-    height: 26,
-    paddingHorizontal: space.xs + 2,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  withReaction: { marginBottom: space.lg },
+  // The sticker carries its own white die-cut rim, so it needs no chip behind it.
+  reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
   reactionMine: { left: -space.xs },
   reactionTheirs: { right: -space.xs },
   row: {

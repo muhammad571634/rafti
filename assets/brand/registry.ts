@@ -37,6 +37,18 @@ export const TILES = {
 
 export type TileName = keyof typeof TILES;
 
+/** Rafti reaction stickers, in menu order. Cut from one sheet by the build script. */
+export const REACTION_STICKERS = {
+  love: require('./reaction-love.png'),
+  laugh: require('./reaction-laugh.png'),
+  wow: require('./reaction-wow.png'),
+  sad: require('./reaction-sad.png'),
+  hyped: require('./reaction-hyped.png'),
+  thumbs: require('./reaction-thumbs.png'),
+} as const;
+
+export type ReactionName = keyof typeof REACTION_STICKERS;
+
 /** Intrinsic width / height, so art can be sized from one dimension. */
 export const BRAND_ASPECT: Record<BrandArtName, number> = {
   sticker: 604 / 539,

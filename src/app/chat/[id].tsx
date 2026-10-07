@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   ShellBadge,
@@ -325,20 +327,20 @@ export default function ChatRoomScreen() {
               </View>
             ) : null}
             <View style={styles.reactions}>
-              {REACTIONS.map((emoji) => {
-                const on = menu.reaction === emoji;
+              {REACTIONS.map((name) => {
+                const on = menu.reaction === name;
                 return (
                   <PressableScale
-                    key={emoji}
+                    key={name}
                     scaleTo={0.85}
                     style={[styles.reactionButton, on && styles.reactionOn]}
-                    accessibilityLabel={t('chat.react', { emoji })}
+                    accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
                     accessibilityState={{ selected: on }}
                     onPress={() => {
-                      reactToMessage(conversation.id, menu.id, on ? undefined : emoji);
+                      reactToMessage(conversation.id, menu.id, on ? undefined : name);
                       setMenu(null);
                     }}>
-                    <Txt style={styles.reactionEmoji}>{emoji}</Txt>
+                    <Image source={REACTION_STICKERS[name]} style={styles.reactionSticker} contentFit="contain" />
                   </PressableScale>
                 );
               })}
@@ -368,7 +370,7 @@ export default function ChatRoomScreen() {
   );
 }
 
-const REACTIONS = ['\u2764\uFE0F', '\u{1F602}', '\u{1F62E}', '\u{1F622}', '\u{1F525}', '\u{1F44D}'];
+const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
 
 /** "Today", "Yesterday" or the date, between messages from different days. */
 function DayChip({ iso }: { iso: string }) {
@@ -436,9 +438,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceAlt,
   },
   reactions: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: space.lg },
-  reactionButton: { width: 48, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  reactionButton: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   reactionOn: { backgroundColor: colors.primarySoft },
-  reactionEmoji: { fontSize: 26, lineHeight: 32 },
+  reactionSticker: { width: 44, height: 44 },
   flex: { flex: 1 },
   missing: { padding: space.xl },
   header: {

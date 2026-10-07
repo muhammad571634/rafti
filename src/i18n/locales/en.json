@@ -182,8 +182,16 @@
     "dayYesterday": "Yesterday",
     "copy": "Copy",
     "deleteMessage": "Delete for me",
-    "react": "React with {{emoji}}",
-    "spent": "{{count}} shell spent"
+    "react": "React with {{name}}",
+    "spent": "{{count}} shell spent",
+    "reactions": {
+      "love": "love",
+      "laugh": "laughter",
+      "wow": "wow",
+      "sad": "sad",
+      "hyped": "hyped",
+      "thumbs": "thumbs up"
+    }
   },
   "paywall": {
     "title": "Out of shells",
