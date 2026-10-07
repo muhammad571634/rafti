@@ -14,7 +14,36 @@
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-06, kechroq) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+## Hozirgi holat (2026-10-07) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+- **Ish branch'i: `local-work`.** Unda Today redesign'i:
+  - hero karta (`today-hero.tsx`) va kunlik sovg'a kartasi (`daily-gift-card.tsx`);
+  - Explore **B varianti**: rangli Phosphor duotone ikonkalar, foydalanuvchi tanlagan;
+  - `assets/heroes/` (16 ta hero rasm).
+- Phosphor ikonkalari bittalab importlanadi (`phosphor-react-native/src/icons/X`). `tsc` ularni tekshirmasligi
+  uchun `tsconfig.json`da `lib/typescript/icons` ga yo'l berilgan.
+- **Mahsulot strategiyasi private reposida:** `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown`.
+  - `HANDOFF.md`;
+  - BIMOBIMO tahlili: `teardown/` (133 skrinshot indeksi bilan);
+  - spetsifikatsiya: `spec/rafti-product-spec.md`;
+  - dizayn va oqimlar rejasi: `spec/design-plan.md`.
+
+  **Har bir yangi dizayn ishi shu hujjatlardan boshlanadi.**
+- **Keyingi ish:** Heartbeat Diary.
+  - personajlar kundaligi kartalari karuseli;
+  - pastdan chiqadigan "How their diary works" qoida oynasi, tepada Rafti lahza rasmi bilan;
+  - keyin shu uslubdagi Secret note, Gifts va Date qoida oynalari.
+
+  Prototip foydalanuvchi bilan kelishilgan, `design-plan.md` dagi F8 oqimi.
+- **Higgsfield API** (bulut muhitida `HF_CREDENTIALS` environment variable bor):
+  - `GET https://api.higgsfield.ai/models` modellar ro'yxatini beradi (84 ta, 17 tasi rasm);
+  - `POST https://api.higgsfield.ai/<slug>`, header `Authorization: Key $HF_CREDENTIALS`;
+  - holatni kuzatish: `GET /requests/<id>/status`;
+  - uslub namunasi bilan rasm: `alibaba/qwen-image-3/edit`. Maydonlar: `prompt`, `image_urls` (ochiq URL, masalan repodagi
+    `raw.githubusercontent.com/.../assets/brand/tile-diary.png`), `aspect_ratio` (`1:1`…), `resolution` (`1k`/`2k`);
+  - natija rasmlari `d3u0tzju9qaucj.cloudfront.net` da. Bu domen bulut muhitining Allowed domains ro'yxatida bo'lishi kerak;
+  - birinchi sinov rasmi (diary qoida oynasi uchun Rafti) chizildi, lekin CDN yopiq bo'lgani uchun hali yuklab olinmadi.
+
+## Avvalgi holat (2026-10-06, kechroq)
 - PR #3 (`redesign`) `main`ga merge qilindi (`4625509`). `redesign` branch'i `main`ga tenglashtirildi.
 - **Backend rejasi yozildi: `docs/backend-plan.md`** — foydalanuvchi tasdig'ini kutmoqda.
   - Tavsiya: Supabase (Postgres + pgvector, Auth, Storage, Realtime) + o'z serverimiz
