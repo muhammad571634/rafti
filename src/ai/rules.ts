@@ -74,10 +74,17 @@ export function buildCharacterPrompt(character: Character, user: User, relations
     `Bio: ${character.bio}`,
     `Personality: ${character.tags.join(', ')}`,
     `How you first greeted them: "${character.greeting}"`,
+  ];
+  // User creations (F15) carry these; the official cast speaks from its bio.
+  if (character.age) lines.push(`Age: ${character.age} (an adult)`);
+  if (character.gender) lines.push(`Gender: ${character.gender}`);
+  if (character.speakingStyle) lines.push(`How you talk: ${character.speakingStyle}`);
+  if (character.role) lines.push(`What you are to the user: their ${character.role}`);
+  lines.push(
     '',
     'THE USER:',
     `Name: ${user.displayName}`,
-  ];
+  );
   if (user.pronouns) lines.push(`Pronouns: ${user.pronouns}`);
   if (user.job) lines.push(`Job: ${user.job}`);
   if (user.interests?.length) lines.push(`Interests: ${user.interests.join(', ')}`);

@@ -64,6 +64,16 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      Find'dan yashiradi; Profil → Blocked'da qaytarish), Profil → Support (`SUPPORT_EMAIL` — vaqtinchalik manzil,
      haqiqiysini qo'yish kerak), inqiroz xabaridan keyin yordam liniyasi kartasi (`src/ai/safety.ts`), profilda "AI"
      belgisi. LLM uchun qoidalar: `src/ai/rules.ts` (server keyin system promptga qo'yadi + moderatsiya).
+   - **F15 Personaj yaratish — kodda tayyor (2026-10-07):** `src/app/create-character.tsx` qayta qurildi. BIMOBIMO
+     tuzilmasi (rasm, ovoz klipi, tavsif, salom, ko'rinish) + standart (Character.AI/Talkie): xarakter belgilari (5 tagacha),
+     gapirish uslubi, munosabat turi, tayyor ovoz (bepul) yoki klon (60 chig'anoq + rozilik belgisi), rasm huquqi
+     belgisi, yosh 18+ majburiy. `checkCreation` (`src/lib/create-character.ts`): voyaga yetmagan va aniq jinsiy
+     so'zlarni rad etadi; asosiy moderatsiya serverda. Ommaviy personaj `review: 'pending'` (profilda "Public after
+     review"). Yangi `Character` maydonlari: `age`, `speakingStyle`, `role`, `voicePreset`, `visibility`, `review` —
+     `buildCharacterPrompt` ularni ishlatadi. Keyin: tahrirlash, rasmni AI bilan chizish (server), tayyor ovozlarni
+     tinglash (TTS bo'lganda).
+   - **Yuzlar (foydalanuvchi qarori):** global ilova, har dunyoda turli kelib chiqish; har bir portret promptida
+     kelib chiqish yozilgan (`docs/characters-plan.md`).
    - **Til qoidasi (foydalanuvchi, 2026-10-07):** kod, izohlar, commitlar va agentlar uchun hujjatlar faqat ingliz
      tilida (AGENTS.md ga yozildi). Foydalanuvchiga javob o'zbekcha.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.

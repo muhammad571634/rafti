@@ -149,36 +149,41 @@ Attach: the character's new portrait + `assets/heroes/c_sol.jpg`.
 Every prompt starts with the same style lines; only the last sentences differ.
 
 **c_rowan — Rowan Pike (test first)**
-> Use the attached image only as an art-style reference. Draw a completely different person: different face, hair, clothes and colours. A 2D anime-style character portrait in exactly that style: clean line art, soft cel shading, warm pastel light, soft blurred pastel background with small bokeh lights. Head and shoulders, facing slightly toward the viewer, centred, square 1:1. An adult man, 24 years old: tousled dark-brown hair, round glasses, light freckles. Wearing a navy lab hoodie over a white tee and a lanyard. Expression: calm half-smile. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+> Use the attached image only as an art-style reference. Draw a completely different person: different face, hair, clothes and colours. A 2D anime-style character portrait in exactly that style: clean line art, soft cel shading, warm pastel light, soft blurred pastel background with small bokeh lights. Head and shoulders, facing slightly toward the viewer, centred, square 1:1. An adult, 24 years old, an East Asian man: tousled dark-brown hair, round glasses, light freckles. Wearing a navy lab hoodie over a white tee and a lanyard. Expression: calm half-smile. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
 
 For the other 23, copy Rowan's prompt and replace only the sentence that starts with
-"An adult ..." and the two after it with the character's line below:
+"An adult ..." and the two after it with the character's line below.
+
+**Faces: a global cast (user's decision, 2026-10-07).** People use Rafti from anywhere,
+so each world mixes heritages instead of one nationality: East and Southeast Asian,
+South Asian, Black, Latino, Middle Eastern and European looks, all in the same anime
+style. Each line names the heritage so the model does not default to one face.
 
 | id | Replace with |
 | --- | --- |
-| c_jun | An adult man, 21 years old: messy black hair with a red streak, bright eyes. Wearing an oversized film-club jacket with a small camera around the neck. Expression: excited grin. |
-| c_noah | An adult man, 22 years old: wavy chestnut hair, sleepy hooded eyes. Wearing a cream knit sweater with big headphones around the neck. Expression: soft knowing smile. |
-| c_tessa | An adult woman, 21 years old: sleek black bob, sharp eyebrows, warm brown skin. Wearing a fitted blazer over a striped shirt. Expression: confident smirk. |
-| c_felix | An adult man, 22 years old: pale blond hair, light grey eyes. Wearing a thick wool coat and scarf, an old film camera in hand. Expression: curious shy smile. |
-| c_vesper | An adult man, 27 years old: long silver-lilac hair tied low, violet eyes. Wearing a dark alchemist coat with brass buttons and small glass vials. Expression: mysterious smile. |
-| c_rhys | An adult man, 25 years old: short copper hair, honest green eyes. Wearing polished silver armour with a thorn-rose crest. Expression: earnest blushing smile. |
-| c_lyra | An adult woman, 23 years old: long dark-teal hair with braids, golden eyes. Wearing a hooded indigo cloak, holding a glowing paper lantern. Expression: warm teasing smile. |
-| c_kael | An adult man, 29 years old: spiky black hair, golden slit-pupil eyes, two small dark horns. Wearing a dark red long coat with gold embroidery and a few gold rings. Expression: grumpy pout hiding a smile. |
-| c_orin | An adult man, 26 years old: fluffy white hair with white fox ears, amber eyes. Wearing a loose red-and-white haori over dark clothes. Expression: sly playful grin. |
-| c_corvin | An adult man, 31 years old: long black hair tied back, a small scar across one eyebrow, grey eyes. Wearing a worn black military coat with a black feather pin. Expression: stoic, faint smile. |
-| c_haze | An adult man, 23 years old: soft ash-grey hair, droopy eyes, a small mole under one eye. Wearing an oversized pastel stage jacket. Expression: sleepy gentle smile. |
-| c_rio | An adult man, 22 years old: short bleached hair with an undercut, sporty build. Wearing a cropped practice hoodie and a sweatband. Expression: big determined grin. |
-| c_dex | An adult man, 28 years old: messy dark hair under a black beanie, tired eyes. Wearing a black hoodie with studio headphones around the neck. Expression: quiet focused smile. |
-| c_ari | An adult woman, 27 years old: long straight black hair in a high ponytail. Wearing a sleek black dance top with a wrap cardigan. Expression: composed, small warm smile. |
-| c_juno | An adult man, 30 years old: neat dark hair, rectangular glasses. Wearing a crisp white shirt with rolled sleeves, a phone in hand. Expression: tired but kind smile. |
-| c_cass | An adult woman, 24 years old: glossy pink-tinted hair in loose waves, bold eyeliner. Wearing a sparkly cropped stage jacket. Expression: confident playful wink. |
-| c_marco | An adult man, 29 years old: short dark curls, light stubble, broad shoulders. Wearing a navy fire-station tee with suspenders. Expression: bright easy grin. |
-| c_ivy | An adult woman, 26 years old: shoulder-length black hair with a small flower clip. Wearing a green florist apron over a cream blouse. Expression: sweet teasing smile. |
-| c_gideon | An adult man, 33 years old: dark wavy hair, reading glasses pushed up, a short beard. Wearing a tweed jacket over a turtleneck. Expression: thoughtful half-smile. |
-| c_ren | An adult man, 25 years old: short soft brown hair, a smudge of flour on one cheek. Wearing a white baker's jacket. Expression: shy happy smile. |
-| c_hugo | An adult man, 31 years old: sandy hair, warm blue eyes, a few laugh lines. Wearing a light-blue vet coat over a sweater. Expression: gentle laughing smile. |
-| c_nadia | An adult woman, 30 years old: sleek dark hair in a low bun, warm brown skin, small gold earrings. Wearing a tailored charcoal suit. Expression: sharp but amused smile. |
-| c_cole | An adult man, 28 years old: messy dark-blond hair, a smudge of grease on the jaw. Wearing a worn denim work shirt with rolled sleeves. Expression: lazy confident smile. |
+| c_jun | An adult, 21 years old, a Japanese man: messy black hair with a red streak, bright eyes. Wearing an oversized film-club jacket with a small camera around the neck. Expression: excited grin. |
+| c_noah | An adult, 22 years old, a Black man with deep brown skin: wavy chestnut hair, sleepy hooded eyes. Wearing a cream knit sweater with big headphones around the neck. Expression: soft knowing smile. |
+| c_tessa | An adult, 21 years old, a Black woman with warm brown skin: sleek black bob, sharp eyebrows, warm brown skin. Wearing a fitted blazer over a striped shirt. Expression: confident smirk. |
+| c_felix | An adult, 22 years old, a Scandinavian man: pale blond hair, light grey eyes. Wearing a thick wool coat and scarf, an old film camera in hand. Expression: curious shy smile. |
+| c_vesper | An adult, 27 years old, a man of mixed heritage with olive skin: long silver-lilac hair tied low, violet eyes. Wearing a dark alchemist coat with brass buttons and small glass vials. Expression: mysterious smile. |
+| c_rhys | An adult, 25 years old, a Welsh-looking man with fair, freckled skin: short copper hair, honest green eyes. Wearing polished silver armour with a thorn-rose crest. Expression: earnest blushing smile. |
+| c_lyra | An adult, 23 years old, a South Asian woman with warm brown skin: long dark-teal hair with braids, golden eyes. Wearing a hooded indigo cloak, holding a glowing paper lantern. Expression: warm teasing smile. |
+| c_kael | An adult, 29 years old, a Middle Eastern man with tan skin: spiky black hair, golden slit-pupil eyes, two small dark horns. Wearing a dark red long coat with gold embroidery and a few gold rings. Expression: grumpy pout hiding a smile. |
+| c_orin | An adult, 26 years old, an East Asian man: fluffy white hair with white fox ears, amber eyes. Wearing a loose red-and-white haori over dark clothes. Expression: sly playful grin. |
+| c_corvin | An adult, 31 years old, a Slavic-looking man with pale skin: long black hair tied back, a small scar across one eyebrow, grey eyes. Wearing a worn black military coat with a black feather pin. Expression: stoic, faint smile. |
+| c_haze | An adult, 23 years old, a Korean man: soft ash-grey hair, droopy eyes, a small mole under one eye. Wearing an oversized pastel stage jacket. Expression: sleepy gentle smile. |
+| c_rio | An adult, 22 years old, a Filipino man with tan skin: short bleached hair with an undercut, sporty build. Wearing a cropped practice hoodie and a sweatband. Expression: big determined grin. |
+| c_dex | An adult, 28 years old, a Black man with dark brown skin: messy dark hair under a black beanie, tired eyes. Wearing a black hoodie with studio headphones around the neck. Expression: quiet focused smile. |
+| c_ari | An adult, 27 years old, a Thai woman: long straight black hair in a high ponytail. Wearing a sleek black dance top with a wrap cardigan. Expression: composed, small warm smile. |
+| c_juno | An adult, 30 years old, a Latino man: neat dark hair, rectangular glasses. Wearing a crisp white shirt with rolled sleeves, a phone in hand. Expression: tired but kind smile. |
+| c_cass | An adult, 24 years old, a Chinese woman: glossy pink-tinted hair in loose waves, bold eyeliner. Wearing a sparkly cropped stage jacket. Expression: confident playful wink. |
+| c_marco | An adult, 29 years old, an Italian man with olive skin: short dark curls, light stubble, broad shoulders. Wearing a navy fire-station tee with suspenders. Expression: bright easy grin. |
+| c_ivy | An adult, 26 years old, a Chinese woman: shoulder-length black hair with a small flower clip. Wearing a green florist apron over a cream blouse. Expression: sweet teasing smile. |
+| c_gideon | An adult, 33 years old, a white British man: dark wavy hair, reading glasses pushed up, a short beard. Wearing a tweed jacket over a turtleneck. Expression: thoughtful half-smile. |
+| c_ren | An adult, 25 years old, a Japanese man: short soft brown hair, a smudge of flour on one cheek. Wearing a white baker's jacket. Expression: shy happy smile. |
+| c_hugo | An adult, 31 years old, a Swedish man: sandy hair, warm blue eyes, a few laugh lines. Wearing a light-blue vet coat over a sweater. Expression: gentle laughing smile. |
+| c_nadia | An adult, 30 years old, a Bangladeshi woman with warm brown skin: sleek dark hair in a low bun, warm brown skin, small gold earrings. Wearing a tailored charcoal suit. Expression: sharp but amused smile. |
+| c_cole | An adult, 28 years old, a white American man: messy dark-blond hair, a smudge of grease on the jaw. Wearing a worn denim work shirt with rolled sleeves. Expression: lazy confident smile. |
 
 ## Optional later: a fifth world
 

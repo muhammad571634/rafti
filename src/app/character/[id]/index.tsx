@@ -93,6 +93,11 @@ export default function CharacterProfileScreen() {
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
+          {character.review === 'pending' ? (
+            <Txt variant="caption" color={colors.brandText} center>
+              {t('createCharacter.inReview')}
+            </Txt>
+          ) : null}
           {voiceReady ? (
             <View style={styles.voice}>
               <View style={styles.voiceDot} />

@@ -23,7 +23,21 @@ export interface Character {
   isOfficial: boolean;
   greeting: string;
   tags: string[];
+  /** User creations (F15): what the creator set; the server prompt uses all of it. */
+  age?: number;
+  speakingStyle?: SpeakingStyle;
+  /** What they are to the user */
+  role?: CharacterRole;
+  /** A stock voice; a cloned voice has none (its id lives on the server). */
+  voicePreset?: VoicePreset;
+  /** Public creations wait for review before anyone else can find them. */
+  visibility?: 'private' | 'public';
+  review?: 'pending' | 'approved' | 'rejected';
 }
+
+export type SpeakingStyle = 'casual' | 'gentle' | 'playful' | 'formal' | 'poetic' | 'dry';
+export type CharacterRole = 'friend' | 'crush' | 'partner' | 'mentor' | 'rival' | 'family';
+export type VoicePreset = 'warm' | 'bright' | 'soft' | 'deep' | 'calm' | 'lively';
 
 export interface Relationship {
   characterId: string;
