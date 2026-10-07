@@ -255,7 +255,7 @@ export default function GiftsScreen() {
         />
       </View>
 
-      <Sheet visible={redeemOpen} onClose={() => setRedeemOpen(false)} title={t('gifts.haveCode')}>
+      <Sheet visible={redeemOpen} onClose={() => setRedeemOpen(false)} title={t('gifts.haveCode')} avoidKeyboard>
         <View style={styles.redeem}>
           <TextInput
             value={codeInput}

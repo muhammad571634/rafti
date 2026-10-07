@@ -6,6 +6,7 @@ import { StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
 import { Button, CharacterAvatar, PressableScale, Sheet, Txt } from '@/components/ui';
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, fonts, radius, space } from '@/theme';
 import type { Character } from '@/types';
@@ -55,6 +56,7 @@ export function PlanSheet({
 }) {
   const { t, i18n } = useTranslation();
   const { height } = useWindowDimensions();
+  const keyboard = useKeyboardVisible();
   const today = dayKeyFromToday(0);
   const tomorrow = dayKeyFromToday(1);
 
@@ -97,8 +99,9 @@ export function PlanSheet({
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose}>
-      <View style={[styles.body, { minHeight: Math.round(height * SHEET_SHARE) }]}>
+    <Sheet visible={visible} onClose={onClose} avoidKeyboard>
+      {/* Tall while browsing; while typing it gives the room back to the keyboard. */}
+      <View style={[styles.body, !keyboard && { minHeight: Math.round(height * SHEET_SHARE) }]}>
         <View style={styles.head}>
           <Txt variant="h1" style={styles.grow}>
             {t('us.newPlan')}
@@ -112,7 +115,6 @@ export function PlanSheet({
           placeholder={t('us.planPlaceholder')}
           placeholderTextColor={colors.textFaint}
           maxLength={TITLE_MAX}
-          autoFocus
           returnKeyType="done"
           onSubmitEditing={submit}
           onFocus={() => setFocused(true)}

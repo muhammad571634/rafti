@@ -161,6 +161,10 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     do'stning avatari, katta qalin matnlar; kun tanlash uchta teng tugma (Today | Tomorrow | kalendar, boshqa
     kun tanlansa tugmada sana), vaqt katta raqam va katta ± tugmalari. Kalendar `CalendarPopover` ning
     `allow="future"` rejimi (Diary'da o'zgarish yo'q). Oyna faqat ochilganda tozalanadi.
+  - **Klaviatura (foydalanuvchi talabi):** reja oynasi ochilganda klaviatura o'zi chiqmaydi (autoFocus yo'q).
+    `Sheet` ga `avoidKeyboard` qo'shildi: oyna klaviatura ustidagi joydan baland bo'lmaydi, ichi scroll bo'ladi
+    (Android oynani o'zi kichraytiradi, iOS'da `KeyboardAvoidingView`). Yozish maydoni bor har yangi sheet shu
+    parametrni ishlatsin. `useKeyboardVisible()` (`src/hooks`) — klaviatura ochiqligida reja oynasi balandligini bo'shatadi.
   - Doskaga eslatma yuborilgach oldingi ekranga qaytiladi (`router.back()`), shunda typed routes xatosiga bog'liq emas.
   - Navbat: F11 Date (xarita, raundlar, polaroid).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
