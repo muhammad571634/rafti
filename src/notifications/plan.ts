@@ -87,8 +87,6 @@ export const PUSH_RULES = {
   perCharacterPerDay: 3,
   /** As in runDailyInitiative: the top two bonds say good morning / good night. */
   greeters: 2,
-  quietFrom: 23,
-  quietTo: 8,
   /** The daily call rings a little after the greeting of the same slot. */
   callAfterGreetingMin: 20,
   unreadAfterMin: 30,
@@ -132,7 +130,39 @@ function clock(day: Date, hhmm: string, plusMin = 0) {
   return new Date(at(day, h, m).getTime() + plusMin * 60_000);
 }
 
-const isQuiet = (d: Date) => d.getHours() >= PUSH_RULES.quietFrom || d.getHours() < PUSH_RULES.quietTo;
+const minutesOf = (hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+};
+
+/** The user's quiet hours as a test on a time; the range may run past midnight. */
+function quietTest(settings: AppSettings): (d: Date) => boolean {
+  if (!settings.quietHours) return () => false;
+  const from = minutesOf(settings.quietFrom);
+  const to = minutesOf(settings.quietTo);
+  return (d) => {
+    const m = d.getHours() * 60 + d.getMinutes();
+    return from <= to ? m >= from && m < to : m >= from || m < to;
+  };
+}
+
+/** Which kinds the user switched off (Profile → Notifications). Greetings and calls use their own settings. */
+function kindOn(kind: PushKind, settings: AppSettings) {
+  switch (kind) {
+    case 'remind':
+    case 'followUp':
+      return settings.notifyPlans;
+    case 'diary':
+      return settings.notifyDiary;
+    case 'comeback':
+      return settings.notifyAway;
+    case 'gift':
+    case 'spins':
+      return settings.notifyGifts;
+    default:
+      return true;
+  }
+}
 
 const nameOf = (character: Character, relationships: Record<string, Relationship>) =>
   relationships[character.id]?.nickname || character.name;
@@ -145,7 +175,8 @@ function quoteOf(messages: readonly Message[] | undefined) {
 }
 
 export function planPushes(state: PlanState, now: Date): PlannedPush[] {
-  return capped(pushCandidates(state, now));
+  const wanted = pushCandidates(state, now).filter((push) => kindOn(push.kind, state.settings));
+  return capped(wanted, quietTest(state.settings));
 }
 
 /** Every push the state asks for, before quiet hours, budget and spacing (exported for tests). */
@@ -355,7 +386,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
  * A push too close to a more important one moves later the same day instead of
  * being dropped; it is dropped only when the day has no room left.
  */
-function capped(all: PlannedPush[]): PlannedPush[] {
+function capped(all: PlannedPush[], isQuiet: (d: Date) => boolean): PlannedPush[] {
   const kept: PlannedPush[] = [];
   const counted: PlannedPush[] = [];
   const ordered = [...all].sort((a, b) => PRIORITY[a.kind] - PRIORITY[b.kind] || a.at.getTime() - b.at.getTime());
@@ -371,7 +402,7 @@ function capped(all: PlannedPush[]): PlannedPush[] {
     if (push.characterId && sameDay.filter((p) => p.characterId === push.characterId).length >= PUSH_RULES.perCharacterPerDay) {
       continue;
     }
-    const at = firstFreeSlot(push.at, sameDay);
+    const at = firstFreeSlot(push.at, sameDay, isQuiet);
     if (!at) continue;
     const placed = { ...push, at };
     kept.push(placed);
@@ -383,14 +414,11 @@ function capped(all: PlannedPush[]): PlannedPush[] {
 const SHIFT_STEP_MS = 15 * 60_000;
 
 /** The wanted time, or the first later time that day outside quiet hours with room around it. */
-function firstFreeSlot(wanted: Date, sameDay: PlannedPush[]): Date | null {
+function firstFreeSlot(wanted: Date, sameDay: PlannedPush[], isQuiet: (d: Date) => boolean): Date | null {
   const day = dayKey(wanted);
   for (let t = wanted.getTime(); dayKey(new Date(t)) === day; t += SHIFT_STEP_MS) {
     const candidate = new Date(t);
-    if (isQuiet(candidate)) {
-      if (candidate.getHours() >= PUSH_RULES.quietFrom) return null;
-      continue;
-    }
+    if (isQuiet(candidate)) continue;
     if (sameDay.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_RULES.minGapMs)) return candidate;
   }
   return null;

@@ -68,6 +68,17 @@ export async function configurePushes() {
   }
 }
 
+/** `unsupported`: web or Android Expo Go, where the app runs without pushes. */
+export type PushPermission = 'granted' | 'denied' | 'undetermined' | 'unsupported';
+
+export async function pushPermission(): Promise<PushPermission> {
+  const N = notificationsModule();
+  if (!N) return 'unsupported';
+  if (await pushesAllowed()) return 'granted';
+  const { status } = await N.getPermissionsAsync();
+  return status === N.PermissionStatus.UNDETERMINED ? 'undetermined' : 'denied';
+}
+
 export async function pushesAllowed() {
   const N = notificationsModule();
   if (!N) return false;

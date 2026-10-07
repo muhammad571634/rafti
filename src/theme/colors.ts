@@ -180,6 +180,8 @@ export const gradients = {
    * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.
    */
   heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
+  /** The phone lock screen in Profile → Notifications' preview. */
+  lockScreen: ['#2E3352', '#5B4A6E'] as const,
 } as const;
 
 /** `locations` for the gradients above that do not spread their colours evenly. */

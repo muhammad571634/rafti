@@ -716,11 +716,6 @@
   "profile": {
     "title": "Profile",
     "language": "Language",
-    "greetings": "They reach out",
-    "morningGreeting": "Morning messages",
-    "eveningGreeting": "Night messages",
-    "morningCall": "Good-morning call",
-    "nightCall": "Good-night call",
     "sectionDev": "Developer",
     "testPushes": "Test pushes",
     "testPushesSent": "{{count}} on the way",
@@ -970,6 +965,32 @@
       "calls": "Calls",
       "reminders": "Plan reminders",
       "gifts": "Gifts and spins"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "on": "On",
+    "offShort": "Off",
+    "now": "now",
+    "off": "Notifications are off",
+    "openSettings": "Open settings",
+    "turnOn": "Turn on",
+    "notificationPreview": "Show message text",
+    "morningGreeting": "Morning messages",
+    "eveningGreeting": "Night messages",
+    "morningCall": "Good-morning call",
+    "nightCall": "Good-night call",
+    "notifyPlans": "Plan reminders",
+    "notifyDiary": "Diary pages",
+    "notifyAway": "When I'm away",
+    "notifyGifts": "Gifts and spins",
+    "notifyOffers": "Offers",
+    "quietHours": "Quiet hours",
+    "quietFrom": "From",
+    "quietTo": "Until",
+    "section": {
+      "reachOut": "They reach out",
+      "rafti": "Rafti"
     }
   }
 }

@@ -24,8 +24,8 @@ import {
   Toggle,
   Txt,
   UserAvatar,
-  type ClayIconName,
 } from '@/components/ui';
+import { usePushPermission } from '@/hooks/use-push-permission';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
 import { shortDate } from '@/lib/format';
 import { inviteCodeFor } from '@/lib/invite';
@@ -44,17 +44,9 @@ const ROW_INSET = space.lg + ROW_ICON + space.md;
 /** The on/off settings; call times and the caller live in the chat's Daily calls sheet. */
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
-/** Who reaches out and when: clay icons, like the places they lead to (docs/icons-3d.md). */
-const REACH_OUT: { key: SwitchKey; icon: ClayIconName }[] = [
-  { key: 'morningGreeting', icon: 'sun' },
-  { key: 'eveningGreeting', icon: 'bedtime' },
-  { key: 'morningCall', icon: 'calls' },
-  { key: 'nightCall', icon: 'calls' },
-];
-
 /**
  * Who you are (photo, name, how full the profile is, invite code), then grouped
- * settings: account, how characters reach out, chat, about; delete at the very end.
+ * settings: account (with Notifications), chat, about; delete at the very end.
  */
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
@@ -74,6 +66,8 @@ export default function ProfileScreen() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [blockedOpen, setBlockedOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { status: pushStatus } = usePushPermission();
+  const blockedPushes = pushStatus === 'denied' || pushStatus === 'undetermined';
   /** Dev only: what the last "Test pushes" press did. */
   const [testResult, setTestResult] = useState<string | undefined>();
 
@@ -193,6 +187,15 @@ export default function ProfileScreen() {
           chevron
           onPress={() => router.push('/gifts')}
         />
+        <Divider inset={ROW_INSET} />
+        {/* Who reaches out, previews and quiet hours live on their own screen. */}
+        <ListRow
+          title={t('notifications.title')}
+          left={<ClayIcon name="alarm" size={ROW_ICON} />}
+          meta={pushStatus === 'granted' ? t('notifications.on') : blockedPushes ? t('notifications.offShort') : undefined}
+          chevron
+          onPress={() => router.push('/notifications')}
+        />
         {canPickLanguage ? (
           <>
             <Divider inset={ROW_INSET} />
@@ -205,14 +208,6 @@ export default function ProfileScreen() {
             />
           </>
         ) : null}
-
-        <SectionLabel title={t('profile.greetings')} />
-        {REACH_OUT.map(({ key, icon: iconName }, index) => (
-          <View key={key}>
-            {index > 0 ? <Divider inset={ROW_INSET} /> : null}
-            {toggle(key, t(`profile.${key}`), <ClayIcon name={iconName} size={ROW_ICON} />)}
-          </View>
-        ))}
 
         <SectionLabel title={t('profile.sectionChat')} />
         {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}

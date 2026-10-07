@@ -42,7 +42,10 @@ the last conversation = **done**.
   default; support e-mail stays a mock. How it works and what is left: `docs/push-plan.md` §6.
   The user tests on the phone in parallel. Note: after `npx expo install`, the first web bundle
   took minutes; restart the dev server if the page stays blank.
-- Next candidates: Profile → Notifications screen (prototype first), the notification image
+- Profile → Notifications screen built from the approved prototype (artifact
+  https://claude.ai/artifact/1Zm9bcWHmJ1XXNr8kCtypx). Gemini is building the Android dev build
+  (`docs/agent-tasks/android-dev-build.md`; its result goes at the end of that file).
+- Next candidates: the notification image
   (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
 ### 1. DONE (2026-10-07, Desktop): the 23 character portraits are wired in

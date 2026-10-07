@@ -32,6 +32,14 @@ export const initialSettings: AppSettings = {
   nightCallTime: '21:00',
   chatAnimation: true,
   notificationPreview: false,
+  notifyPlans: true,
+  notifyDiary: true,
+  notifyAway: true,
+  notifyGifts: true,
+  notifyOffers: false,
+  quietHours: true,
+  quietFrom: '23:00',
+  quietTo: '08:00',
 };
 
 /** Level ladder shared by the header badge and the level-up modal. */

@@ -127,6 +127,14 @@ plan later with real AI lines.
 - Permission: the onboarding "Allow" now also shows the system prompt.
 - Checked with the seed data (esbuild + node): a day gets 6-7 counted pushes plus calls and
   reminders; the same state always plans the same list; nothing before onboarding.
-- Not yet: a Profile → Notifications screen (per-kind switches, preview toggle, quiet hours,
-  re-ask after a "no") — needs a prototype first; the character portrait as the notification
-  image; server push (needs the backend and a development build).
+- Profile → Notifications (`src/app/notifications.tsx`, prototype approved 2026-10-07): a
+  lock-screen preview showing tomorrow's real first push (same character and seeded line), the
+  "Show message text" switch, a switch per kind (`morningGreeting`, `eveningGreeting`,
+  `morningCall`, `nightCall`, `notifyPlans`, `notifyDiary`, `notifyAway`, `notifyGifts`,
+  `notifyOffers`), quiet hours on/off with from/until times (`quietFrom` / `quietTo`, tap to step).
+  When the phone blocks notifications (or never asked) a card on top offers "Open settings" /
+  "Turn on" and the switches rest. The four "They reach out" switches left Profile for this screen.
+  The planner reads all of these; quiet hours may run past midnight.
+- Dev: Profile → Developer → Test pushes (only `__DEV__`), see `sendTestPushes`.
+- Not yet: the character portrait as the notification image; offers are never sent (no store
+  campaign yet); server push (needs the backend).

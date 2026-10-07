@@ -356,6 +356,18 @@ export interface AppSettings {
   chatAnimation: boolean;
   /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */
   notificationPreview: boolean;
+  /** Push kinds the user can switch off (Profile → Notifications, docs/push-plan.md). */
+  notifyPlans: boolean;
+  notifyDiary: boolean;
+  /** The comeback ladder: the friend you talked with last writes while you are away. */
+  notifyAway: boolean;
+  notifyGifts: boolean;
+  /** Store offers: opt-in only (App Store 4.5.4), so off until the user turns it on. */
+  notifyOffers: boolean;
+  quietHours: boolean;
+  /** "HH:MM": no pushes from here to `quietTo` (may run past midnight). */
+  quietFrom: string;
+  quietTo: string;
 }
 
 export interface HomeModule {
