@@ -31,6 +31,7 @@ import { shortDate } from '@/lib/format';
 import { inviteCodeFor } from '@/lib/invite';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
+import { sendTestPushes } from '@/notifications/sync';
 import { memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { AppSettings } from '@/types';
@@ -73,6 +74,13 @@ export default function ProfileScreen() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [blockedOpen, setBlockedOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  /** Dev only: what the last "Test pushes" press did. */
+  const [testResult, setTestResult] = useState<string | undefined>();
+
+  const testPushes = async () => {
+    const count = await sendTestPushes(useAppStore.getState());
+    setTestResult(count > 0 ? t('profile.testPushesSent', { count }) : t('profile.testPushesUnavailable'));
+  };
 
   const code = inviteCodeFor(user);
   const percent = profileCompletion(user);
@@ -208,6 +216,19 @@ export default function ProfileScreen() {
 
         <SectionLabel title={t('profile.sectionChat')} />
         {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}
+
+        {/* Development builds only: fire the planned pushes now, a few seconds apart. */}
+        {__DEV__ ? (
+          <>
+            <SectionLabel title={t('profile.sectionDev')} />
+            <ListRow
+              title={t('profile.testPushes')}
+              left={icon('notifications-outline')}
+              meta={testResult}
+              onPress={() => void testPushes()}
+            />
+          </>
+        ) : null}
 
         <SectionLabel title={t('profile.sectionAbout')} />
         {blocked.length > 0 ? (
