@@ -39,7 +39,7 @@ import { colors, fonts, hitSlop, palette, radius, space } from '@/theme';
 /** How long the stand-in "ad" plays before paying out. */
 const AD_MS = 1800;
 const ROW_ICON = 38;
-const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'contacts' } as const;
+const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'invite' } as const;
 
 /**
  * Free shells, three ways — the reference's daily login, roulette wheel and
@@ -225,7 +225,7 @@ export default function GiftsScreen() {
         />
         <ListRow
           title={t('gifts.shareReward', { count: SHARE_REWARD })}
-          left={<ClayIcon name="gift" size={ROW_ICON} />}
+          left={<ClayIcon name="plane" size={ROW_ICON} />}
           right={
             <Button
               label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')}

@@ -36,8 +36,8 @@ const ROW_INSET = space.lg + ROW_ICON + space.md;
 
 /** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
 const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
-  met: 'contacts',
-  levelUp: 'gift',
+  met: 'sparkles',
+  levelUp: 'levelUp',
   call: 'calls',
   diary: 'diary',
   secretNote: 'secretNote',

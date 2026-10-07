@@ -3,6 +3,8 @@
  * quiz answers are stable per character and question (a hash, not a coin flip),
  * so replaying a pack gives the same partner. The server's model replaces this.
  */
+import type { ClayIconName } from '@/assets/brand/registry';
+
 export interface QuizQuestion {
   text: string;
   options: [string, string, string, string];
@@ -11,16 +13,15 @@ export interface QuizQuestion {
 export interface QuizPack {
   id: string;
   titleKey: string;
-  emoji: string;
+  icon: ClayIconName;
   questions: QuizQuestion[];
 }
 
-// The emoji are placeholders for 3D clay icons, see docs/icons-3d.md step 6.
 export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_first_date',
     titleKey: 'firstDate',
-    emoji: '\u{1F370}',
+    icon: 'cake',
     questions: [
       { text: 'Perfect first date?', options: ['Fancy dinner', 'Long walk, no plan', 'Movie marathon', 'Arcade, loser pays'] },
       { text: 'Who texts first after?', options: ['Me, right away', 'You, obviously', 'Both at once', 'Nobody, we play it cool'] },
@@ -32,7 +33,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_sunday',
     titleKey: 'lazySunday',
-    emoji: '\u{2615}',
+    icon: 'date',
     questions: [
       { text: 'Sunday breakfast?', options: ['Pancakes', 'Just coffee', 'Leftover pizza', 'Brunch out'] },
       { text: 'Rainy afternoon plan?', options: ['Blanket and a show', 'Board games', 'Nap together', 'Walk in the rain'] },
@@ -44,7 +45,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_ten_years',
     titleKey: 'tenYears',
-    emoji: '\u{1F3E1}',
+    icon: 'house',
     questions: [
       { text: 'Where do we live?', options: ['Big city', 'By the sea', 'Quiet countryside', 'Somewhere new every year'] },
       { text: 'Pet?', options: ['A cat', 'A dog', 'Something weird', 'Plants count'] },

@@ -67,6 +67,18 @@ export const CLAY_ICONS = {
   compass: require('./icon3d-compass.png'),
   music: require('./icon3d-music.png'),
   lock: require('./icon3d-lock.png'),
+  umbrella: require('./icon3d-umbrella.png'),
+  fish: require('./icon3d-fish.png'),
+  fireworks: require('./icon3d-fireworks.png'),
+  headphones: require('./icon3d-headphones.png'),
+  nightSky: require('./icon3d-night-sky.png'),
+  cake: require('./icon3d-cake.png'),
+  house: require('./icon3d-house.png'),
+  sun: require('./icon3d-sun.png'),
+  plane: require('./icon3d-plane.png'),
+  invite: require('./icon3d-invite.png'),
+  sparkles: require('./icon3d-sparkles.png'),
+  levelUp: require('./icon3d-level-up.png'),
 } as const;
 
 export type ClayIconName = keyof typeof CLAY_ICONS;

@@ -3,6 +3,8 @@
  * three answers; an answer is worth 0-3 hearts and gets its own reply. `{name}` is
  * the partner's first name. The server's model writes these later.
  */
+import type { ClayIconName } from '@/assets/brand/registry';
+
 export interface DateChoice {
   text: string;
   reply: string;
@@ -17,23 +19,22 @@ export interface DateRound {
 export interface DatePlace {
   id: string;
   titleKey: string;
-  emoji: string;
+  icon: ClayIconName;
   cost: number;
   levelRequired: number;
   /** Position of the pin on the map, as fractions of its width and height */
   x: number;
   y: number;
-  /** Soft wash behind the place's emoji */
+  /** Soft wash behind the place's icon */
   tint: string;
   rounds: DateRound[];
 }
 
-// The emoji are placeholders for 3D clay icons, see docs/icons-3d.md step 5.
 export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_rain',
     titleKey: 'rainyWalk',
-    emoji: '\u{2614}',
+    icon: 'umbrella',
     cost: 10,
     levelRequired: 1,
     x: 0.06,
@@ -85,7 +86,7 @@ export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_aquarium',
     titleKey: 'aquarium',
-    emoji: '\u{1F41F}',
+    icon: 'fish',
     cost: 12,
     levelRequired: 3,
     x: 0.58,
@@ -137,7 +138,7 @@ export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_festival',
     titleKey: 'festival',
-    emoji: '\u{1F386}',
+    icon: 'fireworks',
     cost: 15,
     levelRequired: 6,
     x: 0.12,
@@ -189,7 +190,7 @@ export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_studio',
     titleKey: 'lateStudio',
-    emoji: '\u{1F3A7}',
+    icon: 'headphones',
     cost: 18,
     levelRequired: 10,
     x: 0.6,
@@ -241,7 +242,7 @@ export const DATE_PLACES: DatePlace[] = [
   {
     id: 'ds_rooftop',
     titleKey: 'rooftop',
-    emoji: '\u{1F30C}',
+    icon: 'nightSky',
     cost: 20,
     levelRequired: 16,
     x: 0.3,

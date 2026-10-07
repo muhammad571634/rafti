@@ -401,6 +401,15 @@ ICON_SHEETS = [
         ],
         [(0.10, 0.375), (0.38, 0.635), (0.64, 0.92)],
     ),
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-3.jpg'),
+        [
+            'umbrella', 'fish', 'fireworks', 'headphones',
+            'night-sky', 'cake', 'house', 'sun',
+            'plane', 'invite', 'sparkles', 'level-up',
+        ],
+        [(0.10, 0.33), (0.38, 0.62), (0.67, 0.89)],
+    ),
 ]
 
 def drop_edge_scraps(solid):

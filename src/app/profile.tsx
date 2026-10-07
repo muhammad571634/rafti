@@ -43,7 +43,7 @@ type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? 
 
 /** Who reaches out and when: clay icons, like the places they lead to (docs/icons-3d.md). */
 const REACH_OUT: { key: SwitchKey; icon: ClayIconName }[] = [
-  { key: 'morningGreeting', icon: 'date' },
+  { key: 'morningGreeting', icon: 'sun' },
   { key: 'eveningGreeting', icon: 'bedtime' },
   { key: 'morningCall', icon: 'calls' },
   { key: 'nightCall', icon: 'calls' },

@@ -10,13 +10,14 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   Button,
   CharacterAvatar,
+  ClayIcon,
   EmptyState,
   Header,
   PressableScale,
   Screen,
+  Sheet,
   ShellBadge,
   ShellIcon,
-  Sheet,
   Txt,
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
@@ -111,7 +112,7 @@ export default function DatingScreen() {
                       locked && styles.tileLocked,
                       shadows.card,
                     ]}>
-                    <Txt style={styles.emoji}>{p.emoji}</Txt>
+                    <ClayIcon name={p.icon} size={Math.round(TILE * 0.78)} tile={false} />
                   </View>
                   <Txt variant="bodyStrong" center lines={2} color={locked ? colors.textMuted : colors.text}>
                     {t(`dating.places.${p.titleKey}`)}
@@ -187,7 +188,7 @@ export default function DatingScreen() {
         {place ? (
           <View style={styles.place}>
             <View style={[styles.hero, { backgroundColor: place.tint }]}>
-              <Txt style={styles.heroEmoji}>{place.emoji}</Txt>
+              <ClayIcon name={place.icon} size={112} tile={false} />
             </View>
             <Txt variant="h2">{t(`dating.scenarios.${place.titleKey}`)}</Txt>
             <View style={styles.facts}>
@@ -288,14 +289,12 @@ const styles = StyleSheet.create({
   },
   tileBeen: { borderColor: colors.bond },
   tileLocked: { opacity: 0.45 },
-  emoji: { fontSize: 38, lineHeight: 46 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: 0 },
   people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, paddingBottom: space.lg },
   person: { alignItems: 'center', gap: space.xs, width: 68 },
   place: { gap: space.lg },
   hero: { height: 160, borderRadius: radius.xl, alignItems: 'center', justifyContent: 'center' },
-  heroEmoji: { fontSize: 72, lineHeight: 84 },
   facts: { flexDirection: 'row', gap: space.sm },
   fact: { flex: 1, alignItems: 'center', gap: 2, paddingVertical: space.md, borderRadius: radius.lg, backgroundColor: colors.surfaceAlt },
   factValue: { flexDirection: 'row', alignItems: 'center', gap: 4 },

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, CharacterAvatar, Header, PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
+import { Button, CharacterAvatar, ClayIcon, Header, PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { partnerAnswer, QUIZ_PACKS, type QuizPack } from '@/mock/games';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -54,7 +54,7 @@ export default function QuizScreen() {
           {QUIZ_PACKS.map((p) => (
             <PressableScale key={p.id} style={styles.pack} scaleTo={0.97} onPress={() => setPack(p)}>
               <View style={styles.packEmoji}>
-                <Txt style={styles.emoji}>{p.emoji}</Txt>
+                <ClayIcon name={p.icon} size={40} tile={false} />
               </View>
               <View style={styles.grow}>
                 <Txt variant="title">{t(`games.packs.${p.titleKey}`)}</Txt>
@@ -225,7 +225,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  emoji: { fontSize: 30, lineHeight: 38 },
   top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm },
   close: {
     width: 40,
