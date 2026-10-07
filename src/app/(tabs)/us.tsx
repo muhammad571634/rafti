@@ -5,10 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
-  Card,
   CharacterAvatar,
   Chip,
-  Divider,
   ClayIcon,
   EmptyState,
   ListRow,
@@ -31,8 +29,7 @@ import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
-const ROW_ICON = 38;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
+const ROW_ICON = 40;
 
 /** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
 const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
@@ -189,10 +186,12 @@ export default function UsScreen() {
           })}
         </ScrollView>
 
-        <Card
-          variant="outlined"
+        {/* The bond at a glance, straight on the canvas; it opens the chat. */}
+        <PressableScale
+          scaleTo={0.99}
           style={styles.hero}
-          onPress={conversation ? () => router.push(`/chat/${conversation.id}`) : undefined}>
+          disabled={!conversation}
+          onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
           <View style={styles.together}>
             <View style={styles.pair}>
               <UserAvatar user={user} size={40} />
@@ -218,30 +217,31 @@ export default function UsScreen() {
 
           <View style={styles.stats}>
             <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
+            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} />
             <Stat
               value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
               label={t('us.statMet')}
             />
           </View>
-        </Card>
+        </PressableScale>
 
         <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} onAdd={() => setPublishOpen(true)} />
 
-        <SectionLabel title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
+        <SectionLabel tone="title" title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
         {dayPlans.length === 0 ? (
           <ListRow
+            size="large"
             title={t('us.nothingPlanned')}
-            left={<ClayIcon name="calendar" size={ROW_ICON} />}
+            left={<ClayIcon name="calendar" size={ROW_ICON} tile={false} />}
             onPress={() => setPlanOpen(true)}
           />
         ) : (
-          dayPlans.map((item, i) => {
+          dayPlans.map((item) => {
             const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
             return (
               <View key={item.id}>
-                {i > 0 ? <Divider inset={ROW_INSET} /> : null}
                 <ListRow
+                  size="large"
                   title={item.title}
                   left={<TimeTile time={item.time} />}
                   right={
@@ -271,7 +271,7 @@ export default function UsScreen() {
           })
         )}
 
-        <SectionLabel title={t('us.moments')} />
+        <SectionLabel tone="title" title={t('us.moments')} />
         {filters.length > 1 ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
             {(['all', ...filters] as FilterKey[]).map((key) => (
@@ -284,15 +284,14 @@ export default function UsScreen() {
             {t('us.noMoments')}
           </Txt>
         ) : (
-          shownMoments.map((moment, i) => (
-            <View key={moment.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-                meta={relativeStamp(moment.createdAt)}
-                left={<ClayIcon name={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
-              />
-            </View>
+          shownMoments.map((moment) => (
+            <ListRow
+              key={moment.id}
+              size="large"
+              title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+              meta={relativeStamp(moment.createdAt)}
+              left={<ClayIcon name={MOMENT_ICON[moment.kind]} size={ROW_ICON} tile={false} />}
+            />
           ))
         )}
         {timeline.length > visibleMoments ? (
@@ -325,21 +324,21 @@ function dayTitle(key: string, locale: string) {
   return dateFromKey(key).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-/** A plan's time as a small leaf beside the title; a calendar glyph when it has none. */
+/** A plan's time in bold beside the title; a calendar glyph when it has none. */
 function TimeTile({ time }: { time?: string }) {
-  if (!time) return <ClayIcon name="calendar" size={ROW_ICON} />;
+  if (!time) return <ClayIcon name="calendar" size={ROW_ICON} tile={false} />;
   return (
     <View style={styles.timeTile}>
-      <Txt variant="smallStrong" style={styles.tabular}>
+      <Txt variant="title" style={styles.tabular}>
         {time}
       </Txt>
     </View>
   );
 }
 
-function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
+function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <View style={[styles.stat, divided && styles.statDivided]}>
+    <View style={styles.stat}>
       <Txt variant="bodyStrong">{value}</Txt>
       <Txt variant="caption" color={colors.textMuted}>
         {label}
@@ -354,7 +353,7 @@ const styles = StyleSheet.create({
   picker: { gap: space.lg, paddingHorizontal: space.lg, paddingVertical: space.xs },
   pick: { alignItems: 'center', gap: space.xs, width: 56 },
   pickActive: { fontWeight: '600' },
-  hero: { marginHorizontal: space.lg, marginTop: space.md },
+  hero: { paddingHorizontal: space.lg, paddingTop: space.xl },
   together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   pair: { flexDirection: 'row', marginRight: space.xs },
   overlap: { marginLeft: -space.md },
@@ -369,15 +368,7 @@ const styles = StyleSheet.create({
   fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
   stats: { flexDirection: 'row', marginTop: space.lg },
   stat: { flex: 1, alignItems: 'center', gap: 2 },
-  statDivided: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
-  timeTile: {
-    width: ROW_ICON + 14,
-    height: ROW_ICON,
-    borderRadius: radius.sm + 2,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  timeTile: { minWidth: ROW_ICON + 14, height: ROW_ICON, justifyContent: 'center' },
   tabular: { fontVariant: ['tabular-nums'] },
   planRight: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },

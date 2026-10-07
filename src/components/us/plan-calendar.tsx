@@ -98,16 +98,11 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCale
 }
 
 const styles = StyleSheet.create({
+  // Straight on the canvas: no card, border or fill around the month.
   card: {
-    marginHorizontal: space.lg,
-    marginTop: space.md,
+    marginHorizontal: space.sm,
+    marginTop: space.xl,
     paddingHorizontal: space.sm,
-    paddingTop: space.md,
-    paddingBottom: space.sm,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.xs, marginBottom: space.sm },
   month: { flex: 1 },
