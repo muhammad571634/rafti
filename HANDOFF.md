@@ -1,6 +1,90 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-## ▶ KEYINGI QADAM — shu yerdan boshlang (2026-10-07, bulutga o'tish)
+## ▶ NEXT STEP — start here (2026-10-07, back to Claude Desktop)
+
+The user worked this day in cloud Claude Code and now continues in **Claude Desktop on Windows**
+(`C:\Users\joray\BIMOBIMO`). Everything from the cloud session is on `local-work` (last commit
+before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
+English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
+
+### 0. Sync the local folder first
+
+```
+cd C:\Users\joray\BIMOBIMO\rafti
+git status                      # package-lock.json may be modified locally: not the user's, discard it
+git checkout -- package-lock.json
+git fetch origin
+git checkout local-work
+git pull origin local-work
+npm install
+npx tsc --noEmit                # must be clean
+```
+
+`../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
+`AGENT-START.md` section 6 is out of date (says F9) — this file wins.
+
+### 1. The task right now: wire in the 23 character portraits
+
+The user has **finished all portraits in Nano Banana** and will hand them over (in chat or as files).
+
+1. Each portrait goes to `assets/raw/avatars/c_<id>.png` (or `.jpg`). Ids, in the order of
+   `docs/nano-banana-portraits.md`: c_jun, c_noah, c_tessa, c_felix, c_vesper, c_rhys, c_lyra,
+   c_kael, c_orin, c_corvin, c_haze, c_rio, c_dex, c_ari, c_juno, c_cass, c_marco, c_ivy,
+   c_gideon, c_ren, c_hugo, c_nadia, c_cole. (c_rowan is already in.) If the user sends files
+   with other names, match them by the face/description in `docs/characters-plan.md` and ask
+   when unsure — never guess silently.
+2. Look at each image before using it: an adult, not Kai's face, no text or logo. Report any that
+   look off and ask for a redo instead of shipping it.
+3. `python scripts/build-brand-art.py characters` — crops to 512px squares into
+   `assets/avatars/c_<id>.png` and rewrites `assets/avatars/registry.ts` from what is in
+   `assets/avatars/` (the existing 17 stay). Commit the raw files too.
+4. `npx tsc --noEmit`, then `npx expo start --web` (`.claude/launch.json` → `bimobimo-web`,
+   375×812): check Find (all four worlds, Everyone / Him / Her) and a character profile.
+5. Update `docs/characters-plan.md` status, a line here, commit and push to `local-work`
+   (standing permission), tell the user in Uzbek what was done.
+
+Optional after that: hero scenes (16:9, Today card). The prompt is in `docs/characters-plan.md`
+("Shared hero scene prompt" + each character's `{PLACE}`); attach the character's new portrait
+plus `assets/heroes/c_sol.jpg`. Files go to `assets/raw/heroes/c_<id>.png`, same build command.
+Not asked for yet — offer, don't do.
+
+### 2. Then offer the user these, in this order (they choose)
+
+1. **Backend** — the real AI (Claude API), moderation and voices. Plan: `docs/backend-plan.md`
+   (Uzbek); open decisions in its section 12, first one: which Claude model for chat.
+   Character rules for the model are ready in `src/ai/rules.ts`.
+2. **Edit a created character** (F15 follow-up): there is no edit screen yet.
+3. Small fixes: History "Call time" empty state — the mascot overlaps the rule card
+   (`src/app/store/ledger.tsx`); the support address `SUPPORT_EMAIL` in `src/ai/safety.ts` is a
+   placeholder — ask the user for the real one.
+4. Push notifications (`expo-notifications` is not installed; reminders, birthday wishes and
+   morning messages only arrive while the app is open).
+
+### 3. What exists now (all on `local-work`)
+
+- Flows F1-F15 done: `docs/flows.md`.
+- Cast: 40 originals, 10 per world, `gender` on every character, Find filter Everyone / Him / Her
+  (`src/mock/characters.ts`, `docs/characters-plan.md`; faces are a global mix by the user's decision).
+- 18+ content rules approved: `docs/content-policy.md` (human) and `src/ai/rules.ts` (model).
+  Built: Report in chat, Block (character settings) / Unblock (Profile → Blocked), helpline card
+  after crisis messages (`src/ai/safety.ts`), "AI" mark on profiles, Profile → Support.
+- F15 create character: traits, speaking style, role, stock or cloned voice, 18+ and rights checks
+  (`src/app/create-character.tsx`, `src/lib/create-character.ts`).
+- 3D clay icons: four sheets wired everywhere listed in `docs/icons-3d.md`.
+- Build script: `python scripts/build-brand-art.py icons | characters` (cloud-friendly modes).
+
+### 4. Gotchas
+
+- Metro sometimes serves an old bundle after edits: stop the server and start it with `--clear`
+  (on Windows also delete `%TEMP%\metro-cache` and `%TEMP%\metro-file-map-*`).
+- Expo typed routes can go stale and break `tsc`: delete `.expo/types/router.d.ts` and restart.
+- Approved screens are not to be redesigned (Diary, Onboarding, Home).
+
+---
+
+## Cloud session log (2026-10-07) — details of what was built
+
+### Earlier top block (kept for detail)
 Foydalanuvchi lokal Claude Desktop'dan (Windows, `C:\Users\joray\BIMOBIMO`) **bulutdagi Claude Code**'ga o'tdi.
 Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham shu faylga ko'chirildi
 (pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
