@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { CharacterAvatar, Chip, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { ClosenessSheet } from '@/components/closeness-sheet';
+import { CharacterAvatar, Chip, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 
@@ -27,9 +28,21 @@ export default function ContactsScreen() {
 
   const tileWidth = (width - space.lg * 2 - space.md * (COLUMNS - 1)) / COLUMNS;
 
+  const [closenessOpen, setClosenessOpen] = useState(false);
+
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('contacts.title')} />
+      <Header
+        title={t('contacts.title')}
+        right={
+          <IconButton
+            icon="information-circle-outline"
+            size={21}
+            accessibilityLabel={t('closeness.title')}
+            onPress={() => setClosenessOpen(true)}
+          />
+        }
+      />
 
       <View style={styles.filters}>
         <Chip label={t('contacts.all')} active={filter === 'all'} onPress={() => setFilter('all')} />
@@ -77,8 +90,8 @@ export default function ContactsScreen() {
                       {character.name}
                     </Txt>
                     {relationship ? (
-                      <Txt variant="tiny" color={colors.bondText}>
-                        Lv.{relationship.level}
+                      <Txt variant="tiny" color={colors.bondText} center lines={2}>
+                        {relationship.label ?? relationship.levelTitle}
                       </Txt>
                     ) : null}
                   </View>
@@ -88,6 +101,7 @@ export default function ContactsScreen() {
           </View>
         </ScrollView>
       )}
+      <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} />
     </Screen>
   );
 }

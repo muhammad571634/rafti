@@ -208,9 +208,10 @@
     "earned": "+{{count}} shells added"
   },
   "levelUp": {
-    "title": "Ta-da~ Your relationship has moved up a level!",
+    "title": "Ta-da~ You've reached a new stage!",
     "subtitle": "{{name}} feels a little closer to you.",
-    "levelLabel": "Level {{level}} · {{title}}"
+    "levelLabel": "{{title}} · Lv {{level}}",
+    "unlocked": "New relationships unlocked in their settings."
   },
   "call": {
     "connecting": "connecting...",
@@ -653,5 +654,22 @@
       "other": "Other",
       "someone": "a friend"
     }
+  },
+  "closeness": {
+    "title": "How closeness works",
+    "body": "Every chat, call and date brings you closer. Each stage unlocks new relationships you can pick in their settings, and they talk to you the way that relationship feels.",
+    "levels": "Lv {{from}}-{{to}}",
+    "level": "Lv {{level}}",
+    "unlocks": "Unlocks",
+    "nothing": "Where every friendship starts.",
+    "youAreHere": "You are here",
+    "relationship": "Relationship",
+    "pick": "Pick what you are to each other",
+    "none": "No label",
+    "toNext": "{{count}} to Lv {{level}}",
+    "max": "Highest level reached",
+    "lockedAt": "Lv {{level}}",
+    "labelTitle": "What are you to {{name}}?",
+    "labelHint": "Only labels your stage has unlocked can be picked."
   }
 }

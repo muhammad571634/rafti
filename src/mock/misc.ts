@@ -154,9 +154,9 @@ export const radioTracks = [
 
 /** Dating scenario cards. */
 export const dateScenarios = [
-  { id: 'ds_aquarium', titleKey: 'aquarium', emoji: '\u{1F41F}', cost: 12, levelRequired: 2 },
-  { id: 'ds_festival', titleKey: 'festival', emoji: '\u{1F386}', cost: 15, levelRequired: 3 },
+  { id: 'ds_aquarium', titleKey: 'aquarium', emoji: '\u{1F41F}', cost: 12, levelRequired: 3 },
+  { id: 'ds_festival', titleKey: 'festival', emoji: '\u{1F386}', cost: 15, levelRequired: 6 },
   { id: 'ds_rain', titleKey: 'rainyWalk', emoji: '\u{2614}', cost: 10, levelRequired: 1 },
-  { id: 'ds_studio', titleKey: 'lateStudio', emoji: '\u{1F3A7}', cost: 18, levelRequired: 4 },
-  { id: 'ds_rooftop', titleKey: 'rooftop', emoji: '\u{1F30C}', cost: 20, levelRequired: 5 },
+  { id: 'ds_studio', titleKey: 'lateStudio', emoji: '\u{1F3A7}', cost: 18, levelRequired: 10 },
+  { id: 'ds_rooftop', titleKey: 'rooftop', emoji: '\u{1F30C}', cost: 20, levelRequired: 16 },
 ];

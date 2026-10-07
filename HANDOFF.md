@@ -77,7 +77,14 @@
     `scripts/build-brand-art.py` dagi `build_reactions()` 6 tasini kesadi (fon kulrang qog'oz, oq die-cut chegara
     saqlanadi) → `assets/brand/reaction-{love,laugh,wow,sad,hyped,thumbs}.png`, registry'da `REACTION_STICKERS`.
     Chat menyusi va pufak burchagidagi reaksiya shu stikerlar.
-  - Navbat: F7 munosabat v2 (5 bosqich), F6 qo'ng'iroq daqiqalari.
+  - **F7 Munosabat v2 — kodda tayyor** (BIMOBIMO #21-#23, #41): darajalar 0-100, 5 bosqich (`TIERS` in
+    `src/mock/user.ts`): Stranger 0, Friend 1-5, More than friends 6-15, Beloved 16-49, Family 50-100.
+    `levelThreshold(n) = 2*n^2.3` (1 xabar ~2 intimacy). Har bosqich yorliqlar ochadi (romantik: Crush, Partner,
+    Soulmate...; BIMOBIMO'dagi aka/opa yorliqlari olinmadi), `relationship.label`, `setRelationshipLabel`.
+    Level-up oynasi faqat yangi bosqichda chiqadi. Personaj sozlamalarida munosabat kartasi (daraja, progress,
+    yorliq tanlash), kontaktlarda va sozlamalarda "How closeness works" oynasi (`closeness-sheet.tsx`).
+    Store v5 migratsiyasi darajalarni intimacy'dan qayta hisoblaydi. Date ssenariylari darajalari 1/3/6/10/16.
+  - Navbat: F6 qo'ng'iroq daqiqalari (15 daqiqa sinov), F9 kalendar va eslatma.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

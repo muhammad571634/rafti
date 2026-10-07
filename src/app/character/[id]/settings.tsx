@@ -18,7 +18,9 @@ import {
   Toggle,
   Txt,
 } from '@/components/ui';
-import { shortDate } from '@/lib/format';
+import { ClosenessSheet } from '@/components/closeness-sheet';
+import { shortDate, shortName } from '@/lib/format';
+import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
 
@@ -91,10 +93,13 @@ export default function CharacterSettingsScreen() {
   const setNickname = useAppStore((s) => s.setNickname);
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
   const setSetting = useAppStore((s) => s.setSetting);
+  const setRelationshipLabel = useAppStore((s) => s.setRelationshipLabel);
 
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState('');
   const [chatSettingsOpen, setChatSettingsOpen] = useState(false);
+  const [closenessOpen, setClosenessOpen] = useState(false);
+  const [labelOpen, setLabelOpen] = useState(false);
 
   if (!character) {
     return (
@@ -167,6 +172,17 @@ export default function CharacterSettingsScreen() {
           />
         </View>
 
+        {relationship ? (
+          <RelationshipCard
+            level={relationship.level}
+            intimacy={relationship.intimacy}
+            title={relationship.levelTitle}
+            label={relationship.label}
+            onPick={() => setLabelOpen(true)}
+            onInfo={() => setClosenessOpen(true)}
+          />
+        ) : null}
+
         {GROUPS.map((group) => (
           <View key={group.title}>
             <SectionLabel title={t(`characterSettings.${group.title}`)} />
@@ -231,6 +247,45 @@ export default function CharacterSettingsScreen() {
           onChange={(v) => setSetting('chatAnimation', v)}
         />
       </Sheet>
+      <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} level={relationship?.level} />
+
+      <Sheet
+        visible={labelOpen}
+        onClose={() => setLabelOpen(false)}
+        title={t('closeness.labelTitle', { name: shortName(name) })}>
+        <ScrollView style={styles.labelScroll} showsVerticalScrollIndicator={false}>
+          <Txt variant="small" color={colors.textSecondary} style={styles.labelHint}>
+            {t('closeness.labelHint')}
+          </Txt>
+          <LabelRow
+            title={t('closeness.none')}
+            selected={!relationship?.label}
+            onPress={() => {
+              setRelationshipLabel(character.id, undefined);
+              setLabelOpen(false);
+            }}
+          />
+          {TIERS.flatMap((tier) =>
+            tier.labels.map((label) => {
+              const open = unlockedLabels(relationship?.level ?? 0).includes(label);
+              return (
+                <LabelRow
+                  key={label}
+                  title={label}
+                  meta={open ? tier.title : t('closeness.lockedAt', { level: tier.from })}
+                  locked={!open}
+                  selected={relationship?.label === label}
+                  onPress={() => {
+                    if (!open) return;
+                    setRelationshipLabel(character.id, label);
+                    setLabelOpen(false);
+                  }}
+                />
+              );
+            }),
+          )}
+        </ScrollView>
+      </Sheet>
     </Screen>
   );
 }
@@ -263,7 +318,125 @@ function ToggleRow({
   );
 }
 
+/** Level, stage, progress to the next level and the label you chose. */
+function RelationshipCard({
+  level,
+  intimacy,
+  title,
+  label,
+  onPick,
+  onInfo,
+}: {
+  level: number;
+  intimacy: number;
+  title: string;
+  label?: string;
+  onPick: () => void;
+  onInfo: () => void;
+}) {
+  const { t } = useTranslation();
+  const { progress, nextLevelAt } = levelForIntimacy(intimacy);
+  const maxed = level >= MAX_LEVEL;
+
+  return (
+    <View style={styles.bond}>
+      <View style={styles.bondHead}>
+        <View style={styles.bondHeart}>
+          <Ionicons name="heart" size={18} color={colors.bond} />
+        </View>
+        <View style={styles.flex}>
+          <Txt variant="title">{title}</Txt>
+          <Txt variant="small" color={colors.textMuted}>
+            {t('closeness.level', { level })}
+            {' · '}
+            {maxed
+              ? t('closeness.max')
+              : t('closeness.toNext', { count: Math.max(0, nextLevelAt - intimacy), level: level + 1 })}
+          </Txt>
+        </View>
+        <IconButton icon="information-circle-outline" size={21} accessibilityLabel={t('closeness.title')} onPress={onInfo} />
+      </View>
+      <View style={styles.track}>
+        <View style={[styles.fill, { width: `${Math.round(Math.min(1, progress) * 100)}%` }]} />
+      </View>
+      <ListRow
+        title={t('closeness.relationship')}
+        subtitle={label ?? t('closeness.pick')}
+        chevron
+        onPress={onPick}
+        style={styles.bondRow}
+      />
+    </View>
+  );
+}
+
+function LabelRow({
+  title,
+  meta,
+  locked,
+  selected,
+  onPress,
+}: {
+  title: string;
+  meta?: string;
+  locked?: boolean;
+  selected: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <ListRow
+      title={title}
+      meta={meta}
+      trailing={
+        locked ? (
+          <Ionicons name="lock-closed" size={16} color={colors.textFaint} />
+        ) : (
+          <Ionicons
+            name={selected ? 'radio-button-on' : 'radio-button-off'}
+            size={20}
+            color={selected ? colors.bond : colors.textFaint}
+          />
+        )
+      }
+      onPress={onPress}
+      style={locked ? styles.locked : undefined}
+    />
+  );
+}
+
 const styles = StyleSheet.create({
+  bond: {
+    marginHorizontal: space.lg,
+    marginTop: space.lg,
+    paddingTop: space.md,
+    borderRadius: radius.xl,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.sm },
+  bondHeart: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.bondSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  track: {
+    height: 6,
+    marginHorizontal: space.lg,
+    marginTop: space.md,
+    borderRadius: 3,
+    backgroundColor: colors.surfaceAlt,
+    overflow: 'hidden',
+  },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
+  bondRow: { marginTop: space.sm, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.divider },
+  labelScroll: { maxHeight: 460 },
+  labelHint: { marginBottom: space.sm },
+  locked: { opacity: 0.5 },
   flex: { flex: 1 },
   scroll: { paddingBottom: space.huge },
   identity: {

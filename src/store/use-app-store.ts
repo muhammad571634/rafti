@@ -26,6 +26,8 @@ import {
   initialDaily,
   initialSettings,
   levelForIntimacy,
+  tierForLevel,
+  unlockedLabels,
   membershipPlans,
   memories as seedMemories,
   messagesByConversation,
@@ -166,6 +168,8 @@ interface AppState {
   setNickname: (characterId: string, nickname: string) => void;
   setCharacterPref: (characterId: string, key: 'voiceReplies' | 'messagesFirst', value: boolean) => void;
   addIntimacy: (characterId: string, amount: number) => void;
+  /** Picks one of the unlocked relationship labels, or clears it. */
+  setRelationshipLabel: (characterId: string, label?: string) => void;
   dismissLevelUp: () => void;
 
   /* economy */
@@ -575,7 +579,8 @@ export const useAppStore = create<AppState>()(
 
         const intimacy = existing.intimacy + amount;
         const next = levelForIntimacy(intimacy);
-        const levelledUp = next.level > existing.level;
+        // Levels tick up quietly; the celebration is for reaching a new stage.
+        const levelledUp = next.level > existing.level && tierForLevel(next.level).key !== tierForLevel(existing.level).key;
 
         set((s) => ({
           relationships: {
@@ -597,6 +602,11 @@ export const useAppStore = create<AppState>()(
           addMoment(set, characterId, 'levelUp', { level: next.level, title: next.levelTitle });
         }
       },
+
+      setRelationshipLabel: (characterId, label) =>
+        updateRelationship(set, characterId, (r) =>
+          !label || unlockedLabels(r.level).includes(label) ? { label } : {},
+        ),
 
       dismissLevelUp: () => set({ levelUp: null }),
 
@@ -947,7 +957,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 4,
+      version: 5,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: Wallet & { acorns?: number } };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -958,6 +968,15 @@ export const useAppStore = create<AppState>()(
         // v3: the licensed seed cast was replaced by Rafti's originals.
         if (version < 3) state = recastSeed(state);
         // v4: first-launch flow. Anyone who already has data has been through the app.
+        // v5: closeness runs 0-100 in five stages; levels are recomputed from intimacy.
+        if (version < 5 && state.relationships) {
+          state.relationships = Object.fromEntries(
+            Object.entries(state.relationships).map(([id, r]) => {
+              const { level, levelTitle, nextLevelAt } = levelForIntimacy(r.intimacy);
+              return [id, { ...r, level, levelTitle, nextLevelAt }];
+            }),
+          );
+        }
         if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
         return state as AppState;
       },

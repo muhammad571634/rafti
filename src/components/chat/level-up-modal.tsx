@@ -44,7 +44,7 @@ export function LevelUpModal({ event, characterName, onClose }: LevelUpModalProp
         ) : null}
 
         <Txt variant="small" color={colors.textMuted} center>
-          {t('levelUp.subtitle', { name: characterName })}
+          {t('levelUp.subtitle', { name: characterName })} {t('levelUp.unlocked')}
         </Txt>
       </Pressable>
     </Sheet>

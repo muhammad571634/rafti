@@ -37,6 +37,8 @@ export interface Relationship {
   backgroundId: string;
   /** What you call them; falls back to the character name. */
   nickname?: string;
+  /** The relationship you picked from the labels your stage unlocks, e.g. "Crush" */
+  label?: string;
   /** Replies come as a voice note + text, like the reference chat. */
   voiceReplies: boolean;
   /** They may text or call first (morning / night greetings). */
