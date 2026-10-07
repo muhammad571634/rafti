@@ -1,5 +1,95 @@
 # Nano Banana: Today hero scenes, ready to copy
 
+## Redo (2026-10-07): 10 scenes
+
+14 scenes are in the app (Rowan, Jun, Felix, Vesper, Rhys, Lyra, Orin, Haze, Dex, Juno, Marco,
+Gideon, Hugo, Cole). In 8 others Nano Banana drew **Sol from the second reference** instead of
+the character. So the redo prompts below use **one image only: the character's portrait** (it
+already shows the art style). Same steps otherwise: a new chat each time, save as
+`assets/raw/heroes/c_<id>.png`. Kept for review, not in the app: `assets/raw/heroes-review/`;
+rejected: `assets/raw/heroes-rejected/` (neither folder is committed).
+
+### Noah Bellamy (`c_noah`) - missing (the radio-booth scene came out with Tessa)
+
+Attach only: `assets/avatars/c_noah.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a small night radio booth with a glowing ON AIR lamp (no readable text) and a mic. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Tessa Moreau (`c_tessa`) - missing (she appeared in Noah's radio booth instead of the debate hall)
+
+Attach only: `assets/avatars/c_tessa.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a wood-panelled debate hall with an empty podium. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Kael (`c_kael`) - Sol copied
+
+Attach only: `assets/avatars/c_kael.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a cave glittering with gold coins and gems. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Corvin (`c_corvin`) - Sol copied
+
+Attach only: `assets/avatars/c_corvin.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a cliff edge at dusk with ravens circling. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Ari Solenne (`c_ari`) - Sol copied
+
+Attach only: `assets/avatars/c_ari.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a bright rehearsal studio with wooden floor and mirrors. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Cass Valen (`c_cass`) - Sol copied
+
+Attach only: `assets/avatars/c_cass.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a glittering stage with soft spotlights before a show. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Ivy Chen (`c_ivy`) - Sol copied
+
+Attach only: `assets/avatars/c_ivy.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a flower shop full of buckets of bright blooms. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Ren Okada (`c_ren`) - Sol copied
+
+Attach only: `assets/avatars/c_ren.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a warm café kitchen with trays of croissants. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Nadia Rahman (`c_nadia`) - Sol copied
+
+Attach only: `assets/avatars/c_nadia.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a café window seat with legal folders and an espresso. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+### Rio (`c_rio`) - optional: right person, but in Haze's dressing room instead of a dance studio
+
+Attach only: `assets/avatars/c_rio.png`.
+
+```
+The attached image is the character; keep exactly this person (face, hair, clothes) and this art style. Draw a wide 16:9 2D anime-style illustration: clean line art, soft cel shading, warm natural light. This person stands on the right third of the frame, waist up, looking at the viewer, in a mirrored dance studio at night. Nobody else in the picture. Calm, cosy mood, soft background detail, nothing on the left third except the setting. An adult. Original character, not resembling any real person or existing character. No text, no logo, no watermark.
+```
+
+
 The Today card shows the character you talked with last (`docs/today-hero.md`). With a
 wide scene it looks finished; without one the square portrait is cropped to fit. These
 24 characters have a portrait but no scene yet.

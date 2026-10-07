@@ -45,6 +45,7 @@ opens that chat.
 
 ## Pictures still missing
 
-40 characters have portraits; 16 have wide scenes. The other 24 use the cropped
-portrait until their scene is made: ready prompts in `docs/nano-banana-heroes.md`,
+40 characters have portraits; 30 have wide scenes. The other 10 (Noah, Tessa, Kael, Corvin,
+Ari, Cass, Ivy, Ren, Nadia, Rio) use the cropped portrait until their scene is redone: prompts at
+the top of `docs/nano-banana-heroes.md`,
 files go to `assets/raw/heroes/c_<id>.png`, then `python scripts/build-brand-art.py characters`.
