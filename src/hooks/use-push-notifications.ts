@@ -3,7 +3,14 @@ import { useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
 import { AppState, Platform } from 'react-native';
 
-import { clearPushes, configurePushes, deliveredPushes, syncPushes, type PushData } from '@/notifications/sync';
+import {
+  askIfNeverAsked,
+  clearPushes,
+  configurePushes,
+  deliveredPushes,
+  syncPushes,
+  type PushData,
+} from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
 
 /**
@@ -36,7 +43,10 @@ export function usePushNotifications() {
     };
     const leave = () => void syncPushes(useAppStore.getState());
 
-    void configurePushes().then(comeBack);
+    const { settings } = useAppStore.getState();
+    void configurePushes()
+      .then(comeBack)
+      .then(() => askIfNeverAsked(settings.morningGreeting || settings.eveningGreeting));
     // A tap that launched the app from closed.
     open(Notifications.getLastNotificationResponse());
     Notifications.clearLastNotificationResponse();

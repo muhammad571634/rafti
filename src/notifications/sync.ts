@@ -67,6 +67,16 @@ export async function pushesAllowed() {
   return granted || ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
 }
 
+/**
+ * For people who said yes in the app before the system prompt existed (onboarded on an
+ * older build): ask once, only if the system never asked.
+ */
+export async function askIfNeverAsked(saidYesInApp: boolean) {
+  if (!supported || !saidYesInApp) return;
+  const { status, canAskAgain } = await Notifications.getPermissionsAsync();
+  if (status === Notifications.PermissionStatus.UNDETERMINED && canAskAgain) await requestPushPermission();
+}
+
 /** The system prompt. Call it only after the user said yes in the app (two-step ask). */
 export async function requestPushPermission() {
   if (!supported) return false;
