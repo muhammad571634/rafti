@@ -25,6 +25,8 @@ export interface ListRowProps {
   chevron?: boolean;
   onPress?: () => void;
   accessibilityLabel?: string;
+  /** `large`: bigger title and subtitle with more air, for rows that lead a screen (Today). */
+  size?: 'default' | 'large';
   style?: StyleProp<ViewStyle>;
 }
 
@@ -44,8 +46,11 @@ export function ListRow({
   chevron,
   onPress,
   accessibilityLabel,
+  size = 'default',
   style,
 }: ListRowProps) {
+  const large = size === 'large';
+  const titleVariant = large ? 'title' : 'bodyStrong';
   const body = (
     <>
       {left}
@@ -54,13 +59,13 @@ export function ListRow({
           {titleAfter ? (
             // The mark hugs the name; the name gives way first when space runs out.
             <View style={[styles.grow, styles.titleGroup]}>
-              <Txt variant="bodyStrong" lines={1} style={styles.shrink}>
+              <Txt variant={titleVariant} lines={1} style={styles.shrink}>
                 {title}
               </Txt>
               {titleAfter}
             </View>
           ) : (
-            <Txt variant="bodyStrong" lines={1} style={styles.grow}>
+            <Txt variant={titleVariant} lines={1} style={styles.grow}>
               {title}
             </Txt>
           )}
@@ -74,7 +79,7 @@ export function ListRow({
         </View>
         {subtitle ? (
           <View style={styles.line}>
-            <Txt variant="small" color={colors.textSecondary} lines={1} style={styles.grow}>
+            <Txt variant={large ? 'body' : 'small'} color={colors.textSecondary} lines={1} style={styles.grow}>
               {subtitle}
             </Txt>
             {trailing}
@@ -86,14 +91,15 @@ export function ListRow({
     </>
   );
 
-  if (!onPress) return <View style={[styles.row, style]}>{body}</View>;
+  const rowStyle = [styles.row, large && styles.large, style];
+  if (!onPress) return <View style={rowStyle}>{body}</View>;
 
   return (
     <PressableScale
       onPress={onPress}
       scaleTo={1}
       accessibilityLabel={accessibilityLabel ?? title}
-      style={[styles.row, style]}>
+      style={rowStyle}>
       {body}
     </PressableScale>
   );
@@ -108,6 +114,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.sm + 2,
   },
+  large: { minHeight: 68, paddingVertical: space.md },
   text: { flex: 1, gap: 2 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   grow: { flex: 1 },

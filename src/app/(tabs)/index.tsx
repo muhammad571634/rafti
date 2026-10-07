@@ -2,19 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
-import { Fragment, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { DailyGiftCard } from '@/components/daily-gift-card';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
-  Card,
   CharacterAvatar,
   ClayIcon,
   CountBadge,
-  Divider,
   ListRow,
   Mascot,
   PressableScale,
@@ -26,19 +23,17 @@ import {
   type ClayIconName,
 } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
+import { planStart } from '@/lib/schedule';
 import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
 import type { Character, Conversation, HomeModule, Relationship } from '@/types';
 
-const CHAT_AVATAR = 44;
-/** Tile size of the Today and "meet" rows; their divider inset follows it. */
-const ROW_ICON = 38;
+const CHAT_AVATAR = 48;
+/** Art size of the Today and "meet" rows: clay art or a friend's face, no tile. */
+const ROW_ICON = 40;
 /** Explore icons: large clay art on the bare canvas, four to a row. */
 const MODULE_ICON = 68;
-/** Row dividers start under the row text, past the leading avatar or icon. */
-const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
-const TODO_INSET = space.lg + ROW_ICON + space.md;
 
 /** One 3D clay icon per Explore module, keyed by `HomeModule.key` (docs/icons-3d.md). */
 const MODULE_ICONS: Record<string, ClayIconName> = {
@@ -84,7 +79,8 @@ function greetingSlot(hour: number) {
 
 /**
  * The "Today" hub, top to bottom: the friend you talked with last, every module one tap
- * away, who is waiting, what is ready today, today's gift.
+ * away, who is waiting, what is ready today. The daily gift claims itself on launch
+ * (its popup) and lives on Gifts.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -105,6 +101,8 @@ export default function HomeScreen() {
   const spinReady = useAppStore(
     (s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
   );
+  // The daily gift lives on Gifts; its icon carries a dot while today's gift still waits.
+  const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
   const hero = useMemo(
@@ -151,9 +149,13 @@ export default function HomeScreen() {
     });
   }
 
-  // Plans made in chat for today, with the friend who will check in.
-  for (const plan of schedules) {
-    if (plan.date !== today) continue;
+  // Today's plans still ahead, soonest first, with the friend who will check in. Once a
+  // plan has started its row goes: the reminder is past and "how did it go?" comes in chat.
+  const now = Date.now();
+  const upcoming = schedules
+    .filter((plan) => plan.date === today && (!plan.time || planStart(plan).getTime() > now))
+    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
+  for (const plan of upcoming) {
     const character = charactersById.get(plan.characterId);
     if (!character) continue;
     const conversation = conversations.find((c) => c.characterId === character.id);
@@ -235,7 +237,7 @@ export default function HomeScreen() {
             <ModuleCell
               key={module.key}
               module={module}
-              dot={module.key === 'gifts' && spinReady}
+              dot={module.key === 'gifts' && (spinReady || giftWaiting)}
               onPress={() => router.push(module.route as never)}
             />
           ))}
@@ -243,6 +245,7 @@ export default function HomeScreen() {
 
         {chats.length > 0 ? (
           <SectionLabel
+            tone="title"
             title={t('home.chats')}
             right={
               <PressableScale
@@ -256,58 +259,50 @@ export default function HomeScreen() {
             }
           />
         ) : null}
-        <Card
-          variant="outlined"
-          padded={false}
-          style={[styles.chats, chats.length === 0 && styles.chatsAlone]}>
+        {/* Plain rows on the canvas: no card, no lines, the type carries the structure. */}
+        <View style={chats.length === 0 && styles.alone}>
           {shown.length > 0 ? (
-            shown.map((item, i) => (
-              <Fragment key={item.conversation.id}>
-                {i > 0 ? <Divider inset={CHAT_INSET} /> : null}
-                <ChatRow item={item} onPress={() => router.push(`/chat/${item.conversation.id}`)} />
-              </Fragment>
+            shown.map((item) => (
+              <ChatRow
+                key={item.conversation.id}
+                item={item}
+                onPress={() => router.push(`/chat/${item.conversation.id}`)}
+              />
             ))
           ) : (
             <ListRow
-              left={<ClayIcon name="compass" size={ROW_ICON} />}
+              size="large"
+              left={<ClayIcon name="compass" size={ROW_ICON} tile={false} />}
               title={t('home.todo.meet')}
               chevron
               onPress={() => router.push('/(tabs)/find')}
             />
           )}
-        </Card>
+        </View>
 
         {todos.length > 0 ? (
           <>
-            <SectionLabel title={t('home.today')} />
-            {todos.map((todo, i) => (
-              <Fragment key={todo.key}>
-                {i > 0 ? (
-                  // Plain rows sit on the canvas, so the line stops short of the edge too.
-                  <View style={styles.todoDivider}>
-                    <Divider inset={TODO_INSET} />
-                  </View>
-                ) : null}
-                <ListRow
-                  left={
-                    isCharacter(todo.icon) ? (
-                      <CharacterAvatar character={todo.icon} size={ROW_ICON} />
-                    ) : (
-                      <ClayIcon name={todo.icon} size={ROW_ICON} />
-                    )
-                  }
-                  title={todo.title}
-                  subtitle={todo.subtitle}
-                  trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
-                  chevron
-                  onPress={todo.onPress}
-                />
-              </Fragment>
+            <SectionLabel tone="title" title={t('home.today')} />
+            {todos.map((todo) => (
+              <ListRow
+                key={todo.key}
+                size="large"
+                left={
+                  isCharacter(todo.icon) ? (
+                    <CharacterAvatar character={todo.icon} size={ROW_ICON} />
+                  ) : (
+                    <ClayIcon name={todo.icon} size={ROW_ICON} tile={false} />
+                  )
+                }
+                title={todo.title}
+                subtitle={todo.subtitle}
+                trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
+                chevron
+                onPress={todo.onPress}
+              />
             ))}
           </>
         ) : null}
-
-        <DailyGiftCard />
 
 
 
@@ -344,6 +339,7 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
 
   return (
     <ListRow
+      size="large"
       left={<CharacterAvatar character={character} size={CHAT_AVATAR} />}
       title={name}
       titleAfter={level != null ? <BondChip level={level} /> : undefined}
@@ -426,10 +422,8 @@ const styles = StyleSheet.create({
   },
   // A full-size target for the small chevron beside the section title.
   more: { width: 44, height: 44, marginVertical: -space.md, alignItems: 'center', justifyContent: 'center' },
-  // The section label above already opens the gap.
-  chats: { marginHorizontal: space.lg, marginTop: space.xs },
-  chatsAlone: { marginTop: space.xl },
-  todoDivider: { paddingRight: space.lg },
+  // With no chats there is no heading above the "meet someone" row to open the gap.
+  alone: { marginTop: space.xl },
   freshDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
   bond: {
     flexDirection: 'row',

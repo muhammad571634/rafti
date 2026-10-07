@@ -49,6 +49,11 @@ the last conversation = **done**.
   `assets/raw/heroes-review/` and `assets/raw/heroes-rejected/` (the user's to keep or delete).
 - Home reordered at the user's request (2026-10-07): Today card → 10 module icons (4 columns,
   large clay art on the bare canvas, no label) → Chats → Today rows → Daily gift. Logic unchanged.
+- Home below the icons made minimal (2026-10-07, user's request): Chats and Today as bold `h2`
+  headings in ink (`SectionLabel tone="title"`), plain rows on the canvas with no card, no lines,
+  no grey tiles (`ListRow size="large"`, clay art `tile={false}`). The Daily gift card left Home
+  (deleted; the gift claims itself on launch and the 7-day ladder lives on Gifts, whose icon gets a
+  dot while today's gift waits). Today lists only plans still ahead, soonest first.
 - Next candidates: the notification image
   (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
