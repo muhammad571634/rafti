@@ -8,6 +8,7 @@ export {
   conversations,
   eveningGreetings,
   messagesByConversation,
+  missedCallLines,
   morningGreetings,
   scheduleAck,
   scheduleReminder,

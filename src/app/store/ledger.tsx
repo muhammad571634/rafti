@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionList, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
-import { clockTime, shortName } from '@/lib/format';
+import { CharacterAvatar, Chip, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
+import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
@@ -13,6 +13,7 @@ import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
 /** Paid-per-message lines that fold into one row per friend and day. */
 const FOLDED: LedgerReason[] = ['chat', 'voice', 'photo'];
+
 
 interface Row {
   key: string;
@@ -34,13 +35,18 @@ export default function LedgerScreen() {
   const ledger = useAppStore((s) => s.ledger);
   const characters = useAppStore((s) => s.characters);
   const free = useAppStore((s) => s.wallet.free);
+  const callSeconds = useAppStore((s) => s.wallet.callSeconds ?? 0);
+  const [tab, setTab] = useState<'shells' | 'seconds'>('shells');
   const expireFreeShells = useAppStore((s) => s.expireFreeShells);
 
   // A screen left open past midnight should show the expiry line.
   useFocusEffect(useCallback(() => expireFreeShells(), [expireFreeShells]));
 
   const byId = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
-  const sections = useMemo(() => groupByDay(fold(ledger)), [ledger]);
+  const sections = useMemo(
+    () => groupByDay(fold(ledger.filter((e) => (e.unit ?? 'shells') === tab))),
+    [ledger, tab],
+  );
   const freeToday = free && free.day === todayKey() ? free.amount : 0;
 
   const dayTitle = (key: string) => {
@@ -67,19 +73,45 @@ export default function LedgerScreen() {
         stickySectionHeadersEnabled={false}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
-          <View style={styles.rule}>
-            <Icon3D name="shell" size={36} />
-            <View style={styles.flex}>
-              <Txt variant="bodyStrong">
-                {freeToday > 0 ? t('ledger.freeLeft', { count: freeToday }) : t('ledger.freeNone')}
-              </Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('ledger.rule')}
-              </Txt>
+          <>
+            <View style={styles.tabs}>
+              <Chip label={t('ledger.tabShells')} active={tab === 'shells'} onPress={() => setTab('shells')} />
+              <Chip label={t('ledger.tabCalls')} active={tab === 'seconds'} onPress={() => setTab('seconds')} />
             </View>
-          </View>
+            {tab === 'shells' ? (
+              <View style={styles.rule}>
+                <Icon3D name="shell" size={36} />
+                <View style={styles.flex}>
+                  <Txt variant="bodyStrong">
+                    {freeToday > 0 ? t('ledger.freeLeft', { count: freeToday }) : t('ledger.freeNone')}
+                  </Txt>
+                  <Txt variant="small" color={colors.textSecondary}>
+                    {t('ledger.rule')}
+                  </Txt>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.rule}>
+                <View style={styles.callIcon}>
+                  <Ionicons name="call" size={18} color={colors.brandText} />
+                </View>
+                <View style={styles.flex}>
+                  <Txt variant="bodyStrong">{t('ledger.callLeft', { time: callClock(callSeconds) })}</Txt>
+                  <Txt variant="small" color={colors.textSecondary}>
+                    {t('ledger.callRule')}
+                  </Txt>
+                </View>
+              </View>
+            )}
+          </>
         }
-        ListEmptyComponent={<EmptyState title={t('ledger.empty')} hint={t('ledger.emptyHint')} compact />}
+        ListEmptyComponent={
+          <EmptyState
+            title={tab === 'shells' ? t('ledger.empty') : t('ledger.emptyCalls')}
+            hint={t('ledger.emptyHint')}
+            compact
+          />
+        }
         ListFooterComponent={
           sections.length ? (
             <Txt variant="caption" color={colors.textMuted} center style={styles.footer}>
@@ -120,9 +152,13 @@ export default function LedgerScreen() {
               </View>
               <View style={styles.amount}>
                 <Txt variant="bodyStrong" color={credit ? colors.brandText : colors.text}>
-                  {credit ? `+${row.amount}` : `${row.amount}`}
+                  {tab === 'seconds'
+                    ? `${credit ? '+' : '-'}${callClock(Math.abs(row.amount))}`
+                    : credit
+                      ? `+${row.amount}`
+                      : `${row.amount}`}
                 </Txt>
-                <ShellIcon size={16} />
+                {tab === 'shells' ? <ShellIcon size={16} /> : null}
               </View>
             </View>
           );
@@ -146,6 +182,9 @@ const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']>
   date: 'cafe-outline',
   photoBooth: 'camera-outline',
   voiceClone: 'mic-circle-outline',
+  trial: 'call-outline',
+  membership: 'star-outline',
+  call: 'call-outline',
   other: 'ellipse-outline',
 };
 
@@ -189,7 +228,7 @@ const styles = StyleSheet.create({
     gap: space.md,
     alignItems: 'center',
     padding: space.lg,
-    marginTop: space.sm,
+    marginTop: space.md,
     borderRadius: radius.xl,
     backgroundColor: colors.primarySofter,
   },
@@ -220,4 +259,13 @@ const styles = StyleSheet.create({
   glyphMuted: { opacity: 0.7 },
   amount: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   footer: { marginTop: space.xl },
+  tabs: { flexDirection: 'row', gap: space.sm, marginTop: space.sm },
+  callIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

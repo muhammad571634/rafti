@@ -9,17 +9,18 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import {
   Anim,
   BlurBackdrop,
+  Button,
   CharacterAvatar,
   PressableScale,
   Screen,
   Txt,
   characterImage,
 } from '@/components/ui';
-import { callClock } from '@/lib/format';
+import { callClock, shortName } from '@/lib/format';
 import { callScript, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
 
-type CallState = 'connecting' | 'active';
+type CallState = 'empty' | 'connecting' | 'active';
 
 /** How long each subtitle line stays up — a stand-in for streamed TTS. */
 const SUBTITLE_INTERVAL_MS = 5000;
@@ -39,8 +40,12 @@ export default function CallScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const addCall = useAppStore((s) => s.addCall);
+  // The call may run for as long as the balance held when it started.
+  const budget = useRef(useAppStore.getState().wallet.callSeconds ?? 0);
 
-  const [state, setState] = useState<CallState>(answered ? 'active' : 'connecting');
+  const [state, setState] = useState<CallState>(
+    budget.current <= 0 ? 'empty' : answered ? 'active' : 'connecting',
+  );
   const [seconds, setSeconds] = useState(0);
   const [line, setLine] = useState(0);
   const [muted, setMuted] = useState(false);
@@ -65,6 +70,14 @@ export default function CallScreen() {
     };
   }, [state, lines.length]);
 
+  const remaining = Math.max(0, budget.current - seconds);
+
+  // Out of time mid-call: it ends on its own, and the minutes used are booked.
+  useEffect(() => {
+    if (state === 'active' && remaining <= 0) hangUpRef.current();
+  }, [state, remaining]);
+  const hangUpRef = useRef(() => {});
+
   if (!character) {
     return (
       <Screen>
@@ -88,6 +101,7 @@ export default function CallScreen() {
     if (router.canGoBack()) router.back();
     else router.replace('/');
   };
+  hangUpRef.current = hangUp;
 
   const share = () => {
     Share.share({ message: t('call.shareMessage', { name }) }).catch(() => {});
@@ -103,7 +117,7 @@ export default function CallScreen() {
       <View style={styles.top}>
         <View style={styles.topSide} />
         <Txt variant="caption" color={colors.onMediaMuted} center style={styles.flex}>
-          {t('call.free')}
+          {state === 'empty' ? '' : t('call.left', { time: callClock(remaining) })}
         </Txt>
         <PressableScale
           style={styles.topSide}
@@ -127,9 +141,26 @@ export default function CallScreen() {
           {name}
         </Txt>
 
-        <Txt variant="small" color={colors.onMediaMuted} center style={styles.timer}>
-          {state === 'connecting' ? t('call.connecting') : callClock(seconds)}
-        </Txt>
+        {state === 'empty' ? (
+          <View style={styles.empty}>
+            <Txt variant="title" color={colors.onMedia} center>
+              {t('call.emptyTitle')}
+            </Txt>
+            <Txt variant="small" color={colors.onMediaMuted} center>
+              {t('call.emptyBody', { name: shortName(name) })}
+            </Txt>
+            <Button label={t('call.getMore')} size="lg" full onPress={() => router.replace('/store/shell')} />
+            <PressableScale scaleTo={0.96} style={styles.back} onPress={() => router.back()}>
+              <Txt variant="bodyStrong" color={colors.onMedia}>
+                {t('call.backToChat')}
+              </Txt>
+            </PressableScale>
+          </View>
+        ) : (
+          <Txt variant="small" color={colors.onMediaMuted} center style={styles.timer}>
+            {state === 'connecting' ? t('call.connecting') : callClock(seconds)}
+          </Txt>
+        )}
 
         {state === 'active' ? (
           <Animated.View key={line} entering={FadeIn.duration(320)} exiting={FadeOut.duration(200)}>
@@ -140,7 +171,7 @@ export default function CallScreen() {
         ) : null}
       </View>
 
-      <View style={styles.controls}>
+      <View style={[styles.controls, state === 'empty' && styles.hidden]}>
         <CallControl
           icon={muted ? 'mic-off' : 'mic-off-outline'}
           label={muted ? t('call.unmute') : t('call.mute')}
@@ -222,6 +253,9 @@ const styles = StyleSheet.create({
   name: { marginTop: space.xl },
   timer: { marginTop: space.xs, fontVariant: ['tabular-nums'] },
   subtitle: { marginTop: space.xxl, lineHeight: 24 },
+  empty: { marginTop: space.xl, gap: space.md, alignSelf: 'stretch', alignItems: 'center' },
+  back: { paddingVertical: space.sm },
+  hidden: { display: 'none' },
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',

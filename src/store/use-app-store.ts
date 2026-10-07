@@ -32,6 +32,7 @@ import {
   memories as seedMemories,
   messagesByConversation,
   moments as seedMoments,
+  missedCallLines,
   morningGreetings,
   newRelationship,
   relationships as seedRelationships,
@@ -97,6 +98,8 @@ export interface IncomingCall {
 const STALE_RING_MS = 45_000;
 /** The welcome gift at the end of the first launch. */
 export const WELCOME_SHELLS = 100;
+/** Every new user gets a 15-minute trial of live calls. */
+export const CALL_TRIAL_SECONDS = 15 * 60;
 
 export interface DailyRewardEvent {
   amount: number;
@@ -201,6 +204,8 @@ interface AppState {
   acceptCall: () => string | null;
   declineCall: () => void;
   addCall: (record: Omit<CallRecord, 'id'>) => void;
+  /** The one-time note about the free call trial has been shown. */
+  markCallIntroSeen: () => void;
 
   /* modules */
   startDate: (characterId: string, cost: number, levelRequired: number, title: string) => SpendResult;
@@ -521,6 +526,7 @@ export const useAppStore = create<AppState>()(
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
         get().addShells(WELCOME_SHELLS, 'welcome');
+        creditCallTime(set, CALL_TRIAL_SECONDS, 'trial');
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });
@@ -718,6 +724,7 @@ export const useAppStore = create<AppState>()(
         set((s) => ({
           wallet: { ...s.wallet, isMember: true, memberPlan: planId, memberUntil: base.toISOString() },
         }));
+        if (plan.callMinutes) creditCallTime(set, plan.callMinutes * 60, 'membership');
       },
 
       /* ── diary ────────────────────────────────────────────────────────── */
@@ -794,6 +801,8 @@ export const useAppStore = create<AppState>()(
       /* ── calls ────────────────────────────────────────────────────────── */
 
       ring: (characterId, slot) => {
+        // No call time left: they text instead of ringing a call you could not take.
+        if ((get().wallet.callSeconds ?? 0) <= 0) return;
         const current = get().incomingCall;
         if (current && Date.now() - current.at < STALE_RING_MS) return;
         set({ incomingCall: { characterId, slot, at: Date.now() } });
@@ -816,7 +825,14 @@ export const useAppStore = create<AppState>()(
           direction: 'incoming',
           missed: true,
         });
+        // They noticed you did not pick up, and say so.
+        const conversationId = get().addFriend(call.characterId);
+        setTimeout(() => {
+          appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines)), { countUnread: true });
+        }, 1500);
       },
+
+      markCallIntroSeen: () => set((s) => ({ user: { ...s.user, callIntroSeen: true } })),
 
       addCall: (record) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
@@ -840,6 +856,9 @@ export const useAppStore = create<AppState>()(
         );
 
         if (record.missed) return;
+        // Call time is spent second by second; the call screen stops at zero.
+        const spent = Math.min(record.durationSec, get().wallet.callSeconds ?? 0);
+        if (spent > 0) creditCallTime(set, -spent, 'call', record.characterId);
         const minutes = Math.max(1, Math.round(record.durationSec / 60));
         get().addIntimacy(record.characterId, minutes * INTIMACY.callPerMinute);
         if (record.durationSec >= 60) {
@@ -957,7 +976,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 5,
+      version: 6,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: Wallet & { acorns?: number } };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -976,6 +995,10 @@ export const useAppStore = create<AppState>()(
               return [id, { ...r, level, levelTitle, nextLevelAt }];
             }),
           );
+        }
+        // v6: live-call time became its own balance; everyone already here gets the trial.
+        if (version < 6 && state.wallet && state.wallet.callSeconds == null) {
+          state.wallet = { ...state.wallet, callSeconds: CALL_TRIAL_SECONDS };
         }
         if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
         return state as AppState;
@@ -1069,6 +1092,14 @@ function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversa
   if (memberActive(get().wallet)) return true;
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
   return get().spendShells(cost, reason, characterId);
+}
+
+/** Moves the call-time balance and books it in the history, in seconds. */
+function creditCallTime(set: Setter, seconds: number, reason: LedgerReason, characterId?: string) {
+  set((s) => ({
+    wallet: { ...s.wallet, callSeconds: Math.max(0, (s.wallet.callSeconds ?? 0) + seconds) },
+    ledger: [{ ...log([], seconds, reason, characterId)[0], unit: 'seconds' as const }, ...s.ledger],
+  }));
 }
 
 /** History is kept for six months; older lines drop off. */

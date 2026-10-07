@@ -223,12 +223,22 @@
     "incoming": "Incoming",
     "outgoing": "Outgoing",
     "missed": "Missed",
-    "free": "Voice call · free",
+    "free": "Live call",
     "shareMessage": "I'm on a call with {{name}} on Rafti~",
     "mute": "Mute",
     "unmute": "Unmute",
     "speaker": "Speaker",
-    "end": "End"
+    "end": "End",
+    "left": "Live call · {{time}} left",
+    "emptyTitle": "Your call time is used up",
+    "emptyBody": "Membership adds hours of live calls. Until then, {{name}} is happy to text.",
+    "getMore": "Get more call time",
+    "backToChat": "Back to chat",
+    "introTitle": "You have a free trial call",
+    "introBody": "Talk live with {{name}} for up to {{time}}. Membership adds hours more.",
+    "introCall": "Call now",
+    "introMember": "See Membership",
+    "notNow": "Not now"
   },
   "callHistory": {
     "title": "Calls",
@@ -385,7 +395,10 @@
       "noAds": "No ads",
       "longerMemory": "Longer, sharper memory",
       "priorityVoice": "Priority voice replies",
-      "saveMore": "Save 17% vs monthly"
+      "saveMore": "Save 17% vs monthly",
+      "calls2h": "2 hours of live calls",
+      "calls8h": "8 hours of live calls",
+      "calls6h": "6 hours of live calls"
     },
     "restore": "Restore purchases",
     "costs": "What things cost",
@@ -624,8 +637,8 @@
     "step": "Step {{index}} of {{count}}"
   },
   "ledger": {
-    "title": "Shell history",
-    "open": "Shell history",
+    "title": "History",
+    "open": "Shells and call time history",
     "rule": "Free daily shells are spent first and expire at midnight. Shells you buy never expire.",
     "freeLeft_one": "{{count}} free shell left today",
     "freeLeft_other": "{{count}} free shells left today",
@@ -652,8 +665,16 @@
       "photoBooth": "Photo booth",
       "voiceClone": "Character voice",
       "other": "Other",
-      "someone": "a friend"
-    }
+      "someone": "a friend",
+      "trial": "Free call trial",
+      "membership": "Membership call time",
+      "call": "Call with {{name}}"
+    },
+    "tabShells": "Shells",
+    "tabCalls": "Call time",
+    "callLeft": "{{time}} of live calls left",
+    "callRule": "Every new account starts with a free 15-minute trial. Membership adds hours of calls.",
+    "emptyCalls": "No calls yet"
   },
   "closeness": {
     "title": "How closeness works",

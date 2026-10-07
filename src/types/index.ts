@@ -191,6 +191,9 @@ export type LedgerReason =
   | 'date'
   | 'photoBooth'
   | 'voiceClone'
+  | 'trial'
+  | 'membership'
+  | 'call'
   | 'other';
 
 /** One line in the shell history. Positive amounts are credits. */
@@ -200,6 +203,8 @@ export interface LedgerEntry {
   amount: number;
   reason: LedgerReason;
   characterId?: string;
+  /** Shells by default; call time is booked in seconds */
+  unit?: 'shells' | 'seconds';
 }
 
 export interface Wallet {
@@ -209,6 +214,8 @@ export interface Wallet {
    * whatever is left expires at midnight; bought shells never expire.
    */
   free?: { day: string; amount: number };
+  /** Live-call time left, in seconds. Separate from shells. */
+  callSeconds?: number;
   /** Photo Booth currency */
   film: number;
   isMember: boolean;
@@ -227,6 +234,8 @@ export interface User {
   birthYear?: number;
   /** Set when the first-launch flow is finished; until then the app opens on it. */
   onboardedAt?: string;
+  /** The free-trial call note was shown once */
+  callIntroSeen?: boolean;
 }
 
 /** Once-a-day bookkeeping: login reward, greetings, calls, ads, wheel. */
@@ -284,4 +293,6 @@ export interface MembershipPlan {
   /** i18n keys under `store.perks` */
   perks: string[];
   highlight?: boolean;
+  /** Live-call minutes added with each purchase */
+  callMinutes?: number;
 }

@@ -84,7 +84,15 @@
     Level-up oynasi faqat yangi bosqichda chiqadi. Personaj sozlamalarida munosabat kartasi (daraja, progress,
     yorliq tanlash), kontaktlarda va sozlamalarda "How closeness works" oynasi (`closeness-sheet.tsx`).
     Store v5 migratsiyasi darajalarni intimacy'dan qayta hisoblaydi. Date ssenariylari darajalari 1/3/6/10/16.
-  - Navbat: F6 qo'ng'iroq daqiqalari (15 daqiqa sinov), F9 kalendar va eslatma.
+  - **F6 Qo'ng'iroqlar — kodda tayyor** (BIMOBIMO #8, #29, #40, #46):
+    - qo'ng'iroq vaqti alohida balans: `wallet.callSeconds`; onboarding'da 15 daqiqa sinov (`CALL_TRIAL_SECONDS`),
+      obunalar 2/8/6 soat qo'shadi (`membershipPlans[].callMinutes`); store v6 eski foydalanuvchilarga sinov beradi;
+    - qo'ng'iroq ekrani "Live call · 14:57 left", vaqt tugasa o'zi yakunlanadi, balans 0 bo'lsa "Get more call time";
+    - chatdagi qo'ng'iroq tugmasi birinchi marta (yoki vaqt tugaganda) sinov haqida oyna ochadi (`user.callIntroSeen`);
+    - tarix ekrani ikki bo'limli: Shells | Call time (`LedgerEntry.unit = 'seconds'`);
+    - javob berilmagan qo'ng'iroqdan keyin personaj chatga yozadi (`missedCallLines`); vaqt bo'lmasa personaj
+      qo'ng'iroq qilmaydi.
+  - Navbat: F9 kalendar va eslatma (#49-#55), F10 bepul sovg'alar (taklif kodi +50, ulashish +6).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

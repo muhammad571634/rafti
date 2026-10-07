@@ -247,6 +247,13 @@ export const cannedReplies = [
   'Fine, fine, you win this round. What else?',
 ];
 
+/** What they text after a call you did not pick up. */
+export const missedCallLines = [
+  'You did not pick up... I just wanted to hear your voice for a minute.',
+  'Called you. No answer. Should I be worried, or are you just busy?',
+  'Missed you on the phone. Call me back when you can?',
+];
+
 /** "Say Hi & Goodnight": what they send first when you open the app. */
 export const morningGreetings = [
   'Morning~ Did you sleep okay? Eat something before you run out the door.',

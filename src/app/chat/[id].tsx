@@ -13,6 +13,7 @@ import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, Voice
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import {
+  Button,
   ShellBadge,
   CharacterAvatar,
   Divider,
@@ -24,6 +25,7 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
+import { callClock, shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
 import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
@@ -80,6 +82,10 @@ export default function ChatRoomScreen() {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
+  const [callIntro, setCallIntro] = useState(false);
+  const callSeconds = useAppStore((s) => s.wallet.callSeconds ?? 0);
+  const callIntroSeen = useAppStore((s) => !!s.user.callIntroSeen);
+  const markCallIntroSeen = useAppStore((s) => s.markCallIntroSeen);
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
@@ -194,6 +200,12 @@ export default function ChatRoomScreen() {
   };
 
   const name = displayName(character, relationship);
+
+  // The first call explains the free trial; with no time left the same sheet says so.
+  const startCall = () => {
+    if (!callIntroSeen || callSeconds <= 0) return setCallIntro(true);
+    router.push(`/call/${character.id}`);
+  };
   const streak = relationship?.streakDays ?? 0;
   const dark = !!wallpaper?.dark;
 
@@ -237,7 +249,7 @@ export default function ChatRoomScreen() {
           dot={missedToday}
           style={styles.headerIcon}
           accessibilityLabel={t('a11y.call')}
-          onPress={() => router.push(`/call/${character.id}`)}
+          onPress={startCall}
         />
         <IconButton
           icon="menu"
@@ -315,6 +327,47 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+
+      <Sheet visible={callIntro} onClose={() => setCallIntro(false)}>
+        <View style={styles.callIntro}>
+          <View style={styles.callIntroIcon}>
+            <Ionicons name="call" size={28} color={colors.brandText} />
+          </View>
+          <Txt variant="h3" center>
+            {callSeconds > 0 ? t('call.introTitle') : t('call.emptyTitle')}
+          </Txt>
+          <Txt variant="body" color={colors.textSecondary} center>
+            {callSeconds > 0
+              ? t('call.introBody', { name: shortName(name), time: callClock(callSeconds) })
+              : t('call.emptyBody', { name: shortName(name) })}
+          </Txt>
+        </View>
+        <View style={styles.callIntroActions}>
+          {callSeconds > 0 ? (
+            <Button
+              label={t('call.introCall')}
+              size="lg"
+              full
+              onPress={() => {
+                markCallIntroSeen();
+                setCallIntro(false);
+                router.push(`/call/${character.id}`);
+              }}
+            />
+          ) : null}
+          <Button
+            label={t('call.introMember')}
+            variant={callSeconds > 0 ? 'ghost' : 'primary'}
+            size={callSeconds > 0 ? 'md' : 'lg'}
+            full
+            onPress={() => {
+              markCallIntroSeen();
+              setCallIntro(false);
+              router.push('/store/shell');
+            }}
+          />
+        </View>
+      </Sheet>
 
       <Sheet visible={!!menu} onClose={() => setMenu(null)}>
         {menu ? (
@@ -425,6 +478,17 @@ function SpendPulse({ shells }: { shells: number }) {
 
 const styles = StyleSheet.create({
   dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
+  callIntro: { alignItems: 'center', gap: space.sm, paddingTop: space.sm },
+  callIntroIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySofter,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.sm,
+  },
+  callIntroActions: { gap: space.sm, marginTop: space.xl },
   dayChip: {
     paddingHorizontal: space.md,
     paddingVertical: space.xs,

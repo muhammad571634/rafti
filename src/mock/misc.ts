@@ -33,15 +33,16 @@ export const shellPacks: ShellPack[] = [
 ];
 
 export const membershipPlans: MembershipPlan[] = [
-  { id: 'basic', price: '$9.99', days: 30, perks: ['unlimitedChat', 'noAds'] },
+  { id: 'basic', price: '$9.99', days: 30, perks: ['unlimitedChat', 'noAds', 'calls2h'], callMinutes: 120 },
   {
     id: 'pro',
     price: '$29.99',
     days: 30,
-    perks: ['unlimitedChat', 'noAds', 'longerMemory', 'priorityVoice'],
+    perks: ['unlimitedChat', 'noAds', 'calls8h', 'longerMemory', 'priorityVoice'],
+    callMinutes: 480,
     highlight: true,
   },
-  { id: 'quarterly', price: '$24.99', days: 90, perks: ['unlimitedChat', 'noAds', 'saveMore'] },
+  { id: 'quarterly', price: '$24.99', days: 90, perks: ['unlimitedChat', 'noAds', 'calls6h', 'saveMore'], callMinutes: 360 },
 ];
 
 /**
