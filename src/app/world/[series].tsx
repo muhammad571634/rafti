@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { CHARACTER_ROW_AVATAR, CharacterRow } from '@/components/character-row';
-import { Divider, EmptyState, Header, Screen, Txt } from '@/components/ui';
+import { CharacterRow } from '@/components/character-row';
+import { EmptyState, Header, Screen, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
@@ -38,16 +38,14 @@ export default function WorldScreen() {
             <Stat icon="people" value={people.length} label={t('find.characters')} />
             <Stat icon="call" value={voices} label={t('find.canCall')} />
           </View>
-          {people.map((character, i) => (
-            <View key={character.id}>
-              {i > 0 ? <Divider inset={space.lg + CHARACTER_ROW_AVATAR + space.md} /> : null}
-              <CharacterRow
-                character={character}
-                isFriend={friendIds.has(character.id)}
-                onOpen={() => router.push(`/character/${character.id}`)}
-                onAdd={() => addFriend(character.id)}
-              />
-            </View>
+          {people.map((character) => (
+            <CharacterRow
+              key={character.id}
+              character={character}
+              isFriend={friendIds.has(character.id)}
+              onOpen={() => router.push(`/character/${character.id}`)}
+              onAdd={() => addFriend(character.id)}
+            />
           ))}
         </ScrollView>
       )}

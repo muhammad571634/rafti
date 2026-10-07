@@ -28,6 +28,7 @@ export function CharacterRow({
   return (
     <View style={styles.row}>
       <ListRow
+        size="large"
         title={character.name}
         subtitle={character.bio}
         left={

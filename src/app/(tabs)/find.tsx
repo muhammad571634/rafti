@@ -11,10 +11,9 @@ import {
   type NativeSyntheticEvent,
 } from 'react-native';
 
-import { CHARACTER_ROW_AVATAR as AVATAR, CharacterRow } from '@/components/character-row';
+import { CharacterRow } from '@/components/character-row';
 import {
   Chip,
-  Divider,
   EmptyState,
   IconButton,
   PressableScale,
@@ -25,7 +24,7 @@ import {
 } from '@/components/ui';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, CharacterCategory, CharacterGender } from '@/types';
 
 type Tab = CharacterCategory | 'all';
@@ -37,8 +36,9 @@ const WHO: Who[] = ['everyone', 'male', 'female'];
 const PAGE = 3;
 
 /**
- * Discovery: each world is a card of three, swiped page by page, with "›" for the
- * whole world. A search drops the cards and lists every match across worlds.
+ * Discovery: each world is a bold heading with "›" for the whole world, then its
+ * characters three at a time, swiped page by page. No cards or lines: plain rows on
+ * the canvas, like Today. A search lists every match across worlds.
  */
 export default function FindScreen() {
   const { t } = useTranslation();
@@ -149,17 +149,14 @@ export default function FindScreen() {
           contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.huge }}>
           {q ? (
             <>
-              <SectionLabel title={t('find.results', { count: results.length })} />
-              {results.map((character, i) => (
-                <View key={character.id}>
-                  {i > 0 ? <Divider inset={space.lg + AVATAR + space.md} /> : null}
-                  {row(character)}
-                </View>
+              <SectionLabel tone="title" title={t('find.results', { count: results.length })} />
+              {results.map((character) => (
+                <View key={character.id}>{row(character)}</View>
               ))}
             </>
           ) : (
             groups.map((group) => (
-              <WorldCard
+              <WorldSection
                 key={group.series}
                 group={group}
                 row={row}
@@ -173,8 +170,8 @@ export default function FindScreen() {
   );
 }
 
-/** One world: its name with "›", then pages of three characters and the page dots. */
-function WorldCard({
+/** One world: its name as a heading with "›", then pages of three characters and the page dots. */
+function WorldSection({
   group,
   row,
   onOpen,
@@ -186,7 +183,7 @@ function WorldCard({
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [page, setPage] = useState(0);
-  const pageW = width - space.lg * 2;
+  const pageW = width;
 
   const pages = useMemo(() => {
     const out: Character[][] = [];
@@ -198,13 +195,13 @@ function WorldCard({
     setPage(Math.round(e.nativeEvent.contentOffset.x / pageW));
 
   return (
-    <View style={styles.card}>
+    <View style={styles.world}>
       <PressableScale
-        style={styles.cardHead}
+        style={styles.worldHead}
         scaleTo={0.98}
         accessibilityLabel={t('find.openWorld', { world: group.series })}
         onPress={onOpen}>
-        <Txt variant="h3" style={styles.title} lines={1}>
+        <Txt variant="h2" accessibilityRole="header" style={styles.title} lines={1}>
           {group.series}
         </Txt>
         <Txt variant="smallStrong" color={colors.textMuted}>
@@ -222,11 +219,8 @@ function WorldCard({
         scrollEventThrottle={64}>
         {pages.map((list, p) => (
           <View key={p} style={{ width: pageW }}>
-            {list.map((character, i) => (
-              <View key={character.id}>
-                {i > 0 ? <Divider inset={space.lg + AVATAR + space.md} /> : null}
-                {row(character)}
-              </View>
+            {list.map((character) => (
+              <View key={character.id}>{row(character)}</View>
             ))}
           </View>
         ))}
@@ -254,7 +248,8 @@ const styles = StyleSheet.create({
   title: { flex: 1 },
   search: { marginHorizontal: space.lg, marginTop: space.sm },
   who: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, marginTop: space.md },
-  tabsWrap: { borderBottomWidth: 1, borderBottomColor: colors.border, marginTop: space.sm },
+  // Only the active tab is underlined; no full-width rule under the row.
+  tabsWrap: { marginTop: space.sm },
   tabs: { paddingHorizontal: space.lg, gap: space.xl },
   tab: {
     minHeight: 44,
@@ -263,22 +258,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: { borderBottomColor: colors.text },
-  card: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    paddingBottom: space.sm,
-    borderRadius: radius.xl,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
-  cardHead: {
+  world: { paddingTop: space.xl },
+  worldHead: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
     paddingHorizontal: space.lg,
-    paddingTop: space.lg,
     paddingBottom: space.xs,
   },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingTop: space.xs, paddingBottom: space.xs },
