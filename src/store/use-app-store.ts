@@ -4,6 +4,7 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
+import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
   AD_REWARD,
@@ -87,6 +88,7 @@ import type {
   Relationship,
   ScheduleItem,
   SecretNote,
+  MessageReport,
   User,
   Wallet,
 } from '@/types';
@@ -251,6 +253,15 @@ interface AppState {
   /** The one-time note about the free call trial has been shown. */
   markCallIntroSeen: () => void;
 
+  /* safety */
+  reports: MessageReport[];
+  /** Characters the user blocked: gone from chats and Find, never reach out. */
+  blockedIds: string[];
+  reportMessage: (conversationId: string, messageId: string, reason: ReportReason) => void;
+  /** Ends the bond (chat, memories, plans, moments) and hides the character. */
+  blockCharacter: (characterId: string) => void;
+  unblockCharacter: (characterId: string) => void;
+
   /* profile */
   updateProfile: (patch: ProfilePatch) => void;
   /** Wipes everything on this device and starts over at onboarding. */
@@ -310,6 +321,8 @@ type PersistedKeys =
   | 'schedules'
   | 'boardPosts'
   | 'dates'
+  | 'reports'
+  | 'blockedIds'
   | 'daily'
   | 'settings';
 
@@ -429,6 +442,8 @@ export const useAppStore = create<AppState>()(
       schedules: seedSchedules,
       boardPosts: [],
       dates: [],
+      reports: [],
+      blockedIds: [],
       daily: initialDaily,
       settings: initialSettings,
 
@@ -481,6 +496,19 @@ export const useAppStore = create<AppState>()(
           get().addMemory(conversation.characterId, `${plan.title} - ${plan.when}.`, 'chat');
           addMoment(set, conversation.characterId, 'plan', { title: plan.title });
           reply = scheduleAck(plan.title, plan.when, !!plan.time);
+        }
+
+        // A crisis message: a warm reply in voice, then the helpline card under it.
+        if (detectCrisis(trimmed)) {
+          reply = pick(crisisReplies);
+          appendMessage(set, get, conversationId, {
+            id: uid('m'),
+            conversationId,
+            author: 'them',
+            kind: 'system',
+            card: 'helpline',
+            createdAt: new Date().toISOString(),
+          });
         }
 
         scheduleReply(set, get, conversationId, { text: reply, gain: INTIMACY.text });
@@ -954,6 +982,49 @@ export const useAppStore = create<AppState>()(
 
       markCallIntroSeen: () => set((s) => ({ user: { ...s.user, callIntroSeen: true } })),
 
+      /* ── safety ───────────────────────────────────────────────────────── */
+
+      reportMessage: (conversationId, messageId, reason) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const message = (get().messages[conversationId] ?? []).find((m) => m.id === messageId);
+        if (!conversation || !message) return;
+        // The server takes these with the surrounding chat for review.
+        set((s) => ({
+          reports: [
+            ...s.reports,
+            {
+              id: uid('rep'),
+              conversationId,
+              characterId: conversation.characterId,
+              messageId,
+              text: message.text,
+              reason,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        }));
+      },
+
+      blockCharacter: (characterId) =>
+        set((s) => {
+          const gone = new Set(s.conversations.filter((c) => c.characterId === characterId).map((c) => c.id));
+          const { [characterId]: _bond, ...relationships } = s.relationships;
+          return {
+            blockedIds: s.blockedIds.includes(characterId) ? s.blockedIds : [...s.blockedIds, characterId],
+            conversations: s.conversations.filter((c) => !gone.has(c.id)),
+            messages: Object.fromEntries(Object.entries(s.messages).filter(([id]) => !gone.has(id))),
+            relationships,
+            memories: s.memories.filter((m) => m.characterId !== characterId),
+            moments: s.moments.filter((m) => m.characterId !== characterId),
+            schedules: s.schedules.filter((x) => x.characterId !== characterId),
+            notes: s.notes.filter((n) => n.characterId !== characterId),
+            settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
+          };
+        }),
+
+      unblockCharacter: (characterId) =>
+        set((s) => ({ blockedIds: s.blockedIds.filter((id) => id !== characterId) })),
+
       /* ── profile ──────────────────────────────────────────────────────── */
 
       updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
@@ -1326,6 +1397,8 @@ export const useAppStore = create<AppState>()(
         schedules: s.schedules,
         boardPosts: s.boardPosts,
         dates: s.dates,
+        reports: s.reports,
+        blockedIds: s.blockedIds,
         daily: s.daily,
         settings: s.settings,
       }),

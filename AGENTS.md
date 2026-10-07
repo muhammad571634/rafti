@@ -14,7 +14,9 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
    `#N` refs listed for the current flow in `rafti-research/spec/design-plan.md`.
 
 Rules:
-- Reply to the user in Uzbek; code comments in English.
+- Reply to the user in Uzbek. Everything in the repo that code or an AI reads is in
+  English: code, comments, identifiers, commit messages, and the docs written for agents
+  (`docs/*.md` except notes the user asked for in Uzbek).
 - Prototype (image or HTML mockup) first; write code only after the user approves.
 - Change only what the user asked. Do not remove animations on your own.
 - Never redesign or rewrite a screen the user already approved (see `HANDOFF.md`, e.g. the

@@ -18,8 +18,12 @@ export default function WorldScreen() {
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
   const addFriend = useAppStore((s) => s.addFriend);
+  const blockedIds = useAppStore((s) => s.blockedIds);
 
-  const people = useMemo(() => characters.filter((c) => (c.series ?? 'Other') === series), [characters, series]);
+  const people = useMemo(
+    () => characters.filter((c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id)),
+    [characters, series, blockedIds],
+  );
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
   const voices = people.filter((c) => c.voiceReady).length;
 

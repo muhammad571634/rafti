@@ -9,6 +9,7 @@ import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleShee
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
@@ -96,6 +97,10 @@ export default function ChatRoomScreen() {
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
+  const reportMessage = useAppStore((s) => s.reportMessage);
+  /** The message being reported; `reported` flips the sheet to a short thank-you. */
+  const [reporting, setReporting] = useState<Message | null>(null);
+  const [reported, setReported] = useState(false);
   const openMenu = useCallback((message: Message) => setMenu(message), []);
 
   // Replies that land while this chat is on screen are read, not unread.
@@ -406,6 +411,17 @@ export default function ChatRoomScreen() {
                 }}
               />
             ) : null}
+            {menu.author === 'them' ? (
+              <ListRow
+                title={t('safety.report')}
+                left={<Ionicons name="flag-outline" size={21} color={colors.text} />}
+                onPress={() => {
+                  setReported(false);
+                  setReporting(menu);
+                  setMenu(null);
+                }}
+              />
+            ) : null}
             <ListRow
               title={t('chat.deleteMessage')}
               left={<Ionicons name="trash-outline" size={21} color={colors.danger} />}
@@ -416,6 +432,27 @@ export default function ChatRoomScreen() {
             />
           </>
         ) : null}
+      </Sheet>
+
+      <Sheet
+        visible={!!reporting}
+        onClose={() => setReporting(null)}
+        title={reported ? t('safety.reportThanks') : t('safety.reportTitle')}>
+        {reported ? (
+          <Button label={t('safety.done')} size="lg" full onPress={() => setReporting(null)} />
+        ) : (
+          REPORT_REASONS.map((reason) => (
+            <ListRow
+              key={reason}
+              title={t(`safety.reasons.${reason}`)}
+              chevron
+              onPress={() => {
+                if (reporting) reportMessage(conversation.id, reporting.id, reason);
+                setReported(true);
+              }}
+            />
+          ))
+        )}
       </Sheet>
     </Screen>
   );

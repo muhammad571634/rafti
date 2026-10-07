@@ -4,11 +4,13 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
+import { SUPPORT_EMAIL } from '@/ai/safety';
 import { CompletionMeter } from '@/components/profile/completion-meter';
 import {
   Button,
+  CharacterAvatar,
   ClayIcon,
   Divider,
   Header,
@@ -62,9 +64,14 @@ export default function ProfileScreen() {
   const settings = useAppStore((s) => s.settings);
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
+  const blockedIds = useAppStore((s) => s.blockedIds);
+  const characters = useAppStore((s) => s.characters);
+  const unblockCharacter = useAppStore((s) => s.unblockCharacter);
+  const blocked = characters.filter((c) => blockedIds.includes(c.id));
 
   const [languageOpen, setLanguageOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [blockedOpen, setBlockedOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const code = inviteCodeFor(user);
@@ -203,6 +210,25 @@ export default function ProfileScreen() {
         {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}
 
         <SectionLabel title={t('profile.sectionAbout')} />
+        {blocked.length > 0 ? (
+          <>
+            <ListRow
+              title={t('safety.blocked')}
+              left={icon('ban-outline')}
+              meta={String(blocked.length)}
+              chevron
+              onPress={() => setBlockedOpen(true)}
+            />
+            <Divider inset={ROW_INSET} />
+          </>
+        ) : null}
+        <ListRow
+          title={t('safety.support')}
+          left={icon('mail-outline')}
+          chevron
+          onPress={() => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`)}
+        />
+        <Divider inset={ROW_INSET} />
         <ListRow title={t('profile.account')} left={icon('person-circle-outline')} />
         <Divider inset={ROW_INSET} />
         <ListRow title={t('profile.privacy')} left={icon('shield-checkmark-outline')} />
@@ -229,6 +255,31 @@ export default function ProfileScreen() {
         <View style={styles.deleteActions}>
           <Button label={t('profile.deleteConfirm')} variant="danger" size="lg" full onPress={confirmDelete} />
           <Button label={t('profile.cancel')} variant="ghost" size="lg" full onPress={() => setDeleteOpen(false)} />
+        </View>
+      </Sheet>
+
+      <Sheet visible={blockedOpen} onClose={() => setBlockedOpen(false)} title={t('safety.blocked')}>
+        <View style={styles.sheetList}>
+          {blocked.map((character, index) => (
+            <View key={character.id}>
+              {index > 0 ? <Divider inset={space.lg} /> : null}
+              <ListRow
+                title={character.name}
+                left={<CharacterAvatar character={character} size={ROW_ICON} />}
+                right={
+                  <Button
+                    label={t('safety.unblock')}
+                    size="sm"
+                    variant="secondary"
+                    onPress={() => {
+                      unblockCharacter(character.id);
+                      if (blocked.length === 1) setBlockedOpen(false);
+                    }}
+                  />
+                }
+              />
+            </View>
+          ))}
         </View>
       </Sheet>
 

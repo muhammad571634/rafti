@@ -280,7 +280,8 @@
     "chatAnimation": "Chat animations",
     "sectionChat": "This chat",
     "sectionCharacter": "Character",
-    "sectionManage": "Manage"
+    "sectionManage": "Manage",
+    "block": "Block"
   },
   "search": {
     "title": "Search messages",
@@ -867,5 +868,26 @@
     "save": "Save",
     "photo": "Change photo",
     "photoTooLarge": "That photo is too large"
+  },
+  "safety": {
+    "report": "Report",
+    "reportTitle": "What's wrong?",
+    "reportThanks": "Thanks, we'll take a look",
+    "done": "Done",
+    "reasons": {
+      "harmful": "Harmful or upsetting",
+      "sexual": "Too sexual",
+      "offCharacter": "Not like them",
+      "other": "Something else"
+    },
+    "helplineTitle": "Need to talk to someone now?",
+    "helplineAction": "Find a helpline",
+    "block": "Block",
+    "blockTitle": "Block {{name}}?",
+    "blockBody": "Your chat, memories and plans with them are deleted. They won't appear or reach out.",
+    "blocked": "Blocked",
+    "unblock": "Unblock",
+    "support": "Support",
+    "ai": "AI"
   }
 }

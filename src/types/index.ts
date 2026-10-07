@@ -71,6 +71,19 @@ export interface Message {
   reaction?: string;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
+  /** A system card drawn by the chat instead of a bubble: the helpline card after a crisis message. */
+  card?: 'helpline';
+}
+
+/** A message the user reported; the server's review queue gets it with its context. */
+export interface MessageReport {
+  id: string;
+  conversationId: string;
+  characterId: string;
+  messageId: string;
+  text?: string;
+  reason: 'harmful' | 'sexual' | 'offCharacter' | 'other';
+  createdAt: string;
 }
 
 export interface Conversation {

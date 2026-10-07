@@ -2,11 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
-import { Anim, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
+import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
@@ -40,6 +41,7 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const mine = message.author === 'me';
 
+  if (message.card === 'helpline') return <HelplineCard />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -201,6 +203,26 @@ function SystemLine({ text }: { text: string }) {
   );
 }
 
+/** Shown under a crisis message: never blocks the chat, one tap to local helplines. */
+function HelplineCard() {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.system}>
+      <View style={styles.helpline}>
+        <Txt variant="title" center>
+          {t('safety.helplineTitle')}
+        </Txt>
+        <Button
+          label={t('safety.helplineAction')}
+          variant="secondary"
+          size="sm"
+          onPress={() => void Linking.openURL(HELPLINE_URL)}
+        />
+      </View>
+    </View>
+  );
+}
+
 function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () => void }) {
   const { t } = useTranslation();
   const missed = !!message.missed;
@@ -299,4 +321,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.85)',
   },
   callPill: { paddingHorizontal: space.md },
+  helpline: {
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.xl,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
 });

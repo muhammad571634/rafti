@@ -59,8 +59,13 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      o'zi yangilanadi. Rowan (`c_rowan`) birinchi bo'lib ulandi, sinov muvaffaqiyatli.
    - **Kontent qoidalari (18+):** [`docs/content-policy.md`](docs/content-policy.md) — ochiq, lekin chegaralari bor
      (romantika va kuchli xarakterlar ha; aniq jinsiy kontent "fade to black", voyaga yetmaganlar, real odamlar,
-     zo'ravonlikni romantika qilish yo'q). Qurish kerak: chatda Report, personajni bloklash, support havolasi,
-     inqiroz kartasi, profilda "AI" belgisi. Foydalanuvchi tasdig'ini kutmoqda.
+     zo'ravonlikni romantika qilish yo'q). Foydalanuvchi tasdiqladi va qurildi
+     (2026-10-07): chatda Report (sabablar oynasi, `reports`), personaj sozlamalarida Block (bog'lanishni o'chiradi,
+     Find'dan yashiradi; Profil → Blocked'da qaytarish), Profil → Support (`SUPPORT_EMAIL` — vaqtinchalik manzil,
+     haqiqiysini qo'yish kerak), inqiroz xabaridan keyin yordam liniyasi kartasi (`src/ai/safety.ts`), profilda "AI"
+     belgisi. LLM uchun qoidalar: `src/ai/rules.ts` (server keyin system promptga qo'yadi + moderatsiya).
+   - **Til qoidasi (foydalanuvchi, 2026-10-07):** kod, izohlar, commitlar va agentlar uchun hujjatlar faqat ingliz
+     tilida (AGENTS.md ga yozildi). Foydalanuvchiga javob o'zbekcha.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
 5. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
    ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy

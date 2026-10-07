@@ -43,7 +43,12 @@ const PAGE = 3;
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const characters = useAppStore((s) => s.characters);
+  const allCharacters = useAppStore((s) => s.characters);
+  const blockedIds = useAppStore((s) => s.blockedIds);
+  const characters = useMemo(
+    () => allCharacters.filter((c) => !blockedIds.includes(c.id)),
+    [allCharacters, blockedIds],
+  );
   const conversations = useAppStore((s) => s.conversations);
   const addFriend = useAppStore((s) => s.addFriend);
 

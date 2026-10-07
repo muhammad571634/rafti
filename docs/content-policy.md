@@ -1,9 +1,15 @@
 # Rafti content rules (18+)
 
-Status: draft for the user's OK (2026-10-07). This is the rulebook for the characters'
-behaviour (the server prompt will be built from it), for user-created characters
-(F15), and for the store review. Check Apple's and Google's current guidelines before
-submitting; they change.
+Status: **approved by the user** (2026-10-07). This is the rulebook for the characters'
+behaviour, for user-created characters (F15), and for the store review. The model-facing
+version is `src/ai/rules.ts` (`CHARACTER_RULES`, `buildCharacterPrompt`, `SAFETY_LAYERS`);
+keep the two in step. Check Apple's and Google's current guidelines before submitting;
+they change.
+
+**Will the model follow it?** The app has no model yet (mock replies). When the server
+calls Claude, `buildCharacterPrompt` goes into the system prompt. Models follow a system
+prompt well but not perfectly, so the server also classifies each user message and each
+reply, and every report goes to review (see `SAFETY_LAYERS`).
 
 ## The idea in one line
 
@@ -71,11 +77,13 @@ real harm or a store rejection is on the other side.
 
 | Control | Where | Status |
 | --- | --- | --- |
-| Report a message (wrong, harmful, sexual, other) | chat long-press menu → Report | to build |
-| Block / hide a character | character settings | to build |
+| Report a message (harmful, too sexual, not like them, other) | chat long-press menu → Report (`reports` in the store) | done |
+| Block a character (ends the bond, hides them, no reaching out) | character settings → Block; undo in Profile → Blocked | done |
 | Reset the relationship, clear the chat | character settings | exists |
 | Delete account | Profile → Delete account | exists (F14) |
-| Contact / support link | Profile → About | to build |
+| Contact / support link | Profile → Support (`SUPPORT_EMAIL`, placeholder address) | done |
+| Helpline card after a crisis message | chat (`detectCrisis`, `HELPLINE_URL`) | done |
+| "AI" mark | character profile, next to the name | done |
 
 ## User-created characters (F15, public catalogue later)
 

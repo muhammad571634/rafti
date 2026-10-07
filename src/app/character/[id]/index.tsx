@@ -78,9 +78,17 @@ export default function CharacterProfileScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.hero}>
           <CharacterAvatar character={character} size={92} />
-          <Txt variant="h2" center style={styles.name}>
-            {displayName(character, relationship)}
-          </Txt>
+          <View style={styles.nameRow}>
+            <Txt variant="h2" center style={styles.shrink}>
+              {displayName(character, relationship)}
+            </Txt>
+            {/* Store rule: an AI character is marked as one. */}
+            <View style={styles.aiMark} accessibilityLabel={t('safety.ai')}>
+              <Txt variant="tiny" color={colors.textSecondary}>
+                {t('safety.ai')}
+              </Txt>
+            </View>
+          </View>
           <Txt variant="small" color={colors.textMuted} center style={styles.handle}>
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
@@ -215,8 +223,16 @@ function BondCard({ relationship }: { relationship: Relationship }) {
 const styles = StyleSheet.create({
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
   hero: { alignItems: 'center', paddingTop: space.sm },
-  name: { marginTop: space.md },
   handle: { marginTop: space.xxs },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
+  shrink: { flexShrink: 1 },
+  aiMark: {
+    paddingHorizontal: space.sm,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
   voice: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm },
   voiceDot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.bond },
   bio: { marginTop: space.md },

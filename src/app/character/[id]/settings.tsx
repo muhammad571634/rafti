@@ -36,7 +36,8 @@ type ActionKey =
   | 'searchHistory'
   | 'changeBackground'
   | 'clearChat'
-  | 'reset';
+  | 'reset'
+  | 'block';
 
 /** Grouped like Profile: what you do in this chat, who they are, then the destructive two. */
 // Places you go get clay icons; the two destructive rows stay plain line icons.
@@ -62,6 +63,7 @@ const GROUPS: { title: string; actions: { key: ActionKey; clay?: ClayIconName; i
     actions: [
       { key: 'clearChat', icon: 'trash-outline' },
       { key: 'reset', icon: 'refresh-outline' },
+      { key: 'block', icon: 'ban-outline' },
     ],
   },
 ];
@@ -93,6 +95,7 @@ export default function CharacterSettingsScreen() {
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);
   const clearChat = useAppStore((s) => s.clearChat);
   const resetRelationship = useAppStore((s) => s.resetRelationship);
+  const blockCharacter = useAppStore((s) => s.blockCharacter);
   const setNickname = useAppStore((s) => s.setNickname);
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
   const setSetting = useAppStore((s) => s.setSetting);
@@ -142,6 +145,18 @@ export default function CharacterSettingsScreen() {
           t('characterSettings.resetConfirm'),
           t('characterSettings.reset'),
           () => resetRelationship(character.id),
+          t('common.cancel'),
+        );
+      case 'block':
+        return confirm(
+          t('safety.blockTitle', { name: shortName(name) }),
+          t('safety.blockBody'),
+          t('safety.block'),
+          () => {
+            blockCharacter(character.id);
+            if (router.canDismiss()) router.dismissAll();
+            router.replace('/(tabs)/chat');
+          },
           t('common.cancel'),
         );
     }
