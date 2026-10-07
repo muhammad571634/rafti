@@ -520,6 +520,49 @@ def cut_icon(cell, glass=False):
 GLASS_ICONS = {'jar', 'hourglass'}
 
 
+# How grey a pixel may be and still count as backdrop or shadow. Mint and lilac clay is
+# nearly grey too, so the default is tight; the heart's shadow picked up its pink and
+# needs more room (it has no mint to lose).
+SHADOW_CHROMA = {'tab-us': 24}
+
+
+def cut_single(img, max_chroma=14):
+    """
+    One object on light grey (a single-icon render). The backdrop and its soft contact
+    shadow are both grey and smooth, so the flood takes every low-colour, smooth pixel it
+    can reach from the border; the pastel object stops it, and so do the hard edges of
+    grey parts (a pin's metal point).
+    """
+    a = np.asarray(img).astype(int)
+    h, w, _ = a.shape
+    chroma = a.max(axis=2) - a.min(axis=2)
+    smooth = np.asarray(img.filter(ImageFilter.BoxBlur(3))).astype(int)
+    flat = np.abs(a - smooth).max(axis=2) < 7
+    candidate = (chroma < max_chroma) & (a.min(axis=2) > 120) & flat
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = drop_edge_scraps(fill_holes(~reach))
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    alpha = alpha.filter(ImageFilter.GaussianBlur(0.9))
+    out = img.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
 def muted(icon):
     """The resting tab: the same art in soft grey, so only the current tab has colour."""
     grey = icon.convert('L').point(lambda v: round(105 + v * 0.45))
@@ -548,7 +591,7 @@ def build_icons_3d():
     # assets/raw/icons-3d/<name>.png replace the sheet cut of the same name.
     for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'icons-3d', '*.png'))):
         name = os.path.splitext(os.path.basename(raw))[0]
-        icon = fit(cut_icon(Image.open(raw).convert('RGB'), glass=name in GLASS_ICONS), 192)
+        icon = fit(cut_single(Image.open(raw).convert('RGB'), SHADOW_CHROMA.get(name, 14)), 192)
         save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
         if name not in names:
             names.append(name)
