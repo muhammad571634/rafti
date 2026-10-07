@@ -504,8 +504,7 @@
   },
   "dating": {
     "title": "Dating",
-    "subtitle": "Spend a scene together and see where it goes.",
-    "locked": "Reach level {{level}} to unlock",
+    "locked": "Reach level {{level}}",
     "scenarios": {
       "aquarium": "Aquarium at closing time",
       "festival": "Summer festival",
@@ -513,7 +512,21 @@
       "lateStudio": "Late night in the studio",
       "rooftop": "Rooftop, no stars"
     },
-    "pick": "Pick a date"
+    "level": "Lv {{level}}",
+    "places": {
+      "rainyWalk": "Rainy street",
+      "aquarium": "Aquarium",
+      "festival": "Summer festival",
+      "lateStudio": "Late studio",
+      "rooftop": "Rooftop"
+    },
+    "choosePartner": "Who are you going with?",
+    "album": "Our dates · {{count}}",
+    "rounds": "rounds",
+    "closeness": "closeness",
+    "shells": "shells",
+    "start": "Start date with {{name}}",
+    "noFriends": "Start a chat first"
   },
   "photoBooth": {
     "title": "Photo Booth",
@@ -763,5 +776,26 @@
     "lockedAt": "Lv {{level}}",
     "labelTitle": "What are you to {{name}}?",
     "labelHint": "Only labels your stage has unlocked can be picked."
+  },
+  "date": {
+    "caption": "{{place}}, with {{name}}",
+    "ending": {
+      "sweet": "Sweet ending",
+      "warm": "Warm ending",
+      "funny": "Funny ending"
+    },
+    "diaryTomorrow": "Diary tomorrow",
+    "share": "Share",
+    "shareMessage": "Went to the {{place}} with {{name}} on Rafti.",
+    "backToChat": "Back to chat",
+    "next": "Next",
+    "finish": "See our polaroid",
+    "round": "Round {{n}} of {{total}}",
+    "leave": "Leave",
+    "leaveTitle": "Leave {{name}} here?",
+    "leaveHint": "No polaroid if you go now.",
+    "stay": "Stay",
+    "albumTitle": "Our dates",
+    "albumEmpty": "No dates yet"
   }
 }

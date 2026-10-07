@@ -45,15 +45,18 @@ import {
   planAddedLine,
   planFollowUp,
   boardReply,
+  afterDateLine,
   schedules as seedSchedules,
   secretNotePrompts,
   secretNotes as seedNotes,
   todayKey,
   wallet as seedWallet,
 } from '@/mock';
+import { dateEnding, datePlaceById, maxHearts } from '@/mock/dates';
 import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
+  DateRecord,
   BoardPost,
   BoardStyleId,
   CallRecord,
@@ -143,6 +146,8 @@ interface AppState {
   schedules: ScheduleItem[];
   /** Notes the user pinned on the message board, oldest first */
   boardPosts: BoardPost[];
+  /** Finished dates, newest first */
+  dates: DateRecord[];
   daily: DailyState;
   settings: AppSettings;
 
@@ -158,6 +163,8 @@ interface AppState {
   dailyReward: DailyRewardEvent | null;
   /** Shells just paid for a share; a small banner shows it and clears it. */
   shareReward: number | null;
+  /** The date that has been paid for and not finished yet; the date screen only plays this one. */
+  activeDate: { characterId: string; placeId: string } | null;
 
   /* chat */
   sendText: (conversationId: string, text: string) => SendResult;
@@ -229,7 +236,10 @@ interface AppState {
   markCallIntroSeen: () => void;
 
   /* modules */
-  startDate: (characterId: string, cost: number, levelRequired: number, title: string) => SpendResult;
+  /** Pays for a date at a place on the map; the rounds play on the date screen. */
+  beginDate: (characterId: string, placeId: string) => SpendResult;
+  /** Ends a date: closeness from the hearts won, a polaroid record, a moment and a text from them. */
+  finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   takePhoto: (characterId: string) => SpendResult;
 
   /* memories, moments, schedules */
@@ -266,6 +276,7 @@ type PersistedKeys =
   | 'moments'
   | 'schedules'
   | 'boardPosts'
+  | 'dates'
   | 'daily'
   | 'settings';
 
@@ -372,6 +383,7 @@ export const useAppStore = create<AppState>()(
       moments: seedMoments,
       schedules: seedSchedules,
       boardPosts: [],
+      dates: [],
       daily: initialDaily,
       settings: initialSettings,
 
@@ -382,6 +394,7 @@ export const useAppStore = create<AppState>()(
       incomingCall: null,
       dailyReward: null,
       shareReward: null,
+      activeDate: null,
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
@@ -930,27 +943,41 @@ export const useAppStore = create<AppState>()(
 
       /* ── modules ──────────────────────────────────────────────────────── */
 
-      startDate: (characterId, cost, levelRequired, title) => {
+      beginDate: (characterId, placeId) => {
+        const place = datePlaceById(placeId);
         const bond = get().relationships[characterId];
-        if (!bond || bond.level < levelRequired) return 'locked';
-        if (!get().spendShells(cost, 'date', characterId)) return 'noShells';
-
-        const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'them',
-          kind: 'system',
-          text: `\u{1F4CD} ${title}`,
-          createdAt: new Date().toISOString(),
-        });
-        get().addIntimacy(characterId, INTIMACY.date);
-        addMoment(set, characterId, 'dating', { title });
-        scheduleReply(set, get, conversationId, {
-          text: `So... ${title.toLowerCase()}. Just the two of us. Where do you want to start?`,
-          gain: 0,
-        });
+        if (!place || !bond || bond.level < place.levelRequired) return 'locked';
+        if (!get().spendShells(place.cost, 'date', characterId)) return 'noShells';
+        set({ activeDate: { characterId, placeId } });
         return 'ok';
+      },
+
+      finishDate: (characterId, placeId, hearts, title) => {
+        const place = datePlaceById(placeId);
+        const active = get().activeDate;
+        if (!place || active?.characterId !== characterId || active.placeId !== placeId) return null;
+        set({ activeDate: null });
+        const max = maxHearts(place);
+        const record: DateRecord = {
+          id: uid('date'),
+          characterId,
+          placeId,
+          title,
+          hearts,
+          maxHearts: max,
+          ending: dateEnding(hearts, max),
+          createdAt: new Date().toISOString(),
+        };
+        set((s) => ({ dates: [record, ...s.dates] }));
+        // Showing up is worth the base; every heart won on the way adds to it.
+        get().addIntimacy(characterId, INTIMACY.date + hearts);
+        // The 'dating' moment is what tomorrow's diary page is written from.
+        addMoment(set, characterId, 'dating', { title });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, themText(conversationId, afterDateLine(title, record.ending)), {
+          countUnread: true,
+        });
+        return record;
       },
 
       takePhoto: (characterId) => {
@@ -1183,6 +1210,7 @@ export const useAppStore = create<AppState>()(
         moments: s.moments,
         schedules: s.schedules,
         boardPosts: s.boardPosts,
+        dates: s.dates,
         daily: s.daily,
         settings: s.settings,
       }),

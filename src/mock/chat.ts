@@ -309,6 +309,14 @@ export function planFollowUp(title: string) {
   ]);
 }
 
+/** Texted a little after a date, in the mood of how it ended. */
+export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny') {
+  const place = title.toLowerCase();
+  if (ending === 'sweet') return `I keep replaying the ${place}. Can we go back already?`;
+  if (ending === 'warm') return `Thank you for the ${place}. I had a really good time.`;
+  return `Okay, the ${place} was chaos. Best kind of chaos. Rematch?`;
+}
+
 /** Their answer to a note you pinned on the message board. */
 export function boardReply(text: string) {
   const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;

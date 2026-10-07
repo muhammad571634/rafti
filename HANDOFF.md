@@ -4,8 +4,8 @@
 Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
 o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 
-1. **Hozirgi oqim: F11 Date.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F10 tayyor. F11 dan keyin F12, F13, F14, F15.
+1. **Hozirgi oqim: F12 Chat "+" o'yinlari.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F11 tayyor. F12 dan keyin F13, F14, F15.
 2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -21,11 +21,10 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F11 uchun boshlang'ich ma'lumot:**
-   - `src/app/dating.tsx` va `dateScenarios` (darajalar 1/3/6/10/16) bor; `startDate` store'da;
-   - qilinadi: joylar xaritasi, raundlar (tanlovlar), yakunda polaroid, kundalikda "date" sahifasi;
-     BIMOBIMO #9-#12, video A 13-21s. Polaroidni ulashish `shareForReward()` (`src/lib/share.ts`) orqali
-     kunlik +6 ga ulanadi; uchrashuv rejasi F9 kalendariga tushishi mumkin.
+4. **F12 uchun boshlang'ich ma'lumot:**
+   - chatdagi "+" menyusi `src/app/chat/[id].tsx` da (secret note, bedtime, date bor);
+   - qilinadi: juftlar kvizi, haqiqat yoki jasorat, kunlik qo'ng'iroq vaqti sozlamasi; BIMOBIMO #42-#48, video B 31s.
+     Kviz/o'yin natijasi F11 dagi kabi yaqinlik + moment + ertasi kundalik zanjiriga ulanadi.
 5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
    `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
    eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
@@ -166,7 +165,23 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     (Android oynani o'zi kichraytiradi, iOS'da `KeyboardAvoidingView`). Yozish maydoni bor har yangi sheet shu
     parametrni ishlatsin. `useKeyboardVisible()` (`src/hooks`) — klaviatura ochiqligida reja oynasi balandligini bo'shatadi.
   - Doskaga eslatma yuborilgach oldingi ekranga qaytiladi (`router.back()`), shunda typed routes xatosiga bog'liq emas.
-  - Navbat: F11 Date (xarita, raundlar, polaroid).
+  - **F11 Date — kodda tayyor** (BIMOBIMO #9-#12; prototip tasdiqlangan:
+    https://claude.ai/artifact/XQk64zfZuwBGR9vT8QPszv):
+    - `src/app/dating.tsx` — xarita: 5 joy (`src/mock/dates.ts`, `DATE_PLACES`: joy, emoji, narx, daraja, xaritadagi
+      o'rni, 5 raund × 3 javob, har javob 0-3 yurak). Dengiz, nuqtali yo'l, daraxtlar SVG bilan kodda. Daraja yetmasa
+      joy kulrang + qulf; bu sherik bilan borilgan joy yalpiz hoshiyali. Tepada sherik tanlash sheet'i va balans;
+      joy bosilsa oyna (raundlar, daraja, narx, "Start date with X");
+    - `src/app/date/[placeId].tsx` — raundlar: personaj hero rasmi, raund nuqtalari, yuraklar, sahna matni, 3 javob,
+      javobdan keyin personaj reaksiyasi va "Next"; oxirida polaroid (`src/components/date/polaroid.tsx`, Caveat),
+      yakun (sweet/warm/funny), Share (`shareForReward`, kunlik +6), Back to chat. ✕ "Leave X here?" so'raydi,
+      swipe-back o'chirilgan. Ekran faqat to'langan uchrashuvni o'ynaydi (`activeDate`, `beginDate` qo'yadi,
+      `finishDate` tozalaydi) — to'g'ridan-to'g'ri havola bepul o'ynatmaydi;
+    - `finishDate`: yaqinlik `INTIMACY.date + yuraklar`, `dates` (persist, `DateRecord`), `dating` moment (ertasi kundalik
+      sahifasi shundan), personaj chatda kayfiyatga qarab yozadi (`afterDateLine`);
+    - `src/app/date/album.tsx` — "Our dates": polaroidlar panjarasi;
+    - eski `dateScenarios` va `startDate` olib tashlandi (uchrashuv endi chatda emas, o'z ekranida).
+    - Qilinmadi: foydalanuvchilar yaratadigan mavzular (P3), joylar uchun rasm (hozir emoji tile).
+  - Navbat: F12 Chat "+" o'yinlari.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

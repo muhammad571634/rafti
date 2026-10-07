@@ -183,6 +183,18 @@ export interface ScheduleItem {
   source?: 'chat' | 'manual';
 }
 
+/** A finished date: it becomes a polaroid in "Our dates" and a diary page the next morning. */
+export interface DateRecord {
+  id: string;
+  characterId: string;
+  placeId: string;
+  title: string;
+  hearts: number;
+  maxHearts: number;
+  ending: 'sweet' | 'warm' | 'funny';
+  createdAt: string;
+}
+
 export type BoardStyleId = 'cloud' | 'gingham' | 'stripes' | 'heart' | 'kraft' | 'notebook' | 'pinned';
 
 /** A note the user pinned on the message board for one friend; they answer it in chat. */

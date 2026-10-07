@@ -15,6 +15,7 @@ export {
   planAddedLine,
   planFollowUp,
   boardReply,
+  afterDateLine,
 } from './chat';
 export { characterDiaryPages, diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {
@@ -33,7 +34,6 @@ export {
   backgroundsById,
   callHistory,
   chatBackgrounds,
-  dateScenarios,
   homeModules,
   isSurpriseDay,
   membershipPlans,
