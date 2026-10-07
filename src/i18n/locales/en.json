@@ -175,7 +175,13 @@
       "tooShort": "Hold a little longer"
     },
     "shellCost_one": "{{count}} shell",
-    "shellCost_other": "{{count}} shells"
+    "shellCost_other": "{{count}} shells",
+    "dayToday": "Today",
+    "dayYesterday": "Yesterday",
+    "copy": "Copy",
+    "deleteMessage": "Delete for me",
+    "react": "React with {{emoji}}",
+    "spent": "{{count}} shell spent"
   },
   "paywall": {
     "title": "Out of shells",

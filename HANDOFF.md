@@ -59,7 +59,13 @@
   - **F2 Home — kodda tayyor:** "Today" bo'limi hero kartadan keyin darhol turadi. Unda bugun yozilgan, hali
     o'qilmagan kundalik sahifalar ("Theo wrote about you", to'q sariq nuqta bilan), chatda aytilgan bugungi
     rejalar, maxfiy xatlar va g'ildirak bor. Home ochilganda navbatdagi kundalik sahifalar yoziladi.
-  - Navbat: F3 chat yadrosi (#33-#39), F5 hisob tarixi, F7 munosabat v2.
+  - **F3 Chat yadrosi — kodda tayyor** (BIMOBIMO #34-#39):
+    - javob 1-4 ta qisqa xabar bo'lib birma-bir keladi, oralarida "yozyapti" (`replyBursts`, `scheduleReply`);
+    - kun ajratgichlari: Today / Yesterday / sana;
+    - xabarni uzoq bosish menyusi: 6 reaksiya, Copy (`expo-clipboard`), Delete for me; reaksiya pufak burchagida;
+    - xabar yuborilganda chig'anoq belgisidan "-1" ko'tarilib yo'qoladi (narx ko'rinadi);
+    - ro'yxatdan o'tilgan kuni boshqa personajlar o'zi qo'ng'iroq qilmaydi (birinchi kun yangi do'stniki).
+  - Navbat: F4/F5 chig'anoq tugashi va hisob tarixi, F7 munosabat v2.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

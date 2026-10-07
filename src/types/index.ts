@@ -62,6 +62,8 @@ export interface Message {
   pending?: boolean;
   /** Rendered as a low-contrast bubble (the echo of what the character heard) */
   muted?: boolean;
+  /** The user's reaction to this message, an emoji */
+  reaction?: string;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
 }

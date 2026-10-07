@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
+import { dayKey, todayKey } from '@/mock';
 import { useAppStore, type CallSlot } from '@/store/use-app-store';
 
 /** How long after opening the app a good-morning / good-night call starts ringing. */
@@ -34,6 +35,9 @@ export function useCharacterInitiative() {
     const run = () => {
       const store = useAppStore.getState();
       store.claimDailyLogin();
+      // The first day belongs to the friend the user just met: nobody else calls yet.
+      const firstDay = !!store.user.onboardedAt && dayKey(store.user.onboardedAt) === todayKey();
+      if (firstDay) return;
       const { callFrom, slot } = store.runDailyInitiative();
       if (!callFrom) return;
 

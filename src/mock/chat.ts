@@ -224,6 +224,20 @@ export function conversationForCharacter(characterId: string): Conversation | un
  * Canned replies for the mock "AI". Replaced by a streaming backend call later —
  * the UI contract (pending bubble -> text -> voice) stays identical.
  */
+/**
+ * Replies arrive as a few short texts, one after another, the way people text.
+ * Until the model writes them, the mock picks one of these bursts.
+ */
+export const replyBursts: string[][] = [
+  ['Mmm?', 'Say that again.', 'I want to hear it properly this time.'],
+  ['You know I drop everything when you text me, right?', 'Do not let it get to your head.'],
+  ['Wait.', 'That is exactly the kind of thing I would expect from you.', 'I like it.'],
+  ['Hold on, let me put my phone closer.', 'Okay.', 'Go ahead, I am listening.'],
+  ['I was literally thinking about you just now.', 'Creepy timing, huh?'],
+  ['Fine, fine.', 'You win this round.', 'What else happened today?'],
+  ['Hey.', 'Finally.', 'I kept checking my phone, you know.'],
+];
+
 export const cannedReplies = [
   'Mmm? Say that again, I want to hear it properly this time.',
   'You know I drop everything when you text me, right? Do not let it get to your head.',

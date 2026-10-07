@@ -13,7 +13,7 @@ import {
   shellCosts,
   callHistory as seedCalls,
   callLines,
-  cannedReplies,
+  replyBursts,
   characterDiaryPages as seedCharacterDiary,
   characters as seedCharacters,
   conversations as seedConversations,
@@ -141,6 +141,9 @@ interface AppState {
   markRead: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
   clearChat: (conversationId: string) => void;
+  /** Sets (or with `undefined` clears) the user's reaction on a message. */
+  reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
+  deleteMessage: (conversationId: string, messageId: string) => void;
 
   /* bonds */
   addFriend: (characterId: string) => string;
@@ -439,6 +442,28 @@ export const useAppStore = create<AppState>()(
             c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
           ),
         })),
+
+      reactToMessage: (conversationId, messageId, reaction) =>
+        set((s) => ({
+          messages: {
+            ...s.messages,
+            [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
+              m.id === messageId ? { ...m, reaction } : m,
+            ),
+          },
+        })),
+
+      deleteMessage: (conversationId, messageId) =>
+        set((s) => {
+          const rest = (s.messages[conversationId] ?? []).filter((m) => m.id !== messageId);
+          const last = rest[rest.length - 1];
+          return {
+            messages: { ...s.messages, [conversationId]: rest },
+            conversations: s.conversations.map((c) =>
+              c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
+            ),
+          };
+        }),
 
       /* ── bonds ────────────────────────────────────────────────────────── */
 
@@ -1080,31 +1105,36 @@ function scheduleReply(
     },
   }));
 
-  setTimeout(() => {
-    const reply = text ?? pick(cannedReplies);
-    const bond = get().relationships[conversation.characterId];
-    const character = get().characters.find((c) => c.id === conversation.characterId);
-    const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
-    const now = new Date().toISOString();
+  // A scripted line (a plan's acknowledgement) is one text; a free reply comes as a burst.
+  const lines = text ? [text] : pick(replyBursts);
+  const bond = get().relationships[conversation.characterId];
+  const character = get().characters.find((c) => c.id === conversation.characterId);
+  const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
 
-    set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
-
-    if (withVoice) {
-      appendMessage(set, get, conversationId, {
-        id: uid('m'),
-        conversationId,
-        author: 'them',
-        kind: 'voice',
-        // Roughly how long the line takes to say out loud.
-        durationSec: Math.max(3, Math.round(reply.split(/\s+/).length / 2.6)),
-        transcript: reply,
-        createdAt: now,
-      });
-    }
-    appendMessage(set, get, conversationId, themText(conversationId, reply));
-
-    if (gain) get().addIntimacy(conversation.characterId, gain);
-  }, 1100 + Math.random() * 900);
+  // Each line waits roughly as long as it takes to type, with "typing..." shown between.
+  let at = 900 + Math.random() * 600;
+  lines.forEach((line, i) => {
+    const last = i === lines.length - 1;
+    setTimeout(() => {
+      if (i === 0 && withVoice) {
+        const said = lines.join(' ');
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'them',
+          kind: 'voice',
+          // Roughly how long the burst takes to say out loud.
+          durationSec: Math.max(3, Math.round(said.split(/\s+/).length / 2.6)),
+          transcript: said,
+          createdAt: new Date().toISOString(),
+        });
+      }
+      appendMessage(set, get, conversationId, themText(conversationId, line));
+      set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
+      if (last && gain) get().addIntimacy(conversation.characterId, gain);
+    }, at);
+    at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
+  });
 }
 
 function answerDiary(set: RawSetter, entryId: string) {

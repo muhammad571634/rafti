@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
@@ -75,6 +77,11 @@ export default function ChatRoomScreen() {
   const [attachOpen, setAttachOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
+  const [menu, setMenu] = useState<Message | null>(null);
+
+  const reactToMessage = useAppStore((s) => s.reactToMessage);
+  const deleteMessage = useAppStore((s) => s.deleteMessage);
+  const openMenu = useCallback((message: Message) => setMenu(message), []);
 
   // Replies that land while this chat is on screen are read, not unread.
   useFocusEffect(
@@ -105,21 +112,27 @@ export default function ChatRoomScreen() {
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) =>
       character ? (
-        <MessageBubble
-          message={item}
-          character={character}
-          user={user}
-          animate={animations && Date.parse(item.createdAt) > openedAt}
-          showAvatar={
-            index === 0 ||
-            data[index - 1]?.author !== item.author ||
-            data[index - 1]?.kind === 'call' ||
-            data[index - 1]?.kind === 'system'
-          }
-          onCallBack={callBack}
-        />
+        <>
+          {index === 0 || dayKey(data[index - 1].createdAt) !== dayKey(item.createdAt) ? (
+            <DayChip iso={item.createdAt} />
+          ) : null}
+          <MessageBubble
+            message={item}
+            character={character}
+            user={user}
+            animate={animations && Date.parse(item.createdAt) > openedAt}
+            showAvatar={
+              index === 0 ||
+              data[index - 1]?.author !== item.author ||
+              data[index - 1]?.kind === 'call' ||
+              data[index - 1]?.kind === 'system'
+            }
+            onCallBack={callBack}
+            onLongPress={openMenu}
+          />
+        </>
       ) : null,
-    [character, user, animations, openedAt, data, callBack],
+    [character, user, animations, openedAt, data, callBack, openMenu],
   );
 
   if (!conversation || !character) {
@@ -210,7 +223,10 @@ export default function ChatRoomScreen() {
               </Txt>
             </View>
           </PressableScale>
-          <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+          <View>
+            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+            <SpendPulse shells={shells} />
+          </View>
         </View>
 
         <IconButton
@@ -297,11 +313,132 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+
+      <Sheet visible={!!menu} onClose={() => setMenu(null)}>
+        {menu ? (
+          <>
+            {menu.text ? (
+              <View style={styles.quote}>
+                <Txt variant="small" color={colors.textSecondary} lines={3}>
+                  {menu.text}
+                </Txt>
+              </View>
+            ) : null}
+            <View style={styles.reactions}>
+              {REACTIONS.map((emoji) => {
+                const on = menu.reaction === emoji;
+                return (
+                  <PressableScale
+                    key={emoji}
+                    scaleTo={0.85}
+                    style={[styles.reactionButton, on && styles.reactionOn]}
+                    accessibilityLabel={t('chat.react', { emoji })}
+                    accessibilityState={{ selected: on }}
+                    onPress={() => {
+                      reactToMessage(conversation.id, menu.id, on ? undefined : emoji);
+                      setMenu(null);
+                    }}>
+                    <Txt style={styles.reactionEmoji}>{emoji}</Txt>
+                  </PressableScale>
+                );
+              })}
+            </View>
+            {menu.text ? (
+              <ListRow
+                title={t('chat.copy')}
+                left={<Ionicons name="copy-outline" size={21} color={colors.text} />}
+                onPress={() => {
+                  void Clipboard.setStringAsync(menu.text ?? '');
+                  setMenu(null);
+                }}
+              />
+            ) : null}
+            <ListRow
+              title={t('chat.deleteMessage')}
+              left={<Ionicons name="trash-outline" size={21} color={colors.danger} />}
+              onPress={() => {
+                deleteMessage(conversation.id, menu.id);
+                setMenu(null);
+              }}
+            />
+          </>
+        ) : null}
+      </Sheet>
     </Screen>
   );
 }
 
+const REACTIONS = ['\u2764\uFE0F', '\u{1F602}', '\u{1F62E}', '\u{1F622}', '\u{1F525}', '\u{1F44D}'];
+
+/** "Today", "Yesterday" or the date, between messages from different days. */
+function DayChip({ iso }: { iso: string }) {
+  const { t, i18n } = useTranslation();
+  const key = dayKey(iso);
+  const label =
+    key === todayKey()
+      ? t('chat.dayToday')
+      : key === dayKey(new Date(Date.now() - 86_400_000))
+        ? t('chat.dayYesterday')
+        : new Date(iso).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
+  return (
+    <View style={styles.dayRow}>
+      <View style={styles.dayChip}>
+        <Txt variant="caption" color={colors.textSecondary}>
+          {label}
+        </Txt>
+      </View>
+    </View>
+  );
+}
+
+/** A "-1" that floats off the shell badge whenever a message is paid for. */
+function SpendPulse({ shells }: { shells: number }) {
+  const { t } = useTranslation();
+  const prev = useRef(shells);
+  const [spent, setSpent] = useState(0);
+  const lift = useSharedValue(0);
+
+  useEffect(() => {
+    const diff = prev.current - shells;
+    prev.current = shells;
+    if (diff <= 0) return;
+    setSpent(diff);
+    lift.value = 0;
+    lift.value = withSequence(withTiming(1, { duration: 900 }), withTiming(0, { duration: 0 }));
+  }, [shells, lift]);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: lift.value === 0 ? 0 : 1 - lift.value * 0.9,
+    transform: [{ translateY: -lift.value * 14 }],
+  }));
+
+  return (
+    <Animated.View pointerEvents="none" style={[styles.pulse, style]} accessibilityLabel={t('chat.spent', { count: spent })}>
+      <Txt variant="smallStrong" color={colors.brandText}>
+        -{spent}
+      </Txt>
+    </Animated.View>
+  );
+}
+
 const styles = StyleSheet.create({
+  dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
+  dayChip: {
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs,
+    borderRadius: radius.pill,
+    backgroundColor: colors.onMediaSoft,
+  },
+  pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
+  quote: {
+    padding: space.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceAlt,
+  },
+  reactions: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: space.lg },
+  reactionButton: { width: 48, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  reactionOn: { backgroundColor: colors.primarySoft },
+  reactionEmoji: { fontSize: 26, lineHeight: 32 },
   flex: { flex: 1 },
   missing: { padding: space.xl },
   header: {

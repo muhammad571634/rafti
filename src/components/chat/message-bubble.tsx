@@ -18,6 +18,8 @@ export interface MessageBubbleProps {
   showAvatar: boolean;
   animate?: boolean;
   onCallBack?: () => void;
+  /** Long-press on a text or photo opens the message menu (react, copy, delete). */
+  onLongPress?: (message: Message) => void;
 }
 
 const AVATAR = 34;
@@ -33,6 +35,7 @@ export const MessageBubble = memo(function MessageBubble({
   showAvatar,
   animate = true,
   onCallBack,
+  onLongPress,
 }: MessageBubbleProps) {
   const mine = message.author === 'me';
 
@@ -53,10 +56,24 @@ export const MessageBubble = memo(function MessageBubble({
 
       {message.kind === 'voice' ? (
         <VoiceBubble message={message} mine={mine} first={showAvatar} />
-      ) : message.kind === 'image' && message.imageUri ? (
-        <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
       ) : (
-        <TextBubble message={message} mine={mine} first={showAvatar} />
+        <PressableScale
+          scaleTo={0.97}
+          delayLongPress={280}
+          disabled={!onLongPress}
+          onLongPress={onLongPress ? () => onLongPress(message) : undefined}
+          style={[styles.holdable, message.reaction ? styles.withReaction : null]}>
+          {message.kind === 'image' && message.imageUri ? (
+            <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+          ) : (
+            <TextBubble message={message} mine={mine} first={showAvatar} />
+          )}
+          {message.reaction ? (
+            <View style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs, shadows.card]}>
+              <Txt variant="small">{message.reaction}</Txt>
+            </View>
+          ) : null}
+        </PressableScale>
       )}
 
       {!mine ? (
@@ -79,6 +96,7 @@ function TextBubble({ message, mine, first }: { message: Message; mine: boolean;
     <View
       style={[
         styles.bubble,
+        styles.fill,
         mine ? styles.bubbleMine : styles.bubbleTheirs,
         first && (mine ? styles.tailMine : styles.tailTheirs),
         muted && styles.bubbleMuted,
@@ -215,6 +233,26 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
 }
 
 const styles = StyleSheet.create({
+  // The held area carries the bubble's width cap, so the text bubble fills it.
+  holdable: { flexShrink: 1, maxWidth: '72%' },
+  fill: { maxWidth: '100%' },
+  // Room under the bubble for the reaction that hangs off its corner.
+  withReaction: { marginBottom: space.md },
+  reaction: {
+    position: 'absolute',
+    bottom: -space.md - 2,
+    minWidth: 28,
+    height: 26,
+    paddingHorizontal: space.xs + 2,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reactionMine: { left: -space.xs },
+  reactionTheirs: { right: -space.xs },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-end',

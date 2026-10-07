@@ -3,6 +3,7 @@ export type { CharacterGroup } from './characters';
 export {
   callLines,
   cannedReplies,
+  replyBursts,
   conversationForCharacter,
   conversations,
   eveningGreetings,
