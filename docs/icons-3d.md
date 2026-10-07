@@ -7,8 +7,9 @@ icons: the clay style is for "a place you go" or "a thing you do", not for chrom
 
 ## How it works
 
-- Raw sheets: `assets/raw/icons-3d-sheet.jpg`, `-sheet-2.jpg`, `-sheet-3.jpg`
-  (4 columns x 3 rows each, flat light grey).
+- Raw sheets: `assets/raw/icons-3d-sheet.jpg`, `-sheet-2.jpg`, `-sheet-3.jpg`, `-sheet-4.jpg`
+  (4 columns x 3 rows each, flat light grey; sheet 4 is wide, 1024 x 559).
+- Clear glass (jar, hourglass) is cut with a tighter backdrop test (`GLASS_ICONS`).
 - `python scripts/build-brand-art.py icons` cuts them into `assets/brand/icon3d-*.png`
   (grey backdrop and shadow removed, neighbours' scraps dropped).
 - `CLAY_ICONS` in `assets/brand/registry.ts`; draw with `<ClayIcon name="..." size={64} />`
@@ -24,6 +25,7 @@ icons: the clay style is for "a place you go" or "a thing you do", not for chrom
 | 1 | voice, photo, secretNote, quiz (two hearts), truthOrDare (die), date (coffee), calls, diary, ball, planner, play, playStack |
 | 2 | gift, store (bag with a shell), contacts (two friends), radio, board (push pin), bedtime (moon and stars), camera, calendar (with a heart), search, compass, music, lock |
 | 3 | umbrella, fish, fireworks, headphones, nightSky (window with stars), cake, house, sun, plane, invite (person with a plus), sparkles, levelUp (heart with an up arrow) |
+| 4 | fireplace, wave, film, wand, polaroids, jar (hearts), alarm, palette, trophy, hourglass, pencil, bubbles |
 
 ## Done
 
@@ -39,43 +41,34 @@ icons: the clay style is for "a place you go" or "a thing you do", not for chrom
 | Date map pins and place sheet | `src/mock/dates.ts` (`icon`), `src/app/dating.tsx` | umbrella, fish, fireworks, headphones, nightSky |
 | Couple quiz packs | `src/mock/games.ts` (`icon`), `src/app/quiz/[characterId].tsx` | cake, date, house |
 
-Spare for later: search, compass (used on Home "meet someone"), music, lock, ball, planner, playStack.
+| Radio tracks | `src/mock/misc.ts` (`radioTracks`), `src/app/radio.tsx` | umbrella, fireplace, wave, date (cafe), bedtime (lullaby) |
+| Photo booth film count | `src/app/photo-booth.tsx` | film |
+| Contacts "Add one" tile | `src/app/contacts.tsx` | wand |
+| Create character photo drop zone | `src/app/create-character.tsx` | photo |
+| "Our dates" album button | `src/app/dating.tsx` | polaroids |
+| Character profile memories row, Memories empty state | `src/app/character/[id]/index.tsx`, `memories.tsx` | jar |
+| Character settings: chat and character groups | `src/app/character/[id]/settings.tsx` | calls, bubbles, search, palette, jar, wand (clear chat and reset stay line icons) |
+| Daily calls sheet morning / night | `src/components/chat/daily-calls-sheet.tsx` | sun, bedtime |
+| Quiz score | `src/app/quiz/[characterId].tsx` | trophy |
+| History "Call time" | `src/app/store/ledger.tsx` | hourglass |
+| Empty chats | `src/app/(tabs)/chat.tsx` (`EmptyState icon`) | bubbles |
 
-## Next (needs sheet 4)
+`EmptyState` takes `icon` to show a clay icon in place of the mascot.
 
-| # | Place | File | Needs (sheet 4 name) | Uses existing art |
-| --- | --- | --- | --- | --- |
-| 1 | Radio tracks (emoji now) | `src/mock/misc.ts` (`radioTracks`), `src/app/radio.tsx` | fireplace, wave | umbrella (rain), date (cafe), bedtime (lullaby) |
-| 2 | Photo booth film count | `src/app/photo-booth.tsx` | film | |
-| 3 | Create character: entry and photo drop zone | `src/app/create-character.tsx`, Find "create" entry | wand | voice (voice samples) |
-| 4 | "Our dates" album button | `src/app/dating.tsx` | polaroids | |
-| 5 | Character profile: memories row and empty state | `src/app/character/[id]/index.tsx`, `memories.tsx` | jar | |
-| 6 | Daily calls sheet (who and when) and plan reminder time | `src/components/chat/daily-calls-sheet.tsx`, `src/components/us/plan-sheet.tsx` | alarm | |
-| 7 | Chat backgrounds | `src/app/character/[id]/settings.tsx` (change background) | palette | |
-| 8 | Quiz score card and date ending | `src/app/quiz/[characterId].tsx`, `src/app/date/[placeId].tsx` | trophy | |
-| 9 | Call time balance (Store, History "Call time") | `src/app/store/shell.tsx`, `src/app/store/ledger.tsx` header | hourglass | |
-| 10 | Diary "write today" and My diary empty state | `src/app/diary/mine.tsx`, `/diary/write` | pencil | |
-| 11 | Empty chats / "start a chat" | `src/app/(tabs)/chat.tsx` empty state | bubbles | |
-| 12 | Secret note sealed state | `src/app/secret-note/[id].tsx` | waxLetter | lock |
+Spare: compass (Home "meet someone"), music, lock, ball, planner, playStack, alarm, pencil.
+Not changed on purpose: the approved Diary screens (pencil would fit "write today"), the
+date ending polaroid, the chat "+" sheet (alarm could replace calls on Daily calls).
 
 Keep as line icons: settings rows other than "They reach out", ledger rows
 (`src/app/store/ledger.tsx`, dense list), header and tab bar glyphs, close/back/chevron/check,
 the shell currency (`Icon3D name="shell"`).
 
-## Prompt for sheet 4
+## A new sheet
 
-Attach `assets/raw/icons-3d-sheet-3.jpg` as the style reference:
+Prompt style for any further sheet (attach the latest sheet as the reference):
 
 > A set of 12 app icons in one 4x3 grid on a plain light-grey background, same style
 > as the attached sheet: each icon a separate soft 3D clay object, glossy, warm pastel
 > colours (apricot, mint, lilac, sky blue, cream), gentle top-left light, soft shadow,
 > no text, no faces, no outlines, consistent size and angle, generous space between
-> icons, nothing touching the edge of its cell. Row 1: a small cosy fireplace with a
-> flame, a curling ocean wave, a roll of camera film, a magic wand with a small star.
-> Row 2: two overlapping polaroid photos (blank, no picture), a glass jar with tiny
-> hearts inside, a round alarm clock, a painter's palette with four paint dots.
-> Row 3: a trophy cup, an hourglass, a pencil, two overlapping speech bubbles.
-
-Save it as `assets/raw/icons-3d-sheet-4.jpg`. Names in that order: fireplace, wave, film,
-wand, polaroids, jar, alarm, palette, trophy, hourglass, pencil, bubbles. (The table above
-also lists a wax-sealed letter; the existing secretNote envelope covers it for now.)
+> icons, nothing touching the edge of its cell. Row 1: ... Row 2: ... Row 3: ...

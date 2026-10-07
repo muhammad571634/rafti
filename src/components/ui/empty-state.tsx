@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors, space } from '@/theme';
 
 import { Button } from './button';
+import { ClayIcon, type ClayIconName } from './clay-icon';
 import { BrandArt } from './mascot';
 import { Txt } from './text';
 
@@ -12,6 +13,8 @@ export interface EmptyStateProps {
   actionLabel?: string;
   onAction?: () => void;
   compact?: boolean;
+  /** A clay icon for what is missing, in place of the Rafti mascot. */
+  icon?: ClayIconName;
 }
 
 export function EmptyState({
@@ -20,10 +23,15 @@ export function EmptyState({
   actionLabel,
   onAction,
   compact,
+  icon,
 }: EmptyStateProps) {
   return (
     <View style={[styles.root, compact && styles.compact]}>
-      <BrandArt name="empty" width={compact ? 132 : 200} bob />
+      {icon ? (
+        <ClayIcon name={icon} size={compact ? 88 : 120} tile={false} />
+      ) : (
+        <BrandArt name="empty" width={compact ? 132 : 200} bob />
+      )}
       <Txt variant="title" center style={styles.title}>
         {title}
       </Txt>

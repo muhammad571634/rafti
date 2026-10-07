@@ -6,8 +6,8 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 (pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
 
 1. **F1-F14 tayyor (F14 Profil 2026-10-07, bulut sessiyasida).** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   3D ikonkalar 2- va 3-to'plami ulandi. Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15 yoki
-   (b) original personajlar; 4-to'plam ikonkalar (prompt `docs/icons-3d.md` da). Pastdagi 4-bandga qarang.
+   3D ikonkalar 2-, 3- va 4-to'plami ulandi. Keyingisi: foydalanuvchi tanlovi — personajlar katalogi (a) F15
+   yoki (b) original personajlar. Pastdagi 4-bandga qarang.
 2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -40,8 +40,11 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      o'qiydi (`ICON_SHEETS`). Ulangan joylar: Home Explore (10 tasi), Home Today qatorlari, Us "+" va momentlar,
      Free gifts, Profil "They reach out"; `ClayIcon` ga `dot` va `radius` qo'shildi. 3-to'plam ham ulandi
      (`icons-3d-sheet-3.jpg`): Date xaritasi, quiz to'plamlari, quyosh (ertalab), samolyot (ulashish), uchqunlar
-     (tanishuv), yurak-strelka (daraja). Mock'larda `emoji` o'rniga `icon: ClayIconName`. 4-to'plam (Radio, foto
-     budka, personaj yaratish, xotiralar va h.k.) prompti va joylari: [`docs/icons-3d.md`](docs/icons-3d.md).
+     (tanishuv), yurak-strelka (daraja). Mock'larda `emoji` o'rniga `icon: ClayIconName`. 4-to'plam ham ulandi
+     (`icons-3d-sheet-4.jpg`, keng varaq; shisha ikonkalar `GLASS_ICONS` bilan kesiladi): Radio, foto budka,
+     Contacts "Add one", "Our dates", xotiralar, personaj sozlamalari, Daily calls, quiz natijasi, History "Call
+     time", bo'sh chatlar (`EmptyState icon`). Hammasi: [`docs/icons-3d.md`](docs/icons-3d.md).
+   - Ko'rildi, tuzatilmagan: History "Call time" bo'sh holatida maskot rasmi tepadagi qoida kartasiga tegib turadi.
    - **Personajlar katalogi** (foydalanuvchi so'ragan, 2026-10-07): BIMOBIMO'dagi real idol/franchise personajlar
      bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
      personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga

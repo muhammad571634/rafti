@@ -68,6 +68,7 @@ export default function MemoriesScreen() {
 
       {mine.length === 0 ? (
         <EmptyState
+          icon="jar"
           title={t('memories.empty')}
           hint={t('memories.emptyHint')}
           actionLabel={t('memories.addManual')}

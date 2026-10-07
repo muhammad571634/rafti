@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionList, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, Chip, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
+import { CharacterAvatar, Chip, ClayIcon, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -92,9 +92,7 @@ export default function LedgerScreen() {
               </View>
             ) : (
               <View style={styles.rule}>
-                <View style={styles.callIcon}>
-                  <Ionicons name="call" size={18} color={colors.brandText} />
-                </View>
+                <ClayIcon name="hourglass" size={36} tile={false} />
                 <View style={styles.flex}>
                   <Txt variant="bodyStrong">{t('ledger.callLeft', { time: callClock(callSeconds) })}</Txt>
                   <Txt variant="small" color={colors.textSecondary}>
@@ -263,12 +261,4 @@ const styles = StyleSheet.create({
   amount: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   footer: { marginTop: space.xl },
   tabs: { flexDirection: 'row', gap: space.sm, marginTop: space.sm },
-  callIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });

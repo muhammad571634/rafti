@@ -1,3 +1,4 @@
+import type { ClayIconName } from '@/assets/brand/registry';
 import { palette } from '@/theme';
 import type {
   ShellPack,
@@ -154,12 +155,12 @@ export const backgroundsById = Object.fromEntries(
 ) as Record<string, (typeof chatBackgrounds)[number]>;
 
 /** Ambient tracks for Radio / Bedtime. */
-export const radioTracks = [
-  { id: 'r_rain', titleKey: 'rain', emoji: '\u{1F327}\u{FE0F}', minutes: 45 },
-  { id: 'r_fire', titleKey: 'fireplace', emoji: '\u{1F525}', minutes: 60 },
-  { id: 'r_waves', titleKey: 'waves', emoji: '\u{1F30A}', minutes: 30 },
-  { id: 'r_cafe', titleKey: 'cafe', emoji: '\u{2615}', minutes: 40 },
-  { id: 'r_lullaby', titleKey: 'lullaby', emoji: '\u{1F319}', minutes: 20 },
+export const radioTracks: { id: string; titleKey: string; icon: ClayIconName; minutes: number }[] = [
+  { id: 'r_rain', titleKey: 'rain', icon: 'umbrella', minutes: 45 },
+  { id: 'r_fire', titleKey: 'fireplace', icon: 'fireplace', minutes: 60 },
+  { id: 'r_waves', titleKey: 'waves', icon: 'wave', minutes: 30 },
+  { id: 'r_cafe', titleKey: 'cafe', icon: 'date', minutes: 40 },
+  { id: 'r_lullaby', titleKey: 'lullaby', icon: 'bedtime', minutes: 20 },
 ];
 
 /** Dating scenario cards. */

@@ -82,9 +82,12 @@ export default function QuizScreen() {
             <UserAvatar user={user} size={72} />
             <CharacterAvatar character={character} size={72} ring ringColor={colors.bgPlain} style={styles.overlap} />
           </View>
-          <Txt variant="heroFigure">
-            {matches}/{total}
-          </Txt>
+          <View style={styles.score}>
+            <ClayIcon name="trophy" size={52} tile={false} />
+            <Txt variant="heroFigure">
+              {matches}/{total}
+            </Txt>
+          </View>
           <Txt variant="h2" center>
             {title}
           </Txt>
@@ -265,6 +268,7 @@ const styles = StyleSheet.create({
   verdict: { padding: space.md, borderRadius: radius.lg },
   same: { backgroundColor: colors.bondSoft },
   differ: { backgroundColor: colors.surfaceAlt },
+  score: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   result: { flex: 1, alignItems: 'center', gap: space.md, paddingHorizontal: space.xl, paddingTop: space.huge },
   pair: { flexDirection: 'row' },
   overlap: { marginLeft: -space.lg },

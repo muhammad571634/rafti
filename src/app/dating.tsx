@@ -159,7 +159,7 @@ export default function DatingScreen() {
           variant="secondary"
           size="lg"
           full
-          left={<Ionicons name="images-outline" size={20} color={colors.text} />}
+          left={<ClayIcon name="polaroids" size={26} tile={false} />}
           onPress={() => router.push('/date/album')}
         />
       </View>

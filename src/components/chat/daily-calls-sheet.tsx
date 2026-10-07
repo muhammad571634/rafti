@@ -1,11 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { MoonStarsIcon } from 'phosphor-react-native/src/icons/MoonStars';
-import { SunIcon } from 'phosphor-react-native/src/icons/Sun';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { Button, CharacterAvatar, PressableScale, Sheet, Toggle, Txt } from '@/components/ui';
+import { Button, CharacterAvatar, ClayIcon, PressableScale, Sheet, Toggle, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
@@ -101,13 +99,13 @@ export function DailyCallsSheet({
         )}
 
         <CallRow
-          icon={<SunIcon size={26} weight="duotone" color="#B07A00" />}
+          icon={<ClayIcon name="sun" size={32} tile={false} />}
           label={t('games.morning')}
           value={morning}
           onChange={setMorning}
         />
         <CallRow
-          icon={<MoonStarsIcon size={26} weight="duotone" color="#4E56B8" />}
+          icon={<ClayIcon name="bedtime" size={32} tile={false} />}
           label={t('games.night')}
           value={night}
           onChange={setNight}

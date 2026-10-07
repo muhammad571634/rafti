@@ -79,6 +79,18 @@ export const CLAY_ICONS = {
   invite: require('./icon3d-invite.png'),
   sparkles: require('./icon3d-sparkles.png'),
   levelUp: require('./icon3d-level-up.png'),
+  fireplace: require('./icon3d-fireplace.png'),
+  wave: require('./icon3d-wave.png'),
+  film: require('./icon3d-film.png'),
+  wand: require('./icon3d-wand.png'),
+  polaroids: require('./icon3d-polaroids.png'),
+  jar: require('./icon3d-jar.png'),
+  alarm: require('./icon3d-alarm.png'),
+  palette: require('./icon3d-palette.png'),
+  trophy: require('./icon3d-trophy.png'),
+  hourglass: require('./icon3d-hourglass.png'),
+  pencil: require('./icon3d-pencil.png'),
+  bubbles: require('./icon3d-bubbles.png'),
 } as const;
 
 export type ClayIconName = keyof typeof CLAY_ICONS;

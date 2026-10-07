@@ -10,6 +10,7 @@ import {
   Divider,
   Header,
   IconButton,
+  ClayIcon,
   IconTile,
   ListRow,
   Screen,
@@ -17,6 +18,7 @@ import {
   Sheet,
   Toggle,
   Txt,
+  type ClayIconName,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import { shortDate, shortName } from '@/lib/format';
@@ -37,21 +39,22 @@ type ActionKey =
   | 'reset';
 
 /** Grouped like Profile: what you do in this chat, who they are, then the destructive two. */
-const GROUPS: { title: string; actions: { key: ActionKey; icon: IoniconName }[] }[] = [
+// Places you go get clay icons; the two destructive rows stay plain line icons.
+const GROUPS: { title: string; actions: { key: ActionKey; clay?: ClayIconName; icon?: IoniconName }[] }[] = [
   {
     title: 'sectionChat',
     actions: [
-      { key: 'voiceCall', icon: 'call-outline' },
-      { key: 'chatSettings', icon: 'chatbubbles-outline' },
-      { key: 'searchHistory', icon: 'search-outline' },
-      { key: 'changeBackground', icon: 'image-outline' },
+      { key: 'voiceCall', clay: 'calls' },
+      { key: 'chatSettings', clay: 'bubbles' },
+      { key: 'searchHistory', clay: 'search' },
+      { key: 'changeBackground', clay: 'palette' },
     ],
   },
   {
     title: 'sectionCharacter',
     actions: [
-      { key: 'characterMemories', icon: 'bookmark-outline' },
-      { key: 'characterSettings', icon: 'person-outline' },
+      { key: 'characterMemories', clay: 'jar' },
+      { key: 'characterSettings', clay: 'wand' },
     ],
   },
   {
@@ -191,7 +194,13 @@ export default function CharacterSettingsScreen() {
                 {i > 0 ? <Divider inset={space.lg + ROW_ICON + space.md} /> : null}
                 <ListRow
                   title={t(`characterSettings.${action.key}`)}
-                  left={<IconTile icon={action.icon} size={ROW_ICON} />}
+                  left={
+                    action.clay ? (
+                      <ClayIcon name={action.clay} size={ROW_ICON} />
+                    ) : (
+                      <IconTile icon={action.icon!} size={ROW_ICON} />
+                    )
+                  }
                   chevron
                   onPress={() => run(action.key)}
                 />

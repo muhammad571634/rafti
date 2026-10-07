@@ -410,6 +410,16 @@ ICON_SHEETS = [
         ],
         [(0.10, 0.33), (0.38, 0.62), (0.67, 0.89)],
     ),
+    (
+        # A wide sheet (1024 x 559); the bands stop above each row's floor shadow.
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-4.jpg'),
+        [
+            'fireplace', 'wave', 'film', 'wand',
+            'polaroids', 'jar', 'alarm', 'palette',
+            'trophy', 'hourglass', 'pencil', 'bubbles',
+        ],
+        [(0.04, 0.33), (0.355, 0.65), (0.67, 0.955)],
+    ),
 ]
 
 def drop_edge_scraps(solid):
@@ -443,12 +453,41 @@ def drop_edge_scraps(solid):
     return solid
 
 
-def cut_icon(cell):
-    """Flood the grey backdrop and the grey drop shadow in from the border; colour stops it."""
+def drop_thin_bands(solid, min_rows=6):
+    """
+    The tight glass test keeps a faint line of floor shadow under the object; it is
+    a short run of rows with an empty gap above it, so runs that thin are dropped.
+    """
+    filled = solid.any(axis=1)
+    y = 0
+    while y < len(filled):
+        if not filled[y]:
+            y += 1
+            continue
+        end = y
+        while end < len(filled) and filled[end]:
+            end += 1
+        if end - y < min_rows:
+            solid[y:end] = False
+        y = end
+    return solid
+
+
+def cut_icon(cell, glass=False):
+    """
+    Flood the grey backdrop and the grey drop shadow in from the border; colour stops it.
+    Clear glass is grey too, so for `glass` icons only pixels almost exactly the
+    backdrop's colour flood, and the glass rim stops it.
+    """
     a = np.asarray(cell).astype(int)
     h, w, _ = a.shape
     chroma = a.max(axis=2) - a.min(axis=2)
-    candidate = (chroma < 12) & (a.min(axis=2) > 165)
+    if glass:
+        edge = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
+        backdrop = np.median(edge, axis=0)
+        candidate = np.abs(a - backdrop).max(axis=2) < 9
+    else:
+        candidate = (chroma < 12) & (a.min(axis=2) > 165)
 
     reach = np.zeros((h, w), bool)
     reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
@@ -466,6 +505,8 @@ def cut_icon(cell):
 
     solid = fill_holes(~reach)
     solid = drop_edge_scraps(solid)
+    if glass:
+        solid = drop_thin_bands(solid)
     alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
     # One pixel in from the cut: the sheet's light rim must not show on darker tiles.
     alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
@@ -473,6 +514,10 @@ def cut_icon(cell):
     out = cell.convert('RGBA')
     out.putalpha(alpha)
     return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+# Icons with clear glass, cut with the tighter backdrop test.
+GLASS_ICONS = {'jar', 'hourglass'}
 
 
 def build_icons_3d():
@@ -488,7 +533,7 @@ def build_icons_3d():
             c = i % 4
             # Cells overlap a little so no icon is clipped; the neighbour's scraps are dropped.
             box = (max(0, round(c * col) - 16), round(top * h), min(w, round((c + 1) * col) + 16), round(bottom * h))
-            icon = fit(cut_icon(sheet.crop(box)), 192)
+            icon = fit(cut_icon(sheet.crop(box), glass=name in GLASS_ICONS), 192)
             save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
             names.append(name)
     return names

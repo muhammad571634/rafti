@@ -1,11 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { ClosenessSheet } from '@/components/closeness-sheet';
-import { CharacterAvatar, Chip, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, Chip, ClayIcon, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 
@@ -67,7 +66,7 @@ export default function ContactsScreen() {
               style={[styles.addTile, { width: tileWidth, height: tileWidth * 1.3 }]}
               scaleTo={0.94}
               onPress={() => router.push('/create-character')}>
-              <Ionicons name="add" size={28} color={colors.text} />
+              <ClayIcon name="wand" size={44} tile={false} />
               <Txt variant="caption" color={colors.textSecondary}>
                 {t('contacts.addOne')}
               </Txt>

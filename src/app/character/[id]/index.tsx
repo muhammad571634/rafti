@@ -10,6 +10,7 @@ import {
   Divider,
   Header,
   IconButton,
+  ClayIcon,
   IconTile,
   ListRow,
   Screen,
@@ -148,7 +149,7 @@ export default function CharacterProfileScreen() {
         {isFriend ? (
           <View style={styles.list}>
             <ListRow
-              left={<IconTile icon="bookmark-outline" size={ROW_TILE} />}
+              left={<ClayIcon name="jar" size={ROW_TILE} />}
               title={t('characterProfile.memories')}
               meta={memoryCount > 0 ? String(memoryCount) : undefined}
               chevron

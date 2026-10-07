@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Anim, Button, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -179,7 +179,7 @@ export default function CreateCharacterScreen() {
                 <Image source={{ uri: imageUri }} style={styles.preview} contentFit="cover" />
               ) : (
                 <>
-                  <Ionicons name="image-outline" size={32} color={form.text} />
+                  <ClayIcon name="photo" size={48} tile={false} />
                   <Txt variant="small" color={form.muted} center style={styles.dropText}>
                     {t('createCharacter.uploadImageBox')}
                   </Txt>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { Anim, Divider, Header, ListRow, Screen, Txt } from '@/components/ui';
+import { Anim, ClayIcon, Divider, Header, ListRow, Screen } from '@/components/ui';
 import { radioTracks } from '@/mock';
 import { colors, radius, space } from '@/theme';
 
@@ -25,11 +25,7 @@ export default function RadioScreen() {
               <ListRow
                 title={t(`radio.tracks.${track.titleKey}`)}
                 subtitle={t('radio.minutes', { count: track.minutes })}
-                left={
-                  <View style={styles.cover}>
-                    <Txt style={styles.emoji}>{track.emoji}</Txt>
-                  </View>
-                }
+                left={<ClayIcon name={track.icon} size={COVER} radius={radius.md} />}
                 right={
                   active ? (
                     <Anim name="voiceWave" size={30} tint={colors.text} />
@@ -53,13 +49,4 @@ const COVER = 48;
 const styles = StyleSheet.create({
   scroll: { paddingTop: space.sm, paddingBottom: space.huge },
   active: { backgroundColor: colors.surfaceAlt },
-  cover: {
-    width: COVER,
-    height: COVER,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emoji: { fontSize: 22, lineHeight: 28 },
 });
