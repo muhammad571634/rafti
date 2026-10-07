@@ -120,16 +120,20 @@
       "fantasy": "Fantasy",
       "idol": "Idols",
       "daily": "Everyday",
-      "original": "Original"
+      "original": "Original",
+      "all": "All"
     },
     "category": "Category",
     "voiceReady": "Voice ready",
     "voiceTraining": "Voice training",
     "createCharacter": "Create character",
     "noResults": "No characters match that search yet.",
-    "noResultsHint": "Try another name, or create them yourself.",
     "add": "Add",
-    "friends": "Friends"
+    "friends": "Friends",
+    "results": "{{count}} found",
+    "openWorld": "Open {{world}}",
+    "characters": "characters",
+    "canCall": "can call"
   },
   "characterProfile": {
     "addFriend": "Add friend",

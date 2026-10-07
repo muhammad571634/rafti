@@ -4,8 +4,8 @@
 Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
 o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 
-1. **Hozirgi oqim: F13 Find va personaj profili.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F12 tayyor. F13 dan keyin F14, F15.
+1. **Hozirgi oqim: F14 Profil va sozlamalar.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F13 tayyor. F14 dan keyin F15.
 2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -21,9 +21,10 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F13 uchun boshlang'ich ma'lumot:**
-   - `src/app/(tabs)/find.tsx` va `src/app/character/[id]` bor; BIMOBIMO #56-#132 (faqat kerakli bir nechtasini oching);
-   - qilinadi: dunyolar bo'yicha guruhlangan ro'yxat, qidiruv, personaj profilida qo'ng'iroq belgisi (ovozi bor).
+4. **F14 uchun boshlang'ich ma'lumot:**
+   - `src/app/profile.tsx` bor (sozlamalar, til, "They reach out" o'chirgichlari); BIMOBIMO #130, #131, #133;
+   - qilinadi: profil to'ldirilganlik foizi, qiziqishlar, taklif kodi (F10 dagi `inviteCodeFor` ni ko'rsatish),
+     hisobni o'chirish (tasdiq bilan). Til tanlash hozircha yashirin (bitta til).
 5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
    `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
    eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
@@ -193,7 +194,14 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     - **Daily calls** `src/components/chat/daily-calls-sheet.tsx`: kim qo'ng'iroq qiladi (ovozi bor do'stlar),
       ertalab/kechki vaqt (±30 daq.) va o'chirgichlar. `settings.morningCallTime`, `nightCallTime`, `callerId`;
       `runDailyInitiative` endi shu vaqtdan boshlab 4 soat ichida qo'ng'iroq qiladi (`inWindow`).
-  - Navbat: F13 Find va personaj profili.
+  - **F13 Find — kodda tayyor** (BIMOBIMO #56, #59): mavjud ekran kengaytirildi (prototipsiz, HANDOFF qoidasi bo'yicha):
+    - "All" tabi birinchi va standart; har bir dunyo alohida karta: sarlavha, soni, "›" → `src/app/world/[series].tsx`
+      (hamma personajlar, "N characters · M can call"); kartada 3 tadan sahifalar (gorizontal paging) va nuqtalar;
+    - avatarda yashil telefon belgisi = ovozi bor, qo'ng'iroq qilsa bo'ladi (`Avatar badge="call"`; Onboarding'dagi
+      belgi o'zgarmadi);
+    - qidiruv kartalarni olib tashlab, barcha dunyolardan tekis "N found" ro'yxatini ko'rsatadi;
+    - `CharacterRow` umumiy komponentga chiqdi (`src/components/character-row.tsx`).
+  - Navbat: F14 Profil va sozlamalar.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

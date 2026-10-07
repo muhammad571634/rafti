@@ -2,29 +2,40 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
-
 import {
-  Button,
-  CharacterAvatar,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
+
+import { CHARACTER_ROW_AVATAR as AVATAR, CharacterRow } from '@/components/character-row';
+import {
   Divider,
   EmptyState,
   IconButton,
-  ListRow,
   PressableScale,
   Screen,
   SearchBar,
+  SectionLabel,
   Txt,
 } from '@/components/ui';
-import { groupBySeries } from '@/mock';
+import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, CharacterCategory } from '@/types';
 
-const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
-const AVATAR = 48;
+type Tab = CharacterCategory | 'all';
+const TABS: Tab[] = ['all', 'school', 'fantasy', 'idol', 'daily', 'original'];
+/** Rows per page inside a world card. */
+const PAGE = 3;
 
-/** Discovery: worlds as plain lists under underline tabs; "Add" starts a chat on the spot. */
+/**
+ * Discovery: each world is a card of three, swiped page by page, with "›" for the
+ * whole world. A search drops the cards and lists every match across worlds.
+ */
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -33,24 +44,38 @@ export default function FindScreen() {
   const addFriend = useAppStore((s) => s.addFriend);
 
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<CharacterCategory | null>('school');
+  const [tab, setTab] = useState<Tab>('all');
 
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
+  const q = query.trim().toLowerCase();
 
-  const groups = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const filtered = characters.filter((c) => {
-      const matchesCategory = !category || c.category === category;
-      const matchesQuery =
-        !q ||
-        c.name.toLowerCase().includes(q) ||
-        c.handle.toLowerCase().includes(q) ||
-        c.series?.toLowerCase().includes(q) ||
-        c.tags.some((tag) => tag.includes(q));
-      return matchesCategory && matchesQuery;
-    });
-    return groupBySeries(filtered);
-  }, [characters, category, query]);
+  const results = useMemo(
+    () =>
+      q
+        ? characters.filter(
+            (c) =>
+              c.name.toLowerCase().includes(q) ||
+              c.handle.toLowerCase().includes(q) ||
+              c.series?.toLowerCase().includes(q) ||
+              c.tags.some((tag) => tag.includes(q)),
+          )
+        : [],
+    [characters, q],
+  );
+
+  const groups = useMemo(
+    () => groupBySeries(characters.filter((c) => tab === 'all' || c.category === tab)),
+    [characters, tab],
+  );
+
+  const row = (character: Character) => (
+    <CharacterRow
+      character={character}
+      isFriend={friendIds.has(character.id)}
+      onOpen={() => router.push(`/character/${character.id}`)}
+      onAdd={() => addFriend(character.id)}
+    />
+  );
 
   return (
     <Screen background={colors.bgPlain}>
@@ -66,38 +91,34 @@ export default function FindScreen() {
         />
       </View>
 
-      <SearchBar
-        value={query}
-        onChangeText={setQuery}
-        placeholder={t('find.searchPlaceholder')}
-        style={styles.search}
-      />
+      <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.search} />
 
-      <View style={styles.tabsWrap}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
-          {CATEGORIES.map((key) => {
-            const active = category === key;
-            return (
-              <PressableScale
-                key={key}
-                scaleTo={1}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: active }}
-                style={[styles.tab, active && styles.tabActive]}
-                onPress={() => setCategory((prev) => (prev === key ? null : key))}>
-                <Txt variant={active ? 'bodyStrong' : 'body'} color={active ? colors.text : colors.textMuted}>
-                  {t(`find.categories.${key}`)}
-                </Txt>
-              </PressableScale>
-            );
-          })}
-        </ScrollView>
-      </View>
+      {q ? null : (
+        <View style={styles.tabsWrap}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
+            {TABS.map((key) => {
+              const active = tab === key;
+              return (
+                <PressableScale
+                  key={key}
+                  scaleTo={1}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: active }}
+                  style={[styles.tab, active && styles.tabActive]}
+                  onPress={() => setTab(key)}>
+                  <Txt variant={active ? 'bodyStrong' : 'body'} color={active ? colors.text : colors.textMuted}>
+                    {t(`find.categories.${key}`)}
+                  </Txt>
+                </PressableScale>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
 
-      {groups.length === 0 ? (
+      {q && results.length === 0 ? (
         <EmptyState
           title={t('find.noResults')}
-          hint={t('find.noResultsHint')}
           actionLabel={t('find.createCharacter')}
           onAction={() => router.push('/create-character')}
         />
@@ -106,70 +127,98 @@ export default function FindScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.huge }}>
-          {groups.map((group) => (
-            <View key={group.series}>
-              <Txt variant="title" style={styles.series}>
-                {group.series}
-              </Txt>
-              {group.characters.map((character, i) => (
+          {q ? (
+            <>
+              <SectionLabel title={t('find.results', { count: results.length })} />
+              {results.map((character, i) => (
                 <View key={character.id}>
                   {i > 0 ? <Divider inset={space.lg + AVATAR + space.md} /> : null}
-                  <CharacterRow
-                    character={character}
-                    isFriend={friendIds.has(character.id)}
-                    onOpen={() => router.push(`/character/${character.id}`)}
-                    onAdd={() => addFriend(character.id)}
-                  />
+                  {row(character)}
                 </View>
               ))}
-            </View>
-          ))}
+            </>
+          ) : (
+            groups.map((group) => (
+              <WorldCard
+                key={group.series}
+                group={group}
+                row={row}
+                onOpen={() => router.push({ pathname: '/world/[series]', params: { series: group.series } })}
+              />
+            ))
+          )}
         </ScrollView>
       )}
     </Screen>
   );
 }
 
-function CharacterRow({
-  character,
-  isFriend,
+/** One world: its name with "›", then pages of three characters and the page dots. */
+function WorldCard({
+  group,
+  row,
   onOpen,
-  onAdd,
 }: {
-  character: Character;
-  isFriend: boolean;
+  group: CharacterGroup;
+  row: (c: Character) => React.ReactNode;
   onOpen: () => void;
-  onAdd: () => void;
 }) {
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
+  const [page, setPage] = useState(0);
+  const pageW = width - space.lg * 2;
 
-  // The row and "Add" are siblings: a button inside a button is unreachable for
-  // screen readers and invalid HTML on web.
+  const pages = useMemo(() => {
+    const out: Character[][] = [];
+    for (let i = 0; i < group.characters.length; i += PAGE) out.push(group.characters.slice(i, i + PAGE));
+    return out;
+  }, [group.characters]);
+
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
+    setPage(Math.round(e.nativeEvent.contentOffset.x / pageW));
+
   return (
-    <View style={styles.row}>
-      <ListRow
-        title={character.name}
-        subtitle={character.bio}
-        left={<CharacterAvatar character={character} size={AVATAR} />}
-        onPress={onOpen}
-        style={styles.rowMain}
-      />
-      {isFriend ? (
-        <View style={styles.friends}>
-          <Ionicons name="checkmark" size={14} color={colors.textMuted} />
-          <Txt variant="caption" color={colors.textMuted}>
-            {t('find.friends')}
-          </Txt>
+    <View style={styles.card}>
+      <PressableScale
+        style={styles.cardHead}
+        scaleTo={0.98}
+        accessibilityLabel={t('find.openWorld', { world: group.series })}
+        onPress={onOpen}>
+        <Txt variant="h3" style={styles.title} lines={1}>
+          {group.series}
+        </Txt>
+        <Txt variant="smallStrong" color={colors.textMuted}>
+          {group.characters.length}
+        </Txt>
+        <Ionicons name="chevron-forward" size={20} color={colors.text} />
+      </PressableScale>
+
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={onScroll}
+        onScroll={onScroll}
+        scrollEventThrottle={64}>
+        {pages.map((list, p) => (
+          <View key={p} style={{ width: pageW }}>
+            {list.map((character, i) => (
+              <View key={character.id}>
+                {i > 0 ? <Divider inset={space.lg + AVATAR + space.md} /> : null}
+                {row(character)}
+              </View>
+            ))}
+          </View>
+        ))}
+      </ScrollView>
+
+      {pages.length > 1 ? (
+        <View style={styles.dots}>
+          {pages.map((_, p) => (
+            <View key={p} style={[styles.dot, p === page && styles.dotOn]} />
+          ))}
         </View>
-      ) : (
-        <Button
-          label={t('find.add')}
-          size="sm"
-          variant="secondary"
-          onPress={onAdd}
-          style={styles.add}
-        />
-      )}
+      ) : null}
     </View>
   );
 }
@@ -193,9 +242,25 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: { borderBottomColor: colors.text },
-  series: { paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.xs },
-  row: { flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
-  rowMain: { flex: 1, paddingRight: space.sm },
-  friends: { flexDirection: 'row', alignItems: 'center', gap: space.xxs },
-  add: { minWidth: 56 },
+  card: {
+    marginHorizontal: space.lg,
+    marginTop: space.lg,
+    paddingBottom: space.sm,
+    borderRadius: radius.xl,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  cardHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    paddingTop: space.lg,
+    paddingBottom: space.xs,
+  },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingTop: space.xs, paddingBottom: space.xs },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.border },
+  dotOn: { backgroundColor: colors.text },
 });

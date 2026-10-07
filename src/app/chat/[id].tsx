@@ -193,7 +193,7 @@ export default function ChatRoomScreen() {
       case 'secretNote':
         return router.push(`/secret-note/${character.id}`);
       case 'quiz':
-        return router.push(`/quiz/${character.id}`);
+        return router.push({ pathname: '/quiz/[characterId]', params: { characterId: character.id } });
       case 'truthOrDare':
         return setTruthOpen(true);
       case 'date':
