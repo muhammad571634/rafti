@@ -7,7 +7,6 @@ import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-
 import {
   Button,
   CharacterAvatar,
-  Divider,
   Header,
   IconButton,
   ClayIcon,
@@ -212,17 +211,17 @@ export default function CharacterSettingsScreen() {
 
         {GROUPS.map((group) => (
           <View key={group.title}>
-            <SectionLabel title={t(`characterSettings.${group.title}`)} />
+            <SectionLabel tone="title" title={t(`characterSettings.${group.title}`)} />
             {group.actions.filter((action) => visible(action.key, character)).map((action, i) => (
               <View key={action.key}>
-                {i > 0 ? <Divider inset={space.lg + ROW_ICON + space.md} /> : null}
                 <ListRow
+                  size="large"
                   title={t(`characterSettings.${action.key}`)}
                   left={
                     action.clay ? (
-                      <ClayIcon name={action.clay} size={ROW_ICON} />
+                      <ClayIcon name={action.clay} size={ROW_ICON} tile={false} />
                     ) : (
-                      <IconTile icon={action.icon!} size={ROW_ICON} />
+                      <IconTile icon={action.icon!} size={ROW_ICON} background="transparent" glyphSize={22} />
                     )
                   }
                   chevron
@@ -438,16 +437,8 @@ function LabelRow({
 }
 
 const styles = StyleSheet.create({
-  bond: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    paddingTop: space.md,
-    borderRadius: radius.xl,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
+  // Straight on the canvas: no card around the bond.
+  bond: { marginTop: space.xl },
   bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.sm },
   bondHeart: {
     width: 36,
@@ -466,7 +457,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
-  bondRow: { marginTop: space.sm, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.divider },
+  bondRow: { marginTop: space.sm },
   labelScroll: { maxHeight: 460 },
   labelHint: { marginBottom: space.sm },
   locked: { opacity: 0.5 },

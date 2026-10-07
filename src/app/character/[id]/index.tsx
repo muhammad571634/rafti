@@ -5,9 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
-  Card,
   CharacterAvatar,
-  Divider,
   Header,
   IconButton,
   ClayIcon,
@@ -162,7 +160,8 @@ export default function CharacterProfileScreen() {
         {isFriend ? (
           <View style={styles.list}>
             <ListRow
-              left={<ClayIcon name="jar" size={ROW_TILE} />}
+              size="large"
+              left={<ClayIcon name="jar" size={ROW_TILE} tile={false} />}
               title={t('characterProfile.memories')}
               meta={memoryCount > 0 ? String(memoryCount) : undefined}
               chevron
@@ -171,9 +170,9 @@ export default function CharacterProfileScreen() {
                 memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')
               }
             />
-            <Divider inset={space.lg + ROW_TILE + space.md} />
             <ListRow
-              left={<IconTile icon="settings-outline" size={ROW_TILE} />}
+              size="large"
+              left={<IconTile icon="settings-outline" size={ROW_TILE} background="transparent" glyphSize={24} />}
               title={t('characterProfile.settings')}
               chevron
               onPress={() => router.push(`/character/${character.id}/settings`)}
@@ -185,7 +184,7 @@ export default function CharacterProfileScreen() {
   );
 }
 
-/** Level, progress to the next one and how long you have known each other; mint marks the bond. */
+/** Level, progress to the next one and how long you have known each other; mint marks the bond. No card around it. */
 function BondCard({ relationship }: { relationship: Relationship }) {
   const { t } = useTranslation();
   const progress = levelForIntimacy(relationship.intimacy).progress;
@@ -193,7 +192,7 @@ function BondCard({ relationship }: { relationship: Relationship }) {
   const maxed = relationship.intimacy >= relationship.nextLevelAt;
 
   return (
-    <Card variant="outlined" style={styles.bond}>
+    <View style={styles.bond}>
       <View style={styles.bondHead}>
         <Txt variant="smallStrong" lines={1} style={styles.grow}>
           {t('characterProfile.levelLine', {
@@ -221,7 +220,7 @@ function BondCard({ relationship }: { relationship: Relationship }) {
       <Txt variant="caption" color={colors.textFaint} style={styles.since}>
         {t('characterProfile.friends', { date: shortDate(relationship.anniversary) })}
       </Txt>
-    </Card>
+    </View>
   );
 }
 
