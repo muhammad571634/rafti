@@ -34,9 +34,8 @@ import type { Character, Conversation, HomeModule, Relationship } from '@/types'
 const CHAT_AVATAR = 44;
 /** Tile size of the Today and "meet" rows; their divider inset follows it. */
 const ROW_ICON = 38;
-/** Explore tiles: iOS home-screen size, a clay icon, five to a row. */
-const MODULE_TILE = 60;
-const MODULE_RADIUS = radius.lg;
+/** Explore icons: large clay art on the bare canvas, four to a row. */
+const MODULE_ICON = 68;
 /** Row dividers start under the row text, past the leading avatar or icon. */
 const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
 const TODO_INSET = space.lg + ROW_ICON + space.md;
@@ -84,8 +83,8 @@ function greetingSlot(hour: number) {
 }
 
 /**
- * The "Today" hub: the closest friend, today's gift, who is waiting, what is ready,
- * and every module one tap away.
+ * The "Today" hub, top to bottom: the friend you talked with last, every module one tap
+ * away, who is waiting, what is ready today, today's gift.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -230,37 +229,17 @@ export default function HomeScreen() {
           <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
         ) : null}
 
-        {todos.length > 0 ? (
-          <>
-            <SectionLabel title={t('home.today')} />
-            {todos.map((todo, i) => (
-              <Fragment key={todo.key}>
-                {i > 0 ? (
-                  // Plain rows sit on the canvas, so the line stops short of the edge too.
-                  <View style={styles.todoDivider}>
-                    <Divider inset={TODO_INSET} />
-                  </View>
-                ) : null}
-                <ListRow
-                  left={
-                    isCharacter(todo.icon) ? (
-                      <CharacterAvatar character={todo.icon} size={ROW_ICON} />
-                    ) : (
-                      <ClayIcon name={todo.icon} size={ROW_ICON} />
-                    )
-                  }
-                  title={todo.title}
-                  subtitle={todo.subtitle}
-                  trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
-                  chevron
-                  onPress={todo.onPress}
-                />
-              </Fragment>
-            ))}
-          </>
-        ) : null}
-
-        <DailyGiftCard />
+        {/* Every module one tap away, right under the friend card (BIMOBIMO #1). */}
+        <View style={styles.grid}>
+          {homeModules.map((module) => (
+            <ModuleCell
+              key={module.key}
+              module={module}
+              dot={module.key === 'gifts' && spinReady}
+              onPress={() => router.push(module.route as never)}
+            />
+          ))}
+        </View>
 
         {chats.length > 0 ? (
           <SectionLabel
@@ -298,17 +277,40 @@ export default function HomeScreen() {
           )}
         </Card>
 
-        <SectionLabel title={t('home.explore')} />
-        <View style={styles.grid}>
-          {homeModules.map((module) => (
-            <ModuleCell
-              key={module.key}
-              module={module}
-              dot={module.key === 'gifts' && spinReady}
-              onPress={() => router.push(module.route as never)}
-            />
-          ))}
-        </View>
+        {todos.length > 0 ? (
+          <>
+            <SectionLabel title={t('home.today')} />
+            {todos.map((todo, i) => (
+              <Fragment key={todo.key}>
+                {i > 0 ? (
+                  // Plain rows sit on the canvas, so the line stops short of the edge too.
+                  <View style={styles.todoDivider}>
+                    <Divider inset={TODO_INSET} />
+                  </View>
+                ) : null}
+                <ListRow
+                  left={
+                    isCharacter(todo.icon) ? (
+                      <CharacterAvatar character={todo.icon} size={ROW_ICON} />
+                    ) : (
+                      <ClayIcon name={todo.icon} size={ROW_ICON} />
+                    )
+                  }
+                  title={todo.title}
+                  subtitle={todo.subtitle}
+                  trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
+                  chevron
+                  onPress={todo.onPress}
+                />
+              </Fragment>
+            ))}
+          </>
+        ) : null}
+
+        <DailyGiftCard />
+
+
+
       </ScrollView>
     </Screen>
   );
@@ -372,7 +374,7 @@ function BondChip({ level }: { level: number }) {
   );
 }
 
-/** One Explore module: a clay icon tile over a short name; the label carries the full name. */
+/** One Explore module: a large clay icon over a short name; the label carries the full name. */
 function ModuleCell({
   module,
   dot,
@@ -390,8 +392,8 @@ function ModuleCell({
       scaleTo={0.94}
       accessibilityLabel={t(`home.modules.${module.labelKey}`)}
       onPress={onPress}>
-      <ClayIcon name={MODULE_ICONS[module.key]} size={MODULE_TILE} radius={MODULE_RADIUS} dot={dot} />
-      <Txt variant="chip" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
+      <ClayIcon name={MODULE_ICONS[module.key]} size={MODULE_ICON} tile={false} dot={dot} />
+      <Txt variant="small" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
         {t(`home.short.${module.key}`)}
       </Txt>
     </PressableScale>
@@ -443,11 +445,11 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    rowGap: space.xl,
+    rowGap: space.lg,
     paddingHorizontal: space.sm,
-    paddingTop: space.xs,
+    paddingTop: space.xl,
   },
-  // A fifth of the row, so rounding never pushes the fifth tile onto a new line.
-  cell: { width: '20%', alignItems: 'center', gap: space.sm },
+  // A quarter of the row, so rounding never pushes the fourth icon onto a new line.
+  cell: { width: '25%', alignItems: 'center', gap: space.xs },
   cellLabel: { fontWeight: weight.medium },
 });

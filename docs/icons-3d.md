@@ -32,7 +32,7 @@ icons: the clay style is for "a place you go" or "a thing you do", not for chrom
 | Place | File | Icons |
 | --- | --- | --- |
 | Chat "+" sheet | `src/app/chat/[id].tsx` (`ATTACHMENTS`) | voice, photo, secretNote, quiz, truthOrDare, date, calls, diary |
-| Home "Explore" grid | `src/app/(tabs)/index.tsx` (`MODULE_ICONS`) | store, date, diary, camera, contacts, gift (with dot), calls, bedtime, radio, board |
+| Home "Explore" grid (4 columns, 68px art, no tile, right under the Today card since 2026-10-07) | `src/app/(tabs)/index.tsx` (`MODULE_ICONS`) | store, date, diary, camera, contacts, gift (with dot), calls, bedtime, radio, board |
 | Home "Today" rows | `src/app/(tabs)/index.tsx` (`todos`) | secretNote (note), gift (spin), compass (meet someone); diary pages and plans keep the friend's face |
 | Us "+" sheet | `src/components/us/publish-sheet.tsx` | calendar, diary, board |
 | Us plans and moments | `src/app/(tabs)/us.tsx` (`MOMENT_ICON`) | sparkles (met), levelUp, calls, diary, secretNote, date, camera, calendar, board, quiz |

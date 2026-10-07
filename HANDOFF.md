@@ -47,6 +47,8 @@ the last conversation = **done**.
   (`docs/agent-tasks/android-dev-build.md`; its result goes at the end of that file).
 - Hero scenes: all 40 characters have one. Unused renders sit untracked in
   `assets/raw/heroes-review/` and `assets/raw/heroes-rejected/` (the user's to keep or delete).
+- Home reordered at the user's request (2026-10-07): Today card → 10 module icons (4 columns,
+  large clay art on the bare canvas, no label) → Chats → Today rows → Daily gift. Logic unchanged.
 - Next candidates: the notification image
   (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
 
