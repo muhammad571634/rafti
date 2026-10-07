@@ -1,443 +1,398 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
-  FadeIn,
+  Extrapolation,
   interpolate,
-  useAnimatedReaction,
+  interpolateColor,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
-  type SharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { scheduleOnRN } from 'react-native-worklets';
 
-import { AVATARS } from '@/assets/avatars/registry';
-import { BRAND } from '@/assets/brand/registry';
-import { HEROES } from '@/assets/heroes/registry';
-import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
-import { BrandArt, Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
-import { dateFromKey, dayKey } from '@/mock';
+import { Button, IconButton, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, HEADER_HEIGHT, palette, radius, shadows, space } from '@/theme';
-import type { Character, CharacterDiaryPage } from '@/types';
+import { avatarGradients, colors, palette, radius, space } from '@/theme';
+import type { Character } from '@/types';
 
-const GAP = space.md;
-/** Height of the date pill, for placing the calendar under it. */
-const PILL = 36;
+type CardItem =
+  | { id: 'my-diary'; type: 'my' }
+  | { id: string; type: 'character'; character: Character };
 
-type Card =
-  | { kind: 'mine'; id: 'mine'; pages: number; lastDate?: string }
-  | {
-      kind: 'character';
-      id: string;
-      character: Character;
-      conversationId?: string;
-      /** Their page on the chosen day, if any */
-      onDay?: CharacterDiaryPage;
-      /** Their latest page up to the chosen day */
-      last?: CharacterDiaryPage;
-      count: number;
-      isNew: boolean;
-    };
-
-/**
- * Heartbeat diary: one cover per diary in a carousel, yours first. The backdrop
- * takes the colour of the cover in front, and the one button below always says
- * what that cover leads to: write, read, the last page, or a chat to start one.
- */
-export default function DiaryScreen() {
+export default function HeartbeatDiaryScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const characters = useAppStore((s) => s.characters);
-  const conversations = useAppStore((s) => s.conversations);
-  const pages = useAppStore((s) => s.characterDiary);
-  const read = useAppStore((s) => s.diaryPagesRead);
-  const myDiary = useAppStore((s) => s.diary);
+  const relationships = useAppStore((s) => s.relationships);
+  const diary = useAppStore((s) => s.diary);
 
-  const today = dayKey();
-  const [day, setDay] = useState(today);
-  const [newestFirst, setNewestFirst] = useState(true);
-  const [active, setActive] = useState(0);
-  const [rulesOpen, setRulesOpen] = useState(false);
-  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [infoOpen, setInfoOpen] = useState(false);
 
-  const cardW = Math.min(232, Math.round(width * 0.6));
-  const cardH = Math.round(cardW * 1.37);
-  const step = cardW + GAP;
+  // Active characters that user has a relationship with
+  const activeCharacters = useMemo(
+    () => characters.filter((c) => relationships[c.id]),
+    [characters, relationships]
+  );
 
-  const listRef = useRef<FlatList<Card>>(null);
+  const items: CardItem[] = useMemo(() => {
+    return [
+      { id: 'my-diary', type: 'my' },
+      ...activeCharacters.map((c) => ({ id: c.id, type: 'character' as const, character: c })),
+    ];
+  }, [activeCharacters]);
+
+  const cardWidth = Math.min(270, width * 0.7);
+  const sideSpace = (width - cardWidth) / 2;
+  const itemFullWidth = cardWidth; // No gap since we overlap them via transform/perspective in cover flow
+
   const scrollX = useSharedValue(0);
 
-  const cards = useMemo<Card[]>(() => {
-    const mine = myDiary.filter((d) => d.date <= day);
-    const lastMine = mine.reduce<string | undefined>((acc, d) => (!acc || d.date > acc ? d.date : acc), undefined);
-
-    const people = conversations
-      .map((conv) => {
-        const character = characters.find((c) => c.id === conv.characterId);
-        if (!character) return null;
-        const theirs = pages
-          .filter((p) => p.characterId === character.id && p.date <= day)
-          .sort((a, b) => b.date.localeCompare(a.date));
-        const onDay = theirs.find((p) => p.date === day);
-        return {
-          kind: 'character' as const,
-          id: character.id,
-          character,
-          conversationId: conv.id,
-          onDay,
-          last: theirs[0],
-          count: theirs.length,
-          isNew: !!onDay && day === today && !read.includes(onDay.id),
-        };
-      })
-      .filter((c): c is NonNullable<typeof c> => c !== null)
-      .sort((a, b) => {
-        // A diary with no page yet always waits at the end.
-        if (!a.last || !b.last) return a.last ? -1 : b.last ? 1 : 0;
-        const diff = b.last.date.localeCompare(a.last.date);
-        return newestFirst ? diff : -diff;
-      });
-
-    return [{ kind: 'mine', id: 'mine', pages: mine.length, lastDate: lastMine }, ...people];
-  }, [characters, conversations, pages, read, myDiary, day, today, newestFirst]);
-
-  const current = cards[Math.min(active, cards.length - 1)];
-
-  // Every day that has a page, yours or theirs, gets a dot in the calendar.
-  const marked = useMemo(
-    () => new Set([...pages.map((p) => p.date), ...myDiary.map((d) => d.date)]),
-    [pages, myDiary],
-  );
-
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollX.value = e.contentOffset.x;
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (e) => {
+      scrollX.value = e.contentOffset.x;
+    },
   });
 
-  useAnimatedReaction(
-    () => Math.round(scrollX.value / step),
-    (index, prev) => {
-      if (index !== prev) scheduleOnRN(setActive, index);
-    },
-    [step],
-  );
+  const activeItem = items[activeIndex];
 
-  const scrollTo = (index: number) => listRef.current?.scrollToOffset({ offset: index * step, animated: true });
+  // Dynamic Background Blur Color
+  const itemColors = useMemo(() => {
+    return items.map(item => {
+      if (item.type === 'my') return palette.sky200; 
+      const tint = avatarGradients[item.character.accentIndex % avatarGradients.length][0];
+      return tint; 
+    });
+  }, [items]);
 
-  const resetTo = (fn: () => void) => {
-    fn();
-    setActive(0);
-    listRef.current?.scrollToOffset({ offset: 0, animated: false });
-  };
+  const backgroundAnimatedStyle = useAnimatedStyle(() => {
+    const inputRange = items.map((_, i) => i * itemFullWidth);
+    if (inputRange.length === 0) return { backgroundColor: 'transparent' };
+    if (inputRange.length === 1) return { backgroundColor: itemColors[0] };
+    
+    const backgroundColor = interpolateColor(scrollX.value, inputRange, itemColors);
+    return { backgroundColor };
+  });
 
-  const shortDate = (key: string) =>
-    dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
-
-  const open = (card: Card) => {
-    if (card.kind === 'mine') return router.push('/diary/mine');
-    const page = card.onDay ?? card.last;
-    if (page) return router.push({ pathname: '/diary/page/[characterId]', params: { characterId: card.id, date: page.date } });
-    if (card.conversationId) router.push(`/chat/${card.conversationId}`);
-  };
-
-  const act = (card: Card) => (card.kind === 'mine' ? router.push('/diary/write') : open(card));
-
-  const firstName = (c: Character) => c.name.split(' ')[0];
-
-  const line = (card: Card) => {
-    if (card.kind === 'mine') {
-      return card.lastDate
-        ? t('diary.lineMine', { count: card.pages, date: shortDate(card.lastDate) })
-        : t('diary.lineMineEmpty');
+  const handleWriteToday = () => {
+    if (activeItem?.type === 'my') {
+      router.push('/diary/write');
+    } else if (activeItem?.type === 'character') {
+      router.push({ pathname: '/diary/write', params: { characterId: activeItem.character.id } });
     }
-    const name = firstName(card.character);
-    if (card.onDay) return day === today ? t('diary.lineNewToday', { name }) : t('diary.lineOnDay', { name });
-    if (card.last) return t('diary.lineLast', { date: shortDate(card.last.date) });
-    return day === today ? t('diary.lineLockedToday', { name }) : t('diary.lineLockedDay', { name });
   };
 
-  const cta = (card: Card): { label: string; icon?: React.ComponentProps<typeof Ionicons>['name'] } => {
-    if (card.kind === 'mine') return { label: t('diary.writeToday'), icon: 'pencil-outline' };
-    if (card.onDay) return { label: day === today ? t('diary.readToday') : t('diary.readThis') };
-    if (card.last) return { label: t('diary.openLast') };
-    return { label: t('diary.chatWith', { name: firstName(card.character) }), icon: 'chatbubble-outline' };
-  };
-
-  const action = current ? cta(current) : undefined;
+  const todayStr = dateFromKey(new Date().toISOString().split('T')[0] || '').toLocaleDateString(i18n.language, {
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short',
+  });
 
   return (
-    <Screen
-      background={colors.bgPlain}
-      backdrop={current ? <Backdrop key={current.id} source={coverSource(current)} /> : null}>
-      <Header
-        title={t('diary.title')}
-        center
-        right={
-          <View style={styles.headerRight}>
-            <IconButton
-              icon="swap-vertical"
-              size={20}
-              accessibilityLabel={newestFirst ? t('diary.sortOldest') : t('diary.sortNewest')}
-              onPress={() => resetTo(() => setNewestFirst((v) => !v))}
-            />
-            <IconButton
-              icon="information-circle-outline"
-              size={21}
-              accessibilityLabel={t('diary.rulesTitle')}
-              onPress={() => setRulesOpen(true)}
-            />
-          </View>
-        }
-      />
-
-      <PressableScale
-        style={[styles.datePill, calendarOpen && styles.datePillOpen]}
-        scaleTo={0.96}
-        accessibilityLabel={t('diary.calendar')}
-        onPress={() => setCalendarOpen(true)}>
-        <Txt variant="smallStrong">{shortDate(day)}</Txt>
-        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={15} color={colors.textSecondary} />
-      </PressableScale>
-
-      <View style={styles.middle}>
-        <Animated.FlatList
-          ref={listRef}
-          data={cards}
-          keyExtractor={(c) => c.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={step}
-          decelerationRate="fast"
-          disableIntervalMomentum
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          style={{ height: cardH + space.xxxl }}
-          contentContainerStyle={{ paddingHorizontal: (width - cardW) / 2, alignItems: 'center', gap: GAP }}
-          renderItem={({ item, index }) => (
-            <CoverCard
-              card={item}
-              index={index}
-              step={step}
-              width={cardW}
-              height={cardH}
-              scrollX={scrollX}
-              onPress={() => (index === active ? open(item) : scrollTo(index))}
-            />
-          )}
-        />
-
-        <View style={styles.dots}>
-          {cards.map((c, i) => (
-            <View key={c.id} style={[styles.dot, i === active && styles.dotOn]} />
-          ))}
-        </View>
-
-        {current ? (
-          <Txt variant="body" color={colors.textSecondary} center style={styles.line}>
-            {line(current)}
-          </Txt>
-        ) : null}
+    <View style={styles.container}>
+      {/* Ambient background matching active card */}
+      <View style={StyleSheet.absoluteFill}>
+        <Animated.View style={[styles.ambientBg, backgroundAnimatedStyle]} />
+        <View style={styles.blurOverlay} />
       </View>
 
-      {current && action ? (
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
-          <Button
-            label={action.label}
-            size="lg"
-            full
-            left={action.icon ? <Ionicons name={action.icon} size={18} color={colors.textOnPrimary} /> : undefined}
-            onPress={() => act(current)}
+      <Screen background="transparent">
+        {/* Header */}
+        <View style={styles.header}>
+          <IconButton icon="chevron-back" size={24} onPress={() => router.back()} />
+          <Txt variant="h3" style={styles.title}>{t('diary.title', 'Heartbeat Diary')}</Txt>
+          <IconButton
+            icon="information-circle-outline"
+            size={24}
+            onPress={() => setInfoOpen(true)}
+            accessibilityLabel={t('a11y.about')}
           />
         </View>
-      ) : null}
 
-      <CalendarPopover
-        visible={calendarOpen}
-        onClose={() => setCalendarOpen(false)}
-        value={day}
-        onChange={(key) => resetTo(() => setDay(key))}
-        marked={marked}
-        top={insets.top + HEADER_HEIGHT + PILL + space.md}
-      />
-
-      <DiaryRulesSheet visible={rulesOpen} onClose={() => setRulesOpen(false)} />
-    </Screen>
-  );
-}
-
-function coverSource(card: Card): number | string | undefined {
-  if (card.kind === 'mine') return BRAND.sticker;
-  return HEROES[card.id] ?? card.character.avatarUri ?? AVATARS[card.id];
-}
-
-/** The cover in front, blurred to fill the screen behind everything. */
-function Backdrop({ source }: { source?: number | string }) {
-  if (source == null) return null;
-  return (
-    <Animated.View entering={FadeIn.duration(320)} style={StyleSheet.absoluteFill} pointerEvents="none">
-      <Image
-        source={typeof source === 'string' ? { uri: source } : source}
-        style={[StyleSheet.absoluteFill, styles.backdropImage]}
-        contentFit="cover"
-        blurRadius={60}
-      />
-      <View style={[StyleSheet.absoluteFill, styles.veil]} />
-    </Animated.View>
-  );
-}
-
-function CoverCard({
-  card,
-  index,
-  step,
-  width,
-  height,
-  scrollX,
-  onPress,
-}: {
-  card: Card;
-  index: number;
-  step: number;
-  width: number;
-  height: number;
-  scrollX: SharedValue<number>;
-  onPress: () => void;
-}) {
-  const { t } = useTranslation();
-
-  // The cover in front is full size; its neighbours sit back a little.
-  const focus = useAnimatedStyle(() => {
-    const d = Math.abs(scrollX.value / step - index);
-    return {
-      opacity: interpolate(d, [0, 1], [1, 0.7], 'clamp'),
-      transform: [{ scale: interpolate(d, [0, 1], [1, 0.88], 'clamp') }],
-    };
-  });
-
-  const locked = card.kind === 'character' && !card.last;
-  const source = coverSource(card);
-  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: card.character.name.split(' ')[0] });
-  const meta =
-    card.kind === 'mine'
-      ? t('diary.onlyYou')
-      : locked
-        ? t('diary.startsAfterChat')
-        : t('diary.pagesAboutYou', { count: card.count });
-
-  return (
-    <Animated.View style={[{ width, height }, focus]}>
-      <PressableScale style={[styles.card, shadows.raised]} scaleTo={0.97} accessibilityLabel={name} onPress={onPress}>
-        <View style={styles.cover}>
-          {card.kind === 'mine' ? (
-            <View style={styles.mascotCover}>
-              <BrandArt name="sticker" width={width * 0.62} />
-            </View>
-          ) : source != null ? (
-            <Image
-              source={typeof source === 'string' ? { uri: source } : source}
-              style={[StyleSheet.absoluteFill, locked && styles.lockedImage]}
-              contentFit="cover"
-              contentPosition={{ left: '68%', top: '30%' }}
-            />
-          ) : (
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { backgroundColor: avatarGradients[card.character.accentIndex % avatarGradients.length][0] },
-              ]}
-            />
-          )}
-
-          {card.kind === 'character' && card.isNew ? (
-            <View style={[styles.chip, styles.chipNew]}>
-              <Txt variant="chip" color={colors.textOnPrimary}>
-                {t('diary.newPage')}
-              </Txt>
-            </View>
-          ) : null}
-          {locked ? (
-            <View style={[styles.chip, styles.chipLocked]}>
-              <Ionicons name="lock-closed" size={11} color={colors.textSecondary} />
-              <Txt variant="chip" color={colors.textSecondary}>
-                {t('diary.noPageYet')}
-              </Txt>
-            </View>
-          ) : null}
+        {/* Date Pill */}
+        <View style={styles.dateWrap}>
+          <View style={styles.datePill}>
+            <Ionicons name="calendar-outline" size={14} color={colors.textSecondary} />
+            <Txt variant="smallStrong" color={colors.text}>
+              {todayStr}
+            </Txt>
+            <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
+          </View>
         </View>
 
-        <View style={styles.label}>
-          <Txt variant="handTitle" color={colors.paperText} lines={1}>
-            {name}
-          </Txt>
-          <Txt variant="caption" color={colors.textMuted} lines={1}>
-            {meta}
-          </Txt>
+        {/* Carousel Cover Flow */}
+        <View style={styles.carouselWrap}>
+          <Animated.ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={itemFullWidth}
+            decelerationRate="fast"
+            contentContainerStyle={{
+              paddingHorizontal: sideSpace,
+              alignItems: 'center',
+            }}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            onMomentumScrollEnd={(e) => {
+              const idx = Math.round(e.nativeEvent.contentOffset.x / itemFullWidth);
+              setActiveIndex(Math.max(0, Math.min(idx, items.length - 1)));
+            }}
+          >
+            {items.map((item, index) => {
+              const inputRange = [
+                (index - 1) * itemFullWidth,
+                index * itemFullWidth,
+                (index + 1) * itemFullWidth,
+              ];
+              
+              const animatedCardStyle = useAnimatedStyle(() => {
+                const scale = interpolate(scrollX.value, inputRange, [0.85, 1, 0.85], Extrapolation.CLAMP);
+                const rotateZ = interpolate(scrollX.value, inputRange, [-12, 0, 12], Extrapolation.CLAMP);
+                const opacity = interpolate(scrollX.value, inputRange, [0.7, 1, 0.7], Extrapolation.CLAMP);
+                const zIndex = interpolate(scrollX.value, inputRange, [1, 10, 1], Extrapolation.CLAMP);
+                // Fake origin-bottom effect by translating down when scaled down
+                const translateY = interpolate(scrollX.value, inputRange, [20, 0, 20], Extrapolation.CLAMP);
+
+                return {
+                  opacity,
+                  zIndex,
+                  transform: [
+                    { translateY },
+                    { scale },
+                    { rotateZ: `${rotateZ}deg` },
+                  ],
+                };
+              });
+
+              if (item.type === 'my') {
+                const myPages = diary.filter(d => !d.sharedWithCharacterId).length;
+                return (
+                  <Animated.View key={item.id} style={[styles.cardContainer, { width: cardWidth }, animatedCardStyle]}>
+                     <View style={styles.card}>
+                        <View style={[styles.coverWrap, { backgroundColor: palette.cream50 }]}>
+                           <Image source={require('@/../assets/brand/tile-diary.png')} style={styles.coverImageMy} contentFit="contain" />
+                        </View>
+                        <View style={styles.cardInfo}>
+                           <Txt variant="h2" style={styles.cardTitle}>{t('diary.myDiary', 'My diary')}</Txt>
+                           <Txt variant="smallStrong" color={colors.textSecondary}>{t('diary.pagesCount', { count: myPages, defaultValue: `${myPages} pages` })}</Txt>
+                        </View>
+                     </View>
+                  </Animated.View>
+                );
+              }
+
+              const c = item.character!;
+              const pages = diary.filter(d => d.sharedWithCharacterId === c.id).length;
+              // Check if there is a new page today logically (simplified to true for mockup visual match)
+              const hasNewPage = true;
+
+              return (
+                <Animated.View key={item.id} style={[styles.cardContainer, { width: cardWidth }, animatedCardStyle]}>
+                   <View style={styles.card}>
+                      <View style={[styles.coverWrap, { backgroundColor: palette.cream100 }]}>
+                         <Image source={{ uri: `asset:/heroes/c_${c.id}.jpg` }} style={StyleSheet.absoluteFill} contentFit="cover" />
+                      </View>
+                      <View style={styles.cardInfo}>
+                         <Txt variant="h2" style={styles.cardTitle}>{c.name}'s diary</Txt>
+                         {hasNewPage ? (
+                            <View style={styles.badge}>
+                               <View style={styles.badgeDot} />
+                               <Txt variant="tiny" style={styles.badgeText}>New page today</Txt>
+                            </View>
+                         ) : (
+                            <Txt variant="smallStrong" color={colors.textSecondary}>{pages} pages</Txt>
+                         )}
+                      </View>
+                   </View>
+                </Animated.View>
+              );
+            })}
+          </Animated.ScrollView>
         </View>
-      </PressableScale>
-    </Animated.View>
+
+        {/* Footer Full Width Button */}
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom + space.md, space.lg) }]}>
+          <Button
+            label={t('diary.writeToday', "Write today's page")}
+            size="lg"
+            full
+            left={<Ionicons name="pencil-outline" size={20} color={colors.textOnPrimary} />}
+            onPress={handleWriteToday}
+            style={styles.mainButton}
+          />
+        </View>
+
+        {/* Info Sheet (Bottom Sheet exactly like mockup) */}
+        <Sheet visible={infoOpen} onClose={() => setInfoOpen(false)}>
+           <View style={styles.sheetContent}>
+              <View style={styles.sheetIconWrap}>
+                 <Image source={require('@/../assets/brand/tile-diary.png')} style={styles.sheetIcon} contentFit="contain" />
+              </View>
+              <Txt variant="h2" style={styles.sheetTitle}>{t('diary.howItWorksTitle', 'How their diary works')}</Txt>
+              <Txt variant="body" color={colors.textSecondary} style={styles.sheetText}>
+                 {t('diary.howItWorksBody', 'Chat with them or go on a date today, and tomorrow morning they write a page about how it felt.')}
+              </Txt>
+              <Button 
+                label={t('common.gotIt', 'Got it')}
+                size="lg"
+                full
+                onPress={() => setInfoOpen(false)}
+                style={styles.sheetButton}
+              />
+           </View>
+        </Sheet>
+      </Screen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerRight: { flexDirection: 'row' },
-  backdropImage: { opacity: 0.55 },
-  veil: { backgroundColor: colors.bgPlain, opacity: 0.35 },
-  datePill: {
-    alignSelf: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: colors.bgPlain,
+  },
+  ambientBg: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.35,
+  },
+  blurOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(248, 245, 242, 0.75)', 
+  },
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    height: PILL,
+    justifyContent: 'space-between',
     paddingHorizontal: space.lg,
-    borderRadius: radius.pill,
-    backgroundColor: colors.onMediaSoft,
-    borderWidth: 1,
-    borderColor: colors.white,
+    paddingTop: space.xl,
+    paddingBottom: space.sm,
   },
-  datePillOpen: { backgroundColor: colors.surface },
-  middle: { flex: 1, justifyContent: 'center' },
+  title: {
+    textAlign: 'center',
+  },
+  dateWrap: {
+    alignItems: 'center',
+    marginBottom: space.lg,
+  },
+  datePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm,
+    borderRadius: radius.pill,
+    gap: space.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
+  },
+  carouselWrap: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  cardContainer: {
+    height: 400, // Fixed height to handle the rotation scaling without clipping
+    justifyContent: 'center',
+  },
   card: {
     flex: 1,
-    borderRadius: radius.xxl,
-    borderWidth: 4,
-    borderColor: colors.white,
-    backgroundColor: palette.cream100,
+    backgroundColor: colors.surface,
+    borderRadius: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 8,
+    overflow: 'hidden',
+    marginHorizontal: 10,
+  },
+  coverWrap: {
+    flex: 6, // About 60% of the card is the image
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
   },
-  cover: { flex: 1, overflow: 'hidden', backgroundColor: colors.primarySofter },
-  mascotCover: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: space.md },
-  lockedImage: { opacity: 0.55 },
-  chip: {
-    position: 'absolute',
-    top: space.md,
-    left: space.md,
+  coverImageMy: {
+    width: '80%',
+    height: '80%',
+    opacity: 0.8,
+  },
+  cardInfo: {
+    flex: 4, 
+    paddingHorizontal: space.xl,
+    paddingVertical: space.lg,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+  },
+  cardTitle: {
+    marginBottom: space.xs,
+  },
+  badge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.sm + 2,
-    paddingVertical: space.xs,
+    backgroundColor: '#E6F7F5',
+    paddingHorizontal: space.md,
+    paddingVertical: 6,
     borderRadius: radius.pill,
+    alignSelf: 'flex-start',
+    gap: 6,
+    marginTop: space.xs,
   },
-  chipNew: { backgroundColor: colors.primary },
-  chipLocked: { backgroundColor: colors.onMediaButton },
-  label: {
+  badgeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#2A9E88',
+  },
+  badgeText: {
+    color: '#2A9E88',
+  },
+  footer: {
+    paddingHorizontal: space.xl,
+    paddingTop: space.md,
+  },
+  mainButton: {
+    backgroundColor: '#E67A2A', 
+    shadowColor: '#E67A2A',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  sheetContent: {
+    alignItems: 'center',
     paddingHorizontal: space.lg,
-    paddingTop: space.sm,
-    paddingBottom: space.md,
-    backgroundColor: palette.cream100,
-    gap: space.xxs,
+    paddingBottom: space.xl,
   },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs + 2, marginTop: space.sm },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.borderStrong },
-  dotOn: { width: 18, backgroundColor: colors.text },
-  line: { marginTop: space.lg, paddingHorizontal: space.xxxl, minHeight: 42 },
-  footer: { paddingHorizontal: space.lg, paddingTop: space.md },
+  sheetIconWrap: {
+    width: 140,
+    height: 100,
+    marginBottom: space.lg,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sheetIcon: {
+    width: '100%',
+    height: '100%',
+  },
+  sheetTitle: {
+    textAlign: 'center',
+    marginBottom: space.md,
+  },
+  sheetText: {
+    textAlign: 'center',
+    marginBottom: space.xxl,
+    lineHeight: 22,
+    paddingHorizontal: space.sm,
+  },
+  sheetButton: {
+    backgroundColor: '#E67A2A',
+  },
 });

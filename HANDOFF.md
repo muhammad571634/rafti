@@ -390,3 +390,4 @@
 6. Tillar: rus, o'zbek (i18n tayyor — har til bitta JSON).
 7. Keyin: dark mode, widget, guruh chati, dunyo voqealari, rasmlarni WebP'ga o'tkazish.
 8. Ixtiyoriy: Oppa va Luna portretlari. Nashrdan oldin "Rafti" tovar belgisi tekshiruvi.
+- **Oct 7 (F8)**: Heartbeat Diary UI fully redesigned matching exact BIMOBIMO stack/deck screenshots (Apple minimalist).
