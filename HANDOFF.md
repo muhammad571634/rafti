@@ -4,8 +4,8 @@
 Foydalanuvchi bulutdagi Claude'dan Claude Desktop (lokal, Windows, papka `C:\Users\joray\BIMOBIMO`) ga
 o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 
-1. **Hozirgi oqim: F12 Chat "+" o'yinlari.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
-   F1-F11 tayyor. F12 dan keyin F13, F14, F15.
+1. **Hozirgi oqim: F13 Find va personaj profili.** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   F1-F12 tayyor. F13 dan keyin F14, F15.
 2. **Har bir F oqimini qurish tartibi** (shu sessiyada shunday ishlandi, foydalanuvchiga yoqdi):
    1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
       `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
@@ -21,10 +21,9 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
 3. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; asosiy matnlar katta va
    qalin (`src/theme/typography.ts`, qo'lda kattalashtirmang); bitta asosiy to'q sariq tugma; mint faqat
    munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
-4. **F12 uchun boshlang'ich ma'lumot:**
-   - chatdagi "+" menyusi `src/app/chat/[id].tsx` da (secret note, bedtime, date bor);
-   - qilinadi: juftlar kvizi, haqiqat yoki jasorat, kunlik qo'ng'iroq vaqti sozlamasi; BIMOBIMO #42-#48, video B 31s.
-     Kviz/o'yin natijasi F11 dagi kabi yaqinlik + moment + ertasi kundalik zanjiriga ulanadi.
+4. **F13 uchun boshlang'ich ma'lumot:**
+   - `src/app/(tabs)/find.tsx` va `src/app/character/[id]` bor; BIMOBIMO #56-#132 (faqat kerakli bir nechtasini oching);
+   - qilinadi: dunyolar bo'yicha guruhlangan ro'yxat, qidiruv, personaj profilida qo'ng'iroq belgisi (ovozi bor).
 5. **Muhit:** 8081 portda boshqa sessiyaning serveri osilib qolishi mumkin. Unda `.claude/launch.json` dagi
    `bimobimo-web-8082` ni ishlating. `board.tsx` → `board/index.tsx` kabi ko'chirishdan keyin typed routes
    eskirsa, `%TEMP%\metro-cache` va `metro-file-map-*` ni o'chirib, serverni qayta ishga tushiring.
@@ -181,7 +180,20 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     - `src/app/date/album.tsx` — "Our dates": polaroidlar panjarasi;
     - eski `dateScenarios` va `startDate` olib tashlandi (uchrashuv endi chatda emas, o'z ekranida).
     - Qilinmadi: foydalanuvchilar yaratadigan mavzular (P3), joylar uchun rasm (hozir emoji tile).
-  - Navbat: F12 Chat "+" o'yinlari.
+  - **F12 Chat "+" o'yinlari — kodda tayyor** (BIMOBIMO #42-#48; prototip tasdiqlangan:
+    https://claude.ai/artifact/Vr4YPbc6z9LZLGmrfXzRS8):
+    - "+" endi 4×2 panjara, Explore B uslubidagi rangli Phosphor duotone ikonkalar (`moduleTints`: voice, secretNote,
+      quiz, truthOrDare qo'shildi): Voice, Photo, Secret note, Couple quiz, Truth or dare, Date, Daily calls, Diary.
+      Foydalanuvchi emoji ikonkalarni yoqtirmadi — shu uslub tanlandi;
+    - **Couple quiz** `src/app/quiz/[characterId].tsx`: 3 to'plam × 5 savol (`src/mock/games.ts`), personaj javobi
+      `partnerAnswer` (personaj+savol bo'yicha barqaror hash), javob tanlangach darhol ochiladi; natija chatga system
+      karta ("💞 First date · 4/5"), personaj izohi (`quizReply`), yaqinlik `2 + 2×moslik`, `quiz` moment (Us filtri "Games");
+    - **Truth or dare** `src/components/chat/truth-or-dare-sheet.tsx`: SVG g'ildirak (Reanimated aylanish), personajga
+      tushsa siz Truth/Dare tanlaysiz — savol chatga ketadi, u javob beradi (+3); sizga tushsa u chatda savol beradi;
+    - **Daily calls** `src/components/chat/daily-calls-sheet.tsx`: kim qo'ng'iroq qiladi (ovozi bor do'stlar),
+      ertalab/kechki vaqt (±30 daq.) va o'chirgichlar. `settings.morningCallTime`, `nightCallTime`, `callerId`;
+      `runDailyInitiative` endi shu vaqtdan boshlab 4 soat ichida qo'ng'iroq qiladi (`inWindow`).
+  - Navbat: F13 Find va personaj profili.
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.

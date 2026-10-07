@@ -164,12 +164,15 @@
     "callMissed": "Missed call",
     "callBack": "Call back",
     "attachments": {
-      "voice": "Voice message",
+      "voice": "Voice",
       "photo": "Photo",
       "gift": "Gift",
       "secretNote": "Secret note",
-      "date": "Plan a date",
-      "diary": "Write in your diary"
+      "date": "Date",
+      "diary": "Diary",
+      "quiz": "Couple quiz",
+      "truthOrDare": "Truth or dare",
+      "dailyCalls": "Daily calls"
     },
     "voice": {
       "title": "Voice message",
@@ -596,7 +599,8 @@
       "dating": "Date: {{title}}",
       "photo": "Took a photo together",
       "plan": "Planned: {{title}}",
-      "board": "Pinned a note on the board"
+      "board": "Pinned a note on the board",
+      "quiz": "Couple quiz: {{title}} · {{score}}"
     },
     "showMore": "Show {{count}} more",
     "daysLabel_one": "day together",
@@ -625,7 +629,8 @@
       "dates": "Dates",
       "calls": "Calls",
       "notes": "Notes",
-      "diary": "Diary"
+      "diary": "Diary",
+      "games": "Games"
     },
     "day": "Day",
     "time": "Time",
@@ -797,5 +802,32 @@
     "stay": "Stay",
     "albumTitle": "Our dates",
     "albumEmpty": "No dates yet"
+  },
+  "games": {
+    "quiz": "Couple quiz",
+    "packs": {
+      "firstDate": "First date",
+      "lazySunday": "Lazy Sunday",
+      "tenYears": "Us in 10 years"
+    },
+    "questions": "{{count}} questions",
+    "progress": "{{title}} · {{n}} of {{total}}",
+    "you": "You",
+    "same": "Same answer! {{count}} of {{n}} so far",
+    "differ": "{{name}} picked something else",
+    "seeScore": "See our score",
+    "backToChat": "Back to {{name}}",
+    "truthOrDare": "Truth or dare",
+    "spin": "Spin",
+    "truth": "Truth",
+    "dare": "Dare",
+    "landedThem": "{{name}} answers. Pick one:",
+    "landedYou": "You answer. Pick one:",
+    "dailyCalls": "Daily calls",
+    "noVoices": "No one has a voice yet.",
+    "morning": "Morning",
+    "night": "Night",
+    "earlier": "30 minutes earlier",
+    "later": "30 minutes later"
   }
 }

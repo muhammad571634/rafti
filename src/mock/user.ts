@@ -28,6 +28,8 @@ export const initialSettings: AppSettings = {
   eveningGreeting: true,
   morningCall: true,
   nightCall: true,
+  morningCallTime: '08:00',
+  nightCallTime: '21:00',
   chatAnimation: true,
 };
 

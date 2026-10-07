@@ -1,22 +1,31 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
+import { CoffeeIcon } from 'phosphor-react-native/src/icons/Coffee';
+import { DiceFiveIcon } from 'phosphor-react-native/src/icons/DiceFive';
+import { EnvelopeSimpleIcon } from 'phosphor-react-native/src/icons/EnvelopeSimple';
+import { HeartbeatIcon } from 'phosphor-react-native/src/icons/Heartbeat';
+import { ImageIcon } from 'phosphor-react-native/src/icons/Image';
+import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
+import { PhoneCallIcon } from 'phosphor-react-native/src/icons/PhoneCall';
 import * as Clipboard from 'expo-clipboard';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
+import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   Button,
   ShellBadge,
   CharacterAvatar,
-  Divider,
   IconButton,
   IconTile,
   ListRow,
@@ -28,24 +37,30 @@ import {
 import { callClock, shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
 import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space } from '@/theme';
+import { colors, hitSlop, moduleTints, radius, space } from '@/theme';
 import type { Message } from '@/types';
+import type { TileIcon } from '@/components/ui';
 
 type Attachment = {
-  key: 'voice' | 'photo' | 'secretNote' | 'date' | 'diary';
-  icon: React.ComponentProps<typeof Ionicons>['name'];
+  key: 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
+  icon: TileIcon;
+  /** `moduleTints` key: the same tinted duotone tiles as the Explore grid */
+  tint: string;
 };
 
+/** The "+" sheet: four to a row, as on the Explore grid. */
 const ATTACHMENTS: Attachment[] = [
-  { key: 'voice', icon: 'mic-outline' },
-  { key: 'photo', icon: 'image-outline' },
-  { key: 'secretNote', icon: 'mail-outline' },
-  { key: 'date', icon: 'cafe-outline' },
-  { key: 'diary', icon: 'book-outline' },
+  { key: 'voice', icon: MicrophoneIcon, tint: 'voice' },
+  { key: 'photo', icon: ImageIcon, tint: 'photo' },
+  { key: 'secretNote', icon: EnvelopeSimpleIcon, tint: 'secretNote' },
+  { key: 'quiz', icon: HeartbeatIcon, tint: 'quiz' },
+  { key: 'truthOrDare', icon: DiceFiveIcon, tint: 'truthOrDare' },
+  { key: 'date', icon: CoffeeIcon, tint: 'dating' },
+  { key: 'dailyCalls', icon: PhoneCallIcon, tint: 'calls' },
+  { key: 'diary', icon: BookOpenTextIcon, tint: 'diary' },
 ];
 
-/** Leading tile size in the "+" sheet; the dividers inset by it to meet the row text. */
-const ATTACH_TILE = 38;
+const ATTACH_TILE = 60;
 
 export default function ChatRoomScreen() {
   const { id, draft } = useLocalSearchParams<{ id: string; draft?: string }>();
@@ -80,6 +95,8 @@ export default function ChatRoomScreen() {
 
   const [attachOpen, setAttachOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [truthOpen, setTruthOpen] = useState(false);
+  const [callsOpen, setCallsOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
   const [callIntro, setCallIntro] = useState(false);
@@ -175,29 +192,19 @@ export default function ChatRoomScreen() {
         return pickPhoto();
       case 'secretNote':
         return router.push(`/secret-note/${character.id}`);
+      case 'quiz':
+        return router.push(`/quiz/${character.id}`);
+      case 'truthOrDare':
+        return setTruthOpen(true);
       case 'date':
         return router.push('/dating');
+      case 'dailyCalls':
+        return setCallsOpen(true);
       case 'diary':
         return router.push('/diary/write');
     }
   };
 
-  // The price shown on each "+" row. Members send voice and photos free; the
-  // date row opens its own screen, so it carries a chevron instead.
-  const attachMeta = (key: Attachment['key']) => {
-    switch (key) {
-      case 'voice':
-        return member ? undefined : t('chat.shellCost', { count: shellCosts.voiceMessage });
-      case 'photo':
-        return member ? undefined : t('chat.shellCost', { count: shellCosts.textMessage });
-      case 'secretNote':
-        return t('chat.shellCost', { count: shellCosts.secretNote });
-      case 'diary':
-        return t('common.free');
-      case 'date':
-        return undefined;
-    }
-  };
 
   const name = displayName(character, relationship);
 
@@ -294,26 +301,36 @@ export default function ChatRoomScreen() {
       />
 
       <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
-        <View style={styles.attachList}>
-          {ATTACHMENTS.map((item, index) => {
-            const title = t(`chat.attachments.${item.key}`);
-            const meta = attachMeta(item.key);
+        <View style={styles.attachGrid}>
+          {ATTACHMENTS.map((item) => {
+            const tint = moduleTints[item.tint];
             return (
-              <Fragment key={item.key}>
-                {index > 0 ? <Divider inset={space.lg + ATTACH_TILE + space.md} /> : null}
-                <ListRow
-                  title={title}
-                  left={<IconTile icon={item.icon} size={ATTACH_TILE} />}
-                  meta={meta}
-                  chevron={item.key === 'date'}
-                  accessibilityLabel={meta ? `${title}, ${meta}` : title}
-                  onPress={() => attach(item.key)}
+              <PressableScale
+                key={item.key}
+                style={styles.attachCell}
+                scaleTo={0.94}
+                accessibilityLabel={t(`chat.attachments.${item.key}`)}
+                onPress={() => attach(item.key)}>
+                <IconTile
+                  icon={item.icon}
+                  size={ATTACH_TILE}
+                  radius={radius.lg}
+                  glyphSize={32}
+                  weight="duotone"
+                  color={tint?.fg}
+                  background={tint?.bg}
                 />
-              </Fragment>
+                <Txt variant="smallStrong" center lines={2}>
+                  {t(`chat.attachments.${item.key}`)}
+                </Txt>
+              </PressableScale>
             );
           })}
         </View>
       </Sheet>
+
+      <TruthOrDareSheet visible={truthOpen} onClose={() => setTruthOpen(false)} character={character} name={name} />
+      <DailyCallsSheet visible={callsOpen} onClose={() => setCallsOpen(false)} characterId={character.id} />
 
       <VoiceSheet
         visible={voiceOpen}
@@ -524,5 +541,6 @@ const styles = StyleSheet.create({
   identityText: { flex: 1, gap: 2 },
   list: { paddingVertical: space.lg },
   // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
-  attachList: { marginHorizontal: -space.xl },
+  attachGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingTop: space.sm, paddingBottom: space.md },
+  attachCell: { width: '25%', alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },
 });

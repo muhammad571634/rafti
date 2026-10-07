@@ -152,7 +152,7 @@ export interface MemoryItem {
 }
 
 /** The [Us] timeline: every sweet moment with a character is recorded. */
-export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board';
+export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board' | 'quiz';
 
 export interface Moment {
   id: string;
@@ -306,6 +306,12 @@ export interface AppSettings {
   eveningGreeting: boolean;
   morningCall: boolean;
   nightCall: boolean;
+  /** "HH:MM": the good-morning call can ring from this time for a few hours */
+  morningCallTime: string;
+  /** "HH:MM": the good-night call can ring from this time for a few hours */
+  nightCallTime: string;
+  /** Who places the daily calls; the closest friend with a voice when unset */
+  callerId?: string;
   chatAnimation: boolean;
 }
 

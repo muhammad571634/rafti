@@ -45,6 +45,7 @@ const MOMENT_ICON: Record<MomentKind, IoniconName> = {
   photo: 'camera-outline',
   plan: 'calendar-outline',
   board: 'pin-outline',
+  quiz: 'heart-circle-outline',
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */
@@ -54,6 +55,7 @@ const FILTERS = {
   calls: ['call'],
   notes: ['secretNote', 'board'],
   diary: ['diary'],
+  games: ['quiz'],
 } satisfies Record<string, MomentKind[]>;
 type FilterKey = keyof typeof FILTERS | 'all';
 

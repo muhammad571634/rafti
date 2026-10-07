@@ -53,6 +53,14 @@ import {
   wallet as seedWallet,
 } from '@/mock';
 import { dateEnding, datePlaceById, maxHearts } from '@/mock/dates';
+import {
+  DARES_FOR_THEM,
+  DARES_FOR_YOU,
+  quizPackById,
+  quizReply,
+  TRUTHS_FOR_THEM,
+  TRUTHS_FOR_YOU,
+} from '@/mock/games';
 import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
@@ -90,7 +98,12 @@ const INTIMACY = {
   date: 10,
   photo: 6,
   boardNote: 6,
+  quizMatch: 2,
+  truthOrDare: 3,
 } as const;
+
+/** How long after its set time a daily call may still ring. */
+const CALL_WINDOW_HOURS = 4;
 
 /** A board note is answered after a short pause, as if it was just found. */
 const BOARD_REPLY_MS = 8000;
@@ -251,6 +264,13 @@ interface AppState {
   addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string }) => void;
   /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
   runTimers: () => void;
+  /** Ends a couple quiz: the score lands in chat as a card, they react, closeness grows. */
+  finishQuiz: (characterId: string, packId: string, matches: number, title: string) => void;
+  /**
+   * One truth-or-dare turn. On them: the user's question goes to chat and they answer.
+   * On the user: they ask a truth or a dare in chat. Returns the question asked.
+   */
+  playTruthOrDare: (characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
   /** Pins a note on the board for one friend; they answer in chat a moment later. */
   postBoardNote: (characterId: string, text: string, style: BoardStyleId) => SpendResult | 'empty';
 
@@ -284,6 +304,12 @@ const uid = (prefix: string) =>
   `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)];
+
+/** Whether `hour` falls in the few hours after a "HH:MM" call time (wrapping past midnight). */
+function inWindow(hour: number, time = '08:00') {
+  const start = Number(time.split(':')[0]);
+  return (hour - start + 24) % 24 < CALL_WINDOW_HOURS;
+}
 
 /** Static web rendering runs in Node, where there is no localStorage. */
 const noopStorage: StateStorage = {
@@ -1069,6 +1095,46 @@ export const useAppStore = create<AppState>()(
         }
       },
 
+      finishQuiz: (characterId, packId, matches, title) => {
+        const pack = quizPackById(packId);
+        if (!pack) return;
+        const total = pack.questions.length;
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'me',
+          kind: 'system',
+          text: `\u{1F49E} ${title} \u00B7 ${matches}/${total}`,
+          createdAt: new Date().toISOString(),
+        });
+        addMoment(set, characterId, 'quiz', { title, score: `${matches}/${total}` });
+        scheduleReply(set, get, conversationId, {
+          text: quizReply(matches, total),
+          gain: INTIMACY.quizMatch * matches + INTIMACY.quizMatch,
+        });
+      },
+
+      playTruthOrDare: (characterId, target, kind) => {
+        const conversationId = get().addFriend(characterId);
+        if (target === 'you') {
+          const ask = pick(kind === 'truth' ? TRUTHS_FOR_YOU : DARES_FOR_YOU);
+          appendMessage(set, get, conversationId, themText(conversationId, ask));
+          return ask;
+        }
+        const turn = pick(kind === 'truth' ? TRUTHS_FOR_THEM : DARES_FOR_THEM);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'me',
+          kind: 'text',
+          text: turn.ask,
+          createdAt: new Date().toISOString(),
+        });
+        scheduleReply(set, get, conversationId, { text: turn.answer, gain: INTIMACY.truthOrDare });
+        return turn.ask;
+      },
+
       postBoardNote: (characterId, text, style) => {
         const clean = text.trim();
         if (!clean) return 'empty';
@@ -1101,8 +1167,12 @@ export const useAppStore = create<AppState>()(
         const now = new Date();
         const hour = now.getHours();
         const today = todayKey();
-        const slot: CallSlot | null = hour >= 5 && hour < 12 ? 'morning' : hour >= 20 || hour < 2 ? 'night' : null;
         const { settings, daily, relationships, characters, incomingCall } = get();
+        const slot: CallSlot | null = inWindow(hour, settings.morningCallTime)
+          ? 'morning'
+          : inWindow(hour, settings.nightCallTime)
+            ? 'night'
+            : null;
 
         // A ring nobody answered (screen closed, app backgrounded) ends up as a missed call.
         if (incomingCall && Date.now() - incomingCall.at > STALE_RING_MS) get().declineCall();
@@ -1132,7 +1202,10 @@ export const useAppStore = create<AppState>()(
         const call = slot === 'morning' ? settings.morningCall : settings.nightCall;
         if (!call || get().daily.calledSlots.includes(slotKey)) return {};
 
-        const caller = bonds.find((b) => characters.find((c) => c.id === b.characterId)?.voiceReady);
+        // The friend picked in Daily calls rings; otherwise the closest one with a voice.
+        const hasVoice = (id: string) => !!characters.find((c) => c.id === id)?.voiceReady;
+        const chosen = settings.callerId && relationships[settings.callerId] && hasVoice(settings.callerId);
+        const caller = chosen ? { characterId: settings.callerId! } : bonds.find((b) => hasVoice(b.characterId));
         if (!caller) return {};
 
         set((s) => ({ daily: { ...s.daily, calledSlots: [...s.daily.calledSlots, slotKey].slice(-8) } }));

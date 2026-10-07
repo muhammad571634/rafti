@@ -29,7 +29,10 @@ type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 const ROW_ICON = 34;
 const ROW_INSET = space.lg + ROW_ICON + space.md;
 
-const REACH_OUT: { key: keyof AppSettings; icon: IoniconName }[] = [
+/** The on/off settings; call times and the caller live in the chat's Daily calls sheet. */
+type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
+
+const REACH_OUT: { key: SwitchKey; icon: IoniconName }[] = [
   { key: 'morningGreeting', icon: 'sunny-outline' },
   { key: 'eveningGreeting', icon: 'moon-outline' },
   { key: 'morningCall', icon: 'call-outline' },
@@ -52,7 +55,7 @@ export default function ProfileScreen() {
   const member = memberActive(wallet);
   const icon = (name: IoniconName) => <IconTile icon={name} size={ROW_ICON} />;
 
-  const toggle = (key: keyof AppSettings, label: string, iconName: IoniconName) => (
+  const toggle = (key: SwitchKey, label: string, iconName: IoniconName) => (
     <ListRow
       title={label}
       left={icon(iconName)}
