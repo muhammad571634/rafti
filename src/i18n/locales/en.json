@@ -613,7 +613,10 @@
       "calls": "Calls",
       "notes": "Notes",
       "diary": "Diary"
-    }
+    },
+    "day": "Day",
+    "time": "Time",
+    "pickDay": "Pick a day"
   },
   "profile": {
     "title": "Profile",

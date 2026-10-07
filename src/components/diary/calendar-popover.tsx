@@ -21,6 +21,8 @@ export interface CalendarPopoverProps {
   marked: ReadonlySet<string>;
   /** Distance from the top of the screen to the card */
   top: number;
+  /** Which side of today can be picked: the diary looks back, plans look ahead. */
+  allow?: 'past' | 'future';
 }
 
 /**
@@ -28,7 +30,7 @@ export interface CalendarPopoverProps {
  * applies it, Cancel leaves the page as it was. Days with pages carry a dot, the
  * neighbouring months' days are greyed out and the future is out of reach.
  */
-export function CalendarPopover({ visible, onClose, value, onChange, marked, top }: CalendarPopoverProps) {
+export function CalendarPopover({ visible, onClose, value, onChange, marked, top, allow = 'past' }: CalendarPopoverProps) {
   const { t, i18n } = useTranslation();
   const { width: screen } = useWindowDimensions();
   const today = dayKey();
@@ -49,7 +51,9 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
   const cells = useMemo(() => monthCells(month), [month]);
   const weekdays = useMemo(() => weekdayNames(i18n.language), [i18n.language]);
 
-  const atCurrentMonth = month.getTime() >= startOfMonth(new Date()).getTime();
+  const thisMonth = startOfMonth(new Date()).getTime();
+  const atCurrentMonth = month.getTime() >= thisMonth;
+  const atFirstMonth = month.getTime() <= thisMonth;
   const shift = (delta: number) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
 
   const confirm = () => {
@@ -67,16 +71,17 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
               {month.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
             </Txt>
             <PressableScale
-              style={styles.nav}
+              style={[styles.nav, allow === 'future' && atFirstMonth && styles.off]}
               scaleTo={0.88}
+              disabled={allow === 'future' && atFirstMonth}
               accessibilityLabel={t('diary.prevMonth')}
               onPress={() => shift(-1)}>
               <Ionicons name="chevron-back" size={18} color={colors.text} />
             </PressableScale>
             <PressableScale
-              style={[styles.nav, atCurrentMonth && styles.off]}
+              style={[styles.nav, allow === 'past' && atCurrentMonth && styles.off]}
               scaleTo={0.88}
-              disabled={atCurrentMonth}
+              disabled={allow === 'past' && atCurrentMonth}
               accessibilityLabel={t('diary.nextMonth')}
               onPress={() => shift(1)}>
               <Ionicons name="chevron-forward" size={18} color={colors.text} />
@@ -93,7 +98,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
 
           <View style={styles.grid}>
             {cells.map(({ key, inMonth }) => {
-              const disabled = !inMonth || key > today;
+              const disabled = !inMonth || (allow === 'past' ? key > today : key < today);
               const selected = inMonth && key === pending;
               const isToday = key === today;
               return (

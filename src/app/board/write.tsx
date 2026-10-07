@@ -61,7 +61,8 @@ export default function BoardWriteScreen() {
     if (!to) return;
     const result = postBoardNote(to.id, text, style);
     if (result === 'noShells') return setPaywall(shellCosts.boardNote);
-    if (result === 'ok') router.replace('/board');
+    // Back to where the note was started (Us or the board); the answer arrives in chat.
+    if (result === 'ok') router.back();
   };
 
   return (

@@ -157,6 +157,11 @@ o'tdi. Ish **chalg'imasdan** shu tartibda davom etadi:
     - Diqqat: `board/index.tsx` tahrir qilinganda Expo typed routes ba'zan `/board/index` deb yozadi va tsc
       yiqiladi. Tuzatish: serverni to'xtatish, `%TEMP%\metro-cache`, `metro-file-map-*` va
       `.expo/types/router.d.ts` ni o'chirish, qayta ishga tushirish.
+  - **Reja oynasi (F9) foydalanuvchi talabi bilan yangilandi:** ekranning ~72% balandligi, sarlavha h1 va
+    do'stning avatari, katta qalin matnlar; kun tanlash uchta teng tugma (Today | Tomorrow | kalendar, boshqa
+    kun tanlansa tugmada sana), vaqt katta raqam va katta ± tugmalari. Kalendar `CalendarPopover` ning
+    `allow="future"` rejimi (Diary'da o'zgarish yo'q). Oyna faqat ochilganda tozalanadi.
+  - Doskaga eslatma yuborilgach oldingi ekranga qaytiladi (`router.back()`), shunda typed routes xatosiga bog'liq emas.
   - Navbat: F11 Date (xarita, raundlar, polaroid).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,

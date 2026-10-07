@@ -306,7 +306,13 @@ export default function UsScreen() {
       </ScrollView>
 
       <PublishSheet visible={publishOpen} onClose={() => setPublishOpen(false)} onPick={pickPublish} />
-      <PlanSheet visible={planOpen} onClose={() => setPlanOpen(false)} day={day} onSubmit={submitPlan} />
+      <PlanSheet
+        visible={planOpen}
+        onClose={() => setPlanOpen(false)}
+        day={day}
+        character={selected?.character}
+        onSubmit={submitPlan}
+      />
     </Screen>
   );
 }
