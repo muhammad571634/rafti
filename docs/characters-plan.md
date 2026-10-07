@@ -77,6 +77,8 @@ Mix after this: 40 officials, 30 male and 10 female, ages 21-33; 34 can call.
 Every character needs a **portrait** (square, head and shoulders). A **hero scene**
 (16:9, for the Today card) is optional: without one the portrait is used.
 
+**Easiest way: open [`docs/nano-banana-portraits.md`](nano-banana-portraits.md) — every portrait prompt there is complete, just copy and paste.**
+
 ### How to make them (read this first)
 
 The first test (2026-10-07) came back as **Kai in Sol's café**: the shared prompts were
