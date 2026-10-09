@@ -469,11 +469,12 @@
   },
   "contacts": {
     "title": "Contacts",
-    "addOne": "Add one",
     "all": "All",
     "createdByYou": "Created by you",
     "empty": "No contacts yet",
-    "emptyHint": "Everyone you talk to shows up here."
+    "emptyHint": "Everyone you talk to shows up here.",
+    "create": "Create a character",
+    "level": "Lv {{level}}"
   },
   "createCharacter": {
     "title": "New character",

@@ -124,6 +124,12 @@ npx tsc --noEmit                # must be clean
   bottom action bar (error, Create button, "Only you can see them" / review note).
   Next "medium" screen: Contacts (prototype first).
 
+- Contacts restyled (2026-10-10, prototype approved: https://claude.ai/artifact/NHyErhmApd5hygWMjFGGjE):
+  `src/app/contacts.tsx` is a list now, closest first (level, then intimacy), with `Segmented`
+  All / Created by you and a "Create a character" row on top; the empty "Created by you" tab
+  offers Create instead of Find. The owner said to leave the Create character button as it is
+  (it does not look dimmed on an empty form; not touched). Next "medium" screen: Photo Booth.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
