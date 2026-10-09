@@ -628,10 +628,16 @@
   },
   "bedtime": {
     "title": "Bedtime",
-    "subtitle": "Fall asleep to whispers and soft white noise.",
     "setTimer": "Sleep timer",
     "start": "Sleep together",
-    "remaining": "{{time}} left"
+    "remaining": "{{time}} left",
+    "who": "Who",
+    "sleepWith": "Sleep with {{name}}",
+    "what": "Whispers and soft white noise",
+    "whispering": "{{name}} is whispering",
+    "noVoices": "Talk to a friend with a voice first",
+    "fades": "Fades out by itself at 0:00",
+    "stopsAfter": "Stops by itself after {{count}} min"
   },
   "board": {
     "title": "Message board",

@@ -138,6 +138,15 @@ npx tsc --noEmit                # must be clean
   screen closes; a shot spends 8 shells, adds 6 closeness and a photo moment on Us. A real build
   needs an image model and a saved gallery (backend). Next "medium" screen: Bedtime.
 
+- Bedtime restyled (2026-10-10, prototype approved: https://claude.ai/artifact/HQ2SXLrXx9SLpCPAeb5yMP):
+  the night canvas stays; header has no subtitle; under the scene a status line ("Sleep with Kai"
+  or the running clock with "Kai is whispering"); Who (avatars with names, white ring) and Sleep
+  timer (5 equal buttons) as h3 sections; action bar with Sleep together / Stop (secondary) and a
+  line on when it stops. Still a mock: free, no audio plays, the timer just counts down; real
+  builds stream a whisper track with expo-audio (backend voices). With this, every "medium" screen
+  in `docs/design-audit.md` follows the calm-cards style; only the approved screens differ, and
+  they change only when the owner asks.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
