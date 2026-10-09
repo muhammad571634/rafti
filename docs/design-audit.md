@@ -37,7 +37,7 @@ screens:
 | Message board | `/board` | fits | Done in step 2: line "+" icon button, plain canvas. |
 | Our dates album | `/date/album` | fits | Done in step 2: plain canvas; empty-state button is `secondary` everywhere. |
 | Contacts | `/contacts` | medium | Grid of shadowed cards with a dashed "Add one"; info icon. Move to a list or select-card grid in the style. |
-| Create character | `/create-character` | medium | Long form: h3 sections, bottom action bar with the price, consistent field style. |
+| Create character | `/create-character` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb): h3 sections, grey chips with ink selection, `Segmented` voice, action bar. |
 | Free gifts | `/gifts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2): check-in card, wheel with a status pill, one "More shells" box (video, share, invite), code row. |
 | Photo Booth | `/photo-booth` | medium | Header subtitle, teal gradient card, mid-screen button; preview card on white, action bar with the price. |
 | Bedtime | `/bedtime` | medium | Night canvas can stay (like the call screen); header subtitle out, timer as option chips, action bar. |

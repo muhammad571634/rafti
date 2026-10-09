@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Anim, Button, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, Header, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
 import {
   BIO_MAX,
   checkCreation,
@@ -26,7 +26,7 @@ import {
 } from '@/lib/create-character';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { colors, palette, radius, space, type } from '@/theme';
 import type {
   Character,
   CharacterCategory,
@@ -258,7 +258,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
               {imageUri ? (
                 <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
               ) : (
-                <ClayIcon name="photo" size={56} tile={false} />
+                <View style={styles.photoTile}>
+                  <Ionicons name="camera-outline" size={22} color={colors.text} />
+                </View>
               )}
             </PressableScale>
             <CheckRow
@@ -268,44 +270,47 @@ function CharacterForm({ editing }: { editing?: Character }) {
             />
           </View>
 
-          <Field label={t('createCharacter.name')} required>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              placeholder={t('createCharacter.namePlaceholder')}
-              placeholderTextColor={colors.textFaint}
-              style={styles.input}
-              maxLength={NAME_MAX}
-            />
-          </Field>
-
-          <View style={styles.pair}>
-            <Field label={t('createCharacter.age')} required style={styles.ageField}>
+          <Section title={t('createCharacter.basics')}>
+            <Field label={t('createCharacter.name')}>
               <TextInput
-                value={age}
-                onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
-                placeholder="18+"
+                value={name}
+                onChangeText={setName}
+                placeholder={t('createCharacter.namePlaceholder')}
                 placeholderTextColor={colors.textFaint}
-                keyboardType="number-pad"
                 style={styles.input}
-                maxLength={3}
+                maxLength={NAME_MAX}
               />
             </Field>
-            <Field label={t('createCharacter.gender')} style={styles.flex}>
-              <View style={styles.chips}>
-                {GENDERS.map((g) => (
-                  <FormChip
-                    key={g}
-                    label={t(`find.who.${g}`)}
-                    active={gender === g}
-                    onPress={() => setGender(gender === g ? undefined : g)}
-                  />
-                ))}
-              </View>
-            </Field>
-          </View>
+            <View style={styles.pair}>
+              <Field label={t('createCharacter.age')} style={styles.ageField}>
+                <TextInput
+                  value={age}
+                  onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
+                  placeholder="18+"
+                  placeholderTextColor={colors.textFaint}
+                  keyboardType="number-pad"
+                  style={styles.input}
+                  maxLength={3}
+                />
+              </Field>
+              <Field label={t('createCharacter.gender')} style={styles.flex}>
+                <View style={styles.options}>
+                  {GENDERS.map((g) => (
+                    <OptionButton
+                      key={g}
+                      label={t(`find.who.${g}`)}
+                      active={gender === g}
+                      onPress={() => setGender(gender === g ? undefined : g)}
+                    />
+                  ))}
+                </View>
+              </Field>
+            </View>
+          </Section>
 
-          <Field label={t('createCharacter.traits', { count: traits.length, max: MAX_TRAITS })}>
+          <Section
+            title={t('createCharacter.personality')}
+            right={t('createCharacter.traitsCount', { count: traits.length, max: MAX_TRAITS })}>
             <View style={styles.chips}>
               {TRAITS.map((trait) => (
                 <FormChip
@@ -316,9 +321,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 />
               ))}
             </View>
-          </Field>
+          </Section>
 
-          <Field label={t('createCharacter.style')}>
+          <Section title={t('createCharacter.style')}>
             <View style={styles.chips}>
               {STYLES.map((s) => (
                 <FormChip
@@ -329,55 +334,52 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 />
               ))}
             </View>
-          </Field>
+          </Section>
 
-          <Field label={t('createCharacter.role')}>
+          <Section title={t('createCharacter.role')}>
             <View style={styles.chips}>
               {ROLES.map((r) => (
                 <FormChip key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => setRole(r)} />
               ))}
             </View>
-          </Field>
+          </Section>
 
-          <Field label={t('createCharacter.persona')}>
-            <TextInput
-              value={bio}
-              onChangeText={setBio}
-              placeholder={t('createCharacter.personaPlaceholder')}
-              placeholderTextColor={colors.textFaint}
-              style={[styles.input, styles.multiline]}
-              maxLength={BIO_MAX}
-              multiline
-              textAlignVertical="top"
-            />
-          </Field>
-
-          <Field label={t('createCharacter.greeting')}>
-            <TextInput
-              value={greeting}
-              onChangeText={setGreeting}
-              placeholder={t('createCharacter.greetingPlaceholder')}
-              placeholderTextColor={colors.textFaint}
-              style={[styles.input, styles.multiline]}
-              maxLength={GREETING_MAX}
-              multiline
-              textAlignVertical="top"
-            />
-          </Field>
-
-          <Field label={t('createCharacter.voice')} required>
-            <View style={styles.chips}>
-              <FormChip
-                label={t('createCharacter.voicePreset')}
-                active={voiceMode === 'preset'}
-                onPress={() => setVoiceMode('preset')}
+          <Section title={t('createCharacter.story')}>
+            <Field label={t('createCharacter.persona')}>
+              <TextInput
+                value={bio}
+                onChangeText={setBio}
+                placeholder={t('createCharacter.personaPlaceholder')}
+                placeholderTextColor={colors.textFaint}
+                style={[styles.input, styles.multiline]}
+                maxLength={BIO_MAX}
+                multiline
+                textAlignVertical="top"
               />
-              <FormChip
-                label={t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone })}
-                active={voiceMode === 'clone'}
-                onPress={() => setVoiceMode('clone')}
+            </Field>
+            <Field label={t('createCharacter.greeting')}>
+              <TextInput
+                value={greeting}
+                onChangeText={setGreeting}
+                placeholder={t('createCharacter.greetingPlaceholder')}
+                placeholderTextColor={colors.textFaint}
+                style={[styles.input, styles.multiline]}
+                maxLength={GREETING_MAX}
+                multiline
+                textAlignVertical="top"
               />
-            </View>
+            </Field>
+          </Section>
+
+          <Section title={t('createCharacter.voice')}>
+            <Segmented
+              options={[
+                { value: 'preset', label: t('createCharacter.voicePreset') },
+                { value: 'clone', label: t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone }) },
+              ]}
+              value={voiceMode}
+              onChange={setVoiceMode}
+            />
 
             {voiceMode === 'preset' ? (
               <View style={styles.voices}>
@@ -388,17 +390,18 @@ function CharacterForm({ editing }: { editing?: Character }) {
                     onPress={() => setPreset(v)}
                     accessibilityState={{ selected: preset === v }}
                     style={[styles.voiceCell, preset === v && styles.voiceCellOn]}>
-                    <Anim name="voiceWave" size={26} tint={preset === v ? colors.primary : colors.textMuted} />
-                    <Txt variant="smallStrong" color={preset === v ? colors.text : colors.textSecondary}>
-                      {t(`createCharacter.voices.${v}`)}
-                    </Txt>
+                    <Anim name="voiceWave" size={26} tint={preset === v ? colors.text : colors.textFaint} />
+                    <Txt variant="smallStrong">{t(`createCharacter.voices.${v}`)}</Txt>
                   </PressableScale>
                 ))}
               </View>
             ) : (
               <>
                 <PressableScale style={styles.dropzone} onPress={pickSamples} scaleTo={0.98}>
-                  <ClayIcon name="voice" size={44} tile={false} />
+                  <View style={styles.dropTile}>
+                    <Ionicons name="mic-outline" size={20} color={colors.text} />
+                  </View>
+                  <Txt variant="bodyStrong">{t('createCharacter.addClips')}</Txt>
                   <Txt variant="small" color={colors.textSecondary} center style={styles.dropText}>
                     {t('createCharacter.uploadVoicesBox')}
                   </Txt>
@@ -430,9 +433,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 />
               </>
             )}
-          </Field>
+          </Section>
 
-          <Field label={t('find.category')}>
+          <Section title={t('find.category')}>
             <View style={styles.chips}>
               {CATEGORIES.map((key) => (
                 <FormChip
@@ -443,26 +446,23 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 />
               ))}
             </View>
-          </Field>
+          </Section>
 
-          <Field label={t('createCharacter.visibility')}>
-            <View style={styles.chips}>
-              <FormChip label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
-              <FormChip label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
+          <Section title={t('createCharacter.visibility')}>
+            <View style={styles.options}>
+              <OptionButton label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
+              <OptionButton label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
             </View>
-            {isPublic ? (
-              <Txt variant="caption" color={colors.textMuted}>
-                {t('createCharacter.reviewNote')}
-              </Txt>
-            ) : null}
-          </Field>
+          </Section>
+        </ScrollView>
 
+        {/* Action bar (docs/design-style.md §3): the button, then one line on what happens next. */}
+        <View style={styles.actionBar}>
           {error ? (
             <Txt variant="small" color={colors.danger} center>
               {error}
             </Txt>
           ) : null}
-
           <Button
             label={
               creating
@@ -470,8 +470,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 : editing && cost === 0
                   ? t('createCharacter.save')
                   : cost > 0
-                  ? t('createCharacter.create', { count: cost })
-                  : t('createCharacter.createFree')
+                    ? t('createCharacter.create', { count: cost })
+                    : t('createCharacter.createFree')
             }
             size="lg"
             onPress={submit}
@@ -479,7 +479,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
             full
             style={problems.length > 0 && styles.dim}
           />
-        </ScrollView>
+          <Txt variant="caption" color={colors.textSecondary} center>
+            {t(isPublic ? 'createCharacter.reviewNote' : 'createCharacter.privateNote')}
+          </Txt>
+        </View>
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
@@ -487,24 +490,17 @@ function CharacterForm({ editing }: { editing?: Character }) {
   );
 }
 
-function Field({
-  label,
-  required,
-  style,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  style?: object;
-  children: React.ReactNode;
-}) {
+/** A calm-cards section: h3 title, an optional count on the right, then its fields. */
+function Section({ title, right, children }: { title: string; right?: string; children: React.ReactNode }) {
   return (
-    <View style={[styles.field, style]}>
-      <View style={styles.labelRow}>
-        <Txt variant="bodyStrong">{label}</Txt>
-        {required ? (
-          <Txt variant="bodyStrong" color={colors.danger}>
-            *
+    <View style={styles.section}>
+      <View style={styles.sectionHead}>
+        <Txt variant="h3" accessibilityRole="header">
+          {title}
+        </Txt>
+        {right ? (
+          <Txt variant="small" color={colors.textSecondary}>
+            {right}
           </Txt>
         ) : null}
       </View>
@@ -513,6 +509,18 @@ function Field({
   );
 }
 
+function Field({ label, style, children }: { label: string; style?: object; children: React.ReactNode }) {
+  return (
+    <View style={[styles.field, style]}>
+      <Txt variant="smallStrong" color={colors.textSecondary}>
+        {label}
+      </Txt>
+      {children}
+    </View>
+  );
+}
+
+/** Grey chip; the chosen one turns white with an ink border. */
 function FormChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <PressableScale
@@ -520,8 +528,24 @@ function FormChip({ label, active, onPress }: { label: string; active: boolean; 
       scaleTo={0.94}
       dimOnPress={false}
       accessibilityState={{ selected: active }}
-      style={[styles.chip, active && styles.chipActive]}>
-      <Txt variant="smallStrong" color={active ? colors.textOnPrimary : colors.textSecondary}>
+      style={[styles.chip, active && styles.selected]}>
+      <Txt variant="smallStrong" color={active ? colors.text : colors.textSecondary}>
+        {label}
+      </Txt>
+    </PressableScale>
+  );
+}
+
+/** One of two equal option buttons (gender, visibility). */
+function OptionButton({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  return (
+    <PressableScale
+      onPress={onPress}
+      scaleTo={0.97}
+      dimOnPress={false}
+      accessibilityState={{ selected: active }}
+      style={[styles.option, active && styles.selected]}>
+      <Txt variant="bodyStrong" color={active ? colors.text : colors.textSecondary}>
         {label}
       </Txt>
     </PressableScale>
@@ -537,7 +561,9 @@ function CheckRow({ checked, onToggle, label }: { checked: boolean; onToggle: ()
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       style={styles.checkRow}>
-      <Ionicons name={checked ? 'checkbox' : 'square-outline'} size={22} color={checked ? colors.primary : colors.textMuted} />
+      <View style={[styles.box, checked && styles.boxOn]}>
+        {checked ? <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} /> : null}
+      </View>
       <Txt variant="small" color={colors.textSecondary} style={styles.flex}>
         {label}
       </Txt>
@@ -545,15 +571,16 @@ function CheckRow({ checked, onToggle, label }: { checked: boolean; onToggle: ()
   );
 }
 
-const PHOTO = 132;
+const PHOTO = 112;
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scroll: { padding: space.lg, gap: space.xl, paddingBottom: space.huge },
-  field: { gap: space.sm },
-  labelRow: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  pair: { flexDirection: 'row', gap: space.lg },
-  ageField: { width: 92 },
+  scroll: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl + 2 },
+  section: { gap: space.md },
+  sectionHead: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
+  field: { gap: space.xs + 2 },
+  pair: { flexDirection: 'row', gap: space.md, alignItems: 'flex-end' },
+  ageField: { width: 96 },
   photoBlock: { alignItems: 'center', gap: space.md },
   photo: {
     width: PHOTO,
@@ -561,48 +588,65 @@ const styles = StyleSheet.create({
     borderRadius: PHOTO / 2,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: colors.border,
+    borderColor: palette.gray300,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
+  photoTile: {
+    width: 44,
+    height: 44,
+    borderRadius: 13,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   fillImage: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   input: {
-    minHeight: 48,
-    paddingHorizontal: space.md,
+    minHeight: 52,
+    paddingHorizontal: space.md + 2,
     paddingVertical: space.sm,
-    borderRadius: radius.md,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
     color: colors.text,
     ...type.body,
   },
-  multiline: { minHeight: 88 },
+  multiline: { minHeight: 96, paddingTop: space.md },
   voices: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   voiceCell: {
-    width: '31%',
+    width: '31.5%',
+    height: 76,
     alignItems: 'center',
+    justifyContent: 'center',
     gap: space.xs,
-    paddingVertical: space.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
+    borderRadius: 16,
+    borderWidth: 2,
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
-  voiceCellOn: { borderColor: colors.primary, backgroundColor: colors.primarySofter },
+  voiceCellOn: { borderColor: colors.text },
   dropzone: {
-    minHeight: 120,
-    borderRadius: radius.md,
+    minHeight: 116,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: colors.border,
+    borderColor: palette.gray300,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.sm,
     padding: space.lg,
+  },
+  dropTile: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   dropText: { maxWidth: 280 },
   samples: { gap: space.sm },
@@ -617,18 +661,49 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
-  checkRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, alignSelf: 'stretch' },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  chip: {
-    paddingHorizontal: space.lg,
-    height: 34,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
+  checkRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, alignSelf: 'stretch', paddingVertical: space.xs },
+  box: {
+    width: 22,
+    height: 22,
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: palette.gray400,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: colors.text, borderColor: colors.text },
+  boxOn: { backgroundColor: colors.text, borderColor: colors.text },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  chip: {
+    paddingHorizontal: space.lg,
+    height: 38,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    borderColor: colors.surfaceAlt,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  options: { flexDirection: 'row', gap: space.sm },
+  option: {
+    flex: 1,
+    height: 52,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: colors.surfaceAlt,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selected: { backgroundColor: colors.surface, borderColor: colors.text },
+  actionBar: {
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    paddingBottom: space.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+  },
   dim: { opacity: 0.55 },
 });

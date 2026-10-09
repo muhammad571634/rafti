@@ -116,6 +116,14 @@ npx tsc --noEmit                # must be clean
   code row with copy, then "Have a code?". `ShellBadge tone="neutral"` is the grey header pill.
   Next "medium" screen: Create character (prototype first).
 
+- Create character restyled (2026-10-10, prototype approved: https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb):
+  only the look of `src/app/create-character.tsx` changed (state, checks, charging and edit mode are
+  as before). Sections with h3 titles, sub-field labels in grey, no red asterisks (the error line in
+  the action bar names what is missing), chips grey → white with a 2px ink border when chosen, ink
+  checkboxes, line camera / mic icons instead of clay art, `Segmented` for stock vs cloned voice,
+  bottom action bar (error, Create button, "Only you can see them" / review note).
+  Next "medium" screen: Contacts (prototype first).
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
