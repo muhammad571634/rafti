@@ -80,6 +80,11 @@ npx tsc --noEmit                # must be clean
   - Checked on web at 375×812 (screens, trial → call, top-up → resume, paywall → store, v6 → v7
     migration). Purchases are mocked: real builds plug StoreKit / Play Billing (RevenueCat) into
     `subscribe`, `topUpMinutes` and `addShells` (backend-plan §14).
+- The user liked the F17 look and made it the design method for the whole app: `docs/design-style.md`
+  (rule added to `AGENTS.md`). Backend waits; first the frontend flows are fixed and older screens
+  are brought to this style. `docs/design-audit.md` grades every screen (fits / small / medium /
+  approved) and gives the order: shared pieces first, then the daily check-in as a sheet on Today,
+  then the "medium" screens one by one with a prototype each. Approved screens only on request.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
@@ -269,7 +274,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
    - **Til qoidasi (foydalanuvchi, 2026-10-07):** kod, izohlar, commitlar va agentlar uchun hujjatlar faqat ingliz
      tilida (AGENTS.md ga yozildi). Foydalanuvchiga javob o'zbekcha.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
-5. **Dizayn qoidalari:** interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
+5. **Dizayn qoidalari** (2026-10-09 dan asosiy uslub: `docs/design-style.md`): interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
    ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
    to'q sariq tugma; mint faqat munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
    Yozish maydoni bor sheet'larda `Sheet avoidKeyboard`, maydonga `autoFocus` qo'ymang.
