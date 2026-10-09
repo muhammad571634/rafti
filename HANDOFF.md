@@ -33,6 +33,11 @@ npx tsc --noEmit                # must be clean
   Plus 6 of ours: repetition guard, batching quick user messages, `memory_uses`, per-user daily cost
   cap, an eval set with prompt versions, memory privacy and "forget this". §4 and §11 updated to match.
 - No code or design touched. Backend is still "not now" (see 0b); the plan waits for the user.
+- `docs/audit-2026-10-09.md` (Uzbek, the user asked for it): audit of `src/` at `0b63fd5` —
+  architecture, mock AI flow, LLM seams, memory, relationship, voice/call, economy, top 10
+  production risks. Two small bugs found there are not fixed yet: Android back on the call
+  screen skips `hangUp` (call time not charged) and diary pages / comeback pushes can quote a
+  crisis message.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
