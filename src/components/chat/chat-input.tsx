@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconButton } from '@/components/ui';
+import { IconButton, Txt } from '@/components/ui';
 import { colors, radius, shadows, space, type } from '@/theme';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
@@ -24,6 +24,8 @@ export interface ChatInputProps {
   onVoice: () => void;
   /** Text already in the field when the chat opens (e.g. replying to a diary page). */
   initialValue?: string;
+  /** When set, the field is closed and shows this line instead (the daily fair-use limit). */
+  locked?: string;
 }
 
 /**
@@ -31,7 +33,7 @@ export interface ChatInputProps {
  * text field, and one primary button that records a voice message while the field
  * is empty and sends once there is text. The swap is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '' }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
@@ -45,6 +47,19 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
     // react-native-web only submits a multiline field by blurring it; take focus back.
     if (Platform.OS === 'web') setTimeout(() => inputRef.current?.focus(), 30);
   };
+
+  // A draft typed before the lock stays in state and comes back with the field.
+  if (locked) {
+    return (
+      <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+        <View style={styles.locked} accessibilityRole="text">
+          <Txt variant="bodyStrong" color={colors.textSecondary} center>
+            {locked}
+          </Txt>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
@@ -102,6 +117,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
+  },
+  locked: {
+    height: BUTTON + space.xs * 2 + 2,
+    borderRadius: radius.xxl,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.lg,
   },
   input: {
     ...type.body,

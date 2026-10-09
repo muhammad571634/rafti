@@ -27,12 +27,12 @@ import {
 } from '@/components/ui';
 import { usePushPermission } from '@/hooks/use-push-permission';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
-import { shortDate } from '@/lib/format';
+import { planStatus } from '@/economy/plans';
 import { inviteCodeFor } from '@/lib/invite';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
-import { memberActive, useAppStore } from '@/store/use-app-store';
+import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { AppSettings } from '@/types';
 
@@ -57,6 +57,7 @@ export default function ProfileScreen() {
   const settings = useAppStore((s) => s.settings);
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
+  const endPlan = useAppStore((s) => s.endPlan);
   const blockedIds = useAppStore((s) => s.blockedIds);
   const characters = useAppStore((s) => s.characters);
   const unblockCharacter = useAppStore((s) => s.unblockCharacter);
@@ -95,7 +96,7 @@ export default function ProfileScreen() {
   };
 
   const currentLocale = SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? i18n.language;
-  const member = memberActive(wallet);
+  const plan = planStatus(wallet.subscription, Date.now());
   // Line icons sit bare on the canvas, like the clay art: no grey tile behind them.
   const icon = (name: IoniconName) => (
     <IconTile icon={name} size={ROW_ICON} background="transparent" glyphSize={24} />
@@ -127,7 +128,7 @@ export default function ProfileScreen() {
               {user.handle}
             </Txt>
           </View>
-          <ShellBadge count={wallet.shells} showAdd onPress={() => router.push('/store/shell')} />
+          <ShellBadge count={wallet.shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
         </View>
 
         <PressableScale
@@ -175,15 +176,17 @@ export default function ProfileScreen() {
         <SectionLabel tone="title" title={t('profile.sectionAccount')} />
         <ListRow
           size="large"
-          title={t('profile.membership')}
+          title={t('profile.myPlan')}
           left={icon('diamond-outline')}
           meta={
-            member && wallet.memberUntil && wallet.memberPlan
-              ? `${t(`store.plans.${wallet.memberPlan}`)} · ${shortDate(wallet.memberUntil)}`
-              : t('profile.notMember')
+            plan
+              ? plan.trial
+                ? t('plans.trialName', { plan: t(`plans.name.${plan.plan}`) })
+                : t(`plans.name.${plan.plan}`)
+              : t('plans.free')
           }
           chevron
-          onPress={() => router.push('/store/shell')}
+          onPress={() => router.push('/my-plan')}
         />
         <ListRow
           size="large"
@@ -228,6 +231,10 @@ export default function ProfileScreen() {
               meta={testResult}
               onPress={() => void testPushes()}
             />
+            {/* Ends the plan at once, to see the free screens again. */}
+            {plan ? (
+              <ListRow size="large" title={t('profile.endPlan')} left={icon('close-circle-outline')} onPress={endPlan} />
+            ) : null}
           </>
         ) : null}
 

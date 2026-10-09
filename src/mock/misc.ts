@@ -4,7 +4,6 @@ import type {
   ShellPack,
   CallRecord,
   HomeModule,
-  MembershipPlan,
   MemoryItem,
   Moment,
   ScheduleItem,
@@ -33,28 +32,19 @@ export const shellPacks: ShellPack[] = [
   { id: 'sh_1200', shells: 1200, bonus: 200, price: '$14.99', amount: 14.99 },
 ];
 
-export const membershipPlans: MembershipPlan[] = [
-  { id: 'basic', price: '$9.99', days: 30, perks: ['unlimitedChat', 'noAds', 'calls2h'], callMinutes: 120 },
-  {
-    id: 'pro',
-    price: '$29.99',
-    days: 30,
-    perks: ['unlimitedChat', 'noAds', 'calls8h', 'longerMemory', 'priorityVoice'],
-    callMinutes: 480,
-    highlight: true,
-  },
-  { id: 'quarterly', price: '$24.99', days: 90, perks: ['unlimitedChat', 'noAds', 'calls6h', 'saveMore'], callMinutes: 360 },
-];
+/**
+ * Offered once, before the first shell purchase: a low first step, shown on its own
+ * so the value maths of the regular packs stays honest.
+ */
+export const STARTER_PACK: ShellPack = { id: 'sh_starter', shells: 300, bonus: 0, price: '$0.99', amount: 0.99 };
 
 /**
- * What each interaction costs. Sending a message is the metered action; listening,
- * voice replies and calls are free, like the reference app. Members chat for free.
+ * What each interaction costs in shells. Sending a message is the metered action and
+ * members chat for free; calls and voice replies come with a plan (src/economy/plans.ts).
  */
 export const shellCosts = {
   textMessage: 1,
   voiceMessage: 1,
-  voiceReply: 0,
-  callPerMinute: 0,
   photoBooth: 8,
   secretNote: 3,
   boardNote: 2,
@@ -66,8 +56,8 @@ export const shellCosts = {
  * days 1-7. Day 7 is a surprise: its entry is the floor, and the roll goes up to
  * `DAILY_CHECK_IN_TOP`.
  */
-export const DAILY_CHECK_IN = [60, 70, 80, 60, 60, 60, 80] as const;
-export const DAILY_CHECK_IN_TOP = 120;
+export const DAILY_CHECK_IN = [30, 30, 35, 35, 40, 40, 50] as const;
+export const DAILY_CHECK_IN_TOP = 100;
 
 /** True for the last day of the week, the one with the random reward. */
 export const isSurpriseDay = (day: number) => day === DAILY_CHECK_IN.length;
@@ -79,7 +69,8 @@ export function rollCheckIn(day: number) {
   return base + Math.floor(Math.random() * (DAILY_CHECK_IN_TOP - base + 1));
 }
 
-export const AD_REWARD = 10;
+/** Shells per rewarded ad. The server sets it per country from the ad's eCPM (backend-plan §13.5). */
+export const AD_REWARD = 6;
 /** Paid to both sides when a friend joins with an invite code. */
 export const INVITE_REWARD = 50;
 /** Invites that pay out per week (Monday to Sunday). */
@@ -91,8 +82,8 @@ export const FREE_SPINS_PER_DAY = 1;
 
 /** Lucky Wheel segments, clockwise from the pointer. */
 export const WHEEL_SEGMENTS = [5, 20, 10, 50, 5, 30, 10, 100] as const;
-/** Relative odds per segment — the big prizes are rare. */
-export const WHEEL_WEIGHTS = [22, 12, 20, 5, 22, 8, 10, 1] as const;
+/** Relative odds per segment: the big prizes are rare, and a spin pays about 8 shells on average. */
+export const WHEEL_WEIGHTS = [75, 8, 55, 2, 75, 2, 30, 1] as const;
 
 export const callHistory: CallRecord[] = [
   { id: 'call_1', characterId: 'c_theo', startedAt: minutesAgo(20), durationSec: 247, direction: 'outgoing', missed: false },

@@ -25,6 +25,7 @@ export { Header, Screen } from './screen';
 export { SearchBar } from './search-bar';
 export { SectionHeader } from './section-header';
 export { SectionLabel } from './section-label';
+export { Segmented } from './segmented';
 export { ShellBadge } from './shell-badge';
 export { Sheet } from './sheet';
 export { Toggle } from './toggle';

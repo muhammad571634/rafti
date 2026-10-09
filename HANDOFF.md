@@ -59,8 +59,27 @@ npx tsc --noEmit                # must be clean
     page with no quote); the call screen books the time talked however it closes (Android back
     included); creating a character charges the 60-shell voice clone only when the character is
     actually made, and leaving the screen cancels it.
-  - Next: B0 once the user opens the accounts (§15.4) and makes the repo private; the monetization
-    UI after the prototype is approved.
+  - Next: B0 once the user opens the accounts (§15.4) and makes the repo private.
+- The user approved the prototype and the screens are now built (F17 "Plans and limits", done):
+  - Rules live in `src/economy/plans.ts` (pure, server-portable): plans, the 3-day trial, periods,
+    minutes (plan first, then packs bought with shells; packs last 90 days; no rollover), fair use
+    300 messages a day. The store wallet keeps a mock `subscription` and `packs`; Membership and the
+    call-time balance are gone (persist v7 moves a running membership to the same plan from today).
+  - Store: Plans / Shells tabs (`/store/shell?tab=shells&plan=pro`), Basic with Monthly / 3 months /
+    Yearly, Pro, fine print, Restore; a one-time starter pack (300 for $0.99) until the first purchase.
+  - `src/app/my-plan.tsx` (Profile → My plan): member, trial and free views, minutes left with bars,
+    top-ups (10 min calls 120 shells, 10 min voice 100), manage and restore. Dev builds: Profile →
+    Developer → End plan.
+  - Sheets in `src/components/plans/`: free user's call sheet (mock 6-second voice sample, trial
+    starts the call), out-of-minutes sheet (before a call, and mid-call where adding minutes
+    resumes it). Out-of-shells sheet redone with three equal ways on (ad or spin, shells, Basic).
+  - Chat: "AI character" under the name, the "{name} is an AI character, not a real person." line at
+    session start and every 3 hours, voice replies only with plan minutes (a once-a-day note links
+    to My plan when they run out), fair-use line and a locked composer until 00:00. Call screen:
+    "N min left" pill from 2 minutes.
+  - Checked on web at 375×812 (screens, trial → call, top-up → resume, paywall → store, v6 → v7
+    migration). Purchases are mocked: real builds plug StoreKit / Play Billing (RevenueCat) into
+    `subscribe`, `topUpMinutes` and `addShells` (backend-plan §14).
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 

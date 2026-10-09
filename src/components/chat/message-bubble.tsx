@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
@@ -8,6 +9,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
+import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
@@ -42,6 +44,8 @@ export const MessageBubble = memo(function MessageBubble({
   const mine = message.author === 'me';
 
   if (message.card === 'helpline') return <HelplineCard />;
+  if (message.card === 'aiNotice') return <AiNotice name={character.name} />;
+  if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -203,6 +207,37 @@ function SystemLine({ text }: { text: string }) {
   );
 }
 
+/** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
+function AiNotice({ name }: { name: string }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.system}>
+      <View style={[styles.systemPill, styles.notice]}>
+        <Txt variant="caption" color={colors.textSecondary} center>
+          {t('chat.aiNotice', { name })}
+        </Txt>
+      </View>
+    </View>
+  );
+}
+
+/** Under a text-only reply when a member's voice minutes ran out; once a day. */
+function VoiceQuotaNote({ until }: { until?: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.quota}>
+      <Ionicons name="mic-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+        {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
+        <Txt variant="smallStrong" color={colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
+          {t('chat.addMinutes')}
+        </Txt>
+      </Txt>
+    </View>
+  );
+}
+
 /** Shown under a crisis message: never blocks the chat, one tap to local helplines. */
 function HelplineCard() {
   const { t } = useTranslation();
@@ -321,6 +356,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.85)',
   },
   callPill: { paddingHorizontal: space.md },
+  notice: { maxWidth: '86%', paddingVertical: space.xs + 2 },
+  // Lines up with their bubbles: past the avatar column.
+  quota: {
+    flexDirection: 'row',
+    gap: space.xs + 2,
+    paddingLeft: space.md + AVATAR + space.sm,
+    paddingRight: space.xxl,
+    paddingVertical: space.xs,
+  },
+  quotaIcon: { marginTop: 2 },
+  quotaText: { flex: 1 },
   helpline: {
     alignItems: 'center',
     gap: space.sm,

@@ -85,8 +85,13 @@ export interface Message {
   reaction?: string;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
-  /** A system card drawn by the chat instead of a bubble: the helpline card after a crisis message. */
-  card?: 'helpline';
+  /**
+   * A system line drawn by the chat instead of a bubble: the helpline card after a
+   * crisis message, the "AI character" notice, or the note that voice minutes ran out.
+   */
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota';
+  /** voiceQuota lines: when the plan's voice minutes come back */
+  until?: string;
 }
 
 /** A message the user reported; the server's review queue gets it with its context. */
@@ -108,6 +113,8 @@ export interface Conversation {
   unreadCount: number;
   pinned: boolean;
   muted: boolean;
+  /** When the "not a real person" notice last showed: again at session start and every 3 hours. */
+  aiNoticeAt?: string;
 }
 
 export type DiaryMood = 'happy' | 'soft' | 'blue' | 'excited' | 'tired';
@@ -241,7 +248,33 @@ export interface BoardPost {
   replied: boolean;
 }
 
-export type MemberPlan = 'basic' | 'pro' | 'quarterly';
+/** The plans a user can subscribe to (docs/backend-plan.md §13.3). */
+export type PlanId = 'basic' | 'quarterly' | 'annual' | 'pro';
+
+/**
+ * A plan bought in the store. The app keeps a mock copy until the server takes over
+ * (RevenueCat → `subscriptions`); the rules live in `src/economy/plans.ts`.
+ */
+export interface Subscription {
+  plan: PlanId;
+  /** 'trial' for the store's free days, then 'active' */
+  status: 'trial' | 'active';
+  /** Start of the current term: the trial, or the paid month, quarter or year */
+  termStart: string;
+  /** Renews at the end of each term, like the store's auto-renewal; false ends it then */
+  willRenew: boolean;
+  /** Minutes used in the current period; a new period starts from zero */
+  usage: { periodStart: string; callSeconds: number; voiceSeconds: number };
+}
+
+/** Extra minutes bought with shells: used after the plan's own and kept for 90 days. */
+export interface MinutePack {
+  id: string;
+  kind: 'call' | 'voice';
+  seconds: number;
+  used: number;
+  boughtAt: string;
+}
 
 /** Why the shell balance moved; drives the line in the account history. */
 export type LedgerReason =
@@ -264,6 +297,7 @@ export type LedgerReason =
   | 'trial'
   | 'membership'
   | 'call'
+  | 'topUp'
   | 'other';
 
 /** One line in the shell history. Positive amounts are credits. */
@@ -284,13 +318,16 @@ export interface Wallet {
    * whatever is left expires at midnight; bought shells never expire.
    */
   free?: { day: string; amount: number };
-  /** Live-call time left, in seconds. Separate from shells. */
-  callSeconds?: number;
   /** Photo Booth currency */
   film: number;
-  isMember: boolean;
-  memberPlan?: MemberPlan;
-  memberUntil?: string;
+  /** The plan, when there is one: calls, voice replies and unlimited chat come with it. */
+  subscription?: Subscription;
+  /** Extra call and voice-reply minutes bought with shells. */
+  packs?: MinutePack[];
+  /** The store gives one free trial per account. */
+  trialUsed?: boolean;
+  /** Set by the first shell purchase; until then the store offers the starter pack. */
+  boughtShells?: boolean;
 }
 
 export interface User {
@@ -304,8 +341,6 @@ export interface User {
   birthYear?: number;
   /** Set when the first-launch flow is finished; until then the app opens on it. */
   onboardedAt?: string;
-  /** The free-trial call note was shown once */
-  callIntroSeen?: boolean;
   /** A friend's invite code entered here; it can be used only once */
   redeemedInvite?: string;
   /** When friends joined with this user's code (credited by the server later) */
@@ -340,6 +375,11 @@ export interface DailyState {
   spinsUsed: number;
   /** The day the share reward was last paid */
   shareDay?: string;
+  /** Messages sent today, for the members' fair-use limit */
+  messagesDay?: string;
+  messagesSent?: number;
+  /** The day the "voice minutes used up" note last showed (once a day) */
+  voiceNoteDay?: string;
 }
 
 export interface AppSettings {
@@ -390,16 +430,4 @@ export interface ShellPack {
   amount: number;
   /** The pack most people pick: pre-selected in the store. */
   popular?: boolean;
-}
-
-export interface MembershipPlan {
-  id: MemberPlan;
-  price: string;
-  /** Days of membership granted */
-  days: number;
-  /** i18n keys under `store.perks` */
-  perks: string[];
-  highlight?: boolean;
-  /** Live-call minutes added with each purchase */
-  callMinutes?: number;
 }

@@ -206,7 +206,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.actions}>
-          <ShellBadge count={shells} onPress={() => router.push('/store/shell')} />
+          <ShellBadge count={shells} onPress={() => router.push('/store/shell?tab=shells')} />
           <PressableScale
             style={styles.profile}
             scaleTo={0.94}

@@ -8,6 +8,17 @@ import { pickSeeded } from '@/lib/seeded';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
+  consumeMinutes,
+  FAIR_USE_PER_DAY,
+  minutesLeft,
+  PLANS,
+  rollSubscription,
+  startSubscription,
+  TOP_UPS,
+  TRIAL,
+  type MinutesKind,
+} from '@/economy/plans';
+import {
   AD_REWARD,
   INVITE_REWARD,
   SHARE_REWARD,
@@ -36,7 +47,6 @@ import {
   levelForIntimacy,
   tierForLevel,
   unlockedLabels,
-  membershipPlans,
   memories as seedMemories,
   messagesByConversation,
   moments as seedMoments,
@@ -80,12 +90,12 @@ import type {
   DiaryEntry,
   LedgerEntry,
   LedgerReason,
-  MemberPlan,
   MemoryItem,
   MemorySource,
   Message,
   Moment,
   MomentKind,
+  PlanId,
   Relationship,
   ScheduleItem,
   SecretNote,
@@ -132,8 +142,8 @@ export interface IncomingCall {
 const STALE_RING_MS = 45_000;
 /** The welcome gift at the end of the first launch. */
 export const WELCOME_SHELLS = 100;
-/** Every new user gets a 15-minute trial of live calls. */
-export const CALL_TRIAL_SECONDS = 15 * 60;
+/** The "not a real person" notice shows at the start of a session and again after this long (NY GBL 47). */
+const AI_NOTICE_MS = 3 * 3_600_000;
 
 export interface DailyRewardEvent {
   amount: number;
@@ -141,7 +151,8 @@ export interface DailyRewardEvent {
   day: number;
 }
 
-export type SendResult = 'sent' | 'noShells' | 'empty';
+/** `dailyCap`: a member reached the fair-use limit for today (FAIR_USE_PER_DAY). */
+export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
 
 interface AppState {
@@ -238,7 +249,15 @@ interface AppState {
   /** Enters a friend's invite code: both sides get shells once. */
   redeemInvite: (code: string) => 'ok' | 'invalid' | 'own' | 'used';
   spinWheel: () => { index: number; reward: number } | null;
-  subscribe: (plan: MemberPlan) => void;
+  /**
+   * Starts a plan, or with `trial` the store's free days of Basic (once per account).
+   * Real builds call this after StoreKit / Play Billing and the server's receipt check.
+   */
+  subscribe: (plan: PlanId, trial?: boolean) => void;
+  /** Buys 10 extra minutes of calls or voice replies with shells. */
+  topUpMinutes: (kind: MinutesKind) => SpendResult;
+  /** Development builds only: ends the plan at once, to test the free screens. */
+  endPlan: () => void;
 
   /* diary */
   addDiaryEntry: (entry: Omit<DiaryEntry, 'id'>) => string;
@@ -258,8 +277,6 @@ interface AppState {
   acceptCall: () => string | null;
   declineCall: () => void;
   addCall: (record: Omit<CallRecord, 'id'>) => void;
-  /** The one-time note about the free call trial has been shown. */
-  markCallIntroSeen: () => void;
 
   /* safety */
   reports: MessageReport[];
@@ -374,6 +391,15 @@ const rebrandStorage: StateStorage = {
 
 type PersistedState = Partial<Pick<AppState, PersistedKeys>>;
 
+/** Wallet fields older versions saved; the migration reads them once and drops them. */
+type LegacyWallet = Wallet & {
+  acorns?: number;
+  isMember?: boolean;
+  memberPlan?: PlanId;
+  memberUntil?: string;
+  callSeconds?: number;
+};
+
 /** The licensed characters seeded before v3. They must not survive a migration. */
 const RETIRED_SEED_IDS = new Set([
   'c_gojo', 'c_megumi', 'c_toji', 'c_yuji', 'c_nobara', 'c_nanami', 'c_maki', 'c_yuta', 'c_sukuna',
@@ -470,7 +496,10 @@ export const useAppStore = create<AppState>()(
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
+        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -526,7 +555,10 @@ export const useAppStore = create<AppState>()(
       sendVoice: (conversationId, durationSec, transcript) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
+        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -545,7 +577,10 @@ export const useAppStore = create<AppState>()(
       sendImage: (conversationId, imageUri) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
+        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -576,7 +611,10 @@ export const useAppStore = create<AppState>()(
 
       setActiveConversation: (conversationId) => {
         set({ activeConversationId: conversationId });
-        if (conversationId) get().markRead(conversationId);
+        if (!conversationId) return;
+        get().markRead(conversationId);
+        // Opening a chat starts a session: the "not a real person" notice shows if it is due.
+        noticeAiIfDue(set, get, conversationId);
       },
 
       clearChat: (conversationId) =>
@@ -600,7 +638,8 @@ export const useAppStore = create<AppState>()(
       deleteMessage: (conversationId, messageId) =>
         set((s) => {
           const rest = (s.messages[conversationId] ?? []).filter((m) => m.id !== messageId);
-          const last = rest[rest.length - 1];
+          // System lines (the AI notice, cards) never become the preview.
+          const last = [...rest].reverse().find((m) => m.kind !== 'system');
           return {
             messages: { ...s.messages, [conversationId]: rest },
             conversations: s.conversations.map((c) =>
@@ -653,7 +692,6 @@ export const useAppStore = create<AppState>()(
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
         get().addShells(WELCOME_SHELLS, 'welcome');
-        creditCallTime(set, CALL_TRIAL_SECONDS, 'trial');
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });
@@ -783,7 +821,12 @@ export const useAppStore = create<AppState>()(
 
       addShells: (amount, reason = 'purchase') =>
         set((s) => ({
-          wallet: { ...s.wallet, shells: s.wallet.shells + amount },
+          wallet: {
+            ...s.wallet,
+            shells: s.wallet.shells + amount,
+            // The starter pack is offered only until the first purchase.
+            boughtShells: s.wallet.boughtShells || reason === 'purchase',
+          },
           ledger: log(s.ledger, amount, reason),
         })),
 
@@ -890,17 +933,26 @@ export const useAppStore = create<AppState>()(
         return { index, reward };
       },
 
-      subscribe: (planId) => {
-        // Real builds complete StoreKit / Play Billing and verify the receipt server-side first.
-        const plan = membershipPlans.find((p) => p.id === planId);
-        if (!plan) return;
-        const base = memberActive(get().wallet) ? new Date(get().wallet.memberUntil!) : new Date();
-        base.setDate(base.getDate() + plan.days);
-        set((s) => ({
-          wallet: { ...s.wallet, isMember: true, memberPlan: planId, memberUntil: base.toISOString() },
-        }));
-        if (plan.callMinutes) creditCallTime(set, plan.callMinutes * 60, 'membership');
+      subscribe: (plan, trial = false) => {
+        if (trial && get().wallet.trialUsed) return;
+        // A new plan (or a switch) starts today with a fresh allowance, as the store would bill it.
+        const subscription = startSubscription(plan, Date.now(), trial);
+        set((s) => ({ wallet: { ...s.wallet, subscription, trialUsed: s.wallet.trialUsed || trial } }));
+        // The call-time history shows what the plan brought.
+        const callSeconds = trial ? TRIAL.callSeconds : PLANS[plan].callSeconds;
+        logSeconds(set, callSeconds, trial ? 'trial' : 'membership');
       },
+
+      topUpMinutes: (kind) => {
+        const { seconds, shells } = TOP_UPS[kind];
+        if (!get().spendShells(shells, 'topUp')) return 'noShells';
+        const pack = { id: uid('mp'), kind, seconds, used: 0, boughtAt: new Date().toISOString() };
+        set((s) => ({ wallet: { ...s.wallet, packs: [...(s.wallet.packs ?? []), pack] } }));
+        if (kind === 'call') logSeconds(set, seconds, 'topUp');
+        return 'ok';
+      },
+
+      endPlan: () => set((s) => ({ wallet: { ...s.wallet, subscription: undefined } })),
 
       /* ── diary ────────────────────────────────────────────────────────── */
 
@@ -976,8 +1028,9 @@ export const useAppStore = create<AppState>()(
       /* ── calls ────────────────────────────────────────────────────────── */
 
       ring: (characterId, slot) => {
-        // No call time left: they text instead of ringing a call you could not take.
-        if ((get().wallet.callSeconds ?? 0) <= 0) return;
+        // No call minutes (no plan, or this month's are used up): they text instead of
+        // ringing a call you could not take.
+        if (minutesOf(get().wallet, 'call').total <= 0) return;
         const current = get().incomingCall;
         if (current && Date.now() - current.at < STALE_RING_MS) return;
         set({ incomingCall: { characterId, slot, at: Date.now() } });
@@ -1006,8 +1059,6 @@ export const useAppStore = create<AppState>()(
           appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines)), { countUnread: true });
         }, 1500);
       },
-
-      markCallIntroSeen: () => set((s) => ({ user: { ...s.user, callIntroSeen: true } })),
 
       /* ── safety ───────────────────────────────────────────────────────── */
 
@@ -1085,9 +1136,12 @@ export const useAppStore = create<AppState>()(
         );
 
         if (record.missed) return;
-        // Call time is spent second by second; the call screen stops at zero.
-        const spent = Math.min(record.durationSec, get().wallet.callSeconds ?? 0);
-        if (spent > 0) creditCallTime(set, -spent, 'call', record.characterId);
+        // Minutes go second by second: the plan's first, then bought ones. The call
+        // screen stops at zero, so a call never takes more than there was.
+        const { wallet } = get();
+        const used = consumeMinutes(wallet.subscription, wallet.packs, 'call', record.durationSec, Date.now());
+        set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
+        if (used.taken > 0) logSeconds(set, -used.taken, 'call', record.characterId);
         const minutes = Math.max(1, Math.round(record.durationSec / 60));
         get().addIntimacy(record.characterId, minutes * INTIMACY.callPerMinute);
         if (record.durationSec >= 60) {
@@ -1362,9 +1416,9 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 6,
+      version: 7,
       migrate: (persisted, version) => {
-        let state = persisted as PersistedState & { wallet?: Wallet & { acorns?: number } };
+        let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
         if (version < 2 && state.wallet && state.wallet.acorns != null) {
           const { acorns, ...wallet } = state.wallet;
@@ -1382,9 +1436,15 @@ export const useAppStore = create<AppState>()(
             }),
           );
         }
-        // v6: live-call time became its own balance; everyone already here gets the trial.
-        if (version < 6 && state.wallet && state.wallet.callSeconds == null) {
-          state.wallet = { ...state.wallet, callSeconds: CALL_TRIAL_SECONDS };
+        // v6 gave live calls their own time balance; v7 replaced it, and Membership, with
+        // plans that carry monthly call and voice-reply minutes (backend-plan §13). A
+        // membership still running carries on as the same plan from today.
+        if (version < 7 && state.wallet) {
+          const { isMember, memberPlan, memberUntil, callSeconds: _callSeconds, ...wallet } = state.wallet;
+          const running = !!isMember && !!memberUntil && Date.parse(memberUntil) > Date.now();
+          state.wallet = running
+            ? { ...wallet, subscription: startSubscription(memberPlan ?? 'basic', Date.now()) }
+            : wallet;
         }
         if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
         return state as AppState;
@@ -1452,8 +1512,16 @@ export const useAppStore = create<AppState>()(
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */
 
-export const memberActive = (wallet: Wallet) =>
-  wallet.isMember && !!wallet.memberUntil && new Date(wallet.memberUntil).getTime() > Date.now();
+/** A plan or its trial is running: chat is free of shells, calls and voice replies come with it. */
+export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscription(wallet.subscription, now);
+
+/** Call or voice-reply minutes left: the plan's this period, then bought packs. In seconds. */
+export const minutesOf = (wallet: Wallet, kind: MinutesKind, now = Date.now()) =>
+  minutesLeft(wallet.subscription, wallet.packs, kind, now);
+
+/** A member sent FAIR_USE_PER_DAY messages today; chat comes back at midnight. */
+export const fairUseReached = (wallet: Wallet, daily: DailyState, today = todayKey()) =>
+  memberActive(wallet) && daily.messagesDay === today && (daily.messagesSent ?? 0) >= FAIR_USE_PER_DAY;
 
 /**
  * Where today falls in the 7-day check-in week, and whether it is collected yet.
@@ -1484,12 +1552,51 @@ function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversa
   return get().spendShells(cost, reason, characterId);
 }
 
-/** Moves the call-time balance and books it in the history, in seconds. */
-function creditCallTime(set: Setter, seconds: number, reason: LedgerReason, characterId?: string) {
+/** Books call time in the history, in seconds: what a plan or top-up added, what a call used. */
+function logSeconds(set: Setter, seconds: number, reason: LedgerReason, characterId?: string) {
   set((s) => ({
-    wallet: { ...s.wallet, callSeconds: Math.max(0, (s.wallet.callSeconds ?? 0) + seconds) },
     ledger: [{ ...log([], seconds, reason, characterId)[0], unit: 'seconds' as const }, ...s.ledger],
   }));
+}
+
+const overFairUse = (get: Getter) => fairUseReached(get().wallet, get().daily);
+
+/** Counts a sent message toward today's total (the fair-use limit). */
+function countMessage(set: Setter, get: Getter) {
+  const today = todayKey();
+  const sent = get().daily.messagesDay === today ? (get().daily.messagesSent ?? 0) : 0;
+  set((s) => ({ daily: { ...s.daily, messagesDay: today, messagesSent: sent + 1 } }));
+}
+
+/**
+ * The "not a real person" line: when a chat session starts and again every 3 hours of
+ * talking (NY GBL Art. 47, CA SB 243). A quiet system line, never a preview or unread.
+ */
+function noticeAiIfDue(set: Setter, get: Getter, conversationId: string) {
+  const conversation = get().conversations.find((c) => c.id === conversationId);
+  if (!conversation) return;
+  const now = Date.now();
+  if (conversation.aiNoticeAt && now - Date.parse(conversation.aiNoticeAt) < AI_NOTICE_MS) return;
+  const at = new Date(now).toISOString();
+  set((s) => ({
+    conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, aiNoticeAt: at } : c)),
+  }));
+  appendMessage(
+    set,
+    get,
+    conversationId,
+    { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'aiNotice', createdAt: at },
+    { quiet: true },
+  );
+}
+
+/** Takes voice-reply seconds from the plan or packs; false when none are left. */
+function spendVoice(set: Setter, get: Getter, seconds: number) {
+  const { wallet } = get();
+  if (minutesOf(wallet, 'voice').total <= 0) return false;
+  const used = consumeMinutes(wallet.subscription, wallet.packs, 'voice', seconds, Date.now());
+  set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
+  return true;
 }
 
 /** History is kept for six months; older lines drop off. */
@@ -1511,8 +1618,19 @@ function appendMessage(
   get: Getter,
   conversationId: string,
   message: Message,
-  { countUnread = message.author === 'them' }: { countUnread?: boolean } = {},
+  {
+    countUnread = message.author === 'them',
+    quiet = false,
+  }: {
+    countUnread?: boolean;
+    /** A system line: leaves the chat list's preview, time and unread count alone */
+    quiet?: boolean;
+  } = {},
 ) {
+  if (quiet) {
+    set((s) => ({ messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] } }));
+    return;
+  }
   const unseen = countUnread && get().activeConversationId !== conversationId;
   const preview = previewFor(message);
 
@@ -1606,7 +1724,16 @@ function scheduleReply(
   const lines = text ? [text] : withInterest(pick(replyBursts), get().user.interests);
   const bond = get().relationships[conversation.characterId];
   const character = get().characters.find((c) => c.id === conversation.characterId);
-  const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
+  const said = lines.join(' ');
+  // Roughly how long the burst takes to say out loud.
+  const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
+  // Voice replies come with a plan and use its minutes; without minutes the reply is text.
+  const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady;
+  const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
+  // A member whose voice minutes ran out sees why, once a day, under the reply.
+  const voiceBack = minutesOf(get().wallet, 'voice').resetsAt;
+  const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
+  if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
 
   // Each line waits roughly as long as it takes to type, with "typing..." shown between.
   // A burst never starts while the last one is still arriving, so two replies never interleave.
@@ -1616,19 +1743,34 @@ function scheduleReply(
     const last = i === lines.length - 1;
     setTimeout(() => {
       if (i === 0 && withVoice) {
-        const said = lines.join(' ');
         appendMessage(set, get, conversationId, {
           id: uid('m'),
           conversationId,
           author: 'them',
           kind: 'voice',
-          // Roughly how long the burst takes to say out loud.
-          durationSec: Math.max(3, Math.round(said.split(/\s+/).length / 2.6)),
+          durationSec: voiceSec,
           transcript: said,
           createdAt: new Date().toISOString(),
         });
       }
       appendMessage(set, get, conversationId, themText(conversationId, line));
+      if (last && noteVoice && voiceBack != null) {
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          {
+            id: uid('m'),
+            conversationId,
+            author: 'them',
+            kind: 'system',
+            card: 'voiceQuota',
+            until: new Date(voiceBack).toISOString(),
+            createdAt: new Date().toISOString(),
+          },
+          { quiet: true },
+        );
+      }
       set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
       if (last && gain) get().addIntimacy(conversation.characterId, gain);
     }, at);

@@ -7,7 +7,7 @@ import { SectionList, StyleSheet, View } from 'react-native';
 import { CharacterAvatar, Chip, ClayIcon, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
-import { useAppStore } from '@/store/use-app-store';
+import { minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
@@ -35,7 +35,7 @@ export default function LedgerScreen() {
   const ledger = useAppStore((s) => s.ledger);
   const characters = useAppStore((s) => s.characters);
   const free = useAppStore((s) => s.wallet.free);
-  const callSeconds = useAppStore((s) => s.wallet.callSeconds ?? 0);
+  const callSeconds = useAppStore((s) => minutesOf(s.wallet, 'call').total);
   const [tab, setTab] = useState<'shells' | 'seconds'>('shells');
   const expireFreeShells = useAppStore((s) => s.expireFreeShells);
 
@@ -187,6 +187,7 @@ const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']>
   trial: 'call-outline',
   membership: 'star-outline',
   call: 'call-outline',
+  topUp: 'add-circle-outline',
   other: 'ellipse-outline',
 };
 

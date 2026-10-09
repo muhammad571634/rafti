@@ -12,7 +12,6 @@ export const currentUser: User = {
 export const wallet: Wallet = {
   shells: 128,
   film: 3,
-  isMember: false,
 };
 
 export const initialDaily: DailyState = {

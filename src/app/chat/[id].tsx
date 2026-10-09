@@ -15,6 +15,8 @@ import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { PaywallSheet } from '@/components/paywall-sheet';
+import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
+import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import {
   Button,
   ShellBadge,
@@ -27,9 +29,9 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
-import { callClock, shortName } from '@/lib/format';
+import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
-import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
+import { displayName, fairUseReached, memberActive, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
 import type { ClayIconName } from '@/components/ui';
@@ -90,10 +92,12 @@ export default function ChatRoomScreen() {
   const [callsOpen, setCallsOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
-  const [callIntro, setCallIntro] = useState(false);
-  const callSeconds = useAppStore((s) => s.wallet.callSeconds ?? 0);
-  const callIntroSeen = useAppStore((s) => !!s.user.callIntroSeen);
-  const markCallIntroSeen = useAppStore((s) => s.markCallIntroSeen);
+  /** Calling with no minutes: free users see what Basic adds, members can top up. */
+  const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
+  const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
+  // A member past today's fair-use limit: the composer rests until midnight.
+  const capped = useAppStore((s) => fairUseReached(s.wallet, s.daily));
+  const untilMidnight = useUntilMidnight(capped);
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
@@ -168,8 +172,11 @@ export default function ChatRoomScreen() {
     return false;
   };
 
-  const send = (text: string) =>
-    sendText(conversation.id, text) === 'noShells' ? outOfShells(shellCosts.textMessage) : true;
+  const send = (text: string) => {
+    const result = sendText(conversation.id, text);
+    if (result === 'noShells') return outOfShells(shellCosts.textMessage);
+    return result === 'sent';
+  };
 
   const pickPhoto = async () => {
     setAttachOpen(false);
@@ -203,10 +210,13 @@ export default function ChatRoomScreen() {
 
   const name = displayName(character, relationship);
 
-  // The first call explains the free trial; with no time left the same sheet says so.
   const startCall = () => {
-    if (!callIntroSeen || callSeconds <= 0) return setCallIntro(true);
-    router.push(`/call/${character.id}`);
+    if (callMinutes > 0) return router.push(`/call/${character.id}`);
+    setCallGate(member ? 'out' : 'paywall');
+  };
+  const openStore = (route: '/store/shell?tab=shells' | '/store/shell?tab=plans&plan=pro') => {
+    setCallGate(null);
+    router.push(route);
   };
   const streak = relationship?.streakDays ?? 0;
   const dark = !!wallpaper?.dark;
@@ -234,13 +244,19 @@ export default function ChatRoomScreen() {
               <Txt variant="title" lines={1}>
                 {name}
               </Txt>
-              <Txt variant="tiny" color={colors.primary} lines={1}>
-                {streak > 0 ? `${t('chat.streak', { count: streak })} \u{1F9E1}` : t('chat.streakNone')}
+              {/* Always says what they are; the streak rides along once there is one. */}
+              <Txt variant="tiny" color={colors.textSecondary} lines={1}>
+                {t('chat.aiCharacter')}
+                {streak > 0 ? (
+                  <Txt variant="tiny" color={colors.primary}>
+                    {` · \u{1F9E1} ${t('chat.streakShort', { count: streak })}`}
+                  </Txt>
+                ) : null}
               </Txt>
             </View>
           </PressableScale>
           <View>
-            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell')} />
+            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
             <SpendPulse shells={shells} />
           </View>
         </View>
@@ -275,7 +291,18 @@ export default function ChatRoomScreen() {
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
-            ListFooterComponent={typing ? <TypingRow character={character} /> : null}
+            ListFooterComponent={
+              <>
+                {typing ? <TypingRow character={character} /> : null}
+                {capped ? (
+                  <View style={styles.fairUse}>
+                    <Txt variant="smallStrong" color={colors.textSecondary} center>
+                      {t('chat.fairUse', { name: shortName(name) })}
+                    </Txt>
+                  </View>
+                ) : null}
+              </>
+            }
             onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
           />
         </View>
@@ -286,6 +313,7 @@ export default function ChatRoomScreen() {
           onAttach={() => setAttachOpen(true)}
           onVoice={() => setVoiceOpen(true)}
           initialValue={typeof draft === 'string' ? draft : undefined}
+          locked={capped ? t('chat.backAt', { time: untilMidnight }) : undefined}
         />
       </KeyboardAvoidingView>
 
@@ -331,46 +359,26 @@ export default function ChatRoomScreen() {
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
 
-      <Sheet visible={callIntro} onClose={() => setCallIntro(false)}>
-        <View style={styles.callIntro}>
-          <View style={styles.callIntroIcon}>
-            <Ionicons name="call" size={28} color={colors.brandText} />
-          </View>
-          <Txt variant="h3" center>
-            {callSeconds > 0 ? t('call.introTitle') : t('call.emptyTitle')}
-          </Txt>
-          <Txt variant="body" color={colors.textSecondary} center>
-            {callSeconds > 0
-              ? t('call.introBody', { name: shortName(name), time: callClock(callSeconds) })
-              : t('call.emptyBody', { name: shortName(name) })}
-          </Txt>
-        </View>
-        <View style={styles.callIntroActions}>
-          {callSeconds > 0 ? (
-            <Button
-              label={t('call.introCall')}
-              size="lg"
-              full
-              onPress={() => {
-                markCallIntroSeen();
-                setCallIntro(false);
-                router.push(`/call/${character.id}`);
-              }}
-            />
-          ) : null}
-          <Button
-            label={t('call.introMember')}
-            variant={callSeconds > 0 ? 'ghost' : 'primary'}
-            size={callSeconds > 0 ? 'md' : 'lg'}
-            full
-            onPress={() => {
-              markCallIntroSeen();
-              setCallIntro(false);
-              router.push('/store/shell');
-            }}
-          />
-        </View>
-      </Sheet>
+      <CallPaywallSheet
+        visible={callGate === 'paywall'}
+        character={character}
+        name={name}
+        onClose={() => setCallGate(null)}
+        onStarted={() => {
+          setCallGate(null);
+          router.push(`/call/${character.id}`);
+        }}
+      />
+      <OutOfMinutesSheet
+        visible={callGate === 'out'}
+        onAdded={() => {
+          setCallGate(null);
+          router.push(`/call/${character.id}`);
+        }}
+        onNoShells={() => openStore('/store/shell?tab=shells')}
+        onGetPro={() => openStore('/store/shell?tab=plans&plan=pro')}
+        onDone={() => setCallGate(null)}
+      />
 
       <Sheet visible={!!menu} onClose={() => setMenu(null)}>
         {menu ? (
@@ -481,6 +489,24 @@ function DayChip({ iso }: { iso: string }) {
   );
 }
 
+/** "18 min" or "2 h 5 min" to midnight, ticking each minute while `on`. */
+function useUntilMidnight(on: boolean) {
+  const { t } = useTranslation();
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!on) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(timer);
+  }, [on]);
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const minutes = Math.max(1, Math.ceil((midnight.getTime() - now) / 60_000));
+  return minutes < 60
+    ? t('plans.minutes', { count: minutes })
+    : t('chat.hoursMinutes', { hours: Math.floor(minutes / 60), minutes: minutes % 60 });
+}
+
 /** A "-1" that floats off the shell badge whenever a message is paid for. */
 function SpendPulse({ shells }: { shells: number }) {
   const { t } = useTranslation();
@@ -513,17 +539,15 @@ function SpendPulse({ shells }: { shells: number }) {
 
 const styles = StyleSheet.create({
   dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
-  callIntro: { alignItems: 'center', gap: space.sm, paddingTop: space.sm },
-  callIntroIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primarySofter,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: space.sm,
+  fairUse: {
+    alignSelf: 'center',
+    maxWidth: '86%',
+    marginTop: space.md,
+    paddingHorizontal: space.md + 2,
+    paddingVertical: space.sm,
+    borderRadius: radius.lg,
+    backgroundColor: colors.onMediaSoft,
   },
-  callIntroActions: { gap: space.sm, marginTop: space.xl },
   dayChip: {
     paddingHorizontal: space.md,
     paddingVertical: space.xs,

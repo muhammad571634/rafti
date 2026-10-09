@@ -1,27 +1,25 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import {
-  Anim,
-  BlurBackdrop,
-  Button,
-  CharacterAvatar,
-  PressableScale,
-  Screen,
-  Txt,
-  characterImage,
-} from '@/components/ui';
+import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
+import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
+import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
+import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { shareForReward } from '@/lib/share';
-import { callScript, displayName, useAppStore } from '@/store/use-app-store';
+import { callScript, displayName, memberActive, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
 
-type CallState = 'empty' | 'connecting' | 'active';
+/** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
+type CallState = 'empty' | 'connecting' | 'active' | 'out';
+
+/** The "N min left" pill shows from this many seconds left. */
+const WARN_SECONDS = 120;
 
 /** How long each subtitle line stays up — a stand-in for streamed TTS. */
 const SUBTITLE_INTERVAL_MS = 5000;
@@ -41,8 +39,10 @@ export default function CallScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const addCall = useAppStore((s) => s.addCall);
-  // The call may run for as long as the balance held when it started.
-  const budget = useRef(useAppStore.getState().wallet.callSeconds ?? 0);
+  const wallet = useAppStore((s) => s.wallet);
+  const member = memberActive(wallet);
+  // The call may run for as long as the minutes left (plan, then packs) when it started.
+  const budget = useRef(minutesOf(useAppStore.getState().wallet, 'call').total);
 
   const [state, setState] = useState<CallState>(
     budget.current <= 0 ? 'empty' : answered ? 'active' : 'connecting',
@@ -84,11 +84,10 @@ export default function CallScreen() {
 
   const remaining = Math.max(0, budget.current - seconds);
 
-  // Out of time mid-call: it ends on its own, and the minutes used are booked.
+  // Out of minutes mid-call: it pauses on the sheet, which can add more or end it.
   useEffect(() => {
-    if (state === 'active' && remaining <= 0) hangUpRef.current();
+    if (state === 'active' && remaining <= 0) setState('out');
   }, [state, remaining]);
-  const hangUpRef = useRef(() => {});
 
   if (!character) {
     return (
@@ -119,7 +118,24 @@ export default function CallScreen() {
     if (router.canGoBack()) router.back();
     else router.replace('/');
   };
-  hangUpRef.current = hangUp;
+
+  /** Ends the call (booking what was talked) and opens the store instead. */
+  const leaveFor = (route: Href) => {
+    book();
+    router.replace(route);
+  };
+
+  /** Minutes were added or a plan started: carry on from where the clock is. */
+  const resume = () => {
+    budget.current = minutesOf(useAppStore.getState().wallet, 'call').total;
+    setState(state === 'out' ? 'active' : 'connecting');
+  };
+
+  // Nothing is booked until the call ends, so these are the minutes before this call.
+  const minutes = minutesOf(wallet, 'call');
+  const status = planStatus(wallet.subscription, Date.now());
+  const monthly = !!status && !status.trial && status.plan !== 'quarterly';
+  const warn = state === 'active' && remaining <= WARN_SECONDS;
 
   const share = () => {
     // Sharing a call counts as the day's share.
@@ -135,9 +151,15 @@ export default function CallScreen() {
 
       <View style={styles.top}>
         <View style={styles.topSide} />
-        <Txt variant="caption" color={colors.onMediaMuted} center style={styles.flex}>
-          {state === 'empty' ? '' : t('call.left', { time: callClock(remaining) })}
-        </Txt>
+        <View style={styles.flex}>
+          {warn ? (
+            <Animated.View entering={FadeIn.duration(320)} style={styles.warn}>
+              <Txt variant="smallStrong" color={colors.onMedia}>
+                {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
+              </Txt>
+            </Animated.View>
+          ) : null}
+        </View>
         <PressableScale
           style={styles.topSide}
           hitSlop={10}
@@ -160,22 +182,7 @@ export default function CallScreen() {
           {name}
         </Txt>
 
-        {state === 'empty' ? (
-          <View style={styles.empty}>
-            <Txt variant="title" color={colors.onMedia} center>
-              {t('call.emptyTitle')}
-            </Txt>
-            <Txt variant="small" color={colors.onMediaMuted} center>
-              {t('call.emptyBody', { name: shortName(name) })}
-            </Txt>
-            <Button label={t('call.getMore')} size="lg" full onPress={() => router.replace('/store/shell')} />
-            <PressableScale scaleTo={0.96} style={styles.back} onPress={() => router.back()}>
-              <Txt variant="bodyStrong" color={colors.onMedia}>
-                {t('call.backToChat')}
-              </Txt>
-            </PressableScale>
-          </View>
-        ) : (
+        {state === 'empty' ? null : (
           <Txt variant="small" color={colors.onMediaMuted} center style={styles.timer}>
             {state === 'connecting' ? t('call.connecting') : callClock(seconds)}
           </Txt>
@@ -220,6 +227,24 @@ export default function CallScreen() {
           onPress={() => setSpeaker((v) => !v)}
         />
       </View>
+
+      {/* No minutes when it opened: free users hear what Basic adds, members can top up. */}
+      <CallPaywallSheet
+        visible={state === 'empty' && !member}
+        character={character}
+        name={name}
+        onClose={() => router.back()}
+        onStarted={resume}
+      />
+      <OutOfMinutesSheet
+        visible={state === 'out' || (state === 'empty' && member)}
+        name={state === 'out' ? shortName(name) : undefined}
+        talked={state === 'out' ? minutes.planTotal - minutes.plan + seconds : undefined}
+        onAdded={resume}
+        onNoShells={() => leaveFor('/store/shell?tab=shells')}
+        onGetPro={() => leaveFor('/store/shell?tab=plans&plan=pro')}
+        onDone={hangUp}
+      />
     </Screen>
   );
 }
@@ -272,8 +297,15 @@ const styles = StyleSheet.create({
   name: { marginTop: space.xl },
   timer: { marginTop: space.xs, fontVariant: ['tabular-nums'] },
   subtitle: { marginTop: space.xxl, lineHeight: 24 },
-  empty: { marginTop: space.xl, gap: space.md, alignSelf: 'stretch', alignItems: 'center' },
-  back: { paddingVertical: space.sm },
+  warn: {
+    alignSelf: 'center',
+    paddingHorizontal: space.md + 2,
+    paddingVertical: space.xs + 2,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.onMediaHairline,
+    backgroundColor: colors.onMediaGlass,
+  },
   hidden: { display: 'none' },
   controls: {
     flexDirection: 'row',
