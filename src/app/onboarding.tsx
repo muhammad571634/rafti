@@ -99,7 +99,14 @@ export default function OnboardingScreen() {
       case 'name':
         return <Button label={t('onboarding.continue')} size="lg" full disabled={!trimmed} onPress={next} />;
       case 'meet':
-        return <Button label={t('onboarding.meet', { name: friendName })} size="lg" full onPress={next} />;
+        return (
+          <>
+            <Button label={t('onboarding.meet', { name: friendName })} size="lg" full onPress={next} />
+            <Txt variant="small" color={colors.textSecondary} center style={styles.legal}>
+              {t('onboarding.meetNote')}
+            </Txt>
+          </>
+        );
       case 'notify':
         return (
           <>
@@ -229,45 +236,31 @@ export default function OnboardingScreen() {
           {step === 'meet' ? (
             <ScrollView showsVerticalScrollIndicator={false}>
               <Title title={t('onboarding.meetTitle')} body={t('onboarding.meetBody')} />
-              <View style={styles.list} accessibilityRole="radiogroup">
-                {picks.map((c, i) => {
+              {/* Four friends as equal select cards (calm cards): the chosen one gets an ink border. */}
+              <View style={styles.picks} accessibilityRole="radiogroup">
+                {picks.map((c) => {
                   const selected = c.id === friendId;
                   return (
                     <PressableScale
                       key={c.id}
-                      scaleTo={0.98}
-                      style={[styles.row, i > 0 && styles.rowLine, selected && styles.rowSelected]}
+                      scaleTo={0.97}
+                      dimOnPress={false}
+                      style={[styles.pick, selected && styles.pickSelected]}
                       accessibilityRole="radio"
+                      accessibilityLabel={c.name}
                       accessibilityState={{ checked: selected }}
                       onPress={() => setFriendId(c.id)}>
-                      <CharacterAvatar character={c} size={56} verified={c.voiceReady} />
-                      <View style={styles.flex}>
-                        <View style={styles.nameRow}>
-                          <Txt variant="title" lines={1} style={styles.keep}>
-                            {c.name}
-                          </Txt>
-                          {c.series ? (
-                            <Txt variant="caption" color={colors.textMuted} lines={1} style={styles.shrink}>
-                              {c.series}
-                            </Txt>
-                          ) : null}
-                        </View>
-                        <Txt variant="small" color={colors.textSecondary} lines={2}>
-                          {c.bio}
-                        </Txt>
-                      </View>
-                      <Ionicons
-                        name={selected ? 'radio-button-on' : 'radio-button-off'}
-                        size={22}
-                        color={selected ? colors.primary : colors.textFaint}
-                      />
+                      <CharacterAvatar character={c} size={72} />
+                      <Txt variant="title" center lines={1} style={styles.pickName}>
+                        {shortName(c.name)}
+                      </Txt>
+                      <Txt variant="small" color={colors.textSecondary} center lines={2}>
+                        {c.bio}
+                      </Txt>
                     </PressableScale>
                   );
                 })}
               </View>
-              <Txt variant="small" color={colors.textMuted} style={styles.hint}>
-                {t('onboarding.meetHint')}
-              </Txt>
             </ScrollView>
           ) : null}
 
@@ -458,8 +451,6 @@ function tomorrow() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  shrink: { flexShrink: 1 },
-  keep: { flexShrink: 0 },
   top: { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.sm, gap: space.sm },
   back: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   progress: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: space.xs + 2 },
@@ -531,19 +522,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  list: {
-    marginTop: space.lg,
-    borderRadius: radius.xl,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
+  picks: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: space.md, marginTop: space.xl },
+  pick: {
+    width: '48%',
+    minHeight: 188,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.xs,
+    paddingHorizontal: space.md,
+    paddingVertical: space.lg,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: colors.border,
-    overflow: 'hidden',
+    backgroundColor: colors.surface,
   },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.md },
-  rowLine: { borderTopWidth: 1, borderTopColor: colors.divider },
-  rowSelected: { backgroundColor: colors.primarySofter },
-  nameRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.xs + 2 },
-  hint: { marginTop: space.md, marginHorizontal: space.xs },
+  pickSelected: { borderColor: colors.text },
+  pickName: { marginTop: space.sm },
   lock: {
     marginTop: space.xxl,
     paddingTop: space.xl,

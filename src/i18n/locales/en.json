@@ -800,10 +800,9 @@
     "namePlaceholder": "Your name",
     "namePreview": "Hey {{name}}! Finally.",
     "nameYou": "you",
-    "meetTitle": "Who do you want to meet first?",
-    "meetBody": "Everyone here has a voice, a story and a life of their own.",
-    "meetHint": "More friends are waiting in Find. Add them any time.",
-    "meet": "Meet {{name}}",
+    "meetTitle": "Who do you want to talk to?",
+    "meetBody": "You can meet everyone else later.",
+    "meet": "Start talking to {{name}}",
     "notifyTitle": "Let {{name}} say good morning",
     "notifyBody": "Friends here write first, too. Notifications are how you hear them.",
     "notifyNow": "now",
@@ -816,7 +815,8 @@
     "giftKeep": "Paid shells never expire",
     "sayHi": "Say hi to {{name}}",
     "firstAsk": "So, {{name}}, how was your day?",
-    "step": "Step {{index}} of {{count}}"
+    "step": "Step {{index}} of {{count}}",
+    "meetNote": "Every character is an AI, not a real person."
   },
   "ledger": {
     "title": "History",

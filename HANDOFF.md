@@ -147,6 +147,16 @@ npx tsc --noEmit                # must be clean
   in `docs/design-audit.md` follows the calm-cards style; only the approved screens differ, and
   they change only when the owner asks.
 
+- App-flow prototype (11 screens, 2026-10-10): https://claude.ai/artifact/JTwiRZbdTJtV3czQF3ahdi.
+  The owner approved only three screens for code, "touch nothing else, keep the logic":
+  onboarding "meet" step (2x2 select cards; `src/app/onboarding.tsx`, other steps and the progress
+  bar untouched), Chats tab (search opens from the magnifier, pencil goes to Find, ink unread
+  count drawn locally; shared `CountBadge` unchanged), Find tab (48px apricot create button,
+  `Segmented` Everyone / Him / Her replacing the cycling button, local world chips, portrait cards
+  per world; `CharacterRow` is still used by the world page). Search, filters, blocked list, add
+  friend, "See all" and routes work as before. The rest of the prototype (Today, Me tab instead of
+  Us, chat "+" Do together, Kai's space) waits for the owner.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
