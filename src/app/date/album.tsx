@@ -22,7 +22,7 @@ export default function DateAlbumScreen() {
   const cardW = Math.floor((width - space.lg * 2 - space.lg) / 2);
 
   return (
-    <Screen background={colors.bg}>
+    <Screen background={colors.bgPlain}>
       <Header title={t('date.albumTitle')} />
       {dates.length === 0 ? (
         <EmptyState title={t('date.albumEmpty')} actionLabel={t('dating.title')} onAction={() => router.back()} />

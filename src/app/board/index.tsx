@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { boardStyle, Stationery } from '@/components/board/stationery';
-import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { shareForReward } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -36,14 +36,10 @@ export default function BoardScreen() {
   const write = () => router.push('/board/write');
 
   return (
-    <Screen background={colors.bg}>
+    <Screen background={colors.bgPlain}>
       <Header
         title={t('board.title')}
-        right={
-          <PressableScale hitSlop={hitSlop} scaleTo={0.88} accessibilityLabel={t('board.write')} onPress={write}>
-            <Ionicons name="add-circle" size={30} color={colors.primary} />
-          </PressableScale>
-        }
+        right={<IconButton icon="add" onPress={write} accessibilityLabel={t('board.write')} />}
       />
 
       {notes.length === 0 ? (
@@ -68,7 +64,7 @@ export default function BoardScreen() {
                     {shortName(displayName(character!, relationships[character!.id]))}
                   </Txt>
                   {post.replied ? (
-                    <Ionicons name="chatbubble-ellipses" size={14} color={colors.primary} />
+                    <Ionicons name="chatbubble-ellipses" size={14} color={colors.text} />
                   ) : null}
                   <Txt variant="tiny" color={colors.textFaint}>
                     {relativeStamp(post.createdAt)}

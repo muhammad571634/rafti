@@ -83,7 +83,7 @@ export default function EditProfileScreen() {
           </View>
         </View>
 
-        <SectionLabel title={t('editProfile.basics')} />
+        <SectionLabel tone="section" title={t('editProfile.basics')} />
         {row('name', t('editProfile.name'), user.displayName)}
         <Divider inset={space.lg} />
         {row('pronouns', t('editProfile.pronouns'), user.pronouns && t(`editProfile.pronounOptions.${user.pronouns}`))}
@@ -99,7 +99,7 @@ export default function EditProfileScreen() {
         <Divider inset={space.lg} />
         {row('job', t('editProfile.job'), user.job)}
 
-        <SectionLabel title={t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })} />
+        <SectionLabel tone="section" title={t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })} />
         <View style={styles.chips}>
           {interests.map((interest) => (
             <Chip key={interest} label={interest} onPress={() => setOpen('interests')} />
@@ -109,16 +109,16 @@ export default function EditProfileScreen() {
             onPress={() => setOpen('interests')}
             accessibilityLabel={t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })}
             style={styles.add}>
-            <Ionicons name="add" size={20} color={colors.brandText} />
+            <Ionicons name="add" size={20} color={colors.text} />
           </PressableScale>
         </View>
 
-        <SectionLabel title={t('editProfile.about')} />
+        <SectionLabel tone="section" title={t('editProfile.about')} />
         <PressableScale scaleTo={0.98} onPress={() => setOpen('about')} style={styles.about}>
           {user.about ? (
             <Txt variant="body">{user.about}</Txt>
           ) : (
-            <Ionicons name="add" size={22} color={colors.brandText} />
+            <Ionicons name="add" size={22} color={colors.text} />
           )}
         </PressableScale>
       </ScrollView>
@@ -187,18 +187,20 @@ const styles = StyleSheet.create({
     borderRadius: CAMERA / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.text,
     borderWidth: 2,
     borderColor: colors.bgPlain,
   },
   meter: { alignSelf: 'stretch', paddingHorizontal: space.xxl },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingHorizontal: space.lg },
+  // Secondary chip: white with a hairline, like the secondary button.
   add: {
     width: 56,
     height: 34,
     borderRadius: radius.pill,
-    borderWidth: 1.5,
-    borderColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -207,6 +209,8 @@ const styles = StyleSheet.create({
     minHeight: 64,
     padding: space.lg,
     borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
     backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'flex-start',

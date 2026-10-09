@@ -28,14 +28,14 @@ screens:
 | Find tab | `/(tabs)/find` | fits | Done in step 1 (2026-10-09). |
 | Daily check-in popup | — | fits | Step 1: redesigned as a Today-only sheet, then turned off at the owner's request; shells arrive quietly. |
 | Character settings | `/character/[id]/settings` | fits | Done in step 1. |
-| Memories | `/character/[id]/memories` | small | Drop the header subtitle. |
+| Memories | `/character/[id]/memories` | fits | Done in step 2 (2026-10-10). |
 | Profile | `/profile` | fits | Done in step 1; invite card removed (offer on the Free gifts row). |
-| Edit profile | `/edit-profile` | small | Grey micro labels → h3 sections; interests "+" as a secondary chip. |
+| Edit profile | `/edit-profile` | fits | Done in step 2: h3 sections, secondary "+" chip, ink meter and camera badge. |
 | History (ledger) | `/store/ledger` | fits | Done in step 1. |
 | Radio | `/radio` | fits | Done in step 1: selected track card and a time-left bar. |
-| Secret note | `/secret-note/[id]` | small | Header avatar; otherwise close. |
-| Message board | `/board` | small | Orange "+" circle in header → line icon button; empty-state button. |
-| Our dates album | `/date/album` | small | Empty-state button as `secondary`. |
+| Secret note | `/secret-note/[id]` | fits | Done in step 2: no header avatar, h3 "Your note", action bar. |
+| Message board | `/board` | fits | Done in step 2: line "+" icon button, plain canvas. |
+| Our dates album | `/date/album` | fits | Done in step 2: plain canvas; empty-state button is `secondary` everywhere. |
 | Contacts | `/contacts` | medium | Grid of shadowed cards with a dashed "Add one"; info icon. Move to a list or select-card grid in the style. |
 | Create character | `/create-character` | medium | Long form: h3 sections, bottom action bar with the price, consistent field style. |
 | Free gifts | `/gifts` | medium | Five blocks with mixed styles (check-in dots, wheel, invite, code, video); regroup into h3 sections, one primary button. Keep the wheel and its animation. |

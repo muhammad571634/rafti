@@ -30,7 +30,7 @@ export function EmptyState({
       {icon ? (
         <ClayIcon name={icon} size={compact ? 88 : 120} tile={false} />
       ) : (
-        <BrandArt name="empty" width={compact ? 132 : 200} bob />
+        <BrandArt name="empty" width={compact ? 112 : 150} bob />
       )}
       <Txt variant="title" center style={styles.title}>
         {title}
@@ -41,7 +41,7 @@ export function EmptyState({
         </Txt>
       ) : null}
       {actionLabel && onAction ? (
-        <Button label={actionLabel} onPress={onAction} size="sm" variant="soft" style={styles.action} />
+        <Button label={actionLabel} onPress={onAction} size="sm" variant="secondary" style={styles.action} />
       ) : null}
     </View>
   );

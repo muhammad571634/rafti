@@ -5,7 +5,7 @@
 export const BRAND = {
   /** Rafti's face as a die-cut sticker (transparent). Default avatar, call sticker, splash. */
   sticker: require('./rafti-sticker.png'),
-  /** Rafti peering into an empty box (transparent). Empty lists. */
+  /** Rafti listening to a seashell (transparent). Empty lists. */
   empty: require('./rafti-empty.png'),
   /** Rafti holding a glowing shell in confetti, on cream. Daily reward. */
   reward: require('./rafti-reward.jpg'),
@@ -124,7 +124,7 @@ export type ReactionName = keyof typeof REACTION_STICKERS;
 /** Intrinsic width / height, so art can be sized from one dimension. */
 export const BRAND_ASPECT: Record<BrandArtName, number> = {
   sticker: 604 / 539,
-  empty: 720 / 498,
+  empty: 575 / 720,
   reward: 720 / 657,
   levelUp: 800 / 530,
   banner: 1200 / 514,

@@ -99,6 +99,15 @@ npx tsc --noEmit                # must be clean
   and moved to Today, then the owner asked for no popup at all: check-in shells now arrive quietly
   (`claimDailyLogin` no longer sets `dailyReward`; set it again to bring the sheet back).
 
+- Calm cards step 2 (2026-10-10, Desktop; the user said to go on in the same style without a new
+  prototype): Memories (no header subtitle), Edit profile (h3 sections, white "+" chip, ink meter and
+  camera badge, bordered About box), Secret note (no header avatar, h3 "Your note", white action bar),
+  Board (line "+" icon button, `bgPlain`), Our dates (`bgPlain`). `EmptyState` uses a `secondary`
+  button and the new empty-state art: the user asked to replace Rafti's empty box, so Rafti now
+  listens to a seashell (Higgsfield, grok-imagine-image-2.0, 1 image ≈ $0.08; raw in
+  `../BIMOBIMOdesignraw/empty_state.png/rafti-empty-shell.jpg`, cut with `key_out`). Next: the
+  "medium" screens, Free gifts first, each with a prototype.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
