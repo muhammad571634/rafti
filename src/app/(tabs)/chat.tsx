@@ -7,7 +7,6 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import {
   CharacterAvatar,
   CountBadge,
-  Divider,
   EmptyState,
   IconButton,
   ListRow,
@@ -29,6 +28,7 @@ interface ChatItem {
   name: string;
 }
 
+/** Every chat, pinned first: plain rows on the canvas, no lines or cards (same look as Today). */
 export default function ChatListScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -96,6 +96,7 @@ export default function ChatListScreen() {
 
       {items.length === 0 ? (
         <EmptyState
+          icon="bubbles"
           title={t('chatList.empty')}
           hint={t('chatList.emptyHint')}
           actionLabel={t('find.title')}
@@ -116,7 +117,6 @@ export default function ChatListScreen() {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             contentContainerStyle={styles.list}
-            ItemSeparatorComponent={RowDivider}
             ListEmptyComponent={
               <Txt variant="small" color={colors.textMuted} center style={styles.noResults}>
                 {t('chatList.noResults', { query: query.trim() })}
@@ -126,6 +126,7 @@ export default function ChatListScreen() {
               const { conversation, character, name } = item;
               return (
                 <ListRow
+                  size="large"
                   left={<CharacterAvatar character={character} size={AVATAR} />}
                   title={name}
                   titleAccessory={
@@ -152,11 +153,6 @@ export default function ChatListScreen() {
       )}
     </Screen>
   );
-}
-
-/** Inset so the line starts under the name, not under the avatar. */
-function RowDivider() {
-  return <Divider inset={space.lg + AVATAR + space.md} />;
 }
 
 const styles = StyleSheet.create({

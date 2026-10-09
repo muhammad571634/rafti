@@ -55,5 +55,5 @@ export const shadows = {
 export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
 /** Height of the custom bottom tab bar (excluding safe-area inset). */
-export const TAB_BAR_HEIGHT = 58;
+export const TAB_BAR_HEIGHT = 66;
 export const HEADER_HEIGHT = 52;

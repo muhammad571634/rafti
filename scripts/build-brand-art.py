@@ -297,6 +297,309 @@ def build_app_icons(src):
     return '#%02X%02X%02X' % edge
 
 
+# Rafti reaction stickers: one 3x3 Nano Banana sheet; (row, col) per reaction.
+REACTION_SHEET = os.path.join(ROOT, 'assets', 'raw', 'reactions-sheet.jpg')
+REACTIONS = {
+    'love': (0, 0),
+    'laugh': (0, 1),
+    'wow': (0, 2),
+    'sad': (1, 0),
+    'hyped': (2, 1),
+    'thumbs': (2, 2),
+}
+
+
+def cut_sticker(cell):
+    """The paper backdrop is grey and grainy; the die-cut rim is pure white, so the flood stops there."""
+    a = np.asarray(cell).astype(int)
+    h, w, _ = a.shape
+    grey = (a.max(axis=2) - a.min(axis=2)) < 14
+    candidate = grey & (a.min(axis=2) < 250)
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = ~reach
+    # Bits of a neighbouring sticker poke into the cell at its edge. Each piece that
+    # touches the edge is grown on its own and dropped only if it is small.
+    total = solid.sum()
+    seen = np.zeros((h, w), bool)
+    for y, x in zip(*np.nonzero(solid & ~seen & _edge(h, w))):
+        if seen[y, x]:
+            continue
+        piece = np.zeros((h, w), bool)
+        piece[y, x] = True
+        while True:
+            grown = piece.copy()
+            grown[1:] |= piece[:-1]
+            grown[:-1] |= piece[1:]
+            grown[:, 1:] |= piece[:, :-1]
+            grown[:, :-1] |= piece[:, 1:]
+            grown &= solid
+            if (grown == piece).all():
+                break
+            piece = grown
+        seen |= piece
+        if piece.sum() < total * 0.05:
+            solid &= ~piece
+
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
+    out = cell.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+def _edge(h, w):
+    edge = np.zeros((h, w), bool)
+    edge[0, :] = edge[-1, :] = edge[:, 0] = edge[:, -1] = True
+    return edge
+
+
+def build_reactions():
+    if not os.path.exists(REACTION_SHEET):
+        return
+    sheet = Image.open(REACTION_SHEET).convert('RGB')
+    step = sheet.width / 3
+    for name, (row, col) in REACTIONS.items():
+        box = (round(col * step), round(row * step), round((col + 1) * step), round((row + 1) * step))
+        sticker = fit(cut_sticker(sheet.crop(box)), 240)
+        save(sticker, os.path.join(OUT, f'reaction-{name}.png'), optimize=True)
+
+
+# 3D clay icons: Nano Banana sheets, 4 columns x 3 rows on flat light grey.
+# Per sheet: its file, the names row by row, and the row bands (fractions of its
+# height; the rows are not evenly spaced).
+ICON_SHEETS = [
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet.jpg'),
+        [
+            'voice', 'photo', 'secret-note', 'quiz',
+            'truth-or-dare', 'date', 'calls', 'diary',
+            # Spare art kept for later screens.
+            'ball', 'planner', 'play', 'play-stack',
+        ],
+        [(0.10, 0.40), (0.40, 0.65), (0.65, 0.93)],
+    ),
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-2.jpg'),
+        [
+            'gift', 'store', 'contacts', 'radio',
+            'board', 'bedtime', 'camera', 'calendar',
+            'search', 'compass', 'music', 'lock',
+        ],
+        [(0.10, 0.375), (0.38, 0.635), (0.64, 0.92)],
+    ),
+    (
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-3.jpg'),
+        [
+            'umbrella', 'fish', 'fireworks', 'headphones',
+            'night-sky', 'cake', 'house', 'sun',
+            'plane', 'invite', 'sparkles', 'level-up',
+        ],
+        [(0.10, 0.33), (0.38, 0.62), (0.67, 0.89)],
+    ),
+    (
+        # A wide sheet (1024 x 559); the bands stop above each row's floor shadow.
+        os.path.join(ROOT, 'assets', 'raw', 'icons-3d-sheet-4.jpg'),
+        [
+            'fireplace', 'wave', 'film', 'wand',
+            'polaroids', 'jar', 'alarm', 'palette',
+            'trophy', 'hourglass', 'pencil', 'bubbles',
+        ],
+        [(0.04, 0.33), (0.355, 0.65), (0.67, 0.955)],
+    ),
+]
+
+def drop_edge_scraps(solid):
+    """
+    Bits of a neighbouring icon poke into a cell at its side. A piece touching the
+    border stays only if it reaches the middle third of the cell, where this cell's
+    own icon sits; loose bits inside (steam, sparkles) never touch it and stay.
+    """
+    h, w = solid.shape
+    middle = np.zeros((h, w), bool)
+    middle[:, w // 3 : 2 * w // 3] = True
+    seen = np.zeros((h, w), bool)
+    for y, x in zip(*np.nonzero(solid & _edge(h, w))):
+        if seen[y, x]:
+            continue
+        piece = np.zeros((h, w), bool)
+        piece[y, x] = True
+        while True:
+            grown = piece.copy()
+            grown[1:] |= piece[:-1]
+            grown[:-1] |= piece[1:]
+            grown[:, 1:] |= piece[:, :-1]
+            grown[:, :-1] |= piece[:, 1:]
+            grown &= solid
+            if (grown == piece).all():
+                break
+            piece = grown
+        seen |= piece
+        if not (piece & middle).any():
+            solid = solid & ~piece
+    return solid
+
+
+def drop_thin_bands(solid, min_rows=6):
+    """
+    The tight glass test keeps a faint line of floor shadow under the object; it is
+    a short run of rows with an empty gap above it, so runs that thin are dropped.
+    """
+    filled = solid.any(axis=1)
+    y = 0
+    while y < len(filled):
+        if not filled[y]:
+            y += 1
+            continue
+        end = y
+        while end < len(filled) and filled[end]:
+            end += 1
+        if end - y < min_rows:
+            solid[y:end] = False
+        y = end
+    return solid
+
+
+def cut_icon(cell, glass=False):
+    """
+    Flood the grey backdrop and the grey drop shadow in from the border; colour stops it.
+    Clear glass is grey too, so for `glass` icons only pixels almost exactly the
+    backdrop's colour flood, and the glass rim stops it.
+    """
+    a = np.asarray(cell).astype(int)
+    h, w, _ = a.shape
+    chroma = a.max(axis=2) - a.min(axis=2)
+    if glass:
+        edge = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
+        backdrop = np.median(edge, axis=0)
+        candidate = np.abs(a - backdrop).max(axis=2) < 9
+    else:
+        candidate = (chroma < 12) & (a.min(axis=2) > 165)
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = fill_holes(~reach)
+    solid = drop_edge_scraps(solid)
+    if glass:
+        solid = drop_thin_bands(solid)
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    # One pixel in from the cut: the sheet's light rim must not show on darker tiles.
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    alpha = alpha.filter(ImageFilter.GaussianBlur(0.9))
+    out = cell.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+# Icons with clear glass, cut with the tighter backdrop test.
+GLASS_ICONS = {'jar', 'hourglass'}
+
+
+# How grey a pixel may be and still count as backdrop or shadow. Mint and lilac clay is
+# nearly grey too, so the default is tight; the heart's shadow picked up its pink and
+# needs more room (it has no mint to lose).
+SHADOW_CHROMA = {'tab-us': 24}
+
+
+def cut_single(img, max_chroma=14):
+    """
+    One object on light grey (a single-icon render). The backdrop and its soft contact
+    shadow are both grey and smooth, so the flood takes every low-colour, smooth pixel it
+    can reach from the border; the pastel object stops it, and so do the hard edges of
+    grey parts (a pin's metal point).
+    """
+    a = np.asarray(img).astype(int)
+    h, w, _ = a.shape
+    chroma = a.max(axis=2) - a.min(axis=2)
+    smooth = np.asarray(img.filter(ImageFilter.BoxBlur(3))).astype(int)
+    flat = np.abs(a - smooth).max(axis=2) < 7
+    candidate = (chroma < max_chroma) & (a.min(axis=2) > 120) & flat
+
+    reach = np.zeros((h, w), bool)
+    reach[0, :] = reach[-1, :] = reach[:, 0] = reach[:, -1] = True
+    reach &= candidate
+    while True:
+        grown = reach.copy()
+        grown[1:] |= reach[:-1]
+        grown[:-1] |= reach[1:]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= candidate
+        if (grown == reach).all():
+            break
+        reach = grown
+
+    solid = drop_edge_scraps(fill_holes(~reach))
+    alpha = Image.fromarray(np.where(solid, 255, 0).astype(np.uint8))
+    alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    alpha = alpha.filter(ImageFilter.GaussianBlur(0.9))
+    out = img.convert('RGBA')
+    out.putalpha(alpha)
+    return out.crop(alpha.point(lambda v: 255 if v > 24 else 0).getbbox())
+
+
+def muted(icon):
+    """The resting tab: the same art in soft grey, so only the current tab has colour."""
+    grey = icon.convert('L').point(lambda v: round(105 + v * 0.45))
+    out = Image.merge('RGB', (grey, grey, grey))
+    out.putalpha(icon.getchannel('A'))
+    return out
+
+
+def build_icons_3d():
+    names = []
+    for path, sheet_names, rows in ICON_SHEETS:
+        if not os.path.exists(path):
+            continue
+        sheet = Image.open(path).convert('RGB')
+        w, h = sheet.size
+        col = w / 4
+        for i, name in enumerate(sheet_names):
+            top, bottom = rows[i // 4]
+            c = i % 4
+            # Cells overlap a little so no icon is clipped; the neighbour's scraps are dropped.
+            box = (max(0, round(c * col) - 16), round(top * h), min(w, round((c + 1) * col) + 16), round(bottom * h))
+            icon = fit(cut_icon(sheet.crop(box), glass=name in GLASS_ICONS), 192)
+            save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
+            names.append(name)
+    # Single-icon renders (one object on light grey, e.g. Grok Image 2.0 on Higgsfield) in
+    # assets/raw/icons-3d/<name>.png replace the sheet cut of the same name.
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'icons-3d', '*.png'))):
+        name = os.path.splitext(os.path.basename(raw))[0]
+        icon = fit(cut_single(Image.open(raw).convert('RGB'), SHADOW_CHROMA.get(name, 14)), 192)
+        save(icon, os.path.join(OUT, f'icon3d-{name}.png'), optimize=True)
+        if name not in names:
+            names.append(name)
+        # Tab bar icons also get the resting look for tabs that are not current.
+        if name.startswith('tab-'):
+            save(muted(icon), os.path.join(OUT, f'icon3d-{name}-off.png'), optimize=True)
+    return names
+
 def build_sticker_derivatives():
     sticker = Image.open(os.path.join(OUT, 'rafti-sticker.png'))
     # Splash: the sticker centred on transparent, sized by expo-splash-screen.
@@ -310,27 +613,33 @@ def build_sticker_derivatives():
     save(mono, os.path.join(IMAGES, 'android-icon-monochrome.png'), optimize=True)
 
 
+def square_portrait(img):
+    """Portraits are framed head-and-shoulders; keep the top of a tall render."""
+    side = min(img.size)
+    left = (img.width - side) // 2
+    top = 0 if img.height > img.width else (img.height - side) // 2
+    return img.crop((left, top, left + side, top + side)).resize((512, 512), Image.LANCZOS)
+
+
 def build_avatars():
     """
-    Seed character portraits: `avatar_<name>.png/` render folders become
-    assets/avatars/c_<name>.png (square, 512px) and the registry is rewritten
-    to list exactly the portraits that exist.
+    Seed character portraits become assets/avatars/c_<name>.png (square, 512px):
+    `avatar_<name>.png/` render folders in RAW (the local Windows layout) and plain
+    files in assets/raw/avatars/c_<name>.png|jpg (the cloud layout). The registry is
+    rewritten to list every portrait in assets/avatars, built now or before.
     """
     folder = os.path.join(ROOT, 'assets', 'avatars')
     os.makedirs(folder, exist_ok=True)
-    names = []
     for raw in sorted(glob.glob(os.path.join(RAW, 'avatar_*.png'))):
         if not os.path.isdir(raw):
             continue
         name = os.path.basename(raw)[len('avatar_'):-len('.png')]
-        img = Image.open(newest('avatar_' + name)).convert('RGB')
-        # Portraits are framed head-and-shoulders; keep the top of a tall render.
-        side = min(img.size)
-        left = (img.width - side) // 2
-        top = 0 if img.height > img.width else (img.height - side) // 2
-        square = img.crop((left, top, left + side, top + side)).resize((512, 512), Image.LANCZOS)
+        square = square_portrait(Image.open(newest('avatar_' + name)).convert('RGB'))
         save(square, os.path.join(folder, f'c_{name}.png'), optimize=True)
-        names.append(name)
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'avatars', 'c_*.*'))):
+        name = os.path.splitext(os.path.basename(raw))[0][len('c_'):]
+        save(square_portrait(Image.open(raw).convert('RGB')), os.path.join(folder, f'c_{name}.png'), optimize=True)
+    names = sorted(os.path.basename(p)[len('c_'):-len('.png')] for p in glob.glob(os.path.join(folder, 'c_*.png')))
 
     lines = ''.join(f"  c_{n}: require('./c_{n}.png'),\n" for n in names)
     registry = f"""/**
@@ -346,11 +655,49 @@ export const AVATARS: Record<string, number> = {{
     return names
 
 
+def build_heroes():
+    """
+    Wide character scenes for the Today hero card: `hero_<name>.png/` render folders
+    (16:9, generated on Higgsfield) become assets/heroes/c_<name>.jpg, 1600px wide,
+    and the registry is rewritten to list exactly the scenes that exist.
+    """
+    folder = os.path.join(ROOT, 'assets', 'heroes')
+    os.makedirs(folder, exist_ok=True)
+    for raw in sorted(glob.glob(os.path.join(RAW, 'hero_*.png'))):
+        if not os.path.isdir(raw):
+            continue
+        name = os.path.basename(raw)[len('hero_'):-len('.png')]
+        scene = fit(Image.open(newest('hero_' + name)).convert('RGB'), 1600)
+        save(scene, os.path.join(folder, f'c_{name}.jpg'), quality=84, optimize=True, progressive=True)
+    # The cloud layout: plain files in assets/raw/heroes/c_<name>.png|jpg.
+    for raw in sorted(glob.glob(os.path.join(ROOT, 'assets', 'raw', 'heroes', 'c_*.*'))):
+        name = os.path.splitext(os.path.basename(raw))[0][len('c_'):]
+        scene = fit(Image.open(raw).convert('RGB'), 1600)
+        save(scene, os.path.join(folder, f'c_{name}.jpg'), quality=84, optimize=True, progressive=True)
+    names = sorted(os.path.basename(p)[len('c_'):-len('.jpg')] for p in glob.glob(os.path.join(folder, 'c_*.jpg')))
+
+    lines = ''.join(f"  c_{n}: require('./c_{n}.jpg'),\n" for n in names)
+    registry = f"""/**
+ * Wide character scenes for the Today hero card, looked up by character id.
+ * Generated by scripts/build-brand-art.py from `hero_<name>.png/` renders; characters
+ * without one fall back to their portrait.
+ */
+export const HEROES: Record<string, number> = {{
+{lines}}};
+"""
+    with open(os.path.join(folder, 'registry.ts'), 'w', encoding='utf-8', newline='\n') as f:
+        f.write(registry)
+    return names
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
 
     portraits = build_avatars()
     print(f'avatars {len(portraits)}: {", ".join(portraits) or "none yet"}')
+
+    heroes = build_heroes()
+    print(f'heroes  {len(heroes)}: {", ".join(heroes) or "none yet"}')
 
     for raw, name in TILES.items():
         box = build_tile(newest(raw), os.path.join(OUT, name + '.png'), TILE_FACES.get(raw))
@@ -375,8 +722,18 @@ def main():
 
     edge = build_app_icons(newest('app_icon'))
     build_sticker_derivatives()
+    build_reactions()
     print(f'app icon done, android background {edge}')
+    print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
 
 
 if __name__ == '__main__':
-    main()
+    # `python scripts/build-brand-art.py icons` rebuilds only the 3D icons;
+    # `... characters` only the portraits and hero scenes.
+    if sys.argv[1:] == ['icons']:
+        print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
+    elif sys.argv[1:] == ['characters']:
+        print(f'avatars {", ".join(build_avatars())}')
+        print(f'heroes  {", ".join(build_heroes())}')
+    else:
+        main()

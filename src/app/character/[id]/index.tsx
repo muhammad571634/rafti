@@ -5,11 +5,10 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
-  Card,
   CharacterAvatar,
-  Divider,
   Header,
   IconButton,
+  ClayIcon,
   IconTile,
   ListRow,
   Screen,
@@ -77,13 +76,26 @@ export default function CharacterProfileScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.hero}>
           <CharacterAvatar character={character} size={92} />
-          <Txt variant="h2" center style={styles.name}>
-            {displayName(character, relationship)}
-          </Txt>
+          <View style={styles.nameRow}>
+            <Txt variant="h2" center style={styles.shrink}>
+              {displayName(character, relationship)}
+            </Txt>
+            {/* Store rule: an AI character is marked as one. */}
+            <View style={styles.aiMark} accessibilityLabel={t('safety.ai')}>
+              <Txt variant="tiny" color={colors.textSecondary}>
+                {t('safety.ai')}
+              </Txt>
+            </View>
+          </View>
           <Txt variant="small" color={colors.textMuted} center style={styles.handle}>
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
+          {character.review === 'pending' ? (
+            <Txt variant="caption" color={colors.brandText} center>
+              {t('createCharacter.inReview')}
+            </Txt>
+          ) : null}
           {voiceReady ? (
             <View style={styles.voice}>
               <View style={styles.voiceDot} />
@@ -148,7 +160,8 @@ export default function CharacterProfileScreen() {
         {isFriend ? (
           <View style={styles.list}>
             <ListRow
-              left={<IconTile icon="bookmark-outline" size={ROW_TILE} />}
+              size="large"
+              left={<ClayIcon name="jar" size={ROW_TILE} tile={false} />}
               title={t('characterProfile.memories')}
               meta={memoryCount > 0 ? String(memoryCount) : undefined}
               chevron
@@ -157,9 +170,9 @@ export default function CharacterProfileScreen() {
                 memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')
               }
             />
-            <Divider inset={space.lg + ROW_TILE + space.md} />
             <ListRow
-              left={<IconTile icon="settings-outline" size={ROW_TILE} />}
+              size="large"
+              left={<IconTile icon="settings-outline" size={ROW_TILE} background="transparent" glyphSize={24} />}
               title={t('characterProfile.settings')}
               chevron
               onPress={() => router.push(`/character/${character.id}/settings`)}
@@ -171,7 +184,7 @@ export default function CharacterProfileScreen() {
   );
 }
 
-/** Level, progress to the next one and how long you have known each other; mint marks the bond. */
+/** Level, progress to the next one and how long you have known each other; mint marks the bond. No card around it. */
 function BondCard({ relationship }: { relationship: Relationship }) {
   const { t } = useTranslation();
   const progress = levelForIntimacy(relationship.intimacy).progress;
@@ -179,7 +192,7 @@ function BondCard({ relationship }: { relationship: Relationship }) {
   const maxed = relationship.intimacy >= relationship.nextLevelAt;
 
   return (
-    <Card variant="outlined" style={styles.bond}>
+    <View style={styles.bond}>
       <View style={styles.bondHead}>
         <Txt variant="smallStrong" lines={1} style={styles.grow}>
           {t('characterProfile.levelLine', {
@@ -207,15 +220,23 @@ function BondCard({ relationship }: { relationship: Relationship }) {
       <Txt variant="caption" color={colors.textFaint} style={styles.since}>
         {t('characterProfile.friends', { date: shortDate(relationship.anniversary) })}
       </Txt>
-    </Card>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
   hero: { alignItems: 'center', paddingTop: space.sm },
-  name: { marginTop: space.md },
   handle: { marginTop: space.xxs },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
+  shrink: { flexShrink: 1 },
+  aiMark: {
+    paddingHorizontal: space.sm,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
   voice: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm },
   voiceDot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.bond },
   bio: { marginTop: space.md },

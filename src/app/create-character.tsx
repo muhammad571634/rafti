@@ -2,34 +2,47 @@ import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Anim, Button, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import {
+  BIO_MAX,
+  checkCreation,
+  GENDERS,
+  GREETING_MAX,
+  MAX_SAMPLES,
+  MAX_TRAITS,
+  NAME_MAX,
+  reviewAfterEdit,
+  ROLES,
+  STYLES,
+  TRAITS,
+  VOICES,
+  type VoiceChoice,
+} from '@/lib/create-character';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
-import type { CharacterCategory } from '@/types';
+import type {
+  Character,
+  CharacterCategory,
+  CharacterGender,
+  CharacterRole,
+  SpeakingStyle,
+  VoicePreset,
+} from '@/types';
+
+const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
-const MIN_SAMPLES = 3;
-const MAX_SAMPLES = 5;
 const MAX_SAMPLE_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-
-/** The reference "ADD CHARACTER" form is dark; so is this one. */
-/** The form's palette, from the theme: fields are white on the warm canvas. */
-const form = {
-  bg: colors.bgPlain,
-  field: colors.surface,
-  line: colors.border,
-  text: colors.text,
-  muted: colors.textSecondary,
-  faint: colors.textFaint,
-};
+/** How long the mock voice clone "trains"; the server job replaces it. */
+const CLONE_MS = 1400;
 
 interface Sample {
   name: string;
@@ -37,24 +50,96 @@ interface Sample {
   size?: number;
 }
 
+/**
+ * F15: make your own character. Structure from BIMOBIMO (photo, voice clips, persona,
+ * greeting, visibility) plus what character apps share as a standard: traits, a
+ * speaking style, what they are to you, and a stock voice when there are no clips.
+ * Every creation is an adult; the photo and a cloned voice need the creator's word
+ * that they have the right to use them. Public ones wait for review.
+ *
+ * `?id=<character>` opens the same form to edit a character the user made: every field
+ * starts filled, the rights already given stand until the photo or the voice clips
+ * change, keeping a cloned voice costs nothing, and a public character goes back to
+ * review when what others see changes.
+ */
 export default function CreateCharacterScreen() {
+  const { t } = useTranslation();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const editId = Array.isArray(id) ? id[0] : id;
+  const editing = useAppStore((s) => (editId ? s.characters.find((c) => c.id === editId && !c.isOfficial) : undefined));
+
+  if (editId && !editing) {
+    return (
+      <Screen background={colors.bgPlain}>
+        <Header title={t('errors.notFound')} />
+      </Screen>
+    );
+  }
+  // Keyed so the form starts again from the stored character if it changes underneath.
+  return <CharacterForm key={editing?.id ?? 'new'} editing={editing} />;
+}
+
+function CharacterForm({ editing }: { editing?: Character }) {
   const { t } = useTranslation();
   const router = useRouter();
   const addCharacter = useAppStore((s) => s.addCharacter);
+  const updateCharacter = useAppStore((s) => s.updateCharacter);
   const spendShells = useAppStore((s) => s.spendShells);
+  const shells = useAppStore((s) => s.wallet.shells);
+  /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
+  const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(training.current), []);
 
-  const [name, setName] = useState('');
-  const [persona, setPersona] = useState('');
-  const [greeting, setGreeting] = useState('');
-  const [category, setCategory] = useState<CharacterCategory>('original');
+  /** The character already has a cloned voice (made with clips, not a stock voice). */
+  const hasTrainedVoice = !!editing && !editing.voicePreset;
+  /** Tags the form has no chip for (seed or server tags): kept as they are on save. */
+  const [otherTags] = useState(() => (editing?.tags ?? []).filter((tag) => !isTrait(tag)));
+
+  const [imageUri, setImageUri] = useState<string | undefined>(editing?.avatarUri);
+  const [photoRights, setPhotoRights] = useState(!!editing?.avatarUri);
+  const [name, setName] = useState(editing?.name ?? '');
+  const [gender, setGender] = useState<CharacterGender | undefined>(editing?.gender);
+  const [age, setAge] = useState(editing?.age != null ? String(editing.age) : '');
+  const [category, setCategory] = useState<CharacterCategory>(editing?.category ?? 'original');
+  const [traits, setTraits] = useState<string[]>(() => (editing?.tags ?? []).filter(isTrait));
+  const [style, setStyle] = useState<SpeakingStyle>(editing?.speakingStyle ?? 'casual');
+  const [role, setRole] = useState<CharacterRole>(editing?.role ?? 'friend');
+  const [bio, setBio] = useState(editing?.bio ?? '');
+  const [greeting, setGreeting] = useState(editing?.greeting ?? '');
+  const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>(hasTrainedVoice ? 'clone' : 'preset');
+  const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
   const [samples, setSamples] = useState<Sample[]>([]);
-  const [imageUri, setImageUri] = useState<string | undefined>();
-  const [isPublic, setIsPublic] = useState(false);
+  const [voiceConsent, setVoiceConsent] = useState(hasTrainedVoice);
+  const [isPublic, setIsPublic] = useState(editing?.visibility === 'public');
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);
 
-  const canCreate = name.trim().length > 0 && samples.length >= MIN_SAMPLES && !!imageUri;
+  const keepsTrainedVoice = voiceMode === 'clone' && hasTrainedVoice && samples.length === 0;
+  const voice: VoiceChoice | null = keepsTrainedVoice
+    ? { kind: 'trained' }
+    : voiceMode === 'clone'
+      ? { kind: 'clone', samples: samples.length }
+      : preset
+        ? { kind: 'preset', preset }
+        : null;
+  // Only a new clone is paid for.
+  const cost = voiceMode === 'clone' && !keepsTrainedVoice ? shellCosts.characterVoiceClone : 0;
+  const problems = checkCreation({
+    name,
+    age,
+    bio,
+    greeting,
+    hasPhoto: !!imageUri,
+    photoRights,
+    voice,
+    voiceConsent,
+  });
+
+  const toggleTrait = (trait: string) =>
+    setTraits((prev) =>
+      prev.includes(trait) ? prev.filter((x) => x !== trait) : prev.length < MAX_TRAITS ? [...prev, trait] : prev,
+    );
 
   const pickSamples = async () => {
     if (samples.length >= MAX_SAMPLES) return;
@@ -72,6 +157,8 @@ export default function CreateCharacterScreen() {
       .filter((a) => (a.size ?? 0) <= MAX_SAMPLE_BYTES)
       .map((a) => ({ name: a.name, uri: a.uri, size: a.size }));
     setSamples((prev) => [...prev, ...accepted].slice(0, MAX_SAMPLES));
+    // New clips make a new voice; the word given for the old one does not cover them.
+    if (editing && accepted.length > 0) setVoiceConsent(false);
   };
 
   const pickImage = async () => {
@@ -79,43 +166,80 @@ export default function CreateCharacterScreen() {
       mediaTypes: ['images'],
       quality: 0.9,
       allowsEditing: true,
-      aspect: [8, 15],
+      aspect: [1, 1],
     });
     const asset = result.canceled ? undefined : result.assets[0];
     if (!asset) return;
     if ((asset.fileSize ?? 0) > MAX_IMAGE_BYTES) return setError(t('createCharacter.imageTooLarge'));
     setError(null);
     setImageUri(asset.uri);
+    // A new picture needs its own rights check.
+    if (editing) setPhotoRights(false);
   };
 
-  const create = () => {
-    if (!canCreate) return setError(t('createCharacter.needs'));
-    if (!spendShells(shellCosts.characterVoiceClone)) return setPaywall(shellCosts.characterVoiceClone);
+  /** What the form says about the character; creating and saving write the same fields. */
+  const fields = () => {
+    const clean = name.trim();
+    return {
+      name: clean,
+      bio: bio.trim() || t('createCharacter.defaultBio', { traits: traits.join(', ') || t('createCharacter.styles.casual') }),
+      category,
+      gender,
+      avatarUri: imageUri,
+      greeting: greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
+      tags: [...traits, ...otherTags],
+      age: Number(age),
+      speakingStyle: style,
+      role,
+      voicePreset: voiceMode === 'preset' ? preset : undefined,
+      visibility: isPublic ? ('public' as const) : ('private' as const),
+    };
+  };
+
+  const save = (character: Character) => {
+    const next = fields();
+    const seenByOthers =
+      next.name !== character.name ||
+      next.bio !== character.bio ||
+      next.greeting !== character.greeting ||
+      next.avatarUri !== character.avatarUri;
+    updateCharacter(character.id, { ...next, review: reviewAfterEdit(character, isPublic, seenByOthers) });
+    setCreating(false);
+    router.back();
+  };
+
+  const submit = () => {
+    if (problems.length > 0) return setError(t(`createCharacter.problems.${problems[0]}`));
+    // Checked now so the paywall shows at once; charged only when the voice is actually made.
+    if (cost > 0 && shells < cost) return setPaywall(cost);
 
     setCreating(true);
-    // Stands in for the voice-cloning job that runs before the character goes live.
-    setTimeout(() => {
+    const finish = () => {
+      if (cost > 0 && !spendShells(cost, 'voiceClone')) {
+        setCreating(false);
+        return setPaywall(cost);
+      }
+      if (editing) return save(editing);
       const { conversationId } = addCharacter({
-        name: name.trim(),
+        ...fields(),
         handle: '@you',
-        bio: persona.trim() || t('createCharacter.personaPlaceholder'),
-        category,
         series: 'My Creations',
-        avatarUri: imageUri,
         accentIndex: Math.floor(Math.random() * 6),
         voiceReady: true,
         isOfficial: false,
-        greeting: greeting.trim() || `Hi, I am ${name.trim()}.`,
-        tags: isPublic ? ['custom', 'public'] : ['custom'],
+        review: isPublic ? 'pending' : undefined,
       });
       setCreating(false);
       router.replace(`/chat/${conversationId}`);
-    }, 1400);
+    };
+    // A new cloned voice trains first (a server job later); anything else is ready now.
+    if (cost > 0) training.current = setTimeout(finish, CLONE_MS);
+    else finish();
   };
 
   return (
-    <Screen background={form.bg}>
-      <Header title={t('createCharacter.title')} />
+    <Screen background={colors.bgPlain}>
+      <Header title={t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -125,76 +249,104 @@ export default function CreateCharacterScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled">
+          <View style={styles.photoBlock}>
+            <PressableScale
+              style={styles.photo}
+              onPress={pickImage}
+              scaleTo={0.97}
+              accessibilityLabel={t('createCharacter.uploadImage')}>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
+              ) : (
+                <ClayIcon name="photo" size={56} tile={false} />
+              )}
+            </PressableScale>
+            <CheckRow
+              checked={photoRights}
+              onToggle={() => setPhotoRights((v) => !v)}
+              label={t('createCharacter.photoRights')}
+            />
+          </View>
+
           <Field label={t('createCharacter.name')} required>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder={t('createCharacter.namePlaceholder')}
-              placeholderTextColor={form.faint}
+              placeholderTextColor={colors.textFaint}
               style={styles.input}
-              maxLength={40}
+              maxLength={NAME_MAX}
             />
           </Field>
 
-          <Field label={t('createCharacter.uploadVoices')} required hint={t('createCharacter.uploadVoicesHint')}>
-            <PressableScale style={styles.dropzone} onPress={pickSamples} scaleTo={0.98}>
-              <Anim name="voiceWave" size={40} tint={form.text} />
-              <Txt variant="small" color={form.muted} center style={styles.dropText}>
-                {t('createCharacter.uploadVoicesBox')}
-              </Txt>
-            </PressableScale>
-
-            {samples.length > 0 ? (
-              <View style={styles.samples}>
-                <Txt variant="smallStrong" color={form.text}>
-                  {t('createCharacter.samples', { count: samples.length })}
-                </Txt>
-                {samples.map((sample, index) => (
-                  <View key={`${sample.uri}-${index}`} style={styles.sampleRow}>
-                    <Ionicons name="musical-note-outline" size={15} color={form.muted} />
-                    <Txt variant="small" color={form.text} lines={1} style={styles.flex}>
-                      {sample.name}
-                    </Txt>
-                    {sample.size ? (
-                      <Txt variant="tiny" color={form.faint}>
-                        {(sample.size / 1024 / 1024).toFixed(1)}MB
-                      </Txt>
-                    ) : null}
-                    <PressableScale
-                      hitSlop={14}
-                      scaleTo={0.85}
-                      accessibilityLabel={t('a11y.removeClip')}
-                      onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
-                      <Ionicons name="trash-outline" size={17} color={form.muted} />
-                    </PressableScale>
-                  </View>
+          <View style={styles.pair}>
+            <Field label={t('createCharacter.age')} required style={styles.ageField}>
+              <TextInput
+                value={age}
+                onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
+                placeholder="18+"
+                placeholderTextColor={colors.textFaint}
+                keyboardType="number-pad"
+                style={styles.input}
+                maxLength={3}
+              />
+            </Field>
+            <Field label={t('createCharacter.gender')} style={styles.flex}>
+              <View style={styles.chips}>
+                {GENDERS.map((g) => (
+                  <FormChip
+                    key={g}
+                    label={t(`find.who.${g}`)}
+                    active={gender === g}
+                    onPress={() => setGender(gender === g ? undefined : g)}
+                  />
                 ))}
               </View>
-            ) : null}
+            </Field>
+          </View>
+
+          <Field label={t('createCharacter.traits', { count: traits.length, max: MAX_TRAITS })}>
+            <View style={styles.chips}>
+              {TRAITS.map((trait) => (
+                <FormChip
+                  key={trait}
+                  label={t(`createCharacter.traitNames.${trait}`)}
+                  active={traits.includes(trait)}
+                  onPress={() => toggleTrait(trait)}
+                />
+              ))}
+            </View>
           </Field>
 
-          <Field label={t('createCharacter.uploadImage')} required>
-            <PressableScale style={[styles.dropzone, styles.imageZone]} onPress={pickImage} scaleTo={0.98}>
-              {imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.preview} contentFit="cover" />
-              ) : (
-                <>
-                  <Ionicons name="image-outline" size={32} color={form.text} />
-                  <Txt variant="small" color={form.muted} center style={styles.dropText}>
-                    {t('createCharacter.uploadImageBox')}
-                  </Txt>
-                </>
-              )}
-            </PressableScale>
+          <Field label={t('createCharacter.style')}>
+            <View style={styles.chips}>
+              {STYLES.map((s) => (
+                <FormChip
+                  key={s}
+                  label={t(`createCharacter.styles.${s}`)}
+                  active={style === s}
+                  onPress={() => setStyle(s)}
+                />
+              ))}
+            </View>
+          </Field>
+
+          <Field label={t('createCharacter.role')}>
+            <View style={styles.chips}>
+              {ROLES.map((r) => (
+                <FormChip key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => setRole(r)} />
+              ))}
+            </View>
           </Field>
 
           <Field label={t('createCharacter.persona')}>
             <TextInput
-              value={persona}
-              onChangeText={setPersona}
+              value={bio}
+              onChangeText={setBio}
               placeholder={t('createCharacter.personaPlaceholder')}
-              placeholderTextColor={form.faint}
+              placeholderTextColor={colors.textFaint}
               style={[styles.input, styles.multiline]}
+              maxLength={BIO_MAX}
               multiline
               textAlignVertical="top"
             />
@@ -205,11 +357,79 @@ export default function CreateCharacterScreen() {
               value={greeting}
               onChangeText={setGreeting}
               placeholder={t('createCharacter.greetingPlaceholder')}
-              placeholderTextColor={form.faint}
+              placeholderTextColor={colors.textFaint}
               style={[styles.input, styles.multiline]}
+              maxLength={GREETING_MAX}
               multiline
               textAlignVertical="top"
             />
+          </Field>
+
+          <Field label={t('createCharacter.voice')} required>
+            <View style={styles.chips}>
+              <FormChip
+                label={t('createCharacter.voicePreset')}
+                active={voiceMode === 'preset'}
+                onPress={() => setVoiceMode('preset')}
+              />
+              <FormChip
+                label={t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone })}
+                active={voiceMode === 'clone'}
+                onPress={() => setVoiceMode('clone')}
+              />
+            </View>
+
+            {voiceMode === 'preset' ? (
+              <View style={styles.voices}>
+                {VOICES.map((v) => (
+                  <PressableScale
+                    key={v}
+                    scaleTo={0.95}
+                    onPress={() => setPreset(v)}
+                    accessibilityState={{ selected: preset === v }}
+                    style={[styles.voiceCell, preset === v && styles.voiceCellOn]}>
+                    <Anim name="voiceWave" size={26} tint={preset === v ? colors.primary : colors.textMuted} />
+                    <Txt variant="smallStrong" color={preset === v ? colors.text : colors.textSecondary}>
+                      {t(`createCharacter.voices.${v}`)}
+                    </Txt>
+                  </PressableScale>
+                ))}
+              </View>
+            ) : (
+              <>
+                <PressableScale style={styles.dropzone} onPress={pickSamples} scaleTo={0.98}>
+                  <ClayIcon name="voice" size={44} tile={false} />
+                  <Txt variant="small" color={colors.textSecondary} center style={styles.dropText}>
+                    {t('createCharacter.uploadVoicesBox')}
+                  </Txt>
+                </PressableScale>
+                {samples.length > 0 ? (
+                  <View style={styles.samples}>
+                    <Txt variant="smallStrong">{t('createCharacter.samples', { count: samples.length })}</Txt>
+                    {samples.map((sample, index) => (
+                      <View key={`${sample.uri}-${index}`} style={styles.sampleRow}>
+                        <Ionicons name="musical-note-outline" size={15} color={colors.textSecondary} />
+                        <Txt variant="small" lines={1} style={styles.flex}>
+                          {sample.name}
+                        </Txt>
+                        <PressableScale
+                          hitSlop={14}
+                          scaleTo={0.85}
+                          accessibilityLabel={t('a11y.removeClip')}
+                          onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
+                          <Ionicons name="trash-outline" size={17} color={colors.textSecondary} />
+                        </PressableScale>
+                      </View>
+                    ))}
+                  </View>
+                ) : null}
+                <CheckRow
+                  checked={voiceConsent}
+                  onToggle={() => setVoiceConsent((v) => !v)}
+                  label={t('createCharacter.voiceConsent')}
+                />
+              </>
+            )}
           </Field>
 
           <Field label={t('find.category')}>
@@ -230,6 +450,11 @@ export default function CreateCharacterScreen() {
               <FormChip label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
               <FormChip label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
             </View>
+            {isPublic ? (
+              <Txt variant="caption" color={colors.textMuted}>
+                {t('createCharacter.reviewNote')}
+              </Txt>
+            ) : null}
           </Field>
 
           {error ? (
@@ -242,12 +467,17 @@ export default function CreateCharacterScreen() {
             label={
               creating
                 ? t('createCharacter.creating')
-                : t('createCharacter.create', { count: shellCosts.characterVoiceClone })
+                : editing && cost === 0
+                  ? t('createCharacter.save')
+                  : cost > 0
+                  ? t('createCharacter.create', { count: cost })
+                  : t('createCharacter.createFree')
             }
-            onPress={create}
+            size="lg"
+            onPress={submit}
             loading={creating}
             full
-            style={!canCreate && styles.dim}
+            style={problems.length > 0 && styles.dim}
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -260,31 +490,24 @@ export default function CreateCharacterScreen() {
 function Field({
   label,
   required,
-  hint,
+  style,
   children,
 }: {
   label: string;
   required?: boolean;
-  hint?: string;
+  style?: object;
   children: React.ReactNode;
 }) {
   return (
-    <View style={styles.field}>
+    <View style={[styles.field, style]}>
       <View style={styles.labelRow}>
-        <Txt variant="bodyStrong" color={form.text}>
-          {label}
-        </Txt>
+        <Txt variant="bodyStrong">{label}</Txt>
         {required ? (
           <Txt variant="bodyStrong" color={colors.danger}>
             *
           </Txt>
         ) : null}
       </View>
-      {hint ? (
-        <Txt variant="caption" color={form.muted}>
-          {hint}
-        </Txt>
-      ) : null}
       {children}
     </View>
   );
@@ -296,48 +519,93 @@ function FormChip({ label, active, onPress }: { label: string; active: boolean; 
       onPress={onPress}
       scaleTo={0.94}
       dimOnPress={false}
+      accessibilityState={{ selected: active }}
       style={[styles.chip, active && styles.chipActive]}>
-      <Txt variant="smallStrong" color={active ? colors.textOnPrimary : form.muted}>
+      <Txt variant="smallStrong" color={active ? colors.textOnPrimary : colors.textSecondary}>
         {label}
       </Txt>
     </PressableScale>
   );
 }
 
+/** The creator's word on rights and consent: a checkbox with one short line. */
+function CheckRow({ checked, onToggle, label }: { checked: boolean; onToggle: () => void; label: string }) {
+  return (
+    <PressableScale
+      onPress={onToggle}
+      scaleTo={0.98}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      style={styles.checkRow}>
+      <Ionicons name={checked ? 'checkbox' : 'square-outline'} size={22} color={checked ? colors.primary : colors.textMuted} />
+      <Txt variant="small" color={colors.textSecondary} style={styles.flex}>
+        {label}
+      </Txt>
+    </PressableScale>
+  );
+}
+
+const PHOTO = 132;
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   scroll: { padding: space.lg, gap: space.xl, paddingBottom: space.huge },
   field: { gap: space.sm },
   labelRow: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  pair: { flexDirection: 'row', gap: space.lg },
+  ageField: { width: 92 },
+  photoBlock: { alignItems: 'center', gap: space.md },
+  photo: {
+    width: PHOTO,
+    height: PHOTO,
+    borderRadius: PHOTO / 2,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  fillImage: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   input: {
     minHeight: 48,
     paddingHorizontal: space.md,
     paddingVertical: space.sm,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: form.line,
-    backgroundColor: form.field,
-    color: form.text,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    color: colors.text,
     ...type.body,
   },
   multiline: { minHeight: 88 },
+  voices: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  voiceCell: {
+    width: '31%',
+    alignItems: 'center',
+    gap: space.xs,
+    paddingVertical: space.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  voiceCellOn: { borderColor: colors.primary, backgroundColor: colors.primarySofter },
   dropzone: {
-    minHeight: 132,
+    minHeight: 120,
     borderRadius: radius.md,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: form.line,
-    backgroundColor: form.field,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.sm,
     padding: space.lg,
-    overflow: 'hidden',
   },
-  imageZone: { minHeight: 170 },
   dropText: { maxWidth: 280 },
-  preview: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  samples: { gap: space.sm, marginTop: space.xs },
+  samples: { gap: space.sm },
   sampleRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -346,17 +614,18 @@ const styles = StyleSheet.create({
     paddingVertical: space.sm + 2,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: form.line,
-    backgroundColor: form.field,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
+  checkRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, alignSelf: 'stretch' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   chip: {
     paddingHorizontal: space.lg,
     height: 34,
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: form.line,
-    backgroundColor: form.field,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -4,53 +4,85 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { CharacterRow } from '@/components/character-row';
 import {
-  Button,
-  CharacterAvatar,
-  Divider,
+  Chip,
   EmptyState,
   IconButton,
-  ListRow,
   PressableScale,
   Screen,
   SearchBar,
+  SectionLabel,
   Txt,
 } from '@/components/ui';
-import { groupBySeries } from '@/mock';
+import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, CharacterCategory } from '@/types';
+import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
+import type { Character, CharacterCategory, CharacterGender } from '@/types';
 
-const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
-const AVATAR = 48;
+type Tab = CharacterCategory | 'all';
+const TABS: Tab[] = ['all', 'school', 'fantasy', 'idol', 'daily', 'original'];
+/** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
+type Who = CharacterGender | 'everyone';
+const WHO: Who[] = ['everyone', 'male', 'female'];
+/** Characters shown per world before "See all". */
+const PER_WORLD = 4;
 
-/** Discovery: worlds as plain lists under underline tabs; "Add" starts a chat on the spot. */
+/**
+ * Discovery (calm cards, docs/design-style.md): search with a who-to-show button
+ * beside it, one row of world filters, then each world as a section of plain rows with
+ * "See all". A search lists every match across worlds.
+ */
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const characters = useAppStore((s) => s.characters);
+  const allCharacters = useAppStore((s) => s.characters);
+  const blockedIds = useAppStore((s) => s.blockedIds);
+  const characters = useMemo(
+    () => allCharacters.filter((c) => !blockedIds.includes(c.id)),
+    [allCharacters, blockedIds],
+  );
   const conversations = useAppStore((s) => s.conversations);
   const addFriend = useAppStore((s) => s.addFriend);
 
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<CharacterCategory | null>('school');
+  const [tab, setTab] = useState<Tab>('all');
+  const [who, setWho] = useState<Who>('everyone');
 
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
+  const q = query.trim().toLowerCase();
+  const shown = useMemo(
+    () => (who === 'everyone' ? characters : characters.filter((c) => c.gender === who)),
+    [characters, who],
+  );
 
-  const groups = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const filtered = characters.filter((c) => {
-      const matchesCategory = !category || c.category === category;
-      const matchesQuery =
-        !q ||
-        c.name.toLowerCase().includes(q) ||
-        c.handle.toLowerCase().includes(q) ||
-        c.series?.toLowerCase().includes(q) ||
-        c.tags.some((tag) => tag.includes(q));
-      return matchesCategory && matchesQuery;
-    });
-    return groupBySeries(filtered);
-  }, [characters, category, query]);
+  const results = useMemo(
+    () =>
+      q
+        ? shown.filter(
+            (c) =>
+              c.name.toLowerCase().includes(q) ||
+              c.handle.toLowerCase().includes(q) ||
+              c.series?.toLowerCase().includes(q) ||
+              c.tags.some((tag) => tag.includes(q)),
+          )
+        : [],
+    [shown, q],
+  );
+
+  const groups = useMemo(
+    () => groupBySeries(shown.filter((c) => tab === 'all' || c.category === tab)),
+    [shown, tab],
+  );
+
+  const row = (character: Character) => (
+    <CharacterRow
+      character={character}
+      isFriend={friendIds.has(character.id)}
+      onOpen={() => router.push(`/character/${character.id}`)}
+      onAdd={() => addFriend(character.id)}
+    />
+  );
 
   return (
     <Screen background={colors.bgPlain}>
@@ -60,44 +92,42 @@ export default function FindScreen() {
         </Txt>
         <IconButton
           icon="add"
-          size={26}
+          size={22}
+          background={colors.surfaceAlt}
           accessibilityLabel={t('a11y.createCharacter')}
           onPress={() => router.push('/create-character')}
         />
       </View>
 
-      <SearchBar
-        value={query}
-        onChangeText={setQuery}
-        placeholder={t('find.searchPlaceholder')}
-        style={styles.search}
-      />
-
-      <View style={styles.tabsWrap}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
-          {CATEGORIES.map((key) => {
-            const active = category === key;
-            return (
-              <PressableScale
-                key={key}
-                scaleTo={1}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: active }}
-                style={[styles.tab, active && styles.tabActive]}
-                onPress={() => setCategory((prev) => (prev === key ? null : key))}>
-                <Txt variant={active ? 'bodyStrong' : 'body'} color={active ? colors.text : colors.textMuted}>
-                  {t(`find.categories.${key}`)}
-                </Txt>
-              </PressableScale>
-            );
-          })}
-        </ScrollView>
+      <View style={styles.searchRow}>
+        <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.flex} />
+        {/* Everyone, Him, Her: one tap moves to the next. */}
+        <PressableScale
+          scaleTo={0.96}
+          onPress={() => setWho(WHO[(WHO.indexOf(who) + 1) % WHO.length])}
+          accessibilityRole="button"
+          accessibilityLabel={t('find.whoLabel', { who: t(`find.who.${who}`) })}
+          style={styles.whoButton}>
+          <Txt variant="bodyStrong">{t(`find.who.${who}`)}</Txt>
+          <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
+        </PressableScale>
       </View>
 
-      {groups.length === 0 ? (
+      {q ? null : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabsWrap}
+          contentContainerStyle={styles.tabs}>
+          {TABS.map((key) => (
+            <Chip key={key} label={t(`find.categories.${key}`)} active={tab === key} onPress={() => setTab(key)} />
+          ))}
+        </ScrollView>
+      )}
+
+      {q && results.length === 0 ? (
         <EmptyState
           title={t('find.noResults')}
-          hint={t('find.noResultsHint')}
           actionLabel={t('find.createCharacter')}
           onAction={() => router.push('/create-character')}
         />
@@ -106,96 +136,87 @@ export default function FindScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.huge }}>
-          {groups.map((group) => (
-            <View key={group.series}>
-              <Txt variant="title" style={styles.series}>
-                {group.series}
-              </Txt>
-              {group.characters.map((character, i) => (
-                <View key={character.id}>
-                  {i > 0 ? <Divider inset={space.lg + AVATAR + space.md} /> : null}
-                  <CharacterRow
-                    character={character}
-                    isFriend={friendIds.has(character.id)}
-                    onOpen={() => router.push(`/character/${character.id}`)}
-                    onAdd={() => addFriend(character.id)}
-                  />
-                </View>
+          {q ? (
+            <>
+              <SectionLabel tone="section" title={t('find.results', { count: results.length })} />
+              {results.map((character) => (
+                <View key={character.id}>{row(character)}</View>
               ))}
-            </View>
-          ))}
+            </>
+          ) : (
+            groups.map((group) => (
+              <WorldSection
+                key={group.series}
+                group={group}
+                row={row}
+                onOpen={() => router.push({ pathname: '/world/[series]', params: { series: group.series } })}
+              />
+            ))
+          )}
         </ScrollView>
       )}
     </Screen>
   );
 }
 
-function CharacterRow({
-  character,
-  isFriend,
+/** One world: its name as a section title with "See all", then its first few characters. */
+function WorldSection({
+  group,
+  row,
   onOpen,
-  onAdd,
 }: {
-  character: Character;
-  isFriend: boolean;
+  group: CharacterGroup;
+  row: (c: Character) => React.ReactNode;
   onOpen: () => void;
-  onAdd: () => void;
 }) {
   const { t } = useTranslation();
-
-  // The row and "Add" are siblings: a button inside a button is unreachable for
-  // screen readers and invalid HTML on web.
   return (
-    <View style={styles.row}>
-      <ListRow
-        title={character.name}
-        subtitle={character.bio}
-        left={<CharacterAvatar character={character} size={AVATAR} />}
-        onPress={onOpen}
-        style={styles.rowMain}
+    <View style={styles.world}>
+      <SectionLabel
+        tone="section"
+        title={group.series}
+        right={
+          group.characters.length > PER_WORLD ? (
+            <PressableScale
+              scaleTo={0.96}
+              hitSlop={8}
+              accessibilityLabel={t('find.openWorld', { world: group.series })}
+              onPress={onOpen}>
+              <Txt variant="bodyStrong">{t('find.seeAll')}</Txt>
+            </PressableScale>
+          ) : null
+        }
       />
-      {isFriend ? (
-        <View style={styles.friends}>
-          <Ionicons name="checkmark" size={14} color={colors.textMuted} />
-          <Txt variant="caption" color={colors.textMuted}>
-            {t('find.friends')}
-          </Txt>
-        </View>
-      ) : (
-        <Button
-          label={t('find.add')}
-          size="sm"
-          variant="secondary"
-          onPress={onAdd}
-          style={styles.add}
-        />
-      )}
+      {group.characters.slice(0, PER_WORLD).map((character) => (
+        <View key={character.id}>{row(character)}</View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: space.lg,
-    paddingRight: space.sm,
+    paddingRight: space.lg,
     paddingTop: space.sm,
   },
   title: { flex: 1 },
-  search: { marginHorizontal: space.lg, marginTop: space.sm },
-  tabsWrap: { borderBottomWidth: 1, borderBottomColor: colors.border, marginTop: space.sm },
-  tabs: { paddingHorizontal: space.lg, gap: space.xl },
-  tab: {
-    minHeight: 44,
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
+  searchRow: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, marginTop: space.sm },
+  whoButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs + 2,
+    paddingLeft: space.md + 2,
+    paddingRight: space.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
-  tabActive: { borderBottomColor: colors.text },
-  series: { paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.xs },
-  row: { flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
-  rowMain: { flex: 1, paddingRight: space.sm },
-  friends: { flexDirection: 'row', alignItems: 'center', gap: space.xxs },
-  add: { minWidth: 56 },
+  tabsWrap: { flexGrow: 0, flexShrink: 0, marginTop: space.md },
+  tabs: { paddingHorizontal: space.lg, paddingVertical: space.xxs, gap: space.sm, alignItems: 'center' },
+  world: { paddingTop: space.xs },
 });

@@ -1,28 +1,31 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Image } from 'expo-image';
+import { Redirect, Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DailyRewardSheet } from '@/components/daily-reward-sheet';
+import { TAB_ICONS, type TabIconName } from '@/assets/brand/registry';
 import { PressableScale, Txt } from '@/components/ui';
 import { useCharacterInitiative } from '@/hooks/use-character-initiative';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-const ICONS: Record<string, { active: IoniconName; idle: IoniconName }> = {
-  index: { active: 'home', idle: 'home-outline' },
-  chat: { active: 'chatbubble', idle: 'chatbubble-outline' },
-  us: { active: 'heart', idle: 'heart-outline' },
-  find: { active: 'compass', idle: 'compass-outline' },
-};
+/** Clay tab art: a step down from the Home module icons (68), well above a line glyph. */
+const TAB_ICON = 44;
 
 export default function TabsLayout() {
   useCharacterInitiative();
+  usePushNotifications();
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+
+  // Saved data decides whether this is a first launch, so wait for it.
+  if (!hydrated) return null;
+  if (!onboarded) return <Redirect href="/onboarding" />;
 
   return (
     <>
@@ -32,14 +35,14 @@ export default function TabsLayout() {
         <Tabs.Screen name="us" />
         <Tabs.Screen name="find" />
       </Tabs>
-      <DailyRewardSheet />
     </>
   );
 }
 
 /**
- * A flat white bar under a hairline. The current tab is ink with a filled glyph;
- * unread chats show as one small apricot dot rather than a number.
+ * The tab bar sits on the canvas with no line or fill. The current tab shows its clay
+ * icon in colour, the rest the same art in soft grey; unread chats show as one small
+ * apricot dot rather than a number.
  */
 function TabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
@@ -50,7 +53,7 @@ function TabBar({ state, navigation }: TabBarProps) {
     <View style={[styles.bar, { paddingBottom: insets.bottom || space.sm }]}>
       {state.routes.map((route, index) => {
         const focused = state.index === index;
-        const icon = ICONS[route.name] ?? ICONS.index;
+        const art = TAB_ICONS[(route.name in TAB_ICONS ? route.name : 'index') as TabIconName];
         const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
         const hasUnread = route.name === 'chat' && unread > 0;
         const tint = focused ? colors.tabActive : colors.tabInactive;
@@ -69,7 +72,7 @@ function TabBar({ state, navigation }: TabBarProps) {
               if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
             }}>
             <View>
-              <Ionicons name={focused ? icon.active : icon.idle} size={23} color={tint} />
+              <Image source={focused ? art.on : art.off} style={styles.icon} contentFit="contain" />
               {hasUnread ? <View style={styles.dot} /> : null}
             </View>
             <Txt variant="tiny" color={tint} style={focused && styles.labelActive}>
@@ -90,27 +93,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     minHeight: TAB_BAR_HEIGHT,
-    paddingTop: space.sm,
-    backgroundColor: colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    paddingTop: space.xs,
+    backgroundColor: colors.bgPlain,
   },
+  icon: { width: TAB_ICON, height: TAB_ICON },
   item: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
+    gap: 1,
   },
   labelActive: { fontWeight: '600' },
   dot: {
     position: 'absolute',
-    top: -1,
-    right: -4,
+    top: 2,
+    right: 0,
     width: 8,
     height: 8,
     borderRadius: radius.pill,
     backgroundColor: colors.primary,
     borderWidth: 1.5,
-    borderColor: colors.surface,
+    borderColor: colors.bgPlain,
   },
 });

@@ -2,9 +2,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
-import { detectPlan } from '@/lib/schedule';
+import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
+import { isBirthday } from '@/lib/profile';
+import { pickSeeded } from '@/lib/seeded';
+import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
+import { detectPlan, planStep } from '@/lib/schedule';
+import {
+  consumeMinutes,
+  FAIR_USE_PER_DAY,
+  minutesLeft,
+  PLANS,
+  rollSubscription,
+  startSubscription,
+  TOP_UPS,
+  TRIAL,
+  type MinutesKind,
+} from '@/economy/plans';
 import {
   AD_REWARD,
+  INVITE_REWARD,
+  SHARE_REWARD,
   DAILY_CHECK_IN,
   FREE_SPINS_PER_DAY,
   MAX_ADS_PER_DAY,
@@ -13,47 +30,76 @@ import {
   shellCosts,
   callHistory as seedCalls,
   callLines,
-  cannedReplies,
+  replyBursts,
+  birthdayLines,
+  interestLines,
+  characterDiaryPages as seedCharacterDiary,
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
+  dateFromKey,
+  dayKey,
   dayKeyFromToday,
   diaryEntries as seedDiary,
   eveningGreetings,
   initialDaily,
   initialSettings,
   levelForIntimacy,
-  membershipPlans,
+  tierForLevel,
+  unlockedLabels,
   memories as seedMemories,
   messagesByConversation,
   moments as seedMoments,
+  missedCallLines,
   morningGreetings,
   newRelationship,
   relationships as seedRelationships,
+  rollCheckIn,
   scheduleAck,
   scheduleReminder,
+  planAddedLine,
+  planFollowUp,
+  boardReply,
+  afterDateLine,
   schedules as seedSchedules,
   secretNotePrompts,
   secretNotes as seedNotes,
   todayKey,
   wallet as seedWallet,
 } from '@/mock';
+import { dateEnding, datePlaceById, maxHearts } from '@/mock/dates';
+import {
+  DARES_FOR_THEM,
+  DARES_FOR_YOU,
+  quizPackById,
+  quizReply,
+  TRUTHS_FOR_THEM,
+  TRUTHS_FOR_YOU,
+} from '@/mock/games';
+import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
+  DateRecord,
+  BoardPost,
+  BoardStyleId,
   CallRecord,
   Character,
   Conversation,
   DailyState,
+  CharacterDiaryPage,
   DiaryEntry,
-  MemberPlan,
+  LedgerEntry,
+  LedgerReason,
   MemoryItem,
   MemorySource,
   Message,
   Moment,
   MomentKind,
+  PlanId,
   Relationship,
   ScheduleItem,
   SecretNote,
+  MessageReport,
   User,
   Wallet,
 } from '@/types';
@@ -67,7 +113,16 @@ const INTIMACY = {
   secretNote: 8,
   date: 10,
   photo: 6,
+  boardNote: 6,
+  quizMatch: 2,
+  truthOrDare: 3,
 } as const;
+
+/** How long after its set time a daily call may still ring. */
+const CALL_WINDOW_HOURS = 4;
+
+/** A board note is answered after a short pause, as if it was just found. */
+const BOARD_REPLY_MS = 8000;
 
 export interface LevelUpEvent {
   characterId: string;
@@ -85,6 +140,10 @@ export interface IncomingCall {
 }
 
 const STALE_RING_MS = 45_000;
+/** The welcome gift at the end of the first launch. */
+export const WELCOME_SHELLS = 100;
+/** The "not a real person" notice shows at the start of a session and again after this long (NY GBL 47). */
+const AI_NOTICE_MS = 3 * 3_600_000;
 
 export interface DailyRewardEvent {
   amount: number;
@@ -92,7 +151,8 @@ export interface DailyRewardEvent {
   day: number;
 }
 
-export type SendResult = 'sent' | 'noShells' | 'empty';
+/** `dailyCap`: a member reached the fair-use limit for today (FAIR_USE_PER_DAY). */
+export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
 
 interface AppState {
@@ -104,10 +164,20 @@ interface AppState {
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
   diary: DiaryEntry[];
+  /** Pages characters wrote about the user: the morning after a day spent together. */
+  characterDiary: CharacterDiaryPage[];
+  /** Ids of character pages the user has opened, for the "New page" mark. */
+  diaryPagesRead: string[];
   notes: SecretNote[];
+  /** Shell history, newest first */
+  ledger: LedgerEntry[];
   calls: CallRecord[];
   moments: Moment[];
   schedules: ScheduleItem[];
+  /** Notes the user pinned on the message board, oldest first */
+  boardPosts: BoardPost[];
+  /** Finished dates, newest first */
+  dates: DateRecord[];
   daily: DailyState;
   settings: AppSettings;
 
@@ -121,6 +191,10 @@ interface AppState {
   activeConversationId: string | null;
   incomingCall: IncomingCall | null;
   dailyReward: DailyRewardEvent | null;
+  /** Shells just paid for a share; a small banner shows it and clears it. */
+  shareReward: number | null;
+  /** The date that has been paid for and not finished yet; the date screen only plays this one. */
+  activeDate: { characterId: string; placeId: string } | null;
 
   /* chat */
   sendText: (conversationId: string, text: string) => SendResult;
@@ -129,29 +203,68 @@ interface AppState {
   markRead: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
   clearChat: (conversationId: string) => void;
+  /** Sets (or with `undefined` clears) the user's reaction on a message. */
+  reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
+  deleteMessage: (conversationId: string, messageId: string) => void;
 
   /* bonds */
   addFriend: (characterId: string) => string;
+  /** Finishes the first launch: who the user is, their first friend and the welcome gift. Returns the chat. */
+  completeOnboarding: (input: {
+    name: string;
+    birthYear: number;
+    characterId: string;
+    notifications: boolean;
+    /** The friend's first question, in the user's language */
+    firstAsk: string;
+  }) => string;
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
+  /**
+   * A line that reached the user only as a notification (the comeback ladder) lands in
+   * the chat once the app sees it. Written once per notification id.
+   */
+  receivePushLine: (push: { id: string; characterId: string; text: string; at: string }) => void;
+  /** Edits a character the user made; seed characters are not editable. */
+  updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
   resetRelationship: (characterId: string) => void;
   setBackground: (characterId: string, backgroundId: string) => void;
   setNickname: (characterId: string, nickname: string) => void;
   setCharacterPref: (characterId: string, key: 'voiceReplies' | 'messagesFirst', value: boolean) => void;
   addIntimacy: (characterId: string, amount: number) => void;
+  /** Picks one of the unlocked relationship labels, or clears it. */
+  setRelationshipLabel: (characterId: string, label?: string) => void;
   dismissLevelUp: () => void;
 
   /* economy */
-  spendShells: (amount: number) => boolean;
-  addShells: (amount: number) => void;
+  spendShells: (amount: number, reason?: LedgerReason, characterId?: string) => boolean;
+  addShells: (amount: number, reason?: LedgerReason) => void;
+  /** Removes yesterday's unspent check-in shells. Safe to call often. */
+  expireFreeShells: () => void;
   claimDailyLogin: () => number;
   dismissDailyReward: () => void;
   watchAd: () => number;
+  /** Pays the daily share reward once a day; returns what was paid (0 when already paid today). */
+  claimShareReward: () => number;
+  dismissShareReward: () => void;
+  /** Enters a friend's invite code: both sides get shells once. */
+  redeemInvite: (code: string) => 'ok' | 'invalid' | 'own' | 'used';
   spinWheel: () => { index: number; reward: number } | null;
-  subscribe: (plan: MemberPlan) => void;
+  /**
+   * Starts a plan, or with `trial` the store's free days of Basic (once per account).
+   * Real builds call this after StoreKit / Play Billing and the server's receipt check.
+   */
+  subscribe: (plan: PlanId, trial?: boolean) => void;
+  /** Buys 10 extra minutes of calls or voice replies with shells. */
+  topUpMinutes: (kind: MinutesKind) => SpendResult;
+  /** Development builds only: ends the plan at once, to test the free screens. */
+  endPlan: () => void;
 
   /* diary */
   addDiaryEntry: (entry: Omit<DiaryEntry, 'id'>) => string;
   deleteDiaryEntry: (id: string) => void;
+  markDiaryPageRead: (id: string) => void;
+  /** Writes the pages owed for yesterday's chats and dates. Safe to call often. */
+  writeDueDiaryPages: () => void;
 
   /* secret note */
   ensureSecretNote: (characterId: string) => void;
@@ -165,8 +278,29 @@ interface AppState {
   declineCall: () => void;
   addCall: (record: Omit<CallRecord, 'id'>) => void;
 
+  /* safety */
+  reports: MessageReport[];
+  /** Characters the user blocked: gone from chats and Find, never reach out. */
+  blockedIds: string[];
+  reportMessage: (conversationId: string, messageId: string, reason: ReportReason) => void;
+  /** Ends the bond (chat, memories, plans, moments) and hides the character. */
+  blockCharacter: (characterId: string) => void;
+  unblockCharacter: (characterId: string) => void;
+
+  /* profile */
+  updateProfile: (patch: ProfilePatch) => void;
+  /** Wipes everything on this device and starts over at onboarding. */
+  deleteAccount: () => void;
+  /** Development builds only: adds the sample chats, bonds and diary pages, to test full screens. */
+  loadDemoData: () => void;
+
   /* modules */
-  startDate: (characterId: string, cost: number, levelRequired: number, title: string) => SpendResult;
+  /** Pays for a date at a place on the map; the rounds play on the date screen. */
+  beginDate: (characterId: string, placeId: string) => SpendResult;
+  /** Ends a date: closeness from the hearts won, a polaroid record, a moment and a text from them. */
+  finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
+  /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
+  leaveDate: () => void;
   takePhoto: (characterId: string) => SpendResult;
 
   /* memories, moments, schedules */
@@ -174,11 +308,29 @@ interface AppState {
   toggleMemoryPin: (id: string) => void;
   deleteMemory: (id: string) => void;
   removeSchedule: (id: string) => void;
+  /** A plan added by hand in [Us]; the character acknowledges it in chat. */
+  addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string }) => void;
+  /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
+  runTimers: () => void;
+  /** Ends a couple quiz: the score lands in chat as a card, they react, closeness grows. */
+  finishQuiz: (characterId: string, packId: string, matches: number, title: string) => void;
+  /**
+   * One truth-or-dare turn. On them: the user's question goes to chat and they answer.
+   * On the user: they ask a truth or a dare in chat. Returns the question asked.
+   */
+  playTruthOrDare: (characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
+  /** Pins a note on the board for one friend; they answer in chat a moment later. */
+  postBoardNote: (characterId: string, text: string, style: BoardStyleId) => SpendResult | 'empty';
 
   /** What the characters do on their own when the app opens: greet, remind, call. */
   runDailyInitiative: () => { callFrom?: string; slot?: CallSlot };
   setSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
 }
+
+/** The fields the profile screen edits. */
+export type ProfilePatch = Partial<
+  Pick<User, 'displayName' | 'avatarUri' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about'>
+>;
 
 type PersistedKeys =
   | 'user'
@@ -189,10 +341,17 @@ type PersistedKeys =
   | 'relationships'
   | 'memories'
   | 'diary'
+  | 'characterDiary'
+  | 'diaryPagesRead'
   | 'notes'
+  | 'ledger'
   | 'calls'
   | 'moments'
   | 'schedules'
+  | 'boardPosts'
+  | 'dates'
+  | 'reports'
+  | 'blockedIds'
   | 'daily'
   | 'settings';
 
@@ -200,6 +359,18 @@ const uid = (prefix: string) =>
   `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)];
+
+/** Now and then a free reply ends by asking about one of the user's interests. */
+function withInterest(lines: string[], interests: string[] | undefined) {
+  if (!interests?.length || Math.random() > 0.2) return lines;
+  return [...lines, pick(interestLines)(pick(interests))];
+}
+
+/** Whether `hour` falls in the few hours after a "HH:MM" call time (wrapping past midnight). */
+function inWindow(hour: number, time = '08:00') {
+  const start = Number(time.split(':')[0]);
+  return (hour - start + 24) % 24 < CALL_WINDOW_HOURS;
+}
 
 /** Static web rendering runs in Node, where there is no localStorage. */
 const noopStorage: StateStorage = {
@@ -223,6 +394,15 @@ const rebrandStorage: StateStorage = {
 };
 
 type PersistedState = Partial<Pick<AppState, PersistedKeys>>;
+
+/** Wallet fields older versions saved; the migration reads them once and drops them. */
+type LegacyWallet = Wallet & {
+  acorns?: number;
+  isMember?: boolean;
+  memberPlan?: PlanId;
+  memberUntil?: string;
+  callSeconds?: number;
+};
 
 /** The licensed characters seeded before v3. They must not survive a migration. */
 const RETIRED_SEED_IDS = new Set([
@@ -280,21 +460,47 @@ function recastSeed(state: PersistedState): PersistedState {
   };
 }
 
+/**
+ * The sample history the mock shipped with: chats, bonds, memories, diary pages and
+ * calls with a few characters. A new install starts empty, with only the friend the
+ * user picks in onboarding; development builds can load this from Profile.
+ */
+const demoHistory = () => ({
+  conversations: seedConversations,
+  messages: messagesByConversation,
+  relationships: Object.fromEntries(seedRelationships.map((r) => [r.characterId, r])),
+  memories: seedMemories,
+  diary: seedDiary,
+  characterDiary: seedCharacterDiary,
+  notes: seedNotes,
+  calls: seedCalls,
+  moments: seedMoments,
+  schedules: seedSchedules,
+});
+
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       user: currentUser,
-      wallet: seedWallet,
+      // The welcome gift at the end of onboarding is the first balance.
+      wallet: { ...seedWallet, shells: 0 },
       characters: seedCharacters,
-      conversations: seedConversations,
-      messages: messagesByConversation,
-      relationships: Object.fromEntries(seedRelationships.map((r) => [r.characterId, r])),
-      memories: seedMemories,
-      diary: seedDiary,
-      notes: seedNotes,
-      calls: seedCalls,
-      moments: seedMoments,
-      schedules: seedSchedules,
+      conversations: [],
+      messages: {},
+      relationships: {},
+      memories: [],
+      diary: [],
+      characterDiary: [],
+      diaryPagesRead: [],
+      notes: [],
+      ledger: [],
+      calls: [],
+      moments: [],
+      schedules: [],
+      boardPosts: [],
+      dates: [],
+      reports: [],
+      blockedIds: [],
       daily: initialDaily,
       settings: initialSettings,
 
@@ -304,6 +510,8 @@ export const useAppStore = create<AppState>()(
       activeConversationId: null,
       incomingCall: null,
       dailyReward: null,
+      shareReward: null,
+      activeDate: null,
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
@@ -311,7 +519,10 @@ export const useAppStore = create<AppState>()(
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage)) return 'noShells';
+        if (overFairUse(get)) return 'dailyCap';
+        if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -335,13 +546,29 @@ export const useAppStore = create<AppState>()(
                 characterId: conversation.characterId,
                 title: plan.title,
                 date: plan.date,
+                time: plan.time,
                 createdAt: new Date().toISOString(),
                 reminded: false,
+                source: 'chat',
               },
             ],
           }));
           get().addMemory(conversation.characterId, `${plan.title} - ${plan.when}.`, 'chat');
-          reply = scheduleAck(plan.title, plan.when);
+          addMoment(set, conversation.characterId, 'plan', { title: plan.title });
+          reply = scheduleAck(plan.title, plan.when, !!plan.time);
+        }
+
+        // A crisis message: a warm reply in voice, then the helpline card under it.
+        if (detectCrisis(trimmed)) {
+          reply = pick(crisisReplies);
+          appendMessage(set, get, conversationId, {
+            id: uid('m'),
+            conversationId,
+            author: 'them',
+            kind: 'system',
+            card: 'helpline',
+            createdAt: new Date().toISOString(),
+          });
         }
 
         scheduleReply(set, get, conversationId, { text: reply, gain: INTIMACY.text });
@@ -351,7 +578,10 @@ export const useAppStore = create<AppState>()(
       sendVoice: (conversationId, durationSec, transcript) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.voiceMessage)) return 'noShells';
+        if (overFairUse(get)) return 'dailyCap';
+        if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -370,7 +600,10 @@ export const useAppStore = create<AppState>()(
       sendImage: (conversationId, imageUri) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage)) return 'noShells';
+        if (overFairUse(get)) return 'dailyCap';
+        if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -401,7 +634,10 @@ export const useAppStore = create<AppState>()(
 
       setActiveConversation: (conversationId) => {
         set({ activeConversationId: conversationId });
-        if (conversationId) get().markRead(conversationId);
+        if (!conversationId) return;
+        get().markRead(conversationId);
+        // Opening a chat starts a session: the "not a real person" notice shows if it is due.
+        noticeAiIfDue(set, get, conversationId);
       },
 
       clearChat: (conversationId) =>
@@ -411,6 +647,29 @@ export const useAppStore = create<AppState>()(
             c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
           ),
         })),
+
+      reactToMessage: (conversationId, messageId, reaction) =>
+        set((s) => ({
+          messages: {
+            ...s.messages,
+            [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
+              m.id === messageId ? { ...m, reaction } : m,
+            ),
+          },
+        })),
+
+      deleteMessage: (conversationId, messageId) =>
+        set((s) => {
+          const rest = (s.messages[conversationId] ?? []).filter((m) => m.id !== messageId);
+          // System lines (the AI notice, cards) never become the preview.
+          const last = [...rest].reverse().find((m) => m.kind !== 'system');
+          return {
+            messages: { ...s.messages, [conversationId]: rest },
+            conversations: s.conversations.map((c) =>
+              c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
+            ),
+          };
+        }),
 
       /* ── bonds ────────────────────────────────────────────────────────── */
 
@@ -450,12 +709,52 @@ export const useAppStore = create<AppState>()(
         return conversationId;
       },
 
+      completeOnboarding: ({ name, birthYear, characterId, notifications, firstAsk }) => {
+        set((s) => ({
+          user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
+          settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
+        }));
+        get().addShells(WELCOME_SHELLS, 'welcome');
+        // Day one of the check-in week is part of the welcome, not a popup over the first chat.
+        get().claimDailyLogin();
+        set({ dailyReward: null });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'them',
+          kind: 'text',
+          text: firstAsk,
+          createdAt: new Date().toISOString(),
+        });
+        return conversationId;
+      },
+
       addCharacter: (character) => {
         const characterId = uid('c');
         set((s) => ({ characters: [{ ...character, id: characterId }, ...s.characters] }));
         const conversationId = get().addFriend(characterId);
         return { characterId, conversationId };
       },
+
+      receivePushLine: ({ id, characterId, text, at }) => {
+        const conversation = get().conversations.find((c) => c.characterId === characterId);
+        if (!conversation) return;
+        const messageId = `m_push_${id}`;
+        if (get().messages[conversation.id]?.some((m) => m.id === messageId)) return;
+        appendMessage(
+          set,
+          get,
+          conversation.id,
+          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at },
+          { countUnread: true },
+        );
+      },
+
+      updateCharacter: (characterId, patch) =>
+        set((s) => ({
+          characters: s.characters.map((c) => (c.id === characterId && !c.isOfficial ? { ...c, ...patch } : c)),
+        })),
 
       resetRelationship: (characterId) =>
         set((s) => {
@@ -493,7 +792,8 @@ export const useAppStore = create<AppState>()(
 
         const intimacy = existing.intimacy + amount;
         const next = levelForIntimacy(intimacy);
-        const levelledUp = next.level > existing.level;
+        // Levels tick up quietly; the celebration is for reaching a new stage.
+        const levelledUp = next.level > existing.level && tierForLevel(next.level).key !== tierForLevel(existing.level).key;
 
         set((s) => ({
           relationships: {
@@ -516,33 +816,73 @@ export const useAppStore = create<AppState>()(
         }
       },
 
+      setRelationshipLabel: (characterId, label) =>
+        updateRelationship(set, characterId, (r) =>
+          !label || unlockedLabels(r.level).includes(label) ? { label } : {},
+        ),
+
       dismissLevelUp: () => set({ levelUp: null }),
 
       /* ── economy ──────────────────────────────────────────────────────── */
 
-      spendShells: (amount) => {
+      spendShells: (amount, reason = 'other', characterId) => {
+        get().expireFreeShells();
         const { wallet } = get();
         if (wallet.shells < amount) return false;
-        set({ wallet: { ...wallet, shells: wallet.shells - amount } });
+        const today = todayKey();
+        // Today's free shells go first, so bought ones last longer.
+        const free =
+          wallet.free && wallet.free.day === today
+            ? { ...wallet.free, amount: Math.max(0, wallet.free.amount - amount) }
+            : wallet.free;
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells - amount, free },
+          ledger: log(s.ledger, -amount, reason, characterId),
+        }));
         return true;
       },
 
-      addShells: (amount) => set((s) => ({ wallet: { ...s.wallet, shells: s.wallet.shells + amount } })),
+      addShells: (amount, reason = 'purchase') =>
+        set((s) => ({
+          wallet: {
+            ...s.wallet,
+            shells: s.wallet.shells + amount,
+            // The starter pack is offered only until the first purchase.
+            boughtShells: s.wallet.boughtShells || reason === 'purchase',
+          },
+          ledger: log(s.ledger, amount, reason),
+        })),
+
+      expireFreeShells: () => {
+        const { wallet } = get();
+        const free = wallet.free;
+        if (!free || free.day >= todayKey()) return;
+        const gone = Math.min(free.amount, wallet.shells);
+        // Booked at the midnight they ran out, so the history reads in order.
+        const midnight = dateFromKey(free.day);
+        midnight.setDate(midnight.getDate() + 1);
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells - gone, free: undefined },
+          ledger: gone > 0 ? log(s.ledger, -gone, 'expired', undefined, midnight.toISOString()) : s.ledger,
+        }));
+      },
 
       claimDailyLogin: () => {
+        get().expireFreeShells();
         const today = todayKey();
-        const { daily, wallet } = get();
-        if (daily.lastLoginDay === today) return 0;
+        const { daily } = get();
+        const { day, claimed } = checkInStatus(daily, today);
+        if (claimed) return 0;
 
-        const consecutive = daily.lastLoginDay === dayKeyFromToday(-1);
-        const day = consecutive ? (daily.checkInDay % DAILY_CHECK_IN.length) + 1 : 1;
-        const amount = DAILY_CHECK_IN[day - 1];
-
-        set({
-          daily: { ...daily, lastLoginDay: today, checkInDay: day },
-          wallet: { ...wallet, shells: wallet.shells + amount },
-          dailyReward: { amount, day },
-        });
+        const amount = rollCheckIn(day);
+        set((s) => ({
+          daily: { ...s.daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
+          wallet: { ...s.wallet, shells: s.wallet.shells + amount, free: { day: today, amount } },
+          ledger: log(s.ledger, amount, 'daily'),
+          // The owner asked for no check-in popup (2026-10-09): the shells arrive quietly,
+          // and History shows them. Setting `dailyReward: { amount, day }` here brings the
+          // Today sheet (DailyRewardSheet) back.
+        }));
         return amount;
       },
 
@@ -558,8 +898,38 @@ export const useAppStore = create<AppState>()(
         set((s) => ({
           daily: { ...s.daily, adsDay: today, adsWatched: watched + 1 },
           wallet: { ...s.wallet, shells: s.wallet.shells + AD_REWARD },
+          ledger: log(s.ledger, AD_REWARD, 'ad'),
         }));
         return AD_REWARD;
+      },
+
+      claimShareReward: () => {
+        const today = todayKey();
+        if (get().daily.shareDay === today) return 0;
+        set((s) => ({
+          daily: { ...s.daily, shareDay: today },
+          wallet: { ...s.wallet, shells: s.wallet.shells + SHARE_REWARD },
+          ledger: log(s.ledger, SHARE_REWARD, 'share'),
+          shareReward: SHARE_REWARD,
+        }));
+        return SHARE_REWARD;
+      },
+
+      dismissShareReward: () => set({ shareReward: null }),
+
+      redeemInvite: (input) => {
+        const { user } = get();
+        const code = normalizeInviteCode(input);
+        if (!code) return 'invalid';
+        if (user.redeemedInvite) return 'used';
+        if (code === inviteCodeFor(user)) return 'own';
+        // The server checks the code exists and credits the friend who sent it.
+        set((s) => ({
+          user: { ...s.user, redeemedInvite: code },
+          wallet: { ...s.wallet, shells: s.wallet.shells + INVITE_REWARD },
+          ledger: log(s.ledger, INVITE_REWARD, 'invite'),
+        }));
+        return 'ok';
       },
 
       spinWheel: () => {
@@ -583,20 +953,31 @@ export const useAppStore = create<AppState>()(
             ...(free ? {} : { adsDay: today, adsWatched: adsWatched + 1 }),
           },
           wallet: { ...s.wallet, shells: s.wallet.shells + reward },
+          ledger: log(s.ledger, reward, 'spin'),
         }));
         return { index, reward };
       },
 
-      subscribe: (planId) => {
-        // Real builds complete StoreKit / Play Billing and verify the receipt server-side first.
-        const plan = membershipPlans.find((p) => p.id === planId);
-        if (!plan) return;
-        const base = memberActive(get().wallet) ? new Date(get().wallet.memberUntil!) : new Date();
-        base.setDate(base.getDate() + plan.days);
-        set((s) => ({
-          wallet: { ...s.wallet, isMember: true, memberPlan: planId, memberUntil: base.toISOString() },
-        }));
+      subscribe: (plan, trial = false) => {
+        if (trial && get().wallet.trialUsed) return;
+        // A new plan (or a switch) starts today with a fresh allowance, as the store would bill it.
+        const subscription = startSubscription(plan, Date.now(), trial);
+        set((s) => ({ wallet: { ...s.wallet, subscription, trialUsed: s.wallet.trialUsed || trial } }));
+        // The call-time history shows what the plan brought.
+        const callSeconds = trial ? TRIAL.callSeconds : PLANS[plan].callSeconds;
+        logSeconds(set, callSeconds, trial ? 'trial' : 'membership');
       },
+
+      topUpMinutes: (kind) => {
+        const { seconds, shells } = TOP_UPS[kind];
+        if (!get().spendShells(shells, 'topUp')) return 'noShells';
+        const pack = { id: uid('mp'), kind, seconds, used: 0, boughtAt: new Date().toISOString() };
+        set((s) => ({ wallet: { ...s.wallet, packs: [...(s.wallet.packs ?? []), pack] } }));
+        if (kind === 'call') logSeconds(set, seconds, 'topUp');
+        return 'ok';
+      },
+
+      endPlan: () => set((s) => ({ wallet: { ...s.wallet, subscription: undefined } })),
 
       /* ── diary ────────────────────────────────────────────────────────── */
 
@@ -616,6 +997,15 @@ export const useAppStore = create<AppState>()(
       },
 
       deleteDiaryEntry: (id) => set((s) => ({ diary: s.diary.filter((d) => d.id !== id) })),
+
+      markDiaryPageRead: (id) =>
+        set((s) => (s.diaryPagesRead.includes(id) ? s : { diaryPagesRead: [...s.diaryPagesRead, id] })),
+
+      writeDueDiaryPages: () => {
+        const { conversations, messages, moments, characterDiary } = get();
+        const fresh = duePages(daysTogether(conversations, messages, moments), characterDiary);
+        if (fresh.length) set((s) => ({ characterDiary: [...s.characterDiary, ...fresh] }));
+      },
 
       /* ── secret note ──────────────────────────────────────────────────── */
 
@@ -650,7 +1040,7 @@ export const useAppStore = create<AppState>()(
       exchangeNote: (noteId) => {
         const note = get().notes.find((n) => n.id === noteId);
         if (!note || note.status !== 'ready' || !note.myNote.trim()) return 'notReady';
-        if (!get().spendShells(shellCosts.secretNote)) return 'noShells';
+        if (!get().spendShells(shellCosts.secretNote, 'note', note.characterId)) return 'noShells';
 
         set((s) => ({
           notes: s.notes.map((n) => (n.id === noteId ? { ...n, status: 'exchanged' } : n)),
@@ -663,6 +1053,9 @@ export const useAppStore = create<AppState>()(
       /* ── calls ────────────────────────────────────────────────────────── */
 
       ring: (characterId, slot) => {
+        // No call minutes (no plan, or this month's are used up): they text instead of
+        // ringing a call you could not take.
+        if (minutesOf(get().wallet, 'call').total <= 0) return;
         const current = get().incomingCall;
         if (current && Date.now() - current.at < STALE_RING_MS) return;
         set({ incomingCall: { characterId, slot, at: Date.now() } });
@@ -685,6 +1078,86 @@ export const useAppStore = create<AppState>()(
           direction: 'incoming',
           missed: true,
         });
+        // They noticed you did not pick up, and say so.
+        const conversationId = get().addFriend(call.characterId);
+        setTimeout(() => {
+          appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines)), { countUnread: true });
+        }, 1500);
+      },
+
+      /* ── safety ───────────────────────────────────────────────────────── */
+
+      reportMessage: (conversationId, messageId, reason) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const message = (get().messages[conversationId] ?? []).find((m) => m.id === messageId);
+        if (!conversation || !message) return;
+        // The server takes these with the surrounding chat for review.
+        set((s) => ({
+          reports: [
+            ...s.reports,
+            {
+              id: uid('rep'),
+              conversationId,
+              characterId: conversation.characterId,
+              messageId,
+              text: message.text,
+              reason,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        }));
+      },
+
+      blockCharacter: (characterId) =>
+        set((s) => {
+          const gone = new Set(s.conversations.filter((c) => c.characterId === characterId).map((c) => c.id));
+          const { [characterId]: _bond, ...relationships } = s.relationships;
+          return {
+            blockedIds: s.blockedIds.includes(characterId) ? s.blockedIds : [...s.blockedIds, characterId],
+            conversations: s.conversations.filter((c) => !gone.has(c.id)),
+            messages: Object.fromEntries(Object.entries(s.messages).filter(([id]) => !gone.has(id))),
+            relationships,
+            memories: s.memories.filter((m) => m.characterId !== characterId),
+            moments: s.moments.filter((m) => m.characterId !== characterId),
+            schedules: s.schedules.filter((x) => x.characterId !== characterId),
+            notes: s.notes.filter((n) => n.characterId !== characterId),
+            // A note waiting on its answer would bring them back after the block.
+            boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
+            activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
+            settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
+          };
+        }),
+
+      unblockCharacter: (characterId) =>
+        set((s) => ({ blockedIds: s.blockedIds.filter((id) => id !== characterId) })),
+
+      /* ── profile ──────────────────────────────────────────────────────── */
+
+      updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
+
+      deleteAccount: () => {
+        // Replies and timers still in flight must not write into the fresh state.
+        replyingUntil.clear();
+        // The server deletes the account later; here the device starts over.
+        useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
+      },
+
+      loadDemoData: () => {
+        const demo = demoHistory();
+        set((s) => ({
+          ...demo,
+          // Whatever the user already has stays; the sample fills in around it.
+          conversations: [...s.conversations, ...demo.conversations.filter((c) => !s.conversations.some((x) => x.characterId === c.characterId))],
+          messages: { ...demo.messages, ...s.messages },
+          relationships: { ...demo.relationships, ...s.relationships },
+          memories: [...s.memories, ...demo.memories],
+          diary: [...s.diary, ...demo.diary],
+          characterDiary: [...s.characterDiary, ...demo.characterDiary],
+          notes: [...s.notes, ...demo.notes],
+          calls: [...s.calls, ...demo.calls],
+          moments: [...s.moments, ...demo.moments],
+          schedules: [...s.schedules, ...demo.schedules],
+        }));
       },
 
       addCall: (record) => {
@@ -709,6 +1182,12 @@ export const useAppStore = create<AppState>()(
         );
 
         if (record.missed) return;
+        // Minutes go second by second: the plan's first, then bought ones. The call
+        // screen stops at zero, so a call never takes more than there was.
+        const { wallet } = get();
+        const used = consumeMinutes(wallet.subscription, wallet.packs, 'call', record.durationSec, Date.now());
+        set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
+        if (used.taken > 0) logSeconds(set, -used.taken, 'call', record.characterId);
         const minutes = Math.max(1, Math.round(record.durationSec / 60));
         get().addIntimacy(record.characterId, minutes * INTIMACY.callPerMinute);
         if (record.durationSec >= 60) {
@@ -718,31 +1197,47 @@ export const useAppStore = create<AppState>()(
 
       /* ── modules ──────────────────────────────────────────────────────── */
 
-      startDate: (characterId, cost, levelRequired, title) => {
+      beginDate: (characterId, placeId) => {
+        const place = datePlaceById(placeId);
         const bond = get().relationships[characterId];
-        if (!bond || bond.level < levelRequired) return 'locked';
-        if (!get().spendShells(cost)) return 'noShells';
-
-        const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'them',
-          kind: 'system',
-          text: `\u{1F4CD} ${title}`,
-          createdAt: new Date().toISOString(),
-        });
-        get().addIntimacy(characterId, INTIMACY.date);
-        addMoment(set, characterId, 'dating', { title });
-        scheduleReply(set, get, conversationId, {
-          text: `So... ${title.toLowerCase()}. Just the two of us. Where do you want to start?`,
-          gain: 0,
-        });
+        if (!place || !bond || bond.level < place.levelRequired) return 'locked';
+        if (!get().spendShells(place.cost, 'date', characterId)) return 'noShells';
+        set({ activeDate: { characterId, placeId } });
         return 'ok';
       },
 
+      leaveDate: () => set({ activeDate: null }),
+
+      finishDate: (characterId, placeId, hearts, title) => {
+        const place = datePlaceById(placeId);
+        const active = get().activeDate;
+        if (!place || active?.characterId !== characterId || active.placeId !== placeId) return null;
+        set({ activeDate: null });
+        const max = maxHearts(place);
+        const record: DateRecord = {
+          id: uid('date'),
+          characterId,
+          placeId,
+          title,
+          hearts,
+          maxHearts: max,
+          ending: dateEnding(hearts, max),
+          createdAt: new Date().toISOString(),
+        };
+        set((s) => ({ dates: [record, ...s.dates] }));
+        // Showing up is worth the base; every heart won on the way adds to it.
+        get().addIntimacy(characterId, INTIMACY.date + hearts);
+        // The 'dating' moment is what tomorrow's diary page is written from.
+        addMoment(set, characterId, 'dating', { title });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, themText(conversationId, afterDateLine(title, record.ending)), {
+          countUnread: true,
+        });
+        return record;
+      },
+
       takePhoto: (characterId) => {
-        if (!get().spendShells(shellCosts.photoBooth)) return 'noShells';
+        if (!get().spendShells(shellCosts.photoBooth, 'photoBooth', characterId)) return 'noShells';
         get().addIntimacy(characterId, INTIMACY.photo);
         addMoment(set, characterId, 'photo');
         return 'ok';
@@ -767,14 +1262,150 @@ export const useAppStore = create<AppState>()(
 
       removeSchedule: (id) => set((s) => ({ schedules: s.schedules.filter((x) => x.id !== id) })),
 
+      addSchedule: ({ characterId, title, date, time, whenLabel }) => {
+        const clean = title.trim();
+        if (!clean) return;
+        set((s) => ({
+          schedules: [
+            ...s.schedules,
+            {
+              id: uid('sch'),
+              characterId,
+              title: clean,
+              date,
+              time,
+              createdAt: new Date().toISOString(),
+              reminded: false,
+              source: 'manual',
+            },
+          ],
+        }));
+        addMoment(set, characterId, 'plan', { title: clean });
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, themText(conversationId, planAddedLine(clean, whenLabel)), {
+          countUnread: true,
+        });
+      },
+
+      runTimers: () => {
+        const now = new Date();
+        const exists = (id: string) => get().characters.some((c) => c.id === id);
+
+        const steps = get()
+          .schedules.map((item) => ({ item, step: planStep(item, now) }))
+          .filter((x) => x.step);
+        steps.forEach(({ item, step }) => {
+          if ((step !== 'remind' && step !== 'followUp') || !exists(item.characterId)) return;
+          const conversationId = get().addFriend(item.characterId);
+          const line =
+            step === 'remind'
+              ? scheduleReminder(item.title, !!item.time, `${item.id}:remind`)
+              : planFollowUp(item.title, `${item.id}:followUp`);
+          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+        });
+        if (steps.length) {
+          const byId = new Map(steps.map((x) => [x.item.id, x.step]));
+          set((s) => ({
+            schedules: s.schedules.map((x) => {
+              const step = byId.get(x.id);
+              if (step === 'remind' || step === 'skipRemind') return { ...x, reminded: true };
+              if (step === 'followUp' || step === 'skipFollowUp') return { ...x, followedUp: true };
+              return x;
+            }),
+          }));
+        }
+
+        const answered = get().boardPosts.filter((p) => !p.replied && new Date(p.replyAt).getTime() <= now.getTime());
+        answered.forEach((post) => {
+          if (!exists(post.characterId) || get().blockedIds.includes(post.characterId)) return;
+          const conversationId = get().addFriend(post.characterId);
+          const line = post.reply ?? boardReply(post.text);
+          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+        });
+        if (answered.length) {
+          const ids = new Set(answered.map((p) => p.id));
+          set((s) => ({ boardPosts: s.boardPosts.map((p) => (ids.has(p.id) ? { ...p, replied: true } : p)) }));
+        }
+      },
+
+      finishQuiz: (characterId, packId, matches, title) => {
+        const pack = quizPackById(packId);
+        if (!pack) return;
+        const total = pack.questions.length;
+        const conversationId = get().addFriend(characterId);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'me',
+          kind: 'system',
+          text: `\u{1F49E} ${title} \u00B7 ${matches}/${total}`,
+          createdAt: new Date().toISOString(),
+        });
+        addMoment(set, characterId, 'quiz', { title, score: `${matches}/${total}` });
+        scheduleReply(set, get, conversationId, {
+          text: quizReply(matches, total),
+          gain: INTIMACY.quizMatch * matches + INTIMACY.quizMatch,
+        });
+      },
+
+      playTruthOrDare: (characterId, target, kind) => {
+        const conversationId = get().addFriend(characterId);
+        if (target === 'you') {
+          const ask = pick(kind === 'truth' ? TRUTHS_FOR_YOU : DARES_FOR_YOU);
+          appendMessage(set, get, conversationId, themText(conversationId, ask));
+          return ask;
+        }
+        const turn = pick(kind === 'truth' ? TRUTHS_FOR_THEM : DARES_FOR_THEM);
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'me',
+          kind: 'text',
+          text: turn.ask,
+          createdAt: new Date().toISOString(),
+        });
+        scheduleReply(set, get, conversationId, { text: turn.answer, gain: INTIMACY.truthOrDare });
+        return turn.ask;
+      },
+
+      postBoardNote: (characterId, text, style) => {
+        const clean = text.trim();
+        if (!clean) return 'empty';
+        if (!get().spendShells(shellCosts.boardNote, 'board', characterId)) return 'noShells';
+        const createdAt = new Date();
+        set((s) => ({
+          boardPosts: [
+            ...s.boardPosts,
+            {
+              id: uid('bp'),
+              characterId,
+              text: clean,
+              style,
+              createdAt: createdAt.toISOString(),
+              reply: boardReply(clean),
+              replyAt: new Date(createdAt.getTime() + BOARD_REPLY_MS).toISOString(),
+              replied: false,
+            },
+          ],
+        }));
+        get().addIntimacy(characterId, INTIMACY.boardNote);
+        addMoment(set, characterId, 'board');
+        setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
+        return 'ok';
+      },
+
       /* ── character initiative ─────────────────────────────────────────── */
 
       runDailyInitiative: () => {
         const now = new Date();
         const hour = now.getHours();
         const today = todayKey();
-        const slot: CallSlot | null = hour >= 5 && hour < 12 ? 'morning' : hour >= 20 || hour < 2 ? 'night' : null;
         const { settings, daily, relationships, characters, incomingCall } = get();
+        const slot: CallSlot | null = inWindow(hour, settings.morningCallTime)
+          ? 'morning'
+          : inWindow(hour, settings.nightCallTime)
+            ? 'night'
+            : null;
 
         // A ring nobody answered (screen closed, app backgrounded) ends up as a missed call.
         if (incomingCall && Date.now() - incomingCall.at > STALE_RING_MS) get().declineCall();
@@ -783,18 +1414,21 @@ export const useAppStore = create<AppState>()(
           .filter((r) => r.messagesFirst && characters.some((c) => c.id === r.characterId))
           .sort((a, b) => b.intimacy - a.intimacy);
 
-        // 1. Due reminders from plans mentioned in chat.
-        const due = get().schedules.filter((x) => x.date <= today && !x.reminded);
-        if (due.length) {
-          due.forEach((item) => {
-            const conversationId = get().addFriend(item.characterId);
-            appendMessage(set, get, conversationId, themText(conversationId, scheduleReminder(item.title)), {
+        // 1. Plan reminders, "how did it go?" and board answers that came due.
+        get().runTimers();
+
+        // Birthday: the closest bonds text first thing, once a year.
+        const { user } = get();
+        if (isBirthday(user, now) && user.birthdayWishedYear !== now.getFullYear() && hour >= 7) {
+          bonds.slice(0, 3).forEach((bond) => {
+            const conversationId = get().addFriend(bond.characterId);
+            // Seeded like the 07:00 push (src/notifications/plan.ts), so both say the same line.
+            const wish = pickSeeded(birthdayLines, `${now.getFullYear()}:${bond.characterId}`)(user.displayName);
+            appendMessage(set, get, conversationId, themText(conversationId, wish), {
               countUnread: true,
             });
           });
-          set((s) => ({
-            schedules: s.schedules.map((x) => (due.some((d) => d.id === x.id) ? { ...x, reminded: true } : x)),
-          }));
+          set((s) => ({ user: { ...s.user, birthdayWishedYear: now.getFullYear() } }));
         }
 
         if (!slot) return {};
@@ -805,7 +1439,8 @@ export const useAppStore = create<AppState>()(
         if (greet && !daily.greetedSlots.includes(slotKey)) {
           bonds.slice(0, 2).forEach((bond) => {
             const conversationId = get().addFriend(bond.characterId);
-            const line = pick(slot === 'morning' ? morningGreetings : eveningGreetings);
+            // Seeded like the scheduled push for this slot, so the notification and the chat agree.
+            const line = pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${bond.characterId}`);
             appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
           });
           set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));
@@ -815,7 +1450,10 @@ export const useAppStore = create<AppState>()(
         const call = slot === 'morning' ? settings.morningCall : settings.nightCall;
         if (!call || get().daily.calledSlots.includes(slotKey)) return {};
 
-        const caller = bonds.find((b) => characters.find((c) => c.id === b.characterId)?.voiceReady);
+        // The friend picked in Daily calls rings; otherwise the closest one with a voice.
+        const hasVoice = (id: string) => !!characters.find((c) => c.id === id)?.voiceReady;
+        const chosen = settings.callerId && relationships[settings.callerId] && hasVoice(settings.callerId);
+        const caller = chosen ? { characterId: settings.callerId! } : bonds.find((b) => hasVoice(b.characterId));
         if (!caller) return {};
 
         set((s) => ({ daily: { ...s.daily, calledSlots: [...s.daily.calledSlots, slotKey].slice(-8) } }));
@@ -826,9 +1464,9 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 3,
+      version: 7,
       migrate: (persisted, version) => {
-        let state = persisted as PersistedState & { wallet?: Wallet & { acorns?: number } };
+        let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
         if (version < 2 && state.wallet && state.wallet.acorns != null) {
           const { acorns, ...wallet } = state.wallet;
@@ -836,6 +1474,27 @@ export const useAppStore = create<AppState>()(
         }
         // v3: the licensed seed cast was replaced by Rafti's originals.
         if (version < 3) state = recastSeed(state);
+        // v4: first-launch flow. Anyone who already has data has been through the app.
+        // v5: closeness runs 0-100 in five stages; levels are recomputed from intimacy.
+        if (version < 5 && state.relationships) {
+          state.relationships = Object.fromEntries(
+            Object.entries(state.relationships).map(([id, r]) => {
+              const { level, levelTitle, nextLevelAt } = levelForIntimacy(r.intimacy);
+              return [id, { ...r, level, levelTitle, nextLevelAt }];
+            }),
+          );
+        }
+        // v6 gave live calls their own time balance; v7 replaced it, and Membership, with
+        // plans that carry monthly call and voice-reply minutes (backend-plan §13). A
+        // membership still running carries on as the same plan from today.
+        if (version < 7 && state.wallet) {
+          const { isMember, memberPlan, memberUntil, callSeconds: _callSeconds, ...wallet } = state.wallet;
+          const running = !!isMember && !!memberUntil && Date.parse(memberUntil) > Date.now();
+          state.wallet = running
+            ? { ...wallet, subscription: startSubscription(memberPlan ?? 'basic', Date.now()) }
+            : wallet;
+        }
+        if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),
@@ -854,6 +1513,8 @@ export const useAppStore = create<AppState>()(
           daily: { ...current.daily, ...saved.daily },
           settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
+          // Pages are saved with the rest, sample pages included when they were loaded.
+          characterDiary: saved.characterDiary ?? current.characterDiary,
         };
       },
       partialize: (s): Pick<AppState, PersistedKeys> => ({
@@ -865,10 +1526,17 @@ export const useAppStore = create<AppState>()(
         relationships: s.relationships,
         memories: s.memories,
         diary: s.diary,
+        characterDiary: s.characterDiary,
+        diaryPagesRead: s.diaryPagesRead,
         notes: s.notes,
+        ledger: s.ledger,
         calls: s.calls,
         moments: s.moments,
         schedules: s.schedules,
+        boardPosts: s.boardPosts,
+        dates: s.dates,
+        reports: s.reports,
+        blockedIds: s.blockedIds,
         daily: s.daily,
         settings: s.settings,
       }),
@@ -879,6 +1547,8 @@ export const useAppStore = create<AppState>()(
         diary
           .filter((d) => d.sharedWithCharacterId && !d.reply)
           .forEach((d) => answerDiary(useAppStore.setState, d.id));
+        useAppStore.getState().expireFreeShells();
+        useAppStore.getState().writeDueDiaryPages();
         useAppStore.setState({ hydrated: true });
       },
     },
@@ -887,8 +1557,28 @@ export const useAppStore = create<AppState>()(
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */
 
-export const memberActive = (wallet: Wallet) =>
-  wallet.isMember && !!wallet.memberUntil && new Date(wallet.memberUntil).getTime() > Date.now();
+/** A plan or its trial is running: chat is free of shells, calls and voice replies come with it. */
+export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscription(wallet.subscription, now);
+
+/** Call or voice-reply minutes left: the plan's this period, then bought packs. In seconds. */
+export const minutesOf = (wallet: Wallet, kind: MinutesKind, now = Date.now()) =>
+  minutesLeft(wallet.subscription, wallet.packs, kind, now);
+
+/** A member sent FAIR_USE_PER_DAY messages today; chat comes back at midnight. */
+export const fairUseReached = (wallet: Wallet, daily: DailyState, today = todayKey()) =>
+  memberActive(wallet) && daily.messagesDay === today && (daily.messagesSent ?? 0) >= FAIR_USE_PER_DAY;
+
+/**
+ * Where today falls in the 7-day check-in week, and whether it is collected yet.
+ * A missed day restarts the week. The claim and the Today card share this rule.
+ */
+export function checkInStatus(daily: DailyState, today = todayKey()) {
+  if (daily.lastLoginDay === today) return { day: Math.max(1, daily.checkInDay), claimed: true };
+  const yesterday = dateFromKey(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const consecutive = daily.lastLoginDay === dayKey(yesterday);
+  return { day: consecutive ? (daily.checkInDay % DAILY_CHECK_IN.length) + 1 : 1, claimed: false };
+}
 
 /** The name to show for a character: your nickname for them, else theirs. */
 export const displayName = (character: Character, relationship?: Relationship) =>
@@ -901,9 +1591,71 @@ type Getter = () => AppState;
 type RawSetter = (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void;
 
 /** Members chat for free; everyone else spends shells per message. */
-function chargeMessage(get: Getter, cost: number) {
+function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
   if (memberActive(get().wallet)) return true;
-  return get().spendShells(cost);
+  const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+  return get().spendShells(cost, reason, characterId);
+}
+
+/** Books call time in the history, in seconds: what a plan or top-up added, what a call used. */
+function logSeconds(set: Setter, seconds: number, reason: LedgerReason, characterId?: string) {
+  set((s) => ({
+    ledger: [{ ...log([], seconds, reason, characterId)[0], unit: 'seconds' as const }, ...s.ledger],
+  }));
+}
+
+const overFairUse = (get: Getter) => fairUseReached(get().wallet, get().daily);
+
+/** Counts a sent message toward today's total (the fair-use limit). */
+function countMessage(set: Setter, get: Getter) {
+  const today = todayKey();
+  const sent = get().daily.messagesDay === today ? (get().daily.messagesSent ?? 0) : 0;
+  set((s) => ({ daily: { ...s.daily, messagesDay: today, messagesSent: sent + 1 } }));
+}
+
+/**
+ * The "not a real person" line: when a chat session starts and again every 3 hours of
+ * talking (NY GBL Art. 47, CA SB 243). A quiet system line, never a preview or unread.
+ */
+function noticeAiIfDue(set: Setter, get: Getter, conversationId: string) {
+  const conversation = get().conversations.find((c) => c.id === conversationId);
+  if (!conversation) return;
+  const now = Date.now();
+  if (conversation.aiNoticeAt && now - Date.parse(conversation.aiNoticeAt) < AI_NOTICE_MS) return;
+  const at = new Date(now).toISOString();
+  set((s) => ({
+    conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, aiNoticeAt: at } : c)),
+  }));
+  appendMessage(
+    set,
+    get,
+    conversationId,
+    { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'aiNotice', createdAt: at },
+    { quiet: true },
+  );
+}
+
+/** Takes voice-reply seconds from the plan or packs; false when none are left. */
+function spendVoice(set: Setter, get: Getter, seconds: number) {
+  const { wallet } = get();
+  if (minutesOf(wallet, 'voice').total <= 0) return false;
+  const used = consumeMinutes(wallet.subscription, wallet.packs, 'voice', seconds, Date.now());
+  set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
+  return true;
+}
+
+/** History is kept for six months; older lines drop off. */
+const LEDGER_DAYS = 183;
+
+function log(
+  ledger: LedgerEntry[],
+  amount: number,
+  reason: LedgerReason,
+  characterId?: string,
+  at = new Date().toISOString(),
+): LedgerEntry[] {
+  const cutoff = Date.now() - LEDGER_DAYS * 86_400_000;
+  return [{ id: uid('l'), at, amount, reason, characterId }, ...ledger.filter((e) => Date.parse(e.at) >= cutoff)];
 }
 
 function appendMessage(
@@ -911,8 +1663,19 @@ function appendMessage(
   get: Getter,
   conversationId: string,
   message: Message,
-  { countUnread = message.author === 'them' }: { countUnread?: boolean } = {},
+  {
+    countUnread = message.author === 'them',
+    quiet = false,
+  }: {
+    countUnread?: boolean;
+    /** A system line: leaves the chat list's preview, time and unread count alone */
+    quiet?: boolean;
+  } = {},
 ) {
+  if (quiet) {
+    set((s) => ({ messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] } }));
+    return;
+  }
   const unseen = countUnread && get().activeConversationId !== conversationId;
   const preview = previewFor(message);
 
@@ -1002,32 +1765,67 @@ function scheduleReply(
     },
   }));
 
-  setTimeout(() => {
-    const reply = text ?? pick(cannedReplies);
-    const bond = get().relationships[conversation.characterId];
-    const character = get().characters.find((c) => c.id === conversation.characterId);
-    const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
-    const now = new Date().toISOString();
+  // A scripted line (a plan's acknowledgement) is one text; a free reply comes as a burst.
+  const lines = text ? [text] : withInterest(pick(replyBursts), get().user.interests);
+  const bond = get().relationships[conversation.characterId];
+  const character = get().characters.find((c) => c.id === conversation.characterId);
+  const said = lines.join(' ');
+  // Roughly how long the burst takes to say out loud.
+  const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
+  // Voice replies come with a plan and use its minutes; without minutes the reply is text.
+  const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady;
+  const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
+  // A member whose voice minutes ran out sees why, once a day, under the reply.
+  const voiceBack = minutesOf(get().wallet, 'voice').resetsAt;
+  const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
+  if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
 
-    set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
-
-    if (withVoice) {
-      appendMessage(set, get, conversationId, {
-        id: uid('m'),
-        conversationId,
-        author: 'them',
-        kind: 'voice',
-        // Roughly how long the line takes to say out loud.
-        durationSec: Math.max(3, Math.round(reply.split(/\s+/).length / 2.6)),
-        transcript: reply,
-        createdAt: now,
-      });
-    }
-    appendMessage(set, get, conversationId, themText(conversationId, reply));
-
-    if (gain) get().addIntimacy(conversation.characterId, gain);
-  }, 1100 + Math.random() * 900);
+  // Each line waits roughly as long as it takes to type, with "typing..." shown between.
+  // A burst never starts while the last one is still arriving, so two replies never interleave.
+  const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
+  let at = busy + 900 + Math.random() * 600;
+  lines.forEach((line, i) => {
+    const last = i === lines.length - 1;
+    setTimeout(() => {
+      if (i === 0 && withVoice) {
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'them',
+          kind: 'voice',
+          durationSec: voiceSec,
+          transcript: said,
+          createdAt: new Date().toISOString(),
+        });
+      }
+      appendMessage(set, get, conversationId, themText(conversationId, line));
+      if (last && noteVoice && voiceBack != null) {
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          {
+            id: uid('m'),
+            conversationId,
+            author: 'them',
+            kind: 'system',
+            card: 'voiceQuota',
+            until: new Date(voiceBack).toISOString(),
+            createdAt: new Date().toISOString(),
+          },
+          { quiet: true },
+        );
+      }
+      set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
+      if (last && gain) get().addIntimacy(conversation.characterId, gain);
+    }, at);
+    at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
+  });
+  replyingUntil.set(conversationId, Date.now() + at);
 }
+
+/** When each chat's current reply burst finishes; replies queue behind it. */
+const replyingUntil = new Map<string, number>();
 
 function answerDiary(set: RawSetter, entryId: string) {
   set((s) => ({

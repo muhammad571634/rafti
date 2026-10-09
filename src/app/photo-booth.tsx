@@ -1,11 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { ShellIcon, Anim, Button, CharacterAvatar, Chip, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { ShellIcon, Anim, Button, CharacterAvatar, Chip, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, radius, space } from '@/theme';
@@ -55,7 +54,7 @@ export default function PhotoBoothScreen() {
         subtitle={t('photoBooth.subtitle')}
         right={
           <View style={styles.film}>
-            <Ionicons name="film-outline" size={14} color={colors.text} />
+            <ClayIcon name="film" size={20} tile={false} />
             <Txt variant="caption" color={colors.text}>
               {wallet.film}
             </Txt>

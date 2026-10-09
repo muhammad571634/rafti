@@ -1,392 +1,448 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  interpolate,
+  useAnimatedReaction,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  type SharedValue,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import {
-  Anim,
-  Button,
-  CharacterAvatar,
-  EmptyState,
-  Header,
-  IconButton,
-  PressableScale,
-  Screen,
-  Sheet,
-  Txt,
-} from '@/components/ui';
-import { diaryDate, relativeStamp } from '@/lib/format';
-import { dateFromKey } from '@/mock';
+import { AVATARS } from '@/assets/avatars/registry';
+import { BRAND } from '@/assets/brand/registry';
+import { HEROES } from '@/assets/heroes/registry';
+import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
+import { BrandArt, Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { shortName } from '@/lib/format';
+import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, palette, radius, space } from '@/theme';
-import type { DiaryEntry } from '@/types';
+import { avatarGradients, colors, HEADER_HEIGHT, palette, radius, shadows, space } from '@/theme';
+import type { Character, CharacterDiaryPage } from '@/types';
 
-const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
-  happy: '\u{1F60A}',
-  soft: '\u{1F338}',
-  blue: '\u{1F327}\u{FE0F}',
-  excited: '\u{2728}',
-  tired: '\u{1F634}',
-};
+const GAP = space.md;
+/** Height of the date pill, for placing the calendar under it. */
+const PILL = 36;
 
-/** Swipe distance that flips to the next page. */
-const FLIP_AT = 80;
+type Card =
+  | { kind: 'mine'; id: 'mine'; pages: number; lastDate?: string }
+  | {
+      kind: 'character';
+      id: string;
+      character: Character;
+      conversationId?: string;
+      /** Their page on the chosen day, if any */
+      onDay?: CharacterDiaryPage;
+      /** Their latest page up to the chosen day */
+      last?: CharacterDiaryPage;
+      count: number;
+      isNew: boolean;
+    };
 
+/**
+ * Heartbeat diary: one cover per diary in a carousel, yours first. The backdrop
+ * takes the colour of the cover in front, and the one button below always says
+ * what that cover leads to: write, read, the last page, or a chat to start one.
+ */
 export default function DiaryScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  const diary = useAppStore((s) => s.diary);
   const characters = useAppStore((s) => s.characters);
+  const conversations = useAppStore((s) => s.conversations);
+  const pages = useAppStore((s) => s.characterDiary);
+  const read = useAppStore((s) => s.diaryPagesRead);
+  const myDiary = useAppStore((s) => s.diary);
+  const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
 
+  // A new morning may have brought pages for yesterday's chats.
+  useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
+
+  const today = dayKey();
+  const [day, setDay] = useState(today);
   const [newestFirst, setNewestFirst] = useState(true);
-  const [index, setIndex] = useState(0);
-  const [open, setOpen] = useState<DiaryEntry | null>(null);
-  const [infoOpen, setInfoOpen] = useState(false);
-  const [datesOpen, setDatesOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const [rulesOpen, setRulesOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const entries = useMemo(
-    () =>
-      [...diary].sort((a, b) => {
-        const diff = b.date.localeCompare(a.date);
+  const cardW = Math.min(232, Math.round(width * 0.6));
+  const cardH = Math.round(cardW * 1.37);
+  const step = cardW + GAP;
+
+  const listRef = useRef<FlatList<Card>>(null);
+  const scrollX = useSharedValue(0);
+
+  const cards = useMemo<Card[]>(() => {
+    const mine = myDiary.filter((d) => d.date <= day);
+    const lastMine = mine.reduce<string | undefined>((acc, d) => (!acc || d.date > acc ? d.date : acc), undefined);
+
+    const people = conversations
+      .map((conv) => {
+        const character = characters.find((c) => c.id === conv.characterId);
+        if (!character) return null;
+        const theirs = pages
+          .filter((p) => p.characterId === character.id && p.date <= day)
+          .sort((a, b) => b.date.localeCompare(a.date));
+        const onDay = theirs.find((p) => p.date === day);
+        return {
+          kind: 'character' as const,
+          id: character.id,
+          character,
+          conversationId: conv.id,
+          onDay,
+          last: theirs[0],
+          count: theirs.length,
+          isNew: !!onDay && day === today && !read.includes(onDay.id),
+        };
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null)
+      .sort((a, b) => {
+        // A diary with no page yet always waits at the end.
+        if (!a.last || !b.last) return a.last ? -1 : b.last ? 1 : 0;
+        const diff = b.last.date.localeCompare(a.last.date);
         return newestFirst ? diff : -diff;
-      }),
-    [diary, newestFirst],
+      });
+
+    return [{ kind: 'mine', id: 'mine', pages: mine.length, lastDate: lastMine }, ...people];
+  }, [characters, conversations, pages, read, myDiary, day, today, newestFirst]);
+
+  const current = cards[Math.min(active, cards.length - 1)];
+
+  // Every day that has a page, yours or theirs, gets a dot in the calendar.
+  const marked = useMemo(
+    () => new Set([...pages.map((p) => p.date), ...myDiary.map((d) => d.date)]),
+    [pages, myDiary],
   );
 
-  const current = entries[Math.min(index, entries.length - 1)];
-  const cardWidth = Math.min(300, width * 0.78);
-  const replyAuthor = open?.reply ? characters.find((c) => c.id === open.reply?.characterId) : undefined;
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollX.value = e.contentOffset.x;
+  });
 
-  const step = (delta: number) =>
-    setIndex((i) => (entries.length ? (i + delta + entries.length) % entries.length : 0));
+  useAnimatedReaction(
+    () => Math.round(scrollX.value / step),
+    (index, prev) => {
+      if (index !== prev) scheduleOnRN(setActive, index);
+    },
+    [step],
+  );
 
-  // The three pages behind the current one, deepest first.
-  const deck = entries.length
-    ? Array.from({ length: Math.min(4, entries.length) }, (_, d) => entries[(index + d) % entries.length]).reverse()
-    : [];
+  const scrollTo = (index: number) => listRef.current?.scrollToOffset({ offset: index * step, animated: true });
+
+  const resetTo = (fn: () => void) => {
+    fn();
+    setActive(0);
+    listRef.current?.scrollToOffset({ offset: 0, animated: false });
+  };
+
+  const shortDate = (key: string) =>
+    dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
+
+  const open = (card: Card) => {
+    if (card.kind === 'mine') return router.push('/diary/mine');
+    const page = card.onDay ?? card.last;
+    if (page) return router.push({ pathname: '/diary/page/[characterId]', params: { characterId: card.id, date: page.date } });
+    if (card.conversationId) router.push(`/chat/${card.conversationId}`);
+  };
+
+  const act = (card: Card) => (card.kind === 'mine' ? router.push('/diary/write') : open(card));
+
+  const firstName = (c: Character) => shortName(c.name);
+
+  const line = (card: Card) => {
+    if (card.kind === 'mine') {
+      return card.lastDate
+        ? t('diary.lineMine', { count: card.pages, date: shortDate(card.lastDate) })
+        : t('diary.lineMineEmpty');
+    }
+    const name = firstName(card.character);
+    if (card.onDay) return day === today ? t('diary.lineNewToday', { name }) : t('diary.lineOnDay', { name });
+    if (card.last) return t('diary.lineLast', { date: shortDate(card.last.date) });
+    return day === today ? t('diary.lineLockedToday', { name }) : t('diary.lineLockedDay', { name });
+  };
+
+  const cta = (card: Card): { label: string; icon?: React.ComponentProps<typeof Ionicons>['name'] } => {
+    if (card.kind === 'mine') return { label: t('diary.writeToday'), icon: 'pencil-outline' };
+    if (card.onDay) return { label: day === today ? t('diary.readToday') : t('diary.readThis') };
+    if (card.last) return { label: t('diary.openLast') };
+    return { label: t('diary.chatWith', { name: firstName(card.character) }), icon: 'chatbubble-outline' };
+  };
+
+  const action = current ? cta(current) : undefined;
 
   return (
-    <Screen background={colors.bgPlain}>
+    <Screen
+      background={colors.bgPlain}
+      backdrop={current ? <Backdrop key={current.id} source={coverSource(current)} /> : null}>
       <Header
         title={t('diary.title')}
+        center
         right={
           <View style={styles.headerRight}>
             <IconButton
-              icon="calendar-outline"
-              size={20}
-              accessibilityLabel={t('diary.pages', { count: entries.length })}
-              onPress={() => setDatesOpen(true)}
-            />
-            <IconButton
               icon="swap-vertical"
               size={20}
-              accessibilityLabel={t('a11y.sortPages')}
-              onPress={() => {
-                setNewestFirst((v) => !v);
-                setIndex(0);
-              }}
+              accessibilityLabel={newestFirst ? t('diary.sortOldest') : t('diary.sortNewest')}
+              onPress={() => resetTo(() => setNewestFirst((v) => !v))}
             />
             <IconButton
               icon="information-circle-outline"
               size={21}
-              onPress={() => setInfoOpen(true)}
-              accessibilityLabel={t('a11y.about')}
+              accessibilityLabel={t('diary.rulesTitle')}
+              onPress={() => setRulesOpen(true)}
             />
           </View>
         }
       />
 
-      {current ? (
-        <PressableScale style={styles.month} scaleTo={1} onPress={() => setDatesOpen(true)}>
-          <Txt variant="display">
-            {dateFromKey(current.date).toLocaleDateString(i18n.language, { month: 'long' })}
-          </Txt>
-          <Txt variant="small" color={colors.textMuted}>
-            {' · '}
-            {t('diary.pages', { count: entries.length })}
-          </Txt>
-        </PressableScale>
-      ) : null}
+      <PressableScale
+        style={[styles.datePill, calendarOpen && styles.datePillOpen]}
+        scaleTo={0.96}
+        accessibilityLabel={t('diary.calendar')}
+        onPress={() => setCalendarOpen(true)}>
+        <Txt variant="smallStrong">{shortDate(day)}</Txt>
+        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={15} color={colors.textSecondary} />
+      </PressableScale>
 
-      {entries.length === 0 ? (
-        <EmptyState
-          title={t('diary.empty')}
-          hint={t('diary.emptyHint')}
-          actionLabel={t('diary.write')}
-          onAction={() => router.push('/diary/write')}
+      <View style={styles.middle}>
+        <Animated.FlatList
+          ref={listRef}
+          data={cards}
+          keyExtractor={(c) => c.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={step}
+          decelerationRate="fast"
+          disableIntervalMomentum
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          style={{ height: cardH + space.xxxl }}
+          contentContainerStyle={{ paddingHorizontal: (width - cardW) / 2, alignItems: 'center', gap: GAP }}
+          renderItem={({ item, index }) => (
+            <CoverCard
+              card={item}
+              index={index}
+              step={step}
+              width={cardW}
+              height={cardH}
+              scrollX={scrollX}
+              onPress={() => (index === active ? open(item) : scrollTo(index))}
+            />
+          )}
         />
-      ) : (
-        <View style={styles.stackWrap}>
-          <View style={[styles.stack, { width: cardWidth, height: cardWidth * 1.32 }]}>
-            {deck.map((entry, i) => {
-              const depth = deck.length - 1 - i;
-              return (
-                <DiaryCard
-                  key={`${entry.id}-${depth}`}
-                  entry={entry}
-                  sharedWith={characters.find((c) => c.id === entry.sharedWithCharacterId)?.name}
-                  width={cardWidth}
-                  depth={depth}
-                  onOpen={() => setOpen(entry)}
-                  onFlip={step}
-                />
-              );
-            })}
-          </View>
-          <Txt variant="caption" color={colors.textMuted} style={styles.counter}>
-            {t('diary.swipeHint', { index: index + 1, count: entries.length })}
-          </Txt>
-        </View>
-      )}
 
-      {entries.length ? (
-        <View style={styles.footer}>
+        <View style={styles.dots}>
+          {cards.map((c, i) => (
+            <View key={c.id} style={[styles.dot, i === active && styles.dotOn]} />
+          ))}
+        </View>
+
+        {current ? (
+          <Txt variant="body" color={colors.textSecondary} center style={styles.line}>
+            {line(current)}
+          </Txt>
+        ) : null}
+      </View>
+
+      {current && action ? (
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
           <Button
-            label={t('diary.writeToday')}
+            label={action.label}
             size="lg"
             full
-            left={<Ionicons name="pencil-outline" size={18} color={colors.textOnPrimary} />}
-            onPress={() => router.push('/diary/write')}
+            left={action.icon ? <Ionicons name={action.icon} size={18} color={colors.textOnPrimary} /> : undefined}
+            onPress={() => act(current)}
           />
         </View>
       ) : null}
 
-      <Sheet visible={!!open} onClose={() => setOpen(null)} title={open?.title}>
-        {open ? (
-          <ScrollView style={styles.entryScroll} showsVerticalScrollIndicator={false}>
-            <Txt variant="caption" color={colors.textMuted}>
-              {diaryDate(open.date)} {'·'} {MOOD_EMOJI[open.mood]} {t(`diary.moods.${open.mood}`)}
-            </Txt>
-            <Txt variant="body" style={styles.entryBody}>
-              {open.body}
-            </Txt>
-            {open.images.length ? (
-              <View style={styles.images}>
-                {open.images.map((uri) => (
-                  <Image key={uri} source={{ uri }} style={styles.image} contentFit="cover" />
-                ))}
-              </View>
-            ) : null}
+      <CalendarPopover
+        visible={calendarOpen}
+        onClose={() => setCalendarOpen(false)}
+        value={day}
+        onChange={(key) => resetTo(() => setDay(key))}
+        marked={marked}
+        top={insets.top + HEADER_HEIGHT + PILL + space.md}
+      />
 
-            {open.reply && replyAuthor ? (
-              <View style={styles.reply}>
-                <View style={styles.replyHead}>
-                  <CharacterAvatar character={replyAuthor} size={26} />
-                  <Txt variant="smallStrong" style={styles.flex}>
-                    {t('diary.replyTitle', { name: replyAuthor.name })}
-                  </Txt>
-                  <Txt variant="tiny" color={colors.textFaint}>
-                    {relativeStamp(open.reply.createdAt)}
-                  </Txt>
-                </View>
-                <Txt variant="small" color={colors.textSecondary}>
-                  {open.reply.text}
-                </Txt>
-              </View>
-            ) : open.sharedWithCharacterId ? (
-              <View style={styles.pending}>
-                <Anim name="typing" size={30} tint={colors.textFaint} />
-                <Txt variant="small" color={colors.textMuted}>
-                  {t('common.thinking')}
-                </Txt>
-              </View>
-            ) : null}
-          </ScrollView>
-        ) : null}
-      </Sheet>
-
-      <Sheet visible={datesOpen} onClose={() => setDatesOpen(false)} title={t('diary.pages', { count: entries.length })}>
-        {/* One page per day adds up fast: a virtualised list, not a mapped ScrollView. */}
-        <FlatList
-          style={styles.entryScroll}
-          data={entries}
-          keyExtractor={(entry) => entry.id}
-          initialNumToRender={12}
-          renderItem={({ item: entry, index: i }) => (
-            <PressableScale
-              style={styles.dateRow}
-              onPress={() => {
-                setIndex(i);
-                setDatesOpen(false);
-              }}>
-              <Txt variant="body">{MOOD_EMOJI[entry.mood]}</Txt>
-              <View style={styles.flex}>
-                <Txt variant="bodyStrong" lines={1}>
-                  {entry.title || t('diary.myDiary')}
-                </Txt>
-                <Txt variant="caption" color={colors.textMuted}>
-                  {diaryDate(entry.date)}
-                </Txt>
-              </View>
-              {i === index ? <Ionicons name="checkmark" size={18} color={colors.text} /> : null}
-            </PressableScale>
-          )}
-        />
-      </Sheet>
-
-      <Sheet visible={infoOpen} onClose={() => setInfoOpen(false)} title={t('diary.info')}>
-        <Txt variant="body" color={colors.textSecondary} style={styles.infoBody}>
-          {t('diary.infoBody')}
-        </Txt>
-      </Sheet>
+      <DiaryRulesSheet visible={rulesOpen} onClose={() => setRulesOpen(false)} />
     </Screen>
   );
 }
 
-function DiaryCard({
-  entry,
-  sharedWith,
+function coverSource(card: Card): number | string | undefined {
+  if (card.kind === 'mine') return BRAND.sticker;
+  return HEROES[card.id] ?? card.character.avatarUri ?? AVATARS[card.id];
+}
+
+/** The cover in front, blurred to fill the screen behind everything. */
+function Backdrop({ source }: { source?: number | string }) {
+  if (source == null) return null;
+  return (
+    <Animated.View entering={FadeIn.duration(320)} style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Image
+        source={typeof source === 'string' ? { uri: source } : source}
+        style={[StyleSheet.absoluteFill, styles.backdropImage]}
+        contentFit="cover"
+        blurRadius={60}
+      />
+      <View style={[StyleSheet.absoluteFill, styles.veil]} />
+    </Animated.View>
+  );
+}
+
+function CoverCard({
+  card,
+  index,
+  step,
   width,
-  depth,
-  onOpen,
-  onFlip,
+  height,
+  scrollX,
+  onPress,
 }: {
-  entry: DiaryEntry;
-  /** Name of the character the page was shared with, if any. */
-  sharedWith?: string;
+  card: Card;
+  index: number;
+  step: number;
   width: number;
-  depth: number;
-  onOpen: () => void;
-  onFlip: (delta: number) => void;
+  height: number;
+  scrollX: SharedValue<number>;
+  onPress: () => void;
 }) {
-  const { t, i18n } = useTranslation();
-  const tint = avatarGradients[entry.accentIndex % avatarGradients.length];
-  const front = depth === 0;
-  const date = dateFromKey(entry.date);
+  const { t } = useTranslation();
 
-  const dx = useSharedValue(0);
+  // The cover in front is full size; its neighbours sit back a little.
+  const focus = useAnimatedStyle(() => {
+    const d = Math.abs(scrollX.value / step - index);
+    return {
+      opacity: interpolate(d, [0, 1], [1, 0.7], 'clamp'),
+      transform: [{ scale: interpolate(d, [0, 1], [1, 0.88], 'clamp') }],
+    };
+  });
 
-  const pan = Gesture.Pan()
-    .enabled(front)
-    .activeOffsetX([-12, 12])
-    .onUpdate((e) => {
-      dx.value = e.translationX;
-    })
-    .onEnd((e) => {
-      if (Math.abs(e.translationX) > FLIP_AT) {
-        const dir = e.translationX < 0 ? 1 : -1;
-        dx.value = withTiming(-dir * width * 1.2, { duration: 180 }, () => scheduleOnRN(onFlip, dir));
-      } else {
-        dx.value = withSpring(0, { damping: 16 });
-      }
-    });
-
-  const tap = Gesture.Tap()
-    .enabled(front)
-    .onEnd(() => scheduleOnRN(onOpen));
-
-  const dragStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: dx.value }, { rotate: `${dx.value / 22}deg` }],
-  }));
+  const locked = card.kind === 'character' && !card.last;
+  const source = coverSource(card);
+  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: shortName(card.character.name) });
+  const meta =
+    card.kind === 'mine'
+      ? t('diary.onlyYou')
+      : locked
+        ? t('diary.startsAfterChat')
+        : t('diary.pagesAboutYou', { count: card.count });
 
   return (
-    // The fan offset lives on a wrapper; the drag transform on the inner card.
-    <View
-      style={[
-        styles.cardPos,
-        {
-          width,
-          zIndex: 10 - depth,
-          transform: [
-            { translateX: depth * (depth % 2 === 0 ? -10 : 10) },
-            { translateY: depth * 6 },
-            { rotate: `${depth * (depth % 2 === 0 ? -3.5 : 3.5)}deg` },
-          ],
-        },
-      ]}>
-      <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
-        {/* The page itself, not a cover: date, title, the first lines, who wrote back.
-            Pages behind it stay blank paper, so only one page reads at a time. */}
-        <Animated.View style={[styles.card, front && styles.cardFront, front && dragStyle]}>
-          {front ? (
-            <>
-              <View style={styles.cardHead}>
-                <Txt variant="display">{String(date.getDate()).padStart(2, '0')}</Txt>
-                <Txt variant="small" color={colors.textMuted} style={styles.flex}>
-                  {date.toLocaleDateString(i18n.language, { weekday: 'long' })}
-                </Txt>
-                <View style={[styles.ribbon, { backgroundColor: tint[0] }]} />
-              </View>
-              <Txt variant="h3" lines={2} style={styles.cardTitle}>
-                {entry.title || t('diary.myDiary')}
+    <Animated.View style={[{ width, height }, focus]}>
+      <PressableScale style={[styles.card, shadows.raised]} scaleTo={0.97} accessibilityLabel={name} onPress={onPress}>
+        <View style={styles.cover}>
+          {card.kind === 'mine' ? (
+            <View style={styles.mascotCover}>
+              <BrandArt name="sticker" width={width * 0.62} />
+            </View>
+          ) : source != null ? (
+            <Image
+              source={typeof source === 'string' ? { uri: source } : source}
+              style={[StyleSheet.absoluteFill, locked && styles.lockedImage]}
+              contentFit="cover"
+              contentPosition={{ left: '68%', top: '30%' }}
+            />
+          ) : (
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: avatarGradients[card.character.accentIndex % avatarGradients.length][0] },
+              ]}
+            />
+          )}
+
+          {card.kind === 'character' && card.isNew ? (
+            <View style={[styles.chip, styles.chipNew]}>
+              <Txt variant="chip" color={colors.textOnPrimary}>
+                {t('diary.newPage')}
               </Txt>
-              <Txt variant="body" color={colors.textSecondary} lines={6} style={styles.cardBody}>
-                {entry.body}
-              </Txt>
-              {sharedWith ? (
-                <View style={styles.cardFoot}>
-                  <Ionicons
-                    name={entry.reply ? 'mail-open-outline' : 'mail-outline'}
-                    size={16}
-                    color={colors.textSecondary}
-                  />
-                  <Txt variant="small" color={colors.textSecondary}>
-                    {entry.reply
-                      ? t('diary.replyTitle', { name: sharedWith })
-                      : t('diary.waitingFor', { name: sharedWith })}
-                  </Txt>
-                </View>
-              ) : null}
-            </>
+            </View>
           ) : null}
-        </Animated.View>
-      </GestureDetector>
-    </View>
+          {locked ? (
+            <View style={[styles.chip, styles.chipLocked]}>
+              <Ionicons name="lock-closed" size={11} color={colors.textSecondary} />
+              <Txt variant="chip" color={colors.textSecondary}>
+                {t('diary.noPageYet')}
+              </Txt>
+            </View>
+          ) : null}
+        </View>
+
+        <View style={styles.label}>
+          <Txt variant="handTitle" color={colors.paperText} lines={1}>
+            {name}
+          </Txt>
+          <Txt variant="caption" color={colors.textMuted} lines={1}>
+            {meta}
+          </Txt>
+        </View>
+      </PressableScale>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
   headerRight: { flexDirection: 'row' },
-  month: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: space.lg },
-  stackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  stack: { alignItems: 'center', justifyContent: 'center' },
-  counter: { marginTop: space.xxl },
-  cardPos: { position: 'absolute' },
-  card: {
-    aspectRatio: 0.76,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: space.xl,
-    overflow: 'hidden',
-  },
-  cardFront: { backgroundColor: palette.cream100 },
-  cardHead: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  ribbon: { width: 8, height: 22, borderRadius: radius.xs / 2, alignSelf: 'flex-start' },
-  cardTitle: { marginTop: space.lg },
-  cardBody: { marginTop: space.sm },
-  cardFoot: {
+  backdropImage: { opacity: 0.55 },
+  veil: { backgroundColor: colors.bgPlain, opacity: 0.35 },
+  datePill: {
+    alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.sm,
-    marginTop: 'auto',
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    gap: space.xs,
+    height: PILL,
+    paddingHorizontal: space.lg,
+    borderRadius: radius.pill,
+    backgroundColor: colors.onMediaSoft,
+    borderWidth: 1,
+    borderColor: colors.white,
   },
-  footer: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl },
-  entryScroll: { maxHeight: 440 },
-  entryBody: { marginTop: space.md, lineHeight: 22 },
-  images: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md },
-  image: { width: 96, height: 96, borderRadius: radius.md },
-  reply: {
-    marginTop: space.xl,
-    padding: space.md,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-    gap: space.sm,
+  datePillOpen: { backgroundColor: colors.surface },
+  middle: { flex: 1, justifyContent: 'center' },
+  card: {
+    flex: 1,
+    borderRadius: radius.xxl,
+    borderWidth: 4,
+    borderColor: colors.white,
+    backgroundColor: palette.cream100,
+    overflow: 'hidden',
   },
-  replyHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  pending: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xl },
-  dateRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md },
-  infoBody: { marginBottom: space.lg },
+  cover: { flex: 1, overflow: 'hidden', backgroundColor: colors.primarySofter },
+  mascotCover: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: space.md },
+  lockedImage: { opacity: 0.55 },
+  chip: {
+    position: 'absolute',
+    top: space.md,
+    left: space.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    paddingHorizontal: space.sm + 2,
+    paddingVertical: space.xs,
+    borderRadius: radius.pill,
+  },
+  chipNew: { backgroundColor: colors.primary },
+  chipLocked: { backgroundColor: colors.onMediaButton },
+  label: {
+    paddingHorizontal: space.lg,
+    paddingTop: space.sm,
+    paddingBottom: space.md,
+    backgroundColor: palette.cream100,
+    gap: space.xxs,
+  },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs + 2, marginTop: space.sm },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.borderStrong },
+  dotOn: { width: 18, backgroundColor: colors.text },
+  line: { marginTop: space.lg, paddingHorizontal: space.xxxl, minHeight: 42 },
+  footer: { paddingHorizontal: space.lg, paddingTop: space.md },
 });

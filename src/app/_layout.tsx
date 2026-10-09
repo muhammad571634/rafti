@@ -1,3 +1,4 @@
+import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ShareRewardBanner } from '@/components/share-reward-banner';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
 import { colors, space } from '@/theme';
@@ -15,7 +17,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
-  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold });
+  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
 
@@ -41,6 +43,7 @@ export default function RootLayout() {
             animation: 'slide_from_right',
           }}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
           <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
           <Stack.Screen
             name="call/incoming/[id]"
@@ -48,7 +51,10 @@ export default function RootLayout() {
           />
           <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
+          {/* A swipe must not end a date by accident; the close button asks first. */}
+          <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
         </Stack>
+        <ShareRewardBanner />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

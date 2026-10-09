@@ -1,11 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { Anim, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
+import { HELPLINE_URL } from '@/ai/safety';
+import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
+import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
@@ -18,6 +22,8 @@ export interface MessageBubbleProps {
   showAvatar: boolean;
   animate?: boolean;
   onCallBack?: () => void;
+  /** Long-press on a text or photo opens the message menu (react, copy, delete). */
+  onLongPress?: (message: Message) => void;
 }
 
 const AVATAR = 34;
@@ -33,9 +39,13 @@ export const MessageBubble = memo(function MessageBubble({
   showAvatar,
   animate = true,
   onCallBack,
+  onLongPress,
 }: MessageBubbleProps) {
   const mine = message.author === 'me';
 
+  if (message.card === 'helpline') return <HelplineCard />;
+  if (message.card === 'aiNotice') return <AiNotice name={character.name} />;
+  if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -53,10 +63,26 @@ export const MessageBubble = memo(function MessageBubble({
 
       {message.kind === 'voice' ? (
         <VoiceBubble message={message} mine={mine} first={showAvatar} />
-      ) : message.kind === 'image' && message.imageUri ? (
-        <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
       ) : (
-        <TextBubble message={message} mine={mine} first={showAvatar} />
+        <PressableScale
+          scaleTo={0.97}
+          delayLongPress={280}
+          disabled={!onLongPress}
+          onLongPress={onLongPress ? () => onLongPress(message) : undefined}
+          style={[styles.holdable, message.reaction ? styles.withReaction : null]}>
+          {message.kind === 'image' && message.imageUri ? (
+            <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+          ) : (
+            <TextBubble message={message} mine={mine} first={showAvatar} />
+          )}
+          {message.reaction && message.reaction in REACTION_STICKERS ? (
+            <Image
+              source={REACTION_STICKERS[message.reaction as ReactionName]}
+              style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+              contentFit="contain"
+            />
+          ) : null}
+        </PressableScale>
       )}
 
       {!mine ? (
@@ -79,6 +105,7 @@ function TextBubble({ message, mine, first }: { message: Message; mine: boolean;
     <View
       style={[
         styles.bubble,
+        styles.fill,
         mine ? styles.bubbleMine : styles.bubbleTheirs,
         first && (mine ? styles.tailMine : styles.tailTheirs),
         muted && styles.bubbleMuted,
@@ -180,6 +207,57 @@ function SystemLine({ text }: { text: string }) {
   );
 }
 
+/** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
+function AiNotice({ name }: { name: string }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.system}>
+      <View style={[styles.systemPill, styles.notice]}>
+        <Txt variant="caption" color={colors.textSecondary} center>
+          {t('chat.aiNotice', { name })}
+        </Txt>
+      </View>
+    </View>
+  );
+}
+
+/** Under a text-only reply when a member's voice minutes ran out; once a day. */
+function VoiceQuotaNote({ until }: { until?: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.quota}>
+      <Ionicons name="mic-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+        {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
+        <Txt variant="smallStrong" color={colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
+          {t('chat.addMinutes')}
+        </Txt>
+      </Txt>
+    </View>
+  );
+}
+
+/** Shown under a crisis message: never blocks the chat, one tap to local helplines. */
+function HelplineCard() {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.system}>
+      <View style={styles.helpline}>
+        <Txt variant="title" center>
+          {t('safety.helplineTitle')}
+        </Txt>
+        <Button
+          label={t('safety.helplineAction')}
+          variant="secondary"
+          size="sm"
+          onPress={() => void Linking.openURL(HELPLINE_URL)}
+        />
+      </View>
+    </View>
+  );
+}
+
 function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () => void }) {
   const { t } = useTranslation();
   const missed = !!message.missed;
@@ -215,6 +293,15 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
 }
 
 const styles = StyleSheet.create({
+  // The held area carries the bubble's width cap, so the text bubble fills it.
+  holdable: { flexShrink: 1, maxWidth: '72%' },
+  fill: { maxWidth: '100%' },
+  // Room under the bubble for the reaction that hangs off its corner.
+  withReaction: { marginBottom: space.lg },
+  // The sticker carries its own white die-cut rim, so it needs no chip behind it.
+  reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
+  reactionMine: { left: -space.xs },
+  reactionTheirs: { right: -space.xs },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -269,4 +356,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.85)',
   },
   callPill: { paddingHorizontal: space.md },
+  notice: { maxWidth: '86%', paddingVertical: space.xs + 2 },
+  // Lines up with their bubbles: past the avatar column.
+  quota: {
+    flexDirection: 'row',
+    gap: space.xs + 2,
+    paddingLeft: space.md + AVATAR + space.sm,
+    paddingRight: space.xxl,
+    paddingVertical: space.xs,
+  },
+  quotaIcon: { marginTop: 2 },
+  quotaText: { flex: 1 },
+  helpline: {
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.xl,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
 });
