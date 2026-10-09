@@ -163,6 +163,30 @@ npx tsc --noEmit                # must be clean
   `CharacterRow` was deleted. Edits are written one whole file at a time because the owner's phone
   hot-reloads every save (a split edit once showed "HeaderIcon doesn't exist" until a reload).
 
+- Notifications, dating map and diary (2026-10-10, prototype https://claude.ai/artifact/3hXyMMNHVDaa6v9SpDt4RQ;
+  owner: N1, N2, D1, H1-H4 "1:1, keep the logic"; D2-D4 untouched):
+  - N1 `src/app/notifications/index.tsx`: an inbox, nothing new recorded. `src/lib/inbox.ts`
+    (`buildInbox`, pure) reads character diary pages, missed incoming calls, plans whose reminder
+    went out, level-up moments, answered board notes and today's unused free spin (last 14 days).
+    Store: `inboxSeenAt` (persisted, null on new installs) + `markInboxSeen()`; unread = newer than it.
+    Rows open the diary page, the chat, Us, the profile, the board or Gifts.
+  - N2 `src/app/notifications/settings.tsx` (was `src/app/notifications.tsx`): same switches and
+    quiet-hour logic; line icons, one-line hints, From/Until buttons; `LockPreview` is a grey card.
+  - D1 `src/app/dating.tsx`: white place cards (art on tint, lock badge, price or level), partner
+    pill with level, white action bar. Partner sheet, place sheet, paywall and rounds unchanged;
+    Rooftop moved to x 0.24 so cards do not overlap.
+  - H1 `src/app/diary/index.tsx`: same cards/sort/calendar logic; covers lean ±7° and fade, arrows
+    step through them, grey date pill with calendar icon, My diary uses the diary cover art, action
+    bar. The blurred backdrop behind the carousel was removed to match the prototype.
+  - H2 diary page: own header with avatar, round pager, ruled paper with date, mint mood and
+    signature, "Chat with X" + source line. The page's info button was dropped (rules live on H1).
+  - H3 diary write: everything inline (mood chips, ruled handwriting paper, B/U/S/I and photos,
+    "Who can read it?" row, Save in the action bar); the save sheet is gone, empty Save still leaves.
+  - H4 `DiaryRulesSheet`: sticker, "How the diary works", three steps in one box, Got it.
+  - Typed routes: after moving `notifications.tsx` into a folder the running Metro kept writing a
+    stale `.expo/types/router.d.ts` (`/notifications/index`). Restart Metro (`npx expo start -c`)
+    if tsc complains about `/notifications`.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

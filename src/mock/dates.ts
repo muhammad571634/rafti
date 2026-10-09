@@ -245,7 +245,7 @@ export const DATE_PLACES: DatePlace[] = [
     icon: 'nightSky',
     cost: 20,
     levelRequired: 16,
-    x: 0.3,
+    x: 0.24,
     y: 0.62,
     tint: '#DDEBFA',
     rounds: [

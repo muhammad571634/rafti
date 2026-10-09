@@ -25,12 +25,15 @@ import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, palette, radius, shadows, space } from '@/theme';
 
-const TILE = 84;
-const PIN_W = 120;
+/** A place on the map: a white card with the place's art on its tint, name and price. */
+const CARD_W = 128;
+const ART_H = 76;
+const CARD_PAD = space.sm;
 
 /**
  * The date map: places to go with one friend. A place opens once the bond is close
- * enough; a tap shows what it costs and starts the date.
+ * enough; a tap shows what it costs and starts the date. Calm cards on the playful map
+ * (docs/design-style.md): white place cards, a white top bar and an action bar.
  */
 export default function DatingScreen() {
   const { t } = useTranslation();
@@ -95,37 +98,17 @@ export default function DatingScreen() {
       <View style={StyleSheet.absoluteFill} onLayout={onLayout}>
         <MapArt width={map.width} height={map.height} />
         {map.width > 0
-          ? DATE_PLACES.map((p) => {
-              const locked = level < p.levelRequired;
-              return (
-                <PressableScale
-                  key={p.id}
-                  scaleTo={0.94}
-                  accessibilityLabel={t(`dating.scenarios.${p.titleKey}`)}
-                  style={[styles.pin, { left: p.x * map.width, top: p.y * map.height }]}
-                  onPress={() => setPlaceId(p.id)}>
-                  <View
-                    style={[
-                      styles.tile,
-                      { backgroundColor: p.tint },
-                      been.has(p.id) && styles.tileBeen,
-                      locked && styles.tileLocked,
-                      shadows.card,
-                    ]}>
-                    <ClayIcon name={p.icon} size={Math.round(TILE * 0.78)} tile={false} />
-                  </View>
-                  <Txt variant="bodyStrong" center lines={2} color={locked ? colors.textMuted : colors.text}>
-                    {t(`dating.places.${p.titleKey}`)}
-                  </Txt>
-                  <View style={styles.meta}>
-                    {locked ? <Ionicons name="lock-closed" size={13} color={colors.textMuted} /> : null}
-                    <Txt variant="caption" color={colors.textMuted}>
-                      {t('dating.level', { level: p.levelRequired })}
-                    </Txt>
-                  </View>
-                </PressableScale>
-              );
-            })
+          ? DATE_PLACES.map((p) => (
+              <PlaceCard
+                key={p.id}
+                place={p}
+                locked={level < p.levelRequired}
+                been={been.has(p.id)}
+                left={p.x * map.width}
+                top={p.y * map.height}
+                onPress={() => setPlaceId(p.id)}
+              />
+            ))
           : null}
       </View>
 
@@ -143,14 +126,19 @@ export default function DatingScreen() {
           scaleTo={0.95}
           accessibilityLabel={t('dating.choosePartner')}
           onPress={() => setChoosing(true)}>
-          <CharacterAvatar character={partner} size={34} />
-          <Txt variant="bodyStrong" lines={1}>
-            {name}
-          </Txt>
-          <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+          <CharacterAvatar character={partner} size={36} />
+          <View style={styles.whoText}>
+            <Txt variant="bodyStrong" lines={1}>
+              {name}
+            </Txt>
+            <Txt variant="caption" color={colors.bondText} style={styles.bold}>
+              {t('dating.level', { level })}
+            </Txt>
+          </View>
+          <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
         </PressableScale>
         <View style={styles.grow} />
-        <ShellBadge count={shells} />
+        <ShellBadge count={shells} tone="neutral" style={[styles.balance, shadows.card]} />
       </View>
 
       <View style={[styles.bottom, { paddingBottom: insets.bottom + space.lg }]}>
@@ -159,7 +147,7 @@ export default function DatingScreen() {
           variant="secondary"
           size="lg"
           full
-          left={<ClayIcon name="polaroids" size={26} tile={false} />}
+          left={<Ionicons name="images-outline" size={20} color={colors.text} />}
           onPress={() => router.push('/date/album')}
         />
       </View>
@@ -210,6 +198,50 @@ export default function DatingScreen() {
   );
 }
 
+/** One place on the map: art on its tint, name, then the price or the level it needs. */
+function PlaceCard({
+  place,
+  locked,
+  been,
+  left,
+  top,
+  onPress,
+}: {
+  place: DatePlace;
+  locked: boolean;
+  been: boolean;
+  left: number;
+  top: number;
+  onPress: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <PressableScale
+      scaleTo={0.94}
+      accessibilityLabel={t(`dating.scenarios.${place.titleKey}`)}
+      style={[styles.card, shadows.card, been && styles.cardBeen, locked && styles.cardLocked, { left, top }]}
+      onPress={onPress}>
+      <View style={[styles.art, { backgroundColor: place.tint }]}>
+        <ClayIcon name={place.icon} size={58} tile={false} style={locked ? styles.dim : undefined} />
+        {locked ? (
+          <View style={styles.lock}>
+            <Ionicons name="lock-closed-outline" size={14} color={colors.text} />
+          </View>
+        ) : null}
+      </View>
+      <Txt variant="bodyStrong" center lines={2}>
+        {t(`dating.places.${place.titleKey}`)}
+      </Txt>
+      <View style={styles.meta}>
+        {locked ? null : <ShellIcon size={13} />}
+        <Txt variant="caption" color={colors.textSecondary} style={styles.bold}>
+          {locked ? t('dating.level', { level: place.levelRequired }) : String(place.cost)}
+        </Txt>
+      </View>
+    </PressableScale>
+  );
+}
+
 function Fact({ value, label, shell }: { value: string; label: string; shell?: boolean }) {
   return (
     <View style={styles.fact}>
@@ -224,9 +256,9 @@ function Fact({ value, label, shell }: { value: string; label: string; shell?: b
   );
 }
 
-/** A dotted path from place to place, through the middle of each tile, in map order. */
+/** A dotted path from place to place, through the middle of each card's art, in map order. */
 function trail(w: number, h: number) {
-  const pts = DATE_PLACES.map((p) => [p.x * w + PIN_W / 2, p.y * h + TILE / 2]);
+  const pts = DATE_PLACES.map((p) => [p.x * w + CARD_W / 2, p.y * h + CARD_PAD + ART_H / 2]);
   return pts
     .map(([x, y], i) => {
       if (i === 0) return `M${x} ${y}`;
@@ -246,21 +278,22 @@ function MapArt({ width: w, height: h }: { width: number; height: number }) {
         d={`M0 0 H${w} V${h * 0.13} C${w * 0.8} ${h * 0.2} ${w * 0.66} ${h * 0.1} ${w * 0.45} ${h * 0.16} C${w * 0.24} ${h * 0.22} ${w * 0.15} ${h * 0.14} 0 ${h * 0.19} Z`}
         fill={palette.sky200}
       />
-      <Path d={trail(w, h)} fill="none" stroke={palette.cream300} strokeWidth={5} strokeDasharray="2 12" strokeLinecap="round" />
-      <Circle cx={w * 0.9} cy={h * 0.47} r={16} fill="#BFE3B4" />
-      <Circle cx={w * 0.93} cy={h * 0.455} r={11} fill="#A9D79C" />
-      <Circle cx={w * 0.06} cy={h * 0.66} r={13} fill="#BFE3B4" />
-      <Circle cx={w * 0.85} cy={h * 0.83} r={14} fill="#A9D79C" />
+      <Path d={trail(w, h)} fill="none" stroke={palette.cream300} strokeWidth={6} strokeDasharray="2 14" strokeLinecap="round" />
+      <Circle cx={w * 0.9} cy={h * 0.47} r={16} fill="#CFE3C4" />
+      <Circle cx={w * 0.93} cy={h * 0.455} r={11} fill="#BFE3B4" />
+      <Circle cx={w * 0.06} cy={h * 0.66} r={13} fill="#CFE3C4" />
+      <Circle cx={w * 0.85} cy={h * 0.83} r={14} fill="#BFE3B4" />
     </Svg>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
-  top: { position: 'absolute', left: space.lg, right: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  bold: { fontWeight: '600' },
+  top: { position: 'absolute', left: space.md, right: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm },
   round: {
-    width: 42,
-    height: 42,
+    width: 44,
+    height: 44,
     borderRadius: radius.pill,
     backgroundColor: colors.surface,
     alignItems: 'center',
@@ -271,26 +304,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm,
     height: 44,
-    paddingLeft: 5,
+    paddingLeft: 4,
     paddingRight: space.md,
     borderRadius: radius.pill,
     backgroundColor: colors.surface,
-    maxWidth: 200,
+    maxWidth: 210,
   },
-  pin: { position: 'absolute', width: PIN_W, alignItems: 'center', gap: 4 },
-  tile: {
-    width: TILE,
-    height: TILE,
-    borderRadius: radius.xl,
-    borderWidth: 4,
+  whoText: { flexShrink: 1 },
+  balance: { backgroundColor: colors.surface, height: 34 },
+  card: {
+    position: 'absolute',
+    width: CARD_W,
+    alignItems: 'center',
+    gap: 2,
+    paddingTop: CARD_PAD,
+    paddingHorizontal: CARD_PAD,
+    paddingBottom: space.sm + 2,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    borderWidth: 2,
     borderColor: colors.surface,
+  },
+  // A place already visited with this partner.
+  cardBeen: { borderColor: colors.bond },
+  cardLocked: { opacity: 0.75 },
+  art: {
+    width: CARD_W - CARD_PAD * 2 - 4,
+    height: ART_H,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.xs,
+  },
+  dim: { opacity: 0.5 },
+  lock: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tileBeen: { borderColor: colors.bond },
-  tileLocked: { opacity: 0.45 },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: 0 },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  bottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+  },
   people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, paddingBottom: space.lg },
   person: { alignItems: 'center', gap: space.xs, width: 68 },
   place: { gap: space.lg },

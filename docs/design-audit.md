@@ -43,10 +43,10 @@ screens:
 | Bedtime | `/bedtime` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/HQ2SXLrXx9SLpCPAeb5yMP): night canvas kept; no header subtitle, status line, Who / Sleep timer sections, action bar. |
 | Today (Home) | `/(tabs)/index` | approved | Section titles and the 3D tile grid differ from the style. |
 | Us | `/(tabs)/us` | approved | — |
-| Heartbeat diary, write, pages | `/diary/*` | approved | Centered title; paper style is its own world. |
+| Heartbeat diary, write, pages | `/diary/*` | fits | 2026-10-10 (prototype https://claude.ai/artifact/3hXyMMNHVDaa6v9SpDt4RQ, H1-H4): fanned cover carousel with arrows, grey date pill + calendar, ruled page with pager, write page with mood, paper, readers, action bar; rules sheet with three steps. `/diary/mine` unchanged. |
 | Onboarding | `/onboarding` | approved | Close already. |
-| Notifications | `/notifications` | approved | 3D icon per row. |
-| Dating map and date rounds | `/dating`, `/date/[placeId]` | approved | Playful map is its own world. |
+| Notifications | `/notifications`, `/notifications/settings` | fits | 2026-10-10 (N1-N2): new inbox (Today / Earlier, derived from app data, Mark all read) and the settings with line icons, hints and quiet-hour buttons. |
+| Dating map and date rounds | `/dating`, `/date/[placeId]` | small | 2026-10-10: map restyled (D1: white place cards, partner pill with level, action bar). Place sheet, rounds and polaroid kept as they were at the owner's request. |
 | Couple quiz, truth or dare | `/quiz/[id]`, chat "+" | approved | Shadowed cards with pink tiles. |
 
 ## Suggested order

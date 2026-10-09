@@ -1,235 +1,200 @@
-import { Fragment, useMemo } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter, type Href } from 'expo-router';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { LockPreview } from '@/components/notifications/lock-preview';
-import {
-  Button,
-  ClayIcon,
-  Divider,
-  Header,
-  ListRow,
-  PressableScale,
-  Screen,
-  SectionLabel,
-  Toggle,
-  Txt,
-  type ClayIconName,
-} from '@/components/ui';
-import { usePushPermission } from '@/hooks/use-push-permission';
-import { pickSeeded } from '@/lib/seeded';
-import { dayKey, morningGreetings } from '@/mock';
-import { requestPushPermission } from '@/notifications/sync';
+import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { relativeStamp, shortName } from '@/lib/format';
+import { buildInbox, isUnread, type InboxItem, type InboxKind } from '@/lib/inbox';
+import { dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
-import type { AppSettings } from '@/types';
 
-const ROW_ICON = 34;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
+/** Kinds drawn with an icon instead of the character's face. */
+const ICONS: Partial<Record<InboxKind, IconName>> = {
+  plan: 'calendar-outline',
+  levelUp: 'heart-outline',
+  spin: 'gift-outline',
+};
 
-/** Every switch on the screen, grouped as in the approved prototype. */
-const GROUPS: { title: string; rows: { key: SwitchKey; icon: ClayIconName }[] }[] = [
-  {
-    title: 'reachOut',
-    rows: [
-      { key: 'morningGreeting', icon: 'sun' },
-      { key: 'eveningGreeting', icon: 'bedtime' },
-      { key: 'morningCall', icon: 'calls' },
-      { key: 'nightCall', icon: 'calls' },
-      { key: 'notifyPlans', icon: 'planner' },
-      { key: 'notifyDiary', icon: 'diary' },
-      { key: 'notifyAway', icon: 'wave' },
-    ],
-  },
-  {
-    title: 'rafti',
-    rows: [
-      { key: 'notifyGifts', icon: 'gift' },
-      { key: 'notifyOffers', icon: 'store' },
-    ],
-  },
-];
-
-/** Tapping a quiet-hours time steps through these. */
-const QUIET_FROM = ['21:00', '22:00', '23:00', '00:00'];
-const QUIET_TO = ['06:00', '07:00', '08:00', '09:00', '10:00'];
-const nextOf = (list: string[], value: string) => list[(list.indexOf(value) + 1) % list.length];
+const AVATAR = 46;
 
 /**
- * Profile → Notifications (docs/push-plan.md): a live lock-screen preview, a switch per
- * kind of push, quiet hours. When the phone blocks notifications, a card on top leads to
- * the phone's settings and the switches rest. On web and Android Expo Go the switches
- * still steer what characters do inside the app.
+ * Profile → Notifications: what happened lately, newest first, in Today and Earlier
+ * (docs/design-style.md). Every row opens the place it talks about; the sliders in the
+ * header open the push settings. "Mark all read" clears the dots.
  */
 export default function NotificationsScreen() {
-  const { t } = useTranslation();
-  const settings = useAppStore((s) => s.settings);
-  const setSetting = useAppStore((s) => s.setSetting);
+  const { t, i18n } = useTranslation();
+  const router = useRouter();
+
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
-  const { status, refresh } = usePushPermission();
+  const characterDiary = useAppStore((s) => s.characterDiary);
+  const calls = useAppStore((s) => s.calls);
+  const schedules = useAppStore((s) => s.schedules);
+  const moments = useAppStore((s) => s.moments);
+  const boardPosts = useAppStore((s) => s.boardPosts);
+  const daily = useAppStore((s) => s.daily);
+  const seenAt = useAppStore((s) => s.inboxSeenAt);
+  const markSeen = useAppStore((s) => s.markInboxSeen);
 
-  const blocked = status === 'denied' || status === 'undetermined';
+  const items = useMemo(
+    () => buildInbox({ characterDiary, calls, schedules, moments, boardPosts, daily }),
+    [characterDiary, calls, schedules, moments, boardPosts, daily],
+  );
 
-  // The push that would really come first tomorrow: the closest friend who writes first,
-  // with the same seeded line the planner uses.
-  const preview = useMemo(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const writer = characters
-      .filter((c) => relationships[c.id]?.messagesFirst && conversations.some((x) => x.characterId === c.id))
-      .sort((a, b) => relationships[b.id].intimacy - relationships[a.id].intimacy)[0];
-    const line = writer ? pickSeeded(morningGreetings, `${dayKey(tomorrow)}:morning:${writer.id}`) : '';
-    return { tomorrow, writer, line };
-  }, [characters, relationships, conversations]);
+  const today = dayKey();
+  const fresh = items.filter((item) => dayKey(new Date(item.at)) === today);
+  const earlier = items.filter((item) => dayKey(new Date(item.at)) !== today);
+  const anyUnread = items.some((item) => isUnread(item, seenAt));
 
-  const turnOn = async () => {
-    if (status === 'undetermined') await requestPushPermission();
-    else await Linking.openSettings();
-    refresh();
+  const nameOf = (id?: string) => {
+    const character = characters.find((c) => c.id === id);
+    return character ? shortName(displayName(character, relationships[character.id])) : '';
   };
 
-  const row = (key: SwitchKey, icon: ClayIconName) => (
-    <ListRow
-      title={t(`notifications.${key}`)}
-      left={<ClayIcon name={icon} size={ROW_ICON} />}
-      style={blocked && styles.resting}
-      right={
-        <Toggle
-          value={settings[key]}
-          disabled={blocked}
-          onChange={(v) => setSetting(key, v)}
-          accessibilityLabel={t(`notifications.${key}`)}
-        />
-      }
-    />
-  );
+  const text = (item: InboxItem) => t(`notifications.inbox.${item.kind}`, { name: nameOf(item.characterId), ...item.params });
+
+  const when = (item: InboxItem) => {
+    if (item.allDay) return t('common.today');
+    if (dayKey(new Date(item.at)) === today) {
+      return new Date(item.at).toLocaleTimeString(i18n.language, { hour: 'numeric', minute: '2-digit' });
+    }
+    return relativeStamp(item.at);
+  };
+
+  const target = (item: InboxItem): Href => {
+    const conversation = conversations.find((c) => c.characterId === item.characterId);
+    switch (item.kind) {
+      case 'diary':
+        return { pathname: '/diary/page/[characterId]', params: { characterId: item.characterId!, date: String(item.params?.date ?? '') } };
+      case 'missedCall':
+        return conversation ? { pathname: '/chat/[id]', params: { id: conversation.id } } : '/call-history';
+      case 'plan':
+        return '/(tabs)/us';
+      case 'levelUp':
+        return { pathname: '/character/[id]', params: { id: item.characterId! } };
+      case 'boardReply':
+        return '/board';
+      case 'spin':
+        return '/gifts';
+    }
+  };
+
+  const row = (item: InboxItem) => {
+    const unread = isUnread(item, seenAt);
+    const character = characters.find((c) => c.id === item.characterId);
+    const icon = ICONS[item.kind];
+    return (
+      <PressableScale
+        key={item.id}
+        style={styles.row}
+        scaleTo={0.98}
+        accessibilityRole="button"
+        accessibilityLabel={`${text(item)}, ${when(item)}`}
+        onPress={() => router.push(target(item))}>
+        {character && !icon ? (
+          <CharacterAvatar character={character} size={AVATAR} />
+        ) : (
+          <View style={styles.iconTile}>
+            <Ionicons name={icon ?? 'notifications-outline'} size={21} color={colors.text} />
+          </View>
+        )}
+        <View style={styles.flex}>
+          <Txt variant={unread ? 'bodyStrong' : 'body'} color={unread ? colors.text : colors.textSecondary} lines={2}>
+            {text(item)}
+          </Txt>
+          <Txt variant="small" color={colors.textMuted}>
+            {when(item)}
+          </Txt>
+        </View>
+        <View style={[styles.dot, unread && styles.dotOn]} />
+      </PressableScale>
+    );
+  };
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('notifications.title')} />
+      <Header
+        title={t('notifications.title')}
+        right={
+          <PressableScale
+            style={styles.settings}
+            scaleTo={0.88}
+            hitSlop={6}
+            accessibilityLabel={t('notifications.settingsTitle')}
+            onPress={() => router.push('/notifications/settings')}>
+            <Ionicons name="options-outline" size={23} color={colors.text} />
+          </PressableScale>
+        }
+      />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {blocked ? (
-          <View style={styles.off}>
-            <ClayIcon name="lock" size={34} tile={false} />
-            <Txt variant="bodyStrong" style={styles.flex}>
-              {t('notifications.off')}
-            </Txt>
-            <Button
-              label={status === 'undetermined' ? t('notifications.turnOn') : t('notifications.openSettings')}
-              size="sm"
-              onPress={() => void turnOn()}
-            />
-          </View>
-        ) : null}
-
-        <LockPreview
-          at={settings.morningCallTime}
-          date={preview.tomorrow}
-          character={preview.writer}
-          name={preview.writer ? displayName(preview.writer, relationships[preview.writer.id]) : 'Rafti'}
-          line={settings.notificationPreview && preview.line ? preview.line : t('push.hidden')}
-        />
-        {row('notificationPreview', 'lock')}
-
-        {GROUPS.map((group) => (
-          <Fragment key={group.title}>
-            <SectionLabel title={t(`notifications.section.${group.title}`)} />
-            {group.rows.map(({ key, icon }, index) => (
-              <View key={key}>
-                {index > 0 ? <Divider inset={ROW_INSET} /> : null}
-                {row(key, icon)}
+      {items.length === 0 ? (
+        <EmptyState title={t('notifications.inbox.empty')} />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          {fresh.length > 0 ? (
+            <>
+              <View style={styles.sectionHead}>
+                <Txt variant="h3">{t('common.today')}</Txt>
+                {anyUnread ? (
+                  <PressableScale scaleTo={0.95} hitSlop={8} onPress={markSeen}>
+                    <Txt variant="smallStrong" color={colors.textSecondary}>
+                      {t('notifications.inbox.markAll')}
+                    </Txt>
+                  </PressableScale>
+                ) : null}
               </View>
-            ))}
-          </Fragment>
-        ))}
+              {fresh.map(row)}
+            </>
+          ) : null}
 
-        <SectionLabel title={t('notifications.quietHours')} />
-        {row('quietHours', 'nightSky')}
-        {settings.quietHours ? (
-          <View style={[styles.hours, blocked && styles.resting]}>
-            <TimePill
-              value={settings.quietFrom}
-              disabled={blocked}
-              label={t('notifications.quietFrom')}
-              onPress={() => setSetting('quietFrom', nextOf(QUIET_FROM, settings.quietFrom))}
-            />
-            <Txt variant="bodyStrong" color={colors.textFaint}>
-              →
-            </Txt>
-            <TimePill
-              value={settings.quietTo}
-              disabled={blocked}
-              label={t('notifications.quietTo')}
-              onPress={() => setSetting('quietTo', nextOf(QUIET_TO, settings.quietTo))}
-            />
-          </View>
-        ) : null}
-      </ScrollView>
+          {earlier.length > 0 ? (
+            <>
+              <View style={styles.sectionHead}>
+                <Txt variant="h3">{t('notifications.inbox.earlier')}</Txt>
+                {anyUnread && fresh.length === 0 ? (
+                  <PressableScale scaleTo={0.95} hitSlop={8} onPress={markSeen}>
+                    <Txt variant="smallStrong" color={colors.textSecondary}>
+                      {t('notifications.inbox.markAll')}
+                    </Txt>
+                  </PressableScale>
+                ) : null}
+              </View>
+              {earlier.map(row)}
+            </>
+          ) : null}
+        </ScrollView>
+      )}
     </Screen>
   );
 }
 
-function TimePill({
-  value,
-  label,
-  disabled,
-  onPress,
-}: {
-  value: string;
-  label: string;
-  disabled?: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <PressableScale
-      style={styles.pill}
-      scaleTo={0.94}
-      disabled={disabled}
-      onPress={onPress}
-      accessibilityLabel={`${label} ${value}`}>
-      <Txt variant="bodyStrong" style={styles.time}>
-        {value}
-      </Txt>
-    </PressableScale>
-  );
-}
-
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: space.huge },
-  flex: { flex: 1 },
-  off: {
+  flex: { flex: 1, gap: 2 },
+  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
+  settings: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: -space.sm },
+  sectionHead: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    marginHorizontal: space.lg,
-    marginTop: space.sm,
-    padding: space.md,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.primarySoft,
-    backgroundColor: colors.primarySofter,
+    justifyContent: 'space-between',
+    paddingTop: space.md,
+    paddingBottom: space.xs,
   },
-  resting: { opacity: 0.4 },
-  hours: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingLeft: ROW_INSET,
-    paddingRight: space.lg,
-    paddingVertical: space.sm,
-  },
-  pill: {
-    paddingHorizontal: space.md,
-    paddingVertical: space.xs + 2,
+  row: { minHeight: 74, flexDirection: 'row', alignItems: 'center', gap: space.md },
+  iconTile: {
+    width: AVATAR,
+    height: AVATAR,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  time: { fontVariant: ['tabular-nums'] },
+  dot: { width: 8, height: 8, borderRadius: 4 },
+  dotOn: { backgroundColor: colors.primary },
 });

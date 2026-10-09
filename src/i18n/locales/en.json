@@ -360,7 +360,7 @@
     "openLast": "Open last page",
     "chatWith": "Chat with {{name}}",
     "openMine": "Open my pages",
-    "rulesTitle": "How their diary works",
+    "rulesTitle": "How the diary works",
     "rulesBody": "Chat or go on a date with someone today, and tomorrow morning they write a page about you.",
     "gotIt": "Got it",
     "wroteAt": "wrote this at {{time}}",
@@ -375,7 +375,26 @@
     "today": "Today",
     "hasPages": "Days with a dot have pages",
     "sortNewest": "Newest first",
-    "sortOldest": "Oldest first"
+    "sortOldest": "Oldest first",
+    "rules": {
+      "chat": "Talk today",
+      "chatBody": "They write a page about you tomorrow morning.",
+      "date": "Go on a date",
+      "dateBody": "The next page is about that evening.",
+      "share": "Share your page",
+      "shareBody": "They read it, write back, and remember it."
+    },
+    "prevDiary": "Previous diary",
+    "nextDiary": "Next diary",
+    "olderPage": "Older page",
+    "newerPage": "Newer page",
+    "todayPage": "Today's page",
+    "myPage": "My page",
+    "whoReads": "Who can read it?",
+    "onlyMe": "Only me",
+    "savePage": "Save page",
+    "privateNote": "Only you can read this page.",
+    "sharedNote": "{{name}} reads it, writes back and remembers what matters."
   },
   "secretNote": {
     "title": "Secret note",
@@ -1004,7 +1023,29 @@
     "quietTo": "Until",
     "section": {
       "reachOut": "They reach out",
-      "rafti": "Rafti"
+      "rafti": "From Rafti"
+    },
+    "settingsTitle": "Notification settings",
+    "quietNote": "Nothing rings in these hours. Messages wait for the morning.",
+    "hint": {
+      "morningGreeting": "A hello when your day starts",
+      "eveningGreeting": "Good night before you sleep",
+      "morningCall": "At the time you set in chat",
+      "nightCall": "At the time you set in chat",
+      "notifyPlans": "10 minutes before",
+      "notifyDiary": "When a new page is written",
+      "notifyAway": "They check in after a quiet day"
+    },
+    "inbox": {
+      "diary": "{{name}} wrote a diary page about you",
+      "missedCall": "{{name}} called. You missed it.",
+      "plan": "{{title}} with {{name}} starts soon",
+      "levelUp": "You and {{name}} reached level {{level}}",
+      "boardReply": "{{name}} answered your note",
+      "spin": "Your free spin is ready",
+      "empty": "No notifications yet",
+      "markAll": "Mark all read",
+      "earlier": "Earlier"
     }
   },
   "plans": {

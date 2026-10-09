@@ -5,7 +5,6 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
-  FadeIn,
   interpolate,
   useAnimatedReaction,
   useAnimatedScrollHandler,
@@ -20,16 +19,18 @@ import { AVATARS } from '@/assets/avatars/registry';
 import { BRAND } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
-import { BrandArt, Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, HEADER_HEIGHT, palette, radius, shadows, space } from '@/theme';
+import { avatarGradients, colors, HEADER_HEIGHT, radius, shadows, space } from '@/theme';
 import type { Character, CharacterDiaryPage } from '@/types';
 
 const GAP = space.md;
 /** Height of the date pill, for placing the calendar under it. */
-const PILL = 36;
+const PILL = 38;
+/** How far the covers beside the one in front lean, like a fanned deck. */
+const TILT = 7;
 
 type Card =
   | { kind: 'mine'; id: 'mine'; pages: number; lastDate?: string }
@@ -47,9 +48,10 @@ type Card =
     };
 
 /**
- * Heartbeat diary: one cover per diary in a carousel, yours first. The backdrop
- * takes the colour of the cover in front, and the one button below always says
- * what that cover leads to: write, read, the last page, or a chat to start one.
+ * Heartbeat diary: one cover per diary in a fanned carousel, yours first (calm cards,
+ * docs/design-style.md). Swipe or tap the arrows; the date pill opens the calendar; the
+ * one button below always says what the cover in front leads to: write, read, the last
+ * page, or a chat to start one.
  */
 export default function DiaryScreen() {
   const { t, i18n } = useTranslation();
@@ -74,8 +76,8 @@ export default function DiaryScreen() {
   const [rulesOpen, setRulesOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const cardW = Math.min(232, Math.round(width * 0.6));
-  const cardH = Math.round(cardW * 1.37);
+  const cardW = Math.min(260, Math.round(width * 0.66));
+  const cardH = Math.round(cardW * 1.46);
   const step = cardW + GAP;
 
   const listRef = useRef<FlatList<Card>>(null);
@@ -169,22 +171,17 @@ export default function DiaryScreen() {
     return day === today ? t('diary.lineLockedToday', { name }) : t('diary.lineLockedDay', { name });
   };
 
-  const cta = (card: Card): { label: string; icon?: React.ComponentProps<typeof Ionicons>['name'] } => {
-    if (card.kind === 'mine') return { label: t('diary.writeToday'), icon: 'pencil-outline' };
-    if (card.onDay) return { label: day === today ? t('diary.readToday') : t('diary.readThis') };
-    if (card.last) return { label: t('diary.openLast') };
-    return { label: t('diary.chatWith', { name: firstName(card.character) }), icon: 'chatbubble-outline' };
+  const cta = (card: Card) => {
+    if (card.kind === 'mine') return t('diary.writeToday');
+    if (card.onDay) return day === today ? t('diary.readToday') : t('diary.readThis');
+    if (card.last) return t('diary.openLast');
+    return t('diary.chatWith', { name: firstName(card.character) });
   };
 
-  const action = current ? cta(current) : undefined;
-
   return (
-    <Screen
-      background={colors.bgPlain}
-      backdrop={current ? <Backdrop key={current.id} source={coverSource(current)} /> : null}>
+    <Screen background={colors.bgPlain}>
       <Header
         title={t('diary.title')}
-        center
         right={
           <View style={styles.headerRight}>
             <IconButton
@@ -208,36 +205,45 @@ export default function DiaryScreen() {
         scaleTo={0.96}
         accessibilityLabel={t('diary.calendar')}
         onPress={() => setCalendarOpen(true)}>
+        <Ionicons name="calendar-outline" size={16} color={colors.text} />
         <Txt variant="smallStrong">{shortDate(day)}</Txt>
         <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={15} color={colors.textSecondary} />
       </PressableScale>
 
       <View style={styles.middle}>
-        <Animated.FlatList
-          ref={listRef}
-          data={cards}
-          keyExtractor={(c) => c.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={step}
-          decelerationRate="fast"
-          disableIntervalMomentum
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          style={{ height: cardH + space.xxxl }}
-          contentContainerStyle={{ paddingHorizontal: (width - cardW) / 2, alignItems: 'center', gap: GAP }}
-          renderItem={({ item, index }) => (
-            <CoverCard
-              card={item}
-              index={index}
-              step={step}
-              width={cardW}
-              height={cardH}
-              scrollX={scrollX}
-              onPress={() => (index === active ? open(item) : scrollTo(index))}
-            />
-          )}
-        />
+        <View>
+          <Animated.FlatList
+            ref={listRef}
+            data={cards}
+            keyExtractor={(c) => c.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={step}
+            decelerationRate="fast"
+            disableIntervalMomentum
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            style={{ height: cardH + space.xxxl }}
+            contentContainerStyle={{ paddingHorizontal: (width - cardW) / 2, alignItems: 'center', gap: GAP }}
+            renderItem={({ item, index }) => (
+              <CoverCard
+                card={item}
+                index={index}
+                step={step}
+                width={cardW}
+                height={cardH}
+                scrollX={scrollX}
+                onPress={() => (index === active ? open(item) : scrollTo(index))}
+              />
+            )}
+          />
+          {active > 0 ? (
+            <Arrow side="left" label={t('diary.prevDiary')} onPress={() => scrollTo(active - 1)} />
+          ) : null}
+          {active < cards.length - 1 ? (
+            <Arrow side="right" label={t('diary.nextDiary')} onPress={() => scrollTo(active + 1)} />
+          ) : null}
+        </View>
 
         <View style={styles.dots}>
           {cards.map((c, i) => (
@@ -252,15 +258,9 @@ export default function DiaryScreen() {
         ) : null}
       </View>
 
-      {current && action ? (
+      {current ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
-          <Button
-            label={action.label}
-            size="lg"
-            full
-            left={action.icon ? <Ionicons name={action.icon} size={18} color={colors.textOnPrimary} /> : undefined}
-            onPress={() => act(current)}
-          />
+          <Button label={cta(current)} size="lg" full onPress={() => act(current)} />
         </View>
       ) : null}
 
@@ -279,23 +279,21 @@ export default function DiaryScreen() {
 }
 
 function coverSource(card: Card): number | string | undefined {
-  if (card.kind === 'mine') return BRAND.sticker;
+  if (card.kind === 'mine') return BRAND.diaryCover;
   return HEROES[card.id] ?? card.character.avatarUri ?? AVATARS[card.id];
 }
 
-/** The cover in front, blurred to fill the screen behind everything. */
-function Backdrop({ source }: { source?: number | string }) {
-  if (source == null) return null;
+/** A round white button on the carousel's edge that brings the next cover forward. */
+function Arrow({ side, label, onPress }: { side: 'left' | 'right'; label: string; onPress: () => void }) {
   return (
-    <Animated.View entering={FadeIn.duration(320)} style={StyleSheet.absoluteFill} pointerEvents="none">
-      <Image
-        source={typeof source === 'string' ? { uri: source } : source}
-        style={[StyleSheet.absoluteFill, styles.backdropImage]}
-        contentFit="cover"
-        blurRadius={60}
-      />
-      <View style={[StyleSheet.absoluteFill, styles.veil]} />
-    </Animated.View>
+    <PressableScale
+      style={[styles.arrow, side === 'left' ? styles.arrowLeft : styles.arrowRight, shadows.card]}
+      scaleTo={0.9}
+      hitSlop={6}
+      accessibilityLabel={label}
+      onPress={onPress}>
+      <Ionicons name={side === 'left' ? 'chevron-back' : 'chevron-forward'} size={18} color={colors.text} />
+    </PressableScale>
   );
 }
 
@@ -318,12 +316,15 @@ function CoverCard({
 }) {
   const { t } = useTranslation();
 
-  // The cover in front is full size; its neighbours sit back a little.
+  // The cover in front is full size; its neighbours lean away and fade a little.
   const focus = useAnimatedStyle(() => {
-    const d = Math.abs(scrollX.value / step - index);
+    const p = scrollX.value / step - index;
     return {
-      opacity: interpolate(d, [0, 1], [1, 0.7], 'clamp'),
-      transform: [{ scale: interpolate(d, [0, 1], [1, 0.88], 'clamp') }],
+      opacity: interpolate(Math.abs(p), [0, 1], [1, 0.55], 'clamp'),
+      transform: [
+        { scale: interpolate(Math.abs(p), [0, 1], [1, 0.9], 'clamp') },
+        { rotate: `${interpolate(p, [-1, 0, 1], [TILT, 0, -TILT], 'clamp')}deg` },
+      ],
     };
   });
 
@@ -341,22 +342,23 @@ function CoverCard({
     <Animated.View style={[{ width, height }, focus]}>
       <PressableScale style={[styles.card, shadows.raised]} scaleTo={0.97} accessibilityLabel={name} onPress={onPress}>
         <View style={styles.cover}>
-          {card.kind === 'mine' ? (
-            <View style={styles.mascotCover}>
-              <BrandArt name="sticker" width={width * 0.62} />
-            </View>
-          ) : source != null ? (
+          {source != null ? (
             <Image
               source={typeof source === 'string' ? { uri: source } : source}
               style={[StyleSheet.absoluteFill, locked && styles.lockedImage]}
               contentFit="cover"
-              contentPosition={{ left: '68%', top: '30%' }}
+              contentPosition={card.kind === 'mine' ? 'center' : { left: '68%', top: '30%' }}
             />
           ) : (
             <View
               style={[
                 StyleSheet.absoluteFill,
-                { backgroundColor: avatarGradients[card.character.accentIndex % avatarGradients.length][0] },
+                {
+                  backgroundColor:
+                    card.kind === 'character'
+                      ? avatarGradients[card.character.accentIndex % avatarGradients.length][0]
+                      : colors.primarySofter,
+                },
               ]}
             />
           )}
@@ -370,8 +372,8 @@ function CoverCard({
           ) : null}
           {locked ? (
             <View style={[styles.chip, styles.chipLocked]}>
-              <Ionicons name="lock-closed" size={11} color={colors.textSecondary} />
-              <Txt variant="chip" color={colors.textSecondary}>
+              <Ionicons name="lock-closed-outline" size={11} color={colors.text} />
+              <Txt variant="chip" color={colors.text}>
                 {t('diary.noPageYet')}
               </Txt>
             </View>
@@ -379,10 +381,10 @@ function CoverCard({
         </View>
 
         <View style={styles.label}>
-          <Txt variant="handTitle" color={colors.paperText} lines={1}>
+          <Txt variant="handTitle" color={colors.text} lines={1}>
             {name}
           </Txt>
-          <Txt variant="caption" color={colors.textMuted} lines={1}>
+          <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.metaText}>
             {meta}
           </Txt>
         </View>
@@ -391,34 +393,31 @@ function CoverCard({
   );
 }
 
+const ARROW = 40;
+
 const styles = StyleSheet.create({
   headerRight: { flexDirection: 'row' },
-  backdropImage: { opacity: 0.55 },
-  veil: { backgroundColor: colors.bgPlain, opacity: 0.35 },
   datePill: {
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
+    gap: space.xs + 2,
     height: PILL,
-    paddingHorizontal: space.lg,
+    paddingHorizontal: space.md + 2,
     borderRadius: radius.pill,
-    backgroundColor: colors.onMediaSoft,
+    backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
-    borderColor: colors.white,
+    borderColor: colors.surfaceAlt,
   },
-  datePillOpen: { backgroundColor: colors.surface },
+  datePillOpen: { backgroundColor: colors.surface, borderColor: colors.text },
   middle: { flex: 1, justifyContent: 'center' },
   card: {
     flex: 1,
-    borderRadius: radius.xxl,
-    borderWidth: 4,
-    borderColor: colors.white,
-    backgroundColor: palette.cream100,
+    borderRadius: 26,
+    backgroundColor: colors.surface,
     overflow: 'hidden',
   },
-  cover: { flex: 1, overflow: 'hidden', backgroundColor: colors.primarySofter },
-  mascotCover: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: space.md },
+  cover: { flex: 3, overflow: 'hidden', backgroundColor: colors.primarySofter },
   lockedImage: { opacity: 0.55 },
   chip: {
     position: 'absolute',
@@ -432,17 +431,31 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   chipNew: { backgroundColor: colors.primary },
-  chipLocked: { backgroundColor: colors.onMediaButton },
-  label: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
-    paddingBottom: space.md,
-    backgroundColor: palette.cream100,
-    gap: space.xxs,
+  chipLocked: { backgroundColor: colors.surface },
+  label: { flex: 1, justifyContent: 'center', paddingHorizontal: space.lg, gap: space.xxs },
+  metaText: { fontWeight: '600' },
+  arrow: {
+    position: 'absolute',
+    top: '50%',
+    marginTop: -ARROW / 2,
+    width: ARROW,
+    height: ARROW,
+    borderRadius: ARROW / 2,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs + 2, marginTop: space.sm },
+  arrowLeft: { left: space.sm },
+  arrowRight: { right: space.sm },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs + 2, marginTop: space.xs },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.borderStrong },
-  dotOn: { width: 18, backgroundColor: colors.text },
-  line: { marginTop: space.lg, paddingHorizontal: space.xxxl, minHeight: 42 },
-  footer: { paddingHorizontal: space.lg, paddingTop: space.md },
+  dotOn: { width: 20, backgroundColor: colors.text },
+  line: { marginTop: space.md, paddingHorizontal: space.xxxl, minHeight: 42 },
+  footer: {
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+  },
 });

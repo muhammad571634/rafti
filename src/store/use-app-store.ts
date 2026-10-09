@@ -168,6 +168,8 @@ interface AppState {
   characterDiary: CharacterDiaryPage[];
   /** Ids of character pages the user has opened, for the "New page" mark. */
   diaryPagesRead: string[];
+  /** When the user last marked the notifications inbox as read; newer items show as unread. */
+  inboxSeenAt: string | null;
   notes: SecretNote[];
   /** Shell history, newest first */
   ledger: LedgerEntry[];
@@ -263,6 +265,8 @@ interface AppState {
   addDiaryEntry: (entry: Omit<DiaryEntry, 'id'>) => string;
   deleteDiaryEntry: (id: string) => void;
   markDiaryPageRead: (id: string) => void;
+  /** "Mark all read" in the notifications inbox. */
+  markInboxSeen: () => void;
   /** Writes the pages owed for yesterday's chats and dates. Safe to call often. */
   writeDueDiaryPages: () => void;
 
@@ -343,6 +347,7 @@ type PersistedKeys =
   | 'diary'
   | 'characterDiary'
   | 'diaryPagesRead'
+  | 'inboxSeenAt'
   | 'notes'
   | 'ledger'
   | 'calls'
@@ -492,6 +497,7 @@ export const useAppStore = create<AppState>()(
       diary: [],
       characterDiary: [],
       diaryPagesRead: [],
+      inboxSeenAt: null,
       notes: [],
       ledger: [],
       calls: [],
@@ -1000,6 +1006,8 @@ export const useAppStore = create<AppState>()(
 
       markDiaryPageRead: (id) =>
         set((s) => (s.diaryPagesRead.includes(id) ? s : { diaryPagesRead: [...s.diaryPagesRead, id] })),
+
+      markInboxSeen: () => set({ inboxSeenAt: new Date().toISOString() }),
 
       writeDueDiaryPages: () => {
         const { conversations, messages, moments, characterDiary } = get();
@@ -1528,6 +1536,7 @@ export const useAppStore = create<AppState>()(
         diary: s.diary,
         characterDiary: s.characterDiary,
         diaryPagesRead: s.diaryPagesRead,
+        inboxSeenAt: s.inboxSeenAt,
         notes: s.notes,
         ledger: s.ledger,
         calls: s.calls,
