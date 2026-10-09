@@ -2,14 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
-} from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { CharacterRow } from '@/components/character-row';
 import {
@@ -24,7 +17,7 @@ import {
 } from '@/components/ui';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, CharacterCategory, CharacterGender } from '@/types';
 
 type Tab = CharacterCategory | 'all';
@@ -32,13 +25,13 @@ const TABS: Tab[] = ['all', 'school', 'fantasy', 'idol', 'daily', 'original'];
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
-/** Rows per page inside a world card. */
-const PAGE = 3;
+/** Characters shown per world before "See all". */
+const PER_WORLD = 4;
 
 /**
- * Discovery: each world is a bold heading with "›" for the whole world, then its
- * characters three at a time, swiped page by page. No cards or lines: plain rows on
- * the canvas, like Today. A search lists every match across worlds.
+ * Discovery (calm cards, docs/design-style.md): search with a who-to-show button
+ * beside it, one row of world filters, then each world as a section of plain rows with
+ * "See all". A search lists every match across worlds.
  */
 export default function FindScreen() {
   const { t } = useTranslation();
@@ -99,41 +92,37 @@ export default function FindScreen() {
         </Txt>
         <IconButton
           icon="add"
-          size={26}
+          size={22}
+          background={colors.surfaceAlt}
           accessibilityLabel={t('a11y.createCharacter')}
           onPress={() => router.push('/create-character')}
         />
       </View>
 
-      <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.search} />
-
-      <View style={styles.who}>
-        {WHO.map((key) => (
-          <Chip key={key} label={t(`find.who.${key}`)} active={who === key} onPress={() => setWho(key)} />
-        ))}
+      <View style={styles.searchRow}>
+        <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.flex} />
+        {/* Everyone, Him, Her: one tap moves to the next. */}
+        <PressableScale
+          scaleTo={0.96}
+          onPress={() => setWho(WHO[(WHO.indexOf(who) + 1) % WHO.length])}
+          accessibilityRole="button"
+          accessibilityLabel={t('find.whoLabel', { who: t(`find.who.${who}`) })}
+          style={styles.whoButton}>
+          <Txt variant="bodyStrong">{t(`find.who.${who}`)}</Txt>
+          <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
+        </PressableScale>
       </View>
 
       {q ? null : (
-        <View style={styles.tabsWrap}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
-            {TABS.map((key) => {
-              const active = tab === key;
-              return (
-                <PressableScale
-                  key={key}
-                  scaleTo={1}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: active }}
-                  style={[styles.tab, active && styles.tabActive]}
-                  onPress={() => setTab(key)}>
-                  <Txt variant={active ? 'bodyStrong' : 'body'} color={active ? colors.text : colors.textMuted}>
-                    {t(`find.categories.${key}`)}
-                  </Txt>
-                </PressableScale>
-              );
-            })}
-          </ScrollView>
-        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabsWrap}
+          contentContainerStyle={styles.tabs}>
+          {TABS.map((key) => (
+            <Chip key={key} label={t(`find.categories.${key}`)} active={tab === key} onPress={() => setTab(key)} />
+          ))}
+        </ScrollView>
       )}
 
       {q && results.length === 0 ? (
@@ -149,7 +138,7 @@ export default function FindScreen() {
           contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.huge }}>
           {q ? (
             <>
-              <SectionLabel tone="title" title={t('find.results', { count: results.length })} />
+              <SectionLabel tone="section" title={t('find.results', { count: results.length })} />
               {results.map((character) => (
                 <View key={character.id}>{row(character)}</View>
               ))}
@@ -170,7 +159,7 @@ export default function FindScreen() {
   );
 }
 
-/** One world: its name as a heading with "›", then pages of three characters and the page dots. */
+/** One world: its name as a section title with "See all", then its first few characters. */
 function WorldSection({
   group,
   row,
@@ -181,92 +170,53 @@ function WorldSection({
   onOpen: () => void;
 }) {
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
-  const [page, setPage] = useState(0);
-  const pageW = width;
-
-  const pages = useMemo(() => {
-    const out: Character[][] = [];
-    for (let i = 0; i < group.characters.length; i += PAGE) out.push(group.characters.slice(i, i + PAGE));
-    return out;
-  }, [group.characters]);
-
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
-    setPage(Math.round(e.nativeEvent.contentOffset.x / pageW));
-
   return (
     <View style={styles.world}>
-      <PressableScale
-        style={styles.worldHead}
-        scaleTo={0.98}
-        accessibilityLabel={t('find.openWorld', { world: group.series })}
-        onPress={onOpen}>
-        <Txt variant="h2" accessibilityRole="header" style={styles.title} lines={1}>
-          {group.series}
-        </Txt>
-        <Txt variant="smallStrong" color={colors.textMuted}>
-          {group.characters.length}
-        </Txt>
-        <Ionicons name="chevron-forward" size={20} color={colors.text} />
-      </PressableScale>
-
-      <ScrollView
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={onScroll}
-        onScroll={onScroll}
-        scrollEventThrottle={64}>
-        {pages.map((list, p) => (
-          <View key={p} style={{ width: pageW }}>
-            {list.map((character) => (
-              <View key={character.id}>{row(character)}</View>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
-
-      {pages.length > 1 ? (
-        <View style={styles.dots}>
-          {pages.map((_, p) => (
-            <View key={p} style={[styles.dot, p === page && styles.dotOn]} />
-          ))}
-        </View>
-      ) : null}
+      <SectionLabel
+        tone="section"
+        title={group.series}
+        right={
+          group.characters.length > PER_WORLD ? (
+            <PressableScale
+              scaleTo={0.96}
+              hitSlop={8}
+              accessibilityLabel={t('find.openWorld', { world: group.series })}
+              onPress={onOpen}>
+              <Txt variant="bodyStrong">{t('find.seeAll')}</Txt>
+            </PressableScale>
+          ) : null
+        }
+      />
+      {group.characters.slice(0, PER_WORLD).map((character) => (
+        <View key={character.id}>{row(character)}</View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: space.lg,
-    paddingRight: space.sm,
+    paddingRight: space.lg,
     paddingTop: space.sm,
   },
   title: { flex: 1 },
-  search: { marginHorizontal: space.lg, marginTop: space.sm },
-  who: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, marginTop: space.md },
-  // Only the active tab is underlined; no full-width rule under the row.
-  tabsWrap: { marginTop: space.sm },
-  tabs: { paddingHorizontal: space.lg, gap: space.xl },
-  tab: {
-    minHeight: 44,
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabActive: { borderBottomColor: colors.text },
-  world: { paddingTop: space.xl },
-  worldHead: {
+  searchRow: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, marginTop: space.sm },
+  whoButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingBottom: space.xs,
+    gap: space.xs + 2,
+    paddingLeft: space.md + 2,
+    paddingRight: space.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingTop: space.xs, paddingBottom: space.xs },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.border },
-  dotOn: { backgroundColor: colors.text },
+  tabsWrap: { flexGrow: 0, flexShrink: 0, marginTop: space.md },
+  tabs: { paddingHorizontal: space.lg, paddingVertical: space.xxs, gap: space.sm, alignItems: 'center' },
+  world: { paddingTop: space.xs },
 });

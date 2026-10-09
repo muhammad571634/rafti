@@ -140,6 +140,8 @@ export const colors = {
 
   // Status
   danger: palette.red,
+  /** Red that stays readable as text on the cream canvas (Block, destructive rows). */
+  dangerText: '#C93A3A',
   dangerSoft: palette.redSoft,
   success: palette.green,
   warning: palette.amber,

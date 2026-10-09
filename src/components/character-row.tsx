@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -38,12 +37,9 @@ export function CharacterRow({
         style={styles.main}
       />
       {isFriend ? (
-        <View style={styles.friends}>
-          <Ionicons name="checkmark" size={14} color={colors.textMuted} />
-          <Txt variant="caption" color={colors.textMuted}>
-            {t('find.friends')}
-          </Txt>
-        </View>
+        <Txt variant="smallStrong" color={colors.bondText}>
+          {t('find.friends')}
+        </Txt>
       ) : (
         <Button label={t('find.add')} size="sm" variant="secondary" onPress={onAdd} style={styles.add} />
       )}
@@ -54,6 +50,5 @@ export function CharacterRow({
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
   main: { flex: 1, paddingRight: space.sm },
-  friends: { flexDirection: 'row', alignItems: 'center', gap: space.xxs },
   add: { minWidth: 56 },
 });

@@ -5,7 +5,6 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TAB_ICONS, type TabIconName } from '@/assets/brand/registry';
-import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { PressableScale, Txt } from '@/components/ui';
 import { useCharacterInitiative } from '@/hooks/use-character-initiative';
 import { usePushNotifications } from '@/hooks/use-push-notifications';
@@ -36,7 +35,6 @@ export default function TabsLayout() {
         <Tabs.Screen name="us" />
         <Tabs.Screen name="find" />
       </Tabs>
-      <DailyRewardSheet />
     </>
   );
 }

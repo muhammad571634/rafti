@@ -108,9 +108,10 @@
   },
   "dailyReward": {
     "title": "Daily check-in",
-    "body": "Thanks for coming back! Here are today's shells.",
     "day": "Day {{day}} of 7",
-    "collect": "Collect"
+    "dayShort": "Day {{day}}",
+    "rule": "Free shells are spent first and expire at midnight. Day 7 is the big one.",
+    "collectAmount": "Collect +{{count}}"
   },
   "find": {
     "title": "Find",
@@ -138,7 +139,9 @@
     "results": "{{count}} found",
     "openWorld": "Open {{world}}",
     "characters": "characters",
-    "canCall": "can call"
+    "canCall": "can call",
+    "seeAll": "See all",
+    "whoLabel": "Showing: {{who}}"
   },
   "characterProfile": {
     "addFriend": "Add friend",
@@ -257,7 +260,7 @@
   },
   "characterSettings": {
     "title": "Settings",
-    "anniversary": "Anniversary: {{date}}",
+    "anniversary": "Together since {{date}}",
     "voiceCall": "Voice call",
     "characterMemories": "Memories",
     "characterSettings": "Character profile",
@@ -280,7 +283,8 @@
     "sectionCharacter": "Character",
     "sectionManage": "Manage",
     "block": "Block",
-    "voiceRepliesPlanHint": "Voice notes as well as text. They come with a plan."
+    "voiceRepliesPlanHint": "Voice notes as well as text. They come with a plan.",
+    "blockName": "Block {{name}}"
   },
   "search": {
     "title": "Search messages",
@@ -602,7 +606,8 @@
       "waves": "Slow waves",
       "cafe": "Quiet cafe",
       "lullaby": "Lullaby"
-    }
+    },
+    "left": "{{time}} left"
   },
   "bedtime": {
     "title": "Bedtime",
@@ -719,7 +724,10 @@
     "copied": "Copied",
     "myPlan": "My plan",
     "endPlan": "End plan",
-    "loadDemo": "Load sample chats"
+    "loadDemo": "Load sample chats",
+    "completeHint": "Add a photo and a few interests so they know you better.",
+    "inviteOffer": "Invite +{{count}}",
+    "versionRow": "Version"
   },
   "errors": {
     "generic": "Something went wrong.",
@@ -829,7 +837,8 @@
     "tabCalls": "Call time",
     "callLeft": "{{time}} of calls left",
     "callRule": "Calls come with a plan. Plan minutes reset every period and don't roll over; extra minutes bought with shells last 90 days.",
-    "emptyCalls": "No calls yet"
+    "emptyCalls": "No calls yet",
+    "resets": "Resets {{date}}"
   },
   "closeness": {
     "title": "How closeness works",
@@ -846,7 +855,8 @@
     "max": "Highest level reached",
     "lockedAt": "Lv {{level}}",
     "labelTitle": "What are you to {{name}}?",
-    "labelHint": "Only labels your stage has unlocked can be picked."
+    "labelHint": "Only labels your stage has unlocked can be picked.",
+    "pickShort": "Pick one"
   },
   "date": {
     "caption": "{{place}}, with {{name}}",

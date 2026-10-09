@@ -879,7 +879,9 @@ export const useAppStore = create<AppState>()(
           daily: { ...s.daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
           wallet: { ...s.wallet, shells: s.wallet.shells + amount, free: { day: today, amount } },
           ledger: log(s.ledger, amount, 'daily'),
-          dailyReward: { amount, day },
+          // The owner asked for no check-in popup (2026-10-09): the shells arrive quietly,
+          // and History shows them. Setting `dailyReward: { amount, day }` here brings the
+          // Today sheet (DailyRewardSheet) back.
         }));
         return amount;
       },

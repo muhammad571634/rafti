@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
@@ -307,6 +308,8 @@ export default function HomeScreen() {
 
 
       </ScrollView>
+      {/* The day's check-in shows here only, never over a chat or another tab. */}
+      <DailyRewardSheet />
     </Screen>
   );
 }

@@ -4,7 +4,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionList, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, Chip, ClayIcon, EmptyState, Header, Icon3D, Screen, ShellIcon, Txt } from '@/components/ui';
+import { planDate, wholeMinutes } from '@/components/plans/copy';
+import { CharacterAvatar, EmptyState, Header, Icon3D, IconTile, Screen, Segmented, ShellIcon, Txt } from '@/components/ui';
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
@@ -35,7 +36,8 @@ export default function LedgerScreen() {
   const ledger = useAppStore((s) => s.ledger);
   const characters = useAppStore((s) => s.characters);
   const free = useAppStore((s) => s.wallet.free);
-  const callSeconds = useAppStore((s) => minutesOf(s.wallet, 'call').total);
+  const wallet = useAppStore((s) => s.wallet);
+  const calls = minutesOf(wallet, 'call');
   const [tab, setTab] = useState<'shells' | 'seconds'>('shells');
   const expireFreeShells = useAppStore((s) => s.expireFreeShells);
 
@@ -65,7 +67,7 @@ export default function LedgerScreen() {
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('ledger.title')} center />
+      <Header title={t('ledger.title')} />
 
       <SectionList
         sections={sections}
@@ -74,15 +76,20 @@ export default function LedgerScreen() {
         contentContainerStyle={styles.list}
         ListHeaderComponent={
           <>
-            <View style={styles.tabs}>
-              <Chip label={t('ledger.tabShells')} active={tab === 'shells'} onPress={() => setTab('shells')} />
-              <Chip label={t('ledger.tabCalls')} active={tab === 'seconds'} onPress={() => setTab('seconds')} />
-            </View>
+            <Segmented
+              options={[
+                { value: 'shells', label: t('ledger.tabShells') },
+                { value: 'seconds', label: t('ledger.tabCalls') },
+              ]}
+              value={tab}
+              onChange={setTab}
+              style={styles.tabs}
+            />
             {tab === 'shells' ? (
               <View style={styles.rule}>
-                <Icon3D name="shell" size={36} />
+                <Icon3D name="shell" size={44} />
                 <View style={styles.flex}>
-                  <Txt variant="bodyStrong">
+                  <Txt variant="title">
                     {freeToday > 0 ? t('ledger.freeLeft', { count: freeToday }) : t('ledger.freeNone')}
                   </Txt>
                   <Txt variant="small" color={colors.textSecondary}>
@@ -90,11 +97,31 @@ export default function LedgerScreen() {
                   </Txt>
                 </View>
               </View>
+            ) : calls.planTotal > 0 ? (
+              <View style={[styles.rule, styles.meter]}>
+                <View style={styles.meterHead}>
+                  <IconTile icon="call-outline" size={36} radius={11} glyphSize={19} />
+                  <Txt variant="title" style={styles.flex}>
+                    {t('plans.callsRow')}
+                  </Txt>
+                  <Txt variant="bodyStrong">
+                    {t('plans.left', { left: wholeMinutes(calls.plan), total: wholeMinutes(calls.planTotal) })}
+                  </Txt>
+                </View>
+                <View style={styles.track}>
+                  <View style={[styles.fill, { width: `${Math.round((calls.plan / calls.planTotal) * 100)}%` }]} />
+                </View>
+                {calls.resetsAt ? (
+                  <Txt variant="small" color={colors.textSecondary} style={styles.meterNote}>
+                    {t('ledger.resets', { date: planDate(calls.resetsAt) })}
+                  </Txt>
+                ) : null}
+              </View>
             ) : (
               <View style={styles.rule}>
-                <ClayIcon name="hourglass" size={36} tile={false} />
+                <IconTile icon="call-outline" size={36} radius={11} glyphSize={19} />
                 <View style={styles.flex}>
-                  <Txt variant="bodyStrong">{t('ledger.callLeft', { time: callClock(callSeconds) })}</Txt>
+                  <Txt variant="title">{t('ledger.callLeft', { time: callClock(calls.total) })}</Txt>
                   <Txt variant="small" color={colors.textSecondary}>
                     {t('ledger.callRule')}
                   </Txt>
@@ -119,7 +146,7 @@ export default function LedgerScreen() {
           ) : null
         }
         renderSectionHeader={({ section }) => (
-          <Txt variant="smallStrong" color={colors.textMuted} style={styles.day}>
+          <Txt variant="h3" accessibilityRole="header" style={styles.day}>
             {dayTitle(section.key)}
           </Txt>
         )}
@@ -226,16 +253,30 @@ function groupByDay(rows: Row[]) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   list: { paddingHorizontal: space.lg, paddingBottom: space.huge },
+  // One white card on top: what is left today (shells) or this period (calls).
   rule: {
     flexDirection: 'row',
-    gap: space.md,
+    gap: space.md + 2,
     alignItems: 'center',
     padding: space.lg,
-    marginTop: space.md,
-    borderRadius: radius.xl,
-    backgroundColor: colors.primarySofter,
+    marginTop: space.lg,
+    borderRadius: radius.tile,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
-  day: { marginTop: space.xl, marginBottom: space.sm, marginLeft: space.xs },
+  meter: { flexDirection: 'column', alignItems: 'stretch', gap: space.sm + 2 },
+  meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  meterNote: { marginLeft: 36 + space.md },
+  track: {
+    height: 8,
+    marginLeft: 36 + space.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.border,
+    overflow: 'hidden',
+  },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
+  day: { marginTop: space.xl + 2, marginBottom: space.sm },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -254,7 +295,7 @@ const styles = StyleSheet.create({
   glyph: {
     width: 36,
     height: 36,
-    borderRadius: radius.pill,
+    borderRadius: 11,
     backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
@@ -262,5 +303,5 @@ const styles = StyleSheet.create({
   glyphMuted: { opacity: 0.7 },
   amount: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   footer: { marginTop: space.xl },
-  tabs: { flexDirection: 'row', gap: space.sm, marginTop: space.sm },
+  tabs: { marginTop: space.xxs },
 });

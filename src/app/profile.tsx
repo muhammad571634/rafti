@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -7,11 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
 import { SUPPORT_EMAIL } from '@/ai/safety';
-import { CompletionMeter } from '@/components/profile/completion-meter';
 import {
   Button,
   CharacterAvatar,
-  ClayIcon,
   Divider,
   Header,
   IconTile,
@@ -28,7 +25,6 @@ import {
 import { usePushPermission } from '@/hooks/use-push-permission';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
 import { planStatus } from '@/economy/plans';
-import { inviteCodeFor } from '@/lib/invite';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
@@ -38,15 +34,15 @@ import type { AppSettings } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
-const ROW_ICON = 34;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
+const ROW_ICON = 36;
 
 /** The on/off settings; call times and the caller live in the chat's Daily calls sheet. */
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
 /**
- * Who you are (photo, name, how full the profile is, invite code), then grouped
- * settings: account (with Notifications), chat, about; delete at the very end.
+ * Who you are (photo, name, how full the profile is), then grouped settings: account
+ * (plan, gifts with the invite offer, notifications, chat animations), about; delete
+ * at the very end. Calm-cards style (docs/design-style.md).
  */
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
@@ -67,7 +63,6 @@ export default function ProfileScreen() {
   const [languageOpen, setLanguageOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [blockedOpen, setBlockedOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const { status: pushStatus } = usePushPermission();
   const blockedPushes = pushStatus === 'denied' || pushStatus === 'undetermined';
   /** Dev only: what the last "Test pushes" press did. */
@@ -78,16 +73,9 @@ export default function ProfileScreen() {
     setTestResult(count > 0 ? t('profile.testPushesSent', { count }) : t('profile.testPushesUnavailable'));
   };
 
-  const code = inviteCodeFor(user);
   const percent = profileCompletion(user);
   // One language for now: the picker shows up once there is a second one.
   const canPickLanguage = SUPPORTED_LOCALES.length > 1;
-
-  const copyCode = async () => {
-    await Clipboard.setStringAsync(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
-  };
 
   const confirmDelete = () => {
     setDeleteOpen(false);
@@ -98,14 +86,11 @@ export default function ProfileScreen() {
 
   const currentLocale = SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? i18n.language;
   const plan = planStatus(wallet.subscription, Date.now());
-  // Line icons sit bare on the canvas, like the clay art: no grey tile behind them.
-  const icon = (name: IoniconName) => (
-    <IconTile icon={name} size={ROW_ICON} background="transparent" glyphSize={24} />
-  );
+  // A line icon in a grey tile, the calm-cards row (docs/design-style.md).
+  const icon = (name: IoniconName) => <IconTile icon={name} size={ROW_ICON} radius={11} glyphSize={19} />;
 
   const toggle = (key: SwitchKey, label: string, left: React.ReactNode) => (
     <ListRow
-      size="large"
       title={label}
       left={left}
       right={<Toggle value={settings[key]} onChange={(v) => setSetting(key, v)} accessibilityLabel={label} />}
@@ -138,45 +123,24 @@ export default function ProfileScreen() {
           accessibilityLabel={t('profile.editProfile')}
           style={styles.card}>
           <View style={styles.cardTop}>
-            <Txt variant="title">{t('profile.editProfile')}</Txt>
+            <Txt variant="title" style={styles.flex}>
+              {t('profile.editProfile')}
+            </Txt>
+            <Txt variant="bodyStrong">{percent}%</Txt>
             <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
           </View>
-          <CompletionMeter percent={percent} />
+          <View style={styles.track}>
+            <View style={[styles.fill, { width: `${percent}%` }]} />
+          </View>
+          {percent < 100 ? (
+            <Txt variant="small" color={colors.textSecondary}>
+              {t('profile.completeHint')}
+            </Txt>
+          ) : null}
         </PressableScale>
 
-        <View style={[styles.card, styles.invite]}>
-          <View style={styles.flex}>
-            <Txt variant="caption" color={colors.textMuted}>
-              {t('profile.inviteCode')}
-            </Txt>
-            <Txt variant="figure" selectable>
-              {code}
-            </Txt>
-          </View>
-          <PressableScale
-            scaleTo={0.88}
-            hitSlop={8}
-            onPress={() => void copyCode()}
-            accessibilityLabel={copied ? t('profile.copied') : t('gifts.copyCode')}
-            style={styles.copy}>
-            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={18} color={colors.text} />
-          </PressableScale>
-          {/* The rules, the weekly progress and "Have a code?" live on Free gifts. */}
-          <PressableScale
-            scaleTo={0.94}
-            onPress={() => router.push('/gifts')}
-            accessibilityLabel={t('profile.freeGifts')}
-            style={styles.reward}>
-            <Txt variant="chip" color={colors.brandText}>
-              +{INVITE_REWARD}
-            </Txt>
-            <Ionicons name="chevron-forward" size={14} color={colors.brandText} />
-          </PressableScale>
-        </View>
-
-        <SectionLabel tone="title" title={t('profile.sectionAccount')} />
+        <SectionLabel tone="section" title={t('profile.sectionAccount')} />
         <ListRow
-          size="large"
           title={t('profile.myPlan')}
           left={icon('diamond-outline')}
           meta={
@@ -189,90 +153,80 @@ export default function ProfileScreen() {
           chevron
           onPress={() => router.push('/my-plan')}
         />
+        {/* The invite code, its rules and "Have a code?" live on Free gifts. */}
         <ListRow
-          size="large"
           title={t('profile.freeGifts')}
           left={icon('gift-outline')}
+          right={
+            <View style={styles.offer}>
+              <Txt variant="chip" color={colors.brandText}>
+                {t('profile.inviteOffer', { count: INVITE_REWARD })}
+              </Txt>
+            </View>
+          }
           chevron
           onPress={() => router.push('/gifts')}
         />
         {/* Who reaches out, previews and quiet hours live on their own screen. */}
         <ListRow
-          size="large"
           title={t('notifications.title')}
-          left={<ClayIcon name="alarm" size={ROW_ICON} tile={false} />}
+          left={icon('notifications-outline')}
           meta={pushStatus === 'granted' ? t('notifications.on') : blockedPushes ? t('notifications.offShort') : undefined}
           chevron
           onPress={() => router.push('/notifications')}
         />
         {canPickLanguage ? (
-          <>
-                <ListRow
-                  size="large"
-              title={t('profile.language')}
-              left={icon('language-outline')}
-              meta={currentLocale}
-              chevron
-              onPress={() => setLanguageOpen(true)}
-            />
-          </>
+          <ListRow
+            title={t('profile.language')}
+            left={icon('language-outline')}
+            meta={currentLocale}
+            chevron
+            onPress={() => setLanguageOpen(true)}
+          />
         ) : null}
-
-        <SectionLabel tone="title" title={t('profile.sectionChat')} />
         {toggle('chatAnimation', t('profile.chatAnimation'), icon('sparkles-outline'))}
 
-        {/* Development builds only: fire the planned pushes now, a few seconds apart. */}
+        {/* Development builds only. */}
         {__DEV__ ? (
           <>
-            <SectionLabel tone="title" title={t('profile.sectionDev')} />
+            <SectionLabel tone="section" title={t('profile.sectionDev')} />
+            {/* Fires the planned pushes now, a few seconds apart. */}
             <ListRow
-              size="large"
               title={t('profile.testPushes')}
-              left={icon('notifications-outline')}
+              left={icon('paper-plane-outline')}
               meta={testResult}
               onPress={() => void testPushes()}
             />
             {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
-            <ListRow size="large" title={t('profile.loadDemo')} left={icon('albums-outline')} onPress={loadDemoData} />
+            <ListRow title={t('profile.loadDemo')} left={icon('albums-outline')} onPress={loadDemoData} />
             {/* Ends the plan at once, to see the free screens again. */}
             {plan ? (
-              <ListRow size="large" title={t('profile.endPlan')} left={icon('close-circle-outline')} onPress={endPlan} />
+              <ListRow title={t('profile.endPlan')} left={icon('close-circle-outline')} onPress={endPlan} />
             ) : null}
           </>
         ) : null}
 
-        <SectionLabel tone="title" title={t('profile.sectionAbout')} />
+        <SectionLabel tone="section" title={t('profile.sectionAbout')} />
         {blocked.length > 0 ? (
-          <>
-            <ListRow
-              size="large"
-              title={t('safety.blocked')}
-              left={icon('ban-outline')}
-              meta={String(blocked.length)}
-              chevron
-              onPress={() => setBlockedOpen(true)}
-            />
-              </>
+          <ListRow
+            title={t('safety.blocked')}
+            meta={String(blocked.length)}
+            chevron
+            onPress={() => setBlockedOpen(true)}
+          />
         ) : null}
         <ListRow
-          size="large"
           title={t('safety.support')}
-          left={icon('mail-outline')}
           chevron
           onPress={() => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`)}
         />
-        <ListRow size="large" title={t('profile.account')} left={icon('person-circle-outline')} />
-        <ListRow size="large" title={t('profile.privacy')} left={icon('shield-checkmark-outline')} />
-        <ListRow size="large" title={t('profile.terms')} left={icon('document-text-outline')} />
-        <ListRow
-          size="large"
-          title={t('profile.about')}
-          left={icon('information-circle-outline')}
-          meta={t('profile.version', { version: Constants.expoConfig?.version ?? '1.0.0' })}
-        />
+        <ListRow title={t('profile.account')} chevron />
+        <ListRow title={t('profile.privacy')} chevron />
+        <ListRow title={t('profile.terms')} chevron />
+        <ListRow title={t('profile.versionRow')} meta={Constants.expoConfig?.version ?? '1.0.0'} />
 
         <PressableScale scaleTo={0.96} onPress={() => setDeleteOpen(true)} style={styles.delete}>
-          <Txt variant="smallStrong" color={colors.textMuted}>
+          <Txt variant="bodyStrong" color={colors.textSecondary}>
             {t('profile.deleteAccount')}
           </Txt>
         </PressableScale>
@@ -346,34 +300,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
-  // Plain blocks on the canvas: no card fill, border or shadow.
+  // The one card on the screen: how full the profile is.
   card: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.xl,
+    marginHorizontal: space.lg,
+    marginTop: space.xl,
+    padding: space.lg,
     gap: space.md,
+    borderRadius: radius.tile,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
-  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  invite: { flexDirection: 'row', alignItems: 'center' },
-  copy: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surfaceAlt,
-  },
-  reward: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    marginLeft: space.sm,
-    paddingLeft: space.md,
-    paddingRight: space.sm,
-    height: 36,
+  cardTop: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  track: { height: 8, borderRadius: radius.pill, backgroundColor: colors.border, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
+  offer: {
+    paddingHorizontal: space.sm + 1,
+    paddingVertical: 2,
     borderRadius: radius.pill,
-    backgroundColor: colors.primarySoft,
+    borderWidth: 1,
+    borderColor: colors.primarySoft,
+    backgroundColor: colors.primarySofter,
   },
-  delete: { alignSelf: 'center', marginTop: space.xxl, padding: space.md },
+  delete: { alignSelf: 'flex-start', marginTop: space.md, paddingHorizontal: space.lg, paddingVertical: space.md },
   deleteBody: { marginBottom: space.xl },
   deleteActions: { gap: space.sm },
   // The sheet card pads its content; rows bring their own gutter.

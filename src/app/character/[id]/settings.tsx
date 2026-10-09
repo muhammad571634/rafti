@@ -9,18 +9,18 @@ import {
   CharacterAvatar,
   Header,
   IconButton,
-  ClayIcon,
   IconTile,
   ListRow,
+  PressableScale,
   Screen,
   SectionLabel,
   Sheet,
   Toggle,
   Txt,
-  type ClayIconName,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
-import { shortDate, shortName } from '@/lib/format';
+import { planDate } from '@/components/plans/copy';
+import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -40,38 +40,37 @@ type ActionKey =
   | 'reset'
   | 'block';
 
-/** Grouped like Profile: what you do in this chat, who they are, then the destructive two. */
-// Places you go get clay icons; the two destructive rows stay plain line icons.
-const GROUPS: { title: string; actions: { key: ActionKey; clay?: ClayIconName; icon?: IoniconName }[] }[] = [
+/**
+ * Grouped like Profile: what you do in this chat, who they are, then the destructive
+ * three. Rows carry a line icon in a grey tile (docs/design-style.md); the destructive
+ * rows are plain text, Block in red.
+ */
+const GROUPS: { title: string; actions: { key: ActionKey; icon?: IoniconName }[] }[] = [
   {
     title: 'sectionChat',
     actions: [
-      { key: 'voiceCall', clay: 'calls' },
-      { key: 'chatSettings', clay: 'bubbles' },
-      { key: 'searchHistory', clay: 'search' },
-      { key: 'changeBackground', clay: 'palette' },
+      { key: 'voiceCall', icon: 'call-outline' },
+      { key: 'chatSettings', icon: 'options-outline' },
+      { key: 'searchHistory', icon: 'search-outline' },
+      { key: 'changeBackground', icon: 'image-outline' },
     ],
   },
   {
     title: 'sectionCharacter',
     actions: [
-      { key: 'characterMemories', clay: 'jar' },
-      { key: 'characterSettings', clay: 'wand' },
+      { key: 'characterMemories', icon: 'bookmark-outline' },
+      { key: 'characterSettings', icon: 'person-outline' },
       // Only on characters the user made (see `visible`).
-      { key: 'editCharacter', clay: 'pencil' },
+      { key: 'editCharacter', icon: 'pencil-outline' },
     ],
   },
   {
     title: 'sectionManage',
-    actions: [
-      { key: 'clearChat', icon: 'trash-outline' },
-      { key: 'reset', icon: 'refresh-outline' },
-      { key: 'block', icon: 'ban-outline' },
-    ],
+    actions: [{ key: 'clearChat' }, { key: 'reset' }, { key: 'block' }],
   },
 ];
 
-const ROW_ICON = 34;
+const ROW_ICON = 36;
 
 /** Seed characters cannot be edited; the user's own creations can. */
 const visible = (key: ActionKey, character: Character) => key !== 'editCharacter' || !character.isOfficial;
@@ -100,6 +99,7 @@ export default function CharacterSettingsScreen() {
   // Voice replies come with a plan; without one the switch says so.
   const hasPlan = useAppStore((s) => memberActive(s.wallet));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
+  const memoryCount = useAppStore((s) => s.memories.filter((m) => m.characterId === characterId).length);
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);
   const clearChat = useAppStore((s) => s.clearChat);
   const resetRelationship = useAppStore((s) => s.resetRelationship);
@@ -185,13 +185,14 @@ export default function CharacterSettingsScreen() {
             </Txt>
             {relationship ? (
               <Txt variant="small" color={colors.textMuted}>
-                {t('characterSettings.anniversary', { date: shortDate(relationship.anniversary) })}
+                {t('characterSettings.anniversary', { date: planDate(Date.parse(relationship.anniversary)) })}
               </Txt>
             ) : null}
           </View>
           <IconButton
             icon="pencil-outline"
-            size={19}
+            size={18}
+            background={colors.surfaceAlt}
             accessibilityLabel={t('characterSettings.nickname')}
             onPress={() => {
               setDraftName(relationship?.nickname ?? '');
@@ -213,24 +214,32 @@ export default function CharacterSettingsScreen() {
 
         {GROUPS.map((group) => (
           <View key={group.title}>
-            <SectionLabel tone="title" title={t(`characterSettings.${group.title}`)} />
-            {group.actions.filter((action) => visible(action.key, character)).map((action, i) => (
-              <View key={action.key}>
+            <SectionLabel tone="section" title={t(`characterSettings.${group.title}`)} />
+            {group.actions.filter((action) => visible(action.key, character)).map((action) =>
+              action.icon ? (
                 <ListRow
-                  size="large"
+                  key={action.key}
                   title={t(`characterSettings.${action.key}`)}
-                  left={
-                    action.clay ? (
-                      <ClayIcon name={action.clay} size={ROW_ICON} tile={false} />
-                    ) : (
-                      <IconTile icon={action.icon!} size={ROW_ICON} background="transparent" glyphSize={22} />
-                    )
-                  }
+                  left={<IconTile icon={action.icon} size={ROW_ICON} radius={11} glyphSize={19} />}
+                  meta={action.key === 'characterMemories' && memoryCount > 0 ? String(memoryCount) : undefined}
                   chevron
                   onPress={() => run(action.key)}
                 />
-              </View>
-            ))}
+              ) : (
+                <PressableScale
+                  key={action.key}
+                  scaleTo={0.98}
+                  onPress={() => run(action.key)}
+                  accessibilityRole="button"
+                  style={styles.plainRow}>
+                  <Txt variant="title" color={action.key === 'block' ? colors.dangerText : colors.text}>
+                    {action.key === 'block'
+                      ? t('characterSettings.blockName', { name: shortName(name) })
+                      : t(`characterSettings.${action.key}`)}
+                  </Txt>
+                </PressableScale>
+              ),
+            )}
           </View>
         ))}
       </ScrollView>
@@ -376,7 +385,7 @@ function RelationshipCard({
     <View style={styles.bond}>
       <View style={styles.bondHead}>
         <View style={styles.bondHeart}>
-          <Ionicons name="heart" size={18} color={colors.bond} />
+          <Ionicons name="heart" size={18} color={colors.bondText} />
         </View>
         <View style={styles.flex}>
           <Txt variant="title">{title}</Txt>
@@ -395,7 +404,7 @@ function RelationshipCard({
       </View>
       <ListRow
         title={t('closeness.relationship')}
-        subtitle={label ?? t('closeness.pick')}
+        meta={label ?? t('closeness.pickShort')}
         chevron
         onPress={onPick}
         style={styles.bondRow}
@@ -439,27 +448,37 @@ function LabelRow({
 }
 
 const styles = StyleSheet.create({
-  // Straight on the canvas: no card around the bond.
-  bond: { marginTop: space.xl },
+  // One white card for the bond: level, progress and the label you chose.
+  bond: {
+    marginTop: space.xl,
+    marginHorizontal: space.lg,
+    paddingTop: space.lg,
+    borderRadius: radius.tile,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
   bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.sm },
   bondHeart: {
     width: 36,
     height: 36,
-    borderRadius: radius.pill,
+    borderRadius: 11,
     backgroundColor: colors.bondSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
   track: {
-    height: 6,
+    height: 8,
     marginHorizontal: space.lg,
     marginTop: space.md,
-    borderRadius: 3,
-    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.pill,
+    backgroundColor: colors.border,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
-  bondRow: { marginTop: space.sm },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
+  bondRow: { marginTop: space.md, borderTopWidth: 1, borderTopColor: colors.divider },
+  plainRow: { minHeight: 52, justifyContent: 'center', paddingHorizontal: space.lg },
   labelScroll: { maxHeight: 460 },
   labelHint: { marginBottom: space.sm },
   locked: { opacity: 0.5 },

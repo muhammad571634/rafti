@@ -25,14 +25,14 @@ screens:
 | Call, incoming call, call history | `/call/*`, `/call-history` | fits | — |
 | World | `/world/[series]` | fits | — |
 | Chats tab | `/(tabs)/chat` | fits | Tab roots keep the large title. |
-| Find tab | `/(tabs)/find` | small | Two filter rows (chips + underlined tabs); make it one chip row. |
-| Daily check-in popup | over every tab at launch | medium | Centered modal interrupts whatever tab opens first; move to a bottom sheet in the style, shown on Today only. |
-| Character settings | `/character/[id]/settings` | small | h3 sections, line icons instead of 3D per row. |
+| Find tab | `/(tabs)/find` | fits | Done in step 1 (2026-10-09). |
+| Daily check-in popup | — | fits | Step 1: redesigned as a Today-only sheet, then turned off at the owner's request; shells arrive quietly. |
+| Character settings | `/character/[id]/settings` | fits | Done in step 1. |
 | Memories | `/character/[id]/memories` | small | Drop the header subtitle. |
-| Profile | `/profile` | small | h3 sections; one icon style (the 3D alarm among line icons). |
+| Profile | `/profile` | fits | Done in step 1; invite card removed (offer on the Free gifts row). |
 | Edit profile | `/edit-profile` | small | Grey micro labels → h3 sections; interests "+" as a secondary chip. |
-| History (ledger) | `/store/ledger` | small | Left title, `Segmented` for Shells / Call time, white card instead of the peach panel. |
-| Radio | `/radio` | small | Drop header subtitle; line icons or one art per row kept small. |
+| History (ledger) | `/store/ledger` | fits | Done in step 1. |
+| Radio | `/radio` | fits | Done in step 1: selected track card and a time-left bar. |
 | Secret note | `/secret-note/[id]` | small | Header avatar; otherwise close. |
 | Message board | `/board` | small | Orange "+" circle in header → line icon button; empty-state button. |
 | Our dates album | `/date/album` | small | Empty-state button as `secondary`. |

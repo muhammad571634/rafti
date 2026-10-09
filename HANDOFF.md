@@ -90,6 +90,14 @@ npx tsc --noEmit                # must be clean
   onboarding. Development builds: Profile → Developer → "Load sample chats" adds the old sample
   history. Leaving a paid date ends it (`leaveDate`); blocking drops pending board replies. Real-person
   photo checks wait for server moderation (backend plan), not the client.
+- Calm cards step 1 built (prototype approved: https://claude.ai/artifact/LBoVbxLo3LkBedbjmGPQTf):
+  Character settings, Profile, History, Radio and Find now follow `docs/design-style.md`
+  (`SectionLabel tone="section"`, line icons in 36px grey tiles, white cards with 1px borders,
+  `Segmented` for tabs, ink selection). Profile drops the invite-code card ("Invite +50" sits on the
+  Free gifts row; the code lives on Free gifts). Find: who-to-show button beside search, one chip
+  row of worlds, four characters per world with "See all". The daily check-in sheet was redesigned
+  and moved to Today, then the owner asked for no popup at all: check-in shells now arrive quietly
+  (`claimDailyLogin` no longer sets `dailyReward`; set it again to bring the sheet back).
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
