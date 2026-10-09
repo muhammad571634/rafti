@@ -157,6 +157,12 @@ npx tsc --noEmit                # must be clean
   friend, "See all" and routes work as before. The rest of the prototype (Today, Me tab instead of
   Us, chat "+" Do together, Kai's space) waits for the owner.
 
+- World page (2026-10-10): `src/app/world/[series].tsx` now uses the Find portrait cards. The card
+  moved to `src/components/character-card.tsx` (`CharacterCard`, `CARD_GAP`) and Find imports it;
+  behaviour is unchanged (filters, blocked list, add friend, profile route, counts). The unused
+  `CharacterRow` was deleted. Edits are written one whole file at a time because the owner's phone
+  hot-reloads every save (a split edit once showed "HeaderIcon doesn't exist" until a reload).
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

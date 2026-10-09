@@ -2,18 +2,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { CharacterRow } from '@/components/character-row';
+import { CARD_GAP, CharacterCard } from '@/components/character-card';
 import { EmptyState, Header, Screen, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
-/** A whole world from Find: everyone in it, with how many can take a call. */
+/**
+ * A whole world from Find ("See all"): everyone in it as the same portrait cards as Find,
+ * two columns, with how many there are and how many can take a call.
+ */
 export default function WorldScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const { series } = useLocalSearchParams<{ series: string }>();
+  const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - CARD_GAP) / 2);
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -35,30 +40,36 @@ export default function WorldScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.stats}>
-            <Stat icon="people" value={people.length} label={t('find.characters')} />
-            <Stat icon="call" value={voices} label={t('find.canCall')} />
+            <Stat icon="people-outline" value={people.length} label={t('find.characters')} />
+            <Stat icon="call-outline" value={voices} label={t('find.canCall')} />
           </View>
-          {people.map((character) => (
-            <CharacterRow
-              key={character.id}
-              character={character}
-              isFriend={friendIds.has(character.id)}
-              onOpen={() => router.push(`/character/${character.id}`)}
-              onAdd={() => addFriend(character.id)}
-            />
-          ))}
+          <View style={styles.grid}>
+            {people.map((character) => (
+              <CharacterCard
+                key={character.id}
+                character={character}
+                width={cardWidth}
+                isFriend={friendIds.has(character.id)}
+                onOpen={() => router.push(`/character/${character.id}`)}
+                onAdd={() => addFriend(character.id)}
+              />
+            ))}
+          </View>
         </ScrollView>
       )}
     </Screen>
   );
 }
 
-function Stat({ icon, value, label }: { icon: 'people' | 'call'; value: number; label: string }) {
+/** One fact about the world: a line icon in a grey tile, the number, then what it counts. */
+function Stat({ icon, value, label }: { icon: 'people-outline' | 'call-outline'; value: number; label: string }) {
   return (
     <View style={styles.stat}>
-      <Ionicons name={icon} size={18} color={icon === 'call' ? colors.bondText : colors.text} />
-      <Txt variant="figure">{value}</Txt>
-      <Txt variant="smallStrong" color={colors.textMuted}>
+      <View style={styles.tile}>
+        <Ionicons name={icon} size={17} color={colors.text} />
+      </View>
+      <Txt variant="bodyStrong">{value}</Txt>
+      <Txt variant="small" color={colors.textSecondary}>
         {label}
       </Txt>
     </View>
@@ -67,6 +78,15 @@ function Stat({ icon, value, label }: { icon: 'people' | 'call'; value: number; 
 
 const styles = StyleSheet.create({
   scroll: { paddingBottom: space.huge },
-  stats: { flexDirection: 'row', gap: space.xl, paddingHorizontal: space.lg, paddingVertical: space.md },
-  stat: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  stats: { flexDirection: 'row', gap: space.xl, paddingHorizontal: space.lg, paddingTop: space.xs, paddingBottom: space.lg },
+  stat: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  tile: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: CARD_GAP, paddingHorizontal: space.lg },
 });

@@ -23,7 +23,7 @@ screens:
 | Character profile | `/character/[id]` | fits | — |
 | Chat background | `/character/[id]/background` | fits | Already select cards with an ink border. |
 | Call, incoming call, call history | `/call/*`, `/call-history` | fits | — |
-| World | `/world/[series]` | fits | — |
+| World | `/world/[series]` | fits | 2026-10-10: same portrait cards as Find (`src/components/character-card.tsx`), two columns, stats with line icons. |
 | Chats tab | `/(tabs)/chat` | fits | Tab roots keep the large title. |
 | Find tab | `/(tabs)/find` | fits | Done in step 1 (2026-10-09). |
 | Daily check-in popup | — | fits | Step 1: redesigned as a Today-only sheet, then turned off at the owner's request; shells arrive quietly. |

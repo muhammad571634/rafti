@@ -1,13 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { CARD_GAP, CharacterCard } from '@/components/character-card';
 import {
-  CharacterAvatar,
-  characterImage,
   EmptyState,
   PressableScale,
   Screen,
@@ -28,8 +26,6 @@ type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
 /** Characters shown per world before "See all". */
 const PER_WORLD = 4;
-/** Gap between the two card columns. */
-const GAP = 12;
 
 /**
  * Discovery (calm cards, docs/design-style.md): a big apricot "+" to create a character,
@@ -41,7 +37,7 @@ export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - GAP) / 2);
+  const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - CARD_GAP) / 2);
   const allCharacters = useAppStore((s) => s.characters);
   const blockedIds = useAppStore((s) => s.blockedIds);
   const characters = useMemo(
@@ -176,70 +172,6 @@ export default function FindScreen() {
   );
 }
 
-/**
- * A character as a portrait card: picture, name, one line of bio. The add button sits
- * over the picture as a sibling of the card, never inside it (a button in a button is
- * unreachable for screen readers and invalid HTML on web).
- */
-function CharacterCard({
-  character,
-  width,
-  isFriend,
-  onOpen,
-  onAdd,
-}: {
-  character: Character;
-  width: number;
-  isFriend: boolean;
-  onOpen: () => void;
-  onAdd: () => void;
-}) {
-  const { t } = useTranslation();
-  const source = characterImage(character);
-  const imageHeight = Math.round(width * 0.92);
-  return (
-    <View style={{ width }}>
-      <PressableScale
-        scaleTo={0.97}
-        accessibilityRole="button"
-        accessibilityLabel={character.name}
-        onPress={onOpen}
-        style={styles.card}>
-        <View style={[styles.picture, { height: imageHeight }]}>
-          {source ? (
-            <Image source={source} style={StyleSheet.absoluteFill} contentFit="cover" />
-          ) : (
-            <CharacterAvatar character={character} size={width * 0.5} />
-          )}
-        </View>
-        <View style={styles.cardText}>
-          <Txt variant="bodyStrong" lines={1}>
-            {character.name}
-          </Txt>
-          <Txt variant="small" color={colors.textSecondary} lines={1}>
-            {character.bio}
-          </Txt>
-        </View>
-      </PressableScale>
-      {isFriend ? (
-        <View style={[styles.mark, styles.friend]} accessible accessibilityLabel={t('find.friends')}>
-          <Ionicons name="checkmark" size={16} color={colors.white} />
-        </View>
-      ) : (
-        <PressableScale
-          scaleTo={0.88}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('find.add')} ${character.name}`}
-          onPress={onAdd}
-          style={[styles.mark, styles.add]}>
-          <Ionicons name="add" size={20} color={colors.text} />
-        </PressableScale>
-      )}
-    </View>
-  );
-}
-
 /** One world: its name as a section title with "See all", then its first few characters. */
 function WorldSection({
   group,
@@ -274,7 +206,6 @@ function WorldSection({
 }
 
 const CREATE = 48;
-const MARK = 32;
 
 const styles = StyleSheet.create({
   head: {
@@ -309,31 +240,5 @@ const styles = StyleSheet.create({
   },
   worldOn: { backgroundColor: colors.surface, borderColor: colors.text },
   section: { paddingTop: space.xs },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: space.lg },
-  card: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
-  picture: {
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  cardText: { paddingHorizontal: space.md, paddingTop: space.sm + 2, paddingBottom: space.md, gap: 2 },
-  mark: {
-    position: 'absolute',
-    top: space.sm,
-    right: space.sm,
-    width: MARK,
-    height: MARK,
-    borderRadius: MARK / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  add: { backgroundColor: colors.surface },
-  friend: { backgroundColor: colors.bondText },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: CARD_GAP, paddingHorizontal: space.lg },
 });
