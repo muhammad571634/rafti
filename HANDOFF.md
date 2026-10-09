@@ -38,6 +38,12 @@ npx tsc --noEmit                # must be clean
   production risks. Two small bugs found there are not fixed yet: Android back on the call
   screen skips `hangUp` (call time not charged) and diary pages / comeback pushes can quote a
   crisis message.
+- `docs/backend-plan.md` §13 (user's direction): unit economics on 2027 prices, new plan limits
+  (calls 60/150/180 min, voice replies 30/90/120 min, no live voice for free users, 3-day store
+  trial instead of the 15-minute call trial), free tier ~40 shells/day with country-based ad
+  rewards, invisible per-message model routing that is the same on every plan (users never see
+  model names or tiers), and in-app conversion moments. Waiting for approval (§14, items 5–6);
+  no code changed.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 

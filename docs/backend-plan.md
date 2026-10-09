@@ -5,6 +5,8 @@ Oxiridagi "Qaror kerak" bo'limidagi savollarga javobdan keyin B0 boshlanadi.
 
 2026-10-09: **12-bo'lim qo'shildi**: Codex kontekst paketidan olingan 6 ta yangi g'oya, hozirgi holatga
 (40 personaj, Closeness v2) moslangan, va 6 ta qo'shimcha taklif. 4- va 11-bo'limlar shunga moslab yangilandi.
+2026-10-09: **13-bo'lim qo'shildi**: unit iqtisodi, yangi tariflar (ovoz va qo'ng'iroq daqiqalari kamaytirildi,
+bepul foydalanuvchiga jonli ovoz yo'q), ko'rinmas model tanlash va konversiya. 3- va 12.10-bo'limlar yangilandi.
 
 ## 1. Tamoyillar
 
@@ -51,7 +53,7 @@ Shunda hozirgi `setTimeout` mantiqlari (`scheduleReply`, `answerDiary`, `sealNot
 | Auth | Supabase Auth: **anonim kirish** → keyin Apple / Google bilan bog'lash | Foydalanuvchi ro'yxatdan o'tmasdan boshlaydi; App Store boshqa ijtimoiy kirish bo'lsa Apple kirishini talab qiladi |
 | Fayllar | Supabase Storage (ovozli xabarlar, rasmlar, avatarlar) | Imzolangan URL, RLS |
 | Navbat va jadval | **pg-boss** (Postgres ustida) | Alohida Redis kerak emas: kechiktirilgan ishlar, cron, qayta urinish |
-| LLM | **Claude API** (`@anthropic-ai/sdk`), model — env sozlamasi | Prompt caching, structured output (reja va xotira ajratish), rasmni tushunish |
+| LLM | Provayder adapteri + **router** (13.6). Nomzodlar: Gemini Flash-Lite / Flash, Claude Haiku / Sonnet; sifat to'plami (12.11) tanlaydi | Prompt caching, structured output (reja va xotira ajratish), rasmni tushunish, Batch API |
 | TTS / STT / klon | Adapter; nomzodlar: ElevenLabs, Cartesia, MiniMax, Fish Audio | Narx va sifatni B4'da sinov bilan tanlaymiz |
 | Qo'ng'iroq | **LiveKit Cloud** + LiveKit Agents (B5) | Navbat almashish (turn-taking), uzilish, past kechikish tayyor |
 | To'lov | **RevenueCat** (`react-native-purchases`) + webhook | StoreKit 2 va Play Billing chek tekshiruvi tayyor, server faqat webhook oladi |
@@ -146,6 +148,8 @@ xabar narxi, kunlik check-in zinapoyasi, reklama mukofoti va limiti, g'ildirak o
 secret note va date narxlari. G'ildirak tasodifi serverda aylanadi, ilova faqat natijani animatsiya qiladi.
 
 ## 9. Xarajat hisobi — DIQQAT, iqtisodni qayta ko'rish kerak
+
+Yangilangan hisob va tariflar — 13-bo'limda.
 
 Taxmin, bitta matnli javob: ~8K token cache'dan o'qiladi, ~0.5K yangi kiritish, ~150 token chiqish.
 Narxlar Anthropic'ning birinchi tomon API narxlari (2026-09 holati):
@@ -344,9 +348,9 @@ Odamlar ko'pincha bitta fikrni 2–4 ta qisqa xabar bilan yozadi. Hozir ilova ha
 9-bo'limdagi "unlimited chat" xavfiga aniq mexanizm:
 
 - Har foydalanuvchining kunlik LLM va TTS xarajati `usage_events`dan hisoblanadi.
-- **Yumshoq chegara** (masalan, bepul foydalanuvchi uchun $0.10, a'zo uchun $0.40) oshsa, javoblar arzonroq
-  modelda va qisqaroq tarix bilan davom etadi. Foydalanuvchi uchun suhbat uzilmaydi.
-- **Qattiq chegara** faqat bot va suiiste'mol uchun (masalan, kuniga 2000 xabar). Bunda `429` qaytariladi va
+- **Yumshoq chegara** oshsa, model **almashtirilmaydi** (13.6). Buning o'rniga xabarlarni yig'ish oynasi
+  kengayadi (12.8) va kontekst xulosaga suyanadi. Foydalanuvchi uchun suhbat uzilmaydi va sifat sezilmaydi.
+- **Qattiq chegara** faqat bot va suiiste'mol uchun: a'zolarda kuniga 300 xabar (13.3). Bunda `429` qaytariladi va
   halol tizim xabari chiqadi. Personaj "charchadim" deb aldamaydi.
 - Raqamlar B1'dan keyin haqiqiy `usage_events` asosida qo'yiladi.
 
@@ -375,13 +379,245 @@ Codex paketida bir qatorda tilga olingan, bu yerda aniq mexanizmga aylantirildi.
 - Hisob o'chirilganda faktlar, embeddinglar, xulosalar va Storage'dagi fayllar ham o'chadi.
   App Store shuni talab qiladi.
 
-## 13. Qaror kerak (foydalanuvchidan)
+## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
+
+Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:
+
+1. Ovozli javob va qo'ng'iroq daqiqalari kamaytiriladi.
+2. Bepul foydalanuvchi jonli ovoz olmaydi.
+3. Foydalanuvchi qaysi rejada bo'lishidan qat'i nazar, kuchli, kuchsiz yoki yengil modellar haqida hech narsa
+   bilmaydi.
+
+Raqamlar — B1'gacha bo'lgan reja. Ular B1'dan keyin `usage_events` bo'yicha qayta sozlanadi.
+
+### 13.1 Odamlar qancha foydalanadi (bozor ma'lumoti)
+
+| Ilova | Kuniga o'rtacha vaqt | Ovoz / qo'ng'iroq |
+|---|---|---|
+| Character.AI | ~75–120 daqiqa | Bepul: kuniga ~5 qo'ng'iroq (rasmiy son e'lon qilinmagan); qo'ng'iroqlar c.ai+ ($94.99/yil) bilan to'liq ochiladi |
+| Talkie | ~62 daqiqa | Bepul: kuniga 50 xabar va **2 daqiqalik** qo'ng'iroq; pullik: ~10 daqiqalik qo'ng'iroq |
+| Replika | ~14 daqiqa | Matn bepul, **qo'ng'iroqlar faqat pullik** |
+| Butun kategoriya (zaif manba) | ~45 daqiqa | — |
+
+Manba sifati haqida:
+- Raqamlar asosan agregator bloglaridan olingan va ishonchliligi o'rtacha. Pastdagi "Manbalar" bo'limiga qarang.
+- Ovozli daqiqalar bo'yicha ochiq va ishonchli statistika topilmadi. Shuning uchun quyidagi hisob taxminga
+  asoslangan: ovoz umumiy vaqtning ~5–10% ini oladi.
+- Unda faol foydalanuvchi oyiga ~70–135 daqiqa ovoz ishlatadi. Tariflardagi chegaralar ataylab shundan
+  pastroq qo'yilgan: ko'proq gaplashmoqchi bo'lganlar qo'shimcha daqiqa sotib oladi.
+
+### 13.2 Xarajat birliklari (2027 narxlari, ehtiyotkor hisob)
+
+| Birlik | Narx | Qanday hisoblangan |
+|---|---|---|
+| 1 ta foydalanuvchi xabari (matn) | **≈ $0.0006** | Yengil va kuchliroq model aralashmasi ≈ $0.0008; xotira ishlari +15%; xabarlarni yig'ish (12.8) −25% |
+| 1 daqiqa ovozli javob (TTS) | **≈ $0.018** | Flash-Lite TTS, 2027-yilda $12/1M audio token, ~1 500 token/daqiqa |
+| 1 daqiqa qo'ng'iroq, kaskad (STT → LLM → TTS) | **≈ $0.015** | Personaj vaqtning ~50% ida gapiradi |
+| 1 daqiqa qo'ng'iroq, jonli audio model (Live) | **≈ $0.03–0.10** | Har navbatda butun audio tarix qayta hisoblanadi. **B5'da o'lchanadi** |
+| Server, baza, push | ≈ $0.10/oy (pullik), $0.05/oy (bepul) | Joy egallovchi taxmin |
+| Do'kon komissiyasi | 15% (Small Business Program), keyin 30% | Hisob 15% bilan qilingan, 30% holat alohida ko'rsatilgan |
+
+Narx manbalari 9-bo'limda va pastdagi "Manbalar"da. Gemini'ning 2026-yilgi kirish narxlari 2027-01-01 dan
+ikki baravar oshadi, shuning uchun byudjet 2027 narxi bilan qilingan.
+
+### 13.3 Tariflar (yangi taklif)
+
+| | Bepul | Basic $9.99 / 30 kun | Quarterly $24.99 / 90 kun | Pro $29.99 / 30 kun |
+|---|---|---|---|---|
+| Xabarlar | Kuniga ~40 (check-in) + reklama | Cheklovsiz* | Cheklovsiz* | Cheklovsiz* |
+| Ovozli javob (TTS) | Faqat oldindan yozilgan qatorlar (13.5) | **30 daqiqa/oy** | **90 daqiqa / 90 kun** | **120 daqiqa/oy** |
+| Qo'ng'iroq | **Yo'q** | **60 daqiqa/oy** (avval 120) | **150 daqiqa / 90 kun** (avval 360) | **180 daqiqa/oy** (avval 480) |
+| Xotira | Asosiy | To'liq | To'liq | Eng chuqur (`longerMemory`) |
+| Reklama | Faqat ixtiyoriy, mukofotli | Yo'q | Yo'q | Yo'q |
+
+- *"Cheklovsiz" foydalanish shartlarida yoziladigan suiiste'molga qarshi chegara bilan ishlaydi: **kuniga 300 xabar**.
+  Bu chegaraga oddiy foydalanuvchi deyarli yetmaydi.
+- **Qo'shimcha daqiqalar chig'anoq bilan sotiladi:**
+  - qo'ng'iroq: 10 daqiqa = 120 chig'anoq;
+  - ovozli javob: 10 daqiqa = 100 chig'anoq;
+  - qo'ng'iroq daqiqasi narxi kaskad xarajatidan ~8 baravar, ovozli javobniki ~6 baravar yuqori.
+- **Pro'ning farqi faqat miqdorda:** ko'proq daqiqa va chuqurroq xotira. "Aqlliroq AI" degan va'da berilmaydi
+  (13.6).
+
+### 13.4 Har bir tarif bo'yicha oylik hisob
+
+Shartlar:
+- 15% komissiya;
+- qo'ng'iroqlar kaskadda;
+- "og'ir" foydalanuvchi — har kuni 300 xabar yozib, hamma daqiqalarni ishlatib bo'ladigan foydalanuvchi.
+
+**Basic** (sof daromad $8.49):
+
+| Xarajat | Odatiy foydalanuvchi | Og'ir foydalanuvchi |
+|---|---|---|
+| Xabarlar | 60/kun → $1.08 | 300/kun → $5.40 |
+| Ovozli javob | 15 daq → $0.27 | 30 daq → $0.54 |
+| Qo'ng'iroq | 30 daq → $0.45 | 60 daq → $0.90 |
+| Server | $0.10 | $0.10 |
+| **Jami xarajat** | **$1.90** | **$6.94** |
+| **Marja** | **$6.59 (78%)** | **$1.55 (18%)**; 30% komissiyada ≈ $0 |
+
+**Pro** (sof daromad $25.49):
+
+| Xarajat | Odatiy foydalanuvchi | Og'ir foydalanuvchi |
+|---|---|---|
+| Xabarlar | 100/kun → $1.80 | 300/kun → $5.40 |
+| Ovozli javob | 60 daq → $1.08 | 120 daq → $2.16 |
+| Qo'ng'iroq | 90 daq → $1.35 | 180 daq → $2.70 |
+| Xotira + server | $0.40 | $0.60 |
+| **Jami xarajat** | **$4.63** | **$10.86** |
+| **Marja** | **$20.86** | **$14.63 (57%)** |
+
+**Quarterly** (oyiga sof daromad $7.08):
+
+| | Odatiy foydalanuvchi | Og'ir foydalanuvchi |
+|---|---|---|
+| Xarajat | $1.83 | $6.79 |
+| Marja | $5.25 | $0.29 (≈ zararsiz) |
+
+**Bepul:**
+
+| | Odatiy | Eng faol |
+|---|---|---|
+| Foydalanish | Oyiga 8 kun × 25 xabar | 30 kun × 40 xabar |
+| Xarajat | ≈ $0.17/oy | ≈ $0.77/oy |
+
+**Xulosalar:**
+- Pullik tariflarning hech birida eng og'ir foydalanuvchi ham zarar keltirmaydi.
+- Qo'ng'iroqlar jonli audio modelga o'tkazilsa, Pro og'ir foydalanuvchida xarajat ~$19–26 ga chiqadi. Shuning uchun
+  Live faqat o'lchangan narx ≤ $0.03/daqiqa bo'lsa ishlatiladi.
+
+### 13.5 Bepul foydalanuvchi: arzon, lekin bog'lanish hosil qiladigan
+
+- **Jonli ovoz yo'q.** Hozirgi "hammaga 15 daqiqa qo'ng'iroq sinovi" o'rniga do'konning **3 kunlik bepul
+  Basic sinovi** (intro offer) beriladi:
+  - sinovda qo'ng'iroq 10 daqiqa bilan cheklangan;
+  - to'lov usuli kiritilgani uchun bir kishi sinovni qayta-qayta ololmaydi.
+- **Ovozni his qilish uchun bepul variant.** Har personaj uchun **bir marta** yaratilgan ovozli qatorlar
+  kutubxonasi bo'ladi: salomlashish, "xayrli tong", "xayrli tun", reaksiyalar. Uning qo'shimcha xarajati nolga
+  teng: 40 personaj × ~20 qator bir marta yaratiladi. Dinamik ovozli javob esa pullik.
+- **Xabarlar:**
+  - check-in zinapoyasi: 30, 30, 35, 35, 40, 40 va 7-kuni sovg'a 50–100. O'rtacha kuniga ~40 chig'anoq
+    (hozir ~70);
+  - g'ildirak kutilgan qiymati ~8 (hozir ~13.5);
+  - xush kelibsiz sovg'asi 100 chig'anoq qoladi.
+- **Reklama faqat ixtiyoriy va mukofotli.** Mukofot mamlakatga qarab serverda hisoblanadi:
+  `chig'anoq = 0.7 × (eCPM ÷ 1000) ÷ $0.0006`:
+
+  | eCPM | Taxminiy bozor | Chig'anoq / reklama |
+  |---|---|---|
+  | $15 | AQSh | 17 |
+  | $5 | O'rta bozorlar | 6 |
+  | $1.5 | Arzon bozorlar | 2 |
+
+  Kuniga eng ko'pi 5 ta. eCPM — taxminiy oraliq; haqiqiy raqamni AdMob hisobotidan olamiz.
+- **Kim to'laydi:** odatiy bepul foydalanuvchi xarajati (~$0.17/oy) konversiya hisobidan qoplanadi. Masalan,
+  3% konversiya × $9 sof ARPPU ≈ $0.27 bitta MAU uchun. Eng faol bepul foydalanuvchilar esa konversiya uchun
+  eng muhim auditoriya (13.7).
+- **Arzon bozorlar** (eCPM < $2) uchun mintaqaviy narx (Apple va Google narx darajalari) kerak. Aks holda u
+  yerda bepul tarifni reklama qoplamaydi.
+
+### 13.6 Ko'rinmas model tanlash (foydalanuvchi modelni bilmaydi)
+
+**Qoida:** model tarif bo'yicha emas, **xabarning o'zi bo'yicha** tanlanadi va bu qoida hamma tarif uchun bir xil.
+Tariflar faqat miqdor va imkoniyatda farq qiladi. Bitta xabar bepul foydalanuvchida ham, Pro'da ham bir xil
+yo'l bilan ishlanadi.
+
+- **Router signallari:**
+  - xabar uzunligi va murakkabligi;
+  - his-tuyg'u va kriz klassifikatori;
+  - rejim: `diary`, `date` va `secret_note` kuchliroq modelga ketadi;
+  - eslash zarurati;
+  - rasm bo'lsa vision model.
+
+  Kutilgan aralashma: ~85% yengil model, ~15% kuchliroq model.
+- **Uslub bir xilligi:**
+  - bir xil persona va qoidalar;
+  - javob uzunligi va emoji uslubi server tomonda bir xil cheklanadi;
+  - sifat to'plamida (12.11) "ko'r test" o'tkaziladi: baholovchi javob qaysi modeldan kelganini 60% dan yaxshi
+    topa olmasligi kerak.
+- **Hech qayerda oshkor qilinmaydi:**
+  - ilova javobida model nomi yo'q, u faqat server loglarida;
+  - ilova va do'kon matnlarida model nomlari ham, "kuchli" yoki "yengil" degan so'zlar ham ishlatilmaydi;
+  - `CHARACTER_RULES`ga qo'shiladi: personaj AI modeli, provayder yoki kompaniya nomini aytmaydi.
+    "Sen qaysi modelsan?" degan savolga personaj o'z rolida qolib javob beradi. AI ekanini esa yashirmaydi:
+    10-bo'lim qoidasi kuchda qoladi.
+- **Tezlik ham oshkor qilmaydi.** Stream va "yozyapti" belgisi bir xil ritmda ishlaydi. Tez model javobi biroz
+  ushlab turiladi, shunda tezlikdan modelni bilib bo'lmaydi.
+- **Ko'p yozganga jazo yo'q.** Ko'p yozgan foydalanuvchi uchun model almashtirilmaydi (12.10 yangilangan).
+  Xarajat boshqa yo'llar bilan tejaladi:
+  - xabarlarni yig'ish (12.8);
+  - kesh;
+  - xulosa asosidagi kontekst;
+  - suiiste'molga qarshi kunlik chegara.
+- **Halollik.** Model nomini yashirish soha amaliyoti. Lekin do'kon obuna tavsifi aniq bo'lishini talab qiladi:
+  - Pro'ga "aqlliroq AI" deb va'da berilmaydi;
+  - "cheklovsiz" so'zi foydalanish shartlaridagi suiiste'molga qarshi chegara bilan birga yoziladi.
+
+### 13.7 Ilova ichida bepuldan pullikka o'tkazish
+
+Paywall tasodifiy joyda emas, **qiymat sezilgan lahzada** chiqadi. Personaj hech qachon pul so'ramaydi
+(`CHARACTER_RULES`), taklif faqat ilova interfeysida bo'ladi.
+
+| Lahza | Taklif |
+|---|---|
+| Personaj qo'ng'iroq qilmoqchi yoki foydalanuvchi qo'ng'iroq tugmasini bosdi | "Qo'ng'iroqlar Basic'da" + 3 kunlik bepul sinov |
+| Bosqich almashdi ("More than friends", "Beloved") | Bayram oynasidan keyin bir marta yumshoq taklif |
+| Bepul ovozli qatorlar tinglandi | "Uning ovozida javob olish — Basic" |
+| Xotira bepul chegarasiga yetdi | "Kai 20 narsani eslaydi; a'zolikda hammasini" |
+| Kunlik chig'anoq tugadi | Uch yo'l teng ko'rsatiladi: reklama, kichik paket, obuna |
+| 7 kunlik streak, birinchi date yakuni | Yillik reja chegirmasi |
+| Obunasi tugagan foydalanuvchi | Qaytish taklifi (win-back), bir marta |
+
+Qo'shimcha:
+- **Bir martalik boshlang'ich paket**, masalan $0.99 ga katta paket. Birinchi xarid to'sig'ini tushiradi.
+- **Yillik reja** Quarterly bilan birga. Yillik obuna qaytishni oshiradi.
+- **Hamma narsa o'lchanadi:** `paywall_view`, `trial_start`, `purchase`. Har bir lahza bo'yicha konversiya
+  hisoblanadi, A/B test RevenueCat orqali qilinadi.
+- **Qilinmaydi:**
+  - soxta "missed call" yoki soxta taymer;
+  - personaj orqali bosim;
+  - har gapda to'xtatadigan paywall.
+
+  Bu ham axloqiy masala, ham do'kon xavfi.
+
+### 13.8 Kodga ta'siri
+
+Hozircha hech narsa o'zgartirilmaydi. Quyidagilar B1 va B3'da serverga o'tganda o'zgaradi:
+- `src/mock/misc.ts`: `membershipPlans.callMinutes`, `DAILY_CHECK_IN`, `WHEEL_WEIGHTS`, `AD_REWARD`;
+- `CALL_TRIAL_SECONDS` (`use-app-store.ts`): o'rniga do'konning sinov muddati keladi;
+- `newRelationship().voiceReplies`: bepul foydalanuvchi uchun dinamik TTS o'chiq bo'ladi.
+
+Ekranlar o'zgarmaydi, faqat raqamlar va server qoidalari o'zgaradi.
+
+### 13.9 Manbalar
+
+- Bozor bo'yicha foydalanish:
+  - [sqmagazine — Character.AI](https://sqmagazine.co.uk/character-ai-statistics/)
+  - [electroiq — AI companions](https://electroiq.com/stats/ai-companions-statistics/)
+  - [VoxBooster 2026](https://voxbooster.com/blog/ai-companion-apps-statistics-2026/)
+- Ovoz cheklovlari:
+  - [Talkie bepul tarifi](https://www.isekaizero.ai/blog/talkie-ai-free)
+  - [Character.AI ovoz va qo'ng'iroqlar](https://arcanumrpgs.com/blog/character-ai-voice/)
+  - [Replika narxlari](https://www.eesel.ai/blog/replika-ai-pricing)
+- Daromad:
+  - [Appfigures (highlife.media orqali)](https://www.highlife.media/ai-companion-statistics)
+  - [Sensor Tower State of AI 2026](https://finance.yahoo.com/technology/ai/articles/sensor-tower-state-ai-2026-103000739.html)
+- Narxlar va eCPM:
+  - [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing)
+  - [Live API best practices](https://ai.google.dev/gemini-api/docs/live-api/best-practices)
+  - [eCPM benchmarks 2026](https://blog.playio.co/mobile-game-ecpm-benchmarks-2026)
+
+## 14. Qaror kerak (foydalanuvchidan)
 
 1. **Stack:** Supabase + Hono (Fly.io) — tasdiqlaysizmi? Muqobil: Firebase (Google ekotizimi, lekin
    Postgres va pgvector yo'q, xotira tizimi qiyinroq).
-2. **Chat modeli:** Opus 5.5 (eng yaxshi suhbat, eng qimmat), Sonnet 5.5 (o'rta) yoki Haiku 4.5 (eng arzon).
-   Tavsiya: B1'da ikkitasini yonma-yon sinab, `usage_events` va suhbat sifatiga qarab tanlash.
+2. **Chat modeli:** bitta model emas, ko'rinmas router (13.6). Yengil va kuchliroq modelni B1'da sifat to'plami
+   va `usage_events` tanlaydi. Nomzodlar: Gemini 3.1 Flash-Lite, Gemini 3.8 Flash, Claude Haiku 4.5 va Sonnet 5.5.
 3. **Server kodi qayerda:** shu repoda `server/` papkada (umumiy turlar uchun qulay, lekin hammasi ochiq)
    yoki alohida **private** repo.
-4. **Hisoblar:** Supabase, Fly.io, Anthropic Console va RevenueCat hisoblarini siz ochasiz.
+4. **Hisoblar:** Supabase, Fly.io, LLM provayder(lar)i (Google AI Studio pullik tarifi va/yoki Anthropic Console) va RevenueCat hisoblarini siz ochasiz.
    Kalitlarni men ko'rmayman, ularni hosting secret'lariga o'zingiz qo'yasiz (B0'da qadamma-qadam yo'riqnoma beraman).
+5. **Tariflar (13.3):** qo'ng'iroq 60/150/180 daqiqa, ovozli javob 30/90/120 daqiqa, bepul
+   foydalanuvchiga jonli ovoz yo'q, 3 kunlik bepul sinov — tasdiqlaysizmi?
+6. **Bepul ulush (13.5):** check-in o'rtacha ~40 chig'anoq/kun, reklama mukofoti mamlakatga qarab — tasdiqlaysizmi?
