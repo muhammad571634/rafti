@@ -33,6 +33,7 @@ export default function DateScreen() {
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const sharedToday = useAppStore((s) => s.daily.shareDay === todayKey());
   const finishDate = useAppStore((s) => s.finishDate);
+  const leaveDate = useAppStore((s) => s.leaveDate);
   // Only a date paid for on the map plays here; a stray link gets the way back.
   const paid = useAppStore((s) => s.activeDate?.placeId === placeId && s.activeDate?.characterId === characterId);
 
@@ -218,6 +219,8 @@ export default function DateScreen() {
             full
             onPress={() => {
               setLeaving(false);
+              // The date ends here, as the sheet says; the place can be booked again.
+              leaveDate();
               router.back();
             }}
           />

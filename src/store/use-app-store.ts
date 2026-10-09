@@ -297,6 +297,8 @@ interface AppState {
   beginDate: (characterId: string, placeId: string) => SpendResult;
   /** Ends a date: closeness from the hearts won, a polaroid record, a moment and a text from them. */
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
+  /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
+  leaveDate: () => void;
   takePhoto: (characterId: string) => SpendResult;
 
   /* memories, moments, schedules */
@@ -1096,6 +1098,9 @@ export const useAppStore = create<AppState>()(
             moments: s.moments.filter((m) => m.characterId !== characterId),
             schedules: s.schedules.filter((x) => x.characterId !== characterId),
             notes: s.notes.filter((n) => n.characterId !== characterId),
+            // A note waiting on its answer would bring them back after the block.
+            boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
+            activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
             settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
           };
         }),
@@ -1159,6 +1164,8 @@ export const useAppStore = create<AppState>()(
         set({ activeDate: { characterId, placeId } });
         return 'ok';
       },
+
+      leaveDate: () => set({ activeDate: null }),
 
       finishDate: (characterId, placeId, hearts, title) => {
         const place = datePlaceById(placeId);
@@ -1269,7 +1276,7 @@ export const useAppStore = create<AppState>()(
 
         const answered = get().boardPosts.filter((p) => !p.replied && new Date(p.replyAt).getTime() <= now.getTime());
         answered.forEach((post) => {
-          if (!exists(post.characterId)) return;
+          if (!exists(post.characterId) || get().blockedIds.includes(post.characterId)) return;
           const conversationId = get().addFriend(post.characterId);
           const line = post.reply ?? boardReply(post.text);
           appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
