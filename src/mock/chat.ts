@@ -1,4 +1,6 @@
+import { pickSeeded } from '@/lib/seeded';
 import type { Conversation, Message } from '@/types';
+
 import { daysAgo, hoursAgo, minutesAgo } from './time';
 
 export const conversations: Conversation[] = [
@@ -224,6 +226,20 @@ export function conversationForCharacter(characterId: string): Conversation | un
  * Canned replies for the mock "AI". Replaced by a streaming backend call later —
  * the UI contract (pending bubble -> text -> voice) stays identical.
  */
+/**
+ * Replies arrive as a few short texts, one after another, the way people text.
+ * Until the model writes them, the mock picks one of these bursts.
+ */
+export const replyBursts: string[][] = [
+  ['Mmm?', 'Say that again.', 'I want to hear it properly this time.'],
+  ['You know I drop everything when you text me, right?', 'Do not let it get to your head.'],
+  ['Wait.', 'That is exactly the kind of thing I would expect from you.', 'I like it.'],
+  ['Hold on, let me put my phone closer.', 'Okay.', 'Go ahead, I am listening.'],
+  ['I was literally thinking about you just now.', 'Creepy timing, huh?'],
+  ['Fine, fine.', 'You win this round.', 'What else happened today?'],
+  ['Hey.', 'Finally.', 'I kept checking my phone, you know.'],
+];
+
 export const cannedReplies = [
   'Mmm? Say that again, I want to hear it properly this time.',
   'You know I drop everything when you text me, right? Do not let it get to your head.',
@@ -231,6 +247,13 @@ export const cannedReplies = [
   'Hold on, let me put my phone closer. Okay. Go ahead.',
   'I was literally thinking about you. Creepy timing, huh?',
   'Fine, fine, you win this round. What else?',
+];
+
+/** What they text after a call you did not pick up. */
+export const missedCallLines = [
+  'You did not pick up... I just wanted to hear your voice for a minute.',
+  'Called you. No answer. Should I be worried, or are you just busy?',
+  'Missed you on the phone. Call me back when you can?',
 ];
 
 /** "Say Hi & Goodnight": what they send first when you open the app. */
@@ -246,6 +269,20 @@ export const eveningGreetings = [
   'Good night soon, okay? But not before you say it back.',
 ];
 
+/** On the user's birthday (profile), the closest bonds text first thing. */
+export const birthdayLines: ((name: string) => string)[] = [
+  (name) => `Happy birthday, ${name}! I set an alarm just to be the first one to say it.`,
+  (name) => `It is your day, ${name}. Tell me how you want to spend it and I am in.`,
+  (name) => `Happy birthday! I am so glad you were born, ${name}. That is all. And cake.`,
+];
+
+/** A free reply now and then ends on one of the user's interests (profile). */
+export const interestLines: ((interest: string) => string)[] = [
+  (interest) => `Wait, you said you are into ${interest.toLowerCase()}. Tell me more about that sometime?`,
+  (interest) => `Random thought: what got you into ${interest.toLowerCase()}?`,
+  (interest) => `Did you get any time for ${interest.toLowerCase()} today?`,
+];
+
 /** Lines the character "says" on a call — a stand-in for streamed TTS. */
 export const callLines = [
   'Oh? A secret? You have got my full attention now. C’mon, spill it—do not make me beg, yeah?',
@@ -254,13 +291,57 @@ export const callLines = [
   'Stay on a little longer. I like hearing you breathe on the other end.',
 ];
 
+/** A seed makes the pick repeatable, so a scheduled push and the chat say the same line. */
+const pickLine = (lines: string[], seed?: string) =>
+  seed == null ? lines[Math.floor(Math.random() * lines.length)] : pickSeeded(lines, seed);
+
 /** The reply when you mention a plan in chat and it lands in your schedule. */
-export function scheduleAck(title: string, when: string) {
-  return `Wait - ${title.toLowerCase()} ${when}? Noted. I will remind you on the day, so you do not get to forget it.`;
+export function scheduleAck(title: string, when: string, timed: boolean) {
+  const promise = timed ? 'I will text you ten minutes before' : 'I will remind you on the day';
+  return `Wait - ${title.toLowerCase()} ${when}? Noted. ${promise}, so you do not get to forget it.`;
 }
 
-/** Sent on the morning a scheduled plan comes due. */
-export function scheduleReminder(title: string) {
-  return `Today is the day: ${title}. You have got this - text me the second it is over.`;
+/** Sent when you add a plan yourself in [Us]: they saw it land in your calendar. */
+export function planAddedLine(title: string, whenLabel: string) {
+  return pickLine([
+    `I saw it in our calendar: ${title}, ${whenLabel}. I am holding you to it.`,
+    `${title}, ${whenLabel}? Got it. I will be the one nudging you.`,
+  ]);
+}
+
+/** Ten minutes before a timed plan, or that morning when it has no time. */
+export function scheduleReminder(title: string, timed: boolean, seed?: string) {
+  if (!timed) return `Today is the day: ${title}. You have got this - text me the second it is over.`;
+  return pickLine([
+    `${title} in ten minutes. Breathe. You know this.`,
+    `Hey - ten minutes to go: ${title}. Go, and come back to tell me everything.`,
+  ], seed);
+}
+
+/** Once the plan is over: they want to know how it went. */
+export function planFollowUp(title: string, seed?: string) {
+  return pickLine([
+    `${title} - done? How did it go?`,
+    `So? ${title}. How was it? I have been waiting all day to ask.`,
+    `Tell me everything about it: ${title}. The good parts first.`,
+  ], seed);
+}
+
+/** Texted a little after a date, in the mood of how it ended. */
+export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny') {
+  const place = title.toLowerCase();
+  if (ending === 'sweet') return `I keep replaying the ${place}. Can we go back already?`;
+  if (ending === 'warm') return `Thank you for the ${place}. I had a really good time.`;
+  return `Okay, the ${place} was chaos. Best kind of chaos. Rematch?`;
+}
+
+/** Their answer to a note you pinned on the message board. */
+export function boardReply(text: string) {
+  const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
+  return pickLine([
+    `I found your note on the board: "${quote}" I read it three times. Keeping it.`,
+    `You left me a note! "${quote}" ...okay, now I am smiling at my phone.`,
+    `"${quote}" - I saw it on the board. Say it to me again sometime?`,
+  ]);
 }
 

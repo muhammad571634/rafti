@@ -11,6 +11,8 @@ export interface ListRowProps {
   subtitle?: string;
   /** Leading visual: an avatar or an IconTile. */
   left?: React.ReactNode;
+  /** Small mark right after the title text, e.g. a bond level chip beside a name. */
+  titleAfter?: React.ReactNode;
   /** Small mark just before `meta` on the title line, e.g. a pin for a pinned chat. */
   titleAccessory?: React.ReactNode;
   /** Short muted text on the title line's right edge: a time, a price. */
@@ -23,6 +25,8 @@ export interface ListRowProps {
   chevron?: boolean;
   onPress?: () => void;
   accessibilityLabel?: string;
+  /** `large`: bigger title and subtitle with more air, for rows that lead a screen (Today). */
+  size?: 'default' | 'large';
   style?: StyleProp<ViewStyle>;
 }
 
@@ -34,6 +38,7 @@ export function ListRow({
   title,
   subtitle,
   left,
+  titleAfter,
   titleAccessory,
   meta,
   trailing,
@@ -41,16 +46,29 @@ export function ListRow({
   chevron,
   onPress,
   accessibilityLabel,
+  size = 'default',
   style,
 }: ListRowProps) {
+  const large = size === 'large';
+  const titleVariant = large ? 'title' : 'bodyStrong';
   const body = (
     <>
       {left}
       <View style={styles.text}>
         <View style={styles.line}>
-          <Txt variant="bodyStrong" lines={1} style={styles.grow}>
-            {title}
-          </Txt>
+          {titleAfter ? (
+            // The mark hugs the name; the name gives way first when space runs out.
+            <View style={[styles.grow, styles.titleGroup]}>
+              <Txt variant={titleVariant} lines={1} style={styles.shrink}>
+                {title}
+              </Txt>
+              {titleAfter}
+            </View>
+          ) : (
+            <Txt variant={titleVariant} lines={1} style={styles.grow}>
+              {title}
+            </Txt>
+          )}
           {titleAccessory}
           {meta ? (
             <Txt variant="caption" color={colors.textMuted}>
@@ -61,7 +79,7 @@ export function ListRow({
         </View>
         {subtitle ? (
           <View style={styles.line}>
-            <Txt variant="small" color={colors.textSecondary} lines={1} style={styles.grow}>
+            <Txt variant={large ? 'body' : 'small'} color={colors.textSecondary} lines={1} style={styles.grow}>
               {subtitle}
             </Txt>
             {trailing}
@@ -73,14 +91,15 @@ export function ListRow({
     </>
   );
 
-  if (!onPress) return <View style={[styles.row, style]}>{body}</View>;
+  const rowStyle = [styles.row, large && styles.large, style];
+  if (!onPress) return <View style={rowStyle}>{body}</View>;
 
   return (
     <PressableScale
       onPress={onPress}
       scaleTo={1}
       accessibilityLabel={accessibilityLabel ?? title}
-      style={[styles.row, style]}>
+      style={rowStyle}>
       {body}
     </PressableScale>
   );
@@ -95,7 +114,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.sm + 2,
   },
+  large: { minHeight: 68, paddingVertical: space.md },
   text: { flex: 1, gap: 2 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   grow: { flex: 1 },
+  titleGroup: { flexDirection: 'row', alignItems: 'center', gap: space.xs + 2 },
+  shrink: { flexShrink: 1 },
 });

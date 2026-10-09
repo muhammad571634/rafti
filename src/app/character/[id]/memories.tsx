@@ -25,7 +25,6 @@ export default function MemoriesScreen() {
 
   const { t } = useTranslation();
 
-  const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const memories = useAppStore((s) => s.memories);
   const addMemory = useAppStore((s) => s.addMemory);
   const togglePin = useAppStore((s) => s.toggleMemoryPin);
@@ -56,7 +55,6 @@ export default function MemoriesScreen() {
     <Screen background={colors.bgPlain}>
       <Header
         title={t('memories.title')}
-        subtitle={character ? t('memories.subtitle', { name: character.name }) : undefined}
         right={
           <IconButton
             icon="add"
@@ -68,6 +66,7 @@ export default function MemoriesScreen() {
 
       {mine.length === 0 ? (
         <EmptyState
+          icon="jar"
           title={t('memories.empty')}
           hint={t('memories.emptyHint')}
           actionLabel={t('memories.addManual')}

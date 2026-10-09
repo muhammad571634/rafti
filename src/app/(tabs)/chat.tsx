@@ -2,25 +2,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import {
   CharacterAvatar,
-  CountBadge,
-  Divider,
   EmptyState,
-  IconButton,
-  ListRow,
+  PressableScale,
   Screen,
   SearchBar,
   Txt,
 } from '@/components/ui';
 import { relativeStamp } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, Conversation } from '@/types';
 
-const AVATAR = 48;
+const AVATAR = 56;
 
 /** A conversation joined with its character and the name the user knows them by. */
 interface ChatItem {
@@ -29,10 +27,16 @@ interface ChatItem {
   name: string;
 }
 
+/**
+ * Every chat, pinned first: plain rows on the canvas. Search opens from the header's
+ * magnifier; the pencil starts a new chat in Find. Unread chats show their last line in
+ * ink with an ink count.
+ */
 export default function ChatListScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [query, setQuery] = useState('');
+  const [searching, setSearching] = useState(false);
 
   const conversations = useAppStore((s) => s.conversations);
   const characters = useAppStore((s) => s.characters);
@@ -80,14 +84,26 @@ export default function ChatListScreen() {
       .filter(Boolean)
       .join(', ');
 
+  const toggleSearch = () => {
+    if (searching) setQuery('');
+    setSearching((v) => !v);
+  };
+
   return (
     <Screen background={colors.bgPlain}>
       <View style={styles.head}>
         <Txt variant="h1" accessibilityRole="header" style={styles.title}>
           {t('chatList.title')}
         </Txt>
-        <IconButton
-          icon="create-outline"
+        {items.length > 0 ? (
+          <HeaderIcon
+            kind={searching ? 'close' : 'search'}
+            accessibilityLabel={t('common.search')}
+            onPress={toggleSearch}
+          />
+        ) : null}
+        <HeaderIcon
+          kind="pencil"
           accessibilityLabel={t('chatList.newChat')}
           onPress={() => router.push('/(tabs)/find')}
           style={styles.compose}
@@ -96,6 +112,7 @@ export default function ChatListScreen() {
 
       {items.length === 0 ? (
         <EmptyState
+          icon="bubbles"
           title={t('chatList.empty')}
           hint={t('chatList.emptyHint')}
           actionLabel={t('find.title')}
@@ -103,12 +120,15 @@ export default function ChatListScreen() {
         />
       ) : (
         <>
-          <SearchBar
-            value={query}
-            onChangeText={setQuery}
-            placeholder={t('common.search')}
-            style={styles.search}
-          />
+          {searching ? (
+            <SearchBar
+              value={query}
+              onChangeText={setQuery}
+              placeholder={t('common.search')}
+              autoFocus
+              style={styles.search}
+            />
+          ) : null}
 
           <FlatList
             data={visible}
@@ -116,7 +136,6 @@ export default function ChatListScreen() {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             contentContainerStyle={styles.list}
-            ItemSeparatorComponent={RowDivider}
             ListEmptyComponent={
               <Txt variant="small" color={colors.textMuted} center style={styles.noResults}>
                 {t('chatList.noResults', { query: query.trim() })}
@@ -124,27 +143,47 @@ export default function ChatListScreen() {
             }
             renderItem={({ item }) => {
               const { conversation, character, name } = item;
+              const unread = conversation.unreadCount > 0;
               return (
-                <ListRow
-                  left={<CharacterAvatar character={character} size={AVATAR} />}
-                  title={name}
-                  titleAccessory={
-                    conversation.pinned ? (
-                      <Ionicons name="pin-outline" size={13} color={colors.textFaint} />
-                    ) : undefined
-                  }
-                  meta={relativeStamp(conversation.lastMessageAt)}
-                  subtitle={conversation.lastMessagePreview}
-                  trailing={
-                    conversation.muted ? (
-                      <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
-                    ) : (
-                      <CountBadge count={conversation.unreadCount} />
-                    )
-                  }
+                <PressableScale
+                  scaleTo={0.98}
+                  style={styles.row}
+                  accessibilityRole="button"
                   accessibilityLabel={rowLabel(item)}
-                  onPress={() => router.push(`/chat/${conversation.id}`)}
-                />
+                  onPress={() => router.push(`/chat/${conversation.id}`)}>
+                  <CharacterAvatar character={character} size={AVATAR} />
+                  <View style={styles.body}>
+                    <View style={styles.line}>
+                      <Txt variant="title" lines={1} style={styles.name}>
+                        {name}
+                      </Txt>
+                      {conversation.pinned ? (
+                        <Ionicons name="pin-outline" size={13} color={colors.textFaint} />
+                      ) : null}
+                      <Txt variant="small" color={colors.textMuted}>
+                        {relativeStamp(conversation.lastMessageAt)}
+                      </Txt>
+                    </View>
+                    <View style={styles.line}>
+                      <Txt
+                        variant={unread ? 'bodyStrong' : 'body'}
+                        color={unread ? colors.text : colors.textSecondary}
+                        lines={1}
+                        style={styles.preview}>
+                        {conversation.lastMessagePreview}
+                      </Txt>
+                      {conversation.muted ? (
+                        <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
+                      ) : unread ? (
+                        <View style={styles.badge}>
+                          <Txt variant="tiny" color={colors.white} style={styles.badgeText}>
+                            {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
+                          </Txt>
+                        </View>
+                      ) : null}
+                    </View>
+                  </View>
+                </PressableScale>
               );
             }}
           />
@@ -154,9 +193,46 @@ export default function ChatListScreen() {
   );
 }
 
-/** Inset so the line starts under the name, not under the avatar. */
-function RowDivider() {
-  return <Divider inset={space.lg + AVATAR + space.md} />;
+const GLYPH = 26;
+const STROKE = 2.2;
+
+/** The header's search and new-chat glyphs, drawn to match the app-flow prototype. */
+function HeaderIcon({
+  kind,
+  onPress,
+  accessibilityLabel,
+  style,
+}: {
+  kind: 'search' | 'close' | 'pencil';
+  onPress: () => void;
+  accessibilityLabel: string;
+  style?: StyleProp<ViewStyle>;
+}) {
+  return (
+    <PressableScale
+      onPress={onPress}
+      hitSlop={6}
+      scaleTo={0.88}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      style={[styles.headerIcon, style]}>
+      <Svg width={GLYPH} height={GLYPH} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={STROKE} strokeLinecap="round" strokeLinejoin="round">
+        {kind === 'search' ? (
+          <>
+            <Circle cx={11} cy={11} r={6.5} />
+            <Path d="M16 16l4 4" />
+          </>
+        ) : kind === 'close' ? (
+          <Path d="M6 6l12 12M18 6L6 18" />
+        ) : (
+          <>
+            <Path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />
+            <Path d="M13.5 6.5l4 4" />
+          </>
+        )}
+      </Svg>
+    </PressableScale>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -167,10 +243,27 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.sm,
   },
-  title: { flex: 1 },
-  // Pull the button's padding into the gutter so the glyph lines up with the search bar's edge.
-  compose: { marginRight: -space.sm },
+  title: { flex: 1, fontSize: 32, lineHeight: 38 },
+  headerIcon: { width: 46, height: 46, alignItems: 'center', justifyContent: 'center' },
+  // Pull the button's padding into the gutter so the glyph lines up with the list's edge.
+  compose: { marginRight: -space.sm - 2 },
   search: { marginHorizontal: space.lg, marginBottom: space.sm },
-  list: { paddingBottom: TAB_BAR_HEIGHT + space.xxl },
+  list: { paddingHorizontal: space.lg, paddingBottom: TAB_BAR_HEIGHT + space.xxl },
+  row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
+  body: { flex: 1, gap: 3 },
+  line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  name: { flex: 1 },
+  preview: { flex: 1 },
+  // Unread count in ink, like the rest of the calm-cards selection marks.
+  badge: {
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 6,
+    borderRadius: radius.pill,
+    backgroundColor: colors.text,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontWeight: '700' },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
 });

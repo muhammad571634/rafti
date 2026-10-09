@@ -1,20 +1,607 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+## ▶ NEXT STEP — start here (2026-10-07, back to Claude Desktop)
+
+The user worked this day in cloud Claude Code and now continues in **Claude Desktop on Windows**
+(`C:\Users\joray\BIMOBIMO`). Everything from the cloud session is on `local-work` (last commit
+before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
+English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
+
+### 0. Sync the local folder first
+
+```
+cd C:\Users\joray\BIMOBIMO\rafti
+git status                      # package-lock.json may be modified locally: not the user's, discard it
+git checkout -- package-lock.json
+git fetch origin
+git checkout local-work
+git pull origin local-work
+npm install
+npx tsc --noEmit                # must be clean
+```
+
+`../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
+`AGENT-START.md` section 6 is out of date (says F9) — this file wins.
+
+### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
+
+- The user shared `rafti_codex_ready.zip` (Codex, 2026-10-08): the code in it equals old `main`
+  (16 characters); only a context pack of docs was new. Its own `AGENTS.md` was NOT taken (ours wins).
+- `docs/backend-plan.md` §12 now holds the 6 new ideas from that pack, adapted to the current app
+  (40 characters, Closeness v2): memory type/importance, memory lifecycle (superseded facts),
+  structured persona JSON, relationship event stream, a prompt block per mode, a mock LLM provider.
+  Plus 6 of ours: repetition guard, batching quick user messages, `memory_uses`, per-user daily cost
+  cap, an eval set with prompt versions, memory privacy and "forget this". §4 and §11 updated to match.
+- No code or design touched. Backend is still "not now" (see 0b); the plan waits for the user.
+- `docs/audit-2026-10-09.md` (Uzbek, the user asked for it): audit of `src/` at `0b63fd5` —
+  architecture, mock AI flow, LLM seams, memory, relationship, voice/call, economy, top 10
+  production risks. Two small bugs found there are not fixed yet: Android back on the call
+  screen skips `hangUp` (call time not charged) and diary pages / comeback pushes can quote a
+  crisis message.
+- `docs/backend-plan.md` §13 (user's direction): unit economics on 2027 prices, new plan limits
+  (calls 60/150/180 min, voice replies 30/90/120 min, no live voice for free users, 3-day store
+  trial instead of the 15-minute call trial), free tier ~40 shells/day with country-based ad
+  rewards, invisible per-message model routing that is the same on every plan (users never see
+  model names or tiers), and in-app conversion moments. Approved on 2026-10-09 (§15, items 5–6);
+  no code changed.
+- Later the same day the user handed over the founder role ("choose the business model, build it end to
+  end"). Done:
+  - `docs/business-plan.md` (Uzbek): market, competitors, positioning, subscription-first revenue,
+    launch order (CA/AU/NZ → US/UK → CIS via Telegram), payouts and legal entity from Uzbekistan,
+    break-even model, KPIs, compliance (NY GBL 47, CA SB 243, age laws), roadmap with B3 (payments)
+    moved before B2.
+  - `docs/backend-plan.md` §14 explains how plans and limits work in the backend and the UI; §15 holds
+    the decisions. A yearly plan ($79.99, Basic limits) was added as a founder decision.
+  - Prototype of the plan screens for approval (Design canvas, 6 artboards):
+    https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv. Do not build these screens before the user
+    approves them.
+  - Fixed: diary pages and comeback pushes no longer quote a crisis message (a heavy day gets a gentle
+    page with no quote); the call screen books the time talked however it closes (Android back
+    included); creating a character charges the 60-shell voice clone only when the character is
+    actually made, and leaving the screen cancels it.
+  - Next: B0 once the user opens the accounts (§15.4) and makes the repo private.
+- The user approved the prototype and the screens are now built (F17 "Plans and limits", done):
+  - Rules live in `src/economy/plans.ts` (pure, server-portable): plans, the 3-day trial, periods,
+    minutes (plan first, then packs bought with shells; packs last 90 days; no rollover), fair use
+    300 messages a day. The store wallet keeps a mock `subscription` and `packs`; Membership and the
+    call-time balance are gone (persist v7 moves a running membership to the same plan from today).
+  - Store: Plans / Shells tabs (`/store/shell?tab=shells&plan=pro`), Basic with Monthly / 3 months /
+    Yearly, Pro, fine print, Restore; a one-time starter pack (300 for $0.99) until the first purchase.
+  - `src/app/my-plan.tsx` (Profile → My plan): member, trial and free views, minutes left with bars,
+    top-ups (10 min calls 120 shells, 10 min voice 100), manage and restore. Dev builds: Profile →
+    Developer → End plan.
+  - Sheets in `src/components/plans/`: free user's call sheet (mock 6-second voice sample, trial
+    starts the call), out-of-minutes sheet (before a call, and mid-call where adding minutes
+    resumes it). Out-of-shells sheet redone with three equal ways on (ad or spin, shells, Basic).
+  - Chat: "AI character" under the name, the "{name} is an AI character, not a real person." line at
+    session start and every 3 hours, voice replies only with plan minutes (a once-a-day note links
+    to My plan when they run out), fair-use line and a locked composer until 00:00. Call screen:
+    "N min left" pill from 2 minutes.
+  - Checked on web at 375×812 (screens, trial → call, top-up → resume, paywall → store, v6 → v7
+    migration). Purchases are mocked: real builds plug StoreKit / Play Billing (RevenueCat) into
+    `subscribe`, `topUpMinutes` and `addShells` (backend-plan §14).
+- The user liked the F17 look and made it the design method for the whole app: `docs/design-style.md`
+  (rule added to `AGENTS.md`). Backend waits; first the frontend flows are fixed and older screens
+  are brought to this style. `docs/design-audit.md` grades every screen (fits / small / medium /
+  approved) and gives the order: shared pieces first, then the daily check-in as a sheet on Today,
+  then the "medium" screens one by one with a prototype each. Approved screens only on request.
+- Codex review on PR #4 (owner agreed 2026-10-09): a new install now starts empty (no sample chats,
+  bonds, diary pages or calls; 0 shells until the welcome gift), with only the friend picked in
+  onboarding. Development builds: Profile → Developer → "Load sample chats" adds the old sample
+  history. Leaving a paid date ends it (`leaveDate`); blocking drops pending board replies. Real-person
+  photo checks wait for server moderation (backend plan), not the client.
+- Calm cards step 1 built (prototype approved: https://claude.ai/artifact/LBoVbxLo3LkBedbjmGPQTf):
+  Character settings, Profile, History, Radio and Find now follow `docs/design-style.md`
+  (`SectionLabel tone="section"`, line icons in 36px grey tiles, white cards with 1px borders,
+  `Segmented` for tabs, ink selection). Profile drops the invite-code card ("Invite +50" sits on the
+  Free gifts row; the code lives on Free gifts). Find: who-to-show button beside search, one chip
+  row of worlds, four characters per world with "See all". The daily check-in sheet was redesigned
+  and moved to Today, then the owner asked for no popup at all: check-in shells now arrive quietly
+  (`claimDailyLogin` no longer sets `dailyReward`; set it again to bring the sheet back).
+
+- Calm cards step 2 (2026-10-10, Desktop; the user said to go on in the same style without a new
+  prototype): Memories (no header subtitle), Edit profile (h3 sections, white "+" chip, ink meter and
+  camera badge, bordered About box), Secret note (no header avatar, h3 "Your note", white action bar),
+  Board (line "+" icon button, `bgPlain`), Our dates (`bgPlain`). `EmptyState` uses a `secondary`
+  button and the new empty-state art: the user asked to replace Rafti's empty box, so Rafti now
+  listens to a seashell (Higgsfield, grok-imagine-image-2.0, 1 image ≈ $0.08; raw in
+  `../BIMOBIMOdesignraw/empty_state.png/rafti-empty-shell.jpg`, cut with `key_out`). Next: the
+  "medium" screens, Free gifts first, each with a prototype.
+
+- Free gifts restyled (2026-10-10, prototype approved: https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2):
+  `src/app/gifts.tsx`. Check-in days sit in one white card; the wheel (and its spin animation) is
+  unchanged, with a status pill ("1 free spin" / "Watch to spin" / "Back tomorrow"); video, share
+  and invite are equal rows with secondary buttons in one "More shells" box, so the sticky ad bar
+  and the big orange Invite button are gone (the wheel's Spin is the one orange control). Invite
+  code row with copy, then "Have a code?". `ShellBadge tone="neutral"` is the grey header pill.
+  Next "medium" screen: Create character (prototype first).
+
+- Create character restyled (2026-10-10, prototype approved: https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb):
+  only the look of `src/app/create-character.tsx` changed (state, checks, charging and edit mode are
+  as before). Sections with h3 titles, sub-field labels in grey, no red asterisks (the error line in
+  the action bar names what is missing), chips grey → white with a 2px ink border when chosen, ink
+  checkboxes, line camera / mic icons instead of clay art, `Segmented` for stock vs cloned voice,
+  bottom action bar (error, Create button, "Only you can see them" / review note).
+  Next "medium" screen: Contacts (prototype first).
+
+- Contacts restyled (2026-10-10, prototype approved: https://claude.ai/artifact/NHyErhmApd5hygWMjFGGjE):
+  `src/app/contacts.tsx` is a list now, closest first (level, then intimacy), with `Segmented`
+  All / Created by you and a "Create a character" row on top; the empty "Created by you" tab
+  offers Create instead of Find. The owner said to leave the Create character button as it is
+  (it does not look dimmed on an empty form; not touched). Next "medium" screen: Photo Booth.
+
+- Photo Booth restyled (2026-10-10, prototype approved: https://claude.ai/artifact/CuA2RSMFXEjpDmWW9U1ER3):
+  white preview card (portrait on grey, "You & Name", style), With (avatars with names, ink ring),
+  Style as 2×2 option buttons, "Your photos" after the first shot, action bar "Take a photo · 8".
+  The header shows the shell balance; the film count was shown but never spent, so it is gone.
+  Still a mock: no image is generated, the style is not sent anywhere, shots vanish when the
+  screen closes; a shot spends 8 shells, adds 6 closeness and a photo moment on Us. A real build
+  needs an image model and a saved gallery (backend). Next "medium" screen: Bedtime.
+
+- Bedtime restyled (2026-10-10, prototype approved: https://claude.ai/artifact/HQ2SXLrXx9SLpCPAeb5yMP):
+  the night canvas stays; header has no subtitle; under the scene a status line ("Sleep with Kai"
+  or the running clock with "Kai is whispering"); Who (avatars with names, white ring) and Sleep
+  timer (5 equal buttons) as h3 sections; action bar with Sleep together / Stop (secondary) and a
+  line on when it stops. Still a mock: free, no audio plays, the timer just counts down; real
+  builds stream a whisper track with expo-audio (backend voices). With this, every "medium" screen
+  in `docs/design-audit.md` follows the calm-cards style; only the approved screens differ, and
+  they change only when the owner asks.
+
+- App-flow prototype (11 screens, 2026-10-10): https://claude.ai/artifact/JTwiRZbdTJtV3czQF3ahdi.
+  The owner approved only three screens for code, "touch nothing else, keep the logic":
+  onboarding "meet" step (2x2 select cards; `src/app/onboarding.tsx`, other steps and the progress
+  bar untouched), Chats tab (search opens from the magnifier, pencil goes to Find, ink unread
+  count drawn locally; shared `CountBadge` unchanged), Find tab (48px apricot create button,
+  `Segmented` Everyone / Him / Her replacing the cycling button, local world chips, portrait cards
+  per world; `CharacterRow` is still used by the world page). Search, filters, blocked list, add
+  friend, "See all" and routes work as before. The rest of the prototype (Today, Me tab instead of
+  Us, chat "+" Do together, Kai's space) waits for the owner.
+
+- World page (2026-10-10): `src/app/world/[series].tsx` now uses the Find portrait cards. The card
+  moved to `src/components/character-card.tsx` (`CharacterCard`, `CARD_GAP`) and Find imports it;
+  behaviour is unchanged (filters, blocked list, add friend, profile route, counts). The unused
+  `CharacterRow` was deleted. Edits are written one whole file at a time because the owner's phone
+  hot-reloads every save (a split edit once showed "HeaderIcon doesn't exist" until a reload).
+
+- Notifications, dating map and diary (2026-10-10, prototype https://claude.ai/artifact/3hXyMMNHVDaa6v9SpDt4RQ;
+  owner: N1, N2, D1, H1-H4 "1:1, keep the logic"; D2-D4 untouched):
+  - N1 `src/app/notifications/index.tsx`: an inbox, nothing new recorded. `src/lib/inbox.ts`
+    (`buildInbox`, pure) reads character diary pages, missed incoming calls, plans whose reminder
+    went out, level-up moments, answered board notes and today's unused free spin (last 14 days).
+    Store: `inboxSeenAt` (persisted, null on new installs) + `markInboxSeen()`; unread = newer than it.
+    Rows open the diary page, the chat, Us, the profile, the board or Gifts.
+  - N2 `src/app/notifications/settings.tsx` (was `src/app/notifications.tsx`): same switches and
+    quiet-hour logic; line icons, one-line hints, From/Until buttons; `LockPreview` is a grey card.
+  - D1 `src/app/dating.tsx`: white place cards (art on tint, lock badge, price or level), partner
+    pill with level, white action bar. Partner sheet, place sheet, paywall and rounds unchanged;
+    Rooftop moved to x 0.24 so cards do not overlap.
+  - H1 `src/app/diary/index.tsx`: same cards/sort/calendar logic; covers lean ±7° and fade, arrows
+    step through them, grey date pill with calendar icon, My diary uses the diary cover art, action
+    bar. The blurred backdrop behind the carousel was removed to match the prototype.
+  - H2 diary page: own header with avatar, round pager, ruled paper with date, mint mood and
+    signature, "Chat with X" + source line. The page's info button was dropped (rules live on H1).
+  - H3 diary write: everything inline (mood chips, ruled handwriting paper, B/U/S/I and photos,
+    "Who can read it?" row, Save in the action bar); the save sheet is gone, empty Save still leaves.
+  - H4 `DiaryRulesSheet`: sticker, "How the diary works", three steps in one box, Got it.
+  - Typed routes: after moving `notifications.tsx` into a folder the running Metro kept writing a
+    stale `.expo/types/router.d.ts` (`/notifications/index`). Restart Metro (`npx expo start -c`)
+    if tsc complains about `/notifications`.
+
+### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
+
+User's answers to the options: 1 Backend = **not now** (frontend design not finished);
+2 Edit character = **done**; 3 fixes = **done** (clean, in the shared component);
+4 Push = **research + plan written, waiting for approval**; plus the Today card must follow
+the last conversation = **done**.
+
+- Today hero: the character you last wrote to / spoke with on a call (`lastTalkedAt`,
+  `featuredFriend`); rules and the chain in `docs/today-hero.md`. 24 characters have no wide
+  scene yet: ready prompts in `docs/nano-banana-heroes.md` (user makes them in Nano Banana).
+- Edit character: Settings → Edit character (own creations only) → `/create-character?id=`.
+  Not clicked through with a real photo on web (the web image picker could not be fed in the
+  test); validation, prefill and the not-found guard were checked.
+- Fixed: `EmptyState compact` collapsed on web (`flex: 0` → `flex-basis: 0%`), which made the
+  mascot overlap the History card; History call tab no longer shows the shells hint.
+- Push **built** (F16, local notifications): user chose 8 a day, stop after day 14, text hidden by
+  default; support e-mail stays a mock. How it works and what is left: `docs/push-plan.md` §6.
+  The user tests on the phone in parallel. Note: after `npx expo install`, the first web bundle
+  took minutes; restart the dev server if the page stays blank.
+- Profile → Notifications screen built from the approved prototype (artifact
+  https://claude.ai/artifact/1Zm9bcWHmJ1XXNr8kCtypx). Gemini is building the Android dev build
+  (`docs/agent-tasks/android-dev-build.md`; its result goes at the end of that file).
+- Hero scenes: all 40 characters have one. Unused renders sit untracked in
+  `assets/raw/heroes-review/` and `assets/raw/heroes-rejected/` (the user's to keep or delete).
+- Home reordered at the user's request (2026-10-07): Today card → 10 module icons (4 columns,
+  large clay art on the bare canvas, no label) → Chats → Today rows → Daily gift. Logic unchanged.
+- Home below the icons made minimal (2026-10-07, user's request): Chats and Today as bold `h2`
+  headings in ink (`SectionLabel tone="title"`), plain rows on the canvas with no card, no lines,
+  no grey tiles (`ListRow size="large"`, clay art `tile={false}`). The Daily gift card left Home
+  (deleted; the gift claims itself on launch and the 7-day ladder lives on Gifts, whose icon gets a
+  dot while today's gift waits). Today lists only plans still ahead, soonest first.
+- **House style since 2026-10-07 (user's wish, "ChatGPT-like"):** no cards, shadows or divider
+  lines on screens; sections get bold ink headings (`SectionLabel tone="title"`), rows are
+  `ListRow size="large"` on the bare canvas, icons bare (`ClayIcon tile={false}`, `IconTile
+  background="transparent"`). Done: Today, Chats, Find, world list, Us, Profile, character profile
+  and settings, Store (pack/plan cards keep a thin border: they are choices). Not touched: Diary,
+  Onboarding (approved), the chat thread, sheets.
+- Next candidates: the notification image
+  (portrait), hero scenes when the user sends them (`docs/nano-banana-heroes.md`).
+
+### 1. DONE (2026-10-07, Desktop): the 23 character portraits are wired in
+
+All 40 characters now have a portrait (`assets/avatars/c_<id>.png`, raws in
+`assets/raw/avatars/c_<id>.jpg`); checked in Find, a world list and a profile at 375x812.
+Nadia had two takes; the user picked `802fb1e0…` (the unused one stays untracked in
+`assets/images/`). Next: offer the section 2 options below (and, optionally, hero scenes).
+
+The original instructions, kept for reference:
+
+The user has **finished all portraits in Nano Banana** and will hand them over (in chat or as files).
+
+1. Each portrait goes to `assets/raw/avatars/c_<id>.png` (or `.jpg`). Ids, in the order of
+   `docs/nano-banana-portraits.md`: c_jun, c_noah, c_tessa, c_felix, c_vesper, c_rhys, c_lyra,
+   c_kael, c_orin, c_corvin, c_haze, c_rio, c_dex, c_ari, c_juno, c_cass, c_marco, c_ivy,
+   c_gideon, c_ren, c_hugo, c_nadia, c_cole. (c_rowan is already in.) If the user sends files
+   with other names, match them by the face/description in `docs/characters-plan.md` and ask
+   when unsure — never guess silently.
+2. Look at each image before using it: an adult, not Kai's face, no text or logo. Report any that
+   look off and ask for a redo instead of shipping it.
+3. `python scripts/build-brand-art.py characters` — crops to 512px squares into
+   `assets/avatars/c_<id>.png` and rewrites `assets/avatars/registry.ts` from what is in
+   `assets/avatars/` (the existing 17 stay). Commit the raw files too.
+4. `npx tsc --noEmit`, then `npx expo start --web` (`.claude/launch.json` → `bimobimo-web`,
+   375×812): check Find (all four worlds, Everyone / Him / Her) and a character profile.
+5. Update `docs/characters-plan.md` status, a line here, commit and push to `local-work`
+   (standing permission), tell the user in Uzbek what was done.
+
+Optional after that: hero scenes (16:9, Today card). The prompt is in `docs/characters-plan.md`
+("Shared hero scene prompt" + each character's `{PLACE}`); attach the character's new portrait
+plus `assets/heroes/c_sol.jpg`. Files go to `assets/raw/heroes/c_<id>.png`, same build command.
+Not asked for yet — offer, don't do.
+
+### 2. Then offer the user these, in this order (they choose)
+
+1. **Backend** — the real AI (Claude API), moderation and voices. Plan: `docs/backend-plan.md`
+   (Uzbek); open decisions in its section 12, first one: which Claude model for chat.
+   Character rules for the model are ready in `src/ai/rules.ts`.
+2. **Edit a created character** (F15 follow-up): there is no edit screen yet.
+3. Small fixes: History "Call time" empty state — the mascot overlaps the rule card
+   (`src/app/store/ledger.tsx`); the support address `SUPPORT_EMAIL` in `src/ai/safety.ts` is a
+   placeholder — ask the user for the real one.
+4. Push notifications (`expo-notifications` is not installed; reminders, birthday wishes and
+   morning messages only arrive while the app is open).
+
+### 3. What exists now (all on `local-work`)
+
+- Flows F1-F15 done: `docs/flows.md`.
+- Cast: 40 originals, 10 per world, `gender` on every character, Find filter Everyone / Him / Her
+  (`src/mock/characters.ts`, `docs/characters-plan.md`; faces are a global mix by the user's decision).
+- 18+ content rules approved: `docs/content-policy.md` (human) and `src/ai/rules.ts` (model).
+  Built: Report in chat, Block (character settings) / Unblock (Profile → Blocked), helpline card
+  after crisis messages (`src/ai/safety.ts`), "AI" mark on profiles, Profile → Support.
+- F15 create character: traits, speaking style, role, stock or cloned voice, 18+ and rights checks
+  (`src/app/create-character.tsx`, `src/lib/create-character.ts`).
+- 3D clay icons: four sheets wired everywhere listed in `docs/icons-3d.md`.
+- Build script: `python scripts/build-brand-art.py icons | characters` (cloud-friendly modes).
+
+### 4. Gotchas
+
+- Metro sometimes serves an old bundle after edits: stop the server and start it with `--clear`
+  (on Windows also delete `%TEMP%\metro-cache` and `%TEMP%\metro-file-map-*`).
+- Expo typed routes can go stale and break `tsc`: delete `.expo/types/router.d.ts` and restart.
+- Approved screens are not to be redesigned (Diary, Onboarding, Home).
+- Android Expo Go cannot run `expo-notifications` (throws on import). Never import it at the top
+  level; use `notificationsModule()` from `src/notifications/native.ts`. Real push testing needs a
+  development build (`npx expo run:android` over USB; the Android SDK is installed on this PC).
+
+---
+
+## Cloud session log (2026-10-07) — details of what was built
+
+### Earlier top block (kept for detail)
+Foydalanuvchi lokal Claude Desktop'dan (Windows, `C:\Users\joray\BIMOBIMO`) **bulutdagi Claude Code**'ga o'tdi.
+Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham shu faylga ko'chirildi
+(pastdagi "Foydalanuvchi afzalliklari" bo'limi), boshqa joyga qarash shart emas.
+
+1. **F1-F14 tayyor (F14 Profil 2026-10-07, bulut sessiyasida).** Holat jadvali va tartib: [`docs/flows.md`](docs/flows.md).
+   3D ikonkalar 2-, 3- va 4-to'plami ulandi. Personajlar katalogi (b): 40 ta personaj kodda, portretlar
+   kutilmoqda (Rowan sinovi birinchi). Pastdagi 4-bandga qarang.
+2. **Har bir F oqimini qurish tartibi** (shu tarzda ishlandi, foydalanuvchiga yoqdi):
+   1. `docs/flows.md` dagi BIMOBIMO `#N` skrinshotlarini oching (`../rafti-research/`, indeks
+      `teardown/screens.md`). Faqat shu oqimnikini oching, 133 tasini emas.
+   2. Ilovadagi mavjud kodni ko'ring, nima bor va nima yo'qligini ajrating.
+   3. Butunlay yangi ekran bo'lsa, avval HTML prototip (claude.ai Artifact) ko'rsating va tasdiq oling.
+      Mavjud ekranni kengaytirish bo'lsa, to'g'ridan-to'g'ri kodga ruxsat bor ("next" = davom et).
+   4. Kod yozing. Mantiq zanjirga ulanadi: oqim avvalgi va keyingi oqimga ta'sir qiladi
+      (chat → kundalik, uchrashuv → yaqinlik + ertasi kundalik, reja → eslatma, ulashish → +6).
+   5. `npx tsc --noEmit` toza o'tadi; `npx expo start --web` va brauzerda 375×812 tekshiriladi.
+   6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
+   7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
+   8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
+3. **F14 Profil — kodda tayyor** (BIMOBIMO #130, #131, #133). Foydalanuvchi "to'liq tayyorla" dedi, prototipsiz qurildi:
+   - `src/app/profile.tsx`: katta avatar va ism, "Edit profile" kartasi foiz chizig'i bilan, taklif kodi kartasi
+     (nusxa + "+50 ›" → Free gifts, u yerda qoidalar va "Have a code?"), Account: Membership, Free gifts;
+     til qatori faqat 2+ til bo'lsa ko'rinadi; eng pastda "Delete account" → markaziy tasdiq oynasi →
+     `deleteAccount()` store'ni boshlang'ich holatga qaytaradi (`getInitialState`) va `/onboarding` ga o'tadi
+     (server hisobni keyin o'chiradi);
+   - `src/app/edit-profile.tsx`: rasm (image picker, 2 MB gacha), Name, Pronouns, Birthday (oy+kun; yil 18+
+     javobidan, o'zgarmaydi), Job, Interests (24 tadan 10 tagacha), About me (150). Har qator o'z sheet'ida
+     saqlanadi, "Save changes" yo'q. Sheet'lar: `src/components/profile/field-sheets.tsx`, foiz chizig'i
+     `completion-meter.tsx`, qoidalar va ro'yxat `src/lib/profile.ts` (`profileCompletion`: 7 qism);
+   - zanjir: tug'ilgan kunda ertalab (7:00 dan) eng yaqin 3 do'st tabrik yozadi, yiliga bir marta
+     (`birthdayLines`, `user.birthdayWishedYear`); erkin javoblarning ~20% qiziqishlardan biri haqida savol bilan
+     tugaydi (`interestLines`). Server AI bo'lganda profil promptga beriladi.
+   - Bulutda Metro fayl o'zgarishini ko'rmay qolishi mumkin: `npx expo start --web --clear` bilan qayta ishga tushiring.
+4. **Ochiq ishlar (foydalanuvchi bilan kelishilgan, unutmang):**
+   - **3D clay ikonkalar — 2-to'plam ulandi (2026-10-07):** `assets/raw/icons-3d-sheet-2.jpg` (sovg'a, do'kon,
+     do'stlar, radio, igna, oy, kamera, kalendar, lupa, kompas, nota, qulf). Skript endi bir nechta varaqni
+     o'qiydi (`ICON_SHEETS`). Ulangan joylar: Home Explore (10 tasi), Home Today qatorlari, Us "+" va momentlar,
+     Free gifts, Profil "They reach out"; `ClayIcon` ga `dot` va `radius` qo'shildi. 3-to'plam ham ulandi
+     (`icons-3d-sheet-3.jpg`): Date xaritasi, quiz to'plamlari, quyosh (ertalab), samolyot (ulashish), uchqunlar
+     (tanishuv), yurak-strelka (daraja). Mock'larda `emoji` o'rniga `icon: ClayIconName`. 4-to'plam ham ulandi
+     (`icons-3d-sheet-4.jpg`, keng varaq; shisha ikonkalar `GLASS_ICONS` bilan kesiladi): Radio, foto budka,
+     Contacts "Add one", "Our dates", xotiralar, personaj sozlamalari, Daily calls, quiz natijasi, History "Call
+     time", bo'sh chatlar (`EmptyState icon`). Hammasi: [`docs/icons-3d.md`](docs/icons-3d.md).
+   - Ko'rildi, tuzatilmagan: History "Call time" bo'sh holatida maskot rasmi tepadagi qoida kartasiga tegib turadi.
+   - **Personajlar katalogi** (foydalanuvchi so'ragan, 2026-10-07): BIMOBIMO'dagi real idol/franchise personajlar
+     bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
+     personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga
+     oshirish (har dunyoda 8-10), rasmlarni foydalanuvchi Nano Banana'da chizadi, bio'ni agent yozadi.
+     **(b) tanlandi va kodda (2026-10-07):** 24 yangi personaj, har dunyo 10 tadan, jami 40
+     (`src/mock/characters.ts`, reja va promptlar `docs/characters-plan.md`). `Character.gender` qo'shildi, Find'da
+     Everyone / Him / Her filtri (BIMOBIMO'da bunday filtr yo'q, katalogi deyarli faqat erkaklar).
+     Rasmlar kutilmoqda: birinchi sinovda bo'sh `{...}` li umumiy prompt ikki namuna bilan berilib, Kai chiqdi —
+     endi tayyor promptlar bor (portretga faqat `c_kai.png`, sahnaga yangi portret + `c_sol.jpg`).
+     Rasm kelganda: `assets/raw/avatars/c_<id>.png|jpg` (sahna: `assets/raw/heroes/`) ga qo'ying va
+     `python scripts/build-brand-art.py characters` — portret 512px bo'lib `assets/avatars/` ga tushadi, registry
+     o'zi yangilanadi. Rowan (`c_rowan`) birinchi bo'lib ulandi, sinov muvaffaqiyatli.
+   - **Kontent qoidalari (18+):** [`docs/content-policy.md`](docs/content-policy.md) — ochiq, lekin chegaralari bor
+     (romantika va kuchli xarakterlar ha; aniq jinsiy kontent "fade to black", voyaga yetmaganlar, real odamlar,
+     zo'ravonlikni romantika qilish yo'q). Foydalanuvchi tasdiqladi va qurildi
+     (2026-10-07): chatda Report (sabablar oynasi, `reports`), personaj sozlamalarida Block (bog'lanishni o'chiradi,
+     Find'dan yashiradi; Profil → Blocked'da qaytarish), Profil → Support (`SUPPORT_EMAIL` — vaqtinchalik manzil,
+     haqiqiysini qo'yish kerak), inqiroz xabaridan keyin yordam liniyasi kartasi (`src/ai/safety.ts`), profilda "AI"
+     belgisi. LLM uchun qoidalar: `src/ai/rules.ts` (server keyin system promptga qo'yadi + moderatsiya).
+   - **F15 Personaj yaratish — kodda tayyor (2026-10-07):** `src/app/create-character.tsx` qayta qurildi. BIMOBIMO
+     tuzilmasi (rasm, ovoz klipi, tavsif, salom, ko'rinish) + standart (Character.AI/Talkie): xarakter belgilari (5 tagacha),
+     gapirish uslubi, munosabat turi, tayyor ovoz (bepul) yoki klon (60 chig'anoq + rozilik belgisi), rasm huquqi
+     belgisi, yosh 18+ majburiy. `checkCreation` (`src/lib/create-character.ts`): voyaga yetmagan va aniq jinsiy
+     so'zlarni rad etadi; asosiy moderatsiya serverda. Ommaviy personaj `review: 'pending'` (profilda "Public after
+     review"). Yangi `Character` maydonlari: `age`, `speakingStyle`, `role`, `voicePreset`, `visibility`, `review` —
+     `buildCharacterPrompt` ularni ishlatadi. Keyin: tahrirlash, rasmni AI bilan chizish (server), tayyor ovozlarni
+     tinglash (TTS bo'lganda).
+   - **Yuzlar (foydalanuvchi qarori):** global ilova, har dunyoda turli kelib chiqish; har bir portret promptida
+     kelib chiqish yozilgan (`docs/characters-plan.md`).
+   - **Til qoidasi (foydalanuvchi, 2026-10-07):** kod, izohlar, commitlar va agentlar uchun hujjatlar faqat ingliz
+     tilida (AGENTS.md ga yozildi). Foydalanuvchiga javob o'zbekcha.
+   - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
+5. **Dizayn qoidalari** (2026-10-09 dan asosiy uslub: `docs/design-style.md`): interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
+   ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
+   to'q sariq tugma; mint faqat munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
+   Yozish maydoni bor sheet'larda `Sheet avoidKeyboard`, maydonga `autoFocus` qo'ymang.
+6. **Muhit (bulut):**
+   - Repo: `muhammad571634/rafti` (public), branch **`local-work`**. Strategiya hujjatlari: private
+     `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown` — repo yonidagi `../rafti-research/` ga
+     klon qilinadi (agar ruxsat bo'lmasa, foydalanuvchidan GitHub kirishini so'rang). `#100`, `#102-#133`
+     skrinshotlari `muhammad571634/rafti-research-2` da.
+   - Expo typed routes ba'zan eskirib `tsc` yiqiladi (`/board/index` yoki yangi marshrut ko'rinmaydi): dev serverni
+     to'xtatib, Metro keshi (`$TMPDIR/metro-cache`, `metro-file-map-*`) va `.expo/types/router.d.ts` ni o'chirib,
+     qayta ishga tushiring. Marshrutga o'tishda `{ pathname: '/x/[id]', params }` shakli bunga chidamliroq.
+   - `package-lock.json` lokalda o'zgargan holda qolgan edi, commit qilinmagan (foydalanuvchiniki emas, tegmang).
+
+## Foydalanuvchi afzalliklari (lokal xotiradan ko'chirildi, 2026-10-07)
+- **Animatsiya:** popup/sheet'lar animatsiyasiz darhol chiqadi; yozyapti nuqtalari, ovoz to'lqini va boshqa
+  harakatlar qoladi. "Animatsiyani o'zgartir" desa — faqat ko'rsatilganini o'zgartiring, qolganini so'rang.
+- **Minimal matn:** ekranlarda faqat sarlavha, ism, raqam, ikonka. Qoida tushuntirish kerak bo'lsa — ikonka
+  ortidagi info sheet'da, qisqa. Tugma matnlari qisqa ("Claim +60").
+- **Rasmlar:** foydalanuvchi Gemini (Nano Banana) da o'zi chizadi — prompt bering, uslub namunasini biriktirishni
+  ayting. Alternativa: Higgsfield API (`HF_CREDENTIALS` env, `xai/grok-imagine-image-2.0`, ~$0.08/rasm; foydalanuvchi
+  uni "Hugging Face" deb ataydi). Qoida: bitta sinov rasm, ko'rsating, keyin soni va narxi aytilgan to'plam.
+- **Animatsiya fayllari:** faqat LottieFiles (HyperFrames rad etilgan). Web uchun `@lottiefiles/dotlottie-react` kerak.
+- **Personajlar:** real odamlar va boshqa kompaniya qahramonlari yo'q; hamma personaj kattalar (18+).
+- **Javob uslubi:** o'zbekcha, qisqa; tugagach "nima qilindi / BIMOBIMO'dan farqi / keyingi qadam".
+
+
 ## Ish qoidalari (foydalanuvchi bilan)
 - Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizcha.
 - `AGENTS.md`: Expo SDK 57 — kod yozishdan oldin https://docs.expo.dev/versions/v57.0.0/ ga qarash.
-- Commit/push faqat so'ralganda. Yangi ish yangi branch'da, `main`ga PR orqali
-  (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
+- Ish branch'i `local-work`. Har tugagan oqimdan keyin commit va push (foydalanuvchining doimiy ruxsati).
+  `main`ga PR keyinroq (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
 - Repo PUBLIC: https://github.com/muhammad571634/rafti (foydalanuvchi ataylab shunday tanlagan).
   Bu repoda git muallifi lokal sozlangan: `muhammad571634 <jorayevmuhammad496@gmail.com>`.
-- Rasmlarni foydalanuvchi Gemini'da o'zi chizadi: promptni BITTADAN ber, u "avatar"/tayyor
-  deb yozganda papkani tekshir, rasmni ko'r, yaroqli bo'lsa `python scripts/build-brand-art.py`.
+- Rasmlarni foydalanuvchi Gemini (Nano Banana) da o'zi chizadi: promptni ber, Rafti stikerini uslub
+  namunasi qilib biriktirishini ayt. Tayyor rasm `../BIMOBIMOdesignraw/<name>.png/` papkasiga yoki repodagi
+  `assets/raw/` ga tushadi; ko'rib, yaroqli bo'lsa `python scripts/build-brand-art.py`.
 - Har o'zgarishdan keyin: `npx tsc --noEmit` + brauzerda tekshirish
   (`.claude/launch.json` → `bimobimo-web`, port 8081, mobil o'lcham 375×812).
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-06) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+## Hozirgi holat (2026-10-07) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+- **Ish branch'i: `local-work`.** Unda Today redesign'i:
+  - hero karta (`today-hero.tsx`) va kunlik sovg'a kartasi (`daily-gift-card.tsx`);
+  - Explore **B varianti**: rangli Phosphor duotone ikonkalar, foydalanuvchi tanlagan;
+  - `assets/heroes/` (16 ta hero rasm).
+- Phosphor ikonkalari bittalab importlanadi (`phosphor-react-native/src/icons/X`). `tsc` ularni tekshirmasligi
+  uchun `tsconfig.json`da `lib/typescript/icons` ga yo'l berilgan.
+- **Mahsulot strategiyasi private reposida:** `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown`.
+  - `HANDOFF.md`;
+  - BIMOBIMO tahlili: `teardown/` (133 skrinshot indeksi bilan);
+  - spetsifikatsiya: `spec/rafti-product-spec.md`;
+  - dizayn va oqimlar rejasi: `spec/design-plan.md`.
+
+  **Har bir yangi dizayn ishi shu hujjatlardan boshlanadi.**
+- **F8 Heartbeat Diary — kodda tayyor (2026-10-07).** Prototip foydalanuvchi tomonidan tasdiqlangan:
+  https://claude.ai/artifact/DtV8DUHfbUTYjf5RMiWD2T
+  - `src/app/diary/index.tsx`: muqovalar karuseli ("My diary" birinchi, keyin suhbati bor personajlar),
+    orqa fon oldingi muqovaning xira rasmi, "New page" belgisi, sahifasi yo'q personaj kulrang + "No page yet",
+    pastdagi bitta tugma kartaga qarab o'zgaradi (Write / Read / Open last page / Chat with X), saralash.
+  - Sana tugmasi kichik kalendar oynasini ochadi (`src/components/diary/calendar-popover.tsx`, foydalanuvchi yuborgan BIMOBIMO kundalik
+    kalendari tuzilishida: Cancel + Confirm, qo'shni oy kunlari xira; sahifa bor kunlarda nuqta). Tanlangan kun
+    kartalarni o'sha kunga qarab ko'rsatadi.
+  - `src/app/diary/page/[characterId].tsx`: personaj sahifasi (Caveat qo'lyozma, chiziqli qog'oz, kayfiyat, qaysi
+    suhbatdan keyin yozilgani, sahifalar orasida o'tish, "Reply to X in chat" → chat `draft` parametri bilan ochiladi).
+  - `src/app/diary/mine.tsx`: foydalanuvchining o'z sahifalari (avvalgi `diary/index` shu yerga ko'chdi).
+  - `src/components/diary/rules-sheet.tsx`: "How their diary works" oynasi. Rasm hozircha Rafti stikeri.
+  - Ma'lumot: `CharacterDiaryPage` turi, `mock/diary.ts` dagi `characterDiaryPages` (keyin server yozadi),
+    store'da `characterDiary` (persist qilinmaydi) va `diaryPagesRead` (persist).
+  - Yangi paket: `@expo-google-fonts/caveat` (`fonts.hand`, `type.hand`, `type.handTitle`).
+- **Zanjir (2026-10-07):** ilova bitta kunlik halqa sifatida quriladi. Xarita va har oqim holati:
+  https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
+  - Ulangan: kecha suhbat/uchrashuv bo'lsa, ertalab personaj kundalik yozadi (`src/mock/diary-writer.ts`,
+    store'da `writeDueDiaryPages`, ilova ochilganda va Diary ekraniga kirilganda chaqiriladi).
+  - **F1 Onboarding — kodda tayyor** (prototip tasdiqlangan: https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF):
+    `src/app/onboarding.tsx`. Salom → 18+ yil → ism → birinchi do'st (Kai, Aurelian, Sol, Seren) → bildirishnoma
+    → +100 (`WELCOME_SHELLS`) → birinchi chat (personaj ismingiz bilan savol beradi). `(tabs)/_layout` onboarding
+    tugamaguncha `/onboarding` ga yo'naltiradi; store v4 migratsiyasi eski foydalanuvchilarni o'tkazib yuboradi.
+    1-kun check-in onboarding ichida jim beriladi; personajlar tashabbusi (qo'ng'iroq, salom) onboarding'dan keyin.
+    Bildirishnoma hozircha faqat sozlama (`expo-notifications` hali o'rnatilmagan).
+  - `shortName()` (`src/lib/format.ts`): "Prince Aurelian" → "Aurelian". Gaplarda ism uchun shuni ishlating.
+- **Til qarori (2026-10-07):** butun interfeys hozircha faqat ingliz tilida (asosiy til). Boshqa tillar keyin
+  `src/i18n/locales/` orqali qo'shiladi; til tanlash tugmasi bitta til bo'lganda ko'rinmaydi.
+  - **F2 Home — kodda tayyor:** "Today" bo'limi hero kartadan keyin darhol turadi. Unda bugun yozilgan, hali
+    o'qilmagan kundalik sahifalar ("Theo wrote about you", to'q sariq nuqta bilan), chatda aytilgan bugungi
+    rejalar, maxfiy xatlar va g'ildirak bor. Home ochilganda navbatdagi kundalik sahifalar yoziladi.
+  - **F3 Chat yadrosi — kodda tayyor** (BIMOBIMO #34-#39):
+    - javob 1-4 ta qisqa xabar bo'lib birma-bir keladi, oralarida "yozyapti" (`replyBursts`, `scheduleReply`);
+    - kun ajratgichlari: Today / Yesterday / sana;
+    - xabarni uzoq bosish menyusi: 6 reaksiya, Copy (`expo-clipboard`), Delete for me; reaksiya pufak burchagida;
+    - xabar yuborilganda chig'anoq belgisidan "-1" ko'tarilib yo'qoladi (narx ko'rinadi);
+    - ro'yxatdan o'tilgan kuni boshqa personajlar o'zi qo'ng'iroq qilmaydi (birinchi kun yangi do'stniki).
+  - **F4/F5 — kodda tayyor** (BIMOBIMO #2-#8):
+    - har bir chig'anoq harakati tarixga yoziladi (`ledger`, `LedgerEntry`, store'dagi `log()`; 6 oy saqlanadi);
+    - kunlik check-in chig'anoqlari (`wallet.free`) birinchi sarflanadi va yarim tunda tugaydi, tarixda
+      "Unused free shells expired" bo'lib yoziladi; sotib olinganlar tugamaydi (`expireFreeShells`);
+    - `/store/ledger` ekrani: kunlar bo'yicha, bir kunda bitta personaj bilan xabarlar bitta qatorga yig'iladi;
+      do'kon sarlavhasidagi chek belgisi orqali ochiladi; Home'dagi sovg'a kartasida "N free left · gone at midnight";
+    - paywall: reklama (+10) va g'ildirak chatdan chiqmasdan; yozilgan matn saqlanadi;
+    - ketma-ket yuborilgan xabarlarga javoblar navbat bilan keladi, aralashmaydi (`replyingUntil`).
+  - **Rafti reaksiya stikerlari — ulandi:** xom varaq `assets/raw/reactions-sheet.jpg` (Nano Banana, 3x3).
+    `scripts/build-brand-art.py` dagi `build_reactions()` 6 tasini kesadi (fon kulrang qog'oz, oq die-cut chegara
+    saqlanadi) → `assets/brand/reaction-{love,laugh,wow,sad,hyped,thumbs}.png`, registry'da `REACTION_STICKERS`.
+    Chat menyusi va pufak burchagidagi reaksiya shu stikerlar.
+  - **F7 Munosabat v2 — kodda tayyor** (BIMOBIMO #21-#23, #41): darajalar 0-100, 5 bosqich (`TIERS` in
+    `src/mock/user.ts`): Stranger 0, Friend 1-5, More than friends 6-15, Beloved 16-49, Family 50-100.
+    `levelThreshold(n) = 2*n^2.3` (1 xabar ~2 intimacy). Har bosqich yorliqlar ochadi (romantik: Crush, Partner,
+    Soulmate...; BIMOBIMO'dagi aka/opa yorliqlari olinmadi), `relationship.label`, `setRelationshipLabel`.
+    Level-up oynasi faqat yangi bosqichda chiqadi. Personaj sozlamalarida munosabat kartasi (daraja, progress,
+    yorliq tanlash), kontaktlarda va sozlamalarda "How closeness works" oynasi (`closeness-sheet.tsx`).
+    Store v5 migratsiyasi darajalarni intimacy'dan qayta hisoblaydi. Date ssenariylari darajalari 1/3/6/10/16.
+  - **F6 Qo'ng'iroqlar — kodda tayyor** (BIMOBIMO #8, #29, #40, #46):
+    - qo'ng'iroq vaqti alohida balans: `wallet.callSeconds`; onboarding'da 15 daqiqa sinov (`CALL_TRIAL_SECONDS`),
+      obunalar 2/8/6 soat qo'shadi (`membershipPlans[].callMinutes`); store v6 eski foydalanuvchilarga sinov beradi;
+    - qo'ng'iroq ekrani "Live call · 14:57 left", vaqt tugasa o'zi yakunlanadi, balans 0 bo'lsa "Get more call time";
+    - chatdagi qo'ng'iroq tugmasi birinchi marta (yoki vaqt tugaganda) sinov haqida oyna ochadi (`user.callIntroSeen`);
+    - tarix ekrani ikki bo'limli: Shells | Call time (`LedgerEntry.unit = 'seconds'`);
+    - javob berilmagan qo'ng'iroqdan keyin personaj chatga yozadi (`missedCallLines`); vaqt bo'lmasa personaj
+      qo'ng'iroq qilmaydi.
+  - **F9 Us va kalendar — kodda tayyor** (BIMOBIMO #49-#55; prototip tasdiqlangan:
+    https://claude.ai/artifact/VFqxdBJ4mnTbzLtQh6zXu3):
+    - Us tabida "Coming up" o'rniga oy kalendari (`src/components/us/plan-calendar.tsx`): reja bor kunda nuqta,
+      kun bosilsa pastda o'sha kunning rejalari (vaqt, eslatma vaqti, bajarilgani);
+    - "+" → `PublishSheet`: Plan (`plan-sheet.tsx`: nom, kun, ixtiyoriy vaqt ±15 daq), Diary (`/diary/write`),
+      Board (`/board/write`). Qo'lda qo'shilgan reja haqida personaj chatda yozadi (`planAddedLine`);
+    - chatdagi `detectPlan` endi vaqtni ham oladi ("at 3pm", "15:30", "at 7" = 19:00); `ScheduleItem.time`,
+      `followedUp`, `source`;
+    - `runTimers()` (store): vaqtli rejada 10 daqiqa oldin, vaqtsizda ertalab 8:00 da eslatma; tugagach
+      (vaqtli: +2 soat, vaqtsiz: 20:00) "how did it go?" xabari, 36 soatdan keyin so'ramaydi
+      (`src/lib/schedule.ts` → `planStep`). Ilova ochiq bo'lsa har 30 soniyada, ochilganda va foreground'da chaqiriladi.
+      Push bildirishnoma hali yo'q (`expo-notifications` o'rnatilmagan);
+    - "Our moments" filtri: All / Plans / Dates / Calls / Notes / Diary (faqat bor turlar). Yangi moment turlari
+      `plan`, `board`;
+    - **Message board** (BIMOBIMO doskasi tuzilishida, rasmlarsiz): `src/app/board/write.tsx` — kimga (sheet),
+      300 belgi, Clear, 7 ta qog'oz uslubi (`src/components/board/stationery.tsx`, hammasi SVG + Phosphor bilan
+      kodda chizilgan), "Pin it" 2 chig'anoq (`shellCosts.boardNote`, ledger `board`). 8 soniyadan keyin personaj
+      chatda javob beradi, +6 intimacy. `src/app/board/index.tsx` — ilingan eslatmalar panjarasi (eski "oxirgi
+      xabarlar" doskasi o'rniga). Store'da `boardPosts` (persist);
+    - Home'dagi bugungi reja qatorida vaqt: "15:00 · Theo will remind you".
+  - **F10 Bepul sovg'alar — kodda tayyor** (BIMOBIMO #26-#28):
+    - Free gifts ekranida "Invite friends · +50": o'z kodi (`src/lib/invite.ts`, 6 belgi, 0/O/1/I yo'q,
+      akkauntdan hosil qilinadi; server keyin haqiqiy kod beradi), nusxa olish, haftalik progress 0/6
+      (`user.inviteCredits`, server to'ldiradi), "Invite" ulashish oynasini ochadi;
+    - "Have a code?": do'st kodini bir marta kiritish, +50 (`redeemInvite`: invalid / own / used), ledger `invite`;
+    - "Daily share": +6 kuniga bir marta (`claimShareReward`, `daily.shareDay`, ledger `share`). Hisoblanadi:
+      qo'ng'iroqni ulashish (call ekrani), doska eslatmasini ulashish (board kartasidagi belgi), taklif.
+      Hammasi `shareForReward()` orqali; webda share oynasi bo'lmasa matn nusxalanadi;
+    - har qayerda ulashilganda tepada "+6 for sharing" banneri (`share-reward-banner.tsx`, root layout'da);
+    - Discord/Instagram/TikTok qatorlari qo'shilmadi: Rafti'ning rasmiy akkauntlari hali yo'q.
+    - Diqqat: `board/index.tsx` tahrir qilinganda Expo typed routes ba'zan `/board/index` deb yozadi va tsc
+      yiqiladi. Tuzatish: serverni to'xtatish, `%TEMP%\metro-cache`, `metro-file-map-*` va
+      `.expo/types/router.d.ts` ni o'chirish, qayta ishga tushirish.
+  - **Reja oynasi (F9) foydalanuvchi talabi bilan yangilandi:** ekranning ~72% balandligi, sarlavha h1 va
+    do'stning avatari, katta qalin matnlar; kun tanlash uchta teng tugma (Today | Tomorrow | kalendar, boshqa
+    kun tanlansa tugmada sana), vaqt katta raqam va katta ± tugmalari. Kalendar `CalendarPopover` ning
+    `allow="future"` rejimi (Diary'da o'zgarish yo'q). Oyna faqat ochilganda tozalanadi.
+  - **Klaviatura (foydalanuvchi talabi):** reja oynasi ochilganda klaviatura o'zi chiqmaydi (autoFocus yo'q).
+    `Sheet` ga `avoidKeyboard` qo'shildi: oyna klaviatura ustidagi joydan baland bo'lmaydi, ichi scroll bo'ladi
+    (Android oynani o'zi kichraytiradi, iOS'da `KeyboardAvoidingView`). Yozish maydoni bor har yangi sheet shu
+    parametrni ishlatsin. `useKeyboardVisible()` (`src/hooks`) — klaviatura ochiqligida reja oynasi balandligini bo'shatadi.
+  - Doskaga eslatma yuborilgach oldingi ekranga qaytiladi (`router.back()`), shunda typed routes xatosiga bog'liq emas.
+  - **F11 Date — kodda tayyor** (BIMOBIMO #9-#12; prototip tasdiqlangan:
+    https://claude.ai/artifact/XQk64zfZuwBGR9vT8QPszv):
+    - `src/app/dating.tsx` — xarita: 5 joy (`src/mock/dates.ts`, `DATE_PLACES`: joy, emoji, narx, daraja, xaritadagi
+      o'rni, 5 raund × 3 javob, har javob 0-3 yurak). Dengiz, nuqtali yo'l, daraxtlar SVG bilan kodda. Daraja yetmasa
+      joy kulrang + qulf; bu sherik bilan borilgan joy yalpiz hoshiyali. Tepada sherik tanlash sheet'i va balans;
+      joy bosilsa oyna (raundlar, daraja, narx, "Start date with X");
+    - `src/app/date/[placeId].tsx` — raundlar: personaj hero rasmi, raund nuqtalari, yuraklar, sahna matni, 3 javob,
+      javobdan keyin personaj reaksiyasi va "Next"; oxirida polaroid (`src/components/date/polaroid.tsx`, Caveat),
+      yakun (sweet/warm/funny), Share (`shareForReward`, kunlik +6), Back to chat. ✕ "Leave X here?" so'raydi,
+      swipe-back o'chirilgan. Ekran faqat to'langan uchrashuvni o'ynaydi (`activeDate`, `beginDate` qo'yadi,
+      `finishDate` tozalaydi) — to'g'ridan-to'g'ri havola bepul o'ynatmaydi;
+    - `finishDate`: yaqinlik `INTIMACY.date + yuraklar`, `dates` (persist, `DateRecord`), `dating` moment (ertasi kundalik
+      sahifasi shundan), personaj chatda kayfiyatga qarab yozadi (`afterDateLine`);
+    - `src/app/date/album.tsx` — "Our dates": polaroidlar panjarasi;
+    - eski `dateScenarios` va `startDate` olib tashlandi (uchrashuv endi chatda emas, o'z ekranida).
+    - Qilinmadi: foydalanuvchilar yaratadigan mavzular (P3), joylar uchun rasm (hozir emoji tile).
+  - **F12 Chat "+" o'yinlari — kodda tayyor** (BIMOBIMO #42-#48; prototip tasdiqlangan:
+    https://claude.ai/artifact/Vr4YPbc6z9LZLGmrfXzRS8):
+    - "+" endi 4×2 panjara, Explore B uslubidagi rangli Phosphor duotone ikonkalar (`moduleTints`: voice, secretNote,
+      quiz, truthOrDare qo'shildi): Voice, Photo, Secret note, Couple quiz, Truth or dare, Date, Daily calls, Diary.
+      Foydalanuvchi emoji ikonkalarni yoqtirmadi — shu uslub tanlandi;
+    - **Couple quiz** `src/app/quiz/[characterId].tsx`: 3 to'plam × 5 savol (`src/mock/games.ts`), personaj javobi
+      `partnerAnswer` (personaj+savol bo'yicha barqaror hash), javob tanlangach darhol ochiladi; natija chatga system
+      karta ("💞 First date · 4/5"), personaj izohi (`quizReply`), yaqinlik `2 + 2×moslik`, `quiz` moment (Us filtri "Games");
+    - **Truth or dare** `src/components/chat/truth-or-dare-sheet.tsx`: SVG g'ildirak (Reanimated aylanish), personajga
+      tushsa siz Truth/Dare tanlaysiz — savol chatga ketadi, u javob beradi (+3); sizga tushsa u chatda savol beradi;
+    - **Daily calls** `src/components/chat/daily-calls-sheet.tsx`: kim qo'ng'iroq qiladi (ovozi bor do'stlar),
+      ertalab/kechki vaqt (±30 daq.) va o'chirgichlar. `settings.morningCallTime`, `nightCallTime`, `callerId`;
+      `runDailyInitiative` endi shu vaqtdan boshlab 4 soat ichida qo'ng'iroq qiladi (`inWindow`).
+  - **F13 Find — kodda tayyor** (BIMOBIMO #56, #59): mavjud ekran kengaytirildi (prototipsiz, HANDOFF qoidasi bo'yicha):
+    - "All" tabi birinchi va standart; har bir dunyo alohida karta: sarlavha, soni, "›" → `src/app/world/[series].tsx`
+      (hamma personajlar, "N characters · M can call"); kartada 3 tadan sahifalar (gorizontal paging) va nuqtalar;
+    - avatarda yashil telefon belgisi = ovozi bor, qo'ng'iroq qilsa bo'ladi (`Avatar badge="call"`; Onboarding'dagi
+      belgi o'zgarmadi);
+    - qidiruv kartalarni olib tashlab, barcha dunyolardan tekis "N found" ro'yxatini ko'rsatadi;
+    - `CharacterRow` umumiy komponentga chiqdi (`src/components/character-row.tsx`).
+  - **F14 Profil — kodda tayyor** (tafsilot eng tepadagi KEYINGI QADAM 3-bandida).
+- **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
+  zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
+  h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.
+- **Keyingi ish:**
+  - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);
+  - shu uslubdagi Secret note, Gifts va Date qoida oynalari;
+  - keyin `design-plan.md` dagi P0 oqimlari (F1–F5).
+- **Higgsfield API** (bulut muhitida `HF_CREDENTIALS` environment variable bor):
+  - `GET https://api.higgsfield.ai/models` modellar ro'yxatini beradi (84 ta, 17 tasi rasm);
+  - `POST https://api.higgsfield.ai/<slug>`, header `Authorization: Key $HF_CREDENTIALS`;
+  - holatni kuzatish: `GET /requests/<id>/status`;
+  - uslub namunasi bilan rasm: `alibaba/qwen-image-3/edit`. Maydonlar: `prompt`, `image_urls` (ochiq URL, masalan repodagi
+    `raw.githubusercontent.com/.../assets/brand/tile-diary.png`), `aspect_ratio` (`1:1`…), `resolution` (`1k`/`2k`);
+  - natija rasmlari `d3u0tzju9qaucj.cloudfront.net` da. Bu domen bulut muhitining Allowed domains ro'yxatida bo'lishi kerak;
+  - birinchi sinov rasmi (diary qoida oynasi uchun Rafti) chizildi, lekin CDN yopiq bo'lgani uchun hali yuklab olinmadi.
+
+## Avvalgi holat (2026-10-06, kechroq)
+- PR #3 (`redesign`) `main`ga merge qilindi (`4625509`). `redesign` branch'i `main`ga tenglashtirildi.
+- **Backend rejasi yozildi: `docs/backend-plan.md`** — foydalanuvchi tasdig'ini kutmoqda.
+  - Tavsiya: Supabase (Postgres + pgvector, Auth, Storage, Realtime) + o'z serverimiz
+    (Node + Hono + pg-boss, Fly.io), Claude API, RevenueCat, AdMob SSV, keyin LiveKit.
+  - Bosqichlar B0–B6. B0 — poydevor, B1 — haqiqiy chat.
+  - Muhim topilma: hozirgi iqtisodda bepul chig'anoq ko'p (kuniga ~130 xabar) va "unlimited" a'zolik
+    LLM xarajatini qoplamasligi mumkin. Raqamlar rejaning 9-bo'limida.
+  - B1'dan boshlab Expo Go yetmaydi, EAS development build kerak.
+  - Ochiq savollar (12-bo'lim): stack, chat modeli, server kodi shu repodami yoki private repoda, hisoblar.
+
+## Oldingi holat (2026-10-06)
 - Chat redesign va to'liq ilova redesign'i (0–3-bosqich) TUGADI, `redesign` branch'ida:
   `77e07ae` (0–1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
   shuning uchun PR `main`ga ikkala ishni ham olib kiradi.
@@ -328,11 +915,9 @@
   store ~1000 qator monolit; test/analitika/Sentry yo'q; dark mode yo'q; faqat ingliz tili.
 
 ## Keyingi ishlar (tavsiya etilgan tartib)
-1. `redesign` PR'ini ochish va merge qilish (foydalanuvchi). U `mobile-ux-audit`ni ham o'z ichiga oladi.
-   Foydalanuvchi telefonda 3-bosqichni hali ko'rmagan.
-2. **Backend arxitekturasini rejalashtirish** (birinchi navbatdagi ish): server, auth, LLM,
-   TTS/ovoz klonlash, STT, xotira tizimi, xarajat hisobi. README'dagi
-   "Where the backend plugs in" jadvali — ulanish nuqtalari.
+1. ✅ `redesign` PR'i merge qilindi (#3).
+2. ✅ Backend rejasi yozildi (`docs/backend-plan.md`). Keyingi qadam: 12-bo'limdagi savollarga
+   javob olish, keyin B0 (poydevor).
 3. Xabarlarni `expo-sqlite`ga ko'chirish + sahifalash.
 4. Push bildirishnomalar (VoIP/CallKit qo'ng'iroqlar uchun), Sentry, analitika.
 5. Xavfsizlik: yosh tekshiruvi, AI disclosure, moderatsiya, UGC shikoyat, ovoz klonlash roziligi.

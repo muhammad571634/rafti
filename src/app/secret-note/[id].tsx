@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Anim, Button, Card, CharacterAvatar, Header, Screen, ShellIcon, Txt } from '@/components/ui';
+import { Anim, Button, Card, Header, Screen, ShellIcon, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, palette, radius, space, type } from '@/theme';
@@ -60,7 +60,7 @@ export default function SecretNoteScreen() {
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('secretNote.title')} right={<CharacterAvatar character={character} size={30} />} />
+      <Header title={t('secretNote.title')} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -112,7 +112,7 @@ export default function SecretNoteScreen() {
             )}
           </Card>
 
-          <Txt variant="smallStrong" color={colors.textMuted} style={styles.label}>
+          <Txt variant="h3" style={styles.label}>
             {t('secretNote.yourNote')}
           </Txt>
           <Card variant="outlined">
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   letter: { alignSelf: 'center', marginTop: -space.md },
   noteText: { marginTop: space.sm },
-  label: { marginTop: space.md, marginLeft: space.xs },
+  label: { marginTop: space.md },
   input: {
     minHeight: 120,
     padding: 0,
@@ -205,6 +205,14 @@ const styles = StyleSheet.create({
   counter: { alignSelf: 'flex-end', marginTop: space.sm },
   doneBlock: { alignItems: 'center', gap: space.md, marginTop: space.md },
   done: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  footer: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xl },
+  // Action bar (docs/design-style.md §3): white, hairline on top.
+  footer: {
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    paddingBottom: space.xl,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+  },
   cost: { flexDirection: 'row', alignItems: 'center', gap: space.xxs },
 });

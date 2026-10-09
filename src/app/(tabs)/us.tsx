@@ -5,39 +5,59 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
-  Card,
   CharacterAvatar,
-  Divider,
+  Chip,
+  ClayIcon,
   EmptyState,
-  IconTile,
   ListRow,
   PressableScale,
   Screen,
   SectionLabel,
   Txt,
   UserAvatar,
+  type ClayIconName,
 } from '@/components/ui';
-import { daysBetween, relativeStamp } from '@/lib/format';
-import { dateFromKey, levelForIntimacy, todayKey } from '@/mock';
+import { PlanCalendar } from '@/components/us/plan-calendar';
+import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
+import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
+import { useDayKey } from '@/hooks/use-day-key';
+import { daysBetween, relativeStamp, shortName } from '@/lib/format';
+import { reminderAt } from '@/lib/schedule';
+import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
-
 const MOMENT_PAGE = 20;
-const ROW_ICON = 38;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
+const ROW_ICON = 40;
+/** Story-row avatar and the moment art: the top is generous, the timeline light. */
+const STORY = 58;
+const MOMENT_ICON_SIZE = 30;
 
-const MOMENT_ICON: Record<MomentKind, IoniconName> = {
-  met: 'sparkles-outline',
-  levelUp: 'heart-outline',
-  call: 'call-outline',
-  diary: 'book-outline',
-  secretNote: 'mail-outline',
-  dating: 'cafe-outline',
-  photo: 'camera-outline',
+/** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
+const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
+  met: 'sparkles',
+  levelUp: 'levelUp',
+  call: 'calls',
+  diary: 'diary',
+  secretNote: 'secretNote',
+  dating: 'date',
+  photo: 'camera',
+  plan: 'calendar',
+  board: 'board',
+  quiz: 'quiz',
 };
+
+/** Moment filters; a chip shows only when the bond has moments of that kind. */
+const FILTERS = {
+  plans: ['plan'],
+  dates: ['dating', 'photo'],
+  calls: ['call'],
+  notes: ['secretNote', 'board'],
+  diary: ['diary'],
+  games: ['quiz'],
+} satisfies Record<string, MomentKind[]>;
+type FilterKey = keyof typeof FILTERS | 'all';
 
 /** [Us]: one bond at a time — how long, how close, what's next and what you've shared. */
 export default function UsScreen() {
@@ -51,6 +71,13 @@ export default function UsScreen() {
   const moments = useAppStore((s) => s.moments);
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
+  const addSchedule = useAppStore((s) => s.addSchedule);
+
+  const today = useDayKey();
+  const [day, setDay] = useState(today);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterKey>('all');
 
   const bonds = useMemo(
     () =>
@@ -67,22 +94,45 @@ export default function UsScreen() {
   const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
   const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
 
-  const timeline = useMemo(
+  const allMoments = useMemo(
     () =>
       moments
         .filter((m) => m.characterId === selected?.character.id)
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     [moments, selected],
   );
-
-  const today = todayKey();
-  const upcoming = useMemo(
-    () =>
-      schedules
-        .filter((x) => x.characterId === selected?.character.id && x.date >= today)
-        .sort((a, b) => a.date.localeCompare(b.date)),
-    [schedules, selected, today],
+  const filters = (Object.keys(FILTERS) as (keyof typeof FILTERS)[]).filter((key) =>
+    allMoments.some((m) => (FILTERS[key] as MomentKind[]).includes(m.kind)),
   );
+  const activeFilter: FilterKey = filter !== 'all' && filters.includes(filter) ? filter : 'all';
+  const timeline =
+    activeFilter === 'all'
+      ? allMoments
+      : allMoments.filter((m) => (FILTERS[activeFilter] as MomentKind[]).includes(m.kind));
+
+  const plans = useMemo(
+    () => schedules.filter((x) => x.characterId === selected?.character.id),
+    [schedules, selected],
+  );
+  const planDays = useMemo(() => new Set(plans.map((x) => x.date)), [plans]);
+  const dayPlans = useMemo(
+    () => plans.filter((x) => x.date === day).sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '')),
+    [plans, day],
+  );
+
+  const pickPublish = (kind: PublishKind) => {
+    setPublishOpen(false);
+    if (kind === 'plan') setPlanOpen(true);
+    else if (kind === 'diary') router.push('/diary/write');
+    else if (selected) router.push({ pathname: '/board/write', params: { characterId: selected.character.id } });
+  };
+
+  const submitPlan = (plan: NewPlan) => {
+    if (!selected) return;
+    addSchedule({ characterId: selected.character.id, ...plan });
+    setPlanOpen(false);
+    setDay(plan.date);
+  };
 
   if (!selected) {
     return (
@@ -126,23 +176,28 @@ export default function UsScreen() {
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 onPress={() => setSelectedId(c.id)}>
-                <CharacterAvatar character={c} size={50} ring={active} ringColor={colors.text} />
+                {/* A story-style ring with air around the face marks the bond on screen. */}
+                <View style={[styles.ring, active && styles.ringOn]}>
+                  <CharacterAvatar character={c} size={STORY} />
+                </View>
                 <Txt
-                  variant="tiny"
+                  variant="caption"
                   lines={1}
                   color={active ? colors.text : colors.textMuted}
                   style={active && styles.pickActive}>
-                  {displayName(c, r)}
+                  {shortName(displayName(c, r))}
                 </Txt>
               </PressableScale>
             );
           })}
         </ScrollView>
 
-        <Card
-          variant="outlined"
+        {/* The bond at a glance, straight on the canvas; it opens the chat. */}
+        <PressableScale
+          scaleTo={0.99}
           style={styles.hero}
-          onPress={conversation ? () => router.push(`/chat/${conversation.id}`) : undefined}>
+          disabled={!conversation}
+          onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
           <View style={styles.together}>
             <View style={styles.pair}>
               <UserAvatar user={user} size={40} />
@@ -168,58 +223,86 @@ export default function UsScreen() {
 
           <View style={styles.stats}>
             <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
+            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} />
             <Stat
               value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
               label={t('us.statMet')}
             />
           </View>
-        </Card>
+        </PressableScale>
 
-        <SectionLabel title={t('us.upcoming')} />
-        {upcoming.length === 0 ? (
-          <ListRow
-            title={t('us.nothingPlanned')}
-            subtitle={t('us.upcomingHint')}
-            left={<IconTile icon="calendar-outline" size={ROW_ICON} />}
-          />
+        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} onAdd={() => setPublishOpen(true)} />
+
+        <SectionLabel tone="title" title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
+        {dayPlans.length === 0 ? (
+          // A quiet line, not a row: the day is free, and one tap plans something.
+          <View style={styles.free}>
+            <Txt variant="body" color={colors.textMuted} style={styles.grow}>
+              {t('us.nothingPlanned')}
+            </Txt>
+            <PressableScale style={styles.planPill} scaleTo={0.94} onPress={() => setPlanOpen(true)}>
+              <Ionicons name="add" size={16} color={colors.brandText} />
+              <Txt variant="smallStrong" color={colors.brandText}>
+                {t('us.plan')}
+              </Txt>
+            </PressableScale>
+          </View>
         ) : (
-          upcoming.map((item, i) => (
-            <View key={item.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={item.title}
-                subtitle={item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
-                left={<DateTile dateKey={item.date} locale={i18n.language} />}
-                right={
-                  <PressableScale
-                    hitSlop={hitSlop}
-                    scaleTo={0.85}
-                    accessibilityLabel={t('a11y.removePlan')}
-                    onPress={() => removeSchedule(item.id)}>
-                    <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
-                  </PressableScale>
-                }
-              />
-            </View>
-          ))
+          dayPlans.map((item) => {
+            const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
+            return (
+              <View key={item.id}>
+                <ListRow
+                  size="large"
+                  title={item.title}
+                  left={<TimeTile time={item.time} />}
+                  right={
+                    <View style={styles.planRight}>
+                      {pending ? (
+                        <View style={styles.remind}>
+                          <Ionicons name="notifications-outline" size={13} color={colors.textMuted} />
+                          <Txt variant="caption" color={colors.textMuted}>
+                            {clock(reminderAt(item))}
+                          </Txt>
+                        </View>
+                      ) : item.followedUp ? (
+                        <Ionicons name="checkmark-circle" size={18} color={colors.textFaint} />
+                      ) : null}
+                      <PressableScale
+                        hitSlop={hitSlop}
+                        scaleTo={0.85}
+                        accessibilityLabel={t('a11y.removePlan')}
+                        onPress={() => removeSchedule(item.id)}>
+                        <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
+                      </PressableScale>
+                    </View>
+                  }
+                />
+              </View>
+            );
+          })
         )}
 
-        <SectionLabel title={t('us.moments')} />
+        <SectionLabel tone="title" title={t('us.moments')} />
+        {filters.length > 1 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+            {(['all', ...filters] as FilterKey[]).map((key) => (
+              <Chip key={key} label={t(`us.filter.${key}`)} active={activeFilter === key} onPress={() => setFilter(key)} />
+            ))}
+          </ScrollView>
+        ) : null}
         {timeline.length === 0 ? (
           <Txt variant="small" color={colors.textMuted} style={styles.hint}>
             {t('us.noMoments')}
           </Txt>
         ) : (
-          shownMoments.map((moment, i) => (
-            <View key={moment.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-                meta={relativeStamp(moment.createdAt)}
-                left={<IconTile icon={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
-              />
-            </View>
+          shownMoments.map((moment) => (
+            <MomentRow
+              key={moment.id}
+              icon={MOMENT_ICON[moment.kind]}
+              text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+              when={relativeStamp(moment.createdAt)}
+            />
           ))
         )}
         {timeline.length > visibleMoments ? (
@@ -233,32 +316,55 @@ export default function UsScreen() {
           </PressableScale>
         ) : null}
       </ScrollView>
+
+      <PublishSheet visible={publishOpen} onClose={() => setPublishOpen(false)} onPick={pickPublish} />
+      <PlanSheet
+        visible={planOpen}
+        onClose={() => setPlanOpen(false)}
+        day={day}
+        character={selected?.character}
+        onSubmit={submitPlan}
+      />
     </Screen>
   );
 }
 
-function relativeDay(key: string, t: (k: string) => string, locale: string) {
-  const days = Math.round((dateFromKey(key).getTime() - dateFromKey(todayKey()).getTime()) / 86_400_000);
-  if (days === 1) return t('common.tomorrow');
-  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'long' });
+const clock = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+function dayTitle(key: string, locale: string) {
+  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-/** A plan's date as a small calendar leaf, the same size as an IconTile. */
-function DateTile({ dateKey, locale }: { dateKey: string; locale: string }) {
-  const date = dateFromKey(dateKey);
+/** A plan's time in bold beside the title; a calendar glyph when it has none. */
+function TimeTile({ time }: { time?: string }) {
+  if (!time) return <ClayIcon name="calendar" size={ROW_ICON} tile={false} />;
   return (
-    <View style={styles.dateTile}>
-      <Txt variant="tiny" color={colors.textMuted}>
-        {date.toLocaleDateString(locale, { month: 'short' })}
+    <View style={styles.timeTile}>
+      <Txt variant="title" style={styles.tabular}>
+        {time}
       </Txt>
-      <Txt variant="title">{date.getDate()}</Txt>
     </View>
   );
 }
 
-function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
+/** One moment in the timeline: small art, a light line of text, when it happened. */
+function MomentRow({ icon, text, when }: { icon: ClayIconName; text: string; when: string }) {
   return (
-    <View style={[styles.stat, divided && styles.statDivided]}>
+    <View style={styles.moment}>
+      <ClayIcon name={icon} size={MOMENT_ICON_SIZE} tile={false} />
+      <Txt variant="body" lines={1} style={styles.grow}>
+        {text}
+      </Txt>
+      <Txt variant="caption" color={colors.textMuted}>
+        {when}
+      </Txt>
+    </View>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <View style={styles.stat}>
       <Txt variant="bodyStrong">{value}</Txt>
       <Txt variant="caption" color={colors.textMuted}>
         {label}
@@ -270,10 +376,12 @@ function Stat({ value, label, divided }: { value: string; label: string; divided
 const styles = StyleSheet.create({
   grow: { flex: 1 },
   head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  picker: { gap: space.lg, paddingHorizontal: space.lg, paddingVertical: space.xs },
-  pick: { alignItems: 'center', gap: space.xs, width: 56 },
+  picker: { gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm },
+  pick: { alignItems: 'center', gap: space.xs, width: STORY + 10 },
+  ring: { padding: 2, borderRadius: radius.pill, borderWidth: 2, borderColor: 'transparent' },
+  ringOn: { borderColor: colors.primary },
   pickActive: { fontWeight: '600' },
-  hero: { marginHorizontal: space.lg, marginTop: space.md },
+  hero: { paddingHorizontal: space.lg, paddingTop: space.xl },
   together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   pair: { flexDirection: 'row', marginRight: space.xs },
   overlap: { marginLeft: -space.md },
@@ -288,15 +396,23 @@ const styles = StyleSheet.create({
   fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
   stats: { flexDirection: 'row', marginTop: space.lg },
   stat: { flex: 1, alignItems: 'center', gap: 2 },
-  statDivided: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
-  dateTile: {
-    width: ROW_ICON,
-    height: ROW_ICON,
-    borderRadius: radius.sm + 2,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  timeTile: { minWidth: ROW_ICON + 14, height: ROW_ICON, justifyContent: 'center' },
+  tabular: { fontVariant: ['tabular-nums'] },
+  planRight: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  filters: { gap: space.sm, paddingHorizontal: space.lg, paddingBottom: space.sm },
   hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
+  free: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingVertical: space.sm },
+  planPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    height: 34,
+    paddingLeft: space.sm,
+    paddingRight: space.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySofter,
+  },
+  moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 48, paddingHorizontal: space.lg },
   showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
 });

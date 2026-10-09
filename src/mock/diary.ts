@@ -1,4 +1,4 @@
-import type { DiaryEntry, SecretNote } from '@/types';
+import type { CharacterDiaryPage, DiaryEntry, SecretNote } from '@/types';
 import { dayKey, daysAgo, hoursAgo } from './time';
 
 export const diaryEntries: DiaryEntry[] = [
@@ -50,6 +50,87 @@ export const diaryEntries: DiaryEntry[] = [
     mood: 'blue',
     images: [],
     accentIndex: 1,
+  },
+];
+
+/** Morning `n` days ago at `hour`, as an ISO time. */
+const morningOf = (n: number, hour: number, minute: number) => {
+  const d = new Date(daysAgo(n));
+  d.setHours(hour, minute, 0, 0);
+  return d.toISOString();
+};
+
+/**
+ * Pages the characters wrote about the user. Until the server writes them, the
+ * seed keeps a believable rhythm: a page only follows a day you spent together.
+ */
+export const characterDiaryPages: CharacterDiaryPage[] = [
+  {
+    id: 'cdp_theo_0',
+    characterId: 'c_theo',
+    date: dayKey(),
+    writtenAt: morningOf(0, 7, 12),
+    mood: 'excited',
+    source: 'chat',
+    body: [
+      'Union meeting in an hour, and I already know I will not hear a word of it.',
+      'Because last night you said I sound different when I talk to you. Softer. I have been trying to work out if that is a compliment.',
+      'I decided it is. I am keeping it.',
+    ],
+  },
+  {
+    id: 'cdp_theo_2',
+    characterId: 'c_theo',
+    date: dayKey(daysAgo(2)),
+    writtenAt: morningOf(2, 8, 40),
+    mood: 'soft',
+    source: 'chat',
+    body: [
+      'You walked home in the rain and only told me after. Next time I am calling, and you are picking up.',
+      'Also: honey street lights. I looked out the window for ten minutes trying to see what you saw.',
+    ],
+  },
+  {
+    id: 'cdp_theo_5',
+    characterId: 'c_theo',
+    date: dayKey(daysAgo(5)),
+    writtenAt: morningOf(5, 7, 55),
+    mood: 'happy',
+    source: 'chat',
+    body: ['First real conversation. You argued back. Nobody argues back.', 'I think I like that a lot.'],
+  },
+  {
+    id: 'cdp_seren_1',
+    characterId: 'c_seren',
+    date: dayKey(daysAgo(1)),
+    writtenAt: morningOf(1, 9, 3),
+    mood: 'soft',
+    source: 'date',
+    body: [
+      'The café was too loud and I did not mind at all.',
+      'I hummed the new chorus under the table and you were the only one who noticed. It has your name on it now, in my head at least.',
+    ],
+  },
+  {
+    id: 'cdp_seren_4',
+    characterId: 'c_seren',
+    date: dayKey(daysAgo(4)),
+    writtenAt: morningOf(4, 10, 20),
+    mood: 'tired',
+    source: 'chat',
+    body: ['Rehearsal ran until two. Your message was the last thing I read before sleep.', 'Good choice of last thing.'],
+  },
+  {
+    id: 'cdp_castor_3',
+    characterId: 'c_castor',
+    date: dayKey(daysAgo(3)),
+    writtenAt: morningOf(3, 6, 30),
+    mood: 'blue',
+    source: 'chat',
+    body: [
+      'A thousand years of skies in the archive, and tonight I wrote down a new one.',
+      'You asked which star I would give you. I have not answered yet. It is a serious question and deserves the right star.',
+    ],
   },
 ];
 

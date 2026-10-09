@@ -1,15 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Fragment, useMemo, type ComponentProps } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
+import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { DailyRewardSheet } from '@/components/daily-reward-sheet';
+import { featuredFriend, TodayHero } from '@/components/today-hero';
+import { useDayKey } from '@/hooks/use-day-key';
 import {
-  Card,
   CharacterAvatar,
+  ClayIcon,
   CountBadge,
-  Divider,
-  IconTile,
   ListRow,
   Mascot,
   PressableScale,
@@ -18,51 +21,52 @@ import {
   ShellBadge,
   Txt,
   UserAvatar,
+  type ClayIconName,
 } from '@/components/ui';
-import { relativeStamp } from '@/lib/format';
-import { FREE_SPINS_PER_DAY, homeModules, todayKey } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, Conversation, HomeModule } from '@/types';
+import { relativeStamp, shortName } from '@/lib/format';
+import { planStart } from '@/lib/schedule';
+import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
+import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
+import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
+import type { Character, Conversation, HomeModule, Relationship } from '@/types';
 
-type TileIcon = ComponentProps<typeof IconTile>['icon'];
+const CHAT_AVATAR = 48;
+/** Art size of the Today and "meet" rows: clay art or a friend's face, no tile. */
+const ROW_ICON = 40;
+/** Explore icons: large clay art on the bare canvas, four to a row. */
+const MODULE_ICON = 68;
 
-const COLUMNS = 4;
-const CHAT_AVATAR = 44;
-/** Tile size of the Today and "meet" rows; their divider inset follows it. */
-const ROW_ICON = 38;
-const MODULE_ICON = 48;
-/** Row dividers start under the row text, past the leading avatar or icon. */
-const CHAT_INSET = space.lg + CHAT_AVATAR + space.md;
-const TODO_INSET = space.lg + ROW_ICON + space.md;
-
-/** One outline glyph per Explore module, keyed by `HomeModule.key`. */
-const MODULE_ICONS: Record<string, TileIcon> = {
-  store: 'bag-handle-outline',
-  dating: 'cafe-outline',
-  diary: 'book-outline',
-  photo: 'camera-outline',
-  contacts: 'people-outline',
-  radio: 'radio-outline',
-  gifts: 'gift-outline',
-  calls: 'call-outline',
-  board: 'clipboard-outline',
-  bedtime: 'moon-outline',
+/** One 3D clay icon per Explore module, keyed by `HomeModule.key` (docs/icons-3d.md). */
+const MODULE_ICONS: Record<string, ClayIconName> = {
+  store: 'store',
+  dating: 'date',
+  diary: 'diary',
+  photo: 'camera',
+  contacts: 'contacts',
+  gifts: 'gift',
+  calls: 'calls',
+  bedtime: 'bedtime',
+  radio: 'radio',
+  board: 'board',
 };
 
-/** A conversation joined with its character and the name the user knows them by. */
+/** A conversation joined with its character, bond and the name the user knows them by. */
 interface ChatItem {
   conversation: Conversation;
   character: Character;
+  relationship?: Relationship;
   name: string;
 }
 
 /** A small thing the user can do today, shown as a row under "Today". */
 interface TodoItem {
   key: string;
-  icon: TileIcon;
+  /** A friend's face for things they did; a clay icon for everything else */
+  icon: ClayIconName | Character;
   title: string;
-  subtitle: string;
+  subtitle?: string;
+  /** Marks something new since the last visit */
+  fresh?: boolean;
   onPress: () => void;
 }
 
@@ -75,25 +79,37 @@ function greetingSlot(hour: number) {
 }
 
 /**
- * The "Today" hub: who is waiting, what is ready, and every module one tap away.
- * Content sits straight on the canvas; only the conversation block is grouped.
+ * The "Today" hub, top to bottom: the friend you talked with last, every module one tap
+ * away, who is waiting, what is ready today. The daily gift claims itself on launch
+ * (its popup) and lives on Gifts.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { width } = useWindowDimensions();
 
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
   const conversations = useAppStore((s) => s.conversations);
+  const messages = useAppStore((s) => s.messages);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
+  const diaryPages = useAppStore((s) => s.characterDiary);
+  const pagesRead = useAppStore((s) => s.diaryPagesRead);
+  const schedules = useAppStore((s) => s.schedules);
+  const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
+  const today = useDayKey();
   const spinReady = useAppStore(
-    (s) => s.daily.spinDay !== todayKey() || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
+    (s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
   );
+  // The daily gift lives on Gifts; its icon carries a dot while today's gift still waits.
+  const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
+  const hero = useMemo(
+    () => featuredFriend(characters, relationships, conversations, messages),
+    [characters, relationships, conversations, messages],
+  );
 
   /** Newest first; chats whose character is gone are dropped. */
   const chats = useMemo<ChatItem[]>(
@@ -103,7 +119,8 @@ export default function HomeScreen() {
         .flatMap((conversation) => {
           const character = charactersById.get(conversation.characterId);
           if (!character) return [];
-          return [{ conversation, character, name: displayName(character, relationships[character.id]) }];
+          const relationship = relationships[character.id];
+          return [{ conversation, character, relationship, name: displayName(character, relationship) }];
         }),
     [conversations, charactersById, relationships],
   );
@@ -111,28 +128,50 @@ export default function HomeScreen() {
 
   /** Unread chats take the block; otherwise the two most recent invite a return. */
   const shown = unread.length > 0 ? unread.slice(0, 3) : chats.slice(0, 2);
-  const showRecentLabel = unread.length === 0 && chats.length > 0;
 
-  const waitingLine = () => {
-    const [first, second] = unread;
-    if (unread.length === 1) return t('home.waitingOne', { name: first.name });
-    if (unread.length === 2) return t('home.waitingTwo', { first: first.name, second: second.name });
-    if (unread.length > 2) {
-      return t('home.waitingMany', { first: first.name, second: second.name, count: unread.length - 2 });
-    }
-    return chats.length > 0 ? t('home.caughtUp') : t('home.noFriends');
-  };
+  // Coming back in the morning: pages written overnight should be waiting here.
+  useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
 
   const todos: TodoItem[] = [];
-  if (spinReady) {
+
+  // New diary pages first: the reason to come back this morning.
+  for (const page of diaryPages) {
+    if (page.date !== today || pagesRead.includes(page.id)) continue;
+    const character = charactersById.get(page.characterId);
+    if (!character) continue;
     todos.push({
-      key: 'spin',
-      icon: 'gift-outline',
-      title: t('home.todo.spin'),
-      subtitle: t('home.todo.spinHint'),
-      onPress: () => router.push('/gifts'),
+      key: page.id,
+      icon: character,
+      title: t('home.todo.diary', { name: shortName(displayName(character, relationships[character.id])) }),
+      subtitle: t('home.todo.diaryHint'),
+      fresh: true,
+      onPress: () =>
+        router.push({ pathname: '/diary/page/[characterId]', params: { characterId: character.id, date: page.date } }),
     });
   }
+
+  // Today's plans still ahead, soonest first, with the friend who will check in. Once a
+  // plan has started its row goes: the reminder is past and "how did it go?" comes in chat.
+  const now = Date.now();
+  const upcoming = schedules
+    .filter((plan) => plan.date === today && (!plan.time || planStart(plan).getTime() > now))
+    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
+  for (const plan of upcoming) {
+    const character = charactersById.get(plan.characterId);
+    if (!character) continue;
+    const conversation = conversations.find((c) => c.characterId === character.id);
+    todos.push({
+      key: plan.id,
+      icon: character,
+      title: t('home.todo.plan', { title: plan.title }),
+      subtitle: t(plan.time ? 'home.todo.planAt' : 'home.todo.planHint', {
+        name: shortName(displayName(character, relationships[character.id])),
+        time: plan.time,
+      }),
+      onPress: () => conversation && router.push(`/chat/${conversation.id}`),
+    });
+  }
+
   // A note opens per character, so one row per sender is enough.
   const noteSenders = new Set<string>();
   for (const note of notes) {
@@ -142,14 +181,20 @@ export default function HomeScreen() {
     noteSenders.add(character.id);
     todos.push({
       key: note.id,
-      icon: 'mail-outline',
-      title: t('home.todo.note', { name: displayName(character, relationships[character.id]) }),
-      subtitle: t('home.todo.noteHint'),
+      icon: 'secretNote',
+      // First name only: the row stays one short line.
+      title: t('home.todo.note', { name: shortName(displayName(character, relationships[character.id])) }),
       onPress: () => router.push(`/secret-note/${character.id}`),
     });
   }
-
-  const cellWidth = (Math.min(width, 520) - space.lg * 2) / COLUMNS;
+  if (spinReady) {
+    todos.push({
+      key: 'spin',
+      icon: 'gift',
+      title: t('home.todo.spin'),
+      onPress: () => router.push('/gifts'),
+    });
+  }
 
   return (
     <Screen background={colors.bgPlain}>
@@ -162,7 +207,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.actions}>
-          <ShellBadge count={shells} onPress={() => router.push('/store/shell')} />
+          <ShellBadge count={shells} onPress={() => router.push('/store/shell?tab=shells')} />
           <PressableScale
             style={styles.profile}
             scaleTo={0.94}
@@ -178,84 +223,116 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
         <View style={styles.greeting}>
-          <Txt variant="h2" accessibilityRole="header">
+          <Txt variant="h1" accessibilityRole="header">
             {t(`home.greeting.${greetingSlot(new Date().getHours())}`, { name: user.displayName })}
-          </Txt>
-          <Txt variant="small" color={colors.textSecondary}>
-            {waitingLine()}
           </Txt>
         </View>
 
-        {showRecentLabel ? <SectionLabel title={t('home.recent')} /> : null}
-        <Card
-          variant="outlined"
-          padded={false}
-          style={[styles.chats, showRecentLabel && styles.chatsUnderLabel]}>
-          {shown.length > 0 ? (
-            shown.map((item, i) => (
-              <Fragment key={item.conversation.id}>
-                {i > 0 ? <Divider inset={CHAT_INSET} /> : null}
-                <ChatRow item={item} onPress={() => router.push(`/chat/${item.conversation.id}`)} />
-              </Fragment>
-            ))
-          ) : (
-            <ListRow
-              left={<IconTile icon="compass-outline" size={ROW_ICON} />}
-              title={t('home.todo.meet')}
-              subtitle={t('home.todo.meetHint')}
-              chevron
-              onPress={() => router.push('/(tabs)/find')}
-            />
-          )}
-        </Card>
-
-        {todos.length > 0 ? (
-          <>
-            <SectionLabel title={t('home.today')} />
-            {todos.map((todo, i) => (
-              <Fragment key={todo.key}>
-                {i > 0 ? <Divider inset={TODO_INSET} /> : null}
-                <ListRow
-                  left={<IconTile icon={todo.icon} size={ROW_ICON} />}
-                  title={todo.title}
-                  subtitle={todo.subtitle}
-                  chevron
-                  onPress={todo.onPress}
-                />
-              </Fragment>
-            ))}
-          </>
+        {hero ? (
+          <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
         ) : null}
 
-        <SectionLabel title={t('home.explore')} />
+        {/* Every module one tap away, right under the friend card (BIMOBIMO #1). */}
         <View style={styles.grid}>
           {homeModules.map((module) => (
             <ModuleCell
               key={module.key}
               module={module}
-              width={cellWidth}
-              dot={module.key === 'gifts' && spinReady}
+              dot={module.key === 'gifts' && (spinReady || giftWaiting)}
               onPress={() => router.push(module.route as never)}
             />
           ))}
         </View>
+
+        {chats.length > 0 ? (
+          <SectionLabel
+            tone="title"
+            title={t('home.chats')}
+            right={
+              <PressableScale
+                style={styles.more}
+                scaleTo={0.94}
+                accessibilityRole="link"
+                accessibilityLabel={t('home.allChats')}
+                onPress={() => router.navigate('/(tabs)/chat')}>
+                <CaretRightIcon size={18} color={colors.textMuted} />
+              </PressableScale>
+            }
+          />
+        ) : null}
+        {/* Plain rows on the canvas: no card, no lines, the type carries the structure. */}
+        <View style={chats.length === 0 && styles.alone}>
+          {shown.length > 0 ? (
+            shown.map((item) => (
+              <ChatRow
+                key={item.conversation.id}
+                item={item}
+                onPress={() => router.push(`/chat/${item.conversation.id}`)}
+              />
+            ))
+          ) : (
+            <ListRow
+              size="large"
+              left={<ClayIcon name="compass" size={ROW_ICON} tile={false} />}
+              title={t('home.todo.meet')}
+              chevron
+              onPress={() => router.push('/(tabs)/find')}
+            />
+          )}
+        </View>
+
+        {todos.length > 0 ? (
+          <>
+            <SectionLabel tone="title" title={t('home.today')} />
+            {todos.map((todo) => (
+              <ListRow
+                key={todo.key}
+                size="large"
+                left={
+                  isCharacter(todo.icon) ? (
+                    <CharacterAvatar character={todo.icon} size={ROW_ICON} />
+                  ) : (
+                    <ClayIcon name={todo.icon} size={ROW_ICON} tile={false} />
+                  )
+                }
+                title={todo.title}
+                subtitle={todo.subtitle}
+                trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
+                chevron
+                onPress={todo.onPress}
+              />
+            ))}
+          </>
+        ) : null}
+
+
+
       </ScrollView>
+      {/* The day's check-in shows here only, never over a chat or another tab. */}
+      <DailyRewardSheet />
     </Screen>
   );
 }
 
+function isCharacter(icon: TodoItem['icon']): icon is Character {
+  return typeof icon === 'object';
+}
+
 /**
  * A conversation row, marked like the Chats tab: a muted chat shows a quiet bell
- * instead of the unread badge. Both marks are visual only, so the label spells them out.
+ * instead of the unread badge. A small mint chip after the name carries the bond
+ * level. The marks are visual only, so the label spells them out.
  */
 function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
   const { t } = useTranslation();
-  const { conversation, character, name } = item;
+  const { conversation, character, relationship, name } = item;
   const stamp = relativeStamp(conversation.lastMessageAt);
+  const level = relationship && relationship.level >= 1 ? relationship.level : null;
   const label = [
     conversation.unreadCount > 0
       ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
       : name,
+    level != null ? t('home.bondLevel', { level }) : null,
     conversation.muted ? t('chatList.muted') : null,
     stamp,
     conversation.lastMessagePreview,
@@ -265,8 +342,10 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
 
   return (
     <ListRow
+      size="large"
       left={<CharacterAvatar character={character} size={CHAT_AVATAR} />}
       title={name}
+      titleAfter={level != null ? <BondChip level={level} /> : undefined}
       meta={stamp}
       subtitle={conversation.lastMessagePreview}
       trailing={
@@ -282,15 +361,25 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
   );
 }
 
-/** One Explore module: glyph tile over a short name; the label carries the full name. */
+/** Mint heart and level: how close you are, at a glance. */
+function BondChip({ level }: { level: number }) {
+  return (
+    <View style={styles.bond}>
+      <HeartIcon size={10} color={colors.bond} weight="fill" />
+      <Txt variant="tiny" color={colors.bondText} style={styles.bondText}>
+        {level}
+      </Txt>
+    </View>
+  );
+}
+
+/** One Explore module: a large clay icon over a short name; the label carries the full name. */
 function ModuleCell({
   module,
-  width,
   dot,
   onPress,
 }: {
   module: HomeModule;
-  width: number;
   dot: boolean;
   onPress: () => void;
 }) {
@@ -298,12 +387,12 @@ function ModuleCell({
 
   return (
     <PressableScale
-      style={[styles.cell, { width }]}
+      style={styles.cell}
       scaleTo={0.94}
       accessibilityLabel={t(`home.modules.${module.labelKey}`)}
       onPress={onPress}>
-      <IconTile size={MODULE_ICON} icon={MODULE_ICONS[module.key]} dot={dot} />
-      <Txt variant="caption" color={colors.textSecondary} center lines={1}>
+      <ClayIcon name={MODULE_ICONS[module.key]} size={MODULE_ICON} tile={false} dot={dot} />
+      <Txt variant="small" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
         {t(`home.short.${module.key}`)}
       </Txt>
     </PressableScale>
@@ -334,15 +423,30 @@ const styles = StyleSheet.create({
     paddingTop: space.lg,
     gap: space.xs,
   },
-  chats: { marginHorizontal: space.lg, marginTop: space.lg },
-  // The section label above already opens the gap.
-  chatsUnderLabel: { marginTop: space.xs },
+  // A full-size target for the small chevron beside the section title.
+  more: { width: 44, height: 44, marginVertical: -space.md, alignItems: 'center', justifyContent: 'center' },
+  // With no chats there is no heading above the "meet someone" row to open the gap.
+  alone: { marginTop: space.xl },
+  freshDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
+  bond: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xxs,
+    paddingLeft: space.xs + 1,
+    paddingRight: space.xs + 2,
+    paddingVertical: 1,
+    borderRadius: radius.pill,
+    backgroundColor: colors.bondSoft,
+  },
+  bondText: { fontWeight: weight.bold },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     rowGap: space.lg,
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
+    paddingHorizontal: space.sm,
+    paddingTop: space.xl,
   },
-  cell: { alignItems: 'center', gap: space.sm },
+  // A quarter of the row, so rounding never pushes the fourth icon onto a new line.
+  cell: { width: '25%', alignItems: 'center', gap: space.xs },
+  cellLabel: { fontWeight: weight.medium },
 });

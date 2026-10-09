@@ -108,10 +108,18 @@ export const colors = {
   onMedia: palette.white,
   onMediaMuted: 'rgba(255,255,255,0.75)',
   onMediaGlass: 'rgba(255,255,255,0.16)',
+  onMediaSoft: 'rgba(255,255,255,0.88)',
+  /** Hairline round a glass chip on a photo. */
+  onMediaHairline: 'rgba(255,255,255,0.28)',
+  /** The solid round action sitting on a photo (the Today hero's chat button). */
+  onMediaButton: 'rgba(255,255,255,0.92)',
 
   // Bond: the only place mint carries meaning (level progress, "voice ready").
   bond: palette.mint400,
   bondText: palette.mint600,
+  bondSoft: palette.mint100,
+  /** Bond mint that stays readable on a dark photo. */
+  bondOnMedia: palette.mint200,
 
   // Diary
   paper: palette.cream200,
@@ -132,6 +140,8 @@ export const colors = {
 
   // Status
   danger: palette.red,
+  /** Red that stays readable as text on the cream canvas (Block, destructive rows). */
+  dangerText: '#C93A3A',
   dangerSoft: palette.redSoft,
   success: palette.green,
   warning: palette.amber,
@@ -139,6 +149,23 @@ export const colors = {
 } as const;
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
+/**
+ * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each
+ * module is found by colour as well as shape. Mint stays with Contacts, the bond module.
+ */
+export const moduleTints: Record<string, { bg: string; fg: string }> = {
+  store: { bg: palette.apricot100, fg: palette.apricot700 },
+  dating: { bg: '#FFE3DE', fg: '#D2503F' },
+  diary: { bg: '#F6E8D7', fg: palette.caramel700 },
+  photo: { bg: '#DCEBFF', fg: '#2F7BD0' },
+  contacts: { bg: palette.mint100, fg: palette.mint600 },
+  gifts: { bg: palette.apricot100, fg: palette.apricot700 },
+  calls: { bg: '#DDF5E7', fg: '#2E9963' },
+  bedtime: { bg: '#E3E5FA', fg: '#4E56B8' },
+  radio: { bg: '#FFF0CC', fg: '#B07A00' },
+  board: { bg: '#F6E8D7', fg: palette.caramel700 },
+};
+
 export const gradients = {
   home: ['#FFF7EC', '#FFEEDB'] as const,
   banner: ['#FFC999', '#FF9F5A'] as const,
@@ -150,6 +177,18 @@ export const gradients = {
   incoming: ['rgba(0,0,0,0.55)', 'transparent', 'rgba(0,0,0,0.65)'] as const,
   avatarFallback: ['#FFC999', '#FF9F5A'] as const,
   night: ['#1E2A55', '#2E3B6B'] as const,
+  /**
+   * Left-to-right shade under the Today hero's copy, so white text reads on any scene.
+   * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.
+   */
+  heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
+  /** The phone lock screen in Profile → Notifications' preview. */
+  lockScreen: ['#2E3352', '#5B4A6E'] as const,
+} as const;
+
+/** `locations` for the gradients above that do not spread their colours evenly. */
+export const gradientStops = {
+  heroScrim: [0, 0.45, 0.7] as const,
 } as const;
 
 /** Deterministic pastel pair for an avatar with no image yet. */
