@@ -52,8 +52,19 @@ export default function CallScreen() {
   const [muted, setMuted] = useState(false);
   const [speaker, setSpeaker] = useState(false);
   const startedAt = useRef(new Date().toISOString());
+  // The time talked is booked once, however the screen closes: hang-up, out of time,
+  // or the Android back button / a gesture that leaves without pressing End.
+  const secondsRef = useRef(0);
+  const booked = useRef(false);
+  const bookRef = useRef(() => {});
 
   const lines = useMemo(() => (character ? callScript(character) : []), [character]);
+
+  useEffect(() => {
+    secondsRef.current = seconds;
+  }, [seconds]);
+
+  useEffect(() => () => bookRef.current(), []);
 
   useEffect(() => {
     if (state !== 'connecting') return;
@@ -89,16 +100,22 @@ export default function CallScreen() {
 
   const name = displayName(character, relationship);
 
+  const book = () => {
+    const talked = secondsRef.current;
+    if (booked.current || talked <= 0) return;
+    booked.current = true;
+    addCall({
+      characterId: character.id,
+      startedAt: startedAt.current,
+      durationSec: talked,
+      direction: answered ? 'incoming' : 'outgoing',
+      missed: false,
+    });
+  };
+  bookRef.current = book;
+
   const hangUp = () => {
-    if (seconds > 0) {
-      addCall({
-        characterId: character.id,
-        startedAt: startedAt.current,
-        durationSec: seconds,
-        direction: answered ? 'incoming' : 'outgoing',
-        missed: false,
-      });
-    }
+    book();
     if (router.canGoBack()) router.back();
     else router.replace('/');
   };

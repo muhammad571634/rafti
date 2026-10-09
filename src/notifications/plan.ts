@@ -1,3 +1,4 @@
+import { detectCrisis } from '@/ai/safety';
 import { isBirthday } from '@/lib/profile';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
@@ -169,7 +170,8 @@ const nameOf = (character: Character, relationships: Record<string, Relationship
 
 function quoteOf(messages: readonly Message[] | undefined) {
   const text = [...(messages ?? [])].reverse().find((m) => m.author === 'me' && m.kind === 'text' && m.text)?.text;
-  if (!text) return '';
+  // A message that read like the user was in danger is never quoted back: the push uses its gentle no-quote line.
+  if (!text || detectCrisis(text)) return '';
   const clean = text.replace(/\s+/g, ' ').trim();
   return clean.length > PUSH_RULES.quoteMax ? `${clean.slice(0, PUSH_RULES.quoteMax - 1).trim()}…` : clean;
 }

@@ -7,6 +7,8 @@ Oxiridagi "Qaror kerak" bo'limidagi savollarga javobdan keyin B0 boshlanadi.
 (40 personaj, Closeness v2) moslangan, va 6 ta qo'shimcha taklif. 4- va 11-bo'limlar shunga moslab yangilandi.
 2026-10-09: **13-bo'lim qo'shildi**: unit iqtisodi, yangi tariflar (ovoz va qo'ng'iroq daqiqalari kamaytirildi,
 bepul foydalanuvchiga jonli ovoz yo'q), ko'rinmas model tanlash va konversiya. 3- va 12.10-bo'limlar yangilandi.
+2026-10-09: 13-bo'lim **tasdiqlandi**. **14-bo'lim qo'shildi**: tariflar backend va interfeysda qanday ishlashi; qarorlar endi 15-bo'limda.
+Biznes model, bozor va yo'l xaritasi — `docs/business-plan.md`.
 
 ## 1. Tamoyillar
 
@@ -196,6 +198,9 @@ bilan qisqa tarix, xotira ishlarini Batches API'da 50% arzon bajarish.
 ## 11. Bosqichlar
 
 Har bosqich: avval qisqa reja → tasdiq → kod → `tsc` + server testlari → telefonda sinov → commit.
+
+**Tartib (2026-10-09, `business-plan.md` §9):** B0 → B1 → **B3** → B2 → soft launch → B4 → B5 → B6.
+Daromad tezroq boshlanishi uchun to'lov xotiradan oldinga olindi.
 
 | Bosqich | Nima qilinadi | Tayyor degani |
 | --- | --- | --- |
@@ -608,16 +613,161 @@ Ekranlar o'zgarmaydi, faqat raqamlar va server qoidalari o'zgaradi.
   - [Live API best practices](https://ai.google.dev/gemini-api/docs/live-api/best-practices)
   - [eCPM benchmarks 2026](https://blog.playio.co/mobile-game-ecpm-benchmarks-2026)
 
-## 14. Qaror kerak (foydalanuvchidan)
+## 14. Tariflar qanday ishlaydi: backend va interfeys (2026-10-09)
 
-1. **Stack:** Supabase + Hono (Fly.io) — tasdiqlaysizmi? Muqobil: Firebase (Google ekotizimi, lekin
-   Postgres va pgvector yo'q, xotira tizimi qiyinroq).
+13-bo'limdagi tariflar tasdiqlandi. Bu bo'lim ularning qanday qurilishini tushuntiradi.
+
+**Asosiy qoida:** hamma hisob-kitob serverda, ilova faqat ko'rsatadi. Ilova bitta joydan o'qiydi — `GET /v1/me/plan`.
+Foydalanuvchi limitlarni oddiy so'zlar bilan ko'radi: "60 daqiqadan 42 tasi qoldi, 3-noyabrda yangilanadi". Model
+nomlarini hech qachon ko'rmaydi.
+
+### 14.1 Umumiy sxema
+
+```
+ Do'kon (App Store / Google Play)       Ilova (Expo)
+        │ xarid / yangilanish               │  ▲ GET /v1/me/plan (reja, qoldiq, yangilanish sanasi)
+        ▼                                    │  │ 402/429 + "taklif" (paywall lahzasi)
+   RevenueCat ──webhook──► rafti-api ◄───────┘  │
+                              │ subscriptions, quota_periods, minute_packs, shell_ledger
+                              ├─► chat:        xabar oldidan chig'anoq / fair-use tekshiruvi
+                              ├─► ovozli javob: TTS oldidan daqiqa tekshiruvi (tugasa, matn bilan javob)
+                              └─► qo'ng'iroq:  boshida ruxsat, har 15 s server daqiqa yechadi
+```
+
+### 14.2 Jadvallar
+
+| Jadval | Ustunlar | Kim yozadi |
+|---|---|---|
+| `subscriptions` | `user_id`, `plan_id` (basic/quarterly/pro/annual), `store`, `original_tx_id`, `status` (trial/active/grace/expired/refunded), `period_start`, `period_end`, `will_renew` | Faqat RevenueCat webhook'i. Bir event ikki marta kelsa, ikkinchisi e'tiborsiz qoladi |
+| `quota_periods` | `user_id`, `period_start`, `period_end`, `plan_id`, `call_seconds_used`, `tts_seconds_used` | Server. Har yangi obuna davri uchun yangi qator |
+| `minute_packs` | `user_id`, `kind` (call/tts), `seconds_total`, `seconds_used`, `expires_at` (+90 kun), `ledger_id` | Server, chig'anoq bilan xarid qilinganda |
+| `daily_usage` | `user_id`, `day` (foydalanuvchining mahalliy sanasi, server hisoblaydi), `messages`, `ads`, `spins`, `checkin` | Server |
+| `voice_lines` | `character_id`, `line_key`, `locale`, `audio_path`, `transcript` | Bir martalik skript (Batch TTS) |
+| `paywall_events` | `user_id`, `moment`, `shown_at`, `action` (dismiss/trial/purchase) | Server. Chastota cheklovi va analitika uchun |
+| `crisis_events` | `user_id`, `conversation_id`, `detected_by`, `referred_at` (xabar matni saqlanmaydi) | Server. SB 243 hisoboti uchun |
+| `conversations.ai_notice_at` | Oxirgi AI eslatmasi vaqti | Server (har 3 soatda eslatma) |
+
+Tariflar konfiguratsiyasi bazada emas, kodda turadi (`server/src/economy/plans.ts`):
+
+```ts
+basic:     { periodDays: 30, chat: 'unlimited', dailyCap: 300, callSec: 3600,  ttsSec: 1800, memory: 'full' }
+quarterly: { periodDays: 90, chat: 'unlimited', dailyCap: 300, callSec: 9000,  ttsSec: 5400, memory: 'full' }
+pro:       { periodDays: 30, chat: 'unlimited', dailyCap: 300, callSec: 10800, ttsSec: 7200, memory: 'deep' }
+annual:    { periodDays: 365, monthly: true, ...basic }  // daqiqalar har oy yangilanadi
+trial:     { days: 3, callSec: 600, ttsSec: 600 }        // Basic sinovi
+free:      { chat: 'shells', callSec: 0, ttsSec: 0, voiceLines: true }
+```
+
+### 14.3 Qoidalar
+
+1. **Davr do'kon sanasiga bog'langan, kalendar oyiga emas.** Obuna 3-oktabrda boshlangan bo'lsa, daqiqalar 3-noyabrda
+   yangilanadi. Ishlatilmagan daqiqa keyingi oyga o'tmaydi.
+2. **Sarflash tartibi:** avval rejaning daqiqalari, keyin sotib olingan paketlar. Paket 90 kun amal qiladi.
+3. **Sinov (3 kun):** qo'ng'iroq va ovozli javob 10 daqiqadan. Sinov to'lovga aylanganda to'liq davr boshlanadi.
+4. **Bepul foydalanuvchi:**
+   - qo'ng'iroq so'rasa, server `402 needsPlan` qaytaradi;
+   - ovoz sifatida faqat `voice_lines` kutubxonasi;
+   - xabarlar chig'anoq bilan yuboriladi (check-in ~40/kun).
+5. **Fair use.** A'zolar uchun kuniga 300 xabar. Chegaradan oshsa `429 dailyCap` qaytadi va ertangi sana halol
+   ko'rsatiladi. Model hech qachon almashtirilmaydi (§13.6).
+6. **Kun chegarasi serverda hisoblanadi.** Foydalanuvchining vaqt zonasi `bootstrap`da yoziladi va kuniga bir martadan
+   ko'p o'zgartirib bo'lmaydi. Telefon soatini o'zgartirish natija bermaydi.
+7. **Javob o'rtada kesilmaydi.**
+   - Limit generatsiyadan **oldin** tekshiriladi.
+   - Ovozli javob uchun daqiqa yetmasa, javob matn bilan keladi va unga `voiceSkipped: 'quota'` belgisi qo'yiladi.
+   - Qo'ng'iroqda 2 daqiqa va 30 soniya qolganda ogohlantirish chiqadi. 0 da personaj oldindan yozilgan
+     xayrlashuv qatori bilan qo'ng'iroqni yopadi.
+8. **Qo'ng'iroq daqiqasini server yechadi.**
+   - Ilova har 15 soniyada `heartbeat` yuboradi.
+   - Ilova yopilsa yoki aloqa uzilsa, 30 soniyadan keyin server sessiyani o'zi yopadi.
+   - Bu audit'dagi "Android orqaga tugmasi" teshigini butunlay yopadi.
+9. **Qaytarish (refund) va bekor qilish:**
+   - `CANCELLATION` kelsa, reja davr oxirigacha ishlaydi.
+   - `EXPIRATION` kelsa, foydalanuvchi bepul tarifga o'tadi.
+   - `REFUND` kelsa, imtiyoz darhol olinadi.
+   - Sotib olingan chig'anoq qaytarilsa, ledger'ga manfiy yozuv tushadi, balans 0 dan pastga tushmaydi.
+
+### 14.4 API
+
+```
+GET  /v1/me/plan
+     → { plan, status, renewsAt, trialEndsAt,
+         calls:  { leftSec, totalSec, resetsAt, packsSec },
+         voice:  { leftSec, totalSec, resetsAt, packsSec },
+         shells, freeToday: { left, resetsAt }, dailyCap: { used, limit } }
+POST /v1/conversations/:id/messages   → 202 | 402 { reason: 'noShells', options: ['ad','pack','trial'] } | 429 { reason: 'dailyCap', resetsAt }
+POST /v1/calls                         → 201 { callId, allowedSec, warnAtSec: [120, 30] } | 402 { reason: 'needsPlan' | 'noMinutes', offer }
+POST /v1/calls/:id/heartbeat           → 200 { leftSec } | 409 { ended: true }
+POST /v1/minutes/topup { kind, pack }  → 200 { plan }   (chig'anoq → ledger → minute_packs)
+GET  /v1/offers?moment=call            → { show, paywallId, variant }  (RevenueCat Offerings + chastota cheklovi)
+POST /webhooks/revenuecat              → subscriptions / quota_periods
+POST /webhooks/admob-ssv               → mamlakatga qarab chig'anoq (§13.5)
+```
+
+### 14.5 Interfeys: foydalanuvchi nimani ko'radi
+
+Prototip (tasdiqlash uchun): https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv (6 ta ekran). Ekranlar tasdiqdan
+keyin quriladi.
+
+| Joy | Nima ko'rinadi |
+|---|---|
+| Store → "Plans" | Uchta reja kartasi va yillik reja. Limitlar oddiy tilda: "Cheklovsiz chat", "Oyiga 1 soat qo'ng'iroq", "Oyiga 30 daqiqa ovozli javob", "Hammasini eslaydi". Basic'da "3 kun bepul", Quarterly'da "$8.33/oy" yozuvi. Pastda: avtomatik yangilanish sharti, fair-use (300/kun), Restore, Terms, Privacy |
+| Profile → "Mening rejam" | Reja nomi va yangilanish sanasi. Ikki qator: "Qo'ng'iroq — 42 / 60 daq" va "Ovozli javob — 18 / 30 daq", ostida "3-noyabrda yangilanadi" va "Daqiqa qo'shish" tugmasi. Bepul foydalanuvchida bugungi chig'anoq va "Basic'ni 3 kun bepul sinash" |
+| Bepul foydalanuvchi qo'ng'iroq tugmasini bosdi | Sheet: personaj portreti, "Uning ovozini eshit" (kutubxonadan bepul qator), "Qo'ng'iroqlar Basic'da — oyiga 60 daqiqa", asosiy tugma "3 kun bepul boshlash", ikkinchi tugma "Hozir emas" |
+| Qo'ng'iroq paytida | 2 daqiqa qolganda yuqorida kichik "2 daq qoldi" yorlig'i. 0 da yumshoq yakun, keyin sheet: "Qo'ng'iroq daqiqalari tugadi · 3-noyabrda yangilanadi · 10 daqiqa qo'shish — 120 chig'anoq" |
+| Ovozli javob daqiqasi tugadi | Javob matn bilan keladi. Kuniga bir marta ostida kichik qator: "Ovozli javoblar shu oyga tugadi — 3-noyabrda qaytadi. Matn davom etadi." va "Daqiqa qo'shish" |
+| Chig'anoq tugadi (bepul) | Mavjud `PaywallSheet` qayta ishlatiladi. Uchta teng yo'l: reklama (+N), paket ($0.99 dan), Basic 3 kun bepul |
+| Fair-use chegarasi | Tizim qatori: "Bugun juda ko'p gaplashdik 🙂 Ertaga 00:00 da davom etamiz." Paywall chiqmaydi, chunki foydalanuvchi allaqachon a'zo |
+| AI eslatmasi | Chat sarlavhasida ism ostida "AI personaj". Suhbat boshida va har 3 soatda markazda tizim qatori: "Kai — AI personaj, haqiqiy odam emas." |
+
+### 14.6 Paywall lahzalari (texnik qism)
+
+- Server javobida `upsell: { moment }` maydoni keladi. Masalan: `noShells`, `callAttempt`, `voiceLinesHeard`,
+  `stageUp`, `memoryLimit`.
+- Ilova qaysi variantni ko'rsatishni `GET /v1/offers` orqali so'raydi. A/B testlar RevenueCat Experiments'da qilinadi.
+- **Chastota cheklovi:**
+  - bitta lahza kuniga ko'pi bilan 1 marta;
+  - hammasi bo'lib kuniga ko'pi bilan 2 ta paywall;
+  - javob kelayotgan paytda paywall ko'rsatilmaydi;
+  - chat ichida faqat foydalanuvchi o'zi biror harakat qilganda (yuborish, qo'ng'iroq) chiqadi.
+- Har ko'rsatish `paywall_events`ga yoziladi. Konversiya har lahza bo'yicha alohida hisoblanadi.
+
+### 14.7 Qonunga moslik (launch'dan oldin)
+
+- **AI eslatmasi** (NY GBL 47, SB 243): suhbat boshida va har 3 soatda, hamma foydalanuvchiga. `ai_notice_at` buni
+  kuzatadi.
+- **Kriz protokoli:** kirishdagi klassifikator ishlaydi, helpline kartasi chiqadi, `crisis_events`ga yozuv tushadi
+  (matnsiz).
+- **Iqtibos filtri.** Diary sahifasi va comeback push'lar kriz gaplaridan iqtibos olmaydi. Bu ilovada hozirdan
+  tuzatildi.
+- **18+:** tug'ilgan yil + Declared Age Range / Play Age Signals. Kichik yosh aniqlansa, kirish yopiladi.
+
+### 14.8 Testlar
+
+- `plans.ts` va `quota.ts` sof funksiyalar bo'ladi (push rejalashtiruvchisi kabi). Unit testlar tekshiradi:
+  - davr qanday yangilanishi;
+  - sarflash tartibi;
+  - sinov;
+  - fair-use;
+  - vaqt zonasi;
+  - refund.
+- Sandbox: Basic'ni sotib olish → `GET /v1/me/plan` 60 daqiqa ko'rsatadi. 61 daqiqa qo'ng'iroq qilinsa, server 60-
+  daqiqada qo'ng'iroqni yopadi. Webhook'ni ikki marta yuborish daqiqani ikki marta qo'shmaydi.
+
+## 15. Qarorlar
+
+1. **Stack:** ✅ Supabase + Hono (Fly.io) — founder qarori (2026-10-09). Firebase'da Postgres va pgvector yo'q,
+   shuning uchun xotira tizimi u yerda qiyinroq bo'lardi.
 2. **Chat modeli:** bitta model emas, ko'rinmas router (13.6). Yengil va kuchliroq modelni B1'da sifat to'plami
    va `usage_events` tanlaydi. Nomzodlar: Gemini 3.1 Flash-Lite, Gemini 3.8 Flash, Claude Haiku 4.5 va Sonnet 5.5.
-3. **Server kodi qayerda:** shu repoda `server/` papkada (umumiy turlar uchun qulay, lekin hammasi ochiq)
-   yoki alohida **private** repo.
+3. **Server kodi qayerda:** ✅ shu repoda, `server/` papkada (umumiy turlar uchun) — founder qarori.
+   Promptlar va iqtisod qoidalari kirishidan oldin, ya'ni B1'dan oldin, repo'ni **private** qilish tavsiya etiladi
+   (buni faqat siz qila olasiz).
 4. **Hisoblar:** Supabase, Fly.io, LLM provayder(lar)i (Google AI Studio pullik tarifi va/yoki Anthropic Console) va RevenueCat hisoblarini siz ochasiz.
    Kalitlarni men ko'rmayman, ularni hosting secret'lariga o'zingiz qo'yasiz (B0'da qadamma-qadam yo'riqnoma beraman).
-5. **Tariflar (13.3):** qo'ng'iroq 60/150/180 daqiqa, ovozli javob 30/90/120 daqiqa, bepul
-   foydalanuvchiga jonli ovoz yo'q, 3 kunlik bepul sinov — tasdiqlaysizmi?
-6. **Bepul ulush (13.5):** check-in o'rtacha ~40 chig'anoq/kun, reklama mukofoti mamlakatga qarab — tasdiqlaysizmi?
+5. **Tariflar (13.3):** ✅ tasdiqlandi (2026-10-09). Qo'ng'iroq 60/150/180 daqiqa, ovozli javob 30/90/120 daqiqa,
+   bepul foydalanuvchiga jonli ovoz yo'q, 3 kunlik bepul sinov. Founder qo'shimchasi: yillik reja $79.99
+   (Basic limitlari bilan).
+6. **Bepul ulush (13.5):** ✅ tasdiqlandi (2026-10-09). Check-in o'rtacha ~40 chig'anoq/kun, reklama mukofoti
+   mamlakatga qarab.
+7. **Monetizatsiya interfeysi:** prototip https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv — tasdiqlaysizmi?

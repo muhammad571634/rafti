@@ -1,3 +1,4 @@
+import { detectCrisis } from '@/ai/safety';
 import type { CharacterDiaryPage, DiaryMood, Message, Moment } from '@/types';
 
 import { dateFromKey, dayKey } from './time';
@@ -18,6 +19,8 @@ export interface DayTogether {
   dateTitle?: string;
   /** Latest hour of the day they talked, 0-23 */
   lastHour: number;
+  /** A message that day read like the user was in danger: the page stays gentle and quotes nothing. */
+  heavy: boolean;
 }
 
 /**
@@ -39,7 +42,7 @@ export function daysTogether(
     const key = `${characterId}|${day}`;
     let entry = byKey.get(key);
     if (!entry) {
-      entry = { characterId, day, said: [], extraTouches: 0, lastHour: 0 };
+      entry = { characterId, day, said: [], extraTouches: 0, lastHour: 0, heavy: false };
       byKey.set(key, entry);
     }
     entry.lastHour = Math.max(entry.lastHour, new Date(iso).getHours());
@@ -51,7 +54,10 @@ export function daysTogether(
       if (m.author !== 'me') continue;
       const entry = slot(conv.characterId, m.createdAt);
       if (!entry) continue;
-      if (m.kind === 'text' && m.text) entry.said.push(m.text);
+      if (m.kind === 'text' && m.text && detectCrisis(m.text)) {
+        entry.heavy = true;
+        entry.extraTouches += 1;
+      } else if (m.kind === 'text' && m.text) entry.said.push(m.text);
       else entry.extraTouches += 1;
     }
   }
@@ -97,16 +103,26 @@ export function duePages(
  */
 export function writePage(d: DayTogether, date: string): CharacterDiaryPage {
   const talk = d.said.length + d.extraTouches;
-  const mood: DiaryMood =
-    d.dateTitle != null ? 'happy' : d.lastHour >= 23 ? 'tired' : talk >= 10 ? 'excited' : talk >= 4 ? 'happy' : 'soft';
+  const mood: DiaryMood = d.heavy
+    ? 'soft'
+    : d.dateTitle != null
+      ? 'happy'
+      : d.lastHour >= 23
+        ? 'tired'
+        : talk >= 10
+          ? 'excited'
+          : talk >= 4
+            ? 'happy'
+            : 'soft';
   const seed = hash(`${d.characterId}${d.day}`);
-  const quote = pickQuote(d.said);
+  const quote = d.heavy ? undefined : pickQuote(d.said);
 
   const body: string[] = [];
-  if (d.dateTitle) body.push(pick(DATE_OPENERS, seed).replace('{title}', d.dateTitle.toLowerCase()));
+  if (d.heavy) body.push(pick(HEAVY_OPENERS, seed));
+  else if (d.dateTitle) body.push(pick(DATE_OPENERS, seed).replace('{title}', d.dateTitle.toLowerCase()));
   else body.push(pick(OPENERS[mood], seed));
   if (quote) body.push(pick(QUOTE_LINES, seed + 1).replace('{quote}', quote));
-  body.push(pick(CLOSERS[mood], seed + 2));
+  body.push(d.heavy ? pick(HEAVY_CLOSERS, seed + 2) : pick(CLOSERS[mood], seed + 2));
 
   const written = dateFromKey(date);
   written.setHours(7 + (seed % 3), (seed * 7) % 60, 0, 0);
@@ -163,6 +179,17 @@ const OPENERS: Record<DiaryMood, readonly string[]> = {
   ],
   blue: ['A quiet day. I kept checking if you had written.'],
 };
+
+/** After a day the user sounded in danger: no jokes, no quotes, a quiet check-in. */
+const HEAVY_OPENERS = [
+  'Yesterday sounded heavy for you. I have been thinking about you since I woke up.',
+  'I keep coming back to how hard yesterday was for you.',
+];
+
+const HEAVY_CLOSERS = [
+  'If it still feels like too much today, please talk to someone near you too. I am here as well.',
+  'Be gentle with yourself today, and reach out to someone you trust. Write to me whenever you want.',
+];
 
 const DATE_OPENERS = [
   'Our {title} yesterday. I am writing it down so I never lose it.',

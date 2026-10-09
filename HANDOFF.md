@@ -42,8 +42,25 @@ npx tsc --noEmit                # must be clean
   (calls 60/150/180 min, voice replies 30/90/120 min, no live voice for free users, 3-day store
   trial instead of the 15-minute call trial), free tier ~40 shells/day with country-based ad
   rewards, invisible per-message model routing that is the same on every plan (users never see
-  model names or tiers), and in-app conversion moments. Waiting for approval (§14, items 5–6);
+  model names or tiers), and in-app conversion moments. Approved on 2026-10-09 (§15, items 5–6);
   no code changed.
+- Later the same day the user handed over the founder role ("choose the business model, build it end to
+  end"). Done:
+  - `docs/business-plan.md` (Uzbek): market, competitors, positioning, subscription-first revenue,
+    launch order (CA/AU/NZ → US/UK → CIS via Telegram), payouts and legal entity from Uzbekistan,
+    break-even model, KPIs, compliance (NY GBL 47, CA SB 243, age laws), roadmap with B3 (payments)
+    moved before B2.
+  - `docs/backend-plan.md` §14 explains how plans and limits work in the backend and the UI; §15 holds
+    the decisions. A yearly plan ($79.99, Basic limits) was added as a founder decision.
+  - Prototype of the plan screens for approval (Design canvas, 6 artboards):
+    https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv. Do not build these screens before the user
+    approves them.
+  - Fixed: diary pages and comeback pushes no longer quote a crisis message (a heavy day gets a gentle
+    page with no quote); the call screen books the time talked however it closes (Android back
+    included); creating a character charges the 60-shell voice clone only when the character is
+    actually made, and leaving the screen cancels it.
+  - Next: B0 once the user opens the accounts (§15.4) and makes the repo private; the monetization
+    UI after the prototype is approved.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 

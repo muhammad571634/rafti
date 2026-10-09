@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
@@ -85,6 +85,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const addCharacter = useAppStore((s) => s.addCharacter);
   const updateCharacter = useAppStore((s) => s.updateCharacter);
   const spendShells = useAppStore((s) => s.spendShells);
+  const shells = useAppStore((s) => s.wallet.shells);
+  /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
+  const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(training.current), []);
 
   /** The character already has a cloned voice (made with clips, not a stock voice). */
   const hasTrainedVoice = !!editing && !editing.voicePreset;
@@ -206,10 +210,15 @@ function CharacterForm({ editing }: { editing?: Character }) {
 
   const submit = () => {
     if (problems.length > 0) return setError(t(`createCharacter.problems.${problems[0]}`));
-    if (cost > 0 && !spendShells(cost, 'voiceClone')) return setPaywall(cost);
+    // Checked now so the paywall shows at once; charged only when the voice is actually made.
+    if (cost > 0 && shells < cost) return setPaywall(cost);
 
     setCreating(true);
     const finish = () => {
+      if (cost > 0 && !spendShells(cost, 'voiceClone')) {
+        setCreating(false);
+        return setPaywall(cost);
+      }
       if (editing) return save(editing);
       const { conversationId } = addCharacter({
         ...fields(),
@@ -224,7 +233,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       router.replace(`/chat/${conversationId}`);
     };
     // A new cloned voice trains first (a server job later); anything else is ready now.
-    if (cost > 0) setTimeout(finish, CLONE_MS);
+    if (cost > 0) training.current = setTimeout(finish, CLONE_MS);
     else finish();
   };
 
