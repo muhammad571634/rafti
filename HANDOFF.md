@@ -108,6 +108,14 @@ npx tsc --noEmit                # must be clean
   `../BIMOBIMOdesignraw/empty_state.png/rafti-empty-shell.jpg`, cut with `key_out`). Next: the
   "medium" screens, Free gifts first, each with a prototype.
 
+- Free gifts restyled (2026-10-10, prototype approved: https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2):
+  `src/app/gifts.tsx`. Check-in days sit in one white card; the wheel (and its spin animation) is
+  unchanged, with a status pill ("1 free spin" / "Watch to spin" / "Back tomorrow"); video, share
+  and invite are equal rows with secondary buttons in one "More shells" box, so the sticky ad bar
+  and the big orange Invite button are gone (the wheel's Spin is the one orange control). Invite
+  code row with copy, then "Have a code?". `ShellBadge tone="neutral"` is the grey header pill.
+  Next "medium" screen: Create character (prototype first).
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

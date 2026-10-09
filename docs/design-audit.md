@@ -38,7 +38,7 @@ screens:
 | Our dates album | `/date/album` | fits | Done in step 2: plain canvas; empty-state button is `secondary` everywhere. |
 | Contacts | `/contacts` | medium | Grid of shadowed cards with a dashed "Add one"; info icon. Move to a list or select-card grid in the style. |
 | Create character | `/create-character` | medium | Long form: h3 sections, bottom action bar with the price, consistent field style. |
-| Free gifts | `/gifts` | medium | Five blocks with mixed styles (check-in dots, wheel, invite, code, video); regroup into h3 sections, one primary button. Keep the wheel and its animation. |
+| Free gifts | `/gifts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2): check-in card, wheel with a status pill, one "More shells" box (video, share, invite), code row. |
 | Photo Booth | `/photo-booth` | medium | Header subtitle, teal gradient card, mid-screen button; preview card on white, action bar with the price. |
 | Bedtime | `/bedtime` | medium | Night canvas can stay (like the call screen); header subtitle out, timer as option chips, action bar. |
 | Today (Home) | `/(tabs)/index` | approved | Section titles and the 3D tile grid differ from the style. |

@@ -10,6 +10,7 @@ import {
   Button,
   Header,
   ClayIcon,
+  type ClayIconName,
   ListRow,
   PressableScale,
   Screen,
@@ -39,11 +40,13 @@ import { colors, fonts, hitSlop, palette, radius, space } from '@/theme';
 /** How long the stand-in "ad" plays before paying out. */
 const AD_MS = 1800;
 const ROW_ICON = 38;
+const WAY_ICON = 36;
 const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'invite' } as const;
 
 /**
- * Free shells, three ways — the reference's daily login, roulette wheel and
- * rewarded videos. Every limit lives in the store so it survives a restart.
+ * Free shells: the daily check-in, the lucky wheel, then one "More shells" box
+ * (video, share, invite) in the calm-cards style (docs/design-style.md). Every
+ * limit lives in the store so it survives a restart.
  */
 export default function GiftsScreen() {
   const { t } = useTranslation();
@@ -93,6 +96,7 @@ export default function GiftsScreen() {
   const adsLeft = Math.max(0, MAX_ADS_PER_DAY - adsWatched);
   const freeSpinLeft = spinsUsed < FREE_SPINS_PER_DAY;
   const canSpin = freeSpinLeft || adsLeft > 0;
+  const spinStatus = freeSpinLeft ? t('gifts.spinsFree') : adsLeft ? t('gifts.spinsAd') : t('gifts.spinsNone');
 
   const playAd = () => {
     if (!adsLeft || watching) return;
@@ -107,26 +111,34 @@ export default function GiftsScreen() {
 
   return (
     <Screen background={colors.bgPlain}>
-      <Header title={t('gifts.title')} right={<ShellBadge count={shells} style={styles.balance} />} />
+      <Header title={t('gifts.title')} right={<ShellBadge count={shells} tone="neutral" style={styles.balance} />} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <SectionLabel
-          title={t('gifts.checkInLabel', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
+          tone="section"
+          title={t('gifts.checkIn')}
+          right={
+            <Txt variant="small" color={colors.textSecondary}>
+              {t('gifts.dayOf', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
+            </Txt>
+          }
         />
         <View style={styles.days}>
           {DAILY_CHECK_IN.map((amount, index) => {
             const day = index + 1;
             const claimed = day <= daily.checkInDay;
             const isToday = checkedInToday && day === daily.checkInDay;
+            const next = day === daily.checkInDay + 1;
             const last = index === DAILY_CHECK_IN.length - 1;
             // The surprise day shows its floor ("80+") until it is rolled.
             const shown = last
               ? isToday
-                ? String(daily.checkInAmount ?? amount)
-                : t('common.atLeast', { count: amount })
-              : String(amount);
-            const worth =
-              last && !isToday ? t('common.range', { min: amount, max: DAILY_CHECK_IN_TOP }) : `+${shown}`;
+                ? `+${daily.checkInAmount ?? amount}`
+                : claimed
+                  ? `+${amount}`
+                  : t('common.atLeast', { count: amount })
+              : `+${amount}`;
+            const worth = last && !claimed ? t('common.range', { min: amount, max: DAILY_CHECK_IN_TOP }) : shown;
 
             return (
               <View
@@ -134,32 +146,39 @@ export default function GiftsScreen() {
                 style={styles.day}
                 accessible
                 accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
-                <View style={[styles.dayDot, claimed && styles.dayClaimed, last && !claimed && styles.dayBig]}>
+                <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
                   {claimed ? (
                     <Ionicons name="checkmark" size={16} color={colors.textOnPrimary} />
                   ) : (
-                    <Txt variant="smallStrong" color={last ? colors.primary : colors.text}>
-                      {day}
-                    </Txt>
+                    <Txt variant="smallStrong">{day}</Txt>
                   )}
                 </View>
-                <Txt
-                  variant="caption"
-                  color={last && !claimed ? colors.primary : colors.textMuted}>
-                  {shown}
-                </Txt>
+                {last && !claimed ? (
+                  <View style={styles.offer}>
+                    <Txt variant="caption" color={colors.brandText} style={styles.bold}>
+                      {shown}
+                    </Txt>
+                  </View>
+                ) : (
+                  <Txt variant="caption" color={claimed ? colors.text : colors.textMuted} style={styles.bold}>
+                    {shown}
+                  </Txt>
+                )}
               </View>
             );
           })}
         </View>
-        <Txt variant="caption" color={colors.textMuted} style={styles.hint}>
-          {t('gifts.checkInHint')}
-        </Txt>
 
         <SectionLabel
-          title={`${t('gifts.wheel')} · ${
-            freeSpinLeft ? t('gifts.freeSpin') : adsLeft ? t('gifts.adSpin') : t('gifts.noSpins')
-          }`}
+          tone="section"
+          title={t('gifts.wheel')}
+          right={
+            <View style={styles.pill}>
+              <Txt variant="caption" color={colors.textSecondary} style={styles.bold}>
+                {spinStatus}
+              </Txt>
+            </View>
+          }
         />
         <View style={styles.wheel}>
           <LuckyWheel
@@ -170,49 +189,9 @@ export default function GiftsScreen() {
           />
         </View>
 
-        <SectionLabel title={t('gifts.invite', { count: INVITE_REWARD })} />
-        <View style={styles.invite}>
-          <View style={styles.codeRow}>
-            <Txt variant="figure" style={styles.code} selectable>
-              {code}
-            </Txt>
-            <PressableScale
-              hitSlop={hitSlop}
-              scaleTo={0.88}
-              accessibilityLabel={t('gifts.copyCode')}
-              style={styles.copy}
-              onPress={() => void copyCode()}>
-              <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={18} color={colors.text} />
-            </PressableScale>
-          </View>
-          <View
-            style={styles.steps}
-            accessible
-            accessibilityLabel={t('gifts.inviteProgress', { count: invited, total: INVITES_PER_WEEK })}>
-            {Array.from({ length: INVITES_PER_WEEK }, (_, i) => (
-              <View key={i} style={[styles.step, i < invited && styles.stepOn]} />
-            ))}
-          </View>
-          <View style={styles.progressRow}>
-            <Txt variant="caption" color={colors.textMuted}>
-              {t('gifts.thisWeek')}
-            </Txt>
-            <Txt variant="caption" color={colors.textMuted}>
-              {invited} / {INVITES_PER_WEEK}
-            </Txt>
-          </View>
-          <Button label={t('gifts.inviteNow')} full onPress={invite} />
-          {user.redeemedInvite ? null : (
-            <PressableScale scaleTo={0.96} style={styles.haveCode} onPress={() => setRedeemOpen(true)}>
-              <Txt variant="smallStrong" color={colors.textSecondary}>
-                {t('gifts.haveCode')}
-              </Txt>
-            </PressableScale>
-          )}
-        </View>
-
         <SectionLabel
-          title={t('gifts.dailyShare')}
+          tone="section"
+          title={t('gifts.moreShells')}
           right={
             <PressableScale
               hitSlop={hitSlop}
@@ -223,39 +202,73 @@ export default function GiftsScreen() {
             </PressableScale>
           }
         />
-        <ListRow
-          title={t('gifts.shareReward', { count: SHARE_REWARD })}
-          left={<ClayIcon name="plane" size={ROW_ICON} />}
-          right={
-            <Button
-              label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')}
-              size="sm"
-              variant="secondary"
-              disabled={sharedToday}
-              onPress={shareToday}
-            />
-          }
-        />
-      </ScrollView>
+        <View style={styles.ways}>
+          <WayRow
+            icon="play"
+            title={t('gifts.watchAd')}
+            subtitle={adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
+            action={
+              <Button
+                label={t('gifts.watch')}
+                size="sm"
+                variant="secondary"
+                onPress={playAd}
+                loading={watching}
+                disabled={!adsLeft}
+              />
+            }
+          />
+          <View style={styles.divider} />
+          <WayRow
+            icon="plane"
+            title={t('gifts.shareTitle')}
+            subtitle={t('gifts.shareSub', { count: SHARE_REWARD })}
+            action={
+              <Button
+                label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')}
+                size="sm"
+                variant="secondary"
+                disabled={sharedToday}
+                onPress={shareToday}
+              />
+            }
+          />
+          <View style={styles.divider} />
+          <WayRow
+            icon="invite"
+            title={t('gifts.inviteTitle')}
+            subtitle={t('gifts.inviteSub', { count: INVITE_REWARD, done: invited, total: INVITES_PER_WEEK })}
+            action={<Button label={t('gifts.inviteNow')} size="sm" variant="secondary" onPress={invite} />}
+          />
+        </View>
 
-      {/* A row, not a pressable: the Watch button beside it is the only control. */}
-      <View style={styles.adBar}>
-        <ListRow
-          title={t('gifts.watchAd')}
-          subtitle={adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
-          left={<ClayIcon name="play" size={ROW_ICON} />}
-          right={
-            <Button
-              label={t('gifts.watch')}
-              size="sm"
-              variant="secondary"
-              onPress={playAd}
-              loading={watching}
-              disabled={!adsLeft}
-            />
-          }
-        />
-      </View>
+        <View style={styles.codeRow}>
+          <View style={styles.codeTile}>
+            <Ionicons name="gift-outline" size={19} color={colors.text} />
+          </View>
+          <Txt variant="bodyStrong" style={styles.flex}>
+            {t('gifts.yourCode')}
+          </Txt>
+          <Txt variant="figure" style={styles.code} selectable>
+            {code}
+          </Txt>
+          <PressableScale
+            hitSlop={hitSlop}
+            scaleTo={0.88}
+            accessibilityLabel={t('gifts.copyCode')}
+            style={styles.copy}
+            onPress={() => void copyCode()}>
+            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={18} color={colors.text} />
+          </PressableScale>
+        </View>
+        {user.redeemedInvite ? null : (
+          <PressableScale scaleTo={0.96} style={styles.haveCode} onPress={() => setRedeemOpen(true)}>
+            <Txt variant="smallStrong" color={colors.textSecondary}>
+              {t('gifts.haveCode')}
+            </Txt>
+          </PressableScale>
+        )}
+      </ScrollView>
 
       <Sheet visible={redeemOpen} onClose={() => setRedeemOpen(false)} title={t('gifts.haveCode')} avoidKeyboard>
         <View style={styles.redeem}>
@@ -322,32 +335,103 @@ export default function GiftsScreen() {
   );
 }
 
+/** One way to earn shells in the "More shells" box: art, two lines, one secondary button. */
+function WayRow({
+  icon,
+  title,
+  subtitle,
+  action,
+}: {
+  icon: ClayIconName;
+  title: string;
+  subtitle: string;
+  action: React.ReactNode;
+}) {
+  return (
+    <View style={styles.way}>
+      <ClayIcon name={icon} size={WAY_ICON} tile={false} />
+      <View style={styles.flex}>
+        <Txt variant="bodyStrong">{title}</Txt>
+        <Txt variant="small" color={colors.textSecondary}>
+          {subtitle}
+        </Txt>
+      </View>
+      {action}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  bold: { fontWeight: '700' },
   balance: { marginRight: space.sm },
-  scroll: { paddingBottom: space.xl },
-  days: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: space.lg, paddingTop: space.xs },
-  day: { alignItems: 'center', gap: space.xs },
+  scroll: { paddingBottom: space.xxl },
+  days: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: space.lg,
+    marginTop: space.sm,
+    paddingVertical: space.lg,
+    paddingHorizontal: space.md,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  day: { alignItems: 'center', gap: space.xs + 2 },
   dayDot: {
     width: 36,
     height: 36,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayClaimed: { backgroundColor: colors.text, borderColor: colors.text },
-  dayBig: { borderColor: colors.primary },
-  hint: { paddingHorizontal: space.lg, marginTop: space.md },
+  dayClaimed: { backgroundColor: colors.text },
+  // Tomorrow's day: the next one to come back for.
+  dayNext: { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.text },
+  offer: {
+    paddingHorizontal: 6,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.primarySoft,
+    backgroundColor: colors.primarySofter,
+  },
+  pill: {
+    height: 28,
+    justifyContent: 'center',
+    paddingHorizontal: space.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surfaceAlt,
+  },
   wheel: { alignItems: 'center', paddingTop: space.sm },
-  adBar: { borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface, paddingBottom: space.md },
-  success: { alignItems: 'center', gap: space.md },
-  confetti: { position: 'absolute', top: -60 },
-  rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  invite: { paddingHorizontal: space.lg, gap: space.md },
-  codeRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  code: { flex: 1, letterSpacing: 4 },
+  ways: {
+    marginHorizontal: space.lg,
+    marginTop: space.sm,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  way: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 14 },
+  divider: { height: 1, backgroundColor: colors.border, marginLeft: 14 + WAY_ICON + space.md },
+  codeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    paddingHorizontal: space.lg,
+    paddingTop: space.lg,
+  },
+  codeTile: {
+    width: 36,
+    height: 36,
+    borderRadius: 11,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  code: { letterSpacing: 3 },
   copy: {
     width: 38,
     height: 38,
@@ -356,11 +440,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.surfaceAlt,
   },
-  steps: { flexDirection: 'row', gap: 4 },
-  step: { flex: 1, height: 6, borderRadius: radius.pill, backgroundColor: colors.border },
-  stepOn: { backgroundColor: colors.primary },
-  progressRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: -space.xs },
-  haveCode: { alignSelf: 'center', minHeight: 40, justifyContent: 'center', paddingHorizontal: space.lg },
+  haveCode: {
+    alignSelf: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: space.lg,
+    marginTop: space.md,
+  },
+  success: { alignItems: 'center', gap: space.md },
+  confetti: { position: 'absolute', top: -60 },
+  rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   redeem: { gap: space.md },
   codeInput: {
     height: 54,
