@@ -58,6 +58,7 @@ export default function ProfileScreen() {
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
   const endPlan = useAppStore((s) => s.endPlan);
+  const loadDemoData = useAppStore((s) => s.loadDemoData);
   const blockedIds = useAppStore((s) => s.blockedIds);
   const characters = useAppStore((s) => s.characters);
   const unblockCharacter = useAppStore((s) => s.unblockCharacter);
@@ -231,6 +232,8 @@ export default function ProfileScreen() {
               meta={testResult}
               onPress={() => void testPushes()}
             />
+            {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
+            <ListRow size="large" title={t('profile.loadDemo')} left={icon('albums-outline')} onPress={loadDemoData} />
             {/* Ends the plan at once, to see the free screens again. */}
             {plan ? (
               <ListRow size="large" title={t('profile.endPlan')} left={icon('close-circle-outline')} onPress={endPlan} />

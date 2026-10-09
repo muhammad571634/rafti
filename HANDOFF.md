@@ -85,6 +85,11 @@ npx tsc --noEmit                # must be clean
   are brought to this style. `docs/design-audit.md` grades every screen (fits / small / medium /
   approved) and gives the order: shared pieces first, then the daily check-in as a sheet on Today,
   then the "medium" screens one by one with a prototype each. Approved screens only on request.
+- Codex review on PR #4 (owner agreed 2026-10-09): a new install now starts empty (no sample chats,
+  bonds, diary pages or calls; 0 shells until the welcome gift), with only the friend picked in
+  onboarding. Development builds: Profile → Developer → "Load sample chats" adds the old sample
+  history. Leaving a paid date ends it (`leaveDate`); blocking drops pending board replies. Real-person
+  photo checks wait for server moderation (backend plan), not the client.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 

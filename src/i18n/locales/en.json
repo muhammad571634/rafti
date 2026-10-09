@@ -718,7 +718,8 @@
     "cancel": "Cancel",
     "copied": "Copied",
     "myPlan": "My plan",
-    "endPlan": "End plan"
+    "endPlan": "End plan",
+    "loadDemo": "Load sample chats"
   },
   "errors": {
     "generic": "Something went wrong.",

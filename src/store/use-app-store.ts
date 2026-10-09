@@ -291,6 +291,8 @@ interface AppState {
   updateProfile: (patch: ProfilePatch) => void;
   /** Wipes everything on this device and starts over at onboarding. */
   deleteAccount: () => void;
+  /** Development builds only: adds the sample chats, bonds and diary pages, to test full screens. */
+  loadDemoData: () => void;
 
   /* modules */
   /** Pays for a date at a place on the map; the rounds play on the date screen. */
@@ -458,24 +460,43 @@ function recastSeed(state: PersistedState): PersistedState {
   };
 }
 
+/**
+ * The sample history the mock shipped with: chats, bonds, memories, diary pages and
+ * calls with a few characters. A new install starts empty, with only the friend the
+ * user picks in onboarding; development builds can load this from Profile.
+ */
+const demoHistory = () => ({
+  conversations: seedConversations,
+  messages: messagesByConversation,
+  relationships: Object.fromEntries(seedRelationships.map((r) => [r.characterId, r])),
+  memories: seedMemories,
+  diary: seedDiary,
+  characterDiary: seedCharacterDiary,
+  notes: seedNotes,
+  calls: seedCalls,
+  moments: seedMoments,
+  schedules: seedSchedules,
+});
+
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       user: currentUser,
-      wallet: seedWallet,
+      // The welcome gift at the end of onboarding is the first balance.
+      wallet: { ...seedWallet, shells: 0 },
       characters: seedCharacters,
-      conversations: seedConversations,
-      messages: messagesByConversation,
-      relationships: Object.fromEntries(seedRelationships.map((r) => [r.characterId, r])),
-      memories: seedMemories,
-      diary: seedDiary,
-      characterDiary: seedCharacterDiary,
+      conversations: [],
+      messages: {},
+      relationships: {},
+      memories: [],
+      diary: [],
+      characterDiary: [],
       diaryPagesRead: [],
-      notes: seedNotes,
+      notes: [],
       ledger: [],
-      calls: seedCalls,
-      moments: seedMoments,
-      schedules: seedSchedules,
+      calls: [],
+      moments: [],
+      schedules: [],
       boardPosts: [],
       dates: [],
       reports: [],
@@ -1119,6 +1140,24 @@ export const useAppStore = create<AppState>()(
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
       },
 
+      loadDemoData: () => {
+        const demo = demoHistory();
+        set((s) => ({
+          ...demo,
+          // Whatever the user already has stays; the sample fills in around it.
+          conversations: [...s.conversations, ...demo.conversations.filter((c) => !s.conversations.some((x) => x.characterId === c.characterId))],
+          messages: { ...demo.messages, ...s.messages },
+          relationships: { ...demo.relationships, ...s.relationships },
+          memories: [...s.memories, ...demo.memories],
+          diary: [...s.diary, ...demo.diary],
+          characterDiary: [...s.characterDiary, ...demo.characterDiary],
+          notes: [...s.notes, ...demo.notes],
+          calls: [...s.calls, ...demo.calls],
+          moments: [...s.moments, ...demo.moments],
+          schedules: [...s.schedules, ...demo.schedules],
+        }));
+      },
+
       addCall: (record) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
 
@@ -1472,11 +1511,8 @@ export const useAppStore = create<AppState>()(
           daily: { ...current.daily, ...saved.daily },
           settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
-          // Seed pages come from code; pages written on this device are kept.
-          characterDiary: [
-            ...seedCharacterDiary,
-            ...(saved.characterDiary ?? []).filter((p) => !seedCharacterDiary.some((seed) => seed.id === p.id)),
-          ],
+          // Pages are saved with the rest, sample pages included when they were loaded.
+          characterDiary: saved.characterDiary ?? current.characterDiary,
         };
       },
       partialize: (s): Pick<AppState, PersistedKeys> => ({
