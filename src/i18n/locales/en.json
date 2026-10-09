@@ -598,10 +598,19 @@
   },
   "photoBooth": {
     "title": "Photo Booth",
-    "subtitle": "Take a picture together.",
-    "shoot": "Shoot",
+    "shoot": "Take a photo ·",
     "styles": "Style",
-    "empty": "Add a friend first"
+    "empty": "Add a friend first",
+    "with": "With",
+    "together": "You & {{name}}",
+    "yourPhotos": "Your photos",
+    "closer": "Each photo brings you and {{name}} closer",
+    "styleNames": {
+      "polaroid": "Polaroid",
+      "film": "Film",
+      "studio": "Studio",
+      "street": "Street"
+    }
   },
   "radio": {
     "title": "Radio",

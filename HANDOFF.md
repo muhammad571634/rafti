@@ -130,6 +130,14 @@ npx tsc --noEmit                # must be clean
   offers Create instead of Find. The owner said to leave the Create character button as it is
   (it does not look dimmed on an empty form; not touched). Next "medium" screen: Photo Booth.
 
+- Photo Booth restyled (2026-10-10, prototype approved: https://claude.ai/artifact/CuA2RSMFXEjpDmWW9U1ER3):
+  white preview card (portrait on grey, "You & Name", style), With (avatars with names, ink ring),
+  Style as 2×2 option buttons, "Your photos" after the first shot, action bar "Take a photo · 8".
+  The header shows the shell balance; the film count was shown but never spent, so it is gone.
+  Still a mock: no image is generated, the style is not sent anywhere, shots vanish when the
+  screen closes; a shot spends 8 shells, adds 6 closeness and a photo moment on Us. A real build
+  needs an image model and a saved gallery (backend). Next "medium" screen: Bedtime.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

@@ -39,7 +39,7 @@ screens:
 | Contacts | `/contacts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/NHyErhmApd5hygWMjFGGjE): `Segmented` All / Created by you, a "Create a character" row, then plain rows closest first (mint label, "Lv N"). |
 | Create character | `/create-character` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb): h3 sections, grey chips with ink selection, `Segmented` voice, action bar. |
 | Free gifts | `/gifts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2): check-in card, wheel with a status pill, one "More shells" box (video, share, invite), code row. |
-| Photo Booth | `/photo-booth` | medium | Header subtitle, teal gradient card, mid-screen button; preview card on white, action bar with the price. |
+| Photo Booth | `/photo-booth` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/CuA2RSMFXEjpDmWW9U1ER3): white preview card, With / Style pickers, action bar with the price. |
 | Bedtime | `/bedtime` | medium | Night canvas can stay (like the call screen); header subtitle out, timer as option chips, action bar. |
 | Today (Home) | `/(tabs)/index` | approved | Section titles and the 3D tile grid differ from the style. |
 | Us | `/(tabs)/us` | approved | — |
