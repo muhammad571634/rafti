@@ -23,6 +23,17 @@ npx tsc --noEmit                # must be clean
 `../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
 `AGENT-START.md` section 6 is out of date (says F9) — this file wins.
 
+### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
+
+- The user shared `rafti_codex_ready.zip` (Codex, 2026-10-08): the code in it equals old `main`
+  (16 characters); only a context pack of docs was new. Its own `AGENTS.md` was NOT taken (ours wins).
+- `docs/backend-plan.md` §12 now holds the 6 new ideas from that pack, adapted to the current app
+  (40 characters, Closeness v2): memory type/importance, memory lifecycle (superseded facts),
+  structured persona JSON, relationship event stream, a prompt block per mode, a mock LLM provider.
+  Plus 6 of ours: repetition guard, batching quick user messages, `memory_uses`, per-user daily cost
+  cap, an eval set with prompt versions, memory privacy and "forget this". §4 and §11 updated to match.
+- No code or design touched. Backend is still "not now" (see 0b); the plan waits for the user.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
