@@ -2,12 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import {
   CharacterAvatar,
   EmptyState,
-  IconButton,
   PressableScale,
   Screen,
   SearchBar,
@@ -96,14 +96,14 @@ export default function ChatListScreen() {
           {t('chatList.title')}
         </Txt>
         {items.length > 0 ? (
-          <IconButton
-            icon={searching ? 'close' : 'search-outline'}
+          <HeaderIcon
+            kind={searching ? 'close' : 'search'}
             accessibilityLabel={t('common.search')}
             onPress={toggleSearch}
           />
         ) : null}
-        <IconButton
-          icon="create-outline"
+        <HeaderIcon
+          kind="pencil"
           accessibilityLabel={t('chatList.newChat')}
           onPress={() => router.push('/(tabs)/find')}
           style={styles.compose}
@@ -193,6 +193,48 @@ export default function ChatListScreen() {
   );
 }
 
+const GLYPH = 26;
+const STROKE = 2.2;
+
+/** The header's search and new-chat glyphs, drawn to match the app-flow prototype. */
+function HeaderIcon({
+  kind,
+  onPress,
+  accessibilityLabel,
+  style,
+}: {
+  kind: 'search' | 'close' | 'pencil';
+  onPress: () => void;
+  accessibilityLabel: string;
+  style?: StyleProp<ViewStyle>;
+}) {
+  return (
+    <PressableScale
+      onPress={onPress}
+      hitSlop={6}
+      scaleTo={0.88}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      style={[styles.headerIcon, style]}>
+      <Svg width={GLYPH} height={GLYPH} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={STROKE} strokeLinecap="round" strokeLinejoin="round">
+        {kind === 'search' ? (
+          <>
+            <Circle cx={11} cy={11} r={6.5} />
+            <Path d="M16 16l4 4" />
+          </>
+        ) : kind === 'close' ? (
+          <Path d="M6 6l12 12M18 6L6 18" />
+        ) : (
+          <>
+            <Path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />
+            <Path d="M13.5 6.5l4 4" />
+          </>
+        )}
+      </Svg>
+    </PressableScale>
+  );
+}
+
 const styles = StyleSheet.create({
   head: {
     flexDirection: 'row',
@@ -201,9 +243,10 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.sm,
   },
-  title: { flex: 1 },
+  title: { flex: 1, fontSize: 32, lineHeight: 38 },
+  headerIcon: { width: 46, height: 46, alignItems: 'center', justifyContent: 'center' },
   // Pull the button's padding into the gutter so the glyph lines up with the list's edge.
-  compose: { marginRight: -space.sm },
+  compose: { marginRight: -space.sm - 2 },
   search: { marginHorizontal: space.lg, marginBottom: space.sm },
   list: { paddingHorizontal: space.lg, paddingBottom: TAB_BAR_HEIGHT + space.xxl },
   row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
