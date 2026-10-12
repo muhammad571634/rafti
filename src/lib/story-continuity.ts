@@ -99,8 +99,12 @@ function memoryScore(memory: MemoryItem, queryTokens: Set<string>, now: number):
  */
 export function buildStoryContinuityContext(
   input: StoryContinuityContextInput,
-  now = Date.now(),
+  now?: number,
 ): StoryContinuityContext {
+  const referenceTime = now ?? input.memories.reduce(
+    (latest, memory) => Math.max(latest, timestamp(memory.createdAt)),
+    0,
+  );
   const maxRecentMessages = boundedLimit(
     input.maxRecentMessages,
     DEFAULT_MAX_RECENT_MESSAGES,
@@ -111,7 +115,7 @@ export function buildStoryContinuityContext(
   const recentMessages = input.recentMessages
     .slice()
     .sort((a, b) => timestamp(a.createdAt) - timestamp(b.createdAt))
-    .slice(-maxRecentMessages)
+    .slice(maxRecentMessages === 0 ? input.recentMessages.length : -maxRecentMessages)
     .map((message) => ({
       author: message.author,
       kind: message.kind,
@@ -133,7 +137,7 @@ export function buildStoryContinuityContext(
   const rankedMemories = characterMemories
     .map((memory) => ({
       memory,
-      relevanceScore: memoryScore(memory, queryTokens, now),
+      relevanceScore: memoryScore(memory, queryTokens, referenceTime),
     }))
     .sort((a, b) => {
       if (b.relevanceScore !== a.relevanceScore) return b.relevanceScore - a.relevanceScore;
