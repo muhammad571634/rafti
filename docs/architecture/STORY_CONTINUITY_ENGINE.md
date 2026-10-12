@@ -34,6 +34,12 @@ The model must distinguish user-provided facts from inferred details. Do not sil
 
 ## Retrieval policy for v1
 
+The approved memory plan is `docs/backend-plan.md` §7 and §12.1–12.3; it wins where this section
+differs. `src/lib/story-continuity.ts` follows it: the last 30 messages, every pinned fact (up to 20),
+the 8–12 most relevant active facts ranked by `similarity × 0.6 + importance × 0.3 + recency × 0.1`,
+and no superseded or archived facts. Similarity is keyword overlap for now; pgvector replaces it on
+the server.
+
 - Pinned memories are candidates for inclusion, but still obey context limits and deletion rules.
 - Prefer relevance to the current user message, recency, and explicit importance.
 - Deduplicate near-identical memories.

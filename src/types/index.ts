@@ -186,6 +186,10 @@ export interface MemoryItem {
   source: MemorySource;
   createdAt: string;
   pinned: boolean;
+  /** 0-1, set by the server's fact extractor (docs/backend-plan.md 12.1); missing = 0.5. */
+  importance?: number;
+  /** Lifecycle (backend-plan 12.2); missing = active. Only active facts reach the prompt. */
+  status?: 'active' | 'superseded' | 'archived';
 }
 
 /** The [Us] timeline: every sweet moment with a character is recorded. */

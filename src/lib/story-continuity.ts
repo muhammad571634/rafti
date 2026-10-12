@@ -1,5 +1,10 @@
 import type { Character, MemoryItem, Message, Relationship } from '@/types';
 
+/**
+ * Assembles what a future server-side model sees for one chat turn, following the
+ * approved memory plan in docs/backend-plan.md (sections 7 and 12.1-12.3):
+ * the last ~30 messages, every pinned fact, and the 8-12 most relevant active facts.
+ */
 export interface StoryContinuityContextInput {
   character: Character;
   relationship?: Relationship;
@@ -7,6 +12,7 @@ export interface StoryContinuityContextInput {
   memories: MemoryItem[];
   currentUserMessage: string;
   maxRecentMessages?: number;
+  /** Relevant unpinned facts; pinned ones are always added on top (up to 20). */
   maxMemories?: number;
 }
 
@@ -28,9 +34,15 @@ export interface StoryContinuityContext {
     series?: string;
     tags: string[];
     greeting: string;
+    gender?: Character['gender'];
+    age?: number;
+    speakingStyle?: Character['speakingStyle'];
+    role?: Character['role'];
   };
   relationship?: {
     nickname?: string;
+    /** The label the user picked, e.g. "Crush" */
+    label?: string;
     level: number;
     levelTitle: string;
     streakDays: number;
@@ -43,19 +55,23 @@ export interface StoryContinuityContext {
     text: string;
     createdAt: string;
   }>;
+  /** Pinned facts first, then the relevant ones; both groups best-first. */
   relevantMemories: StoryContinuityMemory[];
   limits: {
     maxRecentMessages: number;
     maxMemories: number;
+    maxPinnedMemories: number;
   };
 }
 
-const DEFAULT_MAX_RECENT_MESSAGES = 12;
-const DEFAULT_MAX_MEMORIES = 8;
+const DEFAULT_MAX_RECENT_MESSAGES = 30;
 const MAX_RECENT_MESSAGES = 30;
-const MAX_MEMORIES = 20;
+const DEFAULT_MAX_MEMORIES = 8;
+const MAX_MEMORIES = 12;
+const MAX_PINNED_MEMORIES = 20;
 /** Memories kept when the message has no usable words ("hey", "how are you"). */
 const LOW_INFO_FALLBACK = 2;
+const DEFAULT_IMPORTANCE = 0.5;
 const DAY_MS = 86_400_000;
 
 export const RELATIONSHIP_NOTE =
@@ -121,17 +137,23 @@ function keywordOverlap(memory: MemoryItem, queryTokens: Set<string>): number {
   return overlap;
 }
 
+function importanceOf(memory: MemoryItem): number {
+  const value = memory.importance;
+  if (value === undefined || !Number.isFinite(value)) return DEFAULT_IMPORTANCE;
+  return Math.max(0, Math.min(value, 1));
+}
+
+/** backend-plan 12.1: similarity x 0.6 + importance x 0.3 + recency x 0.1, each 0-1. */
 function memoryScore(memory: MemoryItem, overlap: number, querySize: number, now: number): number {
-  const relevance = querySize === 0 ? 0 : overlap / querySize;
+  const similarity = querySize === 0 ? 0 : overlap / querySize;
   const ageDays = Math.max(0, (now - timestamp(memory.createdAt)) / DAY_MS);
-  const recency = 0.5 / (1 + ageDays / 14);
-  const pinBoost = memory.pinned ? 2 : 0;
-  return Number((pinBoost + relevance * 3 + recency).toFixed(4));
+  const recency = 1 / (1 + ageDays / 14);
+  return Number((similarity * 0.6 + importanceOf(memory) * 0.3 + recency * 0.1).toFixed(4));
 }
 
 /** What the model may see of a message; app-only rows return null. Local URIs never leave. */
 function messageText(message: Message): string | null {
-  if (message.pending || message.kind === 'system') return null;
+  if (message.pending || message.kind === 'system' || message.card) return null;
   if (message.kind === 'call') return message.missed ? '[Missed call]' : '[Call]';
   const text = (message.text ?? message.transcript ?? '').trim();
   if (text) return text;
@@ -171,10 +193,11 @@ export function buildStoryContinuityContext(
       createdAt: message.createdAt,
     }));
 
-  // Same text twice keeps one copy: the pinned one, else the newest.
+  // Only this character's active facts. Same text twice keeps one copy: the pinned one, else the newest.
   const seen = new Set<string>();
   const characterMemories = input.memories
     .filter((memory) => memory.characterId === input.character.id)
+    .filter((memory) => (memory.status ?? 'active') === 'active')
     .sort((a, b) => Number(b.pinned) - Number(a.pinned) || newerFirst(a, b))
     .filter((memory) => {
       const normalized = normalizeText(memory.text);
@@ -191,37 +214,44 @@ export function buildStoryContinuityContext(
     })
     .sort((a, b) => b.relevanceScore - a.relevanceScore || newerFirst(a.memory, b.memory));
 
-  // Pinned memories and real keyword matches only. A message with no usable words
-  // ("hey", "how are you") gets just a couple of the newest memories, never the lot.
-  const matched = ranked.filter(({ memory, overlap }) => memory.pinned || overlap > 0);
-  const selected = (matched.length === 0 && queryTokens.size === 0
-    ? ranked.slice(0, LOW_INFO_FALLBACK)
-    : matched
+  // Every pinned fact, plus real keyword matches. A message with no usable words
+  // ("hey", "how are you") gets just a couple of the newest facts, never the lot.
+  const pinned = ranked.filter(({ memory }) => memory.pinned).slice(0, MAX_PINNED_MEMORIES);
+  const unpinned = ranked.filter(({ memory }) => !memory.pinned);
+  const relevant = (queryTokens.size === 0
+    ? unpinned.slice().sort((a, b) => newerFirst(a.memory, b.memory)).slice(0, LOW_INFO_FALLBACK)
+    : unpinned.filter(({ overlap }) => overlap > 0)
   ).slice(0, maxMemories);
 
+  const { character, relationship } = input;
   return {
     character: {
-      id: input.character.id,
-      name: input.character.name,
-      bio: input.character.bio,
-      category: input.character.category,
-      ...(input.character.series ? { series: input.character.series } : {}),
-      tags: input.character.tags.slice(),
-      greeting: input.character.greeting,
+      id: character.id,
+      name: character.name,
+      bio: character.bio,
+      category: character.category,
+      ...(character.series ? { series: character.series } : {}),
+      tags: character.tags.slice(),
+      greeting: character.greeting,
+      ...(character.gender ? { gender: character.gender } : {}),
+      ...(character.age !== undefined ? { age: character.age } : {}),
+      ...(character.speakingStyle ? { speakingStyle: character.speakingStyle } : {}),
+      ...(character.role ? { role: character.role } : {}),
     },
-    ...(input.relationship
+    ...(relationship
       ? {
           relationship: {
-            ...(input.relationship.nickname ? { nickname: input.relationship.nickname } : {}),
-            level: input.relationship.level,
-            levelTitle: input.relationship.levelTitle,
-            streakDays: input.relationship.streakDays,
+            ...(relationship.nickname ? { nickname: relationship.nickname } : {}),
+            ...(relationship.label ? { label: relationship.label } : {}),
+            level: relationship.level,
+            levelTitle: relationship.levelTitle,
+            streakDays: relationship.streakDays,
             note: RELATIONSHIP_NOTE,
           },
         }
       : {}),
     recentMessages,
-    relevantMemories: selected.map(({ memory, relevanceScore }) => ({
+    relevantMemories: [...pinned, ...relevant].map(({ memory, relevanceScore }) => ({
       id: memory.id,
       text: memory.text,
       source: memory.source,
@@ -229,6 +259,6 @@ export function buildStoryContinuityContext(
       pinned: memory.pinned,
       relevanceScore,
     })),
-    limits: { maxRecentMessages, maxMemories },
+    limits: { maxRecentMessages, maxMemories, maxPinnedMemories: MAX_PINNED_MEMORIES },
   };
 }

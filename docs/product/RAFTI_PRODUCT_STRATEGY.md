@@ -4,6 +4,12 @@
 **Date:** 2026-10-12  
 **Product:** RAFTI, an original AI companion app.
 
+> **Precedence (user decision, 2026-10-12):** the decisions the user approved on 2026-10-09 win
+> wherever this document differs: `docs/business-plan.md` and `docs/backend-plan.md` §13–§15.
+> In particular: messages cost shells (1 shell = 1 message, free tier ~40 shells/day), calls and
+> voice replies ship with the plan limits in §13, and the backend stays "not now" until the user
+> starts it (`HANDOFF.md`). Read the sections below as product thinking, not as new decisions.
+
 ## Executive decision
 
 RAFTI should not compete primarily on the number of characters, decorative UI, or a long list of modules. Its proposed wedge is **reliable story continuity**: a character should preserve its identity, remember relevant user-approved details, and continue shared events naturally across conversations.

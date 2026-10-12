@@ -132,14 +132,23 @@ describe('buildStoryContinuityContext', () => {
 
   it('8. clamps limits to safe non-negative bounds', () => {
     const many = Array.from({ length: 60 }, (_, i) => message(`m${i}`, 60 - i));
-    const mems = Array.from({ length: 40 }, (_, i) => memory(`Peach tea note ${i}`, { pinned: true }));
-    assert.deepEqual(build({ maxRecentMessages: -5, maxMemories: -1 }).limits, { maxRecentMessages: 0, maxMemories: 0 });
-    assert.deepEqual(build({ maxRecentMessages: 1e9, maxMemories: 1e9 }).limits, { maxRecentMessages: 30, maxMemories: 20 });
-    assert.deepEqual(build({ maxRecentMessages: Infinity, maxMemories: Infinity }).limits, { maxRecentMessages: 30, maxMemories: 20 });
-    assert.deepEqual(build({ maxRecentMessages: Number.NaN, maxMemories: 2.9 }).limits, { maxRecentMessages: 12, maxMemories: 2 });
-    const big = build({ recentMessages: many, memories: mems, currentUserMessage: 'peach tea', maxRecentMessages: 99, maxMemories: 99 });
+    const pinnedMems = Array.from({ length: 40 }, (_, i) => memory(`Pinned peach tea note ${i}`, { pinned: true }));
+    const plainMems = Array.from({ length: 40 }, (_, i) => memory(`Peach tea note ${i}`));
+    const limits = (maxRecentMessages: number, maxMemories: number) => ({ maxRecentMessages, maxMemories, maxPinnedMemories: 20 });
+    assert.deepEqual(build({ maxRecentMessages: -5, maxMemories: -1 }).limits, limits(0, 0));
+    assert.deepEqual(build({ maxRecentMessages: 1e9, maxMemories: 1e9 }).limits, limits(30, 12));
+    assert.deepEqual(build({ maxRecentMessages: Infinity, maxMemories: Infinity }).limits, limits(30, 12));
+    assert.deepEqual(build({ maxRecentMessages: Number.NaN, maxMemories: 2.9 }).limits, limits(30, 2));
+    const big = build({
+      recentMessages: many,
+      memories: [...pinnedMems, ...plainMems],
+      currentUserMessage: 'peach tea',
+      maxRecentMessages: 99,
+      maxMemories: 99,
+    });
     assert.equal(big.recentMessages.length, 30);
-    assert.equal(big.relevantMemories.length, 20);
+    assert.equal(big.relevantMemories.filter((m) => m.pinned).length, 20);
+    assert.equal(big.relevantMemories.filter((m) => !m.pinned).length, 12);
   });
 
   it('9. never leaks local image or audio URIs', () => {
@@ -167,7 +176,47 @@ describe('buildStoryContinuityContext', () => {
       message(undefined, 3, { kind: 'call', durationSec: 60 }),
       message(undefined, 2, { kind: 'call', missed: true }),
       message('typing…', 1, { pending: true }),
+      message(undefined, 0, { author: 'them', kind: 'system', card: 'helpline' }),
     ];
     assert.deepEqual(build({ recentMessages }).recentMessages.map((m) => m.text), ['hi', '[Call]', '[Missed call]']);
+  });
+
+  // Approved memory plan: docs/backend-plan.md 7 and 12.1-12.3.
+  it('adds every pinned fact on top of the relevant ones, even when unrelated', () => {
+    const pinned = memory('Exam week ends on Friday.', { pinned: true });
+    const match = memory('Drinks peach tea.');
+    const other = memory('Walked home in the rain.');
+    const context = build({ memories: [other, match, pinned], currentUserMessage: 'peach tea', maxMemories: 1 });
+    assert.deepEqual(ids(context), [pinned.id, match.id]);
+  });
+
+  it('leaves out superseded and archived facts', () => {
+    const old = memory('Works in Namangan.', { status: 'superseded' });
+    const archived = memory('Exam in Namangan on Monday.', { status: 'archived' });
+    const current = memory('Moved to Tashkent from Namangan.', { status: 'active' });
+    assert.deepEqual(ids(build({ memories: [old, archived, current], currentUserMessage: 'namangan' })), [current.id]);
+  });
+
+  it('ranks by similarity, then importance, then recency', () => {
+    const minor = memory('Peach tea once.', { importance: 0.1, createdAt: ago(0) });
+    const major = memory('Peach tea every morning.', { importance: 0.9, createdAt: ago(10) });
+    const closer = memory('Peach tea, cold.', { createdAt: ago(30) });
+    const context = build({ memories: [minor, major], currentUserMessage: 'peach tea' });
+    assert.deepEqual(ids(context), [major.id, minor.id]);
+    // A full match at normal importance (0.5) beats a partial match at 0.9.
+    const both = build({ memories: [major, closer], currentUserMessage: 'cold peach tea' });
+    assert.deepEqual(ids(both), [closer.id, major.id]);
+  });
+
+  it('passes persona fields and the chosen label through', () => {
+    const context = build({
+      character: { ...character, gender: 'male', age: 21, speakingStyle: 'dry', role: 'crush' },
+      relationship: { ...relationship, label: 'Crush' },
+    });
+    assert.deepEqual(
+      { ...context.character, tags: undefined },
+      { ...context.character, tags: undefined, gender: 'male', age: 21, speakingStyle: 'dry', role: 'crush' },
+    );
+    assert.equal(context.relationship?.label, 'Crush');
   });
 });
