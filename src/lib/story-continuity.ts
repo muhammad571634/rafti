@@ -20,6 +20,7 @@ export interface StoryContinuityMemory {
   id: string;
   text: string;
   source: MemoryItem['source'];
+  type?: MemoryItem['type'];
   createdAt: string;
   pinned: boolean;
   relevanceScore: number;
@@ -197,7 +198,8 @@ export function buildStoryContinuityContext(
   const seen = new Set<string>();
   const characterMemories = input.memories
     .filter((memory) => memory.characterId === input.character.id)
-    .filter((memory) => (memory.status ?? 'active') === 'active')
+    // A fact that points at its replacement is superseded even if its status was not updated.
+    .filter((memory) => (memory.status ?? 'active') === 'active' && !memory.supersededBy)
     .sort((a, b) => Number(b.pinned) - Number(a.pinned) || newerFirst(a, b))
     .filter((memory) => {
       const normalized = normalizeText(memory.text);
@@ -255,6 +257,7 @@ export function buildStoryContinuityContext(
       id: memory.id,
       text: memory.text,
       source: memory.source,
+      ...(memory.type ? { type: memory.type } : {}),
       createdAt: memory.createdAt,
       pinned: memory.pinned,
       relevanceScore,

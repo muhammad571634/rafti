@@ -195,6 +195,17 @@ describe('buildStoryContinuityContext', () => {
     const archived = memory('Exam in Namangan on Monday.', { status: 'archived' });
     const current = memory('Moved to Tashkent from Namangan.', { status: 'active' });
     assert.deepEqual(ids(build({ memories: [old, archived, current], currentUserMessage: 'namangan' })), [current.id]);
+    // The replaced fact drops out as soon as it points at its replacement.
+    const stale = memory('Lives in Namangan.', { supersededBy: current.id, pinned: true });
+    assert.deepEqual(ids(build({ memories: [stale, current], currentUserMessage: 'namangan' })), [current.id]);
+  });
+
+  it('passes the fact type through for grouping in the prompt', () => {
+    const fact = memory('Exam on Friday at 3pm.', { type: 'schedule' });
+    const plain = memory('Exam nerves.');
+    const context = build({ memories: [fact, plain], currentUserMessage: 'exam' });
+    assert.equal(context.relevantMemories.find((m) => m.id === fact.id)?.type, 'schedule');
+    assert.equal('type' in (context.relevantMemories.find((m) => m.id === plain.id) ?? {}), false);
   });
 
   it('ranks by similarity, then importance, then recency', () => {

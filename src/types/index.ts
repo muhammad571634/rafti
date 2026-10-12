@@ -186,11 +186,25 @@ export interface MemoryItem {
   source: MemorySource;
   createdAt: string;
   pinned: boolean;
-  /** 0-1, set by the server's fact extractor (docs/backend-plan.md 12.1); missing = 0.5. */
+  /** Kind of fact (docs/backend-plan.md 12.1), used to group facts in the prompt. */
+  type?: MemoryType;
+  /** 0-1, set by the server's fact extractor (backend-plan 12.1); missing = 0.5. */
   importance?: number;
   /** Lifecycle (backend-plan 12.2); missing = active. Only active facts reach the prompt. */
   status?: 'active' | 'superseded' | 'archived';
+  /** A superseded fact points at the fact that replaced it. */
+  supersededBy?: string;
 }
+
+export type MemoryType =
+  | 'preference'
+  | 'dislike'
+  | 'personal_fact'
+  | 'schedule'
+  | 'milestone'
+  | 'promise'
+  | 'habit'
+  | 'event';
 
 /** The [Us] timeline: every sweet moment with a character is recorded. */
 export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board' | 'quiz';

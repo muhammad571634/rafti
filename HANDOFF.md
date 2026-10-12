@@ -30,9 +30,10 @@ npx tsc --noEmit                # must be clean
   §13–§15) win over the ChatGPT strategy; a precedence note sits at its top.
 - The builder is pure and not wired anywhere: mock replies are unchanged and stay mock.
   It follows backend-plan §7/§12.1–12.3 (30 messages, all pinned facts, 8–12 relevant active facts,
-  0.6/0.3/0.1 ranking). `MemoryItem` got optional `importance` and `status` for that.
+  0.6/0.3/0.1 ranking, only active facts). `MemoryItem` got optional `type`, `importance`, `status`
+  and `supersededBy` for that; extraction and archiving stay server work (12.1-12.2).
 - Tests: `npm test` (Node's built-in `node:test`, no new packages; `scripts/ts-test-hooks.mjs`
-  resolves `.ts` imports). 15 tests cover determinism, limits, other characters' memories, dedup,
+  resolves `.ts` imports). 16 tests cover determinism, limits, other characters' memories, dedup,
   pinned facts, low-information messages, bad dates, URIs, app-only rows and the consent note.
 - Not merged into `local-work` and not pushed: waiting for the user.
 
