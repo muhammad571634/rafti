@@ -6,7 +6,7 @@ import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
-import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
+import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { detectPlan, planStep } from '@/lib/schedule';
@@ -321,6 +321,8 @@ interface AppState {
   addMemory: (characterId: string, text: string, source?: MemorySource) => void;
   toggleMemoryPin: (id: string) => void;
   deleteMemory: (id: string) => void;
+  /** Rewrites a memory's text; source, date and pin stay. False when the text is empty or reads like a crisis. */
+  editMemory: (id: string, text: string) => boolean;
   removeSchedule: (id: string) => void;
   /** A plan added by hand in [Us]; the character acknowledges it in chat. */
   addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string }) => void;
@@ -1302,6 +1304,13 @@ export const useAppStore = create<AppState>()(
         })),
 
       deleteMemory: (id) => set((s) => ({ memories: s.memories.filter((m) => m.id !== id) })),
+      editMemory: (id, text) => {
+        // The same guard as adding: a crisis line never becomes a lasting fact.
+        const clean = rememberableText(text);
+        if (!clean) return false;
+        set((s) => ({ memories: s.memories.map((m) => (m.id === id ? { ...m, text: clean } : m)) }));
+        return true;
+      },
 
       removeSchedule: (id) => set((s) => ({ schedules: s.schedules.filter((x) => x.id !== id) })),
 

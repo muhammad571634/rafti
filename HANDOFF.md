@@ -19,7 +19,10 @@ Logic
 2. [x] Plan memories with an absolute date ("Exam - Thu, Oct 15"), not "the day after tomorrow".
    Done: `planMemoryLine` (`src/lib/plan-memory.ts`, tested) writes "Exam - Wed, Oct 14, 17:00.";
    the chat reply still says "tomorrow". Old memories keep their old text.
-3. [ ] Memories: edit a memory's text (prototype first).
+3. [x] Memories: edit a memory's text (prototype first).
+   Done (prototype https://claude.ai/artifact/8V2dcCgBTZKUu3EsNbuU3p, approved): a tap on a memory's
+   text opens the add sheet as "Edit memory", filled in; `editMemory` keeps source, date and pin and
+   uses the crisis guard (`rememberableText`). Locked memories have no text to tap. Checked on web.
 4. [ ] Message storage: cap or move messages out of the one AsyncStorage key (~2 MB Android limit).
 5. [ ] Hide "public" in Create character until moderation (business-plan: no UGC at launch).
 6. [ ] Review and merge the Story Continuity PR (`story-continuity-rebased`).

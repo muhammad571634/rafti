@@ -43,9 +43,12 @@ export default function MemoriesScreen() {
   const addMemory = useAppStore((s) => s.addMemory);
   const togglePin = useAppStore((s) => s.toggleMemoryPin);
   const deleteMemory = useAppStore((s) => s.deleteMemory);
+  const editMemory = useAppStore((s) => s.editMemory);
   const subscribe = useAppStore((s) => s.subscribe);
 
   const [adding, setAdding] = useState(false);
+  // The memory being edited; the add sheet doubles as the edit sheet.
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [unlocking, setUnlocking] = useState(false);
 
@@ -56,11 +59,22 @@ export default function MemoriesScreen() {
     [memories, wallet, characterId],
   );
 
+  const closeSheet = () => {
+    setAdding(false);
+    setEditingId(null);
+    setDraft('');
+  };
+
+  const startEdit = (memory: MemoryItem) => {
+    setDraft(memory.text);
+    setEditingId(memory.id);
+  };
+
   const save = () => {
     if (!characterId || !draft.trim()) return;
-    addMemory(characterId, draft.trim());
-    setDraft('');
-    setAdding(false);
+    if (editingId) editMemory(editingId, draft);
+    else addMemory(characterId, draft.trim());
+    closeSheet();
   };
 
   // Real builds open the store's purchase sheet for Basic; the mock starts it at once.
@@ -101,6 +115,7 @@ export default function MemoriesScreen() {
           renderItem={({ item }) => (
             <MemoryCard
               memory={item}
+              onEdit={() => startEdit(item)}
               onPin={() => togglePin(item.id)}
               onDelete={() => deleteMemory(item.id)}
             />
@@ -120,7 +135,10 @@ export default function MemoriesScreen() {
         </View>
       ) : null}
 
-      <Sheet visible={adding} onClose={() => setAdding(false)} title={t('memories.addManual')}>
+      <Sheet
+        visible={adding || editingId != null}
+        onClose={closeSheet}
+        title={editingId ? t('memories.edit') : t('memories.addManual')}>
         <TextInput
           value={draft}
           onChangeText={setDraft}
@@ -233,10 +251,13 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
 
 function MemoryCard({
   memory,
+  onEdit,
   onPin,
   onDelete,
 }: {
   memory: MemoryItem;
+  /** A tap on the text opens it for editing (the icons stay separate buttons). */
+  onEdit: () => void;
   onPin: () => void;
   onDelete: () => void;
 }) {
@@ -269,7 +290,9 @@ function MemoryCard({
         </View>
       </View>
 
-      <Txt variant="body">{memory.text}</Txt>
+      <PressableScale onPress={onEdit} scaleTo={0.99} accessibilityRole="button" accessibilityLabel={t('memories.edit')}>
+        <Txt variant="body">{memory.text}</Txt>
+      </PressableScale>
     </View>
   );
 }
