@@ -70,6 +70,9 @@ https://docs.expo.dev/versions/v57.0.0/ dagi tegishli sahifalar tekshiriladi (`A
 
 ## 4. Ma'lumotlar modeli (Postgres)
 
+> 2026-10-13: bu jadvalning ba'zi joylari eskirgan (`wallets`, bepul chig'anoq muddati, ikki kunlik jadval).
+> Migratsiyadan oldin `docs/backend-schema-gaps.md`ni o'qing.
+
 Hozirgi `src/types` deyarli to'g'ridan-to'g'ri jadvallarga aylanadi:
 
 | Jadval | Asosiy ustunlar | Izoh |
