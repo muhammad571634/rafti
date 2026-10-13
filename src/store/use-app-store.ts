@@ -5,6 +5,7 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
+import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
@@ -541,8 +542,12 @@ export const useAppStore = create<AppState>()(
         });
         touchStreak(set, get, conversation.characterId);
 
+        // A crisis message is answered with care and never becomes a plan: no reminder,
+        // no "how did it go?", no line on Us ("I'm going to kill myself tomorrow").
+        const crisis = detectCrisis(trimmed);
+
         // "Smart Auto Schedule": a plan in the message becomes a reminder.
-        const plan = detectPlan(trimmed);
+        const plan = crisis ? null : detectPlan(trimmed);
         let reply: string | undefined;
         if (plan) {
           set((s) => ({
@@ -566,16 +571,9 @@ export const useAppStore = create<AppState>()(
         }
 
         // A crisis message: a warm reply in voice, then the helpline card under it.
-        if (detectCrisis(trimmed)) {
+        if (crisis) {
           reply = pick(crisisReplies);
-          appendMessage(set, get, conversationId, {
-            id: uid('m'),
-            conversationId,
-            author: 'them',
-            kind: 'system',
-            card: 'helpline',
-            createdAt: new Date().toISOString(),
-          });
+          appendHelplineCard(set, get, conversationId);
         }
 
         scheduleReply(set, get, conversationId, { text: reply, gain: INTIMACY.text });
@@ -600,7 +598,13 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
-        scheduleReply(set, get, conversationId, { gain: INTIMACY.voice });
+        // A spoken crisis gets the same care as a typed one.
+        const crisis = !!transcript && detectCrisis(transcript);
+        if (crisis) appendHelplineCard(set, get, conversationId);
+        scheduleReply(set, get, conversationId, {
+          text: crisis ? pick(crisisReplies) : undefined,
+          gain: INTIMACY.voice,
+        });
         return 'sent';
       },
 
@@ -745,6 +749,8 @@ export const useAppStore = create<AppState>()(
       },
 
       receivePushLine: ({ id, characterId, text, at }) => {
+        // A push planned by an older build from a crisis "plan" never lands in the chat.
+        if (detectCrisis(text)) return;
         const conversation = get().conversations.find((c) => c.characterId === characterId);
         if (!conversation) return;
         const messageId = `m_push_${id}`;
@@ -995,9 +1001,11 @@ export const useAppStore = create<AppState>()(
         const characterId = entry.sharedWithCharacterId;
         if (characterId) {
           get().addIntimacy(characterId, INTIMACY.diaryShare);
-          // A crisis page is still shared and answered; it just never becomes a memory.
+          // A crisis page is still shared and answered; it just never becomes a memory,
+          // and the helpline card waits in their chat.
           const line = diaryMemoryLine(entry.body);
           if (line) get().addMemory(characterId, line, 'diary');
+          if (detectCrisis(entry.body)) answerCrisisInChat(set, get, characterId);
           setTimeout(() => answerDiary(set, id), 2200);
         }
 
@@ -1279,6 +1287,11 @@ export const useAppStore = create<AppState>()(
       addSchedule: ({ characterId, title, date, time, whenLabel }) => {
         const clean = title.trim();
         if (!clean) return;
+        // Crisis text is never kept as a plan; help goes to their chat instead.
+        if (detectCrisis(clean)) {
+          answerCrisisInChat(set, get, characterId);
+          return;
+        }
         set((s) => ({
           schedules: [
             ...s.schedules,
@@ -1332,6 +1345,11 @@ export const useAppStore = create<AppState>()(
         const answered = get().boardPosts.filter((p) => !p.replied && new Date(p.replyAt).getTime() <= now.getTime());
         answered.forEach((post) => {
           if (!exists(post.characterId) || get().blockedIds.includes(post.characterId)) return;
+          // A crisis note (left by an older build) is answered with care, never quoted.
+          if (detectCrisis(post.text)) {
+            answerCrisisInChat(set, get, post.characterId);
+            return;
+          }
           const conversationId = get().addFriend(post.characterId);
           const line = post.reply ?? boardReply(post.text);
           appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
@@ -1387,6 +1405,8 @@ export const useAppStore = create<AppState>()(
         if (!clean) return 'empty';
         if (!get().spendShells(shellCosts.boardNote, 'board', characterId)) return 'noShells';
         const createdAt = new Date();
+        // A crisis note is answered in their chat right away and never quoted back.
+        const crisis = detectCrisis(clean);
         set((s) => ({
           boardPosts: [
             ...s.boardPosts,
@@ -1396,12 +1416,13 @@ export const useAppStore = create<AppState>()(
               text: clean,
               style,
               createdAt: createdAt.toISOString(),
-              reply: boardReply(clean),
+              reply: crisis ? undefined : boardReply(clean),
               replyAt: new Date(createdAt.getTime() + BOARD_REPLY_MS).toISOString(),
-              replied: false,
+              replied: crisis,
             },
           ],
         }));
+        if (crisis) answerCrisisInChat(set, get, characterId);
         get().addIntimacy(characterId, INTIMACY.boardNote);
         addMoment(set, characterId, 'board');
         setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
@@ -1529,6 +1550,9 @@ export const useAppStore = create<AppState>()(
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
           // Crisis text saved as a memory before the guard existed is dropped on load.
           memories: withoutCrisisMemories(saved.memories ?? current.memories),
+          // So are crisis "plans" from older builds: no reminder, follow-up or Us line.
+          schedules: withoutCrisisPlans(saved.schedules ?? current.schedules),
+          moments: withoutCrisisPlanMoments(saved.moments ?? current.moments),
           // Pages are saved with the rest, sample pages included when they were loaded.
           characterDiary: saved.characterDiary ?? current.characterDiary,
         };
@@ -1734,6 +1758,28 @@ const themText = (conversationId: string, text: string): Message => ({
   createdAt: new Date().toISOString(),
 });
 
+/** The helpline card after a crisis message (src/ai/safety.ts): one tap to local helplines. */
+function appendHelplineCard(set: Setter, get: Getter, conversationId: string) {
+  appendMessage(set, get, conversationId, {
+    id: uid('m'),
+    conversationId,
+    author: 'them',
+    kind: 'system',
+    card: 'helpline',
+    createdAt: new Date().toISOString(),
+  });
+}
+
+/**
+ * Crisis text written outside the chat (a plan in Us, a board note, a shared diary
+ * page): the card and a warm line go to that character's chat, so help is one tap away.
+ */
+function answerCrisisInChat(set: Setter, get: Getter, characterId: string) {
+  const conversationId = get().addFriend(characterId);
+  appendHelplineCard(set, get, conversationId);
+  appendMessage(set, get, conversationId, themText(conversationId, pick(crisisReplies)), { countUnread: true });
+}
+
 function updateRelationship(set: Setter, characterId: string, patch: (r: Relationship) => Partial<Relationship>) {
   set((s) => {
     const existing = s.relationships[characterId];
@@ -1895,6 +1941,8 @@ function clock(totalSeconds: number) {
 }
 
 function diaryReplyFor(body: string) {
+  // A crisis page gets care, not "tell me the longer version".
+  if (detectCrisis(body)) return pick(crisisReplies);
   const opener = pick(['I read it twice.', 'You wrote this for me, right?', 'So that is what today felt like.']);
   return body.length < 60
     ? `${opener} Tell me the longer version next time - I want all of it.`

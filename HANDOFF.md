@@ -23,6 +23,22 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
 4. Still open from the audit: backend-plan §4 vs §14.2 schema and the free-shell bucket (document
    separately); diary replies, board replies and voice transcripts do not check for crisis yet.
 
+### 0e. 2026-10-13 — crisis text in plans, voice, board and diary (branch `fix/crisis-paths`)
+
+Built on `fix/memory-crisis-guard`, not pushed or merged. Closes the crisis part of 0d item 4.
+- Chat: a crisis message never becomes a plan ("I'm going to kill myself tomorrow" used to make a
+  "Kill myself" plan with an 08:00 reminder push, a follow-up and a line on Us). Helpline card + warm
+  reply as before.
+- Voice transcript, board note, shared diary page and a plan added in Us: crisis text gets the
+  helpline card (and a `crisisReplies` line) in that character's chat; board replies never quote
+  it, diary replies no longer say "tell me the longer version", Us keeps no such plan.
+- On load, `merge` drops crisis plans and their Us moments saved by older builds
+  (`src/ai/crisis-guard.ts`); `receivePushLine` never writes a crisis push line into the chat.
+  Pending OS pushes are cancelled on the next app open (`clearPushes`) and re-planned from the
+  cleaned state; one planned before the fix can still fire if the app is not opened first.
+- Open: a private crisis diary page (shared with nobody) gets no help (needs UI); the phrase list
+  is English-only and narrow (Uzbek is not detected); no new UI or copy was added.
+
 ### 0. Sync the local folder first
 
 ```
