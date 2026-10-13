@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { CharacterAvatar, characterImage, PressableScale, Txt } from '@/components/ui';
-import { colors, space } from '@/theme';
+import { colors, radius, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** Gap between two cards in a row; screens use it to size the two columns. */
@@ -16,19 +16,24 @@ const MARK = 32;
  * A character as a portrait card (Find, world pages): picture, name, one line of bio.
  * Tapping the card opens the profile. The add button sits over the picture as a
  * sibling of the card, never inside it (a button in a button is unreachable for screen
- * readers and invalid HTML on web); a friend gets a mint tick instead.
+ * readers and invalid HTML on web); a friend gets a mint tick instead. A character in its
+ * early-access week carries a badge: "Pro first" with a lock on add, or "New" for Pro.
  */
 export function CharacterCard({
   character,
   width,
   isFriend,
+  fresh,
   onOpen,
   onAdd,
 }: {
   character: Character;
   width: number;
   isFriend: boolean;
+  /** In its early-access week: locked for this user ("Pro first") or open ("New"). */
+  fresh?: 'proFirst' | 'new';
   onOpen: () => void;
+  /** With `fresh="proFirst"` the caller opens the Pro sheet instead of adding. */
   onAdd: () => void;
 }) {
   const { t } = useTranslation();
@@ -48,6 +53,13 @@ export function CharacterCard({
           ) : (
             <CharacterAvatar character={character} size={width * 0.5} />
           )}
+          {fresh ? (
+            <View style={[styles.badge, fresh === 'proFirst' && styles.badgePro]}>
+              <Txt variant="tiny" color={fresh === 'proFirst' ? colors.brandText : colors.text} style={styles.badgeText}>
+                {fresh === 'proFirst' ? t('find.proFirst') : t('find.newBadge')}
+              </Txt>
+            </View>
+          ) : null}
         </View>
         <View style={styles.text}>
           <Txt variant="bodyStrong" lines={1}>
@@ -70,7 +82,11 @@ export function CharacterCard({
           accessibilityLabel={`${t('find.add')} ${character.name}`}
           onPress={onAdd}
           style={[styles.mark, styles.add]}>
-          <Ionicons name="add" size={20} color={colors.text} />
+          <Ionicons
+            name={fresh === 'proFirst' ? 'lock-closed' : 'add'}
+            size={fresh === 'proFirst' ? 15 : 20}
+            color={colors.text}
+          />
         </PressableScale>
       )}
     </View>
@@ -103,5 +119,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   add: { backgroundColor: colors.surface },
+  badge: {
+    position: 'absolute',
+    top: space.sm,
+    left: space.sm,
+    paddingHorizontal: space.sm,
+    paddingVertical: 3,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+  },
+  badgePro: { borderWidth: 1, borderColor: colors.primarySoft, backgroundColor: colors.primarySofter },
+  badgeText: { fontWeight: '800' },
   friend: { backgroundColor: colors.bondText },
 });

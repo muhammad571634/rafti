@@ -1,5 +1,7 @@
 import type { Character } from '@/types';
 
+import { daysAgo } from './time';
+
 /**
  * Rafti's own cast: four original worlds of ten plus the user's creations. Every name,
  * look and voice is ours - never a real person or another franchise's character -
@@ -543,6 +545,8 @@ export const characters: Character[] = [
     accentIndex: 4,
     voiceReady: true,
     isOfficial: true,
+    // Mock: released 2 days ago, so Find shows it in the "New" row (early access).
+    releasedAt: daysAgo(2),
     greeting: 'Meet today’s guest. She needs a name. You are good at names.',
     tags: ['gentle', 'funny', 'warm'],
   },
@@ -571,6 +575,8 @@ export const characters: Character[] = [
     accentIndex: 2,
     voiceReady: true,
     isOfficial: true,
+    // Mock: released 4 days ago, so Find shows it in the "New" row (early access).
+    releasedAt: daysAgo(4),
     greeting: 'Your chain was loose again. Fixed it. You are welcome. Need a ride?',
     tags: ['laid-back', 'protective', 'dry humour'],
   },

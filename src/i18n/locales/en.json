@@ -141,7 +141,14 @@
     "characters": "characters",
     "canCall": "can call",
     "seeAll": "See all",
-    "whoLabel": "Showing: {{who}}"
+    "whoLabel": "Showing: {{who}}",
+    "newSection": "New",
+    "proFirst": "Pro first",
+    "newBadge": "New"
+  },
+  "newCharacters": {
+    "proTitle": "Meet them first with Pro",
+    "opensOn": "Pro now · everyone on {{date}}"
   },
   "characterProfile": {
     "addFriend": "Add friend",

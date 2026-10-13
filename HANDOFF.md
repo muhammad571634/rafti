@@ -86,6 +86,23 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Checked on web: free user locked; trial starts the timer; voice minutes stay at 0.
 - Left from the Pro list: "New characters first".
 
+### 0m. 2026-10-13 — New characters first (branch `feat/new-characters-first`, merged into local-work)
+
+- There was no idea of a "new" character before. `Character.releasedAt` (official only; the server sets
+  it when a character goes live). `src/economy/early-access.ts` (tested): not visible before release;
+  Pro and the trial can add it from release day; everyone else after `EARLY_ACCESS_DAYS = 7` (owner
+  approved); then it is an ordinary character.
+- Mock: `c_hugo` released 2 days ago, `c_cole` 4 days ago (relative, so the row always shows).
+- UI (prototype https://claude.ai/artifact/Eh1sTEJfUc7jPvy91w7Gn6, approved): Find "New" row on top
+  (newest first); `CharacterCard` `fresh` prop: "Pro first" + lock on add, or "New" for Pro. World pages
+  and the profile ("Pro first" line, lock on Add friend, "Pro now · everyone on <date>") share
+  `useEarlyAccess` (`src/components/plans/early-access.tsx`). `PhotoPaywallSheet` became
+  `ProPaywallSheet` (`kind: 'photo' | 'newCharacter'`).
+- The gate is in the UI only; `addFriend` itself does not check. The server must refuse early adds.
+- Checked on web: free user sees the lock and the sheet, nothing is added; the trial adds Cole and opens
+  the chat; Pro sees "New".
+- All Pro promises on the Plans tab now work.
+
 ### 0. Sync the local folder first
 
 ```

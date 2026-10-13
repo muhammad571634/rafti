@@ -14,6 +14,9 @@ import {
   Screen,
   Txt,
 } from '@/components/ui';
+import { planDate } from '@/components/plans/copy';
+import { useEarlyAccess } from '@/components/plans/early-access';
+import { opensToAllAt } from '@/economy/early-access';
 import { daysBetween, shortDate } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -42,6 +45,8 @@ export default function CharacterProfileScreen() {
     (s) => s.memories.filter((m) => m.characterId === characterId).length,
   );
   const addFriend = useAppStore((s) => s.addFriend);
+  // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
+  const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
 
   if (!character) {
     return (
@@ -54,7 +59,11 @@ export default function CharacterProfileScreen() {
   const isFriend = !!conversation;
   const voiceReady = character.voiceReady;
 
+  const locked = !isFriend && early.locked(character);
+  const opensAt = opensToAllAt(character);
+
   const openChat = () => {
+    if (locked) return early.add(character);
     const conversationId = conversation?.id ?? addFriend(character.id);
     router.push(`/chat/${conversationId}`);
   };
@@ -91,6 +100,11 @@ export default function CharacterProfileScreen() {
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
+          {locked ? (
+            <Txt variant="caption" color={colors.brandText} center style={styles.bold}>
+              {t('find.proFirst')}
+            </Txt>
+          ) : null}
           {character.review === 'pending' ? (
             <Txt variant="caption" color={colors.brandText} center>
               {t('createCharacter.inReview')}
@@ -123,12 +137,17 @@ export default function CharacterProfileScreen() {
             onPress={openChat}
             left={
               <Ionicons
-                name={isFriend ? 'chatbubble-outline' : 'person-add-outline'}
+                name={isFriend ? 'chatbubble-outline' : locked ? 'lock-closed' : 'person-add-outline'}
                 size={18}
                 color={colors.textOnPrimary}
               />
             }
           />
+          {locked && opensAt != null ? (
+            <Txt variant="caption" color={colors.textSecondary} center>
+              {t('newCharacters.opensOn', { date: planDate(opensAt) })}
+            </Txt>
+          ) : null}
           {isFriend ? (
             <View style={styles.pair}>
               <Button
@@ -180,6 +199,7 @@ export default function CharacterProfileScreen() {
           </View>
         ) : null}
       </ScrollView>
+      {early.sheet}
     </Screen>
   );
 }
@@ -228,6 +248,7 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
   hero: { alignItems: 'center', paddingTop: space.sm },
   handle: { marginTop: space.xxs },
+  bold: { fontWeight: '700' },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
   shrink: { flexShrink: 1 },
   aiMark: {

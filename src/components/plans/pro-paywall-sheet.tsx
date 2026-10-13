@@ -3,25 +3,33 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Button, Sheet, Txt } from '@/components/ui';
+import { Button, CharacterAvatar, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
+import type { Character } from '@/types';
 
 import { planTime } from './copy';
 
 /**
- * A free or Basic user taps "Take a photo": pictures come with Pro only (backend-plan §15.10),
- * so this is the Pro offer with pictures first. Starting the trial lets them shoot at once.
+ * The Pro offer for a Pro-only feature a free or Basic user tried (backend-plan §15.10):
+ * "Take a photo" (pictures first) or adding a new character in its early-access week (that
+ * character first). Starting the trial lets them go on at once. Calls and Bedtime use
+ * `CallPaywallSheet`, which plays a voice sample first.
  */
-export function PhotoPaywallSheet({
+export function ProPaywallSheet({
   visible,
+  kind,
+  character,
   onClose,
   onStarted,
 }: {
   visible: boolean;
+  kind: 'photo' | 'newCharacter';
+  /** The new character, for `newCharacter`. */
+  character?: Character;
   onClose: () => void;
-  /** The trial is on: the caller takes the picture. */
+  /** The trial is on: the caller goes on (takes the picture, adds the friend). */
   onStarted: () => void;
 }) {
   const { t } = useTranslation();
@@ -44,17 +52,28 @@ export function PhotoPaywallSheet({
   return (
     <Sheet visible={visible} onClose={onClose}>
       <View style={styles.head}>
-        <View style={styles.art}>
-          <Ionicons name="camera-outline" size={30} color={colors.primary} />
-        </View>
+        {kind === 'newCharacter' && character ? (
+          <View style={styles.who}>
+            <CharacterAvatar character={character} size={76} />
+            <Txt variant="h3" center>
+              {character.name}
+            </Txt>
+          </View>
+        ) : (
+          <View style={styles.art}>
+            <Ionicons name="camera-outline" size={30} color={colors.primary} />
+          </View>
+        )}
         <Txt variant="h2" center>
-          {t('photoBooth.proTitle')}
+          {kind === 'newCharacter' ? t('newCharacters.proTitle') : t('photoBooth.proTitle')}
         </Txt>
       </View>
 
       <View style={styles.perks}>
         {[
-          t('plans.photosMonth', { count: PLANS.proAnnual.photos }),
+          kind === 'newCharacter'
+            ? t('plans.newCharacters')
+            : t('plans.photosMonth', { count: PLANS.proAnnual.photos }),
           t('plans.callsPerk', { time: planTime(t, PLANS.proAnnual.callSeconds) }),
           t('plans.shellsMonth', { amount: PLANS.proAnnual.shells.toLocaleString('en-US') }),
         ].map((perk) => (
@@ -90,6 +109,7 @@ export function PhotoPaywallSheet({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   head: { alignItems: 'center', gap: space.md, marginTop: space.xs },
+  who: { alignItems: 'center', gap: space.xs },
   art: {
     width: 56,
     height: 56,

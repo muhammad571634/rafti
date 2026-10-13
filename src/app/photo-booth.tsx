@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { planDate } from '@/components/plans/copy';
-import { PhotoPaywallSheet } from '@/components/plans/photo-paywall-sheet';
+import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
 import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { photoQuota } from '@/economy/plans';
 import { shortName } from '@/lib/format';
@@ -221,8 +221,9 @@ export default function PhotoBoothScreen() {
         )}
       </View>
 
-      <PhotoPaywallSheet
+      <ProPaywallSheet
         visible={locked}
+        kind="photo"
         onClose={() => setLocked(false)}
         onStarted={() => {
           setLocked(false);

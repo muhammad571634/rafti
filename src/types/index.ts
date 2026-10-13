@@ -33,6 +33,11 @@ export interface Character {
   /** Public creations wait for review before anyone else can find them. */
   visibility?: 'private' | 'public';
   review?: 'pending' | 'approved' | 'rejected';
+  /**
+   * Official characters only: the day it went live. Pro can add it from then, everyone else
+   * 7 days later (`src/economy/early-access.ts`). Left out for the launch cast and creations.
+   */
+  releasedAt?: string;
 }
 
 export type SpeakingStyle = 'casual' | 'gentle' | 'playful' | 'formal' | 'poetic' | 'dry';

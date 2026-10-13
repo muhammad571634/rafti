@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { CARD_GAP, CharacterCard } from '@/components/character-card';
+import { useEarlyAccess } from '@/components/plans/early-access';
 import { EmptyState, Header, Screen, Txt } from '@/components/ui';
+import { isReleased } from '@/economy/early-access';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
@@ -22,11 +24,14 @@ export default function WorldScreen() {
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
-  const addFriend = useAppStore((s) => s.addFriend);
+  const early = useEarlyAccess();
   const blockedIds = useAppStore((s) => s.blockedIds);
 
   const people = useMemo(
-    () => characters.filter((c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id)),
+    () =>
+      characters.filter(
+        (c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id) && isReleased(c, Date.now()),
+      ),
     [characters, series, blockedIds],
   );
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
@@ -50,13 +55,15 @@ export default function WorldScreen() {
                 character={character}
                 width={cardWidth}
                 isFriend={friendIds.has(character.id)}
+                fresh={early.fresh(character)}
                 onOpen={() => router.push(`/character/${character.id}`)}
-                onAdd={() => addFriend(character.id)}
+                onAdd={() => early.add(character)}
               />
             ))}
           </View>
         </ScrollView>
       )}
+      {early.sheet}
     </Screen>
   );
 }

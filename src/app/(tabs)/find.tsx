@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { CARD_GAP, CharacterCard } from '@/components/character-card';
+import { useEarlyAccess } from '@/components/plans/early-access';
 import {
   EmptyState,
   PressableScale,
@@ -14,6 +15,7 @@ import {
   Segmented,
   Txt,
 } from '@/components/ui';
+import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
@@ -32,6 +34,8 @@ const PER_WORLD = 4;
  * search, Everyone / Him / Her, one row of world filters, then each world as a section of
  * portrait cards (two columns) with "See all". A search lists every match across worlds.
  * Tapping a card opens the profile; the small "+" on a card adds them as a friend.
+ * Characters in their early-access week also sit in a "New" row on top; for free and Basic
+ * users they carry "Pro first" and a lock (`useEarlyAccess`).
  */
 export default function FindScreen() {
   const { t } = useTranslation();
@@ -40,12 +44,13 @@ export default function FindScreen() {
   const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - CARD_GAP) / 2);
   const allCharacters = useAppStore((s) => s.characters);
   const blockedIds = useAppStore((s) => s.blockedIds);
+  // A character before its release day is hidden from everyone.
   const characters = useMemo(
-    () => allCharacters.filter((c) => !blockedIds.includes(c.id)),
+    () => allCharacters.filter((c) => !blockedIds.includes(c.id) && isReleased(c, Date.now())),
     [allCharacters, blockedIds],
   );
   const conversations = useAppStore((s) => s.conversations);
-  const addFriend = useAppStore((s) => s.addFriend);
+  const early = useEarlyAccess();
 
   const [query, setQuery] = useState('');
   const [tab, setTab] = useState<Tab>('all');
@@ -76,6 +81,14 @@ export default function FindScreen() {
     () => groupBySeries(shown.filter((c) => tab === 'all' || c.category === tab)),
     [shown, tab],
   );
+  // Newest release first.
+  const newOnes = useMemo(
+    () =>
+      shown
+        .filter((c) => (tab === 'all' || c.category === tab) && isNewCharacter(c, Date.now()))
+        .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!)),
+    [shown, tab],
+  );
 
   const card = (character: Character) => (
     <CharacterCard
@@ -83,8 +96,9 @@ export default function FindScreen() {
       character={character}
       width={cardWidth}
       isFriend={friendIds.has(character.id)}
+      fresh={early.fresh(character)}
       onOpen={() => router.push(`/character/${character.id}`)}
-      onAdd={() => addFriend(character.id)}
+      onAdd={() => early.add(character)}
     />
   );
 
@@ -157,17 +171,26 @@ export default function FindScreen() {
               <View style={styles.grid}>{results.map(card)}</View>
             </>
           ) : (
-            groups.map((group) => (
-              <WorldSection
-                key={group.series}
-                group={group}
-                card={card}
-                onOpen={() => router.push({ pathname: '/world/[series]', params: { series: group.series } })}
-              />
-            ))
+            <>
+              {newOnes.length > 0 ? (
+                <View style={styles.section}>
+                  <SectionLabel tone="section" title={t('find.newSection')} />
+                  <View style={styles.grid}>{newOnes.map(card)}</View>
+                </View>
+              ) : null}
+              {groups.map((group) => (
+                <WorldSection
+                  key={group.series}
+                  group={group}
+                  card={card}
+                  onOpen={() => router.push({ pathname: '/world/[series]', params: { series: group.series } })}
+                />
+              ))}
+            </>
           )}
         </ScrollView>
       )}
+      {early.sheet}
     </Screen>
   );
 }
