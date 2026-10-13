@@ -39,6 +39,15 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Open: a private crisis diary page (shared with nobody) gets no help (needs UI); the phrase list
   is English-only and narrow (Uzbek is not detected); no new UI or copy was added.
 
+### 0f. 2026-10-13 — per-character chat art wallpapers
+
+- Implemented locally on `feat/credit-plans` from the approved `design-prototypes/chat-backgrounds/` preview.
+- The background picker keeps all six classic gradients and adds a separate Art collection with 30 original wallpapers; image captions are removed and selection stays per character through the existing relationship store.
+- The picker previews the current wallpaper above the image-only grid. Chat art now covers the message list and composer area with a light readability veil; message behavior, header controls, and Today are unchanged.
+- The 30 full-size source PNGs stay in the prototype wallpaper folder; the app uses visually checked JPEG copies in `assets/images/chat-wallpapers/` (about 6.1 MB total instead of 56.2 MB).
+- `npx tsc --noEmit` passes; all 30 image files and accessibility labels are present. Metro responds on ports 8081 and 8082, but no phone is attached to this local session for a screenshot check.
+- Still uncommitted and unpushed on the current branch `feat/credit-plans`.
+
 ### 0. Sync the local folder first
 
 ```

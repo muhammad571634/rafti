@@ -30,7 +30,7 @@ import {
   Txt,
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
+import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
@@ -119,8 +119,10 @@ export default function ChatRoomScreen() {
     return () => clearTimeout(timer);
   }, [messages?.length, typing]);
 
-  const wallpaper = backgroundsById[relationship?.backgroundId ?? 'bg_blossom'];
-  const background = wallpaper?.colors ?? [colors.bg, colors.surface];
+  const backgroundId = relationship?.backgroundId ?? 'bg_blossom';
+  const artWallpaper = chatArtBackgroundsById[backgroundId];
+  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_blossom;
+  const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
 
   // Only messages that arrive while the chat is open animate in. History, and rows
@@ -217,7 +219,7 @@ export default function ChatRoomScreen() {
     router.push(route);
   };
   const streak = relationship?.streakDays ?? 0;
-  const dark = !!wallpaper?.dark;
+  const dark = !!wallpaper.dark;
 
   return (
     <Screen background={background as readonly [string, string]} statusBarStyle="dark">
@@ -280,8 +282,19 @@ export default function ChatRoomScreen() {
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={insets.top + 56}>
+        {artWallpaper ? (
+          <>
+            <Image
+              source={artWallpaper.image}
+              contentFit="cover"
+              style={styles.artWallpaper}
+              accessible={false}
+            />
+            <View pointerEvents="none" style={styles.artWallpaperVeil} />
+          </>
+        ) : null}
         <View style={styles.flex}>
-          <ChatWallpaper hidden={dark} />
+          {!artWallpaper ? <ChatWallpaper hidden={dark} /> : null}
           <FlatList
             ref={listRef}
             data={data}
@@ -528,6 +541,11 @@ const styles = StyleSheet.create({
   reactionOn: { backgroundColor: colors.primarySoft },
   reactionSticker: { width: 44, height: 44 },
   flex: { flex: 1 },
+  artWallpaper: { ...StyleSheet.absoluteFill },
+  artWallpaperVeil: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(255,250,241,0.18)',
+  },
   missing: { padding: space.xl },
   header: {
     flexDirection: 'row',

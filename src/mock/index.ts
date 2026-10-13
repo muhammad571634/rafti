@@ -1,5 +1,6 @@
 export { characters, charactersById, getCharacter, groupBySeries } from './characters';
 export type { CharacterGroup } from './characters';
+export { chatArtBackgrounds, chatArtBackgroundsById } from './chat-background-art';
 export {
   callLines,
   cannedReplies,
