@@ -51,6 +51,13 @@ interface Sample {
 }
 
 /**
+ * Sharing a creation in Find is off until moderation exists (business-plan §12, decision 4: no UGC
+ * market at launch; audit 2026-10-13). While false the "Who sees them" choice is hidden and every
+ * creation is saved private. Turn it on together with the server review queue.
+ */
+const SHARING_OPEN = false;
+
+/**
  * F15: make your own character. Structure from BIMOBIMO (photo, voice clips, persona,
  * greeting, visibility) plus what character apps share as a standard: traits, a
  * speaking style, what they are to you, and a stock voice when there are no clips.
@@ -110,7 +117,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [voiceConsent, setVoiceConsent] = useState(hasTrainedVoice);
-  const [isPublic, setIsPublic] = useState(editing?.visibility === 'public');
+  const [isPublic, setIsPublic] = useState(SHARING_OPEN && editing?.visibility === 'public');
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);
@@ -448,12 +455,14 @@ function CharacterForm({ editing }: { editing?: Character }) {
             </View>
           </Section>
 
-          <Section title={t('createCharacter.visibility')}>
-            <View style={styles.options}>
-              <OptionButton label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
-              <OptionButton label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
-            </View>
-          </Section>
+          {SHARING_OPEN ? (
+            <Section title={t('createCharacter.visibility')}>
+              <View style={styles.options}>
+                <OptionButton label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
+                <OptionButton label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
+              </View>
+            </Section>
+          ) : null}
         </ScrollView>
 
         {/* Action bar (docs/design-style.md §3): the button, then one line on what happens next. */}

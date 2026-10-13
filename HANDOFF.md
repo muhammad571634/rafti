@@ -28,7 +28,10 @@ Logic
    messages per chat and 4,000 overall, and the newest 3,000 ledger lines (the ledger also grew by
    one line per message for 183 days). ~191 bytes a message, so the worst case is about 1.1 MB. The
    screen keeps the full history until the next launch. Real fix later: SQLite or the server.
-5. [ ] Hide "public" in Create character until moderation (business-plan: no UGC at launch).
+5. [x] Hide "public" in Create character until moderation (business-plan: no UGC at launch).
+   Done: `SHARING_OPEN = false` in `src/app/create-character.tsx` hides "Who sees them"; every
+   creation (new or edited) saves private; the caption reads "Only you can see them". The review
+   code stays for when the server queue exists. Checked on web.
 6. [ ] Review and merge the Story Continuity PR (`story-continuity-rebased`).
 Docs
 7. [ ] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
