@@ -13,7 +13,9 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
    lasting memory. `src/ai/memory-guard.ts` (pure) is used by `addMemory` (manual, plan and diary
    memories), by `addDiaryEntry` (a page with a crisis line anywhere leaves no memory) and on every
    load (`merge` drops crisis memories saved by older builds). The chat helpline card and reply are
-   unchanged. `detectCrisis` now reads curly apostrophes (phone keyboards). Tests: `npm test`.
+   unchanged. `detectCrisis` now reads curly apostrophes (phone keyboards). Tests: `npm test`;
+   test files are left out of the app `tsc` and typechecked with `npm run typecheck:test`
+   (`tsconfig.test.json`, Node types only there).
 2. **Next task, decided:** memory quality is the same on every plan. The Store copy that says
    otherwise is not changed yet; list the files and copy options first, then wait for approval.
 3. **Next task, decided:** free users get no automatic real call. Propose a voice note from the
