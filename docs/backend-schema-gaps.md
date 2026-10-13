@@ -29,7 +29,7 @@ The app's rule (`src/store/use-app-store.ts`: `claimDailyLogin`, `spendShells`, 
 
 Proposal for the server (append-only, like the rest of the ledger):
 
-- `shell_ledger.bucket` (`free` | `paid`) and `shell_ledger.expires_at` (set on check-in credits).
+- `shell_ledger.bucket` (`free` | `paid`) and `shell_ledger.expires_at` (set on every free credit).
 - A spend writes one row per bucket it takes from (free first).
 - A pg-boss job at the user's local midnight (time zone from `bootstrap`, §14.3.6) writes the `expired` row.
 - Balance = sum of the ledger; `wallets.shells` is only a cache.
