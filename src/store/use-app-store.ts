@@ -5,6 +5,7 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
+import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
@@ -994,8 +995,9 @@ export const useAppStore = create<AppState>()(
         const characterId = entry.sharedWithCharacterId;
         if (characterId) {
           get().addIntimacy(characterId, INTIMACY.diaryShare);
-          const firstSentence = entry.body.split(/(?<=[.!?])\s/)[0]?.slice(0, 120);
-          if (firstSentence) get().addMemory(characterId, firstSentence, 'diary');
+          // A crisis page is still shared and answered; it just never becomes a memory.
+          const line = diaryMemoryLine(entry.body);
+          if (line) get().addMemory(characterId, line, 'diary');
           setTimeout(() => answerDiary(set, id), 2200);
         }
 
@@ -1158,7 +1160,7 @@ export const useAppStore = create<AppState>()(
           conversations: [...s.conversations, ...demo.conversations.filter((c) => !s.conversations.some((x) => x.characterId === c.characterId))],
           messages: { ...demo.messages, ...s.messages },
           relationships: { ...demo.relationships, ...s.relationships },
-          memories: [...s.memories, ...demo.memories],
+          memories: withoutCrisisMemories([...s.memories, ...demo.memories]),
           diary: [...s.diary, ...demo.diary],
           characterDiary: [...s.characterDiary, ...demo.characterDiary],
           notes: [...s.notes, ...demo.notes],
@@ -1253,12 +1255,16 @@ export const useAppStore = create<AppState>()(
 
       /* ── memories, schedules ──────────────────────────────────────────── */
 
+      // Every memory goes through the guard: crisis text is never kept (src/ai/memory-guard.ts).
       addMemory: (characterId, text, source = 'manual') =>
         set((s) => ({
-          memories: [
-            { id: uid('mem'), characterId, text, source, createdAt: new Date().toISOString(), pinned: false },
-            ...s.memories,
-          ],
+          memories: withMemory(s.memories, {
+            id: uid('mem'),
+            characterId,
+            text,
+            source,
+            createdAt: new Date().toISOString(),
+          }),
         })),
 
       toggleMemoryPin: (id) =>
@@ -1521,6 +1527,8 @@ export const useAppStore = create<AppState>()(
           daily: { ...current.daily, ...saved.daily },
           settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
+          // Crisis text saved as a memory before the guard existed is dropped on load.
+          memories: withoutCrisisMemories(saved.memories ?? current.memories),
           // Pages are saved with the rest, sample pages included when they were loaded.
           characterDiary: saved.characterDiary ?? current.characterDiary,
         };

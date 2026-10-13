@@ -22,7 +22,8 @@ const CRISIS_PATTERNS = [
 
 /** True when a message reads like the user may be in danger. */
 export function detectCrisis(text: string) {
-  const t = text.toLowerCase();
+  // Phone keyboards type curly apostrophes ("don’t"); the patterns expect straight ones.
+  const t = text.toLowerCase().replace(/[‘’]/g, "'");
   return CRISIS_PATTERNS.some((p) => p.test(t));
 }
 

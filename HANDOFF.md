@@ -7,6 +7,20 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0d. 2026-10-13 — owner decisions after the audit (`docs/audit-2026-10-13.md`)
+
+1. **Done (branch `fix/memory-crisis-guard`, not pushed or merged):** crisis text never becomes a
+   lasting memory. `src/ai/memory-guard.ts` (pure) is used by `addMemory` (manual, plan and diary
+   memories), by `addDiaryEntry` (a page with a crisis line anywhere leaves no memory) and on every
+   load (`merge` drops crisis memories saved by older builds). The chat helpline card and reply are
+   unchanged. `detectCrisis` now reads curly apostrophes (phone keyboards). Tests: `npm test`.
+2. **Next task, decided:** memory quality is the same on every plan. The Store copy that says
+   otherwise is not changed yet; list the files and copy options first, then wait for approval.
+3. **Next task, decided:** free users get no automatic real call. Propose a voice note from the
+   free voice-line library (backend-plan §13.5) and list the functions and tests before coding.
+4. Still open from the audit: backend-plan §4 vs §14.2 schema and the free-shell bucket (document
+   separately); diary replies, board replies and voice transcripts do not check for crisis yet.
+
 ### 0. Sync the local folder first
 
 ```
