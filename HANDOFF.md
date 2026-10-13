@@ -9,7 +9,7 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
 
 ### 0d. 2026-10-13 — owner decisions after the audit (`docs/audit-2026-10-13.md`)
 
-1. **Done (branch `fix/memory-crisis-guard`, not pushed or merged):** crisis text never becomes a
+1. **Done (branch `fix/memory-crisis-guard`, merged into local-work 2026-10-13):** crisis text never becomes a
    lasting memory. `src/ai/memory-guard.ts` (pure) is used by `addMemory` (manual, plan and diary
    memories), by `addDiaryEntry` (a page with a crisis line anywhere leaves no memory) and on every
    load (`merge` drops crisis memories saved by older builds). The chat helpline card and reply are
@@ -25,7 +25,7 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
 
 ### 0e. 2026-10-13 — crisis text in plans, voice, board and diary (branch `fix/crisis-paths`)
 
-Built on `fix/memory-crisis-guard`, not pushed or merged. Closes the crisis part of 0d item 4.
+Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the owner tested it on the phone. Closes the crisis part of 0d item 4.
 - Chat: a crisis message never becomes a plan ("I'm going to kill myself tomorrow" used to make a
   "Kill myself" plan with an 08:00 reminder push, a follow-up and a line on Us). Helpline card + warm
   reply as before.
@@ -226,7 +226,7 @@ npx tsc --noEmit                # must be clean
   `en.json`: the Plans subtitle reads "Every plan gets the same memory quality. Paid plans add call and
   voice minutes."; "Remembers everything you share" (Basic) and "Deepest memory" (Pro) are gone, keys
   `plans.remembers` / `plans.deepestMemory` deleted. Nothing else on the screen changed.
-- Checked on web at 375×812 against the approved preview. Not merged or pushed.
+- Checked on web at 375×812 against the approved preview; merged into local-work 2026-10-13.
 
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
