@@ -219,6 +219,15 @@ npx tsc --noEmit                # must be clean
     stale `.expo/types/router.d.ts` (`/notifications/index`). Restart Metro (`npx expo start -c`)
     if tsc complains about `/notifications`.
 
+### 0f. 2026-10-13 — Plans tab: same memory on every plan (branch `fix/plans-memory-copy`)
+
+- Owner decision (backend-plan §15.8): memory quality is the same on every plan; paid plans add only
+  call and voice minutes. Preview approved, then built in `src/components/plans/plan-picker.tsx` and
+  `en.json`: the Plans subtitle reads "Every plan gets the same memory quality. Paid plans add call and
+  voice minutes."; "Remembers everything you share" (Basic) and "Deepest memory" (Pro) are gone, keys
+  `plans.remembers` / `plans.deepestMemory` deleted. Nothing else on the screen changed.
+- Checked on web at 375×812 against the approved preview. Not merged or pushed.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
