@@ -159,6 +159,21 @@ npx tsc --noEmit                # must be clean
 `../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
 `AGENT-START.md` section 6 is out of date (says F9) — this file wins.
 
+### 0c. 2026-10-12 — story continuity builder (branch `strategy/story-continuity-v1`)
+
+- ChatGPT wrote a product strategy, an architecture note and `src/lib/story-continuity.ts` on an old
+  base; the branch is now rebased onto `local-work`. Approved decisions (business-plan, backend-plan
+  §13–§15) win over the ChatGPT strategy; a precedence note sits at its top.
+- The builder is pure and not wired anywhere: mock replies are unchanged and stay mock.
+  It follows backend-plan §7/§12.1–12.3 (30 messages, all pinned facts, 8–12 relevant active facts,
+  0.6/0.3/0.1 ranking, only active facts). `MemoryItem` got optional `type`, `importance`, `status`
+  and `supersededBy` for that; extraction and archiving stay server work (12.1-12.2).
+- Tests: `npm test` (Node's built-in `node:test`, no new packages; `scripts/ts-test-hooks.mjs`
+  resolves `.ts` imports). 16 tests cover determinism, limits, other characters' memories, dedup,
+  pinned facts, low-information messages, bad dates, URIs, app-only rows and the consent note.
+  Test files are left out of the app `tsc`; `npm run typecheck:test` checks them (`tsconfig.test.json`).
+- Not merged into `local-work` and not pushed: waiting for the user.
+
 ### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
 
 - The user shared `rafti_codex_ready.zip` (Codex, 2026-10-08): the code in it equals old `main`
