@@ -240,6 +240,19 @@ export function photosLeft(sub: Subscription | undefined, now: number) {
   return Math.max(0, total - used);
 }
 
+/**
+ * Photo Booth on this plan: pictures left, the period's total and when they come back.
+ * Null without Pro or the trial: pictures are Pro only and never sold for shells
+ * (backend-plan §15.10, owner decision 2026-10-13).
+ */
+export function photoQuota(sub: Subscription | undefined, now: number) {
+  const live = rollSubscription(sub, now);
+  if (!live) return null;
+  const total = live.status === 'trial' ? TRIAL.photos : PLANS[live.plan].photos;
+  if (total <= 0) return null;
+  return { left: photosLeft(live, now), total, resetsAt: periodOf(live, now).end };
+}
+
 /** Takes one picture from the period's allowance; null when none is left. */
 export function consumePhoto(sub: Subscription | undefined, now: number): Subscription | null {
   if (photosLeft(sub, now) <= 0) return null;

@@ -15,6 +15,7 @@ import {
   canRing,
   consumeMinutes,
   consumePhoto,
+  photoQuota,
   minutesLeft,
   photosLeft,
   PLANS,
@@ -312,7 +313,8 @@ interface AppState {
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
-  takePhoto: (characterId: string) => SpendResult;
+  /** Pro only: 'locked' without Pro or the trial, 'usedUp' when this period's pictures are gone. */
+  takePhoto: (characterId: string) => 'ok' | 'locked' | 'usedUp';
 
   /* memories, moments, schedules */
   addMemory: (characterId: string, text: string, source?: MemorySource) => void;
@@ -1267,10 +1269,13 @@ export const useAppStore = create<AppState>()(
       },
 
       takePhoto: (characterId) => {
-        // Pro (and the trial) take pictures from the month's allowance; everyone else pays shells.
-        const fromPlan = consumePhoto(get().wallet.subscription, Date.now());
-        if (fromPlan) set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan } }));
-        else if (!get().spendShells(shellCosts.photoBooth, 'photoBooth', characterId)) return 'noShells';
+        // Pictures come only from Pro's (or the trial's) allowance; shells never buy one
+        // (backend-plan §15.10).
+        const now = Date.now();
+        if (!photoQuota(get().wallet.subscription, now)) return 'locked';
+        const fromPlan = consumePhoto(get().wallet.subscription, now);
+        if (!fromPlan) return 'usedUp';
+        set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan } }));
         get().addIntimacy(characterId, INTIMACY.photo);
         addMoment(set, characterId, 'photo');
         return 'ok';

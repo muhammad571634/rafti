@@ -1,21 +1,13 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { PaywallSheet } from '@/components/paywall-sheet';
-import {
-  Anim,
-  Button,
-  CharacterAvatar,
-  Header,
-  PressableScale,
-  Screen,
-  ShellBadge,
-  ShellIcon,
-  Txt,
-} from '@/components/ui';
+import { planDate } from '@/components/plans/copy';
+import { PhotoPaywallSheet } from '@/components/plans/photo-paywall-sheet';
+import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { photoQuota } from '@/economy/plans';
 import { shortName } from '@/lib/format';
-import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 
@@ -27,9 +19,10 @@ interface Shot {
 }
 
 /**
- * A photo together with one friend: pick who and a style, then shoot. Each photo costs
- * shells, adds closeness and a moment on Us. Calm cards (docs/design-style.md): a preview
- * card, two pickers, and an action bar with the price.
+ * A photo together with one friend: pick who and a style, then shoot. Pictures are Pro only
+ * (30 a period, 3 on the trial) and never sold for shells (backend-plan §15.10); each adds
+ * closeness and a moment on Us. Calm cards (docs/design-style.md): a preview card, two
+ * pickers, and an action bar with pictures left.
  */
 export default function PhotoBoothScreen() {
   const { t } = useTranslation();
@@ -38,7 +31,7 @@ export default function PhotoBoothScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
-  const shells = useAppStore((s) => s.wallet.shells);
+  const subscription = useAppStore((s) => s.wallet.subscription);
   const takePhoto = useAppStore((s) => s.takePhoto);
 
   const known = useMemo(
@@ -50,15 +43,19 @@ export default function PhotoBoothScreen() {
   const [style, setStyle] = useState<(typeof STYLES)[number]>('polaroid');
   const [shots, setShots] = useState<Shot[]>([]);
   const [shooting, setShooting] = useState(false);
-  const [paywall, setPaywall] = useState<number | null>(null);
+  const [locked, setLocked] = useState(false);
 
   const partner = known.find((c) => c.id === partnerId);
+  // Null without Pro or the trial.
+  const quota = photoQuota(subscription, Date.now());
   const previewHeight = Math.round((width - space.lg * 2) * 0.82);
   const thumbWidth = (width - space.lg * 2 - space.sm * 3) / 4;
 
   const shoot = () => {
     if (!partner) return;
-    if (takePhoto(partner.id) === 'noShells') return setPaywall(shellCosts.photoBooth);
+    const result = takePhoto(partner.id);
+    if (result === 'locked') return setLocked(true);
+    if (result === 'usedUp') return;
 
     setShooting(true);
     // The generated image lands here once the image model returns.
@@ -72,7 +69,22 @@ export default function PhotoBoothScreen() {
     <Screen background={colors.bgPlain}>
       <Header
         title={t('photoBooth.title')}
-        right={<ShellBadge count={shells} tone="neutral" style={styles.balance} />}
+        right={
+          quota ? (
+            <View style={[styles.pill, styles.balance]}>
+              <Ionicons name="camera-outline" size={14} color={colors.text} />
+              <Txt variant="smallStrong" style={styles.figure} accessibilityLabel={t('photoBooth.picturesLeft', { count: quota.left })}>
+                {quota.left}
+              </Txt>
+            </View>
+          ) : (
+            <View style={[styles.pill, styles.proPill, styles.balance]}>
+              <Txt variant="smallStrong" color={colors.brandText}>
+                {t('plans.name.pro')}
+              </Txt>
+            </View>
+          )
+        }
       />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
@@ -172,32 +184,51 @@ export default function PhotoBoothScreen() {
         ) : null}
       </ScrollView>
 
-      {/* Action bar (docs/design-style.md §3): the price is in the button. */}
+      {/* Action bar (docs/design-style.md §3): pictures left above the button, or the Pro lock. */}
       <View style={styles.actionBar}>
+        {quota ? (
+          <View style={styles.meter}>
+            <View style={styles.meterHead}>
+              <Txt variant="smallStrong" style={[styles.flex, styles.figure]}>
+                {t('photoBooth.left', { left: quota.left, total: quota.total })}
+              </Txt>
+              <Txt variant="small" color={colors.textSecondary}>
+                {t('photoBooth.resets', { date: planDate(quota.resetsAt) })}
+              </Txt>
+            </View>
+            <View style={styles.track}>
+              <View style={[styles.fill, { width: `${Math.round((quota.left / quota.total) * 100)}%` }]} />
+            </View>
+          </View>
+        ) : null}
         <Button
-          label={t('photoBooth.shoot')}
+          label={
+            quota && quota.left <= 0
+              ? t('photoBooth.backOn', { date: planDate(quota.resetsAt) })
+              : t('photoBooth.shoot')
+          }
           size="lg"
           onPress={shoot}
           loading={shooting}
-          disabled={!partner}
+          disabled={!partner || (quota != null && quota.left <= 0)}
           full
-          right={
-            <View style={styles.cost}>
-              <ShellIcon size={18} />
-              <Txt variant="bodyStrong" color={colors.textOnPrimary}>
-                {shellCosts.photoBooth}
-              </Txt>
-            </View>
-          }
+          left={quota ? undefined : <Ionicons name="lock-closed" size={17} color={colors.textOnPrimary} />}
         />
-        {partner ? (
+        {quota ? null : (
           <Txt variant="caption" color={colors.textSecondary} center>
-            {t('photoBooth.closer', { name: shortName(partner.name) })}
+            {t('photoBooth.withPro')}
           </Txt>
-        ) : null}
+        )}
       </View>
 
-      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
+      <PhotoPaywallSheet
+        visible={locked}
+        onClose={() => setLocked(false)}
+        onStarted={() => {
+          setLocked(false);
+          shoot();
+        }}
+      />
     </Screen>
   );
 }
@@ -257,7 +288,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, marginLeft: space.xs },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    height: 28,
+    paddingHorizontal: space.sm + 2,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surfaceAlt,
+  },
+  proPill: { borderWidth: 1, borderColor: colors.primarySoft, backgroundColor: colors.primarySofter },
+  figure: { fontVariant: ['tabular-nums'] },
+  meter: { gap: space.xs + 2, marginBottom: space.xs },
+  meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  track: { height: 8, borderRadius: radius.pill, backgroundColor: colors.border, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
   actionBar: {
     gap: space.sm,
     paddingHorizontal: space.lg,

@@ -232,7 +232,7 @@ function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void
         <CostRow label={t('store.costListen')} meta={t('store.withPlan')} />
         <CostRow label={t('store.costCall')} meta={t('store.withPlan')} />
         <CostRow label={t('store.costSecretNote')} meta={t('chat.shellCost', { count: shellCosts.secretNote })} />
-        <CostRow label={t('store.costPhotoBooth')} meta={t('chat.shellCost', { count: shellCosts.photoBooth })} />
+        <CostRow label={t('store.costPhotoBooth')} meta={t('store.withPlan')} />
         <CostRow
           label={t('store.costVoiceClone')}
           meta={t('chat.shellCost', { count: shellCosts.characterVoiceClone })}

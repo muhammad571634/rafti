@@ -60,6 +60,20 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Not built: option C (a chat line when the 20 fill up). Server side (§15.10) must send only the open
   20 to the AI prompt.
 
+### 0k. 2026-10-13 — Photo Booth is Pro only (branch `feat/photo-booth-pro`, merged into local-work)
+
+- backend-plan §15.10: pictures come only from Pro's allowance (30 a period, 3 on the trial) and are
+  never sold for shells. `takePhoto` returns `'locked'` without Pro or the trial and `'usedUp'` when the
+  period's pictures are gone; no shells are spent. `photoQuota` (plans.ts, tested) gives left, total and
+  the reset date.
+- Screen (prototype https://claude.ai/artifact/WZQ6jJY8JzmqUQryg6az5N, approved): free and Basic see a
+  "Pro" pill, a lock on "Take a photo" and "Comes with Pro"; the tap opens `PhotoPaywallSheet` (Pro
+  offer, pictures first; starting the trial takes the picture). Pro sees pictures left in the header,
+  "N of 30 left · Resets <date>" and, when used up, a disabled "Back on <date>". Store cost list: Photo
+  Booth reads "With Pro". `photoBooth.closer` copy removed. `shellCosts.photoBooth` stays only for old
+  ledger rows.
+- Checked on web: Basic with 2,099 shells is locked; the trial shoots 3 and then waits; shells unchanged.
+
 ### 0. Sync the local folder first
 
 ```
