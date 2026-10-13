@@ -10,6 +10,7 @@ import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
+import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
 import {
   canRing,
   consumeMinutes,
@@ -1646,6 +1647,13 @@ export const useAppStore = create<AppState>()(
 
 /** A plan or its trial is running. Chat still costs shells (the credit model, backend-plan §15.10). */
 export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscription(wallet.subscription, now);
+
+/**
+ * One character's memories split into open and locked: 20 open without a plan, all with one
+ * (`src/economy/memory-limit.ts`). Locked ones stay saved and open again with any plan.
+ */
+export const memoryAccess = (memories: MemoryItem[], wallet: Wallet, characterId: string, now = Date.now()) =>
+  splitMemories(memories, characterId, hasFullMemory(wallet.subscription, now));
 
 /** The plan includes live calls and voice replies: Pro or the trial, not Basic. */
 export const callsIncluded = (wallet: Wallet, now = Date.now()) => canRing(wallet.subscription, now);
