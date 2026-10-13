@@ -16,6 +16,8 @@ import { planPushes, type PlannedPush, type PlanState, type PushChannel } from '
 const MAX_PENDING = 60;
 /** Test pushes (`sendTestPushes`) carry this id prefix; planning leaves them alone. */
 const TEST_PREFIX = 'test:';
+/** Wake-up alarm rings (`alarms.ts`) are owned there and never cleared here. */
+const ALARM_PREFIX = 'alarm:';
 const TEST_FIRST_MS = 5_000;
 const TEST_STEP_MS = 8_000;
 const TEST_MAX = 10;
@@ -30,7 +32,8 @@ const CHANNELS: Record<PushChannel, { name: string; importance: 'HIGH' | 'MAX' |
 /** What a push carries back to the app when it is tapped or seen. */
 export interface PushData {
   id: string;
-  kind: PlannedPush['kind'];
+  /** `alarm`: a wake-up alarm ring (`src/notifications/alarms.ts`), not a planned push. */
+  kind: PlannedPush['kind'] | 'alarm';
   route: string;
   characterId?: string;
   line?: string;
@@ -51,8 +54,10 @@ export async function configurePushes() {
   // Test pushes are the exception: they exist to be seen.
   N.setNotificationHandler({
     handleNotification: async (notification) => {
-      const test = (notification.request.content.data as unknown as PushData | undefined)?.test === true;
-      return { shouldPlaySound: test, shouldSetBadge: false, shouldShowBanner: test, shouldShowList: true };
+      const data = notification.request.content.data as unknown as PushData | undefined;
+      // A wake-up alarm rings even with the app open.
+      const loud = data?.test === true || data?.kind === 'alarm';
+      return { shouldPlaySound: loud, shouldSetBadge: false, shouldShowBanner: loud, shouldShowList: true };
     },
   });
   if (Platform.OS === 'android') {
@@ -115,7 +120,7 @@ export async function clearPushes() {
   const pending = await N.getAllScheduledNotificationsAsync();
   await Promise.all(
     pending
-      .filter((n) => !n.identifier.startsWith(TEST_PREFIX))
+      .filter((n) => !n.identifier.startsWith(TEST_PREFIX) && !n.identifier.startsWith(ALARM_PREFIX))
       .map((n) => N.cancelScheduledNotificationAsync(n.identifier)),
   );
 }
@@ -125,7 +130,10 @@ export async function syncPushes(state: PlanState, now = new Date()) {
   if (!(await pushesAllowed())) return;
   await configurePushes();
   await clearPushes();
-  const plan = planPushes(state, now).slice(0, MAX_PENDING);
+  // Alarm rings share iOS's 64 pending notifications; the planner takes what is left.
+  const N = notificationsModule()!;
+  const alarms = (await N.getAllScheduledNotificationsAsync()).filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
+  const plan = planPushes(state, now).slice(0, Math.max(0, MAX_PENDING - alarms));
   await Promise.all(plan.map((push) => schedule(push, push.id, push.at, state.settings.notificationPreview)));
 }
 

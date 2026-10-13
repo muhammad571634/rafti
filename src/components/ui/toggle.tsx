@@ -12,11 +12,14 @@ export function Toggle({
   onChange,
   disabled,
   accessibilityLabel,
+  onColor = colors.text,
 }: {
   value: boolean;
   onChange: (v: boolean) => void;
   disabled?: boolean;
   accessibilityLabel?: string;
+  /** The "on" track; ink by default. Alarms use the iOS green from their approved prototype. */
+  onColor?: string;
 }) {
   const webProps = Platform.OS === 'web' ? ({ activeThumbColor: colors.surface } as object) : {};
 
@@ -26,7 +29,7 @@ export function Toggle({
       disabled={disabled}
       onValueChange={onChange}
       accessibilityLabel={accessibilityLabel}
-      trackColor={{ true: colors.text, false: colors.borderStrong }}
+      trackColor={{ true: onColor, false: colors.borderStrong }}
       thumbColor={colors.surface}
       ios_backgroundColor={colors.borderStrong}
       {...webProps}

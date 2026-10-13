@@ -59,7 +59,22 @@ From BIMOBIMO (our own look and words)
    it as a guilt pattern we do not use.
 11. [x] Chat header status line, e.g. "Together 12 days".
    Already in the app: the chat header reads "AI character · 🧡 N days" (the streak).
-12. [ ] Bedtime wake-up alarm in the character's voice (Pro).
+12. [~] Wake-up alarm (owner 2026-10-13: for every plan, any time, iOS Clock style, a real ring with
+    a melody; prototype https://claude.ai/artifact/JYkzQxvxXUV9x9brU1DhZn v3, approved with the
+    wake-up task). Stage 1 done (branch `feat/wake-up-alarms`): `Alarm` type, `src/lib/alarms.ts`
+    (next ring, a week of rings, repeat names; tested), store `alarms` + `saveAlarm/deleteAlarm/
+    setAlarmEnabled` (persisted), screens `/alarms` (list, switch, swipe to delete) and `/alarms/edit`
+    (modal: time wheel `src/components/alarms/time-wheel.tsx`, Repeat / Label / Who / Sound pages,
+    Reply to wake up, Snooze, Delete), a Bedtime "Alarms" row open to every plan, and
+    `src/notifications/alarms.ts` (local notifications with an `alarm:` id, an Android `alarms`
+    channel, never cleared on open, re-synced on every change and open; they ring with the app open).
+    Next, stage 2: the ringing screen with the wake-up task (reply of 3+ words in that chat turns it
+    off, that reply is free, 3 snoozes, hold 3 s to turn off) and our own 5 melodies. Stage 3: a real
+    alarm in a development build (AlarmKit on iOS 26+, exact alarm + full-screen ring on Android).
+    Also asked: redesign the Bedtime screen in the same style (prototype first).
+    Gotcha: a stale `expo start -c` on port 8082 (PID 31720 on 2026-10-13) keeps rewriting
+    `.expo/types/router.d.ts` with `/../lib/...` paths and breaks `tsc`; delete the file and restart
+    your own server before `npx tsc --noEmit`.
 13. [ ] Photo Booth makes and keeps a real picture (Pro pays for it).
 14. [ ] Reply-language lock: the character always answers in the user's language.
 15. [ ] Dark mode.

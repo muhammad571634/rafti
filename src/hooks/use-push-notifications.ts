@@ -3,6 +3,7 @@ import { useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
+import { syncAlarms } from '@/notifications/alarms';
 import { notificationsModule } from '@/notifications/native';
 import {
   askIfNeverAsked,
@@ -42,6 +43,9 @@ export function usePushNotifications() {
     const comeBack = async () => {
       (await deliveredPushes()).forEach(land);
       await clearPushes();
+      // Repeating alarms are handed over a week at a time; every open tops them up.
+      const { alarms, characters } = useAppStore.getState();
+      await syncAlarms(alarms, characters);
     };
     const leave = () => void syncPushes(useAppStore.getState());
 
@@ -54,11 +58,16 @@ export function usePushNotifications() {
     N.clearLastNotificationResponse();
 
     const tapped = N.addNotificationResponseReceivedListener(open);
+    // Any change to the alarms (add, edit, switch, delete) goes to the OS at once.
+    const alarmsChanged = useAppStore.subscribe((next, prev) => {
+      if (next.alarms !== prev.alarms) void syncAlarms(next.alarms, next.characters);
+    });
     const state = AppState.addEventListener('change', (next) => {
       if (next === 'active') void comeBack();
       else if (next === 'background') leave();
     });
     return () => {
+      alarmsChanged();
       tapped.remove();
       state.remove();
     };

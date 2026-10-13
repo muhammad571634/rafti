@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -7,6 +8,8 @@ import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, BrandArt, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
+import { alarmTime, uses12Hour } from '@/lib/alarm-format';
+import { nextAlarmAt } from '@/lib/alarms';
 import { callClock, shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
@@ -28,6 +31,15 @@ export default function BedtimeScreen() {
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
   const pro = useAppStore((s) => hasPro(s.wallet.subscription, Date.now()));
+  const router = useRouter();
+  // The wake-up alarm is for every plan: the row opens Alarms without the Pro lock.
+  const alarms = useAppStore((s) => s.alarms);
+  const nextAlarm = useMemo(() => {
+    const now = new Date();
+    const on = alarms.filter((a) => a.enabled).map((a) => ({ a, at: nextAlarmAt(a, now) }));
+    on.sort((x, y) => x.at.getTime() - y.at.getTime());
+    return on[0]?.a;
+  }, [alarms]);
 
   const known = useMemo(
     () => characters.filter((c) => c.voiceReady && conversations.some((v) => v.characterId === c.id)),
@@ -165,6 +177,27 @@ export default function BedtimeScreen() {
             );
           })}
         </View>
+
+        <PressableScale
+          style={styles.alarmRow}
+          scaleTo={0.98}
+          accessibilityRole="button"
+          accessibilityLabel={t('alarms.entry')}
+          onPress={() => router.push('/alarms')}>
+          <Ionicons name="alarm-outline" size={20} color={colors.white} />
+          <Txt variant="bodyStrong" color={colors.white} style={styles.alarmLabel}>
+            {t('alarms.entry')}
+          </Txt>
+          {nextAlarm ? (
+            <Txt variant="smallStrong" color={SOFT_WHITE}>
+              {(() => {
+                const { time, period } = alarmTime(nextAlarm.hour, nextAlarm.minute, uses12Hour());
+                return period ? `${time} ${t(`alarms.${period}`)}` : time;
+              })()}
+            </Txt>
+          ) : null}
+          <Ionicons name="chevron-forward" size={18} color={SOFT_WHITE} />
+        </PressableScale>
       </ScrollView>
 
       {/* Action bar on the night canvas: one button and what happens next. */}
@@ -238,6 +271,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   timerOn: { backgroundColor: 'rgba(255,255,255,0.16)', borderColor: colors.white },
+  alarmRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    minHeight: 56,
+    marginTop: space.xl,
+    paddingHorizontal: space.lg,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+  },
+  alarmLabel: { flex: 1 },
   actionBar: {
     gap: space.sm,
     paddingHorizontal: space.lg,

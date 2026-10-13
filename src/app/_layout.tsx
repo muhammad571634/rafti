@@ -51,6 +51,7 @@ export default function RootLayout() {
             options={{ animation: 'fade', presentation: 'fullScreenModal', gestureEnabled: false }}
           />
           <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
           {/* A swipe must not end a date by accident; the close button asks first. */}
           <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />

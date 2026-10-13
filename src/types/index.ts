@@ -458,3 +458,29 @@ export interface ShellPack {
   /** The pack most people pick: pre-selected in the store. */
   popular?: boolean;
 }
+
+/** Our own melodies for the wake-up alarm (assets/sounds/alarms); no licensed music. */
+export type AlarmSound = 'morningTide' | 'shellChimes' | 'seaBreeze' | 'softBells' | 'lighthouse';
+
+/** A wake-up alarm (Bedtime → Alarms), for every plan. Times are the phone's local time. */
+export interface Alarm {
+  id: string;
+  /** 0-23 */
+  hour: number;
+  /** 0-59 */
+  minute: number;
+  /** Days it repeats, 0 = Sunday … 6 = Saturday; empty = rings once. */
+  repeat: number[];
+  /** Empty = "Alarm". */
+  label: string;
+  /** The friend who wakes you; none = melody only. */
+  characterId?: string;
+  /** The friend's recorded wake-up line plays with the melody. */
+  voice: boolean;
+  sound: AlarmSound;
+  /** Wake-up task: a real reply in that friend's chat turns the alarm off. */
+  replyToWake: boolean;
+  snooze: boolean;
+  enabled: boolean;
+  createdAt: string;
+}

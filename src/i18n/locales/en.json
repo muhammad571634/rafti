@@ -717,6 +717,50 @@
     "hearWhisper": "Hear {{name}} whisper",
     "sampleLine": "Close your eyes. I'm right here."
   },
+  "alarms": {
+    "title": "Alarms",
+    "entry": "Alarms",
+    "add": "Add Alarm",
+    "edit": "Edit Alarm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "delete": "Delete",
+    "deleteAlarm": "Delete Alarm",
+    "empty": "No alarms",
+    "repeat": "Repeat",
+    "label": "Label",
+    "who": "Who wakes you",
+    "sound": "Sound",
+    "replyToWake": "Reply to wake up",
+    "snooze": "Snooze",
+    "defaultLabel": "Alarm",
+    "never": "Never",
+    "everyDay": "Every day",
+    "weekdays": "Weekdays",
+    "weekends": "Weekends",
+    "everyDayName": "Every {{day}}",
+    "nobody": "Nobody",
+    "theirVoice": "Their voice",
+    "saysGoodMorning": "{{name}} says good morning",
+    "voiceOff": "Off",
+    "melody": "Melody",
+    "am": "AM",
+    "pm": "PM",
+    "sounds": {
+      "morningTide": "Morning Tide",
+      "shellChimes": "Shell Chimes",
+      "seaBreeze": "Sea Breeze",
+      "softBells": "Soft Bells",
+      "lighthouse": "Lighthouse"
+    },
+    "wakeLine": "Good morning, sleepyhead. Time to get up ☀️",
+    "ringing": "Time to get up",
+    "hour": "Hour",
+    "minute": "Minute",
+    "period": "AM or PM",
+    "toggle": "Alarm {{time}}"
+  },
   "board": {
     "title": "Message board",
     "empty": "The board is empty",
@@ -1059,7 +1103,8 @@
       "messages": "Messages",
       "calls": "Calls",
       "reminders": "Plan reminders",
-      "gifts": "Gifts and spins"
+      "gifts": "Gifts and spins",
+      "alarms": "Alarms"
     }
   },
   "notifications": {

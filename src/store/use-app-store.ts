@@ -89,6 +89,7 @@ import {
 import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
+  Alarm,
   DateRecord,
   BoardPost,
   BoardStyleId,
@@ -301,6 +302,13 @@ interface AppState {
   blockCharacter: (characterId: string) => void;
   unblockCharacter: (characterId: string) => void;
 
+  /* wake-up alarms (Bedtime → Alarms), for every plan */
+  alarms: Alarm[];
+  /** Adds a new alarm (no id yet) or replaces the one with the same id; it is switched on. */
+  saveAlarm: (alarm: Omit<Alarm, 'id' | 'createdAt' | 'enabled'> & { id?: string }) => string;
+  deleteAlarm: (id: string) => void;
+  setAlarmEnabled: (id: string, enabled: boolean) => void;
+
   /* profile */
   updateProfile: (patch: ProfilePatch) => void;
   /** Wipes everything on this device and starts over at onboarding. */
@@ -370,6 +378,7 @@ type PersistedKeys =
   | 'dates'
   | 'reports'
   | 'blockedIds'
+  | 'alarms'
   | 'daily'
   | 'settings';
 
@@ -520,6 +529,7 @@ export const useAppStore = create<AppState>()(
       dates: [],
       reports: [],
       blockedIds: [],
+      alarms: [],
       daily: initialDaily,
       settings: initialSettings,
 
@@ -1169,6 +1179,20 @@ export const useAppStore = create<AppState>()(
 
       /* ── profile ──────────────────────────────────────────────────────── */
 
+      saveAlarm: ({ id, ...fields }) => {
+        const existing = id ? get().alarms.find((a) => a.id === id) : undefined;
+        if (existing) {
+          set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...fields, enabled: true } : a)) }));
+          return existing.id;
+        }
+        const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: new Date().toISOString() };
+        set((s) => ({ alarms: [...s.alarms, alarm] }));
+        return alarm.id;
+      },
+      deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id) })),
+      setAlarmEnabled: (id, enabled) =>
+        set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, enabled } : a)) })),
+
       updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
 
       deleteAccount: () => {
@@ -1642,6 +1666,7 @@ export const useAppStore = create<AppState>()(
         dates: s.dates,
         reports: s.reports,
         blockedIds: s.blockedIds,
+        alarms: s.alarms,
         daily: s.daily,
         settings: s.settings,
       }),
