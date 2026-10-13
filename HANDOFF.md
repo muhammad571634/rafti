@@ -16,7 +16,9 @@ Logic
    `router.replace('/onboarding')` for any route outside onboarding; covers new routes without
    listing them). Checked on web: `/store/shell`, `/character/c_kai`, `/chat/...` go to onboarding;
    an onboarded user opens them as before.
-2. [ ] Plan memories with an absolute date ("Exam - Thu, Oct 15"), not "the day after tomorrow".
+2. [x] Plan memories with an absolute date ("Exam - Thu, Oct 15"), not "the day after tomorrow".
+   Done: `planMemoryLine` (`src/lib/plan-memory.ts`, tested) writes "Exam - Wed, Oct 14, 17:00.";
+   the chat reply still says "tomorrow". Old memories keep their old text.
 3. [ ] Memories: edit a memory's text (prototype first).
 4. [ ] Message storage: cap or move messages out of the one AsyncStorage key (~2 MB Android limit).
 5. [ ] Hide "public" in Create character until moderation (business-plan: no UGC at launch).

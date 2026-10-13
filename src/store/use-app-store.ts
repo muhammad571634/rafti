@@ -8,6 +8,7 @@ import { pickSeeded } from '@/lib/seeded';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
+import { planMemoryLine } from '@/lib/plan-memory';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -571,7 +572,7 @@ export const useAppStore = create<AppState>()(
               },
             ],
           }));
-          get().addMemory(conversation.characterId, `${plan.title} - ${plan.when}.`, 'chat');
+          get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
           addMoment(set, conversation.characterId, 'plan', { title: plan.title });
           reply = scheduleAck(plan.title, plan.when, !!plan.time);
         }
