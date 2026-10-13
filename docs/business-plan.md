@@ -1,13 +1,16 @@
-# Rafti biznes rejasi (2026-10-09)
+# Rafti biznes rejasi (2026-10-09, kredit modeli bo'yicha yangilangan 2026-10-13)
 
 Holat: founder rejasi. Tariflar va bepul tarif foydalanuvchi tomonidan tasdiqlangan (`backend-plan.md` §13–15).
+2026-10-13 dan kredit modeli amalda (`backend-plan.md` §15.10–15.12): §0, §4, §5, §10 va §12 shunga moslangan.
 Bozor bo'yicha raqamlar internetdan olingan va asosan ikkilamchi manbalardan (blog, agregator). Ularni "yo'nalish"
 deb tushunish kerak. Manbalar oxirida.
 
 ## 0. Qisqacha
 
-- **Asosiy daromad manbai — obuna** (Basic, Quarterly, Pro va yangi yillik reja). Maqsad: daromadning 70–80%.
-- **Ikkinchi manba — chig'anoq.** Qo'shimcha daqiqalar, date, foto, secret note va mavsumiy lahzalar. Maqsad: 15–25%.
+- **Asosiy daromad manbai — obuna** (Basic, Pro va Pro yillik). Har xabar hamma uchun 1 chig'anoq turadi; reja
+  har oy chig'anoq va imkoniyatlar beradi. Maqsad: daromadning 70–80%.
+- **Ikkinchi manba — chig'anoq paketlari.** Xabarlar, date, secret note, ovoz klonlash va Pro'ga qo'shimcha
+  daqiqalar. Maqsad: 15–25%.
 - **Uchinchi manba — ixtiyoriy reklama.** 5% dan kam, faqat bepul tarifni moliyalash uchun.
 - **Birinchi bozor — ingliz tili.** Avval Kanada, Avstraliya va Yangi Zelandiyada sinov ishga tushiriladi, keyin AQSh
   va Buyuk Britaniya. MDH bozoriga keyinroq, Telegram orqali chiqiladi.
@@ -17,7 +20,7 @@ deb tushunish kerak. Manbalar oxirida.
   - halol iqtisod;
   - AI companion qonunlariga mos xavfsizlik;
   - 40 personajli 4 ta "tirik dunyo".
-- **Zararsizlik nuqtasi:** 10 ming MAU bo'lganda pullik foydalanuvchi ulushi ~1.8% bo'lsa, LLM va server xarajati
+- **Zararsizlik nuqtasi:** 10 ming MAU bo'lganda pullik foydalanuvchi ulushi ~2% bo'lsa, LLM va server xarajati
   qoplanadi (marketing hisobga olinmagan).
 - **Marketing avval organik bo'ladi.** Pullik reklama retention va konversiya o'lchangandan keyin boshlanadi.
 
@@ -101,40 +104,50 @@ chiqmaydi.
 
 ### 4.1 Obuna — asosiy manba (maqsad: 70–80%)
 
-| Reja | Narx | Tarkibi (§13.3 da tasdiqlangan) |
-|---|---|---|
-| Basic | $9.99 / 30 kun | Cheklovsiz chat*, qo'ng'iroq 60 daq/oy, ovozli javob 30 daq/oy, to'liq xotira |
-| Quarterly | $24.99 / 90 kun | Basic bilan bir xil, 90 kun uchun: qo'ng'iroq 150 daq, ovozli javob 90 daq |
-| Pro | $29.99 / 30 kun | Qo'ng'iroq 180 daq/oy, ovozli javob 120 daq/oy, eng chuqur xotira |
-| **Yillik (yangi, founder qarori)** | **$79.99 / yil** | Basic bilan bir xil; oylikka nisbatan ~33% arzon |
+Kredit modeli (founder qarori, 2026-10-13, `backend-plan.md` §15.10): **har xabar 1 chig'anoq, hamma uchun**,
+obunachilar ham. "Cheklovsiz chat" va kuniga 300 xabarlik fair use bekor qilingan. Reja chig'anoqni har oy beradi,
+u yonmaydi.
 
-*Foydalanish shartlarida kuniga 300 xabar chegarasi bor. Bepul sinov: Basic uchun 3 kun (tasdiqlangan).
+| Reja | Narx | Tarkibi |
+|---|---|---|
+| Bepul | $0 | Kuniga ~40 bepul chig'anoq (check-in, yarim tunda yonadi); bir martalik xush kelibsiz sovg'asi 100 (yonmaydi); har personajga 20 ta ochiq xotira, qolgani qulflangan; jonli qo'ng'iroq o'rniga personajning ovozli xati |
+| Basic | $9.99 / oy | 2 000 chig'anoq/oy, hamma xotira ochiq, faqat chat (qo'ng'iroq, ovozli javob va surat yo'q) |
+| Pro | $29.99 / oy | 5 000 chig'anoq/oy, 3 soat qo'ng'iroq, 2 soat ovozli javob, 30 ta Photo Booth surati, Bedtime, yangi personajlar 7 kun oldin |
+| **Pro yillik** | **$239.99 / yil** (= $20/oy, 33% tejash) | Pro bilan bir xil; chig'anoq, daqiqa va suratlar har 30 kunda beriladi. Ekranda oldindan tanlangan |
+
+- **Bepul sinov:** Pro yillik uchun 3 kun, bir hisobga bir marta. Sinovda 10 daqiqa qo'ng'iroq, 10 daqiqa ovozli
+  javob va 3 ta surat bor; reja chig'anoqlari birinchi to'langan oydan boshlanadi.
+- **Xotira sifati hamma rejada bir xil** (§15.8). Farq faqat ochiq xotiralar sonida: bepulda 20 ta, rejada hammasi.
+- Basic yillik va Quarterly olib tashlangan.
 
 Yillik reja nega kerak:
 - pul oldindan keladi;
 - do'kon yillik rejalarni yaxshi ko'rsatadi.
 
 RevenueCat ma'lumoti bo'yicha yillik obunani bekor qilganlarning faqat 5% i qaytadi va bekor qilishlarning 35% i
-birinchi oyga to'g'ri keladi. Shuning uchun yillik reja birinchi kundan emas, birinchi hafta faolligidan keyin yoki
-sinov tugaganda taklif qilinadi.
+birinchi oyga to'g'ri keladi. Shuning uchun Pro yillik sinov bilan taklif qilinadi: 3 kun ichida foydalanuvchi
+qo'ng'iroq, Bedtime va suratlarni sinab ko'radi.
 
 ### 4.2 Chig'anoq — ikkinchi manba (maqsad: 15–25%)
 
-**Paketlar:** $0.99–14.99 (hozirgi narxlar). Bir martalik boshlang'ich paket ham bo'ladi: birinchi xarid uchun
-$0.99 ga ~300 chig'anoq.
+**Paketlar:** 50 / $0.99, 300+20 / $4.99, 500+60 / $6.99, 1 200+200 / $14.99. Birinchi xaridgacha bir martalik
+boshlang'ich paket bor: 300 chig'anoq / $0.99.
 
 **Nimaga sarflanadi:**
 
 | Narsa | Narx |
 |---|---|
-| Qo'shimcha qo'ng'iroq | 10 daqiqa = 120 chig'anoq |
-| Qo'shimcha ovozli javob | 10 daqiqa = 100 chig'anoq |
+| Xabar (matn yoki ovozli xabar) | 1 |
+| Qo'shimcha qo'ng'iroq (faqat Pro) | 10 daqiqa = 120 chig'anoq |
+| Qo'shimcha ovozli javob (faqat Pro) | 10 daqiqa = 100 chig'anoq |
 | Date | Joy narxi |
-| Photo booth | 8 |
 | Secret note | 3 |
 | Board | 2 |
 | Ovoz klonlash | 60 |
 | Mavsumiy lahza to'plamlari (maxsus date, sahna, kiyim) | To'g'ridan-to'g'ri xarid, tasodif yo'q |
+
+**Chig'anoqqa sotilmaydi:** Photo Booth surati, Bedtime va yangi personajga erta kirish. Ular faqat Pro'da bor,
+shunda chig'anoq asosan chatga ketadi (~$0.0006 xarajat).
 
 ### 4.3 Reklama — uchinchi manba (5% dan kam)
 
@@ -144,37 +157,56 @@ $0.99 ga ~300 chig'anoq.
 
 ### 4.4 Keyingi manbalar (2-bosqich)
 
-- **AQShda veb orqali to'lov.** Hozir Apple havola orqali vebga yuborilgan xariddan komissiya olmaydi. Sud 5–15%
-  stavka belgilashi mumkin. Google AQShda bu dastur uchun to'lovni 2026-10-01 dan boshladi. Store komissiyasi
-  o'rniga Stripe ~3% oladi, natijada sof daromad 10–25% oshadi.
+- **AQShda veb orqali to'lov** (§15.11). Launch'dan keyin: Stripe + Stripe Tax yoki Paddle kabi merchant of record.
+  Store komissiyasi (15–30%) o'rniga ~3–5% to'lanadi, sof daromad 10–25% oshadi. Apple va Google qoidalari launch
+  paytida qayta tekshiriladi.
 - **MDH uchun Telegram Mini App.** To'lov Telegram Stars orqali, chunki Rossiyada do'kon to'lovlari ishlamaydi.
   Backend o'sha-o'sha bo'ladi.
-- **Mintaqaviy narx.** Arzon bozorlarda Basic ~$5–7, fair-use chegarasi mintaqaga moslanadi.
-- **Kreator dasturi.** Foydalanuvchilar yaratgan personajlardan daromad ulushi. Moderatsiya tayyor bo'lgandan keyin.
+- **Mintaqaviy narx** (§15.12). Soliq narx ichida bo'lgan joylarda (Avstraliya, Yangi Zelandiya, Britaniya, Yevropa)
+  narx bir pog'ona yuqori qo'yiladi, sof tushum AQSh bilan teng qolishi uchun (masalan, A$16.99). Arzon bozorlarda
+  Apple va Google narx darajalari bilan arzonroq narx.
+- **Kreator dasturi.** Foydalanuvchilar yaratgan personajlardan daromad ulushi. Moderatsiya tayyor bo'lgandan keyin
+  (hozir ilovada ommaviy personaj yaratish yopiq).
 
 ## 5. Unit iqtisodi va moliyaviy model
 
-Xarajat birliklari §13.2 da (2027 narxlari bilan). Model uchun taxminlar:
+Xarajat birliklari `backend-plan.md` §13.2 da (2027 narxlari bilan): xabar ≈ $0.0006, ovozli javob ≈ $0.018/daqiqa,
+qo'ng'iroq (kaskad) ≈ $0.015/daqiqa. Jonli audio qo'ng'iroq narxi B5'da o'lchanadi; qimmat chiqsa, 3 soatlik kvota
+serverdan kamaytiriladi.
+
+**Bitta to'lovchidan oylik sof foyda** (15% do'kon, 3% qaytarish, 1% IT Park va AI xarajatidan keyin; §15.10):
+
+| Reja | Sof tushum (AI dan oldin) | Sof foyda: og'ir → oddiy foydalanuvchi |
+|---|---|---|
+| Basic | ≈ $8.1 | ≈ $6–7 |
+| Pro | ≈ $24.3 | ≈ $13.5–20 |
+| Pro yillik | ≈ $16.2 / oy | ≈ $5.3–12 |
+
+Model uchun taxminlar:
 
 | Taxmin | Qiymat |
 |---|---|
-| To'lovchilar ulushi tariflar bo'yicha | Basic 60%, Yillik 15%, Quarterly 10%, Pro 15% |
-| Bir to'lovchidan oylik sof daromad (15% komissiyadan keyin) | Obuna ≈ $10.5 + chig'anoq ≈ $1.5 → **≈ $12** |
-| Bir to'lovchiga oylik xarajat | ≈ **$3.9** (30% i "og'ir" foydalanuvchi deb ehtiyotkor hisob) |
-| Bir bepul MAU ga oylik xarajat | ≈ **$0.12** |
+| To'lovchilar ulushi rejalar bo'yicha | Basic 55%, Pro yillik 30%, Pro 15% |
+| Bir to'lovchidan oylik sof tushum | Obuna ≈ $13 + chig'anoq paketlari ≈ $1.2 → **≈ $14.2** |
+| Bir to'lovchidan oylik sof foyda (AI xarajatidan keyin) | ≈ **$9.7** (har reja oralig'ining o'rtasi bilan) |
+| Bir bepul MAU ga oylik xarajat | ≈ **$0.17** (§13.5; kuniga ~40 bepul chig'anoq, hammasi ishlatilmaydi) |
 | Doimiy xarajat | ≈ **$300/oy** (server, baza, persona keshi, domen va boshqalar) |
 
-**Zararsizlik nuqtasi:** `MAU × (p × 8.22 − 0.12) = 300`. Bundan:
-- 10 ming MAU bo'lganda **p ≈ 1.8%**;
-- 50 ming MAU bo'lganda **p ≈ 1.5%**.
+**Zararsizlik nuqtasi:** `MAU × (p × 9.87 − 0.17) = 300` (9.87 = to'lovchi foydasi + uning bepul ulushi). Bundan:
+- 10 ming MAU bo'lganda **p ≈ 2.0%**;
+- 50 ming MAU bo'lganda **p ≈ 1.8%**.
 
-Oylik daromad (va foyda; marketing va soliqlar hisobga olinmagan):
+Oylik sof tushum (va foyda; marketing va soliqlar hisobga olinmagan):
 
 | MAU | p = 2% | p = 3% | p = 5% |
 |---|---|---|---|
-| 10 000 | $2 400 ($144) | $3 600 ($966) | $6 000 ($2 610) |
-| 50 000 | $12 000 ($1 920) | $18 000 ($6 030) | $30 000 ($14 250) |
-| 100 000 | $24 000 ($4 140) | $36 000 ($12 360) | $60 000 ($28 800) |
+| 10 000 | $2 840 (−$26) | $4 260 ($961) | $7 100 ($2 935) |
+| 50 000 | $14 200 ($1 070) | $21 300 ($6 005) | $35 500 ($15 875) |
+| 100 000 | $28 400 ($2 440) | $42 600 ($12 310) | $71 000 ($32 050) |
+
+Eski modeldan farq: obunachi ham har xabar uchun to'laydi, shuning uchun og'ir foydalanuvchi zarar keltirmaydi
+(eski "cheklovsiz chat"da eng katta xavf shu edi). Pro yillik eng past oylik foyda beradi, lekin pulni oldindan
+olib keladi va retention'ni oshiradi.
 
 **Taqqoslash uchun RevenueCat ma'lumotlari:**
 - freemium ilovalarda yuklab olishdan 35 kun ichida to'lovga o'tish medianasi 2.1%, qattiq paywall bilan 10.7%;
@@ -185,10 +217,10 @@ Rafti uchun maqsad: MAU ning **3%** i to'lovchi.
 **LTV va CAC:**
 - TikTok'da bitta o'rnatish (CPI) $1.75–4 turadi.
 - 3% konversiyada bitta to'lovchi $58–133 ga tushadi.
-- Bitta to'lovchidan ~5 oyda ~$60 sof daromad keladi.
+- Bitta to'lovchidan ~5 oyda ~$48 sof foyda keladi (Pro yillik to'lovchilarda pul oldindan keladi).
 
-Demak pullik reklama boshida zararsiz chegarada bo'ladi. Shuning uchun avval organik o'sish, pullik reklama faqat
-quyidagi maqsadlarga yetilgandan keyin:
+Demak pullik reklama boshida zararli bo'ladi. Shuning uchun avval organik o'sish, pullik reklama faqat quyidagi
+maqsadlarga yetilgandan keyin:
 - D1 ≥ 35%;
 - D7 ≥ 15%;
 - D30 ≥ 8%;
@@ -246,7 +278,7 @@ quyidagi maqsadlarga yetilgandan keyin:
   - ilova ichidan hisobni o'chirish;
   - xotirani eksport qilish;
   - maxfiylik siyosati;
-  - fair-use bandi bor foydalanish shartlari;
+  - foydalanish shartlari (har xabar 1 chig'anoq, reja chig'anoqlari va daqiqalari, sinov qoidasi);
   - model nomlari hech qayerda ko'rinmaydi (§13.6).
 
 ## 8. Founder logistikasi (O'zbekistondan)
@@ -299,7 +331,7 @@ Yakka founder va AI yordamida soft launch'gacha taxminan **10–14 hafta** ketad
   - sinovdan to'lovga o'tish ≥ 25%;
   - to'lovchilar MAU ning ≥ 3% i.
 - **Pul:**
-  - sof ARPPU ≥ $10;
+  - sof ARPPU ≥ $12;
   - qaytarishlar (refund) ≤ 4%;
   - bitta MAU uchun LLM xarajati ≤ $0.15;
   - yalpi marja ≥ 60%.
@@ -321,7 +353,8 @@ Yakka founder va AI yordamida soft launch'gacha taxminan **10–14 hafta** ketad
 
 **Founder sifatida qabul qilingan qarorlar:**
 1. Model: obuna asosida gibrid, chig'anoq ikkinchi, reklama faqat ixtiyoriy.
-2. Yillik reja $79.99 qo'shiladi.
+2. Kredit modeli (2026-10-13): Basic $9.99, Pro $29.99, Pro yillik $239.99; har xabar 1 chig'anoq. Avvalgi
+   "yillik $79.99" va Quarterly bekor qilingan.
 3. Avval ingliz tilidagi bozorlar, MDH keyin Telegram orqali.
 4. NSFW, gacha va boshida UGC bozori yo'q.
 5. To'lov tartibi: IAP (RevenueCat) → AQShda veb to'lov → Telegram Stars.

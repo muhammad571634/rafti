@@ -39,7 +39,10 @@ Logic
    memories (`isActiveMemory`). Backend note: for a free user pass only `memoryAccess(...).open` to
    the builder, so locked memories never reach the prompt.
 Docs
-7. [ ] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
+7. [x] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
+   Done: §0, §4 (plans table with Free, trial, packs, what shells buy and what is Pro only), §5 (net per
+   plan from §15.10, 55/30/15 mix, ~$14.2 net revenue and ~$9.7 profit per payer, free MAU $0.17,
+   break-even ~2% at 10k MAU, new revenue table), KPI ARPPU >= $12, decision 2, terms line.
 8. [ ] README "How the app behaves" to the current rules.
 9. [ ] Legal: memory export; account deletion that will also cover server data.
 From BIMOBIMO (our own look and words)
