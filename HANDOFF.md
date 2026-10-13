@@ -46,7 +46,7 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - The picker previews the current wallpaper above the image-only grid. Chat art now covers the message list and composer area with a light readability veil; message behavior, header controls, and Today are unchanged.
 - The 30 full-size source PNGs stay in the prototype wallpaper folder; the app uses visually checked JPEG copies in `assets/images/chat-wallpapers/` (about 6.1 MB total instead of 56.2 MB).
 - `npx tsc --noEmit` passes; all 30 image files and accessibility labels are present. Metro responds on ports 8081 and 8082, but no phone is attached to this local session for a screenshot check.
-- Still uncommitted and unpushed on the current branch `feat/credit-plans`.
+- Committed on `feat/credit-plans` (e151cf8) and merged into local-work with the credit plans. Free-plan locks checked on web: call button and call screen open the Pro sheet, a message costs 1 shell and the reply is text only.
 
 ### 0. Sync the local folder first
 
