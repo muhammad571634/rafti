@@ -9,6 +9,7 @@ import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard'
 import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
+import { creditFree } from '@/economy/shells';
 import {
   canRing,
   consumeMinutes,
@@ -726,7 +727,11 @@ export const useAppStore = create<AppState>()(
           user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
-        get().addShells(WELCOME_SHELLS, 'welcome');
+        // The welcome gift is free shells too: it burns at midnight like the rest.
+        set((s) => ({
+          wallet: creditFree(s.wallet, WELCOME_SHELLS, todayKey()),
+          ledger: log(s.ledger, WELCOME_SHELLS, 'welcome'),
+        }));
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });
@@ -891,7 +896,7 @@ export const useAppStore = create<AppState>()(
         const amount = rollCheckIn(day);
         set((s) => ({
           daily: { ...s.daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
-          wallet: { ...s.wallet, shells: s.wallet.shells + amount, free: { day: today, amount } },
+          wallet: creditFree(s.wallet, amount, today),
           ledger: log(s.ledger, amount, 'daily'),
           // The owner asked for no check-in popup (2026-10-09): the shells arrive quietly,
           // and History shows them. Setting `dailyReward: { amount, day }` here brings the
@@ -909,9 +914,10 @@ export const useAppStore = create<AppState>()(
         if (watched >= MAX_ADS_PER_DAY) return 0;
 
         // Real builds credit this from the rewarded-ad SDK callback.
+        get().expireFreeShells();
         set((s) => ({
           daily: { ...s.daily, adsDay: today, adsWatched: watched + 1 },
-          wallet: { ...s.wallet, shells: s.wallet.shells + AD_REWARD },
+          wallet: creditFree(s.wallet, AD_REWARD, today),
           ledger: log(s.ledger, AD_REWARD, 'ad'),
         }));
         return AD_REWARD;
@@ -920,9 +926,10 @@ export const useAppStore = create<AppState>()(
       claimShareReward: () => {
         const today = todayKey();
         if (get().daily.shareDay === today) return 0;
+        get().expireFreeShells();
         set((s) => ({
           daily: { ...s.daily, shareDay: today },
-          wallet: { ...s.wallet, shells: s.wallet.shells + SHARE_REWARD },
+          wallet: creditFree(s.wallet, SHARE_REWARD, today),
           ledger: log(s.ledger, SHARE_REWARD, 'share'),
           shareReward: SHARE_REWARD,
         }));
@@ -938,9 +945,10 @@ export const useAppStore = create<AppState>()(
         if (user.redeemedInvite) return 'used';
         if (code === inviteCodeFor(user)) return 'own';
         // The server checks the code exists and credits the friend who sent it.
+        get().expireFreeShells();
         set((s) => ({
           user: { ...s.user, redeemedInvite: code },
-          wallet: { ...s.wallet, shells: s.wallet.shells + INVITE_REWARD },
+          wallet: creditFree(s.wallet, INVITE_REWARD, todayKey()),
           ledger: log(s.ledger, INVITE_REWARD, 'invite'),
         }));
         return 'ok';
@@ -959,6 +967,7 @@ export const useAppStore = create<AppState>()(
         const index = weightedIndex(WHEEL_WEIGHTS);
         const reward = WHEEL_SEGMENTS[index];
 
+        get().expireFreeShells();
         set((s) => ({
           daily: {
             ...s.daily,
@@ -966,7 +975,7 @@ export const useAppStore = create<AppState>()(
             spinsUsed: used + 1,
             ...(free ? {} : { adsDay: today, adsWatched: adsWatched + 1 }),
           },
-          wallet: { ...s.wallet, shells: s.wallet.shells + reward },
+          wallet: creditFree(s.wallet, reward, today),
           ledger: log(s.ledger, reward, 'spin'),
         }));
         return { index, reward };

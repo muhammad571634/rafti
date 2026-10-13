@@ -21,7 +21,8 @@ writing migrations (B0). Decisions are not changed here; open items are marked *
 
 The app's rule (`src/store/use-app-store.ts`: `claimDailyLogin`, `spendShells`, `expireFreeShells`; `docs/flows.md` F5):
 
-- Only the **daily check-in** credit is "free". Ads, spins, welcome, invite and share shells never expire.
+- **Every free credit** is free-bucket: daily check-in, wheel, ads, share, invite and the welcome gift
+  (owner decision 2026-10-13, built in `src/economy/shells.ts`). Only bought shells never expire.
 - Free shells are **spent first**; bought shells never expire.
 - Whatever free shells are left **expire at the user's local midnight**; History shows an `expired` line
   booked at that midnight.
@@ -33,8 +34,7 @@ Proposal for the server (append-only, like the rest of the ledger):
 - A pg-boss job at the user's local midnight (time zone from `bootstrap`, §14.3.6) writes the `expired` row.
 - Balance = sum of the ledger; `wallets.shells` is only a cache.
 
-**Decide:** should ad and spin shells also expire at midnight? Today they do not; §13.5 counts only the
-check-in (~40 a day) as the free share.
+Decided 2026-10-13: all free shells burn to zero at midnight, to push free users toward a plan.
 
 ## 3. Plan config still has memory tiers (§14.2)
 

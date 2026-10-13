@@ -240,6 +240,14 @@ npx tsc --noEmit                # must be clean
   never rung in the app; the real problem was the "Incoming call" push that led to nothing.
 - Checked on web: free → voice note in chat, no ring; Basic → `/call/incoming/<id>`, no voice note.
 
+### 0h. 2026-10-13 — all free shells burn at midnight (branch `feat/free-shells-expire`)
+
+- Owner decision (backend-plan §15.9): check-in, wheel, ads, share, invite and the welcome gift all go
+  into today's free bucket (`creditFree`, `src/economy/shells.ts`, tested) and burn to zero at midnight
+  (`expireFreeShells`, unchanged). Bought shells never expire. History copy: "Free shells are spent first…".
+- Checked on web: 150 free → 0 after midnight; 500 with 100 free → 400.
+- Open: memory on the free plan (owner leans to none; see the 2026-10-13 chat).
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

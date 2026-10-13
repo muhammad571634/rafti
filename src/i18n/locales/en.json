@@ -840,7 +840,7 @@
   "ledger": {
     "title": "History",
     "open": "Shells and call time history",
-    "rule": "Free daily shells are spent first and expire at midnight. Shells you buy never expire.",
+    "rule": "Free shells are spent first and expire at midnight. Shells you buy never expire.",
     "freeLeft_one": "{{count}} free shell left today",
     "freeLeft_other": "{{count}} free shells left today",
     "freeNone": "No free shells left today",
