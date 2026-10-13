@@ -48,6 +48,15 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - `npx tsc --noEmit` passes; all 30 image files and accessibility labels are present. Metro responds on ports 8081 and 8082, but no phone is attached to this local session for a screenshot check.
 - Committed on `feat/credit-plans` (e151cf8) and merged into local-work with the credit plans. Free-plan locks checked on web: call button and call screen open the Pro sheet, a message costs 1 shell and the reply is text only.
 
+### 0j. 2026-10-13 — free plan memory limit (branch `feat/free-memory-limit`, not merged)
+
+- Logic done: `src/economy/memory-limit.ts` (`FREE_MEMORY_LIMIT = 20`, `hasFullMemory`, `splitMemories`,
+  tested) and the store selector `memoryAccess`. Pinned first, then the newest 20 stay open; the oldest
+  lock first; locked memories stay saved and any plan or the trial opens them all.
+- Next: the Memories screen lock UI, waiting for the owner's pick on the prototype
+  https://claude.ai/artifact/CEexinhaHmUsATByxKJu7S (A list + meter + "Unlock with Basic", B sheet,
+  C optional chat line). Server side (backend-plan §15.10) must apply the same 20 to the AI prompt.
+
 ### 0. Sync the local folder first
 
 ```
