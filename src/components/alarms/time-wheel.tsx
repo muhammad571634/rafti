@@ -17,6 +17,40 @@ const ITEM = 36;
 const VISIBLE = 5;
 const PAD = ITEM * Math.floor(VISIBLE / 2);
 
+/** The three greys of a wheel, plus its band; light by default, `nightColors` on Bedtime. */
+export interface WheelTone {
+  text: string;
+  near: string;
+  far: string;
+  band: string;
+}
+
+const LIGHT: WheelTone = { text: colors.text, near: colors.textMuted, far: colors.textFaint, band: 'rgba(118,118,128,0.12)' };
+
+/** One column on its own (Bedtime's sleep timer): the same snap and band as the time wheel. */
+export function ValueWheel({
+  label,
+  values,
+  index,
+  onChange,
+  width = 160,
+  tone = LIGHT,
+}: {
+  label: string;
+  values: string[];
+  index: number;
+  onChange: (index: number) => void;
+  width?: number;
+  tone?: WheelTone;
+}) {
+  return (
+    <View style={styles.wheel}>
+      <View style={[styles.band, { backgroundColor: tone.band }]} pointerEvents="none" />
+      <Column label={label} values={values} index={index} onChange={onChange} width={width} align="center" tone={tone} />
+    </View>
+  );
+}
+
 /**
  * The iPhone alarm wheel: hour, minute and (on a 12-hour phone) AM / PM columns that snap
  * to a grey band in the middle. `hour` is always 0-23; the columns convert.
@@ -47,7 +81,7 @@ export function TimeWheel({
 
   return (
     <View style={styles.wheel}>
-      <View style={styles.band} pointerEvents="none" />
+      <View style={[styles.band, { backgroundColor: LIGHT.band }]} pointerEvents="none" />
       <Column
         label={t('alarms.hour')}
         values={hours.map((h) => (h12 ? String(h) : String(h).padStart(2, '0')))}
@@ -85,13 +119,15 @@ function Column({
   onChange,
   width,
   align,
+  tone = LIGHT,
 }: {
   label: string;
   values: string[];
   index: number;
   onChange: (index: number) => void;
   width: number;
-  align: 'flex-start' | 'flex-end';
+  align: 'flex-start' | 'flex-end' | 'center';
+  tone?: WheelTone;
 }) {
   const ref = useRef<ScrollView>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -148,7 +184,7 @@ function Column({
             <Txt
               style={[
                 styles.value,
-                { color: distance === 0 ? colors.text : distance === 1 ? colors.textMuted : colors.textFaint },
+                { color: distance === 0 ? tone.text : distance === 1 ? tone.near : tone.far },
               ]}>
               {value}
             </Txt>
@@ -168,7 +204,6 @@ const styles = StyleSheet.create({
     top: PAD,
     height: ITEM,
     borderRadius: 9,
-    backgroundColor: 'rgba(118,118,128,0.12)',
   },
   item: { height: ITEM, justifyContent: 'center', paddingHorizontal: 6 },
   value: { fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },

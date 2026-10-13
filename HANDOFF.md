@@ -71,7 +71,9 @@ From BIMOBIMO (our own look and words)
     Next, stage 2: the ringing screen with the wake-up task (reply of 3+ words in that chat turns it
     off, that reply is free, 3 snoozes, hold 3 s to turn off) and our own 5 melodies. Stage 3: a real
     alarm in a development build (AlarmKit on iOS 26+, exact alarm + full-screen ring on Android).
-    Also asked: redesign the Bedtime screen in the same style (prototype first).
+    Bedtime redrawn in the iOS Sleep look (owner's pick B; flows D7). `nightColors` in
+    `src/theme/colors.ts` holds every token for a dark canvas: dark mode (item 15) will reuse it.
+    The stale 8082 server was stopped on the owner's word (2026-10-14).
     Gotcha: a stale `expo start -c` on port 8082 (PID 31720 on 2026-10-13) keeps rewriting
     `.expo/types/router.d.ts` with `/../lib/...` paths and breaks `tsc`; delete the file and restart
     your own server before `npx tsc --noEmit`.

@@ -715,7 +715,11 @@
     "withPro": "Comes with Pro",
     "proTitle": "Bedtime comes with Pro",
     "hearWhisper": "Hear {{name}} whisper",
-    "sampleLine": "Close your eyes. I'm right here."
+    "sampleLine": "Close your eyes. I'm right here.",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "wakeUp": "Wake-up"
   },
   "alarms": {
     "title": "Alarms",

@@ -148,6 +148,45 @@ export const colors = {
   info: palette.blue,
 } as const;
 
+/**
+ * The night palette: every token of `colors`, re-tuned for a dark navy canvas. Bedtime uses it
+ * today (owner's pick, 2026-10-14: the iOS Sleep look); dark mode (work queue item 15) will hand
+ * it to every screen when the phone is in dark mode, so screens must read colours from tokens.
+ */
+export const nightColors: Record<keyof typeof colors, string> = {
+  ...colors,
+  bg: '#0E1230',
+  bgPlain: '#0E1230',
+  surface: '#1C2148',
+  surfaceAlt: '#252B57',
+  overlay: 'rgba(0,0,0,0.55)',
+  scrim: 'rgba(0,0,0,0.35)',
+  border: '#2B3160',
+  borderStrong: '#3A4178',
+  divider: '#232857',
+  text: '#F4F2FF',
+  textSecondary: '#A3A8C8',
+  textMuted: '#8389AE',
+  textFaint: '#5E6490',
+  primarySoft: '#4A2E1A',
+  primarySofter: '#33241C',
+  brandText: '#FFB27A',
+  accentSoft: '#163F3A',
+  accentBorder: '#1F5A52',
+  bondText: '#5FE0C4',
+  bondSoft: '#163F3A',
+  bubbleSelf: '#5A3A22',
+  bubbleSelfText: '#FFFFFF',
+  bubbleOther: '#1C2148',
+  bubbleOtherText: '#F4F2FF',
+  bubbleTranscript: 'rgba(28,33,72,0.92)',
+  bubbleTranscriptText: '#A3A8C8',
+  tabActive: '#F4F2FF',
+  tabInactive: '#8389AE',
+  dangerText: '#FF7A7A',
+  dangerSoft: '#4A1F24',
+};
+
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**
  * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each
