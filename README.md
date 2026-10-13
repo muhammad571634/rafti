@@ -17,30 +17,36 @@ Then press `a` (Android), `i` (iOS, macOS only), `w` (web) or scan the QR with E
 
 ```bash
 npm run typecheck   # tsc --noEmit
+npm test            # node:test unit tests (plans, memory limit, early access, ...)
 ```
 
 ## How the app behaves
 
-These rules mirror the reference app (BIMOBIMO / BEEMO AI) and live in
-`src/store/use-app-store.ts`.
+The structure starts from the reference app (BIMOBIMO); the rules are Rafti's own and live in
+`src/store/use-app-store.ts` and `src/economy/` (plans, memory limit, early access). The full
+economy is in `docs/backend-plan.md` §13–§15 and `docs/business-plan.md` §4–§5.
 
 | Rule | Where it shows |
 | --- | --- |
-| **Shells meter chat.** Sending a text, photo or voice note costs 1 shell. Listening, voice replies and calls are free. Members chat for free. Out of shells → paywall sheet (top up / free shells / membership). | Chat header badge, paywall sheet, store "What things cost" |
-| **Daily login reward.** First open of the day credits 60+ shells on a 7-day check-in ladder (60, 60, 70, 70, 80, 80, 120); missing a day restarts it. | Daily check-in card on launch, Free Gifts |
-| **Free Gifts.** One free Lucky Wheel spin a day (weighted odds, 100 is rare), plus 5 rewarded videos a day; extra spins use a video. | `/gifts` |
-| **Characters reach out first.** Morning (05–12) and night (20–02) the two closest bonds send a greeting, and the closest bond with a voice rings you once per slot ("Good-morning / Good-night call"). Each is a toggle in Profile, and per character in Chat Settings. | Unread badges, `/call/incoming/[id]` |
-| **Calls.** Incoming: accept / decline; unanswered rings become missed calls. Every call lands in Call History and as a line in the chat; minutes add intimacy. | `/call/[id]`, `/call/incoming/[id]` |
-| **Streaks & levels.** Chatting on consecutive days grows the streak; interactions add intimacy; crossing a threshold opens the level-up card. | Chat header, level-up modal, Us |
-| **Smart schedule.** "I have an exam tomorrow" becomes a plan; the character acknowledges it and reminds you on the day. | Us → Coming up, chat |
-| **Moments ([Us]).** Becoming friends, level-ups, calls over a minute, diary replies, secret notes, dates and photos are recorded. | Us → Our moments |
-| **Secret Note.** The character writes first ("Thinking..."), their note stays sealed until you write yours and Exchange (3 shells). | `/secret-note/[id]` |
-| **Heartbeat Diary.** Pages can be shared with a friend; they write back, and the first line becomes a memory. | `/diary`, Character Memories |
-| **Add Friend.** Find → profile → Add Friend opens a chat that starts with their greeting. Creating a character costs 60 shells (voice cloning) and needs a name, 3–5 voice clips ≤10 MB and a picture ≤2 MB. | `/find`, `/create-character` |
+| **Every message costs a shell, for everyone.** A text, photo or voice note costs 1 shell, plan members included (no unlimited chat). Out of shells → a sheet with three equal ways on: an ad or the spin, a shell pack, a plan. The typed message is kept. | Chat header badge, paywall sheet, Store → "What things cost" |
+| **Free shells burn at midnight.** The 7-day check-in credits 30, 30, 35, 35, 40, 40 and a day-7 surprise of 50–100, quietly on the first open; missing a day restarts it. Free shells are spent first and expire at 00:00. The one-time welcome gift (100), bought shells and plan shells never expire. | Store → History, Free Gifts |
+| **Plans.** Basic $9.99/month: 2,000 shells a month, chat only. Pro $29.99/month or Pro yearly $239.99: 5,000 shells a month, 3 h of calls, 2 h of voice replies, 30 Photo Booth pictures, Bedtime and new characters 7 days early. Plan shells arrive every 30 days and never burn. Pro yearly has a 3-day free trial (10 min calls, 10 min voice, 3 pictures, no plan shells), once per account. | Store → Plans, Profile → My plan |
+| **Pro-only features.** Calls, voice replies, Photo Booth pictures, Bedtime whispers and adding a new character in its first 7 days. Free and Basic users see a lock and the Pro sheet (calls and Bedtime play a short voice sample first). Pictures are never sold for shells. Pro can buy extra minutes with shells: 10 min of calls 120, 10 min of voice 100, valid 90 days. | Chat call button, `/call/[id]`, `/photo-booth`, `/bedtime`, Find "New" row |
+| **Memory.** Free users keep 20 open memories per character (pinned first, then the newest); the rest are saved but locked until any plan or the trial. Memory quality is the same on every plan. Memories can be added, pinned, edited and deleted; plans are remembered with the real date. | Character → Memories |
+| **Free Gifts.** One free Lucky Wheel spin a day, up to 5 rewarded videos a day, +50 for an invite code (6 a week), +6 once a day for sharing a call, board note or invite. | `/gifts` |
+| **Characters reach out first.** Morning and night the closest bonds send a greeting. Pro and the trial get a daily call from the chosen friend; free users get a voice note from the free voice lines instead. Toggles in Profile and per character. | Unread badges, `/call/incoming/[id]` |
+| **Safety.** Birth year (18+) is asked first and no screen opens before onboarding, deep links included. Every chat shows "AI character, not a real person" at the start and every 3 hours. A crisis message gets a helpline card; crisis text never becomes a memory, a plan or a push. | Onboarding, chat system lines |
+| **Streaks & levels.** Chatting on consecutive days grows the streak; interactions add closeness (levels 0–100 in 5 stages); crossing a level opens the level-up card. | Chat header, level-up card, Us |
+| **Smart schedule.** "I have an exam tomorrow at 17:00" becomes a plan; the character acknowledges it, reminds you before it (10 minutes before a timed plan, 08:00 otherwise) and asks how it went. | Us → calendar, chat |
+| **Moments ([Us]).** Becoming friends, level-ups, calls over a minute, diary replies, secret notes, dates and photos are recorded. | Us → moments |
+| **Secret Note.** The character writes first; their note stays sealed until you write yours and exchange (3 shells). | `/secret-note/[id]` |
+| **Heartbeat Diary.** The character writes a page the morning after a chat or a date; your pages can be shared with a friend, who writes back. | `/diary` |
+| **Add Friend.** Find → profile → Add Friend opens a chat that starts with their greeting. Creating a character is free with a stock voice; a cloned voice costs 60 shells. Creations are private until moderation exists. | `/find`, `/create-character` |
 
 Everything above is persisted with zustand `persist` + AsyncStorage, so it survives restarts.
-Work that was mid-flight when the app closed (a note being written, a diary reply) finishes
-on the next launch.
+The save keeps the newest 300 messages per chat (4,000 overall) and the newest 3,000 history
+lines, to stay under Android's ~2 MB limit for one key. Work that was mid-flight when the app
+closed (a note being written, a diary reply) finishes on the next launch.
 
 ## Screens
 
@@ -61,7 +67,9 @@ on the next launch.
 | Diary | Card deck (swipe to flip) | `src/app/diary/index.tsx` |
 | | Writer | `src/app/diary/write.tsx` |
 | Notes | Secret Note exchange | `src/app/secret-note/[id].tsx` |
-| Economy | Shell Store + membership | `src/app/store/shell.tsx` |
+| Economy | Store: Plans / Shells | `src/app/store/shell.tsx` |
+| | My plan (minutes left, top-ups) | `src/app/my-plan.tsx` |
+| | History (shells, call time) | `src/app/store/ledger.tsx` |
 | | Free Gifts (check-in, Lucky Wheel, videos) | `src/app/gifts.tsx` |
 | Modules | Dating, Photo Booth, Radio, Bedtime, Bulletin Board, Call History, Contacts, Profile | `src/app/*.tsx` |
 
@@ -109,12 +117,13 @@ assets/
 | Call audio and subtitles | `src/app/call/[id].tsx` | Realtime STT → LLM → TTS |
 | Voice notes | `VoiceSheet`, `VoiceBubble` | `expo-audio` recording / playback + upload |
 | Voice cloning | `create()` in `src/app/create-character.tsx` | Clone job (ElevenLabs / MiniMax / Fish Audio) |
-| Purchases, membership | `buy()`, `subscribe()` | StoreKit / Play Billing + server receipt check |
+| Purchases, plans, trial | `buy()`, `subscribe()`, `src/economy/plans.ts` | RevenueCat (StoreKit / Play Billing) + server receipt check |
 | Rewarded videos | `watchAd()` | AdMob rewarded SDK |
+| Chat context for the model | `buildStoryContinuityContext()` in `src/lib/story-continuity.ts` (not wired yet) | Server prompt builder; pass only open memories for free users |
 | Seed data | `src/mock/*` | API client |
 
-Move the shell, streak and intimacy rules to the server when it lands so the client
-cannot mint currency.
+Move the shell, plan, quota, streak and intimacy rules to the server when it lands so the client
+cannot mint currency or open Pro features.
 
 ## Before release
 

@@ -43,7 +43,11 @@ Docs
    Done: §0, §4 (plans table with Free, trial, packs, what shells buy and what is Pro only), §5 (net per
    plan from §15.10, 55/30/15 mix, ~$14.2 net revenue and ~$9.7 profit per payer, free MAU $0.17,
    break-even ~2% at 10k MAU, new revenue table), KPI ARPPU >= $12, decision 2, terms line.
-8. [ ] README "How the app behaves" to the current rules.
+8. [x] README "How the app behaves" to the current rules.
+   Done: the table now states the credit model, free shells at midnight, the plans and trial, Pro-only
+   features, the memory limit, gifts, safety (18+ gate, AI notice, crisis), storage caps; `npm test` in
+   Run; Store / My plan / History in Screens; RevenueCat and the continuity builder in the backend
+   seams. The stale "members chat for free" comment in `src/mock/misc.ts` is fixed too.
 9. [ ] Legal: memory export; account deletion that will also cover server data.
 From BIMOBIMO (our own look and words)
 10. [ ] Chats list: closeness heart with the level; a sad face after a long silence.

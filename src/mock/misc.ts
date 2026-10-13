@@ -39,8 +39,9 @@ export const shellPacks: ShellPack[] = [
 export const STARTER_PACK: ShellPack = { id: 'sh_starter', shells: 300, bonus: 0, price: '$0.99', amount: 0.99 };
 
 /**
- * What each interaction costs in shells. Sending a message is the metered action and
- * members chat for free; calls and voice replies come with a plan (src/economy/plans.ts).
+ * What each interaction costs in shells. Sending a message is the metered action, for plan
+ * members too (the credit model); calls, voice replies and Photo Booth pictures come with Pro
+ * (src/economy/plans.ts). `photoBooth` stays only to label old history lines.
  */
 export const shellCosts = {
   textMessage: 1,
