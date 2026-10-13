@@ -48,10 +48,17 @@ Docs
    features, the memory limit, gifts, safety (18+ gate, AI notice, crisis), storage caps; `npm test` in
    Run; Store / My plan / History in Screens; RevenueCat and the continuity builder in the backend
    seams. The stale "members chat for free" comment in `src/mock/misc.ts` is fixed too.
-9. [ ] Legal: memory export; account deletion that will also cover server data.
+9. [-] Legal: memory export; account deletion that will also cover server data.
+   Owner (2026-10-13): skip memory export for now. Note: business-plan §7 lists it as a legal item
+   (EU data portability), so add it before an EU launch. Server-side deletion comes with the backend.
 From BIMOBIMO (our own look and words)
-10. [ ] Chats list: closeness heart with the level; a sad face after a long silence.
-11. [ ] Chat header status line, e.g. "Together 12 days".
+10. [x] Chats list: closeness heart with the level; a sad face after a long silence.
+   Done (prototype https://claude.ai/artifact/S2YsDCX1euvfZ2X7NxtpUH, approved): the Today mint chip
+   moved to `src/components/bond-chip.tsx` and sits after each name on the Chats tab (level 1+, as on
+   Today; the row label says "bond level N"). The sad face is left out: the BIMOBIMO teardown §6 lists
+   it as a guilt pattern we do not use.
+11. [x] Chat header status line, e.g. "Together 12 days".
+   Already in the app: the chat header reads "AI character · 🧡 N days" (the streak).
 12. [ ] Bedtime wake-up alarm in the character's voice (Pro).
 13. [ ] Photo Booth makes and keeps a real picture (Pro pays for it).
 14. [ ] Reply-language lock: the character always answers in the user's language.

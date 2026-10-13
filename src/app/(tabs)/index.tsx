@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
-import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { BondChip } from '@/components/bond-chip';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useDayKey } from '@/hooks/use-day-key';
@@ -361,18 +361,6 @@ function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
   );
 }
 
-/** Mint heart and level: how close you are, at a glance. */
-function BondChip({ level }: { level: number }) {
-  return (
-    <View style={styles.bond}>
-      <HeartIcon size={10} color={colors.bond} weight="fill" />
-      <Txt variant="tiny" color={colors.bondText} style={styles.bondText}>
-        {level}
-      </Txt>
-    </View>
-  );
-}
-
 /** One Explore module: a large clay icon over a short name; the label carries the full name. */
 function ModuleCell({
   module,
@@ -428,17 +416,6 @@ const styles = StyleSheet.create({
   // With no chats there is no heading above the "meet someone" row to open the gap.
   alone: { marginTop: space.xl },
   freshDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
-  bond: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xxs,
-    paddingLeft: space.xs + 1,
-    paddingRight: space.xs + 2,
-    paddingVertical: 1,
-    borderRadius: radius.pill,
-    backgroundColor: colors.bondSoft,
-  },
-  bondText: { fontWeight: weight.bold },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

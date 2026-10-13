@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
+import { BondChip } from '@/components/bond-chip';
 import {
   CharacterAvatar,
   EmptyState,
@@ -41,6 +42,11 @@ export default function ChatListScreen() {
   const conversations = useAppStore((s) => s.conversations);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
+  // The mint level heart, from level 1 (the same rule as the Today chat rows).
+  const levelOf = (characterId: string) => {
+    const level = relationships[characterId]?.level ?? 0;
+    return level >= 1 ? level : null;
+  };
 
   /** Pinned chats first, then most recent; chats whose character is gone are dropped. */
   const items = useMemo<ChatItem[]>(() => {
@@ -71,11 +77,12 @@ export default function ChatListScreen() {
   );
 
   /** The pin, mute and unread marks are icons only, so the row's label spells them out. */
-  const rowLabel = ({ conversation, name }: ChatItem) =>
+  const rowLabel = ({ conversation, character, name }: ChatItem) =>
     [
       conversation.unreadCount > 0
         ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
         : name,
+      levelOf(character.id) != null ? t('home.bondLevel', { level: levelOf(character.id) }) : null,
       conversation.pinned ? t('chatList.pinned') : null,
       conversation.muted ? t('chatList.muted') : null,
       relativeStamp(conversation.lastMessageAt),
@@ -157,10 +164,11 @@ export default function ChatListScreen() {
                       <Txt variant="title" lines={1} style={styles.name}>
                         {name}
                       </Txt>
+                      {levelOf(character.id) != null ? <BondChip level={levelOf(character.id)!} /> : null}
                       {conversation.pinned ? (
                         <Ionicons name="pin-outline" size={13} color={colors.textFaint} />
                       ) : null}
-                      <Txt variant="small" color={colors.textMuted}>
+                      <Txt variant="small" color={colors.textMuted} style={styles.stamp}>
                         {relativeStamp(conversation.lastMessageAt)}
                       </Txt>
                     </View>
@@ -252,7 +260,9 @@ const styles = StyleSheet.create({
   row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
   body: { flex: 1, gap: 3 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  name: { flex: 1 },
+  // The name shrinks first, so the level heart stays right after it and the time at the end.
+  name: { flexShrink: 1 },
+  stamp: { marginLeft: 'auto' },
   preview: { flex: 1 },
   // Unread count in ink, like the rest of the calm-cards selection marks.
   badge: {
