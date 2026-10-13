@@ -249,6 +249,16 @@ npx tsc --noEmit                # must be clean
 - Checked on web: 150 free → 0 after midnight; 500 with 100 free → 400.
 - Open: memory on the free plan (owner leans to none; see the 2026-10-13 chat).
 
+### 0i. 2026-10-13 — credit model and the new plans (decided, prototype approved, not built yet)
+
+- backend-plan §15.10–12: every message costs 1 shell for everyone (no unlimited chat); plans are Basic
+  monthly $9.99 (2,000 shells/mo, full memory, chat only), Pro monthly $29.99 and Pro yearly $239.99
+  (5,000 shells/mo, 3 h calls, 2 h voice, 30 photos, Bedtime, new characters first). Basic yearly and
+  Quarterly go. Plan shells arrive monthly and never burn. Free plan: 20 memories per character, the rest
+  locked. Later: web checkout (US first) and higher local prices where tax is inside the price (AU/NZ/UK/EU).
+- Next build: `src/economy/plans.ts` (plans, monthly shell grants, Pro quotas), message charge for members,
+  memory limit + lock card, Plans tab per the approved prototype.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
