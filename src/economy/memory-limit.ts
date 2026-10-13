@@ -21,17 +21,20 @@ export function byMemoryOrder(a: MemoryItem, b: MemoryItem) {
   return Date.parse(b.createdAt) - Date.parse(a.createdAt);
 }
 
+/** Only active memories are shown and counted; a missing status means active (backend-plan 12.2). */
+export const isActiveMemory = (memory: MemoryItem) => !memory.status || memory.status === 'active';
+
 /**
- * One character's memories, split into what the character may use and what is locked.
+ * One character's active memories, split into what the character may use and what is locked.
  * Without a plan the first 20 in `byMemoryOrder` stay open, so a pinned memory stays open
- * and the oldest unpinned ones lock first.
+ * and the oldest unpinned ones lock first. Superseded and archived facts are left out.
  */
 export function splitMemories(
   memories: MemoryItem[],
   characterId: string,
   full: boolean,
 ): { open: MemoryItem[]; locked: MemoryItem[] } {
-  const mine = memories.filter((m) => m.characterId === characterId).sort(byMemoryOrder);
+  const mine = memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).sort(byMemoryOrder);
   if (full) return { open: mine, locked: [] };
   return { open: mine.slice(0, FREE_MEMORY_LIMIT), locked: mine.slice(FREE_MEMORY_LIMIT) };
 }

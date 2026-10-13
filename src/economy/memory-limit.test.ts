@@ -59,6 +59,15 @@ describe('splitMemories: 20 open memories per character on the free plan', () =>
     assert.equal(splitMemories(list, 'c_mira', false).open.length, 15);
   });
 
+  it('leaves superseded and archived facts out of the list and the count', () => {
+    const list = memories(22);
+    list[21] = { ...list[21], status: 'superseded', supersededBy: 'c_kai_20' };
+    list[20] = { ...list[20], status: 'archived' };
+    const { open, locked } = splitMemories(list, 'c_kai', false);
+    assert.equal(open.length, 20);
+    assert.equal(locked.length, 0);
+  });
+
   it('opens everything with a plan', () => {
     const { open, locked } = splitMemories(memories(40), 'c_kai', true);
     assert.equal(open.length, 40);

@@ -32,7 +32,12 @@ Logic
    Done: `SHARING_OPEN = false` in `src/app/create-character.tsx` hides "Who sees them"; every
    creation (new or edited) saves private; the caption reads "Only you can see them". The review
    code stays for when the server queue exists. Checked on web.
-6. [ ] Review and merge the Story Continuity PR (`story-continuity-rebased`).
+6. [x] Review and merge the Story Continuity PR (`story-continuity-rebased`).
+   Done: merged into local-work (builder `src/lib/story-continuity.ts` + 16 tests, `MemoryItem`
+   `type/importance/status/supersededBy`, 3 docs). The builder is not wired to replies; the backend
+   uses it. Memories screen, the 20-limit and the profile/settings counts now show only active
+   memories (`isActiveMemory`). Backend note: for a free user pass only `memoryAccess(...).open` to
+   the builder, so locked memories never reach the prompt.
 Docs
 7. [ ] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
 8. [ ] README "How the app behaves" to the current rules.
@@ -143,6 +148,10 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
   the chat; Pro sees "New".
 - All Pro promises on the Plans tab now work.
 
+### 0n. 2026-10-13 — remove the time-based Today heading
+
+- Removed the top “Good morning / Good afternoon / Good evening / Still up?” greeting from Today, including its reserved spacing and unused locale strings. The hero and all Today content remain in place.
+
 ### 0. Sync the local folder first
 
 ```
@@ -172,7 +181,7 @@ npx tsc --noEmit                # must be clean
   resolves `.ts` imports). 16 tests cover determinism, limits, other characters' memories, dedup,
   pinned facts, low-information messages, bad dates, URIs, app-only rows and the consent note.
   Test files are left out of the app `tsc`; `npm run typecheck:test` checks them (`tsconfig.test.json`).
-- Not merged into `local-work` and not pushed: waiting for the user.
+- Merged into `local-work` on 2026-10-13 (queue item 6).
 
 ### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
 

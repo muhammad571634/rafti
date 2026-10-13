@@ -20,6 +20,7 @@ import {
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import { planDate } from '@/components/plans/copy';
+import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
@@ -99,7 +100,7 @@ export default function CharacterSettingsScreen() {
   // Voice replies come with Pro (or the trial); without it the switch says so.
   const hasPlan = useAppStore((s) => callsIncluded(s.wallet));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
-  const memoryCount = useAppStore((s) => s.memories.filter((m) => m.characterId === characterId).length);
+  const memoryCount = useAppStore((s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length);
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);
   const clearChat = useAppStore((s) => s.clearChat);
   const resetRelationship = useAppStore((s) => s.resetRelationship);

@@ -17,6 +17,7 @@ import {
 import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
+import { isActiveMemory } from '@/economy/memory-limit';
 import { daysBetween, shortDate } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -42,7 +43,7 @@ export default function CharacterProfileScreen() {
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const memoryCount = useAppStore(
-    (s) => s.memories.filter((m) => m.characterId === characterId).length,
+    (s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length,
   );
   const addFriend = useAppStore((s) => s.addFriend);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
