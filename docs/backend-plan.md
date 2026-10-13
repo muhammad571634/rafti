@@ -781,3 +781,25 @@ keyin quriladi.
 9. **Bepul chig'anoqlar har kuni yonadi:** ✅ founder qarori (2026-10-13). Check-in, g'ildirak, reklama, ulashish,
    va taklifdan kelgan chig'anoqlar yarim tunda to'liq 0 ga tushadi. Sotib olingani va xush kelibsiz sovg'asi
    (100, har hisobga bir marta) yonmaydi. Maqsad: bepul foydalanuvchini pullik rejaga o'tkazish. Sxema: `docs/backend-schema-gaps.md` §2.
+10. **Kredit modeli:** ✅ founder qarori (2026-10-13, BIMOBIMO kabi). **Har xabar 1 chig'anoq, hamma uchun**
+    (obunachilar ham). 13.3 dagi "cheklovsiz chat" va 300/kun fair use bekor bo'ladi. Uchta reja:
+    - **Basic oylik $9.99:** 2 000 chig'anoq/oy, to'liq xotira, faqat chat.
+    - **Pro oylik $29.99** va **Pro yillik $239.99** (= $20/oy, 33% tejash; ekranda yillik oldindan tanlangan):
+      5 000 chig'anoq/oy, 3 soat qo'ng'iroq, 2 soat ovozli javob, 30 ta Photo Booth surati, Bedtime, yangi
+      personajlar birinchi. Yillik va oylik Pro imkoniyatlari bir xil, farq faqat narxda.
+    - Basic yillik va Quarterly olib tashlanadi.
+    - Rejadagi chig'anoq har oy beriladi (yillikda ham bo'lib-bo'lib) va yonmaydi. Qo'ng'iroq va surat faqat Pro
+      kvotasidan, chig'anoqqa sotilmaydi: shunda chig'anoq faqat chatga ketadi (~$0.0006 xarajat).
+    - Bepul: kuniga bepul chig'anoq (yonadi), har personajga 20 ta xotira, qolgani qulflangan ("Unlock with Basic").
+    - Sof foyda (15% do'kon, 3% qaytarish, 1% IT Park va AI xarajatidan keyin), oyiga: Basic ~$6–7,
+      Pro oylik ~$13.5–20, Pro yillik ~$5.3–12 (og'ir → oddiy foydalanuvchi). Qo'ng'iroq narxi B5'da o'lchanadi;
+      qimmat chiqsa, 3 soatlik kvota serverdan kamaytiriladi.
+11. **Veb to'lov (launch'dan keyin):** ✅ rejaga qo'shildi (2026-10-13). AQShdan boshlab veb checkout (Stripe +
+    Stripe Tax yoki Paddle kabi merchant of record): soliq narx ustiga qo'shiladi, do'kon komissiyasi (15–30%)
+    tejaladi. BIMOBIMO Android'da to'lovni veb orqali oladi. Apple/Google'ning tashqi to'lov qoidalari launch
+    paytida qayta tekshiriladi. Business-plan §12.5 dagi tartib: IAP → AQShda veb → Telegram Stars.
+12. **Mintaqaviy narxlar:** ✅ (2026-10-13). Soliq narx ichida bo'lgan mamlakatlarda (Avstraliya, Yangi Zelandiya,
+    Britaniya, Yevropa) do'kon soliqni narxdan ushlab qoladi va bizga 10–17% kam tushadi. Shu yerlarda narx bir
+    pog'ona yuqori qo'yiladi (masalan, Avstraliyada A$16.99), sof tushum AQSh bilan teng qolishi uchun. AQSh va
+    Kanadada soliq narx ustiga qo'shiladi, uni to'lovchi to'laydi. App Store Connect va Play Console'da
+    launch oldidan sozlanadi.
