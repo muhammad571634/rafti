@@ -1,9 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, BrandArt, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { hasPro } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
@@ -13,6 +16,8 @@ const SOFT_WHITE = 'rgba(255,255,255,0.72)';
 
 /**
  * "Sleep Together": whispers and white noise from someone you trust, on a sleep timer.
+ * Pro only (and the trial; backend-plan §15.10): free and Basic users see a lock and the Pro
+ * sheet with a short whisper sample. It never uses the plan's voice-reply minutes.
  * Keeps its night canvas (like the call screen); the rest follows docs/design-style.md:
  * h3 sections, option buttons with a white selection, an action bar at the bottom.
  */
@@ -22,6 +27,7 @@ export default function BedtimeScreen() {
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
+  const pro = useAppStore((s) => hasPro(s.wallet.subscription, Date.now()));
 
   const known = useMemo(
     () => characters.filter((c) => c.voiceReady && conversations.some((v) => v.characterId === c.id)),
@@ -31,10 +37,17 @@ export default function BedtimeScreen() {
   const [readerId, setReaderId] = useState(known[0]?.id);
   const [minutes, setMinutes] = useState(20);
   const [left, setLeft] = useState<number | null>(null);
+  const [locked, setLocked] = useState(false);
 
   const reader = known.find((c) => c.id === readerId);
   const running = left != null;
   const name = reader ? shortName(reader.name) : '';
+
+  const press = () => {
+    if (running) return setLeft(null);
+    if (!pro) return setLocked(true);
+    setLeft(minutes * 60);
+  };
 
   useEffect(() => {
     if (left == null) return;
@@ -49,7 +62,19 @@ export default function BedtimeScreen() {
 
   return (
     <Screen background={gradients.night} statusBarStyle="light">
-      <Header title={t('bedtime.title')} tint={colors.white} />
+      <Header
+        title={t('bedtime.title')}
+        tint={colors.white}
+        right={
+          pro ? null : (
+            <View style={styles.proPill}>
+              <Txt variant="smallStrong" color={colors.brandText}>
+                {t('plans.name.pro')}
+              </Txt>
+            </View>
+          )
+        }
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <BrandArt
@@ -147,23 +172,52 @@ export default function BedtimeScreen() {
         <Button
           label={running ? t('radio.stop') : t('bedtime.start')}
           size="lg"
-          onPress={() => setLeft(running ? null : minutes * 60)}
+          onPress={press}
           variant={running ? 'secondary' : 'primary'}
           disabled={!reader}
           full
+          left={pro || running ? undefined : <Ionicons name="lock-closed" size={17} color={colors.textOnPrimary} />}
         />
         <Txt variant="caption" color={SOFT_WHITE} center>
-          {running ? t('bedtime.fades') : t('bedtime.stopsAfter', { count: minutes })}
+          {running
+            ? t('bedtime.fades')
+            : pro
+              ? t('bedtime.stopsAfter', { count: minutes })
+              : t('bedtime.withPro')}
         </Txt>
       </View>
 
       <LinearGradient colors={['transparent', 'rgba(0,0,0,0.25)']} style={styles.scrim} pointerEvents="none" />
+
+      {reader ? (
+        <CallPaywallSheet
+          visible={locked}
+          character={reader}
+          name={reader.name}
+          kind="bedtime"
+          onClose={() => setLocked(false)}
+          onStarted={() => {
+            setLocked(false);
+            setLeft(minutes * 60);
+          }}
+        />
+      ) : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   bold: { fontWeight: '700' },
+  proPill: {
+    height: 28,
+    justifyContent: 'center',
+    marginRight: space.sm,
+    paddingHorizontal: space.sm + 2,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.primarySoft,
+    backgroundColor: colors.primarySofter,
+  },
   scroll: { paddingHorizontal: space.lg, paddingTop: space.xs, paddingBottom: space.xl, alignItems: 'stretch' },
   status: { alignItems: 'center', justifyContent: 'center', gap: space.xs, minHeight: 92, paddingTop: space.md },
   timerRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },

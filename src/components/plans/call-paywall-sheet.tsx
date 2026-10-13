@@ -18,21 +18,25 @@ import { planTime } from './copy';
 const SAMPLE_SECONDS = 6;
 
 /**
- * A free user taps call: they hear the voice first (a short recorded line, never a
- * live call), then see what Pro adds. Starting the trial goes straight to the call.
+ * A free user taps call (or Bedtime's "Sleep together"): they hear the voice first (a short
+ * recorded line, never a live call), then see what Pro adds. Starting the trial goes straight
+ * to the call or the sleep timer.
  */
 export function CallPaywallSheet({
   visible,
   character,
   name,
+  kind = 'call',
   onClose,
   onStarted,
 }: {
   visible: boolean;
   character: Character;
   name: string;
+  /** What the user tried: a call, or Bedtime whispers (Pro only, backend-plan §15.10). */
+  kind?: 'call' | 'bedtime';
   onClose: () => void;
-  /** The plan (or trial) is on: the caller starts the call. */
+  /** The plan (or trial) is on: the caller starts the call or the timer. */
   onStarted: () => void;
 }) {
   const { t } = useTranslation();
@@ -71,6 +75,10 @@ export function CallPaywallSheet({
   };
 
   const playing = left != null;
+  const bedtime = kind === 'bedtime';
+  const sampleLabel = bedtime
+    ? t('bedtime.hearWhisper', { name: shortName(name) })
+    : t('plans.hearVoice', { name: shortName(name) });
 
   return (
     <Sheet visible={visible} onClose={close}>
@@ -89,13 +97,13 @@ export function CallPaywallSheet({
       <PressableScale
         onPress={() => setLeft(playing ? null : SAMPLE_SECONDS)}
         scaleTo={0.98}
-        accessibilityLabel={t('plans.hearVoice', { name: shortName(name) })}
+        accessibilityLabel={sampleLabel}
         style={styles.sample}>
         <View style={styles.play}>
           <Ionicons name={playing ? 'pause' : 'play'} size={18} color={colors.textOnPrimary} />
         </View>
         <Txt variant="bodyStrong" style={styles.flex} lines={1}>
-          {t('plans.hearVoice', { name: shortName(name) })}
+          {sampleLabel}
         </Txt>
         {playing ? <Anim name="voiceWave" size={24} tint={colors.textSecondary} /> : null}
         <Txt variant="small" color={colors.textSecondary} style={styles.clock}>
@@ -105,25 +113,28 @@ export function CallPaywallSheet({
       {playing ? (
         <Animated.View entering={FadeIn.duration(240)}>
           <Txt variant="small" color={colors.textSecondary} center style={styles.said}>
-            {`“${character.greeting}”`}
+            {`“${bedtime ? t('bedtime.sampleLine') : character.greeting}”`}
           </Txt>
         </Animated.View>
       ) : null}
 
       <View style={styles.offer}>
-        <Txt variant="h2">{t('plans.callsTitle')}</Txt>
+        <Txt variant="h2">{bedtime ? t('bedtime.proTitle') : t('plans.callsTitle')}</Txt>
         {[
+          bedtime ? t('plans.bedtime') : null,
           t('plans.callsPerk', { time: planTime(t, PLANS.proAnnual.callSeconds) }),
-          t('plans.voicePerk', { time: planTime(t, PLANS.proAnnual.voiceSeconds) }),
+          bedtime ? null : t('plans.voicePerk', { time: planTime(t, PLANS.proAnnual.voiceSeconds) }),
           t('plans.shellsMonth', { amount: PLANS.proAnnual.shells.toLocaleString('en-US') }),
-        ].map((perk) => (
-          <View key={perk} style={styles.perk}>
-            <Ionicons name="checkmark" size={17} color={colors.text} />
-            <Txt variant="body" style={styles.flex}>
-              {perk}
-            </Txt>
-          </View>
-        ))}
+        ]
+          .filter((perk): perk is string => perk != null)
+          .map((perk) => (
+            <View key={perk} style={styles.perk}>
+              <Ionicons name="checkmark" size={17} color={colors.text} />
+              <Txt variant="body" style={styles.flex}>
+                {perk}
+              </Txt>
+            </View>
+          ))}
       </View>
 
       <View style={styles.actions}>

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { canRing, consumePhoto, photoQuota, photosLeft, PLANS, shellGrant, startSubscription, TRIAL } from './plans';
+import { canRing, consumePhoto, hasPro, photoQuota, photosLeft, PLANS, shellGrant, startSubscription, TRIAL } from './plans';
 
 const NOW = Date.parse('2026-10-13T08:00:00.000Z');
 const DAY = 86_400_000;
@@ -76,5 +76,15 @@ describe('Photo Booth pictures', () => {
     const pro = consumePhoto(startSubscription('pro', NOW), NOW)!;
     assert.deepEqual(photoQuota(pro, NOW), { left: 29, total: 30, resetsAt: NOW + 30 * DAY });
     assert.equal(photoQuota(startSubscription('proAnnual', NOW, true), NOW)?.total, TRIAL.photos);
+  });
+});
+
+describe('hasPro: Bedtime and the other Pro-only features', () => {
+  it('is false without a plan and on Basic, true on Pro, Pro yearly and the trial', () => {
+    assert.equal(hasPro(undefined, NOW), false);
+    assert.equal(hasPro(startSubscription('basic', NOW), NOW), false);
+    assert.equal(hasPro(startSubscription('pro', NOW), NOW), true);
+    assert.equal(hasPro(startSubscription('proAnnual', NOW), NOW), true);
+    assert.equal(hasPro(startSubscription('proAnnual', NOW, true), NOW), true);
   });
 });

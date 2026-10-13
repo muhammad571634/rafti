@@ -703,7 +703,11 @@
     "whispering": "{{name}} is whispering",
     "noVoices": "Talk to a friend with a voice first",
     "fades": "Fades out by itself at 0:00",
-    "stopsAfter": "Stops by itself after {{count}} min"
+    "stopsAfter": "Stops by itself after {{count}} min",
+    "withPro": "Comes with Pro",
+    "proTitle": "Bedtime comes with Pro",
+    "hearWhisper": "Hear {{name}} whisper",
+    "sampleLine": "Close your eyes. I'm right here."
   },
   "board": {
     "title": "Message board",

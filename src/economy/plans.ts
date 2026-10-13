@@ -231,6 +231,12 @@ export function canRing(sub: Subscription | undefined, now: number) {
   return !!live && allowance(live, 'call') > 0;
 }
 
+/** Pro or its trial is running: Bedtime and the other Pro-only features (backend-plan §15.10). */
+export function hasPro(sub: Subscription | undefined, now: number) {
+  const live = rollSubscription(sub, now);
+  return !!live && (live.status === 'trial' || live.plan !== 'basic');
+}
+
 /** Photo Booth pictures left this period (0 without Pro or the trial). */
 export function photosLeft(sub: Subscription | undefined, now: number) {
   const live = rollSubscription(sub, now);

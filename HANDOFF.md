@@ -74,6 +74,18 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
   ledger rows.
 - Checked on web: Basic with 2,099 shells is locked; the trial shoots 3 and then waits; shells unchanged.
 
+### 0l. 2026-10-13 — Bedtime is Pro only (branch `feat/bedtime-pro`, merged into local-work)
+
+- Plans promised "Bedtime whispers every night" for Pro; it was open to everyone. Now `hasPro`
+  (plans.ts, tested: Pro, Pro yearly or the trial; not Basic) gates "Sleep together".
+- Free and Basic (prototype https://claude.ai/artifact/Y7D1uQBygDuRBJZEeg6RXi, approved): "Pro" pill in
+  the header, a lock on the button, "Comes with Pro"; the tap opens `CallPaywallSheet` with
+  `kind="bedtime"` (whisper sample, "Bedtime comes with Pro", Bedtime / calls / shells). Starting the
+  trial starts the timer. Calls keep `kind="call"` (unchanged). Pro works as before and never uses the
+  voice-reply minutes.
+- Checked on web: free user locked; trial starts the timer; voice minutes stay at 0.
+- Left from the Pro list: "New characters first".
+
 ### 0. Sync the local folder first
 
 ```
