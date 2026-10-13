@@ -21,8 +21,9 @@ writing migrations (B0). Decisions are not changed here; open items are marked *
 
 The app's rule (`src/store/use-app-store.ts`: `claimDailyLogin`, `spendShells`, `expireFreeShells`; `docs/flows.md` F5):
 
-- **Every free credit** is free-bucket: daily check-in, wheel, ads, share, invite and the welcome gift
-  (owner decision 2026-10-13, built in `src/economy/shells.ts`). Only bought shells never expire.
+- **Every free credit** is free-bucket: daily check-in, wheel, ads, share and invite (owner decision
+  2026-10-13, built in `src/economy/shells.ts`). Bought shells and the one-time welcome gift (100, once
+  per account) never expire.
 - Free shells are **spent first**; bought shells never expire.
 - Whatever free shells are left **expire at the user's local midnight**; History shows an `expired` line
   booked at that midnight.

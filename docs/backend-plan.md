@@ -779,5 +779,5 @@ keyin quriladi.
    va 14.5 dagi "Hammasini eslaydi" va'dasi shu qaror bilan bekor bo'ladi. Do'kon matni: "Every plan gets the same
    memory quality. Paid plans add call and voice minutes."
 9. **Bepul chig'anoqlar har kuni yonadi:** ✅ founder qarori (2026-10-13). Check-in, g'ildirak, reklama, ulashish,
-   taklif va xush kelibsiz sovg'adan kelgan chig'anoqlar yarim tunda to'liq 0 ga tushadi; faqat sotib olingani
-   qoladi. Maqsad: bepul foydalanuvchini pullik rejaga o'tkazish. Sxema: `docs/backend-schema-gaps.md` §2.
+   va taklifdan kelgan chig'anoqlar yarim tunda to'liq 0 ga tushadi. Sotib olingani va xush kelibsiz sovg'asi
+   (100, har hisobga bir marta) yonmaydi. Maqsad: bepul foydalanuvchini pullik rejaga o'tkazish. Sxema: `docs/backend-schema-gaps.md` §2.

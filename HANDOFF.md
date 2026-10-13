@@ -242,9 +242,10 @@ npx tsc --noEmit                # must be clean
 
 ### 0h. 2026-10-13 — all free shells burn at midnight (branch `feat/free-shells-expire`)
 
-- Owner decision (backend-plan §15.9): check-in, wheel, ads, share, invite and the welcome gift all go
-  into today's free bucket (`creditFree`, `src/economy/shells.ts`, tested) and burn to zero at midnight
-  (`expireFreeShells`, unchanged). Bought shells never expire. History copy: "Free shells are spent first…".
+- Owner decision (backend-plan §15.9): check-in, wheel, ads, share and invite go into today's free bucket
+  (`creditFree`, `src/economy/shells.ts`, tested) and burn to zero at midnight (`expireFreeShells`,
+  unchanged). Bought shells and the one-time welcome gift (100) never expire. BIMOBIMO has no shell welcome
+  gift (only +15 call minutes, teardown #8). History copy: "Free shells are spent first…".
 - Checked on web: 150 free → 0 after midnight; 500 with 100 free → 400.
 - Open: memory on the free plan (owner leans to none; see the 2026-10-13 chat).
 

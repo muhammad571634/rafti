@@ -727,11 +727,9 @@ export const useAppStore = create<AppState>()(
           user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
-        // The welcome gift is free shells too: it burns at midnight like the rest.
-        set((s) => ({
-          wallet: creditFree(s.wallet, WELCOME_SHELLS, todayKey()),
-          ledger: log(s.ledger, WELCOME_SHELLS, 'welcome'),
-        }));
+        // The welcome gift is paid once per account and never burns; it is gone only when spent
+        // (owner decision 2026-10-13). Every other free credit burns at midnight.
+        get().addShells(WELCOME_SHELLS, 'welcome');
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });

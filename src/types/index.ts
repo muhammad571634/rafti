@@ -314,9 +314,9 @@ export interface LedgerEntry {
 export interface Wallet {
   shells: number;
   /**
-   * The part of `shells` that came free today (check-in, wheel, ads, share, invite,
-   * welcome). It is spent first and whatever is left expires at midnight; bought
-   * shells never expire (src/economy/shells.ts).
+   * The part of `shells` that came free today (check-in, wheel, ads, share, invite).
+   * It is spent first and whatever is left expires at midnight; bought shells and the
+   * one-time welcome gift never expire (src/economy/shells.ts).
    */
   free?: { day: string; amount: number };
   /** Photo Booth currency */
