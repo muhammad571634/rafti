@@ -22,7 +22,7 @@ export interface PlanBought {
 
 /**
  * The Plans tab of the store: Basic with its three billing periods, and Pro. Every
- * plan keeps the same chats, memories and bonds; plans differ only in minutes.
+ * plan gets the same memory quality (owner decision 2026-10-13); plans differ only in minutes.
  */
 export function PlanPicker({
   initialPlan,
@@ -97,7 +97,6 @@ export function PlanPicker({
             t('plans.unlimitedChatMark'),
             t(`plans.calls.${period}`, { time: planTime(t, PLANS[period].callSeconds) }),
             t(`plans.voice.${period}`, { time: planTime(t, PLANS[period].voiceSeconds) }),
-            t('plans.remembers'),
           ]}
         />
 
@@ -142,7 +141,6 @@ export function PlanPicker({
             t('plans.everythingBasic'),
             t('plans.calls.pro', { time: planTime(t, PLANS.pro.callSeconds) }),
             t('plans.voice.pro', { time: planTime(t, PLANS.pro.voiceSeconds) }),
-            t('plans.deepestMemory'),
           ]}
         />
 

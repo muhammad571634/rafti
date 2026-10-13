@@ -1052,7 +1052,7 @@
     "tabPlans": "Plans",
     "tabShells": "Shells",
     "headline": "Talk more. Hear them more.",
-    "sub": "Your chats, memories and bonds stay exactly the same on every plan.",
+    "sub": "Every plan gets the same memory quality. Paid plans add call and voice minutes.",
     "name": {
       "basic": "Basic",
       "quarterly": "Basic",
@@ -1077,9 +1077,7 @@
     "mostTime": "Most time together",
     "unlimitedChat": "Unlimited chat",
     "unlimitedChatMark": "Unlimited chat*",
-    "remembers": "Remembers everything you share",
     "everythingBasic": "Everything in Basic",
-    "deepestMemory": "Deepest memory",
     "calls": {
       "basic": "{{time}} of calls a month",
       "quarterly": "{{time}} of calls every 3 months",

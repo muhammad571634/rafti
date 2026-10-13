@@ -771,3 +771,7 @@ keyin quriladi.
 6. **Bepul ulush (13.5):** ✅ tasdiqlandi (2026-10-09). Check-in o'rtacha ~40 chig'anoq/kun, reklama mukofoti
    mamlakatga qarab.
 7. **Monetizatsiya interfeysi:** prototip https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv — tasdiqlaysizmi?
+8. **Xotira tariflarga bog'lanmaydi:** ✅ founder qarori (2026-10-13). Xotira sifati hamma tariflarda bir xil; pullik
+   rejalar faqat qo'ng'iroq va ovozli javob daqiqalarini qo'shadi. 13.3 jadvalidagi "Xotira" qatori (`longerMemory`)
+   va 14.5 dagi "Hammasini eslaydi" va'dasi shu qaror bilan bekor bo'ladi. Do'kon matni: "Every plan gets the same
+   memory quality. Paid plans add call and voice minutes."
