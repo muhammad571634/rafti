@@ -228,6 +228,18 @@ npx tsc --noEmit                # must be clean
   `plans.remembers` / `plans.deepestMemory` deleted. Nothing else on the screen changed.
 - Checked on web at 375×812 against the approved preview; merged into local-work 2026-10-13.
 
+### 0g. 2026-10-13 — free users get a voice note, not a call (branch `feat/free-voice-note`)
+
+- Owner decision 3 (prototype approved): without a plan or trial nothing rings. `canRing` in
+  `src/economy/plans.ts` (tested). `runDailyInitiative` leaves the caller's voice note + its text in
+  their chat instead (line from the greeting lists, never the same as that friend's text greeting);
+  the push planner sends "sent you a voice note" (`voiceNote` kind, messages channel, not
+  time-sensitive) instead of "Incoming call"; Notification settings call rows read "Good-morning /
+  Good-night voice note" for free users. Plan and trial users: unchanged.
+- Correction to the audit (B9): `ring()` already refused users with no call minutes, so free users were
+  never rung in the app; the real problem was the "Incoming call" push that led to nothing.
+- Checked on web: free → voice note in chat, no ring; Basic → `/call/incoming/<id>`, no voice note.
+
 ### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);

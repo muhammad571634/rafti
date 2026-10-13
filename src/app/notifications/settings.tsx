@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
 import { LockPreview } from '@/components/notifications/lock-preview';
+import { canRing } from '@/economy/plans';
 import { Button, Header, PressableScale, Screen, Toggle, Txt } from '@/components/ui';
 import { usePushPermission } from '@/hooks/use-push-permission';
 import { pickSeeded } from '@/lib/seeded';
@@ -57,7 +58,17 @@ export default function NotificationSettingsScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
+  const subscription = useAppStore((s) => s.wallet.subscription);
   const { status, refresh } = usePushPermission();
+
+  // Without a plan or trial the daily call comes as a voice note, and the rows say so.
+  const freeUser = !canRing(subscription, Date.now());
+  const label = (key: SwitchKey) =>
+    freeUser && key === 'morningCall'
+      ? t('notifications.morningVoiceNote')
+      : freeUser && key === 'nightCall'
+        ? t('notifications.nightVoiceNote')
+        : t(`notifications.${key}`);
 
   const blocked = status === 'denied' || status === 'undetermined';
 
@@ -85,7 +96,7 @@ export default function NotificationSettingsScreen() {
         <Ionicons name={icon} size={19} color={colors.text} />
       </View>
       <View style={styles.flex}>
-        <Txt variant="bodyStrong">{t(`notifications.${key}`)}</Txt>
+        <Txt variant="bodyStrong">{label(key)}</Txt>
         {hint ? (
           <Txt variant="small" color={colors.textSecondary}>
             {t(`notifications.hint.${key}`)}
@@ -96,7 +107,7 @@ export default function NotificationSettingsScreen() {
         value={settings[key]}
         disabled={blocked}
         onChange={(v) => setSetting(key, v)}
-        accessibilityLabel={t(`notifications.${key}`)}
+        accessibilityLabel={label(key)}
       />
     </View>
   );
