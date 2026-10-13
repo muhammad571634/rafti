@@ -9,6 +9,7 @@ import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard'
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { planMemoryLine } from '@/lib/plan-memory';
+import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -1624,7 +1625,8 @@ export const useAppStore = create<AppState>()(
         wallet: s.wallet,
         characters: s.characters,
         conversations: s.conversations,
-        messages: s.messages,
+        // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
+        messages: capMessages(s.messages),
         relationships: s.relationships,
         memories: s.memories,
         diary: s.diary,
@@ -1632,7 +1634,7 @@ export const useAppStore = create<AppState>()(
         diaryPagesRead: s.diaryPagesRead,
         inboxSeenAt: s.inboxSeenAt,
         notes: s.notes,
-        ledger: s.ledger,
+        ledger: capLedger(s.ledger),
         calls: s.calls,
         moments: s.moments,
         schedules: s.schedules,

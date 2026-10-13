@@ -23,7 +23,11 @@ Logic
    Done (prototype https://claude.ai/artifact/8V2dcCgBTZKUu3EsNbuU3p, approved): a tap on a memory's
    text opens the add sheet as "Edit memory", filled in; `editMemory` keeps source, date and pin and
    uses the crisis guard (`rememberableText`). Locked memories have no text to tap. Checked on web.
-4. [ ] Message storage: cap or move messages out of the one AsyncStorage key (~2 MB Android limit).
+4. [x] Message storage: cap or move messages out of the one AsyncStorage key (~2 MB Android limit).
+   Done: `src/lib/storage-caps.ts` (tested), used in `partialize`: the save keeps the newest 300
+   messages per chat and 4,000 overall, and the newest 3,000 ledger lines (the ledger also grew by
+   one line per message for 183 days). ~191 bytes a message, so the worst case is about 1.1 MB. The
+   screen keeps the full history until the next launch. Real fix later: SQLite or the server.
 5. [ ] Hide "public" in Create character until moderation (business-plan: no UGC at launch).
 6. [ ] Review and merge the Story Continuity PR (`story-continuity-rebased`).
 Docs
