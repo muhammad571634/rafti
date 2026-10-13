@@ -992,6 +992,7 @@
   "push": {
     "hidden": "sent you a message",
     "incomingCall": "Incoming call",
+    "voiceNote": "sent you a voice note",
     "spins": "Your free spin is waiting. It resets at midnight.",
     "channels": {
       "messages": "Messages",
@@ -1013,6 +1014,8 @@
     "eveningGreeting": "Night messages",
     "morningCall": "Good-morning call",
     "nightCall": "Good-night call",
+    "morningVoiceNote": "Good-morning voice note",
+    "nightVoiceNote": "Good-night voice note",
     "notifyPlans": "Plan reminders",
     "notifyDiary": "Diary pages",
     "notifyAway": "When I'm away",

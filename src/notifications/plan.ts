@@ -1,4 +1,5 @@
 import { detectCrisis } from '@/ai/safety';
+import { canRing } from '@/economy/plans';
 import { isBirthday } from '@/lib/profile';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
@@ -22,6 +23,7 @@ import type {
   Relationship,
   ScheduleItem,
   User,
+  Wallet,
 } from '@/types';
 
 /**
@@ -36,6 +38,7 @@ export type PushKind =
   | 'morning'
   | 'evening'
   | 'call'
+  | 'voiceNote'
   | 'remind'
   | 'followUp'
   | 'birthday'
@@ -58,7 +61,7 @@ export interface PlannedPush {
   title?: string;
   /** What the character says. Absent when `textKey` names a fixed app string. */
   line?: string;
-  textKey?: 'push.incomingCall' | 'push.spins';
+  textKey?: 'push.incomingCall' | 'push.voiceNote' | 'push.spins';
   /** Where a tap goes. */
   route: string;
   channel: PushChannel;
@@ -77,6 +80,8 @@ export interface PlanState {
   conversations: Conversation[];
   messages: Record<string, Message[]>;
   schedules: ScheduleItem[];
+  /** Free users get a voice note instead of the daily call (`canRing`). */
+  wallet: Pick<Wallet, 'subscription'>;
 }
 
 /** The rules from docs/push-plan.md, in one place. */
@@ -109,6 +114,7 @@ const PRIORITY: Record<PushKind, number> = {
   unread: 2,
   morning: 3,
   evening: 3,
+  voiceNote: 3,
   comeback: 3,
   diary: 4,
   gift: 5,
@@ -241,7 +247,16 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           chosen && relationships[chosen.id] && chosen.voiceReady ? chosen : writers.find((c) => c.voiceReady);
         if (callOn && caller && !daily.calledSlots.includes(slotKey)) {
           const when = clock(day, time, PUSH_RULES.callAfterGreetingMin);
-          if (inHorizon(when)) {
+          // Without a plan or trial nothing rings: a voice note waits in their chat instead.
+          if (inHorizon(when) && !canRing(state.wallet.subscription, when.getTime())) {
+            say({
+              id: `voiceNote:${slotKey}`,
+              kind: 'voiceNote',
+              at: when,
+              characterId: caller.id,
+              textKey: 'push.voiceNote',
+            });
+          } else if (inHorizon(when)) {
             say({
               id: `call:${slotKey}`,
               kind: 'call',

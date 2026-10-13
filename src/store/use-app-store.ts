@@ -10,6 +10,7 @@ import { diaryMemoryLine, withMemory, withoutCrisisMemories } from '@/ai/memory-
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { detectPlan, planStep } from '@/lib/schedule';
 import {
+  canRing,
   consumeMinutes,
   FAIR_USE_PER_DAY,
   minutesLeft,
@@ -1492,6 +1493,33 @@ export const useAppStore = create<AppState>()(
         if (!caller) return {};
 
         set((s) => ({ daily: { ...s.daily, calledSlots: [...s.daily.calledSlots, slotKey].slice(-8) } }));
+
+        // Free users are never rung: the same friend leaves a voice note from the free voice
+        // lines instead (backend-plan §13.5). Its words differ from that friend's text greeting.
+        if (!canRing(get().wallet.subscription, now.getTime())) {
+          const lines = slot === 'morning' ? morningGreetings : eveningGreetings;
+          const greeting = pickSeeded(lines, `${slotKey}:${caller.characterId}`);
+          const said = pickSeeded(lines.filter((l) => l !== greeting), `voiceNote:${slotKey}:${caller.characterId}`);
+          const conversationId = get().addFriend(caller.characterId);
+          appendMessage(
+            set,
+            get,
+            conversationId,
+            {
+              id: uid('m'),
+              conversationId,
+              author: 'them',
+              kind: 'voice',
+              durationSec: Math.min(12, 3 + Math.round(said.length / 18)),
+              transcript: said,
+              createdAt: new Date().toISOString(),
+            },
+            { countUnread: true },
+          );
+          appendMessage(set, get, conversationId, themText(conversationId, said), { countUnread: true });
+          return {};
+        }
+
         return { callFrom: caller.characterId, slot };
       },
 

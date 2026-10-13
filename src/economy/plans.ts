@@ -217,6 +217,15 @@ export function consumeMinutes(
 }
 
 /** What the user is on right now, for labels: the plan, a trial, or nothing. */
+/**
+ * Whether a character may ring the user on their own. Live calls come with a plan or
+ * the trial; a free user gets a voice note from the free voice lines instead
+ * (backend-plan §13.5, owner decision 2026-10-13).
+ */
+export function canRing(sub: Subscription | undefined, now: number) {
+  return planStatus(sub, now) !== null;
+}
+
 export function planStatus(sub: Subscription | undefined, now: number) {
   const live = rollSubscription(sub, now);
   if (!live) return null;
