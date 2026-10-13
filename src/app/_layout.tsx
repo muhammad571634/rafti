@@ -1,6 +1,6 @@
 import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
-import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import { Stack, useRootNavigationState, useRouter, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ShareRewardBanner } from '@/components/share-reward-banner';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
+import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -55,9 +56,34 @@ export default function RootLayout() {
           <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
         </Stack>
         <ShareRewardBanner />
+        <OnboardingGate />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
+}
+
+/**
+ * The 18+ gate for every route, not only the tabs (business-plan §7): until onboarding is done
+ * (birth year 18+, name, first friend) any deep link (a push, `/chat/...`, `/store/...`,
+ * `/character/...`) is sent to onboarding first. A blank cover hides the screen underneath until
+ * saved data is loaded and the redirect has happened, so nothing shows before the age check.
+ * New routes are covered without listing them (unlike `Stack.Protected`).
+ */
+function OnboardingGate() {
+  const router = useRouter();
+  const segments = useSegments();
+  const navReady = !!useRootNavigationState()?.key;
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+  const outside = segments[0] !== 'onboarding';
+  const blocked = !onboarded && outside;
+
+  useEffect(() => {
+    if (navReady && hydrated && blocked) router.replace('/onboarding');
+  }, [navReady, hydrated, blocked, router]);
+
+  if (hydrated && !blocked) return null;
+  return <View style={styles.cover} pointerEvents="auto" />;
 }
 
 /**
@@ -87,6 +113,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 const styles = StyleSheet.create({
+  cover: { ...StyleSheet.absoluteFill, backgroundColor: colors.bg },
   error: {
     flex: 1,
     alignItems: 'center',

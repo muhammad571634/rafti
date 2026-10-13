@@ -7,6 +7,34 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0c-queue. Owner's work queue (2026-10-13, do in this order, one at a time, keep each simple)
+
+Found in the 2026-10-13 review after the credit plans; the owner approved all 16 and the order.
+Logic
+1. [x] 18+ gate at the root: deep links and pushes never open a screen before onboarding.
+   Done: `OnboardingGate` in `src/app/_layout.tsx` (blank cover until data is loaded, then
+   `router.replace('/onboarding')` for any route outside onboarding; covers new routes without
+   listing them). Checked on web: `/store/shell`, `/character/c_kai`, `/chat/...` go to onboarding;
+   an onboarded user opens them as before.
+2. [ ] Plan memories with an absolute date ("Exam - Thu, Oct 15"), not "the day after tomorrow".
+3. [ ] Memories: edit a memory's text (prototype first).
+4. [ ] Message storage: cap or move messages out of the one AsyncStorage key (~2 MB Android limit).
+5. [ ] Hide "public" in Create character until moderation (business-plan: no UGC at launch).
+6. [ ] Review and merge the Story Continuity PR (`story-continuity-rebased`).
+Docs
+7. [ ] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
+8. [ ] README "How the app behaves" to the current rules.
+9. [ ] Legal: memory export; account deletion that will also cover server data.
+From BIMOBIMO (our own look and words)
+10. [ ] Chats list: closeness heart with the level; a sad face after a long silence.
+11. [ ] Chat header status line, e.g. "Together 12 days".
+12. [ ] Bedtime wake-up alarm in the character's voice (Pro).
+13. [ ] Photo Booth makes and keeps a real picture (Pro pays for it).
+14. [ ] Reply-language lock: the character always answers in the user's language.
+15. [ ] Dark mode.
+16. [ ] Group chat with 2-3 characters (large; keep the first version small).
+Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
+
 ### 0d. 2026-10-13 — owner decisions after the audit (`docs/audit-2026-10-13.md`)
 
 1. **Done (branch `fix/memory-crisis-guard`, merged into local-work 2026-10-13):** crisis text never becomes a
