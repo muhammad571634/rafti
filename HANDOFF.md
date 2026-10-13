@@ -35,6 +35,7 @@ npx tsc --noEmit                # must be clean
 - Tests: `npm test` (Node's built-in `node:test`, no new packages; `scripts/ts-test-hooks.mjs`
   resolves `.ts` imports). 16 tests cover determinism, limits, other characters' memories, dedup,
   pinned facts, low-information messages, bad dates, URIs, app-only rows and the consent note.
+  Test files are left out of the app `tsc`; `npm run typecheck:test` checks them (`tsconfig.test.json`).
 - Not merged into `local-work` and not pushed: waiting for the user.
 
 ### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
