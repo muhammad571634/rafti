@@ -31,7 +31,7 @@ import {
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, dayKey, todayKey } from '@/mock';
-import { displayName, fairUseReached, memberActive, minutesOf, useAppStore } from '@/store/use-app-store';
+import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Message } from '@/types';
 import type { ClayIconName } from '@/components/ui';
@@ -72,7 +72,8 @@ export default function ChatRoomScreen() {
   const levelUp = useAppStore((s) => s.levelUp);
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
-  const member = useAppStore((s) => memberActive(s.wallet));
+  // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
+  const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
   const missedToday = useAppStore((s) =>
     s.calls.some(
@@ -95,9 +96,6 @@ export default function ChatRoomScreen() {
   /** Calling with no minutes: free users see what Basic adds, members can top up. */
   const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
   const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
-  // A member past today's fair-use limit: the composer rests until midnight.
-  const capped = useAppStore((s) => fairUseReached(s.wallet, s.daily));
-  const untilMidnight = useUntilMidnight(capped);
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
@@ -212,7 +210,7 @@ export default function ChatRoomScreen() {
 
   const startCall = () => {
     if (callMinutes > 0) return router.push(`/call/${character.id}`);
-    setCallGate(member ? 'out' : 'paywall');
+    setCallGate(withCalls ? 'out' : 'paywall');
   };
   const openStore = (route: '/store/shell?tab=shells' | '/store/shell?tab=plans&plan=pro') => {
     setCallGate(null);
@@ -294,13 +292,6 @@ export default function ChatRoomScreen() {
             ListFooterComponent={
               <>
                 {typing ? <TypingRow character={character} /> : null}
-                {capped ? (
-                  <View style={styles.fairUse}>
-                    <Txt variant="smallStrong" color={colors.textSecondary} center>
-                      {t('chat.fairUse', { name: shortName(name) })}
-                    </Txt>
-                  </View>
-                ) : null}
               </>
             }
             onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
@@ -313,7 +304,6 @@ export default function ChatRoomScreen() {
           onAttach={() => setAttachOpen(true)}
           onVoice={() => setVoiceOpen(true)}
           initialValue={typeof draft === 'string' ? draft : undefined}
-          locked={capped ? t('chat.backAt', { time: untilMidnight }) : undefined}
         />
       </KeyboardAvoidingView>
 
@@ -489,24 +479,6 @@ function DayChip({ iso }: { iso: string }) {
   );
 }
 
-/** "18 min" or "2 h 5 min" to midnight, ticking each minute while `on`. */
-function useUntilMidnight(on: boolean) {
-  const { t } = useTranslation();
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!on) return;
-    setNow(Date.now());
-    const timer = setInterval(() => setNow(Date.now()), 30_000);
-    return () => clearInterval(timer);
-  }, [on]);
-  const midnight = new Date(now);
-  midnight.setHours(24, 0, 0, 0);
-  const minutes = Math.max(1, Math.ceil((midnight.getTime() - now) / 60_000));
-  return minutes < 60
-    ? t('plans.minutes', { count: minutes })
-    : t('chat.hoursMinutes', { hours: Math.floor(minutes / 60), minutes: minutes % 60 });
-}
-
 /** A "-1" that floats off the shell badge whenever a message is paid for. */
 function SpendPulse({ shells }: { shells: number }) {
   const { t } = useTranslation();
@@ -539,15 +511,6 @@ function SpendPulse({ shells }: { shells: number }) {
 
 const styles = StyleSheet.create({
   dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
-  fairUse: {
-    alignSelf: 'center',
-    maxWidth: '86%',
-    marginTop: space.md,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm,
-    borderRadius: radius.lg,
-    backgroundColor: colors.onMediaSoft,
-  },
   dayChip: {
     paddingHorizontal: space.md,
     paddingVertical: space.xs,

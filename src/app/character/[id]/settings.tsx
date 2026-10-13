@@ -22,7 +22,7 @@ import { ClosenessSheet } from '@/components/closeness-sheet';
 import { planDate } from '@/components/plans/copy';
 import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
-import { displayName, memberActive, useAppStore } from '@/store/use-app-store';
+import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
 import type { Character } from '@/types';
 
@@ -96,8 +96,8 @@ export default function CharacterSettingsScreen() {
 
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
-  // Voice replies come with a plan; without one the switch says so.
-  const hasPlan = useAppStore((s) => memberActive(s.wallet));
+  // Voice replies come with Pro (or the trial); without it the switch says so.
+  const hasPlan = useAppStore((s) => callsIncluded(s.wallet));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const memoryCount = useAppStore((s) => s.memories.filter((m) => m.characterId === characterId).length);
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);

@@ -248,8 +248,8 @@ export interface BoardPost {
   replied: boolean;
 }
 
-/** The plans a user can subscribe to (docs/backend-plan.md §13.3). */
-export type PlanId = 'basic' | 'quarterly' | 'annual' | 'pro';
+/** The plans a user can subscribe to (docs/backend-plan.md §15.10): Basic monthly, Pro monthly, Pro yearly. */
+export type PlanId = 'basic' | 'pro' | 'proAnnual';
 
 /**
  * A plan bought in the store. The app keeps a mock copy until the server takes over
@@ -263,8 +263,8 @@ export interface Subscription {
   termStart: string;
   /** Renews at the end of each term, like the store's auto-renewal; false ends it then */
   willRenew: boolean;
-  /** Minutes used in the current period; a new period starts from zero */
-  usage: { periodStart: string; callSeconds: number; voiceSeconds: number };
+  /** Minutes (and Photo Booth pictures) used in the current period; a new period starts from zero */
+  usage: { periodStart: string; callSeconds: number; voiceSeconds: number; photos?: number };
 }
 
 /** Extra minutes bought with shells: used after the plan's own and kept for 90 days. */
@@ -298,6 +298,7 @@ export type LedgerReason =
   | 'membership'
   | 'call'
   | 'topUp'
+  | 'plan'
   | 'other';
 
 /** One line in the shell history. Positive amounts are credits. */
@@ -329,6 +330,8 @@ export interface Wallet {
   trialUsed?: boolean;
   /** Set by the first shell purchase; until then the store offers the starter pack. */
   boughtShells?: boolean;
+  /** Start of the plan period whose monthly shells were already paid (`shellGrant`). */
+  planShellsPeriod?: string;
 }
 
 export interface User {

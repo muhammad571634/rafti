@@ -15,15 +15,24 @@ export interface PlanSpec {
   amount: number;
   /** What one purchase or renewal covers, in days. */
   termDays: number;
-  /** Minutes reset every period: monthly, except the quarterly plan (every 90 days). */
+  /** Shells, minutes and pictures come back every period: 30 days, also on the yearly plan. */
   periodDays: number;
-  /** Allowance per period, in seconds. */
+  /** Allowance per period, in seconds. Basic has none: calls and voice are Pro. */
   callSeconds: number;
   voiceSeconds: number;
+  /** Shells paid at the start of every period (yearly too, month by month). They never burn. */
+  shells: number;
+  /** Photo Booth pictures per period. */
+  photos: number;
 }
 
 const MIN = 60;
 
+/**
+ * The credit model (backend-plan §15.10, owner decision 2026-10-13): every message costs a
+ * shell for everyone. Basic is chat only; Pro adds calls, voice replies and pictures. Pro
+ * yearly has Pro's allowance at $20 a month.
+ */
 export const PLANS: Record<PlanId, PlanSpec> = {
   basic: {
     id: 'basic',
@@ -31,27 +40,10 @@ export const PLANS: Record<PlanId, PlanSpec> = {
     amount: 9.99,
     termDays: 30,
     periodDays: 30,
-    callSeconds: 60 * MIN,
-    voiceSeconds: 30 * MIN,
-  },
-  quarterly: {
-    id: 'quarterly',
-    price: '$24.99',
-    amount: 24.99,
-    termDays: 90,
-    periodDays: 90,
-    callSeconds: 150 * MIN,
-    voiceSeconds: 90 * MIN,
-  },
-  // Billed yearly at Basic's limits; the minutes still reset every month.
-  annual: {
-    id: 'annual',
-    price: '$79.99',
-    amount: 79.99,
-    termDays: 365,
-    periodDays: 30,
-    callSeconds: 60 * MIN,
-    voiceSeconds: 30 * MIN,
+    callSeconds: 0,
+    voiceSeconds: 0,
+    shells: 2000,
+    photos: 0,
   },
   pro: {
     id: 'pro',
@@ -61,14 +53,27 @@ export const PLANS: Record<PlanId, PlanSpec> = {
     periodDays: 30,
     callSeconds: 180 * MIN,
     voiceSeconds: 120 * MIN,
+    shells: 5000,
+    photos: 30,
+  },
+  proAnnual: {
+    id: 'proAnnual',
+    price: '$239.99',
+    amount: 239.99,
+    termDays: 365,
+    periodDays: 30,
+    callSeconds: 180 * MIN,
+    voiceSeconds: 120 * MIN,
+    shells: 5000,
+    photos: 30,
   },
 };
 
-/** The store's free trial: Basic for 3 days, with a smaller allowance. One per account. */
-export const TRIAL = { plan: 'basic' as PlanId, days: 3, callSeconds: 10 * MIN, voiceSeconds: 10 * MIN };
-
-/** Members chat without limits up to this many messages a day (an anti-abuse line in the terms). */
-export const FAIR_USE_PER_DAY = 300;
+/**
+ * The store's free trial: Pro yearly for 3 days, with a small allowance and no plan
+ * shells (they start with the first paid month). One per account.
+ */
+export const TRIAL = { plan: 'proAnnual' as PlanId, days: 3, callSeconds: 10 * MIN, voiceSeconds: 10 * MIN, shells: 0, photos: 3 };
 
 /** Extra minutes bought with shells. */
 export const TOP_UPS: Record<MinutesKind, { seconds: number; shells: number }> = {
@@ -216,16 +221,52 @@ export function consumeMinutes(
   return { subscription, packs: next.filter((pack) => packAlive(pack, now)), taken };
 }
 
-/** What the user is on right now, for labels: the plan, a trial, or nothing. */
 /**
- * Whether a character may ring the user on their own. Live calls come with a plan or
- * the trial; a free user gets a voice note from the free voice lines instead
- * (backend-plan §13.5, owner decision 2026-10-13).
+ * Whether the plan includes live calls: Pro and the trial do, Basic and free users do not.
+ * Characters never ring without it; a voice note from the free voice lines comes instead
+ * (backend-plan §13.5, owner decisions 2026-10-13).
  */
 export function canRing(sub: Subscription | undefined, now: number) {
-  return planStatus(sub, now) !== null;
+  const live = rollSubscription(sub, now);
+  return !!live && allowance(live, 'call') > 0;
 }
 
+/** Photo Booth pictures left this period (0 without Pro or the trial). */
+export function photosLeft(sub: Subscription | undefined, now: number) {
+  const live = rollSubscription(sub, now);
+  if (!live) return 0;
+  const total = live.status === 'trial' ? TRIAL.photos : PLANS[live.plan].photos;
+  const used = at(live.usage.periodStart) === periodOf(live, now).start ? (live.usage.photos ?? 0) : 0;
+  return Math.max(0, total - used);
+}
+
+/** Takes one picture from the period's allowance; null when none is left. */
+export function consumePhoto(sub: Subscription | undefined, now: number): Subscription | null {
+  if (photosLeft(sub, now) <= 0) return null;
+  const live = rollSubscription(sub, now)!;
+  const { start } = periodOf(live, now);
+  const usage =
+    at(live.usage.periodStart) === start ? live.usage : { periodStart: iso(start), callSeconds: 0, voiceSeconds: 0 };
+  return { ...live, usage: { ...usage, photos: (usage.photos ?? 0) + 1 } };
+}
+
+/**
+ * The plan's monthly shells, once per period: due when a paid period has started that was
+ * not paid yet (`lastPaid` is the period start already paid). The trial pays none.
+ */
+export function shellGrant(
+  sub: Subscription | undefined,
+  lastPaid: string | undefined,
+  now: number,
+): { amount: number; periodStart: string } | null {
+  const live = rollSubscription(sub, now);
+  if (!live || live.status === 'trial') return null;
+  const periodStart = iso(periodOf(live, now).start);
+  if (lastPaid === periodStart) return null;
+  return { amount: PLANS[live.plan].shells, periodStart };
+}
+
+/** What the user is on right now, for labels: the plan, a trial, or nothing. */
 export function planStatus(sub: Subscription | undefined, now: number) {
   const live = rollSubscription(sub, now);
   if (!live) return null;

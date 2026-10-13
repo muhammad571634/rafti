@@ -15,7 +15,7 @@ import {
   todayKey,
   WHEEL_SEGMENTS,
 } from '@/mock';
-import { memberActive, useAppStore } from '@/store/use-app-store';
+import { callsIncluded, memberActive, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 
 const ROW_ICON = 36;
@@ -42,6 +42,7 @@ export function PaywallSheet({
   const router = useRouter();
   const wallet = useAppStore((s) => s.wallet);
   const member = useAppStore((s) => memberActive(s.wallet));
+  const proMember = useAppStore((s) => callsIncluded(s.wallet));
   const daily = useAppStore((s) => s.daily);
   const watchAd = useAppStore((s) => s.watchAd);
   const [earned, setEarned] = useState(0);
@@ -97,14 +98,19 @@ export function PaywallSheet({
         : t('paywall.getShellsStarter', { price: STARTER_PACK.price, count: STARTER_PACK.shells }),
       onPress: () => go('/store/shell?tab=shells'),
     },
-    // Members already chat without shells; the plan row is for everyone else.
-    member
+    // A plan brings shells every month: the Pro trial first, then Basic; Basic users see Pro.
+    proMember
       ? null
       : {
           lead: <Icon3D name="crown" size={ROW_ICON} />,
-          title: wallet.trialUsed ? t('paywall.getBasic') : t('plans.tryTrial', { count: TRIAL.days }),
-          meta: t('paywall.planMeta'),
-          onPress: () => go('/store/shell?tab=plans&plan=basic'),
+          title: member
+            ? t('paywall.getPro')
+            : wallet.trialUsed
+              ? t('paywall.getBasic')
+              : t('plans.tryTrial', { count: TRIAL.days }),
+          meta: member ? t('paywall.proMeta') : t('paywall.planMeta'),
+          onPress: () =>
+            go(member || !wallet.trialUsed ? '/store/shell?tab=plans&plan=proAnnual' : '/store/shell?tab=plans&plan=basic'),
         },
   ].filter((row) => row != null);
 

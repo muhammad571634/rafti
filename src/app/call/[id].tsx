@@ -12,7 +12,7 @@ import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, chara
 import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { shareForReward } from '@/lib/share';
-import { callScript, displayName, memberActive, minutesOf, useAppStore } from '@/store/use-app-store';
+import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
@@ -40,7 +40,8 @@ export default function CallScreen() {
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const addCall = useAppStore((s) => s.addCall);
   const wallet = useAppStore((s) => s.wallet);
-  const member = memberActive(wallet);
+  // Pro or the trial: out of minutes means a top-up; Basic and free users see the plans.
+  const member = callsIncluded(wallet);
   // The call may run for as long as the minutes left (plan, then packs) when it started.
   const budget = useRef(minutesOf(useAppStore.getState().wallet, 'call').total);
 
@@ -134,7 +135,7 @@ export default function CallScreen() {
   // Nothing is booked until the call ends, so these are the minutes before this call.
   const minutes = minutesOf(wallet, 'call');
   const status = planStatus(wallet.subscription, Date.now());
-  const monthly = !!status && !status.trial && status.plan !== 'quarterly';
+  const monthly = !!status && !status.trial;
   const warn = state === 'active' && remaining <= WARN_SECONDS;
 
   const share = () => {
@@ -228,7 +229,7 @@ export default function CallScreen() {
         />
       </View>
 
-      {/* No minutes when it opened: free users hear what Basic adds, members can top up. */}
+      {/* No minutes when it opened: free and Basic users hear what Pro adds, Pro can top up. */}
       <CallPaywallSheet
         visible={state === 'empty' && !member}
         character={character}

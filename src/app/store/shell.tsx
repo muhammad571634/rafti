@@ -23,14 +23,14 @@ import {
 } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
-import { memberActive, useAppStore } from '@/store/use-app-store';
+import { useAppStore } from '@/store/use-app-store';
 import { colors, palette, radius, space } from '@/theme';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
 type Tab = 'plans' | 'shells';
 
-const PLAN_IDS: readonly string[] = ['basic', 'quarterly', 'annual', 'pro'];
+const PLAN_IDS: readonly string[] = ['basic', 'pro', 'proAnnual'];
 
 /** One pack with the value maths the picker shows: totals, savings, price per 100. */
 interface PackOffer {
@@ -174,7 +174,6 @@ function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void
   const popularId = (shellPacks.find((p) => p.popular) ?? shellPacks[0]).id;
   const [selectedId, setSelectedId] = useState(() => (wallet.boughtShells ? popularId : STARTER_PACK.id));
 
-  const isMember = memberActive(wallet);
   const all = starter ? [starter, ...offers] : offers;
   const selected = all.find((o) => o.pack.id === selectedId) ?? offers.find((o) => o.pack.id === popularId) ?? offers[0];
 
@@ -193,9 +192,7 @@ function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void
           <View style={styles.flex}>
             <Txt variant="display">{wallet.shells}</Txt>
             <Txt variant="small" color={colors.textMuted}>
-              {isMember
-                ? t('store.balanceMember')
-                : t('store.balanceHint', { count: Math.floor(wallet.shells / shellCosts.textMessage) })}
+              {t('store.balanceHint', { count: Math.floor(wallet.shells / shellCosts.textMessage) })}
             </Txt>
           </View>
           <Button
@@ -230,7 +227,7 @@ function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void
         <SectionLabel tone="title" title={t('store.costs')} />
         <CostRow
           label={t('store.costTextMessage')}
-          meta={isMember ? t('common.free') : t('chat.shellCost', { count: shellCosts.textMessage })}
+          meta={t('chat.shellCost', { count: shellCosts.textMessage })}
         />
         <CostRow label={t('store.costListen')} meta={t('store.withPlan')} />
         <CostRow label={t('store.costCall')} meta={t('store.withPlan')} />

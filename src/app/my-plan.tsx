@@ -9,7 +9,7 @@ import { planDate, planPrice, planTime, SUBSCRIPTIONS_URL, wholeMinutes } from '
 import { Button, Header, Icon3D, ListRow, Screen, Sheet, ShellBadge, Txt } from '@/components/ui';
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
 import { todayKey } from '@/mock';
-import { minutesOf, useAppStore } from '@/store/use-app-store';
+import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 
 const ROW_ICON = 36;
@@ -17,7 +17,7 @@ const ROW_ICON = 36;
 /**
  * What the user is on and what is left: minutes for calls and voice replies this
  * period, extra minutes for shells, and the way to change or cancel the plan.
- * Free users see today's free shells and what Basic adds.
+ * Basic shows the plan's monthly shells; free users see today's free shells and what Pro adds.
  */
 export default function MyPlanScreen() {
   const { t } = useTranslation();
@@ -34,6 +34,8 @@ export default function MyPlanScreen() {
   const calls = minutesOf(wallet, 'call', now);
   const voice = minutesOf(wallet, 'voice', now);
   const freeToday = wallet.free && wallet.free.day === todayKey() ? wallet.free.amount : 0;
+  // Pro and the trial carry minutes; Basic is chat only.
+  const withCalls = callsIncluded(wallet, now);
 
   const name = status
     ? status.trial
@@ -43,7 +45,7 @@ export default function MyPlanScreen() {
   const line = !status
     ? t('plans.freeLine')
     : status.trial
-      ? t('plans.trialEnds', { date: planDate(status.renewsAt), price: planPrice(t, 'basic') })
+      ? t('plans.trialEnds', { date: planDate(status.renewsAt), price: planPrice(t, TRIAL.plan) })
       : status.willRenew
         ? t('plans.renews', { date: planDate(status.renewsAt), price: planPrice(t, status.plan) })
         : t('plans.ends', { date: planDate(status.renewsAt) });
@@ -51,9 +53,7 @@ export default function MyPlanScreen() {
     ? ''
     : status.trial
       ? t('plans.yourTrial')
-      : status.plan === 'quarterly'
-        ? t('plans.thisQuarter')
-        : t('plans.thisMonth');
+      : t('plans.thisMonth');
 
   const topUp = (kind: MinutesKind) => {
     if (topUpMinutes(kind) === 'noShells') return setPaywall(TOP_UPS[kind].shells);
@@ -61,9 +61,9 @@ export default function MyPlanScreen() {
   };
 
   const startTrial = () => {
-    if (wallet.trialUsed) return router.push('/store/shell?tab=plans&plan=basic');
+    if (wallet.trialUsed) return router.push('/store/shell?tab=plans&plan=proAnnual');
     // Real builds open the store's purchase sheet with the free-trial offer.
-    subscribe('basic', true);
+    subscribe(TRIAL.plan, true);
   };
 
   return (
@@ -84,28 +84,37 @@ export default function MyPlanScreen() {
         {status ? (
           <View style={styles.section}>
             <Txt variant="h3">{usageTitle}</Txt>
-            <Meter icon="call-outline" label={t('plans.callsRow')} left={calls.plan} total={calls.planTotal} extra={calls.packs} />
-            <Meter icon="mic-outline" label={t('plans.voiceRow')} left={voice.plan} total={voice.planTotal} extra={voice.packs} />
+            {withCalls ? (
+              <>
+                <Meter icon="call-outline" label={t('plans.callsRow')} left={calls.plan} total={calls.planTotal} extra={calls.packs} />
+                <Meter icon="mic-outline" label={t('plans.voiceRow')} left={voice.plan} total={voice.planTotal} extra={voice.packs} />
+              </>
+            ) : null}
             <View style={styles.rowHead}>
               <Glyph icon="chatbubble-outline" />
               <Txt variant="title" style={styles.flex}>
                 {t('plans.chatRow')}
               </Txt>
-              <Txt variant="bodyStrong">{t('plans.unlimited')}</Txt>
+              <Txt variant="bodyStrong">{t('plans.shells', { count: wallet.shells })}</Txt>
             </View>
             <Txt variant="small" color={colors.textSecondary}>
               {status.trial
                 ? t('plans.trialNote', {
-                    calls: planTime(t, PLANS.basic.callSeconds),
-                    voice: planTime(t, PLANS.basic.voiceSeconds),
+                    calls: planTime(t, PLANS[TRIAL.plan].callSeconds),
+                    voice: planTime(t, PLANS[TRIAL.plan].voiceSeconds),
                     date: planDate(status.renewsAt),
                   })
-                : t('plans.resetNote', { date: planDate(calls.resetsAt ?? status.renewsAt) })}
+                : withCalls
+                  ? t('plans.resetNote', { date: planDate(calls.resetsAt ?? status.renewsAt) })
+                  : t('plans.shellsNote', {
+                      amount: PLANS[status.plan].shells.toLocaleString('en-US'),
+                      date: planDate(calls.resetsAt ?? status.renewsAt),
+                    })}
             </Txt>
           </View>
         ) : null}
 
-        {status && !status.trial ? (
+        {status && !status.trial && withCalls ? (
           <View style={styles.sectionTight}>
             <View style={styles.titleRow}>
               <Txt variant="h3" style={styles.flex}>
@@ -151,7 +160,7 @@ export default function MyPlanScreen() {
               <Txt variant="title" style={styles.flex}>
                 {t('plans.callsAndVoice')}
               </Txt>
-              <Txt variant="bodyStrong">{t('plans.withBasic')}</Txt>
+              <Txt variant="bodyStrong">{t('plans.withPro')}</Txt>
             </View>
             <Txt variant="small" color={colors.textSecondary}>
               {t('plans.freeNote')}
@@ -160,7 +169,7 @@ export default function MyPlanScreen() {
               <Button
                 label={
                   wallet.trialUsed
-                    ? t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })
+                    ? t('plans.get', { plan: t('plans.name.proAnnual'), price: PLANS.proAnnual.price })
                     : t('plans.tryTrial', { count: TRIAL.days })
                 }
                 size="lg"
@@ -168,7 +177,7 @@ export default function MyPlanScreen() {
                 onPress={startTrial}
               />
               <Txt variant="caption" color={colors.textMuted} center>
-                {wallet.trialUsed ? t('plans.billed.basic') : t('plans.trialCaption', { price: PLANS.basic.price })}
+                {wallet.trialUsed ? t('plans.billed.proAnnual') : t('plans.trialCaption', { price: PLANS[TRIAL.plan].price })}
               </Txt>
             </View>
           </View>

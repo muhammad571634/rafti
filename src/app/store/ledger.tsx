@@ -196,6 +196,7 @@ export default function LedgerScreen() {
 
 const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']> = {
   welcome: 'sparkles-outline',
+  plan: 'star-outline',
   daily: 'calendar-outline',
   expired: 'moon-outline',
   ad: 'play-circle-outline',

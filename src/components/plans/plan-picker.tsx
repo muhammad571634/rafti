@@ -5,15 +5,17 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, PressableScale, Txt } from '@/components/ui';
-import { FAIR_USE_PER_DAY, planStatus, PLANS, TRIAL } from '@/economy/plans';
+import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { PlanId } from '@/types';
 
 import { perMonth, planPrice, planTime, savingVsMonthly, storeName } from './copy';
 
-type BasicPeriod = 'basic' | 'quarterly' | 'annual';
-const PERIODS: BasicPeriod[] = ['basic', 'quarterly', 'annual'];
+type ProPeriod = 'pro' | 'proAnnual';
+const PRO_PERIODS: ProPeriod[] = ['pro', 'proAnnual'];
+
+const count = new Intl.NumberFormat('en-US');
 
 export interface PlanBought {
   plan: PlanId;
@@ -21,8 +23,9 @@ export interface PlanBought {
 }
 
 /**
- * The Plans tab of the store: Basic with its three billing periods, and Pro. Every
- * plan gets the same memory quality (owner decision 2026-10-13); plans differ only in minutes.
+ * The Plans tab of the store (credit model, backend-plan §15.10): Basic is chat only;
+ * Pro, monthly or yearly with the same allowance, adds calls, voice and pictures.
+ * Pro yearly is picked first and carries the free days.
  */
 export function PlanPicker({
   initialPlan,
@@ -39,22 +42,22 @@ export function PlanPicker({
   const subscribe = useAppStore((s) => s.subscribe);
 
   const current = planStatus(wallet.subscription, Date.now());
-  const start = initialPlan ?? current?.plan ?? 'basic';
-  const [tier, setTier] = useState<'basic' | 'pro'>(start === 'pro' ? 'pro' : 'basic');
-  const [period, setPeriod] = useState<BasicPeriod>(start === 'pro' ? 'basic' : start);
-  const selected: PlanId = tier === 'pro' ? 'pro' : period;
+  const start = initialPlan ?? (current && !current.trial ? current.plan : 'proAnnual');
+  const [tier, setTier] = useState<'basic' | 'pro'>(start === 'basic' ? 'basic' : 'pro');
+  const [period, setPeriod] = useState<ProPeriod>(start === 'pro' ? 'pro' : 'proAnnual');
+  const selected: PlanId = tier === 'basic' ? 'basic' : period;
 
-  // The store's free days go to new subscribers only, once per account.
+  // The store's free days go to new subscribers only, once per account, on Pro yearly.
   const trialOffer = !wallet.trialUsed && !current;
   const isCurrent = !!current && !current.trial && current.plan === selected;
-  const withTrial = trialOffer && selected === 'basic';
+  const withTrial = trialOffer && selected === TRIAL.plan;
 
   const cta = isCurrent
     ? { label: t('plans.current'), caption: t(`plans.billed.${selected}`) }
     : withTrial
       ? {
           label: t('plans.startTrial', { count: TRIAL.days }),
-          caption: t('plans.trialCaption', { price: PLANS.basic.price }),
+          caption: t('plans.trialCaption', { price: PLANS[TRIAL.plan].price }),
         }
       : {
           label: t('plans.get', { plan: t(`plans.name.${selected}`), price: PLANS[selected].price }),
@@ -67,10 +70,11 @@ export function PlanPicker({
     onBought({ plan: selected, trial: withTrial });
   };
 
-  const basicPrice =
-    period === 'basic'
-      ? planPrice(t, period)
-      : `${planPrice(t, period)} · ${t('plans.perMonth', { price: perMonth(period) })}`;
+  const proPrice =
+    period === 'pro'
+      ? planPrice(t, 'pro')
+      : `${planPrice(t, 'proAnnual')} · ${t('plans.perMonth', { price: perMonth('proAnnual') })}`;
+  const pro = PLANS[period];
 
   return (
     <>
@@ -86,30 +90,39 @@ export function PlanPicker({
           selected={tier === 'basic'}
           onPress={() => setTier('basic')}
           name={t('plans.name.basic')}
-          // The free days come with monthly Basic only.
-          badge={
-            trialOffer && period === 'basic'
-              ? { label: t('plans.freeDays', { count: TRIAL.days }), shell: true }
-              : undefined
-          }
-          price={basicPrice}
+          price={planPrice(t, 'basic')}
           perks={[
-            t('plans.unlimitedChatMark'),
-            t(`plans.calls.${period}`, { time: planTime(t, PLANS[period].callSeconds) }),
-            t(`plans.voice.${period}`, { time: planTime(t, PLANS[period].voiceSeconds) }),
+            t('plans.shellsMonth', { amount: count.format(PLANS.basic.shells) }),
+            t('plans.remembers'),
+            t('plans.chatOnly'),
           ]}
         />
 
-        {tier === 'basic' ? (
+        <PlanCard
+          selected={tier === 'pro'}
+          onPress={() => setTier('pro')}
+          name={t('plans.name.pro')}
+          badge={{ label: t('plans.bestValue'), shell: true }}
+          price={proPrice}
+          perks={[
+            t('plans.shellsMonth', { amount: count.format(pro.shells) }),
+            t('plans.remembers'),
+            t(`plans.calls.${period}`, { time: planTime(t, pro.callSeconds) }),
+            t(`plans.voice.${period}`, { time: planTime(t, pro.voiceSeconds) }),
+            t('plans.photosMonth', { count: pro.photos }),
+            t('plans.bedtime'),
+            t('plans.newCharacters'),
+          ]}
+        />
+
+        {tier === 'pro' ? (
           <View style={styles.periods} accessibilityRole="radiogroup">
-            {PERIODS.map((id) => {
+            {PRO_PERIODS.map((id) => {
               const on = period === id;
               const sub =
-                id === 'basic'
-                  ? PLANS.basic.price
-                  : id === 'quarterly'
-                    ? t('plans.perMonth', { price: perMonth(id) })
-                    : t('plans.periodSave', { percent: savingVsMonthly(id) });
+                id === 'pro'
+                  ? PLANS.pro.price
+                  : t('plans.perMonthSave', { price: perMonth(id), percent: savingVsMonthly(id, 'pro') });
               return (
                 <PressableScale
                   key={id}
@@ -131,21 +144,8 @@ export function PlanPicker({
           </View>
         ) : null}
 
-        <PlanCard
-          selected={tier === 'pro'}
-          onPress={() => setTier('pro')}
-          name={t('plans.name.pro')}
-          badge={{ label: t('plans.mostTime') }}
-          price={planPrice(t, 'pro')}
-          perks={[
-            t('plans.everythingBasic'),
-            t('plans.calls.pro', { time: planTime(t, PLANS.pro.callSeconds) }),
-            t('plans.voice.pro', { time: planTime(t, PLANS.pro.voiceSeconds) }),
-          ]}
-        />
-
         <Txt variant="small" color={colors.textSecondary} style={styles.fine}>
-          {t('plans.finePrint', { count: FAIR_USE_PER_DAY, store: storeName(t) })}
+          {t('plans.finePrint', { store: storeName(t) })}
         </Txt>
         <View style={styles.links}>
           <TextLink label={t('plans.restore')} onPress={onRestore} />

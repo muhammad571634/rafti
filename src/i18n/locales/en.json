@@ -210,10 +210,7 @@
     "streakShort_other": "{{count}} days",
     "aiNotice": "{{name}} is an AI character, not a real person.",
     "voiceQuota": "Voice replies are used up this month and come back on {{date}}. Text replies continue.",
-    "addMinutes": "Add minutes",
-    "fairUse": "We talked a lot today. {{name}} will be back at 00:00, right where you left off.",
-    "backAt": "Back at 00:00 · in {{time}}",
-    "hoursMinutes": "{{hours}} h {{minutes}} min"
+    "addMinutes": "Add minutes"
   },
   "paywall": {
     "title": "Out of shells",
@@ -227,9 +224,11 @@
     "getShellsMeta": "Packs from {{price}}",
     "getShellsStarter": "First pack {{count}} for {{price}}",
     "getBasic": "Get Basic",
-    "planMeta": "Unlimited chat, calls and voice replies",
+    "planMeta": "Shells every month",
     "comeBack": "Free shells come back tomorrow at 00:00.",
-    "earned": "+{{count}} shells added"
+    "earned": "+{{count}} shells added",
+    "getPro": "Get Pro",
+    "proMeta": "5,000 shells a month, calls and voice replies"
   },
   "levelUp": {
     "title": "Ta-da~ You've reached a new stage!",
@@ -283,7 +282,7 @@
     "sectionCharacter": "Character",
     "sectionManage": "Manage",
     "block": "Block",
-    "voiceRepliesPlanHint": "Voice notes as well as text. They come with a plan.",
+    "voiceRepliesPlanHint": "Voice notes as well as text. They come with Pro.",
     "blockName": "Block {{name}}"
   },
   "search": {
@@ -423,7 +422,6 @@
     "purchased": "+{{count}} shells",
     "balanceHint_one": "Enough for about {{count}} message",
     "balanceHint_other": "Enough for about {{count}} messages",
-    "balanceMember": "Messages are free on your plan",
     "choose": "Choose a pack",
     "bestValue": "Best value · save {{percent}}%",
     "popular": "Most popular",
@@ -437,7 +435,7 @@
     "buy": "Get {{amount}} shells · {{price}}",
     "paidApple": "One-time purchase · paid through the App Store",
     "paidGoogle": "One-time purchase · paid through Google Play",
-    "withPlan": "With a plan",
+    "withPlan": "With Pro",
     "starter": "First pack only",
     "starterDetail": "A one-time welcome price"
   },
@@ -868,12 +866,13 @@
       "voiceClone": "Character voice",
       "other": "Other",
       "someone": "a friend",
-      "trial": "Basic free trial",
+      "trial": "Pro free trial",
       "membership": "Plan call minutes",
       "call": "Call with {{name}}",
       "invite": "Invite code",
       "share": "Daily share",
-      "topUp": "Extra call minutes"
+      "topUp": "Extra call minutes",
+      "plan": "Plan shells"
     },
     "tabShells": "Shells",
     "tabCalls": "Call time",
@@ -1055,48 +1054,37 @@
     "tabPlans": "Plans",
     "tabShells": "Shells",
     "headline": "Talk more. Hear them more.",
-    "sub": "Every plan gets the same memory quality. Paid plans add call and voice minutes.",
+    "sub": "Every message uses a shell. Plans add shells every month; Pro adds calls and voice.",
     "name": {
       "basic": "Basic",
-      "quarterly": "Basic",
-      "annual": "Basic",
-      "pro": "Pro"
+      "pro": "Pro",
+      "proAnnual": "Pro"
     },
     "price": {
       "basic": "{{price}} a month",
-      "quarterly": "{{price}} every 3 months",
-      "annual": "{{price}} a year",
-      "pro": "{{price}} a month"
+      "pro": "{{price}} a month",
+      "proAnnual": "{{price}} a year"
     },
     "perMonth": "{{price}}/mo",
     "period": {
-      "basic": "Monthly",
-      "quarterly": "3 months",
-      "annual": "Yearly"
+      "pro": "Monthly",
+      "proAnnual": "Yearly"
     },
     "periodSave": "save {{percent}}%",
     "freeDays_one": "{{count}} day free",
     "freeDays_other": "{{count}} days free",
-    "mostTime": "Most time together",
-    "unlimitedChat": "Unlimited chat",
-    "unlimitedChatMark": "Unlimited chat*",
-    "everythingBasic": "Everything in Basic",
     "calls": {
-      "basic": "{{time}} of calls a month",
-      "quarterly": "{{time}} of calls every 3 months",
-      "annual": "{{time}} of calls every month",
-      "pro": "{{time}} of calls a month"
+      "pro": "{{time}} of calls a month",
+      "proAnnual": "{{time}} of calls a month"
     },
     "voice": {
-      "basic": "{{time}} of voice replies a month",
-      "quarterly": "{{time}} of voice replies every 3 months",
-      "annual": "{{time}} of voice replies every month",
-      "pro": "{{time}} of voice replies a month"
+      "pro": "{{time}} of voice replies a month",
+      "proAnnual": "{{time}} of voice replies a month"
     },
     "hours_one": "{{count}} hour",
     "hours_other": "{{count}} hours",
     "minutes": "{{count}} min",
-    "finePrint": "*Unlimited chat has a fair-use limit of {{count}} messages a day. Minutes reset on your renewal date and don't roll over; extra minutes can be added with shells. Plans renew automatically until you cancel in your {{store}} settings.",
+    "finePrint": "Every message uses 1 shell. Plan shells arrive every month and never expire; free daily shells expire at midnight. Minutes reset on your renewal date and don't roll over. Plans renew automatically until you cancel in your {{store}} settings.",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "restore": "Restore purchases",
@@ -1106,13 +1094,12 @@
     "startTrial_one": "Start {{count}} day free",
     "startTrial_other": "Start {{count}} days free",
     "get": "Get {{plan}} — {{price}}",
-    "trialCaption": "Then {{price}} a month. Cancel anytime.",
-    "trialCaptionSettings": "Then {{price}} a month. Cancel anytime in Settings.",
+    "trialCaption": "Then {{price}} a year. Cancel anytime.",
+    "trialCaptionSettings": "Then {{price}} a year. Cancel anytime in Settings.",
     "billed": {
       "basic": "Billed monthly. Cancel anytime.",
-      "quarterly": "Billed every 3 months. Cancel anytime.",
-      "annual": "Billed yearly. Cancel anytime.",
-      "pro": "Billed monthly. Cancel anytime."
+      "pro": "Billed monthly. Cancel anytime.",
+      "proAnnual": "Billed yearly. Cancel anytime."
     },
     "current": "Your current plan",
     "welcome": "Welcome to {{plan}}!",
@@ -1126,12 +1113,10 @@
     "ends": "Ends {{date}}",
     "trialEnds": "Trial ends {{date}} · then {{price}}",
     "thisMonth": "This month",
-    "thisQuarter": "These 3 months",
     "yourTrial": "Your trial",
     "callsRow": "Calls",
     "voiceRow": "Voice replies",
     "chatRow": "Chat",
-    "unlimited": "Unlimited",
     "left": "{{left}} of {{total}} min left",
     "extra": "+{{time}} extra",
     "resetNote": "Minutes reset on {{date}}. Unused minutes don't roll over.",
@@ -1148,16 +1133,15 @@
     "freeShellsLeft": "{{count}} left today",
     "freeShellsNone": "None left today",
     "callsAndVoice": "Calls and voice replies",
-    "withBasic": "With Basic",
     "freeNote": "One message costs one shell. Free shells come back every day at 00:00.",
-    "tryTrial_one": "Try Basic free for {{count}} day",
-    "tryTrial_other": "Try Basic free for {{count}} days",
+    "tryTrial_one": "Try Pro free for {{count}} day",
+    "tryTrial_other": "Try Pro free for {{count}} days",
     "planSection": "Plan",
     "seeAll": "See all plans",
     "manage": "Manage subscription",
     "voiceReady": "Voice ready",
     "hearVoice": "Hear {{name}}'s voice",
-    "callsTitle": "Calls come with Basic",
+    "callsTitle": "Calls come with Pro",
     "callsPerk": "{{time}} of calls every month",
     "voicePerk": "{{time}} of voice replies in their voice",
     "notNow": "Not now",
@@ -1169,6 +1153,16 @@
     "youHave_other": "You have {{count}} shells",
     "getPro": "Get Pro · {{time}} of calls a month",
     "minLeftMonth": "{{count}} min left this month",
-    "minLeft": "{{count}} min left"
+    "minLeft": "{{count}} min left",
+    "perMonthSave": "{{price}}/mo · save {{percent}}%",
+    "bestValue": "Best value",
+    "shellsMonth": "{{amount}} shells every month",
+    "remembers": "Remembers everything",
+    "chatOnly": "Chat only",
+    "photosMonth": "{{count}} Photo Booth pictures a month",
+    "bedtime": "Bedtime whispers every night",
+    "newCharacters": "New characters first",
+    "shellsNote": "{{amount}} plan shells come again on {{date}}.",
+    "withPro": "With Pro"
   }
 }

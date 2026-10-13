@@ -19,7 +19,7 @@ const SAMPLE_SECONDS = 6;
 
 /**
  * A free user taps call: they hear the voice first (a short recorded line, never a
- * live call), then see what Basic adds. Starting the trial goes straight to the call.
+ * live call), then see what Pro adds. Starting the trial goes straight to the call.
  */
 export function CallPaywallSheet({
   visible,
@@ -60,13 +60,13 @@ export function CallPaywallSheet({
   const start = () => {
     setLeft(null);
     if (trialUsed) {
-      // No free days left on this account: the plans, with Basic picked.
+      // No free days left on this account: the plans, with Pro yearly picked.
       onClose();
-      router.push('/store/shell?tab=plans&plan=basic');
+      router.push('/store/shell?tab=plans&plan=proAnnual');
       return;
     }
     // Real builds open the store's purchase sheet with the free-trial offer.
-    subscribe('basic', true);
+    subscribe(TRIAL.plan, true);
     onStarted();
   };
 
@@ -113,9 +113,9 @@ export function CallPaywallSheet({
       <View style={styles.offer}>
         <Txt variant="h2">{t('plans.callsTitle')}</Txt>
         {[
-          t('plans.callsPerk', { time: planTime(t, PLANS.basic.callSeconds) }),
-          t('plans.voicePerk', { time: planTime(t, PLANS.basic.voiceSeconds) }),
-          t('plans.unlimitedChat'),
+          t('plans.callsPerk', { time: planTime(t, PLANS.proAnnual.callSeconds) }),
+          t('plans.voicePerk', { time: planTime(t, PLANS.proAnnual.voiceSeconds) }),
+          t('plans.shellsMonth', { amount: PLANS.proAnnual.shells.toLocaleString('en-US') }),
         ].map((perk) => (
           <View key={perk} style={styles.perk}>
             <Ionicons name="checkmark" size={17} color={colors.text} />
@@ -130,7 +130,7 @@ export function CallPaywallSheet({
         <Button
           label={
             trialUsed
-              ? t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })
+              ? t('plans.get', { plan: t('plans.name.proAnnual'), price: PLANS.proAnnual.price })
               : t('plans.startTrial', { count: TRIAL.days })
           }
           size="lg"
@@ -138,7 +138,7 @@ export function CallPaywallSheet({
           onPress={start}
         />
         <Txt variant="caption" color={colors.textMuted} center>
-          {trialUsed ? t('plans.billed.basic') : t('plans.trialCaptionSettings', { price: PLANS.basic.price })}
+          {trialUsed ? t('plans.billed.proAnnual') : t('plans.trialCaptionSettings', { price: PLANS[TRIAL.plan].price })}
         </Txt>
         <Button label={t('plans.notNow')} variant="ghost" full onPress={close} />
       </View>

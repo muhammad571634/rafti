@@ -12,15 +12,18 @@ import type { PlanId } from '@/types';
 
 export const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
-/** Months one purchase covers: 1, 3 or 12. */
+/** Months one purchase covers: 1 or 12. */
 export const planMonths = (plan: PlanId) => Math.round(PLANS[plan].termDays / 30);
 
-/** "$8.33" — what a longer plan comes to per month. */
-export const perMonth = (plan: PlanId) => usd.format(PLANS[plan].amount / planMonths(plan));
+/** "$20" (or "$8.33") — what a yearly plan comes to per month. */
+export const perMonth = (plan: PlanId) => {
+  const amount = Math.round((PLANS[plan].amount / planMonths(plan)) * 100) / 100;
+  return Number.isInteger(amount) ? `$${amount}` : usd.format(amount);
+};
 
-/** How much a longer Basic plan saves against paying monthly, in percent. */
-export const savingVsMonthly = (plan: PlanId) =>
-  Math.round((1 - PLANS[plan].amount / (PLANS.basic.amount * planMonths(plan))) * 100);
+/** What a yearly plan saves against paying its monthly twin every month, in percent. */
+export const savingVsMonthly = (plan: PlanId, monthly: PlanId) =>
+  Math.round((1 - PLANS[plan].amount / (PLANS[monthly].amount * planMonths(plan))) * 100);
 
 /** "1 hour", "2.5 hours", "30 min". */
 export function planTime(t: TFunction, seconds: number) {

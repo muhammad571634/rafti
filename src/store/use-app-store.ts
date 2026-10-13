@@ -13,10 +13,12 @@ import { creditFree } from '@/economy/shells';
 import {
   canRing,
   consumeMinutes,
-  FAIR_USE_PER_DAY,
+  consumePhoto,
   minutesLeft,
+  photosLeft,
   PLANS,
   rollSubscription,
+  shellGrant,
   startSubscription,
   TOP_UPS,
   TRIAL,
@@ -155,7 +157,7 @@ export interface DailyRewardEvent {
   day: number;
 }
 
-/** `dailyCap`: a member reached the fair-use limit for today (FAIR_USE_PER_DAY). */
+/** `dailyCap` is no longer returned: the credit model has no daily cap (backend-plan §15.10). */
 export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
 
@@ -529,7 +531,6 @@ export const useAppStore = create<AppState>()(
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
-        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
         countMessage(set, get);
         noticeAiIfDue(set, get, conversationId);
@@ -585,7 +586,6 @@ export const useAppStore = create<AppState>()(
       sendVoice: (conversationId, durationSec, transcript) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
         countMessage(set, get);
         noticeAiIfDue(set, get, conversationId);
@@ -613,7 +613,6 @@ export const useAppStore = create<AppState>()(
       sendImage: (conversationId, imageUri) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (overFairUse(get)) return 'dailyCap';
         if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
         countMessage(set, get);
         noticeAiIfDue(set, get, conversationId);
@@ -886,6 +885,8 @@ export const useAppStore = create<AppState>()(
 
       claimDailyLogin: () => {
         get().expireFreeShells();
+        // A plan's monthly shells arrive with the first open of each period.
+        payPlanShells(set, get);
         const today = todayKey();
         const { daily } = get();
         const { day, claimed } = checkInStatus(daily, today);
@@ -984,9 +985,11 @@ export const useAppStore = create<AppState>()(
         // A new plan (or a switch) starts today with a fresh allowance, as the store would bill it.
         const subscription = startSubscription(plan, Date.now(), trial);
         set((s) => ({ wallet: { ...s.wallet, subscription, trialUsed: s.wallet.trialUsed || trial } }));
-        // The call-time history shows what the plan brought.
+        // The call-time history shows what the plan brought (Basic brings none).
         const callSeconds = trial ? TRIAL.callSeconds : PLANS[plan].callSeconds;
-        logSeconds(set, callSeconds, trial ? 'trial' : 'membership');
+        if (callSeconds > 0) logSeconds(set, callSeconds, trial ? 'trial' : 'membership');
+        // The first month's shells come right away; the trial brings none.
+        payPlanShells(set, get);
       },
 
       topUpMinutes: (kind) => {
@@ -1263,7 +1266,10 @@ export const useAppStore = create<AppState>()(
       },
 
       takePhoto: (characterId) => {
-        if (!get().spendShells(shellCosts.photoBooth, 'photoBooth', characterId)) return 'noShells';
+        // Pro (and the trial) take pictures from the month's allowance; everyone else pays shells.
+        const fromPlan = consumePhoto(get().wallet.subscription, Date.now());
+        if (fromPlan) set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan } }));
+        else if (!get().spendShells(shellCosts.photoBooth, 'photoBooth', characterId)) return 'noShells';
         get().addIntimacy(characterId, INTIMACY.photo);
         addMoment(set, characterId, 'photo');
         return 'ok';
@@ -1534,7 +1540,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 7,
+      version: 8,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -1565,6 +1571,11 @@ export const useAppStore = create<AppState>()(
             : wallet;
         }
         if (version < 4 && state.user) state.user = { ...state.user, onboardedAt: state.user.onboardedAt ?? new Date().toISOString() };
+        // v8: the credit model drops Basic quarterly and Basic yearly; they carry on as Basic.
+        const oldPlan = state.wallet?.subscription?.plan as string | undefined;
+        if (version < 8 && state.wallet?.subscription && (oldPlan === 'quarterly' || oldPlan === 'annual')) {
+          state.wallet = { ...state.wallet, subscription: { ...state.wallet.subscription, plan: 'basic' } };
+        }
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),
@@ -1633,16 +1644,15 @@ export const useAppStore = create<AppState>()(
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */
 
-/** A plan or its trial is running: chat is free of shells, calls and voice replies come with it. */
+/** A plan or its trial is running. Chat still costs shells (the credit model, backend-plan §15.10). */
 export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscription(wallet.subscription, now);
+
+/** The plan includes live calls and voice replies: Pro or the trial, not Basic. */
+export const callsIncluded = (wallet: Wallet, now = Date.now()) => canRing(wallet.subscription, now);
 
 /** Call or voice-reply minutes left: the plan's this period, then bought packs. In seconds. */
 export const minutesOf = (wallet: Wallet, kind: MinutesKind, now = Date.now()) =>
   minutesLeft(wallet.subscription, wallet.packs, kind, now);
-
-/** A member sent FAIR_USE_PER_DAY messages today; chat comes back at midnight. */
-export const fairUseReached = (wallet: Wallet, daily: DailyState, today = todayKey()) =>
-  memberActive(wallet) && daily.messagesDay === today && (daily.messagesSent ?? 0) >= FAIR_USE_PER_DAY;
 
 /**
  * Where today falls in the 7-day check-in week, and whether it is collected yet.
@@ -1666,9 +1676,19 @@ type Setter = (fn: (s: AppState) => Partial<AppState>) => void;
 type Getter = () => AppState;
 type RawSetter = (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void;
 
-/** Members chat for free; everyone else spends shells per message. */
+/** Pays the plan's monthly shells once per period (`shellGrant`); they never burn. */
+function payPlanShells(set: Setter, get: Getter) {
+  const { wallet } = get();
+  const due = shellGrant(wallet.subscription, wallet.planShellsPeriod, Date.now());
+  if (!due) return;
+  set((s) => ({
+    wallet: { ...s.wallet, shells: s.wallet.shells + due.amount, planShellsPeriod: due.periodStart },
+    ledger: log(s.ledger, due.amount, 'plan'),
+  }));
+}
+
+/** Every message costs shells, members included (the credit model, backend-plan §15.10). */
 function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
-  if (memberActive(get().wallet)) return true;
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
   return get().spendShells(cost, reason, characterId);
 }
@@ -1680,9 +1700,7 @@ function logSeconds(set: Setter, seconds: number, reason: LedgerReason, characte
   }));
 }
 
-const overFairUse = (get: Getter) => fairUseReached(get().wallet, get().daily);
-
-/** Counts a sent message toward today's total (the fair-use limit). */
+/** Counts a sent message toward today's total (stats; there is no daily cap in the credit model). */
 function countMessage(set: Setter, get: Getter) {
   const today = todayKey();
   const sent = get().daily.messagesDay === today ? (get().daily.messagesSent ?? 0) : 0;
@@ -1873,8 +1891,10 @@ function scheduleReply(
   // Voice replies come with a plan and use its minutes; without minutes the reply is text.
   const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady;
   const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
-  // A member whose voice minutes ran out sees why, once a day, under the reply.
-  const voiceBack = minutesOf(get().wallet, 'voice').resetsAt;
+  // A Pro member whose voice minutes ran out sees why, once a day, under the reply.
+  // Basic has no voice replies at all, so it never gets this note.
+  const voice = minutesOf(get().wallet, 'voice');
+  const voiceBack = voice.planTotal > 0 ? voice.resetsAt : null;
   const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
   if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
 

@@ -249,7 +249,7 @@ npx tsc --noEmit                # must be clean
 - Checked on web: 150 free → 0 after midnight; 500 with 100 free → 400.
 - Open: memory on the free plan (owner leans to none; see the 2026-10-13 chat).
 
-### 0i. 2026-10-13 — credit model and the new plans (decided, prototype approved, not built yet)
+### 0i. 2026-10-13 — credit model and the new plans (built on branch `feat/credit-plans`, not merged)
 
 - backend-plan §15.10–12: every message costs 1 shell for everyone (no unlimited chat); plans are Basic
   monthly $9.99 (2,000 shells/mo, full memory, chat only), Pro monthly $29.99 and Pro yearly $239.99
