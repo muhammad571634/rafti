@@ -50,12 +50,6 @@
       "bulletinBoard": "Bulletin Board",
       "bedtime": "Bedtime"
     },
-    "greeting": {
-      "morning": "Good morning, {{name}}",
-      "afternoon": "Good afternoon, {{name}}",
-      "evening": "Good evening, {{name}}",
-      "night": "Still up, {{name}}?"
-    },
     "today": "Today",
     "explore": "Explore",
     "todo": {

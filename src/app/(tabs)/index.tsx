@@ -70,14 +70,6 @@ interface TodoItem {
   onPress: () => void;
 }
 
-/** Which greeting fits the local hour. */
-function greetingSlot(hour: number) {
-  if (hour >= 5 && hour <= 11) return 'morning';
-  if (hour >= 12 && hour <= 16) return 'afternoon';
-  if (hour >= 17 && hour <= 21) return 'evening';
-  return 'night';
-}
-
 /**
  * The "Today" hub, top to bottom: the friend you talked with last, every module one tap
  * away, who is waiting, what is ready today. The daily gift claims itself on launch
@@ -222,12 +214,6 @@ export default function HomeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
-        <View style={styles.greeting}>
-          <Txt variant="h1" accessibilityRole="header">
-            {t(`home.greeting.${greetingSlot(new Date().getHours())}`, { name: user.displayName })}
-          </Txt>
-        </View>
-
         {hero ? (
           <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
         ) : null}
@@ -405,11 +391,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  greeting: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.lg,
-    gap: space.xs,
   },
   // A full-size target for the small chevron beside the section title.
   more: { width: 44, height: 44, marginVertical: -space.md, alignItems: 'center', justifyContent: 'center' },
