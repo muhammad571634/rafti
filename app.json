@@ -11,13 +11,18 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.rafti.app",
       "adaptiveIcon": {
         "backgroundColor": "#FF9E59",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.USE_FULL_SCREEN_INTENT",
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ]
     },
     "web": {
       "output": "static",
@@ -38,7 +43,14 @@
         "expo-notifications",
         {
           "icon": "./assets/images/android-icon-monochrome.png",
-          "color": "#E8742A"
+          "color": "#E8742A",
+          "sounds": [
+            "./assets/sounds/alarms/morning_tide.wav",
+            "./assets/sounds/alarms/shell_chimes.wav",
+            "./assets/sounds/alarms/sea_breeze.wav",
+            "./assets/sounds/alarms/soft_bells.wav",
+            "./assets/sounds/alarms/lighthouse.wav"
+          ]
         }
       ],
       "expo-audio"

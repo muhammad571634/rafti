@@ -1241,8 +1241,14 @@ export const useAppStore = create<AppState>()(
         if (!alarm) return null;
         const now = new Date();
         const current = get().wake;
-        // The same ring seen twice (the clock and a notification tap) stays one session.
-        if (current?.alarmId === alarmId && now.getTime() - Date.parse(current.rangAt) < WAKE_WINDOW_MIN * 60_000) {
+        // The same ring seen twice (the clock and a notification tap) stays one session. A ring
+        // after the alarm was set again (new time, switched back on) is a new one: ringing sets
+        // `armedAt` to `rangAt`, so only a later save moves it past the session.
+        if (
+          current?.alarmId === alarmId &&
+          (!alarm.armedAt || Date.parse(current.rangAt) >= Date.parse(alarm.armedAt)) &&
+          now.getTime() - Date.parse(current.rangAt) < WAKE_WINDOW_MIN * 60_000
+        ) {
           return current;
         }
         const friend = alarm.characterId ? get().characters.find((c) => c.id === alarm.characterId) : undefined;

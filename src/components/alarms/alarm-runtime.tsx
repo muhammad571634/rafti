@@ -4,7 +4,10 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
 import { ALARM_SOUND_FILES } from '@/lib/alarm-sounds';
+import { silenceAndroidRings } from '@/notifications/alarm-android';
 import { useAppStore } from '@/store/use-app-store';
+
+import { showOverLockScreen } from '../../../modules/alarm-screen';
 
 const TICK_MS = 5_000;
 
@@ -12,7 +15,8 @@ const TICK_MS = 5_000;
  * Wake-up alarms while the app is open (also on the web and in Expo Go, where there are no
  * notifications): a clock that rings due alarms, ends snoozes and sends the sleepy check-in,
  * and the melody, which loops for as long as the alarm rings (on the ring screen and in the
- * friend's chat, until a real reply). Stage 3 adds the real alarm for a closed app.
+ * friend's chat, until a real reply). With the app closed, the OS rings (`alarm-android.ts`)
+ * and opens the app; this clock then finds the due alarm and the app's melody takes over.
  */
 export function AlarmRuntime() {
   const router = useRouter();
@@ -26,6 +30,10 @@ export function AlarmRuntime() {
     if (!hydrated || !onboarded) return;
     const tick = () => {
       if (useAppStore.getState().wakeTick() === 'ring' && !onRing) router.push('/alarms/ring');
+      // Android opens the app over the lock screen for an alarm; nothing rings, so lock it again.
+      if (useAppStore.getState().wake?.state !== 'ringing') showOverLockScreen(false);
+      // Only one melody: the notification's loop stops once the open app rings (or nothing does).
+      if (AppState.currentState === 'active') void silenceAndroidRings();
     };
     tick();
     const timer = setInterval(tick, TICK_MS);

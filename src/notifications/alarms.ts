@@ -1,18 +1,21 @@
 import { Platform } from 'react-native';
 
 import i18n from '@/i18n';
+import { ALARM_SOUND_NAMES } from '@/lib/alarm-sounds';
 import { ringsWithin } from '@/lib/alarms';
 import { CHAIN_LINES } from '@/lib/morning-chain';
 import type { Alarm, Character, WakeSession } from '@/types';
 
+import { allowAndroidAlarms, androidAlarmsSupported, scheduleAndroidRings, type AndroidRing } from './alarm-android';
 import { notificationsModule } from './native';
 import { pushesAllowed, requestPushPermission, type PushData } from './sync';
 
 /**
- * Wake-up alarms as local notifications (stage 1). They live apart from the planned pushes:
- * an `alarm:` id, never cleared when the app opens, and re-synced after every change. Stage 2
- * swaps this for a real alarm (AlarmKit on iOS 26+, an exact alarm with a full-screen ring on
- * Android) in a development build; Expo Go on Android has no notifications at all.
+ * Wake-up alarms handed to the OS. They live apart from the planned pushes: an `alarm:` id,
+ * never cleared when the app opens, and re-synced after every change. In an Android build the
+ * rings are real alarms (`alarm-android.ts`: exact, full screen, our melody); on iOS they are
+ * time-sensitive notifications with the melody (AlarmKit needs an iOS build, later). Expo Go on
+ * Android has no notifications at all; there the app rings only while open (`AlarmRuntime`).
  */
 export const ALARM_PREFIX = 'alarm:';
 export const ALARM_CHANNEL = 'alarms';
@@ -42,7 +45,9 @@ export async function pendingAlarmCount() {
 /** Asks for notifications once, when the first alarm is saved. False where they cannot run. */
 export async function allowAlarms() {
   if (!notificationsModule()) return false;
-  return (await pushesAllowed()) || requestPushPermission();
+  const allowed = (await pushesAllowed()) || (await requestPushPermission());
+  if (allowed) await allowAndroidAlarms();
+  return allowed;
 }
 
 /**
@@ -60,69 +65,71 @@ export async function syncAlarms(alarms: Alarm[], characters: Character[], wake:
       .map((n) => N.cancelScheduledNotificationAsync(n.identifier)),
   );
 
-  const jobs = alarms
+  const rings: AndroidRing[] = alarms
     .filter((alarm) => alarm.enabled)
     .flatMap((alarm) => ringsWithin(alarm, now).map((at) => ({ alarm, at })))
     .sort((a, b) => a.at.getTime() - b.at.getTime())
-    .slice(0, 20);
-
-  await Promise.all(
-    jobs.map(({ alarm, at }) => {
+    .slice(0, 20)
+    .map(({ alarm, at }) => {
       const friend = characters.find((c) => c.id === alarm.characterId);
-      const data: PushData = {
+      return {
         id: `${ALARM_PREFIX}${alarm.id}:${at.getTime()}`,
-        kind: 'alarm',
+        at,
+        title: alarm.label || friend?.name || i18n.t('alarms.defaultLabel'),
+        body: friend ? i18n.t('alarms.wakeLine') : i18n.t('alarms.ringing'),
+        sound: alarm.sound,
         route: `/alarms/ring?id=${alarm.id}&at=${encodeURIComponent(at.toISOString())}`,
-        characterId: friend?.id,
-        at: at.toISOString(),
       };
-      return N.scheduleNotificationAsync({
-        identifier: data.id,
-        content: {
-          title: alarm.label || friend?.name || i18n.t('alarms.defaultLabel'),
-          body: friend ? i18n.t('alarms.wakeLine') : i18n.t('alarms.ringing'),
-          data: data as unknown as Record<string, unknown>,
-          sound: 'default',
-          interruptionLevel: 'timeSensitive',
-        },
-        trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: ALARM_CHANNEL },
-      });
-    }),
-  );
+    });
 
-  if (!wake) return;
-  const friend = characters.find((c) => c.id === wake.characterId);
-  const extra: { id: string; at?: string; route: string; title: string; body: string }[] = [
-    {
+  const friend = wake && characters.find((c) => c.id === wake.characterId);
+  const snoozeAt = wake?.state === 'snoozed' ? wake.snoozeUntil : undefined;
+  if (wake && snoozeAt && Date.parse(snoozeAt) > now.getTime()) {
+    rings.push({
       id: `${ALARM_PREFIX}snooze`,
-      at: wake.state === 'snoozed' ? wake.snoozeUntil : undefined,
-      route: '/alarms/ring',
+      at: new Date(snoozeAt),
       title: friend?.name ?? i18n.t('alarms.defaultLabel'),
       body: friend ? wake.question : i18n.t('alarms.ringing'),
-    },
-    {
-      id: `${ALARM_PREFIX}checkin`,
-      at: wake.checkInAt,
-      route: wake.conversationId ? `/chat/${wake.conversationId}` : '/',
-      title: friend?.name ?? 'Rafti',
-      body: CHAIN_LINES.checkIn,
-    },
-  ];
-  await Promise.all(
-    extra
-      .filter((e) => e.at && Date.parse(e.at) > now.getTime())
-      .map((e) =>
-        N.scheduleNotificationAsync({
-          identifier: e.id,
+      sound: alarms.find((a) => a.id === wake.alarmId)?.sound ?? 'morningTide',
+      route: '/alarms/ring',
+    });
+  }
+
+  if (androidAlarmsSupported()) await scheduleAndroidRings(rings);
+  else {
+    await Promise.all(
+      rings.map((ring) => {
+        const data: PushData = { id: ring.id, kind: 'alarm', route: ring.route, at: ring.at.toISOString() };
+        return N.scheduleNotificationAsync({
+          identifier: ring.id,
           content: {
-            title: e.title,
-            body: e.body,
-            data: { id: e.id, kind: 'alarm', route: e.route, characterId: friend?.id, at: e.at } as unknown as Record<string, unknown>,
-            sound: 'default',
+            title: ring.title,
+            body: ring.body,
+            data: data as unknown as Record<string, unknown>,
+            // iOS plays our melody (bundled by the expo-notifications plugin) once, up to 30 s.
+            sound: Platform.OS === 'ios' ? `${ALARM_SOUND_NAMES[ring.sound]}.wav` : 'default',
             interruptionLevel: 'timeSensitive',
           },
-          trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: new Date(e.at!), channelId: ALARM_CHANNEL },
-        }),
-      ),
-  );
+          trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: ring.at, channelId: ALARM_CHANNEL },
+        });
+      }),
+    );
+  }
+
+  // The "Up yet?" check-in is a plain message, not a ring.
+  const checkInAt = wake?.checkInAt;
+  if (!wake || !checkInAt || Date.parse(checkInAt) <= now.getTime()) return;
+  const id = `${ALARM_PREFIX}checkin`;
+  const route = wake.conversationId ? `/chat/${wake.conversationId}` : '/';
+  await N.scheduleNotificationAsync({
+    identifier: id,
+    content: {
+      title: friend?.name ?? 'Rafti',
+      body: CHAIN_LINES.checkIn,
+      data: { id, kind: 'alarm', route, characterId: friend?.id, at: checkInAt } as unknown as Record<string, unknown>,
+      sound: 'default',
+      interruptionLevel: 'timeSensitive',
+    },
+    trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: new Date(checkInAt), channelId: ALARM_CHANNEL },
+  });
 }

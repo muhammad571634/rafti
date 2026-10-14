@@ -53,12 +53,12 @@ def arp(seq, step, length):
 
 os.makedirs(OUT, exist_ok=True)
 # Morning Tide: a slow rising arpeggio, like small waves.
-write('morning-tide', render(arp(['C5', 'E5', 'G5', 'C6', 'G5', 'E5', 'D5', 'G5'] * 2, 0.5, 8), 8, decay=2.2))
+write('morning_tide', render(arp(['C5', 'E5', 'G5', 'C6', 'G5', 'E5', 'D5', 'G5'] * 2, 0.5, 8), 8, decay=2.2))
 # Shell Chimes: quick high chimes in pairs.
-write('shell-chimes', render(arp(['E6', 'C6', 'D6', 'G5', 'E6', 'C6', 'A5', 'G5'] * 2, 0.5, 8), 8, decay=4.0))
+write('shell_chimes', render(arp(['E6', 'C6', 'D6', 'G5', 'E6', 'C6', 'A5', 'G5'] * 2, 0.5, 8), 8, decay=4.0))
 # Sea Breeze: wide, slow notes.
-write('sea-breeze', render([(0, 'G4'), (1, 'D5'), (2, 'G5'), (3.5, 'E5'), (4, 'A4'), (5, 'E5'), (6, 'A5'), (7.2, 'C5')], 8, decay=1.4))
+write('sea_breeze', render([(0, 'G4'), (1, 'D5'), (2, 'G5'), (3.5, 'E5'), (4, 'A4'), (5, 'E5'), (6, 'A5'), (7.2, 'C5')], 8, decay=1.4))
 # Soft Bells: two-note bell, gentle.
-write('soft-bells', render(arp(['A5', 'E5'] * 8, 0.5, 8), 8, decay=2.8, gain=0.45))
+write('soft_bells', render(arp(['A5', 'E5'] * 8, 0.5, 8), 8, decay=2.8, gain=0.45))
 # Lighthouse: a clear repeating three-note call, the loudest.
 write('lighthouse', render(arp(['C6', 'C6', 'G5', 'G5'] * 4, 0.5, 8), 8, decay=5.0, gain=0.6))

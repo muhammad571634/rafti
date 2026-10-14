@@ -12,6 +12,8 @@ import { MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, gradients, radius, space } from '@/theme';
 
+import { showOverLockScreen, unlockPhone } from '../../../modules/alarm-screen';
+
 /**
  * The ringing screen (approved prototype D): the time, the friend and their question, then
  * "Reply to …" (the wake-up task: the alarm only stops on a real reply in their chat), Snooze
@@ -61,6 +63,14 @@ export default function AlarmRingScreen() {
     }, [ringing]),
   );
 
+  // Android: over the lock screen only while it rings here; the rest of the app stays locked.
+  useFocusEffect(
+    useCallback(() => {
+      showOverLockScreen(ringing);
+      return () => showOverLockScreen(false);
+    }, [ringing]),
+  );
+
   if (!wake || !ringing) return <View style={styles.fill} />;
 
   const { time, period } = alarmTime(now.getHours(), now.getMinutes(), uses12Hour());
@@ -68,7 +78,10 @@ export default function AlarmRingScreen() {
   const task = wake.replyToWake && !!wake.conversationId;
   const name = friend?.name.split(' ')[0] ?? '';
 
-  const reply = () => router.replace(`/chat/${wake.conversationId}`);
+  // The chat is private: a locked phone asks for the PIN or fingerprint first.
+  const reply = async () => {
+    if (await unlockPhone()) router.replace(`/chat/${wake.conversationId}`);
+  };
   const snooze = () => {
     snoozeWake();
     close();

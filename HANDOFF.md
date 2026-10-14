@@ -81,8 +81,29 @@ From BIMOBIMO (our own look and words)
     open `/alarms/ring?id=&at=`, plus the snooze ring and the check-in when the app is closed.
     Checked on web: ring, "ok" refused (free), "work, I leave at 9.30" -> offer -> Yes -> Work 09:30
     with a 09:10 reminder, snooze and re-ring, sleepy -> 10 more min -> "Up yet?". All with 0 shells.
-    Stage 3 (needs a development build): AlarmKit on iOS 26+, an exact alarm with a full-screen ring on
-    Android, custom notification sounds (expo-notifications `sounds`).
+    Stage 3, Android (2026-10-14; the owner picked Android, iOS AlarmKit needs an Apple account and
+    an EAS build, later): `react-native-notify-kit` (the maintained Notifee fork; Notifee was archived
+    in April 2026) in `src/notifications/alarm-android.ts` hands every ring (7 days + the snooze ring)
+    to AlarmManager as an alarm clock, with a full-screen intent, `category: alarm` and our melody
+    looping (one channel per melody, `ring_<sound>`, made by `createAlarmChannel` on the alarm stream so
+    vibrate/silent mode does not mute it; Android fixes a channel's sound). The app opens,
+    `AlarmRuntime`'s clock finds the due alarm, silences the notification and plays the melody itself.
+    The local module `modules/alarm-screen` (Kotlin) shows the ring screen over the lock screen only
+    while it rings, and "Reply" asks to unlock first (chats stay private). Melodies were renamed to
+    underscores (Android resource names) and are bundled by the expo-notifications `sounds` option;
+    iOS notifications play them too. `allowAlarms` opens the exact-alarm settings when they are off.
+    `app.json`: `android.package` `com.rafti.app`, USE_FULL_SCREEN_INTENT, SCHEDULE_EXACT_ALARM.
+    Build: `npx expo run:android` with the phone on USB (`/android` is generated, git-ignored), then
+    `npx expo start --dev-client`. Play Store note: full-screen intent is allowed for alarm apps only;
+    declare the alarm feature in the Play listing.
+    `AlarmScreenPackage` shows the activity over the lock screen as soon as an alarm launches it;
+    `AlarmRuntime` turns that off when nothing rings. Tested on the owner's Samsung A51 (Android 13,
+    vibrate mode, screen locked) 2026-10-14: rings, ring screen over the lock screen, melody, reply in
+    the chat turns it off. Fixed on the device: `ringAlarm` merged a new ring into the same alarm's
+    earlier session (< 30 min, already awake), so a re-set alarm only gave one note and no screen
+    (and `AlarmRuntime` pushed/closed the ring screen in a loop). Now a ring after the alarm was saved
+    again is a new session. Minor, left: "No task registered for key app.notifee.notification-event"
+    on a cold start (the background handler registers on first use; harmless).
     Bedtime redrawn in the iOS Sleep look (owner's pick B; flows D7). `nightColors` in
     `src/theme/colors.ts` holds every token for a dark canvas: dark mode (item 15) will reuse it.
     The stale 8082 server was stopped on the owner's word (2026-10-14).
