@@ -40,7 +40,8 @@
           "icon": "./assets/images/android-icon-monochrome.png",
           "color": "#E8742A"
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

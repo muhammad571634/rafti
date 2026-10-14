@@ -44,3 +44,19 @@ export function repeatKind(repeat: number[]): 'never' | 'everyDay' | 'weekdays' 
   if (days.join() === WEEKEND.join()) return 'weekends';
   return 'days';
 }
+
+/** A ring counts as due for this long after its minute (the app was busy or just opened). */
+const DUE_WINDOW_MS = 2 * 60_000;
+
+/**
+ * Today's ring when it is due right now: its minute has come in the last two minutes, today is
+ * one of its days, and it was not armed after that minute (saving at 7:00:30 does not ring 7:00).
+ */
+export function dueRing(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat' | 'armedAt'>, now: Date): Date | null {
+  const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), alarm.hour, alarm.minute, 0, 0);
+  const late = now.getTime() - at.getTime();
+  if (late < 0 || late > DUE_WINDOW_MS) return null;
+  if (alarm.repeat.length > 0 && !alarm.repeat.includes(at.getDay())) return null;
+  if (alarm.armedAt && Date.parse(alarm.armedAt) >= at.getTime()) return null;
+  return at;
+}

@@ -8,6 +8,23 @@ import { pickSeeded } from '@/lib/seeded';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
+import { dueRing, SNOOZE_MIN } from '@/lib/alarms';
+import {
+  addMinutes,
+  CHAIN_LINES,
+  CHIPS,
+  countsAsWakeReply,
+  likelyLeaveTime,
+  MAX_SNOOZES,
+  readMorningReply,
+  readMorningTime,
+  readYesNo,
+  reminderTimeFor,
+  SLEEPY_CHECK_MIN,
+  WAKE_WINDOW_MIN,
+  wakeQuestion,
+  type MorningRead,
+} from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
@@ -90,6 +107,7 @@ import { daysTogether, duePages } from '@/mock/diary-writer';
 import type {
   AppSettings,
   Alarm,
+  WakeSession,
   DateRecord,
   BoardPost,
   BoardStyleId,
@@ -308,6 +326,17 @@ interface AppState {
   saveAlarm: (alarm: Omit<Alarm, 'id' | 'createdAt' | 'enabled'> & { id?: string }) => string;
   deleteAlarm: (id: string) => void;
   setAlarmEnabled: (id: string, enabled: boolean) => void;
+  /** The morning after a ring (src/lib/morning-chain.ts); null when no alarm is going. */
+  wake: WakeSession | null;
+  /** Starts ringing: the session, the friend's wake-up voice note, a one-time alarm switched off. */
+  ringAlarm: (alarmId: string) => WakeSession | null;
+  snoozeWake: () => void;
+  /** "Hold 3 s to turn off" (or Stop when there is no task): no chain, no guilt. */
+  stopWake: () => void;
+  /** A quick reply under the friend's line: sent as the user's message, free in the wake window. */
+  pickChip: (conversationId: string, messageId: string, chip: string) => void;
+  /** The in-app clock (every few seconds): due rings, snooze over, the sleepy check-in, expiry. */
+  wakeTick: () => 'ring' | null;
 
   /* profile */
   updateProfile: (patch: ProfilePatch) => void;
@@ -379,6 +408,7 @@ type PersistedKeys =
   | 'reports'
   | 'blockedIds'
   | 'alarms'
+  | 'wake'
   | 'daily'
   | 'settings';
 
@@ -530,6 +560,7 @@ export const useAppStore = create<AppState>()(
       reports: [],
       blockedIds: [],
       alarms: [],
+      wake: null,
       daily: initialDaily,
       settings: initialSettings,
 
@@ -548,7 +579,10 @@ export const useAppStore = create<AppState>()(
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        // Replies to the wake-up alarm (and its quick replies) cost no shell, so 0 shells never
+        // keeps anyone from turning it off.
+        const wakeHere = wakeFor(get(), conversationId);
+        if (!wakeHere && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
         countMessage(set, get);
         noticeAiIfDue(set, get, conversationId);
 
@@ -565,6 +599,9 @@ export const useAppStore = create<AppState>()(
         // A crisis message is answered with care and never becomes a plan: no reminder,
         // no "how did it go?", no line on Us ("I'm going to kill myself tomorrow").
         const crisis = detectCrisis(trimmed);
+
+        // The morning chain: a real reply turns the alarm off and the friend helps with the day.
+        if (wakeHere && wakeReply(set, get, conversationId, trimmed, crisis)) return 'sent';
 
         // "Smart Auto Schedule": a plan in the message becomes a reminder.
         const plan = crisis ? null : detectPlan(trimmed);
@@ -1182,16 +1219,125 @@ export const useAppStore = create<AppState>()(
       saveAlarm: ({ id, ...fields }) => {
         const existing = id ? get().alarms.find((a) => a.id === id) : undefined;
         if (existing) {
-          set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...fields, enabled: true } : a)) }));
+          const armedAt = new Date().toISOString();
+          set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...fields, enabled: true, armedAt } : a)) }));
           return existing.id;
         }
-        const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: new Date().toISOString() };
+        const now = new Date().toISOString();
+        const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: now, armedAt: now };
         set((s) => ({ alarms: [...s.alarms, alarm] }));
         return alarm.id;
       },
       deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id) })),
       setAlarmEnabled: (id, enabled) =>
-        set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, enabled } : a)) })),
+        set((s) => ({
+          alarms: s.alarms.map((a) =>
+            a.id === id ? { ...a, enabled, armedAt: enabled ? new Date().toISOString() : a.armedAt } : a,
+          ),
+        })),
+
+      ringAlarm: (alarmId) => {
+        const alarm = get().alarms.find((a) => a.id === alarmId);
+        if (!alarm) return null;
+        const now = new Date();
+        const current = get().wake;
+        // The same ring seen twice (the clock and a notification tap) stays one session.
+        if (current?.alarmId === alarmId && now.getTime() - Date.parse(current.rangAt) < WAKE_WINDOW_MIN * 60_000) {
+          return current;
+        }
+        const friend = alarm.characterId ? get().characters.find((c) => c.id === alarm.characterId) : undefined;
+        const conversation = friend ? get().conversations.find((c) => c.characterId === friend.id) : undefined;
+        // Today's plan with that friend makes the question about it ("Exam at 10 today. Ready?").
+        const todayPlan = get().schedules.find(
+          (p) => p.date === todayKey() && (!friend || p.characterId === friend.id) && !p.followedUp,
+        );
+        const question = wakeQuestion(now.getDate() + alarm.minute, todayPlan && { title: todayPlan.title, time: todayPlan.time });
+        const session: WakeSession = {
+          alarmId,
+          characterId: friend?.id,
+          conversationId: conversation?.id,
+          replyToWake: alarm.replyToWake && !!conversation,
+          question,
+          rangAt: now.toISOString(),
+          state: 'ringing',
+          snoozes: 0,
+        };
+        set((s) => ({
+          wake: session,
+          // A one-time alarm switches itself off once it has rung, as on the iPhone.
+          alarms: s.alarms.map((a) =>
+            a.id === alarmId ? { ...a, armedAt: now.toISOString(), enabled: a.repeat.length > 0 ? a.enabled : false } : a,
+          ),
+        }));
+        if (conversation && friend) {
+          // The recorded wake-up line (free voice lines, backend-plan §13.5): never charged.
+          const voice = alarm.voice && friend.voiceReady;
+          appendMessage(set, get, conversation.id, {
+            id: uid('m'),
+            conversationId: conversation.id,
+            author: 'them',
+            kind: voice ? 'voice' : 'text',
+            text: voice ? undefined : question,
+            transcript: voice ? question : undefined,
+            durationSec: voice ? 4 : undefined,
+            createdAt: now.toISOString(),
+          });
+        }
+        return session;
+      },
+
+      snoozeWake: () => {
+        const wake = get().wake;
+        if (!wake || wake.state !== 'ringing' || wake.snoozes >= MAX_SNOOZES) return;
+        const alarm = get().alarms.find((a) => a.id === wake.alarmId);
+        if (alarm && !alarm.snooze) return;
+        set({
+          wake: { ...wake, state: 'snoozed', snoozes: wake.snoozes + 1, snoozeUntil: new Date(Date.now() + SNOOZE_MIN * 60_000).toISOString() },
+        });
+      },
+
+      stopWake: () => set({ wake: null }),
+
+      pickChip: (conversationId, messageId, chip) => {
+        set((s) => ({
+          messages: {
+            ...s.messages,
+            [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === messageId ? { ...m, chips: undefined } : m)),
+          },
+        }));
+        get().sendText(conversationId, chip);
+      },
+
+      wakeTick: () => {
+        const now = new Date();
+        const t = now.getTime();
+        const { alarms, wake } = get();
+        const busy = wake && wake.state !== 'awake';
+        if (!busy) {
+          const due = alarms.find((a) => a.enabled && dueRing(a, now));
+          if (due) {
+            get().ringAlarm(due.id);
+            return 'ring';
+          }
+        }
+        if (!wake) return null;
+        if (wake.state === 'snoozed' && wake.snoozeUntil && Date.parse(wake.snoozeUntil) <= t) {
+          set({ wake: { ...wake, state: 'ringing', snoozeUntil: undefined } });
+          return 'ring';
+        }
+        if (wake.checkInAt && Date.parse(wake.checkInAt) <= t && wake.conversationId) {
+          appendMessage(set, get, wake.conversationId, themText(wake.conversationId, CHAIN_LINES.checkIn));
+          set((s) => ({ wake: s.wake ? { ...s.wake, checkInAt: undefined } : null }));
+          return null;
+        }
+        // A finished morning ends when its window closes; a ring nobody answered gives up after two.
+        const since = Date.parse(wake.awakeAt ?? wake.rangAt);
+        const window = WAKE_WINDOW_MIN * 60_000;
+        if ((wake.state === 'awake' && !wake.checkInAt && t - since > window) || (wake.state === 'ringing' && t - since > window * 2)) {
+          set({ wake: null });
+        }
+        return null;
+      },
 
       updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
 
@@ -1667,6 +1813,7 @@ export const useAppStore = create<AppState>()(
         reports: s.reports,
         blockedIds: s.blockedIds,
         alarms: s.alarms,
+        wake: s.wake,
         daily: s.daily,
         settings: s.settings,
       }),
@@ -1915,7 +2062,7 @@ function scheduleReply(
   set: Setter,
   get: Getter,
   conversationId: string,
-  { text, gain }: { text?: string; gain: number },
+  { text, gain, chips }: { text?: string; gain: number; chips?: string[] },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -1966,7 +2113,7 @@ function scheduleReply(
           createdAt: new Date().toISOString(),
         });
       }
-      appendMessage(set, get, conversationId, themText(conversationId, line));
+      appendMessage(set, get, conversationId, { ...themText(conversationId, line), chips: last ? chips : undefined });
       if (last && noteVoice && voiceBack != null) {
         appendMessage(
           set,
@@ -1990,6 +2137,149 @@ function scheduleReply(
     at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
   });
   replyingUntil.set(conversationId, Date.now() + at);
+}
+
+/** The wake session for this chat while its replies are free (ringing, snoozed, or the window). */
+function wakeFor(state: AppState, conversationId: string, now = Date.now()) {
+  const wake = state.wake;
+  if (!wake || wake.conversationId !== conversationId) return null;
+  if (wake.state !== 'awake') return wake;
+  return now - Date.parse(wake.awakeAt ?? wake.rangAt) < WAKE_WINDOW_MIN * 60_000 ? wake : null;
+}
+
+const hmNow = (now: Date) => `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+/**
+ * The user's message while a wake session is open in this chat. Returns true when the chain
+ * answered (the normal reply is skipped); false lets the usual reply run (still free).
+ */
+function wakeReply(set: Setter, get: Getter, conversationId: string, text: string, crisis: boolean): boolean {
+  const wake = get().wake!;
+  const now = new Date();
+  const setWake = (patch: Partial<WakeSession>) => set((s) => ({ wake: s.wake ? { ...s.wake, ...patch } : null }));
+  const reply = (line: string, chips?: string[]) => scheduleReply(set, get, conversationId, { text: line, gain: INTIMACY.text, chips });
+
+  if (wake.state !== 'awake') {
+    // Only a real reply turns it off; a crisis message always does, and gets the usual care.
+    if (!crisis && (!wake.replyToWake || !countsAsWakeReply(text))) {
+      if (wake.replyToWake) reply('Nice try 😏 Three real words and I let you go.');
+      return wake.replyToWake;
+    }
+    setWake({ state: 'awake', awakeAt: now.toISOString(), snoozeUntil: undefined });
+    appendMessage(
+      set,
+      get,
+      conversationId,
+      { id: uid('m'), conversationId, author: 'them', kind: 'system', text: '⏰ Alarm off · this reply was free', createdAt: now.toISOString() },
+      { quiet: true },
+    );
+    if (crisis) return false;
+    return startChain(readMorningReply(text, now));
+  }
+
+  const step = wake.step;
+  if (!step) return false;
+  setWake({ step: undefined });
+
+  if (step.kind === 'offerReminder') {
+    if (text === CHIPS.another || /\b(another|other|different)\b/i.test(text)) {
+      setWake({ step: { kind: 'pickRemind', title: step.title, time: step.time } });
+      reply(CHAIN_LINES.pickRemind, [CHIPS.before30, CHIPS.before10]);
+      return true;
+    }
+    const yn = text.startsWith('Yes,') ? 'yes' : readYesNo(text);
+    if (yn === 'yes') return savePlan(step.title, step.time, step.remind);
+    if (yn === 'no') {
+      reply(CHAIN_LINES.noThanks);
+      return true;
+    }
+    const typed = readMorningTime(text, now);
+    return typed ? savePlan(step.title, step.time, typed) : false;
+  }
+
+  if (step.kind === 'pickRemind') {
+    const remind =
+      text === CHIPS.before30 ? addMinutes(step.time, -30) : text === CHIPS.before10 ? addMinutes(step.time, -10) : readMorningTime(text, now);
+    if (remind && remind > hmNow(now)) return savePlan(step.title, step.time, remind);
+    reply(CHAIN_LINES.noTime);
+    return true;
+  }
+
+  if (step.kind === 'askTime') {
+    if (text === CHIPS.notSure || /\b(not sure|dunno|don'?t know|idk)\b/i.test(text)) {
+      reply(CHAIN_LINES.notSure);
+      return true;
+    }
+    const time = text === CHIPS.in30 ? addMinutes(hmNow(now), 30) : readMorningTime(text, now);
+    if (!time) {
+      reply(CHAIN_LINES.noTime);
+      return true;
+    }
+    return startChain({ kind: 'time', activity: step.title, time });
+  }
+
+  // The sleepy branch: "Okay" keeps the 5-minute check, "10 more min" moves it.
+  const more = text === CHIPS.more || /\b10\b/.test(text);
+  setWake({ checkInAt: new Date(now.getTime() + (more ? 10 : SLEEPY_CHECK_MIN) * 60_000).toISOString() });
+  reply(more ? CHAIN_LINES.sleepyMore : CHAIN_LINES.sleepyOk);
+  return true;
+
+  function startChain(read: MorningRead): boolean {
+    if (read.kind === 'time') {
+      const title = read.activity ?? 'Plan';
+      const remind = reminderTimeFor(read.time, now);
+      if (!remind) {
+        reply(CHAIN_LINES.tooLate(read.time));
+        return true;
+      }
+      setWake({ step: { kind: 'offerReminder', title, time: read.time, remind } });
+      reply(CHAIN_LINES.offer(read.time, remind), [CHIPS.yes(remind), CHIPS.another, CHIPS.no]);
+      return true;
+    }
+    if (read.kind === 'activity') {
+      setWake({ step: { kind: 'askTime', title: read.activity } });
+      const likely = likelyLeaveTime(now);
+      reply(CHAIN_LINES.askTime(read.activity), [CHIPS.in30, likely.replace(/^0/, ''), CHIPS.notSure]);
+      return true;
+    }
+    if (read.kind === 'sleepy') {
+      setWake({ step: { kind: 'sleepy' }, checkInAt: new Date(now.getTime() + SLEEPY_CHECK_MIN * 60_000).toISOString() });
+      reply(CHAIN_LINES.sleepy, [CHIPS.okay, CHIPS.more]);
+      return true;
+    }
+    reply(CHAIN_LINES.other);
+    return true;
+  }
+
+  /** "Yes, 9:10": today's plan with the reminder the user picked, a memory and a line on Us. */
+  function savePlan(title: string, time: string, remind: string): boolean {
+    const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+    if (!characterId) return false;
+    const plan = { title, date: todayKey(), time };
+    set((s) => ({
+      schedules: [
+        ...s.schedules,
+        { id: uid('sch'), characterId, ...plan, remindAt: remind, createdAt: new Date().toISOString(), reminded: false, source: 'chat' as const },
+      ],
+    }));
+    get().addMemory(characterId, planMemoryLine(plan), 'chat');
+    addMoment(set, characterId, 'plan', { title });
+    reply(CHAIN_LINES.saved(remind));
+    // The "Plan saved" line lands under the friend's answer, once it has arrived.
+    const after = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now()) + 300;
+    setTimeout(
+      () =>
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          { id: uid('m'), conversationId, author: 'them', kind: 'system', text: `Plan saved · ${title} · ${time}`, createdAt: new Date().toISOString() },
+          { quiet: true },
+        ),
+      after,
+    );
+    return true;
+  }
 }
 
 /** When each chat's current reply burst finishes; replies queue behind it. */

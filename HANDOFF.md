@@ -68,15 +68,27 @@ From BIMOBIMO (our own look and words)
     Reply to wake up, Snooze, Delete), a Bedtime "Alarms" row open to every plan, and
     `src/notifications/alarms.ts` (local notifications with an `alarm:` id, an Android `alarms`
     channel, never cleared on open, re-synced on every change and open; they ring with the app open).
-    Next, stage 2: the ringing screen with the wake-up task (reply of 3+ words in that chat turns it
-    off, that reply is free, 3 snoozes, hold 3 s to turn off) and our own 5 melodies. Stage 3: a real
-    alarm in a development build (AlarmKit on iOS 26+, exact alarm + full-screen ring on Android).
+    Stage 2 done (branch `feat/alarm-ring-chain`): the ring screen `/alarms/ring` (prototype D; Reply,
+    Snooze 9 min x3, hold 3 s to turn off; Stop when there is no task), the wake session in the store
+    (`wake`, `ringAlarm`, `snoozeWake`, `stopWake`, `pickChip`, `wakeTick`), `AlarmRuntime` in the root
+    layout (an in-app clock every 5 s, so it rings with the app open, also on web and Expo Go, and the
+    looping melody via expo-audio), the orange "Alarm on" bar and quick-reply chips in the chat, 5 own
+    melodies (`scripts/build-alarm-sounds.py` -> `assets/sounds/alarms/*.wav`), and the morning chain
+    (prototype https://claude.ai/artifact/YKTHLBfcC9sTHnK6CoR8UC, approved; `src/lib/morning-chain.ts`,
+    tested): a reply of 3+ words turns it off and is free (also the chips, for 30 min); a time ->
+    "text you at 9:10?" -> a plan with `remindAt`; an activity -> "what time?"; sleepy -> a check-in
+    in 5 (or 10) min; else a warm line. The wake question uses today's plan. Notifications: ring taps
+    open `/alarms/ring?id=&at=`, plus the snooze ring and the check-in when the app is closed.
+    Checked on web: ring, "ok" refused (free), "work, I leave at 9.30" -> offer -> Yes -> Work 09:30
+    with a 09:10 reminder, snooze and re-ring, sleepy -> 10 more min -> "Up yet?". All with 0 shells.
+    Stage 3 (needs a development build): AlarmKit on iOS 26+, an exact alarm with a full-screen ring on
+    Android, custom notification sounds (expo-notifications `sounds`).
     Bedtime redrawn in the iOS Sleep look (owner's pick B; flows D7). `nightColors` in
     `src/theme/colors.ts` holds every token for a dark canvas: dark mode (item 15) will reuse it.
     The stale 8082 server was stopped on the owner's word (2026-10-14).
-    Gotcha: a stale `expo start -c` on port 8082 (PID 31720 on 2026-10-13) keeps rewriting
-    `.expo/types/router.d.ts` with `/../lib/...` paths and breaks `tsc`; delete the file and restart
-    your own server before `npx tsc --noEmit`.
+    Gotcha: a running `expo start` rewrites `.expo/types/router.d.ts` badly when files outside
+    `src/app` change (`/../lib/...` paths) and `tsc` then fails on new routes; delete the file, restart
+    your server, wait for the file, then run `npx tsc --noEmit`.
 13. [ ] Photo Booth makes and keeps a real picture (Pro pays for it).
 14. [ ] Reply-language lock: the character always answers in the user's language.
 15. [ ] Dark mode.

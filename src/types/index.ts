@@ -97,6 +97,8 @@ export interface Message {
   card?: 'helpline' | 'aiNotice' | 'voiceQuota';
   /** voiceQuota lines: when the plan's voice minutes come back */
   until?: string;
+  /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
+  chips?: string[];
 }
 
 /** A message the user reported; the server's review queue gets it with its context. */
@@ -241,6 +243,8 @@ export interface ScheduleItem {
   /** The "how did it go?" message has been sent (or its moment has passed). */
   followedUp?: boolean;
   source?: 'chat' | 'manual';
+  /** "HH:MM" the user asked to be reminded at (the morning chain); else 10 min before. */
+  remindAt?: string;
 }
 
 /** A finished date: it becomes a polaroid in "Our dates" and a diary page the next morning. */
@@ -483,4 +487,32 @@ export interface Alarm {
   snooze: boolean;
   enabled: boolean;
   createdAt: string;
+  /** Rings before this moment are never due (set on save, switch-on and each ring). */
+  armedAt?: string;
+}
+
+/**
+ * The morning after a ring (src/lib/morning-chain.ts): ringing until a real reply in the
+ * friend's chat, snoozed, then awake with at most one chain step waiting for an answer.
+ */
+export interface WakeSession {
+  alarmId: string;
+  characterId?: string;
+  conversationId?: string;
+  /** The task is on: only a reply (or "hold to turn off") stops it. */
+  replyToWake: boolean;
+  question: string;
+  rangAt: string;
+  state: 'ringing' | 'snoozed' | 'awake';
+  snoozes: number;
+  snoozeUntil?: string;
+  awakeAt?: string;
+  /** The chain step waiting for the user's answer. */
+  step?:
+    | { kind: 'offerReminder'; title: string; time: string; remind: string }
+    | { kind: 'pickRemind'; title: string; time: string }
+    | { kind: 'askTime'; title: string }
+    | { kind: 'sleepy' };
+  /** "Up yet?" from the friend at this moment (the sleepy branch). */
+  checkInAt?: string;
 }

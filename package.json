@@ -10,6 +10,7 @@
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.24",
+    "expo-audio": "~57.0.5",
     "expo-blur": "~57.0.3",
     "expo-clipboard": "~57.0.2",
     "expo-constants": "~57.0.19",

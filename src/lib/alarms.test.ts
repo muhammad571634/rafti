@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { nextAlarmAt, repeatKind, ringsWithin } from './alarms';
+import { dueRing, nextAlarmAt, repeatKind, ringsWithin } from './alarms';
 
 // Wednesday, Oct 14 2026, 22:00 local time.
 const NOW = new Date(2026, 9, 14, 22, 0, 0, 0);
@@ -39,5 +39,23 @@ describe('repeatKind: the Repeat row', () => {
     assert.equal(repeatKind([6, 0]), 'weekends');
     assert.equal(repeatKind([0, 1, 2, 3, 4, 5, 6]), 'everyDay');
     assert.equal(repeatKind([1, 3]), 'days');
+  });
+});
+
+describe('dueRing: the in-app clock rings an alarm once', () => {
+  const at7 = new Date(2026, 9, 14, 7, 0, 30);
+  it('is due in the two minutes after its time', () => {
+    assert.ok(dueRing({ hour: 7, minute: 0, repeat: [] }, at7));
+    assert.equal(dueRing({ hour: 7, minute: 0, repeat: [] }, new Date(2026, 9, 14, 7, 3)), null);
+    assert.equal(dueRing({ hour: 7, minute: 1, repeat: [] }, at7), null);
+  });
+  it('waits for a repeat day', () => {
+    // Oct 14 2026 is a Wednesday (3).
+    assert.equal(dueRing({ hour: 7, minute: 0, repeat: [0, 6] }, at7), null);
+    assert.ok(dueRing({ hour: 7, minute: 0, repeat: [3] }, at7));
+  });
+  it('does not ring a time that passed before it was saved or rang', () => {
+    const armedAt = new Date(2026, 9, 14, 7, 0, 10).toISOString();
+    assert.equal(dueRing({ hour: 7, minute: 0, repeat: [], armedAt }, at7), null);
   });
 });

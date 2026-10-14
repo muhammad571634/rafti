@@ -216,6 +216,8 @@ export const gradients = {
   incoming: ['rgba(0,0,0,0.55)', 'transparent', 'rgba(0,0,0,0.65)'] as const,
   avatarFallback: ['#FFC999', '#FF9F5A'] as const,
   night: ['#1E2A55', '#2E3B6B'] as const,
+  /** The wake-up alarm's ringing screen: sunrise. */
+  wake: ['#F6C89F', '#E9A27E', '#B9739A'] as const,
   /**
    * Left-to-right shade under the Today hero's copy, so white text reads on any scene.
    * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.

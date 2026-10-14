@@ -8,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { ShareRewardBanner } from '@/components/share-reward-banner';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
@@ -52,11 +53,14 @@ export default function RootLayout() {
           />
           <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
+          <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
           {/* A swipe must not end a date by accident; the close button asks first. */}
           <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
         </Stack>
         <ShareRewardBanner />
+        <AlarmRuntime />
         <OnboardingGate />
       </SafeAreaProvider>
     </GestureHandlerRootView>

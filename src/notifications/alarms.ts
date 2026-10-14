@@ -2,7 +2,8 @@ import { Platform } from 'react-native';
 
 import i18n from '@/i18n';
 import { ringsWithin } from '@/lib/alarms';
-import type { Alarm, Character } from '@/types';
+import { CHAIN_LINES } from '@/lib/morning-chain';
+import type { Alarm, Character, WakeSession } from '@/types';
 
 import { notificationsModule } from './native';
 import { pushesAllowed, requestPushPermission, type PushData } from './sync';
@@ -44,8 +45,11 @@ export async function allowAlarms() {
   return (await pushesAllowed()) || requestPushPermission();
 }
 
-/** Replaces every pending alarm ring with the current list (on: the next 7 days of rings). */
-export async function syncAlarms(alarms: Alarm[], characters: Character[], now = new Date()) {
+/**
+ * Replaces every pending alarm ring with the current list (on: the next 7 days of rings), plus
+ * the open morning's snooze ring and the friend's "Up yet?" check-in.
+ */
+export async function syncAlarms(alarms: Alarm[], characters: Character[], wake: WakeSession | null = null, now = new Date()) {
   const N = notificationsModule();
   if (!N || !(await pushesAllowed())) return;
   await alarmChannel();
@@ -68,7 +72,7 @@ export async function syncAlarms(alarms: Alarm[], characters: Character[], now =
       const data: PushData = {
         id: `${ALARM_PREFIX}${alarm.id}:${at.getTime()}`,
         kind: 'alarm',
-        route: '/alarms',
+        route: `/alarms/ring?id=${alarm.id}&at=${encodeURIComponent(at.toISOString())}`,
         characterId: friend?.id,
         at: at.toISOString(),
       };
@@ -84,5 +88,41 @@ export async function syncAlarms(alarms: Alarm[], characters: Character[], now =
         trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: ALARM_CHANNEL },
       });
     }),
+  );
+
+  if (!wake) return;
+  const friend = characters.find((c) => c.id === wake.characterId);
+  const extra: { id: string; at?: string; route: string; title: string; body: string }[] = [
+    {
+      id: `${ALARM_PREFIX}snooze`,
+      at: wake.state === 'snoozed' ? wake.snoozeUntil : undefined,
+      route: '/alarms/ring',
+      title: friend?.name ?? i18n.t('alarms.defaultLabel'),
+      body: friend ? wake.question : i18n.t('alarms.ringing'),
+    },
+    {
+      id: `${ALARM_PREFIX}checkin`,
+      at: wake.checkInAt,
+      route: wake.conversationId ? `/chat/${wake.conversationId}` : '/',
+      title: friend?.name ?? 'Rafti',
+      body: CHAIN_LINES.checkIn,
+    },
+  ];
+  await Promise.all(
+    extra
+      .filter((e) => e.at && Date.parse(e.at) > now.getTime())
+      .map((e) =>
+        N.scheduleNotificationAsync({
+          identifier: e.id,
+          content: {
+            title: e.title,
+            body: e.body,
+            data: { id: e.id, kind: 'alarm', route: e.route, characterId: friend?.id, at: e.at } as unknown as Record<string, unknown>,
+            sound: 'default',
+            interruptionLevel: 'timeSensitive',
+          },
+          trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: new Date(e.at!), channelId: ALARM_CHANNEL },
+        }),
+      ),
   );
 }

@@ -763,7 +763,12 @@
     "hour": "Hour",
     "minute": "Minute",
     "period": "AM or PM",
-    "toggle": "Alarm {{time}}"
+    "toggle": "Alarm {{time}}",
+    "replyTo": "Reply to {{name}}",
+    "snoozeFor": "Snooze · {{count}} min",
+    "holdToStop": "Hold 3 s to turn off",
+    "stop": "Stop",
+    "ringBar": "Alarm on · reply to turn it off"
   },
   "board": {
     "title": "Message board",

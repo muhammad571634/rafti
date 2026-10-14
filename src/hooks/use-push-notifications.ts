@@ -44,8 +44,8 @@ export function usePushNotifications() {
       (await deliveredPushes()).forEach(land);
       await clearPushes();
       // Repeating alarms are handed over a week at a time; every open tops them up.
-      const { alarms, characters } = useAppStore.getState();
-      await syncAlarms(alarms, characters);
+      const { alarms, characters, wake } = useAppStore.getState();
+      await syncAlarms(alarms, characters, wake);
     };
     const leave = () => void syncPushes(useAppStore.getState());
 
@@ -60,7 +60,7 @@ export function usePushNotifications() {
     const tapped = N.addNotificationResponseReceivedListener(open);
     // Any change to the alarms (add, edit, switch, delete) goes to the OS at once.
     const alarmsChanged = useAppStore.subscribe((next, prev) => {
-      if (next.alarms !== prev.alarms) void syncAlarms(next.alarms, next.characters);
+      if (next.alarms !== prev.alarms || next.wake !== prev.wake) void syncAlarms(next.alarms, next.characters, next.wake);
     });
     const state = AppState.addEventListener('change', (next) => {
       if (next === 'active') void comeBack();

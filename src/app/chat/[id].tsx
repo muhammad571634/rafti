@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
+import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -82,6 +83,9 @@ export default function ChatRoomScreen() {
   );
 
   const sendText = useAppStore((s) => s.sendText);
+  const pickChip = useAppStore((s) => s.pickChip);
+  // The wake-up alarm rings until a real reply here (the morning chain).
+  const alarmRinging = useAppStore((s) => s.wake?.state === 'ringing' && s.wake.conversationId === conversationId);
   const sendVoice = useAppStore((s) => s.sendVoice);
   const sendImage = useAppStore((s) => s.sendImage);
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
@@ -154,9 +158,12 @@ export default function ChatRoomScreen() {
             onCallBack={callBack}
             onLongPress={openMenu}
           />
+          {item.chips?.length && conversationId ? (
+            <QuickReplies chips={item.chips} onPick={(chip) => pickChip(conversationId, item.id, chip)} />
+          ) : null}
         </>
       ) : null,
-    [character, user, animations, openedAt, data, callBack, openMenu],
+    [character, user, animations, openedAt, data, callBack, openMenu, conversationId, pickChip],
   );
 
   if (!conversation || !character) {
@@ -295,6 +302,7 @@ export default function ChatRoomScreen() {
         ) : null}
         <View style={styles.flex}>
           {!artWallpaper ? <ChatWallpaper hidden={dark} /> : null}
+          {alarmRinging ? <AlarmBar /> : null}
           <FlatList
             ref={listRef}
             data={data}

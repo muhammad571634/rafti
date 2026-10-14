@@ -36,7 +36,12 @@ export function planStart(item: Pick<ScheduleItem, 'date' | 'time'>) {
   return at(item.date, h, m);
 }
 
-export function reminderAt(item: Pick<ScheduleItem, 'date' | 'time'>) {
+export function reminderAt(item: Pick<ScheduleItem, 'date' | 'time' | 'remindAt'>) {
+  // A time the user picked in the morning chain ("text me at 9:10").
+  if (item.remindAt) {
+    const [h, m] = item.remindAt.split(':').map(Number);
+    return at(item.date, h, m);
+  }
   if (!item.time) return at(item.date, UNTIMED_REMIND_HOUR);
   return new Date(planStart(item).getTime() - REMIND_BEFORE_MIN * 60_000);
 }
