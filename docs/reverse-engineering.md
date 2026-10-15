@@ -11,8 +11,8 @@ text into Sigmazam (rule in `AGENTS.md`).
 | Java 21 | `C:\Program Files\Android\Android Studio\jbr` | `JAVA_HOME` points here. |
 | adb | scrcpy's `adb.exe` (on PATH) | Phone: Galaxy A51, serial `R58N628VFGY`. |
 | Apktool 3.0.3 | `C:\Users\joray\tools\apktool\apktool.cmd` + `apktool.jar` | On the user PATH; user env var `REA_APKTOOL_COMMAND` holds the full path. |
-| REA MCP | Claude Code only, local scope (`~/.claude.json`), `rea-agents@6.5.0` | Env: `REA_ADB_PATH`, `REA_APKTOOL_COMMAND`. |
-| JADX | not set up | REA tools that need `REA_JADX_MCP_JAR` (`inspect_android_package`, Android class/method tools) fail until it is added. |
+| REA MCP | Claude Code only, local scope (`~/.claude.json`), `rea-agents@6.5.0` installed globally (`npm i -g`), started as `rea mcp` | Env: `REA_ADB_PATH`, `REA_APKTOOL_COMMAND`, `REA_JADX_MCP_JAR`, `REA_JADX_HEAP_MIB=4096`, `JAVA_HOME`. The old `npx -y rea-agents` start missed Claude Code's 30 s MCP limit (fixed 2026-10-16). |
+| JADX MCP 0.7.1 | `C:\Users\joray\tools\jadx-mcp\jadx-headless-mcp-0.7.1-all.jar` (SHA-256 `6e5eacf5…73ff75`, REA's audited release) | Powers `inspect_android_package`, `search_android_classes`, `inspect_android_class`, `inspect_android_method`, `trace_android_references`. Needs a full JDK; Android Studio's JBR has `jdk.compiler`. |
 
 `apktool.cmd` is our own launcher: no `pause`, keeps Java's exit code. Do not replace it with
 upstream `apktool.bat`; that one pauses under `cmd /c` and hangs an agent.
@@ -49,5 +49,8 @@ outside every repo. Never commit APKs or decoded output.
   claude mcp add rea -s local \
     -e 'REA_ADB_PATH=C:\Users\joray\AppData\Local\Microsoft\WinGet\Packages\Genymobile.scrcpy_Microsoft.Winget.Source_8wekyb3d8bbwe\scrcpy-win64-v4.0\adb.exe' \
     -e 'REA_APKTOOL_COMMAND=C:\Users\joray\tools\apktool\apktool.cmd' \
-    -- cmd.exe /d /c npx -y rea-agents@6.5.0 mcp
+    -e 'REA_JADX_MCP_JAR=C:\Users\joray\tools\jadx-mcp\jadx-headless-mcp-0.7.1-all.jar' \
+    -e 'REA_JADX_HEAP_MIB=4096' \
+    -e 'JAVA_HOME=C:\Program Files\Android\Android Studio\jbr' \
+    -- cmd.exe /d /c rea mcp
   ```

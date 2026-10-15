@@ -1,10 +1,16 @@
 # How BIMOBIMO works under the hood, and what Sigmazam takes (2026-10-16)
 
-Static look at the BIMOBIMO Android APK (`com.beemo.ai.flutter_beemo`, `base.apk` in
-`C:\Users\joray\rea-work\apk\`, decoded to `rea-work\decoded\`). Method: Apktool for the manifest,
-a plain string dump of the Dart AOT library (`lib/arm64-v8a/libapp.so`, 78.9k strings) and of the
-Rust library. REA MCP did not connect in that session; JADX is still not set up (not needed:
-the app logic is Dart, not Java). Structure and logic only: no BIMOBIMO code, art or text is
+Static look at the BIMOBIMO Android APK (`com.beemo.ai.flutter_beemo` 2.53.0, build 866,
+minSdk 24, targetSdk 36; `base.apk` in `C:\Users\joray\rea-work\apk\`, decoded to
+`rea-work\decoded\`). Method: Apktool for the manifest, a plain string dump of the Dart AOT library
+(`lib/arm64-v8a/libapp.so`, 78.9k strings) and of the Rust library, then REA with JADX
+(`inspect_android_package`, `identify_flutter_build`, `inspect_dart_aot`, class search).
+
+REA findings: 15,769 Java classes, R8-obfuscated; the app's own Java is one `MainActivity` whose
+only job is to plug Tencent's beauty filter into the RTC video (`TRTCPlugin` +
+`XmagicProcesserFactory`). All product logic is Dart: Dart snapshot hash
+`ace654289f5abc240509fc941453ebc5`, kind-3 FullAOT, 1,000+ `package:` URIs. Typed Dart classes and
+functions need a Dart AOT parser matched to that hash (e.g. Blutter); REA stops at the string pool. Structure and logic only: no BIMOBIMO code, art or text is
 copied (rule in `AGENTS.md`). Raw dumps stay in `rea-work`, outside every repo.
 
 **Limit.** The APK is only the client. Their server code, prompts, model choice and memory logic
