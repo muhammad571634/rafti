@@ -262,7 +262,8 @@
   },
   "paywall": {
     "title": "Out of shells",
-    "body": "You need {{count}} shells for that. Pick any way to get them:",
+    "body_one": "You need {{count}} shell for that. Pick any way to get it:",
+    "body_other": "You need {{count}} shells for that. Pick any way to get them:",
     "chatBody": "Your message is saved. Pick any way to keep talking:",
     "watchAd": "Watch a short ad",
     "watchAdMeta": "+{{count}} shells · {{left}} left today",
