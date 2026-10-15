@@ -133,7 +133,24 @@ From BIMOBIMO (our own look and words)
    for a foreign persona); `buildCharacterPrompt(..., replyLanguage)` adds `REPLY LANGUAGE`, falling
    back to the app language. Server: detect each user message's language into `messages.lang`, keep
    the lock in `conversations.reply_language` (backend-plan §4). content-policy "Language" section.
-15. [ ] Dark mode.
+15. [x] Dark mode (2026-10-15, owner: straight to code, no prototype).
+   Follows the phone, read once at launch (`isDark` in `src/theme/colors.ts`): `colors` becomes
+   `nightColors` (the Bedtime palette), so every screen that reads tokens turns dark; switching the
+   phone's theme applies on the next launch (styles are built at import). `app.json`
+   `userInterfaceStyle: "automatic"` (native setting: needs a new build, `npx expo run:android
+   --variant release --no-bundler`). Also: `Screen`'s status bar follows the theme; the root window
+   colour via `expo-system-ui`; chat wallpapers turn into deep shades of their hue (`dark: isDark`)
+   and the art-wallpaper veil darkens; Date's `gradients.home`; polaroid stays white paper with its
+   own ink; My diary's front card turns `surfaceAlt`; the diary page date uses paper ink. Rule: text
+   on light paper uses paper ink (`paperText`, `palette.gray*`), never `colors.text`. New token
+   `textOnInk` (white by day, navy at night) for text and icons on ink fills (unread count, ticked
+   boxes, selected chips and segments, play buttons, "Best value"); the shell pill, the chat day chip
+   and AI notice, and the lucky wheel have dark versions (light mode unchanged). Checked on web with
+   a dark colour scheme: Today, Chats, chat, Find, Us, Profile, Diary, Store, Gifts, character
+   profile, Create character; light mode re-checked (Today, chat). Not themed: notification
+   previews and photo art (meant to look like a phone or a photo).
+   The Antigravity Java extension (Red Hat) respawns ~11 java processes (~3.5 GB) that froze the
+   laptop; killing them does not hold, the owner should disable the extension in Antigravity.
 16. [ ] Group chat with 2-3 characters (large; keep the first version small).
 Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
 

@@ -33,7 +33,7 @@ import {
 import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space } from '@/theme';
+import { colors, hitSlop, isDark, radius, space } from '@/theme';
 import type { Message } from '@/types';
 import type { ClayIconName } from '@/components/ui';
 
@@ -229,7 +229,7 @@ export default function ChatRoomScreen() {
   const dark = !!wallpaper.dark;
 
   return (
-    <Screen background={background as readonly [string, string]} statusBarStyle="dark">
+    <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'}>
       <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
         <PressableScale
           onPress={() => router.back()}
@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingVertical: space.xs,
     borderRadius: radius.pill,
-    backgroundColor: colors.onMediaSoft,
+    backgroundColor: isDark ? 'rgba(28,33,72,0.85)' : colors.onMediaSoft,
   },
   pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
   quote: {
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   artWallpaper: { ...StyleSheet.absoluteFill },
   artWallpaperVeil: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(255,250,241,0.18)',
+    backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)',
   },
   missing: { padding: space.xl },
   header: {

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, palette, radius, space } from '@/theme';
+import { colors, isDark, palette, radius, space } from '@/theme';
 
 import { ShellIcon } from './icon-3d';
 import { PressableScale } from './pressable-scale';
@@ -23,7 +23,7 @@ export function ShellBadge({ count, onPress, showAdd, style, tone = 'light' }: S
   const { t } = useTranslation();
   const dark = tone === 'dark';
   const neutral = tone === 'neutral';
-  const fg = dark ? colors.white : neutral ? colors.text : palette.shellText;
+  const fg = dark ? colors.white : neutral ? colors.text : isDark ? colors.brandText : palette.shellText;
 
   const content = (
     <View
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   light: {
-    backgroundColor: palette.shellSoft,
+    backgroundColor: isDark ? colors.primarySofter : palette.shellSoft,
     borderWidth: 1,
-    borderColor: palette.shellBorder,
+    borderColor: isDark ? colors.primarySoft : palette.shellBorder,
   },
   dark: { backgroundColor: 'rgba(0,0,0,0.28)' },
   neutral: { backgroundColor: colors.surfaceAlt, height: 30, paddingHorizontal: space.md, gap: 5 },

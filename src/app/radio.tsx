@@ -77,7 +77,7 @@ export default function RadioScreen() {
                 <Ionicons
                   name={active ? 'pause' : 'play'}
                   size={16}
-                  color={active ? colors.textOnPrimary : colors.text}
+                  color={active ? colors.textOnInk : colors.text}
                 />
               </View>
             </PressableScale>

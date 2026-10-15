@@ -3,7 +3,7 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { characterImage, Txt } from '@/components/ui';
-import { colors, fonts, palette, shadows } from '@/theme';
+import { fonts, palette, shadows } from '@/theme';
 import type { Character } from '@/types';
 
 /** The scene photo for a character: their wide hero render, or the portrait when there is none. */
@@ -44,8 +44,9 @@ export function Polaroid({
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.surface, borderRadius: 6 },
-  photo: { width: '100%', borderRadius: 2, backgroundColor: colors.surfaceAlt },
+  // Photo paper: white with its own ink in both themes.
+  card: { backgroundColor: palette.white, borderRadius: 6 },
+  photo: { width: '100%', borderRadius: 2, backgroundColor: palette.gray100 },
   caption: { fontFamily: fonts.hand, color: palette.gray800, marginTop: 10, lineHeight: 30 },
-  date: { fontFamily: fonts.hand, color: colors.textMuted, lineHeight: 20 },
+  date: { fontFamily: fonts.hand, color: palette.gray500, lineHeight: 20 },
 });

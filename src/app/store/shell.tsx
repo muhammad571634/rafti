@@ -274,7 +274,7 @@ function PackCard({
   const tag = starter
     ? { label: t('store.starter'), style: styles.tagPrimary, color: colors.textOnPrimary }
     : bestValue
-    ? { label: t('store.bestValue', { percent: saving }), style: styles.tagInk, color: colors.textOnPrimary }
+    ? { label: t('store.bestValue', { percent: saving }), style: styles.tagInk, color: colors.textOnInk }
     : pack.popular
       ? { label: t('store.popular'), style: styles.tagPrimary, color: colors.textOnPrimary }
       : saving > 0

@@ -187,7 +187,7 @@ export default function ChatListScreen() {
                         <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
                       ) : unread ? (
                         <View style={styles.badge}>
-                          <Txt variant="tiny" color={colors.white} style={styles.badgeText}>
+                          <Txt variant="tiny" color={colors.textOnInk} style={styles.badgeText}>
                             {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
                           </Txt>
                         </View>

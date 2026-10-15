@@ -100,7 +100,7 @@ export function CallPaywallSheet({
         accessibilityLabel={sampleLabel}
         style={styles.sample}>
         <View style={styles.play}>
-          <Ionicons name={playing ? 'pause' : 'play'} size={18} color={colors.textOnPrimary} />
+          <Ionicons name={playing ? 'pause' : 'play'} size={18} color={colors.textOnInk} />
         </View>
         <Txt variant="bodyStrong" style={styles.flex} lines={1}>
           {sampleLabel}

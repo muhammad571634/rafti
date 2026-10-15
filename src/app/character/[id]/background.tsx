@@ -107,7 +107,7 @@ export default function ChangeBackgroundScreen() {
                 )}
                 {selected ? (
                   <View style={styles.check}>
-                    <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} />
+                    <Ionicons name="checkmark" size={15} color={colors.textOnInk} />
                   </View>
                 ) : null}
                 <View

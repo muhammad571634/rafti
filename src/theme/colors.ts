@@ -1,3 +1,5 @@
+import { Appearance } from 'react-native';
+
 /**
  * Rafti palette — "Cocoa & Mint", built around Rafti the sea otter.
  * Raw values live in `palette`; screens should only use the semantic `colors` map
@@ -66,7 +68,7 @@ export const palette = {
   blue: '#4D9BFF',
 } as const;
 
-export const colors = {
+const lightColors = {
   // Raw passthroughs used directly on tinted surfaces
   white: palette.white,
   black: palette.black,
@@ -91,6 +93,8 @@ export const colors = {
   textFaint: palette.gray400,
   textOnPrimary: palette.white,
   textOnDark: palette.white,
+  /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
+  textOnInk: palette.white,
 
   // Brand
   primary: palette.apricot600,
@@ -153,8 +157,8 @@ export const colors = {
  * today (owner's pick, 2026-10-14: the iOS Sleep look); dark mode (work queue item 15) will hand
  * it to every screen when the phone is in dark mode, so screens must read colours from tokens.
  */
-export const nightColors: Record<keyof typeof colors, string> = {
-  ...colors,
+export const nightColors: Record<keyof typeof lightColors, string> = {
+  ...lightColors,
   bg: '#0E1230',
   bgPlain: '#0E1230',
   surface: '#1C2148',
@@ -183,9 +187,20 @@ export const nightColors: Record<keyof typeof colors, string> = {
   bubbleTranscriptText: '#A3A8C8',
   tabActive: '#F4F2FF',
   tabInactive: '#8389AE',
+  textOnInk: '#0E1230',
   dangerText: '#FF7A7A',
   dangerSoft: '#4A1F24',
 };
+
+/**
+ * Dark mode follows the phone, read once at launch: every screen builds its styles from
+ * `colors` when it loads, so switching the phone's theme applies on the next launch.
+ * Paper (diary pages, polaroids, board notes) stays light in both themes, so text on it
+ * uses paper ink (`paperText`, `palette.gray*`), never `text`, which turns light here.
+ */
+export const isDark = Appearance.getColorScheme() === 'dark';
+
+export const colors: Record<keyof typeof lightColors, string> = isDark ? nightColors : lightColors;
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**
@@ -206,7 +221,7 @@ export const moduleTints: Record<string, { bg: string; fg: string }> = {
 };
 
 export const gradients = {
-  home: ['#FFF7EC', '#FFEEDB'] as const,
+  home: (isDark ? ['#0E1230', '#181D45'] : ['#FFF7EC', '#FFEEDB']) as readonly [string, string],
   banner: ['#FFC999', '#FF9F5A'] as const,
   fab: ['#FFB272', '#E8742A'] as const,
   diary: ['#FFEBD6', '#FFF9F1', '#FFE6CC'] as const,
@@ -242,4 +257,4 @@ export const avatarGradients = [
   ['#FFC7B8', '#FF8A70'],
 ] as const;
 
-export type ColorToken = keyof typeof colors;
+export type ColorToken = keyof typeof lightColors;

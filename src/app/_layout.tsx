@@ -2,6 +2,7 @@ import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
 import { Stack, useRootNavigationState, useRouter, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -16,6 +17,8 @@ import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+// The window behind every screen (keyboard, transitions) in the launch theme's canvas colour.
+SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);

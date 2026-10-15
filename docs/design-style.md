@@ -26,6 +26,9 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 - Mint (`colors.bondText`) only for the bond: "Voice ready", closeness, relationship.
 - Ink (`colors.text`) marks selection: 2px ink border on a chosen card or chip.
 - Grey fill (`colors.surfaceAlt`) for unselected chips, segmented track, icon tiles, locked inputs.
+- Dark mode (follows the phone, `isDark`): every colour comes from `colors`, never `palette` or a
+  literal, except paper and photos. Text or an icon on an ink fill uses `colors.textOnInk`, not
+  white. Text on light paper (diary page, polaroid, board note) uses paper ink, not `colors.text`.
 
 ## 2. Type
 

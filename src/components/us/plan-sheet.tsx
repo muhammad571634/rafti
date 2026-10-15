@@ -185,7 +185,7 @@ function Segment({
   accessibilityLabel?: string;
   onPress: () => void;
 }) {
-  const fg = active ? colors.textOnPrimary : colors.text;
+  const fg = active ? colors.textOnInk : colors.text;
   return (
     <PressableScale
       style={[styles.segment, active && styles.segmentActive]}

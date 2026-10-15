@@ -72,7 +72,7 @@ export default function EditProfileScreen() {
             accessibilityLabel={t('editProfile.photo')}>
             <UserAvatar user={user} size={96} />
             <View style={styles.camera}>
-              <Ionicons name="camera" size={16} color={colors.textOnPrimary} />
+              <Ionicons name="camera" size={16} color={colors.textOnInk} />
             </View>
           </PressableScale>
           {photoError ? (

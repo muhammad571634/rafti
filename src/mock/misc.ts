@@ -1,5 +1,5 @@
 import type { ClayIconName } from '@/assets/brand/registry';
-import { palette } from '@/theme';
+import { isDark, palette } from '@/theme';
 import type {
   ShellPack,
   CallRecord,
@@ -134,12 +134,13 @@ export const chatBackgrounds: {
   colors: readonly [string, string];
   dark?: boolean;
 }[] = [
-  { id: 'bg_blossom', nameKey: 'blossom', colors: ['#FFF4E8', '#FFE4CC'] as const },
-  { id: 'bg_dusk', nameKey: 'dusk', colors: ['#E6F6F3', '#DDEBFA'] as const },
-  { id: 'bg_room', nameKey: 'room', colors: ['#F6EFE6', '#EADFD2'] as const },
+  // In dark mode each wallpaper turns into a deep shade of its own hue.
+  { id: 'bg_blossom', nameKey: 'blossom', colors: isDark ? ['#2A1F2A', '#3A2630'] : ['#FFF4E8', '#FFE4CC'], dark: isDark },
+  { id: 'bg_dusk', nameKey: 'dusk', colors: isDark ? ['#14283A', '#1B2448'] : ['#E6F6F3', '#DDEBFA'], dark: isDark },
+  { id: 'bg_room', nameKey: 'room', colors: isDark ? ['#2A2420', '#352C26'] : ['#F6EFE6', '#EADFD2'], dark: isDark },
   { id: 'bg_night', nameKey: 'night', colors: ['#1E2A55', '#2E3B6B'] as const, dark: true },
-  { id: 'bg_tea', nameKey: 'tea', colors: ['#F2F5E8', '#E2EBD6'] as const },
-  { id: 'bg_plain', nameKey: 'plain', colors: [palette.gray50, palette.white] as const },
+  { id: 'bg_tea', nameKey: 'tea', colors: isDark ? ['#1E2A22', '#26342A'] : ['#F2F5E8', '#E2EBD6'], dark: isDark },
+  { id: 'bg_plain', nameKey: 'plain', colors: isDark ? ['#0E1230', '#1C2148'] : [palette.gray50, palette.white], dark: isDark },
 ];
 
 export const backgroundsById = Object.fromEntries(

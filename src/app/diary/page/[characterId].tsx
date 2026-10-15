@@ -9,7 +9,7 @@ import { Button, CharacterAvatar, EmptyState, Header, PressableScale, Screen, Tx
 import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, HEADER_HEIGHT, radius, space, type } from '@/theme';
+import { colors, HEADER_HEIGHT, palette, radius, space, type } from '@/theme';
 
 /** One ruled line on the page; the handwriting sits on this pitch. */
 const LINE = type.hand.lineHeight ?? 32;
@@ -116,7 +116,7 @@ export default function CharacterDiaryPageScreen() {
       <View style={styles.paper}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.paperScroll}>
           <View style={styles.top}>
-            <Txt variant="hand" color={colors.textSecondary} style={styles.flex}>
+            <Txt variant="hand" color={palette.gray600} style={styles.flex}>
               {fmt(page.date, { weekday: 'long', month: 'short', day: 'numeric' })}
             </Txt>
             <View style={styles.mood}>

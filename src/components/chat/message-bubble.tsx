@@ -13,7 +13,7 @@ import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '
 import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space } from '@/theme';
+import { colors, isDark, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
 
 export interface MessageBubbleProps {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingVertical: space.xs + 1,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    backgroundColor: isDark ? 'rgba(28,33,72,0.85)' : 'rgba(255,255,255,0.85)',
   },
   callPill: { paddingHorizontal: space.md },
   notice: { maxWidth: '86%', paddingVertical: space.xs + 2 },

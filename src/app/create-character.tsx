@@ -27,7 +27,7 @@ import {
 } from '@/lib/create-character';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, palette, radius, space, type } from '@/theme';
+import { colors, radius, space, type } from '@/theme';
 import type {
   Character,
   CharacterCategory,
@@ -573,7 +573,7 @@ function CheckRow({ checked, onToggle, label }: { checked: boolean; onToggle: ()
       accessibilityState={{ checked }}
       style={styles.checkRow}>
       <View style={[styles.box, checked && styles.boxOn]}>
-        {checked ? <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} /> : null}
+        {checked ? <Ionicons name="checkmark" size={15} color={colors.textOnInk} /> : null}
       </View>
       <Txt variant="small" color={colors.textSecondary} style={styles.flex}>
         {label}
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     borderRadius: PHOTO / 2,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: palette.gray300,
+    borderColor: colors.borderStrong,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -644,7 +644,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: palette.gray300,
+    borderColor: colors.borderStrong,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: palette.gray400,
+    borderColor: colors.textFaint,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',

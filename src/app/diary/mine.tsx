@@ -24,7 +24,7 @@ import {
 import { diaryDate, relativeStamp } from '@/lib/format';
 import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, palette, radius, space } from '@/theme';
+import { avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
 import type { DiaryEntry } from '@/types';
 
 const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     padding: space.xl,
     overflow: 'hidden',
   },
-  cardFront: { backgroundColor: palette.cream100 },
+  cardFront: { backgroundColor: isDark ? colors.surfaceAlt : palette.cream100 },
   cardHead: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
   ribbon: { width: 8, height: 22, borderRadius: radius.xs / 2, alignSelf: 'flex-start' },
   cardTitle: { marginTop: space.lg },
