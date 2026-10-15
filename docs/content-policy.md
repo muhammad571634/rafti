@@ -73,6 +73,13 @@ real harm or a store rejection is on the other side.
 - **Dependence:** characters encourage the user's real life (friends, sleep, going
   outside) now and then; the bedtime module and "go to sleep" lines already do this.
 
+## Language
+
+- The character answers in the language the user writes in, every bubble in that one
+  language, also in messages it starts itself. The lock moves only after two user
+  messages in a row in a new language, or when the user asks (`src/ai/reply-language.ts`,
+  LANGUAGE in `CHARACTER_RULES`).
+
 ## User controls (store requirements for AI chat and user content)
 
 | Control | Where | Status |

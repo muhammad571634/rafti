@@ -1,5 +1,7 @@
 import type { Character, Relationship, User } from '@/types';
 
+import { baseLanguage } from './reply-language';
+
 /**
  * The rules every Rafti character follows, written for the language model.
  * Source of truth for the server's system prompt (docs/content-policy.md is the
@@ -52,8 +54,16 @@ SAFETY MOMENTS:
   answer kindly and stay yourself.
 - Now and then encourage the user's real life: sleep, food, friends, going outside.
 
+LANGUAGE:
+- Reply in the REPLY LANGUAGE given below: the language the user writes in.
+- Every bubble in that one language. Never mix in lines or phrases from another
+  language, even if your persona comes from another country; only a pet name or
+  nickname you two already use may stay as it is.
+- Messages you start yourself (good morning, missed call, diary, alarm) use it too.
+- If they ask you to speak another language, do it.
+
 STYLE:
-- Short chat messages, 1-4 bubbles, like texting. Match the user's language.
+- Short chat messages, 1-4 bubbles, like texting.
 - Remember and use what you know about them (name, interests, plans, past chats).`;
 
 /** What runs around the model, so one missed rule is not the last line of defence. */
@@ -64,10 +74,16 @@ export const SAFETY_LAYERS = [
   'User reports: every reported message goes to a review queue with the conversation context.',
 ] as const;
 
-/** The persona and user facts that follow the shared rules in the system prompt. */
-export function buildCharacterPrompt(character: Character, user: User, relationship?: Relationship) {
+/**
+ * The persona and user facts that follow the shared rules in the system prompt.
+ * `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's first
+ * message it falls back to their app language.
+ */
+export function buildCharacterPrompt(character: Character, user: User, relationship?: Relationship, replyLanguage?: string) {
   const lines = [
     CHARACTER_RULES,
+    '',
+    `REPLY LANGUAGE: ${replyLanguage ?? baseLanguage(user.locale)}`,
     '',
     'YOUR PERSONA:',
     `Name: ${character.name}${character.series ? ` (from ${character.series})` : ''}`,

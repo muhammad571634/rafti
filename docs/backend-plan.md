@@ -80,8 +80,8 @@ Hozirgi `src/types` deyarli to'g'ridan-to'g'ri jadvallarga aylanadi:
 | `profiles` | `id` (= auth user), `display_name`, `handle`, `locale`, `birth_year`, `age_confirmed_at` | 18+ tekshiruvi shu yerda |
 | `characters` | `id`, `owner_id` (null = rasmiy), `name`, `bio`, `persona jsonb` (12.3), `persona_version`, `voice_id`, `category`, `series`, `gender`, `visibility` | Rasmiy cast seed migratsiyasi bilan |
 | `relationships` | `user_id`, `character_id`, `intimacy`, `level`, `label`, `streak_days`, `last_chat_day`, `nickname`, `voice_replies`, `messages_first`, `summary`, `recent_openers` (12.7) | `summary` — suhbatning qisqa xulosasi (xotira 2-qatlami) |
-| `conversations` | `id`, `user_id`, `character_id`, `pinned`, `muted`, `last_message_at` | `unread_count` hisoblanadi |
-| `messages` | `id`, `conversation_id`, `author`, `kind`, `text`, `transcript`, `media_path`, `duration_sec`, `created_at`, `read_at`, `client_id` | `client_id` — takroriy yuborishdan himoya |
+| `conversations` | `id`, `user_id`, `character_id`, `pinned`, `muted`, `last_message_at`, `reply_language` | `unread_count` hisoblanadi; `reply_language` — javob tili qulfi (`lockedReplyLanguage`, `src/ai/reply-language.ts`), promptga `REPLY LANGUAGE` bo'lib kiradi |
+| `messages` | `id`, `conversation_id`, `author`, `kind`, `text`, `transcript`, `media_path`, `duration_sec`, `created_at`, `read_at`, `client_id`, `lang` | `client_id` — takroriy yuborishdan himoya; `lang` — foydalanuvchi xabarining aniqlangan tili (juda qisqa bo'lsa bo'sh) |
 | `memories` | `id`, `user_id`, `character_id`, `text`, `source`, `type`, `importance`, `confidence`, `status`, `superseded_by`, `pinned`, `embedding vector`, `created_at`, `last_confirmed_at`, `last_used_at` | Memories ekrani faqat `status = active` faktlarni ko'rsatadi (12.1, 12.2) |
 | `memory_uses` | `message_id`, `memory_id` | Qaysi fakt qaysi javob promptiga tushgan (12.9) |
 | `relationship_events` | `id`, `user_id`, `character_id`, `kind`, `params`, `created_at` | Faqat qo'shiladi. Us timeline va level shu oqimdan hisoblanadi (12.4) |

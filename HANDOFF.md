@@ -124,7 +124,15 @@ From BIMOBIMO (our own look and words)
    Typed routes: the running dev server wrote `/photo/[id]` as a static route, so links use
    `{ pathname: '/photo/[id]', params }`, which compiles either way. An image model can replace the
    drawing later behind the same record.
-14. [ ] Reply-language lock: the character always answers in the user's language.
+14. [x] Reply-language lock: the character always answers in the user's language.
+   Done 2026-10-15 (owner's pick: the language the user writes in, no settings row). The app has no
+   real AI yet, so this is the backend seam: `lockedReplyLanguage` (`src/ai/reply-language.ts`,
+   tested) sets the chat's lock from the user's first message and moves it only after 2 messages in a
+   row in a new language (too-short messages never move it; "pt-BR" = "pt"); `CHARACTER_RULES` has a
+   LANGUAGE block (one language in every bubble, also in the character's own messages, no mixing even
+   for a foreign persona); `buildCharacterPrompt(..., replyLanguage)` adds `REPLY LANGUAGE`, falling
+   back to the app language. Server: detect each user message's language into `messages.lang`, keep
+   the lock in `conversations.reply_language` (backend-plan §4). content-policy "Language" section.
 15. [ ] Dark mode.
 16. [ ] Group chat with 2-3 characters (large; keep the first version small).
 Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
