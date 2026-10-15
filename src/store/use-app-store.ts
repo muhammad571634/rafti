@@ -39,6 +39,7 @@ import {
   pickResponders,
   withoutMember,
 } from '@/lib/group-chat';
+import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
 import { checkClip, cleanLines, clipCost, clipDuration, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
@@ -115,7 +116,8 @@ import {
   todayKey,
   wallet as seedWallet,
 } from '@/mock';
-import { dateEnding, datePlaceById, maxHearts } from '@/mock/dates';
+import { themePools } from '@/mock/date-themes';
+import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
   DARES_FOR_YOU,
@@ -139,6 +141,7 @@ import type {
   Conversation,
   DailyState,
   CharacterDiaryPage,
+  DateTheme,
   GroupChat,
   RadioClip,
   DiaryEntry,
@@ -208,6 +211,8 @@ export interface DailyRewardEvent {
 /** `dailyCap` is no longer returned: the credit model has no daily cap (backend-plan §15.10). */
 export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
+/** Saving a date the user wrote: its id, or why it was not saved. */
+export type ThemeResult = { status: 'saved'; id: string } | { status: ThemeProblem };
 /** Making a Radio clip: its id, or why it was not made. */
 export type ClipResult = { status: 'made'; id: string } | { status: 'noShells' | ClipProblem };
 
@@ -258,7 +263,10 @@ interface AppState {
   /** Shells just paid for a share; a small banner shows it and clears it. */
   shareReward: number | null;
   /** The date that has been paid for and not finished yet; the date screen only plays this one. */
-  activeDate: { characterId: string; placeId: string } | null;
+  /** The date being played; a user's own date carries the rounds written for this play. */
+  activeDate: { characterId: string; placeId: string; theme?: { title: string; rounds: DateRound[] } } | null;
+  /** Dates the user wrote (F28); played from the map's "Your own" card. */
+  dateThemes: DateTheme[];
 
   /* chat */
   sendText: (conversationId: string, text: string) => SendResult;
@@ -409,6 +417,11 @@ interface AppState {
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
+  /** Saves a new date, or the one with `id`. Free; playing it costs 2 shells a round. */
+  saveDateTheme: (input: Omit<DateTheme, 'id' | 'createdAt'>, id?: string) => ThemeResult;
+  deleteDateTheme: (id: string) => void;
+  /** Pays for one play of the user's date and writes its rounds; the date screen plays them. */
+  beginThemeDate: (characterId: string, themeId: string) => SpendResult;
   /* Photo Booth: the kept pictures, newest first */
   photos: BoothPhoto[];
   /**
@@ -457,6 +470,7 @@ type PersistedKeys =
   | 'conversations'
   | 'groups'
   | 'radioClips'
+  | 'dateThemes'
   | 'messages'
   | 'relationships'
   | 'memories'
@@ -643,6 +657,7 @@ export const useAppStore = create<AppState>()(
       dailyReward: null,
       shareReward: null,
       activeDate: null,
+      dateThemes: [],
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
@@ -1532,6 +1547,7 @@ export const useAppStore = create<AppState>()(
             boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
             photos: s.photos.filter((p) => p.characterId !== characterId),
             radioClips: s.radioClips.filter((c) => c.characterId !== characterId),
+            dateThemes: s.dateThemes.filter((d) => d.characterId !== characterId),
             activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
             settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
           };
@@ -1746,9 +1762,44 @@ export const useAppStore = create<AppState>()(
 
       leaveDate: () => set({ activeDate: null }),
 
+      saveDateTheme: (input, id) => {
+        const problem = checkTheme(input);
+        if (problem) return { status: problem };
+        const fields = {
+          title: cleanTitle(input.title),
+          scene: cleanScene(input.scene),
+          art: input.art,
+          rounds: input.rounds,
+          mood: input.mood,
+          characterId: input.characterId || undefined,
+        };
+        const existing = id ? get().dateThemes.find((d) => d.id === id) : undefined;
+        if (existing) {
+          set((s) => ({ dateThemes: s.dateThemes.map((d) => (d.id === id ? { ...d, ...fields } : d)) }));
+          return { status: 'saved', id: existing.id };
+        }
+        const theme: DateTheme = { id: uid('dt'), createdAt: new Date().toISOString(), ...fields };
+        set((s) => ({ dateThemes: [theme, ...s.dateThemes] }));
+        return { status: 'saved', id: theme.id };
+      },
+
+      deleteDateTheme: (id) => set((s) => ({ dateThemes: s.dateThemes.filter((d) => d.id !== id) })),
+
+      beginThemeDate: (characterId, themeId) => {
+        const theme = get().dateThemes.find((d) => d.id === themeId);
+        const bond = get().relationships[characterId];
+        if (!theme || !bond || (theme.characterId && theme.characterId !== characterId)) return 'locked';
+        if (!moodOpen(theme.mood, bond.level)) return 'locked';
+        if (!get().spendShells(themeCost(theme.rounds), 'date', characterId)) return 'noShells';
+        // The mock builds the rounds from canned pools; the server's model writes them from the scene.
+        const rounds = buildThemeRounds(theme, themePools, `${theme.id}:${Date.now()}`);
+        set({ activeDate: { characterId, placeId: theme.id, theme: { title: theme.title, rounds } } });
+        return 'ok';
+      },
+
       finishDate: (characterId, placeId, hearts, title) => {
-        const place = datePlaceById(placeId);
         const active = get().activeDate;
+        const place = datePlaceById(placeId) ?? active?.theme;
         if (!place || active?.characterId !== characterId || active.placeId !== placeId) return null;
         set({ activeDate: null });
         const max = maxHearts(place);
@@ -2155,6 +2206,7 @@ export const useAppStore = create<AppState>()(
         conversations: s.conversations,
         groups: s.groups,
         radioClips: s.radioClips,
+        dateThemes: s.dateThemes,
         // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
         messages: capMessages(s.messages),
         relationships: s.relationships,

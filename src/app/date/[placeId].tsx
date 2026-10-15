@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -37,7 +37,12 @@ export default function DateScreen() {
   // Only a date paid for on the map plays here; a stray link gets the way back.
   const paid = useAppStore((s) => s.activeDate?.placeId === placeId && s.activeDate?.characterId === characterId);
 
-  const place = datePlaceById(placeId ?? '');
+  const official = datePlaceById(placeId ?? '');
+  // A user's own date (F28) carries its rounds on the active date; keep them for the end screen.
+  const running = useAppStore((s) => (s.activeDate?.placeId === placeId ? s.activeDate?.theme : undefined));
+  const kept = useRef(running);
+  if (running) kept.current = running;
+  const place = official ?? kept.current;
   const [round, setRound] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [hearts, setHearts] = useState(0);
@@ -56,7 +61,7 @@ export default function DateScreen() {
 
   const name = shortName(displayName(character, relationship));
   const fill = (text: string) => text.replaceAll('{name}', name);
-  const title = t(`dating.places.${place.titleKey}`);
+  const title = official ? t(`dating.places.${official.titleKey}`) : (kept.current?.title ?? '');
   const scene = place.rounds[round];
   const choice = picked != null ? scene.choices[picked] : null;
   const last = round === place.rounds.length - 1;
@@ -73,7 +78,8 @@ export default function DateScreen() {
       setPicked(null);
       return;
     }
-    setRecord(finishDate(character.id, place.id, hearts, t(`dating.scenarios.${place.titleKey}`)));
+    const scenario = official ? t(`dating.scenarios.${official.titleKey}`) : title;
+    setRecord(finishDate(character.id, placeId ?? '', hearts, scenario));
   };
 
   if (record) {
@@ -142,7 +148,11 @@ export default function DateScreen() {
       <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }}>
         <View style={{ height: photoH }}>
           <Image source={sceneImage(character)} style={StyleSheet.absoluteFill} contentFit="cover" />
-          <LinearGradient colors={['transparent', colors.bgPlain]} locations={[0.55, 1]} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={['transparent', colors.bgPlain]}
+            locations={[0.55, 1]}
+            style={StyleSheet.absoluteFill}
+          />
         </View>
 
         <View style={[styles.say, shadows.card]}>
@@ -178,7 +188,13 @@ export default function DateScreen() {
             );
           })}
           {picked != null ? (
-            <Button label={last ? t('date.finish') : t('date.next')} size="lg" full onPress={next} style={styles.next} />
+            <Button
+              label={last ? t('date.finish') : t('date.next')}
+              size="lg"
+              full
+              onPress={next}
+              style={styles.next}
+            />
           ) : null}
         </View>
       </ScrollView>
@@ -192,7 +208,10 @@ export default function DateScreen() {
           onPress={() => setLeaving(true)}>
           <Ionicons name="close" size={22} color={colors.text} />
         </PressableScale>
-        <View style={styles.dots} accessible accessibilityLabel={t('date.round', { n: round + 1, total: place.rounds.length })}>
+        <View
+          style={styles.dots}
+          accessible
+          accessibilityLabel={t('date.round', { n: round + 1, total: place.rounds.length })}>
           {place.rounds.map((_, i) => (
             <View key={i} style={[styles.dot, i <= round && styles.dotOn]} />
           ))}
@@ -233,7 +252,15 @@ export default function DateScreen() {
 const styles = StyleSheet.create({
   grow: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  top: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', alignItems: 'center', gap: space.md },
+  top: {
+    position: 'absolute',
+    left: space.lg,
+    right: space.lg,
+    top: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+  },
   close: {
     width: 42,
     height: 42,
@@ -245,7 +272,13 @@ const styles = StyleSheet.create({
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
   dot: { width: 24, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.55)' },
   dotOn: { backgroundColor: colors.surface },
-  hearts: { height: 38, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: colors.surface, justifyContent: 'center' },
+  hearts: {
+    height: 38,
+    paddingHorizontal: space.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+  },
   say: {
     marginHorizontal: space.lg,
     marginTop: -space.xxl,

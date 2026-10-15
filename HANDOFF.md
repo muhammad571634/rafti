@@ -16,8 +16,12 @@ and ask which one to start (each with a prototype first, as usual):
    `make.tsx`, `[id].tsx` player), `src/lib/radio-clips.ts` (+ tests), `src/components/radio/`
    (`useRadioPlayer`, `useRadioClips`), store `radioClips` + `makeRadioClip` / `deleteRadioClip` /
    `shareRadioClip`, friend clips in `src/mock/radio.ts`, ledger reason `radio`. Checked on web.
-2. [ ] User-made date themes (Dates: the user makes their own date place / theme, beside the 5 map
-   places in `src/mock/dates.ts`).
+2. [x] User-made date themes. Done 2026-10-15 (F28, prototype https://claude.ai/artifact/Cjj8tcHHjNHe5XK8aW9wjv
+   approved: free to make, 2 shells a round per play, Flirty Lv 6 / Sweet Lv 16, only you see them).
+   Map card "Your own" + sheets in `src/app/dating.tsx`, make/edit `src/app/date/theme.tsx`, the date
+   screen plays `activeDate.theme`; `src/lib/date-themes.ts` (+ tests), `src/mock/date-themes.ts`
+   (round pools, `THEME_ARTS`), store `dateThemes` + `saveDateTheme` / `deleteDateTheme` /
+   `beginThemeDate`. Also fixed: "You need 1 shell" in the out-of-shells sheet. Checked on web.
 3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo
    frames for Photo Booth / polaroids, like BIMOBIMO's frame templates but our own art).
 Also on hold: the Backend (real AI), `docs/backend-plan.md`.

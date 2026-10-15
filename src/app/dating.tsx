@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Alert, Platform, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 
@@ -20,13 +20,31 @@ import {
   ShellIcon,
   Txt,
 } from '@/components/ui';
+import { MOOD_LEVEL, moodOpen, themeCost } from '@/lib/date-themes';
 import { shortName } from '@/lib/format';
+import { themeArt } from '@/mock/date-themes';
 import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, palette, radius, shadows, space } from '@/theme';
+import type { Character, DateTheme } from '@/types';
 
 /** A place on the map: a white card with the place's art on its tint, name and price. */
 const CARD_W = 128;
+/** Where the "Your own" card sits on the map (fractions, like the places in dates.ts). */
+const OWN_X = 0.6;
+const OWN_Y = 0.69;
+
+/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
+function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
+  if (Platform.OS === 'web') {
+    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
+    return;
+  }
+  Alert.alert(title, message, [
+    { text: cancel, style: 'cancel' },
+    { text: action, style: 'destructive', onPress: onConfirm },
+  ]);
+}
 const ART_H = 76;
 const CARD_PAD = space.sm;
 
@@ -46,6 +64,9 @@ export default function DatingScreen() {
   const conversations = useAppStore((s) => s.conversations);
   const dates = useAppStore((s) => s.dates);
   const beginDate = useAppStore((s) => s.beginDate);
+  const themes = useAppStore((s) => s.dateThemes);
+  const beginThemeDate = useAppStore((s) => s.beginThemeDate);
+  const deleteDateTheme = useAppStore((s) => s.deleteDateTheme);
 
   const known = useMemo(
     () =>
@@ -63,11 +84,15 @@ export default function DatingScreen() {
   const [choosing, setChoosing] = useState(false);
   const [placeId, setPlaceId] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);
+  // Your own dates (F28): the list sheet, and the date picked in it.
+  const [ownOpen, setOwnOpen] = useState(false);
+  const [themeId, setThemeId] = useState<string | null>(null);
   const [map, setMap] = useState({ width: 0, height: 0 });
 
   const partner = known.find((c) => c.id === partnerId) ?? known[0];
   const level = partner ? (relationships[partner.id]?.level ?? 0) : 0;
   const place = DATE_PLACES.find((p) => p.id === placeId);
+  const theme = themes.find((d) => d.id === themeId);
   const been = useMemo(
     () => new Set(dates.filter((d) => d.characterId === partner?.id).map((d) => d.placeId)),
     [dates, partner],
@@ -77,7 +102,11 @@ export default function DatingScreen() {
     return (
       <Screen background={colors.bgPlain}>
         <Header title={t('dating.title')} />
-        <EmptyState title={t('dating.noFriends')} actionLabel={t('find.title')} onAction={() => router.push('/(tabs)/find')} />
+        <EmptyState
+          title={t('dating.noFriends')}
+          actionLabel={t('find.title')}
+          onAction={() => router.push('/(tabs)/find')}
+        />
       </Screen>
     );
   }
@@ -90,6 +119,84 @@ export default function DatingScreen() {
     if (result !== 'ok') return;
     setPlaceId(null);
     router.push({ pathname: '/date/[placeId]', params: { placeId: p.id, characterId: partner.id } });
+  };
+
+  const nameOf = (c: Character) => shortName(displayName(c, relationships[c.id]));
+  // A date written for one friend plays with them; any other plays with the map's partner.
+  const themeFriend = (d: DateTheme) => (d.characterId ? known.find((c) => c.id === d.characterId) : partner);
+  const themeMeta = (d: DateTheme) => {
+    const only = d.characterId ? characters.find((c) => c.id === d.characterId) : undefined;
+    return t('dating.themeMeta', {
+      who: only ? t('dating.withOne', { name: nameOf(only) }) : t('dating.withAnyone'),
+      rounds: d.rounds,
+      mood: t(`dating.moods.${d.mood}`),
+    });
+  };
+
+  const startTheme = (d: DateTheme) => {
+    const friend = themeFriend(d);
+    if (!friend) return;
+    const result = beginThemeDate(friend.id, d.id);
+    if (result === 'noShells') return setPaywall(themeCost(d.rounds));
+    if (result !== 'ok') return;
+    setThemeId(null);
+    router.push({ pathname: '/date/[placeId]', params: { placeId: d.id, characterId: friend.id } });
+  };
+
+  const removeTheme = (d: DateTheme) =>
+    confirm(
+      t('dating.deleteTitle'),
+      t('dating.deleteBody'),
+      t('dating.delete'),
+      () => {
+        setThemeId(null);
+        deleteDateTheme(d.id);
+      },
+      t('common.cancel'),
+    );
+
+  const themeStart = (d: DateTheme) => {
+    const art = themeArt(d.art);
+    const friend = themeFriend(d);
+    const friendLevel = friend ? (relationships[friend.id]?.level ?? 0) : 0;
+    const open = moodOpen(d.mood, friendLevel);
+    return (
+      <View style={styles.place}>
+        <View style={[styles.hero, { backgroundColor: art.tint }]}>
+          <ClayIcon name={art.id} size={112} tile={false} />
+        </View>
+        <View style={styles.themeText}>
+          <Txt variant="h2">{d.title}</Txt>
+          <Txt variant="body" color={colors.textSecondary}>
+            {d.scene}
+          </Txt>
+        </View>
+        <View style={styles.facts}>
+          <Fact value={String(d.rounds)} label={t('dating.rounds')} />
+          <Fact value={t(`dating.moods.${d.mood}`)} label={t('dating.mood')} />
+          <Fact value={String(themeCost(d.rounds))} label={t('dating.shells')} shell />
+        </View>
+        {!friend ? (
+          <Button label={t('dating.noFriends')} size="lg" full disabled />
+        ) : open ? (
+          <Button label={t('dating.start', { name: nameOf(friend) })} size="lg" full onPress={() => startTheme(d)} />
+        ) : (
+          <Button label={t('dating.locked', { level: MOOD_LEVEL[d.mood] })} size="lg" full disabled />
+        )}
+        <View style={styles.themeActions}>
+          <Button
+            label={t('dating.edit')}
+            variant="secondary"
+            style={styles.grow}
+            onPress={() => {
+              setThemeId(null);
+              router.push({ pathname: '/date/theme', params: { id: d.id, partner: partner.id } });
+            }}
+          />
+          <Button label={t('dating.delete')} variant="ghost" style={styles.grow} onPress={() => removeTheme(d)} />
+        </View>
+      </View>
+    );
   };
 
   const onLayout = (e: LayoutChangeEvent) => {
@@ -114,6 +221,24 @@ export default function DatingScreen() {
               />
             ))
           : null}
+        {map.width > 0 ? (
+          <PressableScale
+            scaleTo={0.94}
+            accessibilityRole="button"
+            accessibilityLabel={t('dating.ownTitle')}
+            style={[styles.card, shadows.card, { left: OWN_X * map.width, top: OWN_Y * map.height }]}
+            onPress={() => setOwnOpen(true)}>
+            <View style={[styles.art, { backgroundColor: colors.surfaceAlt }]}>
+              <ClayIcon name="pencil" size={58} tile={false} />
+            </View>
+            <Txt variant="bodyStrong" center lines={1}>
+              {t('dating.ownCard')}
+            </Txt>
+            <Txt variant="caption" color={colors.textSecondary} style={styles.bold}>
+              {themes.length ? t('dating.ownMade', { count: themes.length }) : t('dating.ownNone')}
+            </Txt>
+          </PressableScale>
+        ) : null}
       </View>
 
       <View style={[styles.top, { paddingTop: insets.top + space.sm }]}>
@@ -195,6 +320,66 @@ export default function DatingScreen() {
             )}
           </View>
         ) : null}
+      </Sheet>
+
+      <Sheet visible={ownOpen} onClose={() => setOwnOpen(false)} title={t('dating.ownTitle')}>
+        <View style={styles.own}>
+          <Txt variant="body" color={colors.textSecondary}>
+            {t('dating.ownHint')}
+          </Txt>
+          <View style={styles.box}>
+            <PressableScale
+              scaleTo={0.98}
+              accessibilityRole="button"
+              style={styles.boxRow}
+              onPress={() => {
+                setOwnOpen(false);
+                router.push({ pathname: '/date/theme', params: { partner: partner.id } });
+              }}>
+              <View style={[styles.boxArt, { backgroundColor: colors.surfaceAlt }]}>
+                <Ionicons name="add" size={22} color={colors.text} />
+              </View>
+              <Txt variant="title" style={styles.grow}>
+                {t('dating.make')}
+              </Txt>
+              <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+            </PressableScale>
+            {themes.map((d) => {
+              const art = themeArt(d.art);
+              return (
+                <PressableScale
+                  key={d.id}
+                  scaleTo={0.98}
+                  accessibilityRole="button"
+                  style={[styles.boxRow, styles.boxDivider]}
+                  onPress={() => {
+                    setOwnOpen(false);
+                    setThemeId(d.id);
+                  }}>
+                  <View style={[styles.boxArt, { backgroundColor: art.tint }]}>
+                    <ClayIcon name={art.id} size={30} tile={false} />
+                  </View>
+                  <View style={styles.grow}>
+                    <Txt variant="title" lines={1}>
+                      {d.title}
+                    </Txt>
+                    <Txt variant="small" color={colors.textSecondary} lines={1}>
+                      {themeMeta(d)}
+                    </Txt>
+                  </View>
+                  <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+                </PressableScale>
+              );
+            })}
+          </View>
+          <Txt variant="caption" color={colors.textSecondary} center>
+            {t('dating.ownOnly')}
+          </Txt>
+        </View>
+      </Sheet>
+
+      <Sheet visible={!!theme} onClose={() => setThemeId(null)}>
+        {theme ? themeStart(theme) : null}
       </Sheet>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
@@ -282,7 +467,14 @@ function MapArt({ width: w, height: h }: { width: number; height: number }) {
         d={`M0 0 H${w} V${h * 0.13} C${w * 0.8} ${h * 0.2} ${w * 0.66} ${h * 0.1} ${w * 0.45} ${h * 0.16} C${w * 0.24} ${h * 0.22} ${w * 0.15} ${h * 0.14} 0 ${h * 0.19} Z`}
         fill={palette.sky200}
       />
-      <Path d={trail(w, h)} fill="none" stroke={palette.cream300} strokeWidth={6} strokeDasharray="2 14" strokeLinecap="round" />
+      <Path
+        d={trail(w, h)}
+        fill="none"
+        stroke={palette.cream300}
+        strokeWidth={6}
+        strokeDasharray="2 14"
+        strokeLinecap="round"
+      />
       <Circle cx={w * 0.9} cy={h * 0.47} r={16} fill="#CFE3C4" />
       <Circle cx={w * 0.93} cy={h * 0.455} r={11} fill="#BFE3B4" />
       <Circle cx={w * 0.06} cy={h * 0.66} r={13} fill="#CFE3C4" />
@@ -294,7 +486,14 @@ function MapArt({ width: w, height: h }: { width: number; height: number }) {
 const styles = StyleSheet.create({
   grow: { flex: 1 },
   bold: { fontWeight: '600' },
-  top: { position: 'absolute', left: space.md, right: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  top: {
+    position: 'absolute',
+    left: space.md,
+    right: space.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+  },
   round: {
     width: 44,
     height: 44,
@@ -369,6 +568,26 @@ const styles = StyleSheet.create({
   place: { gap: space.lg },
   hero: { height: 160, borderRadius: radius.xl, alignItems: 'center', justifyContent: 'center' },
   facts: { flexDirection: 'row', gap: space.sm },
-  fact: { flex: 1, alignItems: 'center', gap: 2, paddingVertical: space.md, borderRadius: radius.lg, backgroundColor: colors.surfaceAlt },
+  themeText: { gap: space.xs + 2 },
+  themeActions: { flexDirection: 'row', gap: space.sm, marginTop: -space.sm },
+  own: { gap: space.md, paddingBottom: space.lg },
+  box: {
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  boxRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64, paddingHorizontal: space.md + 2 },
+  boxDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
+  boxArt: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  fact: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+    paddingVertical: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceAlt,
+  },
   factValue: { flexDirection: 'row', alignItems: 'center', gap: 4 },
 });

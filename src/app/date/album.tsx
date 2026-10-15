@@ -29,17 +29,19 @@ export default function DateAlbumScreen() {
       {dates.length === 0 ? (
         <EmptyState title={t('date.albumEmpty')} actionLabel={t('dating.title')} onAction={() => router.back()} />
       ) : (
-        <ScrollView contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + space.huge }]} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + space.huge }]}
+          showsVerticalScrollIndicator={false}>
           {dates.map((d, i) => {
             const character = characters.find((c) => c.id === d.characterId);
             const place = datePlaceById(d.placeId);
-            if (!character || !place) return null;
+            if (!character) return null;
             const name = shortName(displayName(character, relationships[character.id]));
             return (
               <View key={d.id} style={{ width: cardW }}>
                 <Polaroid
                   character={character}
-                  caption={t(`dating.places.${place.titleKey}`)}
+                  caption={place ? t(`dating.places.${place.titleKey}`) : d.title}
                   date={new Date(d.createdAt).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
                   width={cardW}
                   tilt={i % 2 ? 2 : -2}

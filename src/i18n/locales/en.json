@@ -705,7 +705,66 @@
     "closeness": "closeness",
     "shells": "shells",
     "start": "Start date with {{name}}",
-    "noFriends": "Start a chat first"
+    "noFriends": "Start a chat first",
+    "ownCard": "Your own",
+    "ownMade": "{{count}} made",
+    "ownNone": "Write one",
+    "ownTitle": "Your own dates",
+    "ownHint": "Write a scene. Your friend plays it with you.",
+    "ownOnly": "Only you see your dates.",
+    "make": "Make a date",
+    "withOne": "With {{name}}",
+    "withAnyone": "With anyone",
+    "themeMeta": "{{who}} · {{rounds}} rounds · {{mood}}",
+    "mood": "mood",
+    "moods": {
+      "friendly": "Friendly",
+      "flirty": "Flirty",
+      "sweet": "Sweet"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete this date?",
+    "deleteBody": "It is gone from your list. Dates you already went on stay in Our dates."
+  },
+  "dateTheme": {
+    "titleNew": "Make a date",
+    "titleEdit": "Edit date",
+    "scene": "The scene",
+    "scenePlaceholder": "We find a quiet spot by the lake, but the ducks have other plans for our sandwiches…",
+    "sceneHint": "How it starts. Your friend plays the rest with you.",
+    "where": "Where",
+    "wherePlaceholder": "Picnic by the lake",
+    "picture": "Picture",
+    "arts": {
+      "sun": "Sun",
+      "cafe": "Cafe",
+      "trip": "Trip",
+      "home": "Home",
+      "music": "Music",
+      "night": "Night sky"
+    },
+    "rounds": "Rounds",
+    "roundHint": {
+      "3": "quick",
+      "5": "usual",
+      "8": "long"
+    },
+    "mood": "Mood",
+    "moodHint": {
+      "friendly": "anyone",
+      "flirty": "from Lv {{level}}",
+      "sweet": "from Lv {{level}}"
+    },
+    "who": "Who with",
+    "only": "Only {{name}}",
+    "anyFriend": "Any friend",
+    "save": "Save date",
+    "saveHint": "Free to make · each time you play: {{count}} shells",
+    "needScene": "Write the scene first",
+    "needTitle": "Name the place",
+    "crisisTitle": "This one can't be a date",
+    "crisisBody": "It sounds like things are heavy right now. Someone can talk with you today."
   },
   "photoBooth": {
     "title": "Photo Booth",

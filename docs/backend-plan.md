@@ -426,6 +426,24 @@ Foydalanuvchi do'stini tanlaydi, 1-5 qator yozadi, do'st uni o'z ovozida aytadi.
   levelga bog'langan (`unlockLevel`: 6 = "More than friends", 16 = "Beloved"), `clipUnlocked`.
 - **Bloklash:** do'st bloklansa, uning kliplari ham o'chadi.
 
+### 12.15 O'zingiz yaratadigan date'lar (2026-10-15, F28)
+
+Foydalanuvchi sahna (300 belgi), joy nomi, rasm, raundlar soni (3/5/8), kayfiyat va kim bilan ekanini yozadi.
+Ilovada mock bilan ishlaydi; server shunday qiladi:
+
+- **Narx:** yaratish bepul, har o'ynalganda 1 raund = 2 chig'anoq (egasi qarori 2026-10-15): 6 / 10 / 16.
+  `themeCost` (`src/lib/date-themes.ts`, testlangan). Ledgerda sabab `date`.
+- **Raundlar:** har o'yinda model yangidan yozadi. 1-raund foydalanuvchining sahnasi, keyin kayfiyatdagi
+  raundlar, oxirgisi xayrlashuv. Har raundda 3 javob, 0-3 yurak, xaritadagi joylar bilan bir xil format
+  (`DateRound`). Promptga persona, sahna, joy, kayfiyat va do'stning ismi kiradi. Mock: `buildThemeRounds`
+  + `themePools` (`src/mock/date-themes.ts`).
+- **Kayfiyat:** Friendly hammaga, Flirty 6-darajadan, Sweet 16-darajadan (`MOOD_LEVEL`). Server o'yin boshida tekshiradi.
+- **Tekshiruv:** inqiroz sahnasi saqlanmaydi, helpline kartasi chiqadi (`checkTheme`). Haqoratli yoki 18+ sahnani
+  server moderatsiyasi rad etadi.
+- **Ochiq lenta yo'q:** date'lar faqat foydalanuvchining o'zida (UGC yo'q). Jadval `date_themes`: `id, user_id,
+  title, scene, art, rounds, mood, character_id null, created_at`.
+- **Bloklash:** faqat bloklangan do'st uchun yozilgan date'lar o'chadi. "Har qanday do'st" date'lari qoladi.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

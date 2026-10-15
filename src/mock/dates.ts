@@ -296,7 +296,7 @@ export const DATE_PLACES: DatePlace[] = [
 export const datePlaceById = (id: string) => DATE_PLACES.find((p) => p.id === id);
 
 /** The most hearts a place can give: three per round. */
-export const maxHearts = (place: DatePlace) => place.rounds.length * 3;
+export const maxHearts = (place: { rounds: DateRound[] }) => place.rounds.length * 3;
 
 export type DateEnding = 'sweet' | 'warm' | 'funny';
 

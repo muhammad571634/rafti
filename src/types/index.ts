@@ -325,6 +325,26 @@ export interface DateRecord {
   createdAt: string;
 }
 
+export type DateMood = 'friendly' | 'flirty' | 'sweet';
+
+/**
+ * A date the user wrote (F28): the scene it starts with, a place name, a picture, rounds and
+ * a mood. Played like a map place; the rounds are written fresh each time (src/lib/date-themes.ts).
+ */
+export interface DateTheme {
+  id: string;
+  /** The place name, shown as the date's title. */
+  title: string;
+  scene: string;
+  /** A clay icon name (`THEME_ARTS`). */
+  art: string;
+  rounds: 3 | 5 | 8;
+  mood: DateMood;
+  /** Only this friend; empty means any friend. */
+  characterId?: string;
+  createdAt: string;
+}
+
 export type BoardStyleId = 'cloud' | 'gingham' | 'stripes' | 'heart' | 'kraft' | 'notebook' | 'pinned';
 
 /** A note the user pinned on the message board for one friend; they answer it in chat. */
