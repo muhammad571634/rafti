@@ -7,6 +7,17 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0r. REMIND THE OWNER — saved tasks (2026-10-15, owner: "write them down, remind me later")
+
+At the start of the next session, before anything else, remind the owner of these three in Uzbek
+and ask which one to start (each with a prototype first, as usual):
+1. [ ] Radio clips (Radio screen `src/app/radio.tsx`: short clips from the characters).
+2. [ ] User-made date themes (Dates: the user makes their own date place / theme, beside the 5 map
+   places in `src/mock/dates.ts`).
+3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo
+   frames for Photo Booth / polaroids, like BIMOBIMO's frame templates but our own art).
+Also on hold: the Backend (real AI), `docs/backend-plan.md`.
+
 ### 0c-queue. Owner's work queue (2026-10-13, do in this order, one at a time, keep each simple)
 
 Found in the 2026-10-13 review after the credit plans; the owner approved all 16 and the order.
@@ -177,8 +188,7 @@ From BIMOBIMO (our own look and words)
    gifts are shells for the user), so nothing to add there. Checked on web (375x812, light and dark):
    create, replies, named member, truth or dare, Who with, remove/add member, rename, delete, group
    call on the trial.
-Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
-The 2026-10-13 queue is finished (9 skipped by the owner). Ask the owner what is next.
+The 2026-10-13 queue is finished (9 skipped by the owner). Next: the saved tasks in 0r above.
 
 ### 0p. 2026-10-14 — animated Rafti mascot (Reanimated 3)
 
