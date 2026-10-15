@@ -3,6 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { Anim, Button, Card, Header, Screen, ShellIcon, Txt } from '@/components/ui';
@@ -17,6 +18,7 @@ const MAX_LENGTH = 400;
  * first ("Thinking..."), you write yours, and one swap opens both at once.
  */
 export default function SecretNoteScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -154,7 +156,7 @@ export default function SecretNoteScreen() {
         </ScrollView>
 
         {exchanged ? null : (
-          <View style={styles.footer}>
+          <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
             <Button
               label={t('secretNote.swap')}
               size="lg"

@@ -12,6 +12,7 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 3. BIMOBIMO screenshots: `#1-#99`, `#101` in `rafti-research/`, `#100`, `#102-#133` in
    `rafti-research-2/`. Index: `rafti-research/teardown/screens.md`. Open only the
    `#N` refs listed for the current flow in `rafti-research/spec/design-plan.md`.
+4. Looking inside the BIMOBIMO APK (adb, Apktool, REA MCP): `docs/reverse-engineering.md`.
 
 Rules:
 - Reply to the user in Uzbek. Everything in the repo that code or an AI reads is in

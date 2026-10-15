@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LockPreview } from '@/components/notifications/lock-preview';
 import { canRing } from '@/economy/plans';
@@ -52,6 +53,7 @@ const nextOf = (list: string[], value: string) => list[(list.indexOf(value) + 1)
  * still steer what characters do inside the app.
  */
 export default function NotificationSettingsScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const settings = useAppStore((s) => s.settings);
   const setSetting = useAppStore((s) => s.setSetting);
@@ -116,7 +118,7 @@ export default function NotificationSettingsScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('notifications.settingsTitle')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         {blocked ? (
           <View style={styles.off}>
             <View style={styles.tile}>

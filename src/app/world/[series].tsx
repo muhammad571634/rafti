@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CARD_GAP, CharacterCard } from '@/components/character-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -16,6 +17,7 @@ import { colors, space } from '@/theme';
  * two columns, with how many there are and how many can take a call.
  */
 export default function WorldScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -43,7 +45,7 @@ export default function WorldScreen() {
       {people.length === 0 ? (
         <EmptyState title={t('find.noResults')} />
       ) : (
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]} showsVerticalScrollIndicator={false}>
           <View style={styles.stats}>
             <Stat icon="people-outline" value={people.length} label={t('find.characters')} />
             <Stat icon="call-outline" value={voices} label={t('find.canCall')} />

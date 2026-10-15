@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CARD_GAP, CharacterCard } from '@/components/character-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -40,6 +41,8 @@ const PER_WORLD = 4;
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
+  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - CARD_GAP) / 2);
   const allCharacters = useAppStore((s) => s.characters);
@@ -164,7 +167,7 @@ export default function FindScreen() {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.huge }}>
+          contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.huge }}>
           {q ? (
             <>
               <SectionLabel tone="section" title={t('find.results', { count: results.length })} />

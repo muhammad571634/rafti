@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -39,6 +40,7 @@ const FLIP_AT = 80;
 
 /** The user's own pages, as a stack to flip through. Reached from the My diary card. */
 export default function MyDiaryScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -148,7 +150,7 @@ export default function MyDiaryScreen() {
       )}
 
       {entries.length ? (
-        <View style={styles.footer}>
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
           <Button
             label={t('diary.writeToday')}
             size="lg"

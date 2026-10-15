@@ -99,10 +99,13 @@ From BIMOBIMO (our own look and words)
     `AlarmScreenPackage` shows the activity over the lock screen as soon as an alarm launches it;
     `AlarmRuntime` turns that off when nothing rings. Tested on the owner's Samsung A51 (Android 13,
     vibrate mode, screen locked) 2026-10-14: rings, ring screen over the lock screen, melody, reply in
-    the chat turns it off. Fixed on the device: `ringAlarm` merged a new ring into the same alarm's
-    earlier session (< 30 min, already awake), so a re-set alarm only gave one note and no screen
-    (and `AlarmRuntime` pushed/closed the ring screen in a loop). Now a ring after the alarm was saved
-    again is a new session. Minor, left: "No task registered for key app.notifee.notification-event"
+    the chat turns it off. Found in the phone's log: `ringAlarm` merged a new ring into the same
+    alarm's earlier session (< 30 min, already awake), so a re-set alarm only gave one note and no
+    screen (and `AlarmRuntime` pushed/closed the ring screen in a loop). Now a ring after the alarm
+    was saved again is a new session. Note: the phone ran a release build (JS inside the APK, no
+    Metro), so the 22:34 test above ran the old code; the fix ships with the next release build.
+    The phone's app is a release build so alarms work without the PC: after JS changes rebuild with
+    `npx expo run:android --variant release --no-bundler`. Minor, left: "No task registered for key app.notifee.notification-event"
     on a cold start (the background handler registers on first use; harmless).
     Bedtime redrawn in the iOS Sleep look (owner's pick B; flows D7). `nightColors` in
     `src/theme/colors.ts` holds every token for a dark canvas: dark mode (item 15) will reuse it.
@@ -110,11 +113,37 @@ From BIMOBIMO (our own look and words)
     Gotcha: a running `expo start` rewrites `.expo/types/router.d.ts` badly when files outside
     `src/app` change (`/../lib/...` paths) and `tsc` then fails on new routes; delete the file, restart
     your server, wait for the file, then run `npx tsc --noEmit`.
-13. [ ] Photo Booth makes and keeps a real picture (Pro pays for it).
+13. [x] Photo Booth makes and keeps a real picture (Pro pays for it).
+   Done 2026-10-14 (prototype https://claude.ai/artifact/S4BPNvFGt2tGPd6HnWwU4z; owner: draw it on the
+   phone, a Send button, no save to the phone). `takePhoto(characterId, style)` uses the Pro allowance
+   and returns a `BoothPhoto` kept in `photos` (persisted; removed with a block). The picture is not a
+   file: `src/components/photo-booth/booth-picture.tsx` draws it from the record (friend's avatar and
+   hero art, crops, blend layers via `mixBlendMode`, which works on iOS too, unlike `filter`).
+   `sendPhoto` sends it once as an image message with `photoId`; the friend answers (`photoReply`,
+   free). The Us photo moment carries `photoId` and shows the picture. Viewer: `/photo/[id]`.
+   Typed routes: the running dev server wrote `/photo/[id]` as a static route, so links use
+   `{ pathname: '/photo/[id]', params }`, which compiles either way. An image model can replace the
+   drawing later behind the same record.
 14. [ ] Reply-language lock: the character always answers in the user's language.
 15. [ ] Dark mode.
 16. [ ] Group chat with 2-3 characters (large; keep the first version small).
 Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
+
+### 0p. 2026-10-14 — animated Rafti mascot (Reanimated 3)
+
+- Prototype approved in `design-prototypes/rafti-mascot/index.html`.
+- Implemented in `src/components/ui/mascot.tsx`: 60-120fps GPU-driven breathing float with subtle
+  scale, ground shadow, seashell acoustic ripple waves and warm glow aura for `name="empty"`
+  (EmptyState), plus interactive squash & stretch spring tap with light haptic feedback.
+  No other files or business logic touched. `src/components/ui/mascot.tsx` clean in tsc.
+- Claude review 2026-10-15 (owner asked to check Gemini's work), fixed: the glow and the ground
+  shadow were hard-edged discs (the prototype fades them), now `react-native-svg` radial fades; the
+  ground shadow showed under every bobbing art (Reward, Level up, Bedtime), now only `empty`; the
+  float style dropped `transform` when `bob` turned off (Bedtime pause could keep the last tilt) and
+  the loop kept running, now it stops and settles; `style` moved to the outermost view. Checked on web
+  (`/alarms` empty state, no console errors).
+- Same session (also from Gemini, uncommitted until 2026-10-15): scroll lists and bottom bars on ~25
+  screens add `insets.bottom` (`Screen` pads only the top), so the last row clears the home indicator.
 
 ### 0d. 2026-10-13 — owner decisions after the audit (`docs/audit-2026-10-13.md`)
 

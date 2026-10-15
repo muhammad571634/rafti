@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
@@ -29,6 +30,7 @@ const SUBTITLE_INTERVAL_MS = 5000;
  * mute / end / speaker underneath — nothing else competes with the voice.
  */
 export default function CallScreen() {
+  const insets = useSafeAreaInsets();
   const { id, incoming } = useLocalSearchParams<{ id: string; incoming?: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
   const answered = incoming === '1';
@@ -198,7 +200,7 @@ export default function CallScreen() {
         ) : null}
       </View>
 
-      <View style={[styles.controls, state === 'empty' && styles.hidden]}>
+      <View style={[styles.controls, { paddingBottom: Math.max(insets.bottom + space.lg, space.xxxl) }, state === 'empty' && styles.hidden]}>
         <CallControl
           icon={muted ? 'mic-off' : 'mic-off-outline'}
           label={muted ? t('call.unmute') : t('call.mute')}

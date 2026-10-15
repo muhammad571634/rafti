@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Header, PressableScale, Screen, Segmented } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds } from '@/mock';
@@ -15,6 +16,7 @@ type BackgroundCollection = 'classic' | 'art';
 type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
 
 export default function ChangeBackgroundScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -76,7 +78,7 @@ export default function ChangeBackgroundScreen() {
         numColumns={columns}
         keyExtractor={(background) => background.id}
         columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}
         showsVerticalScrollIndicator={false}
         initialNumToRender={columns * 3}
         renderItem={({ item }) => {

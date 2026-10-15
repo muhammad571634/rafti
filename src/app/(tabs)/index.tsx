@@ -4,6 +4,7 @@ import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BondChip } from '@/components/bond-chip';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
@@ -78,6 +79,8 @@ interface TodoItem {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
+  const insets = useSafeAreaInsets();
 
   const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
@@ -213,7 +216,7 @@ export default function HomeScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
+        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         {hero ? (
           <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
         ) : null}

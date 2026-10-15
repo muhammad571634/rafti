@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   CharacterAvatar,
@@ -17,6 +18,7 @@ import {
   UserAvatar,
   type ClayIconName,
 } from '@/components/ui';
+import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
@@ -33,6 +35,8 @@ const ROW_ICON = 40;
 /** Story-row avatar and the moment art: the top is generous, the timeline light. */
 const STORY = 58;
 const MOMENT_ICON_SIZE = 30;
+/** The picture at the end of a photo moment. */
+const PHOTO_THUMB = 40;
 
 /** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
 const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
@@ -63,12 +67,15 @@ type FilterKey = keyof typeof FILTERS | 'all';
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
+  const insets = useSafeAreaInsets();
 
   const user = useAppStore((s) => s.user);
   const relationships = useAppStore((s) => s.relationships);
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
   const moments = useAppStore((s) => s.moments);
+  const photos = useAppStore((s) => s.photos);
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
   const addSchedule = useAppStore((s) => s.addSchedule);
@@ -164,7 +171,7 @@ export default function UsScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
+        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>
           {bonds.map(({ character: c, relationship: r }) => {
             const active = c.id === character.id;
@@ -296,14 +303,28 @@ export default function UsScreen() {
             {t('us.noMoments')}
           </Txt>
         ) : (
-          shownMoments.map((moment) => (
-            <MomentRow
-              key={moment.id}
-              icon={MOMENT_ICON[moment.kind]}
-              text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-              when={relativeStamp(moment.createdAt)}
-            />
-          ))
+          shownMoments.map((moment) => {
+            const photo = moment.photoId ? photos.find((p) => p.id === moment.photoId) : undefined;
+            return (
+              <MomentRow
+                key={moment.id}
+                icon={MOMENT_ICON[moment.kind]}
+                text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+                when={relativeStamp(moment.createdAt)}
+                // A photo moment shows the picture and opens it.
+                thumb={
+                  photo ? (
+                    <BoothPicture
+                      photo={photo}
+                      character={selected.character}
+                      width={fitWidth(photo.style, { width: PHOTO_THUMB, height: PHOTO_THUMB })}
+                    />
+                  ) : undefined
+                }
+                onPress={photo ? () => router.push({ pathname: '/photo/[id]', params: { id: photo.id } }) : undefined}
+              />
+            );
+          })
         )}
         {timeline.length > visibleMoments ? (
           <PressableScale
@@ -348,9 +369,21 @@ function TimeTile({ time }: { time?: string }) {
 }
 
 /** One moment in the timeline: small art, a light line of text, when it happened. */
-function MomentRow({ icon, text, when }: { icon: ClayIconName; text: string; when: string }) {
+function MomentRow({
+  icon,
+  text,
+  when,
+  thumb,
+  onPress,
+}: {
+  icon: ClayIconName;
+  text: string;
+  when: string;
+  thumb?: React.ReactNode;
+  onPress?: () => void;
+}) {
   return (
-    <View style={styles.moment}>
+    <PressableScale style={styles.moment} scaleTo={0.98} disabled={!onPress} onPress={onPress}>
       <ClayIcon name={icon} size={MOMENT_ICON_SIZE} tile={false} />
       <Txt variant="body" lines={1} style={styles.grow}>
         {text}
@@ -358,7 +391,8 @@ function MomentRow({ icon, text, when }: { icon: ClayIconName; text: string; whe
       <Txt variant="caption" color={colors.textMuted}>
         {when}
       </Txt>
-    </View>
+      {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
+    </PressableScale>
   );
 }
 
@@ -414,5 +448,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySofter,
   },
   moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 48, paddingHorizontal: space.lg },
+  thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
   showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
 });

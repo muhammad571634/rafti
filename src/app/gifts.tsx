@@ -3,6 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LuckyWheel } from '@/components/lucky-wheel';
 import {
@@ -49,6 +50,7 @@ const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'invite' } as c
  * limit lives in the store so it survives a restart.
  */
 export default function GiftsScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
   const shells = useAppStore((s) => s.wallet.shells);
@@ -113,7 +115,7 @@ export default function GiftsScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('gifts.title')} right={<ShellBadge count={shells} tone="neutral" style={styles.balance} />} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xxl }]}>
         <SectionLabel
           tone="section"
           title={t('gifts.checkIn')}

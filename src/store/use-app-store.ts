@@ -87,6 +87,7 @@ import {
   planAddedLine,
   planFollowUp,
   boardReply,
+  photoReply,
   afterDateLine,
   schedules as seedSchedules,
   secretNotePrompts,
@@ -111,6 +112,8 @@ import type {
   DateRecord,
   BoardPost,
   BoardStyleId,
+  BoothPhoto,
+  BoothStyle,
   CallRecord,
   Character,
   Conversation,
@@ -352,8 +355,15 @@ interface AppState {
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
-  /** Pro only: 'locked' without Pro or the trial, 'usedUp' when this period's pictures are gone. */
-  takePhoto: (characterId: string) => 'ok' | 'locked' | 'usedUp';
+  /* Photo Booth: the kept pictures, newest first */
+  photos: BoothPhoto[];
+  /**
+   * Pro only: 'locked' without Pro or the trial, 'usedUp' when this period's pictures are gone.
+   * Otherwise the new picture, kept in the album, with closeness and a moment on Us.
+   */
+  takePhoto: (characterId: string, style: BoothStyle) => BoothPhoto | 'locked' | 'usedUp';
+  /** Sends a kept picture to the friend's chat once; they answer it (free). False if already sent. */
+  sendPhoto: (photoId: string) => boolean;
 
   /* memories, moments, schedules */
   addMemory: (characterId: string, text: string, source?: MemorySource) => void;
@@ -408,6 +418,7 @@ type PersistedKeys =
   | 'reports'
   | 'blockedIds'
   | 'alarms'
+  | 'photos'
   | 'wake'
   | 'daily'
   | 'settings';
@@ -560,6 +571,7 @@ export const useAppStore = create<AppState>()(
       reports: [],
       blockedIds: [],
       alarms: [],
+      photos: [],
       wake: null,
       daily: initialDaily,
       settings: initialSettings,
@@ -1206,6 +1218,7 @@ export const useAppStore = create<AppState>()(
             notes: s.notes.filter((n) => n.characterId !== characterId),
             // A note waiting on its answer would bring them back after the block.
             boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
+            photos: s.photos.filter((p) => p.characterId !== characterId),
             activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
             settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
           };
@@ -1448,17 +1461,43 @@ export const useAppStore = create<AppState>()(
         return record;
       },
 
-      takePhoto: (characterId) => {
+      takePhoto: (characterId, style) => {
         // Pictures come only from Pro's (or the trial's) allowance; shells never buy one
         // (backend-plan §15.10).
         const now = Date.now();
         if (!photoQuota(get().wallet.subscription, now)) return 'locked';
         const fromPlan = consumePhoto(get().wallet.subscription, now);
         if (!fromPlan) return 'usedUp';
-        set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan } }));
+        const photo: BoothPhoto = {
+          id: uid('ph'),
+          characterId,
+          style,
+          createdAt: new Date(now).toISOString(),
+          seed: Math.floor(Math.random() * 1000),
+        };
+        set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan }, photos: [photo, ...s.photos] }));
         get().addIntimacy(characterId, INTIMACY.photo);
-        addMoment(set, characterId, 'photo');
-        return 'ok';
+        addMoment(set, characterId, 'photo', undefined, photo.id);
+        return photo;
+      },
+
+      sendPhoto: (photoId) => {
+        const photo = get().photos.find((p) => p.id === photoId);
+        if (!photo || photo.sentAt) return false;
+        const conversationId = get().addFriend(photo.characterId);
+        const sentAt = new Date().toISOString();
+        set((s) => ({ photos: s.photos.map((p) => (p.id === photoId ? { ...p, sentAt } : p)) }));
+        appendMessage(set, get, conversationId, {
+          id: uid('m'),
+          conversationId,
+          author: 'me',
+          kind: 'image',
+          photoId,
+          createdAt: sentAt,
+        });
+        // Their answer is free, like the quiz's: the picture was already paid for by the plan.
+        scheduleReply(set, get, conversationId, { text: photoReply(photo.style), gain: INTIMACY.text });
+        return true;
       },
 
       /* ── memories, schedules ──────────────────────────────────────────── */
@@ -1819,6 +1858,7 @@ export const useAppStore = create<AppState>()(
         reports: s.reports,
         blockedIds: s.blockedIds,
         alarms: s.alarms,
+        photos: s.photos,
         wake: s.wake,
         daily: s.daily,
         settings: s.settings,
@@ -2054,9 +2094,9 @@ function touchStreak(set: Setter, get: Getter, characterId: string) {
   updateRelationship(set, characterId, () => ({ streakDays, lastChatDay: today }));
 }
 
-function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: Moment['params']) {
+function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: Moment['params'], photoId?: string) {
   set((s) => ({
-    moments: [...s.moments, { id: uid('mo'), characterId, kind, createdAt: new Date().toISOString(), params }],
+    moments: [...s.moments, { id: uid('mo'), characterId, kind, createdAt: new Date().toISOString(), params, photoId }],
   }));
 }
 

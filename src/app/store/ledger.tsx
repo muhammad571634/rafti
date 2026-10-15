@@ -3,6 +3,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionList, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { planDate, wholeMinutes } from '@/components/plans/copy';
 import { CharacterAvatar, EmptyState, Header, Icon3D, IconTile, Screen, Segmented, ShellIcon, Txt } from '@/components/ui';
@@ -32,6 +33,7 @@ interface Row {
  * -1s, and expired free shells are named for what they are.
  */
 export default function LedgerScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const ledger = useAppStore((s) => s.ledger);
   const characters = useAppStore((s) => s.characters);
@@ -73,7 +75,7 @@ export default function LedgerScreen() {
         sections={sections}
         keyExtractor={(row) => row.key}
         stickySectionHeadersEnabled={false}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.huge }]}
         ListHeaderComponent={
           <>
             <Segmented

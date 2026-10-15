@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { planDate, planPrice, planTime, SUBSCRIPTIONS_URL, wholeMinutes } from '@/components/plans/copy';
@@ -20,6 +21,7 @@ const ROW_ICON = 36;
  * Basic shows the plan's monthly shells; free users see today's free shells and what Pro adds.
  */
 export default function MyPlanScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const wallet = useAppStore((s) => s.wallet);
@@ -70,7 +72,7 @@ export default function MyPlanScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('plans.myPlan')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xxxl }]}>
         <View style={styles.head}>
           <Icon3D name="crown" size={56} />
           <View style={styles.flex}>

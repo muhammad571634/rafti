@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Polaroid } from '@/components/date/polaroid';
 import { EmptyState, Header, Screen, Txt } from '@/components/ui';
@@ -11,6 +12,7 @@ import { colors, space } from '@/theme';
 
 /** "Our dates": every polaroid, newest first, two to a row. */
 export default function DateAlbumScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -27,7 +29,7 @@ export default function DateAlbumScreen() {
       {dates.length === 0 ? (
         <EmptyState title={t('date.albumEmpty')} actionLabel={t('dating.title')} onAction={() => router.back()} />
       ) : (
-        <ScrollView contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + space.huge }]} showsVerticalScrollIndicator={false}>
           {dates.map((d, i) => {
             const character = characters.find((c) => c.id === d.characterId);
             const place = datePlaceById(d.placeId);

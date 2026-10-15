@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, SearchBar, Txt, UserAvatar } from '@/components/ui';
 import { relativeStamp } from '@/lib/format';
@@ -11,6 +12,7 @@ import type { Message } from '@/types';
 
 /** "Search History": find a line in this chat — text, transcripts of voice notes included. */
 export default function SearchHistoryScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -57,7 +59,7 @@ export default function SearchHistoryScreen() {
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.huge }]}
           renderItem={({ item }) => (
             <ResultRow
               message={item}

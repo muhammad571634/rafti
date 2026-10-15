@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CompletionMeter } from '@/components/profile/completion-meter';
 import { BirthdaySheet, InterestsSheet, OptionSheet, TextFieldSheet } from '@/components/profile/field-sheets';
@@ -29,6 +30,7 @@ type Field = 'name' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about';
  * so there is no "Save changes" to forget; the meter fills as rows are done.
  */
 export default function EditProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const user = useAppStore((s) => s.user);
   const updateProfile = useAppStore((s) => s.updateProfile);
@@ -62,7 +64,7 @@ export default function EditProfileScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('editProfile.title')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         <View style={styles.top}>
           <PressableScale
             onPress={() => void pickPhoto()}

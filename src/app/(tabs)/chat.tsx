@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { BondChip } from '@/components/bond-chip';
@@ -36,6 +37,8 @@ interface ChatItem {
 export default function ChatListScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [searching, setSearching] = useState(false);
 
@@ -142,7 +145,7 @@ export default function ChatListScreen() {
             keyExtractor={(item) => item.conversation.id}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
-            contentContainerStyle={styles.list}
+            contentContainerStyle={[styles.list, { paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }]}
             ListEmptyComponent={
               <Txt variant="small" color={colors.textMuted} center style={styles.noResults}>
                 {t('chatList.noResults', { query: query.trim() })}
@@ -256,7 +259,7 @@ const styles = StyleSheet.create({
   // Pull the button's padding into the gutter so the glyph lines up with the list's edge.
   compose: { marginRight: -space.sm - 2 },
   search: { marginHorizontal: space.lg, marginBottom: space.sm },
-  list: { paddingHorizontal: space.lg, paddingBottom: TAB_BAR_HEIGHT + space.xxl },
+  list: { paddingHorizontal: space.lg },
   row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
   body: { flex: 1, gap: 3 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space.sm },

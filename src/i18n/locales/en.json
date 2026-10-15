@@ -673,6 +673,10 @@
     "with": "With",
     "together": "You & {{name}}",
     "yourPhotos": "Your photos",
+    "send": "Send",
+    "sent": "Sent",
+    "sendTo": "Send to {{name}}",
+    "openPhoto": "Photo with {{name}}, {{date}}",
     "styleNames": {
       "polaroid": "Polaroid",
       "film": "Film",

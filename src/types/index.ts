@@ -80,6 +80,8 @@ export interface Message {
   transcript?: string;
   durationSec?: number;
   imageUri?: string;
+  /** A Photo Booth picture sent to the chat (drawn from the kept photo, not a file). */
+  photoId?: string;
   createdAt: string;
   readAt?: string;
   /** Local-only optimistic message waiting on the model */
@@ -223,6 +225,25 @@ export interface Moment {
   createdAt: string;
   /** Interpolation values for the `us.moments.<kind>` string. */
   params?: Record<string, string | number>;
+  /** The Photo Booth picture this moment shows (photo moments). */
+  photoId?: string;
+}
+
+export type BoothStyle = 'polaroid' | 'film' | 'studio' | 'street';
+
+/**
+ * A Photo Booth picture, kept in the album. It is drawn on the phone from the friend's art in its
+ * style (`BoothPicture`), so only these fields are saved; an image model replaces the drawing later.
+ */
+export interface BoothPhoto {
+  id: string;
+  characterId: string;
+  style: BoothStyle;
+  createdAt: string;
+  /** Varies the film strip's frames, so two strips of one friend differ. */
+  seed: number;
+  /** When it was sent to the friend's chat; a photo is sent once. */
+  sentAt?: string;
 }
 
 /**

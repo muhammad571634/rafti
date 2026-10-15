@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SUPPORT_EMAIL } from '@/ai/safety';
 import {
@@ -45,6 +46,7 @@ type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? 
  * at the very end. Calm-cards style (docs/design-style.md).
  */
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -101,7 +103,7 @@ export default function ProfileScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('profile.title')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         <View style={styles.identity}>
           <PressableScale scaleTo={0.95} onPress={() => router.push('/edit-profile')}>
             <UserAvatar user={user} size={64} />

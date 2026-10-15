@@ -16,6 +16,7 @@ export {
   planAddedLine,
   planFollowUp,
   boardReply,
+  photoReply,
   afterDateLine,
   birthdayLines,
   interestLines,

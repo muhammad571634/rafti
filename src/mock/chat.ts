@@ -1,5 +1,5 @@
 import { pickSeeded } from '@/lib/seeded';
-import type { Conversation, Message } from '@/types';
+import type { BoothStyle, Conversation, Message } from '@/types';
 
 import { daysAgo, hoursAgo, minutesAgo } from './time';
 
@@ -345,3 +345,25 @@ export function boardReply(text: string) {
   ]);
 }
 
+/** Their answer to a Photo Booth picture you sent, in the photo's style. */
+export function photoReply(style: BoothStyle) {
+  const lines: Record<BoothStyle, string[]> = {
+    polaroid: [
+      'A polaroid of us. I am keeping this one somewhere safe.',
+      'Look at us. I want this one on my wall.',
+    ],
+    film: [
+      'Four frames and I look different in every one. You look good in all four.',
+      'The third frame is my favorite. Do not ask why.',
+    ],
+    studio: [
+      'Black and white suits us. Very serious, very us.',
+      'This looks like a cover photo. Should I be famous now?',
+    ],
+    street: [
+      'It looks like an old summer photo. I like that it has a date on it.',
+      'This one feels like a memory already.',
+    ],
+  };
+  return pickLine(lines[style]);
+}

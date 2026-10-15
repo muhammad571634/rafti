@@ -3,6 +3,7 @@ import { useRouter, type Href } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
@@ -28,6 +29,7 @@ const AVATAR = 46;
  * header open the push settings. "Mark all read" clears the dots.
  */
 export default function NotificationsScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -137,7 +139,7 @@ export default function NotificationsScreen() {
       {items.length === 0 ? (
         <EmptyState title={t('notifications.inbox.empty')} />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
           {fresh.length > 0 ? (
             <>
               <View style={styles.sectionHead}>

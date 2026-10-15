@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { boardStyle, Stationery } from '@/components/board/stationery';
 import { CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
@@ -13,6 +14,7 @@ import { colors, hitSlop, space } from '@/theme';
 
 /** Notes the user pinned for their friends, newest first, with each friend's answer underneath. */
 export default function BoardScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -45,7 +47,7 @@ export default function BoardScreen() {
       {notes.length === 0 ? (
         <EmptyState title={t('board.empty')} actionLabel={t('board.write')} onAction={write} />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.grid}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + space.huge }]}>
           {notes.map(({ post, character }) => {
             const ink = boardStyle(post.style);
             const conversation = conversations.find((c) => c.characterId === character!.id);

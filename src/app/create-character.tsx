@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { Anim, Button, Header, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
@@ -87,6 +88,7 @@ export default function CreateCharacterScreen() {
 }
 
 function CharacterForm({ editing }: { editing?: Character }) {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const addCharacter = useAppStore((s) => s.addCharacter);
@@ -466,7 +468,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         </ScrollView>
 
         {/* Action bar (docs/design-style.md §3): the button, then one line on what happens next. */}
-        <View style={styles.actionBar}>
+        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
           {error ? (
             <Txt variant="small" color={colors.danger} center>
               {error}

@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { EmptyState, Header, IconButton, Screen, Toggle, Txt } from '@/components/ui';
@@ -16,6 +17,7 @@ import type { Alarm } from '@/types';
  * edits it, a swipe to the left deletes it.
  */
 export default function AlarmsScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const alarms = useAppStore((s) => s.alarms);
@@ -40,7 +42,7 @@ export default function AlarmsScreen() {
       {sorted.length === 0 ? (
         <EmptyState title={t('alarms.empty')} actionLabel={t('alarms.add')} onAction={() => router.push('/alarms/edit')} />
       ) : (
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]} showsVerticalScrollIndicator={false}>
           <View style={styles.list}>
             {sorted.map((alarm, i) => (
               <AlarmRow

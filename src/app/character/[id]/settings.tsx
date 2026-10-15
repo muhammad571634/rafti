@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Button,
@@ -89,6 +90,7 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 }
 
 export default function CharacterSettingsScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -177,7 +179,7 @@ export default function CharacterSettingsScreen() {
     <Screen background={colors.bgPlain}>
       <Header title={t('characterSettings.title')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         <View style={styles.identity}>
           <CharacterAvatar character={character} size={56} />
           <View style={styles.flex}>

@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import { CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
@@ -13,6 +14,7 @@ const AVATAR = 52;
 
 /** Everyone the user has a bond with, closest first, as plain rows (docs/design-style.md). */
 export default function ContactsScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -64,7 +66,7 @@ export default function ContactsScreen() {
           onAction={() => router.push(filter === 'mine' ? '/create-character' : '/(tabs)/find')}
         />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
           <PressableScale style={styles.row} scaleTo={0.98} onPress={() => router.push('/create-character')}>
             <View style={styles.addCircle}>
               <Ionicons name="add" size={24} color={colors.text} />

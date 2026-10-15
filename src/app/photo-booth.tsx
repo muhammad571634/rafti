@@ -1,8 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { SendPill } from '@/components/photo-booth/send-pill';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
 import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
@@ -10,28 +14,29 @@ import { photoQuota } from '@/economy/plans';
 import { shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
+import type { BoothStyle } from '@/types';
 
-const STYLES = ['polaroid', 'film', 'studio', 'street'] as const;
-
-interface Shot {
-  id: number;
-  characterId: string;
-}
+const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
 
 /**
  * A photo together with one friend: pick who and a style, then shoot. Pictures are Pro only
  * (30 a period, 3 on the trial) and never sold for shells (backend-plan §15.10); each adds
- * closeness and a moment on Us. Calm cards (docs/design-style.md): a preview card, two
- * pickers, and an action bar with pictures left.
+ * closeness and a moment on Us. The picture is drawn on the phone from the friend's art
+ * (`BoothPicture`), kept in "Your photos", and goes to their chat only with Send. Calm cards
+ * (docs/design-style.md): a preview card, two pickers, and an action bar with pictures left.
  */
 export default function PhotoBoothScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { width } = useWindowDimensions();
+  // The action bar sits above the phone's navigation bar.
+  const insets = useSafeAreaInsets();
 
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
   const subscription = useAppStore((s) => s.wallet.subscription);
+  const photos = useAppStore((s) => s.photos);
   const takePhoto = useAppStore((s) => s.takePhoto);
 
   const known = useMemo(
@@ -40,27 +45,40 @@ export default function PhotoBoothScreen() {
   );
 
   const [partnerId, setPartnerId] = useState(known[0]?.id);
-  const [style, setStyle] = useState<(typeof STYLES)[number]>('polaroid');
-  const [shots, setShots] = useState<Shot[]>([]);
+  const [style, setStyle] = useState<BoothStyle>('polaroid');
+  // The picture just taken: the preview shows it (with Send) until the friend or style changes.
+  const [freshId, setFreshId] = useState<string>();
   const [shooting, setShooting] = useState(false);
   const [locked, setLocked] = useState(false);
 
   const partner = known.find((c) => c.id === partnerId);
+  const fresh = photos.find((p) => p.id === freshId);
   // Null without Pro or the trial.
   const quota = photoQuota(subscription, Date.now());
   const previewHeight = Math.round((width - space.lg * 2) * 0.82);
+  // The preview's inner box, less a margin so the picture's edge and shadow show.
+  const stage = { width: width - space.lg * 2 - (space.md + 3) * 2 - space.xl * 2, height: previewHeight - space.xl * 2 };
   const thumbWidth = (width - space.lg * 2 - space.sm * 3) / 4;
+  const thumbHeight = thumbWidth * 1.25;
+
+  const pickPartner = (id: string) => {
+    setPartnerId(id);
+    setFreshId(undefined);
+  };
+  const pickStyle = (key: BoothStyle) => {
+    setStyle(key);
+    setFreshId(undefined);
+  };
 
   const shoot = () => {
     if (!partner) return;
-    const result = takePhoto(partner.id);
+    const result = takePhoto(partner.id, style);
     if (result === 'locked') return setLocked(true);
     if (result === 'usedUp') return;
 
     setShooting(true);
-    // The generated image lands here once the image model returns.
     setTimeout(() => {
-      setShots((prev) => [{ id: Date.now(), characterId: partner.id }, ...prev]);
+      setFreshId(result.id);
       setShooting(false);
     }, 1600);
   };
@@ -92,8 +110,26 @@ export default function PhotoBoothScreen() {
           <View style={[styles.preview, { height: previewHeight }]}>
             {shooting ? (
               <Anim name="typing" size={48} tint={colors.textMuted} />
+            ) : fresh && partner ? (
+              <>
+                <BoothPicture
+                  key={fresh.id}
+                  photo={fresh}
+                  character={partner}
+                  width={fitWidth(fresh.style, stage)}
+                  develop
+                  style={fresh.style === 'polaroid' ? styles.tilt : undefined}
+                />
+                <SendPill photo={fresh} style={styles.send} />
+              </>
             ) : partner ? (
-              <CharacterAvatar character={partner} size={150} style={styles.portrait} />
+              // What this style makes with this friend, before the shot.
+              <BoothPicture
+                photo={{ style, seed: 0, createdAt: new Date().toISOString() }}
+                character={partner}
+                width={fitWidth(style, stage)}
+                style={style === 'polaroid' ? styles.tilt : undefined}
+              />
             ) : (
               <Txt variant="small" color={colors.textMuted}>
                 {t('photoBooth.empty')}
@@ -106,7 +142,7 @@ export default function PhotoBoothScreen() {
                 {t('photoBooth.together', { name: shortName(partner.name) })}
               </Txt>
               <Txt variant="small" color={colors.textSecondary}>
-                {t(`photoBooth.styleNames.${style}`)}
+                {t(`photoBooth.styleNames.${fresh?.style ?? style}`)}
               </Txt>
             </View>
           ) : null}
@@ -127,7 +163,7 @@ export default function PhotoBoothScreen() {
                     scaleTo={0.93}
                     accessibilityLabel={character.name}
                     accessibilityState={{ selected: on }}
-                    onPress={() => setPartnerId(character.id)}>
+                    onPress={() => pickPartner(character.id)}>
                     <View style={[styles.ring, on && styles.ringOn]}>
                       <CharacterAvatar character={character} size={52} />
                     </View>
@@ -153,7 +189,7 @@ export default function PhotoBoothScreen() {
                 scaleTo={0.97}
                 dimOnPress={false}
                 accessibilityState={{ selected: on }}
-                onPress={() => setStyle(key)}
+                onPress={() => pickStyle(key)}
                 style={[styles.look, on && styles.lookOn]}>
                 <Txt variant="bodyStrong" color={on ? colors.text : colors.textSecondary}>
                   {t(`photoBooth.styleNames.${key}`)}
@@ -163,20 +199,28 @@ export default function PhotoBoothScreen() {
           })}
         </View>
 
-        {shots.length > 0 ? (
+        {photos.length > 0 ? (
           <>
             <Txt variant="h3" style={styles.section}>
               {t('photoBooth.yourPhotos')}
             </Txt>
             <View style={styles.gallery}>
-              {shots.map((shot) => {
-                const who = characters.find((c) => c.id === shot.characterId);
+              {photos.map((photo) => {
+                const who = characters.find((c) => c.id === photo.characterId);
+                if (!who) return null;
                 return (
-                  <View key={shot.id} style={[styles.thumb, { width: thumbWidth, height: thumbWidth * 1.25 }]}>
-                    <View style={styles.thumbFill}>
-                      {who ? <CharacterAvatar character={who} size={thumbWidth * 0.6} /> : null}
-                    </View>
-                  </View>
+                  <PressableScale
+                    key={photo.id}
+                    scaleTo={0.95}
+                    accessibilityLabel={t('photoBooth.openPhoto', { name: shortName(who.name), date: planDate(Date.parse(photo.createdAt)) })}
+                    onPress={() => router.push({ pathname: '/photo/[id]', params: { id: photo.id } })}
+                    style={[styles.thumb, { width: thumbWidth, height: thumbHeight }]}>
+                    <BoothPicture
+                      photo={photo}
+                      character={who}
+                      width={fitWidth(photo.style, { width: thumbWidth - space.md, height: thumbHeight - space.md })}
+                    />
+                  </PressableScale>
                 );
               })}
             </View>
@@ -185,7 +229,7 @@ export default function PhotoBoothScreen() {
       </ScrollView>
 
       {/* Action bar (docs/design-style.md §3): pictures left above the button, or the Pro lock. */}
-      <View style={styles.actionBar}>
+      <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
         {quota ? (
           <View style={styles.meter}>
             <View style={styles.meterHead}>
@@ -254,7 +298,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  portrait: { borderWidth: 4, borderColor: colors.surface, borderRadius: radius.pill },
+  tilt: { transform: [{ rotate: '-2.5deg' }] },
+  send: { position: 'absolute', top: space.sm, left: space.sm },
   caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md },
   section: { marginTop: space.xl, marginBottom: space.md },
   partners: { gap: space.md + 2 },
@@ -275,16 +320,7 @@ const styles = StyleSheet.create({
   lookOn: { backgroundColor: colors.surface, borderColor: colors.text },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   thumb: {
-    padding: 4,
-    paddingBottom: 10,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  thumbFill: {
-    flex: 1,
-    borderRadius: 6,
     backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',

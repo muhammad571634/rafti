@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -26,6 +27,7 @@ const RING_TIMEOUT_MS = 30_000;
  * name top-left, decline / accept at the bottom.
  */
 export default function IncomingCallScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -102,7 +104,7 @@ export default function IncomingCallScreen() {
         <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.9)" />
       </View>
 
-      <View style={styles.actions}>
+      <View style={[styles.actions, { paddingBottom: Math.max(insets.bottom + space.xl, space.huge) }]}>
         <CallAction
           label={t('call.decline')}
           color={colors.danger}

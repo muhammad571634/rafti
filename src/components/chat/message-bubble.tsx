@@ -8,9 +8,11 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
+import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
 
@@ -41,7 +43,9 @@ export const MessageBubble = memo(function MessageBubble({
   onCallBack,
   onLongPress,
 }: MessageBubbleProps) {
+  const router = useRouter();
   const mine = message.author === 'me';
+  const photoId = message.photoId;
 
   if (message.card === 'helpline') return <HelplineCard />;
   if (message.card === 'aiNotice') return <AiNotice name={character.name} />;
@@ -67,10 +71,13 @@ export const MessageBubble = memo(function MessageBubble({
         <PressableScale
           scaleTo={0.97}
           delayLongPress={280}
-          disabled={!onLongPress}
+          disabled={!onLongPress && !photoId}
+          onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
           onLongPress={onLongPress ? () => onLongPress(message) : undefined}
           style={[styles.holdable, message.reaction ? styles.withReaction : null]}>
-          {message.kind === 'image' && message.imageUri ? (
+          {message.kind === 'image' && message.photoId ? (
+            <BoothPhotoMessage photoId={message.photoId} character={character} />
+          ) : message.kind === 'image' && message.imageUri ? (
             <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
           ) : (
             <TextBubble message={message} mine={mine} first={showAvatar} />
@@ -290,6 +297,13 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
       </PressableScale>
     </View>
   );
+}
+
+/** A Photo Booth picture sent to the chat, drawn from the kept photo; a tap opens it. */
+function BoothPhotoMessage({ photoId, character }: { photoId: string; character: Character }) {
+  const photo = useAppStore((s) => s.photos.find((p) => p.id === photoId));
+  if (!photo) return <View style={styles.photo} />;
+  return <BoothPicture photo={photo} character={character} width={fitWidth(photo.style, { width: 176, height: 240 })} />;
 }
 
 const styles = StyleSheet.create({

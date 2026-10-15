@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BOARD_STYLES, boardStyle, Stationery } from '@/components/board/stationery';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -30,6 +31,7 @@ const THUMB_H = 74;
  * They find it a moment later and answer in chat.
  */
 export default function BoardWriteScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -108,7 +110,7 @@ export default function BoardWriteScreen() {
           </View>
         </ScrollView>
 
-        <View style={styles.tray}>
+        <View style={[styles.tray, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.thumbs}>
             {BOARD_STYLES.map(({ id }) => {
               const active = id === style;
