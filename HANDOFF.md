@@ -17,6 +17,19 @@ and ask which one to start (each with a prototype first, as usual):
 3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo
    frames for Photo Booth / polaroids, like BIMOBIMO's frame templates but our own art).
 Also on hold: the Backend (real AI), `docs/backend-plan.md`.
+Also saved for later (owner liked both, 2026-10-15):
+4. [ ] Daily check-in: Rafti peeks over the top edge of the check-in sheet (slides up from behind
+   the card, small squash, paws on the edge, now and then ducks and pops up again; a tap makes him
+   hop). Prototype https://claude.ai/artifact/SFsyqQWjSeYMQezTD9JZcT, artboard "3 · Daily check-in —
+   peek" (the other six moods there were NOT wanted). Idea from BIMOBIMO's screen recording: their
+   cat peeks over the check-in popup and its ears pop up (a pose change); elsewhere their mascot is
+   still art. Build in `src/components/daily-reward-sheet.tsx` with Reanimated; the sheet itself
+   still opens without animation (owner rule), only Rafti moves; respect reduced motion.
+5. [ ] Live scenes: 5-second looping clips on the Today hero (Kai, Aurelian, Sol, Seren, Theo).
+   Groundwork on branch `feat/live-scenes` (expo-video, `LiveScene`, `scripts/build-live-scenes.py`);
+   test clip https://d3u0tzju9qaucj.cloudfront.net/a93ad07f-0007-492f-8a38-3504a22c6791/920c7dff-949c-4b3b-9e33-c6838871da99.mp4
+   (Higgsfield `kling-video/omni/first-last-frame`, std, 5 s, first = last frame). Needs the CDN
+   domain allowed in the cloud environment to download clips, and a new phone build (native module).
 
 ### 0c-queue. Owner's work queue (2026-10-13, do in this order, one at a time, keep each simple)
 
