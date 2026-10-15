@@ -7,6 +7,28 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0s. Rebrand: Rafti is now Sigmazam (2026-10-15)
+
+The owner's logo (`docs/branding/download.png`: "SiGMAZAM", a cream mascot with an orange hair
+swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam".
+- `docs/branding/icon-art.png`: the mascot over the G alone, 1024px, made on Higgsfield
+  (`xai/grok-imagine-image-2.0`, the logo as reference, $0.08).
+- `scripts/build-sigmazam-brand.py` makes every asset from those two: `assets/brand/sigmazam-logo.png`
+  and `sigmazam-mark.png` (transparent; the cut keeps the cream body by flood-filling the background
+  from the border, and drops the logo's shadow), the iOS icon, Android adaptive layers (cream
+  background `#FDF6EE`), the monochrome icon (also the notification icon: solid orange parts,
+  half-alpha body, open eyes), the splash wordmark (240 wide) and the favicon.
+- In the app: `BRAND.logo` in the Today top bar (replaces the Fredoka "Rafti" text + otter),
+  `BRAND.mark` greets on onboarding ("Hi, I'm Sigmazam"), every "Rafti" in `en.json`, push and
+  alarm fallbacks, the crash title and `CHARACTER_RULES` say Sigmazam. `app.json` name is
+  Sigmazam; slug, scheme `rafti`, package `com.rafti.app` and storage keys stay (changing them
+  reinstalls the app as a new one and loses saved data). Icons and splash need a new build.
+- Still the otter (needs new mascot art from the logo): empty states (`BRAND.empty`), the default
+  avatar and `Mascot` sticker, daily reward, level-up, bedtime scene, diary cover, home banner,
+  reaction stickers. Docs still say Rafti.
+- `assets/icons/` had been deleted in the working tree by another agent (the app imports its
+  registry); restored from git. `assets/icons 3D/*.jpg` is deleted too, unused, left uncommitted.
+
 ### 0r. REMIND THE OWNER — saved tasks (2026-10-15, owner: "write them down, remind me later")
 
 At the start of the next session, before anything else, remind the owner of these three in Uzbek

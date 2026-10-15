@@ -175,7 +175,7 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
   return N.scheduleNotificationAsync({
     identifier,
     content: {
-      title: push.title ?? 'Rafti',
+      title: push.title ?? 'Sigmazam',
       body: bodyFor(push, preview),
       data: data as unknown as Record<string, unknown>,
       sound: 'default',

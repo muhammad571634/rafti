@@ -11,11 +11,11 @@ import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
+  BrandArt,
   CharacterAvatar,
   ClayIcon,
   CountBadge,
   ListRow,
-  Mascot,
   PressableScale,
   Screen,
   SectionLabel,
@@ -194,11 +194,8 @@ export default function HomeScreen() {
   return (
     <Screen background={colors.bgPlain}>
       <View style={styles.topBar}>
-        <View style={styles.brand}>
-          <Txt variant="logo" color={colors.brandText}>
-            {t('app.name')}
-          </Txt>
-          <Mascot size={22} />
+        <View style={styles.brand} accessible accessibilityRole="header" accessibilityLabel={t('app.name')}>
+          <BrandArt name="logo" width={LOGO_WIDTH} />
         </View>
 
         <View style={styles.actions}>
@@ -376,6 +373,9 @@ function ModuleCell({
   );
 }
 
+/** The wordmark in the top bar: 30pt tall, as tall as the avatar beside it. */
+const LOGO_WIDTH = 141;
+
 const styles = StyleSheet.create({
   topBar: {
     flexDirection: 'row',
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.sm,
   },
-  brand: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  brand: { flexDirection: 'row', alignItems: 'center' },
   // Wide enough that the badge's and the avatar's hit areas never overlap.
   actions: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   profile: {

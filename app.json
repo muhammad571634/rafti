@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Rafti",
+    "name": "Sigmazam",
     "slug": "rafti",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
     "android": {
       "package": "com.rafti.app",
       "adaptiveIcon": {
-        "backgroundColor": "#FF9E59",
+        "backgroundColor": "#FDF6EE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -35,7 +35,7 @@
         {
           "backgroundColor": "#FFF7EC",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 160
+          "imageWidth": 240
         }
       ],
       "expo-localization",

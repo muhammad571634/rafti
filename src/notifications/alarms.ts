@@ -124,7 +124,7 @@ export async function syncAlarms(alarms: Alarm[], characters: Character[], wake:
   await N.scheduleNotificationAsync({
     identifier: id,
     content: {
-      title: friend?.name ?? 'Rafti',
+      title: friend?.name ?? 'Sigmazam',
       body: CHAIN_LINES.checkIn,
       data: { id, kind: 'alarm', route, characterId: friend?.id, at: checkInAt } as unknown as Record<string, unknown>,
       sound: 'default',

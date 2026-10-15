@@ -109,7 +109,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
     <View style={styles.error}>
       <Mascot size={120} />
       <Txt variant="h3" center>
-        {t('errors.crashTitle', { defaultValue: 'Rafti tripped over a pebble' })}
+        {t('errors.crashTitle', { defaultValue: 'Sigmazam tripped over a pebble' })}
       </Txt>
       <Txt variant="body" color={colors.textSecondary} center>
         {t('errors.crashBody', {

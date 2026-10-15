@@ -138,7 +138,7 @@ export default function NotificationSettingsScreen() {
         <LockPreview
           at={settings.morningCallTime}
           character={preview.writer}
-          name={preview.writer ? displayName(preview.writer, relationships[preview.writer.id]) : 'Rafti'}
+          name={preview.writer ? displayName(preview.writer, relationships[preview.writer.id]) : 'Sigmazam'}
           line={settings.notificationPreview && preview.line ? preview.line : t('push.hidden')}
         />
         {row('notificationPreview', 'eye-outline')}

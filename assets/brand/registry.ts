@@ -17,6 +17,10 @@ export const BRAND = {
   bedtime: require('./bedtime-scene.jpg'),
   /** Heartbeat Diary cover, 3:4, top third left empty for the title. */
   diaryCover: require('./diary-cover.jpg'),
+  /** Sigmazam wordmark with the mascot over the G (transparent). Today header, onboarding. */
+  logo: require('./sigmazam-logo.png'),
+  /** The Sigmazam mascot peeking over the G (transparent). The brand mark. */
+  mark: require('./sigmazam-mark.png'),
 } as const;
 
 export type BrandArtName = keyof typeof BRAND;
@@ -130,4 +134,6 @@ export const BRAND_ASPECT: Record<BrandArtName, number> = {
   banner: 1200 / 514,
   bedtime: 1200 / 656,
   diaryCover: 672 / 900,
+  logo: 1670 / 356,
+  mark: 681 / 806,
 };

@@ -173,7 +173,7 @@ export default function OnboardingScreen() {
         <Animated.View key={step} entering={FadeIn.duration(180)} style={styles.body}>
           {step === 'hello' ? (
             <View style={styles.hello}>
-              <BrandArt name="sticker" width={190} bob />
+              <BrandArt name="mark" width={160} bob />
               <Txt variant="logo" center style={styles.helloTitle}>
                 {t('onboarding.helloTitle')}
               </Txt>
