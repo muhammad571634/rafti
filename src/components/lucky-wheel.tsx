@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     borderWidth: 4,
     borderColor: colors.white,
     alignItems: 'center',

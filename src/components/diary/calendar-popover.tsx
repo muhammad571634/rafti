@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   cell: { alignItems: 'center', justifyContent: 'center' },
   day: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
-  daySelected: { backgroundColor: colors.primary },
+  daySelected: { backgroundColor: colors.primaryFill },
   dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: 'transparent' },
   dotOn: { backgroundColor: colors.primary },
   foot: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.lg },

@@ -76,7 +76,7 @@ export function VoiceSheet({
           accessibilityRole="button"
           accessibilityLabel={t('chat.voice.hold')}
           style={[styles.mic, recording && styles.micActive, shadows.fab]}>
-          <Ionicons name="mic" size={34} color={colors.white} />
+          <Ionicons name="mic" size={34} color={colors.textOnPrimary} />
         </Pressable>
 
         <Txt variant="caption" color={colors.textFaint}>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     alignItems: 'center',
     justifyContent: 'center',
   },

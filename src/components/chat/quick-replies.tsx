@@ -18,15 +18,15 @@ export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip
   );
 }
 
-/** The orange bar while the wake-up alarm rings in this chat: a real reply turns it off. */
+/** The peach bar while the wake-up alarm rings in this chat: a real reply turns it off. */
 export function AlarmBar() {
   const { t } = useTranslation();
   return (
     <View style={styles.bar} accessibilityRole="alert">
-      <Txt variant="smallStrong" color={colors.white} style={styles.flex}>
+      <Txt variant="smallStrong" color={colors.textOnPrimary} style={styles.flex}>
         {`⏰ ${t('alarms.ringBar')}`}
       </Txt>
-      <Anim name="voiceWave" size={22} tint={colors.white} />
+      <Anim name="voiceWave" size={22} tint={colors.textOnPrimary} />
     </View>
   );
 }
@@ -42,5 +42,5 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
-  bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primary },
+  bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primaryFill },
 });

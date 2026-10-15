@@ -47,7 +47,7 @@ export const shadows = {
   none: {} as ViewStyle,
   card: shadow(2, 10, 0.08, 2),
   raised: shadow(4, 16, 0.12, 4),
-  fab: shadow(6, 14, 0.24, 8, '#E8742A'),
+  fab: shadow(6, 14, 0.24, 8, '#F79E63'),
   modal: shadow(10, 30, 0.18, 12),
   bar: shadow(-2, 12, 0.06, 8),
 } as const;

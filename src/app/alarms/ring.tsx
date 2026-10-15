@@ -127,7 +127,7 @@ export default function AlarmRingScreen() {
 
       <View style={styles.actions}>
         <PressableScale onPress={task ? reply : stop} scaleTo={0.97} style={styles.primary} accessibilityRole="button">
-          <Txt variant="bodyStrong" color={colors.white} style={styles.primaryText}>
+          <Txt variant="bodyStrong" color={colors.textOnPrimary} style={styles.primaryText}>
             {task ? t('alarms.replyTo', { name }) : t('alarms.stop')}
           </Txt>
         </PressableScale>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   say: { maxWidth: 260, marginTop: space.md },
   actions: { alignItems: 'center', gap: space.md },
-  primary: { alignSelf: 'stretch', height: 58, borderRadius: radius.pill, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
+  primary: { alignSelf: 'stretch', height: 58, borderRadius: radius.pill, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   primaryText: { fontSize: 17 },
   snooze: { height: 48, paddingHorizontal: space.xl, borderRadius: radius.pill, backgroundColor: colors.onMediaHairline, alignItems: 'center', justifyContent: 'center' },
 });

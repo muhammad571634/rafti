@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     paddingVertical: space.xs,
     borderRadius: radius.pill,
   },
-  chipNew: { backgroundColor: colors.primary },
+  chipNew: { backgroundColor: colors.primaryFill },
   chipLocked: { backgroundColor: colors.surface },
   label: { flex: 1, justifyContent: 'center', paddingHorizontal: space.lg, gap: space.xxs },
   metaText: { fontWeight: '600' },

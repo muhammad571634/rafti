@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     width: CREATE,
     height: CREATE,
     borderRadius: CREATE / 2,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     alignItems: 'center',
     justifyContent: 'center',
   },

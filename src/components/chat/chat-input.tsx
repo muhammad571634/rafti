@@ -93,7 +93,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           icon={hasText ? 'arrow-up' : 'mic'}
           size={ICON}
           color={colors.textOnPrimary}
-          background={colors.primary}
+          background={colors.primaryFill}
           haptic={hasText}
           accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
           onPress={hasText ? submit : onVoice}

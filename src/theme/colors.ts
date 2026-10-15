@@ -1,20 +1,23 @@
 import { Appearance } from 'react-native';
 
 /**
- * Rafti palette — "Cocoa & Mint", built around Rafti the sea otter.
+ * Sigmazam palette — soft peach and mint, built around the Sigmazam mascot.
  * Raw values live in `palette`; screens should only use the semantic `colors` map
  * so a future dark theme / re-skin is a one-file change.
  */
 export const palette = {
-  // Apricot — the whole Home + navigation identity
-  apricot50: '#FFF3E6',
-  apricot100: '#FFE6CC',
-  apricot200: '#FFD2A8',
-  apricot300: '#FFB985',
-  apricot400: '#FF9F5A',
-  apricot500: '#F58B42',
-  apricot600: '#E8742A',
-  apricot700: '#C95F1C',
+  // Soft peach — the whole Home + navigation identity (owner's pick, 2026-10-15: light and
+  // gentle, away from the old terracotta). Fills are 200→400 with ink-brown text on them.
+  apricot50: '#FFF7F0',
+  apricot100: '#FFF0E4',
+  apricot200: '#FFD3B1',
+  apricot300: '#FFC497',
+  apricot400: '#FFB37A',
+  apricot500: '#F79E63',
+  apricot600: '#EF8A4E',
+  apricot700: '#C96A32',
+  /** Text and icons on a peach fill: white would vanish on it. */
+  peachInk: '#6A2F0C',
 
   // Mint — Rafti's scarf: Secret Note, level-up moments
   mint50: '#EEFBF8',
@@ -91,14 +94,15 @@ const lightColors = {
   textSecondary: palette.gray600,
   textMuted: palette.gray500,
   textFaint: palette.gray400,
-  textOnPrimary: palette.white,
+  textOnPrimary: palette.peachInk,
   textOnDark: palette.white,
   /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
   textOnInk: palette.white,
 
-  // Brand
+  // Brand: `primary` marks icons, rings and dots; `primaryFill` is the soft button fill.
   primary: palette.apricot600,
-  primaryHover: palette.apricot700,
+  primaryFill: palette.apricot400,
+  primaryHover: palette.apricot500,
   primarySoft: palette.apricot100,
   primarySofter: palette.apricot50,
   brandText: palette.apricot600,
@@ -172,14 +176,15 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   textSecondary: '#A3A8C8',
   textMuted: '#8389AE',
   textFaint: '#5E6490',
-  primarySoft: '#4A2E1A',
-  primarySofter: '#33241C',
-  brandText: '#FFB27A',
+  primary: palette.apricot300,
+  primarySoft: '#3B2A26',
+  primarySofter: '#2E2422',
+  brandText: palette.apricot300,
   accentSoft: '#163F3A',
   accentBorder: '#1F5A52',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
-  bubbleSelf: '#5A3A22',
+  bubbleSelf: '#56392F',
   bubbleSelfText: '#FFFFFF',
   bubbleOther: '#1C2148',
   bubbleOtherText: '#F4F2FF',
@@ -222,8 +227,10 @@ export const moduleTints: Record<string, { bg: string; fg: string }> = {
 
 export const gradients = {
   home: (isDark ? ['#0E1230', '#181D45'] : ['#FFF7EC', '#FFEEDB']) as readonly [string, string],
-  banner: ['#FFC999', '#FF9F5A'] as const,
-  fab: ['#FFB272', '#E8742A'] as const,
+  banner: ['#FFD3B1', '#FFB37A'] as const,
+  fab: ['#FFD3B1', '#FFB37A'] as const,
+  /** The primary button: peach, lighter at the top. */
+  primary: ['#FFD3B1', '#FFB37A'] as const,
   diary: ['#FFEBD6', '#FFF9F1', '#FFE6CC'] as const,
   secretNote: ['#EEFBF8', '#FFFFFF'] as const,
   call: ['#A9D3F5', '#8FB0C8', '#7E8E9A'] as const,

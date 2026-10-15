@@ -43,7 +43,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/android-icon-monochrome.png",
-          "color": "#E8742A",
+          "color": "#EF8A4E",
           "sounds": [
             "./assets/sounds/alarms/morning_tide.wav",
             "./assets/sounds/alarms/shell_chimes.wav",

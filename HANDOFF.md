@@ -7,6 +7,18 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0t. Palette: soft peach replaces the terracotta orange (2026-10-15)
+
+Owner: the old `#E8742A` looked like Claude's colour; they asked for something light, thin and
+gentle. Picked "Yumshoq shaftoli" (prototype https://claude.ai/artifact/6NCYZdea8yv156PyNg4jnx).
+`src/theme/colors.ts`: the apricot scale is now peach (`#FFF7F0` ... `#C96A32`). `primary`
+(`#EF8A4E`, dark `#FFC497`) marks icons, rings, dots and brand text; new `primaryFill`
+(`#FFB37A`) is every solid peach fill (send, badges, selected days, Spin, store tags), and
+`textOnPrimary` is ink brown `#6A2F0C` because white vanishes on peach. `Button` primary draws
+`gradients.primary` (`#FFD3B1` to `#FFB37A`); `accent` keeps white text; `soft` uses `brandText`.
+Dark mode: `primarySoft #3B2A26`, own bubble `#56392F`. Notification accent in `app.json` is
+`#EF8A4E` (new build). Checked on web, light and dark.
+
 ### 0s. Rebrand: Rafti is now Sigmazam (2026-10-15)
 
 The owner's logo (`docs/branding/download.png`: "SiGMAZAM", a cream mascot with an orange hair

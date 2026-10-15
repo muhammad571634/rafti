@@ -266,5 +266,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayOn: { backgroundColor: colors.primary },
+  dayOn: { backgroundColor: colors.primaryFill },
 });
