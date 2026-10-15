@@ -125,6 +125,29 @@ export interface GroupChat {
   aiNoticeAt?: string;
 }
 
+/**
+ * A Radio clip (F27): a friend says the user's lines in their voice. The user's own clips are
+ * saved; the friends' clips come from code (`radioGifts`) and some open at a level.
+ */
+export interface RadioClip {
+  id: string;
+  characterId: string;
+  title: string;
+  /** 1 to 5 lines, said in order. */
+  lines: string[];
+  durationSec: number;
+  createdAt: string;
+}
+
+/** A clip a friend made for the user; plays once the level with them reaches `unlockLevel`. */
+export interface RadioGift {
+  id: string;
+  characterId: string;
+  title: string;
+  lines: string[];
+  unlockLevel?: number;
+}
+
 /** A message the user reported; the server's review queue gets it with its context. */
 export interface MessageReport {
   id: string;
@@ -369,6 +392,7 @@ export type LedgerReason =
   | 'call'
   | 'topUp'
   | 'plan'
+  | 'radio'
   | 'other';
 
 /** One line in the shell history. Positive amounts are credits. */

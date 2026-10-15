@@ -408,6 +408,24 @@ Foydalanuvchi o'zi gaplashadigan 2-3 do'stidan guruh tuzadi. Ilovada mock bilan 
 - **Xavfsizlik:** inqiroz xabariga helpline kartasi va bitta iliq javob keladi, boshqa a'zolar hazil qilmaydi.
   Shikoyat xabarni yozgan a'zoning `character_id`si bilan ketadi. "AI, haqiqiy odam emas" qatori har 3 soatda chiqadi.
 
+### 12.14 Radio kliplari (2026-10-15, F27)
+
+Foydalanuvchi do'stini tanlaydi, 1-5 qator yozadi, do'st uni o'z ovozida aytadi. Ilovada mock bilan ishlaydi
+(ovoz yo'q, soat yuradi); server shunday qiladi:
+
+- **Narx:** har 5 qator = 1 chig'anoq (egasi qarori 2026-10-15), ya'ni bitta klip 1 chig'anoq. `clipCost`
+  (`src/lib/radio-clips.ts`, testlangan). Ledgerda sabab `radio`. Pro ovoz daqiqalariga tegmaydi.
+- **Ovoz:** qatorlar o'zgartirilmay TTS'ga ketadi (personaning ovozi, `voice_id`). Kerak bo'lsa model qatorni
+  "aytilishga" moslaydi, lekin ma'noni o'zgartirmaydi. Fayl `radio_clips` jadvaliga yoziladi: `id, user_id,
+  character_id, title, lines jsonb, duration_sec` (fayl uzunligidan), `audio_url, created_at`.
+- **Tekshiruv:** inqiroz qatori ovozga berilmaydi, ilova helpline kartasini ko'rsatadi (`checkClip`).
+  Haqoratli yoki shaxsga hujum qatorlarni server moderatsiyasi rad etadi, chig'anoq qaytariladi.
+- **Ochiq lenta yo'q:** ishga tushirishda kliplar faqat foydalanuvchining o'zida va chatda (UGC yo'q).
+  "Chatga yuborish" foydalanuvchining ovozli xabari sifatida tushadi, bepul, javob so'ramaydi.
+- **Do'stlardan kliplar:** rasmiy kliplar (`radioGifts`, `src/mock/radio.ts`) serverdan keladi. Ba'zilari
+  levelga bog'langan (`unlockLevel`: 6 = "More than friends", 16 = "Beloved"), `clipUnlocked`.
+- **Bloklash:** do'st bloklansa, uning kliplari ham o'chadi.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

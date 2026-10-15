@@ -41,7 +41,7 @@ icons: the clay style is for "a place you go" or "a thing you do", not for chrom
 | Date map pins and place sheet | `src/mock/dates.ts` (`icon`), `src/app/dating.tsx` | umbrella, fish, fireworks, headphones, nightSky |
 | Couple quiz packs | `src/mock/games.ts` (`icon`), `src/app/quiz/[characterId].tsx` | cake, date, house |
 
-| Radio tracks | `src/mock/misc.ts` (`radioTracks`), `src/app/radio.tsx` | umbrella, fireplace, wave, date (cafe), bedtime (lullaby) |
+| Radio tracks | `src/mock/misc.ts` (`radioTracks`), `src/app/radio/index.tsx` | umbrella, fireplace, wave, date (cafe), bedtime (lullaby) |
 | Photo booth film count | `src/app/photo-booth.tsx` | film |
 | Contacts "Add one" tile | `src/app/contacts.tsx` | wand |
 | Create character photo drop zone | `src/app/create-character.tsx` | photo |

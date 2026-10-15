@@ -11,7 +11,11 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
 
 At the start of the next session, before anything else, remind the owner of these three in Uzbek
 and ask which one to start (each with a prototype first, as usual):
-1. [~] Radio clips (Radio screen `src/app/radio.tsx`: short clips from the characters). Started 2026-10-15: prototype first.
+1. [x] Radio clips. Done 2026-10-15 (F27, prototype https://claude.ai/artifact/1kNCV5gCbYDJ3jHgVoA4wG
+   approved: shells, level-gated friend clips, no public feed). `src/app/radio/` (index = Clips | Sounds,
+   `make.tsx`, `[id].tsx` player), `src/lib/radio-clips.ts` (+ tests), `src/components/radio/`
+   (`useRadioPlayer`, `useRadioClips`), store `radioClips` + `makeRadioClip` / `deleteRadioClip` /
+   `shareRadioClip`, friend clips in `src/mock/radio.ts`, ledger reason `radio`. Checked on web.
 2. [ ] User-made date themes (Dates: the user makes their own date place / theme, beside the 5 map
    places in `src/mock/dates.ts`).
 3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo

@@ -30,6 +30,7 @@ export {
   groupReplies,
   groupVoiceLines,
 } from './group';
+export { radioGifts } from './radio';
 export {
   AD_REWARD,
   INVITE_REWARD,

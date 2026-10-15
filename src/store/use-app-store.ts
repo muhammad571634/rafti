@@ -39,6 +39,7 @@ import {
   pickResponders,
   withoutMember,
 } from '@/lib/group-chat';
+import { checkClip, cleanLines, clipCost, clipDuration, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
@@ -139,6 +140,7 @@ import type {
   DailyState,
   CharacterDiaryPage,
   GroupChat,
+  RadioClip,
   DiaryEntry,
   LedgerEntry,
   LedgerReason,
@@ -206,6 +208,8 @@ export interface DailyRewardEvent {
 /** `dailyCap` is no longer returned: the credit model has no daily cap (backend-plan §15.10). */
 export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
+/** Making a Radio clip: its id, or why it was not made. */
+export type ClipResult = { status: 'made'; id: string } | { status: 'noShells' | ClipProblem };
 
 interface AppState {
   user: User;
@@ -214,6 +218,8 @@ interface AppState {
   conversations: Conversation[];
   /** Group chats (2-3 characters); their messages are in `messages` under the group id. */
   groups: GroupChat[];
+  /** Radio clips the user made (F27); the friends' clips come from code. */
+  radioClips: RadioClip[];
   messages: Record<string, Message[]>;
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
@@ -282,6 +288,12 @@ interface AppState {
   removeGroupMember: (groupId: string, characterId: string) => boolean;
   setGroupMuted: (groupId: string, muted: boolean) => void;
   deleteGroup: (groupId: string) => void;
+
+  /* radio clips (F27): a friend says the user's lines; 5 lines cost 1 shell */
+  makeRadioClip: (characterId: string, lines: string[], title: string) => ClipResult;
+  deleteRadioClip: (clipId: string) => void;
+  /** Puts the clip in the chat with its friend as the user's voice message. False without a chat. */
+  shareRadioClip: (clipId: string) => boolean;
 
   /* bonds */
   addFriend: (characterId: string) => string;
@@ -444,6 +456,7 @@ type PersistedKeys =
   | 'characters'
   | 'conversations'
   | 'groups'
+  | 'radioClips'
   | 'messages'
   | 'relationships'
   | 'memories'
@@ -598,6 +611,7 @@ export const useAppStore = create<AppState>()(
       characters: seedCharacters,
       conversations: [],
       groups: [],
+      radioClips: [],
       messages: {},
       relationships: {},
       memories: [],
@@ -994,6 +1008,48 @@ export const useAppStore = create<AppState>()(
             activeConversationId: s.activeConversationId === groupId ? null : s.activeConversationId,
           };
         });
+      },
+
+      /* ── radio clips ──────────────────────────────────────────────────── */
+
+      makeRadioClip: (characterId, lines, title) => {
+        const clean = cleanLines(lines);
+        const problem = checkClip(clean);
+        if (problem) return { status: problem };
+        if (!get().characters.some((c) => c.id === characterId) || get().blockedIds.includes(characterId)) {
+          return { status: 'noLines' };
+        }
+        if (!get().spendShells(clipCost(clean.length), 'radio', characterId)) return { status: 'noShells' };
+        const clip: RadioClip = {
+          id: uid('clip'),
+          characterId,
+          title: clipTitle(title, clean),
+          lines: clean,
+          // Real builds get the length from the voiced file (backend-plan §12.14).
+          durationSec: clipDuration(clean),
+          createdAt: new Date().toISOString(),
+        };
+        set((s) => ({ radioClips: [clip, ...s.radioClips] }));
+        return { status: 'made', id: clip.id };
+      },
+
+      deleteRadioClip: (clipId) => set((s) => ({ radioClips: s.radioClips.filter((c) => c.id !== clipId) })),
+
+      shareRadioClip: (clipId) => {
+        const clip = get().radioClips.find((c) => c.id === clipId);
+        const conversation = clip && get().conversations.find((c) => c.characterId === clip.characterId);
+        if (!clip || !conversation) return false;
+        // Already paid for when it was made, so sharing is free and asks for no reply.
+        appendMessage(set, get, conversation.id, {
+          id: uid('m'),
+          conversationId: conversation.id,
+          author: 'me',
+          kind: 'voice',
+          durationSec: clip.durationSec,
+          transcript: clip.lines.join(' '),
+          createdAt: new Date().toISOString(),
+        });
+        return true;
       },
 
       /* ── bonds ────────────────────────────────────────────────────────── */
@@ -1475,6 +1531,7 @@ export const useAppStore = create<AppState>()(
             // A note waiting on its answer would bring them back after the block.
             boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
             photos: s.photos.filter((p) => p.characterId !== characterId),
+            radioClips: s.radioClips.filter((c) => c.characterId !== characterId),
             activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
             settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
           };
@@ -2097,6 +2154,7 @@ export const useAppStore = create<AppState>()(
         characters: s.characters,
         conversations: s.conversations,
         groups: s.groups,
+        radioClips: s.radioClips,
         // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
         messages: capMessages(s.messages),
         relationships: s.relationships,

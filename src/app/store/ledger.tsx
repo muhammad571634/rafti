@@ -218,6 +218,7 @@ const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']>
   membership: 'star-outline',
   call: 'call-outline',
   topUp: 'add-circle-outline',
+  radio: 'radio-outline',
   other: 'ellipse-outline',
 };
 
