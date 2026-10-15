@@ -6,6 +6,7 @@ import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LuckyWheel } from '@/components/lucky-wheel';
+import { PeekingMascot } from '@/components/peeking-mascot';
 import {
   Anim,
   Button,
@@ -126,6 +127,7 @@ export default function GiftsScreen() {
           }
         />
         <View style={styles.days}>
+          <PeekingMascot width={PEEK_WIDTH} />
           {DAILY_CHECK_IN.map((amount, index) => {
             const day = index + 1;
             const claimed = day <= daily.checkInDay;
@@ -363,6 +365,10 @@ function WayRow({
   );
 }
 
+/** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
+const PEEK_WIDTH = 104;
+const PEEK_ROOM = 40;
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   bold: { fontWeight: '700' },
@@ -372,7 +378,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: space.lg,
-    marginTop: space.sm,
+    // Room for the mascot peeking over the card, between the label's two texts.
+    marginTop: space.sm + PEEK_ROOM,
     paddingVertical: space.lg,
     paddingHorizontal: space.md,
     borderRadius: 20,

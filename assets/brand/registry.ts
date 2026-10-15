@@ -6,7 +6,7 @@
 export const BRAND = {
   /** The mascot winking, as a die-cut sticker (transparent). Default avatar, call sticker. */
   sticker: require('./sigmazam-sticker.png'),
-  /** The mascot peeking out of an empty box (transparent). Empty lists. */
+  /** The mascot peering through a magnifying glass (transparent). Empty lists. */
   empty: require('./sigmazam-empty.png'),
   /** The mascot jumping to catch a glowing shell, on cream. Daily reward. */
   reward: require('./sigmazam-reward.jpg'),
@@ -16,6 +16,8 @@ export const BRAND = {
   bedtime: require('./sigmazam-bedtime.jpg'),
   /** The mascot writing at a desk, 3:4, top third left empty for the title. My diary cover. */
   diaryCover: require('./sigmazam-diary.jpg'),
+  /** The mascot's head and paws, peeking over an edge; the body is cut flat (transparent). Check-in sheet. */
+  peek: require('./sigmazam-peek.png'),
   /** Sigmazam wordmark with the mascot over the G (transparent). Today header. */
   logo: require('./sigmazam-logo.png'),
   /** The Sigmazam mascot peeking over the G (transparent). The brand mark, onboarding. */
@@ -132,6 +134,7 @@ export const BRAND_ASPECT: Record<BrandArtName, number> = {
   levelUp: 800 / 533,
   bedtime: 1,
   diaryCover: 675 / 900,
+  peek: 720 / 540,
   logo: 1670 / 356,
   mark: 681 / 806,
 };

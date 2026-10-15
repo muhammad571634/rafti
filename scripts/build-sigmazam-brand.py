@@ -134,7 +134,7 @@ def main():
 # The mascot's moments (Higgsfield, the logo and icon art as references), in docs/branding/art.
 # Cutouts were drawn on flat blue-grey so the cream body keys cleanly; scenes keep their backdrop.
 ART = ROOT / 'docs/branding/art'
-CUTOUTS = {'sticker': 640, 'empty': 720}
+CUTOUTS = {'sticker': 640, 'empty': 720, 'peek': 720}
 SCENES = {'reward': 720, 'levelup': 800, 'bedtime': 720, 'diary': 900}
 
 

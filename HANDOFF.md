@@ -65,7 +65,12 @@ and ask which one to start (each with a prototype first, as usual):
    Date rounds start with a round from the friend's world. Checked on web.
 Also on hold: the Backend (real AI), `docs/backend-plan.md`.
 Also saved for later (owner liked both, 2026-10-15):
-4. [ ] Daily check-in (owner 2026-10-15: not now; do it later together with the rest of this list): Rafti peeks over the top edge of the check-in sheet (slides up from behind
+4. [x] Done 2026-10-15 with the new mascot (owner: "use the mascot in the daily check-in too"):
+   `src/components/peeking-mascot.tsx` (`BRAND.peek`, head and paws drawn on Higgsfield, body cut flat)
+   climbs up from behind an edge, ducks and pops up every ~6 s, hops on a tap (light haptic), sits
+   still with reduced motion. On the Free gifts "Daily check-in" card (the check-in popup is off
+   since 2026-10-09, so that card is where people see it) and on `DailyRewardSheet` if the popup
+   comes back. Original note: Rafti peeks over the top edge of the check-in sheet (slides up from behind
    the card, small squash, paws on the edge, now and then ducks and pops up again; a tap makes him
    hop). Prototype https://claude.ai/artifact/SFsyqQWjSeYMQezTD9JZcT, artboard "3 · Daily check-in —
    peek" (the other six moods there were NOT wanted). Idea from BIMOBIMO's screen recording: their

@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { BrandArt, Button, ShellIcon, Sheet, Txt } from '@/components/ui';
+import { PeekingMascot } from '@/components/peeking-mascot';
+import { Button, ShellIcon, Sheet, Txt } from '@/components/ui';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
@@ -10,7 +11,8 @@ import { colors, radius, space } from '@/theme';
 /**
  * The day's check-in shells, as a bottom sheet on Today only (never over a chat or
  * another tab). The shells are already credited when the app opens; the sheet shows
- * the week: days done, today in an ink frame, the days still to come.
+ * the week: days done, today in an ink frame, the days still to come. The mascot
+ * peeks over the sheet's top edge.
  */
 export function DailyRewardSheet() {
   const { t } = useTranslation();
@@ -20,15 +22,15 @@ export function DailyRewardSheet() {
 
   return (
     <Sheet visible={!!reward} onClose={dismiss}>
+      <PeekingMascot />
       <View style={styles.head}>
-        <BrandArt name="reward" width={64} height={64} radius={18} contentFit="cover" bob />
-        <View style={styles.flex}>
-          <Txt variant="h3">{t('dailyReward.title')}</Txt>
-          <View style={styles.pill}>
-            <Txt variant="chip" color={colors.textSecondary}>
-              {t('dailyReward.day', { day: today })}
-            </Txt>
-          </View>
+        <Txt variant="h3" style={styles.flex}>
+          {t('dailyReward.title')}
+        </Txt>
+        <View style={styles.pill}>
+          <Txt variant="chip" color={colors.textSecondary}>
+            {t('dailyReward.day', { day: today })}
+          </Txt>
         </View>
       </View>
 
@@ -73,10 +75,9 @@ export function DailyRewardSheet() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, gap: space.xs },
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
+  flex: { flex: 1 },
+  head: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   pill: {
-    alignSelf: 'flex-start',
     paddingHorizontal: space.sm + 2,
     paddingVertical: 2,
     borderRadius: radius.pill,
