@@ -26,6 +26,10 @@ export interface MessageBubbleProps {
   onCallBack?: () => void;
   /** Long-press on a text or photo opens the message menu (react, copy, delete). */
   onLongPress?: (message: Message) => void;
+  /** Group chats: the member's name over the first bubble of their run. */
+  senderName?: string;
+  /** Group chats: the "not real people" line names everyone. */
+  aiNoticeText?: string;
 }
 
 const AVATAR = 34;
@@ -42,16 +46,48 @@ export const MessageBubble = memo(function MessageBubble({
   animate = true,
   onCallBack,
   onLongPress,
+  senderName,
+  aiNoticeText,
 }: MessageBubbleProps) {
   const router = useRouter();
   const mine = message.author === 'me';
   const photoId = message.photoId;
+  const named = !mine && showAvatar && !!senderName;
 
   if (message.card === 'helpline') return <HelplineCard />;
-  if (message.card === 'aiNotice') return <AiNotice name={character.name} />;
+  if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
+
+  // The bubble itself; in a group it sits under the member's name, which then holds the width cap.
+  const content =
+    message.kind === 'voice' ? (
+      <VoiceBubble message={message} mine={mine} first={showAvatar} wide={named} />
+    ) : (
+      <PressableScale
+        scaleTo={0.97}
+        delayLongPress={280}
+        disabled={!onLongPress && !photoId}
+        onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
+        onLongPress={onLongPress ? () => onLongPress(message) : undefined}
+        style={[styles.holdable, named && styles.wide, message.reaction ? styles.withReaction : null]}>
+        {message.kind === 'image' && message.photoId ? (
+          <BoothPhotoMessage photoId={message.photoId} character={character} />
+        ) : message.kind === 'image' && message.imageUri ? (
+          <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+        ) : (
+          <TextBubble message={message} mine={mine} first={showAvatar} />
+        )}
+        {message.reaction && message.reaction in REACTION_STICKERS ? (
+          <Image
+            source={REACTION_STICKERS[message.reaction as ReactionName]}
+            style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+            contentFit="contain"
+          />
+        ) : null}
+      </PressableScale>
+    );
 
   return (
     <Animated.View
@@ -65,31 +101,15 @@ export const MessageBubble = memo(function MessageBubble({
 
       {mine ? <ReadReceipt message={message} /> : null}
 
-      {message.kind === 'voice' ? (
-        <VoiceBubble message={message} mine={mine} first={showAvatar} />
+      {named ? (
+        <View style={styles.named}>
+          <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.sender}>
+            {senderName}
+          </Txt>
+          {content}
+        </View>
       ) : (
-        <PressableScale
-          scaleTo={0.97}
-          delayLongPress={280}
-          disabled={!onLongPress && !photoId}
-          onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
-          onLongPress={onLongPress ? () => onLongPress(message) : undefined}
-          style={[styles.holdable, message.reaction ? styles.withReaction : null]}>
-          {message.kind === 'image' && message.photoId ? (
-            <BoothPhotoMessage photoId={message.photoId} character={character} />
-          ) : message.kind === 'image' && message.imageUri ? (
-            <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
-          ) : (
-            <TextBubble message={message} mine={mine} first={showAvatar} />
-          )}
-          {message.reaction && message.reaction in REACTION_STICKERS ? (
-            <Image
-              source={REACTION_STICKERS[message.reaction as ReactionName]}
-              style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
-              contentFit="contain"
-            />
-          ) : null}
-        </PressableScale>
+        content
       )}
 
       {!mine ? (
@@ -128,7 +148,7 @@ function TextBubble({ message, mine, first }: { message: Message; mine: boolean;
 }
 
 /** "🔊 0:06" — tap plays (mock), long-press reveals what was said. */
-function VoiceBubble({ message, mine, first }: { message: Message; mine: boolean; first: boolean }) {
+function VoiceBubble({ message, mine, first, wide }: { message: Message; mine: boolean; first: boolean; wide?: boolean }) {
   const { t } = useTranslation();
   const [playing, setPlaying] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
@@ -142,7 +162,7 @@ function VoiceBubble({ message, mine, first }: { message: Message; mine: boolean
   };
 
   return (
-    <View style={[styles.voiceWrap, mine && styles.voiceWrapMine]}>
+    <View style={[styles.voiceWrap, mine && styles.voiceWrapMine, wide && styles.wide]}>
       <PressableScale
         onPress={play}
         onLongPress={() => setShowTranscript((v) => !v)}
@@ -215,13 +235,13 @@ function SystemLine({ text }: { text: string }) {
 }
 
 /** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
-function AiNotice({ name }: { name: string }) {
+function AiNotice({ name, text }: { name: string; text?: string }) {
   const { t } = useTranslation();
   return (
     <View style={styles.system}>
       <View style={[styles.systemPill, styles.notice]}>
         <Txt variant="caption" color={colors.textSecondary} center>
-          {t('chat.aiNotice', { name })}
+          {text ?? t('chat.aiNotice', { name })}
         </Txt>
       </View>
     </View>
@@ -309,6 +329,10 @@ function BoothPhotoMessage({ photoId, character }: { photoId: string; character:
 const styles = StyleSheet.create({
   // The held area carries the bubble's width cap, so the text bubble fills it.
   holdable: { flexShrink: 1, maxWidth: '72%' },
+  // In a group the name and bubble share one column, which carries the cap instead.
+  named: { flexShrink: 1, maxWidth: '72%', alignItems: 'flex-start', gap: 3 },
+  sender: { paddingLeft: space.xs },
+  wide: { maxWidth: '100%' },
   fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
   withReaction: { marginBottom: space.lg },

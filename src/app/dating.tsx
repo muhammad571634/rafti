@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
@@ -55,7 +55,11 @@ export default function DatingScreen() {
     [characters, relationships, conversations],
   );
 
-  const [partnerId, setPartnerId] = useState(known[0]?.id);
+  // A group chat opens the map with the member the user picked there.
+  const { partner: asked } = useLocalSearchParams<{ partner?: string }>();
+  const [partnerId, setPartnerId] = useState(
+    typeof asked === 'string' && known.some((c) => c.id === asked) ? asked : known[0]?.id,
+  );
   const [choosing, setChoosing] = useState(false);
   const [placeId, setPlaceId] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);

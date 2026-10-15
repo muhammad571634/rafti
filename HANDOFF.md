@@ -151,8 +151,34 @@ From BIMOBIMO (our own look and words)
    previews and photo art (meant to look like a phone or a photo).
    The Antigravity Java extension (Red Hat) respawns ~11 java processes (~3.5 GB) that froze the
    laptop; killing them does not hold, the owner should disable the extension in Antigravity.
-16. [ ] Group chat with 2-3 characters (large; keep the first version small).
+16. [x] Group chat with 2-3 characters (2026-10-15, cloud session after the terminal one closed).
+   Prototype https://claude.ai/artifact/YJ8Q51sPuknSPopxjiwv88 approved with its decisions (1 shell a
+   message, every plan, levels and memories stay in one-to-one chats, any world); the owner then asked
+   for everything the prototype left out of v1 too, so all of it is built. Data: `GroupChat` in
+   `groups` (persisted), messages in `messages[groupId]` with `Message.characterId` (so the storage
+   caps cover them; Today and the diary writer only read conversations). Store: `createGroup`,
+   `sendGroupText/Voice/Image`, `playGroupTruthOrDare`, `addGroupCall`, `renameGroup`,
+   `addGroupMember`, `removeGroupMember`, `setGroupMuted`, `deleteGroup`, transient `groupTyping`;
+   `markRead`, `setActiveConversation` (AI notice), `deleteMessage` and `reportMessage` know groups;
+   `blockCharacter` takes them out of every group and ends a group left with one. Who answers:
+   `pickResponders` (`src/lib/group-chat.ts`, tested): a named member first (two named: both), else
+   the one who spoke least recently; every other message a second member joins in by name (mock
+   lines `src/mock/group.ts`). Crisis: helpline card + one warm answer, no plan, no memory. Backend
+   seam: `buildGroupPrompt` (`src/ai/rules.ts`, tested; backend-plan §12.13). Screens: Chats tab
+   (groups in the list with `GroupAvatar`, pencil sheet New chat / New group, tab badge counts
+   groups), `/group/new`, `/group/[id]` (name over each member's run, "X is typing", "+" sheet:
+   voice, photo and truth or dare in the group; secret note, quiz, date (`/dating?partner=`) and
+   daily calls ask "Who with?" and open that member's flow; diary as usual), `/group/[id]/info`
+   (rename, members sheet: profile / your chat / remove while 2 stay; add while there is room; Mute;
+   Delete with a confirm), `/group/[id]/call` (Pro call minutes, same paywall and top-up sheets, the
+   speaker lit up, the call lands as one line in the group). `MessageBubble` got `senderName` and
+   `aiNoticeText`, `TypingRow` a `label`, `TruthOrDareSheet` an `onPlay`; `DayChip` moved to
+   `src/components/chat/day-chip.tsx`. There is no "gift to a character" feature in the app (Free
+   gifts are shells for the user), so nothing to add there. Checked on web (375x812, light and dark):
+   create, replies, named member, truth or dare, Who with, remove/add member, rename, delete, group
+   call on the trial.
 Later (not in this queue): Radio clips, user-made date themes, quizzes and frames.
+The 2026-10-13 queue is finished (9 skipped by the owner). Ask the owner what is next.
 
 ### 0p. 2026-10-14 — animated Rafti mascot (Reanimated 3)
 

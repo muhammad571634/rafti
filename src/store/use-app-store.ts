@@ -26,6 +26,19 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
+import { shortName } from '@/lib/format';
+import {
+  canAddMember,
+  canRemoveMember,
+  GROUP_MAX,
+  GROUP_MIN,
+  groupPreview,
+  groupTitle,
+  leastRecent,
+  namedMembers,
+  pickResponders,
+  withoutMember,
+} from '@/lib/group-chat';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
@@ -64,6 +77,12 @@ import {
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
+  groupHellos,
+  groupJoinLines,
+  groupPhotoLines,
+  groupReactions,
+  groupReplies,
+  groupVoiceLines,
   dateFromKey,
   dayKey,
   dayKeyFromToday,
@@ -119,6 +138,7 @@ import type {
   Conversation,
   DailyState,
   CharacterDiaryPage,
+  GroupChat,
   DiaryEntry,
   LedgerEntry,
   LedgerReason,
@@ -192,6 +212,8 @@ interface AppState {
   wallet: Wallet;
   characters: Character[];
   conversations: Conversation[];
+  /** Group chats (2-3 characters); their messages are in `messages` under the group id. */
+  groups: GroupChat[];
   messages: Record<string, Message[]>;
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
@@ -221,6 +243,8 @@ interface AppState {
   levelUp: LevelUpEvent | null;
   /** Conversation ids where the character is currently "typing". */
   typing: Record<string, boolean>;
+  /** Group ids and the member typing there now (null: nobody). */
+  groupTyping: Record<string, string | null>;
   /** The chat on screen right now — replies there do not count as unread. */
   activeConversationId: string | null;
   incomingCall: IncomingCall | null;
@@ -240,6 +264,24 @@ interface AppState {
   /** Sets (or with `undefined` clears) the user's reaction on a message. */
   reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
   deleteMessage: (conversationId: string, messageId: string) => void;
+
+  /* group chats (queue item 16): every plan; a message costs what it does in any chat */
+  /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
+  createGroup: (memberIds: string[], name?: string) => string | null;
+  sendGroupText: (groupId: string, text: string) => SendResult;
+  sendGroupVoice: (groupId: string, durationSec: number, transcript: string) => SendResult;
+  sendGroupImage: (groupId: string, imageUri: string) => SendResult;
+  /** Truth or dare with one member in the group; another member joins in. Returns the question. */
+  playGroupTruthOrDare: (groupId: string, characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
+  /** A finished group call: its line in the chat and the call minutes it used. */
+  addGroupCall: (groupId: string, startedAt: string, durationSec: number) => void;
+  renameGroup: (groupId: string, name: string) => void;
+  /** False when the group is full or they are in it already. */
+  addGroupMember: (groupId: string, characterId: string) => boolean;
+  /** False when only two would be left (delete the group instead). */
+  removeGroupMember: (groupId: string, characterId: string) => boolean;
+  setGroupMuted: (groupId: string, muted: boolean) => void;
+  deleteGroup: (groupId: string) => void;
 
   /* bonds */
   addFriend: (characterId: string) => string;
@@ -401,6 +443,7 @@ type PersistedKeys =
   | 'wallet'
   | 'characters'
   | 'conversations'
+  | 'groups'
   | 'messages'
   | 'relationships'
   | 'memories'
@@ -554,6 +597,7 @@ export const useAppStore = create<AppState>()(
       wallet: { ...seedWallet, shells: 0 },
       characters: seedCharacters,
       conversations: [],
+      groups: [],
       messages: {},
       relationships: {},
       memories: [],
@@ -579,6 +623,7 @@ export const useAppStore = create<AppState>()(
       hydrated: false,
       levelUp: null,
       typing: {},
+      groupTyping: {},
       activeConversationId: null,
       incomingCall: null,
       dailyReward: null,
@@ -708,6 +753,7 @@ export const useAppStore = create<AppState>()(
           conversations: s.conversations.map((c) =>
             c.id === conversationId && c.unreadCount ? { ...c, unreadCount: 0 } : c,
           ),
+          groups: s.groups.map((g) => (g.id === conversationId && g.unreadCount ? { ...g, unreadCount: 0 } : g)),
         })),
 
       setActiveConversation: (conversationId) => {
@@ -715,7 +761,8 @@ export const useAppStore = create<AppState>()(
         if (!conversationId) return;
         get().markRead(conversationId);
         // Opening a chat starts a session: the "not a real person" notice shows if it is due.
-        noticeAiIfDue(set, get, conversationId);
+        if (get().groups.some((g) => g.id === conversationId)) noticeGroupAiIfDue(set, get, conversationId);
+        else noticeAiIfDue(set, get, conversationId);
       },
 
       clearChat: (conversationId) =>
@@ -746,8 +793,208 @@ export const useAppStore = create<AppState>()(
             conversations: s.conversations.map((c) =>
               c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
             ),
+            groups: s.groups.map((g) =>
+              g.id === conversationId ? { ...g, lastMessagePreview: last ? groupLinePreview(s, last) : '' } : g,
+            ),
           };
         }),
+
+      /* ── group chats ──────────────────────────────────────────────────── */
+
+      createGroup: (memberIds, name) => {
+        const s = get();
+        const ids = [...new Set(memberIds)].filter(
+          (id) => s.characters.some((c) => c.id === id) && !s.blockedIds.includes(id),
+        );
+        if (ids.length < GROUP_MIN || ids.length > GROUP_MAX) return null;
+        const id = uid('grp');
+        const now = new Date().toISOString();
+        const group: GroupChat = {
+          id,
+          memberIds: ids,
+          name: name?.trim() || undefined,
+          createdAt: now,
+          lastMessagePreview: '',
+          lastMessageAt: now,
+          unreadCount: 0,
+          muted: false,
+        };
+        set((st) => ({ groups: [...st.groups, group], messages: { ...st.messages, [id]: [] } }));
+        appendGroupMessage(set, get, id, groupSystem(id, 'You made the group'), { quiet: true });
+        noticeGroupAiIfDue(set, get, id);
+        // The first member says hello and names the others.
+        const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
+        scheduleGroupReplies(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others)] }]);
+        return id;
+      },
+
+      sendGroupText: (groupId, text) => {
+        const trimmed = text.trim();
+        if (!trimmed || !get().groups.some((g) => g.id === groupId)) return 'empty';
+        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        countMessage(set, get);
+        noticeGroupAiIfDue(set, get, groupId);
+        appendGroupMessage(set, get, groupId, {
+          id: uid('m'),
+          conversationId: groupId,
+          author: 'me',
+          kind: 'text',
+          text: trimmed,
+          createdAt: new Date().toISOString(),
+        });
+        answerGroup(set, get, groupId, trimmed, () => pick(groupReplies));
+        return 'sent';
+      },
+
+      sendGroupVoice: (groupId, durationSec, transcript) => {
+        if (!get().groups.some((g) => g.id === groupId)) return 'empty';
+        if (!get().spendShells(shellCosts.voiceMessage, 'voice')) return 'noShells';
+        countMessage(set, get);
+        noticeGroupAiIfDue(set, get, groupId);
+        appendGroupMessage(set, get, groupId, {
+          id: uid('m'),
+          conversationId: groupId,
+          author: 'me',
+          kind: 'voice',
+          durationSec,
+          transcript,
+          createdAt: new Date().toISOString(),
+        });
+        answerGroup(set, get, groupId, transcript, () => [pick(groupVoiceLines)]);
+        return 'sent';
+      },
+
+      sendGroupImage: (groupId, imageUri) => {
+        if (!get().groups.some((g) => g.id === groupId)) return 'empty';
+        if (!get().spendShells(shellCosts.textMessage, 'photo')) return 'noShells';
+        countMessage(set, get);
+        noticeGroupAiIfDue(set, get, groupId);
+        appendGroupMessage(set, get, groupId, {
+          id: uid('m'),
+          conversationId: groupId,
+          author: 'me',
+          kind: 'image',
+          imageUri,
+          createdAt: new Date().toISOString(),
+        });
+        answerGroup(set, get, groupId, '', () => [pick(groupPhotoLines)]);
+        return 'sent';
+      },
+
+      playGroupTruthOrDare: (groupId, characterId, target, kind) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group || !group.memberIds.includes(characterId)) return '';
+        if (target === 'you') {
+          const ask = pick(kind === 'truth' ? TRUTHS_FOR_YOU : DARES_FOR_YOU);
+          appendGroupMessage(set, get, groupId, memberText(groupId, characterId, ask));
+          return ask;
+        }
+        const turn = pick(kind === 'truth' ? TRUTHS_FOR_THEM : DARES_FOR_THEM);
+        appendGroupMessage(set, get, groupId, {
+          id: uid('m'),
+          conversationId: groupId,
+          author: 'me',
+          kind: 'text',
+          text: turn.ask,
+          createdAt: new Date().toISOString(),
+        });
+        // They answer, and someone else in the group has a word about it.
+        const other = leastRecent(
+          group.memberIds.filter((id) => id !== characterId),
+          speakersIn(get(), groupId),
+        );
+        scheduleGroupReplies(set, get, groupId, [
+          { characterId, lines: [turn.answer] },
+          ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId))] }] : []),
+        ]);
+        return turn.ask;
+      },
+
+      addGroupCall: (groupId, startedAt, durationSec) => {
+        if (durationSec <= 0 || !get().groups.some((g) => g.id === groupId)) return;
+        appendGroupMessage(set, get, groupId, {
+          id: uid('m'),
+          conversationId: groupId,
+          author: 'me',
+          kind: 'call',
+          durationSec,
+          missed: false,
+          createdAt: startedAt,
+        });
+        // The same call minutes as a one-to-one call: the plan's first, then bought ones.
+        const { wallet } = get();
+        const used = consumeMinutes(wallet.subscription, wallet.packs, 'call', durationSec, Date.now());
+        set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
+        if (used.taken > 0) logSeconds(set, -used.taken, 'call');
+      },
+
+      renameGroup: (groupId, name) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group) return;
+        const clean = name.trim() || undefined;
+        if (clean === group.name) return;
+        set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, name: clean } : g)) }));
+        appendGroupMessage(
+          set,
+          get,
+          groupId,
+          groupSystem(groupId, clean ? `You named the group "${clean}"` : 'You removed the group name'),
+          { quiet: true },
+        );
+      },
+
+      addGroupMember: (groupId, characterId) => {
+        const s = get();
+        const group = s.groups.find((g) => g.id === groupId);
+        if (
+          !group ||
+          group.memberIds.includes(characterId) ||
+          !canAddMember(group.memberIds) ||
+          !s.characters.some((c) => c.id === characterId) ||
+          s.blockedIds.includes(characterId)
+        ) {
+          return false;
+        }
+        set((st) => ({
+          groups: st.groups.map((g) => (g.id === groupId ? { ...g, memberIds: [...g.memberIds, characterId] } : g)),
+        }));
+        appendGroupMessage(set, get, groupId, groupSystem(groupId, `${memberName(get(), characterId)} joined`), {
+          quiet: true,
+        });
+        scheduleGroupReplies(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines)] }]);
+        return true;
+      },
+
+      removeGroupMember: (groupId, characterId) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group || !group.memberIds.includes(characterId) || !canRemoveMember(group.memberIds)) return false;
+        const name = memberName(get(), characterId);
+        set((s) => ({
+          groups: s.groups.map((g) =>
+            g.id === groupId ? { ...g, memberIds: g.memberIds.filter((id) => id !== characterId) } : g,
+          ),
+        }));
+        appendGroupMessage(set, get, groupId, groupSystem(groupId, `You removed ${name}`), { quiet: true });
+        return true;
+      },
+
+      setGroupMuted: (groupId, muted) =>
+        set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, muted } : g)) })),
+
+      deleteGroup: (groupId) => {
+        // A reply still on its way must not bring the group back.
+        replyingUntil.delete(groupId);
+        set((s) => {
+          const { [groupId]: _messages, ...messages } = s.messages;
+          const { [groupId]: _typing, ...groupTyping } = s.groupTyping;
+          return {
+            groups: s.groups.filter((g) => g.id !== groupId),
+            messages,
+            groupTyping,
+            activeConversationId: s.activeConversationId === groupId ? null : s.activeConversationId,
+          };
+        });
+      },
 
       /* ── bonds ────────────────────────────────────────────────────────── */
 
@@ -1185,7 +1432,9 @@ export const useAppStore = create<AppState>()(
       reportMessage: (conversationId, messageId, reason) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         const message = (get().messages[conversationId] ?? []).find((m) => m.id === messageId);
-        if (!conversation || !message) return;
+        // In a group the report names the member who wrote it.
+        const characterId = conversation?.characterId ?? message?.characterId;
+        if (!characterId || !message) return;
         // The server takes these with the surrounding chat for review.
         set((s) => ({
           reports: [
@@ -1193,7 +1442,7 @@ export const useAppStore = create<AppState>()(
             {
               id: uid('rep'),
               conversationId,
-              characterId: conversation.characterId,
+              characterId,
               messageId,
               text: message.text,
               reason,
@@ -1206,10 +1455,17 @@ export const useAppStore = create<AppState>()(
       blockCharacter: (characterId) =>
         set((s) => {
           const gone = new Set(s.conversations.filter((c) => c.characterId === characterId).map((c) => c.id));
+          // They leave every group; a group left with one member ends with its messages.
+          const groups = s.groups.flatMap((g) => {
+            const rest = withoutMember(g.memberIds, characterId);
+            if (!rest) gone.add(g.id);
+            return rest ? [{ ...g, memberIds: rest }] : [];
+          });
           const { [characterId]: _bond, ...relationships } = s.relationships;
           return {
             blockedIds: s.blockedIds.includes(characterId) ? s.blockedIds : [...s.blockedIds, characterId],
             conversations: s.conversations.filter((c) => !gone.has(c.id)),
+            groups,
             messages: Object.fromEntries(Object.entries(s.messages).filter(([id]) => !gone.has(id))),
             relationships,
             memories: s.memories.filter((m) => m.characterId !== characterId),
@@ -1840,6 +2096,7 @@ export const useAppStore = create<AppState>()(
         wallet: s.wallet,
         characters: s.characters,
         conversations: s.conversations,
+        groups: s.groups,
         // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
         messages: capMessages(s.messages),
         relationships: s.relationships,
@@ -2183,6 +2440,163 @@ function scheduleReply(
     at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
   });
   replyingUntil.set(conversationId, Date.now() + at);
+}
+
+/* ── group chats ───────────────────────────────────────────────────────────── */
+
+/** A member's short name ("Kai") for group lines and previews; your nickname wins. */
+function memberName(state: AppState, characterId: string) {
+  const character = state.characters.find((c) => c.id === characterId);
+  return character ? shortName(displayName(character, state.relationships[characterId])) : '';
+}
+
+/** "Kai: On my way" for a member's line, the plain preview for the user's own. */
+function groupLinePreview(state: AppState, message: Message) {
+  const sender = message.author === 'them' && message.characterId ? memberName(state, message.characterId) : undefined;
+  return groupPreview(sender, previewFor(message));
+}
+
+const groupSystem = (groupId: string, text: string): Message => ({
+  id: uid('m'),
+  conversationId: groupId,
+  author: 'them',
+  kind: 'system',
+  text,
+  createdAt: new Date().toISOString(),
+});
+
+const memberText = (groupId: string, characterId: string, text: string): Message => ({
+  ...themText(groupId, text),
+  characterId,
+});
+
+/** Members who spoke in the group, oldest first (who answers next takes turns from this). */
+function speakersIn(state: AppState, groupId: string) {
+  return (state.messages[groupId] ?? []).flatMap((m) => (m.author === 'them' && m.characterId ? [m.characterId] : []));
+}
+
+/** `appendMessage` for a group: the list preview names the member, unread counts their lines. */
+function appendGroupMessage(
+  set: Setter,
+  get: Getter,
+  groupId: string,
+  message: Message,
+  { quiet = false }: { quiet?: boolean } = {},
+) {
+  if (quiet) {
+    set((s) => ({ messages: { ...s.messages, [groupId]: [...(s.messages[groupId] ?? []), message] } }));
+    return;
+  }
+  const unseen = message.author === 'them' && get().activeConversationId !== groupId;
+  const preview = groupLinePreview(get(), message);
+  set((s) => ({
+    messages: { ...s.messages, [groupId]: [...(s.messages[groupId] ?? []), message] },
+    groups: s.groups.map((g) =>
+      g.id === groupId
+        ? {
+            ...g,
+            lastMessagePreview: preview,
+            lastMessageAt: message.createdAt,
+            unreadCount: unseen ? g.unreadCount + 1 : g.unreadCount,
+          }
+        : g,
+    ),
+  }));
+}
+
+/** The "not real people" line in a group: at a session's start and every 3 hours, as in a chat. */
+function noticeGroupAiIfDue(set: Setter, get: Getter, groupId: string) {
+  const group = get().groups.find((g) => g.id === groupId);
+  if (!group) return;
+  const now = Date.now();
+  if (group.aiNoticeAt && now - Date.parse(group.aiNoticeAt) < AI_NOTICE_MS) return;
+  const at = new Date(now).toISOString();
+  set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, aiNoticeAt: at } : g)) }));
+  appendGroupMessage(
+    set,
+    get,
+    groupId,
+    { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'aiNotice', createdAt: at },
+    { quiet: true },
+  );
+}
+
+/**
+ * Who answers the user's message and with what (`pickResponders`): the first member answers,
+ * a second one joins in by name. A crisis message gets the helpline card and one warm answer,
+ * never a joke from the others; it never becomes a plan or a memory here either.
+ */
+function answerGroup(set: Setter, get: Getter, groupId: string, text: string, firstLines: () => string[]) {
+  const state = get();
+  const group = state.groups.find((g) => g.id === groupId);
+  if (!group) return;
+  const names = Object.fromEntries(
+    group.memberIds.map((id) => [id, memberName(state, id)] as const).filter(([, name]) => !!name),
+  );
+  const history = state.messages[groupId] ?? [];
+  const turn = history.filter((m) => m.author === 'me').length;
+  const crisis = !!text && detectCrisis(text);
+  const [first, second] = pickResponders(group.memberIds, names, text, speakersIn(state, groupId), crisis ? 0 : turn);
+  if (!first) return;
+  if (crisis) {
+    appendGroupMessage(
+      set,
+      get,
+      groupId,
+      { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() },
+      { quiet: true },
+    );
+    scheduleGroupReplies(set, get, groupId, [{ characterId: first, lines: [pick(crisisReplies)] }]);
+    return;
+  }
+  // Two members named: both answer the user. Otherwise the second talks to the first.
+  const bothAsked = namedMembers(text, names).length >= 2;
+  scheduleGroupReplies(set, get, groupId, [
+    { characterId: first, lines: firstLines() },
+    ...(second ? [{ characterId: second, lines: bothAsked ? pick(groupReplies) : [pick(groupReactions)(names[first])] }] : []),
+  ]);
+}
+
+/**
+ * The mock group reply, standing in for one model call per member: each member in turn shows
+ * "typing", then their lines. Replies queue behind any still arriving, so they never interleave.
+ */
+function scheduleGroupReplies(
+  set: Setter,
+  get: Getter,
+  groupId: string,
+  turns: { characterId: string; lines: string[] }[],
+) {
+  if (!turns.length) return;
+  const readAt = new Date().toISOString();
+  set((s) => ({
+    groupTyping: { ...s.groupTyping, [groupId]: turns[0].characterId },
+    messages: {
+      ...s.messages,
+      [groupId]: (s.messages[groupId] ?? []).map((m) => (m.author === 'me' && !m.readAt ? { ...m, readAt } : m)),
+    },
+  }));
+
+  const busy = Math.max(0, (replyingUntil.get(groupId) ?? 0) - Date.now());
+  let at = busy + 900 + Math.random() * 600;
+  turns.forEach((turn, t) => {
+    turn.lines.forEach((line, i) => {
+      const endOfTurn = i === turn.lines.length - 1;
+      const next = endOfTurn ? (turns[t + 1]?.characterId ?? null) : turn.characterId;
+      setTimeout(() => {
+        // The group was deleted, or the member removed, while they were typing.
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group) return;
+        if (group.memberIds.includes(turn.characterId)) {
+          appendGroupMessage(set, get, groupId, memberText(groupId, turn.characterId, line));
+        }
+        set((s) => ({ groupTyping: { ...s.groupTyping, [groupId]: next } }));
+      }, at);
+      const following = endOfTurn ? turns[t + 1]?.lines[0] : turn.lines[i + 1];
+      at += (endOfTurn ? 1100 : 650) + Math.min(following?.length ?? 0, 80) * 22;
+    });
+  });
+  replyingUntil.set(groupId, Date.now() + at);
 }
 
 /** The wake session for this chat while its replies are free (ringing, snoozed, or the window). */

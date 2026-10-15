@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { DayChip } from '@/components/chat/day-chip';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
@@ -479,27 +480,6 @@ export default function ChatRoomScreen() {
 
 const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
 
-/** "Today", "Yesterday" or the date, between messages from different days. */
-function DayChip({ iso }: { iso: string }) {
-  const { t, i18n } = useTranslation();
-  const key = dayKey(iso);
-  const label =
-    key === todayKey()
-      ? t('chat.dayToday')
-      : key === dayKey(new Date(Date.now() - 86_400_000))
-        ? t('chat.dayYesterday')
-        : new Date(iso).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
-  return (
-    <View style={styles.dayRow}>
-      <View style={styles.dayChip}>
-        <Txt variant="caption" color={colors.textSecondary}>
-          {label}
-        </Txt>
-      </View>
-    </View>
-  );
-}
-
 /** A "-1" that floats off the shell badge whenever a message is paid for. */
 function SpendPulse({ shells }: { shells: number }) {
   const { t } = useTranslation();
@@ -531,13 +511,6 @@ function SpendPulse({ shells }: { shells: number }) {
 }
 
 const styles = StyleSheet.create({
-  dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
-  dayChip: {
-    paddingHorizontal: space.md,
-    paddingVertical: space.xs,
-    borderRadius: radius.pill,
-    backgroundColor: isDark ? 'rgba(28,33,72,0.85)' : colors.onMediaSoft,
-  },
   pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
   quote: {
     padding: space.md,

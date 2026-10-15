@@ -82,6 +82,8 @@ Hozirgi `src/types` deyarli to'g'ridan-to'g'ri jadvallarga aylanadi:
 | `relationships` | `user_id`, `character_id`, `intimacy`, `level`, `label`, `streak_days`, `last_chat_day`, `nickname`, `voice_replies`, `messages_first`, `summary`, `recent_openers` (12.7) | `summary` — suhbatning qisqa xulosasi (xotira 2-qatlami) |
 | `conversations` | `id`, `user_id`, `character_id`, `pinned`, `muted`, `last_message_at`, `reply_language` | `unread_count` hisoblanadi; `reply_language` — javob tili qulfi (`lockedReplyLanguage`, `src/ai/reply-language.ts`), promptga `REPLY LANGUAGE` bo'lib kiradi |
 | `messages` | `id`, `conversation_id`, `author`, `kind`, `text`, `transcript`, `media_path`, `duration_sec`, `created_at`, `read_at`, `client_id`, `lang` | `client_id` — takroriy yuborishdan himoya; `lang` — foydalanuvchi xabarining aniqlangan tili (juda qisqa bo'lsa bo'sh) |
+| `group_chats` | `id`, `user_id`, `name`, `muted`, `ai_notice_at`, `created_at`, `last_message_at` | Guruh chati (12.13). Xabarlari `messages`da: `conversation_id` o'rniga `group_id` va `character_id` (qaysi a'zo yozgan) |
+| `group_members` | `group_id`, `character_id`, `joined_at` | 2-3 a'zo; bloklangan personaj chiqadi, 1 ta qolsa guruh o'chadi |
 | `memories` | `id`, `user_id`, `character_id`, `text`, `source`, `type`, `importance`, `confidence`, `status`, `superseded_by`, `pinned`, `embedding vector`, `created_at`, `last_confirmed_at`, `last_used_at` | Memories ekrani faqat `status = active` faktlarni ko'rsatadi (12.1, 12.2) |
 | `memory_uses` | `message_id`, `memory_id` | Qaysi fakt qaysi javob promptiga tushgan (12.9) |
 | `relationship_events` | `id`, `user_id`, `character_id`, `kind`, `params`, `created_at` | Faqat qo'shiladi. Us timeline va level shu oqimdan hisoblanadi (12.4) |
@@ -386,6 +388,25 @@ Codex paketida bir qatorda tilga olingan, bu yerda aniq mexanizmga aylantirildi.
   Fakt `deleted` bo'ladi, embedding o'chiriladi va personaj buni tasdiqlaydi.
 - Hisob o'chirilganda faktlar, embeddinglar, xulosalar va Storage'dagi fayllar ham o'chadi.
   App Store shuni talab qiladi.
+
+### 12.13 Guruh chati (2026-10-15, navbatdagi 16-band)
+
+Foydalanuvchi o'zi gaplashadigan 2-3 do'stidan guruh tuzadi. Ilovada mock bilan ishlaydi; server shunday qiladi:
+
+- **Kim javob beradi:** `pickResponders` (`src/lib/group-chat.ts`, testlangan). Xabarda ismi bor a'zo birinchi
+  javob beradi (ikki ism bo'lsa, ikkalasi). Aks holda eng uzoq gapirmagan a'zo. Har ikkinchi xabarda
+  ikkinchi a'zo birinchisiga ismi bilan gap qo'shadi.
+- **Model chaqiruvi:** har javob beruvchi uchun alohida chaqiruv, `buildGroupPrompt` (`src/ai/rules.ts`, testlangan).
+  Unda persona, javob tili va GROUP CHAT bloki bor: guruhda kimlar borligi, bir dunyodagilar bir-birini taniydi,
+  faqat o'z nomidan yozadi, 1-2 qisqa xabar.
+- **Maxfiylik:** yakkama-yakka chatdagi xotira, reja va gaplar guruhga chiqmaydi. 1-versiyada guruh promptiga
+  shaxsiy xotira berilmaydi, faqat persona va guruh tarixi beriladi.
+- **Iqtisod:** foydalanuvchi xabari 1 chig'anoq (oddiy chat bilan bir xil). O'rtacha ~1.5 javob ≈ $0.0009,
+  1 chig'anoq ≈ $0.009-0.011, ya'ni zarar yo'q. Guruh qo'ng'irog'i oddiy qo'ng'iroq daqiqalaridan oladi (Pro).
+- **Level va xotira:** guruh xabarlari level, streak va xotirani o'zgartirmaydi; ular yakkama-yakka chatda o'sadi.
+  Guruh rejani ham tanimaydi.
+- **Xavfsizlik:** inqiroz xabariga helpline kartasi va bitta iliq javob keladi, boshqa a'zolar hazil qilmaydi.
+  Shikoyat xabarni yozgan a'zoning `character_id`si bilan ketadi. "AI, haqiqiy odam emas" qatori har 3 soatda chiqadi.
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 

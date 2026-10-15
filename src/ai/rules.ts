@@ -114,3 +114,35 @@ export function buildCharacterPrompt(character: Character, user: User, relations
   }
   return lines.join('\n');
 }
+
+/**
+ * A group chat (queue item 16): the member's own prompt plus who else is there and how to
+ * share the chat. The server calls the model once for each member who answers
+ * (`pickResponders` in src/lib/group-chat.ts), so every voice stays its own.
+ */
+export function buildGroupPrompt(
+  character: Character,
+  others: Character[],
+  user: User,
+  relationship?: Relationship,
+  replyLanguage?: string,
+) {
+  const lines = [
+    buildCharacterPrompt(character, user, relationship, replyLanguage),
+    '',
+    'GROUP CHAT:',
+    `This is a group chat with ${user.displayName} and:`,
+    // Characters from one world know each other already (backend-plan §12.3, world.knows).
+    ...others.map((o) =>
+      o.series && o.series === character.series
+        ? `- ${o.name} (from ${o.series}): you already know each other.`
+        : `- ${o.name}${o.series ? ` (from ${o.series})` : ''}: you met in this chat.`,
+    ),
+    '- Write only your own message, as yourself. Never write lines for the others or for the user.',
+    '- One or two short messages. Not everyone answers everything; the user is who you are here for.',
+    '- You may talk to the others by name: agree, tease or ask them, kindly and in character.',
+    '- What the user told you alone stays private: never bring up your one-to-one chat, memories or plans here unless the user does.',
+    '- If the user writes about crisis or self-harm, answer with care and never joke.',
+  ];
+  return lines.join('\n');
+}

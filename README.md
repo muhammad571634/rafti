@@ -41,6 +41,7 @@ economy is in `docs/backend-plan.md` §13–§15 and `docs/business-plan.md` §4
 | **Moments ([Us]).** Becoming friends, level-ups, calls over a minute, diary replies, secret notes, dates and photos are recorded. | Us → moments |
 | **Secret Note.** The character writes first; their note stays sealed until you write yours and exchange (3 shells). | `/secret-note/[id]` |
 | **Heartbeat Diary.** The character writes a page the morning after a chat or a date; your pages can be shared with a friend, who writes back. | `/diary` |
+| **Group chats.** The Chats pencil makes a group of 2–3 friends you already chat with. A message costs 1 shell; one member answers (the one you name first), and every other message a second one joins in. Voice, photos and truth or dare happen in the group; secret notes, quizzes, dates and daily calls open with the member you pick. Group calls use Pro call minutes. Levels and memories grow only in one-to-one chats. | Chats → pencil, `/group/[id]` |
 | **Add Friend.** Find → profile → Add Friend opens a chat that starts with their greeting. Creating a character is free with a stock voice; a cloned voice costs 60 shells. Creations are private until moderation exists. | `/find`, `/create-character` |
 
 Everything above is persisted with zustand `persist` + AsyncStorage, so it survives restarts.
@@ -57,6 +58,7 @@ closed (a note being written, a diary reply) finishes on the next launch.
 | | Us: bond, plans, moments | `src/app/(tabs)/us.tsx` |
 | | Find / Add Friend | `src/app/(tabs)/find.tsx` |
 | Chat | Chat room, voice notes, photos, read receipts, typing | `src/app/chat/[id].tsx` |
+| Group | New group, group chat, group info, group call | `src/app/group/new.tsx`, `src/app/group/[id]/` |
 | Voice | In-call screen | `src/app/call/[id].tsx` |
 | | Incoming call | `src/app/call/incoming/[id].tsx` |
 | Character | Profile + Add Friend | `src/app/character/[id]/index.tsx` |

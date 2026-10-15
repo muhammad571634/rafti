@@ -25,11 +25,14 @@ export function TruthOrDareSheet({
   onClose,
   character,
   name,
+  onPlay,
 }: {
   visible: boolean;
   onClose: () => void;
   character: Character;
   name: string;
+  /** A group plays in the group chat instead of the one-to-one chat. */
+  onPlay?: (target: Target, kind: 'truth' | 'dare') => void;
 }) {
   const { t } = useTranslation();
   const play = useAppStore((s) => s.playTruthOrDare);
@@ -72,7 +75,8 @@ export function TruthOrDareSheet({
 
   const choose = (kind: 'truth' | 'dare') => {
     if (!target) return;
-    play(character.id, target, kind);
+    if (onPlay) onPlay(target, kind);
+    else play(character.id, target, kind);
     onClose();
   };
 

@@ -47,7 +47,10 @@ export default function TabsLayout() {
 function TabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const unread = useAppStore((s) => s.conversations.reduce((sum, c) => sum + c.unreadCount, 0));
+  const unread = useAppStore(
+    (s) =>
+      s.conversations.reduce((sum, c) => sum + c.unreadCount, 0) + s.groups.reduce((sum, g) => sum + g.unreadCount, 0),
+  );
 
   return (
     <View style={[styles.bar, { paddingBottom: insets.bottom || space.sm }]}>

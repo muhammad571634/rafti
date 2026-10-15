@@ -7,32 +7,38 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { BondChip } from '@/components/bond-chip';
+import { GroupAvatar } from '@/components/group-avatar';
 import {
   CharacterAvatar,
+  Divider,
   EmptyState,
   PressableScale,
   Screen,
   SearchBar,
+  Sheet,
   Txt,
 } from '@/components/ui';
-import { relativeStamp } from '@/lib/format';
+import { relativeStamp, shortName } from '@/lib/format';
+import { groupTitle } from '@/lib/group-chat';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, Conversation } from '@/types';
+import type { Character, Conversation, GroupChat } from '@/types';
 
 const AVATAR = 56;
+const WAY_ICON = 36;
 
-/** A conversation joined with its character and the name the user knows them by. */
-interface ChatItem {
-  conversation: Conversation;
-  character: Character;
-  name: string;
-}
+/** A row: a one-to-one chat with its character, or a group with its members. */
+type ChatItem =
+  | { kind: 'chat'; id: string; conversation: Conversation; character: Character; name: string }
+  | { kind: 'group'; id: string; group: GroupChat; members: Character[]; name: string };
+
+/** What every row shows, whichever kind it is. */
+const rowOf = (item: ChatItem) => (item.kind === 'chat' ? item.conversation : item.group);
 
 /**
- * Every chat, pinned first: plain rows on the canvas. Search opens from the header's
- * magnifier; the pencil starts a new chat in Find. Unread chats show their last line in
- * ink with an ink count.
+ * Every chat and group, pinned first: plain rows on the canvas. Search opens from the
+ * header's magnifier; the pencil offers a new chat (Find) or a new group. Unread chats
+ * show their last line in ink with an ink count.
  */
 export default function ChatListScreen() {
   const { t } = useTranslation();
@@ -41,8 +47,10 @@ export default function ChatListScreen() {
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [searching, setSearching] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   const conversations = useAppStore((s) => s.conversations);
+  const groups = useAppStore((s) => s.groups);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   // The mint level heart, from level 1 (the same rule as the Today chat rows).
@@ -54,45 +62,65 @@ export default function ChatListScreen() {
   /** Pinned chats first, then most recent; chats whose character is gone are dropped. */
   const items = useMemo<ChatItem[]>(() => {
     const byId = new Map(characters.map((c) => [c.id, c]));
-    return [...conversations]
-      .sort((a, b) => {
-        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-        return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
-      })
-      .flatMap((conversation) => {
-        const character = byId.get(conversation.characterId);
-        if (!character) return [];
-        return [{ conversation, character, name: displayName(character, relationships[character.id]) }];
-      });
-  }, [conversations, characters, relationships]);
+    const chats = conversations.flatMap((conversation): ChatItem[] => {
+      const character = byId.get(conversation.characterId);
+      if (!character) return [];
+      const name = displayName(character, relationships[character.id]);
+      return [{ kind: 'chat', id: conversation.id, conversation, character, name }];
+    });
+    const rooms = groups.flatMap((group): ChatItem[] => {
+      const members = group.memberIds.flatMap((id) => byId.get(id) ?? []);
+      if (members.length < 2) return [];
+      const name = group.name || groupTitle(members.map((m) => shortName(displayName(m, relationships[m.id]))));
+      return [{ kind: 'group', id: group.id, group, members, name }];
+    });
+    const pinned = (item: ChatItem) => item.kind === 'chat' && item.conversation.pinned;
+    return [...chats, ...rooms].sort((a, b) => {
+      if (pinned(a) !== pinned(b)) return pinned(a) ? -1 : 1;
+      return new Date(rowOf(b).lastMessageAt).getTime() - new Date(rowOf(a).lastMessageAt).getTime();
+    });
+  }, [conversations, groups, characters, relationships]);
+
+  // A group is made of friends the user already chats with.
+  const friends = useMemo(
+    () => new Set(items.flatMap((item) => (item.kind === 'chat' ? [item.character.id] : []))).size,
+    [items],
+  );
 
   const needle = query.trim().toLowerCase();
   const visible = useMemo(
     () =>
       needle
         ? items.filter(
-            ({ conversation, name }) =>
-              name.toLowerCase().includes(needle) ||
-              conversation.lastMessagePreview.toLowerCase().includes(needle),
+            (item) =>
+              item.name.toLowerCase().includes(needle) ||
+              rowOf(item).lastMessagePreview.toLowerCase().includes(needle),
           )
         : items,
     [items, needle],
   );
 
   /** The pin, mute and unread marks are icons only, so the row's label spells them out. */
-  const rowLabel = ({ conversation, character, name }: ChatItem) =>
-    [
-      conversation.unreadCount > 0
-        ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
-        : name,
-      levelOf(character.id) != null ? t('home.bondLevel', { level: levelOf(character.id) }) : null,
-      conversation.pinned ? t('chatList.pinned') : null,
-      conversation.muted ? t('chatList.muted') : null,
-      relativeStamp(conversation.lastMessageAt),
-      conversation.lastMessagePreview,
+  const rowLabel = (item: ChatItem) => {
+    const row = rowOf(item);
+    const level = item.kind === 'chat' ? levelOf(item.character.id) : null;
+    const name = item.kind === 'group' ? t('group.rowLabel', { name: item.name }) : item.name;
+    return [
+      row.unreadCount > 0 ? t('a11y.unreadTab', { label: name, count: row.unreadCount }) : name,
+      level != null ? t('home.bondLevel', { level }) : null,
+      item.kind === 'chat' && item.conversation.pinned ? t('chatList.pinned') : null,
+      row.muted ? t('chatList.muted') : null,
+      relativeStamp(row.lastMessageAt),
+      row.lastMessagePreview,
     ]
       .filter(Boolean)
       .join(', ');
+  };
+
+  const startWith = (route: '/(tabs)/find' | '/group/new') => {
+    setStarting(false);
+    router.push(route);
+  };
 
   const toggleSearch = () => {
     if (searching) setQuery('');
@@ -115,7 +143,7 @@ export default function ChatListScreen() {
         <HeaderIcon
           kind="pencil"
           accessibilityLabel={t('chatList.newChat')}
-          onPress={() => router.push('/(tabs)/find')}
+          onPress={() => setStarting(true)}
           style={styles.compose}
         />
       </View>
@@ -142,7 +170,7 @@ export default function ChatListScreen() {
 
           <FlatList
             data={visible}
-            keyExtractor={(item) => item.conversation.id}
+            keyExtractor={(item) => item.id}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             contentContainerStyle={[styles.list, { paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }]}
@@ -152,27 +180,36 @@ export default function ChatListScreen() {
               </Txt>
             }
             renderItem={({ item }) => {
-              const { conversation, character, name } = item;
-              const unread = conversation.unreadCount > 0;
+              const row = rowOf(item);
+              const unread = row.unreadCount > 0;
+              const level = item.kind === 'chat' ? levelOf(item.character.id) : null;
               return (
                 <PressableScale
                   scaleTo={0.98}
                   style={styles.row}
                   accessibilityRole="button"
                   accessibilityLabel={rowLabel(item)}
-                  onPress={() => router.push(`/chat/${conversation.id}`)}>
-                  <CharacterAvatar character={character} size={AVATAR} />
+                  onPress={() =>
+                    item.kind === 'chat'
+                      ? router.push(`/chat/${item.id}`)
+                      : router.push({ pathname: '/group/[id]', params: { id: item.id } })
+                  }>
+                  {item.kind === 'chat' ? (
+                    <CharacterAvatar character={item.character} size={AVATAR} />
+                  ) : (
+                    <GroupAvatar members={item.members} size={AVATAR} />
+                  )}
                   <View style={styles.body}>
                     <View style={styles.line}>
                       <Txt variant="title" lines={1} style={styles.name}>
-                        {name}
+                        {item.name}
                       </Txt>
-                      {levelOf(character.id) != null ? <BondChip level={levelOf(character.id)!} /> : null}
-                      {conversation.pinned ? (
+                      {level != null ? <BondChip level={level} /> : null}
+                      {item.kind === 'chat' && item.conversation.pinned ? (
                         <Ionicons name="pin-outline" size={13} color={colors.textFaint} />
                       ) : null}
                       <Txt variant="small" color={colors.textMuted} style={styles.stamp}>
-                        {relativeStamp(conversation.lastMessageAt)}
+                        {relativeStamp(row.lastMessageAt)}
                       </Txt>
                     </View>
                     <View style={styles.line}>
@@ -181,14 +218,14 @@ export default function ChatListScreen() {
                         color={unread ? colors.text : colors.textSecondary}
                         lines={1}
                         style={styles.preview}>
-                        {conversation.lastMessagePreview}
+                        {row.lastMessagePreview}
                       </Txt>
-                      {conversation.muted ? (
+                      {row.muted ? (
                         <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
                       ) : unread ? (
                         <View style={styles.badge}>
                           <Txt variant="tiny" color={colors.textOnInk} style={styles.badgeText}>
-                            {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
+                            {row.unreadCount > 99 ? '99+' : row.unreadCount}
                           </Txt>
                         </View>
                       ) : null}
@@ -200,6 +237,49 @@ export default function ChatListScreen() {
           />
         </>
       )}
+
+      {/* The pencil: a new chat in Find, or a group of 2-3 friends (approved prototype). */}
+      <Sheet visible={starting} onClose={() => setStarting(false)}>
+        <View style={styles.ways}>
+          <PressableScale
+            scaleTo={1}
+            style={styles.way}
+            accessibilityRole="button"
+            accessibilityLabel={t('group.newChat')}
+            onPress={() => startWith('/(tabs)/find')}>
+            <View style={styles.wayIcon}>
+              <Ionicons name="person-outline" size={19} color={colors.text} />
+            </View>
+            <View style={styles.wayText}>
+              <Txt variant="bodyStrong">{t('group.newChat')}</Txt>
+              <Txt variant="small" color={colors.textSecondary}>
+                {t('group.newChatHint')}
+              </Txt>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+          </PressableScale>
+          <Divider inset={space.lg + WAY_ICON + space.md} />
+          <PressableScale
+            scaleTo={1}
+            style={[styles.way, friends < 2 && styles.wayOff]}
+            disabled={friends < 2}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: friends < 2 }}
+            accessibilityLabel={t('group.newGroup')}
+            onPress={() => startWith('/group/new')}>
+            <View style={styles.wayIcon}>
+              <Ionicons name="people-outline" size={19} color={colors.text} />
+            </View>
+            <View style={styles.wayText}>
+              <Txt variant="bodyStrong">{t('group.newGroup')}</Txt>
+              <Txt variant="small" color={colors.textSecondary}>
+                {friends < 2 ? t('group.needFriends') : t('group.newGroupHint')}
+              </Txt>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+          </PressableScale>
+        </View>
+      </Sheet>
     </Screen>
   );
 }
@@ -279,4 +359,24 @@ const styles = StyleSheet.create({
   },
   badgeText: { fontWeight: '700' },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
+  // "Choices in a sheet": one bordered box, rows of equal weight (docs/design-style.md).
+  ways: { borderRadius: radius.xl, borderWidth: 1, borderColor: colors.border, overflow: 'hidden' },
+  way: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    minHeight: 64,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm + 2,
+  },
+  wayOff: { opacity: 0.45 },
+  wayIcon: {
+    width: WAY_ICON,
+    height: WAY_ICON,
+    borderRadius: 11,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wayText: { flex: 1, gap: 2 },
 });

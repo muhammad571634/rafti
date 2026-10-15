@@ -101,6 +101,28 @@ export interface Message {
   until?: string;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
+  /** Group chats: the member who wrote it (author 'them'). */
+  characterId?: string;
+}
+
+/**
+ * A group chat: the user and 2 or 3 characters (queue item 16). Its messages live in
+ * `messages[id]` beside the one-to-one chats. Group messages leave levels and memories
+ * alone; those grow in the one-to-one chats.
+ */
+export interface GroupChat {
+  id: string;
+  /** 2 or 3 character ids, in the order they joined. */
+  memberIds: string[];
+  /** What the user called it; empty means the members' names ("Kai, Theo & Hana"). */
+  name?: string;
+  createdAt: string;
+  lastMessagePreview: string;
+  lastMessageAt: string;
+  unreadCount: number;
+  muted: boolean;
+  /** When the "not real people" notice last showed, as in a one-to-one chat. */
+  aiNoticeAt?: string;
 }
 
 /** A message the user reported; the server's review queue gets it with its context. */
