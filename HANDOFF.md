@@ -11,14 +11,14 @@ English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" bel
 
 At the start of the next session, before anything else, remind the owner of these three in Uzbek
 and ask which one to start (each with a prototype first, as usual):
-1. [ ] Radio clips (Radio screen `src/app/radio.tsx`: short clips from the characters).
+1. [~] Radio clips (Radio screen `src/app/radio.tsx`: short clips from the characters). Started 2026-10-15: prototype first.
 2. [ ] User-made date themes (Dates: the user makes their own date place / theme, beside the 5 map
    places in `src/mock/dates.ts`).
 3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo
    frames for Photo Booth / polaroids, like BIMOBIMO's frame templates but our own art).
 Also on hold: the Backend (real AI), `docs/backend-plan.md`.
 Also saved for later (owner liked both, 2026-10-15):
-4. [ ] Daily check-in: Rafti peeks over the top edge of the check-in sheet (slides up from behind
+4. [ ] Daily check-in (owner 2026-10-15: not now; do it later together with the rest of this list): Rafti peeks over the top edge of the check-in sheet (slides up from behind
    the card, small squash, paws on the edge, now and then ducks and pops up again; a tap makes him
    hop). Prototype https://claude.ai/artifact/SFsyqQWjSeYMQezTD9JZcT, artboard "3 · Daily check-in —
    peek" (the other six moods there were NOT wanted). Idea from BIMOBIMO's screen recording: their
