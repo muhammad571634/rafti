@@ -1,22 +1,22 @@
-# Rafti Global Product Strategy
+# Sigmazam Global Product Strategy
 
 **Status:** Working strategy based on founder decisions made 2026-10-08. Unvalidated claims are hypotheses, not market facts.
 
 ## Founder decisions
 
-- Rafti is positioned for a global audience.
+- Sigmazam is positioned for a global audience.
 - English is the only product language for the initial product. Do not plan Uzbek, Russian, or other launch localization unless the founder changes this decision.
 - Users choose the relationship they want with a character. Friendship, close friendship, romance, and other supported paths are choices. Romance is neither the default nor the only product promise.
-- BIMOBIMO is a reference for product mechanics and engagement loops. Rafti uses original characters, writing, visuals, and world-building.
+- BIMOBIMO is a reference for product mechanics and engagement loops. Sigmazam uses original characters, writing, visuals, and world-building.
 - **Oppa (`c_oppa`) is the selected first vertical-slice character.** In the current mock data, Oppa is a custom boyfriend character; the implementation brief must preserve user choice and avoid assuming romance as the only supported relationship.
 
 ## Product thesis
 
-Rafti helps adults build an ongoing connection with original AI characters. A character remembers useful details, maintains continuity across conversations and activities, and follows the relationship style selected by the user.
+Sigmazam helps adults build an ongoing connection with original AI characters. A character remembers useful details, maintains continuity across conversations and activities, and follows the relationship style selected by the user.
 
 **Positioning hypothesis:** “AI companions who remember what matters and grow with your story.” Validate this before using it as final marketing copy.
 
-Rafti is an entertainment and companionship product, not therapy, professional advice, or a substitute for human relationships.
+Sigmazam is an entertainment and companionship product, not therapy, professional advice, or a substitute for human relationships.
 
 ## Product principles
 
@@ -29,7 +29,7 @@ Rafti is an entertainment and companionship product, not therapy, professional a
 
 ## How to learn from BIMOBIMO
 
-Borrow and adapt the mechanics already reflected in Rafti's flow map:
+Borrow and adapt the mechanics already reflected in Sigmazam's flow map:
 
 - Fast path from onboarding to a first character and conversation.
 - Reasons to return, such as character activity, plans, and diary entries.
@@ -37,7 +37,7 @@ Borrow and adapt the mechanics already reflected in Rafti's flow map:
 - Transparent rewards, purchases, and referrals.
 - Shareable moments users actually want to show others.
 
-Do not treat screen count or feature parity as differentiation. Do not copy BIMOBIMO's art, writing, celebrity or copyrighted character catalog, or economy values without Rafti-specific cost and user evidence.
+Do not treat screen count or feature parity as differentiation. Do not copy BIMOBIMO's art, writing, celebrity or copyrighted character catalog, or economy values without Sigmazam-specific cost and user evidence.
 
 ## Product sequence
 

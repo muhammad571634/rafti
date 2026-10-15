@@ -1,4 +1,4 @@
-# Rafti cast: from 16 to 40 originals
+# Sigmazam cast: from 16 to 40 originals
 
 Status: **approved and in the app** (2026-10-07): all 24 are in `src/mock/characters.ts`
 with a `gender` field (Find has an Everyone / Him / Her filter). Portraits: **all 24 done**
@@ -6,7 +6,7 @@ with a `gender` field (Find has an Everyone / Him / Her filter). Portraits: **al
 all 24 in the app (2026-10-07); every character has a portrait and a scene.
 
 Each of the four worlds grows to 10 characters. Every character is an adult (age given),
-an original Rafti creation: no real person, no idol, actor or character from another
+an original Sigmazam creation: no real person, no idol, actor or character from another
 company, no look-alikes. Text stays in English (the app's language).
 
 After approval: the cast goes into `src/mock/characters.ts`; portraits and hero scenes
@@ -157,7 +157,7 @@ Every prompt starts with the same style lines; only the last sentences differ.
 For the other 23, copy Rowan's prompt and replace only the sentence that starts with
 "An adult ..." and the two after it with the character's line below.
 
-**Faces: a global cast (user's decision, 2026-10-07).** People use Rafti from anywhere,
+**Faces: a global cast (user's decision, 2026-10-07).** People use Sigmazam from anywhere,
 so each world mixes heritages instead of one nationality: East and Southeast Asian,
 South Asian, Black, Latino, Middle Eastern and European looks, all in the same anime
 style. Each line names the heritage so the model does not default to one face.

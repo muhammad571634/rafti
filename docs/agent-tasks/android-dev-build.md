@@ -1,13 +1,13 @@
-# Task for an agent: build and install the Android development build of Rafti
+# Task for an agent: build and install the Android development build of Sigmazam
 
 You are working on the user's Windows PC in `C:\Users\joray\BIMOBIMO` (branch `local-work`).
 Read `AGENTS.md` first. Reply to the user in **Uzbek**; anything you write into the repo is in English.
 
 ## Goal
 
-Install a **development build** of Rafti on the user's Android phone over USB, so that local push
+Install a **development build** of Sigmazam on the user's Android phone over USB, so that local push
 notifications work (they cannot work in Android Expo Go: `expo-notifications` was removed from
-Expo Go in SDK 53). Done means: the Rafti app (not Expo Go) is on the phone, loads the JS from
+Expo Go in SDK 53). Done means: the Sigmazam app (not Expo Go) is on the phone, loads the JS from
 Metro, and Profile → Developer → **Test pushes** delivers notifications.
 
 ## Scope: do only this
@@ -50,11 +50,11 @@ Metro, and Profile → Developer → **Test pushes** delivers notifications.
    ```
    Port 8085 keeps it clear of the user's Metro (8083) and of 8081. When it asks which device,
    pick the phone. If it asks anything else you cannot answer from this file, ask the user.
-   When it finishes, the Rafti app opens on the phone and loads from Metro on 8085. Keep that
+   When it finishes, the Sigmazam app opens on the phone and loads from Metro on 8085. Keep that
    terminal running; it is the Metro the dev build uses.
 
 6. **Check on the phone** (ask the user to do it and tell you what they see):
-   - Rafti opens without a red error screen.
+   - Sigmazam opens without a red error screen.
    - The system asks for notification permission (or allow it in the app's Android settings).
    - Profile → Developer → **Test pushes**: the row says "N on the way" and about 8-10
      notifications arrive, 8 seconds apart, each with a character name and a line.
@@ -74,7 +74,7 @@ Metro, and Profile → Developer → **Test pushes** delivers notifications.
 | --- | --- |
 | `SDK location not found` / `ANDROID_HOME` | Step 1 was not applied in this shell; redo it. |
 | `JAVA_HOME is not set` or wrong Java version | Use Android Studio's `jbr` as in step 1. |
-| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | An older Rafti with another signature is on the phone: ask the user to uninstall it, run again. |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | An older Sigmazam with another signature is on the phone: ask the user to uninstall it, run again. |
 | `INSTALL_FAILED_USER_RESTRICTED` (Xiaomi/Redmi/POCO) | Ask the user to turn on "Install via USB" in Developer options, run again. |
 | Metro port busy | Pick another free port (8086...), never kill the user's processes. |
 | Gradle download/timeouts | Run the same command again once. |

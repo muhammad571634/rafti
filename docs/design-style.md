@@ -1,4 +1,4 @@
-# Rafti design style ("calm cards")
+# Sigmazam design style ("calm cards")
 
 The user chose this style on 2026-10-09 as **the one design method for the whole app**. Every new
 screen, and every screen that is changed, follows it. The reference is the F17 plan screens:

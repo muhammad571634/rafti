@@ -1,8 +1,8 @@
-# RAFTI Product Strategy — v1
+# Sigmazam Product Strategy — v1
 
 **Status:** Working strategy, not yet validated by user research.  
 **Date:** 2026-10-12  
-**Product:** RAFTI, an original AI companion app.
+**Product:** Sigmazam, an original AI companion app.
 
 > **Precedence (user decision, 2026-10-12):** the decisions the user approved on 2026-10-09 win
 > wherever this document differs: `docs/business-plan.md` and `docs/backend-plan.md` §13–§15.
@@ -12,7 +12,7 @@
 
 ## Executive decision
 
-RAFTI should not compete primarily on the number of characters, decorative UI, or a long list of modules. Its proposed wedge is **reliable story continuity**: a character should preserve its identity, remember relevant user-approved details, and continue shared events naturally across conversations.
+Sigmazam should not compete primarily on the number of characters, decorative UI, or a long list of modules. Its proposed wedge is **reliable story continuity**: a character should preserve its identity, remember relevant user-approved details, and continue shared events naturally across conversations.
 
 This is a hypothesis to test, not a proven market advantage.
 

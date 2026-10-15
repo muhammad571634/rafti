@@ -1,4 +1,4 @@
-# Rafti content rules (18+)
+# Sigmazam content rules (18+)
 
 Status: **approved by the user** (2026-10-07). This is the rulebook for the characters'
 behaviour, for user-created characters (F15), and for the store review. The model-facing
@@ -13,7 +13,7 @@ reply, and every report goes to review (see `SAFETY_LAYERS`).
 
 ## The idea in one line
 
-Rafti is an **adults-only, open, warm** app: romance, flirting, friendship, comfort for
+Sigmazam is an **adults-only, open, warm** app: romance, flirting, friendship, comfort for
 introverts and lonely nights, self-improvement, many kinds of personalities. We do
 not sand the characters down into polite assistants. We only draw hard lines where
 real harm or a store rejection is on the other side.

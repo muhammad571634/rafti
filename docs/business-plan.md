@@ -1,4 +1,4 @@
-# Rafti biznes rejasi (2026-10-09, kredit modeli bo'yicha yangilangan 2026-10-13)
+# Sigmazam biznes rejasi (2026-10-09, kredit modeli bo'yicha yangilangan 2026-10-13)
 
 Holat: founder rejasi. Tariflar va bepul tarif foydalanuvchi tomonidan tasdiqlangan (`backend-plan.md` §13–15).
 2026-10-13 dan kredit modeli amalda (`backend-plan.md` §15.10–15.12): §0, §4, §5, §10 va §12 shunga moslangan.
@@ -40,14 +40,14 @@ deb tushunish kerak. Manbalar oxirida.
 1. **Ovoz standartga aylanmoqda.** Character.AI, Replika va Talkie'da qo'ng'iroq bor, lekin bepul tarifda u cheklangan
    yoki umuman yo'q.
 2. **Proaktiv xabarlar tarqalmoqda, lekin sifati past.** Bir testda 54 ta xabardan faqat 20 tasi foydalanuvchining
-   real hayotiga tegishli bo'lgan. Xotiraga tayangan proaktivlik Rafti uchun ochiq imkoniyat.
+   real hayotiga tegishli bo'lgan. Xotiraga tayangan proaktivlik Sigmazam uchun ochiq imkoniyat.
 3. **Xotira asosiy farqlovchi omil.** Raqobatchilar uni eng qimmat tarifga yopadi. Masalan, Chai'da xotira faqat
    Ultra ($29.99) tarifida.
 4. **Katta kompaniyalar companion yo'nalishidan chekinmoqda:**
    - xAI 2026-yil iyulida Grok'dagi companion'larni yopdi va foydalanuvchilar munosabat tarixini yo'qotdi;
    - ChatGPT "adult mode" bir necha marta kechiktirildi.
 
-   Bu companion'ni asosiy mahsulot qilgan ilovalar uchun joy ochadi. Rafti'ning va'dasi: "munosabating seniki"
+   Bu companion'ni asosiy mahsulot qilgan ilovalar uchun joy ochadi. Sigmazam'ning va'dasi: "munosabating seniki"
    (xotirani eksport qilish mumkin).
 5. **Qonunlar kuchaymoqda:**
    - Kaliforniya SB 243 (2026-01-01 dan);
@@ -56,7 +56,7 @@ deb tushunish kerak. Manbalar oxirida.
 
    Xavfsizlikni oldindan qurgan ilova do'kon va hamkorlar oldida ustunlikka ega bo'ladi.
 6. **Kontent va kolleksiya pul olib keladi.** Love and Deepspace buni ko'rsatdi. Lekin gacha (tasodifiy xarid)
-   qonuniy va obro' xavfiga ega. Rafti lahzalarni to'g'ridan-to'g'ri sotadi.
+   qonuniy va obro' xavfiga ega. Sigmazam lahzalarni to'g'ridan-to'g'ri sotadi.
 
 ## 2. Raqobatchilar
 
@@ -77,12 +77,12 @@ deb tushunish kerak. Manbalar oxirida.
 - Ovoz va xotira pullik tarifga yopiladi.
 - Eng ko'p shikoyat "pul devori" va noaniq narx haqida.
 
-Rafti shu shikoyatlarga javob bo'ladi: xotira har qanday pullik tarifda bor, narxlar ochiq va paywall gap o'rtasida
+Sigmazam shu shikoyatlarga javob bo'ladi: xotira har qanday pullik tarifda bor, narxlar ochiq va paywall gap o'rtasida
 chiqmaydi.
 
 ## 3. Pozitsiya
 
-**"Rafti — seni eslab qoladigan va birinchi bo'lib yozadigan AI do'stlar."**
+**"Sigmazam — seni eslab qoladigan va birinchi bo'lib yozadigan AI do'stlar."**
 
 - **Kim uchun:**
   - 18–34 yoshli kattalar;
@@ -212,7 +212,7 @@ olib keladi va retention'ni oshiradi.
 - freemium ilovalarda yuklab olishdan 35 kun ichida to'lovga o'tish medianasi 2.1%, qattiq paywall bilan 10.7%;
 - AI ilovalarda sinovdan to'lovga o'tish ~8.5% (ikkilamchi manba).
 
-Rafti uchun maqsad: MAU ning **3%** i to'lovchi.
+Sigmazam uchun maqsad: MAU ning **3%** i to'lovchi.
 
 **LTV va CAC:**
 - TikTok'da bitta o'rnatish (CPI) $1.75–4 turadi.
@@ -240,7 +240,7 @@ maqsadlarga yetilgandan keyin:
 1. **Qisqa videolar** (TikTok, Reels, Shorts). Personaj POV'lari: "Kai senga tungi 2 da yozdi", diary sahifasi,
    date polaroidi. 40 personaj — tayyor kontent kutubxonasi. Kuniga 1–2 post. AI kontent platforma qoidasiga ko'ra
    belgilanadi.
-2. **Ilova ichidagi virallik.** Diary sahifasi, polaroid va "birga N kun" kartalari Rafti belgisi va havola bilan
+2. **Ilova ichidagi virallik.** Diary sahifasi, polaroid va "birga N kun" kartalari Sigmazam belgisi va havola bilan
    ulashiladi. Invite (+50, server tekshiradi) va share mukofoti tayyor.
 3. **ASO.** Kalit so'zlar va skrinshotlar xotira va proaktivlikni ko'rsatadi. Har til uchun alohida sahifa.
 4. **Jamoa.** Har dunyo uchun Discord yoki Telegram kanali. Keyingi personajni ovoz bilan tanlash. Lor yangiliklari.
@@ -272,7 +272,7 @@ maqsadlarga yetilgandan keyin:
 
   Texas ASAA amalda, Utah qonuni 2027-yil maydan kuchga kiradi.
 - **Google Play AI kontent siyosati:** jinsiy qoniqish uchun mo'ljallangan gen-AI taqiqlangan; AI kontentiga
-  shikoyat qilish tugmasi majburiy. Bu ikkalasi Rafti'da bor.
+  shikoyat qilish tugmasi majburiy. Bu ikkalasi Sigmazam'da bor.
 - **Gacha yo'q.** Pullik tasodifiy sovg'a qonuniy va do'kon xavfi, shuning uchun hamma narsa to'g'ridan-to'g'ri sotiladi.
 - **Hisob va maxfiylik:**
   - ilova ichidan hisobni o'chirish;

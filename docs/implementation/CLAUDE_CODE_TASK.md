@@ -1,6 +1,6 @@
-# Claude Code Task — Verify RAFTI Story Continuity Foundation
+# Claude Code Task — Verify Sigmazam Story Continuity Foundation
 
-You are reviewing and hardening a narrow, reviewable first slice in the existing RAFTI repository. Read `AGENTS.md`, `HANDOFF.md`, `README.md`, and the exact Expo SDK 57 documentation at https://docs.expo.dev/versions/v57.0.0/ before editing. Preserve the current UI and architecture.
+You are reviewing and hardening a narrow, reviewable first slice in the existing Sigmazam repository. Read `AGENTS.md`, `HANDOFF.md`, `README.md`, and the exact Expo SDK 57 documentation at https://docs.expo.dev/versions/v57.0.0/ before editing. Preserve the current UI and architecture.
 
 ## Objective
 

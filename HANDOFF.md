@@ -22,7 +22,8 @@ Dark mode: `primarySoft #3B2A26`, own bubble `#56392F`. Notification accent in `
 ### 0s. Rebrand: Rafti is now Sigmazam (2026-10-15)
 
 The owner's logo (`docs/branding/download.png`: "SiGMAZAM", a cream mascot with an orange hair
-swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam".
+swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam"; the name comes
+from the Turkish word *siğmazam* (owner, 2026-10-15).
 - `docs/branding/icon-art.png`: the mascot over the G alone, 1024px, made on Higgsfield
   (`xai/grok-imagine-image-2.0`, the logo as reference, $0.08).
 - `scripts/build-sigmazam-brand.py` makes every asset from those two: `assets/brand/sigmazam-logo.png`
@@ -47,7 +48,8 @@ swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam".
   rolls back in tears, wow with paws on cheeks, sad under a rain cloud, hyped in a party hat, thumbs
   in sunglasses. `src/components/chat/reaction-sticker.tsx` moves each to its feeling (heartbeat,
   shake, pop, slow sway, jump, cool nod): looping in the picker (chat and group chat), twice then
-  still under a message, still with reduced motion. No otter art is left in the app. Docs still say Rafti.
+  still under a message, still with reduced motion. No otter art is left in the app. Docs now say Sigmazam too (dated audits and the old-status
+  notes below keep Rafti as history; repo, `rafti-research`, slug and storage keys keep `rafti`).
 - Owner wants the app palette moved off the dark apricot `#E8742A` ("looks like Claude") toward the
   logo's bright apricot `#F58B49`; white text needs a deeper button shade (about `#F27B3D`). Do it
   as its own task with a prototype.

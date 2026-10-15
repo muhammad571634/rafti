@@ -39,7 +39,7 @@ character ([aicompanionguides](https://aicompanionguides.com/blog/ai-companions-
   that explains the value, tied to a moment ([AppMaster](https://appmaster.io/blog/push-notification-permission-ux)).
 - 18+ app: the lock screen must never show anything explicit. Offer "Hide message text".
 
-## 2. What Rafti sends (aggressive, but every push is a real line from a character)
+## 2. What Sigmazam sends (aggressive, but every push is a real line from a character)
 
 Every notification looks like a message: **title = character name, body = what they
 say**, their portrait as the icon (Android large icon, iOS attachment). Tapping opens that

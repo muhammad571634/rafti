@@ -2,7 +2,7 @@
 
 Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
 
-# Rafti — any agent (Claude, Gemini/Antigravity, Codex) starts here
+# Sigmazam — any agent (Claude, Gemini/Antigravity, Codex) starts here
 
 1. Read `HANDOFF.md` in this repo — its top block says exactly what to do next.
    Flow order and status: `docs/flows.md`.
@@ -23,7 +23,7 @@ Rules:
 - Never redesign or rewrite a screen the user already approved (see `HANDOFF.md`, e.g. the
   Heartbeat diary in `src/app/diary/`) unless the user asks for that exact change.
   On a merge conflict in such a file, keep the approved version and ask.
-- Keep the current Rafti design system (`src/theme`, `src/components/ui`).
+- Keep the current Sigmazam design system (`src/theme`, `src/components/ui`).
   Explore uses variant B (Phosphor duotone icons).
 - Every new or changed screen follows `docs/design-style.md` ("calm cards", chosen by the user on
   2026-10-09; the F17 plan screens are the reference). `docs/design-audit.md` lists older screens

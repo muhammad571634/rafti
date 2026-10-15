@@ -1,6 +1,6 @@
-# Rafti
+# Sigmazam
 
-AI companion app hosted by Rafti the sea otter — chat, voice calls, a shared diary and a relationship that levels up.
+AI companion app hosted by the Sigmazam mascot — chat, voice calls, a shared diary and a relationship that levels up.
 Cross-platform (iOS + Android + web preview) with **Expo SDK 57 / React Native 0.86 / expo-router**.
 
 The UI, the product logic and the economy are real and persisted on the device; the
@@ -22,7 +22,7 @@ npm test            # node:test unit tests (plans, memory limit, early access, .
 
 ## How the app behaves
 
-The structure starts from the reference app (BIMOBIMO); the rules are Rafti's own and live in
+The structure starts from the reference app (BIMOBIMO); the rules are Sigmazam's own and live in
 `src/store/use-app-store.ts` and `src/economy/` (plans, memory limit, early access). The full
 economy is in `docs/backend-plan.md` §13–§15 and `docs/business-plan.md` §4–§5.
 
@@ -92,7 +92,7 @@ src/
   i18n/           i18next + locales/en.json
 assets/
   avatars/        seed portraits + registry
-  brand/          Rafti art (tiles, scenes, sticker) + registry
+  brand/          Sigmazam logo, mark and mascot art + registry
   icons/          3D icons + registry
   lottie/         animations + registry (see its README)
 ```
@@ -101,8 +101,8 @@ assets/
 
 | What | Source | Licence |
 | --- | --- | --- |
-| 3D icons (`assets/icons`) | Microsoft Fluent Emoji (except `shell.png`, cut from Rafti art) | MIT |
-| Rafti art: Home tiles, banner, scenes, sticker, app icon (`assets/brand`) | Generated in Gemini from the Rafti reference, processed by `scripts/build-brand-art.py` | Project |
+| 3D icons (`assets/icons`) | Microsoft Fluent Emoji (except `shell.png`, cut from the old brand art) | MIT |
+| Sigmazam logo, icon, splash and mascot art (`assets/brand`) | The owner's logo (`docs/branding/download.png`); mascot moments generated on Higgsfield from it, processed by `scripts/build-sigmazam-brand.py` | Project |
 | Seed cast and portraits (`src/mock/characters.ts`, `assets/avatars`) | Original characters; 2D portraits generated in Gemini (monograms until then) | Project |
 | Lottie animations (`assets/lottie`) | LottieFiles free animations, `xvrh/lottie-flutter`, `react-useanimations` | Lottie Simple License / MIT — see `assets/lottie/README.md` |
 | Display font | Fredoka via `@expo-google-fonts/fredoka` | SIL OFL 1.1 |
@@ -129,8 +129,9 @@ cannot mint currency or open Pro features.
 
 ## Before release
 
-- **Name.** The app is Rafti (renamed from the reference's "BIMOBIMO", another company's
-  trademark). Run a trademark search (WIPO / USPTO / EUIPO) before publishing.
+- **Name.** The app is Sigmazam (2026-10-15; before that Rafti, and the reference's "BIMOBIMO"
+  is another company's trademark). The name comes from the Turkish word *siğmazam*. Run a
+  trademark search (WIPO / USPTO / EUIPO) before publishing; check the closeness to "Shazam".
 - **Characters.** The seed cast is original: four worlds (Seaside Academy, Moonlit Realm,
   NEON TIDE, Tidepool Café). Never seed real people or franchise characters, and never clone
   a real actor's or idol's voice. User-created characters still need reporting and takedown.

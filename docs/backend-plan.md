@@ -1,4 +1,4 @@
-# Rafti backend rejasi (taklif, 2026-10-06)
+# Sigmazam backend rejasi (taklif, 2026-10-06)
 
 Holat: **taklif — foydalanuvchi tasdig'ini kutmoqda.** Kod hali yozilmagan.
 Oxiridagi "Qaror kerak" bo'limidagi savollarga javobdan keyin B0 boshlanadi.
@@ -28,7 +28,7 @@ Biznes model, bozor va yo'l xaritasi — `docs/business-plan.md`.
  Expo ilova (iOS / Android)
    │  HTTPS (JSON)            ▲ Realtime (yangi xabar, "yozyapti")   ▲ Push (ilova yopiq bo'lsa)
    ▼                          │                                      │
- rafti-api  (Node + Hono, TS) ─────────── Supabase ─────────────── Expo Push Service
+ sigmazam-api  (Node + Hono, TS) ─────────── Supabase ─────────────── Expo Push Service
    │   ├─ chat, iqtisod, profil endpointlari   ├─ Postgres + pgvector
    │   ├─ RevenueCat / AdMob webhooklari       ├─ Auth (anonim → Apple / Google)
    │   └─ worker: navbatdagi ishlar (pg-boss)  ├─ Storage (ovoz, rasm, avatar)
@@ -49,7 +49,7 @@ Shunda hozirgi `setTimeout` mantiqlari (`scheduleReply`, `answerDiary`, `sealNot
 
 | Qism | Tavsiya | Nega |
 | --- | --- | --- |
-| Server | Node 22 + **Hono**, bitta servis `rafti-api` + bitta worker jarayoni | Yengil, TS-first, Fly.io / Railway'ga bir buyruq bilan chiqadi |
+| Server | Node 22 + **Hono**, bitta servis `sigmazam-api` + bitta worker jarayoni | Yengil, TS-first, Fly.io / Railway'ga bir buyruq bilan chiqadi |
 | Hosting | **Fly.io** (yoki Railway) | Doimiy ishlaydigan jarayon kerak (worker, uzun LLM chaqiruvlari) — serverless emas |
 | Ma'lumotlar bazasi | **Supabase Postgres** + `pgvector` | Auth, Storage va Realtime bitta joyda; bepul tarif bilan boshlanadi; Postgres istalgan joyga ko'chadi |
 | Auth | Supabase Auth: **anonim kirish** → keyin Apple / Google bilan bog'lash | Foydalanuvchi ro'yxatdan o'tmasdan boshlaydi; App Store boshqa ijtimoiy kirish bo'lsa Apple kirishini talab qiladi |
@@ -132,7 +132,7 @@ Har pul sarflaydigan so'rov `idempotency_key` oladi: tarmoq uzilib qayta yuboril
 Ilova tomonda zustand store **kesh** bo'lib qoladi. Xabarlar `expo-sqlite`ga ko'chadi (hozir hammasi
 bitta AsyncStorage kalitida, Android'da ~2MB chegarasi bor).
 
-## 7. Xotira tizimi (Rafti'ning asosiy ustunligi)
+## 7. Xotira tizimi (Sigmazam'ning asosiy ustunligi)
 
 BIMOBIMO sharhlaridagi 1-shikoyat — "unutadi". Uch qatlam:
 
@@ -713,7 +713,7 @@ nomlarini hech qachon ko'rmaydi.
  Do'kon (App Store / Google Play)       Ilova (Expo)
         │ xarid / yangilanish               │  ▲ GET /v1/me/plan (reja, qoldiq, yangilanish sanasi)
         ▼                                    │  │ 402/429 + "taklif" (paywall lahzasi)
-   RevenueCat ──webhook──► rafti-api ◄───────┘  │
+   RevenueCat ──webhook──► sigmazam-api ◄───────┘  │
                               │ subscriptions, quota_periods, minute_packs, shell_ledger
                               ├─► chat:        xabar oldidan chig'anoq / fair-use tekshiruvi
                               ├─► ovozli javob: TTS oldidan daqiqa tekshiruvi (tugasa, matn bilan javob)

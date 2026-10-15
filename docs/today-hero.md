@@ -2,7 +2,7 @@
 
 The big card at the top of Today (`src/components/today-hero.tsx`). BIMOBIMO shows the
 character you were last talking with there, so opening the app feels like coming back to
-that person. Rafti does the same.
+that person. Sigmazam does the same.
 
 ## Who is on the card
 

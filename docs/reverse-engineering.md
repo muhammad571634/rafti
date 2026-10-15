@@ -2,7 +2,7 @@
 
 For every agent (Claude, Gemini/Antigravity, Codex). Goal: learn structure and logic only
 (screens, flows, routes, permissions, packages). Never copy BIMOBIMO code, images, sounds or
-text into Rafti (rule in `AGENTS.md`).
+text into Sigmazam (rule in `AGENTS.md`).
 
 ## Tools on this machine (set up 2026-10-14)
 
