@@ -1,4 +1,4 @@
-import { Image, type ImageContentPosition } from 'expo-image';
+import { type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChatCircleDotsIcon } from 'phosphor-react-native/src/icons/ChatCircleDots';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
+import { LiveScene } from '@/components/live-scene';
 import { characterImage, PressableScale, Txt } from '@/components/ui';
 import { daysBetween } from '@/lib/format';
 import { lastTalkedAt } from '@/lib/talk';
@@ -84,10 +85,10 @@ export function TodayHero({
       scaleTo={0.985}
       accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level].join(', ')}
       onPress={onPress}>
-      <Image
-        source={typeof image === 'string' ? { uri: image } : image}
-        style={StyleSheet.absoluteFill}
-        contentFit="cover"
+      {/* Their scene, alive when they have a live clip (assets/live). */}
+      <LiveScene
+        characterId={character.id}
+        still={image}
         contentPosition={scene ? SCENE_FOCUS : PORTRAIT_FOCUS}
       />
       <LinearGradient
