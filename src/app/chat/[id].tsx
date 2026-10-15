@@ -16,6 +16,7 @@ import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
@@ -416,7 +417,7 @@ export default function ChatRoomScreen() {
                       reactToMessage(conversation.id, menu.id, on ? undefined : name);
                       setMenu(null);
                     }}>
-                    <Image source={REACTION_STICKERS[name]} style={styles.reactionSticker} contentFit="contain" />
+                    <ReactionSticker name={name} style={styles.reactionSticker} />
                   </PressableScale>
                 );
               })}

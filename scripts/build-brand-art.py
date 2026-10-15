@@ -716,7 +716,7 @@ def main():
     print('currency shell done')
 
     edge = build_app_icons(newest('app_icon'))
-    build_reactions()
+    # Reaction stickers are the Sigmazam mascot now: scripts/build-sigmazam-brand.py.
     print(f'app icon done, android background {edge}')
     print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')
 

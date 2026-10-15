@@ -31,7 +31,11 @@ swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam".
   empty state's seashell glow and ripples went with the shell (float, shadow and tap squash stay);
   The empty-state art was redrawn without the box (owner): peeking through a magnifying glass.
   `build-brand-art.py` no longer writes the mascot pieces, splash or icons.
-- Still the otter: the 6 chat reaction stickers (`REACTION_STICKERS`). Docs still say Rafti.
+- Chat reactions redrawn (6 x $0.08, `docs/branding/art/reaction-*.png`): love hugs a heart, laugh
+  rolls back in tears, wow with paws on cheeks, sad under a rain cloud, hyped in a party hat, thumbs
+  in sunglasses. `src/components/chat/reaction-sticker.tsx` moves each to its feeling (heartbeat,
+  shake, pop, slow sway, jump, cool nod): looping in the picker (chat and group chat), twice then
+  still under a message, still with reduced motion. No otter art is left in the app. Docs still say Rafti.
 - Owner wants the app palette moved off the dark apricot `#E8742A` ("looks like Claude") toward the
   logo's bright apricot `#F58B49`; white text needs a deeper button shade (about `#F27B3D`). Do it
   as its own task with a prototype.

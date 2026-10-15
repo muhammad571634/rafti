@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -10,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REPORT_REASONS } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { DayChip } from '@/components/chat/day-chip';
@@ -417,7 +417,7 @@ export default function GroupChatScreen() {
                       reactToMessage(groupId, menu.id, on ? undefined : reaction);
                       setMenu(null);
                     }}>
-                    <Image source={REACTION_STICKERS[reaction]} style={styles.reactionSticker} contentFit="contain" />
+                    <ReactionSticker name={reaction} style={styles.reactionSticker} />
                   </PressableScale>
                 );
               })}

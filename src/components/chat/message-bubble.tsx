@@ -8,6 +8,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
@@ -80,10 +81,10 @@ export const MessageBubble = memo(function MessageBubble({
           <TextBubble message={message} mine={mine} first={showAvatar} />
         )}
         {message.reaction && message.reaction in REACTION_STICKERS ? (
-          <Image
-            source={REACTION_STICKERS[message.reaction as ReactionName]}
+          <ReactionSticker
+            name={message.reaction as ReactionName}
+            play="once"
             style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
-            contentFit="contain"
           />
         ) : null}
       </PressableScale>

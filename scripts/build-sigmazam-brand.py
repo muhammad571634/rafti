@@ -35,15 +35,20 @@ IMAGES = ROOT / 'assets/images'
 CREAM = (253, 246, 238)
 
 
-def cut(path, barrier_t=18, lo=22, hi=70, drop_shadow_below=None):
-    """Return (RGBA image, background colour) with the background removed."""
+def cut(path, barrier_t=18, lo=22, hi=70, drop_shadow_below=None, strip_white=False):
+    """Return (RGBA image, background colour) with the background removed.
+
+    `strip_white` also removes a white die-cut sticker outline: near-white pixels are let
+    through the flood fill and dropped, so the outline goes with the background.
+    """
     a = np.asarray(Image.open(path).convert('RGB')).astype(np.float32)
     h, w, _ = a.shape
     border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
     bg = np.median(border, axis=0)
     diff = np.abs(a - bg).max(axis=2)
 
-    mask = Image.fromarray(((diff > barrier_t) * 255).astype(np.uint8), 'L').copy()
+    white = a.min(axis=2) > 243 if strip_white else np.zeros(diff.shape, bool)
+    mask = Image.fromarray((((diff > barrier_t) & ~white) * 255).astype(np.uint8), 'L').copy()
     for x in range(0, w, 8):
         for y in (0, h - 1):
             if mask.getpixel((x, y)) == 0:
@@ -58,6 +63,7 @@ def cut(path, barrier_t=18, lo=22, hi=70, drop_shadow_below=None):
     soft = np.clip((diff - lo) / (hi - lo), 0, 1)
     alpha = np.ones((h, w), np.float32)
     alpha[reached] = soft[reached]
+    alpha[reached & white] = 0
     near = np.zeros_like(reached)
     near[1:, :] |= reached[:-1, :]
     near[:-1, :] |= reached[1:, :]
@@ -135,6 +141,16 @@ def main():
 # Cutouts were drawn on flat blue-grey so the cream body keys cleanly; scenes keep their backdrop.
 ART = ROOT / 'docs/branding/art'
 CUTOUTS = {'sticker': 640, 'empty': 720, 'peek': 720}
+# Chat reactions, 240px like before. Sad sat on a soft floor shadow (a higher alpha floor drops
+# it); hyped and wow came with a white sticker outline the others do not have.
+REACTIONS = {
+    'love': {},
+    'laugh': {},
+    'wow': {'strip_white': True},
+    'sad': {'barrier_t': 40, 'lo': 34, 'hi': 70},
+    'hyped': {'strip_white': True},
+    'thumbs': {},
+}
 SCENES = {'reward': 720, 'levelup': 800, 'bedtime': 720, 'diary': 900}
 
 
@@ -144,6 +160,11 @@ def build_mascot_art():
         out = fit(img, longest)
         out.save(BRAND / f'sigmazam-{name}.png', optimize=True)
         print(name, out.size)
+    for name, opts in REACTIONS.items():
+        img, _ = cut(ART / f'reaction-{name}.png', **{'barrier_t': 14, 'lo': 14, 'hi': 45, **opts})
+        out = fit(img, 240)
+        out.save(BRAND / f'reaction-{name}.png', optimize=True)
+        print('reaction', name, out.size)
     for name, longest in SCENES.items():
         img = fit(Image.open(ART / f'{name}.png').convert('RGB'), longest)
         img.save(BRAND / f'sigmazam-{name}.jpg', quality=88, optimize=True, progressive=True)
