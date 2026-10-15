@@ -289,6 +289,41 @@ export interface BoothPhoto {
   seed: number;
   /** When it was sent to the friend's chat; a photo is sent once. */
   sentAt?: string;
+  /** The frame it was taken in (F29), kept with the picture so it never changes. */
+  frame?: PhotoFrame;
+}
+
+/** How a Photo Booth frame dresses a picture's card: a world's frame or one the user made. */
+export interface PhotoFrame {
+  bg: string;
+  pattern: 'none' | 'dots' | 'stripes' | 'check' | 'stars' | 'waves';
+  patternColor: string;
+  /** Caption and label color on this card. */
+  ink: string;
+  /** Up to two clay icon names, at the top-left and bottom-right corners. */
+  stickers: string[];
+  caption?: string;
+  /** A neon double outline. */
+  outline?: [string, string];
+}
+
+/** A frame the user made (F29): a color, a pattern, up to two stickers and a caption. */
+export interface UserFrame {
+  id: string;
+  name: string;
+  color: string;
+  pattern: 'none' | 'dots' | 'stripes' | 'check';
+  stickers: string[];
+  caption: string;
+  createdAt: string;
+}
+
+/** A quiz the user wrote (F29); any friend can play it and answers in their own way. */
+export interface UserQuiz {
+  id: string;
+  title: string;
+  questions: { text: string; options: string[] }[];
+  createdAt: string;
 }
 
 /**

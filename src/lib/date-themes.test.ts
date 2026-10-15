@@ -88,6 +88,12 @@ describe('buildThemeRounds', () => {
     assert.ok(text.includes('at Lake picnic'));
   });
 
+  it("starts the middle with a round from the friend's world", () => {
+    const rounds = buildThemeRounds(THEME, POOLS, 'seed', [round('w1'), round('w2')]);
+    assert.ok(['w1', 'w2'].includes(rounds[1].line));
+    assert.equal(rounds.length, 5);
+  });
+
   it('comes out the same for the same seed', () => {
     assert.deepEqual(buildThemeRounds(THEME, POOLS, 'a'), buildThemeRounds(THEME, POOLS, 'a'));
   });

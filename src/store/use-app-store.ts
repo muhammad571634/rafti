@@ -40,6 +40,7 @@ import {
   withoutMember,
 } from '@/lib/group-chat';
 import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
+import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
@@ -117,11 +118,11 @@ import {
   wallet as seedWallet,
 } from '@/mock';
 import { themePools } from '@/mock/date-themes';
+import { worldByKey, worldOf, type WorldKey } from '@/mock/worlds';
 import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
   DARES_FOR_YOU,
-  quizPackById,
   quizReply,
   TRUTHS_FOR_THEM,
   TRUTHS_FOR_YOU,
@@ -142,6 +143,9 @@ import type {
   DailyState,
   CharacterDiaryPage,
   DateTheme,
+  PhotoFrame,
+  UserFrame,
+  UserQuiz,
   GroupChat,
   RadioClip,
   DiaryEntry,
@@ -211,6 +215,8 @@ export interface DailyRewardEvent {
 /** `dailyCap` is no longer returned: the credit model has no daily cap (backend-plan §15.10). */
 export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
+/** Saving a quiz the user wrote: its id, or why it was not saved. */
+export type QuizResult = { status: 'saved'; id: string } | { status: QuizProblem };
 /** Saving a date the user wrote: its id, or why it was not saved. */
 export type ThemeResult = { status: 'saved'; id: string } | { status: ThemeProblem };
 /** Making a Radio clip: its id, or why it was not made. */
@@ -267,6 +273,12 @@ interface AppState {
   activeDate: { characterId: string; placeId: string; theme?: { title: string; rounds: DateRound[] } } | null;
   /** Dates the user wrote (F28); played from the map's "Your own" card. */
   dateThemes: DateTheme[];
+  /** Quizzes the user wrote (F29). */
+  userQuizzes: UserQuiz[];
+  /** Worlds whose Photo Booth frame the user won in the world quiz (F29). */
+  wonFrames: WorldKey[];
+  /** Photo Booth frames the user made (F29). */
+  frames: UserFrame[];
 
   /* chat */
   sendText: (conversationId: string, text: string) => SendResult;
@@ -428,7 +440,7 @@ interface AppState {
    * Pro only: 'locked' without Pro or the trial, 'usedUp' when this period's pictures are gone.
    * Otherwise the new picture, kept in the album, with closeness and a moment on Us.
    */
-  takePhoto: (characterId: string, style: BoothStyle) => BoothPhoto | 'locked' | 'usedUp';
+  takePhoto: (characterId: string, style: BoothStyle, frame?: PhotoFrame) => BoothPhoto | 'locked' | 'usedUp';
   /** Sends a kept picture to the friend's chat once; they answer it (free). False if already sent. */
   sendPhoto: (photoId: string) => boolean;
 
@@ -444,7 +456,14 @@ interface AppState {
   /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
   runTimers: () => void;
   /** Ends a couple quiz: the score lands in chat as a card, they react, closeness grows. */
-  finishQuiz: (characterId: string, packId: string, matches: number, title: string) => void;
+  finishQuiz: (characterId: string, quizId: string, matches: number, total: number, title: string) => void;
+  saveQuiz: (draft: QuizDraft, id?: string) => QuizResult;
+  deleteQuiz: (id: string) => void;
+  /** Ends a world quiz hosted by a friend from it; 4 of 5 wins its frame. True when won. */
+  finishWorldQuiz: (world: WorldKey, hostId: string, score: number, total: number) => boolean;
+  /** Saves a frame the user made (new, or the one with `id`); returns its id. */
+  saveFrame: (input: Omit<UserFrame, 'id' | 'createdAt'>, id?: string) => string;
+  deleteFrame: (id: string) => void;
   /**
    * One truth-or-dare turn. On them: the user's question goes to chat and they answer.
    * On the user: they ask a truth or a dare in chat. Returns the question asked.
@@ -471,6 +490,9 @@ type PersistedKeys =
   | 'groups'
   | 'radioClips'
   | 'dateThemes'
+  | 'userQuizzes'
+  | 'wonFrames'
+  | 'frames'
   | 'messages'
   | 'relationships'
   | 'memories'
@@ -658,6 +680,9 @@ export const useAppStore = create<AppState>()(
       shareReward: null,
       activeDate: null,
       dateThemes: [],
+      userQuizzes: [],
+      wonFrames: [],
+      frames: [],
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
@@ -1792,7 +1817,10 @@ export const useAppStore = create<AppState>()(
         if (!moodOpen(theme.mood, bond.level)) return 'locked';
         if (!get().spendShells(themeCost(theme.rounds), 'date', characterId)) return 'noShells';
         // The mock builds the rounds from canned pools; the server's model writes them from the scene.
-        const rounds = buildThemeRounds(theme, themePools, `${theme.id}:${Date.now()}`);
+        // The friend's world colours the date (src/mock/worlds.ts); the server writes it from the persona.
+        const character = get().characters.find((c) => c.id === characterId);
+        const world = character ? worldOf(character) : undefined;
+        const rounds = buildThemeRounds(theme, themePools, `${theme.id}:${Date.now()}`, world?.dateRounds);
         set({ activeDate: { characterId, placeId: theme.id, theme: { title: theme.title, rounds } } });
         return 'ok';
       },
@@ -1825,7 +1853,7 @@ export const useAppStore = create<AppState>()(
         return record;
       },
 
-      takePhoto: (characterId, style) => {
+      takePhoto: (characterId, style, frame) => {
         // Pictures come only from Pro's (or the trial's) allowance; shells never buy one
         // (backend-plan §15.10).
         const now = Date.now();
@@ -1838,6 +1866,7 @@ export const useAppStore = create<AppState>()(
           style,
           createdAt: new Date(now).toISOString(),
           seed: Math.floor(Math.random() * 1000),
+          ...(frame ? { frame } : {}),
         };
         set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan }, photos: [photo, ...s.photos] }));
         get().addIntimacy(characterId, INTIMACY.photo);
@@ -1970,10 +1999,9 @@ export const useAppStore = create<AppState>()(
         }
       },
 
-      finishQuiz: (characterId, packId, matches, title) => {
-        const pack = quizPackById(packId);
-        if (!pack) return;
-        const total = pack.questions.length;
+      // The quiz id (a pack, a friend's weekly quiz or the user's own) is for the server; the score is what stays.
+      finishQuiz: (characterId, _quizId, matches, total, title) => {
+        if (total < 1) return;
         const conversationId = get().addFriend(characterId);
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -1989,6 +2017,59 @@ export const useAppStore = create<AppState>()(
           gain: INTIMACY.quizMatch * matches + INTIMACY.quizMatch,
         });
       },
+
+      saveQuiz: (draft, id) => {
+        const problem = checkQuiz(draft);
+        if (problem) return { status: problem };
+        const clean = cleanQuiz(draft);
+        const existing = id ? get().userQuizzes.find((q) => q.id === id) : undefined;
+        if (existing) {
+          set((s) => ({ userQuizzes: s.userQuizzes.map((q) => (q.id === id ? { ...q, ...clean } : q)) }));
+          return { status: 'saved', id: existing.id };
+        }
+        const quiz: UserQuiz = { id: uid('uq'), createdAt: new Date().toISOString(), ...clean };
+        set((s) => ({ userQuizzes: [quiz, ...s.userQuizzes] }));
+        return { status: 'saved', id: quiz.id };
+      },
+
+      deleteQuiz: (id) => set((s) => ({ userQuizzes: s.userQuizzes.filter((q) => q.id !== id) })),
+
+      finishWorldQuiz: (world, hostId, score, total) => {
+        const info = worldByKey(world);
+        if (!info) return false;
+        const won = wonWorldQuiz(score);
+        const already = get().wonFrames.includes(world);
+        if (won && !already) set((s) => ({ wonFrames: [...s.wonFrames, world] }));
+        // The host texts about it, in their world's voice (the server writes it from the persona).
+        const conversationId = get().conversations.find((c) => c.characterId === hostId)?.id;
+        if (conversationId) {
+          const text = won
+            ? `${score}/${total}. You know ${info.series} better than half the people who live here. The frame is yours.`
+            : `${score}/${total}. Not bad for a visitor. Come back and try again, I will be here.`;
+          appendMessage(set, get, conversationId, themText(conversationId, text), { countUnread: true });
+        }
+        if (won) get().addIntimacy(hostId, INTIMACY.quizMatch * 2);
+        return won && !already;
+      },
+
+      saveFrame: (input, id) => {
+        const fields = {
+          name: input.name.trim().slice(0, 24) || 'My frame',
+          color: input.color,
+          pattern: input.pattern,
+          stickers: input.stickers.slice(0, 2),
+          caption: input.caption.trim().slice(0, 24),
+        };
+        if (id && get().frames.some((f) => f.id === id)) {
+          set((s) => ({ frames: s.frames.map((f) => (f.id === id ? { ...f, ...fields } : f)) }));
+          return id;
+        }
+        const frame: UserFrame = { id: uid('fr'), createdAt: new Date().toISOString(), ...fields };
+        set((s) => ({ frames: [frame, ...s.frames] }));
+        return frame.id;
+      },
+
+      deleteFrame: (id) => set((s) => ({ frames: s.frames.filter((f) => f.id !== id) })),
 
       playTruthOrDare: (characterId, target, kind) => {
         const conversationId = get().addFriend(characterId);
@@ -2207,6 +2288,9 @@ export const useAppStore = create<AppState>()(
         groups: s.groups,
         radioClips: s.radioClips,
         dateThemes: s.dateThemes,
+        userQuizzes: s.userQuizzes,
+        wonFrames: s.wonFrames,
+        frames: s.frames,
         // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
         messages: capMessages(s.messages),
         relationships: s.relationships,

@@ -91,6 +91,8 @@ export function buildThemeRounds(
   theme: { scene: string; title: string; rounds: number; mood: DateMood },
   pools: ThemePools,
   seed: string,
+  /** Rounds from the friend's world (src/mock/worlds.ts); one comes first, so the date feels like theirs. */
+  worldRounds: DateRound[] = [],
 ): DateRound[] {
   const place = cleanTitle(theme.title);
   const openers = pools.openers[theme.mood];
@@ -98,8 +100,11 @@ export function buildThemeRounds(
     line: cleanScene(theme.scene),
     choices: openers[hashSeed(`${seed}:open`) % openers.length],
   };
+  const world = shuffled(worldRounds, `${seed}:world`);
   const middle = [
+    ...world.slice(0, 1),
     ...shuffled(pools.moodRounds[theme.mood], `${seed}:mood`),
+    ...world.slice(1),
     ...shuffled(pools.shared, `${seed}:shared`),
   ];
   const closers = pools.closers[theme.mood];

@@ -444,6 +444,32 @@ Ilovada mock bilan ishlaydi; server shunday qiladi:
   title, scene, art, rounds, mood, character_id null, created_at`.
 - **Bloklash:** faqat bloklangan do'st uchun yozilgan date'lar o'chadi. "Har qanday do'st" date'lari qoladi.
 
+### 12.16 Personaj hamma joyda o'zi; quiz va ramkalar (2026-10-15, F29)
+
+Egasi: "har personajning o'z yo'li, dunyosi, mimikasi bor; orqada LLM sahna, raund, savollarni tuzadi va nazorat qiladi".
+
+- **Bitta persona promptdan hammasi:** chat, guruh, quiz, dunyo quizi va date raundlari bir xil
+  `buildCharacterPrompt`dan boshlanadi (qoidalar, dunyo, bio, uslub, foydalanuvchi, level). Yangi quruvchilar:
+  `src/ai/content-prompts.ts` (testlangan): `buildSelfQuizPrompt`, `buildQuizAnswerPrompt`,
+  `buildWorldQuizPrompt`, `buildDateRoundsPrompt`. Hammasi faqat JSON qaytaradi; server JSONni tekshiradi
+  (savollar soni, javob indeksi, 0-3 yurak) va moderatsiyadan o'tkazadi, keyin ko'rsatadi.
+- **Mock:** to'rt dunyo (`src/mock/worlds.ts`): Seaside Academy, Moonlit Realm, NEON TIDE, Tidepool Café.
+  Har birida o'z gaplari (moslik, farq, to'g'ri, xato), o'zi haqida savollar, dunyo quizi, date raundlari
+  va ramka bor. Dunyosi yo'q personaj (foydalanuvchi yaratgani) umumiy gaplardan foydalanadi.
+- **Do'stning haftalik quizi:** "Theo'ni qanchalik bilasiz?", 5 savol, har hafta yangisi (`weekKey`). Server
+  haftasiga bir marta yozadi va keshlaydi: `self_quizzes(character_id, user_id, week, json)`.
+- **Couple quiz:** do'st javob tanlaydi va bir qator izoh yozadi (`buildQuizAnswerPrompt`). Narxi yo'q,
+  hozirgi kabi bepul.
+- **Siz yozgan quizlar:** 5 tagacha savol, har birida 2-4 javob (`checkQuiz`), faqat sizga ko'rinadi.
+  Jadval `user_quizzes`.
+- **Dunyo quizi (o'yin):** shu dunyodan do'stingiz 5 ta savol beradi, faqat dunyo odamlarining biolaridagi
+  faktlardan, shuning uchun to'g'ri javobni tekshirsa bo'ladi. 4/5 to'g'ri bo'lsa dunyo ramkasi ochiladi
+  (`won_frames`), mezbon chatga xabar yozadi va yaqinlik biroz oshadi. Yutqazsangiz darhol boshqa savollar
+  bilan qayta o'ynaysiz, bepul.
+- **Ramkalar:** dunyo ramkalari va siz yasagan ramkalar (rang, naqsh, 2 tagacha stiker, yozuv; rasm yuklash
+  yo'q, shuning uchun moderatsiya kerak emas). Rasm o'z ramkasini o'zida saqlaydi (`BoothPhoto.frame`).
+  Jadval `user_frames`. Ramkalar bepul; rasmning o'zi Pro rejasidan.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

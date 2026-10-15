@@ -22,8 +22,16 @@ and ask which one to start (each with a prototype first, as usual):
    screen plays `activeDate.theme`; `src/lib/date-themes.ts` (+ tests), `src/mock/date-themes.ts`
    (round pools, `THEME_ARTS`), store `dateThemes` + `saveDateTheme` / `deleteDateTheme` /
    `beginThemeDate`. Also fixed: "You need 1 shell" in the out-of-shells sheet. Checked on web.
-3. [ ] Quizzes and frames (more couple-quiz packs, `src/mock/games.ts`, user-made quizzes; photo
-   frames for Photo Booth / polaroids, like BIMOBIMO's frame templates but our own art).
+3. [x] Quizzes and frames. Done 2026-10-15 (F29, prototype https://claude.ai/artifact/DXZmjXUYG61wzJV3SBaaXx;
+   owner: free, private, and "a world's frame is won in a game"). Owner rule for all content from now on:
+   every character keeps their own world, voice and habits, and the LLM writes scenes, rounds and questions
+   from one persona prompt (`src/ai/content-prompts.ts`). Mock per world in `src/mock/worlds.ts`. Quiz:
+   `src/app/quiz/[characterId].tsx` (weekly self quiz, world quiz row, 5 packs, your quizzes),
+   `src/app/quiz/write.tsx`, `src/app/quiz/world/[world].tsx` (4 of 5 wins the frame). Frames:
+   `src/components/photo-booth/frame-card.tsx`, `BoothPicture` reads `photo.frame`, frame row and locked
+   sheet in `src/app/photo-booth.tsx`, `src/app/frame/edit.tsx`. Store `userQuizzes`, `wonFrames`, `frames`
+   + `saveQuiz`/`deleteQuiz`/`finishWorldQuiz`/`saveFrame`/`deleteFrame`; `finishQuiz` now takes the total.
+   Date rounds start with a round from the friend's world. Checked on web.
 Also on hold: the Backend (real AI), `docs/backend-plan.md`.
 Also saved for later (owner liked both, 2026-10-15):
 4. [ ] Daily check-in (owner 2026-10-15: not now; do it later together with the rest of this list): Rafti peeks over the top edge of the check-in sheet (slides up from behind

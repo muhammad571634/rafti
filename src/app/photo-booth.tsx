@@ -1,22 +1,36 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { FrameSwatch } from '@/components/photo-booth/frame-card';
 import { SendPill } from '@/components/photo-booth/send-pill';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
-import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { photoQuota } from '@/economy/plans';
+import { frameLook } from '@/lib/frames';
 import { shortName } from '@/lib/format';
+import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
-import type { BoothStyle } from '@/types';
+import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
+const SWATCH = 56;
+
+/** One choice in the frame row: plain, a world's frame (won in its quiz) or one the user made. */
+interface FrameChoice {
+  id: string;
+  label: string;
+  look?: PhotoFrame;
+  world?: World;
+  locked?: boolean;
+  mine?: boolean;
+}
 
 /**
  * A photo together with one friend: pick who and a style, then shoot. Pictures are Pro only
@@ -38,13 +52,21 @@ export default function PhotoBoothScreen() {
   const subscription = useAppStore((s) => s.wallet.subscription);
   const photos = useAppStore((s) => s.photos);
   const takePhoto = useAppStore((s) => s.takePhoto);
+  const wonFrames = useAppStore((s) => s.wonFrames);
+  const userFrames = useAppStore((s) => s.frames);
+  // A world quiz sends the user here with the frame it just won and its host.
+  const params = useLocalSearchParams<{ frame?: string; partner?: string }>();
 
   const known = useMemo(
     () => characters.filter((c) => relationships[c.id] && conversations.some((v) => v.characterId === c.id)),
     [characters, relationships, conversations],
   );
 
-  const [partnerId, setPartnerId] = useState(known[0]?.id);
+  const [partnerId, setPartnerId] = useState(
+    known.some((c) => c.id === params.partner) ? params.partner : known[0]?.id,
+  );
+  const [frameId, setFrameId] = useState(params.frame ?? 'none');
+  const [lockedWorld, setLockedWorld] = useState<World | null>(null);
   const [style, setStyle] = useState<BoothStyle>('polaroid');
   // The picture just taken: the preview shows it (with Send) until the friend or style changes.
   const [freshId, setFreshId] = useState<string>();
@@ -52,6 +74,38 @@ export default function PhotoBoothScreen() {
   const [locked, setLocked] = useState(false);
 
   const partner = known.find((c) => c.id === partnerId);
+  const frames: FrameChoice[] = [
+    { id: 'none', label: t('frames.plain') },
+    ...WORLDS.map((w) => ({
+      id: `w:${w.key}`,
+      label: w.series,
+      look: w.frame,
+      world: w,
+      locked: !wonFrames.includes(w.key),
+    })),
+    ...userFrames.map((f) => ({ id: f.id, label: f.name, look: frameLook(f), mine: true })),
+  ];
+  const chosen = frames.find((f) => f.id === frameId && !f.locked) ?? frames[0];
+  // Street is a bare photo; frames dress the card styles.
+  const look = style === 'street' ? undefined : chosen.look;
+  const frameHint =
+    style === 'street'
+      ? t('frames.fit')
+      : chosen.mine
+        ? t('frames.mineHint')
+        : chosen.world
+          ? t('frames.worldHint', { world: chosen.world.series })
+          : t('frames.plainHint');
+  // Who would host a locked world's quiz: the partner if they live there, else any friend from it.
+  const hostFor = (w: World) =>
+    (partner?.series === w.series ? partner : undefined) ?? known.find((c) => c.series === w.series);
+
+  const pickFrame = (f: FrameChoice) => {
+    if (f.locked && f.world) return setLockedWorld(f.world);
+    if (f.mine && f.id === chosen.id) return router.push({ pathname: '/frame/edit', params: { id: f.id } });
+    setFrameId(f.id);
+    setFreshId(undefined);
+  };
   const fresh = photos.find((p) => p.id === freshId);
   // Null without Pro or the trial.
   const quota = photoQuota(subscription, Date.now());
@@ -72,7 +126,7 @@ export default function PhotoBoothScreen() {
 
   const shoot = () => {
     if (!partner) return;
-    const result = takePhoto(partner.id, style);
+    const result = takePhoto(partner.id, style, look);
     if (result === 'locked') return setLocked(true);
     if (result === 'usedUp') return;
 
@@ -125,7 +179,7 @@ export default function PhotoBoothScreen() {
             ) : partner ? (
               // What this style makes with this friend, before the shot.
               <BoothPicture
-                photo={{ style, seed: 0, createdAt: new Date().toISOString() }}
+                photo={{ style, seed: 0, createdAt: new Date().toISOString(), frame: look }}
                 character={partner}
                 width={fitWidth(style, stage)}
                 style={style === 'polaroid' ? styles.tilt : undefined}
@@ -176,6 +230,76 @@ export default function PhotoBoothScreen() {
             </ScrollView>
           </>
         ) : null}
+
+        <View style={[styles.section, styles.sectionRow]}>
+          <Txt variant="h3" style={styles.flex}>
+            {t('frames.frame')}
+          </Txt>
+          <Txt variant="small" color={colors.textSecondary} lines={1}>
+            {chosen.label}
+          </Txt>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.frames}>
+          {frames.map((f) => {
+            const on = f.id === chosen.id;
+            return (
+              <PressableScale
+                key={f.id}
+                scaleTo={0.94}
+                accessibilityRole="button"
+                accessibilityLabel={f.locked ? `${f.label}, ${t('frames.lockedHint')}` : f.label}
+                accessibilityState={{ selected: on }}
+                style={[styles.frameChoice, f.locked && styles.dim]}
+                onPress={() => pickFrame(f)}>
+                <View style={[styles.frameBox, on && styles.frameBoxOn]}>
+                  {f.look ? (
+                    <FrameSwatch look={f.look} width={SWATCH} />
+                  ) : (
+                    <FrameSwatch
+                      look={{
+                        bg: colors.surface,
+                        pattern: 'none',
+                        patternColor: colors.surface,
+                        ink: colors.text,
+                        stickers: [],
+                      }}
+                      width={SWATCH}
+                    />
+                  )}
+                  {f.locked ? (
+                    <View style={styles.lock}>
+                      <Ionicons name="lock-closed-outline" size={13} color={colors.text} />
+                    </View>
+                  ) : null}
+                </View>
+                <Txt
+                  variant="caption"
+                  center
+                  lines={2}
+                  color={on ? colors.text : colors.textSecondary}
+                  style={on && styles.bold}>
+                  {f.label}
+                </Txt>
+              </PressableScale>
+            );
+          })}
+          <PressableScale
+            scaleTo={0.94}
+            accessibilityRole="button"
+            accessibilityLabel={t('frames.titleNew')}
+            style={styles.frameChoice}
+            onPress={() => router.push('/frame/edit')}>
+            <View style={[styles.frameBox, styles.frameNew]}>
+              <Ionicons name="add" size={22} color={colors.text} />
+            </View>
+            <Txt variant="caption" center color={colors.textSecondary}>
+              {t('frames.make')}
+            </Txt>
+          </PressableScale>
+        </ScrollView>
+        <Txt variant="small" color={colors.textSecondary} style={styles.frameHint}>
+          {frameHint}
+        </Txt>
 
         <Txt variant="h3" style={styles.section}>
           {t('photoBooth.styles')}
@@ -265,6 +389,60 @@ export default function PhotoBoothScreen() {
         )}
       </View>
 
+      <Sheet visible={!!lockedWorld} onClose={() => setLockedWorld(null)}>
+        {lockedWorld ? (
+          <View style={styles.lockedSheet}>
+            {partner ? (
+              <BoothPicture
+                photo={{ style: 'polaroid', seed: 0, createdAt: new Date().toISOString(), frame: lockedWorld.frame }}
+                character={hostFor(lockedWorld) ?? partner}
+                width={150}
+                style={styles.tilt}
+              />
+            ) : null}
+            <Txt variant="h2" center>
+              {t('frames.lockedTitle', { world: lockedWorld.series })}
+            </Txt>
+            {hostFor(lockedWorld) ? (
+              <>
+                <Txt variant="body" color={colors.textSecondary} center>
+                  {t('frames.lockedBody', {
+                    name: shortName(hostFor(lockedWorld)!.name),
+                    world: lockedWorld.series,
+                  })}
+                </Txt>
+                <Button
+                  label={t('frames.play')}
+                  size="lg"
+                  full
+                  onPress={() => {
+                    const w = lockedWorld;
+                    setLockedWorld(null);
+                    router.push({ pathname: '/quiz/world/[world]', params: { world: w.key, host: hostFor(w)!.id } });
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Txt variant="body" color={colors.textSecondary} center>
+                  {t('frames.nobodyBody', { world: lockedWorld.series })}
+                </Txt>
+                <Button
+                  label={t('frames.find')}
+                  variant="secondary"
+                  size="lg"
+                  full
+                  onPress={() => {
+                    setLockedWorld(null);
+                    router.push('/(tabs)/find');
+                  }}
+                />
+              </>
+            )}
+          </View>
+        ) : null}
+      </Sheet>
+
       <ProPaywallSheet
         visible={locked}
         kind="photo"
@@ -302,6 +480,33 @@ const styles = StyleSheet.create({
   send: { position: 'absolute', top: space.sm, left: space.sm },
   caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md },
   section: { marginTop: space.xl, marginBottom: space.md },
+  sectionRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.md },
+  frames: { gap: space.sm + 2, paddingRight: space.lg },
+  frameChoice: { width: 72, alignItems: 'center', gap: space.xs + 2 },
+  frameBox: {
+    width: 72,
+    height: 88,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  frameBoxOn: { borderColor: colors.text },
+  frameNew: { borderWidth: 1, borderStyle: 'dashed', borderColor: colors.borderStrong },
+  frameHint: { marginTop: space.sm },
+  dim: { opacity: 0.6 },
+  lock: {
+    position: 'absolute',
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
   partners: { gap: space.md + 2 },
   partner: { width: 60, alignItems: 'center', gap: space.xs + 2 },
   ring: { padding: 2, borderRadius: radius.pill, borderWidth: 2, borderColor: 'transparent' },

@@ -1,20 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, CharacterAvatar, ClayIcon, Header, PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { partnerAnswer, QUIZ_PACKS, type QuizPack } from '@/mock/games';
+import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/lib/quiz';
+import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
+import { worldOf } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Character } from '@/types';
 
+/** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
+interface Run {
+  id: string;
+  title: string;
+  questions: { text: string; options: readonly string[] }[];
+}
+
+const NEW_PACKS = ['qp_late_night', 'qp_habits'];
+
 /**
- * Couple quiz: pick a pack, answer five questions, and see their answer the moment
- * you choose. The score goes to the chat as a card and they react to it.
+ * Couple quiz (F29, approved prototype). Home: the friend's own quiz (5 questions about
+ * themselves, new each week), their world's quiz that wins a Photo Booth frame, the packs and
+ * the quizzes the user wrote. In play the friend's pick shows the moment you answer, with a line
+ * in their world's voice; the score goes to the chat as a card and they react.
  */
 export default function QuizScreen() {
   const { t } = useTranslation();
@@ -26,13 +39,18 @@ export default function QuizScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
+  const userQuizzes = useAppStore((s) => s.userQuizzes);
+  const wonFrames = useAppStore((s) => s.wonFrames);
   const finishQuiz = useAppStore((s) => s.finishQuiz);
 
-  const [pack, setPack] = useState<QuizPack | null>(null);
+  const [run, setRun] = useState<Run | null>(null);
   const [index, setIndex] = useState(0);
   const [mine, setMine] = useState<number | null>(null);
   const [matches, setMatches] = useState(0);
   const [done, setDone] = useState(false);
+
+  const world = character ? worldOf(character) : undefined;
+  const week = useMemo(() => weekKey(new Date()), []);
 
   if (!character) {
     return (
@@ -44,34 +62,165 @@ export default function QuizScreen() {
 
   const name = shortName(displayName(character, relationship));
   const backToChat = () => (conversation ? router.replace(`/chat/${conversation.id}`) : router.back());
+  const start = (next: Run) => {
+    setRun(next);
+    setIndex(0);
+    setMine(null);
+    setMatches(0);
+    setDone(false);
+  };
 
-  // 1. Pick a pack.
-  if (!pack) {
+  // 1. Home: their quiz, their world's quiz, packs, yours.
+  if (!run) {
+    const selfRun: Run = {
+      id: `self:${week}`,
+      title: t('quizHome.selfRun', { name }),
+      questions: pickSome(world?.selfQuiz ?? SELF_QUIZ, `${character.id}:${week}`, QUIZ_MAX_QUESTIONS),
+    };
+    const won = world ? wonFrames.includes(world.key) : false;
     return (
       <Screen background={colors.bgPlain}>
-        <Header title={t('games.quiz')} />
-        <ScrollView contentContainerStyle={styles.packs}>
-          {QUIZ_PACKS.map((p) => (
-            <PressableScale key={p.id} style={styles.pack} scaleTo={0.97} onPress={() => setPack(p)}>
-              <View style={styles.packEmoji}>
-                <ClayIcon name={p.icon} size={40} tile={false} />
-              </View>
-              <View style={styles.grow}>
-                <Txt variant="title">{t(`games.packs.${p.titleKey}`)}</Txt>
-                <Txt variant="small" color={colors.textMuted}>
-                  {t('games.questions', { count: p.questions.length })}
+        <Header title={t('games.quiz')} right={<CharacterAvatar character={character} size={32} />} />
+        <ScrollView contentContainerStyle={[styles.home, { paddingBottom: insets.bottom + space.xl }]}>
+          <PressableScale
+            scaleTo={0.985}
+            accessibilityRole="button"
+            accessibilityLabel={t('quizHome.selfPlay', { name })}
+            style={styles.selfCard}
+            onPress={() => start(selfRun)}>
+            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? colors.surfaceAlt }]}>
+              <CharacterAvatar character={character} size={64} ring ringColor={colors.surface} />
+              {world ? (
+                <View style={styles.worldPill}>
+                  <Txt variant="caption" style={styles.bold}>
+                    {world.series}
+                  </Txt>
+                </View>
+              ) : null}
+              <ClayIcon name="quiz" size={52} tile={false} style={styles.selfArt} />
+            </View>
+            <View style={styles.selfBody}>
+              <Txt variant="h3">{t('quizHome.selfTitle', { name })}</Txt>
+              <Txt variant="small" color={colors.textSecondary}>
+                {t('quizHome.selfBody', { name })}
+              </Txt>
+              <View style={styles.selfButton}>
+                <Txt variant="bodyStrong" color={colors.textOnPrimary}>
+                  {t('quizHome.selfPlay', { name })}
                 </Txt>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textFaint} />
+            </View>
+          </PressableScale>
+
+          {world ? (
+            <PressableScale
+              scaleTo={0.985}
+              accessibilityRole="button"
+              accessibilityLabel={t('quizHome.worldWin', { world: world.series })}
+              style={styles.row}
+              onPress={() =>
+                router.push({ pathname: '/quiz/world/[world]', params: { world: world.key, host: character.id } })
+              }>
+              <View style={[styles.tile, { backgroundColor: world.tint }]}>
+                <ClayIcon name="polaroids" size={32} tile={false} />
+              </View>
+              <View style={styles.grow}>
+                <Txt variant="title">{t('quizHome.worldWin', { world: world.series })}</Txt>
+                <Txt variant="small" color={won ? colors.bondText : colors.textSecondary}>
+                  {won ? t('quizHome.worldWon') : t('quizHome.worldHost', { name })}
+                </Txt>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
             </PressableScale>
-          ))}
+          ) : null}
+
+          <View style={styles.section}>
+            <Txt variant="h3">{t('quizHome.packs')}</Txt>
+            {QUIZ_PACKS.map((p) => (
+              <PressableScale
+                key={p.id}
+                scaleTo={0.985}
+                accessibilityRole="button"
+                style={styles.row}
+                onPress={() => start({ id: p.id, title: t(`games.packs.${p.titleKey}`), questions: p.questions })}>
+                <View style={styles.tile}>
+                  <ClayIcon name={p.icon} size={32} tile={false} />
+                </View>
+                <View style={styles.grow}>
+                  <Txt variant="title">{t(`games.packs.${p.titleKey}`)}</Txt>
+                  <Txt variant="small" color={colors.textSecondary}>
+                    {t('games.questions', { count: p.questions.length })}
+                  </Txt>
+                </View>
+                {NEW_PACKS.includes(p.id) ? (
+                  <View style={styles.newPill}>
+                    <Txt variant="caption" color={colors.brandText} style={styles.bold}>
+                      {t('quizHome.new')}
+                    </Txt>
+                  </View>
+                ) : null}
+                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+              </PressableScale>
+            ))}
+          </View>
+
+          <View style={styles.section}>
+            <Txt variant="h3">{t('quizHome.yours')}</Txt>
+            <View style={styles.box}>
+              <PressableScale
+                scaleTo={0.985}
+                accessibilityRole="button"
+                style={styles.boxRow}
+                onPress={() => router.push('/quiz/write')}>
+                <View style={styles.boxTile}>
+                  <Ionicons name="add" size={22} color={colors.text} />
+                </View>
+                <Txt variant="title" style={styles.grow}>
+                  {t('quizHome.write')}
+                </Txt>
+                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+              </PressableScale>
+              {userQuizzes.map((q) => (
+                <View key={q.id} style={[styles.boxRow, styles.boxDivider]}>
+                  <PressableScale
+                    scaleTo={0.985}
+                    accessibilityRole="button"
+                    accessibilityLabel={q.title}
+                    style={styles.boxOpen}
+                    onPress={() => start({ id: q.id, title: q.title, questions: q.questions })}>
+                    <View style={styles.boxTile}>
+                      <ClayIcon name="quiz" size={28} tile={false} />
+                    </View>
+                    <View style={styles.grow}>
+                      <Txt variant="title" lines={1}>
+                        {q.title}
+                      </Txt>
+                      <Txt variant="small" color={colors.textSecondary}>
+                        {t('quizHome.mineMeta', { count: q.questions.length })}
+                      </Txt>
+                    </View>
+                  </PressableScale>
+                  <PressableScale
+                    hitSlop={hitSlop}
+                    scaleTo={0.9}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('quizHome.edit', { title: q.title })}
+                    onPress={() => router.push({ pathname: '/quiz/write', params: { id: q.id } })}>
+                    <Ionicons name="create-outline" size={20} color={colors.textSecondary} />
+                  </PressableScale>
+                </View>
+              ))}
+            </View>
+            <Txt variant="caption" color={colors.textSecondary} center>
+              {t('quizHome.only')}
+            </Txt>
+          </View>
         </ScrollView>
       </Screen>
     );
   }
 
-  const total = pack.questions.length;
-  const title = t(`games.packs.${pack.titleKey}`);
+  const total = run.questions.length;
 
   // 3. The score.
   if (done) {
@@ -89,7 +238,7 @@ export default function QuizScreen() {
             </Txt>
           </View>
           <Txt variant="h2" center>
-            {title}
+            {run.title}
           </Txt>
           <View style={styles.grow} />
           <Button label={t('games.backToChat', { name })} size="lg" full onPress={backToChat} />
@@ -99,9 +248,17 @@ export default function QuizScreen() {
   }
 
   // 2. A question.
-  const question = pack.questions[index];
-  const theirs = partnerAnswer(character.id, pack.id, index);
+  const question = run.questions[index];
+  const theirs = partnerPick(character.id, run.id, index, question.options.length);
   const last = index === total - 1;
+  const lines = world ?? QUIZ_LINES;
+  const seed = `${character.id}:${run.id}:${index}`;
+  const line =
+    mine == null
+      ? ''
+      : mine === theirs
+        ? lineFor(lines.match, seed)
+        : lineFor(lines.differ, seed, question.options[theirs]);
 
   const answer = (option: number) => {
     if (mine != null) return;
@@ -115,18 +272,23 @@ export default function QuizScreen() {
       setMine(null);
       return;
     }
-    finishQuiz(character.id, pack.id, matches, title);
+    finishQuiz(character.id, run.id, matches, total, run.title);
     setDone(true);
   };
 
   return (
     <Screen background={colors.bgPlain}>
       <View style={styles.top}>
-        <PressableScale style={styles.close} hitSlop={hitSlop} scaleTo={0.9} accessibilityLabel={t('common.close')} onPress={() => router.back()}>
+        <PressableScale
+          style={styles.close}
+          hitSlop={hitSlop}
+          scaleTo={0.9}
+          accessibilityLabel={t('common.close')}
+          onPress={() => setRun(null)}>
           <Ionicons name="close" size={22} color={colors.text} />
         </PressableScale>
         <View style={styles.dots}>
-          {pack.questions.map((_, i) => (
+          {run.questions.map((_, i) => (
             <View key={i} style={[styles.dot, i <= index && styles.dotOn]} />
           ))}
         </View>
@@ -135,7 +297,7 @@ export default function QuizScreen() {
 
       <ScrollView contentContainerStyle={[styles.play, { paddingBottom: insets.bottom + space.lg }]}>
         <Txt variant="smallStrong" color={colors.textMuted}>
-          {t('games.progress', { title, n: index + 1, total })}
+          {t('games.progress', { title: run.title, n: index + 1, total })}
         </Txt>
         <Txt variant="h1">{question.text}</Txt>
 
@@ -159,6 +321,13 @@ export default function QuizScreen() {
               <Txt variant="bodyStrong" center color={mine === theirs ? colors.bondText : colors.textSecondary}>
                 {mine === theirs ? t('games.same', { count: matches, n: index + 1 }) : t('games.differ', { name })}
               </Txt>
+            </View>
+            {/* Their line, in their world's voice (the server's model writes it from the persona). */}
+            <View style={styles.says} accessibilityLiveRegion="polite">
+              <CharacterAvatar character={character} size={32} />
+              <View style={styles.bubble}>
+                <Txt variant="body">{line}</Txt>
+              </View>
             </View>
             <Button label={last ? t('games.seeScore') : t('date.next')} size="lg" full onPress={next} />
           </>
@@ -209,26 +378,90 @@ function Option({
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
-  packs: { padding: space.lg, gap: space.md },
-  pack: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    padding: space.lg,
+  bold: { fontWeight: '700' },
+  home: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.xl },
+  selfCard: {
     borderRadius: radius.xl,
-    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
   },
-  packEmoji: {
-    width: 60,
-    height: 60,
-    borderRadius: radius.lg,
-    backgroundColor: '#FFE3EC',
+  selfHero: { height: 116, flexDirection: 'row', alignItems: 'flex-end', padding: space.md + 2 },
+  worldPill: {
+    position: 'absolute',
+    top: space.md,
+    right: space.md,
+    height: 26,
+    paddingHorizontal: space.sm + 2,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+  },
+  selfArt: { position: 'absolute', right: space.lg, bottom: space.sm },
+  selfBody: { padding: space.lg, paddingTop: space.md, gap: space.xs },
+  selfButton: {
+    marginTop: space.sm + 2,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm },
+  section: { gap: space.sm + 2 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    minHeight: 68,
+    paddingHorizontal: space.md + 2,
+    borderRadius: radius.tile,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  tile: {
+    width: 44,
+    height: 44,
+    borderRadius: 13,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  newPill: {
+    height: 22,
+    paddingHorizontal: space.sm,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySofter,
+    borderWidth: 1,
+    borderColor: colors.primarySoft,
+    justifyContent: 'center',
+  },
+  box: {
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  boxRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64, paddingHorizontal: space.md + 2 },
+  boxOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64 },
+  boxDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
+  boxTile: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  top: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm,
+  },
   close: {
     width: 40,
     height: 40,
@@ -268,6 +501,17 @@ const styles = StyleSheet.create({
   verdict: { padding: space.md, borderRadius: radius.lg },
   same: { backgroundColor: colors.bondSoft },
   differ: { backgroundColor: colors.surfaceAlt },
+  says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm },
+  bubble: {
+    flexShrink: 1,
+    paddingHorizontal: space.md + 2,
+    paddingVertical: space.sm + 2,
+    borderRadius: 18,
+    borderBottomLeftRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
   score: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   result: { flex: 1, alignItems: 'center', gap: space.md, paddingHorizontal: space.xl, paddingTop: space.huge },
   pair: { flexDirection: 'row' },

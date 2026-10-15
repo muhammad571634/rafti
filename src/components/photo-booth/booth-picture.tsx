@@ -11,6 +11,8 @@ import { shortName } from '@/lib/format';
 import { colors, fonts, palette, shadows } from '@/theme';
 import type { BoothPhoto, BoothStyle, Character } from '@/types';
 
+import { FrameBackdrop, FrameStickers } from './frame-card';
+
 const GRAIN = require('../../../assets/images/film-grain.png');
 
 /** Height over width of each look, from the layouts below (card, frames, caption). */
@@ -25,7 +27,7 @@ const RATIO: Record<BoothStyle, number> = {
 export const fitWidth = (style: BoothStyle, box: { width: number; height: number }) =>
   Math.floor(Math.min(box.width, box.height / RATIO[style]));
 
-type Picture = Pick<BoothPhoto, 'style' | 'seed' | 'createdAt'>;
+type Picture = Pick<BoothPhoto, 'style' | 'seed' | 'createdAt' | 'frame'>;
 
 /**
  * A Photo Booth picture, drawn on the phone from the friend's own art: Polaroid (portrait on white
@@ -56,6 +58,8 @@ export function BoothPicture({
       : undefined;
   const face: Art | undefined = portrait != null ? { source: portrait, aspect: 1 } : scene;
   const name = shortName(character.name);
+  // A frame (F29) dresses the card styles; Street is a bare photo and keeps its look.
+  const look = photo.style === 'street' ? undefined : photo.frame;
 
   if (photo.style === 'film') {
     const pad = width * 0.07;
@@ -72,14 +76,16 @@ export function BoothPicture({
     const first = photo.seed % shots.length;
     return (
       <View style={[styles.strip, { width, padding: pad, paddingBottom: 0, gap: pad * 0.7 }, shadows.card, style]}>
+        {look ? <FrameBackdrop look={look} radius={3} /> : null}
         {[0, 1, 2, 3].map((i) => (
           <Frame key={i} shot={shots[(first + i) % shots.length]} width={frameW} height={frameH} character={character} develop={develop}>
             <View style={[StyleSheet.absoluteFill, styles.warm, { mixBlendMode: 'soft-light' }]} />
           </Frame>
         ))}
-        <Txt style={[styles.stripLabel, { fontSize: Math.max(7, width * 0.075), lineHeight: width * 0.24 }]} center>
+        <Txt style={[styles.stripLabel, { fontSize: Math.max(7, width * 0.075), lineHeight: width * 0.24 }, look && { color: look.ink }]} center>
           {`RAFTI · ${pad2(date.getMonth() + 1)}.${pad2(date.getDate())}`}
         </Txt>
+        {look ? <FrameStickers look={look} width={width} /> : null}
       </View>
     );
   }
@@ -89,17 +95,23 @@ export function BoothPicture({
     const photoW = width - pad * 2;
     return (
       <View style={[styles.mat, { width, padding: pad, paddingBottom: 0 }, shadows.card, style]}>
+        {look ? <FrameBackdrop look={look} radius={3} /> : null}
         <Frame shot={{ art: face, zoom: 1.12, x: 0.5, y: 0.4 }} width={photoW} height={photoW * 1.18} character={character} develop={develop}>
           {/* Saturation from a grey layer leaves only light and shade: black and white on both platforms. */}
           <View style={[StyleSheet.absoluteFill, styles.mono, { mixBlendMode: 'saturation' }]} />
           <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.28)']} style={StyleSheet.absoluteFill} />
         </Frame>
         <Txt
-          style={[styles.studioLabel, { fontSize: Math.max(6, width * 0.055), lineHeight: width * 0.17, letterSpacing: width * 0.02 }]}
+          style={[
+            styles.studioLabel,
+            { fontSize: Math.max(6, width * 0.055), lineHeight: width * 0.17, letterSpacing: width * 0.02 },
+            look && { color: look.ink },
+          ]}
           center
           lines={1}>
           {name.toUpperCase()}
         </Txt>
+        {look ? <FrameStickers look={look} width={width} /> : null}
       </View>
     );
   }
@@ -140,19 +152,21 @@ export function BoothPicture({
   const small = width < 120;
   return (
     <View style={[styles.polaroid, { width, padding: pad, paddingBottom: 0 }, shadows.card, style]}>
+      {look ? <FrameBackdrop look={look} /> : null}
       <Frame shot={{ art: face, zoom: 1, x: 0.5, y: 0.4 }} width={photoW} height={photoW} character={character} develop={develop} />
       <View style={[styles.polaroidFoot, { height: width * 0.2 }]}>
         {small ? null : (
           <>
-            <Txt style={[styles.hand, { fontSize: width * 0.085 }]} lines={1}>
-              {t('photoBooth.together', { name })}
+            <Txt style={[styles.hand, { fontSize: width * 0.085 }, look && { color: look.ink }]} lines={1}>
+              {look?.caption ?? t('photoBooth.together', { name })}
             </Txt>
-            <Txt style={[styles.hand, styles.handDate, { fontSize: width * 0.075 }]} lines={1}>
+            <Txt style={[styles.hand, styles.handDate, { fontSize: width * 0.075 }, look && { color: look.ink, opacity: 0.8 }]} lines={1}>
               {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toLowerCase()}
             </Txt>
           </>
         )}
       </View>
+      {look ? <FrameStickers look={look} width={width} /> : null}
     </View>
   );
 }

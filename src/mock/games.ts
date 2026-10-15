@@ -1,6 +1,6 @@
 /**
  * Chat "+" games: couple quiz packs and truth-or-dare prompts. The character's
- * quiz answers are stable per character and question (a hash, not a coin flip),
+ * quiz answers are stable per character and question (`partnerPick` in src/lib/quiz.ts),
  * so replaying a pack gives the same partner. The server's model replaces this.
  */
 import type { ClayIconName } from '@/assets/brand/registry';
@@ -54,17 +54,48 @@ export const QUIZ_PACKS: QuizPack[] = [
       { text: 'Still doing this quiz?', options: ['Every year', 'Once more, to compare', 'We know the answers', 'We wrote our own'] },
     ],
   },
+  {
+    id: 'qp_late_night',
+    titleKey: 'lateNight',
+    icon: 'nightSky',
+    questions: [
+      { text: 'Best time for deep talks?', options: ['Midnight', '3 a.m.', 'Sunrise', 'Any time with you'] },
+      { text: 'Can\u2019t sleep. What now?', options: ['Call each other', 'Snack run', 'Count stars', 'Scroll until 4'] },
+      { text: 'Biggest late-night fear?', options: ['Strange noises', 'Tomorrow', 'Being alone', 'Nothing'] },
+      { text: 'Something we only say at night?', options: ['"I miss you"', 'Old secrets', 'Silly dreams', '"Stay"'] },
+      { text: 'Who falls asleep first on a call?', options: ['Me', 'You', 'Both, at once', 'Nobody, we talk till dawn'] },
+    ],
+  },
+  {
+    id: 'qp_habits',
+    titleKey: 'habits',
+    icon: 'sun',
+    questions: [
+      { text: 'First thing in the morning?', options: ['Phone', 'Coffee', 'Snooze', 'A good-morning text'] },
+      { text: 'How do we eat pizza?', options: ['Crust first', 'Fold it', 'Fork and knife', 'Steal yours'] },
+      { text: 'Messy or tidy?', options: ['Very messy', 'Neat', 'Messy, but I know where things are', 'Depends on the day'] },
+      { text: 'Hands when nervous?', options: ['In pockets', 'Playing with hair', 'Tapping', 'Holding yours'] },
+      { text: 'Music while working?', options: ['Always', 'Never', 'Rain sounds', 'Your voice notes'] },
+    ],
+  },
 ];
 
-export const quizPackById = (id: string) => QUIZ_PACKS.find((p) => p.id === id);
+/** A friend from no known world (a user creation): their lines in a couple quiz. */
+export const QUIZ_LINES = {
+  match: ['Same! I knew it.', 'We think alike. I like that.', 'Look at us. Matching.'],
+  differ: ['I picked {answer}. Tell me why you did not.', '{answer} for me. Different, and that is fine.', 'Hm, I went with {answer}. Convince me.'],
+};
 
-/** The character's answer to a question: stable for that character and question. */
-export function partnerAnswer(characterId: string, packId: string, question: number) {
-  const seed = `${characterId}:${packId}:${question}`;
-  let h = 7;
-  for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return h % 4;
-}
+/** Questions a friend from no known world asks about themselves. */
+export const SELF_QUIZ: { text: string; options: [string, string, string, string] }[] = [
+  { text: 'My favorite time of day?', options: ['Morning', 'Afternoon', 'Late night', 'Whenever you text'] },
+  { text: 'What do I do when I am sad?', options: ['Sleep', 'Go for a walk', 'Eat something sweet', 'Talk to you'] },
+  { text: 'My comfort food?', options: ['Soup', 'Noodles', 'Chocolate', 'Anything you make'] },
+  { text: 'What makes me laugh most?', options: ['Bad jokes', 'You', 'Animal videos', 'My own jokes'] },
+  { text: 'My dream weekend?', options: ['Sleep in', 'A road trip', 'A quiet café', 'Anything with you'] },
+  { text: 'How do I say I care?', options: ['Small gifts', 'Words', 'I just show up', 'Too many texts'] },
+  { text: 'What am I secretly bad at?', options: ['Cooking', 'Goodbyes', 'Waking up', 'Hiding feelings'] },
+];
 
 /** What they text after a quiz, by how many answers matched out of five. */
 export function quizReply(matches: number, total: number) {
