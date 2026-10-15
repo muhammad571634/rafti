@@ -128,6 +128,26 @@ def main():
 
     on_square(mark, 48, CREAM + (255,), 0.92).convert('RGB').save(IMAGES / 'favicon.png', optimize=True)
     print('logo', logo.size, 'mark', mark.size, 'icon art background', art_bg)
+    build_mascot_art()
+
+
+# The mascot's moments (Higgsfield, the logo and icon art as references), in docs/branding/art.
+# Cutouts were drawn on flat blue-grey so the cream body keys cleanly; scenes keep their backdrop.
+ART = ROOT / 'docs/branding/art'
+CUTOUTS = {'sticker': 640, 'empty': 720}
+SCENES = {'reward': 720, 'levelup': 800, 'bedtime': 720, 'diary': 900}
+
+
+def build_mascot_art():
+    for name, longest in CUTOUTS.items():
+        img, _ = cut(ART / f'{name}.png', barrier_t=14, lo=14, hi=45)
+        out = fit(img, longest)
+        out.save(BRAND / f'sigmazam-{name}.png', optimize=True)
+        print(name, out.size)
+    for name, longest in SCENES.items():
+        img = fit(Image.open(ART / f'{name}.png').convert('RGB'), longest)
+        img.save(BRAND / f'sigmazam-{name}.jpg', quality=88, optimize=True, progressive=True)
+        print(name, img.size)
 
 
 if __name__ == '__main__':

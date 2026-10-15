@@ -23,9 +23,17 @@ swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam".
   alarm fallbacks, the crash title and `CHARACTER_RULES` say Sigmazam. `app.json` name is
   Sigmazam; slug, scheme `rafti`, package `com.rafti.app` and storage keys stay (changing them
   reinstalls the app as a new one and loses saved data). Icons and splash need a new build.
-- Still the otter (needs new mascot art from the logo): empty states (`BRAND.empty`), the default
-  avatar and `Mascot` sticker, daily reward, level-up, bedtime scene, diary cover, home banner,
-  reaction stickers. Docs still say Rafti.
+- Mascot art redrawn (owner: livelier, the logo's bright apricot, no spark dashes, a different idea
+  for each moment): `docs/branding/art/*.png` (Higgsfield, 6 x $0.08) -> `BRAND.sticker` (winking
+  die-cut, default avatar), `empty` (peeking out of an empty box), `reward` (catching a glowing
+  shell), `levelUp` (bursting out of hearts with a crown), `bedtime` (asleep in a crescent moon),
+  `diaryCover` (writing at a desk). Old otter files and the unused home banner are gone; the
+  empty state's seashell glow and ripples went with the shell (float, shadow and tap squash stay);
+  `build-brand-art.py` no longer writes the mascot pieces, splash or icons.
+- Still the otter: the 6 chat reaction stickers (`REACTION_STICKERS`). Docs still say Rafti.
+- Owner wants the app palette moved off the dark apricot `#E8742A` ("looks like Claude") toward the
+  logo's bright apricot `#F58B49`; white text needs a deeper button shade (about `#F27B3D`). Do it
+  as its own task with a prototype.
 - `assets/icons/` had been deleted in the working tree by another agent (the app imports its
   registry); restored from git. `assets/icons 3D/*.jpg` is deleted too, unused, left uncommitted.
 

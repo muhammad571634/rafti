@@ -44,20 +44,15 @@ TILE_FACES = {
 
 # Characters on a plain backdrop: the backdrop is keyed out, then trimmed.
 # Only for backdrops that differ from Rafti's cream face — see SCENES otherwise.
-CUTOUTS = {
-    'sticker_call': ('rafti-sticker', 640),
-    'empty_state': ('rafti-empty', 720),
-}
+# The mascot art (sticker, empty state, reward, level-up, bedtime, diary cover), the splash and
+# the app icons moved to the Sigmazam mascot: scripts/build-sigmazam-brand.py makes them now.
+CUTOUTS = {}
 
 # Full-bleed scenes: optional crop box as fractions (l, t, r, b), then resized.
 # reward_daily / levelup sit on cream, which a key would eat into Rafti's face,
 # so they ship as framed pictures on the cream UI instead.
 SCENES = {
     'banner_home': ('banner-home', 1200, None),
-    'bedtime': ('bedtime-scene', 1200, None),
-    'diary_cover': ('diary-cover', 900, None),
-    'reward_daily': ('rafti-reward', 720, (0.2, 0.0, 0.8, 1.0)),
-    'levelup': ('rafti-levelup', 800, (0.12, 0.08, 0.88, 1.0)),
 }
 
 
@@ -721,7 +716,6 @@ def main():
     print('currency shell done')
 
     edge = build_app_icons(newest('app_icon'))
-    build_sticker_derivatives()
     build_reactions()
     print(f'app icon done, android background {edge}')
     print(f'icons3d {", ".join(build_icons_3d()) or "none yet"}')

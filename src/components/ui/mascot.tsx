@@ -52,96 +52,6 @@ function SoftFade({ id, color, opacity, fadeTo }: { id: string; color: string; o
   );
 }
 
-/** Acoustic sound wave ripple rings radiating from the seashell. */
-function ShellRipples({ width, height }: { width: number; height: number }) {
-  const wave1 = useSharedValue(0);
-  const wave2 = useSharedValue(0);
-  const wave3 = useSharedValue(0);
-
-  useEffect(() => {
-    const duration = 2800;
-    const easing = Easing.bezier(0.15, 0.7, 0.35, 1);
-    wave1.value = withRepeat(withTiming(1, { duration, easing }), -1);
-    wave2.value = withDelay(900, withRepeat(withTiming(1, { duration, easing }), -1));
-    wave3.value = withDelay(1800, withRepeat(withTiming(1, { duration, easing }), -1));
-  }, [wave1, wave2, wave3]);
-
-  const style1 = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(wave1.value, [0, 1], [0.35, 2.3]) }],
-    opacity: interpolate(wave1.value, [0, 0.25, 0.8, 1], [0, 0.75, 0.28, 0]),
-  }));
-  const style2 = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(wave2.value, [0, 1], [0.35, 2.3]) }],
-    opacity: interpolate(wave2.value, [0, 0.25, 0.8, 1], [0, 0.65, 0.22, 0]),
-  }));
-  const style3 = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(wave3.value, [0, 1], [0.35, 2.3]) }],
-    opacity: interpolate(wave3.value, [0, 0.25, 0.8, 1], [0, 0.55, 0.18, 0]),
-  }));
-
-  // Position centered on the pink seashell in rafti-empty.png (~72% X, ~38% Y)
-  const shellX = width * 0.72;
-  const shellY = height * 0.38;
-  const baseSize = Math.max(26, width * 0.22);
-
-  return (
-    <View
-      style={[
-        styles.rippleOrigin,
-        {
-          left: shellX - baseSize / 2,
-          top: shellY - baseSize / 2,
-          width: baseSize,
-          height: baseSize,
-        },
-      ]}
-      pointerEvents="none"
-    >
-      <Animated.View style={[styles.rippleRing, styles.mintRing, style1]} />
-      <Animated.View style={[styles.rippleRing, styles.pinkRing, style2]} />
-      <Animated.View style={[styles.rippleRing, styles.apricotRing, style3]} />
-    </View>
-  );
-}
-
-/** Soft breathing glow aura from the seashell. */
-function ShellGlow({
-  width,
-  height,
-  progress,
-}: {
-  width: number;
-  height: number;
-  progress: SharedValue<number>;
-}) {
-  const shellX = width * 0.72;
-  const shellY = height * 0.38;
-  const glowSize = Math.max(36, width * 0.3);
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 1], [0.35, 0.8]),
-    transform: [{ scale: interpolate(progress.value, [0, 1], [0.95, 1.25]) }],
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        styles.shellGlow,
-        {
-          left: shellX - glowSize / 2,
-          top: shellY - glowSize / 2,
-          width: glowSize,
-          height: glowSize,
-        },
-        glowStyle,
-      ]}
-      pointerEvents="none"
-    >
-      <SoftFade id="raftiShellGlow" color="rgb(251, 113, 133)" opacity={0.55} fadeTo={0.75} />
-    </Animated.View>
-  );
-}
-
 /** Ground shadow that contracts/expands inversely with the float height. */
 function GroundShadow({
   width,
@@ -184,7 +94,7 @@ export function BrandArt({
   style,
 }: BrandArtProps) {
   const isInteractive = interactive ?? (bob && name === 'empty');
-  // Shadow, glow and ripples belong to the full Rafti art only, not to cards like Reward or Level up.
+  // The ground shadow belongs to the free-standing empty-state art, not to cards like Reward or Level up.
   const showAura = bob && name === 'empty';
   const t = useSharedValue(0);
 
@@ -254,13 +164,6 @@ export function BrandArt({
       {showAura ? <GroundShadow width={width} height={boxHeight} progress={t} /> : null}
 
       <Animated.View style={[box, floatStyle]}>
-        {showAura ? (
-          <>
-            <ShellGlow width={width} height={boxHeight} progress={t} />
-            <ShellRipples width={width} height={boxHeight} />
-          </>
-        ) : null}
-
         <Image
           source={BRAND[name]}
           style={[box, { borderRadius: radius }]}
@@ -314,32 +217,6 @@ export function Mascot({
 }
 
 const styles = StyleSheet.create({
-  rippleOrigin: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
-  },
-  rippleRing: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    borderRadius: 999,
-    borderWidth: 1.5,
-  },
-  mintRing: {
-    borderColor: 'rgba(52, 211, 153, 0.55)',
-  },
-  pinkRing: {
-    borderColor: 'rgba(251, 113, 133, 0.5)',
-  },
-  apricotRing: {
-    borderColor: 'rgba(249, 115, 22, 0.45)',
-  },
-  shellGlow: {
-    position: 'absolute',
-    zIndex: 1,
-  },
   groundShadow: {
     position: 'absolute',
     alignSelf: 'center',
