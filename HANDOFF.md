@@ -7,6 +7,14 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0u. BIMOBIMO architecture map (2026-10-16)
+
+Owner asked how BIMOBIMO works inside and what to take. `docs/bimobimo-architecture.md`: static
+look at the APK (manifest + Dart/Rust string dump; REA did not connect, Apktool did): Flutter +
+GetX, REST + SSE chat with async reply jobs, Tencent RTC calls, FCM, Play Billing, AdMob tickets,
+~210 API paths by area, and a gap table. It confirms `docs/backend-plan.md`. Proposed order:
+backend B1, scheduled TTS morning/night calls, memory kinds on Memories, then Moments.
+
 ### 0t. Palette: soft peach replaces the terracotta orange (2026-10-15)
 
 Owner: the old `#E8742A` looked like Claude's colour; they asked for something light, thin and

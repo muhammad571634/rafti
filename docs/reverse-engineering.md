@@ -33,6 +33,7 @@ outside every repo. Never commit APKs or decoded output.
    the `split_config.arm64_v8a.apk` split. Apktool does not decompile it. Claude can try REA
    `identify_flutter_build`, `inspect_dart_aot` and `list_strings` for Dart package and route names.
 4. **Write findings** in your own words, in English, into the `rafti-research` teardown docs.
+   The client architecture map (SDKs, endpoints, what we take) is in `docs/bimobimo-architecture.md`.
 
 ## Gotchas
 
