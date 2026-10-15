@@ -30,7 +30,7 @@ export function EmptyState({
       {icon ? (
         <ClayIcon name={icon} size={compact ? 88 : 120} tile={false} />
       ) : (
-        <BrandArt name="empty" width={compact ? 112 : 150} bob />
+        <BrandArt name="empty" width={compact ? 82 : 111} bob />
       )}
       <Txt variant="title" center style={styles.title}>
         {title}

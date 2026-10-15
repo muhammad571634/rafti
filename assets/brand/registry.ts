@@ -127,7 +127,7 @@ export type ReactionName = keyof typeof REACTION_STICKERS;
 /** Intrinsic width / height, so art can be sized from one dimension. */
 export const BRAND_ASPECT: Record<BrandArtName, number> = {
   sticker: 638 / 640,
-  empty: 644 / 720,
+  empty: 424 / 720,
   reward: 1,
   levelUp: 800 / 533,
   bedtime: 1,
