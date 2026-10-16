@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -15,16 +16,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BOARD_STYLES, boardStyle, Stationery } from '@/components/board/stationery';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Button, CharacterAvatar, Header, PressableScale, Screen, Sheet, ShellIcon, Txt } from '@/components/ui';
+import { CharacterAvatar, GlassButton, glassStyle, InsetGroup, PressableScale, Screen, Sheet, ShellIcon, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, radius, space } from '@/theme';
+import { colors, fonts, space } from '@/theme';
 import type { BoardStyleId } from '@/types';
 
 const MAX_LENGTH = 300;
-const THUMB_W = 64;
-const THUMB_H = 74;
+const THUMB_W = 52;
+const THUMB_H = 62;
 
 /**
  * Write a note for one friend on a paper of your choice and pin it to the board.
@@ -67,24 +68,59 @@ export default function BoardWriteScreen() {
     if (result === 'ok') router.back();
   };
 
+  const ready = !!text.trim() && !!to;
+
   return (
+    // iOS Mail's New Message (approved prototype `UsBoard.dc.html`): × / title / Post in the bar,
+    // a "To:" row, the paper, and the papers to choose from.
     <Screen background={colors.bg}>
-      <Header title={t('board.title')} center />
+      <View style={styles.bar}>
+        <GlassButton icon="close" accessibilityLabel={t('common.close')} onPress={() => router.back()} />
+        <Txt style={styles.barTitle} accessibilityRole="header">
+          {t('board.newNote')}
+        </Txt>
+        <PressableScale
+          scaleTo={0.92}
+          disabled={!ready}
+          onPress={post}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !ready }}
+          accessibilityLabel={`${t('board.post')}, ${shellCosts.boardNote} ${t('common.shells')}`}
+          style={[styles.post, ready ? styles.postOn : glassStyle]}>
+          <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
+            {t('board.post')}
+          </Txt>
+          <ShellIcon size={15} />
+          <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
+            {shellCosts.boardNote}
+          </Txt>
+        </PressableScale>
+      </View>
 
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xl }]} keyboardShouldPersistTaps="handled">
+          <InsetGroup style={styles.toGroup}>
+            <Pressable
+              style={({ pressed }) => [styles.toRow, pressed && styles.pressed]}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('board.to')} ${to ? shortName(displayName(to, relationships[to.id])) : ''}, ${t('board.changeRecipient')}`}
+              onPress={() => setPicking(true)}>
+              <Txt style={styles.toLabel}>{t('board.to')}</Txt>
+              {to ? (
+                <View style={styles.toChip}>
+                  <CharacterAvatar character={to} size={24} />
+                  <Txt style={styles.toName} color={colors.brandText} lines={1}>
+                    {shortName(displayName(to, relationships[to.id]))}
+                  </Txt>
+                </View>
+              ) : null}
+              <View style={styles.flex} />
+              <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+            </Pressable>
+          </InsetGroup>
+
           <View style={styles.paper}>
             <Stationery id={style} width={paperW} height={paperH}>
-              <PressableScale
-                style={styles.to}
-                scaleTo={0.95}
-                accessibilityLabel={t('board.changeRecipient')}
-                onPress={() => setPicking(true)}>
-                <Txt variant="smallStrong">{t('board.to')}</Txt>
-                {to ? <CharacterAvatar character={to} size={26} /> : null}
-                <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
-              </PressableScale>
-
               <TextInput
                 value={text}
                 onChangeText={setText}
@@ -93,6 +129,7 @@ export default function BoardWriteScreen() {
                 maxLength={MAX_LENGTH}
                 multiline
                 textAlignVertical="top"
+                accessibilityLabel={t('board.placeholder')}
                 style={[styles.input, { color: ink.ink }]}
               />
 
@@ -108,9 +145,8 @@ export default function BoardWriteScreen() {
               </View>
             </Stationery>
           </View>
-        </ScrollView>
 
-        <View style={[styles.tray, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+          <Txt style={styles.sectionLabel}>{t('board.paper')}</Txt>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.thumbs}>
             {BOARD_STYLES.map(({ id }) => {
               const active = id === style;
@@ -123,52 +159,38 @@ export default function BoardWriteScreen() {
                   accessibilityLabel={t(`board.style.${id}`)}
                   style={[styles.thumb, active && styles.thumbActive]}
                   onPress={() => setStyle(id)}>
-                  <Stationery id={id} width={THUMB_W - 12} height={THUMB_H - 12} />
-                  {active ? (
-                    <View style={styles.check}>
-                      <Ionicons name="checkmark" size={12} color={colors.textOnPrimary} />
-                    </View>
-                  ) : null}
+                  <Stationery id={id} width={THUMB_W} height={THUMB_H} />
                 </PressableScale>
               );
             })}
           </ScrollView>
-
-          <Button
-            label={t('board.post')}
-            size="lg"
-            full
-            disabled={!text.trim() || !to}
-            onPress={post}
-            right={
-              <View style={styles.cost}>
-                <ShellIcon size={16} />
-                <Txt variant="bodyStrong" color={colors.textOnPrimary}>
-                  {shellCosts.boardNote}
-                </Txt>
-              </View>
-            }
-          />
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
 
       <Sheet visible={picking} onClose={() => setPicking(false)} title={t('board.to')}>
         <View style={styles.people}>
-          {friends.map((c) => (
-            <PressableScale
-              key={c.id}
-              style={styles.person}
-              scaleTo={0.94}
-              onPress={() => {
-                setToId(c.id);
-                setPicking(false);
-              }}>
-              <CharacterAvatar character={c} size={54} ring={c.id === toId} ringColor={colors.text} />
-              <Txt variant="tiny" lines={1} color={c.id === toId ? colors.text : colors.textMuted}>
-                {shortName(displayName(c, relationships[c.id]))}
-              </Txt>
-            </PressableScale>
-          ))}
+          {friends.map((c, i) => {
+            const on = c.id === toId;
+            return (
+              <Pressable
+                key={c.id}
+                style={({ pressed }) => [styles.person, pressed && styles.pressed]}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: on }}
+                onPress={() => {
+                  setToId(c.id);
+                  setPicking(false);
+                }}>
+                <CharacterAvatar character={c} size={36} />
+                <View style={[styles.personBody, i < friends.length - 1 && styles.line]}>
+                  <Txt style={styles.personName} lines={1}>
+                    {displayName(c, relationships[c.id])}
+                  </Txt>
+                  {on ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+                </View>
+              </Pressable>
+            );
+          })}
         </View>
       </Sheet>
 
@@ -179,54 +201,53 @@ export default function BoardWriteScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scroll: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.lg },
-  paper: { alignItems: 'center' },
-  to: {
+  bar: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: space.xs,
-    paddingLeft: space.md,
-    paddingRight: space.sm,
-    height: 36,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
+    paddingBottom: space.sm,
   },
-  input: { flex: 1, marginTop: space.md, fontSize: 17, lineHeight: 26, fontFamily: fonts.body },
+  barTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  post: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.lg, borderRadius: 22 },
+  postOn: { backgroundColor: colors.primaryFill },
+  postText: { fontSize: 17, fontWeight: '600' },
+  scroll: { paddingTop: space.sm },
+  toGroup: { marginBottom: space.lg },
+  toRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  toLabel: { fontSize: 17, letterSpacing: -0.4, color: colors.textSecondary },
+  toChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 30,
+    paddingLeft: 3,
+    paddingRight: space.md,
+    borderRadius: 15,
+    backgroundColor: colors.primarySofter,
+  },
+  toName: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4, flexShrink: 1 },
+  paper: { alignItems: 'center' },
+  input: { flex: 1, fontSize: 17, lineHeight: 26, fontFamily: fonts.body },
   foot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   clear: { textDecorationLine: 'underline' },
-  tray: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xxl,
-    borderTopRightRadius: radius.xxl,
-    paddingTop: space.md,
-    paddingHorizontal: space.lg,
-    paddingBottom: space.lg,
-    gap: space.md,
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: space.sm,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
-  thumbs: { gap: space.sm },
-  thumb: {
-    width: THUMB_W,
-    height: THUMB_H,
-    borderRadius: radius.md,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  thumbs: { gap: 14, paddingHorizontal: space.lg + 6, paddingVertical: 6 },
+  // The chosen paper: a peach ring with a gap of the ground, as on the Us story ring.
+  thumb: { borderRadius: 12, padding: 2, borderWidth: 2.5, borderColor: 'transparent' },
   thumbActive: { borderColor: colors.primary },
-  check: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.primaryFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, paddingBottom: space.md },
-  person: { alignItems: 'center', gap: space.xs, width: 60 },
+  people: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  person: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  personBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  personName: { flex: 1, fontSize: 17, letterSpacing: -0.4 },
 });

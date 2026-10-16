@@ -52,7 +52,8 @@ and Chats plan is complete. **Owner's order from here (2026-10-17):** Us tab and
 the owner's explicit yes: the Heartbeat diary is an approved screen), then Find, then Today, and
 last, calmly, the palette (grounds, buttons) once every screen is done. Prototype each step first.
 Us 1 done (flows.md D23): the Us tab; moments use system-colour icons, no 3D art (owner). Us 2 done (D24): the Add and New plan
-sheets. Next: Us 3, board write.
+sheets. Us 3-4 done (D25): board note and photo. Us 5 (diary)
+waits for the owner's yes; then Find.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 
