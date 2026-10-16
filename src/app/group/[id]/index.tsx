@@ -10,7 +10,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { REPORT_REASONS } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
-import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { DayChip } from '@/components/chat/day-chip';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
@@ -135,8 +136,9 @@ export default function GroupChatScreen() {
   const names = groupTitle(members.map(nameOf));
   const title = group?.name || names;
   const data = useMemo(() => messages ?? [], [messages]);
+  const lastMine = useMemo(() => lastMineId(data), [data]);
   const typing = typingId ? byId.get(typingId) : undefined;
-  const wallpaper = backgroundsById.bg_blossom;
+  const wallpaper = backgroundsById.bg_plain;
 
   // Only messages that arrive while the group is open animate in.
   const [openedAt] = useState(() => Date.now());
@@ -145,25 +147,20 @@ export default function GroupChatScreen() {
 
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
-      const prev = data[index - 1];
       const author = item.characterId ? byId.get(item.characterId) : undefined;
       const character = author ?? fallback;
       if (!character) return null;
-      const runStart =
-        index === 0 ||
-        prev?.author !== item.author ||
-        prev?.characterId !== item.characterId ||
-        prev?.kind === 'call' ||
-        prev?.kind === 'system';
+      const run = runOf(data, index);
       return (
         <>
-          {index === 0 || dayKey(prev.createdAt) !== dayKey(item.createdAt) ? <DayChip iso={item.createdAt} /> : null}
+          {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
           <MessageBubble
             message={item}
             character={character}
-            user={user}
             animate={animations && Date.parse(item.createdAt) > openedAt}
-            showAvatar={runStart}
+            showAvatar={run.runStart}
+            runEnd={run.runEnd}
+            receipt={item.id === lastMine}
             senderName={author ? nameOf(author) : undefined}
             aiNoticeText={noticeText}
             onLongPress={openMenu}
@@ -171,7 +168,7 @@ export default function GroupChatScreen() {
         </>
       );
     },
-    [data, byId, fallback, user, animations, openedAt, nameOf, noticeText, openMenu],
+    [data, byId, fallback, lastMine, animations, openedAt, nameOf, noticeText, openMenu],
   );
 
   if (!group || !groupId || members.length < 2) {
@@ -282,7 +279,6 @@ export default function GroupChatScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={insets.top + 56}>
         <View style={styles.flex}>
-          <ChatWallpaper hidden={!!wallpaper.dark} />
           <FlatList
             ref={listRef}
             data={data}

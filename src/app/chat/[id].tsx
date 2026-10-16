@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { DayChip } from '@/components/chat/day-chip';
+import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
@@ -22,7 +24,6 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import {
   Button,
-  ShellBadge,
   CharacterAvatar,
   ClayIcon,
   IconButton,
@@ -30,12 +31,14 @@ import {
   PressableScale,
   Screen,
   Sheet,
+  ShellIcon,
   Txt,
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
+import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, radius, space } from '@/theme';
+import { colors, hitSlop, isDark, radius, shadows, space } from '@/theme';
 import type { Message } from '@/types';
 import type { ClayIconName } from '@/components/ui';
 
@@ -57,6 +60,13 @@ const ATTACHMENTS: Attachment[] = [
 ];
 
 const ATTACH_TILE = 60;
+/** Room the glass header takes under the status bar: avatar, name chip and caption. */
+const HEADER_ROOM = 112;
+/** The alarm bar under the header while the wake-up alarm rings. */
+const ALARM_ROOM = 44;
+
+/** The same colour, fully transparent: the end of the fade under the header. */
+const fadeOut = (color: string) => (/^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent');
 
 export default function ChatRoomScreen() {
   const { id, draft } = useLocalSearchParams<{ id: string; draft?: string }>();
@@ -73,7 +83,6 @@ export default function ChatRoomScreen() {
   const relationship = useAppStore((s) => (conversation ? s.relationships[conversation.characterId] : undefined));
   const typing = useAppStore((s) => (conversationId ? !!s.typing[conversationId] : false));
   const levelUp = useAppStore((s) => s.levelUp);
-  const user = useAppStore((s) => s.user);
   const shells = useAppStore((s) => s.wallet.shells);
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
@@ -125,9 +134,9 @@ export default function ChatRoomScreen() {
     return () => clearTimeout(timer);
   }, [messages?.length, typing]);
 
-  const backgroundId = relationship?.backgroundId ?? 'bg_blossom';
+  const backgroundId = relationship?.backgroundId ?? 'bg_plain';
   const artWallpaper = chatArtBackgroundsById[backgroundId];
-  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_blossom;
+  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
 
@@ -139,24 +148,21 @@ export default function ChatRoomScreen() {
     if (characterId) router.push(`/call/${characterId}`);
   }, [characterId, router]);
 
+  const lastMine = useMemo(() => lastMineId(data), [data]);
   const renderItem = useCallback(
-    ({ item, index }: ListRenderItemInfo<Message>) =>
-      character ? (
+    ({ item, index }: ListRenderItemInfo<Message>) => {
+      if (!character) return null;
+      const run = runOf(data, index);
+      return (
         <>
-          {index === 0 || dayKey(data[index - 1].createdAt) !== dayKey(item.createdAt) ? (
-            <DayChip iso={item.createdAt} />
-          ) : null}
+          {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
           <MessageBubble
             message={item}
             character={character}
-            user={user}
             animate={animations && Date.parse(item.createdAt) > openedAt}
-            showAvatar={
-              index === 0 ||
-              data[index - 1]?.author !== item.author ||
-              data[index - 1]?.kind === 'call' ||
-              data[index - 1]?.kind === 'system'
-            }
+            showAvatar={run.runStart}
+            runEnd={run.runEnd}
+            receipt={item.id === lastMine}
             onCallBack={callBack}
             onLongPress={openMenu}
           />
@@ -164,9 +170,18 @@ export default function ChatRoomScreen() {
             <QuickReplies chips={item.chips} onPick={(chip) => pickChip(conversationId, item.id, chip)} />
           ) : null}
         </>
-      ) : null,
-    [character, user, animations, openedAt, data, callBack, openMenu, conversationId, pickChip],
+      );
+    },
+    [character, animations, openedAt, data, lastMine, callBack, openMenu, conversationId, pickChip],
   );
+
+  // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
+  // System lines (the AI notice at a session's start) do not count as their last line.
+  const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
+  const suggestions =
+    last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !typing
+      ? suggestedReplies(last.id)
+      : null;
 
   if (!conversation || !character) {
     return (
@@ -230,67 +245,12 @@ export default function ChatRoomScreen() {
   const streak = relationship?.streakDays ?? 0;
   const dark = !!wallpaper.dark;
 
+  // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
+  const headerRoom = insets.top + HEADER_ROOM;
+
   return (
-    <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'}>
-      <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
-        <PressableScale
-          onPress={() => router.back()}
-          hitSlop={hitSlop}
-          scaleTo={0.88}
-          accessibilityLabel={t('a11y.back')}>
-          <Ionicons name="chevron-back" size={27} color={colors.text} />
-        </PressableScale>
-
-        {/* Siblings, not nested: a button inside a button is unreachable for
-            VoiceOver/TalkBack and invalid HTML on web. */}
-        <View style={styles.identity}>
-          <PressableScale
-            style={styles.identityTap}
-            scaleTo={0.98}
-            onPress={() => router.push(`/character/${character.id}`)}>
-            <CharacterAvatar character={character} size={36} />
-            <View style={styles.identityText}>
-              <Txt variant="title" lines={1}>
-                {name}
-              </Txt>
-              {/* Always says what they are; the streak rides along once there is one. */}
-              <Txt variant="tiny" color={colors.textSecondary} lines={1}>
-                {t('chat.aiCharacter')}
-                {streak > 0 ? (
-                  <Txt variant="tiny" color={colors.primary}>
-                    {` · \u{1F9E1} ${t('chat.streakShort', { count: streak })}`}
-                  </Txt>
-                ) : null}
-              </Txt>
-            </View>
-          </PressableScale>
-          <View>
-            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
-            <SpendPulse shells={shells} />
-          </View>
-        </View>
-
-        <IconButton
-          icon="call-outline"
-          size={22}
-          dot={missedToday}
-          style={styles.headerIcon}
-          accessibilityLabel={t('a11y.call')}
-          onPress={startCall}
-        />
-        <IconButton
-          icon="menu"
-          size={24}
-          style={styles.headerIcon}
-          accessibilityLabel={t('a11y.chatSettings')}
-          onPress={() => router.push(`/character/${character.id}/settings`)}
-        />
-      </View>
-
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={insets.top + 56}>
+    <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {artWallpaper ? (
           <>
             <Image
@@ -303,22 +263,31 @@ export default function ChatRoomScreen() {
           </>
         ) : null}
         <View style={styles.flex}>
-          {!artWallpaper ? <ChatWallpaper hidden={dark} /> : null}
-          {alarmRinging ? <AlarmBar /> : null}
+          {!artWallpaper ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
           <FlatList
             ref={listRef}
             data={data}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging ? ALARM_ROOM : 0) }]}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             ListFooterComponent={
               <>
+                {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
                 {typing ? <TypingRow character={character} /> : null}
               </>
             }
             onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
           />
+          {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
+          {!artWallpaper ? (
+            <LinearGradient
+              pointerEvents="none"
+              colors={[background[0], background[0], fadeOut(background[0])]}
+              locations={[0, 0.55, 1]}
+              style={[styles.fade, { height: headerRoom + space.md }]}
+            />
+          ) : null}
         </View>
 
         <ChatInput
@@ -329,6 +298,78 @@ export default function ChatRoomScreen() {
           initialValue={typeof draft === 'string' ? draft : undefined}
         />
       </KeyboardAvoidingView>
+
+      {/* Glass back, the friend in the middle (tap: chat settings), shells and call on the right. */}
+      <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
+        <View style={styles.headerRow} pointerEvents="box-none">
+          <PressableScale
+            onPress={() => router.back()}
+            hitSlop={hitSlop}
+            scaleTo={0.88}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.back')}
+            style={[styles.glass, styles.round]}>
+            <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
+          </PressableScale>
+
+          <PressableScale
+            style={styles.identity}
+            scaleTo={0.96}
+            accessibilityRole="button"
+            accessibilityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
+              .filter(Boolean)
+              .join(', ')}
+            onPress={() => router.push(`/character/${character.id}/settings`)}>
+            <CharacterAvatar character={character} size={54} />
+            <View style={[styles.glass, styles.nameChip]}>
+              <Txt style={styles.nameText} lines={1}>
+                {name}
+              </Txt>
+              <Ionicons name="chevron-forward" size={11} color={colors.textSecondary} />
+            </View>
+            {/* Always says what they are; the streak rides along once there is one. */}
+            <View style={styles.caption}>
+              <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
+              {streak > 0 ? (
+                <>
+                  <View style={styles.captionDot} />
+                  <Ionicons name="heart" size={10} color={colors.primary} />
+                  <Txt style={[styles.captionText, styles.captionStreak]}>{t('chat.streakShort', { count: streak })}</Txt>
+                </>
+              ) : null}
+            </View>
+          </PressableScale>
+
+          <View style={[styles.glass, styles.capsule]}>
+            <View>
+              <PressableScale
+                scaleTo={0.92}
+                onPress={() => router.push('/store/shell?tab=shells')}
+                accessibilityRole="button"
+                accessibilityLabel={`${shells} ${t('common.shells')}`}
+                style={styles.shells}>
+                <ShellIcon size={16} />
+                <Txt style={styles.shellCount}>{shells}</Txt>
+              </PressableScale>
+              <SpendPulse shells={shells} />
+            </View>
+            <View style={styles.capsuleLine} />
+            <IconButton
+              icon="call-outline"
+              size={20}
+              dot={missedToday}
+              style={styles.callButton}
+              accessibilityLabel={t('a11y.call')}
+              onPress={startCall}
+            />
+          </View>
+        </View>
+        {alarmRinging ? (
+          <View style={styles.alarm}>
+            <AlarmBar />
+          </View>
+        ) : null}
+      </View>
 
       <LevelUpModal
         event={levelUp?.characterId === character.id ? levelUp : null}
@@ -529,22 +570,47 @@ const styles = StyleSheet.create({
     backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)',
   },
   missing: { padding: space.xl },
-  header: {
+  header: { position: 'absolute', top: 0, left: 0, right: 0 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+  },
+  fade: { position: 'absolute', top: 0, left: 0, right: 0 },
+  glass: {
+    backgroundColor: colors.glass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+    ...shadows.glassButton,
+  },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  backGlyph: { marginLeft: -2 },
+  // Centred between the side buttons; it may not crowd them.
+  identity: { flex: 1, alignItems: 'center', marginHorizontal: space.sm },
+  nameChip: {
+    marginTop: space.xs,
+    height: 26,
+    maxWidth: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    backgroundColor: colors.surface,
-    borderBottomLeftRadius: radius.xl,
-    borderBottomRightRadius: radius.xl,
-    zIndex: 2,
+    gap: 3,
+    paddingLeft: space.md,
+    paddingRight: space.sm + 2,
+    borderRadius: 13,
   },
-  headerIcon: { width: 34 },
-  identity: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  identityTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  identityText: { flex: 1, gap: 2 },
-  list: { paddingVertical: space.lg },
+  nameText: { fontSize: 13, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
+  caption: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  captionText: { fontSize: 11, color: colors.textSecondary },
+  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
+  captionStreak: { color: colors.primary, fontWeight: '600' },
+  capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
+  shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },
+  shellCount: { fontSize: 15, fontWeight: '600' },
+  capsuleLine: { width: StyleSheet.hairlineWidth, height: 20, backgroundColor: colors.borderStrong },
+  callButton: { width: 40, height: 36 },
+  alarm: { marginTop: space.sm },
+  list: { paddingBottom: space.sm },
   // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
   attachGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingTop: space.sm, paddingBottom: space.md },
   attachCell: { width: '25%', alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },

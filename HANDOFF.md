@@ -7,6 +7,21 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0x. iOS look, step 3: the chat room (2026-10-16)
+
+Owner approved the chat prototype (canvas artboard `Chat.dc.html`) and set the direction: every
+screen goes iOS/Apple style, chat and Chats first, in small steps; the palette is a later task.
+Plan for the chat: 1 room (done), 2 long-press menu (keep the mascot reaction stickers and their
+motion), 3 "+" menu, 4 chat settings as an iOS contact card, 5 search/background/memories/profile,
+6 in-chat sheets, 7 group chat + info, 8 the Chats "new chat" sheet.
+Done here: `src/app/chat/[id].tsx` header is glass over the list (tap the friend = chat settings),
+`bg_plain` is iOS white/black and the default (store v9 migrates `bg_blossom`), bubbles/day
+labels/receipts/system lines/voice bubble/typing/quick replies/input restyled
+(`src/components/chat/*`, run logic in `runs.ts`, used by the group chat too); `bubbleOther` is
+iOS grey. **Suggested replies are a TEST**: `src/mock/suggestions.ts` picks 2 from a fixed pool;
+owner wants to work on them in depth later (model-written replies that fit the line, cost rules,
+when to show). Checked on web, light and dark.
+
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 
 Built from the same approved prototype (artboard `Main.dc.html`). `src/app/(tabs)/chat.tsx`: glass

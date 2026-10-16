@@ -1,15 +1,18 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconButton, Txt } from '@/components/ui';
-import { colors, radius, shadows, space, type } from '@/theme';
+import { IconButton, PressableScale, Txt } from '@/components/ui';
+import { colors, radius, shadows, space } from '@/theme';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
 const BUTTON = ICON + space.lg;
-const LINE = type.body.lineHeight ?? 21;
+/** The "+" circle and the one-line field are both 40pt tall. */
+const FIELD = 40;
+const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
 
@@ -63,15 +66,16 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
-      <View style={[styles.pill, shadows.card]}>
-        <IconButton
-          icon="add"
-          size={ICON}
-          background={colors.surfaceAlt}
-          accessibilityLabel={t('a11y.attach')}
-          onPress={onAttach}
-        />
+      <PressableScale
+        scaleTo={0.9}
+        onPress={onAttach}
+        accessibilityRole="button"
+        accessibilityLabel={t('a11y.attach')}
+        style={[styles.glass, styles.plus]}>
+        <Ionicons name="add" size={24} color={colors.text} />
+      </PressableScale>
 
+      <View style={[styles.glass, styles.field]}>
         <TextInput
           ref={inputRef}
           value={value}
@@ -89,14 +93,16 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           {...webSingleRow}
         />
 
+        {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach send once there is text. */}
         <IconButton
-          icon={hasText ? 'arrow-up' : 'mic'}
-          size={ICON}
-          color={colors.textOnPrimary}
-          background={colors.primaryFill}
+          icon={hasText ? 'arrow-up' : 'mic-outline'}
+          size={hasText ? 18 : 21}
+          color={hasText ? colors.textOnPrimary : colors.textSecondary}
+          background={hasText ? colors.primaryFill : undefined}
           haptic={hasText}
           accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
           onPress={hasText ? submit : onVoice}
+          style={styles.action}
         />
       </View>
     </View>
@@ -104,21 +110,35 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
 }
 
 const styles = StyleSheet.create({
+  // "+" in its own glass circle, then the glass field (approved iOS prototype).
   bar: {
-    paddingHorizontal: space.md,
-    paddingTop: space.xs,
-  },
-  pill: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: space.sm,
-    padding: space.xs,
-    borderRadius: radius.xxl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    paddingHorizontal: space.md,
+    paddingTop: space.xs,
   },
+  glass: {
+    backgroundColor: colors.glass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+    ...shadows.glassButton,
+  },
+  plus: { width: FIELD, height: FIELD, borderRadius: FIELD / 2, alignItems: 'center', justifyContent: 'center' },
+  field: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    minHeight: FIELD,
+    paddingLeft: space.lg,
+    paddingRight: 4,
+    borderRadius: FIELD / 2,
+    borderColor: colors.borderStrong,
+  },
+  // A 32pt circle that sits 4pt inside the 40pt field.
+  action: { width: 32, height: 32, marginBottom: 4 },
   locked: {
+    flex: 1,
     height: BUTTON + space.xs * 2 + 2,
     borderRadius: radius.xxl,
     backgroundColor: colors.surfaceAlt,
@@ -127,12 +147,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
   },
   input: {
-    ...type.body,
+    fontSize: 17,
+    letterSpacing: -0.4,
+    lineHeight: LINE,
     flex: 1,
     color: colors.text,
-    // One line sits level with the buttons; past MAX_LINES the field scrolls.
+    // One line sits level with the "+"; past MAX_LINES the field scrolls.
     paddingHorizontal: 0,
-    paddingVertical: (BUTTON - LINE) / 2,
-    maxHeight: LINE * MAX_LINES + (BUTTON - LINE),
+    paddingVertical: (FIELD - LINE) / 2,
+    maxHeight: LINE * MAX_LINES + (FIELD - LINE),
   },
 });

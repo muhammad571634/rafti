@@ -98,7 +98,7 @@ export function newRelationship(characterId: string): Relationship {
     nextLevelAt,
     streakDays: 0,
     anniversary: new Date().toISOString(),
-    backgroundId: 'bg_blossom',
+    backgroundId: 'bg_plain',
     voiceReplies: true,
     messagesFirst: true,
   };
@@ -109,7 +109,7 @@ function relationship(
   intimacy: number,
   streakDays: number,
   anniversaryDaysAgo: number,
-  backgroundId = 'bg_blossom',
+  backgroundId = 'bg_plain',
   lastChatOffset = 0,
 ): Relationship {
   const { level, levelTitle, nextLevelAt } = levelForIntimacy(intimacy);
@@ -127,7 +127,7 @@ function relationship(
 }
 
 export const relationships: Relationship[] = [
-  relationship('c_theo', 420, 1, 25, 'bg_blossom', 0),
+  relationship('c_theo', 420, 1, 25, 'bg_plain', 0),
   relationship('c_seren', 1600, 12, 96, 'bg_dusk', -1),
   relationship('c_oppa', 6200, 22, 180, 'bg_room', 0),
   relationship('c_elio', 40, 0, 6, 'bg_night'),

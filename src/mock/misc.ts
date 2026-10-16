@@ -1,5 +1,5 @@
 import type { ClayIconName } from '@/assets/brand/registry';
-import { isDark, palette } from '@/theme';
+import { colors, isDark, palette } from '@/theme';
 import type {
   ShellPack,
   CallRecord,
@@ -140,7 +140,8 @@ export const chatBackgrounds: {
   { id: 'bg_room', nameKey: 'room', colors: isDark ? ['#2A2420', '#352C26'] : ['#F6EFE6', '#EADFD2'], dark: isDark },
   { id: 'bg_night', nameKey: 'night', colors: ['#1E2A55', '#2E3B6B'] as const, dark: true },
   { id: 'bg_tea', nameKey: 'tea', colors: isDark ? ['#1E2A22', '#26342A'] : ['#F2F5E8', '#E2EBD6'], dark: isDark },
-  { id: 'bg_plain', nameKey: 'plain', colors: isDark ? ['#0E1230', '#1C2148'] : [palette.gray50, palette.white], dark: isDark },
+  // iOS Messages ground, the default since the iOS look (2026-10-16).
+  { id: 'bg_plain', nameKey: 'plain', colors: [colors.bgPlain, colors.bgPlain] as const, dark: isDark },
 ];
 
 export const backgroundsById = Object.fromEntries(

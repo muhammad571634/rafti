@@ -2242,7 +2242,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 8,
+      version: 9,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -2277,6 +2277,15 @@ export const useAppStore = create<AppState>()(
         const oldPlan = state.wallet?.subscription?.plan as string | undefined;
         if (version < 8 && state.wallet?.subscription && (oldPlan === 'quarterly' || oldPlan === 'annual')) {
           state.wallet = { ...state.wallet, subscription: { ...state.wallet.subscription, plan: 'basic' } };
+        }
+        // v9: the iOS look makes plain white the default chat ground; the old default goes with it.
+        if (version < 9 && state.relationships) {
+          state.relationships = Object.fromEntries(
+            Object.entries(state.relationships).map(([id, r]) => [
+              id,
+              r.backgroundId === 'bg_blossom' ? { ...r, backgroundId: 'bg_plain' } : r,
+            ]),
+          );
         }
         return state as AppState;
       },

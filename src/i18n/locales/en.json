@@ -220,8 +220,9 @@
     "notFound": "This group is gone."
   },
   "chat": {
-    "inputPlaceholder": "Message {{name}}…",
+    "inputPlaceholder": "Message",
     "read": "Read",
+    "delivered": "Delivered",
     "sending": "Sending",
     "tapToPlay": "Tap to play · hold for text",
     "callDuration": "Voice call · {{duration}}",

@@ -27,11 +27,11 @@ export default function ChangeBackgroundScreen() {
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const setBackground = useAppStore((s) => s.setBackground);
 
-  const savedBackgroundId = relationship?.backgroundId ?? 'bg_blossom';
+  const savedBackgroundId = relationship?.backgroundId ?? 'bg_plain';
   const backgroundId =
     backgroundsById[savedBackgroundId] || chatArtBackgroundsById[savedBackgroundId]
       ? savedBackgroundId
-      : 'bg_blossom';
+      : 'bg_plain';
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
     chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
@@ -41,7 +41,7 @@ export default function ChangeBackgroundScreen() {
   const tileWidth = (width - space.lg * 2 - gap * (columns - 1)) / columns;
   const previewHeight = Math.min(200, Math.max(156, width * 0.5));
   const selectedArt = chatArtBackgroundsById[backgroundId];
-  const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_blossom;
+  const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const data: BackgroundOption[] = artCollection ? [...chatArtBackgrounds] : chatBackgrounds;
   const tabs = [
     { value: 'classic', label: t('background.collections.classic') },

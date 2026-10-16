@@ -5,13 +5,18 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { Anim, PressableScale, Txt } from '@/components/ui';
 import { colors, radius, space } from '@/theme';
 
-/** Quick replies under the friend's line (the morning chain): a tap sends it, free. */
+/**
+ * Quick replies under the friend's line (the morning chain): a tap sends it, free. Outlined
+ * pills on the user's side, where the answer will land (iOS suggested replies).
+ */
 export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip: string) => void }) {
   return (
     <Animated.View entering={FadeIn.duration(200)} style={styles.chips}>
       {chips.map((chip) => (
         <PressableScale key={chip} onPress={() => onPick(chip)} scaleTo={0.95} style={styles.chip} accessibilityRole="button">
-          <Txt variant="smallStrong">{chip}</Txt>
+          <Txt style={styles.chipText} color={colors.primary}>
+            {chip}
+          </Txt>
         </PressableScale>
       ))}
     </Animated.View>
@@ -33,14 +38,24 @@ export function AlarmBar() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingLeft: 34 + space.sm + space.lg, paddingRight: space.lg, paddingTop: space.xs, paddingBottom: space.sm },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: space.sm,
+    paddingLeft: space.xxl,
+    paddingRight: space.md,
+    paddingTop: space.xs,
+    paddingBottom: space.sm + 2,
+  },
   chip: {
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm - 1,
+    height: 34,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: colors.borderStrong,
   },
+  chipText: { fontSize: 15, fontWeight: '500', letterSpacing: -0.2 },
   bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primaryFill },
 });

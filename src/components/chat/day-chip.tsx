@@ -2,10 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Txt } from '@/components/ui';
+import { clockTime } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
-import { colors, isDark, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 
-/** "Today", "Yesterday" or the date, between messages from different days (chats and groups). */
+/**
+ * "Today 00:58", "Yesterday 23:58" or the date and time, between messages from different days
+ * or after an hour of quiet (chats and groups). Plain grey text, as in iOS Messages.
+ */
 export function DayChip({ iso }: { iso: string }) {
   const { t, i18n } = useTranslation();
   const key = dayKey(iso);
@@ -16,22 +20,16 @@ export function DayChip({ iso }: { iso: string }) {
         ? t('chat.dayYesterday')
         : new Date(iso).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
   return (
-    <View style={styles.dayRow}>
-      <View style={styles.dayChip}>
-        <Txt variant="caption" color={colors.textSecondary}>
-          {label}
-        </Txt>
-      </View>
+    <View style={styles.row}>
+      <Txt style={styles.line} center>
+        <Txt style={[styles.line, styles.day]}>{label}</Txt> {clockTime(iso)}
+      </Txt>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  dayRow: { alignItems: 'center', marginTop: space.md, marginBottom: space.md },
-  dayChip: {
-    paddingHorizontal: space.md,
-    paddingVertical: space.xs,
-    borderRadius: radius.pill,
-    backgroundColor: isDark ? 'rgba(28,33,72,0.85)' : colors.onMediaSoft,
-  },
+  row: { paddingTop: space.md + 2, paddingBottom: space.sm },
+  line: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
+  day: { fontWeight: '600' },
 });

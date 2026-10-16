@@ -142,7 +142,7 @@ const lightColors = {
   // Chat
   bubbleSelf: palette.apricot200,
   bubbleSelfText: palette.gray900,
-  bubbleOther: palette.white,
+  bubbleOther: '#E9E9EB',
   bubbleOtherText: palette.gray900,
   bubbleTranscript: 'rgba(242,242,247,0.92)',
   bubbleTranscriptText: '#636366',
@@ -193,7 +193,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   bondSoft: '#163F3A',
   bubbleSelf: '#56392F',
   bubbleSelfText: '#FFFFFF',
-  bubbleOther: '#1C1C1E',
+  bubbleOther: '#262628',
   bubbleOtherText: '#FFFFFF',
   bubbleTranscript: 'rgba(28,28,30,0.92)',
   bubbleTranscriptText: '#AEAEB2',
