@@ -340,7 +340,14 @@
     "sectionManage": "Manage",
     "block": "Block",
     "voiceRepliesPlanHint": "Voice notes as well as text. They come with Pro.",
-    "blockName": "Block {{name}}"
+    "blockName": "Block {{name}}",
+    "since": "Since {{date}}",
+    "quickCall": "Call",
+    "quickSearch": "Search",
+    "quickBackground": "Background",
+    "profile": "Profile",
+    "nicknameRow": "Nickname",
+    "none": "None"
   },
   "search": {
     "title": "Search messages",

@@ -28,7 +28,10 @@ owner over the 3D ones, only in this menu). Blur fix: on the phone (Android) the
 `blurMethod="dimezisBlurView"` and a `blurTarget` ref to a `BlurTargetView` are given. Both menus are
 now overlays inside the screen (not a Modal window), the chat and group content sit in a
 `BlurTargetView`, and Android back closes an open menu (`useBackToClose`). Web looked fine because
-it uses CSS blur. Next: step 4, chat settings as an iOS contact card.
+it uses CSS blur. Step 4 done: chat settings are an iOS contact card (`settings.tsx`); every old action kept, the
+Chat settings sheet is inline; switches are RN `Switch` so each platform draws its own (owner asked
+about App Store risk: native controls are what Apple asks for). Next: step 5, search / background /
+memories / profile screens.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

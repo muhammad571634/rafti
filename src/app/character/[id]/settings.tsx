@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -10,13 +10,10 @@ import {
   CharacterAvatar,
   Header,
   IconButton,
-  IconTile,
   ListRow,
   PressableScale,
   Screen,
-  SectionLabel,
   Sheet,
-  Toggle,
   Txt,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
@@ -25,7 +22,7 @@ import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { colors, radius, shadows, space, type } from '@/theme';
 import type { Character } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -35,47 +32,11 @@ type ActionKey =
   | 'characterMemories'
   | 'characterSettings'
   | 'editCharacter'
-  | 'chatSettings'
   | 'searchHistory'
   | 'changeBackground'
   | 'clearChat'
   | 'reset'
   | 'block';
-
-/**
- * Grouped like Profile: what you do in this chat, who they are, then the destructive
- * three. Rows carry a line icon in a grey tile (docs/design-style.md); the destructive
- * rows are plain text, Block in red.
- */
-const GROUPS: { title: string; actions: { key: ActionKey; icon?: IoniconName }[] }[] = [
-  {
-    title: 'sectionChat',
-    actions: [
-      { key: 'voiceCall', icon: 'call-outline' },
-      { key: 'chatSettings', icon: 'options-outline' },
-      { key: 'searchHistory', icon: 'search-outline' },
-      { key: 'changeBackground', icon: 'image-outline' },
-    ],
-  },
-  {
-    title: 'sectionCharacter',
-    actions: [
-      { key: 'characterMemories', icon: 'bookmark-outline' },
-      { key: 'characterSettings', icon: 'person-outline' },
-      // Only on characters the user made (see `visible`).
-      { key: 'editCharacter', icon: 'pencil-outline' },
-    ],
-  },
-  {
-    title: 'sectionManage',
-    actions: [{ key: 'clearChat' }, { key: 'reset' }, { key: 'block' }],
-  },
-];
-
-const ROW_ICON = 36;
-
-/** Seed characters cannot be edited; the user's own creations can. */
-const visible = (key: ActionKey, character: Character) => key !== 'editCharacter' || !character.isOfficial;
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -114,7 +75,6 @@ export default function CharacterSettingsScreen() {
 
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState('');
-  const [chatSettingsOpen, setChatSettingsOpen] = useState(false);
   const [closenessOpen, setClosenessOpen] = useState(false);
   const [labelOpen, setLabelOpen] = useState(false);
 
@@ -138,8 +98,6 @@ export default function CharacterSettingsScreen() {
         return router.push(`/character/${character.id}`);
       case 'editCharacter':
         return router.push({ pathname: '/create-character', params: { id: character.id } });
-      case 'chatSettings':
-        return setChatSettingsOpen(true);
       case 'searchHistory':
         return router.push(`/character/${character.id}/search`);
       case 'changeBackground':
@@ -175,33 +133,83 @@ export default function CharacterSettingsScreen() {
     }
   };
 
-  return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('characterSettings.title')} />
+  const own = !character.isOfficial;
+  const quick: { key: ActionKey; icon: IoniconName; label: string; badge?: number }[] = [
+    { key: 'voiceCall', icon: 'call', label: t('characterSettings.quickCall') },
+    { key: 'searchHistory', icon: 'search', label: t('characterSettings.quickSearch') },
+    { key: 'characterMemories', icon: 'bookmark', label: t('characterSettings.characterMemories'), badge: memoryCount },
+    { key: 'changeBackground', icon: 'image', label: t('characterSettings.quickBackground') },
+  ];
+  const danger: { key: ActionKey; label: string }[] = [
+    { key: 'clearChat', label: t('characterSettings.clearChat') },
+    { key: 'reset', label: t('characterSettings.reset') },
+    { key: 'block', label: t('characterSettings.blockName', { name: shortName(name) }) },
+  ];
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
+  return (
+    // iOS contact card (approved prototype `Info.dc.html`): grouped white cards on the grey ground.
+    <Screen background={colors.bg}>
+      <View style={styles.topBar}>
+        <PressableScale
+          scaleTo={0.88}
+          onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.back')}
+          style={[styles.glass, styles.round]}>
+          <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
+        </PressableScale>
+        {/* Only the user's own characters can be edited; seed ones get a nickname below. */}
+        {own ? (
+          <PressableScale
+            scaleTo={0.92}
+            onPress={() => run('editCharacter')}
+            accessibilityRole="button"
+            accessibilityLabel={t('characterSettings.editCharacter')}
+            style={[styles.glass, styles.editButton]}>
+            <Txt style={styles.editText}>{t('common.edit')}</Txt>
+          </PressableScale>
+        ) : null}
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <View style={styles.identity}>
-          <CharacterAvatar character={character} size={56} />
-          <View style={styles.flex}>
-            <Txt variant="h3" lines={1}>
-              {name}
-            </Txt>
+          <CharacterAvatar character={character} size={112} />
+          <Txt style={styles.name} lines={1} accessibilityRole="header">
+            {name}
+          </Txt>
+          <View style={styles.caption}>
+            <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
             {relationship ? (
-              <Txt variant="small" color={colors.textMuted}>
-                {t('characterSettings.anniversary', { date: planDate(Date.parse(relationship.anniversary)) })}
-              </Txt>
+              <>
+                <View style={styles.captionDot} />
+                <Txt style={styles.captionText}>
+                  {t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) })}
+                </Txt>
+              </>
             ) : null}
           </View>
-          <IconButton
-            icon="pencil-outline"
-            size={18}
-            background={colors.surfaceAlt}
-            accessibilityLabel={t('characterSettings.nickname')}
-            onPress={() => {
-              setDraftName(relationship?.nickname ?? '');
-              setRenaming(true);
-            }}
-          />
+        </View>
+
+        <View style={styles.quick}>
+          {quick.map((q) => (
+            <PressableScale
+              key={q.key}
+              scaleTo={0.95}
+              onPress={() => run(q.key)}
+              accessibilityRole="button"
+              accessibilityLabel={q.badge ? `${q.label}, ${q.badge}` : q.label}
+              style={styles.quickTile}>
+              <Ionicons name={q.icon} size={22} color={colors.primary} />
+              <Txt style={styles.quickLabel} color={colors.primary} lines={1}>
+                {q.label}
+              </Txt>
+              {q.badge ? (
+                <View style={styles.badge}>
+                  <Txt style={styles.badgeText}>{q.badge > 99 ? '99+' : q.badge}</Txt>
+                </View>
+              ) : null}
+            </PressableScale>
+          ))}
         </View>
 
         {relationship ? (
@@ -215,36 +223,57 @@ export default function CharacterSettingsScreen() {
           />
         ) : null}
 
-        {GROUPS.map((group) => (
-          <View key={group.title}>
-            <SectionLabel tone="section" title={t(`characterSettings.${group.title}`)} />
-            {group.actions.filter((action) => visible(action.key, character)).map((action) =>
-              action.icon ? (
-                <ListRow
-                  key={action.key}
-                  title={t(`characterSettings.${action.key}`)}
-                  left={<IconTile icon={action.icon} size={ROW_ICON} radius={11} glyphSize={19} />}
-                  meta={action.key === 'characterMemories' && memoryCount > 0 ? String(memoryCount) : undefined}
-                  chevron
-                  onPress={() => run(action.key)}
-                />
-              ) : (
-                <PressableScale
-                  key={action.key}
-                  scaleTo={0.98}
-                  onPress={() => run(action.key)}
-                  accessibilityRole="button"
-                  style={styles.plainRow}>
-                  <Txt variant="title" color={action.key === 'block' ? colors.dangerText : colors.text}>
-                    {action.key === 'block'
-                      ? t('characterSettings.blockName', { name: shortName(name) })
-                      : t(`characterSettings.${action.key}`)}
-                  </Txt>
-                </PressableScale>
-              ),
-            )}
-          </View>
-        ))}
+        {/* The former "Chat settings" sheet, inline as on iOS. */}
+        <View style={styles.card}>
+          <SwitchRow
+            label={t('characterSettings.voiceReplies')}
+            value={relationship?.voiceReplies ?? true}
+            disabled={!character.voiceReady}
+            onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
+          />
+          <SwitchRow
+            label={t('characterSettings.messagesFirst')}
+            value={relationship?.messagesFirst ?? true}
+            onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
+          />
+          <SwitchRow
+            label={t('characterSettings.chatAnimation')}
+            value={chatAnimation}
+            onChange={(v) => setSetting('chatAnimation', v)}
+            last
+          />
+        </View>
+        {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
+        {!hasPlan && character.voiceReady ? (
+          <Txt style={styles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt>
+        ) : null}
+
+        <View style={styles.card}>
+          <LinkRow label={t('characterSettings.profile')} onPress={() => run('characterSettings')} />
+          <LinkRow
+            label={t('characterSettings.nicknameRow')}
+            meta={relationship?.nickname || t('characterSettings.none')}
+            onPress={() => {
+              setDraftName(relationship?.nickname ?? '');
+              setRenaming(true);
+            }}
+            last
+          />
+        </View>
+
+        <View style={styles.card}>
+          {danger.map((d, i) => (
+            <Pressable
+              key={d.key}
+              onPress={() => run(d.key)}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.row, i < danger.length - 1 && styles.rowLine, pressed && styles.rowPressed]}>
+              <Txt style={styles.rowText} color={colors.danger}>
+                {d.label}
+              </Txt>
+            </Pressable>
+          ))}
+        </View>
       </ScrollView>
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')}>
@@ -270,29 +299,6 @@ export default function CharacterSettingsScreen() {
         />
       </Sheet>
 
-      <Sheet
-        visible={chatSettingsOpen}
-        onClose={() => setChatSettingsOpen(false)}
-        title={t('characterSettings.chatSettings')}>
-        <ToggleRow
-          label={t('characterSettings.voiceReplies')}
-          hint={t(hasPlan ? 'characterSettings.voiceRepliesHint' : 'characterSettings.voiceRepliesPlanHint')}
-          value={relationship?.voiceReplies ?? true}
-          disabled={!character.voiceReady}
-          onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
-        />
-        <ToggleRow
-          label={t('characterSettings.messagesFirst')}
-          hint={t('characterSettings.messagesFirstHint')}
-          value={relationship?.messagesFirst ?? true}
-          onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
-        />
-        <ToggleRow
-          label={t('characterSettings.chatAnimation')}
-          value={chatAnimation}
-          onChange={(v) => setSetting('chatAnimation', v)}
-        />
-      </Sheet>
       <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} level={relationship?.level} />
 
       <Sheet
@@ -336,31 +342,46 @@ export default function CharacterSettingsScreen() {
   );
 }
 
-function ToggleRow({
+/** A row with the platform's own switch: UISwitch on iOS, Material on Android. */
+function SwitchRow({
   label,
-  hint,
   value,
   disabled,
+  last,
   onChange,
 }: {
   label: string;
-  hint?: string;
   value: boolean;
   disabled?: boolean;
+  last?: boolean;
   onChange: (v: boolean) => void;
 }) {
   return (
-    <View style={[styles.toggleRow, disabled && styles.disabled]}>
-      <View style={styles.flex}>
-        <Txt variant="bodyStrong">{label}</Txt>
-        {hint ? (
-          <Txt variant="caption" color={colors.textMuted}>
-            {hint}
-          </Txt>
-        ) : null}
-      </View>
-      <Toggle value={value} disabled={disabled} onChange={onChange} />
+    <View style={[styles.row, !last && styles.rowLine, disabled && styles.disabled]}>
+      <Txt style={[styles.rowText, styles.flex]}>{label}</Txt>
+      <Switch
+        value={value}
+        disabled={disabled}
+        onValueChange={onChange}
+        accessibilityLabel={label}
+        trackColor={{ true: colors.success }}
+        ios_backgroundColor={colors.surfaceAlt}
+      />
     </View>
+  );
+}
+
+function LinkRow({ label, meta, last, onPress }: { label: string; meta?: string; last?: boolean; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={meta ? `${label}, ${meta}` : label}
+      style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && styles.rowPressed]}>
+      <Txt style={[styles.rowText, styles.flex]}>{label}</Txt>
+      {meta ? <Txt style={[styles.rowText, styles.meta]}>{meta}</Txt> : null}
+      <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+    </Pressable>
   );
 }
 
@@ -388,11 +409,11 @@ function RelationshipCard({
     <View style={styles.bond}>
       <View style={styles.bondHead}>
         <View style={styles.bondHeart}>
-          <Ionicons name="heart" size={18} color={colors.bondText} />
+          <Ionicons name="heart" size={16} color={colors.bond} />
         </View>
         <View style={styles.flex}>
-          <Txt variant="title">{title}</Txt>
-          <Txt variant="small" color={colors.textMuted}>
+          <Txt style={styles.bondTitle}>{title}</Txt>
+          <Txt style={styles.bondLine}>
             {t('closeness.level', { level })}
             {' · '}
             {maxed
@@ -400,18 +421,14 @@ function RelationshipCard({
               : t('closeness.toNext', { count: Math.max(0, nextLevelAt - intimacy), level: level + 1 })}
           </Txt>
         </View>
-        <IconButton icon="information-circle-outline" size={21} accessibilityLabel={t('closeness.title')} onPress={onInfo} />
+        <IconButton icon="information-circle-outline" size={22} color={colors.textSecondary} accessibilityLabel={t('closeness.title')} onPress={onInfo} />
       </View>
       <View style={styles.track}>
         <View style={[styles.fill, { width: `${Math.round(Math.min(1, progress) * 100)}%` }]} />
       </View>
-      <ListRow
-        title={t('closeness.relationship')}
-        meta={label ?? t('closeness.pickShort')}
-        chevron
-        onPress={onPick}
-        style={styles.bondRow}
-      />
+      <View style={styles.bondRow}>
+        <LinkRow label={t('closeness.relationship')} meta={label ?? t('closeness.pickShort')} onPress={onPick} last />
+      </View>
     </View>
   );
 }
@@ -451,50 +468,88 @@ function LabelRow({
 }
 
 const styles = StyleSheet.create({
-  // One white card for the bond: level, progress and the label you chose.
-  bond: {
-    marginTop: space.xl,
-    marginHorizontal: space.lg,
-    paddingTop: space.lg,
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
   },
-  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.sm },
+  glass: {
+    backgroundColor: colors.glass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+    ...shadows.glassButton,
+  },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  backGlyph: { marginLeft: -2 },
+  editButton: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
+  editText: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },
+  identity: { alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.xs },
+  name: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
+  caption: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  captionText: { fontSize: 15, color: colors.textSecondary },
+  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
+  quick: { flexDirection: 'row', gap: space.sm, marginTop: 22, paddingHorizontal: space.lg },
+  quickTile: {
+    flex: 1,
+    height: 62,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  quickLabel: { fontSize: 12, fontWeight: '500', letterSpacing: -0.1 },
+  badge: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 5,
+    borderRadius: 9,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontSize: 11, fontWeight: '600', color: colors.textSecondary },
+  // iOS inset grouped list: white cards 16pt in, rows 44pt+, hairlines between rows.
+  card: { marginTop: 22, marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
+  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  rowPressed: { backgroundColor: colors.surfaceAlt },
+  rowText: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  meta: { color: colors.textSecondary },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg + space.lg, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  bond: { marginTop: 22, marginHorizontal: space.lg, paddingTop: 14, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
+  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.xs },
   bondHeart: {
-    width: 36,
-    height: 36,
-    borderRadius: 11,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: colors.bondSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bondTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  bondLine: { fontSize: 13, color: colors.textSecondary },
   track: {
-    height: 8,
-    marginHorizontal: space.lg,
+    height: 6,
+    marginLeft: space.lg + 30 + space.md,
+    marginRight: space.lg,
     marginTop: space.md,
-    borderRadius: radius.pill,
+    marginBottom: 14,
+    borderRadius: 3,
     backgroundColor: colors.border,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
-  bondRow: { marginTop: space.md, borderTopWidth: 1, borderTopColor: colors.divider },
-  plainRow: { minHeight: 52, justifyContent: 'center', paddingHorizontal: space.lg },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
+  bondRow: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
   labelScroll: { maxHeight: 460 },
   labelHint: { marginBottom: space.sm },
   locked: { opacity: 0.5 },
   flex: { flex: 1 },
-  scroll: { paddingBottom: space.huge },
-  identity: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingLeft: space.lg,
-    paddingRight: space.sm,
-    paddingTop: space.sm,
-  },
   input: {
     height: 48,
     paddingHorizontal: space.md,
@@ -504,6 +559,5 @@ const styles = StyleSheet.create({
     ...type.body,
   },
   hint: { marginTop: space.sm, marginBottom: space.lg },
-  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md },
   disabled: { opacity: 0.45 },
 });
