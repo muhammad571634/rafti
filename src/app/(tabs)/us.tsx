@@ -363,7 +363,12 @@ export default function UsScreen() {
         )}
       </ScrollView>
 
-      <PublishSheet visible={publishOpen} onClose={() => setPublishOpen(false)} onPick={pickPublish} />
+      <PublishSheet
+        visible={publishOpen}
+        onClose={() => setPublishOpen(false)}
+        onPick={pickPublish}
+        name={selected ? shortName(displayName(selected.character, selected.relationship)) : ''}
+      />
       <PlanSheet
         visible={planOpen}
         onClose={() => setPlanOpen(false)}

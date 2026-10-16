@@ -1000,8 +1000,8 @@
     "publish": "Add to us",
     "publishKind": {
       "plan": "Plan",
-      "diary": "Diary",
-      "board": "Board"
+      "diary": "Diary page",
+      "board": "Note on the board"
     },
     "newPlan": "New plan",
     "planPlaceholder": "What is the plan?",
@@ -1021,7 +1021,16 @@
     },
     "day": "Day",
     "time": "Time",
-    "pickDay": "Pick a day"
+    "pickDay": "Pick a day",
+    "otherDay": "Other day",
+    "with": "With",
+    "remindBefore": "{{name}} reminds you {{count}} minutes before.",
+    "remindMorning": "{{name}} reminds you at 8:00 that day.",
+    "publishHint": {
+      "plan": "A day and time with {{name}}",
+      "diary": "Write about today",
+      "board": "Pin something for {{name}}"
+    }
   },
   "profile": {
     "title": "Profile",

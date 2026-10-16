@@ -1,21 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
-import { CalendarDotsIcon } from 'phosphor-react-native/src/icons/CalendarDots';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Platform, Pressable, StyleSheet, Switch, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { Button, CharacterAvatar, PressableScale, Sheet, Txt } from '@/components/ui';
-import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
-import { dateFromKey, dayKeyFromToday } from '@/mock';
-import { colors, fonts, radius, space } from '@/theme';
+import { CharacterAvatar, Sheet, Txt } from '@/components/ui';
+import { shortName } from '@/lib/format';
+import { REMIND_BEFORE_MIN } from '@/lib/schedule';
+import { dateFromKey, dayKey, dayKeyFromToday } from '@/mock';
+import { colors, space } from '@/theme';
 import type { Character } from '@/types';
 
 const STEP_MIN = 15;
 const DAY_MIN = 24 * 60;
 const TITLE_MAX = 40;
-/** The sheet takes most of the screen, so nothing in it is cramped. */
-const SHEET_SHARE = 0.72;
 
 export interface NewPlan {
   title: string;
@@ -34,10 +33,17 @@ function defaultMinutes() {
   return Math.min(23, now.getHours() + 1) * 60;
 }
 
+/** The day as a Date for the system pickers (hours and minutes from `minutes`). */
+const asDate = (key: string, minutes = 12 * 60) => {
+  const d = dateFromKey(key);
+  d.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+  return d;
+};
+
 /**
- * A plan by hand: what, which day and, if it matters, what time. Days are three
- * equal buttons — Today, Tomorrow and the calendar, which shows the date once a
- * later day is picked from it.
+ * A plan by hand, iOS Calendar's "New Event" (approved prototype `UsPlan.dc.html`): the title,
+ * who it is with, the day (Today / Tomorrow / Other day) and, if it matters, the time. Other day
+ * and the time open the system pickers (inline on iOS, dialogs on Android); ✓ in the header adds it.
  */
 export function PlanSheet({
   visible,
@@ -56,7 +62,6 @@ export function PlanSheet({
 }) {
   const { t, i18n } = useTranslation();
   const { height } = useWindowDimensions();
-  const keyboard = useKeyboardVisible();
   const today = dayKeyFromToday(0);
   const tomorrow = dayKeyFromToday(1);
 
@@ -64,8 +69,8 @@ export function PlanSheet({
   const [date, setDate] = useState(day);
   const [timed, setTimed] = useState(true);
   const [minutes, setMinutes] = useState(defaultMinutes);
-  const [focused, setFocused] = useState(false);
-  const [picking, setPicking] = useState(false);
+  /** Which inline wheel is open (iOS); web uses the calendar popover for the day. */
+  const [open, setOpen] = useState<'day' | 'time' | null>(null);
 
   // Every opening starts clean, on the day picked in the calendar. Only the opening
   // resets it: a later change to the calendar behind must not wipe what was typed.
@@ -78,12 +83,41 @@ export function PlanSheet({
     setDate(openDay.current < start ? start : openDay.current);
     setTimed(true);
     setMinutes(defaultMinutes());
+    setOpen(null);
   }, [visible]);
 
   const later = date !== today && date !== tomorrow;
   const shortDate = (key: string) => dateFromKey(key).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
+  const name = character ? shortName(character.name) : '';
 
-  const step = (delta: number) => setMinutes((m) => (m + delta + DAY_MIN) % DAY_MIN);
+  const pickOtherDay = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: dateFromKey(date),
+        mode: 'date',
+        minimumDate: dateFromKey(today),
+        onChange: (e, d) => e.type === 'set' && d && setDate(dayKey(d)),
+      });
+    } else {
+      setOpen((o) => (o === 'day' ? null : 'day'));
+    }
+  };
+
+  const pickTime = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: asDate(date, minutes),
+        mode: 'time',
+        is24Hour: true,
+        onChange: (e, d) => e.type === 'set' && d && setMinutes(d.getHours() * 60 + d.getMinutes()),
+      });
+    } else if (Platform.OS === 'ios') {
+      setOpen((o) => (o === 'time' ? null : 'time'));
+    } else {
+      // Web has no native time picker: each tap steps a quarter of an hour.
+      setMinutes((m) => (m + STEP_MIN) % DAY_MIN);
+    }
+  };
 
   const submit = () => {
     const clean = title.trim();
@@ -99,16 +133,8 @@ export function PlanSheet({
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} avoidKeyboard>
-      {/* Tall while browsing; while typing it gives the room back to the keyboard. */}
-      <View style={[styles.body, !keyboard && { minHeight: Math.round(height * SHEET_SHARE) }]}>
-        <View style={styles.head}>
-          <Txt variant="h1" style={styles.grow}>
-            {t('us.newPlan')}
-          </Txt>
-          {character ? <CharacterAvatar character={character} size={40} /> : null}
-        </View>
-
+    <Sheet visible={visible} onClose={onClose} title={t('us.newPlan')} onDone={submit} doneDisabled={!title.trim()} avoidKeyboard>
+      <View style={styles.group}>
         <TextInput
           value={title}
           onChangeText={setTitle}
@@ -117,61 +143,101 @@ export function PlanSheet({
           maxLength={TITLE_MAX}
           returnKeyType="done"
           onSubmitEditing={submit}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          style={[styles.input, focused && styles.inputFocused]}
+          accessibilityLabel={t('us.planPlaceholder')}
+          style={styles.input}
         />
-
-        <View style={styles.group}>
-          <Txt variant="title">{t('us.day')}</Txt>
-          <View style={styles.segments}>
-            <Segment label={t('common.today')} active={date === today} onPress={() => setDate(today)} />
-            <Segment label={t('common.tomorrow')} active={date === tomorrow} onPress={() => setDate(tomorrow)} />
-            <Segment
-              label={later ? shortDate(date) : undefined}
-              icon
-              active={later}
-              accessibilityLabel={t('us.pickDay')}
-              onPress={() => setPicking(true)}
-            />
-          </View>
-        </View>
-
-        <View style={styles.group}>
-          <Txt variant="title">{t('us.time')}</Txt>
-          <View style={styles.segments}>
-            <Segment label={t('us.anyTime')} active={!timed} onPress={() => setTimed(false)} />
-            <Segment label={t('us.atTime')} active={timed} onPress={() => setTimed(true)} />
-          </View>
-          {timed ? (
-            <View style={styles.clock}>
-              <Stepper icon="remove" label={t('us.earlier')} onPress={() => step(-STEP_MIN)} />
-              <Txt variant="heroFigure" style={styles.time}>
-                {toClock(minutes)}
-              </Txt>
-              <Stepper icon="add" label={t('us.later')} onPress={() => step(STEP_MIN)} />
-            </View>
-          ) : null}
-        </View>
-
-        <View style={styles.grow} />
-        <Button label={t('us.addPlan')} full size="lg" disabled={!title.trim()} onPress={submit} />
       </View>
 
-      <CalendarPopover
-        visible={picking}
-        onClose={() => setPicking(false)}
-        value={date}
-        onChange={setDate}
-        marked={new Set()}
-        top={Math.round(height * 0.18)}
-        allow="future"
-      />
+      <View style={[styles.group, styles.gap]}>
+        {character ? (
+          <View style={[styles.row, styles.line]}>
+            <Txt style={[styles.label, styles.grow]}>{t('us.with')}</Txt>
+            <CharacterAvatar character={character} size={26} />
+            <Txt style={[styles.label, styles.meta]}>{name}</Txt>
+          </View>
+        ) : null}
+
+        <Txt style={[styles.label, styles.dayLabel]}>{t('us.day')}</Txt>
+        <View style={styles.segment} accessibilityRole="radiogroup">
+          <Segment label={t('common.today')} active={date === today} onPress={() => setDate(today)} />
+          <Segment label={t('common.tomorrow')} active={date === tomorrow} onPress={() => setDate(tomorrow)} />
+          <Segment
+            label={later ? shortDate(date) : t('us.otherDay')}
+            icon
+            active={later}
+            accessibilityLabel={t('us.pickDay')}
+            onPress={pickOtherDay}
+          />
+        </View>
+        {open === 'day' && Platform.OS === 'ios' ? (
+          <DateTimePicker
+            value={dateFromKey(date)}
+            mode="date"
+            display="inline"
+            minimumDate={dateFromKey(today)}
+            accentColor={colors.primary}
+            onChange={(_, d) => d && setDate(dayKey(d))}
+          />
+        ) : null}
+
+        <View style={[styles.row, styles.lineTop]}>
+          <Txt style={[styles.label, styles.grow]}>{t('us.time')}</Txt>
+          {timed ? (
+            <Pressable
+              onPress={pickTime}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('us.time')}, ${toClock(minutes)}`}
+              style={styles.timePill}>
+              <Txt style={styles.timeText} color={colors.brandText}>
+                {toClock(minutes)}
+              </Txt>
+            </Pressable>
+          ) : null}
+          <Switch
+            value={timed}
+            onValueChange={(on) => {
+              setTimed(on);
+              if (!on) setOpen((o) => (o === 'time' ? null : o));
+            }}
+            accessibilityLabel={t('us.atTime')}
+            trackColor={{ true: colors.success }}
+            ios_backgroundColor={colors.surfaceAlt}
+          />
+        </View>
+        {open === 'time' && timed && Platform.OS === 'ios' ? (
+          <DateTimePicker
+            value={asDate(date, minutes)}
+            mode="time"
+            display="spinner"
+            minuteInterval={5}
+            onChange={(_, d) => d && setMinutes(d.getHours() * 60 + d.getMinutes())}
+          />
+        ) : null}
+      </View>
+
+      {character ? (
+        <Txt style={styles.footer}>
+          {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
+        </Txt>
+      ) : null}
+
+      {/* Web has no system date picker: the app's own calendar stands in. */}
+      {Platform.OS === 'web' ? (
+        <CalendarPopover
+          visible={open === 'day'}
+          onClose={() => setOpen(null)}
+          value={date}
+          onChange={setDate}
+          marked={new Set()}
+          top={Math.round(height * 0.18)}
+          allow="future"
+        />
+      ) : null}
     </Sheet>
   );
 }
 
-/** One of a row of equal buttons: grey when idle, ink when chosen. */
+/** One side of the iOS segmented control: the chosen one is a raised white pill. */
 function Segment({
   label,
   icon,
@@ -179,78 +245,53 @@ function Segment({
   accessibilityLabel,
   onPress,
 }: {
-  label?: string;
+  label: string;
   icon?: boolean;
   active: boolean;
   accessibilityLabel?: string;
   onPress: () => void;
 }) {
-  const fg = active ? colors.textOnInk : colors.text;
   return (
-    <PressableScale
-      style={[styles.segment, active && styles.segmentActive]}
-      scaleTo={0.96}
-      dimOnPress={false}
+    <Pressable
+      style={[styles.segmentItem, active && styles.segmentOn]}
       accessibilityRole="radio"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected: active }}
       onPress={onPress}>
-      {icon ? <CalendarDotsIcon size={22} weight="bold" color={fg} /> : null}
-      {label ? (
-        <Txt variant="bodyStrong" color={fg} lines={1}>
-          {label}
-        </Txt>
-      ) : null}
-    </PressableScale>
-  );
-}
-
-function Stepper({ icon, label, onPress }: { icon: 'add' | 'remove'; label: string; onPress: () => void }) {
-  return (
-    <PressableScale style={styles.stepper} scaleTo={0.88} accessibilityLabel={label} onPress={onPress}>
-      <Ionicons name={icon} size={26} color={colors.text} />
-    </PressableScale>
+      {icon ? <Ionicons name="calendar-outline" size={13} color={colors.text} /> : null}
+      <Txt style={[styles.segmentText, active && styles.segmentTextOn]} lines={1}>
+        {label}
+      </Txt>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
-  body: { gap: space.xl, paddingTop: space.xs },
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  input: {
-    height: 58,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    borderColor: colors.border,
-    paddingHorizontal: space.lg,
-    fontSize: 18,
-    fontWeight: '600',
-    fontFamily: fonts.body,
-    color: colors.text,
-  },
-  inputFocused: { borderColor: colors.primary },
-  group: { gap: space.md },
-  segments: { flexDirection: 'row', gap: space.sm },
+  // iOS inset groups on the white sheet: grey cards, hairlines between rows.
+  group: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  gap: { marginTop: 22 },
+  input: { minHeight: 48, paddingHorizontal: space.lg, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  lineTop: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong, minHeight: 52 },
+  label: { fontSize: 17, letterSpacing: -0.4 },
+  meta: { color: colors.textSecondary },
+  dayLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
   segment: {
-    flex: 1,
     flexDirection: 'row',
-    gap: space.xs,
-    height: 50,
-    paddingHorizontal: space.sm,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  segmentActive: { backgroundColor: colors.text },
-  clock: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xl, paddingTop: space.xs },
-  time: { minWidth: 130, textAlign: 'center', fontVariant: ['tabular-nums'] },
-  stepper: {
-    width: 54,
-    height: 54,
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 34,
+    marginHorizontal: space.lg,
+    marginBottom: space.md,
+    padding: 2,
+    borderRadius: 9,
     backgroundColor: colors.surfaceAlt,
   },
+  segmentItem: { flex: 1, flexDirection: 'row', gap: 4, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
+  segmentOn: { backgroundColor: colors.surface },
+  segmentText: { fontSize: 13, color: colors.text },
+  segmentTextOn: { fontWeight: '600' },
+  timePill: { height: 34, paddingHorizontal: space.md, borderRadius: 8, backgroundColor: colors.primarySofter, justifyContent: 'center' },
+  timeText: { fontSize: 17, fontVariant: ['tabular-nums'] },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary },
 });
