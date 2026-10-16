@@ -163,7 +163,14 @@
     "pinned": "Pinned",
     "muted": "Muted",
     "newChat": "New chat",
-    "noResults": "Nothing matches \"{{query}}\""
+    "noResults": "Nothing matches \"{{query}}\"",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "deleteTitle": "Delete this chat?",
+    "deleteBody": "Your messages with {{name}} go away. Your bond stays.",
+    "deleteGroupBody": "The group and its messages go away."
   },
   "group": {
     "newChat": "New chat",

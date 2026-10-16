@@ -7,6 +7,18 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0w. iOS look, step 2: the Chats screen (2026-10-16)
+
+Built from the same approved prototype (artboard `Main.dc.html`). `src/app/(tabs)/chat.tsx`: glass
+Edit and new-chat buttons (`shadows.glassButton`), large title, search field always shown (no mic:
+the app has no speech search), pinned chats as big avatars on top (bubble with the last line while
+unread), plain rows with an unread dot instead of the count. Swipe left (`ReanimatedSwipeable`):
+Mute/Unmute (iOS indigo), Pin (peach), Delete (confirm); a tap on an open row only closes it.
+Edit: red remove circle per row, unpin badge on each pinned avatar. Store: `setChatPinned`,
+`setChatMuted`, `deleteChat` (chat and messages go, the bond stays; Find starts a new chat).
+Groups have no `pinned` field, so they swipe to Mute and Delete only. Checked on web, light and
+dark (swipe, pin, Edit). Next: owner's pick (iOS look for Today or Us, or back to the audit queue).
+
 ### 0v. iOS look, step 1: grounds and the glass tab bar (2026-10-16)
 
 Owner wants the app to feel like Apple's own apps (prototype

@@ -287,6 +287,10 @@ interface AppState {
   markRead: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
   clearChat: (conversationId: string) => void;
+  setChatPinned: (conversationId: string, pinned: boolean) => void;
+  setChatMuted: (conversationId: string, muted: boolean) => void;
+  /** Drops the chat and its messages; the bond stays, and Find starts a new chat with them. */
+  deleteChat: (conversationId: string) => void;
   /** Sets (or with `undefined` clears) the user's reaction on a message. */
   reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
   deleteMessage: (conversationId: string, messageId: string) => void;
@@ -826,6 +830,27 @@ export const useAppStore = create<AppState>()(
             c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
           ),
         })),
+
+      setChatPinned: (conversationId, pinned) =>
+        set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, pinned } : c)) })),
+
+      setChatMuted: (conversationId, muted) =>
+        set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, muted } : c)) })),
+
+      deleteChat: (conversationId) => {
+        // A reply still on its way must not land in a chat that is gone.
+        replyingUntil.delete(conversationId);
+        set((s) => {
+          const { [conversationId]: _messages, ...messages } = s.messages;
+          const { [conversationId]: _typing, ...typing } = s.typing;
+          return {
+            conversations: s.conversations.filter((c) => c.id !== conversationId),
+            messages,
+            typing,
+            activeConversationId: s.activeConversationId === conversationId ? null : s.activeConversationId,
+          };
+        });
+      },
 
       reactToMessage: (conversationId, messageId, reaction) =>
         set((s) => ({

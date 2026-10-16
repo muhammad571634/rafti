@@ -52,6 +52,8 @@ export const shadows = {
   bar: shadow(-2, 12, 0.06, 8),
   /** The floating glass tab bar. */
   glass: shadow(8, 24, 0.14, 10, '#000000'),
+  /** Small glass buttons on a screen's top bar (Chats: Edit, new chat). */
+  glassButton: shadow(1, 8, 0.08, 2, '#000000'),
 } as const;
 
 export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
