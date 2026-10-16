@@ -17,11 +17,17 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 
 ## 1. Canvas and color
 
-- App screens sit on `colors.bgPlain` (#FCF9F5). Exceptions that keep their own canvas: the chat
-  (wallpaper), the call screens (blurred portrait), the Today hero photo, diary covers and pages.
+- iOS grounds (owner's pick, 2026-10-16, toward Apple's own apps): `colors.bgPlain` is white
+  (#FFFFFF) for plain lists, `colors.bg` the grouped grey (#F2F2F7) behind cards; dark mode is
+  black (#000000) with #1C1C1E cards. Exceptions that keep their own canvas: the chat
+  (wallpaper), the call screens (blurred portrait), the Today hero photo, diary covers and pages,
+  Bedtime (`sleepColors`, navy).
+- Tab bar: the system bar on iOS (Liquid Glass on iOS 26+, `(tabs)/_layout.ios.tsx`); on Android
+  and web a floating frosted pill (Today, Chats, Us) with Find as a round button beside it
+  (`(tabs)/_layout.tsx`). Bold labels; the current tab's icon filled in peach.
 - Content sits on white (`colors.surface`) cards or straight on the canvas. No gradient cards, no
   colored panels behind content (exception list above).
-- Orange (`colors.primary`) only for: the one primary button, offer badges, the brand. Never for
+- Peach (`colors.primary`) only for: the one primary button, offer badges, the brand. Never for
   body text or decoration.
 - Mint (`colors.bondText`) only for the bond: "Voice ready", closeness, relationship.
 - Ink (`colors.text`) marks selection: 2px ink border on a chosen card or chip.

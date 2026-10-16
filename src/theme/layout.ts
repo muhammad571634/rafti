@@ -50,10 +50,15 @@ export const shadows = {
   fab: shadow(6, 14, 0.24, 8, '#F79E63'),
   modal: shadow(10, 30, 0.18, 12),
   bar: shadow(-2, 12, 0.06, 8),
+  /** The floating glass tab bar. */
+  glass: shadow(8, 24, 0.14, 10, '#000000'),
 } as const;
 
 export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
-/** Height of the custom bottom tab bar (excluding safe-area inset). */
-export const TAB_BAR_HEIGHT = 66;
+/**
+ * Room a tab screen leaves under its content for the floating tab bar (62 tall, 12 above the
+ * safe area), excluding the safe-area inset itself.
+ */
+export const TAB_BAR_HEIGHT = 84;
 export const HEADER_HEIGHT = 52;

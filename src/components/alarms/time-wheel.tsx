@@ -17,7 +17,7 @@ const ITEM = 36;
 const VISIBLE = 5;
 const PAD = ITEM * Math.floor(VISIBLE / 2);
 
-/** The three greys of a wheel, plus its band; light by default, `nightColors` on Bedtime. */
+/** The three greys of a wheel, plus its band; light by default, `sleepColors` on Bedtime. */
 export interface WheelTone {
   text: string;
   near: string;

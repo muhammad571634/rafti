@@ -76,24 +76,29 @@ const lightColors = {
   white: palette.white,
   black: palette.black,
 
-  // Surfaces
-  bg: palette.cream50,
-  bgPlain: palette.gray50,
+  // Surfaces: iOS system grounds (owner's pick, 2026-10-16). `bg` is the grouped grey behind
+  // cards, `bgPlain` the white of a plain list (Chats).
+  bg: '#F2F2F7',
+  bgPlain: palette.white,
   surface: palette.white,
-  surfaceAlt: palette.gray100,
-  overlay: 'rgba(42,46,69,0.45)',
-  scrim: 'rgba(42,46,69,0.25)',
+  surfaceAlt: '#EBEBF0',
+  overlay: 'rgba(0,0,0,0.4)',
+  scrim: 'rgba(0,0,0,0.2)',
+  /** The floating tab bar's frosted fill, its hairline and the current tab's capsule. */
+  glass: 'rgba(255,255,255,0.94)',
+  glassLine: 'rgba(0,0,0,0.06)',
+  glassActive: 'rgba(120,120,128,0.14)',
 
   // Lines
-  border: palette.gray200,
-  borderStrong: palette.gray300,
-  divider: palette.gray100,
+  border: '#E5E5EA',
+  borderStrong: '#D1D1D6',
+  divider: '#EFEFF4',
 
   // Text
-  text: palette.gray900,
-  textSecondary: palette.gray600,
-  textMuted: palette.gray500,
-  textFaint: palette.gray400,
+  text: '#1C1C1E',
+  textSecondary: '#636366',
+  textMuted: '#8E8E93',
+  textFaint: '#AEAEB2',
   textOnPrimary: palette.peachInk,
   textOnDark: palette.white,
   /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
@@ -139,12 +144,12 @@ const lightColors = {
   bubbleSelfText: palette.gray900,
   bubbleOther: palette.white,
   bubbleOtherText: palette.gray900,
-  bubbleTranscript: 'rgba(245,240,234,0.92)',
-  bubbleTranscriptText: palette.gray600,
+  bubbleTranscript: 'rgba(242,242,247,0.92)',
+  bubbleTranscriptText: '#636366',
 
   // Nav
-  tabActive: palette.gray900,
-  tabInactive: palette.gray500,
+  tabActive: '#1C1C1E',
+  tabInactive: '#8E8E93',
 
   // Status
   danger: palette.red,
@@ -157,12 +162,57 @@ const lightColors = {
 } as const;
 
 /**
- * The night palette: every token of `colors`, re-tuned for a dark navy canvas. Bedtime uses it
- * today (owner's pick, 2026-10-14: the iOS Sleep look); dark mode (work queue item 15) will hand
- * it to every screen when the phone is in dark mode, so screens must read colours from tokens.
+ * Dark mode: every token of `colors` on iOS's black grounds (owner's pick, 2026-10-16), so
+ * screens must read colours from tokens.
  */
 export const nightColors: Record<keyof typeof lightColors, string> = {
   ...lightColors,
+  bg: '#000000',
+  bgPlain: '#000000',
+  surface: '#1C1C1E',
+  surfaceAlt: '#2C2C2E',
+  overlay: 'rgba(0,0,0,0.6)',
+  scrim: 'rgba(0,0,0,0.4)',
+  glass: 'rgba(30,30,32,0.94)',
+  glassLine: 'rgba(255,255,255,0.10)',
+  glassActive: 'rgba(255,255,255,0.12)',
+  border: '#38383A',
+  borderStrong: '#48484A',
+  divider: '#2C2C2E',
+  text: '#FFFFFF',
+  textSecondary: '#AEAEB2',
+  textMuted: '#8E8E93',
+  textFaint: '#636366',
+  primary: palette.apricot300,
+  primarySoft: '#3B2A26',
+  primarySofter: '#2E2422',
+  brandText: palette.apricot300,
+  accentSoft: '#163F3A',
+  accentBorder: '#1F5A52',
+  bondText: '#5FE0C4',
+  bondSoft: '#163F3A',
+  bubbleSelf: '#56392F',
+  bubbleSelfText: '#FFFFFF',
+  bubbleOther: '#1C1C1E',
+  bubbleOtherText: '#FFFFFF',
+  bubbleTranscript: 'rgba(28,28,30,0.92)',
+  bubbleTranscriptText: '#AEAEB2',
+  tabActive: '#FFFFFF',
+  tabInactive: '#8E8E93',
+  textOnInk: '#000000',
+  dangerText: '#FF6961',
+  dangerSoft: '#3A1D1D',
+};
+
+/**
+ * Bedtime's own palette: the dark navy of the iOS Sleep look (owner's pick, 2026-10-14). It was
+ * dark mode's palette until dark mode moved to iOS black; Bedtime keeps it in both themes.
+ */
+export const sleepColors: Record<keyof typeof lightColors, string> = {
+  ...lightColors,
+  glass: 'rgba(28,33,72,0.94)',
+  glassLine: 'rgba(255,255,255,0.10)',
+  glassActive: 'rgba(255,255,255,0.12)',
   bg: '#0E1230',
   bgPlain: '#0E1230',
   surface: '#1C2148',
@@ -226,7 +276,7 @@ export const moduleTints: Record<string, { bg: string; fg: string }> = {
 };
 
 export const gradients = {
-  home: (isDark ? ['#0E1230', '#181D45'] : ['#FFF7EC', '#FFEEDB']) as readonly [string, string],
+  home: (isDark ? ['#000000', '#000000'] : ['#F2F2F7', '#F2F2F7']) as readonly [string, string],
   banner: ['#FFD3B1', '#FFB37A'] as const,
   fab: ['#FFD3B1', '#FFB37A'] as const,
   /** The primary button: peach, lighter at the top. */

@@ -10,7 +10,7 @@ import { characterImage, PressableScale, Txt } from '@/components/ui';
 import { daysBetween } from '@/lib/format';
 import { lastTalkedAt } from '@/lib/talk';
 import { displayName } from '@/store/use-app-store';
-import { colors, gradients, gradientStops, radius, space } from '@/theme';
+import { colors, gradients, gradientStops, palette, radius, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
 const HEIGHT = 204;
@@ -119,7 +119,8 @@ export function TodayHero({
       </View>
 
       <View style={styles.action}>
-        <ChatCircleDotsIcon size={22} color={colors.text} weight="regular" />
+        {/* The button stays white on the photo in both themes, so its glyph keeps dark ink. */}
+        <ChatCircleDotsIcon size={22} color={palette.gray900} weight="regular" />
       </View>
     </PressableScale>
   );

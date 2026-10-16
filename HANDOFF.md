@@ -7,6 +7,21 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0v. iOS look, step 1: grounds and the glass tab bar (2026-10-16)
+
+Owner wants the app to feel like Apple's own apps (prototype
+https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg approved: "Find stays outside, liquid glass tab
+bar, bold tab labels, iOS background"). Done: `colors` light grounds are iOS (`bg` #F2F2F7,
+`bgPlain` white, iOS greys and separators); dark mode is iOS black (`nightColors`); Bedtime keeps
+the old navy as `sleepColors`. Tab bar: `(tabs)/_layout.ios.tsx` uses `NativeTabs`
+(`expo-router/unstable-native-tabs`, SF Symbols, Find `role="search"`, badge dot for unread);
+`(tabs)/_layout.tsx` (Android, web) draws a floating frosted pill + round Find button
+(`colors.glass*`, `shadows.glass`); both use `useTabsGate`/`useUnreadTotal`
+(`src/hooks/use-tabs-gate.ts`). `TAB_BAR_HEIGHT` is 84 (room for the floating bar). Fonts did not
+change (owner meant bold tab labels only). The iOS bar is untested here (no iPhone); it needs a
+new iOS build. Next: the Chats screen itself from the same prototype (pinned avatars on top,
+unread dot, swipe actions).
+
 ### 0u. BIMOBIMO architecture map (2026-10-16)
 
 Owner asked how BIMOBIMO works inside and what to take. `docs/bimobimo-architecture.md`: static

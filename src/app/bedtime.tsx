@@ -14,7 +14,7 @@ import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { callClock, shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
-import { nightColors as night, radius, space } from '@/theme';
+import { radius, sleepColors as night, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** Sleep timer choices on the wheel, in minutes. */
@@ -31,7 +31,7 @@ type Page = 'main' | 'who' | 'timer';
  * header card, grouped rows (Who, Sleep timer, Wake-up → Alarms) and one button. While the
  * friend whispers, an iOS Timer ring empties with Stop and Pause. Whispers are Pro only
  * (backend-plan §15.10) and never use voice-reply minutes; Alarms open for every plan.
- * Colours come from `nightColors`, the palette dark mode will reuse.
+ * Colours come from `sleepColors`, Bedtime's own navy in both themes.
  */
 export default function BedtimeScreen() {
   const { t } = useTranslation();
