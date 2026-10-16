@@ -1,0 +1,59 @@
+# Design audit against `docs/design-style.md` (2026-10-09)
+
+Every screen was opened on web at 375×812 and compared with the style. Verdicts:
+
+- **fits**: already reads like the reference screens.
+- **small**: shared fixes only (header, section titles, row icons, tabs, buttons). No new layout.
+- **medium**: the layout changes; needs a prototype first.
+- **approved**: the user approved this screen earlier; change it only when the user says so.
+
+Most "small" fixes come from five shared patterns, so fixing the shared pieces once covers many
+screens:
+
+1. Header subtitles and centered titles → left title, no subtitle.
+2. Giant section titles (`SectionLabel tone="title"` at h1/h2 size) → `h3`.
+3. A 3D icon on every settings row → line icon in a 36px grey tile.
+4. Chips used as tabs → `Segmented`.
+5. Soft orange pill buttons in empty states and headers → `secondary` button / line icon button.
+
+| Screen | Route | Verdict | What to change |
+| --- | --- | --- | --- |
+| Store, My plan, plan sheets | `/store/shell`, `/my-plan` | fits | Reference screens. |
+| Chat room | `/chat/[id]` | fits | Long names truncate in the header next to the shell badge. |
+| Character profile | `/character/[id]` | fits | — |
+| Chat background | `/character/[id]/background` | fits | Already select cards with an ink border. |
+| Call, incoming call, call history | `/call/*`, `/call-history` | fits | — |
+| World | `/world/[series]` | fits | 2026-10-10: same portrait cards as Find (`src/components/character-card.tsx`), two columns, stats with line icons. |
+| Chats tab | `/(tabs)/chat` | fits | Tab roots keep the large title. |
+| Find tab | `/(tabs)/find` | fits | Done in step 1 (2026-10-09). |
+| Daily check-in popup | — | fits | Step 1: redesigned as a Today-only sheet, then turned off at the owner's request; shells arrive quietly. |
+| Character settings | `/character/[id]/settings` | fits | Done in step 1. |
+| Memories | `/character/[id]/memories` | fits | Done in step 2 (2026-10-10). |
+| Profile | `/profile` | fits | Done in step 1; invite card removed (offer on the Free gifts row). |
+| Edit profile | `/edit-profile` | fits | Done in step 2: h3 sections, secondary "+" chip, ink meter and camera badge. |
+| History (ledger) | `/store/ledger` | fits | Done in step 1. |
+| Radio | `/radio` | fits | Done in step 1: selected track card and a time-left bar. |
+| Secret note | `/secret-note/[id]` | fits | Done in step 2: no header avatar, h3 "Your note", action bar. |
+| Message board | `/board` | fits | Done in step 2: line "+" icon button, plain canvas. |
+| Our dates album | `/date/album` | fits | Done in step 2: plain canvas; empty-state button is `secondary` everywhere. |
+| Contacts | `/contacts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/NHyErhmApd5hygWMjFGGjE): `Segmented` All / Created by you, a "Create a character" row, then plain rows closest first (mint label, "Lv N"). |
+| Create character | `/create-character` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb): h3 sections, grey chips with ink selection, `Segmented` voice, action bar. |
+| Free gifts | `/gifts` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/ACXhyT5n4RFKXy5jsFCvr2): check-in card, wheel with a status pill, one "More shells" box (video, share, invite), code row. |
+| Photo Booth | `/photo-booth` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/CuA2RSMFXEjpDmWW9U1ER3): white preview card, With / Style pickers, action bar with the price. |
+| Bedtime | `/bedtime` | fits | Done 2026-10-10 (prototype https://claude.ai/artifact/HQ2SXLrXx9SLpCPAeb5yMP): night canvas kept; no header subtitle, status line, Who / Sleep timer sections, action bar. |
+| Today (Home) | `/(tabs)/index` | approved | Section titles and the 3D tile grid differ from the style. |
+| Us | `/(tabs)/us` | approved | — |
+| Heartbeat diary, write, pages | `/diary/*` | fits | 2026-10-10 (prototype https://claude.ai/artifact/3hXyMMNHVDaa6v9SpDt4RQ, H1-H4): fanned cover carousel with arrows, grey date pill + calendar, ruled page with pager, write page with mood, paper, readers, action bar; rules sheet with three steps. `/diary/mine` unchanged. |
+| Onboarding | `/onboarding` | approved | Close already. |
+| Notifications | `/notifications`, `/notifications/settings` | fits | 2026-10-10 (N1-N2): new inbox (Today / Earlier, derived from app data, Mark all read) and the settings with line icons, hints and quiet-hour buttons. |
+| Dating map and date rounds | `/dating`, `/date/[placeId]` | small | 2026-10-10: map restyled (D1: white place cards, partner pill with level, action bar). Place sheet, rounds and polaroid kept as they were at the owner's request. |
+| Couple quiz, truth or dare | `/quiz/[id]`, chat "+" | approved | Shadowed cards with pink tiles. |
+
+## Suggested order
+
+1. Shared pieces (one pass, many screens): header, section title size, row icon tile, `Segmented`
+   for tabs, action bar component, empty-state button. Covers every "small" row.
+2. Daily check-in as a sheet on Today (also a flow fix: it no longer interrupts other tabs).
+3. "Medium" screens one by one, each with a prototype first: Free gifts → Create character →
+   Contacts → Photo Booth → Bedtime.
+4. Approved screens only if the user asks.

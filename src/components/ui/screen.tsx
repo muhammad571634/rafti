@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, hitSlop, HEADER_HEIGHT, space } from '@/theme';
+import { colors, hitSlop, HEADER_HEIGHT, isDark, space } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -28,7 +28,7 @@ export function Screen({
   background = colors.bg,
   style,
   edgeToEdge,
-  statusBarStyle = 'dark',
+  statusBarStyle = isDark ? 'light' : 'dark',
   backdrop,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CharacterAvatar, Divider, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { duration as fmtDuration, relativeStamp } from '@/lib/format';
@@ -12,6 +13,7 @@ import type { CallRecord, Character } from '@/types';
 const AVATAR = 46;
 
 export default function CallHistoryScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -31,7 +33,7 @@ export default function CallHistoryScreen() {
         <FlatList
           data={calls}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.huge }]}
           ItemSeparatorComponent={() => <Divider inset={space.lg + AVATAR + space.md} />}
           renderItem={({ item }) => {
             const character = characters.find((c) => c.id === item.characterId);

@@ -1,18 +1,23 @@
+import { Appearance } from 'react-native';
+
 /**
- * Rafti palette — "Cocoa & Mint", built around Rafti the sea otter.
+ * Sigmazam palette — soft peach and mint, built around the Sigmazam mascot.
  * Raw values live in `palette`; screens should only use the semantic `colors` map
  * so a future dark theme / re-skin is a one-file change.
  */
 export const palette = {
-  // Apricot — the whole Home + navigation identity
-  apricot50: '#FFF3E6',
-  apricot100: '#FFE6CC',
-  apricot200: '#FFD2A8',
-  apricot300: '#FFB985',
-  apricot400: '#FF9F5A',
-  apricot500: '#F58B42',
-  apricot600: '#E8742A',
-  apricot700: '#C95F1C',
+  // Soft peach — the whole Home + navigation identity (owner's pick, 2026-10-15: light and
+  // gentle, away from the old terracotta). Fills are 200→400 with ink-brown text on them.
+  apricot50: '#FFF7F0',
+  apricot100: '#FFF0E4',
+  apricot200: '#FFD3B1',
+  apricot300: '#FFC497',
+  apricot400: '#FFB37A',
+  apricot500: '#F79E63',
+  apricot600: '#EF8A4E',
+  apricot700: '#C96A32',
+  /** Text and icons on a peach fill: white would vanish on it. */
+  peachInk: '#6A2F0C',
 
   // Mint — Rafti's scarf: Secret Note, level-up moments
   mint50: '#EEFBF8',
@@ -66,35 +71,43 @@ export const palette = {
   blue: '#4D9BFF',
 } as const;
 
-export const colors = {
+const lightColors = {
   // Raw passthroughs used directly on tinted surfaces
   white: palette.white,
   black: palette.black,
 
-  // Surfaces
-  bg: palette.cream50,
-  bgPlain: palette.gray50,
+  // Surfaces: iOS system grounds (owner's pick, 2026-10-16). `bg` is the grouped grey behind
+  // cards, `bgPlain` the white of a plain list (Chats).
+  bg: '#F2F2F7',
+  bgPlain: palette.white,
   surface: palette.white,
-  surfaceAlt: palette.gray100,
-  overlay: 'rgba(42,46,69,0.45)',
-  scrim: 'rgba(42,46,69,0.25)',
+  surfaceAlt: '#EBEBF0',
+  overlay: 'rgba(0,0,0,0.4)',
+  scrim: 'rgba(0,0,0,0.2)',
+  /** The floating tab bar's frosted fill, its hairline and the current tab's capsule. */
+  glass: 'rgba(255,255,255,0.94)',
+  glassLine: 'rgba(0,0,0,0.10)',
+  glassActive: 'rgba(120,120,128,0.14)',
 
   // Lines
-  border: palette.gray200,
-  borderStrong: palette.gray300,
-  divider: palette.gray100,
+  border: '#E5E5EA',
+  borderStrong: '#D1D1D6',
+  divider: '#EFEFF4',
 
   // Text
-  text: palette.gray900,
-  textSecondary: palette.gray600,
-  textMuted: palette.gray500,
-  textFaint: palette.gray400,
-  textOnPrimary: palette.white,
+  text: '#1C1C1E',
+  textSecondary: '#636366',
+  textMuted: '#8E8E93',
+  textFaint: '#AEAEB2',
+  textOnPrimary: palette.peachInk,
   textOnDark: palette.white,
+  /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
+  textOnInk: palette.white,
 
-  // Brand
+  // Brand: `primary` marks icons, rings and dots; `primaryFill` is the soft button fill.
   primary: palette.apricot600,
-  primaryHover: palette.apricot700,
+  primaryFill: palette.apricot400,
+  primaryHover: palette.apricot500,
   primarySoft: palette.apricot100,
   primarySofter: palette.apricot50,
   brandText: palette.apricot600,
@@ -108,10 +121,18 @@ export const colors = {
   onMedia: palette.white,
   onMediaMuted: 'rgba(255,255,255,0.75)',
   onMediaGlass: 'rgba(255,255,255,0.16)',
+  onMediaSoft: 'rgba(255,255,255,0.88)',
+  /** Hairline round a glass chip on a photo. */
+  onMediaHairline: 'rgba(255,255,255,0.28)',
+  /** The solid round action sitting on a photo (the Today hero's chat button). */
+  onMediaButton: 'rgba(255,255,255,0.92)',
 
   // Bond: the only place mint carries meaning (level progress, "voice ready").
   bond: palette.mint400,
   bondText: palette.mint600,
+  bondSoft: palette.mint100,
+  /** Bond mint that stays readable on a dark photo. */
+  bondOnMedia: palette.mint200,
 
   // Diary
   paper: palette.cream200,
@@ -121,28 +142,145 @@ export const colors = {
   // Chat
   bubbleSelf: palette.apricot200,
   bubbleSelfText: palette.gray900,
-  bubbleOther: palette.white,
+  bubbleOther: '#E9E9EB',
   bubbleOtherText: palette.gray900,
-  bubbleTranscript: 'rgba(245,240,234,0.92)',
-  bubbleTranscriptText: palette.gray600,
+  bubbleTranscript: 'rgba(242,242,247,0.92)',
+  bubbleTranscriptText: '#636366',
 
   // Nav
-  tabActive: palette.gray900,
-  tabInactive: palette.gray500,
+  tabActive: '#1C1C1E',
+  tabInactive: '#8E8E93',
 
   // Status
   danger: palette.red,
+  /** Red that stays readable as text on the cream canvas (Block, destructive rows). */
+  dangerText: '#C93A3A',
   dangerSoft: palette.redSoft,
   success: palette.green,
   warning: palette.amber,
   info: palette.blue,
 } as const;
 
+/**
+ * Dark mode: every token of `colors` on iOS's black grounds (owner's pick, 2026-10-16), so
+ * screens must read colours from tokens.
+ */
+export const nightColors: Record<keyof typeof lightColors, string> = {
+  ...lightColors,
+  bg: '#000000',
+  bgPlain: '#000000',
+  surface: '#1C1C1E',
+  surfaceAlt: '#2C2C2E',
+  overlay: 'rgba(0,0,0,0.6)',
+  scrim: 'rgba(0,0,0,0.4)',
+  glass: 'rgba(30,30,32,0.94)',
+  glassLine: 'rgba(255,255,255,0.14)',
+  glassActive: 'rgba(255,255,255,0.12)',
+  border: '#38383A',
+  borderStrong: '#48484A',
+  divider: '#2C2C2E',
+  text: '#FFFFFF',
+  textSecondary: '#AEAEB2',
+  textMuted: '#8E8E93',
+  textFaint: '#636366',
+  primary: palette.apricot300,
+  primarySoft: '#3B2A26',
+  primarySofter: '#2E2422',
+  brandText: palette.apricot300,
+  accentSoft: '#163F3A',
+  accentBorder: '#1F5A52',
+  bondText: '#5FE0C4',
+  bondSoft: '#163F3A',
+  bubbleSelf: '#56392F',
+  bubbleSelfText: '#FFFFFF',
+  bubbleOther: '#262628',
+  bubbleOtherText: '#FFFFFF',
+  bubbleTranscript: 'rgba(28,28,30,0.92)',
+  bubbleTranscriptText: '#AEAEB2',
+  tabActive: '#FFFFFF',
+  tabInactive: '#8E8E93',
+  textOnInk: '#000000',
+  dangerText: '#FF6961',
+  dangerSoft: '#3A1D1D',
+};
+
+/**
+ * Bedtime's own palette: the dark navy of the iOS Sleep look (owner's pick, 2026-10-14). It was
+ * dark mode's palette until dark mode moved to iOS black; Bedtime keeps it in both themes.
+ */
+export const sleepColors: Record<keyof typeof lightColors, string> = {
+  ...lightColors,
+  glass: 'rgba(28,33,72,0.94)',
+  glassLine: 'rgba(255,255,255,0.10)',
+  glassActive: 'rgba(255,255,255,0.12)',
+  bg: '#0E1230',
+  bgPlain: '#0E1230',
+  surface: '#1C2148',
+  surfaceAlt: '#252B57',
+  overlay: 'rgba(0,0,0,0.55)',
+  scrim: 'rgba(0,0,0,0.35)',
+  border: '#2B3160',
+  borderStrong: '#3A4178',
+  divider: '#232857',
+  text: '#F4F2FF',
+  textSecondary: '#A3A8C8',
+  textMuted: '#8389AE',
+  textFaint: '#5E6490',
+  primary: palette.apricot300,
+  primarySoft: '#3B2A26',
+  primarySofter: '#2E2422',
+  brandText: palette.apricot300,
+  accentSoft: '#163F3A',
+  accentBorder: '#1F5A52',
+  bondText: '#5FE0C4',
+  bondSoft: '#163F3A',
+  bubbleSelf: '#56392F',
+  bubbleSelfText: '#FFFFFF',
+  bubbleOther: '#1C2148',
+  bubbleOtherText: '#F4F2FF',
+  bubbleTranscript: 'rgba(28,33,72,0.92)',
+  bubbleTranscriptText: '#A3A8C8',
+  tabActive: '#F4F2FF',
+  tabInactive: '#8389AE',
+  textOnInk: '#0E1230',
+  dangerText: '#FF7A7A',
+  dangerSoft: '#4A1F24',
+};
+
+/**
+ * Dark mode follows the phone, read once at launch: every screen builds its styles from
+ * `colors` when it loads, so switching the phone's theme applies on the next launch.
+ * Paper (diary pages, polaroids, board notes) stays light in both themes, so text on it
+ * uses paper ink (`paperText`, `palette.gray*`), never `text`, which turns light here.
+ */
+export const isDark = Appearance.getColorScheme() === 'dark';
+
+export const colors: Record<keyof typeof lightColors, string> = isDark ? nightColors : lightColors;
+
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
+/**
+ * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each
+ * module is found by colour as well as shape. Mint stays with Contacts, the bond module.
+ */
+export const moduleTints: Record<string, { bg: string; fg: string }> = {
+  store: { bg: palette.apricot100, fg: palette.apricot700 },
+  dating: { bg: '#FFE3DE', fg: '#D2503F' },
+  diary: { bg: '#F6E8D7', fg: palette.caramel700 },
+  photo: { bg: '#DCEBFF', fg: '#2F7BD0' },
+  contacts: { bg: palette.mint100, fg: palette.mint600 },
+  gifts: { bg: palette.apricot100, fg: palette.apricot700 },
+  calls: { bg: '#DDF5E7', fg: '#2E9963' },
+  bedtime: { bg: '#E3E5FA', fg: '#4E56B8' },
+  radio: { bg: '#FFF0CC', fg: '#B07A00' },
+  board: { bg: '#F6E8D7', fg: palette.caramel700 },
+};
+
 export const gradients = {
-  home: ['#FFF7EC', '#FFEEDB'] as const,
-  banner: ['#FFC999', '#FF9F5A'] as const,
-  fab: ['#FFB272', '#E8742A'] as const,
+  home: (isDark ? ['#000000', '#000000'] : ['#F2F2F7', '#F2F2F7']) as readonly [string, string],
+  banner: ['#FFD3B1', '#FFB37A'] as const,
+  fab: ['#FFD3B1', '#FFB37A'] as const,
+  /** The primary button: peach, lighter at the top. */
+  primary: ['#FFD3B1', '#FFB37A'] as const,
   diary: ['#FFEBD6', '#FFF9F1', '#FFE6CC'] as const,
   secretNote: ['#EEFBF8', '#FFFFFF'] as const,
   call: ['#A9D3F5', '#8FB0C8', '#7E8E9A'] as const,
@@ -150,6 +288,20 @@ export const gradients = {
   incoming: ['rgba(0,0,0,0.55)', 'transparent', 'rgba(0,0,0,0.65)'] as const,
   avatarFallback: ['#FFC999', '#FF9F5A'] as const,
   night: ['#1E2A55', '#2E3B6B'] as const,
+  /** The wake-up alarm's ringing screen: sunrise. */
+  wake: ['#F6C89F', '#E9A27E', '#B9739A'] as const,
+  /**
+   * Left-to-right shade under the Today hero's copy, so white text reads on any scene.
+   * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.
+   */
+  heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
+  /** The phone lock screen in Profile → Notifications' preview. */
+  lockScreen: ['#2E3352', '#5B4A6E'] as const,
+} as const;
+
+/** `locations` for the gradients above that do not spread their colours evenly. */
+export const gradientStops = {
+  heroScrim: [0, 0.45, 0.7] as const,
 } as const;
 
 /** Deterministic pastel pair for an avatar with no image yet. */
@@ -162,4 +314,4 @@ export const avatarGradients = [
   ['#FFC7B8', '#FF8A70'],
 ] as const;
 
-export type ColorToken = keyof typeof colors;
+export type ColorToken = keyof typeof lightColors;
