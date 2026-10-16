@@ -1,16 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Button,
   Divider,
   EmptyState,
-  Header,
-  IconButton,
+  GlassBar,
+  GlassButton,
+  LargeTitle,
   PressableScale,
   Screen,
   Sheet,
@@ -84,17 +86,10 @@ export default function MemoriesScreen() {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={t('memories.title')}
-        right={
-          <IconButton
-            icon="add"
-            onPress={() => setAdding(true)}
-            accessibilityLabel={t('a11y.addMemory')}
-          />
-        }
-      />
+    // iOS look (approved prototype `Memories.dc.html`): grey ground, glass bar, large title, inset rows.
+    <Screen background={colors.bg}>
+      <GlassBar right={<GlassButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />} />
+      <LargeTitle>{t('memories.title')}</LargeTitle>
 
       {open.length === 0 ? (
         <EmptyState
@@ -111,10 +106,11 @@ export default function MemoriesScreen() {
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={full ? null : <LimitMeter open={open.length} locked={locked.length} />}
-          ItemSeparatorComponent={() => <Divider inset={space.lg} />}
-          renderItem={({ item }) => (
-            <MemoryCard
+          renderItem={({ item, index }) => (
+            <MemoryRow
               memory={item}
+              first={index === 0}
+              last={index === open.length - 1}
               onEdit={() => startEdit(item)}
               onPin={() => togglePin(item.id)}
               onDelete={() => deleteMemory(item.id)}
@@ -219,8 +215,8 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
   return (
     <View style={styles.locked}>
       <View style={styles.lockedHead}>
-        <Ionicons name="lock-closed-outline" size={18} color={colors.text} />
-        <Txt variant="h3">{t('memories.locked', { count: memories.length })}</Txt>
+        <Ionicons name="lock-closed" size={12} color={colors.textSecondary} />
+        <Txt style={styles.lockedTitle}>{t('memories.locked', { count: memories.length })}</Txt>
       </View>
       <View style={styles.lockedBox}>
         {memories.map((memory, i) => {
@@ -249,62 +245,114 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
   );
 }
 
-function MemoryCard({
+/**
+ * One memory in the inset group: tap to edit; swipe left for Pin and Delete (also offered as
+ * screen-reader actions). A pinned memory carries a peach bookmark.
+ */
+function MemoryRow({
   memory,
+  first,
+  last,
   onEdit,
   onPin,
   onDelete,
 }: {
   memory: MemoryItem;
-  /** A tap on the text opens it for editing (the icons stay separate buttons). */
+  first: boolean;
+  last: boolean;
   onEdit: () => void;
   onPin: () => void;
   onDelete: () => void;
 }) {
   const { t } = useTranslation();
+  const swipe = useRef<SwipeableMethods>(null);
+  const pinLabel = memory.pinned ? t('a11y.unpin') : t('a11y.pin');
+  const act = (run: () => void) => () => {
+    swipe.current?.close();
+    run();
+  };
+  // A tap on an open row (or the release that ends a drag) closes it instead of editing.
+  const opened = useRef(false);
+  const draggedAt = useRef(0);
+  const press = () => {
+    if (Date.now() - draggedAt.current < 400) return;
+    if (opened.current) swipe.current?.close();
+    else onEdit();
+  };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHead}>
-        <View style={styles.source}>
-          {memory.pinned ? <Ionicons name="bookmark" size={13} color={colors.text} /> : null}
-          <Txt variant="caption" color={colors.textMuted}>
-            {t(`memories.sources.${memory.source}`)} {'·'} {relativeStamp(memory.createdAt)}
-          </Txt>
-        </View>
-        <View style={styles.cardActions}>
-          <IconButton
-            icon={memory.pinned ? 'bookmark' : 'bookmark-outline'}
-            size={17}
-            color={memory.pinned ? colors.text : colors.textFaint}
-            onPress={onPin}
-            accessibilityLabel={memory.pinned ? t('a11y.unpin') : t('a11y.pin')}
-          />
-          <IconButton
-            icon="trash-outline"
-            size={17}
-            color={colors.textFaint}
-            onPress={onDelete}
-            accessibilityLabel={t('a11y.deleteMemory')}
-          />
-        </View>
-      </View>
-
-      <PressableScale onPress={onEdit} scaleTo={0.99} accessibilityRole="button" accessibilityLabel={t('memories.edit')}>
-        <Txt variant="body">{memory.text}</Txt>
-      </PressableScale>
+    <View style={[styles.rowWrap, first && styles.rowFirst, last && styles.rowLast]}>
+      <ReanimatedSwipeable
+        ref={swipe}
+        friction={2}
+        rightThreshold={40}
+        overshootRight={false}
+        // Both fire on release, just before the click a mouse drag ends with on web.
+        onSwipeableWillOpen={() => {
+          opened.current = true;
+          draggedAt.current = Date.now();
+        }}
+        onSwipeableWillClose={() => {
+          opened.current = false;
+          draggedAt.current = Date.now();
+        }}
+        renderRightActions={() => (
+          <View style={styles.actionsRow}>
+            <Pressable onPress={act(onPin)} accessibilityRole="button" accessibilityLabel={pinLabel} style={[styles.swipeAction, styles.pinAction]}>
+              <Ionicons name={memory.pinned ? 'bookmark-outline' : 'bookmark'} size={20} color={colors.textOnPrimary} />
+            </Pressable>
+            <Pressable
+              onPress={act(onDelete)}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.deleteMemory')}
+              style={[styles.swipeAction, styles.deleteAction]}>
+              <Ionicons name="trash" size={20} color={colors.white} />
+            </Pressable>
+          </View>
+        )}>
+        <Pressable
+          onPress={press}
+          accessibilityRole="button"
+          accessibilityLabel={`${memory.text}, ${t('memories.edit')}`}
+          accessibilityActions={[
+            { name: 'pin', label: pinLabel },
+            { name: 'delete', label: t('a11y.deleteMemory') },
+          ]}
+          onAccessibilityAction={(e) => (e.nativeEvent.actionName === 'pin' ? onPin() : onDelete())}
+          style={({ pressed }) => [styles.memory, pressed && styles.memoryPressed]}>
+          <View style={[styles.memoryBody, !last && styles.memoryLine]}>
+            <View style={styles.flex}>
+              <Txt style={styles.memoryText}>{memory.text}</Txt>
+              <Txt style={styles.memoryMeta}>
+                {t(`memories.sources.${memory.source}`)} {'·'} {relativeStamp(memory.createdAt)}
+              </Txt>
+            </View>
+            {memory.pinned ? <Ionicons name="bookmark" size={16} color={colors.primary} style={styles.pin} /> : null}
+          </View>
+        </Pressable>
+      </ReanimatedSwipeable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  list: { paddingBottom: space.huge },
-  // Memories sit on the canvas as a plain list; the hairline between them is enough.
-  card: { gap: space.xs, paddingHorizontal: space.lg, paddingVertical: space.md },
-  cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  source: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  cardActions: { flexDirection: 'row', marginRight: -space.sm },
+  list: { paddingTop: 14, paddingBottom: space.huge },
+  // Rows share one white card: the first rounds its top, the last its bottom.
+  rowWrap: { marginHorizontal: space.lg, backgroundColor: colors.surface, overflow: 'hidden' },
+  rowFirst: { borderTopLeftRadius: 14, borderTopRightRadius: 14 },
+  rowLast: { borderBottomLeftRadius: 14, borderBottomRightRadius: 14 },
+  memory: { paddingLeft: space.lg, backgroundColor: colors.surface },
+  memoryPressed: { backgroundColor: colors.surfaceAlt },
+  memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: space.md, paddingRight: space.lg },
+  memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  memoryText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  memoryMeta: { marginTop: 2, fontSize: 13, color: colors.textSecondary },
+  pin: { marginTop: 3 },
+  actionsRow: { flexDirection: 'row' },
+  swipeAction: { width: 66, alignItems: 'center', justifyContent: 'center' },
+  pinAction: { backgroundColor: colors.primaryFill },
+  deleteAction: { backgroundColor: colors.danger },
   input: {
     minHeight: 96,
     padding: space.md,
@@ -315,20 +363,15 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     ...type.body,
   },
-  meter: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.xs, paddingBottom: space.md },
+  meter: { gap: space.sm + 2, marginHorizontal: space.lg, marginBottom: 22, padding: space.lg, paddingVertical: 14, borderRadius: 14, backgroundColor: colors.surface },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   figure: { fontVariant: ['tabular-nums'] },
-  track: { height: 8, borderRadius: radius.pill, backgroundColor: colors.border, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
-  locked: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.xl },
-  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  lockedBox: {
-    borderRadius: radius.xl - 2,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
+  track: { height: 6, borderRadius: 3, backgroundColor: colors.border, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.primary },
+  locked: { gap: 6, paddingHorizontal: space.lg, paddingTop: 22 },
+  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: space.lg },
+  lockedTitle: { fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase' },
+  lockedBox: { borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
   lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.md },
   lockTile: {
     width: 36,
@@ -340,14 +383,7 @@ const styles = StyleSheet.create({
   },
   lines: { flex: 1, gap: space.xs + 2 },
   line: { height: 9, borderRadius: radius.pill, backgroundColor: colors.surfaceAlt },
-  bar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
+  bar: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md, backgroundColor: colors.bg },
   sheetHead: { alignItems: 'center', gap: space.md, marginTop: space.xs },
   lockArt: {
     width: 56,

@@ -8,7 +8,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { FadeOut, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REPORT_REASONS } from '@/ai/safety';
@@ -34,6 +34,7 @@ import {
   ShellIcon,
   Txt,
 } from '@/components/ui';
+import { takeFocus } from '@/lib/chat-focus';
 import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { suggestedReplies } from '@/mock/suggestions';
@@ -84,6 +85,8 @@ export default function ChatRoomScreen() {
   const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  /** The message a search result pointed at, tinted for a moment. */
+  const [flash, setFlash] = useState<string | null>(null);
   const blurTarget = useRef<View>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [truthOpen, setTruthOpen] = useState(false);
@@ -107,7 +110,24 @@ export default function ChatRoomScreen() {
     useCallback(() => {
       if (!conversationId) return;
       setActiveConversation(conversationId);
-      return () => setActiveConversation(null);
+      // Back from a search result: scroll to that message and flash it (iOS Messages).
+      const target = takeFocus(conversationId);
+      const timers: ReturnType<typeof setTimeout>[] = [];
+      if (target) {
+        timers.push(
+          setTimeout(() => {
+            const index = (useAppStore.getState().messages[conversationId] ?? []).findIndex((m) => m.id === target);
+            if (index < 0) return;
+            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.4 });
+            setFlash(target);
+            timers.push(setTimeout(() => setFlash(null), 1600));
+          }, 350),
+        );
+      }
+      return () => {
+        timers.forEach(clearTimeout);
+        setActiveConversation(null);
+      };
     }, [conversationId, setActiveConversation]),
   );
 
@@ -138,23 +158,28 @@ export default function ChatRoomScreen() {
       return (
         <>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
-          <MessageBubble
-            message={item}
-            character={character}
-            animate={animations && Date.parse(item.createdAt) > openedAt}
-            showAvatar={run.runStart}
-            runEnd={run.runEnd}
-            receipt={item.id === lastMine}
-            onCallBack={callBack}
-            onLongPress={openMenu}
-          />
+          <View>
+            {item.id === flash ? (
+              <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
+            ) : null}
+            <MessageBubble
+              message={item}
+              character={character}
+              animate={animations && Date.parse(item.createdAt) > openedAt}
+              showAvatar={run.runStart}
+              runEnd={run.runEnd}
+              receipt={item.id === lastMine}
+              onCallBack={callBack}
+              onLongPress={openMenu}
+            />
+          </View>
           {item.chips?.length && conversationId ? (
             <QuickReplies chips={item.chips} onPick={(chip) => pickChip(conversationId, item.id, chip)} />
           ) : null}
         </>
       );
     },
-    [character, animations, openedAt, data, lastMine, callBack, openMenu, conversationId, pickChip],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip],
   );
 
   // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
@@ -262,6 +287,11 @@ export default function ChatRoomScreen() {
                 </>
               }
               onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+              // A row far up is not measured yet: jump near it, then aim again.
+              onScrollToIndexFailed={(info) => {
+                listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
+                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.4 }), 120);
+              }}
             />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
             {!artWallpaper ? (
@@ -482,6 +512,7 @@ function SpendPulse({ shells }: { shells: number }) {
 const styles = StyleSheet.create({
   pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
   flex: { flex: 1 },
+  flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   artWallpaper: { ...StyleSheet.absoluteFill },
   artWallpaperVeil: {
     ...StyleSheet.absoluteFill,

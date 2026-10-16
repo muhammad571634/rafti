@@ -353,7 +353,10 @@
     "title": "Search messages",
     "placeholder": "Search this chat",
     "empty": "Nothing found",
-    "hint": "Type a word you remember from the chat."
+    "hint": "Type a word you remember from the chat.",
+    "count_one": "{{count}} message",
+    "count_other": "{{count}} messages",
+    "you": "You"
   },
   "memories": {
     "title": "Memories",

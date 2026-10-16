@@ -30,8 +30,15 @@ now overlays inside the screen (not a Modal window), the chat and group content 
 `BlurTargetView`, and Android back closes an open menu (`useBackToClose`). Web looked fine because
 it uses CSS blur. Step 4 done: chat settings are an iOS contact card (`settings.tsx`); every old action kept, the
 Chat settings sheet is inline; switches are RN `Switch` so each platform draws its own (owner asked
-about App Store risk: native controls are what Apple asks for). Next: step 5, search / background /
-memories / profile screens.
+about App Store risk: native controls are what Apple asks for). Step 5 done: search, background, memories and profile are iOS style
+(flows.md D18). Navigation follows iOS: a background pick, a search hit and the profile's Message go
+back to the chat already in the stack (`router.dismissTo`), not a new copy; a search hit scrolls to
+the message and tints it. Owner's links (2026-10-16): SF Symbols are used through `expo-symbols`
+(`SFIcon`, iPhone only, Ionicons elsewhere, as Apple's licence allows); SF Pro is not bundled (it is
+already the iPhone system font, and its licence forbids Android); HealthKit does not fit the app.
+**Sign in with Apple is required** (App Store 4.8) as soon as the backend adds any third-party login
+(Google etc.): put its button first, per Apple's HIG. Next: step 6, in-chat sheets (voice, truth or
+dare, daily calls, report).
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

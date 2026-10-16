@@ -4,17 +4,25 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Header, PressableScale, Screen, Segmented } from '@/components/ui';
+import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 
 type BackgroundCollection = 'classic' | 'art';
 type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
 
+const COLUMNS = 3;
+const GAP = 10;
+
+/**
+ * The chat background, iOS style (approved prototype `Background.dc.html`): a large title, a
+ * preview with the chat's own bubbles and glass field, an iOS segmented control, then tiles.
+ * A tap picks the background and goes back to the chat.
+ */
 export default function ChangeBackgroundScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,6 +34,7 @@ export default function ChangeBackgroundScreen() {
 
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const setBackground = useAppStore((s) => s.setBackground);
+  const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
 
   const savedBackgroundId = relationship?.backgroundId ?? 'bg_plain';
   const backgroundId =
@@ -35,86 +44,92 @@ export default function ChangeBackgroundScreen() {
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
     chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
-  const artCollection = collection === 'art';
-  const columns = artCollection ? 3 : 2;
-  const gap = artCollection ? space.sm : space.md;
-  const tileWidth = (width - space.lg * 2 - gap * (columns - 1)) / columns;
-  const previewHeight = Math.min(200, Math.max(156, width * 0.5));
+  const tileWidth = (width - space.lg * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
+  const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
   const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
-  const data: BackgroundOption[] = artCollection ? [...chatArtBackgrounds] : chatBackgrounds;
-  const tabs = [
+  const data: BackgroundOption[] = collection === 'art' ? [...chatArtBackgrounds] : chatBackgrounds;
+  const tabs: { value: BackgroundCollection; label: string }[] = [
     { value: 'classic', label: t('background.collections.classic') },
     { value: 'art', label: t('background.collections.art') },
-  ] as const;
+  ];
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('background.title')} />
+    <Screen background={colors.bg}>
+      <GlassBar />
+      <LargeTitle>{t('background.title')}</LargeTitle>
+
       <View style={[styles.preview, { height: previewHeight }]} accessibilityLabel={t('background.preview')}>
         {selectedArt ? (
           <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
         ) : (
           <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
         )}
-        <View pointerEvents="none" style={styles.previewVeil} />
-        <View pointerEvents="none" style={styles.previewMessages}>
-          <View style={[styles.previewBubble, styles.previewBubbleIncoming]}>
-            <View style={[styles.previewLine, styles.previewLineLong]} />
-            <View style={[styles.previewLine, styles.previewLineShort]} />
-          </View>
-          <View style={[styles.previewBubble, styles.previewBubbleOutgoing]}>
-            <View style={[styles.previewLine, styles.previewLineLong]} />
-            <View style={[styles.previewLine, styles.previewLineShort]} />
-          </View>
-        </View>
-        <View pointerEvents="none" style={styles.previewComposer} />
+        <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs]} />
+        <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
+        <View pointerEvents="none" style={[glassStyle, styles.previewField]} />
       </View>
-      <Segmented options={tabs} value={collection} onChange={setCollection} style={styles.tabs} />
+
+      {/* iOS segmented control: a grey track, the chosen side as a raised white pill. */}
+      <View style={styles.segment} accessibilityRole="tablist">
+        {tabs.map((tab) => {
+          const on = collection === tab.value;
+          return (
+            <Pressable
+              key={tab.value}
+              onPress={() => setCollection(tab.value)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: on }}
+              style={[styles.segmentItem, on && styles.segmentOn]}>
+              <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{tab.label}</Txt>
+            </Pressable>
+          );
+        })}
+      </View>
 
       <FlatList
         key={collection}
         data={data}
-        numColumns={columns}
+        numColumns={COLUMNS}
         keyExtractor={(background) => background.id}
         columnWrapperStyle={styles.row}
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}
         showsVerticalScrollIndicator={false}
-        initialNumToRender={columns * 3}
+        initialNumToRender={COLUMNS * 3}
         renderItem={({ item }) => {
           const art = 'image' in item;
           const selected = backgroundId === item.id;
-          const accessibilityLabel = art
-            ? t(`background.artItems.${item.nameKey}`)
-            : t(`background.${item.nameKey}`);
+          const label = art ? t(`background.artItems.${item.nameKey}`) : t(`background.${item.nameKey}`);
 
           return (
             <PressableScale
-              style={{ width: tileWidth, marginBottom: gap }}
+              style={{ width: tileWidth }}
               scaleTo={0.97}
               accessibilityRole="button"
-              accessibilityLabel={accessibilityLabel}
+              accessibilityLabel={label}
               accessibilityState={{ selected }}
               onPress={() => {
                 if (characterId) setBackground(characterId, item.id);
-                router.back();
+                // Straight back to the chat to see it there (not one step, to the settings).
+                if (conversation) router.dismissTo(`/chat/${conversation.id}`);
+                else router.back();
               }}>
-              <View style={[styles.tile, { height: tileWidth * (artCollection ? 1.22 : 1.5) }]}>
+              <View style={[styles.tile, { height: tileWidth * 1.4 }]}>
                 {art ? (
                   <Image source={item.image} contentFit="cover" style={StyleSheet.absoluteFill} />
                 ) : (
                   <LinearGradient colors={item.colors} style={StyleSheet.absoluteFill} />
                 )}
+                <View pointerEvents="none" style={[styles.tileBorder, selected && styles.tileBorderSelected]} />
                 {selected ? (
                   <View style={styles.check}>
-                    <Ionicons name="checkmark" size={15} color={colors.textOnInk} />
+                    <Ionicons name="checkmark" size={14} color={colors.white} />
                   </View>
                 ) : null}
-                <View
-                  pointerEvents="none"
-                  style={[styles.tileBorder, selected && styles.tileBorderSelected]}
-                />
               </View>
+              <Txt style={styles.tileName} center lines={1}>
+                {label}
+              </Txt>
             </PressableScale>
           );
         }}
@@ -125,68 +140,52 @@ export default function ChangeBackgroundScreen() {
 
 const styles = StyleSheet.create({
   preview: {
+    marginTop: 14,
     marginHorizontal: space.lg,
-    marginBottom: space.md,
-    borderRadius: radius.lg,
+    borderRadius: 22,
     overflow: 'hidden',
     backgroundColor: colors.surfaceAlt,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
-  previewVeil: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(255,250,241,0.16)',
-  },
-  previewMessages: {
-    ...StyleSheet.absoluteFill,
-    justifyContent: 'flex-end',
-    padding: space.sm,
-    gap: space.xs,
-    bottom: 38,
-  },
-  previewBubble: {
+  // The chat's own bubble colours and tails, so the preview reads like the chat.
+  previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
+  previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderBottomLeftRadius: 5 },
+  previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: colors.bubbleSelf, borderBottomRightRadius: 5 },
+  previewField: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, height: 32, borderRadius: 16 },
+  segment: {
+    flexDirection: 'row',
     height: 36,
-    borderRadius: radius.md,
-    justifyContent: 'center',
-    gap: 5,
-    paddingHorizontal: space.sm,
-  },
-  previewBubbleIncoming: { width: '58%', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.96)' },
-  previewBubbleOutgoing: { width: '52%', alignSelf: 'flex-end', backgroundColor: 'rgba(255,226,198,0.96)' },
-  previewLine: { height: 4, borderRadius: radius.pill, backgroundColor: 'rgba(42,46,69,0.18)' },
-  previewLineLong: { width: '78%' },
-  previewLineShort: { width: '52%' },
-  previewComposer: {
-    position: 'absolute',
-    left: space.sm,
-    right: space.sm,
-    bottom: space.sm,
-    height: 30,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.96)',
-  },
-  tabs: { marginHorizontal: space.lg, marginBottom: space.sm },
-  scroll: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.huge },
-  row: { justifyContent: 'space-between' },
-  tile: {
-    borderRadius: radius.lg,
-    overflow: 'hidden',
+    marginTop: space.lg,
+    marginHorizontal: space.lg,
+    padding: 2,
+    borderRadius: 18,
     backgroundColor: colors.surfaceAlt,
   },
+  segmentItem: { flex: 1, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  segmentOn: { backgroundColor: colors.surface, ...glassStyle, borderWidth: 0 },
+  segmentText: { fontSize: 15, fontWeight: '500', color: colors.text },
+  segmentTextOn: { fontWeight: '600' },
+  scroll: { paddingHorizontal: space.lg, paddingTop: space.lg },
+  row: { gap: GAP, marginBottom: space.md },
+  tile: { borderRadius: 16, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
   tileBorder: {
     ...StyleSheet.absoluteFill,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
-  tileBorderSelected: { borderWidth: 2, borderColor: colors.text },
+  tileBorderSelected: { borderWidth: 2.5, borderColor: colors.primary },
   check: {
-    width: 22,
-    height: 22,
-    borderRadius: radius.pill,
-    backgroundColor: colors.text,
+    position: 'absolute',
+    right: space.sm,
+    bottom: space.sm,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute',
-    top: space.sm,
-    right: space.sm,
   },
+  tileName: { marginTop: 6, fontSize: 12, color: colors.textSecondary },
 });
