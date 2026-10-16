@@ -9,18 +9,17 @@ import Svg, { Path } from 'react-native-svg';
 
 import { BondChip } from '@/components/bond-chip';
 import { GroupAvatar } from '@/components/group-avatar';
-import { CharacterAvatar, Divider, EmptyState, PressableScale, Screen, SearchBar, Sheet, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, shadows, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
 
 const AVATAR = 52;
 const PINNED_AVATAR = 76;
 const ROW = 76;
 const ACTION = 66;
-const WAY_ICON = 36;
 /** iOS indigo: the Mute swipe action, as in the approved prototype. */
 const MUTE_FILL = '#5856D6';
 
@@ -279,46 +278,26 @@ export default function ChatListScreen() {
         </>
       )}
 
-      {/* The pencil: a new chat in Find, or a group of 2-3 friends (approved prototype). */}
-      <Sheet visible={starting} onClose={() => setStarting(false)}>
+      {/* The pencil: a new chat in Find, or a group of 2-3 friends; an iOS sheet with the
+          choices in one grey group, each with a system-colour icon. */}
+      <Sheet visible={starting} onClose={() => setStarting(false)} title={t('chatList.newTitle')}>
         <View style={styles.ways}>
-          <PressableScale
-            scaleTo={1}
-            style={styles.way}
-            accessibilityRole="button"
-            accessibilityLabel={t('group.newChat')}
-            onPress={() => startWith('/(tabs)/find')}>
-            <View style={styles.wayIcon}>
-              <Ionicons name="person-outline" size={19} color={colors.text} />
-            </View>
-            <View style={styles.wayText}>
-              <Txt variant="bodyStrong">{t('group.newChat')}</Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('group.newChatHint')}
-              </Txt>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-          </PressableScale>
-          <Divider inset={space.lg + WAY_ICON + space.md} />
-          <PressableScale
-            scaleTo={1}
-            style={[styles.way, friends < 2 && styles.wayOff]}
+          <WayRow
+            icon={<SFIcon ios="person.fill" icon="person" size={18} color={colors.white} />}
+            fill={colors.primary}
+            title={t('group.newChat')}
+            hint={t('group.newChatHint')}
+            onPress={() => startWith('/(tabs)/find')}
+          />
+          <WayRow
+            icon={<SFIcon ios="person.2.fill" icon="people" size={18} color={colors.white} />}
+            fill={GROUP_FILL}
+            title={t('group.newGroup')}
+            hint={friends < 2 ? t('group.needFriends') : t('group.newGroupHint')}
             disabled={friends < 2}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: friends < 2 }}
-            accessibilityLabel={t('group.newGroup')}
-            onPress={() => startWith('/group/new')}>
-            <View style={styles.wayIcon}>
-              <Ionicons name="people-outline" size={19} color={colors.text} />
-            </View>
-            <View style={styles.wayText}>
-              <Txt variant="bodyStrong">{t('group.newGroup')}</Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {friends < 2 ? t('group.needFriends') : t('group.newGroupHint')}
-              </Txt>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-          </PressableScale>
+            onPress={() => startWith('/group/new')}
+            last
+          />
         </View>
       </Sheet>
     </Screen>
@@ -555,6 +534,47 @@ function SwipeAction({
   );
 }
 
+/** iOS indigo: groups, as the system colours a "people" action. */
+const GROUP_FILL = '#5856D6';
+
+/** One choice in the pencil's sheet: a coloured icon, the action, a short line, a chevron. */
+function WayRow({
+  icon,
+  fill,
+  title,
+  hint,
+  disabled,
+  last,
+  onPress,
+}: {
+  icon: React.ReactNode;
+  fill: string;
+  title: string;
+  hint: string;
+  disabled?: boolean;
+  last?: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled }}
+      accessibilityLabel={`${title}, ${hint}`}
+      style={({ pressed }) => [styles.way, pressed && styles.wayPressed, disabled && styles.wayOff]}>
+      <View style={[styles.wayIcon, { backgroundColor: fill }]}>{icon}</View>
+      <View style={[styles.wayBody, !last && styles.wayLine]}>
+        <View style={styles.wayText}>
+          <Txt style={styles.wayTitle}>{title}</Txt>
+          <Txt style={styles.wayHint}>{hint}</Txt>
+        </View>
+        <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+      </View>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   topBar: {
     flexDirection: 'row',
@@ -740,29 +760,15 @@ const styles = StyleSheet.create({
   },
   actionText: { fontSize: 12, fontWeight: '600' },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
-  // "Choices in a sheet": one bordered box, rows of equal weight (docs/design-style.md).
-  ways: {
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
-  way: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    minHeight: 64,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm + 2,
-  },
+  // iOS sheet choices: one grey group, hairlines between rows.
+  ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  way: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  wayPressed: { backgroundColor: colors.surfaceAlt },
   wayOff: { opacity: 0.45 },
-  wayIcon: {
-    width: WAY_ICON,
-    height: WAY_ICON,
-    borderRadius: 11,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  wayText: { flex: 1, gap: 2 },
+  wayIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  wayBody: { flex: 1, minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg },
+  wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  wayText: { flex: 1, gap: 1 },
+  wayTitle: { fontSize: 17, letterSpacing: -0.4 },
+  wayHint: { fontSize: 13, color: colors.textSecondary },
 });

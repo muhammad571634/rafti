@@ -163,6 +163,7 @@
     "pinned": "Pinned",
     "muted": "Muted",
     "newChat": "New chat",
+    "newTitle": "New",
     "noResults": "Nothing matches \"{{query}}\"",
     "pin": "Pin",
     "unpin": "Unpin",

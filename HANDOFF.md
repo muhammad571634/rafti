@@ -46,7 +46,7 @@ New group (flows.md D20). Group typing is now a per-member list (several can typ
 comment on `scheduleGroupReplies`); the real backend should keep that contract: start a member's
 typing when their reply job starts, stop it when their last line lands. Gotcha: `Txt` applies its
 `color` prop before `style`, so a style with `color` silently wins; keep colours out of shared row
-styles. Next: step 8, the Chats "new chat" sheet, then a pass over long screens for an iOS 27
+styles. Step 8 done: the Chats pencil sheet (flows.md D21). Next: a pass over long screens for an iOS 27
 uniform top bar while scrolling (settings content slides under the back button today).
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
