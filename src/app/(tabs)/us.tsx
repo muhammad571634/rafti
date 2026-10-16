@@ -2,21 +2,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import type { SFSymbol } from 'sf-symbols-typescript';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   CharacterAvatar,
-  Chip,
-  ClayIcon,
   EmptyState,
-  ListRow,
+  GlassButton,
+  InsetGroup,
   PressableScale,
   Screen,
-  SectionLabel,
+  SFIcon,
   Txt,
   UserAvatar,
-  type ClayIconName,
 } from '@/components/ui';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { PlanCalendar } from '@/components/us/plan-calendar';
@@ -31,25 +30,26 @@ import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
-const ROW_ICON = 40;
 /** Story-row avatar and the moment art: the top is generous, the timeline light. */
 const STORY = 58;
-const MOMENT_ICON_SIZE = 30;
 /** The picture at the end of a photo moment. */
 const PHOTO_THUMB = 40;
 
-/** One clay icon per moment kind (docs/icons-3d.md); the same art as where it happened. */
-const MOMENT_ICON: Record<MomentKind, ClayIconName> = {
-  met: 'sparkles',
-  levelUp: 'levelUp',
-  call: 'calls',
-  diary: 'diary',
-  secretNote: 'secretNote',
-  dating: 'date',
-  photo: 'camera',
-  plan: 'calendar',
-  board: 'board',
-  quiz: 'quiz',
+/**
+ * Each moment kind as an iOS-style icon: a system-colour circle with a white SF Symbol (an
+ * Ionicon off iPhone). The 3D clay art is gone from Us (owner, 2026-10-17).
+ */
+const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }> = {
+  met: { ios: 'sparkles', icon: 'sparkles', fill: '#AF52DE' },
+  levelUp: { ios: 'crown.fill', icon: 'trophy', fill: '#FF9500' },
+  call: { ios: 'phone.fill', icon: 'call', fill: '#34C759' },
+  diary: { ios: 'book.fill', icon: 'book', fill: '#A2845E' },
+  secretNote: { ios: 'envelope.fill', icon: 'mail', fill: '#5856D6' },
+  dating: { ios: 'heart.fill', icon: 'heart', fill: '#FF2D55' },
+  photo: { ios: 'camera.fill', icon: 'camera', fill: '#007AFF' },
+  plan: { ios: 'calendar', icon: 'calendar', fill: '#FF3B30' },
+  board: { ios: 'pin.fill', icon: 'pin', fill: '#00C7BE' },
+  quiz: { ios: 'questionmark', icon: 'help', fill: '#32ADE6' },
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */
@@ -141,12 +141,18 @@ export default function UsScreen() {
     setDay(plan.date);
   };
 
+  const addButton = (
+    <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />
+  );
+
   if (!selected) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Txt variant="h1" style={styles.head}>
-          {t('us.title')}
-        </Txt>
+      <Screen background={colors.bg}>
+        <View style={styles.head}>
+          <Txt style={styles.title} accessibilityRole="header">
+            {t('us.title')}
+          </Txt>
+        </View>
         <EmptyState
           title={t('us.noRelationships')}
           hint={t('us.noRelationshipsHint')}
@@ -162,12 +168,17 @@ export default function UsScreen() {
   const conversation = conversations.find((c) => c.characterId === character.id);
   const days = daysBetween(relationship.anniversary) + 1;
   const shownMoments = timeline.slice(0, visibleMoments);
+  const filterKeys = ['all', ...filters] as FilterKey[];
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Txt variant="h1" style={styles.head}>
-        {t('us.title')}
-      </Txt>
+    // iOS look (approved prototype `Us.dc.html`): grey ground, white cards, like Fitness' Summary.
+    <Screen background={colors.bg}>
+      <View style={styles.head}>
+        <Txt style={styles.title} accessibilityRole="header">
+          {t('us.title')}
+        </Txt>
+        {addButton}
+      </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -187,11 +198,7 @@ export default function UsScreen() {
                 <View style={[styles.ring, active && styles.ringOn]}>
                   <CharacterAvatar character={c} size={STORY} />
                 </View>
-                <Txt
-                  variant="caption"
-                  lines={1}
-                  color={active ? colors.text : colors.textMuted}
-                  style={active && styles.pickActive}>
+                <Txt style={[styles.pickName, active && styles.pickActive]} lines={1}>
                   {shortName(displayName(c, r))}
                 </Txt>
               </PressableScale>
@@ -199,28 +206,31 @@ export default function UsScreen() {
           })}
         </ScrollView>
 
-        {/* The bond at a glance, straight on the canvas; it opens the chat. */}
+        {/* The bond at a glance in one white card; it opens the chat. */}
         <PressableScale
           scaleTo={0.99}
           style={styles.hero}
           disabled={!conversation}
+          accessibilityRole="button"
+          accessibilityLabel={`${displayName(character, relationship)}, ${t('us.daysLabel', { count: days })} ${days}`}
           onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
           <View style={styles.together}>
             <View style={styles.pair}>
-              <UserAvatar user={user} size={40} />
-              <CharacterAvatar character={character} size={40} ring ringColor={colors.surface} style={styles.overlap} />
+              <UserAvatar user={user} size={44} />
+              <CharacterAvatar character={character} size={44} ring ringColor={colors.surface} style={styles.overlap} />
             </View>
-            <Txt variant="display">{days}</Txt>
-            <Txt variant="small" color={colors.textMuted}>
-              {t('us.daysLabel', { count: days })}
-            </Txt>
+            <View style={styles.daysLine}>
+              <Txt style={styles.days}>{days}</Txt>
+              <Txt style={styles.daysLabel}>{t('us.daysLabel', { count: days })}</Txt>
+            </View>
+            {conversation ? <Ionicons name="chevron-forward" size={15} color={colors.textFaint} /> : null}
           </View>
 
           <View style={styles.levelRow}>
-            <Txt variant="smallStrong" style={styles.grow}>
+            <Txt style={styles.levelText} lines={1}>
               {t('characterProfile.levelLine', { level: relationship.level, title: relationship.levelTitle })}
             </Txt>
-            <Txt variant="caption" color={colors.textMuted}>
+            <Txt style={styles.levelMeta}>
               {t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
             </Txt>
           </View>
@@ -230,7 +240,7 @@ export default function UsScreen() {
 
           <View style={styles.stats}>
             <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} />
+            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} accent divided />
             <Stat
               value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
               label={t('us.statMet')}
@@ -238,104 +248,119 @@ export default function UsScreen() {
           </View>
         </PressableScale>
 
-        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} onAdd={() => setPublishOpen(true)} />
+        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />
 
-        <SectionLabel tone="title" title={day === today ? t('common.today') : dayTitle(day, i18n.language)} />
-        {dayPlans.length === 0 ? (
-          // A quiet line, not a row: the day is free, and one tap plans something.
-          <View style={styles.free}>
-            <Txt variant="body" color={colors.textMuted} style={styles.grow}>
-              {t('us.nothingPlanned')}
-            </Txt>
-            <PressableScale style={styles.planPill} scaleTo={0.94} onPress={() => setPlanOpen(true)}>
-              <Ionicons name="add" size={16} color={colors.brandText} />
-              <Txt variant="smallStrong" color={colors.brandText}>
-                {t('us.plan')}
+        <Txt style={styles.sectionLabel}>{day === today ? t('common.today') : dayTitle(day, i18n.language)}</Txt>
+        <InsetGroup>
+          {dayPlans.length === 0 ? (
+            // The day is free: one quiet line, and one tap plans something.
+            <View style={styles.free}>
+              <Txt style={[styles.rowText, styles.grow]} color={colors.textSecondary}>
+                {t('us.nothingPlanned')}
               </Txt>
-            </PressableScale>
-          </View>
-        ) : (
-          dayPlans.map((item) => {
-            const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
-            return (
-              <View key={item.id}>
-                <ListRow
-                  size="large"
-                  title={item.title}
-                  left={<TimeTile time={item.time} />}
-                  right={
-                    <View style={styles.planRight}>
-                      {pending ? (
-                        <View style={styles.remind}>
-                          <Ionicons name="notifications-outline" size={13} color={colors.textMuted} />
-                          <Txt variant="caption" color={colors.textMuted}>
-                            {clock(reminderAt(item))}
-                          </Txt>
-                        </View>
-                      ) : item.followedUp ? (
-                        <Ionicons name="checkmark-circle" size={18} color={colors.textFaint} />
-                      ) : null}
-                      <PressableScale
-                        hitSlop={hitSlop}
-                        scaleTo={0.85}
-                        accessibilityLabel={t('a11y.removePlan')}
-                        onPress={() => removeSchedule(item.id)}>
-                        <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
-                      </PressableScale>
-                    </View>
-                  }
-                />
-              </View>
-            );
-          })
-        )}
+              <PressableScale style={styles.planPill} scaleTo={0.94} accessibilityRole="button" onPress={() => setPlanOpen(true)}>
+                <Ionicons name="add" size={15} color={colors.brandText} />
+                <Txt style={styles.planPillText} color={colors.brandText}>
+                  {t('us.plan')}
+                </Txt>
+              </PressableScale>
+            </View>
+          ) : (
+            dayPlans.map((item, i) => {
+              const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
+              return (
+                <View key={item.id} style={styles.planRow}>
+                  <TimeTile time={item.time} />
+                  <View style={[styles.planBody, i < dayPlans.length - 1 && styles.line]}>
+                    <Txt style={[styles.rowText, styles.grow]} lines={2}>
+                      {item.title}
+                    </Txt>
+                    {pending ? (
+                      <View style={styles.remind}>
+                        <Ionicons name="notifications" size={12} color={colors.textSecondary} />
+                        <Txt style={styles.remindText}>{clock(reminderAt(item))}</Txt>
+                      </View>
+                    ) : item.followedUp ? (
+                      <Ionicons name="checkmark-circle" size={18} color={colors.success} />
+                    ) : null}
+                    <PressableScale
+                      hitSlop={hitSlop}
+                      scaleTo={0.85}
+                      accessibilityLabel={t('a11y.removePlan')}
+                      onPress={() => removeSchedule(item.id)}>
+                      <Ionicons name="close-circle" size={20} color={colors.textFaint} />
+                    </PressableScale>
+                  </View>
+                </View>
+              );
+            })
+          )}
+        </InsetGroup>
 
-        <SectionLabel tone="title" title={t('us.moments')} />
+        <Txt style={styles.sectionLabel}>{t('us.moments')}</Txt>
         {filters.length > 1 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
-            {(['all', ...filters] as FilterKey[]).map((key) => (
-              <Chip key={key} label={t(`us.filter.${key}`)} active={activeFilter === key} onPress={() => setFilter(key)} />
-            ))}
+          // iOS segmented control; it scrolls sideways when every kind has moments.
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.segmentScroll}
+            contentContainerStyle={styles.segment}>
+            {filterKeys.map((key) => {
+              const on = activeFilter === key;
+              return (
+                <PressableScale
+                  key={key}
+                  scaleTo={0.96}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: on }}
+                  onPress={() => setFilter(key)}
+                  style={[styles.segmentItem, filterKeys.length <= 4 && styles.segmentFill, on && styles.segmentOn]}>
+                  <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{t(`us.filter.${key}`)}</Txt>
+                </PressableScale>
+              );
+            })}
           </ScrollView>
         ) : null}
         {timeline.length === 0 ? (
-          <Txt variant="small" color={colors.textMuted} style={styles.hint}>
-            {t('us.noMoments')}
-          </Txt>
+          <Txt style={styles.hint}>{t('us.noMoments')}</Txt>
         ) : (
-          shownMoments.map((moment) => {
-            const photo = moment.photoId ? photos.find((p) => p.id === moment.photoId) : undefined;
-            return (
-              <MomentRow
-                key={moment.id}
-                icon={MOMENT_ICON[moment.kind]}
-                text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-                when={relativeStamp(moment.createdAt)}
-                // A photo moment shows the picture and opens it.
-                thumb={
-                  photo ? (
-                    <BoothPicture
-                      photo={photo}
-                      character={selected.character}
-                      width={fitWidth(photo.style, { width: PHOTO_THUMB, height: PHOTO_THUMB })}
-                    />
-                  ) : undefined
-                }
-                onPress={photo ? () => router.push({ pathname: '/photo/[id]', params: { id: photo.id } }) : undefined}
-              />
-            );
-          })
+          <InsetGroup>
+            {shownMoments.map((moment, i) => {
+              const photo = moment.photoId ? photos.find((p) => p.id === moment.photoId) : undefined;
+              const last = i === shownMoments.length - 1 && timeline.length <= visibleMoments;
+              return (
+                <MomentRow
+                  key={moment.id}
+                  kind={moment.kind}
+                  text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+                  when={relativeStamp(moment.createdAt)}
+                  last={last}
+                  // A photo moment shows the picture and opens it.
+                  thumb={
+                    photo ? (
+                      <BoothPicture
+                        photo={photo}
+                        character={selected.character}
+                        width={fitWidth(photo.style, { width: PHOTO_THUMB, height: PHOTO_THUMB })}
+                      />
+                    ) : undefined
+                  }
+                  onPress={photo ? () => router.push({ pathname: '/photo/[id]', params: { id: photo.id } }) : undefined}
+                />
+              );
+            })}
+            {timeline.length > visibleMoments ? (
+              <Pressable
+                style={({ pressed }) => [styles.showMore, pressed && styles.pressed]}
+                accessibilityRole="button"
+                onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
+                <Txt style={styles.rowText} color={colors.primary}>
+                  {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
+                </Txt>
+              </Pressable>
+            ) : null}
+          </InsetGroup>
         )}
-        {timeline.length > visibleMoments ? (
-          <PressableScale
-            style={styles.showMore}
-            scaleTo={1}
-            onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
-            <Txt variant="smallStrong" color={colors.textSecondary}>
-              {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
-            </Txt>
-          </PressableScale>
-        ) : null}
       </ScrollView>
 
       <PublishSheet visible={publishOpen} onClose={() => setPublishOpen(false)} onPick={pickPublish} />
@@ -356,98 +381,158 @@ function dayTitle(key: string, locale: string) {
   return dateFromKey(key).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-/** A plan's time in bold beside the title; a calendar glyph when it has none. */
+/** A plan's time in bold beside the title; the iOS Calendar glyph when it has none. */
 function TimeTile({ time }: { time?: string }) {
-  if (!time) return <ClayIcon name="calendar" size={ROW_ICON} tile={false} />;
+  if (!time) {
+    return (
+      <View style={[styles.momentIcon, { backgroundColor: MOMENT_STYLE.plan.fill }]}>
+        <SFIcon ios="calendar" icon="calendar" size={16} color={colors.white} />
+      </View>
+    );
+  }
   return (
     <View style={styles.timeTile}>
-      <Txt variant="title" style={styles.tabular}>
-        {time}
-      </Txt>
+      <Txt style={styles.time}>{time}</Txt>
     </View>
   );
 }
 
-/** One moment in the timeline: small art, a light line of text, when it happened. */
+/** One moment: a system-colour icon (no 3D art here, owner 2026-10-17), the line, when. */
 function MomentRow({
-  icon,
+  kind,
   text,
   when,
   thumb,
+  last,
   onPress,
 }: {
-  icon: ClayIconName;
+  kind: MomentKind;
   text: string;
   when: string;
   thumb?: React.ReactNode;
+  last?: boolean;
   onPress?: () => void;
 }) {
+  const look = MOMENT_STYLE[kind];
   return (
-    <PressableScale style={styles.moment} scaleTo={0.98} disabled={!onPress} onPress={onPress}>
-      <ClayIcon name={icon} size={MOMENT_ICON_SIZE} tile={false} />
-      <Txt variant="body" lines={1} style={styles.grow}>
-        {text}
-      </Txt>
-      <Txt variant="caption" color={colors.textMuted}>
-        {when}
-      </Txt>
-      {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
-    </PressableScale>
+    <Pressable
+      style={({ pressed }) => [styles.moment, pressed && onPress ? styles.pressed : null]}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={`${text}, ${when}`}
+      onPress={onPress}>
+      <View style={[styles.momentIcon, { backgroundColor: look.fill }]}>
+        <SFIcon ios={look.ios} icon={look.icon} size={16} color={colors.white} />
+      </View>
+      <View style={[styles.momentBody, !last && styles.line]}>
+        <Txt style={[styles.momentText, styles.grow]} lines={2}>
+          {text}
+        </Txt>
+        <Txt style={styles.when}>{when}</Txt>
+        {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
+      </View>
+    </Pressable>
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({ value, label, accent, divided }: { value: string; label: string; accent?: boolean; divided?: boolean }) {
   return (
-    <View style={styles.stat}>
-      <Txt variant="bodyStrong">{value}</Txt>
-      <Txt variant="caption" color={colors.textMuted}>
-        {label}
+    <View style={[styles.stat, divided && styles.statDivided]}>
+      <Txt style={styles.statValue} color={accent ? colors.primary : colors.text}>
+        {value}
       </Txt>
+      <Txt style={styles.statLabel}>{label}</Txt>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
-  head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  picker: { gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.sm },
-  pick: { alignItems: 'center', gap: space.xs, width: STORY + 10 },
-  ring: { padding: 2, borderRadius: radius.pill, borderWidth: 2, borderColor: 'transparent' },
-  ringOn: { borderColor: colors.primary },
-  pickActive: { fontWeight: '600' },
-  hero: { paddingHorizontal: space.lg, paddingTop: space.xl },
-  together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  pair: { flexDirection: 'row', marginRight: space.xs },
-  overlap: { marginLeft: -space.md },
-  levelRow: { flexDirection: 'row', alignItems: 'center', marginTop: space.lg },
-  track: {
-    height: 4,
-    borderRadius: radius.pill,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
-    marginTop: space.md,
+  head: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    paddingTop: space.sm,
+    paddingBottom: space.xs,
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
-  stats: { flexDirection: 'row', marginTop: space.lg },
+  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4 },
+  picker: { gap: space.sm + 2, paddingHorizontal: space.lg, paddingVertical: space.md },
+  pick: { alignItems: 'center', gap: 7, width: STORY + 6 },
+  ring: { padding: 2.5, borderRadius: radius.pill, borderWidth: 2.5, borderColor: 'transparent' },
+  ringOn: { borderColor: colors.primary },
+  pickName: { fontSize: 12, color: colors.textSecondary },
+  pickActive: { fontWeight: '600', color: colors.text },
+  hero: { marginHorizontal: space.lg, marginTop: space.xs, padding: space.lg, borderRadius: 16, backgroundColor: colors.surface },
+  together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  pair: { flexDirection: 'row' },
+  overlap: { marginLeft: -space.lg },
+  daysLine: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  days: { fontSize: 34, lineHeight: 40, fontWeight: '700', letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
+  daysLabel: { fontSize: 15, color: colors.textSecondary },
+  levelRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, marginTop: 14 },
+  levelText: { flex: 1, fontSize: 15, fontWeight: '600' },
+  levelMeta: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  track: { height: 6, borderRadius: 3, backgroundColor: colors.border, overflow: 'hidden', marginTop: space.sm },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
+  // Three figures under a hairline, split by hairlines (Health's summary rows).
+  stats: {
+    flexDirection: 'row',
+    marginTop: 14,
+    paddingTop: space.md,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderStrong,
+  },
   stat: { flex: 1, alignItems: 'center', gap: 2 },
-  timeTile: { minWidth: ROW_ICON + 14, height: ROW_ICON, justifyContent: 'center' },
-  tabular: { fontVariant: ['tabular-nums'] },
-  planRight: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  filters: { gap: space.sm, paddingHorizontal: space.lg, paddingBottom: space.sm },
-  hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
-  free: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingVertical: space.sm },
+  statDivided: {
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
+  },
+  statValue: { fontSize: 20, fontWeight: '700', fontVariant: ['tabular-nums'] },
+  statLabel: { fontSize: 12, color: colors.textSecondary },
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
+  },
+  rowText: { fontSize: 17, letterSpacing: -0.4 },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  free: { minHeight: 52, flexDirection: 'row', alignItems: 'center', paddingLeft: space.lg, paddingRight: space.sm },
   planPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
+    gap: 3,
     height: 34,
-    paddingLeft: space.sm,
-    paddingRight: space.md,
-    borderRadius: radius.pill,
+    paddingLeft: space.sm + 2,
+    paddingRight: space.md + 2,
+    borderRadius: 17,
     backgroundColor: colors.primarySofter,
   },
-  moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 48, paddingHorizontal: space.lg },
+  planPillText: { fontSize: 15, fontWeight: '600' },
+  planRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  planBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
+  timeTile: { minWidth: 48, justifyContent: 'center' },
+  time: { fontSize: 17, fontWeight: '600', fontVariant: ['tabular-nums'] },
+  remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  remindText: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  segmentScroll: { marginHorizontal: space.lg, marginBottom: space.sm + 2, flexGrow: 0 },
+  segment: { flexGrow: 1, height: 32, padding: 2, borderRadius: 16, backgroundColor: colors.surfaceAlt },
+  segmentItem: { paddingHorizontal: space.md, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  segmentFill: { flex: 1 },
+  segmentOn: { backgroundColor: colors.surface },
+  segmentText: { fontSize: 13, color: colors.text },
+  segmentTextOn: { fontWeight: '600' },
+  hint: { marginHorizontal: space.lg * 2, fontSize: 15, color: colors.textSecondary },
+  moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  momentIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  momentBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg },
+  momentText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2 },
+  when: { fontSize: 13, color: colors.textSecondary },
   thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
-  showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
+  showMore: { minHeight: 48, justifyContent: 'center', paddingHorizontal: space.lg },
 });

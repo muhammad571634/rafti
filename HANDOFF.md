@@ -47,7 +47,12 @@ comment on `scheduleGroupReplies`); the real backend should keep that contract: 
 typing when their reply job starts, stop it when their last line lands. Gotcha: `Txt` applies its
 `color` prop before `style`, so a style with `color` silently wins; keep colours out of shared row
 styles. Step 8 done: the Chats pencil sheet (flows.md D21). The scroll-edge pass is done too (flows.md D22). The chat
-and Chats plan is complete; next is the owner's call (another tab in iOS style, or the palette).
+and Chats plan is complete. **Owner's order from here (2026-10-17):** Us tab and every screen it opens
+(1 Us main, 2 publish + new-plan sheets, 3 board write, 4 photo viewer, 5 diary screens only with
+the owner's explicit yes: the Heartbeat diary is an approved screen), then Find, then Today, and
+last, calmly, the palette (grounds, buttons) once every screen is done. Prototype each step first.
+Us 1 done (flows.md D23): the Us tab; moments use system-colour icons, no 3D art (owner). Next: Us 2,
+the publish and new-plan sheets.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

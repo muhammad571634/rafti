@@ -15,7 +15,8 @@ export interface PlanCalendarProps {
   today: string;
   /** Days with plans */
   marked: ReadonlySet<string>;
-  onAdd: () => void;
+  /** A peach "+" beside the month; Us moved it to its header, so it is optional. */
+  onAdd?: () => void;
 }
 
 /**
@@ -51,7 +52,7 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCale
           accessibilityLabel={t(open ? 'us.calendarLess' : 'us.calendarMore')}
           onPress={() => setOpen((v) => !v)}>
           <Txt variant="title">{shownMonth.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}</Txt>
-          <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textMuted} />
+          <Ionicons name={open ? 'chevron-up' : 'chevron-forward'} size={15} color={colors.primary} />
         </PressableScale>
         {open ? (
           <>
@@ -63,9 +64,11 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCale
             </PressableScale>
           </>
         ) : null}
-        <PressableScale style={styles.add} scaleTo={0.88} accessibilityLabel={t('us.add')} onPress={onAdd}>
-          <Ionicons name="add" size={20} color={colors.textOnPrimary} />
-        </PressableScale>
+        {onAdd ? (
+          <PressableScale style={styles.add} scaleTo={0.88} accessibilityLabel={t('us.add')} onPress={onAdd}>
+            <Ionicons name="add" size={20} color={colors.textOnPrimary} />
+          </PressableScale>
+        ) : null}
       </View>
 
       <View style={styles.row}>
@@ -113,8 +116,16 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCale
 }
 
 const styles = StyleSheet.create({
-  // Straight on the canvas: no card, border or fill around the days.
-  root: { marginHorizontal: space.sm, marginTop: space.xl, paddingHorizontal: space.sm },
+  // iOS look (approved prototype `Us.dc.html`): one white card on the grey ground.
+  root: {
+    marginHorizontal: space.lg,
+    marginTop: 14,
+    paddingHorizontal: space.sm,
+    paddingTop: space.xs,
+    paddingBottom: space.sm,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+  },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.xs, marginBottom: space.sm },
   toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.xs, minHeight: 44 },
   nav: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
@@ -133,7 +144,8 @@ const styles = StyleSheet.create({
   dayCell: { alignItems: 'center', justifyContent: 'center', height: 44 },
   day: { width: 34, height: 34, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   daySelected: { backgroundColor: colors.primaryFill },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: 'transparent' },
+  // Weekday letters and day numbers in iOS Calendar sizes.
+  dot: { width: 5, height: 5, borderRadius: 3, backgroundColor: 'transparent' },
   dotOn: { backgroundColor: colors.primary },
   dotPast: { backgroundColor: colors.textFaint },
 });
