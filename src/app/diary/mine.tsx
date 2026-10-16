@@ -14,8 +14,8 @@ import {
   Button,
   CharacterAvatar,
   EmptyState,
-  Header,
-  IconButton,
+  GlassBar,
+  GlassIcons,
   PressableScale,
   Screen,
   Sheet,
@@ -76,45 +76,34 @@ export default function MyDiaryScreen() {
     : [];
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
+    // iOS chrome around the approved page stack (prototype `DiaryMine.dc.html`).
+    <Screen background={colors.bg}>
+      <GlassBar
         title={t('diary.myDiary')}
         right={
-          <View style={styles.headerRight}>
-            <IconButton
-              icon="calendar-outline"
-              size={20}
-              accessibilityLabel={t('diary.pages', { count: entries.length })}
-              onPress={() => setDatesOpen(true)}
-            />
-            <IconButton
-              icon="swap-vertical"
-              size={20}
-              accessibilityLabel={t('a11y.sortPages')}
-              onPress={() => {
-                setNewestFirst((v) => !v);
-                setIndex(0);
-              }}
-            />
-            <IconButton
-              icon="information-circle-outline"
-              size={21}
-              onPress={() => setInfoOpen(true)}
-              accessibilityLabel={t('a11y.about')}
-            />
-          </View>
+          <GlassIcons
+            items={[
+              { icon: 'calendar-outline', label: t('diary.pages', { count: entries.length }), onPress: () => setDatesOpen(true) },
+              {
+                icon: 'swap-vertical',
+                label: t('a11y.sortPages'),
+                onPress: () => {
+                  setNewestFirst((v) => !v);
+                  setIndex(0);
+                },
+              },
+              { icon: 'information-circle-outline', label: t('a11y.about'), onPress: () => setInfoOpen(true) },
+            ]}
+          />
         }
       />
 
       {current ? (
         <PressableScale style={styles.month} scaleTo={1} onPress={() => setDatesOpen(true)}>
-          <Txt variant="display">
+          <Txt style={styles.monthTitle} accessibilityRole="header">
             {dateFromKey(current.date).toLocaleDateString(i18n.language, { month: 'long' })}
           </Txt>
-          <Txt variant="small" color={colors.textMuted}>
-            {' · '}
-            {t('diary.pages', { count: entries.length })}
-          </Txt>
+          <Txt style={styles.monthCount}>{t('diary.pages', { count: entries.length })}</Txt>
         </PressableScale>
       ) : null}
 
@@ -347,8 +336,9 @@ function DiaryCard({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  headerRight: { flexDirection: 'row' },
-  month: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: space.lg },
+  month: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, paddingHorizontal: space.lg, paddingTop: 10 },
+  monthTitle: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4 },
+  monthCount: { fontSize: 15, color: colors.textSecondary },
   stackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   stack: { alignItems: 'center', justifyContent: 'center' },
   counter: { marginTop: space.xxl },

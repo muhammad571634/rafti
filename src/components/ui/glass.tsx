@@ -56,6 +56,29 @@ export function GlassButton({
   );
 }
 
+/** Several icon buttons in one glass capsule (iOS 26 groups related bar buttons). */
+export function GlassIcons({
+  items,
+}: {
+  items: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void }[];
+}) {
+  return (
+    <View style={[glassStyle, styles.capsule]}>
+      {items.map((item) => (
+        <PressableScale
+          key={item.label}
+          scaleTo={0.88}
+          onPress={item.onPress}
+          accessibilityRole="button"
+          accessibilityLabel={item.label}
+          style={styles.capsuleItem}>
+          <Ionicons name={item.icon} size={20} color={colors.text} />
+        </PressableScale>
+      ))}
+    </View>
+  );
+}
+
 /** Glass back button for the iOS-look screens. */
 export function BackButton({ onPress }: { onPress?: () => void }) {
   const router = useRouter();
@@ -148,6 +171,8 @@ export function LargeTitle({ children }: { children: string }) {
 
 const styles = StyleSheet.create({
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
+  capsuleItem: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
   pill: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
   back: { marginLeft: -2 },
   label: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },

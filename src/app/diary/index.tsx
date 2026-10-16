@@ -19,16 +19,19 @@ import { AVATARS } from '@/assets/avatars/registry';
 import { BRAND } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
-import { Button, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
+import { Button, GlassBar, GlassIcons, glassStyle, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, HEADER_HEIGHT, radius, shadows, space } from '@/theme';
+import { avatarGradients, colors, radius, shadows, space } from '@/theme';
 import type { Character, CharacterDiaryPage } from '@/types';
 
 const GAP = space.md;
 /** Height of the date pill, for placing the calendar under it. */
 const PILL = 38;
+/** The glass bar and the large title above the date pill (where the calendar opens). */
+const BAR = 56;
+const TITLE = 51;
 /** How far the covers beside the one in front lean, like a fanned deck. */
 const TILT = 7;
 
@@ -179,35 +182,33 @@ export default function DiaryScreen() {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={t('diary.title')}
+    // iOS chrome around the approved diary (prototype `DiaryIndex.dc.html`): glass bar, large
+    // title, glass date pill; the covers, carousel and button are unchanged.
+    <Screen background={colors.bg}>
+      <GlassBar
         right={
-          <View style={styles.headerRight}>
-            <IconButton
-              icon="swap-vertical"
-              size={20}
-              accessibilityLabel={newestFirst ? t('diary.sortOldest') : t('diary.sortNewest')}
-              onPress={() => resetTo(() => setNewestFirst((v) => !v))}
-            />
-            <IconButton
-              icon="information-circle-outline"
-              size={21}
-              accessibilityLabel={t('diary.rulesTitle')}
-              onPress={() => setRulesOpen(true)}
-            />
-          </View>
+          <GlassIcons
+            items={[
+              {
+                icon: 'swap-vertical',
+                label: newestFirst ? t('diary.sortOldest') : t('diary.sortNewest'),
+                onPress: () => resetTo(() => setNewestFirst((v) => !v)),
+              },
+              { icon: 'information-circle-outline', label: t('diary.rulesTitle'), onPress: () => setRulesOpen(true) },
+            ]}
+          />
         }
       />
+      <LargeTitle>{t('diary.title')}</LargeTitle>
 
       <PressableScale
-        style={[styles.datePill, calendarOpen && styles.datePillOpen]}
+        style={[glassStyle, styles.datePill, calendarOpen && styles.datePillOpen]}
         scaleTo={0.96}
         accessibilityLabel={t('diary.calendar')}
         onPress={() => setCalendarOpen(true)}>
         <Ionicons name="calendar-outline" size={16} color={colors.text} />
         <Txt variant="smallStrong">{shortDate(day)}</Txt>
-        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={15} color={colors.textSecondary} />
+        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={13} color={colors.primary} />
       </PressableScale>
 
       <View style={styles.middle}>
@@ -270,7 +271,7 @@ export default function DiaryScreen() {
         value={day}
         onChange={(key) => resetTo(() => setDay(key))}
         marked={marked}
-        top={insets.top + HEADER_HEIGHT + PILL + space.md}
+        top={insets.top + BAR + TITLE + space.md + PILL + space.md}
       />
 
       <DiaryRulesSheet visible={rulesOpen} onClose={() => setRulesOpen(false)} />
@@ -396,20 +397,17 @@ function CoverCard({
 const ARROW = 40;
 
 const styles = StyleSheet.create({
-  headerRight: { flexDirection: 'row' },
   datePill: {
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.xs + 2,
     height: PILL,
+    marginTop: space.md,
     paddingHorizontal: space.md + 2,
     borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: 1,
-    borderColor: colors.surfaceAlt,
   },
-  datePillOpen: { backgroundColor: colors.surface, borderColor: colors.text },
+  datePillOpen: { borderColor: colors.primary },
   middle: { flex: 1, justifyContent: 'center' },
   card: {
     flex: 1,

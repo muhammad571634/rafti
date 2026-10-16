@@ -4,14 +4,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
-import { Button, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { CharacterAvatar, GlassButton, glassStyle, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { dayKey, dayKeyFromToday, dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, HEADER_HEIGHT, radius, space, type } from '@/theme';
+import { colors, radius, space, type } from '@/theme';
 import type { DiaryMood } from '@/types';
 
 type Mark = 'bold' | 'underline' | 'strike' | 'italic';
@@ -36,7 +35,6 @@ const PAPER = '#FFFDF8';
 export default function DiaryWriteScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -86,43 +84,45 @@ export default function DiaryWriteScreen() {
     dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
 
   return (
-    <Screen background={colors.bgPlain}>
+    <Screen background={colors.bg}>
+      {/* iOS Notes-style bar (prototype `DiaryWrite.dc.html`): close, the page and its date, save. */}
       <View style={styles.head}>
+        <GlassButton icon="close" accessibilityLabel={t('common.close')} onPress={() => router.back()} />
         <PressableScale
-          style={styles.back}
-          scaleTo={0.88}
-          hitSlop={8}
-          accessibilityLabel={t('a11y.back')}
-          onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={26} color={colors.text} />
-        </PressableScale>
-        <Txt variant="h3" lines={1} style={styles.flex}>
-          {date === dayKey() ? t('diary.todayPage') : t('diary.myPage')}
-        </Txt>
-        <PressableScale
-          style={styles.date}
-          scaleTo={0.95}
-          hitSlop={6}
-          accessibilityLabel={t('diary.calendar')}
+          style={styles.titleWrap}
+          scaleTo={0.97}
+          accessibilityRole="button"
+          accessibilityLabel={`${shortDate(date)}, ${t('diary.calendar')}`}
           onPress={() => setDatesOpen(true)}>
-          <Txt variant="smallStrong" color={colors.textSecondary}>
-            {shortDate(date)}
+          <Txt style={styles.headTitle} lines={1}>
+            {date === dayKey() ? t('diary.todayPage') : t('diary.myPage')}
           </Txt>
-          <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
+          <View style={styles.date}>
+            <Txt style={styles.dateText} color={colors.primary}>
+              {shortDate(date)}
+            </Txt>
+            <Ionicons name="chevron-down" size={11} color={colors.primary} />
+          </View>
+        </PressableScale>
+        <PressableScale
+          scaleTo={0.9}
+          onPress={save}
+          accessibilityRole="button"
+          accessibilityLabel={t('diary.savePage')}
+          style={styles.save}>
+          <Ionicons name="checkmark" size={22} color={colors.textOnPrimary} />
         </PressableScale>
       </View>
 
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={HEADER_HEIGHT}>
+        keyboardVerticalOffset={BAR}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled">
-          <Txt variant="h3" style={styles.section}>
-            {t('diary.mood')}
-          </Txt>
+          <Txt style={styles.section}>{t('diary.mood')}</Txt>
           <View style={styles.moods}>
             {MOODS.map((m) => (
               <PressableScale
@@ -132,7 +132,7 @@ export default function DiaryWriteScreen() {
                 accessibilityState={{ selected: mood === m }}
                 onPress={() => setMood(m)}
                 style={[styles.chip, mood === m && styles.selected]}>
-                <Txt variant="smallStrong" color={mood === m ? colors.text : colors.textSecondary}>
+                <Txt style={styles.chipText} color={mood === m ? colors.textOnPrimary : colors.text}>
                   {t(`diary.moods.${m}`)}
                 </Txt>
               </PressableScale>
@@ -173,7 +173,7 @@ export default function DiaryWriteScreen() {
             ) : null}
           </View>
 
-          <View style={styles.tools}>
+          <View style={[glassStyle, styles.tools]}>
             {MARKS.map(({ mark, label }) => (
               <PressableScale
                 key={mark}
@@ -203,34 +203,35 @@ export default function DiaryWriteScreen() {
             </PressableScale>
           </View>
 
-          <Txt variant="h3" style={styles.section}>
-            {t('diary.whoReads')}
-          </Txt>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.readers}>
+          <Txt style={styles.section}>{t('diary.whoReads')}</Txt>
+          <View style={styles.readers}>
             <ReaderOption
               selected={!shareWith}
               label={t('diary.onlyMe')}
-              icon={<Ionicons name="lock-closed-outline" size={18} color={colors.text} />}
+              icon={
+                <View style={styles.lock}>
+                  <Ionicons name="lock-closed" size={14} color={colors.white} />
+                </View>
+              }
               onPress={() => setShareWith(undefined)}
+              last={friends.length === 0}
             />
-            {friends.map((character) => (
+            {friends.map((character, i) => (
               <ReaderOption
                 key={character.id}
                 selected={shareWith === character.id}
                 label={shortName(character.name)}
-                icon={<CharacterAvatar character={character} size={26} />}
+                icon={<CharacterAvatar character={character} size={30} />}
                 onPress={() => setShareWith(character.id)}
+                last={i === friends.length - 1}
               />
             ))}
-          </ScrollView>
-        </ScrollView>
-
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
-          <Button label={t('diary.savePage')} size="lg" full onPress={save} />
-          <Txt variant="small" color={colors.textSecondary} center>
+          </View>
+          <Txt style={styles.note}>
             {reader ? t('diary.sharedNote', { name: shortName(reader.name) }) : t('diary.privateNote')}
           </Txt>
-        </View>
+        </ScrollView>
+
       </KeyboardAvoidingView>
 
       <Sheet visible={datesOpen} onClose={() => setDatesOpen(false)}>
@@ -254,60 +255,70 @@ export default function DiaryWriteScreen() {
 }
 
 /** One "who can read it" choice: grey, or white with an ink border when chosen. */
+/** One reader in the inset list: the face, the name and a peach tick when chosen. */
 function ReaderOption({
   selected,
   label,
   icon,
+  last,
   onPress,
 }: {
   selected: boolean;
   label: string;
   icon: React.ReactNode;
+  last?: boolean;
   onPress: () => void;
 }) {
   return (
-    <PressableScale
-      style={[styles.option, selected && styles.selected]}
-      scaleTo={0.96}
-      dimOnPress={false}
+    <Pressable
+      style={({ pressed }) => [styles.option, pressed && styles.pressed]}
+      accessibilityRole="radio"
       accessibilityState={{ selected }}
+      accessibilityLabel={label}
       onPress={onPress}>
       {icon}
-      <Txt variant="smallStrong" lines={1}>
-        {label}
-      </Txt>
-    </PressableScale>
+      <View style={[styles.optionBody, !last && styles.line]}>
+        <Txt style={styles.optionText} lines={1}>
+          {label}
+        </Txt>
+        {selected ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+      </View>
+    </Pressable>
   );
 }
 
+/** The glass bar's height, for the keyboard offset. */
+const BAR = 56;
 const PAPER_PAD = space.md;
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   head: {
-    minHeight: HEADER_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    paddingLeft: space.sm,
-    paddingRight: space.md,
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
+    paddingBottom: space.sm,
   },
-  back: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  date: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm },
+  titleWrap: { flex: 1, alignItems: 'center' },
+  headTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  date: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  dateText: { fontSize: 12 },
+  save: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.xl },
-  section: { marginTop: space.lg, marginBottom: space.md },
+  section: { marginTop: 22, marginBottom: 6, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase' },
   moods: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   chip: {
-    height: 40,
-    paddingHorizontal: space.lg,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    borderColor: colors.surfaceAlt,
+    height: 32,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  selected: { backgroundColor: colors.surface, borderColor: colors.text },
+  chipText: { fontSize: 15 },
+  selected: { backgroundColor: colors.primaryFill },
   paper: {
     marginTop: space.lg,
     minHeight: 240,
@@ -333,31 +344,19 @@ const styles = StyleSheet.create({
   italic: { fontStyle: 'italic' },
   underline: { textDecorationLine: 'underline' },
   strike: { textDecorationLine: 'line-through' },
-  tools: { flexDirection: 'row', gap: space.sm, marginTop: space.md },
-  tool: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  toolOn: { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.text },
+  // One glass capsule of format buttons, centred under the paper (iOS Notes' format bar).
+  tools: { flexDirection: 'row', alignSelf: 'center', gap: 2, height: 44, marginTop: space.md, paddingHorizontal: 4, borderRadius: 22 },
+  tool: { width: 40, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  toolOn: { backgroundColor: colors.primarySoft },
   off: { opacity: 0.4 },
-  readers: { gap: space.sm, paddingRight: space.lg },
-  option: {
-    height: 52,
-    minWidth: 104,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.sm - 2,
-    paddingHorizontal: space.md,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: colors.surfaceAlt,
-    backgroundColor: colors.surfaceAlt,
-  },
+  readers: { borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
+  option: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  optionBody: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
+  optionText: { flex: 1, fontSize: 17, letterSpacing: -0.4 },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  lock: { width: 30, height: 30, borderRadius: 15, backgroundColor: colors.textSecondary, alignItems: 'center', justifyContent: 'center' },
+  note: { marginTop: space.sm, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary },
   dateRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md },
   footer: {
     gap: space.sm,

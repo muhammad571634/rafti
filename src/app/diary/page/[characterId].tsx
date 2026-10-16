@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { BackButton, Button, CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -74,20 +74,19 @@ export default function CharacterDiaryPageScreen() {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
+    <Screen background={colors.bg}>
+      {/* iOS bar (prototype `DiaryPage.dc.html`): back, whose diary over the day and mood. */}
       <View style={styles.head}>
-        <PressableScale
-          style={styles.back}
-          scaleTo={0.88}
-          hitSlop={8}
-          accessibilityLabel={t('a11y.back')}
-          onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={26} color={colors.text} />
-        </PressableScale>
-        <CharacterAvatar character={character} size={32} />
-        <Txt variant="h3" lines={1} style={styles.flex}>
-          {t('diary.theirDiary', { name })}
-        </Txt>
+        <BackButton />
+        <View style={styles.headTitles}>
+          <Txt style={styles.headTitle} lines={1} accessibilityRole="header">
+            {t('diary.theirDiary', { name })}
+          </Txt>
+          <Txt style={styles.headSub} lines={1}>
+            {`${fmt(page.date, { weekday: 'short', month: 'short', day: 'numeric' })} · ${t(`diary.moods.${page.mood}`)}`}
+          </Txt>
+        </View>
+        <CharacterAvatar character={character} size={36} />
       </View>
 
       <View style={styles.pager}>
@@ -184,14 +183,16 @@ function PagerButton({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   head: {
-    minHeight: HEADER_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    paddingLeft: space.sm,
-    paddingRight: space.lg,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
+    paddingBottom: space.sm,
   },
-  back: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  headTitles: { flex: 1, alignItems: 'center' },
+  headTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  headSub: { fontSize: 12, color: colors.textSecondary },
   pager: {
     flexDirection: 'row',
     alignItems: 'center',
