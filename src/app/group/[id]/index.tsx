@@ -8,12 +8,11 @@ import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRe
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REPORT_REASONS } from '@/ai/safety';
-import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
-import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { DayChip } from '@/components/chat/day-chip';
+import { MessageMenu } from '@/components/chat/message-menu';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -389,67 +388,27 @@ export default function GroupChatScreen() {
         onDone={() => setCallGate(null)}
       />
 
-      <Sheet visible={!!menu} onClose={() => setMenu(null)}>
-        {menu ? (
-          <>
-            {menu.text ? (
-              <View style={styles.quote}>
-                <Txt variant="small" color={colors.textSecondary} lines={3}>
-                  {menu.text}
-                </Txt>
-              </View>
-            ) : null}
-            <View style={styles.reactions}>
-              {REACTIONS.map((reaction) => {
-                const on = menu.reaction === reaction;
-                return (
-                  <PressableScale
-                    key={reaction}
-                    scaleTo={0.85}
-                    style={[styles.reactionButton, on && styles.reactionOn]}
-                    accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${reaction}`) })}
-                    accessibilityState={{ selected: on }}
-                    onPress={() => {
-                      reactToMessage(groupId, menu.id, on ? undefined : reaction);
-                      setMenu(null);
-                    }}>
-                    <ReactionSticker name={reaction} style={styles.reactionSticker} />
-                  </PressableScale>
-                );
-              })}
-            </View>
-            {menu.text ? (
-              <ListRow
-                title={t('chat.copy')}
-                left={<Ionicons name="copy-outline" size={21} color={colors.text} />}
-                onPress={() => {
-                  void Clipboard.setStringAsync(menu.text ?? '');
-                  setMenu(null);
-                }}
-              />
-            ) : null}
-            {menu.author === 'them' ? (
-              <ListRow
-                title={t('safety.report')}
-                left={<Ionicons name="flag-outline" size={21} color={colors.text} />}
-                onPress={() => {
-                  setReported(false);
-                  setReporting(menu);
-                  setMenu(null);
-                }}
-              />
-            ) : null}
-            <ListRow
-              title={t('chat.deleteMessage')}
-              left={<Ionicons name="trash-outline" size={21} color={colors.danger} />}
-              onPress={() => {
-                deleteMessage(groupId, menu.id);
-                setMenu(null);
-              }}
-            />
-          </>
-        ) : null}
-      </Sheet>
+      <MessageMenu
+        message={menu}
+        onClose={() => setMenu(null)}
+        onReact={(message, reaction) => {
+          reactToMessage(groupId, message.id, reaction);
+          setMenu(null);
+        }}
+        onCopy={(message) => {
+          void Clipboard.setStringAsync(message.text ?? '');
+          setMenu(null);
+        }}
+        onReport={(message) => {
+          setReported(false);
+          setReporting(message);
+          setMenu(null);
+        }}
+        onDelete={(message) => {
+          deleteMessage(groupId, message.id);
+          setMenu(null);
+        }}
+      />
 
       <Sheet
         visible={!!reporting}
@@ -475,7 +434,6 @@ export default function GroupChatScreen() {
   );
 }
 
-const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
@@ -514,9 +472,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.sm + 2,
   },
-  quote: { padding: space.md, borderRadius: radius.md, backgroundColor: colors.surfaceAlt },
-  reactions: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: space.lg },
-  reactionButton: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
-  reactionOn: { backgroundColor: colors.primarySoft },
-  reactionSticker: { width: 44, height: 44 },
 });

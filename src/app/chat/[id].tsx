@@ -13,12 +13,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { DayChip } from '@/components/chat/day-chip';
+import { MessageMenu } from '@/components/chat/message-menu';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
-import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
-import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
@@ -434,67 +433,27 @@ export default function ChatRoomScreen() {
         onDone={() => setCallGate(null)}
       />
 
-      <Sheet visible={!!menu} onClose={() => setMenu(null)}>
-        {menu ? (
-          <>
-            {menu.text ? (
-              <View style={styles.quote}>
-                <Txt variant="small" color={colors.textSecondary} lines={3}>
-                  {menu.text}
-                </Txt>
-              </View>
-            ) : null}
-            <View style={styles.reactions}>
-              {REACTIONS.map((name) => {
-                const on = menu.reaction === name;
-                return (
-                  <PressableScale
-                    key={name}
-                    scaleTo={0.85}
-                    style={[styles.reactionButton, on && styles.reactionOn]}
-                    accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
-                    accessibilityState={{ selected: on }}
-                    onPress={() => {
-                      reactToMessage(conversation.id, menu.id, on ? undefined : name);
-                      setMenu(null);
-                    }}>
-                    <ReactionSticker name={name} style={styles.reactionSticker} />
-                  </PressableScale>
-                );
-              })}
-            </View>
-            {menu.text ? (
-              <ListRow
-                title={t('chat.copy')}
-                left={<Ionicons name="copy-outline" size={21} color={colors.text} />}
-                onPress={() => {
-                  void Clipboard.setStringAsync(menu.text ?? '');
-                  setMenu(null);
-                }}
-              />
-            ) : null}
-            {menu.author === 'them' ? (
-              <ListRow
-                title={t('safety.report')}
-                left={<Ionicons name="flag-outline" size={21} color={colors.text} />}
-                onPress={() => {
-                  setReported(false);
-                  setReporting(menu);
-                  setMenu(null);
-                }}
-              />
-            ) : null}
-            <ListRow
-              title={t('chat.deleteMessage')}
-              left={<Ionicons name="trash-outline" size={21} color={colors.danger} />}
-              onPress={() => {
-                deleteMessage(conversation.id, menu.id);
-                setMenu(null);
-              }}
-            />
-          </>
-        ) : null}
-      </Sheet>
+      <MessageMenu
+        message={menu}
+        onClose={() => setMenu(null)}
+        onReact={(message, reaction) => {
+          reactToMessage(conversation.id, message.id, reaction);
+          setMenu(null);
+        }}
+        onCopy={(message) => {
+          void Clipboard.setStringAsync(message.text ?? '');
+          setMenu(null);
+        }}
+        onReport={(message) => {
+          setReported(false);
+          setReporting(message);
+          setMenu(null);
+        }}
+        onDelete={(message) => {
+          deleteMessage(conversation.id, message.id);
+          setMenu(null);
+        }}
+      />
 
       <Sheet
         visible={!!reporting}
@@ -520,7 +479,6 @@ export default function ChatRoomScreen() {
   );
 }
 
-const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
 
 /** A "-1" that floats off the shell badge whenever a message is paid for. */
 function SpendPulse({ shells }: { shells: number }) {
@@ -554,15 +512,6 @@ function SpendPulse({ shells }: { shells: number }) {
 
 const styles = StyleSheet.create({
   pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
-  quote: {
-    padding: space.md,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-  },
-  reactions: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: space.lg },
-  reactionButton: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
-  reactionOn: { backgroundColor: colors.primarySoft },
-  reactionSticker: { width: 44, height: 44 },
   flex: { flex: 1 },
   artWallpaper: { ...StyleSheet.absoluteFill },
   artWallpaperVeil: {

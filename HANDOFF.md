@@ -21,6 +21,9 @@ labels/receipts/system lines/voice bubble/typing/quick replies/input restyled
 iOS grey. **Suggested replies are a TEST**: `src/mock/suggestions.ts` picks 2 from a fixed pool;
 owner wants to work on them in depth later (model-written replies that fit the line, cost rules,
 when to show). Checked on web, light and dark.
+Step 2 done too: `src/components/chat/message-menu.tsx` replaces the long-press sheet in the chat
+and the group (blur, mascot stickers in a glass capsule, Copy / Report / Delete); the owner asked
+for no message copy under the reactions. Next: step 3, the "+" menu (prototype first).
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 
