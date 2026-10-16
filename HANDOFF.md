@@ -24,7 +24,11 @@ when to show). Checked on web, light and dark.
 Step 2 done too: `src/components/chat/message-menu.tsx` replaces the long-press sheet in the chat
 and the group (blur, mascot stickers in a glass capsule, Copy / Report / Delete); the owner asked
 for no message copy under the reactions. Step 3 done: the "+" menu is `src/components/chat/attach-menu.tsx` (iOS icons chosen by the
-owner over the 3D ones, only in this menu). Next: step 4, chat settings as an iOS contact card.
+owner over the 3D ones, only in this menu). Blur fix: on the phone (Android) the menus did not blur: expo-blur draws only a tint there unless
+`blurMethod="dimezisBlurView"` and a `blurTarget` ref to a `BlurTargetView` are given. Both menus are
+now overlays inside the screen (not a Modal window), the chat and group content sit in a
+`BlurTargetView`, and Android back closes an open menu (`useBackToClose`). Web looked fine because
+it uses CSS blur. Next: step 4, chat settings as an iOS contact card.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

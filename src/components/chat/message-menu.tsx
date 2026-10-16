@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { type RefObject, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
 
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
@@ -22,6 +23,8 @@ export interface MessageMenuProps {
   onCopy: (message: Message) => void;
   onReport: (message: Message) => void;
   onDelete: (message: Message) => void;
+  /** The chat's BlurTargetView: what the menu blurs on Android. */
+  blurTarget: RefObject<View | null>;
 }
 
 /**
@@ -29,16 +32,26 @@ export interface MessageMenuProps {
  * blurs, the mascot reactions sit in a glass capsule (each moving to its feeling) over
  * Copy / Report / Delete. It appears at once; a tap outside closes it.
  */
-export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDelete }: MessageMenuProps) {
+export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDelete, blurTarget }: MessageMenuProps) {
   const { t } = useTranslation();
+  useBackToClose(!!message, onClose);
   if (!message) return null;
   const mine = message.author === 'me';
   const align = mine ? styles.alignMine : styles.alignTheirs;
 
   return (
-    <Modal visible transparent animationType="none" statusBarTranslucent onRequestClose={onClose}>
+    // An overlay inside the chat, not a Modal: a separate window would sit outside the blur target.
+    <View style={styles.overlay}>
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')}>
-        <BlurView intensity={28} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+        <BlurView
+          intensity={28}
+          tint={isDark ? 'dark' : 'light'}
+          // Android blurs only with a native method and the screen's BlurTargetView.
+          blurMethod="dimezisBlurView"
+          blurReductionFactor={2}
+          blurTarget={blurTarget}
+          style={StyleSheet.absoluteFill}
+        />
         <View style={styles.dim} />
       </Pressable>
 
@@ -71,8 +84,20 @@ export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDel
           <MenuRow label={t('chat.deleteMessage')} icon="trash-outline" danger onPress={() => onDelete(message)} />
         </View>
       </View>
-    </Modal>
+    </View>
   );
+}
+
+/** Android's back button closes the open menu instead of leaving the chat. */
+export function useBackToClose(open: boolean, onClose: () => void) {
+  useEffect(() => {
+    if (!open) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onClose();
+      return true;
+    });
+    return () => sub.remove();
+  }, [open, onClose]);
 }
 
 function MenuRow({
@@ -104,6 +129,7 @@ function MenuRow({
 }
 
 const styles = StyleSheet.create({
+  overlay: { ...StyleSheet.absoluteFill, zIndex: 10 },
   dim: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.10)' },
   stack: { flex: 1, justifyContent: 'center', paddingHorizontal: space.md, gap: space.sm + 2 },
   alignMine: { alignItems: 'flex-end' },

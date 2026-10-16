@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BlurTargetView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -78,6 +79,7 @@ export default function GroupChatScreen() {
   const reportMessage = useAppStore((s) => s.reportMessage);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const blurTarget = useRef<View>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   /** The member on the wheel's other half; a new one each game. */
   const [truthWith, setTruthWith] = useState<Character | null>(null);
@@ -219,69 +221,72 @@ export default function GroupChatScreen() {
 
   return (
     <Screen background={wallpaper.colors as readonly [string, string]} statusBarStyle={wallpaper.dark ? 'light' : 'dark'}>
-      <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
-        <PressableScale onPress={() => router.back()} hitSlop={hitSlop} scaleTo={0.88} accessibilityLabel={t('a11y.back')}>
-          <Ionicons name="chevron-back" size={27} color={colors.text} />
-        </PressableScale>
-
-        <View style={styles.identity}>
-          <PressableScale
-            style={styles.identityTap}
-            scaleTo={0.98}
-            accessibilityRole="button"
-            accessibilityLabel={t('group.rowLabel', { name: title })}
-            onPress={openInfo}>
-            <GroupAvatar members={members} size={38} ringColor={colors.surface} />
-            <View style={styles.identityText}>
-              <Txt variant="title" lines={1}>
-                {title}
-              </Txt>
-              <Txt variant="tiny" color={colors.textSecondary} lines={1}>
-                {t('group.members', { count: members.length })}
-              </Txt>
-            </View>
+      {/* What the menus blur on Android (expo-blur needs a target there). */}
+      <BlurTargetView ref={blurTarget} style={styles.flex}>
+        <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
+          <PressableScale onPress={() => router.back()} hitSlop={hitSlop} scaleTo={0.88} accessibilityLabel={t('a11y.back')}>
+            <Ionicons name="chevron-back" size={27} color={colors.text} />
           </PressableScale>
-          <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
-        </View>
 
-        <IconButton
-          icon="call-outline"
-          size={22}
-          style={styles.headerIcon}
-          accessibilityLabel={t('group.call')}
-          onPress={startCall}
-        />
-        <IconButton icon="menu" size={24} style={styles.headerIcon} accessibilityLabel={t('group.info')} onPress={openInfo} />
-      </View>
+          <View style={styles.identity}>
+            <PressableScale
+              style={styles.identityTap}
+              scaleTo={0.98}
+              accessibilityRole="button"
+              accessibilityLabel={t('group.rowLabel', { name: title })}
+              onPress={openInfo}>
+              <GroupAvatar members={members} size={38} ringColor={colors.surface} />
+              <View style={styles.identityText}>
+                <Txt variant="title" lines={1}>
+                  {title}
+                </Txt>
+                <Txt variant="tiny" color={colors.textSecondary} lines={1}>
+                  {t('group.members', { count: members.length })}
+                </Txt>
+              </View>
+            </PressableScale>
+            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
+          </View>
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={insets.top + 56}>
-        <View style={styles.flex}>
-          <FlatList
-            ref={listRef}
-            data={data}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderItem}
-            ListFooterComponent={
-              typing ? <TypingRow character={typing} label={t('group.typing', { name: nameOf(typing) })} /> : null
-            }
-            onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+          <IconButton
+            icon="call-outline"
+            size={22}
+            style={styles.headerIcon}
+            accessibilityLabel={t('group.call')}
+            onPress={startCall}
           />
+          <IconButton icon="menu" size={24} style={styles.headerIcon} accessibilityLabel={t('group.info')} onPress={openInfo} />
         </View>
 
-        <ChatInput
-          placeholder={t('group.inputPlaceholder', { names })}
-          onSend={send}
-          onAttach={() => setAttachOpen(true)}
-          onVoice={() => setVoiceOpen(true)}
-        />
-      </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={insets.top + 56}>
+          <View style={styles.flex}>
+            <FlatList
+              ref={listRef}
+              data={data}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderItem}
+              ListFooterComponent={
+                typing ? <TypingRow character={typing} label={t('group.typing', { name: nameOf(typing) })} /> : null
+              }
+              onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+            />
+          </View>
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
+          <ChatInput
+            placeholder={t('group.inputPlaceholder', { names })}
+            onSend={send}
+            onAttach={() => setAttachOpen(true)}
+            onVoice={() => setVoiceOpen(true)}
+          />
+        </KeyboardAvoidingView>
+      </BlurTargetView>
+
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)}>
@@ -355,6 +360,7 @@ export default function GroupChatScreen() {
 
       <MessageMenu
         message={menu}
+        blurTarget={blurTarget}
         onClose={() => setMenu(null)}
         onReact={(message, reaction) => {
           reactToMessage(groupId, message.id, reaction);

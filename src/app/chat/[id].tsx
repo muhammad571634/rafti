@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { BlurTargetView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -83,6 +84,7 @@ export default function ChatRoomScreen() {
   const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const blurTarget = useRef<View>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [truthOpen, setTruthOpen] = useState(false);
   const [callsOpen, setCallsOpen] = useState(false);
@@ -230,126 +232,129 @@ export default function ChatRoomScreen() {
 
   return (
     <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        {artWallpaper ? (
-          <>
-            <Image
-              source={artWallpaper.image}
-              contentFit="cover"
-              style={styles.artWallpaper}
-              accessible={false}
+      {/* What the menus blur on Android (expo-blur needs a target there). */}
+      <BlurTargetView ref={blurTarget} style={styles.flex}>
+        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          {artWallpaper ? (
+            <>
+              <Image
+                source={artWallpaper.image}
+                contentFit="cover"
+                style={styles.artWallpaper}
+                accessible={false}
+              />
+              <View pointerEvents="none" style={styles.artWallpaperVeil} />
+            </>
+          ) : null}
+          <View style={styles.flex}>
+            {!artWallpaper ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
+            <FlatList
+              ref={listRef}
+              data={data}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging ? ALARM_ROOM : 0) }]}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderItem}
+              ListFooterComponent={
+                <>
+                  {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
+                  {typing ? <TypingRow character={character} /> : null}
+                </>
+              }
+              onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
             />
-            <View pointerEvents="none" style={styles.artWallpaperVeil} />
-          </>
-        ) : null}
-        <View style={styles.flex}>
-          {!artWallpaper ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
-          <FlatList
-            ref={listRef}
-            data={data}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging ? ALARM_ROOM : 0) }]}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderItem}
-            ListFooterComponent={
-              <>
-                {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
-                {typing ? <TypingRow character={character} /> : null}
-              </>
-            }
-            onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+            {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
+            {!artWallpaper ? (
+              <LinearGradient
+                pointerEvents="none"
+                colors={[background[0], background[0], fadeOut(background[0])]}
+                locations={[0, 0.55, 1]}
+                style={[styles.fade, { height: headerRoom + space.md }]}
+              />
+            ) : null}
+          </View>
+
+          <ChatInput
+            placeholder={t('chat.inputPlaceholder', { name })}
+            onSend={send}
+            onAttach={() => setAttachOpen(true)}
+            onVoice={() => setVoiceOpen(true)}
+            initialValue={typeof draft === 'string' ? draft : undefined}
           />
-          {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
-          {!artWallpaper ? (
-            <LinearGradient
-              pointerEvents="none"
-              colors={[background[0], background[0], fadeOut(background[0])]}
-              locations={[0, 0.55, 1]}
-              style={[styles.fade, { height: headerRoom + space.md }]}
-            />
+        </KeyboardAvoidingView>
+
+        {/* Glass back, the friend in the middle (tap: chat settings), shells and call on the right. */}
+        <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
+          <View style={styles.headerRow} pointerEvents="box-none">
+            <PressableScale
+              onPress={() => router.back()}
+              hitSlop={hitSlop}
+              scaleTo={0.88}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.back')}
+              style={[styles.glass, styles.round]}>
+              <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
+            </PressableScale>
+
+            <PressableScale
+              style={styles.identity}
+              scaleTo={0.96}
+              accessibilityRole="button"
+              accessibilityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
+                .filter(Boolean)
+                .join(', ')}
+              onPress={() => router.push(`/character/${character.id}/settings`)}>
+              <CharacterAvatar character={character} size={54} />
+              <View style={[styles.glass, styles.nameChip]}>
+                <Txt style={styles.nameText} lines={1}>
+                  {name}
+                </Txt>
+                <Ionicons name="chevron-forward" size={11} color={colors.textSecondary} />
+              </View>
+              {/* Always says what they are; the streak rides along once there is one. */}
+              <View style={styles.caption}>
+                <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
+                {streak > 0 ? (
+                  <>
+                    <View style={styles.captionDot} />
+                    <Ionicons name="heart" size={10} color={colors.primary} />
+                    <Txt style={[styles.captionText, styles.captionStreak]}>{t('chat.streakShort', { count: streak })}</Txt>
+                  </>
+                ) : null}
+              </View>
+            </PressableScale>
+
+            <View style={[styles.glass, styles.capsule]}>
+              <View>
+                <PressableScale
+                  scaleTo={0.92}
+                  onPress={() => router.push('/store/shell?tab=shells')}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${shells} ${t('common.shells')}`}
+                  style={styles.shells}>
+                  <ShellIcon size={16} />
+                  <Txt style={styles.shellCount}>{shells}</Txt>
+                </PressableScale>
+                <SpendPulse shells={shells} />
+              </View>
+              <View style={styles.capsuleLine} />
+              <IconButton
+                icon="call-outline"
+                size={20}
+                dot={missedToday}
+                style={styles.callButton}
+                accessibilityLabel={t('a11y.call')}
+                onPress={startCall}
+              />
+            </View>
+          </View>
+          {alarmRinging ? (
+            <View style={styles.alarm}>
+              <AlarmBar />
+            </View>
           ) : null}
         </View>
-
-        <ChatInput
-          placeholder={t('chat.inputPlaceholder', { name })}
-          onSend={send}
-          onAttach={() => setAttachOpen(true)}
-          onVoice={() => setVoiceOpen(true)}
-          initialValue={typeof draft === 'string' ? draft : undefined}
-        />
-      </KeyboardAvoidingView>
-
-      {/* Glass back, the friend in the middle (tap: chat settings), shells and call on the right. */}
-      <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
-        <View style={styles.headerRow} pointerEvents="box-none">
-          <PressableScale
-            onPress={() => router.back()}
-            hitSlop={hitSlop}
-            scaleTo={0.88}
-            accessibilityRole="button"
-            accessibilityLabel={t('a11y.back')}
-            style={[styles.glass, styles.round]}>
-            <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
-          </PressableScale>
-
-          <PressableScale
-            style={styles.identity}
-            scaleTo={0.96}
-            accessibilityRole="button"
-            accessibilityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
-              .filter(Boolean)
-              .join(', ')}
-            onPress={() => router.push(`/character/${character.id}/settings`)}>
-            <CharacterAvatar character={character} size={54} />
-            <View style={[styles.glass, styles.nameChip]}>
-              <Txt style={styles.nameText} lines={1}>
-                {name}
-              </Txt>
-              <Ionicons name="chevron-forward" size={11} color={colors.textSecondary} />
-            </View>
-            {/* Always says what they are; the streak rides along once there is one. */}
-            <View style={styles.caption}>
-              <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
-              {streak > 0 ? (
-                <>
-                  <View style={styles.captionDot} />
-                  <Ionicons name="heart" size={10} color={colors.primary} />
-                  <Txt style={[styles.captionText, styles.captionStreak]}>{t('chat.streakShort', { count: streak })}</Txt>
-                </>
-              ) : null}
-            </View>
-          </PressableScale>
-
-          <View style={[styles.glass, styles.capsule]}>
-            <View>
-              <PressableScale
-                scaleTo={0.92}
-                onPress={() => router.push('/store/shell?tab=shells')}
-                accessibilityRole="button"
-                accessibilityLabel={`${shells} ${t('common.shells')}`}
-                style={styles.shells}>
-                <ShellIcon size={16} />
-                <Txt style={styles.shellCount}>{shells}</Txt>
-              </PressableScale>
-              <SpendPulse shells={shells} />
-            </View>
-            <View style={styles.capsuleLine} />
-            <IconButton
-              icon="call-outline"
-              size={20}
-              dot={missedToday}
-              style={styles.callButton}
-              accessibilityLabel={t('a11y.call')}
-              onPress={startCall}
-            />
-          </View>
-        </View>
-        {alarmRinging ? (
-          <View style={styles.alarm}>
-            <AlarmBar />
-          </View>
-        ) : null}
-      </View>
+      </BlurTargetView>
 
       <LevelUpModal
         event={levelUp?.characterId === character.id ? levelUp : null}
@@ -357,7 +362,7 @@ export default function ChatRoomScreen() {
         onClose={dismissLevelUp}
       />
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} />
 
       <TruthOrDareSheet visible={truthOpen} onClose={() => setTruthOpen(false)} character={character} name={name} />
       <DailyCallsSheet visible={callsOpen} onClose={() => setCallsOpen(false)} characterId={character.id} />
@@ -398,6 +403,7 @@ export default function ChatRoomScreen() {
 
       <MessageMenu
         message={menu}
+        blurTarget={blurTarget}
         onClose={() => setMenu(null)}
         onReact={(message, reaction) => {
           reactToMessage(conversation.id, message.id, reaction);

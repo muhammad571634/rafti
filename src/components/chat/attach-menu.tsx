@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useBackToClose } from '@/components/chat/message-menu';
 import { PressableScale, Txt } from '@/components/ui';
 import { colors, isDark, shadows, space } from '@/theme';
 
@@ -31,17 +33,37 @@ const FIELD = 40;
  * The chat's "+" menu, as in iOS Messages: the chat blurs, the "+" turns into a close button
  * where it stood, and the eight things to send rise above it as icons with large labels.
  */
-export function AttachMenu({ visible, onClose, onPick }: { visible: boolean; onClose: () => void; onPick: (key: AttachKey) => void }) {
+export function AttachMenu({
+  visible,
+  onClose,
+  onPick,
+  blurTarget,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onPick: (key: AttachKey) => void;
+  /** The chat's BlurTargetView: what the menu blurs on Android. */
+  blurTarget: RefObject<View | null>;
+}) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  useBackToClose(visible, onClose);
   if (!visible) return null;
   // Same bottom gap as the input bar, so the close button lands right on the "+".
   const bottom = Math.max(insets.bottom, space.md);
 
   return (
-    <Modal visible transparent animationType="none" statusBarTranslucent onRequestClose={onClose}>
+    <View style={styles.overlay}>
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')}>
-        <BlurView intensity={28} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+        <BlurView
+          intensity={28}
+          tint={isDark ? 'dark' : 'light'}
+          // Android blurs only with a native method and the screen's BlurTargetView.
+          blurMethod="dimezisBlurView"
+          blurReductionFactor={2}
+          blurTarget={blurTarget}
+          style={StyleSheet.absoluteFill}
+        />
         <View style={styles.dim} />
       </Pressable>
 
@@ -70,11 +92,12 @@ export function AttachMenu({ visible, onClose, onPick }: { visible: boolean; onC
         style={[styles.close, { bottom }]}>
         <Ionicons name="close" size={24} color={colors.text} />
       </PressableScale>
-    </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: { ...StyleSheet.absoluteFill, zIndex: 10 },
   dim: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.35)' },
   list: { position: 'absolute', left: space.lg, gap: 4 },
   item: { height: 52, flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: space.md },
