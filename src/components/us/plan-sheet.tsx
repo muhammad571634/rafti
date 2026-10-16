@@ -8,7 +8,7 @@ import { CalendarPopover } from '@/components/diary/calendar-popover';
 import { CharacterAvatar, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
-import { dateFromKey, dayKey, dayKeyFromToday } from '@/mock';
+import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
 
@@ -42,8 +42,8 @@ const asDate = (key: string, minutes = 12 * 60) => {
 
 /**
  * A plan by hand, iOS Calendar's "New Event" (approved prototype `UsPlan.dc.html`): the title,
- * who it is with, the day (Today / Tomorrow / Other day) and, if it matters, the time. Other day
- * and the time open the system pickers (inline on iOS, dialogs on Android); ✓ in the header adds it.
+ * who it is with, the day (Today / Tomorrow / Other day: the app's own calendar) and, if it matters,
+ * the time (the system picker: inline on iOS, a dialog on Android); ✓ in the header adds it.
  */
 export function PlanSheet({
   visible,
@@ -90,18 +90,8 @@ export function PlanSheet({
   const shortDate = (key: string) => dateFromKey(key).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
   const name = character ? shortName(character.name) : '';
 
-  const pickOtherDay = () => {
-    if (Platform.OS === 'android') {
-      DateTimePickerAndroid.open({
-        value: dateFromKey(date),
-        mode: 'date',
-        minimumDate: dateFromKey(today),
-        onChange: (e, d) => e.type === 'set' && d && setDate(dayKey(d)),
-      });
-    } else {
-      setOpen((o) => (o === 'day' ? null : 'day'));
-    }
-  };
+  // Other day opens the app's own calendar on every platform (owner, 2026-10-17), not the system one.
+  const pickOtherDay = () => setOpen('day');
 
   const pickTime = () => {
     if (Platform.OS === 'android') {
@@ -169,16 +159,6 @@ export function PlanSheet({
             onPress={pickOtherDay}
           />
         </View>
-        {open === 'day' && Platform.OS === 'ios' ? (
-          <DateTimePicker
-            value={dateFromKey(date)}
-            mode="date"
-            display="inline"
-            minimumDate={dateFromKey(today)}
-            accentColor={colors.primary}
-            onChange={(_, d) => d && setDate(dayKey(d))}
-          />
-        ) : null}
 
         <View style={[styles.row, styles.lineTop]}>
           <Txt style={[styles.label, styles.grow]}>{t('us.time')}</Txt>
@@ -221,18 +201,16 @@ export function PlanSheet({
         </Txt>
       ) : null}
 
-      {/* Web has no system date picker: the app's own calendar stands in. */}
-      {Platform.OS === 'web' ? (
-        <CalendarPopover
-          visible={open === 'day'}
-          onClose={() => setOpen(null)}
-          value={date}
-          onChange={setDate}
-          marked={new Set()}
-          top={Math.round(height * 0.18)}
-          allow="future"
-        />
-      ) : null}
+      {/* The app's own calendar for a later day (the time keeps the system picker). */}
+      <CalendarPopover
+        visible={open === 'day'}
+        onClose={() => setOpen(null)}
+        value={date}
+        onChange={setDate}
+        marked={new Set()}
+        top={Math.round(height * 0.18)}
+        allow="future"
+      />
     </Sheet>
   );
 }
