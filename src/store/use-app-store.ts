@@ -260,8 +260,12 @@ interface AppState {
   levelUp: LevelUpEvent | null;
   /** Conversation ids where the character is currently "typing". */
   typing: Record<string, boolean>;
-  /** Group ids and the member typing there now (null: nobody). */
-  groupTyping: Record<string, string | null>;
+  /**
+   * Group ids and the members typing there now, in the order they started. Several can type at
+   * once; a member is listed once per reply still on its way, so overlapping replies never
+   * clear each other (the screen shows each member once).
+   */
+  groupTyping: Record<string, string[]>;
   /** The chat on screen right now — replies there do not count as unread. */
   activeConversationId: string | null;
   incomingCall: IncomingCall | null;
@@ -2785,9 +2789,27 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
   ]);
 }
 
+/** How long before the member ahead finishes the next one starts typing, so two type at once. */
+const TYPING_OVERLAP_MS = 900;
+
+function startGroupTyping(set: Setter, groupId: string, characterId: string) {
+  set((s) => ({ groupTyping: { ...s.groupTyping, [groupId]: [...(s.groupTyping[groupId] ?? []), characterId] } }));
+}
+
+function stopGroupTyping(set: Setter, groupId: string, characterId: string) {
+  set((s) => {
+    const now = s.groupTyping[groupId] ?? [];
+    const at = now.indexOf(characterId);
+    if (at < 0) return {};
+    return { groupTyping: { ...s.groupTyping, [groupId]: [...now.slice(0, at), ...now.slice(at + 1)] } };
+  });
+}
+
 /**
- * The mock group reply, standing in for one model call per member: each member in turn shows
- * "typing", then their lines. Replies queue behind any still arriving, so they never interleave.
+ * The mock group reply, standing in for one model call per member. Lines land one member
+ * after another and queue behind replies still arriving, so they never interleave. Typing is
+ * per member: each starts a little before their first line (the next member while the one
+ * before is still finishing, as two people would) and stops with their last line.
  */
 function scheduleGroupReplies(
   set: Setter,
@@ -2798,30 +2820,41 @@ function scheduleGroupReplies(
   if (!turns.length) return;
   const readAt = new Date().toISOString();
   set((s) => ({
-    groupTyping: { ...s.groupTyping, [groupId]: turns[0].characterId },
     messages: {
       ...s.messages,
       [groupId]: (s.messages[groupId] ?? []).map((m) => (m.author === 'me' && !m.readAt ? { ...m, readAt } : m)),
     },
   }));
 
+  // When every line lands, from now.
   const busy = Math.max(0, (replyingUntil.get(groupId) ?? 0) - Date.now());
   let at = busy + 900 + Math.random() * 600;
-  turns.forEach((turn, t) => {
-    turn.lines.forEach((line, i) => {
+  const lands = turns.map((turn, t) =>
+    turn.lines.map((_, i) => {
+      const when = at;
       const endOfTurn = i === turn.lines.length - 1;
-      const next = endOfTurn ? (turns[t + 1]?.characterId ?? null) : turn.characterId;
+      const following = endOfTurn ? turns[t + 1]?.lines[0] : turn.lines[i + 1];
+      at += (endOfTurn ? 1100 : 650) + Math.min(following?.length ?? 0, 80) * 22;
+      return when;
+    }),
+  );
+
+  // The first member starts at once (or when the replies before have landed); each next one
+  // shortly before the member ahead sends their last line, never before that member began.
+  const starts: number[] = [];
+  turns.forEach((turn, t) => {
+    const ahead = lands[t - 1];
+    starts[t] = t === 0 ? busy : Math.max(starts[t - 1] + 600, ahead[ahead.length - 1] - TYPING_OVERLAP_MS);
+    setTimeout(() => startGroupTyping(set, groupId, turn.characterId), starts[t]);
+    turn.lines.forEach((line, i) => {
       setTimeout(() => {
         // The group was deleted, or the member removed, while they were typing.
         const group = get().groups.find((g) => g.id === groupId);
-        if (!group) return;
-        if (group.memberIds.includes(turn.characterId)) {
+        if (group?.memberIds.includes(turn.characterId)) {
           appendGroupMessage(set, get, groupId, memberText(groupId, turn.characterId, line));
         }
-        set((s) => ({ groupTyping: { ...s.groupTyping, [groupId]: next } }));
-      }, at);
-      const following = endOfTurn ? turns[t + 1]?.lines[0] : turn.lines[i + 1];
-      at += (endOfTurn ? 1100 : 650) + Math.min(following?.length ?? 0, 80) * 22;
+        if (i === turn.lines.length - 1) stopGroupTyping(set, groupId, turn.characterId);
+      }, lands[t][i]);
     });
   });
   replyingUntil.set(groupId, Date.now() + at);

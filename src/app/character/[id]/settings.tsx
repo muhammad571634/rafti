@@ -519,7 +519,8 @@ const styles = StyleSheet.create({
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowPressed: { backgroundColor: colors.surfaceAlt },
-  rowText: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
+  rowText: { fontSize: 17, letterSpacing: -0.4 },
   meta: { color: colors.textSecondary },
   footer: { marginTop: space.sm, marginHorizontal: space.lg + space.lg, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   bond: { marginTop: 22, marginHorizontal: space.lg, paddingTop: 14, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },

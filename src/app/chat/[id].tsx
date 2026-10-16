@@ -2,17 +2,17 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { BlurTargetView } from 'expo-blur';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
-import Animated, { FadeOut, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
+import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { ReportSheet } from '@/components/chat/report-sheet';
@@ -23,32 +23,17 @@ import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
-import {
-  CharacterAvatar,
-  IconButton,
-  PressableScale,
-  Screen,
-  Sheet,
-  ShellIcon,
-  Txt,
-} from '@/components/ui';
+import { CharacterAvatar, Screen, Txt } from '@/components/ui';
 import { takeFocus } from '@/lib/chat-focus';
-import { shortName } from '@/lib/format';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, radius, shadows, space } from '@/theme';
+import { colors, isDark, space } from '@/theme';
 import type { Message } from '@/types';
 
-/** Room the glass header takes under the status bar: avatar, name chip and caption. */
-const HEADER_ROOM = 112;
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
-/** The fade under the solid header ground. */
-const FADE = 20;
 
-/** The same colour, fully transparent: the end of the fade under the header. */
-const fadeOut = (color: string) => (/^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent');
 
 export default function ChatRoomScreen() {
   const { id, draft } = useLocalSearchParams<{ id: string; draft?: string }>();
@@ -283,7 +268,7 @@ export default function ChatRoomScreen() {
               ListFooterComponent={
                 <>
                   {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
-                  {typing ? <TypingRow character={character} /> : null}
+                  {typing ? <TypingRow characters={[character]} /> : null}
                 </>
               }
               onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
@@ -294,16 +279,7 @@ export default function ChatRoomScreen() {
               }}
             />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
-            {!artWallpaper ? (
-              <LinearGradient
-                pointerEvents="none"
-                // Solid under the whole header (avatar, name, caption), then a short fade, so a
-                // message never shows through the caption (seen on Android, 2026-10-16).
-                colors={[background[0], background[0], fadeOut(background[0])]}
-                locations={[0, headerRoom / (headerRoom + FADE), 1]}
-                style={[styles.fade, { height: headerRoom + FADE }]}
-              />
-            ) : null}
+            {!artWallpaper ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
           </View>
 
           <ChatInput
@@ -315,77 +291,32 @@ export default function ChatRoomScreen() {
           />
         </KeyboardAvoidingView>
 
-        {/* Glass back, the friend in the middle (tap: chat settings), shells and call on the right. */}
-        <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
-          <View style={styles.headerRow} pointerEvents="box-none">
-            <PressableScale
-              onPress={() => router.back()}
-              hitSlop={hitSlop}
-              scaleTo={0.88}
-              accessibilityRole="button"
-              accessibilityLabel={t('a11y.back')}
-              style={[styles.glass, styles.round]}>
-              <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
-            </PressableScale>
-
-            <PressableScale
-              style={styles.identity}
-              scaleTo={0.96}
-              accessibilityRole="button"
-              accessibilityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
-                .filter(Boolean)
-                .join(', ')}
-              onPress={() => router.push(`/character/${character.id}/settings`)}>
-              <CharacterAvatar character={character} size={54} />
-              <View style={[styles.glass, styles.nameChip]}>
-                <Txt style={styles.nameText} lines={1}>
-                  {name}
-                </Txt>
-                <Ionicons name="chevron-forward" size={11} color={colors.textSecondary} />
-              </View>
-              {/* Always says what they are; the streak rides along once there is one. */}
-              <View style={styles.caption}>
-                <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
-                {streak > 0 ? (
-                  <>
-                    <View style={styles.captionDot} />
-                    <Ionicons name="heart" size={10} color={colors.primary} />
-                    <Txt style={[styles.captionText, styles.captionStreak]}>{t('chat.streakShort', { count: streak })}</Txt>
-                  </>
-                ) : null}
-              </View>
-            </PressableScale>
-
-            <View style={[styles.glass, styles.capsule]}>
-              <View>
-                <PressableScale
-                  scaleTo={0.92}
-                  onPress={() => router.push('/store/shell?tab=shells')}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${shells} ${t('common.shells')}`}
-                  style={styles.shells}>
-                  <ShellIcon size={16} />
-                  <Txt style={styles.shellCount}>{shells}</Txt>
-                </PressableScale>
-                <SpendPulse shells={shells} />
-              </View>
-              <View style={styles.capsuleLine} />
-              <IconButton
-                icon="call-outline"
-                size={20}
-                dot={missedToday}
-                style={styles.callButton}
-                accessibilityLabel={t('a11y.call')}
-                onPress={startCall}
-              />
-            </View>
-          </View>
-          {alarmRinging ? (
-            <View style={styles.alarm}>
-              <AlarmBar />
-            </View>
-          ) : null}
-        </View>
+        <ChatHeader
+          avatar={<CharacterAvatar character={character} size={54} />}
+          title={name}
+          identityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
+            .filter(Boolean)
+            .join(', ')}
+          onIdentity={() => router.push(`/character/${character.id}/settings`)}
+          caption={
+            // Always says what they are; the streak rides along once there is one.
+            <>
+              <CaptionText>{t('chat.aiCharacter')}</CaptionText>
+              {streak > 0 ? (
+                <>
+                  <CaptionDot />
+                  <Ionicons name="heart" size={10} color={colors.primary} />
+                  <CaptionText accent>{t('chat.streakShort', { count: streak })}</CaptionText>
+                </>
+              ) : null}
+            </>
+          }
+          shells={shells}
+          missedCall={missedToday}
+          callLabel={t('a11y.call')}
+          onCall={startCall}
+          below={alarmRinging ? <AlarmBar /> : null}
+        />
       </BlurTargetView>
 
       <LevelUpModal
@@ -470,38 +401,7 @@ export default function ChatRoomScreen() {
 }
 
 
-/** A "-1" that floats off the shell badge whenever a message is paid for. */
-function SpendPulse({ shells }: { shells: number }) {
-  const { t } = useTranslation();
-  const prev = useRef(shells);
-  const [spent, setSpent] = useState(0);
-  const lift = useSharedValue(0);
-
-  useEffect(() => {
-    const diff = prev.current - shells;
-    prev.current = shells;
-    if (diff <= 0) return;
-    setSpent(diff);
-    lift.value = 0;
-    lift.value = withSequence(withTiming(1, { duration: 900 }), withTiming(0, { duration: 0 }));
-  }, [shells, lift]);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: lift.value === 0 ? 0 : 1 - lift.value * 0.9,
-    transform: [{ translateY: -lift.value * 14 }],
-  }));
-
-  return (
-    <Animated.View pointerEvents="none" style={[styles.pulse, style]} accessibilityLabel={t('chat.spent', { count: spent })}>
-      <Txt variant="smallStrong" color={colors.brandText}>
-        -{spent}
-      </Txt>
-    </Animated.View>
-  );
-}
-
 const styles = StyleSheet.create({
-  pulse: { position: 'absolute', right: space.xs, bottom: -space.lg },
   flex: { flex: 1 },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   artWallpaper: { ...StyleSheet.absoluteFill },
@@ -510,46 +410,5 @@ const styles = StyleSheet.create({
     backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)',
   },
   missing: { padding: space.xl },
-  header: { position: 'absolute', top: 0, left: 0, right: 0 },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    paddingHorizontal: space.lg,
-  },
-  fade: { position: 'absolute', top: 0, left: 0, right: 0 },
-  glass: {
-    backgroundColor: colors.glass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
-    ...shadows.glassButton,
-  },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  backGlyph: { marginLeft: -2 },
-  // Centred between the side buttons; it may not crowd them.
-  identity: { flex: 1, alignItems: 'center', marginHorizontal: space.sm },
-  nameChip: {
-    marginTop: space.xs,
-    height: 26,
-    maxWidth: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    paddingLeft: space.md,
-    paddingRight: space.sm + 2,
-    borderRadius: 13,
-  },
-  nameText: { fontSize: 13, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
-  caption: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
-  captionText: { fontSize: 11, color: colors.textSecondary },
-  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
-  captionStreak: { color: colors.primary, fontWeight: '600' },
-  capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
-  shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },
-  shellCount: { fontSize: 15, fontWeight: '600' },
-  capsuleLine: { width: StyleSheet.hairlineWidth, height: 20, backgroundColor: colors.borderStrong },
-  callButton: { width: 40, height: 36 },
-  alarm: { marginTop: space.sm },
   list: { paddingBottom: space.sm },
-  // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
 });

@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { CharacterAvatar, Txt } from '@/components/ui';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** A friend the user can put in a group: someone they already chat with. */
@@ -32,68 +32,66 @@ export function useFriends(): Friend[] {
 }
 
 /**
- * One friend in a pick list: avatar, name, their world, and an ink check when picked
- * (calm cards: ink marks selection). `locked` dims a row that cannot be picked now.
+ * One friend in a pick list, iOS style: avatar, name and world, then a selection circle (empty
+ * ring, or a peach disc with a tick when picked). `last` drops the hairline under the row;
+ * `locked` dims a row that cannot be picked now.
  */
 export function FriendRow({
   friend,
   picked,
   locked,
+  last,
   onPress,
   accessibilityLabel,
 }: {
   friend: Friend;
   picked: boolean;
   locked?: boolean;
+  last?: boolean;
   onPress: () => void;
   accessibilityLabel: string;
 }) {
   return (
-    <PressableScale
-      scaleTo={0.98}
-      style={[styles.row, locked && styles.locked]}
+    <Pressable
+      style={({ pressed }) => [styles.row, locked && styles.locked, pressed && styles.pressed]}
       disabled={locked}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: picked, disabled: locked }}
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}>
-      <CharacterAvatar character={friend.character} size={44} />
-      <View style={styles.text}>
-        <Txt variant="bodyStrong" lines={1}>
-          {friend.name}
-        </Txt>
-        {friend.character.series ? (
-          <Txt variant="small" color={colors.textSecondary} lines={1}>
-            {friend.character.series}
+      <CharacterAvatar character={friend.character} size={40} />
+      <View style={[styles.body, !last && styles.line]}>
+        <View style={styles.text}>
+          <Txt style={styles.name} lines={1}>
+            {friend.name}
           </Txt>
-        ) : null}
-      </View>
-      {picked ? (
-        <View style={[styles.check, styles.checkOn]}>
-          <Ionicons name="checkmark" size={16} color={colors.textOnInk} />
+          {friend.character.series ? (
+            <Txt style={styles.series} lines={1}>
+              {friend.character.series}
+            </Txt>
+          ) : null}
         </View>
-      ) : (
-        <View style={styles.check} />
-      )}
-    </PressableScale>
+        {picked ? (
+          <View style={[styles.check, styles.checkOn]}>
+            <Ionicons name="checkmark" size={15} color={colors.white} />
+          </View>
+        ) : (
+          <View style={styles.check} />
+        )}
+      </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  pressed: { backgroundColor: colors.surfaceAlt },
   locked: { opacity: 0.4 },
-  text: { flex: 1, gap: 2 },
-  check: {
-    width: 26,
-    height: 26,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    borderColor: colors.borderStrong,
-  },
-  checkOn: {
-    borderWidth: 0,
-    backgroundColor: colors.text,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  body: { flex: 1, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  text: { flex: 1, gap: 1 },
+  name: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  series: { fontSize: 13, color: colors.textSecondary },
+  check: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: colors.borderStrong },
+  checkOn: { borderWidth: 0, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
 });

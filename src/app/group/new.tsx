@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -5,7 +6,18 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
-import { Button, EmptyState, Header, Screen, Txt } from '@/components/ui';
+import {
+  CharacterAvatar,
+  EmptyState,
+  GlassBar,
+  glassStyle,
+  Header,
+  InsetGroup,
+  LargeTitle,
+  PressableScale,
+  Screen,
+  Txt,
+} from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
 import { useAppStore } from '@/store/use-app-store';
@@ -58,39 +70,62 @@ export default function NewGroupScreen() {
     );
   }
 
+  const pickedFriends = friends.filter((f) => picked.includes(f.character.id));
+
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('group.newGroup')} />
+    // iOS "New group" from the approved pieces (glass bar, large title, inset groups): Create
+    // sits in the bar and wakes up once two friends are picked.
+    <Screen background={colors.bg}>
+      <GlassBar
+        right={
+          <PressableScale
+            scaleTo={0.92}
+            disabled={!ready}
+            onPress={create}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !ready }}
+            accessibilityLabel={ready ? t('group.create') : t('group.pickOneMore')}
+            style={[styles.create, ready ? styles.createOn : glassStyle]}>
+            <Txt style={styles.createText} color={ready ? colors.textOnPrimary : colors.textFaint}>
+              {t('group.createShort')}
+            </Txt>
+          </PressableScale>
+        }
+      />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
-          <View style={styles.intro}>
-            <Txt variant="h2">{t('group.pickTitle')}</Txt>
-            <Txt variant="body" color={colors.textSecondary}>
-              {t('group.pickBody')}
-            </Txt>
-          </View>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag">
+          <LargeTitle>{t('group.newGroup')}</LargeTitle>
 
-          <View>
-            {friends.map((friend) => {
-              const on = picked.includes(friend.character.id);
-              return (
-                <FriendRow
-                  key={friend.character.id}
-                  friend={friend}
-                  picked={on}
-                  locked={full && !on}
-                  accessibilityLabel={on ? t('group.picked', { name: friend.name }) : friend.name}
-                  onPress={() => toggle(friend.character.id)}
-                />
-              );
-            })}
-          </View>
+          {/* Who is in so far; a tap takes them out again (iOS Messages' "To:" faces). */}
+          {pickedFriends.length > 0 ? (
+            <View style={styles.faces}>
+              {pickedFriends.map((f) => (
+                <PressableScale
+                  key={f.character.id}
+                  scaleTo={0.92}
+                  onPress={() => toggle(f.character.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('group.unpick', { name: f.name })}
+                  style={styles.face}>
+                  <View>
+                    <CharacterAvatar character={f.character} size={56} />
+                    <View style={styles.unpick}>
+                      <Ionicons name="close" size={11} color={colors.white} />
+                    </View>
+                  </View>
+                  <Txt style={styles.faceName} lines={1}>
+                    {shortName(f.name)}
+                  </Txt>
+                </PressableScale>
+              ))}
+            </View>
+          ) : null}
 
-          <View style={styles.field}>
-            <Txt variant="smallStrong">
-              {t('group.nameLabel')}
-              <Txt variant="small" color={colors.textSecondary}>{` · ${t('group.optional')}`}</Txt>
-            </Txt>
+          <Txt style={styles.sectionLabel}>{`${t('group.nameLabel')} · ${t('group.optional')}`}</Txt>
+          <InsetGroup>
             <TextInput
               value={name}
               onChangeText={setName}
@@ -100,22 +135,27 @@ export default function NewGroupScreen() {
               maxLength={NAME_MAX}
               style={styles.input}
             />
-          </View>
-        </ScrollView>
+          </InsetGroup>
 
-        {/* Action bar (docs/design-style.md §3): the button, then one line on what it costs. */}
-        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-          <Button
-            label={ready ? t('group.create') : t('group.pickOneMore')}
-            size="lg"
-            full
-            disabled={!ready}
-            onPress={create}
-          />
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {t('group.costNote')}
-          </Txt>
-        </View>
+          <Txt style={styles.sectionLabel}>{t('group.pickTitle')}</Txt>
+          <InsetGroup>
+            {friends.map((friend, i) => {
+              const on = picked.includes(friend.character.id);
+              return (
+                <FriendRow
+                  key={friend.character.id}
+                  friend={friend}
+                  picked={on}
+                  locked={full && !on}
+                  last={i === friends.length - 1}
+                  accessibilityLabel={on ? t('group.picked', { name: friend.name }) : friend.name}
+                  onPress={() => toggle(friend.character.id)}
+                />
+              );
+            })}
+          </InsetGroup>
+          <Txt style={styles.footer}>{t('group.costNote')}</Txt>
+        </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -123,26 +163,33 @@ export default function NewGroupScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  body: { paddingHorizontal: space.lg, paddingBottom: space.xxl, gap: space.lg },
-  intro: { gap: space.xs + 2, paddingTop: space.sm },
-  field: { gap: space.xs + 2 },
-  input: {
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    ...type.body,
+  create: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
+  createOn: { backgroundColor: colors.primaryFill },
+  createText: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  faces: { flexDirection: 'row', gap: space.lg, paddingHorizontal: space.lg, paddingTop: space.lg },
+  face: { alignItems: 'center', gap: 6, width: 64 },
+  unpick: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.bg,
+    backgroundColor: colors.textSecondary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  actionBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
+  faceName: { fontSize: 13, color: colors.text },
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
+  input: { minHeight: 48, paddingHorizontal: space.lg, color: colors.text, ...type.body, fontSize: 17 },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, color: colors.textSecondary },
 });

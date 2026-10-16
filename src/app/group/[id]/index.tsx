@@ -6,12 +6,14 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo } from 'react-native';
+import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
+import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { ReportSheet } from '@/components/chat/report-sheet';
@@ -20,21 +22,13 @@ import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
-import {
-  CharacterAvatar,
-  Divider,
-  IconButton,
-  PressableScale,
-  Screen,
-  ShellBadge,
-  Sheet,
-  Txt,
-} from '@/components/ui';
+import { CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { takeFocus } from '@/lib/chat-focus';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
-import { backgroundsById, dayKey, shellCosts } from '@/mock';
+import { backgroundsById, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Character, Message } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -60,8 +54,7 @@ export default function GroupChatScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const messages = useAppStore((s) => (groupId ? s.messages[groupId] : undefined));
-  const typingId = useAppStore((s) => (groupId ? s.groupTyping[groupId] : null));
-  const user = useAppStore((s) => s.user);
+  const typingIds = useAppStore((s) => (groupId ? s.groupTyping[groupId] : undefined)) ?? NO_ONE;
   const shells = useAppStore((s) => s.wallet.shells);
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
@@ -88,6 +81,8 @@ export default function GroupChatScreen() {
   const [menu, setMenu] = useState<Message | null>(null);
   const [reporting, setReporting] = useState<Message | null>(null);
   const [reported, setReported] = useState(false);
+  /** The message a search result pointed at, tinted for a moment. */
+  const [flash, setFlash] = useState<string | null>(null);
   const openMenu = useCallback((message: Message) => setMenu(message), []);
 
   // Replies that land while the group is on screen are read, not unread.
@@ -95,14 +90,31 @@ export default function GroupChatScreen() {
     useCallback(() => {
       if (!groupId) return;
       setActiveConversation(groupId);
-      return () => setActiveConversation(null);
+      // Back from a search result: scroll to that message and tint it (iOS Messages).
+      const target = takeFocus(groupId);
+      const timers: ReturnType<typeof setTimeout>[] = [];
+      if (target) {
+        timers.push(
+          setTimeout(() => {
+            const index = (useAppStore.getState().messages[groupId] ?? []).findIndex((m) => m.id === target);
+            if (index < 0) return;
+            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.4 });
+            setFlash(target);
+            timers.push(setTimeout(() => setFlash(null), 1600));
+          }, 350),
+        );
+      }
+      return () => {
+        timers.forEach(clearTimeout);
+        setActiveConversation(null);
+      };
     }, [groupId, setActiveConversation]),
   );
 
   useEffect(() => {
     const timer = setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 80);
     return () => clearTimeout(timer);
-  }, [messages?.length, typingId]);
+  }, [messages?.length, typingIds.length]);
 
   const byId = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
   const members = useMemo(
@@ -117,7 +129,19 @@ export default function GroupChatScreen() {
   const title = group?.name || names;
   const data = useMemo(() => messages ?? [], [messages]);
   const lastMine = useMemo(() => lastMineId(data), [data]);
-  const typing = typingId ? byId.get(typingId) : undefined;
+  // Everyone typing now, each once, in the order they started (members who left are skipped).
+  const typers = useMemo(
+    () => [...new Set(typingIds)].flatMap((id) => (group?.memberIds.includes(id) ? (byId.get(id) ?? []) : [])),
+    [typingIds, group?.memberIds, byId],
+  );
+  const typingLabel =
+    typers.length === 0
+      ? undefined
+      : typers.length === 1
+        ? t('group.typing', { name: nameOf(typers[0]) })
+        : typers.length === 2
+          ? t('group.typingTwo', { a: nameOf(typers[0]), b: nameOf(typers[1]) })
+          : t('group.typingMany', { a: nameOf(typers[0]), b: nameOf(typers[1]), c: nameOf(typers[2]) });
   const wallpaper = backgroundsById.bg_plain;
 
   // Only messages that arrive while the group is open animate in.
@@ -134,21 +158,26 @@ export default function GroupChatScreen() {
       return (
         <>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
-          <MessageBubble
-            message={item}
-            character={character}
-            animate={animations && Date.parse(item.createdAt) > openedAt}
-            showAvatar={run.runStart}
-            runEnd={run.runEnd}
-            receipt={item.id === lastMine}
-            senderName={author ? nameOf(author) : undefined}
-            aiNoticeText={noticeText}
-            onLongPress={openMenu}
-          />
+          <View>
+            {item.id === flash ? (
+              <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
+            ) : null}
+            <MessageBubble
+              message={item}
+              character={character}
+              animate={animations && Date.parse(item.createdAt) > openedAt}
+              showAvatar={run.runStart}
+              runEnd={run.runEnd}
+              receipt={item.id === lastMine}
+              senderName={author ? nameOf(author) : undefined}
+              aiNoticeText={noticeText}
+              onLongPress={openMenu}
+            />
+          </View>
         </>
       );
     },
-    [data, byId, fallback, lastMine, animations, openedAt, nameOf, noticeText, openMenu],
+    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu],
   );
 
   if (!group || !groupId || members.length < 2) {
@@ -216,63 +245,31 @@ export default function GroupChatScreen() {
     router.push(route);
   };
   const openInfo = () => router.push({ pathname: '/group/[id]/info', params: { id: groupId } });
+  // The list scrolls under the glass header; this much room keeps its first line clear.
+  const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen background={wallpaper.colors as readonly [string, string]} statusBarStyle={wallpaper.dark ? 'light' : 'dark'}>
+    <Screen background={wallpaper.colors as readonly [string, string]} statusBarStyle={wallpaper.dark ? 'light' : 'dark'} edgeToEdge>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
-        <View style={[styles.header, { marginTop: -insets.top, paddingTop: insets.top + space.xs }]}>
-          <PressableScale onPress={() => router.back()} hitSlop={hitSlop} scaleTo={0.88} accessibilityLabel={t('a11y.back')}>
-            <Ionicons name="chevron-back" size={27} color={colors.text} />
-          </PressableScale>
-
-          <View style={styles.identity}>
-            <PressableScale
-              style={styles.identityTap}
-              scaleTo={0.98}
-              accessibilityRole="button"
-              accessibilityLabel={t('group.rowLabel', { name: title })}
-              onPress={openInfo}>
-              <GroupAvatar members={members} size={38} ringColor={colors.surface} />
-              <View style={styles.identityText}>
-                <Txt variant="title" lines={1}>
-                  {title}
-                </Txt>
-                <Txt variant="tiny" color={colors.textSecondary} lines={1}>
-                  {t('group.members', { count: members.length })}
-                </Txt>
-              </View>
-            </PressableScale>
-            <ShellBadge count={shells} showAdd onPress={() => router.push('/store/shell?tab=shells')} />
-          </View>
-
-          <IconButton
-            icon="call-outline"
-            size={22}
-            style={styles.headerIcon}
-            accessibilityLabel={t('group.call')}
-            onPress={startCall}
-          />
-          <IconButton icon="menu" size={24} style={styles.headerIcon} accessibilityLabel={t('group.info')} onPress={openInfo} />
-        </View>
-
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={insets.top + 56}>
+        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.flex}>
             <FlatList
               ref={listRef}
               data={data}
               keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.list}
+              contentContainerStyle={[styles.list, { paddingTop: headerRoom }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
-              ListFooterComponent={
-                typing ? <TypingRow character={typing} label={t('group.typing', { name: nameOf(typing) })} /> : null
-              }
+              ListFooterComponent={typers.length ? <TypingRow characters={typers} label={typingLabel} /> : null}
               onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+              // A row far up is not measured yet: jump near it, then aim again.
+              onScrollToIndexFailed={(info) => {
+                listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
+                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.4 }), 120);
+              }}
             />
+            <HeaderFade color={wallpaper.colors[0]} room={headerRoom} />
           </View>
 
           <ChatInput
@@ -282,33 +279,41 @@ export default function GroupChatScreen() {
             onVoice={() => setVoiceOpen(true)}
           />
         </KeyboardAvoidingView>
+
+        <ChatHeader
+          avatar={<GroupAvatar members={members} size={54} ringColor={colors.bgPlain} />}
+          title={title}
+          identityLabel={`${t('group.rowLabel', { name: title })}, ${t('group.members', { count: members.length })}, ${t('group.info')}`}
+          onIdentity={openInfo}
+          caption={
+            // "2 AI characters": says what they are, as the one-to-one header does.
+            <CaptionText>{t('group.members', { count: members.length })}</CaptionText>
+          }
+          shells={shells}
+          callLabel={t('group.call')}
+          onCall={startCall}
+        />
       </BlurTargetView>
 
       <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
-      <Sheet visible={!!withOne} onClose={() => setWithOne(null)}>
-        <Txt variant="h3">{t('group.pickMember')}</Txt>
-        <Txt variant="body" color={colors.textSecondary} style={styles.sheetCopy}>
-          {t('group.pickMemberBody')}
-        </Txt>
+      <Sheet visible={!!withOne} onClose={() => setWithOne(null)} title={t('group.pickMember')}>
         <View style={styles.ways}>
           {members.map((member, index) => (
-            <View key={member.id}>
-              {index > 0 ? <Divider inset={space.lg + ROW_AVATAR + space.md} /> : null}
-              <PressableScale
-                scaleTo={1}
-                style={styles.way}
-                accessibilityRole="button"
-                accessibilityLabel={displayName(member, relationships[member.id])}
-                onPress={() => withOne && openWith(withOne, member)}>
-                <CharacterAvatar character={member} size={ROW_AVATAR} />
-                <Txt variant="bodyStrong" style={styles.flex} lines={1}>
-                  {displayName(member, relationships[member.id])}
-                </Txt>
-                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-              </PressableScale>
-            </View>
+            <PressableScale
+              key={member.id}
+              scaleTo={1}
+              style={[styles.way, index < members.length - 1 && styles.wayLine]}
+              accessibilityRole="button"
+              accessibilityLabel={displayName(member, relationships[member.id])}
+              onPress={() => withOne && openWith(withOne, member)}>
+              <CharacterAvatar character={member} size={ROW_AVATAR} />
+              <Txt style={styles.wayName} lines={1}>
+                {displayName(member, relationships[member.id])}
+              </Txt>
+              <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+            </PressableScale>
           ))}
         </View>
       </Sheet>
@@ -393,39 +398,16 @@ export default function GroupChatScreen() {
 }
 
 
+/** Nobody typing: one shared empty list, so the selector does not make a new one each time. */
+const NO_ONE: string[] = [];
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { padding: space.xl },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    backgroundColor: colors.surface,
-    borderBottomLeftRadius: radius.xl,
-    borderBottomRightRadius: radius.xl,
-    zIndex: 2,
-  },
-  headerIcon: { width: 34 },
-  identity: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  identityTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  identityText: { flex: 1, gap: 2 },
-  list: { paddingVertical: space.lg },
-  sheetCopy: { marginTop: space.xs },
-  ways: {
-    marginTop: space.lg,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
-  way: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    minHeight: 64,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm + 2,
-  },
+  flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
+  list: { paddingBottom: space.sm },
+  ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  way: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.lg },
+  wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  wayName: { flex: 1, fontSize: 17, letterSpacing: -0.4 },
 });

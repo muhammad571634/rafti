@@ -41,8 +41,13 @@ already the iPhone system font, and its licence forbids Android); HealthKit does
 (flows.md D19; owner: "hammasiga qo'lla", iOS 27 look). New dependency
 `@react-native-community/datetimepicker` (config plugin in `app.json`; in Expo Go, a new build picks it
 up too): the daily-call time opens the system picker. iOS 27 per WWDC 2026 coverage keeps Liquid
-Glass with a darker edge and brighter highlights, so `glassLine` is a bit darker. Next: step 7, group
-chat + group info, then step 8, the Chats "new chat" sheet.
+Glass with a darker edge and brighter highlights, so `glassLine` is a bit darker. Step 7 done: group chat, group info, group search and
+New group (flows.md D20). Group typing is now a per-member list (several can type at once; see the
+comment on `scheduleGroupReplies`); the real backend should keep that contract: start a member's
+typing when their reply job starts, stop it when their last line lands. Gotcha: `Txt` applies its
+`color` prop before `style`, so a style with `color` silently wins; keep colours out of shared row
+styles. Next: step 8, the Chats "new chat" sheet, then a pass over long screens for an iOS 27
+uniform top bar while scrolling (settings content slides under the back button today).
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

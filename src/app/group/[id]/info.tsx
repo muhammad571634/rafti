@@ -2,22 +2,33 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BondChip } from '@/components/bond-chip';
 import { FriendRow, useFriends } from '@/components/group/friend-row';
 import { GroupAvatar } from '@/components/group-avatar';
-import { Button, CharacterAvatar, Divider, Header, PressableScale, Screen, Sheet, Toggle, Txt } from '@/components/ui';
+import {
+  Button,
+  CharacterAvatar,
+  GlassBar,
+  GlassButton,
+  Header,
+  InsetGroup,
+  InsetRow,
+  PressableScale,
+  Screen,
+  Sheet,
+  Txt,
+} from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
-import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
+import { colors, space, type } from '@/theme';
 import type { Character } from '@/types';
 
 const NAME_MAX = 40;
-const ROW_ICON = 36;
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in chat settings). */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -53,6 +64,8 @@ export default function GroupInfoScreen() {
   const setGroupMuted = useAppStore((s) => s.setGroupMuted);
   const deleteGroup = useAppStore((s) => s.deleteGroup);
   const friends = useFriends();
+  const withCalls = useAppStore((s) => callsIncluded(s.wallet));
+  const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
 
   const [renaming, setRenaming] = useState(false);
   const [draft, setDraft] = useState('');
@@ -99,120 +112,129 @@ export default function GroupInfoScreen() {
       router.replace('/(tabs)/chat');
     }, t('group.cancel'));
 
-  return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('group.info')} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
-        <View style={styles.identity}>
-          <GroupAvatar members={members} size={72} />
-          <View style={styles.flex}>
-            <Txt variant="h2">{title}</Txt>
-            <Txt variant="small" color={colors.textSecondary}>
-              {t('group.made', {
-                members: t('group.members', { count: members.length }),
-                date: planDate(Date.parse(group.createdAt)),
-              })}
-            </Txt>
-          </View>
-        </View>
-        <Button
-          label={t('group.rename')}
-          variant="secondary"
-          size="sm"
-          style={styles.rename}
-          left={<Ionicons name="pencil-outline" size={15} color={colors.text} />}
-          onPress={() => {
-            setDraft(group.name ?? '');
-            setRenaming(true);
-          }}
-        />
+  const startCall = () => {
+    if (callMinutes > 0) return router.push({ pathname: '/group/[id]/call', params: { id: groupId } });
+    // No minutes: members top up, others see the plans (the chat's sheets say the same).
+    router.push(withCalls ? '/store/shell?tab=shells' : '/store/shell?tab=plans&plan=pro');
+  };
+  const quick: { key: string; icon: IoniconName; label: string; onPress: () => void; off?: boolean }[] = [
+    { key: 'call', icon: 'call', label: t('characterSettings.quickCall'), onPress: startCall },
+    { key: 'add', icon: 'person-add', label: t('group.add'), onPress: () => setAdding(true), off: !roomLeft },
+    {
+      key: 'search',
+      icon: 'search',
+      label: t('characterSettings.quickSearch'),
+      onPress: () => router.push({ pathname: '/group/[id]/search', params: { id: groupId } }),
+    },
+  ];
 
-        <View style={styles.section}>
-          <Txt variant="h3" accessibilityRole="header">
-            {t('group.membersTitle')}
+  return (
+    // iOS contact card for the group (approved prototype `GroupInfo.dc.html`).
+    <Screen background={colors.bg}>
+      <GlassBar
+        right={
+          <GlassButton
+            label={t('common.edit')}
+            accessibilityLabel={t('group.rename')}
+            onPress={() => {
+              setDraft(group.name ?? '');
+              setRenaming(true);
+            }}
+          />
+        }
+      />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+        <View style={styles.identity}>
+          <GroupAvatar members={members} size={112} ringColor={colors.bg} />
+          <Txt style={styles.name} center lines={2} accessibilityRole="header">
+            {title}
           </Txt>
-          {members.map((m) => {
+          <Txt style={styles.caption} center>
+            {t('group.made', {
+              members: t('group.members', { count: members.length }),
+              date: planDate(Date.parse(group.createdAt)),
+            })}
+          </Txt>
+        </View>
+
+        <View style={styles.quick}>
+          {quick.map((q) => (
+            <PressableScale
+              key={q.key}
+              scaleTo={0.95}
+              disabled={q.off}
+              onPress={q.onPress}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !!q.off }}
+              accessibilityLabel={q.label}
+              style={[styles.quickTile, q.off && styles.off]}>
+              <Ionicons name={q.icon} size={22} color={colors.primary} />
+              <Txt style={styles.quickLabel} color={colors.primary}>
+                {q.label}
+              </Txt>
+            </PressableScale>
+          ))}
+        </View>
+
+        <Txt style={styles.sectionLabel}>{t('group.membersCount', { count: members.length, max: 3 })}</Txt>
+        <InsetGroup>
+          {members.map((m, i) => {
             const level = relationships[m.id]?.level ?? 0;
+            const last = i === members.length - 1 && !roomLeft;
             return (
-              <PressableScale
+              <Pressable
                 key={m.id}
-                scaleTo={0.98}
-                style={styles.memberRow}
+                style={({ pressed }) => [styles.member, pressed && styles.pressed]}
                 accessibilityRole="button"
-                accessibilityLabel={nameOf(m)}
+                accessibilityLabel={level >= 1 ? `${nameOf(m)}, ${t('home.bondLevel', { level })}` : nameOf(m)}
                 onPress={() => setMember(m)}>
-                <CharacterAvatar character={m} size={44} />
-                <View style={styles.flex}>
-                  <View style={styles.nameLine}>
-                    <Txt variant="bodyStrong" lines={1} style={styles.shrink}>
+                <CharacterAvatar character={m} size={40} />
+                <View style={[styles.memberBody, !last && styles.line]}>
+                  <View style={styles.flex}>
+                    <Txt style={styles.memberName} lines={1}>
                       {nameOf(m)}
                     </Txt>
-                    {level >= 1 ? <BondChip level={level} /> : null}
+                    {level >= 1 ? <Txt style={styles.memberMeta}>{t('closeness.level', { level })}</Txt> : null}
                   </View>
-                  {m.series ? (
-                    <Txt variant="small" color={colors.textSecondary} lines={1}>
-                      {m.series}
-                    </Txt>
-                  ) : null}
+                  <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
                 </View>
-                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-              </PressableScale>
+              </Pressable>
             );
           })}
           {roomLeft ? (
-            <PressableScale
-              scaleTo={0.98}
-              style={styles.memberRow}
+            <Pressable
+              style={({ pressed }) => [styles.member, pressed && styles.pressed]}
               accessibilityRole="button"
               accessibilityLabel={t('group.addMember')}
               onPress={() => setAdding(true)}>
               <View style={styles.addIcon}>
-                <Ionicons name="person-add-outline" size={20} color={colors.text} />
+                <Ionicons name="add" size={20} color={colors.primary} />
               </View>
-              <Txt variant="bodyStrong" style={styles.flex}>
-                {t('group.addMember')}
-              </Txt>
-              <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-            </PressableScale>
+              <View style={styles.memberBody}>
+                <Txt style={styles.memberName} color={colors.primary}>
+                  {t('group.addMember')}
+                </Txt>
+              </View>
+            </Pressable>
           ) : null}
-          <Txt variant="caption" color={colors.textSecondary} style={styles.note}>
-            {t('group.limitNote')}
-          </Txt>
-        </View>
+        </InsetGroup>
 
-        <View style={styles.section}>
-          <Txt variant="h3" accessibilityRole="header">
-            {t('group.settings')}
-          </Txt>
-          <View style={styles.settingRow}>
-            <View style={styles.tile}>
-              <Ionicons name="notifications-off-outline" size={19} color={colors.text} />
-            </View>
-            <Txt variant="bodyStrong" style={styles.flex}>
-              {t('group.mute')}
-            </Txt>
-            <Toggle
+        <InsetGroup style={styles.block}>
+          <View style={styles.switchRow}>
+            <Txt style={[styles.memberName, styles.flex]}>{t('group.mute')}</Txt>
+            <Switch
               value={group.muted}
-              onChange={(v) => setGroupMuted(groupId, v)}
+              onValueChange={(v) => setGroupMuted(groupId, v)}
               accessibilityLabel={t('group.mute')}
+              trackColor={{ true: colors.success }}
+              ios_backgroundColor={colors.surfaceAlt}
             />
           </View>
-          <PressableScale
-            scaleTo={0.98}
-            style={styles.settingRow}
-            accessibilityRole="button"
-            accessibilityLabel={t('group.delete')}
-            onPress={askDelete}>
-            <View style={[styles.tile, styles.dangerTile]}>
-              <Ionicons name="trash-outline" size={19} color={colors.dangerText} />
-            </View>
-            <Txt variant="bodyStrong" color={colors.dangerText} style={styles.flex}>
-              {t('group.delete')}
-            </Txt>
-          </PressableScale>
-        </View>
+        </InsetGroup>
+
+        <InsetGroup style={styles.block}>
+          <InsetRow label={t('group.delete')} danger last onPress={askDelete} />
+        </InsetGroup>
       </ScrollView>
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('group.nameLabel')} avoidKeyboard>
@@ -239,18 +261,21 @@ export default function GroupInfoScreen() {
 
       <Sheet visible={adding} onClose={() => setAdding(false)} title={t('group.addMemberTitle')}>
         {addable.length ? (
-          addable.map((friend) => (
-            <FriendRow
-              key={friend.character.id}
-              friend={friend}
-              picked={false}
-              accessibilityLabel={friend.name}
-              onPress={() => {
-                addGroupMember(groupId, friend.character.id);
-                setAdding(false);
-              }}
-            />
-          ))
+          <View style={styles.ways}>
+            {addable.map((friend, i) => (
+              <FriendRow
+                key={friend.character.id}
+                friend={friend}
+                picked={false}
+                last={i === addable.length - 1}
+                accessibilityLabel={friend.name}
+                onPress={() => {
+                  addGroupMember(groupId, friend.character.id);
+                  setAdding(false);
+                }}
+              />
+            ))}
+          </View>
         ) : (
           <Txt variant="body" color={colors.textSecondary}>
             {t('group.noOneToAdd')}
@@ -258,15 +283,9 @@ export default function GroupInfoScreen() {
         )}
       </Sheet>
 
-      <Sheet visible={!!member} onClose={() => setMember(null)}>
+      <Sheet visible={!!member} onClose={() => setMember(null)} title={member ? nameOf(member) : undefined}>
         {member ? (
           <>
-            <View style={styles.memberHead}>
-              <CharacterAvatar character={member} size={52} />
-              <Txt variant="h3" style={styles.flex} lines={1}>
-                {nameOf(member)}
-              </Txt>
-            </View>
             <View style={styles.ways}>
               <SheetRow
                 icon="person-outline"
@@ -277,25 +296,18 @@ export default function GroupInfoScreen() {
                 }}
               />
               {conversations.some((c) => c.characterId === member.id) ? (
-                <>
-                  <Divider inset={space.lg + ROW_ICON + space.md} />
-                  <SheetRow icon="chatbubble-outline" label={t('group.openChat')} onPress={() => openChat(member)} />
-                </>
+                <SheetRow icon="chatbubble-outline" label={t('group.openChat')} onPress={() => openChat(member)} />
               ) : null}
-              <Divider inset={space.lg + ROW_ICON + space.md} />
               <SheetRow
                 icon="person-remove-outline"
                 label={t('group.remove')}
                 danger
                 disabled={!removable}
                 onPress={remove}
+                last
               />
             </View>
-            {!removable ? (
-              <Txt variant="caption" color={colors.textSecondary} style={styles.note}>
-                {t('group.removeLast')}
-              </Txt>
-            ) : null}
+            {!removable ? <Txt style={styles.note}>{t('group.removeLast')}</Txt> : null}
           </>
         ) : null}
       </Sheet>
@@ -303,97 +315,93 @@ export default function GroupInfoScreen() {
   );
 }
 
-/** A row in a sheet's bordered box: a line icon tile, the action, and a chevron. */
+/** A row in a sheet's grey group: the action and a line icon on the right, as in iOS menus. */
 function SheetRow({
   icon,
   label,
   onPress,
   danger,
   disabled,
+  last,
 }: {
-  icon: React.ComponentProps<typeof Ionicons>['name'];
+  icon: IoniconName;
   label: string;
   onPress: () => void;
   danger?: boolean;
   disabled?: boolean;
+  last?: boolean;
 }) {
-  const tint = danger ? colors.dangerText : colors.text;
+  const tint = danger ? colors.danger : colors.text;
   return (
-    <PressableScale
-      scaleTo={1}
-      style={[styles.way, disabled && styles.off]}
+    <Pressable
+      style={({ pressed }) => [styles.way, !last && styles.line, pressed && styles.pressed, disabled && styles.off]}
       disabled={disabled}
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       accessibilityLabel={label}
       onPress={onPress}>
-      <View style={[styles.tile, danger && styles.dangerTile]}>
-        <Ionicons name={icon} size={19} color={tint} />
-      </View>
-      <Txt variant="bodyStrong" color={tint} style={styles.flex}>
+      <Txt style={[styles.memberName, styles.flex]} color={tint}>
         {label}
       </Txt>
-      <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-    </PressableScale>
+      <Ionicons name={icon} size={19} color={tint} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  shrink: { flexShrink: 1 },
   missing: { padding: space.xl },
-  scroll: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  identity: { flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
-  rename: { alignSelf: 'flex-start', marginTop: space.md },
-  section: { marginTop: space.xxl },
-  memberRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64 },
-  nameLine: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  identity: { alignItems: 'center', paddingHorizontal: space.xl, paddingTop: space.xs },
+  name: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
+  caption: { marginTop: 4, fontSize: 15, color: colors.textSecondary },
+  quick: { flexDirection: 'row', gap: space.sm, marginTop: 22, paddingHorizontal: space.lg },
+  quickTile: {
+    flex: 1,
+    height: 62,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  quickLabel: { fontSize: 12, fontWeight: '500' },
+  off: { opacity: 0.45 },
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
+  },
+  block: { marginTop: 22 },
+  member: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  memberBody: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: space.lg },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  // No colour here: Txt's `color` prop (peach Add, red Remove) must win.
+  memberName: { fontSize: 17, letterSpacing: -0.4 },
+  memberMeta: { fontSize: 13, color: colors.textSecondary },
   addIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primarySofter,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  note: { marginTop: space.xs },
-  settingRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 56 },
-  tile: {
-    width: ROW_ICON,
-    height: ROW_ICON,
-    borderRadius: 11,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dangerTile: { backgroundColor: colors.dangerSoft },
+  switchRow: { minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg },
   input: {
     minHeight: 52,
     paddingHorizontal: space.md + 2,
     paddingVertical: space.sm,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAlt,
     color: colors.text,
     ...type.body,
   },
   save: { marginTop: space.lg },
-  memberHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  ways: {
-    marginTop: space.lg,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
-  way: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    minHeight: 64,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm + 2,
-  },
-  off: { opacity: 0.45 },
+  note: { marginTop: space.sm, fontSize: 13, color: colors.textSecondary },
+  ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  way: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
 });
