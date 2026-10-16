@@ -23,7 +23,8 @@ owner wants to work on them in depth later (model-written replies that fit the l
 when to show). Checked on web, light and dark.
 Step 2 done too: `src/components/chat/message-menu.tsx` replaces the long-press sheet in the chat
 and the group (blur, mascot stickers in a glass capsule, Copy / Report / Delete); the owner asked
-for no message copy under the reactions. Next: step 3, the "+" menu (prototype first).
+for no message copy under the reactions. Step 3 done: the "+" menu is `src/components/chat/attach-menu.tsx` (iOS icons chosen by the
+owner over the 3D ones, only in this menu). Next: step 4, chat settings as an iOS contact card.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

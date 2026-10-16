@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { lastMineId, runOf } from '@/components/chat/runs';
@@ -24,7 +25,6 @@ import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import {
   Button,
   CharacterAvatar,
-  ClayIcon,
   IconButton,
   ListRow,
   PressableScale,
@@ -39,26 +39,7 @@ import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, isDark, radius, shadows, space } from '@/theme';
 import type { Message } from '@/types';
-import type { ClayIconName } from '@/components/ui';
 
-type Attachment = {
-  key: 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
-  icon: ClayIconName;
-};
-
-/** The "+" sheet: four to a row, each a 3D clay icon (the app-wide icon style). */
-const ATTACHMENTS: Attachment[] = [
-  { key: 'voice', icon: 'voice' },
-  { key: 'photo', icon: 'photo' },
-  { key: 'secretNote', icon: 'secretNote' },
-  { key: 'quiz', icon: 'quiz' },
-  { key: 'truthOrDare', icon: 'truthOrDare' },
-  { key: 'date', icon: 'date' },
-  { key: 'dailyCalls', icon: 'calls' },
-  { key: 'diary', icon: 'diary' },
-];
-
-const ATTACH_TILE = 60;
 /** Room the glass header takes under the status bar: avatar, name chip and caption. */
 const HEADER_ROOM = 112;
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -208,7 +189,7 @@ export default function ChatRoomScreen() {
     if (uri && sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
-  const attach = (key: Attachment['key']) => {
+  const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
       case 'voice':
@@ -376,25 +357,7 @@ export default function ChatRoomScreen() {
         onClose={dismissLevelUp}
       />
 
-      <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
-        <View style={styles.attachGrid}>
-          {ATTACHMENTS.map((item) => {
-            return (
-              <PressableScale
-                key={item.key}
-                style={styles.attachCell}
-                scaleTo={0.94}
-                accessibilityLabel={t(`chat.attachments.${item.key}`)}
-                onPress={() => attach(item.key)}>
-                <ClayIcon name={item.icon} size={ATTACH_TILE} />
-                <Txt variant="smallStrong" center lines={2}>
-                  {t(`chat.attachments.${item.key}`)}
-                </Txt>
-              </PressableScale>
-            );
-          })}
-        </View>
-      </Sheet>
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
 
       <TruthOrDareSheet visible={truthOpen} onClose={() => setTruthOpen(false)} character={character} name={name} />
       <DailyCallsSheet visible={callsOpen} onClose={() => setCallsOpen(false)} characterId={character.id} />
@@ -561,6 +524,4 @@ const styles = StyleSheet.create({
   alarm: { marginTop: space.sm },
   list: { paddingBottom: space.sm },
   // The sheet pads its card by space.xl; rows bring their own space.lg gutter.
-  attachGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingTop: space.sm, paddingBottom: space.md },
-  attachCell: { width: '25%', alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },
 });

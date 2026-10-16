@@ -11,6 +11,7 @@ import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
+import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
@@ -21,7 +22,6 @@ import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import {
   Button,
   CharacterAvatar,
-  ClayIcon,
   Divider,
   IconButton,
   ListRow,
@@ -30,7 +30,6 @@ import {
   ShellBadge,
   Sheet,
   Txt,
-  type ClayIconName,
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
@@ -39,27 +38,9 @@ import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-
 import { colors, hitSlop, radius, space } from '@/theme';
 import type { Character, Message } from '@/types';
 
-type Attachment = {
-  key: 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
-  icon: ClayIconName;
-};
-
-/** The same "+" sheet as a one-to-one chat; the two-person ones ask who with first. */
-const ATTACHMENTS: Attachment[] = [
-  { key: 'voice', icon: 'voice' },
-  { key: 'photo', icon: 'photo' },
-  { key: 'secretNote', icon: 'secretNote' },
-  { key: 'quiz', icon: 'quiz' },
-  { key: 'truthOrDare', icon: 'truthOrDare' },
-  { key: 'date', icon: 'date' },
-  { key: 'dailyCalls', icon: 'calls' },
-  { key: 'diary', icon: 'diary' },
-];
-
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
 type WithOne = 'secretNote' | 'quiz' | 'date' | 'dailyCalls';
 
-const ATTACH_TILE = 60;
 const ROW_AVATAR = 36;
 
 /**
@@ -195,7 +176,7 @@ export default function GroupChatScreen() {
     if (uri && sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
-  const attach = (key: Attachment['key']) => {
+  const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
       case 'voice':
@@ -300,23 +281,7 @@ export default function GroupChatScreen() {
         />
       </KeyboardAvoidingView>
 
-      <Sheet visible={attachOpen} onClose={() => setAttachOpen(false)}>
-        <View style={styles.attachGrid}>
-          {ATTACHMENTS.map((item) => (
-            <PressableScale
-              key={item.key}
-              style={styles.attachCell}
-              scaleTo={0.94}
-              accessibilityLabel={t(`chat.attachments.${item.key}`)}
-              onPress={() => attach(item.key)}>
-              <ClayIcon name={item.icon} size={ATTACH_TILE} />
-              <Txt variant="smallStrong" center lines={2}>
-                {t(`chat.attachments.${item.key}`)}
-              </Txt>
-            </PressableScale>
-          ))}
-        </View>
-      </Sheet>
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)}>
@@ -454,8 +419,6 @@ const styles = StyleSheet.create({
   identityTap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm },
   identityText: { flex: 1, gap: 2 },
   list: { paddingVertical: space.lg },
-  attachGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingTop: space.sm, paddingBottom: space.md },
-  attachCell: { width: '25%', alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },
   sheetCopy: { marginTop: space.xs },
   ways: {
     marginTop: space.lg,
