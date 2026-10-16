@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Anim, Sheet, Txt } from '@/components/ui';
 import { duration as fmtDuration } from '@/lib/format';
-import { colors, radius, shadows, space } from '@/theme';
+import { colors, space } from '@/theme';
 
 const MIN_SECONDS = 1;
 const MAX_SECONDS = 60;
@@ -55,31 +55,32 @@ export function VoiceSheet({
 
   return (
     <Sheet visible={visible} onClose={onClose} title={t('chat.voice.title')}>
+      {/* Voice Memos look (approved prototype `SheetVoice.dc.html`): big timer, red wave, red record button. */}
       <View style={styles.body}>
+        <Txt style={[styles.timer, recording && styles.timerLive]}>{fmtDuration(seconds)}</Txt>
+
         <View style={styles.meter}>
           {recording ? (
-            <Anim name="voiceWave" size={64} tint={colors.primary} />
+            <Anim name="voiceWave" size={72} tint={RECORD_RED} />
           ) : (
-            <Txt variant="small" color={tooShort ? colors.danger : colors.textMuted}>
+            <Txt style={styles.hint} color={tooShort ? colors.danger : colors.textSecondary}>
               {tooShort ? t('chat.voice.tooShort') : t('chat.voice.hold')}
             </Txt>
           )}
         </View>
-
-        <Txt variant="display" color={recording ? colors.primary : colors.textFaint}>
-          {fmtDuration(seconds)}
-        </Txt>
 
         <Pressable
           onPressIn={start}
           onPressOut={stop}
           accessibilityRole="button"
           accessibilityLabel={t('chat.voice.hold')}
-          style={[styles.mic, recording && styles.micActive, shadows.fab]}>
-          <Ionicons name="mic" size={34} color={colors.textOnPrimary} />
+          style={styles.ring}>
+          <View style={[styles.mic, recording && styles.micActive]}>
+            <Ionicons name="mic" size={30} color={colors.white} />
+          </View>
         </Pressable>
 
-        <Txt variant="caption" color={colors.textFaint}>
+        <Txt style={styles.hint} color={colors.textSecondary}>
           {recording ? t('chat.voice.release') : ' '}
         </Txt>
       </View>
@@ -87,16 +88,25 @@ export function VoiceSheet({
   );
 }
 
+/** iOS system red: the record button, as in Voice Memos. */
+const RECORD_RED = '#FF3B30';
+
 const styles = StyleSheet.create({
-  body: { alignItems: 'center', gap: space.md, paddingVertical: space.md },
-  meter: { height: 40, alignItems: 'center', justifyContent: 'center' },
-  mic: {
+  body: { alignItems: 'center', gap: space.md, paddingTop: space.sm },
+  timer: { fontSize: 56, lineHeight: 64, fontWeight: '300', letterSpacing: -1, fontVariant: ['tabular-nums'], color: colors.textSecondary },
+  timerLive: { color: colors.text },
+  meter: { height: 56, alignItems: 'center', justifyContent: 'center' },
+  hint: { fontSize: 15 },
+  ring: {
     width: 84,
     height: 84,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primaryFill,
+    borderRadius: 42,
+    borderWidth: 4,
+    borderColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  micActive: { transform: [{ scale: 1.12 }], backgroundColor: colors.primaryHover },
+  mic: { width: 64, height: 64, borderRadius: 32, backgroundColor: RECORD_RED, alignItems: 'center', justifyContent: 'center' },
+  // While held the red button shrinks a little, like Voice Memos' record-to-stop.
+  micActive: { transform: [{ scale: 0.86 }] },
 });

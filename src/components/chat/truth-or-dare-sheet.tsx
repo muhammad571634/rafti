@@ -83,9 +83,8 @@ export function TruthOrDareSheet({
   const r = SIZE / 2;
 
   return (
-    <Sheet visible={visible} onClose={onClose}>
+    <Sheet visible={visible} onClose={onClose} title={t('games.truthOrDare')}>
       <View style={styles.body}>
-        <Txt variant="h1">{t('games.truthOrDare')}</Txt>
 
         <View style={styles.wheelWrap}>
           <Animated.View style={[styles.wheel, wheelStyle]}>
@@ -109,12 +108,12 @@ export function TruthOrDareSheet({
 
         {target ? (
           <>
-            <Txt variant="title" center>
+            <Txt style={styles.landed} center>
               {target === 'them' ? t('games.landedThem', { name: first }) : t('games.landedYou')}
             </Txt>
             <View style={styles.pair}>
               <Button label={t('games.truth')} size="lg" variant="secondary" style={styles.grow} onPress={() => choose('truth')} />
-              <Button label={t('games.dare')} size="lg" variant="secondary" style={styles.grow} onPress={() => choose('dare')} />
+              <Button label={t('games.dare')} size="lg" variant="primary" style={styles.grow} onPress={() => choose('dare')} />
             </View>
           </>
         ) : (
@@ -126,9 +125,10 @@ export function TruthOrDareSheet({
 }
 
 const styles = StyleSheet.create({
-  body: { gap: space.xl, paddingBottom: space.sm },
+  body: { gap: space.lg, paddingBottom: space.xs },
+  landed: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
   grow: { flex: 1 },
-  wheelWrap: { alignSelf: 'center', width: SIZE, height: SIZE, marginTop: space.md },
+  wheelWrap: { alignSelf: 'center', width: SIZE, height: SIZE, marginTop: space.sm },
   wheel: { width: SIZE, height: SIZE, borderRadius: SIZE / 2, overflow: 'hidden' },
   pointer: {
     position: 'absolute',

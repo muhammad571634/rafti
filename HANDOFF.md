@@ -37,8 +37,12 @@ the message and tints it. Owner's links (2026-10-16): SF Symbols are used throug
 (`SFIcon`, iPhone only, Ionicons elsewhere, as Apple's licence allows); SF Pro is not bundled (it is
 already the iPhone system font, and its licence forbids Android); HealthKit does not fit the app.
 **Sign in with Apple is required** (App Store 4.8) as soon as the backend adds any third-party login
-(Google etc.): put its button first, per Apple's HIG. Next: step 6, in-chat sheets (voice, truth or
-dare, daily calls, report).
+(Google etc.): put its button first, per Apple's HIG. Step 6 done: all sheets are iOS floating sheets
+(flows.md D19; owner: "hammasiga qo'lla", iOS 27 look). New dependency
+`@react-native-community/datetimepicker` (config plugin in `app.json`; in Expo Go, a new build picks it
+up too): the daily-call time opens the system picker. iOS 27 per WWDC 2026 coverage keeps Liquid
+Glass with a darker edge and brighter highlights, so `glassLine` is a bit darker. Next: step 7, group
+chat + group info, then step 8, the Chats "new chat" sheet.
 
 ### 0w. iOS look, step 2: the Chats screen (2026-10-16)
 

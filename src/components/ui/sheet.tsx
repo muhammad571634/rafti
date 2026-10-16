@@ -1,8 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, radius, shadows, space } from '@/theme';
 
+import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 export interface SheetProps {
@@ -19,22 +22,79 @@ export interface SheetProps {
    * off the top of the screen.
    */
   avoidKeyboard?: boolean;
+  /** Adds the peach ✓ on the right of the header (iOS "Done"); the sheet saves there. */
+  onDone?: () => void;
+  doneDisabled?: boolean;
 }
 
+/** iOS 26/27 floating sheet: 8pt in from the screen edges, with the device's large corners. */
+const EDGE = 8;
+const CORNER = 38;
+
 /**
- * Bottom sheet (or centred card) over a light scrim. It appears and leaves at
- * once: no slide, spring or fade, so it never "jumps" at you.
+ * Bottom sheet (or centred card) over a light scrim, iOS style (approved prototype, 2026-10-16):
+ * a floating card with a grabber and, when it has a title, a header row of × / title / ✓.
+ * It appears and leaves at once: no slide, spring or fade, so it never "jumps" at you.
  */
-export function Sheet({ visible, onClose, title, children, center, dismissable = true, avoidKeyboard }: SheetProps) {
+export function Sheet({
+  visible,
+  onClose,
+  title,
+  children,
+  center,
+  dismissable = true,
+  avoidKeyboard,
+  onDone,
+  doneDisabled,
+}: SheetProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+
+  const header = title ? (
+    center ? (
+      <Txt variant="h3" center style={styles.centerTitle}>
+        {title}
+      </Txt>
+    ) : (
+      <View style={styles.header}>
+        {dismissable ? (
+          <PressableScale
+            scaleTo={0.88}
+            onPress={onClose}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+            style={styles.close}>
+            <Ionicons name="close" size={18} color={colors.textSecondary} />
+          </PressableScale>
+        ) : (
+          <View style={styles.side} />
+        )}
+        <Txt style={styles.title} lines={1} accessibilityRole="header">
+          {title}
+        </Txt>
+        {onDone ? (
+          <PressableScale
+            scaleTo={0.88}
+            onPress={onDone}
+            disabled={doneDisabled}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.done')}
+            accessibilityState={{ disabled: !!doneDisabled }}
+            style={[styles.done, doneDisabled && styles.doneOff]}>
+            <Ionicons name="checkmark" size={19} color={colors.textOnPrimary} />
+          </PressableScale>
+        ) : (
+          <View style={styles.side} />
+        )}
+      </View>
+    )
+  ) : null;
 
   const content = (
     <>
-      {title ? (
-        <Txt variant="h3" center={center} style={styles.title}>
-          {title}
-        </Txt>
-      ) : null}
+      {header}
       {children}
     </>
   );
@@ -48,15 +108,14 @@ export function Sheet({ visible, onClose, title, children, center, dismissable =
         <KeyboardAvoidingView
           enabled={!!avoidKeyboard && Platform.OS === 'ios'}
           behavior="padding"
-          style={[styles.fill, center ? styles.centerWrap : [styles.bottomWrap, { paddingTop: insets.top + space.md }]]}
+          style={[
+            styles.fill,
+            center
+              ? styles.centerWrap
+              : [styles.bottomWrap, { paddingTop: insets.top + space.md, paddingBottom: Math.max(EDGE, insets.bottom - 26) }],
+          ]}
           pointerEvents="box-none">
-          <View
-            style={[
-              center ? styles.centerCard : styles.bottomCard,
-              !center && { paddingBottom: insets.bottom + space.xl },
-              avoidKeyboard && styles.capped,
-              shadows.modal,
-            ]}>
+          <View style={[center ? styles.centerCard : styles.bottomCard, avoidKeyboard && styles.capped, shadows.modal]}>
             {!center ? <View style={styles.grabber} /> : null}
             {avoidKeyboard ? (
               <ScrollView
@@ -79,14 +138,17 @@ export function Sheet({ visible, onClose, title, children, center, dismissable =
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   scrim: { backgroundColor: colors.scrim },
-  bottomWrap: { justifyContent: 'flex-end' },
+  bottomWrap: { justifyContent: 'flex-end', paddingHorizontal: EDGE },
   centerWrap: { alignItems: 'center', justifyContent: 'center', padding: space.xxl },
+  // A floating card, inset from every edge; a darker hairline edge as iOS 27 draws its glass.
   bottomCard: {
     backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xxl,
-    borderTopRightRadius: radius.xxl,
-    paddingHorizontal: space.xl,
-    paddingTop: space.md,
+    borderRadius: CORNER,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+    paddingHorizontal: space.lg,
+    paddingTop: space.sm,
+    paddingBottom: space.xxl,
   },
   centerCard: {
     width: '100%',
@@ -100,11 +162,31 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1 },
   grabber: {
     alignSelf: 'center',
-    width: 38,
-    height: 4,
+    width: 36,
+    height: 5,
     borderRadius: radius.pill,
     backgroundColor: colors.borderStrong,
-    marginBottom: space.md,
+    marginBottom: space.xs + 2,
   },
-  title: { marginBottom: space.md },
+  header: { flexDirection: 'row', alignItems: 'center', height: 44, marginBottom: space.md },
+  side: { width: 36 },
+  close: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  done: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primaryFill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  doneOff: { opacity: 0.4 },
+  centerTitle: { marginBottom: space.md },
 });

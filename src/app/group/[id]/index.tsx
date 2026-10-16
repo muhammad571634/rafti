@@ -8,24 +8,22 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { REPORT_REASONS } from '@/ai/safety';
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
+import { ReportSheet } from '@/components/chat/report-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import {
-  Button,
   CharacterAvatar,
   Divider,
   IconButton,
-  ListRow,
   PressableScale,
   Screen,
   ShellBadge,
@@ -381,26 +379,15 @@ export default function GroupChatScreen() {
         }}
       />
 
-      <Sheet
+      <ReportSheet
         visible={!!reporting}
+        reported={reported}
         onClose={() => setReporting(null)}
-        title={reported ? t('safety.reportThanks') : t('safety.reportTitle')}>
-        {reported ? (
-          <Button label={t('safety.done')} size="lg" full onPress={() => setReporting(null)} />
-        ) : (
-          REPORT_REASONS.map((reason) => (
-            <ListRow
-              key={reason}
-              title={t(`safety.reasons.${reason}`)}
-              chevron
-              onPress={() => {
-                if (reporting) reportMessage(groupId, reporting.id, reason);
-                setReported(true);
-              }}
-            />
-          ))
-        )}
-      </Sheet>
+        onReport={(reason) => {
+          if (reporting) reportMessage(groupId, reporting.id, reason);
+          setReported(true);
+        }}
+      />
     </Screen>
   );
 }

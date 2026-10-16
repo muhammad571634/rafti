@@ -86,7 +86,7 @@ const lightColors = {
   scrim: 'rgba(0,0,0,0.2)',
   /** The floating tab bar's frosted fill, its hairline and the current tab's capsule. */
   glass: 'rgba(255,255,255,0.94)',
-  glassLine: 'rgba(0,0,0,0.06)',
+  glassLine: 'rgba(0,0,0,0.10)',
   glassActive: 'rgba(120,120,128,0.14)',
 
   // Lines
@@ -174,7 +174,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   overlay: 'rgba(0,0,0,0.6)',
   scrim: 'rgba(0,0,0,0.4)',
   glass: 'rgba(30,30,32,0.94)',
-  glassLine: 'rgba(255,255,255,0.10)',
+  glassLine: 'rgba(255,255,255,0.14)',
   glassActive: 'rgba(255,255,255,0.12)',
   border: '#38383A',
   borderStrong: '#48484A',
