@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Anim, PressableScale, Txt } from '@/components/ui';
@@ -11,14 +11,27 @@ import { colors, radius, space } from '@/theme';
  */
 export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip: string) => void }) {
   return (
-    <Animated.View entering={FadeIn.duration(200)} style={styles.chips}>
-      {chips.map((chip) => (
-        <PressableScale key={chip} onPress={() => onPick(chip)} scaleTo={0.95} style={styles.chip} accessibilityRole="button">
-          <Txt style={styles.chipText} color={colors.primary}>
-            {chip}
-          </Txt>
-        </PressableScale>
-      ))}
+    // One row that scrolls sideways when it does not fit: wrapping cut the last pill off on Android.
+    <Animated.View entering={FadeIn.duration(200)}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.chips}>
+        {chips.map((chip) => (
+          <PressableScale
+            key={chip}
+            onPress={() => onPick(chip)}
+            scaleTo={0.95}
+            style={styles.chip}
+            accessibilityRole="button"
+            accessibilityLabel={chip}>
+            <Txt style={styles.chipText} color={colors.primary} lines={1}>
+              {chip}
+            </Txt>
+          </PressableScale>
+        ))}
+      </ScrollView>
     </Animated.View>
   );
 }
@@ -38,9 +51,10 @@ export function AlarmBar() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  // flexGrow + flex-end: pills that fit sit on the right, on the user's side.
   chips: {
+    flexGrow: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'flex-end',
     gap: space.sm,
     paddingLeft: space.xxl,
@@ -49,6 +63,7 @@ const styles = StyleSheet.create({
     paddingBottom: space.sm + 2,
   },
   chip: {
+    flexShrink: 0,
     height: 34,
     justifyContent: 'center',
     paddingHorizontal: 14,

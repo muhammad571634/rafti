@@ -44,6 +44,8 @@ import type { Message } from '@/types';
 const HEADER_ROOM = 112;
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
+/** The fade under the solid header ground. */
+const FADE = 20;
 
 /** The same colour, fully transparent: the end of the fade under the header. */
 const fadeOut = (color: string) => (/^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent');
@@ -295,9 +297,11 @@ export default function ChatRoomScreen() {
             {!artWallpaper ? (
               <LinearGradient
                 pointerEvents="none"
+                // Solid under the whole header (avatar, name, caption), then a short fade, so a
+                // message never shows through the caption (seen on Android, 2026-10-16).
                 colors={[background[0], background[0], fadeOut(background[0])]}
-                locations={[0, 0.55, 1]}
-                style={[styles.fade, { height: headerRoom + space.md }]}
+                locations={[0, headerRoom / (headerRoom + FADE), 1]}
+                style={[styles.fade, { height: headerRoom + FADE }]}
               />
             ) : null}
           </View>
