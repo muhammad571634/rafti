@@ -19,6 +19,7 @@ import {
   Screen,
   Sheet,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { shortName } from '@/lib/format';
@@ -71,6 +72,8 @@ export default function GroupInfoScreen() {
   const [draft, setDraft] = useState('');
   const [adding, setAdding] = useState(false);
   const [member, setMember] = useState<Character | null>(null);
+  // Past the group's face and name, the bar shows the name (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(150);
 
   const members = useMemo(
     () => (group?.memberIds ?? []).flatMap((m) => characters.find((c) => c.id === m) ?? []),
@@ -132,6 +135,8 @@ export default function GroupInfoScreen() {
     // iOS contact card for the group (approved prototype `GroupInfo.dc.html`).
     <Screen background={colors.bg}>
       <GlassBar
+        title={title}
+        scrolled={scrolled}
         right={
           <GlassButton
             label={t('common.edit')}
@@ -143,7 +148,11 @@ export default function GroupInfoScreen() {
           />
         }
       />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <View style={styles.identity}>
           <GroupAvatar members={members} size={112} ringColor={colors.bg} />
           <Txt style={styles.name} center lines={2} accessibilityRole="header">

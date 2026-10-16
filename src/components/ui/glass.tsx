@@ -1,7 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import { useCallback, useState } from 'react';
+import {
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  Pressable,
+  type StyleProp,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { colors, shadows, space } from '@/theme';
 
@@ -53,12 +63,39 @@ export function BackButton({ onPress }: { onPress?: () => void }) {
   return <GlassButton icon="chevron-back" accessibilityLabel={t('a11y.back')} onPress={onPress ?? (() => router.back())} />;
 }
 
-/** The top bar of an iOS-look screen: back on the left, an optional action on the right. */
-export function GlassBar({ right }: { right?: React.ReactNode }) {
+/**
+ * True once the list has scrolled past `threshold` (the large title or the hero name): the
+ * glass bar then shows the screen's name and a hairline, iOS's scroll-edge look.
+ */
+export function useScrolledPast(threshold: number) {
+  const [scrolled, setScrolled] = useState(false);
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const past = e.nativeEvent.contentOffset.y > threshold;
+      setScrolled((was) => (was === past ? was : past));
+    },
+    [threshold],
+  );
+  return { scrolled, onScroll };
+}
+
+/**
+ * The top bar of an iOS-look screen: back on the left, an optional action on the right. Once
+ * the content has scrolled under it (`scrolled`), the screen's `title` fades in at the centre
+ * and a hairline marks the edge, as iOS 26/27 bars do.
+ */
+export function GlassBar({ right, title, scrolled }: { right?: React.ReactNode; title?: string; scrolled?: boolean }) {
   return (
-    <View style={styles.bar}>
+    <View style={[styles.bar, scrolled && styles.barScrolled]}>
       <BackButton />
-      {right ?? null}
+      {title && scrolled ? (
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={styles.barTitleWrap} pointerEvents="none">
+          <Txt style={styles.barTitle} lines={1}>
+            {title}
+          </Txt>
+        </Animated.View>
+      ) : null}
+      {right ?? <View style={styles.barSpacer} />}
     </View>
   );
 }
@@ -120,7 +157,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: space.lg,
     paddingTop: space.xs,
+    paddingBottom: space.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'transparent',
   },
+  barScrolled: { borderBottomColor: colors.borderStrong },
+  // Centred on the screen, between the side buttons (they keep 44pt each side).
+  barTitleWrap: { position: 'absolute', left: 72, right: 72, top: space.xs, bottom: space.sm, justifyContent: 'center' },
+  barTitle: { textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  barSpacer: { width: 44 },
   group: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },

@@ -8,6 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Button,
   CharacterAvatar,
+  GlassBar,
+  GlassButton,
   Header,
   IconButton,
   ListRow,
@@ -15,6 +17,7 @@ import {
   Screen,
   Sheet,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import { planDate } from '@/components/plans/copy';
@@ -22,7 +25,7 @@ import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space, type } from '@/theme';
+import { colors, radius, space, type } from '@/theme';
 import type { Character } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -77,6 +80,8 @@ export default function CharacterSettingsScreen() {
   const [draftName, setDraftName] = useState('');
   const [closenessOpen, setClosenessOpen] = useState(false);
   const [labelOpen, setLabelOpen] = useState(false);
+  // Past the avatar and name, the bar shows the name (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(150);
 
   if (!character) {
     return (
@@ -149,29 +154,22 @@ export default function CharacterSettingsScreen() {
   return (
     // iOS contact card (approved prototype `Info.dc.html`): grouped white cards on the grey ground.
     <Screen background={colors.bg}>
-      <View style={styles.topBar}>
-        <PressableScale
-          scaleTo={0.88}
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('a11y.back')}
-          style={[styles.glass, styles.round]}>
-          <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
-        </PressableScale>
-        {/* Only the user's own characters can be edited; seed ones get a nickname below. */}
-        {own ? (
-          <PressableScale
-            scaleTo={0.92}
-            onPress={() => run('editCharacter')}
-            accessibilityRole="button"
-            accessibilityLabel={t('characterSettings.editCharacter')}
-            style={[styles.glass, styles.editButton]}>
-            <Txt style={styles.editText}>{t('common.edit')}</Txt>
-          </PressableScale>
-        ) : null}
-      </View>
+      <GlassBar
+        title={name}
+        scrolled={scrolled}
+        right={
+          // Only the user's own characters can be edited; seed ones get a nickname below.
+          own ? (
+            <GlassButton label={t('common.edit')} accessibilityLabel={t('characterSettings.editCharacter')} onPress={() => run('editCharacter')} />
+          ) : null
+        }
+      />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <View style={styles.identity}>
           <CharacterAvatar character={character} size={112} />
           <Txt style={styles.name} lines={1} accessibilityRole="header">
@@ -468,23 +466,6 @@ function LabelRow({
 }
 
 const styles = StyleSheet.create({
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: space.lg,
-    paddingTop: space.xs,
-  },
-  glass: {
-    backgroundColor: colors.glass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
-    ...shadows.glassButton,
-  },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  backGlyph: { marginLeft: -2 },
-  editButton: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
-  editText: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },
   identity: { alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.xs },
   name: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
   caption: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },

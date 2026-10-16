@@ -17,6 +17,7 @@ import {
   Screen,
   Sheet,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
@@ -53,6 +54,8 @@ export default function MemoriesScreen() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [unlocking, setUnlocking] = useState(false);
+  // Past the large title, the bar shows it (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(44);
 
   // Without a plan 20 stay open (pinned first, then the newest); the rest are locked.
   const full = hasFullMemory(wallet.subscription, Date.now());
@@ -88,10 +91,15 @@ export default function MemoriesScreen() {
   return (
     // iOS look (approved prototype `Memories.dc.html`): grey ground, glass bar, large title, inset rows.
     <Screen background={colors.bg}>
-      <GlassBar right={<GlassButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />} />
-      <LargeTitle>{t('memories.title')}</LargeTitle>
+      <GlassBar
+        title={t('memories.title')}
+        scrolled={scrolled}
+        right={<GlassButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
+      />
 
       {open.length === 0 ? (
+        <>
+        <LargeTitle>{t('memories.title')}</LargeTitle>
         <EmptyState
           icon="jar"
           title={t('memories.empty')}
@@ -99,13 +107,22 @@ export default function MemoriesScreen() {
           actionLabel={t('memories.addManual')}
           onAction={() => setAdding(true)}
         />
+        </>
       ) : (
         <FlatList
           data={open}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={full ? null : <LimitMeter open={open.length} locked={locked.length} />}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          ListHeaderComponent={
+            <>
+              <LargeTitle>{t('memories.title')}</LargeTitle>
+              <View style={styles.listTop} />
+              {full ? null : <LimitMeter open={open.length} locked={locked.length} />}
+            </>
+          }
           renderItem={({ item, index }) => (
             <MemoryRow
               memory={item}
@@ -337,7 +354,8 @@ function MemoryRow({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  list: { paddingTop: 14, paddingBottom: space.huge },
+  list: { paddingBottom: space.huge },
+  listTop: { height: 14 },
   // Rows share one white card: the first rounds its top, the last its bottom.
   rowWrap: { marginHorizontal: space.lg, backgroundColor: colors.surface, overflow: 'hidden' },
   rowFirst: { borderTopLeftRadius: 14, borderTopRightRadius: 14 },

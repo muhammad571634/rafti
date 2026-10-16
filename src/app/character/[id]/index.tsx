@@ -16,6 +16,7 @@ import {
   Screen,
   SFIcon,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -49,6 +50,8 @@ export default function CharacterProfileScreen() {
   const addFriend = useAppStore((s) => s.addFriend);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
   const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
+  // Past the avatar and name, the bar shows the name (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(150);
 
   if (!character) {
     return (
@@ -75,6 +78,8 @@ export default function CharacterProfileScreen() {
     // iOS contact poster (approved prototype `Profile.dc.html`): grey ground, glass bar, inset cards.
     <Screen background={colors.bg}>
       <GlassBar
+        title={displayName(character, relationship)}
+        scrolled={scrolled}
         right={
           isFriend ? (
             <GlassButton
@@ -86,7 +91,11 @@ export default function CharacterProfileScreen() {
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         <View style={styles.hero}>
           <CharacterAvatar character={character} size={112} />
           <View style={styles.nameRow}>

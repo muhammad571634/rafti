@@ -17,6 +17,7 @@ import {
   PressableScale,
   Screen,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
@@ -39,6 +40,8 @@ export default function NewGroupScreen() {
 
   const [picked, setPicked] = useState<string[]>([]);
   const [name, setName] = useState('');
+  // Past the large title, the bar shows it (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(44);
 
   const full = picked.length >= GROUP_MAX;
   const ready = picked.length >= GROUP_MIN;
@@ -77,6 +80,8 @@ export default function NewGroupScreen() {
     // sits in the bar and wakes up once two friends are picked.
     <Screen background={colors.bg}>
       <GlassBar
+        title={t('group.newGroup')}
+        scrolled={scrolled}
         right={
           <PressableScale
             scaleTo={0.92}
@@ -94,6 +99,8 @@ export default function NewGroupScreen() {
       />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag">

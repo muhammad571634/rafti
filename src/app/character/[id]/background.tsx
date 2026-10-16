@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -44,6 +44,8 @@ export default function ChangeBackgroundScreen() {
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
     chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
+  // Past the large title, the bar shows it (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(44);
   const tileWidth = (width - space.lg * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
   const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
@@ -56,37 +58,7 @@ export default function ChangeBackgroundScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar />
-      <LargeTitle>{t('background.title')}</LargeTitle>
-
-      <View style={[styles.preview, { height: previewHeight }]} accessibilityLabel={t('background.preview')}>
-        {selectedArt ? (
-          <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
-        ) : (
-          <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
-        )}
-        <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs]} />
-        <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
-        <View pointerEvents="none" style={[glassStyle, styles.previewField]} />
-      </View>
-
-      {/* iOS segmented control: a grey track, the chosen side as a raised white pill. */}
-      <View style={styles.segment} accessibilityRole="tablist">
-        {tabs.map((tab) => {
-          const on = collection === tab.value;
-          return (
-            <Pressable
-              key={tab.value}
-              onPress={() => setCollection(tab.value)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              style={[styles.segmentItem, on && styles.segmentOn]}>
-              <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{tab.label}</Txt>
-            </Pressable>
-          );
-        })}
-      </View>
-
+      <GlassBar title={t('background.title')} scrolled={scrolled} />
       <FlatList
         key={collection}
         data={data}
@@ -96,6 +68,42 @@ export default function ChangeBackgroundScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}
         showsVerticalScrollIndicator={false}
         initialNumToRender={COLUMNS * 3}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        // Title, preview and the Classic / Art switch scroll away with the tiles (iOS large title).
+        ListHeaderComponent={
+          <View style={styles.head}>
+            <LargeTitle>{t('background.title')}</LargeTitle>
+
+            <View style={[styles.preview, { height: previewHeight }]} accessibilityLabel={t('background.preview')}>
+              {selectedArt ? (
+                <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
+              ) : (
+                <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
+              )}
+              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs]} />
+              <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
+              <View pointerEvents="none" style={[glassStyle, styles.previewField]} />
+            </View>
+
+            {/* iOS segmented control: a grey track, the chosen side as a raised white pill. */}
+            <View style={styles.segment} accessibilityRole="tablist">
+              {tabs.map((tab) => {
+                const on = collection === tab.value;
+                return (
+                  <Pressable
+                    key={tab.value}
+                    onPress={() => setCollection(tab.value)}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected: on }}
+                    style={[styles.segmentItem, on && styles.segmentOn]}>
+                    <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{tab.label}</Txt>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        }
         renderItem={({ item }) => {
           const art = 'image' in item;
           const selected = backgroundId === item.id;
@@ -166,7 +174,9 @@ const styles = StyleSheet.create({
   segmentOn: { backgroundColor: colors.surface, ...glassStyle, borderWidth: 0 },
   segmentText: { fontSize: 15, fontWeight: '500', color: colors.text },
   segmentTextOn: { fontWeight: '600' },
-  scroll: { paddingHorizontal: space.lg, paddingTop: space.lg },
+  scroll: { paddingHorizontal: space.lg },
+  // The header spans the screen; the list's gutter is pulled back for it.
+  head: { marginHorizontal: -space.lg, marginBottom: space.lg },
   row: { gap: GAP, marginBottom: space.md },
   tile: { borderRadius: 16, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
   tileBorder: {
