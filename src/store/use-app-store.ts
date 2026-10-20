@@ -163,6 +163,7 @@ import type {
   MessageReport,
   User,
   Wallet,
+  WidgetKind,
 } from '@/types';
 
 /** Intimacy awarded per interaction. */
@@ -412,6 +413,10 @@ interface AppState {
   rememberViewed: (characterId: string) => void;
   clearRecentSearches: () => void;
 
+  /* Today's widgets: four slots the user arranges (null = an empty slot in edit mode) */
+  todayWidgets: (WidgetKind | null)[];
+  setTodayWidgets: (slots: (WidgetKind | null)[]) => void;
+
   /* wake-up alarms (Bedtime → Alarms), for every plan */
   alarms: Alarm[];
   /** Adds a new alarm (no id yet) or replaces the one with the same id; it is switched on. */
@@ -526,11 +531,15 @@ type PersistedKeys =
   | 'blockedIds'
   | 'recentSearches'
   | 'recentlyViewed'
+  | 'todayWidgets'
   | 'alarms'
   | 'photos'
   | 'wake'
   | 'daily'
   | 'settings';
+
+/** Today's widgets before the user changes them (owner's pick, 2026-10-21). */
+const DEFAULT_WIDGETS: WidgetKind[] = ['calls', 'diary', 'date', 'sleep'];
 
 /** How many recent searches and recently viewed characters Find keeps. */
 const RECENT_LIMIT = 8;
@@ -686,6 +695,7 @@ export const useAppStore = create<AppState>()(
       blockedIds: [],
       recentSearches: [],
       recentlyViewed: [],
+      todayWidgets: DEFAULT_WIDGETS,
       alarms: [],
       photos: [],
       wake: null,
@@ -1634,6 +1644,7 @@ export const useAppStore = create<AppState>()(
       rememberViewed: (characterId) =>
         set((s) => ({ recentlyViewed: [characterId, ...s.recentlyViewed.filter((id) => id !== characterId)].slice(0, RECENT_LIMIT) })),
       clearRecentSearches: () => set({ recentSearches: [] }),
+      setTodayWidgets: (slots) => set({ todayWidgets: slots }),
 
       /* ── profile ──────────────────────────────────────────────────────── */
 
@@ -2373,6 +2384,7 @@ export const useAppStore = create<AppState>()(
         blockedIds: s.blockedIds,
         recentSearches: s.recentSearches,
         recentlyViewed: s.recentlyViewed,
+        todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,
         wake: s.wake,

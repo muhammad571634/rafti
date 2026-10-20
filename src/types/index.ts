@@ -638,3 +638,17 @@ export interface WakeSession {
   /** "Up yet?" from the friend at this moment (the sleepy branch). */
   checkInAt?: string;
 }
+
+/** A widget the Today screen can show (`src/components/today/widgets.tsx`). */
+export type WidgetKind =
+  | 'calls'
+  | 'diary'
+  | 'date'
+  | 'sleep'
+  | 'gifts'
+  | 'store'
+  | 'photos'
+  | 'radio'
+  | 'board'
+  | 'contacts'
+  | 'bond';
