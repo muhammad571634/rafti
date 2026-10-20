@@ -14,6 +14,8 @@ export interface SearchBarProps {
   style?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
   autoFocus?: boolean;
+  onFocus?: () => void;
+  inputRef?: React.Ref<TextInput>;
   /** `light`: white field with a hairline border; `aurora`: a glass field on the aurora ground. */
   tone?: 'filled' | 'light' | 'aurora';
 }
@@ -25,6 +27,8 @@ export function SearchBar({
   style,
   onSubmit,
   autoFocus,
+  onFocus,
+  inputRef,
   tone = 'filled',
 }: SearchBarProps) {
   const { t } = useTranslation();
@@ -35,6 +39,8 @@ export function SearchBar({
     <Field style={[styles.base, tone === 'light' && styles.light, tone === 'aurora' && styles.aurora, style]}>
       <Ionicons name="search" size={17} color={faint} />
       <TextInput
+        ref={inputRef}
+        onFocus={onFocus}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}

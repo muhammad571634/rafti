@@ -143,7 +143,15 @@
     "talkNow": "Talk now",
     "sayHi": "Say hi",
     "topHit": "Top hit",
-    "charactersSection": "Characters"
+    "charactersSection": "Characters",
+    "closeSearch": "Close search",
+    "recentlyViewed": "Recently viewed",
+    "recentSearches": "Recent searches",
+    "clear": "Clear",
+    "surprise": "Surprise me",
+    "searchWorld": "Search {{world}}",
+    "addFriend": "Add {{name}}",
+    "isFriend": "{{name}} is your friend"
   },
   "newCharacters": {
     "proTitle": "Meet them first with Pro",

@@ -2,9 +2,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, type TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
@@ -45,7 +45,9 @@ const heroOf = (c: Character) => HEROES[c.id] ?? characterImage(c);
  * "a search field at the top", room for suggestions and categories before typing): large title
  * with a glass create button, glass search field, Everyone / Him / Her, a paging row of new
  * characters, the worlds as picture tiles, and "Talk now" for friends who can take a call.
- * Typing shows the results in place: the best match on top, then the rest and any worlds.
+ * Tapping the field turns the screen into search (the title steps aside, a glass close button
+ * appears): recently viewed faces and recent searches before typing, results while typing, the
+ * best match on top, then the rest and any worlds.
  * Glass is only on controls; pictures and tiles are content (HIG Materials).
  */
 export default function FindScreen() {
@@ -65,6 +67,13 @@ export default function FindScreen() {
 
   const [query, setQuery] = useState('');
   const [who, setWho] = useState<Who>('everyone');
+  const [searching, setSearching] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+  const recentSearches = useAppStore((s) => s.recentSearches);
+  const recentlyViewed = useAppStore((s) => s.recentlyViewed);
+  const rememberSearch = useAppStore((s) => s.rememberSearch);
+  const rememberViewed = useAppStore((s) => s.rememberViewed);
+  const clearRecentSearches = useAppStore((s) => s.clearRecentSearches);
 
   const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
@@ -98,41 +107,76 @@ export default function FindScreen() {
   }, [shown, groups]);
   const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
-  const open = (c: Character) => router.push(`/character/${c.id}`);
+  const viewed = useMemo(
+    () => recentlyViewed.map((id) => characters.find((c) => c.id === id)).filter((c): c is Character => !!c),
+    [recentlyViewed, characters],
+  );
+
+  const open = (c: Character) => {
+    rememberViewed(c.id);
+    if (q) rememberSearch(query);
+    router.push(`/character/${c.id}`);
+  };
+  const closeSearch = () => {
+    setQuery('');
+    setSearching(false);
+    Keyboard.dismiss();
+  };
   const sayHi = (c: Character) => {
     const chat = chatOf.get(c.id);
     if (chat) router.push(`/chat/${chat}`);
     else early.add(c);
   };
-  const openWorld = (g: CharacterGroup) => router.push({ pathname: '/world/[series]', params: { series: g.series } });
+  const openWorld = (g: CharacterGroup) => {
+    if (q) rememberSearch(query);
+    router.push({ pathname: '/world/[series]', params: { series: g.series } });
+  };
 
   const featureWidth = Math.min(width, 520) - space.lg * 2 - 24;
   const tileWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - space.md) / 2);
 
   return (
     <Screen background="aurora">
-      <View style={styles.head}>
-        <Txt style={styles.title} accessibilityRole="header">
-          {t('find.title')}
-        </Txt>
-        <PressableScale
-          scaleTo={0.9}
-          accessibilityRole="button"
-          accessibilityLabel={t('a11y.createCharacter')}
-          onPress={() => router.push('/create-character')}>
-          <AuroraGlass style={styles.round}>
-            <Ionicons name="add" size={26} color={colors.text} />
-          </AuroraGlass>
-        </PressableScale>
-      </View>
+      {searching ? null : (
+        <View style={styles.head}>
+          <Txt style={styles.title} accessibilityRole="header">
+            {t('find.title')}
+          </Txt>
+          <PressableScale
+            scaleTo={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.createCharacter')}
+            onPress={() => router.push('/create-character')}>
+            <AuroraGlass style={styles.round}>
+              <Ionicons name="add" size={26} color={colors.text} />
+            </AuroraGlass>
+          </PressableScale>
+        </View>
+      )}
 
-      <SearchBar
-        tone="aurora"
-        value={query}
-        onChangeText={setQuery}
-        placeholder={t('find.searchPlaceholder')}
-        style={styles.search}
-      />
+      <View style={styles.searchRow}>
+        <SearchBar
+          tone="aurora"
+          inputRef={inputRef}
+          value={query}
+          onChangeText={setQuery}
+          onFocus={() => setSearching(true)}
+          onSubmit={() => rememberSearch(query)}
+          placeholder={t('find.searchPlaceholder')}
+          style={styles.flex}
+        />
+        {searching ? (
+          <PressableScale
+            scaleTo={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={t('find.closeSearch')}
+            onPress={closeSearch}>
+            <AuroraGlass style={styles.round}>
+              <Ionicons name="close" size={22} color={colors.text} />
+            </AuroraGlass>
+          </PressableScale>
+        ) : null}
+      </View>
       <Segmented
         tone="aurora"
         options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
@@ -152,9 +196,23 @@ export default function FindScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
-          contentContainerStyle={{ paddingTop: space.lg, paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.huge }}>
+          contentContainerStyle={{
+            paddingTop: space.lg,
+            paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.huge,
+          }}>
           {q ? (
             <Results results={results} worlds={worldHits} onOpen={open} onSayHi={sayHi} onOpenWorld={openWorld} />
+          ) : searching ? (
+            <Recent
+              viewed={viewed}
+              searches={recentSearches}
+              onOpen={open}
+              onSearch={(term) => {
+                setQuery(term);
+                inputRef.current?.focus();
+              }}
+              onClear={clearRecentSearches}
+            />
           ) : (
             <>
               <ScrollView
@@ -276,8 +334,16 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
       accessibilityRole="button"
       accessibilityLabel={t('find.openWorld', { world: group.series })}
       onPress={onOpen}
-      style={[styles.tile, { width, backgroundColor: WORLD_TINT[group.series] ?? colors.surfaceAlt }]}>
-      {lead ? <Image source={heroOf(lead)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} /> : null}
+      style={[
+        styles.tile,
+        {
+          width,
+          backgroundColor: WORLD_TINT[group.series] ?? colors.surfaceAlt,
+        },
+      ]}>
+      {lead ? (
+        <Image source={heroOf(lead)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
+      ) : null}
       <LinearGradient colors={SCRIM} style={StyleSheet.absoluteFill} />
       <View style={styles.tileFoot}>
         <Txt style={styles.tileName} lines={2}>
@@ -286,7 +352,14 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
         <View style={styles.tileRow}>
           <View style={styles.stack}>
             {group.characters.slice(0, 3).map((c) => (
-              <CharacterAvatar key={c.id} character={c} size={26} ring ringColor={colors.onMedia} style={styles.stacked} />
+              <CharacterAvatar
+                key={c.id}
+                character={c}
+                size={26}
+                ring
+                ringColor={colors.onMedia}
+                style={styles.stacked}
+              />
             ))}
           </View>
           <Txt variant="caption" color={colors.onMedia}>
@@ -336,7 +409,11 @@ function Results({
                 {top.series ? <WorldLine series={top.series} /> : null}
               </View>
             </PressableScale>
-            <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={() => onSayHi(top)} style={styles.topButton}>
+            <PressableScale
+              scaleTo={0.92}
+              accessibilityRole="button"
+              onPress={() => onSayHi(top)}
+              style={styles.topButton}>
               <Txt variant="smallStrong" color={colors.textOnInk}>
                 {t('find.sayHi')}
               </Txt>
@@ -404,6 +481,82 @@ function Results({
   );
 }
 
+/** Before typing (HIG Search fields: "display recent searches before search begins"). */
+function Recent({
+  viewed,
+  searches,
+  onOpen,
+  onSearch,
+  onClear,
+}: {
+  viewed: Character[];
+  searches: string[];
+  onOpen: (c: Character) => void;
+  onSearch: (term: string) => void;
+  onClear: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <>
+      {viewed.length > 0 ? (
+        <>
+          <Txt style={styles.sectionFirst} accessibilityRole="header">
+            {t('find.recentlyViewed')}
+          </Txt>
+          <View style={styles.viewed}>
+            {viewed.map((c) => (
+              <PressableScale
+                key={c.id}
+                scaleTo={0.94}
+                accessibilityRole="button"
+                accessibilityLabel={c.name}
+                onPress={() => onOpen(c)}
+                style={styles.viewedItem}>
+                <CharacterAvatar character={c} size={68} />
+                <Txt variant="caption" lines={1}>
+                  {c.name.split(' ')[0]}
+                </Txt>
+              </PressableScale>
+            ))}
+          </View>
+        </>
+      ) : null}
+      {searches.length > 0 ? (
+        <>
+          <View style={[styles.sectionRow, viewed.length === 0 && styles.sectionRowFirst]}>
+            <Txt style={styles.sectionTitle} accessibilityRole="header">
+              {t('find.recentSearches')}
+            </Txt>
+            <PressableScale scaleTo={0.94} hitSlop={8} accessibilityRole="button" onPress={onClear}>
+              <Txt variant="bodyStrong" color={colors.text}>
+                {t('find.clear')}
+              </Txt>
+            </PressableScale>
+          </View>
+          <View style={styles.list}>
+            {searches.map((term, i) => (
+              <PressableScale
+                key={term}
+                scaleTo={0.99}
+                accessibilityRole="button"
+                accessibilityLabel={term}
+                onPress={() => onSearch(term)}
+                style={styles.row}>
+                <Ionicons name="search" size={18} color={aurora.textMuted} />
+                <View style={[styles.termBody, i < searches.length - 1 && styles.rowLine]}>
+                  <Txt style={styles.rowName} lines={1}>
+                    {term}
+                  </Txt>
+                </View>
+              </PressableScale>
+            ))}
+          </View>
+        </>
+      ) : null}
+    </>
+  );
+}
+
 function WorldLine({ series }: { series: string }) {
   return (
     <View style={styles.worldLine}>
@@ -425,9 +578,27 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
   },
   // iOS large title: 34pt bold.
-  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  search: { marginHorizontal: space.lg, marginTop: space.md },
+  title: {
+    fontSize: 34,
+    lineHeight: 41,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    color: colors.text,
+  },
+  round: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.lg,
+    marginTop: space.md,
+  },
   who: { marginHorizontal: space.lg, marginTop: space.md },
   section: {
     marginTop: space.xl,
@@ -438,10 +609,28 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
   },
-  sectionFirst: { marginBottom: space.md, marginHorizontal: space.lg, fontSize: 22, lineHeight: 28, fontWeight: '700', color: colors.text },
+  sectionFirst: {
+    marginBottom: space.md,
+    marginHorizontal: space.lg,
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '700',
+    color: colors.text,
+  },
   featuredRow: { paddingHorizontal: space.lg, gap: space.md },
-  feature: { height: 230, borderRadius: 26, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
-  featureScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 140 },
+  feature: {
+    height: 230,
+    borderRadius: 26,
+    overflow: 'hidden',
+    backgroundColor: colors.surfaceAlt,
+  },
+  featureScrim: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 140,
+  },
   featureFoot: {
     position: 'absolute',
     left: space.lg,
@@ -451,8 +640,18 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: space.md,
   },
-  kicker: { fontSize: 12, fontWeight: '700', letterSpacing: 0.6, color: colors.onMediaSoft },
-  featureName: { fontSize: 22, lineHeight: 26, fontWeight: '700', color: colors.onMedia },
+  kicker: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    color: colors.onMediaSoft,
+  },
+  featureName: {
+    fontSize: 22,
+    lineHeight: 26,
+    fontWeight: '700',
+    color: colors.onMedia,
+  },
   // Clear glass on a photo (HIG: the clear variant is for components over rich media).
   sayHi: {
     position: 'absolute',
@@ -466,11 +665,31 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg },
+  tiles: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: space.md,
+    paddingHorizontal: space.lg,
+  },
   tile: { height: 128, borderRadius: 22, overflow: 'hidden' },
-  tileFoot: { position: 'absolute', left: space.md, right: space.md, bottom: 10, gap: 6 },
-  tileName: { fontSize: 17, lineHeight: 20, fontWeight: '700', color: colors.onMedia },
-  tileRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  tileFoot: {
+    position: 'absolute',
+    left: space.md,
+    right: space.md,
+    bottom: 10,
+    gap: 6,
+  },
+  tileName: {
+    fontSize: 17,
+    lineHeight: 20,
+    fontWeight: '700',
+    color: colors.onMedia,
+  },
+  tileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   stack: { flexDirection: 'row' },
   stacked: { marginRight: -7 },
   faces: { paddingHorizontal: space.lg, gap: space.lg },
@@ -485,14 +704,77 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   topOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 14 },
-  topName: { fontSize: 20, lineHeight: 25, fontWeight: '700', color: colors.text },
-  topButton: { height: 34, paddingHorizontal: space.lg, borderRadius: 17, justifyContent: 'center', backgroundColor: colors.text },
-  list: { marginHorizontal: space.lg, borderRadius: 20, backgroundColor: colors.surface, overflow: 'hidden' },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  rowBody: { flex: 1, minHeight: 68, justifyContent: 'center', gap: 2, paddingRight: space.lg },
+  topName: {
+    fontSize: 20,
+    lineHeight: 25,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  topButton: {
+    height: 34,
+    paddingHorizontal: space.lg,
+    borderRadius: 17,
+    justifyContent: 'center',
+    backgroundColor: colors.text,
+  },
+  list: {
+    marginHorizontal: space.lg,
+    borderRadius: 20,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    paddingLeft: space.lg,
+  },
+  rowBody: {
+    flex: 1,
+    minHeight: 68,
+    justifyContent: 'center',
+    gap: 2,
+    paddingRight: space.lg,
+  },
   rowInline: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  rowName: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4, color: colors.text },
+  rowLine: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderStrong,
+  },
+  rowName: {
+    fontSize: 17,
+    fontWeight: '500',
+    letterSpacing: -0.4,
+    color: colors.text,
+  },
+  viewed: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: space.lg,
+    rowGap: space.lg,
+  },
+  viewedItem: { width: '25%', alignItems: 'center', gap: space.sm },
+  sectionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: space.xl,
+    marginBottom: space.md,
+    marginHorizontal: space.lg,
+  },
+  sectionRowFirst: { marginTop: 0 },
+  sectionTitle: {
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  termBody: {
+    flex: 1,
+    minHeight: 50,
+    justifyContent: 'center',
+    paddingRight: space.lg,
+  },
   worldThumb: { width: 72, height: 44, borderRadius: 10 },
   worldLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dot: { width: 8, height: 8, borderRadius: 4 },

@@ -405,6 +405,13 @@ interface AppState {
   blockCharacter: (characterId: string) => void;
   unblockCharacter: (characterId: string) => void;
 
+  /* Find's search page: what was looked up and opened lately, newest first */
+  recentSearches: string[];
+  recentlyViewed: string[];
+  rememberSearch: (term: string) => void;
+  rememberViewed: (characterId: string) => void;
+  clearRecentSearches: () => void;
+
   /* wake-up alarms (Bedtime → Alarms), for every plan */
   alarms: Alarm[];
   /** Adds a new alarm (no id yet) or replaces the one with the same id; it is switched on. */
@@ -517,11 +524,16 @@ type PersistedKeys =
   | 'dates'
   | 'reports'
   | 'blockedIds'
+  | 'recentSearches'
+  | 'recentlyViewed'
   | 'alarms'
   | 'photos'
   | 'wake'
   | 'daily'
   | 'settings';
+
+/** How many recent searches and recently viewed characters Find keeps. */
+const RECENT_LIMIT = 8;
 
 const uid = (prefix: string) =>
   `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -672,6 +684,8 @@ export const useAppStore = create<AppState>()(
       dates: [],
       reports: [],
       blockedIds: [],
+      recentSearches: [],
+      recentlyViewed: [],
       alarms: [],
       photos: [],
       wake: null,
@@ -1610,6 +1624,17 @@ export const useAppStore = create<AppState>()(
       unblockCharacter: (characterId) =>
         set((s) => ({ blockedIds: s.blockedIds.filter((id) => id !== characterId) })),
 
+      rememberSearch: (term) => {
+        const clean = term.trim();
+        if (!clean) return;
+        set((s) => ({
+          recentSearches: [clean, ...s.recentSearches.filter((t) => t.toLowerCase() !== clean.toLowerCase())].slice(0, RECENT_LIMIT),
+        }));
+      },
+      rememberViewed: (characterId) =>
+        set((s) => ({ recentlyViewed: [characterId, ...s.recentlyViewed.filter((id) => id !== characterId)].slice(0, RECENT_LIMIT) })),
+      clearRecentSearches: () => set({ recentSearches: [] }),
+
       /* ── profile ──────────────────────────────────────────────────────── */
 
       saveAlarm: ({ id, ...fields }) => {
@@ -2346,6 +2371,8 @@ export const useAppStore = create<AppState>()(
         dates: s.dates,
         reports: s.reports,
         blockedIds: s.blockedIds,
+        recentSearches: s.recentSearches,
+        recentlyViewed: s.recentlyViewed,
         alarms: s.alarms,
         photos: s.photos,
         wake: s.wake,

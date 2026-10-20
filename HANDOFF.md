@@ -19,6 +19,8 @@ screen where it fits** (rules in `docs/design-style.md` §1). Done: `src/compone
 `Screen background="aurora"`, aurora tones for `SearchBar` and `Segmented`, and Find rebuilt from the
 canvas prototype (flows.md D27). Checked on web, light and dark, search too. Not touched: an
 uncommitted `src/app/_layout.tsx` import of `@/lib/winphone-ios-shim` that someone else added.
+Then Find's search mode (recents) and the World page were coded from the canvas too (flows.md D28),
+checked on web in light and dark. `src/components/character-card.tsx` is now unused (kept for now).
 Next: aurora on Today, then Chats, then Us, one at a time, prototype first where the layout changes.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
