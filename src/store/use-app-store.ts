@@ -290,6 +290,8 @@ interface AppState {
   sendVoice: (conversationId: string, durationSec: number, transcript: string) => SendResult;
   sendImage: (conversationId: string, imageUri: string) => SendResult;
   markRead: (conversationId: string) => void;
+  /** Chats "Mark as Unread": the chat or group shows its dot again until it is opened. */
+  markUnread: (conversationId: string) => void;
   setActiveConversation: (conversationId: string | null) => void;
   clearChat: (conversationId: string) => void;
   setChatPinned: (conversationId: string, pinned: boolean) => void;
@@ -840,6 +842,14 @@ export const useAppStore = create<AppState>()(
             c.id === conversationId && c.unreadCount ? { ...c, unreadCount: 0 } : c,
           ),
           groups: s.groups.map((g) => (g.id === conversationId && g.unreadCount ? { ...g, unreadCount: 0 } : g)),
+        })),
+
+      markUnread: (conversationId) =>
+        set((s) => ({
+          conversations: s.conversations.map((c) =>
+            c.id === conversationId && !c.unreadCount ? { ...c, unreadCount: 1 } : c,
+          ),
+          groups: s.groups.map((g) => (g.id === conversationId && !g.unreadCount ? { ...g, unreadCount: 1 } : g)),
         })),
 
       setActiveConversation: (conversationId) => {
@@ -2559,8 +2569,8 @@ function appendMessage(
   }));
 }
 
-/** The one-line preview on the conversation list. */
-function previewFor(message: Message) {
+/** The one-line preview on the conversation list (and the Chats long-press preview). */
+export function previewFor(message: Message) {
   switch (message.kind) {
     case 'voice':
       return '\u{1F3A4} Voice message';

@@ -223,7 +223,16 @@
     "unmute": "Unmute",
     "deleteTitle": "Delete this chat?",
     "deleteBody": "Your messages with {{name}} go away. Your bond stays.",
-    "deleteGroupBody": "The group and its messages go away."
+    "deleteGroupBody": "The group and its messages go away.",
+    "show": "Show",
+    "all": "All",
+    "unread": "Unread",
+    "groups": "Groups",
+    "caughtUp": "All caught up",
+    "noGroups": "No groups yet",
+    "typing": "typing…",
+    "markRead": "Mark as Read",
+    "markUnread": "Mark as Unread"
   },
   "group": {
     "newChat": "New chat",

@@ -28,7 +28,8 @@ The owner asked that built screens look like their prototypes on Android too (Ex
 phone yet.
 Today header (D32): Sigmazam logo, wallet and a mascot capsule with the name (six letters) in one row; the owner
 wants every screen to fit all iPhone and Android widths, so size from `useWindowDimensions`, not percentages + gaps.
-Next: aurora on Chats, then Us, one at a time, prototype first where the layout changes.
+Chats is on the aurora too (D33: filters, typing bubble, long-press menu). The owner wants code to match the
+canvas colours exactly. Next: Us on the aurora, prototype first.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 

@@ -274,6 +274,15 @@ const auroraLight = {
   /** The selected segment's thumb. */
   thumb: '#FFFFFF',
   textMuted: '#5C5C63',
+  /** Solid content on the aurora (the Chats list card); glass stays on controls. */
+  card: '#FFFFFF',
+  separator: 'rgba(60,60,67,0.16)',
+  /** Unread dots and "typing…" on the aurora. */
+  tint: '#EF8A4E',
+  /** The pinned chat's bubble ("Race you…", the typing dots). */
+  bubble: 'rgba(255,255,255,0.9)',
+  /** The light ring round a pinned avatar. */
+  ring: 'rgba(255,255,255,0.7)',
 };
 
 const auroraDark: typeof auroraLight = {
@@ -285,6 +294,11 @@ const auroraDark: typeof auroraLight = {
   glassEdge: 'rgba(0,0,0,0.6)',
   thumb: 'rgba(255,255,255,0.24)',
   textMuted: '#B4B4BE',
+  card: '#1C1C1E',
+  separator: 'rgba(84,84,88,0.5)',
+  tint: '#FFB27A',
+  bubble: 'rgba(44,44,46,0.92)',
+  ring: 'rgba(255,255,255,0.14)',
 };
 
 export const aurora = isDark ? auroraDark : auroraLight;
