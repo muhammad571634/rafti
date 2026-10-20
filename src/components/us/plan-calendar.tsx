@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
@@ -17,6 +17,8 @@ export interface PlanCalendarProps {
   marked: ReadonlySet<string>;
   /** A peach "+" beside the month; Us moved it to its header, so it is optional. */
   onAdd?: () => void;
+  /** The card's look where it sits (Us puts it on the aurora). */
+  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -24,7 +26,7 @@ export interface PlanCalendarProps {
  * whole month once the month name is tapped. A dot marks a day with plans (grey once
  * it has passed); a tap picks the day whose plans are listed underneath.
  */
-export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCalendarProps) {
+export function PlanCalendar({ value, onChange, today, marked, onAdd, style }: PlanCalendarProps) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState(() => startOfMonth(dateFromKey(value)));
@@ -42,7 +44,7 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd }: PlanCale
   const shownMonth = open ? month : startOfMonth(dateFromKey(value));
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, style]}>
       <View style={styles.head}>
         <PressableScale
           style={styles.toggle}
