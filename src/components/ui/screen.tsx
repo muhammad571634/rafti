@@ -8,13 +8,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, hitSlop, HEADER_HEIGHT, isDark, space } from '@/theme';
 
+import { AuroraBackground } from './aurora';
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 export interface ScreenProps {
   children: React.ReactNode;
-  /** Solid background, or a two-stop gradient. */
-  background?: string | readonly [string, string, ...string[]];
+  /** Solid background, a two-stop gradient, or `'aurora'`: the app's default ground (`AuroraBackground`). */
+  background?: 'aurora' | string | readonly [string, string, ...string[]];
   style?: StyleProp<ViewStyle>;
   /** Skip the top inset when the screen paints its own header art. */
   edgeToEdge?: boolean;
@@ -36,7 +37,9 @@ export function Screen({
   return (
     <View style={styles.root}>
       <StatusBar style={statusBarStyle} />
-      {typeof background === 'string' ? (
+      {background === 'aurora' ? (
+        <AuroraBackground />
+      ) : typeof background === 'string' ? (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: background }]} />
       ) : (
         <LinearGradient colors={background} style={StyleSheet.absoluteFill} />

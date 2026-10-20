@@ -109,7 +109,7 @@
   },
   "find": {
     "title": "Find",
-    "searchPlaceholder": "Search characters",
+    "searchPlaceholder": "Characters, worlds",
     "who": {
       "everyone": "Everyone",
       "male": "Him",
@@ -138,7 +138,12 @@
     "whoLabel": "Showing: {{who}}",
     "newSection": "New",
     "proFirst": "Pro first",
-    "newBadge": "New"
+    "newBadge": "New",
+    "worlds": "Worlds",
+    "talkNow": "Talk now",
+    "sayHi": "Say hi",
+    "topHit": "Top hit",
+    "charactersSection": "Characters"
   },
   "newCharacters": {
     "proTitle": "Meet them first with Pro",

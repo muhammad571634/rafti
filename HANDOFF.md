@@ -7,6 +7,20 @@ The user worked this day in cloud Claude Code and now continues in **Claude Desk
 before this note: `db8f827`). Reply to the user in Uzbek; code, comments, commits and agent docs in
 English (`AGENTS.md`). Their preferences are in "Foydalanuvchi afzalliklari" below.
 
+### 0y. Aurora ground and the new Find (2026-10-21)
+
+Owner's method from now on: check Apple's own guidance first (HIG pages, read through
+`https://developer.apple.com/tutorials/data/design/human-interface-guidelines/<page>.json`, since the
+HTML pages are empty to fetchers), agree the logic, prototype, then code. Goal: an iOS-inspired app
+that is solid and close to a work of art. "Aurora Glass" is not an Apple term; the owner means an
+aurora ground under Liquid Glass, and picked it (light and dark) as **the default ground for every
+screen where it fits** (rules in `docs/design-style.md` §1). Done: `src/components/ui/aurora.tsx`
+(`AuroraBackground`, `AuroraGlass` = `expo-glass-effect` GlassView on iOS 26+), `aurora` tokens,
+`Screen background="aurora"`, aurora tones for `SearchBar` and `Segmented`, and Find rebuilt from the
+canvas prototype (flows.md D27). Checked on web, light and dark, search too. Not touched: an
+uncommitted `src/app/_layout.tsx` import of `@/lib/winphone-ios-shim` that someone else added.
+Next: aurora on Today, then Chats, then Us, one at a time, prototype first where the layout changes.
+
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 
 Owner approved the chat prototype (canvas artboard `Chat.dc.html`) and set the direction: every

@@ -1,7 +1,8 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, shadows, space } from '@/theme';
+import { aurora, colors, radius, shadows, space } from '@/theme';
 
+import { AuroraGlass } from './aurora';
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
@@ -10,12 +11,16 @@ export interface SegmentedProps<T extends string> {
   value: T;
   onChange: (value: T) => void;
   style?: StyleProp<ViewStyle>;
+  /** `aurora`: a glass track on the aurora ground. */
+  tone?: 'filled' | 'aurora';
 }
 
 /** Two or three tabs in one soft track; the chosen one is a white pill. */
-export function Segmented<T extends string>({ options, value, onChange, style }: SegmentedProps<T>) {
+export function Segmented<T extends string>({ options, value, onChange, style, tone = 'filled' }: SegmentedProps<T>) {
+  const glass = tone === 'aurora';
+  const Track = glass ? AuroraGlass : View;
   return (
-    <View style={[styles.track, style]} accessibilityRole="tablist">
+    <Track style={[styles.track, glass && styles.trackGlass, style]} accessibilityRole="tablist">
       {options.map((option) => {
         const on = option.value === value;
         return (
@@ -27,14 +32,14 @@ export function Segmented<T extends string>({ options, value, onChange, style }:
             accessibilityRole="tab"
             accessibilityState={{ selected: on }}
             aria-selected={on}
-            style={[styles.segment, on && styles.on]}>
+            style={[styles.segment, on && (glass ? styles.onGlass : styles.on)]}>
             <Txt variant="bodyStrong" color={on ? colors.text : colors.textSecondary}>
               {option.label}
             </Txt>
           </PressableScale>
         );
       })}
-    </View>
+    </Track>
   );
 }
 
@@ -54,4 +59,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   on: { backgroundColor: colors.surface, ...shadows.card },
+  trackGlass: { backgroundColor: undefined },
+  onGlass: { backgroundColor: aurora.thumb, ...shadows.card },
 });

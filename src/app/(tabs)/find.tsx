@@ -1,50 +1,58 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CARD_GAP, CharacterCard } from '@/components/character-card';
+import { HEROES } from '@/assets/heroes/registry';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import {
+  AuroraGlass,
+  CharacterAvatar,
   EmptyState,
   PressableScale,
   Screen,
   SearchBar,
-  SectionLabel,
   Segmented,
   Txt,
 } from '@/components/ui';
+import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { Character, CharacterCategory, CharacterGender } from '@/types';
+import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
+import type { Character, CharacterGender } from '@/types';
 
-type Tab = CharacterCategory | 'all';
-const TABS: Tab[] = ['all', 'school', 'fantasy', 'idol', 'daily', 'original'];
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
-/** Characters shown per world before "See all". */
-const PER_WORLD = 4;
+/** Shown behind a world tile until its picture loads, and for worlds without one. */
+const WORLD_TINT: Record<string, string> = {
+  'Seaside Academy': '#0A76A3',
+  'Moonlit Realm': '#5856D6',
+  'NEON TIDE': '#C2185B',
+  'Tidepool Café': '#AD4E0E',
+};
+const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
+
+const heroOf = (c: Character) => HEROES[c.id] ?? characterImage(c);
 
 /**
- * Discovery (calm cards, docs/design-style.md): a big apricot "+" to create a character,
- * search, Everyone / Him / Her, one row of world filters, then each world as a section of
- * portrait cards (two columns) with "See all". A search lists every match across worlds.
- * Tapping a card opens the profile; the small "+" on a card adds them as a friend.
- * Characters in their early-access week also sit in a "New" row on top; for free and Basic
- * users they carry "Pro first" and a lock (`useEarlyAccess`).
+ * Discovery on the aurora ground, built as iOS's search tab landing page (HIG Search fields:
+ * "a search field at the top", room for suggestions and categories before typing): large title
+ * with a glass create button, glass search field, Everyone / Him / Her, a paging row of new
+ * characters, the worlds as picture tiles, and "Talk now" for friends who can take a call.
+ * Typing shows the results in place: the best match on top, then the rest and any worlds.
+ * Glass is only on controls; pictures and tiles are content (HIG Materials).
  */
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const cardWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - CARD_GAP) / 2);
   const allCharacters = useAppStore((s) => s.characters);
   const blockedIds = useAppStore((s) => s.blockedIds);
   // A character before its release day is hidden from everyone.
@@ -53,18 +61,18 @@ export default function FindScreen() {
     [allCharacters, blockedIds],
   );
   const conversations = useAppStore((s) => s.conversations);
-  const early = useEarlyAccess();
+  const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
 
   const [query, setQuery] = useState('');
-  const [tab, setTab] = useState<Tab>('all');
   const [who, setWho] = useState<Who>('everyone');
 
-  const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
+  const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
   const shown = useMemo(
     () => (who === 'everyone' ? characters : characters.filter((c) => c.gender === who)),
     [characters, who],
   );
+  const groups = useMemo(() => groupBySeries(shown), [shown]);
 
   const results = useMemo(
     () =>
@@ -79,85 +87,61 @@ export default function FindScreen() {
         : [],
     [shown, q],
   );
+  const worldHits = useMemo(() => (q ? groups.filter((g) => g.series.toLowerCase().includes(q)) : []), [groups, q]);
 
-  const groups = useMemo(
-    () => groupBySeries(shown.filter((c) => tab === 'all' || c.category === tab)),
-    [shown, tab],
-  );
-  // Newest release first.
-  const newOnes = useMemo(
-    () =>
-      shown
-        .filter((c) => (tab === 'all' || c.category === tab) && isNewCharacter(c, Date.now()))
-        .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!)),
-    [shown, tab],
-  );
+  // New releases first; without any, one face from each world keeps the row alive.
+  const featured = useMemo(() => {
+    const fresh = shown
+      .filter((c) => isNewCharacter(c, Date.now()))
+      .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!));
+    return fresh.length > 0 ? fresh : groups.map((g) => g.characters[0]).filter(Boolean);
+  }, [shown, groups]);
+  const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
-  const card = (character: Character) => (
-    <CharacterCard
-      key={character.id}
-      character={character}
-      width={cardWidth}
-      isFriend={friendIds.has(character.id)}
-      fresh={early.fresh(character)}
-      onOpen={() => router.push(`/character/${character.id}`)}
-      onAdd={() => early.add(character)}
-    />
-  );
+  const open = (c: Character) => router.push(`/character/${c.id}`);
+  const sayHi = (c: Character) => {
+    const chat = chatOf.get(c.id);
+    if (chat) router.push(`/chat/${chat}`);
+    else early.add(c);
+  };
+  const openWorld = (g: CharacterGroup) => router.push({ pathname: '/world/[series]', params: { series: g.series } });
+
+  const featureWidth = Math.min(width, 520) - space.lg * 2 - 24;
+  const tileWidth = Math.floor((Math.min(width, 520) - space.lg * 2 - space.md) / 2);
 
   return (
-    <Screen background={colors.bgPlain}>
+    <Screen background="aurora">
       <View style={styles.head}>
-        <Txt variant="h1" style={styles.title}>
+        <Txt style={styles.title} accessibilityRole="header">
           {t('find.title')}
         </Txt>
-        {/* Create is the screen's one apricot action: big enough to hit with a thumb. */}
         <PressableScale
-          scaleTo={0.92}
+          scaleTo={0.9}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.createCharacter')}
-          onPress={() => router.push('/create-character')}
-          style={styles.create}>
-          <Ionicons name="add" size={30} color={colors.textOnPrimary} />
+          onPress={() => router.push('/create-character')}>
+          <AuroraGlass style={styles.round}>
+            <Ionicons name="add" size={26} color={colors.text} />
+          </AuroraGlass>
         </PressableScale>
       </View>
 
-      <SearchBar value={query} onChangeText={setQuery} placeholder={t('find.searchPlaceholder')} style={styles.search} />
-
+      <SearchBar
+        tone="aurora"
+        value={query}
+        onChangeText={setQuery}
+        placeholder={t('find.searchPlaceholder')}
+        style={styles.search}
+      />
       <Segmented
+        tone="aurora"
         options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
         value={who}
         onChange={setWho}
         style={styles.who}
       />
 
-      {q ? null : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.tabsWrap}
-          contentContainerStyle={styles.tabs}>
-          {TABS.map((key) => {
-            const on = tab === key;
-            return (
-              <PressableScale
-                key={key}
-                scaleTo={0.95}
-                dimOnPress={false}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                onPress={() => setTab(key)}
-                style={[styles.world, on && styles.worldOn]}>
-                <Txt variant="smallStrong" color={on ? colors.text : colors.textSecondary}>
-                  {t(`find.categories.${key}`)}
-                </Txt>
-              </PressableScale>
-            );
-          })}
-        </ScrollView>
-      )}
-
-      {q && results.length === 0 ? (
+      {q && results.length === 0 && worldHits.length === 0 ? (
         <EmptyState
           title={t('find.noResults')}
           actionLabel={t('find.createCharacter')}
@@ -167,28 +151,62 @@ export default function FindScreen() {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.huge }}>
+          keyboardDismissMode="on-drag"
+          contentContainerStyle={{ paddingTop: space.lg, paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.huge }}>
           {q ? (
-            <>
-              <SectionLabel tone="section" title={t('find.results', { count: results.length })} />
-              <View style={styles.grid}>{results.map(card)}</View>
-            </>
+            <Results results={results} worlds={worldHits} onOpen={open} onSayHi={sayHi} onOpenWorld={openWorld} />
           ) : (
             <>
-              {newOnes.length > 0 ? (
-                <View style={styles.section}>
-                  <SectionLabel tone="section" title={t('find.newSection')} />
-                  <View style={styles.grid}>{newOnes.map(card)}</View>
-                </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={featureWidth + space.md}
+                decelerationRate="fast"
+                contentContainerStyle={styles.featuredRow}>
+                {featured.map((c) => (
+                  <Feature
+                    key={c.id}
+                    character={c}
+                    width={featureWidth}
+                    isNew={!!early.fresh(c)}
+                    onOpen={() => open(c)}
+                    onSayHi={() => sayHi(c)}
+                  />
+                ))}
+              </ScrollView>
+
+              <Txt style={styles.section} accessibilityRole="header">
+                {t('find.worlds')}
+              </Txt>
+              <View style={styles.tiles}>
+                {groups.map((g) => (
+                  <WorldTile key={g.series} group={g} width={tileWidth} onOpen={() => openWorld(g)} />
+                ))}
+              </View>
+
+              {callable.length > 0 ? (
+                <>
+                  <Txt style={styles.section} accessibilityRole="header">
+                    {t('find.talkNow')}
+                  </Txt>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
+                    {callable.map((c) => (
+                      <PressableScale
+                        key={c.id}
+                        scaleTo={0.94}
+                        accessibilityRole="button"
+                        accessibilityLabel={c.name}
+                        onPress={() => open(c)}
+                        style={styles.face}>
+                        <CharacterAvatar character={c} size={76} verified badge="call" />
+                        <Txt variant="caption" lines={1}>
+                          {c.name.split(' ')[0]}
+                        </Txt>
+                      </PressableScale>
+                    ))}
+                  </ScrollView>
+                </>
               ) : null}
-              {groups.map((group) => (
-                <WorldSection
-                  key={group.series}
-                  group={group}
-                  card={card}
-                  onOpen={() => router.push({ pathname: '/world/[series]', params: { series: group.series } })}
-                />
-              ))}
             </>
           )}
         </ScrollView>
@@ -198,73 +216,284 @@ export default function FindScreen() {
   );
 }
 
-/** One world: its name as a section title with "See all", then its first few characters. */
-function WorldSection({
-  group,
-  card,
+/** One new character: their scene full-bleed, name and world over a scrim, a glass "Say hi". */
+function Feature({
+  character,
+  width,
+  isNew,
   onOpen,
+  onSayHi,
 }: {
-  group: CharacterGroup;
-  card: (c: Character) => React.ReactNode;
+  character: Character;
+  width: number;
+  isNew: boolean;
   onOpen: () => void;
+  onSayHi: () => void;
 }) {
   const { t } = useTranslation();
   return (
-    <View style={styles.section}>
-      <SectionLabel
-        tone="section"
-        title={group.series}
-        right={
-          group.characters.length > PER_WORLD ? (
-            <PressableScale
-              scaleTo={0.96}
-              hitSlop={8}
-              accessibilityLabel={t('find.openWorld', { world: group.series })}
-              onPress={onOpen}>
-              <Txt variant="bodyStrong">{t('find.seeAll')}</Txt>
-            </PressableScale>
-          ) : null
-        }
-      />
-      <View style={styles.grid}>{group.characters.slice(0, PER_WORLD).map(card)}</View>
+    <View style={[styles.feature, { width }]}>
+      <PressableScale
+        scaleTo={0.98}
+        accessibilityRole="button"
+        accessibilityLabel={character.name}
+        onPress={onOpen}
+        style={StyleSheet.absoluteFill}>
+        <Image source={heroOf(character)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
+        <LinearGradient colors={SCRIM} style={styles.featureScrim} />
+        <View style={styles.featureFoot}>
+          <CharacterAvatar character={character} size={48} ring ringColor={colors.onMedia} />
+          <View style={styles.flex}>
+            {isNew ? <Txt style={styles.kicker}>{t('find.newBadge').toUpperCase()}</Txt> : null}
+            <Txt style={styles.featureName} lines={1}>
+              {character.name}
+            </Txt>
+            {character.series ? (
+              <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
+                {character.series}
+              </Txt>
+            ) : null}
+          </View>
+        </View>
+      </PressableScale>
+      {/* A sibling, not a child: a button inside a button is invalid on web. */}
+      <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={onSayHi} style={styles.sayHi}>
+        <Txt variant="smallStrong" color={colors.onMedia}>
+          {t('find.sayHi')}
+        </Txt>
+      </PressableScale>
     </View>
   );
 }
 
-const CREATE = 48;
+/** A world as a picture tile: its first face's scene, the name, three faces and the count. */
+function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: number; onOpen: () => void }) {
+  const { t } = useTranslation();
+  const lead = group.characters[0];
+  return (
+    <PressableScale
+      scaleTo={0.97}
+      accessibilityRole="button"
+      accessibilityLabel={t('find.openWorld', { world: group.series })}
+      onPress={onOpen}
+      style={[styles.tile, { width, backgroundColor: WORLD_TINT[group.series] ?? colors.surfaceAlt }]}>
+      {lead ? <Image source={heroOf(lead)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} /> : null}
+      <LinearGradient colors={SCRIM} style={StyleSheet.absoluteFill} />
+      <View style={styles.tileFoot}>
+        <Txt style={styles.tileName} lines={2}>
+          {group.series}
+        </Txt>
+        <View style={styles.tileRow}>
+          <View style={styles.stack}>
+            {group.characters.slice(0, 3).map((c) => (
+              <CharacterAvatar key={c.id} character={c} size={26} ring ringColor={colors.onMedia} style={styles.stacked} />
+            ))}
+          </View>
+          <Txt variant="caption" color={colors.onMedia}>
+            {group.characters.length}
+          </Txt>
+        </View>
+      </View>
+    </PressableScale>
+  );
+}
+
+/** Search results, best match first (HIG: "provide the most relevant search results first"). */
+function Results({
+  results,
+  worlds,
+  onOpen,
+  onSayHi,
+  onOpenWorld,
+}: {
+  results: Character[];
+  worlds: CharacterGroup[];
+  onOpen: (c: Character) => void;
+  onSayHi: (c: Character) => void;
+  onOpenWorld: (g: CharacterGroup) => void;
+}) {
+  const { t } = useTranslation();
+  const [top, ...rest] = results;
+  return (
+    <>
+      {top ? (
+        <>
+          <Txt style={styles.sectionFirst} accessibilityRole="header">
+            {t('find.topHit')}
+          </Txt>
+          <View style={styles.topHit}>
+            <PressableScale
+              scaleTo={0.98}
+              accessibilityRole="button"
+              accessibilityLabel={top.name}
+              onPress={() => onOpen(top)}
+              style={styles.topOpen}>
+              <CharacterAvatar character={top} size={72} />
+              <View style={styles.flex}>
+                <Txt style={styles.topName} lines={1}>
+                  {top.name}
+                </Txt>
+                {top.series ? <WorldLine series={top.series} /> : null}
+              </View>
+            </PressableScale>
+            <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={() => onSayHi(top)} style={styles.topButton}>
+              <Txt variant="smallStrong" color={colors.textOnInk}>
+                {t('find.sayHi')}
+              </Txt>
+            </PressableScale>
+          </View>
+        </>
+      ) : null}
+
+      {rest.length > 0 ? (
+        <>
+          <Txt style={styles.section} accessibilityRole="header">
+            {t('find.charactersSection')}
+          </Txt>
+          <View style={styles.list}>
+            {rest.map((c, i) => (
+              <PressableScale
+                key={c.id}
+                scaleTo={0.99}
+                accessibilityRole="button"
+                accessibilityLabel={c.name}
+                onPress={() => onOpen(c)}
+                style={styles.row}>
+                <CharacterAvatar character={c} size={48} />
+                <View style={[styles.rowBody, i < rest.length - 1 && styles.rowLine]}>
+                  <Txt style={styles.rowName} lines={1}>
+                    {c.name}
+                  </Txt>
+                  {c.series ? <WorldLine series={c.series} /> : null}
+                </View>
+              </PressableScale>
+            ))}
+          </View>
+        </>
+      ) : null}
+
+      {worlds.length > 0 ? (
+        <>
+          <Txt style={styles.section} accessibilityRole="header">
+            {t('find.worlds')}
+          </Txt>
+          <View style={styles.list}>
+            {worlds.map((g, i) => (
+              <PressableScale
+                key={g.series}
+                scaleTo={0.99}
+                accessibilityRole="button"
+                accessibilityLabel={t('find.openWorld', { world: g.series })}
+                onPress={() => onOpenWorld(g)}
+                style={styles.row}>
+                {g.characters[0] ? (
+                  <Image source={heroOf(g.characters[0])} style={styles.worldThumb} contentFit="cover" />
+                ) : null}
+                <View style={[styles.rowBody, styles.rowInline, i < worlds.length - 1 && styles.rowLine]}>
+                  <Txt style={[styles.rowName, styles.flex]} lines={1}>
+                    {g.series}
+                  </Txt>
+                  <Ionicons name="chevron-forward" size={16} color={aurora.textMuted} />
+                </View>
+              </PressableScale>
+            ))}
+          </View>
+        </>
+      ) : null}
+    </>
+  );
+}
+
+function WorldLine({ series }: { series: string }) {
+  return (
+    <View style={styles.worldLine}>
+      <View style={[styles.dot, { backgroundColor: WORLD_TINT[series] ?? aurora.textMuted }]} />
+      <Txt variant="caption" color={aurora.textMuted} lines={1}>
+        {series}
+      </Txt>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
+  flex: { flex: 1, minWidth: 0 },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
-  title: { flex: 1 },
-  create: {
-    width: CREATE,
-    height: CREATE,
-    borderRadius: CREATE / 2,
-    backgroundColor: colors.primaryFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // iOS large title: 34pt bold.
+  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   search: { marginHorizontal: space.lg, marginTop: space.md },
   who: { marginHorizontal: space.lg, marginTop: space.md },
-  tabsWrap: { flexGrow: 0, flexShrink: 0, marginTop: space.md },
-  tabs: { paddingHorizontal: space.lg, paddingVertical: space.xxs, gap: space.sm, alignItems: 'center' },
-  // World filter chips: grey; the chosen one turns white with an ink border.
-  world: {
-    height: 38,
-    paddingHorizontal: space.lg,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    borderColor: colors.surfaceAlt,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
+  section: {
+    marginTop: space.xl,
+    marginBottom: space.md,
+    marginHorizontal: space.lg,
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '700',
+    color: colors.text,
   },
-  worldOn: { backgroundColor: colors.surface, borderColor: colors.text },
-  section: { paddingTop: space.xs },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: CARD_GAP, paddingHorizontal: space.lg },
+  sectionFirst: { marginBottom: space.md, marginHorizontal: space.lg, fontSize: 22, lineHeight: 28, fontWeight: '700', color: colors.text },
+  featuredRow: { paddingHorizontal: space.lg, gap: space.md },
+  feature: { height: 230, borderRadius: 26, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
+  featureScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 140 },
+  featureFoot: {
+    position: 'absolute',
+    left: space.lg,
+    right: 104,
+    bottom: 14,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: space.md,
+  },
+  kicker: { fontSize: 12, fontWeight: '700', letterSpacing: 0.6, color: colors.onMediaSoft },
+  featureName: { fontSize: 22, lineHeight: 26, fontWeight: '700', color: colors.onMedia },
+  // Clear glass on a photo (HIG: the clear variant is for components over rich media).
+  sayHi: {
+    position: 'absolute',
+    right: space.lg,
+    bottom: 14,
+    height: 34,
+    paddingHorizontal: 14,
+    borderRadius: 17,
+    justifyContent: 'center',
+    backgroundColor: colors.onMediaGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
+  },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg },
+  tile: { height: 128, borderRadius: 22, overflow: 'hidden' },
+  tileFoot: { position: 'absolute', left: space.md, right: space.md, bottom: 10, gap: 6 },
+  tileName: { fontSize: 17, lineHeight: 20, fontWeight: '700', color: colors.onMedia },
+  tileRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  stack: { flexDirection: 'row' },
+  stacked: { marginRight: -7 },
+  faces: { paddingHorizontal: space.lg, gap: space.lg },
+  face: { width: 76, alignItems: 'center', gap: space.sm },
+  topHit: {
+    marginHorizontal: space.lg,
+    padding: 14,
+    borderRadius: 20,
+    backgroundColor: colors.surface,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  topOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 14 },
+  topName: { fontSize: 20, lineHeight: 25, fontWeight: '700', color: colors.text },
+  topButton: { height: 34, paddingHorizontal: space.lg, borderRadius: 17, justifyContent: 'center', backgroundColor: colors.text },
+  list: { marginHorizontal: space.lg, borderRadius: 20, backgroundColor: colors.surface, overflow: 'hidden' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  rowBody: { flex: 1, minHeight: 68, justifyContent: 'center', gap: 2, paddingRight: space.lg },
+  rowInline: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  rowName: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4, color: colors.text },
+  worldThumb: { width: 72, height: 44, borderRadius: 10 },
+  worldLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  dot: { width: 8, height: 8, borderRadius: 4 },
 });

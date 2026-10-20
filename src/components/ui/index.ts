@@ -22,6 +22,7 @@ export { BrandArt, Mascot } from './mascot';
 export type { BrandArtProps } from './mascot';
 export { PressableScale } from './pressable-scale';
 export { Header, Screen } from './screen';
+export { AuroraBackground, AuroraGlass } from './aurora';
 export { SearchBar } from './search-bar';
 export { SectionHeader } from './section-header';
 export { SectionLabel } from './section-label';

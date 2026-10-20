@@ -2,8 +2,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space, type } from '@/theme';
+import { aurora, colors, radius, space, type } from '@/theme';
 
+import { AuroraGlass } from './aurora';
 import { PressableScale } from './pressable-scale';
 
 export interface SearchBarProps {
@@ -13,8 +14,8 @@ export interface SearchBarProps {
   style?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
   autoFocus?: boolean;
-  /** `light`: white field with a hairline border, as on Find. */
-  tone?: 'filled' | 'light';
+  /** `light`: white field with a hairline border; `aurora`: a glass field on the aurora ground. */
+  tone?: 'filled' | 'light' | 'aurora';
 }
 
 export function SearchBar({
@@ -27,15 +28,17 @@ export function SearchBar({
   tone = 'filled',
 }: SearchBarProps) {
   const { t } = useTranslation();
+  const faint = tone === 'aurora' ? aurora.textMuted : colors.textFaint;
+  const Field = tone === 'aurora' ? AuroraGlass : View;
 
   return (
-    <View style={[styles.base, tone === 'light' && styles.light, style]}>
-      <Ionicons name="search" size={17} color={colors.textFaint} />
+    <Field style={[styles.base, tone === 'light' && styles.light, tone === 'aurora' && styles.aurora, style]}>
+      <Ionicons name="search" size={17} color={faint} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={colors.textFaint}
+        placeholderTextColor={faint}
         style={styles.input}
         returnKeyType="search"
         onSubmitEditing={onSubmit}
@@ -48,10 +51,10 @@ export function SearchBar({
           scaleTo={0.85}
           hitSlop={14}
           accessibilityLabel={t('a11y.clearSearch')}>
-          <Ionicons name="close-circle" size={17} color={colors.textFaint} />
+          <Ionicons name="close-circle" size={17} color={faint} />
         </PressableScale>
       ) : null}
-    </View>
+    </Field>
   );
 }
 
@@ -71,6 +74,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.lg,
   },
+  aurora: { backgroundColor: undefined },
   input: {
     flex: 1,
     padding: 0,

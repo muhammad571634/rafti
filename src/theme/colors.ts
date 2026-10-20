@@ -257,6 +257,38 @@ export const isDark = Appearance.getColorScheme() === 'dark';
 
 export const colors: Record<keyof typeof lightColors, string> = isDark ? nightColors : lightColors;
 
+/**
+ * The aurora ground (owner's pick, 2026-10-21): the app's default ground from now on. Light is
+ * a dawn of peach, lavender, mint and pink on warm white; dark is a northern light of teal,
+ * violet, deep blue and plum on near-black. Controls on it use the glass tokens below, so the
+ * colour shows through them (HIG Materials: Liquid Glass needs a rich layer underneath).
+ */
+const auroraLight = {
+  base: '#FBF6F1',
+  blobs: ['#FFC9A3', '#C9C2FF', '#A8EBDD', '#FFD6E4'] as readonly string[],
+  glass: 'rgba(255,255,255,0.46)',
+  glassOn: 'rgba(255,255,255,0.78)',
+  /** Top highlight and outer edge of a glass control (iOS 27: brighter rims, darker edges). */
+  glassRim: 'rgba(255,255,255,0.85)',
+  glassEdge: 'rgba(0,0,0,0.10)',
+  /** The selected segment's thumb. */
+  thumb: '#FFFFFF',
+  textMuted: '#5C5C63',
+};
+
+const auroraDark: typeof auroraLight = {
+  base: '#05060F',
+  blobs: ['#0F7F72', '#4B32B8', '#123A8C', '#7A2466'],
+  glass: 'rgba(255,255,255,0.10)',
+  glassOn: 'rgba(255,255,255,0.22)',
+  glassRim: 'rgba(255,255,255,0.28)',
+  glassEdge: 'rgba(0,0,0,0.6)',
+  thumb: 'rgba(255,255,255,0.24)',
+  textMuted: '#B4B4BE',
+};
+
+export const aurora = isDark ? auroraDark : auroraLight;
+
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**
  * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each

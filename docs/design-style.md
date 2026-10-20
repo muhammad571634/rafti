@@ -17,6 +17,21 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 
 ## 1. Canvas and color
 
+- **Aurora ground (owner's pick, 2026-10-21): the app's default ground from now on.** `Screen
+  background="aurora"` paints `AuroraBackground` (`src/components/ui/aurora.tsx`): four soft colour
+  fields drifting slowly (stopped under Reduce Motion), dawn colours in light mode, a northern
+  light on near-black in dark mode (`aurora` in `src/theme/colors.ts`). Rules, from Apple's HIG:
+  - Controls on it are glass (`AuroraGlass`, `SearchBar tone="aurora"`, `Segmented tone="aurora"`):
+    real Liquid Glass on iOS 26+, a see-through fill with a bright rim elsewhere. Content (pictures,
+    tiles, lists, text cards) is never glass (HIG Materials: "Don't use Liquid Glass in the content
+    layer"); lists and cards on the aurora stay solid `colors.surface`.
+  - Where it goes: hub and landing screens where content floats as tiles, cards and shelves: the
+    tab roots (Today, Chats, Find, Us), Profile's root, onboarding, plans and paywalls, empty states.
+  - Where it does not: screens with their own ground (the chat wallpaper, call portraits, the
+    photo viewer, diary covers and paper, Bedtime navy) and dense reading or typing screens
+    (settings forms, long lists) where plain grounds keep text easiest to read. Sheets keep the
+    system sheet material.
+  - Tab bar icons stay one colour over it (HIG Tab bars: no bright tint on a colourful layer).
 - iOS grounds (owner's pick, 2026-10-16, toward Apple's own apps): `colors.bgPlain` is white
   (#FFFFFF) for plain lists, `colors.bg` the grouped grey (#F2F2F7) behind cards; dark mode is
   black (#000000) with #1C1C1E cards. Exceptions that keep their own canvas: the chat
