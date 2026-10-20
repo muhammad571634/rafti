@@ -109,7 +109,8 @@ export default function ProfileScreen() {
             <UserAvatar user={user} size={64} />
           </PressableScale>
           <View style={styles.flex}>
-            <Txt variant="h2" lines={1}>
+            {/* The whole name here; Today shows only the first six letters. */}
+            <Txt variant="h2" lines={2}>
               {user.displayName}
             </Txt>
             <Txt variant="small" color={colors.textMuted} lines={1}>

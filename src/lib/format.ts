@@ -63,3 +63,9 @@ export function shortName(name: string) {
   while (words.length > 1 && TITLES.has(words[0].toLowerCase())) words.shift();
   return words[0] ?? name;
 }
+
+/** A name cut for a tight spot like the Today profile capsule: "Sevinchoy" -> "Sevinc…" (by letters, so emoji stay whole). */
+export function clipName(name: string, max = 6) {
+  const letters = Array.from(name.trim());
+  return letters.length > max ? `${letters.slice(0, max).join('')}…` : letters.join('');
+}

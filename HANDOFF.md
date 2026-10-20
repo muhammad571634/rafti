@@ -26,6 +26,8 @@ useful one: Calls). The owner has more prompts and inspiration images queued.
 The owner asked that built screens look like their prototypes on Android too (Expo Go): fixed in D30
 (stronger aurora, glass tab bar). Today widgets are user-editable (D31); drag-to-swap is untested by hand on a
 phone yet.
+Today header (D32): Sigmazam logo, wallet and a mascot capsule with the name (six letters) in one row; the owner
+wants every screen to fit all iPhone and Android widths, so size from `useWindowDimensions`, not percentages + gaps.
 Next: aurora on Chats, then Us, one at a time, prototype first where the layout changes.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)

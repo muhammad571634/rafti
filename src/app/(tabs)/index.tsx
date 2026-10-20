@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type LayoutRectangle, ScrollView, StyleSheet, View } from 'react-native';
+import { type LayoutRectangle, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
@@ -18,6 +19,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
@@ -34,7 +36,7 @@ import {
   UserAvatar,
   type ClayIconName,
 } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { clipName, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, hitSlop, moduleTiles, space, TAB_BAR_HEIGHT } from '@/theme';
@@ -67,11 +69,14 @@ const TILE_LABEL: Record<string, string> = {
 };
 const TILE = 52;
 const GALLERY_HEIGHT = 150;
+/** The wordmark's tallest size; on narrower phones it shrinks to what the row leaves beside the buttons. */
+const LOGO_MAX = 44;
 
 /**
  * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
  * changes throughout the day"; "choose between automatically displaying content and letting
- * people customize"): the date and a large title with glass wallet and profile, the friend you
+ * people customize"): one top row with the Sigmazam wordmark, the glass wallet and your mascot
+ * with your name (six letters, the profile shows it whole), the friend you
  * talked with last, one "Waiting for you" row while chats are unread, the user's four widgets,
  * a sealed note when one is ready, then every module no widget stands in for as an app-icon
  * tile, so all ten stay one tap away.
@@ -81,9 +86,14 @@ const GALLERY_HEIGHT = 150;
  * gallery, a tap on a widget swaps it for another, and dragging one onto another trades places.
  */
 export default function HomeScreen() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  // Two widgets to a row on every phone width; percentages plus a fixed gap overflow on narrow Androids.
+  const half = Math.floor((width - space.lg * 2 - space.md) / 2);
+  const [galleryWidth, setGalleryWidth] = useState(0);
+  const galleryHalf = galleryWidth ? Math.floor((galleryWidth - space.md) / 2) : undefined;
 
   const user = useAppStore((s) => s.user);
   const wallet = useAppStore((s) => s.wallet);
@@ -153,23 +163,15 @@ export default function HomeScreen() {
     setSlots(next);
   };
 
-  const dateLine = new Date()
-    .toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' })
-    .toUpperCase();
-
   return (
     <Screen background="aurora">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
-        <View style={styles.head}>
-          <View style={styles.flex}>
-            <Txt style={styles.date} lines={1}>
-              {dateLine}
-            </Txt>
-            <Txt style={styles.title} accessibilityRole="header">
-              {t('home.today')}
-            </Txt>
+        {/* One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max. */}
+        <View style={styles.bar}>
+          <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
+            <Image source={BRAND.logo} style={styles.fill} contentFit="contain" contentPosition="left" />
           </View>
           {editing ? (
             <>
@@ -185,7 +187,9 @@ export default function HomeScreen() {
                 </PressableScale>
               ) : null}
               <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-                <Txt style={styles.doneText}>{t('home.widget.done')}</Txt>
+                <Txt style={styles.doneText} maxFontSizeMultiplier={1.3}>
+                  {t('home.widget.done')}
+                </Txt>
               </PressableScale>
             </>
           ) : (
@@ -198,17 +202,24 @@ export default function HomeScreen() {
                 onPress={() => router.push('/store/shell?tab=shells')}>
                 <AuroraGlass style={styles.wallet}>
                   <ShellIcon size={18} />
-                  <Txt style={styles.walletText}>{wallet.shells}</Txt>
+                  <Txt style={styles.walletText} maxFontSizeMultiplier={1.3}>
+                    {wallet.shells}
+                  </Txt>
                 </AuroraGlass>
               </PressableScale>
               <PressableScale
                 scaleTo={0.92}
                 hitSlop={hitSlop}
                 accessibilityRole="button"
-                accessibilityLabel={t('a11y.profile')}
+                accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
                 onPress={() => router.push('/profile')}>
-                <AuroraGlass style={styles.profile}>
+                <AuroraGlass style={styles.me}>
                   <UserAvatar user={user} size={34} />
+                  {user.displayName.trim() ? (
+                    <Txt style={styles.meName} lines={1} maxFontSizeMultiplier={1.3}>
+                      {clipName(user.displayName)}
+                    </Txt>
+                  ) : null}
                 </AuroraGlass>
               </PressableScale>
             </>
@@ -237,7 +248,9 @@ export default function HomeScreen() {
               ))}
             </View>
             <View style={styles.flex}>
-              <Txt style={styles.rowTitle}>{t('home.waiting')}</Txt>
+              <Txt style={styles.rowTitle} lines={1}>
+                {t('home.waiting')}
+              </Txt>
               <Txt variant="caption" color={aurora.textMuted} lines={1}>
                 {namesLine}
               </Txt>
@@ -257,6 +270,7 @@ export default function HomeScreen() {
               <Slot
                 key={`${kind}-${i}`}
                 index={i}
+                width={half}
                 model={models[kind]}
                 editing={editing}
                 onLayout={(r) => (rects.current[i] = r)}
@@ -273,7 +287,7 @@ export default function HomeScreen() {
                 accessibilityLabel={t('home.widget.addHere')}
                 onPress={() => setGallerySlot(i)}
                 onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
-                style={[styles.slot, styles.empty]}>
+                style={[styles.slot, styles.empty, { width: half }]}>
                 <AuroraGlass style={styles.round}>
                   <Ionicons name="add" size={24} color={colors.text} />
                 </AuroraGlass>
@@ -340,7 +354,7 @@ export default function HomeScreen() {
 
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')}>
         <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
-          <View style={styles.galleryGrid}>
+          <View style={styles.galleryGrid} onLayout={(e) => setGalleryWidth(e.nativeEvent.layout.width)}>
             {WIDGET_KINDS.map((kind) => {
               const used = slots.includes(kind);
               return (
@@ -352,7 +366,7 @@ export default function HomeScreen() {
                   accessibilityLabel={models[kind].label}
                   accessibilityState={{ disabled: used }}
                   onPress={() => place(kind)}
-                  style={[styles.galleryItem, used && styles.used]}>
+                  style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
                   <WidgetView model={models[kind]} height={GALLERY_HEIGHT} preview />
                   <View style={styles.galleryLabel}>
                     <Txt variant="smallStrong">{models[kind].label}</Txt>
@@ -378,6 +392,7 @@ export default function HomeScreen() {
  */
 function Slot({
   index,
+  width,
   model,
   editing,
   onLayout,
@@ -387,6 +402,7 @@ function Slot({
   onDrop,
 }: {
   index: number;
+  width: number;
   model: WidgetModel;
   editing: boolean;
   onLayout: (r: LayoutRectangle) => void;
@@ -447,7 +463,7 @@ function Slot({
 
   return (
     <GestureDetector gesture={drag}>
-      <Animated.View style={[styles.slot, moving]} onLayout={(e) => onLayout(e.nativeEvent.layout)}>
+      <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(e.nativeEvent.layout)}>
         <WidgetView model={model} onPress={editing ? onReplace : undefined} onLongPress={editing ? undefined : onStartEditing} />
         {editing ? (
           <PressableScale
@@ -467,19 +483,22 @@ function Slot({
 
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
-  head: {
+  // The top row: wordmark, wallet and your capsule, 44pt tall like an iOS bar.
+  bar: {
+    minHeight: 44,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     gap: space.sm,
     paddingHorizontal: space.lg,
-    paddingTop: space.sm,
+    paddingTop: space.xs,
   },
-  date: { fontSize: 13, fontWeight: '600', letterSpacing: 0.4, color: aurora.textMuted },
-  // iOS large title: 34pt bold.
-  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
-  wallet: { height: 40, paddingHorizontal: 12, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  logo: { flex: 1, minWidth: 0, height: LOGO_MAX },
+  fill: { width: '100%', height: '100%' },
+  wallet: { height: 40, paddingHorizontal: 12, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6 },
   walletText: { fontSize: 15, fontWeight: '700', color: colors.text },
-  profile: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 2 },
+  // Your mascot and name in one capsule; the name is cut to six letters (clipName).
+  me: { height: 40, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
+  meName: { fontSize: 15, fontWeight: '600', color: colors.text },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: colors.text },
   doneText: { fontSize: 17, fontWeight: '600', color: colors.textOnInk },
@@ -508,8 +527,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF3B30',
   },
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
-  // Two to a row: half the width less half the gap.
-  slot: { width: '48.3%', flexGrow: 1, height: WIDGET_HEIGHT },
+  // The width comes from the screen (`half`), so two always fit.
+  slot: { height: WIDGET_HEIGHT },
   empty: {
     borderRadius: 24,
     borderWidth: 2,
@@ -576,7 +595,7 @@ const styles = StyleSheet.create({
   editText: { fontSize: 15, fontWeight: '600', color: colors.text },
   gallery: { maxHeight: 560 },
   galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingBottom: space.lg },
-  galleryItem: { width: '48%', flexGrow: 1, gap: space.sm },
+  galleryItem: { width: '47%', gap: space.sm },
   used: { opacity: 0.45 },
   galleryLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 4 },
 });
