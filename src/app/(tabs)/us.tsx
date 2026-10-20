@@ -23,6 +23,7 @@ import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
+import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
@@ -95,6 +96,7 @@ export default function UsScreen() {
   const [publishOpen, setPublishOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>('all');
+  const unread = useInboxUnread();
 
   const bonds = useMemo(
     () =>
@@ -151,6 +153,24 @@ export default function UsScreen() {
     setDay(plan.date);
   };
 
+  // Notifications live here, as a bell beside "+" (BIMOBIMO keeps them on Us too).
+  const bell = (
+    <PressableScale
+      scaleTo={0.9}
+      accessibilityRole="button"
+      accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
+      onPress={() => router.push('/notifications')}>
+      <AuroraGlass style={styles.add}>
+        <Ionicons name="notifications-outline" size={21} color={colors.text} />
+      </AuroraGlass>
+      {unread > 0 ? (
+        <View style={styles.badge} pointerEvents="none">
+          <Txt style={styles.badgeText}>{unread > 99 ? '99+' : unread}</Txt>
+        </View>
+      ) : null}
+    </PressableScale>
+  );
+
   const addButton = (
     <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)}>
       <AuroraGlass style={styles.add}>
@@ -163,9 +183,10 @@ export default function UsScreen() {
     return (
       <Screen background="aurora">
         <View style={styles.head}>
-          <Txt style={styles.title} accessibilityRole="header">
+          <Txt style={[styles.title, styles.grow]} accessibilityRole="header">
             {t('us.title')}
           </Txt>
+          {bell}
         </View>
         <EmptyState
           title={t('us.noRelationships')}
@@ -188,9 +209,10 @@ export default function UsScreen() {
     // On the aurora (canvas "Us 2", variant B): glass controls, solid cards, a Fitness-style level ring.
     <Screen background="aurora">
       <View style={styles.head}>
-        <Txt style={styles.title} accessibilityRole="header">
+        <Txt style={[styles.title, styles.grow]} accessibilityRole="header">
           {t('us.title')}
         </Txt>
+        {bell}
         {addButton}
       </View>
 
@@ -504,13 +526,29 @@ const styles = StyleSheet.create({
   head: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    gap: space.sm,
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
     paddingBottom: space.xs,
   },
   title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4 },
   add: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  // The red count on the bell, ringed in the ground colour so it reads as cut out of the glass.
+  badge: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 5,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF3B30',
+    borderWidth: 2,
+    borderColor: aurora.base,
+  },
+  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '700', color: '#FFFFFF' },
   picker: { gap: space.sm + 2, paddingHorizontal: space.lg, paddingTop: space.lg, paddingBottom: space.xs },
   pick: { alignItems: 'center', gap: 7, width: STORY + 6 },
   // The chosen bond: a tint ring with the aurora showing between it and the face; the rest a faint light ring.

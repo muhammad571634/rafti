@@ -2,31 +2,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, type Href } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, GlassBar, GlassIcons, InsetGroup, LargeTitle, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { buildInbox, isUnread, type InboxItem, type InboxKind } from '@/lib/inbox';
 import { dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 /** Kinds drawn with an icon instead of the character's face. */
-const ICONS: Partial<Record<InboxKind, IconName>> = {
-  plan: 'calendar-outline',
-  levelUp: 'heart-outline',
-  spin: 'gift-outline',
+const ICONS: Partial<Record<InboxKind, { icon: IconName; fill: string }>> = {
+  plan: { icon: 'calendar', fill: '#FF3B30' },
+  levelUp: { icon: 'heart', fill: '#34C759' },
+  spin: { icon: 'gift', fill: '#FF2D55' },
 };
 
-const AVATAR = 46;
+const AVATAR = 44;
 
 /**
- * Profile → Notifications: what happened lately, newest first, in Today and Earlier
- * (docs/design-style.md). Every row opens the place it talks about; the sliders in the
- * header open the push settings. "Mark all read" clears the dots.
+ * The bell on Us → Notifications (canvas "NotifInbox", 2026-10-21; BIMOBIMO keeps them on Us):
+ * what happened lately, newest first, as iOS inset groups under Today and Earlier. Every row
+ * opens the place it talks about; the glass capsule marks all read and opens the push settings.
  */
 export default function NotificationsScreen() {
   const insets = useSafeAreaInsets();
@@ -88,89 +88,66 @@ export default function NotificationsScreen() {
     }
   };
 
-  const row = (item: InboxItem) => {
+  const row = (item: InboxItem, last: boolean) => {
     const unread = isUnread(item, seenAt);
     const character = characters.find((c) => c.id === item.characterId);
-    const icon = ICONS[item.kind];
+    const look = ICONS[item.kind];
     return (
-      <PressableScale
+      <Pressable
         key={item.id}
-        style={styles.row}
-        scaleTo={0.98}
+        style={({ pressed }) => [styles.row, pressed && styles.pressed]}
         accessibilityRole="button"
         accessibilityLabel={`${text(item)}, ${when(item)}`}
         onPress={() => router.push(target(item))}>
-        {character && !icon ? (
+        <View style={styles.dotCell}>{unread ? <View style={styles.dot} /> : null}</View>
+        {character && !look ? (
           <CharacterAvatar character={character} size={AVATAR} />
         ) : (
-          <View style={styles.iconTile}>
-            <Ionicons name={icon ?? 'notifications-outline'} size={21} color={colors.text} />
+          <View style={[styles.iconTile, { backgroundColor: look?.fill ?? '#8E8E93' }]}>
+            <Ionicons name={look?.icon ?? 'notifications'} size={20} color="#FFFFFF" />
           </View>
         )}
-        <View style={styles.flex}>
-          <Txt variant={unread ? 'bodyStrong' : 'body'} color={unread ? colors.text : colors.textSecondary} lines={2}>
+        <View style={[styles.body, !last && styles.line]}>
+          <Txt style={[styles.text, unread && styles.textUnread]} lines={3}>
             {text(item)}
           </Txt>
-          <Txt variant="small" color={colors.textMuted}>
-            {when(item)}
-          </Txt>
+          <Txt style={styles.when}>{when(item)}</Txt>
         </View>
-        <View style={[styles.dot, unread && styles.dotOn]} />
-      </PressableScale>
+      </Pressable>
     );
   };
 
+  const section = (title: string, list: InboxItem[]) =>
+    list.length > 0 ? (
+      <>
+        <Txt style={styles.sectionLabel}>{title}</Txt>
+        <InsetGroup>{list.map((item, i) => row(item, i === list.length - 1))}</InsetGroup>
+      </>
+    ) : null;
+
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={t('notifications.title')}
+    <Screen background={colors.bg}>
+      <GlassBar
         right={
-          <PressableScale
-            style={styles.settings}
-            scaleTo={0.88}
-            hitSlop={6}
-            accessibilityLabel={t('notifications.settingsTitle')}
-            onPress={() => router.push('/notifications/settings')}>
-            <Ionicons name="options-outline" size={23} color={colors.text} />
-          </PressableScale>
+          <GlassIcons
+            items={[
+              ...(anyUnread ? [{ icon: 'checkmark-done' as IconName, label: t('notifications.inbox.markAll'), onPress: markSeen }] : []),
+              { icon: 'options-outline' as IconName, label: t('notifications.settingsTitle'), onPress: () => router.push('/notifications/settings') },
+            ]}
+          />
         }
       />
 
       {items.length === 0 ? (
-        <EmptyState title={t('notifications.inbox.empty')} />
+        <>
+          <LargeTitle>{t('notifications.title')}</LargeTitle>
+          <EmptyState title={t('notifications.inbox.empty')} />
+        </>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
-          {fresh.length > 0 ? (
-            <>
-              <View style={styles.sectionHead}>
-                <Txt variant="h3">{t('common.today')}</Txt>
-                {anyUnread ? (
-                  <PressableScale scaleTo={0.95} hitSlop={8} onPress={markSeen}>
-                    <Txt variant="smallStrong" color={colors.textSecondary}>
-                      {t('notifications.inbox.markAll')}
-                    </Txt>
-                  </PressableScale>
-                ) : null}
-              </View>
-              {fresh.map(row)}
-            </>
-          ) : null}
-
-          {earlier.length > 0 ? (
-            <>
-              <View style={styles.sectionHead}>
-                <Txt variant="h3">{t('notifications.inbox.earlier')}</Txt>
-                {anyUnread && fresh.length === 0 ? (
-                  <PressableScale scaleTo={0.95} hitSlop={8} onPress={markSeen}>
-                    <Txt variant="smallStrong" color={colors.textSecondary}>
-                      {t('notifications.inbox.markAll')}
-                    </Txt>
-                  </PressableScale>
-                ) : null}
-              </View>
-              {earlier.map(row)}
-            </>
-          ) : null}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+          <LargeTitle>{t('notifications.title')}</LargeTitle>
+          {section(t('common.today'), fresh)}
+          {section(t('notifications.inbox.earlier'), earlier)}
         </ScrollView>
       )}
     </Screen>
@@ -178,25 +155,24 @@ export default function NotificationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, gap: 2 },
-  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
-  settings: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: -space.sm },
-  sectionHead: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: space.md,
-    paddingBottom: space.xs,
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
-  row: { minHeight: 74, flexDirection: 'row', alignItems: 'center', gap: space.md },
-  iconTile: {
-    width: AVATAR,
-    height: AVATAR,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dot: { width: 8, height: 8, borderRadius: 4 },
-  dotOn: { backgroundColor: colors.primary },
+  row: { flexDirection: 'row', alignItems: 'center', paddingLeft: space.xs },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  dotCell: { width: 14, alignItems: 'center' },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
+  iconTile: { width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2, alignItems: 'center', justifyContent: 'center' },
+  body: { flex: 1, minHeight: 68, marginLeft: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14 },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  text: { flex: 1, fontSize: 15, lineHeight: 20, letterSpacing: -0.2, color: colors.text, paddingVertical: space.sm },
+  textUnread: { fontWeight: '600' },
+  when: { fontSize: 13, color: colors.textSecondary },
 });

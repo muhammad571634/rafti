@@ -30,7 +30,9 @@ Today header (D32): Sigmazam logo, wallet and a mascot capsule with the name (si
 wants every screen to fit all iPhone and Android widths, so size from `useWindowDimensions`, not percentages + gaps.
 Chats is on the aurora too (D33: filters, typing bubble, long-press menu). The owner wants code to match the
 canvas colours exactly. Us is on the aurora too (D34, level ring). All four tabs now share the aurora; next:
-inner screens (character profile, your profile/settings) one at a time, prototype first.
+inner screens one at a time, prototype first. Screen map with every screen's status (db-backed, update it as screens
+finish): https://claude.ai/artifact/Mv1gJHu1TTxNS55aZjkkYw. Profile and Notifications done (D35; Notifications now open
+from the bell on Us). Next per the map: Store, My plan and shell history.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 
