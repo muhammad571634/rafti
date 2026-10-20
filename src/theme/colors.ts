@@ -289,6 +289,38 @@ const auroraDark: typeof auroraLight = {
 
 export const aurora = isDark ? auroraDark : auroraLight;
 
+/**
+ * Today's module tiles (owner's pick, 2026-10-21): each clay icon sits on an iOS app-icon
+ * squircle in its own colour, lighter at the top, deeper and quieter in dark mode (HIG App
+ * icons: dark icons are more subdued, colour backgrounds keep contrast).
+ */
+export const moduleTiles: Record<string, readonly [string, string]> = isDark
+  ? {
+      store: ['#5A3A24', '#3A2416'],
+      photo: ['#22405E', '#14283C'],
+      contacts: ['#1C4A42', '#112E29'],
+      gifts: ['#5A2440', '#3A1629'],
+      radio: ['#584218', '#38290F'],
+      board: ['#3E2E5E', '#271C3C'],
+    }
+  : {
+      store: ['#FFE7D2', '#FFC69A'],
+      photo: ['#DDEEFF', '#A9D2FF'],
+      contacts: ['#DDF7F1', '#A6E9DA'],
+      gifts: ['#FFE2EE', '#FFB3CF'],
+      radio: ['#FFF1D2', '#FFD98F'],
+      board: ['#EEE6FF', '#CDB8FF'],
+    };
+
+/**
+ * Today's widgets. Calls is iOS graphite (systemGray6 dark), Sleep a night sky; the other
+ * widgets are plain cards (`colors.surface`).
+ */
+export const widgetTones = {
+  calls: isDark ? '#2C2C2E' : '#1C1C1E',
+  sleep: ['#2A2D6E', '#12143A'] as const,
+};
+
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**
  * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each

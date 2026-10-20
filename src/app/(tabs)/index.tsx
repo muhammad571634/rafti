@@ -1,89 +1,61 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BondChip } from '@/components/bond-chip';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
-  BrandArt,
+  AuroraGlass,
   CharacterAvatar,
   ClayIcon,
-  CountBadge,
-  ListRow,
   PressableScale,
   Screen,
-  SectionLabel,
-  ShellBadge,
+  ShellIcon,
   Txt,
   UserAvatar,
   type ClayIconName,
 } from '@/components/ui';
-import { relativeStamp, shortName } from '@/lib/format';
+import { nextAlarmAt } from '@/lib/alarms';
+import { shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
-import { FREE_SPINS_PER_DAY, homeModules } from '@/mock';
-import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT, weight } from '@/theme';
-import type { Character, Conversation, HomeModule, Relationship } from '@/types';
+import { FREE_SPINS_PER_DAY } from '@/mock';
+import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
+import { aurora, colors, hitSlop, moduleTiles, space, TAB_BAR_HEIGHT, widgetTones } from '@/theme';
+import type { Character } from '@/types';
 
-const CHAT_AVATAR = 48;
-/** Art size of the Today and "meet" rows: clay art or a friend's face, no tile. */
-const ROW_ICON = 40;
-/** Explore icons: large clay art on the bare canvas, four to a row. */
-const MODULE_ICON = 68;
-
-/** One 3D clay icon per Explore module, keyed by `HomeModule.key` (docs/icons-3d.md). */
-const MODULE_ICONS: Record<string, ClayIconName> = {
-  store: 'store',
-  dating: 'date',
-  diary: 'diary',
-  photo: 'camera',
-  contacts: 'contacts',
-  gifts: 'gift',
-  calls: 'calls',
-  bedtime: 'bedtime',
-  radio: 'radio',
-  board: 'board',
-};
-
-/** A conversation joined with its character, bond and the name the user knows them by. */
-interface ChatItem {
-  conversation: Conversation;
-  character: Character;
-  relationship?: Relationship;
-  name: string;
-}
-
-/** A small thing the user can do today, shown as a row under "Today". */
-interface TodoItem {
-  key: string;
-  /** A friend's face for things they did; a clay icon for everything else */
-  icon: ClayIconName | Character;
-  title: string;
-  subtitle?: string;
-  /** Marks something new since the last visit */
-  fresh?: boolean;
-  onPress: () => void;
-}
+/** The six modules that are not widgets, as app-icon tiles (owner's pick: B with tiles). */
+const TILES: { key: string; icon: ClayIconName; route: string }[] = [
+  { key: 'store', icon: 'store', route: '/store/shell' },
+  { key: 'photo', icon: 'camera', route: '/photo-booth' },
+  { key: 'contacts', icon: 'contacts', route: '/contacts' },
+  { key: 'gifts', icon: 'gift', route: '/gifts' },
+  { key: 'radio', icon: 'radio', route: '/radio' },
+  { key: 'board', icon: 'board', route: '/board' },
+];
+const TILE = 52;
+const WIDGET_HEIGHT = 158;
+const hhmm = (h: number, m: number) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 
 /**
- * The "Today" hub, top to bottom: the friend you talked with last, every module one tap
- * away, who is waiting, what is ready today. The daily gift claims itself on launch
- * (its popup) and lives on Gifts.
+ * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
+ * changes throughout the day"): the date and a large title with glass wallet and profile, the
+ * friend you talked with last, one "Waiting for you" row while chats are unread, four live
+ * widgets (Calls, Diary, Date, Sleep), a sealed note when one is ready, then the other six
+ * modules as app-icon tiles. Every widget keeps its module one tap away. The free spin lives
+ * on the Gifts tile's badge; the daily gift claims itself on launch (its popup).
  */
 export default function HomeScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
-  // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
   const insets = useSafeAreaInsets();
 
   const user = useAppStore((s) => s.user);
-  const shells = useAppStore((s) => s.wallet.shells);
+  const wallet = useAppStore((s) => s.wallet);
   const conversations = useAppStore((s) => s.conversations);
   const messages = useAppStore((s) => s.messages);
   const characters = useAppStore((s) => s.characters);
@@ -92,207 +64,320 @@ export default function HomeScreen() {
   const diaryPages = useAppStore((s) => s.characterDiary);
   const pagesRead = useAppStore((s) => s.diaryPagesRead);
   const schedules = useAppStore((s) => s.schedules);
+  const alarms = useAppStore((s) => s.alarms);
   const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
   const today = useDayKey();
-  const spinReady = useAppStore(
-    (s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY,
-  );
-  // The daily gift lives on Gifts; its icon carries a dot while today's gift still waits.
+  const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
+  const nameOf = (c: Character) => shortName(displayName(c, relationships[c.id]));
   const hero = useMemo(
     () => featuredFriend(characters, relationships, conversations, messages),
     [characters, relationships, conversations, messages],
   );
 
-  /** Newest first; chats whose character is gone are dropped. */
-  const chats = useMemo<ChatItem[]>(
-    () =>
-      [...conversations]
-        .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())
-        .flatMap((conversation) => {
-          const character = charactersById.get(conversation.characterId);
-          if (!character) return [];
-          const relationship = relationships[character.id];
-          return [{ conversation, character, relationship, name: displayName(character, relationship) }];
-        }),
-    [conversations, charactersById, relationships],
-  );
-  const unread = useMemo(() => chats.filter((c) => c.conversation.unreadCount > 0), [chats]);
-
-  /** Unread chats take the block; otherwise the two most recent invite a return. */
-  const shown = unread.length > 0 ? unread.slice(0, 3) : chats.slice(0, 2);
-
   // Coming back in the morning: pages written overnight should be waiting here.
   useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
 
-  const todos: TodoItem[] = [];
+  const friends = useMemo(
+    () =>
+      [...conversations]
+        .sort((a, b) => Date.parse(b.lastMessageAt) - Date.parse(a.lastMessageAt))
+        .flatMap((conversation) => {
+          const character = charactersById.get(conversation.characterId);
+          return character ? [{ conversation, character }] : [];
+        }),
+    [conversations, charactersById],
+  );
+  const unread = friends.filter((f) => f.conversation.unreadCount > 0);
+  const unreadCount = unread.reduce((sum, f) => sum + f.conversation.unreadCount, 0);
 
-  // New diary pages first: the reason to come back this morning.
-  for (const page of diaryPages) {
-    if (page.date !== today || pagesRead.includes(page.id)) continue;
-    const character = charactersById.get(page.characterId);
-    if (!character) continue;
-    todos.push({
-      key: page.id,
-      icon: character,
-      title: t('home.todo.diary', { name: shortName(displayName(character, relationships[character.id])) }),
-      subtitle: t('home.todo.diaryHint'),
-      fresh: true,
-      onPress: () =>
-        router.push({ pathname: '/diary/page/[characterId]', params: { characterId: character.id, date: page.date } }),
-    });
-  }
+  // Calls: the friend you would ring now, and the minutes left to do it.
+  const caller = hero?.character.voiceReady ? hero.character : friends.find((f) => f.character.voiceReady)?.character;
+  const callMinutes = Math.floor(minutesOf(wallet, 'call').total / 60);
 
-  // Today's plans still ahead, soonest first, with the friend who will check in. Once a
-  // plan has started its row goes: the reminder is past and "how did it go?" comes in chat.
+  // Diary: pages friends wrote today that are still unread.
+  const freshPages = diaryPages.filter((p) => p.date === today && !pagesRead.includes(p.id));
+  const writers = [...new Set(freshPages.map((p) => p.characterId))]
+    .map((id) => charactersById.get(id))
+    .filter((c): c is Character => !!c);
+
+  // Date: the next plan still ahead today.
   const now = Date.now();
-  const upcoming = schedules
-    .filter((plan) => plan.date === today && (!plan.time || planStart(plan).getTime() > now))
-    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
-  for (const plan of upcoming) {
-    const character = charactersById.get(plan.characterId);
-    if (!character) continue;
-    const conversation = conversations.find((c) => c.characterId === character.id);
-    todos.push({
-      key: plan.id,
-      icon: character,
-      title: t('home.todo.plan', { title: plan.title }),
-      subtitle: t(plan.time ? 'home.todo.planAt' : 'home.todo.planHint', {
-        name: shortName(displayName(character, relationships[character.id])),
-        time: plan.time,
-      }),
-      onPress: () => conversation && router.push(`/chat/${conversation.id}`),
-    });
-  }
+  const plan = schedules
+    .filter((p) => p.date === today && (!p.time || planStart(p).getTime() > now))
+    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''))[0];
+  const planFriend = plan ? charactersById.get(plan.characterId) : undefined;
+  const planChat = plan ? conversations.find((c) => c.characterId === plan.characterId) : undefined;
 
-  // A note opens per character, so one row per sender is enough.
-  const noteSenders = new Set<string>();
-  for (const note of notes) {
-    if (noteSenders.size === 2) break;
-    const character = charactersById.get(note.characterId);
-    if (note.status !== 'ready' || !character || noteSenders.has(character.id)) continue;
-    noteSenders.add(character.id);
-    todos.push({
-      key: note.id,
-      icon: 'secretNote',
-      // First name only: the row stays one short line.
-      title: t('home.todo.note', { name: shortName(displayName(character, relationships[character.id])) }),
-      onPress: () => router.push(`/secret-note/${character.id}`),
-    });
-  }
-  if (spinReady) {
-    todos.push({
-      key: 'spin',
-      icon: 'gift',
-      title: t('home.todo.spin'),
-      onPress: () => router.push('/gifts'),
-    });
-  }
+  // Sleep: the next alarm that will ring.
+  const alarm = alarms
+    .filter((a) => a.enabled)
+    .map((a) => ({ a, at: nextAlarmAt(a, new Date(now)).getTime() }))
+    .sort((x, y) => x.at - y.at)[0]?.a;
+  const alarmFriend = alarm?.characterId ? charactersById.get(alarm.characterId) : undefined;
+
+  // A sealed note, one sender.
+  const note = notes.find((n) => n.status === 'ready' && charactersById.has(n.characterId));
+  const noteFrom = note ? charactersById.get(note.characterId) : undefined;
+
+  const dateLine = new Date(now)
+    .toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' })
+    .toUpperCase();
+  const names = unread.slice(0, 3).map((f) => nameOf(f.character));
+  const namesLine =
+    names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${t('home.and')} ${names[names.length - 1]}`;
 
   return (
-    <Screen background={colors.bgPlain}>
-      <View style={styles.topBar}>
-        <View style={styles.brand} accessible accessibilityRole="header" accessibilityLabel={t('app.name')}>
-          <BrandArt name="logo" width={LOGO_WIDTH} />
+    <Screen background="aurora">
+      <View style={styles.head}>
+        <View style={styles.flex}>
+          <Txt style={styles.date} lines={1}>
+            {dateLine}
+          </Txt>
+          <Txt style={styles.title} accessibilityRole="header">
+            {t('home.today')}
+          </Txt>
         </View>
-
-        <View style={styles.actions}>
-          <ShellBadge count={shells} onPress={() => router.push('/store/shell?tab=shells')} />
-          <PressableScale
-            style={styles.profile}
-            scaleTo={0.94}
-            hitSlop={hitSlop}
-            accessibilityLabel={t('a11y.profile')}
-            onPress={() => router.push('/profile')}>
-            <UserAvatar user={user} size={30} />
-          </PressableScale>
-        </View>
+        <PressableScale
+          scaleTo={0.92}
+          hitSlop={hitSlop}
+          accessibilityRole="button"
+          accessibilityLabel={`${wallet.shells} ${t('common.shells')}`}
+          onPress={() => router.push('/store/shell?tab=shells')}>
+          <AuroraGlass style={styles.wallet}>
+            <ShellIcon size={18} />
+            <Txt style={styles.walletText}>{wallet.shells}</Txt>
+          </AuroraGlass>
+        </PressableScale>
+        <PressableScale
+          scaleTo={0.92}
+          hitSlop={hitSlop}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.profile')}
+          onPress={() => router.push('/profile')}>
+          <AuroraGlass style={styles.profile}>
+            <UserAvatar user={user} size={34} />
+          </AuroraGlass>
+        </PressableScale>
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
-        {hero ? (
-          <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} />
+        {hero ? <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} /> : null}
+
+        {unread.length > 0 ? (
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('home.waiting')}, ${namesLine}, ${unreadCount}`}
+            onPress={() => router.navigate('/(tabs)/chat')}
+            style={[styles.card, styles.waiting]}>
+            <View style={styles.faces}>
+              {unread.slice(0, 3).map((f, i) => (
+                <CharacterAvatar
+                  key={f.character.id}
+                  character={f.character}
+                  size={36}
+                  ring
+                  ringColor={colors.surface}
+                  style={i > 0 && styles.overlap}
+                />
+              ))}
+            </View>
+            <View style={styles.flex}>
+              <Txt style={styles.rowTitle}>{t('home.waiting')}</Txt>
+              <Txt variant="caption" color={aurora.textMuted} lines={1}>
+                {namesLine}
+              </Txt>
+            </View>
+            <View style={styles.count}>
+              <Txt variant="caption" color={colors.white}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Txt>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={aurora.textMuted} />
+          </PressableScale>
         ) : null}
 
-        {/* Every module one tap away, right under the friend card (BIMOBIMO #1). */}
-        <View style={styles.grid}>
-          {homeModules.map((module) => (
-            <ModuleCell
-              key={module.key}
-              module={module}
-              dot={module.key === 'gifts' && (spinReady || giftWaiting)}
-              onPress={() => router.push(module.route as never)}
-            />
-          ))}
-        </View>
-
-        {chats.length > 0 ? (
-          <SectionLabel
-            tone="title"
-            title={t('home.chats')}
-            right={
+        <View style={styles.widgets}>
+          {/* Calls: graphite, the room's one dark card by day. */}
+          <View style={[styles.widget, { backgroundColor: widgetTones.calls }]}>
+            <PressableScale
+              scaleTo={0.98}
+              accessibilityRole="button"
+              accessibilityLabel={t('home.modules.callHistory')}
+              onPress={() => router.push('/call-history')}
+              style={styles.widgetFill}>
+              <ClayIcon name="calls" size={50} tile={false} />
+              <View>
+                <Txt style={[styles.widgetTitle, styles.onDark]} lines={1}>
+                  {caller ? t('home.widget.call', { name: nameOf(caller) }) : t('home.short.calls')}
+                </Txt>
+                <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
+                  {callMinutes > 0 ? t('home.widget.minutesLeft', { count: callMinutes }) : t('home.widget.hearVoice')}
+                </Txt>
+              </View>
+            </PressableScale>
+            {caller ? (
               <PressableScale
-                style={styles.more}
-                scaleTo={0.94}
-                accessibilityRole="link"
-                accessibilityLabel={t('home.allChats')}
-                onPress={() => router.navigate('/(tabs)/chat')}>
-                <CaretRightIcon size={18} color={colors.textMuted} />
+                scaleTo={0.9}
+                accessibilityRole="button"
+                accessibilityLabel={t('home.widget.call', { name: nameOf(caller) })}
+                onPress={() => router.push(`/call/${caller.id}`)}
+                style={styles.callButton}>
+                <CharacterAvatar character={caller} size={34} />
+                <View style={styles.callDot}>
+                  <Ionicons name="call" size={10} color={colors.white} />
+                </View>
               </PressableScale>
+            ) : null}
+          </View>
+
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.modules.heartbeatDiary')}
+            onPress={() =>
+              freshPages[0]
+                ? router.push({
+                    pathname: '/diary/page/[characterId]',
+                    params: { characterId: freshPages[0].characterId, date: freshPages[0].date },
+                  })
+                : router.push('/diary')
             }
-          />
-        ) : null}
-        {/* Plain rows on the canvas: no card, no lines, the type carries the structure. */}
-        <View style={chats.length === 0 && styles.alone}>
-          {shown.length > 0 ? (
-            shown.map((item) => (
-              <ChatRow
-                key={item.conversation.id}
-                item={item}
-                onPress={() => router.push(`/chat/${item.conversation.id}`)}
-              />
-            ))
-          ) : (
-            <ListRow
-              size="large"
-              left={<ClayIcon name="compass" size={ROW_ICON} tile={false} />}
-              title={t('home.todo.meet')}
-              chevron
-              onPress={() => router.push('/(tabs)/find')}
-            />
-          )}
+            style={[styles.widget, styles.card]}>
+            <View style={styles.widgetTop}>
+              <ClayIcon name="diary" size={50} tile={false} />
+              <View style={styles.faces}>
+                {writers.slice(0, 2).map((c, i) => (
+                  <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.surface} style={i > 0 && styles.overlap} />
+                ))}
+              </View>
+            </View>
+            {freshPages.length > 0 ? (
+              <View>
+                <View style={styles.figureLine}>
+                  <Txt style={styles.figure}>{freshPages.length}</Txt>
+                  <Txt style={styles.figureUnit}>{t('home.widget.newPages', { count: freshPages.length })}</Txt>
+                </View>
+                <Txt variant="caption" color={aurora.textMuted}>
+                  {t('home.short.diary')}
+                </Txt>
+              </View>
+            ) : (
+              <View>
+                <Txt style={styles.widgetTitle}>{t('home.short.diary')}</Txt>
+                <Txt variant="caption" color={aurora.textMuted}>
+                  {t('home.widget.writeToday')}
+                </Txt>
+              </View>
+            )}
+          </PressableScale>
+
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={plan ? plan.title : t('home.modules.dating')}
+            onPress={() => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating'))}
+            style={[styles.widget, styles.card]}>
+            <View style={styles.widgetTop}>
+              <ClayIcon name="date" size={50} tile={false} />
+              {planFriend ? <CharacterAvatar character={planFriend} size={28} /> : null}
+            </View>
+            {plan ? (
+              <View>
+                <Txt style={styles.figure}>{plan.time ?? t('home.today')}</Txt>
+                <Txt variant="caption" color={aurora.textMuted} lines={1}>
+                  {plan.title}
+                </Txt>
+              </View>
+            ) : (
+              <View>
+                <Txt style={styles.widgetTitle}>{t('home.short.dating')}</Txt>
+                <Txt variant="caption" color={aurora.textMuted}>
+                  {t('home.widget.planDate')}
+                </Txt>
+              </View>
+            )}
+          </PressableScale>
+
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.modules.bedtime')}
+            onPress={() => router.push('/bedtime')}
+            style={styles.widget}>
+            <LinearGradient colors={widgetTones.sleep} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} />
+            <ClayIcon name="bedtime" size={50} tile={false} />
+            {alarm ? (
+              <View>
+                <Txt style={[styles.figure, styles.onDark]}>{hhmm(alarm.hour, alarm.minute)}</Txt>
+                <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
+                  {alarmFriend
+                    ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(alarmFriend) })
+                    : alarm.label || t('home.widget.wakeUp')}
+                </Txt>
+              </View>
+            ) : (
+              <View>
+                <Txt style={[styles.widgetTitle, styles.onDark]}>{t('home.short.bedtime')}</Txt>
+                <Txt variant="caption" color={colors.onMediaMuted}>
+                  {t('home.widget.setWake')}
+                </Txt>
+              </View>
+            )}
+          </PressableScale>
         </View>
 
-        {todos.length > 0 ? (
-          <>
-            <SectionLabel tone="title" title={t('home.today')} />
-            {todos.map((todo) => (
-              <ListRow
-                key={todo.key}
-                size="large"
-                left={
-                  isCharacter(todo.icon) ? (
-                    <CharacterAvatar character={todo.icon} size={ROW_ICON} />
-                  ) : (
-                    <ClayIcon name={todo.icon} size={ROW_ICON} tile={false} />
-                  )
-                }
-                title={todo.title}
-                subtitle={todo.subtitle}
-                trailing={todo.fresh ? <View style={styles.freshDot} /> : undefined}
-                chevron
-                onPress={todo.onPress}
-              />
-            ))}
-          </>
+        {note && noteFrom ? (
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.todo.note', { name: nameOf(noteFrom) })}
+            onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
+            style={[styles.card, styles.noteRow]}>
+            <ClayIcon name="secretNote" size={46} tile={false} />
+            <View style={styles.flex}>
+              <Txt style={styles.rowTitle} lines={1}>
+                {t('home.todo.note', { name: nameOf(noteFrom) })}
+              </Txt>
+              <Txt variant="caption" color={aurora.textMuted}>
+                {t('home.widget.sealed')}
+              </Txt>
+            </View>
+            <CharacterAvatar character={noteFrom} size={34} />
+          </PressableScale>
         ) : null}
 
-
-
+        <View style={styles.tiles}>
+          {TILES.map((tile) => {
+            const badge = tile.key === 'gifts' && (spinReady || giftWaiting);
+            return (
+              <PressableScale
+                key={tile.key}
+                scaleTo={0.92}
+                accessibilityRole="button"
+                accessibilityLabel={t(`home.short.${tile.key}`)}
+                onPress={() => router.push(tile.route as never)}
+                style={styles.tileCell}>
+                <LinearGradient colors={moduleTiles[tile.key]} style={styles.tile}>
+                  <ClayIcon name={tile.icon} size={38} tile={false} />
+                </LinearGradient>
+                {badge ? (
+                  <View style={styles.badge}>
+                    <Txt style={styles.badgeText}>1</Txt>
+                  </View>
+                ) : null}
+                <Txt style={styles.tileLabel} lines={1}>
+                  {t(`home.short.${tile.key}`)}
+                </Txt>
+              </PressableScale>
+            );
+          })}
+        </View>
       </ScrollView>
       {/* The day's check-in shows here only, never over a chat or another tab. */}
       <DailyRewardSheet />
@@ -300,114 +385,113 @@ export default function HomeScreen() {
   );
 }
 
-function isCharacter(icon: TodoItem['icon']): icon is Character {
-  return typeof icon === 'object';
-}
-
-/**
- * A conversation row, marked like the Chats tab: a muted chat shows a quiet bell
- * instead of the unread badge. A small mint chip after the name carries the bond
- * level. The marks are visual only, so the label spells them out.
- */
-function ChatRow({ item, onPress }: { item: ChatItem; onPress: () => void }) {
-  const { t } = useTranslation();
-  const { conversation, character, relationship, name } = item;
-  const stamp = relativeStamp(conversation.lastMessageAt);
-  const level = relationship && relationship.level >= 1 ? relationship.level : null;
-  const label = [
-    conversation.unreadCount > 0
-      ? t('a11y.unreadTab', { label: name, count: conversation.unreadCount })
-      : name,
-    level != null ? t('home.bondLevel', { level }) : null,
-    conversation.muted ? t('chatList.muted') : null,
-    stamp,
-    conversation.lastMessagePreview,
-  ]
-    .filter(Boolean)
-    .join(', ');
-
-  return (
-    <ListRow
-      size="large"
-      left={<CharacterAvatar character={character} size={CHAT_AVATAR} />}
-      title={name}
-      titleAfter={level != null ? <BondChip level={level} /> : undefined}
-      meta={stamp}
-      subtitle={conversation.lastMessagePreview}
-      trailing={
-        conversation.muted ? (
-          <Ionicons name="notifications-off-outline" size={14} color={colors.textFaint} />
-        ) : (
-          <CountBadge count={conversation.unreadCount} />
-        )
-      }
-      onPress={onPress}
-      accessibilityLabel={label}
-    />
-  );
-}
-
-/** One Explore module: a large clay icon over a short name; the label carries the full name. */
-function ModuleCell({
-  module,
-  dot,
-  onPress,
-}: {
-  module: HomeModule;
-  dot: boolean;
-  onPress: () => void;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <PressableScale
-      style={styles.cell}
-      scaleTo={0.94}
-      accessibilityLabel={t(`home.modules.${module.labelKey}`)}
-      onPress={onPress}>
-      <ClayIcon name={MODULE_ICONS[module.key]} size={MODULE_ICON} tile={false} dot={dot} />
-      <Txt variant="small" color={colors.textSecondary} center lines={1} style={styles.cellLabel}>
-        {t(`home.short.${module.key}`)}
-      </Txt>
-    </PressableScale>
-  );
-}
-
-/** The wordmark in the top bar: 30pt tall, as tall as the avatar beside it. */
-const LOGO_WIDTH = 141;
-
 const styles = StyleSheet.create({
-  topBar: {
+  flex: { flex: 1, minWidth: 0 },
+  head: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    gap: space.sm,
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
-    paddingBottom: space.sm,
   },
-  brand: { flexDirection: 'row', alignItems: 'center' },
-  // Wide enough that the badge's and the avatar's hit areas never overlap.
-  actions: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
-  profile: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.pill,
+  date: { fontSize: 13, fontWeight: '600', letterSpacing: 0.4, color: aurora.textMuted },
+  // iOS large title: 34pt bold.
+  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
+  wallet: { height: 40, paddingHorizontal: 12, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  walletText: { fontSize: 15, fontWeight: '700', color: colors.text },
+  profile: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 2 },
+  card: { backgroundColor: colors.surface },
+  waiting: {
+    marginHorizontal: space.lg,
+    marginTop: space.lg,
+    height: 64,
+    borderRadius: 20,
+    paddingLeft: space.md,
+    paddingRight: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+  },
+  faces: { flexDirection: 'row' },
+  overlap: { marginLeft: -12 },
+  rowTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  count: {
+    minWidth: 24,
+    height: 24,
+    paddingHorizontal: 7,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF3B30',
+  },
+  widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
+  // Two to a row: half the width less half the gap.
+  widget: {
+    width: '48.3%',
+    flexGrow: 1,
+    height: WIDGET_HEIGHT,
+    borderRadius: 24,
+    padding: 14,
+    overflow: 'hidden',
+    justifyContent: 'space-between',
+  },
+  widgetFill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
+  widgetTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  widgetTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
+  onDark: { color: colors.white },
+  figureLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  figure: { fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5, color: colors.text },
+  figureUnit: { fontSize: 15, fontWeight: '600', color: colors.text },
+  callButton: { position: 'absolute', top: 14, right: 14 },
+  callDot: {
+    position: 'absolute',
+    right: -3,
+    bottom: -3,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: widgetTones.calls,
+    backgroundColor: '#34C759',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // A full-size target for the small chevron beside the section title.
-  more: { width: 44, height: 44, marginVertical: -space.md, alignItems: 'center', justifyContent: 'center' },
-  // With no chats there is no heading above the "meet someone" row to open the gap.
-  alone: { marginTop: space.xl },
-  freshDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
-  grid: {
+  noteRow: {
+    marginHorizontal: space.lg,
+    marginTop: space.md,
+    height: 76,
+    borderRadius: 22,
+    paddingHorizontal: 14,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    rowGap: space.lg,
-    paddingHorizontal: space.sm,
-    paddingTop: space.xl,
+    alignItems: 'center',
+    gap: space.md,
   },
-  // A quarter of the row, so rounding never pushes the fourth icon onto a new line.
-  cell: { width: '25%', alignItems: 'center', gap: space.xs },
-  cellLabel: { fontWeight: weight.medium },
+  tiles: { flexDirection: 'row', paddingHorizontal: space.sm, marginTop: space.xl },
+  tileCell: { flex: 1, alignItems: 'center', gap: 6 },
+  // iOS app-icon squircle: ~22% corner radius.
+  tile: {
+    width: TILE,
+    height: TILE,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: 4,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    borderWidth: 2,
+    borderColor: aurora.base,
+    backgroundColor: '#FF3B30',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontSize: 11, fontWeight: '700', color: colors.white },
+  tileLabel: { fontSize: 11, fontWeight: '500', color: colors.text },
 });

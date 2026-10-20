@@ -75,6 +75,22 @@
       "bedtime": "Sleep"
     },
     "allChats": "All chats",
+    "waiting": "Waiting for you",
+    "and": "and",
+    "widget": {
+      "call": "Call {{name}}",
+      "minutesLeft_one": "{{count}} min left",
+      "minutesLeft_other": "{{count}} min left",
+      "hearVoice": "Hear their voice",
+      "newPages_one": "new page",
+      "newPages_other": "new pages",
+      "writeToday": "Write today's page",
+      "planDate": "Plan something",
+      "wakeUp": "Wake-up",
+      "wakeWith": "{{label}} · {{name}}",
+      "setWake": "Set a wake-up",
+      "sealed": "Sealed · tap to open"
+    },
     "bondLevel": "bond level {{level}}",
     "hero": {
       "days_one": "day",
