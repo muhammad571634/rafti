@@ -21,7 +21,7 @@ import {
   type ClayIconName,
 } from '@/components/ui';
 import { nextAlarmAt } from '@/lib/alarms';
-import { shortName } from '@/lib/format';
+import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -102,12 +102,26 @@ export default function HomeScreen() {
   const writers = [...new Set(freshPages.map((p) => p.characterId))]
     .map((id) => charactersById.get(id))
     .filter((c): c is Character => !!c);
+  const lastPage = freshPages.length
+    ? undefined
+    : [...diaryPages]
+        .sort((a, b) => Date.parse(b.writtenAt) - Date.parse(a.writtenAt))
+        .find((p) => charactersById.has(p.characterId));
+  const lastWriter = lastPage ? charactersById.get(lastPage.characterId) : undefined;
 
   // Date: the next plan still ahead today.
   const now = Date.now();
   const plan = schedules
-    .filter((p) => p.date === today && (!p.time || planStart(p).getTime() > now))
-    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''))[0];
+    .filter((p) => (p.date === today ? !p.time || planStart(p).getTime() > now : p.date > today))
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))[0];
+  const planDay =
+    plan && plan.date !== today
+      ? new Date(`${plan.date}T12:00:00`).toLocaleDateString(i18n.language, {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+        })
+      : undefined;
   const planFriend = plan ? charactersById.get(plan.characterId) : undefined;
   const planChat = plan ? conversations.find((c) => c.characterId === plan.characterId) : undefined;
 
@@ -131,41 +145,40 @@ export default function HomeScreen() {
 
   return (
     <Screen background="aurora">
-      <View style={styles.head}>
-        <View style={styles.flex}>
-          <Txt style={styles.date} lines={1}>
-            {dateLine}
-          </Txt>
-          <Txt style={styles.title} accessibilityRole="header">
-            {t('home.today')}
-          </Txt>
-        </View>
-        <PressableScale
-          scaleTo={0.92}
-          hitSlop={hitSlop}
-          accessibilityRole="button"
-          accessibilityLabel={`${wallet.shells} ${t('common.shells')}`}
-          onPress={() => router.push('/store/shell?tab=shells')}>
-          <AuroraGlass style={styles.wallet}>
-            <ShellIcon size={18} />
-            <Txt style={styles.walletText}>{wallet.shells}</Txt>
-          </AuroraGlass>
-        </PressableScale>
-        <PressableScale
-          scaleTo={0.92}
-          hitSlop={hitSlop}
-          accessibilityRole="button"
-          accessibilityLabel={t('a11y.profile')}
-          onPress={() => router.push('/profile')}>
-          <AuroraGlass style={styles.profile}>
-            <UserAvatar user={user} size={34} />
-          </AuroraGlass>
-        </PressableScale>
-      </View>
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
+        <View style={styles.head}>
+          <View style={styles.flex}>
+            <Txt style={styles.date} lines={1}>
+              {dateLine}
+            </Txt>
+            <Txt style={styles.title} accessibilityRole="header">
+              {t('home.today')}
+            </Txt>
+          </View>
+          <PressableScale
+            scaleTo={0.92}
+            hitSlop={hitSlop}
+            accessibilityRole="button"
+            accessibilityLabel={`${wallet.shells} ${t('common.shells')}`}
+            onPress={() => router.push('/store/shell?tab=shells')}>
+            <AuroraGlass style={styles.wallet}>
+              <ShellIcon size={18} />
+              <Txt style={styles.walletText}>{wallet.shells}</Txt>
+            </AuroraGlass>
+          </PressableScale>
+          <PressableScale
+            scaleTo={0.92}
+            hitSlop={hitSlop}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.profile')}
+            onPress={() => router.push('/profile')}>
+            <AuroraGlass style={styles.profile}>
+              <UserAvatar user={user} size={34} />
+            </AuroraGlass>
+          </PressableScale>
+        </View>
         {hero ? <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} /> : null}
 
         {unread.length > 0 ? (
@@ -240,20 +253,28 @@ export default function HomeScreen() {
             scaleTo={0.98}
             accessibilityRole="button"
             accessibilityLabel={t('home.modules.heartbeatDiary')}
-            onPress={() =>
-              freshPages[0]
-                ? router.push({
-                    pathname: '/diary/page/[characterId]',
-                    params: { characterId: freshPages[0].characterId, date: freshPages[0].date },
-                  })
-                : router.push('/diary')
-            }
+            onPress={() => {
+              const page = freshPages[0] ?? lastPage;
+              if (page)
+                router.push({
+                  pathname: '/diary/page/[characterId]',
+                  params: { characterId: page.characterId, date: page.date },
+                });
+              else router.push('/diary');
+            }}
             style={[styles.widget, styles.card]}>
             <View style={styles.widgetTop}>
               <ClayIcon name="diary" size={50} tile={false} />
               <View style={styles.faces}>
-                {writers.slice(0, 2).map((c, i) => (
-                  <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.surface} style={i > 0 && styles.overlap} />
+                {(lastWriter ? [lastWriter] : writers.slice(0, 2)).map((c, i) => (
+                  <CharacterAvatar
+                    key={c.id}
+                    character={c}
+                    size={28}
+                    ring
+                    ringColor={colors.surface}
+                    style={i > 0 && styles.overlap}
+                  />
                 ))}
               </View>
             </View>
@@ -265,6 +286,15 @@ export default function HomeScreen() {
                 </View>
                 <Txt variant="caption" color={aurora.textMuted}>
                   {t('home.short.diary')}
+                </Txt>
+              </View>
+            ) : lastWriter && lastPage ? (
+              <View>
+                <Txt style={styles.widgetTitle} lines={1}>
+                  {t('home.widget.pageOf', { name: nameOf(lastWriter) })}
+                </Txt>
+                <Txt variant="caption" color={aurora.textMuted} lines={1}>
+                  {relativeStamp(lastPage.writtenAt)}
                 </Txt>
               </View>
             ) : (
@@ -291,7 +321,7 @@ export default function HomeScreen() {
               <View>
                 <Txt style={styles.figure}>{plan.time ?? t('home.today')}</Txt>
                 <Txt variant="caption" color={aurora.textMuted} lines={1}>
-                  {plan.title}
+                  {planDay ? `${planDay} · ${plan.title}` : plan.title}
                 </Txt>
               </View>
             ) : (
@@ -310,14 +340,22 @@ export default function HomeScreen() {
             accessibilityLabel={t('home.modules.bedtime')}
             onPress={() => router.push('/bedtime')}
             style={styles.widget}>
-            <LinearGradient colors={widgetTones.sleep} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={widgetTones.sleep}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0.6, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
             <ClayIcon name="bedtime" size={50} tile={false} />
             {alarm ? (
               <View>
                 <Txt style={[styles.figure, styles.onDark]}>{hhmm(alarm.hour, alarm.minute)}</Txt>
                 <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
                   {alarmFriend
-                    ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(alarmFriend) })
+                    ? t('home.widget.wakeWith', {
+                        label: alarm.label || t('home.widget.wakeUp'),
+                        name: nameOf(alarmFriend),
+                      })
                     : alarm.label || t('home.widget.wakeUp')}
                 </Txt>
               </View>
@@ -397,7 +435,15 @@ const styles = StyleSheet.create({
   date: { fontSize: 13, fontWeight: '600', letterSpacing: 0.4, color: aurora.textMuted },
   // iOS large title: 34pt bold.
   title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
-  wallet: { height: 40, paddingHorizontal: 12, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  wallet: {
+    height: 40,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
   walletText: { fontSize: 15, fontWeight: '700', color: colors.text },
   profile: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 2 },
   card: { backgroundColor: colors.surface },
@@ -435,7 +481,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'space-between',
   },
-  widgetFill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
+  widgetFill: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    padding: 14,
+    justifyContent: 'space-between',
+  },
   widgetTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   widgetTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
   onDark: { color: colors.white },

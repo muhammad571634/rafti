@@ -85,6 +85,7 @@
       "newPages_one": "new page",
       "newPages_other": "new pages",
       "writeToday": "Write today's page",
+      "pageOf": "{{name}}'s page",
       "planDate": "Plan something",
       "wakeUp": "Wake-up",
       "wakeWith": "{{label}} · {{name}}",

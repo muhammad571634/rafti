@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { useTabsGate, useUnreadTotal } from '@/hooks/use-tabs-gate';
-import { colors, radius, shadows, space } from '@/theme';
+import { aurora, colors, isDark, radius, shadows, space } from '@/theme';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -85,7 +85,7 @@ function GlassTabBar({ state, navigation }: TabBarProps) {
                   <Ionicons
                     name={focused ? icon.on : icon.off}
                     size={23}
-                    color={focused ? colors.primary : colors.tabActive}
+                    color={colors.tabActive}
                   />
                   {hasUnread ? <View style={styles.dot} /> : null}
                 </View>
@@ -107,7 +107,7 @@ function GlassTabBar({ state, navigation }: TabBarProps) {
           accessibilityState={{ selected: find.focused }}
           onPress={() => open(find.route.name, find.route.key, find.focused)}>
           <View style={[styles.roundInner, find.focused && styles.itemOn]}>
-            <Ionicons name="search" size={24} color={find.focused ? colors.primary : colors.tabActive} />
+            <Ionicons name="search" size={24} color={colors.tabActive} />
           </View>
         </PressableScale>
       ) : null}
@@ -124,10 +124,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm + 2,
   },
+  // The canvas's glass with a bright top rim. Without a real blur here, the fill stays a little
+  // denser than the canvas's so text scrolling under the bar never shows through.
   glass: {
-    backgroundColor: colors.glass,
+    backgroundColor: isDark ? 'rgba(30,30,32,0.72)' : 'rgba(255,255,255,0.72)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
+    borderColor: aurora.glassEdge,
+    borderTopColor: aurora.glassRim,
     ...shadows.glass,
   },
   pill: {
@@ -146,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 2,
   },
-  itemOn: { backgroundColor: colors.glassActive },
+  itemOn: { backgroundColor: aurora.glassOn },
   label: { fontWeight: '700' },
   round: { width: BAR, height: BAR, borderRadius: BAR / 2, padding: space.xs },
   roundInner: { flex: 1, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },

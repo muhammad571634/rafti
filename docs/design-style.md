@@ -32,6 +32,9 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
     (settings forms, long lists) where plain grounds keep text easiest to read. Sheets keep the
     system sheet material.
   - Tab bar icons stay one colour over it (HIG Tab bars: no bright tint on a colourful layer).
+  - Code must match the canvas: `AuroraBackground` copies the canvas circles (centre, radius, drift)
+    and draws each as a blurred-disc gradient. When a screen looks paler or flatter than its
+    prototype, compare against the canvas first.
 - iOS grounds (owner's pick, 2026-10-16, toward Apple's own apps): `colors.bgPlain` is white
   (#FFFFFF) for plain lists, `colors.bg` the grouped grey (#F2F2F7) behind cards; dark mode is
   black (#000000) with #1C1C1E cards. Exceptions that keep their own canvas: the chat
@@ -39,7 +42,8 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
   Bedtime (`sleepColors`, navy).
 - Tab bar: the system bar on iOS (Liquid Glass on iOS 26+, `(tabs)/_layout.ios.tsx`); on Android
   and web a floating frosted pill (Today, Chats, Us) with Find as a round button beside it
-  (`(tabs)/_layout.tsx`). Bold labels; the current tab's icon filled in peach.
+  (`(tabs)/_layout.tsx`). Bold labels; icons stay ink (HIG Tab bars: one colour over a colourful
+  layer), the current tab is a brighter glass capsule; the bar is the aurora glass with a top rim.
 - Content sits on white (`colors.surface`) cards or straight on the canvas. No gradient cards, no
   colored panels behind content (exception list above).
 - Peach (`colors.primary`) only for: the one primary button, offer badges, the brand. Never for

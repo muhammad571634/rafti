@@ -14,37 +14,49 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { aurora, isDark } from '@/theme';
 
-/** Where each blob sits (fractions of the screen) and how it drifts. */
+/**
+ * The approved canvas draws the aurora as four solid circles under a 46px CSS blur on a
+ * 390 x 844 phone. These are the same circles (centre and radius in those points, scaled to the
+ * screen) and the same drift.
+ */
 const BLOBS = [
-  { x: -0.35, y: -0.12, size: 1.35, dx: 40, dy: 30, ms: 18000 },
-  { x: 0.42, y: 0.1, size: 1.4, dx: -50, dy: 40, ms: 22000 },
-  { x: -0.25, y: 0.5, size: 1.3, dx: 30, dy: -50, ms: 26000 },
-  { x: 0.4, y: 0.78, size: 1.25, dx: -36, dy: -30, ms: 20000 },
+  { cx: 70, cy: 100, r: 190, dx: 40, dy: 30, ms: 18000 },
+  { cx: 330, cy: 320, r: 200, dx: -50, dy: 40, ms: 22000 },
+  { cx: 120, cy: 650, r: 180, dx: 30, dy: -50, ms: 26000 },
+  { cx: 320, cy: 794, r: 170, dx: -36, dy: -30, ms: 20000 },
 ] as const;
+const DESIGN_W = 390;
+const DESIGN_H = 844;
+/** How far past the circle's edge the 46px blur still shows colour. */
+const BLUR_REACH = 70;
 
 /**
  * The aurora ground: four soft colour fields drifting very slowly behind the content. Each field
- * is a radial gradient that fades to nothing, which reads like a heavy blur without the cost of
- * one. The drift stops when the phone asks for reduced motion.
+ * is a radial gradient shaped like a blurred disc (solid core, soft edge), which reads like the
+ * canvas's heavy blur without the cost of one. The drift stops when the phone asks for reduced
+ * motion.
  */
 export function AuroraBackground() {
   const { width, height } = useWindowDimensions();
   const still = useReducedMotion();
   return (
     <View style={[StyleSheet.absoluteFill, styles.base]} pointerEvents="none">
-      {BLOBS.map((b, i) => (
-        <Blob
-          key={i}
-          color={aurora.blobs[i]}
-          left={b.x * width}
-          top={b.y * height}
-          size={b.size * width}
-          dx={b.dx}
-          dy={b.dy}
-          ms={b.ms}
-          still={still}
-        />
-      ))}
+      {BLOBS.map((b, i) => {
+        const size = 2 * (b.r + BLUR_REACH) * (width / DESIGN_W);
+        return (
+          <Blob
+            key={i}
+            color={aurora.blobs[i]}
+            left={(b.cx / DESIGN_W) * width - size / 2}
+            top={(b.cy / DESIGN_H) * height - size / 2}
+            size={size}
+            dx={b.dx}
+            dy={b.dy}
+            ms={b.ms}
+            still={still}
+          />
+        );
+      })}
     </View>
   );
 }
@@ -85,9 +97,13 @@ function Blob({
     <Animated.View style={[styles.blob, { left, top, width: size, height: size }, drift]}>
       <Svg width={size} height={size}>
         <Defs>
+          {/* A disc of radius r under a 46px blur: solid to ~r-70, half at r, gone at r+70. */}
           <RadialGradient id={id} cx="50%" cy="50%" r="50%">
-            <Stop offset="0" stopColor={color} stopOpacity={isDark ? 0.95 : 0.9} />
-            <Stop offset="0.45" stopColor={color} stopOpacity={0.5} />
+            <Stop offset="0" stopColor={color} stopOpacity={1} />
+            <Stop offset="0.45" stopColor={color} stopOpacity={1} />
+            <Stop offset="0.6" stopColor={color} stopOpacity={0.86} />
+            <Stop offset="0.73" stopColor={color} stopOpacity={0.5} />
+            <Stop offset="0.86" stopColor={color} stopOpacity={0.16} />
             <Stop offset="1" stopColor={color} stopOpacity={0} />
           </RadialGradient>
         </Defs>
