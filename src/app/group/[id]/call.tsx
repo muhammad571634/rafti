@@ -144,7 +144,8 @@ export default function GroupCallScreen() {
   const minutes = minutesOf(wallet, 'call');
   const status = planStatus(wallet.subscription, Date.now());
   const monthly = !!status && !status.trial;
-  const warn = state === 'active' && remaining <= WARN_SECONDS;
+  // The minutes left show for the whole call; the last two turn the clock orange.
+  const low = remaining <= WARN_SECONDS;
   const face = members.length >= 3 ? 92 : 112;
 
   return (
@@ -160,9 +161,9 @@ export default function GroupCallScreen() {
       />
 
       <View style={callGlass.top}>
-        {warn ? (
+        {state === 'active' ? (
           <Animated.View entering={FadeIn.duration(320)} style={[callGlass.glass, callGlass.warn]}>
-            <Ionicons name="timer-outline" size={15} color={colors.onMedia} />
+            <Ionicons name={low ? 'timer' : 'timer-outline'} size={15} color={low ? systemColors.orange : colors.onMedia} />
             <Txt style={callGlass.warnText}>
               {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
             </Txt>
