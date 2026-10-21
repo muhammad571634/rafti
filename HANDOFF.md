@@ -37,7 +37,9 @@ Calls done (D36): call history, voice call, incoming call and group call coded f
 Calls"; shared Mute / End / Speaker and call glass in `src/components/call/call-controls.tsx`, iOS system red/green
 in `systemColors`. Date map: the owner approved prototype B (dates as Apple Wallet event tickets, canvas
 `DateWallet.dc.html`; the star-map variant A was rejected as "only new colours") but said to keep the old code for
-now. Next on the list: Date rounds (`/date/[placeId]`), prototype first.
+now. Date rounds and the own-date form are coded from the canvas (D37); ticket looks live in
+`src/components/date/ticket.tsx`, ready for the Dates (Wallet) screen. Next on the map: Date map code when the owner
+asks, else Our dates album (`/date/album`), prototype first.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 

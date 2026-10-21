@@ -15,13 +15,14 @@ import {
   PressableScale,
   Screen,
   SFIcon,
+  SystemSegmented,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
 import { clockTime, relativeStamp, shortName } from '@/lib/format';
 import { dayKey, dayKeyFromToday } from '@/mock';
 import { displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, shadows, space, systemColors } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 import type { CallRecord, Character } from '@/types';
 
 type Filter = 'all' | 'missed';
@@ -102,22 +103,15 @@ export default function CallHistoryScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <LargeTitle>{t('callHistory.title')}</LargeTitle>
 
-        <View style={styles.track} accessibilityRole="tablist">
-          {(['all', 'missed'] as const).map((f) => {
-            const on = f === filter;
-            return (
-              <Pressable
-                key={f}
-                onPress={() => setFilter(f)}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: on }}
-                aria-selected={on}
-                style={[styles.segment, on && styles.segmentOn]}>
-                <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{t(`callHistory.${f}`)}</Txt>
-              </Pressable>
-            );
-          })}
-        </View>
+        <SystemSegmented
+          options={[
+            { value: 'all', label: t('callHistory.all') },
+            { value: 'missed', label: t('callHistory.missed') },
+          ]}
+          value={filter}
+          onChange={(f: Filter) => setFilter(f)}
+          style={styles.track}
+        />
 
         {sections.length === 0 ? (
           <View style={styles.noMissed}>
@@ -226,19 +220,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   minutesText: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, fontVariant: ['tabular-nums'], color: colors.text },
-  track: {
-    marginTop: 12,
-    marginHorizontal: space.lg,
-    height: 34,
-    padding: 2,
-    borderRadius: 9,
-    flexDirection: 'row',
-    backgroundColor: systemColors.fill,
-  },
-  segment: { flex: 1, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
-  segmentOn: { backgroundColor: systemColors.thumb, ...shadows.card },
-  segmentText: { fontSize: 14, fontWeight: '500', letterSpacing: -0.1, color: colors.text },
-  segmentTextOn: { fontWeight: '600' },
+  track: { marginTop: 12, marginHorizontal: space.lg },
   sectionLabel: {
     marginTop: 22,
     marginBottom: 6,

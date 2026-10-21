@@ -5,7 +5,8 @@ import { KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet, TextIn
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
-import { Button, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { artLook, DateTicket, TicketBadge } from '@/components/date/ticket';
+import { Button, GlassButton, glassStyle, PressableScale, Screen, SystemSegmented, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import {
   DATE_MOODS,
@@ -20,11 +21,12 @@ import {
 } from '@/lib/date-themes';
 import { THEME_ARTS } from '@/mock/date-themes';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { colors, space } from '@/theme';
 
 /**
- * Make or edit one of the user's own dates (F28, approved prototype): the scene it starts
- * with, the place, a picture, rounds, mood and who it is for. Free to make; each play costs
+ * Make or edit one of the user's own dates (canvas "DateMake", 2026-10-22): an iOS form under a
+ * live Wallet ticket that shows the date as it will sit on the Dates screen — the scene it starts
+ * with, the place, the look, rounds, mood and who it is for. Free to make; each play costs
  * 2 shells a round. `partner` is the friend picked on the map; `id` edits a saved date.
  */
 export default function DateThemeScreen() {
@@ -32,6 +34,7 @@ export default function DateThemeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ id?: string; partner?: string }>();
+
   const editing = useAppStore((s) => s.dateThemes.find((d) => d.id === params.id));
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
@@ -48,8 +51,12 @@ export default function DateThemeScreen() {
   const [forOne, setForOne] = useState(editing ? !!editing.characterId : !!only);
   const [crisis, setCrisis] = useState(false);
 
+  const onlyName = only ? shortName(displayName(only, relationships[only.id])) : '';
+  const onlyLevel = only ? (relationships[only.id]?.level ?? 0) : undefined;
   const problem = checkTheme({ scene, title });
-  const ready = !problem || problem === 'crisis';
+  const ready = (!problem || problem === 'crisis') && !crisis;
+  const look = artLook(art);
+  const cost = themeCost(rounds);
 
   const save = () => {
     const result = saveDateTheme(
@@ -60,37 +67,57 @@ export default function DateThemeScreen() {
     if (result.status === 'saved') router.back();
   };
 
-  const label =
-    problem === 'noScene'
-      ? t('dateTheme.needScene')
-      : problem === 'noTitle'
-        ? t('dateTheme.needTitle')
-        : t('dateTheme.save');
+  const moodNote =
+    MOOD_LEVEL[mood] === 0
+      ? t('dateTheme.moodNote.anyone')
+      : onlyLevel != null && onlyLevel < MOOD_LEVEL[mood]
+        ? t('dateTheme.moodNote.locked', { level: MOOD_LEVEL[mood] })
+        : t('dateTheme.moodNote.from', { level: MOOD_LEVEL[mood] });
+
+  const label = (text: string) => <Txt style={styles.sectionLabel}>{text}</Txt>;
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={editing ? t('dateTheme.titleEdit') : t('dateTheme.titleNew')} />
+    <Screen background={colors.bg}>
+      <View style={styles.bar}>
+        <GlassButton label={t('common.cancel')} onPress={() => router.back()} />
+        <Txt style={styles.barTitle} lines={1}>
+          {editing ? t('dateTheme.titleEdit') : t('dateTheme.titleNew')}
+        </Txt>
+        <PressableScale
+          scaleTo={0.94}
+          disabled={!ready}
+          onPress={save}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !ready }}
+          style={[ready ? styles.saveOn : glassStyle, styles.save]}>
+          <Txt style={[styles.saveText, { color: ready ? colors.bg : colors.textFaint }]}>{t('dateTheme.save')}</Txt>
+        </PressableScale>
+      </View>
+
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
-          <View style={styles.section}>
-            <Txt variant="h3">{t('dateTheme.scene')}</Txt>
-            <TextInput
-              value={scene}
-              onChangeText={(text) => {
-                setCrisis(false);
-                setScene(text);
-              }}
-              placeholder={t('dateTheme.scenePlaceholder')}
-              placeholderTextColor={colors.textFaint}
-              accessibilityLabel={t('dateTheme.scene')}
-              maxLength={SCENE_MAX}
-              multiline
-              textAlignVertical="top"
-              style={[styles.input, styles.scene]}
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.ticket}>
+            <DateTicket
+              look={look}
+              name={title.trim() || t('dateTheme.yourDate')}
+              headLabel={t('dateTheme.shells')}
+              headValue={String(cost)}
+              kind={t('dateTheme.kind')}
+              title={title.trim() || t('dateTheme.yourDate')}
+              fields={[
+                { label: t('dateTheme.rounds'), value: String(rounds) },
+                { label: t('dateTheme.mood'), value: t(`dating.moods.${mood}`) },
+                { label: t('dateTheme.with'), value: forOne && only ? onlyName : t('dateTheme.anyone') },
+              ]}
+              footer={
+                <View style={styles.preview} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                  <Txt style={styles.previewText}>{t('dateTheme.preview')}</Txt>
+                </View>
+              }
             />
-            <Txt variant="small" color={colors.textSecondary}>
-              {t('dateTheme.sceneHint')}
-            </Txt>
           </View>
 
           {crisis ? (
@@ -108,8 +135,29 @@ export default function DateThemeScreen() {
             </View>
           ) : null}
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('dateTheme.where')}</Txt>
+          {label(t('dateTheme.scene'))}
+          <View style={[styles.card, styles.sceneCard]}>
+            <TextInput
+              value={scene}
+              onChangeText={(text) => {
+                setCrisis(false);
+                setScene(text);
+              }}
+              placeholder={t('dateTheme.scenePlaceholder')}
+              placeholderTextColor="#8E8E93"
+              accessibilityLabel={t('dateTheme.scene')}
+              maxLength={SCENE_MAX}
+              multiline
+              textAlignVertical="top"
+              style={[styles.input, styles.sceneInput]}
+            />
+            <Txt style={styles.count}>
+              {scene.length} / {SCENE_MAX}
+            </Txt>
+          </View>
+
+          {label(t('dateTheme.where'))}
+          <View style={[styles.card, styles.whereCard]}>
             <TextInput
               value={title}
               onChangeText={(text) => {
@@ -117,158 +165,122 @@ export default function DateThemeScreen() {
                 setTitle(text);
               }}
               placeholder={t('dateTheme.wherePlaceholder')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor="#8E8E93"
               accessibilityLabel={t('dateTheme.where')}
               maxLength={TITLE_MAX}
               style={styles.input}
             />
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('dateTheme.picture')}</Txt>
-            <View style={styles.row}>
-              {THEME_ARTS.map((a) => {
-                const on = a.id === art;
-                return (
-                  <PressableScale
-                    key={a.id}
-                    onPress={() => setArt(a.id)}
-                    scaleTo={0.94}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(`dateTheme.arts.${a.labelKey}`)}
-                    accessibilityState={{ selected: on }}
-                    style={[styles.option, styles.artOption, on && styles.optionOn]}>
-                    <ClayIcon name={a.id} size={34} tile={false} />
-                  </PressableScale>
-                );
-              })}
-            </View>
+          {label(t('dateTheme.picture'))}
+          <View style={[styles.card, styles.looks]}>
+            {THEME_ARTS.map((a) => {
+              const on = a.id === art;
+              return (
+                <PressableScale
+                  key={a.id}
+                  onPress={() => setArt(a.id)}
+                  scaleTo={0.9}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`dateTheme.arts.${a.labelKey}`)}
+                  accessibilityState={{ selected: on }}
+                  style={[styles.lookRing, on && styles.lookRingOn]}>
+                  <TicketBadge look={artLook(a.id)} size={46} />
+                </PressableScale>
+              );
+            })}
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('dateTheme.rounds')}</Txt>
-            <View style={styles.row}>
-              {ROUND_OPTIONS.map((n) => (
-                <Option
-                  key={n}
-                  on={rounds === n}
-                  label={String(n)}
-                  hint={t(`dateTheme.roundHint.${n}`)}
-                  onPress={() => setRounds(n)}
-                />
-              ))}
-            </View>
-          </View>
+          {label(t('dateTheme.rounds'))}
+          <SystemSegmented
+            options={ROUND_OPTIONS.map((n) => ({ value: n, label: String(n) }))}
+            value={rounds}
+            onChange={(n) => setRounds(n)}
+            style={styles.segmented}
+          />
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('dateTheme.mood')}</Txt>
-            <View style={styles.row}>
-              {DATE_MOODS.map((m) => (
-                <Option
-                  key={m}
-                  on={mood === m}
-                  label={t(`dating.moods.${m}`)}
-                  hint={t(`dateTheme.moodHint.${m}`, { level: MOOD_LEVEL[m] })}
-                  onPress={() => setMood(m)}
-                />
-              ))}
-            </View>
-          </View>
+          {label(t('dateTheme.mood'))}
+          <SystemSegmented
+            options={DATE_MOODS.map((m) => ({
+              value: m,
+              label: t(`dating.moods.${m}`),
+              locked: onlyLevel != null && onlyLevel < MOOD_LEVEL[m],
+            }))}
+            value={mood}
+            onChange={(m) => setMood(m)}
+            style={styles.segmented}
+          />
+          <Txt style={styles.note}>{moodNote}</Txt>
 
           {only ? (
-            <View style={styles.section}>
-              <Txt variant="h3">{t('dateTheme.who')}</Txt>
-              <View style={styles.row}>
-                <Option
-                  on={forOne}
-                  label={t('dateTheme.only', { name: shortName(displayName(only, relationships[only.id])) })}
-                  onPress={() => setForOne(true)}
-                />
-                <Option on={!forOne} label={t('dateTheme.anyFriend')} onPress={() => setForOne(false)} />
-              </View>
-            </View>
+            <>
+              {label(t('dateTheme.who'))}
+              <SystemSegmented
+                options={[
+                  { value: 'one', label: t('dateTheme.only', { name: onlyName }) },
+                  { value: 'any', label: t('dateTheme.anyFriend') },
+                ]}
+                value={forOne ? 'one' : 'any'}
+                onChange={(v) => setForOne(v === 'one')}
+                style={styles.segmented}
+              />
+            </>
           ) : null}
-        </ScrollView>
 
-        {/* Action bar (docs/design-style.md §3): the button, then what it costs. */}
-        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-          <Button label={label} size="lg" full disabled={!ready || crisis} onPress={save} />
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {t('dateTheme.saveHint', { count: themeCost(rounds) })}
-          </Txt>
-        </View>
+          <Txt style={styles.footer}>{t('dateTheme.saveHint', { count: cost })}</Txt>
+        </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
   );
 }
 
-/** An option chip (docs/design-style.md §4): grey fill, white with an ink border when chosen. */
-function Option({ on, label, hint, onPress }: { on: boolean; label: string; hint?: string; onPress: () => void }) {
-  return (
-    <PressableScale
-      onPress={onPress}
-      scaleTo={0.96}
-      accessibilityRole="button"
-      accessibilityLabel={hint ? `${label}, ${hint}` : label}
-      accessibilityState={{ selected: on }}
-      style={[styles.option, on && styles.optionOn]}>
-      <Txt variant="bodyStrong" lines={1}>
-        {label}
-      </Txt>
-      {hint ? (
-        <Txt variant="caption" color={colors.textSecondary} lines={1}>
-          {hint}
-        </Txt>
-      ) : null}
-    </PressableScale>
-  );
-}
-
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  body: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl },
-  section: { gap: space.sm + 2 },
-  row: { flexDirection: 'row', gap: space.sm },
-  input: {
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    ...type.body,
-  },
-  scene: { minHeight: 112, paddingTop: space.md },
-  option: {
-    flex: 1,
-    minHeight: 52,
+  bar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: space.xs,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    backgroundColor: colors.surfaceAlt,
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
+    paddingBottom: space.sm,
   },
-  artOption: { paddingHorizontal: 0 },
-  optionOn: { backgroundColor: colors.surface, borderColor: colors.text },
+  barTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  save: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
+  saveOn: { backgroundColor: colors.text },
+  saveText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
+  ticket: { marginTop: space.sm, marginHorizontal: space.lg, borderRadius: 16, shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 15, shadowOffset: { width: 0, height: 10 }, elevation: 6 },
+  preview: { height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center', justifyContent: 'center' },
+  previewText: { fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.9)' },
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
+  },
+  card: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface },
+  sceneCard: { paddingHorizontal: space.lg, paddingVertical: 12 },
+  whereCard: { height: 48, paddingHorizontal: space.lg, justifyContent: 'center' },
+  input: { padding: 0, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  sceneInput: { minHeight: 88, lineHeight: 22 },
+  count: { alignSelf: 'flex-end', fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  looks: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 14 },
+  // The chosen look gets an ink ring with a gap, as iOS colour pickers do.
+  lookRing: { padding: 2, borderRadius: 27, borderWidth: 2, borderColor: 'transparent' },
+  lookRingOn: { borderColor: colors.text },
+  segmented: { marginHorizontal: space.lg },
+  note: { marginTop: 6, marginHorizontal: space.lg * 2, fontSize: 13, color: colors.textSecondary },
+  footer: { marginTop: 22, marginHorizontal: space.lg, textAlign: 'center', fontSize: 13, color: colors.textSecondary },
   crisis: {
+    marginTop: space.lg,
+    marginHorizontal: space.lg,
     gap: space.sm,
     padding: space.lg,
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 14,
     backgroundColor: colors.surface,
     alignItems: 'flex-start',
-  },
-  actionBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
   },
 });

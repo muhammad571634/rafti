@@ -26,7 +26,7 @@ export { AuroraBackground, AuroraGlass } from './aurora';
 export { SearchBar } from './search-bar';
 export { SectionHeader } from './section-header';
 export { SectionLabel } from './section-label';
-export { Segmented } from './segmented';
+export { Segmented, SystemSegmented } from './segmented';
 export { ShellBadge } from './shell-badge';
 export { Sheet } from './sheet';
 export { Toggle } from './toggle';
