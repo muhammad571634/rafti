@@ -343,6 +343,11 @@ export const widgetTones = {
   sleep: ['#2A2D6E', '#12143A'] as const,
 };
 
+/** iOS system colours for the call screens (systemRed, systemGreen, tertiary fill), as on the canvas. */
+export const systemColors = isDark
+  ? { red: '#FF453A', green: '#30D158', fill: 'rgba(118,118,128,0.24)', thumb: '#636366' }
+  : { red: '#FF3B30', green: '#34C759', fill: 'rgba(118,118,128,0.12)', thumb: '#FFFFFF' };
+
 /** Tinted widgets (Gifts, Store, Radio, Board, Contacts): gradient, title ink, line ink. */
 export const widgetTints: Record<string, { bg: readonly [string, string]; ink: string; sub: string }> = isDark
   ? {

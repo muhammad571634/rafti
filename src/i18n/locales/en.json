@@ -380,7 +380,13 @@
   "callHistory": {
     "title": "Calls",
     "empty": "No calls yet",
-    "emptyHint": "Call a character and it will show up here."
+    "emptyHint": "Call a character and it will show up here.",
+    "all": "All",
+    "missed": "Missed",
+    "earlier": "Earlier",
+    "noMissed": "No missed calls",
+    "min": "{{count}} min",
+    "minutesLeft": "{{count}} minutes of calls left"
   },
   "characterSettings": {
     "title": "Settings",

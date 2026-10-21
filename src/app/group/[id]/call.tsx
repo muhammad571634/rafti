@@ -1,12 +1,23 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CallControls, callGlass } from '@/components/call/call-controls';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
@@ -14,7 +25,7 @@ import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space } from '@/theme';
+import { colors, gradients, space, systemColors } from '@/theme';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -141,95 +152,81 @@ export default function GroupCallScreen() {
       background={gradients.call}
       statusBarStyle="light"
       backdrop={<BlurBackdrop source={characterImage(members[0])} dim={0.35} blur={50} />}>
-      <LinearGradient colors={['rgba(0,0,0,0.18)', 'transparent']} style={styles.topScrim} />
+      <LinearGradient
+        colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.14)', 'rgba(0,0,0,0.52)']}
+        locations={[0, 0.4, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
-      <View style={styles.top}>
+      <View style={callGlass.top}>
         {warn ? (
-          <Animated.View entering={FadeIn.duration(320)} style={styles.warn}>
-            <Txt variant="smallStrong" color={colors.onMedia}>
+          <Animated.View entering={FadeIn.duration(320)} style={[callGlass.glass, callGlass.warn]}>
+            <Ionicons name="timer-outline" size={15} color={colors.onMedia} />
+            <Txt style={callGlass.warnText}>
               {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
             </Txt>
           </Animated.View>
         ) : null}
       </View>
 
-      <View style={styles.body}>
-        <View style={styles.faces}>
-          {state === 'connecting' ? (
-            <Anim name="calling" size={260} tint="rgba(255,255,255,0.5)" style={styles.rings} />
-          ) : null}
-          {members.map((m, i) => {
-            const talking = state === 'active' && current?.who === i;
-            return (
-              <View key={m.id} style={[styles.face, state === 'active' && !talking && styles.quiet]}>
+      <View style={styles.faces}>
+        {state === 'connecting' ? (
+          <Anim name="calling" size={260} tint="rgba(255,255,255,0.5)" style={styles.rings} />
+        ) : null}
+        {members.map((m, i) => {
+          const talking = state === 'active' && current?.who === i;
+          return (
+            <View key={m.id} style={[styles.face, state === 'active' && !talking && styles.quiet]}>
+              <View>
                 <CharacterAvatar
                   character={m}
                   size={face}
                   ring
                   ringColor={talking ? colors.onMedia : 'rgba(255,255,255,0.45)'}
                 />
-                <Txt variant="smallStrong" color={colors.onMedia} lines={1}>
-                  {nameOf(i)}
-                </Txt>
+                {talking ? <SpeakingBadge /> : null}
               </View>
-            );
-          })}
-        </View>
+              <Txt style={styles.faceName} lines={1}>
+                {nameOf(i)}
+              </Txt>
+            </View>
+          );
+        })}
+      </View>
 
-        <Txt variant="h2" color={colors.onMedia} center style={styles.name} lines={2}>
+      <View style={styles.head}>
+        <Txt style={callGlass.title} lines={2}>
           {title}
         </Txt>
-
         {state === 'empty' ? null : (
-          <Txt variant="small" color={colors.onMediaMuted} center style={styles.timer}>
-            {state === 'connecting' ? t('group.callConnecting') : callClock(seconds)}
-          </Txt>
+          <Txt style={callGlass.timer}>{state === 'connecting' ? t('group.callConnecting') : callClock(seconds)}</Txt>
         )}
-
-        {state === 'active' && current ? (
-          <Animated.View key={line} entering={FadeIn.duration(320)} exiting={FadeOut.duration(200)}>
-            <Txt variant="title" color={colors.onMedia} center style={styles.subtitle}>
-              {`${nameOf(current.who)}: “${current.text}”`}
-            </Txt>
-          </Animated.View>
-        ) : null}
       </View>
 
-      <View
-        style={[
-          styles.controls,
-          { paddingBottom: Math.max(insets.bottom + space.lg, space.xxxl) },
-          state === 'empty' && styles.hidden,
-        ]}>
-        <CallControl
-          icon={muted ? 'mic-off' : 'mic-off-outline'}
-          label={muted ? t('call.unmute') : t('call.mute')}
-          active={muted}
-          onPress={() => setMuted((v) => !v)}
-        />
-        <View style={styles.control}>
-          <View style={styles.slot}>
-            <PressableScale
-              style={styles.hangUp}
-              onPress={hangUp}
-              scaleTo={0.9}
-              haptic
-              accessibilityRole="button"
-              accessibilityLabel={t('call.end')}>
-              <MaterialCommunityIcons name="phone-hangup" size={30} color={colors.onMedia} />
-            </PressableScale>
-          </View>
-          <Txt variant="caption" color={colors.onMediaMuted}>
-            {t('call.end')}
-          </Txt>
-        </View>
-        <CallControl
-          icon={speaker ? 'volume-high' : 'volume-high-outline'}
-          label={t('call.speaker')}
-          active={speaker}
-          onPress={() => setSpeaker((v) => !v)}
-        />
-      </View>
+      <View style={styles.flex} />
+
+      {state === 'active' && current ? (
+        <Animated.View
+          key={line}
+          entering={FadeIn.duration(320)}
+          exiting={FadeOut.duration(200)}
+          style={[callGlass.glass, callGlass.caption]}
+          accessibilityLiveRegion="polite">
+          <Txt style={styles.who}>{nameOf(current.who)}</Txt>
+          <Txt style={callGlass.captionText}>{`“${current.text}”`}</Txt>
+        </Animated.View>
+      ) : null}
+
+      <CallControls
+        muted={muted}
+        speaker={speaker}
+        onMute={() => setMuted((v) => !v)}
+        onSpeaker={() => setSpeaker((v) => !v)}
+        onEnd={hangUp}
+        bottom={Math.max(insets.bottom + space.xl, 52)}
+        hidden={state === 'empty'}
+      />
 
       <CallPaywallSheet
         visible={state === 'empty' && !member}
@@ -251,84 +248,55 @@ export default function GroupCallScreen() {
   );
 }
 
-/** A round glass toggle beside the hang-up button (the mock has no audio session yet). */
-function CallControl({
-  icon,
-  label,
-  active,
-  onPress,
-}: {
-  icon: React.ComponentProps<typeof Ionicons>['name'];
-  label: string;
-  active: boolean;
-  onPress: () => void;
-}) {
+/** The green badge on whoever is talking: three bars that rise and fall like a voice. */
+function SpeakingBadge() {
   return (
-    <View style={styles.control}>
-      <View style={styles.slot}>
-        <PressableScale
-          style={[styles.toggle, active && styles.toggleActive]}
-          onPress={onPress}
-          scaleTo={0.9}
-          accessibilityRole="switch"
-          accessibilityLabel={label}
-          accessibilityState={{ checked: active }}
-          aria-checked={active}>
-          <Ionicons name={icon} size={24} color={active ? colors.text : colors.onMedia} />
-        </PressableScale>
-      </View>
-      <Txt variant="caption" color={colors.onMediaMuted}>
-        {label}
-      </Txt>
+    <View style={styles.badge}>
+      {[0, 150, 300].map((delay) => (
+        <Bar key={delay} delay={delay} />
+      ))}
     </View>
   );
 }
 
+function Bar({ delay }: { delay: number }) {
+  const reduced = useReducedMotion();
+  const scale = useSharedValue(0.4);
+  useEffect(() => {
+    if (reduced) return;
+    scale.value = withDelay(
+      delay,
+      withRepeat(withSequence(withTiming(1, { duration: 450 }), withTiming(0.4, { duration: 450 })), -1),
+    );
+  }, [delay, reduced, scale]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scaleY: scale.value }] }));
+  return <Animated.View style={[styles.bar, style]} />;
+}
+
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
   missing: { padding: space.xl },
-  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 140 },
-  top: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingTop: space.md },
-  warn: {
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.xs + 2,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.onMediaHairline,
-    backgroundColor: colors.onMediaGlass,
-  },
-  body: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl },
-  faces: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: space.lg },
+  faces: { marginTop: 52, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 18 },
   rings: { position: 'absolute', alignSelf: 'center', top: -60 },
-  face: { alignItems: 'center', gap: space.sm, maxWidth: 112 },
+  face: { width: 100, alignItems: 'center', gap: 10 },
   quiet: { opacity: 0.6 },
-  name: { marginTop: space.xl },
-  timer: { marginTop: space.xs, fontVariant: ['tabular-nums'] },
-  subtitle: { marginTop: space.xxl, lineHeight: 24 },
-  hidden: { display: 'none' },
-  controls: {
+  faceName: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.onMedia },
+  head: { marginTop: 50, paddingHorizontal: space.xl },
+  who: { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.72)' },
+  badge: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: systemColors.green,
+    borderWidth: 3,
+    borderColor: 'rgba(16,16,24,0.55)',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-start',
-    paddingHorizontal: space.lg,
-    paddingBottom: space.xxxl,
-  },
-  control: { alignItems: 'center', gap: space.sm, width: 84 },
-  slot: { height: 68, justifyContent: 'center' },
-  toggle: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.pill,
-    backgroundColor: colors.onMediaGlass,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 2,
   },
-  toggleActive: { backgroundColor: colors.onMedia },
-  hangUp: {
-    width: 68,
-    height: 68,
-    borderRadius: radius.pill,
-    backgroundColor: colors.danger,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  bar: { width: 3, height: 12, borderRadius: 2, backgroundColor: colors.onMedia },
 });

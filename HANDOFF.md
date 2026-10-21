@@ -32,7 +32,12 @@ Chats is on the aurora too (D33: filters, typing bubble, long-press menu). The o
 canvas colours exactly. Us is on the aurora too (D34, level ring). All four tabs now share the aurora; next:
 inner screens one at a time, prototype first. Screen map with every screen's status (db-backed, update it as screens
 finish): https://claude.ai/artifact/Mv1gJHu1TTxNS55aZjkkYw. Profile and Notifications done (D35; Notifications now open
-from the bell on Us). Next per the map: Store, My plan and shell history.
+from the bell on Us). The owner now works down the map's "Today: modules" list in its order (not Store first).
+Calls done (D36): call history, voice call, incoming call and group call coded from the canvas row "Today modules:
+Calls"; shared Mute / End / Speaker and call glass in `src/components/call/call-controls.tsx`, iOS system red/green
+in `systemColors`. Date map: the owner approved prototype B (dates as Apple Wallet event tickets, canvas
+`DateWallet.dc.html`; the star-map variant A was rejected as "only new colours") but said to keep the old code for
+now. Next on the list: Date rounds (`/date/[placeId]`), prototype first.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 

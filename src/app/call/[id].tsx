@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { CallControls, callGlass } from '@/components/call/call-controls';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
@@ -14,7 +15,7 @@ import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { shareForReward } from '@/lib/share';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space } from '@/theme';
+import { colors, gradients, space } from '@/theme';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -26,8 +27,8 @@ const WARN_SECONDS = 120;
 const SUBTITLE_INTERVAL_MS = 5000;
 
 /**
- * The in-call screen: blurred portrait, avatar, timer and live subtitles, with
- * mute / end / speaker underneath — nothing else competes with the voice.
+ * The in-call screen (canvas "CallVoice", 2026-10-21): blurred portrait, avatar, name and timer,
+ * the live line in a glass caption, then mute / end / speaker — nothing else competes with the voice.
  */
 export default function CallScreen() {
   const insets = useSafeAreaInsets();
@@ -150,30 +151,33 @@ export default function CallScreen() {
       background={gradients.call}
       statusBarStyle="light"
       backdrop={<BlurBackdrop source={characterImage(character)} dim={0.3} blur={50} />}>
-      <LinearGradient colors={['rgba(0,0,0,0.18)', 'transparent']} style={styles.topScrim} />
+      <LinearGradient
+        colors={['rgba(0,0,0,0.28)', 'rgba(0,0,0,0.12)', 'rgba(0,0,0,0.5)']}
+        locations={[0, 0.4, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
-      <View style={styles.top}>
-        <View style={styles.topSide} />
-        <View style={styles.flex}>
-          {warn ? (
-            <Animated.View entering={FadeIn.duration(320)} style={styles.warn}>
-              <Txt variant="smallStrong" color={colors.onMedia}>
-                {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
-              </Txt>
-            </Animated.View>
-          ) : null}
-        </View>
+      <View style={callGlass.top}>
+        {warn ? (
+          <Animated.View entering={FadeIn.duration(320)} style={[callGlass.glass, callGlass.warn]}>
+            <Ionicons name="timer-outline" size={15} color={colors.onMedia} />
+            <Txt style={callGlass.warnText}>
+              {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
+            </Txt>
+          </Animated.View>
+        ) : null}
         <PressableScale
-          style={styles.topSide}
-          hitSlop={10}
+          style={[callGlass.glass, styles.share]}
+          hitSlop={6}
           scaleTo={0.88}
           accessibilityLabel={t('a11y.share')}
           onPress={share}>
-          <Ionicons name="share-outline" size={22} color={colors.onMedia} />
+          <Ionicons name="share-outline" size={20} color={colors.onMedia} />
         </PressableScale>
       </View>
 
-      <View style={styles.body}>
+      <View style={styles.head}>
         <View style={styles.avatarWrap}>
           {state === 'connecting' ? (
             <Anim name="calling" size={230} tint="rgba(255,255,255,0.7)" style={styles.rings} />
@@ -181,55 +185,37 @@ export default function CallScreen() {
           <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.85)" />
         </View>
 
-        <Txt variant="h2" color={colors.onMedia} center style={styles.name}>
+        <Txt style={[callGlass.title, styles.name]} lines={2}>
           {name}
         </Txt>
 
         {state === 'empty' ? null : (
-          <Txt variant="small" color={colors.onMediaMuted} center style={styles.timer}>
-            {state === 'connecting' ? t('call.connecting') : callClock(seconds)}
-          </Txt>
+          <Txt style={callGlass.timer}>{state === 'connecting' ? t('call.connecting') : callClock(seconds)}</Txt>
         )}
-
-        {state === 'active' ? (
-          <Animated.View key={line} entering={FadeIn.duration(320)} exiting={FadeOut.duration(200)}>
-            <Txt variant="title" color={colors.onMedia} center style={styles.subtitle}>
-              {`“${lines[line]}”`}
-            </Txt>
-          </Animated.View>
-        ) : null}
       </View>
 
-      <View style={[styles.controls, { paddingBottom: Math.max(insets.bottom + space.lg, space.xxxl) }, state === 'empty' && styles.hidden]}>
-        <CallControl
-          icon={muted ? 'mic-off' : 'mic-off-outline'}
-          label={muted ? t('call.unmute') : t('call.mute')}
-          active={muted}
-          onPress={() => setMuted((v) => !v)}
-        />
-        <View style={styles.control}>
-          <View style={styles.slot}>
-            <PressableScale
-              style={styles.hangUp}
-              onPress={hangUp}
-              scaleTo={0.9}
-              haptic
-              accessibilityRole="button"
-              accessibilityLabel={t('call.end')}>
-              <MaterialCommunityIcons name="phone-hangup" size={30} color={colors.onMedia} />
-            </PressableScale>
-          </View>
-          <Txt variant="caption" color={colors.onMediaMuted}>
-            {t('call.end')}
-          </Txt>
-        </View>
-        <CallControl
-          icon={speaker ? 'volume-high' : 'volume-high-outline'}
-          label={t('call.speaker')}
-          active={speaker}
-          onPress={() => setSpeaker((v) => !v)}
-        />
-      </View>
+      <View style={styles.flex} />
+
+      {state === 'active' ? (
+        <Animated.View
+          key={line}
+          entering={FadeIn.duration(320)}
+          exiting={FadeOut.duration(200)}
+          style={[callGlass.glass, callGlass.caption]}
+          accessibilityLiveRegion="polite">
+          <Txt style={callGlass.captionText}>{`“${lines[line]}”`}</Txt>
+        </Animated.View>
+      ) : null}
+
+      <CallControls
+        muted={muted}
+        speaker={speaker}
+        onMute={() => setMuted((v) => !v)}
+        onSpeaker={() => setSpeaker((v) => !v)}
+        onEnd={hangUp}
+        bottom={Math.max(insets.bottom + space.xl, 52)}
+        hidden={state === 'empty'}
+      />
 
       {/* No minutes when it opened: free and Basic users hear what Pro adds, Pro can top up. */}
       <CallPaywallSheet
@@ -252,89 +238,20 @@ export default function CallScreen() {
   );
 }
 
-/**
- * A round glass toggle beside the hang-up button. The mock has no audio session yet,
- * so mute and speaker only change state; real builds route them to expo-audio.
- */
-function CallControl({
-  icon,
-  label,
-  active,
-  onPress,
-}: {
-  icon: React.ComponentProps<typeof Ionicons>['name'];
-  label: string;
-  active: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <View style={styles.control}>
-      <View style={styles.slot}>
-        <PressableScale
-          style={[styles.toggle, active && styles.toggleActive]}
-          onPress={onPress}
-          scaleTo={0.9}
-          accessibilityRole="switch"
-          accessibilityLabel={label}
-          accessibilityState={{ checked: active }}
-          aria-checked={active}>
-          <Ionicons name={icon} size={24} color={active ? colors.text : colors.onMedia} />
-        </PressableScale>
-      </View>
-      <Txt variant="caption" color={colors.onMediaMuted}>
-        {label}
-      </Txt>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { padding: space.xl },
-  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 140 },
-  top: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.md },
-  topSide: { width: 40, alignItems: 'flex-end' },
-  body: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xxl },
+  share: {
+    position: 'absolute',
+    right: 0,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  head: { marginTop: 70, alignItems: 'center', paddingHorizontal: space.xxl },
   avatarWrap: { alignItems: 'center', justifyContent: 'center' },
   rings: { position: 'absolute' },
-  name: { marginTop: space.xl },
-  timer: { marginTop: space.xs, fontVariant: ['tabular-nums'] },
-  subtitle: { marginTop: space.xxl, lineHeight: 24 },
-  warn: {
-    alignSelf: 'center',
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.xs + 2,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.onMediaHairline,
-    backgroundColor: colors.onMediaGlass,
-  },
-  hidden: { display: 'none' },
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-start',
-    paddingHorizontal: space.lg,
-    paddingBottom: space.xxxl,
-  },
-  control: { alignItems: 'center', gap: space.sm, width: 84 },
-  // Every button sits in a slot as tall as the hang-up, so the labels line up.
-  slot: { height: 68, justifyContent: 'center' },
-  toggle: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.pill,
-    backgroundColor: colors.onMediaGlass,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  toggleActive: { backgroundColor: colors.onMedia },
-  hangUp: {
-    width: 68,
-    height: 68,
-    borderRadius: radius.pill,
-    backgroundColor: colors.danger,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  name: { marginTop: 22 },
 });

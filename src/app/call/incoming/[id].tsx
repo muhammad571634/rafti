@@ -17,7 +17,7 @@ import Animated, {
 
 import { Anim, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space } from '@/theme';
+import { colors, gradients, space, systemColors } from '@/theme';
 
 /** Stop ringing after this long and log it as missed, like a real phone. */
 const RING_TIMEOUT_MS = 30_000;
@@ -87,15 +87,19 @@ export default function IncomingCallScreen() {
               blurRadius={6}
             />
           ) : null}
-          <LinearGradient colors={gradients.incoming} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.08)', 'rgba(0,0,0,0.08)', 'rgba(0,0,0,0.62)']}
+            locations={[0, 0.34, 0.58, 1]}
+            style={StyleSheet.absoluteFill}
+          />
         </View>
       }>
       <View style={styles.top}>
-        <Txt variant="h1" color={colors.white}>
-          {displayName(character, relationship)}
-        </Txt>
-        <Txt variant="bodyStrong" color="rgba(255,255,255,0.85)">
+        <Txt style={styles.slot} center>
           {slot ? t(`call.${slot}`) : t('call.calling')}
+        </Txt>
+        <Txt style={styles.name} center lines={2}>
+          {displayName(character, relationship)}
         </Txt>
       </View>
 
@@ -107,16 +111,16 @@ export default function IncomingCallScreen() {
       <View style={[styles.actions, { paddingBottom: Math.max(insets.bottom + space.xl, space.huge) }]}>
         <CallAction
           label={t('call.decline')}
-          color={colors.danger}
+          color={systemColors.red}
           onPress={decline}
-          icon={<MaterialCommunityIcons name="phone-hangup" size={30} color={colors.white} />}
+          icon={<MaterialCommunityIcons name="phone-hangup" size={32} color={colors.white} />}
         />
         <CallAction
           label={t('call.accept')}
-          color={colors.success}
+          color={systemColors.green}
           onPress={accept}
           pulse
-          icon={<Ionicons name="call" size={28} color={colors.white} />}
+          icon={<Ionicons name="call" size={30} color={colors.white} />}
         />
       </View>
     </Screen>
@@ -156,32 +160,49 @@ function CallAction({
   return (
     <View style={styles.action}>
       <PressableScale onPress={onPress} scaleTo={0.9} haptic accessibilityRole="button" accessibilityLabel={label}>
-        <Animated.View style={[styles.actionButton, { backgroundColor: color }, animatedStyle]}>{icon}</Animated.View>
+        <View style={[styles.actionButton, { backgroundColor: color, shadowColor: color }]}>
+          <Animated.View style={animatedStyle}>{icon}</Animated.View>
+        </View>
       </PressableScale>
-      <Txt variant="smallStrong" color={colors.white}>
-        {label}
-      </Txt>
+      <Txt style={styles.actionLabel}>{label}</Txt>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   missing: { padding: space.xl },
-  top: { paddingHorizontal: space.xxl, paddingTop: space.xxl, gap: space.xs },
+  // Name centred up top, the way an iOS contact poster sets it (canvas "CallIncoming", 2026-10-21).
+  top: { paddingHorizontal: space.xl, paddingTop: 38, gap: 4, alignItems: 'center' },
+  slot: { fontSize: 17, fontWeight: '500', letterSpacing: -0.2, color: 'rgba(255,255,255,0.82)' },
+  name: {
+    fontSize: 44,
+    lineHeight: 50,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+    color: '#FFFFFF',
+    textShadowColor: 'rgba(0,0,0,0.25)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 16,
+  },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   rings: { position: 'absolute' },
   actions: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: space.xxl,
+    justifyContent: 'space-between',
+    paddingHorizontal: 40,
     paddingBottom: space.huge,
   },
-  action: { alignItems: 'center', gap: space.sm },
+  action: { width: 96, alignItems: 'center', gap: 10 },
   actionButton: {
-    width: 70,
-    height: 70,
-    borderRadius: radius.pill,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
   },
+  actionLabel: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
 });
