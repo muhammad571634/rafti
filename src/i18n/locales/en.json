@@ -775,6 +775,13 @@
   },
   "dating": {
     "title": "Dating",
+    "walletTitle": "Dates",
+    "kindDate": "Date",
+    "opensAt": "Opens at",
+    "closenessLabel": "Closeness",
+    "more": "More",
+    "pastDates_one": "View {{count}} past date",
+    "pastDates_other": "View {{count}} past dates",
     "locked": "Reach level {{level}}",
     "scenarios": {
       "aquarium": "Aquarium at closing time",

@@ -39,7 +39,8 @@ in `systemColors`. Date map: the owner approved prototype B (dates as Apple Wall
 `DateWallet.dc.html`; the star-map variant A was rejected as "only new colours") but said to keep the old code for
 now. Date rounds and the own-date form are coded from the canvas (D37); ticket looks live in
 `src/components/date/ticket.tsx`, ready for the Dates (Wallet) screen. Next on the map: Date map code when the owner
-asks. Our dates album coded without a prototype at the owner's word (D38). Next on the map: Alarms / Bedtime
+asks. Our dates album coded without a prototype at the owner's word (D38). The Dates screen itself is now coded
+as Wallet tickets (D39), so the whole Date area is done. Next on the map: Alarms / Bedtime
 (Sleep) or Store, in the map's order.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
