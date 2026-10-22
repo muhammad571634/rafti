@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,8 +8,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
 import { ValueWheel, type WheelTone } from '@/components/alarms/time-wheel';
+import { SleepingMascot } from '@/components/bedtime/sleeping-mascot';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
-import { Anim, BrandArt, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
@@ -119,25 +121,25 @@ export default function BedtimeScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {page === 'main' ? (
           <>
-            <View style={styles.hero}>
-              <BrandArt name="bedtime" width={64} height={64} contentFit="cover" radius={14} bob={running && !paused} />
-              <View style={styles.flex}>
+            <LinearGradient colors={['#232A5C', night.surface]} style={styles.hero}>
+              <SleepingMascot size={210} whispering={running && !paused} />
+              <View style={styles.heroText}>
                 {reader ? (
                   <>
-                    <Txt variant="bodyStrong" color={night.text}>
+                    <Txt style={styles.heroTitle} center>
                       {t('bedtime.sleepWith', { name })}
                     </Txt>
-                    <Txt variant="small" color={night.textSecondary}>
+                    <Txt style={styles.heroLine} center>
                       {t('bedtime.what')}
                     </Txt>
                   </>
                 ) : (
-                  <Txt variant="small" color={night.textSecondary}>
+                  <Txt style={styles.heroLine} center>
                     {t('bedtime.noVoices')}
                   </Txt>
                 )}
               </View>
-            </View>
+            </LinearGradient>
 
             {running ? (
               <TimerRing
@@ -406,15 +408,18 @@ const styles = StyleSheet.create({
     borderColor: night.primarySoft,
     backgroundColor: night.primarySofter,
   },
+  // One large card with the sleeping mascot (canvas "BedtimeMascot", owner-approved 2026-10-22).
   hero: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
     marginHorizontal: space.lg,
-    padding: space.md,
-    borderRadius: 14,
-    backgroundColor: night.surface,
+    paddingTop: 28,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+    borderRadius: 28,
   },
+  heroText: { marginTop: 22, alignItems: 'center', gap: 4 },
+  heroTitle: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: 0.2, color: night.text },
+  heroLine: { fontSize: 15, lineHeight: 20, color: night.textSecondary },
   group: { marginHorizontal: space.lg, borderRadius: 11, overflow: 'hidden', backgroundColor: night.surface },
   groupTitle: { marginHorizontal: space.lg * 2, marginBottom: -space.sm, letterSpacing: 0.4 },
   row: {
