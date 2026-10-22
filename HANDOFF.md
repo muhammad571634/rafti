@@ -48,8 +48,9 @@ Store coded from the canvas row "Store: Plans and Shells" (D42). The owner's ord
 card and a Basic / Pro table with locks, "FOMO"), prices last. The owner asked to say Pro "runs a stronger model";
 all plans run the same model, so that line was left out as untrue (App Store 2.3 / 3.1). If the backend ever gives
 Pro a stronger model, add a "Most capable model" row then. The owner checked the Store in Expo Go: matches the
-canvas. My plan and Shell history were coded straight at the owner's word, no prototype (D43). Next on the map:
-Photo Booth / Frame editor, then Contacts, Gifts, Radio, Board, Secret note, Alarm ringing.
+canvas. From here the owner wants the map's screens coded straight, no prototypes: My plan and Shell history (D43),
+Photo Booth and Frame editor (D44). Next on the map: Contacts, Gifts, Radio (+ clip, make), Board, Secret note,
+Alarm ringing.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 

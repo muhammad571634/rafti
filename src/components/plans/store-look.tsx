@@ -115,11 +115,17 @@ export function StoreBuyBar({
   caption,
   disabled,
   onPress,
+  left,
+  children,
 }: {
   label: string;
-  caption: string;
+  caption?: string;
   disabled?: boolean;
   onPress: () => void;
+  /** A glyph before the label (Photo Booth's lock). */
+  left?: React.ReactNode;
+  /** A line above the button (Photo Booth's pictures-left meter). */
+  children?: React.ReactNode;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -128,6 +134,7 @@ export function StoreBuyBar({
         <BlurView intensity={40} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
       ) : null}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === 'ios' ? STORE.bar : STORE.barSolid }]} />
+      {children}
       <PressableScale
         scaleTo={0.97}
         onPress={onPress}
@@ -135,13 +142,16 @@ export function StoreBuyBar({
         accessibilityRole="button"
         accessibilityState={{ disabled: !!disabled }}
         style={[styles.cta, disabled && styles.ctaOff]}>
+        {left}
         <Txt style={styles.ctaText} lines={1}>
           {label}
         </Txt>
       </PressableScale>
-      <Txt style={styles.caption} center>
-        {caption}
-      </Txt>
+      {caption ? (
+        <Txt style={styles.caption} center>
+          {caption}
+        </Txt>
+      ) : null}
     </View>
   );
 }
@@ -174,8 +184,16 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: STORE.barLine,
   },
-  cta: { height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
+  cta: {
+    height: 52,
+    borderRadius: 26,
+    flexDirection: 'row',
+    gap: space.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: STORE.cta,
+  },
   ctaOff: { opacity: 0.5 },
-  ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  ctaText: { flexShrink: 1, fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
   caption: { fontSize: 13, color: aurora.textMuted },
 });

@@ -2,12 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import type { ClayIconName } from '@/assets/brand/registry';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
-import { Button, ClayIcon, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
+import { AuroraGlass, ClayIcon, LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
 import {
   FRAME_CAPTION_MAX,
   FRAME_COLORS,
@@ -18,8 +18,12 @@ import {
   toggleSticker,
 } from '@/lib/frames';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space, type } from '@/theme';
+import { aurora, colors, isDark, space, systemColors } from '@/theme';
 import type { UserFrame } from '@/types';
+
+const GUTTER = space.lg;
+const CARD_PAD = 14;
+const WELL = isDark ? 'rgba(118,118,128,0.24)' : '#F2F2F7';
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -34,14 +38,15 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 }
 
 /**
- * Make a Photo Booth frame (F29, approved prototype): a color, a pattern, up to two stickers
- * and a caption, with the picture updating as you pick. Only pieces, no uploads; free and
- * private. `id` edits a saved frame; pictures already taken keep the frame they were shot in.
+ * Make a Photo Booth frame (F29): a color, a pattern, up to two stickers and a caption, with the
+ * picture updating as you pick. Only pieces, no uploads; free and private. `id` edits a saved
+ * frame; pictures already taken keep the frame they were shot in. iOS look on the aurora
+ * (2026-10-22, coded at the owner's word), in Photo Booth's cards and bar.
  */
 export default function FrameEditScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const editing = useAppStore((s) => s.frames.find((f) => f.id === id));
   const characters = useAppStore((s) => s.characters);
@@ -63,6 +68,9 @@ export default function FrameEditScreen() {
   const look = frameLook({ color, pattern, stickers, caption: caption || t('frames.captionPlaceholder') });
   const [createdAt] = useState(() => new Date().toISOString());
 
+  // Six stickers in one row inside the card: the card's inner width less five gaps.
+  const stickerSize = Math.min(56, (width - GUTTER * 2 - CARD_PAD * 2 - space.sm * 5) / 6);
+
   const save = () => {
     saveFrame({ name: name || t('frames.namePlaceholder'), color, pattern, stickers, caption }, editing?.id);
     router.back();
@@ -82,126 +90,111 @@ export default function FrameEditScreen() {
     );
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={editing ? t('frames.titleEdit') : t('frames.titleNew')}
-        right={
-          editing ? (
-            <PressableScale
-              onPress={remove}
-              hitSlop={hitSlop}
-              scaleTo={0.88}
-              accessibilityRole="button"
-              accessibilityLabel={t('frames.delete')}>
-              <Ionicons name="trash-outline" size={22} color={colors.text} />
-            </PressableScale>
-          ) : undefined
-        }
-      />
+    <Screen background="aurora">
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
-          <View style={styles.preview}>
-            {model ? (
-              <BoothPicture
-                photo={{ style: 'polaroid', seed: 0, createdAt, frame: look }}
-                character={model}
-                width={150}
-                style={styles.tilt}
-              />
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.bar}>
+            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
+              <AuroraGlass style={styles.round}>
+                <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
+              </AuroraGlass>
+            </PressableScale>
+            {editing ? (
+              <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('frames.delete')} onPress={remove}>
+                <AuroraGlass style={styles.round}>
+                  <Ionicons name="trash" size={19} color={systemColors.red} />
+                </AuroraGlass>
+              </PressableScale>
             ) : null}
           </View>
+          <LargeTitle>{editing ? t('frames.titleEdit') : t('frames.titleNew')}</LargeTitle>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('frames.color')}</Txt>
-            <View style={styles.row}>
-              {FRAME_COLORS.map((c) => {
-                const on = c.id === color;
-                return (
-                  <PressableScale
-                    key={c.id}
-                    onPress={() => setColor(c.id)}
-                    scaleTo={0.9}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(`frames.colors.${c.id}`)}
-                    accessibilityState={{ selected: on }}
-                    style={[styles.swatchRing, on && styles.swatchOn]}>
-                    <View style={[styles.swatch, { backgroundColor: c.bg }]} />
-                  </PressableScale>
-                );
-              })}
+          <View style={[styles.card, styles.previewCard]}>
+            <View style={styles.preview}>
+              {model ? (
+                <BoothPicture
+                  photo={{ style: 'polaroid', seed: 0, createdAt, frame: look }}
+                  character={model}
+                  width={150}
+                  style={styles.tilt}
+                />
+              ) : null}
             </View>
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('frames.pattern')}</Txt>
-            <View style={styles.row}>
-              {FRAME_PATTERNS.map((p) => {
-                const on = p === pattern;
-                return (
-                  <PressableScale
-                    key={p}
-                    onPress={() => setPattern(p)}
-                    scaleTo={0.96}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: on }}
-                    style={[styles.chip, on && styles.chipOn]}>
-                    <Txt variant="bodyStrong" color={on ? colors.text : colors.textSecondary}>
-                      {t(`frames.patterns.${p}`)}
-                    </Txt>
-                  </PressableScale>
-                );
-              })}
-            </View>
+          <GroupLabel>{t('frames.color')}</GroupLabel>
+          <View style={[styles.card, styles.pad, styles.wrap]}>
+            {FRAME_COLORS.map((c) => {
+              const on = c.id === color;
+              return (
+                <PressableScale
+                  key={c.id}
+                  onPress={() => setColor(c.id)}
+                  scaleTo={0.9}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`frames.colors.${c.id}`)}
+                  accessibilityState={{ selected: on }}
+                  style={[styles.swatchRing, on && styles.swatchOn]}>
+                  <View style={[styles.swatch, { backgroundColor: c.bg }]} />
+                </PressableScale>
+              );
+            })}
           </View>
 
-          <View style={styles.section}>
-            <View style={styles.titleRow}>
-              <Txt variant="h3" style={styles.flex}>
-                {t('frames.stickers')}
-              </Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('frames.upTo')}
-              </Txt>
-            </View>
-            <View style={styles.row}>
-              {FRAME_STICKERS.map((s) => {
-                const on = stickers.includes(s);
-                return (
-                  <PressableScale
-                    key={s}
-                    onPress={() => setStickers((list) => toggleSticker(list, s))}
-                    scaleTo={0.94}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(`frames.stickerNames.${s}`)}
-                    accessibilityState={{ selected: on }}
-                    style={[styles.chip, on && styles.chipOn]}>
-                    <ClayIcon name={s as ClayIconName} size={30} tile={false} />
-                  </PressableScale>
-                );
-              })}
-            </View>
+          <GroupLabel>{t('frames.pattern')}</GroupLabel>
+          <Segmented
+            tone="aurora"
+            options={FRAME_PATTERNS.map((p) => ({ value: p, label: t(`frames.patterns.${p}`) }))}
+            value={pattern}
+            onChange={setPattern}
+            style={styles.gutter}
+          />
+
+          <View style={styles.labelRow}>
+            <GroupLabel>{t('frames.stickers')}</GroupLabel>
+            <Txt style={styles.labelValue}>{t('frames.upTo')}</Txt>
+          </View>
+          <View style={[styles.card, styles.pad, styles.stickers]}>
+            {FRAME_STICKERS.map((s) => {
+              const on = stickers.includes(s);
+              return (
+                <PressableScale
+                  key={s}
+                  onPress={() => setStickers((list) => toggleSticker(list, s))}
+                  scaleTo={0.94}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`frames.stickerNames.${s}`)}
+                  accessibilityState={{ selected: on }}
+                  style={[styles.sticker, { width: stickerSize, height: stickerSize }, on && styles.stickerOn]}>
+                  <ClayIcon name={s as ClayIconName} size={Math.round(stickerSize * 0.56)} tile={false} />
+                </PressableScale>
+              );
+            })}
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('frames.caption')}</Txt>
+          <GroupLabel>{t('frames.caption')}</GroupLabel>
+          <View style={styles.card}>
             <TextInput
               value={caption}
               onChangeText={setCaption}
               placeholder={t('frames.captionPlaceholder')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor={aurora.textMuted}
               accessibilityLabel={t('frames.caption')}
               maxLength={FRAME_CAPTION_MAX}
               style={styles.input}
             />
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('frames.name')}</Txt>
+          <GroupLabel>{t('frames.name')}</GroupLabel>
+          <View style={styles.card}>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder={t('frames.namePlaceholder')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor={aurora.textMuted}
               accessibilityLabel={t('frames.name')}
               maxLength={FRAME_NAME_MAX}
               style={styles.input}
@@ -209,13 +202,7 @@ export default function FrameEditScreen() {
           </View>
         </ScrollView>
 
-        {/* Action bar (docs/design-style.md §3). */}
-        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-          <Button label={t('frames.save')} size="lg" full onPress={save} />
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {t('frames.saveHint')}
-          </Txt>
-        </View>
+        <StoreBuyBar label={t('frames.save')} caption={t('frames.saveHint')} onPress={save} />
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -223,51 +210,37 @@ export default function FrameEditScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  body: { paddingHorizontal: space.lg, paddingTop: space.xs, paddingBottom: space.xxl, gap: space.xl },
-  preview: {
-    height: 236,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+  bar: {
+    height: 44,
+    paddingHorizontal: GUTTER,
+    paddingTop: space.xs,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  backIcon: { marginLeft: -2 },
+  card: { marginHorizontal: GUTTER, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
+  previewCard: { marginTop: 18, padding: CARD_PAD, borderRadius: 24 },
+  preview: { height: 236, borderRadius: 16, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center' },
   tilt: { transform: [{ rotate: '-2deg' }] },
-  section: { gap: space.sm + 2 },
-  titleRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  swatchRing: { width: 46, height: 46, borderRadius: 23, borderWidth: 2, borderColor: 'transparent', padding: 3 },
-  swatchOn: { borderColor: colors.text },
-  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border },
-  chip: {
-    minWidth: 48,
-    height: 48,
-    paddingHorizontal: space.md,
+  pad: { padding: CARD_PAD },
+  wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  gutter: { marginHorizontal: GUTTER },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: aurora.textMuted },
+  swatchRing: { width: 46, height: 46, borderRadius: 23, borderWidth: 2.5, borderColor: 'transparent', padding: 3 },
+  swatchOn: { borderColor: aurora.tint },
+  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: aurora.separator },
+  stickers: { flexDirection: 'row', justifyContent: 'space-between' },
+  sticker: {
     borderRadius: 14,
-    borderWidth: 2,
+    borderWidth: 2.5,
     borderColor: 'transparent',
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: WELL,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipOn: { backgroundColor: colors.surface, borderColor: colors.text },
-  input: {
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    ...type.body,
-  },
-  actionBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
+  stickerOn: { borderColor: aurora.tint, backgroundColor: aurora.card },
+  input: { minHeight: 50, paddingHorizontal: GUTTER, fontSize: 17, letterSpacing: -0.4, color: colors.text },
 });
