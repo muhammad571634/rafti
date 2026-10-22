@@ -1702,6 +1702,7 @@
     },
     "included": "{{plan}}: included",
     "notIncluded": "{{plan}}: not included",
-    "renewNote": "Plans renew automatically until you cancel in {{store}} settings."
+    "renewNote": "Plans renew automatically until you cancel in {{store}} settings.",
+    "ofTotal": "of {{total}} min"
   }
 }

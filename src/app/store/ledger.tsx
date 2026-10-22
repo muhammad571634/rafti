@@ -1,21 +1,44 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
+import type { Ionicons } from '@expo/vector-icons';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { planDate, wholeMinutes } from '@/components/plans/copy';
-import { CharacterAvatar, EmptyState, Header, Icon3D, IconTile, Screen, Segmented, ShellIcon, Txt } from '@/components/ui';
+import {
+  CharacterAvatar,
+  EmptyState,
+  GlassBar,
+  LargeTitle,
+  Screen,
+  SFIcon,
+  ShellIcon,
+  SystemSegmented,
+  Txt,
+  useScrolledPast,
+} from '@/components/ui';
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, isDark, space } from '@/theme';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
+
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 /** Paid-per-message lines that fold into one row per friend and day. */
 const FOLDED: LedgerReason[] = ['chat', 'voice', 'photo'];
 
+const LEAD = 36;
+/** Money in reads green, as in Wallet; dark text-safe shades of systemGreen. */
+const CREDIT = isDark ? '#30D158' : '#248A3D';
+const CALLS = isDark ? '#30D158' : '#34C759';
+const RING = 52;
+const RING_STROKE = 7;
+const RING_R = (RING - RING_STROKE) / 2;
+const RING_C = 2 * Math.PI * RING_R;
 
 interface Row {
   key: string;
@@ -28,13 +51,16 @@ interface Row {
 }
 
 /**
- * Every shell in and out, newest first. Consecutive messages to one friend on one
- * day read as one line ("Chat with Kai · 12 messages -12") instead of a wall of
- * -1s, and expired free shells are named for what they are.
+ * Every shell in and out, newest first, in the iOS look on the grouped ground (a long list, so
+ * no aurora; 2026-10-22, coded at the owner's word): a large title, Shells / Call time, a card
+ * with what is left, then one inset group per day. Consecutive messages to one friend on one
+ * day read as one line ("Chat with Kai · 12 messages -12") instead of a wall of -1s, and
+ * expired free shells are named for what they are.
  */
 export default function LedgerScreen() {
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
+  const { scrolled, onScroll } = useScrolledPast(40);
   const ledger = useAppStore((s) => s.ledger);
   const characters = useAppStore((s) => s.characters);
   const free = useAppStore((s) => s.wallet.free);
@@ -67,66 +93,74 @@ export default function LedgerScreen() {
     return t(`ledger.reason.${row.reason}`, { name });
   };
 
-  return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('ledger.title')} />
+  const share = calls.planTotal > 0 ? Math.max(0, Math.min(1, calls.plan / calls.planTotal)) : 0;
 
+  return (
+    <Screen background={colors.bg}>
+      <GlassBar title={t('ledger.title')} scrolled={scrolled} />
       <SectionList
         sections={sections}
         keyExtractor={(row) => row.key}
         stickySectionHeadersEnabled={false}
-        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.huge }]}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
         ListHeaderComponent={
           <>
-            <Segmented
+            <LargeTitle>{t('ledger.title')}</LargeTitle>
+            <SystemSegmented
               options={[
                 { value: 'shells', label: t('ledger.tabShells') },
                 { value: 'seconds', label: t('ledger.tabCalls') },
               ]}
               value={tab}
-              onChange={setTab}
+              onChange={(v: 'shells' | 'seconds') => setTab(v)}
               style={styles.tabs}
             />
             {tab === 'shells' ? (
-              <View style={styles.rule}>
-                <Icon3D name="shell" size={44} />
+              <View style={styles.summary}>
+                <ShellIcon size={44} />
                 <View style={styles.flex}>
-                  <Txt variant="title">
+                  <Txt style={styles.summaryTitle}>
                     {freeToday > 0 ? t('ledger.freeLeft', { count: freeToday }) : t('ledger.freeNone')}
                   </Txt>
-                  <Txt variant="small" color={colors.textSecondary}>
-                    {t('ledger.rule')}
-                  </Txt>
+                  <Txt style={styles.summaryNote}>{t('ledger.rule')}</Txt>
                 </View>
               </View>
             ) : calls.planTotal > 0 ? (
-              <View style={[styles.rule, styles.meter]}>
-                <View style={styles.meterHead}>
-                  <IconTile icon="call-outline" size={36} radius={11} glyphSize={19} />
-                  <Txt variant="title" style={styles.flex}>
-                    {t('plans.callsRow')}
-                  </Txt>
-                  <Txt variant="bodyStrong">
+              <View style={styles.summary}>
+                <View style={styles.ring} accessible accessibilityLabel={t('plans.left', { left: wholeMinutes(calls.plan), total: wholeMinutes(calls.planTotal) })}>
+                  <Svg width={RING} height={RING} style={styles.ringSvg}>
+                    <Circle cx={RING / 2} cy={RING / 2} r={RING_R} fill="none" stroke={CALLS} strokeOpacity={0.18} strokeWidth={RING_STROKE} />
+                    {share > 0 ? (
+                      <Circle
+                        cx={RING / 2}
+                        cy={RING / 2}
+                        r={RING_R}
+                        fill="none"
+                        stroke={CALLS}
+                        strokeWidth={RING_STROKE}
+                        strokeLinecap="round"
+                        strokeDasharray={`${RING_C * share} ${RING_C}`}
+                      />
+                    ) : null}
+                  </Svg>
+                  <SFIcon ios="phone.fill" icon="call" size={18} color={CALLS} />
+                </View>
+                <View style={styles.flex}>
+                  <Txt style={styles.summaryTitle}>
                     {t('plans.left', { left: wholeMinutes(calls.plan), total: wholeMinutes(calls.planTotal) })}
                   </Txt>
+                  {calls.resetsAt ? <Txt style={styles.summaryNote}>{t('ledger.resets', { date: planDate(calls.resetsAt) })}</Txt> : null}
                 </View>
-                <View style={styles.track}>
-                  <View style={[styles.fill, { width: `${Math.round((calls.plan / calls.planTotal) * 100)}%` }]} />
-                </View>
-                {calls.resetsAt ? (
-                  <Txt variant="small" color={colors.textSecondary} style={styles.meterNote}>
-                    {t('ledger.resets', { date: planDate(calls.resetsAt) })}
-                  </Txt>
-                ) : null}
               </View>
             ) : (
-              <View style={styles.rule}>
-                <IconTile icon="call-outline" size={36} radius={11} glyphSize={19} />
+              <View style={styles.summary}>
+                <ReasonTile reason="call" />
                 <View style={styles.flex}>
-                  <Txt variant="title">{t('ledger.callLeft', { time: callClock(calls.total) })}</Txt>
-                  <Txt variant="small" color={colors.textSecondary}>
-                    {t('ledger.callRule')}
-                  </Txt>
+                  <Txt style={styles.summaryTitle}>{t('ledger.callLeft', { time: callClock(calls.total) })}</Txt>
+                  <Txt style={styles.summaryNote}>{t('ledger.callRule')}</Txt>
                 </View>
               </View>
             )}
@@ -140,15 +174,9 @@ export default function LedgerScreen() {
             compact
           />
         }
-        ListFooterComponent={
-          sections.length ? (
-            <Txt variant="caption" color={colors.textMuted} center style={styles.footer}>
-              {t('ledger.footer')}
-            </Txt>
-          ) : null
-        }
+        ListFooterComponent={sections.length ? <Txt style={styles.footer}>{t('ledger.footer')}</Txt> : null}
         renderSectionHeader={({ section }) => (
-          <Txt variant="h3" accessibilityRole="header" style={styles.day}>
+          <Txt style={styles.day} accessibilityRole="header">
             {dayTitle(section.key)}
           </Txt>
         )}
@@ -158,28 +186,18 @@ export default function LedgerScreen() {
           const first = index === 0;
           const last = index === section.data.length - 1;
           return (
-            <View style={[styles.row, first && styles.rowFirst, last && styles.rowLast, !first && styles.rowLine]}>
-              <View style={styles.lead}>
-                {character ? (
-                  <CharacterAvatar character={character} size={36} />
-                ) : (
-                  <View style={[styles.glyph, row.reason === 'expired' && styles.glyphMuted]}>
-                    <Ionicons name={GLYPH[row.reason]} size={18} color={colors.textSecondary} />
-                  </View>
-                )}
-              </View>
-              <View style={styles.flex}>
-                <Txt variant="bodyStrong" lines={1}>
+            <View style={[styles.row, first && styles.rowFirst, last && styles.rowLast]}>
+              {character ? <CharacterAvatar character={character} size={LEAD} /> : <ReasonTile reason={row.reason} />}
+              <View style={styles.body}>
+                <Txt style={styles.rowTitle} lines={1}>
                   {title(row, character)}
                 </Txt>
-                <Txt variant="caption" color={colors.textMuted}>
-                  {row.count > 1
-                    ? `${t('ledger.messages', { count: row.count })} · ${clockTime(row.at)}`
-                    : clockTime(row.at)}
+                <Txt style={styles.rowMeta}>
+                  {row.count > 1 ? `${t('ledger.messages', { count: row.count })} · ${clockTime(row.at)}` : clockTime(row.at)}
                 </Txt>
               </View>
               <View style={styles.amount}>
-                <Txt variant="bodyStrong" color={credit ? colors.brandText : colors.text}>
+                <Txt style={[styles.amountText, credit && { color: CREDIT }]}>
                   {tab === 'seconds'
                     ? `${credit ? '+' : '-'}${callClock(Math.abs(row.amount))}`
                     : credit
@@ -188,6 +206,7 @@ export default function LedgerScreen() {
                 </Txt>
                 {tab === 'shells' ? <ShellIcon size={16} /> : null}
               </View>
+              {last ? null : <View style={styles.line} />}
             </View>
           );
         }}
@@ -196,31 +215,41 @@ export default function LedgerScreen() {
   );
 }
 
-const GLYPH: Record<LedgerReason, React.ComponentProps<typeof Ionicons>['name']> = {
-  welcome: 'sparkles-outline',
-  plan: 'star-outline',
-  daily: 'calendar-outline',
-  expired: 'moon-outline',
-  ad: 'play-circle-outline',
-  spin: 'gift-outline',
-  purchase: 'bag-handle-outline',
-  chat: 'chatbubble-outline',
-  voice: 'mic-outline',
-  photo: 'image-outline',
-  note: 'mail-outline',
-  board: 'pin-outline',
-  invite: 'person-add-outline',
-  share: 'share-social-outline',
-  date: 'cafe-outline',
-  photoBooth: 'camera-outline',
-  voiceClone: 'mic-circle-outline',
-  trial: 'call-outline',
-  membership: 'star-outline',
-  call: 'call-outline',
-  topUp: 'add-circle-outline',
-  radio: 'radio-outline',
-  other: 'ellipse-outline',
+/** What each line is about, as a Settings-style tile: a white glyph on an iOS system colour. */
+const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
+  welcome: { fill: '#FF9500', ios: 'sparkles', icon: 'sparkles' },
+  plan: { fill: '#AF52DE', ios: 'crown.fill', icon: 'diamond' },
+  daily: { fill: '#FF3B30', ios: 'calendar', icon: 'calendar' },
+  expired: { fill: '#8E8E93', ios: 'moon.fill', icon: 'moon' },
+  ad: { fill: '#5856D6', ios: 'play.fill', icon: 'play' },
+  spin: { fill: '#FF2D55', ios: 'gift.fill', icon: 'gift' },
+  purchase: { fill: '#FF9500', ios: 'bag.fill', icon: 'bag-handle' },
+  chat: { fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble' },
+  voice: { fill: '#FF2D55', ios: 'waveform', icon: 'pulse' },
+  photo: { fill: '#32ADE6', ios: 'photo.fill', icon: 'image' },
+  note: { fill: '#FF2D55', ios: 'envelope.fill', icon: 'mail' },
+  board: { fill: '#A2845E', ios: 'pin.fill', icon: 'pin' },
+  invite: { fill: '#34C759', ios: 'person.badge.plus', icon: 'person-add' },
+  share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
+  date: { fill: '#FF9500', ios: 'cup.and.saucer.fill', icon: 'cafe' },
+  photoBooth: { fill: '#32ADE6', ios: 'camera.fill', icon: 'camera' },
+  voiceClone: { fill: '#5856D6', ios: 'mic.fill', icon: 'mic' },
+  trial: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
+  membership: { fill: '#AF52DE', ios: 'phone.fill', icon: 'call' },
+  call: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
+  topUp: { fill: '#34C759', ios: 'plus', icon: 'add' },
+  radio: { fill: '#FF9500', ios: 'radio.fill', icon: 'radio' },
+  other: { fill: '#8E8E93', ios: 'ellipsis', icon: 'ellipsis-horizontal' },
 };
+
+function ReasonTile({ reason }: { reason: LedgerReason }) {
+  const look = REASON[reason];
+  return (
+    <View style={[styles.tile, { backgroundColor: look.fill }]}>
+      <SFIcon ios={look.ios} icon={look.icon} size={18} color="#FFFFFF" />
+    </View>
+  );
+}
 
 /** Newest first; runs of the same paid message to the same friend on one day merge. */
 function fold(ledger: LedgerEntry[]): Row[] {
@@ -256,56 +285,57 @@ function groupByDay(rows: Row[]) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  list: { paddingHorizontal: space.lg, paddingBottom: space.huge },
-  // One white card on top: what is left today (shells) or this period (calls).
-  rule: {
+  tabs: { marginTop: 12, marginHorizontal: space.lg },
+  // One card on top: what is left today (shells) or this period (calls).
+  summary: {
     flexDirection: 'row',
-    gap: space.md + 2,
     alignItems: 'center',
+    gap: 14,
+    marginTop: 22,
+    marginHorizontal: space.lg,
     padding: space.lg,
-    marginTop: space.lg,
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 18,
     backgroundColor: colors.surface,
   },
-  meter: { flexDirection: 'column', alignItems: 'stretch', gap: space.sm + 2 },
-  meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterNote: { marginLeft: 36 + space.md },
-  track: {
-    height: 8,
-    marginLeft: 36 + space.md,
-    borderRadius: radius.pill,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
+  summaryTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text, fontVariant: ['tabular-nums'] },
+  summaryNote: { marginTop: 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  ring: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
+  // The arc starts at 12 o'clock, as Fitness draws it.
+  ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
+  day: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
-  day: { marginTop: space.xl + 2, marginBottom: space.sm },
   row: {
+    minHeight: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.md,
+    gap: 12,
+    marginHorizontal: space.lg,
+    paddingHorizontal: 14,
     backgroundColor: colors.surface,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: colors.border,
   },
-  rowFirst: { borderTopWidth: 1, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
-  rowLast: { borderBottomWidth: 1, borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
-  rowLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.divider },
-  lead: { width: 36, alignItems: 'center' },
-  glyph: {
-    width: 36,
-    height: 36,
-    borderRadius: 11,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
+  rowFirst: { borderTopLeftRadius: 18, borderTopRightRadius: 18 },
+  rowLast: { borderBottomLeftRadius: 18, borderBottomRightRadius: 18 },
+  line: {
+    position: 'absolute',
+    left: 14 + LEAD + 12,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.borderStrong,
   },
-  glyphMuted: { opacity: 0.7 },
-  amount: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  footer: { marginTop: space.xl },
-  tabs: { marginTop: space.xxs },
+  tile: { width: LEAD, height: LEAD, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
+  rowTitle: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  rowMeta: { fontSize: 13, color: colors.textSecondary },
+  amount: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  amountText: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
+  footer: { marginTop: 22, textAlign: 'center', fontSize: 13, color: colors.textSecondary },
 });
