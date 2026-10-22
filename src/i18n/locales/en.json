@@ -981,6 +981,10 @@
   },
   "alarms": {
     "title": "Alarms",
+    "next": "Next alarm",
+    "inTime": "in {{h}} h {{m}} min",
+    "inMinutes": "in {{m}} min",
+    "noneOn": "All alarms are off",
     "entry": "Alarms",
     "add": "Add Alarm",
     "edit": "Edit Alarm",

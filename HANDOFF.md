@@ -41,7 +41,9 @@ now. Date rounds and the own-date form are coded from the canvas (D37); ticket l
 `src/components/date/ticket.tsx`, ready for the Dates (Wallet) screen. Next on the map: Date map code when the owner
 asks. Our dates album coded without a prototype at the owner's word (D38). The Dates screen itself is now coded
 as Wallet tickets (D39), so the whole Date area is done.
-Bedtime: the owner likes the screen as it is; only its top card changed, to a large animated sleeping mascot (D40). Next on the map: Alarms / Bedtime
+Bedtime: the owner likes the screen as it is; only its top card changed, to a large animated sleeping mascot (D40).
+Alarms (list + editor) moved to Bedtime's navy in the iOS Clock look, with a Next alarm card (D41); the ringing
+screen is unchanged. Next on the map: Alarms / Bedtime
 (Sleep) or Store, in the map's order.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)

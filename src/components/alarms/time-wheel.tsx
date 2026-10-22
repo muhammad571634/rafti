@@ -60,11 +60,14 @@ export function TimeWheel({
   minute,
   h12,
   onChange,
+  tone = LIGHT,
 }: {
   hour: number;
   minute: number;
   h12: boolean;
   onChange: (hour: number, minute: number) => void;
+  /** Colours for a dark ground (Alarms on Bedtime's navy). */
+  tone?: WheelTone;
 }) {
   const { t } = useTranslation();
   const hours = h12 ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
@@ -81,7 +84,7 @@ export function TimeWheel({
 
   return (
     <View style={styles.wheel}>
-      <View style={[styles.band, { backgroundColor: LIGHT.band }]} pointerEvents="none" />
+      <View style={[styles.band, { backgroundColor: tone.band }]} pointerEvents="none" />
       <Column
         label={t('alarms.hour')}
         values={hours.map((h) => (h12 ? String(h) : String(h).padStart(2, '0')))}
@@ -89,6 +92,7 @@ export function TimeWheel({
         onChange={setHour}
         width={64}
         align="flex-end"
+        tone={tone}
       />
       <Column
         label={t('alarms.minute')}
@@ -97,6 +101,7 @@ export function TimeWheel({
         onChange={(i) => onChange(hour, i)}
         width={64}
         align="flex-start"
+        tone={tone}
       />
       {h12 ? (
         <Column
@@ -106,6 +111,7 @@ export function TimeWheel({
           onChange={setPeriod}
           width={56}
           align="flex-start"
+          tone={tone}
         />
       ) : null}
     </View>
