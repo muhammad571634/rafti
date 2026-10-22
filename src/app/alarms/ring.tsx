@@ -9,6 +9,7 @@ import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
 import { Anim, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
+import { shortName } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { SNOOZE_MIN } from '@/lib/alarms';
 import { MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
@@ -94,7 +95,7 @@ export default function AlarmRingScreen() {
   const { time, period } = alarmTime(now.getHours(), now.getMinutes(), uses12Hour());
   const canSnooze = !!alarm?.snooze && wake.snoozes < MAX_SNOOZES;
   const task = wake.replyToWake && !!wake.conversationId;
-  const name = friend?.name.split(' ')[0] ?? '';
+  const name = friend ? shortName(friend.name) : '';
 
   // The chat is private: a locked phone asks for the PIN or fingerprint first.
   const reply = async () => {
@@ -125,46 +126,50 @@ export default function AlarmRingScreen() {
         <Txt variant="body" color={colors.white}>
           {now.toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
         </Txt>
+        {alarm?.label ? (
+          <Txt style={styles.label} lines={1}>
+            {alarm.label}
+          </Txt>
+        ) : null}
         {friend ? (
-          <View style={styles.who}>
+          <View style={[styles.glassLight, styles.who]}>
             <CharacterAvatar character={friend} size={34} />
-            <Txt variant="bodyStrong" color={colors.white}>
+            <Txt style={styles.whoName} lines={1}>
               {friend.name}
             </Txt>
           </View>
         ) : null}
-        <Txt variant="body" color={colors.white} center style={styles.say}>
-          {clip
-            ? `“${clip.lines[clipLoaded ? lineAt(clip.lines, player.elapsed) : 0]}”`
-            : friend
-              ? `“${wake.question}”`
-              : alarm?.label || t('alarms.ringing')}
-        </Txt>
-        {clip ? (
-          <View style={styles.clipLine}>
-            <Anim name="voiceWave" size={20} tint={colors.white} />
-            <Txt variant="small" color={colors.onMediaMuted} lines={1}>
-              {clip.title}
-            </Txt>
-          </View>
-        ) : alarm ? (
-          <Txt variant="small" color={colors.onMediaMuted}>
-            {`♪ ${t(`alarms.sounds.${alarm.sound}`)}`}
+        <View style={[styles.glassLight, styles.sayCard]}>
+          <Txt style={styles.say} center>
+            {clip
+              ? `“${clip.lines[clipLoaded ? lineAt(clip.lines, player.elapsed) : 0]}”`
+              : friend
+                ? `“${wake.question}”`
+                : alarm?.label || t('alarms.ringing')}
           </Txt>
-        ) : null}
+          {clip ? (
+            <View style={styles.clipLine}>
+              <Anim name="voiceWave" size={20} tint={INK_MUTED} />
+              <Txt style={styles.sayMeta} lines={1}>
+                {clip.title}
+              </Txt>
+            </View>
+          ) : alarm ? (
+            <Txt style={styles.sayMeta}>{`♪ ${t(`alarms.sounds.${alarm.sound}`)}`}</Txt>
+          ) : null}
+        </View>
       </View>
 
+      {/* As the iPhone's alarm: one big button, Snooze in glass under it. */}
       <View style={styles.actions}>
         <PressableScale onPress={task ? reply : stop} scaleTo={0.97} style={styles.primary} accessibilityRole="button">
-          <Txt variant="bodyStrong" color={colors.textOnPrimary} style={styles.primaryText}>
+          <Txt style={styles.primaryText} lines={1}>
             {task ? t('alarms.replyTo', { name }) : t('alarms.stop')}
           </Txt>
         </PressableScale>
         {canSnooze ? (
-          <PressableScale onPress={snooze} scaleTo={0.96} style={styles.snooze} accessibilityRole="button">
-            <Txt variant="bodyStrong" color={colors.white}>
-              {t('alarms.snoozeFor', { count: SNOOZE_MIN })}
-            </Txt>
+          <PressableScale onPress={snooze} scaleTo={0.97} style={[styles.glass, styles.snooze]} accessibilityRole="button">
+            <Txt style={styles.snoozeText}>{t('alarms.snoozeFor', { count: SNOOZE_MIN })}</Txt>
           </PressableScale>
         ) : null}
         {task ? (
@@ -179,27 +184,47 @@ export default function AlarmRingScreen() {
   );
 }
 
+/** Dark warm ink for text on the light glass and the white button. */
+const INK = '#5A2A1E';
+const INK_MUTED = '#8A5446';
+
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: '#E9A27E', justifyContent: 'space-between', paddingHorizontal: space.xl },
   top: { alignItems: 'center', gap: space.xs },
   clockLine: { flexDirection: 'row', alignItems: 'baseline', gap: space.xs },
   clock: { fontSize: 84, lineHeight: 92, fontWeight: '200', fontVariant: ['tabular-nums'] },
   period: { fontSize: 26, fontWeight: '300' },
+  label: { marginTop: 2, fontSize: 17, fontWeight: '600', color: colors.white, opacity: 0.9 },
+  // Glass on the dawn: a light see-through fill with a bright rim, as Liquid Glass reads on colour.
+  glass: {
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.55)',
+  },
+  // The friend and their words sit high, on the light part of the dawn: brighter glass, dark ink.
+  glassLight: {
+    backgroundColor: 'rgba(255,255,255,0.62)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.85)',
+  },
   who: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    marginTop: space.lg,
-    paddingVertical: space.xs,
-    paddingLeft: space.xs,
-    paddingRight: space.md,
+    marginTop: space.xl,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    paddingRight: space.lg,
     borderRadius: radius.pill,
-    backgroundColor: colors.onMediaGlass,
   },
-  say: { maxWidth: 260, marginTop: space.md },
+  whoName: { fontSize: 17, fontWeight: '600', color: INK, maxWidth: 200 },
+  sayCard: { alignSelf: 'stretch', alignItems: 'center', gap: space.sm, marginTop: space.md, paddingVertical: space.lg, paddingHorizontal: space.xl, borderRadius: 24 },
+  say: { fontSize: 20, lineHeight: 27, fontWeight: '600', letterSpacing: -0.3, color: INK },
+  sayMeta: { fontSize: 13, color: INK_MUTED },
   clipLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs, maxWidth: 260 },
   actions: { alignItems: 'center', gap: space.md },
-  primary: { alignSelf: 'stretch', height: 58, borderRadius: radius.pill, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
-  primaryText: { fontSize: 17 },
-  snooze: { height: 48, paddingHorizontal: space.xl, borderRadius: radius.pill, backgroundColor: colors.onMediaHairline, alignItems: 'center', justifyContent: 'center' },
+  primary: { alignSelf: 'stretch', height: 60, borderRadius: 30, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
+  primaryText: { fontSize: 19, fontWeight: '700', letterSpacing: -0.3, color: INK },
+  snooze: { alignSelf: 'stretch', height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  snoozeText: { fontSize: 17, fontWeight: '600', color: colors.white },
 });
