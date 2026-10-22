@@ -63,7 +63,6 @@ import {
 } from '@/economy/plans';
 import {
   INVITE_REWARD,
-  SHARE_REWARD,
   DAILY_CHECK_IN,
   FREE_SPINS_PER_DAY,
   WHEEL_SEGMENTS,
@@ -269,8 +268,6 @@ interface AppState {
   activeConversationId: string | null;
   incomingCall: IncomingCall | null;
   dailyReward: DailyRewardEvent | null;
-  /** Shells just paid for a share; a small banner shows it and clears it. */
-  shareReward: number | null;
   /** The date that has been paid for and not finished yet; the date screen only plays this one. */
   /** The date being played; a user's own date carries the rounds written for this play. */
   activeDate: { characterId: string; placeId: string; theme?: { title: string; rounds: DateRound[] } } | null;
@@ -359,11 +356,10 @@ interface AppState {
   expireFreeShells: () => void;
   claimDailyLogin: () => number;
   dismissDailyReward: () => void;
-  /** Pays the daily share reward once a day; returns what was paid (0 when already paid today). */
-  claimShareReward: () => number;
-  dismissShareReward: () => void;
-  /** Enters a friend's invite code: both sides get shells once. */
+  /** Enters a friend's invite code; both sides get shells once the user is back on a later day. */
   redeemInvite: (code: string) => 'ok' | 'invalid' | 'own' | 'used';
+  /** Pays a pending invite when its day has passed; returns what was paid (0 otherwise). */
+  settleInvite: () => number;
   spinWheel: () => { index: number; reward: number } | null;
   /**
    * Starts a plan, or with `trial` the store's free days of Basic (once per account).
@@ -708,7 +704,6 @@ export const useAppStore = create<AppState>()(
       activeConversationId: null,
       incomingCall: null,
       dailyReward: null,
-      shareReward: null,
       activeDate: null,
       dateThemes: [],
       userQuizzes: [],
@@ -1356,6 +1351,8 @@ export const useAppStore = create<AppState>()(
         get().expireFreeShells();
         // A plan's monthly shells arrive with the first open of each period.
         payPlanShells(set, get);
+        // An invite code entered on an earlier day pays out on this open.
+        get().settleInvite();
         const today = todayKey();
         const { daily } = get();
         const { day, claimed } = checkInStatus(daily, today);
@@ -1375,35 +1372,25 @@ export const useAppStore = create<AppState>()(
 
       dismissDailyReward: () => set({ dailyReward: null }),
 
-      claimShareReward: () => {
-        const today = todayKey();
-        if (get().daily.shareDay === today) return 0;
-        get().expireFreeShells();
-        set((s) => ({
-          daily: { ...s.daily, shareDay: today },
-          wallet: creditFree(s.wallet, SHARE_REWARD, today),
-          ledger: log(s.ledger, SHARE_REWARD, 'share'),
-          shareReward: SHARE_REWARD,
-        }));
-        return SHARE_REWARD;
-      },
-
-      dismissShareReward: () => set({ shareReward: null }),
-
       redeemInvite: (input) => {
         const { user } = get();
         const code = normalizeInviteCode(input);
         if (!code) return 'invalid';
         if (user.redeemedInvite) return 'used';
         if (code === inviteCodeFor(user)) return 'own';
-        // The server checks the code exists and credits the friend who sent it.
-        get().expireFreeShells();
-        set((s) => ({
-          user: { ...s.user, redeemedInvite: code },
-          wallet: creditFree(s.wallet, INVITE_REWARD, todayKey()),
-          ledger: log(s.ledger, INVITE_REWARD, 'invite'),
-        }));
+        // Nothing is paid yet: the shells come when the user is back on a later day
+        // (`settleInvite`). The server checks the code exists and credits the friend who sent it.
+        set((s) => ({ user: { ...s.user, redeemedInvite: code, invitePending: { code, day: todayKey() } } }));
         return 'ok';
+      },
+
+      settleInvite: () => {
+        const pending = get().user.invitePending;
+        if (!pending || pending.day >= todayKey()) return 0;
+        // Back on a later day: the friend is real. Paid like bought shells, so they never burn.
+        get().addShells(INVITE_REWARD, 'invite');
+        set((s) => ({ user: { ...s.user, invitePending: undefined } }));
+        return INVITE_REWARD;
       },
 
       spinWheel: () => {

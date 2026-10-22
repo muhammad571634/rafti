@@ -13,7 +13,7 @@ import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
 import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
-import { shareForReward } from '@/lib/share';
+import { shareText } from '@/lib/share';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, space, systemColors } from '@/theme';
 
@@ -144,7 +144,7 @@ export default function CallScreen() {
 
   const share = () => {
     // Sharing a call counts as the day's share.
-    void shareForReward(t('call.shareMessage', { name }));
+    void shareText(t('call.shareMessage', { name }));
   };
 
   return (

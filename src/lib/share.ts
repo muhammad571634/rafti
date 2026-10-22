@@ -1,11 +1,11 @@
 import * as Clipboard from 'expo-clipboard';
 import { Platform, Share } from 'react-native';
 
-import { useAppStore } from '@/store/use-app-store';
-
 /**
  * Opens the system share sheet. On a web browser without one the text is copied
- * instead. Resolves true when the user went through with it.
+ * instead. Resolves true when the user went through with it. Sharing pays nothing
+ * (owner, 2026-10-22): the share sheet cannot tell whether anyone saw it, and Meta's
+ * rules forbid rewarding shares; invites pay once the friend really joins.
  */
 export async function shareText(message: string) {
   try {
@@ -18,11 +18,4 @@ export async function shareText(message: string) {
   } catch {
     return false;
   }
-}
-
-/** Shares, then pays the daily share reward (once a day; the banner shows it). */
-export async function shareForReward(message: string) {
-  const done = await shareText(message);
-  if (done) useAppStore.getState().claimShareReward();
-  return done;
 }

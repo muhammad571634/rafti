@@ -10,7 +10,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
-import { ShareRewardBanner } from '@/components/share-reward-banner';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
@@ -63,7 +62,6 @@ export default function RootLayout() {
           {/* A swipe must not end a date by accident; the close button asks first. */}
           <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
         </Stack>
-        <ShareRewardBanner />
         <AlarmRuntime />
         <OnboardingGate />
       </SafeAreaProvider>

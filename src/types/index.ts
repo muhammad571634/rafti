@@ -496,6 +496,11 @@ export interface User {
   onboardedAt?: string;
   /** A friend's invite code entered here; it can be used only once */
   redeemedInvite?: string;
+  /**
+   * The code was entered on `day`; both sides get their shells when the user comes back on a
+   * later day (owner, 2026-10-22), so a throwaway account earns nothing.
+   */
+  invitePending?: { code: string; day: string };
   /** When friends joined with this user's code (credited by the server later) */
   inviteCredits?: string[];
   /** Profile details the characters can use; all optional, see `profileCompletion`. */

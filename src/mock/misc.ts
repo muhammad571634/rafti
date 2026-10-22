@@ -74,8 +74,6 @@ export function rollCheckIn(day: number) {
 export const INVITE_REWARD = 50;
 /** Invites that pay out per week (Monday to Sunday). */
 export const INVITES_PER_WEEK = 6;
-/** Sharing a call, a board note or an invite: once a day. */
-export const SHARE_REWARD = 6;
 /** The lucky wheel's one spin a day; the app has no ads to buy more (owner, 2026-10-22). */
 export const FREE_SPINS_PER_DAY = 1;
 

@@ -12,8 +12,7 @@ import { Polaroid, sceneImage } from '@/components/date/polaroid';
 import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
 import { Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { shareForReward } from '@/lib/share';
-import { SHARE_REWARD, todayKey } from '@/mock';
+import { shareText } from '@/lib/share';
 import { datePlaceById, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, isDark, shadows, space } from '@/theme';
@@ -40,7 +39,6 @@ export default function DateScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
-  const sharedToday = useAppStore((s) => s.daily.shareDay === todayKey());
   const finishDate = useAppStore((s) => s.finishDate);
   const leaveDate = useAppStore((s) => s.leaveDate);
   // Only a date paid for on the map plays here; a stray link gets the way back.
@@ -137,11 +135,9 @@ export default function DateScreen() {
             scaleTo={0.97}
             accessibilityRole="button"
             style={[styles.bigButton, { backgroundColor: look.ink }]}
-            onPress={() => void shareForReward(t('date.shareMessage', { place: title, name }))}>
+            onPress={() => void shareText(t('date.shareMessage', { place: title, name }))}>
             <Ionicons name="share-outline" size={19} color="#FFFFFF" />
-            <Txt style={styles.bigButtonText}>
-              {sharedToday ? t('date.share') : t('date.shareReward', { count: SHARE_REWARD })}
-            </Txt>
+            <Txt style={styles.bigButtonText}>{t('date.share')}</Txt>
           </PressableScale>
           <PressableScale
             scaleTo={0.97}

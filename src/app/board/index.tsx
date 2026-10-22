@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { boardStyle, Stationery } from '@/components/board/stationery';
 import { CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
-import { shareForReward } from '@/lib/share';
+import { shareText } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, space } from '@/theme';
 
@@ -75,7 +75,7 @@ export default function BoardScreen() {
                     hitSlop={hitSlop}
                     scaleTo={0.85}
                     accessibilityLabel={t('board.share')}
-                    onPress={() => void shareForReward(t('board.shareMessage', { text: post.text }))}>
+                    onPress={() => void shareText(t('board.shareMessage', { text: post.text }))}>
                     <Ionicons name="share-outline" size={16} color={colors.textSecondary} />
                   </PressableScale>
                 </View>

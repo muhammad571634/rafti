@@ -24,11 +24,10 @@ import {
   Txt,
 } from '@/components/ui';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
-import { shareForReward } from '@/lib/share';
+import { shareText } from '@/lib/share';
 import {
   INVITE_REWARD,
   INVITES_PER_WEEK,
-  SHARE_REWARD,
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
@@ -42,20 +41,22 @@ type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof
 
 const ROW_ICON = 34;
 const WAY_ICON = 36;
-/** The ways to earn shells as iOS system tiles: calls green, the board brown, sharing blue, invites indigo. */
-const WAY_TILES: Record<'call' | 'board' | 'invite' | 'share', TileLook> = {
-  call: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
-  board: { fill: '#A2845E', ios: 'pin.fill', icon: 'pin' },
+/** Invites, sharing and the invite steps as iOS system tiles (SF Symbols). */
+const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook> = {
   invite: { fill: '#5856D6', ios: 'person.badge.plus', icon: 'person-add' },
   share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
+  send: { fill: '#007AFF', ios: 'paperplane.fill', icon: 'paper-plane' },
+  join: { fill: '#5856D6', ios: 'person.badge.plus', icon: 'person-add' },
+  back: { fill: '#34C759', ios: 'calendar', icon: 'calendar' },
 };
 
 /**
- * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (share, invite)
+ * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (invite, share)
  * and your invite code. No ads anywhere in the app (owner, 2026-10-22): shells are bought, or
- * earned by coming back and bringing friends. iOS look on the aurora (2026-10-22, coded at the owner's word):
- * glass back and a shell capsule, large title, white cards, peach capsule buttons as in the
- * Store. Every limit lives in the store so it survives a restart.
+ * earned by coming back and bringing friends. An invite pays 50 to both sides once the friend
+ * joins with the code and comes back on a later day; sharing pays nothing. iOS look on the
+ * aurora: glass back and a shell capsule, large title, white cards, peach capsule buttons as in
+ * the Store. Every limit lives in the store so it survives a restart.
  */
 export default function GiftsScreen() {
   const insets = useSafeAreaInsets();
@@ -74,10 +75,10 @@ export default function GiftsScreen() {
   const [codeInput, setCodeInput] = useState('');
   const [redeemError, setRedeemError] = useState<string | null>(null);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
   const code = inviteCodeFor(user);
   const invited = Math.min(INVITES_PER_WEEK, invitesThisWeek(user.inviteCredits));
-  const sharedToday = daily.shareDay === todayKey();
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(code);
@@ -85,9 +86,10 @@ export default function GiftsScreen() {
     setTimeout(() => setCopied(false), 1600);
   };
 
-  // An invite is also a share, so it can pay the day's share reward.
-  const invite = () => void shareForReward(t('gifts.inviteMessage', { code, count: INVITE_REWARD }));
-  const shareToday = () => void shareForReward(t('gifts.shareMessage'));
+  // Sending the code pays nothing by itself; the friend's shells and the sender's come once the
+  // friend joins with it and is back on a later day (the server credits the sender).
+  const invite = () => void shareText(t('gifts.inviteMessage', { code, count: INVITE_REWARD }));
+  const share = () => void shareText(t('gifts.shareMessage'));
 
   const redeem = () => {
     const result = redeemInvite(codeInput);
@@ -95,7 +97,7 @@ export default function GiftsScreen() {
     setRedeemOpen(false);
     setCodeInput('');
     setRedeemError(null);
-    setReward(INVITE_REWARD);
+    setAccepted(true);
   };
 
   const today = todayKey();
@@ -189,7 +191,7 @@ export default function GiftsScreen() {
             hitSlop={hitSlop}
             scaleTo={0.88}
             accessibilityRole="button"
-            accessibilityLabel={t('gifts.shareRulesTitle')}
+            accessibilityLabel={t('gifts.inviteRulesTitle')}
             style={styles.info}
             onPress={() => setRulesOpen(true)}>
             <Ionicons name="information-circle-outline" size={20} color={aurora.textMuted} />
@@ -197,18 +199,14 @@ export default function GiftsScreen() {
         </View>
         <View style={styles.card}>
           <WayRow
-            tile={WAY_TILES.share}
-            title={t('gifts.shareTitle')}
-            subtitle={t('gifts.shareSub', { count: SHARE_REWARD })}
-            action={<Capsule label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')} disabled={sharedToday} onPress={shareToday} />}
-            line
-          />
-          <WayRow
             tile={WAY_TILES.invite}
             title={t('gifts.inviteTitle')}
             subtitle={t('gifts.inviteSub', { count: INVITE_REWARD, done: invited, total: INVITES_PER_WEEK })}
             action={<Capsule label={t('gifts.inviteNow')} onPress={invite} />}
+            line
           />
+          {/* Sharing tells people about Sigmazam but pays nothing (owner, 2026-10-22). */}
+          <WayRow tile={WAY_TILES.share} title={t('gifts.shareTitle')} action={<Capsule label={t('gifts.share')} onPress={share} />} />
         </View>
 
         <View style={[styles.card, styles.codeRow]}>
@@ -229,7 +227,9 @@ export default function GiftsScreen() {
             <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={17} color={STORE.peachInk} />
           </PressableScale>
         </View>
-        {user.redeemedInvite ? null : (
+        {user.invitePending ? (
+          <Txt style={styles.pending}>{t('gifts.invitePending', { count: INVITE_REWARD })}</Txt>
+        ) : user.redeemedInvite ? null : (
           <PressableScale scaleTo={0.96} accessibilityRole="button" style={styles.haveCode} onPress={() => setRedeemOpen(true)}>
             <Txt style={styles.haveCodeText}>{t('gifts.haveCode')}</Txt>
           </PressableScale>
@@ -257,17 +257,30 @@ export default function GiftsScreen() {
               {redeemError}
             </Txt>
           ) : null}
-          <Button label={t('gifts.redeem', { count: INVITE_REWARD })} full disabled={!codeInput.trim()} onPress={redeem} />
+          <Button label={t('gifts.useCode')} full disabled={!codeInput.trim()} onPress={redeem} />
         </View>
       </Sheet>
 
-      <Sheet visible={rulesOpen} onClose={() => setRulesOpen(false)} title={t('gifts.shareRulesTitle')}>
+      <Sheet visible={accepted} onClose={() => setAccepted(false)} center>
+        <View style={styles.success}>
+          <Tile look={WAY_TILES.back} size={56} />
+          <Txt variant="h3" center>
+            {t('gifts.codeAccepted')}
+          </Txt>
+          <Txt variant="body" color={colors.textSecondary} center>
+            {t('gifts.codeAcceptedBody', { count: INVITE_REWARD })}
+          </Txt>
+          <Button label={t('common.done')} onPress={() => setAccepted(false)} full />
+        </View>
+      </Sheet>
+
+      <Sheet visible={rulesOpen} onClose={() => setRulesOpen(false)} title={t('gifts.inviteRulesTitle')}>
         <View style={styles.rules}>
-          {(['call', 'board', 'invite'] as const).map((way) => (
-            <ListRow key={way} title={t(`gifts.shareWays.${way}`)} left={<Tile look={WAY_TILES[way]} size={ROW_ICON} />} />
+          {(['send', 'join', 'back'] as const).map((step) => (
+            <ListRow key={step} title={t(`gifts.inviteSteps.${step}`)} left={<Tile look={WAY_TILES[step]} size={ROW_ICON} />} />
           ))}
           <Txt variant="caption" color={colors.textMuted} center>
-            {t('gifts.shareRulesLimit', { count: SHARE_REWARD })}
+            {t('gifts.inviteRulesNote', { count: INVITE_REWARD, total: INVITES_PER_WEEK })}
           </Txt>
         </View>
       </Sheet>
@@ -311,7 +324,7 @@ function WayRow({
 }: {
   tile: TileLook;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   action: React.ReactNode;
   line?: boolean;
 }) {
@@ -320,7 +333,7 @@ function WayRow({
       <Tile look={tile} size={WAY_ICON} />
       <View style={styles.wayBody}>
         <Txt style={styles.wayTitle}>{title}</Txt>
-        <Txt style={styles.waySub}>{subtitle}</Txt>
+        {subtitle ? <Txt style={styles.waySub}>{subtitle}</Txt> : null}
       </View>
       {action}
       {line ? <View style={styles.wayLine} /> : null}
@@ -436,6 +449,7 @@ const styles = StyleSheet.create({
   copy: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.peachSoft },
   haveCode: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, marginTop: space.sm },
   haveCodeText: { fontSize: 15, fontWeight: '600', color: STORE.peachInk },
+  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', fontSize: 13, lineHeight: 18, color: aurora.textMuted },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -60 },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
