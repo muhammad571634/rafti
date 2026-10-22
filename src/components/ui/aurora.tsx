@@ -1,5 +1,5 @@
 import { GlassView, isGlassEffectAPIAvailable, isLiquidGlassAvailable } from 'expo-glass-effect';
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { Platform, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import Animated, {
   Easing,
@@ -92,7 +92,9 @@ function Blob({
       { scale: interpolate(t.value, [0, 1], [1, 1.08]) },
     ],
   }));
-  const id = `aurora-${color.slice(1)}`;
+  // Unique per mount: on web a screen under the stack keeps its SVG, and a repeated id would
+  // point this gradient at that hidden copy, which browsers do not paint.
+  const id = `aurora-${color.slice(1)}-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   return (
     <Animated.View style={[styles.blob, { left, top, width: size, height: size }, drift]}>
       <Svg width={size} height={size}>

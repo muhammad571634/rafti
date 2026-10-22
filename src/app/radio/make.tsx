@@ -3,29 +3,31 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { useFriends } from '@/components/group/friend-row';
 import { PaywallSheet } from '@/components/paywall-sheet';
+import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
-import { Anim, Button, CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, AuroraGlass, Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { CLIP_LINE_MAX, CLIP_MAX_LINES, CLIP_TITLE_MAX, checkClip, cleanLines, clipCost } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { aurora, colors, space } from '@/theme';
 
 /** How long the "is recording" moment lasts in the mock; real builds wait for the voiced file. */
 const RECORD_MS = 1800;
+const PAD = 14;
 
 /**
- * Make a clip (F27, approved prototype): pick a friend, write up to 5 lines, name it, and the
- * friend records it in their voice. 5 lines cost 1 shell (owner decision 2026-10-15).
+ * Make a clip (F27): pick a friend, write up to 5 lines, name it, and the friend records it in
+ * their voice. 5 lines cost 1 shell (owner decision 2026-10-15). iOS look on the aurora
+ * (2026-10-22, coded at the owner's word): friends with a tint ring, the lines as one card of
+ * fields, and the Store's bar with Record and what it costs.
  */
 export default function MakeClipScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ characterId?: string }>();
   const friends = useFriends();
   const makeRadioClip = useAppStore((s) => s.makeRadioClip);
@@ -51,10 +53,21 @@ export default function MakeClipScreen() {
   const clean = cleanLines(lines);
   const cost = clipCost(clean.length);
 
+  const back = (
+    <View style={styles.bar}>
+      <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
+        <AuroraGlass style={styles.round}>
+          <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
+        </AuroraGlass>
+      </PressableScale>
+    </View>
+  );
+
   if (!friend) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('radio.make')} />
+      <Screen background="aurora">
+        {back}
+        <LargeTitle>{t('radio.make')}</LargeTitle>
         <EmptyState
           icon="bubbles"
           title={t('radio.noFriends')}
@@ -93,121 +106,102 @@ export default function MakeClipScreen() {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('radio.make')} />
+    <Screen background="aurora">
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
-          <View style={styles.section}>
-            <Txt variant="h3">{t('radio.who')}</Txt>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.friends}>
-              {friends.map((f) => {
-                const on = f.character.id === friend.character.id;
-                return (
-                  <PressableScale
-                    key={f.character.id}
-                    onPress={() => setWho(f.character.id)}
-                    disabled={recording}
-                    scaleTo={0.94}
-                    accessibilityRole="button"
-                    accessibilityLabel={f.name}
-                    accessibilityState={{ selected: on }}
-                    style={styles.friend}>
-                    <View style={[styles.ring, on && styles.ringOn]}>
-                      <CharacterAvatar character={f.character} size={52} />
-                    </View>
-                    <Txt
-                      variant={on ? 'smallStrong' : 'small'}
-                      color={on ? colors.text : colors.textSecondary}
-                      lines={1}
-                      center>
-                      {shortName(f.name)}
-                    </Txt>
-                  </PressableScale>
-                );
-              })}
-            </ScrollView>
-          </View>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          {back}
+          <LargeTitle>{t('radio.make')}</LargeTitle>
 
-          <View style={styles.section}>
-            <View style={styles.titleRow}>
-              <Txt variant="h3" style={styles.flex}>
-                {t('radio.says', { name })}
-              </Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('radio.lineCount', { count: clean.length, max: CLIP_MAX_LINES })}
-              </Txt>
-            </View>
-            <View style={styles.box}>
-              {lines.map((line, i) => (
-                <View key={i} style={[styles.line, i > 0 && styles.divider]}>
-                  <Txt variant="smallStrong" color={colors.textFaint} style={styles.lineNo}>
-                    {i + 1}
-                  </Txt>
-                  <TextInput
-                    value={line}
-                    onChangeText={(text) => edit(i, text)}
-                    placeholder={t('radio.linePlaceholder', { n: i + 1 })}
-                    placeholderTextColor={colors.textFaint}
-                    accessibilityLabel={t('radio.linePlaceholder', { n: i + 1 })}
-                    maxLength={CLIP_LINE_MAX}
-                    multiline
-                    editable={!recording}
-                    style={styles.lineInput}
-                  />
-                  {lines.length > 1 && !recording ? (
-                    <PressableScale
-                      onPress={() => remove(i)}
-                      hitSlop={10}
-                      scaleTo={0.88}
-                      accessibilityRole="button"
-                      accessibilityLabel={t('radio.removeLine', { n: i + 1 })}>
-                      <Ionicons name="close" size={18} color={colors.textFaint} />
-                    </PressableScale>
-                  ) : null}
-                </View>
-              ))}
-              {lines.length < CLIP_MAX_LINES && !recording ? (
+          <GroupLabel>{t('radio.who')}</GroupLabel>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.friends}>
+            {friends.map((f) => {
+              const on = f.character.id === friend.character.id;
+              return (
                 <PressableScale
-                  onPress={add}
-                  scaleTo={0.985}
+                  key={f.character.id}
+                  onPress={() => setWho(f.character.id)}
+                  disabled={recording}
+                  scaleTo={0.94}
                   accessibilityRole="button"
-                  accessibilityLabel={t('radio.addLine')}
-                  style={[styles.line, styles.divider]}>
-                  <Ionicons name="add" size={20} color={colors.text} />
-                  <Txt variant="bodyStrong">{t('radio.addLine')}</Txt>
+                  accessibilityLabel={f.name}
+                  accessibilityState={{ selected: on }}
+                  style={styles.friend}>
+                  <View style={[styles.ring, on && styles.ringOn]}>
+                    <CharacterAvatar character={f.character} size={52} />
+                  </View>
+                  <Txt style={[styles.friendName, on && styles.friendNameOn]} lines={1} center>
+                    {shortName(f.name)}
+                  </Txt>
                 </PressableScale>
-              ) : null}
-            </View>
-            <Txt variant="small" color={colors.textSecondary}>
-              {t('radio.rules', { name })}
-            </Txt>
+              );
+            })}
+          </ScrollView>
+
+          <View style={styles.labelRow}>
+            <GroupLabel>{t('radio.says', { name })}</GroupLabel>
+            <Txt style={styles.labelValue}>{t('radio.lineCount', { count: clean.length, max: CLIP_MAX_LINES })}</Txt>
           </View>
+          <View style={styles.card}>
+            {lines.map((line, i) => (
+              <View key={i} style={[styles.line, i > 0 && styles.divider]}>
+                <Txt style={styles.lineNo}>{i + 1}</Txt>
+                <TextInput
+                  value={line}
+                  onChangeText={(text) => edit(i, text)}
+                  placeholder={t('radio.linePlaceholder', { n: i + 1 })}
+                  placeholderTextColor={aurora.textMuted}
+                  accessibilityLabel={t('radio.linePlaceholder', { n: i + 1 })}
+                  maxLength={CLIP_LINE_MAX}
+                  multiline
+                  editable={!recording}
+                  style={styles.lineInput}
+                />
+                {lines.length > 1 && !recording ? (
+                  <PressableScale
+                    onPress={() => remove(i)}
+                    hitSlop={10}
+                    scaleTo={0.88}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('radio.removeLine', { n: i + 1 })}>
+                    <Ionicons name="close-circle" size={20} color={STORE.faint} />
+                  </PressableScale>
+                ) : null}
+              </View>
+            ))}
+            {lines.length < CLIP_MAX_LINES && !recording ? (
+              <PressableScale
+                onPress={add}
+                scaleTo={0.985}
+                accessibilityRole="button"
+                accessibilityLabel={t('radio.addLine')}
+                style={[styles.line, styles.divider]}>
+                <Ionicons name="add-circle" size={22} color={aurora.tint} />
+                <Txt style={styles.addText}>{t('radio.addLine')}</Txt>
+              </PressableScale>
+            ) : null}
+          </View>
+          <Txt style={styles.footnote}>{t('radio.rules', { name })}</Txt>
 
           {crisis ? (
-            <View style={styles.crisis} accessibilityLiveRegion="polite">
+            <View style={[styles.card, styles.crisis]} accessibilityLiveRegion="polite">
               <Txt variant="title">{t('radio.crisisTitle', { name })}</Txt>
               <Txt variant="small" color={colors.textSecondary}>
                 {t('radio.crisisBody')}
               </Txt>
-              <Button
-                label={t('safety.helplineAction')}
-                variant="secondary"
-                size="sm"
-                onPress={() => void Linking.openURL(HELPLINE_URL)}
-              />
+              <Button label={t('safety.helplineAction')} variant="secondary" size="sm" onPress={() => void Linking.openURL(HELPLINE_URL)} />
             </View>
           ) : null}
 
-          <View style={styles.section}>
-            <Txt variant="smallStrong">
-              {t('radio.nameLabel')}
-              <Txt variant="small" color={colors.textSecondary}>{` · ${t('radio.optional')}`}</Txt>
-            </Txt>
+          <GroupLabel>{`${t('radio.nameLabel')} · ${t('radio.optional')}`}</GroupLabel>
+          <View style={styles.card}>
             <TextInput
               value={title}
               onChangeText={setTitle}
               placeholder={clean[0] ?? t('radio.nameLabel')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor={aurora.textMuted}
               accessibilityLabel={t('radio.nameLabel')}
               maxLength={CLIP_TITLE_MAX}
               editable={!recording}
@@ -216,27 +210,19 @@ export default function MakeClipScreen() {
           </View>
         </ScrollView>
 
-        {/* Action bar (docs/design-style.md §3): the button, then what it costs. */}
-        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+        {/* The Store's bar: Record, then what it costs; while recording, the friend at work. */}
+        <StoreBuyBar
+          label={recording ? t('radio.recording', { name }) : clean.length ? t('radio.record', { name }) : t('radio.writeFirst')}
+          caption={recording ? t('radio.recordingHint') : t('radio.cost', { lines: clean.length, count: cost })}
+          disabled={recording || !clean.length || crisis}
+          onPress={record}
+          left={recording ? <CharacterAvatar character={friend.character} size={28} /> : undefined}>
           {recording ? (
             <View style={styles.recording} accessibilityLiveRegion="polite">
-              <CharacterAvatar character={friend.character} size={40} />
-              <Txt variant="bodyStrong">{t('radio.recording', { name })}</Txt>
-              <Anim name="voiceWave" size={28} tint={colors.text} />
+              <Anim name="voiceWave" size={28} tint={aurora.tint} />
             </View>
-          ) : (
-            <Button
-              label={clean.length ? t('radio.record', { name }) : t('radio.writeFirst')}
-              size="lg"
-              full
-              disabled={!clean.length || crisis}
-              onPress={record}
-            />
-          )}
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {recording ? t('radio.recordingHint') : t('radio.cost', { lines: clean.length, count: cost })}
-          </Txt>
-        </View>
+          ) : null}
+        </StoreBuyBar>
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
@@ -246,57 +232,25 @@ export default function MakeClipScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  body: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl },
-  section: { gap: space.sm + 2 },
-  titleRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  friends: { gap: space.md, paddingRight: space.lg },
-  friend: { width: 64, alignItems: 'center', gap: space.xs + 2 },
-  ring: { padding: 2, borderRadius: radius.pill, borderWidth: 2, borderColor: 'transparent' },
-  ringOn: { borderColor: colors.text },
-  box: {
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
-  line: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm + 2,
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-  },
-  divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
-  lineNo: { width: 18 },
-  lineInput: { flex: 1, paddingVertical: space.md, color: colors.text, ...type.body },
-  crisis: {
-    gap: space.sm,
-    padding: space.lg,
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    alignItems: 'flex-start',
-  },
-  input: {
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    ...type.body,
-  },
-  recording: { height: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.md },
-  actionBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
+  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  backIcon: { marginLeft: -2 },
+  friends: { gap: 14, paddingHorizontal: space.lg },
+  friend: { width: 64, alignItems: 'center', gap: 6 },
+  ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
+  ringOn: { borderColor: aurora.tint },
+  friendName: { fontSize: 13, color: aurora.textMuted },
+  friendNameOn: { fontWeight: '700', color: colors.text },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },
+  line: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 52, paddingHorizontal: PAD },
+  divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: aurora.separator },
+  lineNo: { width: 18, fontSize: 15, fontWeight: '700', color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  lineInput: { flex: 1, paddingVertical: 14, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  addText: { fontSize: 17, fontWeight: '600', color: STORE.tint },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  crisis: { marginTop: 22, gap: space.sm, padding: space.lg, alignItems: 'flex-start' },
+  input: { minHeight: 50, paddingHorizontal: PAD + 2, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  recording: { alignItems: 'center' },
 });
