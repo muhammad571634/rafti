@@ -52,6 +52,7 @@ export default function ClipPlayerScreen() {
   const player = useRadioPlayer();
   const shareRadioClip = useAppStore((s) => s.shareRadioClip);
   const deleteRadioClip = useAppStore((s) => s.deleteRadioClip);
+  const markHeard = useAppStore((s) => s.markRadioGiftHeard);
   const hasChat = useAppStore((s) => !!clip && s.conversations.some((c) => c.characterId === clip.character.id));
   const [sent, setSent] = useState(false);
   const toast = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,6 +63,7 @@ export default function ClipPlayerScreen() {
   // Opening a clip plays it, unless it is already the one loaded.
   useEffect(() => {
     if (!clip || clip.locked) return;
+    markHeard(clip.id);
     const now = useRadioPlayer.getState();
     if (now.kind !== 'clip' || now.id !== clip.id) now.play('clip', clip.id, clip.durationSec);
     // Only when the screen opens on a clip; later plays are the user's.
@@ -135,13 +137,25 @@ export default function ClipPlayerScreen() {
     <Screen background="aurora">
       <View style={styles.bar}>
         {back}
-        {clip.mine ? (
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.delete')} onPress={remove}>
+        <View style={styles.barRight}>
+          {/* The clip as a wake-up voice: a new alarm with this friend and this clip. */}
+          <PressableScale
+            scaleTo={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={t('radio.wakeWith')}
+            onPress={() => router.push({ pathname: '/alarms/edit', params: { characterId: clip.character.id, clipId: clip.id } })}>
             <AuroraGlass style={styles.round}>
-              <Ionicons name="trash" size={19} color={systemColors.red} />
+              <Ionicons name="alarm" size={20} color={colors.text} />
             </AuroraGlass>
           </PressableScale>
-        ) : null}
+          {clip.mine ? (
+            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.delete')} onPress={remove}>
+              <AuroraGlass style={styles.round}>
+                <Ionicons name="trash" size={19} color={systemColors.red} />
+              </AuroraGlass>
+            </PressableScale>
+          ) : null}
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
@@ -231,6 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  barRight: { flexDirection: 'row', gap: space.sm },
   body: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: 22 },
   head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg },
   cover: {

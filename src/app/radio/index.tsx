@@ -13,6 +13,7 @@ import { useRadioClips, type ClipView } from '@/components/radio/use-clips';
 import { Anim, AuroraGlass, CharacterAvatar, LargeTitle, PressableScale, Screen, Segmented, SFIcon, Txt } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
+import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, space } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -189,6 +190,7 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
   const router = useRouter();
   const on = useRadioPlayer((s) => s.kind === 'clip' && s.id === clip.id && s.playing);
   const toggle = useRadioPlayer((s) => s.toggle);
+  const markHeard = useAppStore((s) => s.markRadioGiftHeard);
   const time = duration(clip.durationSec);
 
   if (clip.locked) {
@@ -221,20 +223,30 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
         scaleTo={0.985}
         onPress={() => router.push({ pathname: '/radio/[id]', params: { id: clip.id } })}
         accessibilityRole="button"
-        accessibilityLabel={clip.title}
+        accessibilityLabel={clip.isNew ? `${clip.title}, ${t('radio.new')}` : clip.title}
         style={styles.clipOpen}>
         <CharacterAvatar character={clip.character} size={44} />
         <View style={styles.body}>
-          <Txt style={[styles.title, on && styles.titleOn]} lines={1}>
-            {clip.title}
-          </Txt>
+          <View style={styles.titleRow}>
+            <Txt style={[styles.title, styles.titleShrink, on && styles.titleOn]} lines={1}>
+              {clip.title}
+            </Txt>
+            {clip.isNew ? (
+              <View style={styles.newPill}>
+                <Txt style={styles.newText}>{t('radio.new')}</Txt>
+              </View>
+            ) : null}
+          </View>
           <Txt style={styles.sub} lines={1}>
             {clip.mine ? t('radio.byYou', { name: clip.name, time }) : t('radio.byFriend', { name: clip.name, time })}
           </Txt>
         </View>
       </PressableScale>
       <PressableScale
-        onPress={() => toggle('clip', clip.id, clip.durationSec)}
+        onPress={() => {
+          markHeard(clip.id);
+          toggle('clip', clip.id, clip.durationSec);
+        }}
         hitSlop={8}
         scaleTo={0.9}
         accessibilityRole="button"
@@ -276,6 +288,10 @@ const styles = StyleSheet.create({
   },
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
   title: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  titleShrink: { flexShrink: 1 },
+  newPill: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: STORE.peachSoft },
+  newText: { fontSize: 12, fontWeight: '700', color: STORE.peachInk },
   titleOn: { color: STORE.tint },
   sub: { fontSize: 13, color: aurora.textMuted },
   footnote: { marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },

@@ -70,3 +70,16 @@ export function checkClip(lines: string[]): ClipProblem | null {
 export function clipUnlocked(unlockLevel: number | undefined, level: number | undefined) {
   return !unlockLevel || (level ?? 0) >= unlockLevel;
 }
+
+/**
+ * The friend's level-gated clips that a step from level `from` to level `to` opens: the friend
+ * sends each one to the chat when it opens (2026-10-22). Clips open to everyone are not sent.
+ */
+export function clipsOpenedBy<T extends { characterId: string; unlockLevel?: number }>(
+  gifts: readonly T[],
+  characterId: string,
+  from: number,
+  to: number,
+): T[] {
+  return gifts.filter((g) => g.characterId === characterId && !!g.unlockLevel && from < g.unlockLevel && to >= g.unlockLevel);
+}

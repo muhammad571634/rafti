@@ -41,7 +41,7 @@ import {
 } from '@/lib/group-chat';
 import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
-import { checkClip, cleanLines, clipCost, clipDuration, clipTitle, type ClipProblem } from '@/lib/radio-clips';
+import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
@@ -68,6 +68,7 @@ import {
   WHEEL_SEGMENTS,
   WHEEL_WEIGHTS,
   shellCosts,
+  radioGifts,
   callHistory as seedCalls,
   callLines,
   replyBursts,
@@ -229,6 +230,8 @@ interface AppState {
   groups: GroupChat[];
   /** Radio clips the user made (F27); the friends' clips come from code. */
   radioClips: RadioClip[];
+  /** Friends' clips a level just opened and the user has not played yet: Radio marks them New. */
+  newRadioGifts: string[];
   messages: Record<string, Message[]>;
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
@@ -320,6 +323,8 @@ interface AppState {
   deleteRadioClip: (clipId: string) => void;
   /** Puts the clip in the chat with its friend as the user's voice message. False without a chat. */
   shareRadioClip: (clipId: string) => boolean;
+  /** A friend's new clip was played or opened: it stops being marked New. */
+  markRadioGiftHeard: (giftId: string) => void;
 
   /* bonds */
   addFriend: (characterId: string) => string;
@@ -504,6 +509,7 @@ type PersistedKeys =
   | 'conversations'
   | 'groups'
   | 'radioClips'
+  | 'newRadioGifts'
   | 'dateThemes'
   | 'userQuizzes'
   | 'wonFrames'
@@ -672,6 +678,7 @@ export const useAppStore = create<AppState>()(
       conversations: [],
       groups: [],
       radioClips: [],
+      newRadioGifts: [],
       messages: {},
       relationships: {},
       memories: [],
@@ -1147,6 +1154,9 @@ export const useAppStore = create<AppState>()(
         return true;
       },
 
+      markRadioGiftHeard: (giftId) =>
+        set((s) => (s.newRadioGifts.includes(giftId) ? { newRadioGifts: s.newRadioGifts.filter((id) => id !== giftId) } : s)),
+
       /* ── bonds ────────────────────────────────────────────────────────── */
 
       addFriend: (characterId) => {
@@ -1293,6 +1303,25 @@ export const useAppStore = create<AppState>()(
 
         if (levelledUp) {
           addMoment(set, characterId, 'levelUp', { level: next.level, title: next.levelTitle });
+        }
+
+        // A clip this level opens is not just unlocked: the friend sends it, as a voice message in
+        // the chat, and Radio marks it New. The server does the same with the real audio file.
+        const opened = clipsOpenedBy(radioGifts, characterId, existing.level, next.level);
+        const conversation = get().conversations.find((c) => c.characterId === characterId);
+        if (opened.length && conversation) {
+          for (const gift of opened) {
+            appendMessage(set, get, conversation.id, {
+              id: uid('m'),
+              conversationId: conversation.id,
+              author: 'them',
+              kind: 'voice',
+              durationSec: clipDuration(gift.lines),
+              transcript: gift.lines.join(' '),
+              createdAt: new Date().toISOString(),
+            });
+          }
+          set((s) => ({ newRadioGifts: [...new Set([...opened.map((g) => g.id), ...s.newRadioGifts])] }));
         }
       },
 
@@ -2332,6 +2361,7 @@ export const useAppStore = create<AppState>()(
         conversations: s.conversations,
         groups: s.groups,
         radioClips: s.radioClips,
+        newRadioGifts: s.newRadioGifts,
         dateThemes: s.dateThemes,
         userQuizzes: s.userQuizzes,
         wonFrames: s.wonFrames,

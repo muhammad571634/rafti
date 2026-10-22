@@ -18,6 +18,8 @@ export interface ClipView {
   mine: boolean;
   locked: boolean;
   unlockLevel?: number;
+  /** A friend's clip a level just opened, not played yet. */
+  isNew?: boolean;
 }
 
 /** Gifts from friends the user chats with (open ones first), and the user's own clips, newest first. */
@@ -27,6 +29,7 @@ export function useRadioClips(): { gifts: ClipView[]; mine: ClipView[] } {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const blockedIds = useAppStore((s) => s.blockedIds);
+  const newRadioGifts = useAppStore((s) => s.newRadioGifts);
 
   return useMemo(() => {
     const friendById = new Map(friends.map((f) => [f.character.id, f]));
@@ -41,10 +44,12 @@ export function useRadioClips(): { gifts: ClipView[]; mine: ClipView[] } {
           durationSec: clipDuration(gift.lines),
           mine: false,
           locked: !clipUnlocked(gift.unlockLevel, relationships[gift.characterId]?.level),
+          isNew: newRadioGifts.includes(gift.id),
         },
       ];
     });
-    gifts.sort((a, b) => Number(a.locked) - Number(b.locked));
+    // New ones first, then open, then locked.
+    gifts.sort((a, b) => Number(a.locked) - Number(b.locked) || Number(!!b.isNew) - Number(!!a.isNew));
 
     const byId = new Map(characters.map((c) => [c.id, c]));
     const mine = radioClips.flatMap((clip): ClipView[] => {
@@ -61,7 +66,7 @@ export function useRadioClips(): { gifts: ClipView[]; mine: ClipView[] } {
       ];
     });
     return { gifts, mine };
-  }, [friends, radioClips, characters, relationships, blockedIds]);
+  }, [friends, radioClips, characters, relationships, blockedIds, newRadioGifts]);
 }
 
 export function useRadioClip(id: string | undefined): ClipView | undefined {

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NIGHT_SWITCH, NIGHT_WHEEL } from '@/components/alarms/night';
 import { TimeWheel } from '@/components/alarms/time-wheel';
+import { useRadioClips } from '@/components/radio/use-clips';
 import { CharacterAvatar, Txt } from '@/components/ui';
 import { dayNames, repeatText, uses12Hour } from '@/lib/alarm-format';
 import { ALARM_SOUNDS } from '@/lib/alarms';
@@ -25,8 +26,10 @@ type Draft = Omit<Alarm, 'id' | 'createdAt' | 'enabled'>;
  * Reply to wake up and Snooze. Repeat, Who and Sound open as pages inside the sheet.
  */
 export default function AlarmEditScreen() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  // `characterId` and `clipId` come from a Radio clip's "Wake me with this".
+  const { id, characterId: fromClipFriend, clipId: fromClip } = useLocalSearchParams<{ id?: string; characterId?: string; clipId?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
+  const { gifts, mine } = useRadioClips();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -55,14 +58,16 @@ export default function AlarmEditScreen() {
       return rest;
     }
     const now = new Date();
-    const friend = friends.find((f) => f.voiceReady) ?? friends[0];
+    const clipFriend = fromClip ? friends.find((f) => f.id === fromClipFriend) : undefined;
+    const friend = clipFriend ?? friends.find((f) => f.voiceReady) ?? friends[0];
     return {
       hour: now.getHours(),
       minute: now.getMinutes(),
       repeat: [],
       label: '',
       characterId: friend?.id,
-      voice: !!friend?.voiceReady,
+      voice: !!clipFriend || !!friend?.voiceReady,
+      clipId: clipFriend ? fromClip : undefined,
       sound: 'morningTide',
       replyToWake: !!friend,
       snooze: true,
@@ -72,6 +77,9 @@ export default function AlarmEditScreen() {
 
   const friend = characters.find((c) => c.id === draft.characterId);
   const set = (patch: Partial<Draft>) => setDraft((d) => ({ ...d, ...patch }));
+  // The friend's clips that can wake the user: the ones they made with them, and open gifts.
+  const friendClips = [...mine, ...gifts].filter((c) => !c.locked && c.character.id === draft.characterId);
+  const wakeClip = draft.voice ? friendClips.find((c) => c.id === draft.clipId) : undefined;
 
   // Opened from a link there is nothing to go back to: land on the list instead.
   const close = () => (router.canGoBack() ? router.back() : router.replace('/alarms'));
@@ -125,7 +133,7 @@ export default function AlarmEditScreen() {
                 />
               </View>
               <Cell label={t('alarms.who')} value={friend?.name ?? t('alarms.nobody')} onPress={() => setPage('who')} />
-              <Cell label={t('alarms.sound')} value={t(`alarms.sounds.${draft.sound}`)} onPress={() => setPage('sound')} />
+              <Cell label={t('alarms.sound')} value={wakeClip ? wakeClip.title : t(`alarms.sounds.${draft.sound}`)} onPress={() => setPage('sound')} />
               <SwitchCell
                 label={t('alarms.replyToWake')}
                 value={draft.replyToWake && !!friend}
@@ -170,7 +178,7 @@ export default function AlarmEditScreen() {
             <CheckCell
               label={t('alarms.nobody')}
               checked={!draft.characterId}
-              onPress={() => set({ characterId: undefined, voice: false, replyToWake: false })}
+              onPress={() => set({ characterId: undefined, voice: false, clipId: undefined, replyToWake: false })}
               last={friends.length === 0}
             />
             {friends.map((c, i) => (
@@ -180,7 +188,9 @@ export default function AlarmEditScreen() {
                 lead={<CharacterAvatar character={c} size={30} />}
                 checked={draft.characterId === c.id}
                 last={i === friends.length - 1}
-                onPress={() => set({ characterId: c.id, voice: c.voiceReady, replyToWake: draft.characterId ? draft.replyToWake : true })}
+                onPress={() =>
+                  set({ characterId: c.id, voice: c.voiceReady, clipId: undefined, replyToWake: draft.characterId ? draft.replyToWake : true })
+                }
               />
             ))}
           </Group>
@@ -195,12 +205,31 @@ export default function AlarmEditScreen() {
               {friend?.voiceReady ? (
                 <CheckCell
                   label={t('alarms.saysGoodMorning', { name: friend.name.split(' ')[0] })}
-                  checked={draft.voice}
-                  onPress={() => set({ voice: true })}
+                  checked={draft.voice && !wakeClip}
+                  onPress={() => set({ voice: true, clipId: undefined })}
                 />
               ) : null}
-              <CheckCell label={t('alarms.voiceOff')} checked={!draft.voice} onPress={() => set({ voice: false })} last />
+              <CheckCell label={t('alarms.voiceOff')} checked={!draft.voice} onPress={() => set({ voice: false, clipId: undefined })} last />
             </Group>
+            {friendClips.length ? (
+              <>
+                <Txt variant="caption" color={night.textMuted} style={styles.groupTitle}>
+                  {t('alarms.theirClips').toUpperCase()}
+                </Txt>
+                <Group>
+                  {friendClips.map((clip, i) => (
+                    <CheckCell
+                      key={clip.id}
+                      label={clip.title}
+                      lead={<Ionicons name="radio" size={20} color={night.primary} />}
+                      checked={wakeClip?.id === clip.id}
+                      last={i === friendClips.length - 1}
+                      onPress={() => set({ voice: true, clipId: clip.id })}
+                    />
+                  ))}
+                </Group>
+              </>
+            ) : null}
             <Txt variant="caption" color={night.textMuted} style={styles.groupTitle}>
               {t('alarms.melody').toUpperCase()}
             </Txt>

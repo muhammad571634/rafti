@@ -49,8 +49,10 @@ card and a Basic / Pro table with locks, "FOMO"), prices last. The owner asked t
 all plans run the same model, so that line was left out as untrue (App Store 2.3 / 3.1). If the backend ever gives
 Pro a stronger model, add a "Most capable model" row then. The owner checked the Store in Expo Go: matches the
 canvas. From here the owner wants the map's screens coded straight, no prototypes: My plan and Shell history (D43),
-Photo Booth and Frame editor (D44). Next on the map: Contacts, Gifts, Radio (+ clip, make), Board, Secret note,
-Alarm ringing.
+Photo Booth and Frame editor (D44), Contacts (D45), Gifts (D46), Radio (D49). Owner decisions the same day: **no
+ads anywhere** (D47); invites pay 50 each only when the friend is back the next day, sharing pays nothing (D48);
+Radio clips can be an alarm's voice and a level-up sends the opened clip (D50; later ideas and a possible feed in
+`docs/radio-roadmap.md`). Next on the map: Board, Secret note, Alarm ringing.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 

@@ -8,6 +8,7 @@ import {
   cleanLines,
   clipCost,
   clipDuration,
+  clipsOpenedBy,
   clipTitle,
   clipUnlocked,
   lineAt,
@@ -88,5 +89,25 @@ describe('clipUnlocked', () => {
     assert.equal(clipUnlocked(5, 4), false);
     assert.equal(clipUnlocked(5, 5), true);
     assert.equal(clipUnlocked(5, undefined), false);
+  });
+});
+
+describe('clipsOpenedBy', () => {
+  const gifts = [
+    { id: 'open', characterId: 'kai' },
+    { id: 'six', characterId: 'kai', unlockLevel: 6 },
+    { id: 'sixteen', characterId: 'kai', unlockLevel: 16 },
+    { id: 'other', characterId: 'theo', unlockLevel: 6 },
+  ];
+  const ids = (from: number, to: number) => clipsOpenedBy(gifts, 'kai', from, to).map((g) => g.id);
+
+  it('sends the friend’s gated clips the step crosses, once', () => {
+    assert.deepEqual(ids(5, 6), ['six']);
+    assert.deepEqual(ids(6, 7), []);
+    assert.deepEqual(ids(4, 17), ['six', 'sixteen']);
+  });
+
+  it('never sends open clips or another friend’s', () => {
+    assert.deepEqual(ids(0, 3), []);
   });
 });

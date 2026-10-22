@@ -608,6 +608,11 @@ export interface Alarm {
   characterId?: string;
   /** The friend's recorded wake-up line plays with the melody. */
   voice: boolean;
+  /**
+   * A Radio clip with this friend (one the user made, or an open gift) plays instead of the
+   * stock wake-up line; only used while `voice` is on.
+   */
+  clipId?: string;
   sound: AlarmSound;
   /** Wake-up task: a real reply in that friend's chat turns the alarm off. */
   replyToWake: boolean;

@@ -5,8 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { useRadioPlayer } from '@/components/radio/radio-player';
+import { useRadioClip } from '@/components/radio/use-clips';
+import { Anim, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
+import { lineAt } from '@/lib/radio-clips';
 import { SNOOZE_MIN } from '@/lib/alarms';
 import { MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
 import { useAppStore } from '@/store/use-app-store';
@@ -33,6 +36,11 @@ export default function AlarmRingScreen() {
   const snoozeWake = useAppStore((s) => s.snoozeWake);
   const stopWake = useAppStore((s) => s.stopWake);
   const [now, setNow] = useState(() => new Date());
+  // A Radio clip chosen as this alarm's voice plays while it rings, its words on screen.
+  const found = useRadioClip(alarm?.voice ? alarm.clipId : undefined);
+  const clip = found && !found.locked ? found : undefined;
+  const player = useRadioPlayer();
+  const clipLoaded = !!clip && player.kind === 'clip' && player.id === clip.id;
 
   // Opened from a notification: start the ring if it is recent and not running yet.
   useEffect(() => {
@@ -52,6 +60,16 @@ export default function AlarmRingScreen() {
   // Nothing ringing (stopped, snoozed elsewhere, or a stale link): leave. Only while this screen
   // is in front, so a ring screen left under the chat never closes the chat instead.
   const ringing = wake?.state === 'ringing';
+
+  // The clip starts with the ring and stops with it (Stop, Snooze, or leaving for the chat).
+  useEffect(() => {
+    if (!ringing || !clip) return;
+    useRadioPlayer.getState().play('clip', clip.id, clip.durationSec);
+    return () => {
+      const now = useRadioPlayer.getState();
+      if (now.kind === 'clip' && now.id === clip.id) now.stop();
+    };
+  }, [ringing, clip?.id, clip?.durationSec]);
   useFocusEffect(
     useCallback(() => {
       if (ringing) return;
@@ -116,9 +134,20 @@ export default function AlarmRingScreen() {
           </View>
         ) : null}
         <Txt variant="body" color={colors.white} center style={styles.say}>
-          {friend ? `“${wake.question}”` : alarm?.label || t('alarms.ringing')}
+          {clip
+            ? `“${clip.lines[clipLoaded ? lineAt(clip.lines, player.elapsed) : 0]}”`
+            : friend
+              ? `“${wake.question}”`
+              : alarm?.label || t('alarms.ringing')}
         </Txt>
-        {alarm ? (
+        {clip ? (
+          <View style={styles.clipLine}>
+            <Anim name="voiceWave" size={20} tint={colors.white} />
+            <Txt variant="small" color={colors.onMediaMuted} lines={1}>
+              {clip.title}
+            </Txt>
+          </View>
+        ) : alarm ? (
           <Txt variant="small" color={colors.onMediaMuted}>
             {`♪ ${t(`alarms.sounds.${alarm.sound}`)}`}
           </Txt>
@@ -168,6 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.onMediaGlass,
   },
   say: { maxWidth: 260, marginTop: space.md },
+  clipLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs, maxWidth: 260 },
   actions: { alignItems: 'center', gap: space.md },
   primary: { alignSelf: 'stretch', height: 58, borderRadius: radius.pill, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   primaryText: { fontSize: 17 },
