@@ -3,20 +3,29 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PlanPicker } from '@/components/plans/plan-picker';
 import {
+  BUY_BAR_SPACE,
+  CARD_SHADOW,
+  GroupLabel,
+  IconTile,
+  ProPill,
+  Radio,
+  STORE,
+  StoreBuyBar,
+} from '@/components/plans/store-look';
+import {
   Anim,
+  AuroraGlass,
   Button,
-  Header,
   Icon3D,
-  IconButton,
-  ListRow,
+  LargeTitle,
   PressableScale,
   Screen,
-  SectionLabel,
   Segmented,
+  SFIcon,
   Sheet,
   ShellIcon,
   Txt,
@@ -24,11 +33,12 @@ import {
 import { TRIAL } from '@/economy/plans';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, palette, radius, space } from '@/theme';
+import { aurora, colors, palette, space } from '@/theme';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
 type Tab = 'plans' | 'shells';
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 const PLAN_IDS: readonly string[] = ['basic', 'pro', 'proAnnual'];
 
@@ -40,7 +50,7 @@ interface PackOffer {
   saving: number;
   per100: number;
   bestValue: boolean;
-  /** 1–3 shells drawn on the card: bigger packs look bigger. */
+  /** 1–3 shells drawn on the row: bigger packs look bigger. */
   stack: number;
 }
 
@@ -48,7 +58,7 @@ const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' 
 
 /**
  * Honest value framing: every price stays visible. The biggest pack anchors the list,
- * the popular one is pre-selected, and each card says what it saves per shell.
+ * the popular one is pre-selected, and each row says what it saves per shell.
  */
 function buildOffers(packs: ShellPack[]): PackOffer[] {
   const rate = (p: ShellPack) => p.amount / (p.shells + p.bonus);
@@ -67,8 +77,9 @@ function buildOffers(packs: ShellPack[]): PackOffer[] {
 }
 
 /**
- * The store: Plans (minutes for calls and voice replies, unlimited chat) and Shells
- * (packs for pay-as-you-go chat). `?tab=shells` opens on packs, `?plan=pro` picks a plan.
+ * The store on the aurora (canvas "Store: Plans and Shells", 2026-10-22): Plans (what Pro gives
+ * first, prices last) and Shells (packs for pay-as-you-go chat), one buy button pinned at the
+ * bottom. `?tab=shells` opens on packs, `?plan=pro` picks a plan.
  */
 export default function StoreScreen() {
   const { t } = useTranslation();
@@ -82,20 +93,23 @@ export default function StoreScreen() {
   // Real builds ask StoreKit / Play Billing and the server; the mock has nothing to bring back.
   const restore = () => setRestored(true);
 
-  return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={t('store.title')}
-        right={
-          <IconButton
-            icon="receipt-outline"
-            size={21}
-            accessibilityLabel={t('ledger.open')}
-            onPress={() => router.push('/store/ledger')}
-          />
-        }
-      />
+  const header = (
+    <>
+      <View style={styles.bar}>
+        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
+          <AuroraGlass style={styles.round}>
+            <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
+          </AuroraGlass>
+        </PressableScale>
+        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')}>
+          <AuroraGlass style={styles.round}>
+            <SFIcon ios="clock.arrow.circlepath" icon="time-outline" size={20} color={colors.text} />
+          </AuroraGlass>
+        </PressableScale>
+      </View>
+      <LargeTitle>{t('store.title')}</LargeTitle>
       <Segmented
+        tone="aurora"
         options={[
           { value: 'plans', label: t('plans.tabPlans') },
           { value: 'shells', label: t('plans.tabShells') },
@@ -104,15 +118,20 @@ export default function StoreScreen() {
         onChange={setTab}
         style={styles.tabs}
       />
+    </>
+  );
 
+  return (
+    <Screen background="aurora">
       {tab === 'plans' ? (
         <PlanPicker
+          header={header}
           initialPlan={initialPlan}
           onRestore={restore}
           onBought={({ plan, trial }) => setSuccess({ kind: 'plan', plan, trial })}
         />
       ) : (
-        <ShellsTab onBought={(amount) => setSuccess({ kind: 'pack', amount })} onRestore={restore} />
+        <ShellsTab header={header} onBought={(amount) => setSuccess({ kind: 'pack', amount })} onRestore={restore} />
       )}
 
       <Sheet visible={!!success} onClose={() => setSuccess(null)} center>
@@ -151,10 +170,27 @@ export default function StoreScreen() {
   );
 }
 
-function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void; onRestore: () => void }) {
+/** What things cost: shells for a number, a "Pro" mark for what comes only with Pro. */
+const COSTS: { key: string; fill: string; ios: SFSymbol; icon: IoniconName; shells: number | null }[] = [
+  { key: 'costTextMessage', fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble', shells: shellCosts.textMessage },
+  { key: 'costSecretNote', fill: '#FF2D55', ios: 'envelope.fill', icon: 'mail', shells: shellCosts.secretNote },
+  { key: 'costVoiceClone', fill: '#5856D6', ios: 'mic.fill', icon: 'mic', shells: shellCosts.characterVoiceClone },
+  { key: 'costListen', fill: '#FF2D55', ios: 'waveform', icon: 'pulse', shells: null },
+  { key: 'costCall', fill: '#34C759', ios: 'phone.fill', icon: 'call', shells: null },
+  { key: 'costPhotoBooth', fill: '#32ADE6', ios: 'camera.fill', icon: 'camera', shells: null },
+];
+
+function ShellsTab({
+  header,
+  onBought,
+  onRestore,
+}: {
+  header: React.ReactNode;
+  onBought: (amount: number) => void;
+  onRestore: () => void;
+}) {
   const { t } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const wallet = useAppStore((s) => s.wallet);
   const addShells = useAppStore((s) => s.addShells);
@@ -186,103 +222,106 @@ function ShellsTab({ onBought, onRestore }: { onBought: (amount: number) => void
 
   return (
     <>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+        {header}
+
         <View style={styles.balance}>
-          <Icon3D name="shell" size={40} />
-          <View style={styles.flex}>
-            <Txt variant="display">{wallet.shells}</Txt>
-            <Txt variant="small" color={colors.textMuted}>
-              {t('store.balanceHint', { count: Math.floor(wallet.shells / shellCosts.textMessage) })}
-            </Txt>
+          <ShellIcon size={44} />
+          <View style={styles.balanceAmount}>
+            <Txt style={styles.balanceValue}>{wallet.shells.toLocaleString('en-US')}</Txt>
+            <Txt style={styles.balanceUnit}>{t('store.shellsUnit')}</Txt>
           </View>
-          <Button
-            label={t('common.free')}
-            size="sm"
-            variant="secondary"
-            left={<Ionicons name="gift-outline" size={15} color={colors.text} />}
-            onPress={() => router.push('/gifts')}
-          />
+          <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => router.push('/gifts')} style={styles.freePill}>
+            <Ionicons name="gift-outline" size={16} color={STORE.peachInk} />
+            <Txt style={styles.freeText}>{t('common.free')}</Txt>
+          </PressableScale>
         </View>
 
-        <SectionLabel tone="title" title={t('store.choose')} style={styles.chooseLabel} />
-        <View style={styles.packs} accessibilityRole="radiogroup">
-          {starter ? (
-            <PackCard
-              offer={starter}
-              starter
-              selected={selected.pack.id === STARTER_PACK.id}
-              onSelect={() => setSelectedId(STARTER_PACK.id)}
-            />
-          ) : null}
-          {offers.map((offer) => (
-            <PackCard
+        <GroupLabel>{t('store.choose')}</GroupLabel>
+        <View style={styles.card} accessibilityRole="radiogroup">
+          {all.map((offer, i) => (
+            <PackRow
               key={offer.pack.id}
               offer={offer}
+              starter={offer.pack.id === STARTER_PACK.id}
               selected={offer.pack.id === selected.pack.id}
+              last={i === all.length - 1}
               onSelect={() => setSelectedId(offer.pack.id)}
             />
           ))}
         </View>
 
-        <SectionLabel tone="title" title={t('store.costs')} />
-        <CostRow
-          label={t('store.costTextMessage')}
-          meta={t('chat.shellCost', { count: shellCosts.textMessage })}
-        />
-        <CostRow label={t('store.costListen')} meta={t('store.withPlan')} />
-        <CostRow label={t('store.costCall')} meta={t('store.withPlan')} />
-        <CostRow label={t('store.costSecretNote')} meta={t('chat.shellCost', { count: shellCosts.secretNote })} />
-        <CostRow label={t('store.costPhotoBooth')} meta={t('store.withPlan')} />
-        <CostRow
-          label={t('store.costVoiceClone')}
-          meta={t('chat.shellCost', { count: shellCosts.characterVoiceClone })}
-        />
+        <GroupLabel>{t('store.costs')}</GroupLabel>
+        <View style={styles.card}>
+          {COSTS.map((cost, i) => (
+            <View key={cost.key} style={[styles.costRow, i < COSTS.length - 1 && styles.costLine]}>
+              <IconTile fill={cost.fill}>
+                <SFIcon ios={cost.ios} icon={cost.icon} size={17} color="#FFFFFF" />
+              </IconTile>
+              <Txt style={styles.costTitle} lines={1}>
+                {t(`store.${cost.key}`)}
+              </Txt>
+              {cost.shells === null ? (
+                <ProPill />
+              ) : (
+                <View style={styles.costShells} accessible accessibilityLabel={t('chat.shellCost', { count: cost.shells })}>
+                  <Txt style={styles.costValue}>{cost.shells}</Txt>
+                  <ShellIcon size={16} />
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
 
-        <Button label={t('store.restore')} variant="ghost" full style={styles.restore} onPress={onRestore} />
+        <PressableScale onPress={onRestore} scaleTo={0.96} hitSlop={8} accessibilityRole="link" style={styles.restore}>
+          <Txt style={styles.restoreText}>{t('store.restore')}</Txt>
+        </PressableScale>
       </ScrollView>
 
-      <View style={[styles.buyBar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
-        <Button
-          label={t('store.buy', { amount: selected.total.toLocaleString('en-US'), price: selected.pack.price })}
-          size="lg"
-          full
-          onPress={() => buy(selected)}
-        />
-        <Txt variant="caption" color={colors.textMuted} center>
-          {t(Platform.OS === 'ios' ? 'store.paidApple' : 'store.paidGoogle')}
-        </Txt>
-      </View>
+      <StoreBuyBar
+        label={t('store.buy', { amount: selected.total.toLocaleString('en-US'), price: selected.pack.price })}
+        caption={t(Platform.OS === 'ios' ? 'store.paidApple' : 'store.paidGoogle')}
+        onPress={() => buy(selected)}
+      />
     </>
   );
 }
 
-function PackCard({
+function PackRow({
   offer,
   selected,
+  last,
   onSelect,
   starter = false,
 }: {
   offer: PackOffer;
   selected: boolean;
+  last: boolean;
   onSelect: () => void;
-  /** The one-time starter pack: its own tag and line, no savings maths. */
+  /** The one-time starter pack: its own tag, no savings maths. */
   starter?: boolean;
 }) {
   const { t } = useTranslation();
   const { pack, total, saving, per100, bestValue, stack } = offer;
 
   const tag = starter
-    ? { label: t('store.starter'), style: styles.tagPrimary, color: colors.textOnPrimary }
+    ? { label: t('store.starter'), bg: STORE.peachSoft, ink: STORE.peachInk }
     : bestValue
-    ? { label: t('store.bestValue', { percent: saving }), style: styles.tagInk, color: colors.textOnInk }
-    : pack.popular
-      ? { label: t('store.popular'), style: styles.tagPrimary, color: colors.textOnPrimary }
-      : saving > 0
-        ? { label: t('store.save', { percent: saving }), style: styles.tagSoft, color: colors.textSecondary }
-        : null;
+      ? { label: t('store.bestValue', { percent: saving }), bg: STORE.inkTag, ink: STORE.inkTagText }
+      : pack.popular
+        ? {
+            label: saving > 0 ? `${t('store.popular')} · ${t('store.saveLower', { percent: saving })}` : t('store.popular'),
+            bg: STORE.peachSoft,
+            ink: STORE.peachInk,
+          }
+        : saving > 0
+          ? { label: t('store.save', { percent: saving }), bg: STORE.greyTag, ink: aurora.textMuted }
+          : null;
 
-  const detail = starter ? t('store.starterDetail') : pack.bonus > 0 ? null : t('store.topUp');
-  const popularSaving = pack.popular && !bestValue && saving > 0 ? ` · ${t('store.saveLower', { percent: saving })}` : '';
+  const detail =
+    pack.bonus > 0
+      ? `${pack.shells.toLocaleString('en-US')} + ${t('store.bonusFree', { count: pack.bonus })}`
+      : t('store.shellsUnit');
 
   return (
     <PressableScale
@@ -293,60 +332,41 @@ function PackCard({
       // react-native-web reads the ARIA prop; native reads accessibilityState.
       aria-checked={selected}
       accessibilityLabel={`${t('store.shellCount', { amount: total.toLocaleString('en-US') })}, ${pack.price}${tag ? `, ${tag.label}` : ''}`}
-      style={[styles.pack, tag && styles.packTagged, selected && styles.packSelected]}>
-      {tag ? (
-        <View style={[styles.tag, tag.style]}>
-          <Txt variant="tiny" color={tag.color}>
-            {tag.label}
+      style={styles.packRow}>
+      <Radio on={selected} />
+      <ShellStack count={stack} />
+      <View style={styles.packBody}>
+        <View style={styles.packAmount}>
+          <Txt style={styles.packTotal}>{total.toLocaleString('en-US')}</Txt>
+          <Txt style={styles.muted13} lines={1}>
+            {detail}
           </Txt>
         </View>
-      ) : null}
-
-      <ShellStack count={stack} selected={selected} />
-
-      <View style={styles.flex}>
-        <View style={styles.amount}>
-          <Txt variant="figure">{total.toLocaleString('en-US')}</Txt>
-          <Txt variant="small" color={colors.textMuted}>
-            {t('store.shellsUnit')}
-          </Txt>
-        </View>
-        <Txt variant="caption" color={colors.textMuted} lines={1}>
-          {detail ?? (
-            <>
-              {pack.shells.toLocaleString('en-US')} +{' '}
-              <Txt variant="caption" color={colors.bondText}>
-                {t('store.bonusFree', { count: pack.bonus })}
-              </Txt>
-              {popularSaving}
-            </>
-          )}
-        </Txt>
+        {tag ? (
+          <View style={[styles.tag, { backgroundColor: tag.bg }]}>
+            <Txt style={[styles.tagText, { color: tag.ink }]} lines={1}>
+              {tag.label}
+            </Txt>
+          </View>
+        ) : null}
       </View>
-
       <View style={styles.price}>
-        <Txt variant="bodyStrong">{pack.price}</Txt>
-        <Txt variant="caption" color={colors.textMuted}>
-          {t('store.per100', { price: usd.format(per100) })}
-        </Txt>
+        <Txt style={styles.priceText}>{pack.price}</Txt>
+        <Txt style={styles.muted13}>{t('store.per100', { price: usd.format(per100) })}</Txt>
       </View>
+      {last ? null : <View style={styles.packLine} />}
     </PressableScale>
   );
 }
 
-/** The currency mark, stacked 1–3 deep; the selected pack wears an apricot check. */
-function ShellStack({ count, selected }: { count: number; selected: boolean }) {
+/** The currency mark, stacked 1–3 deep. */
+function ShellStack({ count }: { count: number }) {
   const layout = STACKS[count] ?? STACKS[1];
   return (
-    <View style={styles.stack}>
+    <View style={styles.stack} importantForAccessibility="no-hide-descendants">
       {layout.map((pos, i) => (
-        <ShellIcon key={i} size={32} style={[styles.stackShell, pos]} />
+        <ShellIcon key={i} size={28} style={[styles.stackShell, pos]} />
       ))}
-      {selected ? (
-        <View style={styles.check}>
-          <Ionicons name="checkmark" size={11} color={colors.textOnPrimary} />
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -355,7 +375,7 @@ const STACKS: Record<number, { left: number; top: number }[]> = {
   1: [{ left: 9, top: 6 }],
   2: [
     { left: 3, top: 9 },
-    { left: 14, top: 3 },
+    { left: 15, top: 3 },
   ],
   3: [
     { left: 0, top: 11 },
@@ -364,74 +384,76 @@ const STACKS: Record<number, { left: number; top: number }[]> = {
   ],
 };
 
-function CostRow({ label, meta }: { label: string; meta: string }) {
-  return <ListRow title={label} meta={meta} style={styles.costRow} />;
-}
-
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  tabs: { marginHorizontal: space.lg, marginTop: space.xxs },
-  scroll: { paddingBottom: space.xl },
+  bar: {
+    height: 44,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xs,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  backIcon: { marginLeft: -2 },
+  tabs: { marginHorizontal: space.lg, marginTop: 12 },
   balance: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
+    gap: 14,
+    marginHorizontal: space.lg,
+    marginTop: 22,
+    padding: space.lg,
+    borderRadius: 20,
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
   },
-  chooseLabel: { paddingBottom: space.lg },
-  packs: { paddingHorizontal: space.lg, gap: space.md },
-  pack: {
+  balanceAmount: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: colors.text, fontVariant: ['tabular-nums'] },
+  balanceUnit: { fontSize: 15, color: aurora.textMuted },
+  freePill: {
+    height: 36,
+    paddingLeft: 12,
+    paddingRight: 14,
+    borderRadius: 18,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    padding: space.md + 1,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    gap: 6,
+    backgroundColor: STORE.peachSoft,
   },
-  // A tagged card leaves room for the tag that sits on its top edge.
-  packTagged: { marginTop: space.sm },
-  packSelected: { borderWidth: 2, borderColor: colors.primary, padding: space.md },
-  tag: {
-    position: 'absolute',
-    top: -10,
-    left: space.md,
-    paddingHorizontal: space.sm,
-    paddingVertical: 3,
-    borderRadius: radius.pill,
+  freeText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
+  card: {
+    marginHorizontal: space.lg,
+    borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
   },
-  tagInk: { backgroundColor: colors.text },
-  tagPrimary: { backgroundColor: colors.primaryFill },
-  tagSoft: { backgroundColor: colors.surfaceAlt },
-  stack: { width: 52, height: 46 },
+  packRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: space.lg },
+  stack: { width: 46, height: 40 },
   stackShell: { position: 'absolute' },
-  check: {
+  packBody: { flex: 1, minWidth: 0, gap: 3, paddingVertical: 12 },
+  packAmount: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
+  packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: colors.text, fontVariant: ['tabular-nums'] },
+  muted13: { flexShrink: 1, fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  tag: { alignSelf: 'flex-start', height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
+  tagText: { fontSize: 12, fontWeight: '700' },
+  price: { alignItems: 'flex-end', gap: 1 },
+  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.text, fontVariant: ['tabular-nums'] },
+  packLine: {
     position: 'absolute',
-    right: -2,
-    bottom: -2,
-    width: 18,
-    height: 18,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primaryFill,
-    borderWidth: 2,
-    borderColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    left: 50,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: aurora.separator,
   },
-  amount: { flexDirection: 'row', alignItems: 'baseline', gap: space.xs },
-  price: { alignItems: 'flex-end' },
-  costRow: { minHeight: 48 },
-  restore: { marginHorizontal: space.lg, marginTop: space.xl, alignSelf: 'auto' },
-  buyBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
+  costRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
+  costLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
+  costTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  costShells: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  costValue: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
+  restore: { alignSelf: 'center', marginTop: 10, paddingVertical: 12, paddingHorizontal: 10 },
+  restoreText: { fontSize: 15, fontWeight: '600', color: colors.text },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -50 },
 });

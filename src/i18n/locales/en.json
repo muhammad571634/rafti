@@ -1685,6 +1685,23 @@
     "bedtime": "Bedtime whispers every night",
     "newCharacters": "New characters first",
     "shellsNote": "{{amount}} plan shells come again on {{date}}.",
-    "withPro": "With Pro"
+    "withPro": "With Pro",
+    "choose": "Choose a plan",
+    "row": { "proAnnual": "Pro Yearly", "pro": "Pro Monthly", "basic": "Basic" },
+    "per": { "proAnnual": "per year", "pro": "per month", "basic": "per month" },
+    "proLine": "Calls, voice, pictures",
+    "hoursShort": "{{count}} h",
+    "compare": {
+      "shells": "Shells",
+      "calls": "Voice calls",
+      "voice": "Voice replies",
+      "photos": "Photo Booth",
+      "bedtime": "Bedtime whispers",
+      "characters": "New characters first",
+      "memory": "Remembers everything"
+    },
+    "included": "{{plan}}: included",
+    "notIncluded": "{{plan}}: not included",
+    "renewNote": "Plans renew automatically until you cancel in {{store}} settings."
   }
 }

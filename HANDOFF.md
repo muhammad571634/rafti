@@ -43,8 +43,12 @@ asks. Our dates album coded without a prototype at the owner's word (D38). The D
 as Wallet tickets (D39), so the whole Date area is done.
 Bedtime: the owner likes the screen as it is; only its top card changed, to a large animated sleeping mascot (D40).
 Alarms (list + editor) moved to Bedtime's navy in the iOS Clock look, with a Next alarm card (D41); the ringing
-screen is unchanged. Next on the map: Alarms / Bedtime
-(Sleep) or Store, in the map's order.
+screen is unchanged.
+Store coded from the canvas row "Store: Plans and Shells" (D42). The owner's order: what Pro gives first (a Pro
+card and a Basic / Pro table with locks, "FOMO"), prices last. The owner asked to say Pro "runs a stronger model";
+all plans run the same model, so that line was left out as untrue (App Store 2.3 / 3.1). If the backend ever gives
+Pro a stronger model, add a "Most capable model" row then. Next on the map: My plan and Shell history (Store), then
+the Photo / Radio / Gifts modules, prototype first.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 
