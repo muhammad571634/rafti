@@ -32,14 +32,12 @@ export {
 } from './group';
 export { radioGifts } from './radio';
 export {
-  AD_REWARD,
   INVITE_REWARD,
   INVITES_PER_WEEK,
   SHARE_REWARD,
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
-  MAX_ADS_PER_DAY,
   WHEEL_SEGMENTS,
   WHEEL_WEIGHTS,
   shellCosts,

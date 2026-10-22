@@ -70,15 +70,13 @@ export function rollCheckIn(day: number) {
   return base + Math.floor(Math.random() * (DAILY_CHECK_IN_TOP - base + 1));
 }
 
-/** Shells per rewarded ad. The server sets it per country from the ad's eCPM (backend-plan §13.5). */
-export const AD_REWARD = 6;
 /** Paid to both sides when a friend joins with an invite code. */
 export const INVITE_REWARD = 50;
 /** Invites that pay out per week (Monday to Sunday). */
 export const INVITES_PER_WEEK = 6;
 /** Sharing a call, a board note or an invite: once a day. */
 export const SHARE_REWARD = 6;
-export const MAX_ADS_PER_DAY = 5;
+/** The lucky wheel's one spin a day; the app has no ads to buy more (owner, 2026-10-22). */
 export const FREE_SPINS_PER_DAY = 1;
 
 /** Lucky Wheel segments, clockwise from the pointer. */

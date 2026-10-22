@@ -62,12 +62,10 @@ import {
   type MinutesKind,
 } from '@/economy/plans';
 import {
-  AD_REWARD,
   INVITE_REWARD,
   SHARE_REWARD,
   DAILY_CHECK_IN,
   FREE_SPINS_PER_DAY,
-  MAX_ADS_PER_DAY,
   WHEEL_SEGMENTS,
   WHEEL_WEIGHTS,
   shellCosts,
@@ -361,7 +359,6 @@ interface AppState {
   expireFreeShells: () => void;
   claimDailyLogin: () => number;
   dismissDailyReward: () => void;
-  watchAd: () => number;
   /** Pays the daily share reward once a day; returns what was paid (0 when already paid today). */
   claimShareReward: () => number;
   dismissShareReward: () => void;
@@ -1378,22 +1375,6 @@ export const useAppStore = create<AppState>()(
 
       dismissDailyReward: () => set({ dailyReward: null }),
 
-      watchAd: () => {
-        const today = todayKey();
-        const daily = get().daily;
-        const watched = daily.adsDay === today ? daily.adsWatched : 0;
-        if (watched >= MAX_ADS_PER_DAY) return 0;
-
-        // Real builds credit this from the rewarded-ad SDK callback.
-        get().expireFreeShells();
-        set((s) => ({
-          daily: { ...s.daily, adsDay: today, adsWatched: watched + 1 },
-          wallet: creditFree(s.wallet, AD_REWARD, today),
-          ledger: log(s.ledger, AD_REWARD, 'ad'),
-        }));
-        return AD_REWARD;
-      },
-
       claimShareReward: () => {
         const today = todayKey();
         if (get().daily.shareDay === today) return 0;
@@ -1429,23 +1410,16 @@ export const useAppStore = create<AppState>()(
         const today = todayKey();
         const daily = get().daily;
         const used = daily.spinDay === today ? daily.spinsUsed : 0;
-        const adsWatched = daily.adsDay === today ? daily.adsWatched : 0;
 
-        // One free spin a day; after that each spin costs one of the day's ad views.
-        const free = used < FREE_SPINS_PER_DAY;
-        if (!free && adsWatched >= MAX_ADS_PER_DAY) return null;
+        // One free spin a day, and no more: the app shows no ads (owner, 2026-10-22).
+        if (used >= FREE_SPINS_PER_DAY) return null;
 
         const index = weightedIndex(WHEEL_WEIGHTS);
         const reward = WHEEL_SEGMENTS[index];
 
         get().expireFreeShells();
         set((s) => ({
-          daily: {
-            ...s.daily,
-            spinDay: today,
-            spinsUsed: used + 1,
-            ...(free ? {} : { adsDay: today, adsWatched: adsWatched + 1 }),
-          },
+          daily: { ...s.daily, spinDay: today, spinsUsed: used + 1 },
           wallet: creditFree(s.wallet, reward, today),
           ledger: log(s.ledger, reward, 'spin'),
         }));

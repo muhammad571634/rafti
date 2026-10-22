@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { LuckyWheel } from '@/components/lucky-wheel';
 import { PeekingMascot } from '@/components/peeking-mascot';
@@ -13,8 +14,6 @@ import {
   Anim,
   AuroraGlass,
   Button,
-  ClayIcon,
-  type ClayIconName,
   LargeTitle,
   ListRow,
   PressableScale,
@@ -27,29 +26,34 @@ import {
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
 import { shareForReward } from '@/lib/share';
 import {
-  AD_REWARD,
   INVITE_REWARD,
   INVITES_PER_WEEK,
   SHARE_REWARD,
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
-  MAX_ADS_PER_DAY,
   WHEEL_SEGMENTS,
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, fonts, hitSlop, isDark, palette, radius, space } from '@/theme';
 
-/** How long the stand-in "ad" plays before paying out. */
-const AD_MS = 1800;
-const ROW_ICON = 38;
+type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
+
+const ROW_ICON = 34;
 const WAY_ICON = 36;
-const SHARE_WAY_ICONS = { call: 'calls', board: 'board', invite: 'invite' } as const;
+/** The ways to earn shells as iOS system tiles: calls green, the board brown, sharing blue, invites indigo. */
+const WAY_TILES: Record<'call' | 'board' | 'invite' | 'share', TileLook> = {
+  call: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
+  board: { fill: '#A2845E', ios: 'pin.fill', icon: 'pin' },
+  invite: { fill: '#5856D6', ios: 'person.badge.plus', icon: 'person-add' },
+  share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
+};
 
 /**
- * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (video, share,
- * invite) and your invite code. iOS look on the aurora (2026-10-22, coded at the owner's word):
+ * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (share, invite)
+ * and your invite code. No ads anywhere in the app (owner, 2026-10-22): shells are bought, or
+ * earned by coming back and bringing friends. iOS look on the aurora (2026-10-22, coded at the owner's word):
  * glass back and a shell capsule, large title, white cards, peach capsule buttons as in the
  * Store. Every limit lives in the store so it survives a restart.
  */
@@ -61,12 +65,10 @@ export default function GiftsScreen() {
   const shells = useAppStore((s) => s.wallet.shells);
   const daily = useAppStore((s) => s.daily);
   const spinWheel = useAppStore((s) => s.spinWheel);
-  const watchAd = useAppStore((s) => s.watchAd);
   const user = useAppStore((s) => s.user);
   const redeemInvite = useAppStore((s) => s.redeemInvite);
 
   const [reward, setReward] = useState<number | null>(null);
-  const [watching, setWatching] = useState(false);
   const [copied, setCopied] = useState(false);
   const [redeemOpen, setRedeemOpen] = useState(false);
   const [codeInput, setCodeInput] = useState('');
@@ -99,22 +101,9 @@ export default function GiftsScreen() {
   const today = todayKey();
   const checkedInToday = daily.lastLoginDay === today;
   const spinsUsed = daily.spinDay === today ? daily.spinsUsed : 0;
-  const adsWatched = daily.adsDay === today ? daily.adsWatched : 0;
-  const adsLeft = Math.max(0, MAX_ADS_PER_DAY - adsWatched);
-  const freeSpinLeft = spinsUsed < FREE_SPINS_PER_DAY;
-  const canSpin = freeSpinLeft || adsLeft > 0;
-  const spinStatus = freeSpinLeft ? t('gifts.spinsFree') : adsLeft ? t('gifts.spinsAd') : t('gifts.spinsNone');
-
-  const playAd = () => {
-    if (!adsLeft || watching) return;
-    setWatching(true);
-    // Real builds show an AdMob rewarded video and credit in its reward callback.
-    setTimeout(() => {
-      setWatching(false);
-      const amount = watchAd();
-      if (amount) setReward(amount);
-    }, AD_MS);
-  };
+  // No ads (owner, 2026-10-22): one free spin a day, nothing to watch for more.
+  const canSpin = spinsUsed < FREE_SPINS_PER_DAY;
+  const spinStatus = canSpin ? t('gifts.spinsFree') : t('gifts.spinsNone');
 
   return (
     <Screen background="aurora">
@@ -208,21 +197,14 @@ export default function GiftsScreen() {
         </View>
         <View style={styles.card}>
           <WayRow
-            icon="play"
-            title={t('gifts.watchAd')}
-            subtitle={adsLeft ? t('gifts.watchAdReward', { count: AD_REWARD, left: adsLeft }) : t('gifts.adsDone')}
-            action={<Capsule label={t('gifts.watch')} onPress={playAd} loading={watching} disabled={!adsLeft} />}
-            line
-          />
-          <WayRow
-            icon="plane"
+            tile={WAY_TILES.share}
             title={t('gifts.shareTitle')}
             subtitle={t('gifts.shareSub', { count: SHARE_REWARD })}
             action={<Capsule label={sharedToday ? t('gifts.sharedToday') : t('gifts.share')} disabled={sharedToday} onPress={shareToday} />}
             line
           />
           <WayRow
-            icon="invite"
+            tile={WAY_TILES.invite}
             title={t('gifts.inviteTitle')}
             subtitle={t('gifts.inviteSub', { count: INVITE_REWARD, done: invited, total: INVITES_PER_WEEK })}
             action={<Capsule label={t('gifts.inviteNow')} onPress={invite} />}
@@ -282,7 +264,7 @@ export default function GiftsScreen() {
       <Sheet visible={rulesOpen} onClose={() => setRulesOpen(false)} title={t('gifts.shareRulesTitle')}>
         <View style={styles.rules}>
           {(['call', 'board', 'invite'] as const).map((way) => (
-            <ListRow key={way} title={t(`gifts.shareWays.${way}`)} left={<ClayIcon name={SHARE_WAY_ICONS[way]} size={ROW_ICON} />} />
+            <ListRow key={way} title={t(`gifts.shareWays.${way}`)} left={<Tile look={WAY_TILES[way]} size={ROW_ICON} />} />
           ))}
           <Txt variant="caption" color={colors.textMuted} center>
             {t('gifts.shareRulesLimit', { count: SHARE_REWARD })}
@@ -310,15 +292,24 @@ export default function GiftsScreen() {
   );
 }
 
-/** One way to earn shells: art, two lines, one capsule button. */
+/** A Settings-style tile: an SF Symbol (Ionicons off iPhone) on an iOS system colour. */
+function Tile({ look, size }: { look: TileLook; size: number }) {
+  return (
+    <View style={[styles.tile, { width: size, height: size, borderRadius: Math.round(size * 0.26), backgroundColor: look.fill }]}>
+      <SFIcon ios={look.ios} icon={look.icon} size={Math.round(size * 0.52)} color="#FFFFFF" />
+    </View>
+  );
+}
+
+/** One way to earn shells: a tile, two lines, one capsule button. */
 function WayRow({
-  icon,
+  tile,
   title,
   subtitle,
   action,
   line,
 }: {
-  icon: ClayIconName;
+  tile: TileLook;
   title: string;
   subtitle: string;
   action: React.ReactNode;
@@ -326,7 +317,7 @@ function WayRow({
 }) {
   return (
     <View style={styles.way}>
-      <ClayIcon name={icon} size={WAY_ICON} tile={false} />
+      <Tile look={tile} size={WAY_ICON} />
       <View style={styles.wayBody}>
         <Txt style={styles.wayTitle}>{title}</Txt>
         <Txt style={styles.waySub}>{subtitle}</Txt>
@@ -414,6 +405,7 @@ const styles = StyleSheet.create({
   statusText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
   wheel: { alignItems: 'center', paddingVertical: space.lg },
   info: { marginBottom: 2, marginRight: space.lg + 4, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
+  tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
   wayBody: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
   wayTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
