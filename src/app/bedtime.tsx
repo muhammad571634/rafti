@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -39,6 +39,10 @@ export default function BedtimeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  // Sizes that let the whispering screen fit any phone without scrolling.
+  const artFit = Math.round(Math.min(210, Math.max(104, height * 0.17)));
+  const ringFit = Math.round(Math.min(RING, Math.max(150, height * 0.24)));
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -118,11 +122,15 @@ export default function BedtimeScreen() {
         {page === 'who' ? t('bedtime.who') : page === 'timer' ? t('bedtime.setTimer') : t('bedtime.title')}
       </Txt>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      {/* While whispering, everything fits one screen: the card, the ring, Stop and Pause at the bottom. */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={!(page === 'main' && running)}
+        contentContainerStyle={[styles.scroll, page === 'main' && running && styles.fit]}>
         {page === 'main' ? (
           <>
-            <LinearGradient colors={['#232A5C', night.surface]} style={styles.hero}>
-              <SleepingMascot size={210} whispering={running && !paused} />
+            <LinearGradient colors={['#232A5C', night.surface]} style={[styles.hero, running && styles.heroFit]}>
+              <SleepingMascot size={running ? artFit : 210} whispering={running && !paused} />
               <View style={styles.heroText}>
                 {reader ? (
                   <>
@@ -151,6 +159,7 @@ export default function BedtimeScreen() {
                 paused={paused}
                 onStop={stop}
                 onPause={() => setPaused((p) => !p)}
+                size={ringFit}
               />
             ) : (
               <>
@@ -276,6 +285,7 @@ function TimerRing({
   paused,
   onStop,
   onPause,
+  size,
 }: {
   left: number;
   total: number;
@@ -285,20 +295,21 @@ function TimerRing({
   paused: boolean;
   onStop: () => void;
   onPause: () => void;
+  size: number;
 }) {
   const { t } = useTranslation();
-  const r = (RING - STROKE) / 2;
+  const r = (size - STROKE) / 2;
   const length = 2 * Math.PI * r;
   const share = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
 
   return (
     <View style={styles.timer}>
-      <View style={styles.ring}>
-        <Svg width={RING} height={RING} style={StyleSheet.absoluteFill}>
-          <Circle cx={RING / 2} cy={RING / 2} r={r} stroke={night.border} strokeWidth={STROKE} fill="none" />
+      <View style={[styles.ring, { width: size, height: size }]}>
+        <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
+          <Circle cx={size / 2} cy={size / 2} r={r} stroke={night.border} strokeWidth={STROKE} fill="none" />
           <Circle
-            cx={RING / 2}
-            cy={RING / 2}
+            cx={size / 2}
+            cy={size / 2}
             r={r}
             stroke={night.brandText}
             strokeWidth={STROKE}
@@ -306,10 +317,10 @@ function TimerRing({
             strokeLinecap="round"
             strokeDasharray={`${length} ${length}`}
             strokeDashoffset={length * (1 - share)}
-            transform={`rotate(-90 ${RING / 2} ${RING / 2})`}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
           />
         </Svg>
-        <Txt color={night.text} style={styles.clock}>
+        <Txt color={night.text} style={[styles.clock, size < 200 && styles.clockSmall]}>
           {callClock(left)}
         </Txt>
         {alarm ? (
@@ -398,6 +409,8 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   title: { paddingHorizontal: space.lg, paddingBottom: space.md },
   scroll: { gap: space.lg, paddingBottom: space.xl },
+  fit: { flexGrow: 1, paddingBottom: space.sm },
+  heroFit: { paddingTop: 18, paddingBottom: 16 },
   proPill: {
     height: 28,
     justifyContent: 'center',
@@ -434,12 +447,14 @@ const styles = StyleSheet.create({
   last: { borderBottomWidth: 0 },
   tile: { width: 28, height: 28, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
   wheelBox: { marginHorizontal: space.lg, paddingVertical: space.md, borderRadius: 11, backgroundColor: night.surface },
-  timer: { alignItems: 'center', gap: space.lg, paddingTop: space.sm },
-  ring: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
+  timer: { flex: 1, alignItems: 'center', gap: space.lg, paddingTop: space.sm },
+  ring: { alignItems: 'center', justifyContent: 'center' },
   clock: { fontSize: 52, lineHeight: 60, fontWeight: '200', fontVariant: ['tabular-nums'] },
+  clockSmall: { fontSize: 42, lineHeight: 50 },
   ringAlarm: { position: 'absolute', bottom: 56 },
   whisper: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  circles: { flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch', paddingHorizontal: space.xxl },
+  // Stop and Pause sit at the bottom of the screen, as on the iOS Timer.
+  circles: { marginTop: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch', paddingHorizontal: space.xxl },
   circle: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
   circleGrey: { backgroundColor: night.border },
   circleWarm: { backgroundColor: night.primarySoft },
