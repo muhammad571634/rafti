@@ -6,22 +6,42 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ClosenessSheet } from '@/components/closeness-sheet';
-import { CharacterAvatar, EmptyState, Header, IconButton, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
+import {
+  CharacterAvatar,
+  EmptyState,
+  GlassBar,
+  GlassButton,
+  LargeTitle,
+  PressableScale,
+  Screen,
+  SystemSegmented,
+  Txt,
+  useScrolledPast,
+} from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { aurora, colors, space } from '@/theme';
 
-const AVATAR = 52;
+type Filter = 'all' | 'mine';
 
-/** Everyone the user has a bond with, closest first, as plain rows (docs/design-style.md). */
+const AVATAR = 44;
+const ROW_PAD = 14;
+
+/**
+ * Everyone the user has a bond with, closest first, in the iOS Contacts look on the grouped
+ * ground (2026-10-22, coded at the owner's word): a large title, All / Created by you, then one
+ * inset group with "Create a character" on top and a row per friend (bond and level under the
+ * name). The glass "i" explains closeness.
+ */
 export default function ContactsScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
+  const { scrolled, onScroll } = useScrolledPast(40);
 
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
 
-  const [filter, setFilter] = useState<'all' | 'mine'>('all');
+  const [filter, setFilter] = useState<Filter>('all');
   const [closenessOpen, setClosenessOpen] = useState(false);
 
   const known = useMemo(() => {
@@ -34,98 +54,105 @@ export default function ContactsScreen() {
     });
   }, [characters, relationships, filter]);
 
+  const info = (
+    <GlassButton icon="information-circle-outline" accessibilityLabel={t('closeness.title')} onPress={() => setClosenessOpen(true)} />
+  );
+
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
-        title={t('contacts.title')}
-        right={
-          <IconButton
-            icon="information-circle-outline"
-            size={21}
-            accessibilityLabel={t('closeness.title')}
-            onPress={() => setClosenessOpen(true)}
-          />
-        }
-      />
-
-      <Segmented
-        options={[
-          { value: 'all', label: t('contacts.all') },
-          { value: 'mine', label: t('contacts.createdByYou') },
-        ]}
-        value={filter}
-        onChange={setFilter}
-        style={styles.tabs}
-      />
-
-      {known.length === 0 ? (
-        <EmptyState
-          title={t('contacts.empty')}
-          hint={t('contacts.emptyHint')}
-          actionLabel={filter === 'mine' ? t('contacts.create') : t('find.title')}
-          onAction={() => router.push(filter === 'mine' ? '/create-character' : '/(tabs)/find')}
+    <Screen background={colors.bg}>
+      <GlassBar right={info} title={t('contacts.title')} scrolled={scrolled} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+        <LargeTitle>{t('contacts.title')}</LargeTitle>
+        <SystemSegmented
+          options={[
+            { value: 'all', label: t('contacts.all') },
+            { value: 'mine', label: t('contacts.createdByYou') },
+          ]}
+          value={filter}
+          onChange={(f: Filter) => setFilter(f)}
+          style={styles.track}
         />
-      ) : (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
-          <PressableScale style={styles.row} scaleTo={0.98} onPress={() => router.push('/create-character')}>
-            <View style={styles.addCircle}>
-              <Ionicons name="add" size={24} color={colors.text} />
-            </View>
-            <Txt variant="bodyStrong" style={styles.flex}>
-              {t('contacts.create')}
-            </Txt>
-            <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-          </PressableScale>
 
-          {known.map((character) => {
-            const relationship = relationships[character.id]!;
-            return (
-              <PressableScale
-                key={character.id}
-                style={styles.row}
-                scaleTo={0.98}
-                onPress={() => router.push(`/character/${character.id}`)}>
-                <CharacterAvatar character={character} size={AVATAR} verified={character.voiceReady} />
-                <View style={styles.flex}>
-                  <Txt variant="bodyStrong" lines={1}>
-                    {character.name}
-                  </Txt>
-                  <View style={styles.bond}>
-                    <Txt variant="small" color={colors.bondText} style={styles.bold} lines={1}>
-                      {relationship.label ?? relationship.levelTitle}
+        {known.length === 0 ? (
+          <EmptyState
+            title={t('contacts.empty')}
+            hint={t('contacts.emptyHint')}
+            actionLabel={filter === 'mine' ? t('contacts.create') : t('find.title')}
+            onAction={() => router.push(filter === 'mine' ? '/create-character' : '/(tabs)/find')}
+          />
+        ) : (
+          <View style={styles.group}>
+            <PressableScale style={styles.row} scaleTo={0.985} accessibilityRole="button" onPress={() => router.push('/create-character')}>
+              <View style={styles.addCircle}>
+                <Ionicons name="add" size={26} color="#FFFFFF" />
+              </View>
+              <Txt style={[styles.name, styles.addText]}>{t('contacts.create')}</Txt>
+              <View style={styles.line} />
+            </PressableScale>
+
+            {known.map((character, i) => {
+              const relationship = relationships[character.id]!;
+              return (
+                <PressableScale
+                  key={character.id}
+                  style={styles.row}
+                  scaleTo={0.985}
+                  accessibilityRole="button"
+                  onPress={() => router.push(`/character/${character.id}`)}>
+                  <CharacterAvatar character={character} size={AVATAR} verified={character.voiceReady} />
+                  <View style={styles.body}>
+                    <Txt style={styles.name} lines={1}>
+                      {character.name}
                     </Txt>
-                    <Txt variant="small" color={colors.textFaint}>
-                      ·
-                    </Txt>
-                    <Txt variant="small" color={colors.textSecondary}>
-                      {t('contacts.level', { level: relationship.level })}
-                    </Txt>
+                    <View style={styles.bond}>
+                      <Txt style={styles.bondLabel} lines={1}>
+                        {relationship.label ?? relationship.levelTitle}
+                      </Txt>
+                      <Txt style={styles.meta}>·</Txt>
+                      <Txt style={styles.meta}>{t('contacts.level', { level: relationship.level })}</Txt>
+                    </View>
                   </View>
-                </View>
-                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-              </PressableScale>
-            );
-          })}
-        </ScrollView>
-      )}
+                  <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+                  {i < known.length - 1 ? <View style={styles.line} /> : null}
+                </PressableScale>
+              );
+            })}
+          </View>
+        )}
+      </ScrollView>
       <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  bold: { fontWeight: '600', flexShrink: 1 },
-  tabs: { marginHorizontal: space.lg, marginTop: space.xs, marginBottom: space.sm },
-  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
-  row: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.md + 2 },
+  track: { marginTop: 12, marginHorizontal: space.lg },
+  group: { marginTop: 22, marginHorizontal: space.lg, borderRadius: 18, overflow: 'hidden', backgroundColor: colors.surface },
+  row: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: ROW_PAD },
+  line: {
+    position: 'absolute',
+    left: ROW_PAD + AVATAR + 12,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.borderStrong,
+  },
   addCircle: {
     width: AVATAR,
     height: AVATAR,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
+    borderRadius: AVATAR / 2,
+    backgroundColor: aurora.tint,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bond: { flexDirection: 'row', alignItems: 'center', gap: space.xs + 2, marginTop: 2 },
+  addText: { flex: 1 },
+  body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
+  name: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  bond: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  bondLabel: { flexShrink: 1, fontSize: 13, fontWeight: '600', color: colors.bondText },
+  meta: { fontSize: 13, color: colors.textSecondary },
 });
