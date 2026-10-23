@@ -56,8 +56,8 @@
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
+    "start": "expo start --go",
+    "android": "expo start --go --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
