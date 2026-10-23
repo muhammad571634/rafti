@@ -1,4 +1,4 @@
-import Constants, { ExecutionEnvironment } from 'expo-constants';
+import { isRunningInExpoGo } from 'expo';
 import { Platform } from 'react-native';
 
 import i18n from '@/i18n';
@@ -25,7 +25,7 @@ let kit: NotifyKit | null | undefined;
 function notifyKit(): NotifyKit | null {
   if (kit !== undefined) return kit;
   kit = null;
-  if (Platform.OS !== 'android' || Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return kit;
+  if (Platform.OS !== 'android' || isRunningInExpoGo()) return kit;
   try {
     // Deferred: the native module only exists in a development or store build.
     // eslint-disable-next-line @typescript-eslint/no-require-imports

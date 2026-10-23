@@ -1,4 +1,4 @@
-import Constants, { ExecutionEnvironment } from 'expo-constants';
+import { isRunningInExpoGo } from 'expo';
 import { Platform } from 'react-native';
 
 type NotificationsModule = typeof import('expo-notifications');
@@ -7,9 +7,10 @@ type NotificationsModule = typeof import('expo-notifications');
  * Where local notifications can run. Web has none, and Android Expo Go throws as soon
  * as `expo-notifications` is imported (removed from Expo Go in SDK 53): there the app
  * must keep working, just without pushes. A development build or a store build has them.
+ * `isRunningInExpoGo` is Expo Go only; `ExecutionEnvironment.StoreClient` also covers development
+ * builds and missed Expo Go for SDK 58.
  */
-const expoGoAndroid =
-  Platform.OS === 'android' && Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+const expoGoAndroid = Platform.OS === 'android' && isRunningInExpoGo();
 
 export const pushSupported = (Platform.OS === 'ios' || Platform.OS === 'android') && !expoGoAndroid;
 
