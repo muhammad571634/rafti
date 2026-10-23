@@ -1,42 +1,42 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LockPreview } from '@/components/notifications/lock-preview';
 import { canRing } from '@/economy/plans';
-import { Button, Header, PressableScale, Screen, Toggle, Txt } from '@/components/ui';
+import { GlassBar, IconRow, InsetGroup, InsetRow, LargeTitle, PressableScale, Screen, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { usePushPermission } from '@/hooks/use-push-permission';
 import { pickSeeded } from '@/lib/seeded';
 import { dayKey, morningGreetings } from '@/mock';
 import { requestPushPermission } from '@/notifications/sync';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 import type { AppSettings } from '@/types';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
-/** Every switch on the screen, grouped as in the approved prototype; `hint` rows carry one line under the title. */
-const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; hint?: boolean }[] }[] = [
+/** Every switch on the screen with its iOS system-colour icon; `hint` rows carry one line under the title. */
+const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: string; hint?: boolean }[] }[] = [
   {
     title: 'reachOut',
     rows: [
-      { key: 'morningGreeting', icon: 'sunny-outline', hint: true },
-      { key: 'eveningGreeting', icon: 'moon-outline', hint: true },
-      { key: 'morningCall', icon: 'call-outline', hint: true },
-      { key: 'nightCall', icon: 'call-outline', hint: true },
-      { key: 'notifyPlans', icon: 'calendar-outline', hint: true },
-      { key: 'notifyDiary', icon: 'book-outline', hint: true },
-      { key: 'notifyAway', icon: 'time-outline', hint: true },
+      { key: 'morningGreeting', icon: 'sunny', fill: '#FFCC00', hint: true },
+      { key: 'eveningGreeting', icon: 'moon', fill: '#5856D6', hint: true },
+      { key: 'morningCall', icon: 'call', fill: '#34C759', hint: true },
+      { key: 'nightCall', icon: 'call', fill: '#30B0C7', hint: true },
+      { key: 'notifyPlans', icon: 'calendar', fill: '#FF3B30', hint: true },
+      { key: 'notifyDiary', icon: 'book', fill: '#FF9500', hint: true },
+      { key: 'notifyAway', icon: 'time', fill: '#A2845E', hint: true },
     ],
   },
   {
     title: 'rafti',
     rows: [
-      { key: 'notifyGifts', icon: 'gift-outline' },
-      { key: 'notifyOffers', icon: 'pricetag-outline' },
+      { key: 'notifyGifts', icon: 'gift', fill: '#FF2D55' },
+      { key: 'notifyOffers', icon: 'pricetag', fill: '#AF52DE' },
     ],
   },
 ];
@@ -47,10 +47,10 @@ const QUIET_TO = ['06:00', '07:00', '08:00', '09:00', '10:00'];
 const nextOf = (list: string[], value: string) => list[(list.indexOf(value) + 1) % list.length];
 
 /**
- * Notifications → settings (docs/push-plan.md): a live lock-screen preview, a switch per
- * kind of push, quiet hours. When the phone blocks notifications, a card on top leads to
- * the phone's settings and the switches rest. On web and Android Expo Go the switches
- * still steer what characters do inside the app.
+ * Notifications → settings (docs/push-plan.md) as an iOS Settings page: a live lock-screen
+ * preview, a switch per kind of push in inset groups, quiet hours. When the phone blocks
+ * notifications, a row on top leads to the phone's settings and the switches rest. On web
+ * and Android Expo Go the switches still steer what characters do inside the app.
  */
 export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -62,6 +62,7 @@ export default function NotificationSettingsScreen() {
   const conversations = useAppStore((s) => s.conversations);
   const subscription = useAppStore((s) => s.wallet.subscription);
   const { status, refresh } = usePushPermission();
+  const { scrolled, onScroll } = useScrolledPast(40);
 
   // Without a plan or trial the daily call comes as a voice note, and the rows say so.
   const freeUser = !canRing(subscription, Date.now());
@@ -92,47 +93,54 @@ export default function NotificationSettingsScreen() {
     refresh();
   };
 
-  const row = (key: SwitchKey, icon: IconName, hint?: boolean) => (
-    <View style={[styles.row, blocked && styles.resting]}>
-      <View style={styles.tile}>
-        <Ionicons name={icon} size={19} color={colors.text} />
-      </View>
-      <View style={styles.flex}>
-        <Txt variant="bodyStrong">{label(key)}</Txt>
-        {hint ? (
-          <Txt variant="small" color={colors.textSecondary}>
-            {t(`notifications.hint.${key}`)}
-          </Txt>
-        ) : null}
-      </View>
-      <Toggle
-        value={settings[key]}
-        disabled={blocked}
-        onChange={(v) => setSetting(key, v)}
-        accessibilityLabel={label(key)}
-      />
-    </View>
+  const row = (key: SwitchKey, icon: IconName, fill: string, opts: { hint?: boolean; last?: boolean } = {}) => (
+    <IconRow
+      key={key}
+      icon={icon}
+      fill={fill}
+      title={label(key)}
+      hint={opts.hint ? t(`notifications.hint.${key}`) : undefined}
+      disabled={blocked}
+      last={opts.last}
+      right={
+        <Toggle
+          value={settings[key]}
+          disabled={blocked}
+          onChange={(v) => setSetting(key, v)}
+          onColor={systemColors.green}
+          accessibilityLabel={label(key)}
+        />
+      }
+    />
   );
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('notifications.settingsTitle')} />
+    <Screen background={colors.bg}>
+      <GlassBar title={t('notifications.settingsTitle')} scrolled={scrolled} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+        <LargeTitle>{t('notifications.settingsTitle')}</LargeTitle>
+
         {blocked ? (
-          <View style={styles.off}>
-            <View style={styles.tile}>
-              <Ionicons name="lock-closed-outline" size={19} color={colors.text} />
-            </View>
-            <Txt variant="bodyStrong" style={styles.flex}>
-              {t('notifications.off')}
-            </Txt>
-            <Button
-              label={status === 'undetermined' ? t('notifications.turnOn') : t('notifications.openSettings')}
-              size="sm"
-              onPress={() => void turnOn()}
+          <InsetGroup style={styles.groupTop}>
+            <IconRow
+              icon="notifications-off"
+              fill={systemColors.red}
+              title={t('notifications.off')}
+              last
+              right={
+                <PressableScale scaleTo={0.94} onPress={() => void turnOn()} accessibilityRole="button" style={styles.turnOn}>
+                  <Txt style={styles.turnOnText}>
+                    {status === 'undetermined' ? t('notifications.turnOn') : t('notifications.openSettings')}
+                  </Txt>
+                </PressableScale>
+              }
             />
-          </View>
+          </InsetGroup>
         ) : null}
 
         <LockPreview
@@ -141,125 +149,55 @@ export default function NotificationSettingsScreen() {
           name={preview.writer ? displayName(preview.writer, relationships[preview.writer.id]) : 'Sigmazam'}
           line={settings.notificationPreview && preview.line ? preview.line : t('push.hidden')}
         />
-        {row('notificationPreview', 'eye-outline')}
+        <InsetGroup style={styles.groupTop}>{row('notificationPreview', 'eye', '#007AFF', { last: true })}</InsetGroup>
 
         {GROUPS.map((group) => (
           <Fragment key={group.title}>
-            <Txt variant="h3" style={styles.section}>
-              {t(`notifications.section.${group.title}`)}
-            </Txt>
-            {group.rows.map(({ key, icon, hint }) => (
-              <Fragment key={key}>{row(key, icon, hint)}</Fragment>
-            ))}
+            <Txt style={styles.sectionLabel}>{t(`notifications.section.${group.title}`)}</Txt>
+            <InsetGroup>
+              {group.rows.map(({ key, icon, fill, hint }, i) => row(key, icon, fill, { hint, last: i === group.rows.length - 1 }))}
+            </InsetGroup>
           </Fragment>
         ))}
 
-        <Txt variant="h3" style={styles.section}>
-          {t('notifications.quietHours')}
-        </Txt>
-        {row('quietHours', 'notifications-off-outline')}
-        {settings.quietHours ? (
-          <>
-            <View style={[styles.hours, blocked && styles.resting]}>
-              <TimeButton
-                value={settings.quietFrom}
-                disabled={blocked}
+        <Txt style={styles.sectionLabel}>{t('notifications.quietHours')}</Txt>
+        <InsetGroup>
+          {row('quietHours', 'moon', '#5E5CE6', { last: !settings.quietHours })}
+          {settings.quietHours ? (
+            <>
+              <InsetRow
                 label={t('notifications.quietFrom')}
-                onPress={() => setSetting('quietFrom', nextOf(QUIET_FROM, settings.quietFrom))}
+                meta={settings.quietFrom}
+                onPress={blocked ? undefined : () => setSetting('quietFrom', nextOf(QUIET_FROM, settings.quietFrom))}
               />
-              <TimeButton
-                value={settings.quietTo}
-                disabled={blocked}
+              <InsetRow
                 label={t('notifications.quietTo')}
-                onPress={() => setSetting('quietTo', nextOf(QUIET_TO, settings.quietTo))}
+                meta={settings.quietTo}
+                last
+                onPress={blocked ? undefined : () => setSetting('quietTo', nextOf(QUIET_TO, settings.quietTo))}
               />
-            </View>
-            <Txt variant="small" color={colors.textSecondary} style={styles.note}>
-              {t('notifications.quietNote')}
-            </Txt>
-          </>
-        ) : null}
+            </>
+          ) : null}
+        </InsetGroup>
+        {settings.quietHours ? <Txt style={styles.footer}>{t('notifications.quietNote')}</Txt> : null}
       </ScrollView>
     </Screen>
   );
 }
 
-/** One end of quiet hours: a label over the time; a tap steps to the next choice. */
-function TimeButton({
-  value,
-  label,
-  disabled,
-  onPress,
-}: {
-  value: string;
-  label: string;
-  disabled?: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <PressableScale
-      style={styles.time}
-      scaleTo={0.96}
-      dimOnPress={false}
-      disabled={disabled}
-      onPress={onPress}
-      accessibilityLabel={`${label} ${value}`}>
-      <Txt variant="caption" color={colors.textSecondary} style={styles.bold}>
-        {label}
-      </Txt>
-      <Txt variant="title" style={styles.tabular}>
-        {value}
-      </Txt>
-    </PressableScale>
-  );
-}
-
-const TILE = 36;
-
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  bold: { fontWeight: '600' },
-  scroll: { paddingBottom: space.huge },
-  section: { marginTop: space.xl, marginBottom: space.xs, marginHorizontal: space.lg },
-  row: {
-    minHeight: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.xs,
+  groupTop: { marginTop: space.md },
+  sectionLabel: {
+    marginTop: 22,
+    marginBottom: 6,
+    marginHorizontal: space.lg * 2,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
   },
-  tile: {
-    width: TILE,
-    height: TILE,
-    borderRadius: 11,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  off: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    marginHorizontal: space.lg,
-    marginTop: space.sm,
-    padding: space.md,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  resting: { opacity: 0.4 },
-  hours: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.sm },
-  time: {
-    flex: 1,
-    height: 60,
-    borderRadius: 14,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
-  },
-  tabular: { fontVariant: ['tabular-nums'] },
-  note: { marginHorizontal: space.lg, marginTop: space.sm + 2 },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  turnOn: { height: 30, paddingHorizontal: 14, borderRadius: 15, justifyContent: 'center', backgroundColor: systemColors.fill },
+  turnOnText: { fontSize: 15, fontWeight: '600', color: colors.primary },
 });

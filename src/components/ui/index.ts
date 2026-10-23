@@ -31,5 +31,5 @@ export { ShellBadge } from './shell-badge';
 export { Sheet } from './sheet';
 export { Toggle } from './toggle';
 export { Txt } from './text';
-export { BackButton, GlassBar, GlassButton, GlassIcons, glassStyle, InsetGroup, InsetRow, LargeTitle, useScrolledPast } from './glass';
+export { BackButton, GlassBar, GlassButton, GlassIcons, glassStyle, IconRow, InsetGroup, InsetRow, LargeTitle, useScrolledPast } from './glass';
 export { SFIcon } from './symbol';

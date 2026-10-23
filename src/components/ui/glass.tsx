@@ -160,6 +160,59 @@ export function InsetRow({
   );
 }
 
+/**
+ * An iOS Settings row inside an InsetGroup: a white glyph on a system-colour tile, the title
+ * (and an optional line under it), then a value, a control (`right`) or a chevron when tappable.
+ */
+export function IconRow({
+  icon,
+  fill,
+  title,
+  hint,
+  meta,
+  right,
+  last,
+  disabled,
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  fill: string;
+  title: string;
+  hint?: string;
+  meta?: string;
+  right?: React.ReactNode;
+  last?: boolean;
+  disabled?: boolean;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress || disabled}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={[title, meta].filter(Boolean).join(', ')}
+      style={({ pressed }) => [styles.iconRow, pressed && onPress ? styles.rowPressed : null, disabled && styles.resting]}>
+      <View style={[styles.iconTile, { backgroundColor: fill }]}>
+        <Ionicons name={icon} size={17} color="#FFFFFF" />
+      </View>
+      <View style={[styles.iconBody, !last && styles.rowLine]}>
+        <View style={styles.flex}>
+          <Txt style={styles.rowText} lines={2}>
+            {title}
+          </Txt>
+          {hint ? <Txt style={styles.hint}>{hint}</Txt> : null}
+        </View>
+        {meta ? (
+          <Txt style={[styles.rowText, styles.meta, styles.iconMeta]} lines={1}>
+            {meta}
+          </Txt>
+        ) : null}
+        {right ?? (onPress ? <Ionicons name="chevron-forward" size={15} color={colors.textFaint} /> : null)}
+      </View>
+    </Pressable>
+  );
+}
+
 /** Large left-aligned title under the glass bar (34pt, iOS large title). */
 export function LargeTitle({ children }: { children: string }) {
   return (
@@ -198,6 +251,12 @@ const styles = StyleSheet.create({
   rowText: { fontSize: 17, letterSpacing: -0.4 },
   meta: { color: colors.textSecondary },
   flex: { flex: 1 },
+  iconRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  iconTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  iconBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 6 },
+  iconMeta: { maxWidth: '50%' },
+  hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
+  resting: { opacity: 0.4 },
   largeTitle: {
     marginTop: 10,
     marginHorizontal: space.lg,

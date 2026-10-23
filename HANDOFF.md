@@ -52,7 +52,7 @@ canvas. From here the owner wants the map's screens coded straight, no prototype
 Photo Booth and Frame editor (D44), Contacts (D45), Gifts (D46), Radio (D49). Owner decisions the same day: **no
 ads anywhere** (D47); invites pay 50 each only when the friend is back the next day, sharing pays nothing (D48);
 Radio clips can be an alarm's voice and a level-up sends the opened clip (D50; later ideas and a possible feed in
-`docs/radio-roadmap.md`). Next on the map: Board, Secret note, Alarm ringing.
+`docs/radio-roadmap.md`). Next on the map: Board, Secret note, Alarm ringing. Board, Secret note (D51) and Alarm ringing (D52) done; then the forms: Edit profile and Notification settings as iOS Settings pages (D53); Couple quiz and Onboarding were approved earlier and stay. Next: Create character.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 
