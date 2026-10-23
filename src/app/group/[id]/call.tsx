@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CallControls, callGlass } from '@/components/call/call-controls';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
-import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
+import { Anim, BlurBackdrop, CharacterAvatar, Screen, Txt, characterImage } from '@/components/ui';
 import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';

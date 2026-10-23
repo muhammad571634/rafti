@@ -52,7 +52,6 @@ import {
   consumePhoto,
   photoQuota,
   minutesLeft,
-  photosLeft,
   PLANS,
   rollSubscription,
   shellGrant,

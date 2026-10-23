@@ -1,5 +1,5 @@
 import type { ClayIconName } from '@/assets/brand/registry';
-import { colors, isDark, palette } from '@/theme';
+import { colors, isDark } from '@/theme';
 import type {
   ShellPack,
   CallRecord,

@@ -26,7 +26,6 @@ import { shortName } from '@/lib/format';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
-import type { Character } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 

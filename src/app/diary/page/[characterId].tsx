@@ -9,7 +9,7 @@ import { BackButton, Button, CharacterAvatar, EmptyState, Header, PressableScale
 import { shortName } from '@/lib/format';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, HEADER_HEIGHT, palette, radius, space, type } from '@/theme';
+import { colors, palette, radius, space, type } from '@/theme';
 
 /** One ruled line on the page; the handwriting sits on this pitch. */
 const LINE = type.hand.lineHeight ?? 32;
