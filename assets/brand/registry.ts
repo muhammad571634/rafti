@@ -22,6 +22,12 @@ export const BRAND = {
   logo: require('./sigmazam-logo.png'),
   /** The Sigmazam mascot peeking over the G (transparent). The brand mark, onboarding. */
   mark: require('./sigmazam-mark.png'),
+  /** The mascot jumping and waving (transparent, cut by scripts/cut-mascot-poses.py). Intro, onboarding hello. */
+  hop: require('./sigmazam-hop.png'),
+  /** The mascot winking with a peace sign, no sticker edge (transparent). Intro. */
+  wink: require('./sigmazam-wink.png'),
+  /** The mascot hugging a heart, eyes closed (transparent). Onboarding gift. */
+  love: require('./sigmazam-love.png'),
 } as const;
 
 export type BrandArtName = keyof typeof BRAND;
@@ -137,4 +143,7 @@ export const BRAND_ASPECT: Record<BrandArtName, number> = {
   peek: 720 / 540,
   logo: 1670 / 356,
   mark: 681 / 806,
+  hop: 577 / 640,
+  wink: 639 / 640,
+  love: 443 / 640,
 };

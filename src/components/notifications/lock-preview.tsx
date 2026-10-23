@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CharacterAvatar, Txt } from '@/components/ui';
 import { isDark, space } from '@/theme';
@@ -19,6 +20,9 @@ export function LockPreview({
   character,
   name,
   line,
+  day,
+  dropIn,
+  style,
 }: {
   /** "08:00" */
   at: string;
@@ -26,14 +30,26 @@ export function LockPreview({
   name: string;
   /** What the notification shows: their words, or the hidden-text stand-in. */
   line: string;
+  /** A date line over the clock ("Saturday, 25 October"). */
+  day?: string;
+  /** The notification drops in from the top after a beat (onboarding). */
+  dropIn?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const { t } = useTranslation();
   return (
-    <LinearGradient colors={WALLPAPER} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.screen}>
+    <LinearGradient colors={WALLPAPER} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.screen, style]}>
+      {day ? (
+        <Txt style={styles.day} center>
+          {day}
+        </Txt>
+      ) : null}
       <Txt style={styles.clock} center>
         {at}
       </Txt>
-      <View style={styles.note}>
+      <Animated.View
+        entering={dropIn ? FadeInDown.withInitialValues({ transform: [{ translateY: -70 }] }).delay(500).springify().damping(15) : undefined}
+        style={styles.note}>
         {character ? <CharacterAvatar character={character} size={38} /> : null}
         <View style={styles.body}>
           <View style={styles.who}>
@@ -46,7 +62,7 @@ export function LockPreview({
             {line}
           </Txt>
         </View>
-      </View>
+      </Animated.View>
     </LinearGradient>
   );
 }
@@ -64,6 +80,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     gap: space.lg,
   },
+  day: { marginBottom: -space.md, fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
   // The iOS lock clock: big, heavy and white over the wallpaper.
   clock: { fontSize: 56, lineHeight: 62, fontWeight: '700', letterSpacing: -1, color: '#FFFFFF', fontVariant: ['tabular-nums'] },
   note: {
