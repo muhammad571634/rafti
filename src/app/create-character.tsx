@@ -5,11 +5,25 @@ import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Anim, Button, Header, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
+import { BUY_BAR_SPACE, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
+import {
+  Anim,
+  GlassBar,
+  IconRow,
+  InsetGroup,
+  LargeTitle,
+  PressableScale,
+  Screen,
+  Segmented,
+  ShellIcon,
+  Toggle,
+  Txt,
+  useScrolledPast,
+} from '@/components/ui';
 import {
   BIO_MAX,
   checkCreation,
@@ -27,7 +41,7 @@ import {
 } from '@/lib/create-character';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { colors, isDark, space, systemColors } from '@/theme';
 import type {
   Character,
   CharacterCategory,
@@ -78,8 +92,9 @@ export default function CreateCharacterScreen() {
 
   if (editId && !editing) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('errors.notFound')} />
+      <Screen background={colors.bg}>
+        <GlassBar />
+        <LargeTitle>{t('errors.notFound')}</LargeTitle>
       </Screen>
     );
   }
@@ -95,6 +110,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const updateCharacter = useAppStore((s) => s.updateCharacter);
   const spendShells = useAppStore((s) => s.spendShells);
   const shells = useAppStore((s) => s.wallet.shells);
+  const { scrolled, onScroll } = useScrolledPast(40);
   /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
   const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(training.current), []);
@@ -247,8 +263,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')} />
+    // An iOS form (Contacts' New Contact): inset groups on the grouped grey ground, the Store's bar below.
+    <Screen background={colors.bg}>
+      <GlassBar title={t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')} scrolled={scrolled} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -256,244 +273,234 @@ function CharacterForm({ editing }: { editing?: Character }) {
         keyboardVerticalOffset={90}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scroll}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
           keyboardShouldPersistTaps="handled">
-          <View style={styles.photoBlock}>
-            <PressableScale
-              style={styles.photo}
-              onPress={pickImage}
-              scaleTo={0.97}
-              accessibilityLabel={t('createCharacter.uploadImage')}>
-              {imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
-              ) : (
-                <View style={styles.photoTile}>
-                  <Ionicons name="camera-outline" size={22} color={colors.text} />
-                </View>
-              )}
-            </PressableScale>
-            <CheckRow
-              checked={photoRights}
-              onToggle={() => setPhotoRights((v) => !v)}
-              label={t('createCharacter.photoRights')}
-            />
-          </View>
+          <LargeTitle>{t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')}</LargeTitle>
 
-          <Section title={t('createCharacter.basics')}>
-            <Field label={t('createCharacter.name')}>
+          <View style={styles.hero}>
+            <PressableScale
+              onPress={pickImage}
+              scaleTo={0.95}
+              accessibilityRole="button"
+              accessibilityLabel={t('createCharacter.uploadImage')}>
+              <View style={styles.photo}>
+                {imageUri ? (
+                  <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
+                ) : (
+                  <Ionicons name="person" size={52} color="#FFFFFF" />
+                )}
+              </View>
+              <View style={styles.camera} pointerEvents="none">
+                <Ionicons name="camera" size={16} color="#FFFFFF" />
+              </View>
+            </PressableScale>
+          </View>
+          <InsetGroup>
+            <ConsentRow label={t('createCharacter.photoRights')} value={photoRights} onChange={setPhotoRights} />
+          </InsetGroup>
+
+          <GroupLabel>{t('createCharacter.basics')}</GroupLabel>
+          <InsetGroup>
+            <View style={[styles.formRow, styles.line]}>
+              <Txt style={styles.formLabel}>{t('createCharacter.name')}</Txt>
               <TextInput
                 value={name}
                 onChangeText={setName}
                 placeholder={t('createCharacter.namePlaceholder')}
                 placeholderTextColor={colors.textFaint}
-                style={styles.input}
+                style={styles.formInput}
                 maxLength={NAME_MAX}
+                accessibilityLabel={t('createCharacter.name')}
               />
-            </Field>
-            <View style={styles.pair}>
-              <Field label={t('createCharacter.age')} style={styles.ageField}>
-                <TextInput
-                  value={age}
-                  onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
-                  placeholder="18+"
-                  placeholderTextColor={colors.textFaint}
-                  keyboardType="number-pad"
-                  style={styles.input}
-                  maxLength={3}
-                />
-              </Field>
-              <Field label={t('createCharacter.gender')} style={styles.flex}>
-                <View style={styles.options}>
-                  {GENDERS.map((g) => (
-                    <OptionButton
-                      key={g}
-                      label={t(`find.who.${g}`)}
-                      active={gender === g}
-                      onPress={() => setGender(gender === g ? undefined : g)}
-                    />
-                  ))}
-                </View>
-              </Field>
             </View>
-          </Section>
-
-          <Section
-            title={t('createCharacter.personality')}
-            right={t('createCharacter.traitsCount', { count: traits.length, max: MAX_TRAITS })}>
-            <View style={styles.chips}>
-              {TRAITS.map((trait) => (
-                <FormChip
-                  key={trait}
-                  label={t(`createCharacter.traitNames.${trait}`)}
-                  active={traits.includes(trait)}
-                  onPress={() => toggleTrait(trait)}
-                />
-              ))}
+            <View style={[styles.formRow, styles.line]}>
+              <Txt style={styles.formLabel}>{t('createCharacter.age')}</Txt>
+              <TextInput
+                value={age}
+                onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
+                placeholder="18+"
+                placeholderTextColor={colors.textFaint}
+                keyboardType="number-pad"
+                style={styles.formInput}
+                maxLength={3}
+                accessibilityLabel={t('createCharacter.age')}
+              />
             </View>
-          </Section>
-
-          <Section title={t('createCharacter.style')}>
-            <View style={styles.chips}>
-              {STYLES.map((s) => (
-                <FormChip
-                  key={s}
-                  label={t(`createCharacter.styles.${s}`)}
-                  active={style === s}
-                  onPress={() => setStyle(s)}
-                />
-              ))}
+            <View style={styles.formRow}>
+              <Txt style={styles.formLabel}>{t('createCharacter.gender')}</Txt>
+              <View style={styles.genders}>
+                {GENDERS.map((g) => (
+                  <Pill key={g} label={t(`find.who.${g}`)} active={gender === g} onPress={() => setGender(gender === g ? undefined : g)} />
+                ))}
+              </View>
             </View>
-          </Section>
+          </InsetGroup>
 
-          <Section title={t('createCharacter.role')}>
-            <View style={styles.chips}>
-              {ROLES.map((r) => (
-                <FormChip key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => setRole(r)} />
-              ))}
-            </View>
-          </Section>
+          <GroupLabel>
+            {`${t('createCharacter.personality')} · ${t('createCharacter.traitsCount', { count: traits.length, max: MAX_TRAITS })}`}
+          </GroupLabel>
+          <InsetGroup style={styles.pills}>
+            {TRAITS.map((trait) => (
+              <Pill
+                key={trait}
+                label={t(`createCharacter.traitNames.${trait}`)}
+                active={traits.includes(trait)}
+                onPress={() => toggleTrait(trait)}
+              />
+            ))}
+          </InsetGroup>
 
-          <Section title={t('createCharacter.story')}>
-            <Field label={t('createCharacter.persona')}>
+          <GroupLabel>{t('createCharacter.style')}</GroupLabel>
+          <InsetGroup style={styles.pills}>
+            {STYLES.map((s) => (
+              <Pill key={s} label={t(`createCharacter.styles.${s}`)} active={style === s} onPress={() => setStyle(s)} />
+            ))}
+          </InsetGroup>
+
+          <GroupLabel>{t('createCharacter.role')}</GroupLabel>
+          <InsetGroup style={styles.pills}>
+            {ROLES.map((r) => (
+              <Pill key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => setRole(r)} />
+            ))}
+          </InsetGroup>
+
+          <GroupLabel>{t('createCharacter.story')}</GroupLabel>
+          <InsetGroup>
+            <View style={[styles.area, styles.line]}>
+              <Txt style={styles.areaLabel}>{t('createCharacter.persona')}</Txt>
               <TextInput
                 value={bio}
                 onChangeText={setBio}
                 placeholder={t('createCharacter.personaPlaceholder')}
                 placeholderTextColor={colors.textFaint}
-                style={[styles.input, styles.multiline]}
+                style={styles.areaInput}
                 maxLength={BIO_MAX}
                 multiline
                 textAlignVertical="top"
+                accessibilityLabel={t('createCharacter.persona')}
               />
-            </Field>
-            <Field label={t('createCharacter.greeting')}>
+            </View>
+            <View style={styles.area}>
+              <Txt style={styles.areaLabel}>{t('createCharacter.greeting')}</Txt>
               <TextInput
                 value={greeting}
                 onChangeText={setGreeting}
                 placeholder={t('createCharacter.greetingPlaceholder')}
                 placeholderTextColor={colors.textFaint}
-                style={[styles.input, styles.multiline]}
+                style={styles.areaInput}
                 maxLength={GREETING_MAX}
                 multiline
                 textAlignVertical="top"
+                accessibilityLabel={t('createCharacter.greeting')}
               />
-            </Field>
-          </Section>
-
-          <Section title={t('createCharacter.voice')}>
-            <Segmented
-              options={[
-                { value: 'preset', label: t('createCharacter.voicePreset') },
-                { value: 'clone', label: t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone }) },
-              ]}
-              value={voiceMode}
-              onChange={setVoiceMode}
-            />
-
-            {voiceMode === 'preset' ? (
-              <View style={styles.voices}>
-                {VOICES.map((v) => (
-                  <PressableScale
-                    key={v}
-                    scaleTo={0.95}
-                    onPress={() => setPreset(v)}
-                    accessibilityState={{ selected: preset === v }}
-                    style={[styles.voiceCell, preset === v && styles.voiceCellOn]}>
-                    <Anim name="voiceWave" size={26} tint={preset === v ? colors.text : colors.textFaint} />
-                    <Txt variant="smallStrong">{t(`createCharacter.voices.${v}`)}</Txt>
-                  </PressableScale>
-                ))}
-              </View>
-            ) : (
-              <>
-                <PressableScale style={styles.dropzone} onPress={pickSamples} scaleTo={0.98}>
-                  <View style={styles.dropTile}>
-                    <Ionicons name="mic-outline" size={20} color={colors.text} />
-                  </View>
-                  <Txt variant="bodyStrong">{t('createCharacter.addClips')}</Txt>
-                  <Txt variant="small" color={colors.textSecondary} center style={styles.dropText}>
-                    {t('createCharacter.uploadVoicesBox')}
-                  </Txt>
-                </PressableScale>
-                {samples.length > 0 ? (
-                  <View style={styles.samples}>
-                    <Txt variant="smallStrong">{t('createCharacter.samples', { count: samples.length })}</Txt>
-                    {samples.map((sample, index) => (
-                      <View key={`${sample.uri}-${index}`} style={styles.sampleRow}>
-                        <Ionicons name="musical-note-outline" size={15} color={colors.textSecondary} />
-                        <Txt variant="small" lines={1} style={styles.flex}>
-                          {sample.name}
-                        </Txt>
-                        <PressableScale
-                          hitSlop={14}
-                          scaleTo={0.85}
-                          accessibilityLabel={t('a11y.removeClip')}
-                          onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
-                          <Ionicons name="trash-outline" size={17} color={colors.textSecondary} />
-                        </PressableScale>
-                      </View>
-                    ))}
-                  </View>
-                ) : null}
-                <CheckRow
-                  checked={voiceConsent}
-                  onToggle={() => setVoiceConsent((v) => !v)}
-                  label={t('createCharacter.voiceConsent')}
-                />
-              </>
-            )}
-          </Section>
-
-          <Section title={t('find.category')}>
-            <View style={styles.chips}>
-              {CATEGORIES.map((key) => (
-                <FormChip
-                  key={key}
-                  label={t(`find.categories.${key}`)}
-                  active={category === key}
-                  onPress={() => setCategory(key)}
-                />
-              ))}
             </View>
-          </Section>
+          </InsetGroup>
+
+          <GroupLabel>{t('createCharacter.voice')}</GroupLabel>
+          <Segmented
+            style={styles.segmented}
+            options={[
+              { value: 'preset', label: t('createCharacter.voicePreset') },
+              { value: 'clone', label: t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone }) },
+            ]}
+            value={voiceMode}
+            onChange={setVoiceMode}
+          />
+
+          {voiceMode === 'preset' ? (
+            // A picker list, iOS style: the chosen voice gets the tint check; the wave plays on it.
+            <InsetGroup style={styles.groupGap}>
+              {VOICES.map((v, i) => (
+                <Pressable
+                  key={v}
+                  onPress={() => setPreset(v)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: preset === v }}
+                  style={({ pressed }) => [styles.voiceRow, pressed && styles.pressed]}>
+                  <Anim name="voiceWave" size={24} tint={preset === v ? colors.primary : colors.textFaint} />
+                  <View style={[styles.voiceBody, i < VOICES.length - 1 && styles.line]}>
+                    <Txt style={styles.rowText}>{t(`createCharacter.voices.${v}`)}</Txt>
+                    {preset === v ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+                  </View>
+                </Pressable>
+              ))}
+            </InsetGroup>
+          ) : (
+            <>
+              <InsetGroup style={styles.groupGap}>
+                <IconRow
+                  icon="mic"
+                  fill={systemColors.orange}
+                  title={t('createCharacter.addClips')}
+                  meta={samples.length > 0 ? t('createCharacter.samples', { count: samples.length }) : undefined}
+                  last={samples.length === 0}
+                  onPress={samples.length < MAX_SAMPLES ? () => void pickSamples() : undefined}
+                />
+                {samples.map((sample, index) => (
+                  <View key={`${sample.uri}-${index}`} style={[styles.sampleRow, index < samples.length - 1 && styles.line]}>
+                    <Ionicons name="musical-note" size={16} color={colors.textSecondary} />
+                    <Txt style={[styles.sampleName, styles.flex]} lines={1}>
+                      {sample.name}
+                    </Txt>
+                    <PressableScale
+                      hitSlop={14}
+                      scaleTo={0.85}
+                      accessibilityLabel={t('a11y.removeClip')}
+                      onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
+                      <Ionicons name="remove-circle" size={22} color={systemColors.red} />
+                    </PressableScale>
+                  </View>
+                ))}
+              </InsetGroup>
+              <Txt style={styles.footer}>{t('createCharacter.uploadVoicesBox')}</Txt>
+              <InsetGroup style={styles.groupGap}>
+                <ConsentRow label={t('createCharacter.voiceConsent')} value={voiceConsent} onChange={setVoiceConsent} />
+              </InsetGroup>
+            </>
+          )}
+
+          <GroupLabel>{t('find.category')}</GroupLabel>
+          <InsetGroup style={styles.pills}>
+            {CATEGORIES.map((key) => (
+              <Pill key={key} label={t(`find.categories.${key}`)} active={category === key} onPress={() => setCategory(key)} />
+            ))}
+          </InsetGroup>
 
           {SHARING_OPEN ? (
-            <Section title={t('createCharacter.visibility')}>
-              <View style={styles.options}>
-                <OptionButton label={t('createCharacter.private')} active={!isPublic} onPress={() => setIsPublic(false)} />
-                <OptionButton label={t('createCharacter.public')} active={isPublic} onPress={() => setIsPublic(true)} />
-              </View>
-            </Section>
+            <>
+              <GroupLabel>{t('createCharacter.visibility')}</GroupLabel>
+              <Segmented
+                style={styles.segmented}
+                options={[
+                  { value: 'private', label: t('createCharacter.private') },
+                  { value: 'public', label: t('createCharacter.public') },
+                ]}
+                value={isPublic ? 'public' : 'private'}
+                onChange={(v) => setIsPublic(v === 'public')}
+              />
+            </>
           ) : null}
         </ScrollView>
 
-        {/* Action bar (docs/design-style.md §3): the button, then one line on what happens next. */}
-        <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-          {error ? (
-            <Txt variant="small" color={colors.danger} center>
-              {error}
-            </Txt>
-          ) : null}
-          <Button
-            label={
-              creating
-                ? t('createCharacter.creating')
-                : editing && cost === 0
-                  ? t('createCharacter.save')
-                  : cost > 0
-                    ? t('createCharacter.create', { count: cost })
-                    : t('createCharacter.createFree')
-            }
-            size="lg"
-            onPress={submit}
-            loading={creating}
-            full
-            style={problems.length > 0 && styles.dim}
-          />
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {t(isPublic ? 'createCharacter.reviewNote' : 'createCharacter.privateNote')}
-          </Txt>
-        </View>
+        {/* The Store's bar: the one button, then one line on what happens next. */}
+        <StoreBuyBar
+          label={
+            creating
+              ? t('createCharacter.creating')
+              : editing && cost === 0
+                ? t('createCharacter.save')
+                : cost > 0
+                  ? t('createCharacter.create', { count: cost })
+                  : t('createCharacter.createFree')
+          }
+          left={cost > 0 && !creating ? <ShellIcon size={18} /> : undefined}
+          disabled={creating}
+          caption={t(isPublic ? 'createCharacter.reviewNote' : 'createCharacter.privateNote')}
+          onPress={submit}>
+          {error ? <Txt style={styles.error}>{error}</Txt> : null}
+        </StoreBuyBar>
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
@@ -501,220 +508,84 @@ function CharacterForm({ editing }: { editing?: Character }) {
   );
 }
 
-/** A calm-cards section: h3 title, an optional count on the right, then its fields. */
-function Section({ title, right, children }: { title: string; right?: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.section}>
-      <View style={styles.sectionHead}>
-        <Txt variant="h3" accessibilityRole="header">
-          {title}
-        </Txt>
-        {right ? (
-          <Txt variant="small" color={colors.textSecondary}>
-            {right}
-          </Txt>
-        ) : null}
-      </View>
-      {children}
-    </View>
-  );
-}
-
-function Field({ label, style, children }: { label: string; style?: object; children: React.ReactNode }) {
-  return (
-    <View style={[styles.field, style]}>
-      <Txt variant="smallStrong" color={colors.textSecondary}>
-        {label}
-      </Txt>
-      {children}
-    </View>
-  );
-}
-
-/** Grey chip; the chosen one turns white with an ink border. */
-function FormChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+/** One choice as a capsule: system grey, or the Store's tint when chosen. */
+function Pill({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <PressableScale
       onPress={onPress}
       scaleTo={0.94}
       dimOnPress={false}
+      accessibilityRole="button"
       accessibilityState={{ selected: active }}
-      style={[styles.chip, active && styles.selected]}>
-      <Txt variant="smallStrong" color={active ? colors.text : colors.textSecondary}>
-        {label}
-      </Txt>
+      style={[styles.pill, active && styles.pillOn]}>
+      <Txt style={[styles.pillText, active && styles.pillTextOn]}>{label}</Txt>
     </PressableScale>
   );
 }
 
-/** One of two equal option buttons (gender, visibility). */
-function OptionButton({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+/** The creator's word on rights and consent: the line, then the platform's own switch. */
+function ConsentRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <PressableScale
-      onPress={onPress}
-      scaleTo={0.97}
-      dimOnPress={false}
-      accessibilityState={{ selected: active }}
-      style={[styles.option, active && styles.selected]}>
-      <Txt variant="bodyStrong" color={active ? colors.text : colors.textSecondary}>
-        {label}
-      </Txt>
-    </PressableScale>
-  );
-}
-
-/** The creator's word on rights and consent: a checkbox with one short line. */
-function CheckRow({ checked, onToggle, label }: { checked: boolean; onToggle: () => void; label: string }) {
-  return (
-    <PressableScale
-      onPress={onToggle}
-      scaleTo={0.98}
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked }}
-      style={styles.checkRow}>
-      <View style={[styles.box, checked && styles.boxOn]}>
-        {checked ? <Ionicons name="checkmark" size={15} color={colors.textOnInk} /> : null}
-      </View>
-      <Txt variant="small" color={colors.textSecondary} style={styles.flex}>
-        {label}
-      </Txt>
-    </PressableScale>
+    <View style={styles.consent}>
+      <Txt style={[styles.consentText, styles.flex]}>{label}</Txt>
+      <Toggle value={value} onChange={onChange} onColor={systemColors.green} accessibilityLabel={label} />
+    </View>
   );
 }
 
 const PHOTO = 112;
+const CAMERA = 32;
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scroll: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl + 2 },
-  section: { gap: space.md },
-  sectionHead: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
-  field: { gap: space.xs + 2 },
-  pair: { flexDirection: 'row', gap: space.md, alignItems: 'flex-end' },
-  ageField: { width: 96 },
-  photoBlock: { alignItems: 'center', gap: space.md },
+  hero: { alignItems: 'center', paddingTop: space.md, paddingBottom: space.lg },
   photo: {
     width: PHOTO,
     height: PHOTO,
     borderRadius: PHOTO / 2,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.surface,
+    // iOS Contacts' empty photo: a grey disc with a white figure.
+    backgroundColor: isDark ? '#636366' : '#AEAEB2',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  photoTile: {
-    width: 44,
-    height: 44,
-    borderRadius: 13,
-    backgroundColor: colors.surfaceAlt,
+  camera: {
+    position: 'absolute',
+    right: -2,
+    bottom: 2,
+    width: CAMERA,
+    height: CAMERA,
+    borderRadius: CAMERA / 2,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.primary,
+    borderWidth: 2,
+    borderColor: colors.bg,
   },
   fillImage: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  input: {
-    minHeight: 52,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    ...type.body,
-  },
-  multiline: { minHeight: 96, paddingTop: space.md },
-  voices: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  voiceCell: {
-    width: '31.5%',
-    height: 76,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.xs,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  voiceCellOn: { borderColor: colors.text },
-  dropzone: {
-    minHeight: 116,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.sm,
-    padding: space.lg,
-  },
-  dropTile: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dropText: { maxWidth: 280 },
-  samples: { gap: space.sm },
-  sampleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm + 2,
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  checkRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, alignSelf: 'stretch', paddingVertical: space.xs },
-  box: {
-    width: 22,
-    height: 22,
-    borderRadius: 7,
-    borderWidth: 2,
-    borderColor: colors.textFaint,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  boxOn: { backgroundColor: colors.text, borderColor: colors.text },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  chip: {
-    paddingHorizontal: space.lg,
-    height: 38,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    borderColor: colors.surfaceAlt,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  options: { flexDirection: 'row', gap: space.sm },
-  option: {
-    flex: 1,
-    height: 52,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: colors.surfaceAlt,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selected: { backgroundColor: colors.surface, borderColor: colors.text },
-  actionBar: {
-    gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    paddingBottom: space.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  dim: { opacity: 0.55 },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  pressed: { backgroundColor: colors.surfaceAlt },
+  rowText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  formRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, marginLeft: space.lg, paddingRight: space.lg },
+  formLabel: { width: 72, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  formInput: { flex: 1, minHeight: 48, fontSize: 17, letterSpacing: -0.4, color: colors.text, textAlign: 'right' },
+  genders: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: space.sm },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },
+  pill: { height: 34, paddingHorizontal: 14, borderRadius: 17, justifyContent: 'center', backgroundColor: systemColors.fill },
+  pillOn: { backgroundColor: STORE.tint },
+  pillText: { fontSize: 15, letterSpacing: -0.2, color: colors.text },
+  pillTextOn: { fontWeight: '600', color: STORE.onTint },
+  area: { marginLeft: space.lg, paddingRight: space.lg, paddingTop: 12, paddingBottom: 6 },
+  areaLabel: { fontSize: 13, color: colors.textSecondary },
+  areaInput: { minHeight: 72, paddingTop: 4, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  segmented: { marginHorizontal: space.lg },
+  groupGap: { marginTop: space.md },
+  voiceRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  voiceBody: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
+  sampleRow: { minHeight: 46, flexDirection: 'row', alignItems: 'center', gap: space.sm, marginLeft: space.lg, paddingRight: space.lg },
+  sampleName: { fontSize: 15, color: colors.text },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  consent: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: 10 },
+  consentText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2, color: colors.text },
+  error: { fontSize: 13, textAlign: 'center', color: systemColors.red },
 });
