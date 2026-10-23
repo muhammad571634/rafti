@@ -64,6 +64,7 @@ export const MODULE_ICON: Record<string, keyof typeof Ionicons.glyphMap> = {
   radio: 'radio',
   board: 'clipboard',
   bond: 'sparkles',
+  note: 'mail',
 };
 
 const LABEL_KEY: Record<WidgetKind, string> = {

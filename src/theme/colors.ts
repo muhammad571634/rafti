@@ -321,6 +321,8 @@ export const moduleColors: Record<string, readonly [string, string]> = {
   radio: ['#C86BF5', '#8A2FCC'],
   board: ['#C9A47A', '#8C6A44'],
   bond: ['#4CC9E8', '#1585B0'],
+  // The sealed note row: a gold envelope.
+  note: ['#FFD84D', '#F0A800'],
 };
 
 /** iOS system colours for the call screens (systemRed, systemGreen, tertiary fill), as on the canvas. */

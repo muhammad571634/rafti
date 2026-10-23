@@ -35,7 +35,6 @@ import { useDayKey } from '@/hooks/use-day-key';
 import {
   AuroraGlass,
   CharacterAvatar,
-  ClayIcon,
   PressableScale,
   Screen,
   Sheet,
@@ -310,7 +309,9 @@ export default function HomeScreen() {
             accessibilityLabel={t('home.todo.note', { name: noteName })}
             onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
             style={[styles.card, styles.noteRow]}>
-            <ClayIcon name="secretNote" size={46} tile={false} />
+            <LinearGradient colors={moduleColors.note} style={styles.noteIcon}>
+              <Ionicons name={MODULE_ICON.note} size={24} color={colors.white} />
+            </LinearGradient>
             <View style={styles.flex}>
               <Txt style={styles.rowTitle} lines={1}>
                 {t('home.todo.note', { name: noteName })}
@@ -568,6 +569,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.md,
   },
+  noteIcon: { width: 46, height: 46, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
