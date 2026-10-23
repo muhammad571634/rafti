@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { featuredFriend } from '@/components/today-hero';
-import { CharacterAvatar, ClayIcon, PressableScale, Txt, type ClayIconName } from '@/components/ui';
+import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { useDayKey } from '@/hooks/use-day-key';
 import { nextAlarmAt } from '@/lib/alarms';
@@ -15,7 +15,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, widgetTints, widgetTones } from '@/theme';
+import { colors, moduleColors, systemColors } from '@/theme';
 import type { Character, WidgetKind } from '@/types';
 
 /** Every widget, in the gallery's order. */
@@ -48,6 +48,24 @@ export const WIDGET_MODULE: Record<WidgetKind, string | null> = {
   bond: null,
 };
 
+/**
+ * Each module's glyph: filled, white on its colour (`moduleColors`), as on iOS app icons. The
+ * Today tiles use the same map, so a module looks the same as a tile and as a widget.
+ */
+export const MODULE_ICON: Record<string, keyof typeof Ionicons.glyphMap> = {
+  calls: 'call',
+  diary: 'book',
+  date: 'heart',
+  sleep: 'moon',
+  store: 'bag-handle',
+  photo: 'camera',
+  contacts: 'people',
+  gifts: 'gift',
+  radio: 'radio',
+  board: 'clipboard',
+  bond: 'sparkles',
+};
+
 const LABEL_KEY: Record<WidgetKind, string> = {
   calls: 'home.short.calls',
   diary: 'home.short.diary',
@@ -68,8 +86,6 @@ export const WIDGET_HEIGHT = 158;
 export interface WidgetModel {
   kind: WidgetKind;
   label: string;
-  look: 'card' | 'graphite' | 'night' | 'tint' | 'photo';
-  art?: ClayIconName;
   faces: Character[];
   badge?: string;
   /** A big number or time, with an optional word after it */
@@ -172,8 +188,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     calls: {
       kind: 'calls',
       label: label('calls'),
-      look: 'graphite',
-      art: 'calls',
       faces: [],
       title: caller ? t('home.widget.call', { name: nameOf(caller) }) : label('calls'),
       line: callMinutes > 0 ? t('home.widget.minutesLeft', { count: callMinutes }) : t('home.widget.hearVoice'),
@@ -189,8 +203,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     diary: {
       kind: 'diary',
       label: label('diary'),
-      look: 'card',
-      art: 'diary',
       faces: lastWriter ? [lastWriter] : writers.slice(0, 2),
       ...(fresh.length
         ? { figure: String(fresh.length), unit: t('home.widget.newPages', { count: fresh.length }), line: label('diary') }
@@ -205,8 +217,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     date: {
       kind: 'date',
       label: label('date'),
-      look: 'card',
-      art: 'date',
       faces: planFriend ? [planFriend] : [],
       ...(plan
         ? { figure: plan.time ?? t('home.today'), line: planDay ? `${planDay} · ${plan.title}` : plan.title }
@@ -216,8 +226,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     sleep: {
       kind: 'sleep',
       label: label('sleep'),
-      look: 'night',
-      art: 'bedtime',
       faces: [],
       ...(alarm
         ? {
@@ -232,8 +240,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     gifts: {
       kind: 'gifts',
       label: label('gifts'),
-      look: 'tint',
-      art: 'gift',
       faces: [],
       badge: spinReady ? t('home.widget.oneFree') : undefined,
       title: spinReady ? t('home.todo.spin') : giftWaiting ? t('home.widget.dailyGift') : label('gifts'),
@@ -243,8 +249,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     store: {
       kind: 'store',
       label: label('store'),
-      look: 'tint',
-      art: 'store',
       faces: [],
       figure: String(wallet.shells),
       unit: t('home.widget.shells'),
@@ -254,7 +258,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     photos: {
       kind: 'photos',
       label: label('photos'),
-      look: 'photo',
       faces: [],
       photo: photoFriend ? (HEROES[photoFriend.id] ?? characterImage(photoFriend)) : undefined,
       title: t('home.modules.photoBooth'),
@@ -264,8 +267,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     radio: {
       kind: 'radio',
       label: label('radio'),
-      look: 'tint',
-      art: 'radio',
       faces: clipFriend ? [clipFriend] : [],
       title: clipFriend ? t('home.widget.onAir') : label('radio'),
       line: clipFriend ? `${nameOf(clipFriend)} · ${label('radio')}` : t('home.widget.tuneIn'),
@@ -274,8 +275,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     board: {
       kind: 'board',
       label: label('board'),
-      look: 'tint',
-      art: 'board',
       faces: postFriend ? [postFriend] : [],
       title: label('board'),
       line: postFriend
@@ -288,8 +287,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     contacts: {
       kind: 'contacts',
       label: label('contacts'),
-      look: 'tint',
-      art: 'contacts',
       faces: friends.slice(0, 2),
       figure: String(friends.length),
       unit: t('home.widget.friends', { count: friends.length }),
@@ -299,8 +296,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     bond: {
       kind: 'bond',
       label: label('bond'),
-      look: 'card',
-      art: 'levelUp',
       faces: bondFriend ? [bondFriend] : [],
       ...(bond && bondFriend
         ? {
@@ -331,23 +326,21 @@ export function WidgetView({
   onPress?: () => void;
   onLongPress?: () => void;
 }) {
-  const tint = model.look === 'tint' ? widgetTints[model.kind] : undefined;
-  const onDark = model.look === 'graphite' || model.look === 'night' || model.look === 'photo';
-  const ink = tint ? tint.ink : onDark ? colors.white : colors.text;
-  const sub = tint ? tint.sub : onDark ? colors.onMediaMuted : aurora.textMuted;
-  const ring = model.look === 'graphite' ? widgetTones.calls : model.look === 'card' ? colors.surface : 'transparent';
+  // Photos is `photo`, Bond has no module and keeps its own key.
+  const key = WIDGET_MODULE[model.kind] ?? model.kind;
+  const tone = moduleColors[key];
 
   const body = (
     <>
       <View style={styles.top}>
-        {model.art ? <ClayIcon name={model.art} size={50} tile={false} /> : <View />}
+        {model.photo == null ? <Ionicons name={MODULE_ICON[key]} size={30} color={colors.white} /> : <View />}
         <View style={styles.faces}>
           {model.faces.slice(0, 2).map((c, i) => (
-            <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={ring} style={i > 0 && styles.overlap} />
+            <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
           ))}
           {model.badge ? (
             <View style={styles.badge}>
-              <Txt style={styles.badgeText}>{model.badge}</Txt>
+              <Txt style={[styles.badgeText, { color: tone[1] }]}>{model.badge}</Txt>
             </View>
           ) : null}
         </View>
@@ -355,17 +348,17 @@ export function WidgetView({
       <View>
         {model.figure ? (
           <View style={styles.figureLine}>
-            <Txt style={[styles.figure, { color: ink }]} lines={1}>
+            <Txt style={styles.figure} lines={1}>
               {model.figure}
             </Txt>
-            {model.unit ? <Txt style={[styles.unit, { color: ink }]}>{model.unit}</Txt> : null}
+            {model.unit ? <Txt style={styles.unit}>{model.unit}</Txt> : null}
           </View>
         ) : (
-          <Txt style={[styles.title, { color: ink }]} lines={1}>
+          <Txt style={styles.title} lines={1}>
             {model.title}
           </Txt>
         )}
-        <Txt variant="caption" color={sub} lines={1}>
+        <Txt variant="caption" color={SUB} lines={1}>
           {model.line}
         </Txt>
       </View>
@@ -373,22 +366,11 @@ export function WidgetView({
   );
 
   return (
-    <View
-      style={[
-        styles.card,
-        { height },
-        model.look === 'card' && styles.plain,
-        model.look === 'graphite' && { backgroundColor: widgetTones.calls },
-      ]}>
-      {model.look === 'night' ? (
-        <LinearGradient colors={widgetTones.sleep} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} />
-      ) : null}
-      {tint ? <LinearGradient colors={tint.bg} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} /> : null}
-      {model.look === 'photo' ? (
+    <View style={[styles.card, { height }]}>
+      <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
+      {model.photo != null ? (
         <>
-          {model.photo != null ? (
-            <Image source={model.photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
-          ) : null}
+          <Image source={model.photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
           <LinearGradient colors={PHOTO_SCRIM} style={StyleSheet.absoluteFill} />
         </>
       ) : null}
@@ -432,10 +414,11 @@ export function WidgetView({
 }
 
 const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
+/** The line under a widget's title: white, a step quieter. */
+const SUB = 'rgba(255,255,255,0.85)';
 
 const styles = StyleSheet.create({
   card: { borderRadius: 24, overflow: 'hidden' },
-  plain: { backgroundColor: colors.surface },
   fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   faces: { flexDirection: 'row', alignItems: 'center' },
@@ -445,13 +428,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     borderRadius: 12,
     justifyContent: 'center',
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.white,
   },
-  badgeText: { fontSize: 12, fontWeight: '700', color: colors.white },
+  badgeText: { fontSize: 12, fontWeight: '700' },
   figureLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5 },
-  unit: { fontSize: 15, fontWeight: '600' },
-  title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
+  figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5, color: colors.white },
+  unit: { fontSize: 15, fontWeight: '600', color: colors.white },
+  title: { fontSize: 17, lineHeight: 22, fontWeight: '700', color: colors.white },
   action: { position: 'absolute', top: 14, right: 14 },
   callDot: {
     position: 'absolute',
@@ -461,8 +444,8 @@ const styles = StyleSheet.create({
     height: 18,
     borderRadius: 9,
     borderWidth: 2,
-    borderColor: widgetTones.calls,
-    backgroundColor: '#34C759',
+    borderColor: colors.white,
+    backgroundColor: systemColors.green,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -304,66 +304,29 @@ const auroraDark: typeof auroraLight = {
 export const aurora = isDark ? auroraDark : auroraLight;
 
 /**
- * Today's module tiles (owner's pick, 2026-10-21): each clay icon sits on an iOS app-icon
- * squircle in its own colour, lighter at the top, deeper and quieter in dark mode (HIG App
- * icons: dark icons are more subdued, colour backgrounds keep contrast).
+ * Today's modules (owner's ask, 2026-10-24): one iOS system hue per module, worn by its app-icon
+ * tile (a white glyph on the colour, like Apple's own icons) and by its widget, so a module is
+ * found by colour wherever it shows. Light at the top, deep at the bottom where a widget's white
+ * text sits (3.7:1 or more). The same in dark mode, as iOS app icons and colour widgets are.
  */
-export const moduleTiles: Record<string, readonly [string, string]> = isDark
-  ? {
-      store: ['#5A3A24', '#3A2416'],
-      photo: ['#22405E', '#14283C'],
-      contacts: ['#1C4A42', '#112E29'],
-      gifts: ['#5A2440', '#3A1629'],
-      radio: ['#584218', '#38290F'],
-      board: ['#3E2E5E', '#271C3C'],
-      calls: ['#1E4A2E', '#122E1C'],
-      diary: ['#4E3C2A', '#30241A'],
-      date: ['#5A2E28', '#3A1C18'],
-      sleep: ['#2C2A5E', '#1B1A3C'],
-    }
-  : {
-      store: ['#FFE7D2', '#FFC69A'],
-      photo: ['#DDEEFF', '#A9D2FF'],
-      contacts: ['#DDF7F1', '#A6E9DA'],
-      gifts: ['#FFE2EE', '#FFB3CF'],
-      radio: ['#FFF1D2', '#FFD98F'],
-      board: ['#EEE6FF', '#CDB8FF'],
-      calls: ['#DDF6E5', '#A8E6BD'],
-      diary: ['#F7ECDD', '#E6CBA6'],
-      date: ['#FFE3DC', '#FFB6A4'],
-      sleep: ['#E4E3FF', '#B9B6FF'],
-    };
-
-/**
- * Today's widgets. Calls is iOS graphite (systemGray6 dark), Sleep a night sky; the other
- * widgets are plain cards (`colors.surface`).
- */
-export const widgetTones = {
-  calls: isDark ? '#2C2C2E' : '#1C1C1E',
-  sleep: ['#2A2D6E', '#12143A'] as const,
+export const moduleColors: Record<string, readonly [string, string]> = {
+  calls: ['#4CD964', '#17903D'],
+  diary: ['#FFA930', '#E05A00'],
+  date: ['#FF5A7E', '#E0194B'],
+  sleep: ['#7A77FF', '#3F3CC4'],
+  store: ['#2ED3C6', '#008F87'],
+  photo: ['#4FA3FF', '#0060E0'],
+  contacts: ['#A8A8B0', '#6B6B72'],
+  gifts: ['#FF6259', '#D92A20'],
+  radio: ['#C86BF5', '#8A2FCC'],
+  board: ['#C9A47A', '#8C6A44'],
+  bond: ['#4CC9E8', '#1585B0'],
 };
 
 /** iOS system colours for the call screens (systemRed, systemGreen, tertiary fill), as on the canvas. */
 export const systemColors = isDark
   ? { red: '#FF453A', green: '#30D158', orange: '#FF9F0A', fill: 'rgba(118,118,128,0.24)', thumb: '#636366' }
   : { red: '#FF3B30', green: '#34C759', orange: '#FF9500', fill: 'rgba(118,118,128,0.12)', thumb: '#FFFFFF' };
-
-/** Tinted widgets (Gifts, Store, Radio, Board, Contacts): gradient, title ink, line ink. */
-export const widgetTints: Record<string, { bg: readonly [string, string]; ink: string; sub: string }> = isDark
-  ? {
-      gifts: { bg: ['#5A2440', '#2E1222'], ink: '#FFFFFF', sub: '#F2B8CF' },
-      store: { bg: ['#5A3A24', '#2E1C10'], ink: '#FFFFFF', sub: '#F2CBA8' },
-      radio: { bg: ['#584218', '#2A1F08'], ink: '#FFFFFF', sub: '#F2D9A0' },
-      board: { bg: ['#3E2E5E', '#1E1630'], ink: '#FFFFFF', sub: '#CFC2F2' },
-      contacts: { bg: ['#1C4A42', '#0E2420'], ink: '#FFFFFF', sub: '#A8E6D8' },
-    }
-  : {
-      gifts: { bg: ['#FFE2EE', '#FFB9D3'], ink: '#5A1634', sub: '#8A3A5C' },
-      store: { bg: ['#FFEBDA', '#FFC9A0'], ink: '#5A2A0C', sub: '#8A4A1E' },
-      radio: { bg: ['#FFF4DA', '#FFDE9C'], ink: '#4A3300', sub: '#7A5A10' },
-      board: { bg: ['#F1EAFF', '#D4C2FF'], ink: '#2E1E5A', sub: '#5A4A8A' },
-      contacts: { bg: ['#E2F8F2', '#AEEBDD'], ink: '#0E3E35', sub: '#2E6A5E' },
-    };
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**

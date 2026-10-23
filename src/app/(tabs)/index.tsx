@@ -22,7 +22,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
-import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
+import {
+  MODULE_ICON,
+  useWidgetModels,
+  WIDGET_HEIGHT,
+  WIDGET_KINDS,
+  WIDGET_MODULE,
+  WidgetView,
+  type WidgetModel,
+} from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
   AuroraGlass,
@@ -34,26 +42,25 @@ import {
   ShellIcon,
   Txt,
   UserAvatar,
-  type ClayIconName,
 } from '@/components/ui';
 import { clipName, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, moduleTiles, space, TAB_BAR_HEIGHT } from '@/theme';
+import { aurora, colors, hitSlop, moduleColors, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
-const TILES: { key: string; icon: ClayIconName; route: string }[] = [
-  { key: 'calls', icon: 'calls', route: '/call-history' },
-  { key: 'diary', icon: 'diary', route: '/diary' },
-  { key: 'date', icon: 'date', route: '/dating' },
-  { key: 'sleep', icon: 'bedtime', route: '/bedtime' },
-  { key: 'store', icon: 'store', route: '/store/shell' },
-  { key: 'photo', icon: 'camera', route: '/photo-booth' },
-  { key: 'contacts', icon: 'contacts', route: '/contacts' },
-  { key: 'gifts', icon: 'gift', route: '/gifts' },
-  { key: 'radio', icon: 'radio', route: '/radio' },
-  { key: 'board', icon: 'board', route: '/board' },
+const TILES: { key: string; route: string }[] = [
+  { key: 'calls', route: '/call-history' },
+  { key: 'diary', route: '/diary' },
+  { key: 'date', route: '/dating' },
+  { key: 'sleep', route: '/bedtime' },
+  { key: 'store', route: '/store/shell' },
+  { key: 'photo', route: '/photo-booth' },
+  { key: 'contacts', route: '/contacts' },
+  { key: 'gifts', route: '/gifts' },
+  { key: 'radio', route: '/radio' },
+  { key: 'board', route: '/board' },
 ];
 const TILE_LABEL: Record<string, string> = {
   calls: 'home.short.calls',
@@ -327,8 +334,8 @@ export default function HomeScreen() {
                 accessibilityLabel={t(TILE_LABEL[tile.key])}
                 onPress={() => router.push(tile.route as never)}
                 style={styles.tileCell}>
-                <LinearGradient colors={moduleTiles[tile.key]} style={styles.tile}>
-                  <ClayIcon name={tile.icon} size={38} tile={false} />
+                <LinearGradient colors={moduleColors[tile.key]} style={styles.tile}>
+                  <Ionicons name={MODULE_ICON[tile.key]} size={28} color={colors.white} />
                 </LinearGradient>
                 {badge ? (
                   <View style={styles.badge}>
@@ -564,16 +571,8 @@ const styles = StyleSheet.create({
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
-  // iOS app-icon squircle: ~22% corner radius.
-  tile: {
-    width: TILE,
-    height: TILE,
-    borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
-  },
+  // iOS app-icon squircle: ~22% corner radius, a white glyph on the module's colour.
+  tile: { width: TILE, height: TILE, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
     top: -4,
