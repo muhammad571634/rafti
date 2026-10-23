@@ -134,7 +134,7 @@ export default function MemoriesScreen() {
             />
           )}
           ListFooterComponent={
-            locked.length > 0 ? <LockedBox memories={locked} onPress={() => setUnlocking(true)} /> : null
+            locked.length > 0 ? <LockedBox memories={locked} onPress={() => setUnlocking(true)} /> : undefined
           }
         />
       )}

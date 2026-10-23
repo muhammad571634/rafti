@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  type ScrollViewInstance,
   Platform,
   Pressable,
   ScrollView,
@@ -135,7 +136,7 @@ function Column({
   align: 'flex-start' | 'flex-end' | 'center';
   tone?: WheelTone;
 }) {
-  const ref = useRef<ScrollView>(null);
+  const ref = useRef<ScrollViewInstance>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Starts on the chosen value; later changes come from the user's own scrolling.

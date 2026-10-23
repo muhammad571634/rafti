@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, ScrollView, StyleSheet, type TextInput, useWindowDimensions, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, type TextInputInstance, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
@@ -68,7 +68,7 @@ export default function FindScreen() {
   const [query, setQuery] = useState('');
   const [who, setWho] = useState<Who>('everyone');
   const [searching, setSearching] = useState(false);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
   const recentSearches = useAppStore((s) => s.recentSearches);
   const recentlyViewed = useAppStore((s) => s.recentlyViewed);
   const rememberSearch = useAppStore((s) => s.rememberSearch);

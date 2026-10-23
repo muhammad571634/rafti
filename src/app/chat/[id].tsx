@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View, type ViewInstance } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -72,7 +72,7 @@ export default function ChatRoomScreen() {
   const [attachOpen, setAttachOpen] = useState(false);
   /** The message a search result pointed at, tinted for a moment. */
   const [flash, setFlash] = useState<string | null>(null);
-  const blurTarget = useRef<View>(null);
+  const blurTarget = useRef<ViewInstance>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [truthOpen, setTruthOpen] = useState(false);
   const [callsOpen, setCallsOpen] = useState(false);

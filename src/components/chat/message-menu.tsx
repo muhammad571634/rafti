@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { type RefObject, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
+import { BackHandler, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
@@ -24,7 +24,7 @@ export interface MessageMenuProps {
   onReport: (message: Message) => void;
   onDelete: (message: Message) => void;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
-  blurTarget: RefObject<View | null>;
+  blurTarget: RefObject<ViewInstance | null>;
 }
 
 /**

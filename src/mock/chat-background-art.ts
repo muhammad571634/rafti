@@ -1,9 +1,8 @@
-import type { ImageSourcePropType } from 'react-native';
-
 type ChatArtBackground = {
   id: string;
   nameKey: string;
-  image: ImageSourcePropType;
+  /** A bundled image (`require`), i.e. a Metro asset id. */
+  image: number;
 };
 
 /** Original, user-selectable art wallpapers for any character conversation. */

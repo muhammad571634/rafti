@@ -49,14 +49,14 @@ export default function TabsLayout() {
  * https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg). Labels are bold; the current tab sits in
  * a soft capsule with its icon filled in peach; unread chats show one small dot.
  */
-function GlassTabBar({ state, navigation }: TabBarProps) {
+function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const unread = useUnreadTotal();
 
-  const open = (name: string, key: string, focused: boolean) => {
-    const event = navigation.emit({ type: 'tabPress', target: key, canPreventDefault: true });
-    if (!focused && !event.defaultPrevented) navigation.navigate(name);
+  const open = (key: string, focused: boolean) => {
+    const event = emitter.emit({ type: 'tabPress', target: key, canPreventDefault: true });
+    if (!focused && !event.defaultPrevented) navigateToTab(key);
   };
 
   const tabs = state.routes.map((route, index) => ({ route, focused: state.index === index }));
@@ -80,7 +80,7 @@ function GlassTabBar({ state, navigation }: TabBarProps) {
                 accessibilityRole="tab"
                 accessibilityLabel={hasUnread ? t('a11y.unreadTab', { label, count: unread }) : label}
                 accessibilityState={{ selected: focused }}
-                onPress={() => open(route.name, route.key, focused)}>
+                onPress={() => open(route.key, focused)}>
                 <View>
                   <Ionicons
                     name={focused ? icon.on : icon.off}
@@ -105,7 +105,7 @@ function GlassTabBar({ state, navigation }: TabBarProps) {
           accessibilityRole="tab"
           accessibilityLabel={t('tabs.find')}
           accessibilityState={{ selected: find.focused }}
-          onPress={() => open(find.route.name, find.route.key, find.focused)}>
+          onPress={() => open(find.route.key, find.focused)}>
           <View style={[styles.roundInner, find.focused && styles.itemOn]}>
             <Ionicons name="search" size={24} color={colors.tabActive} />
           </View>

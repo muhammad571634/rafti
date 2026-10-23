@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextInput, View, ViewStyle, type TextInputInstance } from 'react-native';
 
 import { aurora, colors, radius, space, type } from '@/theme';
 
@@ -15,7 +15,7 @@ export interface SearchBarProps {
   onSubmit?: () => void;
   autoFocus?: boolean;
   onFocus?: () => void;
-  inputRef?: React.Ref<TextInput>;
+  inputRef?: React.Ref<TextInputInstance>;
   /** `light`: white field with a hairline border; `aurora`: a glass field on the aurora ground. */
   tone?: 'filled' | 'light' | 'aurora';
 }

@@ -174,7 +174,7 @@ export default function LedgerScreen() {
             compact
           />
         }
-        ListFooterComponent={sections.length ? <Txt style={styles.footer}>{t('ledger.footer')}</Txt> : null}
+        ListFooterComponent={sections.length ? <Txt style={styles.footer}>{t('ledger.footer')}</Txt> : undefined}
         renderSectionHeader={({ section }) => (
           <Txt style={styles.day} accessibilityRole="header">
             {dayTitle(section.key)}

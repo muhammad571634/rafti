@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconButton, PressableScale, Txt } from '@/components/ui';
@@ -40,7 +40,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
 
   const hasText = value.trim().length > 0;
 

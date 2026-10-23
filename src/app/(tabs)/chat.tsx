@@ -4,7 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, Platform, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, {
   useAnimatedStyle,
@@ -93,7 +93,7 @@ export default function ChatListScreen() {
   const [filter, setFilter] = useState<Filter>('all');
   /** The chat a long press opened the menu for. */
   const [held, setHeld] = useState<ChatItem | null>(null);
-  const blurTarget = useRef<View>(null);
+  const blurTarget = useRef<ViewInstance>(null);
 
   const conversations = useAppStore((s) => s.conversations);
   const groups = useAppStore((s) => s.groups);
@@ -338,7 +338,7 @@ export default function ChatListScreen() {
                       {filter === 'unread' ? t('chatList.caughtUp') : t('chatList.noGroups')}
                     </Txt>
                   </View>
-                ) : null
+                ) : undefined
               }
               renderItem={({ item, index }) => (
                 <ChatRow

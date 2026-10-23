@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo, type ViewInstance } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -70,7 +70,7 @@ export default function GroupChatScreen() {
   const reportMessage = useAppStore((s) => s.reportMessage);
 
   const [attachOpen, setAttachOpen] = useState(false);
-  const blurTarget = useRef<View>(null);
+  const blurTarget = useRef<ViewInstance>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   /** The member on the wheel's other half; a new one each game. */
   const [truthWith, setTruthWith] = useState<Character | null>(null);
@@ -261,7 +261,7 @@ export default function GroupChatScreen() {
               contentContainerStyle={[styles.list, { paddingTop: headerRoom }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
-              ListFooterComponent={typers.length ? <TypingRow characters={typers} label={typingLabel} /> : null}
+              ListFooterComponent={typers.length ? <TypingRow characters={typers} label={typingLabel} /> : undefined}
               onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {

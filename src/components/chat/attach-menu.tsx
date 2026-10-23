@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
@@ -43,7 +43,7 @@ export function AttachMenu({
   onClose: () => void;
   onPick: (key: AttachKey) => void;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
-  blurTarget: RefObject<View | null>;
+  blurTarget: RefObject<ViewInstance | null>;
 }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();

@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  type ScrollViewInstance,
   KeyboardAvoidingView,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
@@ -386,7 +387,7 @@ function YearWheel({
   onChange: (year: number) => void;
 }) {
   const years = useMemo(() => Array.from({ length: max - min + 1 }, (_, i) => max - i), [min, max]);
-  const ref = useRef<ScrollView>(null);
+  const ref = useRef<ScrollViewInstance>(null);
   const pad = YEAR_ROW * Math.floor(YEAR_VISIBLE / 2);
 
   // Start on the current answer; `contentOffset` alone is ignored on web.
