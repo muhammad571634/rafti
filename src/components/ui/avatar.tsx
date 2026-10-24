@@ -19,6 +19,8 @@ export interface AvatarProps {
   accentIndex?: number;
   /** Green check overlay used on discovery cards when the voice model is ready. */
   verified?: boolean;
+  /** What the green badge shows: a check (voice ready) or a phone (they can be called). */
+  badge?: 'check' | 'call';
   ring?: boolean;
   ringColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -36,6 +38,7 @@ export function Avatar({
   size = 48,
   accentIndex = 0,
   verified,
+  badge: badgeKind = 'check',
   ring,
   ringColor = colors.primary,
   style,
@@ -79,7 +82,7 @@ export function Avatar({
 
       {verified ? (
         <View style={[styles.badge, { width: badge, height: badge, borderRadius: badge / 2 }]}>
-          <Ionicons name="checkmark" size={badge * 0.66} color={colors.white} />
+          <Ionicons name={badgeKind === 'call' ? 'call' : 'checkmark'} size={badge * (badgeKind === 'call' ? 0.55 : 0.66)} color={colors.white} />
         </View>
       ) : null}
     </View>

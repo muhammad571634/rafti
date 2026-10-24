@@ -2,27 +2,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Button,
-  Card,
   CharacterAvatar,
-  Divider,
+  GlassBar,
+  GlassButton,
   Header,
-  IconButton,
-  IconTile,
-  ListRow,
+  InsetGroup,
+  InsetRow,
+  PressableScale,
   Screen,
+  SFIcon,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
-import { daysBetween, shortDate } from '@/lib/format';
+import { planDate } from '@/components/plans/copy';
+import { useEarlyAccess } from '@/components/plans/early-access';
+import { opensToAllAt } from '@/economy/early-access';
+import { isActiveMemory } from '@/economy/memory-limit';
+import { daysBetween } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Relationship } from '@/types';
-
-/** Leading tile size for the profile's link rows; the divider inset follows it. */
-const ROW_TILE = 34;
 
 /**
  * Discovery -> profile -> "Add friend" is the reference app's way in: adding a
@@ -30,6 +34,7 @@ const ROW_TILE = 34;
  * plain canvas: a centred portrait, one apricot action, and quiet rows below.
  */
 export default function CharacterProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -40,9 +45,13 @@ export default function CharacterProfileScreen() {
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const memoryCount = useAppStore(
-    (s) => s.memories.filter((m) => m.characterId === characterId).length,
+    (s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length,
   );
   const addFriend = useAppStore((s) => s.addFriend);
+  // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
+  const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
+  // Past the avatar and name, the bar shows the name (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(150);
 
   if (!character) {
     return (
@@ -55,48 +64,83 @@ export default function CharacterProfileScreen() {
   const isFriend = !!conversation;
   const voiceReady = character.voiceReady;
 
+  const locked = !isFriend && early.locked(character);
+  const opensAt = opensToAllAt(character);
+
   const openChat = () => {
+    if (locked) return early.add(character);
     const conversationId = conversation?.id ?? addFriend(character.id);
-    router.push(`/chat/${conversationId}`);
+    // Chat → settings → profile → Message goes back to that chat, not a second copy of it.
+    router.dismissTo(`/chat/${conversationId}`);
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header
+    // iOS contact poster (approved prototype `Profile.dc.html`): grey ground, glass bar, inset cards.
+    <Screen background={colors.bg}>
+      <GlassBar
+        title={displayName(character, relationship)}
+        scrolled={scrolled}
         right={
           isFriend ? (
-            <IconButton
+            <GlassButton
               icon="ellipsis-horizontal"
-              accessibilityLabel={t('a11y.more')}
-              onPress={() => router.push(`/character/${character.id}/settings`)}
+              accessibilityLabel={t('characterProfile.settings')}
+              onPress={() => router.dismissTo(`/character/${character.id}/settings`)}
             />
           ) : null
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
         <View style={styles.hero}>
-          <CharacterAvatar character={character} size={92} />
-          <Txt variant="h2" center style={styles.name}>
-            {displayName(character, relationship)}
-          </Txt>
-          <Txt variant="small" color={colors.textMuted} center style={styles.handle}>
+          <CharacterAvatar character={character} size={112} />
+          <View style={styles.nameRow}>
+            <Txt style={styles.name} center lines={2}>
+              {displayName(character, relationship)}
+            </Txt>
+            {/* Store rule: an AI character is marked as one. */}
+            <View style={styles.aiMark} accessibilityLabel={t('safety.ai')}>
+              <Txt style={styles.aiText}>{t('safety.ai')}</Txt>
+            </View>
+          </View>
+          <Txt style={styles.handle} center>
             {character.handle}
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
+          {locked ? (
+            <Txt variant="caption" color={colors.textSecondary} center style={styles.bold}>
+              {t('find.proFirst')}
+            </Txt>
+          ) : null}
+          {character.review === 'pending' ? (
+            <Txt variant="caption" color={colors.textSecondary} center>
+              {t('createCharacter.inReview')}
+            </Txt>
+          ) : null}
           {voiceReady ? (
             <View style={styles.voice}>
-              <View style={styles.voiceDot} />
-              <Txt variant="caption" color={colors.bondText}>
+              {/* SF Symbols' own pulse on iPhone: the voice is alive. */}
+              <SFIcon
+                ios="waveform"
+                icon="pulse"
+                size={14}
+                color={colors.bondText}
+                animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }}
+              />
+              <Txt style={styles.voiceText} color={colors.bondText}>
                 {t('find.voiceReady')}
               </Txt>
             </View>
           ) : null}
-          <Txt variant="body" color={colors.textSecondary} center style={styles.bio}>
+          <Txt style={styles.bio} center>
             {character.bio}
           </Txt>
           {character.tags.length > 0 ? (
-            <Txt variant="small" color={colors.textMuted} center style={styles.tags}>
+            <Txt style={styles.tags} center>
               {character.tags.join(' · ')}
             </Txt>
           ) : null}
@@ -111,129 +155,168 @@ export default function CharacterProfileScreen() {
             onPress={openChat}
             left={
               <Ionicons
-                name={isFriend ? 'chatbubble-outline' : 'person-add-outline'}
+                name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
                 size={18}
                 color={colors.textOnPrimary}
               />
             }
           />
+          {locked && opensAt != null ? (
+            <Txt variant="caption" color={colors.textSecondary} center>
+              {t('newCharacters.opensOn', { date: planDate(opensAt) })}
+            </Txt>
+          ) : null}
           {isFriend ? (
             <View style={styles.pair}>
-              <Button
-                label={t('characterProfile.call')}
-                variant="secondary"
+              <PressableScale
+                scaleTo={0.95}
                 disabled={!voiceReady}
                 onPress={() => router.push(`/call/${character.id}`)}
-                left={<Ionicons name="call-outline" size={17} color={colors.text} />}
-                style={styles.half}
-              />
-              <Button
-                label={t('characterProfile.secretNote')}
-                variant="secondary"
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !voiceReady }}
+                accessibilityLabel={t('characterProfile.call')}
+                style={[styles.tile, !voiceReady && styles.off]}>
+                <SFIcon ios="phone.fill" icon="call" size={22} color={colors.primary} />
+                <Txt style={styles.tileLabel} color={colors.primary}>
+                  {t('characterSettings.quickCall')}
+                </Txt>
+              </PressableScale>
+              <PressableScale
+                scaleTo={0.95}
                 onPress={() => router.push(`/secret-note/${character.id}`)}
-                left={<Ionicons name="mail-outline" size={17} color={colors.text} />}
-                style={styles.half}
-              />
+                accessibilityRole="button"
+                accessibilityLabel={t('characterProfile.secretNote')}
+                style={styles.tile}>
+                <SFIcon ios="envelope" icon="mail-outline" size={22} color={colors.primary} />
+                <Txt style={styles.tileLabel} color={colors.primary}>
+                  {t('characterProfile.secretNote')}
+                </Txt>
+              </PressableScale>
             </View>
           ) : null}
           {!voiceReady ? (
-            <Txt variant="caption" color={colors.textMuted} center>
+            <Txt variant="caption" color={colors.textSecondary} center>
               {t('characterProfile.voiceTraining')}
             </Txt>
           ) : null}
         </View>
 
-        {isFriend && relationship ? <BondCard relationship={relationship} /> : null}
-
-        {isFriend ? (
-          <View style={styles.list}>
-            <ListRow
-              left={<IconTile icon="bookmark-outline" size={ROW_TILE} />}
-              title={t('characterProfile.memories')}
-              meta={memoryCount > 0 ? String(memoryCount) : undefined}
-              chevron
-              onPress={() => router.push(`/character/${character.id}/memories`)}
-              accessibilityLabel={
-                memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')
-              }
-            />
-            <Divider inset={space.lg + ROW_TILE + space.md} />
-            <ListRow
-              left={<IconTile icon="settings-outline" size={ROW_TILE} />}
-              title={t('characterProfile.settings')}
-              chevron
-              onPress={() => router.push(`/character/${character.id}/settings`)}
-            />
-          </View>
+        {isFriend && relationship ? (
+          <BondCard
+            relationship={relationship}
+            memoryCount={memoryCount}
+            onMemories={() => router.push(`/character/${character.id}/memories`)}
+          />
         ) : null}
       </ScrollView>
+      {early.sheet}
     </Screen>
   );
 }
 
-/** Level, progress to the next one and how long you have known each other; mint marks the bond. */
-function BondCard({ relationship }: { relationship: Relationship }) {
+/** Level, progress, streak and days together in one white card, with Memories as its last row. */
+function BondCard({
+  relationship,
+  memoryCount,
+  onMemories,
+}: {
+  relationship: Relationship;
+  memoryCount: number;
+  onMemories: () => void;
+}) {
   const { t } = useTranslation();
   const progress = levelForIntimacy(relationship.intimacy).progress;
   // Intimacy keeps growing past the last threshold, so the top level shows a plain total.
   const maxed = relationship.intimacy >= relationship.nextLevelAt;
 
   return (
-    <Card variant="outlined" style={styles.bond}>
+    <InsetGroup style={styles.bond}>
       <View style={styles.bondHead}>
-        <Txt variant="smallStrong" lines={1} style={styles.grow}>
-          {t('characterProfile.levelLine', {
-            level: relationship.level,
-            title: relationship.levelTitle,
-          })}
-        </Txt>
-        <Txt variant="caption" color={colors.textMuted}>
+        <View style={styles.bondHeart}>
+          {/* One SF Symbols bounce when the card appears (iPhone). */}
+          <SFIcon ios="heart.fill" icon="heart" size={16} color={colors.bond} animation={{ effect: { type: 'bounce' } }} />
+        </View>
+        <View style={styles.grow}>
+          <Txt style={styles.bondTitle} lines={1}>
+            {t('characterProfile.levelLine', { level: relationship.level, title: relationship.levelTitle })}
+          </Txt>
+          <Txt style={styles.bondLine}>
+            {t('us.streak', { count: relationship.streakDays })}
+            {' · '}
+            {t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}
+          </Txt>
+        </View>
+        <Txt style={styles.bondLine}>
           {maxed
             ? t('us.intimacy', { count: relationship.intimacy })
-            : t('characterProfile.progress', {
-                current: relationship.intimacy,
-                next: relationship.nextLevelAt,
-              })}
+            : t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
         </Txt>
       </View>
       <View style={styles.track}>
         <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
       </View>
-      <Txt variant="caption" color={colors.textMuted}>
-        {t('us.streak', { count: relationship.streakDays })}
-        {' · '}
-        {t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}
-      </Txt>
-      <Txt variant="caption" color={colors.textFaint} style={styles.since}>
-        {t('characterProfile.friends', { date: shortDate(relationship.anniversary) })}
-      </Txt>
-    </Card>
+      <View style={styles.bondFoot}>
+        <InsetRow
+          label={t('characterProfile.memories')}
+          meta={memoryCount > 0 ? String(memoryCount) : undefined}
+          chevron
+          last
+          onPress={onMemories}
+        />
+      </View>
+    </InsetGroup>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingHorizontal: space.lg, paddingBottom: space.huge },
-  hero: { alignItems: 'center', paddingTop: space.sm },
-  name: { marginTop: space.md },
-  handle: { marginTop: space.xxs },
-  voice: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm },
-  voiceDot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.bond },
-  bio: { marginTop: space.md },
-  tags: { marginTop: space.sm },
-  actions: { marginTop: space.xl, gap: space.sm },
+  scroll: { paddingBottom: space.huge },
+  hero: { alignItems: 'center', paddingTop: space.xs, paddingHorizontal: space.xl },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
+  name: { flexShrink: 1, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
+  aiMark: { height: 20, paddingHorizontal: 7, borderRadius: 6, backgroundColor: colors.surfaceAlt, justifyContent: 'center' },
+  aiText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
+  handle: { marginTop: 2, fontSize: 15, color: colors.textSecondary },
+  bold: { fontWeight: '700' },
+  voice: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 6 },
+  voiceText: { fontSize: 13, fontWeight: '500' },
+  bio: { marginTop: 10, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
+  tags: { marginTop: space.sm, fontSize: 13, color: colors.textSecondary },
+  actions: { marginTop: 20, gap: space.sm, paddingHorizontal: space.lg },
   pair: { flexDirection: 'row', gap: space.sm },
-  half: { flex: 1 },
-  bond: { marginTop: space.xl },
-  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  tile: {
+    flex: 1,
+    height: 62,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  tileLabel: { fontSize: 12, fontWeight: '500' },
+  off: { opacity: 0.45 },
+  bond: { marginTop: 22 },
+  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: 14 },
+  bondHeart: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.bondSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bondTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
+  bondLine: { fontSize: 13, color: colors.textSecondary },
   grow: { flex: 1 },
   track: {
-    height: 4,
-    marginVertical: space.md,
-    borderRadius: radius.pill,
+    height: 6,
+    marginLeft: space.lg + 30 + space.md,
+    marginRight: space.lg,
+    marginTop: space.md,
+    marginBottom: 14,
+    borderRadius: 3,
     backgroundColor: colors.border,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
-  since: { marginTop: space.xs },
-  list: { marginTop: space.lg, marginHorizontal: -space.lg },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
+  bondFoot: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
 });

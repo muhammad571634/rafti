@@ -1,26 +1,45 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { Anim, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
+import { HELPLINE_URL } from '@/ai/safety';
+import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
-import { colors, radius, shadows, space } from '@/theme';
-import type { Character, Message, User } from '@/types';
+import { useAppStore } from '@/store/use-app-store';
+import { colors, radius, space } from '@/theme';
+import type { Character, Message } from '@/types';
 
 export interface MessageBubbleProps {
   message: Message;
   character: Character;
-  user: User;
-  /** First message of a run from the same author — only then is the avatar drawn. */
+  /** First message of a run from the same author: a group member's name goes over it. */
   showAvatar: boolean;
+  /** Last message of a run: it carries the avatar and the bubble's tail (iOS Messages). */
+  runEnd: boolean;
+  /** The user's last message shows "Read" or "Delivered" under it. */
+  receipt?: boolean;
   animate?: boolean;
   onCallBack?: () => void;
+  /** Long-press on a text or photo opens the message menu (react, copy, delete). */
+  onLongPress?: (message: Message) => void;
+  /** Group chats: the member's name over the first bubble of their run. */
+  senderName?: string;
+  /** Group chats: the "not real people" line names everyone. */
+  aiNoticeText?: string;
 }
 
-const AVATAR = 34;
+const AVATAR = 28;
+/** iOS bubble corners; the tail corner of a run's last bubble is tighter. */
+const CORNER = 19;
+const TAIL = 6;
 
 /**
  * Memoised: a long history re-renders only the rows whose message or run position
@@ -29,63 +48,100 @@ const AVATAR = 34;
 export const MessageBubble = memo(function MessageBubble({
   message,
   character,
-  user,
   showAvatar,
+  runEnd,
+  receipt,
   animate = true,
   onCallBack,
+  onLongPress,
+  senderName,
+  aiNoticeText,
 }: MessageBubbleProps) {
+  const router = useRouter();
   const mine = message.author === 'me';
+  const photoId = message.photoId;
+  const named = !mine && showAvatar && !!senderName;
 
+  if (message.card === 'helpline') return <HelplineCard />;
+  if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
+  if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
+
+  // The bubble itself; in a group it sits under the member's name, which then holds the width cap.
+  const content =
+    message.kind === 'voice' ? (
+      <VoiceBubble message={message} mine={mine} tail={runEnd} wide={named} />
+    ) : (
+      <PressableScale
+        scaleTo={0.97}
+        delayLongPress={280}
+        disabled={!onLongPress && !photoId}
+        onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
+        onLongPress={onLongPress ? () => onLongPress(message) : undefined}
+        style={[styles.holdable, named && styles.wide, message.reaction ? styles.withReaction : null]}>
+        {message.kind === 'image' && message.photoId ? (
+          <BoothPhotoMessage photoId={message.photoId} character={character} />
+        ) : message.kind === 'image' && message.imageUri ? (
+          <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+        ) : (
+          <TextBubble message={message} mine={mine} tail={runEnd} />
+        )}
+        {message.reaction && message.reaction in REACTION_STICKERS ? (
+          <ReactionSticker
+            name={message.reaction as ReactionName}
+            play="once"
+            style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+          />
+        ) : null}
+      </PressableScale>
+    );
 
   return (
     <Animated.View
       entering={animate ? FadeInDown.duration(220).springify().damping(18) : undefined}
-      style={[styles.row, mine ? styles.rowMine : styles.rowTheirs, showAvatar && styles.runStart]}>
-      {!mine ? (
-        <View style={styles.avatarSlot}>
-          {showAvatar ? <CharacterAvatar character={character} size={AVATAR} /> : null}
-        </View>
-      ) : null}
-
-      {mine ? <ReadReceipt message={message} /> : null}
-
-      {message.kind === 'voice' ? (
-        <VoiceBubble message={message} mine={mine} first={showAvatar} />
-      ) : message.kind === 'image' && message.imageUri ? (
-        <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
-      ) : (
-        <TextBubble message={message} mine={mine} first={showAvatar} />
-      )}
-
-      {!mine ? (
-        <Txt variant="tiny" color={colors.textFaint} style={styles.stamp}>
-          {clockTime(message.createdAt)}
-        </Txt>
-      ) : null}
-
+      style={[styles.row, runEnd && styles.runEnd]}>
       {mine ? (
-        <View style={styles.avatarSlot}>{showAvatar ? <UserAvatar user={user} size={AVATAR - 4} /> : null}</View>
-      ) : null}
+        // The user's side: no avatar, as in iOS Messages; the last message says Read or Delivered.
+        <View style={styles.mine}>
+          {content}
+          {receipt ? <ReadReceipt message={message} /> : null}
+        </View>
+      ) : (
+        <>
+          <View style={styles.avatarSlot}>
+            {runEnd ? <CharacterAvatar character={character} size={AVATAR} /> : null}
+          </View>
+          {named ? (
+            <View style={styles.named}>
+              <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.sender}>
+                {senderName}
+              </Txt>
+              {content}
+            </View>
+          ) : (
+            content
+          )}
+        </>
+      )}
     </Animated.View>
   );
 });
 
-function TextBubble({ message, mine, first }: { message: Message; mine: boolean; first: boolean }) {
+function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; tail: boolean }) {
   const muted = message.muted;
 
   return (
     <View
       style={[
         styles.bubble,
+        styles.fill,
         mine ? styles.bubbleMine : styles.bubbleTheirs,
-        first && (mine ? styles.tailMine : styles.tailTheirs),
+        tail && (mine ? styles.tailMine : styles.tailTheirs),
         muted && styles.bubbleMuted,
-        !muted && shadows.card,
       ]}>
       <Txt
-        variant="body"
+        style={styles.text}
         color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}>
         {message.text}
       </Txt>
@@ -93,12 +149,17 @@ function TextBubble({ message, mine, first }: { message: Message; mine: boolean;
   );
 }
 
-/** "🔊 0:06" — tap plays (mock), long-press reveals what was said. */
-function VoiceBubble({ message, mine, first }: { message: Message; mine: boolean; first: boolean }) {
+/** Heights of the still waveform on a voice message (iOS draws one from the clip). */
+const WAVE = [6, 10, 14, 8, 16, 12, 18, 10, 6, 12, 16, 20, 14, 8, 12, 16, 10, 6, 14, 18, 12, 8];
+
+/** Play button, waveform and length; tap plays (mock), long-press reveals what was said. */
+function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: boolean; tail: boolean; wide?: boolean }) {
   const { t } = useTranslation();
   const [playing, setPlaying] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const seconds = message.durationSec ?? 0;
+  const ink = mine ? colors.bubbleSelfText : colors.bubbleOtherText;
+  const faint = mine ? colors.bubbleSelfText : colors.textSecondary;
 
   const play = () => {
     if (playing) return setPlaying(false);
@@ -108,7 +169,7 @@ function VoiceBubble({ message, mine, first }: { message: Message; mine: boolean
   };
 
   return (
-    <View style={[styles.voiceWrap, mine && styles.voiceWrapMine]}>
+    <View style={[styles.voiceWrap, mine && styles.voiceWrapMine, wide && styles.wide]}>
       <PressableScale
         onPress={play}
         onLongPress={() => setShowTranscript((v) => !v)}
@@ -117,17 +178,24 @@ function VoiceBubble({ message, mine, first }: { message: Message; mine: boolean
         style={[
           styles.bubble,
           styles.voiceBubble,
-          { minWidth: Math.min(200, 84 + seconds * 5) },
           mine ? styles.bubbleMine : styles.bubbleTheirs,
-          first && (mine ? styles.tailMine : styles.tailTheirs),
-          shadows.card,
+          tail && (mine ? styles.tailMine : styles.tailTheirs),
         ]}>
+        <View style={[styles.play, { backgroundColor: ink }]}>
+          <Ionicons name={playing ? 'pause' : 'play'} size={13} color={mine ? colors.bubbleSelf : colors.bubbleOther} />
+        </View>
         {playing ? (
-          <Anim name="voiceWave" size={24} tint={mine ? colors.primary : colors.textSecondary} />
+          <View style={styles.wave}>
+            <Anim name="voiceWave" size={24} tint={ink} />
+          </View>
         ) : (
-          <Ionicons name="volume-medium" size={18} color={mine ? colors.primary : colors.textSecondary} />
+          <View style={styles.wave}>
+            {WAVE.slice(0, Math.max(8, Math.min(WAVE.length, 6 + seconds))).map((h, i) => (
+              <View key={i} style={[styles.waveBar, { height: h, backgroundColor: faint }]} />
+            ))}
+          </View>
         )}
-        <Txt variant="small" color={mine ? colors.bubbleSelfText : colors.bubbleOtherText}>
+        <Txt style={styles.voiceLength} color={faint}>
           {fmtDuration(seconds)}
         </Txt>
       </PressableScale>
@@ -147,34 +215,75 @@ function ReadReceipt({ message }: { message: Message }) {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.receipt}>
+    <Txt style={styles.receipt}>
       {message.pending ? (
-        <Txt variant="tiny" color={colors.textFaint}>
-          {t('chat.sending')}
-        </Txt>
-      ) : (
+        t('chat.sending')
+      ) : message.readAt ? (
         <>
-          {message.readAt ? (
-            <Txt variant="tiny" color={colors.textFaint}>
-              {t('chat.read')}
-            </Txt>
-          ) : null}
-          <Txt variant="tiny" color={colors.textFaint}>
-            {clockTime(message.readAt ?? message.createdAt)}
-          </Txt>
+          <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.read')}</Txt> {clockTime(message.readAt)}
         </>
+      ) : (
+        <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.delivered')}</Txt>
       )}
+    </Txt>
+  );
+}
+
+/** System lines are plain grey text between the bubbles, as in iOS Messages. */
+function SystemLine({ text }: { text: string }) {
+  return (
+    <View style={styles.system}>
+      <Txt style={styles.systemText} center>
+        {text}
+      </Txt>
     </View>
   );
 }
 
-function SystemLine({ text }: { text: string }) {
+/** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
+function AiNotice({ name, text }: { name: string; text?: string }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.system}>
-      <View style={styles.systemPill}>
-        <Txt variant="caption" color={colors.textSecondary}>
-          {text}
+      <Txt style={styles.systemText} center>
+        {text ?? t('chat.aiNotice', { name })}
+      </Txt>
+    </View>
+  );
+}
+
+/** Under a text-only reply when a member's voice minutes ran out; once a day. */
+function VoiceQuotaNote({ until }: { until?: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.quota}>
+      <Ionicons name="mic-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+        {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
+        <Txt variant="smallStrong" color={colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
+          {t('chat.addMinutes')}
         </Txt>
+      </Txt>
+    </View>
+  );
+}
+
+/** Shown under a crisis message: never blocks the chat, one tap to local helplines. */
+function HelplineCard() {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.system}>
+      <View style={styles.helpline}>
+        <Txt variant="title" center>
+          {t('safety.helplineTitle')}
+        </Txt>
+        <Button
+          label={t('safety.helplineAction')}
+          variant="secondary"
+          size="sm"
+          onPress={() => void Linking.openURL(HELPLINE_URL)}
+        />
       </View>
     </View>
   );
@@ -186,26 +295,18 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
 
   return (
     <View style={styles.system}>
-      <PressableScale
-        style={[styles.systemPill, styles.callPill]}
-        onPress={onCallBack}
-        disabled={!onCallBack}
-        scaleTo={0.96}>
-        <Ionicons
-          name={missed ? 'call-outline' : 'call'}
-          size={13}
-          color={missed ? colors.danger : colors.primary}
-        />
-        <Txt variant="caption" color={missed ? colors.danger : colors.textSecondary}>
+      <PressableScale style={styles.callLine} onPress={onCallBack} disabled={!onCallBack} scaleTo={0.96}>
+        <Ionicons name={missed ? 'call-outline' : 'call'} size={13} color={missed ? colors.danger : colors.textSecondary} />
+        <Txt style={styles.systemText} color={missed ? colors.danger : colors.textSecondary}>
           {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
         </Txt>
         {missed && onCallBack ? (
-          <Txt variant="caption" color={colors.primary}>
+          <Txt style={[styles.systemText, styles.systemStrong]} color={colors.primary}>
             {' · '}
             {t('chat.callBack')}
           </Txt>
         ) : null}
-        <Txt variant="tiny" color={colors.textFaint}>
+        <Txt style={styles.systemText}>
           {'  '}
           {clockTime(message.createdAt)}
         </Txt>
@@ -214,29 +315,50 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
   );
 }
 
+/** A Photo Booth picture sent to the chat, drawn from the kept photo; a tap opens it. */
+function BoothPhotoMessage({ photoId, character }: { photoId: string; character: Character }) {
+  const photo = useAppStore((s) => s.photos.find((p) => p.id === photoId));
+  if (!photo) return <View style={styles.photo} />;
+  return <BoothPicture photo={photo} character={character} width={fitWidth(photo.style, { width: 176, height: 240 })} />;
+}
+
 const styles = StyleSheet.create({
+  // The held area carries the bubble's width cap, so the text bubble fills it.
+  holdable: { flexShrink: 1, maxWidth: '72%' },
+  // In a group the name and bubble share one column, which carries the cap instead.
+  named: { flexShrink: 1, maxWidth: '72%', alignItems: 'flex-start', gap: 3 },
+  sender: { paddingLeft: space.xs },
+  wide: { maxWidth: '100%' },
+  fill: { maxWidth: '100%' },
+  // Room under the bubble for the reaction that hangs off its corner.
+  withReaction: { marginBottom: space.lg },
+  // The sticker carries its own white die-cut rim, so it needs no chip behind it.
+  reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
+  reactionMine: { left: -space.xs },
+  reactionTheirs: { right: -space.xs },
+  // Bubbles of one run sit 2pt apart; a new run starts 10pt lower.
   row: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: space.sm,
     paddingHorizontal: space.md,
-    marginBottom: space.sm,
+    marginBottom: 2,
   },
-  runStart: { marginTop: space.xs },
-  rowMine: { justifyContent: 'flex-end' },
-  rowTheirs: { justifyContent: 'flex-start' },
-  avatarSlot: { width: AVATAR, alignSelf: 'flex-start' },
+  runEnd: { marginBottom: space.sm + 2 },
+  mine: { flex: 1, alignItems: 'flex-end' },
+  avatarSlot: { width: AVATAR },
   bubble: {
     maxWidth: '72%',
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm + 2,
-    borderRadius: radius.bubble,
+    paddingHorizontal: 13,
+    paddingVertical: space.sm,
+    borderRadius: CORNER,
   },
+  text: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
   bubbleMine: { backgroundColor: colors.bubbleSelf },
   bubbleTheirs: { backgroundColor: colors.bubbleOther },
-  // The first bubble of a run points at the avatar beside it.
-  tailMine: { borderTopRightRadius: radius.xs },
-  tailTheirs: { borderTopLeftRadius: radius.xs },
+  // A run's last bubble points down at its sender's side.
+  tailMine: { borderBottomRightRadius: TAIL },
+  tailTheirs: { borderBottomLeftRadius: TAIL },
   bubbleMuted: { backgroundColor: colors.bubbleTranscript },
   voiceWrap: { alignItems: 'flex-start', gap: space.xs, maxWidth: '72%' },
   voiceWrapMine: { alignItems: 'flex-end' },
@@ -245,7 +367,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm,
     maxWidth: '100%',
+    height: 38,
+    paddingVertical: 0,
+    paddingLeft: space.sm,
+    paddingRight: space.md,
   },
+  play: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', paddingLeft: 2 },
+  wave: { flexDirection: 'row', alignItems: 'center', gap: 2, height: 20, minWidth: 40 },
+  waveBar: { width: 2, borderRadius: 1, opacity: 0.6 },
+  voiceLength: { fontSize: 13, marginLeft: space.xs },
   transcript: {
     backgroundColor: colors.bubbleTranscript,
     maxWidth: '100%',
@@ -256,17 +386,30 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: colors.surfaceAlt,
   },
-  receipt: { alignItems: 'flex-end', marginBottom: 2 },
-  stamp: { marginBottom: 2 },
-  system: { alignItems: 'center', paddingVertical: space.sm },
-  systemPill: {
+  receipt: { fontSize: 11, lineHeight: 14, color: colors.textSecondary, paddingTop: 3, paddingRight: space.xs },
+  receiptStrong: { fontWeight: '600', paddingTop: 0, paddingRight: 0 },
+  system: { alignItems: 'center', paddingVertical: space.sm + 2, paddingHorizontal: space.xxl },
+  systemText: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
+  systemStrong: { fontWeight: '600' },
+  callLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  // Lines up with their bubbles: past the avatar column.
+  quota: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.md,
-    paddingVertical: space.xs + 1,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    gap: space.xs + 2,
+    paddingLeft: space.md + AVATAR + space.sm,
+    paddingRight: space.xxl,
+    paddingVertical: space.xs,
   },
-  callPill: { paddingHorizontal: space.md },
+  quotaIcon: { marginTop: 2 },
+  quotaText: { flex: 1 },
+  helpline: {
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.xl,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
 });

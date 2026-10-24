@@ -7,11 +7,11 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, palette, radius } from '@/theme';
+import { colors, fonts, isDark, palette, radius } from '@/theme';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
 /** Calm alternating slices; only the jackpot gets colour (mint). */
-const FILLS = [palette.gray100, palette.white];
+const FILLS = [colors.surfaceAlt, colors.surface];
 const SPIN_MS = 3600;
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
@@ -73,7 +73,7 @@ export function LuckyWheel({
     <View style={{ width: size, height: size + 14, alignItems: 'center' }}>
       <Animated.View style={[{ width: size, height: size, marginTop: 14 }, wheelStyle]}>
         <Svg width={size} height={size}>
-          <Circle cx={r} cy={r} r={r - 1} fill={palette.white} stroke={palette.gray200} strokeWidth={1} />
+          <Circle cx={r} cy={r} r={r - 1} fill={colors.surface} stroke={colors.border} strokeWidth={1} />
           <G>
             {WHEEL_SEGMENTS.map((value, i) => {
               const from = -90 + i * SEGMENT;
@@ -86,14 +86,14 @@ export function LuckyWheel({
                 <G key={i}>
                   <Path
                     d={slice(r, r, r - 1, from, from + SEGMENT)}
-                    fill={jackpot ? palette.mint50 : FILLS[i % FILLS.length]}
-                    stroke={palette.gray200}
+                    fill={jackpot ? (isDark ? colors.accentSoft : palette.mint50) : FILLS[i % FILLS.length]}
+                    stroke={colors.border}
                     strokeWidth={1}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
-                    fill={jackpot ? palette.mint600 : palette.gray900}
+                    fill={jackpot ? colors.bondText : colors.text}
                     fontSize={size * 0.075}
                     fontFamily={fonts.display}
                     fontWeight="700"
@@ -139,11 +139,11 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     borderWidth: 4,
     borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hubDisabled: { backgroundColor: palette.gray400 },
+  hubDisabled: { backgroundColor: colors.textFaint },
 });

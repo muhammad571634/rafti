@@ -3,41 +3,64 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { SUPPORT_EMAIL } from '@/ai/safety';
 import {
+  AuroraGlass,
+  Button,
+  CharacterAvatar,
   Divider,
-  Header,
-  IconTile,
   ListRow,
+  PressableScale,
   Screen,
-  SectionLabel,
-  ShellBadge,
+  ShellIcon,
   Sheet,
   Toggle,
   Txt,
   UserAvatar,
 } from '@/components/ui';
 import { SUPPORTED_LOCALES, setLocale } from '@/i18n';
-import { shortDate } from '@/lib/format';
-import { memberActive, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
-import type { AppSettings } from '@/types';
+import { planStatus } from '@/economy/plans';
+import { profileCompletion } from '@/lib/profile';
+import { INVITE_REWARD } from '@/mock';
+import { sendTestPushes } from '@/notifications/sync';
+import { useAppStore } from '@/store/use-app-store';
+import { aurora, colors, isDark, moduleFills, space, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
-const ROW_ICON = 34;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
+const AVATAR = 96;
+const ROW_ICON = 30;
+/** iOS system colours for the Settings-style row icons. */
+const FILL = {
+  gifts: moduleFills.gifts,
+  language: systemColors.blue,
+  animation: systemColors.teal,
+  grey: systemColors.gray,
+  support: systemColors.green,
+  account: systemColors.indigo,
+  privacy: systemColors.cyan,
+  terms: systemColors.brown,
+  plan: systemColors.purple,
+};
+const SWITCH_ON = systemColors.green;
+const CARD_SHADOW = {
+  shadowColor: isDark ? '#000000' : '#3C285A',
+  shadowOpacity: isDark ? 0.35 : 0.08,
+  shadowRadius: 10,
+  shadowOffset: { width: 0, height: 6 },
+};
 
-const REACH_OUT: { key: keyof AppSettings; icon: IoniconName }[] = [
-  { key: 'morningGreeting', icon: 'sunny-outline' },
-  { key: 'eveningGreeting', icon: 'moon-outline' },
-  { key: 'morningCall', icon: 'call-outline' },
-  { key: 'nightCall', icon: 'call-outline' },
-];
-
-/** Grouped settings on the canvas: account, how characters reach out, chat, about. */
+/**
+ * Who you are, on the aurora (canvas "Profile on the aurora", 2026-10-21): your mascot, full
+ * name and handle, shells and plan as two tiles, how full the profile is, then iOS Settings
+ * groups with system-colour icons, and Delete account apart at the end. Notifications moved to
+ * the bell on Us.
+ */
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -45,84 +68,235 @@ export default function ProfileScreen() {
   const wallet = useAppStore((s) => s.wallet);
   const settings = useAppStore((s) => s.settings);
   const setSetting = useAppStore((s) => s.setSetting);
+  const deleteAccount = useAppStore((s) => s.deleteAccount);
+  const endPlan = useAppStore((s) => s.endPlan);
+  const loadDemoData = useAppStore((s) => s.loadDemoData);
+  const blockedIds = useAppStore((s) => s.blockedIds);
+  const characters = useAppStore((s) => s.characters);
+  const unblockCharacter = useAppStore((s) => s.unblockCharacter);
+  const blocked = characters.filter((c) => blockedIds.includes(c.id));
 
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [blockedOpen, setBlockedOpen] = useState(false);
+  /** Dev only: what the last "Test pushes" press did. */
+  const [testResult, setTestResult] = useState<string | undefined>();
+
+  const testPushes = async () => {
+    const count = await sendTestPushes(useAppStore.getState());
+    setTestResult(count > 0 ? t('profile.testPushesSent', { count }) : t('profile.testPushesUnavailable'));
+  };
+
+  const percent = profileCompletion(user);
+  // One language for now: the picker shows up once there is a second one.
+  const canPickLanguage = SUPPORTED_LOCALES.length > 1;
+
+  const confirmDelete = () => {
+    setDeleteOpen(false);
+    deleteAccount();
+    if (router.canDismiss()) router.dismissAll();
+    router.replace('/onboarding');
+  };
 
   const currentLocale = SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? i18n.language;
-  const member = memberActive(wallet);
-  const icon = (name: IoniconName) => <IconTile icon={name} size={ROW_ICON} />;
+  const plan = planStatus(wallet.subscription, Date.now());
+  const planName = plan
+    ? plan.trial
+      ? t('plans.trialName', { plan: t(`plans.name.${plan.plan}`) })
+      : t(`plans.name.${plan.plan}`)
+    : t('plans.free');
 
-  const toggle = (key: keyof AppSettings, label: string, iconName: IoniconName) => (
-    <ListRow
-      title={label}
-      left={icon(iconName)}
-      right={<Toggle value={settings[key]} onChange={(v) => setSetting(key, v)} accessibilityLabel={label} />}
-    />
-  );
+  const groupA = [
+    {
+      key: 'gifts',
+      title: t('profile.freeGifts'),
+      icon: 'gift' as IoniconName,
+      fill: FILL.gifts,
+      pill: t('profile.inviteOffer', { count: INVITE_REWARD }),
+      onPress: () => router.push('/gifts'),
+    },
+    ...(canPickLanguage
+      ? [{ key: 'language', title: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => setLanguageOpen(true) }]
+      : []),
+  ];
+  const groupB = [
+    ...(blocked.length > 0
+      ? [{ key: 'blocked', title: t('safety.blocked'), icon: 'hand-left' as IoniconName, fill: FILL.grey, meta: String(blocked.length), onPress: () => setBlockedOpen(true) }]
+      : []),
+    { key: 'support', title: t('safety.support'), icon: 'mail' as IoniconName, fill: FILL.support, onPress: () => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`) },
+    { key: 'account', title: t('profile.account'), icon: 'person' as IoniconName, fill: FILL.account, onPress: () => {} },
+    { key: 'privacy', title: t('profile.privacy'), icon: 'lock-closed' as IoniconName, fill: FILL.privacy, onPress: () => {} },
+    { key: 'terms', title: t('profile.terms'), icon: 'document-text' as IoniconName, fill: FILL.terms, onPress: () => {} },
+  ];
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Header title={t('profile.title')} />
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.identity}>
-          <UserAvatar user={user} size={56} />
-          <View style={styles.flex}>
-            <Txt variant="h3" lines={1}>
-              {user.displayName}
-            </Txt>
-            <Txt variant="small" color={colors.textMuted} lines={1}>
-              {user.handle}
-            </Txt>
-          </View>
-          <ShellBadge count={wallet.shells} showAdd onPress={() => router.push('/store/shell')} />
+    <Screen background="aurora">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+        <View style={styles.bar}>
+          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
+            <AuroraGlass style={styles.round}>
+              <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
+            </AuroraGlass>
+          </PressableScale>
         </View>
 
-        <SectionLabel title={t('profile.sectionAccount')} />
-        <ListRow
-          title={t('profile.membership')}
-          left={icon('diamond-outline')}
-          meta={
-            member && wallet.memberUntil && wallet.memberPlan
-              ? `${t(`store.plans.${wallet.memberPlan}`)} · ${shortDate(wallet.memberUntil)}`
-              : t('profile.notMember')
-          }
-          chevron
-          onPress={() => router.push('/store/shell')}
-        />
-        <Divider inset={ROW_INSET} />
-        <ListRow
-          title={t('profile.language')}
-          left={icon('language-outline')}
-          meta={currentLocale}
-          chevron
-          onPress={() => setLanguageOpen(true)}
-        />
+        <View style={styles.hero}>
+          <PressableScale
+            scaleTo={0.95}
+            accessibilityRole="button"
+            accessibilityLabel={t('profile.editPhoto')}
+            onPress={() => router.push('/edit-profile')}
+            style={styles.avatarRing}>
+            <UserAvatar user={user} size={AVATAR} />
+            <View style={styles.camera} pointerEvents="none">
+              <Ionicons name="camera-outline" size={16} color={colors.text} />
+            </View>
+          </PressableScale>
+          {/* The whole name here; Today shows only the first six letters. */}
+          <Txt style={styles.name} lines={2} accessibilityRole="header">
+            {user.displayName}
+          </Txt>
+          <Txt style={styles.handle} lines={1}>
+            {user.handle}
+          </Txt>
+        </View>
 
-        <SectionLabel title={t('profile.greetings')} />
-        {REACH_OUT.map(({ key, icon: iconName }, index) => (
-          <View key={key}>
-            {index > 0 ? <Divider inset={ROW_INSET} /> : null}
-            {toggle(key, t(`profile.${key}`), iconName)}
+        <View style={styles.tiles}>
+          <PressableScale scaleTo={0.97} accessibilityRole="button" style={styles.tile} onPress={() => router.push('/store/shell?tab=shells')}>
+            <View style={styles.tileHead}>
+              <ShellIcon size={16} />
+              <Txt style={styles.tileLabel}>{t('profile.shells')}</Txt>
+            </View>
+            <View style={styles.tileFoot}>
+              <Txt style={styles.tileValue} lines={1}>
+                {wallet.shells}
+              </Txt>
+              <View style={[styles.tilePill, styles.peachPill]}>
+                <Txt style={[styles.tilePillText, styles.peachInk]}>{t('profile.getMore')}</Txt>
+              </View>
+            </View>
+          </PressableScale>
+          <PressableScale
+            scaleTo={0.97}
+            accessibilityRole="button"
+            style={styles.tile}
+            onPress={() => router.push(plan ? '/my-plan' : '/store/shell?tab=plans')}>
+            <View style={styles.tileHead}>
+              <Ionicons name="diamond" size={15} color={FILL.plan} />
+              <Txt style={styles.tileLabel}>{t('profile.myPlan')}</Txt>
+            </View>
+            <View style={styles.tileFoot}>
+              <Txt style={[styles.tileValue, styles.flex]} lines={1}>
+                {planName}
+              </Txt>
+              <View style={[styles.tilePill, styles.violetPill]}>
+                <Txt style={[styles.tilePillText, styles.violetInk]}>{plan ? t('profile.manage') : t('profile.tryPlus')}</Txt>
+              </View>
+            </View>
+          </PressableScale>
+        </View>
+
+        <PressableScale
+          scaleTo={0.98}
+          accessibilityRole="button"
+          accessibilityLabel={`${percent < 100 ? t('profile.completeTitle') : t('profile.editProfile')}, ${percent}%`}
+          onPress={() => router.push('/edit-profile')}
+          style={styles.complete}>
+          <View style={styles.completeTop}>
+            <Txt style={styles.completeTitle}>{percent < 100 ? t('profile.completeTitle') : t('profile.editProfile')}</Txt>
+            <Txt style={styles.completePercent}>{percent}%</Txt>
+            <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
           </View>
-        ))}
+          <View style={styles.track}>
+            <View style={[styles.fill, { width: `${percent}%` }]} />
+          </View>
+          {percent < 100 ? <Txt style={styles.completeHint}>{t('profile.completeHint')}</Txt> : null}
+        </PressableScale>
 
-        <SectionLabel title={t('profile.sectionChat')} />
-        {toggle('chatAnimation', t('profile.chatAnimation'), 'sparkles-outline')}
+        <View style={styles.group}>
+          {groupA.map(({ key, ...row }) => (
+            <SettingsRow key={key} {...row} />
+          ))}
+          <SettingsRow
+            title={t('profile.chatAnimation')}
+            icon="sparkles"
+            fill={FILL.animation}
+            last
+            right={
+              <Toggle
+                value={settings.chatAnimation}
+                onChange={(v) => setSetting('chatAnimation', v)}
+                onColor={SWITCH_ON}
+                accessibilityLabel={t('profile.chatAnimation')}
+              />
+            }
+          />
+        </View>
 
-        <SectionLabel title={t('profile.sectionAbout')} />
-        <ListRow title={t('profile.account')} left={icon('person-circle-outline')} />
-        <Divider inset={ROW_INSET} />
-        <ListRow title={t('profile.privacy')} left={icon('shield-checkmark-outline')} />
-        <Divider inset={ROW_INSET} />
-        <ListRow title={t('profile.terms')} left={icon('document-text-outline')} />
-        <Divider inset={ROW_INSET} />
-        <ListRow
-          title={t('profile.about')}
-          left={icon('information-circle-outline')}
-          meta={t('profile.version', { version: Constants.expoConfig?.version ?? '1.0.0' })}
-        />
+        {/* Development builds only. */}
+        {__DEV__ ? (
+          <View style={styles.group}>
+            {/* Fires the planned pushes now, a few seconds apart. */}
+            <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
+            {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
+            <SettingsRow title={t('profile.loadDemo')} icon="albums" fill={FILL.grey} onPress={loadDemoData} last={!plan} />
+            {/* Ends the plan at once, to see the free screens again. */}
+            {plan ? <SettingsRow title={t('profile.endPlan')} icon="close-circle" fill={FILL.grey} onPress={endPlan} last /> : null}
+          </View>
+        ) : null}
+
+        <View style={styles.group}>
+          {groupB.map(({ key, ...row }) => (
+            <SettingsRow key={key} {...row} />
+          ))}
+          <SettingsRow
+            title={t('profile.versionRow')}
+            icon="information-circle"
+            fill={FILL.grey}
+            meta={Constants.expoConfig?.version ?? '1.0.0'}
+            last
+          />
+        </View>
+
+        <PressableScale scaleTo={0.98} accessibilityRole="button" onPress={() => setDeleteOpen(true)} style={styles.delete}>
+          <Txt style={styles.deleteText}>{t('profile.deleteAccount')}</Txt>
+        </PressableScale>
       </ScrollView>
+
+      <Sheet visible={deleteOpen} onClose={() => setDeleteOpen(false)} title={t('profile.deleteTitle')} center>
+        <Txt variant="body" color={colors.textSecondary} center style={styles.deleteBody}>
+          {t('profile.deleteBody')}
+        </Txt>
+        <View style={styles.deleteActions}>
+          <Button label={t('profile.deleteConfirm')} variant="danger" size="lg" full onPress={confirmDelete} />
+          <Button label={t('profile.cancel')} variant="ghost" size="lg" full onPress={() => setDeleteOpen(false)} />
+        </View>
+      </Sheet>
+
+      <Sheet visible={blockedOpen} onClose={() => setBlockedOpen(false)} title={t('safety.blocked')}>
+        <View style={styles.sheetList}>
+          {blocked.map((character, index) => (
+            <View key={character.id}>
+              {index > 0 ? <Divider inset={space.lg} /> : null}
+              <ListRow
+                title={character.name}
+                left={<CharacterAvatar character={character} size={36} />}
+                right={
+                  <Button
+                    label={t('safety.unblock')}
+                    size="sm"
+                    variant="secondary"
+                    onPress={() => {
+                      unblockCharacter(character.id);
+                      if (blocked.length === 1) setBlockedOpen(false);
+                    }}
+                  />
+                }
+              />
+            </View>
+          ))}
+        </View>
+      </Sheet>
 
       <Sheet visible={languageOpen} onClose={() => setLanguageOpen(false)} title={t('profile.language')}>
         <View style={styles.sheetList}>
@@ -147,16 +321,137 @@ export default function ProfileScreen() {
   );
 }
 
+/** One iOS Settings row: a system-colour icon tile, the title, then a pill, a value, a control or a chevron. */
+function SettingsRow({
+  title,
+  icon,
+  fill,
+  pill,
+  meta,
+  right,
+  last,
+  onPress,
+}: {
+  title: string;
+  icon: IoniconName;
+  fill: string;
+  pill?: string;
+  meta?: string;
+  right?: React.ReactNode;
+  last?: boolean;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={[title, pill, meta].filter(Boolean).join(', ')}
+      style={({ pressed }) => [styles.row, pressed && onPress ? styles.rowPressed : null]}>
+      <View style={[styles.rowIcon, { backgroundColor: fill }]}>
+        <Ionicons name={icon} size={17} color="#FFFFFF" />
+      </View>
+      <View style={[styles.rowBody, !last && styles.rowLine]}>
+        <Txt style={styles.rowTitle} lines={1}>
+          {title}
+        </Txt>
+        {pill ? (
+          <View style={[styles.rowPill, styles.peachPill]}>
+            <Txt style={[styles.rowPillText, styles.peachInk]}>{pill}</Txt>
+          </View>
+        ) : null}
+        {meta ? (
+          <Txt style={styles.rowMeta} lines={1}>
+            {meta}
+          </Txt>
+        ) : null}
+        {right ?? (onPress ? <Ionicons name="chevron-forward" size={15} color={colors.textFaint} /> : null)}
+      </View>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scroll: { paddingBottom: space.huge },
-  identity: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
+  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  backIcon: { marginLeft: -2 },
+  hero: { alignItems: 'center', paddingHorizontal: space.xl, paddingTop: 6 },
+  // A light ring round your mascot, with a soft shadow under it.
+  avatarRing: {
+    padding: 4,
+    borderRadius: AVATAR / 2 + 4,
+    backgroundColor: aurora.ring,
+    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowOpacity: isDark ? 0.45 : 0.18,
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 12 },
   },
+  camera: {
+    position: 'absolute',
+    right: -2,
+    bottom: 2,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: isDark ? 'rgba(44,44,46,0.95)' : 'rgba(255,255,255,0.92)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: aurora.glassEdge,
+  },
+  name: { marginTop: 14, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, textAlign: 'center', color: colors.text },
+  handle: { marginTop: 2, fontSize: 15, color: aurora.textMuted },
+  tiles: { flexDirection: 'row', gap: space.md, marginHorizontal: space.lg, marginTop: 22 },
+  tile: { flex: 1, padding: 14, gap: 6, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
+  tileHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  tileLabel: { fontSize: 13, fontWeight: '600', color: aurora.textMuted },
+  tileFoot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
+  tileValue: { fontSize: 26, lineHeight: 32, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'], flexShrink: 1 },
+  tilePill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center' },
+  tilePillText: { fontSize: 13, fontWeight: '700' },
+  peachPill: { backgroundColor: isDark ? '#3A2416' : '#FFF0E4' },
+  peachInk: { color: isDark ? '#FFB27A' : '#C96A32' },
+  violetPill: { backgroundColor: isDark ? '#2E1A3C' : '#F3E8FB' },
+  violetInk: { color: isDark ? '#D9A6F5' : '#8E3BB8' },
+  complete: {
+    marginHorizontal: space.lg,
+    marginTop: space.md,
+    paddingHorizontal: space.lg,
+    paddingVertical: 14,
+    borderRadius: 20,
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
+  },
+  completeTop: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  completeTitle: { flex: 1, fontSize: 17, fontWeight: '600', color: colors.text },
+  completePercent: { fontSize: 15, fontWeight: '700', color: colors.text, fontVariant: ['tabular-nums'] },
+  track: { height: 6, marginTop: 10, borderRadius: 3, overflow: 'hidden', backgroundColor: isDark ? '#3A3A3C' : '#E5E5EA' },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: aurora.tint },
+  completeHint: { marginTop: space.sm, fontSize: 13, color: aurora.textMuted },
+  group: { marginHorizontal: space.lg, marginTop: 22, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+  rowPressed: { backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+  rowIcon: { width: ROW_ICON, height: ROW_ICON, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  rowBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14 },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
+  rowTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  rowPill: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center' },
+  rowPillText: { fontSize: 13, fontWeight: '700' },
+  rowMeta: { fontSize: 17, color: aurora.textMuted, maxWidth: '45%' },
+  delete: {
+    height: 50,
+    marginHorizontal: space.lg,
+    marginTop: 22,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
+  },
+  deleteText: { fontSize: 17, letterSpacing: -0.4, color: colors.danger },
+  deleteBody: { marginBottom: space.xl },
+  deleteActions: { gap: space.sm },
   // The sheet card pads its content; rows bring their own gutter.
   sheetList: { marginHorizontal: -space.xl },
 });
