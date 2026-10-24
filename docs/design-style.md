@@ -104,6 +104,9 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 Android: a plain `View` with rounded corners that gains a fill or border only when selected (a
 chosen day, a tab's capsule) gets `collapsable={false}`. Without a fill Android flattens it away,
 and when it comes back for the selection its corners are lost, so it draws as a square.
+Android: never put `elevation` on a see-through surface (glass): its shadow shows through the fill
+as a pale polygon. Use `shadows.glass` / `shadows.glassButton`, which switch to a CSS `boxShadow`
+on Android.
 
 | Need | Use | Notes |
 | --- | --- | --- |

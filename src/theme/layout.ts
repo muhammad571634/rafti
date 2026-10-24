@@ -43,6 +43,22 @@ const shadow = (
     },
   })!;
 
+/**
+ * A shadow for see-through glass. Android's `elevation` draws its shadow under the whole shape,
+ * so through a translucent fill it shows as a pale polygon (the square inside the Find button);
+ * a CSS box-shadow stays outside the shape, as on the web.
+ */
+const glassShadow = (y: number, blur: number, opacity: number): ViewStyle =>
+  Platform.select<ViewStyle>({
+    android: { boxShadow: `0px ${y}px ${blur}px rgba(0,0,0,${opacity})` },
+    default: {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: y },
+      shadowOpacity: opacity,
+      shadowRadius: blur,
+    },
+  })!;
+
 export const shadows = {
   none: {} as ViewStyle,
   card: shadow(2, 10, 0.08, 2),
@@ -51,9 +67,9 @@ export const shadows = {
   modal: shadow(10, 30, 0.18, 12),
   bar: shadow(-2, 12, 0.06, 8),
   /** The floating glass tab bar. */
-  glass: shadow(8, 24, 0.14, 10, '#000000'),
+  glass: glassShadow(8, 24, 0.14),
   /** Small glass buttons on a screen's top bar (Chats: Edit, new chat). */
-  glassButton: shadow(1, 8, 0.08, 2, '#000000'),
+  glassButton: glassShadow(1, 8, 0.08),
 } as const;
 
 export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
