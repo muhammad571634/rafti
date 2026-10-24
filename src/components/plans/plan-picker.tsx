@@ -118,7 +118,7 @@ export function PlanPicker({
   ];
 
   const rows: CompareRow[] = [
-    { key: 'shells', fill: '#FF9500', glyph: 'shell', basic: count.format(basic.shells), pro: count.format(pro.shells) },
+    { key: 'shells', fill: moduleFills.store, glyph: 'shell', basic: count.format(basic.shells), pro: count.format(pro.shells) },
     { key: 'calls', fill: moduleFills.calls, glyph: MODULE_GLYPH.calls, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
     { key: 'voice', fill: '#FF2D55', glyph: { ios: 'waveform', icon: 'pulse' }, basic: time(basic.voiceSeconds), pro: time(pro.voiceSeconds) },
     {

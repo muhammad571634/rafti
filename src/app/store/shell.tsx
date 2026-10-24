@@ -34,7 +34,7 @@ import {
 import { TRIAL } from '@/economy/plans';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, palette, space } from '@/theme';
+import { aurora, colors, moduleFills, palette, space } from '@/theme';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
@@ -173,7 +173,7 @@ export default function StoreScreen() {
 
 /** What things cost: shells for a number, a "Pro" mark for what comes only with Pro. */
 const COSTS: { key: string; fill: string; ios: SFSymbol; icon: IoniconName; shells: number | null }[] = [
-  { key: 'costTextMessage', fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble', shells: shellCosts.textMessage },
+  { key: 'costTextMessage', fill: moduleFills.store, ios: 'bubble.left.fill', icon: 'chatbubble', shells: shellCosts.textMessage },
   { key: 'costSecretNote', ...moduleTile('note'), shells: shellCosts.secretNote },
   { key: 'costVoiceClone', fill: '#5856D6', ios: 'mic.fill', icon: 'mic', shells: shellCosts.characterVoiceClone },
   { key: 'costListen', fill: '#FF2D55', ios: 'waveform', icon: 'pulse', shells: null },

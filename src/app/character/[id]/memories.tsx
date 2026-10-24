@@ -167,7 +167,7 @@ export default function MemoriesScreen() {
       <Sheet visible={unlocking} onClose={() => setUnlocking(false)}>
         <View style={styles.sheetHead}>
           <View style={styles.lockArt}>
-            <Ionicons name="lock-closed" size={28} color={colors.primary} />
+            <Ionicons name="lock-closed" size={28} color={colors.textSecondary} />
           </View>
           <Txt variant="h3" center>
             {t('memories.lockedTitle', { name: shortName(name), count: locked.length })}
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: radius.lg,
-    backgroundColor: colors.primarySofter,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -112,12 +112,12 @@ export default function CharacterProfileScreen() {
             {character.series ? ` · ${character.series}` : ''}
           </Txt>
           {locked ? (
-            <Txt variant="caption" color={colors.brandText} center style={styles.bold}>
+            <Txt variant="caption" color={colors.textSecondary} center style={styles.bold}>
               {t('find.proFirst')}
             </Txt>
           ) : null}
           {character.review === 'pending' ? (
-            <Txt variant="caption" color={colors.brandText} center>
+            <Txt variant="caption" color={colors.textSecondary} center>
               {t('createCharacter.inReview')}
             </Txt>
           ) : null}

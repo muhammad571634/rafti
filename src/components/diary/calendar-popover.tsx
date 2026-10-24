@@ -90,7 +90,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
 
           <View style={styles.row}>
             {weekdays.map((d, i) => (
-              <Txt key={i} variant="caption" color={colors.brandText} center style={{ width: cell }}>
+              <Txt key={i} variant="caption" color={colors.textMuted} center style={{ width: cell }}>
                 {d}
               </Txt>
             ))}

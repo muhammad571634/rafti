@@ -221,14 +221,14 @@ export default function LedgerScreen() {
  * about a module wears that module's colour and glyph (`moduleTile`), as on Today.
  */
 const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
-  welcome: { fill: '#FF9500', ios: 'sparkles', icon: 'sparkles' },
+  welcome: { fill: moduleFills.store, ios: 'sparkles', icon: 'sparkles' },
   plan: { fill: '#AF52DE', ios: 'crown.fill', icon: 'diamond' },
   daily: { fill: '#FF3B30', ios: 'calendar', icon: 'calendar' },
   expired: { fill: '#8E8E93', ios: 'moon.fill', icon: 'moon' },
   ad: { fill: '#5856D6', ios: 'play.fill', icon: 'play' },
   spin: moduleTile('gifts'),
   purchase: moduleTile('store'),
-  chat: { fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble' },
+  chat: { fill: moduleFills.store, ios: 'bubble.left.fill', icon: 'chatbubble' },
   voice: { fill: '#FF2D55', ios: 'waveform', icon: 'pulse' },
   photo: { fill: moduleFills.photo, ios: 'photo.fill', icon: 'image' },
   note: moduleTile('note'),

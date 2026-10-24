@@ -3,10 +3,10 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Button, CharacterAvatar, Sheet, Txt } from '@/components/ui';
+import { Button, CharacterAvatar, ModuleIcon, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Character } from '@/types';
 
 import { planTime } from './copy';
@@ -60,9 +60,7 @@ export function ProPaywallSheet({
             </Txt>
           </View>
         ) : (
-          <View style={styles.art}>
-            <Ionicons name="camera-outline" size={30} color={colors.primary} />
-          </View>
+          <ModuleIcon name="photo" size={56} />
         )}
         <Txt variant="h2" center>
           {kind === 'newCharacter' ? t('newCharacters.proTitle') : t('photoBooth.proTitle')}
@@ -110,14 +108,6 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   head: { alignItems: 'center', gap: space.md, marginTop: space.xs },
   who: { alignItems: 'center', gap: space.xs },
-  art: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.lg,
-    backgroundColor: colors.primarySofter,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   perks: { gap: space.sm + 2, marginTop: space.lg },
   perk: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   actions: { gap: space.sm, marginTop: space.lg },

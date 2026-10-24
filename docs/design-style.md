@@ -58,7 +58,11 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
   colour with dark variants for Settings-style row tiles, glyphs in `MODULE_GLYPH`; use
   `ModuleIcon` / `moduleTile` from `src/components/ui/module-icon.tsx`, never a new hex). Calls
   green, Diary brown, Date pink, Sleep indigo, Store apricot, Photos blue, Contacts grey, Gifts
-  red, Radio purple, Board cyan, Bond mint, Secret note gold. No module but the Store wears orange.
+  red, Radio purple, Board cyan, Bond mint, Secret note gold. No module but the Store wears orange;
+  shell and chat-cost rows (Shell history, Plans, My plan) wear the Store's apricot too, as shells are
+  its currency and the chat is the brand's own bubble. Tiles that are not a module (Profile rows,
+  Radio sounds, ledger reasons) take an iOS hue from `systemColors`, never a new hex and never iOS
+  orange, which is kept for warnings (a call's last minute).
 - Mint (`colors.bondText`) only for the bond: "Voice ready", closeness, relationship.
 - Ink (`colors.text`) marks selection: 2px ink border on a chosen card or chip.
 - Grey fill (`colors.surfaceAlt`) for unselected chips, segmented track, icon tiles, locked inputs.

@@ -14,7 +14,7 @@ import { AuroraGlass, Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, 
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space } from '@/theme';
+import { aurora, colors, isDark, moduleFills, space } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -180,7 +180,7 @@ export default function MyPlanScreen() {
                 </View>
               ) : null}
               <View style={[styles.row, withCalls && styles.rowTopLine]}>
-                <IconTile fill="#FF9500">
+                <IconTile fill={moduleFills.store}>
                   <SFIcon ios="bubble.left.fill" icon="chatbubble" size={17} color="#FFFFFF" />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.chatRow')}</Txt>
@@ -197,7 +197,7 @@ export default function MyPlanScreen() {
             <GroupLabel>{t('plans.today')}</GroupLabel>
             <View style={styles.card}>
               <View style={[styles.row, styles.rowLine]}>
-                <IconTile fill="#FF9500">
+                <IconTile fill={moduleFills.store}>
                   <ShellIcon size={17} tintColor="#FFFFFF" />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.freeShells')}</Txt>

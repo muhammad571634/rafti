@@ -15,7 +15,7 @@ import { shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { datePlaceById, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, shadows, space } from '@/theme';
+import { colors, hitSlop, isDark, moduleFills, shadows, space } from '@/theme';
 import type { DateRecord } from '@/types';
 
 /** Hearts on the photo and in the reply pill (iOS systemPink, lighter on the photo). */
@@ -114,15 +114,15 @@ export default function DateScreen() {
           </Txt>
           <InsetGroup style={styles.results}>
             <View style={[styles.resultRow, styles.resultLine]}>
-              <View style={[styles.resultIcon, { backgroundColor: '#FF2D55' }]}>
+              <View style={[styles.resultIcon, { backgroundColor: moduleFills.date }]}>
                 <Ionicons name="heart" size={17} color="#FFFFFF" />
               </View>
               <Txt style={styles.resultLabel}>{t('date.hearts')}</Txt>
               <Txt style={styles.resultValue}>{t('date.heartsOf', { n: record.hearts, max: record.maxHearts })}</Txt>
             </View>
             <View style={styles.resultRow}>
-              <View style={[styles.resultIcon, { backgroundColor: '#FF9500' }]}>
-                <Ionicons name="book-outline" size={17} color="#FFFFFF" />
+              <View style={[styles.resultIcon, { backgroundColor: moduleFills.diary }]}>
+                <Ionicons name="book" size={17} color="#FFFFFF" />
               </View>
               <Txt style={styles.resultLabel} lines={1}>
                 {t('date.diaryOf', { name })}

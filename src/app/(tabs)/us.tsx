@@ -277,7 +277,7 @@ export default function UsScreen() {
 
           <View style={styles.stats}>
             <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} accent divided />
+            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
             <Stat
               value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
               label={t('us.statMet')}
@@ -512,10 +512,10 @@ function LevelRing({ progress, level, label }: { progress: number; level: number
   );
 }
 
-function Stat({ value, label, accent, divided }: { value: string; label: string; accent?: boolean; divided?: boolean }) {
+function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
   return (
     <View style={[styles.stat, divided && styles.statDivided]}>
-      <Txt style={styles.statValue} color={accent ? aurora.tint : colors.text}>
+      <Txt style={styles.statValue} color={colors.text}>
         {value}
       </Txt>
       <Txt style={styles.statLabel}>{label}</Txt>

@@ -118,8 +118,8 @@ export function ChatHeader({
 }
 
 /** Caption text under the name chip ("AI character", "2 members"). */
-export function CaptionText({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
-  return <Txt style={[styles.captionText, accent && styles.captionAccent]}>{children}</Txt>;
+export function CaptionText({ children }: { children: React.ReactNode }) {
+  return <Txt style={styles.captionText}>{children}</Txt>;
 }
 
 /** The small dot between caption parts. */
@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
   nameText: { fontSize: 13, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
   caption: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   captionText: { fontSize: 11, color: colors.textSecondary },
-  captionAccent: { color: colors.primary, fontWeight: '600' },
   captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
   capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
   shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },

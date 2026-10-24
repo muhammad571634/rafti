@@ -14,20 +14,20 @@ import { Anim, AuroraGlass, CharacterAvatar, LargeTitle, PressableScale, Screen,
 import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space } from '@/theme';
+import { aurora, colors, isDark, space, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 type Tab = 'clips' | 'sounds';
 
 /** Each sound as a Settings-style tile: an SF Symbol on an iOS system colour. */
 const SOUND_TILE: Record<string, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
-  r_rain: { fill: '#32ADE6', ios: 'cloud.rain.fill', icon: 'rainy' },
-  r_fire: { fill: '#FF9500', ios: 'flame.fill', icon: 'flame' },
-  r_waves: { fill: '#30B0C7', ios: 'water.waves', icon: 'water' },
-  r_cafe: { fill: '#A2845E', ios: 'cup.and.saucer.fill', icon: 'cafe' },
-  r_lullaby: { fill: '#5E5CE6', ios: 'moon.stars.fill', icon: 'moon' },
+  r_rain: { fill: systemColors.cyan, ios: 'cloud.rain.fill', icon: 'rainy' },
+  r_fire: { fill: systemColors.red, ios: 'flame.fill', icon: 'flame' },
+  r_waves: { fill: systemColors.teal, ios: 'water.waves', icon: 'water' },
+  r_cafe: { fill: systemColors.brown, ios: 'cup.and.saucer.fill', icon: 'cafe' },
+  r_lullaby: { fill: systemColors.indigo, ios: 'moon.stars.fill', icon: 'moon' },
 };
-const SOUND_DEFAULT = { fill: '#FF2D55', ios: 'music.note' as SFSymbol, icon: 'musical-notes' as IoniconName };
+const SOUND_DEFAULT = { fill: systemColors.pink, ios: 'music.note' as SFSymbol, icon: 'musical-notes' as IoniconName };
 
 const MINI_HEIGHT = 64;
 

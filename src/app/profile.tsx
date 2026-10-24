@@ -27,7 +27,7 @@ import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space } from '@/theme';
+import { aurora, colors, isDark, moduleFills, space, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -35,17 +35,17 @@ const AVATAR = 96;
 const ROW_ICON = 30;
 /** iOS system colours for the Settings-style row icons. */
 const FILL = {
-  gifts: '#FF2D55',
-  language: '#007AFF',
-  animation: '#FF9500',
-  grey: '#8E8E93',
-  support: '#34C759',
-  account: '#5856D6',
-  privacy: '#32ADE6',
-  terms: '#A2845E',
-  plan: '#AF52DE',
+  gifts: moduleFills.gifts,
+  language: systemColors.blue,
+  animation: systemColors.teal,
+  grey: systemColors.gray,
+  support: systemColors.green,
+  account: systemColors.indigo,
+  privacy: systemColors.cyan,
+  terms: systemColors.brown,
+  plan: systemColors.purple,
 };
-const SWITCH_ON = isDark ? '#30D158' : '#34C759';
+const SWITCH_ON = systemColors.green;
 const CARD_SHADOW = {
   shadowColor: isDark ? '#000000' : '#3C285A',
   shadowOpacity: isDark ? 0.35 : 0.08,

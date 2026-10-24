@@ -330,44 +330,65 @@ export const moduleColors: Record<string, readonly [string, string]> = {
 };
 
 /**
+ * iOS system colours (UIColor.systemRed … systemGray) with the variants iOS gives them in dark
+ * mode, plus the tertiary fill and a switch thumb. Every Settings-style tile, status colour and
+ * call control takes its hue from here, never from a new hex, so dark mode gets Apple's tones.
+ */
+export const systemColors = isDark
+  ? {
+      red: '#FF453A',
+      orange: '#FF9F0A',
+      yellow: '#FFD60A',
+      green: '#30D158',
+      mint: '#63E6E2',
+      teal: '#40C8E0',
+      cyan: '#64D2FF',
+      blue: '#0A84FF',
+      indigo: '#5E5CE6',
+      purple: '#BF5AF2',
+      pink: '#FF375F',
+      brown: '#AC8E68',
+      gray: '#98989D',
+      fill: 'rgba(118,118,128,0.24)',
+      thumb: '#636366',
+    }
+  : {
+      red: '#FF3B30',
+      orange: '#FF9500',
+      yellow: '#FFCC00',
+      green: '#34C759',
+      mint: '#00C7BE',
+      teal: '#30B0C7',
+      cyan: '#32ADE6',
+      blue: '#007AFF',
+      indigo: '#5856D6',
+      purple: '#AF52DE',
+      pink: '#FF2D55',
+      brown: '#A2845E',
+      gray: '#8E8E93',
+      fill: 'rgba(118,118,128,0.12)',
+      thumb: '#FFFFFF',
+    };
+
+/**
  * The same hues as flat iOS system colours, with their dark-mode variants, for Settings-style row
  * tiles (chat "+" menu, Us moments, notifications, Shell history, the publish sheet), as iOS pairs
  * a gradient app icon with a flat Settings icon of the same colour.
  */
-export const moduleFills: Record<string, string> = isDark
-  ? {
-      calls: '#30D158',
-      diary: '#AC8E68',
-      date: '#FF375F',
-      sleep: '#5E5CE6',
-      store: palette.apricot500,
-      photo: '#0A84FF',
-      contacts: '#98989D',
-      gifts: '#FF453A',
-      radio: '#BF5AF2',
-      board: '#64D2FF',
-      bond: '#63E6E2',
-      note: '#FFD60A',
-    }
-  : {
-      calls: '#34C759',
-      diary: '#A2845E',
-      date: '#FF2D55',
-      sleep: '#5856D6',
-      store: palette.apricot600,
-      photo: '#007AFF',
-      contacts: '#8E8E93',
-      gifts: '#FF3B30',
-      radio: '#AF52DE',
-      board: '#32ADE6',
-      bond: '#00C7BE',
-      note: '#FFCC00',
-    };
-
-/** iOS system colours for the call screens (systemRed, systemGreen, tertiary fill), as on the canvas. */
-export const systemColors = isDark
-  ? { red: '#FF453A', green: '#30D158', orange: '#FF9F0A', fill: 'rgba(118,118,128,0.24)', thumb: '#636366' }
-  : { red: '#FF3B30', green: '#34C759', orange: '#FF9500', fill: 'rgba(118,118,128,0.12)', thumb: '#FFFFFF' };
+export const moduleFills: Record<string, string> = {
+  calls: systemColors.green,
+  diary: systemColors.brown,
+  date: systemColors.pink,
+  sleep: systemColors.indigo,
+  store: isDark ? palette.apricot500 : palette.apricot600,
+  photo: systemColors.blue,
+  contacts: systemColors.gray,
+  gifts: systemColors.red,
+  radio: systemColors.purple,
+  board: systemColors.cyan,
+  bond: systemColors.mint,
+  note: systemColors.yellow,
+};
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**

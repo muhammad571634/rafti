@@ -305,8 +305,8 @@ export default function ChatRoomScreen() {
               {streak > 0 ? (
                 <>
                   <CaptionDot />
-                  <Ionicons name="heart" size={10} color={colors.primary} />
-                  <CaptionText accent>{t('chat.streakShort', { count: streak })}</CaptionText>
+                  <Ionicons name="heart" size={10} color={colors.textSecondary} />
+                  <CaptionText>{t('chat.streakShort', { count: streak })}</CaptionText>
                 </>
               ) : null}
             </>

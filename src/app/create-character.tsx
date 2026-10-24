@@ -432,7 +432,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
               <InsetGroup style={styles.groupGap}>
                 <IconRow
                   icon="mic"
-                  fill={systemColors.orange}
+                  fill={systemColors.indigo}
                   title={t('createCharacter.addClips')}
                   meta={samples.length > 0 ? t('createCharacter.samples', { count: samples.length }) : undefined}
                   last={samples.length === 0}
