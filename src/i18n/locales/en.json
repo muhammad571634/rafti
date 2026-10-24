@@ -1133,6 +1133,7 @@
     "testPushesSent": "{{count}} on the way",
     "testPushesUnavailable": "Needs a development build",
     "chatAnimation": "Chat animations",
+    "haptics": "Haptics",
     "account": "Account",
     "privacy": "Privacy",
     "terms": "Terms",

@@ -23,6 +23,7 @@ import { ClosenessSheet } from '@/components/closeness-sheet';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -359,7 +360,10 @@ function SwitchRow({
       <Switch
         value={value}
         disabled={disabled}
-        onValueChange={onChange}
+        onValueChange={(v) => {
+          haptic.toggle(v);
+          onChange(v);
+        }}
         accessibilityLabel={label}
         trackColor={{ true: colors.success }}
         ios_backgroundColor={colors.surfaceAlt}

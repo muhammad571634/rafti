@@ -6,6 +6,7 @@ import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { PressableScale, Txt } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { WHEEL_SEGMENTS } from '@/mock';
 import { colors, fonts, isDark, palette, radius } from '@/theme';
 
@@ -44,6 +45,11 @@ export function LuckyWheel({
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
 
+  const land = (index: number) => {
+    haptic.success();
+    onStop(index);
+  };
+
   const spin = () => {
     if (spinning || disabled) return;
     const index = onSpin();
@@ -61,7 +67,7 @@ export function LuckyWheel({
       (finished) => {
         if (finished) {
           scheduleOnRN(setSpinning, false);
-          scheduleOnRN(onStop, index);
+          scheduleOnRN(land, index);
         }
       },
     );

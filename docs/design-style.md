@@ -134,6 +134,17 @@ of a settings list.
 - Then one `body` line in `textSecondary`, then options or the button stack.
 - Never block without a way out: every sheet has a ghost dismiss or closes on the scrim.
 
+## 6b. Haptics
+
+From HIG Playing haptics (read 2026-10-24). Always through `haptic` in `src/lib/haptics.ts`, never
+`expo-haptics` directly, so the Profile → Haptics switch silences them all. Each keeps Apple's meaning:
+`selection` when a wheel passes a value, `tap` for a small press (send, answer, call controls, the
+mascot), `lift` when a long press opens a menu or edit mode, `success` when a task finishes (a
+purchase, a trial, minutes added, a gift, a redeemed code, a level up), `error` when one fails, and
+`toggle` for switches on Android (iOS's UISwitch plays its own). Nothing on tab taps, scrolling or
+every button: Apple's own tab bars stay silent, and the HIG warns against overuse. The first-launch
+intro keeps its own three taps (approved, timed to the motion).
+
 ## 7. Words
 
 - English UI, sentence case, short. Say what happens and what it costs; no exclamation marks

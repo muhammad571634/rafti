@@ -24,6 +24,7 @@ import {
 import { planDate } from '@/components/plans/copy';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
+import { haptic } from '@/lib/haptics';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space, type } from '@/theme';
 import type { Character } from '@/types';
@@ -233,7 +234,10 @@ export default function GroupInfoScreen() {
             <Txt style={[styles.memberName, styles.flex]}>{t('group.mute')}</Txt>
             <Switch
               value={group.muted}
-              onValueChange={(v) => setGroupMuted(groupId, v)}
+              onValueChange={(v) => {
+                haptic.toggle(v);
+                setGroupMuted(groupId, v);
+              }}
               accessibilityLabel={t('group.mute')}
               trackColor={{ true: colors.success }}
               ios_backgroundColor={colors.surfaceAlt}

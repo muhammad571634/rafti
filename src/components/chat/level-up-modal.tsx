@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Anim, BrandArt, Sheet, Txt } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import type { LevelUpEvent } from '@/store/use-app-store';
 import { colors, palette, radius, space } from '@/theme';
 
@@ -18,6 +20,9 @@ export interface LevelUpModalProps {
  * Tapping anywhere dismisses it, like the reference.
  */
 export function LevelUpModal({ event, characterName, onClose }: LevelUpModalProps) {
+  useEffect(() => {
+    if (event) haptic.success();
+  }, [event]);
   const { t } = useTranslation();
 
   return (

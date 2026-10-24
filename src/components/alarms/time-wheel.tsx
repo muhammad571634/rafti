@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { Txt } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { colors } from '@/theme';
 
 const ITEM = 36;
@@ -138,6 +139,8 @@ function Column({
 }) {
   const ref = useRef<ScrollViewInstance>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // The row under the band while scrolling: each new one ticks, as a UIPickerView does.
+  const ticked = useRef(index);
 
   // Starts on the chosen value; later changes come from the user's own scrolling.
   useEffect(() => {
@@ -155,8 +158,13 @@ function Column({
 
   // The web has no momentum events: snap a moment after the last scroll.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (Platform.OS !== 'web') return;
     const y = e.nativeEvent.contentOffset.y;
+    const row = at(y);
+    if (row !== ticked.current) {
+      ticked.current = row;
+      haptic.selection();
+    }
+    if (Platform.OS !== 'web') return;
     if (settleTimer.current) clearTimeout(settleTimer.current);
     settleTimer.current = setTimeout(() => {
       const next = at(y);

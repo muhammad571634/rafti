@@ -23,6 +23,7 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
 import { shareText } from '@/lib/share';
 import {
@@ -93,7 +94,11 @@ export default function GiftsScreen() {
 
   const redeem = () => {
     const result = redeemInvite(codeInput);
-    if (result !== 'ok') return setRedeemError(t(`gifts.redeemError.${result}`));
+    if (result !== 'ok') {
+      haptic.error();
+      return setRedeemError(t(`gifts.redeemError.${result}`));
+    }
+    haptic.success();
     setRedeemOpen(false);
     setCodeInput('');
     setRedeemError(null);

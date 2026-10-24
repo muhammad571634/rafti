@@ -22,6 +22,7 @@ import {
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
 import { relativeStamp, shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
 import type { MemoryItem } from '@/types';
@@ -85,6 +86,7 @@ export default function MemoriesScreen() {
   // Real builds open the store's purchase sheet for Basic; the mock starts it at once.
   const unlock = () => {
     subscribe('basic');
+    haptic.success();
     setUnlocking(false);
   };
 

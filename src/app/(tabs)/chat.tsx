@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
-import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +22,7 @@ import { GroupAvatar } from '@/components/group-avatar';
 import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
+import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
@@ -210,7 +210,7 @@ export default function ChatListScreen() {
     );
 
   const hold = (item: ChatItem) => {
-    if (Platform.OS !== 'web') void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    haptic.lift();
     setHeld(item);
   };
   const menuTarget: ChatMenuTarget | null = held

@@ -11,6 +11,7 @@ import { NIGHT_SWITCH } from '@/components/alarms/night';
 import { Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { alarmLine, alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
+import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, sleepColors as night, space, systemColors } from '@/theme';
 import type { Alarm } from '@/types';
@@ -173,7 +174,10 @@ function AlarmRow({
         </Pressable>
         <Switch
           value={alarm.enabled}
-          onValueChange={onToggle}
+          onValueChange={(v) => {
+            haptic.toggle(v);
+            onToggle(v);
+          }}
           accessibilityLabel={t('alarms.toggle', { time: `${time}${period ? ` ${t(`alarms.${period}`)}` : ''}` })}
           {...NIGHT_SWITCH}
         />

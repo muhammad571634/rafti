@@ -6,6 +6,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, Switch, View } from 'react
 
 import { CharacterAvatar, PressableScale, SFIcon, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 
@@ -194,7 +195,10 @@ function CallRow({
         </Pressable>
         <Switch
           value={value.on}
-          onValueChange={(on) => onChange({ ...value, on })}
+          onValueChange={(on) => {
+            haptic.toggle(on);
+            onChange({ ...value, on });
+          }}
           accessibilityLabel={label}
           trackColor={{ true: colors.success }}
           ios_backgroundColor={colors.surfaceAlt}

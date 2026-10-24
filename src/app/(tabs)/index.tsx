@@ -36,6 +36,7 @@ import {
   type ModuleKey,
 } from '@/components/ui';
 import { clipName, shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
@@ -461,7 +462,10 @@ function Slot({
   return (
     <GestureDetector gesture={drag}>
       <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(e.nativeEvent.layout)}>
-        <WidgetView model={model} onPress={editing ? onReplace : undefined} onLongPress={editing ? undefined : onStartEditing} />
+        <WidgetView model={model} onPress={editing ? onReplace : undefined} onLongPress={editing ? undefined : () => {
+            haptic.lift();
+            onStartEditing();
+          }} />
         {editing ? (
           <PressableScale
             scaleTo={0.88}

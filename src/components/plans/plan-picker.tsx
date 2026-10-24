@@ -7,6 +7,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
+import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
 import type { PlanId } from '@/types';
@@ -103,6 +104,7 @@ export function PlanPicker({
   const buy = () => {
     // Real builds open StoreKit / Play Billing here; the server confirms the receipt.
     subscribe(selected, withTrial);
+    haptic.success();
     onBought({ plan: selected, trial: withTrial });
   };
 

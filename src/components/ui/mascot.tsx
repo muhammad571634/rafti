@@ -1,7 +1,6 @@
-import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { useCallback, useEffect } from 'react';
-import { Platform, Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -18,6 +17,7 @@ import Animated, {
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { BRAND, BRAND_ASPECT, type BrandArtName } from '@/assets/brand/registry';
+import { haptic } from '@/lib/haptics';
 
 export interface BrandArtProps {
   name: BrandArtName;
@@ -125,9 +125,7 @@ export function BrandArt({
   const handlePress = useCallback(() => {
     if (!isInteractive) return;
 
-    if (Platform.OS !== 'web') {
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    }
+    haptic.tap();
 
     // Squash & stretch spring animation
     squashX.value = withSequence(

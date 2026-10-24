@@ -1,7 +1,6 @@
-import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { useEffect } from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -16,6 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
+import { haptic } from '@/lib/haptics';
 
 /** Share of the art below the body's flat bottom: the paws that rest on the edge. */
 const PAW_DROP = 40 / 540;
@@ -67,7 +67,7 @@ export function PeekingMascot({ width = 150 }: PeekingMascotProps) {
   }, [height, reduceMotion, rise, squash]);
 
   const onTap = () => {
-    if (Platform.OS !== 'web') void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    haptic.tap();
     if (reduceMotion) return;
     hop.value = withSequence(
       withTiming(-HEADROOM + 6, { duration: 130, easing: Easing.out(Easing.quad) }),

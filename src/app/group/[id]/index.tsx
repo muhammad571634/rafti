@@ -26,6 +26,7 @@ import { CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/component
 import { takeFocus } from '@/lib/chat-focus';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
+import { haptic } from '@/lib/haptics';
 import { backgroundsById, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -83,7 +84,10 @@ export default function GroupChatScreen() {
   const [reported, setReported] = useState(false);
   /** The message a search result pointed at, tinted for a moment. */
   const [flash, setFlash] = useState<string | null>(null);
-  const openMenu = useCallback((message: Message) => setMenu(message), []);
+  const openMenu = useCallback((message: Message) => {
+    haptic.lift();
+    setMenu(message);
+  }, []);
 
   // Replies that land while the group is on screen are read, not unread.
   useFocusEffect(

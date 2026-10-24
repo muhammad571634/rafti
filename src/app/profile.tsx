@@ -38,6 +38,7 @@ const FILL = {
   gifts: moduleFills.gifts,
   language: systemColors.blue,
   animation: systemColors.teal,
+  haptics: systemColors.pink,
   grey: systemColors.gray,
   support: systemColors.green,
   account: systemColors.indigo,
@@ -221,13 +222,26 @@ export default function ProfileScreen() {
             title={t('profile.chatAnimation')}
             icon="sparkles"
             fill={FILL.animation}
-            last
             right={
               <Toggle
                 value={settings.chatAnimation}
                 onChange={(v) => setSetting('chatAnimation', v)}
                 onColor={SWITCH_ON}
                 accessibilityLabel={t('profile.chatAnimation')}
+              />
+            }
+          />
+          <SettingsRow
+            title={t('profile.haptics')}
+            icon="phone-portrait"
+            fill={FILL.haptics}
+            last
+            right={
+              <Toggle
+                value={settings.haptics}
+                onChange={(v) => setSetting('haptics', v)}
+                onColor={SWITCH_ON}
+                accessibilityLabel={t('profile.haptics')}
               />
             }
           />

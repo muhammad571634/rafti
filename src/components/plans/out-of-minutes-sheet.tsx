@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, ModuleIcon, Sheet, Txt } from '@/components/ui';
 import { planStatus, PLANS, TOP_UPS } from '@/economy/plans';
 import { callClock } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, palette, space } from '@/theme';
 
@@ -43,8 +44,9 @@ export function OutOfMinutesSheet({
   const topUp = TOP_UPS.call;
 
   const add = () => {
-    if (topUpMinutes('call') === 'noShells') onNoShells();
-    else onAdded();
+    if (topUpMinutes('call') === 'noShells') return onNoShells();
+    haptic.success();
+    onAdded();
   };
 
   return (

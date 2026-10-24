@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Button, CharacterAvatar, ModuleIcon, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
+import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
@@ -46,6 +47,7 @@ export function ProPaywallSheet({
     }
     // Real builds open the store's purchase sheet with the free-trial offer.
     subscribe(TRIAL.plan, true);
+    haptic.success();
     onStarted();
   };
 

@@ -25,6 +25,7 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
 import { takeFocus } from '@/lib/chat-focus';
+import { haptic } from '@/lib/haptics';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -88,7 +89,10 @@ export default function ChatRoomScreen() {
   /** The message being reported; `reported` flips the sheet to a short thank-you. */
   const [reporting, setReporting] = useState<Message | null>(null);
   const [reported, setReported] = useState(false);
-  const openMenu = useCallback((message: Message) => setMenu(message), []);
+  const openMenu = useCallback((message: Message) => {
+    haptic.lift();
+    setMenu(message);
+  }, []);
 
   // Replies that land while this chat is on screen are read, not unread.
   useFocusEffect(

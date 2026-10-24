@@ -8,6 +8,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { Anim, Button, CharacterAvatar, PressableScale, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
 import { duration, shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { Character } from '@/types';
@@ -71,6 +72,7 @@ export function CallPaywallSheet({
     }
     // Real builds open the store's purchase sheet with the free-trial offer.
     subscribe(TRIAL.plan, true);
+    haptic.success();
     onStarted();
   };
 

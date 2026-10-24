@@ -1,5 +1,6 @@
 import { Platform, Switch } from 'react-native';
 
+import { haptic } from '@/lib/haptics';
 import { colors } from '@/theme';
 
 /**
@@ -30,7 +31,10 @@ export function Toggle({
     <Switch
       value={value}
       disabled={disabled}
-      onValueChange={onChange}
+      onValueChange={(v) => {
+        haptic.toggle(v);
+        onChange(v);
+      }}
       accessibilityLabel={accessibilityLabel}
       trackColor={{ true: onColor, false: colors.borderStrong }}
       thumbColor={THUMB}

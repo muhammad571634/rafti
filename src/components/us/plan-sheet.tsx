@@ -7,6 +7,7 @@ import { Platform, Pressable, StyleSheet, Switch, TextInput, useWindowDimensions
 import { CalendarPopover } from '@/components/diary/calendar-popover';
 import { CharacterAvatar, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, space } from '@/theme';
@@ -176,6 +177,7 @@ export function PlanSheet({
           <Switch
             value={timed}
             onValueChange={(on) => {
+              haptic.toggle(on);
               setTimed(on);
               if (!on) setOpen((o) => (o === 'time' ? null : o));
             }}

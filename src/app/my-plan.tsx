@@ -12,6 +12,7 @@ import { planDate, planPrice, planTime, SUBSCRIPTIONS_URL, wholeMinutes } from '
 import { CARD_SHADOW, GroupLabel, IconTile, ProGradient, ProPill, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
+import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
@@ -67,6 +68,7 @@ export default function MyPlanScreen() {
 
   const topUp = (kind: MinutesKind) => {
     if (topUpMinutes(kind) === 'noShells') return setPaywall(TOP_UPS[kind].shells);
+    haptic.success();
     setAdded(kind);
   };
 
@@ -74,6 +76,7 @@ export default function MyPlanScreen() {
     if (wallet.trialUsed) return router.push('/store/shell?tab=plans&plan=proAnnual');
     // Real builds open the store's purchase sheet with the free-trial offer.
     subscribe(TRIAL.plan, true);
+    haptic.success();
   };
 
   const heroBody = (

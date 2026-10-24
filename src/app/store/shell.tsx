@@ -32,6 +32,7 @@ import {
   Txt,
 } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
+import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleFills, palette, space, systemColors } from '@/theme';
@@ -217,6 +218,7 @@ function ShellsTab({
   const buy = (offer: PackOffer) => {
     // Real builds hand off to StoreKit / Play Billing and credit after the server checks the receipt.
     addShells(offer.total);
+    haptic.success();
     if (offer.pack.id === STARTER_PACK.id) setSelectedId(popularId);
     onBought(offer.total);
   };

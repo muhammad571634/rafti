@@ -12,6 +12,7 @@ import { useRadioClips } from '@/components/radio/use-clips';
 import { CharacterAvatar, Txt } from '@/components/ui';
 import { dayNames, repeatText, uses12Hour } from '@/lib/alarm-format';
 import { ALARM_SOUNDS } from '@/lib/alarms';
+import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
 import { useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
@@ -298,7 +299,13 @@ function SwitchCell({
       <Txt variant="body" color={disabled ? night.textMuted : night.text}>
         {label}
       </Txt>
-      <Switch value={value} onValueChange={onChange} disabled={disabled} accessibilityLabel={label} {...NIGHT_SWITCH} />
+      <Switch
+        value={value}
+        onValueChange={(v) => {
+          haptic.toggle(v);
+          onChange(v);
+        }}
+        disabled={disabled} accessibilityLabel={label} {...NIGHT_SWITCH} />
     </View>
   );
 }
