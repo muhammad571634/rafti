@@ -26,8 +26,8 @@ Rules:
 - Keep the current Sigmazam design system (`src/theme`, `src/components/ui`).
   Explore uses variant B (Phosphor duotone icons).
 - Every new or changed screen follows `docs/design-style.md` ("calm cards", chosen by the user on
-  2026-10-09; the F17 plan screens are the reference). `docs/design-audit.md` lists older screens
-  that do not follow it yet.
+  2026-10-09; the F17 plan screens are the reference). `docs/design-audit.md` has the latest review
+  and what is still open.
 - Take only structure and logic from BIMOBIMO, never its images or text.
   No real people or copyrighted characters.
 - Generate images sparingly: one test image, show it, then a batch with count stated.

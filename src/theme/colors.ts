@@ -28,32 +28,20 @@ export const palette = {
   mint600: '#138A75',
 
   // Cream — app background and Heartbeat Diary paper
-  cream50: '#FFF7EC',
   cream100: '#FFFAF1',
   cream200: '#FBF1DF',
   cream300: '#F0E2C6',
-  cream500: '#B9A07A',
-
-  // Sky — call / character blurred backdrops
-  sky200: '#CFE6FF',
-  sky400: '#6BB8FF',
-  sky600: '#3D8FE0',
 
   // Caramel — Rafti's fur, warm shadows
   caramel300: '#E3BE9C',
-  caramel500: '#C98B5E',
-  caramel700: '#8E5A36',
 
   // Neutrals: warm lines, ink-blue text
   white: '#FFFFFF',
-  gray50: '#FCF9F5',
   gray100: '#F5F0EA',
-  gray200: '#EBE4DB',
   gray300: '#DAD1C6',
   gray400: '#B3B5C1',
   gray500: '#8D90A0',
   gray600: '#6B6F82',
-  gray700: '#50546A',
   gray800: '#3A3E55',
   gray900: '#2A2E45',
   black: '#000000',
@@ -104,14 +92,12 @@ const lightColors = {
   textMuted: '#8E8E93',
   textFaint: '#AEAEB2',
   textOnPrimary: palette.peachInk,
-  textOnDark: palette.white,
   /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
   textOnInk: palette.white,
 
   // Brand: `primary` marks icons, rings and dots; `primaryFill` is the soft button fill.
   primary: palette.apricot600,
   primaryFill: palette.apricot400,
-  primaryHover: palette.apricot500,
   primarySoft: palette.apricot100,
   primarySofter: palette.apricot50,
   brandText: palette.apricot600,
@@ -119,7 +105,6 @@ const lightColors = {
   // Accent (Secret Note / relationship)
   accent: palette.mint500,
   accentSoft: palette.mint100,
-  accentBorder: palette.mint200,
 
   // On a photo or blurred portrait (call screens)
   onMedia: palette.white,
@@ -153,17 +138,13 @@ const lightColors = {
 
   // Nav
   tabActive: '#1C1C1E',
-  tabInactive: '#8E8E93',
 
   // Status
   danger: palette.red,
-  /** Red that stays readable as text on the cream canvas (Block, destructive rows). */
-  dangerText: '#C93A3A',
   /** Green that stays readable as text (a credit in Shell history): iOS's accessible green. */
   successText: '#248A3D',
   dangerSoft: palette.redSoft,
   success: palette.green,
-  warning: palette.amber,
   info: palette.blue,
 } as const;
 
@@ -196,7 +177,6 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   primarySofter: '#2E2422',
   brandText: palette.apricot300,
   accentSoft: '#163F3A',
-  accentBorder: '#1F5A52',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
   bubbleSelf: '#56392F',
@@ -206,9 +186,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   bubbleTranscript: 'rgba(28,28,30,0.92)',
   bubbleTranscriptText: '#AEAEB2',
   tabActive: '#FFFFFF',
-  tabInactive: '#8E8E93',
   textOnInk: '#000000',
-  dangerText: '#FF6961',
   successText: '#30D158',
   dangerSoft: '#3A1D1D',
 };
@@ -242,7 +220,6 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   primarySofter: '#2E2422',
   brandText: palette.apricot300,
   accentSoft: '#163F3A',
-  accentBorder: '#1F5A52',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
   bubbleSelf: '#56392F',
@@ -252,9 +229,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   bubbleTranscript: 'rgba(28,33,72,0.92)',
   bubbleTranscriptText: '#A3A8C8',
   tabActive: '#F4F2FF',
-  tabInactive: '#8389AE',
   textOnInk: '#0E1230',
-  dangerText: '#FF7A7A',
   successText: '#30D158',
   dangerSoft: '#4A1F24',
 };
@@ -454,36 +429,10 @@ export const storeColors = isDark
     };
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
-/**
- * Explore module tiles: a soft tint behind a deeper glyph of the same hue, so each
- * module is found by colour as well as shape. Mint stays with Contacts, the bond module.
- */
-export const moduleTints: Record<string, { bg: string; fg: string }> = {
-  store: { bg: palette.apricot100, fg: palette.apricot700 },
-  dating: { bg: '#FFE3DE', fg: '#D2503F' },
-  diary: { bg: '#F6E8D7', fg: palette.caramel700 },
-  photo: { bg: '#DCEBFF', fg: '#2F7BD0' },
-  contacts: { bg: palette.mint100, fg: palette.mint600 },
-  gifts: { bg: palette.apricot100, fg: palette.apricot700 },
-  calls: { bg: '#DDF5E7', fg: '#2E9963' },
-  bedtime: { bg: '#E3E5FA', fg: '#4E56B8' },
-  radio: { bg: '#FFF0CC', fg: '#B07A00' },
-  board: { bg: '#F6E8D7', fg: palette.caramel700 },
-};
-
 export const gradients = {
-  home: (isDark ? ['#000000', '#000000'] : ['#F2F2F7', '#F2F2F7']) as readonly [string, string],
-  banner: ['#FFD3B1', '#FFB37A'] as const,
-  fab: ['#FFD3B1', '#FFB37A'] as const,
   /** The primary button: peach, lighter at the top. */
   primary: ['#FFD3B1', '#FFB37A'] as const,
-  diary: ['#FFEBD6', '#FFF9F1', '#FFE6CC'] as const,
-  secretNote: ['#EEFBF8', '#FFFFFF'] as const,
   call: ['#A9D3F5', '#8FB0C8', '#7E8E9A'] as const,
-  levelUp: ['#EEFBF8', '#FFFFFF'] as const,
-  incoming: ['rgba(0,0,0,0.55)', 'transparent', 'rgba(0,0,0,0.65)'] as const,
-  avatarFallback: ['#FFC999', '#FF9F5A'] as const,
-  night: ['#1E2A55', '#2E3B6B'] as const,
   /** The wake-up alarm's ringing screen: sunrise. */
   wake: ['#F6C89F', '#E9A27E', '#B9739A'] as const,
   /**
@@ -491,8 +440,6 @@ export const gradients = {
    * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.
    */
   heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
-  /** The phone lock screen in Profile → Notifications' preview. */
-  lockScreen: ['#2E3352', '#5B4A6E'] as const,
   /** Pro's own colour: violet into peach, on the Pro card, the Pro pill and a chosen Pro plan. */
   pro: ['#5B3FD9', '#A64BD6', '#F0795A'] as const,
 } as const;

@@ -163,6 +163,6 @@ intro keeps its own three taps (approved, timed to the motion).
 
 ## 9. Applying it to older screens
 
-Screens built before 2026-10-09 do not all follow this yet. `docs/design-audit.md` lists each one
-and what it needs. Screens the user approved earlier (Diary, Onboarding, Home, Notifications, Us,
-Dates, the chat "+" games) are restyled only after the user says so for that screen.
+Every screen on the map follows this style since 2026-10-24; `docs/design-audit.md` has the latest
+review and what is still open. A screen the user approved is changed only when the user asks for
+that change.

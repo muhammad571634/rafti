@@ -1,4 +1,4 @@
-export { aurora, moduleColors, moduleFills, storeColors, systemColors, colors, isDark, nightColors, sleepColors, palette, gradients, gradientStops, avatarGradients, moduleTints } from './colors';
+export { aurora, moduleColors, moduleFills, storeColors, systemColors, colors, isDark, nightColors, sleepColors, palette, gradients, gradientStops, avatarGradients } from './colors';
 export type { ColorToken } from './colors';
 export { type, fonts, weight } from './typography';
 export type { TypeVariant } from './typography';
