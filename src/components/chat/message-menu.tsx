@@ -23,16 +23,22 @@ export interface MessageMenuProps {
   onCopy: (message: Message) => void;
   onReport: (message: Message) => void;
   onDelete: (message: Message) => void;
+  /** Given only for your newest text: it opens in the field to change (iOS Messages Edit). */
+  onEdit?: (message: Message) => void;
+  /** Given only for their lines before your newest message (`canRewindTo`). */
+  onRewind?: (message: Message) => void;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
 }
 
 /**
- * The long-press menu, as an iOS context menu (approved prototype `Menu.dc.html`): the chat
- * blurs, the mascot reactions sit in a glass capsule (each moving to its feeling) over
- * Copy / Report / Delete. It appears at once; a tap outside closes it.
+ * The long-press menu, as an iOS context menu (approved prototypes `Menu.dc.html`, `MenuMine.dc.html`,
+ * `ChatRewind.dc.html`): the chat blurs, the mascot reactions sit in a glass capsule (each moving to
+ * its feeling) over Copy / Edit or Report, then the destructive group, Rewind to here and Delete, in
+ * red at the end (HIG Context menus). Items that do not apply are left out, not dimmed. It appears at
+ * once; a tap outside closes it.
  */
-export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDelete, blurTarget }: MessageMenuProps) {
+export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDelete, onEdit, onRewind, blurTarget }: MessageMenuProps) {
   const { t } = useTranslation();
   useBackToClose(!!message, onClose);
   if (!message) return null;
@@ -77,10 +83,14 @@ export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDel
         {/* No copy of the message under the reactions (owner, 2026-10-16): reactions, then actions. */}
         <View style={[styles.menu, !mine && styles.inset]} accessibilityRole="menu">
           {message.text ? (
-            <MenuRow label={t('chat.copy')} icon="copy-outline" onPress={() => onCopy(message)} line={!mine} />
+            <MenuRow label={t('chat.copy')} icon="copy-outline" onPress={() => onCopy(message)} line={!mine || !!onEdit} />
           ) : null}
+          {mine && onEdit ? <MenuRow label={t('chat.edit')} icon="create-outline" onPress={() => onEdit(message)} /> : null}
           {!mine ? <MenuRow label={t('safety.report')} icon="flag-outline" onPress={() => onReport(message)} /> : null}
           <View style={styles.gap} />
+          {onRewind ? (
+            <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" danger line onPress={() => onRewind(message)} />
+          ) : null}
           <MenuRow label={t('chat.deleteMessage')} icon="trash-outline" danger onPress={() => onDelete(message)} />
         </View>
       </View>

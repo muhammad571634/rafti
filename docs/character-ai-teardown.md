@@ -130,7 +130,7 @@ Chapter 11 process to support a court-supervised sale. The app may change hands 
 
 Ordered by value to the owner's companion app, with what exists today:
 
-1. **Regenerate, swipe and edit replies** (chat): keep candidates per AI message; ↻ under the last
+1. **Regenerate, swipe and edit replies** (chat; done 2026-10-24, flows.md D68): keep candidates per AI message; ↻ under the last
    reply, swipe between versions, edit your own last message and resend, rewind to a point, "new
    chat from here". Works with the mock provider now; backend: `turns` + `candidates` tables.
 2. **Memory in three scopes** (`character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /

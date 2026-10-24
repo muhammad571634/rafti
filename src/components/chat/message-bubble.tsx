@@ -105,7 +105,7 @@ export const MessageBubble = memo(function MessageBubble({
         // The user's side: no avatar, as in iOS Messages; the last message says Read or Delivered.
         <View style={styles.mine}>
           {content}
-          {receipt ? <ReadReceipt message={message} /> : null}
+          {receipt ? <ReadReceipt message={message} /> : message.editedAt ? <EditedNote /> : null}
         </View>
       ) : (
         <>
@@ -216,6 +216,12 @@ function ReadReceipt({ message }: { message: Message }) {
 
   return (
     <Txt style={styles.receipt}>
+      {message.editedAt ? (
+        <>
+          <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>
+          {' · '}
+        </>
+      ) : null}
       {message.pending ? (
         t('chat.sending')
       ) : message.readAt ? (
@@ -227,6 +233,12 @@ function ReadReceipt({ message }: { message: Message }) {
       )}
     </Txt>
   );
+}
+
+/** "Edited" under a message you changed (iOS Messages), once a newer one carries the receipt. */
+function EditedNote() {
+  const { t } = useTranslation();
+  return <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>;
 }
 
 /** System lines are plain grey text between the bubbles, as in iOS Messages. */

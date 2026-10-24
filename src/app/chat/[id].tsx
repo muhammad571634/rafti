@@ -6,15 +6,16 @@ import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, View, type ViewInstance } from 'react-native';
-import Animated, { FadeOut } from 'react-native-reanimated';
+import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
-import { MessageMenu } from '@/components/chat/message-menu';
+import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
+import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
@@ -25,6 +26,8 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
 import { takeFocus } from '@/lib/chat-focus';
+import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
+import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { suggestedReplies } from '@/mock/suggestions';
@@ -85,6 +88,17 @@ export default function ChatRoomScreen() {
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
+  const replyVersions = useAppStore((s) => (conversationId ? s.replyVersions[conversationId] : undefined));
+  const regenerateReply = useAppStore((s) => s.regenerateReply);
+  const showReplyVersion = useAppStore((s) => s.showReplyVersion);
+  const editLastMessage = useAppStore((s) => s.editLastMessage);
+  const rewindTo = useAppStore((s) => s.rewindTo);
+  /** Your newest message while it is being changed in the field (canvas `ChatEdit.dc.html`). */
+  const [editing, setEditing] = useState<Message | null>(null);
+  const cancelEdit = useCallback(() => setEditing(null), []);
+  useBackToClose(!!editing, cancelEdit);
+  /** How far their newest reply follows a sideways swipe; all its bubbles share it. */
+  const swipeOffset = useSharedValue(0);
   const reportMessage = useAppStore((s) => s.reportMessage);
   /** The message being reported; `reported` flips the sheet to a short thank-you. */
   const [reporting, setReporting] = useState<Message | null>(null);
@@ -131,6 +145,25 @@ export default function ChatRoomScreen() {
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
 
+  // Their newest reply: ↻ under it, then ‹ › and a swipe once there are versions (canvas
+  // `ChatRegen.dc.html`). A crisis reply, with the helpline card, is never redone.
+  const exchange = useMemo(() => lastExchange(data), [data]);
+  const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
+  const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
+  const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
+  const swipeable = canRedo && (versions?.versions.length ?? 0) > 1;
+  const editableId = exchange?.anchor.kind === 'text' && !exchange.anchor.pending ? exchange.anchor.id : undefined;
+  const stepVersion = useCallback(
+    (delta: 1 | -1) => {
+      if (!conversationId || !versions) return;
+      const target = versions.index + delta;
+      if (target < 0 || target >= versions.versions.length) return;
+      haptic.selection();
+      showReplyVersion(conversationId, target);
+    },
+    [conversationId, versions, showReplyVersion],
+  );
+
   // Only messages that arrive while the chat is open animate in. History, and rows
   // the list re-mounts when you scroll back up, appear without replaying it.
   const [openedAt] = useState(() => Date.now());
@@ -144,6 +177,18 @@ export default function ChatRoomScreen() {
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
       const run = runOf(data, index);
+      const bubble = (
+        <MessageBubble
+          message={item}
+          character={character}
+          animate={animations && Date.parse(item.createdAt) > openedAt}
+          showAvatar={run.runStart}
+          runEnd={run.runEnd}
+          receipt={item.id === lastMine}
+          onCallBack={callBack}
+          onLongPress={openMenu}
+        />
+      );
       return (
         <>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
@@ -151,16 +196,13 @@ export default function ChatRoomScreen() {
             {item.id === flash ? (
               <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
             ) : null}
-            <MessageBubble
-              message={item}
-              character={character}
-              animate={animations && Date.parse(item.createdAt) > openedAt}
-              showAvatar={run.runStart}
-              runEnd={run.runEnd}
-              receipt={item.id === lastMine}
-              onCallBack={callBack}
-              onLongPress={openMenu}
-            />
+            {swipeable && burstIds.has(item.id) ? (
+              <VersionSwipe offset={swipeOffset} onStep={stepVersion}>
+                {bubble}
+              </VersionSwipe>
+            ) : (
+              bubble
+            )}
           </View>
           {item.chips?.length && conversationId ? (
             <QuickReplies chips={item.chips} onPick={(chip) => pickChip(conversationId, item.id, chip)} />
@@ -168,7 +210,7 @@ export default function ChatRoomScreen() {
         </>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, swipeable, burstIds, swipeOffset, stepVersion],
   );
 
   // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
@@ -197,6 +239,29 @@ export default function ChatRoomScreen() {
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
+
+  // A new version and an edit are new replies, so each costs what a message does.
+  const redo = () => {
+    if (regenerateReply(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
+  const saveEdit = (text: string) => {
+    if (editLastMessage(conversation.id, text) === 'noShells') return outOfShells(shellCosts.textMessage);
+    setEditing(null);
+    return true;
+  };
+
+  // An action sheet first (HIG Action sheets): a rewind deletes what came after.
+  const askRewind = (message: Message) =>
+    confirmAction({
+      title: t('chat.rewindTitle', { count: laterCount(data, message.id) }),
+      action: t('chat.rewind'),
+      cancel: t('common.cancel'),
+      onConfirm: () => {
+        setEditing(null);
+        rewindTo(conversation.id, message.id);
+      },
+    });
 
   const pickPhoto = async () => {
     setAttachOpen(false);
@@ -271,6 +336,14 @@ export default function ChatRoomScreen() {
               renderItem={renderItem}
               ListFooterComponent={
                 <>
+                  {canRedo ? (
+                    <ReplyControls
+                      count={versions?.versions.length ?? 1}
+                      index={versions?.index ?? 0}
+                      onStep={stepVersion}
+                      onRedo={redo}
+                    />
+                  ) : null}
                   {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
                   {typing ? <TypingRow characters={[character]} /> : null}
                 </>
@@ -284,6 +357,15 @@ export default function ChatRoomScreen() {
             />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
             {!artWallpaper ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
+            {/* While you edit, the chat fades back; a tap on it cancels the edit. */}
+            {editing ? (
+              <Pressable
+                style={styles.veil}
+                onPress={cancelEdit}
+                accessibilityRole="button"
+                accessibilityLabel={t('chat.cancelEdit')}
+              />
+            ) : null}
           </View>
 
           <ChatInput
@@ -292,6 +374,7 @@ export default function ChatRoomScreen() {
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
             initialValue={typeof draft === 'string' ? draft : undefined}
+            editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
           />
         </KeyboardAvoidingView>
 
@@ -389,6 +472,22 @@ export default function ChatRoomScreen() {
           deleteMessage(conversation.id, message.id);
           setMenu(null);
         }}
+        onEdit={
+          menu && menu.id === editableId
+            ? (message) => {
+                setMenu(null);
+                setEditing(message);
+              }
+            : undefined
+        }
+        onRewind={
+          menu && canRewindTo(data, menu.id)
+            ? (message) => {
+                setMenu(null);
+                askRewind(message);
+              }
+            : undefined
+        }
       />
 
       <ReportSheet
@@ -415,4 +514,5 @@ const styles = StyleSheet.create({
   },
   missing: { padding: space.xl },
   list: { paddingBottom: space.sm },
+  veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
 });

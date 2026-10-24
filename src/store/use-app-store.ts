@@ -26,6 +26,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
+import { lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { shortName } from '@/lib/format';
 import {
   canAddMember,
@@ -212,6 +213,16 @@ export interface DailyRewardEvent {
 
 /** `dailyCap` is no longer returned: the credit model has no daily cap (backend-plan §15.10). */
 export type SendResult = 'sent' | 'noShells' | 'empty' | 'dailyCap';
+/**
+ * The versions of their newest reply in one chat (↻). `versions[index]` is the one on screen; its
+ * copy here goes stale while it shows and is taken again before another version swaps in.
+ */
+export interface ReplyVersions {
+  /** Your message they answered: versions belong to the newest exchange only. */
+  afterId: string;
+  versions: Message[][];
+  index: number;
+}
 export type SpendResult = 'ok' | 'noShells' | 'locked' | 'notReady';
 /** Saving a quiz the user wrote: its id, or why it was not saved. */
 export type QuizResult = { status: 'saved'; id: string } | { status: QuizProblem };
@@ -260,6 +271,8 @@ interface AppState {
   levelUp: LevelUpEvent | null;
   /** Conversation ids where the character is currently "typing". */
   typing: Record<string, boolean>;
+  /** Versions of their newest reply per chat (↻). Not saved: after a restart the one on screen stays. */
+  replyVersions: Record<string, ReplyVersions>;
   /**
    * Group ids and the members typing there now, in the order they started. Several can type at
    * once; a member is listed once per reply still on its way, so overlapping replies never
@@ -298,6 +311,14 @@ interface AppState {
   /** Sets (or with `undefined` clears) the user's reaction on a message. */
   reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
   deleteMessage: (conversationId: string, messageId: string) => void;
+  /** Their newest reply again (↻): a new version arrives and the old one is kept. Costs a message. */
+  regenerateReply: (conversationId: string) => SendResult;
+  /** Shows another version of their newest reply (‹ › or a swipe). */
+  showReplyVersion: (conversationId: string, index: number) => void;
+  /** Changes your newest text and asks them again; their answer to the old words goes. Costs a message. */
+  editLastMessage: (conversationId: string, text: string) => SendResult;
+  /** Deletes everything after one of their lines, as if the chat had stopped there. */
+  rewindTo: (conversationId: string, messageId: string) => void;
 
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
@@ -706,6 +727,7 @@ export const useAppStore = create<AppState>()(
       hydrated: false,
       levelUp: null,
       typing: {},
+      replyVersions: {},
       groupTyping: {},
       activeConversationId: null,
       incomingCall: null,
@@ -739,44 +761,7 @@ export const useAppStore = create<AppState>()(
         });
         touchStreak(set, get, conversation.characterId);
 
-        // A crisis message is answered with care and never becomes a plan: no reminder,
-        // no "how did it go?", no line on Us ("I'm going to kill myself tomorrow").
-        const crisis = detectCrisis(trimmed);
-
-        // The morning chain: a real reply turns the alarm off and the friend helps with the day.
-        if (wakeHere && wakeReply(set, get, conversationId, trimmed, crisis)) return 'sent';
-
-        // "Smart Auto Schedule": a plan in the message becomes a reminder.
-        const plan = crisis ? null : detectPlan(trimmed);
-        let reply: string | undefined;
-        if (plan) {
-          set((s) => ({
-            schedules: [
-              ...s.schedules,
-              {
-                id: uid('sch'),
-                characterId: conversation.characterId,
-                title: plan.title,
-                date: plan.date,
-                time: plan.time,
-                createdAt: new Date().toISOString(),
-                reminded: false,
-                source: 'chat',
-              },
-            ],
-          }));
-          get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
-          addMoment(set, conversation.characterId, 'plan', { title: plan.title });
-          reply = scheduleAck(plan.title, plan.when, !!plan.time);
-        }
-
-        // A crisis message: a warm reply in voice, then the helpline card under it.
-        if (crisis) {
-          reply = pick(crisisReplies);
-          appendHelplineCard(set, get, conversationId);
-        }
-
-        scheduleReply(set, get, conversationId, { text: reply, gain: INTIMACY.text });
+        answerText(set, get, conversationId, trimmed, { wakeHere: !!wakeHere, gain: INTIMACY.text });
         return 'sent';
       },
 
@@ -859,13 +844,16 @@ export const useAppStore = create<AppState>()(
         else noticeAiIfDue(set, get, conversationId);
       },
 
-      clearChat: (conversationId) =>
+      clearChat: (conversationId) => {
+        cancelReplies(set, conversationId);
         set((s) => ({
+          replyVersions: omitKey(s.replyVersions, conversationId),
           messages: { ...s.messages, [conversationId]: [] },
           conversations: s.conversations.map((c) =>
             c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
           ),
-        })),
+        }));
+      },
 
       setChatPinned: (conversationId, pinned) =>
         set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, pinned } : c)) })),
@@ -875,11 +863,12 @@ export const useAppStore = create<AppState>()(
 
       deleteChat: (conversationId) => {
         // A reply still on its way must not land in a chat that is gone.
-        replyingUntil.delete(conversationId);
+        cancelReplies(set, conversationId);
         set((s) => {
           const { [conversationId]: _messages, ...messages } = s.messages;
           const { [conversationId]: _typing, ...typing } = s.typing;
           return {
+            replyVersions: omitKey(s.replyVersions, conversationId),
             conversations: s.conversations.filter((c) => c.id !== conversationId),
             messages,
             typing,
@@ -905,6 +894,8 @@ export const useAppStore = create<AppState>()(
           const last = [...rest].reverse().find((m) => m.kind !== 'system');
           return {
             messages: { ...s.messages, [conversationId]: rest },
+            // A deleted line may belong to the newest exchange; its versions would no longer match.
+            replyVersions: omitKey(s.replyVersions, conversationId),
             conversations: s.conversations.map((c) =>
               c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
             ),
@@ -913,6 +904,92 @@ export const useAppStore = create<AppState>()(
             ),
           };
         }),
+
+      regenerateReply: (conversationId) => {
+        const state = get();
+        const exchange = lastExchange(state.messages[conversationId]);
+        if (!exchange?.burst.length || exchange.crisis || state.typing[conversationId]) return 'empty';
+        if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        countMessage(set, get);
+        // What is on screen becomes a kept version; the new one fills in as it arrives.
+        const held = state.replyVersions[conversationId];
+        const same = held?.afterId === exchange.anchor.id;
+        const versions = same ? [...held.versions] : [];
+        versions[same ? held.index : 0] = exchange.burst;
+        const next = [...versions, []].slice(-MAX_REPLY_VERSIONS);
+        const ids = new Set(exchange.burst.map((m) => m.id));
+        const afterId = exchange.anchor.id;
+        set((s) => ({
+          ...withMessages(s, conversationId, (s.messages[conversationId] ?? []).filter((m) => !ids.has(m.id))),
+          replyVersions: { ...s.replyVersions, [conversationId]: { afterId, versions: next, index: next.length - 1 } },
+        }));
+        // A new version is the same exchange again: it adds no closeness.
+        scheduleReply(set, get, conversationId, { gain: 0, avoid: exchange.burst.find((m) => m.kind === 'text')?.text });
+        return 'sent';
+      },
+
+      showReplyVersion: (conversationId, index) => {
+        const state = get();
+        const held = state.replyVersions[conversationId];
+        const exchange = lastExchange(state.messages[conversationId]);
+        if (!held || !exchange || held.afterId !== exchange.anchor.id || state.typing[conversationId]) return;
+        if (index === held.index || !held.versions[index]?.length) return;
+        // The version leaving the screen is copied first, so a reaction on it is kept.
+        const versions = held.versions.map((v, i) => (i === held.index ? exchange.burst : v));
+        const ids = new Set(exchange.burst.map((m) => m.id));
+        set((s) => ({
+          ...withMessages(s, conversationId, [
+            ...(s.messages[conversationId] ?? []).filter((m) => !ids.has(m.id)),
+            ...versions[index],
+          ]),
+          replyVersions: { ...s.replyVersions, [conversationId]: { ...held, versions, index } },
+        }));
+      },
+
+      editLastMessage: (conversationId, text) => {
+        const trimmed = text.trim();
+        const exchange = lastExchange(get().messages[conversationId]);
+        if (!trimmed || !exchange || exchange.anchor.kind !== 'text' || exchange.anchor.pending) return 'empty';
+        if (trimmed === exchange.anchor.text) return 'sent';
+        // Fixing a reply to the wake-up alarm stays free, as the reply itself was.
+        const wakeHere = !!wakeFor(get(), conversationId);
+        if (!wakeHere && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        countMessage(set, get);
+        // A reply still on its way answered the old words: it stops, and their answer goes.
+        cancelReplies(set, conversationId);
+        const mineId = exchange.anchor.id;
+        const ids = new Set(exchange.burst.map((m) => m.id));
+        const editedAt = new Date().toISOString();
+        set((s) => ({
+          ...withMessages(
+            s,
+            conversationId,
+            (s.messages[conversationId] ?? [])
+              .filter((m) => !ids.has(m.id))
+              .map((m) => (m.id === mineId ? { ...m, text: trimmed, editedAt, readAt: undefined } : m)),
+          ),
+          replyVersions: omitKey(s.replyVersions, conversationId),
+        }));
+        // The new answer reads differently from the one the old words got.
+        answerText(set, get, conversationId, trimmed, { wakeHere, gain: 0, avoid: exchange.burst.find((m) => m.kind === 'text')?.text });
+        return 'sent';
+      },
+
+      rewindTo: (conversationId, messageId) => {
+        const list = get().messages[conversationId] ?? [];
+        const at = list.findIndex((m) => m.id === messageId);
+        if (at < 0 || at === list.length - 1) return;
+        // Level, shells and memories stay as they are (owner, 2026-10-24).
+        cancelReplies(set, conversationId);
+        set((s) => {
+          const current = s.messages[conversationId] ?? [];
+          const keep = current.findIndex((m) => m.id === messageId);
+          return {
+            ...withMessages(s, conversationId, current.slice(0, keep + 1)),
+            replyVersions: omitKey(s.replyVersions, conversationId),
+          };
+        });
+      },
 
       /* ── group chats ──────────────────────────────────────────────────── */
 
@@ -2537,14 +2614,17 @@ function appendMessage(
     quiet?: boolean;
   } = {},
 ) {
+  // A new message of yours starts a new exchange: the old reply's versions are done.
+  const fresh = (s: AppState) => (message.author === 'me' ? { replyVersions: omitKey(s.replyVersions, conversationId) } : {});
   if (quiet) {
-    set((s) => ({ messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] } }));
+    set((s) => ({ messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] }, ...fresh(s) }));
     return;
   }
   const unseen = countUnread && get().activeConversationId !== conversationId;
   const preview = previewFor(message);
 
   set((s) => ({
+    ...fresh(s),
     messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] },
     conversations: s.conversations.map((c) =>
       c.id === conversationId
@@ -2629,6 +2709,59 @@ function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: 
 }
 
 /**
+ * What follows your text: care for a crisis message, the morning chain while the wake-up alarm
+ * rings, a plan turned into a reminder, then their reply. Sending and editing share it.
+ */
+function answerText(
+  set: Setter,
+  get: Getter,
+  conversationId: string,
+  text: string,
+  { wakeHere, gain, avoid }: { wakeHere: boolean; gain: number; avoid?: string },
+) {
+  const conversation = get().conversations.find((c) => c.id === conversationId);
+  if (!conversation) return;
+  // A crisis message is answered with care and never becomes a plan: no reminder,
+  // no "how did it go?", no line on Us ("I'm going to kill myself tomorrow").
+  const crisis = detectCrisis(text);
+
+  // The morning chain: a real reply turns the alarm off and the friend helps with the day.
+  if (wakeHere && wakeReply(set, get, conversationId, text, crisis)) return;
+
+  // "Smart Auto Schedule": a plan in the message becomes a reminder.
+  const plan = crisis ? null : detectPlan(text);
+  let reply: string | undefined;
+  if (plan) {
+    set((s) => ({
+      schedules: [
+        ...s.schedules,
+        {
+          id: uid('sch'),
+          characterId: conversation.characterId,
+          title: plan.title,
+          date: plan.date,
+          time: plan.time,
+          createdAt: new Date().toISOString(),
+          reminded: false,
+          source: 'chat',
+        },
+      ],
+    }));
+    get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
+    addMoment(set, conversation.characterId, 'plan', { title: plan.title });
+    reply = scheduleAck(plan.title, plan.when, !!plan.time);
+  }
+
+  // A crisis message: a warm reply in voice, then the helpline card under it.
+  if (crisis) {
+    reply = pick(crisisReplies);
+    appendHelplineCard(set, get, conversationId);
+  }
+
+  scheduleReply(set, get, conversationId, { text: reply, gain, avoid });
+}
+
+/**
  * Stands in for the streaming backend call: read receipt, typing indicator, then
  * a voice note + text (or text only). Swapping in a real model only changes this.
  */
@@ -2636,10 +2769,12 @@ function scheduleReply(
   set: Setter,
   get: Getter,
   conversationId: string,
-  { text, gain, chips }: { text?: string; gain: number; chips?: string[] },
+  { text, gain, chips, avoid }: { text?: string; gain: number; chips?: string[]; avoid?: string },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
+  // A rewind or an edit can take this reply back while it is on its way (`cancelReplies`).
+  const epoch = replyEpoch.get(conversationId) ?? 0;
 
   const readAt = new Date().toISOString();
   set((s) => ({
@@ -2653,7 +2788,10 @@ function scheduleReply(
   }));
 
   // A scripted line (a plan's acknowledgement) is one text; a free reply comes as a burst.
-  const lines = text ? [text] : withInterest(pick(replyBursts), get().user.interests);
+  // A redo (↻) skips the burst on screen, so the new version reads differently.
+  let burst = pick(replyBursts);
+  for (let tries = 0; avoid && burst[0] === avoid && tries < 4; tries++) burst = pick(replyBursts);
+  const lines = text ? [text] : withInterest(burst, get().user.interests);
   const bond = get().relationships[conversation.characterId];
   const character = get().characters.find((c) => c.id === conversation.characterId);
   const said = lines.join(' ');
@@ -2676,6 +2814,7 @@ function scheduleReply(
   lines.forEach((line, i) => {
     const last = i === lines.length - 1;
     setTimeout(() => {
+      if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
       if (i === 0 && withVoice) {
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -3044,6 +3183,34 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
 
 /** When each chat's current reply burst finishes; replies queue behind it. */
 const replyingUntil = new Map<string, number>();
+/** Bumped when a chat's replies on their way are taken back; their timers then stop. */
+const replyEpoch = new Map<string, number>();
+
+/** Takes back the replies still on their way to a chat (a rewind, an edit, a cleared chat). */
+function cancelReplies(set: Setter, conversationId: string) {
+  replyEpoch.set(conversationId, (replyEpoch.get(conversationId) ?? 0) + 1);
+  replyingUntil.delete(conversationId);
+  set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+}
+
+/** `record` without `key`, unchanged when the key is not there. */
+function omitKey<T>(record: Record<string, T>, key: string): Record<string, T> {
+  if (!(key in record)) return record;
+  const { [key]: _gone, ...rest } = record;
+  return rest;
+}
+
+/** A chat's new message list, with the list's preview following its new last line. */
+function withMessages(s: AppState, conversationId: string, messages: Message[]) {
+  // System lines (the AI notice, cards) never become the preview.
+  const last = [...messages].reverse().find((m) => m.kind !== 'system');
+  return {
+    messages: { ...s.messages, [conversationId]: messages },
+    conversations: s.conversations.map((c) =>
+      c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
+    ),
+  };
+}
 
 function answerDiary(set: RawSetter, entryId: string) {
   set((s) => ({

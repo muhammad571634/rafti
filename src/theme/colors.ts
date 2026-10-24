@@ -72,6 +72,8 @@ const lightColors = {
   surfaceAlt: '#EBEBF0',
   overlay: 'rgba(0,0,0,0.4)',
   scrim: 'rgba(0,0,0,0.2)',
+  /** Fades the chat behind a message being edited, so the field stands out. */
+  veil: 'rgba(255,255,255,0.72)',
   /** The floating tab bar's frosted fill, its hairline and the current tab's capsule. */
   glass: 'rgba(255,255,255,0.94)',
   glassLine: 'rgba(0,0,0,0.10)',
@@ -160,6 +162,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   surfaceAlt: '#2C2C2E',
   overlay: 'rgba(0,0,0,0.6)',
   scrim: 'rgba(0,0,0,0.4)',
+  veil: 'rgba(0,0,0,0.62)',
   glass: 'rgba(30,30,32,0.94)',
   glassLine: 'rgba(255,255,255,0.14)',
   glassActive: 'rgba(255,255,255,0.12)',
@@ -206,6 +209,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   surfaceAlt: '#252B57',
   overlay: 'rgba(0,0,0,0.55)',
   scrim: 'rgba(0,0,0,0.35)',
+  veil: 'rgba(14,18,48,0.7)',
   border: '#2B3160',
   well: 'rgba(255,255,255,0.08)',
   track: '#2B3160',

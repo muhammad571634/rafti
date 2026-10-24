@@ -90,6 +90,8 @@ export interface Message {
   muted?: boolean;
   /** The user's reaction to this message: a Rafti sticker name (see REACTION_STICKERS) */
   reaction?: string;
+  /** You changed this message after sending it; the chat says "Edited" under it (iOS Messages). */
+  editedAt?: string;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
   /**

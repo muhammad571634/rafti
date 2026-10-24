@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -29,6 +29,11 @@ export interface ChatInputProps {
   initialValue?: string;
   /** When set, the field is closed and shows this line instead (the daily fair-use limit). */
   locked?: string;
+  /**
+   * Editing your newest message (canvas `ChatEdit.dc.html`): the field holds its text, ✕ takes the
+   * place of "+" and ✓ of send. `onSave` returns false to stay in the edit (e.g. out of shells).
+   */
+  editing?: { id: string; text: string; onSave: (text: string) => boolean; onCancel: () => void };
 }
 
 /**
@@ -36,16 +41,39 @@ export interface ChatInputProps {
  * text field, and one primary button that records a voice message while the field
  * is empty and sends once there is text. The swap is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<TextInputInstance>(null);
+  /** The unsent draft waits here while a message is edited, and comes back after. */
+  const draft = useRef<string | null>(null);
+  const editingId = editing?.id;
+  const editingText = editing?.text;
+
+  useEffect(() => {
+    if (editingId) {
+      if (draft.current === null) draft.current = value;
+      setValue(editingText ?? '');
+      const timer = setTimeout(() => inputRef.current?.focus(), 60);
+      return () => clearTimeout(timer);
+    }
+    if (draft.current !== null) {
+      setValue(draft.current);
+      draft.current = null;
+    }
+    // Runs when an edit starts or ends, not on every keystroke.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingId]);
 
   const hasText = value.trim().length > 0;
 
   const submit = () => {
     if (!hasText) return;
+    if (editing) {
+      editing.onSave(value);
+      return;
+    }
     if (onSend(value)) setValue('');
     // react-native-web only submits a multiline field by blurring it; take focus back.
     if (Platform.OS === 'web') setTimeout(() => inputRef.current?.focus(), 30);
@@ -68,11 +96,11 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
       <PressableScale
         scaleTo={0.9}
-        onPress={onAttach}
+        onPress={editing ? editing.onCancel : onAttach}
         accessibilityRole="button"
-        accessibilityLabel={t('a11y.attach')}
+        accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
         style={[styles.glass, styles.plus]}>
-        <Ionicons name="add" size={24} color={colors.text} />
+        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 22 : 24} color={colors.text} />
       </PressableScale>
 
       <View style={[styles.glass, styles.field]}>
@@ -94,16 +122,30 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
         />
 
         {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach send once there is text. */}
-        <IconButton
-          icon={hasText ? 'arrow-up' : 'mic-outline'}
-          size={hasText ? 18 : 21}
-          color={hasText ? colors.textOnPrimary : colors.textSecondary}
-          background={hasText ? colors.primaryFill : undefined}
-          haptic={hasText}
-          accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
-          onPress={hasText ? submit : onVoice}
-          style={styles.action}
-        />
+        {editing ? (
+          // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
+          <IconButton
+            icon="checkmark"
+            size={19}
+            color={hasText ? colors.textOnPrimary : colors.textFaint}
+            background={hasText ? colors.primaryFill : colors.surfaceAlt}
+            haptic={hasText}
+            accessibilityLabel={t('chat.saveEdit')}
+            onPress={submit}
+            style={styles.action}
+          />
+        ) : (
+          <IconButton
+            icon={hasText ? 'arrow-up' : 'mic-outline'}
+            size={hasText ? 18 : 21}
+            color={hasText ? colors.textOnPrimary : colors.textSecondary}
+            background={hasText ? colors.primaryFill : undefined}
+            haptic={hasText}
+            accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
+            onPress={hasText ? submit : onVoice}
+            style={styles.action}
+          />
+        )}
       </View>
     </View>
   );
