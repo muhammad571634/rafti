@@ -12,7 +12,7 @@ import { pickSeeded } from '@/lib/seeded';
 import { dayKey, morningGreetings } from '@/mock';
 import { requestPushPermission } from '@/notifications/sync';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, moduleFills, space, systemColors } from '@/theme';
 import type { AppSettings } from '@/types';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -25,17 +25,17 @@ const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: str
     rows: [
       { key: 'morningGreeting', icon: 'sunny', fill: '#FFCC00', hint: true },
       { key: 'eveningGreeting', icon: 'moon', fill: '#5856D6', hint: true },
-      { key: 'morningCall', icon: 'call', fill: '#34C759', hint: true },
+      { key: 'morningCall', icon: 'call', fill: moduleFills.calls, hint: true },
       { key: 'nightCall', icon: 'call', fill: '#30B0C7', hint: true },
       { key: 'notifyPlans', icon: 'calendar', fill: '#FF3B30', hint: true },
-      { key: 'notifyDiary', icon: 'book', fill: '#FF9500', hint: true },
-      { key: 'notifyAway', icon: 'time', fill: '#A2845E', hint: true },
+      { key: 'notifyDiary', icon: 'book', fill: moduleFills.diary, hint: true },
+      { key: 'notifyAway', icon: 'time', fill: '#8E8E93', hint: true },
     ],
   },
   {
     title: 'rafti',
     rows: [
-      { key: 'notifyGifts', icon: 'gift', fill: '#FF2D55' },
+      { key: 'notifyGifts', icon: 'gift', fill: moduleFills.gifts },
       { key: 'notifyOffers', icon: 'pricetag', fill: '#AF52DE' },
     ],
   },

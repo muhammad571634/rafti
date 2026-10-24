@@ -46,8 +46,19 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
   layer), the current tab is a brighter glass capsule; the bar is the aurora glass with a top rim.
 - Content sits on white (`colors.surface`) cards or straight on the canvas. No gradient cards, no
   colored panels behind content (exception list above).
-- Peach (`colors.primary`) only for: the one primary button, offer badges, the brand. Never for
-  body text or decoration.
+- Peach (`colors.primary`, the logo's apricot) is the app's one accent colour (owner's ask
+  2026-10-24, HIG Branding: "use it intentionally for primary actions or status indicators, like
+  badges for unread content or an icon for the selected tab"; HIG Color: "Avoid using the same
+  color to mean different things"). Use it for: the primary button, selection (ticks, chosen day,
+  selected tab on iOS), text buttons and links, unread dots and badges, offer badges, your own chat
+  bubble, the brand, and the Store module (the brand's own shop, as the App Store wears Apple's
+  blue). Never for decoration, non-interactive text or large backgrounds.
+- Module colours (owner's ask 2026-10-24): every module has one hue and one glyph wherever it
+  shows (`moduleColors` gradient for Today's tiles and widgets, `moduleFills` flat iOS system
+  colour with dark variants for Settings-style row tiles, glyphs in `MODULE_GLYPH`; use
+  `ModuleIcon` / `moduleTile` from `src/components/ui/module-icon.tsx`, never a new hex). Calls
+  green, Diary brown, Date pink, Sleep indigo, Store apricot, Photos blue, Contacts grey, Gifts
+  red, Radio purple, Board cyan, Bond mint, Secret note gold. No module but the Store wears orange.
 - Mint (`colors.bondText`) only for the bond: "Voice ready", closeness, relationship.
 - Ink (`colors.text`) marks selection: 2px ink border on a chosen card or chip.
 - Grey fill (`colors.surfaceAlt`) for unselected chips, segmented track, icon tiles, locked inputs.

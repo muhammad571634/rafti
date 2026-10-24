@@ -5,20 +5,20 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CharacterAvatar, EmptyState, GlassBar, GlassIcons, InsetGroup, LargeTitle, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, GlassBar, GlassIcons, InsetGroup, LargeTitle, MODULE_GLYPH, Screen, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
 import { buildInbox, isUnread, type InboxItem, type InboxKind } from '@/lib/inbox';
 import { dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, moduleFills, space } from '@/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-/** Kinds drawn with an icon instead of the character's face. */
+/** Kinds drawn with an icon instead of the character's face; modules in their Today colour. */
 const ICONS: Partial<Record<InboxKind, { icon: IconName; fill: string }>> = {
   plan: { icon: 'calendar', fill: '#FF3B30' },
-  levelUp: { icon: 'heart', fill: '#34C759' },
-  spin: { icon: 'gift', fill: '#FF2D55' },
+  levelUp: { icon: MODULE_GLYPH.bond.icon, fill: moduleFills.bond },
+  spin: { icon: MODULE_GLYPH.gifts.icon, fill: moduleFills.gifts },
 };
 
 const AVATAR = 44;

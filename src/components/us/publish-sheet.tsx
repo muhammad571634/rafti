@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { SFIcon, Sheet, Txt } from '@/components/ui';
+import { moduleTile, SFIcon, Sheet, Txt } from '@/components/ui';
 import { colors, space } from '@/theme';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
 
-/** iOS-style icons: Calendar red, a brown book, a teal pin (approved prototype `UsAdd.dc.html`). */
+/** iOS-style icons (approved prototype `UsAdd.dc.html`): Calendar red, then Diary and Board in their Today colours. */
 const OPTIONS: { kind: PublishKind; ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
   { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: '#FF3B30' },
-  { kind: 'diary', ios: 'book.fill', icon: 'book', fill: '#A2845E' },
-  { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: '#00C7BE' },
+  { kind: 'diary', ...moduleTile('diary') },
+  { kind: 'board', ...moduleTile('board') },
 ];
 
 /** The [Us] "+": add a plan, write a diary page or pin a note on the board. */

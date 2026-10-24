@@ -5,10 +5,10 @@ import type { TFunction } from 'i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
+import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space } from '@/theme';
+import { aurora, colors, moduleFills, space } from '@/theme';
 import type { PlanId } from '@/types';
 
 import { perMonth, savingVsMonthly, storeName } from './copy';
@@ -119,16 +119,16 @@ export function PlanPicker({
 
   const rows: CompareRow[] = [
     { key: 'shells', fill: '#FF9500', glyph: 'shell', basic: count.format(basic.shells), pro: count.format(pro.shells) },
-    { key: 'calls', fill: '#34C759', glyph: { ios: 'phone.fill', icon: 'call' }, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
+    { key: 'calls', fill: moduleFills.calls, glyph: MODULE_GLYPH.calls, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
     { key: 'voice', fill: '#FF2D55', glyph: { ios: 'waveform', icon: 'pulse' }, basic: time(basic.voiceSeconds), pro: time(pro.voiceSeconds) },
     {
       key: 'photos',
-      fill: '#32ADE6',
-      glyph: { ios: 'camera.fill', icon: 'camera' },
+      fill: moduleFills.photo,
+      glyph: MODULE_GLYPH.photo,
       basic: basic.photos > 0 ? String(basic.photos) : false,
       pro: String(pro.photos),
     },
-    { key: 'bedtime', fill: '#5E5CE6', glyph: { ios: 'moon.fill', icon: 'moon' }, basic: false, pro: true },
+    { key: 'bedtime', fill: moduleFills.sleep, glyph: MODULE_GLYPH.sleep, basic: false, pro: true },
     { key: 'characters', fill: '#AF52DE', glyph: { ios: 'sparkles', icon: 'sparkles' }, basic: false, pro: true },
     { key: 'memory', fill: '#8E8E93', glyph: { ios: 'bookmark.fill', icon: 'bookmark' }, basic: true, pro: true },
   ];

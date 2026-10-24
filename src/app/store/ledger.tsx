@@ -13,6 +13,7 @@ import {
   EmptyState,
   GlassBar,
   LargeTitle,
+  moduleTile,
   Screen,
   SFIcon,
   ShellIcon,
@@ -23,7 +24,7 @@ import {
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space } from '@/theme';
+import { colors, isDark, moduleFills, space } from '@/theme';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -215,30 +216,33 @@ export default function LedgerScreen() {
   );
 }
 
-/** What each line is about, as a Settings-style tile: a white glyph on an iOS system colour. */
+/**
+ * What each line is about, as a Settings-style tile: a white glyph on an iOS system colour. A line
+ * about a module wears that module's colour and glyph (`moduleTile`), as on Today.
+ */
 const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
   welcome: { fill: '#FF9500', ios: 'sparkles', icon: 'sparkles' },
   plan: { fill: '#AF52DE', ios: 'crown.fill', icon: 'diamond' },
   daily: { fill: '#FF3B30', ios: 'calendar', icon: 'calendar' },
   expired: { fill: '#8E8E93', ios: 'moon.fill', icon: 'moon' },
   ad: { fill: '#5856D6', ios: 'play.fill', icon: 'play' },
-  spin: { fill: '#FF2D55', ios: 'gift.fill', icon: 'gift' },
-  purchase: { fill: '#FF9500', ios: 'bag.fill', icon: 'bag-handle' },
+  spin: moduleTile('gifts'),
+  purchase: moduleTile('store'),
   chat: { fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble' },
   voice: { fill: '#FF2D55', ios: 'waveform', icon: 'pulse' },
-  photo: { fill: '#32ADE6', ios: 'photo.fill', icon: 'image' },
-  note: { fill: '#FF2D55', ios: 'envelope.fill', icon: 'mail' },
-  board: { fill: '#A2845E', ios: 'pin.fill', icon: 'pin' },
+  photo: { fill: moduleFills.photo, ios: 'photo.fill', icon: 'image' },
+  note: moduleTile('note'),
+  board: moduleTile('board'),
   invite: { fill: '#34C759', ios: 'person.badge.plus', icon: 'person-add' },
   share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
-  date: { fill: '#FF9500', ios: 'cup.and.saucer.fill', icon: 'cafe' },
-  photoBooth: { fill: '#32ADE6', ios: 'camera.fill', icon: 'camera' },
+  date: moduleTile('date'),
+  photoBooth: moduleTile('photo'),
   voiceClone: { fill: '#5856D6', ios: 'mic.fill', icon: 'mic' },
-  trial: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
+  trial: moduleTile('calls'),
   membership: { fill: '#AF52DE', ios: 'phone.fill', icon: 'call' },
-  call: { fill: '#34C759', ios: 'phone.fill', icon: 'call' },
+  call: moduleTile('calls'),
   topUp: { fill: '#34C759', ios: 'plus', icon: 'add' },
-  radio: { fill: '#FF9500', ios: 'radio.fill', icon: 'radio' },
+  radio: moduleTile('radio'),
   other: { fill: '#8E8E93', ios: 'ellipsis', icon: 'ellipsis-horizontal' },
 };
 

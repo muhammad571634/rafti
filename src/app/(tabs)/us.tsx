@@ -12,6 +12,7 @@ import {
   CharacterAvatar,
   EmptyState,
   InsetGroup,
+  moduleTile,
   PressableScale,
   Screen,
   SFIcon,
@@ -48,19 +49,20 @@ const RING_TRACK = isDark ? 'rgba(95,224,196,0.18)' : 'rgba(31,168,143,0.16)';
 
 /**
  * Each moment kind as an iOS-style icon: a system-colour circle with a white SF Symbol (an
- * Ionicon off iPhone). The 3D clay art is gone from Us (owner, 2026-10-17).
+ * Ionicon off iPhone). The 3D clay art is gone from Us (owner, 2026-10-17). Modules wear their
+ * own colour and glyph (`moduleTile`), the same as on Today; a level-up is the bond's mint.
  */
 const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }> = {
   met: { ios: 'sparkles', icon: 'sparkles', fill: '#AF52DE' },
-  levelUp: { ios: 'crown.fill', icon: 'trophy', fill: '#FF9500' },
-  call: { ios: 'phone.fill', icon: 'call', fill: '#34C759' },
-  diary: { ios: 'book.fill', icon: 'book', fill: '#A2845E' },
-  secretNote: { ios: 'envelope.fill', icon: 'mail', fill: '#5856D6' },
-  dating: { ios: 'heart.fill', icon: 'heart', fill: '#FF2D55' },
-  photo: { ios: 'camera.fill', icon: 'camera', fill: '#007AFF' },
+  levelUp: moduleTile('bond'),
+  call: moduleTile('calls'),
+  diary: moduleTile('diary'),
+  secretNote: moduleTile('note'),
+  dating: moduleTile('date'),
+  photo: moduleTile('photo'),
   plan: { ios: 'calendar', icon: 'calendar', fill: '#FF3B30' },
-  board: { ios: 'pin.fill', icon: 'pin', fill: '#00C7BE' },
-  quiz: { ios: 'questionmark', icon: 'help', fill: '#32ADE6' },
+  board: moduleTile('board'),
+  quiz: { ios: 'questionmark', icon: 'help', fill: '#5856D6' },
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */

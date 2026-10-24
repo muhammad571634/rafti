@@ -33,3 +33,5 @@ export { Toggle } from './toggle';
 export { Txt } from './text';
 export { BackButton, GlassBar, GlassButton, GlassIcons, glassStyle, IconRow, InsetGroup, InsetRow, LargeTitle, useScrolledPast } from './glass';
 export { SFIcon } from './symbol';
+export { MODULE_GLYPH, ModuleIcon, moduleTile } from './module-icon';
+export type { ModuleKey } from './module-icon';

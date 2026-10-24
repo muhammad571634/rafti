@@ -6,23 +6,24 @@ import { Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
-import { PressableScale, Txt } from '@/components/ui';
-import { colors, isDark, shadows, space } from '@/theme';
+import { moduleTile, PressableScale, Txt } from '@/components/ui';
+import { colors, isDark, moduleFills, shadows, space } from '@/theme';
 
 export type AttachKey = 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
 /**
  * iOS-style app icons: a system-colour circle with a white glyph (approved prototype
- * `Plus.dc.html`). Top to bottom; the most used sit at the bottom, nearest the thumb.
+ * `Plus.dc.html`). Modules wear their own colour (`moduleTile`), the same as on Today; the
+ * games take hues no module here uses. Top to bottom; the most used sit at the bottom.
  */
 const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
-  { key: 'diary', icon: 'book', fill: '#A2845E' },
-  { key: 'dailyCalls', icon: 'call', fill: '#34C759' },
-  { key: 'date', icon: 'heart', fill: '#FF2D55' },
+  { key: 'diary', ...moduleTile('diary') },
+  { key: 'dailyCalls', ...moduleTile('calls') },
+  { key: 'date', ...moduleTile('date') },
   { key: 'truthOrDare', icon: 'dice', fill: '#AF52DE' },
-  { key: 'quiz', icon: 'help', fill: '#FF9500' },
-  { key: 'secretNote', icon: 'mail', fill: '#5856D6' },
-  { key: 'photo', icon: 'image', fill: '#007AFF' },
+  { key: 'quiz', icon: 'help', fill: '#5856D6' },
+  { key: 'secretNote', ...moduleTile('note') },
+  { key: 'photo', icon: 'image', fill: moduleFills.photo },
   { key: 'voice', icon: 'mic', fill: '#FF3B30' },
 ];
 

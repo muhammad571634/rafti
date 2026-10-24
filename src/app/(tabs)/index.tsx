@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,34 +21,28 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
-import {
-  MODULE_ICON,
-  useWidgetModels,
-  WIDGET_HEIGHT,
-  WIDGET_KINDS,
-  WIDGET_MODULE,
-  WidgetView,
-  type WidgetModel,
-} from '@/components/today/widgets';
+import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
   AuroraGlass,
   CharacterAvatar,
+  ModuleIcon,
   PressableScale,
   Screen,
   Sheet,
   ShellIcon,
   Txt,
   UserAvatar,
+  type ModuleKey,
 } from '@/components/ui';
 import { clipName, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, moduleColors, space, TAB_BAR_HEIGHT } from '@/theme';
+import { aurora, colors, hitSlop, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
-const TILES: { key: string; route: string }[] = [
+const TILES: { key: ModuleKey; route: string }[] = [
   { key: 'calls', route: '/call-history' },
   { key: 'diary', route: '/diary' },
   { key: 'date', route: '/dating' },
@@ -309,9 +302,7 @@ export default function HomeScreen() {
             accessibilityLabel={t('home.todo.note', { name: noteName })}
             onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
             style={[styles.card, styles.noteRow]}>
-            <LinearGradient colors={moduleColors.note} style={styles.noteIcon}>
-              <Ionicons name={MODULE_ICON.note} size={24} color={colors.white} />
-            </LinearGradient>
+            <ModuleIcon name="note" size={46} />
             <View style={styles.flex}>
               <Txt style={styles.rowTitle} lines={1}>
                 {t('home.todo.note', { name: noteName })}
@@ -335,9 +326,7 @@ export default function HomeScreen() {
                 accessibilityLabel={t(TILE_LABEL[tile.key])}
                 onPress={() => router.push(tile.route as never)}
                 style={styles.tileCell}>
-                <LinearGradient colors={moduleColors[tile.key]} style={styles.tile}>
-                  <Ionicons name={MODULE_ICON[tile.key]} size={28} color={colors.white} />
-                </LinearGradient>
+                <ModuleIcon name={tile.key} size={TILE} />
                 {badge ? (
                   <View style={styles.badge}>
                     <Txt style={styles.badgeText}>1</Txt>
@@ -569,12 +558,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.md,
   },
-  noteIcon: { width: 46, height: 46, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
-  // iOS app-icon squircle: ~22% corner radius, a white glyph on the module's colour.
-  tile: { width: TILE, height: TILE, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
     top: -4,

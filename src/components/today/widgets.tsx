@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { featuredFriend } from '@/components/today-hero';
-import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { CharacterAvatar, MODULE_GLYPH, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { useDayKey } from '@/hooks/use-day-key';
 import { nextAlarmAt } from '@/lib/alarms';
@@ -34,7 +34,7 @@ export const WIDGET_KINDS: WidgetKind[] = [
 ];
 
 /** The Today tile a widget stands in for; Bond has none. */
-export const WIDGET_MODULE: Record<WidgetKind, string | null> = {
+export const WIDGET_MODULE: Record<WidgetKind, ModuleKey | null> = {
   calls: 'calls',
   diary: 'diary',
   date: 'date',
@@ -46,25 +46,6 @@ export const WIDGET_MODULE: Record<WidgetKind, string | null> = {
   board: 'board',
   contacts: 'contacts',
   bond: null,
-};
-
-/**
- * Each module's glyph: filled, white on its colour (`moduleColors`), as on iOS app icons. The
- * Today tiles use the same map, so a module looks the same as a tile and as a widget.
- */
-export const MODULE_ICON: Record<string, keyof typeof Ionicons.glyphMap> = {
-  calls: 'call',
-  diary: 'book',
-  date: 'heart',
-  sleep: 'moon',
-  store: 'bag-handle',
-  photo: 'camera',
-  contacts: 'people',
-  gifts: 'gift',
-  radio: 'radio',
-  board: 'clipboard',
-  bond: 'sparkles',
-  note: 'mail',
 };
 
 const LABEL_KEY: Record<WidgetKind, string> = {
@@ -327,14 +308,15 @@ export function WidgetView({
   onPress?: () => void;
   onLongPress?: () => void;
 }) {
-  // Photos is `photo`, Bond has no module and keeps its own key.
-  const key = WIDGET_MODULE[model.kind] ?? model.kind;
+  // Photos is `photo`; Bond is the only widget with no module tile.
+  const key = WIDGET_MODULE[model.kind] ?? 'bond';
   const tone = moduleColors[key];
+  const glyph = MODULE_GLYPH[key];
 
   const body = (
     <>
       <View style={styles.top}>
-        {model.photo == null ? <Ionicons name={MODULE_ICON[key]} size={30} color={colors.white} /> : <View />}
+        {model.photo == null ? <SFIcon ios={glyph.ios} icon={glyph.icon} size={30} color={colors.white} /> : <View />}
         <View style={styles.faces}>
           {model.faces.slice(0, 2).map((c, i) => (
             <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />

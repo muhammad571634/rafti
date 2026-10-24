@@ -22,6 +22,7 @@ import {
   Button,
   Icon3D,
   LargeTitle,
+  moduleTile,
   PressableScale,
   Screen,
   Segmented,
@@ -173,11 +174,11 @@ export default function StoreScreen() {
 /** What things cost: shells for a number, a "Pro" mark for what comes only with Pro. */
 const COSTS: { key: string; fill: string; ios: SFSymbol; icon: IoniconName; shells: number | null }[] = [
   { key: 'costTextMessage', fill: '#FF9500', ios: 'bubble.left.fill', icon: 'chatbubble', shells: shellCosts.textMessage },
-  { key: 'costSecretNote', fill: '#FF2D55', ios: 'envelope.fill', icon: 'mail', shells: shellCosts.secretNote },
+  { key: 'costSecretNote', ...moduleTile('note'), shells: shellCosts.secretNote },
   { key: 'costVoiceClone', fill: '#5856D6', ios: 'mic.fill', icon: 'mic', shells: shellCosts.characterVoiceClone },
   { key: 'costListen', fill: '#FF2D55', ios: 'waveform', icon: 'pulse', shells: null },
-  { key: 'costCall', fill: '#34C759', ios: 'phone.fill', icon: 'call', shells: null },
-  { key: 'costPhotoBooth', fill: '#32ADE6', ios: 'camera.fill', icon: 'camera', shells: null },
+  { key: 'costCall', ...moduleTile('calls'), shells: null },
+  { key: 'costPhotoBooth', ...moduleTile('photo'), shells: null },
 ];
 
 function ShellsTab({

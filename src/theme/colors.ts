@@ -304,26 +304,65 @@ const auroraDark: typeof auroraLight = {
 export const aurora = isDark ? auroraDark : auroraLight;
 
 /**
- * Today's modules (owner's ask, 2026-10-24): one iOS system hue per module, worn by its app-icon
- * tile (a white glyph on the colour, like Apple's own icons) and by its widget, so a module is
- * found by colour wherever it shows. Light at the top, deep at the bottom where a widget's white
- * text sits (3.7:1 or more). The same in dark mode, as iOS app icons and colour widgets are.
+ * Each module's own colour (owner's ask, 2026-10-24, from HIG Color and Branding). Apple gives an
+ * app one accent colour for actions and status, and each kind of content its own hue (Health's
+ * categories, Settings' icons). Our accent is the logo's apricot (`colors.primary`: buttons,
+ * selection, unread dots), so no module wears orange except the Store, which takes the brand
+ * itself, as the App Store wears Apple's blue. Mint stays the bond's.
+ *
+ * `moduleColors` is the app-icon gradient (Today's tiles and widgets): light at the top, deep at
+ * the bottom where a widget's white text sits (3.5:1 or more).
  */
 export const moduleColors: Record<string, readonly [string, string]> = {
   calls: ['#4CD964', '#17903D'],
-  diary: ['#FFA930', '#E05A00'],
+  diary: ['#C9A47A', '#8C6A44'],
   date: ['#FF5A7E', '#E0194B'],
   sleep: ['#7A77FF', '#3F3CC4'],
-  store: ['#2ED3C6', '#008F87'],
-  photo: ['#4FA3FF', '#0060E0'],
+  store: ['#FFA36B', '#D96526'],
+  photo: ['#4F8DFF', '#0052D9'],
   contacts: ['#A8A8B0', '#6B6B72'],
   gifts: ['#FF6259', '#D92A20'],
   radio: ['#C86BF5', '#8A2FCC'],
-  board: ['#C9A47A', '#8C6A44'],
-  bond: ['#4CC9E8', '#1585B0'],
-  // The sealed note row: a gold envelope.
+  board: ['#5AC8FA', '#1A7FC9'],
+  bond: ['#3CCFB4', '#13866F'],
+  // Only ever an icon (the sealed note row), never under text.
   note: ['#FFD84D', '#F0A800'],
 };
+
+/**
+ * The same hues as flat iOS system colours, with their dark-mode variants, for Settings-style row
+ * tiles (chat "+" menu, Us moments, notifications, Shell history, the publish sheet), as iOS pairs
+ * a gradient app icon with a flat Settings icon of the same colour.
+ */
+export const moduleFills: Record<string, string> = isDark
+  ? {
+      calls: '#30D158',
+      diary: '#AC8E68',
+      date: '#FF375F',
+      sleep: '#5E5CE6',
+      store: palette.apricot500,
+      photo: '#0A84FF',
+      contacts: '#98989D',
+      gifts: '#FF453A',
+      radio: '#BF5AF2',
+      board: '#64D2FF',
+      bond: '#63E6E2',
+      note: '#FFD60A',
+    }
+  : {
+      calls: '#34C759',
+      diary: '#A2845E',
+      date: '#FF2D55',
+      sleep: '#5856D6',
+      store: palette.apricot600,
+      photo: '#007AFF',
+      contacts: '#8E8E93',
+      gifts: '#FF3B30',
+      radio: '#AF52DE',
+      board: '#32ADE6',
+      bond: '#00C7BE',
+      note: '#FFCC00',
+    };
 
 /** iOS system colours for the call screens (systemRed, systemGreen, tertiary fill), as on the canvas. */
 export const systemColors = isDark
