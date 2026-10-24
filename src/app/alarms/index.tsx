@@ -12,7 +12,7 @@ import { Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/
 import { alarmLine, alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { useAppStore } from '@/store/use-app-store';
-import { sleepColors as night, space, systemColors } from '@/theme';
+import { colors, sleepColors as night, space, systemColors } from '@/theme';
 import type { Alarm } from '@/types';
 
 /**
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   period: { fontSize: 22, fontWeight: '400' },
   line: { fontSize: 15 },
   delete: { width: 88, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center' },
-  deleteText: { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
+  deleteText: { fontSize: 17, fontWeight: '600', color: colors.white },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingBottom: space.huge },
   emptyIcon: {
     width: 72,

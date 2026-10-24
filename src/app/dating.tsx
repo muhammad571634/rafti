@@ -208,7 +208,7 @@ export default function DatingScreen() {
                   accessibilityLabel={t('dating.more')}
                   onPress={() => setMoreId(d.id)}
                   style={styles.more}>
-                  <Ionicons name="ellipsis-horizontal" size={20} color="#FFFFFF" />
+                  <Ionicons name="ellipsis-horizontal" size={20} color={colors.white} />
                 </PressableScale>
               </View>
             }
@@ -348,7 +348,7 @@ function StartButton({ label, ink, onPress }: { label: string; ink: string; onPr
 function LockedPill({ label }: { label: string }) {
   return (
     <View style={styles.lockedPill}>
-      <Ionicons name="lock-closed-outline" size={15} color="#FFFFFF" />
+      <Ionicons name="lock-closed-outline" size={15} color={colors.white} />
       <Txt style={styles.lockedText} lines={1}>
         {label}
       </Txt>
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...(isDark
       ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' }
-      : { shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 }),
+      : { shadowColor: colors.black, shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 }),
   },
   partner: { paddingLeft: 4, paddingRight: 12, gap: 8, maxWidth: 240 },
   partnerName: { flexShrink: 1, fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.text },
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     borderRadius: 16,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOpacity: 0.14,
     shadowRadius: 7,
     shadowOffset: { width: 0, height: -4 },
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   },
   headTap: { position: 'absolute', left: 0, right: 0, top: 0, height: PEEK },
   footerRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  start: { height: 44, borderRadius: 22, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md },
+  start: { height: 44, borderRadius: 22, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md },
   startText: { fontSize: 16, fontWeight: '700', letterSpacing: -0.2 },
   lockedPill: {
     height: 44,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: space.md,
   },
-  lockedText: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+  lockedText: { fontSize: 16, fontWeight: '600', color: colors.white },
   more: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center', justifyContent: 'center' },
   past: { alignSelf: 'center', marginTop: 14, paddingHorizontal: 18, gap: 8 },
   pastText: { fontSize: 15, fontWeight: '600', color: colors.text },

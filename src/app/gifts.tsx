@@ -35,7 +35,7 @@ import {
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, fonts, hitSlop, isDark, palette, radius, space } from '@/theme';
+import { aurora, colors, fonts, hitSlop, palette, radius, space, systemColors } from '@/theme';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -43,11 +43,11 @@ const ROW_ICON = 34;
 const WAY_ICON = 36;
 /** Invites, sharing and the invite steps as iOS system tiles (SF Symbols). */
 const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook> = {
-  invite: { fill: '#5856D6', ios: 'person.badge.plus', icon: 'person-add' },
-  share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
-  send: { fill: '#007AFF', ios: 'paperplane.fill', icon: 'paper-plane' },
-  join: { fill: '#5856D6', ios: 'person.badge.plus', icon: 'person-add' },
-  back: { fill: '#34C759', ios: 'calendar', icon: 'calendar' },
+  invite: { fill: systemColors.indigo, ios: 'person.badge.plus', icon: 'person-add' },
+  share: { fill: systemColors.blue, ios: 'square.and.arrow.up', icon: 'share' },
+  send: { fill: systemColors.blue, ios: 'paperplane.fill', icon: 'paper-plane' },
+  join: { fill: systemColors.indigo, ios: 'person.badge.plus', icon: 'person-add' },
+  back: { fill: systemColors.green, ios: 'calendar', icon: 'calendar' },
 };
 
 /**
@@ -156,7 +156,7 @@ export default function GiftsScreen() {
                 accessible
                 accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                 <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
-                  {claimed ? <Ionicons name="checkmark" size={17} color="#FFFFFF" /> : <Txt style={styles.dayNumber}>{day}</Txt>}
+                  {claimed ? <Ionicons name="checkmark" size={17} color={colors.white} /> : <Txt style={styles.dayNumber}>{day}</Txt>}
                 </View>
                 {last && !claimed ? (
                   <View style={styles.offer}>
@@ -211,7 +211,7 @@ export default function GiftsScreen() {
 
         <View style={[styles.card, styles.codeRow]}>
           <View style={styles.codeTile}>
-            <SFIcon ios="gift.fill" icon="gift" size={17} color="#FFFFFF" />
+            <SFIcon ios="gift.fill" icon="gift" size={17} color={colors.white} />
           </View>
           <Txt style={styles.codeLabel}>{t('gifts.yourCode')}</Txt>
           <Txt style={styles.code} selectable>
@@ -309,7 +309,7 @@ export default function GiftsScreen() {
 function Tile({ look, size }: { look: TileLook; size: number }) {
   return (
     <View style={[styles.tile, { width: size, height: size, borderRadius: Math.round(size * 0.26), backgroundColor: look.fill }]}>
-      <SFIcon ios={look.ios} icon={look.icon} size={Math.round(size * 0.52)} color="#FFFFFF" />
+      <SFIcon ios={look.ios} icon={look.icon} size={Math.round(size * 0.52)} color={colors.white} />
     </View>
   );
 }
@@ -369,7 +369,7 @@ function Capsule({
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
 const PEEK_ROOM = 40;
-const WELL = isDark ? 'rgba(118,118,128,0.24)' : '#F2F2F7';
+const WELL = colors.well;
 
 const styles = StyleSheet.create({
   bar: {
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   capsuleOff: { opacity: 0.5 },
   capsuleButtonText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
   codeRow: { marginTop: 22, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FF2D55' },
+  codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: systemColors.pink },
   codeLabel: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   code: { fontSize: 17, fontWeight: '700', letterSpacing: 3, color: colors.text },
   copy: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.peachSoft },

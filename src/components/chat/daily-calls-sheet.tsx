@@ -7,7 +7,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, Switch, View } from 'react
 import { CharacterAvatar, PressableScale, SFIcon, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 
 const STEP_MIN = 30;
 const DAY_MIN = 24 * 60;
@@ -133,8 +133,8 @@ export function DailyCallsSheet({
 }
 
 /** iOS system orange and indigo, as the Clock and Sleep apps colour morning and night. */
-const SUN = '#FF9500';
-const MOON = '#5856D6';
+const SUN = systemColors.orange;
+const MOON = systemColors.indigo;
 
 /** The time as a Date for the system picker (only hours and minutes matter). */
 const asDate = (minutes: number) => {

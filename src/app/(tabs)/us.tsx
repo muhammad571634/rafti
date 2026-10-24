@@ -29,7 +29,7 @@ import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, isDark, radius, space, TAB_BAR_HEIGHT } from '@/theme';
+import { aurora, colors, hitSlop, isDark, radius, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
@@ -53,16 +53,16 @@ const RING_TRACK = isDark ? 'rgba(95,224,196,0.18)' : 'rgba(31,168,143,0.16)';
  * own colour and glyph (`moduleTile`), the same as on Today; a level-up is the bond's mint.
  */
 const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }> = {
-  met: { ios: 'sparkles', icon: 'sparkles', fill: '#AF52DE' },
+  met: { ios: 'sparkles', icon: 'sparkles', fill: systemColors.purple },
   levelUp: moduleTile('bond'),
   call: moduleTile('calls'),
   diary: moduleTile('diary'),
   secretNote: moduleTile('note'),
   dating: moduleTile('date'),
   photo: moduleTile('photo'),
-  plan: { ios: 'calendar', icon: 'calendar', fill: '#FF3B30' },
+  plan: { ios: 'calendar', icon: 'calendar', fill: systemColors.red },
   board: moduleTile('board'),
-  quiz: { ios: 'questionmark', icon: 'help', fill: '#5856D6' },
+  quiz: { ios: 'questionmark', icon: 'help', fill: systemColors.indigo },
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */
@@ -546,11 +546,11 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF3B30',
+    backgroundColor: systemColors.red,
     borderWidth: 2,
     borderColor: aurora.base,
   },
-  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '700', color: '#FFFFFF' },
+  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '700', color: colors.white },
   picker: { gap: space.sm + 2, paddingHorizontal: space.lg, paddingTop: space.lg, paddingBottom: space.xs },
   pick: { alignItems: 'center', gap: 7, width: STORY + 6 },
   // The chosen bond: a tint ring with the aurora showing between it and the face; the rest a faint light ring.
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 22,
     backgroundColor: aurora.card,
-    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.35 : 0.08,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   group: {
     borderRadius: 18,
     backgroundColor: aurora.card,
-    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.35 : 0.08,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     padding: space.lg,
     borderRadius: 22,
     backgroundColor: aurora.card,
-    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.35 : 0.08,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   segmentFill: { flex: 1 },
   segmentOn: {
     backgroundColor: aurora.glassOn,
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.12,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },

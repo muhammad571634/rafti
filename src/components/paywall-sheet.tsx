@@ -13,7 +13,7 @@ import {
   WHEEL_SEGMENTS,
 } from '@/mock';
 import { callsIncluded, memberActive, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, radius, space, systemColors } from '@/theme';
 
 const ROW_ICON = 36;
 const cheapestPack = shellPacks.reduce((a, b) => (b.amount < a.amount ? b : a));
@@ -75,7 +75,7 @@ export function PaywallSheet({
       ? null
       : {
           // Plans wear the crown in purple, as in Shell history and My plan.
-          lead: <SymbolTile fill="#AF52DE" ios="crown.fill" icon="diamond" size={ROW_ICON} />,
+          lead: <SymbolTile fill={systemColors.purple} ios="crown.fill" icon="diamond" size={ROW_ICON} />,
           title: member
             ? t('paywall.getPro')
             : wallet.trialUsed

@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   sayMeta: { fontSize: 13, color: INK_MUTED },
   clipLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs, maxWidth: 260 },
   actions: { alignItems: 'center', gap: space.md },
-  primary: { alignSelf: 'stretch', height: 60, borderRadius: 30, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
+  primary: { alignSelf: 'stretch', height: 60, borderRadius: 30, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
   primaryText: { fontSize: 19, fontWeight: '700', letterSpacing: -0.3, color: INK },
   snooze: { alignSelf: 'stretch', height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
   snoozeText: { fontSize: 17, fontWeight: '600', color: colors.white },

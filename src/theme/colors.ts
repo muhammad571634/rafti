@@ -91,6 +91,10 @@ const lightColors = {
 
   // Lines
   border: '#E5E5EA',
+  /** An inset well inside a card (Gifts' code box, Photo Booth's and the frame editor's trays). */
+  well: '#F2F2F7',
+  /** The empty part of a progress bar. */
+  track: '#E5E5EA',
   borderStrong: '#D1D1D6',
   divider: '#EFEFF4',
 
@@ -155,6 +159,8 @@ const lightColors = {
   danger: palette.red,
   /** Red that stays readable as text on the cream canvas (Block, destructive rows). */
   dangerText: '#C93A3A',
+  /** Green that stays readable as text (a credit in Shell history): iOS's accessible green. */
+  successText: '#248A3D',
   dangerSoft: palette.redSoft,
   success: palette.green,
   warning: palette.amber,
@@ -177,6 +183,8 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   glassLine: 'rgba(255,255,255,0.14)',
   glassActive: 'rgba(255,255,255,0.12)',
   border: '#38383A',
+  well: 'rgba(118,118,128,0.24)',
+  track: '#3A3A3C',
   borderStrong: '#48484A',
   divider: '#2C2C2E',
   text: '#FFFFFF',
@@ -201,6 +209,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   tabInactive: '#8E8E93',
   textOnInk: '#000000',
   dangerText: '#FF6961',
+  successText: '#30D158',
   dangerSoft: '#3A1D1D',
 };
 
@@ -220,6 +229,8 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   overlay: 'rgba(0,0,0,0.55)',
   scrim: 'rgba(0,0,0,0.35)',
   border: '#2B3160',
+  well: 'rgba(255,255,255,0.08)',
+  track: '#2B3160',
   borderStrong: '#3A4178',
   divider: '#232857',
   text: '#F4F2FF',
@@ -244,6 +255,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   tabInactive: '#8389AE',
   textOnInk: '#0E1230',
   dangerText: '#FF7A7A',
+  successText: '#30D158',
   dangerSoft: '#4A1F24',
 };
 
@@ -277,6 +289,8 @@ const auroraLight = {
   /** Solid content on the aurora (the Chats list card); glass stays on controls. */
   card: '#FFFFFF',
   separator: 'rgba(60,60,67,0.16)',
+  /** Tint of the soft shadow under cards and glass on the aurora (black in dark mode). */
+  shadow: '#3C285A',
   /** Unread dots and "typing…" on the aurora. */
   tint: '#EF8A4E',
   /** The pinned chat's bubble ("Race you…", the typing dots). */
@@ -296,6 +310,7 @@ const auroraDark: typeof auroraLight = {
   textMuted: '#B4B4BE',
   card: '#1C1C1E',
   separator: 'rgba(84,84,88,0.5)',
+  shadow: '#000000',
   tint: '#FFB27A',
   bubble: 'rgba(44,44,46,0.92)',
   ring: 'rgba(255,255,255,0.14)',
@@ -349,6 +364,7 @@ export const systemColors = isDark
       pink: '#FF375F',
       brown: '#AC8E68',
       gray: '#98989D',
+      gray2: '#636366',
       fill: 'rgba(118,118,128,0.24)',
       thumb: '#636366',
     }
@@ -366,6 +382,7 @@ export const systemColors = isDark
       pink: '#FF2D55',
       brown: '#A2845E',
       gray: '#8E8E93',
+      gray2: '#AEAEB2',
       fill: 'rgba(118,118,128,0.12)',
       thumb: '#FFFFFF',
     };
@@ -389,6 +406,52 @@ export const moduleFills: Record<string, string> = {
   bond: systemColors.mint,
   note: systemColors.yellow,
 };
+
+/**
+ * The Store on the aurora (canvas "Store: Plans and Shells", 2026-10-22): the colours the canvas
+ * uses beyond the aurora tokens. Peach is the brand (buy buttons, offer tags), violet is Pro.
+ */
+export const storeColors = isDark
+  ? {
+      ring: 'rgba(235,235,245,0.3)',
+      tint: '#FFB27A',
+      onTint: '#3A1A06',
+      faint: '#636366',
+      peachSoft: '#3A2416',
+      peachInk: '#FFB27A',
+      violetSoft: '#2E1A3C',
+      violetInk: '#D9A6F5',
+      inkTag: palette.white,
+      inkTagText: '#1C1C1E',
+      greyTag: systemColors.fill,
+      proColumn: 'rgba(166,75,214,0.16)',
+      proInk: '#D9A6F5',
+      cta: palette.apricot400,
+      ctaInk: '#3A1A06',
+      bar: 'rgba(5,6,15,0.62)',
+      barSolid: 'rgba(5,6,15,0.94)',
+      barLine: 'rgba(255,255,255,0.14)',
+    }
+  : {
+      ring: 'rgba(60,60,67,0.3)',
+      tint: palette.apricot700,
+      onTint: palette.white,
+      faint: '#AEAEB2',
+      peachSoft: palette.apricot100,
+      peachInk: '#A8531F',
+      violetSoft: '#F3E8FB',
+      violetInk: '#8E3BB8',
+      inkTag: '#1C1C1E',
+      inkTagText: palette.white,
+      greyTag: systemColors.fill,
+      proColumn: 'rgba(91,63,217,0.07)',
+      proInk: '#5B3FD9',
+      cta: palette.apricot400,
+      ctaInk: palette.peachInk,
+      bar: 'rgba(251,246,241,0.72)',
+      barSolid: 'rgba(251,246,241,0.94)',
+      barLine: 'rgba(0,0,0,0.12)',
+    };
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 /**
@@ -430,6 +493,8 @@ export const gradients = {
   heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
   /** The phone lock screen in Profile → Notifications' preview. */
   lockScreen: ['#2E3352', '#5B4A6E'] as const,
+  /** Pro's own colour: violet into peach, on the Pro card, the Pro pill and a chosen Pro plan. */
+  pro: ['#5B3FD9', '#A64BD6', '#F0795A'] as const,
 } as const;
 
 /** `locations` for the gradients above that do not spread their colours evenly. */

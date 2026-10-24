@@ -18,12 +18,12 @@ import {
   toggleSticker,
 } from '@/lib/frames';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space, systemColors } from '@/theme';
+import { aurora, colors, space, systemColors } from '@/theme';
 import type { UserFrame } from '@/types';
 
 const GUTTER = space.lg;
 const CARD_PAD = 14;
-const WELL = isDark ? 'rgba(118,118,128,0.24)' : '#F2F2F7';
+const WELL = colors.well;
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {

@@ -5,60 +5,17 @@ import { Platform, type StyleProp, StyleSheet, View, type ViewStyle } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { aurora, isDark, space } from '@/theme';
+import { aurora, colors, gradients, isDark, space, storeColors, systemColors } from '@/theme';
 
-/**
- * The Store on the aurora (canvas "Store: Plans and Shells", 2026-10-22): colours the canvas
- * uses beyond the aurora tokens, and the parts both tabs share.
- */
-export const STORE = isDark
-  ? {
-      ring: 'rgba(235,235,245,0.3)',
-      tint: '#FFB27A',
-      onTint: '#3A1A06',
-      faint: '#636366',
-      peachSoft: '#3A2416',
-      peachInk: '#FFB27A',
-      violetSoft: '#2E1A3C',
-      violetInk: '#D9A6F5',
-      inkTag: '#FFFFFF',
-      inkTagText: '#1C1C1E',
-      greyTag: 'rgba(118,118,128,0.24)',
-      proColumn: 'rgba(166,75,214,0.16)',
-      proInk: '#D9A6F5',
-      cta: '#FFB37A',
-      ctaInk: '#3A1A06',
-      bar: 'rgba(5,6,15,0.62)',
-      barSolid: 'rgba(5,6,15,0.94)',
-      barLine: 'rgba(255,255,255,0.14)',
-    }
-  : {
-      ring: 'rgba(60,60,67,0.3)',
-      tint: '#C96A32',
-      onTint: '#FFFFFF',
-      faint: '#AEAEB2',
-      peachSoft: '#FFF0E4',
-      peachInk: '#A8531F',
-      violetSoft: '#F3E8FB',
-      violetInk: '#8E3BB8',
-      inkTag: '#1C1C1E',
-      inkTagText: '#FFFFFF',
-      greyTag: 'rgba(118,118,128,0.12)',
-      proColumn: 'rgba(91,63,217,0.07)',
-      proInk: '#5B3FD9',
-      cta: '#FFB37A',
-      ctaInk: '#6A2F0C',
-      bar: 'rgba(251,246,241,0.72)',
-      barSolid: 'rgba(251,246,241,0.94)',
-      barLine: 'rgba(0,0,0,0.12)',
-    };
+/** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
+export const STORE = storeColors;
 
 /** Pro's own colour: violet into peach, on the Pro card, the Pro pill and a chosen Pro plan. */
-export const PRO_GRADIENT = ['#5B3FD9', '#A64BD6', '#F0795A'] as const;
+export const PRO_GRADIENT = gradients.pro;
 const PRO_STOPS = [0, 0.55, 1] as const;
 
 export const CARD_SHADOW = {
-  shadowColor: isDark ? '#000000' : '#3C285A',
+  shadowColor: aurora.shadow,
   shadowOpacity: isDark ? 0.35 : 0.08,
   shadowRadius: 10,
   shadowOffset: { width: 0, height: 6 },
@@ -81,9 +38,9 @@ export function ProGradient({ style, children }: { style?: StyleProp<ViewStyle>;
  */
 export function Radio({ on, fill = 'tint' }: { on: boolean; fill?: 'tint' | 'pro' | 'grey' }) {
   if (!on) return <View style={[styles.radio, styles.radioOff]} />;
-  const check = <Ionicons name="checkmark" size={15} color={fill === 'tint' ? STORE.onTint : '#FFFFFF'} />;
+  const check = <Ionicons name="checkmark" size={15} color={fill === 'tint' ? STORE.onTint : colors.white} />;
   if (fill === 'pro') return <ProGradient style={styles.radio}>{check}</ProGradient>;
-  return <View style={[styles.radio, { backgroundColor: fill === 'grey' ? '#8E8E93' : STORE.tint }]}>{check}</View>;
+  return <View style={[styles.radio, { backgroundColor: fill === 'grey' ? systemColors.gray : STORE.tint }]}>{check}</View>;
 }
 
 /** An inset group's small caps label ("CHOOSE A PLAN"). */

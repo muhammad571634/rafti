@@ -88,7 +88,7 @@ export default function ContactsScreen() {
           <View style={styles.group}>
             <PressableScale style={styles.row} scaleTo={0.985} accessibilityRole="button" onPress={() => router.push('/create-character')}>
               <View style={styles.addCircle}>
-                <Ionicons name="add" size={26} color="#FFFFFF" />
+                <Ionicons name="add" size={26} color={colors.white} />
               </View>
               <Txt style={[styles.name, styles.addText]}>{t('contacts.create')}</Txt>
               <View style={styles.line} />

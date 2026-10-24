@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { REPORT_REASONS, type ReportReason } from '@/ai/safety';
 import { Button, Sheet, Txt } from '@/components/ui';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 
 /**
  * "What's wrong?" for a reported message (approved prototype `SheetReport.dc.html`): the reasons
@@ -55,7 +55,7 @@ export function ReportSheet({
 }
 
 /** iOS system green: "sent". */
-const SENT = '#34C759';
+const SENT = systemColors.green;
 
 const styles = StyleSheet.create({
   group: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },

@@ -23,7 +23,7 @@ import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/l
 import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
 import { worldOf } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, isDark, moduleFills, space } from '@/theme';
+import { aurora, colors, hitSlop, isDark, moduleFills, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -35,7 +35,7 @@ interface Run {
 
 const NEW_PACKS = ['qp_late_night', 'qp_habits'];
 /** Quizzes wear indigo, as in the chat "+" menu and Us moments. */
-const QUIZ_FILL = '#5856D6';
+const QUIZ_FILL = systemColors.indigo;
 
 /**
  * Couple quiz (F29), on the aurora like the world quiz it links to. Home: the friend's own quiz

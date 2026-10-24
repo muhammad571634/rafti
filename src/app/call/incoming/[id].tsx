@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     lineHeight: 50,
     fontWeight: '700',
     letterSpacing: 0.2,
-    color: '#FFFFFF',
+    color: colors.white,
     textShadowColor: 'rgba(0,0,0,0.25)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 16,
@@ -204,5 +204,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 6,
   },
-  actionLabel: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
+  actionLabel: { fontSize: 15, fontWeight: '600', color: colors.white },
 });

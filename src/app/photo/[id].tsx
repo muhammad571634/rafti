@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   sendOn: { backgroundColor: colors.primaryFill },
   sendText: { fontSize: 17, fontWeight: '600' },
   stage: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xxxl },
-  shadow: { shadowColor: '#000000', shadowOpacity: 0.16, shadowRadius: 20, shadowOffset: { width: 0, height: 14 }, elevation: 8 },
+  shadow: { shadowColor: colors.black, shadowOpacity: 0.16, shadowRadius: 20, shadowOffset: { width: 0, height: 14 }, elevation: 8 },
   captionWrap: { alignItems: 'center' },
   caption: { height: 52, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingLeft: 6, paddingRight: space.lg, borderRadius: 26 },
   captionTitle: { fontSize: 15, fontWeight: '600' },

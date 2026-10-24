@@ -144,7 +144,7 @@ export default function DateThemeScreen() {
                 setScene(text);
               }}
               placeholder={t('dateTheme.scenePlaceholder')}
-              placeholderTextColor="#8E8E93"
+              placeholderTextColor={colors.textMuted}
               accessibilityLabel={t('dateTheme.scene')}
               maxLength={SCENE_MAX}
               multiline
@@ -165,7 +165,7 @@ export default function DateThemeScreen() {
                 setTitle(text);
               }}
               placeholder={t('dateTheme.wherePlaceholder')}
-              placeholderTextColor="#8E8E93"
+              placeholderTextColor={colors.textMuted}
               accessibilityLabel={t('dateTheme.where')}
               maxLength={TITLE_MAX}
               style={styles.input}
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   save: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
   saveOn: { backgroundColor: colors.text },
   saveText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
-  ticket: { marginTop: space.sm, marginHorizontal: space.lg, borderRadius: 16, shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 15, shadowOffset: { width: 0, height: 10 }, elevation: 6 },
+  ticket: { marginTop: space.sm, marginHorizontal: space.lg, borderRadius: 16, shadowColor: colors.black, shadowOpacity: 0.16, shadowRadius: 15, shadowOffset: { width: 0, height: 10 }, elevation: 6 },
   preview: { height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center', justifyContent: 'center' },
   previewText: { fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.9)' },
   sectionLabel: {

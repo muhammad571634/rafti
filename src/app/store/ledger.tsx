@@ -24,7 +24,7 @@ import {
 import { callClock, clockTime, shortName } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, moduleFills, space } from '@/theme';
+import { colors, moduleFills, space, systemColors } from '@/theme';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -34,8 +34,7 @@ const FOLDED: LedgerReason[] = ['chat', 'voice', 'photo'];
 
 const LEAD = 36;
 /** Money in reads green, as in Wallet; dark text-safe shades of systemGreen. */
-const CREDIT = isDark ? '#30D158' : '#248A3D';
-const CALLS = isDark ? '#30D158' : '#34C759';
+const CALLS = systemColors.green;
 const RING = 52;
 const RING_STROKE = 7;
 const RING_R = (RING - RING_STROKE) / 2;
@@ -198,7 +197,7 @@ export default function LedgerScreen() {
                 </Txt>
               </View>
               <View style={styles.amount}>
-                <Txt style={[styles.amountText, credit && { color: CREDIT }]}>
+                <Txt style={[styles.amountText, credit && { color: colors.successText }]}>
                   {tab === 'seconds'
                     ? `${credit ? '+' : '-'}${callClock(Math.abs(row.amount))}`
                     : credit
@@ -222,35 +221,35 @@ export default function LedgerScreen() {
  */
 const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
   welcome: { fill: moduleFills.store, ios: 'sparkles', icon: 'sparkles' },
-  plan: { fill: '#AF52DE', ios: 'crown.fill', icon: 'diamond' },
-  daily: { fill: '#FF3B30', ios: 'calendar', icon: 'calendar' },
-  expired: { fill: '#8E8E93', ios: 'moon.fill', icon: 'moon' },
-  ad: { fill: '#5856D6', ios: 'play.fill', icon: 'play' },
+  plan: { fill: systemColors.purple, ios: 'crown.fill', icon: 'diamond' },
+  daily: { fill: systemColors.red, ios: 'calendar', icon: 'calendar' },
+  expired: { fill: systemColors.gray, ios: 'moon.fill', icon: 'moon' },
+  ad: { fill: systemColors.indigo, ios: 'play.fill', icon: 'play' },
   spin: moduleTile('gifts'),
   purchase: moduleTile('store'),
   chat: { fill: moduleFills.store, ios: 'bubble.left.fill', icon: 'chatbubble' },
-  voice: { fill: '#FF2D55', ios: 'waveform', icon: 'pulse' },
+  voice: { fill: systemColors.pink, ios: 'waveform', icon: 'pulse' },
   photo: { fill: moduleFills.photo, ios: 'photo.fill', icon: 'image' },
   note: moduleTile('note'),
   board: moduleTile('board'),
-  invite: { fill: '#34C759', ios: 'person.badge.plus', icon: 'person-add' },
-  share: { fill: '#007AFF', ios: 'square.and.arrow.up', icon: 'share' },
+  invite: { fill: systemColors.green, ios: 'person.badge.plus', icon: 'person-add' },
+  share: { fill: systemColors.blue, ios: 'square.and.arrow.up', icon: 'share' },
   date: moduleTile('date'),
   photoBooth: moduleTile('photo'),
-  voiceClone: { fill: '#5856D6', ios: 'mic.fill', icon: 'mic' },
+  voiceClone: { fill: systemColors.indigo, ios: 'mic.fill', icon: 'mic' },
   trial: moduleTile('calls'),
-  membership: { fill: '#AF52DE', ios: 'phone.fill', icon: 'call' },
+  membership: { fill: systemColors.purple, ios: 'phone.fill', icon: 'call' },
   call: moduleTile('calls'),
-  topUp: { fill: '#34C759', ios: 'plus', icon: 'add' },
+  topUp: { fill: systemColors.green, ios: 'plus', icon: 'add' },
   radio: moduleTile('radio'),
-  other: { fill: '#8E8E93', ios: 'ellipsis', icon: 'ellipsis-horizontal' },
+  other: { fill: systemColors.gray, ios: 'ellipsis', icon: 'ellipsis-horizontal' },
 };
 
 function ReasonTile({ reason }: { reason: LedgerReason }) {
   const look = REASON[reason];
   return (
     <View style={[styles.tile, { backgroundColor: look.fill }]}>
-      <SFIcon ios={look.ios} icon={look.icon} size={18} color="#FFFFFF" />
+      <SFIcon ios={look.ios} icon={look.icon} size={18} color={colors.white} />
     </View>
   );
 }

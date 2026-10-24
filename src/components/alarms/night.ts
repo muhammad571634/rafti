@@ -1,16 +1,16 @@
 import { Platform } from 'react-native';
 
-import { sleepColors as night, systemColors } from '@/theme';
+import { colors, sleepColors as night, systemColors } from '@/theme';
 
 import type { WheelTone } from './time-wheel';
 
 /** The iOS switch on Bedtime's navy (Alarms and their editor): green when on, a translucent track when off. */
 export const NIGHT_SWITCH = {
   trackColor: { true: systemColors.green, false: 'rgba(120,120,128,0.36)' },
-  thumbColor: '#FFFFFF',
+  thumbColor: colors.white,
   ios_backgroundColor: 'rgba(120,120,128,0.36)',
   // react-native-web tints the thumb on its own unless told.
-  ...(Platform.OS === 'web' ? ({ activeThumbColor: '#FFFFFF' } as object) : {}),
+  ...(Platform.OS === 'web' ? ({ activeThumbColor: colors.white } as object) : {}),
 } as const;
 
 /** The time wheel on the navy, as Bedtime draws it. */

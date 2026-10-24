@@ -66,6 +66,15 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 - Mint (`colors.bondText`) only for the bond: "Voice ready", closeness, relationship.
 - Ink (`colors.text`) marks selection: 2px ink border on a chosen card or chip.
 - Grey fill (`colors.surfaceAlt`) for unselected chips, segmented track, icon tiles, locked inputs.
+- Where colours live (palette pass 2, 2026-10-24): all of them in `src/theme/colors.ts`. `colors`
+  for grounds, text, lines, `well` (an inset tray in a card), `track` (a progress bar's empty part),
+  `successText` / `dangerText`; `aurora` for the aurora ground, its glass and `shadow` (the soft card
+  shadow, black in dark mode); `systemColors` for every iOS system hue (red … gray, gray2, fill)
+  with Apple's dark tones; `moduleColors` / `moduleFills` for modules; `storeColors` and
+  `gradients.pro` for the Store; `sleepColors` for Bedtime. A new hex in a screen is a bug, except
+  content art that is the same in both themes: paper notes (`board/stationery.tsx`), date tickets,
+  Photo Booth frames and pictures, world and date-theme colours in `src/mock`, white on photos and
+  scrims, the approved intro and onboarding art, and the alarm's sunrise.
 - Dark mode (follows the phone, `isDark`): every colour comes from `colors`, never `palette` or a
   literal, except paper and photos. Text or an icon on an ink fill uses `colors.textOnInk`, not
   white. Text on light paper (diary page, polaroid, board note) uses paper ink, not `colors.text`.

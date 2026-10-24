@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Anim, Sheet, Txt } from '@/components/ui';
 import { duration as fmtDuration } from '@/lib/format';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 
 const MIN_SECONDS = 1;
 const MAX_SECONDS = 60;
@@ -89,7 +89,7 @@ export function VoiceSheet({
 }
 
 /** iOS system red: the record button, as in Voice Memos. */
-const RECORD_RED = '#FF3B30';
+const RECORD_RED = systemColors.red;
 
 const styles = StyleSheet.create({
   body: { alignItems: 'center', gap: space.md, paddingTop: space.sm },

@@ -211,7 +211,7 @@ export default function ClipPlayerScreen() {
             accessibilityRole="button"
             accessibilityLabel={t(playing ? 'radio.pause' : 'radio.play', { title: clip.title })}
             style={styles.main}>
-            <Ionicons name={playing ? 'pause' : 'play'} size={32} color="#FFFFFF" style={!playing && styles.playNudge} />
+            <Ionicons name={playing ? 'pause' : 'play'} size={32} color={colors.white} style={!playing && styles.playNudge} />
           </PressableScale>
           {clip.mine && hasChat ? (
             <PressableScale onPress={send} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.send')}>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     backgroundColor: aurora.card,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.5 : 0.22,
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },

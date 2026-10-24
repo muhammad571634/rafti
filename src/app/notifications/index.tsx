@@ -10,13 +10,13 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { buildInbox, isUnread, type InboxItem, type InboxKind } from '@/lib/inbox';
 import { dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, space } from '@/theme';
+import { colors, moduleFills, space, systemColors } from '@/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 /** Kinds drawn with an icon instead of the character's face; modules in their Today colour. */
 const ICONS: Partial<Record<InboxKind, { icon: IconName; fill: string }>> = {
-  plan: { icon: 'calendar', fill: '#FF3B30' },
+  plan: { icon: 'calendar', fill: systemColors.red },
   levelUp: { icon: MODULE_GLYPH.bond.icon, fill: moduleFills.bond },
   spin: { icon: MODULE_GLYPH.gifts.icon, fill: moduleFills.gifts },
 };
@@ -103,8 +103,8 @@ export default function NotificationsScreen() {
         {character && !look ? (
           <CharacterAvatar character={character} size={AVATAR} />
         ) : (
-          <View style={[styles.iconTile, { backgroundColor: look?.fill ?? '#8E8E93' }]}>
-            <Ionicons name={look?.icon ?? 'notifications'} size={20} color="#FFFFFF" />
+          <View style={[styles.iconTile, { backgroundColor: look?.fill ?? systemColors.gray }]}>
+            <Ionicons name={look?.icon ?? 'notifications'} size={20} color={colors.white} />
           </View>
         )}
         <View style={[styles.body, !last && styles.line]}>

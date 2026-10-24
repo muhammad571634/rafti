@@ -14,7 +14,7 @@ import { AuroraGlass, Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, 
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, moduleFills, space } from '@/theme';
+import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -23,8 +23,8 @@ const RING_STROKE = 10;
 const RING_R = (RING - RING_STROKE) / 2;
 const RING_C = 2 * Math.PI * RING_R;
 /** iOS system colours, as on the Store's table: calls green, voice replies pink. */
-const CALLS = isDark ? '#30D158' : '#34C759';
-const VOICE = isDark ? '#FF375F' : '#FF2D55';
+const CALLS = systemColors.green;
+const VOICE = systemColors.pink;
 
 /**
  * What the user is on and what is left, on the aurora in the Store's look (2026-10-22, coded at
@@ -79,7 +79,7 @@ export default function MyPlanScreen() {
   const heroBody = (
     <>
       <View style={[styles.heroIcon, !pro && styles.heroIconPlain]}>
-        <SFIcon ios="crown.fill" icon="diamond" size={22} color={pro ? '#FFFFFF' : colors.textSecondary} />
+        <SFIcon ios="crown.fill" icon="diamond" size={22} color={pro ? colors.white : colors.textSecondary} />
       </View>
       <View style={styles.flex}>
         <Txt style={[styles.heroName, !pro && styles.inkText]} lines={1} accessibilityRole="header">
@@ -111,7 +111,7 @@ export default function MyPlanScreen() {
       title: t('plans.seeAll'),
       ios: 'crown.fill',
       icon: 'diamond',
-      fill: '#AF52DE',
+      fill: systemColors.purple,
       onPress: () => router.push('/store/shell?tab=plans'),
     },
     ...(status
@@ -121,7 +121,7 @@ export default function MyPlanScreen() {
             title: t('plans.manage'),
             ios: 'creditcard.fill' as SFSymbol,
             icon: 'card' as IoniconName,
-            fill: '#007AFF',
+            fill: systemColors.blue,
             onPress: () => void Linking.openURL(SUBSCRIPTIONS_URL),
           },
         ]
@@ -132,7 +132,7 @@ export default function MyPlanScreen() {
       title: t('plans.restore'),
       ios: 'arrow.clockwise',
       icon: 'refresh',
-      fill: '#8E8E93',
+      fill: systemColors.gray,
       onPress: () => setRestored(true),
     },
   ];
@@ -181,7 +181,7 @@ export default function MyPlanScreen() {
               ) : null}
               <View style={[styles.row, withCalls && styles.rowTopLine]}>
                 <IconTile fill={moduleFills.store}>
-                  <SFIcon ios="bubble.left.fill" icon="chatbubble" size={17} color="#FFFFFF" />
+                  <SFIcon ios="bubble.left.fill" icon="chatbubble" size={17} color={colors.white} />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.chatRow')}</Txt>
                 <View style={styles.value}>
@@ -198,7 +198,7 @@ export default function MyPlanScreen() {
             <View style={styles.card}>
               <View style={[styles.row, styles.rowLine]}>
                 <IconTile fill={moduleFills.store}>
-                  <ShellIcon size={17} tintColor="#FFFFFF" />
+                  <ShellIcon size={17} tintColor={colors.white} />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.freeShells')}</Txt>
                 <Txt style={styles.meta}>
@@ -206,8 +206,8 @@ export default function MyPlanScreen() {
                 </Txt>
               </View>
               <View style={styles.row}>
-                <IconTile fill="#34C759">
-                  <SFIcon ios="phone.fill" icon="call" size={17} color="#FFFFFF" />
+                <IconTile fill={systemColors.green}>
+                  <SFIcon ios="phone.fill" icon="call" size={17} color={colors.white} />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.callsAndVoice')}</Txt>
                 <ProPill />
@@ -240,7 +240,7 @@ export default function MyPlanScreen() {
                       ios={kind === 'call' ? 'phone.fill' : 'waveform'}
                       icon={kind === 'call' ? 'call' : 'pulse'}
                       size={17}
-                      color="#FFFFFF"
+                      color={colors.white}
                     />
                   </IconTile>
                   <Txt style={styles.rowTitle} lines={2}>
@@ -267,7 +267,7 @@ export default function MyPlanScreen() {
           {links.map((link, i) => (
             <PressableScale key={link.key} scaleTo={0.985} accessibilityRole="button" onPress={link.onPress} style={[styles.row, i < links.length - 1 && styles.rowLine]}>
               <IconTile fill={link.fill}>
-                <SFIcon ios={link.ios} icon={link.icon} size={17} color="#FFFFFF" />
+                <SFIcon ios={link.ios} icon={link.icon} size={17} color={colors.white} />
               </IconTile>
               <Txt style={styles.rowTitle}>{link.title}</Txt>
               <Ionicons name="chevron-forward" size={15} color={STORE.faint} />
@@ -380,8 +380,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.22)',
   },
-  heroIconPlain: { backgroundColor: isDark ? 'rgba(118,118,128,0.24)' : 'rgba(118,118,128,0.12)' },
-  heroName: { fontSize: 26, lineHeight: 32, fontWeight: '800', letterSpacing: 0.2, color: '#FFFFFF' },
+  heroIconPlain: { backgroundColor: systemColors.fill },
+  heroName: { fontSize: 26, lineHeight: 32, fontWeight: '800', letterSpacing: 0.2, color: colors.white },
   heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, color: 'rgba(255,255,255,0.88)' },
   inkText: { color: colors.text },
   mutedText: { color: aurora.textMuted },

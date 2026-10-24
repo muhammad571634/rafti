@@ -34,7 +34,7 @@ import {
 import { TRIAL } from '@/economy/plans';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleFills, palette, space } from '@/theme';
+import { aurora, colors, moduleFills, palette, space, systemColors } from '@/theme';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
@@ -175,8 +175,8 @@ export default function StoreScreen() {
 const COSTS: { key: string; fill: string; ios: SFSymbol; icon: IoniconName; shells: number | null }[] = [
   { key: 'costTextMessage', fill: moduleFills.store, ios: 'bubble.left.fill', icon: 'chatbubble', shells: shellCosts.textMessage },
   { key: 'costSecretNote', ...moduleTile('note'), shells: shellCosts.secretNote },
-  { key: 'costVoiceClone', fill: '#5856D6', ios: 'mic.fill', icon: 'mic', shells: shellCosts.characterVoiceClone },
-  { key: 'costListen', fill: '#FF2D55', ios: 'waveform', icon: 'pulse', shells: null },
+  { key: 'costVoiceClone', fill: systemColors.indigo, ios: 'mic.fill', icon: 'mic', shells: shellCosts.characterVoiceClone },
+  { key: 'costListen', fill: systemColors.pink, ios: 'waveform', icon: 'pulse', shells: null },
   { key: 'costCall', ...moduleTile('calls'), shells: null },
   { key: 'costPhotoBooth', ...moduleTile('photo'), shells: null },
 ];
@@ -257,7 +257,7 @@ function ShellsTab({
           {COSTS.map((cost, i) => (
             <View key={cost.key} style={[styles.costRow, i < COSTS.length - 1 && styles.costLine]}>
               <IconTile fill={cost.fill}>
-                <SFIcon ios={cost.ios} icon={cost.icon} size={17} color="#FFFFFF" />
+                <SFIcon ios={cost.ios} icon={cost.icon} size={17} color={colors.white} />
               </IconTile>
               <Txt style={styles.costTitle} lines={1}>
                 {t(`store.${cost.key}`)}

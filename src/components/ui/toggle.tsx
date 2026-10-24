@@ -8,7 +8,7 @@ import { colors } from '@/theme';
  * `activeThumbColor` prop, which the native typings don't know about.
  */
 /** The UISwitch thumb is white in both modes. */
-const THUMB = '#FFFFFF';
+const THUMB = colors.white;
 
 export function Toggle({
   value,

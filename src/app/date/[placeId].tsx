@@ -15,7 +15,7 @@ import { shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { datePlaceById, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, moduleFills, shadows, space } from '@/theme';
+import { colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 import type { DateRecord } from '@/types';
 
 /** Hearts on the photo and in the reply pill (iOS systemPink, lighter on the photo). */
@@ -115,14 +115,14 @@ export default function DateScreen() {
           <InsetGroup style={styles.results}>
             <View style={[styles.resultRow, styles.resultLine]}>
               <View style={[styles.resultIcon, { backgroundColor: moduleFills.date }]}>
-                <Ionicons name="heart" size={17} color="#FFFFFF" />
+                <Ionicons name="heart" size={17} color={colors.white} />
               </View>
               <Txt style={styles.resultLabel}>{t('date.hearts')}</Txt>
               <Txt style={styles.resultValue}>{t('date.heartsOf', { n: record.hearts, max: record.maxHearts })}</Txt>
             </View>
             <View style={styles.resultRow}>
               <View style={[styles.resultIcon, { backgroundColor: moduleFills.diary }]}>
-                <Ionicons name="book" size={17} color="#FFFFFF" />
+                <Ionicons name="book" size={17} color={colors.white} />
               </View>
               <Txt style={styles.resultLabel} lines={1}>
                 {t('date.diaryOf', { name })}
@@ -136,7 +136,7 @@ export default function DateScreen() {
             accessibilityRole="button"
             style={[styles.bigButton, { backgroundColor: look.ink }]}
             onPress={() => void shareText(t('date.shareMessage', { place: title, name }))}>
-            <Ionicons name="share-outline" size={19} color="#FFFFFF" />
+            <Ionicons name="share-outline" size={19} color={colors.white} />
             <Txt style={styles.bigButtonText}>{t('date.share')}</Txt>
           </PressableScale>
           <PressableScale
@@ -207,7 +207,7 @@ export default function DateScreen() {
                 <Txt style={styles.choiceText}>{fill(c.text)}</Txt>
                 {chosen ? (
                   <View style={[styles.check, { backgroundColor: look.ink }]}>
-                    <Ionicons name="checkmark" size={15} color="#FFFFFF" />
+                    <Ionicons name="checkmark" size={15} color={colors.white} />
                   </View>
                 ) : null}
               </Pressable>
@@ -223,7 +223,7 @@ export default function DateScreen() {
           scaleTo={0.9}
           accessibilityLabel={t('date.leave')}
           onPress={() => setLeaving(true)}>
-          <Ionicons name="close" size={20} color="#FFFFFF" />
+          <Ionicons name="close" size={20} color={colors.white} />
         </PressableScale>
         <View
           style={styles.progress}
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   placeText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.white,
     textShadowColor: 'rgba(0,0,0,0.35)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   close: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   progress: { flex: 1, flexDirection: 'row', gap: 4 },
   segment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.4)' },
-  segmentOn: { backgroundColor: '#FFFFFF' },
+  segmentOn: { backgroundColor: colors.white },
   hearts: {
     height: 32,
     paddingLeft: 10,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
   },
-  heartsText: { fontSize: 15, fontWeight: '700', color: '#FFFFFF', fontVariant: ['tabular-nums'] },
+  heartsText: { fontSize: 15, fontWeight: '700', color: colors.white, fontVariant: ['tabular-nums'] },
   bar: {
     position: 'absolute',
     left: 0,
@@ -390,8 +390,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-  bigButtonText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: '#FFFFFF' },
-  greyButton: { marginTop: -6, backgroundColor: isDark ? 'rgba(118,118,128,0.24)' : 'rgba(118,118,128,0.12)' },
+  bigButtonText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.white },
+  greyButton: { marginTop: -6, backgroundColor: systemColors.fill },
   greyButtonText: { fontWeight: '600', color: colors.text },
   end: { flexGrow: 1, alignItems: 'center', gap: 16, paddingHorizontal: space.lg, paddingTop: 70 },
   ending: { marginTop: 12, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3, color: colors.text },

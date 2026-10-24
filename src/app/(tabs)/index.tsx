@@ -38,7 +38,7 @@ import {
 import { clipName, shortName } from '@/lib/format';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, space, TAB_BAR_HEIGHT } from '@/theme';
+import { aurora, colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF3B30',
+    backgroundColor: systemColors.red,
   },
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
   // The width comes from the screen (`half`), so two always fit.
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderWidth: 2,
     borderColor: aurora.base,
-    backgroundColor: '#FF3B30',
+    backgroundColor: systemColors.red,
     alignItems: 'center',
     justifyContent: 'center',
   },

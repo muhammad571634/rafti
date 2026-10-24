@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: aurora.glassEdge,
     borderTopColor: aurora.glassRim,
-    shadowColor: '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.4 : 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },

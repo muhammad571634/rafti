@@ -8,7 +8,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleFills, space } from '@/theme';
+import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
 import type { PlanId } from '@/types';
 
 import { perMonth, savingVsMonthly, storeName } from './copy';
@@ -120,7 +120,7 @@ export function PlanPicker({
   const rows: CompareRow[] = [
     { key: 'shells', fill: moduleFills.store, glyph: 'shell', basic: count.format(basic.shells), pro: count.format(pro.shells) },
     { key: 'calls', fill: moduleFills.calls, glyph: MODULE_GLYPH.calls, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
-    { key: 'voice', fill: '#FF2D55', glyph: { ios: 'waveform', icon: 'pulse' }, basic: time(basic.voiceSeconds), pro: time(pro.voiceSeconds) },
+    { key: 'voice', fill: systemColors.pink, glyph: { ios: 'waveform', icon: 'pulse' }, basic: time(basic.voiceSeconds), pro: time(pro.voiceSeconds) },
     {
       key: 'photos',
       fill: moduleFills.photo,
@@ -129,8 +129,8 @@ export function PlanPicker({
       pro: String(pro.photos),
     },
     { key: 'bedtime', fill: moduleFills.sleep, glyph: MODULE_GLYPH.sleep, basic: false, pro: true },
-    { key: 'characters', fill: '#AF52DE', glyph: { ios: 'sparkles', icon: 'sparkles' }, basic: false, pro: true },
-    { key: 'memory', fill: '#8E8E93', glyph: { ios: 'bookmark.fill', icon: 'bookmark' }, basic: true, pro: true },
+    { key: 'characters', fill: systemColors.purple, glyph: { ios: 'sparkles', icon: 'sparkles' }, basic: false, pro: true },
+    { key: 'memory', fill: systemColors.gray, glyph: { ios: 'bookmark.fill', icon: 'bookmark' }, basic: true, pro: true },
   ];
 
   // Two tiles a row inside the Pro card: the screen less both gutters, the card's padding and the gap.
@@ -145,7 +145,7 @@ export function PlanPicker({
           <View style={styles.proGlow} pointerEvents="none" />
           <View style={styles.proHead}>
             <View style={styles.crown}>
-              <SFIcon ios="crown.fill" icon="diamond" size={21} color="#FFFFFF" />
+              <SFIcon ios="crown.fill" icon="diamond" size={21} color={colors.white} />
             </View>
             <Txt style={styles.proTitle} accessibilityRole="header">
               {t('plans.name.pro')}
@@ -258,8 +258,8 @@ export function PlanPicker({
 
 /** A white glyph: an SF Symbol (Ionicons off iPhone), or the shell drawn as a white silhouette. */
 function Glyph({ glyph, size }: { glyph: CompareRow['glyph']; size: number }) {
-  if (glyph === 'shell') return <ShellIcon size={size} tintColor="#FFFFFF" />;
-  return <SFIcon ios={glyph.ios} icon={glyph.icon} size={size} color="#FFFFFF" />;
+  if (glyph === 'shell') return <ShellIcon size={size} tintColor={colors.white} />;
+  return <SFIcon ios={glyph.ios} icon={glyph.icon} size={size} color={colors.white} />;
 }
 
 function CellView({ cell, plan, pro = false }: { cell: Cell; plan: string; pro?: boolean }) {
@@ -325,12 +325,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.22)',
   },
-  proTitle: { flex: 1, fontSize: 28, lineHeight: 34, fontWeight: '800', letterSpacing: 0.2, color: '#FFFFFF' },
-  freePill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: '#FFFFFF' },
+  proTitle: { flex: 1, fontSize: 28, lineHeight: 34, fontWeight: '800', letterSpacing: 0.2, color: colors.white },
+  freePill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: colors.white },
   freePillText: { fontSize: 13, fontWeight: '800', color: '#5B3FD9' },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: 14 },
   proTile: { paddingVertical: 10, paddingHorizontal: 12, gap: 2, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.16)' },
-  proTileValue: { fontSize: 24, lineHeight: 28, fontWeight: '800', color: '#FFFFFF', fontVariant: ['tabular-nums'] },
+  proTileValue: { fontSize: 24, lineHeight: 28, fontWeight: '800', color: colors.white, fontVariant: ['tabular-nums'] },
   proTileLabel: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   proTileText: { flexShrink: 1, fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.88)' },
   card: {
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   basicHead: { width: COLUMN, textAlign: 'center', fontSize: 13, fontWeight: '700', color: aurora.textMuted },
   column: { width: COLUMN, alignItems: 'center', justifyContent: 'center' },
   proHeadPill: { height: 22, paddingHorizontal: 10, borderRadius: 11, justifyContent: 'center' },
-  proHeadText: { fontSize: 13, fontWeight: '800', color: '#FFFFFF' },
+  proHeadText: { fontSize: 13, fontWeight: '800', color: colors.white },
   tableRow: { flexDirection: 'row', alignItems: 'stretch', paddingLeft: GUTTER, paddingRight: GUTTER, minHeight: 48 },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
   tableTitle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },

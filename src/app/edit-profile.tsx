@@ -16,7 +16,7 @@ import {
   profileCompletion,
 } from '@/lib/profile';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space, systemColors } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 import type { Pronouns } from '@/types';
 
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
@@ -24,11 +24,11 @@ const PRONOUNS: Pronouns[] = ['she', 'he', 'they'];
 const AVATAR = 104;
 /** iOS system colours for the Settings-style row icons. */
 const FILL = {
-  name: isDark ? '#0A84FF' : '#007AFF',
-  pronouns: isDark ? '#BF5AF2' : '#AF52DE',
+  name: systemColors.blue,
+  pronouns: systemColors.purple,
   birthday: systemColors.red,
-  born: '#8E8E93',
-  job: isDark ? '#AC8E68' : '#A2845E',
+  born: systemColors.gray,
+  job: systemColors.brown,
 };
 
 type Field = 'name' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about';
@@ -83,7 +83,7 @@ export default function EditProfileScreen() {
             accessibilityLabel={t('editProfile.photo')}>
             <UserAvatar user={user} size={AVATAR} />
             <View style={styles.camera} pointerEvents="none">
-              <Ionicons name="camera" size={16} color="#FFFFFF" />
+              <Ionicons name="camera" size={16} color={colors.white} />
             </View>
           </PressableScale>
           {photoError ? (

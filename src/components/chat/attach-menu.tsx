@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
-import { colors, isDark, moduleFills, shadows, space } from '@/theme';
+import { colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 
 export type AttachKey = 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
@@ -20,11 +20,11 @@ const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: strin
   { key: 'diary', ...moduleTile('diary') },
   { key: 'dailyCalls', ...moduleTile('calls') },
   { key: 'date', ...moduleTile('date') },
-  { key: 'truthOrDare', icon: 'dice', fill: '#AF52DE' },
-  { key: 'quiz', icon: 'help', fill: '#5856D6' },
+  { key: 'truthOrDare', icon: 'dice', fill: systemColors.purple },
+  { key: 'quiz', icon: 'help', fill: systemColors.indigo },
   { key: 'secretNote', ...moduleTile('note') },
   { key: 'photo', icon: 'image', fill: moduleFills.photo },
-  { key: 'voice', icon: 'mic', fill: '#FF3B30' },
+  { key: 'voice', icon: 'mic', fill: systemColors.red },
 ];
 
 /** The chat input's "+" and field are 40pt, 12pt in from the edge (`ChatInput`). */

@@ -193,7 +193,7 @@ export function IconRow({
       accessibilityLabel={[title, meta].filter(Boolean).join(', ')}
       style={({ pressed }) => [styles.iconRow, pressed && onPress ? styles.rowPressed : null, disabled && styles.resting]}>
       <View style={[styles.iconTile, { backgroundColor: fill }]}>
-        <Ionicons name={icon} size={17} color="#FFFFFF" />
+        <Ionicons name={icon} size={17} color={colors.white} />
       </View>
       <View style={[styles.iconBody, !last && styles.rowLine]}>
         <View style={styles.flex}>

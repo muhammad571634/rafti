@@ -83,8 +83,8 @@ export default function RadioScreen() {
               accessibilityRole="button"
               accessibilityLabel={t('radio.make')}
               style={[styles.card, styles.make]}>
-              <IconTile fill="#FF2D55" size={44}>
-                <SFIcon ios="mic.fill" icon="mic" size={22} color="#FFFFFF" />
+              <IconTile fill={systemColors.pink} size={44}>
+                <SFIcon ios="mic.fill" icon="mic" size={22} color={colors.white} />
               </IconTile>
               <View style={styles.body}>
                 <Txt style={styles.title}>{t('radio.make')}</Txt>
@@ -131,7 +131,7 @@ export default function RadioScreen() {
                   accessibilityState={{ selected: active }}
                   style={styles.row}>
                   <IconTile fill={tile.fill} size={44}>
-                    <SFIcon ios={tile.ios} icon={tile.icon} size={22} color="#FFFFFF" />
+                    <SFIcon ios={tile.ios} icon={tile.icon} size={22} color={colors.white} />
                   </IconTile>
                   <View style={styles.body}>
                     <Txt style={[styles.title, active && styles.titleOn]}>{title}</Txt>
@@ -262,7 +262,7 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
 function PlayDot({ on }: { on: boolean }) {
   return (
     <View style={[styles.play, on && styles.playOn]}>
-      <Ionicons name={on ? 'pause' : 'play'} size={16} color={on ? '#FFFFFF' : STORE.peachInk} style={!on && styles.playNudge} />
+      <Ionicons name={on ? 'pause' : 'play'} size={16} color={on ? colors.white : STORE.peachInk} style={!on && styles.playNudge} />
     </View>
   );
 }

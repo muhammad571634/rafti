@@ -24,7 +24,7 @@ import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, Searc
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
+import { aurora, colors, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
 
 const AVATAR = 52;
@@ -38,7 +38,7 @@ const PREVIEW_LINES = 3;
 type Filter = 'all' | 'unread' | 'groups';
 const FILTERS: Filter[] = ['all', 'unread', 'groups'];
 /** iOS indigo: the Mute swipe action, as in the approved prototype. */
-const MUTE_FILL = '#5856D6';
+const MUTE_FILL = systemColors.indigo;
 
 /** A row: a one-to-one chat with its character, or a group with its members. */
 type ChatItem =
@@ -725,7 +725,7 @@ function SwipeAction({
 }
 
 /** iOS indigo: groups, as the system colours a "people" action. */
-const GROUP_FILL = '#5856D6';
+const GROUP_FILL = systemColors.indigo;
 
 /** One choice in the pencil's sheet: a coloured icon, the action, a short line, a chevron. */
 function WayRow({
@@ -817,7 +817,7 @@ const styles = StyleSheet.create({
   filter: { flex: 1, borderRadius: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 },
   filterOn: {
     backgroundColor: aurora.glassOn,
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOpacity: 0.12,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
@@ -833,7 +833,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: aurora.tint,
   },
-  filterCountText: { fontSize: 11, fontWeight: '700', color: '#FFFFFF' },
+  filterCountText: { fontSize: 11, fontWeight: '700', color: colors.white },
   listTop: { paddingBottom: space.lg },
   // Room above the avatars for the unread bubble.
   pinnedGrid: {
@@ -860,7 +860,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 14,
     backgroundColor: aurora.bubble,
-    shadowColor: '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: 0.14,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -873,7 +873,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderRadius: PINNED_AVATAR / 2 + 3,
     backgroundColor: aurora.ring,
-    shadowColor: '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: 0.18,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 8 },

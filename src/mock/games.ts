@@ -6,6 +6,8 @@
 import type { Ionicons } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { systemColors } from '@/theme';
+
 export interface QuizQuestion {
   text: string;
   options: [string, string, string, string];
@@ -23,7 +25,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_first_date',
     titleKey: 'firstDate',
-    look: { ios: 'wineglass.fill', icon: 'wine', fill: '#FF2D55' },
+    look: { ios: 'wineglass.fill', icon: 'wine', fill: systemColors.pink },
     questions: [
       { text: 'Perfect first date?', options: ['Fancy dinner', 'Long walk, no plan', 'Movie marathon', 'Arcade, loser pays'] },
       { text: 'Who texts first after?', options: ['Me, right away', 'You, obviously', 'Both at once', 'Nobody, we play it cool'] },
@@ -35,7 +37,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_sunday',
     titleKey: 'lazySunday',
-    look: { ios: 'cup.and.saucer.fill', icon: 'cafe', fill: '#32ADE6' },
+    look: { ios: 'cup.and.saucer.fill', icon: 'cafe', fill: systemColors.cyan },
     questions: [
       { text: 'Sunday breakfast?', options: ['Pancakes', 'Just coffee', 'Leftover pizza', 'Brunch out'] },
       { text: 'Rainy afternoon plan?', options: ['Blanket and a show', 'Board games', 'Nap together', 'Walk in the rain'] },
@@ -47,7 +49,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_ten_years',
     titleKey: 'tenYears',
-    look: { ios: 'house.fill', icon: 'home', fill: '#34C759' },
+    look: { ios: 'house.fill', icon: 'home', fill: systemColors.green },
     questions: [
       { text: 'Where do we live?', options: ['Big city', 'By the sea', 'Quiet countryside', 'Somewhere new every year'] },
       { text: 'Pet?', options: ['A cat', 'A dog', 'Something weird', 'Plants count'] },
@@ -59,7 +61,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_late_night',
     titleKey: 'lateNight',
-    look: { ios: 'moon.stars.fill', icon: 'moon', fill: '#AF52DE' },
+    look: { ios: 'moon.stars.fill', icon: 'moon', fill: systemColors.purple },
     questions: [
       { text: 'Best time for deep talks?', options: ['Midnight', '3 a.m.', 'Sunrise', 'Any time with you'] },
       { text: 'Can\u2019t sleep. What now?', options: ['Call each other', 'Snack run', 'Count stars', 'Scroll until 4'] },
@@ -71,7 +73,7 @@ export const QUIZ_PACKS: QuizPack[] = [
   {
     id: 'qp_habits',
     titleKey: 'habits',
-    look: { ios: 'sun.max.fill', icon: 'sunny', fill: '#FFCC00' },
+    look: { ios: 'sun.max.fill', icon: 'sunny', fill: systemColors.yellow },
     questions: [
       { text: 'First thing in the morning?', options: ['Phone', 'Coffee', 'Snooze', 'A good-morning text'] },
       { text: 'How do we eat pizza?', options: ['Crust first', 'Fold it', 'Fork and knife', 'Steal yours'] },

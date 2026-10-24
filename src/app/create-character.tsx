@@ -41,7 +41,7 @@ import {
 } from '@/lib/create-character';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space, systemColors } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 import type {
   Character,
   CharacterCategory,
@@ -289,11 +289,11 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 {imageUri ? (
                   <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
                 ) : (
-                  <Ionicons name="person" size={52} color="#FFFFFF" />
+                  <Ionicons name="person" size={52} color={colors.white} />
                 )}
               </View>
               <View style={styles.camera} pointerEvents="none">
-                <Ionicons name="camera" size={16} color="#FFFFFF" />
+                <Ionicons name="camera" size={16} color={colors.white} />
               </View>
             </PressableScale>
           </View>
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     height: PHOTO,
     borderRadius: PHOTO / 2,
     // iOS Contacts' empty photo: a grey disc with a white figure.
-    backgroundColor: isDark ? '#636366' : '#AEAEB2',
+    backgroundColor: systemColors.gray2,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',

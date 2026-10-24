@@ -4,7 +4,7 @@ import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CharacterAvatar, Txt } from '@/components/ui';
-import { isDark, space } from '@/theme';
+import { colors, isDark, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** A soft dusk wallpaper, deeper in dark mode, so the white clock always reads. */
@@ -67,7 +67,7 @@ export function LockPreview({
   );
 }
 
-const INK = isDark ? '#FFFFFF' : '#1C1C1E';
+const INK = colors.text;
 
 const styles = StyleSheet.create({
   screen: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   day: { marginBottom: -space.md, fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
   // The iOS lock clock: big, heavy and white over the wallpaper.
-  clock: { fontSize: 56, lineHeight: 62, fontWeight: '700', letterSpacing: -1, color: '#FFFFFF', fontVariant: ['tabular-nums'] },
+  clock: { fontSize: 56, lineHeight: 62, fontWeight: '700', letterSpacing: -1, color: colors.white, fontVariant: ['tabular-nums'] },
   note: {
     flexDirection: 'row',
     alignItems: 'center',

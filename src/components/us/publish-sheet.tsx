@@ -4,13 +4,13 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { moduleTile, SFIcon, Sheet, Txt } from '@/components/ui';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
 
 /** iOS-style icons (approved prototype `UsAdd.dc.html`): Calendar red, then Diary and Board in their Today colours. */
 const OPTIONS: { kind: PublishKind; ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
-  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: '#FF3B30' },
+  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: systemColors.red },
   { kind: 'diary', ...moduleTile('diary') },
   { kind: 'board', ...moduleTile('board') },
 ];

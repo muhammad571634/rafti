@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: space.lg, paddingTop: 18 },
   // A pinned paper casts a soft shadow on the aurora.
   paper: {
-    shadowColor: '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: 0.12,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },

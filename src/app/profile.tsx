@@ -27,7 +27,7 @@ import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, moduleFills, space, systemColors } from '@/theme';
+import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -47,7 +47,7 @@ const FILL = {
 };
 const SWITCH_ON = systemColors.green;
 const CARD_SHADOW = {
-  shadowColor: isDark ? '#000000' : '#3C285A',
+  shadowColor: aurora.shadow,
   shadowOpacity: isDark ? 0.35 : 0.08,
   shadowRadius: 10,
   shadowOffset: { width: 0, height: 6 },
@@ -349,7 +349,7 @@ function SettingsRow({
       accessibilityLabel={[title, pill, meta].filter(Boolean).join(', ')}
       style={({ pressed }) => [styles.row, pressed && onPress ? styles.rowPressed : null]}>
       <View style={[styles.rowIcon, { backgroundColor: fill }]}>
-        <Ionicons name={icon} size={17} color="#FFFFFF" />
+        <Ionicons name={icon} size={17} color={colors.white} />
       </View>
       <View style={[styles.rowBody, !last && styles.rowLine]}>
         <Txt style={styles.rowTitle} lines={1}>
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: AVATAR / 2 + 4,
     backgroundColor: aurora.ring,
-    shadowColor: isDark ? '#000000' : '#3C285A',
+    shadowColor: aurora.shadow,
     shadowOpacity: isDark ? 0.45 : 0.18,
     shadowRadius: 15,
     shadowOffset: { width: 0, height: 12 },
@@ -412,8 +412,8 @@ const styles = StyleSheet.create({
   tilePillText: { fontSize: 13, fontWeight: '700' },
   peachPill: { backgroundColor: isDark ? '#3A2416' : '#FFF0E4' },
   peachInk: { color: isDark ? '#FFB27A' : '#C96A32' },
-  violetPill: { backgroundColor: isDark ? '#2E1A3C' : '#F3E8FB' },
-  violetInk: { color: isDark ? '#D9A6F5' : '#8E3BB8' },
+  violetPill: { backgroundColor: storeColors.violetSoft },
+  violetInk: { color: storeColors.violetInk },
   complete: {
     marginHorizontal: space.lg,
     marginTop: space.md,
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   completeTop: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   completeTitle: { flex: 1, fontSize: 17, fontWeight: '600', color: colors.text },
   completePercent: { fontSize: 15, fontWeight: '700', color: colors.text, fontVariant: ['tabular-nums'] },
-  track: { height: 6, marginTop: 10, borderRadius: 3, overflow: 'hidden', backgroundColor: isDark ? '#3A3A3C' : '#E5E5EA' },
+  track: { height: 6, marginTop: 10, borderRadius: 3, overflow: 'hidden', backgroundColor: colors.track },
   fill: { height: '100%', borderRadius: 3, backgroundColor: aurora.tint },
   completeHint: { marginTop: space.sm, fontSize: 13, color: aurora.textMuted },
   group: { marginHorizontal: space.lg, marginTop: 22, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },

@@ -28,7 +28,7 @@ import { frameLook } from '@/lib/frames';
 import { shortName } from '@/lib/format';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space } from '@/theme';
+import { aurora, colors, space } from '@/theme';
 import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
@@ -36,7 +36,7 @@ const SWATCH = 56;
 const GUTTER = space.lg;
 const CARD_PAD = 14;
 /** The preview's and the thumbnails' backing: iOS secondary fill on the white card. */
-const WELL = isDark ? 'rgba(118,118,128,0.24)' : '#F2F2F7';
+const WELL = colors.well;
 /** Room under the content for the meter above the shoot button. */
 const METER_SPACE = 44;
 
@@ -496,6 +496,6 @@ const styles = StyleSheet.create({
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   meterLeft: { flex: 1, fontSize: 15, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
   meterReset: { fontSize: 13, color: aurora.textMuted },
-  track: { height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: isDark ? '#3A3A3C' : '#E5E5EA' },
+  track: { height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: colors.track },
   fill: { height: '100%', borderRadius: 3, backgroundColor: aurora.tint },
 });

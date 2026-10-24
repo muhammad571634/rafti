@@ -23,20 +23,20 @@ const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: str
   {
     title: 'reachOut',
     rows: [
-      { key: 'morningGreeting', icon: 'sunny', fill: '#FFCC00', hint: true },
-      { key: 'eveningGreeting', icon: 'moon', fill: '#5856D6', hint: true },
+      { key: 'morningGreeting', icon: 'sunny', fill: systemColors.yellow, hint: true },
+      { key: 'eveningGreeting', icon: 'moon', fill: systemColors.indigo, hint: true },
       { key: 'morningCall', icon: 'call', fill: moduleFills.calls, hint: true },
-      { key: 'nightCall', icon: 'call', fill: '#30B0C7', hint: true },
-      { key: 'notifyPlans', icon: 'calendar', fill: '#FF3B30', hint: true },
+      { key: 'nightCall', icon: 'call', fill: systemColors.teal, hint: true },
+      { key: 'notifyPlans', icon: 'calendar', fill: systemColors.red, hint: true },
       { key: 'notifyDiary', icon: 'book', fill: moduleFills.diary, hint: true },
-      { key: 'notifyAway', icon: 'time', fill: '#8E8E93', hint: true },
+      { key: 'notifyAway', icon: 'time', fill: systemColors.gray, hint: true },
     ],
   },
   {
     title: 'rafti',
     rows: [
       { key: 'notifyGifts', icon: 'gift', fill: moduleFills.gifts },
-      { key: 'notifyOffers', icon: 'pricetag', fill: '#AF52DE' },
+      { key: 'notifyOffers', icon: 'pricetag', fill: systemColors.purple },
     ],
   },
 ];
@@ -149,7 +149,7 @@ export default function NotificationSettingsScreen() {
           name={preview.writer ? displayName(preview.writer, relationships[preview.writer.id]) : 'Sigmazam'}
           line={settings.notificationPreview && preview.line ? preview.line : t('push.hidden')}
         />
-        <InsetGroup style={styles.groupTop}>{row('notificationPreview', 'eye', '#007AFF', { last: true })}</InsetGroup>
+        <InsetGroup style={styles.groupTop}>{row('notificationPreview', 'eye', systemColors.blue, { last: true })}</InsetGroup>
 
         {GROUPS.map((group) => (
           <Fragment key={group.title}>
@@ -162,7 +162,7 @@ export default function NotificationSettingsScreen() {
 
         <Txt style={styles.sectionLabel}>{t('notifications.quietHours')}</Txt>
         <InsetGroup>
-          {row('quietHours', 'moon', '#5E5CE6', { last: !settings.quietHours })}
+          {row('quietHours', 'moon', systemColors.indigo, { last: !settings.quietHours })}
           {settings.quietHours ? (
             <>
               <InsetRow
