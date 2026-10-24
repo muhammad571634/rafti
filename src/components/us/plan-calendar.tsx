@@ -99,7 +99,7 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd, style }: P
               })}
               accessibilityState={{ selected, disabled: !inMonth }}
               onPress={() => onChange(key)}>
-              <View style={[styles.day, selected && styles.daySelected]}>
+              <View collapsable={false} style={[styles.day, selected && styles.daySelected]}>
                 <Txt
                   variant={selected || isToday ? 'bodyStrong' : 'body'}
                   color={

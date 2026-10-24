@@ -92,7 +92,7 @@ export function DailyCallsSheet({
                   accessibilityLabel={name}
                   accessibilityState={{ selected: on }}
                   onPress={() => setCallerId(c.id)}>
-                  <View style={[styles.face, on && styles.faceOn]}>
+                  <View collapsable={false} style={[styles.face, on && styles.faceOn]}>
                     <CharacterAvatar character={c} size={56} />
                     {on ? (
                       <View style={styles.tick}>

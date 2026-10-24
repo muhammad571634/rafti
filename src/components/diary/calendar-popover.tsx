@@ -114,7 +114,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
                   })}
                   accessibilityState={{ selected, disabled }}
                   onPress={() => setPending(key)}>
-                  <View style={[styles.day, selected && styles.daySelected]}>
+                  <View collapsable={false} style={[styles.day, selected && styles.daySelected]}>
                     <Txt
                       variant={selected || isToday ? 'bodyStrong' : 'body'}
                       color={

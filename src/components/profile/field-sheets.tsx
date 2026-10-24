@@ -156,7 +156,7 @@ export function BirthdaySheet({
               onPress={() => setDay(d)}
               accessibilityState={{ selected: on }}
               style={styles.dayCell}>
-              <View style={[styles.day, on && styles.dayOn]}>
+              <View collapsable={false} style={[styles.day, on && styles.dayOn]}>
                 <Txt variant="smallStrong" color={on ? colors.textOnPrimary : colors.text}>
                   {d}
                 </Txt>

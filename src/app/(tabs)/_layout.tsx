@@ -106,7 +106,8 @@ function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
           accessibilityLabel={t('tabs.find')}
           accessibilityState={{ selected: find.focused }}
           onPress={() => open(find.route.key, find.focused)}>
-          <View style={[styles.roundInner, find.focused && styles.itemOn]}>
+          {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
+          <View collapsable={false} style={[styles.roundInner, find.focused && styles.itemOn]}>
             <Ionicons name="search" size={24} color={colors.tabActive} />
           </View>
         </PressableScale>
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
   itemOn: { backgroundColor: aurora.glassOn },
   label: { fontWeight: '700' },
   round: { width: BAR, height: BAR, borderRadius: BAR / 2, padding: space.xs },
-  roundInner: { flex: 1, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  roundInner: { flex: 1, borderRadius: (BAR - space.sm) / 2, alignItems: 'center', justifyContent: 'center' },
   dot: {
     position: 'absolute',
     top: -1,

@@ -101,6 +101,10 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
 
 ## 4. Components
 
+Android: a plain `View` with rounded corners that gains a fill or border only when selected (a
+chosen day, a tab's capsule) gets `collapsable={false}`. Without a fill Android flattens it away,
+and when it comes back for the selection its corners are lost, so it draws as a square.
+
 | Need | Use | Notes |
 | --- | --- | --- |
 | 2–3 views of one screen | `Segmented` | Plans / Shells. Not chips. |
