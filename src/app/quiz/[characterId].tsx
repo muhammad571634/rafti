@@ -5,13 +5,25 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, CharacterAvatar, ClayIcon, Header, PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
+import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
+import {
+  AuroraGlass,
+  CharacterAvatar,
+  LargeTitle,
+  MODULE_GLYPH,
+  PressableScale,
+  Screen,
+  SFIcon,
+  SymbolTile,
+  Txt,
+  UserAvatar,
+} from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/lib/quiz';
 import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
 import { worldOf } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space } from '@/theme';
+import { aurora, colors, hitSlop, isDark, moduleFills, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -22,12 +34,15 @@ interface Run {
 }
 
 const NEW_PACKS = ['qp_late_night', 'qp_habits'];
+/** Quizzes wear indigo, as in the chat "+" menu and Us moments. */
+const QUIZ_FILL = '#5856D6';
 
 /**
- * Couple quiz (F29, approved prototype). Home: the friend's own quiz (5 questions about
- * themselves, new each week), their world's quiz that wins a Photo Booth frame, the packs and
- * the quizzes the user wrote. In play the friend's pick shows the moment you answer, with a line
- * in their world's voice; the score goes to the chat as a card and they react.
+ * Couple quiz (F29), on the aurora like the world quiz it links to. Home: the friend's own quiz
+ * (5 questions about themselves, new each week) as the one featured card, their world's quiz that
+ * wins a Photo Booth frame, the packs and the quizzes the user wrote, as iOS inset groups. In play
+ * the friend's pick shows the moment you answer, with a line in their world's voice; the score
+ * goes to the chat as a card and they react.
  */
 export default function QuizScreen() {
   const { t } = useTranslation();
@@ -52,10 +67,23 @@ export default function QuizScreen() {
   const world = character ? worldOf(character) : undefined;
   const week = useMemo(() => weekKey(new Date()), []);
 
+  const back = (onPress: () => void, icon: 'chevron-back' | 'close' = 'chevron-back') => (
+    <PressableScale
+      scaleTo={0.9}
+      accessibilityRole="button"
+      accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')}
+      onPress={onPress}>
+      <AuroraGlass style={styles.round}>
+        <Ionicons name={icon} size={22} color={colors.text} style={icon === 'chevron-back' && styles.backIcon} />
+      </AuroraGlass>
+    </PressableScale>
+  );
+
   if (!character) {
     return (
-      <Screen>
-        <Header title={t('games.quiz')} />
+      <Screen background="aurora">
+        <View style={styles.bar}>{back(() => router.back())}</View>
+        <LargeTitle>{t('games.quiz')}</LargeTitle>
       </Screen>
     );
   }
@@ -79,33 +107,39 @@ export default function QuizScreen() {
     };
     const won = world ? wonFrames.includes(world.key) : false;
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('games.quiz')} right={<CharacterAvatar character={character} size={32} />} />
-        <ScrollView contentContainerStyle={[styles.home, { paddingBottom: insets.bottom + space.xl }]}>
+      <Screen background="aurora">
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+          <View style={styles.bar}>
+            {back(() => router.back())}
+            <View style={styles.flex} />
+            <View style={styles.hostRing}>
+              <CharacterAvatar character={character} size={36} />
+            </View>
+          </View>
+          <LargeTitle>{t('games.quiz')}</LargeTitle>
+
+          {/* Their quiz: the one featured card, the screen's main action. */}
           <PressableScale
             scaleTo={0.985}
             accessibilityRole="button"
             accessibilityLabel={t('quizHome.selfPlay', { name })}
-            style={styles.selfCard}
+            style={[styles.card, styles.selfCard]}
             onPress={() => start(selfRun)}>
-            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? colors.surfaceAlt }]}>
-              <CharacterAvatar character={character} size={64} ring ringColor={colors.surface} />
+            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? aurora.glassOn }]}>
+              {/* The world's pastel, quieter in dark mode (HIG Dark Mode: dimmer colours). */}
+              {isDark ? <View style={styles.heroShade} /> : null}
+              <CharacterAvatar character={character} size={64} ring ringColor={aurora.card} />
               {world ? (
                 <View style={styles.worldPill}>
-                  <Txt variant="caption" style={styles.bold}>
-                    {world.series}
-                  </Txt>
+                  <Txt style={styles.worldPillText}>{world.series}</Txt>
                 </View>
               ) : null}
-              <ClayIcon name="quiz" size={52} tile={false} style={styles.selfArt} />
             </View>
             <View style={styles.selfBody}>
-              <Txt variant="h3">{t('quizHome.selfTitle', { name })}</Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('quizHome.selfBody', { name })}
-              </Txt>
-              <View style={styles.selfButton}>
-                <Txt variant="bodyStrong" color={colors.textOnPrimary}>
+              <Txt style={styles.selfTitle}>{t('quizHome.selfTitle', { name })}</Txt>
+              <Txt style={styles.selfText}>{t('quizHome.selfBody', { name })}</Txt>
+              <View style={styles.cta}>
+                <Txt style={styles.ctaText} lines={1}>
                   {t('quizHome.selfPlay', { name })}
                 </Txt>
               </View>
@@ -117,104 +151,86 @@ export default function QuizScreen() {
               scaleTo={0.985}
               accessibilityRole="button"
               accessibilityLabel={t('quizHome.worldWin', { world: world.series })}
-              style={styles.row}
+              style={[styles.card, styles.row, styles.worldRow]}
               onPress={() =>
                 router.push({ pathname: '/quiz/world/[world]', params: { world: world.key, host: character.id } })
               }>
-              <View style={[styles.tile, { backgroundColor: world.tint }]}>
-                <ClayIcon name="polaroids" size={32} tile={false} />
-              </View>
-              <View style={styles.grow}>
-                <Txt variant="title">{t('quizHome.worldWin', { world: world.series })}</Txt>
-                <Txt variant="small" color={won ? colors.bondText : colors.textSecondary}>
+              <SymbolTile fill={moduleFills.photo} ios="photo.on.rectangle.angled" icon="images" />
+              <View style={styles.flex}>
+                <Txt style={styles.rowTitle} lines={2}>
+                  {t('quizHome.worldWin', { world: world.series })}
+                </Txt>
+                <Txt style={[styles.rowHint, won && styles.won]}>
                   {won ? t('quizHome.worldWon') : t('quizHome.worldHost', { name })}
                 </Txt>
               </View>
-              <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+              <Ionicons name="chevron-forward" size={15} color={STORE.faint} />
             </PressableScale>
           ) : null}
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('quizHome.packs')}</Txt>
-            {QUIZ_PACKS.map((p) => (
+          <GroupLabel>{t('quizHome.packs')}</GroupLabel>
+          <View style={styles.card}>
+            {QUIZ_PACKS.map((p, i) => (
               <PressableScale
                 key={p.id}
                 scaleTo={0.985}
                 accessibilityRole="button"
-                style={styles.row}
+                style={[styles.row, i < QUIZ_PACKS.length - 1 && styles.rowLine]}
                 onPress={() => start({ id: p.id, title: t(`games.packs.${p.titleKey}`), questions: p.questions })}>
-                <View style={styles.tile}>
-                  <ClayIcon name={p.icon} size={32} tile={false} />
-                </View>
-                <View style={styles.grow}>
-                  <Txt variant="title">{t(`games.packs.${p.titleKey}`)}</Txt>
-                  <Txt variant="small" color={colors.textSecondary}>
-                    {t('games.questions', { count: p.questions.length })}
-                  </Txt>
+                <SymbolTile {...p.look} />
+                <View style={styles.flex}>
+                  <Txt style={styles.rowTitle}>{t(`games.packs.${p.titleKey}`)}</Txt>
+                  <Txt style={styles.rowHint}>{t('games.questions', { count: p.questions.length })}</Txt>
                 </View>
                 {NEW_PACKS.includes(p.id) ? (
                   <View style={styles.newPill}>
-                    <Txt variant="caption" color={colors.brandText} style={styles.bold}>
-                      {t('quizHome.new')}
-                    </Txt>
+                    <Txt style={styles.newText}>{t('quizHome.new')}</Txt>
                   </View>
                 ) : null}
-                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+                <Ionicons name="chevron-forward" size={15} color={STORE.faint} />
               </PressableScale>
             ))}
           </View>
 
-          <View style={styles.section}>
-            <Txt variant="h3">{t('quizHome.yours')}</Txt>
-            <View style={styles.box}>
-              <PressableScale
-                scaleTo={0.985}
-                accessibilityRole="button"
-                style={styles.boxRow}
-                onPress={() => router.push('/quiz/write')}>
-                <View style={styles.boxTile}>
-                  <Ionicons name="add" size={22} color={colors.text} />
-                </View>
-                <Txt variant="title" style={styles.grow}>
-                  {t('quizHome.write')}
-                </Txt>
-                <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
-              </PressableScale>
-              {userQuizzes.map((q) => (
-                <View key={q.id} style={[styles.boxRow, styles.boxDivider]}>
-                  <PressableScale
-                    scaleTo={0.985}
-                    accessibilityRole="button"
-                    accessibilityLabel={q.title}
-                    style={styles.boxOpen}
-                    onPress={() => start({ id: q.id, title: q.title, questions: q.questions })}>
-                    <View style={styles.boxTile}>
-                      <ClayIcon name="quiz" size={28} tile={false} />
-                    </View>
-                    <View style={styles.grow}>
-                      <Txt variant="title" lines={1}>
-                        {q.title}
-                      </Txt>
-                      <Txt variant="small" color={colors.textSecondary}>
-                        {t('quizHome.mineMeta', { count: q.questions.length })}
-                      </Txt>
-                    </View>
-                  </PressableScale>
-                  <PressableScale
-                    hitSlop={hitSlop}
-                    scaleTo={0.9}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('quizHome.edit', { title: q.title })}
-                    onPress={() => router.push({ pathname: '/quiz/write', params: { id: q.id } })}>
-                    <Ionicons name="create-outline" size={20} color={colors.textSecondary} />
-                  </PressableScale>
-                </View>
-              ))}
-            </View>
-            <Txt variant="caption" color={colors.textSecondary} center>
-              {t('quizHome.only')}
-            </Txt>
+          <GroupLabel>{t('quizHome.yours')}</GroupLabel>
+          <View style={styles.card}>
+            {/* iOS "add" row: the accent's plus and words, as Reminders' "Add List". */}
+            <PressableScale
+              scaleTo={0.985}
+              accessibilityRole="button"
+              style={[styles.row, userQuizzes.length > 0 && styles.rowLine]}
+              onPress={() => router.push('/quiz/write')}>
+              <SFIcon ios="plus.circle.fill" icon="add-circle" size={30} color={STORE.peachInk} />
+              <Txt style={[styles.rowTitle, styles.addText]}>{t('quizHome.write')}</Txt>
+            </PressableScale>
+            {userQuizzes.map((q, i) => (
+              <View key={q.id} style={[styles.row, i < userQuizzes.length - 1 && styles.rowLine]}>
+                <PressableScale
+                  scaleTo={0.985}
+                  accessibilityRole="button"
+                  accessibilityLabel={q.title}
+                  style={styles.rowOpen}
+                  onPress={() => start({ id: q.id, title: q.title, questions: q.questions })}>
+                  <SymbolTile fill={QUIZ_FILL} ios="questionmark" icon="help" />
+                  <View style={styles.flex}>
+                    <Txt style={styles.rowTitle} lines={1}>
+                      {q.title}
+                    </Txt>
+                    <Txt style={styles.rowHint}>{t('quizHome.mineMeta', { count: q.questions.length })}</Txt>
+                  </View>
+                </PressableScale>
+                <PressableScale
+                  hitSlop={hitSlop}
+                  scaleTo={0.9}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('quizHome.edit', { title: q.title })}
+                  onPress={() => router.push({ pathname: '/quiz/write', params: { id: q.id } })}>
+                  <SFIcon ios="pencil" icon="create-outline" size={20} color={aurora.textMuted} />
+                </PressableScale>
+              </View>
+            ))}
           </View>
+          <Txt style={styles.footnote}>{t('quizHome.only')}</Txt>
         </ScrollView>
       </Screen>
     );
@@ -225,24 +241,25 @@ export default function QuizScreen() {
   // 3. The score.
   if (done) {
     return (
-      <Screen background={colors.bgPlain}>
-        <View style={[styles.result, { paddingBottom: insets.bottom + space.lg }]}>
-          <View style={styles.pair}>
-            <UserAvatar user={user} size={72} />
-            <CharacterAvatar character={character} size={72} ring ringColor={colors.bgPlain} style={styles.overlap} />
-          </View>
-          <View style={styles.score}>
-            <ClayIcon name="trophy" size={52} tile={false} />
-            <Txt variant="heroFigure">
-              {matches}/{total}
+      <Screen background="aurora">
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+          <View style={[styles.result, styles.resultTop]}>
+            <View style={styles.pair}>
+              <UserAvatar user={user} size={80} />
+              <CharacterAvatar character={character} size={80} ring ringColor={aurora.card} style={styles.overlap} />
+            </View>
+            <View style={styles.score} accessible accessibilityLabel={`${matches} / ${total}`}>
+              <SFIcon ios={MODULE_GLYPH.bond.ios} icon={MODULE_GLYPH.bond.icon} size={36} color={moduleFills.bond} />
+              <Txt variant="heroFigure">
+                {matches}/{total}
+              </Txt>
+            </View>
+            <Txt style={styles.resultTitle} center accessibilityRole="header">
+              {run.title}
             </Txt>
           </View>
-          <Txt variant="h2" center>
-            {run.title}
-          </Txt>
-          <View style={styles.grow} />
-          <Button label={t('games.backToChat', { name })} size="lg" full onPress={backToChat} />
-        </View>
+        </ScrollView>
+        <StoreBuyBar label={t('games.backToChat', { name })} onPress={backToChat} />
       </Screen>
     );
   }
@@ -253,12 +270,8 @@ export default function QuizScreen() {
   const last = index === total - 1;
   const lines = world ?? QUIZ_LINES;
   const seed = `${character.id}:${run.id}:${index}`;
-  const line =
-    mine == null
-      ? ''
-      : mine === theirs
-        ? lineFor(lines.match, seed)
-        : lineFor(lines.differ, seed, question.options[theirs]);
+  const same = mine != null && mine === theirs;
+  const line = mine == null ? '' : same ? lineFor(lines.match, seed) : lineFor(lines.differ, seed, question.options[theirs]);
 
   const answer = (option: number) => {
     if (mine != null) return;
@@ -277,29 +290,26 @@ export default function QuizScreen() {
   };
 
   return (
-    <Screen background={colors.bgPlain}>
-      <View style={styles.top}>
-        <PressableScale
-          style={styles.close}
-          hitSlop={hitSlop}
-          scaleTo={0.9}
-          accessibilityLabel={t('common.close')}
-          onPress={() => setRun(null)}>
-          <Ionicons name="close" size={22} color={colors.text} />
-        </PressableScale>
-        <View style={styles.dots}>
+    <Screen background="aurora">
+      <View style={[styles.bar, styles.playBar]}>
+        {back(() => setRun(null), 'close')}
+        <View style={styles.dots} accessible accessibilityLabel={`${index + 1} / ${total}`}>
           {run.questions.map((_, i) => (
             <View key={i} style={[styles.dot, i <= index && styles.dotOn]} />
           ))}
         </View>
-        <CharacterAvatar character={character} size={36} />
+        <View style={styles.hostRing}>
+          <CharacterAvatar character={character} size={36} />
+        </View>
       </View>
 
-      <ScrollView contentContainerStyle={[styles.play, { paddingBottom: insets.bottom + space.lg }]}>
-        <Txt variant="smallStrong" color={colors.textMuted}>
-          {t('games.progress', { title: run.title, n: index + 1, total })}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: mine != null ? BUY_BAR_SPACE : insets.bottom + space.xl }}>
+        <Txt style={styles.progress}>{t('games.progress', { title: run.title, n: index + 1, total })}</Txt>
+        <Txt style={styles.question} accessibilityRole="header">
+          {question.text}
         </Txt>
-        <Txt variant="h1">{question.text}</Txt>
 
         <View style={styles.options}>
           {question.options.map((text, option) => (
@@ -308,7 +318,7 @@ export default function QuizScreen() {
               text={text}
               mine={mine === option}
               theirs={mine != null && theirs === option}
-              disabled={mine != null}
+              answered={mine != null}
               character={character}
               onPress={() => answer(option)}
             />
@@ -316,59 +326,56 @@ export default function QuizScreen() {
         </View>
 
         {mine != null ? (
-          <>
-            <View style={[styles.verdict, mine === theirs ? styles.same : styles.differ]}>
-              <Txt variant="bodyStrong" center color={mine === theirs ? colors.bondText : colors.textSecondary}>
-                {mine === theirs ? t('games.same', { count: matches, n: index + 1 }) : t('games.differ', { name })}
+          // Their line, in their world's voice (the server's model writes it from the persona).
+          <View style={styles.says} accessibilityLiveRegion="polite">
+            <CharacterAvatar character={character} size={32} />
+            <View style={styles.bubble}>
+              <Txt style={[styles.verdict, { color: same ? colors.bondText : aurora.textMuted }]}>
+                {same ? t('games.same', { count: matches, n: index + 1 }) : t('games.differ', { name })}
               </Txt>
+              <Txt style={styles.bubbleText}>{line}</Txt>
             </View>
-            {/* Their line, in their world's voice (the server's model writes it from the persona). */}
-            <View style={styles.says} accessibilityLiveRegion="polite">
-              <CharacterAvatar character={character} size={32} />
-              <View style={styles.bubble}>
-                <Txt variant="body">{line}</Txt>
-              </View>
-            </View>
-            <Button label={last ? t('games.seeScore') : t('date.next')} size="lg" full onPress={next} />
-          </>
+          </View>
         ) : null}
       </ScrollView>
+
+      {mine != null ? <StoreBuyBar label={last ? t('games.seeScore') : t('date.next')} onPress={next} /> : null}
     </Screen>
   );
 }
 
+/**
+ * One answer as an aurora card. Yours takes an ink border and a "You" tag (ink marks selection),
+ * theirs their face; when both picked it, the border is the bond's mint.
+ */
 function Option({
   text,
   mine,
   theirs,
-  disabled,
+  answered,
   character,
   onPress,
 }: {
   text: string;
   mine: boolean;
   theirs: boolean;
-  disabled: boolean;
+  answered: boolean;
   character: Character;
   onPress: () => void;
 }) {
   const { t } = useTranslation();
   return (
     <PressableScale
-      scaleTo={0.97}
-      disabled={disabled}
+      // No `disabled`: it would fade the answers too; `answer` ignores taps after the first.
+      scaleTo={answered ? 1 : 0.97}
       accessibilityRole="button"
-      accessibilityState={{ selected: mine, disabled }}
-      style={[styles.option, mine && theirs ? styles.both : mine ? styles.mine : theirs ? styles.theirs : null]}
+      accessibilityState={{ selected: mine, disabled: answered }}
+      style={[styles.option, mine && theirs ? styles.both : mine ? styles.mine : null]}
       onPress={onPress}>
-      <Txt variant="bodyStrong" style={styles.grow}>
-        {text}
-      </Txt>
+      <Txt style={[styles.optionText, answered && !mine && !theirs && styles.dim]}>{text}</Txt>
       {mine ? (
         <View style={styles.youTag}>
-          <Txt variant="tiny" color={colors.textOnPrimary}>
-            {t('games.you')}
-          </Txt>
+          <Txt style={styles.youText}>{t('games.you')}</Txt>
         </View>
       ) : null}
       {theirs ? <CharacterAvatar character={character} size={28} /> : null}
@@ -377,143 +384,93 @@ function Option({
 }
 
 const styles = StyleSheet.create({
-  grow: { flex: 1 },
-  bold: { fontWeight: '700' },
-  home: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.xl },
-  selfCard: {
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
-  selfHero: { height: 116, flexDirection: 'row', alignItems: 'flex-end', padding: space.md + 2 },
+  flex: { flex: 1 },
+  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
+  playBar: { height: 56, gap: space.md },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  backIcon: { marginLeft: -2 },
+  hostRing: { padding: 2, borderRadius: 20, backgroundColor: aurora.ring },
+  card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },
+  selfCard: { marginTop: 20 },
+  selfHero: { height: 116, flexDirection: 'row', alignItems: 'flex-end', padding: 14 },
+  heroShade: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.55)' },
   worldPill: {
     position: 'absolute',
-    top: space.md,
-    right: space.md,
+    top: 12,
+    right: 12,
     height: 26,
-    paddingHorizontal: space.sm + 2,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-  },
-  selfArt: { position: 'absolute', right: space.lg, bottom: space.sm },
-  selfBody: { padding: space.lg, paddingTop: space.md, gap: space.xs },
-  selfButton: {
-    marginTop: space.sm + 2,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: colors.primaryFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  section: { gap: space.sm + 2 },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    minHeight: 68,
-    paddingHorizontal: space.md + 2,
-    borderRadius: radius.tile,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  tile: {
-    width: 44,
-    height: 44,
+    paddingHorizontal: 10,
     borderRadius: 13,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
+    backgroundColor: aurora.card,
     justifyContent: 'center',
   },
-  newPill: {
-    height: 22,
-    paddingHorizontal: space.sm,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primarySofter,
-    borderWidth: 1,
-    borderColor: colors.primarySoft,
-    justifyContent: 'center',
-  },
-  box: {
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
-  boxRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64, paddingHorizontal: space.md + 2 },
-  boxOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 64 },
-  boxDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
-  boxTile: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  top: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
-  },
-  close: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  worldPillText: { fontSize: 13, fontWeight: '600', color: colors.text },
+  selfBody: { padding: space.lg, paddingTop: 14, gap: 4 },
+  selfTitle: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
+  selfText: { fontSize: 15, lineHeight: 20, color: aurora.textMuted },
+  cta: { marginTop: 12, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
+  ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  worldRow: { marginTop: space.md },
+  row: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
+  rowOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  rowTitle: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  rowHint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: aurora.textMuted },
+  won: { color: colors.bondText },
+  addText: { flex: 1, color: STORE.peachInk },
+  newPill: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.peachSoft },
+  newText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  dot: { width: 26, height: 6, borderRadius: 3, backgroundColor: colors.border },
-  dotOn: { backgroundColor: colors.primary },
-  play: { paddingHorizontal: space.lg, paddingTop: space.md, gap: space.md },
-  options: { gap: space.sm, marginTop: space.sm },
+  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: aurora.glassOn },
+  dotOn: { backgroundColor: aurora.tint },
+  progress: {
+    marginTop: space.md,
+    marginHorizontal: space.lg,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    color: aurora.textMuted,
+    textTransform: 'uppercase',
+  },
+  question: { marginTop: 6, marginHorizontal: space.lg, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
+  options: { gap: 10, marginTop: space.xl, marginHorizontal: space.lg },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
     minHeight: 58,
     paddingHorizontal: space.lg,
-    paddingVertical: space.md,
-    borderRadius: radius.xl,
+    paddingVertical: 14,
+    borderRadius: 20,
     borderWidth: 2,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: 'transparent',
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
   },
-  mine: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
-  theirs: { borderColor: colors.borderStrong },
-  both: { borderColor: colors.bond, backgroundColor: colors.bondSoft },
-  youTag: {
-    height: 26,
-    paddingHorizontal: space.sm,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primaryFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  verdict: { padding: space.md, borderRadius: radius.lg },
-  same: { backgroundColor: colors.bondSoft },
-  differ: { backgroundColor: colors.surfaceAlt },
-  says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm },
+  optionText: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  mine: { borderColor: colors.text },
+  both: { borderColor: colors.bond },
+  dim: { opacity: 0.4 },
+  youTag: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.inkTag },
+  youText: { fontSize: 13, fontWeight: '700', color: STORE.inkTagText },
+  says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, marginHorizontal: space.lg, marginTop: space.lg },
   bubble: {
     flexShrink: 1,
-    paddingHorizontal: space.md + 2,
-    paddingVertical: space.sm + 2,
-    borderRadius: 18,
+    gap: 2,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 20,
     borderBottomLeftRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: aurora.card,
+    ...CARD_SHADOW,
   },
-  score: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  result: { flex: 1, alignItems: 'center', gap: space.md, paddingHorizontal: space.xl, paddingTop: space.huge },
+  verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
+  bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  result: { alignItems: 'center', gap: space.md, paddingHorizontal: space.xl },
+  resultTop: { paddingTop: space.huge },
   pair: { flexDirection: 'row' },
   overlap: { marginLeft: -space.lg },
+  score: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
+  resultTitle: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
 });
