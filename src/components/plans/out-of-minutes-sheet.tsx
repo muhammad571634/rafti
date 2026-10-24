@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Button, ClayIcon, Sheet, Txt } from '@/components/ui';
+import { Button, ModuleIcon, Sheet, Txt } from '@/components/ui';
 import { planStatus, PLANS, TOP_UPS } from '@/economy/plans';
 import { callClock } from '@/lib/format';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
@@ -50,7 +50,7 @@ export function OutOfMinutesSheet({
   return (
     <Sheet visible={visible} onClose={onDone}>
       <View style={styles.head}>
-        <ClayIcon name="calls" size={52} tile={false} />
+        <ModuleIcon name="calls" size={52} />
         <View style={styles.flex}>
           <Txt variant="h3">{t('plans.outTitle')}</Txt>
           {name && talked != null ? (

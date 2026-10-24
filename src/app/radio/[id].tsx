@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
-import { AuroraGlass, CharacterAvatar, characterImage, EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
+import { AuroraGlass, CharacterAvatar, characterImage, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
@@ -103,7 +103,7 @@ export default function ClipPlayerScreen() {
     return (
       <Screen background="aurora">
         <View style={styles.bar}>{back}</View>
-        <EmptyState icon="radio" title={t('radio.gone')} actionLabel={t('radio.title')} onAction={() => router.back()} />
+        <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('radio.title')} onAction={() => router.back()} />
       </Screen>
     );
   }

@@ -63,7 +63,7 @@ export default function NewGroupScreen() {
       <Screen background={colors.bgPlain}>
         <Header title={t('group.newGroup')} />
         <EmptyState
-          icon="bubbles"
+          symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('group.noFriends')}
           hint={t('group.noFriendsHint')}
           actionLabel={t('find.title')}

@@ -1,6 +1,6 @@
 import type { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { colors, moduleColors, moduleFills } from '@/theme';
@@ -53,6 +53,25 @@ export function ModuleIcon({ name, size }: { name: ModuleKey; size: number }) {
       style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size / 4) }]}>
       <SFIcon ios={glyph.ios} icon={glyph.icon} size={Math.round(size * 0.54)} color={colors.white} />
     </LinearGradient>
+  );
+}
+
+/** A flat Settings-style tile: a white glyph on one iOS colour (`moduleTile` gives a module's). */
+export function SymbolTile({
+  fill,
+  ios,
+  icon,
+  size = 30,
+}: {
+  fill: string;
+  ios: SFSymbol;
+  icon: keyof typeof Ionicons.glyphMap;
+  size?: number;
+}) {
+  return (
+    <View style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size * 0.24), backgroundColor: fill }]}>
+      <SFIcon ios={ios} icon={icon} size={Math.round(size * 0.56)} color={colors.white} />
+    </View>
   );
 }
 

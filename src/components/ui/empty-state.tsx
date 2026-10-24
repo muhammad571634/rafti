@@ -1,10 +1,12 @@
+import type { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { colors, space } from '@/theme';
 
 import { Button } from './button';
-import { ClayIcon, type ClayIconName } from './clay-icon';
 import { BrandArt } from './mascot';
+import { SFIcon } from './symbol';
 import { Txt } from './text';
 
 export interface EmptyStateProps {
@@ -13,8 +15,11 @@ export interface EmptyStateProps {
   actionLabel?: string;
   onAction?: () => void;
   compact?: boolean;
-  /** A clay icon for what is missing, in place of the Rafti mascot. */
-  icon?: ClayIconName;
+  /**
+   * What is missing, as a large grey SF Symbol (an Ionicon off iPhone), the way iOS's
+   * ContentUnavailableView draws it; without one the mascot stands in.
+   */
+  symbol?: { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap };
 }
 
 export function EmptyState({
@@ -23,12 +28,12 @@ export function EmptyState({
   actionLabel,
   onAction,
   compact,
-  icon,
+  symbol,
 }: EmptyStateProps) {
   return (
     <View style={[styles.root, compact ? styles.compact : styles.fill]}>
-      {icon ? (
-        <ClayIcon name={icon} size={compact ? 88 : 120} tile={false} />
+      {symbol ? (
+        <SFIcon ios={symbol.ios} icon={symbol.icon} size={compact ? 44 : 56} color={colors.textMuted} />
       ) : (
         <BrandArt name="empty" width={compact ? 82 : 111} bob />
       )}

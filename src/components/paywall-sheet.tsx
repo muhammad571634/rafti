@@ -3,7 +3,7 @@ import { useRouter, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { ClayIcon, Divider, Icon3D, PressableScale, Sheet, ShellBadge, Txt } from '@/components/ui';
+import { Divider, Icon3D, moduleTile, PressableScale, Sheet, ShellBadge, SymbolTile, Txt } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
 import {
   FREE_SPINS_PER_DAY,
@@ -53,7 +53,7 @@ export function PaywallSheet({
   // The free way: the day's spin while it is left. No ads (owner, 2026-10-22).
   const free = spinLeft
     ? {
-        lead: <ClayIcon name="gift" size={ROW_ICON} tile={false} />,
+        lead: <SymbolTile {...moduleTile('gifts')} size={ROW_ICON} />,
         title: t('paywall.spin'),
         meta: t('paywall.spinMeta', { count: Math.max(...WHEEL_SEGMENTS) }),
         onPress: () => go('/gifts'),
@@ -63,7 +63,7 @@ export function PaywallSheet({
   const rows = [
     free,
     {
-      lead: <Icon3D name="shell" size={ROW_ICON} />,
+      lead: <SymbolTile {...moduleTile('store')} size={ROW_ICON} />,
       title: t('paywall.getShells'),
       meta: wallet.boughtShells
         ? t('paywall.getShellsMeta', { price: cheapestPack.price })
@@ -74,7 +74,8 @@ export function PaywallSheet({
     proMember
       ? null
       : {
-          lead: <Icon3D name="crown" size={ROW_ICON} />,
+          // Plans wear the crown in purple, as in Shell history and My plan.
+          lead: <SymbolTile fill="#AF52DE" ios="crown.fill" icon="diamond" size={ROW_ICON} />,
           title: member
             ? t('paywall.getPro')
             : wallet.trialUsed

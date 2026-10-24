@@ -91,7 +91,7 @@ export default function WorldQuizScreen() {
         <View style={styles.bar}>{back()}</View>
         <LargeTitle>{title}</LargeTitle>
         <EmptyState
-          icon="compass"
+          symbol={{ ios: 'safari.fill', icon: 'compass' }}
           title={t('worldQuiz.noHost', { world: world.series })}
           actionLabel={t('frames.find')}
           onAction={() => router.replace('/(tabs)/find')}

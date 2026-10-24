@@ -101,7 +101,7 @@ export default function MemoriesScreen() {
         <>
         <LargeTitle>{t('memories.title')}</LargeTitle>
         <EmptyState
-          icon="jar"
+          symbol={{ ios: 'bookmark.fill', icon: 'bookmark' }}
           title={t('memories.empty')}
           hint={t('memories.emptyHint')}
           actionLabel={t('memories.addManual')}

@@ -69,7 +69,7 @@ export default function MakeClipScreen() {
         {back}
         <LargeTitle>{t('radio.make')}</LargeTitle>
         <EmptyState
-          icon="bubbles"
+          symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('radio.noFriends')}
           hint={t('radio.noFriendsHint')}
           actionLabel={t('find.title')}

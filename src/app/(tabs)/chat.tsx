@@ -279,7 +279,7 @@ export default function ChatListScreen() {
 
         {items.length === 0 ? (
           <EmptyState
-            icon="bubbles"
+            symbol={{ ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' }}
             title={t('chatList.empty')}
             hint={t('chatList.emptyHint')}
             actionLabel={t('find.title')}
