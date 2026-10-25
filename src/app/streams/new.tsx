@@ -1,21 +1,24 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pill } from '@/components/create/quick-create';
 import { FriendRow, useFriends, type Friend } from '@/components/group/friend-row';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
-import { GlassBar, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { CharacterAvatar, GlassBar, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { freeRoundsLeft, STREAM_SHELLS } from '@/economy/streams';
+import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { fillTopic, STREAM_TOPIC_MAX, STREAM_TOPICS } from '@/lib/streams';
 import { groupBySeries } from '@/mock/characters';
 import { todayKey } from '@/mock/time';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import type { Character } from '@/types';
 
 /**
  * A new stream: a topic (or one of the ideas), then the two who talk: friends first, then
@@ -80,6 +83,7 @@ export default function NewStreamScreen() {
   };
 
   const ready = picked.length === 2 && !!topic.trim();
+  const pair = picked.map((id) => characters.find((c) => c.id === id)).filter((c): c is Character => !!c);
 
   return (
     <Screen background={colors.bg}>
@@ -110,14 +114,21 @@ export default function NewStreamScreen() {
               accessibilityLabel={t('streams.topic')}
             />
           </InsetGroup>
-          <View style={styles.ideas}>
+          {/* Ideas as one swipeable row of capsules under the field, not a wall of chips. */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            style={styles.ideasStrip}
+            contentContainerStyle={styles.ideas}>
             {STREAM_TOPICS.map((idea) => {
               const text = fillTopic(idea, userName);
               return <Pill key={idea} label={text} active={topic === text} onPress={() => setTopic(text)} />;
             })}
-          </View>
+          </ScrollView>
 
-          <GroupLabel>{t('streams.whoTalks', { count: picked.length })}</GroupLabel>
+          <GroupLabel>{t('streams.whoTalks')}</GroupLabel>
+          <PairSeats pair={pair} onRemove={toggle} />
           {friends.length ? <InsetGroup>{friends.map((friend, i) => row(friend, i === friends.length - 1))}</InsetGroup> : null}
           {others.map((group) => (
             <View key={group.series}>
@@ -141,9 +152,71 @@ export default function NewStreamScreen() {
   );
 }
 
+/** The two who talk as two seats: a face and first name once picked (a tap takes them out), a grey seat before. */
+function PairSeats({ pair, onRemove }: { pair: Character[]; onRemove: (id: string) => void }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.pair}>
+      {[0, 1].map((i) => {
+        const c = pair[i];
+        return (
+          <Fragment key={i}>
+            {i === 1 ? (
+              <View style={styles.pairLink}>
+                <Ionicons name="chatbubbles" size={20} color={colors.textFaint} />
+              </View>
+            ) : null}
+            <Pressable
+              disabled={!c}
+              onPress={c ? () => onRemove(c.id) : undefined}
+              accessibilityRole={c ? 'button' : undefined}
+              accessibilityLabel={c ? t('streams.remove', { name: c.name }) : t('streams.pickOne')}
+              style={styles.seat}>
+              {c ? (
+                <View>
+                  <CharacterAvatar character={c} size={64} />
+                  <View style={styles.seatOut}>
+                    <Ionicons name="close" size={12} color={colors.white} />
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.seatEmpty}>
+                  <Ionicons name="add" size={28} color={colors.textSecondary} />
+                </View>
+              )}
+              <Txt style={styles.seatName} lines={1}>
+                {c ? shortName(c.name) : ' '}
+              </Txt>
+            </Pressable>
+          </Fragment>
+        );
+      })}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   input: { minHeight: 72, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  ideas: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md, marginHorizontal: space.lg },
+  ideasStrip: { flexGrow: 0, marginTop: space.md },
+  ideas: { gap: space.sm, paddingHorizontal: space.lg },
+  pair: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: space.lg, marginTop: space.xs, marginBottom: space.sm },
+  pairLink: { height: 64, justifyContent: 'center' },
+  seat: { width: 88, alignItems: 'center', gap: 6 },
+  seatEmpty: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', backgroundColor: systemColors.fill },
+  seatOut: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: systemColors.gray,
+    borderWidth: 2,
+    borderColor: colors.bg,
+  },
+  seatName: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.text },
   barError: { textAlign: 'center', fontSize: 13, color: systemColors.red },
 });

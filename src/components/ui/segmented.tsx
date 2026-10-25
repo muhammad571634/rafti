@@ -76,7 +76,8 @@ export function SystemSegmented<T extends string | number>({
   style,
 }: {
   options: readonly { value: T; label: string; locked?: boolean }[];
-  value: T;
+  /** Nothing chosen yet leaves every segment plain (UISegmentedControl's noSegment). */
+  value: T | undefined;
   onChange: (value: T) => void;
   style?: StyleProp<ViewStyle>;
 }) {

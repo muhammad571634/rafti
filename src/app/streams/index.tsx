@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GroupAvatar } from '@/components/group-avatar';
 import { EmptyState, GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
-import { FREE_STREAM_ROUNDS, STREAM_SHELLS } from '@/economy/streams';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { isPlaying } from '@/lib/streams';
@@ -30,7 +29,11 @@ export default function StreamsScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar title={t('streams.title')} scrolled={scrolled} right={<GlassButton icon="add" accessibilityLabel={t('streams.new')} onPress={startNew} />} />
+      <GlassBar
+        title={t('streams.title')}
+        scrolled={scrolled}
+        right={streams.length ? <GlassButton icon="add" accessibilityLabel={t('streams.new')} onPress={startNew} /> : undefined}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -39,7 +42,13 @@ export default function StreamsScreen() {
         <LargeTitle>{t('streams.title')}</LargeTitle>
 
         {streams.length === 0 ? (
-          <EmptyState title={t('streams.empty')} hint={t('streams.emptyHint')} actionLabel={t('streams.new')} onAction={startNew} />
+          <EmptyState
+            symbol={{ ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' }}
+            title={t('streams.empty')}
+            hint={t('streams.emptyHint')}
+            actionLabel={t('streams.new')}
+            onAction={startNew}
+          />
         ) : (
           <InsetGroup style={styles.first}>
             {streams.map((stream, i) => (
@@ -53,7 +62,6 @@ export default function StreamsScreen() {
             ))}
           </InsetGroup>
         )}
-        <Txt style={styles.footer}>{t('streams.priceRule', { free: FREE_STREAM_ROUNDS.free, plan: FREE_STREAM_ROUNDS.plan, shells: STREAM_SHELLS })}</Txt>
       </ScrollView>
     </Screen>
   );
@@ -99,5 +107,4 @@ const styles = StyleSheet.create({
   topic: { marginTop: 2, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
   meta: { fontSize: 15, color: colors.textSecondary },
   live: { color: colors.primary, fontWeight: '600' },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
 });

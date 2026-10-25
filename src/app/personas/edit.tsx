@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pill } from '@/components/create/quick-create';
 import { GroupLabel } from '@/components/plans/store-look';
-import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, PressableScale, Screen, Toggle, Txt, useScrolledPast } from '@/components/ui';
+import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, PressableScale, Screen, SystemSegmented, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { perkLimit } from '@/economy/perks';
@@ -125,11 +125,16 @@ export default function PersonaEditScreen() {
             </View>
             <View style={styles.formRow}>
               <Txt style={styles.formLabel}>{t('editProfile.pronouns')}</Txt>
-              <View style={styles.pronouns}>
-                {PRONOUNS.map((p) => (
-                  <Pill key={p} label={t(`personas.pronounShort.${p}`)} active={pronouns === p} onPress={() => setPronouns(pronouns === p ? undefined : p)} />
-                ))}
-              </View>
+              {/* iOS segmented control; tapping the chosen one again clears it (pronouns are optional). */}
+              <SystemSegmented
+                options={PRONOUNS.map((p) => ({ value: p, label: t(`personas.pronounShort.${p}`) }))}
+                value={pronouns}
+                onChange={(p) => {
+                  haptic.selection();
+                  setPronouns(pronouns === p ? undefined : p);
+                }}
+                style={styles.flex}
+              />
             </View>
           </InsetGroup>
 
@@ -201,7 +206,6 @@ const styles = StyleSheet.create({
   formRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, marginLeft: space.lg, paddingRight: space.lg },
   formLabel: { width: 84, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   formInput: { flex: 1, minHeight: 48, fontSize: 17, letterSpacing: -0.4, color: colors.text, textAlign: 'right' },
-  pronouns: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: space.sm },
   about: { minHeight: 150, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
   count: { paddingHorizontal: space.lg, paddingBottom: 10, textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   topics: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },

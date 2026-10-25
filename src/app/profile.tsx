@@ -46,7 +46,7 @@ const FILL = {
   privacy: systemColors.cyan,
   terms: systemColors.brown,
   plan: systemColors.purple,
-  personas: systemColors.orange,
+  personas: systemColors.blue,
   lore: systemColors.indigo,
 };
 const SWITCH_ON = systemColors.green;

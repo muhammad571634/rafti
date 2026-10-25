@@ -5,16 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BookRow, EntryRow } from '@/components/lore/lore-rows';
+import { BookRow, EntryRow, LoreInfoButton } from '@/components/lore/lore-rows';
 import { GroupLabel } from '@/components/plans/store-look';
-import { GlassBar, Header, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { AddRow, GlassBar, Header, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor, recentLines, triggeredLore } from '@/lib/lorebook';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Lorebook } from '@/types';
 
 const NO_MESSAGES: never[] = [];
@@ -62,7 +62,7 @@ export default function CharacterLoreScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar title={title} scrolled={scrolled} />
+      <GlassBar title={title} scrolled={scrolled} right={<LoreInfoButton />} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -75,7 +75,7 @@ export default function CharacterLoreScreen() {
           {now.length ? (
             now.map((hit, i) => <EntryRow key={`${hit.book.id}:${hit.entry.id}`} entry={hit.entry} note={t('lore.cameUp', { word: hit.keyword })} last={i === now.length - 1} />)
           ) : (
-            <Txt style={styles.empty}>{t('lore.inChatEmpty', { name })}</Txt>
+            <Txt style={styles.empty}>{t('lore.inChatEmpty')}</Txt>
           )}
         </InsetGroup>
 
@@ -83,7 +83,7 @@ export default function CharacterLoreScreen() {
           <>
             <GroupLabel>{t('lore.theirWorld')}</GroupLabel>
             <InsetGroup>
-              <BookRow official name={world.name} hint={t('lore.servesWorld')} count={world.entries.length} last onPress={() => open(world)} />
+              <BookRow official series={world.series} name={world.name} count={world.entries.length} last onPress={() => open(world)} />
             </InsetGroup>
           </>
         ) : null}
@@ -117,18 +117,13 @@ export default function CharacterLoreScreen() {
             );
           })}
           {canAdd || upsell ? (
-            <Pressable
-              onPress={() =>
-                router.push(canAdd ? { pathname: '/lore/edit', params: { characterId: character.id } } : '/store/shell?tab=plans')
-              }
-              accessibilityRole="button"
-              style={({ pressed }) => [styles.add, pressed && styles.pressed]}>
-              <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
-              <Txt style={styles.addText}>{canAdd ? t('lore.newFor', { name }) : t('lore.morePlan', { count: PERKS.lorebooks.plan })}</Txt>
-            </Pressable>
+            <AddRow
+              label={canAdd ? t('lore.newFor', { name }) : t('lore.morePlan', { count: PERKS.lorebooks.plan })}
+              locked={!canAdd}
+              onPress={() => router.push(canAdd ? { pathname: '/lore/edit', params: { characterId: character.id } } : '/store/shell?tab=plans')}
+            />
           ) : null}
         </InsetGroup>
-        <Txt style={styles.footer}>{t('lore.howItWorks')}</Txt>
       </ScrollView>
     </Screen>
   );
@@ -137,8 +132,4 @@ export default function CharacterLoreScreen() {
 const styles = StyleSheet.create({
   empty: { paddingHorizontal: space.lg, paddingVertical: 14, fontSize: 15, lineHeight: 20, color: colors.textSecondary },
   mark: { width: 56, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
-  add: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
-  addText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
 });

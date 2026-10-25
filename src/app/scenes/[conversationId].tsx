@@ -3,15 +3,29 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { GroupLabel } from '@/components/plans/store-look';
-import { GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, SymbolTile, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { haptic } from '@/lib/haptics';
 import { officialScenes } from '@/mock/scenes';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 import type { Scene } from '@/types';
+
+type SceneLook = { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string };
+
+/** Each of the app's scenes keeps one glyph and iOS hue, as Settings' rows do (never orange). */
+const SCENE_LOOK: Record<string, SceneLook> = {
+  scene_ferry: { ios: 'ferry.fill', icon: 'boat', fill: systemColors.blue },
+  scene_cabin: { ios: 'snowflake', icon: 'snow', fill: systemColors.cyan },
+  scene_rooftop: { ios: 'building.2.fill', icon: 'business', fill: systemColors.purple },
+  scene_market: { ios: 'takeoutbag.and.cup.and.straw.fill', icon: 'fast-food', fill: systemColors.red },
+  scene_lighthouse: { ios: 'cloud.bolt.rain.fill', icon: 'thunderstorm', fill: systemColors.indigo },
+  scene_train: { ios: 'tram.fill', icon: 'train', fill: systemColors.green },
+};
+const OWN_LOOK: SceneLook = { ios: 'theatermasks.fill', icon: 'film', fill: systemColors.teal };
 
 /**
  * Pick a scene for this chat (Character.AI's Scenes, played inside the one chat with them): the
@@ -50,11 +64,7 @@ export default function ScenesScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar
-        title={t('scenes.title')}
-        scrolled={scrolled}
-        right={canAdd ? <GlassButton icon="add" accessibilityLabel={t('scenes.new')} onPress={() => router.push('/scenes/edit')} /> : undefined}
-      />
+      <GlassBar title={t('scenes.title')} scrolled={scrolled} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -92,7 +102,7 @@ export default function ScenesScreen() {
           ))}
         </InsetGroup>
 
-        <GroupLabel>{t('scenes.yours', { count: own.length, max: limit })}</GroupLabel>
+        <GroupLabel>{t('scenes.yours')}</GroupLabel>
         <InsetGroup>
           {own.map((scene, i) => (
             <SceneRow
@@ -104,13 +114,12 @@ export default function ScenesScreen() {
             />
           ))}
           {canAdd || upsell ? (
-            <Pressable
+            <AddRow
+              label={canAdd ? t('scenes.new') : t('scenes.morePlan', { count: PERKS.ownScenes.plan })}
+              count={`${own.length}/${limit}`}
+              locked={!canAdd}
               onPress={() => router.push(canAdd ? '/scenes/edit' : '/store/shell?tab=plans')}
-              accessibilityRole="button"
-              style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
-              <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
-              <Txt style={styles.title}>{canAdd ? t('scenes.new') : t('scenes.morePlan', { count: PERKS.ownScenes.plan })}</Txt>
-            </Pressable>
+            />
           ) : null}
         </InsetGroup>
       </ScrollView>
@@ -118,9 +127,10 @@ export default function ScenesScreen() {
   );
 }
 
-/** One scene: its title and set-up; a tap starts it, the pencil (own scenes) edits it. */
+/** One scene: its glyph, title and set-up; a tap starts it, the pencil (own scenes) edits it. */
 function SceneRow({ scene, last, onPress, onEdit }: { scene: Scene; last?: boolean; onPress: () => void; onEdit?: () => void }) {
   const { t } = useTranslation();
+  const look = SCENE_LOOK[scene.id] ?? OWN_LOOK;
   return (
     <View style={styles.sceneWrap}>
       <Pressable
@@ -128,6 +138,9 @@ function SceneRow({ scene, last, onPress, onEdit }: { scene: Scene; last?: boole
         accessibilityRole="button"
         accessibilityLabel={t('scenes.start', { title: scene.title })}
         style={({ pressed }) => [styles.scene, pressed && styles.pressed]}>
+        <View style={styles.sceneTile}>
+          <SymbolTile {...look} />
+        </View>
         <View style={[styles.sceneBody, !last && styles.line]}>
           <Txt style={styles.title} lines={1}>
             {scene.title}
@@ -154,8 +167,9 @@ const styles = StyleSheet.create({
   title: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   meta: { fontSize: 15, color: colors.textSecondary },
   sceneWrap: { flexDirection: 'row' },
-  scene: { flex: 1, paddingLeft: space.lg },
-  sceneBody: { paddingVertical: 11, paddingRight: space.lg, gap: 2 },
+  scene: { flex: 1, flexDirection: 'row', gap: space.md, paddingLeft: space.lg },
+  sceneTile: { paddingTop: 12 },
+  sceneBody: { flex: 1, paddingVertical: 11, paddingRight: space.lg, gap: 2 },
   setting: { fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   edit: { width: 52, alignItems: 'center', justifyContent: 'center' },
 });

@@ -114,6 +114,8 @@ on Android.
 | Filters with many options | `Chip` | Find categories, styles. |
 | Pick one of a few big options | Select card | White, radius 20, 1px `border`; chosen = 2px ink. Title `h3`, price line, check list (`checkmark` 16, ink). See `PlanCard`. |
 | Pick one of a few small options | Option chips | `surfaceAlt` fill, radius 14, 52px; chosen = white + 2px ink. See billing periods. |
+| "New …" at the end of a list | `AddRow` | Accent ⊕ and label (Reminders' New Reminder), the count ("1/3") at the end, a grey lock and the plan line at a free limit. Not also a "+" in the bar for the same thing. |
+| A rule that needs explaining | ⓘ in the bar | A sheet with a few short points (glyph tile, bold line, one plain line); never a footer paragraph on the screen. |
 | Settings and links | `ListRow` | On the canvas. Leading icon: a line icon (Ionicons outline, 19px, ink) in a 36px `surfaceAlt` tile with radius 11, or nothing. |
 | Usage | Meter | Row (tile + label + "x of y left") and an 8px bar: `border` track, ink fill. |
 | A badge | Pill | Offer: `primarySofter` fill, `primarySoft` border, `brandText`. Neutral: `surfaceAlt`. |

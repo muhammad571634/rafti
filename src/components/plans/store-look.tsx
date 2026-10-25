@@ -100,7 +100,7 @@ export function StoreBuyBar({
         accessibilityState={{ disabled: !!disabled }}
         style={[styles.cta, disabled && styles.ctaOff]}>
         {left}
-        <Txt style={styles.ctaText} lines={1}>
+        <Txt style={[styles.ctaText, disabled && styles.ctaTextOff]} lines={1}>
           {label}
         </Txt>
       </PressableScale>
@@ -150,7 +150,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: STORE.cta,
   },
-  ctaOff: { opacity: 0.5 },
+  // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent.
+  ctaOff: { backgroundColor: systemColors.fill },
   ctaText: { flexShrink: 1, fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  ctaTextOff: { color: colors.textFaint },
   caption: { fontSize: 13, color: aurora.textMuted },
 });

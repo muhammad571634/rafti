@@ -1,17 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EntryRow, servesLine } from '@/components/lore/lore-rows';
 import { GroupLabel } from '@/components/plans/store-look';
-import { GlassBar, GlassButton, Header, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { AddRow, GlassBar, GlassButton, Header, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { LORE_KINDS } from '@/lib/lorebook';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, space } from '@/theme';
 
 /**
  * One world book: the world in a few lines (always known), who it serves, and its entries by
@@ -92,14 +91,12 @@ export default function LorebookScreen() {
         {editable ? (
           <InsetGroup style={styles.gap}>
             {canAdd || upsell ? (
-              <Pressable
+              <AddRow
+                label={canAdd ? t('lore.newEntry') : t('lore.moreEntriesPlan', { count: PERKS.loreEntries.plan })}
+                count={`${count}/${limit}`}
+                locked={!canAdd}
                 onPress={canAdd ? addEntry : () => router.push('/store/shell?tab=plans')}
-                accessibilityRole="button"
-                style={({ pressed }) => [styles.add, pressed && styles.pressed]}>
-                <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
-                <Txt style={styles.addText}>{canAdd ? t('lore.newEntry') : t('lore.moreEntriesPlan', { count: PERKS.loreEntries.plan })}</Txt>
-                <Txt style={styles.count}>{`${count}/${limit}`}</Txt>
-              </Pressable>
+              />
             ) : (
               <View style={styles.add}>
                 <Txt style={[styles.addText, styles.muted]}>{t('lore.full', { max: limit })}</Txt>
@@ -122,6 +119,4 @@ const styles = StyleSheet.create({
   add: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
   addText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   muted: { color: colors.textSecondary },
-  count: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  pressed: { backgroundColor: colors.surfaceAlt },
 });

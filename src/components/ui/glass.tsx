@@ -213,6 +213,27 @@ export function IconRow({
   );
 }
 
+/**
+ * The "New …" row that ends an inset group, as Reminders' New Reminder: the accent ⊕ and label
+ * (HIG Color: the accent marks what can be tapped). At a free limit a plan would raise, it is a
+ * grey lock and the plan line instead. `count` ("1/3") sits at the end.
+ */
+export function AddRow({ label, count, locked, onPress }: { label: string; count?: string; locked?: boolean; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={count ? `${label}, ${count}` : label}
+      style={({ pressed }) => [styles.addRow, pressed && styles.rowPressed]}>
+      <Ionicons name={locked ? 'lock-closed' : 'add-circle'} size={locked ? 20 : 24} color={locked ? colors.textSecondary : colors.primary} />
+      <Txt style={[styles.rowText, styles.flex]} color={locked ? colors.text : colors.primary} lines={1}>
+        {label}
+      </Txt>
+      {count ? <Txt style={styles.addCount}>{count}</Txt> : null}
+    </Pressable>
+  );
+}
+
 /** Large left-aligned title under the glass bar (34pt, iOS large title). */
 export function LargeTitle({ children }: { children: string }) {
   return (
@@ -257,6 +278,8 @@ const styles = StyleSheet.create({
   iconMeta: { maxWidth: '50%' },
   hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
   resting: { opacity: 0.4 },
+  addRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
+  addCount: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   largeTitle: {
     marginTop: 10,
     marginHorizontal: space.lg,

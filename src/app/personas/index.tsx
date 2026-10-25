@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, UserAvatar, useScrolledPast } from '@/components/ui';
+import { AddRow, Avatar, GlassBar, InsetGroup, LargeTitle, Screen, Txt, UserAvatar, useScrolledPast } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { defaultPersona, personaList } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, space } from '@/theme';
 
 /**
  * Who the user can be in a chat (Character.AI's personas): the profile first, then up to five
@@ -35,11 +35,7 @@ export default function PersonasScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar
-        title={t('personas.title')}
-        scrolled={scrolled}
-        right={canAdd ? <GlassButton icon="add" accessibilityLabel={t('personas.new')} onPress={() => router.push('/personas/edit')} /> : undefined}
-      />
+      <GlassBar title={t('personas.title')} scrolled={scrolled} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -91,15 +87,12 @@ export default function PersonasScreen() {
 
         {canAdd || upsell ? (
           <InsetGroup style={styles.gap}>
-            <Pressable
+            <AddRow
+              label={canAdd ? t('personas.new') : t('personas.morePlan', { count: PERKS.personas.plan })}
+              count={`${personas.length}/${limit}`}
+              locked={!canAdd}
               onPress={() => router.push(canAdd ? '/personas/edit' : '/store/shell?tab=plans')}
-              accessibilityRole="button"
-              accessibilityLabel={canAdd ? t('personas.new') : t('personas.morePlan', { count: PERKS.personas.plan })}
-              style={({ pressed }) => [styles.add, pressed && styles.pressed]}>
-              <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
-              <Txt style={styles.addText}>{canAdd ? t('personas.new') : t('personas.morePlan', { count: PERKS.personas.plan })}</Txt>
-              <Txt style={styles.count}>{`${personas.length}/${limit}`}</Txt>
-            </Pressable>
+            />
           </InsetGroup>
         ) : null}
       </ScrollView>
@@ -108,7 +101,6 @@ export default function PersonasScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
   first: { marginTop: 14 },
   gap: { marginTop: space.xxl },
   row: { flexDirection: 'row', backgroundColor: colors.surface },
@@ -119,7 +111,4 @@ const styles = StyleSheet.create({
   name: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
   meta: { marginTop: 2, fontSize: 13, color: colors.textSecondary },
   pick: { width: 56, alignItems: 'center', justifyContent: 'center' },
-  add: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
-  addText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  count: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
 });

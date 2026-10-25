@@ -1,16 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BookRow, servesLine } from '@/components/lore/lore-rows';
+import { BookRow, LoreInfoButton, servesLine } from '@/components/lore/lore-rows';
 import { GroupLabel } from '@/components/plans/store-look';
-import { GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Lorebook } from '@/types';
 
 /**
@@ -33,11 +32,7 @@ export default function LorebooksScreen() {
 
   return (
     <Screen background={colors.bg}>
-      <GlassBar
-        title={t('lore.title')}
-        scrolled={scrolled}
-        right={canAdd ? <GlassButton icon="add" accessibilityLabel={t('lore.new')} onPress={() => router.push('/lore/edit')} /> : undefined}
-      />
+      <GlassBar title={t('lore.title')} scrolled={scrolled} right={<LoreInfoButton />} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
@@ -51,8 +46,8 @@ export default function LorebooksScreen() {
             <BookRow
               key={book.id}
               official
+              series={book.series}
               name={book.name}
-              hint={t('lore.servesWorld')}
               count={book.entries.length}
               last={i === officialLorebooks.length - 1}
               onPress={() => open(book)}
@@ -60,7 +55,7 @@ export default function LorebooksScreen() {
           ))}
         </InsetGroup>
 
-        <GroupLabel>{t('lore.yours', { count: own.length, max: limit })}</GroupLabel>
+        <GroupLabel>{t('lore.yours')}</GroupLabel>
         <InsetGroup>
           {own.map((book, i) => (
             <BookRow
@@ -73,24 +68,15 @@ export default function LorebooksScreen() {
             />
           ))}
           {canAdd || upsell ? (
-            <Pressable
+            <AddRow
+              label={canAdd ? t('lore.new') : t('lore.morePlan', { count: PERKS.lorebooks.plan })}
+              count={`${own.length}/${limit}`}
+              locked={!canAdd}
               onPress={() => router.push(canAdd ? '/lore/edit' : '/store/shell?tab=plans')}
-              accessibilityRole="button"
-              style={({ pressed }) => [styles.add, pressed && styles.pressed]}>
-              <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
-              <Txt style={styles.addText}>{canAdd ? t('lore.new') : t('lore.morePlan', { count: PERKS.lorebooks.plan })}</Txt>
-            </Pressable>
+            />
           ) : null}
         </InsetGroup>
-        <Txt style={styles.footer}>{t('lore.howItWorks')}</Txt>
       </ScrollView>
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  add: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
-  addText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-});
