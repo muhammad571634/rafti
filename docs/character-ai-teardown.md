@@ -151,8 +151,12 @@ Ordered by value to the owner's companion app, with what exists today:
    reply length (Short / Auto / Long) and style (Talk / Mixed / Story), per chat, free for everyone, plus a mood that
    carries between turns. Note: backend-plan §13.6 keeps the model invisible; length and style controls fit that rule, a
    visible model picker does not.
-7. **Prompt layout for caching**: build the server prompt as ordered parts with priorities, stable
-   parts first, history last, and truncate in steps so the provider's prompt cache hits.
+7. **Prompt layout for caching** (done 2026-10-25, flows.md D77; `src/ai/prompt-layout.ts`, `src/ai/chat-prompt.ts`,
+   backend-plan §12.23): build the server prompt as ordered parts with priorities, stable parts first, history last, and
+   truncate in steps so the provider's prompt cache hits. Ours: parts in four tiers by how often they change (rules →
+   persona → chat → turn), the history between the chat tier and the turn tier, cut on whole 20-turn steps; what changes
+   between replies (bond, scene, lore notes, recalled facts, cues, hints) goes after the history. The parts are capped
+   where they are written, so the history is the only part that yields.
 
 8. **Stream** (done 2026-10-25, flows.md D74; `src/lib/streams.ts`, backend-plan §12.20): two characters
    talk about a topic the user picks while the user watches, one model call per line, rounds that

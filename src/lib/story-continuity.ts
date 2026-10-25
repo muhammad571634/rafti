@@ -6,6 +6,8 @@ import { historyText } from './chat-steer';
  * Assembles what a future server-side model sees for one chat turn, following the
  * approved memory plan in docs/backend-plan.md (sections 7 and 12.1-12.3):
  * the last ~30 messages, every pinned fact, and the 8-12 most relevant active facts.
+ * The reply prompt itself takes its history from `layoutChatPrompt` (src/ai/chat-prompt.ts),
+ * cut in steps so the prompt cache holds, not from `recentMessages`, which slides every turn.
  */
 export interface StoryContinuityContextInput {
   character: Character;
@@ -26,6 +28,10 @@ export interface StoryContinuityMemory {
   createdAt: string;
   pinned: boolean;
   relevanceScore: number;
+  /** Whose memory it is (the Memories tabs); missing = about the user. */
+  about?: MemoryItem['about'];
+  /** A pinned chat line, kept word for word. */
+  quote?: MemoryItem['quote'];
 }
 
 export interface StoryContinuityContext {
@@ -155,7 +161,7 @@ function memoryScore(memory: MemoryItem, overlap: number, querySize: number, now
 }
 
 /** What the model may see of a message; app-only rows return null. Local URIs never leave. */
-function messageText(message: Message): string | null {
+export function messageText(message: Message): string | null {
   // A time skip is part of the story: later replies must know the time moved on.
   if (message.card === 'skip') return historyText(message);
   if (message.pending || message.kind === 'system' || message.card) return null;
@@ -265,6 +271,8 @@ export function buildStoryContinuityContext(
       createdAt: memory.createdAt,
       pinned: memory.pinned,
       relevanceScore,
+      ...(memory.about ? { about: memory.about } : {}),
+      ...(memory.quote ? { quote: memory.quote } : {}),
     })),
     limits: { maxRecentMessages, maxMemories, maxPinnedMemories: MAX_PINNED_MEMORIES },
   };

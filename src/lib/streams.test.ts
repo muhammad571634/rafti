@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { buildStreamLinePrompt } from '../ai/content-prompts';
+import { buildStreamLinePrompt, streamLineParts } from '../ai/content-prompts';
+import { layoutPrompt } from '../ai/prompt-layout';
 import { mockStreamLine } from '../mock/streams';
 import type { Character, Stream, User } from '@/types';
 
@@ -109,6 +110,17 @@ describe('the model’s line', () => {
     assert.match(opening, /you just met/);
     assert.match(opening, /You open/);
     assert.doesNotMatch(opening, /SO FAR|last line/);
+  });
+
+  it('caches the speaker’s persona and the stream for every line, and sends what was said after it', () => {
+    const kai = { id: 'c_kai', name: 'Kai Arden', bio: 'Swimmer.', greeting: 'Hi.', tags: [], series: 'Seaside Academy' } as unknown as Character;
+    const theo = { id: 'c_theo', name: 'Theo Lancaster', series: 'Seaside Academy' } as unknown as Character;
+    const user = { displayName: 'Sam', locale: 'en-US' } as User;
+    const first = layoutPrompt(streamLineParts({ character: kai, user }, theo, 'Pizza', [], { index: 0, total: 8 }));
+    const third = layoutPrompt(streamLineParts({ character: kai, user }, theo, 'Pizza', [{ name: 'Theo Lancaster', text: 'Pineapple.' }], { index: 2, total: 8 }));
+    assert.deepEqual(third.system, first.system);
+    assert.match(first.system.at(-1)?.text ?? '', /STREAM:\nYou are talking with Theo Lancaster/);
+    assert.match(third.turn, /^THIS LINE:\n- React to what Theo Lancaster just said[\s\S]*SO FAR:\nTheo Lancaster: Pineapple\./);
   });
 });
 

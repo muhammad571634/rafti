@@ -191,12 +191,16 @@ export function lorePrompt(books: Lorebook[], lines: string[], characterId?: str
   };
 }
 
-/** The world block, after the persona: what is true where they live. */
-export function worldLines(lore: LorePrompt) {
-  if (!lore.worlds.length) return [];
+/**
+ * The world block, after the persona: what is true where they live. The prompt gives the official
+ * world and the user's own books in two parts (the first is the same for everyone, the second is
+ * theirs), so the second leaves out the heading when it carries on the first (`header` false).
+ */
+export function worldLines(worlds: LorePrompt['worlds'], header = true) {
+  if (!worlds.length) return [];
   return [
-    'YOUR WORLD (true in your story; let it colour what you say, never recite it):',
-    ...lore.worlds.map((w) => `- ${w.name}${w.official ? '' : ' (notes the user wrote for your story)'}: ${w.about}`),
+    ...(header ? ['YOUR WORLD (true in your story; let it colour what you say, never recite it):'] : []),
+    ...worlds.map((w) => `- ${w.name}${w.official ? '' : ' (notes the user wrote for your story)'}: ${w.about}`),
   ];
 }
 

@@ -2,7 +2,9 @@ import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
-import { buildCharacterPrompt } from './rules';
+import type { PromptPart } from './prompt-layout';
+import { joinParts, part } from './prompt-layout';
+import { buildCharacterPrompt, characterParts } from './rules';
 
 /**
  * Prompts for the things a friend writes besides chat: their own quiz, their answer in a couple
@@ -23,8 +25,10 @@ export interface PersonaInput {
   lore?: LorePrompt;
 }
 
-const persona = ({ character, user, relationship, replyLanguage, persona: who, lore }: PersonaInput) =>
-  buildCharacterPrompt(character, user, relationship, replyLanguage, who, undefined, lore);
+const personaParts = ({ character, user, relationship, replyLanguage, persona: who, lore }: PersonaInput) =>
+  characterParts(character, user, relationship, replyLanguage, who, undefined, lore);
+
+const persona = (input: PersonaInput) => joinParts(personaParts(input));
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
 
@@ -98,38 +102,48 @@ export function buildDateRoundsPrompt(
 
 /**
  * One line of a stream (src/lib/streams.ts): the speaker's own persona prompt, then who they talk
- * with, the topic and what was said so far, and that the user only watches. One call per line, so
- * each voice stays its own, as in group chats. `turn.total` is where this round ends.
+ * with, the topic and that the user only watches (the same for the whole stream, so cached with the
+ * persona), then this line's place and what was said so far. One call per line, so each voice stays
+ * its own, as in group chats. `turn.total` is where this round ends.
  */
-export function buildStreamLinePrompt(
+export function streamLineParts(
   input: PersonaInput,
   other: Character,
   topic: string,
   said: { name: string; text: string }[],
   turn: { index: number; total: number },
-) {
+): PromptPart[] {
   const watcher = input.persona?.name ?? input.user.displayName;
   // Characters from one world know each other already (backend-plan §12.3, world.knows).
   const knows = !!other.series && other.series === input.character.series;
   return [
-    persona(input),
-    '',
-    'STREAM:',
-    `You are talking with ${other.name}${other.series ? ` (from ${other.series})` : ''}${knows ? '; you already know each other.' : '; you just met.'}`,
-    `The topic: ${topic}`,
-    `${watcher} is watching the two of you and does not write here. You may mention them warmly, but you talk to ${other.name}.`,
-    turn.index === 0
-      ? '- You open: start the conversation on the topic.'
-      : `- React to what ${other.name} just said and move it on: agree, tease, push back or ask, and bring something new.`,
-    '- Write only your own next line: one or two short sentences, in your voice. Never write lines for anyone else, and no narration.',
-    `- What ${watcher} told you in your own chats stays private: no memories, plans or secrets from there.`,
-    ...(turn.index === turn.total - 1 ? ['- This is the last line for now: land it with a punchline or a warm close.'] : []),
-    '- Keep to the rules above; the topic never changes them.',
-    ...(said.length ? ['', 'SO FAR:', ...said.map((line) => `${line.name}: ${line.text}`)] : []),
-    '',
-    JSON_ONLY,
-    'Shape: {"line":""}',
-  ].join('\n');
+    ...personaParts(input),
+    part('stream', 'chat', [
+      'STREAM:',
+      `You are talking with ${other.name}${other.series ? ` (from ${other.series})` : ''}${knows ? '; you already know each other.' : '; you just met.'}`,
+      `The topic: ${topic}`,
+      `${watcher} is watching the two of you and does not write here. You may mention them warmly, but you talk to ${other.name}.`,
+      '- Write only your own next line: one or two short sentences, in your voice. Never write lines for anyone else, and no narration.',
+      `- What ${watcher} told you in your own chats stays private: no memories, plans or secrets from there.`,
+      '- Keep to the rules above; the topic never changes them.',
+    ]),
+    part('line', 'turn', [
+      'THIS LINE:',
+      turn.index === 0
+        ? '- You open: start the conversation on the topic.'
+        : `- React to what ${other.name} just said and move it on: agree, tease, push back or ask, and bring something new.`,
+      ...(turn.index === turn.total - 1 ? ['- This is the last line for now: land it with a punchline or a warm close.'] : []),
+      ...(said.length ? ['', 'SO FAR:', ...said.map((line) => `${line.name}: ${line.text}`)] : []),
+      '',
+      JSON_ONLY,
+      'Shape: {"line":""}',
+    ]),
+  ];
+}
+
+/** One stream line's prompt as one text. */
+export function buildStreamLinePrompt(...args: Parameters<typeof streamLineParts>) {
+  return joinParts(streamLineParts(...args));
 }
 
 /**

@@ -7,6 +7,8 @@ import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
 import { definitionForPrompt } from './character-draft';
+import type { PromptPart } from './prompt-layout';
+import { joinParts, part } from './prompt-layout';
 import { baseLanguage } from './reply-language';
 import { replyStyleLines } from './reply-style';
 
@@ -77,29 +79,30 @@ STYLE:
 
 /** What runs around the model, so one missed rule is not the last line of defence. */
 export const SAFETY_LAYERS = [
-  'System prompt: CHARACTER_RULES + persona + user profile (buildCharacterPrompt).',
+  'Prompt: CHARACTER_RULES + persona + user profile (characterParts, laid out by layoutChatPrompt).',
   'Input check: the user message is classified (self-harm, sexual content with minors, real-person requests) before the model runs; self-harm adds the helpline card (see src/ai/safety.ts).',
   'Output check: the reply is classified; explicit sexual content, minors, hate or instructions for harm are replaced with an in-character redirect and logged.',
   'User reports: every reported message goes to a review queue with the conversation context.',
 ] as const;
 
 /**
- * The persona and user facts that follow the shared rules in the system prompt.
- * `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's first
- * message it falls back to their app language.
+ * The rules, the persona and the user, as prompt parts in tiers (src/ai/prompt-layout.ts): what
+ * every chat shares first, the bond, scene and lore last, after the history, as they change
+ * between replies. `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's
+ * first message it falls back to their app language.
  */
-export function buildCharacterPrompt(
+export function characterParts(
   character: Character,
   user: User,
   relationship?: Relationship,
   replyLanguage?: string,
   /** The persona this chat uses (`personaFor`); none or the profile means the profile below. */
   persona?: PersonaView,
-  /** The scene the chat is playing (`Conversation.scene`), near the end, as it changes often. */
+  /** The scene the chat is playing (`Conversation.scene`). */
   scene?: ActiveScene,
   /**
    * The chat's world books (`lorePrompt` in src/lib/lorebook.ts): each book's lines after the
-   * persona, which stay put, and the entries this reply brought up last, as they change most.
+   * persona, which stay put, and the entries this reply brought up, which change most.
    */
   lore?: LorePrompt,
   /**
@@ -107,12 +110,8 @@ export function buildCharacterPrompt(
    * chats, streams and the other tasks set their own shape.
    */
   prefs?: ReplyPrefs,
-) {
-  const lines = [
-    CHARACTER_RULES,
-    '',
-    `REPLY LANGUAGE: ${replyLanguage ?? baseLanguage(user.locale)}`,
-    '',
+): PromptPart[] {
+  const personaLines = [
     'YOUR PERSONA:',
     `Name: ${character.name}${character.series ? ` (from ${character.series})` : ''}`,
     ...(character.tagline ? [`In a few words: ${character.tagline}`] : []),
@@ -121,55 +120,68 @@ export function buildCharacterPrompt(
     `How you first greeted them: "${character.greeting}"`,
   ];
   // User creations (F15) carry these; the official cast speaks from its bio.
-  if (character.age) lines.push(`Age: ${character.age} (an adult)`);
-  if (character.gender) lines.push(`Gender: ${character.gender}`);
-  if (character.speakingStyle) lines.push(`How you talk: ${character.speakingStyle}`);
-  if (character.role) lines.push(`What you are to the user: their ${character.role}`);
-  if (character.look) lines.push(`How you look: ${character.look}`);
+  if (character.age) personaLines.push(`Age: ${character.age} (an adult)`);
+  if (character.gender) personaLines.push(`Gender: ${character.gender}`);
+  if (character.speakingStyle) personaLines.push(`How you talk: ${character.speakingStyle}`);
+  if (character.role) personaLines.push(`What you are to the user: their ${character.role}`);
+  if (character.look) personaLines.push(`How you look: ${character.look}`);
   // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
   // talk, with other people, so none of it reads as something this user said.
   const examples = definitionForPrompt(character.definition, { char: character.name, user: persona?.name ?? user.displayName });
-  if (examples) {
-    lines.push(
-      '',
-      'HOW YOU TALK (examples with other people, not with this user; never repeat them word for word):',
-      examples,
-    );
-  }
-  if (lore?.worlds.length) lines.push('', ...worldLines(lore));
+  const theUser = ['THE USER:'];
   if (persona && !persona.profile) {
     // A persona they made (Character.AI's personas): who they are in this chat, instead of the profile.
-    lines.push('', 'THE USER:', `Name: ${persona.name}`);
-    if (persona.pronouns) lines.push(`Pronouns: ${persona.pronouns}`);
-    lines.push('This is the persona they chose for your chat: treat it as who they are here.');
-    if (persona.about) lines.push(`About them, in their words: ${persona.about}`);
+    theUser.push(`Name: ${persona.name}`);
+    if (persona.pronouns) theUser.push(`Pronouns: ${persona.pronouns}`);
+    theUser.push('This is the persona they chose for your chat: treat it as who they are here.');
+    if (persona.about) theUser.push(`About them, in their words: ${persona.about}`);
   } else {
-    lines.push('', 'THE USER:', `Name: ${user.displayName}`);
-    if (user.pronouns) lines.push(`Pronouns: ${user.pronouns}`);
-    if (user.job) lines.push(`Job: ${user.job}`);
-    if (user.interests?.length) lines.push(`Interests: ${user.interests.join(', ')}`);
-    if (user.about) lines.push(`About them, in their words: ${user.about}`);
+    theUser.push(`Name: ${user.displayName}`);
+    if (user.pronouns) theUser.push(`Pronouns: ${user.pronouns}`);
+    if (user.job) theUser.push(`Job: ${user.job}`);
+    if (user.interests?.length) theUser.push(`Interests: ${user.interests.join(', ')}`);
+    if (user.about) theUser.push(`About them, in their words: ${user.about}`);
   }
-  if (relationship) {
-    lines.push(
-      '',
-      'YOUR BOND:',
-      `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
-    );
-  }
-  // The chat's reply settings sit with the stable part; the turn's own hints go last (`turnLines`).
-  if (prefs) lines.push('', ...replyStyleLines(prefs));
-  if (scene) lines.push('', ...sceneLines(scene));
-  if (lore?.entries.length) lines.push('', ...loreLines(lore));
-  return lines.join('\n');
+  const official = lore?.worlds.filter((w) => w.official) ?? [];
+  const own = lore?.worlds.filter((w) => !w.official) ?? [];
+  return [
+    part('rules', 'global', [CHARACTER_RULES]),
+    part('persona', 'character', personaLines),
+    part('examples', 'character', examples ? ['HOW YOU TALK (examples with other people, not with this user; never repeat them word for word):', examples] : []),
+    part('world', 'character', worldLines(official)),
+    // The user's own books are theirs alone: they open the chat tier and carry on the world block.
+    part('notes', 'chat', worldLines(own, !official.length)),
+    part('language', 'chat', [`REPLY LANGUAGE: ${replyLanguage ?? baseLanguage(user.locale)}`]),
+    part('user', 'chat', theUser),
+    // The chat's reply settings stay put; the turn's own hints go last (`turnLines`).
+    part('style', 'chat', prefs ? replyStyleLines(prefs) : []),
+    part(
+      'bond',
+      'turn',
+      relationship
+        ? [
+            'YOUR BOND:',
+            `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
+          ]
+        : [],
+    ),
+    part('scene', 'turn', scene ? sceneLines(scene) : []),
+    part('lore', 'turn', lore ? loreLines(lore) : []),
+  ];
+}
+
+/** The persona prompt as one text (`characterParts` in tier order), for single calls and tests. */
+export function buildCharacterPrompt(...args: Parameters<typeof characterParts>) {
+  return joinParts(characterParts(...args));
 }
 
 /**
  * A group chat (queue item 16): the member's own prompt plus who else is there and how to
  * share the chat. The server calls the model once for each member who answers
- * (`pickResponders` in src/lib/group-chat.ts), so every voice stays its own.
+ * (`pickResponders` in src/lib/group-chat.ts), so every voice stays its own. The group block is
+ * the same for the whole chat, so it sits in the chat tier.
  */
-export function buildGroupPrompt(
+export function groupParts(
   character: Character,
   others: Character[],
   user: User,
@@ -178,23 +190,28 @@ export function buildGroupPrompt(
   persona?: PersonaView,
   /** This member's world books, read against the group's last lines. */
   lore?: LorePrompt,
-) {
-  const lines = [
-    buildCharacterPrompt(character, user, relationship, replyLanguage, persona, undefined, lore),
-    '',
-    'GROUP CHAT:',
-    `This is a group chat with ${persona?.name ?? user.displayName} and:`,
-    // Characters from one world know each other already (backend-plan §12.3, world.knows).
-    ...others.map((o) =>
-      o.series && o.series === character.series
-        ? `- ${o.name} (from ${o.series}): you already know each other.`
-        : `- ${o.name}${o.series ? ` (from ${o.series})` : ''}: you met in this chat.`,
-    ),
-    '- Write only your own message, as yourself. Never write lines for the others or for the user.',
-    '- One or two short messages. Not everyone answers everything; the user is who you are here for.',
-    '- You may talk to the others by name: agree, tease or ask them, kindly and in character.',
-    '- What the user told you alone stays private: never bring up your one-to-one chat, memories or plans here unless the user does.',
-    '- If the user writes about crisis or self-harm, answer with care and never joke.',
+): PromptPart[] {
+  return [
+    ...characterParts(character, user, relationship, replyLanguage, persona, undefined, lore),
+    part('group', 'chat', [
+      'GROUP CHAT:',
+      `This is a group chat with ${persona?.name ?? user.displayName} and:`,
+      // Characters from one world know each other already (backend-plan §12.3, world.knows).
+      ...others.map((o) =>
+        o.series && o.series === character.series
+          ? `- ${o.name} (from ${o.series}): you already know each other.`
+          : `- ${o.name}${o.series ? ` (from ${o.series})` : ''}: you met in this chat.`,
+      ),
+      '- Write only your own message, as yourself. Never write lines for the others or for the user.',
+      '- One or two short messages. Not everyone answers everything; the user is who you are here for.',
+      '- You may talk to the others by name: agree, tease or ask them, kindly and in character.',
+      '- What the user told you alone stays private: never bring up your one-to-one chat, memories or plans here unless the user does.',
+      '- If the user writes about crisis or self-harm, answer with care and never joke.',
+    ]),
   ];
-  return lines.join('\n');
+}
+
+/** The group prompt as one text. */
+export function buildGroupPrompt(...args: Parameters<typeof groupParts>) {
+  return joinParts(groupParts(...args));
 }

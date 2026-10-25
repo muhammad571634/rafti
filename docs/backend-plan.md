@@ -122,8 +122,9 @@ Har pul sarflaydigan so'rov `idempotency_key` oladi: tarmoq uzilib qayta yuboril
 2. Server tranzaksiyada: a'zolik yoki balansni tekshiradi, `shell_ledger`ga −1 yozadi, xabarni saqlaydi,
    streak va intimacy'ni yangilaydi, `reply` ishini navbatga qo'yadi. Javob: `202` + yangi hamyon.
 3. Worker: "yozyapti" signalini Realtime broadcast orqali yuboradi, promptni yig'adi va Claude'ni chaqiradi.
-   - **Prompt tartibi (cache uchun):** o'zgarmas qoidalar → personaj personasi → foydalanuvchi profili
-     → xotira faktlari → suhbat xulosasi → oxirgi ~30 xabar. O'zgaruvchan qism (vaqt, bugungi sana)
+   - **Prompt tartibi (cache uchun, 12.23):** qoidalar → personaj personasi va dunyosi → foydalanuvchi, til,
+     uslub, pin qilingan faktlar, suhbat xulosasi → tarix (qadam bilan kesiladi) → shu javobga oid qism
+     (daraja, sahna, shu xabar eslatgan faktlar va lore, vaqt, cue, maslahatlar). O'zgaruvchan qism
      oxirida turadi, aks holda cache buziladi.
 4. Javob `messages`ga yoziladi. Ovozli javob yoqilgan bo'lsa, TTS ishi navbatga qo'yiladi va audio
    tayyor bo'lganda `media_path` to'ldiriladi. Ilova Realtime orqali oladi, yopiq bo'lsa push ketadi.
@@ -136,11 +137,12 @@ bitta AsyncStorage kalitida, Android'da ~2MB chegarasi bor).
 
 BIMOBIMO sharhlaridagi 1-shikoyat — "unutadi". Uch qatlam:
 
-1. **Qisqa muddat:** oxirgi ~30 xabar har promptda.
+1. **Qisqa muddat:** oxirgi 20–39 navbat (~30 xabar) har promptda, kesh uchun qadam bilan kesiladi (12.23).
 2. **Suhbat xulosasi:** `relationships.summary`. Suhbat 15 daqiqa jim qolganda worker uni yangilaydi.
 3. **Faktlar:** o'sha ishda model structured output bilan yangi faktlarni ajratadi
    ("imtihoni 12-oktabrda", "mushugining ismi Pista"). Ular `memories`ga embedding bilan yoziladi.
-   Har javobda eng mos 8–12 fakt (pgvector) va hamma `pinned` faktlar promptga qo'shiladi.
+   Har javobda eng mos 8–12 fakt (pgvector) va hamma `pinned` faktlar promptga qo'shiladi: pin qilinganlar
+   tarixdan oldin (barqaror), mos faktlar tarixdan keyin (har xabarda o'zgaradi, 12.23).
 
 Foydalanuvchi Memories ekranida faktni ko'radi, pin qiladi va o'chiradi. O'chirilgan fakt promptga
 boshqa tushmaydi. Bu ko'rinadigan va boshqariladigan xotira. Rejalarni ajratish (`detectPlan`) ham shu
@@ -311,8 +313,9 @@ Persona va xotira bitta, rejim bloki o'zgaradi:
 
 - Munosabat uslubga ta'sir qiladi: bosqich (`stranger` → `family`) va foydalanuvchi tanlagan `label`
   ("Crush", "Partner") promptga beriladi. Model ularni o'zi o'ylab topmaydi.
-- **Cache uchun tartib:** qoidalar → persona → rejim bloki → foydalanuvchi profili → xotira → xulosa →
-  oxirgi xabarlar. Rejim bloki persona'dan keyin turadi, shuning uchun har rejimning prefiksi alohida keshlanadi.
+- **Cache uchun tartib (12.23):** qoidalar → persona → foydalanuvchi → rejim bloki (guruh, stream) → pin qilingan
+  xotira → xulosa → tarix → shu javob qismi. Rejim bloki chat davomida o'zgarmaydi, shuning uchun keshlangan qismda turadi;
+  vazifa matni (quiz, sahna ochilishi) esa shu javob qismida.
 - `usage_events.mode` qaysi rejim qancha turishini ko'rsatadi.
 
 ### 12.6 Mock provayder
@@ -544,7 +547,8 @@ dunyolar kitoblari: `src/mock/lorebooks.ts`. Ekranlar: flows.md D73.
   qo'shimcha olishi mumkin ("kutubxona" → "kutubxonaga"). Bir javobga ko'pi bilan 4 yozuv va 1200 belgi (~300 token). Eng yangi
   eslanganlar tanlanadi, promptga esa kitob tartibida yoziladi: bir xil to'plam bir xil prompt beradi, kesh saqlanadi.
 - **Prompt:** `YOUR WORLD` bloki persona'dan keyin (barqaror, kesh prefiksida), `WORLD NOTES` eng oxirida (har javobda o'zgaradi).
-  12.5 tartibiga qo'shimcha: qoidalar → persona → dunyo → foydalanuvchi → bog'lanish → sahna → yozuvlar → oxirgi xabarlar.
+  12.23 bo'yicha: rasmiy dunyo qatorlari `character` qatlamida (hamma foydalanuvchi uchun bir xil), foydalanuvchi kitoblari
+  `chat` qatlamida, `WORLD NOTES` tarixdan keyin (`turn`).
   Guruh chati va boshqa rejimlar (`PersonaInput.lore`) ham shu blokni oladi.
 - **Jadvallar:** `lorebooks` (id, owner_id — rasmiylarda null, series, name, about, created_at), `lore_entries` (id, book_id, kind,
   name, keywords text[], text), `lorebook_links` (book_id, character_id). Saqlashda `checkLorebook` / `checkLoreEntry`
@@ -636,6 +640,59 @@ Ekran: flows.md D76. Telefondagi sessiyaning skeleti (`ccr-cbd2e9f1-iwref7`, esk
 - **API:** `PATCH /chats/:id` {replyStyle, replyLength}; `mood` serverda saqlanadi va har javobdan keyin yangilanadi.
 - **Keyinroq:** kayfiyatni UI'da ko'rsatish (avatar ifodasi, ovoz ohangi `Message.emotion`dan), nudge'ni server push
   orqali soatlab kechiktirish, ertalabki salom / diary / secret note ham shu rejadan o'tishi, guruh chati uchun uslub.
+
+### 12.23 Kesh uchun prompt tartibi (2026-10-25)
+
+Character.AI tahlilidagi 7-band (ularning Prompt Poet'i: qismlar va keshga mos kesish, `docs/character-ai-teardown.md` §7).
+Kod: `src/ai/prompt-layout.ts` (umumiy), `src/ai/chat-prompt.ts` (yakkama-yakka chat), `characterParts` / `groupParts`
+(`src/ai/rules.ts`), `streamLineParts` (`src/ai/content-prompts.ts`), hammasi testlangan. Ilovada ko'rinadigan narsa o'zgarmaydi.
+
+- **Muammo:** provayder keshi prefiksni solishtiradi: bitta bayt o'zgarsa, undan keyingi hamma narsa qaytadan yoziladi
+  (1.25× narx), o'qish esa 0.1×. Eski rejadagi "oxirgi ~30 xabar" har javobda bittaga suriladi, ya'ni system promptdan
+  keyingi birinchi baytlar har safar boshqa: tarix keshdan hech qachon o'qilmaydi. Daraja, WORLD NOTES va mos faktlar system
+  prompt ichida bo'lgani uchun ular o'zgarganda ham butun tarix qayta yozilardi.
+- **Qatlamlar (`Tier`):** har qism qanchalik tez o'zgarishini aytadi, prompt shu tartibda yig'iladi:
+  1. `global`: `CHARACTER_RULES` (~750 token), hamma chat uchun bir xil;
+  2. `character`: persona, namunaviy dialog, rasmiy dunyo qatorlari; shu personaj bilan hamma chatda bir xil, rasmiy
+     personajda hamma foydalanuvchiga bitta kesh;
+  3. `chat`: foydalanuvchining o'z kitoblari, javob tili, foydalanuvchi yoki persona, javob uslubi, guruh yoki stream bloki,
+     pin qilingan xotiralar (vaqt tartibida, oxirgi 20 tasi, xabarga qarab tartibi o'zgarmaydi), suhbat xulosasi (tarixdan oldin);
+  4. tarix: faqat oxiriga qo'shiladi, qadam bilan kesiladi;
+  5. `turn`: daraja, sahna, shu xabar eslatgan faktlar va WORLD NOTES, continue/skip cue (`steerCue`), navbat maslahatlari
+     (`turnLines`), javob shakli (`REPLY_SHAPE`). Vaqt yoki sana qo'shilsa, shu yerga.
+- **Kesh nuqtalari:** har system qatlami oxirida va tarixning oxirgi navbatida, jami 4 ta (Claude'ning chegarasi). `turn`
+  tarixdan keyin keladi va keshlanmaydi: har javobda o'z ~150–400 tokeni narxida ketadi. Prefiksda turganida esa uning har
+  o'zgarishi ~3K tokenli tarixni qayta yozdirardi. Hisob: ~30 tokenli qism (masalan, daraja) har ~130 javobdan tezroq
+  o'zgarsa, uni oxirda ushlash arzonroq.
+- **Qadamli kesish (`historyStart`):** tarix suhbat boshidan sanalgan 20 navbatga karrali nuqtadan boshlanadi va chat yana
+  20 navbatga o'sgandagina siljiydi. Tarixda 20–39 navbat bo'ladi; oraliqda har javob butun tarixni keshdan o'qiydi va faqat
+  yangi navbatlar uchun to'liq to'laydi. 24 000 belgidan oshsa (Story/Long), kesish yana butun qadamlar bilan siljiydi, lekin
+  6 navbatdan kam qolmaydi. Kesishdagi birinchi navbat personajniki bo'lsa, u ham tushadi (Claude'da birinchi xabar `user`).
+  Server har xabarga `turn_index` saqlaydi va kesishdan oldingi joydan (kamida oxirgi 40 navbat) `offset` bilan yuklaydi.
+- **Navbatlar (`chatTurns`):** bir tomonning ketma-ket xabarlari bitta navbat. Time skip foydalanuvchining navbati
+  (`[Time skip: …]`); continue ko'rinmaydi, shuning uchun uning ikki tomonidagi personaj qatorlari bitta navbatga qo'shiladi
+  (continue'dan keyingi javobda bitta navbat keshdan chiqadi, xolos). Assistant navbatlari faqat matn bo'lib qaytadi,
+  thinking bloklari saqlanmaydi: qadamli kesish ham, oxirgi `turn` qismining keyingi so'rovda tushib qolishi ham model
+  fikrlashiga bog'liq "tarix tahriri" bo'lmaydi.
+- **Adapter (`LLM_PROVIDER=anthropic`):** `system` = har qatlam alohida text blok; `global` va `character` blokida
+  `cache_control: {type: "ephemeral", ttl: "1h"}` (hamma foydalanuvchiga umumiy, doim issiq), `chat` blokida 5 daqiqalik;
+  tarix `messages` bo'lib, oxirgi navbatida 5 daqiqalik `cache_control`. 1 soatlik yozuvlar 5 daqiqaliklardan oldin turishi
+  kerak, tartib shunday. `turn`: tarix `user` bilan tugasa, `{role: "system"}` xabari (Opus 5.5, Sonnet 5.5, Haiku 5.5
+  qo'llaydi) yoki oxirgi user navbatiga ikkinchi text blok; tarix assistant bilan tugasa (Continue), yangi `user` navbati.
+  Gemini va OpenAI prefiksni o'zi keshlaydi: ularga tartibning o'zi yetadi.
+- **Minimal kesh:** Haiku 5.5, Sonnet 5.5, Opus 5.5'da 512 token, Haiku 4.5'da 4096 token. Bizning ~3K tokenli prompt
+  Haiku 4.5'da umuman keshlanmaydi. Anthropic jadvali (2026-10-06): Haiku 5.5 $0.10 / $0.50, Sonnet 5.5 $2 / $10,
+  Opus 5.5 $4 / $20 (1M token uchun); 9-bo'lim jadvali Haiku 4.5 bilan hisoblangan, B1'dan oldin qayta ko'rish kerak.
+- **Model router (13.6) bilan:** kesh modelga bog'liq, har xabarda model almashsa chat har safar sovuq boshlanadi. Router
+  modelni faol suhbat (5 daqiqalik issiq davr) boshida tanlab, shu davr davomida ushlab tursin; inqiroz kabi kuchli signal
+  bundan mustasno.
+- **Tekshiruv:** `usage_events`ga `cache_read_input_tokens` va `cache_creation_input_tokens` yoziladi (`cached_tokens`, 4-bo'lim).
+  Issiq chatdagi ikkinchi javob `cache_read ≈ system + tarix` ko'rsatishi kerak; nol bo'lsa, prefiksni nimadir buzyapti
+  (vaqt, tartibsiz JSON, xabarga qarab o'zgaradigan qism). `chat-prompt.test.ts` shu xossani ushlaydi: javobdan javobga
+  system bloklari bir xil, tarix oldingisining davomi.
+- **Taxminiy foyda** (system ~1.5K token, navbat ~50 token, oxirgi qism ~300 token): eski tartibda bir javob ≈ 1 700 token
+  birligi; yangisida kesishlar orasida ≈ 715, kesishda (har ~10 javobda) ≈ 1 700, o'rtacha ≈ 810. Kirish xarajati ~2 baravar
+  kamayadi, tarix esa o'rtacha 20 emas, ~30 navbat. Haqiqiy raqamni B1'dan keyin `usage_events` ko'rsatadi.
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
