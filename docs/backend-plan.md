@@ -517,6 +517,7 @@ Har bir yangi funksiya uchun xarajat (13.2 narxlari) va uning pul keltiradigan j
 | Sahna (o'zingizniki) | Birinchi gapi yo'q bo'lsa 1 qisqa chaqiruv ≈ $0.0005; sahna bloki ~120 token | Yozishma ko'payadi | Imtiyoz: bepul 3, tarif 10 |
 | World books (Lorebook) | Faqat eslanganda: ≤ 1200 belgi (~300 token) ≈ +$0.00009 xabarga; `about` qatorlari doim (~70 token, kesh prefiksida) | Rolli o'yin chuqurlashadi, yozishma ko'payadi | Dunyolar kitoblari hammaga bepul; o'zingizniki imtiyoz: bepul 1 kitob × 15 yozuv, tarif 5 × 50 (12.19) |
 | Stream (ikki personaj suhbati) | Raund = 8 ta qator = 8 chaqiruv (har biri ~$0.0006–0.0008) ≈ $0.005–0.006; keyingi raund 6 qator | Raund uchun chig'anoq; yangi personajlar bilan tanishish → do'st qo'shish → yozishma | Kuniga 1 raund bepul (tarifda 5), keyin raund 2 chig'anoq (≈ $0.02–0.04, marja ~4–7×). Eng faol bepul foydalanuvchi oyiga ≤ $0.18 (12.20) |
+| Continue va time skip | Bitta javob = bitta chaqiruv (≈ $0.0006), oddiy xabar bilan bir xil | Har biri 1 chig'anoq (xabar narxi) | Ketma-ket ko'pi bilan 3 ta, keyin foydalanuvchi yozishi kerak (12.21) |
 
 - **Foydalanuvchiga foydasi:** hech qaysi asosiy narsa pul devori ortida emas. Bepul foydalanuvchi ham personaj yaratadi,
   persona va sahna o'ynaydi, faqat sonlar tarifda ko'proq.
@@ -576,6 +577,32 @@ Kod: `src/lib/streams.ts`, prompt `buildStreamLinePrompt` (`src/ai/content-promp
   `POST /streams/:id/pause`, `POST /streams/:id/resume`; `GET /streams/:id/events` (SSE); `DELETE /streams/:id`.
 - **Keyinroq:** foydalanuvchi o'rtada "rejissyor" izohi bilan yo'nalish berishi, uch kishilik stream, stream'ni do'stlarga
   ulashish (ochiq lenta hozircha yo'q).
+
+### 12.21 Continue va time skip (2026-10-25)
+
+Character.AI tahlilidagi 5-band. Kod: `src/lib/chat-steer.ts` (testlangan), mock `src/mock/steer.ts`. Ekranlar: flows.md D75.
+
+- **Continue:** foydalanuvchi hech narsa yozmasdan personaj gapni davom ettiradi (eng yangi javob ostidagi »).
+  **Time skip:** hikoya oldinga suriladi (bir ozdan keyin, o'sha oqshom, ertasi tong, bir haftadan keyin), personaj o'sha
+  vaqtdan davom etadi ("+" menyu).
+- **Chatdagi belgi:** har biri `card: 'continue' | 'skip'` xabarini qoldiradi va bu foydalanuvchining navbati hisoblanadi.
+  ↻ va versiyalar faqat undan keyingi javobni qayta yozadi, rewind uni olib tashlay oladi. Continue ko'rinmaydi, skip
+  markazda soatli qator bo'lib chiziladi.
+- **Prompt:** chatning odatiy prompti → tarix → eng oxirida `steerCue` (keyingi javob nima qilishi kerak). Cue oxirda
+  turgani uchun prompt keshi buzilmaydi. Tarixda skip `[Time skip: The next morning]` bo'lib ko'rinadi
+  (`historyText`, `buildStoryContinuityContext`), continue esa ko'rinmaydi. Claude API ketma-ket ikki assistant navbatini
+  qabul qilmaydi: server ketma-ket javoblarni bitta assistant navbatiga birlashtiradi va cue'ni oxirgi user navbatiga qo'yadi.
+- **Time skip faqat hikoya vaqti:** foydalanuvchining haqiqiy rejalari, eslatmalari va voqealari "bo'lib o'tdi" deb
+  hisoblanmaydi (cue buni aytadi). Sahna ketayotgan bo'lsa, u ham skip bilan oldinga siljiydi.
+- **Cheklovlar (`steerBlock`):** javob kelayotganda yo'q; foydalanuvchining xabariga javob hali kelmagan bo'lsa yo'q;
+  inqiroz javobidan keyin yo'q (helpline kartasi o'tkazib yuborilmaydi); ketma-ket 3 tadan keyin foydalanuvchi yozishi kerak
+  (cheksiz monolog va arzon "farm" bo'lmasin).
+- **Narx:** har biri bitta javob, shuning uchun xabar narxi (1 chig'anoq, ledger `chat`). Yaqinlik qo'shmaydi, streak'ka
+  ta'sir qilmaydi (foydalanuvchi yozmadi). `usage_events.mode = 'chat'`, `steer = 'continue' | 'skip'` ustuni bilan.
+- **API:** `POST /chats/:id/turns` {kind: "continue"} yoki {kind: "skip", span}; javob odatdagi SSE oqimida keladi.
+  Server ham `steerBlock` qoidalarini tekshiradi.
+- **Keyinroq:** guruh chatida Continue (a'zolar o'zaro gaplashib davom etadi, Stream mantig'i bilan), o'zingiz yozgan
+  time skip ("Konsertdan keyin"), sahna paneli ichida "oldinga o'tish" tugmasi.
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 

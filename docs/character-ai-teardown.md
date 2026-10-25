@@ -144,7 +144,8 @@ Ordered by value to the owner's companion app, with what exists today:
    (`persona.sampleLines`, backend-plan §12.3), more than one greeting, per-field "write it for me".
 4. **World book** (done 2026-10-25, flows.md D73; `src/lib/lorebook.ts`, backend-plan §12.19) for our worlds (Seaside Academy, Moonlit Realm …): keyword-triggered entries
    shared by every character of a world (`persona.world`, backend-plan §12.3), and the user's own books for any friend.
-5. **Continue and time skip** in the chat "+" or long-press of send; reply language already exists
+5. **Continue and time skip** (done 2026-10-25, flows.md D75; `src/lib/chat-steer.ts`, backend-plan §12.21): » next to ↻
+   under their newest reply, and Time skip in the chat "+" menu; reply language already exists
    (`src/ai/reply-language.ts`).
 6. **Personalization**: reply length and "more talk / more story". Note: backend-plan §13.6 keeps the
    model invisible; length and style controls fit that rule, a visible model picker does not.

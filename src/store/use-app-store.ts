@@ -27,7 +27,9 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
+import { steerBlock, steerMarker } from '@/lib/chat-steer';
+import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
+import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
 import {
   canAddMember,
@@ -199,6 +201,7 @@ import type {
   Pronouns,
   Scene,
   Stream,
+  TimeSkip,
   MemoryItem,
   MemorySource,
   Message,
@@ -369,6 +372,10 @@ interface AppState {
   editLastMessage: (conversationId: string, text: string) => SendResult;
   /** Deletes everything after one of their lines, as if the chat had stopped there. */
   rewindTo: (conversationId: string, messageId: string) => void;
+  /** They go on without the user writing (Continue). One reply, so it costs what a message does. */
+  continueChat: (conversationId: string) => SendResult;
+  /** The story moves on (a time skip) and they pick up from there. Costs what a message does. */
+  skipTime: (conversationId: string, skip: TimeSkip) => SendResult;
 
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
@@ -1048,8 +1055,15 @@ export const useAppStore = create<AppState>()(
           ...withMessages(s, conversationId, (s.messages[conversationId] ?? []).filter((m) => !ids.has(m.id))),
           replyVersions: { ...s.replyVersions, [conversationId]: { afterId, versions: next, index: next.length - 1 } },
         }));
-        // A new version is the same exchange again: it adds no closeness.
-        scheduleReply(set, get, conversationId, { gain: 0, avoid: exchange.burst.find((m) => m.kind === 'text')?.text });
+        // A new version is the same exchange again: it adds no closeness. After a continue or a
+        // skip it answers that again (the server sends the same cue).
+        const anchor = exchange.anchor;
+        const avoid = exchange.burst.find((m) => m.kind === 'text')?.text;
+        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}`) : undefined;
+        for (let tries = 1; steer && steer[0] === avoid && tries < 5; tries++) {
+          steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`);
+        }
+        scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid });
         return 'sent';
       },
 
@@ -1115,6 +1129,10 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
+
+      continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
+
+      skipTime: (conversationId, skip) => steerChat(set, get, conversationId, 'skip', skip),
 
       /* ── group chats ──────────────────────────────────────────────────── */
 
@@ -3173,6 +3191,25 @@ function answerText(
 }
 
 /**
+ * A continue or a time skip (`src/lib/chat-steer.ts`): a marker that is the user's turn, then
+ * their reply to it. Charged as a message; it adds no closeness (the user wrote nothing) and
+ * leaves the streak alone. The server answers with the chat's prompt and `steerCue`.
+ */
+function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'continue' | 'skip', skip?: TimeSkip): SendResult {
+  const state = get();
+  if (!state.conversations.some((c) => c.id === conversationId)) return 'empty';
+  if (steerBlock(state.messages[conversationId], !!state.typing[conversationId])) return 'empty';
+  if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+  countMessage(set, get);
+  const marker: Message = { id: uid('m'), ...steerMarker(conversationId, kind, skip) };
+  appendMessage(set, get, conversationId, marker, { quiet: true });
+  // A new turn: the versions of the reply before it are done.
+  set((s) => ({ replyVersions: omitKey(s.replyVersions, conversationId) }));
+  scheduleReply(set, get, conversationId, { lines: mockSteerLines(kind, skip, marker.id), gain: 0 });
+  return 'sent';
+}
+
+/**
  * Stands in for the streaming backend call: read receipt, typing indicator, then
  * a voice note + text (or text only). Swapping in a real model only changes this.
  */
@@ -3180,7 +3217,20 @@ function scheduleReply(
   set: Setter,
   get: Getter,
   conversationId: string,
-  { text, gain, chips, avoid }: { text?: string; gain: number; chips?: string[]; avoid?: string },
+  {
+    text,
+    lines: given,
+    gain,
+    chips,
+    avoid,
+  }: {
+    text?: string;
+    /** Lines already written (a continue or a skip); without them the mock picks a burst. */
+    lines?: string[];
+    gain: number;
+    chips?: string[];
+    avoid?: string;
+  },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -3202,7 +3252,7 @@ function scheduleReply(
   // A redo (↻) skips the burst on screen, so the new version reads differently.
   let burst = pick(replyBursts);
   for (let tries = 0; avoid && burst[0] === avoid && tries < 4; tries++) burst = pick(replyBursts);
-  const lines = text ? [text] : withInterest(burst, get().user.interests);
+  const lines = text ? [text] : (given ?? withInterest(burst, get().user.interests));
   const bond = get().relationships[conversation.characterId];
   const character = get().characters.find((c) => c.id === conversation.characterId);
   const said = lines.join(' ');

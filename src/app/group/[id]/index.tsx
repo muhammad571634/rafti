@@ -221,7 +221,8 @@ export default function GroupChatScreen() {
       case 'diary':
         return router.push('/diary/write');
       case 'scene':
-        // Hidden in groups (`hide` below); scenes play in one-to-one chats.
+      case 'timeSkip':
+        // Hidden in groups (`hide` below); scenes and time skips play in one-to-one chats.
         return;
       default:
         return setWithOne(key);
@@ -302,7 +303,7 @@ export default function GroupChatScreen() {
         />
       </BlurTargetView>
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} hide={['scene']} />
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} hide={['scene', 'timeSkip']} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)} title={t('group.pickMember')}>

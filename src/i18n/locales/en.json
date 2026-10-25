@@ -298,6 +298,7 @@
     "callBack": "Call back",
     "attachments": {
       "scene": "Scene",
+      "timeSkip": "Time skip",
       "voice": "Voice",
       "photo": "Photo",
       "gift": "Gift",
@@ -324,6 +325,28 @@
     "cancelEdit": "Cancel editing",
     "saveEdit": "Send edit",
     "newReply": "New reply",
+    "continue": "Continue",
+    "skip": {
+      "later": "A little later",
+      "evening": "That evening",
+      "nextMorning": "The next morning",
+      "week": "A week later"
+    },
+    "skipTitle": "Time skip",
+    "skipLead": "Move the story on. They pick up from there.",
+    "skipHint": {
+      "later": "A little while passes",
+      "evening": "The day goes on into the evening",
+      "nextMorning": "A night passes",
+      "week": "Seven days pass"
+    },
+    "skipNote": "1 shell, like a message. Story time only: your real plans and reminders stay as they are.",
+    "steerBlocked": {
+      "typing": "Let them finish first.",
+      "waiting": "Let them answer first.",
+      "crisis": "Not after this. They're here if you want to keep talking.",
+      "tooMany": "Write to them first: they've gone on three times in a row."
+    },
     "prevVersion": "Previous version",
     "nextVersion": "Next version",
     "versionOf": "Version {{index}} of {{count}}",

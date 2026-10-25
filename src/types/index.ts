@@ -81,6 +81,8 @@ export interface Relationship {
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
+/** How far a time skip moves the story (`src/lib/chat-steer.ts`). */
+export type TimeSkip = 'later' | 'evening' | 'nextMorning' | 'week';
 export type MessageAuthor = 'me' | 'them';
 
 export interface Message {
@@ -111,11 +113,13 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip';
   /** voiceQuota lines: when the plan's voice minutes come back */
   until?: string;
   /** scene cards: the scene that starts here (`text` is its title). */
   setting?: string;
+  /** skip markers: how far the story moved on (`src/lib/chat-steer.ts`). */
+  skip?: TimeSkip;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
   /** Group chats: the member who wrote it (author 'them'). */

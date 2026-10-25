@@ -71,6 +71,9 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
+  // A continue is the user's turn without words: nothing to show, their lines follow.
+  if (message.card === 'continue') return null;
+  if (message.card === 'skip') return <SkipLine text={t(`chat.skip.${message.skip ?? 'later'}`)} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -270,6 +273,18 @@ function SystemLine({ text }: { text: string }) {
       <Txt style={styles.systemText} center>
         {text}
       </Txt>
+    </View>
+  );
+}
+
+/** Where the story moved on (a time skip): the new time, centred like the chat's own notes. */
+function SkipLine({ text }: { text: string }) {
+  return (
+    <View style={styles.system} accessibilityRole="header">
+      <View style={styles.sceneHead}>
+        <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
+        <Txt style={[styles.systemText, styles.systemStrong]}>{text}</Txt>
+      </View>
     </View>
   );
 }

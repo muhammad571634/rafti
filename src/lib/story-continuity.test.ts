@@ -180,6 +180,15 @@ describe('buildStoryContinuityContext', () => {
     assert.deepEqual(build({ recentMessages }).recentMessages.map((m) => m.text), ['hi', '[Call]', '[Missed call]']);
   });
 
+  it('keeps a time skip in the story and leaves a continue out', () => {
+    const recentMessages = [
+      message('see you tomorrow', 3),
+      message(undefined, 2, { author: 'them', kind: 'system', card: 'skip', skip: 'nextMorning' }),
+      message(undefined, 1, { author: 'them', kind: 'system', card: 'continue' }),
+    ];
+    assert.deepEqual(build({ recentMessages }).recentMessages.map((m) => m.text), ['see you tomorrow', '[Time skip: The next morning]']);
+  });
+
   // Approved memory plan: docs/backend-plan.md 7 and 12.1-12.3.
   it('adds every pinned fact on top of the relevant ones, even when unrelated', () => {
     const pinned = memory('Exam week ends on Friday.', { pinned: true });

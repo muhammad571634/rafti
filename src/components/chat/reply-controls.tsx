@@ -13,18 +13,23 @@ const SWIPE = 48;
 
 /**
  * Under their newest reply (canvas `ChatRegen.dc.html`): ↻ asks for a new version, and once there
- * are several, ‹ 2/3 › steps between them. Icons in the secondary grey, as quiet as a read receipt.
+ * are several, ‹ 2/3 › steps between them; » lets them go on without the user writing (Continue,
+ * `src/lib/chat-steer.ts`). Icons in the secondary grey, as quiet as a read receipt.
  */
 export function ReplyControls({
   count,
   index,
   onStep,
   onRedo,
+  onContinue,
 }: {
   count: number;
   index: number;
   onStep: (delta: 1 | -1) => void;
-  onRedo: () => void;
+  /** ↻; left out where there is no reply of theirs to redo yet (their greeting). */
+  onRedo?: () => void;
+  /** »; left out while the chat waits for the user. */
+  onContinue?: () => void;
 }) {
   const { t } = useTranslation();
   const first = index === 0;
@@ -57,15 +62,28 @@ export function ReplyControls({
           </PressableScale>
         </>
       ) : null}
-      <PressableScale
-        scaleTo={0.85}
-        haptic
-        onPress={onRedo}
-        style={styles.redo}
-        accessibilityRole="button"
-        accessibilityLabel={t('chat.newReply')}>
-        <SFIcon ios="arrow.clockwise" icon="refresh" size={18} color={colors.textSecondary} />
-      </PressableScale>
+      {onRedo ? (
+        <PressableScale
+          scaleTo={0.85}
+          haptic
+          onPress={onRedo}
+          style={styles.redo}
+          accessibilityRole="button"
+          accessibilityLabel={t('chat.newReply')}>
+          <SFIcon ios="arrow.clockwise" icon="refresh" size={18} color={colors.textSecondary} />
+        </PressableScale>
+      ) : null}
+      {onContinue ? (
+        <PressableScale
+          scaleTo={0.85}
+          haptic
+          onPress={onContinue}
+          style={styles.redo}
+          accessibilityRole="button"
+          accessibilityLabel={t('chat.continue')}>
+          <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={18} color={colors.textSecondary} />
+        </PressableScale>
+      ) : null}
     </View>
   );
 }

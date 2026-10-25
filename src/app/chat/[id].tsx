@@ -17,6 +17,7 @@ import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
+import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
@@ -26,6 +27,7 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
 import { takeFocus } from '@/lib/chat-focus';
+import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
@@ -33,7 +35,7 @@ import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey }
 import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, shadows, space } from '@/theme';
-import type { Message } from '@/types';
+import type { Message, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -80,6 +82,7 @@ export default function ChatRoomScreen() {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [truthOpen, setTruthOpen] = useState(false);
   const [callsOpen, setCallsOpen] = useState(false);
+  const [skipOpen, setSkipOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
   /** Calling with no minutes: free users see what Basic adds, members can top up. */
@@ -93,6 +96,8 @@ export default function ChatRoomScreen() {
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
+  const continueChat = useAppStore((s) => s.continueChat);
+  const skipTime = useAppStore((s) => s.skipTime);
   const memories = useAppStore((s) => s.memories);
   const pinMessage = useAppStore((s) => s.pinMessage);
   const unpinMessage = useAppStore((s) => s.unpinMessage);
@@ -166,6 +171,8 @@ export default function ChatRoomScreen() {
   );
   const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
+  // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
+  const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
   const swipeable = canRedo && (versions?.versions.length ?? 0) > 1;
   const editableId = exchange?.anchor.kind === 'text' && !exchange.anchor.pending ? exchange.anchor.id : undefined;
@@ -265,6 +272,16 @@ export default function ChatRoomScreen() {
     if (regenerateReply(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
+  // So are a continue and a time skip: each is one reply of theirs.
+  const goOn = () => {
+    if (continueChat(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
+  const skipTo = (skip: TimeSkip) => {
+    setSkipOpen(false);
+    if (skipTime(conversation.id, skip) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
   const saveEdit = (text: string) => {
     if (editLastMessage(conversation.id, text) === 'noShells') return outOfShells(shellCosts.textMessage);
     setEditing(null);
@@ -295,6 +312,8 @@ export default function ChatRoomScreen() {
     switch (key) {
       case 'scene':
         return router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: conversation.id } });
+      case 'timeSkip':
+        return setSkipOpen(true);
       case 'voice':
         return setVoiceOpen(true);
       case 'photo':
@@ -358,12 +377,13 @@ export default function ChatRoomScreen() {
               renderItem={renderItem}
               ListFooterComponent={
                 <>
-                  {canRedo ? (
+                  {canRedo || !block ? (
                     <ReplyControls
                       count={versions?.versions.length ?? 1}
                       index={versions?.index ?? 0}
                       onStep={stepVersion}
-                      onRedo={redo}
+                      onRedo={canRedo ? redo : undefined}
+                      onContinue={block ? undefined : goOn}
                     />
                   ) : null}
                   {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
@@ -465,6 +485,7 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+      <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}

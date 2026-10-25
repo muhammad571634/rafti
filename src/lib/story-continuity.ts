@@ -1,5 +1,7 @@
 import type { Character, MemoryItem, Message, Relationship } from '@/types';
 
+import { historyText } from './chat-steer';
+
 /**
  * Assembles what a future server-side model sees for one chat turn, following the
  * approved memory plan in docs/backend-plan.md (sections 7 and 12.1-12.3):
@@ -154,6 +156,8 @@ function memoryScore(memory: MemoryItem, overlap: number, querySize: number, now
 
 /** What the model may see of a message; app-only rows return null. Local URIs never leave. */
 function messageText(message: Message): string | null {
+  // A time skip is part of the story: later replies must know the time moved on.
+  if (message.card === 'skip') return historyText(message);
   if (message.pending || message.kind === 'system' || message.card) return null;
   if (message.kind === 'call') return message.missed ? '[Missed call]' : '[Call]';
   const text = (message.text ?? message.transcript ?? '').trim();

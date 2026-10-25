@@ -9,7 +9,7 @@ import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
 import { colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 
-export type AttachKey = 'scene' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
+export type AttachKey = 'scene' | 'timeSkip' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
 /**
  * iOS-style app icons: a system-colour circle with a white glyph (approved prototype
@@ -18,6 +18,8 @@ export type AttachKey = 'scene' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 't
  */
 const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
   { key: 'scene', icon: 'film', fill: systemColors.teal },
+  // A clock's grey, as iOS's Clock: story time, not a module.
+  { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
   { key: 'diary', ...moduleTile('diary') },
   { key: 'dailyCalls', ...moduleTile('calls') },
   { key: 'date', ...moduleTile('date') },
@@ -45,7 +47,7 @@ export function AttachMenu({
   visible: boolean;
   onClose: () => void;
   onPick: (key: AttachKey) => void;
-  /** Items this chat has no place for (a group has no scenes yet). */
+  /** Items this chat has no place for (a group has no scenes or time skips yet). */
   hide?: AttachKey[];
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
