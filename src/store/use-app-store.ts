@@ -61,7 +61,13 @@ import {
   type SceneProblem,
 } from '@/lib/scenes';
 import { officialScenes } from '@/mock/scenes';
-import { quickCreatesLeft, spendQuickCreate, type QuickCreateUse } from '@/economy/quick-create';
+import {
+  consumePortrait,
+  PORTRAIT_SHELLS,
+  quickCreatesLeft,
+  spendQuickCreate,
+  type QuickCreateUse,
+} from '@/economy/quick-create';
 import {
   checkPersona,
   defaultPersona,
@@ -412,6 +418,8 @@ interface AppState {
   endScene: (conversationId: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
+  /** Pays for a drawn portrait: one of the plan's free ones, else shells. False when neither is there. */
+  payForPortrait: (characterId?: string) => boolean;
   /**
    * A line that reached the user only as a notification (the comeback ladder) lands in
    * the chat once the app sees it. Written once per notification id.
@@ -1466,6 +1474,16 @@ export const useAppStore = create<AppState>()(
           { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'sceneEnd', text: title, createdAt: new Date().toISOString() },
           { quiet: true },
         );
+      },
+
+      payForPortrait: (characterId) => {
+        const now = Date.now();
+        const free = consumePortrait(get().wallet.subscription, now);
+        if (free) {
+          set((s) => ({ wallet: { ...s.wallet, subscription: free } }));
+          return true;
+        }
+        return get().spendShells(PORTRAIT_SHELLS, 'portrait', characterId);
       },
 
       takeQuickCreate: () => {

@@ -237,6 +237,7 @@ const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconN
   date: moduleTile('date'),
   photoBooth: moduleTile('photo'),
   voiceClone: { fill: systemColors.indigo, ios: 'mic.fill', icon: 'mic' },
+  portrait: { fill: systemColors.orange, ios: 'person.crop.circle.fill', icon: 'person-circle' },
   trial: moduleTile('calls'),
   membership: { fill: systemColors.purple, ios: 'phone.fill', icon: 'call' },
   call: moduleTile('calls'),

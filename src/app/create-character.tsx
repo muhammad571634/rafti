@@ -17,7 +17,7 @@ import {
   type Spark,
   textToDefinition,
 } from '@/ai/character-draft';
-import { requestDraft, requestField } from '@/ai/character-studio';
+import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
 import { Pill, QuickIdea, RewriteButton, SectionHead, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -36,7 +36,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
-import { FREE_QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
+import { FREE_QUICK_CREATES_PER_DAY, portraitPrice } from '@/economy/quick-create';
 import { haptic } from '@/lib/haptics';
 import {
   BIO_MAX,
@@ -144,6 +144,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const locale = useAppStore((s) => s.user.locale);
   const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates));
   const takeQuickCreate = useAppStore((s) => s.takeQuickCreate);
+  const payForPortrait = useAppStore((s) => s.payForPortrait);
+  const subscription = useAppStore((s) => s.wallet.subscription);
   const { scrolled, onScroll } = useScrolledPast(40);
   /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
   const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -210,6 +212,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
         : null;
   // Only a new clone is paid for.
   const cost = voiceMode === 'clone' && !keepsTrainedVoice ? shellCosts.characterVoiceClone : 0;
+  // A new character without a photo gets a picture drawn from their looks (once, at Create): free
+  // from a plan's allowance, else `PORTRAIT_SHELLS` (owner, 2026-10-25). Off until the image server runs.
+  const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !imageUri && !!look.trim();
+  const totalCost = cost + (drawsPortrait ? portraitPrice(subscription, Date.now()) : 0);
   const problems = checkCreation({
     name,
     age,
@@ -388,18 +394,26 @@ function CharacterForm({ editing }: { editing?: Character }) {
 
   const submit = () => {
     if (problems.length > 0) return setError(t(`createCharacter.problems.${problems[0]}`));
-    // Checked now so the paywall shows at once; charged only when the voice is actually made.
-    if (cost > 0 && shells < cost) return setPaywall(cost);
+    // Checked now so the paywall shows at once; charged only when the voice or picture is actually made.
+    if (totalCost > 0 && shells < totalCost) return setPaywall(totalCost);
 
     setCreating(true);
-    const finish = () => {
+    const finish = async () => {
       if (cost > 0 && !spendShells(cost, 'voiceClone')) {
         setCreating(false);
         return setPaywall(cost);
       }
       if (editing) return save(editing);
+      // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
+      let avatarUri = imageUri;
+      if (drawsPortrait) {
+        const drawn = await requestPortrait(look);
+        if (!alive.current) return;
+        if (drawn && payForPortrait()) avatarUri = drawn;
+      }
       const { conversationId } = addCharacter({
         ...fields(),
+        avatarUri,
         handle: '@you',
         series: 'My Creations',
         accentIndex: Math.floor(Math.random() * 6),
@@ -411,8 +425,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
       router.replace(`/chat/${conversationId}`);
     };
     // A new cloned voice trains first (a server job later); anything else is ready now.
-    if (cost > 0) training.current = setTimeout(finish, CLONE_MS);
-    else finish();
+    if (cost > 0) training.current = setTimeout(() => void finish(), CLONE_MS);
+    else void finish();
   };
 
   const rewriteLabel = (field: string) => t('createCharacter.rewrite', { field: field.toLowerCase() });
@@ -736,13 +750,13 @@ function CharacterForm({ editing }: { editing?: Character }) {
             label={
               creating
                 ? t('createCharacter.creating')
-                : editing && cost === 0
+                : editing && totalCost === 0
                   ? t('createCharacter.save')
-                  : cost > 0
-                    ? t('createCharacter.create', { count: cost })
+                  : totalCost > 0
+                    ? t('createCharacter.create', { count: totalCost })
                     : t('createCharacter.createFree')
             }
-            left={cost > 0 && !creating ? <ShellIcon size={18} /> : undefined}
+            left={totalCost > 0 && !creating ? <ShellIcon size={18} /> : undefined}
             disabled={creating || busy != null}
             caption={t(isPublic ? 'createCharacter.reviewNote' : 'createCharacter.privateNote')}
             onPress={submit}>

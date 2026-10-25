@@ -9,6 +9,18 @@ import { type DraftField, type DraftInput, type DraftResult, type FieldContext, 
  * same checks (`parseDraft`, `parseField`), so the screen sees what it would see in production.
  */
 
+/**
+ * Whether pictures are drawn from their looks yet (`POST /characters/portrait`). Off until the
+ * image server runs: then no picture is drawn and none is charged for.
+ */
+export const PORTRAITS_AVAILABLE = false;
+
+/** A picture drawn from their looks, as a URL; null when none came back (nothing is charged then). */
+export async function requestPortrait(look: string): Promise<string | null> {
+  void look;
+  return null;
+}
+
 /** How long the mock "writes": long enough to follow the steps on screen. */
 export const DRAFT_MS = 2600;
 const FIELD_MS = 700;

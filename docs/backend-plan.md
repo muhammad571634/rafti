@@ -511,7 +511,7 @@ Har bir yangi funksiya uchun xarajat (13.2 narxlari) va uning pul keltiradigan j
 |---|---|---|---|
 | Tez yaratish: matnli qoralama | ≈ $0.005–0.01 (kuchliroq model, ~2k token) | Yangi personaj = yangi chatlar, xabarlar | Kuniga 3 bepul (`quick-create.ts`): eng faol bepul foydalanuvchi oyiga ≤ $0.9 |
 | Tez yaratish: ✦ bitta maydon | ≈ $0.001 | Personaj sifati, ko'proq yozishma | Bepul; serverda kuniga 30 ta suiiste'mol chegarasi |
-| Tez yaratish: rasm chizish | **≈ $0.08** (eng qimmat qism) | — | **Taklif:** rasm faqat "Create"da bitta chiziladi; bepul foydalanuvchiga 15 chig'anoq (≈ $0.17–0.30, marja ~2–4×), tarifda oyiga 10 ta bepul. Egasi tasdiqlaydi |
+| Tez yaratish: rasm chizish | **≈ $0.08** (eng qimmat qism) | Chig'anoq / tarif | **Egasi tasdiqladi (2026-10-25):** rasm faqat "Create"da, fotosurat bo'lmasa, bitta chiziladi; tarifsiz 15 chig'anoq (≈ $0.17–0.30, marja ~2–4×), tarifda har 30 kunda 10 ta bepul, keyin 15 chig'anoq. Faqat rasm qaytsa yechiladi. Kod: `src/economy/quick-create.ts` (`PORTRAIT_SHELLS`, `PLAN_PORTRAITS`), rasm serveri ulanguncha o'chiq (`PORTRAITS_AVAILABLE`) |
 | Persona | Promptga ~200 token: xabar xarajati ~+10% (≈ $0.00006) | Rolli o'yinda uzoqroq suhbat | Imtiyoz: bepul 1, tarif 5 |
 | Sahna (rasmiy) | $0: ochuvchi gap tayyor, model chaqirilmaydi | Yozishma ko'payadi | Hammaga bepul |
 | Sahna (o'zingizniki) | Birinchi gapi yo'q bo'lsa 1 qisqa chaqiruv ≈ $0.0005; sahna bloki ~120 token | Yozishma ko'payadi | Imtiyoz: bepul 3, tarif 10 |

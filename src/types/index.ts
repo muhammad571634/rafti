@@ -467,8 +467,8 @@ export interface Subscription {
   termStart: string;
   /** Renews at the end of each term, like the store's auto-renewal; false ends it then */
   willRenew: boolean;
-  /** Minutes (and Photo Booth pictures) used in the current period; a new period starts from zero */
-  usage: { periodStart: string; callSeconds: number; voiceSeconds: number; photos?: number };
+  /** Minutes, Photo Booth pictures and drawn character portraits used in the current period; a new period starts from zero */
+  usage: { periodStart: string; callSeconds: number; voiceSeconds: number; photos?: number; portraits?: number };
 }
 
 /** Extra minutes bought with shells: used after the plan's own and kept for 90 days. */
@@ -498,6 +498,7 @@ export type LedgerReason =
   | 'date'
   | 'photoBooth'
   | 'voiceClone'
+  | 'portrait'
   | 'trial'
   | 'membership'
   | 'call'
