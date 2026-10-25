@@ -399,6 +399,8 @@ interface AppState {
   /** A finished group call: its line in the chat and the call minutes it used. */
   addGroupCall: (groupId: string, startedAt: string, durationSec: number) => void;
   renameGroup: (groupId: string, name: string) => void;
+  /** The group chat's background, picked as a one-to-one chat's is. */
+  setGroupBackground: (groupId: string, backgroundId: string) => void;
   /** False when the group is full or they are in it already. */
   addGroupMember: (groupId: string, characterId: string) => boolean;
   /** False when only two would be left (delete the group instead). */
@@ -1310,6 +1312,9 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
         if (used.taken > 0) logSeconds(set, -used.taken, 'call');
       },
+
+      setGroupBackground: (groupId, backgroundId) =>
+        set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, backgroundId } : g)) })),
 
       renameGroup: (groupId, name) => {
         const group = get().groups.find((g) => g.id === groupId);

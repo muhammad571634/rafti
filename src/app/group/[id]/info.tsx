@@ -230,6 +230,10 @@ export default function GroupInfoScreen() {
         </InsetGroup>
 
         <InsetGroup style={styles.block}>
+          <InsetRow label={t('background.title')} chevron last onPress={() => router.push({ pathname: '/group/[id]/background', params: { id: groupId } })} />
+        </InsetGroup>
+
+        <InsetGroup style={styles.block}>
           <View style={styles.switchRow}>
             <Txt style={[styles.memberName, styles.flex]}>{t('group.mute')}</Txt>
             <Switch

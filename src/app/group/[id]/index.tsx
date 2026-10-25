@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -9,7 +10,7 @@ import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRe
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
@@ -30,9 +31,9 @@ import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
-import { backgroundsById, shellCosts } from '@/mock';
+import { backgroundsById, chatArtBackgroundsById, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, isDark, space } from '@/theme';
 import type { Character, Message, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -154,7 +155,10 @@ export default function GroupChatScreen() {
         : typers.length === 2
           ? t('group.typingTwo', { a: nameOf(typers[0]), b: nameOf(typers[1]) })
           : t('group.typingMany', { a: nameOf(typers[0]), b: nameOf(typers[1]), c: nameOf(typers[2]) });
-  const wallpaper = backgroundsById.bg_plain;
+  // The group's own background (info → Chat background), drawn as a one-to-one chat draws it.
+  const backgroundId = group?.backgroundId ?? 'bg_plain';
+  const artWallpaper = chatArtBackgroundsById[backgroundId];
+  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
 
   // Only messages that arrive while the group is open animate in.
   const [openedAt] = useState(() => Date.now());
@@ -279,7 +283,14 @@ export default function GroupChatScreen() {
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          {artWallpaper ? (
+            <>
+              <Image source={artWallpaper.image} contentFit="cover" style={StyleSheet.absoluteFill} accessible={false} />
+              <View pointerEvents="none" style={styles.artVeil} />
+            </>
+          ) : null}
           <View style={styles.flex}>
+            {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain'} /> : null}
             <FlatList
               ref={listRef}
               data={data}
@@ -300,7 +311,7 @@ export default function GroupChatScreen() {
                 setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.4 }), 120);
               }}
             />
-            <HeaderFade color={wallpaper.colors[0]} room={headerRoom} />
+            {!artWallpaper ? <HeaderFade color={wallpaper.colors[0]} room={headerRoom} /> : null}
           </View>
 
           <ChatInput
@@ -435,6 +446,8 @@ const NO_ONE: string[] = [];
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  // As the one-to-one chat's art veil: the picture stays, the bubbles stay easy to read.
+  artVeil: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)' },
   missing: { padding: space.xl },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   list: { paddingBottom: space.sm },

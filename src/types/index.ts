@@ -177,6 +177,8 @@ export interface GroupChat {
   muted: boolean;
   /** When the "not real people" notice last showed, as in a one-to-one chat. */
   aiNoticeAt?: string;
+  /** The chat background, as a one-to-one chat's (`Relationship.backgroundId`); missing = plain. */
+  backgroundId?: string;
 }
 
 /**
