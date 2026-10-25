@@ -51,7 +51,7 @@ export function AlarmBar() {
 }
 
 /** While a scene runs in this chat: its title, and End to go back to everyday chat. */
-export function SceneBar({ title, onEnd }: { title: string; onEnd: () => void }) {
+export function SceneBar({ title, onSkip, onEnd }: { title: string; onSkip?: () => void; onEnd: () => void }) {
   const { t } = useTranslation();
   return (
     <View style={styles.sceneBar}>
@@ -59,6 +59,12 @@ export function SceneBar({ title, onEnd }: { title: string; onEnd: () => void })
       <Txt variant="smallStrong" style={styles.flex} lines={1}>
         {title}
       </Txt>
+      {/* ⏩ opens the time skip with the scene's next moment first. */}
+      {onSkip ? (
+        <PressableScale onPress={onSkip} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('scenes.skipAhead')} hitSlop={10} style={styles.sceneEnd}>
+          <Ionicons name="play-forward" size={17} color={colors.primary} />
+        </PressableScale>
+      ) : null}
       <PressableScale onPress={onEnd} scaleTo={0.94} accessibilityRole="button" accessibilityLabel={t('scenes.end')} hitSlop={10} style={styles.sceneEnd}>
         <Txt variant="smallStrong" color={colors.primary}>
           {t('scenes.end')}

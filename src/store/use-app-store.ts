@@ -27,7 +27,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { steerBlock, steerMarker } from '@/lib/chat-steer';
+import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -378,8 +378,11 @@ interface AppState {
   rewindTo: (conversationId: string, messageId: string) => void;
   /** They go on without the user writing (Continue). One reply, so it costs what a message does. */
   continueChat: (conversationId: string) => SendResult;
-  /** The story moves on (a time skip) and they pick up from there. Costs what a message does. */
-  skipTime: (conversationId: string, skip: TimeSkip) => SendResult;
+  /**
+   * The story moves on (a time skip) and they pick up from there: a span, the running scene's next
+   * moment, or `to`, the user's own words (`skip: 'own'`). Costs what a message does.
+   */
+  skipTime: (conversationId: string, skip: TimeSkip, to?: string) => SendResult;
 
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
@@ -389,6 +392,8 @@ interface AppState {
   sendGroupImage: (groupId: string, imageUri: string) => SendResult;
   /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
   continueGroup: (groupId: string) => SendResult;
+  /** A time skip in a group: one member picks up at the new time, another answers; a message's price. */
+  skipGroupTime: (groupId: string, skip: TimeSkip, to?: string) => SendResult;
   /** Truth or dare with one member in the group; another member joins in. Returns the question. */
   playGroupTruthOrDare: (groupId: string, characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
   /** A finished group call: its line in the chat and the call minutes it used. */
@@ -1134,7 +1139,7 @@ export const useAppStore = create<AppState>()(
 
       continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
 
-      skipTime: (conversationId, skip) => steerChat(set, get, conversationId, 'skip', skip),
+      skipTime: (conversationId, skip, to) => steerChat(set, get, conversationId, 'skip', skip, to),
 
       /* ── group chats ──────────────────────────────────────────────────── */
 
@@ -1233,6 +1238,28 @@ export const useAppStore = create<AppState>()(
         scheduleGroupReplies(set, get, groupId, [
           { characterId: first, lines: second ? [pick(groupGoOn)(memberName(get(), second))] : pick(groupReplies) },
           ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first))] }] : []),
+        ]);
+        return 'sent';
+      },
+
+      skipGroupTime: (groupId, skip, to) => {
+        const state = get();
+        const group = state.groups.find((g) => g.id === groupId);
+        // Scenes play in one-to-one chats only, so a group skips by a span or the user's words.
+        if (!group || skip === 'scene') return 'empty';
+        if (steerBlock(state.messages[groupId], !!state.groupTyping[groupId]?.length)) return 'empty';
+        const words = skip === 'own' ? cleanSkipTo(to ?? '') : undefined;
+        if (words !== undefined && checkSkipTo(words).length) return 'empty';
+        const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
+        if (!first) return 'empty';
+        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        countMessage(set, get);
+        const marker: Message = { id: uid('m'), ...steerMarker(groupId, 'skip', skip, new Date(), words) };
+        appendGroupMessage(set, get, groupId, marker, { quiet: true });
+        // The server: the first member from `groupSkipCue`, the second from `groupContinueCue`.
+        scheduleGroupReplies(set, get, groupId, [
+          { characterId: first, lines: mockSteerLines('skip', skip, marker.id) },
+          ...(second ? [{ characterId: second, lines: [pick(groupGoOn)(memberName(get(), first))] }] : []),
         ]);
         return 'sent';
       },
@@ -3223,13 +3250,18 @@ function answerText(
  * their reply to it. Charged as a message; it adds no closeness (the user wrote nothing) and
  * leaves the streak alone. The server answers with the chat's prompt and `steerCue`.
  */
-function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'continue' | 'skip', skip?: TimeSkip): SendResult {
+function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'continue' | 'skip', skip?: TimeSkip, to?: string): SendResult {
   const state = get();
-  if (!state.conversations.some((c) => c.id === conversationId)) return 'empty';
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  if (!conversation) return 'empty';
   if (steerBlock(state.messages[conversationId], !!state.typing[conversationId])) return 'empty';
+  // A scene's skip needs a running scene; an own skip needs words that keep the content rules.
+  if (kind === 'skip' && skip === 'scene' && !conversation.scene) return 'empty';
+  const words = kind === 'skip' && skip === 'own' ? cleanSkipTo(to ?? '') : undefined;
+  if (words !== undefined && checkSkipTo(words).length) return 'empty';
   if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
   countMessage(set, get);
-  const marker: Message = { id: uid('m'), ...steerMarker(conversationId, kind, skip) };
+  const marker: Message = { id: uid('m'), ...steerMarker(conversationId, kind, skip, new Date(), words) };
   appendMessage(set, get, conversationId, marker, { quiet: true });
   // A new turn: the versions of the reply before it are done.
   set((s) => ({ replyVersions: omitKey(s.replyVersions, conversationId) }));

@@ -74,7 +74,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   // A continue is the user's turn without words: nothing to show, their lines follow.
   if (message.card === 'continue') return null;
-  if (message.card === 'skip') return <SkipLine text={t(`chat.skip.${message.skip ?? 'later'}`)} />;
+  if (message.card === 'skip') return <SkipLine text={message.skip === 'own' && message.skipTo ? message.skipTo : t(`chat.skip.${message.skip ?? 'later'}`)} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 

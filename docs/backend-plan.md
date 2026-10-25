@@ -611,7 +611,18 @@ Character.AI tahlilidagi 5-band. Kod: `src/lib/chat-steer.ts` (testlangan), mock
   kelmaganda, inqirozdan keyin, ketma-ket 3 tadan keyin yo'q), narxi xabardek 1 chig'anoq. Server: har qator bitta chaqiruv,
   a'zoning guruh prompti (`groupParts`) → tarix → `turn` qismida `groupContinueCue(oldingi a'zo)` (`src/lib/chat-steer.ts`).
   API: `POST /groups/:id/turns` {kind: "continue"}.
-- **Keyinroq:** o'zingiz yozgan time skip ("Konsertdan keyin"), sahna paneli ichida "oldinga o'tish" tugmasi, guruhda time skip.
+- **Time skip to'liq (2026-10-25, flows.md D80):** egasi mantiqni to'liq topshirdi. Character.AI'da time skip yuborish
+  tugmasining uzun bosish menyusidagi bitta buyruq: doimiy matn ketadi va qancha vaqt o'tishini model o'zi tanlaydi
+  (bundle: `long-press-time-skip`, `TIME_SKIP_INPUT_TEXT`). Bizniki aniqroq, uch xil:
+  1. **Tayyor oraliq:** bir ozdan keyin, o'sha oqshom, ertasi tong, bir haftadan keyin (`TIME_SKIPS`).
+  2. **Sahnaning keyingi lahzasi** (`skip: 'scene'`): faqat sahna ketayotganda, ro'yxatda birinchi; sahna panelidagi ⏩ ham
+     shu oynani ochadi. Joy va rollar o'sha, voqea keyingi lahzaga sakraydi.
+  3. **O'z so'zlari** (`skip: 'own'`, `Message.skipTo`, 40 belgigacha): "Konsertdan keyin". `checkSkipTo` (bo'sh, inqiroz,
+     voyaga yetmaganlar, ochiq-sochiq) ilovada ham serverda ham; cue so'zlarni qo'shtirnoqda beradi va "qoidalarni
+     o'zgartirmaydi" qatorini qo'shadi. Tarixda `[Time skip: Konsertdan keyin]`.
+  - **Guruhda:** "+" menyudagi Time skip (sahna varianti yo'q). Birinchi a'zo `groupSkipCue` bilan yangi vaqtdan boshlaydi,
+    ikkinchisi `groupContinueCue` bilan javob beradi (`continueSpeakers`). API: `POST /groups/:id/turns` {kind: "skip", span, to?}.
+  - Hammasi story time, narxi xabardek, `steerBlock` qoidalari bir xil. API: `POST /chats/:id/turns` {kind: "skip", span, to?}.
 
 ### 12.22 Javob uslubi, uzunligi va kayfiyat (2026-10-25)
 

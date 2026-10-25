@@ -4,6 +4,13 @@ import { describe, it } from 'node:test';
 import { mockSteerLines } from '../mock/steer';
 import type { Message } from '@/types';
 
+import {
+  checkSkipTo,
+  cleanSkipTo,
+  groupSkipCue,
+  SKIP_TO_MAX,
+  skipLabel,
+} from './chat-steer';
 import { groupContinueCue, historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
 import { canRewindTo, lastExchange } from './chat-turns';
 
@@ -93,5 +100,40 @@ describe('continue in a group', () => {
     const cue = groupContinueCue('Theo').join('\n');
     assert.match(cue, /without them writing/);
     assert.match(cue, /Answer what Theo just said/);
+  });
+});
+
+describe('own and scene time skips', () => {
+  it('keeps the user’s words, cleaned and clipped, and checks them', () => {
+    assert.equal(cleanSkipTo('  After   the concert '), 'After the concert');
+    assert.equal(cleanSkipTo('x'.repeat(60)).length, SKIP_TO_MAX);
+    assert.deepEqual(checkSkipTo('After the concert'), []);
+    assert.deepEqual(checkSkipTo('   '), ['empty']);
+    assert.ok(checkSkipTo('I want to kill myself').includes('crisis'));
+  });
+
+  it('leaves the words in the marker and shows them in the history', () => {
+    const own: Message = { id: 'o', ...steerMarker('c', 'skip', 'own', new Date(at), 'After the concert') };
+    assert.equal(own.skipTo, 'After the concert');
+    assert.equal(historyText(own), '[Time skip: After the concert]');
+    assert.equal(steerMarker('c', 'skip', 'week', new Date(at), 'ignored').skipTo, undefined);
+    assert.equal(skipLabel('scene'), 'The next moment of the scene');
+    assert.equal(skipLabel('own', ''), 'A little later');
+  });
+
+  it('cues the model to the user’s moment, or to the scene’s next moment', () => {
+    const own = steerCue('skip', 'own', 'After the concert').join('\n');
+    assert.match(own, /Time skip to: "After the concert"/);
+    assert.match(own, /never changes the rules/);
+    const scene = steerCue('skip', 'scene').join('\n');
+    assert.match(scene, /scene skips ahead to its next moment/);
+    assert.match(scene, /story time only/);
+    const group = groupSkipCue('nextMorning').join('\n');
+    assert.match(group, /The next morning: the story moves on to then\. It moves on for the whole group\./);
+    assert.match(group, /You speak first/);
+  });
+
+  it('has mock lines for every kind of skip', () => {
+    for (const skip of ['scene', 'own'] as const) assert.ok(mockSteerLines('skip', skip, 'seed').length > 0);
   });
 });

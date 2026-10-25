@@ -18,6 +18,7 @@ import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { ReplyControls } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
+import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -32,7 +33,7 @@ import { haptic } from '@/lib/haptics';
 import { backgroundsById, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
-import type { Character, Message } from '@/types';
+import type { Character, Message, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
 type WithOne = 'secretNote' | 'quiz' | 'date' | 'dailyCalls';
@@ -67,6 +68,7 @@ export default function GroupChatScreen() {
   const sendGroupVoice = useAppStore((s) => s.sendGroupVoice);
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
   const continueGroup = useAppStore((s) => s.continueGroup);
+  const skipGroupTime = useAppStore((s) => s.skipGroupTime);
   const playGroupTruthOrDare = useAppStore((s) => s.playGroupTruthOrDare);
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
   const reactToMessage = useAppStore((s) => s.reactToMessage);
@@ -74,6 +76,7 @@ export default function GroupChatScreen() {
   const reportMessage = useAppStore((s) => s.reportMessage);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const [skipOpen, setSkipOpen] = useState(false);
   const blurTarget = useRef<ViewInstance>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   /** The member on the wheel's other half; a new one each game. */
@@ -212,6 +215,11 @@ export default function GroupChatScreen() {
     if (continueGroup(groupId) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
+  const skipTo = (skip: TimeSkip, to?: string) => {
+    setSkipOpen(false);
+    if (skipGroupTime(groupId, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
     const uri = result.canceled ? undefined : result.assets[0]?.uri;
@@ -229,9 +237,10 @@ export default function GroupChatScreen() {
         return setTruthWith(members[Math.floor(Math.random() * members.length)]);
       case 'diary':
         return router.push('/diary/write');
-      case 'scene':
       case 'timeSkip':
-        // Hidden in groups (`hide` below); scenes and time skips play in one-to-one chats.
+        return setSkipOpen(true);
+      case 'scene':
+        // Hidden in groups (`hide` below): scenes play in one-to-one chats.
         return;
       default:
         return setWithOne(key);
@@ -317,7 +326,8 @@ export default function GroupChatScreen() {
         />
       </BlurTargetView>
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} hide={['scene', 'timeSkip']} />
+      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} hide={['scene']} />
+      <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)} title={t('group.pickMember')}>

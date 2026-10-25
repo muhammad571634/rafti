@@ -24,6 +24,8 @@ const SKIP: Record<TimeSkip, string[][]> = {
   ],
   nextMorning: [['Morning! Did you sleep okay?'], ['New day.', 'I already had coffee. You?']],
   week: [['A whole week, huh.', 'Catch me up on everything.'], ['It’s been a week. I missed this.']],
+  scene: [['Okay, that part’s behind us.', 'What do we do now?'], ['Look, we’re almost there.', 'Stay close.']],
+  own: [['Okay. Here we are.', 'Tell me what you’re thinking right now.'], ['That went by fast.', 'Worth the wait?']],
 };
 
 /** Their lines after a continue or a skip; the same seed (the marker's id) gives the same lines. */

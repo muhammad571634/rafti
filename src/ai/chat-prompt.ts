@@ -93,8 +93,8 @@ export interface ChatPromptInput {
   messages: readonly Message[];
   /** Memories this message brings up (`buildStoryContinuityContext`); pinned ones are already in. */
   memories?: readonly (MemoryNote & { pinned?: boolean })[];
-  /** A continue or a time skip in place of a message (src/lib/chat-steer.ts). */
-  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip };
+  /** A continue or a time skip in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
+  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
 }
@@ -108,7 +108,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
-    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip) : []),
+    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
     part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];

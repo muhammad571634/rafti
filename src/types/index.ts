@@ -107,8 +107,11 @@ export interface Mood {
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
-/** How far a time skip moves the story (`src/lib/chat-steer.ts`). */
-export type TimeSkip = 'later' | 'evening' | 'nextMorning' | 'week';
+/**
+ * How far a time skip moves the story (`src/lib/chat-steer.ts`): one of four spans, the running
+ * scene's next moment, or the user's own words (`Message.skipTo`).
+ */
+export type TimeSkip = 'later' | 'evening' | 'nextMorning' | 'week' | 'scene' | 'own';
 export type MessageAuthor = 'me' | 'them';
 
 export interface Message {
@@ -146,6 +149,8 @@ export interface Message {
   setting?: string;
   /** skip markers: how far the story moved on (`src/lib/chat-steer.ts`). */
   skip?: TimeSkip;
+  /** An own skip: where the story moves to, in the user's words ("After the concert"). */
+  skipTo?: string;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
   /** Group chats: the member who wrote it (author 'them'). */

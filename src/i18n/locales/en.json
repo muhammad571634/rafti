@@ -330,7 +330,9 @@
       "later": "A little later",
       "evening": "That evening",
       "nextMorning": "The next morning",
-      "week": "A week later"
+      "week": "A week later",
+      "scene": "Next moment",
+      "own": "Later on"
     },
     "skipTitle": "Time skip",
     "skipLead": "Move the story on. They pick up from there.",
@@ -338,7 +340,17 @@
       "later": "A little while passes",
       "evening": "The day goes on into the evening",
       "nextMorning": "A night passes",
-      "week": "Seven days pass"
+      "week": "Seven days pass",
+      "scene": "{{title}} jumps to what happens next",
+      "own": "Your words"
+    },
+    "skipOwnPlaceholder": "Or write it: After the concert",
+    "skipOwnSend": "Skip to this",
+    "skipProblem": {
+      "empty": "Write where the story goes",
+      "crisis": "This can't be a time skip. If you're going through something, they're here to talk",
+      "minors": "Time skips can't involve minors or school-age characters",
+      "explicit": "Keep it within our content rules"
     },
     "skipNote": "1 shell, like a message. Story time only: your real plans and reminders stay as they are.",
     "steerBlocked": {
@@ -740,6 +752,7 @@
     "edit": "Edit scene",
     "now": "Now",
     "end": "End",
+    "skipAhead": "Skip ahead",
     "endScene": "End scene",
     "ended": "Scene ended: {{title}}",
     "start": "Start {{title}}",

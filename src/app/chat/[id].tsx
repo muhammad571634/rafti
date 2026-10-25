@@ -277,9 +277,9 @@ export default function ChatRoomScreen() {
     if (continueChat(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
-  const skipTo = (skip: TimeSkip) => {
+  const skipTo = (skip: TimeSkip, to?: string) => {
     setSkipOpen(false);
-    if (skipTime(conversation.id, skip) === 'noShells') outOfShells(shellCosts.textMessage);
+    if (skipTime(conversation.id, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
   const saveEdit = (text: string) => {
@@ -456,7 +456,7 @@ export default function ChatRoomScreen() {
             alarmRinging ? (
               <AlarmBar />
             ) : conversation.scene ? (
-              <SceneBar title={conversation.scene.title} onEnd={() => endScene(conversation.id)} />
+              <SceneBar title={conversation.scene.title} onSkip={() => setSkipOpen(true)} onEnd={() => endScene(conversation.id)} />
             ) : null
           }
         />
@@ -485,7 +485,7 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
-      <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
+      <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}
