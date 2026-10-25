@@ -1,5 +1,5 @@
 import type { PersonaView } from '@/lib/personas';
-import type { Character, Relationship, User } from '@/types';
+import type { ActiveScene, Character, Relationship, User } from '@/types';
 
 import { buildCharacterPrompt } from './rules';
 
@@ -90,5 +90,21 @@ export function buildDateRoundsPrompt(
     '- Bring in your world and habits. Keep to the mood; flirty and sweet stay tasteful.',
     JSON_ONLY,
     'Shape: {"rounds":[{"line":"","choices":[{"text":"","reply":"","hearts":3}]}]}',
+  ].join('\n');
+}
+
+/**
+ * The first line of a scene the user wrote without one (scenes, `src/lib/scenes.ts`). The persona
+ * prompt already carries the scene; this asks for one message that opens it. Free: one short call.
+ */
+export function buildSceneOpeningPrompt(input: PersonaInput, scene: ActiveScene) {
+  return [
+    buildCharacterPrompt(input.character, input.user, input.relationship, input.replyLanguage, input.persona, scene),
+    '',
+    'TASK: Open this scene with one short message to the user, in your voice, as if it has just begun.',
+    '- Put them right in it: where you are, what you notice, and something they can answer.',
+    '- Max 200 characters. No narration in brackets.',
+    JSON_ONLY,
+    'Shape: {"line":""}',
   ].join('\n');
 }

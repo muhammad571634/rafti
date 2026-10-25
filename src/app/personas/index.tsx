@@ -6,7 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, UserAvatar, useScrolledPast } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { defaultPersona, personaList, PERSONAS_MAX } from '@/lib/personas';
+import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
+import { defaultPersona, personaList } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 
@@ -23,11 +24,14 @@ export default function PersonasScreen() {
   const personas = useAppStore((s) => s.personas);
   const defaultPersonaId = useAppStore((s) => s.defaultPersonaId);
   const setDefaultPersona = useAppStore((s) => s.setDefaultPersona);
+  const limit = useAppStore((s) => perkLimit('personas', s.wallet.subscription, Date.now()));
   const { scrolled, onScroll } = useScrolledPast(44);
 
   const list = personaList({ user, personas });
   const current = defaultPersona({ user, personas, defaultPersonaId }).id;
-  const canAdd = personas.length < PERSONAS_MAX;
+  const canAdd = personas.length < limit;
+  // At the free limit the row offers a plan, which allows more (a perk: personas cost us almost nothing).
+  const upsell = planWouldAllowMore('personas', personas.length, limit);
 
   return (
     <Screen background={colors.bg}>
@@ -85,15 +89,16 @@ export default function PersonasScreen() {
           })}
         </InsetGroup>
 
-        {canAdd ? (
+        {canAdd || upsell ? (
           <InsetGroup style={styles.gap}>
             <Pressable
-              onPress={() => router.push('/personas/edit')}
+              onPress={() => router.push(canAdd ? '/personas/edit' : '/store/shell?tab=plans')}
               accessibilityRole="button"
+              accessibilityLabel={canAdd ? t('personas.new') : t('personas.morePlan', { count: PERKS.personas.plan })}
               style={({ pressed }) => [styles.add, pressed && styles.pressed]}>
-              <Ionicons name="add-circle" size={22} color={systemColors.green} />
-              <Txt style={styles.addText}>{t('personas.new')}</Txt>
-              <Txt style={styles.count}>{`${personas.length}/${PERSONAS_MAX}`}</Txt>
+              <Ionicons name={canAdd ? 'add-circle' : 'lock-closed'} size={22} color={canAdd ? systemColors.green : colors.textSecondary} />
+              <Txt style={styles.addText}>{canAdd ? t('personas.new') : t('personas.morePlan', { count: PERKS.personas.plan })}</Txt>
+              <Txt style={styles.count}>{`${personas.length}/${limit}`}</Txt>
             </Pressable>
           </InsetGroup>
         ) : null}

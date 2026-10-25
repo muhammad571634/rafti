@@ -1,5 +1,7 @@
 import type { PersonaView } from '@/lib/personas';
-import type { Character, Relationship, User } from '@/types';
+import type { ActiveScene, Character, Relationship, User } from '@/types';
+
+import { sceneLines } from '../lib/scenes';
 
 import { definitionForPrompt } from './character-draft';
 import { baseLanguage } from './reply-language';
@@ -88,6 +90,8 @@ export function buildCharacterPrompt(
   replyLanguage?: string,
   /** The persona this chat uses (`personaFor`); none or the profile means the profile below. */
   persona?: PersonaView,
+  /** The scene the chat is playing (`Conversation.scene`), last, as it changes most. */
+  scene?: ActiveScene,
 ) {
   const lines = [
     CHARACTER_RULES,
@@ -137,6 +141,7 @@ export function buildCharacterPrompt(
       `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
     );
   }
+  if (scene) lines.push('', ...sceneLines(scene));
   return lines.join('\n');
 }
 

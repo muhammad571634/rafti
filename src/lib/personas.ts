@@ -6,10 +6,10 @@ import { contentProblems } from './create-character';
  * Personas, taken from Character.AI: besides their profile the user can be someone else in a
  * chat. One persona is the default for new chats and any chat can use another; the character
  * sees the one its chat uses (`buildCharacterPrompt`). The profile is always there as the first
- * persona, so nothing changes for users who never make one.
+ * persona, so nothing changes for users who never make one. How many is a plan perk
+ * (`PERKS.personas` in src/economy/perks.ts).
  */
 
-export const PERSONAS_MAX = 5;
 export const PERSONA_NAME_MAX = 30;
 export const PERSONA_ABOUT_MAX = 750;
 /** The profile's place in the list; it is never stored as a persona. */
@@ -78,11 +78,14 @@ export function personaFor(conversationId: string, state: PersonaState): Persona
 
 export type PersonaProblem = 'name' | 'full' | 'minors' | 'explicit';
 
-/** Checks before a persona is saved; `count` is how many there are, the one being edited left out. */
-export function checkPersona(input: { name: string; about: string }, count: number): PersonaProblem[] {
+/**
+ * Checks before a persona is saved; `count` is how many there are, the one being edited left out,
+ * and `max` what the user's plan allows (`perkLimit('personas', …)`).
+ */
+export function checkPersona(input: { name: string; about: string }, count: number, max: number): PersonaProblem[] {
   const problems: PersonaProblem[] = [];
   if (!input.name.trim()) problems.push('name');
-  if (count >= PERSONAS_MAX) problems.push('full');
+  if (count >= max) problems.push('full');
   problems.push(...contentProblems(`${input.name} ${input.about}`));
   return problems;
 }

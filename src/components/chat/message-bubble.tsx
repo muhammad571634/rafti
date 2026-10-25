@@ -69,6 +69,8 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'helpline') return <HelplineCard />;
   if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
+  if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
+  if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -264,6 +266,23 @@ function SystemLine({ text }: { text: string }) {
   );
 }
 
+/** Where a scene starts in the chat: its title and set-up, centred like the chat's own notes. */
+function SceneCard({ title, setting }: { title: string; setting?: string }) {
+  return (
+    <View style={styles.system} accessibilityRole="header">
+      <View style={styles.sceneHead}>
+        <Ionicons name="film-outline" size={14} color={colors.textSecondary} />
+        <Txt style={[styles.systemText, styles.systemStrong]}>{title}</Txt>
+      </View>
+      {setting ? (
+        <Txt style={[styles.systemText, styles.sceneSetting]} center>
+          {setting}
+        </Txt>
+      ) : null}
+    </View>
+  );
+}
+
 /** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
 function AiNotice({ name, text }: { name: string; text?: string }) {
   const { t } = useTranslation();
@@ -429,6 +448,8 @@ const styles = StyleSheet.create({
   system: { alignItems: 'center', paddingVertical: space.sm + 2, paddingHorizontal: space.xxl },
   systemText: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
   systemStrong: { fontWeight: '600' },
+  sceneHead: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  sceneSetting: { marginTop: 2, fontStyle: 'italic' },
   callLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   // Lines up with their bubbles: past the avatar column.
   quota: {

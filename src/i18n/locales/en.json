@@ -297,6 +297,7 @@
     "callMissed": "Missed call",
     "callBack": "Call back",
     "attachments": {
+      "scene": "Scene",
       "voice": "Voice",
       "photo": "Photo",
       "gift": "Gift",
@@ -704,6 +705,37 @@
     "create": "Create a character",
     "level": "Lv {{level}}"
   },
+  "scenes": {
+    "title": "Scenes",
+    "ready": "Ready to play",
+    "yours": "Yours · {{count}}/{{max}}",
+    "new": "New scene",
+    "edit": "Edit scene",
+    "now": "Now",
+    "end": "End",
+    "endScene": "End scene",
+    "ended": "Scene ended: {{title}}",
+    "start": "Start {{title}}",
+    "morePlan": "Up to {{count}} with a plan",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Title",
+    "setting": "Where and what",
+    "settingPlaceholder": "Where you are and what is happening",
+    "role": "Who you are",
+    "rolePlaceholder": "Your part in it (optional)",
+    "opening": "Their first line",
+    "openingPlaceholder": "Leave it empty and they start it",
+    "delete": "Delete scene",
+    "deleteConfirm": "Delete {{title}}?",
+    "problems": {
+      "title": "Give the scene a title",
+      "setting": "Say where you are and what is happening",
+      "full": "You can keep {{max}} scenes",
+      "crisis": "This can't be a scene. If you're going through something, the chat is here for you",
+      "minors": "Scenes can't involve minors or school-age characters",
+      "explicit": "Keep it within our content rules"
+    }
+  },
   "personas": {
     "title": "Personas",
     "profile": "Your profile",
@@ -739,6 +771,7 @@
     },
     "youAre": "You are",
     "manage": "Manage personas",
+    "morePlan": "Up to {{count}} with a plan",
     "chatTitle": "You are in this chat"
   },
   "createCharacter": {

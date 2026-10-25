@@ -10,7 +10,6 @@ import {
   defaultPersona,
   personaFor,
   personaList,
-  PERSONAS_MAX,
   PROFILE_PERSONA,
 } from './personas';
 
@@ -40,10 +39,10 @@ describe('personas', () => {
   });
 
   it('checks the name, the limit and the content rules', () => {
-    assert.deepEqual(checkPersona({ name: 'Ada', about: '' }, 0), []);
-    assert.deepEqual(checkPersona({ name: ' ', about: '' }, 0), ['name']);
-    assert.deepEqual(checkPersona({ name: 'Ada', about: '' }, PERSONAS_MAX), ['full']);
-    assert.deepEqual(checkPersona({ name: 'Ada', about: 'A high school student' }, 0), ['minors']);
+    assert.deepEqual(checkPersona({ name: 'Ada', about: '' }, 0, 1), []);
+    assert.deepEqual(checkPersona({ name: ' ', about: '' }, 0, 1), ['name']);
+    assert.deepEqual(checkPersona({ name: 'Ada', about: '' }, 1, 1), ['full']);
+    assert.deepEqual(checkPersona({ name: 'Ada', about: 'A high school student' }, 0, 5), ['minors']);
   });
 
   it('starts a topic line, once', () => {

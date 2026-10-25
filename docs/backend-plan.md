@@ -498,6 +498,30 @@ Tadqiqot: `docs/character-ai-teardown.md` §11. Kod: `src/ai/character-draft.ts`
   orqali qo'lda yaratish har doim ochiq; pullik variant hali tanlanmagan.
 - **Olinmadi:** remix, ochiq definition ko'rish, unlisted havola, teglar orqali ochiq katalog (hali ochiq ijodkorlar lentasi yo'q).
 
+### 12.18 Yangi funksiyalarning unit iqtisodi (2026-10-25)
+
+Egasi: "funksiya qo'shyapmiz, lekin unit iqtisod: bizga foydasi, userga foydasi; biznes qilishimiz kerak".
+Har bir yangi funksiya uchun xarajat (13.2 narxlari) va uning pul keltiradigan joyi yoziladi.
+
+- **Asos:** 1 xabar foydalanuvchiga 1 chig'anoq (paketlarda ≈ $0.011–0.020), bizga ≈ $0.0006. Ya'ni yozishmani
+  ko'paytiradigan har funksiya daromadni oshiradi. Kam xarajatli narsalar tarif imtiyozi bo'ladi (sotib olishga sabab),
+  qimmatlari chig'anoq yoki daqiqada qoladi. Imtiyozlar bitta joyda: `src/economy/perks.ts` (`PERKS`), testlangan.
+
+| Funksiya | Bizga xarajati | Pul qayerdan keladi | Hozirgi qoida |
+|---|---|---|---|
+| Tez yaratish: matnli qoralama | ≈ $0.005–0.01 (kuchliroq model, ~2k token) | Yangi personaj = yangi chatlar, xabarlar | Kuniga 3 bepul (`quick-create.ts`): eng faol bepul foydalanuvchi oyiga ≤ $0.9 |
+| Tez yaratish: ✦ bitta maydon | ≈ $0.001 | Personaj sifati, ko'proq yozishma | Bepul; serverda kuniga 30 ta suiiste'mol chegarasi |
+| Tez yaratish: rasm chizish | **≈ $0.08** (eng qimmat qism) | — | **Taklif:** rasm faqat "Create"da bitta chiziladi; bepul foydalanuvchiga 15 chig'anoq (≈ $0.17–0.30, marja ~2–4×), tarifda oyiga 10 ta bepul. Egasi tasdiqlaydi |
+| Persona | Promptga ~200 token: xabar xarajati ~+10% (≈ $0.00006) | Rolli o'yinda uzoqroq suhbat | Imtiyoz: bepul 1, tarif 5 |
+| Sahna (rasmiy) | $0: ochuvchi gap tayyor, model chaqirilmaydi | Yozishma ko'payadi | Hammaga bepul |
+| Sahna (o'zingizniki) | Birinchi gapi yo'q bo'lsa 1 qisqa chaqiruv ≈ $0.0005; sahna bloki ~120 token | Yozishma ko'payadi | Imtiyoz: bepul 3, tarif 10 |
+
+- **Foydalanuvchiga foydasi:** hech qaysi asosiy narsa pul devori ortida emas. Bepul foydalanuvchi ham personaj yaratadi,
+  persona va sahna o'ynaydi, faqat sonlar tarifda ko'proq.
+- **Keyingi g'oya (retention):** rasmiy sahnalarning bir qismi yaqinlik darajasi bilan ochiladi (date kayfiyatlari kabi, `MOOD_LEVEL`).
+- **O'lchov:** `usage_events.mode` ga `create` va `scene` qo'shiladi. B1'dan keyin raqamlar haqiqiy foydalanishga qarab
+  `PERKS` va `FREE_QUICK_CREATES_PER_DAY` da qayta sozlanadi.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

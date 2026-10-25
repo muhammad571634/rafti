@@ -9,7 +9,7 @@ import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
 import { colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 
-export type AttachKey = 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
+export type AttachKey = 'scene' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
 /**
  * iOS-style app icons: a system-colour circle with a white glyph (approved prototype
@@ -17,6 +17,7 @@ export type AttachKey = 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare
  * games take hues no module here uses. Top to bottom; the most used sit at the bottom.
  */
 const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
+  { key: 'scene', icon: 'film', fill: systemColors.teal },
   { key: 'diary', ...moduleTile('diary') },
   { key: 'dailyCalls', ...moduleTile('calls') },
   { key: 'date', ...moduleTile('date') },
@@ -32,17 +33,20 @@ const FIELD = 40;
 
 /**
  * The chat's "+" menu, as in iOS Messages: the chat blurs, the "+" turns into a close button
- * where it stood, and the eight things to send rise above it as icons with large labels.
+ * where it stood, and the things to send or start rise above it as icons with large labels.
  */
 export function AttachMenu({
   visible,
   onClose,
   onPick,
   blurTarget,
+  hide = [],
 }: {
   visible: boolean;
   onClose: () => void;
   onPick: (key: AttachKey) => void;
+  /** Items this chat has no place for (a group has no scenes yet). */
+  hide?: AttachKey[];
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
 }) {
@@ -69,7 +73,7 @@ export function AttachMenu({
       </Pressable>
 
       <View style={[styles.list, { bottom: bottom + FIELD + space.lg }]} accessibilityRole="menu">
-        {ITEMS.map((item) => (
+        {ITEMS.filter((item) => !hide.includes(item.key)).map((item) => (
           <PressableScale
             key={item.key}
             scaleTo={0.95}

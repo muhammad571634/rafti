@@ -48,6 +48,19 @@ import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
+import { perkLimit } from '@/economy/perks';
+import {
+  activeScene,
+  checkScene,
+  mockSceneOpening,
+  SCENE_OPENING_MAX,
+  SCENE_ROLE_MAX,
+  SCENE_SETTING_MAX,
+  SCENE_TITLE_MAX,
+  type SceneInput,
+  type SceneProblem,
+} from '@/lib/scenes';
+import { officialScenes } from '@/mock/scenes';
 import { quickCreatesLeft, spendQuickCreate, type QuickCreateUse } from '@/economy/quick-create';
 import {
   checkPersona,
@@ -162,6 +175,7 @@ import type {
   MemoryAbout,
   Persona,
   Pronouns,
+  Scene,
   MemoryItem,
   MemorySource,
   Message,
@@ -386,6 +400,16 @@ interface AppState {
   setDefaultPersona: (id: string) => void;
   /** This chat's persona; undefined goes back to the default. */
   setChatPersona: (conversationId: string, id?: string) => void;
+  /** The user's own scenes (`src/lib/scenes.ts`); the app's are `officialScenes`. */
+  scenes: Scene[];
+  /** Saves a new scene (or the one with `id`); returns its id, or the first problem. */
+  saveScene: (input: SceneInput, id?: string) => { id: string } | { problem: SceneProblem };
+  /** Chats playing it keep their copy until they end it. */
+  deleteScene: (id: string) => void;
+  /** Starts a scene in a one-to-one chat: a scene card, then their first line. Free. */
+  startScene: (conversationId: string, sceneId: string) => void;
+  /** Ends the chat's scene; the character goes back to everyday chat. */
+  endScene: (conversationId: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
   /**
@@ -590,6 +614,7 @@ type PersistedKeys =
   | 'personas'
   | 'defaultPersonaId'
   | 'chatPersonas'
+  | 'scenes'
   | 'todayWidgets'
   | 'alarms'
   | 'photos'
@@ -757,6 +782,7 @@ export const useAppStore = create<AppState>()(
       recentlyViewed: [],
       personas: [],
       chatPersonas: {},
+      scenes: [],
       todayWidgets: DEFAULT_WIDGETS,
       alarms: [],
       photos: [],
@@ -1339,7 +1365,7 @@ export const useAppStore = create<AppState>()(
 
       savePersona: (input, id) => {
         const others = get().personas.filter((p) => p.id !== id);
-        const problem = checkPersona(input, others.length)[0];
+        const problem = checkPersona(input, others.length, perkLimit('personas', get().wallet.subscription, Date.now()))[0];
         if (problem) return { problem };
         const name = input.name.trim().slice(0, PERSONA_NAME_MAX);
         const about = input.about.trim().slice(0, PERSONA_ABOUT_MAX);
@@ -1373,6 +1399,74 @@ export const useAppStore = create<AppState>()(
           const { [conversationId]: _old, ...rest } = s.chatPersonas;
           return { chatPersonas: id ? { ...rest, [conversationId]: id } : rest };
         }),
+
+      saveScene: (input, id) => {
+        const others = get().scenes.filter((scene) => scene.id !== id);
+        const problem = checkScene(input, others.length, perkLimit('ownScenes', get().wallet.subscription, Date.now()))[0];
+        if (problem) return { problem };
+        const existing = id ? get().scenes.find((scene) => scene.id === id) : undefined;
+        const role = input.userRole?.trim().slice(0, SCENE_ROLE_MAX);
+        const opening = input.opening?.trim().slice(0, SCENE_OPENING_MAX);
+        const scene: Scene = {
+          id: existing?.id ?? uid('scene'),
+          title: input.title.trim().slice(0, SCENE_TITLE_MAX),
+          setting: input.setting.trim().slice(0, SCENE_SETTING_MAX),
+          ...(role ? { userRole: role } : {}),
+          ...(opening ? { opening } : {}),
+          createdAt: existing?.createdAt ?? new Date().toISOString(),
+        };
+        set((s) => ({ scenes: existing ? s.scenes.map((x) => (x.id === scene.id ? scene : x)) : [scene, ...s.scenes] }));
+        return { id: scene.id };
+      },
+
+      deleteScene: (id) => set((s) => ({ scenes: s.scenes.filter((scene) => scene.id !== id) })),
+
+      startScene: (conversationId, sceneId) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const scene = [...officialScenes, ...get().scenes].find((x) => x.id === sceneId);
+        if (!conversation || !scene) return;
+        // A reply still on its way belongs to the chat before the scene.
+        cancelReplies(set, conversationId);
+        const now = Date.now();
+        set((s) => ({
+          conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, scene: activeScene(scene, new Date(now)) } : c)),
+        }));
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'scene', text: scene.title, setting: scene.setting, createdAt: new Date(now).toISOString() },
+          { quiet: true },
+        );
+        // Their first line: the scene's own, else one they write (the server asks `buildSceneOpeningPrompt`).
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          { id: uid('m'), conversationId, author: 'them', kind: 'text', text: scene.opening?.trim() || mockSceneOpening(scene), createdAt: new Date(now + 1).toISOString() },
+          { countUnread: false },
+        );
+      },
+
+      endScene: (conversationId) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        if (!conversation?.scene) return;
+        const title = conversation.scene.title;
+        set((s) => ({
+          conversations: s.conversations.map((c) => {
+            if (c.id !== conversationId) return c;
+            const { scene: _ended, ...rest } = c;
+            return rest;
+          }),
+        }));
+        appendMessage(
+          set,
+          get,
+          conversationId,
+          { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'sceneEnd', text: title, createdAt: new Date().toISOString() },
+          { quiet: true },
+        );
+      },
 
       takeQuickCreate: () => {
         const next = spendQuickCreate(get().quickCreates, todayKey());
@@ -2591,6 +2685,7 @@ export const useAppStore = create<AppState>()(
         personas: s.personas,
         defaultPersonaId: s.defaultPersonaId,
         chatPersonas: s.chatPersonas,
+        scenes: s.scenes,
         todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,

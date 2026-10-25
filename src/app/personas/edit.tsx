@@ -11,7 +11,8 @@ import { GroupLabel } from '@/components/plans/store-look';
 import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, PressableScale, Screen, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
-import { addTopicLine, PERSONA_ABOUT_MAX, PERSONA_NAME_MAX, PERSONA_TOPICS, PERSONAS_MAX, PROFILE_PERSONA } from '@/lib/personas';
+import { perkLimit } from '@/economy/perks';
+import { addTopicLine, PERSONA_ABOUT_MAX, PERSONA_NAME_MAX, PERSONA_TOPICS, PROFILE_PERSONA } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 import type { Pronouns } from '@/types';
@@ -35,6 +36,7 @@ export default function PersonaEditScreen() {
   const savePersona = useAppStore((s) => s.savePersona);
   const deletePersona = useAppStore((s) => s.deletePersona);
   const setDefaultPersona = useAppStore((s) => s.setDefaultPersona);
+  const limit = useAppStore((s) => perkLimit('personas', s.wallet.subscription, Date.now()));
   const { scrolled, onScroll } = useScrolledPast(44);
 
   const [avatarUri, setAvatarUri] = useState(existing?.avatarUri);
@@ -66,7 +68,7 @@ export default function PersonaEditScreen() {
     const result = savePersona({ name, pronouns, about, avatarUri }, existing?.id);
     if ('problem' in result) {
       haptic.error();
-      return setError(t(`personas.problems.${result.problem}`, { max: PERSONAS_MAX }));
+      return setError(t(`personas.problems.${result.problem}`, { max: limit }));
     }
     if (useByDefault) setDefaultPersona(result.id);
     else if (isDefault) setDefaultPersona(PROFILE_PERSONA);

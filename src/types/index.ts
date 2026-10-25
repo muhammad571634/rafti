@@ -111,9 +111,11 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd';
   /** voiceQuota lines: when the plan's voice minutes come back */
   until?: string;
+  /** scene cards: the scene that starts here (`text` is its title). */
+  setting?: string;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
   /** Group chats: the member who wrote it (author 'them'). */
@@ -184,6 +186,34 @@ export interface Conversation {
   muted: boolean;
   /** When the "not a real person" notice last showed: again at session start and every 3 hours. */
   aiNoticeAt?: string;
+  /** The scene this chat is playing now, until the user ends it (`src/lib/scenes.ts`). */
+  scene?: ActiveScene;
+}
+
+/**
+ * A scene to play in a chat (Character.AI's Scenes): where you are, what is happening, who you
+ * are in it, and the character's first line. Some come with the app; the user writes their own.
+ */
+export interface Scene {
+  id: string;
+  title: string;
+  setting: string;
+  /** Who the user is in it. */
+  userRole?: string;
+  /** The character's first line; without one they write their own. */
+  opening?: string;
+  /** Comes with the app (`src/mock/scenes.ts`); the user's own are editable. */
+  official?: boolean;
+  createdAt: string;
+}
+
+/** A scene running in a chat: a copy, so editing or deleting the scene leaves the chat as it was. */
+export interface ActiveScene {
+  sceneId: string;
+  title: string;
+  setting: string;
+  userRole?: string;
+  startedAt: string;
 }
 
 export type DiaryMood = 'happy' | 'soft' | 'blue' | 'excited' | 'tired';

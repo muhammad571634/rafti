@@ -19,7 +19,7 @@ import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
-import { AlarmBar, QuickReplies } from '@/components/chat/quick-replies';
+import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
@@ -96,6 +96,7 @@ export default function ChatRoomScreen() {
   const memories = useAppStore((s) => s.memories);
   const pinMessage = useAppStore((s) => s.pinMessage);
   const unpinMessage = useAppStore((s) => s.unpinMessage);
+  const endScene = useAppStore((s) => s.endScene);
   /** The short notice after a pin ("Pinned to Story"); it shows at once and goes by itself. */
   const [hud, setHud] = useState<string | null>(null);
   useEffect(() => {
@@ -292,6 +293,8 @@ export default function ChatRoomScreen() {
   const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
+      case 'scene':
+        return router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: conversation.id } });
       case 'voice':
         return setVoiceOpen(true);
       case 'photo':
@@ -350,7 +353,7 @@ export default function ChatRoomScreen() {
               ref={listRef}
               data={data}
               keyExtractor={(item) => item.id}
-              contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging ? ALARM_ROOM : 0) }]}
+              contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
               ListFooterComponent={
@@ -429,7 +432,13 @@ export default function ChatRoomScreen() {
           missedCall={missedToday}
           callLabel={t('a11y.call')}
           onCall={startCall}
-          below={alarmRinging ? <AlarmBar /> : null}
+          below={
+            alarmRinging ? (
+              <AlarmBar />
+            ) : conversation.scene ? (
+              <SceneBar title={conversation.scene.title} onEnd={() => endScene(conversation.id)} />
+            ) : null
+          }
         />
       </BlurTargetView>
 

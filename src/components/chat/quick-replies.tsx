@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -49,8 +50,36 @@ export function AlarmBar() {
   );
 }
 
+/** While a scene runs in this chat: its title, and End to go back to everyday chat. */
+export function SceneBar({ title, onEnd }: { title: string; onEnd: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.sceneBar}>
+      <Ionicons name="film-outline" size={15} color={colors.text} />
+      <Txt variant="smallStrong" style={styles.flex} lines={1}>
+        {title}
+      </Txt>
+      <PressableScale onPress={onEnd} scaleTo={0.94} accessibilityRole="button" accessibilityLabel={t('scenes.end')} hitSlop={10} style={styles.sceneEnd}>
+        <Txt variant="smallStrong" color={colors.primary}>
+          {t('scenes.end')}
+        </Txt>
+      </PressableScale>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  sceneBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingLeft: space.lg,
+    paddingRight: space.sm,
+    minHeight: 44,
+    backgroundColor: colors.surfaceAlt,
+  },
+  sceneEnd: { paddingHorizontal: space.sm, paddingVertical: space.xs },
   // flexGrow + flex-end: pills that fit sit on the right, on the user's side.
   chips: {
     flexGrow: 1,
