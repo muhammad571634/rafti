@@ -1,5 +1,6 @@
 import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
+import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
 import { loreLines, worldLines } from '../lib/lorebook';
@@ -7,6 +8,7 @@ import { sceneLines } from '../lib/scenes';
 
 import { definitionForPrompt } from './character-draft';
 import { baseLanguage } from './reply-language';
+import { replyStyleLines } from './reply-style';
 
 /**
  * The rules every Rafti character follows, written for the language model.
@@ -69,7 +71,8 @@ LANGUAGE:
 - If they ask you to speak another language, do it.
 
 STYLE:
-- Short chat messages, 1-4 bubbles, like texting.
+- Short chat messages, 1-3 bubbles, like texting, unless REPLY STYLE or the task below says
+  otherwise (Story is one longer message with narration).
 - Remember and use what you know about them (name, interests, plans, past chats).`;
 
 /** What runs around the model, so one missed rule is not the last line of defence. */
@@ -99,6 +102,11 @@ export function buildCharacterPrompt(
    * persona, which stay put, and the entries this reply brought up last, as they change most.
    */
   lore?: LorePrompt,
+  /**
+   * The one-to-one chat's reply style and length (`replyPrefs`). Only the chat passes them: group
+   * chats, streams and the other tasks set their own shape.
+   */
+  prefs?: ReplyPrefs,
 ) {
   const lines = [
     CHARACTER_RULES,
@@ -149,6 +157,8 @@ export function buildCharacterPrompt(
       `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
     );
   }
+  // The chat's reply settings sit with the stable part; the turn's own hints go last (`turnLines`).
+  if (prefs) lines.push('', ...replyStyleLines(prefs));
   if (scene) lines.push('', ...sceneLines(scene));
   if (lore?.entries.length) lines.push('', ...loreLines(lore));
   return lines.join('\n');

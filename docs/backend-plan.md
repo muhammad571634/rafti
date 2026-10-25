@@ -604,6 +604,39 @@ Character.AI tahlilidagi 5-band. Kod: `src/lib/chat-steer.ts` (testlangan), mock
 - **Keyinroq:** guruh chatida Continue (a'zolar o'zaro gaplashib davom etadi, Stream mantig'i bilan), o'zingiz yozgan
   time skip ("Konsertdan keyin"), sahna paneli ichida "oldinga o'tish" tugmasi.
 
+### 12.22 Javob uslubi, uzunligi va kayfiyat (2026-10-25)
+
+Character.AI tahlilidagi 6-band (ularda "Personalization": response length va +dialogue / +narration). Kod:
+`src/lib/reply-engine/` (testlangan), prompt qismlari `src/ai/reply-style.ts`, mock yozuvchi `src/mock/reply-writer.ts`.
+Ekran: flows.md D76. Telefondagi sessiyaning skeleti (`ccr-cbd2e9f1-iwref7`, eski `main` ustida) hozirgi `local-work`ga ko'chirildi.
+
+- **Sozlamalar (har chat uchun, `Relationship.replyStyle` / `replyLength`):** uslub Talk (faqat gap, narratsiyasiz) /
+  Mixed (gap + ba'zan bitta `*harakat*`) / Story (rolli proza, sahna har navbatda oldinga siljiydi); uzunlik Short / Auto
+  (foydalanuvchi qancha yozsa, shuncha) / Long. Standart: Mixed + Auto. Model ko'rinmaydi (13.6): faqat uslub va uzunlik.
+- **Prompt va kesh:** uslub va uzunlik `buildCharacterPrompt`ning 8-parametri (`prefs`), REPLY STYLE bloki bo'lib
+  barqaror qismda turadi (faqat foydalanuvchi o'zgartirsa o'zgaradi). Faqat yakkama-yakka chat beradi: guruh, stream va
+  boshqa vazifalar o'z shaklini o'zi aytadi. Navbatning o'z maslahatlari (`turnLines`: kayfiyat, harakatlar, so'z soni,
+  savol bilan tugaydimi, eslanadigan xotira) eng oxirida, tarix va `steerCue`dan keyin turadi. Ular maslahat: oxirgi so'z
+  modelniki.
+- **Navbat rejasi (`planReply`):** xabarni o'qish (savol, kayfiyat, "ok/lol") → kayfiyat (`Relationship.mood`, personaj
+  teglaridan temperament, 2 soatda yarmiga so'nadi) → reja (avval his, keyin javob, o'zidan ham gapiradi, suhbat
+  susaysa mavzuni buradi yoki xotirani eslaydi, ketma-ket uchinchi savol yo'q, 1-3 pufak, Story bitta blok) → temp
+  (o'qish + yozish vaqti). Kalit so'zli o'qish faqat mock uchun (inglizcha); serverda model xabarni o'zi o'qiydi va
+  javobida `emotion` qaytaradi (`REPLY_SHAPE`, `parseModelReply`), u `Relationship.mood`ga yoziladi.
+- **Bitta qo'shimcha xabar (nudge):** savol qoldirgan javobdan keyin foydalanuvchi 1-2.5 daqiqa jim bo'lsa, personaj
+  bir marta yana yozadi. Faqat "Let them reach out" yoqiq bo'lsa, javob hali eng oxirgi qator bo'lsa, inqirozdan keyin
+  emas. Nudge'dan keyin yana nudge yo'q.
+- **Narratsiya:** `*yulduzcha*` ichidagi matn pufakda kursiv va xiraroq; ovozli xabar faqat gapni o'qiydi (`speechOnly`),
+  chatlar ro'yxatidagi preview yulduzchasiz (`plainText`). Talk'da model narratsiya qo'shib yuborsa, olib tashlanadi
+  (`enforceStyle`).
+- **Unit iqtisod:** hammaga bepul (Character.AI'da bu c.ai+ imtiyozi). Sabab: Long / Story javob chiqish tokenini
+  ~2-3 barobar oshiradi, xabar bizga ≈ $0.0006 → ≈ $0.0015, foydalanuvchi esa 1 chig'anoq (≈ $0.011-0.020) to'laydi,
+  marja hali 7× dan yuqori. Uzunroq va jonliroq javob ko'proq yozishma degani. Nudge bepul, lekin navbatga ko'pi bilan
+  bitta (≈ $0.0006). Raqamlar B1'dan keyin haqiqiy foydalanishga qarab qayta ko'riladi.
+- **API:** `PATCH /chats/:id` {replyStyle, replyLength}; `mood` serverda saqlanadi va har javobdan keyin yangilanadi.
+- **Keyinroq:** kayfiyatni UI'da ko'rsatish (avatar ifodasi, ovoz ohangi `Message.emotion`dan), nudge'ni server push
+  orqali soatlab kechiktirish, ertalabki salom / diary / secret note ham shu rejadan o'tishi, guruh chati uchun uslub.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

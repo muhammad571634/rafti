@@ -3,8 +3,6 @@ export type { CharacterGroup } from './characters';
 export { chatArtBackgrounds, chatArtBackgroundsById } from './chat-background-art';
 export {
   callLines,
-  cannedReplies,
-  replyBursts,
   conversationForCharacter,
   conversations,
   eveningGreetings,
@@ -19,7 +17,6 @@ export {
   photoReply,
   afterDateLine,
   birthdayLines,
-  interestLines,
 } from './chat';
 export { characterDiaryPages, diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {

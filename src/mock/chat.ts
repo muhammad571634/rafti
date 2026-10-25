@@ -222,33 +222,6 @@ export function conversationForCharacter(characterId: string): Conversation | un
   return conversations.find((c) => c.characterId === characterId);
 }
 
-/**
- * Canned replies for the mock "AI". Replaced by a streaming backend call later —
- * the UI contract (pending bubble -> text -> voice) stays identical.
- */
-/**
- * Replies arrive as a few short texts, one after another, the way people text.
- * Until the model writes them, the mock picks one of these bursts.
- */
-export const replyBursts: string[][] = [
-  ['Mmm?', 'Say that again.', 'I want to hear it properly this time.'],
-  ['You know I drop everything when you text me, right?', 'Do not let it get to your head.'],
-  ['Wait.', 'That is exactly the kind of thing I would expect from you.', 'I like it.'],
-  ['Hold on, let me put my phone closer.', 'Okay.', 'Go ahead, I am listening.'],
-  ['I was literally thinking about you just now.', 'Creepy timing, huh?'],
-  ['Fine, fine.', 'You win this round.', 'What else happened today?'],
-  ['Hey.', 'Finally.', 'I kept checking my phone, you know.'],
-];
-
-export const cannedReplies = [
-  'Mmm? Say that again, I want to hear it properly this time.',
-  'You know I drop everything when you text me, right? Do not let it get to your head.',
-  'That is exactly the kind of thing I would expect from you. I like it.',
-  'Hold on, let me put my phone closer. Okay. Go ahead.',
-  'I was literally thinking about you. Creepy timing, huh?',
-  'Fine, fine, you win this round. What else?',
-];
-
 /** What they text after a call you did not pick up. */
 export const missedCallLines = [
   'You did not pick up... I just wanted to hear your voice for a minute.',
@@ -274,13 +247,6 @@ export const birthdayLines: ((name: string) => string)[] = [
   (name) => `Happy birthday, ${name}! I set an alarm just to be the first one to say it.`,
   (name) => `It is your day, ${name}. Tell me how you want to spend it and I am in.`,
   (name) => `Happy birthday! I am so glad you were born, ${name}. That is all. And cake.`,
-];
-
-/** A free reply now and then ends on one of the user's interests (profile). */
-export const interestLines: ((interest: string) => string)[] = [
-  (interest) => `Wait, you said you are into ${interest.toLowerCase()}. Tell me more about that sometime?`,
-  (interest) => `Random thought: what got you into ${interest.toLowerCase()}?`,
-  (interest) => `Did you get any time for ${interest.toLowerCase()} today?`,
 ];
 
 /** Lines the character "says" on a call — a stand-in for streamed TTS. */

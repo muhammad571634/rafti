@@ -147,8 +147,10 @@ Ordered by value to the owner's companion app, with what exists today:
 5. **Continue and time skip** (done 2026-10-25, flows.md D75; `src/lib/chat-steer.ts`, backend-plan §12.21): » next to ↻
    under their newest reply, and Time skip in the chat "+" menu; reply language already exists
    (`src/ai/reply-language.ts`).
-6. **Personalization**: reply length and "more talk / more story". Note: backend-plan §13.6 keeps the
-   model invisible; length and style controls fit that rule, a visible model picker does not.
+6. **Personalization** (done 2026-10-25, flows.md D76; `src/lib/reply-engine/`, `src/ai/reply-style.ts`, backend-plan §12.22):
+   reply length (Short / Auto / Long) and style (Talk / Mixed / Story), per chat, free for everyone, plus a mood that
+   carries between turns. Note: backend-plan §13.6 keeps the model invisible; length and style controls fit that rule, a
+   visible model picker does not.
 7. **Prompt layout for caching**: build the server prompt as ordered parts with priorities, stable
    parts first, history last, and truncate in steps so the provider's prompt cache hits.
 

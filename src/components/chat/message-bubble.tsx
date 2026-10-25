@@ -13,6 +13,7 @@ import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
+import { segments } from '@/lib/reply-engine';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message } from '@/types';
@@ -168,7 +169,16 @@ function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; 
       <Txt
         style={styles.text}
         color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}>
-        {message.text}
+        {/* *Narration* (Mixed and Story replies) reads as an aside: italic and quieter than speech. */}
+        {segments(message.text ?? '').map((part, i) =>
+          part.kind === 'action' ? (
+            <Txt key={i} style={[styles.text, styles.action, mine ? styles.actionMine : styles.actionTheirs]}>
+              {part.text}
+            </Txt>
+          ) : (
+            part.text
+          ),
+        )}
       </Txt>
     </View>
   );
@@ -434,6 +444,9 @@ const styles = StyleSheet.create({
     borderRadius: CORNER,
   },
   text: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
+  action: { fontStyle: 'italic' },
+  actionTheirs: { color: colors.textSecondary },
+  actionMine: { color: colors.bubbleSelfText, opacity: 0.8 },
   bubbleMine: { backgroundColor: colors.bubbleSelf },
   bubbleTheirs: { backgroundColor: colors.bubbleOther },
   // A run's last bubble points down at its sender's side.

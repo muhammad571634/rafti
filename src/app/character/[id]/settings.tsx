@@ -17,6 +17,7 @@ import {
   PressableScale,
   Screen,
   Sheet,
+  SystemSegmented,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
@@ -27,13 +28,17 @@ import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor } from '@/lib/lorebook';
 import { personaFor, personaList } from '@/lib/personas';
+import { replyPrefs } from '@/lib/reply-engine';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
-import type { Lorebook } from '@/types';
+import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+
+const REPLY_STYLES: readonly ReplyStyle[] = ['talk', 'mix', 'story'];
+const REPLY_LENGTHS: readonly ReplyLength[] = ['short', 'auto', 'long'];
 
 type ActionKey =
   | 'voiceCall'
@@ -78,6 +83,7 @@ export default function CharacterSettingsScreen() {
   const blockCharacter = useAppStore((s) => s.blockCharacter);
   const setNickname = useAppStore((s) => s.setNickname);
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
+  const setReplyPrefs = useAppStore((s) => s.setReplyPrefs);
   const setSetting = useAppStore((s) => s.setSetting);
   const setRelationshipLabel = useAppStore((s) => s.setRelationshipLabel);
   const user = useAppStore((s) => s.user);
@@ -258,6 +264,23 @@ export default function CharacterSettingsScreen() {
           <Txt style={styles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt>
         ) : null}
 
+        {/* How their replies read (Character.AI's response style and length); the next reply follows. */}
+        <View style={styles.card}>
+          <ChoiceRow
+            label={t('characterSettings.replyStyle')}
+            options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
+            value={replyPrefs(relationship).style}
+            onChange={(style) => setReplyPrefs(character.id, { style })}
+          />
+          <ChoiceRow
+            label={t('characterSettings.replyLength')}
+            options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
+            value={replyPrefs(relationship).length}
+            onChange={(length) => setReplyPrefs(character.id, { length })}
+            last
+          />
+        </View>
+
         <View style={styles.card}>
           {conversation ? (
             <LinkRow
@@ -427,6 +450,36 @@ function SwitchRow({
   );
 }
 
+/** A setting with two or three choices: its name over iOS's segmented control. */
+function ChoiceRow<T extends string>({
+  label,
+  options,
+  value,
+  last,
+  onChange,
+}: {
+  label: string;
+  options: readonly { value: T; label: string }[];
+  value: T;
+  last?: boolean;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <View style={[styles.choice, !last && styles.rowLine]} accessibilityLabel={label}>
+      <Txt style={styles.rowText}>{label}</Txt>
+      <SystemSegmented
+        options={options}
+        value={value}
+        onChange={(v: T) => {
+          if (v === value) return;
+          haptic.selection();
+          onChange(v);
+        }}
+      />
+    </View>
+  );
+}
+
 /** The world books row's value: the one book's name, how many there are, or none. */
 function loreMeta(books: Lorebook[], t: TFunction) {
   if (books.length === 1) return books[0].name;
@@ -567,6 +620,7 @@ const styles = StyleSheet.create({
   // iOS inset grouped list: white cards 16pt in, rows 44pt+, hairlines between rows.
   card: { marginTop: 22, marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
+  choice: { gap: 10, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 14 },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowPressed: { backgroundColor: colors.surfaceAlt },
   // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.

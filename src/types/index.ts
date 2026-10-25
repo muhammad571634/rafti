@@ -76,8 +76,34 @@ export interface Relationship {
   label?: string;
   /** Replies come as a voice note + text, like the reference chat. */
   voiceReplies: boolean;
-  /** They may text or call first (morning / night greetings). */
+  /** They may text or call first (morning / night greetings, one text when you go quiet). */
   messagesFirst: boolean;
+  /** Chat settings → Reply style. Older saves lack it: read it through `replyPrefs()`. */
+  replyStyle?: ReplyStyle;
+  /** Chat settings → Reply length. */
+  replyLength?: ReplyLength;
+  /** How they feel right now; carries from one reply to the next and fades with time. */
+  mood?: Mood;
+}
+
+/**
+ * How a reply reads (Character.AI's "response style"). `talk` is texting: spoken lines, no
+ * narration. `mix` is dialogue with a small *action* now and then. `story` is roleplay prose:
+ * actions and the scene in *asterisks*, and the story moves on each turn.
+ */
+export type ReplyStyle = 'talk' | 'mix' | 'story';
+
+/** `auto` mirrors how much you wrote, the way people match each other's energy. */
+export type ReplyLength = 'short' | 'auto' | 'long';
+
+export type Emotion = 'calm' | 'happy' | 'playful' | 'shy' | 'tender' | 'worried' | 'sad' | 'annoyed';
+
+export interface Mood {
+  emotion: Emotion;
+  /** 0..1 */
+  intensity: number;
+  /** ISO time it was last felt; it fades back to their temperament from here. */
+  at: string;
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
@@ -124,6 +150,8 @@ export interface Message {
   chips?: string[];
   /** Group chats: the member who wrote it (author 'them'). */
   characterId?: string;
+  /** Their feeling when they wrote it (`src/lib/reply-engine`); later the voice's tone. */
+  emotion?: Emotion;
 }
 
 /**

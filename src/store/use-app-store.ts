@@ -28,6 +28,9 @@ import {
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { steerBlock, steerMarker } from '@/lib/chat-steer';
+import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
+import { enforceStyle } from '@/ai/reply-style';
+import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
@@ -115,9 +118,7 @@ import {
   radioGifts,
   callHistory as seedCalls,
   callLines,
-  replyBursts,
   birthdayLines,
-  interestLines,
   characterDiaryPages as seedCharacterDiary,
   characters as seedCharacters,
   conversations as seedConversations,
@@ -483,6 +484,8 @@ interface AppState {
   setBackground: (characterId: string, backgroundId: string) => void;
   setNickname: (characterId: string, nickname: string) => void;
   setCharacterPref: (characterId: string, key: 'voiceReplies' | 'messagesFirst', value: boolean) => void;
+  /** Chat settings → Reply style / Reply length; the next reply follows them. */
+  setReplyPrefs: (characterId: string, prefs: Partial<ReplyPrefs>) => void;
   addIntimacy: (characterId: string, amount: number) => void;
   /** Picks one of the unlocked relationship labels, or clears it. */
   setRelationshipLabel: (characterId: string, label?: string) => void;
@@ -695,12 +698,6 @@ const uid = (prefix: string) =>
   `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)];
-
-/** Now and then a free reply ends by asking about one of the user's interests. */
-function withInterest(lines: string[], interests: string[] | undefined) {
-  if (!interests?.length || Math.random() > 0.2) return lines;
-  return [...lines, pick(interestLines)(pick(interests))];
-}
 
 /** Whether `hour` falls in the few hours after a "HH:MM" call time (wrapping past midnight). */
 function inWindow(hour: number, time = '08:00') {
@@ -1724,6 +1721,12 @@ export const useAppStore = create<AppState>()(
         updateRelationship(set, characterId, () =>
           key === 'voiceReplies' ? { voiceReplies: value } : { messagesFirst: value },
         ),
+
+      setReplyPrefs: (characterId, { style, length }) =>
+        updateRelationship(set, characterId, () => ({
+          ...(style ? { replyStyle: style } : {}),
+          ...(length ? { replyLength: length } : {}),
+        })),
 
       addIntimacy: (characterId, amount) => {
         const existing = get().relationships[characterId];
@@ -3078,7 +3081,8 @@ export function previewFor(message: Message) {
     case 'call':
       return message.missed ? '\u{1F4DE} Missed call' : '\u{1F4DE} Voice call';
     default:
-      return message.text ?? '';
+      // *Narration* reads as plain words in a one-line preview.
+      return plainText(message.text ?? '');
   }
 }
 
@@ -3210,8 +3214,10 @@ function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'cont
 }
 
 /**
- * Stands in for the streaming backend call: read receipt, typing indicator, then
- * a voice note + text (or text only). Swapping in a real model only changes this.
+ * Stands in for the streaming backend call: read receipt, typing indicator, then a voice note +
+ * text (or text only). The reply engine (`src/lib/reply-engine`) plans the turn from the chat's
+ * reply style and length and their mood; the mock writes it (`writeMockReply`), the server's
+ * model will. Swapping in the model only changes the writing.
  */
 function scheduleReply(
   set: Setter,
@@ -3223,17 +3229,23 @@ function scheduleReply(
     gain,
     chips,
     avoid,
+    trigger = 'message',
   }: {
     text?: string;
-    /** Lines already written (a continue or a skip); without them the mock picks a burst. */
+    /** Lines already written (a continue or a skip); without them the mock writes the reply. */
     lines?: string[];
     gain: number;
     chips?: string[];
     avoid?: string;
+    /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
+    trigger?: TurnTrigger;
   },
 ) {
-  const conversation = get().conversations.find((c) => c.id === conversationId);
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
+  const bond = state.relationships[conversation.characterId];
+  const character = state.characters.find((c) => c.id === conversation.characterId);
   // A rewind or an edit can take this reply back while it is on its way (`cancelReplies`).
   const epoch = replyEpoch.get(conversationId) ?? 0;
 
@@ -3248,18 +3260,38 @@ function scheduleReply(
     },
   }));
 
-  // A scripted line (a plan's acknowledgement) is one text; a free reply comes as a burst.
-  // A redo (↻) skips the burst on screen, so the new version reads differently.
-  let burst = pick(replyBursts);
-  for (let tries = 0; avoid && burst[0] === avoid && tries < 4; tries++) burst = pick(replyBursts);
-  const lines = text ? [text] : (given ?? withInterest(burst, get().user.interests));
-  const bond = get().relationships[conversation.characterId];
-  const character = get().characters.find((c) => c.id === conversation.characterId);
-  const said = lines.join(' ');
+  // The turn: what they feel and what the reply does. A scripted line (a plan's acknowledgement,
+  // care after a crisis, a continue) keeps its words; the plan still moves their mood.
+  const ctx =
+    character && bond
+      ? {
+          character,
+          relationship: bond,
+          history: state.messages[conversationId] ?? [],
+          memories: memoryAccess(state.memories, state.wallet, character.id).open,
+          trigger,
+          now: Date.now(),
+        }
+      : null;
+  const turn = ctx ? planReply(ctx) : null;
+  const written =
+    text != null
+      ? [text]
+      : (given ??
+        (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoid ? [avoid] : undefined, interests: state.user.interests }) : []));
+  const lines = enforceStyle(written, replyPrefs(bond).style);
+  if (!lines.length) {
+    set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+    return;
+  }
+  const mood = turn?.plan.mood;
+
+  // The voice note says only what is spoken: narration stays on the screen.
+  const said = speechOnly(lines.join(' '));
   // Roughly how long the burst takes to say out loud.
   const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
   // Voice replies come with a plan and use its minutes; without minutes the reply is text.
-  const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady;
+  const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady && !!said;
   const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
   // A Pro member whose voice minutes ran out sees why, once a day, under the reply.
   // Basic has no voice replies at all, so it never gets this note.
@@ -3268,11 +3300,14 @@ function scheduleReply(
   const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
   if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
 
-  // Each line waits roughly as long as it takes to type, with "typing..." shown between.
-  // A burst never starts while the last one is still arriving, so two replies never interleave.
+  // Each bubble waits a beat to read yours, then roughly as long as it takes to type, with
+  // "typing..." between. A burst never starts while the last one is still arriving, so two
+  // replies never interleave.
+  const delays = pace(lines, turn?.read ?? readMessage(undefined));
   const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
-  let at = busy + 900 + Math.random() * 600;
+  let at = busy + 400;
   lines.forEach((line, i) => {
+    at += delays[i];
     const last = i === lines.length - 1;
     setTimeout(() => {
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
@@ -3284,10 +3319,12 @@ function scheduleReply(
           kind: 'voice',
           durationSec: voiceSec,
           transcript: said,
+          emotion: mood?.emotion,
           createdAt: new Date().toISOString(),
         });
       }
-      appendMessage(set, get, conversationId, { ...themText(conversationId, line), chips: last ? chips : undefined });
+      const message: Message = { ...themText(conversationId, line), chips: last ? chips : undefined, emotion: mood?.emotion };
+      appendMessage(set, get, conversationId, message);
       if (last && noteVoice && voiceBack != null) {
         appendMessage(
           set,
@@ -3306,11 +3343,34 @@ function scheduleReply(
         );
       }
       set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
-      if (last && gain) get().addIntimacy(conversation.characterId, gain);
+      if (!last) return;
+      // How they feel now carries into the next reply, and fades with time (`currentMood`).
+      if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
+      if (gain) get().addIntimacy(conversation.characterId, gain);
+      const nudgeAfter = text == null && !given ? turn?.plan.nudgeAfterMs : undefined;
+      if (nudgeAfter) scheduleNudge(set, get, conversationId, message.id, nudgeAfter);
     }, at);
-    at += 650 + Math.min(lines[i + 1]?.length ?? 0, 80) * 22;
   });
   replyingUntil.set(conversationId, Date.now() + at);
+}
+
+/**
+ * You went quiet after a reply that left you something to answer: they text once more
+ * ("Still there?"). Only with Let them reach out (`messagesFirst`), only while that reply is still
+ * the newest line, and never after a crisis reply. Free: there is no message of yours to charge.
+ */
+function scheduleNudge(set: Setter, get: Getter, conversationId: string, afterId: string, delay: number) {
+  const epoch = replyEpoch.get(conversationId) ?? 0;
+  setTimeout(() => {
+    const state = get();
+    if ((replyEpoch.get(conversationId) ?? 0) !== epoch || state.typing[conversationId]) return;
+    const conversation = state.conversations.find((c) => c.id === conversationId);
+    if (!conversation || !state.relationships[conversation.characterId]?.messagesFirst) return;
+    const list = state.messages[conversationId] ?? [];
+    const newest = list.filter((m) => !m.card && m.kind !== 'system').pop();
+    if (newest?.id !== afterId || lastExchange(list)?.crisis) return;
+    scheduleReply(set, get, conversationId, { gain: 0, trigger: 'silence' });
+  }, delay);
 }
 
 /* ── group chats ───────────────────────────────────────────────────────────── */
