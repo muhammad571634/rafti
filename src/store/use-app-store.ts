@@ -71,6 +71,9 @@ import {
   type LorebookProblem,
   parseKeywords,
 } from '@/lib/lorebook';
+import { checkStream, isPlaying, nextSpeaker, nextTarget, STREAM_TOPIC_MAX, STREAMS_KEPT, type StreamProblem } from '@/lib/streams';
+import { mockStreamLine } from '@/mock/streams';
+import { STREAM_SHELLS, takeFreeRound, type StreamUse } from '@/economy/streams';
 import {
   consumePortrait,
   PORTRAIT_SHELLS,
@@ -195,6 +198,7 @@ import type {
   Persona,
   Pronouns,
   Scene,
+  Stream,
   MemoryItem,
   MemorySource,
   Message,
@@ -443,6 +447,20 @@ interface AppState {
     id?: string,
   ) => { id: string } | { problem: LoreEntryProblem };
   deleteLoreEntry: (bookId: string, entryId: string) => void;
+  /** Streams the user watched (`src/lib/streams.ts`), newest first. */
+  streams: Stream[];
+  /** Today's free stream rounds (`src/economy/streams.ts`). */
+  streamUse?: StreamUse;
+  /** Who is typing in a stream right now, by stream id (not saved). */
+  streamTyping: Record<string, string>;
+  /** Starts a stream of two characters on a topic; its first round is free or costs shells. */
+  startStream: (input: { characterIds: string[]; topic: string }) => { id: string } | { problem: StreamProblem } | 'noShells';
+  /** Another round of lines: free while today's free rounds last, else shells. */
+  keepStreaming: (id: string) => 'ok' | 'noShells' | 'full';
+  /** Pauses between lines; `resumeStream` plays the rest of the round already paid for. */
+  pauseStream: (id: string) => void;
+  resumeStream: (id: string) => void;
+  deleteStream: (id: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
   /** Pays for a drawn portrait: one of the plan's free ones, else shells. False when neither is there. */
@@ -651,6 +669,8 @@ type PersistedKeys =
   | 'chatPersonas'
   | 'scenes'
   | 'lorebooks'
+  | 'streams'
+  | 'streamUse'
   | 'todayWidgets'
   | 'alarms'
   | 'photos'
@@ -820,6 +840,8 @@ export const useAppStore = create<AppState>()(
       chatPersonas: {},
       scenes: [],
       lorebooks: [],
+      streams: [],
+      streamTyping: {},
       todayWidgets: DEFAULT_WIDGETS,
       alarms: [],
       photos: [],
@@ -1560,6 +1582,56 @@ export const useAppStore = create<AppState>()(
           lorebooks: s.lorebooks.map((b) => (b.id === bookId ? { ...b, entries: b.entries.filter((e) => e.id !== entryId) } : b)),
         })),
 
+      startStream: (input) => {
+        const s = get();
+        const problem = checkStream(input)[0];
+        if (problem) return { problem };
+        const ids = input.characterIds as [string, string];
+        if (ids.some((id) => !s.characters.some((c) => c.id === id) || s.blockedIds.includes(id))) return { problem: 'pair' };
+        if (!payStreamRound(set, get)) return 'noShells';
+        const stream: Stream = {
+          id: uid('stream'),
+          characterIds: ids,
+          topic: input.topic.trim().slice(0, STREAM_TOPIC_MAX),
+          lines: [],
+          target: nextTarget(undefined)!,
+          createdAt: new Date().toISOString(),
+        };
+        set((st) => ({ streams: [stream, ...st.streams].slice(0, STREAMS_KEPT) }));
+        runStream(set, get, stream.id);
+        return { id: stream.id };
+      },
+
+      keepStreaming: (id) => {
+        const stream = get().streams.find((x) => x.id === id);
+        // A round with lines still to come is paid for already: it just goes on.
+        if (stream && stream.lines.length < stream.target) {
+          get().resumeStream(id);
+          return 'ok';
+        }
+        const target = nextTarget(stream);
+        if (!stream || target === null) return 'full';
+        if (!payStreamRound(set, get)) return 'noShells';
+        set((s) => ({ streams: s.streams.map((x) => (x.id === id ? { ...x, target, stopped: undefined } : x)) }));
+        runStream(set, get, id);
+        return 'ok';
+      },
+
+      pauseStream: (id) => {
+        stopStreamRunner(set, id);
+        set((s) => ({ streams: s.streams.map((x) => (x.id === id ? { ...x, stopped: true } : x)) }));
+      },
+
+      resumeStream: (id) => {
+        set((s) => ({ streams: s.streams.map((x) => (x.id === id ? { ...x, stopped: undefined } : x)) }));
+        runStream(set, get, id);
+      },
+
+      deleteStream: (id) => {
+        stopStreamRunner(set, id);
+        set((s) => ({ streams: s.streams.filter((x) => x.id !== id) }));
+      },
+
       payForPortrait: (characterId) => {
         const now = Date.now();
         const free = consumePortrait(get().wallet.subscription, now);
@@ -2141,6 +2213,7 @@ export const useAppStore = create<AppState>()(
       deleteAccount: () => {
         // Replies and timers still in flight must not write into the fresh state.
         replyingUntil.clear();
+        streamEpoch.clear();
         // The server deletes the account later; here the device starts over.
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
       },
@@ -2789,6 +2862,8 @@ export const useAppStore = create<AppState>()(
         chatPersonas: s.chatPersonas,
         scenes: s.scenes,
         lorebooks: s.lorebooks,
+        streams: s.streams,
+        streamUse: s.streamUse,
         todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,
@@ -2803,6 +2878,11 @@ export const useAppStore = create<AppState>()(
         diary
           .filter((d) => d.sharedWithCharacterId && !d.reply)
           .forEach((d) => answerDiary(useAppStore.setState, d.id));
+        // A stream the app closed on goes on with the round it had paid for.
+        useAppStore
+          .getState()
+          .streams.filter(isPlaying)
+          .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
         useAppStore.getState().expireFreeShells();
         useAppStore.getState().writeDueDiaryPages();
         useAppStore.setState({ hydrated: true });
@@ -3296,6 +3376,60 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
     { characterId: first, lines: firstLines() },
     ...(second ? [{ characterId: second, lines: bothAsked ? pick(groupReplies) : [pick(groupReactions)(names[first])] }] : []),
   ]);
+}
+
+/** A stream's runner generation: a pause, a delete or a new run makes the older one stop. */
+const streamEpoch = new Map<string, number>();
+
+/** One round of a stream: free while today's free rounds last, else shells (`src/economy/streams.ts`). */
+function payStreamRound(set: Setter, get: Getter) {
+  const s = get();
+  const free = takeFreeRound(s.streamUse, todayKey(), s.wallet.subscription, Date.now());
+  if (free) {
+    set(() => ({ streamUse: free }));
+    return true;
+  }
+  return s.spendShells(STREAM_SHELLS, 'stream');
+}
+
+function stopStreamRunner(set: Setter, streamId: string) {
+  streamEpoch.set(streamId, (streamEpoch.get(streamId) ?? 0) + 1);
+  set((s) => {
+    const { [streamId]: _typing, ...streamTyping } = s.streamTyping;
+    return { streamTyping };
+  });
+}
+
+/**
+ * Stands in for the server writing a stream, one model call per line (`buildStreamLinePrompt`):
+ * the next speaker types, their line lands, a short beat, then the other one. It runs until the
+ * round's target, and stops when the stream is paused or deleted (a newer run takes over).
+ */
+function runStream(set: Setter, get: Getter, streamId: string) {
+  const epoch = (streamEpoch.get(streamId) ?? 0) + 1;
+  streamEpoch.set(streamId, epoch);
+  const live = () => streamEpoch.get(streamId) === epoch;
+  const step = () => {
+    const stream = get().streams.find((x) => x.id === streamId);
+    if (!live() || !stream || !isPlaying(stream)) {
+      if (live()) stopStreamRunner(set, streamId);
+      return;
+    }
+    const speaker = nextSpeaker(stream);
+    const otherId = stream.characterIds.find((id) => id !== speaker)!;
+    const other = get().characters.find((c) => c.id === otherId);
+    const index = stream.lines.length;
+    const text = mockStreamLine(stream.id, index, index === stream.target - 1, other ? shortName(other.name) : '', stream.topic);
+    set((s) => ({ streamTyping: { ...s.streamTyping, [streamId]: speaker } }));
+    // About as long as typing the line takes, as in the chats.
+    setTimeout(() => {
+      if (!live()) return;
+      const line = { id: uid('sl'), characterId: speaker, text, createdAt: new Date().toISOString() };
+      set((s) => ({ streams: s.streams.map((x) => (x.id === streamId ? { ...x, lines: [...x.lines, line] } : x)) }));
+      setTimeout(step, 500);
+    }, 900 + Math.min(text.length, 120) * 18 + Math.random() * 500);
+  };
+  step();
 }
 
 /** How long before the member ahead finishes the next one starts typing, so two type at once. */

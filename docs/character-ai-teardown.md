@@ -151,8 +151,12 @@ Ordered by value to the owner's companion app, with what exists today:
 7. **Prompt layout for caching**: build the server prompt as ordered parts with priorities, stable
    parts first, history last, and truncate in steps so the provider's prompt cache hits.
 
+8. **Stream** (done 2026-10-25, flows.md D74; `src/lib/streams.ts`, backend-plan §12.20): two characters
+   talk about a topic the user picks while the user watches, one model call per line, rounds that
+   keep it going, and "talk to both" carries it on as a group chat. The owner took it after all.
+
 Skip: ads and ad passes (owner: no ads), real-person characters, a public creator economy (boosts,
-charms) until there is an audience, video and streams.
+charms) until there is an audience, video.
 
 ## 11. Creation chain, deep dive (2026-10-25)
 

@@ -75,39 +75,47 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
   // The bubble itself; in a group it sits under the member's name, which then holds the width cap.
+  const holdStyle = [styles.holdable, named && styles.wide, message.reaction ? styles.withReaction : null];
+  const inner = (
+    <>
+      {message.kind === 'image' && message.photoId ? (
+        <BoothPhotoMessage photoId={message.photoId} character={character} />
+      ) : message.kind === 'image' && message.imageUri ? (
+        <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+      ) : (
+        <TextBubble message={message} mine={mine} tail={runEnd} />
+      )}
+      {pinned ? (
+        <View
+          style={[styles.pinBadge, mine ? styles.pinMine : styles.pinTheirs]}
+          accessible
+          accessibilityLabel={t('chat.pinnedToast')}>
+          <Ionicons name="pin" size={12} color={colors.textSecondary} />
+        </View>
+      ) : null}
+      {message.reaction && message.reaction in REACTION_STICKERS ? (
+        <ReactionSticker
+          name={message.reaction as ReactionName}
+          play="once"
+          style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+        />
+      ) : null}
+    </>
+  );
   const content =
     message.kind === 'voice' ? (
       <VoiceBubble message={message} mine={mine} tail={runEnd} wide={named} />
+    ) : !onLongPress && !photoId ? (
+      // Nothing to press (a stream's lines): a plain view, since a disabled PressableScale is drawn faded.
+      <View style={holdStyle}>{inner}</View>
     ) : (
       <PressableScale
         scaleTo={0.97}
         delayLongPress={280}
-        disabled={!onLongPress && !photoId}
         onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
         onLongPress={onLongPress ? () => onLongPress(message) : undefined}
-        style={[styles.holdable, named && styles.wide, message.reaction ? styles.withReaction : null]}>
-        {message.kind === 'image' && message.photoId ? (
-          <BoothPhotoMessage photoId={message.photoId} character={character} />
-        ) : message.kind === 'image' && message.imageUri ? (
-          <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
-        ) : (
-          <TextBubble message={message} mine={mine} tail={runEnd} />
-        )}
-        {pinned ? (
-          <View
-            style={[styles.pinBadge, mine ? styles.pinMine : styles.pinTheirs]}
-            accessible
-            accessibilityLabel={t('chat.pinnedToast')}>
-            <Ionicons name="pin" size={12} color={colors.textSecondary} />
-          </View>
-        ) : null}
-        {message.reaction && message.reaction in REACTION_STICKERS ? (
-          <ReactionSticker
-            name={message.reaction as ReactionName}
-            play="once"
-            style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
-          />
-        ) : null}
+        style={holdStyle}>
+        {inner}
       </PressableScale>
     );
 

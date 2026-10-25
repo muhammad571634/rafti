@@ -403,7 +403,8 @@ export function pickOpening(character: Pick<Character, 'greeting' | 'greetings'>
   return openings.length > 0 ? pickSeeded(openings, seed) : '';
 }
 
-function readJson(raw: string): Record<string, unknown> | null {
+/** A model's JSON answer as an object, or null; fences around it are fine. */
+export function readJson(raw: string): Record<string, unknown> | null {
   // Models sometimes wrap JSON in a code fence.
   const body = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
   try {
@@ -425,7 +426,7 @@ const oneOf = <T extends string>(options: readonly T[], value: unknown, fallback
   (options as readonly unknown[]).includes(value) ? (value as T) : fallback;
 
 /** Cuts at the last word that fits and marks the cut, so a long field never breaks the layout. */
-function clip(value: string, max: number) {
+export function clip(value: string, max: number) {
   if (value.length <= max) return value;
   const cut = value.slice(0, max - 1);
   const space = cut.lastIndexOf(' ');

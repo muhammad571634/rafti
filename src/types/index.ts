@@ -216,6 +216,31 @@ export interface ActiveScene {
   startedAt: string;
 }
 
+/** One line of a stream: who said it and what. */
+export interface StreamLine {
+  id: string;
+  characterId: string;
+  text: string;
+  createdAt: string;
+}
+
+/**
+ * A stream (Character.AI's Stream, `src/lib/streams.ts`): two characters talk about a topic the
+ * user picked while the user watches. Each paid round adds lines up to `target`.
+ */
+export interface Stream {
+  id: string;
+  /** The two who talk; the first one opens. */
+  characterIds: [string, string];
+  topic: string;
+  lines: StreamLine[];
+  /** How many lines the rounds so far paid for; lines keep coming until there are this many. */
+  target: number;
+  /** The user stopped it before `target`. */
+  stopped?: boolean;
+  createdAt: string;
+}
+
 /** What a world book entry is about (Character.AI's Lorebook kinds, ours trimmed). */
 export type LoreKind = 'person' | 'place' | 'thing' | 'event' | 'group' | 'rule';
 
@@ -535,6 +560,7 @@ export type LedgerReason =
   | 'photoBooth'
   | 'voiceClone'
   | 'portrait'
+  | 'stream'
   | 'trial'
   | 'membership'
   | 'call'

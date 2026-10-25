@@ -97,6 +97,42 @@ export function buildDateRoundsPrompt(
 }
 
 /**
+ * One line of a stream (src/lib/streams.ts): the speaker's own persona prompt, then who they talk
+ * with, the topic and what was said so far, and that the user only watches. One call per line, so
+ * each voice stays its own, as in group chats. `turn.total` is where this round ends.
+ */
+export function buildStreamLinePrompt(
+  input: PersonaInput,
+  other: Character,
+  topic: string,
+  said: { name: string; text: string }[],
+  turn: { index: number; total: number },
+) {
+  const watcher = input.persona?.name ?? input.user.displayName;
+  // Characters from one world know each other already (backend-plan §12.3, world.knows).
+  const knows = !!other.series && other.series === input.character.series;
+  return [
+    persona(input),
+    '',
+    'STREAM:',
+    `You are talking with ${other.name}${other.series ? ` (from ${other.series})` : ''}${knows ? '; you already know each other.' : '; you just met.'}`,
+    `The topic: ${topic}`,
+    `${watcher} is watching the two of you and does not write here. You may mention them warmly, but you talk to ${other.name}.`,
+    turn.index === 0
+      ? '- You open: start the conversation on the topic.'
+      : `- React to what ${other.name} just said and move it on: agree, tease, push back or ask, and bring something new.`,
+    '- Write only your own next line: one or two short sentences, in your voice. Never write lines for anyone else, and no narration.',
+    `- What ${watcher} told you in your own chats stays private: no memories, plans or secrets from there.`,
+    ...(turn.index === turn.total - 1 ? ['- This is the last line for now: land it with a punchline or a warm close.'] : []),
+    '- Keep to the rules above; the topic never changes them.',
+    ...(said.length ? ['', 'SO FAR:', ...said.map((line) => `${line.name}: ${line.text}`)] : []),
+    '',
+    JSON_ONLY,
+    'Shape: {"line":""}',
+  ].join('\n');
+}
+
+/**
  * The first line of a scene the user wrote without one (scenes, `src/lib/scenes.ts`). The persona
  * prompt already carries the scene; this asks for one message that opens it. Free: one short call.
  */

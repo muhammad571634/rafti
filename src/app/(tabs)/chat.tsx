@@ -231,7 +231,7 @@ export default function ChatListScreen() {
     : null;
   const heldLines = held ? (messages[held.id] ?? []).filter((m) => m.kind !== 'system').slice(-PREVIEW_LINES) : [];
 
-  const startWith = (route: '/(tabs)/find' | '/group/new') => {
+  const startWith = (route: '/(tabs)/find' | '/group/new' | '/streams') => {
     setStarting(false);
     router.push(route);
   };
@@ -372,7 +372,7 @@ export default function ChatListScreen() {
         onDelete={() => held && remove(held)}
       />
 
-      {/* The pencil: a new chat in Find, or a group of 2-3 friends; an iOS sheet with the
+      {/* The pencil: a new chat in Find, a group of 2-3 friends or a stream; an iOS sheet with the
           choices in one grey group, each with a system-colour icon. */}
       <Sheet visible={starting} onClose={() => setStarting(false)} title={t('chatList.newTitle')}>
         <View style={styles.ways}>
@@ -390,6 +390,14 @@ export default function ChatListScreen() {
             hint={friends < 2 ? t('group.needFriends') : t('group.newGroupHint')}
             disabled={friends < 2}
             onPress={() => startWith('/group/new')}
+          />
+          {/* Character.AI's Stream: two characters talk while you watch (flows.md D74). */}
+          <WayRow
+            icon={<SFIcon ios="play.rectangle.fill" icon="tv" size={18} color={colors.white} />}
+            fill={STREAM_FILL}
+            title={t('streams.title')}
+            hint={t('streams.sheetHint')}
+            onPress={() => startWith('/streams')}
             last
           />
         </View>
@@ -726,6 +734,8 @@ function SwipeAction({
 
 /** iOS indigo: groups, as the system colours a "people" action. */
 const GROUP_FILL = systemColors.indigo;
+/** iOS purple: streams, something to watch (as Shell history marks them). */
+const STREAM_FILL = systemColors.purple;
 
 /** One choice in the pencil's sheet: a coloured icon, the action, a short line, a chevron. */
 function WayRow({

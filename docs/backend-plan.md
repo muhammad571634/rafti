@@ -516,6 +516,7 @@ Har bir yangi funksiya uchun xarajat (13.2 narxlari) va uning pul keltiradigan j
 | Sahna (rasmiy) | $0: ochuvchi gap tayyor, model chaqirilmaydi | Yozishma ko'payadi | Hammaga bepul |
 | Sahna (o'zingizniki) | Birinchi gapi yo'q bo'lsa 1 qisqa chaqiruv ≈ $0.0005; sahna bloki ~120 token | Yozishma ko'payadi | Imtiyoz: bepul 3, tarif 10 |
 | World books (Lorebook) | Faqat eslanganda: ≤ 1200 belgi (~300 token) ≈ +$0.00009 xabarga; `about` qatorlari doim (~70 token, kesh prefiksida) | Rolli o'yin chuqurlashadi, yozishma ko'payadi | Dunyolar kitoblari hammaga bepul; o'zingizniki imtiyoz: bepul 1 kitob × 15 yozuv, tarif 5 × 50 (12.19) |
+| Stream (ikki personaj suhbati) | Raund = 8 ta qator = 8 chaqiruv (har biri ~$0.0006–0.0008) ≈ $0.005–0.006; keyingi raund 6 qator | Raund uchun chig'anoq; yangi personajlar bilan tanishish → do'st qo'shish → yozishma | Kuniga 1 raund bepul (tarifda 5), keyin raund 2 chig'anoq (≈ $0.02–0.04, marja ~4–7×). Eng faol bepul foydalanuvchi oyiga ≤ $0.18 (12.20) |
 
 - **Foydalanuvchiga foydasi:** hech qaysi asosiy narsa pul devori ortida emas. Bepul foydalanuvchi ham personaj yaratadi,
   persona va sahna o'ynaydi, faqat sonlar tarifda ko'proq.
@@ -551,6 +552,30 @@ dunyolar kitoblari: `src/mock/lorebooks.ts`. Ekranlar: flows.md D73.
   `PUT/DELETE /lorebooks/:id/entries/:entryId`, `PUT/DELETE /lorebooks/:id/links/:characterId`.
 - **Keyinroq:** kalit so'zdan tashqari embedding bilan topish (sinonimlar, boshqa tillar va yozuvlar), bir necha javob davomida
   qoladigan yozuvlar, mock javoblar hozircha lore ishlatmaydi (server ishlatadi).
+
+### 12.20 Stream: ikki personaj gaplashadi, foydalanuvchi tomosha qiladi (2026-10-25)
+
+Egasi Stream nima ekanini tasdiqladi: foydalanuvchi ikki personaj va mavzu tanlaydi, ular o'zaro gaplashadi.
+Kod: `src/lib/streams.ts`, prompt `buildStreamLinePrompt` (`src/ai/content-prompts.ts`), narx `src/economy/streams.ts`
+(hammasi testlangan). Ekranlar: flows.md D74.
+
+- **Har qator alohida chaqiruv:** gapirayotgan personajning o'z persona prompti (dunyo kitoblari bilan), kim bilan
+  gaplashayotgani (bir dunyodan bo'lsa tanishlar), mavzu, oxirgi 10 qator va "foydalanuvchi faqat tomosha qiladi" qoidasi.
+  Shaxsiy chatlardagi xotira va sirlar kirmaydi. Guruh chatidagidek har ovoz o'ziniki qoladi. Javob `{"line":""}`,
+  `parseStreamLine` uni tozalaydi.
+- **Raundlar:** boshlanishi 8 qator, har "Keep going" yana 6 qator, ko'pi bilan 26. Stop raundni to'xtatadi, "Go on" uning
+  to'langan qolganini bepul davom ettiradi. Serverda raund — bitta ish (job): qatorlar SSE orqali birin-ketin keladi,
+  "yozyapti" holati guruh chatidagi shartnoma bo'yicha (qator ishi boshlanganda yoqiladi, qator tushganda o'chadi).
+- **Narx:** kuniga 1 raund bepul, tarifda 5; keyin raund 2 chig'anoq (`FREE_STREAM_ROUNDS`, `STREAM_SHELLS`).
+  `usage_events.mode = 'stream'`. Raund pul faqat qatorlar boshlanganda yechiladi; server xatosida raund qaytariladi.
+- **Moderatsiya:** mavzu `checkStream` (inqiroz, voyaga yetmaganlar, ochiq-sochiq), har qator chiqish klassifikatoridan
+  o'tadi. Haqiqiy odamlar va boshqa kompaniyalar personajlari qoidalar bo'yicha baribir taqiqlangan.
+- **Jadval:** `streams` (id, user_id, character_ids[2], topic, target, stopped, created_at), `stream_lines`
+  (stream_id, character_id, text, created_at). Qurilmada oxirgi 20 tasi saqlanadi.
+- **API:** `POST /streams` {characterIds, topic} → stream + birinchi raund; `POST /streams/:id/rounds` (Keep going);
+  `POST /streams/:id/pause`, `POST /streams/:id/resume`; `GET /streams/:id/events` (SSE); `DELETE /streams/:id`.
+- **Keyinroq:** foydalanuvchi o'rtada "rejissyor" izohi bilan yo'nalish berishi, uch kishilik stream, stream'ni do'stlarga
+  ulashish (ochiq lenta hozircha yo'q).
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
