@@ -493,8 +493,9 @@ Tadqiqot: `docs/character-ai-teardown.md` §11. Kod: `src/ai/character-draft.ts`
   `{{user}}` foydalanuvchi ismi bilan to'ldiriladi.
 - **API:** `POST /characters/draft` {idea, sparks, role?} → draft; `POST /characters/draft/field` {field, character} → qiymat.
   Ikkalasi ham `usage_events.mode = 'create'` bilan yoziladi.
-- **Kvota (egasi hal qiladi):** Character.AI tez yaratishni kunlik kvota bilan beradi, keyin paywall. Bizda nechta bepul
-  bo'lishi va keyin narxi hali tanlanmagan.
+- **Kvota (egasi, 2026-10-25):** kuniga 3 ta tez yaratish bepul (to'ldirilgan qoralama hisoblanadi, bitta maydonni qayta
+  yozish hisoblanmaydi). Bu bitta sozlama: unit iqtisodi to'g'ri kelmasa keyin o'zgartiriladi. Limitdan keyin forma
+  orqali qo'lda yaratish har doim ochiq; pullik variant hali tanlanmagan.
 - **Olinmadi:** remix, ochiq definition ko'rish, unlisted havola, teglar orqali ochiq katalog (hali ochiq ijodkorlar lentasi yo'q).
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)

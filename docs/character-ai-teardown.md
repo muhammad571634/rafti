@@ -220,8 +220,9 @@ tested; server side in `backend-plan.md` §12.17):
   greeting or one of the extra ones (`pickOpening`), `{{user}}` filled in.
 - Not taken: unlisted links, remix, public definition viewing, tags as discovery (no public
   creator feed yet), the "Squeak" names, their pill texts.
-- Still to decide (owner): how many quick creates are free a day, and the front end (prototype
-  first).
+- Owner's call (2026-10-25): 3 quick creates free a day, one setting so it can change with the
+  unit economics. Front end: canvas row "Quick create" (`QuickCreate`, `QuickReview`,
+  `QuickCreateDark`, `QuickLimit`), waiting for the owner's yes.
 
 Sources: [blog index](https://blog.character.ai/), [memory](https://blog.character.ai/memory/),
 [Lorebook](https://blog.character.ai/lorebook/), [styles and plans](https://blog.character.ai/new-styles-new-plan/),
