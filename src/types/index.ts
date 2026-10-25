@@ -724,6 +724,8 @@ export interface DailyState {
   messagesSent?: number;
   /** The day the "voice minutes used up" note last showed (once a day) */
   voiceNoteDay?: string;
+  /** Family's moments written today (`lifeKey`: "2026-10-25:c_kai:lunch"), so each goes once. */
+  lifeSent?: string[];
 }
 
 export interface AppSettings {

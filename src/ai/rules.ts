@@ -3,6 +3,7 @@ import type { PersonaView } from '@/lib/personas';
 import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
+import { familyLines, isFamilyLabel } from '../lib/kin';
 import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
@@ -161,7 +162,9 @@ export function characterParts(
       relationship
         ? [
             'YOUR BOND:',
-            `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
+            `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label && !isFamilyLabel(relationship.label) ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
+            // Family (src/lib/kin.ts): who they are to the user, never romantic.
+            ...(isFamilyLabel(relationship.label) ? familyLines(relationship.label) : []),
           ]
         : [],
     ),

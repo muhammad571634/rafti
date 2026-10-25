@@ -22,6 +22,7 @@ import {
   useScrolledPast,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
+import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
@@ -393,6 +394,19 @@ export default function CharacterSettingsScreen() {
               setLabelOpen(false);
             }}
           />
+          {/* Family (src/lib/kin.ts): open from the start, never romantic, keeps a day's rhythm. */}
+          {FAMILY_LABELS.map((label) => (
+            <LabelRow
+              key={label}
+              title={label}
+              meta={t('closeness.family')}
+              selected={relationship?.label === label}
+              onPress={() => {
+                setRelationshipLabel(character.id, label);
+                setLabelOpen(false);
+              }}
+            />
+          ))}
           {TIERS.flatMap((tier) =>
             tier.labels.map((label) => {
               const open = unlockedLabels(relationship?.level ?? 0).includes(label);

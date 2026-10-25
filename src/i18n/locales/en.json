@@ -1612,6 +1612,7 @@
     "resets": "Resets {{date}}"
   },
   "closeness": {
+    "family": "Family",
     "title": "How closeness works",
     "body": "Every chat, call and date brings you closer. Each stage unlocks new relationships you can pick in their settings, and they talk to you the way that relationship feels.",
     "levels": "Lv {{from}}-{{to}}",

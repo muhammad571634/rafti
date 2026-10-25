@@ -51,9 +51,11 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
+import { isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
+import { lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
 import { perkLimit } from '@/economy/perks';
@@ -1841,9 +1843,15 @@ export const useAppStore = create<AppState>()(
       },
 
       setRelationshipLabel: (characterId, label) =>
-        updateRelationship(set, characterId, (r) =>
-          !label || unlockedLabels(r.level).includes(label) ? { label } : {},
-        ),
+        updateRelationship(set, characterId, (r) => {
+          // Family is open from the start (src/lib/kin.ts); the other labels unlock with closeness.
+          if (label && !isFamilyLabel(label) && !unlockedLabels(r.level).includes(label)) return {};
+          // Family shows as what they are ("Mom") until the user names them ("Onam"); a name the
+          // label gave follows the label, and goes when they stop being family.
+          const given = !!r.nickname && r.nickname === r.label;
+          const nickname = given || !r.nickname ? (isFamilyLabel(label) ? label : given ? undefined : r.nickname) : r.nickname;
+          return { label, nickname };
+        }),
 
       dismissLevelUp: () => set({ levelUp: null }),
 
@@ -2586,6 +2594,27 @@ export const useAppStore = create<AppState>()(
               return x;
             }),
           }));
+        }
+
+        // Family's day (src/lib/kin.ts): lunch, the evening, Sunday… written into their chat as the push said it.
+        const today = dayKey(now);
+        const lifeSent = new Set(get().daily.lifeSent ?? []);
+        const freshLife: string[] = [];
+        for (const [characterId, bond] of Object.entries(get().relationships)) {
+          const group = kinGroup(bond.label);
+          if (!group || !bond.messagesFirst || !exists(characterId) || get().blockedIds.includes(characterId)) continue;
+          if (!get().conversations.some((c) => c.characterId === characterId)) continue;
+          for (const moment of lifeMoments(group, now)) {
+            const key = lifeKey(today, characterId, moment.key);
+            const at = lifeAt(now, moment).getTime();
+            if (lifeSent.has(key) || now.getTime() < at || now.getTime() - at > LIFE_WINDOW_MS) continue;
+            const conversationId = get().addFriend(characterId);
+            appendMessage(set, get, conversationId, themText(conversationId, lifeLine(group, moment.key, key)), { countUnread: true });
+            freshLife.push(key);
+          }
+        }
+        if (freshLife.length) {
+          set((s) => ({ daily: { ...s.daily, lifeSent: [...(s.daily.lifeSent ?? []).filter((k) => k.startsWith(today)), ...freshLife] } }));
         }
 
         // Care check-ins whose moment came: the friend asks, in the chat (the push said the same line).

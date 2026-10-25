@@ -1,5 +1,6 @@
 import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
+import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
@@ -14,6 +15,7 @@ import {
   scheduleReminder,
 } from '@/mock';
 import { careLine } from '@/mock/care';
+import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
 import type {
   AppSettings,
@@ -44,6 +46,7 @@ export type PushKind =
   | 'remind'
   | 'followUp'
   | 'care'
+  | 'life'
   | 'birthday'
   | 'diary'
   | 'unread'
@@ -117,6 +120,7 @@ const PRIORITY: Record<PushKind, number> = {
   birthday: 0,
   followUp: 1,
   care: 1,
+  life: 3,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -347,6 +351,21 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           characterId: item.characterId,
           line: planFollowUp(item.title, `${item.id}:followUp`),
         });
+      }
+    }
+  }
+
+  // Family's day (src/lib/kin.ts): "Mom: Did you eat lunch?", the same line their chat gets.
+  const written = new Set(daily.lifeSent ?? []);
+  for (const character of writers) {
+    const group = kinGroup(relationships[character.id].label);
+    if (!group) continue;
+    for (const day of days) {
+      for (const moment of lifeMoments(group, day)) {
+        const key = lifeKey(dayKey(day), character.id, moment.key);
+        const when = lifeAt(day, moment);
+        if (written.has(key) || !inHorizon(when)) continue;
+        say({ id: `life:${key}`, kind: 'life', at: when, characterId: character.id, line: lifeLine(group, moment.key, key) });
       }
     }
   }
