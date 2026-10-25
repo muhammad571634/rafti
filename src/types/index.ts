@@ -487,6 +487,21 @@ export interface UserQuiz {
  * The character texts ten minutes before (or that morning when there is no time)
  * and asks how it went afterwards.
  */
+/** How the user said they are, for a friend to ask about later (`src/lib/care.ts`). */
+export type CareKind = 'headache' | 'sick' | 'tired' | 'stressed' | 'sad' | 'lonely' | 'hungry' | 'hurt' | 'fight';
+
+/** A check-in a friend owes: "Is your head any better?" a few hours after the user said it hurt. */
+export interface CareItem {
+  id: string;
+  characterId: string;
+  kind: CareKind;
+  /** When they ask (never at night). */
+  dueAt: string;
+  createdAt: string;
+  /** Asked, its moment passed, or the user already said they are better. */
+  done?: boolean;
+}
+
 export interface ScheduleItem {
   id: string;
   characterId: string;

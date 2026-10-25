@@ -13,9 +13,11 @@ import {
   planFollowUp,
   scheduleReminder,
 } from '@/mock';
+import { careLine } from '@/mock/care';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
 import type {
   AppSettings,
+  CareItem,
   Character,
   Conversation,
   DailyState,
@@ -41,6 +43,7 @@ export type PushKind =
   | 'voiceNote'
   | 'remind'
   | 'followUp'
+  | 'care'
   | 'birthday'
   | 'diary'
   | 'unread'
@@ -80,6 +83,8 @@ export interface PlanState {
   conversations: Conversation[];
   messages: Record<string, Message[]>;
   schedules: ScheduleItem[];
+  /** Check-ins friends owe (`src/lib/care.ts`); older saved states have none. */
+  care?: CareItem[];
   /** Free users get a voice note instead of the daily call (`canRing`). */
   wallet: Pick<Wallet, 'subscription'>;
 }
@@ -111,6 +116,7 @@ const PRIORITY: Record<PushKind, number> = {
   remind: 0,
   birthday: 0,
   followUp: 1,
+  care: 1,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -342,6 +348,15 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           line: planFollowUp(item.title, `${item.id}:followUp`),
         });
       }
+    }
+  }
+
+  // Care check-ins: "Is your head any better?" at its moment, the same line the chat gets.
+  for (const item of state.care ?? []) {
+    if (item.done || !byId.has(item.characterId) || !chatOf.has(item.characterId)) continue;
+    const when = new Date(item.dueAt);
+    if (inHorizon(when)) {
+      say({ id: `care:${item.id}`, kind: 'care', at: when, characterId: item.characterId, line: careLine(item.kind, `${item.id}:care`) });
     }
   }
 

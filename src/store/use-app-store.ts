@@ -51,7 +51,9 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
+import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { detectPlan, planStep } from '@/lib/schedule';
+import { careLine } from '@/mock/care';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
 import { perkLimit } from '@/economy/perks';
@@ -214,6 +216,7 @@ import type {
   PlanId,
   Relationship,
   ScheduleItem,
+  CareItem,
   SecretNote,
   MessageReport,
   User,
@@ -315,6 +318,8 @@ interface AppState {
   calls: CallRecord[];
   moments: Moment[];
   schedules: ScheduleItem[];
+  /** Check-ins friends owe after the user said how they were (`src/lib/care.ts`). */
+  care: CareItem[];
   /** Notes the user pinned on the message board, oldest first */
   boardPosts: BoardPost[];
   /** Finished dates, newest first */
@@ -679,6 +684,7 @@ type PersistedKeys =
   | 'calls'
   | 'moments'
   | 'schedules'
+  | 'care'
   | 'boardPosts'
   | 'dates'
   | 'reports'
@@ -846,6 +852,7 @@ export const useAppStore = create<AppState>()(
       calls: [],
       moments: [],
       schedules: [],
+      care: [],
       boardPosts: [],
       dates: [],
       reports: [],
@@ -2581,6 +2588,20 @@ export const useAppStore = create<AppState>()(
           }));
         }
 
+        // Care check-ins whose moment came: the friend asks, in the chat (the push said the same line).
+        const careSteps = get()
+          .care.map((item) => ({ item, step: careStep(item, now) }))
+          .filter((x) => x.step);
+        careSteps.forEach(({ item, step }) => {
+          if (step !== 'ask' || !exists(item.characterId) || get().blockedIds.includes(item.characterId)) return;
+          const conversationId = get().addFriend(item.characterId);
+          appendMessage(set, get, conversationId, themText(conversationId, careLine(item.kind, `${item.id}:care`)), { countUnread: true });
+        });
+        if (careSteps.length) {
+          const doneIds = new Set(careSteps.map((x) => x.item.id));
+          set((s) => ({ care: s.care.map((x) => (doneIds.has(x.id) ? { ...x, done: true } : x)) }));
+        }
+
         const answered = get().boardPosts.filter((p) => !p.replied && new Date(p.replyAt).getTime() <= now.getTime());
         answered.forEach((post) => {
           if (!exists(post.characterId) || get().blockedIds.includes(post.characterId)) return;
@@ -2927,6 +2948,7 @@ export const useAppStore = create<AppState>()(
         calls: s.calls,
         moments: s.moments,
         schedules: s.schedules,
+        care: s.care,
         boardPosts: s.boardPosts,
         dates: s.dates,
         reports: s.reports,
@@ -3239,6 +3261,26 @@ function answerText(
     get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
     addMoment(set, conversation.characterId, 'plan', { title: plan.title });
     reply = scheduleAck(plan.title, plan.when, !!plan.time);
+  }
+
+  // Care check-ins: "I have a headache" now, "Is your head any better?" a few hours on, from
+  // friends who may write first. "I'm better now" closes what is open; a crisis never becomes one.
+  if (!crisis && get().relationships[conversation.characterId]?.messagesFirst) {
+    const characterId = conversation.characterId;
+    const kind = saysBetter(text) ? null : detectCare(text);
+    if (saysBetter(text)) set((s) => ({ care: closeCare(s.care, characterId) }));
+    else if (kind) {
+      const now = new Date();
+      set((s) => ({
+        care: addCare(pruneCare(s.care, now), {
+          id: uid('care'),
+          characterId,
+          kind,
+          dueAt: careDueAt(kind, now).toISOString(),
+          createdAt: now.toISOString(),
+        }),
+      }));
+    }
   }
 
   // A crisis message: a warm reply in voice, then the helpline card under it.
