@@ -20,6 +20,8 @@ export {
 } from './chat';
 export { characterDiaryPages, diaryEntries, secretNotePrompts, secretNotes } from './diary';
 export {
+  groupComebacks,
+  groupGoOn,
   groupHellos,
   groupJoinLines,
   groupPhotoLines,

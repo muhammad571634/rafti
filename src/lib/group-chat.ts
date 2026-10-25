@@ -68,6 +68,21 @@ export function pickResponders(
   return second ? [first, second] : [first];
 }
 
+/**
+ * Who talks when the user taps Continue in a group (they go on without the user writing): the
+ * member who spoke least recently answers the one who spoke last, and that one answers back, so
+ * two trade a line each, as in a stream. In a group of three the third has the next turn.
+ */
+export function continueSpeakers(memberIds: string[], speakers: string[]): string[] {
+  const last = speakers[speakers.length - 1];
+  const first = leastRecent(
+    memberIds.filter((id) => id !== last),
+    speakers,
+  );
+  if (!first) return [];
+  return last && memberIds.includes(last) ? [first, last] : [first];
+}
+
 /** A member can be added while there is room, and removed while two would stay. */
 export const canAddMember = (memberIds: string[]) => memberIds.length < GROUP_MAX;
 export const canRemoveMember = (memberIds: string[]) => memberIds.length > GROUP_MIN;

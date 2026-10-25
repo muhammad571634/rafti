@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import { mockSteerLines } from '../mock/steer';
 import type { Message } from '@/types';
 
-import { historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
+import { groupContinueCue, historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
 import { canRewindTo, lastExchange } from './chat-turns';
 
 const at = '2026-10-25T20:00:00.000Z';
@@ -74,5 +74,24 @@ describe('what the model is told', () => {
       assert.ok(mockSteerLines('skip', skip, 'seed').length > 0);
     }
     assert.deepEqual(mockSteerLines('continue', undefined, 'a'), mockSteerLines('continue', undefined, 'a'));
+  });
+});
+
+describe('continue in a group', () => {
+  const member = (id: string, characterId: string): Message => ({ ...them(id), characterId });
+
+  it('follows the one-to-one rules', () => {
+    assert.equal(steerBlock([member('k1', 'kai'), member('t1', 'theo')], false), null);
+    assert.equal(steerBlock([member('k1', 'kai'), me('m')], false), 'waiting');
+    assert.equal(steerBlock([member('k1', 'kai')], true), 'typing');
+    assert.equal(steerBlock([me('m'), helpline('h'), member('k1', 'kai')], false), 'crisis');
+    const three = [me('m'), member('k1', 'kai'), mark('c1', 'continue'), member('t1', 'theo'), mark('c2', 'continue'), member('k2', 'kai'), mark('c3', 'continue'), member('t2', 'theo')];
+    assert.equal(steerBlock(three, false), 'tooMany');
+  });
+
+  it('asks each member to answer the one before', () => {
+    const cue = groupContinueCue('Theo').join('\n');
+    assert.match(cue, /without them writing/);
+    assert.match(cue, /Answer what Theo just said/);
   });
 });

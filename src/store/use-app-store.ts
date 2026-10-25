@@ -37,6 +37,7 @@ import { shortName } from '@/lib/format';
 import {
   canAddMember,
   canRemoveMember,
+  continueSpeakers,
   GROUP_MAX,
   GROUP_MIN,
   groupPreview,
@@ -123,6 +124,8 @@ import {
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
+  groupComebacks,
+  groupGoOn,
   groupHellos,
   groupJoinLines,
   groupPhotoLines,
@@ -384,6 +387,8 @@ interface AppState {
   sendGroupText: (groupId: string, text: string) => SendResult;
   sendGroupVoice: (groupId: string, durationSec: number, transcript: string) => SendResult;
   sendGroupImage: (groupId: string, imageUri: string) => SendResult;
+  /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
+  continueGroup: (groupId: string) => SendResult;
   /** Truth or dare with one member in the group; another member joins in. Returns the question. */
   playGroupTruthOrDare: (groupId: string, characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
   /** A finished group call: its line in the chat and the call minutes it used. */
@@ -1210,6 +1215,25 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date().toISOString(),
         });
         answerGroup(set, get, groupId, '', () => [pick(groupPhotoLines)]);
+        return 'sent';
+      },
+
+      continueGroup: (groupId) => {
+        const state = get();
+        const group = state.groups.find((g) => g.id === groupId);
+        if (!group) return 'empty';
+        // The one-to-one rules: not while they type, before their answer, after a crisis, or 3 in a row.
+        if (steerBlock(state.messages[groupId], !!state.groupTyping[groupId]?.length)) return 'empty';
+        const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
+        if (!first) return 'empty';
+        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        countMessage(set, get);
+        appendGroupMessage(set, get, groupId, { id: uid('m'), ...steerMarker(groupId, 'continue') }, { quiet: true });
+        // The server writes each line from the member's group prompt and `groupContinueCue`.
+        scheduleGroupReplies(set, get, groupId, [
+          { characterId: first, lines: second ? [pick(groupGoOn)(memberName(get(), second))] : pick(groupReplies) },
+          ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first))] }] : []),
+        ]);
         return 'sent';
       },
 

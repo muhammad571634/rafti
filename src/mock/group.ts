@@ -25,6 +25,26 @@ export const groupReactions: ((name: string) => string)[] = [
   (name) => `Okay, ${name} wins this one.`,
 ];
 
+/** Continue: a member answers the one who spoke last, by name, with the user only reading. */
+export const groupGoOn: ((name: string) => string)[] = [
+  (name) => `Okay ${name}, but hear me out.`,
+  (name) => `${name}, you cannot just say that and move on.`,
+  (name) => `Wait, ${name}, go back. I need details.`,
+  (name) => `${name} is going to regret saying that.`,
+  (name) => `See, this is why I like talking to you, ${name}.`,
+  (name) => `Fine, ${name}. You pick next time.`,
+];
+
+/** Continue: the one who spoke last answers back. */
+export const groupComebacks: ((name: string) => string)[] = [
+  (name) => `Says you, ${name}.`,
+  (name) => `${name}, I stand by every word.`,
+  (name) => `You only say that because I am right, ${name}.`,
+  (name) => `Okay, okay. ${name} gets this one.`,
+  (name) => `Details later, ${name}. Promise.`,
+  (name) => `You are lucky I like you, ${name}.`,
+];
+
 /** The first line in a new group, from its first member, naming the others. */
 export const groupHellos: ((others: string) => string)[] = [
   (others) => `Wait, ${others} too? Okay, this is going to be fun.`,

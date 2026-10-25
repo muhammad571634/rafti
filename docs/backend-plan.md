@@ -605,8 +605,13 @@ Character.AI tahlilidagi 5-band. Kod: `src/lib/chat-steer.ts` (testlangan), mock
   ta'sir qilmaydi (foydalanuvchi yozmadi). `usage_events.mode = 'chat'`, `steer = 'continue' | 'skip'` ustuni bilan.
 - **API:** `POST /chats/:id/turns` {kind: "continue"} yoki {kind: "skip", span}; javob odatdagi SSE oqimida keladi.
   Server ham `steerBlock` qoidalarini tekshiradi.
-- **Keyinroq:** guruh chatida Continue (a'zolar o'zaro gaplashib davom etadi, Stream mantig'i bilan), o'zingiz yozgan
-  time skip ("Konsertdan keyin"), sahna paneli ichida "oldinga o'tish" tugmasi.
+- **Guruh chatida Continue (2026-10-25, flows.md D79):** a'zolarning eng yangi qatori ostidagi ». Eng kam gapirgan a'zo
+  oxirgi gapirganga javob beradi, u esa qaytib javob beradi: ikki qator, Stream'dagidek (`continueSpeakers`,
+  `src/lib/group-chat.ts`). Cheklovlar yakkama-yakka chatdagidek (`steerBlock`: yozayotganda, foydalanuvchiga javob hali
+  kelmaganda, inqirozdan keyin, ketma-ket 3 tadan keyin yo'q), narxi xabardek 1 chig'anoq. Server: har qator bitta chaqiruv,
+  a'zoning guruh prompti (`groupParts`) → tarix → `turn` qismida `groupContinueCue(oldingi a'zo)` (`src/lib/chat-steer.ts`).
+  API: `POST /groups/:id/turns` {kind: "continue"}.
+- **Keyinroq:** o'zingiz yozgan time skip ("Konsertdan keyin"), sahna paneli ichida "oldinga o'tish" tugmasi, guruhda time skip.
 
 ### 12.22 Javob uslubi, uzunligi va kayfiyat (2026-10-25)
 

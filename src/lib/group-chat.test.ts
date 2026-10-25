@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import {
   canAddMember,
   canRemoveMember,
+  continueSpeakers,
   groupPreview,
   groupTitle,
   leastRecent,
@@ -104,5 +105,16 @@ describe('groupPreview', () => {
   it('puts the sender first', () => {
     assert.equal(groupPreview('Kai', 'On my way'), 'Kai: On my way');
     assert.equal(groupPreview(undefined, 'Photo'), 'Photo');
+  });
+});
+
+describe('continueSpeakers', () => {
+  it('has the quietest member answer the last one, who answers back', () => {
+    assert.deepEqual(continueSpeakers(['kai', 'theo', 'hana'], ['kai', 'theo', 'kai']), ['hana', 'kai']);
+    assert.deepEqual(continueSpeakers(['kai', 'theo'], ['kai', 'theo']), ['kai', 'theo']);
+  });
+
+  it('lets one member speak when the last one has left the group', () => {
+    assert.deepEqual(continueSpeakers(['kai', 'theo'], ['kai', 'hana']), ['theo']);
   });
 });

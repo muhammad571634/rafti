@@ -16,6 +16,7 @@ import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
+import { ReplyControls } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
@@ -24,6 +25,7 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { takeFocus } from '@/lib/chat-focus';
+import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
@@ -64,6 +66,7 @@ export default function GroupChatScreen() {
   const sendGroupText = useAppStore((s) => s.sendGroupText);
   const sendGroupVoice = useAppStore((s) => s.sendGroupVoice);
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
+  const continueGroup = useAppStore((s) => s.continueGroup);
   const playGroupTruthOrDare = useAppStore((s) => s.playGroupTruthOrDare);
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
   const reactToMessage = useAppStore((s) => s.reactToMessage);
@@ -133,6 +136,8 @@ export default function GroupChatScreen() {
   const title = group?.name || names;
   const data = useMemo(() => messages ?? [], [messages]);
   const lastMine = useMemo(() => lastMineId(data), [data]);
+  // » under the members' newest lines: they go on without the user (the one-to-one chat's rules).
+  const block = useMemo(() => steerBlock(data, typingIds.length > 0), [data, typingIds.length]);
   // Everyone typing now, each once, in the order they started (members who left are skipped).
   const typers = useMemo(
     () => [...new Set(typingIds)].flatMap((id) => (group?.memberIds.includes(id) ? (byId.get(id) ?? []) : [])),
@@ -203,6 +208,10 @@ export default function GroupChatScreen() {
     return result === 'sent';
   };
 
+  const goOn = () => {
+    if (continueGroup(groupId) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
     const uri = result.canceled ? undefined : result.assets[0]?.uri;
@@ -269,7 +278,12 @@ export default function GroupChatScreen() {
               contentContainerStyle={[styles.list, { paddingTop: headerRoom }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
-              ListFooterComponent={typers.length ? <TypingRow characters={typers} label={typingLabel} /> : undefined}
+              ListFooterComponent={
+                <>
+                  {block ? null : <ReplyControls count={1} index={0} onStep={() => {}} onContinue={goOn} />}
+                  {typers.length ? <TypingRow characters={typers} label={typingLabel} /> : null}
+                </>
+              }
               onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {

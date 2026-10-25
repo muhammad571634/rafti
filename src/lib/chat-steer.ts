@@ -87,5 +87,18 @@ export function steerCue(kind: 'continue' | 'skip', skip?: TimeSkip): string[] {
   ];
 }
 
+/**
+ * A member's cue when a group goes on without the user (`continueSpeakers`), after the history
+ * in their group prompt: answer the one who spoke before them and move the talk on.
+ */
+export function groupContinueCue(to: string): string[] {
+  return [
+    'NEXT: The user tapped Continue: the group goes on without them writing.',
+    `- Answer what ${to} just said: agree, tease, push back or ask, and bring something new.`,
+    '- The user is still here, reading, and may jump in at any time.',
+    '- One or two short messages, in your voice. Never write lines for the others or for the user.',
+  ];
+}
+
 /** A marker as the chat history shows it to the model: a skip says how far; a continue says nothing. */
 export const historyText = (m: Message) => (m.card === 'skip' ? `[Time skip: ${SKIP_TEXT[m.skip ?? 'later']}]` : null);
