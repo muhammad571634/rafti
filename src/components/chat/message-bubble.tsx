@@ -14,7 +14,7 @@ import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components
 import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, space } from '@/theme';
+import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message } from '@/types';
 
 export interface MessageBubbleProps {
@@ -34,6 +34,8 @@ export interface MessageBubbleProps {
   senderName?: string;
   /** Group chats: the "not real people" line names everyone. */
   aiNoticeText?: string;
+  /** The line is pinned to Memories: a small pin sits on its top corner. */
+  pinned?: boolean;
 }
 
 const AVATAR = 28;
@@ -56,8 +58,10 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   senderName,
   aiNoticeText,
+  pinned,
 }: MessageBubbleProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const mine = message.author === 'me';
   const photoId = message.photoId;
   const named = !mine && showAvatar && !!senderName;
@@ -87,6 +91,14 @@ export const MessageBubble = memo(function MessageBubble({
         ) : (
           <TextBubble message={message} mine={mine} tail={runEnd} />
         )}
+        {pinned ? (
+          <View
+            style={[styles.pinBadge, mine ? styles.pinMine : styles.pinTheirs]}
+            accessible
+            accessibilityLabel={t('chat.pinnedToast')}>
+            <Ionicons name="pin" size={12} color={colors.textSecondary} />
+          </View>
+        ) : null}
         {message.reaction && message.reaction in REACTION_STICKERS ? (
           <ReactionSticker
             name={message.reaction as ReactionName}
@@ -348,6 +360,20 @@ const styles = StyleSheet.create({
   reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
   reactionMine: { left: -space.xs },
   reactionTheirs: { right: -space.xs },
+  // A pinned line's mark, on the corner away from the tail (canvas `MenuPin.dc.html`).
+  pinBadge: {
+    position: 'absolute',
+    top: -6,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    ...shadows.card,
+  },
+  pinMine: { left: -6 },
+  pinTheirs: { right: -6 },
   // Bubbles of one run sit 2pt apart; a new run starts 10pt lower.
   row: {
     flexDirection: 'row',

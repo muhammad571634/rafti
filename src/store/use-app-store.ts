@@ -149,6 +149,7 @@ import type {
   DiaryEntry,
   LedgerEntry,
   LedgerReason,
+  MemoryAbout,
   MemoryItem,
   MemorySource,
   Message,
@@ -485,8 +486,12 @@ interface AppState {
   sendPhoto: (photoId: string) => boolean;
 
   /* memories, moments, schedules */
-  addMemory: (characterId: string, text: string, source?: MemorySource) => void;
+  addMemory: (characterId: string, text: string, source?: MemorySource, about?: MemoryAbout) => void;
   toggleMemoryPin: (id: string) => void;
+  /** Keeps a chat line word for word as a pinned Story memory; false when it may not be kept. */
+  pinMessage: (conversationId: string, messageId: string) => boolean;
+  /** Takes a pinned chat line back out of Story. */
+  unpinMessage: (messageId: string) => void;
   deleteMemory: (id: string) => void;
   /** Rewrites a memory's text; source, date and pin stay. False when the text is empty or reads like a crisis. */
   editMemory: (id: string, text: string) => boolean;
@@ -2037,7 +2042,7 @@ export const useAppStore = create<AppState>()(
       /* ── memories, schedules ──────────────────────────────────────────── */
 
       // Every memory goes through the guard: crisis text is never kept (src/ai/memory-guard.ts).
-      addMemory: (characterId, text, source = 'manual') =>
+      addMemory: (characterId, text, source = 'manual', about) =>
         set((s) => ({
           memories: withMemory(s.memories, {
             id: uid('mem'),
@@ -2045,8 +2050,34 @@ export const useAppStore = create<AppState>()(
             text,
             source,
             createdAt: new Date().toISOString(),
+            about,
           }),
         })),
+
+      pinMessage: (conversationId, messageId) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const message = get().messages[conversationId]?.find((m) => m.id === messageId);
+        if (!conversation || message?.kind !== 'text' || !message.text) return false;
+        if (get().memories.some((m) => m.quote?.messageId === messageId)) return true;
+        const before = get().memories;
+        // A pinned line stays open on every plan, as pinned memories do; the guard keeps crisis text out.
+        set((s) => ({
+          memories: withMemory(s.memories, {
+            id: uid('mem'),
+            characterId: conversation.characterId,
+            text: message.text ?? '',
+            source: 'chat',
+            createdAt: new Date().toISOString(),
+            about: 'story',
+            pinned: true,
+            quote: { messageId, author: message.author === 'me' ? 'me' : 'them' },
+          }),
+        }));
+        return get().memories !== before;
+      },
+
+      unpinMessage: (messageId) =>
+        set((s) => ({ memories: s.memories.filter((m) => m.quote?.messageId !== messageId) })),
 
       toggleMemoryPin: (id) =>
         set((s) => ({
@@ -2358,7 +2389,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 9,
+      version: 10,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -2402,6 +2433,19 @@ export const useAppStore = create<AppState>()(
               r.backgroundId === 'bg_blossom' ? { ...r, backgroundId: 'bg_plain' } : r,
             ]),
           );
+        }
+        // v10: Memories split into Story, Them and You. Sample memories saved before take their
+        // kind and tab from the seed, and the samples about them are added.
+        if (version < 10 && state.memories) {
+          const seeds = new Map(seedMemories.map((m) => [m.id, m]));
+          const saved = new Set(state.memories.map((m) => m.id));
+          state.memories = [
+            ...state.memories.map((m) => {
+              const seed = seeds.get(m.id);
+              return seed ? { ...m, type: m.type ?? seed.type, about: m.about ?? seed.about } : m;
+            }),
+            ...seedMemories.filter((m) => m.about === 'them' && !saved.has(m.id)),
+          ];
         }
         return state as AppState;
       },

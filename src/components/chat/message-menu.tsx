@@ -27,6 +27,10 @@ export interface MessageMenuProps {
   onEdit?: (message: Message) => void;
   /** Given only for their lines before your newest message (`canRewindTo`). */
   onRewind?: (message: Message) => void;
+  /** Pins a text line to Memories, or with `pinned` takes it back (one-to-one chats only). */
+  onPin?: (message: Message) => void;
+  /** The held line is already pinned: the item reads Unpin. */
+  pinned?: boolean;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
 }
@@ -38,12 +42,31 @@ export interface MessageMenuProps {
  * red at the end (HIG Context menus). Items that do not apply are left out, not dimmed. It appears at
  * once; a tap outside closes it.
  */
-export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDelete, onEdit, onRewind, blurTarget }: MessageMenuProps) {
+export function MessageMenu({
+  message,
+  onClose,
+  onReact,
+  onCopy,
+  onReport,
+  onDelete,
+  onEdit,
+  onRewind,
+  onPin,
+  pinned,
+  blurTarget,
+}: MessageMenuProps) {
   const { t } = useTranslation();
   useBackToClose(!!message, onClose);
   if (!message) return null;
   const mine = message.author === 'me';
   const align = mine ? styles.alignMine : styles.alignTheirs;
+  const copy = message.text ? { key: 'copy', label: t('chat.copy'), icon: 'copy-outline' as const, onPress: () => onCopy(message) } : null;
+  const edit = mine && onEdit ? { key: 'edit', label: t('chat.edit'), icon: 'create-outline' as const, onPress: () => onEdit(message) } : null;
+  const pin = onPin
+    ? { key: 'pin', label: pinned ? t('chat.unpin') : t('chat.pin'), icon: pinned ? ('pin' as const) : ('pin-outline' as const), onPress: () => onPin(message) }
+    : null;
+  const report = mine ? null : { key: 'report', label: t('safety.report'), icon: 'flag-outline' as const, onPress: () => onReport(message) };
+  const firstGroup = (mine ? [copy, edit, pin] : [copy, pin, report]).filter((row) => row !== null);
 
   return (
     // An overlay inside the chat, not a Modal: a separate window would sit outside the blur target.
@@ -82,11 +105,10 @@ export function MessageMenu({ message, onClose, onReact, onCopy, onReport, onDel
 
         {/* No copy of the message under the reactions (owner, 2026-10-16): reactions, then actions. */}
         <View style={[styles.menu, !mine && styles.inset]} accessibilityRole="menu">
-          {message.text ? (
-            <MenuRow label={t('chat.copy')} icon="copy-outline" onPress={() => onCopy(message)} line={!mine || !!onEdit} />
-          ) : null}
-          {mine && onEdit ? <MenuRow label={t('chat.edit')} icon="create-outline" onPress={() => onEdit(message)} /> : null}
-          {!mine ? <MenuRow label={t('safety.report')} icon="flag-outline" onPress={() => onReport(message)} /> : null}
+          {/* First group: yours Copy, Edit, Pin; theirs Copy, Pin, Report (canvas `MenuPin.dc.html`). */}
+          {firstGroup.map((row, i) => (
+            <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
+          ))}
           <View style={styles.gap} />
           {onRewind ? (
             <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" danger line onPress={() => onRewind(message)} />

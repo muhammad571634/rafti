@@ -92,6 +92,17 @@ describe('addMemory guard (withMemory is the reducer addMemory uses)', () => {
     assert.equal(withMemory(existing, input('   ')), existing);
     assert.equal(rememberableText(''), null);
   });
+
+  it('keeps a pinned chat line with its tab and quote', () => {
+    const quote = { messageId: 'm_9', author: 'them' as const };
+    const next = withMemory(existing, { ...input('I kept checking my phone.'), about: 'story', pinned: true, quote });
+    assert.deepEqual(next[0], { ...input('I kept checking my phone.'), pinned: true, about: 'story', quote });
+  });
+
+  it('never keeps a crisis line, even when pinned from the chat', () => {
+    const quote = { messageId: 'm_9', author: 'me' as const };
+    assert.equal(withMemory(existing, { ...input(CRISIS[0]), about: 'story', pinned: true, quote }), existing);
+  });
 });
 
 describe('saved memories on load', () => {

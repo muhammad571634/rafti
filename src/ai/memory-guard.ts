@@ -1,4 +1,4 @@
-import type { MemoryItem, MemorySource } from '@/types';
+import type { MemoryAbout, MemoryItem, MemoryQuote, MemorySource } from '@/types';
 
 import { detectCrisis } from './safety';
 
@@ -31,11 +31,33 @@ export function diaryMemoryLine(body: string): string | null {
 /** Adds a memory in front of the list; a crisis or empty text leaves the list as it was. */
 export function withMemory(
   memories: MemoryItem[],
-  input: { id: string; characterId: string; text: string; source: MemorySource; createdAt: string },
+  input: {
+    id: string;
+    characterId: string;
+    text: string;
+    source: MemorySource;
+    createdAt: string;
+    about?: MemoryAbout;
+    pinned?: boolean;
+    quote?: MemoryQuote;
+  },
 ): MemoryItem[] {
   const text = rememberableText(input.text);
   if (text === null) return memories;
-  return [{ id: input.id, characterId: input.characterId, text, source: input.source, createdAt: input.createdAt, pinned: false }, ...memories];
+  const { about, pinned = false, quote } = input;
+  return [
+    {
+      id: input.id,
+      characterId: input.characterId,
+      text,
+      source: input.source,
+      createdAt: input.createdAt,
+      pinned,
+      ...(about ? { about } : {}),
+      ...(quote ? { quote } : {}),
+    },
+    ...memories,
+  ];
 }
 
 /** Drops crisis memories saved before this guard existed (runs on every load). */

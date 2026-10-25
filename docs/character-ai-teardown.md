@@ -133,7 +133,7 @@ Ordered by value to the owner's companion app, with what exists today:
 1. **Regenerate, swipe and edit replies** (chat; done 2026-10-24, flows.md D68): keep candidates per AI message; ↻ under the last
    reply, swipe between versions, edit your own last message and resend, rewind to a point, "new
    chat from here". Works with the mock provider now; backend: `turns` + `candidates` tables.
-2. **Memory in three scopes** (`character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /
+2. **Memory in three scopes** (done 2026-10-25, flows.md D69; `character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /
    them / you tabs, Pin in the message long-press menu (`message-menu.tsx`), fact categories, and a
    memory-left bar as a Pro perk. Our plan already has extraction, importance and lifecycle.
 3. **Quick create** (`create-character.tsx`): describe the character in a sentence → the server

@@ -91,11 +91,14 @@ export const callHistory: CallRecord[] = [
 ];
 
 export const memories: MemoryItem[] = [
-  { id: 'mem_1', characterId: 'c_theo', text: 'Their exam week ends on Friday - they get nervous about the oral part.', source: 'diary', createdAt: daysAgo(1), pinned: true },
-  { id: 'mem_2', characterId: 'c_theo', text: 'Hates being called by their full name.', source: 'chat', createdAt: daysAgo(3), pinned: false },
-  { id: 'mem_3', characterId: 'c_theo', text: 'Drinks peach tea, never coffee after 6pm.', source: 'chat', createdAt: daysAgo(5), pinned: false },
-  { id: 'mem_4', characterId: 'c_theo', text: 'Walked home in the rain and liked it.', source: 'diary', createdAt: hoursAgo(3), pinned: false },
-  { id: 'mem_5', characterId: 'c_theo', text: 'Said my voice is easier to fall asleep to than the radio.', source: 'call', createdAt: daysAgo(4), pinned: true },
+  { id: 'mem_1', characterId: 'c_theo', text: 'Their exam week ends on Friday - they get nervous about the oral part.', source: 'diary', createdAt: daysAgo(1), pinned: true, type: 'schedule' },
+  { id: 'mem_2', characterId: 'c_theo', text: 'Hates being called by their full name.', source: 'chat', createdAt: daysAgo(3), pinned: false, type: 'dislike' },
+  { id: 'mem_3', characterId: 'c_theo', text: 'Drinks peach tea, never coffee after 6pm.', source: 'chat', createdAt: daysAgo(5), pinned: false, type: 'preference' },
+  { id: 'mem_4', characterId: 'c_theo', text: 'Walked home in the rain and liked it.', source: 'diary', createdAt: hoursAgo(3), pinned: false, type: 'event' },
+  // Story and them (the Memories tabs): a moment you share, and what Theo said about himself.
+  { id: 'mem_5', characterId: 'c_theo', text: 'Said my voice is easier to fall asleep to than the radio.', source: 'call', createdAt: daysAgo(4), pinned: true, about: 'story' },
+  { id: 'mem_6', characterId: 'c_theo', text: 'His favourite place is the old library roof.', source: 'chat', createdAt: daysAgo(6), pinned: false, about: 'them' },
+  { id: 'mem_7', characterId: 'c_theo', text: 'He plays the piano when he cannot sleep.', source: 'chat', createdAt: daysAgo(8), pinned: false, about: 'them' },
 ];
 
 /** Seed for the [Us] timeline. */

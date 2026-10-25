@@ -32,7 +32,7 @@ import { haptic } from '@/lib/haptics';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space } from '@/theme';
+import { colors, isDark, shadows, space } from '@/theme';
 import type { Message } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -93,6 +93,16 @@ export default function ChatRoomScreen() {
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
+  const memories = useAppStore((s) => s.memories);
+  const pinMessage = useAppStore((s) => s.pinMessage);
+  const unpinMessage = useAppStore((s) => s.unpinMessage);
+  /** The short notice after a pin ("Pinned to Story"); it shows at once and goes by itself. */
+  const [hud, setHud] = useState<string | null>(null);
+  useEffect(() => {
+    if (!hud) return;
+    const timer = setTimeout(() => setHud(null), 1800);
+    return () => clearTimeout(timer);
+  }, [hud]);
   /** Your newest message while it is being changed in the field (canvas `ChatEdit.dc.html`). */
   const [editing, setEditing] = useState<Message | null>(null);
   const cancelEdit = useCallback(() => setEditing(null), []);
@@ -148,6 +158,11 @@ export default function ChatRoomScreen() {
   // Their newest reply: ↻ under it, then ‹ › and a swipe once there are versions (canvas
   // `ChatRegen.dc.html`). A crisis reply, with the helpline card, is never redone.
   const exchange = useMemo(() => lastExchange(data), [data]);
+  // Lines kept word for word in Memories (Story) carry a pin in the chat.
+  const pinnedIds = useMemo(
+    () => new Set(memories.flatMap((m) => (m.quote && m.characterId === conversation?.characterId ? [m.quote.messageId] : []))),
+    [memories, conversation?.characterId],
+  );
   const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
@@ -187,6 +202,7 @@ export default function ChatRoomScreen() {
           receipt={item.id === lastMine}
           onCallBack={callBack}
           onLongPress={openMenu}
+          pinned={pinnedIds.has(item.id)}
         />
       );
       return (
@@ -210,7 +226,7 @@ export default function ChatRoomScreen() {
         </>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, swipeable, burstIds, swipeOffset, stepVersion],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
   );
 
   // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
@@ -366,6 +382,14 @@ export default function ChatRoomScreen() {
                 accessibilityLabel={t('chat.cancelEdit')}
               />
             ) : null}
+            {hud ? (
+              <View pointerEvents="none" style={styles.hudWrap} accessibilityLiveRegion="polite">
+                <View style={styles.hud}>
+                  <Ionicons name="pin" size={15} color={colors.textOnInk} />
+                  <Txt style={styles.hudText}>{hud}</Txt>
+                </View>
+              </View>
+            ) : null}
           </View>
 
           <ChatInput
@@ -480,6 +504,18 @@ export default function ChatRoomScreen() {
               }
             : undefined
         }
+        onPin={
+          menu?.kind === 'text' && menu.text
+            ? (message) => {
+                setMenu(null);
+                if (pinnedIds.has(message.id)) return unpinMessage(message.id);
+                if (!pinMessage(conversation.id, message.id)) return;
+                haptic.success();
+                setHud(t('chat.pinnedToast'));
+              }
+            : undefined
+        }
+        pinned={!!menu && pinnedIds.has(menu.id)}
         onRewind={
           menu && canRewindTo(data, menu.id)
             ? (message) => {
@@ -515,4 +551,18 @@ const styles = StyleSheet.create({
   missing: { padding: space.xl },
   list: { paddingBottom: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
+  // iOS-style notice over the bottom of the chat, in ink with light text.
+  hudWrap: { position: 'absolute', left: 0, right: 0, bottom: space.md, alignItems: 'center' },
+  hud: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    height: 40,
+    paddingLeft: space.md,
+    paddingRight: space.lg,
+    borderRadius: 20,
+    backgroundColor: colors.text,
+    ...shadows.raised,
+  },
+  hudText: { fontSize: 15, fontWeight: '600', color: colors.textOnInk },
 });

@@ -234,6 +234,13 @@ export interface CallRecord {
 }
 
 export type MemorySource = 'chat' | 'diary' | 'call' | 'manual';
+/** Whose memory it is, the Memories tabs (canvas `MemTabs.dc.html`): your story together, them, you. */
+export type MemoryAbout = 'story' | 'them' | 'you';
+/** A chat line kept word for word (long press, Pin to Memories). */
+export interface MemoryQuote {
+  messageId: string;
+  author: 'me' | 'them';
+}
 
 export interface MemoryItem {
   id: string;
@@ -250,6 +257,10 @@ export interface MemoryItem {
   status?: 'active' | 'superseded' | 'archived';
   /** A superseded fact points at the fact that replaced it. */
   supersededBy?: string;
+  /** Missing = about you (every memory before the tabs was). */
+  about?: MemoryAbout;
+  /** Set when the memory is a pinned chat line; the chat marks that line. */
+  quote?: MemoryQuote;
 }
 
 export type MemoryType =
