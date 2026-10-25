@@ -1,3 +1,4 @@
+import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
@@ -18,10 +19,12 @@ export interface PersonaInput {
   replyLanguage?: string;
   /** The chat's persona, when it is not the profile. */
   persona?: PersonaView;
+  /** Their world books (`lorePrompt`), so a game or a scene happens in their world. */
+  lore?: LorePrompt;
 }
 
-const persona = ({ character, user, relationship, replyLanguage, persona: who }: PersonaInput) =>
-  buildCharacterPrompt(character, user, relationship, replyLanguage, who);
+const persona = ({ character, user, relationship, replyLanguage, persona: who, lore }: PersonaInput) =>
+  buildCharacterPrompt(character, user, relationship, replyLanguage, who, undefined, lore);
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
 
@@ -99,7 +102,7 @@ export function buildDateRoundsPrompt(
  */
 export function buildSceneOpeningPrompt(input: PersonaInput, scene: ActiveScene) {
   return [
-    buildCharacterPrompt(input.character, input.user, input.relationship, input.replyLanguage, input.persona, scene),
+    buildCharacterPrompt(input.character, input.user, input.relationship, input.replyLanguage, input.persona, scene, input.lore),
     '',
     'TASK: Open this scene with one short message to the user, in your voice, as if it has just begun.',
     '- Put them right in it: where you are, what you notice, and something they can answer.',

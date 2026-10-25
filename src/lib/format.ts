@@ -55,14 +55,8 @@ export function daysBetween(iso: string, to = new Date()) {
   return Math.max(0, Math.floor(ms / 86_400_000));
 }
 
-const TITLES = new Set(['prince', 'princess', 'lord', 'lady', 'sir', 'dr', 'dr.', 'commander', 'captain', 'king', 'queen']);
-
-/** What a friend is called in a sentence: "Prince Aurelian" -> "Aurelian", "Kai Arden" -> "Kai". */
-export function shortName(name: string) {
-  const words = name.trim().split(/\s+/);
-  while (words.length > 1 && TITLES.has(words[0].toLowerCase())) words.shift();
-  return words[0] ?? name;
-}
+// Lives apart from i18n so server-portable code (world books, tests) can use it too.
+export { shortName } from './names';
 
 /** A name cut for a tight spot like the Today profile capsule: "Sevinchoy" -> "Sevinc…" (by letters, so emoji stay whole). */
 export function clipName(name: string, max = 6) {

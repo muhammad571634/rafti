@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
@@ -24,10 +25,13 @@ import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { booksFor } from '@/lib/lorebook';
 import { personaFor, personaList } from '@/lib/personas';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
+import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
+import type { Lorebook } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -81,6 +85,7 @@ export default function CharacterSettingsScreen() {
   const defaultPersonaId = useAppStore((s) => s.defaultPersonaId);
   const chatPersonas = useAppStore((s) => s.chatPersonas);
   const setChatPersona = useAppStore((s) => s.setChatPersona);
+  const lorebooks = useAppStore((s) => s.lorebooks);
   const [personaOpen, setPersonaOpen] = useState(false);
 
   const [renaming, setRenaming] = useState(false);
@@ -261,6 +266,12 @@ export default function CharacterSettingsScreen() {
               onPress={() => setPersonaOpen(true)}
             />
           ) : null}
+          {/* What their world and the user's books tell them (Character.AI's Lorebook). */}
+          <LinkRow
+            label={t('lore.chatRow')}
+            meta={loreMeta(booksFor(character, lorebooks, officialLorebooks), t)}
+            onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
+          />
           <LinkRow label={t('characterSettings.profile')} onPress={() => run('characterSettings')} />
           <LinkRow
             label={t('characterSettings.nicknameRow')}
@@ -414,6 +425,12 @@ function SwitchRow({
       />
     </View>
   );
+}
+
+/** The world books row's value: the one book's name, how many there are, or none. */
+function loreMeta(books: Lorebook[], t: TFunction) {
+  if (books.length === 1) return books[0].name;
+  return books.length ? t('lore.bookCount', { count: books.length }) : t('characterSettings.none');
 }
 
 function LinkRow({ label, meta, last, onPress }: { label: string; meta?: string; last?: boolean; onPress: () => void }) {

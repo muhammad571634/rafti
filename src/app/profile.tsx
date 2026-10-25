@@ -47,6 +47,7 @@ const FILL = {
   terms: systemColors.brown,
   plan: systemColors.purple,
   personas: systemColors.orange,
+  lore: systemColors.indigo,
 };
 const SWITCH_ON = systemColors.green;
 const CARD_SHADOW = {
@@ -72,6 +73,7 @@ export default function ProfileScreen() {
   const settings = useAppStore((s) => s.settings);
   // Who new chats use (Character.AI's personas): the profile unless the user picked one.
   const personaName = useAppStore((s) => defaultPersona(s).name);
+  const ownBooks = useAppStore((s) => s.lorebooks.length);
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
   const endPlan = useAppStore((s) => s.endPlan);
@@ -127,6 +129,14 @@ export default function ProfileScreen() {
       fill: FILL.personas,
       meta: personaName,
       onPress: () => router.push('/personas'),
+    },
+    {
+      key: 'lore',
+      title: t('lore.title'),
+      icon: 'book' as IoniconName,
+      fill: FILL.lore,
+      ...(ownBooks ? { meta: String(ownBooks) } : {}),
+      onPress: () => router.push('/lore'),
     },
     ...(canPickLanguage
       ? [{ key: 'language', title: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => setLanguageOpen(true) }]

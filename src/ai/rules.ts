@@ -1,6 +1,8 @@
+import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
+import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
 import { definitionForPrompt } from './character-draft';
@@ -90,8 +92,13 @@ export function buildCharacterPrompt(
   replyLanguage?: string,
   /** The persona this chat uses (`personaFor`); none or the profile means the profile below. */
   persona?: PersonaView,
-  /** The scene the chat is playing (`Conversation.scene`), last, as it changes most. */
+  /** The scene the chat is playing (`Conversation.scene`), near the end, as it changes often. */
   scene?: ActiveScene,
+  /**
+   * The chat's world books (`lorePrompt` in src/lib/lorebook.ts): each book's lines after the
+   * persona, which stay put, and the entries this reply brought up last, as they change most.
+   */
+  lore?: LorePrompt,
 ) {
   const lines = [
     CHARACTER_RULES,
@@ -121,6 +128,7 @@ export function buildCharacterPrompt(
       examples,
     );
   }
+  if (lore?.worlds.length) lines.push('', ...worldLines(lore));
   if (persona && !persona.profile) {
     // A persona they made (Character.AI's personas): who they are in this chat, instead of the profile.
     lines.push('', 'THE USER:', `Name: ${persona.name}`);
@@ -142,6 +150,7 @@ export function buildCharacterPrompt(
     );
   }
   if (scene) lines.push('', ...sceneLines(scene));
+  if (lore?.entries.length) lines.push('', ...loreLines(lore));
   return lines.join('\n');
 }
 
@@ -157,9 +166,11 @@ export function buildGroupPrompt(
   relationship?: Relationship,
   replyLanguage?: string,
   persona?: PersonaView,
+  /** This member's world books, read against the group's last lines. */
+  lore?: LorePrompt,
 ) {
   const lines = [
-    buildCharacterPrompt(character, user, relationship, replyLanguage, persona),
+    buildCharacterPrompt(character, user, relationship, replyLanguage, persona, undefined, lore),
     '',
     'GROUP CHAT:',
     `This is a group chat with ${persona?.name ?? user.displayName} and:`,

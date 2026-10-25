@@ -62,6 +62,16 @@ import {
 } from '@/lib/scenes';
 import { officialScenes } from '@/mock/scenes';
 import {
+  checkLoreEntry,
+  checkLorebook,
+  LORE_ABOUT_MAX,
+  LORE_NAME_MAX,
+  LORE_TEXT_MAX,
+  type LoreEntryProblem,
+  type LorebookProblem,
+  parseKeywords,
+} from '@/lib/lorebook';
+import {
   consumePortrait,
   PORTRAIT_SHELLS,
   quickCreatesLeft,
@@ -179,6 +189,9 @@ import type {
   LedgerEntry,
   LedgerReason,
   MemoryAbout,
+  LoreEntry,
+  LoreKind,
+  Lorebook,
   Persona,
   Pronouns,
   Scene,
@@ -416,6 +429,20 @@ interface AppState {
   startScene: (conversationId: string, sceneId: string) => void;
   /** Ends the chat's scene; the character goes back to everyday chat. */
   endScene: (conversationId: string) => void;
+  /** The user's own world books (`src/lib/lorebook.ts`); the worlds' are `officialLorebooks`. */
+  lorebooks: Lorebook[];
+  /** Saves a new book (or the one with `id`); returns its id, or the first problem. */
+  saveLorebook: (input: { name: string; about: string; characterIds: string[] }, id?: string) => { id: string } | { problem: LorebookProblem };
+  deleteLorebook: (id: string) => void;
+  /** Links one of the user's books to a friend, or takes it off them; their next reply sees it. */
+  setLoreLink: (bookId: string, characterId: string, linked: boolean) => void;
+  /** Saves an entry in one of the user's books (or the one with `id`); returns its id, or the first problem. */
+  saveLoreEntry: (
+    bookId: string,
+    input: { kind: LoreKind; name: string; keywords: string[]; text: string },
+    id?: string,
+  ) => { id: string } | { problem: LoreEntryProblem };
+  deleteLoreEntry: (bookId: string, entryId: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
   /** Pays for a drawn portrait: one of the plan's free ones, else shells. False when neither is there. */
@@ -623,6 +650,7 @@ type PersistedKeys =
   | 'defaultPersonaId'
   | 'chatPersonas'
   | 'scenes'
+  | 'lorebooks'
   | 'todayWidgets'
   | 'alarms'
   | 'photos'
@@ -791,6 +819,7 @@ export const useAppStore = create<AppState>()(
       personas: [],
       chatPersonas: {},
       scenes: [],
+      lorebooks: [],
       todayWidgets: DEFAULT_WIDGETS,
       alarms: [],
       photos: [],
@@ -1475,6 +1504,61 @@ export const useAppStore = create<AppState>()(
           { quiet: true },
         );
       },
+
+      saveLorebook: (input, id) => {
+        const existing = id ? get().lorebooks.find((book) => book.id === id) : undefined;
+        // Only a new book counts against the plan: after a plan lapses, what is there stays editable.
+        const count = existing ? 0 : get().lorebooks.length;
+        const problem = checkLorebook(input, count, perkLimit('lorebooks', get().wallet.subscription, Date.now()))[0];
+        if (problem) return { problem };
+        const book: Lorebook = {
+          id: existing?.id ?? uid('lore'),
+          name: input.name.trim().slice(0, LORE_NAME_MAX),
+          about: input.about.trim().slice(0, LORE_ABOUT_MAX),
+          entries: existing?.entries ?? [],
+          characterIds: [...new Set(input.characterIds)],
+          createdAt: existing?.createdAt ?? new Date().toISOString(),
+        };
+        set((s) => ({ lorebooks: existing ? s.lorebooks.map((x) => (x.id === book.id ? book : x)) : [...s.lorebooks, book] }));
+        return { id: book.id };
+      },
+
+      deleteLorebook: (id) => set((s) => ({ lorebooks: s.lorebooks.filter((book) => book.id !== id) })),
+
+      setLoreLink: (bookId, characterId, linked) =>
+        set((s) => ({
+          lorebooks: s.lorebooks.map((book) => {
+            if (book.id !== bookId) return book;
+            const rest = book.characterIds.filter((c) => c !== characterId);
+            return { ...book, characterIds: linked ? [...rest, characterId] : rest };
+          }),
+        })),
+
+      saveLoreEntry: (bookId, input, id) => {
+        const book = get().lorebooks.find((b) => b.id === bookId);
+        // Only the book's own page opens the editor, so it is there; a stale id saves nothing.
+        if (!book) return { problem: 'name' };
+        // The editor's one field may hold any spelling; what is kept is clean, as matching reads it.
+        const keywords = parseKeywords(input.keywords.join(','));
+        const clean = { name: input.name.trim().slice(0, LORE_NAME_MAX), keywords, text: input.text.trim().slice(0, LORE_TEXT_MAX) };
+        const existing = id ? book.entries.find((e) => e.id === id) : undefined;
+        // As with books, only a new entry counts against the plan.
+        const count = existing ? 0 : book.entries.length;
+        const problem = checkLoreEntry(clean, count, perkLimit('loreEntries', get().wallet.subscription, Date.now()))[0];
+        if (problem) return { problem };
+        const entry: LoreEntry = { id: existing?.id ?? uid('entry'), kind: input.kind, ...clean };
+        set((s) => ({
+          lorebooks: s.lorebooks.map((b) =>
+            b.id !== bookId ? b : { ...b, entries: existing ? b.entries.map((e) => (e.id === entry.id ? entry : e)) : [...b.entries, entry] },
+          ),
+        }));
+        return { id: entry.id };
+      },
+
+      deleteLoreEntry: (bookId, entryId) =>
+        set((s) => ({
+          lorebooks: s.lorebooks.map((b) => (b.id === bookId ? { ...b, entries: b.entries.filter((e) => e.id !== entryId) } : b)),
+        })),
 
       payForPortrait: (characterId) => {
         const now = Date.now();
@@ -2704,6 +2788,7 @@ export const useAppStore = create<AppState>()(
         defaultPersonaId: s.defaultPersonaId,
         chatPersonas: s.chatPersonas,
         scenes: s.scenes,
+        lorebooks: s.lorebooks,
         todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,

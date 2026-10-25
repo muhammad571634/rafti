@@ -515,12 +515,42 @@ Har bir yangi funksiya uchun xarajat (13.2 narxlari) va uning pul keltiradigan j
 | Persona | Promptga ~200 token: xabar xarajati ~+10% (≈ $0.00006) | Rolli o'yinda uzoqroq suhbat | Imtiyoz: bepul 1, tarif 5 |
 | Sahna (rasmiy) | $0: ochuvchi gap tayyor, model chaqirilmaydi | Yozishma ko'payadi | Hammaga bepul |
 | Sahna (o'zingizniki) | Birinchi gapi yo'q bo'lsa 1 qisqa chaqiruv ≈ $0.0005; sahna bloki ~120 token | Yozishma ko'payadi | Imtiyoz: bepul 3, tarif 10 |
+| World books (Lorebook) | Faqat eslanganda: ≤ 1200 belgi (~300 token) ≈ +$0.00009 xabarga; `about` qatorlari doim (~70 token, kesh prefiksida) | Rolli o'yin chuqurlashadi, yozishma ko'payadi | Dunyolar kitoblari hammaga bepul; o'zingizniki imtiyoz: bepul 1 kitob × 15 yozuv, tarif 5 × 50 (12.19) |
 
 - **Foydalanuvchiga foydasi:** hech qaysi asosiy narsa pul devori ortida emas. Bepul foydalanuvchi ham personaj yaratadi,
   persona va sahna o'ynaydi, faqat sonlar tarifda ko'proq.
 - **Keyingi g'oya (retention):** rasmiy sahnalarning bir qismi yaqinlik darajasi bilan ochiladi (date kayfiyatlari kabi, `MOOD_LEVEL`).
 - **O'lchov:** `usage_events.mode` ga `create` va `scene` qo'shiladi. B1'dan keyin raqamlar haqiqiy foydalanishga qarab
   `PERKS` va `FREE_QUICK_CREATES_PER_DAY` da qayta sozlanadi.
+
+### 12.19 World books: Character.AI'ning Lorebook'i (2026-10-25)
+
+Egasi: "Lorebook'dan boshla". Tadqiqot: `docs/character-ai-teardown.md` §6. Kod: `src/lib/lorebook.ts` (testlangan),
+dunyolar kitoblari: `src/mock/lorebooks.ts`. Ekranlar: flows.md D73.
+
+- **Tuzilma:** kitob = nom (40) + `about` (300 belgigacha, dunyo bir necha qatorda, doim promptda) + yozuvlar.
+  Yozuv = tur (`person | place | thing | event | group | rule`), nom (40), kalit so'zlar (6 × 30), matn (400).
+  Bitta kitob ko'p personajga xizmat qiladi.
+- **Dunyolar kitoblari:** har dunyoga bittadan (Seaside Academy, Moonlit Realm, NEON TIDE, Tidepool Café), hammaga bepul,
+  o'zgartirib bo'lmaydi. Ichida qo'lda yozilgan joylar, narsalar, voqealar, guruhlar, qoidalar va dunyoning butun kasti
+  `person` yozuvi sifatida (qisqa ism kalit so'z). Shu bilan personaj dunyodagi boshqalarni ismidan taniydi (12.3 `world.knows`).
+  Personajning o'z yozuvi o'z chatiga kirmaydi. Fakt bio va dunyo quiz'lari bilan mos bo'lishi shart.
+- **Foydalanuvchi kitoblari:** istalgan do'stga ulanadi (`characterIds`). Imtiyoz: bepul 1 kitob × 15 yozuv, tarif 5 × 50
+  (`PERKS.lorebooks`, `PERKS.loreEntries`). Javobga baribir ko'pi bilan 4 yozuv kiradi, shuning uchun kitob hajmi xarajatni oshirmaydi.
+- **Ishga tushish (`triggeredLore`):** chatning oxirgi 8 qatori o'qiladi (ikkala tomon, matn va ovoz transkripti). Yozuv nomi yoki
+  kalit so'zi so'z boshida kelsa ishga tushadi: 5 harfdan qisqasi butun so'z bo'lishi kerak ("Kai" "Kaito"da emas), uzunrog'i
+  qo'shimcha olishi mumkin ("kutubxona" → "kutubxonaga"). Bir javobga ko'pi bilan 4 yozuv va 1200 belgi (~300 token). Eng yangi
+  eslanganlar tanlanadi, promptga esa kitob tartibida yoziladi: bir xil to'plam bir xil prompt beradi, kesh saqlanadi.
+- **Prompt:** `YOUR WORLD` bloki persona'dan keyin (barqaror, kesh prefiksida), `WORLD NOTES` eng oxirida (har javobda o'zgaradi).
+  12.5 tartibiga qo'shimcha: qoidalar → persona → dunyo → foydalanuvchi → bog'lanish → sahna → yozuvlar → oxirgi xabarlar.
+  Guruh chati va boshqa rejimlar (`PersonaInput.lore`) ham shu blokni oladi.
+- **Jadvallar:** `lorebooks` (id, owner_id — rasmiylarda null, series, name, about, created_at), `lore_entries` (id, book_id, kind,
+  name, keywords text[], text), `lorebook_links` (book_id, character_id). Saqlashda `checkLorebook` / `checkLoreEntry`
+  (inqiroz, voyaga yetmaganlar, ochiq-sochiq), keyin server moderatsiyasi.
+- **API:** `GET /lorebooks`, `POST /lorebooks`, `PUT/DELETE /lorebooks/:id`, `POST /lorebooks/:id/entries`,
+  `PUT/DELETE /lorebooks/:id/entries/:entryId`, `PUT/DELETE /lorebooks/:id/links/:characterId`.
+- **Keyinroq:** kalit so'zdan tashqari embedding bilan topish (sinonimlar, boshqa tillar va yozuvlar), bir necha javob davomida
+  qoladigan yozuvlar, mock javoblar hozircha lore ishlatmaydi (server ishlatadi).
 
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 

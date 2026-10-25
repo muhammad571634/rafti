@@ -216,6 +216,42 @@ export interface ActiveScene {
   startedAt: string;
 }
 
+/** What a world book entry is about (Character.AI's Lorebook kinds, ours trimmed). */
+export type LoreKind = 'person' | 'place' | 'thing' | 'event' | 'group' | 'rule';
+
+/**
+ * One fact of a world (`src/lib/lorebook.ts`): it joins a reply's prompt only when its name or
+ * one of its keywords comes up in the chat.
+ */
+export interface LoreEntry {
+  id: string;
+  kind: LoreKind;
+  name: string;
+  keywords: string[];
+  text: string;
+  /** A person who is one of the cast: left out of their own chats, where they are the persona. */
+  characterId?: string;
+}
+
+/**
+ * A world book (Character.AI's Lorebook): a few lines about the world that always ride in the
+ * prompt, and entries that join when they come up. One book serves many characters.
+ */
+export interface Lorebook {
+  id: string;
+  name: string;
+  /** The world in a few lines; always in the prompt of the characters it serves. */
+  about: string;
+  entries: LoreEntry[];
+  /** The friends a book of the user's serves; an official one serves its world's cast (`series`). */
+  characterIds: string[];
+  /** Official books: the world (`Character.series`) whose whole cast it serves. */
+  series?: string;
+  /** Comes with the app (`src/mock/lorebooks.ts`); read-only. */
+  official?: boolean;
+  createdAt: string;
+}
+
 export type DiaryMood = 'happy' | 'soft' | 'blue' | 'excited' | 'tired';
 
 export interface DiaryEntry {

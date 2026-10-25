@@ -11,6 +11,8 @@ describe('perks', () => {
     assert.equal(perkLimit('personas', undefined, now), PERKS.personas.free);
     assert.equal(perkLimit('personas', startSubscription('basic', now), now), PERKS.personas.plan);
     assert.equal(perkLimit('ownScenes', startSubscription('pro', now, true), now), PERKS.ownScenes.plan);
+    assert.equal(perkLimit('lorebooks', undefined, now), PERKS.lorebooks.free);
+    assert.equal(perkLimit('loreEntries', startSubscription('basic', now), now), PERKS.loreEntries.plan);
   });
 
   it('offers a plan only where it would allow more', () => {
