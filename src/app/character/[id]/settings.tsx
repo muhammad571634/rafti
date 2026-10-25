@@ -24,6 +24,7 @@ import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { personaFor, personaList } from '@/lib/personas';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -75,6 +76,12 @@ export default function CharacterSettingsScreen() {
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
   const setSetting = useAppStore((s) => s.setSetting);
   const setRelationshipLabel = useAppStore((s) => s.setRelationshipLabel);
+  const user = useAppStore((s) => s.user);
+  const personas = useAppStore((s) => s.personas);
+  const defaultPersonaId = useAppStore((s) => s.defaultPersonaId);
+  const chatPersonas = useAppStore((s) => s.chatPersonas);
+  const setChatPersona = useAppStore((s) => s.setChatPersona);
+  const [personaOpen, setPersonaOpen] = useState(false);
 
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState('');
@@ -247,6 +254,13 @@ export default function CharacterSettingsScreen() {
         ) : null}
 
         <View style={styles.card}>
+          {conversation ? (
+            <LinkRow
+              label={t('personas.youAre')}
+              meta={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).name}
+              onPress={() => setPersonaOpen(true)}
+            />
+          ) : null}
           <LinkRow label={t('characterSettings.profile')} onPress={() => run('characterSettings')} />
           <LinkRow
             label={t('characterSettings.nicknameRow')}
@@ -295,6 +309,36 @@ export default function CharacterSettingsScreen() {
             setRenaming(false);
           }}
         />
+      </Sheet>
+
+      {/* Who the user is in this chat (Character.AI's per-chat persona); the character sees it from the next reply. */}
+      <Sheet visible={personaOpen} onClose={() => setPersonaOpen(false)} title={t('personas.chatTitle')}>
+        <ScrollView style={styles.labelScroll} showsVerticalScrollIndicator={false}>
+          {conversation
+            ? personaList({ user, personas }).map((persona) => (
+                <LabelRow
+                  key={persona.id}
+                  title={persona.name}
+                  meta={persona.profile ? t('personas.profile') : undefined}
+                  selected={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).id === persona.id}
+                  onPress={() => {
+                    haptic.selection();
+                    setChatPersona(conversation.id, persona.id);
+                    setPersonaOpen(false);
+                  }}
+                />
+              ))
+            : null}
+          <LabelRow
+            title={t('personas.manage')}
+            selected={false}
+            link
+            onPress={() => {
+              setPersonaOpen(false);
+              router.push('/personas');
+            }}
+          />
+        </ScrollView>
       </Sheet>
 
       <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} level={relationship?.level} />
@@ -439,12 +483,15 @@ function LabelRow({
   meta,
   locked,
   selected,
+  link,
   onPress,
 }: {
   title: string;
   meta?: string;
   locked?: boolean;
   selected: boolean;
+  /** A row that opens another screen: a chevron instead of the radio. */
+  link?: boolean;
   onPress: () => void;
 }) {
   return (
@@ -452,7 +499,9 @@ function LabelRow({
       title={title}
       meta={meta}
       trailing={
-        locked ? (
+        link ? (
+          <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+        ) : locked ? (
           <Ionicons name="lock-closed" size={16} color={colors.textFaint} />
         ) : (
           <Ionicons

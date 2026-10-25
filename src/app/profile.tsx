@@ -26,6 +26,7 @@ import { planStatus } from '@/economy/plans';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
+import { defaultPersona } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
 
@@ -45,6 +46,7 @@ const FILL = {
   privacy: systemColors.cyan,
   terms: systemColors.brown,
   plan: systemColors.purple,
+  personas: systemColors.orange,
 };
 const SWITCH_ON = systemColors.green;
 const CARD_SHADOW = {
@@ -68,6 +70,8 @@ export default function ProfileScreen() {
   const user = useAppStore((s) => s.user);
   const wallet = useAppStore((s) => s.wallet);
   const settings = useAppStore((s) => s.settings);
+  // Who new chats use (Character.AI's personas): the profile unless the user picked one.
+  const personaName = useAppStore((s) => defaultPersona(s).name);
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
   const endPlan = useAppStore((s) => s.endPlan);
@@ -115,6 +119,14 @@ export default function ProfileScreen() {
       fill: FILL.gifts,
       pill: t('profile.inviteOffer', { count: INVITE_REWARD }),
       onPress: () => router.push('/gifts'),
+    },
+    {
+      key: 'personas',
+      title: t('personas.title'),
+      icon: 'people' as IoniconName,
+      fill: FILL.personas,
+      meta: personaName,
+      onPress: () => router.push('/personas'),
     },
     ...(canPickLanguage
       ? [{ key: 'language', title: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => setLanguageOpen(true) }]

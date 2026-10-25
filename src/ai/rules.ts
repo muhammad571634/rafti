@@ -1,3 +1,4 @@
+import type { PersonaView } from '@/lib/personas';
 import type { Character, Relationship, User } from '@/types';
 
 import { definitionForPrompt } from './character-draft';
@@ -80,7 +81,14 @@ export const SAFETY_LAYERS = [
  * `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's first
  * message it falls back to their app language.
  */
-export function buildCharacterPrompt(character: Character, user: User, relationship?: Relationship, replyLanguage?: string) {
+export function buildCharacterPrompt(
+  character: Character,
+  user: User,
+  relationship?: Relationship,
+  replyLanguage?: string,
+  /** The persona this chat uses (`personaFor`); none or the profile means the profile below. */
+  persona?: PersonaView,
+) {
   const lines = [
     CHARACTER_RULES,
     '',
@@ -101,7 +109,7 @@ export function buildCharacterPrompt(character: Character, user: User, relations
   if (character.look) lines.push(`How you look: ${character.look}`);
   // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
   // talk, with other people, so none of it reads as something this user said.
-  const examples = definitionForPrompt(character.definition, { char: character.name, user: user.displayName });
+  const examples = definitionForPrompt(character.definition, { char: character.name, user: persona?.name ?? user.displayName });
   if (examples) {
     lines.push(
       '',
@@ -109,15 +117,19 @@ export function buildCharacterPrompt(character: Character, user: User, relations
       examples,
     );
   }
-  lines.push(
-    '',
-    'THE USER:',
-    `Name: ${user.displayName}`,
-  );
-  if (user.pronouns) lines.push(`Pronouns: ${user.pronouns}`);
-  if (user.job) lines.push(`Job: ${user.job}`);
-  if (user.interests?.length) lines.push(`Interests: ${user.interests.join(', ')}`);
-  if (user.about) lines.push(`About them, in their words: ${user.about}`);
+  if (persona && !persona.profile) {
+    // A persona they made (Character.AI's personas): who they are in this chat, instead of the profile.
+    lines.push('', 'THE USER:', `Name: ${persona.name}`);
+    if (persona.pronouns) lines.push(`Pronouns: ${persona.pronouns}`);
+    lines.push('This is the persona they chose for your chat: treat it as who they are here.');
+    if (persona.about) lines.push(`About them, in their words: ${persona.about}`);
+  } else {
+    lines.push('', 'THE USER:', `Name: ${user.displayName}`);
+    if (user.pronouns) lines.push(`Pronouns: ${user.pronouns}`);
+    if (user.job) lines.push(`Job: ${user.job}`);
+    if (user.interests?.length) lines.push(`Interests: ${user.interests.join(', ')}`);
+    if (user.about) lines.push(`About them, in their words: ${user.about}`);
+  }
   if (relationship) {
     lines.push(
       '',
@@ -139,12 +151,13 @@ export function buildGroupPrompt(
   user: User,
   relationship?: Relationship,
   replyLanguage?: string,
+  persona?: PersonaView,
 ) {
   const lines = [
-    buildCharacterPrompt(character, user, relationship, replyLanguage),
+    buildCharacterPrompt(character, user, relationship, replyLanguage, persona),
     '',
     'GROUP CHAT:',
-    `This is a group chat with ${user.displayName} and:`,
+    `This is a group chat with ${persona?.name ?? user.displayName} and:`,
     // Characters from one world know each other already (backend-plan §12.3, world.knows).
     ...others.map((o) =>
       o.series && o.series === character.series

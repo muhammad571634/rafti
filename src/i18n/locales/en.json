@@ -704,6 +704,43 @@
     "create": "Create a character",
     "level": "Lv {{level}}"
   },
+  "personas": {
+    "title": "Personas",
+    "profile": "Your profile",
+    "new": "New persona",
+    "edit": "Edit persona",
+    "noAbout": "No details yet",
+    "useByDefault": "Use {{name}} in new chats",
+    "name": "Name",
+    "namePlaceholder": "Who are you here?",
+    "pronounShort": {
+      "she": "She",
+      "he": "He",
+      "they": "They"
+    },
+    "about": "About you",
+    "aboutPlaceholder": "What they should know about you: looks, story, what you like",
+    "topics": {
+      "looks": "Looks",
+      "personality": "Personality",
+      "likes": "Likes",
+      "dislikes": "Dislikes",
+      "backstory": "Backstory",
+      "style": "Style"
+    },
+    "default": "Use in new chats",
+    "delete": "Delete persona",
+    "deleteConfirm": "Delete {{name}}? Chats with them go back to your default.",
+    "problems": {
+      "name": "Give your persona a name",
+      "full": "You can have {{max}} personas",
+      "minors": "Personas can't be minors or school-age",
+      "explicit": "Keep it within our content rules"
+    },
+    "youAre": "You are",
+    "manage": "Manage personas",
+    "chatTitle": "You are in this chat"
+  },
   "createCharacter": {
     "title": "New character",
     "editTitle": "Edit character",

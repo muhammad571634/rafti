@@ -50,6 +50,14 @@ import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
 import { quickCreatesLeft, spendQuickCreate, type QuickCreateUse } from '@/economy/quick-create';
 import {
+  checkPersona,
+  defaultPersona,
+  PERSONA_ABOUT_MAX,
+  PERSONA_NAME_MAX,
+  type PersonaProblem,
+  PROFILE_PERSONA,
+} from '@/lib/personas';
+import {
   canRing,
   consumeMinutes,
   consumePhoto,
@@ -152,6 +160,8 @@ import type {
   LedgerEntry,
   LedgerReason,
   MemoryAbout,
+  Persona,
+  Pronouns,
   MemoryItem,
   MemorySource,
   Message,
@@ -363,6 +373,19 @@ interface AppState {
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
   /** Quick create's drafts today (`src/economy/quick-create.ts`). */
   quickCreates?: QuickCreateUse;
+  /** Who the user can be in a chat besides their profile (`src/lib/personas.ts`). */
+  personas: Persona[];
+  /** The persona new chats use; none means the profile. */
+  defaultPersonaId?: string;
+  /** A chat's own persona, by conversation id (`PROFILE_PERSONA` for the profile). */
+  chatPersonas: Record<string, string>;
+  /** Saves a new persona (or the one with `id`); returns its id, or the first problem. */
+  savePersona: (input: { name: string; pronouns?: Pronouns; about: string; avatarUri?: string }, id?: string) => { id: string } | { problem: PersonaProblem };
+  deletePersona: (id: string) => void;
+  /** The persona new chats use; `PROFILE_PERSONA` makes it the profile again. */
+  setDefaultPersona: (id: string) => void;
+  /** This chat's persona; undefined goes back to the default. */
+  setChatPersona: (conversationId: string, id?: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
   /**
@@ -564,6 +587,9 @@ type PersistedKeys =
   | 'recentSearches'
   | 'recentlyViewed'
   | 'quickCreates'
+  | 'personas'
+  | 'defaultPersonaId'
+  | 'chatPersonas'
   | 'todayWidgets'
   | 'alarms'
   | 'photos'
@@ -729,6 +755,8 @@ export const useAppStore = create<AppState>()(
       blockedIds: [],
       recentSearches: [],
       recentlyViewed: [],
+      personas: [],
+      chatPersonas: {},
       todayWidgets: DEFAULT_WIDGETS,
       alarms: [],
       photos: [],
@@ -1254,9 +1282,9 @@ export const useAppStore = create<AppState>()(
 
         const conversationId = uid('conv');
         const now = new Date().toISOString();
-        // One of their openings, with the user's name where the creator wrote {{user}}.
+        // One of their openings, with the name of the user's default persona where the creator wrote {{user}}.
         const greeting = character
-          ? fillNames(pickOpening(character, conversationId), { char: character.name, user: get().user.displayName })
+          ? fillNames(pickOpening(character, conversationId), { char: character.name, user: defaultPersona(get()).name })
           : '';
 
         set((s) => ({
@@ -1308,6 +1336,43 @@ export const useAppStore = create<AppState>()(
         });
         return conversationId;
       },
+
+      savePersona: (input, id) => {
+        const others = get().personas.filter((p) => p.id !== id);
+        const problem = checkPersona(input, others.length)[0];
+        if (problem) return { problem };
+        const name = input.name.trim().slice(0, PERSONA_NAME_MAX);
+        const about = input.about.trim().slice(0, PERSONA_ABOUT_MAX);
+        const existing = id ? get().personas.find((p) => p.id === id) : undefined;
+        const persona: Persona = {
+          id: existing?.id ?? uid('persona'),
+          name,
+          about,
+          ...(input.pronouns ? { pronouns: input.pronouns } : {}),
+          ...(input.avatarUri ? { avatarUri: input.avatarUri } : {}),
+          createdAt: existing?.createdAt ?? new Date().toISOString(),
+        };
+        set((s) => ({
+          personas: existing ? s.personas.map((p) => (p.id === persona.id ? persona : p)) : [...s.personas, persona],
+        }));
+        return { id: persona.id };
+      },
+
+      deletePersona: (id) =>
+        set((s) => ({
+          personas: s.personas.filter((p) => p.id !== id),
+          defaultPersonaId: s.defaultPersonaId === id ? undefined : s.defaultPersonaId,
+          // Chats that used it go back to the default.
+          chatPersonas: Object.fromEntries(Object.entries(s.chatPersonas).filter(([, persona]) => persona !== id)),
+        })),
+
+      setDefaultPersona: (id) => set({ defaultPersonaId: id === PROFILE_PERSONA ? undefined : id }),
+
+      setChatPersona: (conversationId, id) =>
+        set((s) => {
+          const { [conversationId]: _old, ...rest } = s.chatPersonas;
+          return { chatPersonas: id ? { ...rest, [conversationId]: id } : rest };
+        }),
 
       takeQuickCreate: () => {
         const next = spendQuickCreate(get().quickCreates, todayKey());
@@ -2523,6 +2588,9 @@ export const useAppStore = create<AppState>()(
         recentSearches: s.recentSearches,
         recentlyViewed: s.recentlyViewed,
         quickCreates: s.quickCreates,
+        personas: s.personas,
+        defaultPersonaId: s.defaultPersonaId,
+        chatPersonas: s.chatPersonas,
         todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,

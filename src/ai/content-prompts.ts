@@ -1,3 +1,4 @@
+import type { PersonaView } from '@/lib/personas';
 import type { Character, Relationship, User } from '@/types';
 
 import { buildCharacterPrompt } from './rules';
@@ -15,10 +16,12 @@ export interface PersonaInput {
   user: User;
   relationship?: Relationship;
   replyLanguage?: string;
+  /** The chat's persona, when it is not the profile. */
+  persona?: PersonaView;
 }
 
-const persona = ({ character, user, relationship, replyLanguage }: PersonaInput) =>
-  buildCharacterPrompt(character, user, relationship, replyLanguage);
+const persona = ({ character, user, relationship, replyLanguage, persona: who }: PersonaInput) =>
+  buildCharacterPrompt(character, user, relationship, replyLanguage, who);
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
 

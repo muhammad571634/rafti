@@ -53,7 +53,9 @@ muted words.
 - **Persona** (who the user plays): avatar required, name 0/20, description 0/750 ("backstory
   details you want characters to remember about you"; c.ai+ triples it), topic chips (gender,
   appearance, species, likes, dislikes, personality, backstory, clothing, eyes, hair, skin),
-  "default for all chats", and a per-chat persona switch.
+  "default for all chats", and a per-chat persona switch. Taken 2026-10-25 (flows.md D71,
+  `src/lib/personas.ts`): photo optional, name 30, about 750, six topic chips, up to 5 personas,
+  the profile always the first one.
 
 ## 4. Chat
 

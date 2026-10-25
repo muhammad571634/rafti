@@ -56,6 +56,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="personas/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
           {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
           <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />

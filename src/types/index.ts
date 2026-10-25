@@ -542,6 +542,19 @@ export interface User {
 
 export type Pronouns = 'she' | 'he' | 'they';
 
+/**
+ * Who the user is in a chat, besides their own profile (Character.AI's personas,
+ * `src/lib/personas.ts`): a name, pronouns and a few lines the character should know.
+ */
+export interface Persona {
+  id: string;
+  name: string;
+  pronouns?: Pronouns;
+  about: string;
+  avatarUri?: string;
+  createdAt: string;
+}
+
 /** Once-a-day bookkeeping: login reward, greetings, calls, ads, wheel. */
 export interface DailyState {
   lastLoginDay?: string;
