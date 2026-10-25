@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
+import { composeReply, plainText, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/persona';
 import { detectPlan } from '@/lib/schedule';
 import {
   AD_REWARD,
@@ -13,7 +14,6 @@ import {
   shellCosts,
   callHistory as seedCalls,
   callLines,
-  cannedReplies,
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
@@ -37,6 +37,7 @@ import {
   secretNotes as seedNotes,
   todayKey,
   wallet as seedWallet,
+  writeMockReply,
 } from '@/mock';
 import type {
   AppSettings,
@@ -137,6 +138,7 @@ interface AppState {
   setBackground: (characterId: string, backgroundId: string) => void;
   setNickname: (characterId: string, nickname: string) => void;
   setCharacterPref: (characterId: string, key: 'voiceReplies' | 'messagesFirst', value: boolean) => void;
+  setReplyPrefs: (characterId: string, prefs: Partial<ReplyPrefs>) => void;
   addIntimacy: (characterId: string, amount: number) => void;
   dismissLevelUp: () => void;
 
@@ -404,13 +406,17 @@ export const useAppStore = create<AppState>()(
         if (conversationId) get().markRead(conversationId);
       },
 
-      clearChat: (conversationId) =>
+      clearChat: (conversationId) => {
+        // A reply still being typed would land in the empty chat otherwise.
+        nextTurn(conversationId);
         set((s) => ({
+          typing: { ...s.typing, [conversationId]: false },
           messages: { ...s.messages, [conversationId]: [] },
           conversations: s.conversations.map((c) =>
             c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
           ),
-        })),
+        }));
+      },
 
       /* ── bonds ────────────────────────────────────────────────────────── */
 
@@ -468,6 +474,8 @@ export const useAppStore = create<AppState>()(
                 ...newRelationship(characterId),
                 backgroundId: existing.backgroundId,
                 nickname: existing.nickname,
+                replyStyle: existing.replyStyle,
+                replyLength: existing.replyLength,
               },
             },
             memories: s.memories.filter((m) => m.characterId !== characterId),
@@ -486,6 +494,12 @@ export const useAppStore = create<AppState>()(
         updateRelationship(set, characterId, () =>
           key === 'voiceReplies' ? { voiceReplies: value } : { messagesFirst: value },
         ),
+
+      setReplyPrefs: (characterId, { style, length }) =>
+        updateRelationship(set, characterId, () => ({
+          ...(style && { replyStyle: style }),
+          ...(length && { replyLength: length }),
+        })),
 
       addIntimacy: (characterId, amount) => {
         const existing = get().relationships[characterId];
@@ -941,7 +955,8 @@ function previewFor(message: Message) {
     case 'call':
       return message.missed ? '\u{1F4DE} Missed call' : '\u{1F4DE} Voice call';
     default:
-      return message.text ?? '';
+      // A narrated story bubble previews by what was said, else by the scene.
+      return message.text ? speechOnly(message.text) || plainText(message.text) : '';
   }
 }
 
@@ -978,18 +993,37 @@ function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: 
   }));
 }
 
+/** How much of the chat the character "sees" each turn — the model's context window later. */
+const HISTORY = 40;
+
 /**
- * Stands in for the streaming backend call: read receipt, typing indicator, then
- * a voice note + text (or text only). Swapping in a real model only changes this.
+ * The turn each chat is on. Starting a newer one (you sent again, the chat was
+ * cleared) makes an older reply drop whatever it had not sent yet.
+ */
+const replyTurns: Record<string, number> = {};
+const nextTurn = (conversationId: string) => (replyTurns[conversationId] = (replyTurns[conversationId] ?? 0) + 1);
+
+/**
+ * The reply pipeline: read receipt and typing, then the persona engine decides
+ * what to say (mood, flow, style) and the writer words it — the mock today, the
+ * model later. Bubbles land one by one at typing pace; with voice replies on, a
+ * voice note of the spoken part leads. A scripted `text` is framed, not replaced.
  */
 function scheduleReply(
   set: Setter,
   get: Getter,
   conversationId: string,
-  { text, gain }: { text?: string; gain: number },
+  { text, gain, trigger = text ? 'event' : 'message' }: { text?: string; gain: number; trigger?: TurnTrigger },
 ) {
-  const conversation = get().conversations.find((c) => c.id === conversationId);
-  if (!conversation) return;
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  const character = state.characters.find((c) => c.id === conversation?.characterId);
+  const bond = character ? state.relationships[character.id] : undefined;
+  if (!character || !bond) return;
+
+  const turn = nextTurn(conversationId);
+  const live = () => replyTurns[conversationId] === turn;
+  const stopTyping = () => set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
 
   const readAt = new Date().toISOString();
   set((s) => ({
@@ -1002,31 +1036,66 @@ function scheduleReply(
     },
   }));
 
-  setTimeout(() => {
-    const reply = text ?? pick(cannedReplies);
-    const bond = get().relationships[conversation.characterId];
-    const character = get().characters.find((c) => c.id === conversation.characterId);
-    const withVoice = !!bond?.voiceReplies && !!character?.voiceReady;
-    const now = new Date().toISOString();
+  const context = {
+    character,
+    relationship: bond,
+    history: (state.messages[conversationId] ?? []).slice(-HISTORY),
+    memories: state.memories
+      .filter((m) => m.characterId === character.id)
+      .sort((a, b) => Number(b.pinned) - Number(a.pinned)),
+    trigger,
+    script: text,
+    now: Date.now(),
+  };
 
-    set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+  composeReply(context, writeMockReply)
+    .then(({ bubbles, delays, mood, plan }) => {
+      if (!live()) return;
+      if (!bubbles.length) return stopTyping();
+      updateRelationship(set, character.id, () => ({ mood }));
 
-    if (withVoice) {
-      appendMessage(set, get, conversationId, {
-        id: uid('m'),
-        conversationId,
-        author: 'them',
-        kind: 'voice',
-        // Roughly how long the line takes to say out loud.
-        durationSec: Math.max(3, Math.round(reply.split(/\s+/).length / 2.6)),
-        transcript: reply,
-        createdAt: now,
-      });
-    }
-    appendMessage(set, get, conversationId, themText(conversationId, reply));
+      const deliver = (i: number) =>
+        setTimeout(() => {
+          if (!live()) return;
+          const last = i === bubbles.length - 1;
+          const latest = get().relationships[character.id];
 
-    if (gain) get().addIntimacy(conversation.characterId, gain);
-  }, 1100 + Math.random() * 900);
+          if (i === 0 && latest?.voiceReplies && character.voiceReady) {
+            const spoken = speechOnly(bubbles.join('\n'));
+            if (spoken) {
+              appendMessage(set, get, conversationId, {
+                id: uid('m'),
+                conversationId,
+                author: 'them',
+                kind: 'voice',
+                // Roughly how long the line takes to say out loud.
+                durationSec: Math.max(3, Math.round(spoken.split(/\s+/).length / 2.6)),
+                transcript: spoken,
+                emotion: mood.emotion,
+                createdAt: new Date().toISOString(),
+              });
+            }
+          }
+          if (last) stopTyping();
+          appendMessage(set, get, conversationId, { ...themText(conversationId, bubbles[i]), emotion: mood.emotion });
+          if (!last) return deliver(i + 1);
+
+          if (gain) get().addIntimacy(character.id, gain);
+          // Left on read: they may text once more. Anything you send first cancels it.
+          if (plan.nudgeAfterMs) {
+            setTimeout(() => {
+              if (live() && get().relationships[character.id]?.messagesFirst) {
+                scheduleReply(set, get, conversationId, { gain: 0, trigger: 'silence' });
+              }
+            }, plan.nudgeAfterMs);
+          }
+        }, delays[i]);
+
+      deliver(0);
+    })
+    .catch(() => {
+      if (live()) stopTyping();
+    });
 }
 
 function answerDiary(set: RawSetter, entryId: string) {

@@ -220,19 +220,6 @@ export function conversationForCharacter(characterId: string): Conversation | un
   return conversations.find((c) => c.characterId === characterId);
 }
 
-/**
- * Canned replies for the mock "AI". Replaced by a streaming backend call later —
- * the UI contract (pending bubble -> text -> voice) stays identical.
- */
-export const cannedReplies = [
-  'Mmm? Say that again, I want to hear it properly this time.',
-  'You know I drop everything when you text me, right? Do not let it get to your head.',
-  'That is exactly the kind of thing I would expect from you. I like it.',
-  'Hold on, let me put my phone closer. Okay. Go ahead.',
-  'I was literally thinking about you. Creepy timing, huh?',
-  'Fine, fine, you win this round. What else?',
-];
-
 /** "Say Hi & Goodnight": what they send first when you open the app. */
 export const morningGreetings = [
   'Morning~ Did you sleep okay? Eat something before you run out the door.',

@@ -41,6 +41,31 @@ export interface Relationship {
   voiceReplies: boolean;
   /** They may text or call first (morning / night greetings). */
   messagesFirst: boolean;
+  /** Chat settings → reply style. Older saves lack it: read through `replyPrefs()`. */
+  replyStyle?: ReplyStyle;
+  replyLength?: ReplyLength;
+  /** How they feel right now; carries from one turn to the next and fades with time. */
+  mood?: Mood;
+}
+
+/**
+ * How a reply reads. `talk` is texting: short spoken lines, no narration.
+ * `story` is roleplay prose: actions and the scene in *asterisks*, the plot moves on.
+ * `mix` is talk with feeling: dialogue first, a small action beat now and then.
+ */
+export type ReplyStyle = 'talk' | 'mix' | 'story';
+
+/** `auto` mirrors how much you wrote, the way people match each other's energy. */
+export type ReplyLength = 'short' | 'auto' | 'long';
+
+export type Emotion = 'calm' | 'happy' | 'playful' | 'shy' | 'tender' | 'worried' | 'sad' | 'annoyed';
+
+export interface Mood {
+  emotion: Emotion;
+  /** 0..1 */
+  intensity: number;
+  /** ISO time it was last felt — intensity fades back to their temperament from here. */
+  at: string;
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
@@ -64,6 +89,8 @@ export interface Message {
   muted?: boolean;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
+  /** Their feeling when they sent it — later the voice tone (TTS emotion) and avatar. */
+  emotion?: Emotion;
 }
 
 export interface Conversation {

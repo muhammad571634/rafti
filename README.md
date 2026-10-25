@@ -33,6 +33,7 @@ These rules mirror the reference app (BIMOBIMO / BEEMO AI) and live in
 | **Calls.** Incoming: accept / decline; unanswered rings become missed calls. Every call lands in Call History and as a line in the chat; minutes add intimacy. | `/call/[id]`, `/call/incoming/[id]` |
 | **Streaks & levels.** Chatting on consecutive days grows the streak; interactions add intimacy; crossing a threshold opens the level-up card. | Chat header, level-up modal, Us |
 | **Smart schedule.** "I have an exam tomorrow" becomes a plan; the character acknowledges it and reminds you on the day. | Us → Coming up, chat |
+| **Replies feel like a person.** Per chat you pick the style (Talk / Mixed / Story, where *asterisks* narrate) and length (Short / Match me / Long). The character has a mood that carries over and fades, reacts before answering, asks back but not every turn, steers a flat chat (new topic or a memory), texts in 1–3 bursts at typing pace, and may double-text once if you go quiet (only with "Let them reach out" on). Logic: `src/lib/persona`. | Chat settings, chat |
 | **Moments ([Us]).** Becoming friends, level-ups, calls over a minute, diary replies, secret notes, dates and photos are recorded. | Us → Our moments |
 | **Secret Note.** The character writes first ("Thinking..."), their note stays sealed until you write yours and Exchange (3 shells). | `/secret-note/[id]` |
 | **Heartbeat Diary.** Pages can be shared with a friend; they write back, and the first line becomes a memory. | `/diary`, Character Memories |
@@ -77,6 +78,7 @@ src/
   hooks/          use-character-initiative (greetings, reminders, calls on app open)
   store/          zustand app state, persistence and the mock AI
   lib/            formatting, plan detection
+    persona/      reply engine: read → mood → turn plan → writer → pacing; the LLM prompt contract
   mock/           seed data, prices, rewards
   theme/          colors, typography (Fredoka), spacing tokens
   i18n/           i18next + locales/en.json
@@ -102,7 +104,8 @@ assets/
 
 | What | Where | Replace with |
 | --- | --- | --- |
-| Model replies (read → typing → voice + text) | `scheduleReply()` in `src/store/use-app-store.ts` | Streaming LLM over WebSocket, TTS for the voice note |
+| Model replies: what to say (mood, flow, style, pacing) | `composeReply()` in `src/lib/persona` | Nothing: it stays, and can run on the server as is |
+| Model replies: the words | `writeMockReply` in `src/mock/reply-writer.ts`, called from `scheduleReply()` in the store | A `ReplyWriter` that sends `buildPrompt()` to the LLM and returns `parseModelReply()`; TTS speaks `speechOnly()` in the message's `emotion` |
 | Plan extraction | `detectPlan()` in `src/lib/schedule.ts` | Structured output from the same model |
 | Diary / Secret Note replies | `diaryReplyFor()`, `noteReplyFor()` in the store | Same model, different prompt |
 | Greetings and wake-up calls | `runDailyInitiative()` in the store | Server-scheduled push notifications + VoIP push |

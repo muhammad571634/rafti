@@ -7,6 +7,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Anim, CharacterAvatar, PressableScale, Txt, UserAvatar } from '@/components/ui';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
+import { segments } from '@/lib/persona';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Character, Message, User } from '@/types';
 
@@ -87,7 +88,16 @@ function TextBubble({ message, mine, first }: { message: Message; mine: boolean;
       <Txt
         variant="body"
         color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}>
-        {message.text}
+        {/* *Narration* reads as an aside: italic and quieter than what is said. */}
+        {segments(message.text ?? '').map((part, i) =>
+          part.kind === 'action' ? (
+            <Txt key={i} color={colors.textSecondary} style={styles.action}>
+              {part.text}
+            </Txt>
+          ) : (
+            part.text
+          ),
+        )}
       </Txt>
     </View>
   );
@@ -238,6 +248,7 @@ const styles = StyleSheet.create({
   tailMine: { borderTopRightRadius: radius.xs },
   tailTheirs: { borderTopLeftRadius: radius.xs },
   bubbleMuted: { backgroundColor: colors.bubbleTranscript },
+  action: { fontStyle: 'italic' },
   voiceWrap: { alignItems: 'flex-start', gap: space.xs, maxWidth: '72%' },
   voiceWrapMine: { alignItems: 'flex-end' },
   voiceBubble: {

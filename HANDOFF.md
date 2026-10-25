@@ -14,7 +14,52 @@
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-06) — YANGI SESSIYA SHU YERDAN BOSHLASIN
+## Hozirgi holat (2026-10-25): 6-band, javob uzunligi va uslubi — SKELET TAYYOR
+- Foydalanuvchi talabi: "ko'proq gap" va "ko'proq hikoya" variantlari ikkalasi ham bo'lsin. Personajda
+  emotsiya bo'lsin, suhbatni inson kabi davom ettirsin va oqimni boshqarsin. Oxir-oqibat yozuvchi LLM bo'ladi.
+  Hozir boshlang'ich mantiq qilindi, keyin birga sayqallanadi.
+- Arxitektura (`src/lib/persona/`). Qaror qabul qilish va so'z yozish ataylab ajratilgan:
+  `o'qish → his-tuyg'u → navbat rejasi → yozuvchi → temp`.
+  - `read.ts`: xabardan signal oladi — savolmi, kayfiyati (valence), cue'lar (sad, affection, goodbye...),
+    "ok/lol" kabi past harakatli javob. Hozir kalit so'zlar (faqat inglizcha), keyin LLM structured output.
+  - `mood.ts`: `Temperament` personaj teglaridan olinadi (`cheerful`, `tsundere`, `shy`...).
+    `Mood` (8 emotsiya + intensivlik) `Relationship.mood`da saqlanadi, 2 soatda yarmiga so'nadi va
+    personajning odatiy holatiga qaytadi. Shy/tsundere mehrdan uyaladi, javobsiz qolsa ranjiydi yoki sog'inadi.
+  - `flow.ts`, `planTurn()` — rejissyor. Avval his qiladi, keyin javob beradi, o'zidan ham gapiradi (share).
+    - Ketma-ket 2 ta past harakatli javobdan keyin mavzuni o'zi buradi yoki xotirani eslatadi.
+    - Ikki marta ketma-ket savol bergan bo'lsa, uchinchisini bermaydi (intervyu bo'lib qolmasin).
+    - Uzunlik: `auto` foydalanuvchi uzunligini aks ettiradi. Bubble soni: talk 1–3, mix 1–2, story 1 blok.
+    - Javobsiz qolsa, 1–2.5 daqiqadan keyin bir marta qayta yozadi (`nudge`). Faqat "Let them reach out" yoqilgan
+      bo'lsa ishlaydi, foydalanuvchi biror narsa yozsa bekor bo'ladi.
+  - `prompt.ts`: LLM shartnomasi. `buildPrompt()` system prompt (persona, xotiralar, uslub, qoidalar, AI ekanini
+    oshkor qilish, inqiroz yordami) va navbat direktivasini yasaydi. `parseModelReply()` JSON
+    `{emotion, intensity, messages[]}`ni o'qiydi. Hozircha hech kim chaqirmaydi.
+  - `narration.ts`: `*harakat*` belgilari. Pufakchada kursiv va xira chiqadi, TTS faqat `speechOnly()`ni o'qiydi,
+    ro'yxat preview'i gapni ko'rsatadi.
+- Mock yozuvchi `src/mock/reply-writer.ts` (LLM kelganda faqat shu fayl almashadi). Rejaga amal qiladi,
+  so'nggi 30 xabardagi iborani takrorlamaydi, dunyoga mos "o'z kunidan" gaplar bor. `cannedReplies` o'chirildi.
+- Store: `scheduleReply()` endi `composeReply()`ni chaqiradi va bubble'larni yozish tezligida birma-bir yuboradi.
+  - Ovozli javob yoqilgan bo'lsa, oldin faqat gapdan iborat voice note keladi.
+  - Har chatda "navbat" hisoblagichi bor: yangi xabar yoki `clearChat` eski javobning qolgan qismini bekor qiladi
+    (HANDOFF'dagi "clearChat'dan keyin keladigan javob" muammosi ham shu bilan hal bo'ldi).
+  - `Message.emotion` keyin TTS ohangi va avatar uchun ishlatiladi.
+- UI (VAQTINCHA, prototipsiz): Chat settings oynasida "Reply style" (Talk / Mixed / Story) va "Reply length"
+  (Short / Match me / Long) Chip qatorlari. Standart qiymat: Mixed + Match me.
+  Sayqal bosqichida avval prototip ko'rsatiladi.
+- Tekshirildi:
+  - `tsc` toza.
+  - Node smoke test: 9 ssenariy, prompt va parser.
+  - Brauzer (375×812): Story'da narratsiya kursivda chiqdi, voice note faqat gapdan iborat. Talk'da "bad day"ga
+    2 bubble bilan tasalli va savol berdi, `mood: worried` saqlandi.
+  - Konsoldagi "WASM URL failed" xatosi sandbox proksisidan (Lottie CDN), kodga aloqasi yo'q.
+- Sayqal uchun ochiq savollar:
+  1. Kayfiyat UI'da ko'rinsinmi (sarlavhada emoji yoki so'z, avatar ifodasi)?
+  2. Nudge vaqti: hozir ilova ochiq paytda bir necha daqiqa. Server kelgach push orqali soatlab bo'ladimi?
+  3. Ertalab/kechki salomlashuvlar, diary va secret note ham shu dvigatel orqali o'tsinmi?
+  4. Uslubni har chat uchun alohida qoldirish yoki global standart qo'shish kerakmi? Story'da sahna/joy tanlash kerakmi?
+  5. Rus va o'zbek tillari uchun `read.ts` kalit so'zlari kerakmi, yoki to'g'ridan-to'g'ri LLM'ga o'tamizmi?
+
+## Oldingi holat (2026-10-06)
 - Chat redesign va to'liq ilova redesign'i (0–3-bosqich) TUGADI, `redesign` branch'ida:
   `77e07ae` (0–1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
   shuning uchun PR `main`ga ikkala ishni ham olib kiradi.

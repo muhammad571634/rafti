@@ -2,7 +2,6 @@ export { characters, charactersById, getCharacter, groupBySeries } from './chara
 export type { CharacterGroup } from './characters';
 export {
   callLines,
-  cannedReplies,
   conversationForCharacter,
   conversations,
   eveningGreetings,
@@ -12,6 +11,7 @@ export {
   scheduleReminder,
 } from './chat';
 export { diaryEntries, secretNotePrompts, secretNotes } from './diary';
+export { writeMockReply } from './reply-writer';
 export {
   AD_REWARD,
   DAILY_CHECK_IN,

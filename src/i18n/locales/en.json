@@ -214,7 +214,29 @@
     "chatAnimation": "Chat animations",
     "sectionChat": "This chat",
     "sectionCharacter": "Character",
-    "sectionManage": "Manage"
+    "sectionManage": "Manage",
+    "replyStyle": "Reply style",
+    "replyStyles": {
+      "talk": "Talk",
+      "mix": "Mixed",
+      "story": "Story"
+    },
+    "replyStyleHints": {
+      "talk": "Short texts, like messaging a real person.",
+      "mix": "Talk with feeling: small actions between the lines.",
+      "story": "Roleplay: they narrate the scene and move the story on."
+    },
+    "replyLength": "Reply length",
+    "replyLengths": {
+      "short": "Short",
+      "auto": "Match me",
+      "long": "Long"
+    },
+    "replyLengthHints": {
+      "short": "A line or two.",
+      "auto": "About as much as you write.",
+      "long": "Fuller replies with more detail."
+    }
   },
   "search": {
     "title": "Search messages",

@@ -7,6 +7,7 @@ import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-
 import {
   Button,
   CharacterAvatar,
+  Chip,
   Divider,
   Header,
   IconButton,
@@ -19,8 +20,10 @@ import {
   Txt,
 } from '@/components/ui';
 import { shortDate } from '@/lib/format';
+import { replyPrefs } from '@/lib/persona';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
+import type { ReplyLength, ReplyStyle } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -63,6 +66,9 @@ const GROUPS: { title: string; actions: { key: ActionKey; icon: IoniconName }[] 
 
 const ROW_ICON = 34;
 
+const REPLY_STYLES: ReplyStyle[] = ['talk', 'mix', 'story'];
+const REPLY_LENGTHS: ReplyLength[] = ['short', 'auto', 'long'];
+
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
   if (Platform.OS === 'web') {
@@ -90,6 +96,7 @@ export default function CharacterSettingsScreen() {
   const resetRelationship = useAppStore((s) => s.resetRelationship);
   const setNickname = useAppStore((s) => s.setNickname);
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
+  const setReplyPrefs = useAppStore((s) => s.setReplyPrefs);
   const setSetting = useAppStore((s) => s.setSetting);
 
   const [renaming, setRenaming] = useState(false);
@@ -105,6 +112,7 @@ export default function CharacterSettingsScreen() {
   }
 
   const name = displayName(character, relationship);
+  const prefs = replyPrefs(relationship);
 
   const run = (key: ActionKey) => {
     switch (key) {
@@ -212,6 +220,20 @@ export default function CharacterSettingsScreen() {
         visible={chatSettingsOpen}
         onClose={() => setChatSettingsOpen(false)}
         title={t('characterSettings.chatSettings')}>
+        <OptionRow
+          label={t('characterSettings.replyStyle')}
+          hint={t(`characterSettings.replyStyleHints.${prefs.style}`)}
+          options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
+          value={prefs.style}
+          onChange={(style) => setReplyPrefs(character.id, { style })}
+        />
+        <OptionRow
+          label={t('characterSettings.replyLength')}
+          hint={t(`characterSettings.replyLengthHints.${prefs.length}`)}
+          options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
+          value={prefs.length}
+          onChange={(length) => setReplyPrefs(character.id, { length })}
+        />
         <ToggleRow
           label={t('characterSettings.voiceReplies')}
           hint={t('characterSettings.voiceRepliesHint')}
@@ -232,6 +254,40 @@ export default function CharacterSettingsScreen() {
         />
       </Sheet>
     </Screen>
+  );
+}
+
+/** A setting with a few exclusive choices; the hint describes the one picked. */
+function OptionRow<T extends string>({
+  label,
+  hint,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <View style={styles.optionRow}>
+      <Txt variant="bodyStrong">{label}</Txt>
+      <View style={styles.options} accessibilityRole="radiogroup" accessibilityLabel={label}>
+        {options.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            active={option.value === value}
+            onPress={() => onChange(option.value)}
+          />
+        ))}
+      </View>
+      <Txt variant="caption" color={colors.textMuted}>
+        {hint}
+      </Txt>
+    </View>
   );
 }
 
@@ -284,5 +340,7 @@ const styles = StyleSheet.create({
   },
   hint: { marginTop: space.sm, marginBottom: space.lg },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md },
+  optionRow: { gap: space.sm, paddingVertical: space.md },
+  options: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   disabled: { opacity: 0.45 },
 });
