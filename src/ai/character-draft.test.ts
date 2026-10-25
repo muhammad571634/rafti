@@ -1,16 +1,19 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { DEFINITION_MAX, GREETING_MAX, TAGLINE_MAX } from '../lib/create-character';
-import { mockDraft } from '../mock/character-drafts';
+import { checkCreation, DEFINITION_MAX, GREETING_MAX, TAGLINE_MAX } from '../lib/create-character';
+import { mockDraft, mockDraftReply, mockFieldReply } from '../mock/character-drafts';
 import type { Character, User } from '@/types';
 
 import {
   buildDraftPrompt,
   buildFieldPrompt,
+  chatToDefinition,
   checkIdea,
   definitionForPrompt,
   definitionFromDialog,
+  definitionToText,
+  type DraftField,
   fillNames,
   ideaText,
   parseDefinition,
@@ -18,6 +21,7 @@ import {
   parseField,
   pickOpening,
   SPARKS,
+  textToDefinition,
 } from './character-draft';
 import { buildCharacterPrompt } from './rules';
 
@@ -174,7 +178,8 @@ describe('mockDraft', () => {
     assert.equal(draft.gender, 'male');
     assert.equal(draft.age, 29);
     assert.deepEqual(draft.tags, ['sarcastic', 'sweet']);
-    assert.equal(draft.greetings.length, 1);
+    assert.equal(draft.greetings.length, 3);
+    assert.equal(draft.voicePreset, 'calm');
     assert.equal(parseDefinition(draft.definition).length, 4);
     assert.equal(draft.starters.length, 3);
   });
@@ -201,5 +206,72 @@ describe('buildCharacterPrompt with a quick-create character', () => {
     assert.match(prompt, /In a few words: Keeps your secrets/);
     assert.match(prompt, /How you look: A yellow raincoat\./);
     assert.match(prompt, /HOW YOU TALK[^\n]*\nPerson 1: Lonely\?\nMira: Never with gulls around\./);
+  });
+});
+
+describe('chatToDefinition', () => {
+  it('adds the latest chat lines, the user as another person', () => {
+    const lines = [
+      { author: 'me' as const, text: 'old' },
+      ...Array.from({ length: 9 }, (_, i) => ({ author: (i % 2 ? 'me' : 'them') as 'me' | 'them', text: `line ${i}` })),
+    ];
+    const { definition, added } = chatToDefinition('{{char}}: Hi.', lines);
+    assert.equal(added, 8);
+    assert.ok(definition.startsWith('{{char}}: Hi.\n{{random_user_1}}: line 1\n{{char}}: line 2'));
+    assert.ok(!definition.includes('old'));
+  });
+
+  it('adds nothing when no line fits', () => {
+    const full = 'x'.repeat(DEFINITION_MAX - 5);
+    assert.deepEqual(chatToDefinition(full, [{ author: 'them', text: 'too long to fit' }]), { definition: full, added: 0 });
+    assert.equal(chatToDefinition('', []).added, 0);
+  });
+});
+
+describe('the dialog editor text', () => {
+  const labels = { char: 'Mira', other: 'Someone' };
+  it('shows names for slots and turns them back, so typing round-trips', () => {
+    const definition = '{{char}}: Hi.\n{{random_user_2}}: Hey.\nMira says: not a slot';
+    const text = definitionToText(definition, labels);
+    assert.equal(text, 'Mira: Hi.\nSomeone: Hey.\nMira says: not a slot');
+    assert.equal(textToDefinition(text, labels), '{{char}}: Hi.\n{{random_user_1}}: Hey.\nMira says: not a slot');
+    assert.equal(definitionToText(textToDefinition(text, labels), labels), text);
+  });
+
+  it('copes with names that read as patterns', () => {
+    const odd = { char: 'J.R. (Kid)', other: 'Someone' };
+    assert.equal(textToDefinition('J.R. (Kid): yo', odd), '{{char}}: yo');
+  });
+});
+
+describe('the mock provider', () => {
+  it('writes a draft reply the real checker accepts', () => {
+    const result = parseDraft(mockDraftReply({ idea: 'A quiet florist', sparks: ['calmUntilHurt'], language: 'English' }));
+    assert.ok(result.ok);
+    assert.ok(result.draft.definition.startsWith('{{random_user_1}}: '));
+  });
+
+  it('writes every field again, a different take each time', () => {
+    const fields: DraftField[] = ['tagline', 'bio', 'look', 'greeting', 'greetings', 'dialog', 'starters'];
+    const context = { name: 'Mira', role: 'crush' as const, tags: ['teasing'], greeting: 'Hi.' };
+    for (const field of fields) {
+      const first = parseField(field, mockFieldReply(field, context, 1));
+      const second = parseField(field, mockFieldReply(field, context, 2));
+      assert.ok(first, field);
+      assert.notDeepEqual(first, second, field);
+    }
+  });
+});
+
+describe('checkCreation with quick-create fields', () => {
+  const base = { name: 'Mira', age: '27', bio: 'Keeps a lighthouse.', greeting: 'Hi.', photoRights: false, voice: { kind: 'preset', preset: 'warm' } as const, voiceConsent: false };
+  it('lets their looks stand in for a photo', () => {
+    assert.deepEqual(checkCreation({ ...base, hasPhoto: false }), ['photo']);
+    assert.deepEqual(checkCreation({ ...base, hasPhoto: false, look: 'Auburn hair.' }), []);
+    assert.deepEqual(checkCreation({ ...base, hasPhoto: true, look: 'Auburn hair.' }), ['photoRights']);
+  });
+
+  it('checks the other texts too', () => {
+    assert.deepEqual(checkCreation({ ...base, hasPhoto: false, look: 'x', more: ['a high school senior'] }), ['minors']);
   });
 });

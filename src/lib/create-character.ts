@@ -46,6 +46,15 @@ export const TRAITS = [
 export const STYLES: SpeakingStyle[] = ['casual', 'gentle', 'playful', 'formal', 'poetic', 'dry'];
 export const ROLES: CharacterRole[] = ['friend', 'crush', 'partner', 'mentor', 'rival', 'family'];
 export const VOICES: VoicePreset[] = ['warm', 'bright', 'soft', 'deep', 'calm', 'lively'];
+/** A stock voice that fits each way of talking, for a draft that names none. */
+export const STYLE_VOICE: Record<SpeakingStyle, VoicePreset> = {
+  casual: 'lively',
+  gentle: 'soft',
+  playful: 'bright',
+  formal: 'deep',
+  poetic: 'warm',
+  dry: 'calm',
+};
 export const GENDERS: CharacterGender[] = ['male', 'female'];
 
 /** `trained`: a voice cloned earlier, kept as it is while editing. */
@@ -60,6 +69,10 @@ export interface CreationInput {
   bio: string;
   greeting: string;
   hasPhoto: boolean;
+  /** Their looks in words: without a photo, their picture is drawn from it. */
+  look?: string;
+  /** Every other text they carry (tagline, openings, sample dialog, first lines), checked the same way. */
+  more?: string[];
   /** "I made this image or have the right to use it, and it is not a real person." */
   photoRights: boolean;
   voice: VoiceChoice | null;
@@ -106,11 +119,11 @@ export function contentProblems(text: string): ('minors' | 'explicit')[] {
 export function checkCreation(input: CreationInput): CreationProblem[] {
   const problems: CreationProblem[] = [];
   const age = Number(input.age);
-  const text = `${input.name} ${input.bio} ${input.greeting}`;
+  const text = [input.name, input.bio, input.greeting, input.look ?? '', ...(input.more ?? [])].join(' ');
 
   if (!input.name.trim()) problems.push('name');
-  if (!input.hasPhoto) problems.push('photo');
-  else if (!input.photoRights) problems.push('photoRights');
+  if (!input.hasPhoto && !input.look?.trim()) problems.push('photo');
+  else if (input.hasPhoto && !input.photoRights) problems.push('photoRights');
   if (!Number.isInteger(age) || age < MIN_AGE || age > 120) problems.push('age');
   if (!input.voice) problems.push('voice');
   else if (input.voice.kind === 'clone') {

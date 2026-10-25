@@ -1,7 +1,17 @@
-import { type CharacterDraft, type DraftInput, type Spark, SPARK_MEANING, SPARKS } from '../ai/character-draft';
-import { BIO_MAX, MORE_GREETINGS_MAX, ROLES } from '../lib/create-character';
+import {
+  type CharacterDraft,
+  type DraftField,
+  type DraftInput,
+  type FieldContext,
+  parseDefinition,
+  type Spark,
+  SPARK_MEANING,
+  SPARKS,
+} from '../ai/character-draft';
+import { BIO_MAX, MORE_GREETINGS_MAX, ROLES, STYLE_VOICE } from '../lib/create-character';
 import { hashSeed, pickSeeded } from '../lib/seeded';
 import type { CharacterGender, CharacterRole, SpeakingStyle } from '@/types';
+
 
 /**
  * The mock provider's quick create: a whole character from the idea and its sparks, the same
@@ -165,10 +175,91 @@ export function mockDraft(input: DraftInput): CharacterDraft {
     age,
     speakingStyle: voices[0].style,
     role,
+    voicePreset: STYLE_VOICE[voices[0].style],
     tags: [...new Set(voices.map((voice) => voice.tag))],
     greeting: voices[0].greeting,
-    greetings: voices.slice(1, 1 + MORE_GREETINGS_MAX).map((voice) => voice.greeting),
+    // The other sparks' openings first, then other moods, so there are always three more.
+    greetings: [...voices.slice(1), ...SPARKS.map((spark) => VOICES[spark]).filter((voice) => !voices.includes(voice))]
+      .slice(0, MORE_GREETINGS_MAX)
+      .map((voice) => voice.greeting),
     definition: voices.flatMap((voice) => [`{{random_user_1}}: ${voice.other}`, `{{char}}: ${voice.reply}`]).join('\n'),
     starters: [...STARTERS[role]],
   };
+}
+
+/** The draft as the model's JSON reply, so the app runs it through the same `parseDraft` the server uses. */
+export function mockDraftReply(input: DraftInput): string {
+  const { definition, ...draft } = mockDraft(input);
+  return JSON.stringify({ ...draft, dialog: dialogOf(definition) });
+}
+
+const dialogOf = (definition: string) =>
+  parseDefinition(definition).map((turn) => ({ from: turn.speaker === '{{char}}' ? 'char' : 'other', text: turn.text }));
+
+/** A line about them for a bio, by what they are to the user, in their own voice. */
+const ROLE_LINES: Record<CharacterRole, string> = {
+  friend: "I'm the one you text when the day goes sideways.",
+  crush: "I notice when you walk in, even when I pretend I don't.",
+  partner: 'I keep your favourite mug at my place. Just in case.',
+  mentor: "I've made most mistakes once, so you don't have to.",
+  rival: 'I like winning. I like winning against you more.',
+  family: "I've known you forever and I still take your side.",
+};
+
+const HABITS = [
+  'Rainy days are for long walks and longer talks.',
+  "I collect postcards from places I haven't been yet.",
+  'Mornings are not my thing; late nights are.',
+  'I cook too much on purpose, so someone has to stay for dinner.',
+];
+
+const MORE_STARTERS = ['Guess what happened today.', 'Can I tell you something?', 'You were right, by the way.', 'Are you awake?'];
+
+/**
+ * One field written again, as the model's JSON reply (`buildFieldPrompt`). `attempt` counts the
+ * taps on that field, so every tap brings a different take, as a new model call would.
+ */
+export function mockFieldReply(field: DraftField, character: FieldContext, attempt: number): string {
+  const name = character.name?.trim() || 'I';
+  const role = character.role ?? 'friend';
+  const tags = character.tags ?? [];
+  // Their voices: the sparks behind their tags first, every other one after.
+  const all = SPARKS.map((spark) => VOICES[spark]);
+  const voices = [...all.filter((v) => tags.includes(v.tag)), ...all.filter((v) => !tags.includes(v.tag))];
+  const at = <T,>(list: readonly T[], skip?: (item: T) => boolean) => {
+    const usable = skip ? list.filter((item) => !skip(item)) : list;
+    return (usable.length > 0 ? usable : list)[attempt % (usable.length > 0 ? usable.length : list.length)];
+  };
+  switch (field) {
+    case 'tagline':
+      return JSON.stringify({ value: at(voices.map((v) => v.tagline), (line) => line === character.tagline) });
+    case 'bio': {
+      const intro = name === 'I' ? '' : `I'm ${name}. `;
+      const traits = tags.length > 0 ? ` People call me ${tags.slice(0, 3).join(', ')}.` : '';
+      return JSON.stringify({ value: `${intro}${ROLE_LINES[role]}${traits} ${at(HABITS)}` });
+    }
+    case 'look':
+      return JSON.stringify({ value: at(LOOKS, (look) => look === character.look) });
+    case 'greeting':
+      return JSON.stringify({ value: at(voices.map((v) => v.greeting), (line) => line === character.greeting) });
+    case 'greetings': {
+      const lines = voices.map((v) => v.greeting).filter((line) => line !== character.greeting);
+      const from = (attempt * MORE_GREETINGS_MAX) % lines.length;
+      return JSON.stringify({ values: [...lines.slice(from), ...lines].slice(0, MORE_GREETINGS_MAX) });
+    }
+    case 'dialog': {
+      const pair = [at(voices), voices[(attempt + 1) % voices.length]];
+      return JSON.stringify({
+        dialog: pair.flatMap((v) => [
+          { from: 'other', text: v.other },
+          { from: 'char', text: v.reply },
+        ]),
+      });
+    }
+    case 'starters': {
+      const pool = [...STARTERS[role], ...MORE_STARTERS];
+      const from = (attempt * 3) % pool.length;
+      return JSON.stringify({ values: [...pool.slice(from), ...pool].slice(0, 3) });
+    }
+  }
 }

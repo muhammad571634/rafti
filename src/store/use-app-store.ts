@@ -48,6 +48,7 @@ import { capLedger, capMessages } from '@/lib/storage-caps';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
+import { quickCreatesLeft, spendQuickCreate, type QuickCreateUse } from '@/economy/quick-create';
 import {
   canRing,
   consumeMinutes,
@@ -360,6 +361,10 @@ interface AppState {
     firstAsk: string;
   }) => string;
   addCharacter: (character: Omit<Character, 'id'>) => { characterId: string; conversationId: string };
+  /** Quick create's drafts today (`src/economy/quick-create.ts`). */
+  quickCreates?: QuickCreateUse;
+  /** Counts one written draft; false when today's free ones are used up. */
+  takeQuickCreate: () => boolean;
   /**
    * A line that reached the user only as a notification (the comeback ladder) lands in
    * the chat once the app sees it. Written once per notification id.
@@ -558,6 +563,7 @@ type PersistedKeys =
   | 'blockedIds'
   | 'recentSearches'
   | 'recentlyViewed'
+  | 'quickCreates'
   | 'todayWidgets'
   | 'alarms'
   | 'photos'
@@ -1301,6 +1307,13 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date().toISOString(),
         });
         return conversationId;
+      },
+
+      takeQuickCreate: () => {
+        const next = spendQuickCreate(get().quickCreates, todayKey());
+        if (!next) return false;
+        set({ quickCreates: next });
+        return true;
       },
 
       addCharacter: (character) => {
@@ -2509,6 +2522,7 @@ export const useAppStore = create<AppState>()(
         blockedIds: s.blockedIds,
         recentSearches: s.recentSearches,
         recentlyViewed: s.recentlyViewed,
+        quickCreates: s.quickCreates,
         todayWidgets: s.todayWidgets,
         alarms: s.alarms,
         photos: s.photos,
@@ -2542,6 +2556,9 @@ export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscrip
  */
 export const memoryAccess = (memories: MemoryItem[], wallet: Wallet, characterId: string, now = Date.now()) =>
   splitMemories(memories, characterId, hasFullMemory(wallet.subscription, now));
+
+/** Quick creates still free today. */
+export const quickCreatesToday = (use: QuickCreateUse | undefined, today = todayKey()) => quickCreatesLeft(use, today);
 
 /** The plan includes live calls and voice replies: Pro or the trial, not Basic. */
 export const callsIncluded = (wallet: Wallet, now = Date.now()) => canRing(wallet.subscription, now);

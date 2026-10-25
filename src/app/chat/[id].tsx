@@ -232,9 +232,12 @@ export default function ChatRoomScreen() {
   // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
   // System lines (the AI notice at a session's start) do not count as their last line.
   const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
+  // Before the user's first message, a created character's own first lines (quick create's
+  // starters, D70) stand in for the test chips.
+  const starters = character?.starters?.length && !data.some((m) => m.author === 'me') ? character.starters : null;
   const suggestions =
     last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !typing
-      ? suggestedReplies(last.id)
+      ? (starters ?? suggestedReplies(last.id))
       : null;
 
   if (!conversation || !character) {

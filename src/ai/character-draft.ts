@@ -11,12 +11,14 @@ import {
   ROLES,
   STARTER_MAX,
   STARTERS_MAX,
+  STYLE_VOICE,
   STYLES,
   TAGLINE_MAX,
   TRAITS,
+  VOICES,
 } from '../lib/create-character';
 import { pickSeeded } from '../lib/seeded';
-import type { Character, CharacterGender, CharacterRole, SpeakingStyle } from '@/types';
+import type { Character, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
 
 /**
  * Quick create: the creation chain taken from Character.AI (docs/character-ai-teardown.md §11).
@@ -84,12 +86,17 @@ export interface CharacterDraft {
   age: number;
   speakingStyle: SpeakingStyle;
   role: CharacterRole;
+  /** A stock voice to start with; the creator can change it or clone one. */
+  voicePreset: VoicePreset;
   tags: string[];
   greeting: string;
   greetings: string[];
   definition: string;
   starters: string[];
 }
+
+/** What the form holds when one field is written again. */
+export type FieldContext = Partial<CharacterDraft>;
 
 export type IdeaProblem = 'empty' | 'long' | 'sparks' | 'minors' | 'explicit';
 
@@ -162,14 +169,14 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${FIELD_RULES.bio}`,
     `- ${FIELD_RULES.look}`,
     `- age: ${MIN_AGE} or older. gender: "male" or "female" when the idea says; else leave it out.`,
-    `- speakingStyle: one of ${STYLES.join(', ')}. role: one of ${ROLES.join(', ')}.`,
+    `- speakingStyle: one of ${STYLES.join(', ')}. role: one of ${ROLES.join(', ')}. voicePreset: one of ${VOICES.join(', ')}.`,
     `- tags: 2-${MAX_TRAITS} of ${TRAITS.join(', ')}.`,
     `- ${FIELD_RULES.greeting}`,
     `- ${FIELD_RULES.greetings}`,
     `- ${FIELD_RULES.dialog}`,
     `- ${FIELD_RULES.starters}`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"gender":"female","speakingStyle":"","role":"","tags":[],"greeting":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[]}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[]}',
   ].join('\n');
 }
 
@@ -224,6 +231,7 @@ export function parseDraft(raw: string): DraftResult {
   if (age < MIN_AGE) return { ok: false, problem: 'minors' };
 
   const gender = data.gender === 'male' || data.gender === 'female' ? data.gender : undefined;
+  const speakingStyle = oneOf(STYLES, data.speakingStyle, 'casual');
   const draft: CharacterDraft = {
     name,
     tagline: clip(text(data.tagline), TAGLINE_MAX),
@@ -231,8 +239,9 @@ export function parseDraft(raw: string): DraftResult {
     look: clip(text(data.look), LOOK_MAX),
     ...(gender ? { gender } : {}),
     age: Math.min(age, 120),
-    speakingStyle: oneOf(STYLES, data.speakingStyle, 'casual'),
+    speakingStyle,
     role: oneOf(ROLES, data.role, 'friend'),
+    voicePreset: oneOf(VOICES, data.voicePreset, STYLE_VOICE[speakingStyle]),
     tags: [...new Set(texts(data.tags).filter((tag) => (TRAITS as readonly string[]).includes(tag)))].slice(0, MAX_TRAITS),
     greeting,
     greetings: lines(data.greetings, GREETING_MAX, MORE_GREETINGS_MAX).filter((g) => g !== greeting),
@@ -342,6 +351,50 @@ export function definitionForPrompt(definition: string | undefined, names: { cha
     size += line.length + 1;
   }
   return out.join('\n');
+}
+
+/** The most recent chat lines one "add from chat" takes. */
+export const CHAT_LINES_MAX = 8;
+
+/**
+ * Character.AI's "insert a chat": the latest lines of a chat with them go to the end of the
+ * definition, theirs as `{{char}}:` and the user's as `{{random_user_1}}:`, so the example never
+ * reads as something this user said. Lines that do not fit are left out, oldest first.
+ */
+export function chatToDefinition(definition: string, lines: readonly { author: 'me' | 'them'; text: string }[]) {
+  const base = definition.trim();
+  const turns = lines
+    .map(({ author, text: said }) => ({ author, said: clip(text(said), 300) }))
+    .filter(({ said }) => said)
+    .slice(-CHAT_LINES_MAX)
+    .map(({ author, said }) => `${author === 'them' ? '{{char}}' : '{{random_user_1}}'}: ${said}`);
+  let room = DEFINITION_MAX - base.length - (base ? 1 : 0);
+  const kept: string[] = [];
+  for (let i = turns.length - 1; i >= 0 && turns[i].length + 1 <= room; i--) {
+    kept.unshift(turns[i]);
+    room -= turns[i].length + 1;
+  }
+  return { definition: [base, ...kept].filter(Boolean).join('\n'), added: kept.length };
+}
+
+const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * A definition as its editor shows it: `{{char}}` as their name and every other person as one
+ * label ("Someone"), so the creator never types slots. `textToDefinition` turns it back.
+ */
+export function definitionToText(definition: string, labels: { char: string; other: string }) {
+  return definition
+    .replace(/^(\s*)\{\{char\}\}:/gim, `$1${labels.char}:`)
+    .replace(/^(\s*)\{\{random_user_\d+\}\}:/gim, `$1${labels.other}:`);
+}
+
+/** What the creator typed, with their name and the other label at a line start back as slots. */
+export function textToDefinition(text: string, labels: { char: string; other: string }) {
+  let out = text;
+  if (labels.char.trim()) out = out.replace(new RegExp(`^(\\s*)${escape(labels.char.trim())}:`, 'gim'), '$1{{char}}:');
+  if (labels.other.trim()) out = out.replace(new RegExp(`^(\\s*)${escape(labels.other.trim())}:`, 'gim'), '$1{{random_user_1}}:');
+  return out.slice(0, DEFINITION_MAX);
 }
 
 /** The opening a new chat starts with: the greeting or one of the extra ones, the same for the same seed. */

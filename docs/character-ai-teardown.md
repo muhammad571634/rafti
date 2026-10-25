@@ -136,7 +136,7 @@ Ordered by value to the owner's companion app, with what exists today:
 2. **Memory in three scopes** (done 2026-10-25, flows.md D69; `character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /
    them / you tabs, Pin in the message long-press menu (`message-menu.tsx`), fact categories, and a
    memory-left bar as a Pro perk. Our plan already has extraction, importance and lifecycle.
-3. **Quick create** (back end done 2026-10-25, §11; front end next; `create-character.tsx`): describe the character in a sentence → the server
+3. **Quick create** (done 2026-10-25, §11, flows.md D70; `create-character.tsx`): describe the character in a sentence → the server
    fills name, tagline, bio, greeting, sample lines and draws the avatar; keep the current form as
    "advanced". Add a tagline (card line) separate from the bio, a private "sample lines" field
    (`persona.sampleLines`, backend-plan §12.3), more than one greeting, per-field "write it for me".
@@ -221,8 +221,8 @@ tested; server side in `backend-plan.md` §12.17):
 - Not taken: unlisted links, remix, public definition viewing, tags as discovery (no public
   creator feed yet), the "Squeak" names, their pill texts.
 - Owner's call (2026-10-25): 3 quick creates free a day, one setting so it can change with the
-  unit economics. Front end: canvas row "Quick create" (`QuickCreate`, `QuickReview`,
-  `QuickCreateDark`, `QuickLimit`), waiting for the owner's yes.
+  unit economics. Front end coded straight in the form's own look (owner: no prototype, design
+  later; the canvas row "Quick create" stays as a sketch): flows.md D70.
 
 Sources: [blog index](https://blog.character.ai/), [memory](https://blog.character.ai/memory/),
 [Lorebook](https://blog.character.ai/lorebook/), [styles and plans](https://blog.character.ai/new-styles-new-plan/),
