@@ -136,7 +136,7 @@ Ordered by value to the owner's companion app, with what exists today:
 2. **Memory in three scopes** (done 2026-10-25, flows.md D69; `character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /
    them / you tabs, Pin in the message long-press menu (`message-menu.tsx`), fact categories, and a
    memory-left bar as a Pro perk. Our plan already has extraction, importance and lifecycle.
-3. **Quick create** (`create-character.tsx`): describe the character in a sentence → the server
+3. **Quick create** (back end done 2026-10-25, §11; front end next; `create-character.tsx`): describe the character in a sentence → the server
    fills name, tagline, bio, greeting, sample lines and draws the avatar; keep the current form as
    "advanced". Add a tagline (card line) separate from the bio, a private "sample lines" field
    (`persona.sampleLines`, backend-plan §12.3), more than one greeting, per-field "write it for me".
@@ -151,6 +151,77 @@ Ordered by value to the owner's companion app, with what exists today:
 
 Skip: ads and ad passes (owner: no ads), real-person characters, a public creator economy (boosts,
 charms) until there is an audience, video and streams.
+
+## 11. Creation chain, deep dive (2026-10-25)
+
+The owner's ask: take Character.AI's creation logic for the back end; the front end stays
+Sigmazam's own. Sources: the bundle (endpoints, payload keys, i18n keys, analytics events), the
+Character Book (`book.character.ai/llms-full.txt`, saved in `rea-work/cai/docs/`), Prompt Poet and
+the blog. The phone account shows only the guided create; Vibe Create sits behind the
+`mobile_vibe_create` flag, so its order comes from the bundle, not from screens.
+
+**Their character record** (Character Book, bundle keys `has_tagline`, `has_definition`,
+`additional_greetings`, `definition_visibility` …):
+
+| Field | Limit | What it does |
+| --- | --- | --- |
+| name | 3-20, letters, digits, space, `-`, `_` | identity; a famous name alone defines a lot |
+| title (tagline) | 0-50 | card line under the name; "how they would describe themselves" |
+| description | 0-500 | longer self-description, ideally in their own voice |
+| greeting | 0-500 (4096 in newer builds) | first message; can carry the whole scene; `{{user}}` slot |
+| additional greetings | a few, reorderable | a new chat opens with one; "dynamic greetings" lets the model vary it |
+| definition | 0-32000, about 3200 used | free text, mostly example dialog; the end is cut first as the chat grows |
+| suggested starters | up to 3 × 200 | lines the user can tap to begin |
+| categories / tags | up to 3 | discovery only, no effect on replies |
+| avatar + `avatar_generation_prompt` / `base_img_prompt` | 512² | drawn from "what do they look like", or uploaded; moderated |
+| voice, visibility (public / unlisted / private), definition visibility, lorebook link | | |
+
+**Definition format.** One turn per `name: text` at the start of a line; lines below carry on that
+turn. Slots: `{{char}}`, `{{user}}`, `{{random_user_N}}` (a made-up other person, so examples do not
+read as things this user said). Uses: example dialog (voice and topics), setting a scene with a
+third voice (a producer, a director), negative guidance (the director tells them what to refuse),
+strict patterns (games). "Insert a chat" turns a test chat into definition lines, swapping the
+names for slots.
+
+**The chains.**
+1. *Guided create*: name → look (describe and generate, or upload; Next stays off without a
+   picture) → tagline → description → definition → greeting(s) → tags → visibility → lorebook.
+2. *Vibe create*: a sentence about the character plus personality pills (shuffle, capped) →
+   the client joins them into one description (`buildVibeCreateDescription`) →
+   `/character/v1/generate_character`, a daily quota with a paywall (`vibe_create_quota`) → the
+   app shows steps "creating", "generating avatar", "saving avatar", "finishing up" → visibility
+   picked after → "create manually" falls back to the guided form. The pills are two-sided traits
+   (a strength with its catch) and story tropes.
+3. *Per-field help*: `chat/character/generate/field` with `field_to_generate`, and
+   `generate_greeting`; each uses what is already filled.
+4. *Remix*: fork a character with chosen personalities (`remix_character`, streamed).
+5. Every create and edit passes content safety (`content-safety-create-*` errors); an avatar
+   upload has its own check; editing a very popular character is paused for a while
+   (`high-interactions-edit-temp-disabled`), so thousands of chats do not change under people.
+
+**Prompt side.** The definition sits after the rules and before the persona and memory; the end of
+a long definition is cut first; parts carry truncation priorities (Prompt Poet), cut in steps so
+the prefix cache holds (§7).
+
+**What Sigmazam took** (code `src/ai/character-draft.ts`, mock `src/mock/character-drafts.ts`,
+tested; server side in `backend-plan.md` §12.17):
+
+- New character fields: `tagline` (50), `look` (300), `definition` (3200, `{{char}}` /
+  `{{random_user_1}}` lines), `greetings` (3 more openings), `starters` (3 × 100). Our older limits
+  stay: name 30, bio 400, greeting 200, age 18+.
+- Quick create: an idea of up to 300 characters and up to 3 sparks (our own twelve two-sided
+  traits, `SPARKS`) → `ideaText` → `buildDraftPrompt` (one JSON call, refusals for real people,
+  owned characters, minors, explicit) → `parseDraft` (clips at a word, drops unknown tags and
+  choices, removes duplicate openings, runs the minors / explicit check, refuses under 18) → the
+  picture from `look` → the form for review → save.
+- Write one field again: `buildFieldPrompt` + `parseField`.
+- The persona prompt carries the tagline, the look and the definition (names filled, whole turns
+  from the start while they fit, marked as examples with other people). A new chat opens with the
+  greeting or one of the extra ones (`pickOpening`), `{{user}}` filled in.
+- Not taken: unlisted links, remix, public definition viewing, tags as discovery (no public
+  creator feed yet), the "Squeak" names, their pill texts.
+- Still to decide (owner): how many quick creates are free a day, and the front end (prototype
+  first).
 
 Sources: [blog index](https://blog.character.ai/), [memory](https://blog.character.ai/memory/),
 [Lorebook](https://blog.character.ai/lorebook/), [styles and plans](https://blog.character.ai/new-styles-new-plan/),

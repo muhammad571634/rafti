@@ -1,0 +1,174 @@
+import { type CharacterDraft, type DraftInput, type Spark, SPARK_MEANING, SPARKS } from '../ai/character-draft';
+import { BIO_MAX, MORE_GREETINGS_MAX, ROLES } from '../lib/create-character';
+import { hashSeed, pickSeeded } from '../lib/seeded';
+import type { CharacterGender, CharacterRole, SpeakingStyle } from '@/types';
+
+/**
+ * The mock provider's quick create: a whole character from the idea and its sparks, the same
+ * every time for the same input, so the create flow works with no server. The real one is one
+ * model call (`buildDraftPrompt`); this only fills the same fields.
+ */
+
+/** How each spark sounds: a form tag, a way of talking, a tagline, an opening and one exchange. */
+const VOICES: Record<
+  Spark,
+  { tag: string; style: SpeakingStyle; tagline: string; greeting: string; other: string; reply: string }
+> = {
+  gentleStubborn: {
+    tag: 'caring',
+    style: 'gentle',
+    tagline: 'Soft voice, stubborn heart',
+    greeting: "There you are. I saved you the window seat, and no, I'm not moving.",
+    other: "You don't have to wait for me.",
+    reply: "I know. I'm waiting anyway.",
+  },
+  teasesWhenNervous: {
+    tag: 'teasing',
+    style: 'playful',
+    tagline: 'Teases you when the stakes get high',
+    greeting: 'Oh, it’s you. Good. I was getting bored of being right about everything alone.',
+    other: 'Are you blushing?',
+    reply: "It's warm in here. Obviously. Stop looking at me like that.",
+  },
+  calmUntilHurt: {
+    tag: 'calm',
+    style: 'dry',
+    tagline: 'Calm, until someone hurts you',
+    greeting: 'Sit. Tea first, then tell me who ruined your day.',
+    other: 'Someone was rude to me at work.',
+    reply: 'Mm. Name, desk and the time they leave. Just curious.',
+  },
+  flirtsToDodge: {
+    tag: 'romantic',
+    style: 'playful',
+    tagline: 'Flirts whenever things get real',
+    greeting: "Hey, stranger. You look like you came to ask me something serious. Don't.",
+    other: 'Why did you leave so early yesterday?',
+    reply: 'Because you were too charming and I panicked. Next question.',
+  },
+  proudLonely: {
+    tag: 'confident',
+    style: 'formal',
+    tagline: 'Proud, and quietly lonely',
+    greeting: "You came back. I wasn't waiting. I simply happened to be here. For an hour.",
+    other: 'Do you ever ask anyone for help?',
+    reply: "I don't need help. ...Would you stay a little longer, though?",
+  },
+  sunnySecret: {
+    tag: 'energetic',
+    style: 'casual',
+    tagline: 'Sunshine with one locked drawer',
+    greeting: 'Hi hi! Okay, first: you look great. Second: tell me everything.',
+    other: 'What are you hiding behind that smile?',
+    reply: 'A terrible singing voice. And maybe one other thing. Someday.',
+  },
+  remembersEverything: {
+    tag: 'sweet',
+    style: 'gentle',
+    tagline: 'Remembers every little thing',
+    greeting: 'Hey. Did the rain stop where you are? You said wet shoes ruin your whole day.',
+    other: 'You remembered my coffee order?',
+    reply: 'Oat milk, no sugar, extra hot. You told me once. I listen.',
+  },
+  braveForOthers: {
+    tag: 'protective',
+    style: 'casual',
+    tagline: 'Braver for you than for themself',
+    greeting: 'Stay behind me a second. ...Okay, false alarm. Hi. I missed you.',
+    other: "Aren't you scared?",
+    reply: "Of course. But you're here, so I'll be scared later.",
+  },
+  plansThenImprovises: {
+    tag: 'nerdy',
+    style: 'casual',
+    tagline: 'Has a plan. Then a better idea',
+    greeting: 'I made a schedule for tonight. Step one was saying hi. I forgot step two.',
+    other: "So what's the plan?",
+    reply: 'Seven steps, colour-coded. Or we just walk and see what happens. Your pick.',
+  },
+  bluntThenSorry: {
+    tag: 'sarcastic',
+    style: 'dry',
+    tagline: 'Says it straight, then says sorry',
+    greeting: "You're late. ...That came out wrong. I'm glad you're here.",
+    other: 'Do you like my new haircut?',
+    reply: "No. Wait. It's growing on me. Sorry. It's nice.",
+  },
+  actsCoolCaresLots: {
+    tag: 'mysterious',
+    style: 'dry',
+    tagline: 'Too cool to admit they care',
+    greeting: "Oh. You. I wasn't checking my phone every five minutes or anything.",
+    other: 'Did you miss me?',
+    reply: "Missed is a strong word. I noticed you were gone. Every hour.",
+  },
+  toughOutsideKindInside: {
+    tag: 'grumpy',
+    style: 'casual',
+    tagline: 'Rough edges, soft with you',
+    greeting: 'Took you long enough. Sit down, I got the good snacks.',
+    other: "You're grumpy today.",
+    reply: "I'm grumpy every day. You're the only one I share snacks with.",
+  },
+};
+
+/** Original first names, none of them in the cast. */
+const NAMES: Record<CharacterGender, readonly string[]> = {
+  male: ['Arlo', 'Bastien', 'Emrys', 'Joren', 'Lior', 'Matteo', 'Nico', 'Soren', 'Tobin', 'Callum'],
+  female: ['Elodie', 'Ines', 'Lira', 'Mira', 'Noor', 'Tamsin', 'Vela', 'Ottilie', 'Sabine', 'Wren'],
+};
+
+const LOOKS = [
+  'Dark wavy hair, warm brown eyes, a worn denim jacket and a silver ring on one thumb.',
+  'Short ash-blond hair, grey eyes, a cream knit sweater and ink on their fingertips.',
+  'Long black hair in a loose braid, amber eyes, a long coat and one small earring.',
+  'Messy chestnut curls, green eyes, rolled-up shirt sleeves and a pencil behind one ear.',
+  'Sleek silver-dyed hair, dark eyes, a black turtleneck and a thin scar on one eyebrow.',
+  'Soft auburn hair, hazel eyes, a yellow raincoat and a camera on a strap.',
+];
+
+/** First messages the user can tap, by what the character is to them. */
+const STARTERS: Record<CharacterRole, readonly string[]> = {
+  friend: ['What are you up to right now?', 'Tell me one good thing about your day.', 'I need a distraction. Got one?'],
+  crush: ["I was hoping you'd be around.", 'Honest question: what do you think of me?', "Guess who couldn't sleep."],
+  partner: ['Hey you. Miss me?', 'Long day. Talk to me?', 'Where should we go this weekend?'],
+  mentor: ['Can I ask you for advice?', "I'm stuck on something. Help?", 'What would you do in my place?'],
+  rival: ['Ready to lose again?', "I heard you've been talking about me.", 'Truce, just for today?'],
+  family: ["Hi! How's everyone?", 'Can I come over later?', 'I have news. Sit down.'],
+};
+
+const MALE = /\b(he|him|his|guy|man|boyfriend|husband|prince|king|lord|sir)\b/i;
+const FEMALE = /\b(she|her|hers|woman|lady|girlfriend|wife|princess|queen)\b/i;
+const AGE = /\b(1[89]|[2-9]\d)\s*(?:-?\s*years?(?:\s*old)?|yo|y\/o)\b/i;
+
+const sentence = (text: string) => {
+  const line = text.trim().replace(/[.!?]*$/, '');
+  return line ? `${line[0].toUpperCase()}${line.slice(1)}.` : '';
+};
+
+export function mockDraft(input: DraftInput): CharacterDraft {
+  const idea = input.idea.trim();
+  const seed = `${idea}|${input.sparks.join(',')}`;
+  const sparks: Spark[] = input.sparks.length > 0 ? input.sparks : [pickSeeded(SPARKS, seed)];
+  const gender: CharacterGender = MALE.test(idea) ? 'male' : FEMALE.test(idea) ? 'female' : hashSeed(seed) % 2 ? 'male' : 'female';
+  const age = Number(AGE.exec(idea)?.[1] ?? 22 + (hashSeed(`${seed}|age`) % 9));
+  const role = input.role ?? pickSeeded(ROLES, `${seed}|role`);
+  const voices = sparks.map((spark) => VOICES[spark]);
+  const bio = [sentence(idea), ...sparks.map((spark) => sentence(SPARK_MEANING[spark]))].join(' ');
+
+  return {
+    name: pickSeeded(NAMES[gender], seed),
+    tagline: voices[0].tagline,
+    bio: bio.length > BIO_MAX ? sentence(idea).slice(0, BIO_MAX) : bio,
+    look: pickSeeded(LOOKS, `${seed}|look`),
+    gender,
+    age,
+    speakingStyle: voices[0].style,
+    role,
+    tags: [...new Set(voices.map((voice) => voice.tag))],
+    greeting: voices[0].greeting,
+    greetings: voices.slice(1, 1 + MORE_GREETINGS_MAX).map((voice) => voice.greeting),
+    definition: voices.flatMap((voice) => [`{{random_user_1}}: ${voice.other}`, `{{char}}: ${voice.reply}`]).join('\n'),
+    starters: [...STARTERS[role]],
+  };
+}

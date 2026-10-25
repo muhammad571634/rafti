@@ -14,6 +14,15 @@ export const MIN_AGE = 18;
 export const MAX_TRAITS = 5;
 export const MIN_SAMPLES = 3;
 export const MAX_SAMPLES = 5;
+/** The fields a quick create fills in too (`src/ai/character-draft.ts`). */
+export const TAGLINE_MAX = 50;
+export const LOOK_MAX = 300;
+/** Sample dialog; the start matters most, the end is cut first when the prompt runs short. */
+export const DEFINITION_MAX = 3200;
+/** Openings besides the first greeting. */
+export const MORE_GREETINGS_MAX = 3;
+export const STARTERS_MAX = 3;
+export const STARTER_MAX = 100;
 
 export const TRAITS = [
   'sweet',
@@ -84,11 +93,20 @@ const EXPLICIT = [
 
 const hits = (patterns: RegExp[], text: string) => patterns.some((p) => p.test(text));
 
+/** Text that places a character as a minor or sets up explicit content. Empty means ok. */
+export function contentProblems(text: string): ('minors' | 'explicit')[] {
+  const lower = text.toLowerCase();
+  const problems: ('minors' | 'explicit')[] = [];
+  if (hits(MINOR, lower)) problems.push('minors');
+  if (hits(EXPLICIT, lower)) problems.push('explicit');
+  return problems;
+}
+
 /** Every problem with the form, in the order the form shows them. Empty means ok. */
 export function checkCreation(input: CreationInput): CreationProblem[] {
   const problems: CreationProblem[] = [];
   const age = Number(input.age);
-  const text = `${input.name} ${input.bio} ${input.greeting}`.toLowerCase();
+  const text = `${input.name} ${input.bio} ${input.greeting}`;
 
   if (!input.name.trim()) problems.push('name');
   if (!input.hasPhoto) problems.push('photo');
@@ -99,8 +117,7 @@ export function checkCreation(input: CreationInput): CreationProblem[] {
     if (input.voice.samples < MIN_SAMPLES) problems.push('samples');
     if (!input.voiceConsent) problems.push('voiceConsent');
   }
-  if (hits(MINOR, text)) problems.push('minors');
-  if (hits(EXPLICIT, text)) problems.push('explicit');
+  problems.push(...contentProblems(text));
   return problems;
 }
 

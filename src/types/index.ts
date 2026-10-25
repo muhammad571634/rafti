@@ -22,7 +22,20 @@ export interface Character {
   voiceReady: boolean;
   isOfficial: boolean;
   greeting: string;
+  /** More openings besides `greeting`; a new chat starts with one of them. */
+  greetings?: string[];
   tags: string[];
+  /** A few words under the name: how they would sum themselves up. */
+  tagline?: string;
+  /** What they look like, in words; their picture is drawn from it. */
+  look?: string;
+  /**
+   * Private sample dialog showing how they talk, never shown in a chat. Each line starts
+   * with `{{char}}:` or `{{random_user_1}}:` (`src/ai/character-draft.ts`).
+   */
+  definition?: string;
+  /** Up to 3 first lines the user can tap to open a new chat. */
+  starters?: string[];
   /** User creations (F15): what the creator set; the server prompt uses all of it. */
   age?: number;
   speakingStyle?: SpeakingStyle;

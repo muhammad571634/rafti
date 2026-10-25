@@ -1,5 +1,6 @@
 import type { Character, Relationship, User } from '@/types';
 
+import { definitionForPrompt } from './character-draft';
 import { baseLanguage } from './reply-language';
 
 /**
@@ -87,6 +88,7 @@ export function buildCharacterPrompt(character: Character, user: User, relations
     '',
     'YOUR PERSONA:',
     `Name: ${character.name}${character.series ? ` (from ${character.series})` : ''}`,
+    ...(character.tagline ? [`In a few words: ${character.tagline}`] : []),
     `Bio: ${character.bio}`,
     `Personality: ${character.tags.join(', ')}`,
     `How you first greeted them: "${character.greeting}"`,
@@ -96,6 +98,17 @@ export function buildCharacterPrompt(character: Character, user: User, relations
   if (character.gender) lines.push(`Gender: ${character.gender}`);
   if (character.speakingStyle) lines.push(`How you talk: ${character.speakingStyle}`);
   if (character.role) lines.push(`What you are to the user: their ${character.role}`);
+  if (character.look) lines.push(`How you look: ${character.look}`);
+  // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
+  // talk, with other people, so none of it reads as something this user said.
+  const examples = definitionForPrompt(character.definition, { char: character.name, user: user.displayName });
+  if (examples) {
+    lines.push(
+      '',
+      'HOW YOU TALK (examples with other people, not with this user; never repeat them word for word):',
+      examples,
+    );
+  }
   lines.push(
     '',
     'THE USER:',

@@ -6,6 +6,7 @@ import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
+import { fillNames, pickOpening } from '@/ai/character-draft';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { dueRing, SNOOZE_MIN } from '@/lib/alarms';
@@ -1247,7 +1248,10 @@ export const useAppStore = create<AppState>()(
 
         const conversationId = uid('conv');
         const now = new Date().toISOString();
-        const greeting = character?.greeting ?? '';
+        // One of their openings, with the user's name where the creator wrote {{user}}.
+        const greeting = character
+          ? fillNames(pickOpening(character, conversationId), { char: character.name, user: get().user.displayName })
+          : '';
 
         set((s) => ({
           conversations: [

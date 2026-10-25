@@ -470,6 +470,33 @@ Egasi: "har personajning o'z yo'li, dunyosi, mimikasi bor; orqada LLM sahna, rau
   yo'q, shuning uchun moderatsiya kerak emas). Rasm o'z ramkasini o'zida saqlaydi (`BoothPhoto.frame`).
   Jadval `user_frames`. Ramkalar bepul; rasmning o'zi Pro rejasidan.
 
+### 12.17 Tez yaratish: Character.AI'ning yaratish zanjiri (2026-10-25)
+
+Egasi: "Character.AI'ning arxitektura mantig'ini ol, u faqat orqa tomonda ishlaydi, frontend bizniki bo'ladi".
+Tadqiqot: `docs/character-ai-teardown.md` §11. Kod: `src/ai/character-draft.ts` (testlangan), mock: `src/mock/character-drafts.ts`.
+
+- **Zanjir:** g'oya (300 belgigacha) + 3 tagacha "uchqun" (`SPARKS`: ikki tomonlama xususiyatlar) →
+  `checkIdea` (bo'sh, uzun, voyaga yetmagan, ochiq-sochiq) → `ideaText` (bitta tavsif) → `buildDraftPrompt`
+  (bitta model chaqiruvi, faqat JSON) → `parseDraft` (tekshiradi va qisqartiradi) → rasm `look` bo'yicha chiziladi
+  → foydalanuvchi formada ko'rib chiqadi → `addCharacter`. Hech narsa foydalanuvchi "Saqlash"ni bosmaguncha saqlanmaydi.
+- **Rad etish:** model haqiqiy odam, boshqa kompaniyaning personaji, voyaga yetmagan yoki ochiq-sochiq so'rovga
+  `{"refused":"realPerson" | "owned" | "minor" | "explicit"}` qaytaradi; server buni foydalanuvchiga tushunarli xatoga aylantiradi.
+  Server moderatsiyasi (matn klassifikatori, rasm tekshiruvi) bu tekshiruvlar ustidan baribir ishlaydi.
+- **Bitta maydonni qayta yozish:** `buildFieldPrompt(field, hozirgi forma)` + `parseField` (tagline, bio, look,
+  greeting, greetings, dialog, starters).
+- **Yangi maydonlar (`characters` jadvali):** `tagline` (50), `look` (300), `definition` (3200, `{{char}}:` va
+  `{{random_user_1}}:` qatorlari), `greetings` (yana 3 ta salom), `starters` (3 × 100). `persona_version` har o'zgarishda oshadi (12.3).
+- **Prompt:** persona blokiga tagline, tashqi ko'rinish va definition qo'shiladi (`buildCharacterPrompt`). Definition
+  nomlari to'ldiriladi, boshidan butun qatorlar sig'guncha olinadi, "boshqa odamlar bilan misol" deb belgilanadi,
+  shuning uchun model ularni foydalanuvchi aytgan gap deb o'ylamaydi. Persona barqaror, shuning uchun kesh prefiksida turadi (12.5).
+- **Yangi chat:** asosiy salom yoki qo'shimchalardan biri bilan boshlanadi (`pickOpening`, suhbat id bo'yicha),
+  `{{user}}` foydalanuvchi ismi bilan to'ldiriladi.
+- **API:** `POST /characters/draft` {idea, sparks, role?} → draft; `POST /characters/draft/field` {field, character} → qiymat.
+  Ikkalasi ham `usage_events.mode = 'create'` bilan yoziladi.
+- **Kvota (egasi hal qiladi):** Character.AI tez yaratishni kunlik kvota bilan beradi, keyin paywall. Bizda nechta bepul
+  bo'lishi va keyin narxi hali tanlanmagan.
+- **Olinmadi:** remix, ochiq definition ko'rish, unlisted havola, teglar orqali ochiq katalog (hali ochiq ijodkorlar lentasi yo'q).
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:
