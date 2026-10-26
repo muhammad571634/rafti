@@ -835,6 +835,21 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
   `ideas_week`. Alohida tugma: `settings.weeklyRecap`.
 - **Narx:** haftasiga bitta chaqiruv (≈ $0.0006).
 
+### 12.29 Jozibali personajlar: ochilish harakati, quirk va har xil ↻ (2026-10-26, D96)
+
+- **↻ yangi variant:** promptga `redo` qo'shiladi (`ChatPromptInput.redo`, `redoCue`), oldingi
+  variantlarning matnlari "allaqachon aytilgan" bo'lib boradi. Model o'sha personaj bo'lib qoladi,
+  lekin boshqa yondashuv tanlaydi: boshqa kayfiyat, urg'u yoki harakat. Shunchaki qayta so'zlab
+  bermaydi. Hamma chatlar uchun.
+- **`Character.opening`:** asosiy salomlashuvdan oldingi qisqa `*harakat*`. Mixed va Story
+  chatlarda ko'rinadi, Talk'da ko'rinmaydi (`withOpening`). Rasmiy 41 personajning hammasida bor;
+  quick create chernovigi yozadi, formada maydoni bor.
+- **`Character.quirk`:** bitta yoqimli, sog'lom zaif tomon. Persona qismida turadi: "show it now and
+  then, never announce it". Rashk, egalik va nazorat ohangi taqiqlangan (chernovik qoidasida ham
+  shunday).
+- **Narx:** persona keshlangan qatlamda, bir necha o'n token; `redo` faqat ↻ bosilganda turn
+  qatlamiga qo'shiladi.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

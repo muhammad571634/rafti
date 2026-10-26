@@ -16,6 +16,8 @@ export const MIN_SAMPLES = 3;
 export const MAX_SAMPLES = 5;
 /** The fields a quick create fills in too (`src/ai/character-draft.ts`). */
 export const TAGLINE_MAX = 50;
+export const OPENING_MAX = 90;
+export const QUIRK_MAX = 120;
 export const LOOK_MAX = 300;
 /** Sample dialog; the start matters most, the end is cut first when the prompt runs short. */
 export const DEFINITION_MAX = 3200;

@@ -14,11 +14,13 @@ import {
   STYLE_VOICE,
   STYLES,
   TAGLINE_MAX,
+  OPENING_MAX,
+  QUIRK_MAX,
   TRAITS,
   VOICES,
 } from '../lib/create-character';
 import { pickSeeded } from '../lib/seeded';
-import type { Character, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
+import type { Character, CharacterGender, CharacterRole, ReplyStyle, SpeakingStyle, VoicePreset } from '@/types';
 
 /**
  * Quick create: the creation chain taken from Character.AI (docs/character-ai-teardown.md §11).
@@ -90,6 +92,10 @@ export interface CharacterDraft {
   voicePreset: VoicePreset;
   tags: string[];
   greeting: string;
+  /** A short action before the greeting (`*looks up from the counter*`); may be empty. */
+  opening: string;
+  /** One small endearing flaw; may be empty. */
+  quirk: string;
   greetings: string[];
   definition: string;
   starters: string[];
@@ -128,7 +134,7 @@ const CREATION_RULES = [
 ].join('\n');
 
 /** The fields a draft or a single-field request writes. */
-export type DraftField = 'tagline' | 'bio' | 'look' | 'greeting' | 'greetings' | 'dialog' | 'starters';
+export type DraftField = 'tagline' | 'bio' | 'look' | 'greeting' | 'opening' | 'quirk' | 'greetings' | 'dialog' | 'starters';
 
 /** One rule per field, shared by the whole-draft and the single-field prompt. */
 const FIELD_RULES: Record<DraftField, string> = {
@@ -136,6 +142,8 @@ const FIELD_RULES: Record<DraftField, string> = {
   bio: `bio: who they are, what they want, their world and habits, in their own voice (first person), max ${BIO_MAX} characters.`,
   look: `look: what they look like, for their picture: hair, eyes, clothes, one detail. Adult features. Max ${LOOK_MAX} characters.`,
   greeting: `greeting: their first message to the user, in character, setting the scene, max ${GREETING_MAX} characters. {{user}} stands for the user's name.`,
+  opening: `opening: a short physical action before the greeting, in *asterisks*, third person, what they are doing as the user arrives (*looks up from the counter, smiling*), max ${OPENING_MAX} characters.`,
+  quirk: `quirk: one small, endearing flaw or habit that makes them human (forgets their own lunch, hums when focused); kind and healthy, never jealous, possessive or controlling. Max ${QUIRK_MAX} characters.`,
   greetings: `greetings: ${MORE_GREETINGS_MAX} more first messages, each a different mood or moment, max ${GREETING_MAX} characters each.`,
   dialog:
     'dialog: 4-6 short lines of them talking with someone else (not the user), "from" is "char" or "other". It shows their voice, words and rhythm; no facts about the user.',
@@ -147,6 +155,8 @@ const FIELD_SHAPES: Record<DraftField, string> = {
   bio: '{"value":""}',
   look: '{"value":""}',
   greeting: '{"value":""}',
+  opening: '{"value":""}',
+  quirk: '{"value":""}',
   greetings: '{"values":[]}',
   dialog: '{"dialog":[{"from":"char","text":""}]}',
   starters: '{"values":[]}',
@@ -172,11 +182,13 @@ export function buildDraftPrompt(input: DraftInput) {
     `- speakingStyle: one of ${STYLES.join(', ')}. role: one of ${ROLES.join(', ')}. voicePreset: one of ${VOICES.join(', ')}.`,
     `- tags: 2-${MAX_TRAITS} of ${TRAITS.join(', ')}.`,
     `- ${FIELD_RULES.greeting}`,
+    `- ${FIELD_RULES.opening}`,
+    `- ${FIELD_RULES.quirk}`,
     `- ${FIELD_RULES.greetings}`,
     `- ${FIELD_RULES.dialog}`,
     `- ${FIELD_RULES.starters}`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[]}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[]}',
   ].join('\n');
 }
 
@@ -192,6 +204,7 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
     character.role && `What they are to the user: their ${character.role}`,
     character.tags?.length && `Personality: ${character.tags.join(', ')}`,
     character.greeting && `First message: ${character.greeting}`,
+    character.quirk && `Quirk: ${character.quirk}`,
   ].filter(Boolean);
   return [
     CREATION_RULES,
@@ -244,12 +257,14 @@ export function parseDraft(raw: string): DraftResult {
     voicePreset: oneOf(VOICES, data.voicePreset, STYLE_VOICE[speakingStyle]),
     tags: [...new Set(texts(data.tags).filter((tag) => (TRAITS as readonly string[]).includes(tag)))].slice(0, MAX_TRAITS),
     greeting,
+    opening: actionOf(text(data.opening)),
+    quirk: clip(text(data.quirk), QUIRK_MAX),
     greetings: lines(data.greetings, GREETING_MAX, MORE_GREETINGS_MAX).filter((g) => g !== greeting),
     definition: definitionFromDialog(data.dialog),
     starters: lines(data.starters, STARTER_MAX, STARTERS_MAX),
   };
   const problems = contentProblems(
-    [draft.name, draft.tagline, draft.bio, draft.look, draft.greeting, ...draft.greetings, draft.definition, ...draft.starters].join(' '),
+    [draft.name, draft.tagline, draft.bio, draft.look, draft.greeting, draft.opening, draft.quirk, ...draft.greetings, draft.definition, ...draft.starters].join(' '),
   );
   return problems.length > 0 ? { ok: false, problem: problems[0] } : { ok: true, draft };
 }
@@ -271,6 +286,12 @@ export function parseField(field: DraftField, raw: string): string | string[] | 
       break;
     case 'greeting':
       value = clip(text(data.value), GREETING_MAX);
+      break;
+    case 'opening':
+      value = actionOf(text(data.value));
+      break;
+    case 'quirk':
+      value = clip(text(data.value), QUIRK_MAX);
       break;
     case 'greetings':
       value = lines(data.values, GREETING_MAX, MORE_GREETINGS_MAX);
@@ -395,6 +416,21 @@ export function textToDefinition(text: string, labels: { char: string; other: st
   if (labels.char.trim()) out = out.replace(new RegExp(`^(\\s*)${escape(labels.char.trim())}:`, 'gim'), '$1{{char}}:');
   if (labels.other.trim()) out = out.replace(new RegExp(`^(\\s*)${escape(labels.other.trim())}:`, 'gim'), '$1{{random_user_1}}:');
   return out.slice(0, DEFINITION_MAX);
+}
+
+/** An opening action as one `*…*`, however the model or the creator wrote it; empty stays empty. */
+export function actionOf(raw: string) {
+  const inner = raw.replace(/\*/g, '').replace(/\s+/g, ' ').trim();
+  return inner ? `*${inner.slice(0, OPENING_MAX - 2)}*` : '';
+}
+
+/**
+ * A new chat's first message: their opening action before the main greeting, unless the chat is
+ * plain texting (Talk), where narration never shows. Extra greetings set their own scene.
+ */
+export function withOpening(character: Pick<Character, 'greeting' | 'opening'>, picked: string, style: ReplyStyle) {
+  const action = actionOf(character.opening ?? '');
+  return action && picked === character.greeting && style !== 'talk' ? `${action} ${picked}` : picked;
 }
 
 /** The opening a new chat starts with: the greeting or one of the extra ones, the same for the same seed. */

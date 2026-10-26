@@ -9,6 +9,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
+  actionOf,
   chatToDefinition,
   checkIdea,
   type CharacterDraft,
@@ -45,6 +46,8 @@ import {
   GENDERS,
   GREETING_MAX,
   LOOK_MAX,
+  OPENING_MAX,
+  QUIRK_MAX,
   MAX_SAMPLES,
   MAX_TRAITS,
   MORE_GREETINGS_MAX,
@@ -186,6 +189,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [bio, setBio] = useState(editing?.bio ?? '');
   const [look, setLook] = useState(editing?.look ?? '');
   const [greeting, setGreeting] = useState(editing?.greeting ?? '');
+  const [opening, setOpening] = useState(editing?.opening ?? '');
+  const [quirk, setQuirk] = useState(editing?.quirk ?? '');
   const [greetings, setGreetings] = useState<string[]>(editing?.greetings ?? []);
   /** The sample dialog with its slots (`{{char}}:`); the editor shows names instead. */
   const [definition, setDefinition] = useState(editing?.definition ?? '');
@@ -223,7 +228,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     greeting,
     hasPhoto: !!imageUri,
     look,
-    more: [tagline, ...greetings, definition, ...starters],
+    more: [tagline, opening, quirk, ...greetings, definition, ...starters],
     photoRights,
     voice,
     voiceConsent,
@@ -248,6 +253,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
     setBio(draft.bio);
     setLook(draft.look);
     setGreeting(draft.greeting);
+    setOpening(draft.opening);
+    setQuirk(draft.quirk);
     setGreetings(draft.greetings);
     setDefinition(draft.definition);
     setStarters(draft.starters);
@@ -282,7 +289,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     asked.current[field] = attempt;
     const value = await requestField(
       field,
-      { name, tagline, bio, look, greeting, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
+      { name, tagline, bio, look, greeting, quirk, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
       language,
       attempt,
     );
@@ -295,6 +302,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
     else if (field === 'bio') setBio(text);
     else if (field === 'look') setLook(text);
     else if (field === 'greeting') setGreeting(text);
+    else if (field === 'opening') setOpening(text);
+    else if (field === 'quirk') setQuirk(text);
     else if (field === 'greetings') setGreetings(list);
     else if (field === 'starters') setStarters(list);
     else setDefinition(text);
@@ -363,6 +372,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
       gender,
       avatarUri: imageUri,
       greeting: greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
+      opening: actionOf(opening) || undefined,
+      quirk: quirk.trim() || undefined,
       greetings: cleanList(greetings),
       definition: definition.trim() || undefined,
       starters: cleanList(starters),
@@ -384,6 +395,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       next.tagline !== character.tagline ||
       next.bio !== character.bio ||
       next.greeting !== character.greeting ||
+      next.opening !== character.opening ||
       !same(next.greetings, character.greetings) ||
       !same(next.starters, character.starters) ||
       next.avatarUri !== character.avatarUri;
@@ -586,6 +598,24 @@ function CharacterForm({ editing }: { editing?: Character }) {
                   max={LOOK_MAX}
                   line
                   action={<RewriteButton label={rewriteLabel(t('createCharacter.look'))} busy={busy === 'look'} onPress={() => void rewrite('look')} />}
+                />
+                <Area
+                  label={t('createCharacter.quirk')}
+                  value={quirk}
+                  onChange={setQuirk}
+                  placeholder={t('createCharacter.quirkPlaceholder')}
+                  max={QUIRK_MAX}
+                  line
+                  action={<RewriteButton label={rewriteLabel(t('createCharacter.quirk'))} busy={busy === 'quirk'} onPress={() => void rewrite('quirk')} />}
+                />
+                <Area
+                  label={t('createCharacter.opening')}
+                  value={opening}
+                  onChange={setOpening}
+                  placeholder={t('createCharacter.openingPlaceholder')}
+                  max={OPENING_MAX}
+                  line
+                  action={<RewriteButton label={rewriteLabel(t('createCharacter.opening'))} busy={busy === 'opening'} onPress={() => void rewrite('opening')} />}
                 />
                 <Area
                   label={t('createCharacter.greeting')}

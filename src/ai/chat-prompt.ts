@@ -4,6 +4,7 @@ import type { ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
 import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relationship, Thread, TimeSkip, User } from '@/types';
 
 import { steerCue } from '../lib/chat-steer';
+import { redoCue } from '../lib/chat-turns';
 import { messageText } from '../lib/story-continuity';
 
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
@@ -96,6 +97,8 @@ export interface ChatPromptInput {
   memories?: readonly (MemoryNote & { pinned?: boolean })[];
   /** A continue or a time skip in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** ↻: what earlier versions of this reply said; the new one takes another angle (`redoCue`). */
+  redo?: readonly string[];
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
@@ -112,6 +115,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
+    part('redo', 'turn', input.redo?.length ? redoCue(input.redo) : []),
     part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
     ...threadParts(input.threads ?? []),
     part('shape', 'turn', [REPLY_SHAPE]),

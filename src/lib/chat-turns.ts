@@ -1,5 +1,18 @@
 import type { Message } from '@/types';
 
+/**
+ * ↻ for every chat and character: the earlier versions go to the model as what was already said,
+ * and the new one is the same person taking another angle (a different mood, focus or move), not a
+ * rephrase and not a different person. Character.AI's swipes feel alive because no two read alike.
+ */
+export function redoCue(said: readonly string[]) {
+  return [
+    'NEW VERSION: the user asked for another version of your last reply. You already said:',
+    ...said.slice(-8).map((line) => `- ${line}`),
+    'Write a different take, still fully you and true to everything so far: a different mood, focus or move (tease where you comforted, ask where you told, act where you talked). Never a rephrase of the above.',
+  ];
+}
+
 /** How many versions of their newest reply a chat keeps (↻, Character.AI teardown item 1). */
 export const MAX_REPLY_VERSIONS = 5;
 

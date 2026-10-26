@@ -9,6 +9,20 @@ import {
   SPARKS,
 } from '../ai/character-draft';
 import { BIO_MAX, MORE_GREETINGS_MAX, ROLES, STYLE_VOICE } from '../lib/create-character';
+
+/** Stand-ins until the model writes them: an opening action and a small endearing quirk. */
+const OPENINGS = [
+  '*looks up and smiles as you come in*',
+  '*sets down what they were holding and waves you over*',
+  '*glances at the door, then breaks into a grin*',
+  '*pulls out the chair next to them*',
+];
+const QUIRKS = [
+  'Forgets their own lunch, never yours.',
+  'Hums without noticing when they concentrate.',
+  'Gets flustered by compliments, every single time.',
+  'Writes everything down, then loses the notebook.',
+];
 import { hashSeed, pickSeeded } from '../lib/seeded';
 import type { CharacterGender, CharacterRole, SpeakingStyle } from '@/types';
 
@@ -178,6 +192,8 @@ export function mockDraft(input: DraftInput): CharacterDraft {
     voicePreset: STYLE_VOICE[voices[0].style],
     tags: [...new Set(voices.map((voice) => voice.tag))],
     greeting: voices[0].greeting,
+    opening: pickSeeded(OPENINGS, `${seed}|opening`),
+    quirk: pickSeeded(QUIRKS, `${seed}|quirk`),
     // The other sparks' openings first, then other moods, so there are always three more.
     greetings: [...voices.slice(1), ...SPARKS.map((spark) => VOICES[spark]).filter((voice) => !voices.includes(voice))]
       .slice(0, MORE_GREETINGS_MAX)
@@ -240,6 +256,10 @@ export function mockFieldReply(field: DraftField, character: FieldContext, attem
     }
     case 'look':
       return JSON.stringify({ value: at(LOOKS, (look) => look === character.look) });
+    case 'opening':
+      return JSON.stringify({ value: at(OPENINGS, (line) => line === character.opening) });
+    case 'quirk':
+      return JSON.stringify({ value: at(QUIRKS, (line) => line === character.quirk) });
     case 'greeting':
       return JSON.stringify({ value: at(voices.map((v) => v.greeting), (line) => line === character.greeting) });
     case 'greetings': {

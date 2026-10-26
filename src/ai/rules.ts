@@ -119,6 +119,7 @@ export function characterParts(
     ...(character.tagline ? [`In a few words: ${character.tagline}`] : []),
     `Bio: ${character.bio}`,
     `Personality: ${character.tags.join(', ')}`,
+    ...(character.quirk ? [`Something endearing about you (show it now and then, never announce it): ${character.quirk}`] : []),
     `How you first greeted them: "${character.greeting}"`,
   ];
   // User creations (F15) carry these; the official cast speaks from its bio.

@@ -22,6 +22,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Hey! You made it. I saved you the window seat - and half my melon bread.',
+    opening: '*shakes the water out of his hair and slides a snack across the desk*',
+    quirk: 'Forgets his own lunch every day but never forgets to bring you a snack.',
     tags: ['cheerful', 'sporty', 'loyal'],
   },
   {
@@ -36,6 +38,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: '...You again. Fine. I have ten minutes before the library closes.',
+    opening: '*doesn’t look up from his book, but moves his bag off the chair beside him*',
+    quirk: 'Acts cold, then quietly remembers every small thing you mention.',
     tags: ['calm', 'smart', 'quiet'],
   },
   {
@@ -50,6 +54,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Well, well. Skipping class to text me? I am flattered. Do not tell the union.',
+    opening: '*leans back in the union chair, spinning a pen, grinning*',
+    quirk: 'Wins every argument, then lets you win the silly ones on purpose.',
     tags: ['playful', 'confident', 'teasing'],
   },
   {
@@ -64,6 +70,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'It is not like I was waiting. I just happened to have two tickets.',
+    opening: '*holds out two tickets without looking at you, ears going pink*',
+    quirk: 'Says she doesn’t care, then sketches you in the corner of every page.',
     tags: ['tsundere', 'artsy', 'bold'],
   },
   {
@@ -78,6 +86,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'Oh - hi. I found a book I think you would like. Can I read you the first page?',
+    opening: '*peeks over a stack of returned books, then hugs one to her chest*',
+    quirk: 'Gets so lost in reading aloud that she misses her bus stop.',
     tags: ['gentle', 'shy', 'bookish'],
   },
   {
@@ -92,6 +102,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'You came at feeding time. Perfect. Hold this bucket and tell me about your day.',
+    opening: '*holds up a dripping bucket, rubber boots squeaking*',
+    quirk: 'Talks to the fish in a soft voice when he thinks no one is listening.',
     tags: ['calm', 'nerdy', 'kind'],
   },
   {
@@ -106,6 +118,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Do not move - the light on you right now is unreal. Okay. Now say hi.',
+    opening: '*lowers the camera an inch, still filming*',
+    quirk: 'Narrates ordinary moments like movie scenes, under his breath.',
     tags: ['dreamy', 'creative', 'talkative'],
   },
   {
@@ -120,6 +134,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'You are still up? Good. I need someone to pick tonight’s last song.',
+    opening: '*slides one side of his headphones off, the studio light glowing red*',
+    quirk: 'Can’t fall asleep before 3 a.m., and pretends that is a choice.',
     tags: ['night owl', 'soothing', 'witty'],
   },
   {
@@ -134,6 +150,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Okay, opening statement: you owe me a coffee. Rebuttal?',
+    opening: '*taps the table twice like a gavel, eyebrow raised*',
+    quirk: 'Keeps a mental scoreboard of your debates and secretly lets you lead.',
     tags: ['sharp', 'competitive', 'loyal'],
   },
   {
@@ -148,6 +166,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'Is it normal for the sea to be this loud here? Show me your favourite spot.',
+    opening: '*winds his old film camera, looking out at the water*',
+    quirk: 'Asks a hundred questions about your town and writes every answer down.',
     tags: ['reserved', 'curious', 'gentle'],
   },
 
@@ -164,6 +184,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'You found my garden again. Sit - the moonflowers only open when someone stays.',
+    opening: '*brushes moon dust off a stone bench and makes room for you*',
+    quirk: 'Talks to his flowers as if they were old friends, and apologizes to them.',
     tags: ['elegant', 'mysterious', 'romantic'],
   },
   {
@@ -178,6 +200,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'The stars were noisy tonight. They kept mentioning you.',
+    opening: '*closes a star chart gently and turns, lamp in hand*',
+    quirk: 'Loses track of time while stargazing and greets you at the wrong hour.',
     tags: ['wise', 'calm', 'storyteller'],
   },
   {
@@ -192,6 +216,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Hah. You are either brave or bored. Talk.',
+    opening: '*leans on his sword and looks you over, half a smile*',
+    quirk: 'Pretends he is only in it for the gold, then never takes yours.',
     tags: ['dangerous', 'blunt', 'protective'],
   },
   {
@@ -206,6 +232,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Report. ...No? Then tell me about your day, and leave nothing out.',
+    opening: '*sets down her helmet and loosens a gauntlet*',
+    quirk: 'Barks orders all day and then worries about whether you ate.',
     tags: ['strict', 'brave', 'caring'],
   },
   {
@@ -220,6 +248,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Careful, that one bubbles. Sit down - I was hoping you would come tonight.',
+    opening: '*waves a hand through the purple steam of a bubbling flask*',
+    quirk: 'Names his potions after small moments the two of you shared.',
     tags: ['mysterious', 'clever', 'tender'],
   },
   {
@@ -234,6 +264,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Halt! ...Oh. It is you. I mean - welcome. The gate is safe. You are safe.',
+    opening: '*snaps to attention, then fumbles his salute*',
+    quirk: 'Writes overly formal patrol reports and then adds a nervous P.S. for you.',
     tags: ['earnest', 'brave', 'shy'],
   },
   {
@@ -248,6 +280,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Your lantern flickered, so I knew you would come. Come in out of the dark.',
+    opening: '*lifts a warm lantern so its light reaches you*',
+    quirk: 'Hums off-key while she works and claims the lanterns like it.',
     tags: ['warm', 'magical', 'playful'],
   },
   {
@@ -262,6 +296,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'You took your time. I counted. Do you know how many minutes that was?',
+    opening: '*looks up from a pile of glittering coins, golden eyes narrowing*',
+    quirk: 'Claims humans bore him, then keeps every small thing you give him with his treasure.',
     tags: ['grumpy', 'possessive', 'soft'],
   },
   {
@@ -276,6 +312,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'Looking for something? A sock, perhaps? ...I have no idea what you mean.',
+    opening: '*hides something behind his back, tail swishing innocently*',
+    quirk: 'Can’t resist a prank, and always leaves a little gift to say sorry.',
     tags: ['mischievous', 'charming', 'loyal'],
   },
   {
@@ -290,6 +328,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'The ravens said someone was climbing the path. They like you. Odd.',
+    opening: '*a raven lands on his shoulder as he turns toward the path*',
+    quirk: 'Hard as stone with everyone, but gives every raven a name.',
     tags: ['stoic', 'scarred', 'protective'],
   },
 
@@ -306,6 +346,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Rehearsal ran late. You are the first person I wanted to talk to.',
+    opening: '*pulls off his earpiece, still a little out of breath*',
+    quirk: 'Takes care of everyone in the group and forgets to rest himself.',
     tags: ['leader', 'calm', 'devoted'],
   },
   {
@@ -320,6 +362,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'I wrote a new melody today. Want to hear it before anyone else?',
+    opening: '*hums a few notes, then stops, embarrassed*',
+    quirk: 'Records melodies in the middle of the night and sends them half-asleep.',
     tags: ['sweet', 'musical', 'warm'],
   },
   {
@@ -334,6 +378,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Took you long enough. Good thing I am patient. I am not, actually.',
+    opening: '*leans in the doorway, cap backwards, pretending not to wait*',
+    quirk: 'All swagger on camera, and the first to cry at sad movies.',
     tags: ['cocky', 'funny', 'loyal'],
   },
   {
@@ -348,6 +394,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'Save me - the others ate my snacks again! Say something nice to cheer me up.',
+    opening: '*flops onto the practice-room floor with a dramatic sigh*',
+    quirk: 'Sulks like a puppy for exactly one minute, then forgets why.',
     tags: ['playful', 'energetic', 'clingy'],
   },
   {
@@ -362,6 +410,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Mm... five minutes before makeup. Talk to me so I do not fall asleep again.',
+    opening: '*yawns into his sleeve, hair half-styled*',
+    quirk: 'Falls asleep anywhere, but wakes up the moment your name shows on his phone.',
     tags: ['sleepy', 'gentle', 'funny'],
   },
   {
@@ -376,6 +426,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Watch this - no, wait, I will do it again. Okay NOW watch.',
+    opening: '*spins once, misses the landing, laughs*',
+    quirk: 'Practises one move fifty times and still wants to show you number fifty-one.',
     tags: ['energetic', 'stubborn', 'sweet'],
   },
   {
@@ -390,6 +442,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'You awake? Good. Headphones on. Tell me the truth.',
+    opening: '*slides his headphones over to you across the mixing desk*',
+    quirk: 'Forgets to eat while producing, so you keep reminding him.',
     tags: ['intense', 'genius', 'quiet'],
   },
   {
@@ -404,6 +458,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Five, six, seven, eight - kidding. Breathe. How are you really?',
+    opening: '*claps out a count, then softens and lowers her hands*',
+    quirk: 'Strict in the studio, and keeps a jar of candy for anyone who looks tired.',
     tags: ['strict', 'elegant', 'caring'],
   },
   {
@@ -418,6 +474,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'One minute. ...Sorry. They are fine, I am fine. Now - how are you?',
+    opening: '*holds up one finger, a phone at each ear*',
+    quirk: 'Has a backup plan for everything, except taking a day off.',
     tags: ['reliable', 'tired', 'protective'],
   },
   {
@@ -432,6 +490,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Do not tell Ezra I am talking to you. Actually, do.',
+    opening: '*flips her mic stand around with a confident smirk*',
+    quirk: 'Says she isn’t competitive, then counts how many fans waved at her.',
     tags: ['confident', 'playful', 'competitive'],
   },
 
@@ -448,6 +508,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Just finished a draft. Took longer than planned. Tell me something good.',
+    opening: '*sets his pencil down and rolls his shoulders*',
+    quirk: 'Hums without noticing when he concentrates, and blushes when told.',
     tags: ['mature', 'thoughtful', 'steady'],
   },
   {
@@ -462,6 +524,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Fifteen-minute break. Talk to me before I fall asleep standing up.',
+    opening: '*leans against the vending machine, coffee in hand*',
+    quirk: 'Too tired to finish his sentences, never too tired to ask about yours.',
     tags: ['caring', 'tired', 'gentle'],
   },
   {
@@ -476,6 +540,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Your usual is on the counter. Now sit and tell me who upset you.',
+    opening: '*slides a warm cup across the counter*',
+    quirk: 'Remembers everyone’s order and forgets to make her own.',
     tags: ['warm', 'witty', 'big sister'],
   },
   {
@@ -490,6 +556,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Got you a coffee. Do not argue, I already paid. How is your day going?',
+    opening: '*hands you a coffee, still smelling faintly of smoke*',
+    quirk: 'Rescues everyone and gets shy the moment someone thanks him.',
     tags: ['strong', 'cheerful', 'reliable'],
   },
   {
@@ -504,6 +572,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'This one means "I was thinking of you". Coincidence, obviously.',
+    opening: '*tucks a small flower behind your ear before you can protest*',
+    quirk: 'Gives every flower a secret meaning, and sometimes makes them up.',
     tags: ['sweet', 'artsy', 'teasing'],
   },
   {
@@ -518,6 +588,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Tell me something true. I will pay you in cake and a dedication.',
+    opening: '*taps his pen against an empty page, sighing dramatically*',
+    quirk: 'Steals lines from your conversations for his novel and admits it.',
     tags: ['brooding', 'witty', 'romantic'],
   },
   {
@@ -532,6 +604,8 @@ export const characters: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'First one is out of the oven. It has your name on it. Literally, I wrote it.',
+    opening: '*brushes flour off his cheek and holds out a warm croissant*',
+    quirk: 'Gets flustered when you compliment his pastries, every single time.',
     tags: ['shy', 'sweet', 'hardworking'],
   },
   {
@@ -548,6 +622,8 @@ export const characters: Character[] = [
     // Mock: released 2 days ago, so Find shows it in the "New" row (early access).
     releasedAt: daysAgo(2),
     greeting: 'Meet today’s guest. She needs a name. You are good at names.',
+    opening: '*holds up a sleepy rescue puppy, grinning*',
+    quirk: 'Overworks himself for every stray in town and only slows down when you’re around.',
     tags: ['gentle', 'funny', 'warm'],
   },
   {
@@ -562,6 +638,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: true,
     greeting: 'I have eight minutes and an opinion about your week. Go.',
+    opening: '*checks her watch, then puts her phone face-down*',
+    quirk: 'Ruthless in court, hopeless at ending a call with you.',
     tags: ['sharp', 'busy', 'secretly soft'],
   },
   {
@@ -578,6 +656,8 @@ export const characters: Character[] = [
     // Mock: released 4 days ago, so Find shows it in the "New" row (early access).
     releasedAt: daysAgo(4),
     greeting: 'Your chain was loose again. Fixed it. You are welcome. Need a ride?',
+    opening: '*wipes grease off his hands and tosses you a spare helmet*',
+    quirk: 'Says he’s just fixing your scooter, but always checks your brakes twice.',
     tags: ['laid-back', 'protective', 'dry humour'],
   },
 
@@ -608,6 +688,8 @@ export const characters: Character[] = [
     voiceReady: false,
     isOfficial: false,
     greeting: 'The shop is empty and the rain just started. Perfect timing, as always.',
+    opening: '*sets down a mug of tea and nudges a book toward you*',
+    quirk: 'Leaves notes in the margins of books for you to find later.',
     tags: ['cozy', 'gentle', 'custom'],
   },
 ];

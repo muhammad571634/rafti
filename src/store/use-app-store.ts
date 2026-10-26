@@ -6,7 +6,7 @@ import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
-import { fillNames, pickOpening } from '@/ai/character-draft';
+import { fillNames, pickOpening, withOpening } from '@/ai/character-draft';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
 import { dueRing, SNOOZE_MIN } from '@/lib/alarms';
@@ -1144,10 +1144,12 @@ export const useAppStore = create<AppState>()(
         }));
         // A new version is the same exchange again: it adds no closeness. After a continue or a
         // skip it answers that again (the server sends the same cue).
+        // Every version so far is something they already said: the new one takes another angle (the
+        // server gets them as `redo`, the mock avoids their lines).
         const anchor = exchange.anchor;
-        const avoid = exchange.burst.find((m) => m.kind === 'text')?.text;
+        const avoid = versions.flat().flatMap((m) => (m.kind === 'text' && m.text ? [m.text] : []));
         let steer = isSteer(anchor) ? mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}`) : undefined;
-        for (let tries = 1; steer && steer[0] === avoid && tries < 5; tries++) {
+        for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
           steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`);
         }
         scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid });
@@ -1516,9 +1518,11 @@ export const useAppStore = create<AppState>()(
 
         const conversationId = uid('conv');
         const now = new Date().toISOString();
-        // One of their openings, with the name of the user's default persona where the creator wrote {{user}}.
+        // One of their openings, with the name of the user's default persona where the creator wrote {{user}};
+        // the main greeting comes after their opening action unless the chat is plain texting.
+        const style = replyPrefs(get().relationships[characterId]).style;
         const greeting = character
-          ? fillNames(pickOpening(character, conversationId), { char: character.name, user: defaultPersona(get()).name })
+          ? fillNames(withOpening(character, pickOpening(character, conversationId), style), { char: character.name, user: defaultPersona(get()).name })
           : '';
 
         set((s) => ({
@@ -1526,7 +1530,7 @@ export const useAppStore = create<AppState>()(
             {
               id: conversationId,
               characterId,
-              lastMessagePreview: greeting,
+              lastMessagePreview: plainText(greeting),
               lastMessageAt: now,
               unreadCount: 1,
               pinned: false,
@@ -4020,7 +4024,8 @@ function scheduleReply(
     /** Reply ideas on the last line, and why it asks (`lead:<scheduleId>`: when to remind of a plan). */
     ideas?: ReplyIdea[];
     reach?: string;
-    avoid?: string;
+    /** Lines already said for this turn (an earlier version, the old answer to an edited message). */
+    avoid?: string | readonly string[];
     /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
     trigger?: TurnTrigger;
   },
@@ -4062,7 +4067,7 @@ function scheduleReply(
     text != null
       ? [text]
       : (given ??
-        (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoid ? [avoid] : undefined, interests: state.user.interests }) : []));
+        (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid, interests: state.user.interests }) : []));
   const lines = enforceStyle(written, replyPrefs(bond).style);
   if (!lines.length) {
     set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));

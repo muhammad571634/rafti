@@ -29,6 +29,13 @@ export interface Character {
   temper?: Temper;
   /** A few words under the name: how they would sum themselves up. */
   tagline?: string;
+  /**
+   * A short action before their first greeting (`*holds up a sleepy puppy*`), shown in Mixed and Story
+   * chats and left out in Talk ones (`withOpening`).
+   */
+  opening?: string;
+  /** One small, endearing flaw the model plays ("Forgets his own lunch, never yours"). */
+  quirk?: string;
   /** What they look like, in words; their picture is drawn from it. */
   look?: string;
   /**
