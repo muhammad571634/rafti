@@ -46,7 +46,10 @@ export function createApp(provider: LlmProvider | null, opts: { timeoutMs: numbe
       const reply = parseModelReply(result.text);
       const ms = Date.now() - started;
       // The cost log until the database's `usage_events` exists.
-      console.log(`[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'}`);
+      const lang = input.replyLanguage === FOLLOW_USER_LANGUAGE ? 'follow' : input.replyLanguage;
+      console.log(
+        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
+      );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: result.model ?? provider.name, ms });
     } catch (error) {

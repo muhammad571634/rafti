@@ -26,6 +26,13 @@ export const config = {
     .split(',')
     .map((m) => m.trim())
     .filter(Boolean),
+  /** An OpenAI-compatible provider (DeepSeek, OpenRouter, Groq…), tried before Gemini when all three are set. */
+  openai: {
+    baseUrl: process.env.OPENAI_BASE_URL ?? '',
+    apiKey: process.env.OPENAI_API_KEY ?? '',
+    model: process.env.OPENAI_MODEL ?? '',
+    label: process.env.OPENAI_LABEL ?? 'openai',
+  },
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
 } as const;
