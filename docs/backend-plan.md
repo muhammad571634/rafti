@@ -762,6 +762,18 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
 - **Narx:** mavzu ajratish javobning o'zida (bir necha o'n token). Har yozilgan xabar bitta chaqiruv
   (≈ $0.0006) va kunlik push byudjeti ichida. Voqeadan oldingi xabar (`before`) eslatma sifatida
   time-sensitive ketadi.
+- **Turlar (D88):** `kind` = `follow | plan | goal | quest`. Bosqichlar:
+  - `eve`: kechqurun "erta yot", budilnik taklifi bilan;
+  - `leave`: chiqish vaqti;
+  - `before`, `after`, `check`;
+  - `goal`: odat maqsadi, bir necha kunda bir so'raladi, urishilmaydi;
+  - `quest`: kuniga ko'pi bilan bitta kichik hayotiy topshiriq, bajarilsa 3 chig'anoq.
+- **Global qatlamda `REAL LIFE` qoidasi:** uzoq o'tirganda tanaffus, kech bo'lganda uyqu taklif qilinadi,
+  foydalanuvchi tanlovi qabul qilinadi.
+- **Telefondagi qoidalar** (`src/lib/life.ts`):
+  - tun 00:30–05:00, bir kechada bir marta;
+  - tanaffus 40 daqiqa va 25 xabardan keyin, kuniga bir marta;
+  - topshiriq 10:00–20:00 oralig'ida, kuniga bir marta.
 - **Hozir telefonda:** `src/mock/threads.ts` vaqtincha o'rinbosar. U faqat shaklni taniydi (vaqtli reja,
   vazifa, niyat, natija; EN/UZ/RU) va foydalanuvchi so'zini iqtibos qiladi. Server kelishi bilan
   olib tashlanadi.

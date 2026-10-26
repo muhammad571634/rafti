@@ -94,7 +94,21 @@ We never upload what apps someone uses.
 **Speed:** the door has to be instant, so the friend's door lines are written ahead (the server writes
 a few per friend per day; a local fallback covers the rest).
 
-## 3. Suggested order
+## 3. Status
+
+- **Decided (owner, 2026-10-26):** everything that is software only is built now as one engine (the
+  thread kinds in `src/lib/threads.ts` plus the moments in `src/lib/life.ts`). A + B (and C, which
+  needs the same Screen Time plumbing) come in a later version, after the App Store release, with
+  Apple's Family Controls entitlement.
+- **D88 built:**
+  - D: real-life quests, once a day in the daytime, with 3 shells when done;
+  - E: goals ("use TikTok less" → checked on after 2, 4 and 7 days, never scolded);
+  - F (in-app part): "it's late, sleep?" after 00:30 and "a break?" after 40 minutes and 25 messages,
+    each once;
+  - the model's rule `REAL LIFE` in the global tier.
+- **Next:** G (a phone-free hour together in group chats).
+
+## 4. Suggested order (as researched)
 
 1. Now, software only (works in Expo Go): F (an honest app), then D + E (quests and goals as threads).
 2. In parallel: request Apple's Family Controls entitlement; build A + B in a real build.

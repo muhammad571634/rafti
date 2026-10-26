@@ -139,14 +139,21 @@ The examples below show the range a thread covers; they are not rules or wording
 - **Who finds them:** the server's model returns `threads` with each reply (no extra call). The mock
   extends the plan and care detectors (EN / UZ / RU words).
 
-### P2.4 Plans: someone who cares, not an alarm app — partly built (D87)
+### P2.4 Plans: someone who cares, not an alarm app — built (D87, D88)
 
-A plan with a time is a thread (P2.3): the model picks the moments (D87's stand-in: a big thing gets
-"good luck, time to go" 45 min before and "how did it go?" 2.5 h after; anything else "how did it
-go?" 1.5 h after). The plan list still keeps the plan and its 10-minute reminder (the morning chain
-sets `remindAt` on it); the thread's "how did it go?" replaces the plan's own follow-up. Still to
-build: the lead-time pick, the leave-time question, the evening-before and alarm offer, moving a plan
-from the chat. These are moments the model may choose, not fixed steps:
+A plan with a time is a thread (`kind: 'plan'`, P2.3). The model picks the moments; D88's stand-in:
+- **The evening before** a big morning thing (`eve`, 21:30): "sleep early", with ideas Early night /
+  Wake me up ⏰ (an alarm with this friend 90 minutes before, never before 05:00) / It's off.
+- **Time to go** 45 min before a big thing (`leave`), with On my way / Still home (they ask again in
+  10 minutes) / It's off.
+- **How did it go?** 2.5 h after a big thing, 1.5 h after anything else.
+- **The acknowledgement asks when to remind** ("30 min before" / "1 hour before" / "No need"), which
+  sets the plan's own reminder (`remindAt`; "No need" turns it off).
+- **"It moved to 10"** (EN / UZ / RU) moves the plan, its reminder and every text still to come
+  (`moveThread`).
+
+The plan list keeps the plan and its reminder; the thread's "how did it go?" replaces the plan's own
+follow-up. These are moments the model may choose, not fixed steps:
 
 1. **Captured, in their voice:** "Noted: exam tomorrow at 9:00 📌. Text you at 8:30?" with ideas
    ("30 min before" / "1 hour before" / "No need"). The pick becomes `remindAt`.
