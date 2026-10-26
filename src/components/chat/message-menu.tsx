@@ -31,6 +31,8 @@ export interface MessageMenuProps {
   onPin?: (message: Message) => void;
   /** The held line is already pinned: the item reads Unpin. */
   pinned?: boolean;
+  /** Given only for their lines written first (a reach key): Why? says what started it. */
+  onWhy?: (message: Message) => void;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
 }
@@ -53,6 +55,7 @@ export function MessageMenu({
   onRewind,
   onPin,
   pinned,
+  onWhy,
   blurTarget,
 }: MessageMenuProps) {
   const { t } = useTranslation();
@@ -65,8 +68,9 @@ export function MessageMenu({
   const pin = onPin
     ? { key: 'pin', label: pinned ? t('chat.unpin') : t('chat.pin'), icon: pinned ? ('pin' as const) : ('pin-outline' as const), onPress: () => onPin(message) }
     : null;
+  const why = !mine && onWhy ? { key: 'why', label: t('why.menu'), icon: 'help-circle-outline' as const, onPress: () => onWhy(message) } : null;
   const report = mine ? null : { key: 'report', label: t('safety.report'), icon: 'flag-outline' as const, onPress: () => onReport(message) };
-  const firstGroup = (mine ? [copy, edit, pin] : [copy, pin, report]).filter((row) => row !== null);
+  const firstGroup = (mine ? [copy, edit, pin] : [copy, why, pin, report]).filter((row) => row !== null);
 
   return (
     // An overlay inside the chat, not a Modal: a separate window would sit outside the blur target.
@@ -105,7 +109,7 @@ export function MessageMenu({
 
         {/* No copy of the message under the reactions (owner, 2026-10-16): reactions, then actions. */}
         <View style={[styles.menu, !mine && styles.inset]} accessibilityRole="menu">
-          {/* First group: yours Copy, Edit, Pin; theirs Copy, Pin, Report (canvas `MenuPin.dc.html`). */}
+          {/* First group: yours Copy, Edit, Pin; theirs Copy, Why? (a line they wrote first), Pin, Report. */}
           {firstGroup.map((row, i) => (
             <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
           ))}

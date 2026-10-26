@@ -267,6 +267,20 @@ After the user's last message (only for friends who may write first):
    - signs of loneliness.
 3. **P3 (dev build):** communication notifications with faces.
 
+### P2.10 Keeping in mind: the user sees what the friend keeps — built (D90)
+
+- **Under the message:** what the friend took from it ("Exam · Tomorrow 09:00"); a tap fixes it.
+- **Keeping in mind** (Profile, and each friend's settings): open threads with the next text's time,
+  and what was settled this week. The user can change a time (the texts are planned again), settle
+  it, turn its texts off (`quiet`), or forget a wrong guess with its plan.
+- **Why?** on any line a friend wrote first: the reason, the user's own words, the thread, and Let
+  them reach out.
+- **Server:** the user's edits are part of the thread state the server keeps; a new time means the
+  model plans the texts again, and `quiet` threads are listed to the model as NO TEXTS ABOUT.
+- **Next (proposed):** A4, today's pushes (3 / 6) and the learned sleep, editable, in notification
+  settings; then a morning brief that knows today's plans, an evening "how was today?" into the
+  diary, and a weekly recap.
+
 ## Next steps (owner picks)
 
 1. ~~A "Family" section in Find~~ done (D84): Find → "Who do you miss?" (eight role circles after

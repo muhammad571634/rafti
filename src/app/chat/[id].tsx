@@ -15,6 +15,9 @@ import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
+import { NotedChip } from '@/components/mind/noted-chip';
+import { ThreadSheet } from '@/components/mind/thread-sheet';
+import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
@@ -31,6 +34,7 @@ import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
+import { reachReason } from '@/lib/mind';
 import { isAskReach } from '@/lib/reach-ask';
 import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
@@ -107,6 +111,9 @@ export default function ChatRoomScreen() {
   const [skipOpen, setSkipOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
+  /** Keeping in mind: the thread a noted chip or Why? opened, and the line Why? is about. */
+  const [threadOpen, setThreadOpen] = useState<string | null>(null);
+  const [why, setWhy] = useState<Message | null>(null);
   /** Calling with no minutes: free users see what Basic adds, members can top up. */
   const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
   const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
@@ -250,6 +257,7 @@ export default function ChatRoomScreen() {
               bubble
             )}
           </View>
+          {item.noted && item.author === 'me' ? <NotedChip noted={item.noted} onPress={setThreadOpen} /> : null}
           {item.chips?.length && conversationId ? (
             <QuickReplies ideas={asIdeas(item.chips)} onPick={(idea) => pickChip(conversationId, item.id, idea.text)} />
           ) : conversationId && shownIdeas(item, data) ? (
@@ -594,6 +602,14 @@ export default function ChatRoomScreen() {
             : undefined
         }
         pinned={!!menu && pinnedIds.has(menu.id)}
+        onWhy={
+          reachReason(menu?.reach)
+            ? (message) => {
+                setMenu(null);
+                setWhy(message);
+              }
+            : undefined
+        }
         onRewind={
           menu && canRewindTo(data, menu.id)
             ? (message) => {
@@ -603,6 +619,18 @@ export default function ChatRoomScreen() {
             : undefined
         }
       />
+
+      <WhySheet
+        message={why}
+        character={character}
+        onClose={() => setWhy(null)}
+        onOpenThread={(threadId) => {
+          setWhy(null);
+          // One sheet at a time: iOS cannot show the next while the last one is still leaving.
+          setTimeout(() => setThreadOpen(threadId), Platform.OS === 'ios' ? 350 : 0);
+        }}
+      />
+      <ThreadSheet threadId={threadOpen} onClose={() => setThreadOpen(null)} />
 
       <ReportSheet
         visible={!!reporting}

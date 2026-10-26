@@ -128,7 +128,7 @@ export const threadReach = (phase: TouchPhase, threadId: string) => `thread:${ph
 /** The phase and thread behind a reach key, or null. */
 export function reachThread(reach: string | undefined): { phase: TouchPhase; id: string } | null {
   const [source, phase, ...id] = reach?.split(':') ?? [];
-  return source === 'thread' && (phase === 'before' || phase === 'after' || phase === 'check') && id.length ? { phase, id: id.join(':') } : null;
+  return source === 'thread' && phase in THREAD && id.length ? { phase: phase as TouchPhase, id: id.join(':') } : null;
 }
 
 /**

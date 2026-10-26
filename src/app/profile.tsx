@@ -48,6 +48,7 @@ const FILL = {
   plan: systemColors.purple,
   personas: systemColors.blue,
   lore: systemColors.indigo,
+  mind: systemColors.orange,
 };
 const SWITCH_ON = systemColors.green;
 const CARD_SHADOW = {
@@ -74,6 +75,7 @@ export default function ProfileScreen() {
   // Who new chats use (Character.AI's personas): the profile unless the user picked one.
   const personaName = useAppStore((s) => defaultPersona(s).name);
   const ownBooks = useAppStore((s) => s.lorebooks.length);
+  const openThreads = useAppStore((s) => s.threads.filter((x) => x.status === 'open').length);
   const setSetting = useAppStore((s) => s.setSetting);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
   const endPlan = useAppStore((s) => s.endPlan);
@@ -136,6 +138,14 @@ export default function ProfileScreen() {
       fill: FILL.personas,
       meta: personaName,
       onPress: () => router.push('/personas'),
+    },
+    {
+      key: 'mind',
+      title: t('mind.title'),
+      icon: 'bookmark' as IoniconName,
+      fill: FILL.mind,
+      ...(openThreads ? { meta: String(openThreads) } : {}),
+      onPress: () => router.push('/mind'),
     },
     {
       key: 'lore',

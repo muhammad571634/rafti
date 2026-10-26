@@ -2054,5 +2054,61 @@
     "notIncluded": "{{plan}}: not included",
     "renewNote": "Plans renew automatically until you cancel in {{store}} settings.",
     "ofTotal": "of {{total}} min"
+  },
+  "mind": {
+    "title": "Keeping in mind",
+    "soon": "Coming up",
+    "following": "Following",
+    "settled": "Settled",
+    "empty": "Nothing yet",
+    "next": "Next text {{when}}",
+    "youSaid": "You said",
+    "when": "When",
+    "texts": "{{name}}'s texts",
+    "reachOff": "{{name}} can't text first",
+    "forget": "Forget this",
+    "forgetConfirm": "{{name}} will forget it, and its plan goes too.",
+    "kind": { "plan": "Plan", "follow": "Following up", "goal": "Goal", "quest": "Quest" },
+    "outcome": { "good": "Went well", "bad": "Not great", "done": "Done", "off": "It's off", "quiet": "No texts" },
+    "end": { "good": "It went well", "bad": "Not great", "done": "Done", "off": "It's off", "quiet": "No texts about it", "stopGoal": "Stop this goal" },
+    "phase": {
+      "eve": "Early night",
+      "before": "Good luck",
+      "leave": "Time to go",
+      "after": "How did it go?",
+      "check": "Did you finish?",
+      "goal": "How's the goal?",
+      "quest": "Quest check"
+    }
+  },
+  "why": {
+    "title": "Why {{name}} wrote",
+    "menu": "Why?",
+    "thread": {
+      "eve": "The night before {{about}}",
+      "before": "Before {{about}}",
+      "leave": "Time to leave for {{about}}",
+      "after": "To hear how {{about}} went",
+      "check": "Checking on {{about}}",
+      "goal": "Your goal: {{about}}",
+      "quest": "Today's quest"
+    },
+    "quest": "A small real-life quest",
+    "lead": "When to remind you of {{about}}",
+    "care": {
+      "headache": "Your headache",
+      "sick": "You felt sick",
+      "tired": "You were tired",
+      "stressed": "You were stressed",
+      "sad": "You felt down",
+      "lonely": "You felt lonely",
+      "hungry": "You hadn't eaten",
+      "hurt": "You got hurt",
+      "fight": "The fight you had"
+    },
+    "life": { "lunch": "Family lunchtime", "evening": "Family evening", "morning": "Family morning", "weekend": "Family weekend", "sunday": "Family Sunday" },
+    "hello": "Saying hello",
+    "ask": "Asking if they may text you",
+    "pause": { "break": "You'd been chatting a while", "night": "It was late" }
   }
 }

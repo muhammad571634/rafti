@@ -29,13 +29,21 @@ const when = (iso?: string) => (iso ? new Date(iso).toISOString().slice(0, 16).r
 /** The friend's open threads for this reply (turn tier), so the model can follow, move or settle them. */
 export function threadLines(threads: readonly Thread[]) {
   const open = threads.filter((t) => t.status === 'open');
-  if (!open.length) return [];
+  // The user sees these in the app (Keeping in mind) and may change a time or turn texts off.
+  const quiet = threads.filter((t) => t.status === 'closed' && t.outcome === 'quiet');
   return [
-    'OPEN THREADS (what the user told you that has a future):',
-    ...open.map((t) => {
-      const next = t.touches.find((x) => !x.sent);
-      return `- [${t.id}] ${t.about} (${when(t.happensAt)}); they said "${t.quote}"${next ? `; you plan to text at ${when(next.at)}: ${next.why}` : ''}`;
-    }),
+    ...(open.length
+      ? [
+          'OPEN THREADS (what the user told you that has a future):',
+          ...open.map((t) => {
+            const next = t.touches.find((x) => !x.sent);
+            return `- [${t.id}] ${t.about} (${when(t.happensAt)}${t.userSet ? ', they set this time themselves' : ''}); they said "${t.quote}"${next ? `; you plan to text at ${when(next.at)}: ${next.why}` : ''}`;
+          }),
+        ]
+      : []),
+    ...(quiet.length
+      ? ['NO TEXTS ABOUT (the user turned these off; do not open them again unless they bring it up):', ...quiet.map((t) => `- ${t.about}`)]
+      : []),
   ];
 }
 

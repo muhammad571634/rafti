@@ -78,6 +78,7 @@ export default function CharacterSettingsScreen() {
   const hasPlan = useAppStore((s) => callsIncluded(s.wallet));
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const memoryCount = useAppStore((s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length);
+  const openThreads = useAppStore((s) => s.threads.filter((x) => x.characterId === characterId && x.status === 'open').length);
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);
   const clearChat = useAppStore((s) => s.clearChat);
   const resetRelationship = useAppStore((s) => s.resetRelationship);
@@ -295,6 +296,12 @@ export default function CharacterSettingsScreen() {
             label={t('lore.chatRow')}
             meta={loreMeta(booksFor(character, lorebooks, officialLorebooks), t)}
             onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
+          />
+          {/* What they took from the chat (A2): open threads, to see, change or stop. */}
+          <LinkRow
+            label={t('mind.title')}
+            meta={openThreads ? String(openThreads) : undefined}
+            onPress={() => router.push({ pathname: '/mind', params: { characterId: character.id } })}
           />
           <LinkRow label={t('characterSettings.profile')} onPress={() => run('characterSettings')} />
           <LinkRow

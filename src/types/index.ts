@@ -164,6 +164,11 @@ export interface Message {
   ideas?: ReplyIdea[];
   /** Why they wrote first (`reachKey`): a family moment, a care check-in, a hello. */
   reach?: string;
+  /**
+   * Your message opened, moved or settled a thread: the chat shows what they took from it under the
+   * bubble ("📌 Exam · Tomorrow 9:00"), tap to change it (`src/components/mind`).
+   */
+  noted?: { threadId: string; change: NoteChange };
   /** Group chats: the member who wrote it (author 'them'). */
   characterId?: string;
   /** Their feeling when they wrote it (`src/lib/reply-engine`); later the voice's tone. */
@@ -513,6 +518,8 @@ export interface CareItem {
   done?: boolean;
   /** A second ask after "Still not great"; there is no third. */
   again?: boolean;
+  /** What the user said, as they said it ("Why did they write?" shows it). */
+  quote?: string;
 }
 
 /**
@@ -540,7 +547,11 @@ export interface Touch {
   sent?: boolean;
 }
 
-export type ThreadOutcome = 'good' | 'bad' | 'done' | 'off';
+/** How it went; `quiet`: the user turned off texts about it in the app (the thing may still happen). */
+export type ThreadOutcome = 'good' | 'bad' | 'done' | 'off' | 'quiet';
+
+/** What a message of the user's did to a thread: opened it, moved its time, or settled it. */
+export type NoteChange = 'new' | 'moved' | 'settled';
 
 /** Something the user said that has a future, followed up like a person would (`src/lib/threads.ts`). */
 export interface Thread {
@@ -559,6 +570,8 @@ export interface Thread {
   kind?: ThreadKind;
   /** Shells a quest pays when the user says it is done. */
   reward?: number;
+  /** The user set its time themselves in the app (Keeping in mind); the model keeps it. */
+  userSet?: boolean;
   touches: Touch[];
   status: 'open' | 'closed';
   outcome?: ThreadOutcome;

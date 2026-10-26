@@ -227,6 +227,7 @@ import type {
   Relationship,
   ScheduleItem,
   CareItem,
+  NoteChange,
   Thread,
   ThreadOutcome,
   TouchPhase,
@@ -628,6 +629,15 @@ interface AppState {
    * friend may not write first yet (turn on Let them reach out).
    */
   devNextTexts: () => { sent: number; waiting: number };
+  /**
+   * Keeping in mind (`src/app/mind.tsx`): the user moves a thread's time; its plan and the texts
+   * still to come follow (the server's model plans them again around the new time).
+   */
+  retimeThread: (threadId: string, happensAt: string) => void;
+  /** Keeping in mind: the user settles a thread (how it went, it's off) or turns its texts off (`quiet`). */
+  endThread: (threadId: string, outcome: ThreadOutcome) => void;
+  /** "Forget this": a thread they got wrong goes, with the plan and the memory it made. */
+  forgetThread: (threadId: string) => void;
   /** The in-app clock (every few seconds): due rings, snooze over, the sleepy check-in, expiry. */
   wakeTick: () => 'ring' | null;
 
@@ -1165,7 +1175,7 @@ export const useAppStore = create<AppState>()(
             conversationId,
             (s.messages[conversationId] ?? [])
               .filter((m) => !ids.has(m.id))
-              .map((m) => (m.id === mineId ? { ...m, text: trimmed, editedAt, readAt: undefined } : m)),
+              .map((m) => (m.id === mineId ? { ...m, text: trimmed, editedAt, readAt: undefined, noted: undefined } : m)),
           ),
           replyVersions: omitKey(s.replyVersions, conversationId),
         }));
@@ -2369,6 +2379,53 @@ export const useAppStore = create<AppState>()(
         return { sent, waiting };
       },
 
+      retimeThread: (threadId, happensAt) => {
+        const now = new Date();
+        const thread = get().threads.find((t) => t.id === threadId && t.status === 'open');
+        const at = new Date(happensAt);
+        if (!thread || Number.isNaN(at.getTime())) return;
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const date = `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())}`;
+        const time = `${pad(at.getHours())}:${pad(at.getMinutes())}`;
+        // The texts are planned again around the new time (the model on the server, the mock here);
+        // a thread the mock cannot plan keeps its texts, shifted with the time.
+        const found = mockThread(thread.quote, now, { title: thread.about, date, time, when: '' });
+        set((s) => {
+          const fresh = found?.happensAt
+            ? s.threads.map((t) =>
+                t.id === threadId
+                  ? {
+                      ...t,
+                      happensAt: at.toISOString(),
+                      touches: [...t.touches.filter((x) => x.sent), ...ruleTouches(found.touches, `${t.id}:u${t.touches.length}`, now, at.toISOString())],
+                    }
+                  : t,
+              )
+            : moveThread(s.threads, threadId, at.toISOString(), now);
+          return {
+            threads: fresh.map((t) => (t.id === threadId ? { ...t, userSet: true } : t)),
+            schedules: s.schedules.map((x) => (x.id === thread.scheduleId ? { ...x, date, time, reminded: false, remindAt: undefined } : x)),
+          };
+        });
+      },
+
+      endThread: (threadId, outcome) => {
+        const thread = get().threads.find((t) => t.id === threadId && t.status === 'open');
+        if (thread) settleThread(set, get, thread, outcome);
+      },
+
+      forgetThread: (threadId) => {
+        const thread = get().threads.find((t) => t.id === threadId);
+        if (!thread) return;
+        const plan = thread.scheduleId ? get().schedules.find((x) => x.id === thread.scheduleId) : undefined;
+        const line = plan ? planMemoryLine(plan) : undefined;
+        set((s) => ({
+          threads: s.threads.filter((t) => t.id !== threadId),
+          schedules: plan ? s.schedules.filter((x) => x.id !== plan.id) : s.schedules,
+          memories: line ? s.memories.filter((m) => !(m.characterId === thread.characterId && m.text === line)) : s.memories,
+        }));
+      },
+
       noteNotifyOff: (conversationId) => {
         // Once per chat: a second card says nothing new.
         if (get().messages[conversationId]?.some((m) => m.card === 'notifyOff')) return;
@@ -3401,7 +3458,14 @@ function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: 
  * Opens a thread from the user's message, or settles the one they were last asked about. A plan's
  * thread asks "how did it go?" itself, so the plan's own follow-up stands down.
  */
-function noteThreads(set: Setter, get: Getter, characterId: string, text: string, plan: DetectedPlan | null, scheduleId?: string): Thread | null {
+function noteThreads(
+  set: Setter,
+  get: Getter,
+  characterId: string,
+  text: string,
+  plan: DetectedPlan | null,
+  scheduleId?: string,
+): { thread: Thread; change: NoteChange } | null {
   const now = new Date();
   // "The exam moved to 10": the plan, its reminder and every text still to come move with it.
   const moved = plan ? null : mockMove(text);
@@ -3414,14 +3478,14 @@ function noteThreads(set: Setter, get: Getter, characterId: string, text: string
       threads: moveThread(s.threads, ahead.id, at.toISOString(), now),
       schedules: s.schedules.map((x) => (x.id === ahead.scheduleId ? { ...x, time, reminded: false, remindAt: undefined } : x)),
     }));
-    return null;
+    return { thread: get().threads.find((t) => t.id === ahead.id) ?? ahead, change: 'moved' };
   }
   const outcome = mockOutcome(text);
   const asked = outcome ? lastAsked(get().threads, characterId, now) : null;
   // A goal goes on whatever one day was like; only "stop" ends it.
   if (asked && outcome && (asked.kind !== 'goal' || outcome === 'off')) {
     settleThread(set, get, asked, outcome);
-    return null;
+    return { thread: asked, change: 'settled' };
   }
   const found = mockThread(text, now, plan);
   if (!found) return null;
@@ -3444,13 +3508,33 @@ function noteThreads(set: Setter, get: Getter, characterId: string, text: string
     threads: addThread(pruneThreads(s.threads, now), thread),
     schedules: scheduleId && touches.some((x) => x.phase === 'after') ? s.schedules.map((x) => (x.id === scheduleId ? { ...x, followedUp: true } : x)) : s.schedules,
   }));
-  return thread;
+  return { thread, change: 'new' };
+}
+
+/** What the chat shows under the user's message: the thread it opened, moved or settled (their newest by default). */
+function markNoted(set: Setter, conversationId: string, threadId: string, change: NoteChange, messageId?: string) {
+  set((s) => {
+    const list = s.messages[conversationId] ?? [];
+    const target = messageId ?? list.findLast((m) => m.author === 'me' && !m.card)?.id;
+    if (!target) return {};
+    return { messages: { ...s.messages, [conversationId]: list.map((m) => (m.id === target ? { ...m, noted: { threadId, change } } : m)) } };
+  });
 }
 
 /** Settles a thread: a good end or a done task is remembered, a bad one gets a check-in later. */
 function settleThread(set: Setter, get: Getter, thread: Thread, outcome: ThreadOutcome) {
   const now = new Date();
-  set((s) => ({ threads: closeThread(s.threads, thread.id, outcome, now) }));
+  // "It's off": the plan it came with goes too; "no texts about it": the plan stays, its reminder does not.
+  const plan = thread.scheduleId;
+  set((s) => ({
+    threads: closeThread(s.threads, thread.id, outcome, now),
+    schedules:
+      plan && outcome === 'off'
+        ? s.schedules.filter((x) => x.id !== plan)
+        : plan && outcome === 'quiet'
+          ? s.schedules.map((x) => (x.id === plan ? { ...x, reminded: true } : x))
+          : s.schedules,
+  }));
   if (outcome === 'good' || outcome === 'done') {
     get().addMemory(thread.characterId, `${thread.about}: ${outcome === 'good' ? 'it went well' : 'done'}`, 'chat');
   }
@@ -3570,7 +3654,8 @@ function answerLine(
       [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === messageId ? { ...m, ideas: undefined } : m)),
     },
   }));
-  appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'text', text: line, createdAt: new Date().toISOString() });
+  const mineId = uid('m');
+  appendMessage(set, get, conversationId, { id: mineId, conversationId, author: 'me', kind: 'text', text: line, createdAt: new Date().toISOString() });
   touchStreak(set, get, conversation.characterId);
   const characterId = conversation.characterId;
 
@@ -3608,6 +3693,7 @@ function answerLine(
   // Their own words under a thread's text ("it went great!", typed or changed): settle that thread, no other.
   const said = open && (!idea || edited) ? mockOutcome(line) : null;
   if (open && said && (open.kind !== 'goal' || said === 'off')) settleThread(set, get, open, said);
+  if (open && get().threads.find((t) => t.id === open.id)?.status === 'closed') markNoted(set, conversationId, open.id, 'settled', mineId);
   // Asks that are not a thread's text: when to remind of a plan, a quest offer.
   if (idea?.intent && !edited) askIdea(set, get, message.reach, idea.intent);
 
@@ -3675,6 +3761,7 @@ function answerText(
           kind,
           dueAt: careDueAt(kind, now).toISOString(),
           createdAt: now.toISOString(),
+          quote: text,
         }),
       }));
     }
@@ -3683,7 +3770,10 @@ function answerText(
   // Threads: anything with a future becomes one, and a word on how it went settles the last one
   // asked about. The server's model does both from the chat (`src/ai/thread-prompt.ts`); the mock
   // only notices shapes and keeps the user's words. A crisis never becomes a thread.
-  const planThread = crisis || answered ? null : noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
+  const noted = crisis || answered ? null : noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
+  // The chat shows what they took from it under the message, so a wrong guess is one tap to fix.
+  if (noted) markNoted(set, conversationId, noted.thread.id, noted.change);
+  const planThread = noted?.change === 'new' ? noted.thread : null;
   // A timed plan: their acknowledgement asks when to remind (30 min, an hour, no need).
   const lead = plan?.time && planThread?.scheduleId ? `lead:${planThread.scheduleId}` : undefined;
 
