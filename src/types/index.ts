@@ -848,6 +848,15 @@ export interface DailyState {
   breakDay?: string;
   /** The night (keyed by the evening's day) a friend said it is late, go to sleep. */
   nightDay?: string;
+  /** Counted pushes handed to the OS (`src/notifications/budget.ts`); the past ones of today were sent. */
+  pushLog?: PushSent[];
+}
+
+/** One counted push the planner handed to the OS: enough to count it and space the next ones. */
+export interface PushSent {
+  id: string;
+  at: string;
+  characterId?: string;
 }
 
 export interface AppSettings {

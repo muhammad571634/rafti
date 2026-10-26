@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
 import { syncAlarms } from '@/notifications/alarms';
+import { nextPushLog, sentToday } from '@/notifications/budget';
 import { notificationsModule } from '@/notifications/native';
 import {
   askIfNeverAsked,
@@ -15,6 +16,7 @@ import {
   syncPushes,
   type PushData,
 } from '@/notifications/sync';
+import { counts } from '@/notifications/plan';
 import { useAppStore } from '@/store/use-app-store';
 import type { IdeaIntent } from '@/types';
 
@@ -62,11 +64,19 @@ export function usePushNotifications() {
     const comeBack = async () => {
       (await deliveredPushes()).forEach(land);
       await clearPushes();
+      // What was still to come was just cancelled: the log keeps only what already went out.
+      const store = useAppStore.getState();
+      store.setPushLog(sentToday(store.daily.pushLog, new Date()));
       // Repeating alarms are handed over a week at a time; every open tops them up.
       const { alarms, characters, wake } = useAppStore.getState();
       await syncAlarms(alarms, characters, wake);
     };
-    const leave = () => void syncPushes(useAppStore.getState());
+    // The counted pushes go into the log, so today's budget holds across every re-plan.
+    const leave = async () => {
+      const now = new Date();
+      const plan = await syncPushes(useAppStore.getState(), now);
+      if (plan) useAppStore.getState().setPushLog(nextPushLog(useAppStore.getState().daily.pushLog, plan.filter(counts), now));
+    };
 
     const { settings } = useAppStore.getState();
     void configurePushes()
@@ -83,7 +93,7 @@ export function usePushNotifications() {
     });
     const state = AppState.addEventListener('change', (next) => {
       if (next === 'active') void comeBack();
-      else if (next === 'background') leave();
+      else if (next === 'background') void leave();
     });
     return () => {
       alarmsChanged();

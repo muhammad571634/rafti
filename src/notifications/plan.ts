@@ -23,7 +23,7 @@ import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@
 import { temperComeback } from '@/mock/temper';
 import { mockTouchLine } from '@/mock/threads';
 
-import { activityHours, asleep, dailyBudget, learnedSleep, lonely, placeFlexible, PUSH_BUDGET, replyRate, type Budget } from './budget';
+import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budget';
 import type {
   AppSettings,
   CareItem,
@@ -33,6 +33,7 @@ import type {
   Conversation,
   DailyState,
   Message,
+  PushSent,
   Relationship,
   ScheduleItem,
   User,
@@ -209,17 +210,11 @@ function quoteOf(messages: readonly Message[] | undefined) {
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
 const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'life', 'care', 'comeback', 'touch']);
 
+/** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
+export const counts = (push: PlannedPush) => !EXEMPT.has(push.kind) && !push.timeSensitive;
+
 export function planPushes(state: PlanState, now: Date): PlannedPush[] {
-  // The user's own rhythm (`src/notifications/budget.ts`): active hours, sleep, how they answer.
-  const chats = Object.values(state.messages);
-  const hours = activityHours(chats, now);
-  const sleep = learnedSleep(hours);
-  const budget = dailyBudget({
-    subscription: state.wallet.subscription,
-    rate: replyRate(chats, now),
-    isLonely: lonely(state.care ?? [], hours, now),
-    now,
-  });
+  const { hours, sleep, budget, sent } = rhythm(state, now);
   const userQuiet = quietTest(state.settings);
   const isQuiet = (d: Date) => userQuiet(d) || asleep(d, sleep);
   const byId = new Map(state.characters.map((c) => [c.id, c]));
@@ -230,7 +225,7 @@ export function planPushes(state: PlanState, now: Date): PlannedPush[] {
   const wanted = pushCandidates(state, now)
     .filter((push) => kindOn(push.kind, state.settings))
     .map((push) => (FLEXIBLE.has(push.kind) && !push.timeSensitive ? { ...push, at: placeFlexible(push.at, push.id, hours, sleep) } : push));
-  return capped(wanted, isQuiet, budget, temperFor);
+  return capped(wanted, isQuiet, budget, temperFor, sent);
 }
 
 /** Every push the state asks for, before quiet hours, budget and spacing (exported for tests). */
@@ -506,19 +501,29 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
   return out;
 }
 
+/** A counted push as the budget sees it: when, and from whom. */
+type Slot = Pick<PlannedPush, 'at' | 'characterId'>;
+
 /**
  * Applies quiet hours and sleep, the day budget, the gap between pushes and each friend's share.
- * Exempt kinds and time-sensitive texts before the user's own plans always stay (a user-set call or
- * plan may ring at night). A push too close to a more important one moves later the same day instead
- * of being dropped; it is dropped only when the day has no room left.
+ * Today's pushes that already went out (`sent`) count first, so planning again later in the day
+ * never hands out a fresh budget. Exempt kinds and time-sensitive texts before the user's own plans
+ * always stay (a user-set call or plan may ring at night). A push too close to a more important one
+ * moves later the same day instead of being dropped; it is dropped only when the day has no room left.
  */
-function capped(all: PlannedPush[], isQuiet: (d: Date) => boolean, budget: Budget, temperFor: (characterId: string) => Temper): PlannedPush[] {
+function capped(
+  all: PlannedPush[],
+  isQuiet: (d: Date) => boolean,
+  budget: Budget,
+  temperFor: (characterId: string) => Temper,
+  sent: readonly PushSent[],
+): PlannedPush[] {
   const kept: PlannedPush[] = [];
-  const counted: PlannedPush[] = [];
+  const counted: Slot[] = sent.map((p) => ({ at: new Date(p.at), characterId: p.characterId }));
   const ordered = [...all].sort((a, b) => PRIORITY[a.kind] - PRIORITY[b.kind] || a.at.getTime() - b.at.getTime());
 
   for (const push of ordered) {
-    if (EXEMPT.has(push.kind) || push.timeSensitive) {
+    if (!counts(push)) {
       kept.push(push);
       continue;
     }
@@ -542,7 +547,7 @@ const SHIFT_STEP_MS = 15 * 60_000;
  * The wanted time, or the first later time that day outside quiet hours and sleep with room around
  * it: `minGapMs` from any counted push, `friendGapMs` from the same friend's.
  */
-function firstFreeSlot(wanted: Date, sameDay: PlannedPush[], theirs: PlannedPush[], isQuiet: (d: Date) => boolean): Date | null {
+function firstFreeSlot(wanted: Date, sameDay: Slot[], theirs: Slot[], isQuiet: (d: Date) => boolean): Date | null {
   const day = dayKey(wanted);
   for (let t = wanted.getTime(); dayKey(new Date(t)) === day; t += SHIFT_STEP_MS) {
     const candidate = new Date(t);

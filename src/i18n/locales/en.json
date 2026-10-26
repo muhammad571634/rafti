@@ -1897,8 +1897,12 @@
     "quietTo": "Until",
     "section": {
       "reachOut": "They reach out",
-      "rafti": "From Sigmazam"
+      "rafti": "From Sigmazam",
+      "today": "Today"
     },
+    "pushesToday": "Notifications",
+    "sentOf": "{{sent}} of {{budget}}",
+    "sleep": "Sleep",
     "settingsTitle": "Notification settings",
     "quietNote": "Nothing rings in these hours. Messages wait for the morning.",
     "hint": {

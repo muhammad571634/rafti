@@ -10,6 +10,7 @@ import { GlassBar, IconRow, InsetGroup, InsetRow, LargeTitle, PressableScale, Sc
 import { usePushPermission } from '@/hooks/use-push-permission';
 import { pickSeeded } from '@/lib/seeded';
 import { dayKey, morningGreetings } from '@/mock';
+import { hourClock, pushDay } from '@/notifications/budget';
 import { requestPushPermission } from '@/notifications/sync';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors } from '@/theme';
@@ -61,6 +62,10 @@ export default function NotificationSettingsScreen() {
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
   const subscription = useAppStore((s) => s.wallet.subscription);
+  const wallet = useAppStore((s) => s.wallet);
+  const messages = useAppStore((s) => s.messages);
+  const care = useAppStore((s) => s.care);
+  const daily = useAppStore((s) => s.daily);
   const { status, refresh } = usePushPermission();
   const { scrolled, onScroll } = useScrolledPast(40);
 
@@ -86,6 +91,9 @@ export default function NotificationSettingsScreen() {
     const line = writer ? pickSeeded(morningGreetings, `${dayKey(tomorrow)}:morning:${writer.id}`) : '';
     return { writer, line };
   }, [characters, relationships, conversations]);
+
+  // Today's pushes against the day's budget and the sleep the planner keeps clear (`pushDay`).
+  const today = useMemo(() => pushDay({ messages, care, wallet, daily }, new Date()), [messages, care, wallet, daily]);
 
   const turnOn = async () => {
     if (status === 'undetermined') await requestPushPermission();
@@ -150,6 +158,23 @@ export default function NotificationSettingsScreen() {
           line={settings.notificationPreview && preview.line ? preview.line : t('push.hidden')}
         />
         <InsetGroup style={styles.groupTop}>{row('notificationPreview', 'eye', systemColors.blue, { last: true })}</InsetGroup>
+
+        <Txt style={styles.sectionLabel}>{t('notifications.section.today')}</Txt>
+        <InsetGroup>
+          <IconRow
+            icon="notifications"
+            fill={systemColors.red}
+            title={t('notifications.pushesToday')}
+            meta={t('notifications.sentOf', { sent: today.sent, budget: today.budget })}
+          />
+          <IconRow
+            icon="bed"
+            fill={systemColors.teal}
+            title={t('notifications.sleep')}
+            meta={`${hourClock(today.sleep.from)} – ${hourClock(today.sleep.to)}`}
+            last
+          />
+        </InsetGroup>
 
         {GROUPS.map((group) => (
           <Fragment key={group.title}>

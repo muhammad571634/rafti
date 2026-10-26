@@ -164,9 +164,12 @@ export async function clearPushes() {
   );
 }
 
-/** Re-plans from the current state and replaces every pending push. */
-export async function syncPushes(state: PlanState, now = new Date()) {
-  if (!(await pushesAllowed())) return;
+/**
+ * Re-plans from the current state and replaces every pending push. Returns what was handed to the
+ * OS (the caller logs the counted ones, `nextPushLog`), or null when pushes are off.
+ */
+export async function syncPushes(state: PlanState, now = new Date()): Promise<PlannedPush[] | null> {
+  if (!(await pushesAllowed())) return null;
   await configurePushes();
   await clearPushes();
   // Alarm rings share iOS's 64 pending notifications; the planner takes what is left.
@@ -174,6 +177,7 @@ export async function syncPushes(state: PlanState, now = new Date()) {
   const alarms = (await N.getAllScheduledNotificationsAsync()).filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
   const plan = planPushes(state, now).slice(0, Math.max(0, MAX_PENDING - alarms));
   await Promise.all(plan.map((push) => schedule(push, push.id, push.at, state.settings.notificationPreview)));
+  return plan;
 }
 
 /**

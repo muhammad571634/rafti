@@ -1,7 +1,7 @@
 import { rollSubscription } from '../economy/plans';
 import { hashSeed } from '../lib/seeded';
 import { TEMPER_PACE } from '../lib/temper';
-import type { CareItem, Message, Subscription, Temper } from '@/types';
+import type { CareItem, DailyState, Message, PushSent, Subscription, Temper } from '@/types';
 
 /**
  * How many pushes a day and when (Presence 2, P2.8; owner 2026-10-26: 6 a day free, 20 with a
@@ -137,6 +137,61 @@ export function dailyBudget({
     day: Math.max(1, Math.round(tier.day * factor)),
     perFriend: (temper) => Math.max(1, Math.round(tier.perFriend * TEMPER_PACE[temper])),
   };
+}
+
+const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
+
+/** Today's counted pushes that already went out: they use up today's budget and keep their gaps. */
+export function sentToday(log: readonly PushSent[] | undefined, now: Date): PushSent[] {
+  return (log ?? []).filter((p) => {
+    const at = new Date(p.at);
+    return sameDay(at, now) && at.getTime() <= now.getTime();
+  });
+}
+
+/**
+ * The log after handing a new plan to the OS: what already went out today stays, the old future
+ * ones go (they were cancelled), the new plan's counted pushes come in. When the app opens again,
+ * the ones whose time passed were sent.
+ */
+export function nextPushLog(log: readonly PushSent[] | undefined, planned: readonly { id: string; at: Date; characterId?: string }[], now: Date): PushSent[] {
+  return [
+    ...sentToday(log, now),
+    ...planned.map((p) => ({ id: p.id, at: p.at.toISOString(), ...(p.characterId ? { characterId: p.characterId } : {}) })),
+  ];
+}
+
+/** What the budget and the sleep rules read from the app's state. */
+export interface RhythmState {
+  messages: Record<string, readonly Message[]>;
+  care?: readonly CareItem[];
+  wallet: { subscription?: Subscription };
+  daily: Pick<DailyState, 'pushLog'>;
+}
+
+/** The user's own rhythm: active hours, sleep, today's budget and what already went out today. */
+export function rhythm(state: RhythmState, now: Date) {
+  const chats = Object.values(state.messages);
+  const hours = activityHours(chats, now);
+  const budget = dailyBudget({
+    subscription: state.wallet.subscription,
+    rate: replyRate(chats, now),
+    isLonely: lonely(state.care ?? [], hours, now),
+    now,
+  });
+  return { hours, sleep: learnedSleep(hours), budget, sent: sentToday(state.daily.pushLog, now) };
+}
+
+/** Today in numbers for Notification settings: pushes sent of the day's budget, and the learned sleep. */
+export function pushDay(state: RhythmState, now: Date) {
+  const { budget, sleep, sent } = rhythm(state, now);
+  return { sent: Math.min(sent.length, budget.day), budget: budget.day, sleep };
+}
+
+/** "18:30" for a sleep edge given as hours (23.5 → "23:30"). */
+export function hourClock(hours: number) {
+  const minutes = Math.round(hours * 60) % (24 * 60);
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 }
 
 /**

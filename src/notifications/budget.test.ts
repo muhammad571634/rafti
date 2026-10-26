@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { activityHours, asleep, dailyBudget, learnedSleep, lonely, placeFlexible, PUSH_BUDGET, replyRate } from './budget';
+import { activityHours, asleep, dailyBudget, hourClock, learnedSleep, lonely, nextPushLog, placeFlexible, PUSH_BUDGET, pushDay, replyRate, sentToday } from './budget';
 import type { CareItem, Message, Subscription } from '@/types';
 
 const now = new Date(2026, 9, 26, 12, 0);
@@ -90,5 +90,29 @@ describe('push budget', () => {
     assert.ok(!lonely([], hours, now));
     hours[2] = 3;
     assert.ok(lonely([], hours, now));
+  });
+
+  it('keeps what went out today in the log and swaps the rest for the new plan', () => {
+    const log = [
+      { id: 'a', at: ago(0, 9) },
+      { id: 'b', at: ago(0, 11, 30), characterId: 'c_kai' },
+      { id: 'c', at: ago(0, 15) },
+      { id: 'd', at: ago(1, 20) },
+    ];
+    assert.deepEqual(sentToday(log, now).map((p) => p.id), ['a', 'b']);
+    const later = new Date(now.getTime() + 3_600_000);
+    const next = nextPushLog(log, [{ id: 'e', at: later, characterId: 'c_iris' }], now);
+    assert.deepEqual(next.map((p) => p.id), ['a', 'b', 'e']);
+    assert.equal(next[2].at, later.toISOString());
+    assert.equal(next[2].characterId, 'c_iris');
+  });
+
+  it('shows today as sent of the budget, with the sleep as clock times', () => {
+    const daily = { pushLog: [{ id: 'a', at: ago(0, 9) }, { id: 'b', at: ago(0, 18) }] };
+    const today = pushDay({ messages: {}, care: [], wallet: {}, daily }, now);
+    assert.deepEqual(today, { sent: 1, budget: PUSH_BUDGET.free.day, sleep: PUSH_BUDGET.defaultSleep });
+    assert.equal(hourClock(23.5), '23:30');
+    assert.equal(hourClock(7.5), '07:30');
+    assert.equal(hourClock(0), '00:00');
   });
 });

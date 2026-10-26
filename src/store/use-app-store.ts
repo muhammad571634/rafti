@@ -214,6 +214,7 @@ import type {
   LoreKind,
   Lorebook,
   Persona,
+  PushSent,
   Pronouns,
   Scene,
   Stream,
@@ -506,6 +507,8 @@ interface AppState {
   deleteStream: (id: string) => void;
   /** Counts one written draft; false when today's free ones are used up. */
   takeQuickCreate: () => boolean;
+  /** The counted pushes handed to the OS (`src/notifications/budget.ts`), kept in `daily`. */
+  setPushLog: (log: PushSent[]) => void;
   /** Pays for a drawn portrait: one of the plan's free ones, else shells. False when neither is there. */
   payForPortrait: (characterId?: string) => boolean;
   /**
@@ -1773,6 +1776,8 @@ export const useAppStore = create<AppState>()(
         }
         return get().spendShells(PORTRAIT_SHELLS, 'portrait', characterId);
       },
+
+      setPushLog: (pushLog) => set((s) => ({ daily: { ...s.daily, pushLog } })),
 
       takeQuickCreate: () => {
         const next = spendQuickCreate(get().quickCreates, todayKey());
