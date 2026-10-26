@@ -1477,6 +1477,8 @@
     "testPushes": "Test pushes",
     "testPushesSent": "{{count}} on the way",
     "testPushesUnavailable": "Needs a development build",
+    "nextTexts": "Next planned texts now",
+    "nextTextsResult": "{{sent}} sent · {{waiting}} waiting",
     "chatAnimation": "Chat animations",
     "haptics": "Haptics",
     "account": "Account",

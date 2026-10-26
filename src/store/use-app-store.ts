@@ -62,7 +62,7 @@ import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
-import { mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
+import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -622,6 +622,12 @@ interface AppState {
   answerFromPush: (push: { characterId: string; line?: string; reach?: string; intent?: IdeaIntent; text?: string }) => SendResult;
   /** The user said "Yes, text me!" but the system blocks pushes: a card with a way to Settings. */
   noteNotifyOff: (conversationId: string) => void;
+  /**
+   * Development only: each open thread's next text and every waiting check-in arrive now, as if their
+   * time had come, so the phone can be checked without waiting for 21:30. `waiting`: threads whose
+   * friend may not write first yet (turn on Let them reach out).
+   */
+  devNextTexts: () => { sent: number; waiting: number };
   /** The in-app clock (every few seconds): due rings, snooze over, the sleepy check-in, expiry. */
   wakeTick: () => 'ring' | null;
 
@@ -2340,6 +2346,29 @@ export const useAppStore = create<AppState>()(
         return typed ? get().sendText(conversation.id, typed) : 'empty';
       },
 
+      devNextTexts: () => {
+        const now = new Date();
+        const due = new Date(now.getTime() - 60_000).toISOString();
+        const may = (characterId: string) => !!get().relationships[characterId]?.messagesFirst;
+        let sent = 0;
+        let waiting = 0;
+        set((s) => ({
+          threads: s.threads.map((t) => {
+            const next = t.status === 'open' ? [...t.touches].filter((x) => !x.sent).sort((a, b) => Date.parse(a.at) - Date.parse(b.at))[0] : undefined;
+            if (!next) return t;
+            if (!may(t.characterId)) {
+              waiting++;
+              return t;
+            }
+            sent++;
+            return { ...t, touches: t.touches.map((x) => (x.id === next.id ? { ...x, at: due } : x)) };
+          }),
+          care: s.care.map((c) => (!c.done && may(c.characterId) ? (sent++, { ...c, dueAt: due }) : c)),
+        }));
+        get().runTimers();
+        return { sent, waiting };
+      },
+
       noteNotifyOff: (conversationId) => {
         // Once per chat: a second card says nothing new.
         if (get().messages[conversationId]?.some((m) => m.card === 'notifyOff')) return;
@@ -3460,22 +3489,32 @@ function threadIdea(set: Setter, get: Getter, thread: Thread, phase: TouchPhase,
     const soon = new Date(now.getTime() + LIFE.hurryAfterMin * 60_000);
     set((s) => ({ threads: extendThread(s.threads, thread.id, [{ at: soon.toISOString(), phase: 'leave', why: 'nudge them to hurry, gently' }], now) }));
   }
-  if (intent === 'wake' && thread.happensAt) {
-    const wake = new Date(Date.parse(thread.happensAt) - LIFE.wakeBeforeMin * 60_000);
-    wake.setMinutes(Math.floor(wake.getMinutes() / 15) * 15, 0, 0);
-    if (wake.getHours() < LIFE.wakeEarliestHour) wake.setHours(LIFE.wakeEarliestHour, 0, 0, 0);
-    get().saveAlarm({
-      hour: wake.getHours(),
-      minute: wake.getMinutes(),
-      repeat: [],
-      label: thread.about,
-      characterId: thread.characterId,
-      voice: true,
-      sound: 'morningTide',
-      replyToWake: true,
-      snooze: true,
-    });
-  }
+  if (intent === 'wake') alarmBefore(get, thread);
+}
+
+/** "Wake me up": a one-time alarm with this friend before the thing (never before 05:00). */
+function alarmBefore(get: Getter, thread: Thread) {
+  if (!thread.happensAt) return;
+  const wake = new Date(Date.parse(thread.happensAt) - LIFE.wakeBeforeMin * 60_000);
+  wake.setMinutes(Math.floor(wake.getMinutes() / 15) * 15, 0, 0);
+  if (wake.getHours() < LIFE.wakeEarliestHour) wake.setHours(LIFE.wakeEarliestHour, 0, 0, 0);
+  get().saveAlarm({
+    hour: wake.getHours(),
+    minute: wake.getMinutes(),
+    repeat: [],
+    label: thread.about,
+    characterId: thread.characterId,
+    voice: true,
+    sound: 'morningTide',
+    replyToWake: true,
+    snooze: true,
+  });
+}
+
+/** The ideas on a plan's acknowledgement: when to remind, and for a big early thing, "Wake me up". */
+function leadIdeas(reach: string, offerWake: boolean): ReplyIdea[] {
+  const [half, hour, none] = ideasFor(reach);
+  return offerWake ? [half, { label: 'Wake me up ⏰', text: 'Can you wake me up for it?', intent: 'wake' }, none] : [half, hour, none];
 }
 
 /** "Remind me 30 minutes before" on a plan's acknowledgement; "Not today" on a quest offer drops it. */
@@ -3483,6 +3522,7 @@ function askIdea(set: Setter, get: Getter, reach: string | undefined, intent: Id
   const [source, id] = reach?.split(':') ?? [];
   if (source === 'lead') {
     const thread = get().threads.find((t) => t.scheduleId === id);
+    if (intent === 'wake' && thread) alarmBefore(get, thread);
     if (intent === 'off') set((s) => ({ schedules: s.schedules.map((x) => (x.id === id ? { ...x, reminded: true } : x)) }));
     if ((intent === 'lead30' || intent === 'lead60') && thread?.happensAt) {
       const at = new Date(Date.parse(thread.happensAt) - (intent === 'lead30' ? 30 : 60) * 60_000);
@@ -3595,7 +3635,8 @@ function answerText(
   if (wakeHere && wakeReply(set, get, conversationId, text, crisis)) return;
 
   // "Smart Auto Schedule": a plan in the message becomes a reminder.
-  const plan = crisis ? null : detectPlan(text);
+  // English from `detectPlan`; Uzbek and Russian from the stand-in until the server's model reads plans.
+  const plan = crisis ? null : (detectPlan(text) ?? localPlan(text, new Date()));
   let reply: string | undefined;
   const scheduleId = plan ? uid('sch') : undefined;
   if (plan) {
@@ -3657,7 +3698,7 @@ function answerText(
     text: reply ?? say,
     gain,
     avoid,
-    ...(lead && !crisis ? { reach: lead, ideas: ideasFor(lead) } : {}),
+    ...(lead && !crisis ? { reach: lead, ideas: leadIdeas(lead, !!plan && isBig(text) && (plan.time ?? '99') < LIFE.wakeOfferBefore) } : {}),
   });
 }
 

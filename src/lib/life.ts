@@ -26,6 +26,8 @@ export const LIFE = {
   /** "Wake me up": the alarm rings this long before the thing, never before 05:00. */
   wakeBeforeMin: 90,
   wakeEarliestHour: 5,
+  /** A big plan starting before this ("HH:MM") gets "Wake me up" on its acknowledgement. */
+  wakeOfferBefore: '09:30',
   /** A quiet gap this long ends a sitting. */
   sittingGapMs: 30 * 60_000,
 } as const;

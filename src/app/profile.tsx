@@ -89,6 +89,13 @@ export default function ProfileScreen() {
   /** Dev only: what the last "Test pushes" press did. */
   const [testResult, setTestResult] = useState<string | undefined>();
 
+  /** Dev only: what the last "Next planned texts" press did. */
+  const [nextResult, setNextResult] = useState<string | undefined>();
+  const nextTexts = () => {
+    const { sent, waiting } = useAppStore.getState().devNextTexts();
+    setNextResult(t('profile.nextTextsResult', { sent, waiting }));
+  };
+
   const testPushes = async () => {
     const count = await sendTestPushes(useAppStore.getState());
     setTestResult(count > 0 ? t('profile.testPushesSent', { count }) : t('profile.testPushesUnavailable'));
@@ -274,6 +281,8 @@ export default function ProfileScreen() {
           <View style={styles.group}>
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
+            {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}
+            <SettingsRow title={t('profile.nextTexts')} icon="time" fill={FILL.grey} meta={nextResult} onPress={nextTexts} />
             {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
             <SettingsRow title={t('profile.loadDemo')} icon="albums" fill={FILL.grey} onPress={loadDemoData} last={!plan} />
             {/* Ends the plan at once, to see the free screens again. */}

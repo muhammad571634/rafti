@@ -1,4 +1,4 @@
-import { dateFromKey, dayKeyFromToday } from '@/mock/time';
+import { dateFromKey } from '../mock/time';
 import type { ScheduleItem } from '@/types';
 
 export interface DetectedPlan {
@@ -98,25 +98,49 @@ function findTime(lower: string): { time: string; phrase: string } | null {
   return null;
 }
 
+/** "Tonight at 8" is 20:00, not 08:00: an evening word turns a morning hour into the evening. */
+function evening(clock: { time: string; phrase: string } | null, lower: string) {
+  if (!clock || !/\b(tonight|evening|night)\b/.test(lower) || /\b(am|a\.m\.|morning)\b/.test(lower)) return clock;
+  const [h, m] = clock.time.split(':').map(Number);
+  return h < 12 ? { ...clock, time: `${pad(h + 12)}:${pad(m)}` } : clock;
+}
+
+/** The day key `offset` days after `now` (the caller's clock, so tests can pin it). */
+function dayKeyFrom(now: Date, offset: number) {
+  const d = new Date(now);
+  d.setDate(d.getDate() + offset);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 /** Only first-person plans count — "what are you doing tomorrow?" is not a schedule. */
 const LEAD_IN =
-  /^\s*(?:and\s+|so\s+|well\s+)?(?:i have|i've got|i got|i'm going to|i am going to|i'm going|i am going|i'll|i will|i need to|i have to|i must|we have|we're going to|we're going|my)\b\s*/i;
+  /^\s*(?:and\s+|so\s+|well\s+|ugh\s+|omg\s+)?(?:i have|i've got|i got|i'm going to|i am going to|i'm going|i am going|im going|i'm meeting|i'm seeing|i'm flying|i'm leaving|i'm starting|i start|i'll|i will|i need to|i have to|i must|i gotta|gotta|got to|need to|have to|going to|heading to|we have|we're going to|we're going|my)\b\s*/i;
 
-const FILLER_START = /^(?:to|a|an|the|my|our)\s+/i;
+/**
+ * A plan said without "I": "Exam tomorrow at 9", "Job interview on Friday at 10am", "date tonight at
+ * 7". It starts with the thing itself (a word or two before it at most).
+ */
+const EVENT_LEAD =
+  /^\s*(?:(?:big|final|first|the|a|an|another|important)\s+)?(?:[\w']+\s+){0,2}?(exam|exams|test|quiz|midterm|final|interview|meeting|appointment|doctor|dentist|flight|presentation|date|class|lecture|match|game|shift|deadline|party|wedding|concert|gym|practice|training|surgery|audition|call)\b/i;
+
+/** Not a plan of the user's: a question, or about the other person. */
+const NOT_MINE = /\?\s*$|^\s*(what|when|where|why|how|do|does|did|are|is|will|would|can|could)\b|\byou(r|'re)?\b/i;
+
+const FILLER_START = /^(?:to|a|an|the|my|our|for)\s+/i;
 const FILLER_END = /\s+(?:is|are|at|on|in|will be|coming up)$/i;
 
 function findWhen(lower: string, now: Date): { offset: number; phrase: string; when: string } | null {
   let m = lower.match(/\bday after tomorrow\b/);
   if (m) return { offset: 2, phrase: m[0], when: 'the day after tomorrow' };
 
-  m = lower.match(/\b(tonight|today|this evening)\b/);
-  if (m) return { offset: 0, phrase: m[0], when: m[1] };
+  m = lower.match(/\b(tonight|today|this (?:morning|afternoon|evening))\b/);
+  if (m) return { offset: 0, phrase: m[0], when: m[1] === 'tonight' || m[1] === 'today' ? m[1] : 'today' };
 
-  m = lower.match(/\b(tomorrow|tmrw|tmr)\b/);
+  m = lower.match(/\b(?:tomorrow|tmrw|tmr)(?:\s+(?:morning|afternoon|evening|night))?\b/);
   if (m) return { offset: 1, phrase: m[0], when: 'tomorrow' };
 
   m = lower.match(/\bnext week\b/);
@@ -144,10 +168,12 @@ function findWhen(lower: string, now: Date): { offset: number; phrase: string; w
  */
 export function detectPlan(text: string, now = new Date()): DetectedPlan | null {
   const sentence = text.trim();
-  if (!LEAD_IN.test(sentence)) return null;
+  const mine = LEAD_IN.test(sentence);
+  if (!mine && (!EVENT_LEAD.test(sentence) || NOT_MINE.test(sentence))) return null;
+  if (mine && /\?\s*$/.test(sentence)) return null;
 
   const lower = sentence.toLowerCase();
-  const clock = findTime(lower);
+  const clock = evening(findTime(lower), lower);
   let found = findWhen(lower, now);
   // "I have a meeting at 5pm": today, or tomorrow once that time has passed.
   if (!found && clock) {
@@ -174,7 +200,7 @@ export function detectPlan(text: string, now = new Date()): DetectedPlan | null 
 
   return {
     title: title[0].toUpperCase() + title.slice(1),
-    date: dayKeyFromToday(found.offset),
+    date: dayKeyFrom(now, found.offset),
     time: clock?.time,
     when: clock ? `${found.when} at ${clock.time}` : found.when,
   };

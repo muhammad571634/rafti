@@ -125,7 +125,7 @@ export function mockThread(text: string, now: Date, plan: DetectedPlan | null): 
 export function mockMove(text: string): { hour: number; minute: number } | null {
   const lower = text.toLowerCase();
   const m =
-    lower.match(/(?:moved|pushed|postponed|changed)\s+(?:to\s+|at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/) ??
+    lower.match(/(?:moved|pushed|postponed|changed|rescheduled)\s+(?:it\s+|the \w+\s+)?(?:back\s+)?(?:to\s+|till\s+|until\s+)?(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)?(?!\s*(?:day|week|min|hour))/) ??
     lower.match(/(?:soat\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:ga|да)?\s*(?:ko'chdi|surildi|o'zgardi)/) ??
     lower.match(/перенесли\s+на\s+(\d{1,2})(?:[:.](\d{2}))?/);
   if (!m) return null;
@@ -136,12 +136,46 @@ export function mockMove(text: string): { hour: number; minute: number } | null 
   return hour <= 23 && minute <= 59 ? { hour, minute } : null;
 }
 
+/** Plain names for the plans people mention most, so Us shows "Exam" rather than the whole sentence. */
+const TITLES: [RegExp, string][] = [
+  [/(imtihon|экзамен)/i, 'Exam'],
+  [/(suhbat|собеседован)/i, 'Interview'],
+  [/(uchrashuv|uchrashaman|встреча|встречаюсь)/i, 'Meeting'],
+  [/(shifokor|vrach|врач|stomatolog|стоматолог)/i, 'Doctor'],
+  [/(samolyot|рейс|самолет|самолёт)/i, 'Flight'],
+  [/(dars|урок|занятие)/i, 'Class'],
+  [/(taqdimot|презентац)/i, 'Presentation'],
+  [/(musobaqa|соревнован|матч)/i, 'Match'],
+];
+
+/** A big thing (an exam, an interview…): worth a "good luck", a "time to go" and an offer to wake them. */
+export const isBig = (text: string) => BIG.test(text);
+
+/**
+ * An Uzbek or Russian plan ("Ertaga soat 9 da imtihonim bor", "Завтра в 11 собеседование"), shaped
+ * like `detectPlan`'s English one, or null. Same rule as threads: a day plus a time, a big thing, a
+ * task or a going.
+ */
+export function localPlan(text: string, now: Date): DetectedPlan | null {
+  if (QUESTION.test(text.trim())) return null;
+  const when = localWhen(text, now);
+  if (!when || !(when.timed || BIG.test(text) || TASK.test(text) || GOING.test(text))) return null;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const date = `${when.at.getFullYear()}-${pad(when.at.getMonth() + 1)}-${pad(when.at.getDate())}`;
+  const time = when.timed ? `${pad(when.at.getHours())}:${pad(when.at.getMinutes())}` : undefined;
+  const title = TITLES.find(([re]) => re.test(text))?.[1] ?? clauseOf(text, /\S/).split(/\s+/).slice(0, 4).join(' ');
+  const day = Math.round((new Date(when.at).setHours(0, 0, 0, 0) - new Date(now).setHours(0, 0, 0, 0)) / 86_400_000);
+  const dayWord = day === 0 ? 'today' : day === 1 ? 'tomorrow' : 'the day after tomorrow';
+  return { title, date, time, when: time ? `${dayWord} at ${time}` : dayWord };
+}
+
 /** How the user says it went, in any of the three languages, or null. "It's off" wins over the rest. */
 export function mockOutcome(text: string): ThreadOutcome | null {
   const lower = text.toLowerCase();
   if (/(cancell?ed|it'?s off|called off|not going|bekor bo'ldi|qoldirildi|bormayman|отмен|не пойду)/.test(lower)) return 'off';
-  if (/(failed|went (badly|bad|terribly)|didn'?t go well|terrible|awful|yiqildim|o'tolmadim|yomon o'tdi|провал|не сдал|плохо прошл)/.test(lower)) return 'bad';
-  if (/(went (well|great|fine|ok)|passed|nailed it|it was great|i did it|o'tdim|yaxshi o'tdi|zo'r o'tdi|сдал|получилось|хорошо прошл)/.test(lower)) return 'good';
+  if (/(fell through|not happening anymore)/.test(lower)) return 'off';
+  if (/(failed|flunked|bombed|went (badly|bad|terribly|horribly)|didn'?t go well|did not go well|didn'?t pass|did not pass|terrible|awful|disaster|it sucked|messed (it )?up|screwed (it )?up|yiqildim|o'tolmadim|yomon o'tdi|провал|не сдал|плохо прошл)/.test(lower)) return 'bad';
+  if (/(went (well|great|fine|ok|okay|amazing|awesome|perfect)|passed|nailed it|aced it|crushed it|killed it|it was great|it was amazing|i did it|got the job|i got in|o'tdim|yaxshi o'tdi|zo'r o'tdi|сдал|получилось|хорошо прошл)/.test(lower)) return 'good';
   if (/(\bdone\b|finished|submitted|handed (it )?in|tugatdim|bitdi|topshirdim|сделал|закончил)/.test(lower)) return 'done';
   return null;
 }
