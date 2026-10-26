@@ -278,8 +278,9 @@ After the user's last message (only for friends who may write first):
 - **Server:** the user's edits are part of the thread state the server keeps; a new time means the
   model plans the texts again, and `quiet` threads are listed to the model as NO TEXTS ABOUT.
 - **Done:** A4, today's pushes (3 / 6) and the learned sleep in notification settings (D91); B5, a
-  morning brief that knows today's plans (D92, `src/lib/brief.ts`).
-- **Next (proposed):** B6, an evening "how was today?" into the diary; B7, a weekly recap.
+  morning brief that knows today's plans (D92, `src/lib/brief.ts`); B6, the evening "how was today?"
+  into the diary (D93, `src/lib/day-ask.ts`).
+- **Next (proposed):** B7, a weekly recap.
 
 ## Next steps (owner picks)
 

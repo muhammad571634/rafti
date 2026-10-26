@@ -39,6 +39,9 @@ const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
 const SPECIAL: Record<string, string[]> = {
   'brief:rough': ['That just means it matters to you. Breathe, you’re ready.', 'Nervous is normal. You prepared for this, I know you did.'],
   'brief:good': ['Morning! Now go have a good one ☀️', 'Hehe, morning. Eat breakfast, okay?'],
+  'day:good': ['Yay, I love good days. What was the best bit?', 'Good! I wrote it down in your diary 📖 What made it good?'],
+  'day:rough': ['Come here. Long days are heavy. Rest now, I’ll keep it in your diary 📖', 'I’m sorry. Do you want to tell me, or just rest?'],
+  'day:later': ['Okay. I’m here when you want to talk 🙂', 'Deal. I’ll be waiting.'],
   'quest:yes': ['Yesss. Report back later 😏', 'Deal! Tell me how it went.'],
   'quest:no': ['Okay, no pressure. Another day 🙂', 'Fair. Maybe tomorrow!'],
   'lead:off': ['Okay, no reminder. You’ve got this.', 'Alright, I trust you 😌'],

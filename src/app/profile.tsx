@@ -101,6 +101,9 @@ export default function ProfileScreen() {
   /** Dev only: what the last "Morning brief now" press did. */
   const [briefResult, setBriefResult] = useState<string | undefined>();
   const morningBrief = () => setBriefResult(t(useAppStore.getState().devMorningBrief() ? 'profile.briefSent' : 'profile.briefNone'));
+  /** Dev only: what the last "Evening question now" press did. */
+  const [dayResult, setDayResult] = useState<string | undefined>();
+  const dayAsk = () => setDayResult(t(useAppStore.getState().devDayAsk() ? 'profile.briefSent' : 'profile.dayNone'));
 
   const testPushes = async () => {
     const count = await sendTestPushes(useAppStore.getState());
@@ -299,6 +302,8 @@ export default function ProfileScreen() {
             <SettingsRow title={t('profile.nextTexts')} icon="time" fill={FILL.grey} meta={nextResult} onPress={nextTexts} />
             {/* The morning brief now (today's plans, else tomorrow's), without waiting for the morning. */}
             <SettingsRow title={t('profile.briefNow')} icon="sunny" fill={FILL.grey} meta={briefResult} onPress={morningBrief} />
+            {/* Tonight's "how was today?" now; the answer becomes today's diary page. */}
+            <SettingsRow title={t('profile.dayNow')} icon="moon" fill={FILL.grey} meta={dayResult} onPress={dayAsk} />
             {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
             <SettingsRow title={t('profile.loadDemo')} icon="albums" fill={FILL.grey} onPress={loadDemoData} last={!plan} />
             {/* Ends the plan at once, to see the free screens again. */}

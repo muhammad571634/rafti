@@ -1482,6 +1482,8 @@
     "briefNow": "Morning brief now",
     "briefSent": "Sent",
     "briefNone": "No plans ahead",
+    "dayNow": "Evening question now",
+    "dayNone": "Not today",
     "chatAnimation": "Chat animations",
     "haptics": "Haptics",
     "account": "Account",

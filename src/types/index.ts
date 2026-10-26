@@ -346,6 +346,8 @@ export interface DiaryEntry {
   /** The character "reads" the entry and writes back */
   reply?: { characterId: string; text: string; createdAt: string };
   accentIndex: number;
+  /** `evening`: the user's answer to "how was today?" (`src/lib/day-ask.ts`), one a day. */
+  source?: 'evening';
 }
 
 /**

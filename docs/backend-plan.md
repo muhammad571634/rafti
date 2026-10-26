@@ -795,6 +795,27 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
   kunlik byudjet ichida; kategoriyasi `ideas_brief`.
 - **Narx:** kuniga bitta chaqiruv (≈ $0.0006), oddiy salom o'rniga.
 
+### 12.27 Kechqurun "Kun qanday o'tdi?" → Kundalik (2026-10-26, B6)
+
+- **Kim so'raydi** (`dayAsker`, `src/lib/day-ask.ts`): kechki vaqtda (`nightCallTime`) bugun eng ko'p
+  gaplashgan do'st, bo'lmasa eng yaqini (faqat birinchi yoza oladiganlar). Shu kuni oila a'zosining
+  kechki savoli bo'lsa (ota-ona 19:30, aka-uka 20:00), boshqa hech kim so'ramaydi va o'sha savolga
+  javob ham Kundalik'ka tushadi. Shu chatda inqiroz bo'lgan kuni u do'st so'ramaydi. Kuniga bitta
+  savol. So'rovchi kechki salom beradiganlardan biri bo'lsa, savol uning "good night"i o'rniga ketadi.
+- **Odamga moslashish:** savolga 12 soat ichida javob berilsa, "javob berildi" hisoblanadi. Ketma-ket
+  2 ta javobsiz qolsa, savol 3 kunda bir keladi; 4 ta javobsiz qolsa, biriga javob berilmaguncha
+  to'xtaydi. Bu tarix 14 kunlik xabarlardan hisoblanadi, alohida holat saqlanmaydi.
+- **Kundalik:** savoldan keyingi birinchi xabar (bosilgan g'oya yoki yozilgan matn) kuniga bitta
+  sahifa bo'ladi (`DiaryEntry.source = 'evening'`), do'st bilan bo'lishilgan, do'st sahifaga javob
+  yozadi. "Tell you later" va inqiroz matni sahifa bo'lmaydi.
+- **Server chaqiruvlari** (`src/ai/day-prompt.ts`): savol `dayAskParts` bilan (persona, bugungi chat,
+  bugun bo'lgan mavzular natijasi bilan; javob `TOUCH_SHAPE`). Javob qaytganda promptga
+  `DAY_DIARY_LINE` qo'shiladi, model `"diary":{"mood":...}` beradi (`parseDayMood`). Mock esa bir necha
+  so'zdan kayfiyatni o'qiydi (`moodOf`).
+- **Push:** turi `day`, kechki vaqtda (faol soatlarga suriladi), byudjet ichida, kategoriyasi `ideas_day`.
+- **Narx:** kuniga ko'pi bilan bitta chaqiruv (≈ $0.0006), oddiy "good night" o'rniga; kayfiyat
+  javobning o'zida (bir necha token).
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

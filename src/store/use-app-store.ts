@@ -59,11 +59,13 @@ import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouche
 import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
+import { answeredQuestion, DAY_REACH, dayAsker, moodOfIntent } from '@/lib/day-ask';
 import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
 import { briefLine } from '@/mock/brief';
+import { dayLine, moodOf } from '@/mock/day-ask';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
@@ -209,6 +211,7 @@ import type {
   GroupChat,
   RadioClip,
   DiaryEntry,
+  DiaryMood,
   LedgerEntry,
   LedgerReason,
   MemoryAbout,
@@ -636,6 +639,8 @@ interface AppState {
   devNextTexts: () => { sent: number; waiting: number };
   /** Dev: the next morning brief (today's, else tomorrow's) now; false when no plans are ahead. */
   devMorningBrief: () => boolean;
+  /** Dev: tonight's "how was today?" now; false when family asks, the back-off holds, or nobody may write. */
+  devDayAsk: () => boolean;
   /**
    * Keeping in mind (`src/app/mind.tsx`): the user moves a thread's time; its plan and the texts
    * still to come follow (the server's model plans them again around the new time).
@@ -969,6 +974,7 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
+        dayToDiary(set, get, conversationId, trimmed);
 
         answerText(set, get, conversationId, trimmed, { wakeHere: !!wakeHere, gain: INTIMACY.text });
         return 'sent';
@@ -2403,6 +2409,14 @@ export const useAppStore = create<AppState>()(
         return false;
       },
 
+      devDayAsk: () => {
+        if (!sendDayAsk(set, get, new Date())) return false;
+        // Tonight's question is asked, so the real one does not come again.
+        const slotKey = `${todayKey()}:night`;
+        set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));
+        return true;
+      },
+
       retimeThread: (threadId, happensAt) => {
         const now = new Date();
         const thread = get().threads.find((t) => t.id === threadId && t.status === 'open');
@@ -3025,8 +3039,10 @@ export const useAppStore = create<AppState>()(
           // On a day with something on, the closest friend who holds it sends the morning brief
           // instead (B5, `src/lib/brief.ts`), timed and worded like its push, and its luck text is said.
           const briefFrom = slot === 'morning' ? sendBrief(set, get, clockOn(now, settings.morningCallTime)) : null;
+          // The evening's "how was today?" (B6): one friend asks instead of their good night.
+          const asker = slot === 'night' ? sendDayAsk(set, get, clockOn(now, settings.nightCallTime)) : null;
           bonds.slice(0, 2).forEach((bond) => {
-            if (bond.characterId === briefFrom) return;
+            if (bond.characterId === briefFrom || bond.characterId === asker) return;
             const conversationId = get().addFriend(bond.characterId);
             // Seeded like the scheduled push for this slot, so the notification and the chat agree.
             const line = pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${bond.characterId}`);
@@ -3416,12 +3432,8 @@ export function previewFor(message: Message) {
  * when nobody holds anything for that day.
  */
 function sendBrief(set: Setter, get: Getter, at: Date): string | null {
-  const { relationships, characters, conversations } = get();
-  const writers = Object.values(relationships)
-    .filter((r) => r.messagesFirst && characters.some((c) => c.id === r.characterId) && conversations.some((c) => c.characterId === r.characterId))
-    .sort((a, b) => b.intimacy - a.intimacy)
-    .map((r) => r.characterId);
-  const brief = morningBrief(writers, get().schedules, get().threads, at);
+  const { relationships, characters } = get();
+  const brief = morningBrief(chatWriters(get), get().schedules, get().threads, at);
   const from = brief && characters.find((c) => c.id === brief.characterId);
   if (!brief || !from) return null;
   const conversationId = get().addFriend(brief.characterId);
@@ -3429,6 +3441,83 @@ function sendBrief(set: Setter, get: Getter, at: Date): string | null {
   appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(BRIEF_REACH) }, { countUnread: true });
   if (brief.covers.length) set((s) => ({ threads: markTouches(s.threads, new Set(brief.covers)) }));
   return from.id;
+}
+
+/** The writers in closeness order who have a chat: who may brief or ask about the day. */
+function chatWriters(get: Getter) {
+  const { relationships, characters, conversations, blockedIds } = get();
+  return Object.values(relationships)
+    .filter(
+      (r) =>
+        r.messagesFirst &&
+        !blockedIds.includes(r.characterId) &&
+        characters.some((c) => c.id === r.characterId) &&
+        conversations.some((c) => c.characterId === r.characterId),
+    )
+    .sort((a, b) => b.intimacy - a.intimacy)
+    .map((r) => r.characterId);
+}
+
+/**
+ * Asks "how was today?" for the evening at `at` (`src/lib/day-ask.ts`) in the friend's chat, with
+ * the line its push said. Returns who asked, or null when family asks, the back-off holds, or
+ * nobody may write.
+ */
+function sendDayAsk(set: Setter, get: Getter, at: Date): string | null {
+  const { relationships, characters, conversations, messages } = get();
+  const writers = chatWriters(get);
+  const chatOf = (id: string) => conversations.find((c) => c.characterId === id)!.id;
+  const asker = dayAsker(
+    {
+      writers,
+      chats: Object.fromEntries(writers.map((id) => [id, messages[chatOf(id)] ?? []])),
+      familyAsks: writers.filter((id) => {
+        const group = kinGroup(relationships[id]?.label);
+        return !!group && lifeMoments(group, at).some((m) => m.key === 'evening');
+      }),
+    },
+    at,
+  );
+  const from = asker && characters.find((c) => c.id === asker);
+  if (!from) return null;
+  const conversationId = get().addFriend(from.id);
+  const line = dayLine(temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:night:day:${from.id}`);
+  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(DAY_REACH) }, { countUnread: true });
+  return from.id;
+}
+
+const DIARY_MOODS: DiaryMood[] = ['happy', 'soft', 'blue', 'excited', 'tired'];
+
+/**
+ * The user's newest message answers "how was today?" (or a family evening's same question): it
+ * becomes today's diary page with its mood, and the friend writes back on it. Once a day; "Tell you
+ * later" and crisis words write nothing.
+ */
+function dayToDiary(set: Setter, get: Getter, conversationId: string, text: string, intent?: IdeaIntent) {
+  const chat = get().messages[conversationId] ?? [];
+  const mine = chat.findLast((m) => m.author === 'me');
+  const question = mine && answeredQuestion(chat, mine.id);
+  const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+  if (!question || !characterId || detectCrisis(text)) return;
+  const fromIdea = moodOfIntent(intent);
+  if (fromIdea === null) return;
+  const date = todayKey();
+  if (get().diary.some((d) => d.source === 'evening' && d.date === date)) return;
+  const mood = fromIdea ?? moodOf(text);
+  const id = uid('d');
+  const entry: DiaryEntry = {
+    id,
+    date,
+    title: text.split('\n')[0].slice(0, 60),
+    body: text,
+    mood,
+    images: [],
+    sharedWithCharacterId: characterId,
+    accentIndex: DIARY_MOODS.indexOf(mood),
+    source: 'evening',
+  };
+  set((s) => ({ diary: [entry, ...s.diary] }));
+  setTimeout(() => answerDiary(useAppStore.setState, id), 2200);
 }
 
 /** `HH:MM` on the day of `day`: the morning time the brief and its push are planned for. */
@@ -3714,6 +3803,7 @@ function answerLine(
   const mineId = uid('m');
   appendMessage(set, get, conversationId, { id: mineId, conversationId, author: 'me', kind: 'text', text: line, createdAt: new Date().toISOString() });
   touchStreak(set, get, conversation.characterId);
+  dayToDiary(set, get, conversationId, line, edited ? undefined : idea?.intent);
   const characterId = conversation.characterId;
 
   // "May I text you?": the idea the user started from decides, even if they changed its words.

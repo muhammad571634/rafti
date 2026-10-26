@@ -196,6 +196,13 @@ const BRIEF: ReplyIdea[] = [
   idea('Morning ☀️', 'Good morning to you too ☀️', 'good'),
 ];
 
+/** The evening "how was today?" (`src/lib/day-ask.ts`): the answer becomes a diary page. */
+const DAY: ReplyIdea[] = [
+  idea('Pretty good 🙂', 'It was pretty good, actually 🙂', 'good'),
+  idea('Long day', 'Long day… I’m tired', 'rough'),
+  idea('Tell you later', 'I’ll tell you later', 'later'),
+];
+
 /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
 const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
 
@@ -204,6 +211,7 @@ export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
   if (source === 'ask') return ASK;
   if (source === 'brief') return BRIEF;
+  if (source === 'day') return DAY;
   if (source === 'lead' || source === 'quest') return ASKS[source];
   if (source === 'pause') return ASKS[reach] ?? [];
   // `thread:after` (a push action set) or `thread:after:<id>` (a text in the chat).
@@ -222,6 +230,7 @@ export function allReachKeys() {
     ...(Object.keys(CARE_BETTER) as CareKind[]).map((kind) => careReach(kind)),
     ...(Object.keys(THREAD) as TouchPhase[]).map((phase) => `thread:${phase}`),
     'brief',
+    'day',
   ];
 }
 

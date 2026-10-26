@@ -1,6 +1,7 @@
 import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
+import { DAY_REACH, dayAsker } from '@/lib/day-ask';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { careReach, lifeReach, threadReach } from '@/lib/reply-ideas';
@@ -19,6 +20,7 @@ import {
   scheduleReminder,
 } from '@/mock';
 import { briefLine } from '@/mock/brief';
+import { dayLine } from '@/mock/day-ask';
 import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
@@ -54,6 +56,7 @@ export type PushKind =
   | 'morning'
   | 'brief'
   | 'evening'
+  | 'day'
   | 'call'
   | 'voiceNote'
   | 'remind'
@@ -140,6 +143,7 @@ const PRIORITY: Record<PushKind, number> = {
   touch: 1,
   life: 3,
   brief: 2,
+  day: 2,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -212,7 +216,7 @@ function quoteOf(messages: readonly Message[] | undefined) {
 }
 
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
-const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'life', 'care', 'comeback', 'touch']);
+const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'life', 'care', 'comeback', 'touch']);
 // The brief is not flexible: it has to come before the things it wishes luck for.
 
 /** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
@@ -301,8 +305,36 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               reach: BRIEF_REACH,
             });
           }
+          // The evening's "how was today?" (B6): one friend asks instead of their good night.
+          const asker =
+            slot === 'night'
+              ? dayAsker(
+                  {
+                    writers: writers.map((c) => c.id),
+                    chats: Object.fromEntries(writers.map((c) => [c.id, messages[chatOf.get(c.id)!.id] ?? []])),
+                    familyAsks: writers
+                      .filter((c) => {
+                        const group = kinGroup(relationships[c.id].label);
+                        return !!group && lifeMoments(group, day).some((m) => m.key === 'evening');
+                      })
+                      .map((c) => c.id),
+                  },
+                  when,
+                )
+              : null;
+          if (asker) {
+            const character = byId.get(asker)!;
+            say({
+              id: `day:${slotKey}:${asker}`,
+              kind: 'day',
+              at: when,
+              characterId: asker,
+              line: dayLine(temperOf(character, relationships[asker].label), `${slotKey}:day:${asker}`),
+              reach: DAY_REACH,
+            });
+          }
           for (const writer of writers.slice(0, PUSH_RULES.greeters)) {
-            if (writer.id === brief?.characterId) continue;
+            if (writer.id === brief?.characterId || writer.id === asker) continue;
             say({
               id: `${slot === 'morning' ? 'morning' : 'evening'}:${slotKey}:${writer.id}`,
               kind: slot === 'morning' ? 'morning' : 'evening',
