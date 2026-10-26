@@ -41,6 +41,8 @@ const WORLD_TINT: Record<string, string> = {
   'Tidepool Café': '#AD4E0E',
 };
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
+/** "Say hi" is 34 pt tall; this makes its tap area HIG's 44 pt. */
+const SAY_HI_SLOP = { top: 5, bottom: 5, left: 4, right: 4 };
 
 const heroOf = (c: Character) => HEROES[c.id] ?? characterImage(c);
 
@@ -324,9 +326,8 @@ export default function FindScreen() {
 }
 
 /**
- * One new character: their scene full-bleed, and at the bottom a frosted capsule with the face, name,
- * NEW and world, and "Say hi". HIG Materials: text and controls over a photo sit on a material, so
- * they read on any picture (iOS: the thin dark system material; Android: the same tone, unblurred).
+ * One new character: their scene full-bleed, name and world over a scrim, a clear glass "Say hi" the
+ * picture shows through (the owner's pick; a frosted capsule was tried and reverted, D95).
  */
 function Feature({
   character,
@@ -351,36 +352,34 @@ function Feature({
         onPress={onOpen}
         style={StyleSheet.absoluteFill}>
         <Image source={heroOf(character)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
-      </PressableScale>
-      <View style={styles.capsule}>
-        {Platform.OS === 'ios' ? <BlurView intensity={40} tint="systemThinMaterialDark" style={StyleSheet.absoluteFill} /> : null}
-        {/* Siblings, not children: a button inside a button is invalid on web. */}
-        <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityLabel={character.name} onPress={onOpen} style={styles.capsuleOpen}>
-          <CharacterAvatar character={character} size={40} ring ringColor={colors.onMedia} />
+        <LinearGradient colors={SCRIM} style={styles.featureScrim} />
+        <View style={styles.featureFoot}>
+          <CharacterAvatar character={character} size={48} ring ringColor={colors.onMedia} />
           <View style={styles.flex}>
-            <View style={styles.nameRow}>
-              <Txt style={styles.featureName} lines={1}>
-                {character.name}
-              </Txt>
-              {isNew ? (
-                <View style={styles.newBadge}>
-                  <Txt style={styles.newText}>{t('find.newBadge').toUpperCase()}</Txt>
-                </View>
-              ) : null}
-            </View>
+            {isNew ? (
+              <View style={styles.newBadge}>
+                <Txt style={styles.newText}>{t('find.newBadge').toUpperCase()}</Txt>
+              </View>
+            ) : null}
+            <Txt style={styles.featureName} lines={1}>
+              {character.name}
+            </Txt>
             {character.series ? (
               <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
                 {character.series}
               </Txt>
             ) : null}
           </View>
-        </PressableScale>
-        <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={onSayHi} style={styles.sayHi}>
-          <Txt variant="smallStrong" color={colors.black}>
-            {t('find.sayHi')}
-          </Txt>
-        </PressableScale>
-      </View>
+        </View>
+      </PressableScale>
+      {/* A sibling, not a child: a button inside a button is invalid on web. Clear glass: on iOS a light
+          blur behind it keeps the words readable on a bright picture, which still shows through. */}
+      <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={onSayHi} hitSlop={SAY_HI_SLOP} style={styles.sayHi}>
+        {Platform.OS === 'ios' ? <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} /> : null}
+        <Txt variant="smallStrong" color={colors.onMedia}>
+          {t('find.sayHi')}
+        </Txt>
+      </PressableScale>
     </View>
   );
 }
@@ -689,46 +688,51 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: colors.surfaceAlt,
   },
-  // The frosted capsule: concentric with the card's corners (26 - 10 inset = 16 + padding).
-  capsule: {
+  featureScrim: {
     position: 'absolute',
-    left: 10,
-    right: 10,
-    bottom: 10,
-    minHeight: 60,
-    paddingVertical: space.sm,
-    paddingLeft: space.sm,
-    paddingRight: space.sm + 2,
-    borderRadius: 18,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    backgroundColor: colors.onMediaMaterial,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 140,
   },
-  capsuleOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  featureFoot: {
+    position: 'absolute',
+    left: space.lg,
+    right: 104,
+    bottom: 14,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: space.md,
+  },
+  // NEW in the app's one accent (unread / new, docs/design-style.md §1), over the name.
+  newBadge: {
+    alignSelf: 'flex-start',
+    marginBottom: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 6,
+    backgroundColor: colors.primaryFill,
+  },
+  newText: { fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 0.4, color: colors.textOnPrimary },
   featureName: {
-    flexShrink: 1,
-    fontSize: 17,
-    lineHeight: 22,
+    fontSize: 22,
+    lineHeight: 26,
     fontWeight: '700',
     color: colors.onMedia,
   },
-  // NEW in the app's one accent (unread / new, docs/design-style.md §1).
-  newBadge: { paddingHorizontal: 6, paddingVertical: 1, borderRadius: 6, backgroundColor: colors.primaryFill },
-  newText: { fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 0.4, color: colors.textOnPrimary },
-  // The capsule's one prominent action: the solid light button used on photos (world page, Today hero).
+  // Clear glass on a photo (HIG: the clear variant is for components over rich media).
   sayHi: {
+    position: 'absolute',
+    right: space.lg,
+    bottom: 14,
     height: 34,
-    minWidth: 44,
     paddingHorizontal: 14,
     borderRadius: 17,
+    overflow: 'hidden',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.onMediaButton,
+    backgroundColor: colors.onMediaGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
   },
   tiles: {
     flexDirection: 'row',

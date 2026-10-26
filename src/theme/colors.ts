@@ -117,8 +117,6 @@ const lightColors = {
   onMediaHairline: 'rgba(255,255,255,0.28)',
   /** The solid round action sitting on a photo (the Today hero's chat button). */
   onMediaButton: 'rgba(255,255,255,0.92)',
-  /** A dark material on a photo where the system blur is missing (Android); iOS draws a thin dark material over it. */
-  onMediaMaterial: 'rgba(22,22,28,0.46)',
 
   // Bond: the only place mint carries meaning (level progress, "voice ready").
   bond: palette.mint400,
