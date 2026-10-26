@@ -751,7 +751,8 @@ const ChatRow = memo(function ChatRow({
       leftThreshold={ACTION * 0.6}
       rightThreshold={ACTION * 0.6}
       dragOffsetFromLeft={SWIPE_START}
-      dragOffsetFromRight={SWIPE_START}
+      // Leftward travel is negative: the library rejects a positive right offset.
+      dragOffsetFromRight={-SWIPE_START}
       overshootLeft={false}
       overshootRight={false}
       // The list is one rounded card: the first and last rows carry its corners.
