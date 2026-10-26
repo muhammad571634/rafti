@@ -122,9 +122,13 @@ function careIdeas(kind: CareKind): ReplyIdea[] {
   ];
 }
 
+/** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
+const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
+
 /** The ideas for a line they wrote first; none for a reach key this build does not know. */
 export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
+  if (source === 'ask') return ASK;
   if (source === 'life') return LIFE[`${a}:${b}`] ?? [];
   if (source === 'hello') return HELLO[a as KinGroup] ?? [];
   if (source === 'care') return a in CARE_BETTER ? careIdeas(a as CareKind) : [];

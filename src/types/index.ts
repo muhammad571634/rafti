@@ -25,6 +25,8 @@ export interface Character {
   /** More openings besides `greeting`; a new chat starts with one of them. */
   greetings?: string[];
   tags: string[];
+  /** How they text when the user is away; from the tags when missing (`temperOf`). */
+  temper?: Temper;
   /** A few words under the name: how they would sum themselves up. */
   tagline?: string;
   /** What they look like, in words; their picture is drawn from it. */
@@ -78,6 +80,8 @@ export interface Relationship {
   voiceReplies: boolean;
   /** They may text or call first (morning / night greetings, one text when you go quiet). */
   messagesFirst: boolean;
+  /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): how often they asked and what the user said. */
+  reachAsk?: ReachAsk;
   /** Chat settings → Reply style. Older saves lack it: read it through `replyPrefs()`. */
   replyStyle?: ReplyStyle;
   /** Chat settings → Reply length. */
@@ -142,7 +146,7 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff';
   /** voiceQuota lines: when the plan's voice minutes come back */
   until?: string;
   /** scene cards: the scene that starts here (`text` is its title). */
@@ -509,6 +513,17 @@ export interface CareItem {
   done?: boolean;
   /** A second ask after "Still not great"; there is no third. */
   again?: boolean;
+}
+
+/** How a character texts when the user is away (`src/lib/temper.ts`). */
+export type Temper = 'warm' | 'teasing' | 'sulky' | 'clingy' | 'shy';
+
+/** The consent ask's history with one friend. */
+export interface ReachAsk {
+  asks: number;
+  /** ISO time of the last ask. */
+  lastAt?: string;
+  answer?: 'yes' | 'no';
 }
 
 /** What the user means by a reply idea; it picks their answer and what happens next. */

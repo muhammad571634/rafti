@@ -48,6 +48,12 @@ export interface PushData {
 
 /** A reply idea's button on a push: `idea_` and the idea's intent. */
 export const IDEA_ACTION = 'idea_';
+/** The typed reply on a push (iOS text input action, Android RemoteInput). */
+export const REPLY_ACTION = 'reply_text';
+/** The action set of a friend's push that carries no ideas: just the typed reply. */
+const CHAT_CATEGORY = 'chat_reply';
+/** Android shows at most three actions: two ideas and the typed reply. iOS shows four. */
+const IDEA_BUTTONS = Platform.OS === 'android' ? 2 : 3;
 
 let configured = false;
 
@@ -77,21 +83,30 @@ export async function configurePushes() {
       ),
     );
   }
-  // Reply ideas as push buttons ("I ate!" from the lock screen). Best effort: a build or host
-  // without categories still gets the push, with no buttons.
+  // A friend's push answers like a text: reply ideas as buttons ("I ate!") and a typed reply, from
+  // the lock screen. Best effort: where categories are missing the push still comes, without them.
+  const reply = {
+    identifier: REPLY_ACTION,
+    buttonTitle: i18n.t('push.reply'),
+    textInput: { submitButtonTitle: i18n.t('push.send'), placeholder: i18n.t('push.replyPlaceholder') },
+    options: { opensAppToForeground: true },
+  };
   try {
-    await Promise.all(
-      allReachKeys().map((reach) =>
-        N.setNotificationCategoryAsync(
-          ideaCategory(reach),
-          ideasFor(reach).map((idea) => ({
-            identifier: `${IDEA_ACTION}${idea.intent}`,
-            buttonTitle: idea.label,
-            options: { opensAppToForeground: true },
-          })),
-        ),
+    await Promise.all([
+      N.setNotificationCategoryAsync(CHAT_CATEGORY, [reply]),
+      ...allReachKeys().map((reach) =>
+        N.setNotificationCategoryAsync(ideaCategory(reach), [
+          ...ideasFor(reach)
+            .slice(0, IDEA_BUTTONS)
+            .map((idea) => ({
+              identifier: `${IDEA_ACTION}${idea.intent}`,
+              buttonTitle: idea.label,
+              options: { opensAppToForeground: true },
+            })),
+          reply,
+        ]),
       ),
-    );
+    ]);
   } catch {
     // No buttons here; the push itself still works.
   }
@@ -205,14 +220,23 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
       data: data as unknown as Record<string, unknown>,
       sound: 'default',
       interruptionLevel: push.timeSensitive ? 'timeSensitive' : 'active',
-      categoryIdentifier: push.reach ? ideaCategory(push.reach) : undefined,
+      categoryIdentifier: categoryFor(push),
+      // One friend's texts stack together, as a person's messages do (iOS thread, Android group).
+      threadIdentifier: push.characterId ? `friend_${push.characterId}` : undefined,
     },
     trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: push.channel },
   });
 }
 
-/** The lock screen shows what they said only when the user turned previews on. */
+/** A push that opens a friend's chat can be answered from the lock screen. */
+function categoryFor(push: PlannedPush) {
+  if (push.reach) return ideaCategory(push.reach);
+  return push.characterId && push.route.startsWith('/chat/') && push.kind !== 'call' ? CHAT_CATEGORY : undefined;
+}
+
+/** What they said, as a text shows it; hidden only when the user turned previews off in Profile. */
 function bodyFor(push: PlannedPush, preview: boolean) {
+  if (push.textKey === 'push.voiceNote') return preview ? `🎤 ${i18n.t('push.voiceMessage')}` : i18n.t(push.textKey);
   if (push.textKey) return i18n.t(push.textKey);
   if (!preview || !push.line) return i18n.t('push.hidden');
   return push.line;

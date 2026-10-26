@@ -4,6 +4,7 @@ import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
 import { familyLines, isFamilyLabel } from '../lib/kin';
+import { temperLines, temperOf } from '../lib/temper';
 import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
@@ -165,6 +166,8 @@ export function characterParts(
             `Closeness level ${relationship.level} (${relationship.levelTitle})${relationship.label && !isFamilyLabel(relationship.label) ? `, they call you their ${relationship.label}` : ''}${relationship.nickname ? `, they call you "${relationship.nickname}"` : ''}.`,
             // Family (src/lib/kin.ts): who they are to the user, never romantic.
             ...(isFamilyLabel(relationship.label) ? familyLines(relationship.label) : []),
+            // How they text first and after a silence (src/lib/temper.ts); a family role sets it.
+            ...temperLines(temperOf(character, relationship.label)),
           ]
         : [],
     ),

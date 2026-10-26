@@ -56,7 +56,7 @@ is the plan the next steps build.
 - **5 temperaments** for now.
 - The "may I text you?" ask comes **from the character, softly, in the chat**.
 
-### P2.1 Temperament (5, picked from the persona; the user sets nothing)
+### P2.1 Temperament (5, picked from the persona; the user sets nothing) — built (D86, `src/lib/temper.ts`)
 
 Each character gets one temperament from their bio and tags (server: one model call at creation;
 mock: a tag table). It decides how often they write, what silence does to them and how they make up.
@@ -80,13 +80,13 @@ A mood (D76's carried mood) lasts across lines and days and shows in the chat he
 - Why: App Store and Play review, AI companion laws (California SB 243), the EU AI Act's ban on
   manipulation, and vulnerable users.
 
-### P2.2 "May I text you sometimes?" (the consent ask, from the character)
+### P2.2 "May I text you sometimes?" (the consent ask, from the character) — built (D86, `src/lib/reach-ask.ts`)
 
 Character.AI shows a system alert ("Characters can message you while you're away! Allow {{name}}?").
 Ours is a line in the chat with reply ideas ("Yes, text me! 😊" / "Not now"), in the temperament's voice.
 
 - **When:** the user is engaged: 8+ of their own messages with this friend in total and 4+ in this
-  session, or the first closeness level-up. Never in the first 3 messages, never right after a crisis
+  session. Never in the first 3 messages, never right after a crisis
   reply, never while a reply idea is waiting.
 - **Yes:**
   - "Let them reach out" turns on.
@@ -212,7 +212,7 @@ After the user's last message (only for friends who may write first):
   - Signs of loneliness raise it: saying lonely or sad often, being awake at night, going quiet
     suddenly after being active.
   - A crisis goes to the helpline path, never to more pushes.
-- **Lock screen like an SMS:**
+- **Lock screen like an SMS** (D86 built the words always shown, the grouping and the typed reply):
   - The title is what the user calls them ("Mom").
   - One friend's lines group together (iOS `threadIdentifier`, Android group).
   - Reply ideas as buttons (D85), plus a typed reply (`textInput` action).

@@ -299,6 +299,8 @@
     "notFound": "This group is gone."
   },
   "chat": {
+    "notifyOff": "Notifications are off, so {{name}}'s texts can't reach you.",
+    "notifyOffAction": "Turn on",
     "ideaEditHint": "Long press to change it before sending",
     "inputPlaceholder": "Message",
     "read": "Read",
@@ -1851,6 +1853,10 @@
     "ai": "AI"
   },
   "push": {
+    "reply": "Reply",
+    "send": "Send",
+    "replyPlaceholder": "Message",
+    "voiceMessage": "Voice message",
     "hidden": "sent you a message",
     "incomingCall": "Incoming call",
     "voiceNote": "sent you a voice note",

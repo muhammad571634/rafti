@@ -1,6 +1,8 @@
-import type { IdeaIntent } from '@/types';
+import type { IdeaIntent, Temper } from '@/types';
 
 import { pickSeeded } from '../lib/seeded';
+import { TEMPERS } from '../lib/temper';
+import { askAnswer } from './temper';
 
 /**
  * Their answer to a tapped reply idea (`src/lib/reply-ideas.ts`) until the server's model writes
@@ -29,6 +31,9 @@ const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
 
 /** Their answer to an idea; `reach` gives the voice (a sibling teases), the seed keeps it stable. */
 export function ideaAnswer(reach: string | undefined, intent: IdeaIntent, seed: string) {
+  // "May I text you?": their answer follows their temper.
+  const [source, temper] = reach?.split(':') ?? [];
+  if (source === 'ask' && TEMPERS.includes(temper as Temper)) return askAnswer(temper as Temper, intent === 'yes', seed);
   const sibling = reach?.split(':')[1] === 'sibling';
   return pickSeeded((sibling && SIBLING[intent]) || ANSWERS[intent], seed);
 }

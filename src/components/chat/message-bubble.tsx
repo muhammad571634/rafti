@@ -70,6 +70,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'helpline') return <HelplineCard />;
   if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
+  if (message.card === 'notifyOff') return <NotifyOffNote name={character.name.split(' ')[0]} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   // A continue is the user's turn without words: nothing to show, their lines follow.
@@ -339,6 +340,22 @@ function VoiceQuotaNote({ until }: { until?: string }) {
         {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
         <Txt variant="smallStrong" color={colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
           {t('chat.addMinutes')}
+        </Txt>
+      </Txt>
+    </View>
+  );
+}
+
+/** "Yes, text me!" while the phone blocks pushes: their texts cannot reach the lock screen yet. */
+function NotifyOffNote({ name }: { name: string }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.quota}>
+      <Ionicons name="notifications-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+        {t('chat.notifyOff', { name })}{' '}
+        <Txt variant="smallStrong" color={colors.text} onPress={() => void Linking.openSettings()} accessibilityRole="link">
+          {t('chat.notifyOffAction')}
         </Txt>
       </Txt>
     </View>

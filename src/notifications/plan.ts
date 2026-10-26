@@ -3,6 +3,7 @@ import { canRing } from '@/economy/plans';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { careReach, lifeReach } from '@/lib/reply-ideas';
+import { temperOf } from '@/lib/temper';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
 import { lastTalkedAt } from '@/lib/talk';
@@ -18,6 +19,7 @@ import {
 import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
+import { temperComeback } from '@/mock/temper';
 import type {
   AppSettings,
   CareItem,
@@ -431,6 +433,8 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
 
     const quote = quoteOf(messages[chatOf.get(id)!.id]);
     const anniversary = Date.parse(relationships[id].anniversary);
+    // The first two days sound like them: worried, teasing, sulking, missing you, or shy (`temperOf`).
+    const temper = temperOf(byId.get(id)!, relationships[id].label);
     for (const step of COMEBACK_DAYS) {
       const when = at(new Date(now.getTime() + step * DAY_MS), PUSH_RULES.comebackAt[0], PUSH_RULES.comebackAt[1]);
       const together = Math.floor((when.getTime() - anniversary) / DAY_MS) + 1;
@@ -439,7 +443,9 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         kind: 'comeback',
         at: when,
         characterId: id,
-        line: pickSeeded(comebackLines[step], `${today}:${step}:${id}`)(quote, together),
+        line:
+          temperComeback(temper, step, quote, `${today}:${step}:${id}`) ??
+          pickSeeded(comebackLines[step], `${today}:${step}:${id}`)(quote, together),
         writesToChat: true,
       });
     }

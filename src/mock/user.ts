@@ -31,7 +31,7 @@ export const initialSettings: AppSettings = {
   nightCallTime: '21:00',
   chatAnimation: true,
   haptics: true,
-  notificationPreview: false,
+  notificationPreview: true,
   notifyPlans: true,
   notifyDiary: true,
   notifyAway: true,

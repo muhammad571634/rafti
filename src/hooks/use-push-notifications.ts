@@ -11,6 +11,7 @@ import {
   configurePushes,
   deliveredPushes,
   IDEA_ACTION,
+  REPLY_ACTION,
   syncPushes,
   type PushData,
 } from '@/notifications/sync';
@@ -40,11 +41,21 @@ export function usePushNotifications() {
       const data = response?.notification.request.content.data as unknown as PushData | undefined;
       if (!data?.id) return;
       land(data);
-      // A reply idea's button ("I ate!"): the answer goes into their chat, then the chat opens.
+      // A reply idea's button ("I ate!") or a reply typed on the lock screen: the answer goes into
+      // their chat, then the chat opens. Without shells for a typed one, it waits in the field.
       const action = response?.actionIdentifier ?? '';
+      const store = useAppStore.getState();
       if (action.startsWith(IDEA_ACTION) && data.reach && data.characterId && data.line) {
         const intent = action.slice(IDEA_ACTION.length) as IdeaIntent;
-        useAppStore.getState().answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, intent });
+        store.answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, intent });
+      }
+      const typed = response?.userText?.trim();
+      if (action === REPLY_ACTION && typed && data.characterId) {
+        const sent = store.answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, text: typed });
+        if (sent === 'noShells') {
+          router.push({ pathname: data.route as never, params: { draft: typed } } as Href);
+          return;
+        }
       }
       router.push(data.route as Href);
     };

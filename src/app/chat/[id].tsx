@@ -31,7 +31,9 @@ import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
+import { isAskReach } from '@/lib/reach-ask';
 import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
+import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, shadows, space } from '@/theme';
@@ -69,6 +71,23 @@ export default function ChatRoomScreen() {
   const sendText = useAppStore((s) => s.sendText);
   const pickChip = useAppStore((s) => s.pickChip);
   const answerIdea = useAppStore((s) => s.answerIdea);
+  const noteNotifyOff = useAppStore((s) => s.noteNotifyOff);
+  /**
+   * "Yes, text me!": the system asks for pushes now, the moment the user is most willing. Blocked
+   * pushes leave a card with a way to Settings; web and Expo Go on Android have none to ask for.
+   */
+  const afterIdea = useCallback(
+    (message: Message | undefined, idea: ReplyIdea) => {
+      if (!conversationId || !isAskReach(message?.reach) || idea.intent !== 'yes') return;
+      void (async () => {
+        const status = await pushPermission();
+        if (status === 'granted' || status === 'unsupported') return;
+        const granted = status === 'undetermined' && (await requestPushPermission());
+        if (!granted) noteNotifyOff(conversationId);
+      })();
+    },
+    [conversationId, noteNotifyOff],
+  );
   /** A long-pressed reply idea waiting in the field to be changed, and the line it answers. */
   const [ideaDraft, setIdeaDraft] = useState<{ messageId: string; idea: ReplyIdea; at: number } | null>(null);
   // The wake-up alarm rings until a real reply here (the morning chain).
@@ -237,14 +256,17 @@ export default function ChatRoomScreen() {
             // A line they wrote first: answering it is free (`answerIdea`).
             <QuickReplies
               ideas={item.ideas!}
-              onPick={(idea) => answerIdea(conversationId, item.id, idea)}
+              onPick={(idea) => {
+                answerIdea(conversationId, item.id, idea);
+                afterIdea(item, idea);
+              }}
               onEdit={(idea) => setIdeaDraft({ messageId: item.id, idea, at: Date.now() })}
             />
           ) : null}
         </>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -278,6 +300,7 @@ export default function ChatRoomScreen() {
     const draftIdea = ideaDraft;
     setIdeaDraft(null);
     const result = draftIdea ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text) : sendText(conversation.id, text);
+    if (draftIdea && result === 'sent') afterIdea(data.find((m) => m.id === draftIdea.messageId), draftIdea.idea);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
