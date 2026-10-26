@@ -30,6 +30,7 @@ import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
+import { apiBase, serverReply } from '@/ai/server';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { mockSteerLines } from '@/mock/steer';
@@ -4063,90 +4064,114 @@ function scheduleReply(
         }
       : null;
   const turn = ctx ? planReply(ctx) : null;
-  const written =
-    text != null
-      ? [text]
-      : (given ??
-        (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid, interests: state.user.interests }) : []));
-  const lines = enforceStyle(written, replyPrefs(bond).style);
-  if (!lines.length) {
-    set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
-    return;
-  }
-  const mood = turn?.plan.mood;
+  const avoided = avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid;
+  const standIn = () =>
+    text != null ? [text] : (given ?? (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoided, interests: state.user.interests }) : []));
 
-  // The voice note says only what is spoken: narration stays on the screen.
-  const said = speechOnly(lines.join(' '));
-  // Roughly how long the burst takes to say out loud.
-  const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
-  // Voice replies come with a plan and use its minutes; without minutes the reply is text.
-  const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady && !!said;
-  const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
-  // A Pro member whose voice minutes ran out sees why, once a day, under the reply.
-  // Basic has no voice replies at all, so it never gets this note.
-  const voice = minutesOf(get().wallet, 'voice');
-  const voiceBack = voice.planTotal > 0 ? voice.resetsAt : null;
-  const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
-  if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
+  const deliver = (written: string[]) => {
+    const lines = enforceStyle(written, replyPrefs(bond).style);
+    if (!lines.length) {
+      set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+      return;
+    }
+    const mood = turn?.plan.mood;
 
-  // Each bubble waits a beat to read yours, then roughly as long as it takes to type, with
-  // "typing..." between. A burst never starts while the last one is still arriving, so two
-  // replies never interleave.
-  const delays = pace(lines, turn?.read ?? readMessage(undefined));
-  const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
-  let at = busy + 400;
-  lines.forEach((line, i) => {
-    at += delays[i];
-    const last = i === lines.length - 1;
-    setTimeout(() => {
-      if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
-      if (i === 0 && withVoice) {
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'them',
-          kind: 'voice',
-          durationSec: voiceSec,
-          transcript: said,
-          emotion: mood?.emotion,
-          createdAt: new Date().toISOString(),
-        });
-      }
-      const message: Message = {
-        ...themText(conversationId, line),
-        chips: last ? chips : undefined,
-        emotion: mood?.emotion,
-        ...(last && reach && ideas?.length ? { reach, ideas } : {}),
-      };
-      appendMessage(set, get, conversationId, message);
-      if (last && noteVoice && voiceBack != null) {
-        appendMessage(
-          set,
-          get,
-          conversationId,
-          {
+    // The voice note says only what is spoken: narration stays on the screen.
+    const said = speechOnly(lines.join(' '));
+    // Roughly how long the burst takes to say out loud.
+    const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
+    // Voice replies come with a plan and use its minutes; without minutes the reply is text.
+    const wantsVoice = !!bond?.voiceReplies && !!character?.voiceReady && !!said;
+    const withVoice = wantsVoice && spendVoice(set, get, voiceSec);
+    // A Pro member whose voice minutes ran out sees why, once a day, under the reply.
+    // Basic has no voice replies at all, so it never gets this note.
+    const voice = minutesOf(get().wallet, 'voice');
+    const voiceBack = voice.planTotal > 0 ? voice.resetsAt : null;
+    const noteVoice = wantsVoice && !withVoice && voiceBack != null && get().daily.voiceNoteDay !== todayKey();
+    if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
+
+    // Each bubble waits a beat to read yours, then roughly as long as it takes to type, with
+    // "typing..." between. A burst never starts while the last one is still arriving, so two
+    // replies never interleave.
+    const delays = pace(lines, turn?.read ?? readMessage(undefined));
+    const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
+    let at = busy + 400;
+    lines.forEach((line, i) => {
+      at += delays[i];
+      const last = i === lines.length - 1;
+      setTimeout(() => {
+        if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
+        if (i === 0 && withVoice) {
+          appendMessage(set, get, conversationId, {
             id: uid('m'),
             conversationId,
             author: 'them',
-            kind: 'system',
-            card: 'voiceQuota',
-            until: new Date(voiceBack).toISOString(),
+            kind: 'voice',
+            durationSec: voiceSec,
+            transcript: said,
+            emotion: mood?.emotion,
             createdAt: new Date().toISOString(),
-          },
-          { quiet: true },
-        );
-      }
-      set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
-      if (!last) return;
-      // How they feel now carries into the next reply, and fades with time (`currentMood`).
-      if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
-      if (gain) get().addIntimacy(conversation.characterId, gain);
-      if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
-      const nudgeAfter = text == null && !given ? turn?.plan.nudgeAfterMs : undefined;
-      if (nudgeAfter) scheduleNudge(set, get, conversationId, message.id, nudgeAfter);
-    }, at);
-  });
-  replyingUntil.set(conversationId, Date.now() + at);
+          });
+        }
+        const message: Message = {
+          ...themText(conversationId, line),
+          chips: last ? chips : undefined,
+          emotion: mood?.emotion,
+          ...(last && reach && ideas?.length ? { reach, ideas } : {}),
+        };
+        appendMessage(set, get, conversationId, message);
+        if (last && noteVoice && voiceBack != null) {
+          appendMessage(
+            set,
+            get,
+            conversationId,
+            {
+              id: uid('m'),
+              conversationId,
+              author: 'them',
+              kind: 'system',
+              card: 'voiceQuota',
+              until: new Date(voiceBack).toISOString(),
+              createdAt: new Date().toISOString(),
+            },
+            { quiet: true },
+          );
+        }
+        set((s) => ({ typing: { ...s.typing, [conversationId]: !last } }));
+        if (!last) return;
+        // How they feel now carries into the next reply, and fades with time (`currentMood`).
+        if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
+        if (gain) get().addIntimacy(conversation.characterId, gain);
+        if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
+        const nudgeAfter = text == null && !given ? turn?.plan.nudgeAfterMs : undefined;
+        if (nudgeAfter) scheduleNudge(set, get, conversationId, message.id, nudgeAfter);
+      }, at);
+    });
+    replyingUntil.set(conversationId, Date.now() + at);
+  };
+
+  // The real model writes the reply when the local AI server is on (development, `src/ai/server.ts`);
+  // a scripted line keeps its words. "Typing…" shows while it thinks, and any failure (offline, the
+  // free tier's daily cap, a slow answer) falls back to the stand-in, so the chat never stalls.
+  if (text == null && given == null && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
+    void serverReply({
+      character,
+      user: state.user,
+      relationship: bond,
+      prefs: replyPrefs(bond),
+      messages: ctx.history.filter((m) => !m.pending),
+      plan: turn.plan,
+      threads: state.threads.filter((t) => t.characterId === character.id),
+      // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
+      redo: Array.isArray(avoid) ? avoid : undefined,
+      replyLanguage: 'English',
+    }).then((lines) => {
+      if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
+      deliver(lines ?? standIn());
+    });
+    return;
+  }
+  deliver(standIn());
 }
 
 /** A beat after their reply, before the ask: long enough to read it, short enough to still be here. */

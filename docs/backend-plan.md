@@ -850,6 +850,30 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
 - **Narx:** persona keshlangan qatlamda, bir necha o'n token; `redo` faqat ↻ bosilganda turn
   qatlamiga qo'shiladi.
 
+### 12.30 Bepul start: B0-lite (2026-10-26)
+
+Founder qarori: hozircha pul sarflanmaydi, test bepul xizmatlarda boshlanadi.
+
+- **Server:** `server/` (Hono, TypeScript). Node 24'ning o'zi ishga tushiradi (`scripts/ts-test-hooks.mjs`),
+  `tsx` kerak emas. Prompt kodini ilova bilan bo'lishadi (`src/ai/*`). Hozircha **holatsiz**: ilova
+  javob uchun kerakli narsani (`ChatPromptInput`) yuboradi, server esa xabarlarni qaytaradi.
+  Baza, hisoblar va serverdagi iqtisod Supabase bilan keyingi qadamda keladi.
+- **Qayerda ishlaydi:** test paytida noutbukda, Metro bilan yonma-yon (`0.0.0.0:8787`). Telefon uni
+  o'sha Wi-Fi orqali topadi (`Constants.expoConfig.hostUri`). Hosting (Fly.io) keyinroq, pul bo'lganda.
+- **Model:** Google AI Studio bepul tarifi, `gemini-flash-latest` (2026 holati: bepul tarifda faqat
+  Flash; kunlik so'rov limiti bor; bepul tarifdagi ma'lumotdan Google o'z modellarini yaxshilash
+  uchun foydalanishi mumkin, shuning uchun faqat test ma'lumoti). Kalit `server/.env.local`da
+  (git'ga tushmaydi). Billing ulanmagan loyiha kaliti bo'lishi shart. `GOOGLE_API_KEY` ataylab
+  o'qilmaydi.
+- **Ilova:** Profile (dev) → "Real AI (local server)". Yoqilganda javoblarni model yozadi, yonida
+  model nomi yoki "Server off" ko'rinadi. Server o'chiq bo'lsa, xato bersa, limit tugasa yoki 25
+  soniyadan ortiq kutilsa, mock javob yoziladi va chat hech qachon to'xtamaydi.
+- **Hozircha mock qolganlar:** xotira, mavzular, brief, kechki savol, quick create, stream — ular
+  B1/B2'da shu serverga ulanadi. Kontraktlar tayyor (`src/ai/*-prompt.ts`).
+- **Bepul qolgan qadamlar:** Supabase bepul tarifi (2 loyiha, bir hafta harakatsiz bo'lsa uxlaydi),
+  EAS bepul (oyiga 15 Android build: dev build, push va Android'da haqiqiy bildirishnomalar uchun).
+  iPhone build Apple Developer ($99/yil) talab qiladi, shuning uchun avval Android.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

@@ -1492,6 +1492,8 @@
     "testPushes": "Test pushes",
     "testPushesSent": "{{count}} on the way",
     "testPushesUnavailable": "Needs a development build",
+    "realAi": "Real AI (local server)",
+    "aiOffline": "Server off",
     "nextTexts": "Next planned texts now",
     "nextTextsResult": "{{sent}} sent · {{waiting}} waiting",
     "briefNow": "Morning brief now",

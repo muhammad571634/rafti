@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SUPPORT_EMAIL } from '@/ai/safety';
+import { serverModel } from '@/ai/server';
 import {
   AuroraGlass,
   Button,
@@ -90,6 +91,19 @@ export default function ProfileScreen() {
   const [blockedOpen, setBlockedOpen] = useState(false);
   /** Dev only: what the last "Test pushes" press did. */
   const [testResult, setTestResult] = useState<string | undefined>();
+
+  /** Dev only: the local AI server's model while Real AI is on ("gemini:…"), else why not. */
+  const [aiStatus, setAiStatus] = useState<string | undefined>();
+  useEffect(() => {
+    if (!__DEV__ || !settings.realAi) return setAiStatus(undefined);
+    let alive = true;
+    void serverModel().then((model) => {
+      if (alive) setAiStatus(model ? model.replace(/^gemini:/, '') : t('profile.aiOffline'));
+    });
+    return () => {
+      alive = false;
+    };
+  }, [settings.realAi, t]);
 
   /** Dev only: what the last "Next planned texts" press did. */
   const [nextResult, setNextResult] = useState<string | undefined>();
@@ -299,6 +313,21 @@ export default function ProfileScreen() {
         {/* Development builds only. */}
         {__DEV__ ? (
           <View style={styles.group}>
+            {/* Replies from the real model on the local server (`server/`); off = the stand-in. */}
+            <SettingsRow
+              title={t('profile.realAi')}
+              icon="sparkles"
+              fill={FILL.grey}
+              meta={aiStatus}
+              right={
+                <Toggle
+                  value={!!settings.realAi}
+                  onChange={(v) => setSetting('realAi', v)}
+                  onColor={SWITCH_ON}
+                  accessibilityLabel={t('profile.realAi')}
+                />
+              }
+            />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
             {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}

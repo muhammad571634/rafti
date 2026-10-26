@@ -27,6 +27,8 @@
     "jest.config.js",
     "android",
     "ios",
+    "server",
+    ".claude",
     "**/*.test.ts"
   ]
 }

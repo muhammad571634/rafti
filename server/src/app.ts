@@ -1,0 +1,52 @@
+import { Hono } from 'hono';
+
+import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import { parseModelReply } from '../../src/ai/reply-style.ts';
+import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+
+/** How much of the chat a request may carry; the prompt layout cuts it further. */
+const MAX_MESSAGES = 120;
+
+/**
+ * The API. B0 is stateless: the app sends what the reply needs (the same `ChatPromptInput` the
+ * prompt code was written for) and gets the bubbles back. The database, accounts and the server's
+ * own economy come with Supabase (backend-plan §11, B0-B1).
+ */
+export function createApp(provider: LlmProvider | null, opts: { timeoutMs: number }) {
+  const app = new Hono();
+
+  app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null }));
+
+  app.post('/v1/chat/reply', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    let input: ChatPromptInput;
+    try {
+      input = await c.req.json();
+    } catch {
+      return c.json({ error: 'badJson' }, 400);
+    }
+    if (!input?.character?.name || !input?.user || !Array.isArray(input.messages)) return c.json({ error: 'badInput' }, 400);
+    // English is the launch market: a profile without a locale is written to in English.
+    input = { ...input, user: { ...input.user, locale: input.user.locale || 'en-US' }, messages: input.messages.slice(-MAX_MESSAGES) };
+
+    const started = Date.now();
+    try {
+      const result = await provider.complete(layoutChatPrompt(input), opts);
+      const reply = parseModelReply(result.text);
+      const ms = Date.now() - started;
+      // The cost log until the database's `usage_events` exists.
+      console.log(`[reply] ${input.character.name} ${ms}ms in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'}`);
+      if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: provider.name, ms });
+    } catch (error) {
+      if (error instanceof LlmBusyError) {
+        console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);
+        return c.json({ error: 'busy' }, 503);
+      }
+      console.error('[reply] failed', error);
+      return c.json({ error: 'failed' }, 502);
+    }
+  });
+
+  return app;
+}

@@ -32,6 +32,9 @@ yarn-error.*
 
 # local env files
 .env*.local
+# The server's secrets (server/.env.local is covered above; this guards a plain .env too)
+server/.env
+server/node_modules/
 
 # typescript
 *.tsbuildinfo

@@ -901,6 +901,8 @@ export interface AppSettings {
   chatAnimation: boolean;
   /** Haptic taps on presses, menus, wheels and outcomes (HIG: let people turn them off). */
   haptics: boolean;
+  /** Development: replies come from the real model on the local server (`src/ai/server.ts`). */
+  realAi?: boolean;
   /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */
   notificationPreview: boolean;
   /** Push kinds the user can switch off (Profile → Notifications, docs/push-plan.md). */
