@@ -46,6 +46,9 @@ export interface TouchDraft {
   phase: TouchPhase;
 }
 
+/** Texts that belong before the thing: good luck, time to go, sleep early. */
+export const beforeThing = (phase: TouchPhase) => phase === 'before' || phase === 'leave' || phase === 'eve';
+
 const hourOf = (d: Date) => d.getHours() + d.getMinutes() / 60;
 const isNight = (d: Date) => hourOf(d) >= THREAD_RULES.nightFrom || hourOf(d) < THREAD_RULES.nightTo;
 
@@ -58,20 +61,25 @@ function nextMorning(d: Date) {
 }
 
 /**
- * The texts that may stand: in the future, `before` ones before the thing and the rest after it,
- * a night "how did it go?" moved to the morning (a night `before` is dropped: it would wake them
- * for nothing), in time order, spaced by `minGapMs`, at most `maxTouches`. Ids are stable from the
- * thread id, so the push and the chat agree.
+ * The texts that may stand: in the future; good luck, time to go and sleep early before the thing,
+ * "how did it go?" after it (checks, goals and quests whenever); a night text moved to the morning,
+ * except one before the thing, which is dropped (it would wake them for nothing); in time order,
+ * spaced by `minGapMs`, at most `maxTouches`. Ids are stable from the thread id, so the push and the
+ * chat agree.
  */
 export function ruleTouches(drafts: readonly TouchDraft[], threadId: string, now: Date, happensAt?: string): Touch[] {
   const happens = happensAt ? Date.parse(happensAt) : NaN;
   const placed = drafts
     .map((d) => ({ ...d, time: new Date(d.at) }))
     .filter((d) => !Number.isNaN(d.time.getTime()) && d.why.trim())
-    .map((d) => (d.phase !== 'before' && isNight(d.time) ? { ...d, time: nextMorning(d.time) } : d))
-    .filter((d) => !(d.phase === 'before' && isNight(d.time)))
+    .map((d) => (!beforeThing(d.phase) && isNight(d.time) ? { ...d, time: nextMorning(d.time) } : d))
+    .filter((d) => !(beforeThing(d.phase) && isNight(d.time)))
     .filter((d) => d.time.getTime() > now.getTime() + 60_000)
-    .filter((d) => Number.isNaN(happens) || (d.phase === 'before' ? d.time.getTime() < happens : d.time.getTime() >= happens))
+    .filter(
+      (d) =>
+        Number.isNaN(happens) ||
+        (beforeThing(d.phase) ? d.time.getTime() < happens : d.phase !== 'after' || d.time.getTime() >= happens),
+    )
     .sort((a, b) => a.time.getTime() - b.time.getTime());
   const kept: typeof placed = [];
   for (const d of placed) {
@@ -157,3 +165,25 @@ export const pruneThreads = (threads: readonly Thread[], now: Date): Thread[] =>
       ? now.getTime() - Date.parse(t.closedAt ?? t.createdAt) < THREAD_RULES.keepClosedMs
       : t.touches.some((x) => !x.sent) || now.getTime() - Date.parse(t.createdAt) < THREAD_RULES.fadeMs,
   );
+
+/**
+ * The thing moved ("the exam moved to 10"): the thread's time and every text not yet sent shift with
+ * it, then the rules apply again (a "time to go" that now falls in the past is dropped).
+ */
+export function moveThread(threads: readonly Thread[], id: string, happensAt: string, now: Date): Thread[] {
+  return threads.map((t) => {
+    if (t.id !== id || t.status !== 'open' || !t.happensAt) return t;
+    const delta = Date.parse(happensAt) - Date.parse(t.happensAt);
+    const sent = t.touches.filter((x) => x.sent);
+    const moved = t.touches
+      .filter((x) => !x.sent)
+      .map((x) => ({ at: new Date(Date.parse(x.at) + delta).toISOString(), why: x.why, phase: x.phase }));
+    return { ...t, happensAt, touches: [...sent, ...ruleTouches(moved, `${t.id}:m${t.touches.length}`, now, happensAt)] };
+  });
+}
+
+/** The friend's open plan still ahead (the newest), which "it moved to 10" is about, or null. */
+export const nextPlan = (threads: readonly Thread[], characterId: string, now: Date): Thread | null =>
+  threads
+    .filter((t) => t.status === 'open' && t.characterId === characterId && t.happensAt && Date.parse(t.happensAt) > now.getTime() - 3_600_000)
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))[0] ?? null;

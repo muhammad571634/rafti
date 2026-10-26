@@ -4,6 +4,7 @@ import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { careReach, lifeReach, threadReach } from '@/lib/reply-ideas';
 import { temperOf } from '@/lib/temper';
+import { beforeThing } from '@/lib/threads';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
 import { lastTalkedAt } from '@/lib/talk';
@@ -412,7 +413,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
     for (const touch of thread.touches) {
       const when = new Date(touch.at);
       if (touch.sent || !inHorizon(when)) continue;
-      const before = touch.phase === 'before';
+      const before = beforeThing(touch.phase);
       say({
         id: `touch:${touch.id}`,
         kind: 'touch',

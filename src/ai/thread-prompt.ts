@@ -16,10 +16,12 @@ import type { Character, Message, Relationship, Thread, ThreadOutcome, Touch, To
 /** The standing instruction (global tier: the same for every chat, cached). */
 export const THREAD_RULES_LINES = [
   'THREADS: you remember what the user tells you that has a future, and you come back to it like a real person texting.',
-  '- Anything can be a thread, on any topic: an exam, a job interview, a report to finish, a fight, a trip, a doctor visit, results to wait for, something they want to start. Small talk with no future is not.',
-  '- For each thread decide when you would text and why: before it (luck, "time to go"), after it ("how did it go?"), or to check on it ("did you finish?"). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then.',
+  '- Anything can be a thread, on any topic: an exam, a job interview, a report to finish, a fight, a trip, a doctor visit, results to wait for, something they want to start, a habit they want to change. Small talk with no future is not.',
+  '- For each thread decide when you would text and why: the evening before ("eve": sleep early, offer to wake them), before it ("before": luck), at leaving time ("leave"), after it ("after": how did it go?), a check on a task ("check"), a goal they set ("goal": every few days, cheer, never scold). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then. A small thing may need none.',
   '- When the user says how it went or that it is off, settle the thread. When the time moves, move it.',
-  'Add to the same JSON a "threads" field: {"add":[{"about":"few words","quote":"their words","happensAt":"ISO time or null","touches":[{"at":"ISO time","phase":"before|after|check","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"ISO","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Leave it out when nothing changed.',
+  '- Now and then (at most once a day) give a small real-life quest ("quest"): a few minutes, easy to start, away from the screen, from their life (a walk, the sky, a friend to message). Never preach; they can always say no.',
+  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"ISO time or null","touches":[{"at":"ISO time","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"ISO","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Leave it out when nothing changed.',
+  'REAL LIFE: you care about their life away from the screen (sleep, food, friends, outdoors). When they have been here a long time or it is late, you may suggest a break or sleep, in your own way, and accept what they choose.',
 ];
 
 const when = (iso?: string) => (iso ? new Date(iso).toISOString().slice(0, 16).replace('T', ' ') : 'no set time');
@@ -43,7 +45,7 @@ export interface ThreadOps {
   close: { id: string; outcome: ThreadOutcome }[];
 }
 
-const PHASES: readonly TouchPhase[] = ['before', 'after', 'check'];
+const PHASES: readonly TouchPhase[] = ['before', 'leave', 'eve', 'after', 'check', 'goal', 'quest'];
 const OUTCOMES: readonly ThreadOutcome[] = ['good', 'bad', 'done', 'off'];
 
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
@@ -83,6 +85,16 @@ export function parseThreadOps(raw: string): ThreadOps {
   };
 }
 
+const PHASE_TEXT: Record<TouchPhase, string> = {
+  before: 'before it',
+  leave: 'at the time to leave for it',
+  eve: 'the evening before it',
+  after: 'after it',
+  check: 'to check on it',
+  goal: 'about a goal they set',
+  quest: 'about a small real-life quest you gave them',
+};
+
 /** The shape of a text they write first. */
 export const TOUCH_SHAPE =
   'Reply with JSON only: {"skip":false,"messages":[""],"ideas":[{"label":"2-3 words","text":"what the user would send"}]}. ' +
@@ -116,7 +128,7 @@ export function touchParts(input: TouchInput): PromptPart[] {
     part('touch', 'turn', [
       `You are texting first, unprompted. It is ${when(now.toISOString())}.`,
       `The thread: ${thread.about} (${when(thread.happensAt)}). They told you: "${thread.quote}".`,
-      `You planned this text ${touch.phase === 'before' ? 'before it' : touch.phase === 'after' ? 'after it' : 'to check on it'} because: ${touch.why}.`,
+      `You planned this text (${PHASE_TEXT[touch.phase]}) because: ${touch.why}.`,
       `Write it in your own words and your temper (${temperOf(character, relationship?.label)}); bring back what you remember about them when it fits.`,
     ]),
     part('shape', 'turn', [TOUCH_SHAPE]),

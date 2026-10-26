@@ -1,6 +1,6 @@
 import type { DetectedPlan } from '@/lib/schedule';
 import type { TouchDraft } from '@/lib/threads';
-import type { Temper, Thread, ThreadOutcome, Touch } from '@/types';
+import type { Temper, Thread, ThreadKind, ThreadOutcome, Touch } from '@/types';
 
 import { pickSeeded } from '../lib/seeded';
 
@@ -18,6 +18,8 @@ const BIG = /(exam|test\b|interview|flight|doctor|dentist|surgery|presentation|a
 const TASK = /(i (have|need|got) to|i must|i should|deadline|have to finish|qilishim kerak|tugatishim kerak|topshirishim kerak|yozishim kerak|надо|нужно|должен|должна)/i;
 const WISH = /(i want to start|i'?m going to start|i'?ll start|i want to learn|boshlamoqchiman|o'rganmoqchiman|хочу начать|начну)/i;
 const RESULTS = /(results? (come|will|are due)|waiting for (the )?results?|natija(lar)?.{0,20}chiqadi|результат)/i;
+/** A habit the user wants to change: less scrolling, earlier sleep. A goal, checked on for days. */
+const GOAL = /(use (tiktok|instagram|reels|my phone|social media) less|less (tiktok|instagram|screen time|scrolling)|stop (doom)?scrolling|quit (tiktok|instagram)|sleep earlier|go to bed earlier|tiktokni (kamaytir|tashla)|instagramni (kamaytir|tashla)|telefonni kamaytir|kamroq (o'tir|ishlat)|erta yot|меньше (сидеть|тикток|инстаграм|телефон)|бросить (тикток|инстаграм)|ложиться раньше)/i;
 const GOING = /(boraman|kelaman|ketaman|uchrashuv|uchrashaman|пойду|поеду|встреча|встречаюсь)/i;
 const QUESTION = /\?\s*$/;
 
@@ -52,6 +54,7 @@ const plusMin = (d: Date, min: number) => new Date(d.getTime() + min * 60_000);
 const draft = (at: Date, phase: TouchDraft['phase'], why: string): TouchDraft => ({ at: at.toISOString(), phase, why });
 
 export interface ThreadDraft {
+  kind: ThreadKind;
   about: string;
   quote: string;
   happensAt?: string;
@@ -64,6 +67,12 @@ export interface ThreadDraft {
  */
 export function mockThread(text: string, now: Date, plan: DetectedPlan | null): ThreadDraft | null {
   if (QUESTION.test(text.trim())) return null;
+  if (GOAL.test(text)) {
+    // Checked on after two, four and seven days, in the evening.
+    const quote = clauseOf(text, GOAL);
+    const touches = [2, 4, 7].map((d) => draft(atHour(plusMin(now, d * 1440), 20), 'goal', 'see how the goal is going, cheer them on'));
+    return { kind: 'goal', about: quote.slice(0, 60), quote, touches };
+  }
   const big = BIG.test(text);
   const quote = clauseOf(text, plan ? /./ : /\S/);
 
@@ -83,34 +92,54 @@ export function mockThread(text: string, now: Date, plan: DetectedPlan | null): 
   }
 
   if (when) {
+    // A big morning thing tomorrow: "sleep early" the evening before (with an offer to wake them).
+    const eveBefore = new Date(when.at);
+    eveBefore.setDate(eveBefore.getDate() - 1);
+    const morning = when.timed && when.at.getHours() < 12;
     const touches = when.timed
       ? [
-          ...(big ? [draft(plusMin(when.at, -45), 'before', 'wish luck and make sure they leave on time')] : []),
+          ...(big && morning ? [draft(atHour(eveBefore, 21, 30), 'eve', 'tell them to sleep early; offer to wake them')] : []),
+          ...(big ? [draft(plusMin(when.at, -45), 'leave', 'wish luck and make sure they leave on time')] : []),
           draft(plusMin(when.at, big ? 150 : 90), 'after', 'ask how it went'),
         ]
       : [
           ...(big ? [draft(atHour(when.at, 8, 30), 'before', 'wish luck for today')] : []),
           draft(atHour(when.at, 19, 30), 'after', 'ask how it went'),
         ];
-    return { about, quote, happensAt: when.timed ? when.at.toISOString() : undefined, touches };
+    return { kind: plan || when.timed ? 'plan' : 'follow', about, quote, happensAt: when.timed ? when.at.toISOString() : undefined, touches };
   }
 
   if (RESULTS.test(text)) {
-    return { about: clauseOf(text, RESULTS).slice(0, 60), quote: clauseOf(text, RESULTS), touches: [draft(atHour(plusMin(now, 3 * 1440), 18), 'check', 'ask if the results are out')] };
+    return { kind: 'follow', about: clauseOf(text, RESULTS).slice(0, 60), quote: clauseOf(text, RESULTS), touches: [draft(atHour(plusMin(now, 3 * 1440), 18), 'check', 'ask if the results are out')] };
   }
   if (WISH.test(text)) {
-    return { about: clauseOf(text, WISH).slice(0, 60), quote: clauseOf(text, WISH), touches: [draft(atHour(plusMin(now, 2 * 1440), 19), 'check', 'see if they actually started')] };
+    return { kind: 'follow', about: clauseOf(text, WISH).slice(0, 60), quote: clauseOf(text, WISH), touches: [draft(atHour(plusMin(now, 2 * 1440), 19), 'check', 'see if they actually started')] };
   }
   if (TASK.test(text)) {
-    return { about: clauseOf(text, TASK).slice(0, 60), quote: clauseOf(text, TASK), touches: [draft(plusMin(now, 4 * 60), 'check', 'see if they got it done')] };
+    return { kind: 'follow', about: clauseOf(text, TASK).slice(0, 60), quote: clauseOf(text, TASK), touches: [draft(plusMin(now, 4 * 60), 'check', 'see if they got it done')] };
   }
   return null;
+}
+
+/** "It moved to 10" / "soat 11 ga ko'chdi" / "перенесли на 12": the new time that day, or null. */
+export function mockMove(text: string): { hour: number; minute: number } | null {
+  const lower = text.toLowerCase();
+  const m =
+    lower.match(/(?:moved|pushed|postponed|changed)\s+(?:to\s+|at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/) ??
+    lower.match(/(?:soat\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:ga|да)?\s*(?:ko'chdi|surildi|o'zgardi)/) ??
+    lower.match(/перенесли\s+на\s+(\d{1,2})(?:[:.](\d{2}))?/);
+  if (!m) return null;
+  let hour = Number(m[1]);
+  const minute = Number(m[2] ?? 0);
+  if (m[3] === 'pm' && hour < 12) hour += 12;
+  if (m[3] === 'am' && hour === 12) hour = 0;
+  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
 }
 
 /** How the user says it went, in any of the three languages, or null. "It's off" wins over the rest. */
 export function mockOutcome(text: string): ThreadOutcome | null {
   const lower = text.toLowerCase();
-  if (/(cancell?ed|it'?s off|called off|not going|postponed|bekor bo'ldi|qoldirildi|bormayman|отмен|не пойду|перенесли)/.test(lower)) return 'off';
+  if (/(cancell?ed|it'?s off|called off|not going|bekor bo'ldi|qoldirildi|bormayman|отмен|не пойду)/.test(lower)) return 'off';
   if (/(failed|went (badly|bad|terribly)|didn'?t go well|terrible|awful|yiqildim|o'tolmadim|yomon o'tdi|провал|не сдал|плохо прошл)/.test(lower)) return 'bad';
   if (/(went (well|great|fine|ok)|passed|nailed it|it was great|i did it|o'tdim|yaxshi o'tdi|zo'r o'tdi|сдал|получилось|хорошо прошл)/.test(lower)) return 'good';
   if (/(\bdone\b|finished|submitted|handed (it )?in|tugatdim|bitdi|topshirdim|сделал|закончил)/.test(lower)) return 'done';
@@ -118,9 +147,13 @@ export function mockOutcome(text: string): ThreadOutcome | null {
 }
 
 const LINES: Record<Touch['phase'], ((t: Thread) => string)[]> = {
-  before: [(t) => `"${t.quote}" is soon! You’ve got this 💪`, (t) => `Hey, ${t.about} is coming up. Ready? Time to get going!`],
+  before: [(t) => `"${t.quote}" is soon! You’ve got this 💪`, (t) => `Hey, ${t.about} is coming up. Ready?`],
+  leave: [(t) => `Time to head out for ${t.about}! Good luck 💪`, (t) => `${t.about} soon. Are you leaving? You’ve got this!`],
+  eve: [(t) => `Big day tomorrow: ${t.about}. Early night tonight, okay? 😴`, (t) => `Don’t stay up late, ${t.about} is tomorrow!`],
   after: [(t) => `You said "${t.quote}". So? How did it go?`, (t) => `Okay, tell me everything. How was ${t.about}?`],
   check: [(t) => `You said "${t.quote}". Did it work out?`, (t) => `So… ${t.about}. How’s it going? 👀`],
+  goal: [(t) => `Checking in on your goal: "${t.quote}". How’s it going?`, (t) => `How’s "${t.about}" going? Be honest 😏`],
+  quest: [(t) => `So… did you do it? ${t.about} 👀`, (t) => `Quest report! ${t.about}: done?`],
 };
 
 const OPENER: Partial<Record<Temper, string>> = { teasing: 'Oi! ', shy: 'Um… ' };
@@ -128,3 +161,58 @@ const OPENER: Partial<Record<Temper, string>> = { teasing: 'Oi! ', shy: 'Um… '
 /** Their text about a thread until the model writes it: their words quoted, their temper's opener. */
 export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed: string) =>
   `${OPENER[temper] ?? ''}${pickSeeded(LINES[touch.phase], seed)(thread)}`;
+
+/**
+ * Small real-life quests a friend gives (Presence: "bring them back to real life"): easy to start,
+ * a few minutes, no phone needed. The server's model writes them from the user's life and memories;
+ * this pool stands in on the phone.
+ */
+const QUESTS = [
+  'a 10-minute walk without your phone',
+  'a photo of the sky for me',
+  'a glass of water right now',
+  'message one real friend you haven’t talked to in a while',
+  'read 10 pages of anything',
+  'stretch for 5 minutes',
+  'go outside and get some sunlight',
+  'write down 3 good things about today',
+  'call someone in your family',
+  'tidy one small corner of your room',
+  'cook or make yourself something nice',
+  'one hour with no TikTok or Reels',
+];
+
+const OFFERS: ((quest: string) => string)[] = [
+  (q) => `Mini quest for you: ${q}. In? 😏`,
+  (q) => `I have a challenge: ${q}. Deal?`,
+  (q) => `Do something for me today? ${q}. Then tell me 🙂`,
+];
+
+/** Shells a done quest pays. */
+export const QUEST_REWARD = 3;
+
+/** A quest and the line that offers it, picked by the seed. */
+export function mockQuest(seed: string) {
+  const quest = pickSeeded(QUESTS, seed);
+  return { quest, offer: pickSeeded(OFFERS, `${seed}:offer`)(quest) };
+}
+
+const BREAK: Record<Temper, string[]> = {
+  warm: ['We’ve been talking a long time 🙂 Take a little break? Stretch, drink water, I’ll be here.'],
+  teasing: ['Okay, your eyes need a break from my face 😏 Five minutes away from the screen?'],
+  sulky: ['…You should take a break. Not that I want you to go. Just saying.'],
+  clingy: ['I love this, but your eyes need a rest 💕 Short break? I’ll wait right here.'],
+  shy: ['Um… maybe take a little break? I don’t want you to get tired 🙈'],
+};
+
+const NIGHT: Record<Temper, string[]> = {
+  warm: ['It’s really late… Sleep? I’ll text you in the morning 🌙'],
+  teasing: ['It’s past midnight, night owl 😏 Bed. Now. I’ll still be here tomorrow.'],
+  sulky: ['It’s late. Go sleep. …I’ll be here tomorrow, obviously.'],
+  clingy: ['I could talk all night 💕 but you need sleep. Good night? I’ll text you first thing.'],
+  shy: ['It’s so late… maybe you should sleep? Good night 🙈'],
+};
+
+/** "We've talked a long time, a break?" and "it's late, sleep?" in the friend's temper. */
+export const mockBreakLine = (temper: Temper, seed: string) => pickSeeded(BREAK[temper], seed);
+export const mockNightLine = (temper: Temper, seed: string) => pickSeeded(NIGHT[temper], seed);

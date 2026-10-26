@@ -105,14 +105,16 @@ describe('threads: the rules a model must keep', () => {
 });
 
 describe('threads: the stand-in until the server', () => {
-  it('follows a timed plan: luck and leaving before a big thing, "how did it go" after', () => {
+  it('follows a big morning plan: sleep early the evening before, time to go, then how did it go', () => {
     // What `detectPlan` returns for "I have an exam tomorrow at 9am" (it reads the clock through @/mock, so it stays out of tests).
     const found = mockThread('I have an exam tomorrow at 9am', now, { title: 'Exam', date: '2026-10-27', time: '09:00', when: 'tomorrow' })!;
     assert.deepEqual(
       found.touches.map((t) => t.phase),
-      ['before', 'after'],
+      ['eve', 'leave', 'after'],
     );
+    assert.equal(found.kind, 'plan');
     assert.equal(found.happensAt, at(1, 9));
+    assert.equal(found.touches[0].at, at(0, 21, 30));
   });
 
   it('reads Uzbek and Russian days and times, and keeps the user’s words', () => {

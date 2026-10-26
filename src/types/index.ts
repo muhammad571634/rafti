@@ -515,8 +515,18 @@ export interface CareItem {
   again?: boolean;
 }
 
-/** Where a friend's text sits around the thing: before it, after it ("how did it go?"), or a check on it. */
-export type TouchPhase = 'before' | 'after' | 'check';
+/**
+ * Where a friend's text sits around the thing: before it ("good luck"), at leaving time ("time to
+ * go"), the evening before ("sleep early"), after it ("how did it go?"), a check on a task, a goal
+ * or a real-life quest.
+ */
+export type TouchPhase = 'before' | 'leave' | 'eve' | 'after' | 'check' | 'goal' | 'quest';
+
+/**
+ * What a thread is: something the user said with a future (`follow`), a plan with a time (`plan`),
+ * a habit they want to change (`goal`), or a small real-life quest the friend gave (`quest`).
+ */
+export type ThreadKind = 'follow' | 'plan' | 'goal' | 'quest';
 
 /** One text a friend means to send about a thread (`src/lib/threads.ts`). */
 export interface Touch {
@@ -545,6 +555,10 @@ export interface Thread {
   happensAt?: string;
   /** The plan it came with (Us → plans), if any. */
   scheduleId?: string;
+  /** `follow` when missing (threads saved before kinds). */
+  kind?: ThreadKind;
+  /** Shells a quest pays when the user says it is done. */
+  reward?: number;
   touches: Touch[];
   status: 'open' | 'closed';
   outcome?: ThreadOutcome;
@@ -578,7 +592,10 @@ export type IdeaIntent =
   | 'ask'
   | 'onWay'
   | 'off'
-  | 'done';
+  | 'done'
+  | 'wake'
+  | 'lead30'
+  | 'lead60';
 
 /** A reply the user can send with one tap: a short label on the pill and the line it sends. */
 export interface ReplyIdea {
@@ -706,6 +723,7 @@ export type LedgerReason =
   | 'topUp'
   | 'plan'
   | 'radio'
+  | 'quest'
   | 'other';
 
 /** One line in the shell history. Positive amounts are credits. */
@@ -811,6 +829,12 @@ export interface DailyState {
   voiceNoteDay?: string;
   /** Family's moments written today (`lifeKey`: "2026-10-25:c_kai:lunch"), so each goes once. */
   lifeSent?: string[];
+  /** The day a friend gave a real-life quest (one a day, `src/lib/life.ts`). */
+  questDay?: string;
+  /** The day a friend suggested a break after a long sitting. */
+  breakDay?: string;
+  /** The night (keyed by the evening's day) a friend said it is late, go to sleep. */
+  nightDay?: string;
 }
 
 export interface AppSettings {

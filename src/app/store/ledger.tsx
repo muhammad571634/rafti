@@ -244,6 +244,7 @@ const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconN
   call: moduleTile('calls'),
   topUp: { fill: systemColors.green, ios: 'plus', icon: 'add' },
   radio: moduleTile('radio'),
+  quest: { fill: systemColors.green, ios: 'figure.walk', icon: 'walk' },
   other: { fill: systemColors.gray, ios: 'ellipsis', icon: 'ellipsis-horizontal' },
 };
 

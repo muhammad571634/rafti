@@ -54,14 +54,15 @@ import { capLedger, capMessages } from '@/lib/storage-caps';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
-import { askedOnce, askReach, isAskReach, shouldAskToReach } from '@/lib/reach-ask';
-import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, pruneThreads, ruleTouches } from '@/lib/threads';
+import { askedOnce, askReach, isAskReach, shouldAskToReach, sittingCount } from '@/lib/reach-ask';
+import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches } from '@/lib/threads';
+import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
 import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
-import { mockOutcome, mockThread, mockTouchLine } from '@/mock/threads';
+import { mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -228,6 +229,7 @@ import type {
   CareItem,
   Thread,
   ThreadOutcome,
+  TouchPhase,
   IdeaIntent,
   ReplyIdea,
   SecretNote,
@@ -3370,24 +3372,50 @@ function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: 
  * Opens a thread from the user's message, or settles the one they were last asked about. A plan's
  * thread asks "how did it go?" itself, so the plan's own follow-up stands down.
  */
-function noteThreads(set: Setter, get: Getter, characterId: string, text: string, plan: DetectedPlan | null, scheduleId?: string) {
+function noteThreads(set: Setter, get: Getter, characterId: string, text: string, plan: DetectedPlan | null, scheduleId?: string): Thread | null {
   const now = new Date();
+  // "The exam moved to 10": the plan, its reminder and every text still to come move with it.
+  const moved = plan ? null : mockMove(text);
+  const ahead = moved ? nextPlan(get().threads, characterId, now) : null;
+  if (moved && ahead?.happensAt) {
+    const at = new Date(ahead.happensAt);
+    at.setHours(moved.hour, moved.minute, 0, 0);
+    const time = `${String(moved.hour).padStart(2, '0')}:${String(moved.minute).padStart(2, '0')}`;
+    set((s) => ({
+      threads: moveThread(s.threads, ahead.id, at.toISOString(), now),
+      schedules: s.schedules.map((x) => (x.id === ahead.scheduleId ? { ...x, time, reminded: false, remindAt: undefined } : x)),
+    }));
+    return null;
+  }
   const outcome = mockOutcome(text);
   const asked = outcome ? lastAsked(get().threads, characterId, now) : null;
-  if (asked && outcome) {
+  // A goal goes on whatever one day was like; only "stop" ends it.
+  if (asked && outcome && (asked.kind !== 'goal' || outcome === 'off')) {
     settleThread(set, get, asked, outcome);
-    return;
+    return null;
   }
   const found = mockThread(text, now, plan);
-  if (!found) return;
+  if (!found) return null;
   const id = uid('th');
   const touches = ruleTouches(found.touches, id, now, found.happensAt);
-  if (!touches.length) return;
-  const thread: Thread = { id, characterId, about: found.about, quote: found.quote, createdAt: now.toISOString(), happensAt: found.happensAt, scheduleId, touches, status: 'open' };
+  if (!touches.length) return null;
+  const thread: Thread = {
+    id,
+    characterId,
+    kind: found.kind,
+    about: found.about,
+    quote: found.quote,
+    createdAt: now.toISOString(),
+    happensAt: found.happensAt,
+    scheduleId,
+    touches,
+    status: 'open',
+  };
   set((s) => ({
     threads: addThread(pruneThreads(s.threads, now), thread),
     schedules: scheduleId && touches.some((x) => x.phase === 'after') ? s.schedules.map((x) => (x.id === scheduleId ? { ...x, followedUp: true } : x)) : s.schedules,
   }));
+  return thread;
 }
 
 /** Settles a thread: a good end or a done task is remembered, a bad one gets a check-in later. */
@@ -3397,6 +3425,8 @@ function settleThread(set: Setter, get: Getter, thread: Thread, outcome: ThreadO
   if (outcome === 'good' || outcome === 'done') {
     get().addMemory(thread.characterId, `${thread.about}: ${outcome === 'good' ? 'it went well' : 'done'}`, 'chat');
   }
+  // A real-life quest done pays its shells, once (the thread is closed now).
+  if (thread.kind === 'quest' && outcome === 'done' && thread.reward && thread.status === 'open') get().addShells(thread.reward, 'quest');
   if (outcome === 'bad' && get().relationships[thread.characterId]?.messagesFirst) {
     set((s) => ({
       care: addCare(pruneCare(s.care, now), {
@@ -3407,6 +3437,62 @@ function settleThread(set: Setter, get: Getter, thread: Thread, outcome: ThreadO
         createdAt: now.toISOString(),
       }),
     }));
+  }
+}
+
+/**
+ * What a thread's idea sets going. It's off / It went well / Not great / Done settle it (a goal goes
+ * on unless it is "stop asking"); Not yet asks again tomorrow evening; Still home asks once more in
+ * ten minutes; Wake me up sets an alarm with this friend before the thing; Not today drops a quest.
+ */
+function threadIdea(set: Setter, get: Getter, thread: Thread, phase: TouchPhase, intent: IdeaIntent) {
+  const now = new Date();
+  const outcome = ({ off: 'off', good: 'good', rough: 'bad', done: 'done' } as const)[intent as 'off' | 'good' | 'rough' | 'done'];
+  if (outcome && (thread.kind !== 'goal' || outcome === 'off')) settleThread(set, get, thread, outcome);
+  if (intent === 'no' && phase === 'quest') settleThread(set, get, thread, 'off');
+  if (intent === 'no' && phase === 'check') {
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(19, 0, 0, 0);
+    set((s) => ({ threads: extendThread(s.threads, thread.id, [{ at: tomorrow.toISOString(), phase: 'check', why: 'ask again if they finished' }], now) }));
+  }
+  if (intent === 'no' && phase === 'leave' && thread.happensAt && !thread.touches.some((x) => x.phase === 'leave' && !x.sent)) {
+    const soon = new Date(now.getTime() + LIFE.hurryAfterMin * 60_000);
+    set((s) => ({ threads: extendThread(s.threads, thread.id, [{ at: soon.toISOString(), phase: 'leave', why: 'nudge them to hurry, gently' }], now) }));
+  }
+  if (intent === 'wake' && thread.happensAt) {
+    const wake = new Date(Date.parse(thread.happensAt) - LIFE.wakeBeforeMin * 60_000);
+    wake.setMinutes(Math.floor(wake.getMinutes() / 15) * 15, 0, 0);
+    if (wake.getHours() < LIFE.wakeEarliestHour) wake.setHours(LIFE.wakeEarliestHour, 0, 0, 0);
+    get().saveAlarm({
+      hour: wake.getHours(),
+      minute: wake.getMinutes(),
+      repeat: [],
+      label: thread.about,
+      characterId: thread.characterId,
+      voice: true,
+      sound: 'morningTide',
+      replyToWake: true,
+      snooze: true,
+    });
+  }
+}
+
+/** "Remind me 30 minutes before" on a plan's acknowledgement; "Not today" on a quest offer drops it. */
+function askIdea(set: Setter, get: Getter, reach: string | undefined, intent: IdeaIntent) {
+  const [source, id] = reach?.split(':') ?? [];
+  if (source === 'lead') {
+    const thread = get().threads.find((t) => t.scheduleId === id);
+    if (intent === 'off') set((s) => ({ schedules: s.schedules.map((x) => (x.id === id ? { ...x, reminded: true } : x)) }));
+    if ((intent === 'lead30' || intent === 'lead60') && thread?.happensAt) {
+      const at = new Date(Date.parse(thread.happensAt) - (intent === 'lead30' ? 30 : 60) * 60_000);
+      const remindAt = `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
+      set((s) => ({ schedules: s.schedules.map((x) => (x.id === id ? { ...x, remindAt, reminded: false } : x)) }));
+    }
+  }
+  if (source === 'quest' && intent === 'no') {
+    const quest = get().threads.find((t) => t.id === id && t.status === 'open');
+    if (quest) settleThread(set, get, quest, 'off');
   }
 }
 
@@ -3478,21 +3564,17 @@ function answerLine(
   // A thread's idea: "It's off", "It went well", "Not great", "Done" settle it; "Not yet" asks again tomorrow evening.
   const thread = reachThread(message.reach);
   const open = thread && get().threads.find((t) => t.id === thread.id && t.status === 'open');
-  if (open && idea?.intent && !edited) {
-    const outcome = ({ off: 'off', good: 'good', rough: 'bad', done: 'done' } as const)[idea.intent as 'off' | 'good' | 'rough' | 'done'];
-    if (outcome) settleThread(set, get, open, outcome);
-    if (idea.intent === 'no' && thread.phase === 'check') {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(now.getDate() + 1);
-      tomorrow.setHours(19, 0, 0, 0);
-      set((s) => ({ threads: extendThread(s.threads, open.id, [{ at: tomorrow.toISOString(), phase: 'check', why: 'ask again if they finished' }], now) }));
-    }
-  }
+  if (open && idea?.intent && !edited) threadIdea(set, get, open, thread.phase, idea.intent);
+  // Their own words under a thread's text ("it went great!", typed or changed): settle that thread, no other.
+  const said = open && (!idea || edited) ? mockOutcome(line) : null;
+  if (open && said && (open.kind !== 'goal' || said === 'off')) settleThread(set, get, open, said);
+  // Asks that are not a thread's text: when to remind of a plan, a quest offer.
+  if (idea?.intent && !edited) askIdea(set, get, message.reach, idea.intent);
 
   // An edited line is the user's own words: the ordinary reply answers it (the ask keeps its answer).
   const say = idea?.intent && (!edited || ask) ? ideaAnswer(message.reach, idea.intent, message.id) : undefined;
-  answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say });
+  // An answer to a line that asked something has settled what it settles: no guessing from its words.
+  answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say, answered: !!message.reach });
   return 'sent';
 }
 
@@ -3501,7 +3583,7 @@ function answerText(
   get: Getter,
   conversationId: string,
   text: string,
-  { wakeHere, gain, avoid, say }: { wakeHere: boolean; gain: number; avoid?: string; say?: string },
+  { wakeHere, gain, avoid, say, answered }: { wakeHere: boolean; gain: number; avoid?: string; say?: string; answered?: boolean },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -3560,7 +3642,9 @@ function answerText(
   // Threads: anything with a future becomes one, and a word on how it went settles the last one
   // asked about. The server's model does both from the chat (`src/ai/thread-prompt.ts`); the mock
   // only notices shapes and keeps the user's words. A crisis never becomes a thread.
-  if (!crisis) noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
+  const planThread = crisis || answered ? null : noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
+  // A timed plan: their acknowledgement asks when to remind (30 min, an hour, no need).
+  const lead = plan?.time && planThread?.scheduleId ? `lead:${planThread.scheduleId}` : undefined;
 
   // A crisis message: a warm reply in voice, then the helpline card under it.
   if (crisis) {
@@ -3569,7 +3653,12 @@ function answerText(
   }
 
   // `say`: their answer to a reply idea, unless a plan or a crisis needs the reply.
-  scheduleReply(set, get, conversationId, { text: reply ?? say, gain, avoid });
+  scheduleReply(set, get, conversationId, {
+    text: reply ?? say,
+    gain,
+    avoid,
+    ...(lead && !crisis ? { reach: lead, ideas: ideasFor(lead) } : {}),
+  });
 }
 
 /**
@@ -3611,6 +3700,8 @@ function scheduleReply(
     lines: given,
     gain,
     chips,
+    ideas,
+    reach,
     avoid,
     trigger = 'message',
   }: {
@@ -3619,6 +3710,9 @@ function scheduleReply(
     lines?: string[];
     gain: number;
     chips?: string[];
+    /** Reply ideas on the last line, and why it asks (`lead:<scheduleId>`: when to remind of a plan). */
+    ideas?: ReplyIdea[];
+    reach?: string;
     avoid?: string;
     /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
     trigger?: TurnTrigger;
@@ -3706,7 +3800,12 @@ function scheduleReply(
           createdAt: new Date().toISOString(),
         });
       }
-      const message: Message = { ...themText(conversationId, line), chips: last ? chips : undefined, emotion: mood?.emotion };
+      const message: Message = {
+        ...themText(conversationId, line),
+        chips: last ? chips : undefined,
+        emotion: mood?.emotion,
+        ...(last && reach && ideas?.length ? { reach, ideas } : {}),
+      };
       appendMessage(set, get, conversationId, message);
       if (last && noteVoice && voiceBack != null) {
         appendMessage(
@@ -3730,7 +3829,7 @@ function scheduleReply(
       // How they feel now carries into the next reply, and fades with time (`currentMood`).
       if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
       if (gain) get().addIntimacy(conversation.characterId, gain);
-      if (trigger === 'message' && !chips?.length) maybeAskToReach(set, get, conversationId);
+      if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
       const nudgeAfter = text == null && !given ? turn?.plan.nudgeAfterMs : undefined;
       if (nudgeAfter) scheduleNudge(set, get, conversationId, message.id, nudgeAfter);
     }, at);
@@ -3745,14 +3844,14 @@ const ASK_AFTER_MS = 1800;
  * "May I text you sometimes?" (`src/lib/reach-ask.ts`): right after a reply, when the user is
  * enjoying this chat, the friend asks in their own temper, with "Yes, text me!" / "Not now" under it.
  */
-function maybeAskToReach(set: Setter, get: Getter, conversationId: string) {
+function maybeAskToReach(set: Setter, get: Getter, conversationId: string): boolean {
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   const character = state.characters.find((c) => c.id === conversation?.characterId);
   const bond = conversation && state.relationships[conversation.characterId];
-  if (!conversation || !character || !bond) return;
+  if (!conversation || !character || !bond) return false;
   const messages = state.messages[conversationId] ?? [];
-  if (!shouldAskToReach({ bond, messages, now: Date.now(), inScene: !!conversation.scene })) return;
+  if (!shouldAskToReach({ bond, messages, now: Date.now(), inScene: !!conversation.scene })) return false;
   const epoch = replyEpoch.get(conversationId) ?? 0;
   const afterId = messages.at(-1)?.id;
   const again = (bond.reachAsk?.asks ?? 0) > 0;
@@ -3768,6 +3867,61 @@ function maybeAskToReach(set: Setter, get: Getter, conversationId: string) {
     const line = { ...themText(conversationId, askLine(temper, again, id)), id, ...withIdeas(askReach(temper)) };
     appendMessage(set, get, conversationId, line);
   }, ASK_AFTER_MS);
+  return true;
+}
+
+/** After their reply: the consent ask when it is time, else one real-life moment (`maybeLifeMoment`). */
+function afterReply(set: Setter, get: Getter, conversationId: string) {
+  if (!maybeAskToReach(set, get, conversationId)) maybeLifeMoment(set, get, conversationId);
+}
+
+/**
+ * Real life first (Presence + docs/digital-wellbeing.md: an honest app, quests away from the
+ * screen). After a reply, at most one of: "it's late, sleep?" after midnight (once a night), "a
+ * break?" after a long sitting (once a day), or a small real-life quest in the daytime (once a day,
+ * friends who may write first). Never in a scene, after a crisis or over ideas still waiting. The
+ * server's model writes these lines; the mock stands in.
+ */
+function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  const character = state.characters.find((c) => c.id === conversation?.characterId);
+  const bond = conversation && state.relationships[conversation.characterId];
+  if (!conversation || !character || !bond || conversation.scene) return;
+  const messages = state.messages[conversationId] ?? [];
+  const newest = messages.findLast((m) => m.kind !== 'system' && !m.card);
+  if (newest?.ideas?.length || messages.slice(-8).some((m) => m.card === 'helpline')) return;
+  const now = new Date();
+  const today = dayKey(now);
+  const temper = temperOf(character, bond.label);
+  const id = uid('m');
+  const say = (text: string, reach: string, daily: Partial<DailyState>) => {
+    set((s) => ({ daily: { ...s.daily, ...daily } }));
+    appendMessage(set, get, conversationId, { ...themText(conversationId, text), id, ...withIdeas(reach) });
+  };
+
+  const night = lateNight(now);
+  if (night && state.daily.nightDay !== night) return say(mockNightLine(temper, id), 'pause:night', { nightDay: night });
+  if (state.daily.breakDay !== today && sittingMinutes(messages, now.getTime()) >= LIFE.breakAfterMin && sittingCount(messages) >= LIFE.breakAfterMessages) {
+    return say(mockBreakLine(temper, id), 'pause:break', { breakDay: today });
+  }
+  const hour = now.getHours();
+  const openQuest = state.threads.some((t) => t.kind === 'quest' && t.status === 'open');
+  if (
+    bond.messagesFirst &&
+    !openQuest &&
+    state.daily.questDay !== today &&
+    hour >= LIFE.questFromHour &&
+    hour < LIFE.questToHour &&
+    sittingCount(messages) >= LIFE.questAfterMessages
+  ) {
+    const threadId = uid('th');
+    const { quest, offer } = mockQuest(threadId);
+    const touches = ruleTouches([{ at: new Date(now.getTime() + LIFE.questCheckMin * 60_000).toISOString(), phase: 'quest', why: 'ask if they did the quest' }], threadId, now);
+    const thread: Thread = { id: threadId, characterId: character.id, kind: 'quest', about: quest, quote: '', createdAt: now.toISOString(), reward: QUEST_REWARD, touches, status: 'open' };
+    set((s) => ({ threads: addThread(pruneThreads(s.threads, now), thread) }));
+    say(offer, `quest:${threadId}`, { questDay: today });
+  }
 }
 
 /**

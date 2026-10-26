@@ -151,6 +151,42 @@ const THREAD: Record<TouchPhase, ReplyIdea[]> = {
     idea('Not yet', 'Not yet, still on it', 'no'),
     idea('It’s off', "It's off actually", 'off'),
   ],
+  leave: [
+    idea('On my way 🚶', 'On my way now', 'onWay'),
+    idea('Still home', 'Still home… leaving soon', 'no'),
+    idea('It’s off', "It's off actually", 'off'),
+  ],
+  eve: [
+    idea('Early night 😴', 'Okay, early night for me 😴', 'yes'),
+    idea('Wake me up ⏰', 'Can you wake me up tomorrow?', 'wake'),
+    idea('It’s off', "It's off actually", 'off'),
+  ],
+  goal: [
+    idea('Going well 💪', 'It’s going well 💪', 'good'),
+    idea('Slipped a bit', 'I slipped a bit, honestly', 'rough'),
+    idea('Stop asking', 'You can stop asking about it', 'off'),
+  ],
+  quest: [
+    idea('Done ✅', 'Done ✅', 'done'),
+    idea('Not today', 'Not today', 'no'),
+  ],
+};
+
+/**
+ * Lines that are not a thread's text but ask the user something: when to remind them of a plan
+ * (`lead:<scheduleId>`), a quest offer (`quest:<threadId>`), a break after a long sitting
+ * (`pause:break`) and "it's late, sleep?" (`pause:night`). Not pushed: they come while the user
+ * is in the chat.
+ */
+const ASKS: Record<string, ReplyIdea[]> = {
+  lead: [
+    idea('30 min before', 'Remind me 30 minutes before', 'lead30'),
+    idea('1 hour before', 'Remind me an hour before', 'lead60'),
+    idea('No need', 'No need, thanks', 'off'),
+  ],
+  quest: [idea('I’m in! 💪', 'I’m in! 💪', 'yes'), idea('Not today', 'Not today', 'no')],
+  'pause:break': [idea('Okay, break 🙂', 'Okay, a short break 🙂', 'yes'), idea('5 more minutes', 'Five more minutes 😅', 'later')],
+  'pause:night': [idea('Good night 🌙', 'Good night 🌙', 'yes'), idea('Can’t sleep', 'I can’t sleep…', 'rough')],
 };
 
 /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
@@ -160,6 +196,8 @@ const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊'
 export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
   if (source === 'ask') return ASK;
+  if (source === 'lead' || source === 'quest') return ASKS[source];
+  if (source === 'pause') return ASKS[reach] ?? [];
   // `thread:after` (a push action set) or `thread:after:<id>` (a text in the chat).
   if (source === 'thread') return THREAD[a as TouchPhase] ?? [];
   if (source === 'life') return LIFE[`${a}:${b}`] ?? [];

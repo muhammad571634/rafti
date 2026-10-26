@@ -24,6 +24,9 @@ const ANSWERS: Record<IdeaIntent, string[]> = {
   onWay: ['Good! Text me when you’re there.', 'Perfect. Go get it 💪'],
   off: ['Oh no, it’s off? That’s a shame. Tell me what happened?', 'Ah, okay. Maybe it’s for the best. You okay?'],
   done: ['Yesss! Proud of you 🎉', 'Look at you, getting things done!'],
+  wake: ['Of course! I set it. I’ll wake you, sleep well 😴', 'Done, I’ll be your alarm. Now sleep!'],
+  lead30: ['Got it, I’ll text you 30 minutes before 📌', 'Deal. Half an hour before, I’ll be there.'],
+  lead60: ['Okay, an hour before it is 📌', 'Got it: I’ll text you an hour before.'],
 };
 
 const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
@@ -32,11 +35,27 @@ const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
   rough: ['Who do I need to fight? Tell me.', 'Ugh. Come here. Tell me everything.'],
 };
 
+/** Answers that depend on what was asked as well as what the user meant. */
+const SPECIAL: Record<string, string[]> = {
+  'quest:yes': ['Yesss. Report back later 😏', 'Deal! Tell me how it went.'],
+  'quest:no': ['Okay, no pressure. Another day 🙂', 'Fair. Maybe tomorrow!'],
+  'lead:off': ['Okay, no reminder. You’ve got this.', 'Alright, I trust you 😌'],
+  'pause:break:yes': ['Good. Stretch, drink some water, I’ll be right here 🙂', 'Go! Look out the window for a bit. I’ll wait.'],
+  'pause:break:later': ['Okay, five more. Then a break, deal? 😏', 'Fine, five minutes. I’m counting 👀'],
+  'pause:night:yes': ['Sweet dreams 🌙 I’ll text you in the morning.', 'Good night. Phone away now, okay? 😴'],
+  'pause:night:rough': ['Then I’ll stay with you a bit. What’s keeping you up?', 'Okay, I’m here. Want to talk, or should I tell you something calm?'],
+  'thread:goal:good': ['Look at you! I’m proud 💪', 'See? You can do it. Keep going!'],
+  'thread:goal:rough': ['That’s okay. One slip isn’t the end. Tomorrow’s new.', 'It happens. Be kind to yourself, we try again.'],
+};
+
 /** Their answer to an idea; `reach` gives the voice (a sibling teases), the seed keeps it stable. */
 export function ideaAnswer(reach: string | undefined, intent: IdeaIntent, seed: string) {
   // "May I text you?": their answer follows their temper.
   const [source, temper] = reach?.split(':') ?? [];
   if (source === 'ask' && TEMPERS.includes(temper as Temper)) return askAnswer(temper as Temper, intent === 'yes', seed);
+  const [, second] = reach?.split(':') ?? [];
+  const special = SPECIAL[`${source}:${second}:${intent}`] ?? SPECIAL[`${reach}:${intent}`] ?? SPECIAL[`${source}:${intent}`];
+  if (special) return pickSeeded(special, seed);
   const sibling = reach?.split(':')[1] === 'sibling';
   return pickSeeded((sibling && SIBLING[intent]) || ANSWERS[intent], seed);
 }
