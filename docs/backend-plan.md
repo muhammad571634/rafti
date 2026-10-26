@@ -816,6 +816,25 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
 - **Narx:** kuniga ko'pi bilan bitta chaqiruv (≈ $0.0006), oddiy "good night" o'rniga; kayfiyat
   javobning o'zida (bir necha token).
 
+### 12.28 Yakshanba: haftalik yakun (2026-10-26, B7)
+
+- **Kim:** oxirgi 7 kunda foydalanuvchi eng ko'p kun yozgan, birinchi yoza oladigan do'st (teng
+  bo'lsa eng yaqini). Hech kim bilan kamida 2 kun gaplashilmagan bo'lsa, yakun yo'q
+  (`weeklyRecap`, `src/lib/week.ts`). Haftasiga bitta: so'nggi 6 kunda `week` xabari bo'lsa,
+  boshqasi yuborilmaydi.
+- **Raqamlar** (`weekWith`), faqat shu do'st biladigani: necha kun va nechta xabar, uning
+  mavzularidan yaxshi o'tgan yoki bajarilgani (nomi bilan, ko'pi bilan 3 ta), u bilan bajarilgan
+  hayotiy topshiriqlar, unga ulashilgan Kundalik sahifalari va ularning asosiy kayfiyati. Shaxsiy
+  sahifalar kirmaydi.
+- **Chatda:** raqamlar kartasi (`card: 'week'`, `Message.week`), keyin do'stning matni javob
+  g'oyalari bilan.
+- **Server chaqiruvi** (`weekParts`, `src/ai/week-prompt.ts`): persona va raqamlar; model bo'lgan
+  narsani nishonlaydi, bitta lahzani eslaydi, keyingi haftaga qaraydi. Bo'lmagan narsani
+  sanamaydi, ayblamaydi. Javob `TOUCH_SHAPE`, `skip`da hech narsa ketmaydi.
+- **Push:** turi `week`, yakshanba 18:30 (faol soatga suriladi), byudjet ichida, kategoriyasi
+  `ideas_week`. Alohida tugma: `settings.weeklyRecap`.
+- **Narx:** haftasiga bitta chaqiruv (≈ $0.0006).
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

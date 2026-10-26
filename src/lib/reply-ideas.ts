@@ -203,6 +203,13 @@ const DAY: ReplyIdea[] = [
   idea('Tell you later', 'I’ll tell you later', 'later'),
 ];
 
+/** The Sunday recap (`src/lib/week.ts`). */
+const WEEK: ReplyIdea[] = [
+  idea('Good week 🙂', 'It was a good week 🙂', 'good'),
+  idea('Rough week', 'Honestly, it was a rough week', 'rough'),
+  idea('Next week 💪', 'Here’s to next week 💪', 'thanks'),
+];
+
 /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
 const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
 
@@ -212,6 +219,7 @@ export function ideasFor(reach: string): ReplyIdea[] {
   if (source === 'ask') return ASK;
   if (source === 'brief') return BRIEF;
   if (source === 'day') return DAY;
+  if (source === 'week') return WEEK;
   if (source === 'lead' || source === 'quest') return ASKS[source];
   if (source === 'pause') return ASKS[reach] ?? [];
   // `thread:after` (a push action set) or `thread:after:<id>` (a text in the chat).
@@ -231,6 +239,7 @@ export function allReachKeys() {
     ...(Object.keys(THREAD) as TouchPhase[]).map((phase) => `thread:${phase}`),
     'brief',
     'day',
+    'week',
   ];
 }
 

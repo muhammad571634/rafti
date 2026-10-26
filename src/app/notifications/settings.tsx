@@ -26,6 +26,7 @@ const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: str
     rows: [
       { key: 'morningGreeting', icon: 'sunny', fill: systemColors.yellow, hint: true },
       { key: 'eveningGreeting', icon: 'moon', fill: systemColors.indigo, hint: true },
+      { key: 'weeklyRecap', icon: 'sparkles', fill: systemColors.pink, hint: true },
       { key: 'morningCall', icon: 'call', fill: moduleFills.calls, hint: true },
       { key: 'nightCall', icon: 'call', fill: systemColors.teal, hint: true },
       { key: 'notifyPlans', icon: 'calendar', fill: systemColors.red, hint: true },

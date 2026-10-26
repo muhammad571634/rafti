@@ -146,7 +146,9 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week';
+  /** week cards: the week's numbers with this friend (`src/lib/week.ts`). */
+  week?: WeekStats;
   /** voiceQuota lines: when the plan's voice minutes come back */
   until?: string;
   /** scene cards: the scene that starts here (`text` is its title). */
@@ -854,6 +856,21 @@ export interface DailyState {
   pushLog?: PushSent[];
 }
 
+/** A week with one friend, for the Sunday recap (`src/lib/week.ts`). */
+export interface WeekStats {
+  /** Days of the last 7 the user wrote to them. */
+  days: number;
+  messages: number;
+  /** Their threads that went well or got done, a few by name. */
+  wins: string[];
+  winCount: number;
+  quests: number;
+  /** Diary pages shared with them. */
+  pages: number;
+  /** The shared pages' most common mood. */
+  mood?: DiaryMood;
+}
+
 /** One counted push the planner handed to the OS: enough to count it and space the next ones. */
 export interface PushSent {
   id: string;
@@ -864,6 +881,8 @@ export interface PushSent {
 export interface AppSettings {
   morningGreeting: boolean;
   eveningGreeting: boolean;
+  /** Sunday evening: the friend looks back on the week together (`src/lib/week.ts`). */
+  weeklyRecap: boolean;
   morningCall: boolean;
   nightCall: boolean;
   /** "HH:MM": the good-morning call can ring from this time for a few hours */

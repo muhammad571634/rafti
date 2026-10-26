@@ -348,6 +348,17 @@
       "scene": "Next moment",
       "own": "Later on"
     },
+    "week": {
+      "title": "This week",
+      "days_one": "{{count}} day together",
+      "days_other": "{{count}} days together",
+      "messages_one": "{{count}} message",
+      "messages_other": "{{count}} messages",
+      "wins_one": "{{count}} win",
+      "wins_other": "{{count}} wins",
+      "pages_one": "{{count}} diary page",
+      "pages_other": "{{count}} diary pages"
+    },
     "skipTitle": "Time skip",
     "skipLead": "Move the story on. They pick up from there.",
     "skipHint": {
@@ -1484,6 +1495,8 @@
     "briefNone": "No plans ahead",
     "dayNow": "Evening question now",
     "dayNone": "Not today",
+    "weekNow": "Weekly recap now",
+    "weekNone": "Not enough days yet",
     "chatAnimation": "Chat animations",
     "haptics": "Haptics",
     "account": "Account",
@@ -1888,6 +1901,7 @@
     "notificationPreview": "Show message text",
     "morningGreeting": "Morning messages",
     "eveningGreeting": "Night messages",
+    "weeklyRecap": "Weekly recap",
     "morningCall": "Good-morning call",
     "nightCall": "Good-night call",
     "morningVoiceNote": "Good-morning voice note",
@@ -1913,6 +1927,7 @@
     "hint": {
       "morningGreeting": "A hello when your day starts",
       "eveningGreeting": "Good night before you sleep",
+      "weeklyRecap": "Sunday: your week together",
       "morningCall": "At the time you set in chat",
       "nightCall": "At the time you set in chat",
       "notifyPlans": "10 minutes before",

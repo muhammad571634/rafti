@@ -279,8 +279,8 @@ After the user's last message (only for friends who may write first):
   model plans the texts again, and `quiet` threads are listed to the model as NO TEXTS ABOUT.
 - **Done:** A4, today's pushes (3 / 6) and the learned sleep in notification settings (D91); B5, a
   morning brief that knows today's plans (D92, `src/lib/brief.ts`); B6, the evening "how was today?"
-  into the diary (D93, `src/lib/day-ask.ts`).
-- **Next (proposed):** B7, a weekly recap.
+  into the diary (D93, `src/lib/day-ask.ts`); B7, the Sunday weekly recap (D94, `src/lib/week.ts`).
+  The transparency queue (A1-A4, B5-B7) is done.
 
 ## Next steps (owner picks)
 

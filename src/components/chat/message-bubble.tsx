@@ -16,7 +16,7 @@ import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { segments } from '@/lib/reply-engine';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, shadows, space } from '@/theme';
-import type { Character, Message } from '@/types';
+import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
   message: Message;
@@ -71,6 +71,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.card === 'notifyOff') return <NotifyOffNote name={character.name.split(' ')[0]} />;
+  if (message.card === 'week' && message.week) return <WeekCard week={message.week} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   // A continue is the user's turn without words: nothing to show, their lines follow.
@@ -317,6 +318,38 @@ function SceneCard({ title, setting }: { title: string; setting?: string }) {
   );
 }
 
+/**
+ * The Sunday recap's numbers (`src/lib/week.ts`), above the friend's line: a calm card of icons and
+ * numbers (days together, messages, wins, shared diary pages); the words are in their text.
+ */
+function WeekCard({ week }: { week: WeekStats }) {
+  const { t } = useTranslation();
+  const stats: { icon: React.ComponentProps<typeof Ionicons>['name']; value: string; label: string }[] = [
+    { icon: 'calendar-outline', value: `${week.days}/7`, label: t('chat.week.days', { count: week.days }) },
+    { icon: 'chatbubbles-outline', value: String(week.messages), label: t('chat.week.messages', { count: week.messages }) },
+    { icon: 'trophy-outline', value: String(week.winCount + week.quests), label: t('chat.week.wins', { count: week.winCount + week.quests }) },
+    { icon: 'book-outline', value: String(week.pages), label: t('chat.week.pages', { count: week.pages }) },
+  ];
+  return (
+    <View style={styles.system}>
+      <View style={styles.weekCard} accessibilityRole="summary" accessibilityLabel={[t('chat.week.title'), ...stats.map((x) => x.label)].join(', ')}>
+        <View style={styles.sceneHead}>
+          <Ionicons name="sparkles-outline" size={14} color={colors.textSecondary} />
+          <Txt style={[styles.systemText, styles.systemStrong]}>{t('chat.week.title')}</Txt>
+        </View>
+        <View style={styles.weekRow}>
+          {stats.map((x) => (
+            <View key={x.icon} style={styles.weekStat}>
+              <Ionicons name={x.icon} size={18} color={colors.primary} />
+              <Txt style={styles.weekValue}>{x.value}</Txt>
+            </View>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
 /** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
 function AiNotice({ name, text }: { name: string; text?: string }) {
   const { t } = useTranslation();
@@ -503,6 +536,18 @@ const styles = StyleSheet.create({
   systemStrong: { fontWeight: '600' },
   sceneHead: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   sceneSetting: { marginTop: 2, fontStyle: 'italic' },
+  weekCard: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingVertical: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    ...shadows.card,
+  },
+  weekRow: { flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' },
+  weekStat: { alignItems: 'center', gap: 4, minWidth: 56 },
+  weekValue: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
   callLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   // Lines up with their bubbles: past the avatar column.
   quota: {

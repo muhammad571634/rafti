@@ -2,6 +2,7 @@ import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { DAY_REACH, dayAsker } from '@/lib/day-ask';
+import { recapAt, WEEK_REACH, weeklyRecap } from '@/lib/week';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { careReach, lifeReach, threadReach } from '@/lib/reply-ideas';
@@ -21,6 +22,7 @@ import {
 } from '@/mock';
 import { briefLine } from '@/mock/brief';
 import { dayLine } from '@/mock/day-ask';
+import { weekLine } from '@/mock/week';
 import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
@@ -31,6 +33,7 @@ import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budge
 import type {
   AppSettings,
   CareItem,
+  DiaryEntry,
   Temper,
   Thread,
   Character,
@@ -57,6 +60,7 @@ export type PushKind =
   | 'brief'
   | 'evening'
   | 'day'
+  | 'week'
   | 'call'
   | 'voiceNote'
   | 'remind'
@@ -98,6 +102,8 @@ export interface PlannedPush {
 
 export interface PlanState {
   user: Pick<User, 'displayName' | 'birthday' | 'birthdayWishedYear' | 'onboardedAt'>;
+  /** The user's diary: pages shared with a friend show in their Sunday recap; older saved states may have none. */
+  diary?: DiaryEntry[];
   settings: AppSettings;
   daily: DailyState;
   characters: Character[];
@@ -144,6 +150,7 @@ const PRIORITY: Record<PushKind, number> = {
   life: 3,
   brief: 2,
   day: 2,
+  week: 3,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -216,7 +223,7 @@ function quoteOf(messages: readonly Message[] | undefined) {
 }
 
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
-const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'life', 'care', 'comeback', 'touch']);
+const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'week', 'life', 'care', 'comeback', 'touch']);
 // The brief is not flexible: it has to come before the things it wishes luck for.
 
 /** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
@@ -373,6 +380,31 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
             });
           }
         }
+      }
+    }
+
+    // Sunday evening: the friend of the most days looks back on the week (B7).
+    const recapWhen = settings.weeklyRecap ? recapAt(day) : null;
+    if (recapWhen && inHorizon(recapWhen)) {
+      const recap = weeklyRecap(
+        {
+          writers: writers.map((c) => c.id),
+          chats: Object.fromEntries(writers.map((c) => [c.id, messages[chatOf.get(c.id)!.id] ?? []])),
+          threads: state.threads ?? [],
+          diary: state.diary ?? [],
+        },
+        recapWhen,
+      );
+      if (recap) {
+        const character = byId.get(recap.characterId)!;
+        say({
+          id: `week:${key}:${recap.characterId}`,
+          kind: 'week',
+          at: recapWhen,
+          characterId: recap.characterId,
+          line: weekLine(recap.week, temperOf(character, relationships[recap.characterId].label), `${key}:week:${recap.characterId}`),
+          reach: WEEK_REACH,
+        });
       }
     }
 

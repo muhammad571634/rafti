@@ -104,6 +104,9 @@ export default function ProfileScreen() {
   /** Dev only: what the last "Evening question now" press did. */
   const [dayResult, setDayResult] = useState<string | undefined>();
   const dayAsk = () => setDayResult(t(useAppStore.getState().devDayAsk() ? 'profile.briefSent' : 'profile.dayNone'));
+  /** Dev only: what the last "Weekly recap now" press did. */
+  const [weekResult, setWeekResult] = useState<string | undefined>();
+  const weekRecap = () => setWeekResult(t(useAppStore.getState().devWeekRecap() ? 'profile.briefSent' : 'profile.weekNone'));
 
   const testPushes = async () => {
     const count = await sendTestPushes(useAppStore.getState());
@@ -304,6 +307,8 @@ export default function ProfileScreen() {
             <SettingsRow title={t('profile.briefNow')} icon="sunny" fill={FILL.grey} meta={briefResult} onPress={morningBrief} />
             {/* Tonight's "how was today?" now; the answer becomes today's diary page. */}
             <SettingsRow title={t('profile.dayNow')} icon="moon" fill={FILL.grey} meta={dayResult} onPress={dayAsk} />
+            {/* This week's Sunday recap now, whatever the day. */}
+            <SettingsRow title={t('profile.weekNow')} icon="sparkles" fill={FILL.grey} meta={weekResult} onPress={weekRecap} />
             {/* A new install starts empty; this fills chats, bonds and diary pages to test full screens. */}
             <SettingsRow title={t('profile.loadDemo')} icon="albums" fill={FILL.grey} onPress={loadDemoData} last={!plan} />
             {/* Ends the plan at once, to see the free screens again. */}

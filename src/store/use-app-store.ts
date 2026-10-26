@@ -60,12 +60,14 @@ import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { answeredQuestion, DAY_REACH, dayAsker, moodOfIntent } from '@/lib/day-ask';
+import { recapAt, WEEK_REACH, weeklyRecap } from '@/lib/week';
 import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
 import { briefLine } from '@/mock/brief';
 import { dayLine, moodOf } from '@/mock/day-ask';
+import { weekLine } from '@/mock/week';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
@@ -641,6 +643,8 @@ interface AppState {
   devMorningBrief: () => boolean;
   /** Dev: tonight's "how was today?" now; false when family asks, the back-off holds, or nobody may write. */
   devDayAsk: () => boolean;
+  /** Dev: this week's recap now, whatever the day; false when sent this week or no friend has 2+ days. */
+  devWeekRecap: () => boolean;
   /**
    * Keeping in mind (`src/app/mind.tsx`): the user moves a thread's time; its plan and the texts
    * still to come follow (the server's model plans them again around the new time).
@@ -2409,6 +2413,8 @@ export const useAppStore = create<AppState>()(
         return false;
       },
 
+      devWeekRecap: () => !!sendRecap(set, get, new Date()),
+
       devDayAsk: () => {
         if (!sendDayAsk(set, get, new Date())) return false;
         // Tonight's question is asked, so the real one does not come again.
@@ -3030,6 +3036,10 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ user: { ...s.user, birthdayWishedYear: now.getFullYear() } }));
         }
 
+        // Sunday evening: the friend of the most days looks back on the week (B7, once a week).
+        const recapTime = recapAt(now);
+        if (settings.weeklyRecap && recapTime && now >= recapTime) sendRecap(set, get, now);
+
         if (!slot) return {};
         const slotKey = `${today}:${slot}`;
 
@@ -3483,6 +3493,25 @@ function sendDayAsk(set: Setter, get: Getter, at: Date): string | null {
   const conversationId = get().addFriend(from.id);
   const line = dayLine(temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:night:day:${from.id}`);
   appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(DAY_REACH) }, { countUnread: true });
+  return from.id;
+}
+
+/**
+ * The Sunday recap at `at` (`src/lib/week.ts`): a card with the week's numbers, then the friend's
+ * line with reply ideas (the push said the same). Returns who sent it, or null (sent already this
+ * week, or no friend with enough days).
+ */
+function sendRecap(set: Setter, get: Getter, at: Date): string | null {
+  const { relationships, characters, conversations, messages, threads, diary } = get();
+  const writers = chatWriters(get);
+  const chatOf = (id: string) => conversations.find((c) => c.characterId === id)!.id;
+  const recap = weeklyRecap({ writers, chats: Object.fromEntries(writers.map((id) => [id, messages[chatOf(id)] ?? []])), threads, diary }, at);
+  const from = recap && characters.find((c) => c.id === recap.characterId);
+  if (!recap || !from) return null;
+  const conversationId = get().addFriend(from.id);
+  appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'week', week: recap.week, createdAt: new Date().toISOString() });
+  const line = weekLine(recap.week, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:week:${from.id}`);
+  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(WEEK_REACH) }, { countUnread: true });
   return from.id;
 }
 

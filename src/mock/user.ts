@@ -25,6 +25,7 @@ export const initialDaily: DailyState = {
 export const initialSettings: AppSettings = {
   morningGreeting: true,
   eveningGreeting: true,
+  weeklyRecap: true,
   morningCall: true,
   nightCall: true,
   morningCallTime: '08:00',
