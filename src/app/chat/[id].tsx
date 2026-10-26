@@ -20,7 +20,7 @@ import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
-import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
+import { AlarmBar, asIdeas, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
@@ -31,11 +31,11 @@ import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
+import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
-import { suggestedReplies } from '@/mock/suggestions';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, shadows, space } from '@/theme';
-import type { Message, TimeSkip } from '@/types';
+import type { Message, ReplyIdea, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -68,6 +68,9 @@ export default function ChatRoomScreen() {
 
   const sendText = useAppStore((s) => s.sendText);
   const pickChip = useAppStore((s) => s.pickChip);
+  const answerIdea = useAppStore((s) => s.answerIdea);
+  /** A long-pressed reply idea waiting in the field to be changed, and the line it answers. */
+  const [ideaDraft, setIdeaDraft] = useState<{ messageId: string; idea: ReplyIdea; at: number } | null>(null);
   // The wake-up alarm rings until a real reply here (the morning chain).
   const alarmRinging = useAppStore((s) => s.wake?.state === 'ringing' && s.wake.conversationId === conversationId);
   const sendVoice = useAppStore((s) => s.sendVoice);
@@ -229,23 +232,32 @@ export default function ChatRoomScreen() {
             )}
           </View>
           {item.chips?.length && conversationId ? (
-            <QuickReplies chips={item.chips} onPick={(chip) => pickChip(conversationId, item.id, chip)} />
+            <QuickReplies ideas={asIdeas(item.chips)} onPick={(idea) => pickChip(conversationId, item.id, idea.text)} />
+          ) : conversationId && shownIdeas(item, data) ? (
+            // A line they wrote first: answering it is free (`answerIdea`).
+            <QuickReplies
+              ideas={item.ideas!}
+              onPick={(idea) => answerIdea(conversationId, item.id, idea)}
+              onEdit={(idea) => setIdeaDraft({ messageId: item.id, idea, at: Date.now() })}
+            />
           ) : null}
         </>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
   );
 
-  // TEST: two suggested replies under their last plain line (see src/mock/suggestions.ts).
+  // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
   // System lines (the AI notice at a session's start) do not count as their last line.
   const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
   // Before the user's first message, a created character's own first lines (quick create's
   // starters, D70) stand in for the test chips.
   const starters = character?.starters?.length && !data.some((m) => m.author === 'me') ? character.starters : null;
   const suggestions =
-    last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !typing
-      ? (starters ?? suggestedReplies(last.id))
+    last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !shownIdeas(last, data) && !typing
+      ? starters
+        ? asIdeas(starters)
+        : everydayIdeas(last.text, last.id)
       : null;
 
   if (!conversation || !character) {
@@ -262,7 +274,10 @@ export default function ChatRoomScreen() {
   };
 
   const send = (text: string) => {
-    const result = sendText(conversation.id, text);
+    // A changed reply idea still answers the line it came from.
+    const draftIdea = ideaDraft;
+    setIdeaDraft(null);
+    const result = draftIdea ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text) : sendText(conversation.id, text);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
@@ -386,7 +401,13 @@ export default function ChatRoomScreen() {
                       onContinue={block ? undefined : goOn}
                     />
                   ) : null}
-                  {suggestions ? <QuickReplies chips={suggestions} onPick={send} /> : null}
+                  {suggestions ? (
+                    <QuickReplies
+                      ideas={suggestions}
+                      onPick={(idea) => send(idea.text)}
+                      onEdit={(idea) => setIdeaDraft(last ? { messageId: last.id, idea, at: Date.now() } : null)}
+                    />
+                  ) : null}
                   {typing ? <TypingRow characters={[character]} /> : null}
                 </>
               }
@@ -424,6 +445,7 @@ export default function ChatRoomScreen() {
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
             initialValue={typeof draft === 'string' ? draft : undefined}
+            fill={ideaDraft ? { text: ideaDraft.idea.text, at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
           />
         </KeyboardAvoidingView>

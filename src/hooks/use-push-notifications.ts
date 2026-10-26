@@ -10,10 +10,12 @@ import {
   clearPushes,
   configurePushes,
   deliveredPushes,
+  IDEA_ACTION,
   syncPushes,
   type PushData,
 } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
+import type { IdeaIntent } from '@/types';
 
 /**
  * Pushes follow the app's life (docs/push-plan.md): leaving the app plans the next
@@ -38,6 +40,12 @@ export function usePushNotifications() {
       const data = response?.notification.request.content.data as unknown as PushData | undefined;
       if (!data?.id) return;
       land(data);
+      // A reply idea's button ("I ate!"): the answer goes into their chat, then the chat opens.
+      const action = response?.actionIdentifier ?? '';
+      if (action.startsWith(IDEA_ACTION) && data.reach && data.characterId && data.line) {
+        const intent = action.slice(IDEA_ACTION.length) as IdeaIntent;
+        useAppStore.getState().answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, intent });
+      }
       router.push(data.route as Href);
     };
     const comeBack = async () => {

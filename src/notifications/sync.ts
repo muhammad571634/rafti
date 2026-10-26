@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 
 import i18n from '@/i18n';
+import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
 import { notificationsModule } from './native';
 import { planPushes, type PlannedPush, type PlanState, type PushChannel } from './plan';
@@ -41,7 +42,12 @@ export interface PushData {
   at: string;
   /** A test push from the dev button: shown even while the app is open. */
   test?: boolean;
+  /** Why they wrote first; its reply ideas are the push's buttons (`IDEA_ACTION` + intent). */
+  reach?: string;
 }
+
+/** A reply idea's button on a push: `idea_` and the idea's intent. */
+export const IDEA_ACTION = 'idea_';
 
 let configured = false;
 
@@ -70,6 +76,24 @@ export async function configurePushes() {
         }),
       ),
     );
+  }
+  // Reply ideas as push buttons ("I ate!" from the lock screen). Best effort: a build or host
+  // without categories still gets the push, with no buttons.
+  try {
+    await Promise.all(
+      allReachKeys().map((reach) =>
+        N.setNotificationCategoryAsync(
+          ideaCategory(reach),
+          ideasFor(reach).map((idea) => ({
+            identifier: `${IDEA_ACTION}${idea.intent}`,
+            buttonTitle: idea.label,
+            options: { opensAppToForeground: true },
+          })),
+        ),
+      ),
+    );
+  } catch {
+    // No buttons here; the push itself still works.
   }
 }
 
@@ -171,6 +195,7 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
     writesToChat: push.writesToChat,
     at: at.toISOString(),
     test: test || undefined,
+    reach: push.reach,
   };
   return N.scheduleNotificationAsync({
     identifier,
@@ -180,6 +205,7 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
       data: data as unknown as Record<string, unknown>,
       sound: 'default',
       interruptionLevel: push.timeSensitive ? 'timeSensitive' : 'active',
+      categoryIdentifier: push.reach ? ideaCategory(push.reach) : undefined,
     },
     trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: push.channel },
   });

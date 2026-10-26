@@ -34,6 +34,8 @@ export interface ChatInputProps {
    * place of "+" and ✓ of send. `onSave` returns false to stay in the edit (e.g. out of shells).
    */
   editing?: { id: string; text: string; onSave: (text: string) => boolean; onCancel: () => void };
+  /** Puts this text in the field and focuses it (a long-pressed reply idea); `at` makes each fill new. */
+  fill?: { text: string; at: number };
 }
 
 /**
@@ -41,7 +43,7 @@ export interface ChatInputProps {
  * text field, and one primary button that records a voice message while the field
  * is empty and sends once there is text. The swap is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
@@ -65,6 +67,16 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
     // Runs when an edit starts or ends, not on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingId]);
+
+  const fillAt = fill?.at;
+  useEffect(() => {
+    if (!fillAt || !fill) return;
+    setValue(fill.text);
+    const timer = setTimeout(() => inputRef.current?.focus(), 60);
+    return () => clearTimeout(timer);
+    // A new fill only, not every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fillAt]);
 
   const hasText = value.trim().length > 0;
 

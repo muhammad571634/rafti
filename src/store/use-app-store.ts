@@ -53,8 +53,10 @@ import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
+import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, shownIdeas } from '@/lib/reply-ideas';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
+import { ideaAnswer } from '@/mock/reply-ideas';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -219,6 +221,8 @@ import type {
   Relationship,
   ScheduleItem,
   CareItem,
+  IdeaIntent,
+  ReplyIdea,
   SecretNote,
   MessageReport,
   User,
@@ -496,7 +500,7 @@ interface AppState {
    * A line that reached the user only as a notification (the comeback ladder) lands in
    * the chat once the app sees it. Written once per notification id.
    */
-  receivePushLine: (push: { id: string; characterId: string; text: string; at: string }) => void;
+  receivePushLine: (push: { id: string; characterId: string; text: string; at: string; reach?: string }) => void;
   /** Edits a character the user made; seed characters are not editable. */
   updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
   resetRelationship: (characterId: string) => void;
@@ -593,6 +597,14 @@ interface AppState {
   stopWake: () => void;
   /** A quick reply under the friend's line: sent as the user's message, free in the wake window. */
   pickChip: (conversationId: string, messageId: string, chip: string) => void;
+  /**
+   * A reply idea (`src/lib/reply-ideas.ts`): sends its line, or `edited` when the user changed it
+   * first. Under a line they wrote first it is free and their answer fits the idea; elsewhere it
+   * costs what a message does.
+   */
+  answerIdea: (conversationId: string, messageId: string, idea: ReplyIdea, edited?: string) => SendResult;
+  /** A push's action button ("I ate!"): the line lands in the chat if it is not there yet, then the idea answers it. */
+  answerFromPush: (push: { characterId: string; line: string; reach: string; intent: IdeaIntent }) => void;
   /** The in-app clock (every few seconds): due rings, snooze over, the sleepy check-in, expiry. */
   wakeTick: () => 'ring' | null;
 
@@ -1741,7 +1753,7 @@ export const useAppStore = create<AppState>()(
         return { characterId, conversationId };
       },
 
-      receivePushLine: ({ id, characterId, text, at }) => {
+      receivePushLine: ({ id, characterId, text, at, reach }) => {
         // A push planned by an older build from a crisis "plan" never lands in the chat.
         if (detectCrisis(text)) return;
         const conversation = get().conversations.find((c) => c.characterId === characterId);
@@ -1752,7 +1764,7 @@ export const useAppStore = create<AppState>()(
           set,
           get,
           conversation.id,
-          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at },
+          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at, ...withIdeas(reach) },
           { countUnread: true },
         );
       },
@@ -1865,7 +1877,8 @@ export const useAppStore = create<AppState>()(
         freeFamilyRole(set, get, label, characterId);
         updateRelationship(set, characterId, () => ({ label, nickname: familyName(name, label), messagesFirst: true }));
         const group = kinGroup(label)!;
-        appendMessage(set, get, conversationId, themText(conversationId, familyHello(group, `${conversationId}:${label}`)), { countUnread: true });
+        const hello = { ...themText(conversationId, familyHello(group, `${conversationId}:${label}`)), ...withIdeas(helloReach(group)) };
+        appendMessage(set, get, conversationId, hello, { countUnread: true });
         return conversationId;
       },
 
@@ -2285,6 +2298,65 @@ export const useAppStore = create<AppState>()(
         get().sendText(conversationId, chip);
       },
 
+      answerIdea: (conversationId, messageId, idea, edited) => {
+        const state = get();
+        const messages = state.messages[conversationId] ?? [];
+        const message = messages.find((m) => m.id === messageId);
+        const text = (edited ?? idea.text).trim();
+        const shown = message ? shownIdeas(message, messages) : null;
+        // Ideas that are gone (answered, old, a newer line came) leave a plain message.
+        if (!message || !shown?.some((x) => x.label === idea.label) || !text) return get().sendText(conversationId, text);
+        const conversation = state.conversations.find((c) => c.id === conversationId);
+        if (!conversation) return 'empty';
+        // Being asked how you are never costs a shell; everyday ideas cost what a message does.
+        if (!message.reach && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+        countMessage(set, get);
+        noticeAiIfDue(set, get, conversationId);
+        set((s) => ({
+          messages: {
+            ...s.messages,
+            [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === messageId ? { ...m, ideas: undefined } : m)),
+          },
+        }));
+        appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'text', text, createdAt: new Date().toISOString() });
+        touchStreak(set, get, conversation.characterId);
+
+        // "Still not great": one more check-in later, as the first one was asked; never a third.
+        const kind = reachCare(message.reach);
+        if (kind && !edited && ideaEffect(message.reach, idea.intent) === 'askAgain') {
+          const now = new Date();
+          set((s) => ({
+            care: addCare(pruneCare(s.care, now), {
+              id: uid('care'),
+              characterId: conversation.characterId,
+              kind,
+              dueAt: careDueAt(kind, now).toISOString(),
+              createdAt: now.toISOString(),
+              again: true,
+            }),
+          }));
+        }
+        // An edited line is the user's own words: the ordinary reply answers it.
+        const say = idea.intent && !edited ? ideaAnswer(message.reach, idea.intent, message.id) : undefined;
+        answerText(set, get, conversationId, text, { wakeHere: false, gain: INTIMACY.text, say });
+        return 'sent';
+      },
+
+      answerFromPush: ({ characterId, line, reach, intent }) => {
+        // The moment's line may not be in the chat yet: the clock writes what is due, else it lands here.
+        get().runTimers();
+        const conversation = get().conversations.find((c) => c.characterId === characterId);
+        const idea = ideasFor(reach).find((x) => x.intent === intent);
+        if (!conversation || !idea) return;
+        const find = () => get().messages[conversation.id]?.findLast((m) => m.author === 'them' && m.reach === reach && m.text === line);
+        const landed = find();
+        // Answered already (the same tap seen twice): nothing more to send.
+        if (landed && !landed.ideas) return;
+        if (!landed) appendMessage(set, get, conversation.id, { ...themText(conversation.id, line), ...withIdeas(reach) }, { countUnread: false });
+        const message = find();
+        if (message) get().answerIdea(conversation.id, message.id, idea);
+      },
+
       wakeTick: () => {
         const now = new Date();
         const t = now.getTime();
@@ -2625,7 +2697,8 @@ export const useAppStore = create<AppState>()(
             const at = lifeAt(now, moment).getTime();
             if (lifeSent.has(key) || now.getTime() < at || now.getTime() - at > LIFE_WINDOW_MS) continue;
             const conversationId = get().addFriend(characterId);
-            appendMessage(set, get, conversationId, themText(conversationId, lifeLine(group, moment.key, key)), { countUnread: true });
+            const line = { ...themText(conversationId, lifeLine(group, moment.key, key)), ...withIdeas(lifeReach(group, moment.key)) };
+            appendMessage(set, get, conversationId, line, { countUnread: true });
             freshLife.push(key);
           }
         }
@@ -2640,7 +2713,8 @@ export const useAppStore = create<AppState>()(
         careSteps.forEach(({ item, step }) => {
           if (step !== 'ask' || !exists(item.characterId) || get().blockedIds.includes(item.characterId)) return;
           const conversationId = get().addFriend(item.characterId);
-          appendMessage(set, get, conversationId, themText(conversationId, careLine(item.kind, `${item.id}:care`)), { countUnread: true });
+          const line = { ...themText(conversationId, careLine(item.kind, `${item.id}:care`)), ...withIdeas(careReach(item.kind, item.again)) };
+          appendMessage(set, get, conversationId, line, { countUnread: true });
         });
         if (careSteps.length) {
           const doneIds = new Set(careSteps.map((x) => x.item.id));
@@ -3209,6 +3283,12 @@ export function previewFor(message: Message) {
   }
 }
 
+/** A line they write first carries why (`reach`) and the reply ideas made for it. */
+const withIdeas = (reach?: string): Pick<Message, 'reach' | 'ideas'> => {
+  const ideas = reach ? ideasFor(reach) : [];
+  return reach ? { reach, ideas: ideas.length ? ideas : undefined } : {};
+};
+
 const themText = (conversationId: string, text: string): Message => ({
   id: uid('m'),
   conversationId,
@@ -3281,7 +3361,7 @@ function answerText(
   get: Getter,
   conversationId: string,
   text: string,
-  { wakeHere, gain, avoid }: { wakeHere: boolean; gain: number; avoid?: string },
+  { wakeHere, gain, avoid, say }: { wakeHere: boolean; gain: number; avoid?: string; say?: string },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -3342,7 +3422,8 @@ function answerText(
     appendHelplineCard(set, get, conversationId);
   }
 
-  scheduleReply(set, get, conversationId, { text: reply, gain, avoid });
+  // `say`: their answer to a reply idea, unless a plan or a crisis needs the reply.
+  scheduleReply(set, get, conversationId, { text: reply ?? say, gain, avoid });
 }
 
 /**

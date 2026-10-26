@@ -2,6 +2,7 @@ import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
+import { careReach, lifeReach } from '@/lib/reply-ideas';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
 import { lastTalkedAt } from '@/lib/talk';
@@ -75,6 +76,8 @@ export interface PlannedPush {
   timeSensitive?: boolean;
   /** The line is not in the chat yet; the app writes it there when it sees the push. */
   writesToChat?: boolean;
+  /** Why they wrote first (`src/lib/reply-ideas.ts`): the push carries the line's reply ideas as buttons. */
+  reach?: string;
 }
 
 export interface PlanState {
@@ -365,7 +368,14 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         const key = lifeKey(dayKey(day), character.id, moment.key);
         const when = lifeAt(day, moment);
         if (written.has(key) || !inHorizon(when)) continue;
-        say({ id: `life:${key}`, kind: 'life', at: when, characterId: character.id, line: lifeLine(group, moment.key, key) });
+        say({
+          id: `life:${key}`,
+          kind: 'life',
+          at: when,
+          characterId: character.id,
+          line: lifeLine(group, moment.key, key),
+          reach: lifeReach(group, moment.key),
+        });
       }
     }
   }
@@ -375,7 +385,14 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
     if (item.done || !byId.has(item.characterId) || !chatOf.has(item.characterId)) continue;
     const when = new Date(item.dueAt);
     if (inHorizon(when)) {
-      say({ id: `care:${item.id}`, kind: 'care', at: when, characterId: item.characterId, line: careLine(item.kind, `${item.id}:care`) });
+      say({
+        id: `care:${item.id}`,
+        kind: 'care',
+        at: when,
+        characterId: item.characterId,
+        line: careLine(item.kind, `${item.id}:care`),
+        reach: careReach(item.kind, item.again),
+      });
     }
   }
 

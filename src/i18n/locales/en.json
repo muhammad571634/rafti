@@ -299,6 +299,7 @@
     "notFound": "This group is gone."
   },
   "chat": {
+    "ideaEditHint": "Long press to change it before sending",
     "inputPlaceholder": "Message",
     "read": "Read",
     "delivered": "Delivered",

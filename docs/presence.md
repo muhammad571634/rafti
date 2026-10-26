@@ -45,8 +45,10 @@ with "Let them reach out" write first (Character.AI's per-character switch).
 1. ~~A "Family" section in Find~~ done (D84): Find → "Who do you miss?" (eight role circles after
    the new-characters row); an empty one picks a friend or anyone by world and what to call them,
    turns on Let them reach out and they say hello at once.
-2. Suggested replies under a proactive line (Character.AI's `proactive_suggested_replies_enabled`):
-   two chips like "I ate!" / "Not yet".
+2. ~~Suggested replies under a proactive line~~ done (D85): reply ideas (`src/lib/reply-ideas.ts`) under
+   family moments, care check-ins and the family hello, free to tap, also as push buttons; the idea's
+   intent picks their answer and what follows (a skipped lunch opens a hungry check-in, "Still not
+   great" one more ask). Everyday lines get question-aware ideas instead of the old test pool.
 3. Server: the model writes care and family lines from `careCue` / `familyLines` with the user's
    memories, and returns `care` (the kind) with each reply instead of the mock's keywords.
 4. Unit economics: proactive lines cost model calls with no shell paid; keep them inside the push

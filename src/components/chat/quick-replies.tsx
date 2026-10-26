@@ -5,12 +5,23 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Anim, PressableScale, Txt } from '@/components/ui';
 import { colors, radius, space } from '@/theme';
+import type { ReplyIdea } from '@/types';
 
 /**
- * Quick replies under the friend's line (the morning chain): a tap sends it, free. Outlined
- * pills on the user's side, where the answer will land (iOS suggested replies).
+ * Quick replies under the friend's line (the morning chain, reply ideas): a tap sends the idea's
+ * line; a long press puts it in the field to change first (Character.AI's edit before send).
+ * Outlined pills on the user's side, where the answer will land (iOS suggested replies).
  */
-export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip: string) => void }) {
+export function QuickReplies({
+  ideas,
+  onPick,
+  onEdit,
+}: {
+  ideas: ReplyIdea[];
+  onPick: (idea: ReplyIdea) => void;
+  onEdit?: (idea: ReplyIdea) => void;
+}) {
+  const { t } = useTranslation();
   return (
     // One row that scrolls sideways when it does not fit: wrapping cut the last pill off on Android.
     <Animated.View entering={FadeIn.duration(200)}>
@@ -19,16 +30,18 @@ export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.chips}>
-        {chips.map((chip) => (
+        {ideas.map((idea) => (
           <PressableScale
-            key={chip}
-            onPress={() => onPick(chip)}
+            key={idea.label}
+            onPress={() => onPick(idea)}
+            onLongPress={onEdit ? () => onEdit(idea) : undefined}
             scaleTo={0.95}
             style={styles.chip}
             accessibilityRole="button"
-            accessibilityLabel={chip}>
+            accessibilityLabel={idea.text}
+            accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
             <Txt style={styles.chipText} color={colors.primary} lines={1}>
-              {chip}
+              {idea.label}
             </Txt>
           </PressableScale>
         ))}
@@ -36,6 +49,9 @@ export function QuickReplies({ chips, onPick }: { chips: string[]; onPick: (chip
     </Animated.View>
   );
 }
+
+/** Plain chips (the morning chain, a character's starters) as ideas that send their own words. */
+export const asIdeas = (chips: readonly string[]): ReplyIdea[] => chips.map((chip) => ({ label: chip, text: chip }));
 
 /** The peach bar while the wake-up alarm rings in this chat: a real reply turns it off. */
 export function AlarmBar() {

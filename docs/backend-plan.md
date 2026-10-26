@@ -710,6 +710,30 @@ Kod: `src/ai/prompt-layout.ts` (umumiy), `src/ai/chat-prompt.ts` (yakkama-yakka 
   birligi; yangisida kesishlar orasida ≈ 715, kesishda (har ~10 javobda) ≈ 1 700, o'rtacha ≈ 810. Kirish xarajati ~2 baravar
   kamayadi, tarix esa o'rtacha 20 emas, ~30 navbat. Haqiqiy raqamni B1'dan keyin `usage_events` ko'rsatadi.
 
+### 12.24 Javob g'oyalari: personaj o'zi yozgan xabar ostida (2026-10-26)
+
+Character.AI'da bu `proactive_suggested_replies_enabled`: o'zi yozgan xabar ostida tayyor javoblar chiqadi.
+Ularda har bir g'oya qisqa yorliq va to'liq matndan iborat, alohida chaqiruv bilan yaratiladi va pullik
+(charm). Bizda (`src/lib/reply-ideas.ts`):
+
+- **Qachon:** oila lahzasi (tushlik, kechqurun, yakshanba), care so'rovi, oilaviy salom. Xabarda `reach` (nima
+  uchun yozdi) va `ideas` (2–3 ta g'oya: `label`, `text`, `intent`) saqlanadi. G'oyalar faqat shu xabar eng
+  oxirgisi bo'lsa, foydalanuvchi hali yozmagan bo'lsa va 12 soat o'tmagan bo'lsa ko'rinadi.
+- **Narx:** bunday g'oyani bosish bepul (chig'anoq olinmaydi). Server g'oyalarni o'sha xabarni yozgan chaqiruvning
+  o'zida qaytaradi: JSON'da `ideas` maydoni, bir necha o'nlab chiqish tokeni, alohida so'rov yo'q. Oddiy
+  xabarlar ostidagi g'oyalar (`everydayIdeas`) ham har javob bilan birga keladi. Ularni bosish oddiy xabar narxida.
+- **Mantiq:** `intent` javobni tanlaydi (mock'da `ideaAnswer`, serverda modelga ishora). Matnlar shunday
+  yozilganki, chatning detektorlari o'zi ishlaydi: "Not yet… I skipped lunch" ochlik care so'rovini ochadi, "Long
+  day… I'm so tired" charchoq so'rovini, "Much better now" ochiqlarini yopadi. "Still not great" esa yana bitta
+  so'rov qo'yadi (`again`), uchinchisi bo'lmaydi.
+- **Push tugmalari:** g'oyalar push'da action tugmalari bo'lib chiqadi (har `reach` uchun bitta kategoriya,
+  `ideas_life_parent_lunch`). Tugma ilovani ochadi, xabarni chatga yozadi va javobni yuboradi (`answerFromPush`).
+  Server push'larida ham shu kategoriyalar ishlatiladi.
+- **Tahrir:** g'oyani uzoq bossangiz, matni yozish maydoniga tushadi. O'zgartirilgan matn ham shu xabarga javob
+  hisoblanadi (bepul), lekin oddiy javob bilan javob beriladi.
+- **Server vazifalari:** g'oyalarni foydalanuvchi tilida va xotirasini hisobga olib yozish (masalan, "Ate
+  plov!"), `intent` ro'yxatini (`IdeaIntent`) saqlash va noma'lum `reach` uchun g'oya qaytarmaslik.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

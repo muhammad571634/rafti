@@ -153,6 +153,13 @@ export interface Message {
   skipTo?: string;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
+  /**
+   * Reply ideas under a line they wrote first (`src/lib/reply-ideas.ts`): "I ate!" / "Not yet".
+   * Gone once the user answers; a tap sends the idea's text, free.
+   */
+  ideas?: ReplyIdea[];
+  /** Why they wrote first (`reachKey`): a family moment, a care check-in, a hello. */
+  reach?: string;
   /** Group chats: the member who wrote it (author 'them'). */
   characterId?: string;
   /** Their feeling when they wrote it (`src/lib/reply-engine`); later the voice's tone. */
@@ -500,6 +507,18 @@ export interface CareItem {
   createdAt: string;
   /** Asked, its moment passed, or the user already said they are better. */
   done?: boolean;
+  /** A second ask after "Still not great"; there is no third. */
+  again?: boolean;
+}
+
+/** What the user means by a reply idea; it picks their answer and what happens next. */
+export type IdeaIntent = 'yes' | 'no' | 'now' | 'good' | 'rough' | 'later' | 'call' | 'missed' | 'thanks' | 'better' | 'worse' | 'ask';
+
+/** A reply the user can send with one tap: a short label on the pill and the line it sends. */
+export interface ReplyIdea {
+  label: string;
+  text: string;
+  intent?: IdeaIntent;
 }
 
 export interface ScheduleItem {
