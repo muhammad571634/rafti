@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, ScrollView, StyleSheet, type TextInputInstance, useWindowDimensions, View } from 'react-native';
+import { Keyboard, Platform, ScrollView, StyleSheet, type TextInputInstance, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
@@ -322,7 +323,11 @@ export default function FindScreen() {
   );
 }
 
-/** One new character: their scene full-bleed, name and world over a scrim, a glass "Say hi". */
+/**
+ * One new character: their scene full-bleed, and at the bottom a frosted capsule with the face, name,
+ * NEW and world, and "Say hi". HIG Materials: text and controls over a photo sit on a material, so
+ * they read on any picture (iOS: the thin dark system material; Android: the same tone, unblurred).
+ */
 function Feature({
   character,
   width,
@@ -346,28 +351,36 @@ function Feature({
         onPress={onOpen}
         style={StyleSheet.absoluteFill}>
         <Image source={heroOf(character)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
-        <LinearGradient colors={SCRIM} style={styles.featureScrim} />
-        <View style={styles.featureFoot}>
-          <CharacterAvatar character={character} size={48} ring ringColor={colors.onMedia} />
+      </PressableScale>
+      <View style={styles.capsule}>
+        {Platform.OS === 'ios' ? <BlurView intensity={40} tint="systemThinMaterialDark" style={StyleSheet.absoluteFill} /> : null}
+        {/* Siblings, not children: a button inside a button is invalid on web. */}
+        <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityLabel={character.name} onPress={onOpen} style={styles.capsuleOpen}>
+          <CharacterAvatar character={character} size={40} ring ringColor={colors.onMedia} />
           <View style={styles.flex}>
-            {isNew ? <Txt style={styles.kicker}>{t('find.newBadge').toUpperCase()}</Txt> : null}
-            <Txt style={styles.featureName} lines={1}>
-              {character.name}
-            </Txt>
+            <View style={styles.nameRow}>
+              <Txt style={styles.featureName} lines={1}>
+                {character.name}
+              </Txt>
+              {isNew ? (
+                <View style={styles.newBadge}>
+                  <Txt style={styles.newText}>{t('find.newBadge').toUpperCase()}</Txt>
+                </View>
+              ) : null}
+            </View>
             {character.series ? (
               <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
                 {character.series}
               </Txt>
             ) : null}
           </View>
-        </View>
-      </PressableScale>
-      {/* A sibling, not a child: a button inside a button is invalid on web. */}
-      <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={onSayHi} style={styles.sayHi}>
-        <Txt variant="smallStrong" color={colors.onMedia}>
-          {t('find.sayHi')}
-        </Txt>
-      </PressableScale>
+        </PressableScale>
+        <PressableScale scaleTo={0.92} accessibilityRole="button" onPress={onSayHi} style={styles.sayHi}>
+          <Txt variant="smallStrong" color={colors.black}>
+            {t('find.sayHi')}
+          </Txt>
+        </PressableScale>
+      </View>
     </View>
   );
 }
@@ -410,9 +423,13 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
               />
             ))}
           </View>
-          <Txt variant="caption" color={colors.onMedia}>
-            {group.characters.length}
-          </Txt>
+          {/* How many people live there, with the glyph the world page uses. */}
+          <View style={styles.tileCount}>
+            <Ionicons name="person" size={12} color={colors.onMedia} />
+            <Txt variant="caption" color={colors.onMedia}>
+              {group.characters.length}
+            </Txt>
+          </View>
         </View>
       </View>
     </PressableScale>
@@ -672,46 +689,46 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: colors.surfaceAlt,
   },
-  featureScrim: {
+  // The frosted capsule: concentric with the card's corners (26 - 10 inset = 16 + padding).
+  capsule: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 140,
-  },
-  featureFoot: {
-    position: 'absolute',
-    left: space.lg,
-    right: 104,
-    bottom: 14,
+    left: 10,
+    right: 10,
+    bottom: 10,
+    minHeight: 60,
+    paddingVertical: space.sm,
+    paddingLeft: space.sm,
+    paddingRight: space.sm + 2,
+    borderRadius: 18,
+    overflow: 'hidden',
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: space.md,
+    alignItems: 'center',
+    gap: space.sm,
+    backgroundColor: colors.onMediaMaterial,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
   },
-  kicker: {
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.6,
-    color: colors.onMediaSoft,
-  },
+  capsuleOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   featureName: {
-    fontSize: 22,
-    lineHeight: 26,
+    flexShrink: 1,
+    fontSize: 17,
+    lineHeight: 22,
     fontWeight: '700',
     color: colors.onMedia,
   },
-  // Clear glass on a photo (HIG: the clear variant is for components over rich media).
+  // NEW in the app's one accent (unread / new, docs/design-style.md §1).
+  newBadge: { paddingHorizontal: 6, paddingVertical: 1, borderRadius: 6, backgroundColor: colors.primaryFill },
+  newText: { fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 0.4, color: colors.textOnPrimary },
+  // The capsule's one prominent action: the solid light button used on photos (world page, Today hero).
   sayHi: {
-    position: 'absolute',
-    right: space.lg,
-    bottom: 14,
     height: 34,
+    minWidth: 44,
     paddingHorizontal: 14,
     borderRadius: 17,
     justifyContent: 'center',
-    backgroundColor: colors.onMediaGlass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
+    alignItems: 'center',
+    backgroundColor: colors.onMediaButton,
   },
   tiles: {
     flexDirection: 'row',
@@ -739,6 +756,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   stack: { flexDirection: 'row' },
+  tileCount: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   stacked: { marginRight: -7 },
   faces: { paddingHorizontal: space.lg, gap: space.lg },
   face: { width: 76, alignItems: 'center', gap: space.sm },
