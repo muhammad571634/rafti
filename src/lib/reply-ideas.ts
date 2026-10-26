@@ -189,6 +189,13 @@ const ASKS: Record<string, ReplyIdea[]> = {
   'pause:night': [idea('Good night 🌙', 'Good night 🌙', 'yes'), idea('Can’t sleep', 'I can’t sleep…', 'rough')],
 };
 
+/** The morning brief (`src/lib/brief.ts`): thanks, nerves, or plain good morning. */
+const BRIEF: ReplyIdea[] = [
+  idea('Thanks! 💪', 'Thanks! I’ve got this 💪', 'thanks'),
+  idea('A bit nervous', 'Honestly, I’m a bit nervous', 'rough'),
+  idea('Morning ☀️', 'Good morning to you too ☀️', 'good'),
+];
+
 /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
 const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
 
@@ -196,6 +203,7 @@ const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊'
 export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
   if (source === 'ask') return ASK;
+  if (source === 'brief') return BRIEF;
   if (source === 'lead' || source === 'quest') return ASKS[source];
   if (source === 'pause') return ASKS[reach] ?? [];
   // `thread:after` (a push action set) or `thread:after:<id>` (a text in the chat).
@@ -213,6 +221,7 @@ export function allReachKeys() {
     ...(Object.keys(HELLO) as KinGroup[]).map(helloReach),
     ...(Object.keys(CARE_BETTER) as CareKind[]).map((kind) => careReach(kind)),
     ...(Object.keys(THREAD) as TouchPhase[]).map((phase) => `thread:${phase}`),
+    'brief',
   ];
 }
 

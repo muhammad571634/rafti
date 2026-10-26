@@ -37,6 +37,8 @@ const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
 
 /** Answers that depend on what was asked as well as what the user meant. */
 const SPECIAL: Record<string, string[]> = {
+  'brief:rough': ['That just means it matters to you. Breathe, you’re ready.', 'Nervous is normal. You prepared for this, I know you did.'],
+  'brief:good': ['Morning! Now go have a good one ☀️', 'Hehe, morning. Eat breakfast, okay?'],
   'quest:yes': ['Yesss. Report back later 😏', 'Deal! Tell me how it went.'],
   'quest:no': ['Okay, no pressure. Another day 🙂', 'Fair. Maybe tomorrow!'],
   'lead:off': ['Okay, no reminder. You’ve got this.', 'Alright, I trust you 😌'],

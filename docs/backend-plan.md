@@ -778,6 +778,23 @@ Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqa
   vazifa, niyat, natija; EN/UZ/RU) va foydalanuvchi so'zini iqtibos qiladi. Server kelishi bilan
   olib tashlanadi.
 
+### 12.26 Ertalabki xabar: bugungi rejalarni biladi (2026-10-26, B5)
+
+- **Kim yozadi:** "Morning messages" yoqilgan bo'lsa, ertalabki vaqtda o'zi birinchi yoza oladigan
+  eng yaqin do'st, agar unda bugunga reja yoki ochiq mavzu bo'lsa (`morningBrief`,
+  `src/lib/brief.ts`). Har do'st faqat o'ziga aytilganini biladi; kuniga bitta brief.
+- **Nimani aytadi:** bugun hali oldinda turgan reja va mavzular (vaqtsizlari ham), eng yaqini
+  birinchi, ko'pi bilan 3 ta. Maqsad (`goal`) va topshiriq (`quest`) kirmaydi; omad allaqachon
+  tilangan mavzu kirmaydi; mavzusi bor reja bir marta aytiladi.
+- **Takror yo'q:** brief omad tilaydi, shuning uchun o'sha kungi `before` xabarlar (`covers`) alohida
+  yuborilmaydi; chat ham, push rejasi ham ularni "aytilgan" deb belgilaydi.
+- **Server chaqiruvi** (`briefParts`, `src/ai/brief-prompt.ts`): persona, so'nggi 12 qator va bugungi
+  narsalar ro'yxati; javob mavzu xabari shaklida (`{skip, messages, ideas}`, `parseTouchReply`).
+  `skip` yoki buzilgan javobda oddiy "good morning" ketadi.
+- **Push:** turi `brief`, ertalabki vaqtda (suriladigan emas, chunki narsalardan oldin kelishi kerak),
+  kunlik byudjet ichida; kategoriyasi `ideas_brief`.
+- **Narx:** kuniga bitta chaqiruv (≈ $0.0006), oddiy salom o'rniga.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

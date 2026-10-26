@@ -1,5 +1,6 @@
 import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
+import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
 import { careReach, lifeReach, threadReach } from '@/lib/reply-ideas';
@@ -17,6 +18,7 @@ import {
   planFollowUp,
   scheduleReminder,
 } from '@/mock';
+import { briefLine } from '@/mock/brief';
 import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
@@ -50,6 +52,7 @@ import type {
 
 export type PushKind =
   | 'morning'
+  | 'brief'
   | 'evening'
   | 'call'
   | 'voiceNote'
@@ -136,6 +139,7 @@ const PRIORITY: Record<PushKind, number> = {
   care: 1,
   touch: 1,
   life: 3,
+  brief: 2,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -209,6 +213,7 @@ function quoteOf(messages: readonly Message[] | undefined) {
 
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
 const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'life', 'care', 'comeback', 'touch']);
+// The brief is not flexible: it has to come before the things it wishes luck for.
 
 /** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
 export const counts = (push: PlannedPush) => !EXEMPT.has(push.kind) && !push.timeSensitive;
@@ -259,6 +264,8 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
   };
 
   const days = [0, 1, 2].map((n) => at(new Date(now.getTime() + n * DAY_MS), 0));
+  // Thread texts a planned morning brief already says ("before" texts later that day).
+  const covered = new Set<string>();
 
   for (const day of days) {
     const key = dayKey(day);
@@ -272,7 +279,30 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         const greet = slot === 'morning' ? settings.morningGreeting : settings.eveningGreeting;
         const when = clock(day, time);
         if (greet && !daily.greetedSlots.includes(slotKey) && inHorizon(when)) {
+          // On a day with something on, the closest friend who holds it sends the brief instead (B5).
+          const brief =
+            slot === 'morning'
+              ? morningBrief(
+                  writers.map((c) => c.id),
+                  schedules,
+                  state.threads ?? [],
+                  when,
+                )
+              : null;
+          if (brief) {
+            brief.covers.forEach((id) => covered.add(id));
+            const character = byId.get(brief.characterId)!;
+            say({
+              id: `brief:${slotKey}:${brief.characterId}`,
+              kind: 'brief',
+              at: when,
+              characterId: brief.characterId,
+              line: briefLine(brief.items, temperOf(character, relationships[brief.characterId].label), `${slotKey}:brief:${brief.characterId}`),
+              reach: BRIEF_REACH,
+            });
+          }
           for (const writer of writers.slice(0, PUSH_RULES.greeters)) {
+            if (writer.id === brief?.characterId) continue;
             say({
               id: `${slot === 'morning' ? 'morning' : 'evening'}:${slotKey}:${writer.id}`,
               kind: slot === 'morning' ? 'morning' : 'evening',
@@ -431,7 +461,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
     if (thread.status !== 'open' || !character || !chatOf.has(thread.characterId) || !relationships[thread.characterId]?.messagesFirst) continue;
     for (const touch of thread.touches) {
       const when = new Date(touch.at);
-      if (touch.sent || !inHorizon(when)) continue;
+      if (touch.sent || covered.has(touch.id) || !inHorizon(when)) continue;
       const before = beforeThing(touch.phase);
       say({
         id: `touch:${touch.id}`,

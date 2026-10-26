@@ -58,10 +58,12 @@ import { askedOnce, askReach, isAskReach, shouldAskToReach, sittingCount } from 
 import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches } from '@/lib/threads';
 import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
+import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
+import { briefLine } from '@/mock/brief';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
@@ -632,6 +634,8 @@ interface AppState {
    * friend may not write first yet (turn on Let them reach out).
    */
   devNextTexts: () => { sent: number; waiting: number };
+  /** Dev: the next morning brief (today's, else tomorrow's) now; false when no plans are ahead. */
+  devMorningBrief: () => boolean;
   /**
    * Keeping in mind (`src/app/mind.tsx`): the user moves a thread's time; its plan and the texts
    * still to come follow (the server's model plans them again around the new time).
@@ -2384,6 +2388,21 @@ export const useAppStore = create<AppState>()(
         return { sent, waiting };
       },
 
+      devMorningBrief: () => {
+        const now = new Date();
+        const tomorrow = clockOn(new Date(now.getTime() + 86_400_000), get().settings.morningCallTime);
+        for (const at of [now, tomorrow]) {
+          const slotKey = `${dayKey(at)}:morning`;
+          // Tomorrow's morning that is already done stays done; today's may be sent again for testing.
+          if (at === tomorrow && get().daily.greetedSlots.includes(slotKey)) continue;
+          if (!sendBrief(set, get, at)) continue;
+          // That morning's greeting is done, so the real one does not come again.
+          set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));
+          return true;
+        }
+        return false;
+      },
+
       retimeThread: (threadId, happensAt) => {
         const now = new Date();
         const thread = get().threads.find((t) => t.id === threadId && t.status === 'open');
@@ -3003,7 +3022,11 @@ export const useAppStore = create<AppState>()(
         // 2. "Say Hi & Goodnight" — the top two bonds text first.
         const greet = slot === 'morning' ? settings.morningGreeting : settings.eveningGreeting;
         if (greet && !daily.greetedSlots.includes(slotKey)) {
+          // On a day with something on, the closest friend who holds it sends the morning brief
+          // instead (B5, `src/lib/brief.ts`), timed and worded like its push, and its luck text is said.
+          const briefFrom = slot === 'morning' ? sendBrief(set, get, clockOn(now, settings.morningCallTime)) : null;
           bonds.slice(0, 2).forEach((bond) => {
+            if (bond.characterId === briefFrom) return;
             const conversationId = get().addFriend(bond.characterId);
             // Seeded like the scheduled push for this slot, so the notification and the chat agree.
             const line = pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${bond.characterId}`);
@@ -3387,6 +3410,35 @@ export function previewFor(message: Message) {
 }
 
 /** A line they write first carries why (`reach`) and the reply ideas made for it. */
+/**
+ * Writes the morning brief for the morning at `at` (`src/lib/brief.ts`) into the friend's chat, with
+ * the line its push said, and marks the luck texts it covers as said. Returns who sent it, or null
+ * when nobody holds anything for that day.
+ */
+function sendBrief(set: Setter, get: Getter, at: Date): string | null {
+  const { relationships, characters, conversations } = get();
+  const writers = Object.values(relationships)
+    .filter((r) => r.messagesFirst && characters.some((c) => c.id === r.characterId) && conversations.some((c) => c.characterId === r.characterId))
+    .sort((a, b) => b.intimacy - a.intimacy)
+    .map((r) => r.characterId);
+  const brief = morningBrief(writers, get().schedules, get().threads, at);
+  const from = brief && characters.find((c) => c.id === brief.characterId);
+  if (!brief || !from) return null;
+  const conversationId = get().addFriend(brief.characterId);
+  const line = briefLine(brief.items, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:morning:brief:${from.id}`);
+  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(BRIEF_REACH) }, { countUnread: true });
+  if (brief.covers.length) set((s) => ({ threads: markTouches(s.threads, new Set(brief.covers)) }));
+  return from.id;
+}
+
+/** `HH:MM` on the day of `day`: the morning time the brief and its push are planned for. */
+const clockOn = (day: Date, hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number);
+  const d = new Date(day);
+  d.setHours(h, m, 0, 0);
+  return d;
+};
+
 const withIdeas = (reach?: string): Pick<Message, 'reach' | 'ideas'> => {
   const ideas = reach ? ideasFor(reach) : [];
   return reach ? { reach, ideas: ideas.length ? ideas : undefined } : {};
