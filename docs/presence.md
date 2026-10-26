@@ -217,7 +217,7 @@ After the user's last message (only for friends who may write first):
 - **After the morning alarm:** "You have the interview at 11 today".
 - **Local calendar:** Navruz, Ramadan (iftar time), exam season, weekends, the user's birthday.
 
-### P2.8 Timing and budget (no fixed slots)
+### P2.8 Timing and budget (no fixed slots) — built (D89, `src/notifications/budget.ts`)
 
 - **Windows, not clocks:** 14 days of app opens and messages give each hour a weight. A line goes
   into a likely-free window with ±25 min jitter, and some days a source skips.

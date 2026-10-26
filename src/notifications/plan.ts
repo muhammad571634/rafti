@@ -22,9 +22,12 @@ import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
 import { temperComeback } from '@/mock/temper';
 import { mockTouchLine } from '@/mock/threads';
+
+import { activityHours, asleep, dailyBudget, learnedSleep, lonely, placeFlexible, PUSH_BUDGET, replyRate, type Budget } from './budget';
 import type {
   AppSettings,
   CareItem,
+  Temper,
   Thread,
   Character,
   Conversation,
@@ -103,13 +106,12 @@ export interface PlanState {
   wallet: Pick<Wallet, 'subscription'>;
 }
 
-/** The rules from docs/push-plan.md, in one place. */
+/**
+ * The rules from docs/push-plan.md, in one place. How many a day, each friend's share, the gaps,
+ * sleep and active hours are `src/notifications/budget.ts` (Presence 2, P2.8).
+ */
 export const PUSH_RULES = {
   horizonMs: 48 * 3_600_000,
-  /** Pushes a day that count (calls, plan reminders and birthdays do not). */
-  dayBudget: 8,
-  minGapMs: 90 * 60_000,
-  perCharacterPerDay: 3,
   /** As in runDailyInitiative: the top two bonds say good morning / good night. */
   greeters: 2,
   /** The daily call rings a little after the greeting of the same slot. */
@@ -204,9 +206,31 @@ function quoteOf(messages: readonly Message[] | undefined) {
   return clean.length > PUSH_RULES.quoteMax ? `${clean.slice(0, PUSH_RULES.quoteMax - 1).trim()}…` : clean;
 }
 
+/** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
+const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'life', 'care', 'comeback', 'touch']);
+
 export function planPushes(state: PlanState, now: Date): PlannedPush[] {
-  const wanted = pushCandidates(state, now).filter((push) => kindOn(push.kind, state.settings));
-  return capped(wanted, quietTest(state.settings));
+  // The user's own rhythm (`src/notifications/budget.ts`): active hours, sleep, how they answer.
+  const chats = Object.values(state.messages);
+  const hours = activityHours(chats, now);
+  const sleep = learnedSleep(hours);
+  const budget = dailyBudget({
+    subscription: state.wallet.subscription,
+    rate: replyRate(chats, now),
+    isLonely: lonely(state.care ?? [], hours, now),
+    now,
+  });
+  const userQuiet = quietTest(state.settings);
+  const isQuiet = (d: Date) => userQuiet(d) || asleep(d, sleep);
+  const byId = new Map(state.characters.map((c) => [c.id, c]));
+  const temperFor = (id: string) => {
+    const character = byId.get(id);
+    return character ? temperOf(character, state.relationships[id]?.label) : 'warm';
+  };
+  const wanted = pushCandidates(state, now)
+    .filter((push) => kindOn(push.kind, state.settings))
+    .map((push) => (FLEXIBLE.has(push.kind) && !push.timeSensitive ? { ...push, at: placeFlexible(push.at, push.id, hours, sleep) } : push));
+  return capped(wanted, isQuiet, budget, temperFor);
 }
 
 /** Every push the state asks for, before quiet hours, budget and spacing (exported for tests). */
@@ -483,28 +507,27 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
 }
 
 /**
- * Applies quiet hours, the day budget, the gap between pushes and the per-friend
- * limit. Exempt kinds always stay (a user-set call or plan may ring at night).
- * A push too close to a more important one moves later the same day instead of
- * being dropped; it is dropped only when the day has no room left.
+ * Applies quiet hours and sleep, the day budget, the gap between pushes and each friend's share.
+ * Exempt kinds and time-sensitive texts before the user's own plans always stay (a user-set call or
+ * plan may ring at night). A push too close to a more important one moves later the same day instead
+ * of being dropped; it is dropped only when the day has no room left.
  */
-function capped(all: PlannedPush[], isQuiet: (d: Date) => boolean): PlannedPush[] {
+function capped(all: PlannedPush[], isQuiet: (d: Date) => boolean, budget: Budget, temperFor: (characterId: string) => Temper): PlannedPush[] {
   const kept: PlannedPush[] = [];
   const counted: PlannedPush[] = [];
   const ordered = [...all].sort((a, b) => PRIORITY[a.kind] - PRIORITY[b.kind] || a.at.getTime() - b.at.getTime());
 
   for (const push of ordered) {
-    if (EXEMPT.has(push.kind)) {
+    if (EXEMPT.has(push.kind) || push.timeSensitive) {
       kept.push(push);
       continue;
     }
     const day = dayKey(push.at);
     const sameDay = counted.filter((p) => dayKey(p.at) === day);
-    if (sameDay.length >= PUSH_RULES.dayBudget) continue;
-    if (push.characterId && sameDay.filter((p) => p.characterId === push.characterId).length >= PUSH_RULES.perCharacterPerDay) {
-      continue;
-    }
-    const at = firstFreeSlot(push.at, sameDay, isQuiet);
+    if (sameDay.length >= budget.day) continue;
+    const theirs = push.characterId ? sameDay.filter((p) => p.characterId === push.characterId) : [];
+    if (push.characterId && theirs.length >= budget.perFriend(temperFor(push.characterId))) continue;
+    const at = firstFreeSlot(push.at, sameDay, theirs, isQuiet);
     if (!at) continue;
     const placed = { ...push, at };
     kept.push(placed);
@@ -515,13 +538,18 @@ function capped(all: PlannedPush[], isQuiet: (d: Date) => boolean): PlannedPush[
 
 const SHIFT_STEP_MS = 15 * 60_000;
 
-/** The wanted time, or the first later time that day outside quiet hours with room around it. */
-function firstFreeSlot(wanted: Date, sameDay: PlannedPush[], isQuiet: (d: Date) => boolean): Date | null {
+/**
+ * The wanted time, or the first later time that day outside quiet hours and sleep with room around
+ * it: `minGapMs` from any counted push, `friendGapMs` from the same friend's.
+ */
+function firstFreeSlot(wanted: Date, sameDay: PlannedPush[], theirs: PlannedPush[], isQuiet: (d: Date) => boolean): Date | null {
   const day = dayKey(wanted);
   for (let t = wanted.getTime(); dayKey(new Date(t)) === day; t += SHIFT_STEP_MS) {
     const candidate = new Date(t);
     if (isQuiet(candidate)) continue;
-    if (sameDay.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_RULES.minGapMs)) return candidate;
+    const spaced = sameDay.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_BUDGET.minGapMs);
+    const spacedFromFriend = theirs.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_BUDGET.friendGapMs);
+    if (spaced && spacedFromFriend) return candidate;
   }
   return null;
 }

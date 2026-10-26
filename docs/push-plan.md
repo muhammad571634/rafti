@@ -2,7 +2,8 @@
 
 Status: **built (local notifications), 2026-10-07.** The user's answers: up to **8** pushes a
 day, the comeback ladder **stops after 14 days**, **message text hidden** on the lock screen by
-default, support address stays a mock. Code: `src/notifications/plan.ts` (pure planner),
+default, support address stays a mock. **Changed 2026-10-26:** 6 a day free / 20 with a plan,
+tuned to the user (`src/notifications/budget.ts`, D89); their words always show (D86). Code: `src/notifications/plan.ts` (pure planner),
 `src/notifications/sync.ts` (OS), `src/hooks/use-push-notifications.ts` (app life), lines in
 `src/mock/push.ts`. Section 6 lists how it differs from the first draft below.
 
