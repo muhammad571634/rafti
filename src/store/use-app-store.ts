@@ -4164,7 +4164,6 @@ function scheduleReply(
       threads: state.threads.filter((t) => t.characterId === character.id),
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
       redo: Array.isArray(avoid) ? avoid : undefined,
-      replyLanguage: 'English',
     }).then((lines) => {
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
       deliver(lines ?? standIn());

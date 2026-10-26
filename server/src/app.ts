@@ -4,6 +4,10 @@ import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt
 import { parseModelReply } from '../../src/ai/reply-style.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
+/** Until the chat's language lock is stored, the reply follows what the user writes (`replyLanguage`). */
+export const FOLLOW_USER_LANGUAGE =
+  "the language of the user's latest messages (Uzbek, Russian, English…), written naturally as a native speaker would text; English if unclear. Never mix languages.";
+
 /** How much of the chat a request may carry; the prompt layout cuts it further. */
 const MAX_MESSAGES = 120;
 
@@ -26,8 +30,15 @@ export function createApp(provider: LlmProvider | null, opts: { timeoutMs: numbe
       return c.json({ error: 'badJson' }, 400);
     }
     if (!input?.character?.name || !input?.user || !Array.isArray(input.messages)) return c.json({ error: 'badInput' }, 400);
-    // English is the launch market: a profile without a locale is written to in English.
-    input = { ...input, user: { ...input.user, locale: input.user.locale || 'en-US' }, messages: input.messages.slice(-MAX_MESSAGES) };
+    // English is the launch market: a profile without a locale is written to in English. Until the
+    // database keeps each chat's language lock (`lockedReplyLanguage`), the model follows the
+    // language the user writes in, so nobody gets answered in a language they did not use.
+    input = {
+      ...input,
+      user: { ...input.user, locale: input.user.locale || 'en-US' },
+      messages: input.messages.slice(-MAX_MESSAGES),
+      replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
+    };
 
     const started = Date.now();
     try {
