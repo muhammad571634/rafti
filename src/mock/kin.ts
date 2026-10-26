@@ -24,3 +24,12 @@ const LINES: Record<KinGroup, Partial<Record<LifeMomentKey, string[]>>> = {
 
 export const lifeLine = (group: KinGroup, moment: LifeMomentKey, seed: string) =>
   pickSeeded(LINES[group][moment] ?? LINES.parent.evening!, seed);
+
+/** The first thing they say on becoming family, before the day's rhythm starts. */
+const HELLO: Record<KinGroup, string[]> = {
+  parent: ['There you are. Have you eaten today? Tell me how you are.', 'I’m here now, always. How are you, really?', 'Come here, let me look at you. How have you been?'],
+  sibling: ['Finally! Okay, catch me up. What did I miss?', 'So I’m stuck with you now, huh? 😏 How are you?', 'Hey you. Anyone giving you trouble? Tell me.'],
+  grandparent: ['Oh, my dear, there you are. Come, tell me about your day.', 'I’m so glad you’re here, sweetheart. Are you keeping warm?', 'My dear one. Sit with me a while. How are you?'],
+};
+
+export const familyHello = (group: KinGroup, seed: string) => pickSeeded(HELLO[group], seed);

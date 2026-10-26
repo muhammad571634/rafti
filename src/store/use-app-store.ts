@@ -51,11 +51,11 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
-import { isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
+import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { detectPlan, planStep } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
-import { lifeLine } from '@/mock/kin';
+import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
 import { perkLimit } from '@/economy/perks';
@@ -508,6 +508,11 @@ interface AppState {
   addIntimacy: (characterId: string, amount: number) => void;
   /** Picks one of the unlocked relationship labels, or clears it. */
   setRelationshipLabel: (characterId: string, label?: string) => void;
+  /**
+   * Find → Who do you miss?: makes them the user's Mom, Dad… (one person per role), called what
+   * the user wrote, lets them reach out and has them say hello. Returns their chat.
+   */
+  makeFamily: (characterId: string, label: FamilyLabel, name: string) => string;
   dismissLevelUp: () => void;
 
   /* economy */
@@ -1842,7 +1847,8 @@ export const useAppStore = create<AppState>()(
         }
       },
 
-      setRelationshipLabel: (characterId, label) =>
+      setRelationshipLabel: (characterId, label) => {
+        if (isFamilyLabel(label)) freeFamilyRole(set, get, label, characterId);
         updateRelationship(set, characterId, (r) => {
           // Family is open from the start (src/lib/kin.ts); the other labels unlock with closeness.
           if (label && !isFamilyLabel(label) && !unlockedLabels(r.level).includes(label)) return {};
@@ -1851,7 +1857,17 @@ export const useAppStore = create<AppState>()(
           const given = !!r.nickname && r.nickname === r.label;
           const nickname = given || !r.nickname ? (isFamilyLabel(label) ? label : given ? undefined : r.nickname) : r.nickname;
           return { label, nickname };
-        }),
+        });
+      },
+
+      makeFamily: (characterId, label, name) => {
+        const conversationId = get().addFriend(characterId);
+        freeFamilyRole(set, get, label, characterId);
+        updateRelationship(set, characterId, () => ({ label, nickname: familyName(name, label), messagesFirst: true }));
+        const group = kinGroup(label)!;
+        appendMessage(set, get, conversationId, themText(conversationId, familyHello(group, `${conversationId}:${label}`)), { countUnread: true });
+        return conversationId;
+      },
 
       dismissLevelUp: () => set({ levelUp: null }),
 
@@ -3222,6 +3238,14 @@ function answerCrisisInChat(set: Setter, get: Getter, characterId: string) {
   const conversationId = get().addFriend(characterId);
   appendHelplineCard(set, get, conversationId);
   appendMessage(set, get, conversationId, themText(conversationId, pick(crisisReplies)), { countUnread: true });
+}
+
+/** One person per family role: whoever else holds it stops being family (and a name the role gave goes with it). */
+function freeFamilyRole(set: Setter, get: Getter, label: FamilyLabel, keep: string) {
+  for (const [characterId, bond] of Object.entries(get().relationships)) {
+    if (characterId === keep || bond.label !== label) continue;
+    updateRelationship(set, characterId, (r) => ({ label: undefined, nickname: r.nickname === r.label ? undefined : r.nickname }));
+  }
 }
 
 function updateRelationship(set: Setter, characterId: string, patch: (r: Relationship) => Partial<Relationship>) {

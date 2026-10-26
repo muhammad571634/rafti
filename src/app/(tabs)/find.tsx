@@ -8,6 +8,8 @@ import { Keyboard, ScrollView, StyleSheet, type TextInputInstance, useWindowDime
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
+import { FamilyRow, familySeats } from '@/components/find/family-row';
+import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import {
   AuroraGlass,
@@ -21,8 +23,9 @@ import {
 } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
+import { familyOf, type FamilyLabel } from '@/lib/kin';
 import { groupBySeries, type CharacterGroup } from '@/mock';
-import { useAppStore } from '@/store/use-app-store';
+import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
 
@@ -74,6 +77,9 @@ export default function FindScreen() {
   const rememberSearch = useAppStore((s) => s.rememberSearch);
   const rememberViewed = useAppStore((s) => s.rememberViewed);
   const clearRecentSearches = useAppStore((s) => s.clearRecentSearches);
+  const relationships = useAppStore((s) => s.relationships);
+  const makeFamily = useAppStore((s) => s.makeFamily);
+  const [familyRole, setFamilyRole] = useState<FamilyLabel | null>(null);
 
   const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
@@ -107,6 +113,21 @@ export default function FindScreen() {
   }, [shown, groups]);
   const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
+  // Who do you miss? One person per role; the sheet offers friends first, then everyone else.
+  const family = useMemo(() => familyOf(relationships, (id) => characters.some((c) => c.id === id)), [relationships, characters]);
+  const seats = useMemo(
+    () =>
+      familySeats((role) => {
+        const character = characters.find((c) => c.id === family[role]);
+        return character ? { character, name: displayName(character, relationships[character.id]) } : undefined;
+      }),
+    [family, characters, relationships],
+  );
+  const kinIds = useMemo(() => new Set(Object.values(family)), [family]);
+  const kinFriends = useMemo(() => characters.filter((c) => chatOf.has(c.id) && !kinIds.has(c.id)), [characters, chatOf, kinIds]);
+  // A character still Pro-only (New characters first) is added from its card, not here.
+  const kinOthers = characters.filter((c) => !chatOf.has(c.id) && !early.locked(c));
+
   const viewed = useMemo(
     () => recentlyViewed.map((id) => characters.find((c) => c.id === id)).filter((c): c is Character => !!c),
     [recentlyViewed, characters],
@@ -130,6 +151,17 @@ export default function FindScreen() {
   const openWorld = (g: CharacterGroup) => {
     if (q) rememberSearch(query);
     router.push({ pathname: '/world/[series]', params: { series: g.series } });
+  };
+
+  const openFamily = (c: Character) => {
+    const chat = chatOf.get(c.id);
+    router.push(`/chat/${chat ?? useAppStore.getState().addFriend(c.id)}`);
+  };
+  const confirmFamily = (characterId: string, name: string) => {
+    if (!familyRole) return;
+    const conversationId = makeFamily(characterId, familyRole, name);
+    setFamilyRole(null);
+    router.push(`/chat/${conversationId}`);
   };
 
   const featureWidth = Math.min(width, 520) - space.lg * 2 - 24;
@@ -234,6 +266,11 @@ export default function FindScreen() {
               </ScrollView>
 
               <Txt style={styles.section} accessibilityRole="header">
+                {t('find.missTitle')}
+              </Txt>
+              <FamilyRow seats={seats} onOpen={openFamily} onChoose={setFamilyRole} />
+
+              <Txt style={styles.section} accessibilityRole="header">
                 {t('find.worlds')}
               </Txt>
               <View style={styles.tiles}>
@@ -270,6 +307,17 @@ export default function FindScreen() {
         </ScrollView>
       )}
       {early.sheet}
+      <FamilySheet
+        role={familyRole}
+        friends={kinFriends}
+        others={kinOthers}
+        onClose={() => setFamilyRole(null)}
+        onCreate={() => {
+          setFamilyRole(null);
+          router.push('/create-character');
+        }}
+        onConfirm={confirmFamily}
+      />
     </Screen>
   );
 }

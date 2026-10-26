@@ -146,6 +146,14 @@
     "rule": "Free shells are spent first and expire at midnight. Day 7 is the big one.",
     "collectAmount": "Collect +{{count}}"
   },
+  "family": {
+    "sheetTitle": "Who will be your {{role}}?",
+    "callThem": "Call them",
+    "make": "Make {{name}} your {{role}}",
+    "choose": "Choose someone",
+    "createOwn": "Create your own",
+    "rhythm": "They write first: lunch, evenings, Sundays."
+  },
   "find": {
     "title": "Find",
     "searchPlaceholder": "Characters, worlds",
@@ -180,6 +188,9 @@
     "newBadge": "New",
     "worlds": "Worlds",
     "talkNow": "Talk now",
+    "missTitle": "Who do you miss?",
+    "chooseRole": "Choose your {{role}}",
+    "yourRole": "{{name}}, your {{role}}",
     "sayHi": "Say hi",
     "topHit": "Top hit",
     "charactersSection": "Characters",

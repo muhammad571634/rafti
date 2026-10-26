@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { buildCharacterPrompt } from '../ai/rules';
-import { lifeLine } from '../mock/kin';
+import { familyHello, lifeLine } from '../mock/kin';
 import type { Character, Relationship, User } from '@/types';
 
-import { FAMILY_LABELS, isFamilyLabel, kinGroup, lifeKey, lifeMoments } from './kin';
+import { FAMILY_LABELS, FAMILY_NAME_MAX, familyName, familyOf, isFamilyLabel, kinGroup, lifeKey, lifeMoments, rankForKin } from './kin';
 
 describe('family labels', () => {
   it('put a friend in a family group; other labels stay out', () => {
@@ -40,5 +40,28 @@ describe('family labels', () => {
     assert.match(prompt, /Never romantic or flirty/);
     assert.doesNotMatch(prompt, /they call you their Mom/);
     assert.match(prompt, /they call you "Onam"/);
+  });
+
+  it('keep one person per role', () => {
+    const holders = familyOf({ a: { label: 'Mom' }, b: { label: 'Best friend' }, c: { label: 'Dad' }, d: { label: 'Mom' } });
+    assert.deepEqual(holders, { Mom: 'a', Dad: 'c' });
+    assert.deepEqual(familyOf({ a: { label: 'Mom' } }, () => false), {});
+  });
+
+  it('go by the name the user gives, else the role', () => {
+    assert.equal(familyName('  Onam  ', 'Mom'), 'Onam');
+    assert.equal(familyName('   ', 'Dad'), 'Dad');
+    assert.equal(familyName('x'.repeat(50), 'Dad').length, FAMILY_NAME_MAX);
+  });
+
+  it('offer women first for Mom and men first for Dad', () => {
+    const people = [{ id: 'kai', gender: 'male' }, { id: 'own' }, { id: 'lyra', gender: 'female' }, { id: 'theo', gender: 'male' }];
+    assert.deepEqual(rankForKin(people, 'Mom').map((p) => p.id), ['lyra', 'kai', 'theo', 'own']);
+    assert.deepEqual(rankForKin(people, 'Big brother').map((p) => p.id), ['kai', 'theo', 'lyra', 'own']);
+  });
+
+  it('say hello like family', () => {
+    assert.equal(familyHello('parent', 'c_kai'), familyHello('parent', 'c_kai'));
+    assert.ok(familyHello('grandparent', 'x').length > 0);
   });
 });

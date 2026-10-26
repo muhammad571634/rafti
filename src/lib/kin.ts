@@ -87,3 +87,39 @@ export function familyLines(label: FamilyLabel) {
     '- Care like family: ask about food, sleep, work or studies and their health, and remember what they told you.',
   ];
 }
+
+/** Who a family role is: Find's "Who do you miss?" puts women first for Mom, men first for Dad. */
+const KIN_GENDER: Record<FamilyLabel, 'female' | 'male'> = {
+  Mom: 'female',
+  Dad: 'male',
+  'Big sister': 'female',
+  'Big brother': 'male',
+  'Little sister': 'female',
+  'Little brother': 'male',
+  Grandma: 'female',
+  Grandpa: 'male',
+};
+
+export const kinGender = (label: FamilyLabel) => KIN_GENDER[label];
+
+/** The longest name the user may call a family member ("Onam", "Dadajon"). */
+export const FAMILY_NAME_MAX = 30;
+
+/** The name they will go by: the user's words, else the role itself. */
+export const familyName = (name: string, label: FamilyLabel) => name.replace(/\s+/g, ' ').trim().slice(0, FAMILY_NAME_MAX) || label;
+
+/** Who holds each family role: one person per role, as `relationships` labels say. */
+export function familyOf(relationships: Record<string, { label?: string }>, exists: (characterId: string) => boolean = () => true) {
+  const holders: Partial<Record<FamilyLabel, string>> = {};
+  for (const [characterId, bond] of Object.entries(relationships)) {
+    if (isFamilyLabel(bond.label) && !holders[bond.label] && exists(characterId)) holders[bond.label] = characterId;
+  }
+  return holders;
+}
+
+/** The ones to offer for a role, gender first (unknown last), keeping the given order within each. */
+export function rankForKin<T extends { gender?: string }>(people: T[], label: FamilyLabel) {
+  const want = kinGender(label);
+  const rank = (p: T) => (p.gender === want ? 0 : p.gender ? 1 : 2);
+  return people.map((p, i) => ({ p, i })).sort((a, b) => rank(a.p) - rank(b.p) || a.i - b.i).map((x) => x.p);
+}

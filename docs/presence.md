@@ -42,8 +42,9 @@ with "Let them reach out" write first (Character.AI's per-character switch).
 
 ## Next steps (owner picks)
 
-1. A "Family" section in Find or onboarding: "Who do you miss?" picks a friend and their family
-   label in one step (today: chat settings → relationship label → Family).
+1. ~~A "Family" section in Find~~ done (D84): Find → "Who do you miss?" (eight role circles after
+   the new-characters row); an empty one picks a friend or anyone by world and what to call them,
+   turns on Let them reach out and they say hello at once.
 2. Suggested replies under a proactive line (Character.AI's `proactive_suggested_replies_enabled`):
    two chips like "I ate!" / "Not yet".
 3. Server: the model writes care and family lines from `careCue` / `familyLines` with the user's
