@@ -35,9 +35,9 @@ export function createApp(provider: LlmProvider | null, opts: { timeoutMs: numbe
       const reply = parseModelReply(result.text);
       const ms = Date.now() - started;
       // The cost log until the database's `usage_events` exists.
-      console.log(`[reply] ${input.character.name} ${ms}ms in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'}`);
+      console.log(`[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'}`);
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: provider.name, ms });
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

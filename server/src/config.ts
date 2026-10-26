@@ -8,6 +8,9 @@ try {
 } catch {
   // No local file: the environment alone decides.
 }
+// The Google SDK prefers GOOGLE_API_KEY over GEMINI_API_KEY when both are set, and the laptop has
+// one that may bill. The server only ever uses its own key.
+delete process.env.GOOGLE_API_KEY;
 
 export const config = {
   port: Number(process.env.PORT ?? 8787),
@@ -15,11 +18,14 @@ export const config = {
   host: process.env.HOST ?? '0.0.0.0',
   geminiKey: process.env.GEMINI_API_KEY ?? '',
   /**
-   * The chat model. `gemini-flash-latest` follows Google's current Flash, which the free tier
-   * serves (2026: Flash-class models only, a daily request cap). `npm run models` lists what the key
-   * may call.
+   * The chat models, tried in order (`CHAT_MODELS`, comma-separated). Measured on the free tier on
+   * 2026-10-26: 3.1 Flash-Lite answered in ~1.5 s, 2.5 Flash in ~3.5 s, the newest Flash was often
+   * "experiencing high demand". `npm run models` lists what the key may call.
    */
-  chatModel: process.env.CHAT_MODEL ?? 'gemini-flash-latest',
+  chatModels: (process.env.CHAT_MODELS ?? 'gemini-3.1-flash-lite,gemini-2.5-flash,gemini-flash-latest')
+    .split(',')
+    .map((m) => m.trim())
+    .filter(Boolean),
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
 } as const;

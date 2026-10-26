@@ -11,6 +11,8 @@ export interface LlmProvider {
 
 export interface LlmResult {
   text: string;
+  /** The model that answered (a provider may fall back to another). */
+  model?: string;
   /** Tokens, for the cost log (`usage_events` once the database is in). */
   usage: { input?: number; cached?: number; output?: number };
 }

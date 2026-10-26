@@ -860,8 +860,11 @@ Founder qarori: hozircha pul sarflanmaydi, test bepul xizmatlarda boshlanadi.
   Baza, hisoblar va serverdagi iqtisod Supabase bilan keyingi qadamda keladi.
 - **Qayerda ishlaydi:** test paytida noutbukda, Metro bilan yonma-yon (`0.0.0.0:8787`). Telefon uni
   o'sha Wi-Fi orqali topadi (`Constants.expoConfig.hostUri`). Hosting (Fly.io) keyinroq, pul bo'lganda.
-- **Model:** Google AI Studio bepul tarifi, `gemini-flash-latest` (2026 holati: bepul tarifda faqat
-  Flash; kunlik so'rov limiti bor; bepul tarifdagi ma'lumotdan Google o'z modellarini yaxshilash
+- **Model:** Google AI Studio bepul tarifi, navbat bilan: `gemini-3.1-flash-lite` → `gemini-2.5-flash` →
+  `gemini-flash-latest` (`CHAT_MODELS`). 2026-10-26 o'lchovi: 3.1 Flash-Lite ≈ 1.5–2.7 s, 2.5 Flash ≈ 3.5 s,
+  eng yangi Flash (3.8) tez-tez "high demand" (503) beradi, 2.5 Flash-Lite yangi kalitlarga yopiq.
+  Biri band bo'lsa keyingisi javob beradi. Server `GOOGLE_API_KEY`ni o'z jarayonidan o'chiradi:
+  SDK ikkalasi bo'lsa o'shani afzal ko'radi. (Bepul tarifda: kunlik so'rov limiti bor; bepul tarifdagi ma'lumotdan Google o'z modellarini yaxshilash
   uchun foydalanishi mumkin, shuning uchun faqat test ma'lumoti). Kalit `server/.env.local`da
   (git'ga tushmaydi). Billing ulanmagan loyiha kaliti bo'lishi shart. `GOOGLE_API_KEY` ataylab
   o'qilmaydi.
