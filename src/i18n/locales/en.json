@@ -243,7 +243,8 @@
     "noGroups": "No groups yet",
     "typing": "typing…",
     "markRead": "Mark as Read",
-    "markUnread": "Mark as Unread"
+    "markUnread": "Mark as Unread",
+    "read": "Read"
   },
   "group": {
     "newChat": "New chat",
