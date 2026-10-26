@@ -2,7 +2,7 @@ import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
-import { careReach, lifeReach } from '@/lib/reply-ideas';
+import { careReach, lifeReach, threadReach } from '@/lib/reply-ideas';
 import { temperOf } from '@/lib/temper';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
@@ -20,9 +20,11 @@ import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
 import { temperComeback } from '@/mock/temper';
+import { mockTouchLine } from '@/mock/threads';
 import type {
   AppSettings,
   CareItem,
+  Thread,
   Character,
   Conversation,
   DailyState,
@@ -50,6 +52,7 @@ export type PushKind =
   | 'followUp'
   | 'care'
   | 'life'
+  | 'touch'
   | 'birthday'
   | 'diary'
   | 'unread'
@@ -93,6 +96,8 @@ export interface PlanState {
   schedules: ScheduleItem[];
   /** Check-ins friends owe (`src/lib/care.ts`); older saved states have none. */
   care?: CareItem[];
+  /** What the user said that has a future (`src/lib/threads.ts`); older saved states have none. */
+  threads?: Thread[];
   /** Free users get a voice note instead of the daily call (`canRing`). */
   wallet: Pick<Wallet, 'subscription'>;
 }
@@ -125,6 +130,7 @@ const PRIORITY: Record<PushKind, number> = {
   birthday: 0,
   followUp: 1,
   care: 1,
+  touch: 1,
   life: 3,
   unread: 2,
   morning: 3,
@@ -394,6 +400,27 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         characterId: item.characterId,
         line: careLine(item.kind, `${item.id}:care`),
         reach: careReach(item.kind, item.again),
+      });
+    }
+  }
+
+  // Threads: "Good luck!" before, "How did it go?" after, the same line the chat gets; only from
+  // friends who may write first. A text before the thing goes as a reminder (time-sensitive).
+  for (const thread of state.threads ?? []) {
+    const character = byId.get(thread.characterId);
+    if (thread.status !== 'open' || !character || !chatOf.has(thread.characterId) || !relationships[thread.characterId]?.messagesFirst) continue;
+    for (const touch of thread.touches) {
+      const when = new Date(touch.at);
+      if (touch.sent || !inHorizon(when)) continue;
+      const before = touch.phase === 'before';
+      say({
+        id: `touch:${touch.id}`,
+        kind: 'touch',
+        at: when,
+        characterId: thread.characterId,
+        line: mockTouchLine(thread, touch, temperOf(character, relationships[thread.characterId].label), touch.id),
+        reach: threadReach(touch.phase, thread.id),
+        ...(before ? { channel: 'reminders' as const, timeSensitive: true } : {}),
       });
     }
   }

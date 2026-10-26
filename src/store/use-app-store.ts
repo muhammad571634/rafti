@@ -53,13 +53,15 @@ import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle
 import { capLedger, capMessages } from '@/lib/storage-caps';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
-import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, shownIdeas } from '@/lib/reply-ideas';
+import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
 import { askedOnce, askReach, isAskReach, shouldAskToReach } from '@/lib/reach-ask';
+import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, pruneThreads, ruleTouches } from '@/lib/threads';
 import { temperOf } from '@/lib/temper';
-import { detectPlan, planStep } from '@/lib/schedule';
+import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
 import { askLine } from '@/mock/temper';
+import { mockOutcome, mockThread, mockTouchLine } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
 import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
@@ -224,6 +226,8 @@ import type {
   Relationship,
   ScheduleItem,
   CareItem,
+  Thread,
+  ThreadOutcome,
   IdeaIntent,
   ReplyIdea,
   SecretNote,
@@ -329,6 +333,8 @@ interface AppState {
   schedules: ScheduleItem[];
   /** Check-ins friends owe after the user said how they were (`src/lib/care.ts`). */
   care: CareItem[];
+  /** What the user said that has a future, followed up like a person would (`src/lib/threads.ts`). */
+  threads: Thread[];
   /** Notes the user pinned on the message board, oldest first */
   boardPosts: BoardPost[];
   /** Finished dates, newest first */
@@ -713,6 +719,7 @@ type PersistedKeys =
   | 'moments'
   | 'schedules'
   | 'care'
+  | 'threads'
   | 'boardPosts'
   | 'dates'
   | 'reports'
@@ -881,6 +888,7 @@ export const useAppStore = create<AppState>()(
       moments: [],
       schedules: [],
       care: [],
+      threads: [],
       boardPosts: [],
       dates: [],
       reports: [],
@@ -2691,6 +2699,20 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ daily: { ...s.daily, lifeSent: [...(s.daily.lifeSent ?? []).filter((k) => k.startsWith(today)), ...freshLife] } }));
         }
 
+        // Thread texts whose moment came (`src/lib/threads.ts`): written by friends who may write
+        // first, in their temper; a moment long gone or a settled thread is dropped.
+        const touchesDue = dueTouches(get().threads, now);
+        touchesDue.forEach(({ thread, touch, step }) => {
+          const bond = get().relationships[thread.characterId];
+          const character = get().characters.find((c) => c.id === thread.characterId);
+          if (step !== 'send' || !bond?.messagesFirst || !character || get().blockedIds.includes(thread.characterId)) return;
+          if (!get().conversations.some((c) => c.characterId === thread.characterId)) return;
+          const conversationId = get().addFriend(thread.characterId);
+          const line = mockTouchLine(thread, touch, temperOf(character, bond.label), touch.id);
+          appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(threadReach(touch.phase, thread.id)) }, { countUnread: true });
+        });
+        if (touchesDue.length) set((s) => ({ threads: markTouches(s.threads, new Set(touchesDue.map((x) => x.touch.id))) }));
+
         // Care check-ins whose moment came: the friend asks, in the chat (the push said the same line).
         const careSteps = get()
           .care.map((item) => ({ item, step: careStep(item, now) }))
@@ -3055,6 +3077,7 @@ export const useAppStore = create<AppState>()(
         moments: s.moments,
         schedules: s.schedules,
         care: s.care,
+        threads: s.threads,
         boardPosts: s.boardPosts,
         dates: s.dates,
         reports: s.reports,
@@ -3344,6 +3367,50 @@ function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: 
  * rings, a plan turned into a reminder, then their reply. Sending and editing share it.
  */
 /**
+ * Opens a thread from the user's message, or settles the one they were last asked about. A plan's
+ * thread asks "how did it go?" itself, so the plan's own follow-up stands down.
+ */
+function noteThreads(set: Setter, get: Getter, characterId: string, text: string, plan: DetectedPlan | null, scheduleId?: string) {
+  const now = new Date();
+  const outcome = mockOutcome(text);
+  const asked = outcome ? lastAsked(get().threads, characterId, now) : null;
+  if (asked && outcome) {
+    settleThread(set, get, asked, outcome);
+    return;
+  }
+  const found = mockThread(text, now, plan);
+  if (!found) return;
+  const id = uid('th');
+  const touches = ruleTouches(found.touches, id, now, found.happensAt);
+  if (!touches.length) return;
+  const thread: Thread = { id, characterId, about: found.about, quote: found.quote, createdAt: now.toISOString(), happensAt: found.happensAt, scheduleId, touches, status: 'open' };
+  set((s) => ({
+    threads: addThread(pruneThreads(s.threads, now), thread),
+    schedules: scheduleId && touches.some((x) => x.phase === 'after') ? s.schedules.map((x) => (x.id === scheduleId ? { ...x, followedUp: true } : x)) : s.schedules,
+  }));
+}
+
+/** Settles a thread: a good end or a done task is remembered, a bad one gets a check-in later. */
+function settleThread(set: Setter, get: Getter, thread: Thread, outcome: ThreadOutcome) {
+  const now = new Date();
+  set((s) => ({ threads: closeThread(s.threads, thread.id, outcome, now) }));
+  if (outcome === 'good' || outcome === 'done') {
+    get().addMemory(thread.characterId, `${thread.about}: ${outcome === 'good' ? 'it went well' : 'done'}`, 'chat');
+  }
+  if (outcome === 'bad' && get().relationships[thread.characterId]?.messagesFirst) {
+    set((s) => ({
+      care: addCare(pruneCare(s.care, now), {
+        id: uid('care'),
+        characterId: thread.characterId,
+        kind: 'sad',
+        dueAt: careDueAt('sad', now).toISOString(),
+        createdAt: now.toISOString(),
+      }),
+    }));
+  }
+}
+
+/**
  * The user's answer to a line that carries reply ideas: an idea (maybe changed first) or their own
  * words. Free under a line they wrote first; "Yes, text me!" turns on Let them reach out and shows
  * their words on the lock screen; "Still not great" asks once more later. Ideas that are gone leave
@@ -3408,6 +3475,21 @@ function answerLine(
       }),
     }));
   }
+  // A thread's idea: "It's off", "It went well", "Not great", "Done" settle it; "Not yet" asks again tomorrow evening.
+  const thread = reachThread(message.reach);
+  const open = thread && get().threads.find((t) => t.id === thread.id && t.status === 'open');
+  if (open && idea?.intent && !edited) {
+    const outcome = ({ off: 'off', good: 'good', rough: 'bad', done: 'done' } as const)[idea.intent as 'off' | 'good' | 'rough' | 'done'];
+    if (outcome) settleThread(set, get, open, outcome);
+    if (idea.intent === 'no' && thread.phase === 'check') {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+      tomorrow.setHours(19, 0, 0, 0);
+      set((s) => ({ threads: extendThread(s.threads, open.id, [{ at: tomorrow.toISOString(), phase: 'check', why: 'ask again if they finished' }], now) }));
+    }
+  }
+
   // An edited line is the user's own words: the ordinary reply answers it (the ask keeps its answer).
   const say = idea?.intent && (!edited || ask) ? ideaAnswer(message.reach, idea.intent, message.id) : undefined;
   answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say });
@@ -3433,12 +3515,13 @@ function answerText(
   // "Smart Auto Schedule": a plan in the message becomes a reminder.
   const plan = crisis ? null : detectPlan(text);
   let reply: string | undefined;
+  const scheduleId = plan ? uid('sch') : undefined;
   if (plan) {
     set((s) => ({
       schedules: [
         ...s.schedules,
         {
-          id: uid('sch'),
+          id: scheduleId!,
           characterId: conversation.characterId,
           title: plan.title,
           date: plan.date,
@@ -3473,6 +3556,11 @@ function answerText(
       }));
     }
   }
+
+  // Threads: anything with a future becomes one, and a word on how it went settles the last one
+  // asked about. The server's model does both from the chat (`src/ai/thread-prompt.ts`); the mock
+  // only notices shapes and keeps the user's words. A crisis never becomes a thread.
+  if (!crisis) noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
 
   // A crisis message: a warm reply in voice, then the helpline card under it.
   if (crisis) {

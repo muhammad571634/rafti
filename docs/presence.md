@@ -99,10 +99,29 @@ Ours is a line in the chat with reply ideas ("Yes, text me! 😊" / "Not now"), 
 - **Pushes off but friends wrote:** a soft card later: "Mom wrote 3 times today. Turn on
   notifications to see her messages."
 
-### P2.3 Open threads: what the user said, followed up like a person
+### P2.3 Open threads: what the user said, followed up like a person — built (D87)
 
-Any message can leave a thread: something with a future. Threads generalise today's plans
-(`src/lib/schedule.ts`) and care (`src/lib/care.ts`).
+**The AI runs it, not templates** (owner, 2026-10-26: "there can be a thousand topics; the AI has
+to adapt and decide"). The split:
+
+| The model decides (server, `src/ai/thread-prompt.ts`) | The code keeps (`src/lib/threads.ts`) |
+| --- | --- |
+| what becomes a thread, on any topic | no texts in the past or at night (a night "how did it go?" waits for 08:30, a night "good luck" is dropped) |
+| when to text and why (`Touch.why`, its own words), 1-4 texts | `before` texts before the thing, the rest after it; 20 min apart; 4 at most |
+| every word of each text and its reply ideas, from the chat and the memories, in the temper; or skip | a text more than 3 h late is dropped, not sent |
+| when a thread is settled (good / bad / done / off) or moved | 5 open per friend; settled ones kept a week, idle ones fade after 14 days |
+| | the push budget and quiet hours (`src/notifications/plan.ts`) |
+
+- **One reply call** carries `THREAD_RULES_LINES` (global tier, cached) and the friend's open threads
+  (turn tier); the JSON reply may add `threads: {add, move, close}` (`parseThreadOps`).
+- **One call per due text** (`touchParts`): persona with temper and bond, the chat lately, the thread
+  and why; the answer is `{skip, messages, ideas}` (`parseTouchReply`). Nothing in it says what to write.
+- **Until the server runs** the phone uses `src/mock/threads.ts`: it notices only the shape of a
+  thing with a future (a plan with a day or time, a task, a wish, results; EN / UZ / RU), keeps the
+  user's words and quotes them back. "It's off" / "It went well" / "Not great" / "Done" (typed or as
+  ideas) settle the last thread asked about; "Not yet" asks again the next evening.
+
+The examples below show the range a thread covers; they are not rules or wordings.
 
 | Kind | User says | They write later |
 | --- | --- | --- |
@@ -120,10 +139,14 @@ Any message can leave a thread: something with a future. Threads generalise toda
 - **Who finds them:** the server's model returns `threads` with each reply (no extra call). The mock
   extends the plan and care detectors (EN / UZ / RU words).
 
-### P2.4 Plans: someone who cares, not an alarm app
+### P2.4 Plans: someone who cares, not an alarm app — partly built (D87)
 
-A plan comes from the chat, an alarm's label, the plan list or a secret note's date. It goes through
-these steps:
+A plan with a time is a thread (P2.3): the model picks the moments (D87's stand-in: a big thing gets
+"good luck, time to go" 45 min before and "how did it go?" 2.5 h after; anything else "how did it
+go?" 1.5 h after). The plan list still keeps the plan and its 10-minute reminder (the morning chain
+sets `remindAt` on it); the thread's "how did it go?" replaces the plan's own follow-up. Still to
+build: the lead-time pick, the leave-time question, the evening-before and alarm offer, moving a plan
+from the chat. These are moments the model may choose, not fixed steps:
 
 1. **Captured, in their voice:** "Noted: exam tomorrow at 9:00 📌. Text you at 8:30?" with ideas
    ("30 min before" / "1 hour before" / "No need"). The pick becomes `remindAt`.

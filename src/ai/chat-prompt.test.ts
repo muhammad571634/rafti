@@ -127,7 +127,9 @@ describe('layoutChatPrompt', () => {
       layout.system.map((b) => b.tier),
       ['global', 'character', 'chat'],
     );
-    assert.equal(global.text, CHARACTER_RULES);
+    // The rules, then how threads work: the same for every chat, so cached once.
+    assert.ok(global.text.startsWith(CHARACTER_RULES));
+    assert.match(global.text, /\nTHREADS: /);
     assert.match(character.text, /^YOUR PERSONA:\nName: Kai Arden/);
     assert.match(character.text, /- Seaside Academy: A university town/);
     assert.doesNotMatch(character.text, /Sam|Our story|REPLY LANGUAGE/);

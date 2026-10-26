@@ -515,6 +515,42 @@ export interface CareItem {
   again?: boolean;
 }
 
+/** Where a friend's text sits around the thing: before it, after it ("how did it go?"), or a check on it. */
+export type TouchPhase = 'before' | 'after' | 'check';
+
+/** One text a friend means to send about a thread (`src/lib/threads.ts`). */
+export interface Touch {
+  /** `${threadId}:${n}`: the push and the chat say the same line. */
+  id: string;
+  at: string;
+  /** Why they write then, in the model's own words ("wish luck, check they are leaving on time"). */
+  why: string;
+  phase: TouchPhase;
+  /** Sent, or dropped because its moment passed. */
+  sent?: boolean;
+}
+
+export type ThreadOutcome = 'good' | 'bad' | 'done' | 'off';
+
+/** Something the user said that has a future, followed up like a person would (`src/lib/threads.ts`). */
+export interface Thread {
+  id: string;
+  characterId: string;
+  /** A few words: what it is ("the maths exam"). */
+  about: string;
+  /** What the user said, as they said it. */
+  quote: string;
+  createdAt: string;
+  /** When it happens, when known. */
+  happensAt?: string;
+  /** The plan it came with (Us → plans), if any. */
+  scheduleId?: string;
+  touches: Touch[];
+  status: 'open' | 'closed';
+  outcome?: ThreadOutcome;
+  closedAt?: string;
+}
+
 /** How a character texts when the user is away (`src/lib/temper.ts`). */
 export type Temper = 'warm' | 'teasing' | 'sulky' | 'clingy' | 'shy';
 
@@ -527,7 +563,22 @@ export interface ReachAsk {
 }
 
 /** What the user means by a reply idea; it picks their answer and what happens next. */
-export type IdeaIntent = 'yes' | 'no' | 'now' | 'good' | 'rough' | 'later' | 'call' | 'missed' | 'thanks' | 'better' | 'worse' | 'ask';
+export type IdeaIntent =
+  | 'yes'
+  | 'no'
+  | 'now'
+  | 'good'
+  | 'rough'
+  | 'later'
+  | 'call'
+  | 'missed'
+  | 'thanks'
+  | 'better'
+  | 'worse'
+  | 'ask'
+  | 'onWay'
+  | 'off'
+  | 'done';
 
 /** A reply the user can send with one tap: a short label on the pill and the line it sends. */
 export interface ReplyIdea {

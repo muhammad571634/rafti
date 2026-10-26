@@ -1,7 +1,7 @@
 import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
-import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relationship, TimeSkip, User } from '@/types';
+import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relationship, Thread, TimeSkip, User } from '@/types';
 
 import { steerCue } from '../lib/chat-steer';
 import { messageText } from '../lib/story-continuity';
@@ -10,6 +10,7 @@ import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
 import { REPLY_SHAPE, turnLines } from './reply-style';
 import { characterParts } from './rules';
+import { threadParts } from './thread-prompt';
 
 /**
  * The prompt for one reply in a one-to-one chat (teardown item 7), laid out for the provider's
@@ -97,6 +98,8 @@ export interface ChatPromptInput {
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
+  /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
+  threads?: readonly Thread[];
 }
 
 /** The parts of one reply's prompt, every tier; the history comes from `chatTurns`. */
@@ -110,6 +113,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('recall', 'turn', recallLines(input.memories ?? [])),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
     part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
+    ...threadParts(input.threads ?? []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];
 }

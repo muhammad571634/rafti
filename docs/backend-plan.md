@@ -734,6 +734,38 @@ Ularda har bir g'oya qisqa yorliq va to'liq matndan iborat, alohida chaqiruv bil
 - **Server vazifalari:** g'oyalarni foydalanuvchi tilida va xotirasini hisobga olib yozish (masalan, "Ate
   plov!"), `intent` ro'yxatini (`IdeaIntent`) saqlash va noma'lum `reach` uchun g'oya qaytarmaslik.
 
+### 12.25 Ochiq mavzular: AI o'zi kuzatadi (2026-10-26)
+
+Egasining qarori: qolip yo'q, mavzular cheksiz, **AI o'zi boshqaradi**. Kod faqat qoidalarni ushlaydi
+(`src/lib/threads.ts`), model qaror qiladi (`src/ai/thread-prompt.ts`).
+
+- **Javob chaqiruvi:**
+  - promptda `THREAD_RULES_LINES` (global qatlam, keshda) va shu do'stning ochiq mavzulari bor
+    (`threadLines`, turn qatlami);
+  - model JSON javobga `threads` maydonini qo'shishi mumkin:
+    `{"add":[{about, quote, happensAt, touches:[{at, phase, why}]}], "move":[...], "close":[{id, outcome}]}`;
+  - `parseThreadOps` buzilgan qismni tashlaydi, taxmin qilmaydi;
+  - server `ruleTouches` qoidalarini qo'llab saqlaydi.
+- **Vaqti kelgan xabar uchun alohida chaqiruv** (`touchParts`):
+  - promptda persona (temperament va bog'liqlik), so'nggi 12 qator, mavzu va "nega hozir yozyapman";
+  - javob: `{skip, messages, ideas}` (`parseTouchReply`);
+  - `skip`: chatda allaqachon hal bo'lgan bo'lsa, xabar yuborilmaydi;
+  - push shu chaqiruvdan keyin serverdan ketadi; kategoriyasi `ideas_thread_<phase>`, tugmalarni
+    model yozadi.
+- **Qoidalar:**
+  - o'tgan vaqtga yozilmaydi;
+  - kechasi 23:00–06:30 "qanday o'tdi?" 08:30 ga suriladi, "omad" esa tashlanadi;
+  - `before` voqeadan oldin, qolganlari keyin keladi;
+  - bitta mavzuda 20 daqiqa oraliq bilan ko'pi bilan 4 ta xabar;
+  - 3 soatdan ortiq kechikkan xabar yuborilmaydi;
+  - do'st boshiga 5 ta ochiq mavzu; yopilganlar 7 kun saqlanadi, harakatsizlari 14 kunda o'chadi.
+- **Narx:** mavzu ajratish javobning o'zida (bir necha o'n token). Har yozilgan xabar bitta chaqiruv
+  (≈ $0.0006) va kunlik push byudjeti ichida. Voqeadan oldingi xabar (`before`) eslatma sifatida
+  time-sensitive ketadi.
+- **Hozir telefonda:** `src/mock/threads.ts` vaqtincha o'rinbosar. U faqat shaklni taniydi (vaqtli reja,
+  vazifa, niyat, natija; EN/UZ/RU) va foydalanuvchi so'zini iqtibos qiladi. Server kelishi bilan
+  olib tashlanadi.
+
 ## 13. Unit iqtisodi, tariflar va konversiya (2026-10-09)
 
 Bu bo'lim 9-bo'limdagi xavflarga aniq javob beradi. Uchta asosiy talab bor:

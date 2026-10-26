@@ -1,6 +1,6 @@
 import type { KinGroup, LifeMomentKey } from './kin';
 import { hashSeed } from './seeded';
-import type { CareKind, IdeaIntent, Message, ReplyIdea } from '@/types';
+import type { CareKind, IdeaIntent, Message, ReplyIdea, TouchPhase } from '@/types';
 
 /**
  * Reply ideas (owner, 2026-10-26: presence step B). Character.AI shows suggested replies under a
@@ -122,6 +122,37 @@ function careIdeas(kind: CareKind): ReplyIdea[] {
   ];
 }
 
+/** A thread's text (`src/lib/threads.ts`): the phase picks the ideas, the id says which thread. */
+export const threadReach = (phase: TouchPhase, threadId: string) => `thread:${phase}:${threadId}`;
+
+/** The phase and thread behind a reach key, or null. */
+export function reachThread(reach: string | undefined): { phase: TouchPhase; id: string } | null {
+  const [source, phase, ...id] = reach?.split(':') ?? [];
+  return source === 'thread' && (phase === 'before' || phase === 'after' || phase === 'check') && id.length ? { phase, id: id.join(':') } : null;
+}
+
+/**
+ * Ideas under a thread's text until the server's model writes its own with each text: the phase's
+ * usual answers. Their lines feed `mockOutcome` like typed words ("It's off actually" settles it).
+ */
+const THREAD: Record<TouchPhase, ReplyIdea[]> = {
+  before: [
+    idea('Thanks! 💪', 'Thanks! I’ve got this 💪', 'thanks'),
+    idea('On my way', 'On my way now', 'onWay'),
+    idea('It’s off', "It's off actually", 'off'),
+  ],
+  after: [
+    idea('It went well! 🎉', 'It went well! 🎉', 'good'),
+    idea('Not great…', 'Not great, honestly…', 'rough'),
+    idea('Tell you later', 'I’ll tell you later', 'later'),
+  ],
+  check: [
+    idea('Done ✅', 'Done ✅', 'done'),
+    idea('Not yet', 'Not yet, still on it', 'no'),
+    idea('It’s off', "It's off actually", 'off'),
+  ],
+};
+
 /** "May I text you sometimes?" (`src/lib/reach-ask.ts`): the same two answers whatever their temper. */
 const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
 
@@ -129,6 +160,8 @@ const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊'
 export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
   if (source === 'ask') return ASK;
+  // `thread:after` (a push action set) or `thread:after:<id>` (a text in the chat).
+  if (source === 'thread') return THREAD[a as TouchPhase] ?? [];
   if (source === 'life') return LIFE[`${a}:${b}`] ?? [];
   if (source === 'hello') return HELLO[a as KinGroup] ?? [];
   if (source === 'care') return a in CARE_BETTER ? careIdeas(a as CareKind) : [];
@@ -141,11 +174,15 @@ export function allReachKeys() {
     ...Object.keys(LIFE).map((k) => `life:${k}`),
     ...(Object.keys(HELLO) as KinGroup[]).map(helloReach),
     ...(Object.keys(CARE_BETTER) as CareKind[]).map((kind) => careReach(kind)),
+    ...(Object.keys(THREAD) as TouchPhase[]).map((phase) => `thread:${phase}`),
   ];
 }
 
-/** The push action set for a reach key (a second check-in shares the first one's). */
-export const ideaCategory = (reach: string) => `ideas_${reach.replace(/:again$/, '').replace(/:/g, '_')}`;
+/** The push action set for a reach key (a second check-in shares the first one's; every thread of a phase one set). */
+export function ideaCategory(reach: string) {
+  const thread = reachThread(reach);
+  return `ideas_${(thread ? `thread:${thread.phase}` : reach.replace(/:again$/, '')).replace(/:/g, '_')}`;
+}
 
 /** The care kind behind a reach key, or null. */
 export function reachCare(reach: string | undefined): CareKind | null {

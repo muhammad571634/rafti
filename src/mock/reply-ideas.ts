@@ -21,6 +21,9 @@ const ANSWERS: Record<IdeaIntent, string[]> = {
   better: ['Oh, thank goodness. I was worried.', 'Good! Take it easy anyway, okay?', 'That’s a relief. Don’t overdo it today.'],
   worse: ['I’m sorry. Rest, drink some water, and I’ll check on you later.', 'That worries me. Take care of yourself, I’ll ask again in a bit.'],
   ask: ['Me? Better now that you wrote 😏', 'Same old. Missed annoying you.'],
+  onWay: ['Good! Text me when you’re there.', 'Perfect. Go get it 💪'],
+  off: ['Oh no, it’s off? That’s a shame. Tell me what happened?', 'Ah, okay. Maybe it’s for the best. You okay?'],
+  done: ['Yesss! Proud of you 🎉', 'Look at you, getting things done!'],
 };
 
 const SIBLING: Partial<Record<IdeaIntent, string[]>> = {
