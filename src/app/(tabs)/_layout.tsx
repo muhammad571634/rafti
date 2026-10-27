@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BlurTargetView, BlurView } from 'expo-blur';
 import { Redirect, Tabs } from 'expo-router';
+import { createRef, useCallback, useRef, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
@@ -11,11 +13,15 @@ import { aurora, colors, isDark, radius, shadows, space } from '@/theme';
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+type BlurTarget = RefObject<ViewInstance | null>;
 
-/** Each tab's line icon and the filled twin it shows while current. */
+/**
+ * Each tab's line icon and the filled twin it shows while current: the Ionicons closest to the
+ * SF Symbols the iOS bar uses (`house`, `bubble.left.and.bubble.right`, `heart`, `magnifyingglass`).
+ */
 const ICONS: Record<string, { off: IoniconName; on: IoniconName }> = {
   index: { off: 'home-outline', on: 'home' },
-  chat: { off: 'chatbubble-outline', on: 'chatbubble' },
+  chat: { off: 'chatbubbles-outline', on: 'chatbubbles' },
   us: { off: 'heart-outline', on: 'heart' },
 };
 
@@ -29,12 +35,34 @@ const BAR = 62;
 export default function TabsLayout() {
   const gate = useTabsGate();
 
+  // Android blurs only what sits in a BlurTargetView, so every tab screen gets one, and the bar
+  // blurs the current screen's. One ref per route key, made on first ask.
+  const targets = useRef(new Map<string, BlurTarget>()).current;
+  const targetFor = useCallback(
+    (key: string) => {
+      let ref = targets.get(key);
+      if (!ref) {
+        ref = createRef<ViewInstance>();
+        targets.set(key, ref);
+      }
+      return ref;
+    },
+    [targets],
+  );
+
   // Saved data decides whether this is a first launch, so wait for it.
   if (gate === 'loading') return null;
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
   return (
-    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <GlassTabBar {...props} />}>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      screenLayout={({ route, children }) => (
+        <BlurTargetView ref={targetFor(route.key)} style={styles.screen}>
+          {children}
+        </BlurTargetView>
+      )}
+      tabBar={(props) => <GlassTabBar {...props} targetFor={targetFor} />}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="chat" />
       <Tabs.Screen name="us" />
@@ -43,13 +71,34 @@ export default function TabsLayout() {
   );
 }
 
+/** Frosted glass over the current screen: a real blur, a thin fill and a bright top rim. */
+function Glass({ target, style, children }: { target: BlurTarget; style: StyleProp<ViewStyle>; children: ReactNode }) {
+  return (
+    <View style={[styles.glass, style]}>
+      <View style={[StyleSheet.absoluteFill, styles.clip]} pointerEvents="none">
+        <BlurView
+          intensity={60}
+          tint={isDark ? 'dark' : 'light'}
+          blurMethod="dimezisBlurView"
+          blurReductionFactor={4}
+          blurTarget={target}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={[StyleSheet.absoluteFill, styles.fill]} />
+      </View>
+      {children}
+    </View>
+  );
+}
+
 /**
  * A floating frosted pill holding Today, Chats and Us, with Find as its own round button beside
  * it, the way iOS sets the search tab apart (approved prototype
- * https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg). Labels are bold; the current tab sits in
- * a soft capsule with its icon filled in peach; unread chats show one small dot.
+ * https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg). As on iOS, the current tab takes the tint
+ * (icon filled) inside a soft capsule and the rest stay in the label colour; unread chats show
+ * one small dot.
  */
-function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
+function GlassTabBar({ state, emitter, navigateToTab, targetFor }: TabBarProps & { targetFor: (key: string) => BlurTarget }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const unread = useUnreadTotal();
@@ -61,15 +110,19 @@ function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
 
   const tabs = state.routes.map((route, index) => ({ route, focused: state.index === index }));
   const find = tabs.find(({ route }) => route.name === 'find');
+  const currentKey = state.routes[state.index].key;
+  const target = targetFor(currentKey);
 
   return (
     <View pointerEvents="box-none" style={[styles.wrap, { bottom: insets.bottom + space.md }]}>
-      <View style={[styles.pill, styles.glass]}>
+      {/* Keyed by the current screen: the blur binds to its target when it mounts. */}
+      <Glass key={`pill-${currentKey}`} target={target} style={styles.pill}>
         {tabs
           .filter(({ route }) => route.name !== 'find')
           .map(({ route, focused }) => {
             const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
             const icon = ICONS[route.name] ?? ICONS.index;
+            const tint = focused ? colors.primary : colors.text;
             const hasUnread = route.name === 'chat' && unread > 0;
             return (
               <PressableScale
@@ -82,41 +135,40 @@ function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
                 accessibilityState={{ selected: focused }}
                 onPress={() => open(route.key, focused)}>
                 <View>
-                  <Ionicons
-                    name={focused ? icon.on : icon.off}
-                    size={23}
-                    color={colors.tabActive}
-                  />
+                  <Ionicons name={focused ? icon.on : icon.off} size={24} color={tint} />
                   {hasUnread ? <View style={styles.dot} /> : null}
                 </View>
-                <Txt variant="tiny" color={colors.tabActive} style={styles.label}>
+                <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2}>
                   {label}
                 </Txt>
               </PressableScale>
             );
           })}
-      </View>
+      </Glass>
 
       {find ? (
-        <PressableScale
-          style={[styles.round, styles.glass]}
-          scaleTo={0.92}
-          dimOnPress={false}
-          accessibilityRole="tab"
-          accessibilityLabel={t('tabs.find')}
-          accessibilityState={{ selected: find.focused }}
-          onPress={() => open(find.route.key, find.focused)}>
-          {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
-          <View collapsable={false} style={[styles.roundInner, find.focused && styles.itemOn]}>
-            <Ionicons name="search" size={24} color={colors.tabActive} />
-          </View>
-        </PressableScale>
+        <Glass key={`find-${currentKey}`} target={target} style={styles.round}>
+          <PressableScale
+            style={styles.roundPress}
+            scaleTo={0.92}
+            dimOnPress={false}
+            accessibilityRole="tab"
+            accessibilityLabel={t('tabs.find')}
+            accessibilityState={{ selected: find.focused }}
+            onPress={() => open(find.route.key, find.focused)}>
+            {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
+            <View collapsable={false} style={[styles.roundInner, find.focused && styles.itemOn]}>
+              <Ionicons name="search" size={24} color={find.focused ? colors.primary : colors.text} />
+            </View>
+          </PressableScale>
+        </Glass>
       ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1 },
   wrap: {
     position: 'absolute',
     left: space.lg,
@@ -125,19 +177,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm + 2,
   },
-  // The canvas's glass with a bright top rim. Without a real blur here, the fill stays a little
-  // denser than the canvas's so text scrolling under the bar never shows through.
   glass: {
-    backgroundColor: isDark ? 'rgba(30,30,32,0.72)' : 'rgba(255,255,255,0.72)',
+    borderRadius: BAR / 2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: aurora.glassEdge,
     borderTopColor: aurora.glassRim,
     ...shadows.glass,
   },
+  clip: { borderRadius: BAR / 2, overflow: 'hidden' },
+  // Over the blur, a thin fill keeps the bar's own labels crisp whatever scrolls beneath.
+  fill: { backgroundColor: isDark ? 'rgba(30,30,32,0.45)' : 'rgba(255,255,255,0.5)' },
   pill: {
     flex: 1,
     height: BAR,
-    borderRadius: BAR / 2,
     flexDirection: 'row',
     alignItems: 'center',
     padding: space.xs,
@@ -152,7 +204,8 @@ const styles = StyleSheet.create({
   },
   itemOn: { backgroundColor: aurora.glassOn },
   label: { fontWeight: '700' },
-  round: { width: BAR, height: BAR, borderRadius: BAR / 2, padding: space.xs },
+  round: { width: BAR, height: BAR },
+  roundPress: { flex: 1, padding: space.xs },
   roundInner: { flex: 1, borderRadius: (BAR - space.sm) / 2, alignItems: 'center', justifyContent: 'center' },
   dot: {
     position: 'absolute',
