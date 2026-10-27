@@ -1,17 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z7. Backend B1.3b: the server keeps the chats (2026-10-28, D115). NEXT: apply the migration
+### 0z7. Backend B1.3b done: the server keeps the chats (2026-10-28, D115). NEXT: Sign in with Apple
 
-**Owner, 2026-10-28:** iOS only for now (App Store first). Code stays cross-platform, App Store needs go first.
+**Owner, 2026-10-28:** iOS only for now (App Store first). Code stays cross-platform, App Store needs go
+first. The owner handed the backend over fully ("senga topshirdim to'liq") and approved this migration.
 
-**Blocked on one owner step:** migration `supabase/migrations/20261028010000_b1_message_sync.sql` is
-written but NOT applied to the cloud. `supabase link` / `db push` fail (the token lacks
-`project_admin_read`), and the agent's apply through the Management API
-(`POST /v1/projects/{ref}/database/migrations`, name `b1_message_sync`) was stopped by the auto-mode
-classifier as a production deploy. The owner approves it (or allows that call), then: rename the file to
-the version the API returns, run the advisors, and run the cloud suite (`SUPABASE_E2E=1 npm test` in
-`server/`; it now covers the chats and the account delete). `public.messages` had 0 rows on 2026-10-28.
-Until it is applied, `/v1/messages/sync` answers 500 and the app shows "Server off"; nothing is lost.
+**Applied to the cloud on 2026-10-28** (owner's yes): `supabase/migrations/20261027192041_b1_message_sync.sql`
+(the Management API names the version by its UTC clock). How agents apply migrations now: `supabase
+link` / `db push` fail (the token lacks `project_admin_read`), so post the file through
+`POST https://api.supabase.com/v1/projects/{ref}/database/migrations` with `{ query, name }` (read the
+file with `[IO.File]::ReadAllText`, not `Get-Content`, or the query goes out as an object), then rename
+the file to the returned version. The auto-mode classifier stops that call unless the owner said yes in
+the session. After it: `sync_messages` runs for `service_role` only; the advisors show nothing new (only
+the by-design items of 0z4 and "unused index"); the cloud suite passed 38/38 (`SUPABASE_E2E=1 npm test`
+in `server/`, now with the chats and the account delete).
 
 What it does: `public.messages` becomes the phone's mirror (`chat_id` = the app's chat id, `body jsonb`
 = the whole message, `seq` = chat order, `conversation_id` optional until chats are server rows) and
@@ -24,8 +26,10 @@ Profile (dev) → **Server chats** toggle. **Delete account** now deletes the se
 keeps everything if that fails ("No connection. Nothing was deleted."); a phone that never signed in
 deletes locally as before. Restored chats need their conversations, which are not on the server yet:
 that comes with Sign in with Apple (the next App Store step), then StoreKit (B3).
-Checked: app `tsc`, 409/409, server `tsc`, 28/28, `expo export` for ios and web. Not yet on a phone,
-not yet against the cloud.
+Checked: app `tsc`, 409/409, server `tsc`, 28/28 local and 38/38 with the cloud, `expo export` for
+ios and web. **Phone checks (Expo Go):** Profile (dev) → Server chats on → "Synced" (or "N restored" on
+an empty phone); send a line, wait 3 s, tap the row again; Delete account with the laptop server on →
+onboarding, and the account is gone from the cloud.
 
 ### 0z6. Backend B1.3a done: messages live in SQLite on the phone (2026-10-27, D115). NEXT: B1.3b
 
