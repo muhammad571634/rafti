@@ -8,11 +8,20 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { PressableScale, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, isDark, palette, radius } from '@/theme';
+import { colors, fonts, isDark, palette, radius, systemColors } from '@/theme';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
-/** Calm alternating slices; only the jackpot gets colour (mint). */
-const FILLS = [colors.surfaceAlt, colors.surface];
+/** Pastel iOS colours, led by Sigmazam's peach brand accent. */
+const FILLS = [
+  colors.primaryFill,
+  systemColors.purple,
+  systemColors.mint,
+  systemColors.yellow,
+  systemColors.pink,
+  systemColors.blue,
+  systemColors.green,
+];
+const FILL_OPACITY = isDark ? 0.72 : 0.38;
 const SPIN_MS = 3600;
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
@@ -44,6 +53,9 @@ export function LuckyWheel({
   const rotation = useSharedValue(0);
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
+  const hubSize = Math.min(68, Math.max(52, Math.round(size * 0.32)));
+  const pointerSize = Math.max(20, Math.round(size * 0.11));
+  const pointerInset = pointerSize * 0.14;
 
   const land = (index: number) => {
     haptic.success();
@@ -87,19 +99,20 @@ export function LuckyWheel({
               const rad = (mid * Math.PI) / 180;
               const tx = r + r * 0.64 * Math.cos(rad);
               const ty = r + r * 0.64 * Math.sin(rad);
-              const jackpot = value === Math.max(...WHEEL_SEGMENTS);
+              const labelColor = isDark && [0, 2, 3, 6].includes(i) ? palette.gray900 : colors.text;
               return (
                 <G key={i}>
                   <Path
                     d={slice(r, r, r - 1, from, from + SEGMENT)}
-                    fill={jackpot ? (isDark ? colors.accentSoft : palette.mint50) : FILLS[i % FILLS.length]}
-                    stroke={colors.border}
-                    strokeWidth={1}
+                    fill={FILLS[i % FILLS.length]}
+                    fillOpacity={FILL_OPACITY}
+                    stroke={colors.surface}
+                    strokeWidth={1.5}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
-                    fill={jackpot ? colors.bondText : colors.text}
+                    fill={labelColor}
                     fontSize={size * 0.075}
                     fontFamily={fonts.display}
                     fontWeight="700"
@@ -116,8 +129,13 @@ export function LuckyWheel({
       </Animated.View>
 
       {/* pointer */}
-      <Svg width={30} height={30} style={styles.pointer}>
-        <Path d="M15 28 L4 6 Q15 0 26 6 Z" fill={colors.text} stroke={colors.white} strokeWidth={2} />
+      <Svg width={pointerSize} height={pointerSize} style={styles.pointer}>
+        <Path
+          d={`M${pointerSize / 2} ${pointerSize - 2} L${pointerInset} ${pointerInset} Q${pointerSize / 2} 0 ${pointerSize - pointerInset} ${pointerInset} Z`}
+          fill={colors.text}
+          stroke={colors.white}
+          strokeWidth={2}
+        />
       </Svg>
 
       <PressableScale
@@ -127,7 +145,7 @@ export function LuckyWheel({
         haptic
         style={[
           styles.hub,
-          { top: 14 + r - 34 },
+          { top: 14 + r - hubSize / 2, width: hubSize, height: hubSize, borderRadius: hubSize / 2 },
           (spinning || disabled) && styles.hubDisabled,
         ]}>
         <Txt variant="bodyStrong" color={colors.textOnPrimary}>

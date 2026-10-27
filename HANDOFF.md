@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z. Free Gifts: Lucky wheel card (2026-10-27)
+
+The owner selected only the Lucky wheel card from the Free Gifts prototype. `src/app/gifts.tsx`
+now centers a responsive 224 pt colorful wheel without side copy; its slices use the brand peach
+and iOS system colours. The daily limit, spin result, shell credit and reward sheet are unchanged.
+The wheel hub and pointer still scale with the wheel in `src/components/lucky-wheel.tsx`. A fresh
+web session redirected to first-run onboarding; it was left there rather than creating a test
+conversation, so the in-app visual check is still pending. TypeScript passes after regenerating
+Windows route types.
+
 ## ▶ NEXT STEP — start here (2026-10-07, back to Claude Desktop)
 
 The user worked this day in cloud Claude Code and now continues in **Claude Desktop on Windows**

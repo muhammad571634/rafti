@@ -11,6 +11,7 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 
 | Flow | Status | What is in the app | BIMOBIMO refs |
 | --- | --- | --- | --- |
+| D107 Free Gifts: Lucky wheel card | code complete; typecheck passes | Owner selected the Lucky wheel from the Free Gifts prototype. The responsive 224 pt wheel is centered with no side copy; pastel slices use the brand peach and iOS system colours. The daily free-spin limit, wallet credit, spin animation, and reward sheet remain intact. A fresh web session redirected to first-run onboarding, so in-app visual verification remains pending | — |
 | F8 Heartbeat diary | done | Cover carousel, calendar popover, character pages, rules sheet; pages are written the morning after a chat or date (`src/mock/diary-writer.ts`) | #13-#15, video A 22-29s |
 | F1 Onboarding | done | Hello → 18+ birth year → name → first friend → notifications → +100 shells → first chat (`src/app/onboarding.tsx`) | none (list style from #56) |
 | F2 Home / coming back | done | Today opens directly into the hero/modules without a time-based greeting heading; diary pages, today's plans, notes, and spin remain below | #1, #26 |

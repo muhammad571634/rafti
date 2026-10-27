@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -61,6 +61,7 @@ const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook>
  */
 export default function GiftsScreen() {
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -80,6 +81,7 @@ export default function GiftsScreen() {
 
   const code = inviteCodeFor(user);
   const invited = Math.min(INVITES_PER_WEEK, invitesThisWeek(user.inviteCredits));
+  const wheelSize = Math.max(0, Math.min(224, width - space.lg * 2 - space.md * 2));
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(code);
@@ -183,7 +185,7 @@ export default function GiftsScreen() {
         </View>
         <View style={[styles.card, styles.wheel]}>
           <LuckyWheel
-            size={264}
+            size={wheelSize}
             disabled={!canSpin}
             onSpin={() => spinWheel()?.index ?? null}
             onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
@@ -422,7 +424,12 @@ const styles = StyleSheet.create({
     backgroundColor: STORE.peachSoft,
   },
   statusText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
-  wheel: { alignItems: 'center', paddingVertical: space.lg },
+  wheel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: space.md,
+    marginBottom: 23,
+  },
   info: { marginBottom: 2, marginRight: space.lg + 4, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
