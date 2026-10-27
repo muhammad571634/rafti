@@ -3,8 +3,9 @@ import { Hono } from 'hono';
 import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import { parseModelReply } from '../../src/ai/reply-style.ts';
 import type { ClientConfig } from '../../src/ai/session-types.ts';
-import type { BootstrapInput, Db } from './db/types.ts';
+import type { BootstrapInput, Db, UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+import { costUsd, promptVersion } from './llm/usage.ts';
 
 /** Until the chat's language lock is stored, the reply follows what the user writes (`replyLanguage`). */
 export const FOLLOW_USER_LANGUAGE =
@@ -31,6 +32,12 @@ export function cleanTimeZone(value: unknown): string | undefined {
 
 /** The bearer token of `Authorization: Bearer <token>`, if any. */
 const bearer = (header: string | undefined) => header?.match(/^Bearer\s+(\S+)$/i)?.[1] ?? null;
+
+/** Writes a call's cost row without holding the reply up; a failed write is only reported. */
+function logUsage(db: Db | null, userId: Promise<string | null>, event: Omit<UsageEvent, 'userId'>) {
+  if (!db) return;
+  void userId.then((id) => db.logUsage({ userId: id, ...event })).catch((error) => console.error('[usage] not logged', error));
+}
 
 /**
  * The API. Chat replies are stateless: the app sends what the reply needs (the same
@@ -95,15 +102,31 @@ export function createApp(
       replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
     };
 
+    // Who is asking, looked up while the model writes: the reply never waits on it, and a missing or
+    // stale token only leaves the cost row without a user.
+    const token = bearer(c.req.header('authorization'));
+    const userId = db && token ? db.userIdFromToken(token).catch(() => null) : Promise.resolve(null);
+
     const started = Date.now();
     try {
-      const result = await provider.complete(layoutChatPrompt(input), opts);
+      const layout = layoutChatPrompt(input);
+      const result = await provider.complete(layout, opts);
       const reply = parseModelReply(result.text);
       const ms = Date.now() - started;
-      // The cost log until the database's `usage_events` exists.
+      const cost = costUsd(result.model, result.usage);
+      logUsage(db, userId, {
+        kind: 'llm',
+        mode: 'chat',
+        model: result.model ?? provider.name,
+        promptVersion: promptVersion(layout),
+        inputTokens: result.usage.input,
+        cachedTokens: result.usage.cached,
+        outputTokens: result.usage.output,
+        costUsd: cost,
+      });
       const lang = input.replyLanguage === FOLLOW_USER_LANGUAGE ? 'follow' : input.replyLanguage;
       console.log(
-        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
+        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: result.model ?? provider.name, ms });

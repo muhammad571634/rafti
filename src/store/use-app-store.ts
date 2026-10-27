@@ -30,6 +30,7 @@ import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
+import { accessToken } from '@/ai/account';
 import { apiBase, serverReply } from '@/ai/server';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -4232,7 +4233,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   // tier's daily cap, a slow answer) says so under the user's line with a way to try again, as iOS
   // Messages does, instead of passing the stand-in off as their reply.
   if (text == null && given == null && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
-    void serverReply({
+    const input = {
       character,
       user: state.user,
       relationship: bond,
@@ -4243,11 +4244,15 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
       redo: Array.isArray(avoid) ? avoid : undefined,
       redoOff: off,
-    }).then((lines) => {
-      if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
-      if (lines) deliver(lines);
-      else failReply(set, conversationId, request);
-    });
+    };
+    // The account's token lets the server log the reply's cost against this user (B1).
+    void accessToken()
+      .then((token) => serverReply(input, token))
+      .then((lines) => {
+        if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
+        if (lines) deliver(lines);
+        else failReply(set, conversationId, request);
+      });
     return;
   }
   deliver(standIn());

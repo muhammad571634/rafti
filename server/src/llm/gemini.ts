@@ -34,10 +34,17 @@ export function geminiProvider(apiKey: string, models: readonly string[]): LlmPr
             },
           });
           const usage = res.usageMetadata;
+          const answer = usage?.candidatesTokenCount;
           return {
             text: res.text ?? '',
-            model,
-            usage: { input: usage?.promptTokenCount, cached: usage?.cachedContentTokenCount, output: usage?.candidatesTokenCount },
+            // The model that really answered: an alias such as "gemini-flash-latest" is named here.
+            model: res.modelVersion ?? model,
+            usage: {
+              input: usage?.promptTokenCount,
+              cached: usage?.cachedContentTokenCount,
+              // Thinking is billed as output.
+              output: answer === undefined ? undefined : answer + (usage?.thoughtsTokenCount ?? 0),
+            },
           };
         } catch (error) {
           last = error;

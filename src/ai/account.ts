@@ -16,7 +16,10 @@ export type AccountResult =
   /** noServer: the server or its database is off; signInOff: anonymous sign-ins are disabled in the project. */
   | { ok: false; reason: 'noServer' | 'signInOff' | 'failed' };
 
-let client: SupabaseClient | null = null;
+type SignedIn = { token: string } | { reason: 'noServer' | 'signInOff' | 'failed' };
+
+let client: Promise<SupabaseClient | null> | null = null;
+let signingIn: Promise<SignedIn> | null = null;
 
 /** A release build carries the config at build time; a development build asks the local server. */
 async function clientConfig(): Promise<ClientConfig | null> {
@@ -26,35 +29,59 @@ async function clientConfig(): Promise<ClientConfig | null> {
   return serverClientConfig();
 }
 
-async function supabase(): Promise<SupabaseClient | null> {
-  if (client) return client;
-  const config = await clientConfig();
-  if (!config) return null;
-  client = createClient(config.supabaseUrl, config.supabaseKey, {
-    auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
-  });
-  // Tokens refresh only while the app is in front (Supabase's advice for mobile).
-  AppState.addEventListener('change', (state) => {
-    if (state === 'active') client?.auth.startAutoRefresh();
-    else client?.auth.stopAutoRefresh();
+/** One client for the app's life; when the backend is off, the next call asks again. */
+function supabase(): Promise<SupabaseClient | null> {
+  client ??= clientConfig().then((config) => {
+    if (!config) {
+      client = null;
+      return null;
+    }
+    const created = createClient(config.supabaseUrl, config.supabaseKey, {
+      auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
+    });
+    // Tokens refresh only while the app is in front (Supabase's advice for mobile).
+    AppState.addEventListener('change', (state) => {
+      if (state === 'active') created.auth.startAutoRefresh();
+      else created.auth.stopAutoRefresh();
+    });
+    return created;
   });
   return client;
 }
 
+/** The kept session, else an anonymous sign-in; calls made meanwhile share it, so only one account is made. */
+function signIn(): Promise<SignedIn> {
+  signingIn ??= (async (): Promise<SignedIn> => {
+    const auth = (await supabase())?.auth;
+    if (!auth) return { reason: 'noServer' };
+    const { data } = await auth.getSession();
+    if (data.session) return { token: data.session.access_token };
+    const anonymous = await auth.signInAnonymously();
+    if (anonymous.error) return { reason: anonymous.error.code === 'anonymous_provider_disabled' ? 'signInOff' : 'failed' };
+    return anonymous.data.session ? { token: anonymous.data.session.access_token } : { reason: 'failed' };
+  })()
+    .catch((): SignedIn => ({ reason: 'failed' }))
+    .finally(() => {
+      signingIn = null;
+    });
+  return signingIn;
+}
+
+/**
+ * The access token for API calls, signing in the first time. Never throws and never holds a reply
+ * up for long: when the backend is off or slow it gives null and the call goes out without one.
+ */
+export async function accessToken(waitMs = 2500): Promise<string | null> {
+  const token = signIn().then((result) => ('token' in result ? result.token : null));
+  const late = new Promise<null>((resolve) => setTimeout(() => resolve(null), waitMs));
+  return Promise.race([token, late]);
+}
+
 /** Signs in (anonymously the first time) and returns the server's view of this account. */
 export async function connectAccount(): Promise<AccountResult> {
-  const auth = (await supabase())?.auth;
-  if (!auth) return { ok: false, reason: 'noServer' };
-
-  let { data } = await auth.getSession();
-  if (!data.session) {
-    const signIn = await auth.signInAnonymously();
-    if (signIn.error) return { ok: false, reason: signIn.error.code === 'anonymous_provider_disabled' ? 'signInOff' : 'failed' };
-    data = { session: signIn.data.session };
-  }
-  if (!data.session) return { ok: false, reason: 'failed' };
-
+  const signedIn = await signIn();
+  if ('reason' in signedIn) return { ok: false, reason: signedIn.reason };
   const { locale, timeZone } = Intl.DateTimeFormat().resolvedOptions();
-  const session = await serverBootstrap(data.session.access_token, { locale, timeZone });
+  const session = await serverBootstrap(signedIn.token, { locale, timeZone });
   return session ? { ok: true, session } : { ok: false, reason: 'noServer' };
 }

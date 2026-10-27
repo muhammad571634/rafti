@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-import type { BootstrapInput, BootstrapResult, Db } from './types.ts';
+import type { BootstrapInput, BootstrapResult, Db, UsageEvent } from './types.ts';
 
 /**
  * Supabase with the server's secret key (service role): RLS does not apply to it, so every write
@@ -28,6 +28,22 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       });
       if (error) throw new Error(`bootstrap_user: ${error.message}`);
       return data as BootstrapResult;
+    },
+
+    async logUsage(event: UsageEvent) {
+      const { error } = await client.from('usage_events').insert({
+        user_id: event.userId,
+        kind: event.kind,
+        mode: event.mode ?? null,
+        model: event.model ?? null,
+        prompt_version: event.promptVersion ?? null,
+        input_tokens: event.inputTokens ?? null,
+        cached_tokens: event.cachedTokens ?? null,
+        output_tokens: event.outputTokens ?? null,
+        seconds: event.seconds ?? null,
+        cost_usd: event.costUsd ?? null,
+      });
+      if (error) throw new Error(`usage_events: ${error.message}`);
     },
   };
 }

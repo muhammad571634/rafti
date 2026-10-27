@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z3. Backend B1.1: the cost log (2026-10-27, D113)
+
+B0 is done: the owner turned anonymous sign-ins on and the phone's Server account showed 100 shells.
+B1 is cut into steps, one at a time: **B1.1 the cost log (done)**, B1.2 the whole wallet moves to the
+server (every spend and earn rule in shared code, the server books them, the app keeps a cache),
+B1.3 messages kept on the server and `expo-sqlite`, B1.4 the mocked AI features (quick create, brief,
+evening question, week recap, topics, stream) through the server, B1.5 quality (mode templates,
+batching, repetition guard, eval set). B1.1: every real-AI reply writes a `usage_events` row with the
+user, the real model, `prompt_version`, tokens and the list-price cost (`server/src/llm/usage.ts`).
+The server needs `GEMINI_API_KEY` in its own process for real replies; the owner's key is only in
+`.claude/worktrees/a4-push-today/server/.env.local` (git-ignored; do not copy keys into files).
+
 ### 0z2. Backend B0: Supabase in the cloud, accounts and wallet (2026-10-27, D112)
 
 Owner: Docker froze the laptop, so Supabase now runs **only in the cloud project "rafti sigmazam"**

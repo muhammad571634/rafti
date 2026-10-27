@@ -51,11 +51,14 @@ export function serverBootstrap(accessToken: string, input: BootstrapInput): Pro
   });
 }
 
-/** The real model's reply as chat bubbles, or null (fall back to the stand-in). */
-export async function serverReply(input: ChatPromptInput): Promise<string[] | null> {
+/**
+ * The real model's reply as chat bubbles, or null (fall back to the stand-in). With the account's
+ * token the server ties the call's cost to this user (`usage_events`); without one it still answers.
+ */
+export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<string[] | null> {
   const reply = await call<{ messages?: string[] }>('/v1/chat/reply', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
     body: JSON.stringify(input),
   });
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());

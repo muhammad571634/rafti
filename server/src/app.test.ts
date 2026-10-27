@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { cleanLocale, cleanTimeZone, createApp } from './app.ts';
-import type { BootstrapInput, BootstrapResult, Db } from './db/types.ts';
+import type { BootstrapInput, BootstrapResult, Db, UsageEvent } from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
@@ -61,6 +61,59 @@ describe('sigmazam-api', () => {
   });
 });
 
+describe('the cost log of a reply', () => {
+  const provider: LlmProvider = {
+    name: 'fake',
+    complete: async () => ({ text: '{"messages":["Hi!"]}', model: 'gemini-3.1-flash-lite', usage: { input: 1000, cached: 400, output: 100 } }),
+  };
+  const logged: UsageEvent[] = [];
+  const db: Db = {
+    name: 'fake',
+    userIdFromToken: async (token) => (token === 'good' ? 'user-1' : null),
+    bootstrap: async () => Promise.reject(new Error('unused')),
+    logUsage: async (event) => {
+      logged.push(event);
+    },
+  };
+  const send = (headers: Record<string, string> = {}) =>
+    createApp(provider, { timeoutMs: 1000, db }).request('/v1/chat/reply', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+    });
+  // The row is written after the reply has gone out.
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+
+  it('writes one row per reply: who, which model and prompt, the tokens and the list-price cost', async () => {
+    assert.equal((await send({ authorization: 'Bearer good' })).status, 200);
+    await settle();
+    assert.equal(logged.length, 1);
+    const { promptVersion, ...row } = logged[0];
+    assert.deepEqual(row, {
+      userId: 'user-1',
+      kind: 'llm',
+      mode: 'chat',
+      model: 'gemini-3.1-flash-lite',
+      inputTokens: 1000,
+      cachedTokens: 400,
+      outputTokens: 100,
+      costUsd: 0.00031,
+    });
+    assert.match(promptVersion ?? '', /^g[0-9a-f]{8}\.c[0-9a-f]{8}$/);
+  });
+
+  it('still answers without an account or with a stale token, and logs no user then', async () => {
+    logged.length = 0;
+    assert.equal((await send()).status, 200);
+    assert.equal((await send({ authorization: 'Bearer stale' })).status, 200);
+    await settle();
+    assert.deepEqual(
+      logged.map((row) => row.userId),
+      [null, null],
+    );
+  });
+});
+
 describe('POST /v1/session/bootstrap', () => {
   const seen: BootstrapInput[] = [];
   const fakeDb: Db = {
@@ -70,6 +123,7 @@ describe('POST /v1/session/bootstrap', () => {
       seen.push(input);
       return { isNew: true, profile: { id: userId }, wallet: { shells: 100 }, subscription: null } as unknown as BootstrapResult;
     },
+    logUsage: async () => {},
   };
   const call = (db: Db | null, headers: Record<string, string>, body?: unknown) =>
     createApp(null, { timeoutMs: 1000, db }).request('/v1/session/bootstrap', {

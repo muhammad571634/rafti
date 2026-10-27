@@ -13,7 +13,10 @@ export interface LlmResult {
   text: string;
   /** The model that answered (a provider may fall back to another). */
   model?: string;
-  /** Tokens, for the cost log (`usage_events` once the database is in). */
+  /**
+   * Tokens, for the cost log (`usage_events`). Input counts the cached tokens too; output counts the
+   * answer and any thinking, both billed as output.
+   */
   usage: { input?: number; cached?: number; output?: number };
 }
 
