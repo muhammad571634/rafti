@@ -684,6 +684,7 @@
   },
   "secretNote": {
     "title": "Secret note",
+    "gone": "This note is no longer here",
     "theirNote": "{{name}}'s Note",
     "placeholder": "Type your idea...",
     "thinking": "Thinking...",

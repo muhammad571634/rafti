@@ -9,16 +9,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, Segmented, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, Segmented, Txt, useScrolledPast } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isReleased } from '@/economy/early-access';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { aurora, colors, isDark, space } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
 
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
 const HERO_HEIGHT = 330;
+/** The buttons' row under the status bar: 44 pt buttons and their top gap. */
+const BAR_ROOM = 44 + space.xs * 2;
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.65)'] as const;
 
 /**
@@ -30,6 +32,7 @@ const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.65)'] as const;
  */
 export default function WorldScreen() {
   const insets = useSafeAreaInsets();
+  const { scrolled: edge, onScroll } = useScrolledPast(HERO_HEIGHT - BAR_ROOM);
   const { t } = useTranslation();
   const router = useRouter();
   const { series } = useLocalSearchParams<{ series: string }>();
@@ -71,8 +74,10 @@ export default function WorldScreen() {
   };
 
   return (
-    <Screen background="aurora" edgeToEdge statusBarStyle="light">
+    <Screen background="aurora" edgeToEdge statusBarStyle={edge && !isDark ? 'dark' : 'light'}>
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={32}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
@@ -147,6 +152,8 @@ export default function WorldScreen() {
         )}
       </ScrollView>
 
+      {/* Past the scene the list would run under the status bar and the buttons: a scroll edge. */}
+      {edge ? <View pointerEvents="none" style={[styles.edge, { height: insets.top + BAR_ROOM }]} /> : null}
       {/* Clear glass over the scene (HIG Materials: the clear variant is for rich media). */}
       <View style={[styles.bar, { top: insets.top + space.xs }]} pointerEvents="box-none">
         <PressableScale
@@ -154,8 +161,8 @@ export default function WorldScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
           onPress={() => router.back()}
-          style={styles.mediaButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.onMedia} style={styles.backIcon} />
+          style={[styles.mediaButton, edge && styles.edgeButton]}>
+          <Ionicons name="chevron-back" size={24} color={edge ? colors.text : colors.onMedia} style={styles.backIcon} />
         </PressableScale>
         <PressableScale
           scaleTo={0.9}
@@ -165,8 +172,8 @@ export default function WorldScreen() {
             if (searchOpen) setQuery('');
             setSearchOpen((v) => !v);
           }}
-          style={styles.mediaButton}>
-          <Ionicons name={searchOpen ? 'close' : 'search'} size={20} color={colors.onMedia} />
+          style={[styles.mediaButton, edge && styles.edgeButton]}>
+          <Ionicons name={searchOpen ? 'close' : 'search'} size={20} color={edge ? colors.text : colors.onMedia} />
         </PressableScale>
       </View>
       {early.sheet}
@@ -260,6 +267,16 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: colors.onMediaButton,
   },
+  edge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: aurora.base,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: aurora.separator,
+  },
+  edgeButton: { backgroundColor: aurora.glass, borderColor: aurora.glassEdge },
   bar: {
     position: 'absolute',
     left: space.lg,

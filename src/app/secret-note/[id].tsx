@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
-import { Anim, AuroraGlass, CharacterAvatar, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
+import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, space } from '@/theme';
@@ -62,6 +62,10 @@ export default function SecretNoteScreen() {
       <Screen background="aurora">
         {bar}
         <LargeTitle>{t('secretNote.title')}</LargeTitle>
+        {/* No such friend any more (deleted, blocked, an old link); with one, the note is being made. */}
+        {!character ? (
+          <EmptyState title={t('secretNote.gone')} actionLabel={t('common.back')} onAction={() => router.back()} />
+        ) : null}
       </Screen>
     );
   }
