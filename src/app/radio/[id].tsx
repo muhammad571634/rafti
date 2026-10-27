@@ -103,7 +103,7 @@ export default function ClipPlayerScreen() {
     return (
       <Screen background="aurora">
         <View style={styles.bar}>{back}</View>
-        <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('radio.title')} onAction={() => router.back()} />
+        <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('common.backToRadio')} onAction={() => router.back()} />
       </Screen>
     );
   }

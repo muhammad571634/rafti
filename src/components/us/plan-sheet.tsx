@@ -2,12 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Platform, Pressable, StyleSheet, Switch, TextInput, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { CharacterAvatar, Sheet, Txt } from '@/components/ui';
+import { CharacterAvatar, Sheet, Toggle, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { haptic } from '@/lib/haptics';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, space } from '@/theme';
@@ -174,16 +173,13 @@ export function PlanSheet({
               </Txt>
             </Pressable>
           ) : null}
-          <Switch
+          <Toggle
             value={timed}
-            onValueChange={(on) => {
-              haptic.toggle(on);
+            onChange={(on) => {
               setTimed(on);
               if (!on) setOpen((o) => (o === 'time' ? null : o));
             }}
             accessibilityLabel={t('us.atTime')}
-            trackColor={{ true: colors.success }}
-            ios_backgroundColor={colors.surfaceAlt}
           />
         </View>
         {open === 'time' && timed && Platform.OS === 'ios' ? (

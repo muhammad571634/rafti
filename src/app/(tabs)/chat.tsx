@@ -385,7 +385,7 @@ export default function ChatListScreen() {
             symbol={{ ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' }}
             title={t('chatList.empty')}
             hint={t('chatList.emptyHint')}
-            actionLabel={t('find.title')}
+            actionLabel={t('common.findSomeone')}
             onAction={() => router.push('/(tabs)/find')}
           />
         ) : (

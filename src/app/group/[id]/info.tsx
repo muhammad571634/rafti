@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
@@ -18,13 +18,13 @@ import {
   PressableScale,
   Screen,
   Sheet,
+  Toggle,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
-import { haptic } from '@/lib/haptics';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space, type } from '@/theme';
 import type { Character } from '@/types';
@@ -236,15 +236,10 @@ export default function GroupInfoScreen() {
         <InsetGroup style={styles.block}>
           <View style={styles.switchRow}>
             <Txt style={[styles.memberName, styles.flex]}>{t('group.mute')}</Txt>
-            <Switch
+            <Toggle
               value={group.muted}
-              onValueChange={(v) => {
-                haptic.toggle(v);
-                setGroupMuted(groupId, v);
-              }}
+              onChange={(v) => setGroupMuted(groupId, v)}
               accessibilityLabel={t('group.mute')}
-              trackColor={{ true: colors.success }}
-              ios_backgroundColor={colors.surfaceAlt}
             />
           </View>
         </InsetGroup>

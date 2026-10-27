@@ -193,7 +193,7 @@ export default function UsScreen() {
         <EmptyState
           title={t('us.noRelationships')}
           hint={t('us.noRelationshipsHint')}
-          actionLabel={t('find.title')}
+          actionLabel={t('common.findSomeone')}
           onAction={() => router.push('/(tabs)/find')}
         />
       </Screen>

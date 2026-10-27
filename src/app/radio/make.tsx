@@ -72,7 +72,7 @@ export default function MakeClipScreen() {
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('radio.noFriends')}
           hint={t('radio.noFriendsHint')}
-          actionLabel={t('find.title')}
+          actionLabel={t('common.findSomeone')}
           onAction={() => router.replace('/(tabs)/find')}
         />
       </Screen>

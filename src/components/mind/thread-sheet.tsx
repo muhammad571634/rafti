@@ -2,10 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { CharacterAvatar, Sheet, Txt } from '@/components/ui';
+import { CharacterAvatar, Sheet, Toggle, Txt } from '@/components/ui';
 import { confirmAction } from '@/lib/confirm';
 import { clockTime, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -177,15 +177,10 @@ export function ThreadSheet({ threadId, onClose }: { threadId: string | null; on
                     <Txt style={[styles.label, styles.grow]} lines={2}>
                       {t('mind.reachOff', { name })}
                     </Txt>
-                    <Switch
+                    <Toggle
                       value={false}
-                      onValueChange={(on) => {
-                        haptic.toggle(on);
-                        setCharacterPref(thread.characterId, 'messagesFirst', on);
-                      }}
+                      onChange={(on) => setCharacterPref(thread.characterId, 'messagesFirst', on)}
                       accessibilityLabel={t('characterSettings.messagesFirst')}
-                      trackColor={{ true: colors.success }}
-                      ios_backgroundColor={colors.surfaceAlt}
                     />
                   </View>
                 ) : null}

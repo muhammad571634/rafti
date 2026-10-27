@@ -94,7 +94,7 @@ export default function DatingScreen() {
         <LargeTitle>{t('dating.walletTitle')}</LargeTitle>
         <EmptyState
           title={t('dating.noFriends')}
-          actionLabel={t('find.title')}
+          actionLabel={t('common.findSomeone')}
           onAction={() => router.push('/(tabs)/find')}
         />
       </Screen>

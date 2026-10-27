@@ -66,7 +66,7 @@ export default function NewGroupScreen() {
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('group.noFriends')}
           hint={t('group.noFriendsHint')}
-          actionLabel={t('find.title')}
+          actionLabel={t('common.findSomeone')}
           onAction={() => router.replace('/(tabs)/find')}
         />
       </Screen>

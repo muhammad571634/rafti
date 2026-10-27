@@ -2,11 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Platform, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, PressableScale, SFIcon, Sheet, Txt } from '@/components/ui';
+import { CharacterAvatar, PressableScale, SFIcon, Sheet, Toggle, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 
@@ -193,15 +192,10 @@ function CallRow({
             {toClock(value.at)}
           </Txt>
         </Pressable>
-        <Switch
+        <Toggle
           value={value.on}
-          onValueChange={(on) => {
-            haptic.toggle(on);
-            onChange({ ...value, on });
-          }}
+          onChange={(on) => onChange({ ...value, on })}
           accessibilityLabel={label}
-          trackColor={{ true: colors.success }}
-          ios_backgroundColor={colors.surfaceAlt}
         />
       </View>
       {open && Platform.OS === 'ios' ? (

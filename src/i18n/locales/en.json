@@ -5,6 +5,9 @@
   },
   "common": {
     "save": "Save",
+    "findSomeone": "Find someone",
+    "planDate": "Plan a date",
+    "backToRadio": "Back to Radio",
     "cancel": "Cancel",
     "done": "Done",
     "next": "Next",
@@ -1133,7 +1136,7 @@
     "walletTitle": "Dates",
     "kindDate": "Date",
     "opensAt": "Opens at",
-    "closenessLabel": "Closeness",
+    "closenessLabel": "Opens at",
     "more": "More",
     "pastDates_one": "View {{count}} past date",
     "pastDates_other": "View {{count}} past dates",

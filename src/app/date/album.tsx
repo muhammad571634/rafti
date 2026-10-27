@@ -84,7 +84,7 @@ export default function DateAlbumScreen() {
       <Screen background={colors.bg}>
         <GlassBar />
         <LargeTitle>{t('date.albumTitle')}</LargeTitle>
-        <EmptyState title={t('date.albumEmpty')} actionLabel={t('dating.title')} onAction={() => router.back()} />
+        <EmptyState title={t('date.albumEmpty')} actionLabel={t('common.planDate')} onAction={() => router.back()} />
       </Screen>
     );
   }

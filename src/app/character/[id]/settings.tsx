@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -18,6 +18,7 @@ import {
   Screen,
   Sheet,
   SystemSegmented,
+  Toggle,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
@@ -440,7 +441,7 @@ export default function CharacterSettingsScreen() {
   );
 }
 
-/** A row with the platform's own switch: UISwitch on iOS, Material on Android. */
+/** A row with the app's switch (`Toggle`): the iOS green track and white thumb on both platforms. */
 function SwitchRow({
   label,
   value,
@@ -457,16 +458,11 @@ function SwitchRow({
   return (
     <View style={[styles.row, !last && styles.rowLine, disabled && styles.disabled]}>
       <Txt style={[styles.rowText, styles.flex]}>{label}</Txt>
-      <Switch
+      <Toggle
         value={value}
         disabled={disabled}
-        onValueChange={(v) => {
-          haptic.toggle(v);
-          onChange(v);
-        }}
+        onChange={onChange}
         accessibilityLabel={label}
-        trackColor={{ true: colors.success }}
-        ios_backgroundColor={colors.surfaceAlt}
       />
     </View>
   );

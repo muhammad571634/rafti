@@ -12,7 +12,7 @@ import { Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/
 import { alarmLine, alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { haptic } from '@/lib/haptics';
-import { useAppStore } from '@/store/use-app-store';
+import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, sleepColors as night, space, systemColors } from '@/theme';
 import type { Alarm } from '@/types';
 
@@ -28,8 +28,14 @@ export default function AlarmsScreen() {
   const router = useRouter();
   const alarms = useAppStore((s) => s.alarms);
   const characters = useAppStore((s) => s.characters);
+  const relationships = useAppStore((s) => s.relationships);
   const setAlarmEnabled = useAppStore((s) => s.setAlarmEnabled);
   const deleteAlarm = useAppStore((s) => s.deleteAlarm);
+  // The name the user calls them ("Mom"), as the chat header shows it.
+  const nameFor = (id?: string) => {
+    const character = characters.find((c) => c.id === id);
+    return character ? displayName(character, relationships[character.id]) : undefined;
+  };
   const h12 = uses12Hour();
 
   const sorted = [...alarms].sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute));
@@ -77,7 +83,7 @@ export default function AlarmsScreen() {
                 alarm={alarm}
                 last={i === sorted.length - 1}
                 h12={h12}
-                line={alarmLine(t, alarm, characters.find((c) => c.id === alarm.characterId)?.name, i18n.language)}
+                line={alarmLine(t, alarm, nameFor(alarm.characterId), i18n.language)}
                 onOpen={() => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } })}
                 onToggle={(on) => setAlarmEnabled(alarm.id, on)}
                 onDelete={() => deleteAlarm(alarm.id)}

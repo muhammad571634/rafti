@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Sheet, Txt } from '@/components/ui';
+import { Sheet, Toggle, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
-import { haptic } from '@/lib/haptics';
 import { reachReason, reasonThreadId, type ReachReason } from '@/lib/mind';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
@@ -128,15 +127,10 @@ export function WhySheet({
       <View style={[styles.group, styles.gap]}>
         <View style={styles.row}>
           <Txt style={[styles.label, styles.grow]}>{t('characterSettings.messagesFirst')}</Txt>
-          <Switch
+          <Toggle
             value={!!relationship?.messagesFirst}
-            onValueChange={(on) => {
-              haptic.toggle(on);
-              setCharacterPref(character.id, 'messagesFirst', on);
-            }}
+            onChange={(on) => setCharacterPref(character.id, 'messagesFirst', on)}
             accessibilityLabel={t('characterSettings.messagesFirst')}
-            trackColor={{ true: colors.success }}
-            ios_backgroundColor={colors.surfaceAlt}
           />
         </View>
       </View>
