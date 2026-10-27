@@ -5,6 +5,7 @@ import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relation
 
 import { steerCue } from '../lib/chat-steer';
 import { redoCue } from '../lib/chat-turns';
+import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
 import { messageText } from '../lib/story-continuity';
 
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
@@ -99,6 +100,8 @@ export interface ChatPromptInput {
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
   /** ↻: what earlier versions of this reply said; the new one takes another angle (`redoCue`). */
   redo?: readonly string[];
+  /** ↻ after 👎 on the version before: what was off (`offCue`). */
+  redoOff?: OffReason;
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
@@ -114,8 +117,11 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
+    // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill
+    // the cached history if this sat in the prefix, so it rides in the turn tier.
+    part('taste', 'turn', tasteLines(input.messages)),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
-    part('redo', 'turn', input.redo?.length ? redoCue(input.redo) : []),
+    part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
     ...threadParts(input.threads ?? []),
     part('shape', 'turn', [REPLY_SHAPE]),

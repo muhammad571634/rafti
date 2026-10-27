@@ -8,7 +8,9 @@ import { steerMarker } from '../lib/chat-steer';
 import { lorePrompt, recentLines } from '../lib/lorebook';
 
 import type { ChatPromptInput } from './chat-prompt';
-import { chatTurns, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
+import { offCue } from '../lib/reply-rating';
+
+import { chatParts, chatTurns, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
 import { CHARACTER_RULES } from './rules';
 
 const kai = {
@@ -213,5 +215,24 @@ describe('pinnedLines', () => {
       memory('a4', 'Old job.', { createdAt: '2026-10-04T00:00:00.000Z', status: 'superseded' }),
     ]);
     assert.deepEqual(lines.slice(1), ['- About you: Hates the cold.', '- Your story: The ferry night.', '- They said: "I will never forget this."']);
+  });
+});
+
+describe('votes in the prompt (👍 👎)', () => {
+  const said = (id: string, text: string, extra: Partial<Message> = {}): Message =>
+    ({ id, conversationId: 'c', author: 'them', kind: 'text', text, createdAt: '2026-10-27T20:00:00.000Z', ...extra }) as Message;
+
+  it('tells ↻ after 👎 what to fix, and carries the votes in the turn tier', () => {
+    const parts = chatParts({
+      character: kai,
+      user: sam,
+      messages: [said('a', 'Ha, stop it', { reaction: 'laugh' })],
+      redo: ['First try.'],
+      redoOff: 'listen',
+    });
+    assert.ok(parts.find((p) => p.name === 'redo')?.text.includes(offCue('listen')));
+    const taste = parts.find((p) => p.name === 'taste');
+    assert.equal(taste?.tier, 'turn');
+    assert.ok(taste?.text.includes('- Ha, stop it'));
   });
 });

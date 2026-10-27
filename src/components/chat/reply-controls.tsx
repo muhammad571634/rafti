@@ -6,15 +6,17 @@ import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
+import type { Rating } from '@/lib/reply-rating';
 import { colors, space } from '@/theme';
 
 /** How far a swipe on their reply must travel to switch the version. */
 const SWIPE = 48;
 
 /**
- * Under their newest reply (canvas `ChatRegen.dc.html`): ↻ asks for a new version, and once there
- * are several, ‹ 2/3 › steps between them; » lets them go on without the user writing (Continue,
- * `src/lib/chat-steer.ts`). Icons in the secondary grey, as quiet as a read receipt.
+ * Under their newest reply (canvas `ChatRegen.dc.html`): 👍 👎 vote on how it was written
+ * (`src/lib/reply-rating.ts`), ↻ asks for a new version, and once there are several, ‹ 2/3 › steps
+ * between them; » lets them go on without the user writing (Continue, `src/lib/chat-steer.ts`).
+ * Icons in the secondary grey, as quiet as a read receipt; a cast vote fills in peach.
  */
 export function ReplyControls({
   count,
@@ -22,6 +24,8 @@ export function ReplyControls({
   onStep,
   onRedo,
   onContinue,
+  rating,
+  onRate,
 }: {
   count: number;
   index: number;
@@ -30,13 +34,52 @@ export function ReplyControls({
   onRedo?: () => void;
   /** »; left out while the chat waits for the user. */
   onContinue?: () => void;
+  /** The reply's vote, cast or from a happy sticker (`ratingOf`). */
+  rating?: Rating;
+  /** 👍 👎; left out where the reply cannot be voted on (their greeting, a crisis reply). */
+  onRate?: (rating: Rating) => void;
 }) {
   const { t } = useTranslation();
   const first = index === 0;
   const last = index === count - 1;
+  const up = rating === 'up';
+  const down = rating === 'down';
 
   return (
     <View style={styles.row}>
+      {onRate ? (
+        <>
+          <PressableScale
+            scaleTo={0.85}
+            onPress={() => onRate('up')}
+            style={styles.button}
+            accessibilityRole="button"
+            accessibilityLabel={t('chat.rateUp')}
+            accessibilityState={{ selected: up }}>
+            <SFIcon
+              ios={up ? 'hand.thumbsup.fill' : 'hand.thumbsup'}
+              icon={up ? 'thumbs-up' : 'thumbs-up-outline'}
+              size={17}
+              color={up ? colors.primary : colors.textSecondary}
+            />
+          </PressableScale>
+          <PressableScale
+            scaleTo={0.85}
+            onPress={() => onRate('down')}
+            style={styles.button}
+            accessibilityRole="button"
+            accessibilityLabel={t('chat.rateDown')}
+            accessibilityState={{ selected: down }}>
+            <SFIcon
+              ios={down ? 'hand.thumbsdown.fill' : 'hand.thumbsdown'}
+              icon={down ? 'thumbs-down' : 'thumbs-down-outline'}
+              size={17}
+              color={down ? colors.primary : colors.textSecondary}
+            />
+          </PressableScale>
+          {count > 1 || onRedo || onContinue ? <View style={styles.divider} /> : null}
+        </>
+      ) : null}
       {count > 1 ? (
         <>
           <PressableScale
@@ -131,6 +174,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', height: 36, paddingLeft: 36, marginTop: -space.xs },
   button: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
   off: { opacity: 0.3 },
+  divider: { width: StyleSheet.hairlineWidth * 2, height: 16, marginHorizontal: space.xs, backgroundColor: colors.borderStrong },
   count: { minWidth: 34, textAlign: 'center', fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   redo: { width: 44, height: 36, alignItems: 'center', justifyContent: 'center' },
 });

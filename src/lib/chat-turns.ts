@@ -23,7 +23,7 @@ const isLine = (m: Message) => m.kind !== 'system' && m.kind !== 'call' && !m.ca
 export const isSteer = (m: Message) => m.card === 'continue' || m.card === 'skip';
 
 /** Where a turn starts: a line of yours, or a continue or a skip. */
-const isTurn = (m: Message) => (m.author === 'me' && isLine(m)) || isSteer(m);
+export const isTurn =(m: Message) => (m.author === 'me' && isLine(m)) || isSteer(m);
 
 /**
  * Your newest turn (a message, a continue or a skip) and their reply after it, the unit ↻ redoes

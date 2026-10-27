@@ -15,6 +15,7 @@ import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
+import { OffSheet } from '@/components/chat/off-sheet';
 import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
@@ -38,6 +39,7 @@ import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
 import { isAskReach } from '@/lib/reach-ask';
 import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
+import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -123,6 +125,10 @@ export default function ChatRoomScreen() {
   const deleteMessage = useAppStore((s) => s.deleteMessage);
   const replyVersions = useAppStore((s) => (conversationId ? s.replyVersions[conversationId] : undefined));
   const regenerateReply = useAppStore((s) => s.regenerateReply);
+  const rateReply = useAppStore((s) => s.rateReply);
+  /** "What was off?" after 👎, with the reason picked so far. */
+  const [offOpen, setOffOpen] = useState(false);
+  const [offReason, setOffReason] = useState<OffReason>();
   const stopReply = useAppStore((s) => s.stopReply);
   const retryReply = useAppStore((s) => s.retryReply);
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
@@ -211,6 +217,7 @@ export default function ChatRoomScreen() {
   );
   const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
+  const rating = useMemo(() => (exchange ? ratingOf(exchange.burst) : undefined), [exchange]);
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
@@ -331,8 +338,19 @@ export default function ChatRoomScreen() {
   };
 
   // A new version and an edit are new replies, so each costs what a message does.
-  const redo = () => {
-    if (regenerateReply(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
+  const redo = (off?: OffReason) => {
+    if (regenerateReply(conversation.id, off) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
+  // 👍 👎 under their newest reply: a second tap takes the vote back; 👎 asks what was off.
+  const rate = (vote: Rating) => {
+    haptic.selection();
+    if (rating === vote) return rateReply(conversation.id, undefined);
+    rateReply(conversation.id, vote);
+    if (vote === 'down') {
+      setOffReason(undefined);
+      setOffOpen(true);
+    }
   };
 
   // So are a continue and a time skip: each is one reply of theirs.
@@ -452,8 +470,10 @@ export default function ChatRoomScreen() {
                       count={versions?.versions.length ?? 1}
                       index={versions?.index ?? 0}
                       onStep={stepVersion}
-                      onRedo={canRedo ? redo : undefined}
+                      onRedo={canRedo ? () => redo() : undefined}
                       onContinue={block ? undefined : goOn}
+                      rating={rating}
+                      onRate={canRedo ? rate : undefined}
                     />
                   ) : null}
                   {suggestions ? (
@@ -655,6 +675,22 @@ export default function ChatRoomScreen() {
         }}
       />
       <ThreadSheet threadId={threadOpen} onClose={() => setThreadOpen(null)} />
+
+      <OffSheet
+        visible={offOpen}
+        name={name}
+        reason={offReason}
+        onPick={(reason) => {
+          setOffReason(reason);
+          // The reason is kept with the 👎 even if they close the sheet without a new reply.
+          rateReply(conversation.id, 'down', reason);
+        }}
+        onClose={() => setOffOpen(false)}
+        onNewReply={() => {
+          setOffOpen(false);
+          redo(offReason);
+        }}
+      />
 
       <ReportSheet
         visible={!!reporting}

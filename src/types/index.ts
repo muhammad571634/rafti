@@ -147,6 +147,10 @@ export interface Message {
   muted?: boolean;
   /** The user's reaction to this message: a Rafti sticker name (see REACTION_STICKERS) */
   reaction?: string;
+  /** 👍 👎 on their reply, kept on its first line; the friend never sees it (`src/lib/reply-rating.ts`). */
+  rating?: 'up' | 'down';
+  /** Why a reply was marked down (`OffReason`). */
+  offReason?: string;
   /** You changed this message after sending it; the chat says "Edited" under it (iOS Messages). */
   editedAt?: string;
   /** Call rows: the call was not picked up. */

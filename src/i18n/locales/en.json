@@ -345,6 +345,17 @@
     "cancelEdit": "Cancel editing",
     "saveEdit": "Send edit",
     "newReply": "New reply",
+    "rateUp": "Good reply",
+    "rateDown": "Bad reply",
+    "offTitle": "What was off?",
+    "off": {
+      "character": "Not like {{name}}",
+      "listen": "Didn't listen",
+      "repeat": "Repeats itself",
+      "long": "Too long",
+      "short": "Too short",
+      "sense": "Doesn't make sense"
+    },
     "continue": "Continue",
     "skip": {
       "later": "A little later",

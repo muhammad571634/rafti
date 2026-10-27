@@ -34,6 +34,7 @@ import { apiBase, serverReply } from '@/ai/server';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
+import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
 import {
@@ -398,11 +399,13 @@ interface AppState {
   setChatMuted: (conversationId: string, muted: boolean) => void;
   /** Drops the chat and its messages; the bond stays, and Find starts a new chat with them. */
   deleteChat: (conversationId: string) => void;
-  /** Sets (or with `undefined` clears) the user's reaction on a message. */
+  /** Sets (or with `undefined` clears) the user's reaction on a message; a happy one takes back a 👎 on its reply. */
   reactToMessage: (conversationId: string, messageId: string, reaction?: string) => void;
+  /** 👍 👎 on their newest reply (or with `undefined` takes the vote back); 👎 can say what was off. */
+  rateReply: (conversationId: string, rating?: Rating, reason?: OffReason) => void;
   deleteMessage: (conversationId: string, messageId: string) => void;
-  /** Their newest reply again (↻): a new version arrives and the old one is kept. Costs a message. */
-  regenerateReply: (conversationId: string) => SendResult;
+  /** Their newest reply again (↻): a new version arrives and the old one is kept. Costs a message. After 👎, `off` says what to fix. */
+  regenerateReply: (conversationId: string, off?: OffReason) => SendResult;
   /** Stops the reply on its way (■): lines already shown stay, the rest never come. */
   stopReply: (conversationId: string) => void;
   /** Asks again for the reply that failed ("Not Delivered", tap). */
@@ -1109,14 +1112,35 @@ export const useAppStore = create<AppState>()(
       },
 
       reactToMessage: (conversationId, messageId, reaction) =>
+        set((s) => {
+          const list = s.messages[conversationId] ?? [];
+          // A happy sticker and a 👎 on the same reply say opposite things: the sticker wins.
+          const undown = isHappy(reaction) ? new Set(replyAround(list, messageId).map((m) => m.id)) : null;
+          return {
+            messages: {
+              ...s.messages,
+              [conversationId]: list.map((m) => {
+                const next = m.id === messageId ? { ...m, reaction } : m;
+                return undown?.has(m.id) && next.rating === 'down' ? { ...next, rating: undefined, offReason: undefined } : next;
+              }),
+            },
+          };
+        }),
+
+      rateReply: (conversationId, rating, reason) => {
+        const exchange = lastExchange(get().messages[conversationId]);
+        if (!exchange?.burst.length) return;
+        const first = exchange.burst[0].id;
+        const ids = new Set(exchange.burst.map((m) => m.id));
         set((s) => ({
           messages: {
             ...s.messages,
             [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
-              m.id === messageId ? { ...m, reaction } : m,
+              ids.has(m.id) ? withRating(m, m.id === first, rating, reason) : m,
             ),
           },
-        })),
+        }));
+      },
 
       deleteMessage: (conversationId, messageId) =>
         set((s) => {
@@ -1156,7 +1180,7 @@ export const useAppStore = create<AppState>()(
         scheduleReply(set, get, conversationId, turn);
       },
 
-      regenerateReply: (conversationId) => {
+      regenerateReply: (conversationId, off) => {
         const state = get();
         const exchange = lastExchange(state.messages[conversationId]);
         if (!exchange?.burst.length || exchange.crisis || state.typing[conversationId]) return 'empty';
@@ -1184,7 +1208,7 @@ export const useAppStore = create<AppState>()(
         for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
           steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`);
         }
-        scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid });
+        scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid, off });
         return 'sent';
       },
 
@@ -4067,12 +4091,14 @@ interface ReplyRequest {
   reach?: string;
   /** Lines already said for this turn (an earlier version, the old answer to an edited message). */
   avoid?: string | readonly string[];
+  /** ↻ after 👎: what was off in the version before (`offCue`). */
+  off?: OffReason;
   /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
   trigger?: TurnTrigger;
 }
 
 function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
-  const { text, lines: given, gain, chips, ideas, reach, avoid, trigger = 'message' } = request;
+  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message' } = request;
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4210,6 +4236,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       threads: state.threads.filter((t) => t.characterId === character.id),
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
       redo: Array.isArray(avoid) ? avoid : undefined,
+      redoOff: off,
     }).then((lines) => {
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
       if (lines) deliver(lines);
