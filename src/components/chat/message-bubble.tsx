@@ -63,14 +63,17 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  // The name the user gave them ("Mom") is the one the chat header shows, so notes use it too.
+  const nickname = useAppStore((s) => s.relationships[character.id]?.nickname);
+  const name = nickname || character.name;
   const mine = message.author === 'me';
   const photoId = message.photoId;
   const named = !mine && showAvatar && !!senderName;
 
   if (message.card === 'helpline') return <HelplineCard />;
-  if (message.card === 'aiNotice') return <AiNotice name={character.name} text={aiNoticeText} />;
+  if (message.card === 'aiNotice') return <AiNotice name={name} text={aiNoticeText} />;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
-  if (message.card === 'notifyOff') return <NotifyOffNote name={character.name.split(' ')[0]} />;
+  if (message.card === 'notifyOff') return <NotifyOffNote name={name.split(' ')[0]} />;
   if (message.card === 'week' && message.week) return <WeekCard week={message.week} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
