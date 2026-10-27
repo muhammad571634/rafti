@@ -164,9 +164,11 @@ export default function ChatRoomScreen() {
       if (target) {
         timers.push(
           setTimeout(() => {
-            const index = (useAppStore.getState().messages[conversationId] ?? []).findIndex((m) => m.id === target);
-            if (index < 0) return;
-            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.4 });
+            const lines = useAppStore.getState().messages[conversationId] ?? [];
+            const at = lines.findIndex((m) => m.id === target);
+            if (at < 0) return;
+            // The list runs newest first.
+            listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
             setFlash(target);
             timers.push(setTimeout(() => setFlash(null), 1600));
           }, 350),
@@ -179,9 +181,9 @@ export default function ChatRoomScreen() {
     }, [conversationId, setActiveConversation]),
   );
 
+  // A new line or typing brings the newest end back into view; on open it is already there.
   useEffect(() => {
-    const timer = setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 80);
-    return () => clearTimeout(timer);
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
   }, [messages?.length, typing]);
 
   const backgroundId = relationship?.backgroundId ?? 'bg_plain';
@@ -189,6 +191,8 @@ export default function ChatRoomScreen() {
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
+  // Newest first for the inverted list: the chat opens on its latest line with nothing to scroll (iOS Messages).
+  const rows = useMemo(() => [...data].reverse(), [data]);
 
   // Their newest reply: ↻ under it, then ‹ › and a swipe once there are versions (canvas
   // `ChatRegen.dc.html`). A crisis reply, with the helpline card, is never redone.
@@ -228,7 +232,7 @@ export default function ChatRoomScreen() {
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
-      const run = runOf(data, index);
+      const run = runOf(data, data.length - 1 - index);
       const bubble = (
         <MessageBubble
           message={item}
@@ -416,12 +420,15 @@ export default function ChatRoomScreen() {
             {!artWallpaper ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
             <FlatList
               ref={listRef}
-              data={data}
+              data={rows}
+              inverted
               keyExtractor={(item) => item.id}
-              contentContainerStyle={[styles.list, { paddingTop: headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
+              // Inverted: the bottom padding is the room under the header at the top of the screen.
+              contentContainerStyle={[styles.list, { paddingBottom: headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
-              ListFooterComponent={
+              // The header of an inverted list sits under the newest line.
+              ListHeaderComponent={
                 <>
                   {canRedo || !block ? (
                     <ReplyControls
@@ -442,11 +449,10 @@ export default function ChatRoomScreen() {
                   {typing ? <TypingRow characters={[character]} /> : null}
                 </>
               }
-              onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {
                 listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
-                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.4 }), 120);
+                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }), 120);
               }}
             />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
@@ -655,7 +661,7 @@ const styles = StyleSheet.create({
     backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)',
   },
   missing: { padding: space.xl },
-  list: { paddingBottom: space.sm },
+  list: { paddingTop: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
   // iOS-style notice over the bottom of the chat, in ink with light text.
   hudWrap: { position: 'absolute', left: 0, right: 0, bottom: space.md, alignItems: 'center' },

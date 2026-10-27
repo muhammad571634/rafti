@@ -30,7 +30,8 @@ export const initialSettings: AppSettings = {
   nightCall: true,
   morningCallTime: '08:00',
   nightCallTime: '21:00',
-  chatAnimation: true,
+  // Off: new lines appear in place, as in iOS Messages (owner, 2026-10-27); Profile can turn it on.
+  chatAnimation: false,
   haptics: true,
   notificationPreview: true,
   notifyPlans: true,

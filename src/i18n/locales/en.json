@@ -397,7 +397,6 @@
     "rewindTitle_other": "Delete {{count}} later messages?",
     "deleteMessage": "Delete for me",
     "react": "React with {{name}}",
-    "spent": "{{count}} shell spent",
     "reactions": {
       "love": "love",
       "laugh": "laughter",

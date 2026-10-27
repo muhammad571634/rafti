@@ -3111,7 +3111,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 11,
+      version: 12,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -3171,6 +3171,8 @@ export const useAppStore = create<AppState>()(
         }
         // v11: their texts read like texts (owner, 2026-10-26): the words show on the lock screen.
         if (version < 11 && state.settings) state.settings = { ...state.settings, notificationPreview: true };
+        // v12: a calm chat (owner, 2026-10-27): new lines no longer slide in unless turned back on.
+        if (version < 12 && state.settings) state.settings = { ...state.settings, chatAnimation: false };
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),

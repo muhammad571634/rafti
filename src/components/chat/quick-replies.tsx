@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Anim, PressableScale, Txt } from '@/components/ui';
 import { colors, radius, space } from '@/theme';
@@ -24,7 +23,7 @@ export function QuickReplies({
   const { t } = useTranslation();
   return (
     // One row that scrolls sideways when it does not fit: wrapping cut the last pill off on Android.
-    <Animated.View entering={FadeIn.duration(200)}>
+    <View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -46,7 +45,7 @@ export function QuickReplies({
           </PressableScale>
         ))}
       </ScrollView>
-    </Animated.View>
+    </View>
   );
 }
 

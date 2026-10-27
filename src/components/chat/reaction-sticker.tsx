@@ -19,8 +19,8 @@ import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 
 interface ReactionStickerProps {
   name: ReactionName;
-  /** `loop` keeps moving (the reaction picker); `once` plays twice and rests (under a message). */
-  play?: 'loop' | 'once';
+  /** `loop` keeps moving (the reaction picker); `still` stands quiet (under a message, iOS tapback). */
+  play?: 'loop' | 'still';
   /** Size and position; the sticker fills it. */
   style?: StyleProp<ViewStyle>;
 }
@@ -35,8 +35,8 @@ const tick = (to: number, duration: number) => withTiming(to, { duration, easing
  * love beats like a heart, laugh shakes, wow pops, sad sways slowly, hyped jumps,
  * thumbs gives a cool nod. `lift` is a share of the sticker's height.
  */
-function start(name: ReactionName, { scale, rotate, lift }: Motion, times: number) {
-  const repeat = (beat: number) => withRepeat(beat, times);
+function start(name: ReactionName, { scale, rotate, lift }: Motion) {
+  const repeat = (beat: number) => withRepeat(beat, -1);
   switch (name) {
     case 'love':
       scale.value = repeat(
@@ -87,8 +87,8 @@ export function ReactionSticker({ name, play = 'loop', style }: ReactionStickerP
   const height = useSharedValue(0);
 
   useEffect(() => {
-    if (reduceMotion) return;
-    start(name, { scale, rotate, lift }, play === 'loop' ? -1 : 2);
+    if (reduceMotion || play === 'still') return;
+    start(name, { scale, rotate, lift });
     return () => {
       cancelAnimation(scale);
       cancelAnimation(rotate);

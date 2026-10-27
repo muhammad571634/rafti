@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
@@ -102,7 +102,7 @@ export const MessageBubble = memo(function MessageBubble({
       {message.reaction && message.reaction in REACTION_STICKERS ? (
         <ReactionSticker
           name={message.reaction as ReactionName}
-          play="once"
+          play="still"
           style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
         />
       ) : null}
@@ -112,17 +112,17 @@ export const MessageBubble = memo(function MessageBubble({
     message.kind === 'voice' ? (
       <VoiceBubble message={message} mine={mine} tail={runEnd} wide={named} />
     ) : !onLongPress && !photoId ? (
-      // Nothing to press (a stream's lines): a plain view, since a disabled PressableScale is drawn faded.
+      // Nothing to press (a stream's lines): a plain view.
       <View style={holdStyle}>{inner}</View>
     ) : (
-      <PressableScale
-        scaleTo={0.97}
+      // Still under the finger, as in iOS Messages: a hold opens the menu, nothing shrinks or dims.
+      <Pressable
         delayLongPress={280}
         onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
         onLongPress={onLongPress ? () => onLongPress(message) : undefined}
         style={holdStyle}>
         {inner}
-      </PressableScale>
+      </Pressable>
     );
 
   return (
@@ -207,10 +207,10 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
 
   return (
     <View style={[styles.voiceWrap, mine && styles.voiceWrapMine, wide && styles.wide]}>
-      <PressableScale
+      <Pressable
         onPress={play}
         onLongPress={() => setShowTranscript((v) => !v)}
-        scaleTo={0.95}
+        accessibilityRole="button"
         accessibilityLabel={t('chat.tapToPlay')}
         style={[
           styles.bubble,
@@ -235,7 +235,7 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
         <Txt style={styles.voiceLength} color={faint}>
           {fmtDuration(seconds)}
         </Txt>
-      </PressableScale>
+      </Pressable>
 
       {showTranscript && message.transcript ? (
         <View style={[styles.bubble, styles.transcript]}>
