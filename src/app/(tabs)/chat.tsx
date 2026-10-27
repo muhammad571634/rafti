@@ -23,6 +23,7 @@ import { ChatMenu, type ChatMenuTarget } from '@/components/chat/chat-menu';
 import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
 import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
+import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
@@ -123,7 +124,10 @@ export default function ChatListScreen() {
   }, [asked, router]);
   /** The chat a long press opened the menu for. */
   const [held, setHeld] = useState<ChatItem | null>(null);
-  const blurTarget = useRef<ViewInstance>(null);
+  // On Android the tab bar blurs this same target (one target per screen, never nested).
+  const tabTarget = useTabBlurTarget();
+  const ownTarget = useRef<ViewInstance>(null);
+  const blurTarget = tabTarget ?? ownTarget;
 
   const conversations = useAppStore((s) => s.conversations);
   const groups = useAppStore((s) => s.groups);

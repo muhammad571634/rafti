@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView, BlurView } from 'expo-blur';
 import { Redirect, Tabs } from 'expo-router';
 import { createRef, useCallback, useRef, type ReactNode, type RefObject } from 'react';
@@ -6,24 +5,31 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PressableScale, Txt } from '@/components/ui';
+import { PressableScale, SFIcon, Txt } from '@/components/ui';
+import { TabBlurTarget } from '@/hooks/use-tab-blur-target';
 import { useTabsGate, useUnreadTotal } from '@/hooks/use-tabs-gate';
 import { aurora, colors, isDark, radius, shadows, space } from '@/theme';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+type Icon = React.ComponentProps<typeof SFIcon>;
 type BlurTarget = RefObject<ViewInstance | null>;
 
 /**
- * Each tab's line icon and the filled twin it shows while current: the Ionicons closest to the
- * SF Symbols the iOS bar uses (`house`, `bubble.left.and.bubble.right`, `heart`, `magnifyingglass`).
+ * Each tab's line icon and the filled twin it shows while current: the iOS bar's SF Symbols, and
+ * the Ionicons closest to them where SF Symbols may not be drawn.
  */
-const ICONS: Record<string, { off: IoniconName; on: IoniconName }> = {
-  index: { off: 'home-outline', on: 'home' },
-  chat: { off: 'chatbubbles-outline', on: 'chatbubbles' },
-  us: { off: 'heart-outline', on: 'heart' },
+const ICONS: Record<string, { off: Pick<Icon, 'ios' | 'icon'>; on: Pick<Icon, 'ios' | 'icon'> }> = {
+  index: { off: { ios: 'house', icon: 'home-outline' }, on: { ios: 'house.fill', icon: 'home' } },
+  chat: {
+    off: { ios: 'bubble.left.and.bubble.right', icon: 'chatbubbles-outline' },
+    on: { ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' },
+  },
+  us: { off: { ios: 'heart', icon: 'heart-outline' }, on: { ios: 'heart.fill', icon: 'heart' } },
 };
+
+/** Screens that render their own BlurTargetView with `useTabBlurTarget()`'s ref. */
+const OWN_TARGET = new Set(['chat']);
 
 /** The bar's height; `TAB_BAR_HEIGHT` leaves room for it. */
 const BAR = 62;
@@ -58,9 +64,15 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{ headerShown: false }}
       screenLayout={({ route, children }) => (
-        <BlurTargetView ref={targetFor(route.key)} style={styles.screen}>
-          {children}
-        </BlurTargetView>
+        <TabBlurTarget.Provider value={targetFor(route.key)}>
+          {OWN_TARGET.has(route.name) ? (
+            children
+          ) : (
+            <BlurTargetView ref={targetFor(route.key)} style={styles.screen}>
+              {children}
+            </BlurTargetView>
+          )}
+        </TabBlurTarget.Provider>
       )}
       tabBar={(props) => <GlassTabBar {...props} targetFor={targetFor} />}>
       <Tabs.Screen name="index" />
@@ -135,7 +147,7 @@ function GlassTabBar({ state, emitter, navigateToTab, targetFor }: TabBarProps &
                 accessibilityState={{ selected: focused }}
                 onPress={() => open(route.key, focused)}>
                 <View>
-                  <Ionicons name={focused ? icon.on : icon.off} size={24} color={tint} />
+                  <SFIcon {...(focused ? icon.on : icon.off)} size={24} color={tint} />
                   {hasUnread ? <View style={styles.dot} /> : null}
                 </View>
                 <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2}>
@@ -158,7 +170,7 @@ function GlassTabBar({ state, emitter, navigateToTab, targetFor }: TabBarProps &
             onPress={() => open(find.route.key, find.focused)}>
             {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
             <View collapsable={false} style={[styles.roundInner, find.focused && styles.itemOn]}>
-              <Ionicons name="search" size={24} color={find.focused ? colors.primary : colors.text} />
+              <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? colors.primary : colors.text} />
             </View>
           </PressableScale>
         </Glass>
