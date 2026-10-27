@@ -67,7 +67,7 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd, style }: P
           </>
         ) : null}
         {onAdd ? (
-          <PressableScale style={styles.add} scaleTo={0.88} accessibilityLabel={t('us.add')} onPress={onAdd}>
+          <PressableScale style={styles.add} scaleTo={0.88} hitSlop={6} accessibilityLabel={t('us.add')} onPress={onAdd}>
             <Ionicons name="add" size={20} color={colors.textOnPrimary} />
           </PressableScale>
         ) : null}
@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.xs, marginBottom: space.sm },
   toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.xs, minHeight: 44 },
-  nav: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  // No fill, so the box itself is the 44pt tap target.
+  nav: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   add: {
     width: 32,
     height: 32,

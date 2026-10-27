@@ -165,7 +165,14 @@ export default function DiaryWriteScreen() {
             {images.length ? (
               <View style={styles.images}>
                 {images.map((uri) => (
-                  <PressableScale key={uri} onLongPress={() => setImages((prev) => prev.filter((u) => u !== uri))}>
+                  <PressableScale
+                    key={uri}
+                    accessibilityRole="image"
+                    accessibilityLabel={t('diary.photo')}
+                    accessibilityHint={t('diary.removePhotoHint')}
+                    accessibilityActions={[{ name: 'longpress', label: t('diary.removePhoto') }]}
+                    onAccessibilityAction={() => setImages((prev) => prev.filter((u) => u !== uri))}
+                    onLongPress={() => setImages((prev) => prev.filter((u) => u !== uri))}>
                     <Image source={{ uri }} style={styles.image} contentFit="cover" />
                   </PressableScale>
                 ))}

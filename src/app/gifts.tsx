@@ -250,6 +250,7 @@ export default function GiftsScreen() {
               setRedeemError(null);
             }}
             placeholder="ABC234"
+            accessibilityLabel={t('gifts.haveCode')}
             placeholderTextColor={colors.textFaint}
             autoCapitalize="characters"
             autoCorrect={false}

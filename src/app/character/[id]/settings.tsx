@@ -335,6 +335,7 @@ export default function CharacterSettingsScreen() {
           value={draftName}
           onChangeText={setDraftName}
           placeholder={character.name}
+          accessibilityLabel={t('characterSettings.nickname')}
           placeholderTextColor={colors.textFaint}
           style={styles.input}
           maxLength={30}

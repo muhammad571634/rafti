@@ -71,6 +71,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
               {month.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
             </Txt>
             <PressableScale
+              hitSlop={5}
               style={[styles.nav, allow === 'future' && atFirstMonth && styles.off]}
               scaleTo={0.88}
               disabled={allow === 'future' && atFirstMonth}
@@ -79,6 +80,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
               <Ionicons name="chevron-back" size={18} color={colors.text} />
             </PressableScale>
             <PressableScale
+              hitSlop={5}
               style={[styles.nav, allow === 'past' && atCurrentMonth && styles.off]}
               scaleTo={0.88}
               disabled={allow === 'past' && atCurrentMonth}
