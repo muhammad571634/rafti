@@ -3118,7 +3118,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 12,
+      version: 13,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -3180,6 +3180,15 @@ export const useAppStore = create<AppState>()(
         if (version < 11 && state.settings) state.settings = { ...state.settings, notificationPreview: true };
         // v12: a calm chat (owner, 2026-10-27): new lines no longer slide in unless turned back on.
         if (version < 12 && state.settings) state.settings = { ...state.settings, chatAnimation: false };
+        // v13: sample level-up moments end at the seeded level, under its tier title.
+        if (version < 13 && state.moments) {
+          const seeds = new Map(seedMoments.filter((m) => m.kind === 'levelUp').map((m) => [m.id, m]));
+          const saved = new Set(state.moments.map((m) => m.id));
+          state.moments = [
+            ...state.moments.map((m) => seeds.get(m.id) ?? m),
+            ...[...seeds.values()].filter((m) => !saved.has(m.id)),
+          ];
+        }
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),
