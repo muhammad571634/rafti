@@ -1,5 +1,41 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z5. NEXT: Backend B1.3, messages in SQLite and on the server (2026-10-27, D115, not started)
+
+**Owner, 2026-10-27:** iOS first: the App Store launch comes first, Google Play after. Keep testing on
+the current Gemini key (Google AI Studio); the owner says when a new key comes, never wait for it.
+No B1.3 code is written yet. Do it in two commits, each tested and pushed:
+
+- **B1.3a, messages into `expo-sqlite`** (in Expo Go, no config plugin; `npx expo install expo-sqlite --
+  --legacy-peer-deps`, docs `versions/v58.0.0/sdk/sqlite`). Today all messages sit in the one
+  AsyncStorage save (`rafti.store`), cut by `capMessages` to 300 a chat / 4000 in all, and the whole
+  save is rewritten on every change. Plan (worked out, not coded):
+  1. `src/lib/message-diff.ts` (pure, `node:test`): diff two `messages` records by reference into
+     upserts (in array order), deleted ids and dropped chats.
+  2. `src/store/message-db.ts`: `messages.db`, WAL, `PRAGMA user_version` migrations, table
+     `messages(id primary key, conversation_id, created_at, body json)`, read back `order by rowid`
+     (messages are only appended, edited in place or cut from the end; upserts keep the rowid). One
+     exclusive transaction per flush; a meta flag says the old save was imported.
+     `message-db.web.ts` does nothing, so web keeps the old save.
+  3. Store: `partialize` writes `messages: {}` once SQLite holds them (`capMessages` while it does not);
+     `onRehydrateStorage` first imports the old save once, or loads from SQLite, then runs today's
+     hydration work and sets `hydrated`. A subscriber diffs `messages` against the last saved snapshot,
+     flushes about 250 ms later and when the app goes to the background, and moves the snapshot only
+     after a write succeeds. Load every message for now; paging comes with B1.3b.
+  4. Profile (dev): a "Messages on this phone" count, so the phone shows the import worked.
+- **B1.3b, the server keeps the chats:** SQLite rows that are not yet sent go to
+  `POST /v1/messages/sync` (upserts and deletes, the message JSON in a new `body jsonb` column). A new
+  install restores with `GET /v1/messages?after=`. `DELETE /v1/account` deletes the server data too
+  (App Store 5.1.1(v); today `deleteAccount` only resets the phone).
+- **After B1.3, for the App Store:** Sign in with Apple (keeps the anonymous account across devices),
+  then B3 purchases through StoreKit.
+
+**The laptop server** (8787, minimized "Sigmazam server" window) runs `npm run dev --prefix
+C:\Users\joray\BIMOBIMO\server` with the Supabase vars from the Windows user env, `DEV_GRANTS=1` and
+`GEMINI_API_KEY` read at launch from `.claude/worktrees/a4-push-today/server/.env.local` (never copy
+keys into files). `SUPABASE_ACCESS_TOKEN` (user env) has Database read-write, Migrations, Advisors and
+Logs. Run the advisors after each migration (`/v1/projects/{ref}/advisors/security|performance`).
+
 ### 0z4. Backend B1.2: the wallet on the server (2026-10-27, D114)
 
 Migration `20261027174110_b1_wallet.sql` (wallet functions, free bucket, check-in, wheel) and the
