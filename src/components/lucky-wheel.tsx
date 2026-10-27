@@ -8,11 +8,20 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { PressableScale, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, isDark, palette, radius } from '@/theme';
+import { colors, fonts, isDark, palette, radius, systemColors } from '@/theme';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
-/** Calm alternating slices; only the jackpot gets colour (mint). */
-const FILLS = [colors.surfaceAlt, colors.surface];
+/** Pastel iOS colours, led by Sigmazam's peach brand accent. */
+const FILLS = [
+  colors.primaryFill,
+  systemColors.purple,
+  systemColors.mint,
+  systemColors.yellow,
+  systemColors.pink,
+  systemColors.blue,
+  systemColors.green,
+];
+const FILL_OPACITY = isDark ? 0.72 : 0.38;
 const SPIN_MS = 3600;
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
@@ -90,19 +99,20 @@ export function LuckyWheel({
               const rad = (mid * Math.PI) / 180;
               const tx = r + r * 0.64 * Math.cos(rad);
               const ty = r + r * 0.64 * Math.sin(rad);
-              const jackpot = value === Math.max(...WHEEL_SEGMENTS);
+              const labelColor = isDark && [0, 2, 3, 6].includes(i) ? palette.gray900 : colors.text;
               return (
                 <G key={i}>
                   <Path
                     d={slice(r, r, r - 1, from, from + SEGMENT)}
-                    fill={jackpot ? (isDark ? colors.accentSoft : palette.mint50) : FILLS[i % FILLS.length]}
-                    stroke={colors.border}
-                    strokeWidth={1}
+                    fill={FILLS[i % FILLS.length]}
+                    fillOpacity={FILL_OPACITY}
+                    stroke={colors.surface}
+                    strokeWidth={1.5}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
-                    fill={jackpot ? colors.bondText : colors.text}
+                    fill={labelColor}
                     fontSize={size * 0.075}
                     fontFamily={fonts.display}
                     fontWeight="700"
