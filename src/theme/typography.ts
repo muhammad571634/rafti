@@ -31,8 +31,9 @@ export const type = {
   h2: { fontSize: 24, fontWeight: weight.heavy, letterSpacing: -0.3, lineHeight: 30 } as Variant,
   h3: { fontSize: 19, fontWeight: weight.bold, letterSpacing: -0.1 } as Variant,
   title: { fontSize: 17, fontWeight: weight.bold } as Variant,
-  body: { fontSize: 16, fontWeight: weight.regular, lineHeight: 22 } as Variant,
-  bodyStrong: { fontSize: 16, fontWeight: weight.bold, lineHeight: 22 } as Variant,
+  // iOS Body: 17 pt on a 22 pt line.
+  body: { fontSize: 17, fontWeight: weight.regular, lineHeight: 22 } as Variant,
+  bodyStrong: { fontSize: 17, fontWeight: weight.bold, lineHeight: 22 } as Variant,
   small: { fontSize: 14, fontWeight: weight.regular, lineHeight: 19 } as Variant,
   smallStrong: { fontSize: 14, fontWeight: weight.bold, lineHeight: 19 } as Variant,
   caption: { fontSize: 12, fontWeight: weight.semibold, letterSpacing: 0.1 } as Variant,

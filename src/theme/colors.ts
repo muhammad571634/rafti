@@ -240,7 +240,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
 
 /**
  * Dark mode follows the phone, read once at launch: every screen builds its styles from
- * `colors` when it loads, so switching the phone's theme applies on the next launch.
+ * `colors` when it loads, so switching the phone's theme reloads the app (`useThemeReload`).
  * Paper (diary pages, polaroids, board notes) stays light in both themes, so text on it
  * uses paper ink (`paperText`, `palette.gray*`), never `text`, which turns light here.
  */

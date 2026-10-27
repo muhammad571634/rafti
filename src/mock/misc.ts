@@ -104,13 +104,15 @@ export const memories: MemoryItem[] = [
 /** Seed for the [Us] timeline. */
 export const moments: Moment[] = [
   { id: 'mo_1', characterId: 'c_theo', kind: 'met', createdAt: daysAgo(25) },
-  { id: 'mo_2', characterId: 'c_theo', kind: 'levelUp', createdAt: daysAgo(9), params: { level: 2, title: 'Acquaintance' } },
+  // Level-up moments carry the tier title, as `addMoment` does, and end at the seeded level.
+  { id: 'mo_2', characterId: 'c_theo', kind: 'levelUp', createdAt: daysAgo(9), params: { level: 10, title: 'More than friends' } },
   { id: 'mo_3', characterId: 'c_theo', kind: 'call', createdAt: daysAgo(4), params: { duration: '2:08' } },
   { id: 'mo_4', characterId: 'c_theo', kind: 'diary', createdAt: hoursAgo(2) },
   { id: 'mo_5', characterId: 'c_seren', kind: 'met', createdAt: daysAgo(96) },
   { id: 'mo_6', characterId: 'c_seren', kind: 'secretNote', createdAt: daysAgo(1) },
   { id: 'mo_7', characterId: 'c_oppa', kind: 'met', createdAt: daysAgo(180) },
-  { id: 'mo_8', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(12), params: { level: 6, title: 'Crush' } },
+  { id: 'mo_9', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(70), params: { level: 16, title: 'Beloved' } },
+  { id: 'mo_8', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(12), params: { level: 32, title: 'Beloved' } },
 ];
 
 export const schedules: ScheduleItem[] = [

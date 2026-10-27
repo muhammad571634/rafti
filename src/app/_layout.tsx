@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { Button, Mascot, Txt } from '@/components/ui';
+import { useThemeReload } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -24,6 +25,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
+  useThemeReload();
 
   useEffect(() => {
     initI18n()
