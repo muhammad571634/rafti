@@ -1,10 +1,28 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
+import { DAILY_CHECK_IN, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import { cleanLocale, cleanTimeZone, createApp } from './app.ts';
-import type { BootstrapInput, BootstrapResult, Db, UsageEvent } from './db/types.ts';
+import { WalletError, type BootstrapInput, type BootstrapResult, type Db, type UsageEvent, type WalletState } from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+
+/** A Db for one test: "good" is user-1's token, and every call the test does not fill in fails. */
+function makeDb(overrides: Partial<Db>): Db {
+  const unused = () => Promise.reject(new Error('unused in this test'));
+  return {
+    name: 'fake',
+    userIdFromToken: async (token) => (token === 'good' ? 'user-1' : null),
+    bootstrap: unused,
+    logUsage: async () => {},
+    walletState: unused,
+    walletSpend: unused,
+    walletCredit: unused,
+    walletCheckIn: unused,
+    walletSpin: unused,
+    ...overrides,
+  };
+}
 
 const kai = { id: 'c_kai', name: 'Kai', handle: '@k', bio: 'Swimmer.', category: 'school', accentIndex: 0, voiceReady: false, isOfficial: true, greeting: 'Hey!', tags: ['cheerful'] };
 const body = {
@@ -67,14 +85,11 @@ describe('the cost log of a reply', () => {
     complete: async () => ({ text: '{"messages":["Hi!"]}', model: 'gemini-3.1-flash-lite', usage: { input: 1000, cached: 400, output: 100 } }),
   };
   const logged: UsageEvent[] = [];
-  const db: Db = {
-    name: 'fake',
-    userIdFromToken: async (token) => (token === 'good' ? 'user-1' : null),
-    bootstrap: async () => Promise.reject(new Error('unused')),
+  const db = makeDb({
     logUsage: async (event) => {
       logged.push(event);
     },
-  };
+  });
   const send = (headers: Record<string, string> = {}) =>
     createApp(provider, { timeoutMs: 1000, db }).request('/v1/chat/reply', {
       method: 'POST',
@@ -114,17 +129,93 @@ describe('the cost log of a reply', () => {
   });
 });
 
+describe('the wallet API', () => {
+  const state: WalletState = { shells: 100, free: null, trialUsed: false, boughtShells: false, today: '2026-10-27', checkIn: { lastDay: null, streak: 0 }, spinsToday: 0 };
+  const call = (app: ReturnType<typeof createApp>, path: string, json?: unknown, token = 'good') =>
+    app.request(path, {
+      method: json === undefined && path === '/v1/wallet' ? 'GET' : 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+      body: json === undefined ? undefined : JSON.stringify(json),
+    });
+
+  it('needs a database and a signed-in user', async () => {
+    assert.equal((await call(createApp(null, { timeoutMs: 1000 }), '/v1/wallet')).status, 503);
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ walletState: async () => state }) });
+    assert.equal((await call(app, '/v1/wallet', undefined, 'bad')).status, 401);
+    assert.deepEqual(await (await call(app, '/v1/wallet')).json(), state);
+  });
+
+  it('spends with a checked amount and reason, and keeps the app’s key apart from the server’s', async () => {
+    const spends: unknown[] = [];
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ walletSpend: async (_user, request) => (spends.push(request), state) }) });
+    for (const bad of [{ amount: 0, reason: 'chat', key: 'k' }, { amount: 1, reason: 'welcome', key: 'k' }, { amount: 1, reason: 'chat' }, { amount: 2000, reason: 'chat', key: 'k' }]) {
+      assert.equal((await call(app, '/v1/wallet/spend', bad)).status, 400, JSON.stringify(bad));
+    }
+    assert.equal((await call(app, '/v1/wallet/spend', { amount: 3, reason: 'note', key: 'daily:2026-10-28', characterId: 'c_kai' })).status, 200);
+    assert.deepEqual(spends, [{ amount: 3, reason: 'note', key: 'spend:daily:2026-10-28', characterId: 'c_kai' }]);
+  });
+
+  it('answers 402 with the real wallet when shells run out', async () => {
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({ walletSpend: async () => Promise.reject(new WalletError('noShells')), walletState: async () => ({ ...state, shells: 0 }) }),
+    });
+    const res = await call(app, '/v1/wallet/spend', { amount: 1, reason: 'chat', key: 'm1' });
+    assert.equal(res.status, 402);
+    assert.deepEqual(await res.json(), { error: 'noShells', wallet: { ...state, shells: 0 } });
+  });
+
+  it('makes the wallet first when bootstrap never ran', async () => {
+    let made = false;
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({
+        bootstrap: async () => ((made = true), {} as BootstrapResult),
+        walletState: async () => (made ? state : Promise.reject(new WalletError('noWallet'))),
+      }),
+    });
+    assert.equal((await call(app, '/v1/wallet')).status, 200);
+    assert.equal(made, true);
+  });
+
+  it('runs the check-in and the wheel with the app’s own numbers', async () => {
+    const rules: unknown[] = [];
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({
+        walletCheckIn: async (_user, r) => (rules.push(r), { amount: 30, day: 1, wallet: state }),
+        walletSpin: async (_user, r) => (rules.push(r), { index: 2, reward: 10, wallet: state }),
+      }),
+    });
+    assert.equal(((await (await call(app, '/v1/wallet/check-in', {})).json()) as { amount: number }).amount, 30);
+    assert.equal(((await (await call(app, '/v1/wallet/spin', {})).json()) as { index: number }).index, 2);
+    assert.deepEqual((rules[0] as { ladder: unknown }).ladder, DAILY_CHECK_IN);
+    assert.deepEqual((rules[1] as { weights: unknown }).weights, WHEEL_WEIGHTS);
+  });
+
+  it('takes grants only on a test server that allows them; ads and shares burn, purchases stay', async () => {
+    const grants: unknown[] = [];
+    const db = makeDb({ walletCredit: async (_user, request) => (grants.push(request), state) });
+    assert.equal((await call(createApp(null, { timeoutMs: 1000, db }), '/v1/wallet/grant', { amount: 560, reason: 'purchase', key: 'p1' })).status, 403);
+    const app = createApp(null, { timeoutMs: 1000, db, devGrants: true });
+    assert.equal((await call(app, '/v1/wallet/grant', { amount: 30, reason: 'daily', key: 'd1' })).status, 400);
+    assert.equal((await call(app, '/v1/wallet/grant', { amount: 560, reason: 'purchase', key: 'p1' })).status, 200);
+    assert.equal((await call(app, '/v1/wallet/grant', { amount: 10, reason: 'ad', key: 'a1' })).status, 200);
+    assert.deepEqual(grants, [
+      { amount: 560, reason: 'purchase', key: 'grant:p1', free: false },
+      { amount: 10, reason: 'ad', key: 'grant:a1', free: true },
+    ]);
+  });
+});
+
 describe('POST /v1/session/bootstrap', () => {
   const seen: BootstrapInput[] = [];
-  const fakeDb: Db = {
-    name: 'fake',
-    userIdFromToken: async (token) => (token === 'good' ? 'user-1' : null),
+  const fakeDb = makeDb({
     async bootstrap(userId, input) {
       seen.push(input);
       return { isNew: true, profile: { id: userId }, wallet: { shells: 100 }, subscription: null } as unknown as BootstrapResult;
     },
-    logUsage: async () => {},
-  };
+  });
   const call = (db: Db | null, headers: Record<string, string>, body?: unknown) =>
     createApp(null, { timeoutMs: 1000, db }).request('/v1/session/bootstrap', {
       method: 'POST',

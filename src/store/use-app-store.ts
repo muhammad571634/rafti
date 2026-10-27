@@ -30,8 +30,9 @@ import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
-import { accessToken } from '@/ai/account';
-import { apiBase, serverReply } from '@/ai/server';
+import { accessToken, withAccount } from '@/ai/account';
+import { apiBase, serverReply, serverWallet } from '@/ai/server';
+import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
@@ -563,7 +564,10 @@ interface AppState {
   redeemInvite: (code: string) => 'ok' | 'invalid' | 'own' | 'used';
   /** Pays a pending invite when its day has passed; returns what was paid (0 otherwise). */
   settleInvite: () => number;
-  spinWheel: () => { index: number; reward: number } | null;
+  /** The wheel's result, drawn by the server when the wallet lives there (Profile → Server wallet). */
+  spinWheel: () => Promise<{ index: number; reward: number } | null>;
+  /** Development (B1.2): reads the wallet from the server and takes it as the truth. */
+  syncServerWallet: () => Promise<void>;
   /**
    * Starts a plan, or with `trial` the store's free days of Basic (once per account).
    * Real builds call this after StoreKit / Play Billing and the server's receipt check.
@@ -2020,10 +2024,12 @@ export const useAppStore = create<AppState>()(
           wallet: { ...s.wallet, shells: s.wallet.shells - amount, free },
           ledger: log(s.ledger, -amount, reason, characterId),
         }));
+        // With the wallet on the server the spend shows at once and the server's answer settles it.
+        if (serverWalletOn(get)) syncWallet(set, (token) => serverWallet.spend(token, { amount, reason, key: uid('sp'), characterId }));
         return true;
       },
 
-      addShells: (amount, reason = 'purchase') =>
+      addShells: (amount, reason = 'purchase') => {
         set((s) => ({
           wallet: {
             ...s.wallet,
@@ -2032,7 +2038,10 @@ export const useAppStore = create<AppState>()(
             boughtShells: s.wallet.boughtShells || reason === 'purchase',
           },
           ledger: log(s.ledger, amount, reason),
-        })),
+        }));
+        // Earnings with no rule on the server yet; a server that takes none puts the balance back.
+        if (serverWalletOn(get)) syncWallet(set, (token) => serverWallet.grant(token, { amount, reason, key: uid('gr') }));
+      },
 
       expireFreeShells: () => {
         const { wallet } = get();
@@ -2054,6 +2063,18 @@ export const useAppStore = create<AppState>()(
         payPlanShells(set, get);
         // An invite code entered on an earlier day pays out on this open.
         get().settleInvite();
+        // With the wallet on the server, the server checks in (in the user's time zone) and the
+        // shells arrive quietly a moment later, as they do here.
+        if (serverWalletOn(get)) {
+          void withAccount((token) => serverWallet.checkIn(token)).then((result) => {
+            if (!result) return;
+            applyServerWallet(set, result.wallet);
+            if (result.amount > 0) {
+              set((s) => ({ ledger: log(s.ledger, result.amount, 'daily'), daily: { ...s.daily, checkInAmount: result.amount } }));
+            }
+          });
+          return 0;
+        }
         const today = todayKey();
         const { daily } = get();
         const { day, claimed } = checkInStatus(daily, today);
@@ -2094,13 +2115,23 @@ export const useAppStore = create<AppState>()(
         return INVITE_REWARD;
       },
 
-      spinWheel: () => {
+      spinWheel: async () => {
         const today = todayKey();
         const daily = get().daily;
         const used = daily.spinDay === today ? daily.spinsUsed : 0;
 
         // One free spin a day, and no more: the app shows no ads (owner, 2026-10-22).
         if (used >= FREE_SPINS_PER_DAY) return null;
+
+        // With the wallet on the server, the server draws the segment and pays it.
+        if (serverWalletOn(get)) {
+          const result = await withAccount((token) => serverWallet.spin(token));
+          if (!result) return null;
+          applyServerWallet(set, result.wallet);
+          if (result.index == null) return null;
+          set((s) => ({ ledger: log(s.ledger, result.reward, 'spin') }));
+          return { index: result.index, reward: result.reward };
+        }
 
         const index = weightedIndex(WHEEL_WEIGHTS);
         const reward = WHEEL_SEGMENTS[index];
@@ -2112,6 +2143,11 @@ export const useAppStore = create<AppState>()(
           ledger: log(s.ledger, reward, 'spin'),
         }));
         return { index, reward };
+      },
+
+      syncServerWallet: async () => {
+        const wallet = await withAccount((token) => serverWallet.state(token));
+        if (wallet) applyServerWallet(set, wallet);
       },
 
       subscribe: (plan, trial = false) => {
@@ -3392,6 +3428,41 @@ export const displayName = (character: Character, relationship?: Relationship) =
 type Setter = (fn: (s: AppState) => Partial<AppState>) => void;
 type Getter = () => AppState;
 type RawSetter = (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void;
+
+/** Development (B1.2): the wallet lives on the local server (Profile → Server wallet). */
+const serverWalletOn = (get: Getter) => !!get().settings.serverWallet && !!apiBase();
+
+/** Wallet calls still out: only the last answer is applied, as it holds every booking before it. */
+let walletCallsOut = 0;
+
+/**
+ * Sends one wallet call and takes the server's wallet as the truth once no other call is out. A
+ * refused or failed call reads the wallet again, so the balance shown never drifts from the server.
+ */
+function syncWallet(set: Setter, run: (accessToken: string) => Promise<WalletState | null>) {
+  walletCallsOut++;
+  void withAccount(run)
+    .then((wallet) => wallet ?? withAccount((token) => serverWallet.state(token)))
+    .catch(() => null)
+    .then((wallet) => {
+      walletCallsOut--;
+      if (wallet && walletCallsOut === 0) applyServerWallet(set, wallet);
+    });
+}
+
+/** The server's wallet into the store: the balance, today's free bucket, the check-in and wheel days. */
+function applyServerWallet(set: Setter, wallet: WalletState) {
+  set((s) => ({
+    wallet: { ...s.wallet, shells: wallet.shells, free: wallet.free ?? undefined, boughtShells: s.wallet.boughtShells || wallet.boughtShells },
+    daily: {
+      ...s.daily,
+      lastLoginDay: wallet.checkIn.lastDay ?? s.daily.lastLoginDay,
+      checkInDay: wallet.checkIn.lastDay ? wallet.checkIn.streak : s.daily.checkInDay,
+      spinDay: wallet.today,
+      spinsUsed: wallet.spinsToday,
+    },
+  }));
+}
 
 /** Pays the plan's monthly shells once per period (`shellGrant`); they never burn. */
 function payPlanShells(set: Setter, get: Getter) {

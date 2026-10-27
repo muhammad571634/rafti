@@ -187,7 +187,7 @@ export default function GiftsScreen() {
           <LuckyWheel
             size={wheelSize}
             disabled={!canSpin}
-            onSpin={() => spinWheel()?.index ?? null}
+            onSpin={() => spinWheel().then((result) => result?.index ?? null)}
             onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
           />
         </View>

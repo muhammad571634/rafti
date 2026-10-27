@@ -8,6 +8,8 @@ import type {
   Moment,
   ScheduleItem,
 } from '@/types';
+import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP } from '@/economy/shells';
+
 import { dayKey, daysAgo, hoursAgo, minutesAgo } from './time';
 
 /** The Home launcher grid. `tile` is a key into the Rafti tile art (assets/brand). */
@@ -52,13 +54,8 @@ export const shellCosts = {
   characterVoiceClone: 60,
 } as const;
 
-/**
- * The 7-day check-in ladder ("Log in daily to unlock surprise shells"): shells for
- * days 1-7. Day 7 is a surprise: its entry is the floor, and the roll goes up to
- * `DAILY_CHECK_IN_TOP`.
- */
-export const DAILY_CHECK_IN = [30, 30, 35, 35, 40, 40, 50] as const;
-export const DAILY_CHECK_IN_TOP = 100;
+// The check-in ladder and the wheel live in src/economy/shells.ts, which the server imports too.
+export { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, FREE_SPINS_PER_DAY, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '@/economy/shells';
 
 /** True for the last day of the week, the one with the random reward. */
 export const isSurpriseDay = (day: number) => day === DAILY_CHECK_IN.length;
@@ -74,13 +71,6 @@ export function rollCheckIn(day: number) {
 export const INVITE_REWARD = 50;
 /** Invites that pay out per week (Monday to Sunday). */
 export const INVITES_PER_WEEK = 6;
-/** The lucky wheel's one spin a day; the app has no ads to buy more (owner, 2026-10-22). */
-export const FREE_SPINS_PER_DAY = 1;
-
-/** Lucky Wheel segments, clockwise from the pointer. */
-export const WHEEL_SEGMENTS = [5, 20, 10, 50, 5, 30, 10, 100] as const;
-/** Relative odds per segment: the big prizes are rare, and a spin pays about 8 shells on average. */
-export const WHEEL_WEIGHTS = [75, 8, 55, 2, 75, 2, 30, 1] as const;
 
 export const callHistory: CallRecord[] = [
   { id: 'call_1', characterId: 'c_theo', startedAt: minutesAgo(20), durationSec: 247, direction: 'outgoing', missed: false },

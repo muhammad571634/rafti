@@ -1,7 +1,16 @@
 import Constants from 'expo-constants';
 
 import type { ChatPromptInput } from './chat-prompt';
-import type { BootstrapInput, BootstrapResult, ClientConfig } from './session-types';
+import type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  ClientConfig,
+  GrantRequest,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+} from './session-types';
 
 /**
  * The phone's side of the Sigmazam API (`server/`). While testing, the server runs on the same
@@ -50,6 +59,25 @@ export function serverBootstrap(accessToken: string, input: BootstrapInput): Pro
     body: JSON.stringify(input),
   });
 }
+
+const withToken = (accessToken: string, init: RequestInit = {}): RequestInit => ({
+  ...init,
+  headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
+});
+const post = (accessToken: string, body: unknown) => withToken(accessToken, { method: 'POST', body: JSON.stringify(body) });
+
+/**
+ * The wallet on the server (B1.2). Each call answers the server's wallet, or null when the server is
+ * off or refused (no shells, a grant on a server that takes none); the caller then reads the wallet
+ * again and takes it as the truth.
+ */
+export const serverWallet = {
+  state: (accessToken: string) => call<WalletState>('/v1/wallet', withToken(accessToken), 8000),
+  spend: (accessToken: string, request: SpendRequest) => call<WalletState>('/v1/wallet/spend', post(accessToken, request), 8000),
+  grant: (accessToken: string, request: GrantRequest) => call<WalletState>('/v1/wallet/grant', post(accessToken, request), 8000),
+  checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
+  spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
+};
 
 /**
  * The real model's reply as chat bubbles, or null (fall back to the stand-in). With the account's

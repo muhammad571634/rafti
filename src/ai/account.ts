@@ -77,6 +77,12 @@ export async function accessToken(waitMs = 2500): Promise<string | null> {
   return Promise.race([token, late]);
 }
 
+/** Runs a call with the account's token; null when there is no account to run it with. */
+export async function withAccount<T>(run: (accessToken: string) => Promise<T | null>): Promise<T | null> {
+  const token = await accessToken();
+  return token ? run(token) : null;
+}
+
 /** Signs in (anonymously the first time) and returns the server's view of this account. */
 export async function connectAccount(): Promise<AccountResult> {
   const signedIn = await signIn();

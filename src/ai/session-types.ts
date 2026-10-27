@@ -1,4 +1,4 @@
-import type { PlanId } from '@/types';
+import type { LedgerReason, PlanId } from '@/types';
 
 /**
  * What `POST /v1/session/bootstrap` takes and returns, shared by the app (`src/ai/account.ts`) and
@@ -36,6 +36,52 @@ export interface BootstrapResult {
     termEnd: string;
     willRenew: boolean;
   } | null;
+}
+
+/** The wallet as the server keeps it: `GET /v1/wallet` and every wallet call's answer (B1.2). */
+export interface WalletState {
+  shells: number;
+  /** Today's free bucket: spent first, burnt at the user's midnight. */
+  free: { day: string; amount: number } | null;
+  trialUsed: boolean;
+  boughtShells: boolean;
+  /** The user's today on the server, in their time zone ("2026-10-27"). */
+  today: string;
+  checkIn: { lastDay: string | null; streak: number };
+  spinsToday: number;
+}
+
+/**
+ * `POST /v1/wallet/spend`. The app names the amount for now: the goods (dates, notes, replies) are
+ * still made on the phone, so a price check on the server would guard nothing yet. Each feature's
+ * price moves to the server together with the feature. `key` makes a retry book once.
+ */
+export interface SpendRequest {
+  amount: number;
+  reason: LedgerReason;
+  key: string;
+  characterId?: string;
+}
+
+/** `POST /v1/wallet/grant`: earnings whose rules are not on the server yet; the test server only. */
+export interface GrantRequest {
+  amount: number;
+  reason: LedgerReason;
+  key: string;
+}
+
+/** `POST /v1/wallet/check-in`: amount 0 when today is already claimed; day is 1-7 of the streak. */
+export interface CheckInResult {
+  amount: number;
+  day: number;
+  wallet: WalletState;
+}
+
+/** `POST /v1/wallet/spin`: the segment (0-based, clockwise from the pointer), or null with no spin left. */
+export interface SpinResult {
+  index: number | null;
+  reward: number;
+  wallet: WalletState;
 }
 
 /** `GET /v1/client-config`: where the app signs in. The publishable key is public by design. */

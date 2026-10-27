@@ -79,6 +79,7 @@ export default function ProfileScreen() {
   const ownBooks = useAppStore((s) => s.lorebooks.length);
   const openThreads = useAppStore((s) => s.threads.filter((x) => x.status === 'open').length);
   const setSetting = useAppStore((s) => s.setSetting);
+  const syncServerWallet = useAppStore((s) => s.syncServerWallet);
   const deleteAccount = useAppStore((s) => s.deleteAccount);
   const endPlan = useAppStore((s) => s.endPlan);
   const loadDemoData = useAppStore((s) => s.loadDemoData);
@@ -341,6 +342,23 @@ export default function ProfileScreen() {
             />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <SettingsRow title={t('profile.serverAccount')} icon="cloud" fill={FILL.grey} meta={accountStatus} onPress={() => void checkAccount()} />
+            {/* B1.2: shells are spent and earned on the server; turning it on loads the server's wallet. */}
+            <SettingsRow
+              title={t('profile.serverWallet')}
+              icon="wallet"
+              fill={FILL.grey}
+              right={
+                <Toggle
+                  value={!!settings.serverWallet}
+                  onChange={(v) => {
+                    setSetting('serverWallet', v);
+                    if (v) void syncServerWallet();
+                  }}
+                  onColor={SWITCH_ON}
+                  accessibilityLabel={t('profile.serverWallet')}
+                />
+              }
+            />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
             {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}

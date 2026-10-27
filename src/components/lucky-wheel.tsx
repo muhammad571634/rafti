@@ -45,8 +45,8 @@ export function LuckyWheel({
 }: {
   size?: number;
   disabled?: boolean;
-  /** Returns the winning segment index, or null when no spin is available. */
-  onSpin: () => number | null;
+  /** Returns the winning segment index, or null when no spin is available; the server's draw arrives later. */
+  onSpin: () => number | null | Promise<number | null>;
   onStop: (index: number) => void;
 }) {
   const { t } = useTranslation();
@@ -62,12 +62,16 @@ export function LuckyWheel({
     onStop(index);
   };
 
-  const spin = () => {
+  const spin = async () => {
     if (spinning || disabled) return;
-    const index = onSpin();
-    if (index == null) return;
-
+    // Locked while the result comes (the server may draw it), so a second tap cannot spin twice.
     setSpinning(true);
+    const index = await onSpin();
+    if (index == null) {
+      setSpinning(false);
+      return;
+    }
+
     // Land the middle of the winning slice under the pointer, after five full turns.
     const current = rotation.value % 360;
     const target = 360 - (index * SEGMENT + SEGMENT / 2);

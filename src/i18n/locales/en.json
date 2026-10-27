@@ -1530,6 +1530,7 @@
     "realAi": "Real AI (local server)",
     "aiOffline": "Server off",
     "serverAccount": "Server account",
+    "serverWallet": "Server wallet",
     "accountSignInOff": "Anonymous sign-in off",
     "accountFailed": "Sign-in failed",
     "nextTexts": "Next planned texts now",

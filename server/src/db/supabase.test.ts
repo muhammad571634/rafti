@@ -3,9 +3,10 @@ import { after, before, describe, it } from 'node:test';
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../../src/economy/shells.ts';
 import { createApp } from '../app.ts';
 import { supabaseDb } from './supabase.ts';
-import type { BootstrapResult } from './types.ts';
+import { WalletError, type BootstrapResult } from './types.ts';
 
 /**
  * Against the cloud project (there is no local Docker stack). It signs up real anonymous users and
@@ -125,6 +126,43 @@ describe('Supabase (cloud project)', { skip: stack ? false : 'set SUPABASE_E2E=1
     assert.ok(edit.error, 'ledger rows must not change');
     const remove = await admin.from('shell_ledger').delete().eq('user_id', a.id);
     assert.ok(remove.error, 'ledger rows must not be deleted while the user exists');
+  });
+
+  it('runs the wallet (B1.2): check-in once a day, free shells first, one spin, no overspend, overnight burn', async () => {
+    const user = await anonymousUser();
+    try {
+      await db!.bootstrap(user.id, { timeZone: 'Asia/Tashkent' });
+      const rules = { ladder: DAILY_CHECK_IN, top: DAILY_CHECK_IN_TOP };
+      const checkIn = await db!.walletCheckIn(user.id, rules);
+      assert.deepEqual([checkIn.amount, checkIn.day, checkIn.wallet.shells], [DAILY_CHECK_IN[0], 1, 100 + DAILY_CHECK_IN[0]]);
+      assert.deepEqual(checkIn.wallet.free, { day: checkIn.wallet.today, amount: DAILY_CHECK_IN[0] });
+      assert.equal((await db!.walletCheckIn(user.id, rules)).amount, 0);
+
+      // 40 shells: the 30 free ones go first, then 10 kept ones; the same key books once.
+      const spent = await db!.walletSpend(user.id, { amount: 40, reason: 'date', key: 'spend:d1' });
+      assert.deepEqual([spent.shells, spent.free], [90, null]);
+      assert.deepEqual(await db!.walletSpend(user.id, { amount: 40, reason: 'date', key: 'spend:d1' }), spent);
+      await assert.rejects(db!.walletSpend(user.id, { amount: 1000, reason: 'date', key: 'spend:d2' }), (e) => e instanceof WalletError && e.code === 'noShells');
+
+      const wheel = { segments: WHEEL_SEGMENTS, weights: WHEEL_WEIGHTS, freeSpins: 1 };
+      const spin = await db!.walletSpin(user.id, wheel);
+      assert.ok(spin.index !== null && WHEEL_SEGMENTS[spin.index] === spin.reward);
+      assert.equal(spin.wallet.shells, 90 + spin.reward);
+      assert.equal((await db!.walletSpin(user.id, wheel)).index, null);
+
+      // The app may not call the money functions itself.
+      const rpc = await user.client.rpc('wallet_credit', { p_user: user.id, p_amount: 1000, p_reason: 'purchase', p_key: 'x', p_free: false });
+      assert.ok(rpc.error, 'wallet_credit must not run for a player');
+
+      // Yesterday's free shells burn when the wallet is next read.
+      const yesterday = new Date(`${spin.wallet.today}T00:00:00Z`);
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      await admin.from('wallets').update({ free_day: yesterday.toISOString().slice(0, 10) }).eq('user_id', user.id);
+      const after = await db!.walletState(user.id);
+      assert.deepEqual([after.shells, after.free], [90, null]);
+    } finally {
+      await admin.auth.admin.deleteUser(user.id);
+    }
   });
 
   it('deletes an account with everything it owns (App Store 5.1.1(v))', async () => {

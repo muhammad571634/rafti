@@ -44,6 +44,11 @@ export const config = {
     /** The public key (`sb_publishable_…`) the app signs in with; handed out by `/v1/client-config`. */
     publishableKey: process.env.SUPABASE_PUBLISHABLE_KEY ?? '',
   },
+  /**
+   * `DEV_GRANTS=1` on the laptop's test server only: the app may credit earnings whose rules are not
+   * on the server yet (mock purchases, quests, invites; `POST /v1/wallet/grant`). Off anywhere else.
+   */
+  devGrants: process.env.DEV_GRANTS === '1',
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
 } as const;

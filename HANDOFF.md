@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z4. Backend B1.2: the wallet on the server (2026-10-27, D114)
+
+Migration `20261027174110_b1_wallet.sql` (wallet functions, free bucket, check-in, wheel) and the
+`/v1/wallet/*` API. Profile (dev) → **Server wallet** switches the app's shells to the server; off, the
+app works as before. The laptop server runs with `DEV_GRANTS=1` so mock purchases, quests and invites
+still pay. Agents apply migrations with the owner's access token (Windows user env var
+`SUPABASE_ACCESS_TOKEN`, Database read-write): `npx supabase db push --linked --workdir ..` from
+`server/`. The cloud suite: `SUPABASE_E2E=1 npm test` in `server/` with the Supabase env vars set.
+**Phone checks:** Profile → Server wallet on → the balance turns into the server's; send a message
+(−1), spin the wheel (the server draws), reopen the app (check-in).
+
 ### 0z3. Backend B1.1: the cost log (2026-10-27, D113)
 
 B0 is done: the owner turned anonymous sign-ins on and the phone's Server account showed 100 shells.
