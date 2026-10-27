@@ -24,7 +24,7 @@ export function planReply(ctx: TurnContext) {
 
 export { chatRhythm, DEFAULT_REPLY_PREFS, memoryQuote, pace, replyPrefs } from './flow';
 export { currentMood, temperamentFor } from './mood';
-export { plainText, segments, speechOnly } from './narration';
+export { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
 export type { Segment } from './narration';
 export { readMessage } from './read';
 export type { Move, ReplyPrefs, TurnContext, TurnPlan, TurnTrigger } from './types';

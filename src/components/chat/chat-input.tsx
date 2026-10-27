@@ -36,14 +36,17 @@ export interface ChatInputProps {
   editing?: { id: string; text: string; onSave: (text: string) => boolean; onCancel: () => void };
   /** Puts this text in the field and focuses it (a long-pressed reply idea); `at` makes each fill new. */
   fill?: { text: string; at: number };
+  /** Set while their reply is on its way: an empty field shows ■ to stop it (Character.AI). */
+  onStop?: () => void;
 }
 
 /**
  * The composer: a floating pill over the wallpaper with "+" for attachments, the
  * text field, and one primary button that records a voice message while the field
- * is empty and sends once there is text. The swap is instant; nothing here animates.
+ * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
+ * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
@@ -144,6 +147,17 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
             haptic={hasText}
             accessibilityLabel={t('chat.saveEdit')}
             onPress={submit}
+            style={styles.action}
+          />
+        ) : onStop && !hasText ? (
+          // Typing a new line brings send back; the reply then answers both.
+          <IconButton
+            icon="stop"
+            size={13}
+            color={colors.textOnPrimary}
+            background={colors.primaryFill}
+            accessibilityLabel={t('a11y.stopReply')}
+            onPress={onStop}
             style={styles.action}
           />
         ) : (

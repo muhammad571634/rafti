@@ -7,7 +7,7 @@ import type { Character, MemoryItem, Message, Relationship } from '@/types';
 import { chatRhythm, pace, planTurn, replyPrefs } from './flow';
 import { planReply } from './index';
 import { currentMood, feel, temperamentFor } from './mood';
-import { plainText, segments, speechOnly } from './narration';
+import { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
 import { readMessage } from './read';
 import type { TurnContext } from './types';
 
@@ -214,5 +214,25 @@ describe('the mock writer', () => {
     const plan = { ...planReply(c).plan, moves: ['react' as const], ask: true };
     const lines = writeMockReply(plan, c, { interests: ['Surfing'] });
     assert.match(lines.join(' '), /surfing/);
+  });
+});
+
+describe('cutSegments (a reply revealed word by word)', () => {
+  const parts = segments('*leans in* You came. I waited.');
+
+  it('counts words as it cuts them', () => {
+    assert.equal(segmentWords(parts), 6);
+    assert.deepEqual(cutSegments(parts, 99), parts);
+  });
+
+  it('keeps a half-shown action italic and never shows an asterisk', () => {
+    assert.deepEqual(cutSegments(parts, 1), [{ kind: 'action', text: 'leans ' }]);
+    const three = cutSegments(parts, 3);
+    assert.deepEqual(three.map((p) => p.kind), ['action', 'speech']);
+    assert.equal(three.map((p) => p.text).join(''), 'leans in You ');
+  });
+
+  it('shows nothing for zero words', () => {
+    assert.deepEqual(cutSegments(parts, 0), []);
   });
 });

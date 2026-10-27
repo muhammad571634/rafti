@@ -241,3 +241,36 @@ Sources: [blog index](https://blog.character.ai/), [memory](https://blog.charact
 [Lorebook](https://blog.character.ai/lorebook/), [styles and plans](https://blog.character.ai/new-styles-new-plan/),
 [April update](https://blog.character.ai/pipsqueak2-and-more/), [Prompt Poet](https://github.com/character-ai/prompt-poet),
 [Character Book: attributes](https://book.character.ai/character-book/character-attributes).
+
+## 12. Live check on the phone (2026-10-27)
+
+The owner's ask: study how their chats and characters work, and take what works better than ours.
+Character.AI 1.17.4 and BIMOBIMO 2.53.0 on the Galaxy A51, through their normal screens (adb taps,
+screenshots and screen recordings in the session scratchpad, not in any repo); one harmless test
+line in each app, the owner's own test accounts.
+
+- **Character.AI chat.** Sending turns the send button into ■ (stop, `abort_generation` in the
+  bundle); "•••" shows for about 3 s, then the reply grows word by word for 6-7 s (streamed:
+  websocket, `create_and_generate_turn`, `is_final`). Under the finished reply: 👍 👎, draw a
+  picture, ↻; after ↻ the new candidate streams in place and ‹ › step between versions. The reply
+  followed the greeting's language (Russian) although the test line was English.
+- **Character.AI loading and errors.** Lists show skeleton rows while loading; a failed list says
+  "Something went wrong" with a full-width "Try again" above the empty state.
+- **Character.AI create.** "+" opens a sheet: Character, Persona, Lorebook (beta), Scenario, Group
+  chat, Video (off), Voice, Stream, Comic (new). Character starts with one question per screen
+  (the name; Next stays off until filled). A greeting can be a whole scene that gives the user a
+  role ("You are a 10th grader who…").
+- **Character.AI feed.** Two columns of rounded, near-square cards: picture, name or a scenario
+  title, one-line tagline, chat count, creator. Pictures run dark: monochrome or desaturated photos,
+  often faceless (backs, hands, suits), and semi-realistic manhwa art with side light.
+- **BIMOBIMO chat.** The reply came as six short bubbles, each whole (no word-by-word), within the
+  same minute; "Read" under the user's line; one acorn per message; the status changed from
+  "Disconnected" to "Talking 1 day in a row", the guilt banner ("the chat broke, closeness at risk")
+  left, and a full-screen level-up card covered the reply. Every chat row carried a sad-face badge.
+- **Store listings** (Google Play US, 12 companion apps, 2026-10): 8 of 12 on dark grounds; glossy
+  semi-realistic anime ("2.5D") leads, Linky and Kindroid photoreal; tall ~3:4 cards in two
+  columns; chats over the character's full picture.
+
+Taken (flows.md D108): replies revealed word by word, ■ Stop, "Not Delivered · Tap to try again".
+Kept from BIMOBIMO: short bubbles one by one. Not taken: guilt banners and sad faces, a level-up
+card over the chat (our chat stays calm, D100), a model picker, ads.

@@ -123,6 +123,8 @@ export default function ChatRoomScreen() {
   const deleteMessage = useAppStore((s) => s.deleteMessage);
   const replyVersions = useAppStore((s) => (conversationId ? s.replyVersions[conversationId] : undefined));
   const regenerateReply = useAppStore((s) => s.regenerateReply);
+  const stopReply = useAppStore((s) => s.stopReply);
+  const retryReply = useAppStore((s) => s.retryReply);
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
@@ -234,6 +236,9 @@ export default function ChatRoomScreen() {
   }, [characterId, router]);
 
   const lastMine = useMemo(() => lastMineId(data), [data]);
+  const retry = useCallback(() => {
+    if (conversationId) retryReply(conversationId);
+  }, [conversationId, retryReply]);
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
@@ -249,6 +254,7 @@ export default function ChatRoomScreen() {
           onCallBack={callBack}
           onLongPress={openMenu}
           pinned={pinnedIds.has(item.id)}
+          onRetry={item.failed ? retry : undefined}
         />
       );
       return (
@@ -285,7 +291,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -495,6 +501,7 @@ export default function ChatRoomScreen() {
             initialValue={typeof draft === 'string' ? draft : undefined}
             fill={ideaDraft ? { text: ideaDraft.idea.text, at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
+            onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
           />
         </KeyboardAvoidingView>
 

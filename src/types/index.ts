@@ -141,6 +141,8 @@ export interface Message {
   readAt?: string;
   /** Local-only optimistic message waiting on the model */
   pending?: boolean;
+  /** The user's line got no reply (the model failed or was out of reach): "Not Delivered", tap to try again. */
+  failed?: boolean;
   /** Rendered as a low-contrast bubble (the echo of what the character heard) */
   muted?: boolean;
   /** The user's reaction to this message: a Rafti sticker name (see REACTION_STICKERS) */

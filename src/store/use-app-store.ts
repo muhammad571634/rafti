@@ -31,6 +31,7 @@ import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-st
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
 import { apiBase, serverReply } from '@/ai/server';
+import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { mockSteerLines } from '@/mock/steer';
@@ -402,6 +403,10 @@ interface AppState {
   deleteMessage: (conversationId: string, messageId: string) => void;
   /** Their newest reply again (↻): a new version arrives and the old one is kept. Costs a message. */
   regenerateReply: (conversationId: string) => SendResult;
+  /** Stops the reply on its way (■): lines already shown stay, the rest never come. */
+  stopReply: (conversationId: string) => void;
+  /** Asks again for the reply that failed ("Not Delivered", tap). */
+  retryReply: (conversationId: string) => void;
   /** Shows another version of their newest reply (‹ › or a swipe). */
   showReplyVersion: (conversationId: string, index: number) => void;
   /** Changes your newest text and asks them again; their answer to the old words goes. Costs a message. */
@@ -1130,6 +1135,26 @@ export const useAppStore = create<AppState>()(
             ),
           };
         }),
+
+      stopReply: (conversationId) => {
+        cancelReplies(set, conversationId);
+        finishReveals();
+      },
+
+      retryReply: (conversationId) => {
+        const failed = (get().messages[conversationId] ?? []).findLast((m) => m.failed);
+        if (!failed || get().typing[conversationId]) return;
+        set((s) => ({
+          messages: {
+            ...s.messages,
+            [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === failed.id ? { ...m, failed: undefined } : m)),
+          },
+        }));
+        // After a restart the turn's details are gone; a plain reply to the same line still fits.
+        const turn = failedTurns.get(conversationId) ?? { gain: INTIMACY.text };
+        failedTurns.delete(conversationId);
+        scheduleReply(set, get, conversationId, turn);
+      },
 
       regenerateReply: (conversationId) => {
         const state = get();
@@ -4031,34 +4056,23 @@ function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'cont
  * reply style and length and their mood; the mock writes it (`writeMockReply`), the server's
  * model will. Swapping in the model only changes the writing.
  */
-function scheduleReply(
-  set: Setter,
-  get: Getter,
-  conversationId: string,
-  {
-    text,
-    lines: given,
-    gain,
-    chips,
-    ideas,
-    reach,
-    avoid,
-    trigger = 'message',
-  }: {
-    text?: string;
-    /** Lines already written (a continue or a skip); without them the mock writes the reply. */
-    lines?: string[];
-    gain: number;
-    chips?: string[];
-    /** Reply ideas on the last line, and why it asks (`lead:<scheduleId>`: when to remind of a plan). */
-    ideas?: ReplyIdea[];
-    reach?: string;
-    /** Lines already said for this turn (an earlier version, the old answer to an edited message). */
-    avoid?: string | readonly string[];
-    /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
-    trigger?: TurnTrigger;
-  },
-) {
+interface ReplyRequest {
+  text?: string;
+  /** Lines already written (a continue or a skip); without them the mock writes the reply. */
+  lines?: string[];
+  gain: number;
+  chips?: string[];
+  /** Reply ideas on the last line, and why it asks (`lead:<scheduleId>`: when to remind of a plan). */
+  ideas?: ReplyIdea[];
+  reach?: string;
+  /** Lines already said for this turn (an earlier version, the old answer to an edited message). */
+  avoid?: string | readonly string[];
+  /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
+  trigger?: TurnTrigger;
+}
+
+function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
+  const { text, lines: given, gain, chips, ideas, reach, avoid, trigger = 'message' } = request;
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4072,8 +4086,9 @@ function scheduleReply(
     typing: { ...s.typing, [conversationId]: true },
     messages: {
       ...s.messages,
+      // A new reply answers a line that failed before too, so it is no longer "Not Delivered".
       [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
-        m.author === 'me' && !m.readAt ? { ...m, readAt } : m,
+        m.author === 'me' && (!m.readAt || m.failed) ? { ...m, readAt: m.readAt ?? readAt, failed: undefined } : m,
       ),
     },
   }));
@@ -4147,6 +4162,8 @@ function scheduleReply(
           emotion: mood?.emotion,
           ...(last && reach && ideas?.length ? { reach, ideas } : {}),
         };
+        // It shows word by word, as a streamed reply would (`src/lib/reveal.ts`).
+        markFresh(message.id);
         appendMessage(set, get, conversationId, message);
         if (last && noteVoice && voiceBack != null) {
           appendMessage(
@@ -4179,8 +4196,9 @@ function scheduleReply(
   };
 
   // The real model writes the reply when the local AI server is on (development, `src/ai/server.ts`);
-  // a scripted line keeps its words. "Typing…" shows while it thinks, and any failure (offline, the
-  // free tier's daily cap, a slow answer) falls back to the stand-in, so the chat never stalls.
+  // a scripted line keeps its words. "Typing…" shows while it thinks. A failure (offline, the free
+  // tier's daily cap, a slow answer) says so under the user's line with a way to try again, as iOS
+  // Messages does, instead of passing the stand-in off as their reply.
   if (text == null && given == null && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
     void serverReply({
       character,
@@ -4194,7 +4212,8 @@ function scheduleReply(
       redo: Array.isArray(avoid) ? avoid : undefined,
     }).then((lines) => {
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
-      deliver(lines ?? standIn());
+      if (lines) deliver(lines);
+      else failReply(set, conversationId, request);
     });
     return;
   }
@@ -4700,6 +4719,25 @@ function cancelReplies(set: Setter, conversationId: string) {
   replyEpoch.set(conversationId, (replyEpoch.get(conversationId) ?? 0) + 1);
   replyingUntil.delete(conversationId);
   set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+}
+
+/** The reply each chat could not get, kept for "Try again" (`retryReply`). */
+const failedTurns = new Map<string, ReplyRequest>();
+
+/**
+ * No reply came: typing stops and the user's newest line says "Not Delivered". Only an answer
+ * to the user fails visibly; a text they would have sent first (going quiet) is simply skipped.
+ */
+function failReply(set: Setter, conversationId: string, request: ReplyRequest) {
+  set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+  if ((request.trigger ?? 'message') !== 'message') return;
+  failedTurns.set(conversationId, request);
+  set((s) => {
+    const list = s.messages[conversationId] ?? [];
+    const mine = list.findLast((m) => m.author === 'me');
+    if (!mine) return {};
+    return { messages: { ...s.messages, [conversationId]: list.map((m) => (m.id === mine.id ? { ...m, failed: true } : m)) } };
+  });
 }
 
 /** `record` without `key`, unchanged when the key is not there. */

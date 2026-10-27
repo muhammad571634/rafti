@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -13,9 +13,10 @@ import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
-import { segments } from '@/lib/reply-engine';
+import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
+import { useReveal } from '@/lib/reveal';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space } from '@/theme';
+import { colors, radius, shadows, space, systemColors } from '@/theme';
 import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
@@ -37,6 +38,8 @@ export interface MessageBubbleProps {
   aiNoticeText?: string;
   /** The line is pinned to Memories: a small pin sits on its top corner. */
   pinned?: boolean;
+  /** A line of yours that got no reply: "Not Delivered" under it asks again. */
+  onRetry?: () => void;
 }
 
 const AVATAR = 28;
@@ -60,6 +63,7 @@ export const MessageBubble = memo(function MessageBubble({
   senderName,
   aiNoticeText,
   pinned,
+  onRetry,
 }: MessageBubbleProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -136,7 +140,13 @@ export const MessageBubble = memo(function MessageBubble({
         // The user's side: no avatar, as in iOS Messages; the last message says Read or Delivered.
         <View style={styles.mine}>
           {content}
-          {receipt ? <ReadReceipt message={message} /> : message.editedAt ? <EditedNote /> : null}
+          {message.failed ? (
+            <NotDelivered onRetry={onRetry} />
+          ) : receipt ? (
+            <ReadReceipt message={message} />
+          ) : message.editedAt ? (
+            <EditedNote />
+          ) : null}
         </View>
       ) : (
         <>
@@ -161,6 +171,11 @@ export const MessageBubble = memo(function MessageBubble({
 
 function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; tail: boolean }) {
   const muted = message.muted;
+  const parts = useMemo(() => segments(message.text ?? ''), [message.text]);
+  const total = useMemo(() => segmentWords(parts), [parts]);
+  // A line that just arrived shows word by word (`src/lib/reveal.ts`); any other shows whole.
+  const shown = useReveal(message.id, total);
+  const revealing = shown < total;
 
   return (
     <View
@@ -173,9 +188,11 @@ function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; 
       ]}>
       <Txt
         style={styles.text}
-        color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}>
+        color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}
+        // A screen reader hears the whole line at once, not each word as it lands.
+        accessibilityLabel={revealing ? message.text : undefined}>
         {/* *Narration* (Mixed and Story replies) reads as an aside: italic and quieter than speech. */}
-        {segments(message.text ?? '').map((part, i) =>
+        {(revealing ? cutSegments(parts, shown) : parts).map((part, i) =>
           part.kind === 'action' ? (
             <Txt key={i} style={[styles.text, styles.action, mine ? styles.actionMine : styles.actionTheirs]}>
               {part.text}
@@ -279,6 +296,26 @@ function ReadReceipt({ message }: { message: Message }) {
 function EditedNote() {
   const { t } = useTranslation();
   return <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>;
+}
+
+/** iOS Messages' "Not Delivered" in system red under the line; a tap asks for the reply again. */
+function NotDelivered({ onRetry }: { onRetry?: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <Pressable
+      onPress={onRetry}
+      disabled={!onRetry}
+      hitSlop={10}
+      accessibilityRole="button"
+      accessibilityLabel={`${t('chat.notDelivered')}. ${t('chat.tryAgain')}`}
+      style={styles.failed}>
+      <Ionicons name="alert-circle" size={13} color={systemColors.red} />
+      <Txt style={[styles.receipt, styles.failedText]}>
+        <Txt style={[styles.receipt, styles.receiptStrong, styles.failedText]}>{t('chat.notDelivered')}</Txt>
+        {onRetry ? ` · ${t('chat.tryAgain')}` : null}
+      </Txt>
+    </Pressable>
+  );
 }
 
 /** System lines are plain grey text between the bubbles, as in iOS Messages. */
@@ -537,6 +574,8 @@ const styles = StyleSheet.create({
   },
   receipt: { fontSize: 11, lineHeight: 14, color: colors.textSecondary, paddingTop: 3, paddingRight: space.xs },
   receiptStrong: { fontWeight: '600', paddingTop: 0, paddingRight: 0 },
+  failed: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingTop: 3, paddingRight: space.xs },
+  failedText: { color: systemColors.red, paddingTop: 0, paddingRight: 0 },
   system: { alignItems: 'center', paddingVertical: space.sm + 2, paddingHorizontal: space.xxl },
   systemText: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
   systemStrong: { fontWeight: '600' },
