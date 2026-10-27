@@ -56,7 +56,7 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
-import { messagesInDb, restoreMessages } from '@/store/message-sync';
+import { messagesInDb, resetMessages, restoreMessages } from '@/store/message-sync';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
@@ -2622,7 +2622,9 @@ export const useAppStore = create<AppState>()(
         // Replies and timers still in flight must not write into the fresh state.
         replyingUntil.clear();
         streamEpoch.clear();
-        // The server deletes the account later; here the device starts over.
+        // The server's copy is deleted first (`deleteServerAccount`); here the device starts over,
+        // its message database included.
+        void resetMessages();
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
       },
 

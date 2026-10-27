@@ -4,7 +4,7 @@ import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt
 import { parseModelReply } from '../../src/ai/reply-style.ts';
 import type { Context } from 'hono';
 
-import type { ClientConfig } from '../../src/ai/session-types.ts';
+import { MESSAGE_SYNC_LIMITS, type ClientConfig, type MessageSyncRequest } from '../../src/ai/session-types.ts';
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, FREE_SPINS_PER_DAY, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import type { LedgerReason } from '../../src/types/index.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
@@ -47,6 +47,53 @@ const FREE_GRANTS = new Set<LedgerReason>(['ad', 'share']);
 
 const isCount = (value: unknown, max: number): value is number => Number.isInteger(value) && (value as number) >= 1 && (value as number) <= max;
 const isKey = (value: unknown): value is string => typeof value === 'string' && value.length > 0 && value.length <= 100;
+
+/** The most one sync may carry; the phone sends its outbox in batches this size. */
+export const SYNC_LIMITS = MESSAGE_SYNC_LIMITS;
+/** A restore page (`GET /v1/messages`). */
+const PAGE_SIZE = 500;
+
+const MESSAGE_AUTHORS = new Set(['me', 'them']);
+const MESSAGE_KINDS = new Set(['text', 'voice', 'image', 'system', 'call']);
+const isId = (value: unknown): value is string => typeof value === 'string' && value.length > 0 && value.length <= 100;
+
+/**
+ * A sync body the database can take, or null when its shape is wrong. A message the database would
+ * refuse (unknown author or kind, a bad date, too big) is left out and counted, so one bad line can
+ * never block the rest of the outbox; it stays on the phone. A message sent twice keeps its last copy.
+ */
+export function cleanSync(body: Record<string, unknown> | null): { request: MessageSyncRequest; skipped: number } | null {
+  const { droppedChats, deletedIds, upserts } = body ?? {};
+  const ids = (value: unknown, max: number) => Array.isArray(value) && value.length <= max && value.every(isId);
+  if (!ids(droppedChats, SYNC_LIMITS.droppedChats) || !ids(deletedIds, SYNC_LIMITS.deletedIds)) return null;
+  if (!Array.isArray(upserts) || upserts.length > SYNC_LIMITS.upserts) return null;
+
+  const kept = new Map<string, MessageSyncRequest['upserts'][number]>();
+  let skipped = 0;
+  for (const entry of upserts as { chatId?: unknown; message?: Record<string, unknown> }[]) {
+    const m = entry?.message;
+    const ok =
+      isId(entry?.chatId) &&
+      !!m &&
+      isId(m.id) &&
+      MESSAGE_AUTHORS.has(m.author as string) &&
+      MESSAGE_KINDS.has(m.kind as string) &&
+      typeof m.createdAt === 'string' &&
+      !Number.isNaN(Date.parse(m.createdAt)) &&
+      (m.durationSec == null || Number.isFinite(m.durationSec)) &&
+      JSON.stringify(m).length <= SYNC_LIMITS.messageBytes;
+    if (!ok) {
+      skipped++;
+      continue;
+    }
+    kept.delete(m.id as string);
+    kept.set(m.id as string, entry as unknown as MessageSyncRequest['upserts'][number]);
+  }
+  return {
+    request: { droppedChats: droppedChats as string[], deletedIds: deletedIds as string[], upserts: [...kept.values()] },
+    skipped,
+  };
+}
 
 /** The request's JSON object, {} for an empty body, null when it is not JSON. */
 async function readJson(c: Context): Promise<Record<string, unknown> | null> {
@@ -101,6 +148,12 @@ export function createApp(
       console.error('[wallet] failed', error);
       return c.json({ error: 'failed' }, 500);
     }
+  }
+
+  /** The signed-in user's id, or null (no database, no token, a stale token). */
+  async function signedIn(c: Context) {
+    const token = bearer(c.req.header('authorization'));
+    return db && token ? db.userIdFromToken(token).catch(() => null) : null;
   }
 
   app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null, db: db?.name ?? null }));
@@ -164,6 +217,50 @@ export function createApp(
     if (!isCount(body?.amount, MAX_GRANT) || !GRANT_REASONS.has(reason) || !isKey(body?.key)) return c.json({ error: 'badInput' }, 400);
     const { amount, key } = body as { amount: number; key: string };
     return wallet(c, (userId) => db!.walletCredit(userId, { amount, reason, key: `grant:${key}`, free: FREE_GRANTS.has(reason) }));
+  });
+
+  // The chats (B1.3b): the phone sends what it has not sent yet; a new install reads them back.
+  app.post('/v1/messages/sync', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const clean = cleanSync(await readJson(c));
+    if (!clean) return c.json({ error: 'badInput' }, 400);
+    try {
+      return c.json({ seq: await db.syncMessages(userId, clean.request), skipped: clean.skipped });
+    } catch (error) {
+      console.error('[messages] sync failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  app.get('/v1/messages', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const after = Number(c.req.query('after') ?? 0);
+    if (!Number.isSafeInteger(after) || after < 0) return c.json({ error: 'badInput' }, 400);
+    try {
+      return c.json(await db.messagesAfter(userId, after, PAGE_SIZE));
+    } catch (error) {
+      console.error('[messages] read failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  // Deleting the account deletes everything the server keeps for it (App Store 5.1.1(v)): the auth
+  // user goes, and every table follows it through `on delete cascade`.
+  app.delete('/v1/account', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    try {
+      await db.deleteUser(userId);
+      return c.json({ ok: true });
+    } catch (error) {
+      console.error('[account] delete failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
   });
 
   app.post('/v1/chat/reply', async (c) => {

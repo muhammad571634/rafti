@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { DAILY_CHECK_IN, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
-import { cleanLocale, cleanTimeZone, createApp } from './app.ts';
-import { WalletError, type BootstrapInput, type BootstrapResult, type Db, type UsageEvent, type WalletState } from './db/types.ts';
+import { cleanLocale, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
+import { WalletError, type BootstrapInput, type BootstrapResult, type Db, type MessageSyncRequest, type UsageEvent, type WalletState } from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
@@ -20,6 +20,9 @@ function makeDb(overrides: Partial<Db>): Db {
     walletCredit: unused,
     walletCheckIn: unused,
     walletSpin: unused,
+    syncMessages: unused,
+    messagesAfter: unused,
+    deleteUser: unused,
     ...overrides,
   };
 }
@@ -254,5 +257,67 @@ describe('POST /v1/session/bootstrap', () => {
     assert.equal(cleanLocale(42), undefined);
     assert.equal(cleanTimeZone('America/New_York'), 'America/New_York');
     assert.equal(cleanTimeZone('Nowhere/Land'), undefined);
+  });
+});
+
+describe('the chats on the server (B1.3b)', () => {
+  const line = (id: string, extra: Record<string, unknown> = {}) => ({
+    chatId: 'conv_kai',
+    message: { id, conversationId: 'conv_kai', author: 'me', kind: 'text', text: 'hi', createdAt: '2026-10-28T08:00:00Z', ...extra },
+  });
+  const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
+
+  it('takes a sync body, leaves out lines the database would refuse and keeps the last copy of a repeat', () => {
+    const clean = cleanSync({
+      droppedChats: ['conv_old'],
+      deletedIds: ['m0'],
+      upserts: [line('m1'), line('m2', { author: 'narrator' }), line('m3', { createdAt: 'soon' }), line('m1', { text: 'edited' }), { chatId: '', message: {} }],
+    });
+    assert.equal(clean?.skipped, 3);
+    assert.deepEqual(clean?.request.upserts.map((u) => [u.message.id, u.message.text]), [['m1', 'edited']]);
+    assert.deepEqual(clean?.request.droppedChats, ['conv_old']);
+  });
+
+  it('refuses a body of the wrong shape or over the limits', () => {
+    assert.equal(cleanSync(null), null);
+    assert.equal(cleanSync({ droppedChats: [], deletedIds: [] }), null);
+    assert.equal(cleanSync({ droppedChats: [1], deletedIds: [], upserts: [] }), null);
+    const many = Array.from({ length: SYNC_LIMITS.upserts + 1 }, (_, i) => line(`m${i}`));
+    assert.equal(cleanSync({ droppedChats: [], deletedIds: [], upserts: many }), null);
+    assert.equal(cleanSync({ droppedChats: [], deletedIds: [], upserts: [line('big', { text: 'x'.repeat(SYNC_LIMITS.messageBytes) })] })?.skipped, 1);
+  });
+
+  it('syncs for the signed-in user only', async () => {
+    let seen: [string, MessageSyncRequest] | null = null;
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ syncMessages: async (userId, request) => ((seen = [userId, request]), 42) }) });
+    const body = JSON.stringify({ droppedChats: [], deletedIds: ['m0'], upserts: [line('m1')] });
+    assert.equal((await app.request('/v1/messages/sync', { method: 'POST', body })).status, 401);
+    const res = await app.request('/v1/messages/sync', { method: 'POST', headers: auth, body });
+    assert.deepEqual(await res.json(), { seq: 42, skipped: 0 });
+    assert.equal(seen![0], 'user-1');
+    assert.deepEqual(seen![1].deletedIds, ['m0']);
+    assert.equal((await app.request('/v1/messages/sync', { method: 'POST', headers: auth, body: '{"upserts":3}' })).status, 400);
+  });
+
+  it('reads the messages back a page at a time', async () => {
+    let asked: number[] = [];
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({ messagesAfter: async (_userId, after, limit) => ((asked = [after, limit]), { messages: [], next: null }) }),
+    });
+    const res = await app.request('/v1/messages?after=17', { headers: auth });
+    assert.deepEqual(await res.json(), { messages: [], next: null });
+    assert.equal(asked[0], 17);
+    assert.equal((await app.request('/v1/messages?after=-1', { headers: auth })).status, 400);
+  });
+
+  it('deletes the account on the server', async () => {
+    const deleted: string[] = [];
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ deleteUser: async (userId) => void deleted.push(userId) }) });
+    assert.equal((await app.request('/v1/account', { method: 'DELETE' })).status, 401);
+    const res = await app.request('/v1/account', { method: 'DELETE', headers: auth });
+    assert.deepEqual(await res.json(), { ok: true });
+    assert.deepEqual(deleted, ['user-1']);
+    assert.equal((await createApp(null, { timeoutMs: 1000 }).request('/v1/account', { method: 'DELETE', headers: auth })).status, 503);
   });
 });

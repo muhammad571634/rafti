@@ -165,12 +165,57 @@ describe('Supabase (cloud project)', { skip: stack ? false : 'set SUPABASE_E2E=1
     }
   });
 
+  it('keeps the chats (B1.3b): chat order, edits in place, a rewrite, own rows only, no app writes', async () => {
+    const line = (id: string, chatId = 'conv_kai', text = id) => ({
+      chatId,
+      message: { id, conversationId: chatId, author: 'me' as const, kind: 'text' as const, text, createdAt: '2026-10-28T08:00:00Z' },
+    });
+    const ids = async (user = a.id) => (await db!.messagesAfter(user, 0, 500)).messages.map((m) => `${m.chatId}:${m.message.id}:${m.message.text}`);
+
+    await db!.syncMessages(a.id, { droppedChats: [], deletedIds: [], upserts: [line('m1'), line('m2'), line('g1', 'group_1')] });
+    // An edit keeps its place; a deletion and a new line arrive together.
+    await db!.syncMessages(a.id, { droppedChats: [], deletedIds: ['m2'], upserts: [line('m1', 'conv_kai', 'edited'), line('m3')] });
+    assert.deepEqual(await ids(), ['conv_kai:m1:edited', 'group_1:g1:g1', 'conv_kai:m3:m3']);
+    // A chat sent whole again in a new order.
+    await db!.syncMessages(a.id, { droppedChats: ['conv_kai'], deletedIds: [], upserts: [line('m3'), line('m1')] });
+    assert.deepEqual(await ids(), ['group_1:g1:g1', 'conv_kai:m3:m3', 'conv_kai:m1:m1']);
+
+    const page = await db!.messagesAfter(a.id, 0, 2);
+    assert.equal(page.messages.length, 2);
+    const rest = await db!.messagesAfter(a.id, page.next!, 2);
+    assert.deepEqual([rest.messages.length, rest.next], [1, null]);
+
+    const own = await a.client.from('messages').select('client_id');
+    assert.equal(own.data?.length, 3);
+    assert.deepEqual((await b.client.from('messages').select('client_id')).data, []);
+    const insert = await a.client.from('messages').insert({ user_id: a.id, chat_id: 'x', client_id: 'x', author: 'me', body: {} });
+    assert.ok(insert.error, 'the app must not write messages');
+    assert.ok((await a.client.rpc('sync_messages', { p_user: a.id, p_dropped: [], p_deleted: [], p_upserts: [] })).error);
+
+    // Through the API too.
+    const app = createApp(null, { timeoutMs: 1000, db });
+    const res = await app.request('/v1/messages/sync', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${b.token}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ droppedChats: [], deletedIds: [], upserts: [line('b1')] }),
+    });
+    assert.equal(res.status, 200);
+    assert.deepEqual(await ids(b.id), ['conv_kai:b1:b1']);
+  });
+
   it('deletes an account with everything it owns (App Store 5.1.1(v))', async () => {
     const gone = await anonymousUser();
     await db!.bootstrap(gone.id, {});
-    const { error } = await admin.auth.admin.deleteUser(gone.id);
-    assert.equal(error, null);
-    const { data } = await admin.from('shell_ledger').select('id').eq('user_id', gone.id);
-    assert.deepEqual(data, []);
+    const message = { id: 'm1', conversationId: 'c', author: 'me', kind: 'text', text: 'hi', createdAt: '2026-10-28T08:00:00Z' } as const;
+    await db!.syncMessages(gone.id, { droppedChats: [], deletedIds: [], upserts: [{ chatId: 'c', message }] });
+    const app = createApp(null, { timeoutMs: 1000, db });
+    const res = await app.request('/v1/account', { method: 'DELETE', headers: { authorization: `Bearer ${gone.token}` } });
+    assert.equal(res.status, 200);
+    for (const table of ['shell_ledger', 'messages', 'wallets', 'profiles'] as const) {
+      const { data } = await admin.from(table).select('*').eq(table === 'profiles' ? 'id' : 'user_id', gone.id);
+      assert.deepEqual(data, [], table);
+    }
+    const { data: user } = await admin.auth.admin.getUserById(gone.id);
+    assert.equal(user.user, null);
   });
 });

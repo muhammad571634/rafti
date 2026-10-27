@@ -1,4 +1,4 @@
-import type { LedgerReason, PlanId } from '@/types';
+import type { LedgerReason, Message, PlanId } from '@/types';
 
 /**
  * What `POST /v1/session/bootstrap` takes and returns, shared by the app (`src/ai/account.ts`) and
@@ -88,4 +88,31 @@ export interface SpinResult {
 export interface ClientConfig {
   supabaseUrl: string;
   supabaseKey: string;
+}
+
+/**
+ * `POST /v1/messages/sync` (B1.3b): what the phone has not sent yet. The server drops the chats
+ * first, then deletes the single messages, then writes the upserts in the order sent.
+ */
+export interface MessageSyncRequest {
+  /** Chats gone from the phone, or about to be sent whole again in a new order. */
+  droppedChats: string[];
+  deletedIds: string[];
+  upserts: { chatId: string; message: Message }[];
+}
+
+/** The most one sync may carry: the server refuses more, the phone sends its outbox in batches this size. */
+export const MESSAGE_SYNC_LIMITS = { upserts: 500, deletedIds: 5000, droppedChats: 500, messageBytes: 32_768 } as const;
+
+/** The user's newest `seq`, and how many upserts the server could not take (kept on the phone only). */
+export interface MessageSyncResult {
+  seq: number | null;
+  skipped: number;
+}
+
+/** `GET /v1/messages?after=<seq>`: the next page of the user's messages, in chat order. */
+export interface MessagesPage {
+  messages: { chatId: string; seq: number; message: Message }[];
+  /** Pass as `after` for the next page; null on the last page. */
+  next: number | null;
 }

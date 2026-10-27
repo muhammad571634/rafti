@@ -1,5 +1,32 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z7. Backend B1.3b: the server keeps the chats (2026-10-28, D115). NEXT: apply the migration
+
+**Owner, 2026-10-28:** iOS only for now (App Store first). Code stays cross-platform, App Store needs go first.
+
+**Blocked on one owner step:** migration `supabase/migrations/20261028010000_b1_message_sync.sql` is
+written but NOT applied to the cloud. `supabase link` / `db push` fail (the token lacks
+`project_admin_read`), and the agent's apply through the Management API
+(`POST /v1/projects/{ref}/database/migrations`, name `b1_message_sync`) was stopped by the auto-mode
+classifier as a production deploy. The owner approves it (or allows that call), then: rename the file to
+the version the API returns, run the advisors, and run the cloud suite (`SUPABASE_E2E=1 npm test` in
+`server/`; it now covers the chats and the account delete). `public.messages` had 0 rows on 2026-10-28.
+Until it is applied, `/v1/messages/sync` answers 500 and the app shows "Server off"; nothing is lost.
+
+What it does: `public.messages` becomes the phone's mirror (`chat_id` = the app's chat id, `body jsonb`
+= the whole message, `seq` = chat order, `conversation_id` optional until chats are server rows) and
+`sync_messages()` applies one sync in one transaction (dropped chats, then deletions, then upserts).
+API: `POST /v1/messages/sync`, `GET /v1/messages?after=`, `DELETE /v1/account` (deletes the auth user;
+every table cascades). Phone: `messages.db` v2 (`pending` per row = the write that changed it, an
+`outbox` of deletions and dropped chats), `syncMessages()` sends batches 3 s after a write and when the
+app leaves the foreground; `restoreFromServer()` reads the chats back on a phone with no messages.
+Profile (dev) → **Server chats** toggle. **Delete account** now deletes the server account first and
+keeps everything if that fails ("No connection. Nothing was deleted."); a phone that never signed in
+deletes locally as before. Restored chats need their conversations, which are not on the server yet:
+that comes with Sign in with Apple (the next App Store step), then StoreKit (B3).
+Checked: app `tsc`, 409/409, server `tsc`, 28/28, `expo export` for ios and web. Not yet on a phone,
+not yet against the cloud.
+
 ### 0z6. Backend B1.3a done: messages live in SQLite on the phone (2026-10-27, D115). NEXT: B1.3b
 
 `expo-sqlite` ~58.0.14 (no config plugin; `expo install` adds one to `app.json`, it was left out on

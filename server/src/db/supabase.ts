@@ -6,6 +6,7 @@ import {
   type BootstrapResult,
   type CheckInResult,
   type Db,
+  type MessagesPage,
   type SpinResult,
   type UsageEvent,
   type WalletState,
@@ -75,5 +76,36 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
 
     walletSpin: (userId, { segments, weights, freeSpins }) =>
       rpc<SpinResult>('wallet_spin', { p_user: userId, p_segments: segments, p_weights: weights, p_free_spins: freeSpins }),
+
+    async syncMessages(userId, { droppedChats, deletedIds, upserts }) {
+      const seq = await rpc<number | null>('sync_messages', {
+        p_user: userId,
+        p_dropped: droppedChats,
+        p_deleted: deletedIds,
+        p_upserts: upserts,
+      });
+      return seq == null ? null : Number(seq);
+    },
+
+    async messagesAfter(userId, after, limit) {
+      const { data, error } = await client
+        .from('messages')
+        .select('chat_id, seq, body')
+        .eq('user_id', userId)
+        .gt('seq', after)
+        .order('seq')
+        .limit(limit);
+      if (error) throw new Error(`messages: ${error.message}`);
+      const rows = (data ?? []) as { chat_id: string; seq: number; body: MessagesPage['messages'][number]['message'] }[];
+      return {
+        messages: rows.map((r) => ({ chatId: r.chat_id, seq: Number(r.seq), message: r.body })),
+        next: rows.length === limit ? Number(rows[rows.length - 1].seq) : null,
+      };
+    },
+
+    async deleteUser(userId) {
+      const { error } = await client.auth.admin.deleteUser(userId);
+      if (error) throw new Error(`deleteUser: ${error.message}`);
+    },
   };
 }

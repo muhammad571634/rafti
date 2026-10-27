@@ -921,6 +921,8 @@ export interface AppSettings {
   realAi?: boolean;
   /** Development (B1.2): the wallet lives on the local server's database; the store keeps a cache. */
   serverWallet?: boolean;
+  /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */
+  serverMessages?: boolean;
   /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */
   notificationPreview: boolean;
   /** Push kinds the user can switch off (Profile → Notifications, docs/push-plan.md). */

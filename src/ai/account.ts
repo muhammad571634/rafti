@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { AppState } from 'react-native';
 
-import { serverBootstrap, serverClientConfig } from './server';
+import { serverBootstrap, serverClientConfig, serverMessages } from './server';
 import type { BootstrapResult, ClientConfig } from './session-types';
 
 /**
@@ -90,4 +90,29 @@ export async function connectAccount(): Promise<AccountResult> {
   const { locale, timeZone } = Intl.DateTimeFormat().resolvedOptions();
   const session = await serverBootstrap(signedIn.token, { locale, timeZone });
   return session ? { ok: true, session } : { ok: false, reason: 'noServer' };
+}
+
+/** Supabase keeps the session under `sb-<project>-auth-token`; finding one needs no network. */
+async function hasStoredSession() {
+  const keys = await AsyncStorage.getAllKeys();
+  return keys.some((key) => key.startsWith('sb-') && key.endsWith('-auth-token'));
+}
+
+/**
+ * Deletes this phone's account on the server, with everything the server keeps for it, then
+ * signs out (App Store 5.1.1(v)). `none`: the phone never signed in, so the server has nothing.
+ * `failed`: there is an account but the server could not delete it; the caller must not pretend
+ * it is gone.
+ */
+export async function deleteServerAccount(): Promise<'deleted' | 'none' | 'failed'> {
+  if (!(await hasStoredSession())) return 'none';
+  const auth = (await supabase())?.auth;
+  if (!auth) return 'failed';
+  const { data } = await auth.getSession();
+  // A session the server no longer knows (the account is already gone) cannot refresh.
+  if (!data.session) return 'none';
+  const done = await serverMessages.deleteAccount(data.session.access_token);
+  if (!done) return 'failed';
+  await auth.signOut({ scope: 'local' }).catch(() => {});
+  return 'deleted';
 }

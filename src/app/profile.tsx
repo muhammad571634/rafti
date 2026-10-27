@@ -7,7 +7,7 @@ import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SUPPORT_EMAIL } from '@/ai/safety';
-import { connectAccount } from '@/ai/account';
+import { connectAccount, deleteServerAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
 import {
   AuroraGlass,
@@ -30,7 +30,7 @@ import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { defaultPersona } from '@/lib/personas';
 import { countMessages } from '@/store/message-db';
-import { flushMessages, messagesInDb } from '@/store/message-sync';
+import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/store/message-sync';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
 
@@ -158,7 +158,24 @@ export default function ProfileScreen() {
   // One language for now: the picker shows up once there is a second one.
   const canPickLanguage = SUPPORTED_LOCALES.length > 1;
 
-  const confirmDelete = () => {
+  /** Dev only: the last Server chats sync (B1.3b): what came back, synced, or why not. */
+  const [chatsStatus, setChatsStatus] = useState<string | undefined>();
+  const syncChats = async () => {
+    const restored = await restoreFromServer();
+    const status = await syncMessages();
+    if (restored) setChatsStatus(t('profile.chatsRestored', { count: restored }));
+    else setChatsStatus(t(status === 'synced' ? 'profile.chatsSynced' : status === 'off' ? 'profile.chatsOff' : 'profile.aiOffline'));
+    void checkMessages();
+  };
+
+  // The server's copy goes first (App Store 5.1.1(v)); if it cannot, the phone keeps everything.
+  const [deleting, setDeleting] = useState(false);
+  const [deleteFailed, setDeleteFailed] = useState(false);
+  const confirmDelete = async () => {
+    setDeleting(true);
+    const result = await deleteServerAccount();
+    setDeleting(false);
+    if (result === 'failed') return setDeleteFailed(true);
     setDeleteOpen(false);
     deleteAccount();
     if (router.canDismiss()) router.dismissAll();
@@ -376,6 +393,26 @@ export default function ProfileScreen() {
             />
             {/* B1.3a: messages live in SQLite on the phone; the count shows the import worked. */}
             <SettingsRow title={t('profile.messagesOnPhone')} icon="chatbubbles" fill={FILL.grey} meta={messageCount} onPress={() => void checkMessages()} />
+            {/* B1.3b: the chats are copied to the server; turning it on reads them back on an empty phone, then sends what is new. */}
+            <SettingsRow
+              title={t('profile.serverChats')}
+              icon="cloud-upload"
+              fill={FILL.grey}
+              meta={chatsStatus}
+              onPress={settings.serverMessages ? () => void syncChats() : undefined}
+              right={
+                <Toggle
+                  value={!!settings.serverMessages}
+                  onChange={(v) => {
+                    setSetting('serverMessages', v);
+                    if (v) void syncChats();
+                    else setChatsStatus(undefined);
+                  }}
+                  onColor={SWITCH_ON}
+                  accessibilityLabel={t('profile.serverChats')}
+                />
+              }
+            />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
             {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}
@@ -411,12 +448,28 @@ export default function ProfileScreen() {
         </PressableScale>
       </ScrollView>
 
-      <Sheet visible={deleteOpen} onClose={() => setDeleteOpen(false)} title={t('profile.deleteTitle')} center>
-        <Txt variant="body" color={colors.textSecondary} center style={styles.deleteBody}>
-          {t('profile.deleteBody')}
+      <Sheet
+        visible={deleteOpen}
+        onClose={() => {
+          setDeleteOpen(false);
+          setDeleteFailed(false);
+        }}
+        title={t('profile.deleteTitle')}
+        center
+      >
+        <Txt variant="body" color={deleteFailed ? colors.danger : colors.textSecondary} center style={styles.deleteBody}>
+          {t(deleteFailed ? 'profile.deleteFailed' : 'profile.deleteBody')}
         </Txt>
         <View style={styles.deleteActions}>
-          <Button label={t('profile.deleteConfirm')} variant="danger" size="lg" full onPress={confirmDelete} />
+          <Button
+            label={t('profile.deleteConfirm')}
+            variant="danger"
+            size="lg"
+            full
+            loading={deleting}
+            disabled={deleting}
+            onPress={() => void confirmDelete()}
+          />
           <Button label={t('profile.cancel')} variant="ghost" size="lg" full onPress={() => setDeleteOpen(false)} />
         </View>
       </Sheet>

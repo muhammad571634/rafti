@@ -7,6 +7,9 @@ import type {
   CheckInResult,
   ClientConfig,
   GrantRequest,
+  MessageSyncRequest,
+  MessageSyncResult,
+  MessagesPage,
   SpendRequest,
   SpinResult,
   WalletState,
@@ -77,6 +80,18 @@ export const serverWallet = {
   grant: (accessToken: string, request: GrantRequest) => call<WalletState>('/v1/wallet/grant', post(accessToken, request), 8000),
   checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
   spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
+};
+
+/**
+ * The chats on the server (B1.3b): the phone's unsent rows go up, a new install reads them back,
+ * and deleting the account deletes the server's copy. Null when the server is off or refused.
+ */
+export const serverMessages = {
+  sync: (accessToken: string, request: MessageSyncRequest) =>
+    call<MessageSyncResult>('/v1/messages/sync', post(accessToken, request), 20_000),
+  page: (accessToken: string, after: number) => call<MessagesPage>(`/v1/messages?after=${after}`, withToken(accessToken), 20_000),
+  deleteAccount: (accessToken: string) =>
+    call<{ ok: true }>('/v1/account', withToken(accessToken, { method: 'DELETE' }), 15_000),
 };
 
 /**

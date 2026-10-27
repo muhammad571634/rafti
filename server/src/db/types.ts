@@ -3,12 +3,14 @@ import type {
   BootstrapResult,
   CheckInResult,
   GrantRequest,
+  MessageSyncRequest,
+  MessagesPage,
   SpendRequest,
   SpinResult,
   WalletState,
 } from '../../../src/ai/session-types.ts';
 
-export type { BootstrapInput, BootstrapResult, CheckInResult, GrantRequest, SpendRequest, SpinResult, WalletState };
+export type { BootstrapInput, BootstrapResult, CheckInResult, GrantRequest, MessageSyncRequest, MessagesPage, SpendRequest, SpinResult, WalletState };
 
 /** A wallet call the database refused: too few shells, no wallet yet (before bootstrap), a bad amount. */
 export class WalletError extends Error {
@@ -40,6 +42,14 @@ export interface Db {
   walletCredit(userId: string, request: GrantRequest & { free: boolean }): Promise<WalletState>;
   walletCheckIn(userId: string, rules: { ladder: readonly number[]; top: number }): Promise<CheckInResult>;
   walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
+
+  // The chats (B1.3b, supabase/migrations/*_b1_message_sync.sql).
+  /** One sync, all or nothing; answers the user's newest `seq`. */
+  syncMessages(userId: string, request: MessageSyncRequest): Promise<number | null>;
+  /** The user's messages after `after`, in `seq` order. */
+  messagesAfter(userId: string, after: number, limit: number): Promise<MessagesPage>;
+  /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
+  deleteUser(userId: string): Promise<void>;
 }
 
 /** What one model or voice call cost (backend-plan §1.5, §9: the unit economics come from these rows). */
