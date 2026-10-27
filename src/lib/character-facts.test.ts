@@ -6,7 +6,21 @@ import { CHARACTER_PROFILES } from '../mock/character-profiles';
 import { characters } from '../mock/characters';
 
 import { heightLabel } from './character-facts';
-import { GREETING_MAX, LOOK_MAX, MIN_AGE, MORE_GREETINGS_MAX, STARTER_MAX, STARTERS_MAX, TAGLINE_MAX } from './create-character';
+import {
+  BACKSTORY_MAX,
+  DEFINITION_MAX,
+  GREETING_MAX,
+  HEIGHT_MAX,
+  HEIGHT_MIN,
+  LOOK_MAX,
+  MIN_AGE,
+  MORE_GREETINGS_MAX,
+  STARTER_MAX,
+  STARTERS_MAX,
+  TAGLINE_MAX,
+  THING_MAX,
+  THINGS_MAX,
+} from './create-character';
 
 describe('heightLabel', () => {
   it('reads feet and inches in the US, centimetres elsewhere', () => {
@@ -18,6 +32,10 @@ describe('heightLabel', () => {
 
 describe('the official cast’s profiles', () => {
   const entries = Object.entries(CHARACTER_PROFILES);
+
+  it('cover every official character', () => {
+    for (const c of characters.filter((x) => x.isOfficial)) assert.ok(CHARACTER_PROFILES[c.id], c.id);
+  });
 
   it('belong to official characters, who are adults', () => {
     for (const [id, p] of entries) {
@@ -36,6 +54,13 @@ describe('the official cast’s profiles', () => {
       for (const g of p.greetings ?? []) assert.ok(g.length <= GREETING_MAX, `${id} greeting: ${g}`);
       assert.ok((p.starters ?? []).length <= STARTERS_MAX, `${id} starters`);
       for (const s of p.starters ?? []) assert.ok(s.length <= STARTER_MAX, `${id} starter: ${s}`);
+      assert.ok((p.backstory ?? '').length <= BACKSTORY_MAX, `${id} backstory`);
+      assert.ok((p.definition ?? '').length <= DEFINITION_MAX, `${id} definition`);
+      assert.ok(p.heightCm !== undefined && p.heightCm >= HEIGHT_MIN && p.heightCm <= HEIGHT_MAX, `${id} height`);
+      for (const things of [p.likes ?? [], p.dislikes ?? []]) {
+        assert.ok(things.length <= THINGS_MAX, `${id} things`);
+        for (const t of things) assert.ok(t.length <= THING_MAX, `${id} thing: ${t}`);
+      }
     }
   });
 
