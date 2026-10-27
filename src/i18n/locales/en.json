@@ -210,7 +210,15 @@
     "proTitle": "Meet them first with Pro",
     "opensOn": "Pro now · everyone on {{date}}"
   },
+  "intro": {
+    "age": "{{count}} years old",
+    "loves": "Loves",
+    "cantStand": "Can't stand",
+    "open": "About {{name}}",
+    "story": "Story"
+  },
   "characterProfile": {
+    "height": "Height",
     "addFriend": "Add friend",
     "chat": "Message",
     "call": "Voice call",

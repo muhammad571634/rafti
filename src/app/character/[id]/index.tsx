@@ -22,11 +22,12 @@ import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
 import { isActiveMemory } from '@/economy/memory-limit';
+import { heightLabel } from '@/lib/character-facts';
 import { daysBetween } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
-import type { Relationship } from '@/types';
+import type { Character, Relationship } from '@/types';
 
 /**
  * Discovery -> profile -> "Add friend" is the reference app's way in: adding a
@@ -48,6 +49,7 @@ export default function CharacterProfileScreen() {
     (s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length,
   );
   const addFriend = useAppStore((s) => s.addFriend);
+  const locale = useAppStore((s) => s.user.locale);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
   const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
   // Past the avatar and name, the bar shows the name (iOS scroll edge).
@@ -136,6 +138,11 @@ export default function CharacterProfileScreen() {
               </Txt>
             </View>
           ) : null}
+          {character.tagline ? (
+            <Txt style={styles.tagline} center>
+              {character.tagline}
+            </Txt>
+          ) : null}
           <Txt style={styles.bio} center>
             {character.bio}
           </Txt>
@@ -201,6 +208,8 @@ export default function CharacterProfileScreen() {
           ) : null}
         </View>
 
+        <AboutCard character={character} locale={locale} />
+
         {isFriend && relationship ? (
           <BondCard
             relationship={relationship}
@@ -211,6 +220,38 @@ export default function CharacterProfileScreen() {
       </ScrollView>
       {early.sheet}
     </Screen>
+  );
+}
+
+/**
+ * Their story and facts in one white card (`src/mock/character-profiles.ts`), as the chat's first
+ * card shows them: age and height, the story, then what they love and can't stand.
+ */
+function AboutCard({ character, locale }: { character: Character; locale: string }) {
+  const { t } = useTranslation();
+  const rows = [
+    character.age ? { key: 'age', label: t('createCharacter.age'), value: String(character.age) } : null,
+    character.heightCm ? { key: 'height', label: t('characterProfile.height'), value: heightLabel(character.heightCm, locale) } : null,
+    character.likes?.length ? { key: 'loves', label: t('intro.loves'), value: character.likes.join(', ') } : null,
+    character.dislikes?.length ? { key: 'cantStand', label: t('intro.cantStand'), value: character.dislikes.join(', ') } : null,
+  ].filter((row) => row !== null);
+  if (!character.backstory && !rows.length) return null;
+
+  return (
+    <InsetGroup style={styles.about}>
+      {character.backstory ? (
+        <View style={[styles.aboutStory, rows.length > 0 && styles.aboutLine]}>
+          <Txt style={styles.aboutLabel}>{t('intro.story')}</Txt>
+          <Txt style={styles.aboutText}>{character.backstory}</Txt>
+        </View>
+      ) : null}
+      {rows.map((row, i) => (
+        <View key={row.key} style={[styles.aboutRow, i < rows.length - 1 && styles.aboutLine]}>
+          <Txt style={styles.aboutLabel}>{row.label}</Txt>
+          <Txt style={styles.aboutValue}>{row.value}</Txt>
+        </View>
+      ))}
+    </InsetGroup>
   );
 }
 
@@ -279,7 +320,15 @@ const styles = StyleSheet.create({
   bold: { fontWeight: '700' },
   voice: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 6 },
   voiceText: { fontSize: 13, fontWeight: '500' },
+  tagline: { marginTop: 10, fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4 },
   bio: { marginTop: 10, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
+  about: { marginTop: 22 },
+  aboutStory: { paddingHorizontal: space.lg, paddingVertical: 12, gap: 4 },
+  aboutRow: { paddingHorizontal: space.lg, paddingVertical: 11, gap: 2 },
+  aboutLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  aboutLabel: { fontSize: 13, color: colors.textSecondary },
+  aboutText: { fontSize: 15, lineHeight: 21 },
+  aboutValue: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
   tags: { marginTop: space.sm, fontSize: 13, color: colors.textSecondary },
   actions: { marginTop: 20, gap: space.sm, paddingHorizontal: space.lg },
   pair: { flexDirection: 'row', gap: space.sm },

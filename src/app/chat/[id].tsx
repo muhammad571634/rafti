@@ -14,6 +14,7 @@ import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, Voice
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { DayChip } from '@/components/chat/day-chip';
+import { IntroCard } from '@/components/chat/intro-card';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
 import { OffSheet } from '@/components/chat/off-sheet';
 import { NotedChip } from '@/components/mind/noted-chip';
@@ -126,6 +127,7 @@ export default function ChatRoomScreen() {
   const replyVersions = useAppStore((s) => (conversationId ? s.replyVersions[conversationId] : undefined));
   const regenerateReply = useAppStore((s) => s.regenerateReply);
   const rateReply = useAppStore((s) => s.rateReply);
+  const locale = useAppStore((s) => s.user.locale);
   /** "What was off?" after 👎, with the reason picked so far. */
   const [offOpen, setOffOpen] = useState(false);
   const [offReason, setOffReason] = useState<OffReason>();
@@ -485,6 +487,15 @@ export default function ChatRoomScreen() {
                   ) : null}
                   {typing ? <TypingRow characters={[character]} /> : null}
                 </>
+              }
+              // The footer of an inverted list sits above the oldest line: who they are, first.
+              ListFooterComponent={
+                <IntroCard
+                  character={character}
+                  name={name}
+                  locale={locale}
+                  onPress={() => router.push(`/character/${character.id}`)}
+                />
               }
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {

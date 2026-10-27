@@ -45,6 +45,13 @@ export interface Character {
   definition?: string;
   /** Up to 3 first lines the user can tap to open a new chat. */
   starters?: string[];
+  /** Height in centimetres, shown as feet and inches in the US (`heightLabel`). */
+  heightCm?: number;
+  /** A few things they love and can't stand, shown on the chat's first card and the profile. */
+  likes?: string[];
+  dislikes?: string[];
+  /** Where they come from and what they want now, in a few sentences (third person). */
+  backstory?: string;
   /** User creations (F15): what the creator set; the server prompt uses all of it. */
   age?: number;
   speakingStyle?: SpeakingStyle;

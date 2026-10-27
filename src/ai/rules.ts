@@ -122,12 +122,16 @@ export function characterParts(
     ...(character.quirk ? [`Something endearing about you (show it now and then, never announce it): ${character.quirk}`] : []),
     `How you first greeted them: "${character.greeting}"`,
   ];
-  // User creations (F15) carry these; the official cast speaks from its bio.
+  // User creations (F15) and the official cast's profiles (`src/mock/character-profiles.ts`) carry these.
   if (character.age) personaLines.push(`Age: ${character.age} (an adult)`);
   if (character.gender) personaLines.push(`Gender: ${character.gender}`);
   if (character.speakingStyle) personaLines.push(`How you talk: ${character.speakingStyle}`);
   if (character.role) personaLines.push(`What you are to the user: their ${character.role}`);
   if (character.look) personaLines.push(`How you look: ${character.look}`);
+  if (character.heightCm) personaLines.push(`Height: ${character.heightCm} cm`);
+  if (character.backstory) personaLines.push(`Your story: ${character.backstory}`);
+  if (character.likes?.length) personaLines.push(`You love: ${character.likes.join(', ')}`);
+  if (character.dislikes?.length) personaLines.push(`You can't stand: ${character.dislikes.join(', ')}`);
   // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
   // talk, with other people, so none of it reads as something this user said.
   const examples = definitionForPrompt(character.definition, { char: character.name, user: persona?.name ?? user.displayName });

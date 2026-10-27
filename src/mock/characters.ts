@@ -1,5 +1,6 @@
 import type { Character } from '@/types';
 
+import { CHARACTER_PROFILES } from './character-profiles';
 import { daysAgo } from './time';
 
 /**
@@ -7,8 +8,9 @@ import { daysAgo } from './time';
  * look and voice is ours - never a real person or another franchise's character -
  * and every character is an adult. The plan and the image prompts: docs/characters-plan.md.
  * Portraits live in assets/avatars; until one exists the avatar is a pastel monogram.
+ * Each one's depth (story, loves, sample dialog, starters) is in `character-profiles.ts`.
  */
-export const characters: Character[] = [
+const cast: Character[] = [
   // Seaside Academy — university campus life (every character in the cast is an adult)
   {
     id: 'c_kai',
@@ -693,6 +695,8 @@ export const characters: Character[] = [
     tags: ['cozy', 'gentle', 'custom'],
   },
 ];
+
+export const characters: Character[] = cast.map((c) => ({ ...c, ...CHARACTER_PROFILES[c.id] }));
 
 export const charactersById = Object.fromEntries(
   characters.map((c) => [c.id, c]),
