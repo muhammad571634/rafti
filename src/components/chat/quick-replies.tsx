@@ -39,7 +39,7 @@ export function QuickReplies({
             accessibilityRole="button"
             accessibilityLabel={idea.text}
             accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
-            <Txt style={styles.chipText} color={colors.primary} lines={1}>
+            <Txt style={styles.chipText} color={colors.brandText} lines={1}>
               {idea.label}
             </Txt>
           </PressableScale>
@@ -81,7 +81,7 @@ export function SceneBar({ title, onSkip, onEnd }: { title: string; onSkip?: () 
         </PressableScale>
       ) : null}
       <PressableScale onPress={onEnd} scaleTo={0.94} accessibilityRole="button" accessibilityLabel={t('scenes.end')} hitSlop={10} style={styles.sceneEnd}>
-        <Txt variant="smallStrong" color={colors.primary}>
+        <Txt variant="smallStrong" color={colors.brandText}>
           {t('scenes.end')}
         </Txt>
       </PressableScale>

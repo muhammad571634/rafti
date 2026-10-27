@@ -218,7 +218,7 @@ export default function CharacterSettingsScreen() {
               accessibilityLabel={q.badge ? `${q.label}, ${q.badge}` : q.label}
               style={styles.quickTile}>
               <Ionicons name={q.icon} size={22} color={colors.primary} />
-              <Txt style={styles.quickLabel} color={colors.primary} lines={1}>
+              <Txt style={styles.quickLabel} color={colors.brandText} lines={1}>
                 {q.label}
               </Txt>
               {q.badge ? (

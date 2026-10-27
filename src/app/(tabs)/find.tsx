@@ -182,8 +182,8 @@ export default function FindScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('a11y.createCharacter')}
             onPress={() => router.push('/create-character')}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="add" size={26} color={colors.text} />
+            <AuroraGlass prominent style={styles.round}>
+              <Ionicons name="add" size={26} color={colors.textOnPrimary} />
             </AuroraGlass>
           </PressableScale>
         </View>

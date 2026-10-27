@@ -208,5 +208,5 @@ const styles = StyleSheet.create({
   topic: { fontSize: 15, lineHeight: 20, color: colors.text, textAlign: 'center' },
   note: { fontSize: 13, color: colors.textSecondary, textAlign: 'center' },
   link: { alignSelf: 'center', paddingVertical: 4 },
-  linkText: { fontSize: 15, fontWeight: '600', color: colors.primary },
+  linkText: { fontSize: 15, fontWeight: '600', color: colors.brandText },
 });

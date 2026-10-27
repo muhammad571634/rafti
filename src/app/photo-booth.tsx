@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
   capsuleText: { fontSize: 15, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
   proPill: { height: 28, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: STORE.violetSoft },
-  proPillText: { fontSize: 14, fontWeight: '700', color: STORE.violetInk },
+  proPillText: { fontSize: 15, fontWeight: '700', color: STORE.violetInk },
   card: { marginHorizontal: GUTTER, borderRadius: 24, backgroundColor: aurora.card, ...CARD_SHADOW },
   previewCard: { marginTop: 18, padding: CARD_PAD, gap: 12 },
   preview: { borderRadius: 16, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },

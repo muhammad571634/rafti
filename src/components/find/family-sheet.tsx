@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.6 },
   rowText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   create: { marginTop: space.lg, minHeight: 50 },
-  createText: { color: colors.primary },
+  createText: { color: colors.brandText },
   field: { borderRadius: 14, backgroundColor: colors.surfaceAlt, paddingHorizontal: space.lg },
   input: { height: 50, fontSize: 17, color: colors.text },
   cta: { marginTop: space.lg, height: 56, borderRadius: 28 },

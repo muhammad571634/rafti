@@ -98,7 +98,7 @@ export default function DiaryWriteScreen() {
             {date === dayKey() ? t('diary.todayPage') : t('diary.myPage')}
           </Txt>
           <View style={styles.date}>
-            <Txt style={styles.dateText} color={colors.primary}>
+            <Txt style={styles.dateText} color={colors.brandText}>
               {shortDate(date)}
             </Txt>
             <Ionicons name="chevron-down" size={11} color={colors.primary} />

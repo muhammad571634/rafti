@@ -63,7 +63,7 @@ export function ChatSearch({
           ) : null}
         </View>
         <Pressable onPress={() => router.back()} hitSlop={8} accessibilityRole="button">
-          <Txt style={styles.cancel} color={colors.primary}>
+          <Txt style={styles.cancel} color={colors.brandText}>
             {t('common.cancel')}
           </Txt>
         </Pressable>

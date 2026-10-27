@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
-import { aurora, isDark } from '@/theme';
+import { aurora, colors, isDark } from '@/theme';
 
 /**
  * The approved canvas draws the aurora as four solid circles under a 46px CSS blur on a
@@ -122,24 +122,29 @@ const nativeGlass = Platform.OS === 'ios' && isLiquidGlassAvailable() && isGlass
  * A control's glass on the aurora: the system's Liquid Glass on iOS 26+, elsewhere a see-through
  * fill with a bright top rim and a fine dark edge. For controls only, never for content
  * (HIG Materials). `on` marks the selected state (the current tab, a pressed toggle).
+ * `prominent` is a screen's one primary action (iOS's prominent glass): tinted in the brand
+ * fill, its glyph in `colors.textOnPrimary`.
  */
 export function AuroraGlass({
   children,
   style,
   on,
+  prominent,
 }: {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   on?: boolean;
+  prominent?: boolean;
 }) {
   if (nativeGlass) {
+    const tint = prominent ? colors.primaryFill : on ? aurora.glassOn : undefined;
     return (
-      <GlassView style={style} glassEffectStyle="regular" isInteractive tintColor={on ? aurora.glassOn : undefined}>
+      <GlassView style={style} glassEffectStyle="regular" isInteractive tintColor={tint}>
         {children}
       </GlassView>
     );
   }
-  return <View style={[styles.glass, on && styles.glassOn, style]}>{children}</View>;
+  return <View style={[styles.glass, on && styles.glassOn, prominent && styles.prominent, style]}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -156,4 +161,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
   },
   glassOn: { backgroundColor: aurora.glassOn },
+  prominent: { backgroundColor: colors.primaryFill, borderTopColor: aurora.glassEdge },
 });

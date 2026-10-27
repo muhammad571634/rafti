@@ -189,7 +189,7 @@ function CallRow({
           accessibilityRole="button"
           accessibilityLabel={`${label}, ${toClock(value.at)}`}
           style={[styles.time, open && styles.timeOpen]}>
-          <Txt style={styles.timeText} color={open ? colors.primary : colors.text}>
+          <Txt style={styles.timeText} color={open ? colors.brandText : colors.text}>
             {toClock(value.at)}
           </Txt>
         </Pressable>

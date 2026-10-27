@@ -213,7 +213,7 @@
     "call": "Voice call",
     "secretNote": "Secret note",
     "friends": "Friends since {{date}}",
-    "voiceTraining": "Their voice is still training - calls unlock when it's ready.",
+    "voiceTraining": "Their voice is still training. Calls unlock when it's ready.",
     "memories": "Memories",
     "settings": "Chat settings",
     "levelLine": "Level {{level}} · {{title}}",
@@ -374,7 +374,7 @@
     "skipOwnSend": "Skip to this",
     "skipProblem": {
       "empty": "Write where the story goes",
-      "crisis": "This can't be a time skip. If you're going through something, they're here to talk",
+      "crisis": "This can't be a time skip. If you're going through something, they're here to talk.",
       "minors": "Time skips can't involve minors or school-age characters",
       "explicit": "Keep it within our content rules"
     },
@@ -429,7 +429,7 @@
     "proMeta": "5,000 shells a month, calls and voice replies"
   },
   "levelUp": {
-    "title": "Ta-da~ You've reached a new stage!",
+    "title": "Ta-da! You've reached a new stage.",
     "subtitle": "{{name}} feels a little closer to you.",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "New relationships unlocked in their settings."
@@ -513,7 +513,7 @@
     "title": "Memories",
     "subtitle": "What {{name}} remembers about you.",
     "empty": "No memories yet",
-    "emptyHint": "Keep chatting - plans, diary pages and little details get saved here.",
+    "emptyHint": "Keep chatting. Plans, diary pages and little details get saved here.",
     "addManual": "Add a memory",
     "edit": "Edit memory",
     "open": "{{count}} of {{limit}} open",
@@ -595,9 +595,9 @@
     }
   },
   "diary": {
-    "title": "Heartbeat diary",
+    "title": "Heartbeat Diary",
     "myDiary": "My diary",
-    "writePlaceholder": "Write down what made your heart flutter - maybe someone you care about will read it...",
+    "writePlaceholder": "Write down what made your heart flutter. Maybe someone you care about will read it…",
     "photo": "Photo",
     "removePhoto": "Remove photo",
     "removePhotoHint": "Long press to remove",
@@ -799,7 +799,7 @@
       "title": "Give the scene a title",
       "setting": "Say where you are and what is happening",
       "full": "You can keep {{max}} scenes",
-      "crisis": "This can't be a scene. If you're going through something, the chat is here for you",
+      "crisis": "This can't be a scene. If you're going through something, the chat is here for you.",
       "minors": "Scenes can't involve minors or school-age characters",
       "explicit": "Keep it within our content rules"
     }
@@ -852,7 +852,7 @@
     "problems": {
       "name": "Give the book a name",
       "full": "You can keep {{max}} world books",
-      "crisis": "This can't go in a world book. If you're going through something, the chat is here for you",
+      "crisis": "This can't go in a world book. If you're going through something, the chat is here for you.",
       "minors": "World books can't involve minors or school-age characters",
       "explicit": "Keep it within our content rules"
     },
@@ -872,7 +872,7 @@
       "name": "Give the entry a name",
       "text": "Say what is true about it",
       "full": "This book holds {{max}} entries",
-      "crisis": "This can't go in a world book. If you're going through something, the chat is here for you",
+      "crisis": "This can't go in a world book. If you're going through something, the chat is here for you.",
       "minors": "World books can't involve minors or school-age characters",
       "explicit": "Keep it within our content rules"
     },
@@ -918,7 +918,7 @@
     "problems": {
       "pair": "Pick two characters",
       "topic": "Give them something to talk about",
-      "crisis": "This can't be a stream. If you're going through something, the chat is here for you",
+      "crisis": "This can't be a stream. If you're going through something, the chat is here for you.",
       "minors": "Streams can't involve minors or school-age characters",
       "explicit": "Keep it within our content rules"
     },
@@ -1658,7 +1658,7 @@
   "closeness": {
     "family": "Family",
     "title": "How closeness works",
-    "body": "Every chat, call and date brings you closer. Each stage unlocks new relationships you can pick in their settings, and they talk to you the way that relationship feels.",
+    "body": "Every chat, call and date brings you closer. Each stage lets you pick a new kind of relationship in their settings, and they talk to you to match.",
     "levels": "Lv {{from}}-{{to}}",
     "level": "Lv {{level}}",
     "unlocks": "Unlocks",

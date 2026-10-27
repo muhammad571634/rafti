@@ -225,5 +225,5 @@ const styles = StyleSheet.create({
   },
   footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   turnOn: { height: 30, paddingHorizontal: 14, borderRadius: 15, justifyContent: 'center', backgroundColor: systemColors.fill },
-  turnOnText: { fontSize: 15, fontWeight: '600', color: colors.primary },
+  turnOnText: { fontSize: 15, fontWeight: '600', color: colors.brandText },
 });

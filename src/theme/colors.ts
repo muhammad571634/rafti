@@ -102,7 +102,8 @@ const lightColors = {
   primaryFill: palette.apricot400,
   primarySoft: palette.apricot100,
   primarySofter: palette.apricot50,
-  brandText: palette.apricot600,
+  // Tinted text: a step darker than `primary` so it reads on white (3.8:1 vs 2.5:1).
+  brandText: palette.apricot700,
 
   // Accent (Secret Note / relationship)
   accent: palette.mint500,

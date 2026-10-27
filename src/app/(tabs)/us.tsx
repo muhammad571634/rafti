@@ -175,8 +175,8 @@ export default function UsScreen() {
 
   const addButton = (
     <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)}>
-      <AuroraGlass style={styles.add}>
-        <Ionicons name="add" size={24} color={colors.text} />
+      <AuroraGlass prominent style={styles.add}>
+        <Ionicons name="add" size={24} color={colors.textOnPrimary} />
       </AuroraGlass>
     </PressableScale>
   );
@@ -392,7 +392,7 @@ export default function UsScreen() {
                 style={({ pressed }) => [styles.showMore, pressed && styles.pressed]}
                 accessibilityRole="button"
                 onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
-                <Txt style={styles.rowText} color={aurora.tint}>
+                <Txt style={styles.rowText} color={colors.brandText}>
                   {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
                 </Txt>
               </Pressable>
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
   },
-  segmentText: { fontSize: 14, fontWeight: '500', color: colors.text },
+  segmentText: { fontSize: 13, fontWeight: '500', color: colors.text },
   segmentTextOn: { fontWeight: '700' },
   hint: { marginHorizontal: space.lg * 2, fontSize: 15, color: aurora.textMuted },
   moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },

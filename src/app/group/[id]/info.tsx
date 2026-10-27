@@ -179,7 +179,7 @@ export default function GroupInfoScreen() {
               accessibilityLabel={q.label}
               style={[styles.quickTile, q.off && styles.off]}>
               <Ionicons name={q.icon} size={22} color={colors.primary} />
-              <Txt style={styles.quickLabel} color={colors.primary}>
+              <Txt style={styles.quickLabel} color={colors.brandText}>
                 {q.label}
               </Txt>
             </PressableScale>
@@ -221,7 +221,7 @@ export default function GroupInfoScreen() {
                 <Ionicons name="add" size={20} color={colors.primary} />
               </View>
               <View style={styles.memberBody}>
-                <Txt style={styles.memberName} color={colors.primary}>
+                <Txt style={styles.memberName} color={colors.brandText}>
                   {t('group.addMember')}
                 </Txt>
               </View>

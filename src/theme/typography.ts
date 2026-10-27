@@ -27,15 +27,16 @@ export const type = {
   logo: { fontSize: 26, fontFamily: fonts.display, letterSpacing: 0.6 } as Variant,
   /** Big playful numbers: balances, rewards, the wheel */
   display: { fontSize: 30, fontFamily: fonts.display, letterSpacing: 0.2 } as Variant,
-  h1: { fontSize: 30, fontWeight: weight.heavy, letterSpacing: -0.5, lineHeight: 36 } as Variant,
-  h2: { fontSize: 24, fontWeight: weight.heavy, letterSpacing: -0.3, lineHeight: 30 } as Variant,
-  h3: { fontSize: 19, fontWeight: weight.bold, letterSpacing: -0.1 } as Variant,
+  // Headings, body and secondary text sit on the iOS text styles (HIG Typography):
+  // Title 1, Title 2, Title 3, Body and Subheadline.
+  h1: { fontSize: 28, fontWeight: weight.heavy, letterSpacing: -0.5, lineHeight: 34 } as Variant,
+  h2: { fontSize: 22, fontWeight: weight.heavy, letterSpacing: -0.3, lineHeight: 28 } as Variant,
+  h3: { fontSize: 20, fontWeight: weight.bold, letterSpacing: -0.1, lineHeight: 25 } as Variant,
   title: { fontSize: 17, fontWeight: weight.bold } as Variant,
-  // iOS Body: 17 pt on a 22 pt line.
   body: { fontSize: 17, fontWeight: weight.regular, lineHeight: 22 } as Variant,
   bodyStrong: { fontSize: 17, fontWeight: weight.bold, lineHeight: 22 } as Variant,
-  small: { fontSize: 14, fontWeight: weight.regular, lineHeight: 19 } as Variant,
-  smallStrong: { fontSize: 14, fontWeight: weight.bold, lineHeight: 19 } as Variant,
+  small: { fontSize: 15, fontWeight: weight.regular, lineHeight: 20 } as Variant,
+  smallStrong: { fontSize: 15, fontWeight: weight.bold, lineHeight: 20 } as Variant,
   caption: { fontSize: 12, fontWeight: weight.semibold, letterSpacing: 0.1 } as Variant,
   /** Short labels on chips and small cells */
   chip: { fontSize: 13, fontWeight: weight.bold } as Variant,

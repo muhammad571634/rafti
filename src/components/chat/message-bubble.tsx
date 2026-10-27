@@ -427,7 +427,7 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
           {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
         </Txt>
         {missed && onCallBack ? (
-          <Txt style={[styles.systemText, styles.systemStrong]} color={colors.primary}>
+          <Txt style={[styles.systemText, styles.systemStrong]} color={colors.brandText}>
             {' · '}
             {t('chat.callBack')}
           </Txt>

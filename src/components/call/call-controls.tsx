@@ -100,7 +100,7 @@ export const callGlass = StyleSheet.create({
   captionText: { fontSize: 17, lineHeight: 23, fontWeight: '500', letterSpacing: -0.3, color: colors.onMedia, textAlign: 'center' },
   // "2 min left", centred in the top row.
   warn: { height: 32, paddingHorizontal: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  warnText: { fontSize: 14, fontWeight: '600', color: colors.onMedia, fontVariant: ['tabular-nums'] },
+  warnText: { fontSize: 15, fontWeight: '600', color: colors.onMedia, fontVariant: ['tabular-nums'] },
   top: { height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: space.lg },
   title: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3, color: colors.onMedia, textAlign: 'center' },
   timer: { marginTop: 4, fontSize: 17, letterSpacing: -0.2, color: 'rgba(255,255,255,0.72)', fontVariant: ['tabular-nums'], textAlign: 'center' },

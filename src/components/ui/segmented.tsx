@@ -108,6 +108,7 @@ const system = StyleSheet.create({
   track: { height: 34, padding: 2, borderRadius: 9, flexDirection: 'row', backgroundColor: systemColors.fill },
   segment: { flex: 1, borderRadius: 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
   on: { backgroundColor: systemColors.thumb, ...shadows.card },
-  text: { fontSize: 14, fontWeight: '500', letterSpacing: -0.1, color: colors.text },
+  // UISegmentedControl's 13 pt.
+  text: { fontSize: 13, fontWeight: '500', letterSpacing: -0.1, color: colors.text },
   textOn: { fontWeight: '600' },
 });

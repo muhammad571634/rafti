@@ -26,7 +26,8 @@ export interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 48 };
+// lg is iOS's large control (50 pt); sm reaches the 44 pt target through hitSlop.
+const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 50 };
 
 export function Button({
   label,
@@ -46,6 +47,7 @@ export function Button({
     <PressableScale
       onPress={onPress}
       disabled={disabled || loading}
+      hitSlop={size === 'sm' ? 5 : undefined}
       style={[
         styles.base,
         {

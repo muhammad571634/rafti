@@ -951,7 +951,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     gap: 6,
   },
-  cancel: { fontSize: 17, letterSpacing: -0.4, color: colors.primary },
+  cancel: { fontSize: 17, letterSpacing: -0.4, color: colors.brandText },
   filters: { height: 36, marginTop: space.sm, marginHorizontal: space.lg, borderRadius: 18, padding: 3 },
   filtersRow: { flex: 1, flexDirection: 'row' },
   filter: { flex: 1, borderRadius: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 },
@@ -962,7 +962,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
   },
-  filterText: { fontSize: 14, fontWeight: '500', color: colors.text },
+  filterText: { fontSize: 13, fontWeight: '500', color: colors.text },
   filterTextOn: { fontWeight: '700' },
   filterCount: {
     minWidth: 18,
@@ -1110,7 +1110,7 @@ const styles = StyleSheet.create({
   },
   level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   levelText: { fontSize: 12, fontWeight: '600', color: colors.bondText },
-  stamp: { fontSize: 14, letterSpacing: -0.2, color: aurora.textMuted },
+  stamp: { fontSize: 15, letterSpacing: -0.2, color: aurora.textMuted },
   stampUnread: { color: aurora.tint, fontWeight: '600' },
   preview: {
     fontSize: 15,
