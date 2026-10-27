@@ -29,6 +29,8 @@ import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { defaultPersona } from '@/lib/personas';
+import { countMessages } from '@/store/message-db';
+import { flushMessages, messagesInDb } from '@/store/message-sync';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
 
@@ -106,6 +108,19 @@ export default function ProfileScreen() {
       alive = false;
     };
   }, [settings.realAi, t]);
+
+  /** Dev only: how many messages the on-device database holds (B1.3a); tap to count again. */
+  const [messageCount, setMessageCount] = useState<string | undefined>();
+  const checkMessages = async () => {
+    if (!messagesInDb()) return setMessageCount(t('profile.messagesOldSave'));
+    await flushMessages();
+    setMessageCount(String(await countMessages()));
+  };
+  useEffect(() => {
+    if (__DEV__) void checkMessages();
+    // Counted once when Profile opens; a tap counts again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** Dev only: the server account after the last "Server account" press (shells, or why not). */
   const [accountStatus, setAccountStatus] = useState<string | undefined>();
@@ -359,6 +374,8 @@ export default function ProfileScreen() {
                 />
               }
             />
+            {/* B1.3a: messages live in SQLite on the phone; the count shows the import worked. */}
+            <SettingsRow title={t('profile.messagesOnPhone')} icon="chatbubbles" fill={FILL.grey} meta={messageCount} onPress={() => void checkMessages()} />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
             {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}

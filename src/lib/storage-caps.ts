@@ -2,8 +2,9 @@ import type { LedgerEntry, Message } from '@/types';
 
 /**
  * Everything is saved under one AsyncStorage key; on Android a value over ~2 MB fails to load
- * and the whole save is lost (audit 2026-10-13). Until messages move to SQLite or the server,
- * the save keeps only the newest part. The screen keeps the full history until the next launch.
+ * and the whole save is lost (audit 2026-10-13). On the phone messages now live in SQLite
+ * (`src/store/message-db.ts`, B1.3a); these caps apply only while they do not (web, or before the
+ * one-time import), when the save keeps the newest part.
  */
 export const SAVED_MESSAGES_PER_CHAT = 300;
 export const SAVED_MESSAGES_TOTAL = 4000;

@@ -1,6 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z5. NEXT: Backend B1.3, messages in SQLite and on the server (2026-10-27, D115, not started)
+### 0z6. Backend B1.3a done: messages live in SQLite on the phone (2026-10-27, D115). NEXT: B1.3b
+
+`expo-sqlite` ~58.0.14 (no config plugin; `expo install` adds one to `app.json`, it was left out on
+purpose). `src/lib/message-diff.ts` (pure, 10 tests), `src/store/message-db.ts` (+ `.web.ts` no-op),
+`src/store/message-sync.ts` (import once / load, 250 ms flush, flush on background, retry). The store's
+save writes `messages: {}` once the database holds them; `onRehydrateStorage` now awaits
+`restoreMessages` and then runs `finishHydration`. Checked: `tsc`, 409/409 tests, `expo export` for
+android and web. **Not yet checked on a phone.** Phone checks (Expo Go): open the app with old chats →
+Profile (dev) → Messages on this phone shows a number (not "Old save"); send a line, tap the row, the
+count grows; force-close and reopen, the chats are all there; Delete account → 0.
+Next: B1.3b below (the server keeps the chats).
+
+### 0z5. Backend B1.3, messages in SQLite and on the server (2026-10-27, D115, B1.3a done, see 0z6)
 
 **Owner, 2026-10-27:** iOS first: the App Store launch comes first, Google Play after. Keep testing on
 the current Gemini key (Google AI Studio); the owner says when a new key comes, never wait for it.

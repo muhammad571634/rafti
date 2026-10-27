@@ -56,6 +56,7 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
+import { messagesInDb, restoreMessages } from '@/store/message-sync';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
@@ -3328,8 +3329,9 @@ export const useAppStore = create<AppState>()(
         userQuizzes: s.userQuizzes,
         wonFrames: s.wonFrames,
         frames: s.frames,
-        // One AsyncStorage key holds the whole save (~2 MB Android limit): only the newest part is kept.
-        messages: capMessages(s.messages),
+        // Once the on-device database holds the messages (B1.3a) the save leaves them out. Until
+        // then (and on web) one AsyncStorage key holds them (~2 MB Android limit): only the newest part.
+        messages: messagesInDb() ? {} : capMessages(s.messages),
         relationships: s.relationships,
         memories: s.memories,
         diary: s.diary,
@@ -3365,24 +3367,29 @@ export const useAppStore = create<AppState>()(
         settings: s.settings,
       }),
       onRehydrateStorage: () => () => {
-        // Work that was mid-flight when the app closed finishes now.
-        const { notes, diary } = useAppStore.getState();
-        notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));
-        diary
-          .filter((d) => d.sharedWithCharacterId && !d.reply)
-          .forEach((d) => answerDiary(useAppStore.setState, d.id));
-        // A stream the app closed on goes on with the round it had paid for.
-        useAppStore
-          .getState()
-          .streams.filter(isPlaying)
-          .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
-        useAppStore.getState().expireFreeShells();
-        useAppStore.getState().writeDueDiaryPages();
-        useAppStore.setState({ hydrated: true });
+        // The messages come from the database first, so the work below sees them all.
+        void restoreMessages(useAppStore).finally(finishHydration);
       },
     },
   ),
 );
+
+/** Work that was mid-flight when the app closed finishes now; then the app opens. */
+function finishHydration() {
+  const { notes, diary } = useAppStore.getState();
+  notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));
+  diary
+    .filter((d) => d.sharedWithCharacterId && !d.reply)
+    .forEach((d) => answerDiary(useAppStore.setState, d.id));
+  // A stream the app closed on goes on with the round it had paid for.
+  useAppStore
+    .getState()
+    .streams.filter(isPlaying)
+    .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
+  useAppStore.getState().expireFreeShells();
+  useAppStore.getState().writeDueDiaryPages();
+  useAppStore.setState({ hydrated: true });
+}
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */
 

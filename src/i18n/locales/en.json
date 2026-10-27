@@ -1531,6 +1531,8 @@
     "aiOffline": "Server off",
     "serverAccount": "Server account",
     "serverWallet": "Server wallet",
+    "messagesOnPhone": "Messages on this phone",
+    "messagesOldSave": "Old save",
     "accountSignInOff": "Anonymous sign-in off",
     "accountFailed": "Sign-in failed",
     "nextTexts": "Next planned texts now",
