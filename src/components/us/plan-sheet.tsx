@@ -6,7 +6,7 @@ import { Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View }
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
 import { CharacterAvatar, Sheet, Toggle, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, space } from '@/theme';
@@ -60,6 +60,7 @@ export function PlanSheet({
   character?: Character;
   onSubmit: (plan: NewPlan) => void;
 }) {
+  const friendName = useFriendName();
   const { t, i18n } = useTranslation();
   const { height } = useWindowDimensions();
   const today = dayKeyFromToday(0);
@@ -88,7 +89,7 @@ export function PlanSheet({
 
   const later = date !== today && date !== tomorrow;
   const shortDate = (key: string) => dateFromKey(key).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
-  const name = character ? shortName(character.name) : '';
+  const name = character ? friendName(character, true) : '';
 
   // Other day opens the app's own calendar on every platform (owner, 2026-10-17), not the system one.
   const pickOtherDay = () => setOpen('day');

@@ -12,9 +12,10 @@ import { SleepingMascot } from '@/components/bedtime/sleeping-mascot';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
-import { callClock, shortName } from '@/lib/format';
+import { callClock } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space } from '@/theme';
 import type { Character } from '@/types';
@@ -36,6 +37,7 @@ type Page = 'main' | 'who' | 'timer';
  * Colours come from `sleepColors`, Bedtime's own navy in both themes.
  */
 export default function BedtimeScreen() {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -63,7 +65,7 @@ export default function BedtimeScreen() {
 
   const reader = known.find((c) => c.id === readerId);
   const running = left != null;
-  const name = reader ? shortName(reader.name) : '';
+  const name = reader ? friendName(reader, true) : '';
 
   // The next alarm, shown on the Alarms row and under the ring.
   const nextAlarm = useMemo(() => {
@@ -168,7 +170,7 @@ export default function BedtimeScreen() {
                     <Row
                       lead={reader ? <CharacterAvatar character={reader} size={28} /> : null}
                       label={t('bedtime.who')}
-                      value={reader?.name ?? ''}
+                      value={reader ? friendName(reader) : ''}
                       onPress={() => setPage('who')}
                     />
                     <Row
@@ -212,7 +214,7 @@ export default function BedtimeScreen() {
                 accessibilityState={{ selected: c.id === readerId }}>
                 <CharacterAvatar character={c} size={28} />
                 <Txt variant="body" color={night.text} style={styles.flex}>
-                  {c.name}
+                  {friendName(c)}
                 </Txt>
                 {c.id === readerId ? <Ionicons name="checkmark" size={20} color={night.brandText} /> : null}
               </Pressable>

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { CharacterAvatar, GlassButton, glassStyle, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { dayKey, dayKeyFromToday, dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -33,6 +33,7 @@ const PAPER = '#FFFDF8';
  * the header and opens the last seven days.
  */
 export default function DiaryWriteScreen() {
+  const friendName = useFriendName();
   const { t, i18n } = useTranslation();
   const router = useRouter();
 
@@ -227,7 +228,7 @@ export default function DiaryWriteScreen() {
               <ReaderOption
                 key={character.id}
                 selected={shareWith === character.id}
-                label={shortName(character.name)}
+                label={friendName(character, true)}
                 icon={<CharacterAvatar character={character} size={30} />}
                 onPress={() => setShareWith(character.id)}
                 last={i === friends.length - 1}
@@ -235,7 +236,7 @@ export default function DiaryWriteScreen() {
             ))}
           </View>
           <Txt style={styles.note}>
-            {reader ? t('diary.sharedNote', { name: shortName(reader.name) }) : t('diary.privateNote')}
+            {reader ? t('diary.sharedNote', { name: friendName(reader, true) }) : t('diary.privateNote')}
           </Txt>
         </ScrollView>
 

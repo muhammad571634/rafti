@@ -7,7 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { HEROES } from '@/assets/heroes/registry';
 import { CharacterAvatar, characterImage, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { colors, fonts, palette, shadows } from '@/theme';
 import type { BoothPhoto, BoothStyle, Character } from '@/types';
 
@@ -48,6 +48,7 @@ export function BoothPicture({
   develop?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const date = new Date(photo.createdAt);
   const portrait = characterImage(character);
@@ -57,7 +58,7 @@ export function BoothPicture({
       ? { source: portrait, aspect: 1 }
       : undefined;
   const face: Art | undefined = portrait != null ? { source: portrait, aspect: 1 } : scene;
-  const name = shortName(character.name);
+  const name = friendName(character, true);
   // A frame (F29) dresses the card styles; Street is a bare photo and keeps its look.
   const look = photo.style === 'street' ? undefined : photo.frame;
 

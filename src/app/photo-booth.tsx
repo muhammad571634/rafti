@@ -24,6 +24,7 @@ import {
   Txt,
 } from '@/components/ui';
 import { photoQuota } from '@/economy/plans';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { frameLook } from '@/lib/frames';
 import { shortName } from '@/lib/format';
 import { WORLDS, type World } from '@/mock/worlds';
@@ -59,6 +60,7 @@ interface FrameChoice {
  * a segmented control, and the Store's bar with pictures left above the shoot button.
  */
 export default function PhotoBoothScreen() {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -212,7 +214,7 @@ export default function PhotoBoothScreen() {
           {partner ? (
             <View style={styles.caption}>
               <Txt style={styles.captionTitle} lines={1}>
-                {t('photoBooth.together', { name: shortName(partner.name) })}
+                {t('photoBooth.together', { name: friendName(partner, true) })}
               </Txt>
               <Txt style={styles.muted15}>{t(`photoBooth.styleNames.${fresh?.style ?? style}`)}</Txt>
             </View>
@@ -230,14 +232,14 @@ export default function PhotoBoothScreen() {
                     key={character.id}
                     style={styles.partner}
                     scaleTo={0.93}
-                    accessibilityLabel={character.name}
+                    accessibilityLabel={friendName(character)}
                     accessibilityState={{ selected: on }}
                     onPress={() => pickPartner(character.id)}>
                     <View style={[styles.ring, on && styles.ringOn]}>
                       <CharacterAvatar character={character} size={52} />
                     </View>
                     <Txt style={[styles.choiceLabel, on && styles.choiceLabelOn]} lines={1}>
-                      {shortName(character.name)}
+                      {friendName(character, true)}
                     </Txt>
                   </PressableScale>
                 );
@@ -327,7 +329,7 @@ export default function PhotoBoothScreen() {
                   <PressableScale
                     key={photo.id}
                     scaleTo={0.95}
-                    accessibilityLabel={t('photoBooth.openPhoto', { name: shortName(who.name), date: planDate(Date.parse(photo.createdAt)) })}
+                    accessibilityLabel={t('photoBooth.openPhoto', { name: friendName(who, true), date: planDate(Date.parse(photo.createdAt)) })}
                     onPress={() => router.push({ pathname: '/photo/[id]', params: { id: photo.id } })}
                     style={[styles.thumb, { width: thumbWidth, height: thumbHeight }]}>
                     <BoothPicture

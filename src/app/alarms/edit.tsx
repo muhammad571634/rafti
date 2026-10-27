@@ -10,6 +10,7 @@ import { NIGHT_SWITCH, NIGHT_WHEEL } from '@/components/alarms/night';
 import { TimeWheel } from '@/components/alarms/time-wheel';
 import { useRadioClips } from '@/components/radio/use-clips';
 import { CharacterAvatar, Txt } from '@/components/ui';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { dayNames, repeatText, uses12Hour } from '@/lib/alarm-format';
 import { ALARM_SOUNDS } from '@/lib/alarms';
 import { haptic } from '@/lib/haptics';
@@ -27,6 +28,7 @@ type Draft = Omit<Alarm, 'id' | 'createdAt' | 'enabled'>;
  * Reply to wake up and Snooze. Repeat, Who and Sound open as pages inside the sheet.
  */
 export default function AlarmEditScreen() {
+  const friendName = useFriendName();
   // `characterId` and `clipId` come from a Radio clip's "Wake me with this".
   const { id, characterId: fromClipFriend, clipId: fromClip } = useLocalSearchParams<{ id?: string; characterId?: string; clipId?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
@@ -133,7 +135,7 @@ export default function AlarmEditScreen() {
                   returnKeyType="done"
                 />
               </View>
-              <Cell label={t('alarms.who')} value={friend?.name ?? t('alarms.nobody')} onPress={() => setPage('who')} />
+              <Cell label={t('alarms.who')} value={friend ? friendName(friend) : t('alarms.nobody')} onPress={() => setPage('who')} />
               <Cell label={t('alarms.sound')} value={wakeClip ? wakeClip.title : t(`alarms.sounds.${draft.sound}`)} onPress={() => setPage('sound')} />
               <SwitchCell
                 label={t('alarms.replyToWake')}
@@ -185,7 +187,7 @@ export default function AlarmEditScreen() {
             {friends.map((c, i) => (
               <CheckCell
                 key={c.id}
-                label={c.name}
+                label={friendName(c)}
                 lead={<CharacterAvatar character={c} size={30} />}
                 checked={draft.characterId === c.id}
                 last={i === friends.length - 1}
@@ -205,7 +207,7 @@ export default function AlarmEditScreen() {
             <Group>
               {friend?.voiceReady ? (
                 <CheckCell
-                  label={t('alarms.saysGoodMorning', { name: friend.name.split(' ')[0] })}
+                  label={t('alarms.saysGoodMorning', { name: friendName(friend, true) })}
                   checked={draft.voice && !wakeClip}
                   onPress={() => set({ voice: true, clipId: undefined })}
                 />

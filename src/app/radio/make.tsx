@@ -10,7 +10,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { Anim, AuroraGlass, Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { CLIP_LINE_MAX, CLIP_MAX_LINES, CLIP_TITLE_MAX, checkClip, cleanLines, clipCost } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space } from '@/theme';
@@ -26,6 +26,7 @@ const PAD = 14;
  * fields, and the Store's bar with Record and what it costs.
  */
 export default function MakeClipScreen() {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ characterId?: string }>();
@@ -49,7 +50,7 @@ export default function MakeClipScreen() {
   );
 
   const friend = friends.find((f) => f.character.id === who) ?? friends[0];
-  const name = friend ? shortName(friend.name) : '';
+  const name = friend ? friendName(friend.character, true) : '';
   const clean = cleanLines(lines);
   const cost = clipCost(clean.length);
 
@@ -126,14 +127,14 @@ export default function MakeClipScreen() {
                   disabled={recording}
                   scaleTo={0.94}
                   accessibilityRole="button"
-                  accessibilityLabel={f.name}
+                  accessibilityLabel={friendName(f.character)}
                   accessibilityState={{ selected: on }}
                   style={styles.friend}>
                   <View style={[styles.ring, on && styles.ringOn]}>
                     <CharacterAvatar character={f.character} size={52} />
                   </View>
                   <Txt style={[styles.friendName, on && styles.friendNameOn]} lines={1} center>
-                    {shortName(f.name)}
+                    {friendName(f.character, true)}
                   </Txt>
                 </PressableScale>
               );

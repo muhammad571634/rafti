@@ -6,7 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GroupAvatar } from '@/components/group-avatar';
 import { EmptyState, GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
-import { relativeStamp, shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
+import { relativeStamp } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { isPlaying } from '@/lib/streams';
 import { useAppStore } from '@/store/use-app-store';
@@ -69,9 +70,10 @@ export default function StreamsScreen() {
 
 /** One stream: the two faces, their names, the topic, and when (or "Live" while it plays). */
 function StreamRow({ stream, characters, last, onPress }: { stream: Stream; characters: Character[]; last: boolean; onPress: () => void }) {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const pair = stream.characterIds.map((id) => characters.find((c) => c.id === id)).filter((c): c is Character => !!c);
-  const names = groupTitle(pair.map((c) => shortName(c.name)));
+  const names = groupTitle(pair.map((c) => friendName(c, true)));
   const live = isPlaying(stream);
   return (
     <Pressable

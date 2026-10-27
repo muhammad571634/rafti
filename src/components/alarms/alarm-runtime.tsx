@@ -23,7 +23,7 @@ export function AlarmRuntime() {
   const segments = useSegments();
   const hydrated = useAppStore((s) => s.hydrated);
   const onboarded = useAppStore((s) => !!s.user.onboardedAt);
-  const onRing = segments[0] === 'alarms' && segments[1] === 'ring';
+  const onRing = segments[0] === 'alarms' && (segments as string[])[1] === 'ring';
   const inChat = segments[0] === 'chat';
 
   useEffect(() => {

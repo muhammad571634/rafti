@@ -6,7 +6,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BackButton, Button, CharacterAvatar, EmptyState, Header, PressableScale, Screen, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, palette, radius, space, type } from '@/theme';
@@ -21,6 +21,7 @@ const PAPER = '#FFFDF8';
  * "New page" mark; the button carries the page into a chat.
  */
 export default function CharacterDiaryPageScreen() {
+  const friendName = useFriendName();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -58,7 +59,7 @@ export default function CharacterDiaryPageScreen() {
     );
   }
 
-  const name = shortName(character.name);
+  const name = friendName(character, true);
   const fmt = (key: string, opts: Intl.DateTimeFormatOptions) => dateFromKey(key).toLocaleDateString(i18n.language, opts);
   const dayBefore = (key: string) => {
     const d = dateFromKey(key);

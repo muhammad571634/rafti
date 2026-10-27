@@ -11,7 +11,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
 import { CharacterAvatar, GlassBar, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { freeRoundsLeft, STREAM_SHELLS } from '@/economy/streams';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { haptic } from '@/lib/haptics';
 import { fillTopic, STREAM_TOPIC_MAX, STREAM_TOPICS } from '@/lib/streams';
 import { groupBySeries } from '@/mock/characters';
@@ -154,6 +154,7 @@ export default function NewStreamScreen() {
 
 /** The two who talk as two seats: a face and first name once picked (a tap takes them out), a grey seat before. */
 function PairSeats({ pair, onRemove }: { pair: Character[]; onRemove: (id: string) => void }) {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   return (
     <View style={styles.pair}>
@@ -170,7 +171,7 @@ function PairSeats({ pair, onRemove }: { pair: Character[]; onRemove: (id: strin
               disabled={!c}
               onPress={c ? () => onRemove(c.id) : undefined}
               accessibilityRole={c ? 'button' : undefined}
-              accessibilityLabel={c ? t('streams.remove', { name: c.name }) : t('streams.pickOne')}
+              accessibilityLabel={c ? t('streams.remove', { name: friendName(c) }) : t('streams.pickOne')}
               style={styles.seat}>
               {c ? (
                 <View>
@@ -185,7 +186,7 @@ function PairSeats({ pair, onRemove }: { pair: Character[]; onRemove: (id: strin
                 </View>
               )}
               <Txt style={styles.seatName} lines={1}>
-                {c ? shortName(c.name) : ' '}
+                {c ? friendName(c, true) : ' '}
               </Txt>
             </Pressable>
           </Fragment>

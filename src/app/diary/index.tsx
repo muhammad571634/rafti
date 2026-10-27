@@ -20,7 +20,7 @@ import { BRAND } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { CalendarPopover, DiaryRulesSheet } from '@/components/diary';
 import { Button, GlassBar, GlassIcons, glassStyle, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, radius, shadows, space } from '@/theme';
@@ -57,6 +57,7 @@ type Card =
  * page, or a chat to start one.
  */
 export default function DiaryScreen() {
+  const friendName = useFriendName();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -160,7 +161,7 @@ export default function DiaryScreen() {
 
   const act = (card: Card) => (card.kind === 'mine' ? router.push('/diary/write') : open(card));
 
-  const firstName = (c: Character) => shortName(c.name);
+  const firstName = (c: Character) => friendName(c, true);
 
   const line = (card: Card) => {
     if (card.kind === 'mine') {
@@ -315,6 +316,7 @@ function CoverCard({
   scrollX: SharedValue<number>;
   onPress: () => void;
 }) {
+  const friendName = useFriendName();
   const { t } = useTranslation();
 
   // The cover in front is full size; its neighbours lean away and fade a little.
@@ -331,7 +333,7 @@ function CoverCard({
 
   const locked = card.kind === 'character' && !card.last;
   const source = coverSource(card);
-  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: shortName(card.character.name) });
+  const name = card.kind === 'mine' ? t('diary.myDiary') : t('diary.theirDiary', { name: friendName(card.character, true) });
   const meta =
     card.kind === 'mine'
       ? t('diary.onlyYou')

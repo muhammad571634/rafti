@@ -8,8 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
 import { Anim, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
-import { shortName } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { SNOOZE_MIN } from '@/lib/alarms';
 import { MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
@@ -25,6 +25,7 @@ import { showOverLockScreen, unlockPhone } from '../../../modules/alarm-screen';
  * button is Stop. The melody is played by `AlarmRuntime` for as long as the session rings.
  */
 export default function AlarmRingScreen() {
+  const friendName = useFriendName();
   const { id, at } = useLocalSearchParams<{ id?: string; at?: string }>();
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -95,7 +96,7 @@ export default function AlarmRingScreen() {
   const { time, period } = alarmTime(now.getHours(), now.getMinutes(), uses12Hour());
   const canSnooze = !!alarm?.snooze && wake.snoozes < MAX_SNOOZES;
   const task = wake.replyToWake && !!wake.conversationId;
-  const name = friend ? shortName(friend.name) : '';
+  const name = friend ? friendName(friend, true) : '';
 
   // The chat is private: a locked phone asks for the PIN or fingerprint first.
   const reply = async () => {
@@ -135,7 +136,7 @@ export default function AlarmRingScreen() {
           <View style={[styles.glassLight, styles.who]}>
             <CharacterAvatar character={friend} size={34} />
             <Txt style={styles.whoName} lines={1}>
-              {friend.name}
+              {friendName(friend)}
             </Txt>
           </View>
         ) : null}

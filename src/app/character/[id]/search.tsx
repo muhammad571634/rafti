@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ChatSearch } from '@/components/chat/chat-search';
 import { CharacterAvatar, UserAvatar } from '@/components/ui';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { focusMessage } from '@/lib/chat-focus';
 import { useAppStore } from '@/store/use-app-store';
 
@@ -10,6 +11,7 @@ import { useAppStore } from '@/store/use-app-store';
 export default function SearchHistoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -24,7 +26,7 @@ export default function SearchHistoryScreen() {
       who={(m) =>
         m.author === 'me'
           ? { name: t('search.you'), avatar: <UserAvatar user={user} size={40} /> }
-          : { name: character?.name ?? '', avatar: character ? <CharacterAvatar character={character} size={40} /> : null }
+          : { name: character ? friendName(character) : '', avatar: character ? <CharacterAvatar character={character} size={40} /> : null }
       }
       onOpen={(m) => {
         if (!conversation) return;

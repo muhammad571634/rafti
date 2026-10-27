@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
 import type { BoothPhoto } from '@/types';
@@ -14,6 +14,7 @@ import type { BoothPhoto } from '@/types';
  * pill reads Sent (mint) and opens the chat.
  */
 export function SendPill({ photo, style }: { photo: BoothPhoto; style?: StyleProp<ViewStyle> }) {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
   const sendPhoto = useAppStore((s) => s.sendPhoto);
@@ -27,7 +28,7 @@ export function SendPill({ photo, style }: { photo: BoothPhoto; style?: StylePro
       style={[styles.pill, style, sent && styles.sent]}
       scaleTo={0.94}
       haptic={!sent}
-      accessibilityLabel={sent ? t('photoBooth.sent') : t('photoBooth.sendTo', { name: friend ? shortName(friend.name) : '' })}
+      accessibilityLabel={sent ? t('photoBooth.sent') : t('photoBooth.sendTo', { name: friend ? friendName(friend, true) : '' })}
       onPress={() => {
         if (!sent) sendPhoto(photo.id);
         else if (chat) router.push(`/chat/${chat.id}`);

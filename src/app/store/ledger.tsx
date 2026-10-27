@@ -21,7 +21,8 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
-import { callClock, clockTime, shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
+import { callClock, clockTime } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors } from '@/theme';
@@ -58,6 +59,7 @@ interface Row {
  * expired free shells are named for what they are.
  */
 export default function LedgerScreen() {
+  const friendName = useFriendName();
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const { scrolled, onScroll } = useScrolledPast(40);
@@ -89,7 +91,7 @@ export default function LedgerScreen() {
   };
 
   const title = (row: Row, character?: Character) => {
-    const name = character ? shortName(character.name) : t('ledger.reason.someone');
+    const name = character ? friendName(character, true) : t('ledger.reason.someone');
     return t(`ledger.reason.${row.reason}`, { name });
   };
 

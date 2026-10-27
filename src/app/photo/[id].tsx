@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { planDate } from '@/components/plans/copy';
 import { BackButton, CharacterAvatar, glassStyle, Header, PressableScale, Screen, Txt } from '@/components/ui';
-import { shortName } from '@/lib/format';
+import { useFriendName } from '@/hooks/use-friend-name';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
@@ -17,6 +17,7 @@ import { colors, space } from '@/theme';
  * (then a glass "Sent" that opens the chat), the picture on the ground, a glass caption below.
  */
 export default function PhotoScreen() {
+  const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
   const { width, height } = useWindowDimensions();
@@ -35,7 +36,7 @@ export default function PhotoScreen() {
     );
   }
 
-  const name = shortName(friend.name);
+  const name = friendName(friend, true);
   const sent = !!photo.sentAt;
 
   return (
