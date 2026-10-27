@@ -31,8 +31,9 @@ import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-st
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
+import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
-import { apiBase, serverFirstText, serverReply, serverWallet } from '@/ai/server';
+import { apiBase, serverFirstText, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -4654,10 +4655,15 @@ function stopStreamRunner(set: Setter, streamId: string) {
   });
 }
 
+/** About as long as typing a line takes, as in the chats. */
+const typingMs = (text: string) => 900 + Math.min(text.length, 120) * 18 + Math.random() * 500;
+
 /**
- * Stands in for the server writing a stream, one model call per line (`buildStreamLinePrompt`):
- * the next speaker types, their line lands, a short beat, then the other one. It runs until the
- * round's target, and stops when the stream is paused or deleted (a newer run takes over).
+ * Writes a stream, one line at a time: the next speaker types, their line lands, a short beat,
+ * then the other one. With Real AI on, each line is one model call in the speaker's own persona
+ * (`POST /v1/streams/line`, B1.4b) and the time it takes counts toward the typing; the server off,
+ * busy or slow, the canned line goes instead. It runs until the round's target, and stops when the
+ * stream is paused or deleted (a newer run takes over).
  */
 function runStream(set: Setter, get: Getter, streamId: string) {
   const epoch = (streamEpoch.get(streamId) ?? 0) + 1;
@@ -4671,17 +4677,38 @@ function runStream(set: Setter, get: Getter, streamId: string) {
     }
     const speaker = nextSpeaker(stream);
     const otherId = stream.characterIds.find((id) => id !== speaker)!;
-    const other = get().characters.find((c) => c.id === otherId);
+    const state = get();
+    const me = state.characters.find((c) => c.id === speaker);
+    const other = state.characters.find((c) => c.id === otherId);
     const index = stream.lines.length;
-    const text = mockStreamLine(stream.id, index, index === stream.target - 1, other ? shortName(other.name) : '', stream.topic);
+    const canned = mockStreamLine(stream.id, index, index === stream.target - 1, other ? shortName(other.name) : '', stream.topic);
     set((s) => ({ streamTyping: { ...s.streamTyping, [streamId]: speaker } }));
-    // About as long as typing the line takes, as in the chats.
-    setTimeout(() => {
-      if (!live()) return;
-      const line = { id: uid('sl'), characterId: speaker, text, createdAt: new Date().toISOString() };
-      set((s) => ({ streams: s.streams.map((x) => (x.id === streamId ? { ...x, lines: [...x.lines, line] } : x)) }));
-      setTimeout(step, 500);
-    }, 900 + Math.min(text.length, 120) * 18 + Math.random() * 500);
+    const land = (text: string, after: number) =>
+      setTimeout(() => {
+        if (!live()) return;
+        const line = { id: uid('sl'), characterId: speaker, text, createdAt: new Date().toISOString() };
+        set((s) => ({ streams: s.streams.map((x) => (x.id === streamId ? { ...x, lines: [...x.lines, line] } : x)) }));
+        setTimeout(step, 500);
+      }, after);
+    if (!state.settings.realAi || !apiBase() || !me || !other) {
+      land(canned, typingMs(canned));
+      return;
+    }
+    const nameOf = (id: string) => shortName(state.characters.find((c) => c.id === id)?.name ?? '');
+    const request: StreamLineRequest = {
+      input: { character: me, user: state.user, relationship: state.relationships[speaker] },
+      other,
+      topic: stream.topic,
+      said: stream.lines.map((l) => ({ name: nameOf(l.characterId), text: l.text })),
+      turn: { index, total: stream.target },
+    };
+    const started = Date.now();
+    void accessToken()
+      .then((token) => serverStreamLine(request, token))
+      .then((line) => {
+        const text = line ?? canned;
+        land(text, Math.max(0, typingMs(text) - (Date.now() - started)));
+      });
   };
   step();
 }

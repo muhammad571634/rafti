@@ -873,8 +873,9 @@ Founder qarori: hozircha pul sarflanmaydi, test bepul xizmatlarda boshlanadi.
   soniyadan ortiq kutilsa, mock javob yoziladi va chat hech qachon to'xtamaydi.
 - **Serverga ulangan (B1.4a, 2026-10-28):** thread xabarlari, ertalabki brief, kechki savol va haftalik
   xulosa (`POST /v1/ai/first-text`).
-- **Hozircha mock qolganlar:** xotira, mavzular, quick create, stream — ular B1.4b/B2'da shu serverga
-  ulanadi. Kontraktlar tayyor (`src/ai/*-prompt.ts`).
+- **Serverga ulangan (B1.4b, 2026-10-28):** quick create (to'liq qoralama va ✦ bitta maydon) va stream
+  qatorlari (`/v1/characters/draft`, `/v1/characters/draft/field`, `/v1/streams/line`).
+- **Hozircha mock qolganlar:** xotira — u B2'da shu serverga ulanadi. Kontraktlar tayyor (`src/ai/*-prompt.ts`).
 - **Bepul qolgan qadamlar:** Supabase bepul tarifi (2 loyiha, bir hafta harakatsiz bo'lsa uxlaydi),
   EAS bepul (oyiga 15 Android build: dev build, push va Android'da haqiqiy bildirishnomalar uchun).
   iPhone build Apple Developer ($99/yil) talab qiladi, shuning uchun avval Android.

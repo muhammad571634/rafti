@@ -175,6 +175,9 @@ const FIELD_RULES: Record<DraftField, string> = {
   dislikes: `dislikes: 2-3 small things they can't stand, harmless and a little funny, a few words each, max ${THING_MAX} characters each.`,
 };
 
+/** Every field one "write it for me" may ask for (the server checks requests against it). */
+export const DRAFT_FIELDS = Object.keys(FIELD_RULES) as DraftField[];
+
 const FIELD_SHAPES: Record<DraftField, string> = {
   tagline: '{"value":""}',
   bio: '{"value":""}',

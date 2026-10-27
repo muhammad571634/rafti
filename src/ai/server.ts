@@ -1,6 +1,8 @@
 import Constants from 'expo-constants';
 
 import type { ChatPromptInput } from './chat-prompt';
+import type { DraftField, DraftInput, DraftResult, FieldContext } from './character-draft';
+import type { StreamLineRequest } from './content-prompts';
 import type { FirstTextRequest } from './first-text';
 import type {
   BootstrapInput,
@@ -26,6 +28,10 @@ const DEV_PORT = 8787;
 const TIMEOUT_MS = 25_000;
 /** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
 const FIRST_TEXT_TIMEOUT_MS = 15_000;
+/** A whole character is the longest answer the model writes. */
+const DRAFT_TIMEOUT_MS = 40_000;
+/** A stream line is short; a stuck one would stall the stream, so the stand-in goes sooner. */
+const STREAM_LINE_TIMEOUT_MS = 12_000;
 
 export function apiBase(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL;
@@ -109,6 +115,32 @@ export async function serverReply(input: ChatPromptInput, accessToken?: string |
   });
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
   return lines?.length ? lines : null;
+}
+
+const withOptionalToken = (accessToken: string | null | undefined, body: unknown): RequestInit => ({
+  method: 'POST',
+  headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+  body: JSON.stringify(body),
+});
+
+/**
+ * Quick create on the server (B1.4b): the whole draft, or one field written again. The server runs
+ * the same checks (`parseDraft`, `parseField`). Null when it is off, busy or slow: the caller uses
+ * the stand-in, as before.
+ */
+export const serverStudio = {
+  draft: (input: DraftInput, accessToken?: string | null) =>
+    call<DraftResult>('/v1/characters/draft', withOptionalToken(accessToken, input), DRAFT_TIMEOUT_MS),
+  field: async (field: DraftField, character: FieldContext, language: string, accessToken?: string | null) => {
+    const reply = await call<{ value?: string | string[] | null }>('/v1/characters/draft/field', withOptionalToken(accessToken, { field, character, language }));
+    return reply ? (reply.value ?? null) : undefined;
+  },
+};
+
+/** The next stream line in the speaker's voice (B1.4b), or null (off, busy, slow or no usable line). */
+export async function serverStreamLine(request: StreamLineRequest, accessToken?: string | null): Promise<string | null> {
+  const reply = await call<{ line?: string | null }>('/v1/streams/line', withOptionalToken(accessToken, request), STREAM_LINE_TIMEOUT_MS);
+  return typeof reply?.line === 'string' && reply.line.trim() ? reply.line : null;
 }
 
 /**

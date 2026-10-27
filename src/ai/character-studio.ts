@@ -1,12 +1,15 @@
 import { mockDraftReply, mockFieldReply } from '../mock/character-drafts';
 
+import { accessToken } from './account';
 import { type DraftField, type DraftInput, type DraftResult, type FieldContext, parseDraft, parseField } from './character-draft';
+import { apiBase, serverStudio } from './server';
 
 /**
- * Where the create screen asks for a draft or one field. Today the mock provider answers after a
- * short wait; the server takes over with the same calls and shapes (`POST /characters/draft`,
- * `POST /characters/draft/field`, backend-plan §12.17). Either way the reply goes through the
- * same checks (`parseDraft`, `parseField`), so the screen sees what it would see in production.
+ * Where the create screen asks for a draft or one field. With Real AI on (`real`), the server's
+ * model writes it (`POST /v1/characters/draft`, `POST /v1/characters/draft/field`, B1.4b); else, or
+ * when the server is off, busy or slow, the mock answers after a short wait. Either way the reply
+ * goes through the same checks (`parseDraft`, `parseField`), so the screen sees what it would see
+ * in production.
  */
 
 /**
@@ -27,17 +30,25 @@ const FIELD_MS = 700;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function requestDraft(input: DraftInput): Promise<DraftResult> {
+export async function requestDraft(input: DraftInput, real = false): Promise<DraftResult> {
+  if (real && apiBase()) {
+    const fromServer = await serverStudio.draft(input, await accessToken());
+    if (fromServer) return fromServer;
+  }
   await wait(DRAFT_MS);
   return parseDraft(mockDraftReply(input));
 }
 
 /**
  * One field written again, in `language` (the server's `buildFieldPrompt`); null when nothing
- * usable came back. `attempt` counts the taps on that field.
+ * usable came back. `attempt` counts the taps on that field (the mock's variety).
  */
-export async function requestField(field: DraftField, character: FieldContext, language: string, attempt: number) {
-  void language; // The mock writes English; the server prompt carries it.
+export async function requestField(field: DraftField, character: FieldContext, language: string, attempt: number, real = false) {
+  if (real && apiBase()) {
+    const fromServer = await serverStudio.field(field, character, language, await accessToken());
+    // undefined: the server did not answer, so the stand-in writes it.
+    if (fromServer !== undefined) return fromServer;
+  }
   await wait(FIELD_MS);
   return parseField(field, mockFieldReply(field, character, attempt));
 }

@@ -146,6 +146,41 @@ export function buildStreamLinePrompt(...args: Parameters<typeof streamLineParts
   return joinParts(streamLineParts(...args));
 }
 
+/** `POST /v1/streams/line` (B1.4b): `streamLineParts`' arguments, as the app sends them. */
+export interface StreamLineRequest {
+  input: PersonaInput;
+  other: Character;
+  topic: string;
+  said: { name: string; text: string }[];
+  turn: { index: number; total: number };
+}
+
+/** The longest stream line kept: one or two short sentences, with room to spare. */
+export const STREAM_LINE_MAX = 300;
+
+/**
+ * The line from the model's `{"line":""}`, or null when there is none. A model that writes its
+ * own name in front ("Kai: …") or wraps the line in quotes gets them taken off.
+ */
+export function parseStreamLine(raw: string, speaker: string): string | null {
+  let line: unknown;
+  try {
+    line = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '')?.line;
+  } catch {
+    return null;
+  }
+  if (typeof line !== 'string') return null;
+  const first = speaker.split(' ')[0];
+  const text = line
+    .trim()
+    .replace(new RegExp(`^(${escape(speaker)}|${escape(first)})\\s*:\\s*`, 'i'), '')
+    .replace(/^"(.*)"$/s, '$1')
+    .trim();
+  return text ? text.slice(0, STREAM_LINE_MAX) : null;
+}
+
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
  * The first line of a scene the user wrote without one (scenes, `src/lib/scenes.ts`). The persona
  * prompt already carries the scene; this asks for one message that opens it. Free: one short call.

@@ -150,6 +150,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const spendShells = useAppStore((s) => s.spendShells);
   const shells = useAppStore((s) => s.wallet.shells);
   const locale = useAppStore((s) => s.user.locale);
+  /** Development: the server's model writes the draft and the ✦ fields (B1.4b). */
+  const realAi = useAppStore((s) => !!s.settings.realAi);
   const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates, s.wallet));
   const takeQuickCreate = useAppStore((s) => s.takeQuickCreate);
   const payForPortrait = useAppStore((s) => s.payForPortrait);
@@ -283,7 +285,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     if (quickLeft === 0) return setError(t('createCharacter.quick.limit', { max: quickMax }));
     setError(null);
     setMode('writing');
-    const result = await requestDraft({ idea, sparks, role: ideaRole, language });
+    const result = await requestDraft({ idea, sparks, role: ideaRole, language }, realAi);
     if (!alive.current) return;
     if (!result.ok) {
       setMode('idea');
@@ -309,6 +311,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       { name, tagline, bio, look, greeting, quirk, backstory, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
       language,
       attempt,
+      realAi,
     );
     if (!alive.current) return;
     setBusy(null);

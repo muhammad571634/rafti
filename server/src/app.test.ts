@@ -365,3 +365,70 @@ describe('POST /v1/ai/first-text (B1.4a)', () => {
     assert.equal((await send(createApp(null, { timeoutMs: 1000 }), brief)).status, 503);
   });
 });
+
+describe('quick create and streams on the server (B1.4b)', () => {
+  const answering = (text: string, seen?: { prompt: string }): LlmProvider => ({
+    name: 'fake',
+    async complete(layout) {
+      if (seen) seen.prompt = [...layout.system.map((s) => s.text), layout.turn].join('\n');
+      return { text, usage: {} };
+    },
+  });
+  const postJson = (app: ReturnType<typeof createApp>, path: string, json: unknown) =>
+    app.request(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(json) });
+  const draftJson = JSON.stringify({
+    name: 'Mira Vale', tagline: 'Night-shift baker', bio: 'I bake bread at 4am and talk to the dough.', look: 'Flour on her cheek, auburn braid.',
+    age: 27, heightCm: 168, gender: 'female', speakingStyle: 'casual', role: 'friend', voicePreset: 'warm', tags: ['cheerful', 'caring'],
+    greeting: 'Oh! You caught me mid-knead.', opening: '*wipes her hands on her apron*', quirk: 'Names every loaf.', greetings: ['Morning, {{user}}!'],
+    dialog: [{ from: 'char', text: 'Smell that?' }, { from: 'other', text: 'Cinnamon?' }], starters: ['What are you baking?'],
+    backstory: 'She left the city to run her grandmother’s bakery.', likes: ['rainy mornings'], dislikes: ['soggy crusts'],
+  });
+
+  it('writes a whole character from the idea, and refuses an idea the rules do not allow', async () => {
+    const seen = { prompt: '' };
+    const app = createApp(answering(draftJson, seen), { timeoutMs: 1000 });
+    const res = await postJson(app, '/v1/characters/draft', { idea: 'a night-shift baker who talks to the dough', sparks: [], language: 'English' });
+    assert.equal(res.status, 200);
+    const json = await res.json();
+    assert.equal(json.ok, true, JSON.stringify(json));
+    assert.equal(json.draft.name, 'Mira Vale');
+    assert.match(seen.prompt, /night-shift baker/);
+    assert.match(seen.prompt, /REPLY LANGUAGE: English/);
+
+    const empty = await postJson(app, '/v1/characters/draft', { idea: '  ', sparks: [], language: 'English' });
+    assert.deepEqual([empty.status, (await empty.json()).problems], [400, ['empty']]);
+    const refused = await postJson(createApp(answering('{"refused":"realPerson"}'), { timeoutMs: 1000 }), '/v1/characters/draft', {
+      idea: 'a famous singer',
+      sparks: [],
+      language: 'English',
+    });
+    assert.deepEqual(await refused.json(), { ok: false, problem: 'realPerson', model: 'fake' });
+  });
+
+  it('writes one field again, only a field the form has', async () => {
+    const app = createApp(answering('{"value":"Bread first, questions later."}'), { timeoutMs: 1000 });
+    const res = await postJson(app, '/v1/characters/draft/field', { field: 'tagline', character: { name: 'Mira' }, language: 'English' });
+    assert.equal((await res.json()).value, 'Bread first, questions later.');
+    assert.equal((await postJson(app, '/v1/characters/draft/field', { field: 'password', character: {}, language: 'English' })).status, 400);
+  });
+
+  it('writes the next stream line in the speaker’s voice and cleans it', async () => {
+    const seen = { prompt: '' };
+    const app = createApp(answering('{"line":"Kai: \\"Race you to the pier?\\""}', seen), { timeoutMs: 1000 });
+    const body = {
+      input: { character: kai, user: { id: 'u1', displayName: 'Sam' } },
+      other: { ...kai, id: 'c_mira', name: 'Mira Vale' },
+      topic: 'the best swim spot in town',
+      said: [{ name: 'Mira', text: 'The lake, obviously.' }],
+      turn: { index: 1, total: 4 },
+    };
+    const res = await postJson(app, '/v1/streams/line', body);
+    assert.equal((await res.json()).line, 'Race you to the pier?');
+    assert.match(seen.prompt, /You are talking with Mira Vale/);
+    assert.match(seen.prompt, /Mira: The lake, obviously\./);
+    assert.equal((await postJson(app, '/v1/streams/line', { ...body, topic: '' })).status, 400);
+    assert.equal((await postJson(app, '/v1/streams/line', { ...body, turn: { index: -1, total: 4 } })).status, 400);
+    const broken = await postJson(createApp(answering('nope'), { timeoutMs: 1000 }), '/v1/streams/line', body);
+    assert.equal((await broken.json()).line, null);
+  });
+});

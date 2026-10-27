@@ -1,8 +1,20 @@
 import { Hono } from 'hono';
 
 import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import {
+  buildDraftPrompt,
+  buildFieldPrompt,
+  checkIdea,
+  DRAFT_FIELDS,
+  parseDraft,
+  parseField,
+  type DraftField,
+  type DraftInput,
+  type FieldContext,
+} from '../../src/ai/character-draft.ts';
+import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
-import { layoutPrompt } from '../../src/ai/prompt-layout.ts';
+import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import { parseModelReply } from '../../src/ai/reply-style.ts';
 import type { Context } from 'hono';
@@ -98,6 +110,34 @@ export function cleanSync(body: Record<string, unknown> | null): { request: Mess
   };
 }
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
+/** "English", "Uzbek (Latin)", "en-US": what the prompts call the REPLY LANGUAGE. */
+const isLanguage = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0 && value.length <= 60;
+
+/** How much of a stream the next line sees; the round is a few lines, so this is all of it in practice. */
+const STREAM_SAID_MAX = 24;
+
+/** A stream line request the prompt code can lay out, or null. */
+export function cleanStreamLine(body: Record<string, unknown> | null): StreamLineRequest | null {
+  const { input, other, topic, said, turn } = body ?? {};
+  if (!isPlainObject(input) || !isPlainObject(input.character) || typeof input.character.name !== 'string' || !input.character.name) return null;
+  if (!isPlainObject(input.user) || !isPlainObject(other) || typeof other.name !== 'string' || !other.name) return null;
+  if (typeof topic !== 'string' || !topic.trim() || topic.length > 200 || !Array.isArray(said) || !isPlainObject(turn)) return null;
+  const { index, total } = turn;
+  if (!Number.isInteger(index) || !Number.isInteger(total) || (index as number) < 0 || (total as number) < 1 || (total as number) > 50) return null;
+  const lines = said
+    .filter((l): l is { name: string; text: string } => isPlainObject(l) && typeof l.name === 'string' && typeof l.text === 'string')
+    .slice(-STREAM_SAID_MAX)
+    .map(({ name, text }) => ({ name: name.slice(0, 40), text: text.slice(0, 400) }));
+  return {
+    input: input as unknown as StreamLineRequest['input'],
+    other: other as unknown as StreamLineRequest['other'],
+    topic: topic.trim(),
+    said: lines,
+    turn: { index: index as number, total: total as number },
+  };
+}
+
 /** The request's JSON object, {} for an empty body, null when it is not JSON. */
 async function readJson(c: Context): Promise<Record<string, unknown> | null> {
   try {
@@ -157,6 +197,36 @@ export function createApp(
   async function signedIn(c: Context) {
     const token = bearer(c.req.header('authorization'));
     return db && token ? db.userIdFromToken(token).catch(() => null) : null;
+  }
+
+  /**
+   * One model call for a feature: the cost row is written under `mode` (without holding the answer
+   * up), `read` turns the model's text into the answer. Busy (the free tier's cap) is 503.
+   */
+  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object) {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const started = Date.now();
+    try {
+      const result = await provider.complete(layout, opts);
+      const model = result.model ?? provider.name;
+      const cost = costUsd(result.model, result.usage);
+      logUsage(db, signedIn(c), {
+        kind: 'llm',
+        mode,
+        model,
+        promptVersion: promptVersion(layout),
+        inputTokens: result.usage.input,
+        cachedTokens: result.usage.cached,
+        outputTokens: result.usage.output,
+        costUsd: cost,
+      });
+      console.log(`[${mode}] ${model} ${Date.now() - started}ms in=${result.usage.input ?? '?'} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}`);
+      return c.json({ ...read(result.text), model });
+    } catch (error) {
+      if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
+      console.error(`[${mode}] failed`, error);
+      return c.json({ error: 'failed' }, 502);
+    }
   }
 
   app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null, db: db?.name ?? null }));
@@ -278,32 +348,46 @@ export function createApp(
       user: { ...request.input.user, locale: request.input.user.locale || 'en-US' },
       replyLanguage: request.input.replyLanguage || FOLLOW_USER_LANGUAGE,
     };
-    const userId = signedIn(c);
-    const started = Date.now();
-    try {
-      const layout = layoutPrompt(firstTextParts(request));
-      const result = await provider.complete(layout, opts);
-      const reply = parseTouchReply(result.text);
-      const cost = costUsd(result.model, result.usage);
-      logUsage(db, userId, {
-        kind: 'llm',
-        mode: request.kind,
-        model: result.model ?? provider.name,
-        promptVersion: promptVersion(layout),
-        inputTokens: result.usage.input,
-        cachedTokens: result.usage.cached,
-        outputTokens: result.usage.output,
-        costUsd: cost,
-      });
-      console.log(
-        `[first] ${request.kind} ${request.input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms $${cost?.toFixed(6) ?? '?'} ${reply.skip ? 'skip' : `"${reply.lines[0].slice(0, 50)}"`}`,
-      );
-      return c.json({ ...reply, model: result.model ?? provider.name });
-    } catch (error) {
-      if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
-      console.error('[first] failed', error);
-      return c.json({ error: 'failed' }, 502);
-    }
+    return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply);
+  });
+
+  // Quick create (B1.4b, backend-plan §12.17): the whole character from the creator's idea. The idea
+  // is checked again here (the app checks it first); a model refusal comes back as `{ ok: false }`.
+  app.post('/v1/characters/draft', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const body = await readJson(c);
+    const { idea, sparks, role, language } = body ?? {};
+    if (typeof idea !== 'string' || !Array.isArray(sparks) || !isLanguage(language)) return c.json({ error: 'badInput' }, 400);
+    const problems = checkIdea(idea, sparks as string[]);
+    if (problems.length) return c.json({ error: 'badIdea', problems }, 400);
+    const input: DraftInput = { idea, sparks: sparks as DraftInput['sparks'], role: typeof role === 'string' ? (role as DraftInput['role']) : undefined, language };
+    return modelCall(c, 'quickCreate', layoutPrompt([part('draft', 'turn', [buildDraftPrompt(input)])]), parseDraft);
+  });
+
+  // ✦ on one field of the create form: that field written again from what the form holds.
+  app.post('/v1/characters/draft/field', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const body = await readJson(c);
+    const { field, character, language } = body ?? {};
+    if (!DRAFT_FIELDS.includes(field as DraftField) || !isPlainObject(character) || !isLanguage(language)) return c.json({ error: 'badInput' }, 400);
+    const prompt = buildFieldPrompt(field as DraftField, character as FieldContext, language);
+    return modelCall(c, 'draftField', layoutPrompt([part('field', 'turn', [prompt])]), (text) => ({ value: parseField(field as DraftField, text) }));
+  });
+
+  // One line of a stream (B1.4b): the speaker's own persona writes it, one call per line, so the two
+  // voices stay their own. A broken answer is `{ line: null }` and the app writes its stand-in.
+  app.post('/v1/streams/line', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const request = cleanStreamLine(await readJson(c));
+    if (!request) return c.json({ error: 'badInput' }, 400);
+    const { input, other, topic, said, turn } = request;
+    const persona = {
+      ...input,
+      user: { ...input.user, locale: input.user.locale || 'en-US' },
+      replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
+    };
+    const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
+    return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }));
   });
 
   app.post('/v1/chat/reply', async (c) => {

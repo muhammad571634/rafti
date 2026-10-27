@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z9. Backend B1.4b: quick create and streams from the model (2026-10-28, D117). NEXT: B1.5
+
+With Real AI on: the create screen's quick create (`POST /v1/characters/draft`, the idea checked
+again on the server, a model refusal comes back as `{ ok: false, problem }`), its ✦ "write it for me"
+on one field (`POST /v1/characters/draft/field`), and every stream line (`POST /v1/streams/line`,
+one call per line in the speaker's own persona; the model's time counts toward the typing pause).
+Server off, busy or slow: the mock, as before (draft 40 s, field 25 s, stream line 12 s).
+`modelCall` in `server/src/app.ts` is the one place a feature's model call is made and its cost
+logged (modes `quickCreate`, `draftField`, `stream`, and the first-text kinds). There was no separate
+"topics" feature: a stream's topic is the only one. Checked: app `tsc`, 416/416, server `tsc`, 33/33,
+`expo export` ios, and the real model (draft 5.8 s, field 1.4 s, stream lines 1.3-2.8 s, two clearly
+different voices) through a throwaway server on 8788.
+**Phone checks (Expo Go, Real AI on):** Create → Quick create an idea → a new character in ~6 s;
+✦ on the tagline; Streams → start one → each line in its speaker's voice.
+Next, B1.5 quality (0z3): mode templates, batching, a repetition guard, an eval set.
+
 ### 0z8. Backend B1.4a: texts they write first come from the model (2026-10-28, D116). NEXT: B1.4b
 
 **Owner, 2026-10-28:** no Apple Developer account and no iPhone yet, so Sign in with Apple and StoreKit
