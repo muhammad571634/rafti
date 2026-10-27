@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
-import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -21,6 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { ChatMenu, type ChatMenuTarget } from '@/components/chat/chat-menu';
+import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
 import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
 import { relativeStamp, shortName } from '@/lib/format';
@@ -36,8 +36,8 @@ const ROW = 84;
 /** One swipe action: a round glyph with its label under it. */
 const ACTION = 72;
 const ACTION_DOT = 44;
-/** A row starts to swipe only after this much sideways travel, so a vertical scroll never opens it. */
-const SWIPE_START = 22;
+/** The width under a row for this many actions, with the strip's 4 pt inset on each end. */
+const actionsWidth = (count: number) => count * ACTION + 8;
 const MENU_AVATAR = 36;
 /** How many of the chat's last lines the long-press preview shows. */
 const PREVIEW_LINES = 3;
@@ -91,8 +91,8 @@ interface RowActions {
   read: (item: ChatItem) => void;
   remove: (item: ChatItem) => void;
   /** One open row at a time (iOS): a row opening or starting to open closes the one before. */
-  opening: (row: SwipeableMethods) => void;
-  closed: (row: SwipeableMethods) => void;
+  opening: (row: SwipeRowMethods) => void;
+  closed: (row: SwipeRowMethods) => void;
 }
 
 /**
@@ -194,7 +194,7 @@ export default function ChatListScreen() {
   }, [items, needle, filter, grid, searching]);
 
   // The row that is open now; the next one to open closes it, as in iOS.
-  const openRow = useRef<SwipeableMethods | null>(null);
+  const openRow = useRef<SwipeRowMethods | null>(null);
   const closeOpenRow = useCallback(() => {
     openRow.current?.close();
     openRow.current = null;
@@ -214,10 +214,12 @@ export default function ChatListScreen() {
 
   const actions = useMemo<RowActions>(
     () => ({
-      open: (item) =>
-        item.kind === 'chat'
-          ? router.push(`/chat/${item.id}`)
-          : router.push({ pathname: '/group/[id]', params: { id: item.id } }),
+      open: (item) => {
+        // With a row open, the first tap anywhere only closes it (iOS).
+        if (openRow.current) return closeOpenRow();
+        if (item.kind === 'chat') router.push(`/chat/${item.id}`);
+        else router.push({ pathname: '/group/[id]', params: { id: item.id } });
+      },
       hold: (item) => {
         haptic.lift();
         setHeld(item);
@@ -237,7 +239,7 @@ export default function ChatListScreen() {
         if (openRow.current === row) openRow.current = null;
       },
     }),
-    [router, setChatMuted, setGroupMuted, setChatPinned, markRead, markUnread, remove],
+    [router, closeOpenRow, setChatMuted, setGroupMuted, setChatPinned, markRead, markUnread, remove],
   );
 
   // Edit mode and search start from a closed list.
@@ -688,7 +690,7 @@ const ChatRow = memo(function ChatRow({
   actions: RowActions;
 }) {
   const { t } = useTranslation();
-  const swipe = useRef<SwipeableMethods>(null);
+  const swipe = useRef<SwipeRowMethods>(null);
   const label = useRowLabel(item, level, typing);
   const row = rowOf(item);
   const unread = row.unreadCount > 0;
@@ -744,34 +746,28 @@ const ChatRow = memo(function ChatRow({
   ];
 
   return (
-    <ReanimatedSwipeable
+    <SwipeRow
       ref={swipe}
       enabled={!editing}
-      friction={1.6}
-      leftThreshold={ACTION * 0.6}
-      rightThreshold={ACTION * 0.6}
-      dragOffsetFromLeft={SWIPE_START}
-      // Leftward travel is negative: the library rejects a positive right offset.
-      dragOffsetFromRight={-SWIPE_START}
-      overshootLeft={false}
-      overshootRight={false}
+      leftWidth={actionsWidth(leading.length)}
+      rightWidth={actionsWidth(trailing.length)}
       // The list is one rounded card: the first and last rows carry its corners.
-      containerStyle={[styles.cardRow, first && styles.cardTop, last && styles.cardBottom]}
-      onSwipeableOpenStartDrag={() => swipe.current && actions.opening(swipe.current)}
+      style={[styles.cardRow, first && styles.cardTop, last && styles.cardBottom]}
+      onOpenStart={() => swipe.current && actions.opening(swipe.current)}
       // Both fire on release, just before the click a mouse drag ends with on web.
-      onSwipeableWillOpen={() => {
+      onWillOpen={() => {
         opened.current = true;
         draggedAt.current = Date.now();
         if (swipe.current) actions.opening(swipe.current);
         haptic.selection();
       }}
-      onSwipeableWillClose={() => {
+      onWillClose={() => {
         opened.current = false;
         draggedAt.current = Date.now();
         if (swipe.current) actions.closed(swipe.current);
       }}
-      renderLeftActions={(progress) => <SwipeActions actions={leading} progress={progress} />}
-      renderRightActions={(progress) => <SwipeActions actions={trailing} progress={progress} />}>
+      renderLeft={(progress) => <SwipeActions actions={leading} progress={progress} />}
+      renderRight={(progress) => <SwipeActions actions={trailing} progress={progress} />}>
       <View style={styles.row}>
         {/* Beside the row's button, not inside it: a button cannot hold another one. */}
         {editing ? (
@@ -829,15 +825,15 @@ const ChatRow = memo(function ChatRow({
               <Txt style={styles.typing} lines={1}>
                 {t('chatList.typing')}
               </Txt>
-            ) : (
+            ) : row.lastMessagePreview ? (
               <Txt style={styles.preview} lines={2}>
                 {row.lastMessagePreview}
               </Txt>
-            )}
+            ) : null}
           </View>
         </PressableScale>
       </View>
-    </ReanimatedSwipeable>
+    </SwipeRow>
   );
 });
 
@@ -1024,15 +1020,16 @@ const styles = StyleSheet.create({
   cardRow: { marginHorizontal: space.lg, backgroundColor: aurora.card, overflow: 'hidden' },
   cardTop: { borderTopLeftRadius: 22, borderTopRightRadius: 22 },
   cardBottom: { borderBottomLeftRadius: 22, borderBottomRightRadius: 22 },
+  // At least ROW tall: with large text the row grows instead of clipping its lines.
   row: {
-    height: ROW,
+    minHeight: ROW,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: aurora.card,
   },
   rowMain: {
     flex: 1,
-    height: ROW,
+    minHeight: ROW,
     flexDirection: 'row',
     alignItems: 'center',
     paddingRight: 14,
@@ -1058,7 +1055,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     minWidth: 0,
-    height: ROW,
+    minHeight: ROW,
     marginLeft: 12,
     paddingVertical: 12,
     justifyContent: 'center',
