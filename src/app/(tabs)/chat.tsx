@@ -746,94 +746,99 @@ const ChatRow = memo(function ChatRow({
   ];
 
   return (
-    <SwipeRow
-      ref={swipe}
-      enabled={!editing}
-      leftWidth={actionsWidth(leading.length)}
-      rightWidth={actionsWidth(trailing.length)}
-      // The list is one rounded card: the first and last rows carry its corners.
-      style={[styles.cardRow, first && styles.cardTop, last && styles.cardBottom]}
-      onOpenStart={() => swipe.current && actions.opening(swipe.current)}
-      // Both fire on release, just before the click a mouse drag ends with on web.
-      onWillOpen={() => {
-        opened.current = true;
-        draggedAt.current = Date.now();
-        if (swipe.current) actions.opening(swipe.current);
-        haptic.selection();
-      }}
-      onWillClose={() => {
-        opened.current = false;
-        draggedAt.current = Date.now();
-        if (swipe.current) actions.closed(swipe.current);
-      }}
-      renderLeft={(progress) => <SwipeActions actions={leading} progress={progress} />}
-      renderRight={(progress) => <SwipeActions actions={trailing} progress={progress} />}>
-      <View style={styles.row}>
-        {/* Beside the row's button, not inside it: a button cannot hold another one. */}
-        {editing ? (
-          <Pressable
-            onPress={() => actions.remove(item)}
-            hitSlop={6}
+    <View>
+      {/* Row heights land on fractions of a pixel, which can leave a hairline gap to the next row;
+          this strip of the card, under the row and into the next one, fills it. */}
+      {last ? null : <View pointerEvents="none" style={styles.seam} />}
+      <SwipeRow
+        ref={swipe}
+        enabled={!editing}
+        leftWidth={actionsWidth(leading.length)}
+        rightWidth={actionsWidth(trailing.length)}
+        // The list is one rounded card: the first and last rows carry its corners.
+        style={[styles.cardRow, first && styles.cardTop, last && styles.cardBottom]}
+        onOpenStart={() => swipe.current && actions.opening(swipe.current)}
+        // Both fire on release, just before the click a mouse drag ends with on web.
+        onWillOpen={() => {
+          opened.current = true;
+          draggedAt.current = Date.now();
+          if (swipe.current) actions.opening(swipe.current);
+          haptic.selection();
+        }}
+        onWillClose={() => {
+          opened.current = false;
+          draggedAt.current = Date.now();
+          if (swipe.current) actions.closed(swipe.current);
+        }}
+        renderLeft={(progress) => <SwipeActions actions={leading} progress={progress} />}
+        renderRight={(progress) => <SwipeActions actions={trailing} progress={progress} />}>
+        <View style={styles.row}>
+          {/* Beside the row's button, not inside it: a button cannot hold another one. */}
+          {editing ? (
+            <Pressable
+              onPress={() => actions.remove(item)}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('common.delete')}, ${item.name}`}
+              style={styles.removeCell}>
+              <Ionicons name="remove-circle" size={24} color={colors.danger} />
+            </Pressable>
+          ) : null}
+          <PressableScale
+            scaleTo={0.985}
+            style={styles.rowMain}
+            onPress={press}
+            onLongPress={editing ? undefined : () => actions.hold(item)}
+            delayLongPress={350}
             accessibilityRole="button"
-            accessibilityLabel={`${t('common.delete')}, ${item.name}`}
-            style={styles.removeCell}>
-            <Ionicons name="remove-circle" size={24} color={colors.danger} />
-          </Pressable>
-        ) : null}
-        <PressableScale
-          scaleTo={0.985}
-          style={styles.rowMain}
-          onPress={press}
-          onLongPress={editing ? undefined : () => actions.hold(item)}
-          delayLongPress={350}
-          accessibilityRole="button"
-          accessibilityLabel={label}
-          accessibilityActions={a11yActions}
-          onAccessibilityAction={(e) => {
-            const name = e.nativeEvent.actionName;
-            if (name === 'read') actions.read(item);
-            else if (name === 'pin') actions.pin(item);
-            else if (name === 'mute') actions.mute(item);
-            else if (name === 'delete') actions.remove(item);
-          }}>
-          {editing ? null : <View style={styles.dotCell}>{unread ? <View style={styles.unreadDot} /> : null}</View>}
+            accessibilityLabel={label}
+            accessibilityActions={a11yActions}
+            onAccessibilityAction={(e) => {
+              const name = e.nativeEvent.actionName;
+              if (name === 'read') actions.read(item);
+              else if (name === 'pin') actions.pin(item);
+              else if (name === 'mute') actions.mute(item);
+              else if (name === 'delete') actions.remove(item);
+            }}>
+            {editing ? null : <View style={styles.dotCell}>{unread ? <View style={styles.unreadDot} /> : null}</View>}
 
-          {item.kind === 'chat' ? (
-            <CharacterAvatar character={item.character} size={AVATAR} />
-          ) : (
-            <GroupAvatar members={item.members} size={AVATAR} />
-          )}
+            {item.kind === 'chat' ? (
+              <CharacterAvatar character={item.character} size={AVATAR} />
+            ) : (
+              <GroupAvatar members={item.members} size={AVATAR} />
+            )}
 
-          <View style={[styles.body, !last && styles.separator]}>
-            <View style={styles.line}>
-              <Txt style={[styles.name, unread && styles.nameUnread]} lines={1}>
-                {item.name}
-              </Txt>
-              {level != null ? (
-                <View style={styles.level}>
-                  <Ionicons name="heart" size={12} color={colors.bondText} />
-                  <Txt style={styles.levelText}>{level}</Txt>
+            <View style={[styles.body, !first && styles.separator]}>
+              <View style={styles.line}>
+                <Txt style={[styles.name, unread && styles.nameUnread]} lines={1}>
+                  {item.name}
+                </Txt>
+                {level != null ? (
+                  <View style={styles.level}>
+                    <Ionicons name="heart" size={12} color={colors.bondText} />
+                    <Txt style={styles.levelText}>{level}</Txt>
+                  </View>
+                ) : null}
+                <View style={styles.meta}>
+                  {row.muted ? <Ionicons name="notifications-off" size={13} color={aurora.textMuted} /> : null}
+                  <Txt style={[styles.stamp, unread && styles.stampUnread]}>{relativeStamp(row.lastMessageAt)}</Txt>
+                  <Ionicons name="chevron-forward" size={14} color={colors.textFaint} />
                 </View>
-              ) : null}
-              <View style={styles.meta}>
-                {row.muted ? <Ionicons name="notifications-off" size={13} color={aurora.textMuted} /> : null}
-                <Txt style={[styles.stamp, unread && styles.stampUnread]}>{relativeStamp(row.lastMessageAt)}</Txt>
-                <Ionicons name="chevron-forward" size={14} color={colors.textFaint} />
               </View>
+              {typing ? (
+                <Txt style={styles.typing} lines={1}>
+                  {t('chatList.typing')}
+                </Txt>
+              ) : row.lastMessagePreview ? (
+                <Txt style={styles.preview} lines={2}>
+                  {row.lastMessagePreview}
+                </Txt>
+              ) : null}
             </View>
-            {typing ? (
-              <Txt style={styles.typing} lines={1}>
-                {t('chatList.typing')}
-              </Txt>
-            ) : row.lastMessagePreview ? (
-              <Txt style={styles.preview} lines={2}>
-                {row.lastMessagePreview}
-              </Txt>
-            ) : null}
-          </View>
-        </PressableScale>
-      </View>
-    </SwipeRow>
+          </PressableScale>
+        </View>
+      </SwipeRow>
+    </View>
   );
 });
 
@@ -1061,9 +1066,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 3,
   },
+  // On the row's top edge, which the row above can never paint over.
   separator: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: aurora.separator,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: aurora.separator,
+  },
+  seam: {
+    position: 'absolute',
+    left: space.lg,
+    right: space.lg,
+    bottom: -2,
+    height: 4,
+    backgroundColor: aurora.card,
   },
   line: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   // The name shrinks first, so the level heart stays right after it and the time at the end.
