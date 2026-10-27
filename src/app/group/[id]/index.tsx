@@ -107,9 +107,11 @@ export default function GroupChatScreen() {
       if (target) {
         timers.push(
           setTimeout(() => {
-            const index = (useAppStore.getState().messages[groupId] ?? []).findIndex((m) => m.id === target);
-            if (index < 0) return;
-            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.4 });
+            const lines = useAppStore.getState().messages[groupId] ?? [];
+            const at = lines.findIndex((m) => m.id === target);
+            if (at < 0) return;
+            // The list runs newest first.
+            listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
             setFlash(target);
             timers.push(setTimeout(() => setFlash(null), 1600));
           }, 350),
@@ -122,9 +124,9 @@ export default function GroupChatScreen() {
     }, [groupId, setActiveConversation]),
   );
 
+  // A new line or typing brings the newest end back into view; on open it is already there.
   useEffect(() => {
-    const timer = setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 80);
-    return () => clearTimeout(timer);
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
   }, [messages?.length, typingIds.length]);
 
   const byId = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
@@ -139,6 +141,8 @@ export default function GroupChatScreen() {
   const names = groupTitle(members.map(nameOf));
   const title = group?.name || names;
   const data = useMemo(() => messages ?? [], [messages]);
+  // Newest first for the inverted list: the group opens on its latest line with nothing to scroll (iOS Messages).
+  const rows = useMemo(() => [...data].reverse(), [data]);
   const lastMine = useMemo(() => lastMineId(data), [data]);
   // » under the members' newest lines: they go on without the user (the one-to-one chat's rules).
   const block = useMemo(() => steerBlock(data, typingIds.length > 0), [data, typingIds.length]);
@@ -170,7 +174,7 @@ export default function GroupChatScreen() {
       const author = item.characterId ? byId.get(item.characterId) : undefined;
       const character = author ?? fallback;
       if (!character) return null;
-      const run = runOf(data, index);
+      const run = runOf(data, data.length - 1 - index);
       return (
         <>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
@@ -293,22 +297,24 @@ export default function GroupChatScreen() {
             {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain'} /> : null}
             <FlatList
               ref={listRef}
-              data={data}
+              data={rows}
+              inverted
               keyExtractor={(item) => item.id}
-              contentContainerStyle={[styles.list, { paddingTop: headerRoom }]}
+              // Inverted: the bottom padding is the room under the header at the top of the screen.
+              contentContainerStyle={[styles.list, { paddingBottom: headerRoom }]}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
-              ListFooterComponent={
+              // The header of an inverted list sits under the newest line.
+              ListHeaderComponent={
                 <>
                   {block ? null : <ReplyControls count={1} index={0} onStep={() => {}} onContinue={goOn} />}
                   {typers.length ? <TypingRow characters={typers} label={typingLabel} /> : null}
                 </>
               }
-              onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {
                 listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
-                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.4 }), 120);
+                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }), 120);
               }}
             />
             {!artWallpaper ? <HeaderFade color={wallpaper.colors[0]} room={headerRoom} /> : null}
@@ -450,7 +456,7 @@ const styles = StyleSheet.create({
   artVeil: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)' },
   missing: { padding: space.xl },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
-  list: { paddingBottom: space.sm },
+  list: { paddingTop: space.sm },
   ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
   way: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.lg },
   wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },

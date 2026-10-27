@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, View, type ListRenderItemInfo } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View, type ListRenderItemInfo, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MessageBubble, TypingRow } from '@/components/chat';
@@ -9,7 +9,7 @@ import { runOf } from '@/components/chat/runs';
 import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, StoreBuyBar } from '@/components/plans/store-look';
-import { GlassBar, GlassButton, Header, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { GlassBar, GlassButton, Header, Screen, Txt } from '@/components/ui';
 import { freeRoundsLeft, STREAM_SHELLS } from '@/economy/streams';
 import { confirmAction } from '@/lib/confirm';
 import { shortName } from '@/lib/format';
@@ -46,8 +46,15 @@ export default function StreamScreen() {
   const createGroup = useAppStore((s) => s.createGroup);
   const groups = useAppStore((s) => s.groups);
   const listRef = useRef<FlatList<Message>>(null);
-  // Past the faces and the topic, the bar shows the names (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(150);
+  // Past the faces and the topic, the bar shows the names (iOS scroll edge). The list is inverted,
+  // so the offset counts from the newest line: the faces are out of sight once the rest of the
+  // content above the screen is taller than they are.
+  const [scrolled, setScrolled] = useState(false);
+  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+    const past = contentSize.height - layoutMeasurement.height - contentOffset.y > 150;
+    setScrolled((was) => (was === past ? was : past));
+  }, []);
   const [paywall, setPaywall] = useState<number | null>(null);
   // Only lines that arrive while the stream is open animate in.
   const [openedAt] = useState(() => Date.now());
@@ -57,23 +64,22 @@ export default function StreamScreen() {
     [stream?.characterIds, characters],
   );
   const data = useMemo(() => (stream ? stream.lines.map((line) => lineMessage(stream.id, line)) : []), [stream]);
+  // Newest first for the inverted list: the stream opens on its latest line with nothing to scroll.
+  const rows = useMemo(() => [...data].reverse(), [data]);
   const nameOf = useCallback((c: Character) => shortName(displayName(c, relationships[c.id])), [relationships]);
 
   // The newest line stays in view, as in the chats (also when the bar comes up at a round's end).
   const lineCount = stream?.lines.length ?? 0;
   const barShown = !!stream && !isPlaying(stream);
   useEffect(() => {
-    const scroll = () => listRef.current?.scrollToEnd({ animated: true });
-    // Once more after the new size is measured (the bar coming up grows the list's padding).
-    const timers = [setTimeout(scroll, 80), setTimeout(scroll, 400)];
-    return () => timers.forEach(clearTimeout);
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
   }, [lineCount, typingId, barShown]);
 
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       const character = pair.find((c) => c.id === item.characterId);
       if (!character) return null;
-      const run = runOf(data, index);
+      const run = runOf(data, data.length - 1 - index);
       return (
         <MessageBubble
           message={item}
@@ -157,28 +163,29 @@ export default function StreamScreen() {
       />
       <FlatList
         ref={listRef}
-        data={data}
+        data={rows}
+        inverted
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
         contentContainerStyle={styles.list}
-        onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+        // Inverted: the header sits under the newest line, the footer over the oldest.
         ListHeaderComponent={
+          <>
+            {typer ? <TypingRow characters={[typer]} label={t('group.typing', { name: nameOf(typer) })} /> : null}
+            {/* Room for the bar under the newest line. */}
+            <View style={{ height: (bar ? BUY_BAR_SPACE : space.xl) + insets.bottom }} />
+          </>
+        }
+        ListFooterComponent={
           <View style={styles.head}>
             <GroupAvatar members={pair} size={64} ringColor={colors.bgPlain} />
             <Txt style={styles.names}>{names}</Txt>
             <Txt style={styles.topic}>{`“${stream.topic}”`}</Txt>
             <Txt style={styles.note}>{t('streams.aiNote')}</Txt>
           </View>
-        }
-        ListFooterComponent={
-          <>
-            {typer ? <TypingRow characters={[typer]} label={t('group.typing', { name: nameOf(typer) })} /> : null}
-            {/* Room for the bar as part of the footer: scrollToEnd counts the footer, not the padding. */}
-            <View style={{ height: (bar ? BUY_BAR_SPACE : space.xl) + insets.bottom }} />
-          </>
         }
       />
       {bar}
