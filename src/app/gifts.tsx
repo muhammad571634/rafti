@@ -183,11 +183,17 @@ export default function GiftsScreen() {
         </View>
         <View style={[styles.card, styles.wheel]}>
           <LuckyWheel
-            size={264}
+            size={140}
             disabled={!canSpin}
             onSpin={() => spinWheel()?.index ?? null}
             onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
           />
+          <View style={styles.wheelCopy}>
+            <Txt style={styles.wheelTitle}>{t('gifts.wheelCardTitle')}</Txt>
+            <Txt style={styles.wheelDescription}>
+              {t(canSpin ? 'gifts.wheelReadyBody' : 'gifts.wheelSpentBody')}
+            </Txt>
+          </View>
         </View>
 
         <View style={styles.labelRow}>
@@ -422,7 +428,16 @@ const styles = StyleSheet.create({
     backgroundColor: STORE.peachSoft,
   },
   statusText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
-  wheel: { alignItems: 'center', paddingVertical: space.lg },
+  wheel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    padding: space.md,
+    marginBottom: 23,
+  },
+  wheelCopy: { flex: 1, minWidth: 0, gap: 6, justifyContent: 'center' },
+  wheelTitle: { fontSize: 17, fontWeight: '700', letterSpacing: -0.35, color: colors.text },
+  wheelDescription: { fontSize: 13, lineHeight: 18, color: aurora.textMuted },
   info: { marginBottom: 2, marginRight: space.lg + 4, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },

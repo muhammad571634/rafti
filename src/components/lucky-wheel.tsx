@@ -44,6 +44,9 @@ export function LuckyWheel({
   const rotation = useSharedValue(0);
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
+  const hubSize = Math.min(68, Math.max(52, Math.round(size * 0.32)));
+  const pointerSize = Math.max(20, Math.round(size * 0.11));
+  const pointerInset = pointerSize * 0.14;
 
   const land = (index: number) => {
     haptic.success();
@@ -116,8 +119,13 @@ export function LuckyWheel({
       </Animated.View>
 
       {/* pointer */}
-      <Svg width={30} height={30} style={styles.pointer}>
-        <Path d="M15 28 L4 6 Q15 0 26 6 Z" fill={colors.text} stroke={colors.white} strokeWidth={2} />
+      <Svg width={pointerSize} height={pointerSize} style={styles.pointer}>
+        <Path
+          d={`M${pointerSize / 2} ${pointerSize - 2} L${pointerInset} ${pointerInset} Q${pointerSize / 2} 0 ${pointerSize - pointerInset} ${pointerInset} Z`}
+          fill={colors.text}
+          stroke={colors.white}
+          strokeWidth={2}
+        />
       </Svg>
 
       <PressableScale
@@ -127,7 +135,7 @@ export function LuckyWheel({
         haptic
         style={[
           styles.hub,
-          { top: 14 + r - 34 },
+          { top: 14 + r - hubSize / 2, width: hubSize, height: hubSize, borderRadius: hubSize / 2 },
           (spinning || disabled) && styles.hubDisabled,
         ]}>
         <Txt variant="bodyStrong" color={colors.textOnPrimary}>
