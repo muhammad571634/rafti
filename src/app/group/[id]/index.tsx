@@ -11,6 +11,7 @@ import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { useFollowNewest } from '@/components/chat/follow-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
@@ -124,9 +125,13 @@ export default function GroupChatScreen() {
     }, [groupId, setActiveConversation]),
   );
 
-  // A new line or typing brings the newest end back into view; on open it is already there.
+  // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
+  const { onScroll, follow } = useFollowNewest(listRef);
+  const newestMine = messages?.at(-1)?.author === 'me';
   useEffect(() => {
-    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    follow(newestMine);
+    // A new line or a typing flip, not every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages?.length, typingIds.length]);
 
   const byId = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
@@ -300,6 +305,10 @@ export default function GroupChatScreen() {
               data={rows}
               inverted
               keyExtractor={(item) => item.id}
+              onScroll={onScroll}
+              scrollEventThrottle={100}
+              // The keyboard goes with a drag of the chat (iOS follows the finger).
+              keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
               // Inverted: the bottom padding is the room under the header at the top of the screen.
               contentContainerStyle={[styles.list, { paddingBottom: headerRoom }]}
               showsVerticalScrollIndicator={false}

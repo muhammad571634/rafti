@@ -5,6 +5,7 @@ import { FlatList, Pressable, StyleSheet, View, type ListRenderItemInfo, type Na
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MessageBubble, TypingRow } from '@/components/chat';
+import { useFollowNewest } from '@/components/chat/follow-newest';
 import { runOf } from '@/components/chat/runs';
 import { GroupAvatar } from '@/components/group-avatar';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -50,11 +51,17 @@ export default function StreamScreen() {
   // so the offset counts from the newest line: the faces are out of sight once the rest of the
   // content above the screen is taller than they are.
   const [scrolled, setScrolled] = useState(false);
-  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
-    const past = contentSize.height - layoutMeasurement.height - contentOffset.y > 150;
-    setScrolled((was) => (was === past ? was : past));
-  }, []);
+  // A new line keeps someone watching the newest end there, and leaves a reader further up alone.
+  const { onScroll: followScroll, follow } = useFollowNewest(listRef);
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      followScroll(e);
+      const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+      const past = contentSize.height - layoutMeasurement.height - contentOffset.y > 150;
+      setScrolled((was) => (was === past ? was : past));
+    },
+    [followScroll],
+  );
   const [paywall, setPaywall] = useState<number | null>(null);
   // Only lines that arrive while the stream is open animate in.
   const [openedAt] = useState(() => Date.now());
@@ -72,8 +79,8 @@ export default function StreamScreen() {
   const lineCount = stream?.lines.length ?? 0;
   const barShown = !!stream && !isPlaying(stream);
   useEffect(() => {
-    listRef.current?.scrollToOffset({ offset: 0, animated: true });
-  }, [lineCount, typingId, barShown]);
+    follow();
+  }, [follow, lineCount, typingId, barShown]);
 
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {

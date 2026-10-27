@@ -21,6 +21,7 @@ import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
+import { useFollowNewest } from '@/components/chat/follow-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, asIdeas, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
@@ -181,9 +182,13 @@ export default function ChatRoomScreen() {
     }, [conversationId, setActiveConversation]),
   );
 
-  // A new line or typing brings the newest end back into view; on open it is already there.
+  // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
+  const { onScroll, follow } = useFollowNewest(listRef);
+  const newestMine = messages?.at(-1)?.author === 'me';
   useEffect(() => {
-    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    follow(newestMine);
+    // A new line or a typing flip, not every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages?.length, typing]);
 
   const backgroundId = relationship?.backgroundId ?? 'bg_plain';
@@ -423,6 +428,10 @@ export default function ChatRoomScreen() {
               data={rows}
               inverted
               keyExtractor={(item) => item.id}
+              onScroll={onScroll}
+              scrollEventThrottle={100}
+              // The keyboard goes with a drag of the chat (iOS follows the finger).
+              keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
               // Inverted: the bottom padding is the room under the header at the top of the screen.
               contentContainerStyle={[styles.list, { paddingBottom: headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
               showsVerticalScrollIndicator={false}

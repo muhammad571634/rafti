@@ -187,6 +187,8 @@ const styles = StyleSheet.create({
     paddingLeft: space.lg,
     paddingRight: 4,
     borderRadius: FIELD / 2,
+    // A grown, multi-line field keeps iOS squircle corners; Android ignores it.
+    borderCurve: 'continuous',
     borderColor: colors.borderStrong,
   },
   // A 32pt circle that sits 4pt inside the 40pt field.

@@ -492,6 +492,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: space.sm,
     borderRadius: CORNER,
+    // iOS squircle corners; Android ignores it.
+    borderCurve: 'continuous',
   },
   text: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
   action: { fontStyle: 'italic' },
@@ -527,6 +529,7 @@ const styles = StyleSheet.create({
     width: 168,
     height: 210,
     borderRadius: radius.lg,
+    borderCurve: 'continuous',
     backgroundColor: colors.surfaceAlt,
   },
   receipt: { fontSize: 11, lineHeight: 14, color: colors.textSecondary, paddingTop: 3, paddingRight: space.xs },

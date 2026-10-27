@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
   capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
   shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },
-  shellCount: { fontSize: 15, fontWeight: '600' },
+  shellCount: { fontSize: 15, fontWeight: '600', fontVariant: ['tabular-nums'] },
   capsuleLine: { width: StyleSheet.hairlineWidth, height: 20, backgroundColor: colors.borderStrong },
   callButton: { width: 40, height: 36 },
   below: { marginTop: space.sm },
