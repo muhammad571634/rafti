@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { createApp } from './app.ts';
+import { cleanLocale, cleanTimeZone, createApp } from './app.ts';
+import type { BootstrapInput, BootstrapResult, Db } from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
@@ -57,5 +58,56 @@ describe('sigmazam-api', () => {
         ['user', ['Hi', 'Reply with JSON only.']],
       ],
     );
+  });
+});
+
+describe('POST /v1/session/bootstrap', () => {
+  const seen: BootstrapInput[] = [];
+  const fakeDb: Db = {
+    name: 'fake',
+    userIdFromToken: async (token) => (token === 'good' ? 'user-1' : null),
+    async bootstrap(userId, input) {
+      seen.push(input);
+      return { isNew: true, profile: { id: userId }, wallet: { shells: 100 }, subscription: null } as unknown as BootstrapResult;
+    },
+  };
+  const call = (db: Db | null, headers: Record<string, string>, body?: unknown) =>
+    createApp(null, { timeoutMs: 1000, db }).request('/v1/session/bootstrap', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+
+  it('needs a database and a signed-in user', async () => {
+    assert.equal((await call(null, { authorization: 'Bearer good' })).status, 503);
+    assert.equal((await call(fakeDb, {})).status, 401);
+    assert.equal((await call(fakeDb, { authorization: 'Bearer bad' })).status, 401);
+  });
+
+  it('passes a clean locale and time zone, drops anything else, and works with no body', async () => {
+    const ok = await call(fakeDb, { authorization: 'Bearer good' }, { locale: 'en-US', timeZone: 'Asia/Tashkent' });
+    assert.equal(ok.status, 200);
+    assert.equal(((await ok.json()) as BootstrapResult).profile.id, 'user-1');
+    await call(fakeDb, { authorization: 'Bearer good' }, { locale: "en'; drop table", timeZone: 'Mars/Olympus' });
+    assert.equal((await call(fakeDb, { authorization: 'Bearer good' })).status, 200);
+    assert.deepEqual(seen, [
+      { locale: 'en-US', timeZone: 'Asia/Tashkent' },
+      { locale: undefined, timeZone: undefined },
+      { locale: undefined, timeZone: undefined },
+    ]);
+  });
+
+  it('hands out the public sign-in config, or 503 without a database', async () => {
+    const client = { supabaseUrl: 'https://x.supabase.co', supabaseKey: 'sb_publishable_x' };
+    const ok = await createApp(null, { timeoutMs: 1000, client }).request('/v1/client-config');
+    assert.deepEqual(await ok.json(), client);
+    assert.equal((await createApp(null, { timeoutMs: 1000 }).request('/v1/client-config')).status, 503);
+  });
+
+  it('cleans locales and time zones', () => {
+    assert.equal(cleanLocale('uz-Latn-UZ'), 'uz-Latn-UZ');
+    assert.equal(cleanLocale(42), undefined);
+    assert.equal(cleanTimeZone('America/New_York'), 'America/New_York');
+    assert.equal(cleanTimeZone('Nowhere/Land'), undefined);
   });
 });

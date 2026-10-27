@@ -2,6 +2,8 @@ import { Hono } from 'hono';
 
 import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import { parseModelReply } from '../../src/ai/reply-style.ts';
+import type { ClientConfig } from '../../src/ai/session-types.ts';
+import type { BootstrapInput, Db } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
 /** Until the chat's language lock is stored, the reply follows what the user writes (`replyLanguage`). */
@@ -11,15 +13,68 @@ export const FOLLOW_USER_LANGUAGE =
 /** How much of the chat a request may carry; the prompt layout cuts it further. */
 const MAX_MESSAGES = 120;
 
-/**
- * The API. B0 is stateless: the app sends what the reply needs (the same `ChatPromptInput` the
- * prompt code was written for) and gets the bubbles back. The database, accounts and the server's
- * own economy come with Supabase (backend-plan §11, B0-B1).
- */
-export function createApp(provider: LlmProvider | null, opts: { timeoutMs: number }) {
-  const app = new Hono();
+/** A BCP 47 tag the profile may keep ("en-US", "uz-Latn-UZ"); anything else is dropped. */
+export function cleanLocale(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length <= 35 && /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(value) ? value : undefined;
+}
 
-  app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null }));
+/** An IANA time zone the runtime knows ("Asia/Tashkent"); anything else is dropped. */
+export function cleanTimeZone(value: unknown): string | undefined {
+  if (typeof value !== 'string' || value.length > 64) return undefined;
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: value });
+    return value;
+  } catch {
+    return undefined;
+  }
+}
+
+/** The bearer token of `Authorization: Bearer <token>`, if any. */
+const bearer = (header: string | undefined) => header?.match(/^Bearer\s+(\S+)$/i)?.[1] ?? null;
+
+/**
+ * The API. Chat replies are stateless: the app sends what the reply needs (the same
+ * `ChatPromptInput` the prompt code was written for) and gets the bubbles back. Accounts and the
+ * server's own economy live in Supabase (`db`), from B0 on (backend-plan §11).
+ */
+export function createApp(
+  provider: LlmProvider | null,
+  opts: { timeoutMs: number; db?: Db | null; client?: ClientConfig | null },
+) {
+  const app = new Hono();
+  const db = opts.db ?? null;
+
+  app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null, db: db?.name ?? null }));
+
+  // Where the app signs in. A development build asks here so no key sits in the app's files; a
+  // release build reads EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY instead.
+  app.get('/v1/client-config', (c) => (opts.client ? c.json(opts.client) : c.json({ error: 'noDatabase' }, 503)));
+
+  // After sign-in (anonymous at first): the profile, the wallet and the plan, created on the first
+  // call with the welcome gift paid once (backend-plan §5). Safe to call on every launch.
+  app.post('/v1/session/bootstrap', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const token = bearer(c.req.header('authorization'));
+    if (!token) return c.json({ error: 'signIn' }, 401);
+    const userId = await db.userIdFromToken(token);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+
+    let body: Record<string, unknown> = {};
+    try {
+      const raw = await c.req.text();
+      if (raw) body = JSON.parse(raw);
+    } catch {
+      return c.json({ error: 'badJson' }, 400);
+    }
+    const input: BootstrapInput = { locale: cleanLocale(body.locale), timeZone: cleanTimeZone(body.timeZone) };
+
+    try {
+      return c.json(await db.bootstrap(userId, input));
+    } catch (error) {
+      console.error('[bootstrap] failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
 
   app.post('/v1/chat/reply', async (c) => {
     if (!provider) return c.json({ error: 'noModel' }, 503);

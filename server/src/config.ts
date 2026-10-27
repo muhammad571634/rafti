@@ -33,6 +33,17 @@ export const config = {
     model: process.env.OPENAI_MODEL ?? '',
     label: process.env.OPENAI_LABEL ?? 'openai',
   },
+  /**
+   * Supabase: the project URL and the server's secret key (service role; `sb_secret_…` or the
+   * legacy JWT) of the cloud project; there is no local stack. Without them the API runs without
+   * accounts, as before B0.
+   */
+  supabase: {
+    url: process.env.SUPABASE_URL ?? '',
+    secretKey: process.env.SUPABASE_SECRET_KEY ?? '',
+    /** The public key (`sb_publishable_…`) the app signs in with; handed out by `/v1/client-config`. */
+    publishableKey: process.env.SUPABASE_PUBLISHABLE_KEY ?? '',
+  },
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
 } as const;

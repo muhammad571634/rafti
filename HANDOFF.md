@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z2. Backend B0: Supabase in the cloud, accounts and wallet (2026-10-27, D112)
+
+Owner: Docker froze the laptop, so Supabase now runs **only in the cloud project "rafti sigmazam"**
+(`yhelqgpwputlayawwtne`, Tokyo). Never run `supabase start`; the Supabase containers, volumes and
+images were removed and Docker Desktop no longer starts at login (the owner keeps Docker installed).
+In the cloud: migration `b0_foundation` and the 40-character cast. Server keys are Windows user env
+vars (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`), in no file. New:
+`GET /v1/client-config`, `src/ai/account.ts` (anonymous sign-in + `POST /v1/session/bootstrap`),
+Profile (dev) → Server account. Verified against the cloud with a throwaway user, then deleted.
+**Owner, one click:** Supabase dashboard → Authentication → Sign In / Providers → turn on "Allow
+anonymous sign-ins" (agents may not change auth security settings on their own). **Phone checks
+(Expo Go):** start the server (`npm run dev --prefix server`), turn on Real AI, then Profile →
+Server account shows "100 shells" (before the click it says "Anonymous sign-in off").
+
 ### 0z1. Quick create and character pictures by plan (2026-10-27, D111)
 
 Owner's call after comparing with Character.AI: the create form stays free for everyone; the AI parts follow

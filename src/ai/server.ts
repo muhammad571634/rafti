@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 
 import type { ChatPromptInput } from './chat-prompt';
+import type { BootstrapInput, BootstrapResult, ClientConfig } from './session-types';
 
 /**
  * The phone's side of the Sigmazam API (`server/`). While testing, the server runs on the same
@@ -34,6 +35,20 @@ async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS)
 export async function serverModel(): Promise<string | null> {
   const health = await call<{ ok: boolean; model: string | null }>('/health', undefined, 4000);
   return health?.model ?? null;
+}
+
+/** Where the app signs in (the Supabase URL and publishable key), or null when the server has no database. */
+export function serverClientConfig(): Promise<ClientConfig | null> {
+  return call<ClientConfig>('/v1/client-config', undefined, 4000);
+}
+
+/** The signed-in user's profile, wallet and plan; the first call creates them and pays the welcome gift. */
+export function serverBootstrap(accessToken: string, input: BootstrapInput): Promise<BootstrapResult | null> {
+  return call<BootstrapResult>('/v1/session/bootstrap', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(input),
+  });
 }
 
 /** The real model's reply as chat bubbles, or null (fall back to the stand-in). */

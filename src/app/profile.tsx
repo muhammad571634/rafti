@@ -7,6 +7,7 @@ import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SUPPORT_EMAIL } from '@/ai/safety';
+import { connectAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
 import {
   AuroraGlass,
@@ -104,6 +105,16 @@ export default function ProfileScreen() {
       alive = false;
     };
   }, [settings.realAi, t]);
+
+  /** Dev only: the server account after the last "Server account" press (shells, or why not). */
+  const [accountStatus, setAccountStatus] = useState<string | undefined>();
+  const checkAccount = async () => {
+    const result = await connectAccount();
+    if (result.ok) return setAccountStatus(t('plans.shells', { count: result.session.wallet.shells }));
+    setAccountStatus(
+      t(result.reason === 'signInOff' ? 'profile.accountSignInOff' : result.reason === 'failed' ? 'profile.accountFailed' : 'profile.aiOffline'),
+    );
+  };
 
   /** Dev only: what the last "Next planned texts" press did. */
   const [nextResult, setNextResult] = useState<string | undefined>();
@@ -328,6 +339,8 @@ export default function ProfileScreen() {
                 />
               }
             />
+            {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
+            <SettingsRow title={t('profile.serverAccount')} icon="cloud" fill={FILL.grey} meta={accountStatus} onPress={() => void checkAccount()} />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <SettingsRow title={t('profile.testPushes')} icon="paper-plane" fill={FILL.grey} meta={testResult} onPress={() => void testPushes()} />
             {/* Each thread's next text now (good luck, time to go, how did it go?), without waiting for its hour. */}
