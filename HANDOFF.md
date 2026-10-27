@@ -10,9 +10,12 @@ vars (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`), in no 
 `GET /v1/client-config`, `src/ai/account.ts` (anonymous sign-in + `POST /v1/session/bootstrap`),
 Profile (dev) → Server account. Verified against the cloud with a throwaway user, then deleted.
 **Owner, one click:** Supabase dashboard → Authentication → Sign In / Providers → turn on "Allow
-anonymous sign-ins" (agents may not change auth security settings on their own). **Phone checks
-(Expo Go):** start the server (`npm run dev --prefix server`), turn on Real AI, then Profile →
-Server account shows "100 shells" (before the click it says "Anonymous sign-in off").
+anonymous sign-ins" and press Save changes (agents may not change auth security settings on their
+own; at 22:15 it was still off). Check it read-only: `GET <SUPABASE_URL>/auth/v1/settings` →
+`external.anonymous_users`. **Phone checks (Expo Go):** start the server (`npm run dev --prefix
+server`), then Profile → Server account shows "100 shells" (while it is off: "Anonymous sign-in off").
+**Metro:** `metro.config.js` blocks `.claude/`. The agents' worktrees there (full repo copies with
+node_modules) were 78k of Metro's 115k files and kept it at full CPU, so Expo Go got no manifest; keep it.
 
 ### 0z1. Quick create and character pictures by plan (2026-10-27, D111)
 
