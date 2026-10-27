@@ -1,6 +1,9 @@
 import { Hono } from 'hono';
 
 import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
+import { layoutPrompt } from '../../src/ai/prompt-layout.ts';
+import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import { parseModelReply } from '../../src/ai/reply-style.ts';
 import type { Context } from 'hono';
 
@@ -260,6 +263,46 @@ export function createApp(
     } catch (error) {
       console.error('[account] delete failed', error);
       return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  // A text a friend writes first (B1.4a): a thread's text, the morning brief, the evening question,
+  // the Sunday recap. The app picks who, when and about what; the model writes the words. A skip
+  // ("the chat already settled it", or a broken answer) is an answer too: the app decides what then.
+  app.post('/v1/ai/first-text', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const request = cleanFirstText(await readJson(c));
+    if (!request) return c.json({ error: 'badInput' }, 400);
+    request.input = {
+      ...request.input,
+      user: { ...request.input.user, locale: request.input.user.locale || 'en-US' },
+      replyLanguage: request.input.replyLanguage || FOLLOW_USER_LANGUAGE,
+    };
+    const userId = signedIn(c);
+    const started = Date.now();
+    try {
+      const layout = layoutPrompt(firstTextParts(request));
+      const result = await provider.complete(layout, opts);
+      const reply = parseTouchReply(result.text);
+      const cost = costUsd(result.model, result.usage);
+      logUsage(db, userId, {
+        kind: 'llm',
+        mode: request.kind,
+        model: result.model ?? provider.name,
+        promptVersion: promptVersion(layout),
+        inputTokens: result.usage.input,
+        cachedTokens: result.usage.cached,
+        outputTokens: result.usage.output,
+        costUsd: cost,
+      });
+      console.log(
+        `[first] ${request.kind} ${request.input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms $${cost?.toFixed(6) ?? '?'} ${reply.skip ? 'skip' : `"${reply.lines[0].slice(0, 50)}"`}`,
+      );
+      return c.json({ ...reply, model: result.model ?? provider.name });
+    } catch (error) {
+      if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
+      console.error('[first] failed', error);
+      return c.json({ error: 'failed' }, 502);
     }
   });
 

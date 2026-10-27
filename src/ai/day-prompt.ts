@@ -1,6 +1,6 @@
 import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
-import { TOUCH_SHAPE } from './thread-prompt';
+import { TOUCH_SHAPE, wallClock } from './thread-prompt';
 import { temperOf } from '../lib/temper';
 import type { Character, DiaryMood, Message, Relationship, Thread, User } from '@/types';
 
@@ -18,6 +18,8 @@ export interface DayAskInput {
   /** This friend's threads that happened or were settled today ("the exam went well"). */
   threads: readonly Thread[];
   now: Date;
+  /** The user's clock, in minutes east of UTC: every time in the prompt is theirs (UTC when missing). */
+  utcOffsetMin?: number;
   replyLanguage?: string;
 }
 
@@ -35,7 +37,7 @@ export function dayAskParts(input: DayAskInput): PromptPart[] {
       ...(things.length ? ['WHAT WAS ON TODAY:', ...things] : []),
     ]),
     part('dayAsk', 'turn', [
-      `You are texting first, unprompted: it is evening (${now.toISOString().slice(0, 16).replace('T', ' ')}) and you ask how their day was.`,
+      `You are texting first, unprompted: it is evening (${wallClock(now.toISOString(), input.utcOffsetMin)} where they are) and you ask how their day was.`,
       `Ask in your own words and your temper (${temperOf(character, relationship?.label)}); pick up on something from today when there is one, never a generic survey. One short text. Their answer becomes a page in their diary, so make it easy to say a little.`,
     ]),
     part('shape', 'turn', [TOUCH_SHAPE]),

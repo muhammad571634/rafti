@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 
 import type { ChatPromptInput } from './chat-prompt';
+import type { FirstTextRequest } from './first-text';
 import type {
   BootstrapInput,
   BootstrapResult,
@@ -23,6 +24,8 @@ import type {
  */
 const DEV_PORT = 8787;
 const TIMEOUT_MS = 25_000;
+/** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
+const FIRST_TEXT_TIMEOUT_MS = 15_000;
 
 export function apiBase(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL;
@@ -106,4 +109,23 @@ export async function serverReply(input: ChatPromptInput, accessToken?: string |
   });
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
   return lines?.length ? lines : null;
+}
+
+/**
+ * A text they write first, in the model's words (B1.4a): `skip` when the model passed (the chat
+ * already settled it), null when the server is off, busy or slow (the caller writes the scripted line).
+ */
+export async function serverFirstText(request: FirstTextRequest, accessToken?: string | null): Promise<{ skip: boolean; lines: string[] } | null> {
+  const reply = await call<{ skip?: boolean; lines?: unknown[] }>(
+    '/v1/ai/first-text',
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+      body: JSON.stringify(request),
+    },
+    FIRST_TEXT_TIMEOUT_MS,
+  );
+  if (!reply) return null;
+  const lines = (reply.lines ?? []).filter((line): line is string => typeof line === 'string' && !!line.trim());
+  return { skip: reply.skip === true || !lines.length, lines };
 }

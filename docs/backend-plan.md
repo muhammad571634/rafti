@@ -871,8 +871,10 @@ Founder qarori: hozircha pul sarflanmaydi, test bepul xizmatlarda boshlanadi.
 - **Ilova:** Profile (dev) → "Real AI (local server)". Yoqilganda javoblarni model yozadi, yonida
   model nomi yoki "Server off" ko'rinadi. Server o'chiq bo'lsa, xato bersa, limit tugasa yoki 25
   soniyadan ortiq kutilsa, mock javob yoziladi va chat hech qachon to'xtamaydi.
-- **Hozircha mock qolganlar:** xotira, mavzular, brief, kechki savol, quick create, stream — ular
-  B1/B2'da shu serverga ulanadi. Kontraktlar tayyor (`src/ai/*-prompt.ts`).
+- **Serverga ulangan (B1.4a, 2026-10-28):** thread xabarlari, ertalabki brief, kechki savol va haftalik
+  xulosa (`POST /v1/ai/first-text`).
+- **Hozircha mock qolganlar:** xotira, mavzular, quick create, stream — ular B1.4b/B2'da shu serverga
+  ulanadi. Kontraktlar tayyor (`src/ai/*-prompt.ts`).
 - **Bepul qolgan qadamlar:** Supabase bepul tarifi (2 loyiha, bir hafta harakatsiz bo'lsa uxlaydi),
   EAS bepul (oyiga 15 Android build: dev build, push va Android'da haqiqiy bildirishnomalar uchun).
   iPhone build Apple Developer ($99/yil) talab qiladi, shuning uchun avval Android.

@@ -15,6 +15,8 @@ export interface WeekInput {
   relationship?: Relationship;
   week: WeekStats;
   now: Date;
+  /** The user's clock, in minutes east of UTC: every time in the prompt is theirs (UTC when missing). */
+  utcOffsetMin?: number;
   replyLanguage?: string;
 }
 

@@ -321,3 +321,47 @@ describe('the chats on the server (B1.3b)', () => {
     assert.equal((await createApp(null, { timeoutMs: 1000 }).request('/v1/account', { method: 'DELETE', headers: auth })).status, 503);
   });
 });
+
+describe('POST /v1/ai/first-text (B1.4a)', () => {
+  const brief = {
+    kind: 'brief',
+    input: {
+      character: kai,
+      user: { id: 'u1', displayName: 'Sam' },
+      brief: { characterId: 'c_kai', items: [{ title: 'Chemistry exam', time: '10:00' }], covers: [] },
+      recent: [],
+      now: '2026-10-28T07:30:00.000Z',
+    },
+  };
+  const send = (app: ReturnType<typeof createApp>, json: unknown) =>
+    app.request('/v1/ai/first-text', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: JSON.stringify(json) });
+
+  it('writes the text in their words, logs its cost under its kind', async () => {
+    let seen = '';
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(layout) {
+        seen = [...layout.system.map((s) => s.text), layout.turn].join('\n');
+        return { text: '{"skip":false,"messages":["Morning! Chem at 10 💪"],"ideas":[{"label":"Thanks","text":"Thanks!"}]}', usage: { input: 900, output: 30 }, model: 'gemini-x' };
+      },
+    };
+    const logged: UsageEvent[] = [];
+    const app = createApp(provider, { timeoutMs: 1000, db: makeDb({ logUsage: async (event) => void logged.push(event) }) });
+    const res = await send(app, brief);
+    assert.equal(res.status, 200);
+    const json = await res.json();
+    assert.deepEqual([json.skip, json.lines], [false, ['Morning! Chem at 10 💪']]);
+    assert.match(seen, /Chemistry exam at 10:00/);
+    assert.match(seen, /the language of the user's latest messages/);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.deepEqual([logged[0]?.mode, logged[0]?.userId, logged[0]?.model], ['brief', 'user-1', 'gemini-x']);
+  });
+
+  it('passes a skip on, refuses a bad request and says when there is no model', async () => {
+    const skip: LlmProvider = { name: 'fake', complete: async () => ({ text: 'not json', usage: {} }) };
+    const json = await (await send(createApp(skip, { timeoutMs: 1000 }), brief)).json();
+    assert.equal(json.skip, true);
+    assert.equal((await send(createApp(skip, { timeoutMs: 1000 }), { kind: 'brief', input: {} })).status, 400);
+    assert.equal((await send(createApp(null, { timeoutMs: 1000 }), brief)).status, 503);
+  });
+});

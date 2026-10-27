@@ -1,5 +1,28 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z8. Backend B1.4a: texts they write first come from the model (2026-10-28, D116). NEXT: B1.4b
+
+**Owner, 2026-10-28:** no Apple Developer account and no iPhone yet, so Sign in with Apple and StoreKit
+wait (the Supabase Apple provider needs that account's Team ID, Services ID, Key ID and .p8 key; the
+owner turns it on when told). Until then pick work the owner can test on the Android Expo Go phone.
+
+B1.4a: a thread's text, the morning brief, the evening "how was today?" and the Sunday recap are
+written by the model when Real AI is on. One contract for the four, `src/ai/first-text.ts`
+(`FirstTextRequest`, `firstTextParts`, `cleanFirstText`, 6 tests), one route `POST /v1/ai/first-text`
+(logs `usage_events` with mode `thread|brief|day|week`). In the store, `writeFirst` shows "typing…",
+asks the server (15 s) and writes the model's 1-3 lines; the ideas under them stay the code's,
+whose intents drive what a tap does (wake-up, diary mood, a settled thread). Server off, busy or slow:
+the scripted line, as before. A skip: a thread's text sends nothing (the chat settled it), the other
+three send the scripted line. Fix found live: the prompts printed UTC while the brief's times are the
+user's clock, so the model asked "how did the exam go?" before it; the four prompts now take
+`utcOffsetMin` and print every time on the user's clock (`wallClock`; the chat prompt is unchanged).
+Checked: app `tsc`, 414/414, server `tsc`, 30/30, `expo export` ios, and the real model (gemini 3.1
+flash-lite, 1.5-3 s each) on all four kinds through a throwaway server on 8788.
+**Phone checks (Expo Go, Real AI on):** Profile (dev) → Morning brief now / Evening question now /
+Weekly recap now / Next planned texts: "typing…", then their own words with the usual reply ideas.
+B1.4b next: quick create, topics and stream through the server (contracts in `src/ai/character-draft.ts`,
+`src/ai/content-prompts.ts`, `src/ai/group-prompt.*`).
+
 ### 0z7. Backend B1.3b done: the server keeps the chats (2026-10-28, D115). NEXT: Sign in with Apple
 
 **Owner, 2026-10-28:** iOS only for now (App Store first). Code stays cross-platform, App Store needs go

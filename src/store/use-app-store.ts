@@ -31,7 +31,8 @@ import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-st
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
-import { apiBase, serverReply, serverWallet } from '@/ai/server';
+import type { FirstTextRequest } from '@/ai/first-text';
+import { apiBase, serverFirstText, serverReply, serverWallet } from '@/ai/server';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -2947,7 +2948,13 @@ export const useAppStore = create<AppState>()(
           if (!get().conversations.some((c) => c.characterId === thread.characterId)) return;
           const conversationId = get().addFriend(thread.characterId);
           const line = mockTouchLine(thread, touch, temperOf(character, bond.label), touch.id);
-          appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(threadReach(touch.phase, thread.id)) }, { countUnread: true });
+          const recent = get().messages[conversationId] ?? [];
+          const request: FirstTextRequest = {
+            kind: 'thread',
+            input: { character, user: get().user, relationship: bond, thread, touch, recent, now: now.toISOString(), utcOffsetMin: -now.getTimezoneOffset() },
+          };
+          // A thread the chat already settled gets no text.
+          writeFirst(set, get, conversationId, line, threadReach(touch.phase, thread.id), request, 'nothing');
         });
         if (touchesDue.length) set((s) => ({ threads: markTouches(s.threads, new Set(touchesDue.map((x) => x.touch.id))) }));
 
@@ -3617,9 +3624,55 @@ function sendBrief(set: Setter, get: Getter, at: Date): string | null {
   if (!brief || !from) return null;
   const conversationId = get().addFriend(brief.characterId);
   const line = briefLine(brief.items, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:morning:brief:${from.id}`);
-  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(BRIEF_REACH) }, { countUnread: true });
+  const request: FirstTextRequest = {
+    kind: 'brief',
+    input: { character: from, user: get().user, relationship: relationships[from.id], brief, recent: get().messages[conversationId] ?? [], now: at.toISOString(), utcOffsetMin: -at.getTimezoneOffset() },
+  };
+  writeFirst(set, get, conversationId, line, BRIEF_REACH, request, 'scripted');
   if (brief.covers.length) set((s) => ({ threads: markTouches(s.threads, new Set(brief.covers)) }));
   return from.id;
+}
+
+/**
+ * A text they write first: a thread's text, the brief, the evening question, the week recap. With
+ * Real AI on, the model writes the words in their voice (B1.4a, `src/ai/first-text.ts`) while
+ * "typing…" shows; the ideas under it stay the code's, whose intents decide what a tap does (a
+ * wake-up call, the diary mood, a settled thread). Server off, busy or slow: the scripted line, as
+ * before. `onSkip` is what the model's skip sends: nothing, or the scripted line.
+ */
+function writeFirst(
+  set: Setter,
+  get: Getter,
+  conversationId: string,
+  scripted: string,
+  reach: string,
+  request: FirstTextRequest,
+  onSkip: 'nothing' | 'scripted',
+) {
+  const send = (lines: string[]) =>
+    lines.forEach((text, i) =>
+      appendMessage(
+        set,
+        get,
+        conversationId,
+        { ...themText(conversationId, text), ...(i === lines.length - 1 ? withIdeas(reach) : {}) },
+        { countUnread: true },
+      ),
+    );
+  if (!get().settings.realAi || !apiBase()) return send([scripted]);
+  // A reply already "typing…" in this chat keeps the indicator; this text does not take it over.
+  const owns = !get().typing[conversationId];
+  if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: true } }));
+  void accessToken()
+    .then((token) => serverFirstText(request, token))
+    .then((reply) => {
+      if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+      // The chat (or the whole account) was deleted meanwhile: nothing to write into.
+      if (!get().conversations.some((c) => c.id === conversationId)) return;
+      if (!reply) send([scripted]);
+      else if (!reply.skip) send(reply.lines);
+      else if (onSkip === 'scripted') send([scripted]);
+    });
 }
 
 /** The writers in closeness order who have a chat: who may brief or ask about the day. */
@@ -3661,7 +3714,22 @@ function sendDayAsk(set: Setter, get: Getter, at: Date): string | null {
   if (!from) return null;
   const conversationId = get().addFriend(from.id);
   const line = dayLine(temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:night:day:${from.id}`);
-  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(DAY_REACH) }, { countUnread: true });
+  const day = dayKey(at);
+  const onDay = (iso?: string) => !!iso && dayKey(new Date(iso)) === day;
+  const request: FirstTextRequest = {
+    kind: 'day',
+    input: {
+      character: from,
+      user: get().user,
+      relationship: relationships[from.id],
+      today: (get().messages[conversationId] ?? []).filter((m) => onDay(m.createdAt)),
+      threads: get().threads.filter((t) => t.characterId === from.id && (onDay(t.happensAt) || onDay(t.closedAt))),
+      now: at.toISOString(),
+      utcOffsetMin: -at.getTimezoneOffset(),
+    },
+  };
+  // The question is always asked: its answer is tonight's diary page.
+  writeFirst(set, get, conversationId, line, DAY_REACH, request, 'scripted');
   return from.id;
 }
 
@@ -3680,7 +3748,12 @@ function sendRecap(set: Setter, get: Getter, at: Date): string | null {
   const conversationId = get().addFriend(from.id);
   appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'week', week: recap.week, createdAt: new Date().toISOString() });
   const line = weekLine(recap.week, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:week:${from.id}`);
-  appendMessage(set, get, conversationId, { ...themText(conversationId, line), ...withIdeas(WEEK_REACH) }, { countUnread: true });
+  const request: FirstTextRequest = {
+    kind: 'week',
+    input: { character: from, user: get().user, relationship: relationships[from.id], week: recap.week, now: at.toISOString(), utcOffsetMin: -at.getTimezoneOffset() },
+  };
+  // The card with the numbers is already there, so a skip still gets the scripted line under it.
+  writeFirst(set, get, conversationId, line, WEEK_REACH, request, 'scripted');
   return from.id;
 }
 

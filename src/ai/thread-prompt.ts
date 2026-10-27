@@ -24,7 +24,10 @@ export const THREAD_RULES_LINES = [
   'REAL LIFE: you care about their life away from the screen (sleep, food, friends, outdoors). When they have been here a long time or it is late, you may suggest a break or sleep, in your own way, and accept what they choose.',
 ];
 
-const when = (iso?: string) => (iso ? new Date(iso).toISOString().slice(0, 16).replace('T', ' ') : 'no set time');
+/** A time as the user's clock shows it ("2026-10-28 07:30"); UTC without an offset. */
+export const wallClock = (iso?: string, utcOffsetMin = 0) =>
+  iso ? new Date(Date.parse(iso) + utcOffsetMin * 60_000).toISOString().slice(0, 16).replace('T', ' ') : 'no set time';
+const when = (iso?: string) => wallClock(iso);
 
 /** The friend's open threads for this reply (turn tier), so the model can follow, move or settle them. */
 export function threadLines(threads: readonly Thread[]) {
@@ -117,6 +120,8 @@ export interface TouchInput {
   /** The chat's last lines, oldest first: what was said since the thread began. */
   recent: readonly Message[];
   now: Date;
+  /** The user's clock, in minutes east of UTC: every time in the prompt is theirs (UTC when missing). */
+  utcOffsetMin?: number;
   replyLanguage?: string;
 }
 
@@ -126,6 +131,7 @@ export interface TouchInput {
  */
 export function touchParts(input: TouchInput): PromptPart[] {
   const { character, user, relationship, thread, touch, now } = input;
+  const at = (iso?: string) => wallClock(iso, input.utcOffsetMin);
   const recent = input.recent
     .filter((m) => m.kind === 'text' && m.text && !m.card)
     .slice(-12)
@@ -134,8 +140,8 @@ export function touchParts(input: TouchInput): PromptPart[] {
     ...characterParts(character, user, relationship, input.replyLanguage),
     part('recent', 'turn', recent.length ? ['THE CHAT LATELY:', ...recent] : []),
     part('touch', 'turn', [
-      `You are texting first, unprompted. It is ${when(now.toISOString())}.`,
-      `The thread: ${thread.about} (${when(thread.happensAt)}). They told you: "${thread.quote}".`,
+      `You are texting first, unprompted. It is ${at(now.toISOString())} where they are.`,
+      `The thread: ${thread.about} (${at(thread.happensAt)}). They told you: "${thread.quote}".`,
       `You planned this text (${PHASE_TEXT[touch.phase]}) because: ${touch.why}.`,
       `Write it in your own words and your temper (${temperOf(character, relationship?.label)}); bring back what you remember about them when it fits.`,
     ]),
