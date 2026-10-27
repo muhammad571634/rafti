@@ -181,7 +181,9 @@ export default function GroupChatScreen() {
       if (!character) return null;
       const run = runOf(data, data.length - 1 - index);
       return (
-        <>
+        // One View: an inverted list lays each cell out column-reverse, so a Fragment's
+        // children would draw bottom to top (the day chip under its line).
+        <View>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
           <View>
             {item.id === flash ? (
@@ -199,7 +201,7 @@ export default function GroupChatScreen() {
               onLongPress={openMenu}
             />
           </View>
-        </>
+        </View>
       );
     },
     [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu],

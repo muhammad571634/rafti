@@ -252,7 +252,9 @@ export default function ChatRoomScreen() {
         />
       );
       return (
-        <>
+        // One View: an inverted list lays each cell out column-reverse, so a Fragment's
+        // children would draw bottom to top (the day chip under its line).
+        <View>
           {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
           <View>
             {item.id === flash ? (
@@ -280,7 +282,7 @@ export default function ChatRoomScreen() {
               onEdit={(idea) => setIdeaDraft({ messageId: item.id, idea, at: Date.now() })}
             />
           ) : null}
-        </>
+        </View>
       );
     },
     [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds],
