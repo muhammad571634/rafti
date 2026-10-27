@@ -1,4 +1,5 @@
 import {
+  BACKSTORY_MAX,
   BIO_MAX,
   contentProblems,
   DEFINITION_MAX,
@@ -16,6 +17,10 @@ import {
   TAGLINE_MAX,
   OPENING_MAX,
   QUIRK_MAX,
+  HEIGHT_MAX,
+  HEIGHT_MIN,
+  THING_MAX,
+  THINGS_MAX,
   TRAITS,
   VOICES,
 } from '../lib/create-character';
@@ -99,6 +104,11 @@ export interface CharacterDraft {
   greetings: string[];
   definition: string;
   starters: string[];
+  /** For the chat's first card and the profile (D110); each may be empty. */
+  backstory: string;
+  likes: string[];
+  dislikes: string[];
+  heightCm?: number;
 }
 
 /** What the form holds when one field is written again. */
@@ -134,7 +144,19 @@ const CREATION_RULES = [
 ].join('\n');
 
 /** The fields a draft or a single-field request writes. */
-export type DraftField = 'tagline' | 'bio' | 'look' | 'greeting' | 'opening' | 'quirk' | 'greetings' | 'dialog' | 'starters';
+export type DraftField =
+  | 'tagline'
+  | 'bio'
+  | 'look'
+  | 'greeting'
+  | 'opening'
+  | 'quirk'
+  | 'greetings'
+  | 'dialog'
+  | 'starters'
+  | 'backstory'
+  | 'likes'
+  | 'dislikes';
 
 /** One rule per field, shared by the whole-draft and the single-field prompt. */
 const FIELD_RULES: Record<DraftField, string> = {
@@ -148,6 +170,9 @@ const FIELD_RULES: Record<DraftField, string> = {
   dialog:
     'dialog: 4-6 short lines of them talking with someone else (not the user), "from" is "char" or "other". It shows their voice, words and rhythm; no facts about the user.',
   starters: `starters: ${STARTERS_MAX} first messages the user could send them, max ${STARTER_MAX} characters each.`,
+  backstory: `backstory: where they come from and what they want now, 2-3 sentences, third person, max ${BACKSTORY_MAX} characters.`,
+  likes: `likes: ${THINGS_MAX} small, concrete things they love (a food, a place, a habit), a few words each, max ${THING_MAX} characters each.`,
+  dislikes: `dislikes: 2-3 small things they can't stand, harmless and a little funny, a few words each, max ${THING_MAX} characters each.`,
 };
 
 const FIELD_SHAPES: Record<DraftField, string> = {
@@ -160,6 +185,9 @@ const FIELD_SHAPES: Record<DraftField, string> = {
   greetings: '{"values":[]}',
   dialog: '{"dialog":[{"from":"char","text":""}]}',
   starters: '{"values":[]}',
+  backstory: '{"value":""}',
+  likes: '{"values":[]}',
+  dislikes: '{"values":[]}',
 };
 
 /** One call that writes the whole character from the idea. */
@@ -187,8 +215,12 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${FIELD_RULES.greetings}`,
     `- ${FIELD_RULES.dialog}`,
     `- ${FIELD_RULES.starters}`,
+    `- ${FIELD_RULES.backstory}`,
+    `- ${FIELD_RULES.likes}`,
+    `- ${FIELD_RULES.dislikes}`,
+    `- heightCm: their height in centimetres, ${HEIGHT_MIN}-${HEIGHT_MAX}, fitting the look.`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[]}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[]}',
   ].join('\n');
 }
 
@@ -205,6 +237,7 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
     character.tags?.length && `Personality: ${character.tags.join(', ')}`,
     character.greeting && `First message: ${character.greeting}`,
     character.quirk && `Quirk: ${character.quirk}`,
+    character.backstory && `Story: ${character.backstory}`,
   ].filter(Boolean);
   return [
     CREATION_RULES,
@@ -262,9 +295,29 @@ export function parseDraft(raw: string): DraftResult {
     greetings: lines(data.greetings, GREETING_MAX, MORE_GREETINGS_MAX).filter((g) => g !== greeting),
     definition: definitionFromDialog(data.dialog),
     starters: lines(data.starters, STARTER_MAX, STARTERS_MAX),
+    backstory: clip(text(data.backstory), BACKSTORY_MAX),
+    likes: lines(data.likes, THING_MAX, THINGS_MAX),
+    dislikes: lines(data.dislikes, THING_MAX, THINGS_MAX),
+    ...(typeof data.heightCm === 'number' && data.heightCm >= HEIGHT_MIN && data.heightCm <= HEIGHT_MAX
+      ? { heightCm: Math.round(data.heightCm) }
+      : {}),
   };
   const problems = contentProblems(
-    [draft.name, draft.tagline, draft.bio, draft.look, draft.greeting, draft.opening, draft.quirk, ...draft.greetings, draft.definition, ...draft.starters].join(' '),
+    [
+      draft.name,
+      draft.tagline,
+      draft.bio,
+      draft.look,
+      draft.greeting,
+      draft.opening,
+      draft.quirk,
+      ...draft.greetings,
+      draft.definition,
+      ...draft.starters,
+      draft.backstory,
+      ...draft.likes,
+      ...draft.dislikes,
+    ].join(' '),
   );
   return problems.length > 0 ? { ok: false, problem: problems[0] } : { ok: true, draft };
 }
@@ -298,6 +351,13 @@ export function parseField(field: DraftField, raw: string): string | string[] | 
       break;
     case 'starters':
       value = lines(data.values, STARTER_MAX, STARTERS_MAX);
+      break;
+    case 'backstory':
+      value = clip(text(data.value), BACKSTORY_MAX);
+      break;
+    case 'likes':
+    case 'dislikes':
+      value = lines(data.values, THING_MAX, THINGS_MAX);
       break;
     case 'dialog':
       value = definitionFromDialog(data.dialog);

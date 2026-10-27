@@ -249,10 +249,22 @@ describe('the mock provider', () => {
     const result = parseDraft(mockDraftReply({ idea: 'A quiet florist', sparks: ['calmUntilHurt'], language: 'English' }));
     assert.ok(result.ok);
     assert.ok(result.draft.definition.startsWith('{{random_user_1}}: '));
+    // The chat's first card (D110): a story, a few loves and can't stand, a height in range.
+    assert.ok(result.draft.backstory.length > 0);
+    assert.equal(result.draft.likes.length, 4);
+    assert.ok(result.draft.dislikes.length >= 2);
+    assert.ok(result.draft.heightCm && result.draft.heightCm >= 140 && result.draft.heightCm <= 220);
+  });
+
+  it('drops a height out of range and caps the loves', () => {
+    const result = parseDraft(JSON.stringify({ ...good, heightCm: 400, likes: ['a', 'b', 'c', 'd', 'e', 'a'] }));
+    assert.ok(result.ok);
+    assert.equal(result.draft.heightCm, undefined);
+    assert.deepEqual(result.draft.likes, ['a', 'b', 'c', 'd']);
   });
 
   it('writes every field again, a different take each time', () => {
-    const fields: DraftField[] = ['tagline', 'bio', 'look', 'greeting', 'greetings', 'dialog', 'starters'];
+    const fields: DraftField[] = ['tagline', 'bio', 'look', 'greeting', 'greetings', 'dialog', 'starters', 'backstory', 'likes', 'dislikes'];
     const context = { name: 'Mira', role: 'crush' as const, tags: ['teasing'], greeting: 'Hi.' };
     for (const field of fields) {
       const first = parseField(field, mockFieldReply(field, context, 1));

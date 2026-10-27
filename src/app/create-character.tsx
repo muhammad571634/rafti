@@ -48,6 +48,11 @@ import {
   LOOK_MAX,
   OPENING_MAX,
   QUIRK_MAX,
+  BACKSTORY_MAX,
+  heightOf,
+  thingsOf,
+  THING_MAX,
+  THINGS_MAX,
   MAX_SAMPLES,
   MAX_TRAITS,
   MORE_GREETINGS_MAX,
@@ -195,6 +200,11 @@ function CharacterForm({ editing }: { editing?: Character }) {
   /** The sample dialog with its slots (`{{char}}:`); the editor shows names instead. */
   const [definition, setDefinition] = useState(editing?.definition ?? '');
   const [starters, setStarters] = useState<string[]>(editing?.starters ?? []);
+  /** The chat's first card (D110): height in cm, their story, loves and can't stand as "a, b, c". */
+  const [height, setHeight] = useState(editing?.heightCm != null ? String(editing.heightCm) : '');
+  const [backstory, setBackstory] = useState(editing?.backstory ?? '');
+  const [likes, setLikes] = useState((editing?.likes ?? []).join(', '));
+  const [dislikes, setDislikes] = useState((editing?.dislikes ?? []).join(', '));
   const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>(hasTrainedVoice ? 'clone' : 'preset');
   const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
   const [samples, setSamples] = useState<Sample[]>([]);
@@ -228,7 +238,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     greeting,
     hasPhoto: !!imageUri,
     look,
-    more: [tagline, opening, quirk, ...greetings, definition, ...starters],
+    more: [tagline, opening, quirk, ...greetings, definition, ...starters, backstory, likes, dislikes],
     photoRights,
     voice,
     voiceConsent,
@@ -258,6 +268,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
     setGreetings(draft.greetings);
     setDefinition(draft.definition);
     setStarters(draft.starters);
+    setHeight(draft.heightCm != null ? String(draft.heightCm) : '');
+    setBackstory(draft.backstory);
+    setLikes(draft.likes.join(', '));
+    setDislikes(draft.dislikes.join(', '));
   };
 
   const writeDraft = async () => {
@@ -289,7 +303,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     asked.current[field] = attempt;
     const value = await requestField(
       field,
-      { name, tagline, bio, look, greeting, quirk, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
+      { name, tagline, bio, look, greeting, quirk, backstory, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
       language,
       attempt,
     );
@@ -306,6 +320,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
     else if (field === 'quirk') setQuirk(text);
     else if (field === 'greetings') setGreetings(list);
     else if (field === 'starters') setStarters(list);
+    else if (field === 'backstory') setBackstory(text);
+    else if (field === 'likes') setLikes(list.join(', '));
+    else if (field === 'dislikes') setDislikes(list.join(', '));
     else setDefinition(text);
   };
 
@@ -377,6 +394,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
       greetings: cleanList(greetings),
       definition: definition.trim() || undefined,
       starters: cleanList(starters),
+      heightCm: heightOf(height),
+      backstory: backstory.trim() || undefined,
+      likes: thingsOf(likes),
+      dislikes: thingsOf(dislikes),
       tags: [...traits, ...otherTags],
       age: Number(age),
       speakingStyle: style,
@@ -398,6 +419,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
       next.opening !== character.opening ||
       !same(next.greetings, character.greetings) ||
       !same(next.starters, character.starters) ||
+      next.backstory !== character.backstory ||
+      !same(next.likes, character.likes) ||
+      !same(next.dislikes, character.dislikes) ||
       next.avatarUri !== character.avatarUri;
     updateCharacter(character.id, { ...next, review: reviewAfterEdit(character, isPublic, seenByOthers) });
     setCreating(false);
@@ -541,6 +565,19 @@ function CharacterForm({ editing }: { editing?: Character }) {
                     accessibilityLabel={t('createCharacter.age')}
                   />
                 </View>
+                <View style={[styles.formRow, styles.line]}>
+                  <Txt style={styles.formLabel}>{t('createCharacter.height')}</Txt>
+                  <TextInput
+                    value={height}
+                    onChangeText={(v) => setHeight(v.replace(/[^0-9]/g, ''))}
+                    placeholder={t('createCharacter.heightPlaceholder')}
+                    placeholderTextColor={colors.textFaint}
+                    keyboardType="number-pad"
+                    style={styles.formInput}
+                    maxLength={3}
+                    accessibilityLabel={t('createCharacter.height')}
+                  />
+                </View>
                 <View style={styles.formRow}>
                   <Txt style={styles.formLabel}>{t('createCharacter.gender')}</Txt>
                   <View style={styles.genders}>
@@ -591,6 +628,15 @@ function CharacterForm({ editing }: { editing?: Character }) {
                   action={<RewriteButton label={rewriteLabel(t('createCharacter.persona'))} busy={busy === 'bio'} onPress={() => void rewrite('bio')} />}
                 />
                 <Area
+                  label={t('createCharacter.backstory')}
+                  value={backstory}
+                  onChange={setBackstory}
+                  placeholder={t('createCharacter.backstoryPlaceholder')}
+                  max={BACKSTORY_MAX}
+                  line
+                  action={<RewriteButton label={rewriteLabel(t('createCharacter.backstory'))} busy={busy === 'backstory'} onPress={() => void rewrite('backstory')} />}
+                />
+                <Area
                   label={t('createCharacter.look')}
                   value={look}
                   onChange={setLook}
@@ -607,6 +653,24 @@ function CharacterForm({ editing }: { editing?: Character }) {
                   max={QUIRK_MAX}
                   line
                   action={<RewriteButton label={rewriteLabel(t('createCharacter.quirk'))} busy={busy === 'quirk'} onPress={() => void rewrite('quirk')} />}
+                />
+                <Area
+                  label={t('intro.loves')}
+                  value={likes}
+                  onChange={setLikes}
+                  placeholder={t('createCharacter.likesPlaceholder')}
+                  max={THINGS_MAX * (THING_MAX + 2)}
+                  line
+                  action={<RewriteButton label={rewriteLabel(t('intro.loves'))} busy={busy === 'likes'} onPress={() => void rewrite('likes')} />}
+                />
+                <Area
+                  label={t('intro.cantStand')}
+                  value={dislikes}
+                  onChange={setDislikes}
+                  placeholder={t('createCharacter.dislikesPlaceholder')}
+                  max={THINGS_MAX * (THING_MAX + 2)}
+                  line
+                  action={<RewriteButton label={rewriteLabel(t('intro.cantStand'))} busy={busy === 'dislikes'} onPress={() => void rewrite('dislikes')} />}
                 />
                 <Area
                   label={t('createCharacter.opening')}

@@ -161,6 +161,22 @@ const STARTERS: Record<CharacterRole, readonly string[]> = {
   family: ["Hi! How's everyone?", 'Can I come over later?', 'I have news. Sit down.'],
 };
 
+/** Stand-ins for the chat's first card (D110): a story, loves and can't stand. */
+const BACKSTORIES = [
+  'Moved to the city a few years ago with one suitcase and a plan that changed twice. Works long hours, keeps a small circle, and is ready to let one more person in.',
+  'Grew up in a loud family by the sea and still cooks for six out of habit. Left home to chase a quiet dream, and now wants someone to share the noise with again.',
+  'Spent years being the reliable one for everybody else. Lately has been learning to say what they want, starting with small things, like a slow evening and good company.',
+  'Changed careers at an age people said was too late, and has not regretted it once. Curious about everything, and especially about you.',
+];
+const LIKES = ['rainy mornings', 'street food', 'old films', 'late-night walks', 'strong coffee', 'vinyl records', 'sea air', 'bookshops'];
+const DISLIKES = ['cold coffee', 'being rushed', 'loud alarms', 'small talk', 'spoilers', 'soggy chips'];
+
+/** A few things from a pool, picked by the seed, in a steady order. */
+const some = (pool: readonly string[], seed: string, count: number) => {
+  const from = hashSeed(seed) % pool.length;
+  return [...pool.slice(from), ...pool].slice(0, count);
+};
+
 const MALE = /\b(he|him|his|guy|man|boyfriend|husband|prince|king|lord|sir)\b/i;
 const FEMALE = /\b(she|her|hers|woman|lady|girlfriend|wife|princess|queen)\b/i;
 const AGE = /\b(1[89]|[2-9]\d)\s*(?:-?\s*years?(?:\s*old)?|yo|y\/o)\b/i;
@@ -200,6 +216,10 @@ export function mockDraft(input: DraftInput): CharacterDraft {
       .map((voice) => voice.greeting),
     definition: voices.flatMap((voice) => [`{{random_user_1}}: ${voice.other}`, `{{char}}: ${voice.reply}`]).join('\n'),
     starters: [...STARTERS[role]],
+    backstory: pickSeeded(BACKSTORIES, `${seed}|story`),
+    likes: some(LIKES, `${seed}|likes`, 4),
+    dislikes: some(DISLIKES, `${seed}|dislikes`, 3),
+    heightCm: (gender === 'male' ? 175 : 160) + (hashSeed(`${seed}|height`) % 14),
   };
 }
 
@@ -281,5 +301,11 @@ export function mockFieldReply(field: DraftField, character: FieldContext, attem
       const from = (attempt * 3) % pool.length;
       return JSON.stringify({ values: [...pool.slice(from), ...pool].slice(0, 3) });
     }
+    case 'backstory':
+      return JSON.stringify({ value: at(BACKSTORIES, (story) => story === character.backstory) });
+    case 'likes':
+      return JSON.stringify({ values: some(LIKES, `${name}|${attempt}`, 4) });
+    case 'dislikes':
+      return JSON.stringify({ values: some(DISLIKES, `${name}|${attempt}`, 3) });
   }
 }

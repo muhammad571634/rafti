@@ -1080,11 +1080,20 @@ export const useAppStore = create<AppState>()(
 
       clearChat: (conversationId) => {
         cancelReplies(set, conversationId);
+        // A cleared chat starts over, as Character.AI's new chat does: one of their openings
+        // (likely another one) and, under it, their starters.
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const character = get().characters.find((c) => c.id === conversation?.characterId);
+        const greeting = character ? openingFor(get(), character, `${conversationId}:${Date.now()}`) : '';
+        const now = new Date().toISOString();
         set((s) => ({
           replyVersions: omitKey(s.replyVersions, conversationId),
-          messages: { ...s.messages, [conversationId]: [] },
+          messages: {
+            ...s.messages,
+            [conversationId]: greeting ? [{ id: uid('m'), conversationId, author: 'them', kind: 'text', text: greeting, createdAt: now }] : [],
+          },
           conversations: s.conversations.map((c) =>
-            c.id === conversationId ? { ...c, lastMessagePreview: '', unreadCount: 0 } : c,
+            c.id === conversationId ? { ...c, lastMessagePreview: plainText(greeting), lastMessageAt: greeting ? now : c.lastMessageAt, unreadCount: 0 } : c,
           ),
         }));
       },
@@ -1574,12 +1583,7 @@ export const useAppStore = create<AppState>()(
 
         const conversationId = uid('conv');
         const now = new Date().toISOString();
-        // One of their openings, with the name of the user's default persona where the creator wrote {{user}};
-        // the main greeting comes after their opening action unless the chat is plain texting.
-        const style = replyPrefs(get().relationships[characterId]).style;
-        const greeting = character
-          ? fillNames(withOpening(character, pickOpening(character, conversationId), style), { char: character.name, user: defaultPersona(get()).name })
-          : '';
+        const greeting = character ? openingFor(get(), character, conversationId) : '';
 
         set((s) => ({
           conversations: [
@@ -4746,6 +4750,16 @@ function cancelReplies(set: Setter, conversationId: string) {
   replyEpoch.set(conversationId, (replyEpoch.get(conversationId) ?? 0) + 1);
   replyingUntil.delete(conversationId);
   set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+}
+
+/**
+ * A chat's first line (a new friend, a cleared chat): one of their openings picked by `seed`, with
+ * the name of the user's default persona where the creator wrote {{user}}; the main greeting comes
+ * after their opening action unless the chat is plain texting.
+ */
+function openingFor(state: AppState, character: Character, seed: string) {
+  const style = replyPrefs(state.relationships[character.id]).style;
+  return fillNames(withOpening(character, pickOpening(character, seed), style), { char: character.name, user: defaultPersona(state).name });
 }
 
 /** The reply each chat could not get, kept for "Try again" (`retryReply`). */

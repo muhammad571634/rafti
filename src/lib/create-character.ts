@@ -25,6 +25,24 @@ export const DEFINITION_MAX = 3200;
 export const MORE_GREETINGS_MAX = 3;
 export const STARTERS_MAX = 3;
 export const STARTER_MAX = 100;
+/** Their story for the chat's first card and the profile (D110). */
+export const BACKSTORY_MAX = 400;
+/** Loves and can't stand: a few short things each. */
+export const THINGS_MAX = 4;
+export const THING_MAX = 40;
+/** A height the form keeps; anything outside is left out. */
+export const HEIGHT_MIN = 140;
+export const HEIGHT_MAX = 220;
+
+/** Loves or can't stand as the form holds them ("tea, rain, jazz"): trimmed, no repeats, capped. */
+export const thingsOf = (text: string) =>
+  [...new Set(text.split(/[,\n]/).map((s) => s.trim().slice(0, THING_MAX)).filter(Boolean))].slice(0, THINGS_MAX);
+
+/** A height in centimetres from the form, or undefined when it is empty or out of range. */
+export function heightOf(text: string) {
+  const cm = Number(text);
+  return Number.isInteger(cm) && cm >= HEIGHT_MIN && cm <= HEIGHT_MAX ? cm : undefined;
+}
 
 export const TRAITS = [
   'sweet',
