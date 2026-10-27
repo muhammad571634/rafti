@@ -42,11 +42,15 @@ export function spendQuickCreate(use: QuickCreateUse | undefined, today: string,
  * A picture drawn from their looks when a character is created without a photo, the costly part
  * (≈ $0.08 a picture; backend-plan §12.18). Not Photo Booth, which has its own `PLANS.photos`.
  * 15 shells without a plan (≈ $0.17–0.30 to the user). A plan draws some free every 30 days
- * (owner, 2026-10-27: Basic 10, Pro 20; the 3-day trial 3, like its Photo Booth pictures), then 15
- * shells each. Charged only when a picture came back.
+ * (owner, 2026-10-27: Basic 10, Pro 20; the 3-day trial 3, one a day, so a trial account cannot draw
+ * all of them at once), then 15 shells each. Charged only when a picture came back.
  */
 export const PORTRAIT_SHELLS = 15;
 export const PLAN_PORTRAITS = { basic: 10, pro: 20, trial: 3 } as const;
+
+/** On the trial, a free portrait already drawn today (the user's local day) waits for tomorrow. */
+const drewToday = (sub: Subscription, now: number) =>
+  !!sub.usage.lastPortraitAt && new Date(sub.usage.lastPortraitAt).toDateString() === new Date(now).toDateString();
 
 const portraitsUsed = (sub: Subscription, now: number) =>
   Date.parse(sub.usage.periodStart) === periodOf(sub, now).start ? (sub.usage.portraits ?? 0) : 0;
@@ -62,7 +66,9 @@ export function planPortraits(sub: Subscription | undefined, now: number) {
 /** Free pictures left this period: the plan's, none without one. */
 export function portraitsLeft(sub: Subscription | undefined, now: number) {
   const live = rollSubscription(sub, now);
-  return live ? Math.max(0, planPortraits(live, now) - portraitsUsed(live, now)) : 0;
+  if (!live) return 0;
+  if (live.status === 'trial' && drewToday(live, now)) return 0;
+  return Math.max(0, planPortraits(live, now) - portraitsUsed(live, now));
 }
 
 /** What the next picture costs in shells: 0 while the plan has free ones. */
@@ -75,5 +81,5 @@ export function consumePortrait(sub: Subscription | undefined, now: number): Sub
   const { start } = periodOf(live, now);
   const usage =
     Date.parse(live.usage.periodStart) === start ? live.usage : { periodStart: new Date(start).toISOString(), callSeconds: 0, voiceSeconds: 0 };
-  return { ...live, usage: { ...usage, portraits: (usage.portraits ?? 0) + 1 } };
+  return { ...live, usage: { ...usage, portraits: (usage.portraits ?? 0) + 1, lastPortraitAt: new Date(now).toISOString() } };
 }

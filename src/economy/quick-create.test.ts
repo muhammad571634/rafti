@@ -34,6 +34,29 @@ describe('drawn portraits', () => {
     assert.equal(portraitsLeft(sub, now + 31 * 86_400_000), PLAN_PORTRAITS.basic);
   });
 
+  it('give the trial one a day: its three spread over its three days', () => {
+    let sub = startSubscription('proAnnual', now, true);
+    sub = consumePortrait(sub, now)!;
+    assert.equal(portraitsLeft(sub, now), 0);
+    assert.equal(portraitPrice(sub, now), PORTRAIT_SHELLS);
+    assert.equal(consumePortrait(sub, now), null);
+    // The next day one more is free.
+    const tomorrow = now + 86_400_000;
+    assert.equal(portraitsLeft(sub, tomorrow), PLAN_PORTRAITS.trial - 1);
+    sub = consumePortrait(sub, tomorrow)!;
+    const lastDay = tomorrow + 86_400_000;
+    sub = consumePortrait(sub, lastDay)!;
+    assert.equal(portraitsLeft(sub, lastDay), 0);
+    // Once the trial turns into the paid plan, Pro's own allowance starts.
+    assert.equal(portraitsLeft(sub, now + 4 * 86_400_000), PLAN_PORTRAITS.pro);
+  });
+
+  it('let a paid plan draw several the same day', () => {
+    let sub = startSubscription('pro', now);
+    sub = consumePortrait(sub, now)!;
+    assert.equal(portraitsLeft(sub, now), PLAN_PORTRAITS.pro - 1);
+  });
+
   it('give Pro twenty a period and the trial three', () => {
     assert.equal(portraitsLeft(startSubscription('pro', now), now), PLAN_PORTRAITS.pro);
     assert.equal(portraitsLeft(startSubscription('proAnnual', now), now), PLAN_PORTRAITS.pro);

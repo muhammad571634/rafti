@@ -4,8 +4,8 @@
 
 Owner's call after comparing with Character.AI: the create form stays free for everyone; the AI parts follow
 the plan. Quick create drafts a day: no plan 1, Basic 5, Pro and its trial 10. Drawn character pictures (the
-avatar drawn in Create when there is no photo; not Photo Booth) free every 30 days: Basic 10, Pro 20, trial 3,
-else 15 shells. At the limit the Write button becomes "Get more with a plan" (opens the plans). The Store's
+avatar drawn in Create when there is no photo; not Photo Booth) free every 30 days: Basic 10, Pro 20, trial 3 at
+one a day (owner: a trial account must not draw all three at once), else 15 shells. At the limit the Write button becomes "Get more with a plan" (opens the plans). The Store's
 Basic / Pro table has two new rows. Unit economics: backend-plan §12.18. Note for agents: Metro runs from
 `C:\Users\joray\BIMOBIMO`; after pushing local-work, fast-forward that checkout or the phone shows old code.
 **Phone checks (Expo Go):** (1) without a plan, Create → Quick create: "1 of 1 left today"; write one, then the
