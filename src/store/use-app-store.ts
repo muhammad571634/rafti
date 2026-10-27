@@ -105,6 +105,7 @@ import {
   consumePortrait,
   PORTRAIT_SHELLS,
   quickCreatesLeft,
+  quickCreatesPerDay,
   spendQuickCreate,
   type QuickCreateUse,
 } from '@/economy/quick-create';
@@ -1858,7 +1859,7 @@ export const useAppStore = create<AppState>()(
       setPushLog: (pushLog) => set((s) => ({ daily: { ...s.daily, pushLog } })),
 
       takeQuickCreate: () => {
-        const next = spendQuickCreate(get().quickCreates, todayKey());
+        const next = spendQuickCreate(get().quickCreates, todayKey(), quickCreatesPerDay(get().wallet.subscription, Date.now()));
         if (!next) return false;
         set({ quickCreates: next });
         return true;
@@ -3358,8 +3359,9 @@ export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscrip
 export const memoryAccess = (memories: MemoryItem[], wallet: Wallet, characterId: string, now = Date.now()) =>
   splitMemories(memories, characterId, hasFullMemory(wallet.subscription, now));
 
-/** Quick creates still free today. */
-export const quickCreatesToday = (use: QuickCreateUse | undefined, today = todayKey()) => quickCreatesLeft(use, today);
+/** Quick creates left today on the user's plan. */
+export const quickCreatesToday = (use: QuickCreateUse | undefined, wallet: Wallet, today = todayKey()) =>
+  quickCreatesLeft(use, today, quickCreatesPerDay(wallet.subscription, Date.now()));
 
 /** The plan includes live calls and voice replies: Pro or the trial, not Basic. */
 export const callsIncluded = (wallet: Wallet, now = Date.now()) => canRing(wallet.subscription, now);

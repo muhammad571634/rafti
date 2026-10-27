@@ -1106,7 +1106,8 @@
       "sparks": "Personality · {{count}}/{{max}}",
       "shuffle": "Shuffle",
       "write": "Write them",
-      "left": "{{count}} of {{max}} free today",
+      "left": "{{count}} of {{max}} left today",
+      "more": "Get more with a plan",
       "limit": "{{max}} of {{max}} used today · new ones tomorrow",
       "manual": "Fill in myself",
       "writing": "Writing them…",
@@ -2111,6 +2112,8 @@
       "calls": "Voice calls",
       "voice": "Voice replies",
       "photos": "Photo Booth",
+      "quickCreate": "Quick creates a day",
+      "portraits": "Character pictures",
       "bedtime": "Bedtime whispers",
       "characters": "New characters first",
       "memory": "Remembers everything"

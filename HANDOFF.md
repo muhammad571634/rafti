@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z1. Quick create and character pictures by plan (2026-10-27, D111)
+
+Owner's call after comparing with Character.AI: the create form stays free for everyone; the AI parts follow
+the plan. Quick create drafts a day: no plan 1, Basic 5, Pro and its trial 10. Drawn character pictures (the
+avatar drawn in Create when there is no photo; not Photo Booth) free every 30 days: Basic 10, Pro 20, trial 3,
+else 15 shells. At the limit the Write button becomes "Get more with a plan" (opens the plans). The Store's
+Basic / Pro table has two new rows. Unit economics: backend-plan §12.18. Note for agents: Metro runs from
+`C:\Users\joray\BIMOBIMO`; after pushing local-work, fast-forward that checkout or the phone shows old code.
+**Phone checks (Expo Go):** (1) without a plan, Create → Quick create: "1 of 1 left today"; write one, then the
+button says Get more with a plan and opens the plans; (2) Store → plans: rows Quick creates a day 5 / 10 and
+Character pictures 10 / 20; (3) dark mode.
+
 ### 0z0. Characters 2.0 done: all 40 of the cast have deep profiles (2026-10-27)
 
 D110 is done (flows.md D110). `src/mock/character-profiles.ts` now holds all 40 official characters

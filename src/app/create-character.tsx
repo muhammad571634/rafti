@@ -37,7 +37,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
-import { FREE_QUICK_CREATES_PER_DAY, portraitPrice } from '@/economy/quick-create';
+import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
 import { haptic } from '@/lib/haptics';
 import {
   BIO_MAX,
@@ -150,10 +150,13 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const spendShells = useAppStore((s) => s.spendShells);
   const shells = useAppStore((s) => s.wallet.shells);
   const locale = useAppStore((s) => s.user.locale);
-  const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates));
+  const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates, s.wallet));
   const takeQuickCreate = useAppStore((s) => s.takeQuickCreate);
   const payForPortrait = useAppStore((s) => s.payForPortrait);
   const subscription = useAppStore((s) => s.wallet.subscription);
+  const quickMax = quickCreatesPerDay(subscription, Date.now());
+  // Today's drafts are used up but a bigger plan writes more: the button offers one.
+  const quickUpsell = quickLeft === 0 && createTier(subscription, Date.now()) !== 'pro';
   const { scrolled, onScroll } = useScrolledPast(40);
   /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
   const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -277,7 +280,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const writeDraft = async () => {
     const ideaProblems = checkIdea(idea, sparks);
     if (ideaProblems.length > 0) return setError(t(`createCharacter.quick.problems.${ideaProblems[0]}`));
-    if (quickLeft === 0) return setError(t('createCharacter.quick.limit', { max: FREE_QUICK_CREATES_PER_DAY }));
+    if (quickLeft === 0) return setError(t('createCharacter.quick.limit', { max: quickMax }));
     setError(null);
     setMode('writing');
     const result = await requestDraft({ idea, sparks, role: ideaRole, language });
@@ -828,15 +831,15 @@ function CharacterForm({ editing }: { editing?: Character }) {
         {/* The Store's bar: the one button, then one line on what happens next. */}
         {mode === 'idea' ? (
           <StoreBuyBar
-            label={t('createCharacter.quick.write')}
+            label={quickUpsell ? t('createCharacter.quick.more') : t('createCharacter.quick.write')}
             left={<Ionicons name="sparkles" size={18} color={colors.textOnPrimary} />}
-            disabled={!idea.trim() || quickLeft === 0}
+            disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
             caption={
               quickLeft === 0
-                ? t('createCharacter.quick.limit', { max: FREE_QUICK_CREATES_PER_DAY })
-                : t('createCharacter.quick.left', { count: quickLeft, max: FREE_QUICK_CREATES_PER_DAY })
+                ? t('createCharacter.quick.limit', { max: quickMax })
+                : t('createCharacter.quick.left', { count: quickLeft, max: quickMax })
             }
-            onPress={() => void writeDraft()}>
+            onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}>
             {error ? <Txt style={styles.error}>{error}</Txt> : null}
           </StoreBuyBar>
         ) : mode === 'form' ? (

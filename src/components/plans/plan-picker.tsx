@@ -7,6 +7,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
+import { PLAN_PORTRAITS, QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
@@ -129,6 +130,20 @@ export function PlanPicker({
       glyph: MODULE_GLYPH.photo,
       basic: basic.photos > 0 ? String(basic.photos) : false,
       pro: String(pro.photos),
+    },
+    {
+      key: 'quickCreate',
+      fill: systemColors.indigo,
+      glyph: { ios: 'wand.and.stars', icon: 'color-wand' },
+      basic: String(QUICK_CREATES_PER_DAY.basic),
+      pro: String(QUICK_CREATES_PER_DAY.pro),
+    },
+    {
+      key: 'portraits',
+      fill: systemColors.teal,
+      glyph: { ios: 'person.crop.square.fill', icon: 'person-circle' },
+      basic: String(PLAN_PORTRAITS.basic),
+      pro: String(PLAN_PORTRAITS.pro),
     },
     { key: 'bedtime', fill: moduleFills.sleep, glyph: MODULE_GLYPH.sleep, basic: false, pro: true },
     { key: 'characters', fill: systemColors.purple, glyph: { ios: 'sparkles', icon: 'sparkles' }, basic: false, pro: true },
