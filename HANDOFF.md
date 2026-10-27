@@ -8,9 +8,12 @@ app works as before. The laptop server runs with `DEV_GRANTS=1` so mock purchase
 still pay. Agents apply migrations with the owner's access token (Windows user env var
 `SUPABASE_ACCESS_TOKEN`, Database read-write): `npx supabase db push --linked --workdir ..` from
 `server/`. The cloud suite: `SUPABASE_E2E=1 npm test` in `server/` with the Supabase env vars set.
-Applied to the cloud on 2026-10-27 and the cloud suite passed (32/32). The token has no Advisors (read),
-so `supabase db advisors` gets 403; the lint was checked by SQL instead: every public table has RLS, every
-wallet function pins `search_path` and only `service_role` may run it.
+Applied to the cloud on 2026-10-27 and the cloud suite passed (32/32). The owner's token also has
+Advisors, Logs and Migrations, not Auth Config (read anonymous sign-ins from `/auth/v1/settings`).
+Advisors: the uncovered foreign keys got indexes (`b1_fk_indexes`). What remains is by design: 12
+"anonymous users can access" (accounts start anonymous; every policy is own rows or the official cast),
+`usage_events` with no policy (server only), the leaked-password check off (no passwords), and "unused
+index" until there is traffic.
 **Phone checks:** Profile → Server wallet on → the balance turns into the server's; send a message
 (−1), spin the wheel (the server draws), reopen the app (check-in).
 
