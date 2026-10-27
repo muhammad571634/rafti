@@ -838,6 +838,12 @@ const LEGACY_CATEGORY: Record<string, Character['category']> = {
   game: 'fantasy',
 };
 
+/** Each id once, the first copy kept: lists merged from saved and sample data must not repeat. */
+function uniqueById<T extends { id: string }>(list: T[]): T[] {
+  const seen = new Set<string>();
+  return list.filter((item) => !seen.has(item.id) && !!seen.add(item.id));
+}
+
 /**
  * v3: swap the seed cast for the new one. Seed-owned data is replaced by the new
  * seed; characters the user created (and everything tied to them) are kept, and
@@ -2536,13 +2542,14 @@ export const useAppStore = create<AppState>()(
           conversations: [...s.conversations, ...demo.conversations.filter((c) => !s.conversations.some((x) => x.characterId === c.characterId))],
           messages: { ...demo.messages, ...s.messages },
           relationships: { ...demo.relationships, ...s.relationships },
-          memories: withoutCrisisMemories([...s.memories, ...demo.memories]),
-          diary: [...s.diary, ...demo.diary],
-          characterDiary: [...s.characterDiary, ...demo.characterDiary],
-          notes: [...s.notes, ...demo.notes],
-          calls: [...s.calls, ...demo.calls],
-          moments: [...s.moments, ...demo.moments],
-          schedules: [...s.schedules, ...demo.schedules],
+          // Loading the sample again adds nothing twice (a repeat once showed every moment four times).
+          memories: withoutCrisisMemories(uniqueById([...s.memories, ...demo.memories])),
+          diary: uniqueById([...s.diary, ...demo.diary]),
+          characterDiary: uniqueById([...s.characterDiary, ...demo.characterDiary]),
+          notes: uniqueById([...s.notes, ...demo.notes]),
+          calls: uniqueById([...s.calls, ...demo.calls]),
+          moments: uniqueById([...s.moments, ...demo.moments]),
+          schedules: uniqueById([...s.schedules, ...demo.schedules]),
         }));
       },
 
@@ -3192,12 +3199,21 @@ export const useAppStore = create<AppState>()(
           settings: { ...current.settings, ...saved.settings },
           characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
           // Crisis text saved as a memory before the guard existed is dropped on load.
-          memories: withoutCrisisMemories(saved.memories ?? current.memories),
+          // Repeats left by an older sample loader are dropped too (`uniqueById`).
+          memories: withoutCrisisMemories(uniqueById(saved.memories ?? current.memories)),
           // So are crisis "plans" from older builds: no reminder, follow-up or Us line.
-          schedules: withoutCrisisPlans(saved.schedules ?? current.schedules),
-          moments: withoutCrisisPlanMoments(saved.moments ?? current.moments),
+          schedules: withoutCrisisPlans(uniqueById(saved.schedules ?? current.schedules)),
+          moments: withoutCrisisPlanMoments(uniqueById(saved.moments ?? current.moments)),
           // Pages are saved with the rest, sample pages included when they were loaded.
-          characterDiary: saved.characterDiary ?? current.characterDiary,
+          characterDiary: uniqueById(saved.characterDiary ?? current.characterDiary),
+          diary: uniqueById(saved.diary ?? current.diary),
+          notes: uniqueById(saved.notes ?? current.notes),
+          calls: uniqueById(saved.calls ?? current.calls),
+          // Previews follow the current rule (`previewFor`) even when saved by an older build.
+          conversations: (saved.conversations ?? current.conversations).map((c) => {
+            const last = [...(saved.messages?.[c.id] ?? [])].reverse().find((m) => m.kind !== 'system');
+            return last ? { ...c, lastMessagePreview: previewFor(last) } : c;
+          }),
         };
       },
       partialize: (s): Pick<AppState, PersistedKeys> => ({
@@ -3437,8 +3453,9 @@ export function previewFor(message: Message) {
     case 'call':
       return message.missed ? '\u{1F4DE} Missed call' : '\u{1F4DE} Voice call';
     default:
-      // *Narration* reads as plain words in a one-line preview.
-      return plainText(message.text ?? '');
+      // What they said, without the *narration* that would run into it ("grins Okay, that…");
+      // a line that is only narration shows it as plain words.
+      return speechOnly(message.text ?? '') || plainText(message.text ?? '');
   }
 }
 

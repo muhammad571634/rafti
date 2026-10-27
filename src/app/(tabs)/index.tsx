@@ -131,7 +131,8 @@ export default function HomeScreen() {
       const character = charactersById.get(c.characterId);
       return character ? [{ conversation: c, character }] : [];
     });
-  const unreadCount = unread.reduce((sum, f) => sum + f.conversation.unreadCount, 0);
+  // Chats waiting, not messages: the same count the names show and Chats' Unread filter carries.
+  const unreadCount = unread.length;
   const names = unread.slice(0, 3).map((f) => shortName(displayName(f.character, relationships[f.character.id])));
   const namesLine =
     names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${t('home.and')} ${names[names.length - 1]}`;
@@ -233,7 +234,12 @@ export default function HomeScreen() {
             scaleTo={0.98}
             accessibilityRole="button"
             accessibilityLabel={`${t('home.waiting')}, ${namesLine}, ${unreadCount}`}
-            onPress={() => router.navigate('/(tabs)/chat')}
+            // One friend waiting opens their chat; several open Chats on Unread, where they all are.
+            onPress={() =>
+              unread.length === 1
+                ? router.push(`/chat/${unread[0].conversation.id}`)
+                : router.navigate({ pathname: '/(tabs)/chat', params: { filter: 'unread' } })
+            }
             style={[styles.card, styles.waiting]}>
             <View style={styles.faces}>
               {unread.slice(0, 3).map((f, i) => (

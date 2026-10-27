@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
@@ -113,6 +113,14 @@ export default function ChatListScreen() {
   const [editing, setEditing] = useState(false);
   const [starting, setStarting] = useState(false);
   const [filter, setFilter] = useState<Filter>('all');
+  // Opened on a filter (Today's "Waiting for you" asks for Unread): apply it once, then forget it.
+  const { filter: asked } = useLocalSearchParams<{ filter?: string }>();
+  useEffect(() => {
+    if (!asked || !(FILTERS as string[]).includes(asked)) return;
+    setFilter(asked as Filter);
+    setSearching(false);
+    router.setParams({ filter: undefined });
+  }, [asked, router]);
   /** The chat a long press opened the menu for. */
   const [held, setHeld] = useState<ChatItem | null>(null);
   const blurTarget = useRef<ViewInstance>(null);

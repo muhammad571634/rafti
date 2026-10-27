@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   head: { height: 62, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 10 },
   name: { flex: 1, fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.3, color: '#FFFFFF' },
   headField: { alignItems: 'flex-end', gap: 1 },
-  label: { fontSize: 10, lineHeight: 13, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' },
+  label: { fontSize: 11, lineHeight: 13, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' },
   // A grey wash in place of CSS saturate(): the ticket reads as not yet open.
   mute: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: 'rgba(110,110,118,0.55)' },
   headValueRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
