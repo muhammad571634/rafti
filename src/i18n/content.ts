@@ -6,6 +6,7 @@ import es from './content/es.json';
 import fr from './content/fr.json';
 import it from './content/it.json';
 import ja from './content/ja.json';
+import ko from './content/ko.json';
 import ptBR from './content/pt-BR.json';
 import { overlay } from './overlay';
 
@@ -22,6 +23,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   fr,
   it,
   ja,
+  ko,
   'pt-BR': ptBR,
 };
 
