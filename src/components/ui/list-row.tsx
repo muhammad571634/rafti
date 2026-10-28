@@ -71,7 +71,7 @@ export function ListRow({
           )}
           {titleAccessory}
           {meta ? (
-            <Txt variant="caption" color={colors.textMuted}>
+            <Txt variant="caption" color={colors.textMuted} lines={1}>
               {meta}
             </Txt>
           ) : null}

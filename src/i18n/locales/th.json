@@ -1500,6 +1500,7 @@
   "profile": {
     "title": "โปรไฟล์",
     "language": "ภาษา",
+    "languageAuto": "อัตโนมัติ",
     "sectionDev": "นักพัฒนา",
     "testPushes": "ทดสอบการแจ้งเตือน",
     "testPushesSent": "กำลังส่ง {{count}} รายการ",

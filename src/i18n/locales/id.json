@@ -1500,6 +1500,7 @@
   "profile": {
     "title": "Profil",
     "language": "Bahasa",
+    "languageAuto": "Otomatis",
     "sectionDev": "Pengembang",
     "testPushes": "Uji notifikasi push",
     "testPushesSent": "{{count}} sedang dikirim",

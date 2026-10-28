@@ -1500,6 +1500,7 @@
   "profile": {
     "title": "個人檔案",
     "language": "語言",
+    "languageAuto": "自動",
     "sectionDev": "開發者選項",
     "testPushes": "推播通知測試",
     "testPushesSent": "{{count}}則推播正在途中",

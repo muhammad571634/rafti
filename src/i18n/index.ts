@@ -93,17 +93,54 @@ export function deviceLocale(): string {
   return FALLBACK_LOCALE;
 }
 
+export function phoneLanguageName(): string {
+  const tag = phoneLanguage();
+  const base = tag.split('-')[0].toLowerCase();
+  const dev = deviceLocale();
+  const match = SUPPORTED_LOCALES.find((l) => l.code === dev);
+  if (match && (tag.toLowerCase().startsWith(dev.toLowerCase()) || base === dev.toLowerCase() || dev !== FALLBACK_LOCALE)) {
+    return match.label;
+  }
+  try {
+    return new Intl.DisplayNames([i18n.language], { type: 'language' }).of(tag) ?? match?.label ?? tag;
+  } catch {
+    return match?.label ?? tag;
+  }
+}
+
 let initialised = false;
+let savedLocale: string | null = null;
+let savedLocaleLoaded = false;
+
+export async function getSavedLocale(): Promise<string | null> {
+  if (savedLocaleLoaded) return savedLocale;
+  try {
+    savedLocale = await AsyncStorage.getItem(STORAGE_KEY);
+    savedLocaleLoaded = true;
+    return savedLocale;
+  } catch {
+    return null;
+  }
+}
+
+export function getSavedLocaleSync(): string | null {
+  return savedLocale;
+}
+
+export function isAutomaticLocale(): boolean {
+  return savedLocale === null;
+}
 
 export async function initI18n() {
   if (initialised) return i18n;
   initialised = true;
 
-  const stored = await AsyncStorage.getItem(STORAGE_KEY).catch(() => null);
+  savedLocale = await AsyncStorage.getItem(STORAGE_KEY).catch(() => null);
+  savedLocaleLoaded = true;
 
   await i18n.use(initReactI18next).init({
     resources,
-    lng: stored ?? deviceLocale(),
+    lng: savedLocale ?? deviceLocale(),
     fallbackLng: FALLBACK_LOCALE,
     compatibilityJSON: 'v4',
     interpolation: { escapeValue: false },
@@ -113,9 +150,20 @@ export async function initI18n() {
   return i18n;
 }
 
-export async function setLocale(code: string) {
-  await i18n.changeLanguage(code);
+export async function setLocale(code: string | null) {
+  if (!code || code === 'auto') {
+    savedLocale = null;
+    savedLocaleLoaded = true;
+    await AsyncStorage.removeItem(STORAGE_KEY).catch(() => {});
+    const target = deviceLocale();
+    await i18n.changeLanguage(target);
+    return target;
+  }
+  savedLocale = code;
+  savedLocaleLoaded = true;
   await AsyncStorage.setItem(STORAGE_KEY, code).catch(() => {});
+  await i18n.changeLanguage(code);
+  return code;
 }
 
 export default i18n;

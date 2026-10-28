@@ -32,7 +32,12 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
     style,
   ];
   const text = (
-    <Txt variant="smallStrong" color={active ? activeFg : colors.textSecondary}>
+    <Txt
+      variant="smallStrong"
+      color={active ? activeFg : colors.textSecondary}
+      lines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.8}>
       {label}
     </Txt>
   );

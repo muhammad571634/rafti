@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z18. App language choice: "Automatic", characters follow choice, iOS per-app language (2026-10-28, D126). NEXT: B2.4 retrieval past the cap (pgvector)
+
+**Owner, 2026-10-28:** Finished app language choice per `docs/agent-tasks/language-screen.md`:
+1. "Automatic" row added first in the Language sheet (`profile.languageAuto` across all 14 locale files), with meta displaying the device/phone language name. Selecting it clears saved choice, allowing the app to follow the phone again (`deviceLocale()`). The Profile row meta displays "Automatic" when no custom choice is saved.
+2. The characters follow the chosen language: `User.locale` updates when chosen in the sheet, and `finishHydration()` initializes from `getSavedLocale() ?? phoneLanguage()`.
+3. iOS per-app language enabled: added `CFBundleLocalizations` with the 14 locale codes to `ios.infoPlist` in `app.json`.
+4. Long text handling verified: added `lines={1} adjustsFontSizeToFit` to `Button`, `Chip`, `Segmented`, `SystemSegmented`, `StoreBuyBar`, and tab bar labels in `(tabs)/_layout.tsx`, and `lines={1}` to `ListRow` meta.
+Checked: `npm run check:locales`, `npx tsc --noEmit`, and `npm test` (447/447 passing) all pass with 0 errors.
+
 ### 0z17. Translate the app's screens into 13 languages (2026-10-28, D125). NEXT: Profile → Language screen and iOS per-app language settings
 
 **Owner, 2026-10-28:** All 13 languages requested by the owner are added: `es`, `pt-BR`, `fr`, `de`, `it`, `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th`, `ru`, `tr`.

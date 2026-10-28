@@ -30,7 +30,7 @@ import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
-import { phoneLanguage } from '@/i18n';
+import { getSavedLocale, phoneLanguage } from '@/i18n';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
@@ -3409,10 +3409,12 @@ export const useAppStore = create<AppState>()(
 );
 
 /** Work that was mid-flight when the app closed finishes now; then the app opens. */
-function finishHydration() {
+async function finishHydration() {
   // The phone's language, read on every launch (the user may change it in iOS Settings): the
-  // characters write in it until the user writes in their own words.
-  const locale = phoneLanguage();
+  // characters write in it until the user writes in their own words. When the user picked a
+  // language, that choice is used instead.
+  const saved = await getSavedLocale();
+  const locale = saved ?? phoneLanguage();
   if (useAppStore.getState().user.locale !== locale) useAppStore.setState((s) => ({ user: { ...s.user, locale } }));
   const { notes, diary } = useAppStore.getState();
   notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));

@@ -8,7 +8,25 @@
     "scheme": "rafti",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleLocalizations": [
+          "en",
+          "es",
+          "pt-BR",
+          "fr",
+          "de",
+          "it",
+          "ja",
+          "ko",
+          "zh-Hant",
+          "id",
+          "vi",
+          "th",
+          "ru",
+          "tr"
+        ]
+      }
     },
     "android": {
       "package": "com.rafti.app",

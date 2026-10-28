@@ -1531,6 +1531,7 @@
   "profile": {
     "title": "Profil",
     "language": "Dil",
+    "languageAuto": "Otomatik",
     "sectionDev": "Geliştirici",
     "testPushes": "Test bildirimleri",
     "testPushesSent": "{{count}} yolda",

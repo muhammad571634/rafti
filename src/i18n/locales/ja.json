@@ -1500,6 +1500,7 @@
   "profile": {
     "title": "プロフィール",
     "language": "言語",
+    "languageAuto": "自動",
     "sectionDev": "開発者",
     "testPushes": "テストプッシュ通知",
     "testPushesSent": "{{count}}件送信中",

@@ -1500,6 +1500,7 @@
   "profile": {
     "title": "Hồ sơ",
     "language": "Ngôn ngữ",
+    "languageAuto": "Tự động",
     "sectionDev": "Nhà phát triển",
     "testPushes": "Thử nghiệm thông báo đẩy",
     "testPushesSent": "đang gửi {{count}}",

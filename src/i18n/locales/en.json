@@ -1523,6 +1523,7 @@
   "profile": {
     "title": "Profile",
     "language": "Language",
+    "languageAuto": "Automatic",
     "sectionDev": "Developer",
     "testPushes": "Test pushes",
     "testPushesSent": "{{count}} on the way",

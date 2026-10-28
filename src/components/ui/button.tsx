@@ -67,7 +67,12 @@ export function Button({
         ) : (
           <>
             {left}
-            <Txt variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'} color={fg}>
+            <Txt
+              variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'}
+              color={fg}
+              lines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}>
               {label}
             </Txt>
             {right}

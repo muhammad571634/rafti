@@ -100,7 +100,7 @@ export function StoreBuyBar({
         accessibilityState={{ disabled: !!disabled }}
         style={[styles.cta, disabled && styles.ctaOff]}>
         {left}
-        <Txt style={[styles.ctaText, disabled && styles.ctaTextOff]} lines={1}>
+        <Txt style={[styles.ctaText, disabled && styles.ctaTextOff]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
           {label}
         </Txt>
       </PressableScale>

@@ -34,7 +34,12 @@ export function Segmented<T extends string>({ options, value, onChange, style, t
             accessibilityState={{ selected: on }}
             aria-selected={on}
             style={[styles.segment, on && (glass ? styles.onGlass : styles.on)]}>
-            <Txt variant="bodyStrong" color={on ? colors.text : colors.textSecondary}>
+            <Txt
+              variant="bodyStrong"
+              color={on ? colors.text : colors.textSecondary}
+              lines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}>
               {option.label}
             </Txt>
           </PressableScale>
@@ -94,7 +99,11 @@ export function SystemSegmented<T extends string | number>({
             aria-selected={on}
             style={[system.segment, on && system.on]}>
             {option.locked ? <Ionicons name="lock-closed" size={11} color={colors.textSecondary} /> : null}
-            <Txt style={[system.text, on && system.textOn]} lines={1}>
+            <Txt
+              style={[system.text, on && system.textOn]}
+              lines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}>
               {option.label}
             </Txt>
           </Pressable>

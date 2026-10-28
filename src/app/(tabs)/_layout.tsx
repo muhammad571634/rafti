@@ -150,7 +150,14 @@ function GlassTabBar({ state, emitter, navigateToTab, targetFor }: TabBarProps &
                   <SFIcon {...(focused ? icon.on : icon.off)} size={24} color={tint} />
                   {hasUnread ? <View style={styles.dot} /> : null}
                 </View>
-                <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2}>
+                <Txt
+                  variant="tiny"
+                  color={tint}
+                  style={styles.label}
+                  maxFontSizeMultiplier={1.2}
+                  lines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.75}>
                   {label}
                 </Txt>
               </PressableScale>

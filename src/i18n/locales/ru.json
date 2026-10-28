@@ -1593,6 +1593,7 @@
   "profile": {
     "title": "Профиль",
     "language": "Язык",
+    "languageAuto": "Автоматически",
     "sectionDev": "Разработчик",
     "testPushes": "Тестовые уведомления",
     "testPushesSent": "отправлено {{count}}",

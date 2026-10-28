@@ -1531,6 +1531,7 @@
   "profile": {
     "title": "Perfil",
     "language": "Idioma",
+    "languageAuto": "Automático",
     "sectionDev": "Desarrollador",
     "testPushes": "Notificaciones de prueba",
     "testPushesSent": "{{count}} en camino",
