@@ -117,7 +117,7 @@ describe('the cost log of a reply', () => {
       outputTokens: 100,
       costUsd: 0.00031,
     });
-    assert.match(promptVersion ?? '', /^g[0-9a-f]{8}\.c[0-9a-f]{8}$/);
+    assert.match(promptVersion ?? '', /^g[0-9a-f]{8}\.c[0-9a-f]{8}\.m[0-9a-f]{8}$/);
   });
 
   it('still answers without an account or with a stale token, and logs no user then', async () => {

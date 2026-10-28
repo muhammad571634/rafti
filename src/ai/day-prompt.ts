@@ -1,3 +1,4 @@
+import { modePart } from './modes';
 import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { TOUCH_SHAPE, wallClock } from './thread-prompt';
@@ -32,6 +33,7 @@ export function dayAskParts(input: DayAskInput): PromptPart[] {
   const things = input.threads.map((t) => `- ${t.about}${t.outcome ? ` (${t.outcome})` : ''}`);
   return [
     ...characterParts(character, user, relationship, input.replyLanguage),
+    modePart('initiative'),
     part('today', 'turn', [
       ...(lines.length ? ['TODAY IN YOUR CHAT:', ...lines] : ['You have not talked today.']),
       ...(things.length ? ['WHAT WAS ON TODAY:', ...things] : []),

@@ -36,4 +36,12 @@ describe('cost log', () => {
     assert.notEqual(promptVersion(layout('Be kind.', 'Kai dives.')).slice(10), v1.slice(10));
     assert.equal(promptVersion({ system: [], history: [], turn: '', cut: 0 }), 'g-.c-');
   });
+
+  it('adds the mode template, so a changed mode block is its own version', () => {
+    const layout: PromptLayout = { system: [{ tier: 'global', text: 'Be kind.' }], history: [], turn: '', cut: 0 };
+    const chat = promptVersion(layout, 'chat');
+    assert.match(chat, /^g[0-9a-f]{8}\.c-\.m[0-9a-f]{8}$/);
+    assert.ok(chat.startsWith(`${promptVersion(layout)}.m`));
+    assert.notEqual(promptVersion(layout, 'call'), chat);
+  });
 });

@@ -1,3 +1,4 @@
+import { modePart } from './modes';
 import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { TOUCH_SHAPE } from './thread-prompt';
@@ -24,6 +25,7 @@ export function weekParts(input: WeekInput): PromptPart[] {
   const { character, user, relationship, week } = input;
   return [
     ...characterParts(character, user, relationship, input.replyLanguage),
+    modePart('initiative'),
     part('week', 'turn', [
       'You are texting first, unprompted: it is Sunday evening and you look back on your week together.',
       `This week: you talked ${week.days} of 7 days (${week.messages} messages from them).`,

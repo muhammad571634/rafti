@@ -8,6 +8,7 @@ import { redoCue } from '../lib/chat-turns';
 import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
 import { messageText } from '../lib/story-continuity';
 
+import { modePart } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
 import { REPLY_SHAPE, turnLines } from './reply-style';
@@ -114,6 +115,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
   const summary = input.summary?.trim();
   return [
     ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs),
+    modePart('chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),

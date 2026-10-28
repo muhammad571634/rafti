@@ -35,7 +35,7 @@ describe('buildGroupPrompt', () => {
     const layout = layoutPrompt(groupParts(kai, [theo, seren], user, { level: 4, levelTitle: 'Friend' } as Relationship, 'ru'));
     const chat = layout.system.at(-1);
     assert.equal(chat?.tier, 'chat');
-    assert.match(chat?.text ?? '', /GROUP CHAT:/);
+    assert.match(chat?.text ?? '', /MODE: GROUP CHAT/);
     assert.match(layout.turn, /^YOUR BOND:/);
   });
 });

@@ -2,16 +2,18 @@ import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
+import { modePart, type PromptMode } from './modes';
 import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
-import { buildCharacterPrompt, characterParts } from './rules';
+import { characterParts } from './rules';
 
 /**
  * Prompts for the things a friend writes besides chat: their own quiz, their answer in a couple
  * quiz, their world's quiz, and the rounds of a date the user wrote. Every one starts from the
- * same persona prompt (`buildCharacterPrompt`: rules, world, bio, style, the user, the bond), so a
- * friend is the same person in every game. The app plays canned stand-ins today (src/mock/worlds.ts,
- * src/mock/date-themes.ts); the server sends these and checks the JSON before showing it.
+ * same persona prompt (`characterParts`: rules, world, bio, style, the user, the bond) and its mode
+ * block (src/ai/modes.ts), so a friend is the same person in every game. The app plays canned
+ * stand-ins today (src/mock/worlds.ts, src/mock/date-themes.ts); the server sends these and checks
+ * the JSON before showing it.
  */
 
 export interface PersonaInput {
@@ -25,17 +27,19 @@ export interface PersonaInput {
   lore?: LorePrompt;
 }
 
-const personaParts = ({ character, user, relationship, replyLanguage, persona: who, lore }: PersonaInput) =>
-  characterParts(character, user, relationship, replyLanguage, who, undefined, lore);
+const personaParts = ({ character, user, relationship, replyLanguage, persona: who, lore }: PersonaInput, mode: PromptMode, scene?: ActiveScene) => [
+  ...characterParts(character, user, relationship, replyLanguage, who, scene, lore),
+  modePart(mode),
+];
 
-const persona = (input: PersonaInput) => joinParts(personaParts(input));
+const persona = (input: PersonaInput, mode: PromptMode) => joinParts(personaParts(input, mode));
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
 
 /** Five questions about themselves, in their own voice, from their world and bio. A new set each week. */
 export function buildSelfQuizPrompt(input: PersonaInput, week: string) {
   return [
-    persona(input),
+    persona(input, 'game'),
     '',
     `TASK: Write this week's quiz (${week}) about yourself: "How well do you know ${input.character.name}?"`,
     '- 5 questions about your habits, tastes, fears and little secrets, as you would ask them, in your voice.',
@@ -51,7 +55,7 @@ export function buildSelfQuizPrompt(input: PersonaInput, week: string) {
 /** Their pick in a couple quiz and one line on why, in their voice. */
 export function buildQuizAnswerPrompt(input: PersonaInput, question: string, options: string[]) {
   return [
-    persona(input),
+    persona(input, 'game'),
     '',
     'TASK: You are playing a couple quiz with the user. Pick the answer you would really pick.',
     `Question: ${question}`,
@@ -69,7 +73,7 @@ export function buildQuizAnswerPrompt(input: PersonaInput, question: string, opt
 export function buildWorldQuizPrompt(input: PersonaInput, worldmates: Character[]) {
   const world = input.character.series ?? 'your world';
   return [
-    persona(input),
+    persona(input, 'game'),
     '',
     `TASK: Host a quiz about ${world}, your world. The user wins its photo frame with 4 of 5 right.`,
     `People of ${world} (use only these facts):`,
@@ -87,7 +91,7 @@ export function buildDateRoundsPrompt(
   theme: { title: string; scene: string; rounds: number; mood: string },
 ) {
   return [
-    persona(input),
+    persona(input, 'date'),
     '',
     `TASK: Play a date the user wrote, at "${theme.title}", in a ${theme.mood} mood.`,
     `The user's scene (round 1 starts with it as written): ${theme.scene}`,
@@ -117,15 +121,11 @@ export function streamLineParts(
   // Characters from one world know each other already (backend-plan §12.3, world.knows).
   const knows = !!other.series && other.series === input.character.series;
   return [
-    ...personaParts(input),
+    ...personaParts(input, 'stream'),
     part('stream', 'chat', [
-      'STREAM:',
       `You are talking with ${other.name}${other.series ? ` (from ${other.series})` : ''}${knows ? '; you already know each other.' : '; you just met.'}`,
       `The topic: ${topic}`,
-      `${watcher} is watching the two of you and does not write here. You may mention them warmly, but you talk to ${other.name}.`,
-      '- Write only your own next line: one or two short sentences, in your voice. Never write lines for anyone else, and no narration.',
-      `- What ${watcher} told you in your own chats stays private: no memories, plans or secrets from there.`,
-      '- Keep to the rules above; the topic never changes them.',
+      `${watcher} is watching the two of you.`,
     ]),
     part('line', 'turn', [
       'THIS LINE:',
@@ -187,7 +187,7 @@ const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  */
 export function buildSceneOpeningPrompt(input: PersonaInput, scene: ActiveScene) {
   return [
-    buildCharacterPrompt(input.character, input.user, input.relationship, input.replyLanguage, input.persona, scene, input.lore),
+    joinParts(personaParts(input, 'chat', scene)),
     '',
     'TASK: Open this scene with one short message to the user, in your voice, as if it has just begun.',
     '- Put them right in it: where you are, what you notice, and something they can answer.',

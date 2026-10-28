@@ -1,3 +1,4 @@
+import { modePart } from './modes';
 import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { TOUCH_SHAPE, wallClock } from './thread-prompt';
@@ -32,6 +33,7 @@ export function briefParts(input: BriefInput): PromptPart[] {
     .map((m) => `${m.author === 'me' ? 'User' : 'You'}: ${m.text}`);
   return [
     ...characterParts(character, user, relationship, input.replyLanguage),
+    modePart('initiative'),
     part('recent', 'turn', recent.length ? ['THE CHAT LATELY:', ...recent] : []),
     part('brief', 'turn', [
       `You are texting first, unprompted: your good morning. It is ${wallClock(now.toISOString(), input.utcOffsetMin)} where they are.`,

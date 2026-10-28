@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 
+import { MODE_BLOCKS, type PromptMode } from '../../../src/ai/modes.ts';
 import type { PromptLayout } from '../../../src/ai/prompt-layout.ts';
 import type { LlmResult } from './types.ts';
 
@@ -34,15 +35,15 @@ export function costUsd(model: string | undefined, usage: LlmResult['usage']): n
   return ((input - cached) * price.input + cached * price.cached + (usage.output ?? 0) * price.output) / 1e6;
 }
 
+const hash8 = (text: string | undefined) => (text ? createHash('sha256').update(text).digest('hex').slice(0, 8) : '-');
+
 /**
- * Which rules and persona wrote a reply (backend-plan §12.11): a short hash of the global tier (the
- * rules) and of the character tier (persona and world), e.g. "g3f9a1c2e.c7b0d4e19". Editing either
- * changes it, so cost and quality can be tied to a version without anyone bumping a number by hand.
+ * Which rules, persona and mode block wrote a reply (backend-plan §12.11): a short hash of the global
+ * tier (the rules), of the character tier (persona and world) and of the mode's template
+ * (src/ai/modes.ts), e.g. "g3f9a1c2e.c7b0d4e19.m5d2e8a10". Editing any of them changes it, so cost
+ * and quality can be tied to a version without anyone bumping a number by hand.
  */
-export function promptVersion(layout: PromptLayout): string {
-  const hash = (tier: 'global' | 'character') => {
-    const text = layout.system.find((block) => block.tier === tier)?.text;
-    return text ? createHash('sha256').update(text).digest('hex').slice(0, 8) : '-';
-  };
-  return `g${hash('global')}.c${hash('character')}`;
+export function promptVersion(layout: PromptLayout, mode?: PromptMode): string {
+  const tier = (name: 'global' | 'character') => hash8(layout.system.find((block) => block.tier === name)?.text);
+  return `g${tier('global')}.c${tier('character')}${mode ? `.m${hash8(MODE_BLOCKS[mode].join('\n'))}` : ''}`;
 }

@@ -14,6 +14,7 @@ import {
 } from '../../src/ai/character-draft.ts';
 import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
+import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import { parseModelReply } from '../../src/ai/reply-style.ts';
@@ -202,8 +203,9 @@ export function createApp(
   /**
    * One model call for a feature: the cost row is written under `mode` (without holding the answer
    * up), `read` turns the model's text into the answer. Busy (the free tier's cap) is 503.
+   * `template` is the mode block the prompt carries (src/ai/modes.ts), for `promptVersion`.
    */
-  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object) {
+  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode) {
     if (!provider) return c.json({ error: 'noModel' }, 503);
     const started = Date.now();
     try {
@@ -214,7 +216,7 @@ export function createApp(
         kind: 'llm',
         mode,
         model,
-        promptVersion: promptVersion(layout),
+        promptVersion: promptVersion(layout, template),
         inputTokens: result.usage.input,
         cachedTokens: result.usage.cached,
         outputTokens: result.usage.output,
@@ -348,7 +350,7 @@ export function createApp(
       user: { ...request.input.user, locale: request.input.user.locale || 'en-US' },
       replyLanguage: request.input.replyLanguage || FOLLOW_USER_LANGUAGE,
     };
-    return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply);
+    return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, 'initiative');
   });
 
   // Quick create (B1.4b, backend-plan §12.17): the whole character from the creator's idea. The idea
@@ -387,7 +389,7 @@ export function createApp(
       replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
     };
     const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
-    return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }));
+    return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }), 'stream');
   });
 
   app.post('/v1/chat/reply', async (c) => {
@@ -425,7 +427,7 @@ export function createApp(
         kind: 'llm',
         mode: 'chat',
         model: result.model ?? provider.name,
-        promptVersion: promptVersion(layout),
+        promptVersion: promptVersion(layout, 'chat'),
         inputTokens: result.usage.input,
         cachedTokens: result.usage.cached,
         outputTokens: result.usage.output,

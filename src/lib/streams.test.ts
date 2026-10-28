@@ -119,7 +119,7 @@ describe('the model’s line', () => {
     const first = layoutPrompt(streamLineParts({ character: kai, user }, theo, 'Pizza', [], { index: 0, total: 8 }));
     const third = layoutPrompt(streamLineParts({ character: kai, user }, theo, 'Pizza', [{ name: 'Theo Lancaster', text: 'Pineapple.' }], { index: 2, total: 8 }));
     assert.deepEqual(third.system, first.system);
-    assert.match(first.system.at(-1)?.text ?? '', /STREAM:\nYou are talking with Theo Lancaster/);
+    assert.match(first.system.at(-1)?.text ?? '', /MODE: STREAM[\s\S]*\n\nYou are talking with Theo Lancaster/);
     assert.match(third.turn, /^THIS LINE:\n- React to what Theo Lancaster just said[\s\S]*SO FAR:\nTheo Lancaster: Pineapple\./);
   });
 });

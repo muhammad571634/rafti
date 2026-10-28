@@ -1,3 +1,4 @@
+import { modePart } from './modes';
 import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { temperOf } from '../lib/temper';
@@ -138,6 +139,7 @@ export function touchParts(input: TouchInput): PromptPart[] {
     .map((m) => `${m.author === 'me' ? 'User' : 'You'}: ${m.text}`);
   return [
     ...characterParts(character, user, relationship, input.replyLanguage),
+    modePart('initiative'),
     part('recent', 'turn', recent.length ? ['THE CHAT LATELY:', ...recent] : []),
     part('touch', 'turn', [
       `You are texting first, unprompted. It is ${at(now.toISOString())} where they are.`,

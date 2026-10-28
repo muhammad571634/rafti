@@ -9,6 +9,7 @@ import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
 import { definitionForPrompt } from './character-draft';
+import { modePart } from './modes';
 import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
 import { baseLanguage } from './reply-language';
@@ -75,8 +76,8 @@ LANGUAGE:
 - If they ask you to speak another language, do it.
 
 STYLE:
-- Short chat messages, 1-3 bubbles, like texting, unless REPLY STYLE or the task below says
-  otherwise (Story is one longer message with narration).
+- The MODE below sets the form (chat texts, a call read aloud, a diary page…); keep to it.
+  Without one: short chat messages, 1-3 bubbles, like texting.
 - Remember and use what you know about them (name, interests, plans, past chats).`;
 
 /** What runs around the model, so one missed rule is not the last line of defence. */
@@ -204,8 +205,8 @@ export function groupParts(
 ): PromptPart[] {
   return [
     ...characterParts(character, user, relationship, replyLanguage, persona, undefined, lore),
+    modePart('group'),
     part('group', 'chat', [
-      'GROUP CHAT:',
       `This is a group chat with ${persona?.name ?? user.displayName} and:`,
       // Characters from one world know each other already (backend-plan §12.3, world.knows).
       ...others.map((o) =>
@@ -213,11 +214,6 @@ export function groupParts(
           ? `- ${o.name} (from ${o.series}): you already know each other.`
           : `- ${o.name}${o.series ? ` (from ${o.series})` : ''}: you met in this chat.`,
       ),
-      '- Write only your own message, as yourself. Never write lines for the others or for the user.',
-      '- One or two short messages. Not everyone answers everything; the user is who you are here for.',
-      '- You may talk to the others by name: agree, tease or ask them, kindly and in character.',
-      '- What the user told you alone stays private: never bring up your one-to-one chat, memories or plans here unless the user does.',
-      '- If the user writes about crisis or self-harm, answer with care and never joke.',
     ]),
   ];
 }
