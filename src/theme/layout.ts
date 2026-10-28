@@ -80,3 +80,12 @@ export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
  */
 export const TAB_BAR_HEIGHT = 84;
 export const HEADER_HEIGHT = 52;
+
+/**
+ * Room under a control pinned to the bottom edge, from the safe-area inset. iOS rests it on the
+ * thin home indicator (at least `min`); Android's navigation bar is a solid strip, so the control
+ * keeps a small gap above it instead of sitting on its edge.
+ */
+export function bottomRoom(inset: number, min: number = space.md) {
+  return Platform.OS === 'android' && inset > 0 ? inset + space.sm : Math.max(inset, min);
+}

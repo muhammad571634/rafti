@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Linking, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { useFriends } from '@/components/group/friend-row';
@@ -26,6 +27,7 @@ const PAD = 14;
  * fields, and the Store's bar with Record and what it costs.
  */
 export default function MakeClipScreen() {
+  const insets = useSafeAreaInsets();
   const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
@@ -108,9 +110,9 @@ export default function MakeClipScreen() {
 
   return (
     <Screen background="aurora">
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
-          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}
+          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {back}

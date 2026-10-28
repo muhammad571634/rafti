@@ -333,7 +333,7 @@ export default function CharacterSettingsScreen() {
         </View>
       </ScrollView>
 
-      <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')}>
+      <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')} avoidKeyboard>
         <TextInput
           value={draftName}
           onChangeText={setDraftName}

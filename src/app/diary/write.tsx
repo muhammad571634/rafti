@@ -4,7 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CharacterAvatar, GlassButton, glassStyle, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
@@ -33,6 +34,7 @@ const PAPER = '#FFFDF8';
  * the header and opens the last seven days.
  */
 export default function DiaryWriteScreen() {
+  const insets = useSafeAreaInsets();
   const friendName = useFriendName();
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -117,11 +119,11 @@ export default function DiaryWriteScreen() {
 
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="padding"
         keyboardVerticalOffset={BAR}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scroll}
+          contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xl }]}
           keyboardShouldPersistTaps="handled">
           <Txt style={styles.section}>{t('diary.mood')}</Txt>
           <View style={styles.moods}>

@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { FrameSwatch } from '@/components/photo-booth/frame-card';
@@ -62,6 +63,7 @@ interface FrameChoice {
  * a segmented control, and the Store's bar with pictures left above the shoot button.
  */
 export default function PhotoBoothScreen() {
+  const insets = useSafeAreaInsets();
   const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
@@ -163,7 +165,7 @@ export default function PhotoBoothScreen() {
     <Screen background="aurora">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + (quota ? METER_SPACE : 0) }}>
+        contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom + (quota ? METER_SPACE : 0) }}>
         <View style={styles.bar}>
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
             <AuroraGlass style={styles.round}>

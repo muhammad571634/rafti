@@ -9,7 +9,7 @@ import { planDate } from '@/components/plans/copy';
 import { BackButton, CharacterAvatar, glassStyle, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { bottomRoom, colors, space } from '@/theme';
 
 /**
  * One kept Photo Booth picture, opened from the album, the chat or Us. iOS Photos look
@@ -74,7 +74,7 @@ export default function PhotoScreen() {
         </View>
       </View>
 
-      <View style={[styles.captionWrap, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
+      <View style={[styles.captionWrap, { paddingBottom: bottomRoom(insets.bottom, space.xl) }]}>
         <View style={[glassStyle, styles.caption]}>
           <CharacterAvatar character={friend} size={40} />
           <View>

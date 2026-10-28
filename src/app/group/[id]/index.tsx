@@ -293,7 +293,7 @@ export default function GroupChatScreen() {
     <Screen background={wallpaper.colors as readonly [string, string]} statusBarStyle={wallpaper.dark ? 'light' : 'dark'} edgeToEdge>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
-        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.flex} behavior="padding">
           {artWallpaper ? (
             <>
               <Image source={artWallpaper.image} contentFit="cover" style={StyleSheet.absoluteFill} accessible={false} />

@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { ClayIconName } from '@/assets/brand/registry';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
@@ -44,6 +45,7 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
  * (2026-10-22, coded at the owner's word), in Photo Booth's cards and bar.
  */
 export default function FrameEditScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -91,9 +93,9 @@ export default function FrameEditScreen() {
 
   return (
     <Screen background="aurora">
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
-          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}
+          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View style={styles.bar}>

@@ -245,7 +245,7 @@ export default function QuizScreen() {
   if (done) {
     return (
       <Screen background="aurora">
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={[styles.result, styles.resultTop]}>
             <View style={styles.pair}>
               <UserAvatar user={user} size={80} />
@@ -308,7 +308,7 @@ export default function QuizScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: mine != null ? BUY_BAR_SPACE : insets.bottom + space.xl }}>
+        contentContainerStyle={{ paddingBottom: mine != null ? BUY_BAR_SPACE + insets.bottom : insets.bottom + space.xl }}>
         <Txt style={styles.progress}>{t('games.progress', { title: run.title, n: index + 1, total })}</Txt>
         <Txt style={styles.question} accessibilityRole="header">
           {question.text}

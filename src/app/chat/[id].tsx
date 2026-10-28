@@ -441,7 +441,7 @@ export default function ChatRoomScreen() {
     <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
-        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.flex} behavior="padding">
           {artWallpaper ? (
             <>
               <Image

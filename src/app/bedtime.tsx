@@ -17,7 +17,7 @@ import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { callClock } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
-import { radius, sleepColors as night, space } from '@/theme';
+import { bottomRoom, radius, sleepColors as night, space } from '@/theme';
 import type { Character } from '@/types';
 
 /** Sleep timer choices on the wheel, in minutes. */
@@ -236,7 +236,7 @@ export default function BedtimeScreen() {
       </ScrollView>
 
       {page === 'main' && !running ? (
-        <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
           <Button
             label={t('bedtime.start')}
             size="lg"
@@ -252,7 +252,7 @@ export default function BedtimeScreen() {
       ) : null}
 
       {page === 'main' && running ? (
-        <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
           <Txt variant="caption" color={night.textSecondary} center>
             {t('bedtime.fades')}
           </Txt>

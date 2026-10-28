@@ -10,7 +10,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { localDiaryPage } from '@/i18n/content';
-import { colors, palette, radius, space, type } from '@/theme';
+import { bottomRoom, colors, palette, radius, space, type } from '@/theme';
 
 /** One ruled line on the page; the handwriting sits on this pitch. */
 const LINE = type.hand.lineHeight ?? 32;
@@ -148,7 +148,7 @@ export default function CharacterDiaryPageScreen() {
         </ScrollView>
       </View>
 
-      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
+      <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.xl) }]}>
         {conversation ? <Button label={t('diary.chatWith', { name })} size="lg" full onPress={reply} /> : null}
         <Txt variant="small" color={colors.textSecondary} center>
           {t(page.source === 'date' ? 'diary.afterDate' : 'diary.afterChat', { date: dayBefore(page.date) })}

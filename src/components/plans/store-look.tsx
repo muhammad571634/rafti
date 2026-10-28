@@ -5,7 +5,7 @@ import { Platform, type StyleProp, StyleSheet, View, type ViewStyle } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { aurora, colors, gradients, isDark, space, storeColors, systemColors } from '@/theme';
+import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors } from '@/theme';
 
 /** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
 export const STORE = storeColors;
@@ -14,12 +14,16 @@ export const STORE = storeColors;
 export const PRO_GRADIENT = gradients.pro;
 const PRO_STOPS = [0, 0.55, 1] as const;
 
-export const CARD_SHADOW = {
-  shadowColor: aurora.shadow,
-  shadowOpacity: isDark ? 0.35 : 0.08,
-  shadowRadius: 10,
-  shadowOffset: { width: 0, height: 6 },
-};
+/** Android ignores the `shadow*` props, so it draws the same soft drop as a CSS box-shadow. */
+export const CARD_SHADOW = Platform.select<ViewStyle>({
+  android: { boxShadow: `0px 6px 10px ${aurora.shadow}${isDark ? '59' : '14'}` },
+  default: {
+    shadowColor: aurora.shadow,
+    shadowOpacity: isDark ? 0.35 : 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+  },
+})!;
 
 /** Room the scroll leaves under its content for the buy bar. */
 export const BUY_BAR_SPACE = 150;
@@ -86,7 +90,7 @@ export function StoreBuyBar({
 }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) + 6 }]}>
+    <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) + 6 }]}>
       {Platform.OS === 'ios' ? (
         <BlurView intensity={40} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
       ) : null}

@@ -23,7 +23,7 @@ import { Button, GlassBar, GlassIcons, glassStyle, LargeTitle, PressableScale, S
 import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, radius, shadows, space } from '@/theme';
+import { bottomRoom, avatarGradients, colors, radius, shadows, space } from '@/theme';
 import type { Character, CharacterDiaryPage } from '@/types';
 
 const GAP = space.md;
@@ -261,7 +261,7 @@ export default function DiaryScreen() {
       </View>
 
       {current ? (
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
+        <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.xl) }]}>
           <Button label={cta(current)} size="lg" full onPress={() => act(current)} />
         </View>
       ) : null}

@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
@@ -74,7 +74,7 @@ export default function LorebookEditScreen() {
   return (
     <Screen background={colors.bg}>
       <GlassBar title={heading} scrolled={scrolled} right={<GlassButton label={t('common.save')} accessibilityLabel={t('common.save')} onPress={save} />} />
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding" keyboardVerticalOffset={90}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           onScroll={onScroll}

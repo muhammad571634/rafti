@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PlanPicker } from '@/components/plans/plan-picker';
@@ -193,6 +194,7 @@ function ShellsTab({
 }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const wallet = useAppStore((s) => s.wallet);
   const addShells = useAppStore((s) => s.addShells);
@@ -225,7 +227,7 @@ function ShellsTab({
 
   return (
     <>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
         {header}
 
         <View style={styles.balance}>

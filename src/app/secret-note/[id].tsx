@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -85,10 +85,10 @@ export default function SecretNoteScreen() {
 
   return (
     <Screen background="aurora">
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: exchanged ? insets.bottom + space.xxl : BUY_BAR_SPACE }}
+          contentContainerStyle={{ paddingBottom: exchanged ? insets.bottom + space.xxl : BUY_BAR_SPACE + insets.bottom }}
           keyboardShouldPersistTaps="handled">
           {bar}
           <LargeTitle>{t('secretNote.title')}</LargeTitle>

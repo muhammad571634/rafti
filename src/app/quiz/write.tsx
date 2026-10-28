@@ -108,7 +108,7 @@ export default function WriteQuizScreen() {
         scrolled={scrolled}
         right={editing ? <GlassButton icon="trash-outline" accessibilityLabel={t('quizWrite.delete')} onPress={remove} /> : undefined}
       />
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
           showsVerticalScrollIndicator={false}
           onScroll={onScroll}

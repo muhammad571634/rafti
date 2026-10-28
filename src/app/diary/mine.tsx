@@ -25,7 +25,7 @@ import { localDiaryEntry } from '@/i18n/content';
 import { diaryDate, relativeStamp } from '@/lib/format';
 import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
+import { bottomRoom, avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
 import type { DiaryEntry } from '@/types';
 
 const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
@@ -140,7 +140,7 @@ export default function MyDiaryScreen() {
       )}
 
       {entries.length ? (
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
+        <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.xl) }]}>
           <Button
             label={t('diary.writeToday')}
             size="lg"

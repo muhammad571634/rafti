@@ -16,7 +16,7 @@ import { shareText } from '@/lib/share';
 import { localized } from '@/i18n/content';
 import { DATE_PLACES, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
+import { bottomRoom, colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 import type { DateRecord } from '@/types';
 
 /** Hearts on the photo and in the reply pill (iOS systemPink, lighter on the photo). */
@@ -241,7 +241,7 @@ export default function DateScreen() {
       </View>
 
       {picked != null ? (
-        <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.lg) + space.md }]}>
+        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) + space.md }]}>
           <PressableScale scaleTo={0.97} accessibilityRole="button" style={[styles.bigButton, { backgroundColor: look.ink }]} onPress={next}>
             <Txt style={styles.bigButtonText}>{last ? t('date.finish') : t('date.next')}</Txt>
           </PressableScale>

@@ -27,7 +27,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, radius, space, type } from '@/theme';
+import { bottomRoom, colors, isDark, radius, space, type } from '@/theme';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
 /** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
@@ -189,7 +189,7 @@ export default function MemoriesScreen() {
       />
 
       {locked.length > 0 ? (
-        <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
           <Button label={t('memories.unlock')} size="lg" full onPress={() => setUnlocking(true)} />
           <Txt variant="caption" color={colors.textMuted} center>
             {t('memories.unlockCaption', { price: PLANS.basic.price })}
@@ -200,7 +200,8 @@ export default function MemoriesScreen() {
       <Sheet
         visible={adding || editingId != null}
         onClose={closeSheet}
-        title={editingId ? t('memories.edit') : t('memories.addManual')}>
+        title={editingId ? t('memories.edit') : t('memories.addManual')}
+        avoidKeyboard>
         <TextInput
           value={draft}
           onChangeText={setDraft}

@@ -21,7 +21,7 @@ import { AuroraGlass, CharacterAvatar, characterImage, EmptyState, MODULE_GLYPH,
 import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space, systemColors } from '@/theme';
+import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
 
 const COVER = 240;
 
@@ -184,7 +184,7 @@ export default function ClipPlayerScreen() {
         </View>
       </ScrollView>
 
-      <View style={[styles.controls, { paddingBottom: Math.max(insets.bottom, space.lg) + space.sm }]}>
+      <View style={[styles.controls, { paddingBottom: bottomRoom(insets.bottom, space.lg) + space.sm }]}>
         <View style={styles.meter}>
           <View style={styles.track}>
             <View style={[styles.fill, { width: `${Math.round(progress * 100)}%` }]} />
@@ -226,7 +226,7 @@ export default function ClipPlayerScreen() {
       </View>
 
       {sent ? (
-        <View style={[styles.toast, { bottom: Math.max(insets.bottom, space.lg) + 170 }]} accessibilityLiveRegion="polite">
+        <View style={[styles.toast, { bottom: bottomRoom(insets.bottom, space.lg) + 170 }]} accessibilityLiveRegion="polite">
           <Ionicons name="checkmark-circle" size={18} color={systemColors.green} />
           <Txt style={styles.toastText}>{t('radio.sent', { name: clip.name })}</Txt>
         </View>

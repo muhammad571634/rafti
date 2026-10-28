@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { colors, radius, shadows, space } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
@@ -52,6 +53,14 @@ export function Sheet({
 }: SheetProps) {
   const insets = useSafeAreaInsets();
   const scrolls = avoidKeyboard || scroll;
+  // iOS tucks the card into the home-indicator room; Android's nav bar is solid, so the card stands
+  // above it. The keyboard covers either, and the card then sits just over the keys.
+  const keyboardUp = useKeyboardVisible();
+  const sheetBottom = keyboardUp
+    ? EDGE
+    : Platform.OS === 'android' && insets.bottom > 0
+      ? insets.bottom + EDGE
+      : Math.max(EDGE, insets.bottom - 26);
   const { t } = useTranslation();
 
   const header = title ? (
@@ -108,15 +117,15 @@ export function Sheet({
       <View style={styles.fill}>
         <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={dismissable ? onClose : undefined} />
 
-        {/* Android resizes the window for the keyboard on its own; iOS needs the padding. */}
+        {/* Edge-to-edge Android does not resize the window for the keyboard either, so both need the padding. */}
         <KeyboardAvoidingView
-          enabled={!!avoidKeyboard && Platform.OS === 'ios'}
+          enabled={!!avoidKeyboard}
           behavior="padding"
           style={[
             styles.fill,
             center
               ? styles.centerWrap
-              : [styles.bottomWrap, { paddingTop: insets.top + space.md, paddingBottom: Math.max(EDGE, insets.bottom - 26) }],
+              : [styles.bottomWrap, { paddingTop: insets.top + space.md, paddingBottom: sheetBottom }],
           ]}
           pointerEvents="box-none">
           <View style={[center ? styles.centerCard : styles.bottomCard, scrolls && styles.capped, shadows.modal]}>

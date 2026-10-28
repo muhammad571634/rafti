@@ -5,7 +5,8 @@ import { Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'r
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconButton, PressableScale, Txt } from '@/components/ui';
-import { colors, radius, shadows, space } from '@/theme';
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { bottomRoom, colors, radius, shadows, space } from '@/theme';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
@@ -51,6 +52,9 @@ export interface ChatInputProps {
 export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
+  const keyboardUp = useKeyboardVisible();
+  const barBottom = keyboardUp ? space.sm : bottomRoom(insets.bottom, space.md);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<TextInputInstance>(null);
   /** The unsent draft waits here while a message is edited, and comes back after. */
@@ -108,7 +112,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   // A draft typed before the lock stays in state and comes back with the field.
   if (locked) {
     return (
-      <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+      <View style={[styles.bar, { paddingBottom: barBottom }]}>
         <View style={styles.locked} accessibilityRole="text">
           <Txt variant="bodyStrong" color={colors.textSecondary} center>
             {locked}
@@ -119,7 +123,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   }
 
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+    <View style={[styles.bar, { paddingBottom: barBottom }]}>
       <PressableScale
         scaleTo={0.9}
         onPress={editing ? editing.onCancel : onAttach}

@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -47,7 +46,7 @@ import { shortName } from '@/lib/format';
 import { morningGreetings } from '@/mock';
 import { requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
-import { aurora, colors, isDark, space, systemColors } from '@/theme';
+import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
 /** One friend from each world, so the first choice is about taste, not scrolling. */
@@ -207,7 +206,7 @@ export default function OnboardingScreen() {
         )}
       </View>
 
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <Animated.View key={step} entering={FadeInRight.duration(360)} style={styles.flex}>
           <ScrollView
             style={styles.flex}
@@ -338,7 +337,7 @@ export default function OnboardingScreen() {
           </ScrollView>
         </Animated.View>
 
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.lg) + 6 }]}>{footer}</View>
+        <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.lg) + 6 }]}>{footer}</View>
       </KeyboardAvoidingView>
 
       <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>

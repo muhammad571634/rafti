@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
-import { colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
+import { bottomRoom, colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 
 export type AttachKey = 'scene' | 'timeSkip' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
@@ -57,7 +57,7 @@ export function AttachMenu({
   useBackToClose(visible, onClose);
   if (!visible) return null;
   // Same bottom gap as the input bar, so the close button lands right on the "+".
-  const bottom = Math.max(insets.bottom, space.md);
+  const bottom = bottomRoom(insets.bottom, space.md);
 
   return (
     <View style={styles.overlay}>

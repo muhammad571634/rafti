@@ -118,7 +118,7 @@ export default function WorldQuizScreen() {
   if (phase === 'intro') {
     return (
       <Screen background="aurora">
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={styles.bar}>{back()}</View>
           <LargeTitle>{title}</LargeTitle>
           <View style={styles.prize}>
@@ -139,7 +139,7 @@ export default function WorldQuizScreen() {
     const total = questions.length;
     return (
       <Screen background="aurora">
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={styles.bar}>{back()}</View>
           <View style={styles.result}>
             {result === 'lost' ? (
@@ -221,7 +221,7 @@ export default function WorldQuizScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: picked != null ? BUY_BAR_SPACE : insets.bottom + space.xl }}>
+        contentContainerStyle={{ paddingBottom: picked != null ? BUY_BAR_SPACE + insets.bottom : insets.bottom + space.xl }}>
         <Txt style={styles.progress}>
           {t('worldQuiz.progress', { world: phrase(world.series), n: index + 1, total: questions.length })}
         </Txt>

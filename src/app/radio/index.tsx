@@ -14,7 +14,7 @@ import { Anim, AuroraGlass, CharacterAvatar, LargeTitle, PressableScale, Screen,
 import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space, systemColors } from '@/theme';
+import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 type Tab = 'clips' | 'sounds';
@@ -154,7 +154,7 @@ export default function RadioScreen() {
           onPress={() => nowClip && router.push({ pathname: '/radio/[id]', params: { id: nowClip.id } })}
           accessibilityRole={nowClip ? 'button' : undefined}
           accessibilityLabel={nowClip ? t('radio.openPlayer') : undefined}
-          style={[styles.mini, { bottom: Math.max(insets.bottom, space.md) + space.xs }]}>
+          style={[styles.mini, { bottom: bottomRoom(insets.bottom, space.md) + space.xs }]}>
           {Platform.OS === 'ios' ? <BlurView intensity={50} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} /> : null}
           <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === 'ios' ? STORE.bar : STORE.barSolid }]} />
           <View style={styles.miniHead}>

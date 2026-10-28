@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pill } from '@/components/create/quick-create';
@@ -89,7 +89,7 @@ export default function NewStreamScreen() {
   return (
     <Screen background={colors.bg}>
       <GlassBar title={t('streams.new')} scrolled={scrolled} />
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding" keyboardVerticalOffset={90}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           onScroll={onScroll}
