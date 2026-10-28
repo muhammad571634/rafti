@@ -75,7 +75,7 @@ function GroundShadow({
       style={[styles.groundShadow, { width: shadowWidth, height: shadowHeight }, shadowStyle]}
       pointerEvents="none"
     >
-      <SoftFade id="raftiGroundShadow" color="#000000" opacity={0.14} fadeTo={0.7} />
+      <SoftFade id="sigmazamGroundShadow" color="#000000" opacity={0.14} fadeTo={0.7} />
     </Animated.View>
   );
 }

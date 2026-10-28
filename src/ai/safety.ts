@@ -7,8 +7,8 @@
 /** A worldwide directory that finds the user's local helplines. */
 export const HELPLINE_URL = 'https://findahelpline.com';
 
-/** Placeholder until Rafti has a real support inbox; shown in Profile → Support. */
-export const SUPPORT_EMAIL = 'support@rafti.app';
+/** Placeholder until Sigmazam has a real support inbox; shown in Profile → Support. */
+export const SUPPORT_EMAIL = 'support@sigmazam.app';
 
 const CRISIS_PATTERNS = [
   /\b(kill|hurt|harm|cut)\s+my\s*self\b/,

@@ -84,7 +84,7 @@ export function BoothPicture({
           </Frame>
         ))}
         <Txt style={[styles.stripLabel, { fontSize: Math.max(7, width * 0.075), lineHeight: width * 0.24 }, look && { color: look.ink }]} center>
-          {`RAFTI · ${pad2(date.getMonth() + 1)}.${pad2(date.getDate())}`}
+          {`SIGMAZAM · ${pad2(date.getMonth() + 1)}.${pad2(date.getDate())}`}
         </Txt>
         {look ? <FrameStickers look={look} width={width} /> : null}
       </View>

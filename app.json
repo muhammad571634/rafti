@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Sigmazam",
-    "slug": "rafti",
+    "slug": "sigmazam",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rafti",
+    "scheme": "sigmazam",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
@@ -29,7 +29,7 @@
       }
     },
     "android": {
-      "package": "com.rafti.app",
+      "package": "com.sigmazam.app",
       "adaptiveIcon": {
         "backgroundColor": "#FDF6EE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -92,7 +92,7 @@
         }
       },
       "eas": {
-        "projectId": "eee1d82d-4318-4578-a3e7-9a6986bda817"
+        "projectId": "2280e30a-4e30-447f-9d62-078d6b58a619"
       }
     },
     "owner": "sukuts-team",
@@ -100,7 +100,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/eee1d82d-4318-4578-a3e7-9a6986bda817"
+      "url": "https://u.expo.dev/2280e30a-4e30-447f-9d62-078d6b58a619"
     }
   }
 }

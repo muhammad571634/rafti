@@ -25,7 +25,7 @@ export function inviteCodeFor(user: Pick<User, 'id' | 'onboardedAt'>) {
 
 /** "rafti-ab3 kq7" -> "AB3KQ7"; null when it cannot be a code. */
 export function normalizeInviteCode(input: string) {
-  const code = input.toUpperCase().replace(/^RAFTI[-\s]*/, '').replace(/[\s-]/g, '');
+  const code = input.toUpperCase().replace(/^(SIGMAZAM|RAFTI)[-\s]*/, '').replace(/[\s-]/g, '');
   if (code.length !== LENGTH) return null;
   return [...code].every((c) => ALPHABET.includes(c)) ? code : null;
 }
