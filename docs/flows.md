@@ -174,5 +174,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 1 | done | Machinery: `content-extract`, `overlay`, `check-content`, `en.json` generated | — |
 | F30 Content translation: Phase 2 | done | Screens & store wired with content overlays (localCharacter, localized, localDiaryEntry, localDiaryPage, localSecretNote) | — |
 | F30 Content translation: Phase 3 (es) | done | Spanish content translation generated (1973 strings), checked and registered | — |
+| F30 Content translation: Phase 3 (pt-BR) | done | Brazilian Portuguese content translation generated (1973 strings), checked and registered | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
