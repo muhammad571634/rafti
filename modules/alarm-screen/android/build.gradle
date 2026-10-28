@@ -3,7 +3,7 @@ plugins {
   id 'expo-module-gradle-plugin'
 }
 
-group = 'com.rafti.app'
+group = 'com.sigmazam.app'
 version = '1.0.0'
 
 android {
