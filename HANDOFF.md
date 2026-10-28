@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z19. EAS Build + OTA updates for preview APK (2026-10-28, D127). NEXT: test APK on Samsung A51, B2.4 retrieval past the cap (pgvector)
+
+**Owner, 2026-10-28:** Set up EAS Build and expo-updates for the preview APK:
+1. Installed `expo-updates`, linked project to `@sukuts-team/rafti` on EAS (projectId `eee1d82d-4318-4578-a3e7-9a6986bda817`).
+2. Configured `updates.url` and `runtimeVersion` with `appVersion` policy in `app.json`.
+3. Created `eas.json` with `preview` profile: `distribution: "internal"`, `android.buildType: "apk"`, `channel: "preview"`.
+4. Profile's Development section now shows in preview builds too (shared `SHOW_DEV` constant using `Updates.channel`).
+5. First EAS build triggered for Android APK. The phone receives updates via `eas update --channel preview`.
+
+**From now on:**
+- A JS-only change (screens, logic, strings): after pushing it, run `npx eas-cli update --channel preview --message "<what changed>"`. The phone takes it the next time the app is closed and opened (sometimes a second reopen).
+- A native change (a new native package, `app.json` plugins or permissions): bump `version` in `app.json` and make a new build; the owner installs it over the old one (same keystore).
+
 ### 0z18. App language choice: "Automatic", characters follow choice, iOS per-app language (2026-10-28, D126). NEXT: B2.4 retrieval past the cap (pgvector)
 
 **Owner, 2026-10-28:** Finished app language choice per `docs/agent-tasks/language-screen.md`:
