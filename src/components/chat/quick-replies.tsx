@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Anim, PressableScale, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { colors, radius, space } from '@/theme';
 import type { ReplyIdea } from '@/types';
 
@@ -37,10 +38,10 @@ export function QuickReplies({
             scaleTo={0.95}
             style={styles.chip}
             accessibilityRole="button"
-            accessibilityLabel={idea.text}
+            accessibilityLabel={phrase(idea.text)}
             accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
             <Txt style={styles.chipText} color={colors.brandText} lines={1}>
-              {idea.label}
+              {phrase(idea.label)}
             </Txt>
           </PressableScale>
         ))}

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { Button, CharacterAvatar, PressableScale, Sheet, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { haptic } from '@/lib/haptics';
 import { FAMILY_NAME_MAX, rankForKin, type FamilyLabel } from '@/lib/kin';
 import { groupBySeries } from '@/mock';
@@ -42,7 +43,7 @@ export function FamilySheet({
   useEffect(() => {
     if (!role) return;
     setPick(null);
-    setName(role);
+    setName(phrase(role));
   }, [role]);
 
   const faces = useMemo(() => (role ? rankForKin(friends, role) : []), [friends, role]);
@@ -57,7 +58,7 @@ export function FamilySheet({
   };
 
   return (
-    <Sheet visible={!!role} onClose={onClose} title={role ? t('family.sheetTitle', { role }) : undefined} avoidKeyboard>
+    <Sheet visible={!!role} onClose={onClose} title={role ? t('family.sheetTitle', { role: phrase(role) }) : undefined} avoidKeyboard>
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={{ maxHeight: height * 0.46 }}>
         {faces.length > 0 ? (
           <>
@@ -128,7 +129,7 @@ export function FamilySheet({
           onChangeText={setName}
           maxLength={FAMILY_NAME_MAX}
           accessibilityLabel={t('family.callThem')}
-          placeholder={role ?? ''}
+          placeholder={role ? phrase(role) : ''}
           placeholderTextColor={colors.textMuted}
           returnKeyType="done"
           style={styles.input}
@@ -136,7 +137,7 @@ export function FamilySheet({
       </View>
 
       <Button
-        label={picked && role ? t('family.make', { name: picked.name.split(' ')[0], role }) : t('family.choose')}
+        label={picked && role ? t('family.make', { name: picked.name.split(' ')[0], role: phrase(role) }) : t('family.choose')}
         disabled={!picked}
         size="lg"
         full

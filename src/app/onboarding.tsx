@@ -41,7 +41,8 @@ import { LockPreview } from '@/components/notifications/lock-preview';
 import { Intro } from '@/components/onboarding/intro';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
-import { setLocale, SUPPORTED_LOCALES } from '@/i18n';
+import { LanguageList, pickLanguage } from '@/components/profile/language-list';
+import { getSavedLocaleSync, SUPPORTED_LOCALES } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { morningGreetings } from '@/mock';
 import { requestPushPermission } from '@/notifications/sync';
@@ -340,21 +341,15 @@ export default function OnboardingScreen() {
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space.lg) + 6 }]}>{footer}</View>
       </KeyboardAvoidingView>
 
-      <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')}>
-        {SUPPORTED_LOCALES.map((l) => (
-          <PressableScale
-            key={l.code}
-            style={styles.langRow}
-            onPress={() => {
-              void setLocale(l.code);
-              setLangOpen(false);
-            }}>
-            <Txt variant={l.code === i18n.language ? 'bodyStrong' : 'body'} style={styles.flex}>
-              {l.label}
-            </Txt>
-            {l.code === i18n.language ? <Ionicons name="checkmark" size={18} color={colors.primary} /> : null}
-          </PressableScale>
-        ))}
+      <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>
+        <LanguageList
+          value={getSavedLocaleSync()}
+          groupStyle={styles.langGroup}
+          onPick={(code) => {
+            void pickLanguage(code);
+            setLangOpen(false);
+          }}
+        />
       </Sheet>
     </Screen>
   );
@@ -678,5 +673,6 @@ const styles = StyleSheet.create({
   caption: { fontSize: 12, lineHeight: 16, textAlign: 'center', color: aurora.textMuted },
   notNow: { height: 44, alignItems: 'center', justifyContent: 'center' },
   notNowText: { fontSize: 16, fontWeight: '600', color: aurora.textMuted },
-  langRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: space.md },
+  // Rows straight on the sheet, no card inside the card.
+  langGroup: { marginHorizontal: 0, borderRadius: 0, backgroundColor: 'transparent' },
 });

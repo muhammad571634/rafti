@@ -150,6 +150,17 @@ export async function initI18n() {
   return i18n;
 }
 
+/**
+ * The app's own English words that are kept as data (a relationship label "Mom", a tier
+ * "Beloved", an interest, a reply idea's label and line) in the screen language. The stored
+ * value, the server and the prompts keep the English; only what the user sees and sends
+ * changes, so old saves translate too. A phrase with no entry stays as it is.
+ */
+export function phrase(english: string): string {
+  const table = (resources[i18n.language as keyof typeof resources]?.translation as { phrases?: Record<string, string> } | undefined)?.phrases;
+  return table?.[english] ?? english;
+}
+
 export async function setLocale(code: string | null) {
   if (!code || code === 'auto') {
     savedLocale = null;

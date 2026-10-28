@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { Button, Chip, PressableScale, Sheet, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { INTEREST_OPTIONS, MAX_INTERESTS, birthdayKey, daysInMonth } from '@/lib/profile';
 import { colors, radius, space, type } from '@/theme';
 
@@ -217,7 +218,7 @@ export function InterestsSheet({
         {INTEREST_OPTIONS.map((interest) => (
           <Chip
             key={interest}
-            label={interest}
+            label={phrase(interest)}
             active={picked.includes(interest)}
             onPress={() => toggle(interest)}
           />

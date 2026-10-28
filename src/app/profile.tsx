@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,7 +24,7 @@ import {
   Txt,
   UserAvatar,
 } from '@/components/ui';
-import { SUPPORTED_LOCALES, getSavedLocale, phoneLanguage, phoneLanguageName, setLocale } from '@/i18n';
+import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
@@ -95,11 +95,9 @@ export default function ProfileScreen() {
   const unblockCharacter = useAppStore((s) => s.unblockCharacter);
   const blocked = characters.filter((c) => blockedIds.includes(c.id));
 
-  const [languageOpen, setLanguageOpen] = useState(false);
-  const [savedLang, setSavedLang] = useState<string | null>(null);
-  useEffect(() => {
-    void getSavedLocale().then(setSavedLang);
-  }, []);
+  // Read again on return from Profile → Language.
+  const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
+  useFocusEffect(useCallback(() => setSavedLang(getSavedLocaleSync()), []));
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [blockedOpen, setBlockedOpen] = useState(false);
   /** Dev only: what the last "Test pushes" press did. */
@@ -237,7 +235,7 @@ export default function ProfileScreen() {
       onPress: () => router.push('/lore'),
     },
     ...(canPickLanguage
-      ? [{ key: 'language', title: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => setLanguageOpen(true) }]
+      ? [{ key: 'language', title: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => router.push('/language') }]
       : []),
   ];
   const groupB = [
@@ -506,39 +504,6 @@ export default function ProfileScreen() {
                     }}
                   />
                 }
-              />
-            </View>
-          ))}
-        </View>
-      </Sheet>
-
-      <Sheet visible={languageOpen} onClose={() => setLanguageOpen(false)} title={t('profile.language')}>
-        <View style={styles.sheetList}>
-          <ListRow
-            title={t('profile.languageAuto')}
-            meta={phoneLanguageName()}
-            right={!savedLang ? <Ionicons name="checkmark" size={20} color={colors.text} /> : null}
-            onPress={async () => {
-              await setLocale(null);
-              setSavedLang(null);
-              const phoneLang = phoneLanguage();
-              useAppStore.setState((s) => ({ user: { ...s.user, locale: phoneLang } }));
-              setLanguageOpen(false);
-            }}
-          />
-          <Divider inset={space.lg} />
-          {SUPPORTED_LOCALES.map((locale, index) => (
-            <View key={locale.code}>
-              {index > 0 ? <Divider inset={space.lg} /> : null}
-              <ListRow
-                title={locale.label}
-                right={savedLang === locale.code ? <Ionicons name="checkmark" size={20} color={colors.text} /> : null}
-                onPress={async () => {
-                  await setLocale(locale.code);
-                  setSavedLang(locale.code);
-                  useAppStore.setState((s) => ({ user: { ...s.user, locale: locale.code } }));
-                  setLanguageOpen(false);
-                }}
               />
             </View>
           ))}

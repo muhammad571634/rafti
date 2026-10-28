@@ -80,7 +80,7 @@ export default function DateThemeScreen() {
     <Screen background={colors.bg}>
       <View style={styles.bar}>
         <GlassButton label={t('common.cancel')} onPress={() => router.back()} />
-        <Txt style={styles.barTitle} lines={1}>
+        <Txt style={styles.barTitle} lines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
           {editing ? t('dateTheme.titleEdit') : t('dateTheme.titleNew')}
         </Txt>
         <PressableScale

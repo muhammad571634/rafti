@@ -15,6 +15,7 @@ import {
   birthdayLabel,
   profileCompletion,
 } from '@/lib/profile';
+import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 import type { Pronouns } from '@/types';
@@ -133,9 +134,9 @@ export default function EditProfileScreen() {
                 key={interest}
                 onPress={() => setOpen('interests')}
                 accessibilityRole="button"
-                accessibilityLabel={interest}
+                accessibilityLabel={phrase(interest)}
                 style={({ pressed }) => [styles.pill, pressed && styles.pressed]}>
-                <Txt style={styles.pillText}>{interest}</Txt>
+                <Txt style={styles.pillText}>{phrase(interest)}</Txt>
               </Pressable>
             ))}
             {interests.length < MAX_INTERESTS ? (

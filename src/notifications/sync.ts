@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import i18n from '@/i18n';
+import i18n, { phrase } from '@/i18n';
 import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
 import { notificationsModule } from './native';
@@ -100,7 +100,7 @@ export async function configurePushes() {
             .slice(0, IDEA_BUTTONS)
             .map((idea) => ({
               identifier: `${IDEA_ACTION}${idea.intent}`,
-              buttonTitle: idea.label,
+              buttonTitle: phrase(idea.label),
               options: { opensAppToForeground: true },
             })),
           reply,

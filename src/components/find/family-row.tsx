@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { AuroraGlass, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { FAMILY_LABELS, type FamilyLabel } from '@/lib/kin';
 import { aurora, colors, shadows, space } from '@/theme';
 import type { Character } from '@/types';
@@ -35,7 +36,7 @@ export function FamilyRow({
           key={role}
           scaleTo={0.94}
           accessibilityRole="button"
-          accessibilityLabel={who ? t('find.yourRole', { name: who.name, role }) : t('find.chooseRole', { role })}
+          accessibilityLabel={who ? t('find.yourRole', { name: who.name, role: phrase(role) }) : t('find.chooseRole', { role: phrase(role) })}
           onPress={() => (who ? onOpen(who.character) : onChoose(role))}
           style={styles.seat}>
           {who ? (
@@ -45,8 +46,8 @@ export function FamilyRow({
               <Ionicons name="add" size={26} color={aurora.tint} />
             </AuroraGlass>
           )}
-          <Txt style={[styles.label, !who && styles.labelEmpty]} lines={2}>
-            {who ? who.name : role}
+          <Txt style={[styles.label, !who && styles.labelEmpty]} lines={2} adjustsFontSizeToFit minimumFontScale={0.8}>
+            {who ? who.name : phrase(role)}
           </Txt>
         </PressableScale>
       ))}

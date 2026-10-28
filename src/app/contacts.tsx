@@ -18,6 +18,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space } from '@/theme';
 
@@ -110,7 +111,7 @@ export default function ContactsScreen() {
                     </Txt>
                     <View style={styles.bond}>
                       <Txt style={styles.bondLabel} lines={1}>
-                        {relationship.label ?? relationship.levelTitle}
+                        {phrase(relationship.label ?? relationship.levelTitle)}
                       </Txt>
                       <Txt style={styles.meta}>·</Txt>
                       <Txt style={styles.meta}>{t('contacts.level', { level: relationship.level })}</Txt>

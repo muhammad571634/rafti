@@ -22,6 +22,7 @@ import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
 import { isActiveMemory } from '@/economy/memory-limit';
+import { phrase } from '@/i18n';
 import { heightLabel } from '@/lib/character-facts';
 import { daysBetween } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
@@ -279,7 +280,7 @@ function BondCard({
         </View>
         <View style={styles.grow}>
           <Txt style={styles.bondTitle} lines={1}>
-            {t('characterProfile.levelLine', { level: relationship.level, title: relationship.levelTitle })}
+            {t('characterProfile.levelLine', { level: relationship.level, title: phrase(relationship.levelTitle) })}
           </Txt>
           <Txt style={styles.bondLine}>
             {t('us.streak', { count: relationship.streakDays })}

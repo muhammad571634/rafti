@@ -1,5 +1,35 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z20. The English left in the app's data, a real Language page, labels that fit (2026-10-28, D128). NEXT: the built-in catalog (seed characters, dates, worlds, games) per language
+
+**Owner, 2026-10-28:** after checking the 14 languages on the phone: "ancha joy inglizcha qolib
+ketgan" (Character → Settings label list, Find → "Who do you miss?"…), some labels do not fit, and
+Profile → Language "juda rasvo chiqqan". Fix it directly, no agent brief.
+- **Why English was left:** the screens' JSX was translated, but some words are kept as English
+  **data** and printed as is: family roles (`FAMILY_LABELS`), closeness tiers and relationship
+  labels (`TIERS`), interests (`INTEREST_OPTIONS`), reply ideas (`src/lib/reply-ideas.ts`).
+- **The rule:** stored values, the server and the prompts keep the English; only what the user sees
+  and sends goes through `phrase(english)` (`src/i18n/index.ts`), a lookup in each locale's
+  `phrases` block keyed by the English itself (193 phrases × 13 languages). Old saves translate
+  too. A reply idea's line is sent in the screen language (`answerIdea`, `answerFromPush`, chat's
+  everyday ideas, the edit draft), so one tap no longer writes English into a Russian chat (the
+  reply-language lock moved after two). Effects still follow the idea's `intent`. Push buttons use it.
+  `src/i18n/phrases.test.ts` fails when a new label or idea has no phrase in every locale.
+- `alarms.offFree` replaces the English "⏰ Alarm off · this reply was free" system line.
+- **Profile → Language** is now its own iOS Settings page (`src/app/language.tsx`): "Automatic" with
+  the phone's language in one group, then every language under its own name with its name in the
+  current language beneath ("Deutsch" / "Немецкий", `languages.*` from Node's ICU in all 14 files)
+  and the accent ✓. The old sheet had 15 rows that ran off the top of the screen. Onboarding's
+  language sheet uses the same list (`LanguageList`, `pickLanguage`) and the new `Sheet scroll`.
+- **Fit:** chat-list swipe actions, character settings quick tiles, the family circles, sheet titles
+  and the date-theme bar title shrink to fit (`adjustsFontSizeToFit`) instead of cutting off.
+- **Not yet (owner decides):** the built-in catalog in `src/mock/` (~560 strings: seed characters'
+  tagline/bio/greeting, dates, date themes, worlds, quiz questions, radio, diary samples) and the
+  morning-chain mock dialog (`src/lib/morning-chain.ts`; its chips are parsed as English). Plan:
+  `src/i18n/content/<code>.json` by item id with English fallback; the server later serves the same ids.
+Checked: `npx tsc --noEmit`, `npm run check:locales`, `npm test` 449/449; a static replica of the
+new Language page and the label list in ru / de / ja (headless Chrome).
+
 ### 0z19. EAS Build + OTA updates for preview APK (2026-10-28, D127). NEXT: test APK on Samsung A51, B2.4 retrieval past the cap (pgvector)
 
 **Owner, 2026-10-28:** Set up EAS Build and expo-updates for the preview APK:

@@ -25,6 +25,7 @@ import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
+import { phrase } from '@/i18n';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
@@ -260,7 +261,7 @@ export default function UsScreen() {
                 <Txt style={styles.daysLabel}>{t('us.daysShort', { count: days })}</Txt>
               </View>
               <Txt style={styles.levelText} lines={1}>
-                {relationship.levelTitle}
+                {phrase(relationship.levelTitle)}
               </Txt>
               <Txt style={styles.levelMeta} lines={1}>
                 {t('us.toLevel', {

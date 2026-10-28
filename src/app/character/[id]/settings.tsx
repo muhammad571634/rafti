@@ -23,6 +23,7 @@ import {
   useScrolledPast,
 } from '@/components/ui';
 import { ClosenessSheet } from '@/components/closeness-sheet';
+import { phrase } from '@/i18n';
 import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
@@ -219,7 +220,7 @@ export default function CharacterSettingsScreen() {
               accessibilityLabel={q.badge ? `${q.label}, ${q.badge}` : q.label}
               style={styles.quickTile}>
               <Ionicons name={q.icon} size={22} color={colors.primary} />
-              <Txt style={styles.quickLabel} color={colors.brandText} lines={1}>
+              <Txt style={styles.quickLabel} color={colors.brandText} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
                 {q.label}
               </Txt>
               {q.badge ? (
@@ -235,8 +236,8 @@ export default function CharacterSettingsScreen() {
           <RelationshipCard
             level={relationship.level}
             intimacy={relationship.intimacy}
-            title={relationship.levelTitle}
-            label={relationship.label}
+            title={phrase(relationship.levelTitle)}
+            label={relationship.label && phrase(relationship.label)}
             onPick={() => setLabelOpen(true)}
             onInfo={() => setClosenessOpen(true)}
           />
@@ -407,7 +408,7 @@ export default function CharacterSettingsScreen() {
           {FAMILY_LABELS.map((label) => (
             <LabelRow
               key={label}
-              title={label}
+              title={phrase(label)}
               meta={t('closeness.family')}
               selected={relationship?.label === label}
               onPress={() => {
@@ -422,8 +423,8 @@ export default function CharacterSettingsScreen() {
               return (
                 <LabelRow
                   key={label}
-                  title={label}
-                  meta={open ? tier.title : t('closeness.lockedAt', { level: tier.from })}
+                  title={phrase(label)}
+                  meta={open ? phrase(tier.title) : t('closeness.lockedAt', { level: tier.from })}
                   locked={!open}
                   selected={relationship?.label === label}
                   onPress={() => {

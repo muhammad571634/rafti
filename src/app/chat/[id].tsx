@@ -32,6 +32,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
@@ -482,7 +483,7 @@ export default function ChatRoomScreen() {
                   {suggestions ? (
                     <QuickReplies
                       ideas={suggestions}
-                      onPick={(idea) => send(idea.text)}
+                      onPick={(idea) => send(phrase(idea.text))}
                       onEdit={(idea) => setIdeaDraft(last ? { messageId: last.id, idea, at: Date.now() } : null)}
                     />
                   ) : null}
@@ -531,7 +532,7 @@ export default function ChatRoomScreen() {
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
             initialValue={typeof draft === 'string' ? draft : undefined}
-            fill={ideaDraft ? { text: ideaDraft.idea.text, at: ideaDraft.at } : undefined}
+            fill={ideaDraft ? { text: phrase(ideaDraft.idea.text), at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
             onTyping={conversationId ? (isTyping) => setComposing(conversationId, isTyping) : undefined}

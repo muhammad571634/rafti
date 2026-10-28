@@ -22,6 +22,8 @@ export interface SheetProps {
    * off the top of the screen.
    */
   avoidKeyboard?: boolean;
+  /** For long lists (the languages): never taller than the screen, the content scrolls. */
+  scroll?: boolean;
   /** Adds the peach ✓ on the right of the header (iOS "Done"); the sheet saves there. */
   onDone?: () => void;
   doneDisabled?: boolean;
@@ -44,10 +46,12 @@ export function Sheet({
   center,
   dismissable = true,
   avoidKeyboard,
+  scroll,
   onDone,
   doneDisabled,
 }: SheetProps) {
   const insets = useSafeAreaInsets();
+  const scrolls = avoidKeyboard || scroll;
   const { t } = useTranslation();
 
   const header = title ? (
@@ -70,7 +74,7 @@ export function Sheet({
         ) : (
           <View style={styles.side} />
         )}
-        <Txt style={styles.title} lines={1} accessibilityRole="header">
+        <Txt style={styles.title} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} accessibilityRole="header">
           {title}
         </Txt>
         {onDone ? (
@@ -115,9 +119,9 @@ export function Sheet({
               : [styles.bottomWrap, { paddingTop: insets.top + space.md, paddingBottom: Math.max(EDGE, insets.bottom - 26) }],
           ]}
           pointerEvents="box-none">
-          <View style={[center ? styles.centerCard : styles.bottomCard, avoidKeyboard && styles.capped, shadows.modal]}>
+          <View style={[center ? styles.centerCard : styles.bottomCard, scrolls && styles.capped, shadows.modal]}>
             {!center ? <View style={styles.grabber} /> : null}
-            {avoidKeyboard ? (
+            {scrolls ? (
               <ScrollView
                 bounces={false}
                 keyboardShouldPersistTaps="handled"

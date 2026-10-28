@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { PressableScale, Sheet, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { tierForLevel, TIERS } from '@/mock';
 import { colors, radius, space } from '@/theme';
 
@@ -51,7 +52,7 @@ export function ClosenessSheet({
                   <Ionicons name={tier.from === 0 ? 'heart-outline' : 'heart'} size={18} color={colors.bond} />
                 </View>
                 <View style={styles.flex}>
-                  <Txt variant="bodyStrong">{tier.title}</Txt>
+                  <Txt variant="bodyStrong">{phrase(tier.title)}</Txt>
                   {here ? (
                     <Txt variant="caption" color={colors.bondText}>
                       {t('closeness.youAreHere')}
@@ -77,7 +78,7 @@ export function ClosenessSheet({
                         {tier.labels.map((label) => (
                           <View key={label} style={styles.label}>
                             <Txt variant="chip" color={colors.bondText}>
-                              {label}
+                              {phrase(label)}
                             </Txt>
                           </View>
                         ))}

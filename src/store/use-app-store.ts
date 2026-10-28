@@ -30,7 +30,7 @@ import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
-import { getSavedLocale, phoneLanguage } from '@/i18n';
+import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
@@ -2478,7 +2478,7 @@ export const useAppStore = create<AppState>()(
       },
 
       answerIdea: (conversationId, messageId, idea, edited) =>
-        answerLine(set, get, conversationId, messageId, edited ?? idea.text, idea, edited != null),
+        answerLine(set, get, conversationId, messageId, edited ?? phrase(idea.text), idea, edited != null),
 
       answerFromPush: ({ characterId, line, reach, intent, text }) => {
         // The moment's line may not be in the chat yet: the clock writes what is due, else it lands here.
@@ -2494,7 +2494,7 @@ export const useAppStore = create<AppState>()(
           if (!landed) appendMessage(set, get, conversation.id, { ...themText(conversation.id, line), ...withIdeas(reach) }, { countUnread: false });
           const message = find();
           const idea = intent ? ideasFor(reach).find((x) => x.intent === intent) : undefined;
-          if (message && idea) return answerLine(set, get, conversation.id, message.id, idea.text, idea);
+          if (message && idea) return answerLine(set, get, conversation.id, message.id, phrase(idea.text), idea);
           if (message && typed) return answerLine(set, get, conversation.id, message.id, typed);
         }
         return typed ? get().sendText(conversation.id, typed) : 'empty';
@@ -4872,7 +4872,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
       set,
       get,
       conversationId,
-      { id: uid('m'), conversationId, author: 'them', kind: 'system', text: '⏰ Alarm off · this reply was free', createdAt: now.toISOString() },
+      { id: uid('m'), conversationId, author: 'them', kind: 'system', text: i18n.t('alarms.offFree'), createdAt: now.toISOString() },
       { quiet: true },
     );
     if (crisis) return false;

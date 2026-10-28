@@ -671,7 +671,7 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
         <View style={[styles.actionDot, { backgroundColor: action.fill }]}>
           <Ionicons name={action.icon} size={21} color={action.ink} />
         </View>
-        <Txt style={styles.actionText} lines={1} maxFontSizeMultiplier={1.2}>
+        <Txt style={styles.actionText} lines={1} maxFontSizeMultiplier={1.2} adjustsFontSizeToFit minimumFontScale={0.75}>
           {action.label}
         </Txt>
       </Animated.View>
