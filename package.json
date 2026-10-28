@@ -59,13 +59,15 @@
   },
   "scripts": {
     "start": "expo start --go",
+    "ensure:expo": "node scripts/ensure-expo.mjs",
     "android": "expo start --go --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "typecheck:test": "tsc -p tsconfig.test.json",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-test-hooks.mjs --test \"src/**/*.test.ts\""
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-test-hooks.mjs --test \"src/**/*.test.ts\"",
+    "check:locales": "node scripts/check-locales.mjs"
   },
   "private": true
 }

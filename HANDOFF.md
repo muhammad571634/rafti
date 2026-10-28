@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z17. Translate the app's screens into 13 languages (2026-10-28, D125). NEXT: Profile → Language screen and iOS per-app language settings
+
+**Owner, 2026-10-28:** All 13 languages requested by the owner are added: `es`, `pt-BR`, `fr`, `de`, `it`, `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th`, `ru`, `tr`.
+Each locale file in `src/i18n/locales/` contains the full ~2050 strings in the exact key order of `en.json`.
+All `{{placeholder}}` variables are strictly preserved.
+CLDR plural rules are respected per language: `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th` have `_other` only; `ru` has `_one`, `_few`, `_many`, `_other`; `es`, `pt-BR`, `fr`, `de`, `it`, `tr` have `_one`, `_other`.
+Shells currency is translated consistently across every file (e.g. conchas, coquillages, Muscheln, conchiglie, 貝殻, 조개, 貝殼, kerang, vỏ sò, เปลือกหอย, ракушки, kabuklar).
+`src/i18n/index.ts` imports all 14 locales, registers them in `resources`, exports complete `SUPPORTED_LOCALES` with native labels, and resolves device locales (e.g. `pt-BR`, `zh-Hant` from `zh-TW`, `zh-HK`, `zh-MO`).
+Validation: `npm run check:locales` passes for all 13 locales, `npx tsc --noEmit` passes with 0 errors, and `npm test` passes.
+
 ### 0z16. B2.3: the memory on the server (2026-10-28, D124). NEXT: B2.4 retrieval past the cap (pgvector), or the Language screen
 
 **Owner, 2026-10-28:** "Qadamni uchishing mumkin, ya'ni xotira serverga ham saqlash" (yes to this
