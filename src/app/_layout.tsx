@@ -17,6 +17,8 @@ import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+/** Longest the splash waits for saved data before it lets go anyway. */
+const SPLASH_LIMIT_MS = 8000;
 // The window behind every screen (keyboard, transitions) in the launch theme's canvas colour.
 SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
@@ -33,8 +35,12 @@ export default function RootLayout() {
       .finally(() => setI18nReady(true));
   }, []);
 
+  // The splash stays up until the first real screen is there (OnboardingGate lets it go); this
+  // only keeps a launch that never finishes loading from sitting on the splash for good.
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync().catch(() => {});
+    if (!ready) return;
+    const timer = setTimeout(() => SplashScreen.hideAsync().catch(() => {}), SPLASH_LIMIT_MS);
+    return () => clearTimeout(timer);
   }, [ready]);
 
   if (!ready) return null;
@@ -96,7 +102,14 @@ function OnboardingGate() {
     if (navReady && hydrated && blocked) router.replace('/onboarding');
   }, [navReady, hydrated, blocked, router]);
 
-  if (hydrated && !blocked) return null;
+  // The splash goes once saved data is in and the right first screen is underneath, so launch
+  // goes straight from the splash to content, without a blank cover in between.
+  const released = hydrated && !blocked;
+  useEffect(() => {
+    if (released) SplashScreen.hideAsync().catch(() => {});
+  }, [released]);
+
+  if (released) return null;
   return <View style={styles.cover} pointerEvents="auto" />;
 }
 
@@ -107,6 +120,11 @@ function OnboardingGate() {
  */
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   const { t } = useTranslation();
+
+  // An error during launch must not stay hidden behind the splash.
+  useEffect(() => {
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
 
   if (__DEV__) console.error(error);
 

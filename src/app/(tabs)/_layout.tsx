@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   // Over the blur, a thin fill keeps the bar's own labels crisp whatever scrolls beneath.
   fill: { backgroundColor: isDark ? 'rgba(30,30,32,0.45)' : 'rgba(255,255,255,0.5)' },
   // Without the blur, a denser fill keeps the labels crisp over whatever scrolls beneath.
-  frost: { backgroundColor: isDark ? 'rgba(30,30,32,0.86)' : 'rgba(255,255,255,0.84)' },
+  frost: { backgroundColor: isDark ? 'rgba(30,30,32,0.9)' : 'rgba(255,255,255,0.9)' },
   pill: {
     flex: 1,
     height: BAR,
