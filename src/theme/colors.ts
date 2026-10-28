@@ -257,6 +257,7 @@ export const colors: Record<keyof typeof lightColors, string> = isDark ? nightCo
  */
 const auroraLight = {
   base: '#FBF6F1',
+  /** Baked into assets/images/aurora-*.png: re-run scripts/build-aurora.py after changing them. */
   blobs: ['#FFC9A3', '#C9C2FF', '#A8EBDD', '#FFD6E4'] as readonly string[],
   glass: 'rgba(255,255,255,0.46)',
   glassOn: 'rgba(255,255,255,0.78)',
