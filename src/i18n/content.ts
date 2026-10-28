@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 
+import de from './content/de.json';
 import en from './content/en.json';
 import es from './content/es.json';
 import fr from './content/fr.json';
@@ -13,6 +14,7 @@ export { overlay };
  * New languages are registered here as they are added in Phase 3.
  */
 export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
+  de,
   en,
   es,
   'pt-BR': ptBR,

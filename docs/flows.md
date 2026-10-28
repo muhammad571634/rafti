@@ -176,5 +176,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 3 (es) | done | Spanish content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (pt-BR) | done | Brazilian Portuguese content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (fr) | done | French content translation generated (1973 strings), checked and registered | — |
+| F30 Content translation: Phase 3 (de) | done | German content translation generated (1973 strings), checked and registered | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
