@@ -7,6 +7,7 @@ import { BookRow, LoreInfoButton, servesLine } from '@/components/lore/lore-rows
 import { GroupLabel } from '@/components/plans/store-look';
 import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
+import { phrase } from '@/i18n';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -47,7 +48,7 @@ export default function LorebooksScreen() {
               key={book.id}
               official
               series={book.series}
-              name={book.name}
+              name={phrase(book.name)}
               count={book.entries.length}
               last={i === officialLorebooks.length - 1}
               onPress={() => open(book)}
@@ -60,7 +61,7 @@ export default function LorebooksScreen() {
           {own.map((book, i) => (
             <BookRow
               key={book.id}
-              name={book.name}
+              name={phrase(book.name)}
               hint={servesLine(book, characters, t)}
               count={book.entries.length}
               last={i === own.length - 1 && !(canAdd || upsell)}

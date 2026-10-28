@@ -14,6 +14,7 @@ import { freeRoundsLeft, STREAM_SHELLS } from '@/economy/streams';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { haptic } from '@/lib/haptics';
 import { fillTopic, STREAM_TOPIC_MAX, STREAM_TOPICS } from '@/lib/streams';
+import { phrase } from '@/i18n';
 import { groupBySeries } from '@/mock/characters';
 import { todayKey } from '@/mock/time';
 import { useAppStore } from '@/store/use-app-store';
@@ -132,7 +133,7 @@ export default function NewStreamScreen() {
           {friends.length ? <InsetGroup>{friends.map((friend, i) => row(friend, i === friends.length - 1))}</InsetGroup> : null}
           {others.map((group) => (
             <View key={group.series}>
-              <GroupLabel>{group.series === 'Other' ? t('streams.others') : group.series}</GroupLabel>
+              <GroupLabel>{group.series === 'Other' ? t('streams.others') : phrase(group.series)}</GroupLabel>
               <InsetGroup>{group.people.map((friend, i) => row(friend, i === group.people.length - 1))}</InsetGroup>
             </View>
           ))}

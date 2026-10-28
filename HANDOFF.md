@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z22. Translate content: Phase 0 leftovers (2026-10-28). NEXT: Phase 1 (content extract & overlay machinery)
+
+- Level-up moment title translated with `phrase(String(moment.params.title))` in `src/app/(tabs)/us.tsx`.
+- The 4 world names ("Seaside Academy", "Moonlit Realm", "NEON TIDE", "Tidepool Café") added to `phrases` across all 14 locale files, verified in `src/i18n/phrases.test.ts`.
+- All UI screens and components printing `series` now wrap the text in `phrase(...)` while preserving logic comparisons.
+- Checked: `npm run check:locales`, `npm test` (449/449 passing), `npx tsc --noEmit` (0 errors).
+
 ### 0z21. EAS build fixed: lock file in sync for npm 10 and 11 (2026-10-28)
 
 EAS build `9f11d7f6` failed at Install dependencies: EAS ran Node 22 / npm 10, whose `npm ci` wants

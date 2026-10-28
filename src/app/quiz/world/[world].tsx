@@ -10,6 +10,7 @@ import { CARD_SHADOW, BUY_BAR_SPACE, STORE, StoreBuyBar } from '@/components/pla
 import { AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { lineFor, pickSome, WORLD_PASS, WORLD_QUESTIONS } from '@/lib/quiz';
+import { phrase } from '@/i18n';
 import { worldByKey } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, systemColors } from '@/theme';
@@ -83,7 +84,7 @@ export default function WorldQuizScreen() {
     );
   }
 
-  const title = t('worldQuiz.title', { world: world.series });
+  const title = t('worldQuiz.title', { world: phrase(world.series) });
 
   if (!host) {
     return (
@@ -92,7 +93,7 @@ export default function WorldQuizScreen() {
         <LargeTitle>{title}</LargeTitle>
         <EmptyState
           symbol={{ ios: 'safari.fill', icon: 'compass' }}
-          title={t('worldQuiz.noHost', { world: world.series })}
+          title={t('worldQuiz.noHost', { world: phrase(world.series) })}
           actionLabel={t('frames.find')}
           onAction={() => router.replace('/(tabs)/find')}
         />
@@ -149,7 +150,7 @@ export default function WorldQuizScreen() {
             )}
             <Txt style={styles.resultTitle} center accessibilityRole="header">
               {result === 'won'
-                ? t('worldQuiz.wonTitle', { world: world.series })
+                ? t('worldQuiz.wonTitle', { world: phrase(world.series) })
                 : result === 'again'
                   ? t('worldQuiz.alreadyTitle', { score, total })
                   : t('worldQuiz.lostTitle', { score, total })}
@@ -221,7 +222,7 @@ export default function WorldQuizScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: picked != null ? BUY_BAR_SPACE : insets.bottom + space.xl }}>
         <Txt style={styles.progress}>
-          {t('worldQuiz.progress', { world: world.series, n: index + 1, total: questions.length })}
+          {t('worldQuiz.progress', { world: phrase(world.series), n: index + 1, total: questions.length })}
         </Txt>
         <Txt style={styles.question} accessibilityRole="header">
           {question.text}

@@ -507,9 +507,17 @@
     "messagesFirstHint": "Morning and night greetings, calls and reminders.",
     "chatAnimation": "Chat animations",
     "replyStyle": "Reply style",
-    "replyStyles": { "talk": "Talk", "mix": "Mixed", "story": "Story" },
+    "replyStyles": {
+      "talk": "Talk",
+      "mix": "Mixed",
+      "story": "Story"
+    },
     "replyLength": "Reply length",
-    "replyLengths": { "short": "Short", "auto": "Auto", "long": "Long" },
+    "replyLengths": {
+      "short": "Short",
+      "auto": "Auto",
+      "long": "Long"
+    },
     "sectionChat": "This chat",
     "sectionCharacter": "Character",
     "sectionManage": "Manage",
@@ -2116,8 +2124,16 @@
     "shellsNote": "{{amount}} plan shells come again on {{date}}.",
     "withPro": "With Pro",
     "choose": "Choose a plan",
-    "row": { "proAnnual": "Pro Yearly", "pro": "Pro Monthly", "basic": "Basic" },
-    "per": { "proAnnual": "per year", "pro": "per month", "basic": "per month" },
+    "row": {
+      "proAnnual": "Pro Yearly",
+      "pro": "Pro Monthly",
+      "basic": "Basic"
+    },
+    "per": {
+      "proAnnual": "per year",
+      "pro": "per month",
+      "basic": "per month"
+    },
     "proLine": "Calls, voice, pictures",
     "hoursShort": "{{count}} h",
     "compare": {
@@ -2149,9 +2165,27 @@
     "reachOff": "{{name}} can't text first",
     "forget": "Forget this",
     "forgetConfirm": "{{name}} will forget it, and its plan goes too.",
-    "kind": { "plan": "Plan", "follow": "Following up", "goal": "Goal", "quest": "Quest" },
-    "outcome": { "good": "Went well", "bad": "Not great", "done": "Done", "off": "It's off", "quiet": "No texts" },
-    "end": { "good": "It went well", "bad": "Not great", "done": "Done", "off": "It's off", "quiet": "No texts about it", "stopGoal": "Stop this goal" },
+    "kind": {
+      "plan": "Plan",
+      "follow": "Following up",
+      "goal": "Goal",
+      "quest": "Quest"
+    },
+    "outcome": {
+      "good": "Went well",
+      "bad": "Not great",
+      "done": "Done",
+      "off": "It's off",
+      "quiet": "No texts"
+    },
+    "end": {
+      "good": "It went well",
+      "bad": "Not great",
+      "done": "Done",
+      "off": "It's off",
+      "quiet": "No texts about it",
+      "stopGoal": "Stop this goal"
+    },
     "phase": {
       "eve": "Early night",
       "before": "Good luck",
@@ -2187,10 +2221,19 @@
       "hurt": "You got hurt",
       "fight": "The fight you had"
     },
-    "life": { "lunch": "Family lunchtime", "evening": "Family evening", "morning": "Family morning", "weekend": "Family weekend", "sunday": "Family Sunday" },
+    "life": {
+      "lunch": "Family lunchtime",
+      "evening": "Family evening",
+      "morning": "Family morning",
+      "weekend": "Family weekend",
+      "sunday": "Family Sunday"
+    },
     "hello": "Saying hello",
     "ask": "Asking if they may text you",
-    "pause": { "break": "You'd been chatting a while", "night": "It was late" }
+    "pause": {
+      "break": "You'd been chatting a while",
+      "night": "It was late"
+    }
   },
   "languages": {
     "en": "English",
@@ -2401,6 +2444,10 @@
     "Let me think…": "Let me think…",
     "You first!": "You first!",
     "Long story 😅": "Long story 😅",
-    "Can you wake me up for it?": "Can you wake me up for it?"
+    "Can you wake me up for it?": "Can you wake me up for it?",
+    "Seaside Academy": "Seaside Academy",
+    "Moonlit Realm": "Moonlit Realm",
+    "NEON TIDE": "NEON TIDE",
+    "Tidepool Café": "Tidepool Café"
   }
 }

@@ -12,6 +12,7 @@ import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor, recentLines, triggeredLore } from '@/lib/lorebook';
+import { phrase } from '@/i18n';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -83,7 +84,7 @@ export default function CharacterLoreScreen() {
           <>
             <GroupLabel>{t('lore.theirWorld')}</GroupLabel>
             <InsetGroup>
-              <BookRow official series={world.series} name={world.name} count={world.entries.length} last onPress={() => open(world)} />
+              <BookRow official series={world.series} name={phrase(world.name)} count={world.entries.length} last onPress={() => open(world)} />
             </InsetGroup>
           </>
         ) : null}

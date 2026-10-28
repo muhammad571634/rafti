@@ -18,6 +18,7 @@ import {
   Txt,
   UserAvatar,
 } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/lib/quiz';
 import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
@@ -131,7 +132,7 @@ export default function QuizScreen() {
               <CharacterAvatar character={character} size={64} ring ringColor={aurora.card} />
               {world ? (
                 <View style={styles.worldPill}>
-                  <Txt style={styles.worldPillText}>{world.series}</Txt>
+                  <Txt style={styles.worldPillText}>{phrase(world.series)}</Txt>
                 </View>
               ) : null}
             </View>
@@ -150,7 +151,7 @@ export default function QuizScreen() {
             <PressableScale
               scaleTo={0.985}
               accessibilityRole="button"
-              accessibilityLabel={t('quizHome.worldWin', { world: world.series })}
+              accessibilityLabel={t('quizHome.worldWin', { world: phrase(world.series) })}
               style={[styles.card, styles.row, styles.worldRow]}
               onPress={() =>
                 router.push({ pathname: '/quiz/world/[world]', params: { world: world.key, host: character.id } })
@@ -158,7 +159,7 @@ export default function QuizScreen() {
               <SymbolTile fill={moduleFills.photo} ios="photo.on.rectangle.angled" icon="images" />
               <View style={styles.flex}>
                 <Txt style={styles.rowTitle} lines={2}>
-                  {t('quizHome.worldWin', { world: world.series })}
+                  {t('quizHome.worldWin', { world: phrase(world.series) })}
                 </Txt>
                 <Txt style={[styles.rowHint, won && styles.won]}>
                   {won ? t('quizHome.worldWon') : t('quizHome.worldHost', { name })}

@@ -12,6 +12,7 @@ import { useEarlyAccess } from '@/components/plans/early-access';
 import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, Segmented, Txt, useScrolledPast } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isReleased } from '@/economy/early-access';
+import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, space } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
@@ -95,7 +96,7 @@ export default function WorldScreen() {
           <View style={styles.heroFoot}>
             <View style={styles.flex}>
               <Txt style={styles.title} accessibilityRole="header" lines={2}>
-                {series}
+                {phrase(series)}
               </Txt>
               <View style={styles.count}>
                 <Ionicons name="person" size={14} color={colors.onMediaSoft} />
@@ -121,7 +122,7 @@ export default function WorldScreen() {
             autoFocus
             value={query}
             onChangeText={setQuery}
-            placeholder={t('find.searchWorld', { world: series })}
+            placeholder={t('find.searchWorld', { world: phrase(series) })}
             style={styles.search}
           />
         ) : null}
@@ -167,7 +168,7 @@ export default function WorldScreen() {
         <PressableScale
           scaleTo={0.9}
           accessibilityRole="button"
-          accessibilityLabel={t('find.searchWorld', { world: series })}
+          accessibilityLabel={t('find.searchWorld', { world: phrase(series) })}
           onPress={() => {
             if (searchOpen) setQuery('');
             setSearchOpen((v) => !v);

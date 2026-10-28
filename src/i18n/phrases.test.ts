@@ -7,6 +7,7 @@ import { FAMILY_LABELS } from '../lib/kin';
 import { INTEREST_OPTIONS } from '../lib/profile';
 import { allReachKeys, everydayIdeas, ideasFor } from '../lib/reply-ideas';
 import { TIERS } from '../mock/user';
+import { WORLDS } from '../mock/worlds';
 
 const dir = join(import.meta.dirname, 'locales');
 const phrasesOf = (file: string): Record<string, string> => JSON.parse(readFileSync(join(dir, file), 'utf8')).phrases ?? {};
@@ -29,6 +30,7 @@ describe('phrases: the English words kept as data, in every screen language', ()
     ...TIERS.flatMap((tier) => [tier.title, ...tier.labels]),
     ...INTEREST_OPTIONS,
     ...allIdeas().flatMap((idea) => [idea.label, idea.text]),
+    ...WORLDS.map((w) => w.series),
   ];
 
   it('covers every label, tier, interest and reply idea', () => {

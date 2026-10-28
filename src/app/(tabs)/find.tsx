@@ -25,6 +25,7 @@ import {
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
+import { phrase } from '@/i18n';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
@@ -366,7 +367,7 @@ function Feature({
             </Txt>
             {character.series ? (
               <Txt variant="caption" color={colors.onMediaMuted} lines={1}>
-                {character.series}
+                {phrase(character.series)}
               </Txt>
             ) : null}
           </View>
@@ -392,7 +393,7 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
     <PressableScale
       scaleTo={0.97}
       accessibilityRole="button"
-      accessibilityLabel={t('find.openWorld', { world: group.series })}
+      accessibilityLabel={t('find.openWorld', { world: phrase(group.series) })}
       onPress={onOpen}
       style={[
         styles.tile,
@@ -407,7 +408,7 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
       <LinearGradient colors={SCRIM} style={StyleSheet.absoluteFill} />
       <View style={styles.tileFoot}>
         <Txt style={styles.tileName} lines={2}>
-          {group.series}
+          {phrase(group.series)}
         </Txt>
         <View style={styles.tileRow}>
           <View style={styles.stack}>
@@ -524,7 +525,7 @@ function Results({
                 key={g.series}
                 scaleTo={0.99}
                 accessibilityRole="button"
-                accessibilityLabel={t('find.openWorld', { world: g.series })}
+                accessibilityLabel={t('find.openWorld', { world: phrase(g.series) })}
                 onPress={() => onOpenWorld(g)}
                 style={styles.row}>
                 {g.characters[0] ? (
@@ -532,7 +533,7 @@ function Results({
                 ) : null}
                 <View style={[styles.rowBody, styles.rowInline, i < worlds.length - 1 && styles.rowLine]}>
                   <Txt style={[styles.rowName, styles.flex]} lines={1}>
-                    {g.series}
+                    {phrase(g.series)}
                   </Txt>
                   <Ionicons name="chevron-forward" size={16} color={aurora.textMuted} />
                 </View>
@@ -626,7 +627,7 @@ function WorldLine({ series }: { series: string }) {
     <View style={styles.worldLine}>
       <View style={[styles.dot, { backgroundColor: WORLD_TINT[series] ?? aurora.textMuted }]} />
       <Txt variant="caption" color={aurora.textMuted} lines={1}>
-        {series}
+        {phrase(series)}
       </Txt>
     </View>
   );

@@ -7,6 +7,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { characterImage, PressableScale, SFIcon, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { heightLabel } from '@/lib/character-facts';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
@@ -44,7 +45,7 @@ export function IntroCard({
   const facts: Fact[] = [];
   if (character.age) facts.push({ key: 'age', ios: 'birthday.cake', icon: 'gift-outline', label: t('intro.age', { count: character.age }) });
   if (character.heightCm) facts.push({ key: 'height', ios: 'ruler', icon: 'resize-outline', label: heightLabel(character.heightCm, locale) });
-  if (character.series) facts.push({ key: 'world', ios: 'globe', icon: 'globe-outline', label: character.series });
+  if (character.series) facts.push({ key: 'world', ios: 'globe', icon: 'globe-outline', label: phrase(character.series) });
 
   return (
     <PressableScale

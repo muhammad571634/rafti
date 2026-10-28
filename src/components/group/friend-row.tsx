@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { CharacterAvatar, Txt } from '@/components/ui';
+import { phrase } from '@/i18n';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
@@ -67,7 +68,7 @@ export function FriendRow({
           </Txt>
           {friend.character.series ? (
             <Txt style={styles.series} lines={1}>
-              {friend.character.series}
+              {phrase(friend.character.series)}
             </Txt>
           ) : null}
         </View>

@@ -112,7 +112,7 @@ export default function CharacterProfileScreen() {
           </View>
           <Txt style={styles.handle} center>
             {character.handle}
-            {character.series ? ` · ${character.series}` : ''}
+            {character.series ? ` · ${phrase(character.series)}` : ''}
           </Txt>
           {locked ? (
             <Txt variant="caption" color={colors.textSecondary} center style={styles.bold}>

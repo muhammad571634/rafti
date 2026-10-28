@@ -42,7 +42,7 @@ import { Intro } from '@/components/onboarding/intro';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
-import { getSavedLocaleSync, SUPPORTED_LOCALES } from '@/i18n';
+import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { morningGreetings } from '@/mock';
 import { requestPushPermission } from '@/notifications/sync';
@@ -506,14 +506,14 @@ function DeckCard({ character, depth, width, height, onPress }: { character: Cha
         onPress={onPress}
         disabled={depth !== 0}
         accessibilityRole="button"
-        accessibilityLabel={`${character.name}, ${character.series}`}
+        accessibilityLabel={`${character.name}${character.series ? `, ${phrase(character.series)}` : ''}`}
         style={StyleSheet.absoluteFill}>
         <Image source={HEROES[character.id] ?? character.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
         <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.78)']} style={styles.deckShade} />
         <View style={styles.deckText}>
           <View style={styles.deckChip}>
             <Txt style={styles.deckChipText} lines={1}>
-              {character.series}
+              {character.series ? phrase(character.series) : ''}
             </Txt>
           </View>
           <Txt style={styles.deckName} lines={1}>

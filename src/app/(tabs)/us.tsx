@@ -371,7 +371,10 @@ export default function UsScreen() {
                 <MomentRow
                   key={moment.id}
                   kind={moment.kind}
-                  text={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
+                  text={t(
+                    `us.momentText.${moment.kind}`,
+                    { ...moment.params, ...(moment.params?.title ? { title: phrase(String(moment.params.title)) } : {}) },
+                  )}
                   when={relativeStamp(moment.createdAt)}
                   last={last}
                   // A photo moment shows the picture and opens it.

@@ -90,7 +90,7 @@ export function FamilySheet({
 
         {worlds.map((g) => (
           <View key={g.series}>
-            <Txt style={styles.label}>{g.series}</Txt>
+            <Txt style={styles.label}>{phrase(g.series)}</Txt>
             <View style={styles.box}>
               {g.characters.map((c, i) => (
                 <Pressable

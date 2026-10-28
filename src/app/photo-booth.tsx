@@ -27,6 +27,7 @@ import { photoQuota } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { frameLook } from '@/lib/frames';
 import { shortName } from '@/lib/format';
+import { phrase } from '@/i18n';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space } from '@/theme';
@@ -97,7 +98,7 @@ export default function PhotoBoothScreen() {
     { id: 'none', label: t('frames.plain') },
     ...WORLDS.map((w) => ({
       id: `w:${w.key}`,
-      label: w.series,
+      label: phrase(w.series),
       look: w.frame,
       world: w,
       locked: !wonFrames.includes(w.key),
@@ -113,7 +114,7 @@ export default function PhotoBoothScreen() {
       : chosen.mine
         ? t('frames.mineHint')
         : chosen.world
-          ? t('frames.worldHint', { world: chosen.world.series })
+          ? t('frames.worldHint', { world: phrase(chosen.world.series) })
           : t('frames.plainHint');
   // Who would host a locked world's quiz: the partner if they live there, else any friend from it.
   const hostFor = (w: World) =>
@@ -377,14 +378,14 @@ export default function PhotoBoothScreen() {
               />
             ) : null}
             <Txt variant="h2" center>
-              {t('frames.lockedTitle', { world: lockedWorld.series })}
+              {t('frames.lockedTitle', { world: phrase(lockedWorld.series) })}
             </Txt>
             {hostFor(lockedWorld) ? (
               <>
                 <Txt variant="body" color={colors.textSecondary} center>
                   {t('frames.lockedBody', {
                     name: shortName(hostFor(lockedWorld)!.name),
-                    world: lockedWorld.series,
+                    world: phrase(lockedWorld.series),
                   })}
                 </Txt>
                 <Button
@@ -401,7 +402,7 @@ export default function PhotoBoothScreen() {
             ) : (
               <>
                 <Txt variant="body" color={colors.textSecondary} center>
-                  {t('frames.nobodyBody', { world: lockedWorld.series })}
+                  {t('frames.nobodyBody', { world: phrase(lockedWorld.series) })}
                 </Txt>
                 <Button
                   label={t('frames.find')}
