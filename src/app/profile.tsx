@@ -30,6 +30,7 @@ import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { defaultPersona } from '@/lib/personas';
 import { countMessages } from '@/store/message-db';
+import { syncMemories } from '@/store/memory-sync';
 import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/store/message-sync';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
@@ -162,7 +163,8 @@ export default function ProfileScreen() {
   const [chatsStatus, setChatsStatus] = useState<string | undefined>();
   const syncChats = async () => {
     const restored = await restoreFromServer();
-    const status = await syncMessages();
+    // The memory goes with the chats (B2.3); the row reports the chats.
+    const [status] = await Promise.all([syncMessages(), syncMemories()]);
     if (restored) setChatsStatus(t('profile.chatsRestored', { count: restored }));
     else setChatsStatus(t(status === 'synced' ? 'profile.chatsSynced' : status === 'off' ? 'profile.chatsOff' : 'profile.aiOffline'));
     void checkMessages();

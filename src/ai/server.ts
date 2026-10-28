@@ -11,6 +11,9 @@ import type {
   CheckInResult,
   ClientConfig,
   GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
+  MemorySyncResult,
   MessageSyncRequest,
   MessageSyncResult,
   MessagesPage,
@@ -105,6 +108,12 @@ export const serverMessages = {
   page: (accessToken: string, after: number) => call<MessagesPage>(`/v1/messages?after=${after}`, withToken(accessToken), 20_000),
   deleteAccount: (accessToken: string) =>
     call<{ ok: true }>('/v1/account', withToken(accessToken, { method: 'DELETE' }), 15_000),
+};
+
+/** The memory on the server (B2.3): the characters the phone changed go up whole; a new phone reads it all back. */
+export const serverMemories = {
+  sync: (accessToken: string, request: MemorySyncRequest) => call<MemorySyncResult>('/v1/memories/sync', post(accessToken, request), 20_000),
+  all: (accessToken: string) => call<MemoriesState>('/v1/memories', withToken(accessToken), 20_000),
 };
 
 /**

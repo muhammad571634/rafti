@@ -21,9 +21,16 @@ import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts'
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import type { Context } from 'hono';
 
-import { MESSAGE_SYNC_LIMITS, type ClientConfig, type MessageSyncRequest } from '../../src/ai/session-types.ts';
+import {
+  MEMORY_SYNC_LIMITS,
+  MESSAGE_SYNC_LIMITS,
+  type ChatMemory,
+  type ClientConfig,
+  type MemorySyncRequest,
+  type MessageSyncRequest,
+} from '../../src/ai/session-types.ts';
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, FREE_SPINS_PER_DAY, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
-import type { LedgerReason } from '../../src/types/index.ts';
+import type { LedgerReason, MemoryItem } from '../../src/types/index.ts';
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
@@ -113,6 +120,68 @@ export function cleanSync(body: Record<string, unknown> | null): { request: Mess
     request: { droppedChats: droppedChats as string[], deletedIds: deletedIds as string[], upserts: [...kept.values()] },
     skipped,
   };
+}
+
+const MEMORY_ABOUT = new Set(['you', 'them', 'story']);
+const MEMORY_STATUS = new Set(['active', 'superseded', 'archived']);
+const isDay = (value: unknown) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+
+/**
+ * A memory sync the database can take, or null when its shape is wrong. As with the chats, an item
+ * the database would refuse (a bad date, an unknown status, too big, an id already sent) is left
+ * out and counted. A character or chat sent twice keeps its last copy.
+ */
+export function cleanMemorySync(body: Record<string, unknown> | null): { request: MemorySyncRequest; skipped: number } | null {
+  const { characters, chats } = body ?? {};
+  if (!Array.isArray(characters) || characters.length > MEMORY_SYNC_LIMITS.characters) return null;
+  if (!Array.isArray(chats) || chats.length > MEMORY_SYNC_LIMITS.chats) return null;
+
+  const lists = new Map<string, Record<string, unknown>[]>();
+  for (const entry of characters as { characterId?: unknown; items?: unknown }[]) {
+    if (!isId(entry?.characterId) || !Array.isArray(entry.items) || entry.items.length > MEMORY_SYNC_LIMITS.items) return null;
+    lists.delete(entry.characterId);
+    lists.set(entry.characterId, entry.items as Record<string, unknown>[]);
+  }
+  let skipped = 0;
+  const seen = new Set<string>();
+  const kept: MemorySyncRequest['characters'] = [];
+  for (const [characterId, items] of lists) {
+    const ok = items.filter((m) => {
+      const fine =
+        isPlainObject(m) &&
+        isId(m.id) &&
+        !seen.has(m.id) &&
+        m.characterId === characterId &&
+        typeof m.text === 'string' &&
+        m.text.trim().length > 0 &&
+        typeof m.createdAt === 'string' &&
+        !Number.isNaN(Date.parse(m.createdAt)) &&
+        (m.about == null || MEMORY_ABOUT.has(m.about as string)) &&
+        (m.status == null || MEMORY_STATUS.has(m.status as string)) &&
+        (m.pinned == null || typeof m.pinned === 'boolean') &&
+        (m.importance == null || Number.isFinite(m.importance)) &&
+        (m.until == null || isDay(m.until)) &&
+        JSON.stringify(m).length <= MEMORY_SYNC_LIMITS.itemBytes;
+      if (fine) seen.add(m.id as string);
+      else skipped++;
+      return fine;
+    });
+    kept.push({ characterId, items: ok as unknown as MemoryItem[] });
+  }
+
+  const rows = new Map<string, ChatMemory>();
+  for (const entry of chats as Record<string, unknown>[]) {
+    if (!isPlainObject(entry) || !isId(entry.chatId)) return null;
+    if (entry.summary != null && (typeof entry.summary !== 'string' || entry.summary.length > MEMORY_SYNC_LIMITS.summaryChars)) return null;
+    if (entry.mark != null && !isId(entry.mark)) return null;
+    rows.delete(entry.chatId);
+    rows.set(entry.chatId, {
+      chatId: entry.chatId,
+      ...(typeof entry.summary === 'string' && entry.summary.trim() ? { summary: entry.summary.trim() } : {}),
+      ...(typeof entry.mark === 'string' ? { mark: entry.mark } : {}),
+    });
+  }
+  return { request: { characters: kept, chats: [...rows.values()] }, skipped };
 }
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
@@ -324,6 +393,34 @@ export function createApp(
       return c.json(await db.messagesAfter(userId, after, PAGE_SIZE));
     } catch (error) {
       console.error('[messages] read failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  // The memory (B2.3): each character the phone changed goes up whole; a new install reads it all back.
+  app.post('/v1/memories/sync', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const clean = cleanMemorySync(await readJson(c));
+    if (!clean) return c.json({ error: 'badInput' }, 400);
+    try {
+      await db.syncMemories(userId, clean.request);
+      return c.json({ skipped: clean.skipped });
+    } catch (error) {
+      console.error('[memories] sync failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  app.get('/v1/memories', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    try {
+      return c.json(await db.memoriesOf(userId));
+    } catch (error) {
+      console.error('[memories] read failed', error);
       return c.json({ error: 'failed' }, 500);
     }
   });

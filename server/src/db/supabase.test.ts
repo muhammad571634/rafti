@@ -4,6 +4,7 @@ import { after, before, describe, it } from 'node:test';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../../src/economy/shells.ts';
+import type { MemoryItem } from '../../../src/types/index.ts';
 import { createApp } from '../app.ts';
 import { supabaseDb } from './supabase.ts';
 import { WalletError, type BootstrapResult } from './types.ts';
@@ -203,15 +204,63 @@ describe('Supabase (cloud project)', { skip: stack ? false : 'set SUPABASE_E2E=1
     assert.deepEqual(await ids(b.id), ['conv_kai:b1:b1']);
   });
 
+  it('keeps the memory (B2.3): a character replaced whole, a chat summary, own rows only, no app writes', async () => {
+    const fact = (id: string, characterId = 'c_kai', extra: Partial<MemoryItem> = {}): MemoryItem => ({
+      id,
+      characterId,
+      text: `fact ${id}`,
+      source: 'chat',
+      createdAt: '2026-10-28T08:00:00Z',
+      pinned: false,
+      ...extra,
+    });
+    const facts = async (user = a.id) =>
+      (await db!.memoriesOf(user)).characters.flatMap((c) => c.items.map((m) => `${c.characterId}:${m.id}:${m.text}`)).sort();
+
+    await db!.syncMemories(a.id, {
+      characters: [
+        { characterId: 'c_kai', items: [fact('f1'), fact('f2', 'c_kai', { until: '2026-11-02', status: 'active', importance: 0.8, about: 'story' })] },
+        { characterId: 'c_ivy', items: [fact('i1', 'c_ivy')] },
+      ],
+      chats: [{ chatId: 'conv_kai', summary: 'They met at the pool.', mark: 'm9' }],
+    });
+    // Kai's list sent again without f1 (forgotten) and with f2 changed; Ivy is not sent, so she keeps hers.
+    await db!.syncMemories(a.id, { characters: [{ characterId: 'c_kai', items: [fact('f2', 'c_kai', { text: 'changed' }), fact('f3')] }], chats: [] });
+    assert.deepEqual(await facts(), ['c_ivy:i1:fact i1', 'c_kai:f2:changed', 'c_kai:f3:fact f3']);
+    assert.deepEqual((await db!.memoriesOf(a.id)).chats, [{ chatId: 'conv_kai', summary: 'They met at the pool.', mark: 'm9' }]);
+    // A chat with neither a summary nor a mark is dropped; a character sent empty loses everything.
+    await db!.syncMemories(a.id, { characters: [{ characterId: 'c_ivy', items: [] }], chats: [{ chatId: 'conv_kai' }] });
+    assert.deepEqual(await facts(), ['c_kai:f2:changed', 'c_kai:f3:fact f3']);
+    assert.deepEqual((await db!.memoriesOf(a.id)).chats, []);
+
+    assert.equal((await a.client.from('memories').select('client_id')).data?.length, 2);
+    assert.deepEqual((await b.client.from('memories').select('client_id')).data, []);
+    const insert = await a.client.from('memories').insert({ user_id: a.id, client_id: 'x', character_id: 'c', body: {}, text: 'x', created_at: '2026-10-28T08:00:00Z' });
+    assert.ok(insert.error, 'the app must not write memories');
+    assert.ok((await a.client.rpc('sync_memories', { p_user: a.id, p_characters: [], p_chats: [] })).error);
+
+    // Through the API too.
+    const app = createApp(null, { timeoutMs: 1000, db });
+    const res = await app.request('/v1/memories/sync', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${b.token}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ characters: [{ characterId: 'c_kai', items: [fact('b1')] }], chats: [] }),
+    });
+    assert.equal(res.status, 200);
+    assert.deepEqual(await facts(b.id), ['c_kai:b1:fact b1']);
+  });
+
   it('deletes an account with everything it owns (App Store 5.1.1(v))', async () => {
     const gone = await anonymousUser();
     await db!.bootstrap(gone.id, {});
     const message = { id: 'm1', conversationId: 'c', author: 'me', kind: 'text', text: 'hi', createdAt: '2026-10-28T08:00:00Z' } as const;
     await db!.syncMessages(gone.id, { droppedChats: [], deletedIds: [], upserts: [{ chatId: 'c', message }] });
+    const memory = { id: 'f1', characterId: 'c_kai', text: 'Has a beagle.', source: 'chat', createdAt: '2026-10-28T08:00:00Z', pinned: false } as const;
+    await db!.syncMemories(gone.id, { characters: [{ characterId: 'c_kai', items: [memory] }], chats: [{ chatId: 'c', summary: 'Hi.' }] });
     const app = createApp(null, { timeoutMs: 1000, db });
     const res = await app.request('/v1/account', { method: 'DELETE', headers: { authorization: `Bearer ${gone.token}` } });
     assert.equal(res.status, 200);
-    for (const table of ['shell_ledger', 'messages', 'wallets', 'profiles'] as const) {
+    for (const table of ['shell_ledger', 'messages', 'memories', 'chat_memory', 'wallets', 'profiles'] as const) {
       const { data } = await admin.from(table).select('*').eq(table === 'profiles' ? 'id' : 'user_id', gone.id);
       assert.deepEqual(data, [], table);
     }

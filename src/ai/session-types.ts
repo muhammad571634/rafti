@@ -1,4 +1,4 @@
-import type { LedgerReason, Message, PlanId } from '@/types';
+import type { LedgerReason, MemoryItem, Message, PlanId } from '@/types';
 
 /**
  * What `POST /v1/session/bootstrap` takes and returns, shared by the app (`src/ai/account.ts`) and
@@ -115,4 +115,37 @@ export interface MessagesPage {
   messages: { chatId: string; seq: number; message: Message }[];
   /** Pass as `after` for the next page; null on the last page. */
   next: number | null;
+}
+
+/**
+ * `POST /v1/memories/sync` (B2.3): the memory the phone changed. Each character goes up whole and
+ * replaces the server's list for it, so a fact the user had forgotten is gone from the server too.
+ * A chat goes up with its summary and how far the memory pass read; without either, it is dropped.
+ */
+export interface MemorySyncRequest {
+  characters: CharacterMemory[];
+  chats: ChatMemory[];
+}
+
+export interface CharacterMemory {
+  characterId: string;
+  items: MemoryItem[];
+}
+
+export interface ChatMemory {
+  chatId: string;
+  summary?: string;
+  /** The last message the memory pass read (`Conversation.memoryMark`). */
+  mark?: string;
+}
+
+/** The most one sync may carry; the phone sends the rest in the next one. */
+export const MEMORY_SYNC_LIMITS = { characters: 50, items: 400, chats: 200, itemBytes: 4096, summaryChars: 2000 } as const;
+
+/** `GET /v1/memories`: everything the server keeps of the user's memory. */
+export type MemoriesState = MemorySyncRequest;
+
+export interface MemorySyncResult {
+  /** Items the server could not take (a bad date, too big): they stay on the phone only. */
+  skipped: number;
 }

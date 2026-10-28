@@ -3,6 +3,8 @@ import type {
   BootstrapResult,
   CheckInResult,
   GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
   MessageSyncRequest,
   MessagesPage,
   SpendRequest,
@@ -10,7 +12,19 @@ import type {
   WalletState,
 } from '../../../src/ai/session-types.ts';
 
-export type { BootstrapInput, BootstrapResult, CheckInResult, GrantRequest, MessageSyncRequest, MessagesPage, SpendRequest, SpinResult, WalletState };
+export type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
+  MessageSyncRequest,
+  MessagesPage,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+};
 
 /** A wallet call the database refused: too few shells, no wallet yet (before bootstrap), a bad amount. */
 export class WalletError extends Error {
@@ -48,6 +62,13 @@ export interface Db {
   syncMessages(userId: string, request: MessageSyncRequest): Promise<number | null>;
   /** The user's messages after `after`, in `seq` order. */
   messagesAfter(userId: string, after: number, limit: number): Promise<MessagesPage>;
+
+  // The memory (B2.3, supabase/migrations/*_b2_memory_sync.sql).
+  /** One sync, all or nothing: each character sent replaces its list, each chat its row. */
+  syncMemories(userId: string, request: MemorySyncRequest): Promise<void>;
+  /** Everything the server keeps of the user's memory. */
+  memoriesOf(userId: string): Promise<MemoriesState>;
+
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
   deleteUser(userId: string): Promise<void>;
 }

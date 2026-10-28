@@ -1,5 +1,25 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z16. B2.3: the memory on the server (2026-10-28, D124). NEXT: B2.4 retrieval past the cap (pgvector), or the Language screen
+
+**Owner, 2026-10-28:** "Qadamni uchishing mumkin, ya'ni xotira serverga ham saqlash" (yes to this
+step and its migration). **Applied to the cloud:** `supabase/migrations/20261028151126_b2_memory_sync.sql`
+(via the Management API as in 0z7; advisors show nothing for the new tables). `public.memories`
+(one row per app `MemoryItem`, `body jsonb` + copied columns for B2.4) and `public.chat_memory`
+(a chat's summary + `mark`), RLS select-own, written only by `sync_memories()` (service role):
+each character sent **replaces** its list (a forgotten fact leaves the server), each chat its row.
+API: `POST /v1/memories/sync`, `GET /v1/memories` (`cleanMemorySync` in server/src/app.ts).
+Phone: `src/lib/memory-sync.ts` (keys `c:<characterId>` / `h:<chatId>`, signatures, batches,
+`joinRemote`) + `src/store/memory-sync.ts`: every change marks its key in the persisted
+`memorySync.dirty`; a sync 3 s later or on leaving the foreground sends the marked characters
+whole. The first sync of an install reads the server's copy and joins it (a character or chat the
+phone has nothing of takes the server's; the phone's own always wins), then sends it all. Same
+gate as the chats: Profile (dev) → **Server chats** (the row's tap now syncs the memory too).
+Checked: app `tsc`, 447/447; server `tsc`, 45/45 local, **56/56 against the cloud**
+(`SUPABASE_E2E=1` + the Supabase keys from the user env). **Phone check:** Server chats on, chat
+until a memory appears, wait 3 s; the row "Synced". Restored chat summaries need their
+conversations, which are not on the server yet (as in 0z7).
+
 ### 0z15. B2 memory, steps 1-2: the character's memory reaches the model, and the model keeps it (2026-10-28, D123). NEXT: memory on the server (sync), then retrieval past the cap
 
 **Owner, 2026-10-28:** "B2, ya'ni xotira… juda ham qattiq kirish… bozorga shu bilan kiraylik":

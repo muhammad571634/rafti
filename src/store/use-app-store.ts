@@ -60,6 +60,8 @@ import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCo
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
+import type { MemorySyncState } from '@/lib/memory-sync';
+import { resetMemorySync, startMemorySync } from '@/store/memory-sync';
 import { messagesInDb, resetMessages, restoreMessages } from '@/store/message-sync';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
@@ -347,6 +349,8 @@ interface AppState {
   messages: Record<string, Message[]>;
   relationships: Record<string, Relationship>;
   memories: MemoryItem[];
+  /** What of the memory the server has not taken yet (B2.3, `src/store/memory-sync.ts`). */
+  memorySync: MemorySyncState;
   diary: DiaryEntry[];
   /** Pages characters wrote about the user: the morning after a day spent together. */
   characterDiary: CharacterDiaryPage[];
@@ -772,6 +776,7 @@ type PersistedKeys =
   | 'messages'
   | 'relationships'
   | 'memories'
+  | 'memorySync'
   | 'diary'
   | 'characterDiary'
   | 'diaryPagesRead'
@@ -947,6 +952,7 @@ export const useAppStore = create<AppState>()(
       messages: {},
       relationships: {},
       memories: [],
+      memorySync: { dirty: [], joined: false },
       diary: [],
       characterDiary: [],
       diaryPagesRead: [],
@@ -2641,6 +2647,7 @@ export const useAppStore = create<AppState>()(
         // The server's copy is deleted first (`deleteServerAccount`); here the device starts over,
         // its message database included.
         void resetMessages();
+        resetMemorySync();
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
       },
 
@@ -3358,6 +3365,7 @@ export const useAppStore = create<AppState>()(
         messages: messagesInDb() ? {} : capMessages(s.messages),
         relationships: s.relationships,
         memories: s.memories,
+        memorySync: s.memorySync,
         diary: s.diary,
         characterDiary: s.characterDiary,
         diaryPagesRead: s.diaryPagesRead,
@@ -3391,6 +3399,8 @@ export const useAppStore = create<AppState>()(
         settings: s.settings,
       }),
       onRehydrateStorage: () => () => {
+        // Memory changes from here on reach the server, the hydration work's own included.
+        startMemorySync(useAppStore);
         // The messages come from the database first, so the work below sees them all.
         void restoreMessages(useAppStore).finally(finishHydration);
       },

@@ -6,11 +6,15 @@ import {
   type BootstrapResult,
   type CheckInResult,
   type Db,
+  type MemoriesState,
   type MessagesPage,
   type SpinResult,
   type UsageEvent,
   type WalletState,
 } from './types.ts';
+
+/** The API's own cap on the rows one read answers. */
+const MEMORY_PAGE = 1000;
 
 /**
  * Supabase with the server's secret key (service role): RLS does not apply to it, so every write
@@ -100,6 +104,40 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       return {
         messages: rows.map((r) => ({ chatId: r.chat_id, seq: Number(r.seq), message: r.body })),
         next: rows.length === limit ? Number(rows[rows.length - 1].seq) : null,
+      };
+    },
+
+    async syncMemories(userId, { characters, chats }) {
+      await rpc<null>('sync_memories', { p_user: userId, p_characters: characters, p_chats: chats });
+    },
+
+    async memoriesOf(userId) {
+      // The API answers at most 1000 rows a call, so the memories come in pages.
+      const items: { character_id: string; body: MemoriesState['characters'][number]['items'][number] }[] = [];
+      for (let from = 0; ; from += MEMORY_PAGE) {
+        const { data, error } = await client
+          .from('memories')
+          .select('character_id, body')
+          .eq('user_id', userId)
+          .order('created_at')
+          .order('client_id')
+          .range(from, from + MEMORY_PAGE - 1);
+        if (error) throw new Error(`memories: ${error.message}`);
+        items.push(...((data ?? []) as typeof items));
+        if ((data ?? []).length < MEMORY_PAGE) break;
+      }
+      const { data, error } = await client.from('chat_memory').select('chat_id, summary, mark').eq('user_id', userId).limit(MEMORY_PAGE);
+      if (error) throw new Error(`chat_memory: ${error.message}`);
+
+      const lists = new Map<string, MemoriesState['characters'][number]['items']>();
+      for (const row of items) lists.set(row.character_id, [...(lists.get(row.character_id) ?? []), row.body]);
+      return {
+        characters: [...lists].map(([characterId, list]) => ({ characterId, items: list })),
+        chats: ((data ?? []) as { chat_id: string; summary: string | null; mark: string | null }[]).map((r) => ({
+          chatId: r.chat_id,
+          ...(r.summary ? { summary: r.summary } : {}),
+          ...(r.mark ? { mark: r.mark } : {}),
+        })),
       };
     },
 

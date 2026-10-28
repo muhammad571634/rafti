@@ -2,8 +2,19 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { DAILY_CHECK_IN, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
-import { cleanLocale, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
-import { WalletError, type BootstrapInput, type BootstrapResult, type Db, type MessageSyncRequest, type UsageEvent, type WalletState } from './db/types.ts';
+import { MEMORY_SYNC_LIMITS } from '../../src/ai/session-types.ts';
+import { cleanLocale, cleanMemorySync, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
+import {
+  WalletError,
+  type BootstrapInput,
+  type BootstrapResult,
+  type Db,
+  type MemoriesState,
+  type MemorySyncRequest,
+  type MessageSyncRequest,
+  type UsageEvent,
+  type WalletState,
+} from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 
@@ -22,6 +33,8 @@ function makeDb(overrides: Partial<Db>): Db {
     walletSpin: unused,
     syncMessages: unused,
     messagesAfter: unused,
+    syncMemories: unused,
+    memoriesOf: unused,
     deleteUser: unused,
     ...overrides,
   };
@@ -441,6 +454,68 @@ describe('the chats on the server (B1.3b)', () => {
     assert.deepEqual(await res.json(), { ok: true });
     assert.deepEqual(deleted, ['user-1']);
     assert.equal((await createApp(null, { timeoutMs: 1000 }).request('/v1/account', { method: 'DELETE', headers: auth })).status, 503);
+  });
+});
+
+describe('the memory on the server (B2.3)', () => {
+  const fact = (id: string, extra: Record<string, unknown> = {}) => ({
+    id,
+    characterId: 'c_kai',
+    text: 'Has a beagle called Biscuit.',
+    source: 'chat',
+    createdAt: '2026-10-28T08:00:00Z',
+    pinned: false,
+    ...extra,
+  });
+  const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
+
+  it('takes each character whole, leaves out items the database would refuse and keeps the last copy of a repeat', () => {
+    const clean = cleanMemorySync({
+      characters: [
+        { characterId: 'c_kai', items: [fact('f0')] },
+        {
+          characterId: 'c_kai',
+          items: [fact('f1'), fact('f2', { until: 'next week' }), fact('f3', { characterId: 'c_ivy' }), fact('f4', { status: 'deleted' }), fact('f1'), fact('f5', { text: ' ' })],
+        },
+        { characterId: 'c_ivy', items: [] },
+      ],
+      chats: [
+        { chatId: 'conv_kai', summary: 'Old.' },
+        { chatId: 'conv_kai', summary: ' They met at the pool. ', mark: 'm9' },
+        { chatId: 'conv_gone' },
+      ],
+    });
+    assert.equal(clean?.skipped, 5);
+    assert.deepEqual(clean?.request.characters.map((c) => [c.characterId, c.items.map((m) => m.id)]), [['c_kai', ['f1']], ['c_ivy', []]]);
+    assert.deepEqual(clean?.request.chats, [{ chatId: 'conv_kai', summary: 'They met at the pool.', mark: 'm9' }, { chatId: 'conv_gone' }]);
+  });
+
+  it('refuses a body of the wrong shape or over the limits', () => {
+    assert.equal(cleanMemorySync(null), null);
+    assert.equal(cleanMemorySync({ characters: [] }), null);
+    assert.equal(cleanMemorySync({ characters: [{ characterId: '', items: [] }], chats: [] }), null);
+    assert.equal(cleanMemorySync({ characters: [], chats: [{ chatId: 'c', summary: 'x'.repeat(MEMORY_SYNC_LIMITS.summaryChars + 1) }] }), null);
+    const many = Array.from({ length: MEMORY_SYNC_LIMITS.items + 1 }, (_, i) => fact(`f${i}`));
+    assert.equal(cleanMemorySync({ characters: [{ characterId: 'c_kai', items: many }], chats: [] }), null);
+    assert.equal(cleanMemorySync({ characters: [{ characterId: 'c_kai', items: [fact('big', { text: 'x'.repeat(MEMORY_SYNC_LIMITS.itemBytes) })] }], chats: [] })?.skipped, 1);
+  });
+
+  it('syncs and reads back for the signed-in user only', async () => {
+    let seen: [string, MemorySyncRequest] | null = null;
+    const state = { characters: [{ characterId: 'c_kai', items: [fact('f1')] }], chats: [] };
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({ syncMemories: async (userId, request) => void (seen = [userId, request]), memoriesOf: async () => state as MemoriesState }),
+    });
+    const body = JSON.stringify({ characters: [{ characterId: 'c_kai', items: [fact('f1')] }], chats: [] });
+    assert.equal((await app.request('/v1/memories/sync', { method: 'POST', body })).status, 401);
+    const res = await app.request('/v1/memories/sync', { method: 'POST', headers: auth, body });
+    assert.deepEqual(await res.json(), { skipped: 0 });
+    assert.equal(seen![0], 'user-1');
+    assert.equal(seen![1].characters[0].items[0].id, 'f1');
+    assert.equal((await app.request('/v1/memories/sync', { method: 'POST', headers: auth, body: '{"characters":3}' })).status, 400);
+    assert.deepEqual(await (await app.request('/v1/memories', { headers: auth })).json(), state);
+    assert.equal((await app.request('/v1/memories')).status, 401);
   });
 });
 
