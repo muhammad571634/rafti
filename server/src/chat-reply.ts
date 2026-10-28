@@ -4,9 +4,9 @@ import { findRepeat, type Repeat } from '../../src/ai/repetition.ts';
 import { parseModelReply, type ModelReply } from '../../src/ai/reply-style.ts';
 import type { LlmProvider, LlmResult } from './llm/types.ts';
 
-/** One model call a reply made, for the cost log: the first draft, or the guard's second try. */
+/** One model call a reply made, for the cost log: the first draft ("chat", "call"…), or the guard's second try ("chatRepeat"…). */
 export interface ChatCall {
-  mode: 'chat' | 'chatRepeat';
+  mode: string;
   layout: PromptLayout;
   result: LlmResult;
 }
@@ -29,9 +29,10 @@ export interface GuardedReply {
  */
 export async function chatReply(provider: LlmProvider, input: ChatPromptInput, timeoutMs: number): Promise<GuardedReply> {
   const started = Date.now();
+  const mode = input.mode ?? 'chat';
   const layout = layoutChatPrompt(input);
   const first = await provider.complete(layout, { timeoutMs });
-  const calls: ChatCall[] = [{ mode: 'chat', layout, result: first }];
+  const calls: ChatCall[] = [{ mode, layout, result: first }];
   let reply = parseModelReply(first.text);
   let result = first;
 
@@ -41,7 +42,7 @@ export async function chatReply(provider: LlmProvider, input: ChatPromptInput, t
     const again = layoutChatPrompt({ ...input, repeated: repeat.line });
     try {
       const second = await provider.complete(again, { timeoutMs: left });
-      calls.push({ mode: 'chatRepeat', layout: again, result: second });
+      calls.push({ mode: `${mode}Repeat`, layout: again, result: second });
       const redone = parseModelReply(second.text);
       const still = findRepeat(redone.bubbles, input.messages, input.redo);
       if (redone.bubbles.length && (still?.score ?? 0) < repeat.score) {

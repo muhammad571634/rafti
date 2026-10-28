@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-import type { ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import { CHAT_MODES, type ChatMode, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import {
   buildDraftPrompt,
   buildFieldPrompt,
@@ -16,6 +16,7 @@ import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
+import { FOLLOW_USER_LANGUAGE } from '../../src/ai/reply-language.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import type { Context } from 'hono';
 
@@ -27,9 +28,8 @@ import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
 
-/** Until the chat's language lock is stored, the reply follows what the user writes (`replyLanguage`). */
-export const FOLLOW_USER_LANGUAGE =
-  "the language of the user's latest messages (Uzbek, Russian, English…), written naturally as a native speaker would text; English if unclear. Never mix languages.";
+/** Until each chat's language lock is stored, the reply follows what the user writes (src/ai/reply-language.ts). */
+export { FOLLOW_USER_LANGUAGE };
 
 /** How much of the chat a request may carry; the prompt layout cuts it further. */
 const MAX_MESSAGES = 120;
@@ -401,11 +401,12 @@ export function createApp(
       return c.json({ error: 'badJson' }, 400);
     }
     if (!input?.character?.name || !input?.user || !Array.isArray(input.messages)) return c.json({ error: 'badInput' }, 400);
-    // English is the launch market: a profile without a locale is written to in English. Until the
-    // database keeps each chat's language lock (`lockedReplyLanguage`), the model follows the
-    // language the user writes in, so nobody gets answered in a language they did not use.
+    // A profile without a locale is written to in English. Until the database keeps each chat's
+    // language lock, the model follows the language the user writes in, whatever it is, reminded
+    // with their latest words (`languageCue`), so nobody gets answered in a language they did not use.
     input = {
       ...input,
+      mode: CHAT_MODES.includes(input.mode as ChatMode) ? input.mode : undefined,
       user: { ...input.user, locale: input.user.locale || 'en-US' },
       messages: input.messages.slice(-MAX_MESSAGES),
       replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
@@ -428,7 +429,7 @@ export function createApp(
           kind: 'llm',
           mode: call.mode,
           model: call.result.model ?? provider.name,
-          promptVersion: promptVersion(call.layout, 'chat'),
+          promptVersion: promptVersion(call.layout, input.mode ?? 'chat'),
           inputTokens: call.result.usage.input,
           cachedTokens: call.result.usage.cached,
           outputTokens: call.result.usage.output,

@@ -8,9 +8,10 @@ import { redoCue } from '../lib/chat-turns';
 import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
 import { messageText } from '../lib/story-continuity';
 
-import { modePart } from './modes';
+import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
+import { FOLLOW_USER_LANGUAGE, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE, turnLines } from './reply-style';
 import { characterParts } from './rules';
@@ -81,7 +82,13 @@ export function chatTurns(messages: readonly Message[]): HistoryTurn[] {
   return turns;
 }
 
+/** The modes a one-to-one chat reply can take: texting, a voice call, or bedtime (src/ai/modes.ts). */
+export type ChatMode = Extract<PromptMode, 'chat' | 'call' | 'bedtime'>;
+export const CHAT_MODES: readonly ChatMode[] = ['chat', 'call', 'bedtime'];
+
 export interface ChatPromptInput {
+  /** The reply's form; texting when missing. */
+  mode?: ChatMode;
   character: Character;
   user: User;
   relationship?: Relationship;
@@ -118,7 +125,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
   const summary = input.summary?.trim();
   return [
     ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs),
-    modePart('chat'),
+    modePart(input.mode ?? 'chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
@@ -130,8 +137,11 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
     part('openers', 'turn', openerLines(input.messages)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
-    part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
+    // Bedtime asks nothing (its mode block): the plan's "end with a question" would undo that.
+    part('hints', 'turn', input.plan ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
     ...threadParts(input.threads ?? []),
+    // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
+    part('languageNow', 'turn', input.replyLanguage === FOLLOW_USER_LANGUAGE ? languageCue(userLines(input.messages)) : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];
 }

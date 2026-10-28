@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Character, User } from '@/types';
 
-import { baseLanguage, lockedReplyLanguage } from './reply-language';
+import { baseLanguage, FOLLOW_USER_LANGUAGE, languageCue, lockedReplyLanguage } from './reply-language';
 import { buildCharacterPrompt } from './rules';
 
 describe('lockedReplyLanguage', () => {
@@ -36,6 +36,20 @@ describe('lockedReplyLanguage', () => {
   it('treats regional tags as one language', () => {
     assert.equal(baseLanguage('pt-BR'), 'pt');
     assert.equal(lockedReplyLanguage('pt-BR', ['pt', 'pt_PT'], 'en'), 'pt');
+  });
+});
+
+describe('languageCue: any language, read off their own words', () => {
+  it('quotes their last two lines, cut when long, and is empty before they write', () => {
+    assert.deepEqual(languageCue([]), []);
+    assert.deepEqual(languageCue(['  ']), []);
+    const [cue] = languageCue(['hi', 'こんにちは', 'お元気ですか？']);
+    assert.match(cue, /^LANGUAGE: write every message in the language their latest messages are in \("こんにちは \/ お元気ですか？"\)/);
+    assert.ok(languageCue(['a'.repeat(400)])[0].includes(`"${'a'.repeat(160)}…"`));
+  });
+
+  it('names no language itself', () => {
+    assert.doesNotMatch(FOLLOW_USER_LANGUAGE + languageCue(['hola'])[0], /English,|Spanish|Russian|Uzbek/);
   });
 });
 

@@ -9,8 +9,40 @@
  * or the model) and stores it with the message; this decides what the lock becomes.
  */
 
+import type { Message } from '@/types';
+
 /** New-language messages in a row the user must send before the lock moves. */
 export const SWITCH_AFTER = 2;
+
+/**
+ * The REPLY LANGUAGE while no chat has a stored lock: the language the user writes in, any language
+ * in the world (owner, 2026-10-28: a global app; no list of languages in code). It stays put in the
+ * cached chat tier; `languageCue` repeats it in the turn tier with their own latest words.
+ */
+export const FOLLOW_USER_LANGUAGE =
+  "the language of the user's latest messages, whatever language that is, written naturally as a native speaker would text; English if unclear. Never mix languages.";
+
+/** How much of their latest words the cue quotes. */
+const CUE_CHARS = 160;
+
+/** What the user wrote or said in a chat, oldest first: the words `languageCue` reads. */
+export const userLines = (messages: readonly Pick<Message, 'author' | 'card' | 'text' | 'transcript'>[]) =>
+  messages.filter((m) => m.author === 'me' && !m.card).map((m) => (m.text ?? m.transcript ?? '').trim()).filter(Boolean);
+
+/**
+ * The turn's language reminder, last in the prompt where the model weighs it most: their latest
+ * lines, quoted, so the model reads the language off them (a light model told only "their
+ * language" in the cached prefix answered Spanish in English: eval set, B1.5). No detector and no
+ * list: it works for every language the model knows. [] before they have written.
+ */
+export function languageCue(userLines: readonly string[]): string[] {
+  const latest = userLines.map((line) => line.trim()).filter(Boolean).slice(-2).join(' / ');
+  if (!latest) return [];
+  const quote = latest.length > CUE_CHARS ? `${latest.slice(0, CUE_CHARS)}…` : latest;
+  return [
+    `LANGUAGE: write every message in the language their latest messages are in ("${quote}"). If they just switched language for two messages in a row, switch with them; a word or two from another language changes nothing.`,
+  ];
+}
 
 /** "pt-BR" and "pt" are one language for the lock. */
 export function baseLanguage(tag: string) {

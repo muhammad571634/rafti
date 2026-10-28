@@ -1,6 +1,7 @@
 import { briefParts, type BriefInput } from './brief-prompt';
 import { dayAskParts, type DayAskInput } from './day-prompt';
-import type { PromptPart } from './prompt-layout';
+import { part, type PromptPart } from './prompt-layout';
+import { FOLLOW_USER_LANGUAGE, languageCue, userLines } from './reply-language';
 import { touchParts, type TouchInput } from './thread-prompt';
 import { weekParts, type WeekInput } from './week-prompt';
 
@@ -22,16 +23,22 @@ export type FirstTextRequest =
 
 export const FIRST_TEXT_KINDS: readonly FirstTextKind[] = ['thread', 'brief', 'day', 'week'];
 
-/** The prompt parts for one first text; every kind answers in the thread texts' shape (`parseTouchReply`). */
+/**
+ * The prompt parts for one first text; every kind answers in the thread texts' shape
+ * (`parseTouchReply`). Without a stored language lock, the user's own latest words in the chat say
+ * which language (`languageCue`).
+ */
 export function firstTextParts(request: FirstTextRequest): PromptPart[] {
   const now = new Date(request.input.now);
+  const lines = request.kind === 'day' ? request.input.today : request.kind === 'week' ? [] : request.input.recent;
+  const cue = part('languageNow', 'turn', request.input.replyLanguage === FOLLOW_USER_LANGUAGE ? languageCue(userLines(lines)) : []);
   switch (request.kind) {
     case 'thread':
-      return touchParts({ ...request.input, now });
+      return [...touchParts({ ...request.input, now }), cue];
     case 'brief':
-      return briefParts({ ...request.input, now });
+      return [...briefParts({ ...request.input, now }), cue];
     case 'day':
-      return dayAskParts({ ...request.input, now });
+      return [...dayAskParts({ ...request.input, now }), cue];
     case 'week':
       return weekParts({ ...request.input, now });
   }

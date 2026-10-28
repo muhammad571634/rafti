@@ -66,10 +66,14 @@ export function turnLines(plan: TurnPlan) {
   ];
 }
 
-/** What the model answers with: one string per bubble, and the feeling it settled on. */
+/**
+ * What the model answers with: the language it writes in, the feeling it settled on, one string per
+ * bubble. Naming the language first makes the model look before it writes: told only "their
+ * language", a light model answered Japanese in English (eval set, B1.5).
+ */
 export const REPLY_SHAPE =
-  `Reply with JSON only: {"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"messages":[""]}. ` +
-  'Each string is one chat bubble; narration in *asterisks*.';
+  `Reply with JSON only: {"language":"the REPLY LANGUAGE, named","emotion":"${EMOTIONS.join('|')}","intensity":0-1,"messages":[""]}. ` +
+  'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
 export interface ModelReply {
   bubbles: string[];

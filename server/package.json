@@ -8,6 +8,7 @@
     "dev": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --watch --import ../scripts/ts-test-hooks.mjs src/index.ts",
     "models": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/models.ts",
     "test": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs --test \"src/**/*.test.ts\"",
+    "eval": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/evals/run.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "db:seed-file": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/db/write-seed.ts"
   },

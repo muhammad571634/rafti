@@ -10,8 +10,9 @@ import { LlmBusyError, type LlmProvider } from './types.ts';
  * Free-tier requests queue behind paid ones, so a model is sometimes "experiencing high demand" or
  * retired for new keys: `models` is tried in order, each with its own deadline, and the next one
  * answers instead. Only when every one is busy does the app fall back to its stand-in.
+ * `temperature`: 0.9 for the characters; the eval set's judge reads at a low one.
  */
-export function geminiProvider(apiKey: string, models: readonly string[]): LlmProvider {
+export function geminiProvider(apiKey: string, models: readonly string[], { temperature = 0.9 } = {}): LlmProvider {
   const ai = new GoogleGenAI({ apiKey });
   return {
     name: `gemini:${models[0]}`,
@@ -28,7 +29,7 @@ export function geminiProvider(apiKey: string, models: readonly string[]): LlmPr
             config: {
               systemInstruction: layout.system.map((block) => block.text).join('\n\n'),
               responseMimeType: 'application/json',
-              temperature: 0.9,
+              temperature,
               // One model may not take the whole wait: leave room for the next.
               abortSignal: AbortSignal.timeout(Math.min(left, Math.max(6000, timeoutMs / 2))),
             },
