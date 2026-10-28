@@ -2,7 +2,7 @@ import { BlurTargetView, BlurView } from 'expo-blur';
 import { Redirect, Tabs } from 'expo-router';
 import { createRef, useCallback, useRef, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
@@ -83,20 +83,29 @@ export default function TabsLayout() {
   );
 }
 
-/** Frosted glass over the current screen: a real blur, a thin fill and a bright top rim. */
+/**
+ * iOS blurs in the system compositor. Android has no system material: a live blur there redraws
+ * the whole screen into a full-size layer for each glass shape on every scroll frame (atrace on a
+ * Galaxy A51: two 1080x2400 BlurView layers per frame), so it gets a denser frosted fill instead.
+ */
+const LIVE_BLUR = Platform.OS === 'ios';
+
+/** Frosted glass over the current screen: a blur (iOS) or a dense fill (Android), and a bright top rim. */
 function Glass({ target, style, children }: { target: BlurTarget; style: StyleProp<ViewStyle>; children: ReactNode }) {
   return (
     <View style={[styles.glass, style]}>
       <View style={[StyleSheet.absoluteFill, styles.clip]} pointerEvents="none">
-        <BlurView
-          intensity={60}
-          tint={isDark ? 'dark' : 'light'}
-          blurMethod="dimezisBlurView"
-          blurReductionFactor={4}
-          blurTarget={target}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={[StyleSheet.absoluteFill, styles.fill]} />
+        {LIVE_BLUR ? (
+          <BlurView
+            intensity={60}
+            tint={isDark ? 'dark' : 'light'}
+            blurMethod="dimezisBlurView"
+            blurReductionFactor={4}
+            blurTarget={target}
+            style={StyleSheet.absoluteFill}
+          />
+        ) : null}
+        <View style={[StyleSheet.absoluteFill, LIVE_BLUR ? styles.fill : styles.frost]} />
       </View>
       {children}
     </View>
@@ -206,6 +215,8 @@ const styles = StyleSheet.create({
   clip: { borderRadius: BAR / 2, overflow: 'hidden' },
   // Over the blur, a thin fill keeps the bar's own labels crisp whatever scrolls beneath.
   fill: { backgroundColor: isDark ? 'rgba(30,30,32,0.45)' : 'rgba(255,255,255,0.5)' },
+  // Without the blur, a denser fill keeps the labels crisp over whatever scrolls beneath.
+  frost: { backgroundColor: isDark ? 'rgba(30,30,32,0.86)' : 'rgba(255,255,255,0.84)' },
   pill: {
     flex: 1,
     height: BAR,
