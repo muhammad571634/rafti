@@ -4,6 +4,7 @@ import de from './content/de.json';
 import en from './content/en.json';
 import es from './content/es.json';
 import fr from './content/fr.json';
+import it from './content/it.json';
 import ptBR from './content/pt-BR.json';
 import { overlay } from './overlay';
 
@@ -17,8 +18,9 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   de,
   en,
   es,
-  'pt-BR': ptBR,
   fr,
+  it,
+  'pt-BR': ptBR,
 };
 
 const cache = new Map<string, unknown>();
