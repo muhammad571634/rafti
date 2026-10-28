@@ -38,6 +38,8 @@ export interface ChatInputProps {
   fill?: { text: string; at: number };
   /** Set while their reply is on its way: an empty field shows ■ to stop it (Character.AI). */
   onStop?: () => void;
+  /** The field has text (true) or is empty (false): a reply waiting for more messages waits longer while they type. */
+  onTyping?: (typing: boolean) => void;
 }
 
 /**
@@ -46,7 +48,7 @@ export interface ChatInputProps {
  * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
  * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(initialValue);
@@ -82,6 +84,15 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   }, [fillAt]);
 
   const hasText = value.trim().length > 0;
+
+  // Typing a new message (not an edit) tells a waiting reply to wait for it; leaving the chat stops that.
+  const typingNow = hasText && !editingId;
+  const reportTyping = useRef(onTyping);
+  reportTyping.current = onTyping;
+  useEffect(() => {
+    reportTyping.current?.(typingNow);
+  }, [typingNow]);
+  useEffect(() => () => reportTyping.current?.(false), []);
 
   const submit = () => {
     if (!hasText) return;

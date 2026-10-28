@@ -132,6 +132,7 @@ export default function ChatRoomScreen() {
   const [offOpen, setOffOpen] = useState(false);
   const [offReason, setOffReason] = useState<OffReason>();
   const stopReply = useAppStore((s) => s.stopReply);
+  const setComposing = useAppStore((s) => s.setComposing);
   const retryReply = useAppStore((s) => s.retryReply);
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
@@ -533,6 +534,7 @@ export default function ChatRoomScreen() {
             fill={ideaDraft ? { text: ideaDraft.idea.text, at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
+            onTyping={conversationId ? (isTyping) => setComposing(conversationId, isTyping) : undefined}
           />
         </KeyboardAvoidingView>
 

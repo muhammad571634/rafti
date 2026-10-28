@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z12. Backend B1.7: back-to-back messages get one reply (2026-10-28, D120). NEXT: the server in the cloud
+
+**Owner, 2026-10-28:** after this, the server goes to the cloud (today it runs on the laptop, so Real
+AI stops when the laptop does); state the hosting and its monthly cost and wait for a yes before
+signing up for anything paid. Then B2 memory; B3 and Sign in with Apple wait for the Apple account.
+
+Backend-plan §12.8, in the app (it drives the replies; the server stays stateless):
+`src/lib/reply-batch.ts` (`replyBatcher`, fake-clock tests). A typed text that wants the model's
+reply waits 1.5 s while the field is empty, 3 s while the user types again (`ChatInput.onTyping` →
+`setComposing`), never more than 8 s from the first; then one reply answers them all (the history
+holds every message). Shells are still paid per message on send; each message's closeness is
+added up and paid with the reply. A scripted reply (a plan saved, a crisis, a reply idea) answers at
+once and takes the waiting batch along; a rewind, an edit or ■ drops it (`cancelReplies`). Voice
+messages, idea taps and edits are not batched. Checked: app `tsc`, 434/434, `expo export` ios.
+**Phone checks (Expo Go):** send "hey", then quickly "guess what", then "I got the job!": one reply
+to all three, "typing…" only after the last; send one message and wait: the reply starts about
+1.5 s later than before.
+
 ### 0z11. Backend B1.6: the crisis check, and the middle road (2026-10-28, D119). NEXT: batching (§12.8) or B2
 
 **Owner, 2026-10-28:** one step at a time; this one first. Content takes the middle road for 18+

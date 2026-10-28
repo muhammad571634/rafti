@@ -29,6 +29,7 @@ import {
 import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
+import { replyBatcher } from '@/lib/reply-batch';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
@@ -414,6 +415,8 @@ interface AppState {
   regenerateReply: (conversationId: string, off?: OffReason) => SendResult;
   /** Stops the reply on its way (■): lines already shown stay, the rest never come. */
   stopReply: (conversationId: string) => void;
+  /** The composer has text or is empty: a reply waiting for more messages waits longer or shorter (`src/lib/reply-batch.ts`). */
+  setComposing: (conversationId: string, typing: boolean) => void;
   /** Asks again for the reply that failed ("Not Delivered", tap). */
   retryReply: (conversationId: string) => void;
   /** Shows another version of their newest reply (‹ › or a swipe). */
@@ -1004,7 +1007,8 @@ export const useAppStore = create<AppState>()(
         touchStreak(set, get, conversation.characterId);
         dayToDiary(set, get, conversationId, trimmed);
 
-        answerText(set, get, conversationId, trimmed, { wakeHere: !!wakeHere, gain: INTIMACY.text });
+        // Typed texts wait a beat for the next one, so back-to-back messages get one reply.
+        answerText(set, get, conversationId, trimmed, { wakeHere: !!wakeHere, gain: INTIMACY.text, batch: true });
         return 'sent';
       },
 
@@ -1182,6 +1186,8 @@ export const useAppStore = create<AppState>()(
         cancelReplies(set, conversationId);
         finishReveals();
       },
+
+      setComposing: (conversationId, typing) => replyBatch.composing(conversationId, typing),
 
       retryReply: (conversationId) => {
         const failed = (get().messages[conversationId] ?? []).findLast((m) => m.failed);
@@ -4128,7 +4134,14 @@ function answerText(
   get: Getter,
   conversationId: string,
   text: string,
-  { wakeHere, gain, avoid, say, answered }: { wakeHere: boolean; gain: number; avoid?: string; say?: string; answered?: boolean },
+  {
+    wakeHere,
+    gain,
+    avoid,
+    say,
+    answered,
+    batch,
+  }: { wakeHere: boolean; gain: number; avoid?: string; say?: string; answered?: boolean; /** Wait for more texts before replying. */ batch?: boolean },
 ) {
   const conversation = get().conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4203,9 +4216,16 @@ function answerText(
   }
 
   // `say`: their answer to a reply idea, unless a plan or a crisis needs the reply.
+  const scripted = reply ?? say;
+  // Back-to-back texts get one reply (src/lib/reply-batch.ts): the model's reply waits a beat for
+  // the next one. A scripted line answers at once, for the waiting ones too.
+  if (batch && scripted == null && avoid == null) {
+    replyBatch.queue(conversationId, gain, (total) => scheduleReply(set, get, conversationId, { gain: total }));
+    return;
+  }
   scheduleReply(set, get, conversationId, {
-    text: reply ?? say,
-    gain,
+    text: scripted,
+    gain: gain + replyBatch.take(conversationId),
     avoid,
     ...(lead && !crisis ? { reach: lead, ideas: leadIdeas(lead, !!plan && isBig(text) && (plan.time ?? '99') < LIFE.wakeOfferBefore) } : {}),
   });
@@ -4933,9 +4953,12 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
 const replyingUntil = new Map<string, number>();
 /** Bumped when a chat's replies on their way are taken back; their timers then stop. */
 const replyEpoch = new Map<string, number>();
+/** Replies waiting a beat for the next text (src/lib/reply-batch.ts). */
+const replyBatch = replyBatcher();
 
-/** Takes back the replies still on their way to a chat (a rewind, an edit, a cleared chat). */
+/** Takes back the replies still on their way to a chat (a rewind, an edit, a cleared chat), and one still waiting. */
 function cancelReplies(set: Setter, conversationId: string) {
+  replyBatch.take(conversationId);
   replyEpoch.set(conversationId, (replyEpoch.get(conversationId) ?? 0) + 1);
   replyingUntil.delete(conversationId);
   set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
