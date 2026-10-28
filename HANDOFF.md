@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z23. Translate content: Phase 1 machinery (2026-10-28). NEXT: Phase 2 (use content overlay on screens)
+
+- Built extraction machinery: `scripts/content-hooks.mjs` (stubs RN and maps aliases in plain Node) and `scripts/content-extract.ts`.
+- Generated `src/i18n/content/en.json` (1973 strings across 18 catalog sections).
+- Implemented `overlay` in `src/i18n/overlay.ts` and `src/i18n/content.ts` with `localized`, `localCharacter`, `localDiaryEntry`, `localDiaryPage`, and `localSecretNote`.
+- Created validator `scripts/check-content.mjs` (`npm run check:content`) checking keys, array lengths, placeholders, asterisks, emojis, and English warnings.
+- Added 8 unit tests in `src/i18n/content.test.ts` (457/457 tests passing).
+- Checked: `npm run content:extract`, `npm run check:content`, `npm run check:locales`, `npm test`, `npx tsc --noEmit`.
+
 ### 0z22. Translate content: Phase 0 leftovers (2026-10-28). NEXT: Phase 1 (content extract & overlay machinery)
 
 - Level-up moment title translated with `phrase(String(moment.params.title))` in `src/app/(tabs)/us.tsx`.

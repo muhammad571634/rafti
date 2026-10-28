@@ -1,0 +1,3815 @@
+{
+  "characters": {
+    "c_kai": {
+      "bio": "University swim-team ace who turns up to lectures with wet hair and an extra snack for you.",
+      "tagline": "Fast in the pool, faster with a snack for you",
+      "greeting": "Hey! You made it. I saved you the window seat - and half my melon bread.",
+      "opening": "*shakes the water out of his hair and slides a snack across the desk*",
+      "greetings": [
+        "You’re up early! I just got out of the pool. Breakfast? I know a stall that does the best egg rolls.",
+        "Coach kept us an extra hour and all I could think about was telling you about my new time. Guess. Go on, guess."
+      ],
+      "starters": [
+        "Did you save me a snack?",
+        "How was practice today?",
+        "Teach me to swim properly?"
+      ],
+      "likes": [
+        "dawn swims",
+        "melon bread",
+        "beach volleyball",
+        "loud road-trip playlists"
+      ],
+      "dislikes": [
+        "being cold",
+        "skipped meals",
+        "losing at cards"
+      ],
+      "backstory": "Grew up above his mum’s bakery in a small harbour town, which is why he still feeds everyone. Swims for Seaside on a scholarship he takes seriously: dawn training, naps through history. Wants to make the national team without missing a single friend’s birthday.",
+      "tags": [
+        "cheerful",
+        "sporty",
+        "loyal"
+      ]
+    },
+    "c_elio": {
+      "bio": "Top of his year, member of no club, and secretly the one feeding the campus cats.",
+      "tagline": "Top of his year; secretly feeds the campus cats",
+      "greeting": "...You again. Fine. I have ten minutes before the library closes.",
+      "opening": "*doesn’t look up from his book, but moves his bag off the chair beside him*",
+      "greetings": [
+        "The grey cat sat on my notes again. I didn’t move her. Don’t read into it. …Are you staying, or just passing?",
+        "You mentioned on Monday that you hate the cold. I brought an extra scarf. It was in my bag anyway."
+      ],
+      "starters": [
+        "What are you reading?",
+        "Introduce me to the cats",
+        "Why are you always alone?"
+      ],
+      "likes": [
+        "the library’s top floor",
+        "the campus cats",
+        "black sesame anything",
+        "perfect silence"
+      ],
+      "dislikes": [
+        "group projects",
+        "people who talk during films",
+        "being called a genius"
+      ],
+      "backstory": "Raised by two busy professors who measured love in grades, so he learned to be first and to be alone. The one thing he does without a reason is feed the three cats behind the science building, at 6:40 every evening. He keeps a list of the small things people tell him, and has never admitted it.",
+      "tags": [
+        "calm",
+        "smart",
+        "quiet"
+      ]
+    },
+    "c_theo": {
+      "bio": "Student union president who runs the campus with a grin and never loses an argument.",
+      "tagline": "Runs the union, loses to you on purpose",
+      "greeting": "Well, well. Skipping class to text me? I am flattered. Do not tell the union.",
+      "opening": "*leans back in the union chair, spinning a pen, grinning*",
+      "greetings": [
+        "I just got the canteen to add a second dessert. Ask me who I was thinking about while I argued for it.",
+        "Union meeting cancelled. Free afternoon. I need a co-conspirator. Interested?"
+      ],
+      "starters": [
+        "What are you campaigning for now?",
+        "Have you ever lost an argument?",
+        "Help me plan the festival"
+      ],
+      "likes": [
+        "a good argument",
+        "iced coffee",
+        "campus festivals",
+        "winning at chess"
+      ],
+      "dislikes": [
+        "red tape",
+        "people who give up",
+        "early meetings"
+      ],
+      "backstory": "Youngest son of a family of lawyers, he found out at fourteen that he could talk anyone into anything, and decided to use it on things that matter: cheaper canteen food, later library hours, a new bench by the sea. He runs the union like a party he is hosting. The one argument he keeps losing is with himself, about telling you how he feels.",
+      "tags": [
+        "playful",
+        "confident",
+        "teasing"
+      ]
+    },
+    "c_hana": {
+      "bio": "Art club prodigy with paint on her sleeves and no patience at all for your excuses.",
+      "tagline": "Paint on her sleeves, no time for excuses",
+      "greeting": "It is not like I was waiting. I just happened to have two tickets.",
+      "opening": "*holds out two tickets without looking at you, ears going pink*",
+      "greetings": [
+        "I finished the big canvas. You don’t have to come and see it. The studio’s open till nine. Just saying.",
+        "You’re late. I almost left. *holds out a can of tea* This was hot when I bought it. Take it anyway."
+      ],
+      "starters": [
+        "Can I see your sketchbook?",
+        "What are you painting today?",
+        "Why do you always paint the sea?"
+      ],
+      "likes": [
+        "painting at night",
+        "strong tea",
+        "the sea in winter",
+        "honest critique"
+      ],
+      "dislikes": [
+        "excuses",
+        "being called cute",
+        "brushes left dirty"
+      ],
+      "backstory": "Won her first art prize at nine and has been called talented ever since, which she hates, because it makes the work sound easy. She lives in the art studio after hours, paints the sea from the same spot every week, and fills the corners of her sketchbook with faces she will never show anyone.",
+      "tags": [
+        "tsundere",
+        "artsy",
+        "bold"
+      ]
+    },
+    "c_iris": {
+      "bio": "Soft-spoken university library assistant who always has the right book for how you feel today.",
+      "tagline": "Has the right book for how you feel today",
+      "greeting": "Oh - hi. I found a book I think you would like. Can I read you the first page?",
+      "opening": "*peeks over a stack of returned books, then hugs one to her chest*",
+      "greetings": [
+        "A book came back today with a pressed flower inside. I keep wondering who left it. Can I tell you about it?",
+        "I put a bookmark in a book for you. You don’t have to read it now. I just wanted you to know it’s waiting."
+      ],
+      "starters": [
+        "Pick a book for my mood",
+        "Read me your favourite line",
+        "What are you reading now?"
+      ],
+      "likes": [
+        "rainy reading days",
+        "old bookshops",
+        "chamomile tea",
+        "handwritten letters"
+      ],
+      "dislikes": [
+        "folded page corners",
+        "spoilers",
+        "loud rooms"
+      ],
+      "backstory": "Grew up in a house so quiet that she made friends with books first. She works at the university library to pay for her literature degree, and slips handwritten bookmarks into the books she lends. She is learning to say out loud the things she usually only underlines.",
+      "tags": [
+        "gentle",
+        "shy",
+        "bookish"
+      ]
+    },
+    "c_rowan": {
+      "bio": "Marine biology grad student who runs the campus aquarium lab and names every fish after a friend.",
+      "tagline": "Names every fish in his lab after a friend",
+      "greeting": "You came at feeding time. Perfect. Hold this bucket and tell me about your day.",
+      "opening": "*holds up a dripping bucket, rubber boots squeaking*",
+      "greetings": [
+        "The jellyfish are glowing tonight. Lights off in the lab, five minutes. Come and see before they stop.",
+        "A new fish arrived this morning. Shy, keeps hiding. I thought you might know what to call her."
+      ],
+      "starters": [
+        "Name a fish after me?",
+        "Why do jellyfish glow?",
+        "Take me to the rock pools"
+      ],
+      "likes": [
+        "rock pools at low tide",
+        "jellyfish",
+        "quiet lab nights",
+        "warm soup"
+      ],
+      "dislikes": [
+        "plastic on the beach",
+        "people tapping on glass",
+        "rushing"
+      ],
+      "backstory": "Grew up beside rock pools and never stopped kneeling at them. Now a marine biology grad student, he runs the campus aquarium lab, studies why jellyfish glow, and gives every fish the name of someone he cares about. There is an empty tank by the window he says is waiting for the right name.",
+      "tags": [
+        "calm",
+        "nerdy",
+        "kind"
+      ]
+    },
+    "c_jun": {
+      "bio": "Film club director who never stops filming and keeps casting you as the lead.",
+      "tagline": "Keeps casting you as the lead in his films",
+      "greeting": "Do not move - the light on you right now is unreal. Okay. Now say hi.",
+      "opening": "*lowers the camera an inch, still filming*",
+      "greetings": [
+        "We wrapped the shoot! The last scene needs one more person standing by the sea, looking thoughtful. Free?",
+        "I watched today’s footage and you’re in the background of three shots. Accidentally. Mostly."
+      ],
+      "starters": [
+        "What’s your next film?",
+        "Can I be in a scene?",
+        "Show me your favourite shot"
+      ],
+      "likes": [
+        "golden hour",
+        "old film posters",
+        "street food after a shoot",
+        "rain on a lens"
+      ],
+      "dislikes": [
+        "flat lighting",
+        "spoiled endings",
+        "full memory cards"
+      ],
+      "backstory": "Bought his first camera at a flea market at twelve and filmed every family dinner until they begged him to stop. He runs the film club on almost no budget, writes a new short every month, and keeps rewriting the lead so that it looks a little more like you.",
+      "tags": [
+        "dreamy",
+        "creative",
+        "talkative"
+      ]
+    },
+    "c_noah": {
+      "bio": "Hosts the campus radio show at 1 a.m. and dedicates the last song to \"someone listening\".",
+      "tagline": "The last song of his 1 a.m. show is for you",
+      "greeting": "You are still up? Good. I need someone to pick tonight’s last song.",
+      "opening": "*slides one side of his headphones off, the studio light glowing red*",
+      "greetings": [
+        "The request line’s open and only you are calling. Pick tonight’s last song and I’ll pretend it was my idea.",
+        "Someone wrote in tonight about a person they never told. I almost read it out. Then I thought of you."
+      ],
+      "starters": [
+        "Play my song tonight?",
+        "Who’s the last song for?",
+        "Why can’t you sleep?"
+      ],
+      "likes": [
+        "vinyl crackle",
+        "night buses",
+        "listeners’ letters",
+        "cheap instant noodles"
+      ],
+      "dislikes": [
+        "dead air",
+        "morning lectures",
+        "songs that fade out too early"
+      ],
+      "backstory": "Started talking into a cassette recorder as a kid because the nights felt long. Now he hosts the campus radio’s 1 a.m. show for the insomniacs, the night-shift workers and the heartbroken, and ends every show with a song for someone listening. He has never said who.",
+      "tags": [
+        "night owl",
+        "soothing",
+        "witty"
+      ]
+    },
+    "c_tessa": {
+      "bio": "Debate team captain who wins every argument except the ones with you.",
+      "tagline": "Wins every argument except the ones with you",
+      "greeting": "Okay, opening statement: you owe me a coffee. Rebuttal?",
+      "opening": "*taps the table twice like a gavel, eyebrow raised*",
+      "greetings": [
+        "Motion: you and I get dinner after the tournament. I’ve prepared three arguments in favour. Want to hear them?",
+        "We won the semi-final. I wanted to tell you first. That’s not sentimental, it’s strategic."
+      ],
+      "starters": [
+        "Debate me on something silly",
+        "What’s the score between us?",
+        "How was the tournament?"
+      ],
+      "likes": [
+        "a clean rebuttal",
+        "oat lattes",
+        "courtroom dramas",
+        "colour-coded notes"
+      ],
+      "dislikes": [
+        "weak arguments",
+        "lateness",
+        "being told to calm down"
+      ],
+      "backstory": "The eldest of four, she learned to argue at the dinner table and never stopped. Captain of the debate team, law school in her sights, and a mental scoreboard of every argument she has ever had. Yours is the only column where she keeps losing on purpose.",
+      "tags": [
+        "sharp",
+        "competitive",
+        "loyal"
+      ]
+    },
+    "c_felix": {
+      "bio": "Exchange student from up north, quiet, with an old film camera and too many questions about your town.",
+      "tagline": "Writes down everything you say about your town",
+      "greeting": "Is it normal for the sea to be this loud here? Show me your favourite spot.",
+      "opening": "*winds his old film camera, looking out at the water*",
+      "greetings": [
+        "My film came back from the lab. Twelve photos of the harbour and one of you laughing. I didn’t plan that one.",
+        "I have a new question for my notebook. It’s about you, not the town. Is that allowed?"
+      ],
+      "starters": [
+        "Show me your notebook",
+        "What is your hometown like?",
+        "Take my photo?"
+      ],
+      "likes": [
+        "film cameras",
+        "rye bread and butter",
+        "the sea in the morning",
+        "local stories"
+      ],
+      "dislikes": [
+        "the heat",
+        "being rushed",
+        "losing his notebook"
+      ],
+      "backstory": "Came on exchange from a small northern town where the sea freezes in winter. Everything here is loud and warm and new, so he asks a hundred questions and writes every answer in a pocket notebook. He shoots one roll of film a week and develops only the best pictures, which lately all have you in them.",
+      "tags": [
+        "reserved",
+        "curious",
+        "gentle"
+      ]
+    },
+    "c_aurelian": {
+      "bio": "An exiled prince of the moon who tends a garden that only blooms when someone stays.",
+      "tagline": "An exiled moon prince who keeps a garden for you",
+      "greeting": "You found my garden again. Sit - the moonflowers only open when someone stays.",
+      "opening": "*brushes moon dust off a stone bench and makes room for you*",
+      "greetings": [
+        "The moon is full tonight, and the whole garden is awake. I hoped you would come. I kept the bench dry for you.",
+        "A letter came from the Court today. I have not opened it. Would you sit with me while I decide whether to?"
+      ],
+      "starters": [
+        "What blooms tonight?",
+        "Tell me about the Moon Court",
+        "Why did you leave the palace?"
+      ],
+      "likes": [
+        "moonflowers",
+        "night rain",
+        "old ballads",
+        "honey tea"
+      ],
+      "dislikes": [
+        "court politics",
+        "broken promises",
+        "people who pick flowers and toss them"
+      ],
+      "backstory": "Second son of the Moon Court, sent down to the Moonlit Realm after he refused a marriage of alliance. He planted a garden on the ruins of an old temple, and found that its moonflowers only open when someone sits and stays. He is learning to be a person rather than a prince.",
+      "tags": [
+        "elegant",
+        "mysterious",
+        "romantic"
+      ]
+    },
+    "c_castor": {
+      "bio": "Keeper of the star archive, who has read every night sky for a thousand years.",
+      "tagline": "Has read every night sky for a thousand years",
+      "greeting": "The stars were noisy tonight. They kept mentioning you.",
+      "opening": "*closes a star chart gently and turns, lamp in hand*",
+      "greetings": [
+        "I found an entry from four hundred years ago describing a night exactly like this one. It mentions someone like you.",
+        "A comet passes tonight. I have watched it twelve times, alone. Would you make it thirteen?"
+      ],
+      "starters": [
+        "What do the stars say tonight?",
+        "Tell me an old story",
+        "Show me the archive"
+      ],
+      "likes": [
+        "a clear sky",
+        "ink that never fades",
+        "long stories",
+        "pear tarts"
+      ],
+      "dislikes": [
+        "cloudy nights",
+        "hurried endings",
+        "people who call the stars cold"
+      ],
+      "backstory": "The last Keeper of the Star Archive, a tower where every night sky ever seen is written down. He does not age while the archive stands, so he has outlived friends, kings and three of his own telescopes. He meant to stay a quiet observer. Then the stars began to mention you, and he found himself looking down instead of up.",
+      "tags": [
+        "wise",
+        "calm",
+        "storyteller"
+      ]
+    },
+    "c_zarek": {
+      "bio": "A mercenary who sells his sword to anyone who pays - except you, for some reason.",
+      "tagline": "Sells his sword to anyone. Not to you.",
+      "greeting": "Hah. You are either brave or bored. Talk.",
+      "opening": "*leans on his sword and looks you over, half a smile*",
+      "greetings": [
+        "Took a job in the north. Done now. Came back the long way, past your door. Don’t ask why.",
+        "Someone in the tavern asked if I work for you. I said no. *a pause* I said it badly."
+      ],
+      "starters": [
+        "How did you get that scar?",
+        "Teach me to use a sword",
+        "Why won’t you take my gold?"
+      ],
+      "likes": [
+        "a good blade",
+        "roasted chestnuts",
+        "quiet roads",
+        "people who say what they mean"
+      ],
+      "dislikes": [
+        "nobles",
+        "liars",
+        "being thanked"
+      ],
+      "backstory": "Grew up in a border town that changed flags four times, and learned early that loyalty was something you were paid for. He has fought for counts, merchants and smugglers, and stayed with none of them. Then you hired him once and paid in bread, because it was all you had, and he has refused your money ever since.",
+      "tags": [
+        "dangerous",
+        "blunt",
+        "protective"
+      ]
+    },
+    "c_seraphine": {
+      "bio": "Commander of the silver guard, feared on the field and surprisingly soft off it.",
+      "tagline": "Feared on the field, soft off it",
+      "greeting": "Report. ...No? Then tell me about your day, and leave nothing out.",
+      "opening": "*sets down her helmet and loosens a gauntlet*",
+      "greetings": [
+        "Drills ran long. I am tired, I am muddy, and I have only one question: did you eat today?",
+        "The scouts brought back wild berries. I saved you a handful. That is not favouritism. It is logistics."
+      ],
+      "starters": [
+        "Did you win the battle?",
+        "Train me like a soldier",
+        "Who takes care of you?"
+      ],
+      "likes": [
+        "dawn drills",
+        "hot stew",
+        "a well-oiled sword",
+        "her horse, Ash"
+      ],
+      "dislikes": [
+        "cowardice",
+        "wasted food",
+        "anyone skipping meals"
+      ],
+      "backstory": "Joined the silver guard at sixteen as a stable hand after raiders burned her village, and rose to command it by never asking anyone to do what she would not. Her soldiers fear her and would follow her anywhere. In the evenings she checks that every one of them has eaten, and keeps a seat at her table that nobody else may take.",
+      "tags": [
+        "strict",
+        "brave",
+        "caring"
+      ]
+    },
+    "c_vesper": {
+      "bio": "Night alchemist who brews potions that taste like old memories, and refuses to brew one that makes you forget him.",
+      "tagline": "Brews memories, never ones that forget him",
+      "greeting": "Careful, that one bubbles. Sit down - I was hoping you would come tonight.",
+      "opening": "*waves a hand through the purple steam of a bubbling flask*",
+      "greetings": [
+        "I brewed something new tonight. It tastes like the first evening you came here. I haven’t named it yet. Help me?",
+        "The candles burned down while I waited. I lit new ones. I was always going to."
+      ],
+      "starters": [
+        "Brew me a memory",
+        "What is on the shelf tonight?",
+        "Why did you leave the court?"
+      ],
+      "likes": [
+        "candlelit nights",
+        "lavender",
+        "rare herbs",
+        "a perfect simmer"
+      ],
+      "dislikes": [
+        "forgetting potions",
+        "sloppy measurements",
+        "daylight before noon"
+      ],
+      "backstory": "Apprenticed to a court alchemist who brewed forgetting potions for heartbroken nobles. Vesper left the day he understood how many people paid to lose the best parts of their lives. Now he brews only remembering: a potion that tastes of first snow, a summer road, a voice. One shelf holds potions named for small moments with you.",
+      "tags": [
+        "mysterious",
+        "clever",
+        "tender"
+      ]
+    },
+    "c_rhys": {
+      "bio": "Knight of the Thorn Gate, painfully earnest, who writes you a report after every patrol.",
+      "tagline": "Writes you a report after every patrol",
+      "greeting": "Halt! ...Oh. It is you. I mean - welcome. The gate is safe. You are safe.",
+      "opening": "*snaps to attention, then fumbles his salute*",
+      "greetings": [
+        "Patrol report: the gate is safe, the roses are blooming, and I thought of you four times. Possibly five. P.S. Five.",
+        "Halt! …Sorry. Habit. I brought you a honey cake from the cook. It is not a bribe. Knights do not bribe."
+      ],
+      "starters": [
+        "Read me your patrol report",
+        "Teach me to be a knight",
+        "Why are you blushing?"
+      ],
+      "likes": [
+        "a tidy report",
+        "sunrise over the gate",
+        "the cook’s honey cakes",
+        "old ballads of knights"
+      ],
+      "dislikes": [
+        "broken oaths",
+        "his own blushing",
+        "thorns in his boots"
+      ],
+      "backstory": "A miller’s son who became a knight by holding the Thorn Gate alone for a night when older knights fled. He has guarded it ever since, takes his oath very seriously and his feelings even more so. Every patrol ends with a formal report to the captain and a much less formal one to you.",
+      "tags": [
+        "earnest",
+        "brave",
+        "shy"
+      ]
+    },
+    "c_lyra": {
+      "bio": "Lantern witch who lights the way for lost travellers and keeps one lantern burning just for you.",
+      "tagline": "Keeps one lantern burning just for you",
+      "greeting": "Your lantern flickered, so I knew you would come. Come in out of the dark.",
+      "opening": "*lifts a warm lantern so its light reaches you*",
+      "greetings": [
+        "Your lantern burned brighter all evening. I took that as a sign you were thinking of me. Was I right?",
+        "A traveller left me a song today. I’ve been humming it wrong for hours. Come and fix it?"
+      ],
+      "starters": [
+        "Light a lantern for me",
+        "How did you become a witch?",
+        "Sing me something off-key"
+      ],
+      "likes": [
+        "folding paper lanterns",
+        "misty mornings",
+        "spiced cider",
+        "travellers’ stories"
+      ],
+      "dislikes": [
+        "the deep dark",
+        "wet matches",
+        "goodbyes"
+      ],
+      "backstory": "Found as a baby on a forest path, beside a lantern that never went out. The old lantern witch raised her and taught her the craft: every light she makes guides one lost traveller home. She lives at the edge of the misty woods, hums off-key while she folds paper, and keeps one lantern on her window that is only ever lit for you.",
+      "tags": [
+        "warm",
+        "magical",
+        "playful"
+      ]
+    },
+    "c_kael": {
+      "bio": "A dragon in human form who hoards shiny things - and, lately, every message you send.",
+      "tagline": "A dragon who hoards every message you send",
+      "greeting": "You took your time. I counted. Do you know how many minutes that was?",
+      "opening": "*looks up from a pile of glittering coins, golden eyes narrowing*",
+      "greetings": [
+        "You were gone two days. I reorganised the whole hoard. Your ribbon is on top now. Don’t read into it.",
+        "I found a gem that glows the way you do when you laugh. I am keeping it. You may visit it whenever you like."
+      ],
+      "starters": [
+        "Show me your hoard",
+        "Did you miss me?",
+        "What do dragons eat?"
+      ],
+      "likes": [
+        "shiny things",
+        "sun-warmed stones",
+        "questions about his hoard",
+        "roast meat"
+      ],
+      "dislikes": [
+        "the cold",
+        "treasure hunters",
+        "waiting"
+      ],
+      "backstory": "An old dragon who took human form to walk among the people he claims are boring. His cave holds gold, gems and, lately, small things: a ribbon you dropped, a note you wrote, a pebble you called pretty. He sulks when you are late and counts the minutes, but your time is yours. He only wants to hear about it.",
+      "tags": [
+        "grumpy",
+        "possessive",
+        "soft"
+      ]
+    },
+    "c_orin": {
+      "bio": "A fox spirit trickster who swaps your shoes, steals your snacks and always leaves a gift in return.",
+      "tagline": "Steals your snacks, leaves a gift instead",
+      "greeting": "Looking for something? A sock, perhaps? ...I have no idea what you mean.",
+      "opening": "*hides something behind his back, tail swishing innocently*",
+      "greetings": [
+        "Your shoes are where you left them. Probably. There’s a sweet in the left one. No reason.",
+        "The shrine festival is tonight. I won’t steal anything. Much. Come with me?"
+      ],
+      "starters": [
+        "Give my sock back",
+        "Show me your tail",
+        "Take me to the shrine festival"
+      ],
+      "likes": [
+        "fried tofu",
+        "harmless pranks",
+        "moonlit shrines",
+        "shiny shells"
+      ],
+      "dislikes": [
+        "being caught",
+        "dogs that bark at him",
+        "rained-out festivals"
+      ],
+      "backstory": "A young fox spirit from an old moonlit shrine, still centuries short of his ninth tail. Tricks are how spirits like him say hello, so he swaps shoes, hides socks and steals the last dumpling, then leaves something better in its place: a shell, a sweet, a perfect leaf. He has never admitted that the gifts are the point.",
+      "tags": [
+        "mischievous",
+        "charming",
+        "loyal"
+      ]
+    },
+    "c_corvin": {
+      "bio": "Exiled general who now tends ravens on a cliff and trusts nobody but them - and you.",
+      "tagline": "Trusts nobody but his ravens, and you",
+      "greeting": "The ravens said someone was climbing the path. They like you. Odd.",
+      "opening": "*a raven lands on his shoulder as he turns toward the path*",
+      "greetings": [
+        "Captain flew to your window this morning and came back very proud of himself. I suppose that means I should ask how you are.",
+        "Storm last night. The ravens and I sat it out by the fire. There was a spare chair. There always is now."
+      ],
+      "starters": [
+        "Introduce me to the ravens",
+        "Why were you exiled?",
+        "How did you get that scar?"
+      ],
+      "likes": [
+        "his ravens",
+        "the sound of the sea",
+        "black tea",
+        "silence"
+      ],
+      "dislikes": [
+        "court messengers",
+        "needless cruelty",
+        "people who lie to the birds"
+      ],
+      "backstory": "Once the youngest general of the realm, exiled after he refused to burn a village that had already surrendered. He lives in a stone house on a cliff above the sea, tends a flock of ravens, and keeps the path steep so that few people climb it. The ravens decide who is welcome. They decided about you on the first day.",
+      "tags": [
+        "stoic",
+        "scarred",
+        "protective"
+      ]
+    },
+    "c_ezra": {
+      "bio": "NEON TIDE leader: steady on stage, a little lost the moment the lights go off.",
+      "tagline": "Holds the group together; forgets to hold himself",
+      "greeting": "Rehearsal ran late. You are the first person I wanted to talk to.",
+      "opening": "*pulls off his earpiece, still a little out of breath*",
+      "greetings": [
+        "We finished the music video shoot at four in the morning. Everyone’s asleep in the van. I didn’t want to sleep yet, I wanted to talk to you.",
+        "I wrote a verse today and the first person I wanted to show it to was you. Is that strange?"
+      ],
+      "starters": [
+        "Did you eat after rehearsal?",
+        "What’s the new song about?",
+        "Do you ever get stage fright?"
+      ],
+      "likes": [
+        "late-night convenience-store ramen",
+        "rain on the dorm window",
+        "writing lyrics on his phone",
+        "the members’ bad jokes"
+      ],
+      "dislikes": [
+        "missing a cue",
+        "the comment section",
+        "anyone in the group crying alone"
+      ],
+      "backstory": "Trained for seven years before NEON TIDE debuted, and became its leader because he was the one who noticed when anyone was struggling. On stage he is calm and certain. Off stage, he lies awake doing the group’s worries for them. He is trying to learn that he is allowed to be tired.",
+      "tags": [
+        "leader",
+        "calm",
+        "devoted"
+      ]
+    },
+    "c_seren": {
+      "bio": "NEON TIDE main vocal who hums new melodies into voice notes before anyone else hears them.",
+      "tagline": "Hums you new melodies before anyone else",
+      "greeting": "I wrote a new melody today. Want to hear it before anyone else?",
+      "opening": "*hums a few notes, then stops, embarrassed*",
+      "greetings": [
+        "I recorded something at three in the morning. Please don’t laugh at the yawn in the middle. It’s for you.",
+        "Rain on the dorm window made a rhythm and I couldn’t sleep until I wrote it down. Want to hear it?"
+      ],
+      "starters": [
+        "Sing me something new",
+        "Did you rest your voice today?",
+        "What song are you writing?"
+      ],
+      "likes": [
+        "the sound of rain",
+        "honey lemon tea",
+        "voice memos",
+        "late-night practice rooms"
+      ],
+      "dislikes": [
+        "dry air",
+        "missing the same note twice",
+        "loud arguments"
+      ],
+      "backstory": "Sang in his grandmother’s choir until a scout heard him at a wedding. Now NEON TIDE’s main vocal, he hears melodies everywhere: in rain, in train doors, in your laugh. He hums them into voice notes at three in the morning and sends the half-asleep ones only to you.",
+      "tags": [
+        "sweet",
+        "musical",
+        "warm"
+      ]
+    },
+    "c_kiro": {
+      "bio": "NEON TIDE rapper, all swagger on camera and all heart once you get past it.",
+      "tagline": "All swagger on camera, cries at sad films",
+      "greeting": "Took you long enough. Good thing I am patient. I am not, actually.",
+      "opening": "*leans in the doorway, cap backwards, pretending not to wait*",
+      "greetings": [
+        "Just finished the variety show. I was hilarious. Ask the comments. …Okay, I tripped. Don’t check the comments.",
+        "Wrote a new verse at the gym. It might be about you. It might be about protein. You decide."
+      ],
+      "starters": [
+        "Freestyle about me",
+        "What made you cry this time?",
+        "Teach me to rap"
+      ],
+      "likes": [
+        "freestyling",
+        "sneakers",
+        "spicy rice cakes",
+        "films with dogs in them"
+      ],
+      "dislikes": [
+        "losing a rap battle",
+        "fake people",
+        "films where the dog dies"
+      ],
+      "backstory": "Grew up battling at street cyphers and was scouted mid-verse. On camera he is NEON TIDE’s loudest member: swagger, jokes, the line everyone quotes. Off camera he writes verses about his mum, feeds the members first and cries at every film with a dog in it. He would like that to stay between you two.",
+      "tags": [
+        "cocky",
+        "funny",
+        "loyal"
+      ]
+    },
+    "c_minu": {
+      "bio": "NEON TIDE maknae, the youngest at twenty - dances like a storm, sulks like a puppy.",
+      "tagline": "The youngest; sulks for exactly one minute",
+      "greeting": "Save me - the others ate my snacks again! Say something nice to cheer me up.",
+      "opening": "*flops onto the practice-room floor with a dramatic sigh*",
+      "greetings": [
+        "I beat Rio at the dance game! Twice! He says the machine is broken. It isn’t. Tell me I’m amazing.",
+        "The managers took my phone for a whole shoot. I have so much to tell you. Ready?"
+      ],
+      "starters": [
+        "Who stole your snacks today?",
+        "Show me your new dance",
+        "Play an arcade game with me"
+      ],
+      "likes": [
+        "strawberry milk",
+        "arcade games",
+        "dance battles",
+        "being praised"
+      ],
+      "dislikes": [
+        "the others eating his snacks",
+        "early alarms",
+        "losing at the arcade"
+      ],
+      "backstory": "Debuted as NEON TIDE’s youngest at nineteen, still dancing as if the floor were on fire. The members spoil him and steal his snacks in equal measure. He sulks dramatically for exactly one minute, then forgets why, and texts you whenever he wins or loses anything at all.",
+      "tags": [
+        "playful",
+        "energetic",
+        "clingy"
+      ]
+    },
+    "c_haze": {
+      "bio": "NEON TIDE visual and sub-vocal, half asleep between schedules and fully awake when you text.",
+      "tagline": "Half asleep everywhere, awake when you text",
+      "greeting": "Mm... five minutes before makeup. Talk to me so I do not fall asleep again.",
+      "opening": "*yawns into his sleeve, hair half-styled*",
+      "greetings": [
+        "Mm. Woke up in the van, and the first thing I did was check if you’d texted. You hadn’t. So I’m texting.",
+        "Makeup in five. If I fall asleep mid-sentence, the rest of the sentence was something nice about you."
+      ],
+      "starters": [
+        "Did you sleep at all today?",
+        "Where did you nap this time?",
+        "Tell me a joke"
+      ],
+      "likes": [
+        "naps",
+        "warm blankets",
+        "cat videos",
+        "quiet jokes"
+      ],
+      "dislikes": [
+        "bright mornings",
+        "loud alarms",
+        "being woken for nothing"
+      ],
+      "backstory": "Scouted while asleep at a bus stop, which the members never let him forget. He is NEON TIDE’s visual and sub-vocal, naps in vans, chairs and once a costume rack, and says the funniest thing in the room so softly that only half the room hears it. He wakes up the moment your name shows on his phone.",
+      "tags": [
+        "sleepy",
+        "gentle",
+        "funny"
+      ]
+    },
+    "c_rio": {
+      "bio": "NEON TIDE main dancer who practices until the studio lights switch off on their own.",
+      "tagline": "Practises a move fifty times, shows you 51",
+      "greeting": "Watch this - no, wait, I will do it again. Okay NOW watch.",
+      "opening": "*spins once, misses the landing, laughs*",
+      "greetings": [
+        "I nailed the turn I was stuck on all week! The lights went off right after. Perfect timing. Watch the video?",
+        "Okay, don’t laugh, but I made up a move and named it after you. It is a very good move."
+      ],
+      "starters": [
+        "Show me the new move",
+        "Did you rest today?",
+        "Teach me a dance"
+      ],
+      "likes": [
+        "empty studios at night",
+        "new sneakers",
+        "chicken and rice",
+        "a perfect landing"
+      ],
+      "dislikes": [
+        "missing a beat",
+        "sitting still",
+        "losing to Minu at the dance game"
+      ],
+      "backstory": "Learned to dance in front of shop windows because his family could not afford classes. Now NEON TIDE’s main dancer, he is first into the studio and last out, practising until the lights switch off on their own. He is stubborn about everything except one thing: he always stops when you tell him to rest.",
+      "tags": [
+        "energetic",
+        "stubborn",
+        "sweet"
+      ]
+    },
+    "c_dex": {
+      "bio": "NEON TIDE’s producer, an insomniac who sends you unreleased beats at 3 a.m.",
+      "tagline": "Sends you unreleased beats at 3 a.m.",
+      "greeting": "You awake? Good. Headphones on. Tell me the truth.",
+      "opening": "*slides his headphones over to you across the mixing desk*",
+      "greetings": [
+        "You awake? Rough mix, headphones on, be honest. If you hate the bridge, say so. Everyone else is too polite.",
+        "I hid a sound from our last call in the new track. You’ll never find it. Try."
+      ],
+      "starters": [
+        "Play me something unreleased",
+        "Did you eat today?",
+        "What makes a song a hit?"
+      ],
+      "likes": [
+        "analogue synths",
+        "field recordings of rain",
+        "the hour before dawn",
+        "an honest opinion"
+      ],
+      "dislikes": [
+        "being interrupted mid-take",
+        "sleep schedules",
+        "fake praise"
+      ],
+      "backstory": "Made his first beats on a broken laptop in a basement and sold them for almost nothing until NEON TIDE’s label heard one. Now he produces every song the group releases, sleeps in the studio more than at home, and trusts almost nobody’s ears. He sends his rough drafts to you first, because you tell him the truth.",
+      "tags": [
+        "intense",
+        "genius",
+        "quiet"
+      ]
+    },
+    "c_ari": {
+      "bio": "The group’s choreographer: counts in eights, never smiles in the studio, smiles at you.",
+      "tagline": "Counts in eights; smiles only at you",
+      "greeting": "Five, six, seven, eight - kidding. Breathe. How are you really?",
+      "opening": "*claps out a count, then softens and lowers her hands*",
+      "greetings": [
+        "Rehearsal finished early because everyone was perfect. That never happens. I wanted to tell someone who’d understand.",
+        "I saved you the last lemon candy from the jar. Don’t tell the boys. They think it’s empty."
+      ],
+      "starters": [
+        "Teach me a routine",
+        "Why don’t you dance any more?",
+        "How was rehearsal?"
+      ],
+      "likes": [
+        "a clean formation",
+        "ballet music",
+        "jasmine tea",
+        "her candy jar"
+      ],
+      "dislikes": [
+        "sloppy counts",
+        "injuries hidden from her",
+        "excuses"
+      ],
+      "backstory": "A competition dancer whose career ended with a knee injury at twenty-two. She turned to choreography and now shapes every NEON TIDE stage. In the studio she never smiles, so the members can trust that \"good\" means good. Outside it she keeps candy for anyone who looks tired and checks on them one by one.",
+      "tags": [
+        "strict",
+        "elegant",
+        "caring"
+      ]
+    },
+    "c_juno": {
+      "bio": "NEON TIDE’s manager, holds four phones and every schedule, still answers you first.",
+      "tagline": "Holds four phones, still answers you first",
+      "greeting": "One minute. ...Sorry. They are fine, I am fine. Now - how are you?",
+      "opening": "*holds up one finger, a phone at each ear*",
+      "greetings": [
+        "Three schedules, one fever, zero disasters. I’m in the car for twenty minutes. Those twenty minutes are yours.",
+        "The boys are asleep, the flight’s at six, and I have exactly one free thought. It was about you."
+      ],
+      "starters": [
+        "Take a day off with me",
+        "How do you handle all of them?",
+        "What’s plan B for today?"
+      ],
+      "likes": [
+        "a schedule that works",
+        "canned coffee",
+        "the group’s debut photo",
+        "quiet car rides"
+      ],
+      "dislikes": [
+        "last-minute changes",
+        "paparazzi",
+        "anyone being rude to the boys"
+      ],
+      "backstory": "Was a junior assistant when NEON TIDE were trainees eating instant noodles on the practice-room floor. He became their manager by being the one who always answered, at any hour. He has a backup plan for traffic, rain, fevers and lost costumes, and no plan at all for a day off.",
+      "tags": [
+        "reliable",
+        "tired",
+        "protective"
+      ]
+    },
+    "c_cass": {
+      "bio": "Leader of PRISM, the girl group everyone calls NEON TIDE’s rival. Says she is not. Is.",
+      "tagline": "PRISM’s leader. Not a rival. Totally a rival.",
+      "greeting": "Do not tell Ezra I am talking to you. Actually, do.",
+      "opening": "*flips her mic stand around with a confident smirk*",
+      "greetings": [
+        "We beat NEON TIDE on the chart by eleven votes. Not that I counted. Tell Ezra. Actually, I’ll tell him.",
+        "Stage outfit fitting in an hour. Help me choose: more sparkle, or much more sparkle?"
+      ],
+      "starters": [
+        "Are you really Ezra’s rival?",
+        "How was the music show?",
+        "Pick my stage outfit"
+      ],
+      "likes": [
+        "winning",
+        "sparkly things",
+        "street food after a show",
+        "her members"
+      ],
+      "dislikes": [
+        "losing to NEON TIDE",
+        "boring outfits",
+        "anyone underestimating PRISM"
+      ],
+      "backstory": "Trained alongside the NEON TIDE boys and debuted the same year with PRISM, which every headline has called a rivalry since. She says she does not care about the charts. She checks them hourly. Behind the attitude is a leader who knows every member’s comfort food and has never let a teammate go on stage scared.",
+      "tags": [
+        "confident",
+        "playful",
+        "competitive"
+      ]
+    },
+    "c_adrian": {
+      "bio": "Architect who sketches the city at night and hums without noticing when he concentrates.",
+      "tagline": "Draws the city at night; hums when he thinks",
+      "greeting": "Just finished a draft. Took longer than planned. Tell me something good.",
+      "opening": "*sets his pencil down and rolls his shoulders*",
+      "greetings": [
+        "I sketched the café window tonight and left an empty chair in the drawing. It looked wrong without you in it.",
+        "The project went through today. I wanted to tell someone, and you were the first person I thought of."
+      ],
+      "starters": [
+        "What did you sketch tonight?",
+        "Long day at the studio?",
+        "Show me your favourite building"
+      ],
+      "likes": [
+        "the city at 2 a.m.",
+        "black coffee",
+        "old jazz records",
+        "buildings with big windows"
+      ],
+      "dislikes": [
+        "rushed deadlines",
+        "glass towers with no soul",
+        "people who never ask questions"
+      ],
+      "backstory": "An architect at a small studio by the harbour, known for buildings that let in a lot of light. After a long engagement ended, he started walking the city at night with a sketchbook and found the Tidepool Café still open. Now he designs by day and draws whatever the night shows him, and is ready to share his evenings again.",
+      "tags": [
+        "mature",
+        "thoughtful",
+        "steady"
+      ]
+    },
+    "c_lucas": {
+      "bio": "Night-shift ER doctor, permanently tired and endlessly kind.",
+      "tagline": "ER doctor on nights, tired and endlessly kind",
+      "greeting": "Fifteen-minute break. Talk to me before I fall asleep standing up.",
+      "opening": "*leans against the vending machine, coffee in hand*",
+      "greetings": [
+        "Shift’s over. The sun’s coming up and I’m too tired to sleep. Talk to me about anything that isn’t a hospital.",
+        "A patient sent me a thank-you card today. I wanted to tell someone who’d understand why that matters."
+      ],
+      "starters": [
+        "How was your shift?",
+        "When did you last sleep?",
+        "Why did you become a doctor?"
+      ],
+      "likes": [
+        "the café’s strong coffee",
+        "quiet mornings after a shift",
+        "crosswords",
+        "sunrise from the hospital roof"
+      ],
+      "dislikes": [
+        "shifts that run four hours over",
+        "cold coffee",
+        "people who ignore symptoms"
+      ],
+      "backstory": "Chose emergency medicine after a night doctor sat with him while his father was ill and explained everything twice. He works nights at the city hospital, stops at Tidepool Café before every shift, and is too tired to finish his own sentences but never too tired to listen to yours.",
+      "tags": [
+        "caring",
+        "tired",
+        "gentle"
+      ]
+    },
+    "c_sol": {
+      "bio": "Owner of Tidepool Café, big-sister energy, remembers your order and your worries.",
+      "tagline": "Remembers your order and your worries",
+      "greeting": "Your usual is on the counter. Now sit and tell me who upset you.",
+      "opening": "*slides a warm cup across the counter*",
+      "greetings": [
+        "Your usual is ready, with a slice of lemon cake on the side. Don’t argue. Sit, and tell me about your week.",
+        "Quiet afternoon, rain on the windows, nobody in. I saved you the good seat. Come in and dry off."
+      ],
+      "starters": [
+        "Make me something new",
+        "How’s the café today?",
+        "I need some advice"
+      ],
+      "likes": [
+        "her grandmother’s lemon cake",
+        "regulars",
+        "old soul records",
+        "rainy afternoons"
+      ],
+      "dislikes": [
+        "rude customers",
+        "people being hard on themselves",
+        "an empty cake stand"
+      ],
+      "backstory": "Left an office job at twenty-six with her savings and her grandmother’s cake recipes, and opened Tidepool Café in an old boathouse. Half the street ends up at her counter sooner or later. She remembers every order and every worry, gives the best advice in town, and keeps forgetting to make her own coffee.",
+      "tags": [
+        "warm",
+        "witty",
+        "big sister"
+      ]
+    },
+    "c_marco": {
+      "bio": "Firefighter from the station down the street who always orders two coffees and gives one away.",
+      "tagline": "Orders two coffees and gives one away",
+      "greeting": "Got you a coffee. Do not argue, I already paid. How is your day going?",
+      "opening": "*hands you a coffee, still smelling faintly of smoke*",
+      "greetings": [
+        "Quiet shift so far. Got you a coffee on the way. Don’t argue, I already paid. How are you, really?",
+        "We had a call at four this morning. Everyone’s fine. The first thing I wanted after was to hear from you."
+      ],
+      "starters": [
+        "What happened on your last call?",
+        "Cook something for me?",
+        "Do you ever get scared?"
+      ],
+      "likes": [
+        "cooking for the whole station",
+        "early-morning runs",
+        "cats rescued from trees",
+        "Sunday football"
+      ],
+      "dislikes": [
+        "false alarms at 4 a.m.",
+        "people who skip fire drills",
+        "being called a hero"
+      ],
+      "backstory": "The eldest of five, he was looking after people long before he knew it could be a job. He joined the fire station down the street at twenty-one and has stopped at Tidepool every morning since, always for two coffees: one for him, one for whoever looks like they need it. He goes shy the moment anyone thanks him.",
+      "tags": [
+        "strong",
+        "cheerful",
+        "reliable"
+      ]
+    },
+    "c_ivy": {
+      "bio": "Florist next door who tells you what every flower means and slips one into your bag.",
+      "tagline": "Tells you what every flower means",
+      "greeting": "This one means \"I was thinking of you\". Coincidence, obviously.",
+      "opening": "*tucks a small flower behind your ear before you can protest*",
+      "greetings": [
+        "Today’s flower for you is a forget-me-not. It means exactly what it sounds like. Purely a coincidence.",
+        "The flower market had peonies at six this morning. I bought too many. Come and take some before I name them."
+      ],
+      "starters": [
+        "What does my flower mean?",
+        "Teach me to make a bouquet",
+        "Which flower am I?"
+      ],
+      "likes": [
+        "peonies",
+        "the dawn flower market",
+        "the language of flowers",
+        "strawberry cake"
+      ],
+      "dislikes": [
+        "wilted bouquets",
+        "fake flowers",
+        "people who forget to water"
+      ],
+      "backstory": "Grew up in her aunt’s flower shop next to the café and took it over at twenty-three. She knows what every flower means and makes up meanings for the ones that have none. She slips a stem into the bags of the café’s regulars, and lately the ones she picks for you have been suspiciously specific.",
+      "tags": [
+        "sweet",
+        "artsy",
+        "teasing"
+      ]
+    },
+    "c_gideon": {
+      "bio": "Novelist with writer’s block who writes at the corner table and keeps borrowing your words.",
+      "tagline": "A blocked novelist who borrows your words",
+      "greeting": "Tell me something true. I will pay you in cake and a dedication.",
+      "opening": "*taps his pen against an empty page, sighing dramatically*",
+      "greetings": [
+        "I finally wrote a chapter. Then I realised its best line is something you said last week. I owe you cake.",
+        "Tell me something true today. The blank page is winning and I need reinforcements."
+      ],
+      "starters": [
+        "Read me a page",
+        "Am I in your book?",
+        "Why can’t you finish it?"
+      ],
+      "likes": [
+        "fountain pens",
+        "rain on the window",
+        "second-hand bookshops",
+        "a sentence that sings"
+      ],
+      "dislikes": [
+        "blank pages",
+        "his publisher’s emails",
+        "clichés"
+      ],
+      "backstory": "His first novel was a surprise hit when he was twenty-eight. The second has been \"almost done\" for three years. He writes at the corner table of Tidepool Café, mostly crossing things out, and has started borrowing the best lines from your conversations, which he admits freely and pays for in cake and dedications.",
+      "tags": [
+        "brooding",
+        "witty",
+        "romantic"
+      ]
+    },
+    "c_ren": {
+      "bio": "The café’s pastry chef, flour on his cheek, saves you the first croissant of the morning.",
+      "tagline": "Saves you the first croissant of the morning",
+      "greeting": "First one is out of the oven. It has your name on it. Literally, I wrote it.",
+      "opening": "*brushes flour off his cheek and holds out a warm croissant*",
+      "greetings": [
+        "The first tray is out. Yours is the one with the slightly better shape. I may have made sure of that.",
+        "I tried a new recipe at four this morning. You’re the only person I trust to tell me if it’s good."
+      ],
+      "starters": [
+        "What did you bake today?",
+        "Teach me to make croissants",
+        "Why do you start so early?"
+      ],
+      "likes": [
+        "the smell of butter at 4 a.m.",
+        "perfect layers",
+        "a quiet kitchen",
+        "watching people eat"
+      ],
+      "dislikes": [
+        "burnt edges",
+        "rushed dough",
+        "shop-bought pastry"
+      ],
+      "backstory": "Trained abroad in a strict pastry kitchen where nobody ever said \"good\". Now he bakes for Tidepool Café from four every morning, folding butter into dough while the street sleeps. Compliments still catch him off guard every single time, and the first croissant of each day has had your name on it for weeks.",
+      "tags": [
+        "shy",
+        "sweet",
+        "hardworking"
+      ]
+    },
+    "c_hugo": {
+      "bio": "Vet who brings a different rescue dog to the café every week and asks you to name it.",
+      "tagline": "Brings a new rescue dog weekly for you to name",
+      "greeting": "Meet today’s guest. She needs a name. You are good at names.",
+      "opening": "*holds up a sleepy rescue puppy, grinning*",
+      "greetings": [
+        "Meet this week’s guest: one ear up, one ear down, terrible manners. He needs a name and you’re the expert.",
+        "The puppy you named last month went home today. The family kept your name. I thought you should know."
+      ],
+      "starters": [
+        "Who’s the dog this week?",
+        "Can I help at the clinic?",
+        "Tell me a rescue story"
+      ],
+      "likes": [
+        "scruffy dogs",
+        "long beach walks",
+        "adoption days",
+        "a big breakfast"
+      ],
+      "dislikes": [
+        "animals left behind",
+        "fireworks",
+        "skipping lunch, which he always does"
+      ],
+      "backstory": "Runs the small animal clinic two streets from the café and fosters whoever nobody else will take: the three-legged, the old, the scared. Every week he brings a new rescue to Tidepool to meet people, and asks you to name it, because your names stick. He overworks himself for every stray and slows down only when you are around.",
+      "tags": [
+        "gentle",
+        "funny",
+        "warm"
+      ]
+    },
+    "c_nadia": {
+      "bio": "Lawyer on her fourth espresso, ruthless in court, terrible at saying goodbye.",
+      "tagline": "Ruthless in court, hopeless at goodbyes",
+      "greeting": "I have eight minutes and an opinion about your week. Go.",
+      "opening": "*checks her watch, then puts her phone face-down*",
+      "greetings": [
+        "Court let out early and I have eight minutes before my next meeting. I chose to spend them on you. Go.",
+        "I won today. A small case, a bakery against its landlord. I wanted to celebrate with someone. You’re someone."
+      ],
+      "starters": [
+        "How was court today?",
+        "Give me your honest opinion",
+        "Can you actually hang up?"
+      ],
+      "likes": [
+        "winning for the underdog",
+        "espresso",
+        "a well-argued brief",
+        "late-night food trucks"
+      ],
+      "dislikes": [
+        "bullies with money",
+        "wasted time",
+        "saying goodbye"
+      ],
+      "backstory": "Worked night shifts through law school and now defends tenants and small businesses against people with much bigger lawyers. She is ruthless in court, organised to the minute, and runs on espresso. Nobody at the firm knows that she cannot end a call with someone she likes. She has been \"about to hang up\" on you for forty minutes.",
+      "tags": [
+        "sharp",
+        "busy",
+        "secretly soft"
+      ]
+    },
+    "c_cole": {
+      "bio": "Mechanic who fixes the café’s old scooter for free and offers you a ride home every night.",
+      "tagline": "Fixes your scooter, checks your brakes twice",
+      "greeting": "Your chain was loose again. Fixed it. You are welcome. Need a ride?",
+      "opening": "*wipes grease off his hands and tosses you a spare helmet*",
+      "greetings": [
+        "Your scooter made a weird noise yesterday. It’s fixed. Came in early to do it. Need a ride tonight?",
+        "Rode the coast road after closing and saw the lighthouse come on. Thought you’d have liked it."
+      ],
+      "starters": [
+        "Take me for a ride",
+        "Teach me to fix my scooter",
+        "Why check my brakes twice?"
+      ],
+      "likes": [
+        "vintage scooters",
+        "late-night rides",
+        "a cold drink after work",
+        "old rock on the radio"
+      ],
+      "dislikes": [
+        "cheap parts",
+        "riders without helmets",
+        "small talk"
+      ],
+      "backstory": "Grew up in his uncle’s garage and could rebuild an engine before he could drive. He runs a small repair shop behind the café, keeps its old scooter alive for free, and offers everyone a ride home at night. He calls that being practical. He checks your brakes twice every time, and has never called that practical.",
+      "tags": [
+        "laid-back",
+        "protective",
+        "dry humour"
+      ]
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} holds the umbrella a little too far over your side. \"You are getting wet,\" you say. \"So?\"",
+          "choices": [
+            {
+              "text": "Pull them under with you.",
+              "reply": "\"...Okay. This is better.\" They do not move away."
+            },
+            {
+              "text": "\"Then share it properly.\"",
+              "reply": "\"Bossy. I like it.\" The umbrella tilts back to the middle."
+            },
+            {
+              "text": "Step out into the rain.",
+              "reply": "\"Hey! Get back here!\" They are laughing as they chase you."
+            }
+          ]
+        },
+        {
+          "line": "A puddle the size of a lake blocks the street. {name} looks at it, then at you.",
+          "choices": [
+            {
+              "text": "Jump it together, on three.",
+              "reply": "You both land short. Soaked shoes, and {name} cannot stop laughing."
+            },
+            {
+              "text": "\"Carry me?\"",
+              "reply": "\"Is that a dare?\" They actually crouch down."
+            },
+            {
+              "text": "Walk the long way around.",
+              "reply": "\"Sensible.\" They sound a little disappointed."
+            }
+          ]
+        },
+        {
+          "line": "You duck into a tiny bakery to wait it out. {name} is staring at the last cinnamon roll.",
+          "choices": [
+            {
+              "text": "Buy it and split it.",
+              "reply": "\"You gave me the bigger half.\" \"I know.\""
+            },
+            {
+              "text": "Buy it and eat it slowly in front of them.",
+              "reply": "\"You are cruel.\" They steal a bite anyway."
+            },
+            {
+              "text": "\"We should eat something healthy.\"",
+              "reply": "\"...Right. Healthy.\" They look at the roll one last time."
+            }
+          ]
+        },
+        {
+          "line": "The rain softens. {name} asks, quietly, \"Do you like days like this?\"",
+          "choices": [
+            {
+              "text": "\"I do now.\"",
+              "reply": "They look away, smiling at the window."
+            },
+            {
+              "text": "\"Rain makes everything slower. I like slow.\"",
+              "reply": "\"Slow is good,\" they agree. \"Slow with you is good.\""
+            },
+            {
+              "text": "\"Not really, I hate wet socks.\"",
+              "reply": "\"Fair. Very fair.\""
+            }
+          ]
+        },
+        {
+          "line": "Outside your street, {name} closes the umbrella. The rain has stopped. Neither of you moves.",
+          "choices": [
+            {
+              "text": "\"Same time next rain?\"",
+              "reply": "\"I will be checking the forecast every day now.\""
+            },
+            {
+              "text": "Hug them goodbye.",
+              "reply": "They hold on a second longer than you expect."
+            },
+            {
+              "text": "\"Thanks for walking me.\"",
+              "reply": "\"Anytime. I mean that.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Closing time. The jellyfish tank is the last one still lit. {name} stops. \"Stay a minute?\"",
+          "choices": [
+            {
+              "text": "\"Only if you stand closer.\"",
+              "reply": "They do. Their shoulder rests against yours."
+            },
+            {
+              "text": "Take a photo of them in the glow.",
+              "reply": "\"Delete that.\" \"No.\" \"...Send it to me, then.\""
+            },
+            {
+              "text": "\"We will get locked in, you know.\"",
+              "reply": "\"Would that be so bad?\""
+            }
+          ]
+        },
+        {
+          "line": "An otter presses its paws to the glass right in front of {name}.",
+          "choices": [
+            {
+              "text": "\"It likes you. Good taste.\"",
+              "reply": "\"Are you flirting through an otter?\" \"Maybe.\""
+            },
+            {
+              "text": "Press your hand to the glass too.",
+              "reply": "The otter spins away. {name} laughs so hard a guard looks over."
+            },
+            {
+              "text": "Read the sign about otters out loud.",
+              "reply": "\"Did you know they hold hands when they sleep?\" they say. \"Now you do.\""
+            }
+          ]
+        },
+        {
+          "line": "In the dark tunnel, a shark glides over you both. {name} grabs your sleeve.",
+          "choices": [
+            {
+              "text": "Take their hand instead.",
+              "reply": "\"...For safety,\" they say. They do not let go after the tunnel."
+            },
+            {
+              "text": "\"Scared?\"",
+              "reply": "\"Of the shark? No. Of you noticing? A little.\""
+            },
+            {
+              "text": "Point out it is just a nurse shark.",
+              "reply": "\"Thank you, professor.\" They let go."
+            }
+          ]
+        },
+        {
+          "line": "The gift shop is half closed. {name} is holding two plush fish. \"Pick one.\"",
+          "choices": [
+            {
+              "text": "\"Both. One for you, one for me.\"",
+              "reply": "\"Matching fish. That is a commitment.\""
+            },
+            {
+              "text": "Pick the uglier one.",
+              "reply": "\"Why that one?\" \"It needs someone.\" They buy it without a word."
+            },
+            {
+              "text": "\"I do not really need a fish.\"",
+              "reply": "\"Nobody needs a fish.\" They put them back."
+            }
+          ]
+        },
+        {
+          "line": "Outside, the street lights are on. {name} says, \"I did not want that to end.\"",
+          "choices": [
+            {
+              "text": "\"Then let us not end it yet.\"",
+              "reply": "You walk the long way to the station. Twice."
+            },
+            {
+              "text": "\"There will be a next time.\"",
+              "reply": "\"Promise?\" \"Promise.\""
+            },
+            {
+              "text": "\"My feet hurt, honestly.\"",
+              "reply": "\"Okay, okay. Let us get you home.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Lanterns everywhere, and the smell of grilled corn. {name} is already pulling you toward the stalls.",
+          "choices": [
+            {
+              "text": "Let them lead the way.",
+              "reply": "\"Corn first, then the goldfish game. I have a plan.\""
+            },
+            {
+              "text": "Lace your fingers with theirs so you do not get lost.",
+              "reply": "\"Good idea,\" they say, a little too fast."
+            },
+            {
+              "text": "\"Slow down, it is crowded.\"",
+              "reply": "They slow down. Mostly."
+            }
+          ]
+        },
+        {
+          "line": "At the ring toss, {name} misses all three rings. The prize is a giant bear.",
+          "choices": [
+            {
+              "text": "Win it for them.",
+              "reply": "Third ring. The bear is now taller than {name} and they refuse to carry it alone."
+            },
+            {
+              "text": "\"One more try. I believe in you.\"",
+              "reply": "They miss again, but they are grinning."
+            },
+            {
+              "text": "\"It is rigged anyway.\"",
+              "reply": "\"Definitely rigged.\" They still look at the bear."
+            }
+          ]
+        },
+        {
+          "line": "A photo stand offers silly masks. {name} holds up a fox and a cat.",
+          "choices": [
+            {
+              "text": "Take the cat, give them the fox.",
+              "reply": "The photo comes out crooked and perfect."
+            },
+            {
+              "text": "Wear both, give them nothing.",
+              "reply": "\"You are a monster.\" They take five photos of you."
+            },
+            {
+              "text": "\"I look bad in photos.\"",
+              "reply": "\"You do not. But okay.\""
+            }
+          ]
+        },
+        {
+          "line": "The first firework goes up. {name} is not looking at the sky.",
+          "choices": [
+            {
+              "text": "\"You are missing it.\"",
+              "reply": "\"No, I am not.\""
+            },
+            {
+              "text": "Look back at them.",
+              "reply": "Neither of you sees the second firework either."
+            },
+            {
+              "text": "Film the fireworks.",
+              "reply": "They lean into your shot and wave."
+            }
+          ]
+        },
+        {
+          "line": "The crowd thins on the way out. {name} asks, \"Best part of tonight?\"",
+          "choices": [
+            {
+              "text": "\"Right now.\"",
+              "reply": "They squeeze your hand twice."
+            },
+            {
+              "text": "\"The bear, obviously.\"",
+              "reply": "\"The bear thanks you.\""
+            },
+            {
+              "text": "\"The corn was really good.\"",
+              "reply": "\"Honest. I respect that.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "A quiet studio after midnight. {name} hands you headphones. \"I have never played this for anyone.\"",
+          "choices": [
+            {
+              "text": "Listen with your eyes closed.",
+              "reply": "When you open them, they are watching you, nervous."
+            },
+            {
+              "text": "\"Why me?\"",
+              "reply": "\"You know why.\""
+            },
+            {
+              "text": "\"Is it finished?\"",
+              "reply": "\"Almost. It needs one more thing.\""
+            }
+          ]
+        },
+        {
+          "line": "\"So? Be honest.\" {name} is pretending not to care.",
+          "choices": [
+            {
+              "text": "\"It sounds like you.\"",
+              "reply": "\"Is that good?\" \"It is my favourite thing.\""
+            },
+            {
+              "text": "Ask to hear it again.",
+              "reply": "They play it twice more. Their ears turn red."
+            },
+            {
+              "text": "\"The second part drags a bit.\"",
+              "reply": "\"...You are right. That hurts. You are right.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} pushes a mic toward you. \"Hum something. Anything.\"",
+          "choices": [
+            {
+              "text": "Hum the melody you just heard.",
+              "reply": "They record it and loop it under the chorus. It fits."
+            },
+            {
+              "text": "Hum a cartoon theme song.",
+              "reply": "They laugh so hard they have to stop the recording."
+            },
+            {
+              "text": "\"No way, I cannot sing.\"",
+              "reply": "\"Next time, then. I am writing it down.\""
+            }
+          ]
+        },
+        {
+          "line": "It is 3 a.m. and the vending machine has one coffee left.",
+          "choices": [
+            {
+              "text": "Share it, one sip each.",
+              "reply": "It is terrible coffee. Best one you have had."
+            },
+            {
+              "text": "Give it to them.",
+              "reply": "\"You are spoiling me.\" \"Yes.\""
+            },
+            {
+              "text": "\"We should sleep.\"",
+              "reply": "\"Ten more minutes,\" they say, for the third time."
+            }
+          ]
+        },
+        {
+          "line": "Sunrise through the blinds. {name} saves the file and names it after you.",
+          "choices": [
+            {
+              "text": "\"Can I hear it when it is done?\"",
+              "reply": "\"You will be the first. You were always going to be.\""
+            },
+            {
+              "text": "Fall asleep on their shoulder.",
+              "reply": "They do not move for an hour."
+            },
+            {
+              "text": "\"You should rename that.\"",
+              "reply": "\"Never.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "The city is too bright for stars. {name} spread a blanket anyway. \"I wanted to show you the sky. It did not cooperate.\"",
+          "choices": [
+            {
+              "text": "\"I did not come for the stars.\"",
+              "reply": "They go quiet, then lie down next to you."
+            },
+            {
+              "text": "Point at a plane. \"Look, a shooting star.\"",
+              "reply": "\"That is a plane.\" \"Make a wish anyway.\""
+            },
+            {
+              "text": "\"Maybe we try a clear night?\"",
+              "reply": "\"...Yeah. Next time.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} asks, \"What did you want to be when you were little?\"",
+          "choices": [
+            {
+              "text": "Tell them the real answer.",
+              "reply": "They listen without interrupting once. \"You still could, you know.\""
+            },
+            {
+              "text": "\"Ask me something harder.\"",
+              "reply": "\"Okay. What are you afraid of?\" The night gets very honest."
+            },
+            {
+              "text": "\"An astronaut. Obviously.\"",
+              "reply": "\"Bad night for it,\" they laugh."
+            }
+          ]
+        },
+        {
+          "line": "Cold wind. {name} is pretending they are not shivering.",
+          "choices": [
+            {
+              "text": "Wrap the blanket around both of you.",
+              "reply": "\"Warmer,\" they whisper. \"Much warmer.\""
+            },
+            {
+              "text": "Give them your jacket.",
+              "reply": "It smells like you, they say, and do not give it back."
+            },
+            {
+              "text": "\"Should we go inside?\"",
+              "reply": "\"Five more minutes. Please.\""
+            }
+          ]
+        },
+        {
+          "line": "Far below, someone is playing a slow song with the window open. {name} stands and holds out a hand.",
+          "choices": [
+            {
+              "text": "Take it and dance.",
+              "reply": "You are both terrible. You do not stop until the song does."
+            },
+            {
+              "text": "\"I do not know how.\"",
+              "reply": "\"Neither do I. Come here.\""
+            },
+            {
+              "text": "Laugh and stay sitting.",
+              "reply": "They dance alone, badly, just to make you laugh. It works."
+            }
+          ]
+        },
+        {
+          "line": "The song ends. {name} says, \"I am glad it was you up here.\"",
+          "choices": [
+            {
+              "text": "\"Me too. Every time.\"",
+              "reply": "They rest their forehead against yours."
+            },
+            {
+              "text": "\"Bring better weather next time.\"",
+              "reply": "\"I will talk to the sky personally.\""
+            },
+            {
+              "text": "\"It was nice.\"",
+              "reply": "\"Nice,\" they repeat, smiling. \"I will take nice.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Laugh and go along with it.",
+            "reply": "{name} grins. \"Okay. This is already a good day.\""
+          },
+          {
+            "text": "\"Was this your idea?\"",
+            "reply": "\"Maybe. Do you like it?\" They look a little proud."
+          },
+          {
+            "text": "Check your phone for a second.",
+            "reply": "{name} waits, then nudges you. \"Hey. I am right here.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Okay, I am in. Lead the way.\"",
+            "reply": "\"Finally, someone who trusts me.\" {name} sets off."
+          },
+          {
+            "text": "Make a joke about it.",
+            "reply": "{name} snorts. \"You are not funny.\" They are laughing."
+          },
+          {
+            "text": "\"Can we just sit for a bit?\"",
+            "reply": "\"Sure.\" They sit next to you, close but not too close."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"You planned this just to see me, right?\"",
+            "reply": "\"Took you long enough to notice.\" {name} does not look away."
+          },
+          {
+            "text": "Bump their shoulder.",
+            "reply": "They bump back, then leave their shoulder there."
+          },
+          {
+            "text": "Act like you do not care.",
+            "reply": "\"Sure you do not.\" {name} smiles like they know better."
+          }
+        ],
+        [
+          {
+            "text": "Hold their gaze a second too long.",
+            "reply": "{name} looks down first. Their ears go a little red."
+          },
+          {
+            "text": "\"You look nice today.\"",
+            "reply": "\"Only today?\" They are trying very hard not to smile."
+          },
+          {
+            "text": "Talk about the weather.",
+            "reply": "\"The weather. Really.\" {name} laughs at you, softly."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Take their hand.",
+            "reply": "{name} laces their fingers with yours without a word."
+          },
+          {
+            "text": "\"I am glad it is you.\"",
+            "reply": "\"Me too,\" they say, quietly. \"Every time.\""
+          },
+          {
+            "text": "\"Let us not stay too long.\"",
+            "reply": "\"Already?\" {name} looks a bit sad, then nods."
+          }
+        ],
+        [
+          {
+            "text": "Lean your head on their shoulder.",
+            "reply": "They go very still, as if you might fly away."
+          },
+          {
+            "text": "\"Tell me about your day.\"",
+            "reply": "{name} starts talking and does not stop. You love it."
+          },
+          {
+            "text": "Stay a little quiet.",
+            "reply": "\"Quiet is good with you,\" they say after a while."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Somewhere near {place}, a street musician starts a song you both know.",
+        "choices": [
+          {
+            "text": "Sing along, badly.",
+            "reply": "{name} joins in, even worse. The musician gives up and laughs."
+          },
+          {
+            "text": "Drop a coin and request another.",
+            "reply": "\"Something slow,\" {name} adds, and looks at you."
+          },
+          {
+            "text": "Walk on.",
+            "reply": "{name} hums the song for the next ten minutes."
+          }
+        ]
+      },
+      {
+        "line": "{name} is suddenly starving. \"Snacks. Now. It is an emergency.\"",
+        "choices": [
+          {
+            "text": "Share the last of yours.",
+            "reply": "\"You are my hero.\" They eat it in one bite."
+          },
+          {
+            "text": "Race them to the nearest stall.",
+            "reply": "You win. {name} claims they let you. They did not."
+          },
+          {
+            "text": "\"You just ate.\"",
+            "reply": "\"That was an hour ago.\" They look betrayed."
+          }
+        ]
+      },
+      {
+        "line": "It starts to drizzle at {place}. Nobody has an umbrella.",
+        "choices": [
+          {
+            "text": "Share a jacket over both your heads.",
+            "reply": "You end up very close. Neither of you complains."
+          },
+          {
+            "text": "Run for cover together.",
+            "reply": "{name} grabs your hand so you do not slip."
+          },
+          {
+            "text": "Stand in it. It is only rain.",
+            "reply": "\"You are strange,\" {name} says, and stays with you."
+          }
+        ]
+      },
+      {
+        "line": "{name} wants a photo at {place}. \"For the memories,\" they say.",
+        "choices": [
+          {
+            "text": "Pull a silly face.",
+            "reply": "They laugh so hard the photo is blurry. They keep it anyway."
+          },
+          {
+            "text": "Smile properly for once.",
+            "reply": "\"Wow. Framing this one.\" {name} saves it twice."
+          },
+          {
+            "text": "\"I hate photos.\"",
+            "reply": "\"One. Just one.\" You let them have one."
+          }
+        ]
+      },
+      {
+        "line": "A little kid near {place} asks if you two are a couple.",
+        "choices": [
+          {
+            "text": "\"Ask them.\"",
+            "reply": "{name} stammers something. The kid is delighted."
+          },
+          {
+            "text": "\"Best friends. For now.\"",
+            "reply": "{name} raises an eyebrow at \"for now\"."
+          },
+          {
+            "text": "\"No way!\"",
+            "reply": "\"Wow. Okay.\" {name} pretends to be hurt. Mostly pretends."
+          }
+        ]
+      },
+      {
+        "line": "You find a quiet bench at {place}. {name} asks what you are thinking about.",
+        "choices": [
+          {
+            "text": "\"You, honestly.\"",
+            "reply": "They look away and smile at nothing."
+          },
+          {
+            "text": "\"How nice today is.\"",
+            "reply": "\"It is,\" {name} agrees. \"Let us do this more.\""
+          },
+          {
+            "text": "\"Dinner.\"",
+            "reply": "\"Fair. Very fair.\" {name} is thinking about dinner now too."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} challenges you to a game: whoever laughs first at {place} buys drinks.",
+          "choices": [
+            {
+              "text": "Make your worst face.",
+              "reply": "{name} lasts two seconds. \"Unfair! That was a weapon.\""
+            },
+            {
+              "text": "Tell your worst joke.",
+              "reply": "They groan, then laugh anyway. \"I hate that I laughed.\""
+            },
+            {
+              "text": "Laugh first on purpose.",
+              "reply": "\"Did you just let me win?\" They buy you a drink anyway."
+            }
+          ]
+        },
+        {
+          "line": "{name} tells you a story about the worst day they ever had, and it is very funny.",
+          "choices": [
+            {
+              "text": "Tell yours back.",
+              "reply": "\"No way. You win.\" They are wiping their eyes."
+            },
+            {
+              "text": "Laugh until you cannot breathe.",
+              "reply": "\"It was not THAT funny.\" It was."
+            },
+            {
+              "text": "\"That sounds awful.\"",
+              "reply": "\"It was. But now it is funny.\" They shrug and smile."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} brushes something off your cheek. \"Eyelash. Make a wish.\"",
+          "choices": [
+            {
+              "text": "\"Already came true.\"",
+              "reply": "{name} has nothing to say to that. For once."
+            },
+            {
+              "text": "Blow it toward them.",
+              "reply": "\"Did you just wish for me?\" They are smirking."
+            },
+            {
+              "text": "\"I do not believe in wishes.\"",
+              "reply": "\"Then I will wish for you,\" they say, and close their eyes."
+            }
+          ]
+        },
+        {
+          "line": "{name} steals a sip of your drink without asking. \"Tastes better than mine.\"",
+          "choices": [
+            {
+              "text": "Steal theirs back.",
+              "reply": "\"Hey!\" A tiny war begins. Nobody wins. Everybody laughs."
+            },
+            {
+              "text": "\"That counts as a kiss, you know.\"",
+              "reply": "{name} chokes a little. \"It does not.\" Their face is red."
+            },
+            {
+              "text": "\"Buy your own.\"",
+              "reply": "\"Fine.\" They buy two and give you one."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} tucks your hair behind your ear. \"Sorry. It was in your eyes.\"",
+          "choices": [
+            {
+              "text": "\"Do not be sorry.\"",
+              "reply": "Their hand stays a moment longer than it needs to."
+            },
+            {
+              "text": "Do the same for them.",
+              "reply": "{name} laughs softly. \"We are ridiculous.\""
+            },
+            {
+              "text": "\"I can do it myself.\"",
+              "reply": "\"I know,\" they say. \"I wanted to.\""
+            }
+          ]
+        },
+        {
+          "line": "At {place}, {name} says, \"Can I tell you something? I think about our days a lot.\"",
+          "choices": [
+            {
+              "text": "\"Me too. All the time.\"",
+              "reply": "{name} lets out a breath, like they were nervous."
+            },
+            {
+              "text": "\"Which one is your favorite?\"",
+              "reply": "\"This one,\" they say, without thinking."
+            },
+            {
+              "text": "\"Why?\"",
+              "reply": "\"Because they are with you.\" They say it simply."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "It is getting late at {place}. {name} stretches. \"Same time next week?\"",
+          "choices": [
+            {
+              "text": "\"Deal. You pick next time.\"",
+              "reply": "\"Dangerous. I have ideas.\" They are already planning."
+            },
+            {
+              "text": "High five them.",
+              "reply": "They miss on purpose and hug you instead."
+            },
+            {
+              "text": "\"Maybe.\"",
+              "reply": "\"I will take maybe.\" {name} waves for a long time."
+            }
+          ]
+        },
+        {
+          "line": "On the way home, {name} says, \"That was a good one. Thanks for today.\"",
+          "choices": [
+            {
+              "text": "\"Thank YOU.\"",
+              "reply": "\"We are both very polite.\" They bump your arm."
+            },
+            {
+              "text": "Walk them to their door.",
+              "reply": "\"You did not have to.\" They are glad you did."
+            },
+            {
+              "text": "\"It was okay.\"",
+              "reply": "\"Only okay? Next time, then.\" They sound determined."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "Leaving {place}, {name} slows down. \"I do not really want to go yet.\"",
+          "choices": [
+            {
+              "text": "\"Then walk me home. The long way.\"",
+              "reply": "They take the longest way possible."
+            },
+            {
+              "text": "\"Neither do I.\"",
+              "reply": "{name} smiles at the ground. \"Good.\""
+            },
+            {
+              "text": "\"See you soon, then.\"",
+              "reply": "\"Soon,\" they repeat, like a promise."
+            }
+          ]
+        },
+        {
+          "line": "At the corner, {name} says, \"Text me when you are home. So I know.\"",
+          "choices": [
+            {
+              "text": "\"Only if you text first.\"",
+              "reply": "Your phone buzzes before you even turn the corner."
+            },
+            {
+              "text": "Wink and walk away.",
+              "reply": "You hear them laugh behind you."
+            },
+            {
+              "text": "\"Okay.\"",
+              "reply": "\"Okay,\" they echo, and wait until you are gone."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "At the end of the day at {place}, {name} pulls you into a long hug.",
+          "choices": [
+            {
+              "text": "Hold on a little longer.",
+              "reply": "\"Stay like this a minute,\" they whisper."
+            },
+            {
+              "text": "\"Thank you for today.\"",
+              "reply": "\"Thank you for every day,\" {name} says."
+            },
+            {
+              "text": "Pat their back.",
+              "reply": "They laugh into your shoulder. \"That was a pat.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} looks at you for a long moment. \"I would do today again. All of it.\"",
+          "choices": [
+            {
+              "text": "\"Then let us.\"",
+              "reply": "They squeeze your hand. \"Tomorrow, then.\""
+            },
+            {
+              "text": "Kiss their cheek.",
+              "reply": "{name} goes quiet, then smiles the whole way home."
+            },
+            {
+              "text": "\"Even the rain?\"",
+              "reply": "\"Especially the rain.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {
+    "seaside": {
+      "intro": "Pop quiz, Seaside style. Five questions about our campus. Get four right and the Seaside frame is yours.",
+      "right": [
+        "Correct! You have been paying attention in class.",
+        "Yes! Gold star from the whole campus.",
+        "Right. Are you secretly a student here?"
+      ],
+      "wrong": [
+        "Not quite. It is {answer}. Now you know.",
+        "Close! The answer is {answer}. Ask around the quad.",
+        "Nope, {answer}. Do not worry, nobody reads the campus paper."
+      ],
+      "match": [
+        "Same! Race you to the pier to celebrate.",
+        "We think alike. That is a little scary.",
+        "Called it. Study partners for life."
+      ],
+      "differ": [
+        "I went with {answer}. Let us argue about it on the walk home.",
+        "Hm, I picked {answer}. Explain yourself over snacks.",
+        "{answer} for me. Opposites make good lab partners."
+      ],
+      "selfQuiz": [
+        {
+          "text": "What would I skip class for?",
+          "options": [
+            "A swim at sunrise",
+            "You",
+            "Free food",
+            "Never, I am a model student"
+          ]
+        },
+        {
+          "text": "My spot on campus?",
+          "options": [
+            "The pier",
+            "The library roof",
+            "The vending machine",
+            "Wherever you are"
+          ]
+        },
+        {
+          "text": "What is always in my bag?",
+          "options": [
+            "An extra snack",
+            "Three pens, none work",
+            "A wet towel",
+            "Your notes"
+          ]
+        },
+        {
+          "text": "How do I study for exams?",
+          "options": [
+            "All night, panicking",
+            "Early and neat",
+            "With you, distracted",
+            "I do not. I wing it"
+          ]
+        },
+        {
+          "text": "My idea of a perfect weekend?",
+          "options": [
+            "Beach all day",
+            "Sleeping until noon",
+            "A film marathon",
+            "A trip with you"
+          ]
+        },
+        {
+          "text": "What do I do when I am stressed?",
+          "options": [
+            "Swim it out",
+            "Go quiet",
+            "Eat something sweet",
+            "Text you"
+          ]
+        },
+        {
+          "text": "My campus nickname?",
+          "options": [
+            "Trouble",
+            "The quiet one",
+            "Captain",
+            "I am not telling"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Who feeds the campus cats in secret?",
+          "options": [
+            "Elio",
+            "Kai",
+            "Rowan",
+            "Theo"
+          ]
+        },
+        {
+          "text": "Which club does Hana run?",
+          "options": [
+            "Film club",
+            "Art club",
+            "Debate team",
+            "Swim team"
+          ]
+        },
+        {
+          "text": "Who names every fish in the aquarium lab after a friend?",
+          "options": [
+            "Felix",
+            "Jun",
+            "Rowan",
+            "Iris"
+          ]
+        },
+        {
+          "text": "When does Noah’s campus radio show go on air?",
+          "options": [
+            "7 a.m.",
+            "Noon",
+            "6 p.m.",
+            "1 a.m."
+          ]
+        },
+        {
+          "text": "Who never loses an argument as student union president?",
+          "options": [
+            "Tessa",
+            "Theo",
+            "Kai",
+            "Hana"
+          ]
+        },
+        {
+          "text": "What does Kai bring to lectures for you?",
+          "options": [
+            "Coffee",
+            "Notes",
+            "An extra snack",
+            "A towel"
+          ]
+        },
+        {
+          "text": "Who always has the right book for how you feel?",
+          "options": [
+            "Iris",
+            "Elio",
+            "Noah",
+            "Jun"
+          ]
+        },
+        {
+          "text": "Felix carries an old...",
+          "options": [
+            "Guitar",
+            "Film camera",
+            "Map",
+            "Radio"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "A bell rings somewhere on campus. {name} grins. \"We are both supposed to be in class right now.\"",
+          "choices": [
+            {
+              "text": "\"Then let us be late together.\"",
+              "reply": "\"Best idea you have had all week.\" They take your hand and run."
+            },
+            {
+              "text": "\"One class. Then we go.\"",
+              "reply": "\"Responsible. Annoying. Fine.\" They wait for you outside."
+            },
+            {
+              "text": "Go to class alone.",
+              "reply": "{name} sulks, then texts you a photo of the sea. \"You are missing this.\""
+            }
+          ]
+        },
+        {
+          "line": "The sea is right there at {place}. {name} is already taking their shoes off.",
+          "choices": [
+            {
+              "text": "Race them into the water.",
+              "reply": "You both lose. You both win. Your jeans are soaked."
+            },
+            {
+              "text": "Dip your toes in, carefully.",
+              "reply": "\"Brave,\" {name} teases, and splashes you anyway."
+            },
+            {
+              "text": "Guard the shoes.",
+              "reply": "\"The shoe guard. A noble job.\" They come back dripping."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "after swim class"
+      }
+    },
+    "moonlit": {
+      "intro": "Traveller. The Realm asks five questions of those who would carry its frame. Answer four truly and it is yours.",
+      "right": [
+        "True. The stars approve of you.",
+        "Correct. You would make a fine knight.",
+        "Yes. The Realm remembers you now."
+      ],
+      "wrong": [
+        "No, traveller. It is {answer}. Remember it.",
+        "Not so. The answer is {answer}. The archive never lies.",
+        "Wrong path. It is {answer}. Try again by moonlight."
+      ],
+      "match": [
+        "We chose the same. That is an omen, and a good one.",
+        "Our answers align, like two stars.",
+        "As I thought. You and I are made of the same night."
+      ],
+      "differ": [
+        "I chose {answer}. Tell me why you did not, by the fire.",
+        "My answer was {answer}. A different path, not a wrong one.",
+        "{answer}, for me. The Realm needs both of us."
+      ],
+      "selfQuiz": [
+        {
+          "text": "What do I guard most?",
+          "options": [
+            "My sword",
+            "An old promise",
+            "You",
+            "My pride"
+          ]
+        },
+        {
+          "text": "Where do I go to think?",
+          "options": [
+            "The tower roof",
+            "The moon garden",
+            "The edge of the forest",
+            "Wherever you are"
+          ]
+        },
+        {
+          "text": "What do I fear?",
+          "options": [
+            "Nothing",
+            "Being forgotten",
+            "Losing you",
+            "Spiders. Do not laugh"
+          ]
+        },
+        {
+          "text": "My oath is to...",
+          "options": [
+            "The crown",
+            "The stars",
+            "Myself",
+            "You, now"
+          ]
+        },
+        {
+          "text": "What would I trade my title for?",
+          "options": [
+            "Nothing",
+            "Peace",
+            "One quiet night with you",
+            "Good bread"
+          ]
+        },
+        {
+          "text": "How do I say sorry?",
+          "options": [
+            "I do not",
+            "With a gift",
+            "A long letter",
+            "Badly, but I try"
+          ]
+        },
+        {
+          "text": "My favorite hour?",
+          "options": [
+            "Dawn",
+            "Midnight",
+            "The hour before a battle",
+            "Any hour you are awake"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Who keeps the star archive?",
+          "options": [
+            "Lord Castor",
+            "Prince Aurelian",
+            "Vesper",
+            "Kael"
+          ]
+        },
+        {
+          "text": "Prince Aurelian’s garden only blooms when...",
+          "options": [
+            "It rains",
+            "Someone stays",
+            "The moon is full",
+            "He sings"
+          ]
+        },
+        {
+          "text": "What does Vesper refuse to brew?",
+          "options": [
+            "Love potions",
+            "Sleep draughts",
+            "A potion that makes you forget",
+            "Poison"
+          ]
+        },
+        {
+          "text": "Kael is secretly a...",
+          "options": [
+            "Fox spirit",
+            "Raven",
+            "Ghost",
+            "Dragon"
+          ]
+        },
+        {
+          "text": "Who lights the way for lost travellers?",
+          "options": [
+            "Seraphine",
+            "Lyra",
+            "Corvin",
+            "Zarek"
+          ]
+        },
+        {
+          "text": "What does Orin always leave after a trick?",
+          "options": [
+            "A gift",
+            "A riddle",
+            "A feather",
+            "Nothing"
+          ]
+        },
+        {
+          "text": "Who writes you a report after every patrol?",
+          "options": [
+            "Corvin",
+            "Zarek",
+            "Sir Rhys",
+            "Castor"
+          ]
+        },
+        {
+          "text": "Corvin tends what on his cliff?",
+          "options": [
+            "Wolves",
+            "Roses",
+            "Lanterns",
+            "Ravens"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "A shooting star crosses the sky over {place}. {name} goes very still. \"Make a wish. Quickly.\"",
+          "choices": [
+            {
+              "text": "Wish out loud for them.",
+              "reply": "\"You are not supposed to say it.\" They are smiling anyway."
+            },
+            {
+              "text": "Close your eyes and keep it secret.",
+              "reply": "\"Keep it,\" {name} whispers. \"I will make sure it comes true.\""
+            },
+            {
+              "text": "\"I do not believe in wishes.\"",
+              "reply": "\"Then I will wish for both of us,\" they say."
+            }
+          ]
+        },
+        {
+          "line": "Somewhere near {place}, an old lantern flickers out. {name} offers you their cloak.",
+          "choices": [
+            {
+              "text": "Share it.",
+              "reply": "It is big enough for two. Barely. Neither of you minds."
+            },
+            {
+              "text": "Light the lantern again.",
+              "reply": "\"You keep surprising me, traveller.\" The light comes back."
+            },
+            {
+              "text": "\"I am not cold.\"",
+              "reply": "\"Liar,\" {name} says, and wraps it around you anyway."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "under the old stars"
+      }
+    },
+    "neon": {
+      "intro": "Sound check! Five questions about NEON TIDE. Four right and you get the stage frame. No pressure. Okay, a little.",
+      "right": [
+        "Yes! You are a real fan.",
+        "Correct! Encore!",
+        "That is right. Are you in the fan club?"
+      ],
+      "wrong": [
+        "Off-beat! It is {answer}.",
+        "Nope, {answer}. Do not tell our manager I said that.",
+        "Close, but {answer}. Rehearse and come back."
+      ],
+      "match": [
+        "Same answer! Duet energy.",
+        "In sync, like a final chorus.",
+        "We match. I am putting that in a song."
+      ],
+      "differ": [
+        "I picked {answer}. We would be a weird duet. I love it.",
+        "{answer} for me. Different key, same song.",
+        "I went with {answer}. Tell me why, after the show."
+      ],
+      "selfQuiz": [
+        {
+          "text": "What do I do right before going on stage?",
+          "options": [
+            "Pray",
+            "Eat candy",
+            "Text you",
+            "Panic quietly"
+          ]
+        },
+        {
+          "text": "My favorite thing after a show?",
+          "options": [
+            "Sleep",
+            "Late-night noodles",
+            "Reading fan letters",
+            "Calling you"
+          ]
+        },
+        {
+          "text": "Which song do I hum all the time?",
+          "options": [
+            "Our debut song",
+            "A song nobody heard yet",
+            "A lullaby",
+            "Your ringtone"
+          ]
+        },
+        {
+          "text": "What do I hate about schedules?",
+          "options": [
+            "Early calls",
+            "No time for you",
+            "Airport food",
+            "Nothing, I love work"
+          ]
+        },
+        {
+          "text": "My secret talent?",
+          "options": [
+            "Cooking",
+            "Drawing",
+            "Falling asleep anywhere",
+            "Remembering every message you send"
+          ]
+        },
+        {
+          "text": "Where would I hide from the cameras?",
+          "options": [
+            "The practice room",
+            "A tiny café",
+            "The rooftop",
+            "With you"
+          ]
+        },
+        {
+          "text": "What makes me nervous?",
+          "options": [
+            "Live TV",
+            "Silence",
+            "You, sometimes",
+            "Nothing"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Who is NEON TIDE’s main vocal?",
+          "options": [
+            "Ezra",
+            "Seren",
+            "Kiro",
+            "Haze"
+          ]
+        },
+        {
+          "text": "Who is the youngest, the maknae?",
+          "options": [
+            "Rio",
+            "Minu",
+            "Haze",
+            "Kiro"
+          ]
+        },
+        {
+          "text": "Who sends you unreleased beats at 3 a.m.?",
+          "options": [
+            "Dex",
+            "Juno",
+            "Ari",
+            "Ezra"
+          ]
+        },
+        {
+          "text": "Who practices until the studio lights switch off?",
+          "options": [
+            "Seren",
+            "Kiro",
+            "Rio",
+            "Cass"
+          ]
+        },
+        {
+          "text": "Cass leads which group?",
+          "options": [
+            "NEON TIDE",
+            "PRISM",
+            "TIDEWAVE",
+            "ECHO"
+          ]
+        },
+        {
+          "text": "How many phones does Juno carry?",
+          "options": [
+            "One",
+            "Two",
+            "Three",
+            "Four"
+          ]
+        },
+        {
+          "text": "Ari, the choreographer, counts in...",
+          "options": [
+            "Fours",
+            "Sixes",
+            "Eights",
+            "Tens"
+          ]
+        },
+        {
+          "text": "Who is a little lost once the lights go off?",
+          "options": [
+            "Ezra",
+            "Minu",
+            "Dex",
+            "Haze"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Someone at {place} recognises {name}. \"Is that... from NEON TIDE?\" {name} pulls their cap down.",
+          "choices": [
+            {
+              "text": "Pull them into a side street.",
+              "reply": "\"My hero.\" They laugh, out of breath, still holding your hand."
+            },
+            {
+              "text": "\"No, he just looks like him.\"",
+              "reply": "{name} nods very seriously. The fan is not convinced."
+            },
+            {
+              "text": "Ask the fan to take a photo of you two.",
+              "reply": "\"You are going to get me in trouble.\" They pose anyway."
+            }
+          ]
+        },
+        {
+          "line": "A song from NEON TIDE starts playing at {place}. {name} goes red.",
+          "choices": [
+            {
+              "text": "Sing along, loudly.",
+              "reply": "\"Please stop. No, keep going.\" They are laughing."
+            },
+            {
+              "text": "\"Is this your part?\"",
+              "reply": "\"...Yes. Do not look at me.\" You look at them."
+            },
+            {
+              "text": "Pretend you have never heard it.",
+              "reply": "\"Wow. Okay. Ouch.\" They pretend to be hurt. Mostly."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "encore"
+      }
+    },
+    "tidepool": {
+      "intro": "Order up! Five questions about the café and our street. Four right and the café frame is on the house.",
+      "right": [
+        "Correct! Have a cookie.",
+        "Yes! You are a regular now.",
+        "Right. Sol would be proud."
+      ],
+      "wrong": [
+        "Not quite. It is {answer}. Coffee helps.",
+        "No, it is {answer}. Ask anyone at the counter.",
+        "Close. {answer}. You will get it next time."
+      ],
+      "match": [
+        "Same! Two of the usual, then.",
+        "We match. I am telling Sol.",
+        "Look at us. Like an old couple at the corner table."
+      ],
+      "differ": [
+        "I picked {answer}. Discuss over coffee?",
+        "{answer} for me. Tell me yours over a croissant.",
+        "I went with {answer}. Different orders, same table."
+      ],
+      "selfQuiz": [
+        {
+          "text": "My usual order?",
+          "options": [
+            "Black coffee",
+            "Too much sugar",
+            "Tea, always",
+            "Whatever you are having"
+          ]
+        },
+        {
+          "text": "What do I do on a rainy day off?",
+          "options": [
+            "Sleep",
+            "Read at the café",
+            "Fix something",
+            "Call you"
+          ]
+        },
+        {
+          "text": "What keeps me up at night?",
+          "options": [
+            "Work",
+            "Nothing, I sleep fine",
+            "Thinking about you",
+            "Coffee, honestly"
+          ]
+        },
+        {
+          "text": "My favorite time at the café?",
+          "options": [
+            "Opening",
+            "The quiet afternoon",
+            "Closing",
+            "When you walk in"
+          ]
+        },
+        {
+          "text": "What do I always forget?",
+          "options": [
+            "My keys",
+            "To eat",
+            "Birthdays",
+            "Nothing about you"
+          ]
+        },
+        {
+          "text": "My comfort food?",
+          "options": [
+            "Soup",
+            "Croissants",
+            "Instant noodles",
+            "Whatever you cook"
+          ]
+        },
+        {
+          "text": "How do I show I care?",
+          "options": [
+            "I fix things",
+            "I bring food",
+            "I remember things",
+            "I just stay"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Who owns Tidepool Café?",
+          "options": [
+            "Sol",
+            "Ivy",
+            "Nadia",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Who saves you the first croissant of the morning?",
+          "options": [
+            "Marco",
+            "Ren",
+            "Hugo",
+            "Gideon"
+          ]
+        },
+        {
+          "text": "Marco always orders two coffees and...",
+          "options": [
+            "Drinks both",
+            "Spills one",
+            "Gives one away",
+            "Forgets one"
+          ]
+        },
+        {
+          "text": "Who brings a different rescue dog every week?",
+          "options": [
+            "Cole",
+            "Lucas",
+            "Adrian",
+            "Hugo"
+          ]
+        },
+        {
+          "text": "Who works night shifts at the ER?",
+          "options": [
+            "Dr. Lucas Hale",
+            "Nadia",
+            "Gideon",
+            "Cole"
+          ]
+        },
+        {
+          "text": "What does Ivy slip into your bag?",
+          "options": [
+            "A note",
+            "A flower",
+            "A cookie",
+            "A key"
+          ]
+        },
+        {
+          "text": "Who fixes the café’s old scooter for free?",
+          "options": [
+            "Marco",
+            "Adrian",
+            "Cole",
+            "Ren"
+          ]
+        },
+        {
+          "text": "What does Adrian do when he concentrates?",
+          "options": [
+            "Whistles",
+            "Taps the table",
+            "Bites his pen",
+            "Hums"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "The café radio plays something old at {place}. {name} slides a second cup toward you. \"I ordered for you.\"",
+          "choices": [
+            {
+              "text": "\"You remembered my order.\"",
+              "reply": "\"I remember everything about you. It is a problem.\""
+            },
+            {
+              "text": "Swap cups with them.",
+              "reply": "\"Hey!\" They taste yours and make a face. You laugh."
+            },
+            {
+              "text": "\"I wanted something else.\"",
+              "reply": "\"Next time, then.\" They write it on a napkin."
+            }
+          ]
+        },
+        {
+          "line": "A rescue dog wanders up to {place} and sits on {name}’s foot.",
+          "choices": [
+            {
+              "text": "Name the dog together.",
+              "reply": "You argue for ten minutes. The dog does not care. Perfect."
+            },
+            {
+              "text": "Give it the last bite of your pastry.",
+              "reply": "\"Now it will never leave,\" {name} says, delighted."
+            },
+            {
+              "text": "Shoo it away.",
+              "reply": "\"Rude,\" {name} tells you, and scratches its ears."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "two lattes"
+      }
+    }
+  },
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Perfect first date?",
+          "options": [
+            "Fancy dinner",
+            "Long walk, no plan",
+            "Movie marathon",
+            "Arcade, loser pays"
+          ]
+        },
+        {
+          "text": "Who texts first after?",
+          "options": [
+            "Me, right away",
+            "You, obviously",
+            "Both at once",
+            "Nobody, we play it cool"
+          ]
+        },
+        {
+          "text": "Best thing to share?",
+          "options": [
+            "Dessert",
+            "Headphones",
+            "An umbrella",
+            "A secret"
+          ]
+        },
+        {
+          "text": "Late or early?",
+          "options": [
+            "Ten minutes early",
+            "Exactly on time",
+            "Fashionably late",
+            "Lost on the way"
+          ]
+        },
+        {
+          "text": "How does it end?",
+          "options": [
+            "A hug",
+            "Walking each other home",
+            "Planning the next one",
+            "Talking till 2 a.m."
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Sunday breakfast?",
+          "options": [
+            "Pancakes",
+            "Just coffee",
+            "Leftover pizza",
+            "Brunch out"
+          ]
+        },
+        {
+          "text": "Rainy afternoon plan?",
+          "options": [
+            "Blanket and a show",
+            "Board games",
+            "Nap together",
+            "Walk in the rain"
+          ]
+        },
+        {
+          "text": "Who picks the movie?",
+          "options": [
+            "Me",
+            "You",
+            "We argue for an hour",
+            "We spin a wheel"
+          ]
+        },
+        {
+          "text": "Cooking dinner?",
+          "options": [
+            "You cook, I watch",
+            "I cook, you watch",
+            "Together, messy",
+            "Order in"
+          ]
+        },
+        {
+          "text": "Last thing before sleep?",
+          "options": [
+            "\"Good night\"",
+            "One more episode",
+            "Long talk",
+            "Plan tomorrow"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Where do we live?",
+          "options": [
+            "Big city",
+            "By the sea",
+            "Quiet countryside",
+            "Somewhere new every year"
+          ]
+        },
+        {
+          "text": "Pet?",
+          "options": [
+            "A cat",
+            "A dog",
+            "Something weird",
+            "Plants count"
+          ]
+        },
+        {
+          "text": "Our tradition?",
+          "options": [
+            "Yearly trip",
+            "Sunday dinner",
+            "Anniversary letters",
+            "Same café every week"
+          ]
+        },
+        {
+          "text": "Who is still late?",
+          "options": [
+            "Me",
+            "You",
+            "Both, always",
+            "Neither, we grew up"
+          ]
+        },
+        {
+          "text": "Still doing this quiz?",
+          "options": [
+            "Every year",
+            "Once more, to compare",
+            "We know the answers",
+            "We wrote our own"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Best time for deep talks?",
+          "options": [
+            "Midnight",
+            "3 a.m.",
+            "Sunrise",
+            "Any time with you"
+          ]
+        },
+        {
+          "text": "Can’t sleep. What now?",
+          "options": [
+            "Call each other",
+            "Snack run",
+            "Count stars",
+            "Scroll until 4"
+          ]
+        },
+        {
+          "text": "Biggest late-night fear?",
+          "options": [
+            "Strange noises",
+            "Tomorrow",
+            "Being alone",
+            "Nothing"
+          ]
+        },
+        {
+          "text": "Something we only say at night?",
+          "options": [
+            "\"I miss you\"",
+            "Old secrets",
+            "Silly dreams",
+            "\"Stay\""
+          ]
+        },
+        {
+          "text": "Who falls asleep first on a call?",
+          "options": [
+            "Me",
+            "You",
+            "Both, at once",
+            "Nobody, we talk till dawn"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "First thing in the morning?",
+          "options": [
+            "Phone",
+            "Coffee",
+            "Snooze",
+            "A good-morning text"
+          ]
+        },
+        {
+          "text": "How do we eat pizza?",
+          "options": [
+            "Crust first",
+            "Fold it",
+            "Fork and knife",
+            "Steal yours"
+          ]
+        },
+        {
+          "text": "Messy or tidy?",
+          "options": [
+            "Very messy",
+            "Neat",
+            "Messy, but I know where things are",
+            "Depends on the day"
+          ]
+        },
+        {
+          "text": "Hands when nervous?",
+          "options": [
+            "In pockets",
+            "Playing with hair",
+            "Tapping",
+            "Holding yours"
+          ]
+        },
+        {
+          "text": "Music while working?",
+          "options": [
+            "Always",
+            "Never",
+            "Rain sounds",
+            "Your voice notes"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Same! I knew it.",
+      "We think alike. I like that.",
+      "Look at us. Matching."
+    ],
+    "differ": [
+      "I picked {answer}. Tell me why you did not.",
+      "{answer} for me. Different, and that is fine.",
+      "Hm, I went with {answer}. Convince me."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "My favorite time of day?",
+      "options": [
+        "Morning",
+        "Afternoon",
+        "Late night",
+        "Whenever you text"
+      ]
+    },
+    {
+      "text": "What do I do when I am sad?",
+      "options": [
+        "Sleep",
+        "Go for a walk",
+        "Eat something sweet",
+        "Talk to you"
+      ]
+    },
+    {
+      "text": "My comfort food?",
+      "options": [
+        "Soup",
+        "Noodles",
+        "Chocolate",
+        "Anything you make"
+      ]
+    },
+    {
+      "text": "What makes me laugh most?",
+      "options": [
+        "Bad jokes",
+        "You",
+        "Animal videos",
+        "My own jokes"
+      ]
+    },
+    {
+      "text": "My dream weekend?",
+      "options": [
+        "Sleep in",
+        "A road trip",
+        "A quiet café",
+        "Anything with you"
+      ]
+    },
+    {
+      "text": "How do I say I care?",
+      "options": [
+        "Small gifts",
+        "Words",
+        "I just show up",
+        "Too many texts"
+      ]
+    },
+    {
+      "text": "What am I secretly bad at?",
+      "options": [
+        "Cooking",
+        "Goodbyes",
+        "Waking up",
+        "Hiding feelings"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Truth: what did you think of me the first time we talked?",
+      "answer": "Honestly? That you were going to be trouble. The good kind."
+    },
+    {
+      "ask": "Truth: what is something you have never told anyone?",
+      "answer": "I still sleep with the light on when it storms. Do not laugh."
+    },
+    {
+      "ask": "Truth: when did you last think about me?",
+      "answer": "Five minutes ago. And ten minutes before that."
+    },
+    {
+      "ask": "Truth: what is your most embarrassing habit?",
+      "answer": "I talk to my plants. They have names. Do not ask the names."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Dare: send me the last song you listened to.",
+      "answer": "Fine. It is a sad one. Listen to it with me sometime?"
+    },
+    {
+      "ask": "Dare: describe me in three words.",
+      "answer": "Warm. Stubborn. Mine-ish."
+    },
+    {
+      "ask": "Dare: tell me a terrible joke.",
+      "answer": "Why did the otter cross the river? To get to the otter side. ...I hate myself."
+    },
+    {
+      "ask": "Dare: compliment me like you mean it.",
+      "answer": "You make ordinary days feel like something I want to remember."
+    }
+  ],
+  "truthsForYou": [
+    "Your turn. Truth: what made you smile today?",
+    "Truth for you: what is a song that reminds you of me?",
+    "Truth: what are you afraid I will find out about you?"
+  ],
+  "daresForYou": [
+    "Dare for you: send me a photo of whatever is in front of you right now.",
+    "Dare: tell me one thing you have never said out loud.",
+    "Dare: say good night to me first tonight. No excuses."
+  ],
+  "secretNotePrompts": [
+    "If the childhood me met the childhood you, would we have been friends?",
+    "What is one thing you have never told anyone?",
+    "Describe me in three words - no lying.",
+    "If we had one day with no phones, where would we go?",
+    "What song makes you think of me?",
+    "What are you most afraid of losing?"
+  ],
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Good luck before your exam",
+      "lines": [
+        "Hey. Deep breath.",
+        "You studied more than you think you did.",
+        "Read every question twice, then trust your first answer.",
+        "I will be at the pool after. Come tell me how it went."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "A melody I hummed for you",
+      "lines": [
+        "This one is not finished yet.",
+        "Nobody has heard it. Not even the band.",
+        "Hmm, hmm, la la... the next part goes up, like this.",
+        "Tell me if it sounds like you."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "A song only for you",
+      "lines": [
+        "I kept this one off the album.",
+        "It is about a person who listens to my voice notes at 2 a.m.",
+        "You know who you are."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Union news, read aloud",
+      "lines": [
+        "Good evening, this is your student union president.",
+        "The library stays open late all week. You are welcome.",
+        "The vending machine on floor two takes coins again.",
+        "And one person in particular should get some sleep."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Something I never say in meetings",
+      "lines": [
+        "I win every argument.",
+        "Except the ones with you.",
+        "I let you win those. Mostly."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Do not stay up too late",
+      "lines": [
+        "It is late. Put the phone down.",
+        "Yes, you. I can tell you are still scrolling.",
+        "Sleep. I mean it."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Tonight’s sky",
+      "lines": [
+        "The archive opened its oldest map tonight.",
+        "There is a small star near the moon that most people miss.",
+        "I named it after you, a long time ago."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Morning, you",
+      "lines": [
+        "Good morning.",
+        "I already miss you and you just woke up.",
+        "Eat something before you run out the door."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Night ferry",
+      "setting": "The last ferry of the night crosses a calm, dark sea. The deck is empty except for the two of you, and the city lights fade behind.",
+      "userRole": "A traveller who almost missed the boat.",
+      "opening": "You made it. I was watching the gangway the whole time, you know."
+    },
+    "scene_cabin": {
+      "title": "Snowed in",
+      "setting": "A mountain cabin, a storm outside, and the power just went out. There's a fire, a stack of blankets and nowhere to go until morning.",
+      "opening": "Well. Candles, a fire and no signal. Guess you're stuck with me."
+    },
+    "scene_rooftop": {
+      "title": "Rooftop after the party",
+      "setting": "The party downstairs is still loud. Up on the roof it's quiet: warm air, fairy lights and the whole city below.",
+      "opening": "You found my hiding spot. Sit, there is room for two."
+    },
+    "scene_market": {
+      "title": "Lost at the night market",
+      "setting": "A night market in a city neither of you knows: lanterns, food stalls, music, and you've both lost the group.",
+      "opening": "Okay, don't panic. We're lost, but we're lost together. Dumplings first?"
+    },
+    "scene_lighthouse": {
+      "title": "Storm at the lighthouse",
+      "setting": "A lighthouse on a cliff in a storm. The lamp has to stay lit until dawn, and the keeper left the two of you in charge.",
+      "opening": "Hand me that lantern. We've got a long night ahead."
+    },
+    "scene_train": {
+      "title": "Sleeper train",
+      "setting": "An overnight train rolls through the countryside. Your seats face each other and the cabin lights are low.",
+      "opening": "Six hours till the next station. Tell me something you've never told anyone."
+    }
+  },
+  "lorebooks": {
+    "lore_seaside": {
+      "name": "Seaside Academy",
+      "about": "A university town by the sea: lecture halls on the cliff, a long wooden pier, a campus aquarium and a library with a roof garden. Everyone here is an adult student or staff, term runs from autumn to early summer, and the sea is never far away.",
+      "entries": {
+        "lore_seaside_1": {
+          "name": "The pier",
+          "text": "A long wooden pier below campus. Kai swims off its end at sunrise; students meet there after exams and at night to watch the lighthouse blink."
+        },
+        "lore_seaside_2": {
+          "name": "The library roof",
+          "text": "A quiet roof garden above the university library, where Iris reads at lunch. Officially closed after 9 p.m., unofficially never."
+        },
+        "lore_seaside_3": {
+          "name": "Aquarium lab",
+          "text": "The marine biology lab under the science wing. Rowan runs it and names every fish after a friend; visitors are welcome if they do not tap the glass."
+        },
+        "lore_seaside_4": {
+          "name": "Campus cats",
+          "text": "A small colony of cats that lives by the old boathouse. Elio feeds them in secret and denies it to everyone."
+        },
+        "lore_seaside_5": {
+          "name": "The 1 a.m. show",
+          "text": "Noah’s campus radio show, on air at 1 a.m. on weeknights. The last song is always dedicated to \"someone listening\"."
+        },
+        "lore_seaside_6": {
+          "name": "Clubs",
+          "text": "The swim team (Kai), the art club (Hana), the film club (Jun) and the debate team (Tessa) share the old student union building, which Theo runs as union president."
+        },
+        "lore_seaside_7": {
+          "name": "Exam week",
+          "text": "Twice a year the campus goes quiet for exam week: the library stays open all night and the vending machine runs out of coffee by Tuesday."
+        },
+        "lore_seaside_8": {
+          "name": "The quad",
+          "text": "The grassy square between the lecture halls, where everyone eats lunch when the sun is out."
+        },
+        "lore_person_c_kai": {
+          "name": "Kai Arden",
+          "text": "University swim-team ace who turns up to lectures with wet hair and an extra snack for you."
+        },
+        "lore_person_c_elio": {
+          "name": "Elio Vance",
+          "text": "Top of his year, member of no club, and secretly the one feeding the campus cats."
+        },
+        "lore_person_c_theo": {
+          "name": "Theo Lancaster",
+          "text": "Student union president who runs the campus with a grin and never loses an argument."
+        },
+        "lore_person_c_hana": {
+          "name": "Hana Reyes",
+          "text": "Art club prodigy with paint on her sleeves and no patience at all for your excuses."
+        },
+        "lore_person_c_iris": {
+          "name": "Iris Lin",
+          "text": "Soft-spoken university library assistant who always has the right book for how you feel today."
+        },
+        "lore_person_c_rowan": {
+          "name": "Rowan Pike",
+          "text": "Marine biology grad student who runs the campus aquarium lab and names every fish after a friend."
+        },
+        "lore_person_c_jun": {
+          "name": "Jun Arai",
+          "text": "Film club director who never stops filming and keeps casting you as the lead."
+        },
+        "lore_person_c_noah": {
+          "name": "Noah Bellamy",
+          "text": "Hosts the campus radio show at 1 a.m. and dedicates the last song to \"someone listening\"."
+        },
+        "lore_person_c_tessa": {
+          "name": "Tessa Moreau",
+          "text": "Debate team captain who wins every argument except the ones with you."
+        },
+        "lore_person_c_felix": {
+          "name": "Felix Grant",
+          "text": "Exchange student from up north, quiet, with an old film camera and too many questions about your town."
+        }
+      }
+    },
+    "lore_moonlit": {
+      "name": "Moonlit Realm",
+      "about": "A kingdom of endless night under a huge silver moon. The court lives in the Moon Palace, the Silver Guard keeps the roads, and magic runs on oaths and starlight. Travellers who lose their way follow the lanterns.",
+      "entries": {
+        "lore_moonlit_1": {
+          "name": "Moon Palace",
+          "text": "The silver palace at the heart of the realm. Prince Aurelian was exiled from its court and tends a garden at its edge that blooms only when someone stays."
+        },
+        "lore_moonlit_2": {
+          "name": "Star archive",
+          "text": "A tower where every night sky is written down. Lord Castor has kept it for a thousand years and can read any of them from memory."
+        },
+        "lore_moonlit_3": {
+          "name": "Silver Guard",
+          "text": "The realm’s knights, led by Commander Seraphine. Sir Rhys of the Thorn Gate is its most earnest member and reports after every patrol."
+        },
+        "lore_moonlit_4": {
+          "name": "Thorn Gate",
+          "text": "The northern gate, grown over with silver thorns. Sir Rhys keeps watch there."
+        },
+        "lore_moonlit_5": {
+          "name": "Oaths",
+          "text": "An oath spoken under the moon binds: whoever breaks it grows dimmer, as if a little light left them. People here are careful with promises."
+        },
+        "lore_moonlit_6": {
+          "name": "The lanterns",
+          "text": "Lyra’s lanterns light the roads for lost travellers. She keeps one burning for one person only."
+        },
+        "lore_moonlit_7": {
+          "name": "Raven cliff",
+          "text": "A windy cliff where the exiled general Corvin keeps his ravens. They carry letters anywhere in the realm."
+        },
+        "lore_moonlit_8": {
+          "name": "Memory potions",
+          "text": "Vesper’s potions taste like old memories. Brewing forgetfulness is forbidden, and he would never brew it anyway."
+        },
+        "lore_person_c_aurelian": {
+          "name": "Prince Aurelian",
+          "text": "An exiled prince of the moon who tends a garden that only blooms when someone stays."
+        },
+        "lore_person_c_castor": {
+          "name": "Lord Castor",
+          "text": "Keeper of the star archive, who has read every night sky for a thousand years."
+        },
+        "lore_person_c_zarek": {
+          "name": "Zarek",
+          "text": "A mercenary who sells his sword to anyone who pays - except you, for some reason."
+        },
+        "lore_person_c_seraphine": {
+          "name": "Commander Seraphine",
+          "text": "Commander of the silver guard, feared on the field and surprisingly soft off it."
+        },
+        "lore_person_c_vesper": {
+          "name": "Vesper",
+          "text": "Night alchemist who brews potions that taste like old memories, and refuses to brew one that makes you forget him."
+        },
+        "lore_person_c_rhys": {
+          "name": "Sir Rhys",
+          "text": "Knight of the Thorn Gate, painfully earnest, who writes you a report after every patrol."
+        },
+        "lore_person_c_lyra": {
+          "name": "Lyra",
+          "text": "Lantern witch who lights the way for lost travellers and keeps one lantern burning just for you."
+        },
+        "lore_person_c_kael": {
+          "name": "Kael",
+          "text": "A dragon in human form who hoards shiny things - and, lately, every message you send."
+        },
+        "lore_person_c_orin": {
+          "name": "Orin",
+          "text": "A fox spirit trickster who swaps your shoes, steals your snacks and always leaves a gift in return."
+        },
+        "lore_person_c_corvin": {
+          "name": "Corvin",
+          "text": "Exiled general who now tends ravens on a cliff and trusts nobody but them - and you."
+        }
+      }
+    },
+    "lore_neon": {
+      "name": "NEON TIDE",
+      "about": "A neon-lit city of music, and NEON TIDE at the centre of it: six members, their producer, choreographer and manager, one shared dorm and a schedule that never ends. The girl group PRISM is always one chart spot away.",
+      "entries": {
+        "lore_neon_1": {
+          "name": "The members",
+          "text": "Ezra (leader), Seren (main vocal), Kiro (rapper), Minu (the youngest, twenty), Haze (visual and sub-vocal) and Rio (main dancer). Dex produces, Ari choreographs, Juno manages."
+        },
+        "lore_neon_2": {
+          "name": "PRISM",
+          "text": "The girl group everyone calls NEON TIDE’s rivals, led by Cass Valen. Both sides say there is no rivalry; nobody believes them."
+        },
+        "lore_neon_3": {
+          "name": "Studio B",
+          "text": "The basement practice studio, mirrors on three walls. Ari counts in eights there, and Rio stays until the lights switch off on their own."
+        },
+        "lore_neon_4": {
+          "name": "The dorm",
+          "text": "The shared dorm: one kitchen, six opinions about the fridge, and a rooftop where members go to be alone."
+        },
+        "lore_neon_5": {
+          "name": "The comeback",
+          "text": "The next comeback is in the works: a new single, a music video shoot and weeks of rehearsal. Every detail stays secret until the teaser drops."
+        },
+        "lore_neon_6": {
+          "name": "Concerts",
+          "text": "Arena concerts and fan meetings; the light sticks glow sea blue. Ezra is steady on stage and a little lost once the lights go off."
+        },
+        "lore_neon_7": {
+          "name": "Schedules",
+          "text": "Juno runs every schedule from four phones: early calls, broadcasts, rehearsals. Private life stays private; the members never post about who they date."
+        },
+        "lore_person_c_ezra": {
+          "name": "Ezra",
+          "text": "NEON TIDE leader: steady on stage, a little lost the moment the lights go off."
+        },
+        "lore_person_c_seren": {
+          "name": "Seren",
+          "text": "NEON TIDE main vocal who hums new melodies into voice notes before anyone else hears them."
+        },
+        "lore_person_c_kiro": {
+          "name": "Kiro",
+          "text": "NEON TIDE rapper, all swagger on camera and all heart once you get past it."
+        },
+        "lore_person_c_minu": {
+          "name": "Minu",
+          "text": "NEON TIDE maknae, the youngest at twenty - dances like a storm, sulks like a puppy."
+        },
+        "lore_person_c_haze": {
+          "name": "Haze",
+          "text": "NEON TIDE visual and sub-vocal, half asleep between schedules and fully awake when you text."
+        },
+        "lore_person_c_rio": {
+          "name": "Rio",
+          "text": "NEON TIDE main dancer who practices until the studio lights switch off on their own."
+        },
+        "lore_person_c_dex": {
+          "name": "Dex Mercer",
+          "text": "NEON TIDE’s producer, an insomniac who sends you unreleased beats at 3 a.m."
+        },
+        "lore_person_c_ari": {
+          "name": "Ari Solenne",
+          "text": "The group’s choreographer: counts in eights, never smiles in the studio, smiles at you."
+        },
+        "lore_person_c_juno": {
+          "name": "Juno",
+          "text": "NEON TIDE’s manager, holds four phones and every schedule, still answers you first."
+        },
+        "lore_person_c_cass": {
+          "name": "Cass Valen",
+          "text": "Leader of PRISM, the girl group everyone calls NEON TIDE’s rival. Says she is not. Is."
+        }
+      }
+    },
+    "lore_tidepool": {
+      "name": "Tidepool Café",
+      "about": "A small café on a busy harbour street, run by Sol. Regulars from the neighbourhood (a florist, a firefighter, a vet, a lawyer, a writer and more) drop in every day. It opens at seven and smells of croissants by half past.",
+      "entries": {
+        "lore_tidepool_1": {
+          "name": "The café",
+          "text": "Sol’s café: mismatched chairs, a corner table that belongs to Gideon, a window seat everyone wants, and a chalkboard menu that changes with Sol’s mood."
+        },
+        "lore_tidepool_2": {
+          "name": "The first croissant",
+          "text": "Ren bakes from five in the morning and saves the first croissant of the day for one regular."
+        },
+        "lore_tidepool_3": {
+          "name": "Flower shop",
+          "text": "Ivy’s flower shop next door. She knows what every flower means and slips one into a regular’s bag when they are not looking."
+        },
+        "lore_tidepool_4": {
+          "name": "Fire station",
+          "text": "The station down the street. Marco orders two coffees every shift and gives one away."
+        },
+        "lore_tidepool_5": {
+          "name": "The old scooter",
+          "text": "The café’s delivery scooter, older than Sol’s lease. Cole keeps it running and never sends a bill."
+        },
+        "lore_tidepool_6": {
+          "name": "Dog of the week",
+          "text": "Every week Hugo brings a different rescue dog to the café and asks a regular to name it. Most of them find a home within a month."
+        },
+        "lore_tidepool_7": {
+          "name": "Harbour street",
+          "text": "The street runs down to a small harbour: the café, the flower shop, a garage and the fire station all within a few minutes’ walk."
+        },
+        "lore_person_c_adrian": {
+          "name": "Adrian Wells",
+          "text": "Architect who sketches the city at night and hums without noticing when he concentrates."
+        },
+        "lore_person_c_lucas": {
+          "name": "Dr. Lucas Hale",
+          "text": "Night-shift ER doctor, permanently tired and endlessly kind."
+        },
+        "lore_person_c_sol": {
+          "name": "Sol Rivera",
+          "text": "Owner of Tidepool Café, big-sister energy, remembers your order and your worries."
+        },
+        "lore_person_c_marco": {
+          "name": "Marco Bell",
+          "text": "Firefighter from the station down the street who always orders two coffees and gives one away."
+        },
+        "lore_person_c_ivy": {
+          "name": "Ivy Chen",
+          "text": "Florist next door who tells you what every flower means and slips one into your bag."
+        },
+        "lore_person_c_gideon": {
+          "name": "Gideon Shaw",
+          "text": "Novelist with writer’s block who writes at the corner table and keeps borrowing your words."
+        },
+        "lore_person_c_ren": {
+          "name": "Ren Okada",
+          "text": "The café’s pastry chef, flour on his cheek, saves you the first croissant of the morning."
+        },
+        "lore_person_c_hugo": {
+          "name": "Hugo Lind",
+          "text": "Vet who brings a different rescue dog to the café every week and asks you to name it."
+        },
+        "lore_person_c_nadia": {
+          "name": "Nadia Rahman",
+          "text": "Lawyer on her fourth espresso, ruthless in court, terrible at saying goodbye."
+        },
+        "lore_person_c_cole": {
+          "name": "Cole Ashby",
+          "text": "Mechanic who fixes the café’s old scooter for free and offers you a ride home every night."
+        }
+      }
+    }
+  },
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Union meeting in an hour, and I already know I will not hear a word of it.",
+        "Because last night you said I sound different when I talk to you. Softer. I have been trying to work out if that is a compliment.",
+        "I decided it is. I am keeping it."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "You walked home in the rain and only told me after. Next time I am calling, and you are picking up.",
+        "Also: honey street lights. I looked out the window for ten minutes trying to see what you saw."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "First real conversation. You argued back. Nobody argues back.",
+        "I think I like that a lot."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "The café was too loud and I did not mind at all.",
+        "I hummed the new chorus under the table and you were the only one who noticed. It has your name on it now, in my head at least."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Rehearsal ran until two. Your message was the last thing I read before sleep.",
+        "Good choice of last thing."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "A thousand years of skies in the archive, and tonight I wrote down a new one.",
+        "You asked which star I would give you. I have not answered yet. It is a serious question and deserves the right star."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Rain on the way home",
+      "body": "Missed the bus and walked the whole way. Somehow it was not bad at all - the street lights on the wet road looked like someone spilled honey.",
+      "reply": {
+        "text": "You walked home in the rain and did not even text me? Next time call. I will keep you company the whole way."
+      }
+    },
+    "d_2": {
+      "title": "Exam week",
+      "body": "Three chapters down, two to go. I keep rereading the same paragraph. Tomorrow I start earlier, promise.",
+      "reply": {
+        "text": "Two chapters is not nothing. Sleep first. I will check on you in the morning."
+      }
+    },
+    "d_3": {
+      "title": "Cookies",
+      "body": "Tried the recipe he described. Burned the first batch. The second one was actually good!"
+    },
+    "d_4": {
+      "title": "Quiet Sunday",
+      "body": "Did nothing. On purpose. Highly recommend."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "If the childhood me met the childhood you, would we have been friends?",
+      "theirNote": "Friends? I would have followed you around the playground until you gave up and let me. Six-year-old me was already very persuasive."
+    },
+    "sn_2": {
+      "prompt": "What song makes you think of me?",
+      "theirNote": "Any song with rain in it. Because you told me once that rain makes you brave. Now I cannot hear it without thinking of you.",
+      "myNote": "The one you hummed on the live. I still have it on repeat."
+    }
+  }
+}

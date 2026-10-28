@@ -68,7 +68,9 @@
     "typecheck": "tsc --noEmit",
     "typecheck:test": "tsc -p tsconfig.test.json",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-test-hooks.mjs --test \"src/**/*.test.ts\"",
-    "check:locales": "node scripts/check-locales.mjs"
+    "check:locales": "node scripts/check-locales.mjs",
+    "content:extract": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./scripts/content-hooks.mjs scripts/content-extract.ts",
+    "check:content": "node scripts/check-content.mjs"
   },
   "private": true
 }
