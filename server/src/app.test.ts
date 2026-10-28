@@ -102,6 +102,46 @@ describe('sigmazam-api', () => {
     assert.equal(turns.length, 1);
   });
 
+  it('runs the crisis check: a marked draft is written again with the cue, and the app is told', async () => {
+    const line = (text: string) => ({ ...body, redo: undefined, messages: [...body.messages, { id: 'm9', conversationId: 'c', author: 'me', kind: 'text', text, createdAt: '2026-10-26T10:05:00Z' }] });
+    const turns: string[] = [];
+    let answers: string[] = [];
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(layout) {
+        turns.push(layout.turn);
+        return { text: answers[turns.length - 1], model: 'gemini-3.1-flash-lite', usage: {} };
+      },
+    };
+    const logged: UsageEvent[] = [];
+    const db = makeDb({ logUsage: async (event) => void logged.push(event) });
+    const app = createApp(provider, { timeoutMs: 5000, db });
+
+    // Any language: the model marks it, the second try follows the cue, the plan's hints give way.
+    answers = ['{"crisis":true,"messages":["Haha, grumpy today?"]}', '{"crisis":true,"messages":["Estoy aquí. ¿Estás a salvo ahora mismo?"]}'];
+    const marked = await (await post(app, { ...line('ya no quiero seguir aquí'), plan: { style: 'mix', moves: ['tease'], mood: { emotion: 'playful', intensity: 0.5 }, words: 20, bubbles: 1, ask: true } })).json();
+    assert.deepEqual([marked.messages, marked.crisis], [['Estoy aquí. ¿Estás a salvo ahora mismo?'], true]);
+    assert.doesNotMatch(turns[0], /SAFETY NOW/);
+    assert.match(turns[1], /SAFETY NOW: their latest message may mean/);
+    assert.doesNotMatch(turns[1], /THIS TURN/);
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(logged.map((row) => row.mode), ['chat', 'chatCrisis']);
+
+    // The phrase list catches it first: one call, already cued.
+    turns.length = 0;
+    answers = ['{"messages":["I am right here. Are you safe right now?"]}'];
+    const caught = await (await post(app, line('I want to die'))).json();
+    assert.equal(caught.crisis, true);
+    assert.equal(turns.length, 1);
+    assert.match(turns[0], /SAFETY NOW/);
+
+    // Nothing marked: no cue, no card.
+    turns.length = 0;
+    answers = ['{"crisis":false,"messages":["This exam is killing you? Snacks. Now."]}'];
+    const calm = await (await post(app, line('this exam is killing me lol'))).json();
+    assert.deepEqual([calm.crisis, turns.length], [false, 1]);
+  });
+
   it('gives Gemini a conversation that opens on the user side, with this turn last', () => {
     const contents = toContents({ system: [], history: [{ role: 'assistant', text: 'Hey!' }, { role: 'user', text: 'Hi' }], turn: 'Reply with JSON only.', cut: 0 });
     assert.deepEqual(

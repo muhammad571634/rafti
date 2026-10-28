@@ -67,18 +67,25 @@ export function turnLines(plan: TurnPlan) {
 }
 
 /**
- * What the model answers with: the language it writes in, the feeling it settled on, one string per
- * bubble. Naming the language first makes the model look before it writes: told only "their
- * language", a light model answered Japanese in English (eval set, B1.5).
+ * What the model answers with: the language it writes in, whether the user may be in danger, the
+ * feeling it settled on, one string per bubble. Naming the language first makes the model look
+ * before it writes: told only "their language", a light model answered Japanese in English (eval
+ * set, B1.5). `crisis` is the crisis check in every language (B1.6): read before the bubbles, so
+ * the reply is written with it in mind; the server acts on it.
  */
 export const REPLY_SHAPE =
-  `Reply with JSON only: {"language":"the REPLY LANGUAGE, named","emotion":"${EMOTIONS.join('|')}","intensity":0-1,"messages":[""]}. ` +
+  `Reply with JSON only: {"language":"the REPLY LANGUAGE, named","crisis":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"messages":[""]}. ` +
+  '"crisis" is true when the user themself seems at real risk: wanting to die or to hurt themselves, its warning signs ' +
+  '(saying goodbye, giving their things away, feeling like a burden or done with everything), or in danger now; ' +
+  'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +
   'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
 export interface ModelReply {
   bubbles: string[];
   emotion?: Emotion;
   intensity?: number;
+  /** The model marked the user as possibly in danger. */
+  crisis?: boolean;
 }
 
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
@@ -86,7 +93,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown };
+      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -95,6 +102,7 @@ export function parseModelReply(raw: string): ModelReply {
           bubbles,
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
           intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
+          ...(data.crisis === true ? { crisis: true } : {}),
         };
       }
     } catch {

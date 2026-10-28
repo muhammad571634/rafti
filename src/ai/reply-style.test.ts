@@ -4,8 +4,11 @@ import { describe, it } from 'node:test';
 import type { TurnPlan } from '@/lib/reply-engine';
 import type { Character, User } from '@/types';
 
-import { enforceStyle, parseModelReply, replyStyleLines, turnLines } from './reply-style';
+import { chatParts } from './chat-prompt';
+import { joinParts } from './prompt-layout';
+import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, turnLines } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
+import { CRISIS_CUE } from './safety';
 
 const character: Character = {
   id: 'c_kai',
@@ -72,5 +75,27 @@ describe('the model’s reply', () => {
   it('holds Talk to no narration', () => {
     assert.deepEqual(enforceStyle(['*grins* Hey.', '*waves*'], 'talk'), ['Hey.']);
     assert.deepEqual(enforceStyle(['*grins* Hey.'], 'mix'), ['*grins* Hey.']);
+  });
+
+  it('reads the crisis mark only when it is a real true', () => {
+    assert.equal(parseModelReply('{"crisis":true,"messages":["I am here."]}').crisis, true);
+    assert.equal('crisis' in parseModelReply('{"crisis":"yes","messages":["Hm."]}'), false);
+    assert.equal('crisis' in parseModelReply('{"crisis":false,"messages":["Hm."]}'), false);
+    assert.match(REPLY_SHAPE, /"crisis":false[\s\S]*never for a joke/);
+  });
+});
+
+describe('the crisis cue in the chat prompt', () => {
+  const plan = { style: 'mix', moves: ['tease'], mood: { emotion: 'playful', intensity: 0.6 }, words: 20, bubbles: 1, ask: true } as unknown as TurnPlan;
+  const input = { character, user, messages: [], plan };
+
+  it('goes last before the shape and takes the turn plan’s place', () => {
+    const parts = chatParts({ ...input, crisis: true });
+    const names = parts.filter((p) => p.tier === 'turn' && p.text).map((p) => p.name);
+    assert.deepEqual(names.slice(-2), ['crisis', 'shape']);
+    assert.ok(!names.includes('hints'));
+    assert.ok(joinParts(parts).includes(CRISIS_CUE.join('\n')));
+    assert.ok(chatParts(input).some((p) => p.name === 'hints' && p.text.includes('tease')));
+    assert.ok(!joinParts(chatParts(input)).includes('SAFETY NOW'));
   });
 });

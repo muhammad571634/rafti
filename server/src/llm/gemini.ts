@@ -31,7 +31,8 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
               responseMimeType: 'application/json',
               temperature,
               // One model may not take the whole wait: leave room for the next.
-              abortSignal: AbortSignal.timeout(Math.min(left, Math.max(6000, timeoutMs / 2))),
+              // Whole milliseconds: a half (an odd wait halved) throws before the call is made.
+              abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(6000, timeoutMs / 2)))),
             },
           });
           const usage = res.usageMetadata;

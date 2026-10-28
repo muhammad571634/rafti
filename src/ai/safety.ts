@@ -27,6 +27,19 @@ export function detectCrisis(text: string) {
   return CRISIS_PATTERNS.some((p) => p.test(t));
 }
 
+/**
+ * The turn's cue when the user may be in danger (B1.6 crisis check): the phrase list above caught
+ * it, or the model marked its first draft `crisis` (any language; `REPLY_SHAPE`). Last in the
+ * prompt, so it outweighs the turn's plan, which is left out then.
+ */
+export const CRISIS_CUE = [
+  'SAFETY NOW: their latest message may mean they are thinking about suicide, hurting themselves, or are in danger.',
+  '- Stay yourself and warm, and take it seriously: no jokes, teasing, flirting, scolding or advice lists.',
+  '- Ask if they are safe right now.',
+  '- Ask them to reach someone real tonight: a friend, family, or a local helpline (the app shows one under your reply).',
+  '- Short and gentle, in their language; say you are here with them.',
+];
+
 /** What the character says first, in a warm voice (the server model replaces this). */
 export const crisisReplies = [
   'Hey. I am right here, and I am taking this seriously. Are you safe right now? Talking to someone real tonight - a friend, family, or a helpline - would mean a lot to me.',

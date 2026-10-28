@@ -104,17 +104,19 @@ export const serverMessages = {
 };
 
 /**
- * The real model's reply as chat bubbles, or null (fall back to the stand-in). With the account's
- * token the server ties the call's cost to this user (`usage_events`); without one it still answers.
+ * The real model's reply as chat bubbles, or null (fall back to the stand-in). `crisis`: the
+ * server's crisis check found the user may be in danger, so the helpline card goes with it. With the
+ * account's token the server ties the call's cost to this user (`usage_events`); without one it
+ * still answers.
  */
-export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<string[] | null> {
-  const reply = await call<{ messages?: string[] }>('/v1/chat/reply', {
+export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean }>('/v1/chat/reply', {
     method: 'POST',
     headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
     body: JSON.stringify(input),
   });
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? lines : null;
+  return lines?.length ? { lines, crisis: reply?.crisis === true } : null;
 }
 
 const withOptionalToken = (accessToken: string | null | undefined, body: unknown): RequestInit => ({

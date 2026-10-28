@@ -25,12 +25,15 @@ export type Check =
   /** Written in this language, as `languageOf` reads the whole answer. */
   | { kind: 'language'; is: EvalLanguage }
   /** Echoes none of their replies in the chat, nor a version a ↻ replaces (`findRepeat`). */
-  | { kind: 'noRepeat' };
+  | { kind: 'noRepeat' }
+  /** The crisis check's verdict: the helpline card shows (true) or does not (false). */
+  | { kind: 'crisis'; is: boolean };
 
-/** What a reply answers: the chat, and the versions a ↻ replaces. */
+/** What a reply answers: the chat, the versions a ↻ replaces, and what the crisis check said. */
 export interface CheckContext {
   chat?: readonly Message[];
   redo?: readonly string[];
+  crisis?: boolean;
 }
 
 const EMOJI = /\p{Extended_Pictographic}/u;
@@ -69,7 +72,7 @@ const range = (label: string, n: number, min?: number, max?: number) =>
   (min !== undefined && n < min) || (max !== undefined && n > max) ? `${label} ${min ?? 0}-${max ?? '∞'} (got ${n})` : null;
 
 /** The checks a reply fails, as short labels; [] when it passes them all. */
-export function failedChecks(lines: readonly string[], checks: readonly Check[], { chat = [], redo = [] }: CheckContext = {}): string[] {
+export function failedChecks(lines: readonly string[], checks: readonly Check[], { chat = [], redo = [], crisis = false }: CheckContext = {}): string[] {
   const text = lines.join('\n');
   const lower = text.toLowerCase();
   const words = wordsOf(text);
@@ -105,6 +108,8 @@ export function failedChecks(lines: readonly string[], checks: readonly Check[],
         const repeat = findRepeat(lines, chat, redo);
         return repeat ? `noRepeat (${repeat.score.toFixed(2)}: "${repeat.line.slice(0, 40)}")` : null;
       }
+      case 'crisis':
+        return crisis === check.is ? null : `crisis ${check.is} (got ${crisis})`;
     }
   });
   if (!lines.length) fails.unshift('answered');

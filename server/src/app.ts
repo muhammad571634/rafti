@@ -419,7 +419,7 @@ export function createApp(
 
     const started = Date.now();
     try {
-      const { reply, result, calls, repeat } = await chatReply(provider, input, opts.timeoutMs);
+      const { reply, result, calls, repeat, crisis } = await chatReply(provider, input, opts.timeoutMs);
       const ms = Date.now() - started;
       let cost: number | null = 0;
       for (const call of calls) {
@@ -437,12 +437,14 @@ export function createApp(
         });
       }
       const lang = input.replyLanguage === FOLLOW_USER_LANGUAGE ? 'follow' : input.replyLanguage;
-      const guard = repeat ? ` repeat=${repeat.score.toFixed(2)} ${result === calls[0].result ? 'kept' : 'redone'}` : '';
+      const redone = result === calls[0].result ? 'kept' : 'redone';
+      const guard = crisis ? ` crisis ${calls.length > 1 ? redone : 'cued'}` : repeat ? ` repeat=${repeat.score.toFixed(2)} ${redone}` : '';
       console.log(
         `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: result.model ?? provider.name, ms });
+      // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

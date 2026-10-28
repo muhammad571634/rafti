@@ -4402,10 +4402,12 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     // The account's token lets the server log the reply's cost against this user (B1).
     void accessToken()
       .then((token) => serverReply(input, token))
-      .then((lines) => {
+      .then((reply) => {
         if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
-        if (lines) deliver(lines);
-        else failReply(set, conversationId, request);
+        if (!reply) return failReply(set, conversationId, request);
+        // The server's crisis check (any language): the helpline card, as a caught phrase gets.
+        if (reply.crisis) appendHelplineCard(set, get, conversationId);
+        deliver(reply.lines);
       });
     return;
   }

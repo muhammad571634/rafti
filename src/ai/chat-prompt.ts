@@ -14,6 +14,7 @@ import { layoutPrompt, part } from './prompt-layout';
 import { FOLLOW_USER_LANGUAGE, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE, turnLines } from './reply-style';
+import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
 
@@ -113,6 +114,8 @@ export interface ChatPromptInput {
   redoOff?: OffReason;
   /** The repetition guard's second try (server only): the earlier line the first draft echoed (`repeatCue`). */
   repeated?: string;
+  /** The crisis check (server only): the user may be in danger, so the reply follows `CRISIS_CUE`. */
+  crisis?: boolean;
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
@@ -137,11 +140,13 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
     part('openers', 'turn', openerLines(input.messages)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
-    // Bedtime asks nothing (its mode block): the plan's "end with a question" would undo that.
-    part('hints', 'turn', input.plan ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
+    // Bedtime asks nothing (its mode block): the plan's "end with a question" would undo that. In a
+    // crisis the plan (a tease, a new topic) gives way to `CRISIS_CUE`.
+    part('hints', 'turn', input.plan && !input.crisis ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
     ...threadParts(input.threads ?? []),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', input.replyLanguage === FOLLOW_USER_LANGUAGE ? languageCue(userLines(input.messages)) : []),
+    part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];
 }

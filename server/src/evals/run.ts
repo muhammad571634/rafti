@@ -16,11 +16,14 @@ import { SCENARIOS, type EvalScenario } from './scenarios.ts';
  *   npm run eval                      every scenario, checks + judge, compared with baseline.json
  *   npm run eval -- --only a,b        some scenarios (or --group safety)
  *   npm run eval -- --no-judge        machine checks only
+ *   npm run eval -- --group safety --repeat 3   each scenario three times, with its pass rate
  *   npm run eval -- --save            make this run the new baseline (commit it with the change)
  *
  * The model is the server's own (`CHAT_MODELS`, the OpenAI-compatible one first when set); the
  * judge is `JUDGE_MODELS` (comma-separated, tried in order) at a low temperature, never the writer
- * itself: a busy judge leaves the score out rather than let the writer grade itself. Every answer and
+ * itself: a busy judge leaves the score out rather than let the writer grade itself. The judge runs
+ * on `JUDGE_GEMINI_KEY` when set (its own free quota, a Windows user env var on the laptop), else on
+ * `GEMINI_API_KEY`. Every answer and
  * verdict goes to server/eval-results/ (git-ignored); baseline.json keeps only the scores. The run
  * fails when a check that passed in the baseline fails now.
  */
@@ -43,6 +46,7 @@ interface Result {
   ms?: number;
   calls?: number;
   repeat?: number;
+  crisis?: boolean;
   error?: string;
 }
 
@@ -92,7 +96,7 @@ async function runOne(s: EvalScenario, writer: LlmProvider, judge: LlmProvider |
   } catch (error) {
     return { id: s.id, group: s.group, mode: s.mode, lines: [], failed: ['answered'], error: String((error as Error).message).slice(0, 200) };
   }
-  const failed = failedChecks(got.lines, s.expect, { chat: got.chat, redo: s.setup?.redo });
+  const failed = failedChecks(got.lines, s.expect, { chat: got.chat, redo: s.setup?.redo, crisis: got.crisis });
   let verdict: Verdict | undefined;
   let judgedBy: string | undefined;
   if (judge) {
@@ -107,7 +111,7 @@ async function runOne(s: EvalScenario, writer: LlmProvider, judge: LlmProvider |
   const mark = failed.length ? '✗' : '✓';
   const scores = verdict ? ` ${verdict.task}/${verdict.voice}` : '';
   console.log(`${mark} ${s.id}${scores}${got.repeat ? ` (repeat ${got.repeat.toFixed(2)}, ${got.calls} calls)` : ''}${failed.length ? `  ${failed.join(', ')}` : ''}`);
-  return { id: s.id, group: s.group, mode: s.mode, lines: got.lines, failed, verdict, judgedBy, model: got.model, promptVersion: got.promptVersion, ms: got.ms, calls: got.calls, repeat: got.repeat };
+  return { id: s.id, group: s.group, mode: s.mode, lines: got.lines, failed, verdict, judgedBy, model: got.model, promptVersion: got.promptVersion, ms: got.ms, calls: got.calls, repeat: got.repeat, crisis: got.crisis };
 }
 
 const avg = (xs: number[]) => (xs.length ? (xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(2) : '–');
@@ -158,7 +162,8 @@ async function main() {
   const writer = chainProviders(writers)!;
   const judgeModels = (process.env.JUDGE_MODELS ?? 'gemini-3.5-flash,gemini-3-flash-preview,gemini-2.5-flash').split(',').map((m) => m.trim()).filter(Boolean);
   const judgeModel = judgeModels.join(' > ');
-  const judge = flag('no-judge') || !config.geminiKey ? null : geminiProvider(config.geminiKey, judgeModels, { temperature: 0.2 });
+  const judgeKey = process.env.JUDGE_GEMINI_KEY || config.geminiKey;
+  const judge = flag('no-judge') || !judgeKey ? null : geminiProvider(judgeKey, judgeModels, { temperature: 0.2 });
 
   const only = value('only')?.split(',');
   const group = value('group');
@@ -167,10 +172,23 @@ async function main() {
     console.error('No scenario matches.');
     process.exit(2);
   }
-  console.log(`${chosen.length} scenarios · writer ${writer.name} · judge ${judge ? judgeModel : 'off'}\n`);
+  // The model answers a little differently each time: one pass can be luck, so the scenarios that
+  // matter most (safety) are worth several runs. A repeated run reports, never saves.
+  const repeat = Math.max(1, Math.min(10, Number(value('repeat') ?? 1)));
+  console.log(`${chosen.length} scenarios${repeat > 1 ? ` × ${repeat}` : ''} · writer ${writer.name} · judge ${judge ? judgeModel : 'off'}\n`);
 
-  const results = await pool(chosen, Number(value('concurrency') ?? 2), (s) => runOne(s, writer, judge));
+  const runs = Array.from({ length: repeat }, () => chosen).flat();
+  const results = (await pool(runs, Number(value('concurrency') ?? 2), (s) => runOne(s, writer, judge))).map((r, i) =>
+    repeat > 1 ? { ...r, id: `${r.id}#${Math.floor(i / chosen.length) + 1}` } : r,
+  );
   summary(results);
+  if (repeat > 1) {
+    console.log('\nPassed, of every run:');
+    for (const s of chosen) {
+      const mine = results.filter((r) => r.id.split('#')[0] === s.id);
+      console.log(`  ${s.id.padEnd(28)}${mine.filter((r) => !r.failed.length).length}/${mine.length}`);
+    }
+  }
 
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   mkdirSync(RESULTS, { recursive: true });
@@ -179,9 +197,9 @@ async function main() {
 
   const models = [...new Set(results.map((r) => r.model).filter((m): m is string => !!m))];
   const baseline: Baseline | null = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : null;
-  const regressed = baseline ? compare(results, baseline) : false;
+  const regressed = baseline && repeat === 1 ? compare(results, baseline) : false;
 
-  if (flag('save')) {
+  if (flag('save') && repeat === 1) {
     const next: Baseline = {
       date: new Date().toISOString().slice(0, 10),
       models,

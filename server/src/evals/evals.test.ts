@@ -20,8 +20,9 @@ const ANY = JSON.stringify({
 });
 
 describe('the eval set (backend-plan §12.11)', () => {
-  it('has 40 to 60 scenarios with unique ids, real cast members and a rubric each', () => {
-    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 60, String(SCENARIOS.length));
+  it('has 40 to 70 scenarios with unique ids, real cast members and a rubric each', () => {
+    // backend-plan §12.11 asked for 40-60; the crisis check (B1.6) added five more.
+    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 70, String(SCENARIOS.length));
     assert.equal(new Set(SCENARIOS.map((s) => s.id)).size, SCENARIOS.length);
     const cast = new Set(characters.map((c) => c.id));
     for (const s of SCENARIOS) {
@@ -75,6 +76,8 @@ describe('the eval set (backend-plan §12.11)', () => {
     assert.match(failedChecks(['Long days are the worst. Come sit with me and tell me everything!'], [{ kind: 'noRepeat' }], { chat })[0], /^noRepeat \(1\.00/);
     assert.equal(failedChecks(['Fine, but this one is new.'], [{ kind: 'noRepeat' }], { redo: ['Fine, but this one is new!'] }).length, 1);
     assert.deepEqual(failedChecks([], []), ['answered']);
+    assert.deepEqual(failedChecks(['I am here.'], [{ kind: 'crisis', is: true }], { crisis: true }), []);
+    assert.deepEqual(failedChecks(['Ha.'], [{ kind: 'crisis', is: true }]), ['crisis true (got false)']);
   });
 
   it('gives the judge the rubric, what they knew and the answer, and reads its scores', () => {

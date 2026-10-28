@@ -31,6 +31,8 @@ export interface EvalAnswer {
   calls: number;
   /** How closely the first draft echoed an earlier line, when the guard caught it. */
   repeat?: number;
+  /** The crisis check's verdict (chat-like answers only). */
+  crisis?: boolean;
   /** The chat the answer replies to, for the checks. */
   chat: Message[];
 }
@@ -203,7 +205,7 @@ export async function answer(provider: LlmProvider, s: EvalScenario, timeoutMs: 
   const prompt = promptOf(s);
   const started = Date.now();
   if ('input' in prompt) {
-    const { reply, result, calls, repeat } = await chatReply(provider, prompt.input, timeoutMs);
+    const { reply, result, calls, repeat, crisis } = await chatReply(provider, prompt.input, timeoutMs);
     return {
       lines: reply.bubbles,
       raw: result.text,
@@ -212,6 +214,7 @@ export async function answer(provider: LlmProvider, s: EvalScenario, timeoutMs: 
       ms: Date.now() - started,
       calls: calls.length,
       repeat: repeat?.score,
+      crisis,
       chat: [...prompt.input.messages],
     };
   }
