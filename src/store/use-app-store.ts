@@ -96,6 +96,7 @@ import {
 } from '@/lib/scenes';
 import { officialScenes } from '@/mock/scenes';
 import {
+  booksFor,
   checkLoreEntry,
   checkLorebook,
   LORE_ABOUT_MAX,
@@ -103,8 +104,11 @@ import {
   LORE_TEXT_MAX,
   type LoreEntryProblem,
   type LorebookProblem,
+  lorePrompt,
   parseKeywords,
+  recentLines,
 } from '@/lib/lorebook';
+import { officialLorebooks } from '@/mock/lorebooks';
 import { checkStream, isPlaying, nextSpeaker, nextTarget, STREAM_TOPIC_MAX, STREAMS_KEPT, type StreamProblem } from '@/lib/streams';
 import { mockStreamLine } from '@/mock/streams';
 import { STREAM_SHELLS, takeFreeRound, type StreamUse } from '@/economy/streams';
@@ -122,6 +126,7 @@ import {
   PERSONA_ABOUT_MAX,
   PERSONA_NAME_MAX,
   type PersonaProblem,
+  personaFor,
   PROFILE_PERSONA,
 } from '@/lib/personas';
 import {
@@ -4412,12 +4417,22 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   // tier's daily cap, a slow answer) says so under the user's line with a way to try again, as iOS
   // Messages does, instead of passing the stand-in off as their reply.
   if (text == null && given == null && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
+    const messages = ctx.history.filter((m) => !m.pending);
     const input = {
       character,
       user: state.user,
       relationship: bond,
       prefs: replyPrefs(bond),
-      messages: ctx.history.filter((m) => !m.pending),
+      // Who they are here, the scene and the world books: the same as the stand-in reads.
+      persona: personaFor(conversationId, state),
+      scene: conversation.scene,
+      lore: lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id),
+      // Memory (B2): what they pinned, every other open fact, and their story so far. Locked
+      // memories (no plan, past the free 20) stay out, as on the Memories screen.
+      pinned: ctx.memories.filter((m) => m.pinned),
+      facts: ctx.memories.filter((m) => !m.pinned),
+      summary: conversation.summary,
+      messages,
       plan: turn.plan,
       threads: state.threads.filter((t) => t.characterId === character.id),
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.

@@ -10,7 +10,7 @@ import { lorePrompt, recentLines } from '../lib/lorebook';
 import type { ChatPromptInput } from './chat-prompt';
 import { offCue } from '../lib/reply-rating';
 
-import { chatParts, chatTurns, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
+import { chatParts, chatTurns, FACTS_MAX, factLines, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
 import { CHARACTER_RULES } from './rules';
 
 const kai = {
@@ -234,5 +234,44 @@ describe('votes in the prompt (👍 👎)', () => {
     const taste = parts.find((p) => p.name === 'taste');
     assert.equal(taste?.tier, 'turn');
     assert.ok(taste?.text.includes('- Ha, stop it'));
+  });
+});
+
+describe('factLines (B2: what they know)', () => {
+  const fact = (id: string, text: string, extra: Partial<MemoryItem> = {}): MemoryItem => ({
+    id,
+    characterId: 'c_kai',
+    text,
+    source: 'chat',
+    createdAt: `2026-10-${id.padStart(2, '0')}T10:00:00Z`,
+    pinned: false,
+    ...extra,
+  });
+
+  it('carries every open fact, the most important then the newest, never pins or old ones', () => {
+    const lines = factLines([
+      fact('1', 'Likes rain'),
+      fact('2', 'Dog called Biscuit', { importance: 0.9 }),
+      fact('3', 'Lives in Namangan', { status: 'superseded', supersededBy: '4' }),
+      fact('4', 'Moved to Tashkent'),
+      fact('5', 'Pinned one', { pinned: true }),
+    ]);
+    assert.deepEqual(lines, [
+      'WHAT YOU KNOW (from your chats; true in your story; use it when it fits, never as a list):',
+      '- About them: Dog called Biscuit',
+      '- About them: Moved to Tashkent',
+      '- About them: Likes rain',
+    ]);
+    assert.deepEqual(factLines([]), []);
+  });
+
+  it('caps the count and the text, and sits in the cached chat tier before the summary', () => {
+    const many = Array.from({ length: FACTS_MAX + 10 }, (_, i) => fact(String((i % 28) + 1), `Fact number ${i}`));
+    assert.equal(factLines(many).length, FACTS_MAX + 1);
+    const long = Array.from({ length: 40 }, (_, i) => fact('9', `${i} ${'x'.repeat(200)}`));
+    assert.ok(factLines(long).join('\n').length < 5200);
+    const parts = chatParts({ character: kai, user: sam, messages: [], facts: [fact('2', 'Dog called Biscuit')], summary: 'They met at the pool.' });
+    const names = parts.filter((p) => p.tier === 'chat' && p.text).map((p) => p.name);
+    assert.ok(names.indexOf('facts') < names.indexOf('summary'), names.join());
   });
 });

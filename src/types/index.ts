@@ -265,6 +265,10 @@ export interface Conversation {
   aiNoticeAt?: string;
   /** The scene this chat is playing now, until the user ends it (`src/lib/scenes.ts`). */
   scene?: ActiveScene;
+  /** Their story so far, kept short by the memory pass (B2, src/ai/memory-pass.ts); the prompt's YOUR STORY SO FAR. */
+  summary?: string;
+  /** The last message the memory pass has read; it reads only what came after. */
+  memoryMark?: string;
 }
 
 /**

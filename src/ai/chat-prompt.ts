@@ -58,6 +58,26 @@ export function pinnedLines(pinned: readonly MemoryItem[]) {
   return ['ALWAYS REMEMBER (they pinned these; true in your story):', ...kept.map(memoryLine)];
 }
 
+/** The most facts the prompt carries besides the pins, and their text budget (about 4 characters a token). */
+export const FACTS_MAX = 60;
+const FACTS_CHARS = 4800;
+
+/**
+ * What they know about each other from earlier chats (B2): every open fact that is not pinned, the
+ * most important first, then the newest, up to `FACTS_MAX` and a text budget. In the chat tier, so
+ * it is cached until a fact changes (the memory pass, a few times a day), and the model sees all of
+ * it: no retrieval to miss a fact while there are this few. `importance` is 0.5 when missing.
+ */
+export function factLines(facts: readonly MemoryItem[]) {
+  const kept = facts
+    .filter((m) => !m.pinned && (m.status ?? 'active') === 'active' && !m.supersededBy)
+    .sort((a, b) => (b.importance ?? 0.5) - (a.importance ?? 0.5) || compare(b.createdAt, a.createdAt))
+    .slice(0, FACTS_MAX);
+  let chars = 0;
+  const lines = kept.map(memoryLine).filter((line) => (chars += line.length) <= FACTS_CHARS);
+  return lines.length ? ['WHAT YOU KNOW (from your chats; true in your story; use it when it fits, never as a list):', ...lines] : [];
+}
+
 /** What this message brings to mind besides the pins, for this reply only. */
 export function recallLines(memories: readonly (MemoryNote & { pinned?: boolean })[]) {
   const loose = memories.filter((m) => !m.pinned);
@@ -100,6 +120,8 @@ export interface ChatPromptInput {
   prefs?: ReplyPrefs;
   /** This character's pinned memories (`pinnedLines`). */
   pinned?: readonly MemoryItem[];
+  /** Their other open memories (`factLines`). */
+  facts?: readonly MemoryItem[];
   /** The summary of earlier chats (backend-plan §7), the last thing before the history. */
   summary?: string;
   /** The chat, oldest first, from its start (or from `HistoryWindow.offset`). */
@@ -130,6 +152,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs),
     modePart(input.mode ?? 'chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
+    part('facts', 'chat', factLines(input.facts ?? [])),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
     // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill
