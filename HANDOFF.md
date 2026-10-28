@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z32. Translate content: Phase 3 Traditional Chinese (zh-Hant) complete (2026-10-29). NEXT: Phase 3 id (Indonesian)
+
+- Traditional Chinese (`zh-Hant`) content translation generated with full coverage across all 18 catalog sections (1973 strings):
+  - 40 characters (bio, tagline, greeting, opening, greetings, starters, likes, dislikes, backstory, tags).
+  - 5 date places (situations and choices).
+  - 4 date themes (openers, shared, mood rounds, closers).
+  - 4 worlds (seaside, moonlit, neon, tidepool: quiz, selfQuiz, dateRounds, frames, reactions).
+  - 5 quiz packs (questions and options).
+  - 4 world books & lore entries.
+  - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
+- Registered `zh-Hant` in `src/i18n/content.ts`.
+- Validated via `scripts/check-content.mjs zh-Hant` — 0 errors, placeholders/asterisks/emojis exact.
+- Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
+
 ### 0z31. Translate content: Phase 3 Korean (ko) complete (2026-10-29). NEXT: Phase 3 zh-Hant (Traditional Chinese)
 
 - Korean (`ko`) content translation generated with full coverage across all 18 catalog sections (1973 strings):

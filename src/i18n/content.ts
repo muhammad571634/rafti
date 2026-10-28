@@ -8,6 +8,7 @@ import it from './content/it.json';
 import ja from './content/ja.json';
 import ko from './content/ko.json';
 import ptBR from './content/pt-BR.json';
+import zhHant from './content/zh-Hant.json';
 import { overlay } from './overlay';
 
 export { overlay };
@@ -25,6 +26,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   ja,
   ko,
   'pt-BR': ptBR,
+  'zh-Hant': zhHant,
 };
 
 const cache = new Map<string, unknown>();
