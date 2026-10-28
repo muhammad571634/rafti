@@ -10,7 +10,7 @@ import { planReply } from '../../../src/lib/reply-engine/index.ts';
 import { characters } from '../../../src/mock/characters.ts';
 import { tierForLevel } from '../../../src/mock/user.ts';
 import type { Character, MemoryItem, Message, Relationship, Thread, User } from '../../../src/types/index.ts';
-import { FOLLOW_USER_LANGUAGE } from '../../../src/ai/reply-language.ts';
+import { followUserLanguage } from '../../../src/ai/reply-language.ts';
 import { chatReply } from '../chat-reply.ts';
 import type { LlmProvider } from '../llm/types.ts';
 import { promptVersion } from '../llm/usage.ts';
@@ -94,8 +94,8 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
   const character = cast(s.character);
   const user = { id: 'u_eval', displayName: 'Sam', locale: 'en-US', ...s.setup?.user } as User;
   const relationship = bondOf(s, character);
-  // As the routes do: the reply follows the language the user writes in.
-  const replyLanguage = FOLLOW_USER_LANGUAGE;
+  // As the routes do: the reply follows the language the user writes in, before that their phone's.
+  const replyLanguage = followUserLanguage(user.locale);
   const persona = { character, user, relationship, replyLanguage };
 
   switch (s.mode) {

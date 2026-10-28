@@ -1,7 +1,7 @@
 import { briefParts, type BriefInput } from './brief-prompt';
 import { dayAskParts, type DayAskInput } from './day-prompt';
 import { part, type PromptPart } from './prompt-layout';
-import { FOLLOW_USER_LANGUAGE, languageCue, userLines } from './reply-language';
+import { followsUser, languageCue, userLines } from './reply-language';
 import { touchParts, type TouchInput } from './thread-prompt';
 import { weekParts, type WeekInput } from './week-prompt';
 
@@ -31,7 +31,7 @@ export const FIRST_TEXT_KINDS: readonly FirstTextKind[] = ['thread', 'brief', 'd
 export function firstTextParts(request: FirstTextRequest): PromptPart[] {
   const now = new Date(request.input.now);
   const lines = request.kind === 'day' ? request.input.today : request.kind === 'week' ? [] : request.input.recent;
-  const cue = part('languageNow', 'turn', request.input.replyLanguage === FOLLOW_USER_LANGUAGE ? languageCue(userLines(lines)) : []);
+  const cue = part('languageNow', 'turn', followsUser(request.input.replyLanguage) ? languageCue(userLines(lines), request.input.user.locale) : []);
   switch (request.kind) {
     case 'thread':
       return [...touchParts({ ...request.input, now }), cue];
@@ -40,7 +40,7 @@ export function firstTextParts(request: FirstTextRequest): PromptPart[] {
     case 'day':
       return [...dayAskParts({ ...request.input, now }), cue];
     case 'week':
-      return weekParts({ ...request.input, now });
+      return [...weekParts({ ...request.input, now }), cue];
   }
 }
 

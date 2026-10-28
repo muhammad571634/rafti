@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Character, User } from '@/types';
 
-import { baseLanguage, FOLLOW_USER_LANGUAGE, languageCue, lockedReplyLanguage } from './reply-language';
+import { baseLanguage, FOLLOW_USER_LANGUAGE, followsUser, followUserLanguage, languageCue, languageName, lockedReplyLanguage } from './reply-language';
 import { buildCharacterPrompt } from './rules';
 
 describe('lockedReplyLanguage', () => {
@@ -40,16 +40,23 @@ describe('lockedReplyLanguage', () => {
 });
 
 describe('languageCue: any language, read off their own words', () => {
-  it('quotes their last two lines, cut when long, and is empty before they write', () => {
+  it('quotes their last two lines, cut when long; before they write, names the phone’s language', () => {
     assert.deepEqual(languageCue([]), []);
     assert.deepEqual(languageCue(['  ']), []);
+    assert.deepEqual(languageCue([], 'th-TH'), ["LANGUAGE: they have not written to you yet: write every message in Thai (Thailand), their phone's language."]);
+    assert.doesNotMatch(languageCue(['hola'], 'th-TH')[0], /Thai/);
     const [cue] = languageCue(['hi', 'こんにちは', 'お元気ですか？']);
     assert.match(cue, /^LANGUAGE: write every message in the language their latest messages are in \("こんにちは \/ お元気ですか？"\)/);
     assert.ok(languageCue(['a'.repeat(400)])[0].includes(`"${'a'.repeat(160)}…"`));
   });
 
-  it('names no language itself', () => {
-    assert.doesNotMatch(FOLLOW_USER_LANGUAGE + languageCue(['hola'])[0], /English,|Spanish|Russian|Uzbek/);
+  it('names no language itself, only the phone’s as the fallback before they write', () => {
+    assert.doesNotMatch(FOLLOW_USER_LANGUAGE + languageCue(['hola'])[0], /Spanish|Russian|Japanese/);
+    assert.match(followUserLanguage('ja-JP'), /before they have written, or when it is unclear, Japanese \(Japan\) \(their phone's language\)\./);
+    assert.match(FOLLOW_USER_LANGUAGE, /when it is unclear, English\./);
+    assert.ok(followsUser(followUserLanguage('th-TH')) && followsUser(FOLLOW_USER_LANGUAGE));
+    assert.ok(!followsUser('Spanish') && !followsUser(undefined));
+    assert.equal(languageName('not a tag!'), 'not a tag!');
   });
 });
 

@@ -60,6 +60,26 @@ describe('sigmazam-api', () => {
     assert.match(seen, /NEW VERSION/);
   });
 
+  it('writes in the phone’s language until the user writes, then follows their words', async () => {
+    let system = '';
+    let turn = '';
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(layout) {
+        system = layout.system.map((s) => s.text).join('\n');
+        turn = layout.turn;
+        return { text: '{"messages":["こんにちは"]}', usage: {} };
+      },
+    };
+    const app = createApp(provider, { timeoutMs: 1000 });
+    const greeting = { ...body, user: { id: 'u1', displayName: 'Sam', locale: 'ja-JP' }, messages: [body.messages[0]], redo: undefined };
+    assert.equal((await post(app, greeting)).status, 200);
+    assert.match(system, /REPLY LANGUAGE: .*Japanese \(Japan\) \(their phone's language\)/);
+    assert.match(turn, /LANGUAGE: they have not written to you yet: write every message in Japanese \(Japan\)/);
+    await post(app, { ...greeting, messages: body.messages });
+    assert.match(turn, /LANGUAGE: write every message in the language their latest messages are in \("I had a long day"\)/);
+  });
+
   it('says why when it cannot answer: no model, bad input, the free tier is busy', async () => {
     assert.equal((await post(createApp(null, { timeoutMs: 1000 }), body)).status, 503);
     const busy: LlmProvider = { name: 'fake', complete: async () => Promise.reject(new LlmBusyError('quota')) };

@@ -490,6 +490,16 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'Replies fully in natural Japanese, shy and bookish Iris; no English.',
   },
   {
+    id: 'lang-phone-first-text',
+    group: 'language',
+    mode: 'initiative',
+    character: 'c_kai',
+    setup: { level: 4, user: { locale: 'ja-JP' } },
+    first: { kind: 'brief', items: [{ title: 'Swim meet', time: '09:00' }] },
+    expect: [{ kind: 'language', is: 'ja' }, { kind: 'lines', max: 3 }],
+    rubric: 'They have not written yet and their phone is in Japanese: the good morning is written fully in natural Japanese, cheerful Kai, about the swim meet.',
+  },
+  {
     id: 'lang-spanish-switch',
     group: 'language',
     mode: 'chat',

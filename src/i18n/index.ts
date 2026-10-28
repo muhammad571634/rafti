@@ -32,8 +32,16 @@ export const SUPPORTED_LOCALES: { code: string; label: string; rtl?: boolean }[]
 
 export const FALLBACK_LOCALE = 'en';
 
+/**
+ * The phone's own language ("ja-JP"), whether or not the app's screens are translated into it yet:
+ * the characters write in it before the user has written anything (`User.locale`, src/ai/reply-language.ts).
+ */
+export function phoneLanguage(): string {
+  return Localization.getLocales()[0]?.languageTag ?? FALLBACK_LOCALE;
+}
+
 function deviceLocale(): string {
-  const tag = Localization.getLocales()[0]?.languageTag ?? FALLBACK_LOCALE;
+  const tag = phoneLanguage();
   if (tag in resources) return tag;
   const base = tag.split('-')[0];
   return base in resources ? base : FALLBACK_LOCALE;

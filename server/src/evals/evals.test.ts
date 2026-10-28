@@ -73,6 +73,7 @@ describe('the eval set (backend-plan §12.11)', () => {
     assert.equal(languageOf('こんにちは！今日は何をしているの？'), 'ja');
     assert.equal(languageOf('ok 😂'), undefined);
     assert.equal(languageOf("*sonríe* Dibujo un ranúnculo, significa 'estás deslumbrante'."), 'es');
+    assert.equal(languageOf('¡Sam! ¿Cómo fue todo hoy? No pude dejar de pensar en tu entrevista.'), 'es');
     assert.deepEqual(failedChecks(['Hehe, nothing.'], [{ kind: 'opensNot', any: ['Hehe'] }]), ['opensNot(hehe)']);
     assert.match(failedChecks(['Long days are the worst. Come sit with me and tell me everything!'], [{ kind: 'noRepeat' }], { chat })[0], /^noRepeat \(1\.00/);
     assert.equal(failedChecks(['Fine, but this one is new.'], [{ kind: 'noRepeat' }], { redo: ['Fine, but this one is new!'] }).length, 1);

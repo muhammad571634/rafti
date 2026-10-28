@@ -107,10 +107,10 @@ const PHASE_TEXT: Record<TouchPhase, string> = {
   quest: 'about a small real-life quest you gave them',
 };
 
-/** The shape of a text they write first. */
+/** The shape of a text they write first; the language is named first, so the model looks before it writes (`REPLY_SHAPE`). */
 export const TOUCH_SHAPE =
-  'Reply with JSON only: {"skip":false,"messages":[""],"ideas":[{"label":"2-3 words","text":"what the user would send"}]}. ' +
-  'One to three short texts, like a real person; two or three ideas the user could tap. "skip":true if the chat already settled it or it would be odd now.';
+  'Reply with JSON only: {"language":"the REPLY LANGUAGE, named","skip":false,"messages":[""],"ideas":[{"label":"2-3 words","text":"what the user would send"}]}. ' +
+  'One to three short texts, like a real person, and two or three ideas the user could tap, all in that language. "skip":true if the chat already settled it or it would be odd now.';
 
 export interface TouchInput {
   character: Character;

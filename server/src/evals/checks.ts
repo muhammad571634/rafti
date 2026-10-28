@@ -60,6 +60,8 @@ export function languageOf(text: string): EvalLanguage | undefined {
   if (!letters) return undefined;
   if ((text.match(/\p{Script=Cyrillic}/gu) ?? []).length / letters >= 0.5) return 'ru';
   if ((text.match(/[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/gu) ?? []).length / letters >= 0.5) return 'ja';
+  // Only Spanish opens questions and exclamations upside down.
+  if (/[¿¡]/.test(text)) return 'es';
   // Words with an inner apostrophe ("i'm"), never one from a quote mark ("'estás").
   const words = text.toLowerCase().match(/\p{L}+(?:'\p{L}+)*/gu) ?? [];
   const scores = (Object.keys(WORDS) as (keyof typeof WORDS)[]).map((lang) => [lang, words.filter((w) => WORDS[lang].has(w)).length] as const);

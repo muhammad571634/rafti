@@ -16,7 +16,7 @@ import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
-import { FOLLOW_USER_LANGUAGE } from '../../src/ai/reply-language.ts';
+import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import type { Context } from 'hono';
 
@@ -28,8 +28,11 @@ import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
 
-/** Until each chat's language lock is stored, the reply follows what the user writes (src/ai/reply-language.ts). */
-export { FOLLOW_USER_LANGUAGE };
+/**
+ * Until each chat's language lock is stored, the reply follows what the user writes, and before
+ * they write, their phone's language (src/ai/reply-language.ts).
+ */
+const replyLanguageOf = (input: { replyLanguage?: string; user: { locale?: string } }) => input.replyLanguage || followUserLanguage(input.user.locale);
 
 /** How much of the chat a request may carry; the prompt layout cuts it further. */
 const MAX_MESSAGES = 120;
@@ -345,11 +348,8 @@ export function createApp(
     if (!provider) return c.json({ error: 'noModel' }, 503);
     const request = cleanFirstText(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
-    request.input = {
-      ...request.input,
-      user: { ...request.input.user, locale: request.input.user.locale || 'en-US' },
-      replyLanguage: request.input.replyLanguage || FOLLOW_USER_LANGUAGE,
-    };
+    const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
+    request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
     return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, 'initiative');
   });
 
@@ -383,11 +383,8 @@ export function createApp(
     const request = cleanStreamLine(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
     const { input, other, topic, said, turn } = request;
-    const persona = {
-      ...input,
-      user: { ...input.user, locale: input.user.locale || 'en-US' },
-      replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
-    };
+    const user = { ...input.user, locale: input.user.locale || 'en-US' };
+    const persona = { ...input, user, replyLanguage: replyLanguageOf({ ...input, user }) };
     const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
     return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }), 'stream');
   });
@@ -404,12 +401,13 @@ export function createApp(
     // A profile without a locale is written to in English. Until the database keeps each chat's
     // language lock, the model follows the language the user writes in, whatever it is, reminded
     // with their latest words (`languageCue`), so nobody gets answered in a language they did not use.
+    const user = { ...input.user, locale: input.user.locale || 'en-US' };
     input = {
       ...input,
       mode: CHAT_MODES.includes(input.mode as ChatMode) ? input.mode : undefined,
-      user: { ...input.user, locale: input.user.locale || 'en-US' },
+      user,
       messages: input.messages.slice(-MAX_MESSAGES),
-      replyLanguage: input.replyLanguage || FOLLOW_USER_LANGUAGE,
+      replyLanguage: replyLanguageOf({ ...input, user }),
     };
 
     // Who is asking, looked up while the model writes: the reply never waits on it, and a missing or
@@ -436,7 +434,7 @@ export function createApp(
           costUsd: callCost,
         });
       }
-      const lang = input.replyLanguage === FOLLOW_USER_LANGUAGE ? 'follow' : input.replyLanguage;
+      const lang = followsUser(input.replyLanguage) ? `follow:${input.user.locale}` : input.replyLanguage;
       const redone = result === calls[0].result ? 'kept' : 'redone';
       const guard = crisis ? ` crisis ${calls.length > 1 ? redone : 'cued'}` : repeat ? ` repeat=${repeat.score.toFixed(2)} ${redone}` : '';
       console.log(

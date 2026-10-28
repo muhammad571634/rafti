@@ -14,13 +14,34 @@ import type { Message } from '@/types';
 /** New-language messages in a row the user must send before the lock moves. */
 export const SWITCH_AFTER = 2;
 
+const FOLLOW = "the language of the user's latest messages, whatever language that is, written naturally as a native speaker would text";
+
+/** "ja-JP" as the model reads it best ("Japanese (Japan)"); the tag itself where the runtime cannot name it. */
+export function languageName(tag: string): string {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(tag) ?? tag;
+  } catch {
+    return tag;
+  }
+}
+
 /**
  * The REPLY LANGUAGE while no chat has a stored lock: the language the user writes in, any language
- * in the world (owner, 2026-10-28: a global app; no list of languages in code). It stays put in the
- * cached chat tier; `languageCue` repeats it in the turn tier with their own latest words.
+ * in the world (owner, 2026-10-28: a global app; no list of languages in code). Before they have
+ * written (a greeting, the morning text), their phone's language (`User.locale`, set from the phone
+ * on every launch), else English. It stays put in the cached chat tier; `languageCue` repeats it in
+ * the turn tier with their own latest words.
  */
-export const FOLLOW_USER_LANGUAGE =
-  "the language of the user's latest messages, whatever language that is, written naturally as a native speaker would text; English if unclear. Never mix languages.";
+export function followUserLanguage(phoneLocale?: string): string {
+  const phone = phoneLocale?.trim() ? `${languageName(phoneLocale.trim())} (their phone's language)` : 'English';
+  return `${FOLLOW}; before they have written, or when it is unclear, ${phone}. Never mix languages.`;
+}
+
+/** `followUserLanguage` with no phone language known. */
+export const FOLLOW_USER_LANGUAGE = followUserLanguage();
+
+/** The reply follows the user (`followUserLanguage`), rather than a stored lock. */
+export const followsUser = (replyLanguage: string | undefined) => !!replyLanguage?.startsWith(FOLLOW);
 
 /** How much of their latest words the cue quotes. */
 const CUE_CHARS = 160;
@@ -33,11 +54,16 @@ export const userLines = (messages: readonly Pick<Message, 'author' | 'card' | '
  * The turn's language reminder, last in the prompt where the model weighs it most: their latest
  * lines, quoted, so the model reads the language off them (a light model told only "their
  * language" in the cached prefix answered Spanish in English: eval set, B1.5). No detector and no
- * list: it works for every language the model knows. [] before they have written.
+ * list: it works for every language the model knows. Before they have written, their phone's
+ * language, named here too: told it only in the cached prefix, the model wrote a Japanese phone's
+ * good morning in English (eval set, B1.8). [] when neither is known.
  */
-export function languageCue(userLines: readonly string[]): string[] {
+export function languageCue(userLines: readonly string[], phoneLocale?: string): string[] {
   const latest = userLines.map((line) => line.trim()).filter(Boolean).slice(-2).join(' / ');
-  if (!latest) return [];
+  if (!latest) {
+    const phone = phoneLocale?.trim();
+    return phone ? [`LANGUAGE: they have not written to you yet: write every message in ${languageName(phone)}, their phone's language.`] : [];
+  }
   const quote = latest.length > CUE_CHARS ? `${latest.slice(0, CUE_CHARS)}…` : latest;
   return [
     `LANGUAGE: write every message in the language their latest messages are in ("${quote}"). If they just switched language for two messages in a row, switch with them; a word or two from another language changes nothing.`,

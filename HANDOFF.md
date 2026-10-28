@@ -1,5 +1,29 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z13. B1.8: the phone's language reaches the characters (2026-10-28, D121). NEXT: translate the app (13 languages) + Language screen; Fly.io when the owner has the account
+
+**Owner, 2026-10-28:** stay in Tokyo (the Supabase project is in AWS ap-northeast-1; no move). The
+server goes to Fly.io in Tokyo (`nrt`, ~$4/month) once the owner opens the account and runs
+`! fly auth login`. The app's screens follow the phone's language with English as the fallback;
+the AI writes in the phone's language until the user writes, then in whatever language they write.
+Languages to add, decided on market data (App Store revenue, companion-app demand): Spanish,
+Portuguese (Brazil), French, German, Italian, Japanese, Korean, Chinese (Traditional; mainland
+China's App Store needs a licence for AI chat), Indonesian, Vietnamese, Thai, Russian, Turkish. Later:
+Arabic (right-to-left), Hindi, Polish. Translate with a script on the free Gemini key that checks
+every key and `{{placeholder}}`; a Profile → Language screen ("Phone language" first), shown to the
+owner as a picture; iOS per-app language in Settings too.
+
+B1.8: `User.locale` was always `'en'` (src/mock/user.ts), so a Japanese phone got English first
+texts. Now `finishHydration` sets it from the phone on every launch (`phoneLanguage()`,
+src/i18n). `followUserLanguage(locale)` (src/ai/reply-language.ts) names the phone's language as
+the fallback (`Intl.DisplayNames`: "Japanese (Japan)"; no list in code), the routes pass the
+profile's locale, and `languageCue` names it in the turn tier before the user has written (the
+model ignored it in the cached prefix alone). `TOUCH_SHAPE` asks for `"language"` first, as
+`REPLY_SHAPE` does. Eval: `lang-phone-first-text` (a Japanese phone's good morning) 0/2 → 2/2; the
+language group 9/9, the mode group 19/19 (saved). Checked: app `tsc`, 434/434, server `tsc`, 41/41.
+**Phone check:** set the phone to Japanese, Profile (dev) → Morning brief now: the text comes in
+Japanese (the screens stay English until the translations land).
+
 ### 0z12. Backend B1.7: back-to-back messages get one reply (2026-10-28, D120). NEXT: the server in the cloud
 
 **Owner, 2026-10-28:** after this, the server goes to the cloud (today it runs on the laptop, so Real

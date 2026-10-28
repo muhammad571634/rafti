@@ -11,7 +11,7 @@ import { messageText } from '../lib/story-continuity';
 import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
-import { FOLLOW_USER_LANGUAGE, languageCue, userLines } from './reply-language';
+import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE, turnLines } from './reply-style';
 import { CRISIS_CUE } from './safety';
@@ -145,7 +145,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('hints', 'turn', input.plan && !input.crisis ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
     ...threadParts(input.threads ?? []),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
-    part('languageNow', 'turn', input.replyLanguage === FOLLOW_USER_LANGUAGE ? languageCue(userLines(input.messages)) : []),
+    part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];
