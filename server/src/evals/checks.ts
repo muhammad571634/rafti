@@ -37,7 +37,8 @@ export interface CheckContext {
 }
 
 const EMOJI = /\p{Extended_Pictographic}/u;
-const NARRATION = /\*[^*\n]+\*/;
+/** *Narration*, also when a long one runs over several lines. */
+const NARRATION = /\*[^*]+\*/;
 
 /**
  * The languages the eval's scenarios are written in. The app itself names none (the model follows

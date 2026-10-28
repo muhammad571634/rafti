@@ -62,6 +62,7 @@ describe('the eval set (backend-plan §12.11)', () => {
     assert.deepEqual(failedChecks(['Hmm.'], [{ kind: 'includes', any: ['Biscuit'] }]), ['includes(Biscuit)']);
     assert.deepEqual(failedChecks(['As an AI I cannot.'], [{ kind: 'excludes', any: ['as an ai'] }]), ['excludes(as an ai)']);
     assert.deepEqual(failedChecks(['*smiles* hi 😊'], [{ kind: 'noEmoji' }, { kind: 'noNarration' }, { kind: 'narration' }]), ['noEmoji', 'noNarration']);
+    assert.deepEqual(failedChecks(['*I take your hand.\n\nThe forest hums around us.* Come.'], [{ kind: 'narration' }]), []);
     assert.deepEqual(failedChecks(['one two three'], [{ kind: 'words', max: 2 }, { kind: 'lines', min: 2 }]), ['words 0-2 (got 3)', 'lines 2-∞ (got 1)']);
     assert.deepEqual(failedChecks(['Sleep now.'], [{ kind: 'noQuestion' }]), []);
     assert.deepEqual(failedChecks(['Привет! Как ты?'], [{ kind: 'language', is: 'ru' }]), []);
