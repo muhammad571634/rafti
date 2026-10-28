@@ -1,5 +1,24 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z14. The server is in the cloud: Fly.io, Tokyo (2026-10-28, D122). NEXT: translate the app (13 languages) + Language screen
+
+**Owner, 2026-10-28:** full go-ahead for the cloud work ("senior developer sifatida ishla").
+`https://sigmazam-api.fly.dev`: app `sigmazam-api` (org personal), region `nrt` next to Supabase,
+one always-on `shared-cpu-1x` 512 MB machine (~$4/month), health check on `/health`. Built from
+the repo root by `server/Dockerfile` (Node 24.14, no build step; `.dockerignore` keeps the context
+to server/, src/, scripts/). Deploy: `flyctl deploy . --config server/fly.toml --dockerfile
+server/Dockerfile --ha=false --remote-only` (`C:/Users/joray/.fly/bin/flyctl.exe`, logged in as the
+owner). Secrets (Fly only, set from the user env / the a4 `.env.local` without printing them):
+`GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `DEV_GRANTS=1`.
+**Remove `DEV_GRANTS` before launch** (it lets the app grant itself shells for mock purchases).
+Checked: `/health` ok (model + database), a real chat reply 3.1 s in the model, 4.0 s from the
+owner's network. The app now talks to the cloud by default (`apiBase`, src/ai/server.ts);
+`EXPO_PUBLIC_API_URL=local` brings back the laptop server on 8787. **Left for the owner:** the
+Fly website's GitHub launcher had made an app `rafti` (the Expo dev server from `main`, two
+machines in `iad`, useless); destroying it was blocked for the agent, so the owner runs
+`! C:/Users/joray/.fly/bin/flyctl.exe apps destroy rafti --yes`.
+**Phone check (Expo Go, Real AI on):** close the laptop's server window (or not): chat replies still come.
+
 ### 0z13. B1.8: the phone's language reaches the characters (2026-10-28, D121). NEXT: translate the app (13 languages) + Language screen; Fly.io when the owner has the account
 
 **Owner, 2026-10-28:** stay in Tokyo (the Supabase project is in AWS ap-northeast-1; no move). The

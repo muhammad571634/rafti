@@ -19,11 +19,13 @@ import type {
 } from './session-types';
 
 /**
- * The phone's side of the Sigmazam API (`server/`). While testing, the server runs on the same
- * laptop as Metro, so a development build finds it at Metro's host on port 8787; a release build
- * reads `EXPO_PUBLIC_API_URL`. Every call has a deadline and any failure returns null: the caller
- * then writes the stand-in reply, so the chat never stalls on a network or a free-tier daily cap.
+ * The phone's side of the Sigmazam API (`server/`). Every build talks to the cloud server
+ * (`server/fly.toml`, Tokyo) unless `EXPO_PUBLIC_API_URL` names another one; `local` means the
+ * laptop's test server at Metro's host on port 8787. Every call has a deadline and any failure
+ * returns null: the caller then writes the stand-in reply, so the chat never stalls on a network
+ * or a free-tier daily cap.
  */
+const CLOUD_API = 'https://sigmazam-api.fly.dev';
 const DEV_PORT = 8787;
 const TIMEOUT_MS = 25_000;
 /** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
@@ -35,10 +37,9 @@ const STREAM_LINE_TIMEOUT_MS = 12_000;
 
 export function apiBase(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL;
-  if (fromEnv) return fromEnv.replace(/\/$/, '');
-  if (!__DEV__) return null;
+  if (fromEnv !== 'local') return (fromEnv || CLOUD_API).replace(/\/$/, '');
   const host = Constants.expoConfig?.hostUri?.split(':')[0];
-  return host ? `http://${host}:${DEV_PORT}` : null;
+  return __DEV__ && host ? `http://${host}:${DEV_PORT}` : null;
 }
 
 async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T | null> {

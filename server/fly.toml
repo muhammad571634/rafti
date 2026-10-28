@@ -1,0 +1,28 @@
+# The Sigmazam API on Fly.io. Deploy from the repo root:
+#   flyctl deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false
+# Tokyo, next to the Supabase project (AWS ap-northeast-1). Keys are Fly secrets, never here.
+app = "sigmazam-api"
+primary_region = "nrt"
+
+[env]
+  PORT = "8080"
+  HOST = "0.0.0.0"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Always on: a stopped machine would make the first reply wait for a cold start.
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
