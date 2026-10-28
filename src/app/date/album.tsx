@@ -9,7 +9,8 @@ import { Polaroid } from '@/components/date/polaroid';
 import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
 import { EmptyState, GlassBar, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { datePlaceById } from '@/mock/dates';
+import { localized } from '@/i18n/content';
+import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, space } from '@/theme';
 import type { DateRecord } from '@/types';
@@ -54,7 +55,7 @@ export default function DateAlbumScreen() {
   const card = (d: DateRecord, i: number) => {
     const character = characters.find((c) => c.id === d.characterId);
     if (!character) return null;
-    const place = datePlaceById(d.placeId);
+    const place = localized('datePlaces', DATE_PLACES).find((p) => p.id === d.placeId);
     const own = place ? undefined : themes.find((th) => th.id === d.placeId);
     const look = place ? placeLook(place.id) : artLook(own?.art ?? '');
     const name = shortName(displayName(character, relationships[character.id]));

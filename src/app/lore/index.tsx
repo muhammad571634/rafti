@@ -8,6 +8,7 @@ import { GroupLabel } from '@/components/plans/store-look';
 import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { phrase } from '@/i18n';
+import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -43,14 +44,14 @@ export default function LorebooksScreen() {
 
         <GroupLabel>{t('lore.worlds')}</GroupLabel>
         <InsetGroup>
-          {officialLorebooks.map((book, i) => (
+          {localized('lorebooks', officialLorebooks).map((book, i, list) => (
             <BookRow
               key={book.id}
               official
               series={book.series}
               name={phrase(book.name)}
               count={book.entries.length}
-              last={i === officialLorebooks.length - 1}
+              last={i === list.length - 1}
               onPress={() => open(book)}
             />
           ))}

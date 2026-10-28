@@ -9,6 +9,7 @@ import { GroupLabel } from '@/components/plans/store-look';
 import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, SymbolTile, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { haptic } from '@/lib/haptics';
+import { localized } from '@/i18n/content';
 import { officialScenes } from '@/mock/scenes';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
@@ -97,8 +98,8 @@ export default function ScenesScreen() {
 
         <GroupLabel>{t('scenes.ready')}</GroupLabel>
         <InsetGroup>
-          {officialScenes.map((scene, i) => (
-            <SceneRow key={scene.id} scene={scene} last={i === officialScenes.length - 1} onPress={() => start(scene)} />
+          {localized('scenes', officialScenes).map((scene, i, list) => (
+            <SceneRow key={scene.id} scene={scene} last={i === list.length - 1} onPress={() => start(scene)} />
           ))}
         </InsetGroup>
 

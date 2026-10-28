@@ -13,6 +13,7 @@ import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor, recentLines, triggeredLore } from '@/lib/lorebook';
 import { phrase } from '@/i18n';
+import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -42,7 +43,7 @@ export default function CharacterLoreScreen() {
 
   // What the next reply would carry: the same pick the server makes from the chat's last lines.
   const now = useMemo(
-    () => (character ? triggeredLore(booksFor(character, own, officialLorebooks), recentLines(messages), character.id) : []),
+    () => (character ? triggeredLore(booksFor(character, own, localized('lorebooks', officialLorebooks)), recentLines(messages), character.id) : []),
     [character, own, messages],
   );
 
@@ -54,7 +55,7 @@ export default function CharacterLoreScreen() {
     );
   }
 
-  const world = officialLorebooks.find((b) => b.series === character.series);
+  const world = localized('lorebooks', officialLorebooks).find((b) => b.series === character.series);
   const name = shortName(displayName(character, relationship));
   const title = t('lore.chatTitle', { name });
   const canAdd = own.length < limit;

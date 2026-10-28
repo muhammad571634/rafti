@@ -22,6 +22,7 @@ import {
 } from '@/components/ui';
 import { moodOpen, MOOD_LEVEL, themeCost } from '@/lib/date-themes';
 import { shortName } from '@/lib/format';
+import { localized } from '@/i18n/content';
 import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, space } from '@/theme';
@@ -136,12 +137,13 @@ export default function DatingScreen() {
     );
 
   // The ticket open by default is the newest place this friend can go to.
-  const newestOpen = [...DATE_PLACES].reverse().find((p) => p.levelRequired <= level)?.id ?? DATE_PLACES[0].id;
+  const places = localized('datePlaces', DATE_PLACES);
+  const newestOpen = [...places].reverse().find((p) => p.levelRequired <= level)?.id ?? places[0].id;
   const current = openId ?? newestOpen;
   const toggle = (id: string) => setOpenId(current === id ? '' : id);
 
   const tickets: { id: string; label: string; node: React.ReactNode }[] = [
-    ...DATE_PLACES.map((p) => {
+    ...places.map((p) => {
       const locked = level < p.levelRequired;
       return {
         id: p.id,

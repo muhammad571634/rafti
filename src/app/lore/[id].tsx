@@ -8,6 +8,7 @@ import { GroupLabel } from '@/components/plans/store-look';
 import { AddRow, GlassBar, GlassButton, Header, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { LORE_KINDS } from '@/lib/lorebook';
+import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -28,7 +29,7 @@ export default function LorebookScreen() {
   const limit = useAppStore((s) => perkLimit('loreEntries', s.wallet.subscription, Date.now()));
   const { scrolled, onScroll } = useScrolledPast(44);
 
-  const book = own ?? officialLorebooks.find((b) => b.id === bookId);
+  const book = own ?? localized('lorebooks', officialLorebooks).find((b) => b.id === bookId);
   if (!book) {
     return (
       <Screen background={colors.bg}>

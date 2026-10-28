@@ -10,6 +10,7 @@ import { PLANS, TRIAL } from '@/economy/plans';
 import { duration, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
+import { localCharacter } from '@/i18n/content';
 import { colors, radius, space } from '@/theme';
 import type { Character } from '@/types';
 
@@ -115,7 +116,7 @@ export function CallPaywallSheet({
       {playing ? (
         <Animated.View entering={FadeIn.duration(240)}>
           <Txt variant="small" color={colors.textSecondary} center style={styles.said}>
-            {`“${bedtime ? t('bedtime.sampleLine') : character.greeting}”`}
+            {`“${bedtime ? t('bedtime.sampleLine') : localCharacter(character).greeting}”`}
           </Txt>
         </Animated.View>
       ) : null}

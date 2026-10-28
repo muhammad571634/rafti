@@ -13,7 +13,8 @@ import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
 import { Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
-import { datePlaceById, maxHearts } from '@/mock/dates';
+import { localized } from '@/i18n/content';
+import { DATE_PLACES, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 import type { DateRecord } from '@/types';
@@ -44,7 +45,7 @@ export default function DateScreen() {
   // Only a date paid for on the map plays here; a stray link gets the way back.
   const paid = useAppStore((s) => s.activeDate?.placeId === placeId && s.activeDate?.characterId === characterId);
 
-  const official = datePlaceById(placeId ?? '');
+  const official = localized('datePlaces', DATE_PLACES).find((p) => p.id === placeId);
   // A user's own date (F28) carries its rounds on the active date; keep them for the end screen.
   const running = useAppStore((s) => (s.activeDate?.placeId === placeId ? s.activeDate?.theme : undefined));
   // Its look comes from the saved date (the theme's id is the date's place id).

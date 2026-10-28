@@ -31,6 +31,7 @@ import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-st
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
+import { localCharacter, localized } from '@/i18n/content';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
@@ -202,7 +203,7 @@ import {
   wallet as seedWallet,
 } from '@/mock';
 import { themePools } from '@/mock/date-themes';
-import { worldByKey, worldOf, type WorldKey } from '@/mock/worlds';
+import { WORLDS, worldByKey, worldOf, type WorldKey } from '@/mock/worlds';
 import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
@@ -1444,11 +1445,11 @@ export const useAppStore = create<AppState>()(
         const group = get().groups.find((g) => g.id === groupId);
         if (!group || !group.memberIds.includes(characterId)) return '';
         if (target === 'you') {
-          const ask = pick(kind === 'truth' ? TRUTHS_FOR_YOU : DARES_FOR_YOU);
+          const ask = pick(kind === 'truth' ? localized('truthsForYou', TRUTHS_FOR_YOU) : localized('daresForYou', DARES_FOR_YOU));
           appendGroupMessage(set, get, groupId, memberText(groupId, characterId, ask));
           return ask;
         }
-        const turn = pick(kind === 'truth' ? TRUTHS_FOR_THEM : DARES_FOR_THEM);
+        const turn = pick(kind === 'truth' ? localized('truthsForThem', TRUTHS_FOR_THEM) : localized('daresForThem', DARES_FOR_THEM));
         appendGroupMessage(set, get, groupId, {
           id: uid('m'),
           conversationId: groupId,
@@ -1724,7 +1725,7 @@ export const useAppStore = create<AppState>()(
 
       startScene: (conversationId, sceneId) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
-        const scene = [...officialScenes, ...get().scenes].find((x) => x.id === sceneId);
+        const scene = [...localized('scenes', officialScenes), ...get().scenes].find((x) => x.id === sceneId);
         if (!conversation || !scene) return;
         // A reply still on its way belongs to the chat before the scene.
         cancelReplies(set, conversationId);
@@ -1988,7 +1989,7 @@ export const useAppStore = create<AppState>()(
 
         // A clip this level opens is not just unlocked: the friend sends it, as a voice message in
         // the chat, and Radio marks it New. The server does the same with the real audio file.
-        const opened = clipsOpenedBy(radioGifts, characterId, existing.level, next.level);
+        const opened = clipsOpenedBy(localized('radioGifts', radioGifts), characterId, existing.level, next.level);
         const conversation = get().conversations.find((c) => c.characterId === characterId);
         if (opened.length && conversation) {
           for (const gift of opened) {
@@ -2241,7 +2242,7 @@ export const useAppStore = create<AppState>()(
       newSecretNote: (characterId) => {
         const id = uid('sn');
         const previous = latestNote(get().notes, characterId)?.prompt;
-        const pool = secretNotePrompts.filter((p) => p !== previous);
+        const pool = localized('secretNotePrompts', secretNotePrompts).filter((p) => p !== previous);
 
         set((s) => ({
           notes: [
@@ -2750,8 +2751,9 @@ export const useAppStore = create<AppState>()(
         // The mock builds the rounds from canned pools; the server's model writes them from the scene.
         // The friend's world colours the date (src/mock/worlds.ts); the server writes it from the persona.
         const character = get().characters.find((c) => c.id === characterId);
-        const world = character ? worldOf(character) : undefined;
-        const rounds = buildThemeRounds(theme, themePools, `${theme.id}:${Date.now()}`, world?.dateRounds);
+        const worlds = localized('worlds', WORLDS);
+        const world = character ? worlds.find((w) => w.series === character.series) : undefined;
+        const rounds = buildThemeRounds(theme, localized('dateThemes', themePools), `${theme.id}:${Date.now()}`, world?.dateRounds);
         set({ activeDate: { characterId, placeId: theme.id, theme: { title: theme.title, rounds } } });
         return 'ok';
       },
@@ -3049,7 +3051,8 @@ export const useAppStore = create<AppState>()(
       deleteQuiz: (id) => set((s) => ({ userQuizzes: s.userQuizzes.filter((q) => q.id !== id) })),
 
       finishWorldQuiz: (world, hostId, score, total) => {
-        const info = worldByKey(world);
+        const worlds = localized('worlds', WORLDS);
+        const info = worlds.find((w) => w.key === world);
         if (!info) return false;
         const won = wonWorldQuiz(score);
         const already = get().wonFrames.includes(world);
@@ -3088,11 +3091,11 @@ export const useAppStore = create<AppState>()(
       playTruthOrDare: (characterId, target, kind) => {
         const conversationId = get().addFriend(characterId);
         if (target === 'you') {
-          const ask = pick(kind === 'truth' ? TRUTHS_FOR_YOU : DARES_FOR_YOU);
+          const ask = pick(kind === 'truth' ? localized('truthsForYou', TRUTHS_FOR_YOU) : localized('daresForYou', DARES_FOR_YOU));
           appendMessage(set, get, conversationId, themText(conversationId, ask));
           return ask;
         }
-        const turn = pick(kind === 'truth' ? TRUTHS_FOR_THEM : DARES_FOR_THEM);
+        const turn = pick(kind === 'truth' ? localized('truthsForThem', TRUTHS_FOR_THEM) : localized('daresForThem', DARES_FOR_THEM));
         appendMessage(set, get, conversationId, {
           id: uid('m'),
           conversationId,
@@ -5088,8 +5091,9 @@ function cancelReplies(set: Setter, conversationId: string) {
  * after their opening action unless the chat is plain texting.
  */
 function openingFor(state: AppState, character: Character, seed: string) {
+  const local = localCharacter(character);
   const style = replyPrefs(state.relationships[character.id]).style;
-  return fillNames(withOpening(character, pickOpening(character, seed), style), { char: character.name, user: defaultPersona(state).name });
+  return fillNames(withOpening(local, pickOpening(local, seed), style), { char: character.name, user: defaultPersona(state).name });
 }
 
 /** The reply each chat could not get, kept for "Try again" (`retryReply`). */

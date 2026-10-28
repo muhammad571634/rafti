@@ -33,6 +33,7 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
@@ -310,7 +311,8 @@ export default function ChatRoomScreen() {
   const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
   // Before the user's first message, a created character's own first lines (quick create's
   // starters, D70) stand in for the test chips.
-  const starters = character?.starters?.length && !data.some((m) => m.author === 'me') ? character.starters : null;
+  const shownChar = character ? localCharacter(character) : null;
+  const starters = shownChar?.starters?.length && !data.some((m) => m.author === 'me') ? shownChar.starters : null;
   const suggestions =
     last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !shownIdeas(last, data) && !typing
       ? starters

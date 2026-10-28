@@ -23,6 +23,7 @@ import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
 import { daysBetween } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
@@ -66,6 +67,7 @@ export default function CharacterProfileScreen() {
 
   const isFriend = !!conversation;
   const voiceReady = character.voiceReady;
+  const shown = localCharacter(character);
 
   const locked = !isFriend && early.locked(character);
   const opensAt = opensToAllAt(character);
@@ -139,17 +141,17 @@ export default function CharacterProfileScreen() {
               </Txt>
             </View>
           ) : null}
-          {character.tagline ? (
+          {shown.tagline ? (
             <Txt style={styles.tagline} center>
-              {character.tagline}
+              {shown.tagline}
             </Txt>
           ) : null}
           <Txt style={styles.bio} center>
-            {character.bio}
+            {shown.bio}
           </Txt>
-          {character.tags.length > 0 ? (
+          {shown.tags.length > 0 ? (
             <Txt style={styles.tags} center>
-              {character.tags.join(' · ')}
+              {shown.tags.join(' · ')}
             </Txt>
           ) : null}
         </View>
@@ -209,7 +211,7 @@ export default function CharacterProfileScreen() {
           ) : null}
         </View>
 
-        <AboutCard character={character} locale={locale} />
+        <AboutCard character={shown} locale={locale} />
 
         {isFriend && relationship ? (
           <BondCard

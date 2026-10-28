@@ -9,6 +9,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
+import { localSecretNote } from '@/i18n/content';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, space } from '@/theme';
 
@@ -41,7 +42,8 @@ export default function SecretNoteScreen() {
   const [paywall, setPaywall] = useState<number | null>(null);
   const [justOpened, setJustOpened] = useState(false);
 
-  const note = useMemo(() => notes.find((n) => n.characterId === characterId), [notes, characterId]);
+  const rawNote = useMemo(() => notes.find((n) => n.characterId === characterId), [notes, characterId]);
+  const note = rawNote ? localSecretNote(rawNote) : undefined;
 
   useEffect(() => {
     if (characterId) ensureSecretNote(characterId);

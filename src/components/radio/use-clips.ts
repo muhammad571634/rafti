@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { useFriends } from '@/components/group/friend-row';
 import { clipDuration, clipUnlocked } from '@/lib/radio-clips';
+import { localized } from '@/i18n/content';
 import { radioGifts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import type { Character } from '@/types';
@@ -33,7 +34,7 @@ export function useRadioClips(): { gifts: ClipView[]; mine: ClipView[] } {
 
   return useMemo(() => {
     const friendById = new Map(friends.map((f) => [f.character.id, f]));
-    const gifts = radioGifts.flatMap((gift): ClipView[] => {
+    const gifts = localized('radioGifts', radioGifts).flatMap((gift): ClipView[] => {
       const friend = friendById.get(gift.characterId);
       if (!friend) return [];
       return [

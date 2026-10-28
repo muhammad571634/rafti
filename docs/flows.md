@@ -172,5 +172,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F16 Push notifications | done (local) | Planner for 2 days + comeback ladder (1-14 days) from the last friend, 8 a day, quiet 23-08, 90 min apart, lines identical to the chat, text hidden by default, system prompt after onboarding "Allow" (`docs/push-plan.md`). Profile → Notifications screen (preview, switch per kind, quiet hours). Server push later | #46, #52, #53 |
 | F30 Content translation: Phase 0 | done | Phase 0 leftovers: level-up moment titles and world series wrapped in `phrase()`, phrases added across all 14 locale files | — |
 | F30 Content translation: Phase 1 | done | Machinery: `content-extract`, `overlay`, `check-content`, `en.json` generated | — |
+| F30 Content translation: Phase 2 | done | Screens & store wired with content overlays (localCharacter, localized, localDiaryEntry, localDiaryPage, localSecretNote) | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

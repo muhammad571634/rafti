@@ -8,6 +8,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { HEROES } from '@/assets/heroes/registry';
 import { characterImage, PressableScale, SFIcon, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
@@ -41,6 +42,7 @@ export function IntroCard({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
+  const shown = localCharacter(character);
   const photo = HEROES[character.id] ?? characterImage(character);
   const facts: Fact[] = [];
   if (character.age) facts.push({ key: 'age', ios: 'birthday.cake', icon: 'gift-outline', label: t('intro.age', { count: character.age }) });
@@ -72,9 +74,9 @@ export function IntroCard({
             </Txt>
           </View>
         </View>
-        {character.tagline ? (
+        {shown.tagline ? (
           <Txt style={styles.tagline} color={colors.onMediaSoft}>
-            {character.tagline}
+            {shown.tagline}
           </Txt>
         ) : null}
         {facts.length ? (
@@ -90,10 +92,10 @@ export function IntroCard({
           </View>
         ) : null}
         <Txt style={styles.story} color={colors.onMediaMuted}>
-          {character.backstory ?? character.bio}
+          {shown.backstory ?? shown.bio}
         </Txt>
-        <Things ios="heart.fill" icon="heart" label={t('intro.loves')} items={character.likes} />
-        <Things ios="heart.slash" icon="heart-dislike-outline" label={t('intro.cantStand')} items={character.dislikes} />
+        <Things ios="heart.fill" icon="heart" label={t('intro.loves')} items={shown.likes} />
+        <Things ios="heart.slash" icon="heart-dislike-outline" label={t('intro.cantStand')} items={shown.dislikes} />
       </View>
     </PressableScale>
   );

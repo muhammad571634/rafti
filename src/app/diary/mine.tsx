@@ -21,6 +21,7 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
+import { localDiaryEntry } from '@/i18n/content';
 import { diaryDate, relativeStamp } from '@/lib/format';
 import { dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -56,7 +57,7 @@ export default function MyDiaryScreen() {
 
   const entries = useMemo(
     () =>
-      [...diary].sort((a, b) => {
+      [...diary].map(localDiaryEntry).sort((a, b) => {
         const diff = b.date.localeCompare(a.date);
         return newestFirst ? diff : -diff;
       }),

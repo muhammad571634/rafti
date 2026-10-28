@@ -26,6 +26,7 @@ import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
@@ -101,7 +102,8 @@ export default function FindScreen() {
               c.name.toLowerCase().includes(q) ||
               c.handle.toLowerCase().includes(q) ||
               c.series?.toLowerCase().includes(q) ||
-              c.tags.some((tag) => tag.includes(q)),
+              c.tags.some((tag) => tag.includes(q)) ||
+              localCharacter(c).tags.some((tag) => tag.toLowerCase().includes(q)),
           )
         : [],
     [shown, q],

@@ -11,7 +11,8 @@ import { AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, S
 import { shortName } from '@/lib/format';
 import { lineFor, pickSome, WORLD_PASS, WORLD_QUESTIONS } from '@/lib/quiz';
 import { phrase } from '@/i18n';
-import { worldByKey } from '@/mock/worlds';
+import { localized } from '@/i18n/content';
+import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
@@ -28,7 +29,7 @@ export default function WorldQuizScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ world: string; host?: string }>();
-  const world = worldByKey(params.world ?? '');
+  const world = localized('worlds', WORLDS).find((w) => w.key === params.world);
 
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);

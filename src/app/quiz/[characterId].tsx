@@ -22,7 +22,8 @@ import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/lib/quiz';
 import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
-import { worldOf } from '@/mock/worlds';
+import { localized } from '@/i18n/content';
+import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, hitSlop, isDark, moduleFills, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
@@ -65,7 +66,8 @@ export default function QuizScreen() {
   const [matches, setMatches] = useState(0);
   const [done, setDone] = useState(false);
 
-  const world = character ? worldOf(character) : undefined;
+  const worlds = localized('worlds', WORLDS);
+  const world = character ? worlds.find((w) => w.series === character.series) : undefined;
   const week = useMemo(() => weekKey(new Date()), []);
 
   const back = (onPress: () => void, icon: 'chevron-back' | 'close' = 'chevron-back') => (
@@ -104,7 +106,7 @@ export default function QuizScreen() {
     const selfRun: Run = {
       id: `self:${week}`,
       title: t('quizHome.selfRun', { name }),
-      questions: pickSome(world?.selfQuiz ?? SELF_QUIZ, `${character.id}:${week}`, QUIZ_MAX_QUESTIONS),
+      questions: pickSome(world?.selfQuiz ?? localized('selfQuiz', SELF_QUIZ), `${character.id}:${week}`, QUIZ_MAX_QUESTIONS),
     };
     const won = world ? wonFrames.includes(world.key) : false;
     return (
@@ -171,12 +173,12 @@ export default function QuizScreen() {
 
           <GroupLabel>{t('quizHome.packs')}</GroupLabel>
           <View style={styles.card}>
-            {QUIZ_PACKS.map((p, i) => (
+            {localized('quizPacks', QUIZ_PACKS).map((p, i, list) => (
               <PressableScale
                 key={p.id}
                 scaleTo={0.985}
                 accessibilityRole="button"
-                style={[styles.row, i < QUIZ_PACKS.length - 1 && styles.rowLine]}
+                style={[styles.row, i < list.length - 1 && styles.rowLine]}
                 onPress={() => start({ id: p.id, title: t(`games.packs.${p.titleKey}`), questions: p.questions })}>
                 <SymbolTile {...p.look} />
                 <View style={styles.flex}>
@@ -269,7 +271,7 @@ export default function QuizScreen() {
   const question = run.questions[index];
   const theirs = partnerPick(character.id, run.id, index, question.options.length);
   const last = index === total - 1;
-  const lines = world ?? QUIZ_LINES;
+  const lines = world ?? localized('quizLines', QUIZ_LINES);
   const seed = `${character.id}:${run.id}:${index}`;
   const same = mine != null && mine === theirs;
   const line = mine == null ? '' : same ? lineFor(lines.match, seed) : lineFor(lines.differ, seed, question.options[theirs]);

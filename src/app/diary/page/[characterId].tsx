@@ -9,6 +9,7 @@ import { BackButton, Button, CharacterAvatar, EmptyState, Header, PressableScale
 import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
+import { localDiaryPage } from '@/i18n/content';
 import { colors, palette, radius, space, type } from '@/theme';
 
 /** One ruled line on the page; the handwriting sits on this pitch. */
@@ -44,7 +45,8 @@ export default function CharacterDiaryPageScreen() {
   });
   const [bodyHeight, setBodyHeight] = useState(0);
 
-  const page = pages[index];
+  const rawPage = pages[index];
+  const page = rawPage ? localDiaryPage(rawPage) : undefined;
 
   useEffect(() => {
     if (page) markRead(page.id);

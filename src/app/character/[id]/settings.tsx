@@ -33,6 +33,7 @@ import { booksFor } from '@/lib/lorebook';
 import { personaFor, personaList } from '@/lib/personas';
 import { replyPrefs } from '@/lib/reply-engine';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
+import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -296,7 +297,7 @@ export default function CharacterSettingsScreen() {
           {/* What their world and the user's books tell them (Character.AI's Lorebook). */}
           <LinkRow
             label={t('lore.chatRow')}
-            meta={loreMeta(booksFor(character, lorebooks, officialLorebooks), t)}
+            meta={loreMeta(booksFor(character, lorebooks, localized('lorebooks', officialLorebooks)), t)}
             onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
           />
           {/* What they took from the chat (A2): open threads, to see, change or stop. */}

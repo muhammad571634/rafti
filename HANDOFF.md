@@ -1,6 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z23. Translate content: Phase 1 machinery (2026-10-28). NEXT: Phase 2 (use content overlay on screens)
+### 0z24. Translate content: Phase 2 screens and store overlays (2026-10-28). NEXT: Phase 3 (translate 13 languages one by one)
+
+- Wrapped display text across screens and store using `localCharacter`, `localized`, `localDiaryEntry`, `localDiaryPage`, and `localSecretNote`:
+  - Characters: profile (`character/[id]/index.tsx`), chat intro card (`intro-card.tsx`), starters in chat (`chat/[id].tsx`), call paywall sheet (`call-paywall-sheet.tsx`), and tag search in Find (`find.tsx`).
+  - Store: `openingFor` uses `localCharacter(character)` to open new chats in the active locale; `beginThemeDate` uses localized `dateThemes`; `finishWorldQuiz` uses localized `worlds`; `startScene` uses localized `scenes`; intimacy unlocks use localized `radioGifts`; `newSecretNote` uses localized `secretNotePrompts`; `playTruthOrDare` and `playGroupTruthOrDare` use localized truth/dare pools.
+  - Dates: `dating.tsx`, `date/[placeId].tsx`, and `date/album.tsx` read `localized('datePlaces', DATE_PLACES)`.
+  - Worlds & Games: `photo-booth.tsx`, `quiz/world/[world].tsx`, `quiz/[characterId].tsx` read `localized('worlds', WORLDS)`, `localized('quizPacks', QUIZ_PACKS)`, `localized('selfQuiz', SELF_QUIZ)`, `localized('quizLines', QUIZ_LINES)`.
+  - Radio & Scenes: `use-clips.ts` uses `localized('radioGifts', radioGifts)`, `scenes/[conversationId].tsx` uses `localized('scenes', officialScenes)`.
+  - World books: `lore/index.tsx`, `lore/[id].tsx`, `lore/for/[characterId].tsx`, and `character/[id]/settings.tsx` read `localized('lorebooks', officialLorebooks)`.
+  - Diary & Notes: `diary/page/[characterId].tsx` uses `localDiaryPage`, `diary/mine.tsx` uses `localDiaryEntry`, `secret-note/[id].tsx` uses `localSecretNote`.
+- Checked: `npx tsc --noEmit` (0 errors), `npm test` (457/457 passed), `npm run check:locales` (all 13 pass), `npm run check:content`.
 
 - Built extraction machinery: `scripts/content-hooks.mjs` (stubs RN and maps aliases in plain Node) and `scripts/content-extract.ts`.
 - Generated `src/i18n/content/en.json` (1973 strings across 18 catalog sections).

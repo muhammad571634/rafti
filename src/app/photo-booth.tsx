@@ -28,6 +28,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { frameLook } from '@/lib/frames';
 import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
+import { localized } from '@/i18n/content';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space } from '@/theme';
@@ -96,7 +97,7 @@ export default function PhotoBoothScreen() {
   const partner = known.find((c) => c.id === partnerId);
   const frames: FrameChoice[] = [
     { id: 'none', label: t('frames.plain') },
-    ...WORLDS.map((w) => ({
+    ...localized('worlds', WORLDS).map((w) => ({
       id: `w:${w.key}`,
       label: phrase(w.series),
       look: w.frame,
