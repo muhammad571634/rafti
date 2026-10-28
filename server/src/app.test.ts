@@ -80,6 +80,35 @@ describe('sigmazam-api', () => {
     assert.match(turn, /LANGUAGE: write every message in the language their latest messages are in \("I had a long day"\)/);
   });
 
+  it('runs the memory pass at a low temperature and answers only ops on facts it was shown', async () => {
+    let temperature: number | undefined;
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(_layout, opts) {
+        temperature = opts.temperature;
+        return {
+          text: JSON.stringify({ summary: 'Biscuit steals socks.', ops: [{ op: 'update', id: 'm1', text: 'Has a beagle called Biscuit' }, { op: 'forget', id: 'other' }] }),
+          usage: {},
+        };
+      },
+    };
+    const res = await createApp(provider, { timeoutMs: 1000 }).request('/v1/memory/pass', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        character: { name: 'Kai' },
+        user: { displayName: 'Sam' },
+        facts: [{ id: 'm1', text: 'Has a dog' }],
+        lines: [{ author: 'me', text: 'my beagle Biscuit ate my socks', at: '2026-10-28T10:00:00Z' }],
+        now: '2026-10-28T10:05:00Z',
+      }),
+    });
+    assert.equal(res.status, 200);
+    const json = await res.json();
+    assert.deepEqual([json.summary, json.ops], ['Biscuit steals socks.', [{ op: 'update', id: 'm1', text: 'Has a beagle called Biscuit' }]]);
+    assert.equal(temperature, 0.2);
+  });
+
   it('says why when it cannot answer: no model, bad input, the free tier is busy', async () => {
     assert.equal((await post(createApp(null, { timeoutMs: 1000 }), body)).status, 503);
     const busy: LlmProvider = { name: 'fake', complete: async () => Promise.reject(new LlmBusyError('quota')) };

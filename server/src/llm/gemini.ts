@@ -16,7 +16,7 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
   const ai = new GoogleGenAI({ apiKey });
   return {
     name: `gemini:${models[0]}`,
-    async complete(layout, { timeoutMs }) {
+    async complete(layout, { timeoutMs, temperature: callTemperature }) {
       const deadline = Date.now() + timeoutMs;
       let last: unknown;
       for (const model of models) {
@@ -29,7 +29,7 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
             config: {
               systemInstruction: layout.system.map((block) => block.text).join('\n\n'),
               responseMimeType: 'application/json',
-              temperature,
+              temperature: callTemperature ?? temperature,
               // One model may not take the whole wait: leave room for the next.
               // Whole milliseconds: a half (an odd wait halved) throws before the call is made.
               abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(6000, timeoutMs / 2)))),

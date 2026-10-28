@@ -35,7 +35,7 @@ import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
-import { apiBase, serverFirstText, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
+import { apiBase, serverFirstText, serverMemoryPass, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -81,7 +81,9 @@ import { weekLine } from '@/mock/week';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree } from '@/economy/shells';
-import { hasFullMemory, splitMemories } from '@/economy/memory-limit';
+import { byMemoryOrder, hasFullMemory, isActiveMemory, splitMemories } from '@/economy/memory-limit';
+import { PASS_FACTS_MAX, PASS_LINES_MAX, type MemoryPassRequest } from '@/ai/memory-pass';
+import { applyMemoryPass } from '@/lib/memory-ops';
 import { perkLimit } from '@/economy/perks';
 import {
   activeScene,
@@ -4405,6 +4407,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
         if (gain) get().addIntimacy(conversation.characterId, gain);
         if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
+        queueMemoryPass(set, get, conversationId);
         const nudgeAfter = text == null && !given ? turn?.plan.nudgeAfterMs : undefined;
         if (nudgeAfter) scheduleNudge(set, get, conversationId, message.id, nudgeAfter);
       }, at);
@@ -4967,6 +4970,89 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
     );
     return true;
   }
+}
+
+/** The memory pass (B2, src/ai/memory-pass.ts) runs once this many of the user's lines are new… */
+const MEMORY_EVERY = 4;
+/** …and the chat has been quiet this long after a reply; this many new lines run it at once. */
+const MEMORY_QUIET_MS = 20_000;
+const MEMORY_NOW = 20;
+const memoryTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const memoryRunning = new Set<string>();
+
+/** The lines after the memory pass's mark (all of them when the mark was cut away by a rewind). */
+function sinceMark(messages: readonly Message[], mark?: string) {
+  const at = mark ? messages.findIndex((m) => m.id === mark) : -1;
+  return { at, fresh: messages.slice(at + 1) };
+}
+
+/** A line the memory pass may read: what was said, never a card, a call row or a crisis line. */
+const passLine = (m: Message) => {
+  const text = m.card || m.pending || m.kind === 'system' || m.kind === 'call' ? '' : (m.text ?? m.transcript ?? '').trim();
+  return text && !detectCrisis(text) ? { author: m.author, text, at: m.createdAt } : null;
+};
+
+/** After a reply: once enough is new, the memory pass waits for a quiet moment (each reply resets the wait). */
+function queueMemoryPass(set: Setter, get: Getter, conversationId: string) {
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  if (!conversation || !state.settings.realAi || !apiBase()) return;
+  const { fresh } = sinceMark(state.messages[conversationId] ?? [], conversation.memoryMark);
+  const said = fresh.filter((m) => m.author === 'me' && passLine(m)).length;
+  if (said < MEMORY_EVERY) return;
+  clearTimeout(memoryTimers.get(conversationId));
+  memoryTimers.set(
+    conversationId,
+    setTimeout(() => void runMemoryPass(set, get, conversationId), said >= MEMORY_NOW ? 0 : MEMORY_QUIET_MS),
+  );
+}
+
+/**
+ * One memory pass: the character's active facts, the story so far and the new lines go to the
+ * server; the answer changes the memories (`applyMemoryPass`) and the summary, and moves the mark.
+ * Off, busy or slow: nothing changes and the next reply tries again.
+ */
+async function runMemoryPass(set: Setter, get: Getter, conversationId: string) {
+  memoryTimers.delete(conversationId);
+  if (memoryRunning.has(conversationId)) return;
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  const character = state.characters.find((c) => c.id === conversation?.characterId);
+  if (!conversation || !character) return;
+  const messages = (state.messages[conversationId] ?? []).filter((m) => !m.pending);
+  const { at, fresh } = sinceMark(messages, conversation.memoryMark);
+  const lines = fresh.map(passLine).filter((l): l is NonNullable<ReturnType<typeof passLine>> => !!l).slice(-PASS_LINES_MAX);
+  const lastId = fresh.at(-1)?.id;
+  if (!lines.length || !lastId) return;
+  const before = messages
+    .slice(Math.max(0, at - 5), at + 1)
+    .map(passLine)
+    .filter((l): l is NonNullable<ReturnType<typeof passLine>> => !!l)
+    .map(({ author, text }) => ({ author, text }));
+  const facts = state.memories
+    .filter((m) => m.characterId === character.id && isActiveMemory(m))
+    .sort(byMemoryOrder)
+    .slice(0, PASS_FACTS_MAX)
+    .map(({ id, text, about, type, pinned }) => ({ id, text, about, type, pinned }));
+  const request: MemoryPassRequest = {
+    character: { name: character.name, series: character.series, bio: character.bio },
+    user: { displayName: personaFor(conversationId, state).name, locale: state.user.locale },
+    summary: conversation.summary,
+    facts,
+    before,
+    lines,
+    now: new Date().toISOString(),
+    utcOffsetMin: -new Date().getTimezoneOffset(),
+  };
+  memoryRunning.add(conversationId);
+  const result = await accessToken()
+    .then((token) => serverMemoryPass(request, token))
+    .finally(() => memoryRunning.delete(conversationId));
+  if (!result) return;
+  set((s) => ({
+    memories: applyMemoryPass(s.memories, character.id, result, new Date(), () => uid('mem')),
+    conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, memoryMark: lastId, summary: result.summary ?? c.summary } : c)),
+  }));
 }
 
 /** When each chat's current reply burst finishes; replies queue behind it. */

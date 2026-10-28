@@ -160,7 +160,7 @@ async function main() {
   if (config.openai.apiKey && config.openai.baseUrl && config.openai.model) writers.push(openAiCompatProvider(config.openai));
   if (config.geminiKey) writers.push(geminiProvider(config.geminiKey, config.chatModels));
   const writer = chainProviders(writers)!;
-  const judgeModels = (process.env.JUDGE_MODELS ?? 'gemini-3.5-flash,gemini-3-flash-preview,gemini-2.5-flash').split(',').map((m) => m.trim()).filter(Boolean);
+  const judgeModels = (process.env.JUDGE_MODELS ?? 'gemini-3.5-flash,gemini-3-flash-preview,gemini-flash-latest').split(',').map((m) => m.trim()).filter(Boolean);
   const judgeModel = judgeModels.join(' > ');
   const judgeKey = process.env.JUDGE_GEMINI_KEY || config.geminiKey;
   const judge = flag('no-judge') || !judgeKey ? null : geminiProvider(judgeKey, judgeModels, { temperature: 0.2 });

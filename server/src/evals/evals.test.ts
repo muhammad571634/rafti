@@ -17,12 +17,14 @@ const ANY = JSON.stringify({
   line: 'Fine, but I pick the snacks.',
   answer: 1,
   rounds: [{ line: 'One.' }, { line: 'Two.' }, { line: 'Three.' }],
+  summary: 'They talked about Biscuit.',
+  ops: [{ op: 'add', text: 'Has a beagle', about: 'you', importance: 0.9, confidence: 0.9 }],
 });
 
 describe('the eval set (backend-plan §12.11)', () => {
-  it('has 40 to 70 scenarios with unique ids, real cast members and a rubric each', () => {
-    // backend-plan §12.11 asked for 40-60; the crisis check (B1.6) added five more.
-    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 70, String(SCENARIOS.length));
+  it('has 40 to 90 scenarios with unique ids, real cast members and a rubric each', () => {
+    // backend-plan §12.11 asked for 40-60; the crisis check (B1.6) and the memory pass (B2) added more.
+    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 90, String(SCENARIOS.length));
     assert.equal(new Set(SCENARIOS.map((s) => s.id)).size, SCENARIOS.length);
     const cast = new Set(characters.map((c) => c.id));
     for (const s of SCENARIOS) {
@@ -48,8 +50,8 @@ describe('the eval set (backend-plan §12.11)', () => {
     for (const s of SCENARIOS) {
       const got = await answer(fake, s, 1000);
       assert.ok(got.lines.length, s.id);
-      assert.match(got.promptVersion, /\.m[0-9a-f]{8}$/, s.id);
-      assert.ok(seen.at(-1)?.includes(`MODE: `), s.id);
+      if (s.mode !== 'memoryPass') assert.match(got.promptVersion, /\.m[0-9a-f]{8}$/, s.id);
+      assert.ok(seen.at(-1)?.includes(s.mode === 'memoryPass' ? 'NEW SINCE LAST TIME:' : 'MODE: '), s.id);
     }
   });
 

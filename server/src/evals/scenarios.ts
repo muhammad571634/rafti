@@ -60,7 +60,9 @@ export type EvalScenario =
   | (Base & { mode: 'stream'; other: string; topic: string; said?: readonly Line[] })
   | (Base & { mode: 'group'; others: readonly string[] })
   | (Base & { mode: 'game'; question: string; options: readonly string[] })
-  | (Base & { mode: 'date'; theme: { title: string; scene: string; rounds: number; mood: string } });
+  | (Base & { mode: 'date'; theme: { title: string; scene: string; rounds: number; mood: string } })
+  /** The memory pass (B2): `chat` is what is new; the answer reads as "add: …", "update f1: …", "forget f1", "summary: …". */
+  | (Base & { mode: 'memoryPass'; facts?: readonly { id: string; text: string }[] });
 
 const ASSISTANT: Check = { kind: 'excludes', any: ['as an ai', 'language model', 'how can i assist', 'how can i help you today', 'is there anything else'] };
 const SPOKEN: readonly Check[] = [{ kind: 'noEmoji' }, { kind: 'noNarration' }, { kind: 'words', max: 60 }];
@@ -133,6 +135,87 @@ export const SCENARIOS: readonly EvalScenario[] = [
     chat: [['me', 'bored. give me something to do tonight']],
     expect: [{ kind: 'includes', any: ['star', 'sky', 'film', 'camera', 'photo', 'telescope', 'moon', 'planet'] }],
     rubric: 'Suggests something tied to their interests (astronomy or film photography), dreamy and talkative Jun.',
+  },
+
+  // The memory pass (B2): what the friend keeps from a chat, and what it changes or forgets.
+  {
+    id: 'mempass-pet',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_kai',
+    chat: [
+      ['me', 'my beagle Biscuit stole my socks AGAIN lol'],
+      ['them', 'Biscuit is a professional sock thief at this point.'],
+      ['me', "he's 3 and still a puppy in his head"],
+    ],
+    expect: [{ kind: 'includes', any: ['add:'] }, { kind: 'includes', any: ['Biscuit'] }],
+    rubric: 'Keeps that the user has a 3-year-old beagle called Biscuit who steals socks, as one or two short facts about the user; nothing else.',
+  },
+  {
+    id: 'mempass-update',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_iris',
+    facts: [{ id: 'f1', text: 'Has a dog' }],
+    chat: [['me', "oh his name is Biscuit btw, he's a beagle"]],
+    expect: [{ kind: 'includes', any: ['update f1', 'supersede f1'] }, { kind: 'excludes', any: ['add: has a dog'] }],
+    rubric: 'Grows the fact it already has ("Has a dog") into "a beagle called Biscuit" instead of adding a copy.',
+  },
+  {
+    id: 'mempass-move',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_hana',
+    facts: [{ id: 'f1', text: 'Lives in Namangan' }],
+    chat: [['me', 'big news!! I moved to Tashkent last week, new job and everything']],
+    expect: [{ kind: 'includes', any: ['supersede f1'] }],
+    rubric: 'Replaces "Lives in Namangan" with the move to Tashkent (keeping the old as the past), and may add the new job.',
+  },
+  {
+    id: 'mempass-forget',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_noah',
+    facts: [{ id: 'f1', text: 'Has a crush on Leo from work' }, { id: 'f2', text: 'Works night shifts' }],
+    chat: [['me', 'please forget what I told you about Leo, it was nothing. seriously']],
+    expect: [{ kind: 'includes', any: ['forget f1'] }, { kind: 'excludes', any: ['forget f2'] }],
+    rubric: 'Forgets the fact about Leo as asked, and only that one.',
+  },
+  {
+    id: 'mempass-chatter',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_kiro',
+    chat: [
+      ['me', 'hi'],
+      ['them', 'Yo. Took you long enough.'],
+      ['me', 'lol'],
+      ['me', 'bored rn'],
+      ['them', 'Bored? With me around? Impossible.'],
+    ],
+    expect: [{ kind: 'excludes', any: ['add:', 'update', 'supersede', 'forget'] }],
+    rubric: 'Small talk and a passing mood: keeps nothing.',
+  },
+  {
+    id: 'mempass-date',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_sol',
+    chat: [['me', "my driving test is on November 14 and I'm so nervous about parallel parking"]],
+    expect: [{ kind: 'includes', any: ['until 2026-11-14'] }],
+    rubric: 'Keeps the driving test with its date (until 2026-11-14) and, perhaps, the parallel-parking worry.',
+  },
+  {
+    id: 'mempass-spanish',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_ivy',
+    chat: [
+      ['me', 'mi perrita se llama Luna y odia los truenos'],
+      ['them', 'Pobre Luna, ¡yo también odio los truenos!'],
+    ],
+    expect: [{ kind: 'includes', any: ['Luna'] }, { kind: 'language', is: 'es' }],
+    rubric: 'Keeps, in Spanish, that the user has a little dog called Luna who hates thunder.',
   },
 
   // Persona: each of the four worlds sounds like itself.

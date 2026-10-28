@@ -11,11 +11,11 @@ export function openAiCompatProvider(opts: { baseUrl: string; apiKey: string; mo
   const base = opts.baseUrl.replace(/\/$/, '');
   return {
     name: `${opts.label ?? 'openai'}:${opts.model}`,
-    async complete(layout, { timeoutMs }) {
+    async complete(layout, { timeoutMs, temperature = 0.9 }) {
       const res = await fetch(`${base}/chat/completions`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', authorization: `Bearer ${opts.apiKey}` },
-        body: JSON.stringify({ model: opts.model, messages: toMessages(layout), temperature: 0.9, response_format: { type: 'json_object' } }),
+        body: JSON.stringify({ model: opts.model, messages: toMessages(layout), temperature, response_format: { type: 'json_object' } }),
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (res.status === 429 || res.status === 503 || res.status === 529) throw new LlmBusyError(`${res.status} ${await res.text()}`);

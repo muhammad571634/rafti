@@ -60,6 +60,9 @@ function knewLines(s: EvalScenario): string[] {
     case 'date':
       lines.push(`- A date the user wrote: ${JSON.stringify(s.theme)}`);
       break;
+    case 'memoryPass':
+      lines.push(...(s.facts?.length ? s.facts.map((f) => `- Remembered already [${f.id}]: ${f.text}`) : ['- Nothing remembered yet.']));
+      break;
   }
   return lines;
 }
@@ -72,7 +75,9 @@ export function judgeLayout(s: EvalScenario, chat: readonly Message[], lines: re
     part('judge', 'global', JUDGE_RULES),
     part('case', 'turn', [
       `CHARACTER: ${character?.name} (${character?.series ?? 'their own world'}). ${character?.bio} Personality: ${character?.tags.join(', ')}.`,
-      `MODE: ${MODE_BLOCKS[s.mode][0].replace(/^MODE: /, '')}`,
+      s.mode === 'memoryPass'
+        ? 'MODE: MEMORY PASS (not a reply: what the character keeps from this chat, as add / update / supersede / forget and a short summary; judge "voice" as how well the facts are worded)'
+        : `MODE: ${MODE_BLOCKS[s.mode][0].replace(/^MODE: /, '')}`,
       'WHAT THEY KNEW:',
       ...knewLines(s),
       'THE CHAT:',

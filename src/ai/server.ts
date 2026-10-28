@@ -4,6 +4,7 @@ import type { ChatPromptInput } from './chat-prompt';
 import type { DraftField, DraftInput, DraftResult, FieldContext } from './character-draft';
 import type { StreamLineRequest } from './content-prompts';
 import type { FirstTextRequest } from './first-text';
+import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
 import type {
   BootstrapInput,
   BootstrapResult,
@@ -34,6 +35,8 @@ const FIRST_TEXT_TIMEOUT_MS = 15_000;
 const DRAFT_TIMEOUT_MS = 40_000;
 /** A stream line is short; a stuck one would stall the stream, so the stand-in goes sooner. */
 const STREAM_LINE_TIMEOUT_MS = 12_000;
+/** Nobody waits on the memory pass. */
+const MEMORY_PASS_TIMEOUT_MS = 30_000;
 
 export function apiBase(): string | null {
   const fromEnv = process.env.EXPO_PUBLIC_API_URL;
@@ -139,6 +142,12 @@ export const serverStudio = {
     return reply ? (reply.value ?? null) : undefined;
   },
 };
+
+/** The memory pass (B2): what to remember from the new lines, or null (off, busy, slow); the next pass tries again. */
+export async function serverMemoryPass(request: MemoryPassRequest, accessToken?: string | null): Promise<MemoryPassResult | null> {
+  const reply = await call<MemoryPassResult>('/v1/memory/pass', withOptionalToken(accessToken, request), MEMORY_PASS_TIMEOUT_MS);
+  return reply && Array.isArray(reply.ops) ? { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops } : null;
+}
 
 /** The next stream line in the speaker's voice (B1.4b), or null (off, busy, slow or no usable line). */
 export async function serverStreamLine(request: StreamLineRequest, accessToken?: string | null): Promise<string | null> {

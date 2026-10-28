@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z15. B2 memory, steps 1-2: the character's memory reaches the model, and the model keeps it (2026-10-28, D123). NEXT: memory on the server (sync), then retrieval past the cap
+
+**Owner, 2026-10-28:** "B2, ya'ni xotira… juda ham qattiq kirish… bozorga shu bilan kiraylik":
+memory is the product's edge. **B2.1:** every reply's prompt carries the pinned memories, all open
+facts (chat tier, `FACTS_MAX` 60 / 4800 chars, `factLines`), the conversation summary, persona,
+scene and lore. **B2.2, the memory pass** (`src/ai/memory-pass.ts`, `src/lib/memory-ops.ts`,
+`POST /v1/memory/pass`): after ≥4 new user lines and 20 s of quiet (≥20 lines: at once) the
+store sends the new lines + what is known to the model (temperature 0.2), which answers ops
+(add / update / supersede / forget, with importance, confidence, `until` for dated plans) and a
+new summary. Kept only at importance ≥0.5 and confidence ≥0.7; crisis lines and copies are
+dropped; supersede keeps the old fact as the past and moves its pin; dated facts archive 30 days
+after `until`. Free plan: 20 open memories. Facts and summary follow the user's language
+(`languageCue`); the ops come before the summary in the JSON because a summary written first
+pulled a Spanish chat into English. Eval set: 7 `memoryPass` scenarios (74 in all). Real model:
+update, move, forget and date pass; Spanish facts now Spanish, the Spanish summary fix is
+**not yet re-run** (both free keys hit the daily quota). The fallback chat model
+`gemini-2.5-flash` stopped serving new keys (404): `gemini-3-flash-preview` replaces it.
+**Key:** the owner's newest AI Studio key (user env `GEMINI_API_KEY`) is on a project with no
+free tier (403 "set up billing"): it works only once the owner turns on billing. Fly still runs
+on the older key.
+
 ### 0z14. The server is in the cloud: Fly.io, Tokyo (2026-10-28, D122). NEXT: translate the app (13 languages) + Language screen
 
 **Owner, 2026-10-28:** full go-ahead for the cloud work ("senior developer sifatida ishla").

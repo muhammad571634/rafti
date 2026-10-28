@@ -6,7 +6,8 @@ import type { PromptLayout } from '../../../src/ai/prompt-layout.ts';
  */
 export interface LlmProvider {
   name: string;
-  complete(layout: PromptLayout, opts: { timeoutMs: number }): Promise<LlmResult>;
+  /** `temperature`: the provider's own when missing (0.9, for the characters); low for work that must be exact (the memory pass). */
+  complete(layout: PromptLayout, opts: { timeoutMs: number; temperature?: number }): Promise<LlmResult>;
 }
 
 export interface LlmResult {

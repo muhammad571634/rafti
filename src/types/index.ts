@@ -444,6 +444,8 @@ export interface MemoryItem {
   status?: 'active' | 'superseded' | 'archived';
   /** A superseded fact points at the fact that replaced it. */
   supersededBy?: string;
+  /** A plan or event's date (YYYY-MM-DD): 30 days after it the fact is archived (backend-plan 12.2). */
+  until?: string;
   /** Missing = about you (every memory before the tabs was). */
   about?: MemoryAbout;
   /** Set when the memory is a pinned chat line; the chat marks that line. */

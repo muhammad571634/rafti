@@ -14,6 +14,7 @@ import {
 } from '../../src/ai/character-draft.ts';
 import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
+import { cleanMemoryPass, memoryPassParts, parseMemoryPass } from '../../src/ai/memory-pass.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts';
@@ -206,13 +207,14 @@ export function createApp(
   /**
    * One model call for a feature: the cost row is written under `mode` (without holding the answer
    * up), `read` turns the model's text into the answer. Busy (the free tier's cap) is 503.
-   * `template` is the mode block the prompt carries (src/ai/modes.ts), for `promptVersion`.
+   * `template` is the mode block the prompt carries (src/ai/modes.ts), for `promptVersion`;
+   * `temperature` is for work that must be exact (the memory pass).
    */
-  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode) {
+  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode, temperature?: number) {
     if (!provider) return c.json({ error: 'noModel' }, 503);
     const started = Date.now();
     try {
-      const result = await provider.complete(layout, opts);
+      const result = await provider.complete(layout, { timeoutMs: opts.timeoutMs, temperature });
       const model = result.model ?? provider.name;
       const cost = costUsd(result.model, result.usage);
       logUsage(db, signedIn(c), {
@@ -351,6 +353,16 @@ export function createApp(
     const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
     request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
     return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, 'initiative');
+  });
+
+  // The memory pass (B2): what was said since the last pass becomes facts and the story so far. The
+  // app sends the facts and the lines and applies the answer (src/lib/memory-ops.ts).
+  app.post('/v1/memory/pass', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const request = cleanMemoryPass(await readJson(c));
+    if (!request) return c.json({ error: 'badInput' }, 400);
+    const ids = new Set(request.facts.map((f) => f.id));
+    return modelCall(c, 'memory', layoutPrompt(memoryPassParts(request)), (text) => parseMemoryPass(text, ids), undefined, 0.2);
   });
 
   // Quick create (B1.4b, backend-plan §12.17): the whole character from the creator's idea. The idea

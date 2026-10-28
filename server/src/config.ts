@@ -20,9 +20,10 @@ export const config = {
   /**
    * The chat models, tried in order (`CHAT_MODELS`, comma-separated). Measured on the free tier on
    * 2026-10-26: 3.1 Flash-Lite answered in ~1.5 s, 2.5 Flash in ~3.5 s, the newest Flash was often
-   * "experiencing high demand". `npm run models` lists what the key may call.
+   * "experiencing high demand". On 2026-10-28 2.5 Flash stopped serving new keys (404), so
+   * 3 Flash Preview took its place. `npm run models` lists what the key may call.
    */
-  chatModels: (process.env.CHAT_MODELS ?? 'gemini-3.1-flash-lite,gemini-2.5-flash,gemini-flash-latest')
+  chatModels: (process.env.CHAT_MODELS ?? 'gemini-3.1-flash-lite,gemini-3-flash-preview,gemini-flash-latest')
     .split(',')
     .map((m) => m.trim())
     .filter(Boolean),

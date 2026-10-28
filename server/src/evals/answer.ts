@@ -1,6 +1,7 @@
 import { chatTurns, type ChatPromptInput } from '../../../src/ai/chat-prompt.ts';
 import { buildDateRoundsPrompt, buildQuizAnswerPrompt, parseStreamLine, streamLineParts } from '../../../src/ai/content-prompts.ts';
 import { firstTextParts, type FirstTextRequest } from '../../../src/ai/first-text.ts';
+import { memoryPassParts, parseMemoryPass, type MemoryPassRequest } from '../../../src/ai/memory-pass.ts';
 import { modePart } from '../../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../../src/ai/prompt-layout.ts';
 import { parseModelReply, REPLY_SHAPE } from '../../../src/ai/reply-style.ts';
@@ -90,7 +91,7 @@ const pinnedOf = (s: EvalScenario, characterId: string): MemoryItem[] =>
   (s.setup?.pinned ?? []).map((text, i) => ({ id: `p${i}`, characterId, text, source: 'chat', createdAt: '2026-10-20T12:00:00.000Z', pinned: true, about: 'you' }) as MemoryItem);
 
 /** The scenario's prompt, and how to read the model's answer into lines. */
-function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) => string[]; chat: Message[] } | { input: ChatPromptInput } {
+function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) => string[]; chat: Message[]; temperature?: number } | { input: ChatPromptInput } {
   const character = cast(s.character);
   const user = { id: 'u_eval', displayName: 'Sam', locale: 'en-US', ...s.setup?.user } as User;
   const relationship = bondOf(s, character);
@@ -194,6 +195,32 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
       };
       return { layout: layoutPrompt([part('task', 'turn', [prompt])]), read, chat: [] };
     }
+    case 'memoryPass': {
+      const chat = messagesOf(s.chat);
+      const facts = (s.facts ?? []).map((f) => ({ ...f, about: 'you' as const }));
+      const request: MemoryPassRequest = {
+        character: { name: character.name, series: character.series, bio: character.bio },
+        user: { displayName: user.displayName, locale: user.locale },
+        facts,
+        before: [],
+        lines: chat.map((m) => ({ author: m.author, text: m.text ?? '', at: m.createdAt })),
+        now: EVAL_NOW,
+        utcOffsetMin: 0,
+      };
+      // What the pass decided, as lines the checks and the judge can read.
+      const read = (raw: string) => {
+        const { summary, ops } = parseMemoryPass(raw, new Set(facts.map((f) => f.id)));
+        const lines = ops.map((op) =>
+          op.op === 'add'
+            ? `add: ${op.text}${op.until ? ` (until ${op.until})` : ''}`
+            : op.op === 'forget'
+              ? `forget ${op.id}`
+              : `${op.op} ${op.id}: ${op.text}${'until' in op && op.until ? ` (until ${op.until})` : ''}`,
+        );
+        return [...lines, ...(summary ? [`summary: ${summary}`] : [])];
+      };
+      return { layout: layoutPrompt(memoryPassParts(request)), read, chat, temperature: 0.2 };
+    }
   }
 }
 
@@ -218,12 +245,12 @@ export async function answer(provider: LlmProvider, s: EvalScenario, timeoutMs: 
       chat: [...prompt.input.messages],
     };
   }
-  const result = await provider.complete(prompt.layout, { timeoutMs });
+  const result = await provider.complete(prompt.layout, { timeoutMs, temperature: prompt.temperature });
   return {
     lines: prompt.read(result.text),
     raw: result.text,
     model: result.model,
-    promptVersion: promptVersion(prompt.layout, s.mode),
+    promptVersion: promptVersion(prompt.layout, s.mode === 'memoryPass' ? undefined : s.mode),
     ms: Date.now() - started,
     calls: 1,
     chat: prompt.chat,
