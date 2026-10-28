@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 
 import en from './content/en.json';
+import es from './content/es.json';
 import { overlay } from './overlay';
 
 export { overlay };
@@ -11,6 +12,7 @@ export { overlay };
  */
 export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   en,
+  es,
 };
 
 const cache = new Map<string, unknown>();
