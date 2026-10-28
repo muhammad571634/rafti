@@ -4,6 +4,7 @@ import de from './content/de.json';
 import en from './content/en.json';
 import es from './content/es.json';
 import fr from './content/fr.json';
+import id from './content/id.json';
 import it from './content/it.json';
 import ja from './content/ja.json';
 import ko from './content/ko.json';
@@ -22,6 +23,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   en,
   es,
   fr,
+  id,
   it,
   ja,
   ko,

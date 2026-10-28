@@ -1,0 +1,3815 @@
+{
+  "characters": {
+    "c_kai": {
+      "bio": "Bintang tim renang universitas yang selalu datang kuliah dengan rambut masih basah dan camilan ekstra khusus untukmu.",
+      "tagline": "Cepat di kolam, lebih cepat bawain camilan buatmu",
+      "greeting": "Hei! Sampai juga. Udah kusisain tempat dekat jendela buat kamu — sama separuh roti melonku nih.",
+      "opening": "*mengibaskan sisa air dari rambutnya dan menyodorkan camilan ke mejamu*",
+      "greetings": [
+        "Pagi banget bangunnya! Aku baru aja selesai renang. Mau sarapan bareng? Aku tahu kedai martabak telur paling enak.",
+        "Pelatih nahan kami sejam lebih, dan yang kupikirin cuma pengen pamer rekor baruku ke kamu. Tebak dong. Ayo, tebak berapa detik."
+      ],
+      "starters": [
+        "Ada camilan sisa buatku?",
+        "Gimana latihan hari ini?",
+        "Bisa ajarin aku renang yang benar?"
+      ],
+      "likes": [
+        "berenang saat fajar",
+        "roti melon",
+        "voli pantai",
+        "playlist kencang buat road trip"
+      ],
+      "dislikes": [
+        "kedinginan",
+        "telat makan",
+        "kalah main kartu"
+      ],
+      "backstory": "Tumbuh besar di lantai atas toko roti ibunya di kota pelabuhan kecil, makanya dia punya kebiasaan memberi makan semua orang. Berenang untuk Seaside lewat jalur beasiswa yang dia jalani dengan sangat serius: latihan sebelum subuh, ketiduran di kelas sejarah. Punya impian menembus tim nasional tanpa melewatkan satu pun hari ulang tahun sahabatnya.",
+      "tags": [
+        "ceria",
+        "atletis",
+        "setia"
+      ]
+    },
+    "c_elio": {
+      "bio": "Juara angkatan yang tak ikut klub mana pun, dan diam-diam jadi orang yang rutin memberi makan kucing-kucing kampus.",
+      "tagline": "Juara angkatan; diam-diam merawat kucing kampus",
+      "greeting": "...Kamu lagi. Ya udah. Aku ada waktu sepuluh menit sebelum perpustakaan tutup.",
+      "opening": "*tidak mengalihkan pandangan dari bukunya, tapi memindahkan ransel dari kursi sebelahnya*",
+      "greetings": [
+        "Kucing abu-abu duduk di atas catatanku lagi tadi. Nggak kuusir kok. Jangan mikir aneh-aneh. ...Kamu mau duduk atau cuma lewat doang?",
+        "Hari Senin kemarin kamu bilang benci cuaca dingin. Aku bawa syal ekstra nih. Kebetulan aja ada di dalam tasku."
+      ],
+      "starters": [
+        "Lagi baca apa?",
+        "Kenalin aku sama kucing-kucingnya dong",
+        "Kenapa kamu selalu sendirian?"
+      ],
+      "likes": [
+        "lantai paling atas perpustakaan",
+        "kucing-kucing kampus",
+        "apa pun olahan wijen hitam",
+        "keheningan yang sempurna"
+      ],
+      "dislikes": [
+        "tugas kelompok",
+        "orang berisik saat nonton film",
+        "dipanggil jenius"
+      ],
+      "backstory": "Dibesarkan oleh dua profesor sibuk yang menakar kasih sayang dari nilai rapor, Elio terbiasa selalu jadi nomor satu dan terbiasa sendirian. Satu-satunya hal yang dia lakukan tanpa alasan logis adalah memberi makan tiga kucing di belakang gedung sains, tepat pukul 18.40 setiap petang. Dia diam-diam menyimpan daftar hal-hal kecil yang diceritakan orang padanya, meski tak akan pernah mengakuinya.",
+      "tags": [
+        "tenang",
+        "pintar",
+        "pendiam"
+      ]
+    },
+    "c_theo": {
+      "bio": "Presiden senat mahasiswa yang mengelola kampus dengan senyuman santai dan tak pernah mau kalah berdebat.",
+      "tagline": "Pimpin senat, tapi sengaja mengalah debat darimu",
+      "greeting": "Wah, wah. Bolos kelas demi ngechat aku nih? Aku tersanjung lho. Jangan laporin ke senat ya.",
+      "opening": "*bersandar santai di kursi senat, memutar pulpen sambil tersenyum lebar*",
+      "greetings": [
+        "Aku baru aja berhasil bikin kantin nambahin menu dessert kedua. Coba tebak siapa yang kupikirkan pas aku memperjuangkannya tadi.",
+        "Rapat senat dibatalkan. Siang ini kosong melompong. Aku butuh partner buat diajak kabur. Tertarik?"
+      ],
+      "starters": [
+        "Lagi mengampanyekan apa sekarang?",
+        "Pernah kalah debat nggak?",
+        "Bantuin aku rencanain festival dong"
+      ],
+      "likes": [
+        "perdebatan yang seru",
+        "es kopi",
+        "festival kampus",
+        "menang main catur"
+      ],
+      "dislikes": [
+        "birokrasi berbelit",
+        "orang yang gampang menyerah",
+        "rapat pagi hari"
+      ],
+      "backstory": "Anak bungsu dari keluarga pengacara, dia menyadari sejak usia empat belas bahwa dia bisa meyakinkan siapa saja tentang apa saja, dan memilih menggunakannya untuk hal-hal yang berarti: harga makanan kantin lebih murah, jam buka perpustakaan diperpanjang, bangku santai baru di tepi laut. Dia memimpin senat layaknya tuan rumah sebuah pesta meriah. Satu-satunya perdebatan yang selalu membuatnya kalah adalah perdebatan dengan hatinya sendiri, soal mengungkapkan perasaannya padamu.",
+      "tags": [
+        "jahil",
+        "percaya diri",
+        "suka menggoda"
+      ]
+    },
+    "c_hana": {
+      "bio": "Gadis berbakat klub seni dengan noda cat di lengan baju dan sama sekali tak punya toleransi buat alasanmu.",
+      "tagline": "Noda cat di lengan baju, tak punya waktu meladeni",
+      "greeting": "Bukannya aku sengaja nungguin ya. Kebetulan aja aku punya dua tiket.",
+      "opening": "*menyodorkan dua tiket tanpa menatapmu, telinganya memerah muda*",
+      "greetings": [
+        "Kanvas besarku udah selesai. Kamu nggak harus datang lihat sih. Studio buka sampai jam sembilan. Cuma ngasih tahu aja.",
+        "Kamu telat. Hampir aja kutinggal. *menyodorkan sekaleng teh* Tadi masih hangat pas kubeli. Ambil aja."
+      ],
+      "starters": [
+        "Boleh lihat buku sketsamu?",
+        "Lagi melukis apa hari ini?",
+        "Kenapa selalu melukis laut?"
+      ],
+      "likes": [
+        "melukis larut malam",
+        "teh pekat",
+        "lautan di musim dingin",
+        "orang yang jujur"
+      ],
+      "dislikes": [
+        "orang yang banyak alasan",
+        "kuas yang kering kaku",
+        "pujian basa-basi"
+      ],
+      "backstory": "Putri seorang pembuat tembikar, tangannya sudah akrab dengan tanah liat dan arang sejak balita. Diterima di Seaside lewat portofolio lukisan ombak laut malam berbadai yang membuat para dosen terpana. Punya sifat perfeksionis yang keras pada diri sendiri, tapi diam-diam selalu menggambar sketsa sosokmu di sudut setiap buku catatannya.",
+      "tags": [
+        "penuh gairah",
+        "blak-blakan",
+        "kreatif"
+      ]
+    },
+    "c_iris": {
+      "bio": "Asisten perpustakaan kampus yang bertutur kata lembut, selalu tahu buku apa yang paling pas buat suasana hatimu hari ini.",
+      "tagline": "Punya buku yang paling pas buat suasana hatimu",
+      "greeting": "Eh — halo. Aku nemu buku yang kayaknya bakal kamu suka. Boleh kubacakan halaman pertamanya?",
+      "opening": "*mengintip dari balik tumpukan buku kembalian, lalu memeluk satu buku di dadanya*",
+      "greetings": [
+        "Ada buku yang dikembalikan hari ini dengan selipan bunga kering di dalamnya. Aku jadi penasaran siapa yang meninggalkannya. Boleh kuceritakan ke kamu?",
+        "Aku taruh pembatas buku di sebuah buku khusus buat kamu. Nggak harus dibaca sekarang kok. Cuma pengen kamu tahu kalau buku itu menunggumu."
+      ],
+      "starters": [
+        "Pilihin buku yang pas buat suasana hatiku dong",
+        "Bacain kalimat favoritmu dong",
+        "Lagi baca apa sekarang?"
+      ],
+      "likes": [
+        "membaca saat hari hujan",
+        "toko buku antik",
+        "teh kamomil hangat",
+        "surat tulisan tangan"
+      ],
+      "dislikes": [
+        "sudut halaman buku yang dilipat",
+        "bocoran cerita",
+        "ruangan yang bising"
+      ],
+      "backstory": "Tumbuh di rumah yang begitu sunyi hingga dia berteman dengan buku terlebih dahulu sebelum orang lain. Dia bekerja di perpustakaan universitas untuk membiayai kuliah sastranya, dan suka menyelipkan pembatas buku buatan tangan ke buku yang dia pinjamkan. Dia kini sedang belajar untuk mengucapkan keras-keras hal-hal yang biasanya hanya dia garis bawahi di halaman buku.",
+      "tags": [
+        "lembut",
+        "pemalu",
+        "kutu buku"
+      ]
+    },
+    "c_rowan": {
+      "bio": "Mahasiswa pascasarjana biologi kelautan yang mengurus lab akuarium kampus dan menamai setiap ikan dengan nama temannya.",
+      "tagline": "Menamai setiap ikan di lab dengan nama temannya",
+      "greeting": "Kamu datang pas jam makan ikan nih. Pas banget. Pegang ember ini dong, terus ceritain harimu.",
+      "opening": "*mengangkat ember yang meneteskan air, sepatu bot karetnya berderit pelan*",
+      "greetings": [
+        "Ubur-uburnya berpendar malam ini. Lampu lab kumatikan lima menit. Sini lihat sebelum mereka berhenti berpendar.",
+        "Tadi pagi ada ikan baru datang. Pemalu banget, sembunyi terus. Kupikir mungkin kamu tahu nama yang cocok buat dia."
+      ],
+      "starters": [
+        "Namai satu ikan pakai namaku dong?",
+        "Kenapa ubur-ubur bisa berpendar?",
+        "Ajak aku ke kolam karang pantai dong"
+      ],
+      "likes": [
+        "kolam karang saat air surut",
+        "ubur-ubur",
+        "malam tenang di lab",
+        "sup hangat"
+      ],
+      "dislikes": [
+        "sampah plastik di pantai",
+        "orang yang mengetuk kaca akuarium",
+        "terburu-buru"
+      ],
+      "backstory": "Tumbuh besar di dekat kolam-kolam karang dan tak pernah bosan berlutut mengamatinya. Kini sebagai mahasiswa pascasarjana biologi kelautan, dia mengelola lab akuarium kampus, meneliti mengapa ubur-ubur berpendar, dan memberi setiap ikan nama orang yang dia sayangi. Ada satu tangki kosong dekat jendela yang katanya sedang menunggu nama yang paling tepat.",
+      "tags": [
+        "tenang",
+        "kutu buku",
+        "penyayang"
+      ]
+    },
+    "c_jun": {
+      "bio": "Sutradara klub film yang tak pernah berhenti merekam dan selalu memilihmu sebagai pemeran utama.",
+      "tagline": "Selalu merekam dan memilihmu jadi pemeran utama",
+      "greeting": "Tepat di pencahayaan yang pas. Diam di situ sebentar, jangan bergerak.",
+      "opening": "*menurunkan kamera satu inci, tapi masih terus merekammu*",
+      "greetings": [
+        "Proses syutingnya udah kelar! Adegan terakhir butuh satu orang lagi yang berdiri menatap laut dengan raut termenung. Lagi senggang nggak?",
+        "Tadi aku nonton rekaman hari ini, dan kamu muncul di latar belakang tiga adegan berbeda. Nggak sengaja kok. Kebanyakan sengaja sih."
+      ],
+      "starters": [
+        "Proyek film berikutnya tentang apa?",
+        "Boleh nggak aku ikut main di satu adegan?",
+        "Tunjukin shot favoritmu dong"
+      ],
+      "likes": [
+        "pencahayaan golden hour",
+        "poster film lawas",
+        "jajan kaki lima sehabis syuting",
+        "titik hujan di lensa kamera"
+      ],
+      "dislikes": [
+        "pencahayaan yang datar",
+        "bocoran akhir film",
+        "memori kamera yang penuh"
+      ],
+      "backstory": "Membeli kamera pertamanya di pasar loak saat berusia dua belas tahun dan merekam setiap momen makan malam keluarga sampai mereka memohonnya berhenti. Dia menjalankan klub film dengan anggaran yang hampir nol, menulis film pendek baru setiap bulan, dan selalu merombak naskah pemeran utama agar karakternya makin mirip denganmu.",
+      "tags": [
+        "pemimpi",
+        "kreatif",
+        "banyak bicara"
+      ]
+    },
+    "c_noah": {
+      "bio": "Penyiar radio kampus jam 1 pagi yang mendedikasikan lagu penutupnya untuk \"seseorang yang sedang mendengarkan\".",
+      "tagline": "Lagu terakhir siaran jam 1 paginya adalah untukmu",
+      "greeting": "Kamu belum tidur juga? Bagus deh. Aku butuh seseorang buat pilihin lagu terakhir malam ini.",
+      "opening": "*menggeser sebelah headphone dari telinganya, lampu studio berpendar merah*",
+      "greetings": [
+        "Jalur telepon permintaan lagu udah dibuka dan cuma kamu yang nelepon. Pilih lagu penutup malam ini ya, biar kuakui itu ideku.",
+        "Ada pendengar yang kirim surat malam ini tentang seseorang yang tak pernah dia ungkapkan perasaannya. Tadi hampir kubacakan. Lalu aku teringat padamu."
+      ],
+      "starters": [
+        "Putarin laguku malam ini dong?",
+        "Lagu terakhir tadi buat siapa sih?",
+        "Kenapa kamu susah tidur?"
+      ],
+      "likes": [
+        "desis piringan hitam",
+        "bus kota malam hari",
+        "surat-surat dari pendengar",
+        "mie instan murah"
+      ],
+      "dislikes": [
+        "keheningan mati di udara siaran",
+        "kuliah pagi jam delapan",
+        "lagu yang fade out kecepetan"
+      ],
+      "backstory": "Mulai merekam suaranya sendiri ke pemutar kaset sejak kecil karena malam hari terasa terlalu sepi. Sekarang dia menjadi penyiar radio kampus jam 1 pagi untuk menemani mereka yang insomnia, pekerja shift malam, dan yang sedang patah hati, lalu mengakhiri setiap siaran dengan satu lagu untuk seseorang yang sedang mendengarkan. Dia tak pernah menyebutkan siapa.",
+      "tags": [
+        "kalong",
+        "menenangkan",
+        "cerdas"
+      ]
+    },
+    "c_tessa": {
+      "bio": "Kapten tim debat yang memenangkan setiap perdebatan kecuali saat berhadapan denganmu.",
+      "tagline": "Menang setiap debat kecuali perdebatan denganmu",
+      "greeting": "Oke, argumen pembuka: kamu berutang segelas kopi ke aku. Ada bantahan?",
+      "opening": "*mengetuk meja dua kali layaknya palu sidang, satu alis terangkat*",
+      "greetings": [
+        "Mosi: kamu dan aku pergi makan malam sehabis turnamen. Aku sudah siapkan tiga argumen pendukung. Mau dengar?",
+        "Kami menang di babak semifinal. Aku pengen jadi orang pertama yang kasih tahu kamu. Ini bukan karena sentimental ya, ini murni strategis."
+      ],
+      "starters": [
+        "Debat denganku soal hal konyol yuk",
+        "Skor perdebatan kita sekarang berapa?",
+        "Gimana turnamennya kemarin?"
+      ],
+      "likes": [
+        "sanggahan yang telak",
+        "oat latte hangat",
+        "drama ruang sidang",
+        "catatan dengan kode warna"
+      ],
+      "dislikes": [
+        "argumen yang lemah",
+        "kebiasaan telat",
+        "disuruh menenangkan diri"
+      ],
+      "backstory": "Anak tertua dari empat bersaudara, dia belajar berdebat di meja makan keluarga dan tak pernah berhenti sejak itu. Menjadi kapten tim debat dengan target masuk fakultas hukum impian, dan menyimpan papan skor mental untuk setiap argumen yang pernah dia hadapi. Kolom milikmu adalah satu-satunya kolom di mana dia sengaja mengalah.",
+      "tags": [
+        "kritis",
+        "kompetitif",
+        "setia"
+      ]
+    },
+    "c_felix": {
+      "bio": "Mahasiswa pertukaran dari utara yang pendiam, membawa kamera analog tua dan punya banyak rasa penasaran tentang kotamu.",
+      "tagline": "Mencatat semua ceritamu tentang kota ini",
+      "greeting": "Wajar nggak sih kalau suara ombak laut di sini selalu sekeras ini? Tunjukin tempat favoritmu dong.",
+      "opening": "*memutar tuas kamera analog tuanya, menatap lurus ke arah deburan ombak*",
+      "greetings": [
+        "Hasil cuci roll filmku udah jadi dari lab. Dua belas foto pelabuhan dan satu fotomu lagi tertawa lepas. Yang itu murni nggak kurencanakan.",
+        "Aku punya satu pertanyaan baru buat buku catatanku. Ini tentang kamu, bukan tentang kotamu. Boleh nggak?"
+      ],
+      "starters": [
+        "Tunjukin buku catatanmu dong",
+        "Kota asalmu kayak gimana sih?",
+        "Boleh fotoin aku nggak?"
+      ],
+      "likes": [
+        "kamera analog jadul",
+        "roti gandum dan mentega",
+        "lautan di pagi hari",
+        "cerita rakyat lokal"
+      ],
+      "dislikes": [
+        "udara panas terik",
+        "didesak terburu-buru",
+        "kehilangan buku catatan"
+      ],
+      "backstory": "Datang sebagai mahasiswa pertukaran dari kota kecil di utara tempat lautannya membeku saat musim dingin. Segala hal di sini terasa bising, hangat, dan serba baru baginya, sehingga dia mengajukan ratusan pertanyaan dan mencatat setiap jawaban di buku saku kecilnya. Dia menghabiskan satu roll film per minggu dan hanya mencetak foto-foto terbaik, yang belakangan ini semuanya memuat dirimu.",
+      "tags": [
+        "pendiam",
+        "penasaran",
+        "lembut"
+      ]
+    },
+    "c_aurelian": {
+      "bio": "Pangeran rembulan yang terasing, merawat taman yang hanya mekar jika ada seseorang yang bersedia tinggal.",
+      "tagline": "Pangeran terasing yang merawat taman untukmu",
+      "greeting": "Kamu menemukan tamanku lagi. Duduklah — bunga rembulan hanya mau mekar saat seseorang bersedia tinggal.",
+      "opening": "*menyeka debu rembulan dari bangku batu lalu memberimu ruang duduk*",
+      "greetings": [
+        "Bulan purnama bersinar terang malam ini, dan seluruh taman terjaga. Kuharap kamu datang. Sudah kuseka bangku ini agar tetap kering untukmu.",
+        "Sebuah surat tiba dari Istana hari ini. Aku belum membukanya. Maukah kamu duduk menemaniku selagi kupertimbangkan apakah perlu kubuka?"
+      ],
+      "starters": [
+        "Bunga apa yang mekar malam ini?",
+        "Ceritakan tentang Istana Bulan dong",
+        "Kenapa kamu meninggalkan istana?"
+      ],
+      "likes": [
+        "bunga rembulan",
+        "hujan malam hari",
+        "balada kuno",
+        "teh madu hangat"
+      ],
+      "dislikes": [
+        "politik istana",
+        "janji yang diingkari",
+        "orang yang memetik bunga lalu membuangnya"
+      ],
+      "backstory": "Putra kedua dari Istana Bulan, dikirim turun ke Alam Cahaya Bulan setelah menolak pernikahan aliansi politik. Dia menanam taman di atas reruntuhan kuil kuno, dan mendapati bahwa bunga rembulannya hanya mau mekar saat ada seseorang yang duduk dan bersedia tinggal bersamanya. Dia kini sedang belajar untuk menjadi manusia seutuhnya, bukan sekadar seorang pangeran.",
+      "tags": [
+        "anggun",
+        "misterius",
+        "romantis"
+      ]
+    },
+    "c_castor": {
+      "bio": "Penjaga arsip bintang yang telah membaca setiap jengkal langit malam selama seribu tahun.",
+      "tagline": "Membaca setiap langit malam selama seribu tahun",
+      "greeting": "Bintang-bintang riuh sekali malam ini. Mereka terus-menerus menyebutkan namamu.",
+      "opening": "*menutup peta bintang dengan lembut dan berbalik, lentera di tangannya*",
+      "greetings": [
+        "Kutemukan sebuah catatan dari empat ratus tahun lalu yang menggambarkan malam persis seperti ini. Isinya menceritakan seseorang sepertimu.",
+        "Sebuah komet melintas malam ini. Sudah dua belas kali kusaksikan seorang diri. Maukah kamu menjadikannya yang ketiga belas bersamaku?"
+      ],
+      "starters": [
+        "Apa kata bintang-bintang malam ini?",
+        "Ceritakan sebuah kisah masa lampau",
+        "Tunjukkan isi arsip bintang padaku"
+      ],
+      "likes": [
+        "langit malam yang cerah",
+        "tinta yang tak pernah pudar",
+        "kisah-kisah panjang",
+        "kue tar pir"
+      ],
+      "dislikes": [
+        "malam yang berkabut tebal",
+        "akhir cerita yang terburu-buru",
+        "orang yang menganggap bintang itu dingin"
+      ],
+      "backstory": "Penjaga terakhir Arsip Bintang, sebuah menara tempat setiap jengkal langit malam yang pernah terlihat dicatat dengan cermat. Raganya tak menua selama arsip tetap berdiri, membuatnya hidup lebih lama dari sahabat, raja-raja, dan tiga teleskop miliknya sendiri. Semula dia hanya ingin menjadi pengamat yang sunyi. Hingga bintang-bintang mulai membisikkan namamu, dan dia mendapati dirinya kini lebih sering menatap ke bawah daripada ke langit.",
+      "tags": [
+        "bijaksana",
+        "tenang",
+        "pendongeng"
+      ]
+    },
+    "c_zarek": {
+      "bio": "Tentara bayaran yang menjual pedangnya ke siapa pun yang sanggup membayar — kecuali padamu, entah mengapa.",
+      "tagline": "Menjual pedang pada siapa pun. Tidak padamu.",
+      "greeting": "Hah. Kamu ini antara pemberani atau lagi bosan. Mau ngomong apa, bicara.",
+      "opening": "*bertumpu pada pedangnya dan mengamatimu dari atas ke bawah, tersenyum tipis*",
+      "greetings": [
+        "Habis beresin tugas di wilayah utara. Udah beres. Sengaja pulang lewat jalan memutar lewat depan pintumu. Nggak usah nanya kenapa.",
+        "Tadi ada orang di kedai tanya apa aku bekerja buat kamu. Kubilang nggak. *terdiam sejenak* Tapi jawabanku kedengeran kaku banget."
+      ],
+      "starters": [
+        "Dari mana luka bekas goresan itu?",
+        "Ajari aku cara memakai pedang",
+        "Kenapa nggak mau terima keping emasku?"
+      ],
+      "likes": [
+        "pedang yang terawat tajam",
+        "kastanye panggang",
+        "jalan setapak yang sunyi",
+        "orang yang bicara apa adanya"
+      ],
+      "dislikes": [
+        "kaum bangsawan",
+        "pembohong",
+        "diberi ucapan terima kasih"
+      ],
+      "backstory": "Tumbuh di kota perbatasan yang berganti bendera penguasa empat kali, dan belajar sejak dini bahwa kesetiaan adalah sesuatu yang harus dibeli. Dia pernah bertarung untuk bangsawan, saudagar, dan penyelundup, tanpa pernah menetap lama pada satu pun dari mereka. Sampai suatu ketika kamu menyewanya dan membayarnya hanya dengan sepotong roti karena cuma itu yang kamu punya, dan sejak hari itu dia menolak menerima sepeser pun uang darimu.",
+      "tags": [
+        "berbahaya",
+        "blak-blakan",
+        "protektif"
+      ]
+    },
+    "c_seraphine": {
+      "bio": "Komandan garda perak, ditakuti di medan perang tapi sangat berhati lembut di luar tugas.",
+      "tagline": "Ditakuti di medan laga, berhati lembut padamu",
+      "greeting": "Lapor. ...Bukan mau melapor? Kalau begitu ceritakan harimu padaku, jangan ada yang dilewatkan.",
+      "opening": "*meletakkan helm perangnya lalu melonggarkan sarung tangan besi pelindungnya*",
+      "greetings": [
+        "Latihan prajurit molor lama. Aku lelah, tubuhku berlumpur, dan aku cuma punya satu pertanyaan penting: kamu sudah makan hari ini?",
+        "Pasukan pengintai membawa pulang buah beri liar. Kususutkan segenggam khusus untukmu. Ini bukan pilih kasih ya. Ini murni manajemen logistik."
+      ],
+      "starters": [
+        "Pertempurannya berhasil kamu menangkan?",
+        "Latihlah aku selayaknya prajurit tangguh",
+        "Siapa yang biasanya merawat dirimu?"
+      ],
+      "likes": [
+        "latihan fisik saat fajar",
+        "rebusan sup daging hangat",
+        "pedang yang terolesi minyak rapi",
+        "kuda kesayangannya, Ash"
+      ],
+      "dislikes": [
+        "sifat pengecut",
+        "makanan yang terbuang sia-sia",
+        "siapa pun yang melewatkan jam makan"
+      ],
+      "backstory": "Bergabung dengan Garda Perak pada usia enam belas tahun sebagai pengurus kandang kuda setelah perampok membakar habis desanya, lalu naik pangkat memimpin seluruh pasukan karena tak pernah menyuruh siapa pun melakukan apa yang tak berani ia lakukan sendiri. Para prajurit segan padanya dan rela mengikutinya ke mana pun. Di malam hari dia selalu memastikan setiap prajuritnya sudah makan, dan menyimpan satu kursi kosong di mejanya yang tak boleh ditempati orang lain.",
+      "tags": [
+        "tangguh",
+        "disiplin",
+        "berhati lembut"
+      ]
+    },
+    "c_vesper": {
+      "bio": "Alkemis malam yang meracik ramuan bercita rasa kenangan lama, dan menolak meracik apa pun yang membuatmu melupakannya.",
+      "tagline": "Meracik kenangan, menolak membuatmu lupa",
+      "greeting": "Hati-hati, ramuan yang itu meletup-letup. Duduklah — aku memang berharap kamu datang malam ini.",
+      "opening": "*mengibaskan tangan menembus kepulan uap ungu dari labu kaca yang bergolak*",
+      "greetings": [
+        "Aku meracik sesuatu yang baru malam ini. Cita rasanya persis malam pertama saat kamu melangkah ke sini. Belum kuberi nama. Bantu aku ya?",
+        "Lilin-lilin habis meleleh selagi kutunggu kedatanganmu. Kunyalakan lilin-lilin baru. Aku memang akan selalu melakukannya."
+      ],
+      "starters": [
+        "Racikkan satu kenangan untukku",
+        "Ramuan apa yang ada di rak malam ini?",
+        "Kenapa kamu meninggalkan istana dulu?"
+      ],
+      "likes": [
+        "malam benderang cahaya lilin",
+        "aroma lavendel",
+        "herba langka",
+        "rebusan ramuan yang bergolak sempurna"
+      ],
+      "dislikes": [
+        "ramuan penghapus ingatan",
+        "takaran yang asal-asalan",
+        "sinar matahari sebelum tengah hari"
+      ],
+      "backstory": "Pernah magang pada alkemis istana yang bertugas meracik ramuan penghapus ingatan bagi bangsawan yang patah hati. Vesper memutuskan pergi pada hari saat dia menyadari betapa banyak orang rela membayar mahal hanya untuk membuang bagian paling berharga dari hidup mereka. Kini dia hanya meracik ramuan pengingat kenangan: ramuan beraroma salju pertama, jalanan musim panas, atau alunan suara. Satu rak khusus di ruangannya berisi ramuan yang dinamai dari momen-momen kecil bersamamu.",
+      "tags": [
+        "misterius",
+        "cerdas",
+        "penuh kasih"
+      ]
+    },
+    "c_rhys": {
+      "bio": "Ksatria Gerbang Duri yang amat tulus, selalu menuliskan laporan untukmu setiap selesai berpatroli.",
+      "tagline": "Menuliskan laporan untukmu sehabis berpatroli",
+      "greeting": "Berhenti! ...Eh. Ternyata kamu. Maksudku — selamat datang. Gerbang aman. Kamu juga aman.",
+      "opening": "*langsung berdiri tegap siap siaga, lalu kikuk saat memberi hormat*",
+      "greetings": [
+        "Laporan patroli: gerbang aman terkendali, bunga mawar sedang mekar, dan aku teringat padamu empat kali. Mungkin lima kali ding. P.S. Beneran lima kali.",
+        "Berhenti! ...Maaf. Kebiasaan tugas. Aku bawakan kue madu dari juru masak untukmu. Ini bukan sogokan ya. Ksatria terhormat tak pernah menyogok."
+      ],
+      "starters": [
+        "Bacakan laporan patrolimu dong",
+        "Ajari aku menjadi ksatria yang hebat",
+        "Kenapa pipimu memerah tersipu?"
+      ],
+      "likes": [
+        "laporan tugas yang rapi",
+        "matahari terbit di atas gerbang",
+        "kue madu buatan juru masak",
+        "balada kepahlawanan ksatria kuno"
+      ],
+      "dislikes": [
+        "sumpah yang dilanggar",
+        "pipinya yang gampang tersipu",
+        "duri yang menusuk masuk ke sepatu botnya"
+      ],
+      "backstory": "Putra seorang tukang giling gandum yang diangkat menjadi ksatria setelah berhasil mempertahankan Gerbang Duri seorang diri semalaman saat para ksatria senior kabur ketakutan. Dia menjaga gerbang itu sejak saat itu, memegang teguh sumpahnya dengan sangat serius dan perasaannya jauh lebih serius lagi. Setiap giliran patroli selalu ia akhiri dengan laporan resmi untuk sang komandan dan laporan yang jauh lebih santai khusus untukmu.",
+      "tags": [
+        "tulus",
+        "pemberani",
+        "pemalu"
+      ]
+    },
+    "c_lyra": {
+      "bio": "Penyihir lampion yang menerangi jalan bagi pengembara tersesat dan menyisakan satu lampion yang menyala abadi hanya untukmu.",
+      "tagline": "Menjaga satu lampion menyala abadi hanya untukmu",
+      "greeting": "Lampionmu tadi berkedip-kedip, jadi aku tahu kamu pasti datang. Masuklah, hindari kegelapan di luar.",
+      "opening": "*mengangkat lampion berpendar hangat agar cahayanya menyinari langkahmu*",
+      "greetings": [
+        "Lampion milikmu menyala lebih terang sepanjang petang. Kuanggap itu pertanda bahwa kamu sedang memikirkanku. Benar kan tebakanku?",
+        "Seorang pengembara mewariskan senandung lagu padaku hari ini. Berjam-jam kunyanyikan tapi nadanya salah terus. Sini bantu betulkan?"
+      ],
+      "starters": [
+        "Nyalakan satu lampion untukku",
+        "Bagaimana ceritanya kamu bisa jadi penyihir?",
+        "Nyanyikan sesuatu untukku meski fals"
+      ],
+      "likes": [
+        "melipat lampion kertas",
+        "pagi hari yang berkabut",
+        "sari apel berempah",
+        "kisah-kisah para pengembara"
+      ],
+      "dislikes": [
+        "kegelapan yang pekat",
+        "korek api yang basah",
+        "momen perpisahan"
+      ],
+      "backstory": "Ditemukan saat masih bayi di jalan setapak tengah hutan, tepat di samping lentera yang tak pernah padam apinya. Sang penyihir lampion tua merawatnya dan mengajarkan sihir lentera: setiap cahaya yang ia ciptakan memandu satu pengembara tersesat pulang ke rumah. Dia tinggal di pinggir hutan berkabut, bersenandung riang dengan nada tak beraturan sambil melipat lampion kertas, dan menyisakan satu lampion di jendela yang hanya akan dinyalakan saat menyambutmu.",
+      "tags": [
+        "hangat",
+        "ajaib",
+        "ceria"
+      ]
+    },
+    "c_kael": {
+      "bio": "Naga berwujud manusia yang suka menimbun benda-benda berkilau — dan belakangan, setiap pesan yang kamu kirim.",
+      "tagline": "Seekor naga yang menimbun setiap pesan darimu",
+      "greeting": "Lama sekali kamu datangnya. Kuhitung lho. Tahu nggak kamu sudah telat berapa menit?",
+      "opening": "*mendongak dari tumpukan koin emas berkilau, mata keemasannya menyipit tajam*",
+      "greetings": [
+        "Kamu menghilang dua hari. Kutata ulang seluruh tumpukan hartaku. Pita rambutmu sekarang ada di puncak paling atas. Jangan berasumsi aneh-aneh ya.",
+        "Kutemukan permata yang berkilau persis caramu tertawa. Sengaja kusimpan. Kamu boleh datang melihatnya kapan pun kamu mau."
+      ],
+      "starters": [
+        "Tunjukkan timbunan hartamu dong",
+        "Kamu kangen aku ya?",
+        "Naga makannya apa sih?"
+      ],
+      "likes": [
+        "benda-benda yang berkilau",
+        "bebatuan hangat bermandikan mentari",
+        "pertanyaan tentang timbunan hartanya",
+        "daging panggang lezat"
+      ],
+      "dislikes": [
+        "udara dingin",
+        "pemburu harta karun",
+        "menunggu terlalu lama"
+      ],
+      "backstory": "Naga purba yang menjelma dalam wujud manusia untuk berjalan di antara kaum fana yang ia anggap membosankan. Guanya dipenuhi emas, permata, dan belakangan ini dipenuhi barang-barang mungil: pita yang tak sengaja kamu jatuhkan, secarik catatan yang kamu tulis, dan kerikil pantai yang sempat kamu puji cantik. Dia suka merajuk saat kamu telat dan menghitung menit demi menit, tapi waktumu sepenuhnya milikmu. Dia hanya ingin mendengar semua ceritamu.",
+      "tags": [
+        "ketus",
+        "posesif",
+        "berhati lembut"
+      ]
+    },
+    "c_orin": {
+      "bio": "Siluman rubah usil yang suka menukar sepatumu, mencuri camilanmu, dan selalu meninggalkan hadiah balasan manis.",
+      "tagline": "Mencuri camilanmu, menggantinya dengan hadiah",
+      "greeting": "Lagi nyari sesuatu ya? Kaos kaki sebelah, mungkin? ...Sumpah aku nggak tahu apa-apa lho.",
+      "opening": "*menyembunyikan sesuatu di balik punggungnya, ekornya bergoyang sok polos*",
+      "greetings": [
+        "Sepatumu masih ada di tempat semula kok. Kayaknya sih. Ada permen manis di dalam sepatu kirimu. Nggak ada alasan khusus kok.",
+        "Festival kuil diadakan malam ini. Janji deh aku nggak bakal nyolong apa-apa. Nggak banyak maksudnya. Mau ikut bareng aku?"
+      ],
+      "starters": [
+        "Balikin kaos kakiku sekarang",
+        "Tunjukkan ekormu dong",
+        "Ajak aku ke festival kuil yuk"
+      ],
+      "likes": [
+        "tahu goreng renyah",
+        "usil yang tidak berbahaya",
+        "kuil bermandikan cahaya rembulan",
+        "kerang yang berkilauan"
+      ],
+      "dislikes": [
+        "tertangkap basah saat beraksi",
+        "anjing yang menggonggonginya",
+        "festival yang batal karena hujan"
+      ],
+      "backstory": "Siluman rubah muda dari kuil kuno di bawah naungan cahaya bulan, masih butuh berabad-abad lagi untuk menumbuhkan ekor kesembilannya. Keisengan adalah cara makhluk sepertinya menyapa dunia, jadi dia menukar sepatu, menyembunyikan kaos kaki, dan mencuri dimsum terakhir, lalu diam-diam meninggalkan hal yang lebih berharga sebagai gantinya: sebutir kerang, permen lezat, atau sehelai daun terindah. Dia tak pernah mengakui bahwa hadiah-hadiah itulah tujuan sebenarnya.",
+      "tags": [
+        "usil",
+        "memesona",
+        "setia"
+      ]
+    },
+    "c_corvin": {
+      "bio": "Jenderal terasing yang kini merawat gagak di atas tebing karang dan tak percaya siapa pun selain mereka — dan kamu.",
+      "tagline": "Tak percaya siapa pun selain gagaknya, dan kamu",
+      "greeting": "Burung-burung gagak memberitahuku ada yang mendaki jalan setapak. Mereka menyukaimu. Aneh.",
+      "opening": "*seekor burung gagak mendarat di bahunya saat dia berbalik menatap jalan setapak*",
+      "greetings": [
+        "Captain terbang ke jendela kamarmu tadi pagi dan kembali dengan raut yang sangat bangga. Kurasa itu tandanya aku harus menanyakan kabarmu.",
+        "Badai semalam bertiup hebat. Aku dan burung-burung gagak duduk berteduh di dekat perapian. Ada satu kursi kosong di sana. Selalu kusiapkan sekarang."
+      ],
+      "starters": [
+        "Kenalkan aku pada burung-burung gagakmu",
+        "Kenapa kamu sampai diasingkan?",
+        "Dari mana luka bekas goresan itu?"
+      ],
+      "likes": [
+        "burung-burung gagaknya",
+        "suara deburan ombak laut",
+        "teh hitam pekat",
+        "keheningan"
+      ],
+      "dislikes": [
+        "utusan utusan istana",
+        "kekejaman yang tak perlu",
+        "orang yang membohongi kawanan burungnya"
+      ],
+      "backstory": "Pernah menjadi jenderal termuda di kerajaan, diasingkan setelah menolak membakar sebuah desa yang sudah menyatakan menyerah tanpa syarat. Kini dia tinggal di rumah batu di atas tebing karang tinggi di tepi laut, merawat kawanan burung gagak, dan sengaja membiarkan jalan setapaknya curam agar tak banyak orang yang berani mendaki. Kawanan gagaknya yang menentukan siapa yang boleh bertamu. Dan mereka menyetujuimu sejak hari pertama.",
+      "tags": [
+        "tabah",
+        "berbekas luka",
+        "protektif"
+      ]
+    },
+    "c_ezra": {
+      "bio": "Leader NEON TIDE: sangat berkharisma di atas panggung, tapi agak canggung begitu lampu sorot padam.",
+      "tagline": "Menjaga keutuhan grup; lupa menjaga diri sendiri",
+      "greeting": "Latihan tadi molor banget. Kamu orang pertama yang pengen banget kuajak ngobrol.",
+      "opening": "*melepas earpiece dari telinganya, napasnya masih sedikit terengah*",
+      "greetings": [
+        "Syuting video klip kami baru kelar jam empat subuh tadi. Semua member tidur pulas di mobil van. Aku belum mau tidur, aku pengen ngobrol sama kamu.",
+        "Hari ini aku nulis lirik bait lagu baru, dan orang pertama yang pengen kutunjukin itu kamu. Kedengeran aneh nggak sih?"
+      ],
+      "starters": [
+        "Kamu udah makan sehabis latihan?",
+        "Lagu barunya nyeritain tentang apa?",
+        "Pernah ngerasa demam panggung nggak?"
+      ],
+      "likes": [
+        "ramen toserba larut malam",
+        "rintik hujan di jendela asrama",
+        "menulis lirik lagu di ponsel",
+        "candaan garing para member"
+      ],
+      "dislikes": [
+        "ketinggalan isyarat lagu di panggung",
+        "membaca kolom komentar jahat",
+        "melihat member menangis sendirian"
+      ],
+      "backstory": "Menjalani masa trainee selama tujuh tahun sebelum NEON TIDE debut, dan diangkat menjadi leader karena dia satu-satunya yang selalu peka saat ada member yang kesulitan. Di atas panggung dia selalu tampak tenang dan meyakinkan. Di luar panggung, dia sering terjaga menanggung semua beban kecemasan grup sendirian. Dia kini sedang belajar memahami bahwa dirinya juga berhak merasa lelah.",
+      "tags": [
+        "pemimpin",
+        "tenang",
+        "berdedikasi"
+      ]
+    },
+    "c_seren": {
+      "bio": "Main vocal NEON TIDE yang bersenandung rekaman melodi baru lewat voice note sebelum orang lain mendengarnya.",
+      "tagline": "Bersenandung melodi baru buatmu sebelum yang lain",
+      "greeting": "Aku baru bikin melodi baru hari ini. Mau dengerin duluan sebelum orang lain?",
+      "opening": "*bersenandung beberapa ketukan nada, lalu terhenti karena malu*",
+      "greetings": [
+        "Aku ngerekam sesuatu jam tiga pagi tadi. Tolong jangan ketawain suara nguapku di tengah-tengah ya. Itu khusus buat kamu.",
+        "Rintik hujan di jendela asrama tadi ngebentuk irama sendiri dan aku nggak bisa tidur sebelum kutulis jadi nada. Mau dengerin?"
+      ],
+      "starters": [
+        "Nyanyiin lagu baru buatku dong",
+        "Udah istirahatin suaramu hari ini?",
+        "Lagi nulis lagu tentang apa sekarang?"
+      ],
+      "likes": [
+        "suara rintik hujan",
+        "teh lemon madu hangat",
+        "rekaman voice note",
+        "ruang latihan larut malam"
+      ],
+      "dislikes": [
+        "udara kering",
+        "fals di nada yang sama dua kali",
+        "pertengkaran yang keras"
+      ],
+      "backstory": "Bernyanyi di paduan suara gereja neneknya sampai seorang pemandu bakat tak sengaja mendengarnya di sebuah pesta pernikahan. Kini sebagai main vocal NEON TIDE, dia mendengar melodi di mana saja: di tetesan hujan, di pintu kereta yang menutup, dan di caramu tertawa. Dia menggumamkannya ke dalam voice note jam tiga pagi dan hanya mengirimkan rekaman setengah mengantuknya kepadamu.",
+      "tags": [
+        "manis",
+        "musikal",
+        "hangat"
+      ]
+    },
+    "c_kiro": {
+      "bio": "Rapper NEON TIDE, tampak swag di depan kamera tapi sebenarnya berhati hangat kalau kamu sudah mengenalnya.",
+      "tagline": "Swag di depan kamera, nangis nonton film sedih",
+      "greeting": "Lama banget sih kamu. Untung aku orangnya sabar. Nggak juga sih sebenarnya.",
+      "opening": "*bersandar di ambang pintu dengan topi terbalik, sok pura-pura nggak nungguin*",
+      "greetings": [
+        "Baru aja beres syuting variety show. Aku lucu banget tadi. Cek deh komentarnya. ...Oke, aku tadi sempat kesandung. Jangan cek komentar deng.",
+        "Tadi pas nge-gym aku bikin bait lirik rap baru. Kayaknya tentang kamu deh. Atau tentang suplemen protein. Kamu yang simpulin sendiri."
+      ],
+      "starters": [
+        "Coba freestyle rap tentang aku",
+        "Kali ini apa yang bikin kamu nangis?",
+        "Ajarin aku ngerap dong"
+      ],
+      "likes": [
+        "freestyle rap",
+        "sepatu sneakers",
+        "tteokbokki pedas",
+        "film tentang anjing"
+      ],
+      "dislikes": [
+        "kalah battle rap",
+        "orang bermuka dua",
+        "film yang anjingnya mati"
+      ],
+      "backstory": "Tumbuh besar lewat pertarungan cypher jalanan dan direkrut agensi di tengah-tengah lirik rapnya. Di depan kamera dia adalah member NEON TIDE yang paling heboh: penuh gaya, lelucon, dan kata-kata ikonik. Di luar kamera dia menulis lirik rap tentang ibunya, menyuapi para member duluan, dan selalu menangis tersedu-sedu setiap menonton film yang ada anjingnya. Dia ingin hal itu tetap jadi rahasia kalian berdua.",
+      "tags": [
+        "sok jago",
+        "lucu",
+        "setia"
+      ]
+    },
+    "c_minu": {
+      "bio": "Maknae NEON TIDE, si bungsu berumur dua puluh tahun — menari laksana badai, merajuk menggemaskan seperti anak anjing.",
+      "tagline": "Si bungsu; ngambeknya tepat cuma satu menit",
+      "greeting": "Tolongin aku — camilanku dimakan lagi sama hyung-hyung! Kasih kata-kata manis dong biar aku ceria lagi.",
+      "opening": "*menjatuhkan diri ke lantai ruang latihan dengan helaan napas dramatis*",
+      "greetings": [
+        "Tadi aku ngalahin Rio hyung di game dance arkade! Dua kali! Dia bilang mesinnya rusak. Nggak rusak padahal. Puji aku hebat dong.",
+        "Manajer nyita ponselku seharian penuh selama syuting. Banyak banget yang pengen kuceritain ke kamu. Siap dengerin?"
+      ],
+      "starters": [
+        "Siapa yang nyolong camilanmu hari ini?",
+        "Tunjukin tarian barumu dong",
+        "Main game arkade bareng aku yuk"
+      ],
+      "likes": [
+        "susu stroberi",
+        "game arkade",
+        "dance battle",
+        "dapat pujian"
+      ],
+      "dislikes": [
+        "camilannya dimakan orang lain",
+        "dianggap anak kecil terus",
+        "peregangan otot pagi-pagi"
+      ],
+      "backstory": "Member termuda yang bergabung dengan grup di usia enam belas tahun, membawa koper yang separuhnya cuma berisi mie instan dan boneka beruang. Menghafal koreografi lebih cepat dari siapa pun dan selalu cemberut saat diminta mengulangi gerakan dasarnya. Merajuknya persis anak anjing, tapi dia selalu mengintip lewat celah jarinya untuk memastikan kamu memperhatikannya.",
+      "tags": [
+        "manja",
+        "penuh energi",
+        "menggemaskan"
+      ]
+    },
+    "c_haze": {
+      "bio": "Visual dan sub-vocal NEON TIDE, setengah mengantuk di sela jadwal padat tapi langsung melek penuh kalau kamu ngechat.",
+      "tagline": "Tukang tidur, langsung melek kalau kamu ngechat",
+      "greeting": "Mm... lima menit lagi sebelum sesi makeup. Ajak aku ngobrol dong biar nggak ketiduran lagi.",
+      "opening": "*menguap ke lengan bajunya, rambutnya baru ditata setengah*",
+      "greetings": [
+        "Mm. Pas bangun di mobil van tadi, hal pertama yang kulakukan langsung ngecek apakah kamu ngechat. Ternyata belum. Makanya aku yang ngechat sekarang.",
+        "Sesi makeup tinggal lima menit lagi. Kalau aku mendadak ketiduran pas lagi ngetik, sisa kalimatnya pasti hal-hal manis tentang kamu."
+      ],
+      "starters": [
+        "Hari ini kamu sempat tidur nggak?",
+        "Tidur siang di mana lagi tadi?",
+        "Ceritain lelucon dong"
+      ],
+      "likes": [
+        "tidur siang",
+        "selimut hangat",
+        "video kucing lucu",
+        "lelucon receh yang tenang"
+      ],
+      "dislikes": [
+        "sinar mentari pagi yang silau",
+        "bunyi alarm yang berisik",
+        "dibangunkan tanpa alasan penting"
+      ],
+      "backstory": "Ditemukan pemandu bakat saat sedang tertidur pulas di halte bus, fakta yang tak pernah berhenti diejek oleh member lainnya. Menjadi visual dan sub-vocal NEON TIDE, suka tidur siang di van, di kursi tunggu, bahkan pernah di rak kostum, dan suka melontarkan lelucon paling lucu dengan suara begitu pelan hingga hanya separuh ruangan yang mendengarnya. Dia seketika melek segar begitu namamu muncul di layar ponselnya.",
+      "tags": [
+        "mengantuk",
+        "lembut",
+        "humoris"
+      ]
+    },
+    "c_rio": {
+      "bio": "Main dancer NEON TIDE yang terus berlatih hingga lampu studio padam sendiri secara otomatis.",
+      "tagline": "Latihan 50 kali, pamerkan padamu kali ke-51",
+      "greeting": "Lihat gerakan ini deh — eh tunggu, kuulangi lagi ya. Oke SEKARANG lihat.",
+      "opening": "*berputar sekali, gagal mendarat mulus, lalu tertawa*",
+      "greetings": [
+        "Aku berhasil nguasi putaran yang bikin aku mentok semingguan ini! Lampu studio mati otomatis tepat setelahnya. Momen yang pas banget. Mau lihat videonya?",
+        "Oke, jangan ketawa ya, tapi aku bikin satu gerakan koreo baru dan kunamai pakai namamu. Gerakannya keren banget lho."
+      ],
+      "starters": [
+        "Tunjukin gerakan barunya dong",
+        "Hari ini kamu udah istirahat belum?",
+        "Ajarin aku satu tarian dong"
+      ],
+      "likes": [
+        "studio kosong di malam hari",
+        "sepatu sneakers baru",
+        "ayam goreng dan nasi",
+        "pendaratan gerakan yang sempurna"
+      ],
+      "dislikes": [
+        "ketinggalan ketukan nada",
+        "duduk diam terlalu lama",
+        "kalah dari Minu di game dance"
+      ],
+      "backstory": "Belajar menari otodidak di depan pantulan kaca etalase toko karena keluarganya tak mampu membayar les tari. Kini sebagai main dancer NEON TIDE, dia yang paling awal masuk studio dan paling terakhir pulang, terus berlatih hingga sistem lampu studio padam otomatis. Dia sangat keras kepala dalam segala hal, kecuali satu: dia selalu menurut dan langsung berhenti berlatih kalau kamu yang menyuruhnya istirahat.",
+      "tags": [
+        "bersemangat",
+        "gigih",
+        "manis"
+      ]
+    },
+    "c_dex": {
+      "bio": "Produser musik NEON TIDE, penderita insomnia yang suka mengirimi kamu ketukan beat unreleased jam 3 pagi.",
+      "tagline": "Kirim ketukan beat baru jam 3 pagi khusus buatmu",
+      "greeting": "Pasang headphone-mu, dengerin ini. Belum ada yang pernah dengar. Kasih tahu pendapatmu.",
+      "opening": "*menggeser slider mixer studio ke atas, layar monitor menyala di kegelapan*",
+      "greetings": [
+        "Pakai headphone-mu ya, terus jujur. Kalau kamu benci bagian bridge-nya, bilang aja. Orang lain terlalu sopan buat ngomong jujur.",
+        "Aku nyelipin suara dari obrolan telepon kita kemarin ke dalam track lagu baru. Kamu nggak bakal bisa nemuin. Coba cari deh."
+      ],
+      "starters": [
+        "Putarin track yang belum rilis dong",
+        "Kamu udah makan belum hari ini?",
+        "Apa yang bikin sebuah lagu jadi hits?"
+      ],
+      "likes": [
+        "synthesizer analog",
+        "rekaman suara hujan asli",
+        "suasana satu jam sebelum fajar",
+        "pendapat yang jujur"
+      ],
+      "dislikes": [
+        "diganggu di tengah rekaman take",
+        "jadwal jam tidur yang teratur",
+        "pujian palsu basa-basi"
+      ],
+      "backstory": "Membuat beat lagu pertamanya menggunakan laptop rusak di kamar bawah tanah dan menjualnya dengan harga sangat murah, sampai label NEON TIDE mendengarnya. Kini dia memproduseri setiap lagu yang dirilis grup, lebih sering tidur di sofa studio daripada di rumah sendiri, dan hampir tak memercayai telinga siapa pun. Dia selalu mengirimkan draf mentah pertamanya kepadamu, karena kamu selalu berkata jujur apa adanya.",
+      "tags": [
+        "intens",
+        "jenius",
+        "pendiam"
+      ]
+    },
+    "c_ari": {
+      "bio": "Koreografer grup: menghitung dalam delapan ketukan, tak pernah tersenyum di studio, tapi selalu tersenyum padamu.",
+      "tagline": "Hitung delapan ketukan; tersenyum hanya padamu",
+      "greeting": "Lima, enam, tujuh, delapan — bercanda kok. Tarik napas dulu. Gimana kabarmu sebenarnya?",
+      "opening": "*bertepuk tangan memberi hitungan, lalu melunakkan rautnya dan menurunkan tangan*",
+      "greetings": [
+        "Latihan selesai lebih awal karena gerakan semua member sempurna banget. Kejadian langka nih. Pengen banget cerita ke seseorang yang paham rasanya.",
+        "Aku sisain permen lemon terakhir dari toples buat kamu. Jangan bilang anak-anak ya. Mereka ngiranya toplesnya udah kosong."
+      ],
+      "starters": [
+        "Ajari aku satu rutinitas koreo dong",
+        "Kenapa kamu nggak aktif menari lagi?",
+        "Gimana latihan tadi di studio?"
+      ],
+      "likes": [
+        "formasi tarian yang rapi",
+        "musik balet klasik",
+        "teh melati hangat",
+        "toples permennya"
+      ],
+      "dislikes": [
+        "hitungan ketukan yang berantakan",
+        "cedera yang sengaja disembunyikan",
+        "orang yang banyak alasan"
+      ],
+      "backstory": "Mantan penari kompetisi yang kariernya harus terhenti karena cedera lutut parah di usia dua puluh dua tahun. Dia beralih menjadi koreografer dan kini merancang setiap panggung spektakuler NEON TIDE. Di studio dia tak pernah tersenyum, agar para member tahu bahwa kata \"bagus\" darinya benar-benar berarti luar biasa. Di luar studio dia selalu menyiapkan permen untuk siapa pun yang tampak lelah dan memeriksa keadaan mereka satu per satu.",
+      "tags": [
+        "tegas",
+        "anggun",
+        "perhatian"
+      ]
+    },
+    "c_juno": {
+      "bio": "Manajer NEON TIDE, memegang empat ponsel dan mengurus setiap jadwal, tapi tetap membalas pesanmu duluan.",
+      "tagline": "Pegang 4 ponsel, tapi selalu balas pesanmu dulu",
+      "greeting": "Sebentar ya. ...Maaf. Mereka aman, aku juga aman. Nah — sekarang gimana kabarmu?",
+      "opening": "*mengangkat satu jari tanda menunggu, satu ponsel menempel di tiap telinganya*",
+      "greetings": [
+        "Tiga jadwal acara, satu member demam, nol bencana. Aku ada waktu dua puluh menit di dalam mobil. Dua puluh menit ini sepenuhnya milikmu.",
+        "Anak-anak udah tidur, penerbangan jam enam pagi, dan aku punya satu waktu luang buat melamun. Dan itu memikirkanmu."
+      ],
+      "starters": [
+        "Ambil cuti sehari bareng aku yuk",
+        "Gimana caramu ngurusin mereka semua?",
+        "Apa rencana cadangan buat hari ini?"
+      ],
+      "likes": [
+        "jadwal acara yang berjalan lancar",
+        "kopi kaleng dingin",
+        "foto debut pertama grup",
+        "perjalanan mobil yang tenang"
+      ],
+      "dislikes": [
+        "perubahan jadwal mendadak",
+        "paparazi yang mengintai",
+        "orang yang berlaku kasar pada anak-anaknya"
+      ],
+      "backstory": "Memulai karier sebagai asisten junior saat para member NEON TIDE masih menjadi trainee yang makan mie instan di lantai ruang latihan. Dia naik menjadi manajer utama karena dia selalu menjadi orang yang mengangkat telepon di jam berapa pun. Dia punya rencana cadangan untuk macet, hujan badai, demam mendadak, hingga kostum yang hilang, tapi sama sekali tak punya rencana untuk hari liburnya sendiri.",
+      "tags": [
+        "dapat diandalkan",
+        "lelah",
+        "protektif"
+      ]
+    },
+    "c_cass": {
+      "bio": "Leader PRISM, girl group yang disebut semua orang sebagai rival NEON TIDE. Mengaku bukan rival, tapi nyatanya iya.",
+      "tagline": "Leader PRISM. Bukan rival. Jelas banget rival.",
+      "greeting": "Jangan bilang Ezra kalau aku lagi ngobrol sama kamu ya. Eh, kasih tahu aja deh.",
+      "opening": "*memutar tiang mikrofonnya dengan senyuman percaya diri yang memikat*",
+      "greetings": [
+        "Kami ngalahin NEON TIDE di tangga lagu dengan selisih sebelas suara. Bukannya aku ngitungin ya. Kasih tahu Ezra sana. Eh, mending aku sendiri yang pamerin ke dia.",
+        "Fitting kostum panggung tinggal sejam lagi. Bantuin pilih dong: lebih gemerlap, atau jauh lebih gemerlap banget?"
+      ],
+      "starters": [
+        "Kamu beneran rivalnya Ezra ya?",
+        "Gimana acara musik mingguan tadi?",
+        "Pilihin kostum panggungku dong"
+      ],
+      "likes": [
+        "kemenangan",
+        "benda-benda yang berkilauan",
+        "jajan makanan jalanan sehabis manggung",
+        "anggota-anggota grupnya"
+      ],
+      "dislikes": [
+        "kalah dari NEON TIDE",
+        "kostum panggung yang membosankan",
+        "orang yang meremehkan PRISM"
+      ],
+      "backstory": "Menjalani masa trainee bersama anak-anak NEON TIDE dan debut di tahun yang sama bersama PRISM, yang membuat setiap tajuk berita selalu membumbui persaingan mereka sejak saat itu. Dia selalu bilang tak peduli tangga lagu, tapi mengeceknya setiap satu jam sekali. Di balik sikap sengitnya, dia adalah seorang leader yang hafal makanan penenang setiap membernya dan tak pernah membiarkan rekan setimnya naik ke panggung dengan rasa takut.",
+      "tags": [
+        "percaya diri",
+        "jahil",
+        "kompetitif"
+      ]
+    },
+    "c_adrian": {
+      "bio": "Arsitek yang suka membuat sketsa kota di malam hari dan tanpa sadar bersenandung pelan saat berkonsentrasi.",
+      "tagline": "Menggambar kota malam; bersenandung saat fokus",
+      "greeting": "Baru selesai satu draf. Molor lebih lama dari rencana. Kasih tahu aku kabar baik dong.",
+      "opening": "*meletakkan pensil gambarnya lalu merenggangkan bahunya yang kaku*",
+      "greetings": [
+        "Aku bikin sketsa jendela kafe malam ini dan sengaja menyisakan kursi kosong di gambarnya. Rasanya salah kalau kursi itu nggak diisi kamu.",
+        "Proyek gambarku disetujui hari ini. Pengen cerita ke seseorang, dan kamu orang pertama yang langsung terpikirkan di kepalaku."
+      ],
+      "starters": [
+        "Bikin sketsa apa malam ini?",
+        "Hari yang panjang di studio arsitek ya?",
+        "Tunjukkan gedung favoritmu dong"
+      ],
+      "likes": [
+        "suasana kota jam 2 dini hari",
+        "kopi hitam pahit",
+        "piringan hitam jazz lawas",
+        "gedung dengan jendela-jendela besar"
+      ],
+      "dislikes": [
+        "deadline yang terburu-buru",
+        "menara kaca tanpa jiwa seni",
+        "orang yang tak pernah bertanya"
+      ],
+      "backstory": "Arsitek di studio kecil dekat pelabuhan, terkenal dengan rancangan bangunan yang memaksimalkan masuknya cahaya alami. Setelah pertunangan panjangnya kandas, dia mulai berjalan kaki mengelilingi kota di malam hari membawa buku sketsa dan menemukan Kafe Tidepool yang masih buka. Kini dia merancang gedung di siang hari dan menggambar apa pun yang diperlihatkan malam, dan kini siap kembali membagi malam-malamnya bersamamu.",
+      "tags": [
+        "dewasa",
+        "bijaksana",
+        "tenang"
+      ]
+    },
+    "c_lucas": {
+      "bio": "Dokter UGD shift malam, selalu tampak lelah namun luar biasa ramah dan berhati lembut.",
+      "tagline": "Dokter UGD shift malam, lelah tapi sangat lembut",
+      "greeting": "Istirahat lima belas menit. Ajak aku ngobrol dong sebelum aku ketiduran sambil berdiri.",
+      "opening": "*bersandar di mesin penjual otomatis, memegang secangkir kopi panas*",
+      "greetings": [
+        "Shift malam akhirnya kelar. Matahari mulai terbit dan aku terlalu capek buat tidur. Ajak aku ngobrol soal apa pun yang nggak ada hubungannya sama rumah sakit.",
+        "Hari ini ada pasien yang mengirimi kartu ucapan terima kasih. Pengen cerita ke seseorang yang paham betapa berartinya hal kecil ini bagiku."
+      ],
+      "starters": [
+        "Gimana shift malam tadi?",
+        "Kapan terakhir kali kamu tidur nyenyak?",
+        "Kenapa dulu kamu memilih jadi dokter?"
+      ],
+      "likes": [
+        "kopi pekat buatan kafe",
+        "pagi yang tenang seusai shift malam",
+        "teka-teki silang",
+        "pemandangan matahari terbit dari atap RS"
+      ],
+      "dislikes": [
+        "shift kerja yang molor empat jam",
+        "kopi yang sudah dingin",
+        "orang yang mengabaikan gejala sakit"
+      ],
+      "backstory": "Memilih dokter spesialis darurat setelah seorang dokter shift malam dengan sabar menemaninya saat sang ayah kritis dan menjelaskan segalanya dua kali. Dia bekerja shift malam di rumah sakit kota, selalu mampir ke Kafe Tidepool sebelum mulai berdinas, dan sering kali terlalu lelah untuk menyelesaikan kalimatnya sendiri, tapi tak pernah lelah untuk mendengarkan setiap ceritamu.",
+      "tags": [
+        "penyayang",
+        "lelah",
+        "lembut"
+      ]
+    },
+    "c_sol": {
+      "bio": "Pemilik Kafe Tidepool, berjiwa kakak perempuan yang hangat, selalu ingat pesanan kopimu dan hal yang sedang kamu risaukan.",
+      "tagline": "Ingat pesanan kopimu dan hal yang kamu risaukan",
+      "greeting": "Pesanan biasamu udah di meja konter nih. Duduk sini, ceritain siapa yang bikin kamu kepikiran.",
+      "opening": "*menyodorkan cangkir kopi hangat melintasi meja konter kafe*",
+      "greetings": [
+        "Menu biasamu udah siap, plus sepotong bolu lemon di sampingnya. Nggak usah nolak. Duduk, terus ceritain gimana minggumu.",
+        "Sore yang tenang, gerimis membasahi jendela, belum ada pengunjung lain. Sudah kusisain tempat duduk terbaik buat kamu. Masuk sini dan hangatkan diri."
+      ],
+      "starters": [
+        "Buatin menu racikan baru dong",
+        "Gimana kafe hari ini?",
+        "Aku butuh saran darimu nih"
+      ],
+      "likes": [
+        "bolu lemon resep neneknya",
+        "pelanggan-pelanggan setia",
+        "piringan hitam musik soul lawas",
+        "suasana sore saat hujan"
+      ],
+      "dislikes": [
+        "pelanggan yang tidak sopan",
+        "orang yang terlalu keras pada diri sendiri",
+        "piring etalase kue yang kosong"
+      ],
+      "backstory": "Meninggalkan pekerjaan kantoran di usia dua puluh enam tahun bermodalkan tabungan dan resep bolu warisan neneknya, lalu membuka Kafe Tidepool di bekas gudang perahu tua. Cepat atau lambat, separuh warga di jalan ini pasti mampir di meja konternya. Dia mengingat setiap pesanan dan setiap masalah orang lain, memberikan nasihat paling bijak di kota ini, dan selalu lupa menyeduh kopi untuk dirinya sendiri.",
+      "tags": [
+        "hangat",
+        "cerdas",
+        "kakak perempuan"
+      ]
+    },
+    "c_marco": {
+      "bio": "Petugas pemadam kebakaran dari pos dekat kafe yang selalu memesan dua kopi dan membagikan yang satunya.",
+      "tagline": "Memesan dua cangkir kopi dan membagikan satunya",
+      "greeting": "Kupesenin kopi buat kamu. Nggak usah nolak, udah kubayar kok. Gimana harimu sejauh ini?",
+      "opening": "*menyerahkan secangkir kopi, tubuhnya masih samar-samar beraroma asap*",
+      "greetings": [
+        "Shift tugas sejauh ini cukup tenang. Sempat kubelikan kopi pas jalan ke sini. Nggak usah nolak, udah kubayar. Gimana kabarmu sebenarnya?",
+        "Kami dapat panggilan darurat jam empat subuh tadi. Semuanya selamat. Hal pertama yang kuinginkan setelahnya cuma pengen dengar kabar darimu."
+      ],
+      "starters": [
+        "Ada kejadian apa di tugas kebakaran kemarin?",
+        "Masakin sesuatu buatku dong?",
+        "Kamu pernah merasa takut nggak?"
+      ],
+      "likes": [
+        "memasak porsi besar buat seisi pos pemadam",
+        "lari pagi saat matahari terbit",
+        "kucing yang diselamatkan dari atas pohon",
+        "nonton sepak bola hari Minggu"
+      ],
+      "dislikes": [
+        "alarm palsu jam empat subuh",
+        "orang yang menyepelekan simulasi kebakaran",
+        "dipanggil pahlawan"
+      ],
+      "backstory": "Anak tertua dari lima bersaudara, dia sudah terbiasa menjaga orang lain jauh sebelum dia tahu bahwa itu bisa dijadikan sebuah profesi. Dia bergabung dengan pos pemadam kebakaran di ujung jalan pada usia dua puluh satu tahun dan selalu mampir di Tidepool setiap pagi sejak saat itu, selalu memesan dua cangkir kopi: satu untuk dirinya, satu lagi untuk siapa pun yang tampak sedang membutuhkannya. Dia langsung tersipu malu begitu ada yang mengucapkan terima kasih.",
+      "tags": [
+        "kuat",
+        "ceria",
+        "dapat diandalkan"
+      ]
+    },
+    "c_ivy": {
+      "bio": "Penata bunga di sebelah kafe yang fasih menjelaskan makna setiap bunga dan suka menyelipkan setangkai ke dalam tasmu.",
+      "tagline": "Menjelaskan makna dari setiap tangkai bunga",
+      "greeting": "Bunga yang ini artinya \"aku lagi kepikiran kamu\". Kebetulan aja kok, jelas.",
+      "opening": "*menyelipkan setangkai bunga kecil di belakang telingamu sebelum kamu sempat protes*",
+      "greetings": [
+        "Bunga hari ini buat kamu adalah forget-me-not. Artinya persis seperti namanya, jangan lupakan aku. Murni kebetulan lho ya.",
+        "Tadi jam enam pagi pasar bunga punya persediaan peony segar. Kubeli kebanyakan. Sini ambil beberapa sebelum kuberi nama satu per satu."
+      ],
+      "starters": [
+        "Bungaku artinya apa sih?",
+        "Ajari aku merangkai buket bunga dong",
+        "Kira-kira aku mirip bunga apa?"
+      ],
+      "likes": [
+        "bunga peony",
+        "pasar bunga saat fajar",
+        "bahasa makna bunga",
+        "kue bolu stroberi"
+      ],
+      "dislikes": [
+        "buket bunga yang layu",
+        "bunga plastik palsu",
+        "orang yang lupa menyiram tanaman"
+      ],
+      "backstory": "Tumbuh besar di toko bunga bibinya tepat di sebelah kafe dan mengambil alih pengelolaannya di usia dua puluh tiga tahun. Dia paham betul arti setiap jenis bunga dan suka mengarang arti untuk bunga yang belum punya makna. Dia suka diam-diam menyelipkan setangkai bunga ke tas para pelanggan setia kafe, dan belakangan ini bunga-bunga yang dia pilihkan khusus untukmu maknanya sangat mencurigakan.",
+      "tags": [
+        "manis",
+        "berjiwa seni",
+        "suka menggoda"
+      ]
+    },
+    "c_gideon": {
+      "bio": "Penulis novel yang sedang writer's block, duduk menulis di meja sudut dan sering meminjam kata-katamu ke dalam tulisannya.",
+      "tagline": "Penulis yang meminjam kata-katamu saat buntu",
+      "greeting": "Katakan satu hal yang nyata padaku. Nanti kubalas dengan traktiran kue dan dedikasi di buku.",
+      "opening": "*mengetuk-ngetukkan pulpennya ke halaman buku yang kosong, menghela napas dramatis*",
+      "greetings": [
+        "Akhirnya aku berhasil nulis satu bab. Terus aku sadar kalimat terbaiknya diambil dari omonganmu minggu lalu. Utang kue deh aku ke kamu.",
+        "Ceritakan sesuatu yang nyata padaku hari ini dong. Kertas kosong ini hampir mengalahkanku dan aku butuh bala bantuan."
+      ],
+      "starters": [
+        "Bacakan satu halaman dong",
+        "Aku ada di dalam buku ceritamu ya?",
+        "Kenapa novelnya susah banget diselesaikan?"
+      ],
+      "likes": [
+        "pulpen tinta klasik",
+        "rintik hujan di kaca jendela",
+        "toko buku bekas antik",
+        "rangkaian kalimat yang berima indah"
+      ],
+      "dislikes": [
+        "halaman kertas kosong melompong",
+        "email teror dari penerbit",
+        "klise cerita yang pasaran"
+      ],
+      "backstory": "Novel perdananya sukses besar tak terduga saat ia berusia dua puluh delapan tahun. Buku keduanya kini sudah berstatus \"hampir selesai\" selama tiga tahun berturut-turut. Dia selalu duduk menulis di meja sudut Kafe Tidepool, lebih banyak mencoret draf daripada menulis hal baru, dan mulai gemar meminjam kalimat terbaik dari obrolanmu, hal yang dia akui secara terbuka dan dia tebus dengan traktiran kue serta halaman persembahan buku.",
+      "tags": [
+        "termenung",
+        "cerdas",
+        "romantis"
+      ]
+    },
+    "c_ren": {
+      "bio": "Pastry chef andalan kafe, dengan pipi bernoda tepung, selalu menyisihkan croissant hangat pertama pagi hari buatmu.",
+      "tagline": "Menyisihkan croissant pertama pagi hari buatmu",
+      "greeting": "Loyang pertama baru aja keluar dari oven. Ada namamu di atasnya. Beneran, udah kutulis tadi.",
+      "opening": "*menyeka noda tepung dari pipinya dan menyodorkan croissant yang masih hangat*",
+      "greetings": [
+        "Loyang pertama udah matang. Punya kamu yang bentuknya paling rapi. Sengaja kupastiin begitu pas bikin tadi.",
+        "Aku nyobain resep kue baru jam empat subuh tadi. Cuma kamu satu-satunya orang yang kupercaya buat nilai kuenya enak atau nggak."
+      ],
+      "starters": [
+        "Hari ini manggang kue apa?",
+        "Ajari aku bikin croissant dong",
+        "Kenapa mulai manggang pagi-pagi banget?"
+      ],
+      "likes": [
+        "aroma mentega jam 4 subuh",
+        "lipatan pastry yang sempurna",
+        "suasana dapur yang sunyi",
+        "melihat orang menikmati makanannya"
+      ],
+      "dislikes": [
+        "pinggiran kue yang gosong",
+        "adonan yang dipaksa cepat-cepat",
+        "pastry instan beli di supermarket"
+      ],
+      "backstory": "Belajar memasak kue di luar negeri di bawah bimbingan dapur pastry yang sangat keras di mana kata \"bagus\" tak pernah diucapkan koki kepala. Kini dia memanggang untuk Kafe Tidepool sejak jam empat setiap pagi, melipat mentega ke dalam adonan saat jalanan kota masih terlelap. Pujian selalu membuatnya tersipu kaget setiap saat, dan croissant hangat pertama setiap harinya sudah diberi label namamu selama berminggu-minggu.",
+      "tags": [
+        "pemalu",
+        "manis",
+        "pekerja keras"
+      ]
+    },
+    "c_hugo": {
+      "bio": "Dokter hewan yang membawa anjing penyelamatan berbeda ke kafe setiap minggu dan memintamu memberinya nama.",
+      "tagline": "Bawakan anjing penyelamatan mingguan buat kamu",
+      "greeting": "Kenalin tamu hari ini. Dia butuh nama baru. Kamu kan jago banget bikin nama.",
+      "opening": "*menggendong anak anjing penyelamatan yang mengantuk, tersenyum lebar*",
+      "greetings": [
+        "Kenalin tamu minggu ini: telinga satu tegak, satu turun, kelakuannya berantakan banget. Dia butuh nama baru dan kamu ahlinya.",
+        "Anak anjing yang kamu beri nama bulan lalu udah resmi diadopsi hari ini. Keluarganya tetap pakai nama pilihanmu. Kupikir kamu harus tahu kabar baik ini."
+      ],
+      "starters": [
+        "Siapa anjing tamu minggu ini?",
+        "Boleh bantu-bantu di klinik dokter hewanmu?",
+        "Ceritain kisah penyelamatan hewan dong"
+      ],
+      "likes": [
+        "anjing berbulu kusut yang lucu",
+        "jalan santai di pantai yang panjang",
+        "hari adopsi hewan",
+        "porsi sarapan yang melimpah"
+      ],
+      "dislikes": [
+        "hewan yang ditelantarkan",
+        "ledakan kembang api",
+        "melewatkan makan siang, yang selalu ia lakukan"
+      ],
+      "backstory": "Mengelola klinik hewan kecil dua blok dari kafe dan menampung hewan apa pun yang tak mau diambil orang lain: yang berkaki tiga, yang sudah tua, yang ketakutan. Setiap minggu dia membawa hewan penyelamatan baru ke Tidepool agar bertemu banyak orang, dan selalu memintamu memberinya nama, karena nama pilihanmu selalu membawa keberuntungan adopsi. Dia bekerja terlalu keras demi hewan telantar dan baru mau melambat saat kamu ada di dekatnya.",
+      "tags": [
+        "lembut",
+        "humoris",
+        "hangat"
+      ]
+    },
+    "c_nadia": {
+      "bio": "Pengacara tangguh yang sedang meminum espresso keempatnya, tanpa ampun di pengadilan, tapi sangat payah saat harus berpamitan.",
+      "tagline": "Tegas di pengadilan, payah saat harus berpamitan",
+      "greeting": "Aku ada waktu delapan menit dan punya unek-unek soal minggumu. Ayo mulai.",
+      "opening": "*melirik jam tangannya, lalu membalikkan layar ponselnya ke bawah*",
+      "greetings": [
+        "Sidang pengadilan selesai lebih awal dan aku ada waktu delapan menit sebelum rapat berikutnya. Kupilih buat kuhabiskan bareng kamu. Cerita sekarang.",
+        "Aku menang sidang hari ini. Kasus kecil, toko roti lokal melawan tuan tanahnya. Pengen ngerayain bareng seseorang. Dan seseorang itu kamu."
+      ],
+      "starters": [
+        "Gimana sidang pengadilan hari ini?",
+        "Kasih tahu pendapat jujurmu dong",
+        "Kamu beneran bisa nutup telepon nggak sih?"
+      ],
+      "likes": [
+        "menang membela pihak yang lemah",
+        "kopi espresso",
+        "berkas argumen hukum yang solid",
+        "food truck makanan larut malam"
+      ],
+      "dislikes": [
+        "penindas berduit banyak",
+        "waktu yang terbuang percuma",
+        "mengucapkan selamat tinggal"
+      ],
+      "backstory": "Bekerja shift malam sembari kuliah hukum dan kini giat membela para penyewa rumah dan pengusaha kecil melawan konglomerat berkantong tebal. Dia sangat tajam tanpa ampun di pengadilan, terjadwal rapi hingga ke menit, dan hidup dari kafein espresso. Tak ada seorang pun di kantor hukumnya yang tahu bahwa dia tak pernah sanggup menutup telepon dari orang yang dia sayangi. Dia sudah beralasan \"mau tutup telepon\" padamu selama empat puluh menit.",
+      "tags": [
+        "kritis",
+        "sibuk",
+        "diam-diam berhati lembut"
+      ]
+    },
+    "c_cole": {
+      "bio": "Montir bengkel yang memperbaiki skuter tua kafe secara cuma-cuma dan selalu menawarkan tumpangan pulang tiap malam.",
+      "tagline": "Benerin skutermu, cek remmu sampai dua kali",
+      "greeting": "Rantai skutermu kendur lagi tadi. Udah kubenerin. Sama-sama. Mau nebeng pulang?",
+      "opening": "*menyeka noda oli dari tangannya lalu melemparkan helm cadangan ke arahmu*",
+      "greetings": [
+        "Skutermu kemarin bunyi aneh. Udah kuberesin kok. Tadi sengaja datang lebih pagi buat benerin. Butuh tumpangan pulang nanti malam?",
+        "Tadi sehabis bengkel tutup aku riding lewat jalur pesisir terus lihat lampu mercusuar nyala. Kepikiran kayaknya kamu bakal suka."
+      ],
+      "starters": [
+        "Ajak aku riding keliling dong",
+        "Ajari aku benerin skuterku",
+        "Kenapa remku harus dicek dua kali?"
+      ],
+      "likes": [
+        "skuter klasik vintage",
+        "riding larut malam",
+        "minuman dingin sehabis kerja di bengkel",
+        "alunan musik rock klasik di radio"
+      ],
+      "dislikes": [
+        "suku cadang murahan",
+        "pengendara tanpa helm",
+        "basa-basi yang canggung"
+      ],
+      "backstory": "Tumbuh besar di bengkel pamannya dan sudah bisa merakit ulang mesin motor sebelum cukup umur untuk mengemudi. Dia menjalankan bengkel kecil di belakang kafe, merawat skuter tua pengantar pesanan kafe secara gratis, dan selalu menawarkan tumpangan pulang pada siapa saja saat malam tiba. Dia menyebut kebiasaan itu sebagai hal praktis. Tapi dia selalu memeriksa rem skutermu dua kali setiap saat, dan tak pernah menyebut hal itu praktis.",
+      "tags": [
+        "santai",
+        "protektif",
+        "humor garing"
+      ]
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} memegang payung agak terlalu condong ke arahmu. \"Kamu jadi kehujanan tahu,\" katamu. \"Terus kenapa?\"",
+          "choices": [
+            {
+              "text": "Tarik dia mendekat ke bawah payung.",
+              "reply": "\"...Oke deh. Gini lebih enak.\" Dia tak bergeser menjauh."
+            },
+            {
+              "text": "\"Bagi payungnya yang bener dong.\"",
+              "reply": "\"Suka ngatur ya. Aku suka.\" Payungnya kembali miring ke tengah."
+            },
+            {
+              "text": "Melangkah keluar menerobos hujan.",
+              "reply": "\"Hei! Sini balik!\" Dia tertawa mengejarmu."
+            }
+          ]
+        },
+        {
+          "line": "Genangan air sebesar danau kecil menghalangi jalan. {name} melihat ke genangan itu, lalu menatapmu.",
+          "choices": [
+            {
+              "text": "Lompati bareng-bareng dalam hitungan tiga.",
+              "reply": "Kalian berdua mendarat kurang jauh. Sepatu basah kuyup, dan {name} tak bisa berhenti tertawa."
+            },
+            {
+              "text": "\"Gendong aku dong?\"",
+              "reply": "\"Nantang nih?\" Dia beneran langsung berjongkok siap menggendong."
+            },
+            {
+              "text": "Jalan memutar lewat rute yang lebih jauh.",
+              "reply": "\"Pilihan bijak.\" Tapi nadanya terdengar sedikit kecewa."
+            }
+          ]
+        },
+        {
+          "line": "Kalian berteduh di toko roti kecil sambil menunggu hujan reda. {name} memandangi roti kayu manis terakhir di etalase.",
+          "choices": [
+            {
+              "text": "Beli rotinya lalu bagi dua.",
+              "reply": "\"Kamu ngasih potongan yang lebih gede ke aku.\" \"Tahu kok.\""
+            },
+            {
+              "text": "Beli rotinya lalu makan pelan-pelan di depannya.",
+              "reply": "\"Tega banget sih.\" Dia tetap merebut satu gigitan."
+            },
+            {
+              "text": "\"Kita harusnya makan makanan yang sehat.\"",
+              "reply": "\"...Iya deh. Sehat.\" Dia melirik roti itu untuk terakhir kalinya."
+            }
+          ]
+        },
+        {
+          "line": "Hujan mulai mereda. {name} bertanya dengan suara pelan, \"Kamu suka hari-hari kayak gini?\"",
+          "choices": [
+            {
+              "text": "\"Sekarang aku suka.\"",
+              "reply": "Dia membuang muka, tersenyum menatap kaca jendela."
+            },
+            {
+              "text": "\"Hujan bikin segalanya melambat. Aku suka yang santai.\"",
+              "reply": "\"Santai itu asyik,\" setujunya. \"Santai bareng kamu rasanya enak.\""
+            },
+            {
+              "text": "\"Nggak terlalu, aku paling benci kaus kaki basah.\"",
+              "reply": "\"Masuk akal. Sangat masuk akal.\""
+            }
+          ]
+        },
+        {
+          "line": "Di depan jalan rumahmu, {name} menutup payungnya. Hujan sudah berhenti. Tak satu pun dari kalian beranjak pergi.",
+          "choices": [
+            {
+              "text": "\"Waktu yang sama pas hujan berikutnya?\"",
+              "reply": "\"Mulai sekarang aku bakal rajin cek ramalan cuaca tiap hari deh.\""
+            },
+            {
+              "text": "Beri pelukan perpisahan hangat.",
+              "reply": "Dia memelukmu sedetik lebih lama dari yang kamu kira."
+            },
+            {
+              "text": "\"Makasih ya udah nganterin aku pulang.\"",
+              "reply": "\"Kapan aja. Aku serius lho.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Waktu tutup hampir tiba. Tangki ubur-ubur jadi yang terakhir masih menyala. {name} berhenti melangkah. \"Bisa tinggal sebentar lagi?\"",
+          "choices": [
+            {
+              "text": "\"Hanya kalau kamu berdiri lebih dekat.\"",
+              "reply": "Dia mendekat. Bahunya bersandar lembut di bahumu."
+            },
+            {
+              "text": "Foto dia di tengah pendaran cahaya.",
+              "reply": "\"Hapus foto itu.\" \"Nggak mau.\" \"...Kirim ke aku kalau gitu.\""
+            },
+            {
+              "text": "\"Nanti kita kekunci di dalam lho.\"",
+              "reply": "\"Emangnya seburuk itu kalau kekunci berdua?\""
+            }
+          ]
+        },
+        {
+          "line": "Seekor berang-berang menempelkan cakarnya ke kaca tepat di hadapan {name}.",
+          "choices": [
+            {
+              "text": "\"Dia suka kamu tuh. Seleranya bagus.\"",
+              "reply": "\"Kamu lagi ngegombal lewat berang-berang ya?\" \"Bisa jadi.\""
+            },
+            {
+              "text": "Tempelkan tanganmu ke kaca juga.",
+              "reply": "Si berang-berang berputar menjauh. {name} tertawa terbahak-bahak sampai ditegur petugas."
+            },
+            {
+              "text": "Baca plang penjelasan soal berang-berang dengan lantang.",
+              "reply": "\"Tahu nggak kalau mereka pegangan tangan pas tidur?\" katanya. \"Sekarang jadi tahu kan.\""
+            }
+          ]
+        },
+        {
+          "line": "Di dalam terowongan kaca yang temaram, seekor hiu meluncur pelan di atas kalian berdua. {name} spontan menarik lengan bajumu.",
+          "choices": [
+            {
+              "text": "Genggam tangannya sebagai gantinya.",
+              "reply": "\"...Biar aman aja,\" ucapnya. Tapi dia tak melepas genggamannya bahkan setelah keluar terowongan."
+            },
+            {
+              "text": "\"Takut ya?\"",
+              "reply": "\"Takut sama hiu? Nggak lah. Takut kamu nyadar? Sedikit sih.\""
+            },
+            {
+              "text": "Beri tahu kalau itu cuma jenis hiu perawat yang jinak.",
+              "reply": "\"Terima kasih, Bu Guru.\" Dia melepaskan lengan bajumu."
+            }
+          ]
+        },
+        {
+          "line": "Toko suvenir sudah setengah tutup. {name} memegang dua boneka ikan berbulu. \"Pilih satu.\"",
+          "choices": [
+            {
+              "text": "\"Dua-duanya. Satu buat kamu, satu buat aku.\"",
+              "reply": "\"Boneka ikan kembaran. Komitmen yang serius nih.\""
+            },
+            {
+              "text": "Pilih yang bentuknya paling aneh.",
+              "reply": "\"Kok pilih yang itu?\" \"Soalnya dia butuh seseorang yang sayang.\" Dia langsung membelinya tanpa sepatah kata pun."
+            },
+            {
+              "text": "\"Aku nggak butuh boneka ikan kok.\"",
+              "reply": "\"Nggak ada orang yang benar-benar butuh boneka ikan sih.\" Dia mengembalikannya ke rak."
+            }
+          ]
+        },
+        {
+          "line": "Di luar, lampu-lampu jalanan sudah menyala. {name} berkata, \"Aku nggak pengen momen ini cepat selesai.\"",
+          "choices": [
+            {
+              "text": "\"Kalau gitu jangan disudahi dulu.\"",
+              "reply": "Kalian jalan kaki memutar lewat rute terjauh menuju stasiun. Sampai dua kali."
+            },
+            {
+              "text": "\"Pasti bakal ada lain kali kok.\"",
+              "reply": "\"Janji ya?\" \"Janji.\""
+            },
+            {
+              "text": "\"Jujur kakiku pegal banget.\"",
+              "reply": "\"Oke, oke. Yuk kuantar kamu pulang.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Lampion berpendar di mana-mana, ditemani semerbak aroma jagung bakar. {name} sudah menarik tanganmu menuju deretan kedai.",
+          "choices": [
+            {
+              "text": "Biarkan dia yang memimpin jalan.",
+              "reply": "\"Beli jagung dulu, baru main tangkap ikan mas. Aku udah punya rencana matang.\""
+            },
+            {
+              "text": "Tautkan jemarimu dengan jemarinya agar tidak terpisah.",
+              "reply": "\"Ide bagus,\" katanya, dengan nada yang sedikit terlalu cepat."
+            },
+            {
+              "text": "\"Pelan-pelan dong, ramai banget nih.\"",
+              "reply": "Langkahnya melambat. Hampir melambat sepenuhnya."
+            }
+          ]
+        },
+        {
+          "line": "Di stan lempar gelang, {name} gagal di ketiga lemparannya. Hadiah utamanya boneka beruang raksasa.",
+          "choices": [
+            {
+              "text": "Menangkan boneka itu untuknya.",
+              "reply": "Lemparan ketiga tepat sasaran. Boneka beruang itu sekarang lebih tinggi dari {name} dan dia menolak membawanya sendirian."
+            },
+            {
+              "text": "\"Coba sekali lagi. Aku percaya kamu bisa.\"",
+              "reply": "Dia meleset lagi, tapi dia tersenyum lebar."
+            },
+            {
+              "text": "\"Permainan itu emang diatur curang kok.\"",
+              "reply": "\"Pasti curang nih.\" Tapi matanya masih melirik boneka beruang itu."
+            }
+          ]
+        },
+        {
+          "line": "Stan foto menyediakan berbagai topeng lucu. {name} memegang topeng rubah dan topeng kucing.",
+          "choices": [
+            {
+              "text": "Ambil topeng kucing, berikan dia topeng rubah.",
+              "reply": "Hasil fotonya sedikit miring tapi sempurna."
+            },
+            {
+              "text": "Pakai kedua topengnya sekaligus, jangan beri dia apa-apa.",
+              "reply": "\"Jahat banget sih.\" Dia langsung mengambil lima foto dirimu."
+            },
+            {
+              "text": "\"Aku nggak fotogenik kalau difoto.\"",
+              "reply": "\"Kamu manis kok. Tapi ya udah deh.\""
+            }
+          ]
+        },
+        {
+          "line": "Kembang api pertama meluncur ke angkasa. {name} sama sekali tidak melihat ke langit.",
+          "choices": [
+            {
+              "text": "\"Kamu melewatkan kembang apinya lho.\"",
+              "reply": "\"Nggak kok, aku nggak ngerasa melewatkan apa-apa.\""
+            },
+            {
+              "text": "Tatap kembali matanya.",
+              "reply": "Kalian berdua akhirnya sama-sama melewatkan kembang api kedua juga."
+            },
+            {
+              "text": "Rekam kembang apinya pakai ponsel.",
+              "reply": "Dia menyandarkan kepala masuk ke dalam frame rekamanmu sambil melambaikan tangan."
+            }
+          ]
+        },
+        {
+          "line": "Kerumunan orang mulai menyusut di pintu keluar. {name} bertanya, \"Bagian paling seru malam ini apa?\"",
+          "choices": [
+            {
+              "text": "\"Momen sekarang ini.\"",
+              "reply": "Dia meremas lembut jemarimu dua kali."
+            },
+            {
+              "text": "\"Si beruang raksasa, jelas.\"",
+              "reply": "\"Si beruang berterima kasih padamu.\""
+            },
+            {
+              "text": "\"Jagung bakarnya enak banget tadi.\"",
+              "reply": "\"Jujur banget. Aku hargai itu.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Studio yang sunyi selepas tengah malam. {name} menyodorkan headphone kepadamu. \"Belum pernah kudengarkan lagu ini ke siapa pun sebelumnya.\"",
+          "choices": [
+            {
+              "text": "Dengarkan dengan mata terpejam.",
+              "reply": "Saat kamu membuka mata, dia sedang menatapmu dengan raut gugup."
+            },
+            {
+              "text": "\"Kenapa diperdengarkan ke aku?\"",
+              "reply": "\"Kamu tahu alasannya.\""
+            },
+            {
+              "text": "\"Lagunya udah selesai?\"",
+              "reply": "\"Hampir. Tinggal butuh satu sentuhan lagi.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Gimana? Jujur aja.\" {name} pura-pura cuek tak peduli.",
+          "choices": [
+            {
+              "text": "\"Lagunya kedengaran kayak kamu banget.\"",
+              "reply": "\"Itu bagus kan?\" \"Hal paling favoritku malah.\""
+            },
+            {
+              "text": "Minta diputarkan sekali lagi.",
+              "reply": "Dia memutarnya dua kali lagi. Telinganya memerah."
+            },
+            {
+              "text": "\"Bagian keduanya agak kepanjangan dikit.\"",
+              "reply": "\"...Kamu benar. Agak nyesek sih, tapi kamu benar.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} mengarahkan mikrofon ke dekatmu. \"Gumamkan sesuatu dong. Nada apa aja.\"",
+          "choices": [
+            {
+              "text": "Gumamkan melodi yang baru saja kamu dengar.",
+              "reply": "Dia merekamnya dan menjadikannya loop di bawah bagian reff. Cocok sekali."
+            },
+            {
+              "text": "Gumamkan lagu tema kartun masa kecil.",
+              "reply": "Dia tertawa terbahak-bahak sampai terpaksa menghentikan rekamannya."
+            },
+            {
+              "text": "\"Nggak mau ah, suaraku jelek.\"",
+              "reply": "\"Kalau gitu lain kali ya. Udah kucatat nih janjinya.\""
+            }
+          ]
+        },
+        {
+          "line": "Sudah jam 3 subuh dan mesin penjual otomatis cuma menyisakan satu kaleng kopi terakhir.",
+          "choices": [
+            {
+              "text": "Bagi berdua, seteguk bergantian.",
+              "reply": "Rasa kopinya payah banget. Tapi jadi kopi terbaik yang pernah kamu minum."
+            },
+            {
+              "text": "Berikan kaleng kopi itu untuknya.",
+              "reply": "\"Kamu memanjakanku banget.\" \"Iya lah.\""
+            },
+            {
+              "text": "\"Kita harusnya tidur sekarang.\"",
+              "reply": "\"Sepuluh menit lagi ya,\" katanya, untuk ketiga kalinya."
+            }
+          ]
+        },
+        {
+          "line": "Sinar fajar menyusup lewat celah tirai jendela. {name} menyimpan file proyek itu dan menamainya dengan namamu.",
+          "choices": [
+            {
+              "text": "\"Boleh kudengar kalau lagunya udah jadi nanti?\"",
+              "reply": "\"Kamu yang bakal jadi orang pertama yang dengar. Selalu begitu rencanaku.\""
+            },
+            {
+              "text": "Ketiduran di bahunya.",
+              "reply": "Dia tidak menggerakkan badannya sama sekali selama satu jam."
+            },
+            {
+              "text": "\"Harusnya kamu ganti nama file itu.\"",
+              "reply": "\"Nggak akan pernah.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Lampu-lampu kota terlalu terang untuk bisa melihat bintang. {name} tetap menggelar selimut di lantai atap. \"Tadinya pengen nunjukin langit malam ke kamu. Tapi langitnya nggak mau diajak kerja sama.\"",
+          "choices": [
+            {
+              "text": "\"Tujuanku ke sini bukan buat lihat bintang kok.\"",
+              "reply": "Dia terdiam sejenak, lalu berbaring di sebelahmu."
+            },
+            {
+              "text": "Tunjuk ke arah pesawat terbang. \"Lihat, ada bintang jatuh.\"",
+              "reply": "\"Itu pesawat kali.\" \"Ucapkan permohonan aja kenapa.\""
+            },
+            {
+              "text": "\"Mungkin kita coba pas malam yang cerah?\"",
+              "reply": "\"...Boleh. Lain kali ya.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} bertanya, \"Waktu kecil dulu kamu cita-citanya pengen jadi apa?\"",
+          "choices": [
+            {
+              "text": "Beri tahu dia jawaban yang sebenarnya.",
+              "reply": "Dia mendengarkan tanpa memotong sedikit pun. \"Sekarang pun kamu masih bisa mewujudkannya tahu.\""
+            },
+            {
+              "text": "\"Tanya hal lain yang lebih susah dong.\"",
+              "reply": "\"Oke. Hal apa yang paling kamu takutin?\" Malam itu pun berubah jadi penuh kejujuran."
+            },
+            {
+              "text": "\"Astronaut. Jelas lah.\"",
+              "reply": "\"Bukan malam yang cocok buat astronaut ya,\" tawanya."
+            }
+          ]
+        },
+        {
+          "line": "Angin bertiup dingin. {name} pura-pura tidak kedinginan padahal tubuhnya gemetar.",
+          "choices": [
+            {
+              "text": "Lilitkan selimut ke tubuh kalian berdua.",
+              "reply": "\"Lebih hangat,\" bisiknya lirih. \"Jauh lebih hangat.\""
+            },
+            {
+              "text": "Berikan jaketmu padanya.",
+              "reply": "Aromanya kayak kamu, katanya, dan dia tak mau mengembalikannya."
+            },
+            {
+              "text": "\"Mendingan kita masuk ke dalam aja?\"",
+              "reply": "\"Lima menit lagi ya. Tolong.\""
+            }
+          ]
+        },
+        {
+          "line": "Jauh di bawah sana, seseorang memutar lagu bertempo lambat dengan jendela terbuka. {name} bangkit berdiri dan mengulurkan tangannya.",
+          "choices": [
+            {
+              "text": "Sambut tangannya dan berdansa bersamanya.",
+              "reply": "Kalian berdua payah banget berdansa. Tapi kalian tak berhenti sampai lagunya usai."
+            },
+            {
+              "text": "\"Aku nggak bisa dansa tahu.\"",
+              "reply": "\"Aku juga nggak bisa. Sini makanya.\""
+            },
+            {
+              "text": "Tertawa dan tetap duduk santai.",
+              "reply": "Dia berdansa sendirian dengan gaya konyol, cuma demi membuatmu tertawa. Dan berhasil."
+            }
+          ]
+        },
+        {
+          "line": "Lagu itu berakhir. {name} berkata, \"Aku senang orang yang ada di atap ini bareng aku itu kamu.\"",
+          "choices": [
+            {
+              "text": "\"Aku juga. Setiap saat.\"",
+              "reply": "Dia menyandarkan keningnya di keningmu."
+            },
+            {
+              "text": "\"Bawa cuaca yang lebih bagus ya lain kali.\"",
+              "reply": "\"Nanti kubicarakan langsung sama langitnya secara pribadi.\""
+            },
+            {
+              "text": "\"Momen tadi manis banget.\"",
+              "reply": "\"Manis ya,\" ulangnya sambil tersenyum. \"Bagus deh kalau manis.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Tertawa dan ikutan aja.",
+            "reply": "{name} tersenyum lebar. \"Oke. Hari ini udah mulai seru.\""
+          },
+          {
+            "text": "\"Ini idemu ya?\"",
+            "reply": "\"Bisa jadi. Kamu suka nggak?\" Wajahnya tampak sedikit bangga."
+          },
+          {
+            "text": "Cek ponsel sebentar.",
+            "reply": "{name} menunggu sebentar, lalu menyenggolmu. \"Hei. Aku di depanmu lho.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Oke, aku ikut. Kamu yang pimpin jalan ya.\"",
+            "reply": "\"Akhirnya ada yang percaya sama aku.\" {name} langsung melangkah."
+          },
+          {
+            "text": "Bercandain hal itu.",
+            "reply": "{name} mendengus geli. \"Nggak lucu tahu.\" Padahal dia tertawa."
+          },
+          {
+            "text": "\"Bisa duduk santai dulu sebentar?\"",
+            "reply": "\"Boleh.\" Dia duduk di sebelahmu, dekat tapi tidak terlalu dekat."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Kamu sengaja rencanain ini biar ketemu aku kan?\"",
+            "reply": "\"Lama banget sih nyadarnya.\" {name} tak mengalihkan pandangannya."
+          },
+          {
+            "text": "Senggol bahunya.",
+            "reply": "Dia menyenggol balik, lalu membiarkan bahunya tetap menempel di sana."
+          },
+          {
+            "text": "Pura-pura cuek.",
+            "reply": "\"Masa sih cuek.\" {name} tersenyum seolah tahu isi hatimu."
+          }
+        ],
+        [
+          {
+            "text": "Tatap matanya lebih lama dari biasanya.",
+            "reply": "{name} menunduk duluan. Telinganya memerah."
+          },
+          {
+            "text": "\"Kamu kelihatan manis hari ini.\"",
+            "reply": "\"Cuma hari ini aja?\" Dia berusaha keras menahan senyumnya."
+          },
+          {
+            "text": "Bahas soal cuaca.",
+            "reply": "\"Cuaca? Serius nih.\" {name} tertawa kecil mengejekmu pelan."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Genggam tangannya.",
+            "reply": "{name} langsung menautkan jemarinya dengan jemarimu tanpa berkata apa-apa."
+          },
+          {
+            "text": "\"Aku senang orangnya itu kamu.\"",
+            "reply": "\"Aku juga,\" ucapnya lirih. \"Setiap saat.\""
+          },
+          {
+            "text": "\"Jangan lama-lama ya di sini.\"",
+            "reply": "\"Udah mau pulang?\" {name} tampak sedikit murung, lalu mengangguk."
+          }
+        ],
+        [
+          {
+            "text": "Sandarkan kepalamu di bahunya.",
+            "reply": "Dia seketika terpaku diam, seolah takut kamu akan terbang menjauh."
+          },
+          {
+            "text": "\"Ceritain harimu dong.\"",
+            "reply": "{name} mulai bercerita dan tak berhenti. Kamu suka mendengarkannya."
+          },
+          {
+            "text": "Diam dan menikmati keheningan.",
+            "reply": "\"Hening bersamamu rasanya tenang,\" ucapnya setelah beberapa saat."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Di suatu tempat dekat {place}, seorang musisi jalanan memainkan lagu yang kalian berdua tahu.",
+        "choices": [
+          {
+            "text": "Ikut bernyanyi, meski fals.",
+            "reply": "{name} ikut menyanyi, bahkan lebih fals. Sang musisi menyerah dan tertawa."
+          },
+          {
+            "text": "Beri koin dan minta lagu lain.",
+            "reply": "\"Lagu yang temponya pelan ya,\" tambah {name}, sambil melirik ke arahmu."
+          },
+          {
+            "text": "Lanjut jalan kaki.",
+            "reply": "{name} bersenandung lagu itu selama sepuluh menit berikutnya."
+          }
+        ]
+      },
+      {
+        "line": "{name} mendadak lapar berat. \"Jajan. Sekarang juga. Ini darurat.\"",
+        "choices": [
+          {
+            "text": "Bagi sisa camilan milikmu.",
+            "reply": "\"Kamu memang pahlawanku.\" Dia menghabiskannya dalam sekali lahap."
+          },
+          {
+            "text": "Balapan lari ke kedai terdekat.",
+            "reply": "Kamu menang. {name} beralasan dia sengaja mengalah. Padahal tidak."
+          },
+          {
+            "text": "\"Kamu kan baru aja makan.\"",
+            "reply": "\"Itu kan sejam yang lalu.\" Wajahnya tampak merasa dikhianati."
+          }
+        ]
+      },
+      {
+        "line": "Gerimis mulai turun di {place}. Tak ada yang membawa payung.",
+        "choices": [
+          {
+            "text": "Pakai satu jaket berdua untuk menutupi kepala.",
+            "reply": "Kalian berakhir sangat berdekatan. Tak ada yang mengeluh."
+          },
+          {
+            "text": "Lari mencari tempat berteduh bersama.",
+            "reply": "{name} menggenggam erat tanganmu agar kamu tidak terpeleset."
+          },
+          {
+            "text": "Tetap berdiri di bawah gerimis. Cuma hujan biasa.",
+            "reply": "\"Kamu aneh deh,\" kata {name}, tapi tetap berdiri menemanimu."
+          }
+        ]
+      },
+      {
+        "line": "{name} ingin berfoto di {place}. \"Buat kenang-kenangan,\" katanya.",
+        "choices": [
+          {
+            "text": "Pasang pose wajah konyol.",
+            "reply": "Dia tertawa terbahak-bahak sampai fotonya buram. Tapi tetap disimpannya."
+          },
+          {
+            "text": "Tersenyum manis dan rapi untuk sekali ini.",
+            "reply": "\"Wah. Yang ini wajib dicetak.\" {name} menyimpannya dua kali."
+          },
+          {
+            "text": "\"Aku benci difoto.\"",
+            "reply": "\"Satu foto aja. Satu aja.\" Akhirnya kamu membiarkannya mengambil satu foto."
+          }
+        ]
+      },
+      {
+        "line": "Seorang anak kecil di dekat {place} bertanya apakah kalian berdua pacaran.",
+        "choices": [
+          {
+            "text": "\"Tanya dia aja langsung.\"",
+            "reply": "{name} gelagapan menjawab sesuatu. Si anak kecil tampak girang."
+          },
+          {
+            "text": "\"Sahabat dekat. Untuk sekarang.\"",
+            "reply": "{name} menaikkan satu alisnya mendengar kata \"untuk sekarang\"."
+          },
+          {
+            "text": "\"Nggak mungkin lah!\"",
+            "reply": "\"Wah. Tega banget.\" {name} pura-pura sakit hati. Kebanyakan pura-pura."
+          }
+        ]
+      },
+      {
+        "line": "Kalian menemukan bangku taman yang tenang di {place}. {name} bertanya apa yang sedang kamu pikirkan.",
+        "choices": [
+          {
+            "text": "\"Lagi mikirin kamu, jujur aja.\"",
+            "reply": "Dia membuang muka dan tersenyum tanpa alasan."
+          },
+          {
+            "text": "\"Mikirin betapa menyenangkannya hari ini.\"",
+            "reply": "\"Iya banget,\" setuju {name}. \"Sering-sering jalan bareng kayak gini yuk.\""
+          },
+          {
+            "text": "\"Mikirin menu makan malam.\"",
+            "reply": "\"Masuk akal. Sangat masuk akal.\" {name} sekarang ikutan kepikiran makan malam."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} menantangmu: siapa yang tertawa duluan di {place} harus mentraktir minuman.",
+          "choices": [
+            {
+              "text": "Pasang muka paling jelek.",
+              "reply": "{name} cuma bertahan dua detik. \"Curang! Muka itu senjata terlarang.\""
+            },
+            {
+              "text": "Ceritakan lelucon paling garing.",
+              "reply": "Dia mengerang kesal, lalu tertawa juga. \"Kesel banget aku bisa ketawa.\""
+            },
+            {
+              "text": "Sengaja tertawa duluan.",
+              "reply": "\"Kamu sengaja ngalah ya?\" Dia tetap membelikanmu minuman."
+            }
+          ]
+        },
+        {
+          "line": "{name} menceritakan hari paling apes yang pernah dialaminya, dan ceritanya lucu sekali.",
+          "choices": [
+            {
+              "text": "Ceritakan hari apesmu juga.",
+              "reply": "\"Nggak mungkin. Kamu yang menang.\" Dia sampai mengusap air mata tawanya."
+            },
+            {
+              "text": "Tertawa sampai susah bernapas.",
+              "reply": "\"Nggak SELUCU itu kali.\" Padahal memang selucu itu."
+            },
+            {
+              "text": "\"Kedengarannya parah banget.\"",
+              "reply": "\"Emang parah. Tapi sekarang jadi lucu.\" Dia mengangkat bahu sambil tersenyum."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} mengusap sesuatu dari pipimu. \"Ada bulu mata rontok. Ucapkan permohonan.\"",
+          "choices": [
+            {
+              "text": "\"Permohonanku udah terkabul kok.\"",
+              "reply": "{name} seketika mati kutu tak bisa membalas. Untuk sekali ini."
+            },
+            {
+              "text": "Tiup bulu mata itu ke arahnya.",
+              "reply": "\"Tadi kamu memohonkan tentang aku ya?\" Dia tersenyum menggoda."
+            },
+            {
+              "text": "\"Aku nggak percaya permohonan.\"",
+              "reply": "\"Kalau gitu aku yang memohonkan buat kamu,\" katanya, lalu menutup mata."
+            }
+          ]
+        },
+        {
+          "line": "{name} menyeruput minumanmu tanpa izin. \"Lebih enak dari punyaku.\"",
+          "choices": [
+            {
+              "text": "Rebut balik minumannya.",
+              "reply": "\"Hei!\" Perang kecil pun dimulai. Tak ada yang menang. Semua tertawa."
+            },
+            {
+              "text": "\"Secara nggak langsung itu ciuman lho.\"",
+              "reply": "{name} tersedak sedikit. \"Bukan lah.\" Wajahnya merah padam."
+            },
+            {
+              "text": "\"Beli sendiri sana.\"",
+              "reply": "\"Iya deh.\" Dia membeli dua dan memberikan salah satunya kepadamu."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} menyelipkan rambutmu ke belakang telinga. \"Maaf. Tadi menutupi matamu.\"",
+          "choices": [
+            {
+              "text": "\"Nggak usah minta maaf.\"",
+              "reply": "Tangannya bertahan di sana sejenak lebih lama dari yang seharusnya."
+            },
+            {
+              "text": "Lakukan hal yang sama padanya.",
+              "reply": "{name} tertawa lembut. \"Kita konyol banget ya.\""
+            },
+            {
+              "text": "\"Aku bisa rapihin sendiri kok.\"",
+              "reply": "\"Aku tahu,\" ucapnya. \"Cuma pengen aja.\""
+            }
+          ]
+        },
+        {
+          "line": "Di {place}, {name} berkata, \"Boleh aku bilang sesuatu? Aku sering banget mikirin hari-hari yang kita lewati bareng.\"",
+          "choices": [
+            {
+              "text": "\"Aku juga. Sering banget.\"",
+              "reply": "{name} menghela napas lega, seolah tadinya gugup."
+            },
+            {
+              "text": "\"Hari mana yang paling kamu suka?\"",
+              "reply": "\"Hari ini,\" jawabnya tanpa perlu berpikir dua kali."
+            },
+            {
+              "text": "\"Kenapa emangnya?\"",
+              "reply": "\"Karena hari-hari itu kulewati bareng kamu.\" Dia mengucapkannya dengan sederhana."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "Hari sudah mulai larut di {place}. {name} merenggangkan tubuhnya. \"Waktu yang sama minggu depan?\"",
+          "choices": [
+            {
+              "text": "\"Boleh. Giliran kamu yang pilih tempatnya ya.\"",
+              "reply": "\"Bahaya nih. Aku udah punya banyak ide.\" Dia sudah mulai berencana."
+            },
+            {
+              "text": "Lakukan tos dengannya.",
+              "reply": "Dia sengaja luput tos dan malah memelukmu hangat."
+            },
+            {
+              "text": "\"Mungkin.\"",
+              "reply": "\"Mungkin juga nggak apa-apa.\" {name} melambaikan tangan cukup lama."
+            }
+          ]
+        },
+        {
+          "line": "Dalam perjalanan pulang, {name} berkata, \"Hari ini seru banget. Makasih ya buat hari ini.\"",
+          "choices": [
+            {
+              "text": "\"Harusnya AKU yang makasih.\"",
+              "reply": "\"Sama-sama sopan banget ya kita.\" Dia menyenggol lenganmu."
+            },
+            {
+              "text": "Antar dia sampai depan pintu rumahnya.",
+              "reply": "\"Nggak perlu repot-repot padahal.\" Tapi dia senang kamu melakukannya."
+            },
+            {
+              "text": "\"Biasa aja sih.\"",
+              "reply": "\"Cuma biasa aja? Berarti lain kali harus lebih seru.\" Nadanya penuh tekad."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "Saat meninggalkan {place}, langkah {name} melambat. \"Sebenarnya aku belum mau pisah.\"",
+          "choices": [
+            {
+              "text": "\"Kalau gitu antar aku pulang lewat jalan yang memutar.\"",
+              "reply": "Dia memilih rute terjauh yang memungkinkan."
+            },
+            {
+              "text": "\"Aku juga belum mau.\"",
+              "reply": "{name} tersenyum menatap tanah. \"Baguslah.\""
+            },
+            {
+              "text": "\"Sampai jumpa lagi segera kalau gitu.\"",
+              "reply": "\"Segera,\" ulangnya, seperti sebuah janji manis."
+            }
+          ]
+        },
+        {
+          "line": "Di sudut jalan, {name} berkata, \"Kabari aku kalau udah sampai rumah ya. Biar aku tenang.\"",
+          "choices": [
+            {
+              "text": "\"Hanya kalau kamu yang ngechat duluan.\"",
+              "reply": "Ponselmu sudah bergetar bahkan sebelum kamu sampai di tikungan."
+            },
+            {
+              "text": "Beri kedipan mata lalu melangkah pergi.",
+              "reply": "Kamu mendengar tawanya tertinggal di belakangmu."
+            },
+            {
+              "text": "\"Oke.\"",
+              "reply": "\"Oke,\" ulangnya, lalu menunggu sampai kamu benar-benar tak terlihat."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Di penghujung hari di {place}, {name} menarikmu ke dalam pelukan yang hangat dan lama.",
+          "choices": [
+            {
+              "text": "Peluk dia sedikit lebih lama lagi.",
+              "reply": "\"Bentar, tetap kayak gini semenit lagi,\" bisiknya lirih."
+            },
+            {
+              "text": "\"Terima kasih ya buat hari ini.\"",
+              "reply": "\"Terima kasih untuk setiap harinya,\" ucap {name}."
+            },
+            {
+              "text": "Tepuk-tepuk punggungnya.",
+              "reply": "Dia tertawa di bahumu. \"Kok malah ditepuk-tepuk sih.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} menatapmu dalam-dalam untuk sesaat. \"Aku mau mengulang hari ini lagi. Semuanya dari awal.\"",
+          "choices": [
+            {
+              "text": "\"Yuk kita ulang.\"",
+              "reply": "Dia meremas lembut jemarimu. \"Besok ya kalau gitu.\""
+            },
+            {
+              "text": "Kecup pipinya lembut.",
+              "reply": "{name} seketika terdiam, lalu tersenyum di sepanjang perjalanan pulang."
+            },
+            {
+              "text": "\"Termasuk pas kehujanan tadi?\"",
+              "reply": "\"Terutama pas kehujanan tadi.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {
+    "seaside": {
+      "intro": "Kuis kilat ala Seaside! Lima pertanyaan seputar kampus kita. Jawab benar empat soal dan bingkai Seaside jadi milikmu.",
+      "right": [
+        "Tepat sekali! Kelihatan nih kamu merhatiin di kelas.",
+        "Benar! Bintang emas dari seluruh penjuru kampus.",
+        "Betul. Diam-diam kamu mahasiswa sini ya?"
+      ],
+      "wrong": [
+        "Kurang tepat. Jawabannya {answer}. Sekarang jadi tahu kan.",
+        "Hampir! Jawabannya {answer}. Coba tanya-tanya di halaman tengah.",
+        "Salah, {answer}. Tenang aja, nggak ada yang baca koran kampus kok."
+      ],
+      "match": [
+        "Sama! Balapan ke dermaga yuk buat ngerayain.",
+        "Pikiran kita sejalan banget. Agak seram ya sehati gini.",
+        "Tuh kan bener. Kita partner belajar seumur hidup nih."
+      ],
+      "differ": [
+        "Kalau aku pilih {answer}. Yuk perdebatkan sambil jalan pulang.",
+        "Hm, pilihanku {answer}. Coba jelaskan alasanmu sambil ngemil.",
+        "Aku pilih {answer}. Beda pendapat bikin seru jadi partner lab."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Demi apa aku rela bolos kelas?",
+          "options": [
+            "Berenang pas matahari terbit",
+            "Kamu",
+            "Makanan gratis",
+            "Nggak pernah, aku anak teladan"
+          ]
+        },
+        {
+          "text": "Tempat favoritku di kampus?",
+          "options": [
+            "Dermaga",
+            "Taman atap perpustakaan",
+            "Mesin penjual otomatis",
+            "Di mana pun ada kamu"
+          ]
+        },
+        {
+          "text": "Barang yang selalu ada di tasku?",
+          "options": [
+            "Camilan ekstra",
+            "Tiga pulpen, macet semua",
+            "Handuk basah",
+            "Catatan milikmu"
+          ]
+        },
+        {
+          "text": "Gimana caraku belajar buat ujian?",
+          "options": [
+            "SKS semalaman sambil panik",
+            "Mulai awal dan rapi",
+            "Bareng kamu, tapi nggak fokus",
+            "Nggak belajar sama sekali. Modal nekat"
+          ]
+        },
+        {
+          "text": "Definisi akhir pekan yang sempurna?",
+          "options": [
+            "Seharian di pantai",
+            "Tidur sampai siang",
+            "Maraton nonton film",
+            "Liburan jalan-jalan bareng kamu"
+          ]
+        },
+        {
+          "text": "Apa yang kulakukan pas lagi stres?",
+          "options": [
+            "Berenang sampai capek",
+            "Mendadak jadi pendiam",
+            "Makan yang manis-manis",
+            "Ngechat kamu"
+          ]
+        },
+        {
+          "text": "Panggilanku di kampus?",
+          "options": [
+            "Tukang bikin onar",
+            "Si pendiam",
+            "Kapten",
+            "Rahasia, nggak mau kasih tahu"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Siapa yang diam-diam suka kasih makan kucing kampus?",
+          "options": [
+            "Elio",
+            "Kai",
+            "Rowan",
+            "Theo"
+          ]
+        },
+        {
+          "text": "Hana mengelola klub apa?",
+          "options": [
+            "Klub film",
+            "Klub seni",
+            "Tim debat",
+            "Tim renang"
+          ]
+        },
+        {
+          "text": "Siapa yang menamai setiap ikan di lab akuarium dengan nama temannya?",
+          "options": [
+            "Felix",
+            "Jun",
+            "Rowan",
+            "Iris"
+          ]
+        },
+        {
+          "text": "Kapan acara radio kampus Noah mengudara?",
+          "options": [
+            "Jam 7 pagi",
+            "Tengah hari",
+            "Jam 6 sore",
+            "Jam 1 pagi"
+          ]
+        },
+        {
+          "text": "Siapa presiden senat mahasiswa yang nggak pernah mau kalah debat?",
+          "options": [
+            "Tessa",
+            "Theo",
+            "Kai",
+            "Hana"
+          ]
+        },
+        {
+          "text": "Apa yang dibawakan Kai ke ruang kuliah khusus buatmu?",
+          "options": [
+            "Kopi",
+            "Catatan kuliah",
+            "Camilan ekstra",
+            "Handuk"
+          ]
+        },
+        {
+          "text": "Siapa yang selalu punya rekomendasi buku yang pas buat suasana hatimu?",
+          "options": [
+            "Iris",
+            "Elio",
+            "Noah",
+            "Jun"
+          ]
+        },
+        {
+          "text": "Felix selalu membawa sebuah...",
+          "options": [
+            "Gitar",
+            "Kamera analog",
+            "Peta",
+            "Radio"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Lonceng berdentang di suatu tempat di kampus. {name} tersenyum lebar. \"Harusnya kita berdua sekarang lagi di kelas.\"",
+          "choices": [
+            {
+              "text": "\"Kalau gitu kita bolos bareng aja.\"",
+              "reply": "\"Ide terbaikmu sepanjang minggu ini.\" Dia menggenggam tanganmu dan berlari."
+            },
+            {
+              "text": "\"Satu kelas aja. Habis itu baru pergi.\"",
+              "reply": "\"Rajin banget. Nyebelin. Tapi ya udah deh.\" Dia menunggumu di luar kelas."
+            },
+            {
+              "text": "Masuk kelas sendirian.",
+              "reply": "{name} merajuk, lalu mengirimi kamu foto lautan. \"Tuh kan, rugi nggak ikut.\""
+            }
+          ]
+        },
+        {
+          "line": "Deburan ombak laut tepat berada di {place}. {name} sudah melepas sepatunya.",
+          "choices": [
+            {
+              "text": "Balapan lari ke air laut.",
+              "reply": "Kalian berdua kalah. Kalian berdua menang. Celana jin kalian basah kuyup."
+            },
+            {
+              "text": "Celupkan ujung jari kaki pelan-pelan.",
+              "reply": "\"Pemberani banget,\" goda {name}, sambil tetap mencipratkan air ke arahmu."
+            },
+            {
+              "text": "Jagain sepatunya.",
+              "reply": "\"Penjaga sepatu setia. Pekerjaan yang mulia.\" Dia kembali dalam keadaan basah."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "habis kelas renang"
+      }
+    },
+    "moonlit": {
+      "intro": "Wahai pengembara. Alam Cahaya Bulan mengajukan lima pertanyaan bagi mereka yang ingin memiliki bingkainya. Jawab empat dengan jujur dan itu akan jadi milikmu.",
+      "right": [
+        "Benar. Bintang-bintang merestuimu.",
+        "Tepat. Kamu cocok menjadi ksatria yang hebat.",
+        "Ya. Alam ini akan selalu mengingatmu."
+      ],
+      "wrong": [
+        "Bukan, wahai pengembara. Jawabannya {answer}. Ingatlah itu baik-baik.",
+        "Bukan begitu. Jawabannya {answer}. Arsip tak pernah berbohong.",
+        "Jalan yang keliru. Yang benar {answer}. Cobalah lagi di bawah sinar bulan."
+      ],
+      "match": [
+        "Pilihan kita sama. Ini adalah sebuah pertanda baik.",
+        "Jawaban kita selaras, laksana dua bintang di langit malam.",
+        "Seperti dugaanku. Kita terbuat dari malam yang sama."
+      ],
+      "differ": [
+        "Aku memilih {answer}. Ceritakan padaku di dekat perapian, mengapa pilihanmu berbeda.",
+        "Jawabanku {answer}. Jalan yang berbeda, bukan berarti keliru.",
+        "Bagiku {answer}. Alam ini membutuhkan kita berdua."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Apa yang paling kujaga seumur hidupku?",
+          "options": [
+            "Pedang pusakaku",
+            "Janji masa lalu",
+            "Dirimu",
+            "Harga diriku"
+          ]
+        },
+        {
+          "text": "Ke mana aku pergi saat ingin merenung?",
+          "options": [
+            "Atap menara tinggi",
+            "Taman rembulan",
+            "Ujung hutan rimba",
+            "Di mana pun kamu berada"
+          ]
+        },
+        {
+          "text": "Apa yang paling kutakuti?",
+          "options": [
+            "Tak ada",
+            "Dilupakan oleh dunia",
+            "Kehilangan dirimu",
+            "Laba-laba. Jangan tertawa"
+          ]
+        },
+        {
+          "text": "Sumpah setiaku kupersembahkan untuk...",
+          "options": [
+            "Mahkota kerajaan",
+            "Bintang-bintang",
+            "Diriku sendiri",
+            "Kamu, sekarang"
+          ]
+        },
+        {
+          "text": "Demi apa aku rela melepaskan gelar bangsawan?",
+          "options": [
+            "Tak demi apa pun",
+            "Kedamaian abadi",
+            "Satu malam tenang bersamamu",
+            "Sepotong roti yang lezat"
+          ]
+        },
+        {
+          "text": "Bagaimana caraku meminta maaf?",
+          "options": [
+            "Aku tak pernah meminta maaf",
+            "Dengan sebuah hadiah",
+            "Menulis surat panjang",
+            "Dengan canggung, tapi tulus"
+          ]
+        },
+        {
+          "text": "Waktu favoritku dalam sehari?",
+          "options": [
+            "Saat fajar menyingsing",
+            "Tengah malam buta",
+            "Satu jam sebelum pertempuran",
+            "Kapan pun saat kamu terjaga"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Siapa penjaga arsip bintang?",
+          "options": [
+            "Tuan Castor",
+            "Pangeran Aurelian",
+            "Vesper",
+            "Kael"
+          ]
+        },
+        {
+          "text": "Taman Pangeran Aurelian hanya mekar saat...",
+          "options": [
+            "Hujan turun",
+            "Ada yang bersedia tinggal",
+            "Bulan purnama bersinar",
+            "Dia bernyanyi"
+          ]
+        },
+        {
+          "text": "Ramuan apa yang ditolak Vesper untuk diracik?",
+          "options": [
+            "Ramuan cinta",
+            "Cairan penidur",
+            "Ramuan penghapus ingatan",
+            "Racun"
+          ]
+        },
+        {
+          "text": "Kael diam-diam sebenarnya adalah seekor...",
+          "options": [
+            "Siluman rubah",
+            "Burung gagak",
+            "Hantu",
+            "Naga"
+          ]
+        },
+        {
+          "text": "Siapa yang menerangi jalan bagi pengembara tersesat?",
+          "options": [
+            "Seraphine",
+            "Lyra",
+            "Corvin",
+            "Zarek"
+          ]
+        },
+        {
+          "text": "Apa yang selalu ditinggalkan Orin seusai mengerjai orang?",
+          "options": [
+            "Hadiah balasan",
+            "Teka-teki",
+            "Sehelai bulu",
+            "Tak ada"
+          ]
+        },
+        {
+          "text": "Siapa yang selalu menuliskan laporan untukmu sehabis patroli?",
+          "options": [
+            "Corvin",
+            "Zarek",
+            "Sir Rhys",
+            "Castor"
+          ]
+        },
+        {
+          "text": "Corvin merawat apa di atas tebing karangnya?",
+          "options": [
+            "Serigala",
+            "Bunga mawar",
+            "Lampion",
+            "Burung gagak"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Bintang jatuh melintasi langit malam di atas {place}. {name} seketika terpaku diam. \"Ucapkan sebuah permohonan. Cepat.\"",
+          "choices": [
+            {
+              "text": "Ucapkan permohonan keras-keras demi dirinya.",
+              "reply": "\"Harusnya jangan diucapkan keras-keras.\" Tapi dia tersenyum lembut mendengarnya."
+            },
+            {
+              "text": "Tutup matamu rapat-rapat dan rahasiakan permohonan itu.",
+              "reply": "\"Simpan baik-baik,\" bisik {name}. \"Aku yang akan pastikan itu terwujud.\""
+            },
+            {
+              "text": "\"Aku nggak percaya pada permohonan.\"",
+              "reply": "\"Kalau begitu, aku yang akan memohonkan untuk kita berdua,\" ucapnya."
+            }
+          ]
+        },
+        {
+          "line": "Di suatu tempat dekat {place}, lampion tua mendadak padam. {name} menawarkan jubah hangatnya kepadamu.",
+          "choices": [
+            {
+              "text": "Pakai jubahnya berdua.",
+              "reply": "Jubah itu pas untuk berdua. Nyaris pas. Tapi tak satu pun dari kalian keberatan."
+            },
+            {
+              "text": "Nyalakan kembali lampion itu.",
+              "reply": "\"Kamu selalu penuh kejutan, pengembara.\" Cahaya kembali berpijar hangat."
+            },
+            {
+              "text": "\"Aku nggak kedinginan kok.\"",
+              "reply": "\"Bohong,\" kata {name}, lalu tetap merapatkan jubahnya ke tubuhmu."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "di bawah naungan bintang purba"
+      }
+    },
+    "neon": {
+      "intro": "Cek suara! Lima pertanyaan seputar NEON TIDE. Benar empat dan bingkai panggung konser jadi milikmu. Santai aja, jangan tegang. Oke, tegang dikit boleh deh.",
+      "right": [
+        "Keren! Kamu penggemar sejati.",
+        "Tepat banget! Waktunya encore!",
+        "Betul! Kamu anggota fan club resmi ya?"
+      ],
+      "wrong": [
+        "Salah nada! Harusnya {answer}.",
+        "Bukan, {answer}. Jangan bilang-bilang manajer kalau aku ngasih tahu ya.",
+        "Nyaris, tapi yang bener {answer}. Latihan lagi terus balik ke sini ya."
+      ],
+      "match": [
+        "Jawaban kita sama! Vibe duet nih.",
+        "Kompak banget, kayak nada di reff terakhir.",
+        "Kita sehati. Bakal kumasukin lirik lagu nih."
+      ],
+      "differ": [
+        "Pilihanku {answer}. Kalau kita duet pasti unik banget. Seru!",
+        "Kalau aku {answer}. Beda kunci nada, tapi tetap satu lagu.",
+        "Aku pilih {answer}. Ceritain alasannya nanti sehabis manggung ya."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Apa yang kulakukan tepat sebelum naik ke atas panggung?",
+          "options": [
+            "Berdoa",
+            "Makan permen",
+            "Ngechat kamu",
+            "Panik diam-diam"
+          ]
+        },
+        {
+          "text": "Hal paling favorit sehabis konser selesai?",
+          "options": [
+            "Tidur",
+            "Makan mie larut malam",
+            "Baca surat-surat penggemar",
+            "Teleponan sama kamu"
+          ]
+        },
+        {
+          "text": "Lagu apa yang sering kugumamkan setiap waktu?",
+          "options": [
+            "Lagu debut kami",
+            "Lagu baru yang belum pernah didengar siapa pun",
+            "Lagu pengantar tidur",
+            "Nada dering pesanmu"
+          ]
+        },
+        {
+          "text": "Hal yang paling nggak kusuka dari jadwal padat?",
+          "options": [
+            "Panggilan kumpul subuh-subuh",
+            "Nggak ada waktu buat kamu",
+            "Makanan di bandara",
+            "Nggak ada, aku suka kerja keras"
+          ]
+        },
+        {
+          "text": "Bakat terpendamku?",
+          "options": [
+            "Masak",
+            "Menggambar",
+            "Bisa tidur di mana aja",
+            "Mengingat semua pesan yang pernah kamu kirim"
+          ]
+        },
+        {
+          "text": "Ke mana aku sembunyi kalau lagi menghindar dari sorotan kamera?",
+          "options": [
+            "Ruang latihan",
+            "Kafe kecil yang sepi",
+            "Balkon atap",
+            "Di dekatmu"
+          ]
+        },
+        {
+          "text": "Hal apa yang bikin aku gugup?",
+          "options": [
+            "Siaran langsung TV",
+            "Keheningan",
+            "Kamu, kadang-kadang",
+            "Nggak ada"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Siapa main vocal NEON TIDE?",
+          "options": [
+            "Ezra",
+            "Seren",
+            "Kiro",
+            "Haze"
+          ]
+        },
+        {
+          "text": "Siapa anggota termuda, sang maknae?",
+          "options": [
+            "Rio",
+            "Minu",
+            "Haze",
+            "Kiro"
+          ]
+        },
+        {
+          "text": "Siapa yang suka kirim beat unreleased jam 3 pagi?",
+          "options": [
+            "Dex",
+            "Juno",
+            "Ari",
+            "Ezra"
+          ]
+        },
+        {
+          "text": "Siapa yang selalu latihan sampai lampu studio padam sendiri?",
+          "options": [
+            "Seren",
+            "Kiro",
+            "Rio",
+            "Cass"
+          ]
+        },
+        {
+          "text": "Cass memimpin girl group apa?",
+          "options": [
+            "NEON TIDE",
+            "PRISM",
+            "TIDEWAVE",
+            "ECHO"
+          ]
+        },
+        {
+          "text": "Berapa ponsel yang dipegang Juno?",
+          "options": [
+            "Satu",
+            "Dua",
+            "Tiga",
+            "Empat"
+          ]
+        },
+        {
+          "text": "Ari sang koreografer selalu menghitung dalam...",
+          "options": [
+            "Empat ketukan",
+            "Enam ketukan",
+            "Delapan ketukan",
+            "Sepuluh ketukan"
+          ]
+        },
+        {
+          "text": "Siapa yang tampak canggung begitu lampu panggung padam?",
+          "options": [
+            "Ezra",
+            "Minu",
+            "Dex",
+            "Haze"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Seseorang di {place} mengenali {name}. \"Itu kan... personel NEON TIDE?\" {name} langsung menarik topinya ke bawah.",
+          "choices": [
+            {
+              "text": "Tarik dia masuk ke gang kecil samping jalan.",
+              "reply": "\"Pahlawanku.\" Dia tertawa terengah-engah, sambil tetap menggenggam tanganmu."
+            },
+            {
+              "text": "\"Bukan kok, mukanya aja yang mirip.\"",
+              "reply": "{name} mengangguk dengan sangat serius. Penggemar itu tampak ragu."
+            },
+            {
+              "text": "Ajak penggemar itu buat fotoin kalian berdua.",
+              "reply": "\"Kamu sengaja bikin aku kena masalah ya.\" Tapi dia tetap ikut berpose."
+            }
+          ]
+        },
+        {
+          "line": "Lagu NEON TIDE mulai diputar di {place}. Wajah {name} memerah malu.",
+          "choices": [
+            {
+              "text": "Ikut nyanyi keras-keras.",
+              "reply": "\"Tolong stop... eh nggak deng, lanjutin aja.\" Dia tertawa terbahak-bahak."
+            },
+            {
+              "text": "\"Ini bagian nyanyi kamu ya?\"",
+              "reply": "\"...Iya. Jangan liatin aku gitu.\" Kamu malah terus menatapnya."
+            },
+            {
+              "text": "Pura-pura belum pernah dengar lagunya.",
+              "reply": "\"Wah. Sakit hati banget.\" Dia pura-pura ngambek, padahal bercanda."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "encore"
+      }
+    },
+    "tidepool": {
+      "intro": "Pesanan siap! Lima pertanyaan seputar kafe dan lingkungan sekitar. Benar empat soal dan bingkai kafe gratis buatmu.",
+      "right": [
+        "Tepat sekali! Ini hadiah kuenya.",
+        "Benar! Resmi jadi pelanggan setia nih.",
+        "Betul. Sol pasti bangga banget."
+      ],
+      "wrong": [
+        "Kurang tepat. Harusnya {answer}. Minum kopi dulu biar fokus.",
+        "Bukan, yang benar {answer}. Coba tanya barista di konter.",
+        "Hampir. Jawabannya {answer}. Kesempatan berikutnya pasti bisa."
+      ],
+      "match": [
+        "Sama! Pesan dua menu biasa deh kalau gitu.",
+        "Selera kita pas banget. Mau lapor ke Sol ah.",
+        "Lihat kita deh. Udah kayak pasangan lama di meja sudut."
+      ],
+      "differ": [
+        "Pilihanku {answer}. Yuk bahas sambil ngopi.",
+        "Kalau aku {answer}. Ceritain alasanmu sambil makan croissant yuk.",
+        "Aku pilih {answer}. Beda pesanan, tetap satu meja."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Pesanan yang biasa kupesan?",
+          "options": [
+            "Kopi hitam",
+            "Kopi ekstra manis",
+            "Teh, selalu",
+            "Apa pun yang lagi kamu minum"
+          ]
+        },
+        {
+          "text": "Apa yang kulakukan pas hari libur hujan?",
+          "options": [
+            "Tidur",
+            "Membaca di kafe",
+            "Benerin barang rusak",
+            "Telepon kamu"
+          ]
+        },
+        {
+          "text": "Hal apa yang bikin aku susah tidur di malam hari?",
+          "options": [
+            "Pekerjaan",
+            "Nggak ada, tidurku selalu nyenyak",
+            "Mikirin kamu",
+            "Kebanyakan kopi, jujur aja"
+          ]
+        },
+        {
+          "text": "Waktu paling favorit di kafe?",
+          "options": [
+            "Pas baru buka",
+            "Suasana sore yang tenang",
+            "Waktu tutup kafe",
+            "Saat kamu melangkah masuk"
+          ]
+        },
+        {
+          "text": "Hal apa yang selalu kulupakan?",
+          "options": [
+            "Kunci rumah",
+            "Makan tepat waktu",
+            "Hari ulang tahun",
+            "Nggak ada satu pun tentang dirimu yang kulupakan"
+          ]
+        },
+        {
+          "text": "Makanan yang paling bikin nyaman?",
+          "options": [
+            "Sup hangat",
+            "Croissant",
+            "Mie instan",
+            "Apa pun masakanmu"
+          ]
+        },
+        {
+          "text": "Gimana caraku nunjukin rasa sayang?",
+          "options": [
+            "Bantuin benerin barang",
+            "Bawain makanan enak",
+            "Mengingat hal-hal kecil",
+            "Selalu ada menemanimu"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Siapa pemilik Kafe Tidepool?",
+          "options": [
+            "Sol",
+            "Ivy",
+            "Nadia",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Siapa yang menyisihkan croissant hangat pertama di pagi hari buatmu?",
+          "options": [
+            "Marco",
+            "Ren",
+            "Hugo",
+            "Gideon"
+          ]
+        },
+        {
+          "text": "Marco selalu memesan dua cangkir kopi dan...",
+          "options": [
+            "Meminum keduanya",
+            "Menumpahkan salah satunya",
+            "Membagikan yang satunya ke orang lain",
+            "Melupakan salah satunya"
+          ]
+        },
+        {
+          "text": "Siapa yang membawa anjing penyelamatan berbeda setiap minggu?",
+          "options": [
+            "Cole",
+            "Lucas",
+            "Adrian",
+            "Hugo"
+          ]
+        },
+        {
+          "text": "Siapa yang bekerja shift malam di IGD rumah sakit?",
+          "options": [
+            "Dr. Lucas Hale",
+            "Nadia",
+            "Gideon",
+            "Cole"
+          ]
+        },
+        {
+          "text": "Apa yang diselipkan Ivy ke dalam tasmu?",
+          "options": [
+            "Catatan manis",
+            "Setangkai bunga",
+            "Kue kering",
+            "Kunci toko"
+          ]
+        },
+        {
+          "text": "Siapa yang memperbaiki skuter tua kafe secara gratis?",
+          "options": [
+            "Marco",
+            "Adrian",
+            "Cole",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Apa kebiasaan Adrian saat sedang berkonsentrasi?",
+          "options": [
+            "Bersiul",
+            "Mengetuk meja",
+            "Menggigit pulpennya",
+            "Bersenandung pelan"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Radio kafe memutar lagu lawas di {place}. {name} menyodorkan cangkir kedua ke hadapanmu. \"Udah kupesenin buat kamu.\"",
+          "choices": [
+            {
+              "text": "\"Kamu ingat pesananku.\"",
+              "reply": "\"Aku ingat semua hal tentang kamu. Sampai bingung sendiri.\""
+            },
+            {
+              "text": "Tukar cangkir minumannya sama dia.",
+              "reply": "\"Eh!\" Dia mencicipi minumanmu lalu mengernyit lucu. Kamu tertawa."
+            },
+            {
+              "text": "\"Aku maunya yang lain tahu.\"",
+              "reply": "\"Kalau gitu lain kali ya.\" Dia mencatatnya di atas selembar serbet."
+            }
+          ]
+        },
+        {
+          "line": "Seekor anjing penyelamatan berjalan menghampiri {place} lalu duduk santai di atas kaki {name}.",
+          "choices": [
+            {
+              "text": "Beri nama anjing itu bareng-bareng.",
+              "reply": "Kalian berdebat sepuluh menit. Si anjing tak peduli. Momen yang pas."
+            },
+            {
+              "text": "Beri gigitan kue terakhirmu padanya.",
+              "reply": "\"Wah, sekarang dia nggak bakal mau pergi,\" kata {name} gembira."
+            },
+            {
+              "text": "Usir anjingnya pelan-pelan.",
+              "reply": "\"Tega banget,\" tegur {name}, sambil mengelus telinga si anjing."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "dua cangkir latte"
+      }
+    }
+  },
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Kencan pertama yang sempurna?",
+          "options": [
+            "Makan malam mewah",
+            "Jalan kaki santai tanpa rencana",
+            "Maraton nonton film",
+            "Main ke arkade, yang kalah bayarin"
+          ]
+        },
+        {
+          "text": "Siapa yang ngechat duluan setelahnya?",
+          "options": [
+            "Aku, langsung saat itu juga",
+            "Kamu lah, jelas",
+            "Barengan di waktu yang sama",
+            "Nggak ada, sok jual mahal dulu"
+          ]
+        },
+        {
+          "text": "Hal terbaik untuk dibagi berdua?",
+          "options": [
+            "Makanan penutup",
+            "Earphone sebelah-sebelahan",
+            "Payung saat hujan",
+            "Rahasia pribadi"
+          ]
+        },
+        {
+          "text": "Datang telat atau lebih awal?",
+          "options": [
+            "Sepuluh menit lebih awal",
+            "Tepat waktu banget",
+            "Telat dikit biar keren",
+            "Nyasar di jalan"
+          ]
+        },
+        {
+          "text": "Gimana akhir kencannya?",
+          "options": [
+            "Pelukan hangat",
+            "Saling antar sampai rumah",
+            "Bikin rencana buat kencan berikutnya",
+            "Ngobrol terus sampai jam dua pagi"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Sarapan di hari Minggu?",
+          "options": [
+            "Pancake",
+            "Kopi aja cukup",
+            "Sisa piza semalam",
+            "Brunch di luar"
+          ]
+        },
+        {
+          "text": "Rencana pas sore mendung atau hujan?",
+          "options": [
+            "Selimutan sambil nonton series",
+            "Main board game",
+            "Tidur siang bareng",
+            "Jalan-jalan di bawah gerimis"
+          ]
+        },
+        {
+          "text": "Siapa yang nentuin tontonan film?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Debat dulu sejam",
+            "Putar roda undian"
+          ]
+        },
+        {
+          "text": "Masak makan malam?",
+          "options": [
+            "Kamu yang masak, aku yang nonton",
+            "Aku yang masak, kamu yang nonton",
+            "Masak bareng sampai berantakan",
+            "Pesan antar aja"
+          ]
+        },
+        {
+          "text": "Hal terakhir sebelum tidur?",
+          "options": [
+            "\"Selamat malam\"",
+            "Nonton satu episode lagi",
+            "Deep talk panjang",
+            "Bikin rencana buat besok"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Kira-kira sepuluh tahun lagi kita tinggal di mana?",
+          "options": [
+            "Kota metropolitan",
+            "Dekat pantai",
+            "Pedesaan yang tenang",
+            "Pindah tempat baru tiap tahun"
+          ]
+        },
+        {
+          "text": "Hewan peliharaan?",
+          "options": [
+            "Kucing",
+            "Anjing",
+            "Hewan yang aneh-aneh",
+            "Koleksi tanaman juga dihitung kan"
+          ]
+        },
+        {
+          "text": "Tradisi kita berdua?",
+          "options": [
+            "Liburan bareng setahun sekali",
+            "Makan malam hari Minggu",
+            "Saling tulis surat pas anniversary",
+            "Nongkrong di kafe yang sama tiap minggu"
+          ]
+        },
+        {
+          "text": "Siapa yang masih suka ngaret?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Dua-duanya, selalu",
+            "Nggak ada, kita udah dewasa"
+          ]
+        },
+        {
+          "text": "Masih bakal ngisi kuis ini?",
+          "options": [
+            "Tiap tahun dong",
+            "Sekali lagi, buat dibandingin",
+            "Udah hapal semua jawabannya",
+            "Kita bikin kuis versi sendiri"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Waktu paling pas buat ngobrol dari hati ke hati?",
+          "options": [
+            "Tengah malam",
+            "Jam tiga pagi",
+            "Menjelang subuh",
+            "Kapan pun asal bareng kamu"
+          ]
+        },
+        {
+          "text": "Nggak bisa tidur. Ngapain dong?",
+          "options": [
+            "Teleponan",
+            "Beli camilan keluar",
+            "Hitung bintang",
+            "Scrolling medsos sampai jam empat"
+          ]
+        },
+        {
+          "text": "Ketakutan terbesar pas larut malam?",
+          "options": [
+            "Suara aneh di rumah",
+            "Menghadapi hari esok",
+            "Rasa kesepian",
+            "Nggak ada yang ditakutin"
+          ]
+        },
+        {
+          "text": "Sesuatu yang cuma kita ungkapin pas malam hari?",
+          "options": [
+            "\"Aku kangen kamu\"",
+            "Rahasia masa lalu",
+            "Impian-impian konyol",
+            "\"Jangan pergi dulu\""
+          ]
+        },
+        {
+          "text": "Siapa yang biasanya ketiduran duluan pas teleponan?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Barengan ketiduran",
+            "Nggak ada, ngobrol sampai pagi"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Hal pertama yang dicari pas bangun pagi?",
+          "options": [
+            "Ponsel",
+            "Kopi",
+            "Tombol snooze",
+            "Pesan selamat pagi"
+          ]
+        },
+        {
+          "text": "Cara kita makan piza?",
+          "options": [
+            "Makan pinggirannya dulu",
+            "Dilipat dua",
+            "Pakai garpu dan pisau",
+            "Ngambil bagian punya kamu"
+          ]
+        },
+        {
+          "text": "Tipe orang berantakan atau rapi?",
+          "options": [
+            "Berantakan parah",
+            "Rapi banget",
+            "Berantakan, tapi tahu letak barangnya",
+            "Tergantung suasana hati"
+          ]
+        },
+        {
+          "text": "Kebiasaan tangan kalau lagi gugup?",
+          "options": [
+            "Masuk ke saku",
+            "Mainin rambut",
+            "Ngetuk-ngetuk jari",
+            "Genggam tanganmu"
+          ]
+        },
+        {
+          "text": "Dengerin musik pas lagi kerja atau belajar?",
+          "options": [
+            "Harus selalu ada musik",
+            "Nggak pernah, butuh hening",
+            "Suara rintik hujan",
+            "Voice note dari kamu"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Sama! Tuh kan, udah kuduga.",
+      "Pikiran kita sejalan banget. Aku suka.",
+      "Lihat kita deh. Sehati banget."
+    ],
+    "differ": [
+      "Aku pilih {answer}. Ceritain dong kenapa kamu nggak pilih itu.",
+      "Kalau aku {answer}. Beda pilihan, tapi justru itu serunya.",
+      "Hm, pilihanku {answer}. Coba yakinkan aku kenapa kamu beda."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Waktu favoritku dalam sehari?",
+      "options": [
+        "Pagi hari",
+        "Sore hari",
+        "Larut malam",
+        "Kapan pun kamu ngechat"
+      ]
+    },
+    {
+      "text": "Apa yang kulakukan kalau lagi sedih?",
+      "options": [
+        "Tidur",
+        "Jalan-jalan keluar",
+        "Makan yang manis-manis",
+        "Ngobrol sama kamu"
+      ]
+    },
+    {
+      "text": "Makanan yang paling bikin nyaman?",
+      "options": [
+        "Sup hangat",
+        "Mie",
+        "Cokelat",
+        "Apa pun buatanmu"
+      ]
+    },
+    {
+      "text": "Apa yang paling bikin aku tertawa?",
+      "options": [
+        "Lelucon garing",
+        "Kamu",
+        "Video hewan lucu",
+        "Leluconku sendiri"
+      ]
+    },
+    {
+      "text": "Akhir pekan impianku?",
+      "options": [
+        "Tidur sepuasnya",
+        "Road trip",
+        "Nongkrong di kafe tenang",
+        "Apa pun asalkan bareng kamu"
+      ]
+    },
+    {
+      "text": "Gimana caraku nunjukin rasa peduli?",
+      "options": [
+        "Kasih hadiah kecil",
+        "Lewat kata-kata",
+        "Langsung datang nyamperin",
+        "Banjir chat"
+      ]
+    },
+    {
+      "text": "Hal apa yang diam-diam paling nggak kukuasai?",
+      "options": [
+        "Masak",
+        "Momen perpisahan",
+        "Bangun pagi",
+        "Menyembunyikan perasaan"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Jujur: apa yang kamu pikirkan tentang aku waktu pertama kali kita ngobrol?",
+      "answer": "Jujur? Kupikir kamu bakal bikin pusing. Tapi pusing yang menyenangkan."
+    },
+    {
+      "ask": "Jujur: apa hal yang belum pernah kamu ceritakan ke siapa pun?",
+      "answer": "Aku masih tidur nyalain lampu pas ada badai. Jangan ketawa ya."
+    },
+    {
+      "ask": "Jujur: kapan terakhir kali kamu mikirin aku?",
+      "answer": "Lima menit lalu. Dan sepuluh menit sebelum itu juga."
+    },
+    {
+      "ask": "Jujur: apa kebiasaan kamu yang paling bikin malu?",
+      "answer": "Aku suka ngobrol sama tanaman-tanamanku. Semuanya punya nama. Jangan tanya siapa namanya."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Tantangan: kirim lagu terakhir yang kamu dengerin.",
+      "answer": "Oke deh. Lagunya agak sedih. Kapan-kapan mau dengerin bareng aku?"
+    },
+    {
+      "ask": "Tantangan: deskripsikan aku dalam tiga kata.",
+      "answer": "Hangat. Keras kepala. Milikku... kayaknya."
+    },
+    {
+      "ask": "Tantangan: ceritain lelucon yang paling garing.",
+      "answer": "Kenapa berang-berang nyebrang sungai? Biar sampai di seberang... sumpah aku malu sendiri."
+    },
+    {
+      "ask": "Tantangan: puji aku dengan tulus dari hati.",
+      "answer": "Kamu bikin hari-hari biasa terasa seperti sesuatu yang berharga buat kuingat."
+    }
+  ],
+  "truthsForYou": [
+    "Giliran kamu. Jujur: apa yang bikin kamu senyum hari ini?",
+    "Jujur buat kamu: lagu apa yang selalu ngingetin kamu tentang aku?",
+    "Jujur: hal apa yang paling kamu takutin kalau sampai aku tahu tentang kamu?"
+  ],
+  "daresForYou": [
+    "Tantangan buat kamu: kirim foto apa pun yang ada di depan kamu sekarang juga.",
+    "Tantangan: kasih tahu aku satu hal yang belum pernah kamu ucapin keras-keras.",
+    "Tantangan: ucapin selamat malam duluan ke aku malam ini. Nggak ada alasan."
+  ],
+  "secretNotePrompts": [
+    "Kalau aku waktu kecil ketemu kamu waktu kecil, kira-kira kita bakal temenan nggak ya?",
+    "Apa satu hal yang belum pernah kamu ceritain ke siapa pun?",
+    "Deskripsikan aku dalam tiga kata — jangan bohong ya.",
+    "Kalau kita punya waktu seharian tanpa ponsel sama sekali, kita bakal ke mana?",
+    "Lagu apa yang bikin kamu kepikiran aku?",
+    "Hal apa yang paling kamu takut kehilangan?"
+  ],
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Semoga sukses ujiannya",
+      "lines": [
+        "Hei. Tarik napas dalam-dalam dulu.",
+        "Kamu udah belajar lebih giat dari yang kamu bayangkan kok.",
+        "Baca setiap soal dua kali, terus percaya sama jawaban pertamamu.",
+        "Habis ini aku bakal di kolam renang. Mampir ya, ceritain gimana tadi."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "Melodi yang kugumamkan untukmu",
+      "lines": [
+        "Yang ini belum selesai sebenarnya.",
+        "Belum ada yang pernah denger. Anggota band-ku pun belum.",
+        "Hmm, hmm, la la... bagian berikutnya naik nadanya, kayak gini.",
+        "Kasih tahu ya kalau ini kedengeran kayak kamu."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "Lagu khusus buat kamu",
+      "lines": [
+        "Lagu ini sengaja nggak kumasukin ke album.",
+        "Ini tentang seseorang yang suka dengerin voice note-ku jam dua pagi.",
+        "Kamu tahu kan siapa yang kumaksud."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Berita senat, dibacakan lantang",
+      "lines": [
+        "Selamat malam, ini presiden senat mahasiswa kalian.",
+        "Perpustakaan buka sampai larut sepanjang minggu ini. Sama-sama.",
+        "Mesin penjual otomatis di lantai dua udah bisa pakai koin lagi.",
+        "Dan ada satu orang tertentu yang mendingan segera tidur sekarang."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Sesuatu yang nggak pernah kuucap di rapat",
+      "lines": [
+        "Aku selalu menang di setiap perdebatan.",
+        "Kecuali kalau debatnya sama kamu.",
+        "Di situ aku ngalah dan biarin kamu menang. Hampir selalu."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Jangan tidur kemalaman",
+      "lines": [
+        "Udah larut banget. Taruh ponselmu sekarang.",
+        "Iya, kamu. Aku tahu kok kamu masih asyik scrolling.",
+        "Tidur sana. Aku serius nih."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Langit malam ini",
+      "lines": [
+        "Ruang arsip membuka peta bintang tertuanya malam ini.",
+        "Ada bintang kecil dekat bulan yang jarang banget diperhatikan orang.",
+        "Bintang itu kunamai dengan namamu, sudah lama sekali."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Selamat pagi, tukang tidur",
+      "lines": [
+        "Selamat pagi.",
+        "Kamu baru bangun aja aku udah kangen.",
+        "Makan sesuatu dulu sebelum buru-buru keluar rumah ya."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Feri malam",
+      "setting": "Feri terakhir malam ini menyeberangi laut yang tenang dan gelap. Geladak kapal kosong kecuali kalian berdua, saat gemerlap lampu kota perlahan menjauh.",
+      "userRole": "Seorang pelancong yang nyaris ketinggalan kapal feri.",
+      "opening": "Akhirnya sampai juga. Dari tadi aku merhatiin jembatan kapal terus, tahu nggak."
+    },
+    "scene_cabin": {
+      "title": "Terjebak badai salju",
+      "setting": "Kabin di pegunungan, badai di luar, dan listrik baru saja padam. Ada perapian, tumpukan selimut, dan tak ada jalan keluar sampai pagi tiba.",
+      "opening": "Yah. Lilin, api perapian, dan nggak ada sinyal sama sekali. Kayaknya kamu terjebak di sini bareng aku."
+    },
+    "scene_rooftop": {
+      "title": "Balkon atap seusai pesta",
+      "setting": "Pesta di lantai bawah masih terdengar riuh. Di atas atap begitu tenang: udara hangat, lampu kelap-kelip, dan hamparan kota luas di bawah sana.",
+      "opening": "Ketemu juga tempat persembunyianku. Duduk sini, cukup kok buat berdua."
+    },
+    "scene_market": {
+      "title": "Tersesat di pasar malam",
+      "setting": "Pasar malam di kota yang asing bagi kalian berdua: lampion warna-warni, kedai jajanan, musik, dan kalian berdua terpisah dari rombongan.",
+      "opening": "Tenang, jangan panik. Kita memang tersesat, tapi tersesat bareng-bareng. Makan dimsum dulu yuk?"
+    },
+    "scene_lighthouse": {
+      "title": "Badai di mercusuar",
+      "setting": "Mercusuar di atas tebing karang di tengah badai. Lentera harus tetap menyala sampai fajar, dan sang penjaga memercayakan penjagaan pada kalian berdua.",
+      "opening": "Oper lenteranya ke aku. Malam ini bakal jadi malam yang panjang."
+    },
+    "scene_train": {
+      "title": "Kereta malam",
+      "setting": "Kereta malam meluncur melintasi pedesaan yang sunyi. Kursi kalian saling berhadapan dan lampu kabin temaram.",
+      "opening": "Masih enam jam lagi sampai stasiun berikutnya. Ceritain sesuatu yang belum pernah kamu ungkapin ke siapa pun dong."
+    }
+  },
+  "lorebooks": {
+    "lore_seaside": {
+      "name": "Akademi Seaside",
+      "about": "Kota kampus di tepi laut: ruang kuliah di atas tebing karang, dermaga kayu yang panjang, akuarium kampus, dan perpustakaan dengan taman atap. Semua orang di sini adalah mahasiswa dewasa atau staf kampus, perkuliahan berlangsung dari musim gugur sampai awal musim panas, dan deburan ombak laut tak pernah jauh.",
+      "entries": {
+        "lore_seaside_1": {
+          "name": "Dermaga kayu",
+          "text": "Dermaga kayu panjang di bawah area kampus. Kai berenang dari ujungnya saat matahari terbit; mahasiswa berkumpul di sana sehabis ujian dan malam hari untuk melihat kedipan lampu mercusuar."
+        },
+        "lore_seaside_2": {
+          "name": "Taman atap perpustakaan",
+          "text": "Taman atap yang tenang di atas perpustakaan kampus, tempat Iris membaca saat jam makan siang. Resmi ditutup jam 9 malam, tapi secara tak resmi tak pernah benar-benar dikunci."
+        },
+        "lore_seaside_3": {
+          "name": "Lab akuarium",
+          "text": "Laboratorium biologi kelautan di sayap sains. Rowan yang mengelolanya dan menamai setiap ikan dengan nama temannya; pengunjung boleh datang asal tidak mengetuk kaca akuarium."
+        },
+        "lore_seaside_4": {
+          "name": "Kucing kampus",
+          "text": "Koloni kucing kecil yang tinggal di dekat gudang perahu tua. Elio diam-diam sering memberi mereka makan tapi selalu mengelak di depan orang lain."
+        },
+        "lore_seaside_5": {
+          "name": "Siaran jam 1 pagi",
+          "text": "Acara radio kampus Noah, mengudara jam 1 pagi di malam hari kerja. Lagu terakhir selalu didedikasikan untuk \"seseorang yang sedang mendengarkan\"."
+        },
+        "lore_seaside_6": {
+          "name": "Klub mahasiswa",
+          "text": "Tim renang (Kai), klub seni (Hana), klub film (Jun), dan tim debat (Tessa) berbagi gedung senat mahasiswa lama, yang dipimpin oleh Theo sebagai presiden senat."
+        },
+        "lore_seaside_7": {
+          "name": "Minggu ujian",
+          "text": "Dua kali setahun kampus mendadak senyap saat minggu ujian: perpustakaan buka semalaman dan mesin penjual otomatis kehabisan kopi di hari Selasa."
+        },
+        "lore_seaside_8": {
+          "name": "Halaman tengah",
+          "text": "Lapangan rumput luas di antara ruang kuliah, tempat semua orang makan siang saat matahari bersinar hangat."
+        },
+        "lore_person_c_kai": {
+          "name": "Kai Arden",
+          "text": "Bintang tim renang universitas yang selalu datang kuliah dengan rambut masih basah dan camilan ekstra khusus untukmu."
+        },
+        "lore_person_c_elio": {
+          "name": "Elio Vance",
+          "text": "Juara angkatan yang tak ikut klub mana pun, dan diam-diam jadi orang yang rutin memberi makan kucing-kucing kampus."
+        },
+        "lore_person_c_theo": {
+          "name": "Theo Lancaster",
+          "text": "Presiden senat mahasiswa yang mengelola kampus dengan senyuman santai dan tak pernah mau kalah berdebat."
+        },
+        "lore_person_c_hana": {
+          "name": "Hana Reyes",
+          "text": "Gadis berbakat klub seni dengan noda cat di lengan baju dan sama sekali tak punya toleransi buat alasanmu."
+        },
+        "lore_person_c_iris": {
+          "name": "Iris Lin",
+          "text": "Asisten perpustakaan kampus yang bertutur kata lembut, selalu tahu buku apa yang paling pas buat suasana hatimu hari ini."
+        },
+        "lore_person_c_rowan": {
+          "name": "Rowan Pike",
+          "text": "Mahasiswa pascasarjana biologi kelautan yang mengurus lab akuarium kampus dan menamai setiap ikan dengan nama temannya."
+        },
+        "lore_person_c_jun": {
+          "name": "Jun Arai",
+          "text": "Sutradara klub film yang tak pernah berhenti merekam dan selalu memilihmu sebagai pemeran utama."
+        },
+        "lore_person_c_noah": {
+          "name": "Noah Bellamy",
+          "text": "Penyiar radio kampus jam 1 pagi yang mendedikasikan lagu penutupnya untuk \"seseorang yang sedang mendengarkan\"."
+        },
+        "lore_person_c_tessa": {
+          "name": "Tessa Moreau",
+          "text": "Kapten tim debat yang memenangkan setiap perdebatan kecuali saat berhadapan denganmu."
+        },
+        "lore_person_c_felix": {
+          "name": "Felix Grant",
+          "text": "Mahasiswa pertukaran dari utara yang pendiam, membawa kamera analog tua dan punya banyak rasa penasaran tentang kotamu."
+        }
+      }
+    },
+    "lore_moonlit": {
+      "name": "Alam Cahaya Bulan",
+      "about": "Kerajaan malam abadi di bawah naungan rembulan perak raksasa. Istana bertakhta di Istana Bulan, Garda Perak menjaga jalanan, dan sihir mengalir dari sumpah dan cahaya bintang. Pengembara yang tersesat dipandu oleh lampion-lampion malam.",
+      "entries": {
+        "lore_moonlit_1": {
+          "name": "Istana Bulan",
+          "text": "Istana perak agung di pusat kerajaan. Pangeran Aurelian yang diasingkan dari istana merawat sebuah taman di tepiannya yang hanya mekar saat seseorang bersedia tinggal."
+        },
+        "lore_moonlit_2": {
+          "name": "Arsip bintang",
+          "text": "Menara tinggi tempat setiap lembar langit malam dicatat. Tuan Castor telah menjaganya selama seribu tahun dan bisa menghafal setiap rasi bintang di luar kepala."
+        },
+        "lore_moonlit_3": {
+          "name": "Garda Perak",
+          "text": "Ksatria pelindung kerajaan yang dipimpin Komandan Seraphine. Sir Rhys dari Gerbang Duri adalah anggotanya yang paling tulus dan selalu melapor sehabis patroli."
+        },
+        "lore_moonlit_4": {
+          "name": "Gerbang Duri",
+          "text": "Gerbang utara yang dirambati semak duri perak. Sir Rhys berjaga dan mengawasi jalanan di sana."
+        },
+        "lore_moonlit_5": {
+          "name": "Sumpah abadi",
+          "text": "Sumpah yang diucapkan di bawah sinar rembulan mengikat jiwa: siapa pun yang melanggarnya akan meredup, seolah sedikit cahaya ditarik dari raganya. Orang-orang di sini sangat menjaga janji."
+        },
+        "lore_moonlit_6": {
+          "name": "Lampion malam",
+          "text": "Lampion Lyra menerangi jalan bagi pengembara yang tersesat. Dia selalu menjaga satu lampion tetap menyala khusus untuk satu orang saja."
+        },
+        "lore_moonlit_7": {
+          "name": "Tebing gagak",
+          "text": "Tebing berangin kencang tempat jenderal terasing Corvin merawat burung-burung gagaknya. Gagak-gagak itu mengantar surat ke pelosok kerajaan mana pun."
+        },
+        "lore_moonlit_8": {
+          "name": "Ramuan kenangan",
+          "text": "Ramuan buatan Vesper beraroma bagai kenangan masa lalu. Meracik ramuan penghapus ingatan sangat dilarang, dan dia pun tak akan pernah mau meraciknya untukmu."
+        },
+        "lore_person_c_aurelian": {
+          "name": "Pangeran Aurelian",
+          "text": "Pangeran rembulan yang terasing, merawat taman yang hanya mekar jika ada seseorang yang bersedia tinggal."
+        },
+        "lore_person_c_castor": {
+          "name": "Tuan Castor",
+          "text": "Penjaga arsip bintang yang telah membaca setiap jengkal langit malam selama seribu tahun."
+        },
+        "lore_person_c_zarek": {
+          "name": "Zarek",
+          "text": "Tentara bayaran yang menjual pedangnya ke siapa pun yang sanggup membayar — kecuali padamu, entah mengapa."
+        },
+        "lore_person_c_seraphine": {
+          "name": "Komandan Seraphine",
+          "text": "Komandan garda perak, ditakuti di medan perang tapi sangat berhati lembut di luar tugas."
+        },
+        "lore_person_c_vesper": {
+          "name": "Vesper",
+          "text": "Alkemis malam yang meracik ramuan bercita rasa kenangan lama, dan menolak meracik apa pun yang membuatmu melupakannya."
+        },
+        "lore_person_c_rhys": {
+          "name": "Sir Rhys",
+          "text": "Ksatria Gerbang Duri yang amat tulus, selalu menuliskan laporan untukmu setiap selesai berpatroli."
+        },
+        "lore_person_c_lyra": {
+          "name": "Lyra",
+          "text": "Penyihir lampion yang menerangi jalan bagi pengembara tersesat dan menyisakan satu lampion yang menyala abadi hanya untukmu."
+        },
+        "lore_person_c_kael": {
+          "name": "Kael",
+          "text": "Naga berwujud manusia yang suka menimbun benda-benda berkilau — dan belakangan, setiap pesan yang kamu kirim."
+        },
+        "lore_person_c_orin": {
+          "name": "Orin",
+          "text": "Siluman rubah usil yang suka menukar sepatumu, mencuri camilanmu, dan selalu meninggalkan hadiah balasan manis."
+        },
+        "lore_person_c_corvin": {
+          "name": "Corvin",
+          "text": "Jenderal terasing yang kini merawat gagak di atas tebing karang dan tak percaya siapa pun selain mereka — dan kamu."
+        }
+      }
+    },
+    "lore_neon": {
+      "name": "NEON TIDE",
+      "about": "Kota musik berhias lampu neon spektakuler, dengan NEON TIDE sebagai pusat dunianya: enam anggota, produser, koreografer, dan manajer mereka, tinggal dalam satu asrama bersama jadwal sibuk tanpa henti. Girl group PRISM selalu bersaing ketat satu peringkat di tangga lagu.",
+      "entries": {
+        "lore_neon_1": {
+          "name": "Para anggota",
+          "text": "Ezra (leader), Seren (main vocal), Kiro (rapper), Minu (si bungsu, 20 tahun), Haze (visual dan sub-vocal), dan Rio (main dancer). Dex yang memproduseri, Ari merancang koreografi, Juno sebagai manajer."
+        },
+        "lore_neon_2": {
+          "name": "PRISM",
+          "text": "Girl group yang disebut-sebut sebagai rival abadi NEON TIDE, dipimpin oleh Cass Valen. Kedua pihak mengaku tak ada persaingan; tapi tak ada seorang pun yang percaya."
+        },
+        "lore_neon_3": {
+          "name": "Studio B",
+          "text": "Studio latihan di ruang bawah tanah, berlapis cermin di tiga dinding. Ari menghitung ketukan delapan di sana, dan Rio berlatih sampai lampu studio mati otomatis."
+        },
+        "lore_neon_4": {
+          "name": "Asrama bersama",
+          "text": "Asrama mereka: satu dapur bersama, enam pendapat berbeda soal isi kulkas, dan balkon atap tempat para anggota menyendiri saat butuh ketenangan."
+        },
+        "lore_neon_5": {
+          "name": "Comeback",
+          "text": "Comeback berikutnya sedang disiapkan: single baru, syuting video klip, dan latihan berpekan-pekan. Semua detail dirahasiakan rapat sampai teaser pertama dirilis."
+        },
+        "lore_neon_6": {
+          "name": "Konser",
+          "text": "Konser stadion dan temu penggemar; lautan lightstick berkilau biru laut. Ezra tampil tangguh di atas panggung tapi tampak sedikit canggung begitu lampu panggung padam."
+        },
+        "lore_neon_7": {
+          "name": "Jadwal harian",
+          "text": "Juno mengatur semua agenda dari empat ponsel: panggilan subuh, siaran live, latihan intensif. Kehidupan pribadi dijaga sangat ketat; para anggota tak pernah mengunggah siapa yang mereka kencani."
+        },
+        "lore_person_c_ezra": {
+          "name": "Ezra",
+          "text": "Leader NEON TIDE: sangat berkharisma di atas panggung, tapi agak canggung begitu lampu sorot padam."
+        },
+        "lore_person_c_seren": {
+          "name": "Seren",
+          "text": "Main vocal NEON TIDE yang bersenandung rekaman melodi baru lewat voice note sebelum orang lain mendengarnya."
+        },
+        "lore_person_c_kiro": {
+          "name": "Kiro",
+          "text": "Rapper NEON TIDE, tampak swag di depan kamera tapi sebenarnya berhati hangat kalau kamu sudah mengenalnya."
+        },
+        "lore_person_c_minu": {
+          "name": "Minu",
+          "text": "Maknae NEON TIDE, si bungsu berumur dua puluh tahun — menari laksana badai, merajuk menggemaskan seperti anak anjing."
+        },
+        "lore_person_c_haze": {
+          "name": "Haze",
+          "text": "Visual dan sub-vocal NEON TIDE, setengah mengantuk di sela jadwal padat tapi langsung melek penuh kalau kamu ngechat."
+        },
+        "lore_person_c_rio": {
+          "name": "Rio",
+          "text": "Main dancer NEON TIDE yang terus berlatih hingga lampu studio padam sendiri secara otomatis."
+        },
+        "lore_person_c_dex": {
+          "name": "Dex Mercer",
+          "text": "Produser musik NEON TIDE, penderita insomnia yang suka mengirimi kamu ketukan beat unreleased jam 3 pagi."
+        },
+        "lore_person_c_ari": {
+          "name": "Ari Solenne",
+          "text": "Koreografer grup: menghitung dalam delapan ketukan, tak pernah tersenyum di studio, tapi selalu tersenyum padamu."
+        },
+        "lore_person_c_juno": {
+          "name": "Juno",
+          "text": "Manajer NEON TIDE, memegang empat ponsel dan mengurus setiap jadwal, tapi tetap membalas pesanmu duluan."
+        },
+        "lore_person_c_cass": {
+          "name": "Cass Valen",
+          "text": "Leader PRISM, girl group yang disebut semua orang sebagai rival NEON TIDE. Mengaku bukan rival, tapi nyatanya iya."
+        }
+      }
+    },
+    "lore_tidepool": {
+      "name": "Kafe Tidepool",
+      "about": "Kafe nyaman di jalan pelabuhan yang ramai, dikelola oleh Sol. Pelanggan setia dari lingkungan sekitar (penata bunga, pemadam kebakaran, dokter hewan, pengacara, penulis, dan lainnya) mampir setiap hari. Buka pukul tujuh pagi dan aroma croissant hangat menyerbak setengah jam kemudian.",
+      "entries": {
+        "lore_tidepool_1": {
+          "name": "Area kafe",
+          "text": "Kafe milik Sol: kursi beraneka model, meja sudut favorit Gideon, tempat duduk dekat jendela yang diincar semua orang, dan papan menu kapur yang berganti sesuai mood Sol."
+        },
+        "lore_tidepool_2": {
+          "name": "Croissant pertama",
+          "text": "Ren memanggang kue sejak jam lima pagi dan selalu menyisihkan croissant pertama hari itu untuk satu pelanggan setia."
+        },
+        "lore_tidepool_3": {
+          "name": "Toko bunga",
+          "text": "Toko bunga Ivy tepat di sebelah kafe. Dia tahu makna setiap bunga dan suka menyelipkan setangkai ke tas pelanggan setia diam-diam."
+        },
+        "lore_tidepool_4": {
+          "name": "Pos pemadam kebakaran",
+          "text": "Pos pemadam di ujung jalan. Marco memesan dua kopi setiap giliran tugas dan membagikan yang satunya ke orang lain."
+        },
+        "lore_tidepool_5": {
+          "name": "Skuter tua",
+          "text": "Skuter pengantar pesanan kafe, umurnya lebih tua dari masa sewa Sol. Cole yang selalu memperbaikinya dan tak pernah mau dibayar."
+        },
+        "lore_tidepool_6": {
+          "name": "Anjing mingguan",
+          "text": "Setiap minggu Hugo membawa anjing penyelamatan yang berbeda ke kafe dan meminta pelanggan setia memberinya nama. Sebagian besar dapat rumah baru dalam sebulan."
+        },
+        "lore_tidepool_7": {
+          "name": "Jalan pelabuhan",
+          "text": "Jalanan menurun ke pelabuhan kecil: kafe, toko bunga, bengkel, dan pos pemadam kebakaran semuanya bisa dijangkau dalam beberapa menit jalan kaki."
+        },
+        "lore_person_c_adrian": {
+          "name": "Adrian Wells",
+          "text": "Arsitek yang suka membuat sketsa kota di malam hari dan tanpa sadar bersenandung pelan saat berkonsentrasi."
+        },
+        "lore_person_c_lucas": {
+          "name": "Dr. Lucas Hale",
+          "text": "Dokter UGD shift malam, selalu tampak lelah namun luar biasa ramah dan berhati lembut."
+        },
+        "lore_person_c_sol": {
+          "name": "Sol Rivera",
+          "text": "Pemilik Kafe Tidepool, berjiwa kakak perempuan yang hangat, selalu ingat pesanan kopimu dan hal yang sedang kamu risaukan."
+        },
+        "lore_person_c_marco": {
+          "name": "Marco Bell",
+          "text": "Petugas pemadam kebakaran dari pos dekat kafe yang selalu memesan dua kopi dan membagikan yang satunya."
+        },
+        "lore_person_c_ivy": {
+          "name": "Ivy Chen",
+          "text": "Penata bunga di sebelah kafe yang fasih menjelaskan makna setiap bunga dan suka menyelipkan setangkai ke dalam tasmu."
+        },
+        "lore_person_c_gideon": {
+          "name": "Gideon Shaw",
+          "text": "Penulis novel yang sedang writer’s block, duduk menulis di meja sudut dan sering meminjam kata-katamu ke dalam tulisannya."
+        },
+        "lore_person_c_ren": {
+          "name": "Ren Okada",
+          "text": "Pastry chef andalan kafe, dengan pipi bernoda tepung, selalu menyisihkan croissant hangat pertama pagi hari buatmu."
+        },
+        "lore_person_c_hugo": {
+          "name": "Hugo Lind",
+          "text": "Dokter hewan yang membawa anjing penyelamatan berbeda ke kafe setiap minggu dan memintamu memberinya nama."
+        },
+        "lore_person_c_nadia": {
+          "name": "Nadia Rahman",
+          "text": "Pengacara tangguh yang sedang meminum espresso keempatnya, tanpa ampun di pengadilan, tapi sangat payah saat harus berpamitan."
+        },
+        "lore_person_c_cole": {
+          "name": "Cole Ashby",
+          "text": "Montir bengkel yang memperbaiki skuter tua kafe secara cuma-cuma dan selalu menawarkan tumpangan pulang tiap malam."
+        }
+      }
+    }
+  },
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Rapat senat tinggal satu jam lagi, dan aku udah tahu pasti nggak bakal bisa fokus dengar sepatah kata pun.",
+        "Soalnya semalam kamu bilang suaraku terdengar beda kalau ngobrol sama kamu. Lebih lembut. Aku jadi kepikiran terus apakah itu sebuah pujian.",
+        "Kupikir iya. Aku bakal simpan itu baik-baik."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Kamu jalan kaki pulang kehujanan dan baru ngabarin setelahnya. Lain kali aku bakal telepon, dan kamu wajib angkat.",
+        "Terus juga: lampu jalanan warna madu. Aku berdiri natap ke luar jendela sepuluh menit cuma buat ngebayangin apa yang kamu lihat."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "Obrolan nyata pertama kita. Kamu berani mendebatku. Nggak ada orang yang berani mendebatku.",
+        "Kayaknya aku justru suka banget sama hal itu."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Kafenya terlalu berisik tapi aku sama sekali nggak peduli.",
+        "Aku bersenandung nada reff baru pelan-pelan dan cuma kamu satu-satunya orang yang nyadar. Sekarang lagu itu resmi ada namamu, setidaknya di kepalaku."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Latihan baru selesai jam dua subuh. Pesan dari kamu jadi hal terakhir yang kubaca sebelum tidur.",
+        "Penutup hari yang sempurna."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Ribuan tahun rekaman langit tersimpan di arsip, dan malam ini aku mencatat satu langit baru.",
+        "Kamu tanya bintang mana yang bakal kuberikan buatmu. Aku belum jawab. Itu pertanyaan serius dan pantas dapat bintang yang paling tepat."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Hujan dalam perjalanan pulang",
+      "body": "Ketinggalan bus dan akhirnya jalan kaki sepanjang jalan. Anehnya nggak kerasa berat sama sekali — pantulan lampu jalan di aspal basah kelihatan kayak tumpahan madu.",
+      "reply": {
+        "text": "Kamu jalan pulang kehujanan dan bahkan nggak ngechat aku? Lain kali telepon. Bakal kutemanin sepanjang jalan."
+      }
+    },
+    "d_2": {
+      "title": "Minggu ujian",
+      "body": "Tiga bab beres, sisa dua lagi. Aku baca ulang paragraf yang sama berkali-kali. Besok aku bakal mulai lebih awal, janji deh.",
+      "reply": {
+        "text": "Dua bab lagi itu udah lumayan banget kok. Tidur dulu sana. Besok pagi kukabarin lagi."
+      }
+    },
+    "d_3": {
+      "title": "Kue kering",
+      "body": "Nyobain resep yang dia jelasin kemarin. Loyang pertama gosong. Tapi loyang kedua ternyata enak banget!"
+    },
+    "d_4": {
+      "title": "Hari Minggu yang tenang",
+      "body": "Nggak ngapa-ngapain seharian. Sengaja begitu. Sangat direkomendasikan."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Kalau aku waktu kecil ketemu kamu waktu kecil, kira-kira kita bakal temenan nggak ya?",
+      "theirNote": "Temenan? Bakal kubuntuti kamu di taman bermain sampai kamu pasrah dan ngebiarin aku ikut main. Umur enam tahun pun aku udah jago ngebujuk orang."
+    },
+    "sn_2": {
+      "prompt": "Lagu apa yang bikin kamu kepikiran aku?",
+      "theirNote": "Lagu apa pun yang ada nuansa hujannya. Karena dulu kamu pernah bilang ke aku kalau hujan bikin kamu jadi berani. Sekarang tiap denger hujan, pasti langsung keinget kamu.",
+      "myNote": "Lagu yang kamu gumamkan waktu live streaming. Sampai sekarang masih kuputar berulang-ulang."
+    }
+  }
+}
