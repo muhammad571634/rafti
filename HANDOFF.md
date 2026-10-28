@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z21. EAS build fixed: lock file in sync for npm 10 and 11 (2026-10-28)
+
+EAS build `9f11d7f6` failed at Install dependencies: EAS ran Node 22 / npm 10, whose `npm ci` wants
+a nested `typescript@5.9.3` (optional peer `^5` of `@expo/require-utils` under
+`react-native-notify-kit`, while the app uses TypeScript 6); the lock was written by npm 11, which
+leaves it out. Fix: lock regenerated with `npx npm@10.9 install --package-lock-only` (+15 lines,
+only that entry); `npm ci --include=dev` passes on npm 10 and npm 11. `eas.json` pins
+`"node": "24.14.0"` (same as the laptop and `server/Dockerfile`) for preview and production. No
+`.npmrc legacy-peer-deps`: the lock was the problem, not peer resolution. **Rule:** after any
+dependency change, run `npx -y npm@10.9 ci --include=dev --ignore-scripts` in a scratch copy of
+package.json + package-lock.json before starting an EAS build.
+
 ### 0z20. The English left in the app's data, a real Language page, labels that fit (2026-10-28, D128). NEXT: the built-in catalog (seed characters, dates, worlds, games) per language
 
 **Owner, 2026-10-28:** after checking the 14 languages on the phone: "ancha joy inglizcha qolib
