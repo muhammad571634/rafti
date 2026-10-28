@@ -11,6 +11,7 @@ import { messageText } from '../lib/story-continuity';
 import { modePart } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
+import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE, turnLines } from './reply-style';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
@@ -103,6 +104,8 @@ export interface ChatPromptInput {
   redo?: readonly string[];
   /** ↻ after 👎 on the version before: what was off (`offCue`). */
   redoOff?: OffReason;
+  /** The repetition guard's second try (server only): the earlier line the first draft echoed (`repeatCue`). */
+  repeated?: string;
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
@@ -124,6 +127,9 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('taste', 'turn', tasteLines(input.messages)),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
+    // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
+    part('openers', 'turn', openerLines(input.messages)),
+    part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
     part('hints', 'turn', input.plan ? turnLines(input.plan) : []),
     ...threadParts(input.threads ?? []),
     part('shape', 'turn', [REPLY_SHAPE]),

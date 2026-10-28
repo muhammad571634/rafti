@@ -69,6 +69,39 @@ describe('sigmazam-api', () => {
     assert.equal((await post(createApp(busy, { timeoutMs: 1000 }), { messages: [] })).status, 400);
   });
 
+  it('asks once more when the reply echoes an earlier one, and logs both calls', async () => {
+    const echo = 'Long days are the worst, come sit with me for a bit.';
+    const chat = { ...body, redo: undefined, messages: [...body.messages, { id: 'm3', conversationId: 'c', author: 'them', kind: 'text', text: echo, createdAt: '2026-10-26T10:02:00Z' }, { id: 'm4', conversationId: 'c', author: 'me', kind: 'text', text: 'still tired', createdAt: '2026-10-26T10:03:00Z' }] };
+    const turns: string[] = [];
+    const answers = [`{"messages":["${echo}"]}`, '{"messages":["Then nap. I will guard the snacks."]}'];
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(layout) {
+        turns.push(layout.turn);
+        return { text: answers[turns.length - 1], model: 'gemini-3.1-flash-lite', usage: { input: 100, output: 10 } };
+      },
+    };
+    const logged: UsageEvent[] = [];
+    const db = makeDb({ logUsage: async (event) => void logged.push(event) });
+    const res = await post(createApp(provider, { timeoutMs: 5000, db }), chat);
+    assert.deepEqual((await res.json()).messages, ['Then nap. I will guard the snacks.']);
+    assert.equal(turns.length, 2);
+    assert.match(turns[0], /YOUR RECENT REPLIES OPENED WITH/);
+    assert.doesNotMatch(turns[0], /DO NOT REPEAT/);
+    assert.ok(turns[1].includes(`DO NOT REPEAT YOURSELF: your first draft echoed something you already said in this chat:\n- "${echo}"`));
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(logged.map((row) => row.mode), ['chat', 'chatRepeat']);
+
+    // A fresh reply is asked for once; a second try that echoes as much leaves the first draft.
+    turns.length = 0;
+    answers[1] = answers[0];
+    assert.deepEqual((await (await post(createApp(provider, { timeoutMs: 5000 }), chat)).json()).messages, [echo]);
+    turns.length = 0;
+    answers[0] = '{"messages":["Want me to order soup?"]}';
+    await post(createApp(provider, { timeoutMs: 5000 }), chat);
+    assert.equal(turns.length, 1);
+  });
+
   it('gives Gemini a conversation that opens on the user side, with this turn last', () => {
     const contents = toContents({ system: [], history: [{ role: 'assistant', text: 'Hey!' }, { role: 'user', text: 'Hi' }], turn: 'Reply with JSON only.', cut: 0 });
     assert.deepEqual(

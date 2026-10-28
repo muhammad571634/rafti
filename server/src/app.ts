@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-import { layoutChatPrompt, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import type { ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import {
   buildDraftPrompt,
   buildFieldPrompt,
@@ -17,12 +17,12 @@ import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
-import { parseModelReply } from '../../src/ai/reply-style.ts';
 import type { Context } from 'hono';
 
 import { MESSAGE_SYNC_LIMITS, type ClientConfig, type MessageSyncRequest } from '../../src/ai/session-types.ts';
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, FREE_SPINS_PER_DAY, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import type { LedgerReason } from '../../src/types/index.ts';
+import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
@@ -418,24 +418,27 @@ export function createApp(
 
     const started = Date.now();
     try {
-      const layout = layoutChatPrompt(input);
-      const result = await provider.complete(layout, opts);
-      const reply = parseModelReply(result.text);
+      const { reply, result, calls, repeat } = await chatReply(provider, input, opts.timeoutMs);
       const ms = Date.now() - started;
-      const cost = costUsd(result.model, result.usage);
-      logUsage(db, userId, {
-        kind: 'llm',
-        mode: 'chat',
-        model: result.model ?? provider.name,
-        promptVersion: promptVersion(layout, 'chat'),
-        inputTokens: result.usage.input,
-        cachedTokens: result.usage.cached,
-        outputTokens: result.usage.output,
-        costUsd: cost,
-      });
+      let cost: number | null = 0;
+      for (const call of calls) {
+        const callCost = costUsd(call.result.model, call.result.usage);
+        cost = cost === null || callCost === null ? null : cost + callCost;
+        logUsage(db, userId, {
+          kind: 'llm',
+          mode: call.mode,
+          model: call.result.model ?? provider.name,
+          promptVersion: promptVersion(call.layout, 'chat'),
+          inputTokens: call.result.usage.input,
+          cachedTokens: call.result.usage.cached,
+          outputTokens: call.result.usage.output,
+          costUsd: callCost,
+        });
+      }
       const lang = input.replyLanguage === FOLLOW_USER_LANGUAGE ? 'follow' : input.replyLanguage;
+      const guard = repeat ? ` repeat=${repeat.score.toFixed(2)} ${result === calls[0].result ? 'kept' : 'redone'}` : '';
       console.log(
-        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
+        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, model: result.model ?? provider.name, ms });
