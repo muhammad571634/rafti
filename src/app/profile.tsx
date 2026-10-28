@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import * as Updates from 'expo-updates';
 import { SUPPORT_EMAIL } from '@/ai/safety';
 import { connectAccount, deleteServerAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
@@ -36,6 +37,9 @@ import { useAppStore } from '@/store/use-app-store';
 import { aurora, colors, isDark, moduleFills, space, storeColors, systemColors } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+
+/** Show the Development section in dev builds AND in preview (internal APK) builds. */
+const SHOW_DEV = __DEV__ || Updates.channel === 'preview';
 
 const AVATAR = 96;
 const ROW_ICON = 30;
@@ -104,7 +108,7 @@ export default function ProfileScreen() {
   /** Dev only: the local AI server's model while Real AI is on ("gemini:…"), else why not. */
   const [aiStatus, setAiStatus] = useState<string | undefined>();
   useEffect(() => {
-    if (!__DEV__ || !settings.realAi) return setAiStatus(undefined);
+    if (!SHOW_DEV || !settings.realAi) return setAiStatus(undefined);
     let alive = true;
     void serverModel().then((model) => {
       if (alive) setAiStatus(model ? model.replace(/^gemini:/, '') : t('profile.aiOffline'));
@@ -122,7 +126,7 @@ export default function ProfileScreen() {
     setMessageCount(String(await countMessages()));
   };
   useEffect(() => {
-    if (__DEV__) void checkMessages();
+    if (SHOW_DEV) void checkMessages();
     // Counted once when Profile opens; a tap counts again.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -363,8 +367,8 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* Development builds only. */}
-        {__DEV__ ? (
+        {/* Development and preview (internal APK) builds. */}
+        {SHOW_DEV ? (
           <View style={styles.group}>
             {/* Replies from the real model on the local server (`server/`); off = the stand-in. */}
             <SettingsRow
