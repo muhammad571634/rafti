@@ -3,5 +3,23 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "java.server.launchMode": "off",
+  "java.autobuild.enabled": false,
+  "java.import.gradle.enabled": false,
+  "java.import.maven.enabled": false,
+  "java.trace.server": "off",
+  "java.progressReports.enabled": false,
+  "java.completion.enabled": false,
+  "java.signatureHelp.enabled": false,
+  "java.hover.enabled": false,
+  "gradle.autoDetect": "off",
+  "java.gradle.buildServer.enabled": "off",
+  "files.watcherExclude": {
+    "**/android/**": true,
+    "**/.gradle/**": true,
+    "**/node_modules/**": true
+  },
+  "java.compile.nullAnalysis.mode": "disabled",
+  "terminal.integrated.environmentChangesIndicator": "off"
 }
