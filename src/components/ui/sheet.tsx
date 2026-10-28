@@ -125,10 +125,16 @@ export function Sheet({
             styles.fill,
             center
               ? styles.centerWrap
-              : [styles.bottomWrap, { paddingTop: insets.top + space.md, paddingBottom: sheetBottom }],
+              : [styles.bottomWrap, { paddingTop: insets.top + space.md }],
           ]}
           pointerEvents="box-none">
-          <View style={[center ? styles.centerCard : styles.bottomCard, scrolls && styles.capped, shadows.modal]}>
+          {/* The room under the card is its margin: KeyboardAvoidingView owns its own paddingBottom. */}
+          <View
+            style={[
+              center ? styles.centerCard : [styles.bottomCard, { marginBottom: sheetBottom }],
+              scrolls && styles.capped,
+              shadows.modal,
+            ]}>
             {!center ? <View style={styles.grabber} /> : null}
             {scrolls ? (
               <ScrollView
