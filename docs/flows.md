@@ -182,5 +182,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 3 (ko) | done | Korean content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (zh-Hant) | done | Traditional Chinese content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (id) | done | Indonesian content translation generated (1973 strings), checked and registered | — |
+| F30 Content translation: Phase 3 (vi) | done | Vietnamese content translation generated (1973 strings), checked and registered | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

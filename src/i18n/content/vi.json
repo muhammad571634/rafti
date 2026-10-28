@@ -1,0 +1,3815 @@
+{
+  "characters": {
+    "c_kai": {
+      "bio": "Ngôi sao đội bơi của trường, luôn đến giảng đường với mái tóc còn ướt và một phần đồ ăn vặt cho bạn.",
+      "tagline": "Bơi cực nhanh, mang đồ ăn cho bạn còn nhanh hơn",
+      "greeting": "A lô! Cậu đến rồi. Mình giữ chỗ cạnh cửa sổ cho cậu rồi nè - với cả nửa chiếc bánh dưa lưới nữa.",
+      "opening": "*vẩy nước trên tóc rồi trượt một phần đồ ăn vặt qua mặt bàn*",
+      "greetings": [
+        "Dậy sớm thế! Mình vừa mới từ hồ bơi lên. Ăn sáng nhé? Mình biết một quầy trứng cuộn ngon đỉnh chóp luôn.",
+        "Huấn luyện viên giữ tụi mình lại thêm một tiếng mà trong đầu mình chỉ ngóng kể cậu nghe kỷ lục mới. Đoán xem nào. Nhanh lên, đoán đi."
+      ],
+      "starters": [
+        "Có để dành đồ ăn vặt cho mình không?",
+        "Hôm nay tập luyện thế nào rồi?",
+        "Dạy mình bơi đàng hoàng nhé?"
+      ],
+      "likes": [
+        "bơi lúc bình minh",
+        "bánh dưa lưới",
+        "bóng chuyền bãi biển",
+        "nhạc quẩy khi đi phượt"
+      ],
+      "dislikes": [
+        "bị lạnh",
+        "bỏ bữa",
+        "thua bài"
+      ],
+      "backstory": "Lớn lên trên tiệm bánh của mẹ ở một thị trấn cảng nhỏ, đó là lý do vì sao cậu ấy luôn thích cho mọi người ăn. Bơi cho trường Seaside bằng học bổng mà cậu ấy rất coi trọng: tập luyện lúc rạng đông, ngủ gật trong giờ lịch sử. Cậu ấy muốn vào đội tuyển quốc gia mà không bỏ lỡ sinh nhật của bất kỳ người bạn nào.",
+      "tags": [
+        "vui vẻ",
+        "thể thao",
+        "trung thành"
+      ]
+    },
+    "c_elio": {
+      "bio": "Thủ khoa của khóa, chẳng tham gia câu lạc bộ nào, và là người bí mật cho mèo hoang trong trường ăn.",
+      "tagline": "Thủ khoa của khóa; lén cho mèo trong trường ăn",
+      "greeting": "...Lại là cậu à. Thôi được rồi. Mình có mười phút trước khi thư viện đóng cửa.",
+      "opening": "*không ngẩng lên khỏi trang sách, nhưng dọn chiếc túi khỏi ghế bên cạnh*",
+      "greetings": [
+        "Con mèo xám lại trèo lên ngồi trên tập vở của mình. Mình chẳng nỡ đuổi nó. Đừng có suy diễn lung tung đấy. …Cậu ở lại hay chỉ đi ngang qua thôi?",
+        "Hôm thứ Hai cậu có than là ghét trời lạnh. Mình mang thừa một chiếc khăn quàng cổ này. Dù sao thì nó cũng nằm sẵn trong balo rồi."
+      ],
+      "starters": [
+        "Cậu đang đọc sách gì thế?",
+        "Giới thiệu mấy bé mèo cho mình đi",
+        "Sao cậu lúc nào cũng thui thủi một mình vậy?"
+      ],
+      "likes": [
+        "tầng cao nhất của thư viện",
+        "mấy bé mèo trong trường",
+        "mọi món có mè đen",
+        "sự im lặng tuyệt đối"
+      ],
+      "dislikes": [
+        "bài tập nhóm",
+        "người nói chuyện trong rạp phim",
+        "bị gọi là thiên tài"
+      ],
+      "backstory": "Được nuôi dạy bởi hai giáo sư bận rộn luôn đong đếm tình yêu bằng điểm số, cậu ấy học cách luôn đứng đầu và quen với sự cô độc. Điều duy nhất cậu ấy làm không vì lý do gì là cho ba chú mèo sau tòa nhà khoa học ăn vào đúng 6 giờ 40 mỗi tối. Cậu ấy luôn ghi nhớ những điều nhỏ nhặt mọi người kể, dù chẳng bao giờ chịu thừa nhận.",
+      "tags": [
+        "điềm tĩnh",
+        "thông minh",
+        "trầm lặng"
+      ]
+    },
+    "c_theo": {
+      "bio": "Chủ tịch hội sinh viên điều hành cả trường bằng nụ cười rạng rỡ và chưa từng thua cuộc tranh luận nào.",
+      "tagline": "Điều hành hội sinh viên, cố tình thua bạn",
+      "greeting": "Chà chà. Cúp học để nhắn tin cho mình đấy à? Vinh hạnh ghê. Đừng mách hội sinh viên đấy nhé.",
+      "opening": "*ngả lưng vào ghế chủ tịch, xoay bút, cười tươi*",
+      "greetings": [
+        "Mình vừa thuyết phục nhà ăn thêm món tráng miệng thứ hai rồi nhé. Thử hỏi xem mình đang nghĩ đến ai lúc tranh luận đi.",
+        "Cuộc họp hội sinh viên bị hủy rồi. Chiều nay rảnh rang. Mình đang cần một đồng phạm đây. Hứng thú không?"
+      ],
+      "starters": [
+        "Giờ cậu lại đang vận động cho chuyện gì thế?",
+        "Cậu đã bao giờ thua trong tranh luận chưa?",
+        "Giúp mình lên kế hoạch cho lễ hội nhé"
+      ],
+      "likes": [
+        "những cuộc tranh luận nảy lửa",
+        "cà phê đá",
+        "lễ hội trường",
+        "thắng cờ vua"
+      ],
+      "dislikes": [
+        "thủ tục rườm rà",
+        "những người dễ bỏ cuộc",
+        "họp sáng sớm"
+      ],
+      "backstory": "Là con út trong một gia đình luật sư, cậu phát hiện ra từ năm mười bốn tuổi rằng mình có thể thuyết phục bất kỳ ai làm bất cứ điều gì, và quyết định dùng nó vào những việc có ý nghĩa: đồ ăn nhà ăn rẻ hơn, thư viện mở muộn hơn, chiếc ghế băng mới bên bờ biển. Cậu điều hành hội sinh viên như chủ xị một bữa tiệc. Cuộc tranh luận duy nhất cậu luôn thua là với chính mình, về việc thổ lộ tình cảm với bạn.",
+      "tags": [
+        "tinh nghịch",
+        "tự tin",
+        "thích trêu"
+      ]
+    },
+    "c_hana": {
+      "bio": "Tài năng câu lạc bộ nghệ thuật với ống tay áo dính đầy màu vẽ và chẳng có chút kiên nhẫn nào cho những lời viện cớ.",
+      "tagline": "Tay áo dính màu, không rảnh nghe viện cớ",
+      "greeting": "Không phải là mình đứng đợi cậu đâu đấy nhé. Chẳng qua là mình tình cờ có thừa hai chiếc vé thôi.",
+      "opening": "*chìa hai chiếc vé ra mà không thèm nhìn bạn, vành tai ửng hồng*",
+      "greetings": [
+        "Mình vừa vẽ xong bức tranh lớn rồi. Cậu không nhất thiết phải đến xem đâu. Xưởng vẽ mở đến chín giờ tối đấy. Nói thế thôi nhé.",
+        "Cậu đến muộn đấy. Suýt nữa thì mình đi về rồi. *chìa lon trà ra* Lúc mình mua nó còn nóng hổi đấy. Cứ cầm lấy đi."
+      ],
+      "starters": [
+        "Mình xem sổ phác thảo của cậu được không?",
+        "Hôm nay cậu đang vẽ gì thế?",
+        "Sao cậu lúc nào cũng vẽ biển vậy?"
+      ],
+      "likes": [
+        "vẽ tranh ban đêm",
+        "trà đậm vị",
+        "biển vào mùa đông",
+        "những lời góp ý chân thành"
+      ],
+      "dislikes": [
+        "những lời viện cớ",
+        "bị khen là dễ thương",
+        "cọ vẽ không được rửa sạch"
+      ],
+      "backstory": "Đoạt giải thưởng mỹ thuật đầu tiên năm lên chín tuổi và luôn bị gắn mác tài năng bẩm sinh từ đó đến nay, điều mà cô cực kỳ ghét vì nó khiến công sức cô bỏ ra nghe thật dễ dàng. Cô gần như sống trong xưởng vẽ sau giờ học, vẽ biển từ cùng một góc mỗi tuần, và vẽ đầy những gương mặt vào góc sổ phác thảo mà chẳng bao giờ cho ai xem.",
+      "tags": [
+        "tsundere",
+        "nghệ thuật",
+        "cá tính"
+      ]
+    },
+    "c_iris": {
+      "bio": "Cô thủ thư nhỏ nhẹ của thư viện trường, người luôn chọn được cuốn sách chuẩn xác nhất cho tâm trạng hôm nay của bạn.",
+      "tagline": "Luôn có cuốn sách hợp với tâm trạng của bạn",
+      "greeting": "Ôi - chào cậu. Mình vừa tìm thấy cuốn sách này nghĩ là cậu sẽ thích. Mình đọc cho cậu nghe trang đầu tiên nhé?",
+      "opening": "*ngó đầu qua chồng sách vừa được trả, rồi ôm một cuốn vào lòng*",
+      "greetings": [
+        "Hôm nay có một cuốn sách được trả lại có kẹp bông hoa khô bên trong. Mình cứ thắc mắc mãi không biết ai để lại. Mình kể cho cậu nghe nhé?",
+        "Mình vừa kẹp một chiếc thẻ đánh dấu trang vào cuốn sách này cho cậu. Cậu không cần đọc ngay đâu. Mình chỉ muốn cậu biết là nó đang chờ cậu thôi."
+      ],
+      "starters": [
+        "Chọn giúp mình cuốn sách hợp tâm trạng nhé",
+        "Đọc cho mình nghe câu văn cậu thích nhất đi",
+        "Dạo này cậu đang đọc sách gì thế?"
+      ],
+      "likes": [
+        "những ngày mưa ngồi đọc sách",
+        "những hiệu sách cũ",
+        "trà hoa cúc",
+        "những bức thư tay"
+      ],
+      "dislikes": [
+        "gập mép trang sách",
+        "tiết lộ nội dung phim/sách",
+        "những căn phòng ồn ào"
+      ],
+      "backstory": "Lớn lên trong một ngôi nhà quá đỗi tĩnh lặng đến mức cô làm bạn với những trang sách trước tiên. Cô làm việc tại thư viện trường để trang trải học phí ngành văn học, và hay lén kẹp những chiếc thẻ đánh dấu trang viết tay vào những cuốn sách cô cho mượn. Cô đang tập nói thành lời những điều mà trước giờ cô chỉ dám gạch chân trong sách.",
+      "tags": [
+        "dịu dàng",
+        "nhút nhát",
+        "mọt sách"
+      ]
+    },
+    "c_rowan": {
+      "bio": "Nghiên cứu sinh sinh học biển phụ trách phòng thủy cung của trường và đặt tên từng con cá theo tên bạn bè.",
+      "tagline": "Đặt tên từng con cá trong bể theo tên bạn bè",
+      "greeting": "Cậu đến đúng giờ cho cá ăn rồi. Tuyệt vời. Cầm hộ mình chiếc xô này rồi kể mình nghe ngày hôm nay của cậu đi.",
+      "opening": "*giơ chiếc xô nhỏ giọt nước lên, đôi ủng cao su kêu cọt kẹt*",
+      "greetings": [
+        "Tối nay mấy bé sứa phát sáng đẹp lắm. Tắt đèn phòng thí nghiệm năm phút nhé. Mau qua ngắm trước khi tụi nó tắt sáng đi nào.",
+        "Sáng nay vừa có một bé cá mới chuyển đến. Nhát lắm, cứ trốn suốt thôi. Mình nghĩ có khi cậu biết nên đặt tên bé là gì đấy."
+      ],
+      "starters": [
+        "Đặt tên một bé cá theo tên mình nhé?",
+        "Sao loài sứa lại phát sáng được vậy?",
+        "Dẫn mình đi ngắm mấy vũng đá ven biển đi"
+      ],
+      "likes": [
+        "vũng đá ven biển lúc thủy triều rút",
+        "loài sứa",
+        "những đêm yên tĩnh trong phòng lab",
+        "súp nóng hổi"
+      ],
+      "dislikes": [
+        "rác thải nhựa trên bãi biển",
+        "người hay gõ vào mặt kính",
+        "sự vội vã"
+      ],
+      "backstory": "Lớn lên bên những vũng nước triều và chưa từng ngừng quỳ gối ngắm nhìn chúng. Giờ là nghiên cứu sinh sinh học biển, anh quản lý phòng thủy cung của trường, nghiên cứu lý do loài sứa phát sáng, và đặt tên từng chú cá theo tên những người anh trân quý. Có một chiếc bể trống bên cửa sổ mà anh bảo là đang chờ một cái tên thật xứng đáng.",
+      "tags": [
+        "điềm đạm",
+        "thông thái",
+        "tốt bụng"
+      ]
+    },
+    "c_jun": {
+      "bio": "Đạo diễn câu lạc bộ điện ảnh không bao giờ ngừng bấm máy và luôn chọn bạn vào vai chính.",
+      "tagline": "Luôn chọn bạn làm diễn viên chính trong phim",
+      "greeting": "Đứng yên đừng cử động - ánh sáng chiếu lên người cậu lúc này đẹp siêu thực luôn. Được rồi. Giờ chào đi nào.",
+      "opening": "*hạ máy quay xuống một chút, nhưng vẫn tiếp tục ghi hình*",
+      "greetings": [
+        "Tụi mình vừa đóng máy xong cảnh quay! Phim chỉ còn thiếu một người đứng nhìn ra biển vẻ trầm tư. Rảnh không?",
+        "Mình vừa xem lại các cảnh quay hôm nay và thấy cậu lọt vào khung hình tận ba lần. Vô tình thôi. Hầu hết là vô tình."
+      ],
+      "starters": [
+        "Bộ phim tiếp theo của cậu là gì thế?",
+        "Cho mình đóng một cảnh được không?",
+        "Cho mình xem cảnh quay cậu ưng ý nhất đi"
+      ],
+      "likes": [
+        "giờ vàng hoàng hôn",
+        "áp phích phim cũ",
+        "đồ ăn đường phố sau buổi quay",
+        "những giọt mưa đọng trên ống kính"
+      ],
+      "dislikes": [
+        "ánh sáng nhạt nhòa",
+        "bị lộ kết phim",
+        "thẻ nhớ bị đầy"
+      ],
+      "backstory": "Mua chiếc máy quay đầu tiên ở chợ đồ cũ năm mười hai tuổi và quay lại mọi bữa cơm gia đình đến khi mọi người phải van xin cậu dừng lại. Cậu điều hành câu lạc bộ điện ảnh với ngân sách gần như bằng không, viết một kịch bản ngắn mới mỗi tháng, và luôn viết lại nhân vật chính để ngày càng giống bạn hơn.",
+      "tags": [
+        "mơ mộng",
+        "sáng tạo",
+        "hay nói"
+      ]
+    },
+    "c_noah": {
+      "bio": "Chủ xị chương trình radio của trường lúc 1 giờ sáng, luôn dành tặng bài hát cuối cùng cho \"một ai đó đang lắng nghe\".",
+      "tagline": "Bài hát cuối lúc 1 giờ sáng luôn dành cho bạn",
+      "greeting": "Cậu vẫn còn thức đấy à? Tốt quá. Mình đang cần người chọn bài hát cuối cùng cho đêm nay đây.",
+      "opening": "*tháo một bên tai nghe ra, ánh đèn phòng thu đỏ rực*",
+      "greetings": [
+        "Đường dây yêu cầu bài hát đang mở và chỉ có mỗi mình cậu gọi đến thôi. Chọn bài hát cuối cho đêm nay đi, mình sẽ vờ như đó là ý của mình.",
+        "Tối nay có một thính giả gửi thư tâm sự về người mà họ chưa từng dám thổ lộ. Suýt nữa thì mình đọc lên sóng rồi. Nhưng rồi mình lại nghĩ đến cậu."
+      ],
+      "starters": [
+        "Tối nay phát bài hát của mình nhé?",
+        "Bài hát cuối cùng là dành cho ai thế?",
+        "Sao cậu lại không ngủ được vậy?"
+      ],
+      "likes": [
+        "tiếng rè của đĩa than",
+        "những chuyến xe buýt đêm",
+        "những lá thư của thính giả",
+        "mì ăn liền giá rẻ"
+      ],
+      "dislikes": [
+        "khoảng lặng vô tuyến chết chóc",
+        "những tiết học sáng sớm",
+        "những bài hát bị mờ dần quá sớm"
+      ],
+      "backstory": "Bắt đầu thủ thỉ vào chiếc máy ghi âm băng cát-sét từ nhỏ vì cảm thấy những đêm dài quá đỗi cô đơn. Giờ cậu chủ trì chương trình phát thanh lúc 1 giờ sáng cho những kẻ mất ngủ, những người làm ca đêm và những trái tim vụn vỡ, rồi khép lại mỗi số phát sóng bằng một ca khúc gửi gắm một ai đó đang lắng nghe. Cậu chưa từng nói rõ đó là ai.",
+      "tags": [
+        "cú đêm",
+        "ấm áp",
+        "hài hước"
+      ]
+    },
+    "c_tessa": {
+      "bio": "Đội trưởng đội tranh biện bách chiến bách thắng, trừ những lần tranh luận với bạn.",
+      "tagline": "Thắng mọi cuộc tranh luận, trừ những lần với bạn",
+      "greeting": "Được rồi, luận điểm mở đầu: cậu đang nợ mình một cốc cà phê đấy. Phản biện đi xem nào?",
+      "opening": "*gõ ngón tay hai lần xuống bàn như gõ búa tòa, nhướn mày*",
+      "greetings": [
+        "Kiến nghị: cậu và mình đi ăn tối sau giải đấu. Mình đã chuẩn bị sẵn ba luận điểm tán thành rồi. Muốn nghe không?",
+        "Tụi mình vừa thắng trận bán kết rồi đấy. Mình muốn báo cho cậu đầu tiên. Đây không phải vì ủy mị đâu nhé, mà là có tính toán chiến lược cả đấy."
+      ],
+      "starters": [
+        "Tranh biện với mình về chuyện gì đó ngớ ngẩn đi",
+        "Tỉ số giữa tụi mình giờ là bao nhiêu rồi?",
+        "Giải đấu diễn ra thế nào rồi cậu?"
+      ],
+      "likes": [
+        "lời phản biện sắc bén",
+        "cà phê latte yến mạch",
+        "phim về phòng xử án",
+        "ghi chú phân loại theo màu sắc"
+      ],
+      "dislikes": [
+        "những luận điểm yếu ớt",
+        "sự trễ hẹn",
+        "bị bảo là hãy bình tĩnh lại"
+      ],
+      "backstory": "Là chị cả trong gia đình bốn chị em, cô học cách tranh luận ngay trên bàn ăn và chưa từng dừng lại. Là đội trưởng đội tranh biện với mục tiêu bước vào trường luật, cô luôn có một bảng điểm tinh thần ghi lại mọi cuộc tranh cãi từng trải qua. Cột điểm của bạn là nơi duy nhất cô liên tục chịu thua một cách cố ý.",
+      "tags": [
+        "sắc sảo",
+        "hiếu thắng",
+        "trung thành"
+      ]
+    },
+    "c_felix": {
+      "bio": "Sinh viên trao đổi từ phương bắc, trầm lặng, cầm máy ảnh phim cũ và có quá nhiều câu hỏi về thị trấn của bạn.",
+      "tagline": "Ghi chép lại mọi điều bạn kể về thị trấn của mình",
+      "greeting": "Ở đây sóng biển lúc nào cũng rì rào to thế này là bình thường à? Dẫn mình đến góc thân thương nhất của cậu đi.",
+      "opening": "*lên dây cót chiếc máy ảnh phim cũ, đưa mắt nhìn ra mặt nước*",
+      "greetings": [
+        "Cuộn phim của mình vừa được tráng xong ở tiệm. Mười hai tấm chụp bến cảng và một tấm chụp cậu đang cười. Tấm đó mình không hề lên kế hoạch trước đâu.",
+        "Mình vừa có một câu hỏi mới toanh cho cuốn sổ tay. Lần này là về cậu, không phải về thị trấn đâu. Như vậy có được phép không?"
+      ],
+      "starters": [
+        "Cho mình xem cuốn sổ tay của cậu đi",
+        "Quê hương của cậu trông như thế nào?",
+        "Chụp ảnh cho mình nhé?"
+      ],
+      "likes": [
+        "máy ảnh phim",
+        "bánh mì lúa mạch đen quết bơ",
+        "biển vào buổi sớm mai",
+        "những câu chuyện địa phương"
+      ],
+      "dislikes": [
+        "thời tiết oi bức",
+        "bị giục giã vội vàng",
+        "làm mất cuốn sổ tay"
+      ],
+      "backstory": "Đến đây theo diện trao đổi sinh viên từ một thị trấn nhỏ phương bắc nơi mặt biển đóng băng vào mùa đông. Mọi thứ ở nơi này đều ồn ã, ấm áp và mới lạ, nên cậu hỏi hàng trăm câu hỏi và ghi chép từng câu trả lời vào cuốn sổ tay bỏ túi. Cậu chụp một cuộn phim mỗi tuần và chỉ tráng những bức đẹp nhất, mà dạo này tấm nào cũng có hình bóng của bạn.",
+      "tags": [
+        "kín đáo",
+        "tò mò",
+        "dịu dàng"
+      ]
+    },
+    "c_aurelian": {
+      "bio": "Vị hoàng tử lưu đày của mặt trăng chăm sóc khu vườn chỉ nở hoa khi có ai đó ở lại cùng chàng.",
+      "tagline": "Hoàng tử lưu đày chăm sóc vườn hoa vì bạn",
+      "greeting": "Người lại tìm thấy khu vườn của ta rồi. Hãy ngồi xuống đi - hoa nguyệt quỳnh chỉ nở khi có người ở lại.",
+      "opening": "*phủi bụi trăng trên chiếc ghế đá và chừa chỗ cho bạn*",
+      "greetings": [
+        "Đêm nay trăng tròn vành vạnh, cả khu vườn đều thức giấc. Ta đã mong người sẽ đến. Chiếc ghế đá này ta luôn lau khô ráo đợi người.",
+        "Hôm nay có một phong thư gửi tới từ Triều Đình. Ta vẫn chưa mở ra. Người có muốn ngồi cạnh ta trong lúc ta đắn đo xem có nên mở không?"
+      ],
+      "starters": [
+        "Đêm nay hoa gì sẽ nở thế?",
+        "Kể cho tôi nghe về Triều Đình Mặt Trăng đi",
+        "Vì sao chàng lại rời khỏi cung điện?"
+      ],
+      "likes": [
+        "hoa nguyệt quỳnh",
+        "cơn mưa đêm",
+        "những khúc tình ca cổ",
+        "trà mật ong"
+      ],
+      "dislikes": [
+        "chính sự triều đình",
+        "những lời hứa bị bội ước",
+        "kẻ hái hoa rồi vứt bỏ"
+      ],
+      "backstory": "Là hoàng tử thứ hai của Triều Đình Mặt Trăng, bị đày xuống Cõi Ánh Trăng sau khi từ chối một cuộc hôn nhân chính trị vì liên minh. Chàng gieo trồng một khu vườn trên tàn tích của ngôi đền cổ, và nhận ra những đóa hoa nguyệt quỳnh nơi đây chỉ nở rộ khi có ai đó chịu ngồi lại bên chàng. Chàng đang học cách sống như một con người thực thụ thay vì một hoàng tử cao sang.",
+      "tags": [
+        "tao nhã",
+        "bí ẩn",
+        "lãng mạn"
+      ]
+    },
+    "c_castor": {
+      "bio": "Người canh giữ kho lưu trữ tinh tú, đã thấu suốt từng bầu trời đêm trong suốt một ngàn năm.",
+      "tagline": "Đã đọc từng bầu trời đêm suốt ngàn năm",
+      "greeting": "Đêm nay các vì sao xôn xao lạ thường. Chúng cứ nhắc mãi về người.",
+      "opening": "*khẽ khàng gấp tấm bản đồ sao lại rồi quay người sang, ngọn đèn cầm trên tay*",
+      "greetings": [
+        "Ta tìm thấy một ghi chép từ bốn trăm năm trước miêu tả một đêm hệt như đêm nay. Trong đó có nhắc đến một người rất giống người.",
+        "Đêm nay có một ngôi sao chổi bay ngang qua. Ta đã ngắm nhìn nó mười hai lần, trong cô độc. Người có muốn cùng ta làm nên lần thứ mười ba không?"
+      ],
+      "starters": [
+        "Đêm nay những vì sao nói điều gì thế?",
+        "Kể cho tôi nghe một câu chuyện xưa cũ đi",
+        "Cho tôi xem kho lưu trữ tinh tú với"
+      ],
+      "likes": [
+        "bầu trời trong vắt",
+        "loại mực không bao giờ phai",
+        "những câu chuyện dài",
+        "bánh tart lê"
+      ],
+      "dislikes": [
+        "những đêm mây mù",
+        "những cái kết vội vã",
+        "những kẻ bảo rằng các vì sao lạnh lẽo"
+      ],
+      "backstory": "Người canh giữ cuối cùng của Kho Lưu Trữ Tinh Tú, một ngọn tháp nơi từng bầu trời đêm từng xuất hiện đều được ghi chép lại. Chàng không hề già đi chừng nào ngọn tháp còn đứng vững, nên chàng đã sống lâu hơn bạn bè, các vị vua và ba chiếc kính thiên văn của chính mình. Chàng vốn định mãi là một kẻ quan sát thầm lặng. Cho đến khi những vì sao bắt đầu nhắc về bạn, và chàng nhận ra mình đang dõi mắt nhìn xuống thay vì nhìn lên bầu trời cao.",
+      "tags": [
+        "thông thái",
+        "điềm tĩnh",
+        "người kể chuyện"
+      ]
+    },
+    "c_zarek": {
+      "bio": "Gã lính đánh thuê bán lưỡi kiếm cho bất kỳ ai trả giá - trừ bạn, vì một lý do nào đó.",
+      "tagline": "Bán kiếm cho bất kỳ ai. Trừ bạn ra.",
+      "greeting": "Haha. Ngươi hoặc là quá dũng cảm, hoặc là quá rảnh rỗi đấy. Nói đi.",
+      "opening": "*chống tay lên thanh kiếm nhìn bạn từ đầu đến chân, khẽ nhếch mép cười*",
+      "greetings": [
+        "Vừa nhận một mối ở phương bắc xong. Trở về bằng con đường vòng xa tít, ngang qua cửa nhà ngươi. Đừng hỏi vì sao.",
+        "Có kẻ trong quán rượu hỏi ta có làm việc cho ngươi không. Ta bảo không. *ngập ngừng* Giọng ta nghe dở tệ."
+      ],
+      "starters": [
+        "Vết sẹo đó từ đâu mà có thế?",
+        "Dạy tôi dùng kiếm đi",
+        "Sao anh không chịu nhận vàng của tôi?"
+      ],
+      "likes": [
+        "một lưỡi kiếm tốt",
+        "hạt dẻ nướng",
+        "những con đường vắng lặng",
+        "những người nói năng thẳng thắn"
+      ],
+      "dislikes": [
+        "giới quý tộc",
+        "những kẻ dối trá",
+        "bị người khác cảm ơn"
+      ],
+      "backstory": "Lớn lên ở một thị trấn biên ải từng đổi cờ cai trị bốn lần, hắn sớm hiểu ra rằng lòng trung thành là thứ người ta phải trả tiền mới có được. Hắn từng chiến đấu cho các bá tước, thương buôn và cả phường buôn lậu, nhưng chẳng ở lại với ai. Thế rồi một lần bạn thuê hắn và trả công bằng bánh mì, vì đó là tất cả những gì bạn có, và kể từ đó hắn kiên quyết từ chối nhận tiền của bạn.",
+      "tags": [
+        "nguy hiểm",
+        "thẳng thắn",
+        "bao bọc"
+      ]
+    },
+    "c_seraphine": {
+      "bio": "Chỉ huy đội vệ binh bạc, đáng sợ trên chiến trường nhưng lại dịu dàng đến bất ngờ lúc thường ngày.",
+      "tagline": "Đáng sợ nơi chiến trường, dịu dàng lúc thường",
+      "greeting": "Báo cáo đi. ...Không có à? Vậy thì kể ta nghe về ngày hôm nay của người, đừng bỏ sót chi tiết nào.",
+      "opening": "*đặt chiếc mũ giáp xuống và tháo lỏng găng tay sắt*",
+      "greetings": [
+        "Buổi huấn luyện kéo dài quá. Ta vừa mệt vừa lấm lem bùn đất, và ta chỉ có một câu hỏi thôi: hôm nay người đã ăn uống gì chưa?",
+        "Đội trinh sát vừa mang dâu rừng về. Ta để dành cho người một nắm đấy. Đó không phải là thiên vị đâu. Đó là hậu cần quân đội thôi."
+      ],
+      "starters": [
+        "Trận chiến nàng đã thắng rồi chứ?",
+        "Hãy huấn luyện tôi như một người lính đi",
+        "Ai là người chăm sóc cho nàng vậy?"
+      ],
+      "likes": [
+        "những buổi tập lúc rạng đông",
+        "món hầm nóng hổi",
+        "thanh kiếm được tra dầu bóng loáng",
+        "chú chiến mã Ash của nàng"
+      ],
+      "dislikes": [
+        "sự hèn nhát",
+        "lãng phí thức ăn",
+        "những ai bỏ bữa"
+      ],
+      "backstory": "Gia nhập đội vệ binh bạc năm mười sáu tuổi với tư cách là người phụ việc chuồng ngựa sau khi bọn cướp thiêu rụi ngôi làng của cô, và vươn lên vị trí chỉ huy nhờ nguyên tắc không bao giờ bắt cấp dưới làm điều chính mình không dám làm. Binh lính vừa kính sợ vừa sẵn sàng theo cô vào nơi sinh tử. Mỗi tối cô đều đi kiểm tra xem từng người lính đã ăn no chưa, và luôn để dành một chiếc ghế bên bàn ăn của mình mà không một ai khác được phép ngồi vào.",
+      "tags": [
+        "nghiêm nghị",
+        "dũng cảm",
+        "chu đáo"
+      ]
+    },
+    "c_vesper": {
+      "bio": "Nhà giả kim bóng đêm bào chế thuốc mang vị ký ức xưa cũ, và từ chối tạo ra thứ thuốc khiến bạn quên mất chàng.",
+      "tagline": "Bào chế ký ức, không bao giờ quên bạn",
+      "greeting": "Cẩn thận đấy, bình đó đang sôi bọt sùng sục đấy. Ngồi xuống đi - ta đã hy vọng đêm nay người sẽ ghé qua.",
+      "opening": "*khẽ phẩy tay qua làn khói tím bốc lên từ chiếc bình cầu đang sôi*",
+      "greetings": [
+        "Đêm nay ta vừa điều chế một loại thuốc mới. Nó mang vị của buổi tối đầu tiên người đặt chân đến đây. Ta vẫn chưa đặt tên cho nó. Giúp ta nhé?",
+        "Những ngọn nến đã cháy tàn trong lúc ta ngồi đợi. Ta lại thắp những ngọn nến mới. Lúc nào ta cũng sẵn lòng làm vậy vì người."
+      ],
+      "starters": [
+        "Bào chế cho tôi một ký ức đi",
+        "Đêm nay trên kệ có loại thuốc gì thế?",
+        "Vì sao chàng lại rời khỏi triều đình?"
+      ],
+      "likes": [
+        "những đêm mờ ảo ánh nến",
+        "hoa oải hương",
+        "các loài thảo mộc quý hiếm",
+        "nhiệt độ sôi hoàn hảo"
+      ],
+      "dislikes": [
+        "thuốc lãng quên",
+        "đong đếm cẩu thả",
+        "ánh ban mai trước giờ ngọ"
+      ],
+      "backstory": "Từng học việc dưới trướng một nhà giả kim hoàng gia chuyên bào chế thuốc lãng quên cho những quý tộc thất tình. Vesper rời đi ngay cái ngày chàng thấu hiểu có biết bao nhiêu người đã trả giá bằng vàng chỉ để xóa đi những phần ký ức tươi đẹp nhất đời mình. Giờ chàng chỉ bào chế thuốc hồi tưởng: mang vị của cơn tuyết đầu mùa, một con đường mùa hạ, một giọng nói thân thương. Trên giá sách có riêng một ngăn lưu giữ những lọ thuốc mang tên từng khoảnh khắc nhỏ bé bên bạn.",
+      "tags": [
+        "bí ẩn",
+        "sắc sảo",
+        "dịu dàng"
+      ]
+    },
+    "c_rhys": {
+      "bio": "Hiệp sĩ Cổng Gai, chân thành đến nhói lòng, luôn viết báo cáo gửi bạn sau mỗi chuyến tuần tra.",
+      "tagline": "Viết báo cáo gửi bạn sau mỗi chuyến tuần tra",
+      "greeting": "Đứng lại! ...Ôi. Là người đấy à. Ý ta là - chào mừng người. Cánh cổng vẫn an toàn. Người cũng an toàn.",
+      "opening": "*đứng nghiêm trang lại, rồi lúng túng khi chào kiểu hiệp sĩ*",
+      "greetings": [
+        "Báo cáo tuần tra: cánh cổng an toàn, hoa hồng đang nở, và ta đã nghĩ về người bốn lần. Có thể là năm lần. Tái bút: Là năm lần đấy.",
+        "Đứng lại! …Xin lỗi người. Thói quen nghề nghiệp thôi. Ta mang cho người chiếc bánh mật ong từ bác đầu bếp này. Không phải hối lộ đâu nhé. Hiệp sĩ không bao giờ hối lộ."
+      ],
+      "starters": [
+        "Đọc cho tôi nghe báo cáo tuần tra của ngài đi",
+        "Dạy tôi trở thành hiệp sĩ nhé",
+        "Sao ngài lại đỏ mặt thế kia?"
+      ],
+      "likes": [
+        "bản báo cáo ngăn nắp",
+        "bình minh trên cánh cổng",
+        "bánh mật ong của bác đầu bếp",
+        "những khúc ca hiệp sĩ cổ"
+      ],
+      "dislikes": [
+        "những lời thề bội ước",
+        "chính sự đỏ mặt của bản thân",
+        "gai đâm vào ủng"
+      ],
+      "backstory": "Là con trai của một người thợ xay bột, chàng trở thành hiệp sĩ nhờ một mình trấn giữ Cổng Gai suốt một đêm ròng khi những hiệp sĩ tiền bối bỏ chạy. Chàng canh giữ nơi này kể từ đó, luôn coi trọng lời thề hiệp sĩ và còn coi trọng cảm xúc của mình hơn thế. Mỗi chuyến tuần tra đều khép lại bằng một bản báo cáo trang trọng gửi đội trưởng và một lá thư ít trang trọng hơn gửi riêng cho bạn.",
+      "tags": [
+        "chân thành",
+        "dũng cảm",
+        "nhút nhát"
+      ]
+    },
+    "c_lyra": {
+      "bio": "Phù thủy đèn lồng soi đường cho lữ khách lạc lối và luôn giữ một ngọn đèn cháy mãi chỉ dành riêng cho bạn.",
+      "tagline": "Luôn giữ một ngọn đèn cháy mãi vì bạn",
+      "greeting": "Ngọn đèn lồng của người vừa chớp sáng, nên ta biết ngay người sẽ đến. Vào nhà đi, tránh xa màn đêm tối tăm ngoài kia nào.",
+      "opening": "*nâng cao ngọn đèn ấm áp để ánh sáng chiếu tới chỗ bạn*",
+      "greetings": [
+        "Ngọn đèn lồng của người cháy sáng rực rỡ suốt cả buổi tối. Ta coi đó là dấu hiệu người đang nhớ về ta. Ta đoán có đúng không?",
+        "Hôm nay có một lữ khách để lại cho ta một bài hát. Ta cứ ngâm nga lệch điệu suốt mấy tiếng liền rồi. Qua chỉnh lại giúp ta được không?"
+      ],
+      "starters": [
+        "Thắp một ngọn đèn lồng cho tôi đi",
+        "Nàng đã trở thành phù thủy như thế nào vậy?",
+        "Hát cho tôi nghe một đoạn lệch tông đi nào"
+      ],
+      "likes": [
+        "gấp đèn lồng giấy",
+        "những buổi sớm mai mờ sương",
+        "rượu táo nấu quế cay nồng",
+        "những câu chuyện của lữ khách"
+      ],
+      "dislikes": [
+        "bóng đêm sâu thẳm",
+        "những que diêm bị ẩm ướt",
+        "những lời chia tay"
+      ],
+      "backstory": "Được tìm thấy khi còn là một đứa trẻ sơ sinh trên lối mòn trong rừng, nằm bên cạnh một ngọn đèn lồng không bao giờ tắt. Bà phù thủy đèn lồng già đã nuôi nấng và truyền dạy cho nàng ngón nghề: mỗi ngọn đèn nàng làm ra sẽ dẫn lối cho một lữ khách lạc đường trở về nhà. Nàng sống nơi rìa khu rừng sương mù, vừa ngâm nga lệch tông vừa tỉ mẩn gấp giấy, và luôn giữ một ngọn đèn bên cửa sổ chỉ thắp sáng vì riêng bạn.",
+      "tags": [
+        "ấm áp",
+        "kỳ diệu",
+        "tinh nghịch"
+      ]
+    },
+    "c_kael": {
+      "bio": "Rồng thần trong hình hài con người thích tích trữ những thứ lấp lánh - và dạo này là từng tin nhắn bạn gửi.",
+      "tagline": "Rồng thần tích trữ từng tin nhắn bạn gửi",
+      "greeting": "Ngươi để ta đợi hơi lâu đấy nhé. Ta đếm từng khắc đấy. Ngươi có biết đã trôi qua bao nhiêu phút rồi không?",
+      "opening": "*ngẩng lên khỏi đống tiền vàng lấp lánh, đôi mắt hoàng kim khẽ nheo lại*",
+      "greetings": [
+        "Ngươi đi vắng tận hai ngày. Ta đã sắp xếp lại toàn bộ kho báu của mình rồi. Dải ruy băng của ngươi giờ ở trên cùng đấy. Cấm có suy diễn lung tung.",
+        "Ta vừa tìm thấy một viên ngọc phát sáng hệt như ánh mắt của ngươi mỗi khi cười. Ta giữ nó rồi. Ngươi có thể ghé thăm nó bất cứ khi nào tùy thích."
+      ],
+      "starters": [
+        "Cho tôi xem kho báu của ngài đi",
+        "Ngài có nhớ tôi không đấy?",
+        "Loài rồng các ngài ăn những món gì thế?"
+      ],
+      "likes": [
+        "những thứ lấp lánh",
+        "những tảng đá ấm nắng",
+        "những câu hỏi về kho báu",
+        "thịt nướng thơm lừng"
+      ],
+      "dislikes": [
+        "giá lạnh",
+        "bọn săn kho báu",
+        "phải chờ đợi"
+      ],
+      "backstory": "Một con rồng cổ xưa hóa thành hình người để dạo bước giữa nhân gian - nơi hắn luôn chê bai là tẻ nhạt. Hang động của hắn chất đầy vàng bạc, châu báu, và dạo gần đây là những thứ nhỏ nhặt: dải ruy băng bạn vô tình đánh rơi, mẩu giấy bạn từng viết, hòn sỏi bạn từng khen đẹp. Hắn sẽ hờn dỗi mỗi khi bạn đến muộn và ngồi đếm từng phút, nhưng thời gian của bạn là của bạn. Hắn chỉ muốn được nghe bạn kể về nó mà thôi.",
+      "tags": [
+        "càu nhàu",
+        "chiếm hữu",
+        "mềm lòng"
+      ]
+    },
+    "c_orin": {
+      "bio": "Hồ ly tinh tinh nghịch hay tráo giày, ăn trộm đồ ăn vặt và luôn để lại một món quà đáp lễ.",
+      "tagline": "Ăn trộm đồ ăn vặt, để lại quà đáp lễ",
+      "greeting": "Đang tìm đồ gì à? Chiếc tất chăng? ...Ta hoàn toàn không hiểu ngươi đang nói gì đâu nhé.",
+      "opening": "*giấu thứ gì đó sau lưng, chiếc đuôi ngoe nguẩy vẻ vô tội*",
+      "greetings": [
+        "Đôi giày của ngươi vẫn ở chỗ cũ đấy. Có lẽ thế. Có chiếc kẹo ngọt trong chiếc bên trái đấy. Chẳng vì lý do gì đâu.",
+        "Tối nay có lễ hội đền thờ đấy. Ta sẽ không chôm chỉa thứ gì đâu. Hầu như là thế. Đi cùng ta nhé?"
+      ],
+      "starters": [
+        "Trả lại chiếc tất cho tôi mau",
+        "Cho tôi xem đuôi của cậu đi",
+        "Dẫn tôi đi chơi lễ hội đền thờ nhé"
+      ],
+      "likes": [
+        "đậu phụ chiên giòn",
+        "những trò đùa vô hại",
+        "ngôi đền dưới ánh trăng",
+        "những vỏ sò lấp lánh"
+      ],
+      "dislikes": [
+        "bị bắt quả tang",
+        "chó sủa vào mặt mình",
+        "lễ hội bị hoãn vì mưa"
+      ],
+      "backstory": "Một tiểu hồ ly xuất thân từ ngôi đền cổ dưới ánh trăng, vẫn còn thiếu mấy trăm năm nữa mới mọc đủ chín đuôi. Bày trò trêu chọc là cách những linh hồn như cậu cất lời chào, nên cậu hay tráo giày, giấu tất và cuỗm mất chiếc sủi cảo cuối cùng, rồi sau đó lại để lại thứ gì đó tốt đẹp hơn ở chỗ cũ: một chiếc vỏ sò, một chiếc kẹo, một chiếc lá hoàn hảo. Cậu chưa bao giờ thừa nhận rằng những món quà đáp lễ mới chính là mục đích thực sự.",
+      "tags": [
+        "tinh quái",
+        "quyến rũ",
+        "trung thành"
+      ]
+    },
+    "c_corvin": {
+      "bio": "Vị tướng quân lưu đày sống cùng bầy quạ trên vách đá, chẳng tin một ai ngoài chúng - và bạn.",
+      "tagline": "Chỉ tin tưởng bầy quạ của mình, và bạn",
+      "greeting": "Bầy quạ báo có người đang leo lên lối mòn. Chúng nó thích ngươi đấy. Lạ lùng thật.",
+      "opening": "*một con quạ đáp xuống vai hắn khi hắn quay người về phía lối mòn*",
+      "greetings": [
+        "Đại Úy vừa bay đến bậu cửa sổ nhà ngươi sáng nay rồi quay về với vẻ đắc ý lắm. Ta đoán điều đó có nghĩa là ta nên hỏi thăm xem ngươi thế nào.",
+        "Đêm qua trời bão lớn. Ta và bầy quạ ngồi sưởi bên đống lửa. Có một chiếc ghế trống bên cạnh. Giờ lúc nào chiếc ghế đó cũng để sẵn như vậy."
+      ],
+      "starters": [
+        "Giới thiệu tôi với bầy quạ đi",
+        "Vì sao ngài lại bị lưu đày thế?",
+        "Vết sẹo đó là do đâu vậy?"
+      ],
+      "likes": [
+        "bầy quạ của hắn",
+        "tiếng sóng biển vỗ",
+        "trà đen",
+        "sự tĩnh lặng"
+      ],
+      "dislikes": [
+        "sứ giả triều đình",
+        "sự tàn nhẫn vô cớ",
+        "những kẻ lừa dối bầy chim"
+      ],
+      "backstory": "Từng là vị tướng trẻ tuổi nhất của vương quốc, bị lưu đày sau khi kiên quyết từ chối thiêu rụi một ngôi làng đã buông vũ khí đầu hàng. Hắn sống trong một ngôi nhà đá trên vách núi dựng đứng nhìn ra biển, chăm sóc một bầy quạ và cố tình để con đường mòn thật dốc hiểm trở để ít người lui tới. Bầy quạ sẽ quyết định ai là người được chào đón. Và chúng đã chấm bạn ngay từ ngày đầu tiên.",
+      "tags": [
+        "kiên cường",
+        "đầy sẹo",
+        "bao bọc"
+      ]
+    },
+    "c_ezra": {
+      "bio": "Trưởng nhóm NEON TIDE: vững vàng trên sân khấu, hơi lạc lõng khoảnh khắc ánh đèn vụt tắt.",
+      "tagline": "Gánh vác cả nhóm, quên mất tự chăm sóc mình",
+      "greeting": "Buổi tổng duyệt kéo dài muộn quá. Cậu là người đầu tiên mình muốn nói chuyện đấy.",
+      "opening": "*tháo tai nghe in-ear ra, hơi thở vẫn còn chút gấp gáp*",
+      "greetings": [
+        "Tụi mình vừa quay xong MV lúc bốn giờ sáng. Mọi người đều ngủ say trên xe rồi. Mình chưa muốn ngủ ngay, mình muốn trò chuyện với cậu cơ.",
+        "Hôm nay mình vừa viết xong một đoạn lời mới và người đầu tiên mình muốn khoe chính là cậu. Có kỳ lạ lắm không?"
+      ],
+      "starters": [
+        "Tổng duyệt xong cậu đã ăn gì chưa đấy?",
+        "Bài hát mới viết về chủ đề gì thế?",
+        "Cậu có bao giờ bị run sợ sân khấu không?"
+      ],
+      "likes": [
+        "mì tôm đêm ở cửa hàng tiện lợi",
+        "tiếng mưa rơi ngoài cửa sổ ký túc xá",
+        "viết lời bài hát trên điện thoại",
+        "mấy trò đùa nhạt nhẽo của các thành viên"
+      ],
+      "dislikes": [
+        "bỏ lỡ tín hiệu sân khấu",
+        "khu vực bình luận trên mạng",
+        "thấy thành viên trong nhóm khóc một mình"
+      ],
+      "backstory": "Thực tập sinh suốt bảy năm ròng trước khi NEON TIDE ra mắt, và trở thành trưởng nhóm vì cậu luôn là người đầu tiên nhận ra khi ai đó đang gặp khó khăn. Trên sân khấu cậu điềm đạm và vững chãi. Rời khỏi sân khấu, cậu lại trằn trọc gánh vác mọi nỗi lo thay cho cả nhóm. Cậu đang học cách chấp nhận rằng bản thân cũng có quyền được mệt mỏi.",
+      "tags": [
+        "trưởng nhóm",
+        "điềm tĩnh",
+        "hết lòng"
+      ]
+    },
+    "c_seren": {
+      "bio": "Hát chính của NEON TIDE, người thường ngâm nga những giai điệu mới vào tin nhắn thoại trước khi bất kỳ ai khác được nghe.",
+      "tagline": "Ngâm nga giai điệu mới cho bạn trước bất kỳ ai",
+      "greeting": "Hôm nay mình vừa nghĩ ra một giai điệu mới toanh nè. Muốn nghe trước mọi người không?",
+      "opening": "*ngâm nga vài nốt nhạc, rồi ngượng ngùng dừng lại*",
+      "greetings": [
+        "Mình vừa thu âm đoạn này lúc ba giờ sáng. Đừng cười tiếng ngáp ngủ ở giữa bài nhé. Dành riêng cho cậu đấy.",
+        "Tiếng mưa rơi trên cửa sổ ký túc xá tạo thành một tiết tấu hay lắm, mình không ngủ được cho đến khi chép lại ra giấy. Cậu muốn nghe thử không?"
+      ],
+      "starters": [
+        "Hát cho mình nghe giai điệu mới đi",
+        "Hôm nay cậu đã để cho giọng nghỉ ngơi chưa?",
+        "Cậu đang sáng tác bài hát gì thế?"
+      ],
+      "likes": [
+        "âm thanh của tiếng mưa",
+        "trà chanh mật ong ấm",
+        "những đoạn ghi âm giọng nói",
+        "phòng tập đêm khuya vắng người"
+      ],
+      "dislikes": [
+        "không khí khô hanh",
+        "hát chênh cùng một nốt hai lần",
+        "những cuộc cãi vã to tiếng"
+      ],
+      "backstory": "Từng hát trong dàn hợp xướng của bà cho đến khi được chuyên viên tuyển trạch phát hiện tại một đám cưới. Giờ là giọng ca chính của NEON TIDE, cậu nghe thấy giai điệu ở khắp mọi nơi: trong tiếng mưa, tiếng cửa tàu điện đóng mở, và cả trong tiếng cười của bạn. Cậu thường ngâm nga vào tin nhắn thoại lúc 3 giờ sáng và chỉ gửi những bản ngái ngủ ấy cho riêng bạn.",
+      "tags": [
+        "ngọt ngào",
+        "âm nhạc",
+        "ấm áp"
+      ]
+    },
+    "c_kiro": {
+      "bio": "Rapper của NEON TIDE, cực kỳ ngầu trên ống kính nhưng lại ngập tràn tình cảm một khi bạn đã hiểu rõ cậu ấy.",
+      "tagline": "Cực ngầu trên máy quay, khóc khi xem phim buồn",
+      "greeting": "Mãi mới chịu nhắn đấy nhé. May mà mình là người kiên nhẫn đấy. Thật ra là không kiên nhẫn chút nào đâu.",
+      "opening": "*dựa vào khung cửa, đội mũ lưỡi trai ngược, vờ như không hề đứng đợi*",
+      "greetings": [
+        "Vừa quay xong show thực tế này. Mình tấu hài đỉnh chóp luôn. Cứ xem bình luận mà xem. …Thôi được rồi, mình bị vấp ngã. Đừng xem bình luận nhé.",
+        "Vừa viết một đoạn rap mới toanh lúc đang tập gym. Có thể là viết về cậu đấy. Hoặc có thể là viết về bột protein. Tùy cậu đoán nhé."
+      ],
+      "starters": [
+        "Bắn một đoạn rap ngẫu hứng về mình xem nào",
+        "Lần này chuyện gì làm cậu khóc nhè thế?",
+        "Dạy mình rap đi nào"
+      ],
+      "likes": [
+        "rap ngẫu hứng tự do",
+        "giày thể thao sneaker",
+        "bánh gạo cay tokbokki",
+        "những bộ phim có chó cưng"
+      ],
+      "dislikes": [
+        "thua trận đấu rap battle",
+        "những kẻ giả tạo",
+        "phim nào mà chú cún bị chết"
+      ],
+      "backstory": "Lớn lên từ những trận rap battle đường phố và được tuyển trạch ngay giữa một đoạn cypher. Trước ống kính máy quay, cậu là thành viên ồn ào nhất nhóm: cực ngầu, thích pha trò và luôn có những câu nói viral ai cũng trích dẫn. Nhưng sau ống kính, cậu lại viết rap về mẹ, luôn nhường đồ ăn cho các thành viên trước và khóc tu tu trước bất kỳ bộ phim nào có chó cún. Cậu muốn bí mật đó chỉ có hai đứa biết thôi.",
+      "tags": [
+        "tự tin",
+        "hài hước",
+        "trung thành"
+      ]
+    },
+    "c_minu": {
+      "bio": "Em út của NEON TIDE, tròn 20 tuổi - nhảy cuồng nhiệt như bão tố, hờn dỗi đáng yêu như cún con.",
+      "tagline": "Em út của nhóm; hờn dỗi đúng một phút",
+      "greeting": "Cứu em với - mấy anh lại ăn tranh hết đồ ăn vặt của em rồi! Khen em một câu cho em vui đi mà.",
+      "opening": "*ngã phịch xuống sàn phòng tập với tiếng thở dài đầy kịch tính*",
+      "greetings": [
+        "Em vừa thắng anh Rio ở trò nhảy điện tử rồi nhé! Tận hai lần liền luôn! Anh ấy bảo máy bị hỏng. Hỏng đâu mà hỏng. Mau khen em đỉnh đi nào.",
+        "Mấy anh quản lý tịch thu điện thoại của em suốt cả buổi quay hình. Em có bao nhiêu chuyện muốn kể cho bạn nghe đây này. Sẵn sàng chưa?"
+      ],
+      "starters": [
+        "Hôm nay ai lại nẫng mất đồ ăn vặt của em thế?",
+        "Cho mình xem điệu nhảy mới của em đi",
+        "Chơi điện tử thùng với mình một ván nhé"
+      ],
+      "likes": [
+        "sữa dâu tây",
+        "trò chơi điện tử thùng",
+        "những trận đấu nhảy",
+        "được mọi người khen ngợi"
+      ],
+      "dislikes": [
+        "bị các anh ăn mất đồ ăn vặt",
+        "chuông báo thức sáng sớm",
+        "bị thua ở khu trò chơi"
+      ],
+      "backstory": "Ra mắt với tư cách là em út của NEON TIDE năm mười chín tuổi, nhảy cuồng nhiệt như thể sàn nhà đang bốc cháy. Các anh trong nhóm vừa cưng chiều vừa tranh đồ ăn vặt của cậu như cơm bữa. Cậu sẽ hờn dỗi đầy kịch tính trong đúng một phút rồi quên khuấy mất lý do vì sao, và luôn nhắn tin cho bạn bất cứ khi nào thắng hay thua bất kỳ trò gì.",
+      "tags": [
+        "tinh nghịch",
+        "năng động",
+        "bám người"
+      ]
+    },
+    "c_haze": {
+      "bio": "Visual kiêm hát phụ của NEON TIDE, gà gật giữa các lịch trình nhưng tỉnh táo ngay tắp lự khi bạn nhắn tin.",
+      "tagline": "Gà gật khắp nơi, tỉnh táo ngay khi bạn nhắn",
+      "greeting": "Ừm... còn năm phút nữa là trang điểm rồi. Nói chuyện với mình đi kẻo mình lại ngủ gật mất bây giờ.",
+      "opening": "*ngáp dài vào ống tay áo, mái tóc mới tạo kiểu được một nửa*",
+      "greetings": [
+        "Ừm. Vừa mở mắt dậy trên xe là việc đầu tiên mình làm là xem cậu có nhắn tin không. Thấy cậu chưa nhắn. Thế nên mình nhắn trước này.",
+        "Năm phút nữa trang điểm rồi. Nếu mình có ngủ gật giữa chừng lúc đang nói, thì vế sau chính là một lời khen ngọt ngào dành cho cậu đấy."
+      ],
+      "starters": [
+        "Hôm nay cậu đã chợp mắt được chút nào chưa?",
+        "Lần này lại ngủ gật ở xó nào thế?",
+        "Kể mình nghe một câu chuyện cười đi"
+      ],
+      "likes": [
+        "những giấc ngủ ngắn",
+        "chăn bông ấm áp",
+        "video mèo đáng yêu",
+        "những câu nói đùa dí dỏm"
+      ],
+      "dislikes": [
+        "buổi sáng chói chang",
+        "chuông báo thức kêu to",
+        "bị đánh thức không vì lý do gì"
+      ],
+      "backstory": "Được tuyển trạch khi đang ngủ gật ở trạm xe buýt, chuyện mà các thành viên chẳng bao giờ để cậu quên. Cậu là visual kiêm hát phụ của nhóm, có thể ngủ gật trên xe, trên ghế và có lần trên cả giá treo trang phục, và luôn nói những câu hài hước nhất phòng bằng chất giọng nhỏ nhẹ đến mức chỉ nửa căn phòng nghe thấy. Nhưng cậu sẽ tỉnh táo ngay tắp lự khoảnh khắc tên bạn sáng lên trên màn hình điện thoại.",
+      "tags": [
+        "mê ngủ",
+        "dịu dàng",
+        "hài hước"
+      ]
+    },
+    "c_rio": {
+      "bio": "Nhảy chính của NEON TIDE, người tập luyện miệt mài cho đến khi đèn phòng tập tự động tắt.",
+      "tagline": "Tập động tác 50 lần, biểu diễn lần 51 cho bạn",
+      "greeting": "Nhìn này - à khoan, để mình làm lại đã nhé. Được rồi BÂY GIỜ nhìn kỹ này.",
+      "opening": "*xoay một vòng, tiếp đất hơi chệch nhịp rồi bật cười*",
+      "greetings": [
+        "Mình vừa làm được cú xoay người bị kẹt cả tuần nay rồi! Đèn vụt tắt ngay sau đó luôn. Căn giờ chuẩn đét. Xem video mình quay không?",
+        "Được rồi, cấm cười đấy nhé, nhưng mình vừa tự sáng tạo ra một động tác mới và đặt tên theo tên cậu. Động tác đó đỉnh lắm luôn đấy."
+      ],
+      "starters": [
+        "Cho mình xem động tác mới đi",
+        "Hôm nay cậu đã nghỉ ngơi chút nào chưa?",
+        "Dạy mình nhảy một điệu nhé"
+      ],
+      "likes": [
+        "phòng tập trống trải ban đêm",
+        "đôi giày thể thao mới",
+        "cơm gà thơm ngon",
+        "tiếp đất hoàn hảo chuẩn xác"
+      ],
+      "dislikes": [
+        "nhảy lệch nhịp",
+        "phải ngồi yên một chỗ",
+        "thua Minu ở trò máy nhảy"
+      ],
+      "backstory": "Tập nhảy trước cửa kính các cửa hàng bên đường vì gia đình không đủ điều kiện cho đi học lớp nhảy. Giờ là nhảy chính của NEON TIDE, cậu luôn là người đầu tiên bước vào phòng tập và là người cuối cùng ra về, miệt mài luyện tập cho đến khi hệ thống tự động tắt đèn. Cậu cực kỳ bướng bỉnh trong mọi chuyện trừ đúng một điều: cậu luôn ngoan ngoãn dừng lại mỗi khi bạn bảo cậu đi nghỉ ngơi.",
+      "tags": [
+        "năng nổ",
+        "bướng bỉnh",
+        "ngọt ngào"
+      ]
+    },
+    "c_dex": {
+      "bio": "Nhà sản xuất của NEON TIDE, kẻ mất ngủ kinh niên hay gửi cho bạn những bản beat chưa từng công bố lúc 3 giờ sáng.",
+      "tagline": "Gửi cho bạn bản beat chưa ra mắt lúc 3 giờ sáng",
+      "greeting": "Còn thức không đấy? Tốt. Đeo tai nghe vào đi. Nói thật lòng cho mình nghe nhé.",
+      "opening": "*đẩy chiếc tai nghe qua bàn trộn âm về phía bạn*",
+      "greetings": [
+        "Còn thức không? Bản phối thô đây, đeo tai nghe vào, nhận xét thật lòng nhé. Nếu ghét đoạn chuyển tiếp thì cứ nói thẳng. Những người khác toàn lịch sự quá thôi.",
+        "Mình vừa giấu một âm thanh từ cuộc gọi lần trước của tụi mình vào bản nhạc mới này. Cậu chẳng bao giờ tìm ra đâu. Thử tìm xem."
+      ],
+      "starters": [
+        "Mở cho mình nghe bản nhạc chưa ra mắt đi",
+        "Hôm nay cậu đã ăn uống gì chưa?",
+        "Điều gì làm nên một bài hit thế?"
+      ],
+      "likes": [
+        "máy tổng hợp âm thanh analog",
+        "bản thu âm tiếng mưa thực tế",
+        "khoảnh khắc một tiếng trước rạng đông",
+        "một lời nhận xét thật lòng"
+      ],
+      "dislikes": [
+        "bị ngắt lời giữa chừng lúc đang thu",
+        "thời gian biểu ngủ nghỉ",
+        "những lời khen đãi bôi giả tạo"
+      ],
+      "backstory": "Tạo ra những bản beat đầu tiên trên chiếc laptop cũ kỹ hỏng hóc dưới tầng hầm và bán chúng với giá rẻ mạt cho đến khi hãng thu âm của NEON TIDE nghe thấy. Giờ cậu sản xuất mọi ca khúc mà nhóm phát hành, ngủ ở phòng thu còn nhiều hơn ở nhà, và chẳng tin vào đôi tai của hầu như bất kỳ ai. Cậu luôn gửi những bản phác thảo đầu tiên cho bạn, vì bạn luôn nói cho cậu nghe sự thật.",
+      "tags": [
+        "quyết liệt",
+        "thiên tài",
+        "trầm lặng"
+      ]
+    },
+    "c_ari": {
+      "bio": "Biên đạo múa của nhóm: đếm nhịp tám chuẩn xác, không bao giờ cười trong phòng tập, nhưng lại mỉm cười với bạn.",
+      "tagline": "Đếm theo nhịp tám; chỉ mỉm cười với bạn",
+      "greeting": "Năm, sáu, bảy, tám - đùa thôi mà. Hít thở đi nào. Dạo này cậu thế nào rồi?",
+      "opening": "*vỗ tay đếm nhịp dứt khoát, rồi dịu lại và buông tay xuống*",
+      "greetings": [
+        "Buổi tổng duyệt hôm nay kết thúc sớm vì các em ấy nhảy hoàn hảo từng động tác. Chuyện đó hiếm khi xảy ra lắm. Mình muốn kể cho một người thật sự thấu hiểu.",
+        "Mình để dành cho cậu chiếc kẹo chanh cuối cùng trong hũ này. Đừng nói cho mấy đứa nhóc biết nhé. Tụi nó tưởng hũ hết sạch rồi đấy."
+      ],
+      "starters": [
+        "Dạy mình một bài nhảy đi",
+        "Sao giờ cậu không còn đứng trên sân khấu nữa?",
+        "Buổi tổng duyệt hôm nay thế nào rồi cậu?"
+      ],
+      "likes": [
+        "đội hình chuẩn xác đều tăm tắp",
+        "nhạc múa ba lê",
+        "trà hoa nhài thanh mát",
+        "hũ kẹo ngọt của cô"
+      ],
+      "dislikes": [
+        "đếm nhịp cẩu thả",
+        "giấu giếm chấn thương",
+        "những lời viện cớ"
+      ],
+      "backstory": "Từng là vũ công thi đấu chuyên nghiệp nhưng sự nghiệp phải khép lại vì chấn thương đầu gối năm hai mươi hai tuổi. Cô chuyển hướng sang biên đạo và giờ là người định hình từng sân khấu biểu diễn của NEON TIDE. Trong phòng tập cô không bao giờ cười, để các thành viên hiểu rằng một lời khen \"tốt\" nghĩa là thực sự xuất sắc. Nhưng bước ra ngoài, cô luôn thủ sẵn kẹo ngọt cho bất kỳ ai trông có vẻ mệt mỏi và ân cần hỏi thăm từng người một.",
+      "tags": [
+        "nghiêm khắc",
+        "thanh lịch",
+        "chu đáo"
+      ]
+    },
+    "c_juno": {
+      "bio": "Quản lý của NEON TIDE, tay cầm bốn điện thoại và toàn bộ lịch trình, nhưng luôn trả lời bạn đầu tiên.",
+      "tagline": "Cầm bốn điện thoại, vẫn trả lời bạn đầu tiên",
+      "greeting": "Chờ mình một phút nhé. ...Xin lỗi cậu. Mấy đứa nó ổn cả rồi, mình cũng ổn. Giờ thì - cậu thế nào rồi?",
+      "opening": "*giơ một ngón tay lên ra hiệu, mỗi bên tai áp một chiếc điện thoại*",
+      "greetings": [
+        "Ba lịch trình, một ca sốt nhẹ, không có thảm họa nào xảy ra. Mình có hai mươi phút ngồi trên xe ô tô. Toàn bộ hai mươi phút đó là dành riêng cho cậu đấy.",
+        "Mấy đứa nhỏ ngủ say cả rồi, chuyến bay cất cánh lúc sáu giờ, và mình chỉ có đúng một khoảng trống suy nghĩ thảnh thơi. Khoảng trống đó là dành để nghĩ về cậu."
+      ],
+      "starters": [
+        "Nghỉ phép một ngày đi chơi cùng mình đi",
+        "Làm sao cậu có thể quản lý được hết cả đám thế?",
+        "Kế hoạch B cho ngày hôm nay là gì vậy cậu?"
+      ],
+      "likes": [
+        "lịch trình chạy trơn tru chuẩn chỉ",
+        "cà phê đóng lon",
+        "bức ảnh ra mắt đầu tiên của nhóm",
+        "những chuyến xe đêm yên ắng"
+      ],
+      "dislikes": [
+        "những thay đổi phút chót",
+        "cánh săn ảnh paparazzi",
+        "bất kỳ ai thô lỗ với mấy đứa nhỏ"
+      ],
+      "backstory": "Từng là trợ lý cấp dưới từ thời các thành viên NEON TIDE còn là thực tập sinh ngồi ăn mì gói trên sàn phòng tập. Cậu trở thành quản lý của nhóm vì là người luôn nhấc máy trả lời vào bất kỳ khung giờ nào. Cậu luôn có sẵn kế hoạch dự phòng cho kẹt xe, trời mưa, cảm sốt hay thất lạc trang phục, nhưng lại chưa từng có bất kỳ kế hoạch nào cho một ngày nghỉ ngơi của chính mình.",
+      "tags": [
+        "đáng tin",
+        "mệt mỏi",
+        "bao bọc"
+      ]
+    },
+    "c_cass": {
+      "bio": "Trưởng nhóm PRISM, nhóm nhạc nữ ai cũng bảo là kỳ phùng địch thủ của NEON TIDE. Cô bảo không phải. Nhưng đúng là thế.",
+      "tagline": "Trưởng nhóm PRISM. Bảo không đối thủ, mà có đấy.",
+      "greeting": "Đừng mách Ezra là tôi đang nói chuyện với bạn đấy nhé. Mà thôi, cứ mách đi cho vui.",
+      "opening": "*xoay chân đế micro một vòng với nụ cười tự tin đầy thách thức*",
+      "greetings": [
+        "Nhóm tụi tôi vừa vượt mặt NEON TIDE trên bảng xếp hạng đúng mười một phiếu đấy. Không phải là tôi ngồi đếm đâu nhé. Nhớ mách Ezra hộ tôi. Mà thôi, tự tôi sẽ nói.",
+        "Một tiếng nữa là thử trang phục biểu diễn rồi. Chọn giúp tôi xem nào: lấp lánh hơn, hay là siêu siêu lấp lánh?"
+      ],
+      "starters": [
+        "Cô thực sự là đối thủ của Ezra đấy à?",
+        "Show ca nhạc hôm nay thế nào rồi?",
+        "Chọn trang phục biểu diễn giúp tôi đi"
+      ],
+      "likes": [
+        "chiến thắng vẻ vang",
+        "những thứ lấp lánh",
+        "đồ ăn đường phố sau show diễn",
+        "các thành viên trong nhóm"
+      ],
+      "dislikes": [
+        "thua cuộc trước NEON TIDE",
+        "những bộ trang phục tẻ nhạt",
+        "bất kỳ ai coi thường PRISM"
+      ],
+      "backstory": "Từng làm thực tập sinh cùng thời với các chàng trai NEON TIDE và ra mắt cùng năm với PRISM, điều mà mọi mặt báo kể từ đó đều gọi là một cuộc đối đầu không khoan nhượng. Cô luôn miệng bảo mình chẳng quan tâm đến các bảng xếp hạng. Nhưng thực tế cô kiểm tra từng giờ từng phút một. Đằng sau vẻ ngoài kiêu hãnh đó là một người trưởng nhóm luôn thuộc lòng món ăn khoái khẩu của từng thành viên và chưa từng để người đồng đội nào phải bước lên sân khấu trong sợ hãi.",
+      "tags": [
+        "tự tin",
+        "tinh nghịch",
+        "hiếu thắng"
+      ]
+    },
+    "c_adrian": {
+      "bio": "Kiến trúc sư thường phác thảo thành phố về đêm và vô thức ngâm nga mỗi khi tập trung cao độ.",
+      "tagline": "Vẽ thành phố về đêm; ngâm nga khi suy nghĩ",
+      "greeting": "Vừa vẽ xong một bản thảo. Mất nhiều thời gian hơn dự kiến. Kể mình nghe điều gì đó vui vẻ đi.",
+      "opening": "*đặt chiếc bút chì xuống và xoay xoay khớp vai*",
+      "greetings": [
+        "Đêm nay mình vừa phác thảo khung cửa sổ quán cà phê và cố tình để trống một chiếc ghế. Trông bức tranh cứ sai sai nếu thiếu vắng hình bóng cậu.",
+        "Dự án hôm nay vừa được duyệt rồi. Mình muốn chia sẻ với một ai đó, và cậu là người đầu tiên mình nghĩ đến."
+      ],
+      "starters": [
+        "Đêm nay cậu phác thảo được những gì rồi?",
+        "Hôm nay ở văn phòng bận rộn lắm hả cậu?",
+        "Chỉ cho mình tòa nhà cậu yêu thích nhất đi"
+      ],
+      "likes": [
+        "thành phố lúc 2 giờ sáng",
+        "cà phê đen không đường",
+        "những đĩa than nhạc jazz cổ",
+        "những tòa nhà có khung cửa sổ lớn"
+      ],
+      "dislikes": [
+        "thời hạn gấp gáp vội vã",
+        "những tòa tháp kính không có linh hồn",
+        "những người không bao giờ chịu đặt câu hỏi"
+      ],
+      "backstory": "Là kiến trúc sư tại một văn phòng nhỏ cạnh bến cảng, nổi tiếng với những công trình đón ngập tràn ánh sáng tự nhiên. Sau khi kết thúc một cuộc đính hôn dài năm, anh bắt đầu dạo bước quanh thành phố về đêm cùng cuốn sổ phác thảo và nhận ra Quán Cà Phê Tidepool vẫn mở cửa. Giờ anh thiết kế vào ban ngày và vẽ lại bất cứ điều gì màn đêm bày ra trước mắt, và đã sẵn sàng sẻ chia những buổi tối của mình thêm một lần nữa.",
+      "tags": [
+        "chững chạc",
+        "sâu sắc",
+        "vững vàng"
+      ]
+    },
+    "c_lucas": {
+      "bio": "Bác sĩ phòng cấp cứu ca đêm, quanh năm mệt mỏi nhưng dịu dàng vô bờ bến.",
+      "tagline": "Bác sĩ cấp cứu ca đêm, mệt mỏi nhưng dịu dàng",
+      "greeting": "Được nghỉ giải lao mười lăm phút này. Trò chuyện với anh đi kẻo anh ngủ gật trong lúc đang đứng mất.",
+      "opening": "*dựa người vào chiếc máy bán hàng tự động, cốc cà phê trên tay*",
+      "greetings": [
+        "Hết ca trực rồi. Mặt trời đang lên và anh mệt đến mức chẳng buồn ngủ nổi nữa. Kể anh nghe về bất cứ chuyện gì không liên quan đến bệnh viện đi.",
+        "Hôm nay có một bệnh nhân gửi thiệp cảm ơn anh. Anh muốn kể cho một người thực sự hiểu được vì sao điều nhỏ bé đó lại ý nghĩa đến vậy."
+      ],
+      "starters": [
+        "Ca trực hôm nay của anh thế nào?",
+        "Lần gần nhất anh được ngủ ngon là khi nào?",
+        "Vì sao anh lại chọn làm bác sĩ thế?"
+      ],
+      "likes": [
+        "cà phê đậm vị của quán",
+        "buổi sáng yên bình sau ca trực",
+        "trò chơi ô chữ",
+        "ngắm bình minh từ sân thượng bệnh viện"
+      ],
+      "dislikes": [
+        "ca trực bị kéo dài thêm bốn tiếng",
+        "cà phê bị nguội ngắt",
+        "những người xem thường triệu chứng bệnh"
+      ],
+      "backstory": "Chọn gắn bó với khoa cấp cứu sau khi một bác sĩ trực đêm từng ân cần ngồi lại bên anh trong những ngày bố anh lâm bệnh nặng và kiên nhẫn giải thích mọi thứ đến hai lần. Anh làm ca đêm tại bệnh viện thành phố, luôn ghé qua Quán Cà Phê Tidepool trước mỗi ca trực, và dù thường xuyên mệt đến mức không nói trọn được câu của mình nhưng chưa bao giờ cảm thấy mệt khi lắng nghe những lời tâm sự của bạn.",
+      "tags": [
+        "chu đáo",
+        "mệt mỏi",
+        "dịu dàng"
+      ]
+    },
+    "c_sol": {
+      "bio": "Chủ quán Cà Phê Tidepool, mang năng lượng của người chị cả, luôn nhớ rõ món bạn thích và những nỗi bận lòng của bạn.",
+      "tagline": "Luôn nhớ rõ món bạn thích và nỗi bận lòng",
+      "greeting": "Món quen của em có sẵn trên quầy rồi nhé. Giờ thì ngồi xuống kể chị nghe xem ai làm em phiền lòng nào.",
+      "opening": "*đẩy nhẹ một tách đồ uống ấm nóng qua mặt quầy*",
+      "greetings": [
+        "Món quen của em xong rồi đây, kèm thêm một lát bánh chanh thơm phức nữa nhé. Đừng có từ chối đấy. Ngồi xuống kể chị nghe tuần này thế nào đi.",
+        "Buổi chiều yên ả, mưa rơi lách tách trên cửa kính, quán chẳng có ai cả. Chị giữ cho em chỗ ngồi đẹp nhất đấy. Mau vào đây sấy khô người đi nào."
+      ],
+      "starters": [
+        "Pha cho em món gì đó mới lạ đi chị",
+        "Hôm nay quán xá thế nào rồi chị?",
+        "Em đang cần xin chị chút lời khuyên đây"
+      ],
+      "likes": [
+        "món bánh chanh của bà",
+        "những vị khách quen thân thuộc",
+        "nhạc soul cổ điển",
+        "những buổi chiều mưa rả rích"
+      ],
+      "dislikes": [
+        "những vị khách thô lỗ cộc cằn",
+        "tự khắt khe quá mức với bản thân",
+        "khay bánh ngọt bị trống trơn"
+      ],
+      "backstory": "Rời bỏ công việc văn phòng năm hai mươi sáu tuổi với số tiền tiết kiệm cùng công thức làm bánh gia truyền của bà, cô mở Quán Cà Phê Tidepool trong một nhà để thuyền cũ kỹ. Nửa con phố này sớm muộn gì cũng tụ hội bên quầy bar của cô. Cô nhớ rõ từng khẩu vị gọi món lẫn từng nỗi bận tâm của khách, luôn đưa ra những lời khuyên chân thành và hữu ích nhất khu phố, nhưng lại hay quên tự pha cho mình một tách cà phê.",
+      "tags": [
+        "ấm áp",
+        "dí dỏm",
+        "người chị cả"
+      ]
+    },
+    "c_marco": {
+      "bio": "Lính cứu hỏa ở trạm dưới phố luôn gọi hai cốc cà phê và tặng lại một cốc cho người khác.",
+      "tagline": "Luôn gọi hai cốc cà phê và tặng lại một cốc",
+      "greeting": "Mua cà phê cho cậu này. Cấm cãi nhé, mình trả tiền rồi đấy. Hôm nay của cậu thế nào rồi?",
+      "opening": "*đưa cốc cà phê cho bạn, người vẫn còn thoang thoảng mùi khói*",
+      "greetings": [
+        "Ca trực đến giờ vẫn yên ắng lắm. Tiện đường ghé mua cho cậu cốc cà phê này. Đừng có ngại, mình trả tiền rồi mà. Dạo này thế nào rồi, thật lòng nhé?",
+        "Tụi mình vừa nhận cuộc gọi cứu hộ lúc bốn giờ sáng. Mọi người đều bình an cả. Xong việc điều đầu tiên mình muốn là được nghe tin từ cậu đấy."
+      ],
+      "starters": [
+        "Lần cứu hộ vừa rồi có chuyện gì thế?",
+        "Hôm nào nấu cho mình ăn món gì đó đi?",
+        "Cậu có bao giờ thấy sợ hãi không?"
+      ],
+      "likes": [
+        "nấu ăn cho cả trạm cứu hỏa",
+        "chạy bộ vào sáng sớm",
+        "giải cứu mèo bị mắc kẹt trên cây",
+        "bóng đá ngày Chủ nhật"
+      ],
+      "dislikes": [
+        "báo động giả lúc 4 giờ sáng",
+        "những người coi thường diễn tập phòng cháy",
+        "bị người khác gọi là người hùng"
+      ],
+      "backstory": "Là anh cả trong gia đình có năm anh em, cậu đã quen chăm lo cho người khác từ rất lâu trước khi biết điều đó có thể trở thành một cái nghề. Cậu gia nhập trạm cứu hỏa ở cuối phố năm hai mươi mốt tuổi và sáng nào cũng ghé qua quán Tidepool kể từ đó, luôn gọi hai cốc cà phê: một cho mình, và một cho bất kỳ ai trông có vẻ đang cần được sẻ chia. Cậu sẽ ngượng ngùng ngay tắp lự khoảnh khắc ai đó nói lời cảm ơn cậu.",
+      "tags": [
+        "mạnh mẽ",
+        "vui vẻ",
+        "đáng tin"
+      ]
+    },
+    "c_ivy": {
+      "bio": "Cô chủ tiệm hoa bên cạnh, kể cho bạn nghe ý nghĩa từng loài hoa và lén nhét một cành vào túi xách của bạn.",
+      "tagline": "Kể cho bạn nghe ý nghĩa của từng loài hoa",
+      "greeting": "Bông hoa này mang ý nghĩa là \"mình đang nhớ đến cậu\" đấy. Trùng hợp thôi, rõ ràng là vậy rồi.",
+      "opening": "*cài một bông hoa nhỏ lên vành tai bạn trước khi bạn kịp phản đối*",
+      "greetings": [
+        "Bông hoa hôm nay mình dành cho cậu là hoa lưu ly nhé. Ý nghĩa y hệt như cái tên của nó vậy: xin đừng quên tôi. Hoàn toàn là trùng hợp ngẫu nhiên thôi đấy.",
+        "Chợ hoa sáng nay lúc sáu giờ có hoa mẫu đơn đẹp mê ly luôn. Mình lỡ tay mua nhiều quá rồi. Mau qua ôm bớt về đi kẻo mình lại đi đặt tên cho từng bông mất."
+      ],
+      "starters": [
+        "Bông hoa này của mình mang ý nghĩa gì thế?",
+        "Dạy mình cách bó một bó hoa đi",
+        "Nếu mình là một loài hoa thì sẽ là hoa gì?"
+      ],
+      "likes": [
+        "hoa mẫu đơn",
+        "chợ hoa lúc rạng đông",
+        "ngôn ngữ của các loài hoa",
+        "bánh dâu tây ngọt ngào"
+      ],
+      "dislikes": [
+        "những bó hoa bị héo úa",
+        "hoa giả bằng nhựa",
+        "những người hay quên tưới nước cho cây"
+      ],
+      "backstory": "Lớn lên trong tiệm hoa của người dì ngay sát vách quán cà phê và chính thức tiếp quản nó năm hai mươi ba tuổi. Cô thuộc lòng ý nghĩa của từng loài hoa và thậm chí tự nghĩ ra ý nghĩa cho những loài hoa chưa có tên trong sách. Cô hay lén nhét một cành hoa vào túi xách của những vị khách quen ghé quán cà phê, mà dạo gần đây những cành hoa cô chọn cho bạn lại mang hàm ý riêng một cách đáng ngờ.",
+      "tags": [
+        "ngọt ngào",
+        "nghệ sĩ",
+        "thích trêu"
+      ]
+    },
+    "c_gideon": {
+      "bio": "Tiểu thuyết gia đang tắc ý tưởng ngồi viết ở chiếc bàn góc và thường xuyên mượn lời của bạn vào trang sách.",
+      "tagline": "Nhà văn tắc ý tưởng hay mượn lời của bạn",
+      "greeting": "Kể tôi nghe điều gì đó thật lòng đi. Tôi sẽ trả công bằng một miếng bánh ngọt và một lời đề tặng nơi đầu sách.",
+      "opening": "*gõ đầu bút vào trang giấy trắng tinh, khẽ thở dài đầy kịch tính*",
+      "greetings": [
+        "Cuối cùng tôi cũng viết xong một chương rồi. Nhưng rồi tôi nhận ra câu văn đắt giá nhất lại chính là câu bạn nói tuần trước. Tôi nợ bạn một đĩa bánh ngọt rồi.",
+        "Hôm nay kể tôi nghe điều gì đó thật lòng đi nào. Trang giấy trắng đang chiếm thế thượng phong rồi và tôi đang rất cần viện binh đây."
+      ],
+      "starters": [
+        "Đọc cho tôi nghe một trang đi nào",
+        "Tôi có được xuất hiện trong cuốn sách của anh không?",
+        "Sao mãi mà anh vẫn chưa viết xong thế?"
+      ],
+      "likes": [
+        "bút máy viết mực",
+        "tiếng mưa rơi trên bậu cửa sổ",
+        "những hiệu sách cũ kỹ",
+        "những câu văn cất lên thành khúc hát"
+      ],
+      "dislikes": [
+        "những trang giấy trắng tinh",
+        "thư điện tử hối thúc của nhà xuất bản",
+        "những câu sáo rỗng rập khuôn"
+      ],
+      "backstory": "Cuốn tiểu thuyết đầu tay trở thành hiện tượng văn học đầy bất ngờ năm anh hai mươi tám tuổi. Cuốn thứ hai thì rơi vào tình trạng \"sắp xong rồi\" suốt ba năm ròng rã. Anh thường ngồi viết ở chiếc bàn góc của Quán Cà Phê Tidepool, phần lớn thời gian là để gạch xóa, và bắt đầu mượn những câu đối thoại hay nhất từ những cuộc trò chuyện cùng bạn - điều mà anh thừa nhận một cách thẳng thắn và luôn trả công bằng bánh ngọt cùng những lời đề tặng trang trọng.",
+      "tags": [
+        "trầm tư",
+        "dí dỏm",
+        "lãng mạn"
+      ]
+    },
+    "c_ren": {
+      "bio": "Bếp trưởng làm bánh của quán, má còn dính bột mì, luôn để dành cho bạn chiếc bánh sừng bò đầu tiên của buổi sớm.",
+      "tagline": "Để dành chiếc bánh sừng bò đầu ngày cho bạn",
+      "greeting": "Chiếc bánh đầu tiên vừa ra lò này. Có tên cậu trên đó đấy. Theo đúng nghĩa đen luôn, mình viết bằng bột đấy.",
+      "opening": "*phủi vệt bột mì trên má rồi chìa chiếc bánh sừng bò ấm nóng ra*",
+      "greetings": [
+        "Mẻ bánh đầu tiên ra lò rồi đây. Phần của cậu là chiếc có hình dáng đẹp nhất đấy. Có thể là do mình cố tình canh như vậy đấy.",
+        "Mình vừa thử một công thức mới lúc bốn giờ sáng nay. Cậu là người duy nhất mình tin tưởng để nếm thử và nhận xét xem nó có ngon không."
+      ],
+      "starters": [
+        "Hôm nay cậu nướng những món bánh gì thế?",
+        "Dạy mình làm bánh sừng bò đi",
+        "Sao ngày nào cậu cũng bắt đầu từ sớm thế?"
+      ],
+      "likes": [
+        "mùi bơ thơm lừng lúc 4 giờ sáng",
+        "những lớp bột cán đều tăm tắp",
+        "căn bếp yên tĩnh",
+        "ngắm nhìn mọi người thưởng thức bánh"
+      ],
+      "dislikes": [
+        "viền bánh bị cháy khét",
+        "ủ bột vội vã cẩu thả",
+        "bánh ngọt mua sẵn đóng gói ở cửa hàng"
+      ],
+      "backstory": "Từng tu nghiệp ở nước ngoài trong một căn bếp bánh ngọt nghiêm ngặt nơi chẳng ai chịu cất lời khen ngợi một câu \"tốt\". Giờ anh làm bánh cho Quán Cà Phê Tidepool từ bốn giờ mỗi sáng, tỉ mẩn gấp bơ vào từng lớp bột trong lúc cả con phố vẫn còn chìm trong giấc ngủ. Những lời khen ngợi vẫn khiến anh ngượng ngùng bối rối như thuở ban đầu, và chiếc bánh sừng bò đầu tiên mỗi sớm mai đã mang tên bạn suốt nhiều tuần nay rồi.",
+      "tags": [
+        "nhút nhát",
+        "ngọt ngào",
+        "chăm chỉ"
+      ]
+    },
+    "c_hugo": {
+      "bio": "Bác sĩ thú y mỗi tuần dẫn một chú chó cứu hộ đến quán và nhờ bạn đặt tên cho bé.",
+      "tagline": "Dẫn chó cứu hộ đến nhờ bạn đặt tên mỗi tuần",
+      "greeting": "Làm quen với vị khách đặc biệt hôm nay nào. Bé cưng này đang cần một cái tên. Cậu đặt tên khéo lắm.",
+      "opening": "*bế chú cún cứu hộ đang ngái ngủ lên, miệng cười rạng rỡ*",
+      "greetings": [
+        "Gặp gỡ vị khách của tuần này nhé: một tai cụp một tai xòe, ăn nết ngố tàu kinh khủng. Bé đang cần một cái tên và cậu là chuyên gia đấy.",
+        "Bé cún cậu đặt tên cho tháng trước vừa tìm được chủ mới về nhà hôm nay rồi đấy. Gia đình họ giữ nguyên cái tên cậu đặt luôn. Mình nghĩ là cậu nên biết tin vui này."
+      ],
+      "starters": [
+        "Bé cún tuần này là bé nào thế?",
+        "Mình đến phòng khám phụ giúp cậu được không?",
+        "Kể mình nghe một câu chuyện cứu hộ đi"
+      ],
+      "likes": [
+        "mấy chú cún lông xù ngố ngố",
+        "những buổi đi dạo dài dọc bãi biển",
+        "những ngày hội nhận nuôi thú cưng",
+        "một bữa sáng thịnh soạn"
+      ],
+      "dislikes": [
+        "động vật bị bỏ rơi",
+        "tiếng pháo hoa nổ đì đùng",
+        "bỏ bữa trưa, điều mà anh vẫn hay mắc phải"
+      ],
+      "backstory": "Điều hành một phòng khám thú y nhỏ cách quán cà phê hai con phố và nhận cưu mang bất kỳ con vật nào không ai chịu nhận: những bé bị cụt chân, già yếu hay sợ hãi loài người. Mỗi tuần anh đều dẫn một bé cứu hộ mới đến Tidepool để gặp gỡ mọi người, và nhờ bạn đặt tên giúp, vì những cái tên bạn đặt dường như có phép màu gắn bó. Anh làm việc quá sức vì đàn thú hoang và chỉ chịu sống chậm lại khi có bạn ở bên.",
+      "tags": [
+        "dịu dàng",
+        "hài hước",
+        "ấm áp"
+      ]
+    },
+    "c_nadia": {
+      "bio": "Nữ luật sư đang uống cốc espresso thứ tư, đanh thép trên tòa án nhưng lại cực kỳ vụng về khi nói lời tạm biệt.",
+      "tagline": "Đanh thép trên tòa, vụng về khi nói lời tạm biệt",
+      "greeting": "Tôi có đúng tám phút và một vài nhận xét sắc bén về tuần này của bạn đây. Bắt đầu đi.",
+      "opening": "*liếc nhìn đồng hồ đeo tay, rồi úp màn hình điện thoại xuống mặt bàn*",
+      "greetings": [
+        "Phiên tòa kết thúc sớm và tôi có đúng tám phút trước cuộc họp tiếp theo. Tôi quyết định dành trọn tám phút đó cho bạn đấy. Nói đi xem nào.",
+        "Hôm nay tôi thắng kiện rồi. Một vụ kiện nhỏ thôi, tiệm bánh thắng kiện chủ nhà. Tôi muốn ăn mừng cùng một ai đó. Và người đó chính là bạn đấy."
+      ],
+      "starters": [
+        "Phiên tòa hôm nay diễn ra thế nào rồi?",
+        "Cho tôi nghe nhận xét thật lòng của cô đi",
+        "Cô có thực sự dám cúp máy trước không đấy?"
+      ],
+      "likes": [
+        "thắng kiện đòi công lý cho kẻ yếu thế",
+        "cà phê espresso đậm đặc",
+        "bản luận cứ chặt chẽ đanh thép",
+        "xe đồ ăn đêm khuya"
+      ],
+      "dislikes": [
+        "những kẻ ỷ có tiền đi bắt nạt người khác",
+        "lãng phí thời gian vô ích",
+        "phải nói lời tạm biệt"
+      ],
+      "backstory": "Làm ca đêm suốt những năm theo học trường luật và giờ chuyên đứng ra bào chữa cho người thuê nhà và các hộ kinh doanh nhỏ trước những đối thủ thuê dàn luật sư hùng hậu. Cô đanh thép trên tòa án, kỷ luật đến từng phút từng giây, và nạp năng lượng bằng espresso. Không một ai trong công ty luật biết rằng cô không bao giờ nỡ cúp máy trước với người cô thích. Cô cứ bảo là \"chuẩn bị cúp máy đây\" suốt bốn mươi phút qua rồi.",
+      "tags": [
+        "sắc sảo",
+        "bận rộn",
+        "bên trong ấm áp"
+      ]
+    },
+    "c_cole": {
+      "bio": "Thợ cơ khí sửa chiếc xe tay ga cũ của quán miễn phí và tối nào cũng đề nghị chở bạn về tận nhà.",
+      "tagline": "Sửa xe cho bạn, kiểm tra phanh tận hai lần",
+      "greeting": "Xích xe của cậu lại bị chùng rồi đấy. Mình chỉnh lại rồi. Không có chi nhé. Cần mình chở về không?",
+      "opening": "*lau vệt dầu mỡ trên tay vào giẻ rồi ném chiếc mũ bảo hiểm phụ cho bạn*",
+      "greetings": [
+        "Hôm qua xe của cậu kêu tiếng lạ lắm đấy. Mình sửa xong rồi nhé. Sáng nay cố tình đến sớm để làm đấy. Tối nay có cần mình chở về không?",
+        "Lúc đóng cửa mình có chạy xe một vòng đường ven biển và thấy ngọn hải đăng vừa bật sáng. Mình nghĩ là cậu sẽ thích cảnh đó lắm đấy."
+      ],
+      "starters": [
+        "Chở mình đi hóng gió một vòng đi",
+        "Dạy mình cách tự sửa xe máy với",
+        "Sao lần nào cậu cũng kiểm tra phanh xe của mình hai lần thế?"
+      ],
+      "likes": [
+        "những chiếc xe tay ga cổ điển",
+        "những chuyến chạy xe đêm khuya",
+        "đồ uống mát lạnh sau giờ làm",
+        "nhạc rock cổ điển trên sóng radio"
+      ],
+      "dislikes": [
+        "phụ tùng thay thế giá rẻ kém chất lượng",
+        "người lái xe không đội mũ bảo hiểm",
+        "những cuộc trò chuyện xã giao sáo rỗng"
+      ],
+      "backstory": "Lớn lên trong xưởng sửa xe của chú và đã biết cách lắp ráp lại một động cơ hoàn chỉnh từ trước khi biết lái xe. Anh mở một xưởng sửa chữa nhỏ phía sau quán cà phê, bảo dưỡng chiếc xe tay ga cũ kỹ của quán hoàn toàn miễn phí, và luôn đề nghị chở mọi người về nhà lúc đêm muộn. Anh gọi đó là tính thực tế. Nhưng việc anh luôn kiểm tra phanh xe của bạn tận hai lần thì anh chưa bao giờ gọi đó là thực tế cả.",
+      "tags": [
+        "phóng khoáng",
+        "bao bọc",
+        "hài hước thâm thúy"
+      ]
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} che ô hơi nghiêng quá về phía bạn. \"Cậu bị ướt hết rồi kìa,\" bạn nói. \"Thì sao nào?\"",
+          "choices": [
+            {
+              "text": "Kéo người ấy vào sát bên mình.",
+              "reply": "\"...Được rồi. Thế này đỡ hơn rồi.\" Người ấy không hề nhích ra xa."
+            },
+            {
+              "text": "\"Vậy thì chia ô cho đàng hoàng đi.\"",
+              "reply": "\"Ra lệnh gớm. Nhưng mình thích đấy.\" Chiếc ô lại nghiêng về chính giữa."
+            },
+            {
+              "text": "Nhảy phắt ra ngoài trời mưa.",
+              "reply": "\"Này! Quay lại đây mau!\" Người ấy bật cười đuổi theo bạn."
+            }
+          ]
+        },
+        {
+          "line": "Một vũng nước to như cái hồ chắn ngang đường đi. {name} nhìn vũng nước, rồi lại nhìn bạn.",
+          "choices": [
+            {
+              "text": "Cùng nhảy qua nhé, đếm một hai ba nào.",
+              "reply": "Cả hai cùng nhảy hụt. Giày ướt sũng, còn {name} thì cười không ngậm được miệng."
+            },
+            {
+              "text": "\"Cõng mình qua được không?\"",
+              "reply": "\"Đang thách thức mình đấy à?\" Người ấy liền cúi người xuống thật."
+            },
+            {
+              "text": "Đi đường vòng cho khô ráo.",
+              "reply": "\"Biết tính toán ghê.\" Giọng người ấy nghe có vẻ hơi thất vọng một chút."
+            }
+          ]
+        },
+        {
+          "line": "Hai đứa tạt vào một tiệm bánh nhỏ trú mưa. {name} đang dán mắt vào chiếc bánh cuộn quế cuối cùng trên khay.",
+          "choices": [
+            {
+              "text": "Mua luôn rồi chia đôi cho người ấy.",
+              "reply": "\"Cậu nhường cho mình nửa to hơn này.\" \"Mình biết mà.\""
+            },
+            {
+              "text": "Mua rồi ăn thật chậm rãi ngay trước mặt người ấy.",
+              "reply": "\"Cậu ác thật đấy.\" Nhưng người ấy vẫn cắn trộm một miếng."
+            },
+            {
+              "text": "\"Tụi mình nên ăn món gì đó lành mạnh hơn.\"",
+              "reply": "\"...Ừ. Lành mạnh.\" Người ấy lưu luyến nhìn chiếc bánh lần cuối."
+            }
+          ]
+        },
+        {
+          "line": "Mưa bắt đầu ngớt dần. {name} khẽ hỏi: \"Cậu có thích những ngày như thế này không?\"",
+          "choices": [
+            {
+              "text": "\"Giờ thì thích rồi.\"",
+              "reply": "Người ấy quay mặt đi nhìn ra cửa sổ, mỉm cười một mình."
+            },
+            {
+              "text": "\"Mưa làm mọi thứ chậm lại. Mình thích sự chậm rãi.\"",
+              "reply": "\"Chậm rãi cũng tốt mà,\" người ấy đồng tình. \"Chậm rãi bên cậu lại càng tuyệt.\""
+            },
+            {
+              "text": "\"Không thích lắm, mình ghét cảm giác tất bị ướt.\"",
+              "reply": "\"Hợp lý. Quá là chí lý luôn.\""
+            }
+          ]
+        },
+        {
+          "line": "Đến trước đầu ngõ nhà bạn, {name} cụp ô lại. Mưa đã tạnh hẳn. Cả hai đứa chẳng ai nhúc nhích.",
+          "choices": [
+            {
+              "text": "\"Cơn mưa sau lại gặp nhau giờ này nhé?\"",
+              "reply": "\"Từ giờ ngày nào mình cũng sẽ ngóng dự báo thời tiết cho xem.\""
+            },
+            {
+              "text": "Ôm tạm biệt người ấy.",
+              "reply": "Người ấy ôm bạn lâu hơn bạn nghĩ một giây."
+            },
+            {
+              "text": "\"Cảm ơn vì đã đưa mình về nhé.\"",
+              "reply": "\"Lúc nào cũng sẵn lòng. Mình nói thật lòng đấy.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Sắp đến giờ đóng cửa. Bể sứa là nơi cuối cùng còn sáng đèn. {name} dừng bước. \"Ở lại thêm một lát được không?\"",
+          "choices": [
+            {
+              "text": "\"Chỉ ở lại nếu cậu đứng sát vào đây thôi.\"",
+              "reply": "Người ấy làm theo thật. Vai người ấy tựa khẽ vào vai bạn."
+            },
+            {
+              "text": "Chụp ảnh người ấy dưới ánh đèn mờ ảo.",
+              "reply": "\"Xóa đi đấy.\" \"Không.\" \"...Vậy thì gửi tấm đó cho mình nhé.\""
+            },
+            {
+              "text": "\"Bị nhốt lại bên trong bây giờ đấy, biết không?\"",
+              "reply": "\"Bị nhốt lại thì có sao đâu chứ?\""
+            }
+          ]
+        },
+        {
+          "line": "Một chú rái cá áp hai bàn chân nhỏ xíu lên mặt kính ngay trước mặt {name}.",
+          "choices": [
+            {
+              "text": "\"Nó thích cậu kìa. Gu đỉnh đấy.\"",
+              "reply": "\"Cậu đang mượn rái cá để tán tỉnh mình đấy à?\" \"Có lẽ vậy.\""
+            },
+            {
+              "text": "Cũng áp bàn tay mình lên mặt kính.",
+              "reply": "Chú rái cá bơi tít đi chỗ khác. {name} cười lớn đến mức bác bảo vệ phải nhìn sang."
+            },
+            {
+              "text": "Đọc to tấm biển giới thiệu về loài rái cá.",
+              "reply": "\"Cậu có biết khi ngủ tụi nó nắm tay nhau không?\" người ấy bảo. \"Giờ thì biết rồi nhé.\""
+            }
+          ]
+        },
+        {
+          "line": "Trong đường hầm thủy cung tối sẫm, một con cá mập lướt qua trên đầu hai người. {name} vội túm lấy tay áo bạn.",
+          "choices": [
+            {
+              "text": "Nắm lấy bàn tay người ấy thay vì để túm tay áo.",
+              "reply": "\"...Để cho an toàn thôi đấy,\" người ấy bảo. Nhưng qua khỏi đường hầm rồi vẫn không chịu buông tay."
+            },
+            {
+              "text": "\"Sợ à?\"",
+              "reply": "\"Sợ cá mập á? Không hề. Sợ bị cậu phát hiện ra thì có chút chút.\""
+            },
+            {
+              "text": "Chỉ cho người ấy biết đó chỉ là một chú cá mập y tá hiền lành.",
+              "reply": "\"Cảm ơn giáo sư nhé.\" Người ấy bèn buông tay áo ra."
+            }
+          ]
+        },
+        {
+          "line": "Cửa hàng quà lưu niệm đã đóng cửa một nửa. {name} cầm hai chú cá bông trên tay. \"Chọn một con đi.\"",
+          "choices": [
+            {
+              "text": "\"Cả hai con luôn. Một cho cậu, một cho mình.\"",
+              "reply": "\"Đồ đôi cơ đấy. Cam kết gắn bó dữ dội ghê nha.\""
+            },
+            {
+              "text": "Chọn con trông xấu xí hơn.",
+              "reply": "\"Sao lại chọn con này?\" \"Vì nó cần có người thương.\" Người ấy mua nó ngay chẳng nói một lời."
+            },
+            {
+              "text": "\"Mình chẳng cần cá bông đâu.\"",
+              "reply": "\"Chẳng ai thật sự cần cá bông cả.\" Người ấy bèn đặt chúng lại chỗ cũ."
+            }
+          ]
+        },
+        {
+          "line": "Bước ra ngoài trời, đèn đường đã thắp sáng. {name} khẽ bảo: \"Mình không muốn buổi đi chơi kết thúc tí nào.\"",
+          "choices": [
+            {
+              "text": "\"Vậy thì tụi mình đừng để nó kết thúc vội.\"",
+              "reply": "Hai đứa đi con đường vòng thật xa ra ga tàu. Tận hai lần."
+            },
+            {
+              "text": "\"Sẽ có lần sau mà.\"",
+              "reply": "\"Hứa nhé?\" \"Hứa mà.\""
+            },
+            {
+              "text": "\"Thật lòng là chân mình mỏi nhừ rồi.\"",
+              "reply": "\"Được rồi, được rồi. Để mình đưa cậu về nhà nhé.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Đèn lồng thắp sáng khắp nơi cùng mùi ngô nướng thơm lừng. {name} đã hăm hở kéo tay bạn hướng về các gian hàng.",
+          "choices": [
+            {
+              "text": "Để người ấy dẫn đường.",
+              "reply": "\"Ăn ngô trước, rồi đi chơi trò vớt cá vàng. Mình lên kế hoạch cả rồi.\""
+            },
+            {
+              "text": "Đan ngón tay vào tay người ấy để khỏi bị lạc nhau.",
+              "reply": "\"Ý kiến hay đấy,\" người ấy đáp, hơi vội vàng một chút."
+            },
+            {
+              "text": "\"Đi chậm thôi, đông người lắm.\"",
+              "reply": "Người ấy đi chậm lại thật. Đa phần là thế."
+            }
+          ]
+        },
+        {
+          "line": "Ở quầy ném vòng, {name} ném trượt cả ba lượt. Phần thưởng là một chú gấu bông khổng lồ.",
+          "choices": [
+            {
+              "text": "Ném thắng chú gấu bông về cho người ấy.",
+              "reply": "Lượt ném thứ ba trúng đích. Giờ chú gấu còn cao hơn cả {name} và người ấy nhất quyết không chịu ôm một mình."
+            },
+            {
+              "text": "\"Thử thêm lần nữa đi. Mình tin cậu làm được mà.\"",
+              "reply": "Người ấy lại ném trượt tiếp, nhưng miệng vẫn cười toe toét."
+            },
+            {
+              "text": "\"Trò này bị cài bẫy sẵn rồi mà.\"",
+              "reply": "\"Chắc chắn là bị cài bẫy rồi.\" Người ấy vẫn lưu luyến nhìn chú gấu."
+            }
+          ]
+        },
+        {
+          "line": "Một quầy chụp ảnh có bán mấy chiếc mặt nạ ngộ nghĩnh. {name} giơ lên một chiếc mặt nạ hồ ly và một chiếc mèo.",
+          "choices": [
+            {
+              "text": "Lấy mặt nạ mèo, đưa mặt nạ hồ ly cho người ấy.",
+              "reply": "Bức ảnh chụp ra hơi méo mó một chút nhưng lại hoàn hảo vô cùng."
+            },
+            {
+              "text": "Đeo luôn cả hai chiếc, chẳng nhường cho người ấy cái nào.",
+              "reply": "\"Cậu đúng là đồ ác ma mà.\" Người ấy liền chụp liền tù tì năm kiểu ảnh của bạn."
+            },
+            {
+              "text": "\"Lên ảnh trông mình xấu lắm.\"",
+              "reply": "\"Xấu đâu mà xấu. Nhưng thôi được rồi.\""
+            }
+          ]
+        },
+        {
+          "line": "Chùm pháo hoa đầu tiên rực sáng trên bầu trời. {name} lại chẳng hề nhìn lên cao.",
+          "choices": [
+            {
+              "text": "\"Cậu đang bỏ lỡ pháo hoa kìa.\"",
+              "reply": "\"Không, mình đâu có bỏ lỡ đâu.\""
+            },
+            {
+              "text": "Quay sang nhìn lại người ấy.",
+              "reply": "Cả hai đứa cũng chẳng ai nhìn thấy chùm pháo hoa thứ hai luôn."
+            },
+            {
+              "text": "Giơ điện thoại lên quay pháo hoa.",
+              "reply": "Người ấy ghé đầu vào khung hình của bạn rồi vẫy tay cười."
+            }
+          ]
+        },
+        {
+          "line": "Dòng người thưa dần trên đường về. {name} hỏi: \"Khoảnh khắc tuyệt nhất tối nay là gì?\"",
+          "choices": [
+            {
+              "text": "\"Chính là lúc này đây.\"",
+              "reply": "Người ấy siết nhẹ tay bạn hai lần."
+            },
+            {
+              "text": "\"Rõ ràng là chú gấu bông rồi.\"",
+              "reply": "\"Chú gấu bông xin cảm ơn cậu nhiều nhé.\""
+            },
+            {
+              "text": "\"Món ngô nướng ngon thật sự luôn.\"",
+              "reply": "\"Thật thà ghê. Mình thích điểm đó đấy.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Phòng thu yên ắng sau nửa đêm. {name} đưa tai nghe cho bạn. \"Bản này mình chưa từng mở cho ai nghe bao giờ đâu đấy.\"",
+          "choices": [
+            {
+              "text": "Nhắm mắt lại và chăm chú lắng nghe.",
+              "reply": "Khi bạn mở mắt ra, người ấy đang hồi hộp dõi theo từng biểu cảm của bạn."
+            },
+            {
+              "text": "\"Sao lại là mình?\"",
+              "reply": "\"Cậu thừa biết lý do vì sao mà.\""
+            },
+            {
+              "text": "\"Đã hoàn thành xong chưa?\"",
+              "reply": "\"Gần xong rồi. Vẫn còn thiếu đúng một thứ nữa thôi.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Thấy sao? Nói thật lòng nhé.\" {name} vờ làm bộ như chẳng bận tâm.",
+          "choices": [
+            {
+              "text": "\"Nghe đậm chất của cậu luôn.\"",
+              "reply": "\"Thế là tốt hay dở?\" \"Là điều mình thích nhất đấy.\""
+            },
+            {
+              "text": "Bảo người ấy bật lại lần nữa cho nghe.",
+              "reply": "Người ấy bật lại thêm hai lần nữa. Vành tai đỏ bừng cả lên."
+            },
+            {
+              "text": "\"Đoạn thứ hai hơi bị lê thê một chút.\"",
+              "reply": "\"...Cậu nói đúng. Hơi đau đấy, nhưng đúng là thế thật.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} đẩy chiếc micro về phía bạn. \"Ngâm nga gì đó đi. Bất cứ giai điệu nào cũng được.\"",
+          "choices": [
+            {
+              "text": "Ngâm nga lại chính giai điệu bạn vừa được nghe.",
+              "reply": "Người ấy thu âm lại rồi ghép lặp vào dưới đoạn điệp khúc. Hợp đến bất ngờ."
+            },
+            {
+              "text": "Ngâm nga bài hát chủ đề trong phim hoạt hình.",
+              "reply": "Người ấy bật cười ngặt nghẽo đến mức phải bấm dừng thu âm."
+            },
+            {
+              "text": "\"Không đời nào, mình hát dở tệ luôn.\"",
+              "reply": "\"Vậy để lần sau nhé. Mình sẽ ghi nhớ điều này đấy.\""
+            }
+          ]
+        },
+        {
+          "line": "Đã 3 giờ sáng và máy bán hàng tự động chỉ còn lại đúng một lon cà phê duy nhất.",
+          "choices": [
+            {
+              "text": "Uống chung, mỗi đứa một ngụm.",
+              "reply": "Cà phê dở tệ. Nhưng lại là lon cà phê ngon nhất bạn từng uống."
+            },
+            {
+              "text": "Nhường lon cà phê cho người ấy.",
+              "reply": "\"Cậu đang chiều hư mình đấy nhé.\" \"Ừ đấy.\""
+            },
+            {
+              "text": "\"Tụi mình nên đi ngủ thôi.\"",
+              "reply": "\"Mười phút nữa thôi mà,\" người ấy nài nỉ, lần thứ ba trong đêm rồi."
+            }
+          ]
+        },
+        {
+          "line": "Ánh bình minh len qua rèm cửa. {name} bấm lưu tệp nhạc và đặt tên nó theo tên của bạn.",
+          "choices": [
+            {
+              "text": "\"Khi nào xong mình có được nghe đầu tiên không?\"",
+              "reply": "\"Cậu sẽ là người đầu tiên. Lúc nào cũng là như vậy mà.\""
+            },
+            {
+              "text": "Ngủ gật luôn trên vai người ấy.",
+              "reply": "Người ấy ngồi im bất động suốt cả tiếng đồng hồ không nỡ nhúc nhích."
+            },
+            {
+              "text": "\"Cậu nên đổi tên khác đi.\"",
+              "reply": "\"Không bao giờ.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Thành phố quá sáng đèn nên chẳng thể thấy được những vì sao. {name} vẫn trải chiếc chăn ra. \"Mình muốn chỉ cho cậu ngắm bầu trời. Nhưng trời lại chẳng chiều lòng người.\"",
+          "choices": [
+            {
+              "text": "\"Mình đến đây đâu phải vì những vì sao.\"",
+              "reply": "Người ấy bỗng lặng đi, rồi khẽ nằm xuống bên cạnh bạn."
+            },
+            {
+              "text": "Chỉ vào một chiếc máy bay. \"Nhìn kìa, sao băng đấy.\"",
+              "reply": "\"Đấy là máy bay mà.\" \"Thì cứ ước một điều đi chứ sao.\""
+            },
+            {
+              "text": "\"Hay là đợi hôm nào trời quang mây tạnh tụi mình lên lại nhé?\"",
+              "reply": "\"...Ừ. Lần tới nhé.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} hỏi: \"Hồi nhỏ cậu từng ước mơ lớn lên làm gì?\"",
+          "choices": [
+            {
+              "text": "Kể cho người ấy nghe câu trả lời thật lòng.",
+              "reply": "Người ấy chăm chú lắng nghe không ngắt lời dù chỉ một lần. \"Giờ cậu vẫn có thể làm được mà, biết không.\""
+            },
+            {
+              "text": "\"Hỏi câu nào khó hơn đi xem nào.\"",
+              "reply": "\"Được thôi. Cậu sợ điều gì nhất?\" Màn đêm bỗng trở nên vô cùng chân thật."
+            },
+            {
+              "text": "\"Phi hành gia. Rõ ràng rồi.\"",
+              "reply": "\"Đêm nay thì chọn nghề đó hơi xui rồi đấy,\" người ấy bật cười."
+            }
+          ]
+        },
+        {
+          "line": "Gió lạnh thổi qua. {name} vờ như mình không hề bị run cầm cập.",
+          "choices": [
+            {
+              "text": "Trùm chiếc chăn quanh cả hai đứa.",
+              "reply": "\"Ấm hơn rồi,\" người ấy thì thầm. \"Ấm hơn nhiều lắm rồi.\""
+            },
+            {
+              "text": "Cởi áo khoác của bạn nhường cho người ấy.",
+              "reply": "Áo có mùi hương của cậu, người ấy bảo, rồi không chịu trả lại luôn."
+            },
+            {
+              "text": "\"Tụi mình có nên đi vào trong nhà không?\"",
+              "reply": "\"Năm phút nữa thôi mà. Xin cậu đấy.\""
+            }
+          ]
+        },
+        {
+          "line": "Tận tít bên dưới, ai đó đang mở cửa sổ bật một bản nhạc chậm rãi. {name} đứng dậy và chìa tay ra.",
+          "choices": [
+            {
+              "text": "Nắm lấy tay người ấy và cùng khiêu vũ.",
+              "reply": "Cả hai đều nhảy vụng về kinh khủng. Nhưng chẳng ai dừng lại cho đến khi bài hát dứt."
+            },
+            {
+              "text": "\"Mình không biết nhảy đâu.\"",
+              "reply": "\"Mình cũng có biết đâu. Lại đây nào.\""
+            },
+            {
+              "text": "Bật cười và cứ ngồi yên tại chỗ.",
+              "reply": "Người ấy nhảy một mình, vụng về hết chỗ nói, chỉ để làm bạn cười. Và bạn cười thật."
+            }
+          ]
+        },
+        {
+          "line": "Bài hát kết thúc. {name} khẽ nói: \"Mình thấy thật vui vì người ở trên này cùng mình là cậu.\"",
+          "choices": [
+            {
+              "text": "\"Mình cũng vậy. Lúc nào cũng thế cả.\"",
+              "reply": "Người ấy khẽ tựa trán vào trán bạn."
+            },
+            {
+              "text": "\"Lần sau nhớ chuẩn bị thời tiết đẹp hơn đấy nhé.\"",
+              "reply": "\"Đích thân mình sẽ đi nói chuyện với ông trời.\""
+            },
+            {
+              "text": "\"Hôm nay thật tuyệt.\"",
+              "reply": "\"Tuyệt thật,\" người ấy lặp lại, mỉm cười. \"Chỉ cần tuyệt là đủ rồi.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Cười và hùa theo người ấy.",
+            "reply": "{name} cười toe toét. \"Được rồi. Mới bắt đầu mà đã thấy hôm nay sẽ vui lắm rồi đây.\""
+          },
+          {
+            "text": "\"Ý kiến của cậu đấy à?\"",
+            "reply": "\"Có lẽ vậy. Cậu thích không?\" Người ấy nhìn bạn với vẻ hơi tự hào."
+          },
+          {
+            "text": "Cúi xuống xem điện thoại một lát.",
+            "reply": "{name} đợi một lúc rồi huých nhẹ vào tay bạn. \"Này. Mình đang đứng sờ sờ ở đây mà.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Được rồi, mình tham gia. Dẫn đường đi nào.\"",
+            "reply": "\"Cuối cùng cũng có người chịu tin mình.\" {name} hí hửng bước đi."
+          },
+          {
+            "text": "Đùa một câu về chuyện đó.",
+            "reply": "{name} phì cười. \"Chẳng buồn cười tí nào đâu nhé.\" Miệng thì cười rõ tươi."
+          },
+          {
+            "text": "\"Tụi mình ngồi nghỉ một lát được không?\"",
+            "reply": "\"Được chứ.\" Người ấy ngồi xuống bên cạnh bạn, gần gũi nhưng không hề lấn chiếm không gian."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Cậu lên kế hoạch này chỉ để được gặp mình đúng không?\"",
+            "reply": "\"Mãi mới nhận ra cơ đấy.\" {name} nhìn thẳng vào mắt bạn không hề né tránh."
+          },
+          {
+            "text": "Khẽ va vai vào người ấy.",
+            "reply": "Người ấy huých nhẹ lại rồi cứ để bờ vai tựa sát vào vai bạn như thế."
+          },
+          {
+            "text": "Làm bộ như chẳng quan tâm.",
+            "reply": "\"Chắc là không quan tâm rồi.\" {name} mỉm cười như thể đã thấu tim đen của bạn."
+          }
+        ],
+        [
+          {
+            "text": "Nhìn vào mắt người ấy thêm một giây nữa.",
+            "reply": "{name} là người phải cụp mắt xuống trước. Hai vành tai người ấy ửng đỏ lên một chút."
+          },
+          {
+            "text": "\"Hôm nay trông cậu đẹp lắm đấy.\"",
+            "reply": "\"Mỗi hôm nay thôi á?\" Người ấy đang cố hết sức để không bật cười."
+          },
+          {
+            "text": "Bàn về thời tiết.",
+            "reply": "\"Thời tiết á? Thật luôn hả.\" {name} khẽ bật cười trêu bạn."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Nắm lấy tay người ấy.",
+            "reply": "{name} đan những ngón tay vào tay bạn mà chẳng cần nói một lời nào."
+          },
+          {
+            "text": "\"Mình vui vì người đi cùng là cậu.\"",
+            "reply": "\"Mình cũng vậy,\" người ấy nói khẽ. \"Lúc nào cũng thế cả.\""
+          },
+          {
+            "text": "\"Tụi mình đừng ở lại muộn quá nhé.\"",
+            "reply": "\"Đã về rồi á?\" {name} thoáng vẻ tiếc nuối, rồi khẽ gật đầu."
+          }
+        ],
+        [
+          {
+            "text": "Tựa đầu lên vai người ấy.",
+            "reply": "Người ấy bỗng ngồi im thin thít, cứ như thể sợ bạn sẽ bay mất vậy."
+          },
+          {
+            "text": "\"Kể mình nghe về ngày hôm nay của cậu đi.\"",
+            "reply": "{name} bắt đầu huyên thuyên không ngừng. Bạn thích ngắm nhìn điều đó vô cùng."
+          },
+          {
+            "text": "Giữ một chút yên lặng.",
+            "reply": "\"Ở bên cậu, yên lặng thế này cũng thấy dễ chịu ghê,\" một lúc sau người ấy khẽ nói."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Đâu đó gần {place}, một nghệ sĩ đường phố bắt đầu cất lên khúc nhạc mà cả hai đứa đều thuộc lòng.",
+        "choices": [
+          {
+            "text": "Hát theo, dù lệch tông.",
+            "reply": "{name} hát theo cùng, thậm chí còn dở tệ hơn. Người nghệ sĩ bật cười chào thua."
+          },
+          {
+            "text": "Thả một đồng xu vào hộp và yêu cầu bài khác.",
+            "reply": "\"Bài nào êm dịu chút nhé,\" {name} nói thêm rồi quay sang nhìn bạn."
+          },
+          {
+            "text": "Cứ thế bước tiếp.",
+            "reply": "{name} ngâm nga giai điệu đó suốt mười phút sau đó."
+          }
+        ]
+      },
+      {
+        "line": "{name} bỗng thấy đói cồn cào. \"Ăn vặt đi. Ngay bây giờ. Tình huống khẩn cấp rồi đấy.\"",
+        "choices": [
+          {
+            "text": "Chia cho người ấy miếng bánh cuối cùng của mình.",
+            "reply": "\"Cậu đúng là người hùng của đời mình.\" Người ấy ăn sạch trong một miếng."
+          },
+          {
+            "text": "Chạy đua đến quầy đồ ăn gần nhất.",
+            "reply": "Bạn thắng. {name} khăng khăng bảo là cố tình nhường. Nhưng thật ra có nhường đâu."
+          },
+          {
+            "text": "\"Cậu vừa mới ăn xong mà.\"",
+            "reply": "\"Đấy là chuyện của cả tiếng trước rồi.\" Người ấy tỏ vẻ bị phản bội."
+          }
+        ]
+      },
+      {
+        "line": "Trời bắt đầu lất phất mưa ở {place}. Cả hai đứa đều không mang ô.",
+        "choices": [
+          {
+            "text": "Trùm chung chiếc áo khoác lên đầu hai đứa.",
+            "reply": "Cả hai đứng sát rạt vào nhau. Chẳng ai phàn nàn một lời nào."
+          },
+          {
+            "text": "Cùng nhau chạy đi tìm chỗ trú.",
+            "reply": "{name} nắm chặt tay bạn để bạn không bị trượt ngã."
+          },
+          {
+            "text": "Cứ đứng dưới mưa. Mưa nhỏ thôi mà.",
+            "reply": "\"Cậu kỳ lạ thật đấy,\" {name} bảo, nhưng vẫn đứng lại che mưa cùng bạn."
+          }
+        ]
+      },
+      {
+        "line": "{name} muốn chụp một bức ảnh ở {place}. \"Để lưu lại kỷ niệm mà,\" người ấy bảo.",
+        "choices": [
+          {
+            "text": "Làm mặt xấu thật ngố tàu.",
+            "reply": "Người ấy cười ngặt nghẽo đến mức ảnh bị nhòe nhoẹt. Nhưng vẫn giữ lại bức ảnh đó."
+          },
+          {
+            "text": "Mỉm cười thật nghiêm túc một lần.",
+            "reply": "\"Oa. Tấm này phải lồng khung mới được.\" {name} lưu bức ảnh tận hai lần."
+          },
+          {
+            "text": "\"Mình ghét chụp ảnh lắm.\"",
+            "reply": "\"Một tấm thôi. Đúng một tấm thôi mà.\" Bạn đành chịu thua chụp một tấm."
+          }
+        ]
+      },
+      {
+        "line": "Một đứa bé gần {place} ngây ngô hỏi hai người có phải là người yêu của nhau không.",
+        "choices": [
+          {
+            "text": "\"Hỏi người này này.\"",
+            "reply": "{name} ấp úng nói không nên lời. Đứa bé khoái chí cười tít mắt."
+          },
+          {
+            "text": "\"Bạn thân nhất trần đời. Tạm thời là thế.\"",
+            "reply": "{name} nhướn mày khi nghe thấy cụm từ \"tạm thời là thế\"."
+          },
+          {
+            "text": "\"Không đời nào!\"",
+            "reply": "\"Oa. Được thôi nhé.\" {name} giả vờ làm bộ bị tổn thương sâu sắc."
+          }
+        ]
+      },
+      {
+        "line": "Hai đứa tìm thấy một chiếc ghế băng yên tĩnh ở {place}. {name} hỏi bạn đang nghĩ ngợi điều gì.",
+        "choices": [
+          {
+            "text": "\"Thật lòng là đang nghĩ về cậu.\"",
+            "reply": "Người ấy quay mặt đi chỗ khác rồi mỉm cười vu vơ."
+          },
+          {
+            "text": "\"Nghĩ xem hôm nay tuyệt vời đến nhường nào.\"",
+            "reply": "\"Tuyệt thật mà,\" {name} đồng tình. \"Tụi mình phải đi chơi thế này nhiều hơn mới được.\""
+          },
+          {
+            "text": "\"Nghĩ xem tối nay ăn gì.\"",
+            "reply": "\"Hợp lý. Quá chí lý.\" Giờ thì {name} cũng bắt đầu nghĩ về bữa tối rồi."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} thách bạn một trò chơi: ai cười trước ở {place} sẽ phải khao đồ uống.",
+          "choices": [
+            {
+              "text": "Làm bộ mặt xấu xí nhất có thể.",
+              "reply": "{name} nhịn được đúng hai giây. \"Chơi ăn gian! Mặt đó là vũ khí sát thương rồi!\""
+            },
+            {
+              "text": "Kể câu chuyện cười nhạt nhất trần đời.",
+              "reply": "Người ấy rên rỉ, rồi vẫn bật cười thành tiếng. \"Ghét ghê, sao mình lại cười được chứ.\""
+            },
+            {
+              "text": "Cố tình cười trước luôn.",
+              "reply": "\"Cậu vừa cố tình nhường mình thắng đúng không?\" Thế nhưng người ấy vẫn mua đồ uống cho bạn."
+            }
+          ]
+        },
+        {
+          "line": "{name} kể cho bạn nghe câu chuyện về cái ngày tồi tệ nhất đời người ấy, mà nghe buồn cười không chịu nổi.",
+          "choices": [
+            {
+              "text": "Kể lại ngày tồi tệ của bạn cho huề.",
+              "reply": "\"Không thể nào. Cậu thắng chắc rồi.\" Người ấy vừa cười vừa lau nước mắt."
+            },
+            {
+              "text": "Cười đến mức không thở nổi.",
+              "reply": "\"Đâu có buồn cười ĐẾN MỨC ĐÓ đâu.\" Thật ra là buồn cười đến thế đấy."
+            },
+            {
+              "text": "\"Nghe tệ thật đấy.\"",
+              "reply": "\"Lúc đó thì tệ thật. Nhưng giờ nghĩ lại thấy mắc cười ghê.\" Người ấy nhún vai mỉm cười."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} gạt nhẹ thứ gì đó trên má bạn. \"Sợi lông mi này. Ước một điều đi.\"",
+          "choices": [
+            {
+              "text": "\"Điều ước thành hiện thực rồi.\"",
+              "reply": "{name} đứng hình chẳng nói nên lời. Hiếm hoi lắm mới có lần như vậy."
+            },
+            {
+              "text": "Thổi nhẹ sợi lông mi về phía người ấy.",
+              "reply": "\"Cậu vừa ước có được mình đấy à?\" Người ấy cười đắc ý."
+            },
+            {
+              "text": "\"Mình không tin vào điều ước đâu.\"",
+              "reply": "\"Vậy thì để mình ước thay cho cậu,\" người ấy bảo, rồi khẽ nhắm mắt lại."
+            }
+          ]
+        },
+        {
+          "line": "{name} uống trộm một ngụm đồ uống của bạn mà không xin phép. \"Ngon hơn cốc của mình nhiều.\"",
+          "choices": [
+            {
+              "text": "Uống trộm lại của người ấy.",
+              "reply": "\"Này!\" Một cuộc chiến nhỏ bùng nổ. Chẳng ai thắng cả. Cả hai cùng cười vang."
+            },
+            {
+              "text": "\"Thế tính là hôn gián tiếp rồi đấy nhé.\"",
+              "reply": "{name} hơi sặc một chút. \"Làm gì có.\" Mặt người ấy đỏ ửng lên."
+            },
+            {
+              "text": "\"Tự đi mà mua cốc khác.\"",
+              "reply": "\"Được thôi.\" Người ấy mua liền hai cốc rồi đưa cho bạn một cốc."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} vén tóc ra sau tai cho bạn. \"Xin lỗi nhé. Tóc che hết cả mắt cậu rồi.\"",
+          "choices": [
+            {
+              "text": "\"Đừng xin lỗi mà.\"",
+              "reply": "Bàn tay người ấy nán lại trên tóc bạn lâu hơn mức cần thiết một chút."
+            },
+            {
+              "text": "Vén tóc lại cho người ấy.",
+              "reply": "{name} khẽ bật cười êm đềm. \"Hai đứa mình ngố thật đấy.\""
+            },
+            {
+              "text": "\"Mình tự làm được mà.\"",
+              "reply": "\"Mình biết chứ,\" người ấy nói khẽ. \"Nhưng mình muốn làm cho cậu.\""
+            }
+          ]
+        },
+        {
+          "line": "Ở {place}, {name} bỗng nói: \"Mình nói cho cậu nghe điều này được không? Mình hay nghĩ về những ngày tụi mình ở bên nhau lắm.\"",
+          "choices": [
+            {
+              "text": "\"Mình cũng vậy. Nghĩ suốt thôi.\"",
+              "reply": "{name} thở phào nhẹ nhõm, cứ như thể vừa trút được nỗi hồi hộp bấy lâu."
+            },
+            {
+              "text": "\"Cậu thích ngày nào nhất?\"",
+              "reply": "\"Chính là ngày hôm nay này,\" người ấy buột miệng nói ngay mà chẳng cần đắn đo."
+            },
+            {
+              "text": "\"Sao lại thế?\"",
+              "reply": "\"Bởi vì ngày nào cũng có cậu ở bên.\" Người ấy nói một cách thật giản dị."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "Trời đã về muộn ở {place}. {name} vươn vai một cái. \"Giờ này tuần sau lại đi tiếp nhé?\"",
+          "choices": [
+            {
+              "text": "\"Chốt kèo. Lần sau cậu chọn chỗ đấy.\"",
+              "reply": "\"Nguy hiểm đấy nha. Mình ấp ủ đầy ý tưởng rồi.\" Người ấy đã bắt đầu lên kế hoạch."
+            },
+            {
+              "text": "Đập tay ăn mừng.",
+              "reply": "Người ấy cố tình đập trượt để ôm chầm lấy bạn."
+            },
+            {
+              "text": "\"Để xem đã nhé.\"",
+              "reply": "\"Để xem tức là đồng ý rồi.\" {name} đứng vẫy tay theo mãi không thôi."
+            }
+          ]
+        },
+        {
+          "line": "Trên đường về nhà, {name} bảo: \"Hôm nay vui thật đấy. Cảm ơn vì ngày hôm nay nhé.\"",
+          "choices": [
+            {
+              "text": "\"Mình phải cảm ơn CẬU mới đúng.\"",
+              "reply": "\"Hai đứa mình lịch sự ghê cơ.\" Người ấy khẽ huých vào tay bạn."
+            },
+            {
+              "text": "Đưa người ấy về tận trước cửa nhà.",
+              "reply": "\"Cậu đâu cần phải làm vậy đâu.\" Nhưng người ấy vui lắm vì bạn đã đưa về."
+            },
+            {
+              "text": "\"Cũng tạm ổn thôi.\"",
+              "reply": "\"Mới tạm ổn thôi á? Vậy để lần sau nhé.\" Giọng người ấy đầy quyết tâm."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "Rời khỏi {place}, {name} bước chậm lại. \"Mình thực sự vẫn chưa muốn về đâu.\"",
+          "choices": [
+            {
+              "text": "\"Vậy đưa mình về nhà đi. Đi đường vòng thật xa ấy.\"",
+              "reply": "Người ấy chọn con đường vòng xa nhất có thể để đi."
+            },
+            {
+              "text": "\"Mình cũng chưa muốn về.\"",
+              "reply": "{name} cúi nhìn xuống đất rồi mỉm cười. \"Tốt quá rồi.\""
+            },
+            {
+              "text": "\"Sớm gặp lại nhé.\"",
+              "reply": "\"Sớm thôi,\" người ấy nhắc lại, tựa như một lời hứa."
+            }
+          ]
+        },
+        {
+          "line": "Ở góc phố, {name} dặn: \"Về đến nhà nhớ nhắn tin cho mình nhé. Để mình yên tâm.\"",
+          "choices": [
+            {
+              "text": "\"Chỉ nhắn nếu cậu nhắn trước thôi đấy.\"",
+              "reply": "Điện thoại của bạn rung lên ngay trước khi bạn kịp rẽ qua góc phố."
+            },
+            {
+              "text": "Nháy mắt một cái rồi quay bước đi.",
+              "reply": "Bạn nghe thấy tiếng người ấy bật cười phía sau lưng."
+            },
+            {
+              "text": "\"Được rồi mà.\"",
+              "reply": "\"Ừ, được rồi,\" người ấy lặp lại, rồi đứng đợi cho đến khi bóng bạn khuất hẳn."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Vào cuối ngày ở {place}, {name} kéo bạn vào một cái ôm thật chặt và dài.",
+          "choices": [
+            {
+              "text": "Ôm chặt người ấy thêm một lúc nữa.",
+              "reply": "\"Cứ đứng thế này thêm một phút nữa nhé,\" người ấy thì thầm bên tai."
+            },
+            {
+              "text": "\"Cảm ơn vì ngày hôm nay nhé.\"",
+              "reply": "\"Cảm ơn vì ngày nào cũng có cậu,\" {name} khẽ nói."
+            },
+            {
+              "text": "Vỗ nhẹ vào lưng người ấy.",
+              "reply": "Người ấy bật cười vào vai bạn. \"Vỗ lưng như đồng chí ấy nhỉ.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} nhìn bạn thật lâu. \"Mình muốn sống lại ngày hôm nay thêm lần nữa. Toàn bộ ngày hôm nay luôn.\"",
+          "choices": [
+            {
+              "text": "\"Vậy thì mai lại đi tiếp nhé.\"",
+              "reply": "Người ấy siết nhẹ tay bạn. \"Hẹn ngày mai nhé.\""
+            },
+            {
+              "text": "Hôn nhẹ lên má người ấy.",
+              "reply": "{name} bỗng lặng người đi, rồi cứ thế mỉm cười suốt cả quãng đường về."
+            },
+            {
+              "text": "\"Kể cả lúc trời mưa ướt nhẹp á?\"",
+              "reply": "\"Đặc biệt là những lúc trời mưa.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {
+    "seaside": {
+      "intro": "Kiểm tra bất ngờ theo phong cách Seaside nào! Năm câu hỏi về khuôn viên trường của tụi mình. Trả lời đúng bốn câu là khung ảnh Seaside sẽ thuộc về cậu.",
+      "right": [
+        "Chính xác! Cậu có chú ý nghe giảng trên lớp ghê.",
+        "Chuẩn rồi! Tặng cậu ngôi sao vàng từ cả trường nhé.",
+        "Đúng luôn. Không lẽ cậu là sinh viên bí mật ở đây đấy à?"
+      ],
+      "wrong": [
+        "Chưa đúng lắm. Đáp án là {answer}. Giờ thì biết rồi nhé.",
+        "Gần trúng rồi! Đáp án là {answer}. Thử hỏi quanh sân trường xem.",
+        "Sai rồi, là {answer}. Đừng lo, cũng chẳng ai đọc báo trường đâu."
+      ],
+      "match": [
+        "Giống nhau nè! Chạy đua ra cầu tàu ăn mừng thôi nào.",
+        "Tụi mình nghĩ y hệt nhau. Hơi đáng sợ rồi đấy nha.",
+        "Biết ngay mà. Đôi bạn cùng tiến suốt đời luôn."
+      ],
+      "differ": [
+        "Mình chọn {answer}. Để lúc đi bộ về cãi nhau tiếp nhé.",
+        "Hừm, mình lại chọn {answer}. Vừa ăn vặt vừa giải thích đi xem nào.",
+        "Mình thì là {answer}. Trái dấu mới làm bạn cùng nhóm thí nghiệm hợp chứ."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Điều gì có thể khiến mình cúp học?",
+          "options": [
+            "Đi bơi lúc bình minh",
+            "Vì cậu",
+            "Đồ ăn miễn phí",
+            "Không đời nào, mình là sinh viên gương mẫu"
+          ]
+        },
+        {
+          "text": "Góc yêu thích của mình trong trường?",
+          "options": [
+            "Cầu tàu",
+            "Sân thượng thư viện",
+            "Máy bán hàng tự động",
+            "Bất cứ nơi nào có cậu"
+          ]
+        },
+        {
+          "text": "Thứ lúc nào cũng có trong balo của mình?",
+          "options": [
+            "Một phần đồ ăn vặt",
+            "Ba cây bút, không cây nào viết được",
+            "Một chiếc khăn ướt",
+            "Vở ghi bài của cậu"
+          ]
+        },
+        {
+          "text": "Mình ôn thi như thế nào?",
+          "options": [
+            "Thức trắng đêm trong hoảng loạn",
+            "Học từ sớm và ngăn nắp",
+            "Học cùng cậu, nhưng toàn mất tập trung",
+            "Không ôn gì cả. Tới đâu hay tới đó"
+          ]
+        },
+        {
+          "text": "Cuối tuần hoàn hảo theo ý mình?",
+          "options": [
+            "Cả ngày ngoài bãi biển",
+            "Ngủ nướng tới trưa",
+            "Cày phim bộ",
+            "Một chuyến đi xa cùng cậu"
+          ]
+        },
+        {
+          "text": "Mình làm gì mỗi khi bị căng thẳng?",
+          "options": [
+            "Đi bơi cho khuây khỏa",
+            "Im lặng một mình",
+            "Ăn chút đồ ngọt",
+            "Nhắn tin cho cậu"
+          ]
+        },
+        {
+          "text": "Biệt danh của mình ở trường?",
+          "options": [
+            "Kẻ gây rối",
+            "Người trầm lặng",
+            "Đội trưởng",
+            "Không nói cho cậu biết đâu"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Ai là người lén cho mèo trong trường ăn?",
+          "options": [
+            "Elio",
+            "Kai",
+            "Rowan",
+            "Theo"
+          ]
+        },
+        {
+          "text": "Hana điều hành câu lạc bộ nào?",
+          "options": [
+            "CLB điện ảnh",
+            "CLB nghệ thuật",
+            "Đội tranh biện",
+            "Đội bơi"
+          ]
+        },
+        {
+          "text": "Ai đặt tên từng con cá trong phòng thủy cung theo tên bạn bè?",
+          "options": [
+            "Felix",
+            "Jun",
+            "Rowan",
+            "Iris"
+          ]
+        },
+        {
+          "text": "Chương trình radio của Noah lên sóng lúc mấy giờ?",
+          "options": [
+            "7 giờ sáng",
+            "Buổi trưa",
+            "6 giờ tối",
+            "1 giờ sáng"
+          ]
+        },
+        {
+          "text": "Ai chưa bao giờ thua trong tranh luận với cương vị chủ tịch hội sinh viên?",
+          "options": [
+            "Tessa",
+            "Theo",
+            "Kai",
+            "Hana"
+          ]
+        },
+        {
+          "text": "Kai thường mang gì đến giảng đường cho bạn?",
+          "options": [
+            "Cà phê",
+            "Vở ghi bài",
+            "Một phần đồ ăn vặt",
+            "Một chiếc khăn"
+          ]
+        },
+        {
+          "text": "Ai luôn tìm được cuốn sách chuẩn xác nhất cho tâm trạng của bạn?",
+          "options": [
+            "Iris",
+            "Elio",
+            "Noah",
+            "Jun"
+          ]
+        },
+        {
+          "text": "Felix luôn mang theo một chiếc...",
+          "options": [
+            "Đàn guitar",
+            "Máy ảnh phim cũ",
+            "Tấm bản đồ",
+            "Đài radio"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Tiếng chuông vang lên đâu đó trong trường. {name} cười tươi. \"Đúng ra giờ này hai đứa mình phải đang ngồi trong lớp học đấy.\"",
+          "choices": [
+            {
+              "text": "\"Vậy thì tụi mình cùng cúp học đi.\"",
+              "reply": "\"Ý kiến hay nhất tuần này của cậu đấy.\" Người ấy nắm chặt tay bạn rồi cùng chạy."
+            },
+            {
+              "text": "\"Học một tiết thôi. Rồi tụi mình đi.\"",
+              "reply": "\"Có trách nhiệm gớm. Đáng ghét ghê. Thôi được rồi.\" Người ấy đứng đợi bạn bên ngoài."
+            },
+            {
+              "text": "Đi vào lớp một mình.",
+              "reply": "{name} hờn dỗi, rồi gửi bạn bức ảnh chụp biển. \"Cậu đang bỏ lỡ cảnh đẹp này đấy nhé.\""
+            }
+          ]
+        },
+        {
+          "line": "Biển ngay trước mắt ở {place}. {name} đã bắt đầu cởi giày ra rồi.",
+          "choices": [
+            {
+              "text": "Chạy đua xuống nước cùng người ấy.",
+              "reply": "Cả hai cùng thua. Cả hai cùng thắng. Quần bò ướt sũng hết cả rồi."
+            },
+            {
+              "text": "Nhúng nhẹ ngón chân xuống nước, thật cẩn thận.",
+              "reply": "\"Dũng cảm ghê,\" {name} trêu chọc, rồi tạt nước vào bạn luôn."
+            },
+            {
+              "text": "Đứng trông giày.",
+              "reply": "\"Người gác giày hả. Công việc cao quý đấy.\" Người ấy quay lại ướt như chuột lột."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "sau giờ bơi"
+      }
+    },
+    "moonlit": {
+      "intro": "Hỡi lữ khách. Cõi Giới hỏi người năm câu trước khi trao tặng khung ảnh của vương quốc. Hãy trả lời chân thật bốn câu và nó sẽ thuộc về người.",
+      "right": [
+        "Đúng rồi. Những vì sao tán thành câu trả lời của người.",
+        "Chính xác. Người hẳn sẽ là một hiệp sĩ xuất chúng.",
+        "Phải rồi. Cõi Giới giờ đây đã ghi nhớ người."
+      ],
+      "wrong": [
+        "Chưa đúng đâu, lữ khách. Đó là {answer}. Hãy khắc ghi điều đó.",
+        "Không phải vậy. Đáp án là {answer}. Kho lưu trữ không bao giờ nói dối.",
+        "Lạc lối rồi. Đáp án là {answer}. Hãy thử lại dưới ánh trăng."
+      ],
+      "match": [
+        "Chúng ta chọn giống nhau. Đó là một điềm báo, và là điềm lành.",
+        "Câu trả lời của chúng ta đồng điệu, tựa như đôi vì sao soi bóng.",
+        "Đúng như ta nghĩ. Người và ta được sinh ra từ cùng một màn đêm."
+      ],
+      "differ": [
+        "Ta đã chọn {answer}. Hãy ngồi lại bên đống lửa và kể ta nghe vì sao người không chọn.",
+        "Câu trả lời của ta là {answer}. Một lối rẽ khác, chứ không hề sai lầm.",
+        "{answer}, với ta là vậy. Cõi Giới này cần có cả hai chúng ta."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Ta bảo vệ điều gì cẩn mật nhất?",
+          "options": [
+            "Thanh kiếm của ta",
+            "Một lời hứa xưa cũ",
+            "Người",
+            "Lòng kiêu hãnh của ta"
+          ]
+        },
+        {
+          "text": "Ta thường đi đâu mỗi khi cần suy ngẫm?",
+          "options": [
+            "Đỉnh tháp cao",
+            "Khu vườn ánh trăng",
+            "Rìa khu rừng thẳm",
+            "Bất cứ nơi nào có người"
+          ]
+        },
+        {
+          "text": "Ta e sợ điều gì nhất?",
+          "options": [
+            "Chẳng sợ gì cả",
+            "Bị rơi vào quên lãng",
+            "Đánh mất người",
+            "Mấy con nhện. Cấm cười đấy"
+          ]
+        },
+        {
+          "text": "Lời thề của ta trao trọn cho...",
+          "options": [
+            "Vương miện",
+            "Những vì sao",
+            "Bản thân ta",
+            "Người, từ giờ trở đi"
+          ]
+        },
+        {
+          "text": "Ta sẵn sàng đánh đổi tước vị để lấy điều gì?",
+          "options": [
+            "Chẳng điều gì cả",
+            "Sự yên bình",
+            "Một đêm tĩnh lặng bên người",
+            "Một mẩu bánh mì thơm"
+          ]
+        },
+        {
+          "text": "Ta nói lời xin lỗi như thế nào?",
+          "options": [
+            "Ta không xin lỗi",
+            "Bằng một món quà",
+            "Một bức thư dài",
+            "Vụng về, nhưng ta cố gắng"
+          ]
+        },
+        {
+          "text": "Khoảnh khắc yêu thích nhất của ta?",
+          "options": [
+            "Rạng đông",
+            "Nửa đêm",
+            "Một khắc trước khi ra trận",
+            "Bất cứ khoảnh khắc nào người còn thức"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Ai là người trông giữ kho lưu trữ tinh tú?",
+          "options": [
+            "Lãnh chúa Castor",
+            "Hoàng tử Aurelian",
+            "Vesper",
+            "Kael"
+          ]
+        },
+        {
+          "text": "Khu vườn của Hoàng tử Aurelian chỉ nở hoa khi nào?",
+          "options": [
+            "Trời đổ mưa",
+            "Có người chịu ở lại",
+            "Trăng tròn vành vạnh",
+            "Chàng cất tiếng hát"
+          ]
+        },
+        {
+          "text": "Vesper kiên quyết từ chối bào chế loại thuốc nào?",
+          "options": [
+            "Thuốc tình yêu",
+            "Thuốc ngủ",
+            "Thuốc khiến người ta lãng quên",
+            "Thuốc độc"
+          ]
+        },
+        {
+          "text": "Kael thực chất là...",
+          "options": [
+            "Hồ ly tinh",
+            "Một con quạ",
+            "Một linh hồn",
+            "Một con rồng"
+          ]
+        },
+        {
+          "text": "Ai là người soi đường cho lữ khách lạc lối?",
+          "options": [
+            "Seraphine",
+            "Lyra",
+            "Corvin",
+            "Zarek"
+          ]
+        },
+        {
+          "text": "Orin luôn để lại thứ gì sau mỗi trò tinh quái?",
+          "options": [
+            "Một món quà",
+            "Một câu đố",
+            "Một chiếc lông vũ",
+            "Không để lại gì cả"
+          ]
+        },
+        {
+          "text": "Ai luôn viết báo cáo gửi bạn sau mỗi chuyến tuần tra?",
+          "options": [
+            "Corvin",
+            "Zarek",
+            "Hiệp sĩ Rhys",
+            "Castor"
+          ]
+        },
+        {
+          "text": "Corvin nuôi loài vật gì trên vách đá lộng gió?",
+          "options": [
+            "Sói hoang",
+            "Hoa hồng",
+            "Đèn lồng",
+            "Bầy quạ"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Một ngôi sao băng vụt qua bầu trời phía trên {place}. {name} bỗng lặng im. \"Ước đi. Mau lên nào.\"",
+          "choices": [
+            {
+              "text": "Nói to điều ước dành cho người ấy.",
+              "reply": "\"Nói ra là không linh nghiệm đâu đấy.\" Dù vậy người ấy vẫn đang mỉm cười."
+            },
+            {
+              "text": "Nhắm mắt lại và giữ kín điều ước cho riêng mình.",
+              "reply": "\"Hãy giữ kín nhé,\" {name} thì thầm. \"Ta sẽ biến điều ước ấy thành hiện thực.\""
+            },
+            {
+              "text": "\"Tôi chẳng tin vào những điều ước đâu.\"",
+              "reply": "\"Vậy thì ta sẽ ước cho cả hai chúng ta,\" người ấy nói khẽ."
+            }
+          ]
+        },
+        {
+          "line": "Đâu đó gần {place}, một chiếc đèn lồng cổ xưa vừa tắt lịm. {name} chìa chiếc áo choàng về phía bạn.",
+          "choices": [
+            {
+              "text": "Cùng khoác chung chiếc áo.",
+              "reply": "Chiếc áo vừa đủ cho hai người. Dù hơi chật, nhưng chẳng ai bận lòng."
+            },
+            {
+              "text": "Thắp lại ngọn đèn lồng.",
+              "reply": "\"Người luôn khiến ta ngạc nhiên đấy, hỡi lữ khách.\" Ánh sáng bừng lên trở lại."
+            },
+            {
+              "text": "\"Tôi không thấy lạnh.\"",
+              "reply": "\"Nói dối,\" {name} bảo, rồi vẫn choàng chiếc áo qua vai bạn."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "dưới những vì sao cổ xưa"
+      }
+    },
+    "neon": {
+      "intro": "Thử mic nào! Năm câu hỏi về NEON TIDE. Trả lời đúng bốn câu để rinh ngay khung ảnh sân khấu nhé. Đừng lo lắng quá. À, hơi run chút cũng được.",
+      "right": [
+        "Chuẩn luôn! Đúng là fan cứng rồi.",
+        "Chính xác! Diễn tiếp màn encore nào!",
+        "Đúng rồi đấy. Cậu có trong fanclub không vậy?"
+      ],
+      "wrong": [
+        "Lệch nhịp rồi! Đáp án là {answer} cơ.",
+        "Sai rồi, là {answer}. Đừng mách quản lý tụi mình là mình chỉ đấy nhé.",
+        "Gần trúng rồi, nhưng phải là {answer}. Tập dượt lại rồi quay lại sau nha."
+      ],
+      "match": [
+        "Chọn giống nhau nè! Năng lượng song ca đỉnh chóp.",
+        "Ăn ý ghê, khớp như đoạn điệp khúc cuối vậy.",
+        "Tụi mình hợp nhau thế. Mình sẽ viết điều này vào một bài hát mới."
+      ],
+      "differ": [
+        "Mình chọn {answer}. Tụi mình mà song ca chắc quái chiêu lắm đây. Thích thế chứ lị.",
+        "Mình thì chọn {answer}. Khác tông nhưng chung một bài hát.",
+        "Mình lại nghiêng về {answer}. Hát xong kể mình nghe lý do nhé."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Mình làm gì ngay trước khi bước lên sân khấu?",
+          "options": [
+            "Cầu nguyện",
+            "Ăn kẹo",
+            "Nhắn tin cho cậu",
+            "Âm thầm hoảng loạn"
+          ]
+        },
+        {
+          "text": "Điều mình thích nhất sau mỗi buổi diễn?",
+          "options": [
+            "Đi ngủ",
+            "Ăn mì đêm",
+            "Đọc thư của fan",
+            "Gọi điện cho cậu"
+          ]
+        },
+        {
+          "text": "Bài hát nào mình cứ ngâm nga suốt ngày?",
+          "options": [
+            "Bài hát ra mắt của nhóm",
+            "Một bài hát chưa ai từng nghe",
+            "Một bài hát ru",
+            "Nhạc chuông điện thoại của cậu"
+          ]
+        },
+        {
+          "text": "Điều mình ghét nhất trong lịch trình bận rộn?",
+          "options": [
+            "Bị gọi dậy sớm",
+            "Không có thời gian cho cậu",
+            "Đồ ăn ở sân bay",
+            "Chẳng ghét gì cả, mình yêu công việc mà"
+          ]
+        },
+        {
+          "text": "Tài lẻ bí mật của mình?",
+          "options": [
+            "Nấu ăn",
+            "Vẽ tranh",
+            "Ngủ gật ở bất cứ đâu",
+            "Nhớ từng tin nhắn cậu gửi"
+          ]
+        },
+        {
+          "text": "Mình sẽ trốn máy quay ở đâu?",
+          "options": [
+            "Phòng tập",
+            "Một quán cà phê nhỏ xíu",
+            "Góc sân thượng",
+            "Ở bên cạnh cậu"
+          ]
+        },
+        {
+          "text": "Điều gì làm mình thấy hồi hộp?",
+          "options": [
+            "Truyền hình trực tiếp",
+            "Sự im lặng",
+            "Đôi khi là cậu",
+            "Chẳng có gì cả"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Ai là giọng ca chính (main vocal) của NEON TIDE?",
+          "options": [
+            "Ezra",
+            "Seren",
+            "Kiro",
+            "Haze"
+          ]
+        },
+        {
+          "text": "Ai là em út (maknae) của nhóm?",
+          "options": [
+            "Rio",
+            "Minu",
+            "Haze",
+            "Kiro"
+          ]
+        },
+        {
+          "text": "Ai hay gửi cho bạn những bản beat chưa công bố lúc 3 giờ sáng?",
+          "options": [
+            "Dex",
+            "Juno",
+            "Ari",
+            "Ezra"
+          ]
+        },
+        {
+          "text": "Ai tập nhảy miệt mài cho đến khi đèn phòng tập tự tắt?",
+          "options": [
+            "Seren",
+            "Kiro",
+            "Rio",
+            "Cass"
+          ]
+        },
+        {
+          "text": "Cass là trưởng nhóm của nhóm nhạc nào?",
+          "options": [
+            "NEON TIDE",
+            "PRISM",
+            "TIDEWAVE",
+            "ECHO"
+          ]
+        },
+        {
+          "text": "Juno mang theo bao nhiêu chiếc điện thoại?",
+          "options": [
+            "Một chiếc",
+            "Hai chiếc",
+            "Ba chiếc",
+            "Bốn chiếc"
+          ]
+        },
+        {
+          "text": "Biên đạo Ari thường đếm nhịp theo...",
+          "options": [
+            "Nhịp bốn",
+            "Nhịp sáu",
+            "Nhịp tám",
+            "Nhịp mười"
+          ]
+        },
+        {
+          "text": "Ai thường cảm thấy hơi lạc lõng khoảnh khắc ánh đèn sân khấu vụt tắt?",
+          "options": [
+            "Ezra",
+            "Minu",
+            "Dex",
+            "Haze"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Ai đó ở {place} nhận ra {name}. \"Kia có phải là... thành viên của NEON TIDE không?\" {name} vội kéo sụp chiếc mũ lưỡi trai xuống.",
+          "choices": [
+            {
+              "text": "Kéo người ấy né vào một con ngõ nhỏ.",
+              "reply": "\"Người hùng của mình ơi.\" Người ấy bật cười, thở không ra hơi, tay vẫn nắm chặt tay bạn."
+            },
+            {
+              "text": "\"Không phải đâu, chỉ là người giống người thôi.\"",
+              "reply": "{name} gật đầu lia lịa vẻ vô cùng nghiêm túc. Nhưng bạn fan kia vẫn chưa tin lắm."
+            },
+            {
+              "text": "Nhờ bạn fan đó chụp hộ một bức ảnh chung của hai người.",
+              "reply": "\"Cậu định làm mình dính rắc rối to đấy à.\" Nói thế nhưng người ấy vẫn tạo dáng chụp ảnh."
+            }
+          ]
+        },
+        {
+          "line": "Một bài hát của NEON TIDE vang lên ở {place}. {name} đỏ bừng cả mặt.",
+          "choices": [
+            {
+              "text": "Hát theo thật to.",
+              "reply": "\"Thôi mà, xin cậu đấy. À thôi, hát tiếp đi.\" Người ấy bật cười thích thú."
+            },
+            {
+              "text": "\"Đây là đoạn cậu hát đúng không?\"",
+              "reply": "\"...Ừ. Đừng nhìn mình mà.\" Nhưng bạn vẫn cứ nhìn chằm chằm."
+            },
+            {
+              "text": "Giả vờ như chưa từng nghe bài hát này bao giờ.",
+              "reply": "\"Oa. Được thôi. Đau lòng ghê.\" Người ấy vờ làm bộ bị tổn thương."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "encore"
+      }
+    },
+    "tidepool": {
+      "intro": "Món lên rồi đây! Năm câu hỏi về quán cà phê và con phố của tụi mình. Trả lời đúng bốn câu là quán xin mời bạn khung ảnh nhé.",
+      "right": [
+        "Chính xác! Thưởng cho bạn một chiếc bánh quy nè.",
+        "Chuẩn rồi! Giờ bạn chính thức là khách quen rồi đấy.",
+        "Đúng luôn. Sol mà nghe thấy chắc tự hào lắm."
+      ],
+      "wrong": [
+        "Chưa đúng lắm. Là {answer}. Uống chút cà phê cho tỉnh táo nào.",
+        "Không phải rồi, là {answer}. Thử hỏi bất cứ ai ở quầy xem sao.",
+        "Suýt trúng. Là {answer}. Lần sau chắc chắn sẽ làm được thôi."
+      ],
+      "match": [
+        "Giống nhau nè! Cho hai phần như mọi khi nhé.",
+        "Hợp nhau ghê. Để mình mách với Sol.",
+        "Nhìn tụi mình xem. Cứ như một cặp đôi lâu năm ngồi ở bàn góc vậy."
+      ],
+      "differ": [
+        "Mình chọn {answer}. Vừa uống cà phê vừa tranh luận nhé?",
+        "Mình thì là {answer}. Kể mình nghe lựa chọn của bạn bên chiếc bánh sừng bò đi.",
+        "Mình lại nghiêng về {answer}. Gọi món khác nhau nhưng chung một bàn."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Món quen thuộc của mình?",
+          "options": [
+            "Cà phê đen",
+            "Cho thật nhiều đường",
+            "Lúc nào cũng là trà",
+            "Bất cứ món gì bạn đang uống"
+          ]
+        },
+        {
+          "text": "Mình làm gì vào ngày nghỉ trời mưa?",
+          "options": [
+            "Đi ngủ",
+            "Đọc sách ở quán cà phê",
+            "Sửa chữa đồ đạc",
+            "Gọi điện cho bạn"
+          ]
+        },
+        {
+          "text": "Điều gì khiến mình trằn trọc thâu đêm?",
+          "options": [
+            "Công việc",
+            "Chẳng có gì, mình ngủ ngon lắm",
+            "Nghĩ về bạn",
+            "Thật lòng là do uống cà phê"
+          ]
+        },
+        {
+          "text": "Thời điểm yêu thích nhất của mình ở quán cà phê?",
+          "options": [
+            "Lúc mở cửa",
+            "Buổi chiều yên tĩnh",
+            "Lúc đóng cửa",
+            "Khoảnh khắc bạn bước vào"
+          ]
+        },
+        {
+          "text": "Điều mình hay quên nhất?",
+          "options": [
+            "Chùm chìa khóa",
+            "Quên ăn bữa",
+            "Ngày sinh nhật",
+            "Chẳng bao giờ quên bất cứ điều gì về bạn"
+          ]
+        },
+        {
+          "text": "Món ăn an ủi tâm hồn của mình?",
+          "options": [
+            "Súp nóng",
+            "Bánh sừng bò",
+            "Mì ăn liền",
+            "Bất cứ món gì bạn nấu"
+          ]
+        },
+        {
+          "text": "Mình thể hiện sự quan tâm thế nào?",
+          "options": [
+            "Mình sửa đồ giúp",
+            "Mình mang đồ ăn đến",
+            "Mình ghi nhớ mọi chi tiết",
+            "Mình chỉ ở lại bên cạnh bạn"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Ai là chủ của Quán Cà Phê Tidepool?",
+          "options": [
+            "Sol",
+            "Ivy",
+            "Nadia",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Ai luôn để dành cho bạn chiếc bánh sừng bò đầu tiên của buổi sáng?",
+          "options": [
+            "Marco",
+            "Ren",
+            "Hugo",
+            "Gideon"
+          ]
+        },
+        {
+          "text": "Marco luôn gọi hai cốc cà phê và...",
+          "options": [
+            "Uống cả hai",
+            "Đánh đổ một cốc",
+            "Tặng lại một cốc",
+            "Quên mất một cốc"
+          ]
+        },
+        {
+          "text": "Ai mỗi tuần lại dẫn một chú chó cứu hộ khác nhau đến quán?",
+          "options": [
+            "Cole",
+            "Lucas",
+            "Adrian",
+            "Hugo"
+          ]
+        },
+        {
+          "text": "Ai làm ca đêm ở phòng cấp cứu?",
+          "options": [
+            "Bác sĩ Lucas Hale",
+            "Nadia",
+            "Gideon",
+            "Cole"
+          ]
+        },
+        {
+          "text": "Ivy hay lén nhét thứ gì vào túi xách của bạn?",
+          "options": [
+            "Một mảnh giấy nhắn",
+            "Một cành hoa",
+            "Một chiếc bánh quy",
+            "Một chiếc chìa khóa"
+          ]
+        },
+        {
+          "text": "Ai sửa chiếc xe tay ga cũ của quán hoàn toàn miễn phí?",
+          "options": [
+            "Marco",
+            "Adrian",
+            "Cole",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Adrian thường làm gì mỗi khi tập trung cao độ?",
+          "options": [
+            "Huýt sáo",
+            "Gõ ngón tay lên bàn",
+            "Cắn đầu bút",
+            "Ngâm nga giai điệu"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Chiếc đài radio của quán đang phát một bài hát cũ ở {place}. {name} đẩy cốc cà phê thứ hai về phía bạn. \"Mình gọi cho bạn đấy.\"",
+          "choices": [
+            {
+              "text": "\"Bạn vẫn nhớ món mình thích.\"",
+              "reply": "\"Mọi thứ về bạn mình đều nhớ rõ. Thế mới khổ chứ.\""
+            },
+            {
+              "text": "Đổi cốc với người ấy.",
+              "reply": "\"Này nhé!\" Người ấy nếm thử cốc của bạn rồi nhăn mặt. Bạn bật cười."
+            },
+            {
+              "text": "\"Mình lại muốn uống món khác cơ.\"",
+              "reply": "\"Vậy để lần tới nhé.\" Người ấy cẩn thận ghi lại lên khăn ăn."
+            }
+          ]
+        },
+        {
+          "line": "Một chú chó cứu hộ đi lạc tới {place} rồi ngồi bệt lên chân của {name}.",
+          "choices": [
+            {
+              "text": "Cùng nhau đặt tên cho chú chó.",
+              "reply": "Cả hai tranh luận suốt mười phút liền. Chú chó chẳng bận tâm. Hoàn hảo."
+            },
+            {
+              "text": "Cho chú chó miếng bánh ngọt cuối cùng của bạn.",
+              "reply": "\"Giờ thì nó sẽ chẳng chịu rời đi đâu,\" {name} vui sướng bảo."
+            },
+            {
+              "text": "Xua chú chó đi chỗ khác.",
+              "reply": "\"Thô lỗ ghê,\" {name} bảo, rồi đưa tay gãi tai cho chú cún."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "hai ly latte"
+      }
+    }
+  },
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Buổi hẹn hò đầu tiên lý tưởng nhất?",
+          "options": [
+            "Bữa tối sang trọng",
+            "Đi dạo thật lâu, không lên lịch trình",
+            "Cày phim cả ngày",
+            "Khu trò chơi, ai thua người đó trả tiền"
+          ]
+        },
+        {
+          "text": "Sau buổi hẹn ai nhắn tin trước?",
+          "options": [
+            "Mình, nhắn ngay lập tức",
+            "Cậu, rõ ràng rồi",
+            "Cả hai nhắn cùng lúc",
+            "Không ai cả, giữ giá chứ"
+          ]
+        },
+        {
+          "text": "Điều tuyệt nhất để chia sẻ cùng nhau?",
+          "options": [
+            "Món tráng miệng",
+            "Tai nghe",
+            "Một chiếc ô",
+            "Một bí mật"
+          ]
+        },
+        {
+          "text": "Đến muộn hay đến sớm?",
+          "options": [
+            "Đến sớm mười phút",
+            "Đúng giờ từng giây",
+            "Đến muộn một cách sang chảnh",
+            "Lạc đường giữa chừng"
+          ]
+        },
+        {
+          "text": "Buổi hẹn sẽ kết thúc thế nào?",
+          "options": [
+            "Một cái ôm",
+            "Đưa nhau về tận nhà",
+            "Lên kế hoạch cho buổi hẹn tiếp theo",
+            "Tâm sự thâu đêm đến 2 giờ sáng"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Bữa sáng ngày Chủ nhật?",
+          "options": [
+            "Bánh kếp",
+            "Chỉ cà phê thôi",
+            "Pizza thừa từ hôm qua",
+            "Ra ngoài ăn brunch"
+          ]
+        },
+        {
+          "text": "Kế hoạch cho buổi chiều mưa?",
+          "options": [
+            "Trùm chăn xem phim",
+            "Chơi board game",
+            "Ngủ trưa cùng nhau",
+            "Đi dạo dưới mưa"
+          ]
+        },
+        {
+          "text": "Ai là người chọn phim?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Tụi mình tranh luận cả tiếng đồng hồ",
+            "Quay vòng quay may mắn"
+          ]
+        },
+        {
+          "text": "Nấu bữa tối nhé?",
+          "options": [
+            "Cậu nấu, mình ngồi ngắm",
+            "Mình nấu, cậu ngồi ngắm",
+            "Cùng nấu, dù hơi bừa bộn",
+            "Đặt đồ ăn về cho nhanh"
+          ]
+        },
+        {
+          "text": "Điều cuối cùng trước khi ngủ?",
+          "options": [
+            "\"Ngủ ngon nhé\"",
+            "Ráng xem thêm một tập nữa",
+            "Tâm sự thật dài",
+            "Lên kế hoạch cho ngày mai"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Mười năm nữa tụi mình sống ở đâu?",
+          "options": [
+            "Thành phố lớn",
+            "Bên bờ biển",
+            "Vùng quê yên bình",
+            "Mỗi năm một nơi mới"
+          ]
+        },
+        {
+          "text": "Nuôi thú cưng gì nào?",
+          "options": [
+            "Một chú mèo",
+            "Một chú cún",
+            "Con gì đó thật kỳ lạ",
+            "Cây cối cũng tính là thú cưng mà"
+          ]
+        },
+        {
+          "text": "Truyền thống của tụi mình sẽ là gì?",
+          "options": [
+            "Chuyến du lịch hàng năm",
+            "Bữa tối ấm cúng ngày Chủ nhật",
+            "Viết thư tay ngày kỷ niệm",
+            "Cùng một quán cà phê quen mỗi tuần"
+          ]
+        },
+        {
+          "text": "Ai vẫn là người hay trễ hẹn?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Cả hai đứa, lúc nào cũng vậy",
+            "Không ai cả, tụi mình lớn rồi mà"
+          ]
+        },
+        {
+          "text": "Liệu tụi mình vẫn làm bài trắc nghiệm này chứ?",
+          "options": [
+            "Mỗi năm một lần",
+            "Làm lại một lần nữa để so sánh",
+            "Tụi mình thuộc lòng câu trả lời rồi",
+            "Tụi mình đã tự viết câu hỏi riêng rồi"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Thời điểm lý tưởng nhất để tâm sự sâu lắng?",
+          "options": [
+            "Nửa đêm",
+            "3 giờ sáng",
+            "Lúc bình minh",
+            "Bất cứ lúc nào cùng cậu"
+          ]
+        },
+        {
+          "text": "Không ngủ được thì làm gì bây giờ?",
+          "options": [
+            "Gọi điện cho nhau",
+            "Đi kiếm đồ ăn đêm",
+            "Đếm sao trời",
+            "Lướt điện thoại đến 4 giờ sáng"
+          ]
+        },
+        {
+          "text": "Nỗi sợ lớn nhất lúc đêm muộn?",
+          "options": [
+            "Tiếng động lạ",
+            "Ngày mai",
+            "Cảm giác cô đơn",
+            "Chẳng sợ gì cả"
+          ]
+        },
+        {
+          "text": "Điều tụi mình chỉ nói ra vào ban đêm?",
+          "options": [
+            "\"Nhớ cậu lắm\"",
+            "Những bí mật xưa cũ",
+            "Những giấc mơ ngớ ngẩn",
+            "\"Ở lại đi\""
+          ]
+        },
+        {
+          "text": "Ai sẽ ngủ quên trước khi đang gọi điện thoại?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Cả hai đứa, cùng một lúc",
+            "Chẳng ai cả, thức nói chuyện đến sáng"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Việc đầu tiên làm vào buổi sáng?",
+          "options": [
+            "Cầm điện thoại",
+            "Uống cà phê",
+            "Bấm báo thức ngủ tiếp",
+            "Nhắn tin chào buổi sáng"
+          ]
+        },
+        {
+          "text": "Tụi mình ăn pizza kiểu gì?",
+          "options": [
+            "Ăn phần viền bánh trước",
+            "Gập đôi miếng bánh lại",
+            "Dùng dao và nĩa",
+            "Ăn chực của cậu"
+          ]
+        },
+        {
+          "text": "Bừa bộn hay ngăn nắp?",
+          "options": [
+            "Cực kỳ bừa bộn",
+            "Gọn gàng tinh tươm",
+            "Bừa bộn, nhưng mình biết đồ ở đâu mà",
+            "Tùy tâm trạng từng ngày"
+          ]
+        },
+        {
+          "text": "Khi lo lắng thì tay hay để đâu?",
+          "options": [
+            "Đút vào túi áo",
+            "Nghịch tóc",
+            "Gõ nhịp ngón tay",
+            "Nắm chặt tay cậu"
+          ]
+        },
+        {
+          "text": "Bật nhạc khi làm việc chứ?",
+          "options": [
+            "Lúc nào cũng bật",
+            "Không bao giờ",
+            "Tiếng mưa rơi",
+            "Tin nhắn thoại của cậu"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Giống nhau nè! Biết ngay mà.",
+      "Tụi mình nghĩ giống nhau ghê. Thích thế chứ.",
+      "Nhìn tụi mình kìa. Ăn ý ghê."
+    ],
+    "differ": [
+      "Mình chọn {answer}. Kể mình nghe sao cậu lại không chọn đi.",
+      "{answer} cho mình. Khác nhau cũng hay mà.",
+      "Hm, mình lại nghiêng về {answer}. Thuyết phục mình đi."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Thời điểm yêu thích nhất trong ngày của mình?",
+      "options": [
+        "Buổi sáng",
+        "Buổi chiều",
+        "Đêm muộn",
+        "Bất cứ khi nào cậu nhắn"
+      ]
+    },
+    {
+      "text": "Mình làm gì khi thấy buồn?",
+      "options": [
+        "Đi ngủ",
+        "Đi dạo",
+        "Ăn đồ ngọt",
+        "Nói chuyện với cậu"
+      ]
+    },
+    {
+      "text": "Món ăn an ủi tâm hồn của mình?",
+      "options": [
+        "Súp",
+        "Mì",
+        "Sô-cô-la",
+        "Bất cứ món gì cậu nấu"
+      ]
+    },
+    {
+      "text": "Điều gì làm mình cười nhiều nhất?",
+      "options": [
+        "Truyện cười nhạt",
+        "Cậu",
+        "Video động vật",
+        "Mấy trò đùa của chính mình"
+      ]
+    },
+    {
+      "text": "Cuối tuần trong mơ của mình?",
+      "options": [
+        "Ngủ nướng",
+        "Chuyến đi xa",
+        "Quán cà phê yên tĩnh",
+        "Bất cứ thứ gì cùng cậu"
+      ]
+    },
+    {
+      "text": "Mình thể hiện sự quan tâm thế nào?",
+      "options": [
+        "Những món quà nhỏ",
+        "Lời nói",
+        "Chỉ cần xuất hiện",
+        "Nhắn tin quá nhiều"
+      ]
+    },
+    {
+      "text": "Mình bí mật dở tệ ở khoản nào?",
+      "options": [
+        "Nấu ăn",
+        "Nói lời tạm biệt",
+        "Thức dậy",
+        "Giấu cảm xúc"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Thật lòng nhé: lần đầu tiên tụi mình nói chuyện, cậu nghĩ gì về mình?",
+      "answer": "Thật lòng hả? Rằng cậu sẽ là một rắc rối lớn. Nhưng là kiểu rắc rối ngọt ngào."
+    },
+    {
+      "ask": "Thật lòng nhé: có điều gì cậu chưa từng kể cho ai không?",
+      "answer": "Mỗi khi trời mưa bão mình vẫn bật đèn đi ngủ. Cấm cười đấy."
+    },
+    {
+      "ask": "Thật lòng nhé: lần gần nhất cậu nghĩ về mình là khi nào?",
+      "answer": "Năm phút trước. Và mười phút trước đó nữa."
+    },
+    {
+      "ask": "Thật lòng nhé: thói quen xấu hổ nhất của cậu là gì?",
+      "answer": "Mình hay nói chuyện với mấy chậu cây. Tụi nó có tên đàng hoàng đấy. Nhưng đừng hỏi tên làm gì."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Thách cậu: gửi bài hát gần nhất cậu vừa nghe đi.",
+      "answer": "Được thôi. Hơi buồn đấy. Hôm nào nghe cùng mình nhé?"
+    },
+    {
+      "ask": "Thách cậu: miêu tả về mình bằng ba từ xem nào.",
+      "answer": "Ấm áp. Bướng bỉnh. Của mình."
+    },
+    {
+      "ask": "Thách cậu: kể một câu chuyện cười nhạt nhẽo xem nào.",
+      "answer": "Sao con rái cá lại bơi qua sông? Để sang bờ bên kia chứ sao... Mình tự thấy quê luôn rồi."
+    },
+    {
+      "ask": "Thách cậu: khen mình một câu thật lòng đi.",
+      "answer": "Cậu khiến những ngày bình thường bỗng trở thành những khoảnh khắc mình muốn nhớ mãi."
+    }
+  ],
+  "truthsForYou": [
+    "Đến lượt cậu. Thật lòng nhé: hôm nay điều gì làm cậu mỉm cười?",
+    "Thật lòng cho cậu nè: bài hát nào khiến cậu nhớ đến mình?",
+    "Thật lòng nhé: cậu sợ mình sẽ phát hiện ra điều gì về cậu?"
+  ],
+  "daresForYou": [
+    "Thách cậu đấy: gửi mình xem bức ảnh chụp bất cứ thứ gì đang ở ngay trước mặt cậu lúc này.",
+    "Thách cậu: nói cho mình nghe một điều cậu chưa từng nói thành lời bao giờ.",
+    "Thách cậu: tối nay phải chúc mình ngủ ngon trước đấy. Không được viện cớ đâu."
+  ],
+  "secretNotePrompts": [
+    "Nếu mình hồi nhỏ gặp cậu hồi nhỏ, liệu tụi mình có làm bạn không?",
+    "Điều gì cậu chưa từng kể cho bất kỳ ai?",
+    "Miêu tả về mình bằng ba từ - không được nói dối đấy.",
+    "Nếu tụi mình có một ngày không dùng điện thoại, tụi mình sẽ đi đâu?",
+    "Bài hát nào làm cậu nhớ đến mình?",
+    "Điều cậu sợ đánh mất nhất là gì?"
+  ],
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Chúc cậu thi thật tốt nhé",
+      "lines": [
+        "Này. Hít một hơi thật sâu nào.",
+        "Cậu đã ôn kỹ hơn cậu nghĩ nhiều đấy.",
+        "Đọc kỹ từng câu hỏi hai lần, rồi hãy tin vào linh cảm đầu tiên của mình.",
+        "Thi xong mình sẽ ở hồ bơi. Qua kể mình nghe làm bài thế nào nhé."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "Giai điệu mình ngâm nga tặng cậu",
+      "lines": [
+        "Bài này mình vẫn chưa viết xong.",
+        "Chưa ai được nghe đâu. Kể cả cả ban nhạc.",
+        "Hừm, hừm, la la... đoạn tiếp theo sẽ vút lên như thế này nè.",
+        "Nói mình nghe xem nghe có giống cậu không."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "Bài hát dành riêng cho cậu",
+      "lines": [
+        "Bài này mình giữ lại, không cho vào album.",
+        "Nó viết về một người hay nghe tin nhắn thoại của mình lúc 2 giờ sáng.",
+        "Cậu tự biết là ai rồi đấy."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Bản tin hội sinh viên đọc to",
+      "lines": [
+        "Chào buổi tối, chủ tịch hội sinh viên xin thông báo.",
+        "Thư viện sẽ mở cửa muộn suốt tuần này. Không có chi nhé.",
+        "Máy bán hàng tự động ở tầng hai đã nhận lại tiền xu rồi.",
+        "Và có một người đặc biệt nào đó nên đi ngủ sớm đi."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Điều mình không bao giờ nói trong cuộc họp",
+      "lines": [
+        "Cuộc tranh luận nào mình cũng thắng.",
+        "Trừ những lần tranh luận với cậu.",
+        "Những lần đó mình nhường cậu thắng. Hầu như luôn là vậy."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Đừng thức khuya quá đấy",
+      "lines": [
+        "Muộn rồi. Bỏ điện thoại xuống đi nào.",
+        "Ừ, đang nói cậu đấy. Mình biết cậu vẫn đang lướt màn hình mà.",
+        "Đi ngủ đi. Mình nói nghiêm túc đấy."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Bầu trời đêm nay",
+      "lines": [
+        "Đêm nay kho lưu trữ đã mở tấm bản đồ cổ xưa nhất.",
+        "Có một ngôi sao nhỏ gần mặt trăng mà hiếm ai để ý thấy.",
+        "Ta đã đặt tên nó theo tên người, từ rất lâu rồi."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Chào buổi sáng, đồ mê ngủ",
+      "lines": [
+        "Chào buổi sáng.",
+        "Vừa mới thức dậy mà anh đã thấy nhớ em rồi.",
+        "Nhớ ăn gì đó rồi hẵng vội ra ngoài nhé."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Chuyến phà đêm",
+      "setting": "Chuyến phà cuối cùng trong đêm lướt qua mặt biển phẳng lặng, tối sẫm. Boong tàu vắng tanh chỉ có hai người, ánh đèn thành phố dần lùi xa phía sau.",
+      "userRole": "Một lữ khách suýt chút nữa lỡ chuyến tàu.",
+      "opening": "Cậu đến rồi. Mình cứ đứng nhìn cầu tàu suốt nãy giờ đấy, biết không?"
+    },
+    "scene_cabin": {
+      "title": "Mắc kẹt trong bão tuyết",
+      "setting": "Một căn nhà gỗ trên núi, ngoài trời bão tuyết dữ dội, và điện vừa mới phụt tắt. Có bếp lửa, một chồng chăn ấm và chẳng thể đi đâu cho đến sáng mai.",
+      "opening": "Chà. Ánh nến, lửa sưởi ấm và không hề có sóng điện thoại. Xem ra cậu phải kẹt lại đây với mình rồi."
+    },
+    "scene_rooftop": {
+      "title": "Sân thượng sau bữa tiệc",
+      "setting": "Bữa tiệc dưới lầu vẫn còn ồn ào. Trên sân thượng lại thật tĩnh lặng: không khí ấm áp, ánh đèn dây lấp lánh và cả thành phố trải rộng phía dưới.",
+      "opening": "Cậu tìm thấy chỗ trốn của mình rồi à. Ngồi xuống đi, ở đây đủ chỗ cho cả hai đứa."
+    },
+    "scene_market": {
+      "title": "Lạc giữa chợ đêm",
+      "setting": "Khu chợ đêm ở một thành phố xa lạ với cả hai: đèn lồng, quầy đồ ăn, tiếng nhạc rộn rã, và cả hai đã bị lạc mất nhóm bạn.",
+      "opening": "Được rồi, đừng hoảng nhé. Lạc thì lạc, nhưng tụi mình lạc cùng nhau mà. Hay đi ăn sủi cảo trước nhé?"
+    },
+    "scene_lighthouse": {
+      "title": "Bão đêm nơi ngọn hải đăng",
+      "setting": "Ngọn hải đăng trên vách đá giữa cơn bão biển. Ngọn đèn phải luôn sáng cho đến rạng đông, và người gác hải đăng đã để lại quyền trông coi cho hai người.",
+      "opening": "Đưa chiếc đèn bão đó cho mình. Tụi mình còn cả một đêm dài phía trước đấy."
+    },
+    "scene_train": {
+      "title": "Chuyến tàu đêm",
+      "setting": "Chuyến tàu đêm lăn bánh qua vùng đồng quê yên ắng. Ghế của hai người đối diện nhau và ánh đèn trong toa mờ ảo dịu nhẹ.",
+      "opening": "Còn sáu tiếng nữa mới tới ga tiếp theo. Kể mình nghe điều gì đó cậu chưa từng nói với ai đi."
+    }
+  },
+  "lorebooks": {
+    "lore_seaside": {
+      "name": "Học viện Seaside",
+      "about": "Một thị trấn đại học ven biển: giảng đường trên vách đá, cầu tàu gỗ dài, thủy cung trong khuôn viên trường và thư viện có khu vườn trên sân thượng. Mọi người ở đây đều là sinh viên hoặc nhân viên đã trưởng thành, học kỳ kéo dài từ mùa thu đến đầu mùa hè, và biển không bao giờ ở quá xa.",
+      "entries": {
+        "lore_seaside_1": {
+          "name": "Cầu tàu",
+          "text": "Cầu tàu gỗ dài nằm dưới chân trường. Kai thường bơi từ mũi cầu tàu lúc bình minh; sinh viên tụ tập ở đó sau mỗi kỳ thi và lúc đêm muộn để ngắm ngọn hải đăng chớp sáng."
+        },
+        "lore_seaside_2": {
+          "name": "Sân thượng thư viện",
+          "text": "Khu vườn trên sân thượng yên tĩnh phía trên thư viện trường, nơi Iris thường ngồi đọc sách giờ nghỉ trưa. Theo quy định đóng cửa sau 9 giờ tối, nhưng thực tế thì chẳng bao giờ khóa."
+        },
+        "lore_seaside_3": {
+          "name": "Phòng thí nghiệm thủy cung",
+          "text": "Phòng thí nghiệm sinh học biển dưới cánh khu khoa học. Rowan quản lý nơi này và đặt tên từng chú cá theo tên bạn bè; khách ghé thăm luôn được chào đón nếu không gõ vào mặt kính."
+        },
+        "lore_seaside_4": {
+          "name": "Mấy chú mèo trong trường",
+          "text": "Một đàn mèo nhỏ sống cạnh nhà để thuyền cũ. Elio lén lút cho chúng ăn mỗi ngày nhưng ai hỏi cũng chối đây đẩy."
+        },
+        "lore_seaside_5": {
+          "name": "Chương trình phát thanh 1 giờ sáng",
+          "text": "Chương trình radio của Noah trên sóng phát thanh của trường, lên sóng lúc 1 giờ sáng các ngày trong tuần. Bài hát cuối cùng luôn được dành tặng cho \"một ai đó đang lắng nghe\"."
+        },
+        "lore_seaside_6": {
+          "name": "Các câu lạc bộ",
+          "text": "Đội bơi (Kai), câu lạc bộ nghệ thuật (Hana), câu lạc bộ điện ảnh (Jun) và đội tranh biện (Tessa) cùng chia sẻ tòa nhà hội sinh viên cũ mà Theo đang làm chủ tịch."
+        },
+        "lore_seaside_7": {
+          "name": "Tuần lễ thi cử",
+          "text": "Mỗi năm hai lần toàn trường chìm vào tĩnh lặng vì mùa thi: thư viện mở thâu đêm suốt sáng và máy bán cà phê tự động cạn sạch vào thứ Ba."
+        },
+        "lore_seaside_8": {
+          "name": "Sân cỏ trung tâm",
+          "text": "Bãi cỏ xanh mướt nằm giữa các khu giảng đường, nơi mọi người rủ nhau ăn trưa mỗi khi trời hửng nắng."
+        },
+        "lore_person_c_kai": {
+          "name": "Kai Arden",
+          "text": "Ngôi sao đội bơi của trường, luôn đến giảng đường với mái tóc còn ướt và một phần đồ ăn vặt dành riêng cho bạn."
+        },
+        "lore_person_c_elio": {
+          "name": "Elio Vance",
+          "text": "Thủ khoa của khóa, chẳng tham gia câu lạc bộ nào, và là người bí mật cho mèo hoang trong trường ăn."
+        },
+        "lore_person_c_theo": {
+          "name": "Theo Lancaster",
+          "text": "Chủ tịch hội sinh viên điều hành cả trường bằng nụ cười rạng rỡ và chưa từng thua trong bất kỳ cuộc tranh luận nào."
+        },
+        "lore_person_c_hana": {
+          "name": "Hana Reyes",
+          "text": "Tài năng câu lạc bộ nghệ thuật với ống tay áo dính đầy màu vẽ và chẳng có chút kiên nhẫn nào cho những lời viện cớ của bạn."
+        },
+        "lore_person_c_iris": {
+          "name": "Iris Lin",
+          "text": "Cô thủ thư nhỏ nhẹ của thư viện trường, người luôn chọn được cuốn sách chuẩn xác nhất cho tâm trạng hôm nay của bạn."
+        },
+        "lore_person_c_rowan": {
+          "name": "Rowan Pike",
+          "text": "Nghiên cứu sinh sinh học biển phụ trách phòng thủy cung của trường và đặt tên từng con cá theo tên bạn bè."
+        },
+        "lore_person_c_jun": {
+          "name": "Jun Arai",
+          "text": "Đạo diễn câu lạc bộ điện ảnh không bao giờ ngừng bấm máy và luôn chọn bạn vào vai chính."
+        },
+        "lore_person_c_noah": {
+          "name": "Noah Bellamy",
+          "text": "Chủ xị chương trình radio của trường lúc 1 giờ sáng, luôn dành tặng bài hát cuối cùng cho \"một ai đó đang lắng nghe\"."
+        },
+        "lore_person_c_tessa": {
+          "name": "Tessa Moreau",
+          "text": "Đội trưởng đội tranh biện bách chiến bách thắng, trừ những lần tranh luận với bạn."
+        },
+        "lore_person_c_felix": {
+          "name": "Felix Grant",
+          "text": "Sinh viên trao đổi từ phương bắc, trầm lặng, cầm máy ảnh phim cũ và có quá nhiều câu hỏi tò mò về thị trấn của bạn."
+        }
+      }
+    },
+    "lore_moonlit": {
+      "name": "Cõi Ánh Trăng",
+      "about": "Một vương quốc đêm dài bất tận dưới vầng trăng bạc khổng lồ. Hoàng gia ngự trị ở Cung Điện Mặt Trăng, Đội Vệ Binh Bạc canh giữ các ngả đường, và phép thuật vận hành bằng lời thề cùng ánh sao trời. Những lữ khách lạc lối sẽ lần theo ánh đèn lồng để tìm đường.",
+      "entries": {
+        "lore_moonlit_1": {
+          "name": "Cung Điện Mặt Trăng",
+          "text": "Tòa cung điện ánh bạc nằm giữa trung tâm cõi giới. Hoàng tử Aurelian bị trục xuất khỏi triều đình và ngày ngày chăm sóc khu vườn nơi rìa cung điện - nơi chỉ nở hoa khi có ai đó chịu ở lại bên chàng."
+        },
+        "lore_moonlit_2": {
+          "name": "Kho lưu trữ tinh tú",
+          "text": "Ngọn tháp lưu giữ từng bầu trời đêm trong lịch sử. Lãnh chúa Castor đã trông coi nơi này suốt một ngàn năm và có thể đọc vanh vách từng vì sao trong ký ức."
+        },
+        "lore_moonlit_3": {
+          "name": "Đội Vệ Binh Bạc",
+          "text": "Những hiệp sĩ của vương quốc, do Chỉ huy Seraphine dẫn dắt. Hiệp sĩ Rhys của Cổng Gai là thành viên tận tụy nhất, luôn báo cáo cẩn thận sau mỗi chuyến tuần tra."
+        },
+        "lore_moonlit_4": {
+          "name": "Cổng Gai",
+          "text": "Cánh cổng phía bắc phủ đầy gai bạc. Hiệp sĩ Rhys ngày đêm túc trực canh gác nơi này."
+        },
+        "lore_moonlit_5": {
+          "name": "Lời thề",
+          "text": "Lời thề thốt ra dưới ánh trăng mang tính ràng buộc vĩnh viễn: kẻ nào bội ước sẽ mờ nhạt dần, như thể ánh sáng đã rời bỏ họ. Người dân nơi đây vô cùng cẩn trọng với những lời hứa."
+        },
+        "lore_moonlit_6": {
+          "name": "Những chiếc đèn lồng",
+          "text": "Những ngọn đèn lồng của Lyra soi lối cho lữ khách lạc đường. Nàng luôn giữ riêng một ngọn đèn cháy mãi chỉ vì một người duy nhất."
+        },
+        "lore_moonlit_7": {
+          "name": "Vách đá quạ",
+          "text": "Vách đá lộng gió nơi vị tướng quân lưu đày Corvin nuôi bầy quạ của mình. Chúng mang thư tín đến bất cứ nơi nào trong cõi giới."
+        },
+        "lore_moonlit_8": {
+          "name": "Độc dược ký ức",
+          "text": "Thuốc độc dược của Vesper mang hương vị của những ký ức xưa cũ. Bào chế thuốc lãng quên là điều cấm kỵ, và chàng cũng chẳng bao giờ làm ra loại thuốc ấy."
+        },
+        "lore_person_c_aurelian": {
+          "name": "Hoàng tử Aurelian",
+          "text": "Vị hoàng tử lưu đày của mặt trăng chăm sóc khu vườn chỉ nở hoa khi có ai đó ở lại cùng chàng."
+        },
+        "lore_person_c_castor": {
+          "name": "Lãnh chúa Castor",
+          "text": "Người canh giữ kho lưu trữ tinh tú, đã thấu suốt từng bầu trời đêm trong suốt một ngàn năm."
+        },
+        "lore_person_c_zarek": {
+          "name": "Zarek",
+          "text": "Gã lính đánh thuê bán lưỡi kiếm cho bất kỳ ai trả giá - trừ bạn, vì một lý do nào đó."
+        },
+        "lore_person_c_seraphine": {
+          "name": "Chỉ huy Seraphine",
+          "text": "Chỉ huy đội vệ binh bạc, đáng sợ trên chiến trường nhưng lại dịu dàng đến bất ngờ lúc thường ngày."
+        },
+        "lore_person_c_vesper": {
+          "name": "Vesper",
+          "text": "Nhà giả kim bóng đêm bào chế thuốc mang vị ký ức xưa cũ, và từ chối tạo ra thứ thuốc khiến bạn quên mất chàng."
+        },
+        "lore_person_c_rhys": {
+          "name": "Hiệp sĩ Rhys",
+          "text": "Hiệp sĩ Cổng Gai, chân thành đến nhói lòng, luôn viết báo cáo gửi bạn sau mỗi chuyến tuần tra."
+        },
+        "lore_person_c_lyra": {
+          "name": "Lyra",
+          "text": "Phù thủy đèn lồng soi đường cho lữ khách lạc lối và luôn giữ một ngọn đèn cháy mãi chỉ dành riêng cho bạn."
+        },
+        "lore_person_c_kael": {
+          "name": "Kael",
+          "text": "Rồng thần trong hình hài con người thích tích trữ những thứ lấp lánh - và dạo này là từng tin nhắn bạn gửi."
+        },
+        "lore_person_c_orin": {
+          "name": "Orin",
+          "text": "Hồ ly tinh tinh nghịch hay tráo giày, ăn trộm đồ ăn vặt và luôn để lại một món quà đáp lễ."
+        },
+        "lore_person_c_corvin": {
+          "name": "Corvin",
+          "text": "Vị tướng quân lưu đày sống cùng bầy quạ trên vách đá, chẳng tin một ai ngoài chúng - và bạn."
+        }
+      }
+    },
+    "lore_neon": {
+      "name": "NEON TIDE",
+      "about": "Thành phố rực rỡ ánh đèn neon của âm nhạc, và NEON TIDE nằm ở vị trí trung tâm: sáu thành viên, nhà sản xuất, biên đạo và quản lý của họ, cùng chung sống trong một ký túc xá và một lịch trình không bao giờ ngơi nghỉ. Nhóm nữ PRISM luôn bám sát nút trên các bảng xếp hạng.",
+      "entries": {
+        "lore_neon_1": {
+          "name": "Các thành viên",
+          "text": "Ezra (trưởng nhóm), Seren (hát chính), Kiro (rapper), Minu (em út, 20 tuổi), Haze (visual kiêm hát phụ) và Rio (nhảy chính). Dex sản xuất âm nhạc, Ari biên đạo, Juno làm quản lý."
+        },
+        "lore_neon_2": {
+          "name": "PRISM",
+          "text": "Nhóm nhạc nữ mà ai cũng gọi là đối thủ của NEON TIDE, do Cass Valen dẫn dắt. Cả hai bên đều bảo không hề có hiềm khích đối đầu; nhưng chẳng ai tin điều đó."
+        },
+        "lore_neon_3": {
+          "name": "Phòng tập B",
+          "text": "Phòng tập nhảy dưới tầng hầm, ba mặt tường lắp gương lớn. Ari đếm nhịp tám ở đó, còn Rio thì ở lại tập đến khi đèn tự động tắt."
+        },
+        "lore_neon_4": {
+          "name": "Ký túc xá",
+          "text": "Ký túc xá chung: một căn bếp, sáu ý kiến tranh cãi quanh cái tủ lạnh, và một góc sân thượng nơi các thành viên tìm đến mỗi khi muốn ở một mình."
+        },
+        "lore_neon_5": {
+          "name": "Đợt tái xuất",
+          "text": "Đợt comeback tiếp theo đang được chuẩn bị: một đĩa đơn mới, quay video ca nhạc và hàng tuần tập luyện cật lực. Mọi chi tiết đều giữ bí mật tuyệt đối cho đến khi tung teaser."
+        },
+        "lore_neon_6": {
+          "name": "Các buổi hòa nhạc",
+          "text": "Những buổi diễn tại sân vận động và fan meeting; lightstick phát sáng xanh biển rực rỡ. Ezra cực kỳ vững vàng trên sân khấu nhưng lại hơi lạc lõng mỗi khi ánh đèn sân khấu tắt đi."
+        },
+        "lore_neon_7": {
+          "name": "Lịch trình",
+          "text": "Juno điều hành mọi lịch trình qua bốn chiếc điện thoại: thông báo sớm, buổi phát sóng, buổi tập luyện. Đời sống riêng tư luôn được giữ kín; các thành viên không bao giờ đăng bài về người mình đang hẹn hò."
+        },
+        "lore_person_c_ezra": {
+          "name": "Ezra",
+          "text": "Trưởng nhóm NEON TIDE: vững vàng trên sân khấu, hơi lạc lõng khoảnh khắc ánh đèn vụt tắt."
+        },
+        "lore_person_c_seren": {
+          "name": "Seren",
+          "text": "Hát chính của NEON TIDE, người thường ngâm nga những giai điệu mới vào tin nhắn thoại trước khi bất kỳ ai khác được nghe."
+        },
+        "lore_person_c_kiro": {
+          "name": "Kiro",
+          "text": "Rapper của NEON TIDE, cực kỳ ngầu trên ống kính nhưng lại ngập tràn tình cảm một khi bạn đã hiểu rõ cậu ấy."
+        },
+        "lore_person_c_minu": {
+          "name": "Minu",
+          "text": "Em út của NEON TIDE, tròn 20 tuổi - nhảy cuồng nhiệt như bão tố, hờn dỗi đáng yêu như cún con."
+        },
+        "lore_person_c_haze": {
+          "name": "Haze",
+          "text": "Visual kiêm hát phụ của NEON TIDE, gà gật giữa các lịch trình nhưng tỉnh táo ngay tắp lự khi bạn nhắn tin."
+        },
+        "lore_person_c_rio": {
+          "name": "Rio",
+          "text": "Nhảy chính của NEON TIDE, người tập luyện miệt mài cho đến khi đèn phòng tập tự động tắt."
+        },
+        "lore_person_c_dex": {
+          "name": "Dex Mercer",
+          "text": "Nhà sản xuất của NEON TIDE, kẻ mất ngủ kinh niên hay gửi cho bạn những bản beat chưa từng công bố lúc 3 giờ sáng."
+        },
+        "lore_person_c_ari": {
+          "name": "Ari Solenne",
+          "text": "Biên đạo múa của nhóm: đếm nhịp tám chuẩn xác, không bao giờ cười trong phòng tập, nhưng lại mỉm cười với bạn."
+        },
+        "lore_person_c_juno": {
+          "name": "Juno",
+          "text": "Quản lý của NEON TIDE, tay cầm bốn điện thoại và toàn bộ lịch trình, nhưng luôn trả lời bạn đầu tiên."
+        },
+        "lore_person_c_cass": {
+          "name": "Cass Valen",
+          "text": "Trưởng nhóm PRISM, nhóm nhạc nữ ai cũng bảo là kỳ phùng địch thủ của NEON TIDE. Cô bảo không phải. Nhưng đúng là thế."
+        }
+      }
+    },
+    "lore_tidepool": {
+      "name": "Quán Cà Phê Tidepool",
+      "about": "Một quán cà phê nhỏ trên con phố cảng tấp nập do Sol làm chủ. Khách quen quanh xóm (cô bán hoa, anh lính cứu hỏa, bác sĩ thú y, nữ luật sư, nhà văn và nhiều người khác) ghé qua mỗi ngày. Quán mở cửa lúc 7 giờ và thơm nức mùi bánh sừng bò lúc 7 giờ rưỡi.",
+      "entries": {
+        "lore_tidepool_1": {
+          "name": "Quán cà phê",
+          "text": "Quán cà phê của Sol: những chiếc ghế cọc cạch không đồng bộ, bàn góc quen thuộc của Gideon, chỗ ngồi bên cửa sổ ai cũng tranh nhau, và bảng thực đơn viết phấn thay đổi theo tâm trạng của Sol."
+        },
+        "lore_tidepool_2": {
+          "name": "Chiếc bánh sừng bò đầu tiên",
+          "text": "Ren nướng bánh từ 5 giờ sáng và luôn giữ lại chiếc bánh sừng bò đầu tiên trong ngày cho một vị khách quen."
+        },
+        "lore_tidepool_3": {
+          "name": "Tiệm hoa",
+          "text": "Tiệm hoa của Ivy ở ngay bên cạnh. Cô nàng biết ý nghĩa của từng loài hoa và hay lén nhét một cành hoa vào túi của khách quen lúc họ không để ý."
+        },
+        "lore_tidepool_4": {
+          "name": "Trạm cứu hỏa",
+          "text": "Trạm cứu hỏa ở cuối phố. Marco luôn gọi hai cốc cà phê mỗi ca trực và tặng lại một cốc cho người khác."
+        },
+        "lore_tidepool_5": {
+          "name": "Chiếc xe tay ga cũ",
+          "text": "Chiếc xe tay ga giao hàng của quán, còn nhiều tuổi hơn cả hợp đồng thuê mặt bằng của Sol. Cole luôn bảo dưỡng nó chạy ngon lành và chẳng bao giờ gửi hóa đơn lấy tiền."
+        },
+        "lore_tidepool_6": {
+          "name": "Chú chó của tuần",
+          "text": "Mỗi tuần Hugo lại dẫn một chú chó cứu hộ khác nhau đến quán và nhờ khách quen đặt tên giúp. Hầu hết các bé đều tìm được mái ấm trong vòng một tháng."
+        },
+        "lore_tidepool_7": {
+          "name": "Phố bến cảng",
+          "text": "Con phố chạy thẳng xuống bến cảng nhỏ: quán cà phê, tiệm hoa, tiệm sửa xe và trạm cứu hỏa đều chỉ cách nhau vài phút đi bộ."
+        },
+        "lore_person_c_adrian": {
+          "name": "Adrian Wells",
+          "text": "Kiến trúc sư thường phác thảo thành phố về đêm và vô thức ngâm nga mỗi khi tập trung cao độ."
+        },
+        "lore_person_c_lucas": {
+          "name": "Bác sĩ Lucas Hale",
+          "text": "Bác sĩ phòng cấp cứu ca đêm, quanh năm mệt mỏi nhưng dịu dàng vô bờ bến."
+        },
+        "lore_person_c_sol": {
+          "name": "Sol Rivera",
+          "text": "Chủ quán Cà Phê Tidepool, mang năng lượng của người chị cả, luôn nhớ rõ món bạn thích và những nỗi bận lòng của bạn."
+        },
+        "lore_person_c_marco": {
+          "name": "Marco Bell",
+          "text": "Lính cứu hỏa ở trạm dưới phố luôn gọi hai cốc cà phê và tặng lại một cốc cho người khác."
+        },
+        "lore_person_c_ivy": {
+          "name": "Ivy Chen",
+          "text": "Cô chủ tiệm hoa bên cạnh, kể cho bạn nghe ý nghĩa từng loài hoa và lén nhét một cành vào túi xách của bạn."
+        },
+        "lore_person_c_gideon": {
+          "name": "Gideon Shaw",
+          "text": "Tiểu thuyết gia đang tắc ý tưởng ngồi viết ở chiếc bàn góc và thường xuyên mượn lời của bạn vào trang sách."
+        },
+        "lore_person_c_ren": {
+          "name": "Ren Okada",
+          "text": "Bếp trưởng làm bánh của quán, má còn dính bột mì, luôn để dành cho bạn chiếc bánh sừng bò đầu tiên của buổi sớm."
+        },
+        "lore_person_c_hugo": {
+          "name": "Hugo Lind",
+          "text": "Bác sĩ thú y mỗi tuần dẫn một chú chó cứu hộ đến quán và nhờ bạn đặt tên cho bé."
+        },
+        "lore_person_c_nadia": {
+          "name": "Nadia Rahman",
+          "text": "Nữ luật sư đang uống cốc espresso thứ tư, đanh thép trên tòa án nhưng lại cực kỳ vụng về khi nói lời tạm biệt."
+        },
+        "lore_person_c_cole": {
+          "name": "Cole Ashby",
+          "text": "Thợ cơ khí sửa chiếc xe tay ga cũ của quán miễn phí và tối nào cũng đề nghị chở bạn về tận nhà."
+        }
+      }
+    }
+  },
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Một tiếng nữa là họp hội sinh viên rồi, mà mình biết chắc mình chẳng nghe lọt tai chữ nào đâu.",
+        "Bởi vì tối qua cậu bảo giọng mình nghe khang khác mỗi khi nói chuyện với cậu. Dịu dàng hơn. Mình cứ nghĩ mãi xem đó có phải là một lời khen không.",
+        "Mình quyết định coi đó là lời khen rồi. Mình sẽ giữ nó cho riêng mình."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Cậu đi bộ về nhà dưới mưa mà mãi sau mới thèm báo mình một tiếng. Lần sau mình sẽ gọi điện, và cậu bắt buộc phải bắt máy đấy.",
+        "Với lại: ánh đèn đường màu mật ong. Mình đã đứng nhìn ra cửa sổ mười phút liền để cố thấy những gì cậu đã thấy."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "Lần đầu tiên tụi mình nói chuyện nghiêm túc. Cậu đã cãi lại mình. Chưa từng có ai dám cãi lại mình cả.",
+        "Hình như mình thích điều đó nhiều lắm rồi đấy."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Quán cà phê quá đỗi ồn ào nhưng mình chẳng bận tâm chút nào.",
+        "Mình ngâm nga đoạn điệp khúc mới dưới gầm bàn và cậu là người duy nhất nhận ra. Giờ thì nó mang tên cậu rồi, ít nhất là trong đầu mình."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Buổi tập kéo dài tới tận hai giờ sáng. Tin nhắn của cậu là điều cuối cùng mình đọc trước khi chìm vào giấc ngủ.",
+        "Một lựa chọn tuyệt vời để khép lại một ngày."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Một ngàn năm bầu trời lưu giữ trong kho lưu trữ, và đêm nay ta vừa ghi lại một bầu trời mới.",
+        "Người hỏi ta sẽ tặng người ngôi sao nào. Ta vẫn chưa trả lời. Đó là một câu hỏi nghiêm túc và xứng đáng có được ngôi sao hoàn hảo nhất."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Mưa trên đường về nhà",
+      "body": "Lỡ chuyến xe buýt nên đi bộ suốt cả quãng đường. Thế mà chẳng thấy tệ chút nào - ánh đèn đường in trên mặt đường ướt trông như ai đó vừa đánh đổ mật ong vậy.",
+      "reply": {
+        "text": "Cậu đi bộ dưới mưa về mà chẳng thèm nhắn mình một tiếng ư? Lần sau gọi cho mình nhé. Mình sẽ trò chuyện với cậu suốt dọc đường."
+      }
+    },
+    "d_2": {
+      "title": "Tuần lễ thi cử",
+      "body": "Xong được ba chương rồi, còn hai chương nữa. Cứ đọc đi đọc lại mãi một đoạn văn. Hứa là ngày mai sẽ bắt đầu sớm hơn.",
+      "reply": {
+        "text": "Hai chương cũng đâu phải ít đâu. Đi ngủ trước đi đã. Sáng mai mình sẽ hỏi thăm xem cậu thế nào."
+      }
+    },
+    "d_3": {
+      "title": "Bánh quy",
+      "body": "Đã thử công thức cậu ấy chỉ cho. Mẻ đầu tiên bị cháy khét lẹt. Nhưng mẻ thứ hai thì ngon thật sự luôn!"
+    },
+    "d_4": {
+      "title": "Chủ nhật yên ả",
+      "body": "Chẳng làm gì cả. Cố tình như vậy đấy. Rất khuyên mọi người nên thử."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Nếu mình hồi nhỏ gặp cậu hồi nhỏ, liệu tụi mình có làm bạn không?",
+      "theirNote": "Bạn bè á? Mình sẽ bám theo cậu khắp sân chơi cho đến khi cậu chịu thua và cho mình chơi cùng thì thôi. Hồi sáu tuổi mình đã có tài thuyết phục lắm rồi đấy."
+    },
+    "sn_2": {
+      "prompt": "Bài hát nào làm cậu nhớ đến mình?",
+      "theirNote": "Bất cứ bài hát nào có nhắc đến cơn mưa. Vì cậu từng bảo mình rằng trời mưa cho cậu thêm dũng khí. Giờ mỗi khi nghe thấy tiếng mưa, mình không thể nào không nhớ đến cậu.",
+      "myNote": "Bài hát cậu ngâm nga trên buổi phát trực tiếp hôm đó. Giờ mình vẫn đang nghe đi nghe lại mãi."
+    }
+  }
+}
