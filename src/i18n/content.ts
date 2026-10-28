@@ -2,6 +2,7 @@ import i18n from 'i18next';
 
 import en from './content/en.json';
 import es from './content/es.json';
+import fr from './content/fr.json';
 import ptBR from './content/pt-BR.json';
 import { overlay } from './overlay';
 
@@ -15,6 +16,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   en,
   es,
   'pt-BR': ptBR,
+  fr,
 };
 
 const cache = new Map<string, unknown>();

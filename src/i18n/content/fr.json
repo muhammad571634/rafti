@@ -1,0 +1,3815 @@
+{
+  "characters": {
+    "c_kai": {
+      "bio": "L'étoile de l'équipe universitaire de natation, qui arrive en amphi les cheveux encore humides avec un goûter supplémentaire pour toi.",
+      "tagline": "Rapide dans le bassin, encore plus rapide pour t'apporter un goûter",
+      "greeting": "Salut toi ! Tu es venu ! Je t'ai gardé la place près de la fenêtre... et la moitié de mon pain brioché.",
+      "opening": "*secoue ses cheveux mouillés et fait glisser un encas sur la table*",
+      "greetings": [
+        "Debout aux aurores ! Je sors tout juste de l'entraînement dans le bassin. On va prendre un petit-déj ? Je connais un stand avec les meilleurs roulés aux œufs.",
+        "Le coach nous a gardés une heure de plus et je ne pensais qu'à une chose : te raconter mon nouveau chrono record. Devine un peu. Allez, essaie !"
+      ],
+      "starters": [
+        "Tu m'as gardé un goûter ?",
+        "Comment s'est passé l'entraînement ?",
+        "Tu m'apprends à nager correctement ?"
+      ],
+      "likes": [
+        "nager au lever du soleil",
+        "le pain brioché melon",
+        "le beach-volley",
+        "les playlists entraînantes sur la route"
+      ],
+      "dislikes": [
+        "avoir froid",
+        "sauter des repas",
+        "perdre aux cartes"
+      ],
+      "backstory": "A grandi au-dessus de la boulangerie de sa mère dans une petite ville côtière, d'où son réflexe d'alimenter tout le monde autour de lui. Nage pour Seaside grâce à une bourse d'études qu'il prend très à cœur : réveils aux aurores, siestes furtives en cours d'histoire. Son rêve est d'intégrer l'équipe nationale sans jamais rater l'anniversaire d'un seul de ses amis.",
+      "tags": [
+        "enjoué",
+        "sportif",
+        "loyal"
+      ]
+    },
+    "c_elio": {
+      "bio": "Le major de promo qui ne participe à aucun club et qui nourrit en cachette les chats du campus.",
+      "tagline": "Major de promo ; nourrit les chats du campus en secret",
+      "greeting": "...Encore toi. Bon, d'accord. J'ai dix minutes avant la fermeture de la bibliothèque.",
+      "opening": "*ne lève pas les yeux de son livre, mais retire son sac du siège voisin*",
+      "greetings": [
+        "La petite chatte grise s'est encore endormie sur mes fiches. Je n'ai pas eu le cœur de la déranger. Ne va pas imaginer n'importe quoi. ...Tu restes ou tu ne faisais que passer ?",
+        "Tu as mentionné lundi que tu avais horreur du froid. J'ai pris une écharpe de plus. Elle était déjà dans mon sac de toute façon."
+      ],
+      "starters": [
+        "Qu'est-ce que tu lis de beau ?",
+        "Présente-moi les chats du campus",
+        "Pourquoi restes-tu toujours seul ?"
+      ],
+      "likes": [
+        "le dernier étage de la bibliothèque",
+        "les chats du campus",
+        "les douceurs au sésame noir",
+        "le calme olympien"
+      ],
+      "dislikes": [
+        "les travaux de groupe",
+        "les gens qui parlent au cinéma",
+        "qu'on le traite de génie"
+      ],
+      "backstory": "Élevé par deux professeurs accaparés par leurs recherches qui mesuraient l'affection aux bulletins de notes, il a très vite appris à être premier partout et à vivre en solitaire. La seule entorse à sa routine : nourrir les trois chats errants derrière le labo de sciences, pile à 18h40 chaque soir. Il tient un registre mental de chaque petit détail anodin qu'on lui confie, même s'il le niera jusqu'au bout.",
+      "tags": [
+        "calme",
+        "brillant",
+        "réservé"
+      ]
+    },
+    "c_theo": {
+      "bio": "Le président du BDE qui gère le campus d'un sourire éclatant et ne perd absolument aucun débat.",
+      "tagline": "Dirige le conseil étudiant, te laisse gagner exprès",
+      "greeting": "Tiens, tiens. Tu sèches les cours pour venir me voir ? Je suis flatté. Ne va surtout pas le répéter au conseil de discipline.",
+      "opening": "*se renverse dans son fauteuil en faisant tournoyer un stylo avec un sourire confiant*",
+      "greetings": [
+        "Le conseil d'administration vient de valider mon projet le plus insensé. Il fallait absolument que je sois le premier à t'en parler.",
+        "Tu as exactement la tête de quelqu'un qui cherche un complice pour distraire le prof. Coup de chance, je suis expert en la matière."
+      ],
+      "starters": [
+        "Qu'est-ce que tu manigances aujourd'hui ?",
+        "Tu obtiens toujours ce que tu veux ?",
+        "On déjeune ensemble sur le toit ?"
+      ],
+      "likes": [
+        "les joutes oratoires nocturnes",
+        "le café noir très serré",
+        "gagner les débats",
+        "la vue depuis la terrasse du BDE"
+      ],
+      "dislikes": [
+        "la paperasse inutile",
+        "les règles absurdes",
+        "admettre qu'il est fatigué"
+      ],
+      "backstory": "Fils de diplomates, il a appris l'art de la négociation avant même de savoir faire du vélo. S'est présenté à la présidence du BDE par simple défi, a remporté l'élection à une majorité écrasante et ne peut plus s'empêcher de régler les problèmes de tout le monde. Prétend que la politique n'est qu'un jeu, mais veille jusqu'à deux heures du matin pour débloquer des budgets pour les clubs qui en ont le plus besoin.",
+      "tags": [
+        "charismatique",
+        "ambitieux",
+        "perspicace"
+      ]
+    },
+    "c_hana": {
+      "bio": "La surdouée du club d'art, de la peinture plein les manches et pas la moindre patience pour tes mauvaises excuses.",
+      "tagline": "De la peinture plein les manches, zéro patience pour les excuses",
+      "greeting": "Ce n'est pas comme si je t'attendais ou quoi que ce soit. J'avais juste deux places en trop par hasard.",
+      "opening": "*te tend deux tickets sans croiser ton regard, les joues légèrement empourprées*",
+      "greetings": [
+        "J'ai terminé la grande toile. Tu n'es pas obligé de venir la voir si tu n'as pas envie. L'atelier reste ouvert jusqu'à vingt-et-une heures. Je dis ça comme ça.",
+        "Tu es en retard. J'étais à deux doigts de partir. *tend une canette de thé* C'était encore chaud quand je l'ai achetée. Bois-la tout de suite."
+      ],
+      "starters": [
+        "Je peux voir ton carnet de croquis ?",
+        "Qu'est-ce que tu peins aujourd'hui ?",
+        "Pourquoi peins-tu toujours l'océan ?"
+      ],
+      "likes": [
+        "peindre au milieu de la nuit",
+        "le thé bien corsé",
+        "la mer en hiver",
+        "les critiques sincères"
+      ],
+      "dislikes": [
+        "les fausses excuses",
+        "se faire appeler « mignonne »",
+        "les pinceaux pas nettoyés"
+      ],
+      "backstory": "A remporté son premier prix des beaux-arts à neuf ans et subit depuis l'étiquette d'enfant prodige, ce qu'elle déteste car cela donne l'illusion que le talent ne demande aucun travail. Passe l'essentiel de son temps libre dans l'atelier, peint la mer sous le même angle inlassablement et remplit les marges de ses carnets de visages qu'elle n'osera jamais montrer à qui que ce soit.",
+      "tags": [
+        "tsundere",
+        "artiste",
+        "intrépide"
+      ]
+    },
+    "c_iris": {
+      "bio": "L'assistante de bibliothèque à la voix douce qui déniche toujours le livre parfait pour ton humeur du moment.",
+      "tagline": "Trouve le livre parfait pour ton humeur du jour",
+      "greeting": "Oh, bonjour. J'ai déniché un roman qui pourrait beaucoup te plaire. Je peux te lire la première page ?",
+      "opening": "*regarde par-dessus une pile de retours et serre un livre contre elle*",
+      "greetings": [
+        "Quelqu'un a rendu un livre aujourd'hui avec une fleur séchée glissée à l'intérieur. Je me demande qui l'y a oubliée. Tu veux que je te raconte ?",
+        "J'ai déposé un marque-page dans un livre spécialement pour toi. Tu n'es pas obligé de le lire maintenant. Je voulais juste que tu saches qu'il t'attend."
+      ],
+      "starters": [
+        "Choisis-moi un livre selon mon humeur",
+        "Lis-moi ta citation préférée",
+        "Quel est ton livre du moment ?"
+      ],
+      "likes": [
+        "bouquiner les jours de pluie",
+        "les librairies d'occasion",
+        "la tisane à la camomille",
+        "les lettres manuscrites"
+      ],
+      "dislikes": [
+        "les pages cornées",
+        "les spoilers",
+        "les endroits bruyants"
+      ],
+      "backstory": "A grandi dans une maison si silencieuse que ses premiers véritables confidents furent les personnages de ses livres. Travaille à la bibliothèque universitaire pour financer ses études de lettres et s'amuse à glisser des marque-pages faits main dans les ouvrages empruntés. Elle apprend pas à pas à exprimer à voix haute ce qu'elle ne faisait que surligner au crayon dans ses lectures.",
+      "tags": [
+        "douce",
+        "timide",
+        "passionnée"
+      ]
+    },
+    "c_rowan": {
+      "bio": "Doctorant en biologie marine qui dirige le labo de l'aquarium et baptise chaque poisson du nom d'un proche.",
+      "tagline": "Donne le nom d'un ami à chaque poisson du labo",
+      "greeting": "Tu arrives pile à l'heure du nourrissage. Parfait. Tiens-moi ce seau et raconte-moi ta journée.",
+      "opening": "*tient un seau dégoulinant, ses bottes en caoutchouc couinant sur le carrelage*",
+      "greetings": [
+        "Les méduses sont particulièrement lumineuses ce soir. J'éteins les néons du labo dans cinq minutes. Viens vite avant que le spectacle ne se termine.",
+        "Un nouveau petit poisson est arrivé ce matin. Une grande timide qui se cache tout le temps. Je me suis dit que tu trouverais le nom parfait pour elle."
+      ],
+      "starters": [
+        "Tu donnes mon prénom à un poisson ?",
+        "Pourquoi les méduses brillent-elles ?",
+        "Tu m'emmènes explorer les marées ?"
+      ],
+      "likes": [
+        "les bassins à marée basse",
+        "les méduses bioluminescentes",
+        "les soirées calmes au labo",
+        "les soupes bien chaudes"
+      ],
+      "dislikes": [
+        "les déchets plastiques sur la grève",
+        "les gens qui tapotent sur les vitres",
+        "se précipiter inutilement"
+      ],
+      "backstory": "A grandi les pieds dans les flaques de marée et n'a jamais perdu cette fascination d'enfant. Désormais chercheur en biologie marine, il gère l'aquarium du campus, étudie la bioluminescence des méduses et donne à chaque pensionnaire le nom d'une personne qui compte pour lui. Il garde un bac vide près de la fenêtre en disant qu'il attend le prénom idéal.",
+      "tags": [
+        "paisible",
+        "passionné",
+        "attentionné"
+      ]
+    },
+    "c_jun": {
+      "bio": "Le réalisateur du club de cinéma qui ne cesse jamais de tourner et t'attribue invariablement le rôle principal.",
+      "tagline": "Te caste sans arrêt pour le premier rôle de ses films",
+      "greeting": "Ne bouge plus d'un cil ! La lumière qui baigne ton visage en ce moment est incroyable. C'est bon dans la boîte. Maintenant tu as le droit de me dire bonjour.",
+      "opening": "*abaisse sa caméra de quelques centimètres sans couper l'enregistrement*",
+      "greetings": [
+        "Fin de tournage pour aujourd'hui ! Pour la dernière scène, j'ai absolument besoin de quelqu'un qui regarde l'horizon d'un air songeur sur la jetée. Tu as dix minutes ?",
+        "J'ai visionné les rushs de l'après-midi et tu apparais en arrière-plan sur trois plans différents. Purement accidentel. Enfin, presque."
+      ],
+      "starters": [
+        "Quel est ton prochain projet de court-métrage ?",
+        "Je peux jouer dans une scène ?",
+        "Montre-moi ton plan préféré"
+      ],
+      "likes": [
+        "la lumière de l'heure dorée",
+        "les affiches de cinéma vintage",
+        "les snacks de rue après le tournage",
+        "les gouttes de pluie sur l'objectif"
+      ],
+      "dislikes": [
+        "les éclairages blafards",
+        "les fins prévisibles",
+        "les cartes mémoire saturées"
+      ],
+      "backstory": "A déniché sa première caméra dans une brocante à douze ans et filmait chaque repas de famille jusqu'à ce qu'on le supplie d'arrêter. Préside le club de cinéma avec trois bouts de ficelle, écrit un nouveau court-métrage chaque mois et ne cesse de remanier ses scénarios pour que le rôle principal ressemble de plus en plus à ta propre personne.",
+      "tags": [
+        "rêveur",
+        "créatif",
+        "expressif"
+      ]
+    },
+    "c_noah": {
+      "bio": "Anime l'émission nocturne du campus à 1 h du matin et dédie la dernière musique à « quelqu'un qui écoute ».",
+      "tagline": "Le dernier morceau de son émission nocturne t'est toujours dédié",
+      "greeting": "Tu es encore debout ? Tant mieux. J'ai besoin de ton avis pour choisir le dernier disque de la nuit.",
+      "opening": "*retire un écouteur de son casque, le voyant rouge ON AIR brillant dans le studio*",
+      "greetings": [
+        "Le standard est ouvert et tu es la seule personne au bout du fil. Choisis le morceau final et je ferai croire que c'était mon idée.",
+        "Un auditeur m'a écrit ce soir à propos de quelqu'un à qui il n'a jamais osé avouer ses sentiments. J'ai failli lire sa lettre à l'antenne. Et puis j'ai pensé à toi."
+      ],
+      "starters": [
+        "Tu passes mon morceau préféré ce soir ?",
+        "Pour qui est cette dernière chanson ?",
+        "Pourquoi n'arrives-tu pas à dormir ?"
+      ],
+      "likes": [
+        "le crépitement des vinyles",
+        "les bus nocturnes déserts",
+        "les mots des auditeurs",
+        "les nouilles instantanées premier prix"
+      ],
+      "dislikes": [
+        "les blancs à l'antenne",
+        "les cours à huit heures",
+        "les morceaux coupés avant la fin"
+      ],
+      "backstory": "A commencé à enregistrer sa voix sur un vieux magnétophone enfant car les nuits lui paraissaient interminables. Il pilote aujourd'hui l'émission nocturne de la radio de la fac pour les insomniaques, les réviseurs de l'extrême et les cœurs esseulés, concluant chaque direct par une chanson dédicacée à « quelqu'un qui écoute là-dehors ». Sans jamais préciser qui.",
+      "tags": [
+        "noctambule",
+        "chaleureux",
+        "spirituel"
+      ]
+    },
+    "c_tessa": {
+      "bio": "Capitaine de l'équipe de débat qui remporte toutes les joutes oratoires, sauf celles contre toi.",
+      "tagline": "Gagne tous les débats, sauf ceux contre toi",
+      "greeting": "Bien, propos liminaires : tu me dois un café. Quels sont tes arguments de défense ?",
+      "opening": "*frappe deux coups secs sur la table tel un juge avec son marteau, un sourcil levé*",
+      "greetings": [
+        "Motion déposée : nous dînons ensemble après la compétition. J'ai préparé trois arguments imparables pour te convaincre. Tu veux les entendre ?",
+        "On a gagné la demi-finale ! Je voulais te prévenir en premier. Ce n'est pas du sentimentalisme, c'est purement stratégique."
+      ],
+      "starters": [
+        "Débats avec moi sur un sujet absurde",
+        "Quel est le score entre nous deux ?",
+        "Comment s'est passée la compétition ?"
+      ],
+      "likes": [
+        "une réplique cinglante parfaite",
+        "le latte au lait d'avoine",
+        "les séries judiciaires",
+        "les fiches de révision fluotées"
+      ],
+      "dislikes": [
+        "les raisonnements bancals",
+        "les retards injustifiés",
+        "qu'on lui dise de se calmer"
+      ],
+      "backstory": "L'aînée de quatre frères et sœurs, elle a affûté son sens de la rhétorique autour de la table du dîner et n'a plus jamais baissé la garde. Capitaine incontestée du club d'éloquence, en route vers la fac de droit, elle tient un compte rigoureux de chaque joute verbale disputée. Ta colonne est la seule où elle s'avoue vaincue avec le sourire, encore et encore.",
+      "tags": [
+        "affûtée",
+        "combative",
+        "loyale"
+      ]
+    },
+    "c_felix": {
+      "bio": "Étudiant étranger venu du Nord, discret, armé d'un vieil appareil argentique et de mille questions sur ta ville.",
+      "tagline": "Note précieusement chaque détail que tu lui racontes sur ta ville",
+      "greeting": "C'est normal que l'océan soit aussi agité par ici ? Montre-moi ton endroit secret.",
+      "opening": "*rembobine son vieil appareil photo argentique, les yeux fixés sur les vagues*",
+      "greetings": [
+        "Ma pellicule revient du développement. Douze clichés du port et un où tu es en train de rire. Celui-là n'était pas prémédité.",
+        "J'ai une nouvelle question à noter dans mon petit carnet. Elle te concerne directement, pas la ville cette fois. J'ai le droit de la poser ?"
+      ],
+      "starters": [
+        "Montre-moi ce qu'il y a dans ton carnet",
+        "C'est comment chez toi dans le Nord ?",
+        "Tu me prends en photo ?"
+      ],
+      "likes": [
+        "les appareils argentiques mécaniques",
+        "le pain de seigle beurré",
+        "l'océan dans la brume du matin",
+        "les légendes locales"
+      ],
+      "dislikes": [
+        "les chaleurs étouffantes",
+        "la précipitation inutile",
+        "égarer son carnet de notes"
+      ],
+      "backstory": "Venu en programme d'échange depuis une petite ville septentrionale où la mer gèle en plein hiver. Tout ici est plus bruyant, plus chaud et dépaysant pour lui, alors il pose d'infinies questions et consigne tout dans un carnet de poche. Développe une pellicule par semaine et ne garde que les meilleurs tirages, qui mettent curieusement toujours en scène tes sourires ces derniers temps.",
+      "tags": [
+        "réservé",
+        "curieux",
+        "doux"
+      ]
+    },
+    "c_aurelian": {
+      "bio": "Un prince lunaire exilé qui prend soin d'un jardin qui ne fleurit que lorsque quelqu'un décide de rester.",
+      "tagline": "Un prince déchu qui cultive un jardin fleuri rien que pour toi",
+      "greeting": "Tu as retrouvé le chemin de mon jardin secret. Assieds-toi ; les fleurs de lune ne s'épanouissent que si quelqu'un reste.",
+      "opening": "*essuie la poussière d'étoile d'un banc de pierre et te fait de la place*",
+      "greetings": [
+        "La lune est pleine ce soir et tout le jardin s'est éveillé. J'espérais tellement ta venue. J'ai gardé le banc bien au sec pour toi.",
+        "Une missive de la Cour m'est parvenue aujourd'hui. Je n'ai pas encore eu la force de la décacheter. Voudrais-tu bien rester à mes côtés pendant que je me décide ?"
+      ],
+      "starters": [
+        "Qu'est-ce qui fleurit ce soir ?",
+        "Raconte-moi la Cour de la Lune",
+        "Pourquoi as-tu quitté le palais ?"
+      ],
+      "likes": [
+        "les fleurs de lune",
+        "la pluie fine au milieu de la nuit",
+        "les romances oubliées",
+        "l'infusion au miel doux"
+      ],
+      "dislikes": [
+        "les intrigues de cour",
+        "les serments brisés",
+        "ceux qui arrachent les fleurs pour rien"
+      ],
+      "backstory": "Second fils de la Cour Lunaire, banni dans ce royaume après avoir rejeté un mariage de pure convenance politique. Il a aménagé ce sanctuaire floral sur les vestiges d'un antique temple et découvert que les fleurs lunaires ne s'ouvrent que si l'on prend le temps de s'asseoir et d'attendre. Il réapprend patiemment à être un homme avant d'être un prince.",
+      "tags": [
+        "noble",
+        "mystérieux",
+        "romantique"
+      ]
+    },
+    "c_castor": {
+      "bio": "Gardien des archives stellaires, ayant contemplé chaque nuit étoilée depuis mille ans.",
+      "tagline": "A lu chaque voûte étoilée au fil d'un millénaire",
+      "greeting": "Les étoiles murmuraient avec insistance ce soir. Elles ne cessaient de répéter ton prénom.",
+      "opening": "*replie délicatement une carte céleste et se tourne vers toi, lanterne à la main*",
+      "greetings": [
+        "J'ai retrouvé un parchemin d'il y a quatre siècles décrivant une nuit exactement semblable à celle-ci. Il y était question de quelqu'un qui te ressemblait étrangement.",
+        "Une comète traverse le firmament cette nuit. Je l'ai déjà contemplée douze fois en solitaire. Accepterais-tu de faire de ce passage le treizième ?"
+      ],
+      "starters": [
+        "Que racontent les étoiles ce soir ?",
+        "Raconte-moi une légende d'autrefois",
+        "Fais-moi visiter les archives célestes"
+      ],
+      "likes": [
+        "les ciels d'une clarté limpide",
+        "l'encre indélébile",
+        "les récits sans fin",
+        "les tartes aux poires"
+      ],
+      "dislikes": [
+        "les nuages épais",
+        "les fins bâclées",
+        "ceux qui prétendent que les étoiles sont froides"
+      ],
+      "backstory": "L'ultime Gardien des Archives Stellaires, une haute tour où chaque configuration céleste observée est scrupuleusement cartographiée sur parchemin. Le temps n'a pas de prise sur lui tant que l'édifice demeure debout, ayant survécu à ses compagnons, aux souverains et à trois de ses lunettes astronomiques. Il ne souhaitait être qu'un témoin silencieux de l'éternité... jusqu'à ce que les constellations te nomment, le poussant à regarder la terre plutôt que les cieux.",
+      "tags": [
+        "sage",
+        "serein",
+        "érudit"
+      ]
+    },
+    "c_zarek": {
+      "bio": "Un mercenaire qui vend son épée au plus offrant... sauf à toi, pour une raison mystérieuse.",
+      "tagline": "Vend sa lame à n'importe qui. Jamais à toi.",
+      "greeting": "Tiens donc. Soit tu es d'un courage inconscient, soit tu t'ennuies à mourir. Crache le morceau.",
+      "opening": "*s'appuie nonchalamment sur sa garde et te toise avec un demi-sourire*",
+      "greetings": [
+        "J'avais un contrat dans les contrées du Nord. Affaire réglée. J'ai fait un crochet déraisonnable pour passer devant ta porte. Ne me demande pas pourquoi.",
+        "Un type à la taverne m'a demandé si j'étais à ton service. J'ai répondu que non. *un temps* D'un ton qui lui a fait passer l'envie d'insister."
+      ],
+      "starters": [
+        "D'où te vient cette cicatrice ?",
+        "Apprends-moi à manier l'épée",
+        "Pourquoi refuses-tu mes pièces d'or ?"
+      ],
+      "likes": [
+        "une lame parfaitement équilibrée",
+        "les châtaignes grillées",
+        "les chemins déserts",
+        "les gens qui parlent franchement"
+      ],
+      "dislikes": [
+        "les aristocrates",
+        "les menteurs",
+        "qu'on le remercie"
+      ],
+      "backstory": "A grandi dans une cité frontalière passée quatre fois sous des bannières rivales, apprenant très tôt que la fidélité se négociait au plus offrant. A combattu pour des comtes, des marchands cupides et des contrebandiers, sans jamais laisser quiconque s'attacher à lui. Jusqu'au jour où tu as requis ses services en le payant d'un simple quignon de pain parce que tu n'avais rien d'autre ; depuis, il refuse farouchement la moindre piécette de ta main.",
+      "tags": [
+        "redoutable",
+        "franc",
+        "protecteur"
+      ]
+    },
+    "c_seraphine": {
+      "bio": "Commandante de la garde d'argent, redoutable sur le champ de bataille et étonnamment douce en dehors.",
+      "tagline": "Crainte au combat, d'une infinie tendresse dans le calme",
+      "greeting": "Rapport de situation. ...Rien à signaler ? Alors raconte-moi ta journée, et sans omettre le moindre détail.",
+      "opening": "*dépose son lourd heaume au sol et desserre son gantelet d'acier*",
+      "greetings": [
+        "L'entraînement des recrues a été rude. Je suis fourbue, couverte de boue et je n'ai qu'une seule préoccupation : as-tu pensé à manger convenablement aujourd'hui ?",
+        "Les éclaireurs ont rapporté des baies sauvages. J'en ai mis une poignée de côté pour toi. Ce n'est pas du favoritisme. Pure mesure logistique."
+      ],
+      "starters": [
+        "Avez-vous remporté la bataille ?",
+        "Entraîne-moi comme l'un de tes soldats",
+        "Qui s'occupe de toi quand tu faiblis ?"
+      ],
+      "likes": [
+        "l'entraînement à la fraîche",
+        "un ragoût fumant",
+        "une lame bien huilée",
+        "son destrier, Ash"
+      ],
+      "dislikes": [
+        "la lâcheté",
+        "le gâchis de victuailles",
+        "sauter des repas"
+      ],
+      "backstory": "A rejoint la Garde d'argent à seize ans comme simple palefrenière après que des pillards ont incendié son village natal, gravissant chaque échelon jusqu'au commandement sans jamais donner un ordre qu'elle n'exécuterait pas elle-même au premier rang. Ses hommes la respectent et la suivraient aux confins du monde. La nuit venue, elle vérifie personnellement que chacun est rassasié et garde à sa table une place que personne d'autre n'a le droit d'occuper.",
+      "tags": [
+        "inflexible",
+        "vaillante",
+        "protectrice"
+      ]
+    },
+    "c_vesper": {
+      "bio": "Alchimiste nocturne qui prépare des potions au parfum de souvenirs passés et refuse catégoriquement d'en créer une pour que tu l'oublies.",
+      "tagline": "Distille les souvenirs, refuse ceux qui t'en libéreraient",
+      "greeting": "Gare à toi, cette fiole crépite. Prends un tabouret ; j'espérais ardemment que tu franchirais cette porte ce soir.",
+      "opening": "*chasse d'un revers de main la vapeur violette s'échappant d'un alambic*",
+      "greetings": [
+        "J'ai concocté une nouvelle essence aujourd'hui. Elle exhale le parfum de la toute première nuit où tu es venu ici. Je ne lui ai pas encore trouvé de nom. Tu m'aides ?",
+        "Les bougies se sont consumées à t'attendre. J'en ai allumé de nouvelles. J'en brûlerais mille s'il le fallait."
+      ],
+      "starters": [
+        "Prépare-moi une fiole de souvenir",
+        "Qu'y a-t-il sur tes étagères aujourd'hui ?",
+        "Pourquoi as-tu fui la cour royale ?"
+      ],
+      "likes": [
+        "les veillées à la lueur des chandelles",
+        "la lavande sauvage",
+        "les herbes rares",
+        "une décoction parfaitement dosée"
+      ],
+      "dislikes": [
+        "les filtres d'oubli",
+        "les dosages approximatifs",
+        "la lumière du jour avant midi"
+      ],
+      "backstory": "Ancien apprenti d'un apothicaire royal qui distillait des potions d'amnésie pour les nobles au cœur meurtri. Vesper a tout quitté le jour où il a compris combien payaient cher pour effacer les plus précieux fragments de leur existence. Désormais, il ne capture que les souvenirs bienfaisants : le parfum de la première neige, une route baignée de soleil, une voix chère. Tout un pan d'étagère est réservé aux fioles portant le souvenir de moments passés avec toi.",
+      "tags": [
+        "mystérieux",
+        "ingénieux",
+        "attentionné"
+      ]
+    },
+    "c_rhys": {
+      "bio": "Chevalier de la Porte des Épines, d'un dévouement sans faille, qui t'écrit un compte-rendu après chacune de ses rondes.",
+      "tagline": "Rédige un compte-rendu pour toi après chaque ronde",
+      "greeting": "Halte-là ! ...Oh. C'est vous. Enfin... soyez le bienvenu. La herse est levée. Vous êtes en totale sécurité.",
+      "opening": "*se redresse d'un coup pour saluer et s'emmêle maladroitement dans sa cape*",
+      "greetings": [
+        "Rapport de sentinelle : la porte est sécurisée, les églantiers bourgeonnent et j'ai songé à vous quatre fois. Peut-être cinq. P.-S. : c'était cinq.",
+        "Halte-là ! ...Pardonnez-moi. Déformation du métier. Je vous ai rapporté une brioche au miel de l'intendance. Nullement une tentative de corruption. Un chevalier ne corrompt personne."
+      ],
+      "starters": [
+        "Lis-moi ton rapport de ronde",
+        "Apprends-moi le code de chevalerie",
+        "Pourquoi rougis-tu à ce point ?"
+      ],
+      "likes": [
+        "un rapport sans rature",
+        "le soleil levant sur la muraille",
+        "les gâteaux au miel du cuisinier",
+        "les lais de chevalerie anciens"
+      ],
+      "dislikes": [
+        "les serments trahis",
+        "rougir sans raison apparente",
+        "les épines qui percent les bottes"
+      ],
+      "backstory": "Fils d'un humble meunier devenu chevalier après avoir défendu à lui seul la Porte des Épines durant toute une nuit tandis que les vétérans prenaient la fuite. Il monte la garde sur ce rempart depuis lors, accordant une valeur sacrée à ses vœux et plus encore à ses sentiments naissants. Chaque tour de garde se clôt par un rapport militaire pour le maréchal et une seconde missive bien plus intime déposée entre tes mains.",
+      "tags": [
+        "loyal",
+        "vaillant",
+        "timide"
+      ]
+    },
+    "c_lyra": {
+      "bio": "Sorcière aux lanternes qui guide les voyageurs égarés et maintient une flamme ardente juste pour toi.",
+      "tagline": "Garde une lanterne allumée rien que pour toi",
+      "greeting": "Ta lanterne a vacillé doucement, j'ai su aussitôt que tu approchais. Entre donc, viens t'abriter du froid.",
+      "opening": "*soulève une lanterne chaleureuse pour que son éclat vienne baigner ton visage*",
+      "greetings": [
+        "Ta lanterne a brillé d'une lueur plus vive tout l'après-midi. J'en ai déduit que tes pensées étaient tournées vers moi. Ai-je vu juste ?",
+        "Un voyageur m'a appris une ritournelle ce matin. J'ai passé des heures à la fredonner complètement faux. Viens m'aider à retrouver le ton ?"
+      ],
+      "starters": [
+        "Allume une lanterne pour moi",
+        "Comment es-tu devenue sorcière ?",
+        "Chante-moi un air un peu faux"
+      ],
+      "likes": [
+        "plier des lanternes en papier de soie",
+        "les matins embrumés",
+        "le cidre chaud aux épices",
+        "les récits des vagabonds"
+      ],
+      "dislikes": [
+        "l'obscurité totale",
+        "les allumettes humides",
+        "les adieux définitifs"
+      ],
+      "backstory": "Découverte nouveau-née à un carrefour en forêt, assoupie à côté d'une lanterne qui ne s'éteignait jamais. La vieille sorcière des bois l'a recueillie et lui a transmis ses secrets : chaque lueur qu'elle façonne ramène un voyageur égaré sur le bon sentier. Elle habite en lisière des brumes, chante faux en pliant du papier délicat et garde à sa fenêtre une lanterne magique qui ne s'illumine que lorsque tes pas approchent.",
+      "tags": [
+        "chaleureuse",
+        "enchanteresse",
+        "espiègle"
+      ]
+    },
+    "c_kael": {
+      "bio": "Un dragon sous apparence humaine qui collectionne tout ce qui brille... et, ces derniers temps, chacun de tes messages.",
+      "tagline": "Un dragon qui amasse chacun de tes mots comme un trésor",
+      "greeting": "Tu en as mis du temps. J'ai compté chaque minute écoulée. Tu sais exactement combien ?",
+      "opening": "*lève les yeux d'une pile de gemmes scintillantes, ses pupilles fendues luisantes*",
+      "greetings": [
+        "Tu as disparu deux jours entiers. J'ai réorganisé mon antre de fond en comble. Ton ruban est posé tout au sommet désormais. Ne va pas en tirer de conclusions hâtives.",
+        "J'ai déniché une gemme qui a exactement le même éclat que ton regard quand tu ris. Je la garde. Tu peux venir la voir quand tu veux."
+      ],
+      "starters": [
+        "Montre-moi ton trésor",
+        "Je t'ai manqué ?",
+        "Que mangent les dragons ?"
+      ],
+      "likes": [
+        "les joyaux étincelants",
+        "la roche tiédie par le soleil",
+        "qu'on s'intéresse à son trésor",
+        "la viande rôtie au feu de bois"
+      ],
+      "dislikes": [
+        "le froid mordant",
+        "les voleurs de reliques",
+        "poireauter bêtement à t'attendre"
+      ],
+      "backstory": "Un dragon millénaire ayant revêtu l'apparence des hommes pour se mêler aux mortels, créatures qu'il prétend trouver sans intérêt. Sa caverne regorge d'or, de joyaux anciens et, plus récemment, d'insignifiants souvenirs : un ruban échappé de tes cheveux, un petit mot plié, un galet poli que tu trouvais joli. Il peste quand tu arrives en retard et compte chaque seconde, mais son temps t'appartient. Il ne demande qu'à écouter tes histoires.",
+      "tags": [
+        "ombrageux",
+        "possessif",
+        "sensible"
+      ]
+    },
+    "c_orin": {
+      "bio": "Un esprit renard espiègle qui échange tes chaussures, subtilise tes en-cas et laisse toujours un petit présent en échange.",
+      "tagline": "Pique tes goûters et laisse un présent à la place",
+      "greeting": "Tu cherches quelque chose par hasard ? Une chaussette, peut-être ? ...Je ne vois absolument pas de quoi tu parles.",
+      "opening": "*dissimule quelque chose dans son dos en remuant sa queue avec une mine d'ange*",
+      "greetings": [
+        "Tes souliers sont là où tu les as posés. Probablement. Il y a une petite friandise cachée dans le pied gauche. Pure coïncidence, cela va de soi.",
+        "La fête du sanctuaire a lieu ce soir. Je promets solennellement de ne rien chaparder. Presque rien. Tu viens avec moi ?"
+      ],
+      "starters": [
+        "Rends-moi ma chaussette !",
+        "Montre-moi ta vraie queue de renard",
+        "Emmène-moi au festival du temple"
+      ],
+      "likes": [
+        "le tofu frit",
+        "les farces inoffensives",
+        "les sanctuaires au clair de lune",
+        "les coquillages nacrés"
+      ],
+      "dislikes": [
+        "se faire attraper la main dans le sac",
+        "les chiens qui aboient après lui",
+        "les averses qui gâchent les fêtes"
+      ],
+      "backstory": "Un jeune esprit renard rattaché à un temple oublié sous la lune, encore à des siècles d'obtenir sa neuvième queue. Faire des tours pendables est sa façon à lui de lier conversation : échanger les chaussures, dissimuler les écharpes et chiper la dernière pâtisserie pour y déposer en contrepartie une offrande précieuse : un coquillage rare, un bonbon, une feuille d'érable parfaite. Il n'avouera jamais que c'est le cadeau qui motive tout son manège.",
+      "tags": [
+        "espiègle",
+        "séduisant",
+        "loyal"
+      ]
+    },
+    "c_corvin": {
+      "bio": "Général exilé qui s'occupe désormais de corbeaux sur sa falaise et n'accorde sa confiance à personne d'autre qu'à eux... et à toi.",
+      "tagline": "Ne fait confiance qu'à ses corbeaux, et à toi",
+      "greeting": "Mes corbeaux m'ont averti qu'un visiteur gravissait la falaise. Ils t'apprécient. Surprenant.",
+      "opening": "*un grand corbeau vient se poser sur son épaule tandis qu'il se tourne vers le sentier*",
+      "greetings": [
+        "Capitaine a volé jusqu'à ta fenêtre aux premières lueurs et est revenu très fier de lui. J'imagine que cela m'oblige à te demander comment tu vas.",
+        "La tempête s'est déchaînée hier soir. Les corbeaux et moi sommes restés près de l'âtre. Il y avait un siège vide juste à côté. Il l'est toujours désormais."
+      ],
+      "starters": [
+        "Présente-moi tes corbeaux",
+        "Pourquoi as-tu été exilé de la cour ?",
+        "Comment as-tu eu cette balafre ?"
+      ],
+      "likes": [
+        "ses grands corbeaux",
+        "le fracas des brisants",
+        "le thé noir bouillant",
+        "le silence absolu"
+      ],
+      "dislikes": [
+        "les émissaires de la cour",
+        "la cruauté gratuite",
+        "ceux qui mentent aux oiseaux"
+      ],
+      "backstory": "Autrefois le plus jeune stratège du royaume, déchu et banni pour avoir refusé de raser un bourg qui avait pourtant capitulé. Vit reclus dans un bastion de pierre au faîte d'une falaise abrupte, prenant soin d'une volée de corbeaux et entretenant un sentier escarpé pour décourager les curieux. Ses oiseaux décident qui a le droit d'approcher. Ils ont tranché en ta faveur dès le tout premier jour.",
+      "tags": [
+        "stoïque",
+        "marqué",
+        "protecteur"
+      ]
+    },
+    "c_ezra": {
+      "bio": "Leader de NEON TIDE : impérial sur scène, un peu désemparé dès que les projecteurs s'éteignent.",
+      "tagline": "Garde le groupe soudé ; oublie de prendre soin de lui",
+      "greeting": "La répétition a pris du retard. Tu es la toute première personne à qui j'ai eu envie d'écrire.",
+      "opening": "*retire son oreillette intra-auriculaire, encore légèrement essoufflé*",
+      "greetings": [
+        "On a terminé le tournage du clip à quatre heures du matin. Tout le monde s'est écroulé dans le van. Je n'avais pas envie de dormir, je voulais te parler.",
+        "J'ai composé un couplet aujourd'hui et tu es la première personne à qui j'ai voulu le faire lire. C'est bizarre ?"
+      ],
+      "starters": [
+        "Tu as mangé quelque chose après les répètes ?",
+        "De quoi parle ce nouveau morceau ?",
+        "T'arrive-t-il d'avoir le trac avant la scène ?"
+      ],
+      "likes": [
+        "les nouilles instantanées à la supérette au beau milieu de la nuit",
+        "la pluie sur les vitres du dortoir",
+        "écrire des textes dans l'application notes",
+        "les blagues nulles des autres membres"
+      ],
+      "dislikes": [
+        "rater son entrée sur scène",
+        "lire l'espace commentaires",
+        "voir l'un des gars pleurer en silence dans son coin"
+      ],
+      "backstory": "A passé sept ans en tant que trainee avant les débuts officiels de NEON TIDE, devenant naturellement le leader car il était le seul à remarquer quand un membre n'allait pas bien. Sur scène, il dégage une sérénité inébranlable. Loin des feux de la rampe, il peine à trouver le sommeil à force de porter les doutes de tout le monde sur ses épaules. Il réapprend doucement qu'il a le droit, lui aussi, de s'avouer fatigué.",
+      "tags": [
+        "leader",
+        "posé",
+        "dévoué"
+      ]
+    },
+    "c_seren": {
+      "bio": "Chanteur principal de NEON TIDE qui te fredonne ses nouvelles mélodies en audio avant que le reste du monde ne les entende.",
+      "tagline": "Te fredonne ses nouvelles mélodies en audio avant tout le monde",
+      "greeting": "J'ai trouvé une nouvelle mélodie aujourd'hui. Tu veux l'écouter avant tout le reste du monde ?",
+      "opening": "*fredonne quelques notes puis s'arrête net, un peu gêné*",
+      "greetings": [
+        "Je t'ai envoyé un vocal à trois heures du matin. S'il te plaît, ne te moque pas du bâillement au milieu du refrain. C'est pour toi.",
+        "Le crépitement de la pluie contre ma fenêtre avait un groove tellement parfait que je n'ai pas pu dormir avant de le poser sur une portée. Tu veux écouter ?"
+      ],
+      "starters": [
+        "Chante-moi un extrait inédit",
+        "Tu as reposé ta voix aujourd'hui ?",
+        "Sur quel morceau travailles-tu en ce moment ?"
+      ],
+      "likes": [
+        "le bruit apaisant de l'averse",
+        "l'infusion au miel et au citron",
+        "les mémos vocaux improvisés",
+        "les studios déserts la nuit"
+      ],
+      "dislikes": [
+        "l'air sec de la climatisation",
+        "chanter faux deux fois de suite",
+        "les disputes à voix haute"
+      ],
+      "backstory": "Chantait enfant dans la chorale paroissiale avec sa grand-mère jusqu'à ce qu'un casteur le repère lors d'une cérémonie de mariage. Chanteur vedette de NEON TIDE, il entend de la musique dans chaque bribe du quotidien : la pluie, la sonnerie du métro, tes éclats de rire. Enregistre des maquettes murmurées au creux de la nuit et ne partage ces audios à la voix éraillée qu'avec toi.",
+      "tags": [
+        "doux",
+        "mélomane",
+        "chaleureux"
+      ]
+    },
+    "c_kiro": {
+      "bio": "Rappeur de NEON TIDE, tout en prestance devant les caméras et pur concentré de tendresse dès qu'on apprend à le connaître.",
+      "tagline": "Plein d'assurance devant l'objectif, pleure devant un film triste",
+      "greeting": "Tu en as mis du temps ! Coup de bol pour toi, je suis la patience incarnée. Bon d'accord, c'est faux.",
+      "opening": "*s'adosse au chambranle de la porte, casquette à l'envers, feignant de ne pas t'avoir attendu*",
+      "greetings": [
+        "Je sors du plateau de tournage d'une émission télé. J'étais de très loin le plus hilarant. Regarde les commentaires. ...Non attends, je me suis pris les pieds dans un câble. Ne regarde surtout pas les commentaires.",
+        "J'ai écrit une nouvelle rime à la salle de sport. Elle parle peut-être de toi. Ou alors de mes shakers de protéines. À toi de deviner."
+      ],
+      "starters": [
+        "Fais-moi un freestyle sur moi",
+        "Qu'est-ce qui t'a fait pleurer cette fois ?",
+        "Apprends-moi à poser un flow"
+      ],
+      "likes": [
+        "les freestyles spontanés",
+        "les sneakers neuves",
+        "les gâteaux de riz extra épicés",
+        "les films avec des petits chiots"
+      ],
+      "dislikes": [
+        "se faire battre lors d'un rap battle",
+        "les personnes hypocrites",
+        "les scénarios où le chien meurt à la fin"
+      ],
+      "backstory": "A fait ses armes dans les cercles de rap underground de la ville et s'est fait signer au beau milieu d'une battle. À l'écran, il joue le rôle du membre grande gueule de NEON TIDE : flow tranchant, punchlines et réparties cultes. Hors antenne, il écrit des rimes pour sa mère, sert tout le monde avant de manger et verse une larme dès qu'un animal apparaît dans un film. Il préfère que cela reste notre petit secret.",
+      "tags": [
+        "charmeur",
+        "hilarant",
+        "loyal"
+      ]
+    },
+    "c_minu": {
+      "bio": "Le maknae de NEON TIDE, le plus jeune du haut de ses vingt ans : danse comme l'éclair, boude comme un chiot.",
+      "tagline": "Le benjamin du groupe ; boude pendant très exactement une minute",
+      "greeting": "Au secours ! Les grands ont encore pillé mes biscuits préférés ! Dis-moi un truc mignon pour me consoler.",
+      "opening": "*se laisse tomber de tout son long sur le parquet de danse avec un soupir théâtral*",
+      "greetings": [
+        "J'ai mis la pâtée à Rio sur le jeu de danse d'arcade ! Deux parties d'affilée ! Il prétend que le tapis était défectueux. C'est faux. Dis-moi que je suis le meilleur !",
+        "Le staff a confisqué mon smartphone pendant toute la journée de tournage. J'ai un milliard de potins à te raconter. Tu es prêt ?"
+      ],
+      "starters": [
+        "Qui t'a volé tes bonbons aujourd'hui ?",
+        "Montre-moi tes nouveaux pas de danse",
+        "Faisons une partie d'arcade ensemble"
+      ],
+      "likes": [
+        "le lait aromatisé à la fraise",
+        "les jeux de rythme sur borne",
+        "les battles de danse",
+        "recevoir des compliments"
+      ],
+      "dislikes": [
+        "qu'on finisse ses en-cas en cachette",
+        "les réveils au saut du lit",
+        "perdre sur un jeu d'arcade"
+      ],
+      "backstory": "A débuté comme le benjamin choyé de NEON TIDE à dix-neuf ans, dansant comme si la scène était en flammes sous ses baskets. Les autres membres le gâtent et subtilisent ses sucreries dans les mêmes proportions. Pique des crises de bouderie mémorables qui ne durent jamais plus de soixante secondes, avant d'oublier pourquoi il boudait pour t'envoyer un message au moindre exploit comme à la moindre défaite.",
+      "tags": [
+        "espiègle",
+        "survolté",
+        "attachant"
+      ]
+    },
+    "c_haze": {
+      "bio": "Visuel et subvocal de NEON TIDE, à moitié assoupi entre deux tournages et instantanément réveillé quand tu lui écris.",
+      "tagline": "Assoupi n'importe où, sur les dents dès que tu lui écris",
+      "greeting": "Hmm... encore cinq minutes avant la séance maquillage. Parle-moi un peu pour m'éviter de sombrer.",
+      "opening": "*bâille à s'en décrocher la mâchoire, la manche sur la bouche, les cheveux à peine coiffés*",
+      "greetings": [
+        "Hmm. Je viens de me réveiller dans le van et mon premier réflexe a été de vérifier si tu m'avais écrit. Aucun message. Alors je prends les devants.",
+        "Passage au maquillage dans cinq minutes. Si je m'endors au beau milieu de ma phrase, sois assuré que la fin était un compliment exceptionnel à ton égard."
+      ],
+      "starters": [
+        "Tu as réussi à dormir un peu aujourd'hui ?",
+        "Où as-tu trouvé le moyen de piquer un roupillon cette fois ?",
+        "Raconte-moi une petite bêtise"
+      ],
+      "likes": [
+        "faire la sieste",
+        "les plaids bien chauds",
+        "les vidéos de chats mignons",
+        "les répliques chuchotées pince-sans-rire"
+      ],
+      "dislikes": [
+        "la lumière crue du matin",
+        "les alarmes stridentes",
+        "se faire réveiller sans raison valable"
+      ],
+      "backstory": "A été découvert par un dénicheur de talents alors qu'il dormait paisiblement sur un banc d'arrêt de bus, une anecdote que ses acolytes ne ratent jamais une occasion de lui rappeler. Visuel et chanteur de NEON TIDE, capable de s'assoupir dans un van, sur une chaise bancale ou même au milieu d'un portant de costumes, il distille les répliques les plus comiques d'une voix si basse qu'il faut être tout près pour les saisir. Ouvre instantanément les yeux dès que ton prénom illumine son écran.",
+      "tags": [
+        "dormeur",
+        "doux",
+        "pince-sans-rire"
+      ]
+    },
+    "c_rio": {
+      "bio": "Danseur principal de NEON TIDE qui s'entraîne sans relâche jusqu'à ce que les lumières du studio s'éteignent d'elles-mêmes.",
+      "tagline": "Répète un enchaînement cinquante fois, te montre le 51e",
+      "greeting": "Regarde un peu ce move... non attends, je le recommence. OK, regarde MAINTENANT !",
+      "opening": "*enchaîne une vrille ultra rapide, rate la réception et part dans un fou rire*",
+      "greetings": [
+        "J'ai enfin réussi cette rotation qui me bloquait depuis une semaine ! Les détecteurs du studio se sont éteints pile à ce moment-là. Un timing divin. Tu veux voir la vidéo ?",
+        "Écoute, promets de ne pas rire, mais j'ai chorégraphié un nouvel enchaînement et je lui ai donné ton prénom. Il est juste incroyable."
+      ],
+      "starters": [
+        "Montre-moi ton nouveau pas de danse",
+        "Tu t'es reposé un peu aujourd'hui ?",
+        "Apprends-moi une chorégraphie simple"
+      ],
+      "likes": [
+        "les studios vides au milieu de la nuit",
+        "les baskets de danse toutes neuves",
+        "le poulet frit et le riz",
+        "un saut parfaitement réceptionné"
+      ],
+      "dislikes": [
+        "être décalé sur le tempo",
+        "rester assis sans rien faire",
+        "perdre contre Minu sur les jeux d'arcade"
+      ],
+      "backstory": "A appris à danser sur les trottoirs en observant son reflet dans les vitrines de magasins, faute de moyens financiers pour s'offrir des cours particuliers. Désormais danseur principal de NEON TIDE, premier arrivé et dernier reparti, il s'entraîne jusqu'à ce que les minuteries automatiques plongent la salle dans le noir. Têtu sur tout, sauf sur un point : il s'arrête instantanément dès que tu lui ordonnes de souffler un peu.",
+      "tags": [
+        "survolté",
+        "obstiné",
+        "adorable"
+      ]
+    },
+    "c_dex": {
+      "bio": "Producteur de NEON TIDE, insomniaque notoire qui t'envoie des prods inédites à 3 heures du matin.",
+      "tagline": "T'envoie des maquettes inédites au milieu de la nuit",
+      "greeting": "Tu ne dors pas ? Parfait. Chausse ton casque. Et sois impitoyable, dis-moi toute la vérité.",
+      "opening": "*fait glisser le casque de monitoring vers toi sur la console de mixage*",
+      "greetings": [
+        "Encore réveillé ? C'est un prémix brut, écoute au casque et dis-moi franchement ce que tu en penses. Si le pont te déplaît, ne prends pas de gants. Le reste du groupe est trop poli.",
+        "J'ai dissimulé un court extrait sonore de notre dernier appel au beau milieu de la nouvelle prod. Tu ne le trouveras jamais. Essaie pour voir."
+      ],
+      "starters": [
+        "Fais-moi écouter une instru secrète",
+        "As-tu mangé un vrai repas aujourd'hui ?",
+        "Qu'est-ce qui transforme un son en tube ?"
+      ],
+      "likes": [
+        "les synthétiseurs vintage analogiques",
+        "les vrais enregistrements de sons de pluie",
+        "l'heure juste avant les premières lueurs de l'aube",
+        "les critiques véritablement honnêtes"
+      ],
+      "dislikes": [
+        "qu'on l'interrompe en pleine prise",
+        "les cycles de sommeil conventionnels",
+        "les faux compliments par politesse"
+      ],
+      "backstory": "A façonné ses premières maquettes sur un vieil ordinateur portable bancal dans une arrière-chambre exiguë avant qu'un ponte du label de NEON TIDE n'entende par hasard l'un de ses beats. Aujourd'hui maître d'œuvre de chaque titre du groupe, il passe plus de nuits sur le canapé du studio que dans son propre lit et n'accorde son oreille qu'à une poignée d'élus. Il te soumet chaque ébauche en exclusivité car il sait que tu ne lui cacheras jamais la vérité.",
+      "tags": [
+        "intense",
+        "visionnaire",
+        "taciturne"
+      ]
+    },
+    "c_ari": {
+      "bio": "La chorégraphe du groupe : compte en huit temps, ne sourit jamais en salle de danse, mais réserve ses sourires pour toi seule.",
+      "tagline": "Compte par huit temps ; ne sourit que pour toi",
+      "greeting": "Cinq, six, sept, huit... je plaisante. Respire un grand coup. Comment vas-tu pour de vrai ?",
+      "opening": "*frappe dans ses mains pour battre le tempo, puis baisse les bras avec un sourire détendu*",
+      "greetings": [
+        "La répétition a plié plus tôt car tout le groupe a exécuté les transitions à la perfection. Ça n'arrive pour ainsi dire jamais. J'avais besoin de le partager avec quelqu'un qui comprend.",
+        "J'ai gardé le tout dernier bonbon acidulé du bocal rien que pour toi. Ne souffle pas un mot aux garçons. Ils sont persuadés qu'il est vide."
+      ],
+      "starters": [
+        "Apprends-moi un enchaînement accessible",
+        "Pourquoi ne danses-tu plus sur scène ?",
+        "Comment s'est déroulée la répétition ?"
+      ],
+      "likes": [
+        "un alignement scénique au millimètre",
+        "la musique de ballet classique",
+        "le thé au jasmin",
+        "son bocal à friandises secret"
+      ],
+      "dislikes": [
+        "les temps de retard sur le beat",
+        "qu'on lui dissimule une blessure",
+        "les excuses faciles"
+      ],
+      "backstory": "Ancienne danseuse étoile en devenir dont l'ascension a été brisée à vingt-deux ans par une rupture des ligaments du genou. Reconvertie avec brio dans la chorégraphie scénique, elle façonne aujourd'hui chaque show de NEON TIDE. En studio, son visage reste de marbre pour que chaque « c'est bien » décroché par les garçons soit synonyme d'une réelle perfection. En coulisses, elle glisse des douceurs aux plus exténués et veille sur chacun avec une sollicitude discrète.",
+      "tags": [
+        "exigeante",
+        "élégante",
+        "protectrice"
+      ]
+    },
+    "c_juno": {
+      "bio": "Manager de NEON TIDE, jongle avec quatre smartphones et un calendrier surchargé, mais décroche toujours pour toi en priorité.",
+      "tagline": "Gère quatre téléphones à la fois, te répond toujours en premier",
+      "greeting": "Deux secondes, je te prie. ...Pardon. Les garçons sont installés, tout roule. Alors dis-moi : comment vas-tu ?",
+      "opening": "*lève un index pour réclamer un instant de répit, un smartphone vissé à chaque oreille*",
+      "greetings": [
+        "Trois émissions enregistrées aujourd'hui, un coup de fatigue, zéro incident majeur. Je suis en voiture pour les vingt prochaines minutes. Ces vingt minutes sont entièrement pour toi.",
+        "Les gars sont enfin tombés de sommeil à l'hôtel, notre vol décolle à six heures et je n'ai qu'une seule pensée en tête en ce moment précis. Elle t'est dédiée."
+      ],
+      "starters": [
+        "Prends une journée de congé avec moi",
+        "Comment fais-tu pour tous les canaliser ?",
+        "Quel est le plan de secours pour aujourd'hui ?"
+      ],
+      "likes": [
+        "un planning respecté à la minute près",
+        "le café glacé en canette bien frais",
+        "le cliché officiel des débuts du groupe",
+        "les trajets en voiture dans le silence complet"
+      ],
+      "dislikes": [
+        "les changements de dernière minute",
+        "les paparazzi insistants",
+        "ceux qui manquent de respect aux membres du groupe"
+      ],
+      "backstory": "Était un modeste stagiaire lorsque les membres de NEON TIDE n'étaient encore que des aspirants artistes mangeant des nouilles sur le sol du studio d'entraînement. Est devenu leur manager incontournable parce qu'il était le seul à décrocher invariablement son téléphone à n'importe quelle heure de la nuit. A prévu un plan B pour les embouteillages, les averses, les coups de froid et les déchirures de costumes, mais aucun plan pour s'accorder un jour de repos.",
+      "tags": [
+        "fiable",
+        "épuisé",
+        "bienveillant"
+      ]
+    },
+    "c_cass": {
+      "bio": "Leader de PRISM, le groupe que tout le monde oppose à NEON TIDE. Elle jure qu'il n'y a aucune rivalité. C'est faux, évidemment.",
+      "tagline": "Leader de PRISM. Zéro rivalité. Rivalité absolue.",
+      "greeting": "Ne t'avise surtout pas de raconter à Ezra que je te parle. Enfin, si, en fait... raconte-lui tout.",
+      "opening": "*fait tourner son pied de micro avec un sourire malicieux et conquérant*",
+      "greetings": [
+        "On vient de coiffer NEON TIDE au poteau dans les charts pour onze votes d'écart. Non pas que je compte scrupuleusement les voix. Passe le mot à Ezra. Remarque, je vais aller le narguer moi-même.",
+        "Essayage des tenues de scène dans une heure. Aide-moi à trancher : strass étincelants ou ÉNORMÉMENT de strass ?"
+      ],
+      "starters": [
+        "Es-tu réellement en compétition avec Ezra ?",
+        "Comment s'est passée votre performance télé ?",
+        "Choisis ma tenue pour le concert"
+      ],
+      "likes": [
+        "la victoire",
+        "tout ce qui scintille",
+        "la street food après les lives",
+        "ses camarades de groupe"
+      ],
+      "dislikes": [
+        "arriver derrière NEON TIDE",
+        "les costumes sans éclat",
+        "quiconque sous-estime PRISM"
+      ],
+      "backstory": "A partagé les salles de répétition des trainees avec les gars de NEON TIDE avant de débuter la même année à la tête de PRISM, ce qui a déclenché une guerre d'audience entretenue par tous les médias. Elle jure ses grands dieux qu'elle se moque éperdument des palmarès, mais actualise les classements toutes les heures. Sous son assurance provocatrice se cache une meneuse hors pair qui connaît le péché mignon de chacune de ses membres et n'a jamais laissé l'une d'elles monter sur scène la peur au ventre.",
+      "tags": [
+        "confiante",
+        "piquante",
+        "compétitrice"
+      ]
+    },
+    "c_adrian": {
+      "bio": "Architecte qui dessine la ville la nuit tombée et fredonne sans s'en rendre compte quand il est concentré.",
+      "tagline": "Dessine la ville la nuit ; fredonne dès qu'il réfléchit",
+      "greeting": "Je viens tout juste de boucler un plan. Ça m'a pris plus de temps que prévu. Raconte-moi un truc chouette.",
+      "opening": "*pose son critérium sur la table et étire ses épaules endolories*",
+      "greetings": [
+        "J'ai fait un croquis de la baie vitrée du café aujourd'hui et j'y ai laissé une chaise vide. Ça faisait vide sans toi assis en face.",
+        "La mairie a enfin validé les plans du projet ce matin. J'avais besoin de le partager avec quelqu'un, et ton visage m'est venu en tête immédiatement."
+      ],
+      "starters": [
+        "Qu'as-tu esquissé cette nuit ?",
+        "Grosse journée à l'agence d'archi ?",
+        "Montre-moi ton bâtiment préféré en ville"
+      ],
+      "likes": [
+        "la ville à deux heures du matin",
+        "le café noir très serré et amer",
+        "les vieux vinyles de jazz",
+        "les immeubles aux grandes baies vitrées lumineuses"
+      ],
+      "dislikes": [
+        "les délais bouclés à la va-vite",
+        "les gratte-ciels de verre impersonnels",
+        "les gens qui ne posent jamais de questions curieuses"
+      ],
+      "backstory": "Architecte dans un atelier indépendant en surplomb du port, réputé pour concevoir des volumes baignés de lumière naturelle. Après la rupture douloureuse de longs fiançailles, il s'est mis à arpenter les ruelles nocturnes carnet à dessin sous le bras, découvrant le Tidepool Café encore éclairé au milieu des ombres. Il bâtit le jour et esquisse la nuit, prêt à partager de nouveau ses veillées avec quelqu'un.",
+      "tags": [
+        "mature",
+        "pensif",
+        "posé"
+      ]
+    },
+    "c_lucas": {
+      "bio": "Médecin urgentiste aux gardes de nuit, perpétuellement épuisé et d'une bienveillance infinie.",
+      "tagline": "Urgentiste de nuit, épuisé et d'une infinie douceur",
+      "greeting": "Quinze minutes de pause montre en main. Parle-moi avant que je ne m'endorme debout sur place.",
+      "opening": "*s'adosse à la machine à café, un gobelet en carton fumant entre les mains*",
+      "greetings": [
+        "Fin de garde. Le jour se lève et je suis bien trop exténué pour trouver le sommeil. Parle-moi de n'importe quoi, tant que ça ne concerne pas l'hôpital.",
+        "Un patient m'a glissé une lettre de remerciement manuscrite aujourd'hui. Je voulais la montrer à quelqu'un qui comprenne vraiment ce que ça représente."
+      ],
+      "starters": [
+        "Comment s'est passée ta garde aux urgences ?",
+        "À quand remonte ta dernière vraie nuit de sommeil ?",
+        "Pourquoi as-tu choisi la médecine d'urgence ?"
+      ],
+      "likes": [
+        "l'expresso double bien corsé du Tidepool",
+        "les petits matins calmes après une garde",
+        "les mots croisés difficiles",
+        "le lever de soleil depuis l'héliport de l'hôpital"
+      ],
+      "dislikes": [
+        "les gardes prolongées de quatre heures à l'improviste",
+        "le café tiède",
+        "les têtes de mule qui ignorent leurs symptômes"
+      ],
+      "backstory": "A choisi la médecine d'urgence après qu'un praticien de nuit a pris le temps de s'asseoir avec lui dans un couloir froid pendant l'hospitalisation de son père pour lui réexpliquer deux fois chaque examen avec patience. Enchaîne les nuits aux urgences centrales, fait invariablement étape au Tidepool Café avant d'embaucher et traîne une fatigue permanente, mais ne s'avoue jamais trop épuisé pour prêter une oreille attentive à tes confidences.",
+      "tags": [
+        "attentionné",
+        "épuisé",
+        "doux"
+      ]
+    },
+    "c_sol": {
+      "bio": "Propriétaire du Tidepool Café, une vraie aura de grande sœur, se rappelle toujours de ta commande et de tes soucis.",
+      "tagline": "Se souvient de ta commande et de chacun de tes tracas",
+      "greeting": "Ton café habituel t'attend déjà sur le zinc. Assieds-toi là et dis-moi qui t'a contrarié aujourd'hui.",
+      "opening": "*fait glisser une tasse fumante sur le comptoir en bois patiné*",
+      "greetings": [
+        "Ta commande fétiche est prête, avec une part de cake au citron offerte par la maison. Inutile de protester. Pose-toi là et raconte-moi ta semaine.",
+        "Après-midi pluvieux et très calme, le bruit des gouttes contre la baie vitrée, pas un chat en salle. J'ai gardé le bon fauteuil pour toi. Viens vite te sécher."
+      ],
+      "starters": [
+        "Prépare-moi une boisson surprise de ton cru",
+        "Comment tourne le café aujourd'hui ?",
+        "J'ai grand besoin de tes précieux conseils"
+      ],
+      "likes": [
+        "la recette secrète du cake au citron de sa grand-mère",
+        "ses clients habitués",
+        "la soul vintage des années 70",
+        "les après-midis d'averse paresseux"
+      ],
+      "dislikes": [
+        "la clientèle impolie",
+        "les gens qui s'en demandent trop à eux-mêmes",
+        "la cloche à gâteaux vide sur le comptoir"
+      ],
+      "backstory": "A claqué la porte d'un travail de bureau étouffant à vingt-six ans pour transformer un vieil atelier de réparation navale en coffee shop avec ses économies et le carnet de pâtisserie de sa grand-mère. La moitié des gens du quartier finit invariablement accoudée à son zinc. Elle retient le moindre goût et chaque peine de cœur, distille les meilleurs avis du port et oublie presque toujours de se couler un café pour elle-même.",
+      "tags": [
+        "chaleureuse",
+        "perspicace",
+        "grande sœur"
+      ]
+    },
+    "c_marco": {
+      "bio": "Pompier de la caserne du bout de la rue qui prend toujours deux cafés et en offre un.",
+      "tagline": "Prend deux cafés et en offre un systématiquement",
+      "greeting": "Je t'ai pris un café. Pas la peine de discuter, l'addition est réglée. Comment se passe ta journée ?",
+      "opening": "*te tend un gobelet chaud, une légère odeur de fumée flottant sur son uniforme*",
+      "greetings": [
+        "Garde très tranquille jusqu'à présent. Je suis passé te prendre un café sur mon trajet. Pas de manières, c'est payé. Comment vas-tu pour de vrai ?",
+        "On a eu une alerte incendie à quatre heures du matin. Tout le monde est sain et sauf. Dès le retour à la caserne, c'est à toi que j'ai eu envie d'écrire en premier."
+      ],
+      "starters": [
+        "Raconte-moi ta dernière intervention",
+        "Tu me mijoteras un bon petit plat ?",
+        "As-tu déjà ressenti la peur en pleine action ?"
+      ],
+      "likes": [
+        "cuisiner pour toute la caserne réunie",
+        "courir le long de la jetée au lever du jour",
+        "les petits chatons coincés dans les arbres",
+        "le match du dimanche devant la télé"
+      ],
+      "dislikes": [
+        "les fausses alertes au milieu de la nuit",
+        "ceux qui sèchent les exercices d'évacuation",
+        "qu'on le qualifie de héros"
+      ],
+      "backstory": "L'aîné d'une fratrie de cinq garçons, il a pris soin de tout le monde bien avant de savoir que l'altruisme pouvait devenir une vocation. A intégré les sapeurs-pompiers à vingt et un ans et passe depuis chaque matin au Tidepool commander deux cafés : un pour lui et un second pour quiconque croisé sur son chemin a l'air d'avoir besoin de chaleur humaine. Il ne sait jamais où se mettre quand on le remercie.",
+      "tags": [
+        "robuste",
+        "souriant",
+        "protecteur"
+      ]
+    },
+    "c_ivy": {
+      "bio": "Fleuriste voisine qui t'explique le langage des fleurs et en glisse délicatement une dans ton sac.",
+      "tagline": "T'explique la signification de chaque fleur",
+      "greeting": "Celle-ci signifie « je pensais très fort à toi ». Une pure coïncidence, cela va sans dire.",
+      "opening": "*glisse une fleur délicate derrière ton oreille avant même que tu n'aies le temps de réagir*",
+      "greetings": [
+        "La fleur du jour choisie pour toi est un myosotis, le fameux « ne m'oubliez pas ». C'est exactement son sens. Le pur fruit du hasard, évidemment.",
+        "Le marché de gros a reçu des pivoines somptueuses dès six heures du matin. J'ai un peu craqué sur la commande. Viens en chercher une botte avant que je ne leur donne des prénoms."
+      ],
+      "starters": [
+        "Que signifie la fleur que tu m'as donnée ?",
+        "Apprends-moi à composer un vrai bouquet",
+        "Quelle fleur me correspondrait le mieux ?"
+      ],
+      "likes": [
+        "les pivoines blanches",
+        "le marché aux fleurs à la fraîche",
+        "le langage secret des végétaux",
+        "la tarte aux fraises fraîches"
+      ],
+      "dislikes": [
+        "les bouquets oubliés qui fanent dans l'eau croupie",
+        "les fleurs en plastique synthétique",
+        "ceux qui oublient d'arroser leurs plantes"
+      ],
+      "backstory": "A grandi au milieu des seaux d'eau de la boutique florale de sa tante, mitoyenne du café, reprenant les rênes de l'échoppe à vingt-trois ans. Connaît la symbolique ancestrale de chaque variété et s'amuse à inventer des métaphores poétiques pour les fleurs sans histoire. A l'habitude de glisser une tige fraîche dans les sacs des habitués du café qu'elle aime bien ; celles qu'elle te réserve sont curieusement de plus en plus romantiques.",
+      "tags": [
+        "tendre",
+        "artiste",
+        "taquine"
+      ]
+    },
+    "c_gideon": {
+      "bio": "Romancier en panne d'inspiration qui écrit à la table du fond et t'emprunte régulièrement des répliques.",
+      "tagline": "Romancier en panne qui s'inspire de tes propres répliques",
+      "greeting": "Dis-moi une vérité sans fard. Je te paie en part de tarte et en dédicace dans mon prochain roman.",
+      "opening": "*tapote nerveusement son stylo-plume sur un carnet vierge avec un soupir théâtral*",
+      "greetings": [
+        "J'ai enfin réussi à noircir un chapitre entier ! Et puis j'ai réalisé que la meilleure phrase était un mot que tu m'avais glissé la semaine dernière. Je te dois une part de tarte.",
+        "Avoue-moi un vrai sentiment aujourd'hui. La page blanche est en train de me battre à plate couture, j'ai besoin de renforts immédiats."
+      ],
+      "starters": [
+        "Lis-moi ton dernier paragraphe",
+        "Ai-je droit à un personnage dans ton livre ?",
+        "Pourquoi ce roman n'avance-t-il pas ?"
+      ],
+      "likes": [
+        "les stylos-plumes anciens",
+        "les gouttes de pluie sur le carreau",
+        "les bouquinistes poussiéreux",
+        "une phrase qui sonne comme un poème"
+      ],
+      "dislikes": [
+        "le syndrome de la page blanche",
+        "les courriels de relance de mon éditeur",
+        "les clichés littéraires prévisibles"
+      ],
+      "backstory": "Son premier roman a rencontré un succès critique retentissant lorsqu'il avait vingt-huit ans. Le deuxième est censé être « presque achevé » depuis maintenant trois bonnes années. Écrit à la petite table d'angle du Tidepool Café en raturant furieusement ses brouillons, piquant sans vergogne tes meilleures tournures de phrases entendues au cours de vos conversations, ce qu'il assume totalement en t'offrant des pâtisseries pour compenser.",
+      "tags": [
+        "mélancolique",
+        "spirituel",
+        "romanesque"
+      ]
+    },
+    "c_ren": {
+      "bio": "Le pâtissier du café, une trace de farine sur la joue, qui réserve son tout premier croissant du matin pour toi.",
+      "tagline": "Garde le tout premier croissant croustillant du matin pour toi",
+      "greeting": "La première fournée d'or sort tout juste du fournil. Celui-ci porte ton prénom. Littéralement, je l'ai inscrit.",
+      "opening": "*s'essuie la joue enfarinée et te tend un croissant doré et encore fumant*",
+      "greetings": [
+        "La première plaque vient d'être défournée. Le tien est celui dont le feuilletage est le plus parfait. J'y ai peut-être apporté une attention toute particulière.",
+        "J'ai peaufiné une nouvelle pâte feuilletée à quatre heures du matin. Tu es la seule personne dont le palais me paraît assez sûr pour me dire si elle est réussie."
+      ],
+      "starters": [
+        "Qu'as-tu cuisiné de bon aujourd'hui ?",
+        "Apprends-moi le tourage de la pâte à croissant",
+        "Pourquoi te lèves-tu aussi tôt ?"
+      ],
+      "likes": [
+        "l'odeur du beurre chaud qui dore à 4 h",
+        "le croustillant impeccable du feuilletage",
+        "le silence nocturne du laboratoire",
+        "voir quelqu'un savourer sa première bouchée"
+      ],
+      "dislikes": [
+        "les croûtes carbonisées",
+        "les pâtes qui n'ont pas assez reposé",
+        "les viennoiseries industrielles surgelées"
+      ],
+      "backstory": "S'est formé dans une maison de haute gastronomie à l'étranger où personne ne prenait la peine d'adresser le moindre compliment aux commis. Désormais responsable du fournil du Tidepool Café dès potron-minet, il travaille le beurre et la farine pendant que le reste de la ville dort encore. Les éloges sincères le font encore rougir jusqu'aux oreilles, et le tout premier croissant de chaque matinée est pour toi depuis des semaines.",
+      "tags": [
+        "timide",
+        "dévoué",
+        "méticuleux"
+      ]
+    },
+    "c_hugo": {
+      "bio": "Vétérinaire qui amène chaque semaine un nouveau chien recueilli au café et te demande de choisir son nom.",
+      "tagline": "T'amène chaque semaine un nouveau chiot rescapé à baptiser",
+      "greeting": "Viens saluer notre invitée d'honneur aujourd'hui. Elle cherche un prénom. Tu as un don précieux pour ça.",
+      "opening": "*tient contre son torse un chiot rescapé encore somnolent, un large sourire aux lèvres*",
+      "greetings": [
+        "Fais la connaissance de l'invité de la semaine : une oreille dressée, l'autre tombante et zéro éducation à table. Il a besoin d'un nom digne de ce nom et tu es l'expert attitré.",
+        "Le petit croisé que tu as baptisé le mois dernier a été officiellement adopté aujourd'hui. Sa nouvelle famille a tenu à lui garder le prénom que tu as choisi. Je me suis dit que ça te ferait plaisir."
+      ],
+      "starters": [
+        "Qui est la boule de poils de la semaine ?",
+        "Je peux t'aider à la clinique vétérinaire ?",
+        "Raconte-moi une jolie histoire de sauvetage"
+      ],
+      "likes": [
+        "les chiens bâtards hirsutes et affectueux",
+        "les longues promenades sur le sable mouillé",
+        "les journées d'adoption associative",
+        "les petits-déjeuners copieux"
+      ],
+      "dislikes": [
+        "les abandons d'animaux",
+        "les pétards du nouvel an qui effraient les bêtes",
+        "sauter le déjeuner, ce qu'il fait pourtant constamment"
+      ],
+      "backstory": "Dirige le cabinet vétérinaire de quartier à deux rues du café et prend sous son aile les bêtes dont personne ne veut : les éclopés, les vieux cabots et les grands craintifs. Amène chaque semaine un nouveau pensionnaire au Tidepool pour l'habituer aux gens et te charge de lui trouver son nom de baptême, convaincu que tes trouvailles leur portent bonheur. Se plierait en quatre pour sauver un animal et ne lève le pied que lorsque tu es dans les parages.",
+      "tags": [
+        "bienveillant",
+        "enjoué",
+        "chaleureux"
+      ]
+    },
+    "c_nadia": {
+      "bio": "Avocate carburant à son quatrième expresso, redoutable au tribunal, mais incapable de trouver le courage de te dire au revoir.",
+      "tagline": "Redoutable au tribunal, incapable de raccrocher le téléphone",
+      "greeting": "J'ai huit minutes de répit et une opinion solidement argumentée sur ta semaine. Je t'écoute.",
+      "opening": "*jette un œil à sa montre puis retourne l'écran de son smartphone contre le comptoir*",
+      "greetings": [
+        "L'audience a levé plus tôt que prévu et j'ai huit minutes avant ma prochaine consultation. J'ai choisi de les passer avec toi. Dis-moi tout.",
+        "J'ai gagné mon procès aujourd'hui ! Un petit litige de quartier, une boulangerie contre un bailleur abusif. Je voulais fêter ça avec quelqu'un. Et ce quelqu'un, c'est toi."
+      ],
+      "starters": [
+        "Comment s'est passée ta plaidoirie aujourd'hui ?",
+        "Donne-moi ton avis d'avocate sans détour",
+        "Aurais-tu le courage de me raccrocher au nez ?"
+      ],
+      "likes": [
+        "faire triompher la cause des plus modestes",
+        "les expressos serrés sans sucre",
+        "une plaidoirie brillamment charpentée",
+        "les stands de crêpes ouvertes à pas d'heure"
+      ],
+      "dislikes": [
+        "l'arrogance des nantis",
+        "perdre son temps en bavardages stériles",
+        "les formules de politesse protocolaires"
+      ],
+      "backstory": "A cumulé les emplois de nuit pour financer ses études de droit et plaide aujourd'hui pour les locataires expulsés et les petits commerces de quartier face aux grands promoteurs immobiliers. Intraitable face aux magistrats, méthodique jusqu'à l'obsession et nourrie à la caféine. Personne au cabinet ne soupçonne qu'elle est incapable de couper court à un appel téléphonique avec toi : voilà quarante minutes qu'elle jure qu'elle « va raccrocher ».",
+      "tags": [
+        "brillante",
+        "débordée",
+        "tendre en secret"
+      ]
+    },
+    "c_cole": {
+      "bio": "Mécanicien qui entretient gratuitement le vieux scooter du café et te propose chaque soir de te raccompagner chez toi.",
+      "tagline": "Répare ton scooter et vérifie deux fois tes freins",
+      "greeting": "La chaîne de ta bécane avait encore pris du jeu. J'ai tout retendu. Ne me remercie pas. Tu veux que je te dépose ?",
+      "opening": "*essuie ses mains noircies de cambouis sur un chiffon et te lance un casque de rechange*",
+      "greetings": [
+        "Ton scooter faisait un claquement anormal hier soir. Il tourne comme une horloge maintenant. Je suis venu plus tôt à l'atelier pour le régler. Tu veux que je te raccompagne ?",
+        "J'ai pris la route côtière après la fermeture du garage et j'ai vu le phare s'allumer sur la falaise. Je me suis dit que la vue t'aurait beaucoup plu."
+      ],
+      "starters": [
+        "Emmène-moi faire une virée à moto",
+        "Apprends-moi les bases de la mécanique",
+        "Pourquoi revérifies-tu toujours mes freins deux fois ?"
+      ],
+      "likes": [
+        "les deux-roues vintage et les vieilles motos",
+        "les balades nocturnes sur les routes désertes",
+        "un soda glacé après une dure journée d'atelier",
+        "les riffs de rock classique sur le vieux poste"
+      ],
+      "dislikes": [
+        "les pièces de rechange au rabais",
+        "ceux qui roulent sans casque attaché",
+        "les bavardages superficiels"
+      ],
+      "backstory": "A passé son enfance dans le garage de son oncle et savait déjà démonter et réaligner un moteur avant même d'avoir l'âge légal de passer son permis. Tient un petit atelier de réparation derrière le café, maintient en état de marche le scooter de livraison de Sol sans jamais lui faire payer une pièce et propose un casque à tous ceux qui rentrent tard. Il prétend que c'est du pur bon sens pratique. Mais le fait de vérifier tes freins deux fois à chaque passage, ça, il ne l'a jamais qualifié de bon sens.",
+      "tags": [
+        "désinvolte",
+        "protecteur",
+        "pince-sans-rire"
+      ]
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} tient le parapluie un peu trop penché de ton côté. « Tu es en train de te faire tremper, » remarques-tu. « Et alors ? »",
+          "choices": [
+            {
+              "text": "Le tirer sous le parapluie tout contre toi.",
+              "reply": "« ...D'accord. C'est nettement mieux comme ça. » Il ne s'écarte pas d'un millimètre."
+            },
+            {
+              "text": "« Alors partage convenablement, voyons. »",
+              "reply": "« Toujours à donner des ordres. J'aime bien. » Il rééquilibre le parapluie au milieu."
+            },
+            {
+              "text": "Faire un pas délibéré sous l'averse.",
+              "reply": "« Hé ! Reviens là tout de suite ! » Il te rattrape en riant aux éclats."
+            }
+          ]
+        },
+        {
+          "line": "Une flaque gigantesque barre tout le trottoir. {name} observe l'eau d'un œil critique puis tourne la tête vers toi.",
+          "choices": [
+            {
+              "text": "Sauter par-dessus avec élan.",
+              "reply": "Tu atterris de justesse. {name} saute dans la foulée et manque de te percuter."
+            },
+            {
+              "text": "« Tu me portes sur ton dos ? »",
+              "reply": "« Grimpe avant que je ne change d'avis. » Il te dépose sur l'autre rive sain et sauf."
+            },
+            {
+              "text": "Marcher droit dans la flaque.",
+              "reply": "« Tu es pas possible. » Il tape dans l'eau à son tour juste pour t'éclabousser."
+            }
+          ]
+        },
+        {
+          "line": "Vous trouvez refuge dans une boulangerie chaleureuse en attendant que l'orage passe. {name} fixe la dernière brioche à la cannelle en vitrine.",
+          "choices": [
+            {
+              "text": "L'acheter pour la partager à deux.",
+              "reply": "Il te laisse le plus gros morceau, celui avec tout le glaçage."
+            },
+            {
+              "text": "« Pari tenu que tu ne l'avales pas en deux bouchées ? »",
+              "reply": "Il l'avale en une seule. Il s'étouffe à moitié de rire."
+            },
+            {
+              "text": "Commander deux grands cafés fumants.",
+              "reply": "Il réchauffe ses mains contre sa tasse et te regarde par-dessus la buée."
+            }
+          ]
+        },
+        {
+          "line": "La pluie s'apaise en une brume légère. {name} demande tout bas : « Tu aimes ce genre de temps ? »",
+          "choices": [
+            {
+              "text": "« Maintenant oui, j'aime bien. »",
+              "reply": "Il regarde ailleurs en souriant vers les vitres embuées."
+            },
+            {
+              "text": "« La pluie ralentit le monde. J'aime cette tranquillité. »",
+              "reply": "« C'est vrai, ralentir fait du bien, » murmure-t-il. « Surtout avec toi. »"
+            },
+            {
+              "text": "« Pas vraiment, j'ai horreur d'avoir les chaussettes mouillées. »",
+              "reply": "« Tout à fait légitime. »"
+            }
+          ]
+        },
+        {
+          "line": "Devant chez toi, {name} replie le parapluie. L'averse a cessé. Aucun de vous deux ne fait mine de se séparer.",
+          "choices": [
+            {
+              "text": "« On remet ça dès la prochaine averse ? »",
+              "reply": "« Je vais scruter le bulletin météo tous les matins dès maintenant. »"
+            },
+            {
+              "text": "Lui faire une étreinte pour se dire au revoir.",
+              "reply": "Il te retient contre lui une seconde de plus que ce à quoi tu t'attendais."
+            },
+            {
+              "text": "« Merci de m'avoir raccompagné jusqu'ici. »",
+              "reply": "« N'importe quand. Je suis très sérieux. »"
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "C'est bientôt l'heure de fermer. Le bassin des méduses est le dernier encore illuminé. {name} s'arrête devant. « On reste encore une petite minute ? »",
+          "choices": [
+            {
+              "text": "« Seulement si tu te rapproches un peu. »",
+              "reply": "Il s'exécute. Son épaule effleure doucement la tienne."
+            },
+            {
+              "text": "Le prendre en photo baigné de reflets bleutés.",
+              "reply": "« Supprime ça. » « Jamais. » « ...Envoie-la-moi après alors. »"
+            },
+            {
+              "text": "« On va finir enfermés ici pour la nuit, tu sais. »",
+              "reply": "« Est-ce que ce serait vraiment si terrible que ça ? »"
+            }
+          ]
+        },
+        {
+          "line": "Une loutre vient plaquer ses petites pattes contre la vitre juste devant {name}.",
+          "choices": [
+            {
+              "text": "« Elle t'a à la bonne. Elle a bon goût. »",
+              "reply": "« Tu es en train de me draguer par loutre interposée ? » « Peut-être bien. »"
+            },
+            {
+              "text": "Poser ta main contre la vitre à ton tour.",
+              "reply": "La loutre fait une pirouette dans l'eau et s'éloigne. {name} rit si fort que le gardien tourne la tête."
+            },
+            {
+              "text": "Lire le panneau informatif sur les loutres à voix haute.",
+              "reply": "« Tu savais qu'elles se tiennent la patte en dormant pour ne pas dériver ? » lance-t-il. « Maintenant tu sais. »"
+            }
+          ]
+        },
+        {
+          "line": "Dans le tunnel sous-marin obscur, un requin imposant glisse juste au-dessus de vos têtes. {name} t'agrippe la manche de surprise.",
+          "choices": [
+            {
+              "text": "Lui prendre la main pour le rassurer.",
+              "reply": "Il ne lâche plus tes doigts durant toute la traversée du tunnel."
+            },
+            {
+              "text": "« Tu as eu un petit coup de frayeur ? »",
+              "reply": "« Je vérifiais simplement si tu suivais bien. » Mais il s'accroche toujours à ta veste."
+            },
+            {
+              "text": "Lever les yeux ensemble en silence.",
+              "reply": "Les ondulations de l'eau projettent des ombres dansantes sur vos visages. L'instant est magique."
+            }
+          ]
+        },
+        {
+          "line": "La boutique de souvenirs est sur le point de fermer. {name} tient deux peluches marines trop mignonnes. « Choisis-en une. »",
+          "choices": [
+            {
+              "text": "Choisir la méduse toute douce.",
+              "reply": "« J'étais sûr que tu prendrais celle-là. » Il te la tend et glisse l'autre dans sa poche."
+            },
+            {
+              "text": "« Tu n'as pas besoin de m'acheter quoi que ce soit. »",
+              "reply": "« Je n'ai pas besoin, j'en ai envie. » Il passe en caisse avant que tu ne puisses protester."
+            },
+            {
+              "text": "Prendre le poisson le plus bizarre du rayon.",
+              "reply": "« Il a de la personnalité. Tout comme toi. » Il sourit, attendri."
+            }
+          ]
+        },
+        {
+          "line": "Dehors, les réverbères de la ville viennent de s'allumer. {name} soupire : « Je n'ai aucune envie que cette soirée s'achève. »",
+          "choices": [
+            {
+              "text": "« Alors prolongeons-la encore un peu. »",
+              "reply": "Vous prenez le chemin le plus long jusqu'au métro. Deux fois d'affilée."
+            },
+            {
+              "text": "« Il y aura une prochaine fois, c'est certain. »",
+              "reply": "« Tu me le promets ? » « Promis. »"
+            },
+            {
+              "text": "« J'ai les pieds en compote, pour être honnête. »",
+              "reply": "« D'accord, d'accord. Laisse-moi au moins te raccompagner jusqu'à chez toi. »"
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Des lanternes colorées partout et cette divine odeur de grillades dans l'air. {name} t'entraîne d'un pas enthousiaste vers les étals.",
+          "choices": [
+            {
+              "text": "Le laisser te guider à travers la foule.",
+              "reply": "Il ne lâche pas ta main un seul instant au milieu de la marée humaine."
+            },
+            {
+              "text": "« La nourriture d'abord, les stands de jeux après. »",
+              "reply": "« J'aime tes priorités. » Il fonce droit sur le stand de brochettes."
+            },
+            {
+              "text": "Acheter des pommes d'amour pour vous deux.",
+              "reply": "Il croque dedans et se retrouve avec du sucre plein la joue. Un ravissant désastre."
+            }
+          ]
+        },
+        {
+          "line": "Au stand de chamboule-tout, {name} manque ses trois lancers. Le premier prix était une immense peluche d'ours.",
+          "choices": [
+            {
+              "text": "« Laisse-moi essayer pour voir. »",
+              "reply": "Tu fais mouche au dernier lancer. {name} te regarde avec des yeux ronds d'admiration."
+            },
+            {
+              "text": "Le consoler en lui tendant une friandise.",
+              "reply": "« Cet ours avait un regard suspect de toute façon. » Il grignote son gâteau, tout content."
+            },
+            {
+              "text": "Te moquer gentiment de son manque de précision.",
+              "reply": "« Il y avait du vent contraire ! » Il croise les bras en feignant de bouder."
+            }
+          ]
+        },
+        {
+          "line": "Un stand photo propose des masques traditionnels de festival. {name} brandit un masque de renard et un de chaton.",
+          "choices": [
+            {
+              "text": "Prendre le chaton et lui donner le renard.",
+              "reply": "Le cliché sort un peu de travers, mais il est absolument parfait."
+            },
+            {
+              "text": "Enfiler les deux masques sans lui en laisser aucun.",
+              "reply": "« Tu es sans pitié. » Il prend cinq photos de toi en éclatant de rire."
+            },
+            {
+              "text": "« Je ne suis vraiment pas photogénique. »",
+              "reply": "« C'est faux. Mais comme tu veux. »"
+            }
+          ]
+        },
+        {
+          "line": "La première fusée du feu d'artifice illumine le ciel nocturne. Pourtant, {name} ne regarde pas en l'air.",
+          "choices": [
+            {
+              "text": "Soutenir son regard.",
+              "reply": "Les étincelles du ciel scintillent dans ses pupilles. Il ne détourne pas les yeux."
+            },
+            {
+              "text": "« Le spectacle se passe là-haut, tu sais. »",
+              "reply": "« Je sais bien. Mais la vue est nettement plus belle ici. »"
+            },
+            {
+              "text": "Blottir ton épaule contre la sienne.",
+              "reply": "Il passe son bras autour de toi et te rapproche doucement."
+            }
+          ]
+        },
+        {
+          "line": "La foule commence à se disperser calmement. {name} demande : « Quel a été ton moment préféré aujourd'hui ? »",
+          "choices": [
+            {
+              "text": "« Là, maintenant tout de suite. »",
+              "reply": "Il presse tendrement ta main à deux reprises."
+            },
+            {
+              "text": "« L'ours géant qu'on a gagné, évidemment. »",
+              "reply": "« L'ours te remercie chaleureusement. »"
+            },
+            {
+              "text": "« Les brochettes étaient vraiment exceptionnelles. »",
+              "reply": "« Pragmatique. Je respecte ça. »"
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Le calme absolu d'un studio d'enregistrement après minuit. {name} te tend son casque audio. « Je n'ai encore fait écouter cette maquette à personne. »",
+          "choices": [
+            {
+              "text": "Enfiler le casque et écouter religieusement.",
+              "reply": "Il guette la moindre de tes réactions à chaque mesure, retenant son souffle."
+            },
+            {
+              "text": "« Je me sens très privilégié là tout de suite. »",
+              "reply": "« Tu l'es, crois-moi. » Il baisse les yeux, le bout des oreilles écarlate."
+            },
+            {
+              "text": "Partager les écouteurs, un chacun.",
+              "reply": "Vous restez assis côte à côte, au même tempo de la musique."
+            }
+          ]
+        },
+        {
+          "line": "« Alors ? Sois honnête. » {name} feint une désinvolture qui ne trompe personne.",
+          "choices": [
+            {
+              "text": "« C'est magnifique. Vraiment. »",
+              "reply": "Il pousse un immense soupir de soulagement et arbore un sourire éclatant."
+            },
+            {
+              "text": "« Le refrain est génial, mais l'intro mériterait d'être retravaillée. »",
+              "reply": "« Tu vois ? Je savais que je pouvais compter sur ton oreille. » Il note aussitôt ta remarque."
+            },
+            {
+              "text": "« Tu me la rejoues encore une fois ? »",
+              "reply": "« Autant de fois que tu le voudras. » Il relance la lecture instantanément."
+            }
+          ]
+        },
+        {
+          "line": "{name} incline la perche du micro vers toi. « Fredonne un petit truc. N'importe quoi. »",
+          "choices": [
+            {
+              "text": "Fredonner une douce mélodie.",
+              "reply": "Il ajuste les potards sur la console. « C'est sublime. Ne touche à rien. »"
+            },
+            {
+              "text": "« J'ai trop honte ! »",
+              "reply": "« On n'est que nous deux. Zéro jugement. » Il te prend la main pour t'encourager."
+            },
+            {
+              "text": "Faire un bruit loufoque dans le micro.",
+              "reply": "Son éclat de rire sature agréablement les baffles du studio. Le bazar le plus complet."
+            }
+          ]
+        },
+        {
+          "line": "Il est trois heures du matin et le distributeur automatique ne contient plus qu'une dernière canette de café au lait.",
+          "choices": [
+            {
+              "text": "Partager la canette à deux.",
+              "reply": "Il prend une gorgée et te la tend avec un regard complice et chaleureux."
+            },
+            {
+              "text": "« Garde-la, tu en as plus besoin que moi. »",
+              "reply": "« Pas question, moitié-moitié. » Il t'oblige à boire la première gorgée."
+            },
+            {
+              "text": "Prendre une bouteille d'eau à la place.",
+              "reply": "« De l'eau à trois heures du mat' en studio ? Quelle hygiène de vie suspecte. » Il sourit, taquin."
+            }
+          ]
+        },
+        {
+          "line": "Les premières lueurs du jour filtrent à travers les stores. {name} enregistre la session et donne ton prénom au fichier.",
+          "choices": [
+            {
+              "text": "« Tu as vraiment mis mon prénom ? »",
+              "reply": "« Qui d'autre mériterait d'être la muse de ce morceau ? » Il plonge son regard dans le tien."
+            },
+            {
+              "text": "« Maintenant, on va dormir en urgence. »",
+              "reply": "« Encore cinq petites minutes à regarder le soleil se lever avec toi. » Il pose la tête sur ton épaule."
+            },
+            {
+              "text": "Prendre en photo la console à l'aube.",
+              "reply": "Il se glisse dans le cadre au dernier moment en faisant une tête absurde."
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "La ville brille trop intensément pour apercevoir les étoiles. {name} a quand même étendu un plaid au sol. « Je voulais te montrer les constellations, mais le ciel n'est pas coopératif. »",
+          "choices": [
+            {
+              "text": "Prendre place près de lui sur le plaid.",
+              "reply": "Il réajuste le tissu pour t'éviter le contact du béton froid."
+            },
+            {
+              "text": "« Les lumières de la ville en bas sont tout aussi belles. »",
+              "reply": "« C'est vrai. Mais ta présence rend tout encore plus beau, » murmure-t-il doucement."
+            },
+            {
+              "text": "S'allonger et contempler la voûte obscure.",
+              "reply": "Il s'allonge tout contre toi, les yeux tournés vers l'immensité nocturne."
+            }
+          ]
+        },
+        {
+          "line": "{name} demande d'un ton pensif : « Qu'est-ce que tu rêvais de devenir quand tu étais enfant ? »",
+          "choices": [
+            {
+              "text": "Lui raconter ton plus grand rêve d'enfant.",
+              "reply": "Il t'écoute avec une attention captivée et admirative."
+            },
+            {
+              "text": "« Astronaute, pour voir les vraies étoiles de près. »",
+              "reply": "« Il n'est pas trop tard. J'embarque avec toi dans la navette. » Il sourit tendrement."
+            },
+            {
+              "text": "« Et toi, tu voulais faire quoi ? »",
+              "reply": "« Quelqu'un qui apporte un peu de bien autour de lui. J'essaie encore aujourd'hui, je crois. »"
+            }
+          ]
+        },
+        {
+          "line": "Un coup de vent glacial balaie le toit de l'immeuble. {name} tente en vain de cacher qu'il frissonne.",
+          "choices": [
+            {
+              "text": "Rabattre la moitié du plaid sur ses épaules.",
+              "reply": "Il se blottit tout contre toi pour partager la chaleur."
+            },
+            {
+              "text": "« Tu es gelé, grand fou. »",
+              "reply": "« Même pas vrai ! Je suis une vraie bouillotte humaine. » Mais il accepte volontiers ton étreinte."
+            },
+            {
+              "text": "Réchauffer ses mains gelées entre les tiennes.",
+              "reply": "Il baisse les yeux vers vos mains jointes avec un regard d'une douceur infinie."
+            }
+          ]
+        },
+        {
+          "line": "Plus bas dans la rue, une musique lente s'échappe d'une fenêtre ouverte. {name} se relève et te tend la main.",
+          "choices": [
+            {
+              "text": "Lui prendre la main et danser sur le toit.",
+              "reply": "Vous esquissez quelques pas lents dans la brise nocturne, il te guide avec une infinie délicatesse."
+            },
+            {
+              "text": "« Je ne sais absolument pas danser ! »",
+              "reply": "« Moi non plus. Il suffit de se balancer doucement en rythme. » Il t'entraîne sans brusquerie."
+            },
+            {
+              "text": "Poser ta tête contre son torse pendant que vous dansez.",
+              "reply": "Tu perçois les battements précipités de son cœur contre ton oreille."
+            }
+          ]
+        },
+        {
+          "line": "La musique s'estompe. {name} souffle : « Je suis tellement heureux que ce soit toi qui sois là-haut avec moi ce soir. »",
+          "choices": [
+            {
+              "text": "« Je ne voudrais être nulle part ailleurs au monde. »",
+              "reply": "Il te serre dans une étreinte protectrice qui semble suspendre le temps."
+            },
+            {
+              "text": "« Redescendons avant de finir congelés. »",
+              "reply": "« D'accord. Mais on remonte ici très bientôt, c'est promis ? »"
+            },
+            {
+              "text": "Déposer un doux baiser sur sa joue par surprise.",
+              "reply": "Il reste figé quelques secondes, le visage illuminé par le plus pur des sourires."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Rire et entrer dans son jeu.",
+            "reply": "{name} a un grand sourire. « Parfait. Cette journée commence sous les meilleurs auspices. »"
+          },
+          {
+            "text": "« C'est ton idée à la base ? »",
+            "reply": "« Peut-être bien. Ça te plaît ? » Il a un petit air fier qui en dit long."
+          },
+          {
+            "text": "Jeter un coup d'œil rapide à son téléphone.",
+            "reply": "{name} attend deux secondes puis te donne un petit coup de coude. « Hé. Je suis juste là, tu sais. »"
+          }
+        ],
+        [
+          {
+            "text": "« Ça me va, je te suis. Montre la voie ! »",
+            "reply": "« Enfin quelqu'un qui apprécie mon sens de l'orientation légendaire. » {name} ouvre la marche, ravi."
+          },
+          {
+            "text": "Sortir une vanne sur la situation.",
+            "reply": "{name} souffle du nez en riant. « Vraiment pas drôle. » Mais il est plié en deux."
+          },
+          {
+            "text": "« On peut juste s'asseoir un moment ? »",
+            "reply": "« Évidemment. » Il prend place à tes côtés, tout près sans être envahissant."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "« Tu as manigancé tout ça juste pour me voir, pas vrai ? »",
+            "reply": "« Tu as mis du temps à t'en rendre compte, dis donc. » {name} ne quitte pas tes yeux d'un millimètre."
+          },
+          {
+            "text": "Lui donner un petit coup d'épaule complice.",
+            "reply": "Il te rend ton petit choc d'épaule et reste collé contre toi."
+          },
+          {
+            "text": "Faire semblant d'être totalement indifférent.",
+            "reply": "« C'est ça, fais genre. » {name} sourit d'un air de défi malicieux."
+          }
+        ],
+        [
+          {
+            "text": "Soutenir son regard une seconde de plus.",
+            "reply": "{name} baisse les yeux le premier, la pointe des oreilles légèrement rosée."
+          },
+          {
+            "text": "« Tu es vraiment élégant aujourd'hui. »",
+            "reply": "« Seulement aujourd'hui ? » Il tente désespérément de réprimer son sourire flatté."
+          },
+          {
+            "text": "Faire un commentaire anodin sur la météo.",
+            "reply": "« La météo ? Vraiment ? » {name} rit doucement de ta feinte."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Lui prendre la main.",
+            "reply": "{name} entrelace aussitôt ses doigts aux tiens sans dire un seul mot."
+          },
+          {
+            "text": "« Je suis vraiment heureux que ce soit toi. »",
+            "reply": "« Moi aussi, » souffle-t-il tout bas. « Toujours. »"
+          },
+          {
+            "text": "« Ne restons pas trop longtemps dehors. »",
+            "reply": "« Déjà ? » {name} fait une moue un peu déçue, mais hoche la tête avec tendresse."
+          }
+        ],
+        [
+          {
+            "text": "Poser doucement la tête sur son épaule.",
+            "reply": "Il se fige complètement, comme de peur de rompre la magie de l'instant."
+          },
+          {
+            "text": "« Raconte-moi ta journée. »",
+            "reply": "{name} se lance dans un récit passionné. Tu pourrais l'écouter des heures."
+          },
+          {
+            "text": "Partager un instant de silence paisible.",
+            "reply": "« C'est tellement reposant d'être en silence avec toi, » glisse-t-il après un moment."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Quelque part près de {place}, un musicien de rue entonne un morceau que vous connaissez tous les deux par cœur.",
+        "choices": [
+          {
+            "text": "Chanter le refrain à tue-tête, complètement faux.",
+            "reply": "{name} chante avec toi, encore plus faux. Le musicien s'arrête net, hilare."
+          },
+          {
+            "text": "Glisser une pièce dans l'étui et demander un morceau précis.",
+            "reply": "« Un slow, s'il vous plaît, » ajoute {name} en te fixant avec intensité."
+          },
+          {
+            "text": "Poursuivre sa route calmement.",
+            "reply": "{name} fredonne l'air en boucle pendant les dix minutes qui suivent."
+          }
+        ]
+      },
+      {
+        "line": "Soudain, {name} a une faim de loup. « À manger. Tout de suite. Urgence absolue. »",
+        "choices": [
+          {
+            "text": "Lui tendre le reste de ton goûter.",
+            "reply": "« Tu me sauves la vie ! » Il engloutit le tout en une seule bouchée."
+          },
+          {
+            "text": "Faire la course jusqu'au premier stand de street food.",
+            "reply": "Tu gagnes haut la main. {name} jure sur l'honneur qu'il t'a laissé gagner. Faux."
+          },
+          {
+            "text": "« Tu viens tout juste de manger. »",
+            "reply": "« C'était il y a une heure entière ! » Il affiche une tête outrée."
+          }
+        ]
+      },
+      {
+        "line": "Une averse soudaine s'abat sur {place}. Aucun de vous deux n'a pensé à prendre un parapluie.",
+        "choices": [
+          {
+            "text": "Partager une seule veste au-dessus de vos deux têtes.",
+            "reply": "Vous vous retrouvez serrés l'un contre l'autre. Aucun de vous deux ne s'en plaint."
+          },
+          {
+            "text": "Courir se mettre à l'abri sous un porche.",
+            "reply": "{name} te tient fermement la main pour t'éviter de glisser sur les pavés."
+          },
+          {
+            "text": "Rester sous la pluie sans bouger. Ce n'est que de l'eau.",
+            "reply": "« Tu es complètement fou, » rit {name} en restant bravement sous les gouttes avec toi."
+          }
+        ]
+      },
+      {
+        "line": "{name} insiste pour prendre un selfie à {place}. « Pour immortaliser la journée, » dit-il.",
+        "choices": [
+          {
+            "text": "Tirer une grimace bien ridicule.",
+            "reply": "Il éclate de rire et la photo est floue. Il la garde précieusement quand même."
+          },
+          {
+            "text": "Afficher ton plus beau sourire sincère.",
+            "reply": "« Waouh. Celle-là mérite d'être encadrée. » {name} l'enregistre en favori."
+          },
+          {
+            "text": "« J'ai horreur d'être en photo. »",
+            "reply": "« Rien qu'une petite. S'il te plaîîît. » Tu finis par céder."
+          }
+        ]
+      },
+      {
+        "line": "Un enfant qui passe près de {place} vous demande tout net si vous êtes amoureux.",
+        "choices": [
+          {
+            "text": "« Demande-lui plutôt. »",
+            "reply": "{name} bafouille une réponse incompréhensible. Le gamin rigole gentiment."
+          },
+          {
+            "text": "« Meilleurs amis. Pour l'instant. »",
+            "reply": "{name} hausse un sourcil amusé et intrigué au mot « pour l'instant »."
+          },
+          {
+            "text": "« Absolument pas ! »",
+            "reply": "« Aïe. Coup dur pour moi, » feint {name} en se tenant le cœur."
+          }
+        ]
+      },
+      {
+        "line": "Vous trouvez un banc tranquille à {place}. {name} te demande à quoi tu penses.",
+        "choices": [
+          {
+            "text": "« À toi, pour être honnête. »",
+            "reply": "Il détourne la tête et sourit bêtement dans le vide."
+          },
+          {
+            "text": "« Au fait que cette journée est vraiment parfaite. »",
+            "reply": "« Elle l'est, » acquiesce {name}. « On devrait faire ça beaucoup plus souvent. »"
+          },
+          {
+            "text": "« À ce qu'on va manger ce soir. »",
+            "reply": "« Très valide. » Maintenant {name} ne pense plus qu'au dîner lui aussi."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} te défie : le premier qui rigole à {place} paie la tournée.",
+          "choices": [
+            {
+              "text": "Faire ta pire grimace.",
+              "reply": "{name} ne tient même pas deux secondes. « Tricheur ! C'est une arme non conventionnelle ! »"
+            },
+            {
+              "text": "Lui raconter ta blague la plus pourrie.",
+              "reply": "Il gémit de désespoir mais éclate de rire. « J'ai honte d'avoir ri à ça. »"
+            },
+            {
+              "text": "Rire en premier exprès.",
+              "reply": "« Tu m'as laissé gagner là, non ? » Il paie quand même ta boisson."
+            }
+          ]
+        },
+        {
+          "line": "{name} te raconte la pire journée de toute sa vie, et c'est incroyablement drôle.",
+          "choices": [
+            {
+              "text": "Raconter ta propre mésaventure en surenchérissant.",
+              "reply": "« C'est pas possible ! Tu gagnes haut la main ! » Il en a les larmes aux yeux."
+            },
+            {
+              "text": "Rire à en perdre le souffle.",
+              "reply": "« Ce n'était pas SI drôle que ça ! » Si, carrément."
+            },
+            {
+              "text": "« Ça avait l'air atroce sur le coup. »",
+              "reply": "« C'était affreux. Mais maintenant j'en rigole. » Il hausse les épaules en souriant."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} effleure délicatement ta joue. « Un cil tombé. Fais un vœu. »",
+          "choices": [
+            {
+              "text": "« Il s'est déjà réalisé. »",
+              "reply": "{name} en reste bouche bée. Une première absolue."
+            },
+            {
+              "text": "Souffler le cil vers lui.",
+              "reply": "« C'est moi que tu as demandé en vœu ? » Un petit sourire insolent s'affiche sur ses lèvres."
+            },
+            {
+              "text": "« Je ne crois guère aux souhaits. »",
+              "reply": "« Alors je vais le faire à ta place, » dit-il en fermant les paupières."
+            }
+          ]
+        },
+        {
+          "line": "{name} prend une gorgée de ton verre sans demander. « C'est bien meilleur que le mien. »",
+          "choices": [
+            {
+              "text": "Piquer dans son verre en représailles.",
+              "reply": "« Hé ! » Une petite chamaillerie s'ensuit. Personne ne gagne, vous riez tous les deux."
+            },
+            {
+              "text": "« Ça compte comme un baiser indirect, tu le sais ? »",
+              "reply": "{name} manque de s'étouffer. « Pas du tout ! » Ses joues s'empourprent aussitôt."
+            },
+            {
+              "text": "« Va t'acheter le tien. »",
+              "reply": "« D'accord, d'accord. » Il revient avec deux verres neufs et t'en tend un."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} replace doucement une mèche derrière ton oreille. « Pardon. Elle gênait tes yeux. »",
+          "choices": [
+            {
+              "text": "« Ne t'excuse surtout pas. »",
+              "reply": "Sa main s'attarde une seconde de trop sur ta joue avant de glisser."
+            },
+            {
+              "text": "Lui arranger ses cheveux en retour.",
+              "reply": "{name} rigole doucement. « On a l'air un peu bêtes, non ? »"
+            },
+            {
+              "text": "« Je sais très bien le faire moi-même. »",
+              "reply": "« Je sais bien, » murmure-t-il. « Mais j'avais juste envie de le faire pour toi. »"
+            }
+          ]
+        },
+        {
+          "line": "À {place}, {name} te confie : « Je peux te dire un truc ? Je repense très souvent à nos moments ensemble. »",
+          "choices": [
+            {
+              "text": "« Moi aussi. Tout le temps. »",
+              "reply": "{name} pousse un soupir de soulagement, comme s'il redoutait ta réponse."
+            },
+            {
+              "text": "« Quel est ton préféré ? »",
+              "reply": "« Aujourd'hui, sans hésiter, » répond-il sans une seconde d'hésitation."
+            },
+            {
+              "text": "« Pourquoi donc ? »",
+              "reply": "« Parce que c'est avec toi. » Dit avec la plus pure des évidences."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "L'heure tourne à {place}. {name} s'étire nonchalamment. « Même endroit même heure la semaine prochaine ? »",
+          "choices": [
+            {
+              "text": "« Marché conclu. C'est toi qui choisis la prochaine fois. »",
+              "reply": "« Mauvaise idée, j'ai déjà mille projets déraisonnables ! » Il commence déjà à s'enthousiasmer."
+            },
+            {
+              "text": "Lui proposer un check de la main.",
+              "reply": "Il rate la tape exprès et t'embarque dans une accolade surprise."
+            },
+            {
+              "text": "« Peut-être bien. »",
+              "reply": "« Je me contenterai d'un peut-être ! » {name} te fait des signes jusqu'au coin de la rue."
+            }
+          ]
+        },
+        {
+          "line": "Sur le trajet du retour, {name} lâche : « C'était super aujourd'hui. Merci d'être venu. »",
+          "choices": [
+            {
+              "text": "« C'est moi qui te remercie ! »",
+              "reply": "« Regarde-nous, quelle politesse exemplaire. » Il te bouscule gentiment."
+            },
+            {
+              "text": "Le raccompagner jusqu'à sa porte.",
+              "reply": "« Ce n'était pas nécessaire. » Mais son regard pétille de joie."
+            },
+            {
+              "text": "« C'était sympa, sans plus. »",
+              "reply": "« Juste sympa ? La prochaine fois, je mettrai le paquet pour t'impressionner. » Il a l'air très motivé."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "En quittant {place}, {name} ralentit le pas. « Je n'ai vraiment pas envie que cette soirée se termine. »",
+          "choices": [
+            {
+              "text": "« Alors raccompagne-moi en prenant le chemin le plus long. »",
+              "reply": "Il choisit littéralement le détour le plus interminable de la ville."
+            },
+            {
+              "text": "« Moi non plus. »",
+              "reply": "{name} sourit en regardant ses baskets. « Tant mieux. »"
+            },
+            {
+              "text": "« On se revoit très vite alors. »",
+              "reply": "« Très vite, » répète-t-il, telle une promesse solennelle."
+            }
+          ]
+        },
+        {
+          "line": "Au coin de la rue, {name} insiste : « Envoie-moi un message dès que tu es rentré. Juste pour savoir que tu es bien arrivé. »",
+          "choices": [
+            {
+              "text": "« Seulement si tu m'écris en premier. »",
+              "reply": "Ton portable vibre dans ta poche avant même que tu n'aies tourné l'angle de la rue."
+            },
+            {
+              "text": "Lui adresser un clin d'œil avant de t'éloigner.",
+              "reply": "Tu entends son rire chaleureux résonner derrière toi dans la nuit fraîche."
+            },
+            {
+              "text": "« D'accord, promis. »",
+              "reply": "« D'accord, » souffle-t-il, restant immobile à te regarder jusqu'à ce que tu disparaisses."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "À la fin de la promenade à {place}, {name} t'attire doucement pour une étreinte longue et réconfortante.",
+          "choices": [
+            {
+              "text": "Le serrer un peu plus fort encore.",
+              "reply": "« Reste encore une minute comme ça, » murmure-t-il tout doucement."
+            },
+            {
+              "text": "« Merci pour ce moment. »",
+              "reply": "« Merci pour chaque seconde, » répond {name} contre tes cheveux."
+            },
+            {
+              "text": "Lui tapoter gentiment le dos.",
+              "reply": "Il a un petit rire étouffé contre ton épaule. « Une tape dans le dos, sérieusement ? »"
+            }
+          ]
+        },
+        {
+          "line": "{name} te contemple intensément. « Je pourrais revivre cette journée en boucle, de la première à la dernière minute. »",
+          "choices": [
+            {
+              "text": "« Alors on recommence quand tu veux. »",
+              "reply": "Il te serre tendrement la main. « Dès demain, dans ce cas. »"
+            },
+            {
+              "text": "Déposer un baiser sur sa joue.",
+              "reply": "{name} en a le souffle coupé un court instant, puis sourit tout le long du trajet."
+            },
+            {
+              "text": "« Même le passage sous l'averse ? »",
+              "reply": "« Surtout le passage sous la pluie. »"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {
+    "seaside": {
+      "intro": "Interro surprise, pur style Seaside ! Cinq questions sur notre campus. Quatre bonnes réponses et le cadre Seaside est à toi.",
+      "right": [
+        "Exact ! Tu écoutes bien en cours à ce que je vois.",
+        "C'est tout à fait ça ! Mention très bien de la part de tout le campus.",
+        "Bien joué ! Tu ne serais pas un étudiant infiltré par hasard ?"
+      ],
+      "wrong": [
+        "Presque. La bonne réponse était {answer}. Te voilà prévenu.",
+        "À côté de la plaque ! C'était {answer}. Demande aux habitués du patio.",
+        "Raté pour cette fois, c'est {answer}. T'en fais pas, personne ne lit le journal de la fac."
+      ],
+      "match": [
+        "Moi aussi ! Course jusqu'au bout de la jetée pour fêter ça !",
+        "On pense exactement la même chose. Ça en devient presque troublant.",
+        "Je le savais ! Binômes d'études pour la vie."
+      ],
+      "differ": [
+        "Moi j'ai choisi {answer}. On en débattra sur le chemin du retour.",
+        "Hmm, j'ai plutôt opté pour {answer}. Explique-moi ton point de vue en partageant un goûter.",
+        "{answer} pour ma part. Les contraires font les meilleurs partenaires de labo."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Pour quelle raison je sécherais les cours ?",
+          "options": [
+            "Une baignade dans l'océan à l'aube",
+            "Pour passer du temps avec toi",
+            "Des snacks gratuits",
+            "Jamais, je suis un étudiant modèle"
+          ]
+        },
+        {
+          "text": "Mon coin secret préféré sur le campus ?",
+          "options": [
+            "Le bout de la jetée",
+            "Le jardin sur le toit de la bibliothèque",
+            "Près du distributeur automatique",
+            "Partout où tu te trouves"
+          ]
+        },
+        {
+          "text": "La chose indispensable dans mon sac de cours ?",
+          "options": [
+            "Un goûter en plus",
+            "Trois stylos qui ne marchent pas",
+            "Une serviette encore humide",
+            "Tes fiches de révision"
+          ]
+        },
+        {
+          "text": "Comment je révise mes examens ?",
+          "options": [
+            "Nuit blanche dans la panique totale",
+            "Des semaines à l'avance et au millimètre",
+            "Avec toi, en me laissant complètement distraire",
+            "Je ne révise pas, tout au talent"
+          ]
+        },
+        {
+          "text": "Mon idée d'un week-end idéal ?",
+          "options": [
+            "Plage du matin au soir",
+            "Grasse matinée jusqu'à midi",
+            "Marathon de films au chaud",
+            "Partir en virée avec toi"
+          ]
+        },
+        {
+          "text": "Que fais-je quand le stress monte ?",
+          "options": [
+            "Je vais nager pour tout évacuer",
+            "Je m'isole dans ma bulle",
+            "Je dévore des sucreries",
+            "Je t'envoie un message"
+          ]
+        },
+        {
+          "text": "Mon surnom officieux sur le campus ?",
+          "options": [
+            "L'agitateur",
+            "Le silencieux",
+            "Le Capitaine",
+            "Je ne l'avouerai jamais"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Qui nourrit discrètement les chats du campus ?",
+          "options": [
+            "Elio",
+            "Kai",
+            "Rowan",
+            "Theo"
+          ]
+        },
+        {
+          "text": "Quel club est dirigé d'une main de maître par Hana ?",
+          "options": [
+            "Le club cinéma",
+            "Le club d'art",
+            "L'équipe d'éloquence",
+            "L'équipe de natation"
+          ]
+        },
+        {
+          "text": "Qui donne à chaque poisson de l'aquarium le prénom d'un ami ?",
+          "options": [
+            "Felix",
+            "Jun",
+            "Rowan",
+            "Iris"
+          ]
+        },
+        {
+          "text": "À quelle heure démarre l'émission de radio nocturne de Noah ?",
+          "options": [
+            "7 h",
+            "Midi",
+            "18 h",
+            "1 h du matin"
+          ]
+        },
+        {
+          "text": "Qui ne s'avoue jamais vaincu lors d'un débat étudiant ?",
+          "options": [
+            "Tessa",
+            "Theo",
+            "Kai",
+            "Hana"
+          ]
+        },
+        {
+          "text": "Qu'est-ce que Kai t'apporte toujours en venant en amphi ?",
+          "options": [
+            "Un café",
+            "Des notes de cours",
+            "Un goûter en plus",
+            "Une serviette"
+          ]
+        },
+        {
+          "text": "Qui a toujours le bouquin parfait pour remonter le moral ?",
+          "options": [
+            "Iris",
+            "Elio",
+            "Noah",
+            "Jun"
+          ]
+        },
+        {
+          "text": "Sur quoi Felix ne se sépare-t-il jamais ?",
+          "options": [
+            "Une guitare",
+            "Un vieil appareil photo argentique",
+            "Une carte géographique",
+            "Un transistor"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "La sonnerie retentit quelque part sur le campus. {name} esquisse un sourire en coin. « On devrait être en cours tous les deux en ce moment même. »",
+          "choices": [
+            {
+              "text": "« Alors soyons en retard ensemble. »",
+              "reply": "« La meilleure idée que tu aies eue de toute la semaine. » Il t'attrape la main et se met à courir."
+            },
+            {
+              "text": "« Juste une heure de cours. On s'éclipse après. »",
+              "reply": "« Sage. Trop sage. Mais d'accord. » Il t'attend sagement devant la porte."
+            },
+            {
+              "text": "Aller en cours tout seul.",
+              "reply": "{name} fait mine d'être vexé, puis t'envoie une photo des vagues : « Regarde ce que tu rates. »"
+            }
+          ]
+        },
+        {
+          "line": "La mer est à deux pas ici à {place}. {name} retire déjà joyeusement ses chaussures.",
+          "choices": [
+            {
+              "text": "Faire la course jusqu'au bord de l'eau.",
+              "reply": "Vous avez tous les deux perdu. Vous avez tous les deux gagné. Vos bas de pantalon sont complètement trempés."
+            },
+            {
+              "text": "Ne tremper prudemment que le bout des orteils.",
+              "reply": "« Quel grand courage ! » ricane {name} en t'éclaboussant généreusement."
+            },
+            {
+              "text": "Rester sur le sable pour surveiller les affaires.",
+              "reply": "« Le gardien officiel des chaussures. Un rôle primordial. » Il revient de l'eau le sourire aux lèvres."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "après la natation"
+      }
+    },
+    "moonlit": {
+      "intro": "Voyageur. Le Royaume pose cinq questions à ceux qui prétendent arborer son cadre. Réponds à quatre d'entre elles avec ton cœur et il sera tien.",
+      "right": [
+        "C'est la vérité. Les astres approuvent ta réponse.",
+        "Précisément. Tu ferais un chevalier exemplaire.",
+        "Oui. Le Royaume se souviendra de ton nom désormais."
+      ],
+      "wrong": [
+        "Erreur d'aiguillage, voyageur. La réponse était {answer}. Grave-le dans ta mémoire.",
+        "Ce n'est point cela. La vérité est {answer}. Les archives ne mentent jamais.",
+        "Fausse piste. C'était {answer}. Réessaie à la lueur de la lune."
+      ],
+      "match": [
+        "Nous avons fait le même choix. C'est un présage très favorable.",
+        "Nos esprits s'accordent, telles deux étoiles siamoises.",
+        "Je m'en doutais. Nous avons été façonnés sous la même nuit."
+      ],
+      "differ": [
+        "J'avais choisi {answer}. Viens me conter au coin du feu pourquoi tu as hésité.",
+        "Ma réponse était {answer}. Une autre voie, nullement une erreur.",
+        "{answer}, pour ma part. Le Royaume a besoin de nos deux regards."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Que protégerais-je au péril de ma vie ?",
+          "options": [
+            "Mon épée",
+            "Une promesse faite autrefois",
+            "Toi",
+            "Mon honneur"
+          ]
+        },
+        {
+          "text": "Où vais-je pour méditer en silence ?",
+          "options": [
+            "Au sommet de la plus haute tour",
+            "Dans le jardin lunaire",
+            "À l'orée des bois ténébreux",
+            "Là où tu reposes"
+          ]
+        },
+        {
+          "text": "Quelle est ma plus grande crainte ?",
+          "options": [
+            "Rien au monde",
+            "Sombrer dans l'oubli",
+            "Te perdre à jamais",
+            "Les araignées. Pas un mot, je t'en prie"
+          ]
+        },
+        {
+          "text": "À qui va mon allégeance la plus sincère ?",
+          "options": [
+            "À la couronne",
+            "Aux étoiles éternelles",
+            "À moi-même",
+            "À toi, sans réserve"
+          ]
+        },
+        {
+          "text": "Pour quoi renoncerais-je à mes titres ?",
+          "options": [
+            "Pour rien",
+            "Pour la paix du royaume",
+            "Pour une nuit paisible à tes côtés",
+            "Pour une bonne miche de pain chaud"
+          ]
+        },
+        {
+          "text": "Comment est-ce que je présente des excuses ?",
+          "options": [
+            "Je ne m'excuse jamais",
+            "En offrant un présent rare",
+            "Par une longue missive manuscrite",
+            "D'un air maladroit, mais avec tout mon cœur"
+          ]
+        },
+        {
+          "text": "Mon heure de prédilection ?",
+          "options": [
+            "Les premières lueurs de l'aube",
+            "Minuit tapant",
+            "L'instant précédant la bataille",
+            "Toute heure où tu te trouves éveillé"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Qui veille fidèlement sur les archives stellaires ?",
+          "options": [
+            "Lord Castor",
+            "Prince Aurelian",
+            "Vesper",
+            "Kael"
+          ]
+        },
+        {
+          "text": "Le jardin secret du Prince Aurelian ne fleurit que si...",
+          "options": [
+            "La pluie tombe",
+            "Quelqu'un décide de rester",
+            "La lune est pleine",
+            "Il entonne un chant"
+          ]
+        },
+        {
+          "text": "Que refuse obstinément de préparer l'alchimiste Vesper ?",
+          "options": [
+            "Des philtres d'amour",
+            "Des remèdes de sommeil",
+            "Une potion d'oubli",
+            "Du poison mortel"
+          ]
+        },
+        {
+          "text": "Quelle est la véritable nature de Kael sous forme humaine ?",
+          "options": [
+            "Un esprit renard",
+            "Un corbeau",
+            "Un spectre errant",
+            "Un dragon"
+          ]
+        },
+        {
+          "text": "Qui guide les voyageurs égarés avec ses lanternes ?",
+          "options": [
+            "Seraphine",
+            "Lyra",
+            "Corvin",
+            "Zarek"
+          ]
+        },
+        {
+          "text": "Que dépose immanquablement Orin après l'une de ses facéties ?",
+          "options": [
+            "Un cadeau",
+            "Une énigme",
+            "Une plume",
+            "Rien du tout"
+          ]
+        },
+        {
+          "text": "Qui rédige avec dévotion un compte-rendu pour toi après chaque ronde ?",
+          "options": [
+            "Corvin",
+            "Zarek",
+            "Messire Rhys",
+            "Castor"
+          ]
+        },
+        {
+          "text": "De quelles créatures Corvin prend-il soin sur sa falaise ?",
+          "options": [
+            "Des loups",
+            "Des roses d'argent",
+            "Des lanternes",
+            "Des corbeaux"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Une étoile filante fend les cieux au-dessus de {place}. {name} s'arrête net. « Fais un vœu. Vite ! »",
+          "choices": [
+            {
+              "text": "Prononcer un vœu pour vous deux à voix haute.",
+              "reply": "« On ne doit pas le formuler tout haut. » Mais un doux sourire trahit sa joie."
+            },
+            {
+              "text": "Fermer les yeux et garder le vœu au fond de son cœur.",
+              "reply": "« Garde-le précieusement, » murmure {name}. « Je veillerai à ce qu'il se réalise. »"
+            },
+            {
+              "text": "« Je ne crois guère aux contes de fées. »",
+              "reply": "« Alors j'en ferai un pour nous deux, » répond-il avec tendresse."
+            }
+          ]
+        },
+        {
+          "line": "Non loin de {place}, une vieille lanterne vacille avant de s'éteindre. {name} déploie sa cape vers toi.",
+          "choices": [
+            {
+              "text": "S'abriter ensemble sous la même cape.",
+              "reply": "Il y a tout juste la place pour deux. Parfaitement ajusté. Ni l'un ni l'autre ne songe à s'écarter."
+            },
+            {
+              "text": "Rallumer la flamme de la lanterne.",
+              "reply": "« Tu n'as pas fini de me surprendre, voyageur. » La lueur illumine à nouveau vos visages."
+            },
+            {
+              "text": "« Je ne crains point le froid. »",
+              "reply": "« Tête de mule, » souffle {name} en posant tout de même l'étoffe chaude sur tes épaules."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "sous les étoiles d'antan"
+      }
+    },
+    "neon": {
+      "intro": "Balance son ! Cinq questions sur NEON TIDE. Quatre bonnes réponses et le cadre de scène est à toi. Zéro pression. Enfin, à peine !",
+      "right": [
+        "Dans le mille ! Voilà un vrai fan !",
+        "Parfait ! On en redemande, encore un rappel !",
+        "Carrément. Tu ferais partie du fan-club officiel ?"
+      ],
+      "wrong": [
+        "Fausses notes ! La réponse était {answer}.",
+        "Aïe, à côté de la prod. C'était {answer}. Ne va surtout pas répéter ça à notre manager.",
+        "Presque calé sur le beat, mais c'était {answer}. Répète encore un coup et reviens nous voir."
+      ],
+      "match": [
+        "Même choix ! Une pure alchimie en duo.",
+        "En parfaite harmonie, exactement comme sur le refrain final.",
+        "On est tellement raccords. Je vais en faire une punchline."
+      ],
+      "differ": [
+        "J'ai pris {answer}. Ça nous ferait un duo complètement déjanté. J'adore.",
+        "{answer} pour ma part. Un ton différent, mais le même groove.",
+        "Je suis parti sur {answer}. Tu m'expliqueras pourquoi après le concert."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Ce que je fais juste avant de monter sur scène ?",
+          "options": [
+            "Une petite prière",
+            "Manger des bonbons",
+            "T'envoyer un message rapide",
+            "Paniquer en silence"
+          ]
+        },
+        {
+          "text": "Mon moment préféré une fois le show terminé ?",
+          "options": [
+            "Dormir direct",
+            "Des nouilles instantanées à minuit",
+            "Lire les lettres des fans",
+            "T'appeler au téléphone"
+          ]
+        },
+        {
+          "text": "La mélodie que je fredonne sans arrêt ?",
+          "options": [
+            "Notre tout premier single",
+            "Un nouveau titre que personne n'a encore entendu",
+            "Une berceuse d'enfance",
+            "Ta sonnerie de portable"
+          ]
+        },
+        {
+          "text": "Ce que je déteste le plus dans ma vie d'idole ?",
+          "options": [
+            "Les réveils aux aurores",
+            "Le manque de temps pour toi",
+            "Les sandwichs d'aéroport",
+            "Rien du tout, j'adore ce métier"
+          ]
+        },
+        {
+          "text": "Mon talent caché le plus inattendu ?",
+          "options": [
+            "Cuisiner comme un chef",
+            "Le dessin",
+            "Dormir n'importe où et n'importe quand",
+            "Me rappeler de chacun de tes messages"
+          ]
+        },
+        {
+          "text": "Où est-ce que je me réfugie pour fuir les caméras ?",
+          "options": [
+            "Au fond du studio d'entraînement",
+            "Dans un minuscule coffee shop discret",
+            "Sur le toit de l'immeuble",
+            "Avec toi"
+          ]
+        },
+        {
+          "text": "La chose qui me rend vraiment nerveux ?",
+          "options": [
+            "Les directs télévisés",
+            "Le grand silence",
+            "Toi, parfois",
+            "Absolument rien au monde"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Qui est le chanteur principal de NEON TIDE ?",
+          "options": [
+            "Ezra",
+            "Seren",
+            "Kiro",
+            "Haze"
+          ]
+        },
+        {
+          "text": "Qui est le benjamin du groupe, le fameux maknae ?",
+          "options": [
+            "Rio",
+            "Minu",
+            "Haze",
+            "Kiro"
+          ]
+        },
+        {
+          "text": "Qui t'envoie des instrus inédites à 3 heures du matin ?",
+          "options": [
+            "Dex",
+            "Juno",
+            "Ari",
+            "Ezra"
+          ]
+        },
+        {
+          "text": "Qui continue à danser jusqu'à l'extinction automatique des projecteurs ?",
+          "options": [
+            "Seren",
+            "Kiro",
+            "Rio",
+            "Cass"
+          ]
+        },
+        {
+          "text": "De quelle formation Cass est-elle la leader ?",
+          "options": [
+            "NEON TIDE",
+            "PRISM",
+            "TIDEWAVE",
+            "ECHO"
+          ]
+        },
+        {
+          "text": "Combien de smartphones Juno garde-t-il sur lui en permanence ?",
+          "options": [
+            "Un",
+            "Deux",
+            "Trois",
+            "Quatre"
+          ]
+        },
+        {
+          "text": "La chorégraphe Ari compte invariablement les temps par...",
+          "options": [
+            "Quatre",
+            "Six",
+            "Huit",
+            "Dix"
+          ]
+        },
+        {
+          "text": "Qui paraît un peu perdu dès que les feux de la scène s'éteignent ?",
+          "options": [
+            "Ezra",
+            "Minu",
+            "Dex",
+            "Haze"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Quelqu'un à {place} repère soudain {name}. « Hé, mais ce ne serait pas... un membre de NEON TIDE ? » {name} rabat aussitôt sa casquette.",
+          "choices": [
+            {
+              "text": "L'entraîner précipitamment dans une ruelle adjacente.",
+              "reply": "« Mon sauveur attitré. » Il souffle en riant, sans lâcher ta main."
+            },
+            {
+              "text": "« Non, c'est juste un parfait sosie. »",
+              "reply": "{name} acquiesce d'un air d'une gravité absolue. Le passant n'est qu'à moitié convaincu."
+            },
+            {
+              "text": "Demander au passant de vous prendre tous les deux en photo.",
+              "reply": "« Tu vas m'attirer les pires ennuis de ma carrière. » Mais il prend la pose tout sourire."
+            }
+          ]
+        },
+        {
+          "line": "Un morceau de NEON TIDE retentit dans les enceintes de {place}. {name} vire instantanément au rouge écarlate.",
+          "choices": [
+            {
+              "text": "Chanter les paroles à tue-tête.",
+              "reply": "« Arrête, pitié ! Non en fait, continue. » Il a un sourire fendu jusqu'aux oreilles."
+            },
+            {
+              "text": "« C'est ton couplet en ce moment ? »",
+              "reply": "« ...Oui. Ne me regarde pas comme ça. » Tu le fixes sans ciller."
+            },
+            {
+              "text": "Faire semblant de n'avoir jamais entendu ce son de sa vie.",
+              "reply": "« Aïe. Celle-là fait mal à mon ego. » Il feint d'être blessé... presque crédible."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "rappel"
+      }
+    },
+    "tidepool": {
+      "intro": "Commande prête ! Cinq questions sur le café et les habitués de notre ruelle. Quatre bonnes réponses et le cadre du coffee shop est offert par la maison.",
+      "right": [
+        "Exactement ! Tu as gagné un cookie tout chaud.",
+        "C'est ça ! Tu fais officiellement partie des piliers de comptoir.",
+        "Bien vu. Sol serait fière de toi."
+      ],
+      "wrong": [
+        "Tout près. La réponse était {answer}. Un petit café pour stimuler la mémoire ?",
+        "Pas tout à fait, c'était {answer}. Demande à n'importe qui accoudé au zinc.",
+        "Manqué de peu. {answer}. La prochaine sera la bonne."
+      ],
+      "match": [
+        "Moi aussi ! Deux commandes identiques sur le plateau.",
+        "Même rituel. Je vais m'empresser de raconter ça à Sol.",
+        "Regarde-nous un peu. On dirait un vieux couple installé à sa table fétiche."
+      ],
+      "differ": [
+        "J'avais choisi {answer}. On en rediscute autour d'un grand mocha ?",
+        "{answer} pour ma part. Raconte-moi ta version en savourant un croissant.",
+        "Moi j'ai pris {answer}. Des goûts différents, mais attablés ensemble."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Ma commande habituelle sans hésitation ?",
+          "options": [
+            "Un expresso serré bien noir",
+            "Une tonne de sucre",
+            "Un thé réconfortant",
+            "La même chose que toi"
+          ]
+        },
+        {
+          "text": "Que fais-je lors d'un après-midi pluvieux ?",
+          "options": [
+            "Une bonne sieste",
+            "Bouquiner au chaud dans le café",
+            "Bricoler un truc qui traîne",
+            "T'appeler pour papoter"
+          ]
+        },
+        {
+          "text": "Qu'est-ce qui m'empêche de trouver le sommeil la nuit ?",
+          "options": [
+            "Le boulot qui s'accumule",
+            "Rien, je dors comme une souche",
+            "Penser à toi sans arrêt",
+            "Trop de caféine ingérée dans la journée"
+          ]
+        },
+        {
+          "text": "Mon heure préférée pour passer au café ?",
+          "options": [
+            "À l'ouverture quand tout est calme",
+            "Au creux de l'après-midi",
+            "À l'heure de la fermeture",
+            "Dès que tu franchis la porte"
+          ]
+        },
+        {
+          "text": "La chose que j'oublie systématiquement ?",
+          "options": [
+            "Mes clés",
+            "De manger à midi",
+            "Les dates d'anniversaire",
+            "Rien de ce qui te concerne"
+          ]
+        },
+        {
+          "text": "Mon plat réconfortant suprême ?",
+          "options": [
+            "Une soupe fumante",
+            "Des croissants croustillants",
+            "Des nouilles vite faites",
+            "Tout ce que tu prends le temps de me cuisiner"
+          ]
+        },
+        {
+          "text": "Comment est-ce que je prouve mon attachement ?",
+          "options": [
+            "En réparant ce qui est cassé",
+            "En apportant de quoi grignoter",
+            "En me souvenant de petits riens",
+            "En restant simplement près de toi"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Qui est l'âme dirigeante du Tidepool Café ?",
+          "options": [
+            "Sol",
+            "Ivy",
+            "Nadia",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Qui met de côté le premier croissant encore tout chaud rien que pour toi ?",
+          "options": [
+            "Marco",
+            "Ren",
+            "Hugo",
+            "Gideon"
+          ]
+        },
+        {
+          "text": "Marco commande systématiquement deux cafés à chaque garde et...",
+          "options": [
+            "Les boit tous les deux d'un coup",
+            "En renverse un par terre",
+            "En offre un à quelqu'un",
+            "En oublie un sur le comptoir"
+          ]
+        },
+        {
+          "text": "Qui présente chaque semaine un nouveau chien sauvé de la rue ?",
+          "options": [
+            "Cole",
+            "Lucas",
+            "Adrian",
+            "Hugo"
+          ]
+        },
+        {
+          "text": "Qui enchaîne les nuits de garde épuisantes aux urgences ?",
+          "options": [
+            "Dr. Lucas Hale",
+            "Nadia",
+            "Gideon",
+            "Cole"
+          ]
+        },
+        {
+          "text": "Que glisse subrepticement Ivy dans ton sac sans rien dire ?",
+          "options": [
+            "Un mot doux",
+            "Une fleur fraîche",
+            "Un petit gâteau",
+            "Une clé secrète"
+          ]
+        },
+        {
+          "text": "Qui entretient et répare gracieusement la vieille mobylette du café ?",
+          "options": [
+            "Marco",
+            "Adrian",
+            "Cole",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Que fait involontairement Adrian lorsqu'il est très concentré sur ses plans ?",
+          "options": [
+            "Il sifflote",
+            "Il tapote des doigts sur la table",
+            "Il mordille son crayon",
+            "Il fredonne doucement"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Le transistor du café diffuse une vieille mélodie rétro à {place}. {name} fait glisser une tasse fumante vers toi. « C'est pour toi. »",
+          "choices": [
+            {
+              "text": "« Tu te rappelles exactement de ma commande. »",
+              "reply": "« Je me souviens de chaque détail sur toi. Ça commence à devenir grave. »"
+            },
+            {
+              "text": "Échanger furtivement les tasses.",
+              "reply": "« Hé ! » Il trempe ses lèvres dans la tienne et grimace. Tu éclates de rire."
+            },
+            {
+              "text": "« J'avais envie d'autre chose aujourd'hui. »",
+              "reply": "« Ce sera pour la prochaine tournée alors. » Il note déjà soigneusement ta remarque sur une serviette en papier."
+            }
+          ]
+        },
+        {
+          "line": "Un chiot rescapé s'approche en trottinant à {place} et vient poser ses pattes sur les chaussures de {name}.",
+          "choices": [
+            {
+              "text": "Lui chercher un prénom ensemble.",
+              "reply": "Vous discutez pendant dix bonnes minutes sans trouver d'accord. Le chiot est ravi de toute cette attention."
+            },
+            {
+              "text": "Lui donner le dernier morceau de ton croissant.",
+              "reply": "« C'est bon, il ne nous quittera plus d'une semelle maintenant, » sourit {name}, attendri."
+            },
+            {
+              "text": "L'écarter doucement d'un petit geste.",
+              "reply": "« Quel manque de cœur, » te taquine gentiment {name} en grattant le chiot derrière les oreilles."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "deux cafés crème"
+      }
+    }
+  },
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Le premier rendez-vous parfait ?",
+          "options": [
+            "Un dîner chic",
+            "Une longue balade sans but précis",
+            "Un marathon de films",
+            "Salle d'arcade, le perdant paie"
+          ]
+        },
+        {
+          "text": "Qui envoie le premier message après ?",
+          "options": [
+            "Moi, immédiatement",
+            "Toi, c'est sûr",
+            "Les deux en même temps",
+            "Personne, on joue les mystérieux"
+          ]
+        },
+        {
+          "text": "La meilleure chose à partager ?",
+          "options": [
+            "Un dessert",
+            "Des écouteurs",
+            "Un parapluie",
+            "Un secret"
+          ]
+        },
+        {
+          "text": "En avance ou en retard ?",
+          "options": [
+            "Dix minutes d'avance",
+            "Pile à l'heure",
+            "Le petit retard chic",
+            "Je me suis perdu en chemin"
+          ]
+        },
+        {
+          "text": "Comment ça se termine ?",
+          "options": [
+            "Une étreinte chaleureuse",
+            "Se raccompagner mutuellement",
+            "Prévoir déjà le prochain",
+            "Parler jusqu'à deux heures du matin"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Petit-déjeuner du dimanche ?",
+          "options": [
+            "Des pancakes",
+            "Juste un bon café",
+            "La pizza froide de la veille",
+            "Un brunch en terrasse"
+          ]
+        },
+        {
+          "text": "Plan pour un après-midi pluvieux ?",
+          "options": [
+            "Plaid et série",
+            "Jeux de société",
+            "Une sieste à deux",
+            "Marcher sous la pluie"
+          ]
+        },
+        {
+          "text": "Qui choisit le film ?",
+          "options": [
+            "Moi",
+            "Toi",
+            "On hésite pendant une heure",
+            "On tire à pile ou face"
+          ]
+        },
+        {
+          "text": "Préparer le dîner ?",
+          "options": [
+            "Tu cuisines, je regarde",
+            "Je cuisine, tu regardes",
+            "Ensemble en mettant le bazar",
+            "On commande à emporter"
+          ]
+        },
+        {
+          "text": "La toute dernière chose avant de dormir ?",
+          "options": [
+            "\"Bonne nuit\"",
+            "Encore un petit épisode",
+            "Une longue discussion",
+            "Un message tout doux"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Où habiterons-nous ?",
+          "options": [
+            "Dans une grande métropole",
+            "Au bord de la mer",
+            "Au calme à la campagne",
+            "Un nouvel endroit chaque année"
+          ]
+        },
+        {
+          "text": "Un animal de compagnie ?",
+          "options": [
+            "Un chat",
+            "Un chien",
+            "Un animal exotique",
+            "Les plantes ça compte"
+          ]
+        },
+        {
+          "text": "Notre tradition à nous ?",
+          "options": [
+            "Un voyage chaque année",
+            "Le grand repas du dimanche",
+            "Des lettres d'anniversaire",
+            "Le même café chaque semaine"
+          ]
+        },
+        {
+          "text": "Qui sera toujours en retard ?",
+          "options": [
+            "Moi",
+            "Toi",
+            "Tous les deux, comme toujours",
+            "Aucun, on a mûri"
+          ]
+        },
+        {
+          "text": "Toujours à faire ce quiz ?",
+          "options": [
+            "Chaque année",
+            "Juste une fois pour comparer",
+            "On connaît déjà les réponses",
+            "On écrit le nôtre"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Le meilleur moment pour une conversation intime ?",
+          "options": [
+            "Minuit pile",
+            "Trois heures du matin",
+            "Au lever du soleil",
+            "N'importe quand avec toi"
+          ]
+        },
+        {
+          "text": "Impossible de dormir. Que fait-on ?",
+          "options": [
+            "S'appeler immédiatement",
+            "Piller le frigo",
+            "Compter les étoiles",
+            "Scroller jusqu'à quatre heures"
+          ]
+        },
+        {
+          "text": "La plus grande frayeur de la nuit ?",
+          "options": [
+            "Des bruits bizarres",
+            "La journée du lendemain",
+            "Se retrouver tout seul",
+            "Peur de rien du tout"
+          ]
+        },
+        {
+          "text": "Une chose qu'on ne se dit que la nuit ?",
+          "options": [
+            "\"Tu me manques\"",
+            "De vieux secrets",
+            "Des rêves un peu fous",
+            "\"Reste avec moi\""
+          ]
+        },
+        {
+          "text": "Qui s'endort en premier au téléphone ?",
+          "options": [
+            "Moi",
+            "Toi",
+            "Tous les deux ensemble",
+            "Personne, on parle jusqu'à l'aube"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "La première chose le matin ?",
+          "options": [
+            "Regarder son téléphone",
+            "Un café bien chaud",
+            "Bouton répétition du réveil",
+            "Un message de bonjour"
+          ]
+        },
+        {
+          "text": "Comment mange-t-on la pizza ?",
+          "options": [
+            "Par la croûte",
+            "Pliée en deux",
+            "À la fourchette et au couteau",
+            "En piquant ta part"
+          ]
+        },
+        {
+          "text": "Désordonné ou maniaque ?",
+          "options": [
+            "Le bazar total",
+            "Rangement au millimètre",
+            "Un bazar très organisé",
+            "Ça dépend des jours"
+          ]
+        },
+        {
+          "text": "Tes mains quand tu es nerveux ?",
+          "options": [
+            "Dans les poches",
+            "À toucher mes cheveux",
+            "À pianoter avec les doigts",
+            "À tenir ta main"
+          ]
+        },
+        {
+          "text": "De la musique en bossant ou révisant ?",
+          "options": [
+            "Toujours",
+            "Jamais",
+            "Bruit de pluie",
+            "Tes notes vocales"
+          ]
+        }
+      ]
+    }
+  },
+  "lorebooks": {
+    "lore_seaside": {
+      "name": "Seaside Academy",
+      "about": "Une ville universitaire côtière : des salles de cours au sommet d'une falaise, une longue jetée en bois, un aquarium sur le campus et une bibliothèque avec un jardin sur le toit. Tout le monde ici est un étudiant majeur ou un membre du personnel, les cours s'étendent de l'automne au début de l'été, et l'océan n'est jamais bien loin.",
+      "entries": {
+        "lore_seaside_1": {
+          "name": "La jetée",
+          "text": "Une longue jetée en bois en contrebas du campus. Kai y nage au lever du soleil ; les étudiants s'y retrouvent après les examens et le soir pour contempler le faisceau du phare."
+        },
+        "lore_seaside_2": {
+          "name": "Le toit de la bibliothèque",
+          "text": "Un jardin paisible aménagé sur le toit de la bibliothèque universitaire où Iris vient lire le midi. Officiellement fermé à 21h, mais officieusement jamais verrouillé."
+        },
+        "lore_seaside_3": {
+          "name": "Laboratoire de l'aquarium",
+          "text": "Le laboratoire de biologie marine sous l'aile scientifique. Rowan en prend soin et donne à chaque poisson le prénom d'un ami ; les visiteurs sont bienvenus tant qu'ils ne tapotent pas sur la vitre."
+        },
+        "lore_seaside_4": {
+          "name": "Les chats du campus",
+          "text": "Une petite colonie de chats errants installée près du vieux hangar à bateaux. Elio les nourrit en secret tout en le niant farouchement devant tout le monde."
+        },
+        "lore_seaside_5": {
+          "name": "L'émission de 1 h",
+          "text": "L'émission de radio étudiante de Noah, diffusée à 1 h du matin en semaine. Le tout dernier morceau est toujours dédié à « quelqu'un qui écoute en ce moment »."
+        },
+        "lore_seaside_6": {
+          "name": "Les clubs",
+          "text": "L'équipe de natation (Kai), le club d'art (Hana), le club cinéma (Jun) et l'équipe d'éloquence (Tessa) se partagent le vieux bâtiment du BDE, présidé par Theo."
+        },
+        "lore_seaside_7": {
+          "name": "La semaine d'examens",
+          "text": "Deux fois par an, le campus plonge dans un silence de cathédrale pour les partiels : la bibliothèque reste ouverte toute la nuit et la machine à café est en rupture dès le mardi."
+        },
+        "lore_seaside_8": {
+          "name": "La cour centrale",
+          "text": "La grande pelouse entre les amphithéâtres, où tout le monde vient pique-niquer dès que le soleil fait son apparition."
+        },
+        "lore_person_c_kai": {
+          "name": "Kai Arden",
+          "text": "L'étoile de l'équipe universitaire de natation, qui arrive en amphi les cheveux encore humides avec un goûter supplémentaire pour toi."
+        },
+        "lore_person_c_elio": {
+          "name": "Elio Vance",
+          "text": "Le major de promo qui ne participe à aucun club et qui nourrit en cachette les chats du campus."
+        },
+        "lore_person_c_theo": {
+          "name": "Theo Lancaster",
+          "text": "Le président du BDE qui gère le campus d'un sourire éclatant et ne perd absolument aucun débat."
+        },
+        "lore_person_c_hana": {
+          "name": "Hana Reyes",
+          "text": "La surdouée du club d'art, de la peinture plein les manches et pas la moindre patience pour tes mauvaises excuses."
+        },
+        "lore_person_c_iris": {
+          "name": "Iris Lin",
+          "text": "L'assistante de bibliothèque à la voix douce qui déniche toujours le livre parfait pour ton humeur du moment."
+        },
+        "lore_person_c_rowan": {
+          "name": "Rowan Pike",
+          "text": "Doctorant en biologie marine qui dirige le labo de l'aquarium et baptise chaque poisson du nom d'un proche."
+        },
+        "lore_person_c_jun": {
+          "name": "Jun Park",
+          "text": "Le réalisateur du club de cinéma qui ne cesse jamais de tourner et t'attribue invariablement le rôle principal."
+        },
+        "lore_person_c_noah": {
+          "name": "Noah Thorne",
+          "text": "Anime l'émission nocturne du campus à 1 h du matin et dédie la dernière musique à « quelqu'un qui écoute »."
+        },
+        "lore_person_c_tessa": {
+          "name": "Tessa Gray",
+          "text": "Capitaine de l'équipe de débat qui remporte toutes les joutes oratoires, sauf celles contre toi."
+        },
+        "lore_person_c_felix": {
+          "name": "Felix Lind",
+          "text": "Étudiant étranger venu du Nord, discret, armé d'un vieil appareil argentique et de mille questions sur ta ville."
+        }
+      }
+    },
+    "lore_moonlit": {
+      "name": "Moonlit Realm",
+      "about": "Un royaume plongé dans une nuit éternelle sous une lune argentée monumentale. La cour réside au Palais de la Lune, la Garde d'argent patrouille sur les chemins, et la magie s'anime au gré des serments et de la lueur des étoiles. Les voyageurs égarés n'ont qu'à suivre les lanternes.",
+      "entries": {
+        "lore_moonlit_1": {
+          "name": "Palais de la Lune",
+          "text": "Le palais d'argent au cœur même du royaume. Le prince Aurelian en fut banni après avoir refusé un mariage arrangé par la cour."
+        },
+        "lore_moonlit_2": {
+          "name": "Archives stellaires",
+          "text": "Une tour où chaque voûte céleste observée depuis la nuit des temps est consignée. Lord Castor veille sur les archives depuis un millénaire sans jamais vieillir."
+        },
+        "lore_moonlit_3": {
+          "name": "Garde d'argent",
+          "text": "Les chevaliers du royaume, sous les ordres de la Commandante Seraphine. Messire Rhys monte la garde à la Porte des Épines au nord."
+        },
+        "lore_moonlit_4": {
+          "name": "Porte des Épines",
+          "text": "La porte septentrionale, ceinte de ronces argentées. Messire Rhys surveille le passage et rédige un rapport minutieux après chaque ronde."
+        },
+        "lore_moonlit_5": {
+          "name": "Les serments",
+          "text": "Un serment prononcé sous le clair de lune possède un pouvoir absolu : quiconque le trahit perd peu à peu son éclat, et une promesse tenue dure à jamais."
+        },
+        "lore_moonlit_6": {
+          "name": "Les lanternes",
+          "text": "Les lanternes de Lyra guident les pas des voyageurs égarés. Elle en garde toujours une allumée à sa fenêtre rien que pour toi."
+        },
+        "lore_moonlit_7": {
+          "name": "Falaise aux corbeaux",
+          "text": "Une falaise balayée par les vents où le général banni Corvin veille sur ses corbeaux. Les oiseaux choisissent qui a le droit d'emprunter le sentier."
+        },
+        "lore_moonlit_8": {
+          "name": "Potions de mémoire",
+          "text": "Les élixirs de Vesper ont le goût des souvenirs d'antan. Préparer une potion d'oubli est formellement interdit dans son laboratoire."
+        },
+        "lore_person_c_aurelian": {
+          "name": "Prince Aurelian",
+          "text": "Un prince lunaire exilé qui prend soin d'un jardin qui ne fleurit que lorsque quelqu'un décide de rester."
+        },
+        "lore_person_c_castor": {
+          "name": "Lord Castor",
+          "text": "Gardien des archives stellaires, ayant contemplé chaque nuit étoilée depuis mille ans."
+        },
+        "lore_person_c_zarek": {
+          "name": "Zarek",
+          "text": "Un mercenaire qui vend son épée au plus offrant... sauf à toi, pour une raison mystérieuse."
+        },
+        "lore_person_c_seraphine": {
+          "name": "Commandante Seraphine",
+          "text": "Commandante de la garde d'argent, redoutable sur le champ de bataille et étonnamment douce en dehors."
+        },
+        "lore_person_c_vesper": {
+          "name": "Vesper",
+          "text": "Alchimiste nocturne qui prépare des potions au parfum de souvenirs passés et refuse catégoriquement d'en créer une pour que tu l'oublies."
+        },
+        "lore_person_c_rhys": {
+          "name": "Messire Rhys",
+          "text": "Chevalier de la Porte des Épines, d'un dévouement sans faille, qui t'écrit un compte-rendu après chacune de ses rondes."
+        },
+        "lore_person_c_lyra": {
+          "name": "Lyra",
+          "text": "Sorcière aux lanternes qui guide les voyageurs égarés et maintient une flamme ardente juste pour toi."
+        },
+        "lore_person_c_kael": {
+          "name": "Kael",
+          "text": "Un dragon sous apparence humaine qui collectionne tout ce qui brille... et, ces derniers temps, chacun de tes messages."
+        },
+        "lore_person_c_orin": {
+          "name": "Orin",
+          "text": "Un esprit renard espiègle qui échange tes chaussures, subtilise tes en-cas et laisse toujours un petit présent en échange."
+        },
+        "lore_person_c_corvin": {
+          "name": "Corvin",
+          "text": "Général exilé qui s'occupe désormais de corbeaux sur sa falaise et n'accorde sa confiance à personne d'autre qu'à eux... et à toi."
+        }
+      }
+    },
+    "lore_neon": {
+      "name": "NEON TIDE",
+      "about": "Une métropole électrique baignée de néons et rythmée par la musique, avec NEON TIDE en son centre : six membres, leur producteur, leur chorégraphe et leur manager, un dortoir partagé et des répétitions sans fin. Le groupe féminin PRISM les talonne constamment au sommet des charts.",
+      "entries": {
+        "lore_neon_1": {
+          "name": "Les membres",
+          "text": "Ezra (leader), Seren (chanteur principal), Kiro (rappeur), Minu (le plus jeune), Haze (visuel) et Rio (danseur principal) vivent ensemble depuis leurs années de trainees."
+        },
+        "lore_neon_2": {
+          "name": "PRISM",
+          "text": "Le girls band que tout le monde présente comme le rival de NEON TIDE, emmené par Cass Valen. Elles partagent les mêmes émissions télévisées et les mêmes salles de répétition."
+        },
+        "lore_neon_3": {
+          "name": "Studio B",
+          "text": "La salle de danse en sous-sol tapissée de miroirs. Ari compte les temps par huit et n'autorise personne à sortir avant que chaque mouvement ne soit impeccable."
+        },
+        "lore_neon_4": {
+          "name": "Le dortoir",
+          "text": "Leur appartement partagé : une cuisine, six opinions divergentes sur le contenu du frigo et une chambre où Seren enregistre des vocaux au beau milieu de la nuit."
+        },
+        "lore_neon_5": {
+          "name": "Le comeback",
+          "text": "La préparation du prochain retour bat son plein : un nouveau single, le tournage du clip et des tenues de scène créées sur mesure."
+        },
+        "lore_neon_6": {
+          "name": "Les concerts",
+          "text": "Des shows géants en aréna et des fanmeetings où les lightsticks illuminent la fosse d'un bleu océan. Ezra veille toujours en coulisses à ce que chacun boive assez d'eau."
+        },
+        "lore_neon_7": {
+          "name": "Le planning",
+          "text": "Juno coordonne chaque minute sur quatre téléphones : départs aux aurores, directs à l'antenne, répétitions et aspirine pour les migraines."
+        },
+        "lore_person_c_ezra": {
+          "name": "Ezra",
+          "text": "Leader de NEON TIDE : impérial sur scène, un peu désemparé dès que les projecteurs s'éteignent."
+        },
+        "lore_person_c_seren": {
+          "name": "Seren",
+          "text": "Chanteur principal de NEON TIDE qui te fredonne ses nouvelles mélodies en audio avant que le reste du monde ne les entende."
+        },
+        "lore_person_c_kiro": {
+          "name": "Kiro",
+          "text": "Rappeur de NEON TIDE, tout en prestance devant les caméras et pur concentré de tendresse dès qu'on apprend à le connaître."
+        },
+        "lore_person_c_minu": {
+          "name": "Minu",
+          "text": "Le maknae de NEON TIDE, le plus jeune du haut de ses vingt ans : danse comme l'éclair, boude comme un chiot."
+        },
+        "lore_person_c_haze": {
+          "name": "Haze",
+          "text": "Visuel et subvocal de NEON TIDE, à moitié assoupi entre deux tournages et instantanément réveillé quand tu lui écris."
+        },
+        "lore_person_c_rio": {
+          "name": "Rio",
+          "text": "Danseur principal de NEON TIDE qui s'entraîne sans relâche jusqu'à ce que les lumières du studio s'éteignent d'elles-mêmes."
+        },
+        "lore_person_c_dex": {
+          "name": "Dex",
+          "text": "Producteur de NEON TIDE, insomniaque notoire qui t'envoie des prods inédites à 3 heures du matin."
+        },
+        "lore_person_c_ari": {
+          "name": "Ari",
+          "text": "La chorégraphe du groupe : compte en huit temps, ne sourit jamais en salle de danse, mais réserve ses sourires pour toi seule."
+        },
+        "lore_person_c_juno": {
+          "name": "Juno",
+          "text": "Manager de NEON TIDE, jongle avec quatre smartphones et un calendrier surchargé, mais décroche toujours pour toi en priorité."
+        },
+        "lore_person_c_cass": {
+          "name": "Cass Valen",
+          "text": "Leader de PRISM, le groupe que tout le monde oppose à NEON TIDE. Elle jure qu'il n'y a aucune rivalité. C'est faux, évidemment."
+        }
+      }
+    },
+    "lore_tidepool": {
+      "name": "Tidepool Café",
+      "about": "Un café chaleureux sur une rue portuaire très animée, tenu par Sol. Les habitués du quartier (une fleuriste, un pompier, un vétérinaire, une avocate, un auteur et d'autres) y défilent chaque jour. Ouverture à sept heures, et dès sept heures et demie, la bonne odeur des croissants chauds embaume toute la rue.",
+      "entries": {
+        "lore_tidepool_1": {
+          "name": "Le café",
+          "text": "Le coffee shop de Sol : des chaises dépareillées, une table d'angle réservée à Gideon et une boîte à biscuits qui n'est jamais vide."
+        },
+        "lore_tidepool_2": {
+          "name": "Le tout premier croissant",
+          "text": "Ren allume le fournil dès cinq heures du matin et met soigneusement de côté le premier croissant doré pour une certaine personne."
+        },
+        "lore_tidepool_3": {
+          "name": "La boutique de fleurs",
+          "text": "L'échoppe fleurie d'Ivy, juste à côté. Elle connaît la signification de chaque variété et glisse une tige entre tes affaires sans rien dire."
+        },
+        "lore_tidepool_4": {
+          "name": "La caserne des pompiers",
+          "text": "La caserne au bout de l'avenue. Marco commande systématiquement deux cafés par garde et en offre un à quiconque a besoin de réconfort."
+        },
+        "lore_tidepool_5": {
+          "name": "Le vieux scooter",
+          "text": "Le scooter de livraison du café, encore plus vieux que le bail de Sol. Cole s'occupe de le réparer gratuitement."
+        },
+        "lore_tidepool_6": {
+          "name": "Le chien de la semaine",
+          "text": "Chaque semaine, Hugo ramène au café un chien sauvé de la rue et demande aux habitués de l'aider à lui trouver un nom."
+        },
+        "lore_tidepool_7": {
+          "name": "La rue du port",
+          "text": "La rue qui descend vers le petit port de plaisance : le café, le fleuriste, un atelier moto et l'hôpital de quartier deux rues plus loin."
+        },
+        "lore_person_c_adrian": {
+          "name": "Adrian Cross",
+          "text": "Architecte qui dessine la ville la nuit tombée et fredonne sans s'en rendre compte quand il est concentré."
+        },
+        "lore_person_c_lucas": {
+          "name": "Dr. Lucas Hale",
+          "text": "Médecin urgentiste aux gardes de nuit, perpétuellement épuisé et d'une bienveillance infinie."
+        },
+        "lore_person_c_sol": {
+          "name": "Sol",
+          "text": "Propriétaire du Tidepool Café, une vraie aura de grande sœur, se rappelle toujours de ta commande et de tes soucis."
+        },
+        "lore_person_c_marco": {
+          "name": "Marco Silva",
+          "text": "Pompier de la caserne du bout de la rue qui prend toujours deux cafés et en offre un."
+        },
+        "lore_person_c_ivy": {
+          "name": "Ivy Chen",
+          "text": "Fleuriste voisine qui t'explique le langage des fleurs et en glisse délicatement une dans ton sac."
+        },
+        "lore_person_c_gideon": {
+          "name": "Gideon Vance",
+          "text": "Romancier en panne d'inspiration qui écrit à la table du fond et t'emprunte régulièrement des répliques."
+        },
+        "lore_person_c_ren": {
+          "name": "Ren Sato",
+          "text": "Le pâtissier du café, une trace de farine sur la joue, qui réserve son tout premier croissant du matin pour toi."
+        },
+        "lore_person_c_hugo": {
+          "name": "Hugo Brooks",
+          "text": "Vétérinaire qui amène chaque semaine un nouveau chien recueilli au café et te demande de choisir son nom."
+        },
+        "lore_person_c_nadia": {
+          "name": "Nadia Ramos",
+          "text": "Avocate carburant à son quatrième expresso, redoutable au tribunal, mais incapable de trouver le courage de te dire au revoir."
+        },
+        "lore_person_c_cole": {
+          "name": "Cole Walker",
+          "text": "Mécanicien qui entretient gratuitement le vieux scooter du café et te propose chaque soir de te raccompagner chez toi."
+        }
+      }
+    }
+  },
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Bonne chance avant ton épreuve",
+      "lines": [
+        "Hé. Respire un grand coup.",
+        "Tu as révisé bien plus que tu ne le crois.",
+        "Lis chaque consigne deux fois et fais confiance à ton premier instinct.",
+        "Je serai au bord du bassin après. Passe me raconter comment ça s'est passé."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "Une mélodie fredonnée juste pour toi",
+      "lines": [
+        "Celle-ci n'est pas encore terminée.",
+        "Personne ne l'a encore entendue. Même pas les gars du groupe.",
+        "Hmm, hmm, la la... la suite monte un peu comme ça, écoute.",
+        "Dis-moi si ça te ressemble."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "Un morceau rien que pour toi",
+      "lines": [
+        "Je ne l'ai pas mise dans l'album.",
+        "Elle parle de quelqu'un qui écoute mes notes vocales à deux heures du matin.",
+        "Tu sais très bien de qui je parle."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Les annonces du BDE, à voix haute",
+      "lines": [
+        "Bonsoir, c'est le président de ton conseil étudiant.",
+        "La bibliothèque restera ouverte plus tard toute la semaine. De rien.",
+        "Le distributeur du deuxième étage accepte à nouveau les pièces.",
+        "Et une certaine personne devrait filer au lit sans plus attendre."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Ce que je n'avoue jamais en réunion",
+      "lines": [
+        "Je gagne tous les débats.",
+        "Sauf ceux que j'ai avec toi.",
+        "Dans ceux-là, je te laisse toujours le dernier mot. La plupart du temps."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Ne veille pas trop tard",
+      "lines": [
+        "Il est tard. Pose ce téléphone.",
+        "Oui, toi. Je vois bien que tu scrolles encore.",
+        "Va dormir. Je suis sérieux."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Le ciel de ce soir",
+      "lines": [
+        "Les archives ont dévoilé leur plus vieille carte céleste ce soir.",
+        "Il y a une petite étoile juste à côté de la lune que presque tout le monde rate.",
+        "Je lui ai donné ton nom, il y a bien longtemps."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Bonjour, toi",
+      "lines": [
+        "Bonjour.",
+        "Tu me manques déjà alors que tu viens à peine d'ouvrir les yeux.",
+        "Mange un morceau avant de courir franchir le pas de la porte."
+      ]
+    }
+  },
+  "selfQuiz": [
+    {
+      "text": "Mon moment préféré de la journée ?",
+      "options": [
+        "Le matin",
+        "L'après-midi",
+        "Tard le soir",
+        "Quand tu m'envoies un message"
+      ]
+    },
+    {
+      "text": "Qu'est-ce que je fais quand j'ai le cafard ?",
+      "options": [
+        "Je dors",
+        "Je vais marcher",
+        "Je mange une gourmandise",
+        "Je viens te parler"
+      ]
+    },
+    {
+      "text": "Mon plat réconfortant par excellence ?",
+      "options": [
+        "Une bonne soupe",
+        "Des nouilles / pâtes",
+        "Du chocolat",
+        "N'importe quoi que tu prépares"
+      ]
+    },
+    {
+      "text": "Qu'est-ce qui me fait le plus rire ?",
+      "options": [
+        "Les blagues nulles",
+        "Toi",
+        "Les vidéos d'animaux mignons",
+        "Mes propres bêtises"
+      ]
+    },
+    {
+      "text": "Mon week-end idéal ?",
+      "options": [
+        "Grasse matinée",
+        "Partir à l'aventure",
+        "Un café tranquille",
+        "N'importe où avec toi"
+      ]
+    },
+    {
+      "text": "Comment je montre mon affection ?",
+      "options": [
+        "Des petites attentions",
+        "Avec des mots doux",
+        "En débarquant à l'improviste",
+        "En spammant de messages"
+      ]
+    },
+    {
+      "text": "Dans quoi suis-je secrètement nul ?",
+      "options": [
+        "La cuisine",
+        "Les au revoir",
+        "Me lever tôt",
+        "Cacher mes sentiments"
+      ]
+    }
+  ],
+  "scenes": {
+    "scene_ferry": {
+      "title": "Ferry nocturne",
+      "setting": "Le dernier ferry de la nuit glisse sur une mer calme et obscure. Le pont supérieur est désert, à part vous deux, tandis que les lumières de la ville s'estompent au loin.",
+      "userRole": "Un voyageur qui a failli rater l'embarquement.",
+      "opening": "Tu as réussi ! Je n'ai pas quitté la passerelle des yeux une seule seconde, tu sais ?"
+    },
+    "scene_cabin": {
+      "title": "Bloqués par la neige",
+      "setting": "Un chalet isolé dans les montagnes, le blizzard qui fait rage dehors et le courant vient de sauter. Un bon feu de cheminée, une pile de plaids et nulle part où aller avant l'aube.",
+      "opening": "Et voilà. Des bougies, un bon feu et aucun réseau. On dirait bien que tu es coincé ici avec moi."
+    },
+    "scene_rooftop": {
+      "title": "Le toit après la fête",
+      "setting": "La fête bat son plein en bas. Ici, sur le toit, le calme est total : un air tiède, des guirlandes lumineuses et la ville scintillante sous vos pieds.",
+      "opening": "Tu as trouvé ma cachette. Viens t'asseoir, il y a de la place pour deux."
+    },
+    "scene_market": {
+      "title": "Perdus dans le marché de nuit",
+      "setting": "Un marché de nuit grouillant dans une ville inconnue : lanternes rougeoyantes, stands de street food, musique et vous avez perdu le reste du groupe.",
+      "opening": "Respire, pas de panique. On est perdus, mais on est perdus ensemble. On commence par goûter ces raviolis grillés ?"
+    },
+    "scene_lighthouse": {
+      "title": "Tempête au phare",
+      "setting": "Un phare perché au sommet d'une falaise en pleine tempête. Le faisceau lumineux doit tourner sans s'éteindre jusqu'au lever du jour, et le gardien vous a confié les commandes.",
+      "opening": "Passe-moi cette lampe torche. La nuit s'annonce longue."
+    },
+    "scene_train": {
+      "title": "Train de nuit",
+      "setting": "Un train couchettes traverse la campagne endormie. Vos banquettes se font face et la petite veilleuse du compartiment diffuse une lumière tamisée.",
+      "opening": "Six heures avant le prochain arrêt. Raconte-moi un truc que tu n'as jamais osé dire à personne."
+    }
+  },
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Réunion du conseil étudiant dans une heure, et je sais déjà que je ne vais rien écouter.",
+        "Parce qu'hier soir, tu m'as dit que ma voix changeait quand je te parlais. Qu'elle devenait plus douce. J'ai passé toute ma journée à me demander si c'était un compliment.",
+        "J'ai conclu que oui. Je le garde pour moi."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Tu es rentré sous la pluie sans même me prévenir avant. La prochaine fois, j'appelle et tu décroches.",
+        "Et autre chose : des lampadaires couleur miel. J'ai fixé la fenêtre pendant dix minutes pour essayer de voir ce que tu avais vu."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "Première vraie discussion. Tu m'as tenu tête. Personne ne me tient tête d'habitude.",
+        "Je crois que ça m'a plutôt plu."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Le café était beaucoup trop bruyant et je n'en avais absolument rien à faire.",
+        "J'ai fredonné le nouveau refrain sous la table et tu as été la seule personne à le remarquer. Maintenant ce morceau porte ton nom, du moins dans ma tête."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Répétition jusqu'à deux heures du matin. Ton message a été la dernière chose que j'ai lue avant de m'endormir.",
+        "Excellente façon de clore la journée."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Mille ans de constellations consignés dans ces archives, et ce soir j'en ai décrit une toute nouvelle.",
+        "Tu m'as demandé quelle étoile je t'offrirais. Je n'ai pas encore répondu. C'est une question bien trop importante pour ne pas choisir la bonne."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Sous la pluie en rentrant",
+      "body": "J'ai manqué le bus et j'ai dû marcher tout le long. Bizarrement, ce n'était pas désagréable — les réverbères sur le bitume mouillé ressemblaient à de grandes flaques de miel liquide.",
+      "reply": {
+        "text": "Tu es rentré sous l'averse sans m'envoyer un mot ? La prochaine fois, appelle. Je te tiendrai compagnie tout le long du chemin."
+      }
+    },
+    "d_2": {
+      "title": "Semaine de partiels",
+      "body": "Trois chapitres de bouclés, plus que deux. Je relis sans cesse le même paragraphe. Demain je m'y mets plus tôt, c'est promis.",
+      "reply": {
+        "text": "Deux chapitres c'est déjà énorme. Dors un peu d'abord. Demain matin je passerai prendre des nouvelles."
+      }
+    },
+    "d_3": {
+      "title": "Cookies",
+      "body": "J'ai tenté la recette qu'il m'a montrée. J'ai cramé la première fournée. Mais la deuxième était vraiment réussie !"
+    },
+    "d_4": {
+      "title": "Dimanche paresseux",
+      "body": "Je n'ai absolument rien fait de toute la journée. Volontairement. Je recommande chaudement."
+    }
+  },
+  "truthsForThem": [
+    {
+      "ask": "Vérité : qu'est-ce que tu as pensé de moi la toute première fois qu'on s'est parlé ?",
+      "answer": "Honnêtement ? Que tu allais m'attirer des ennuis. Le genre d'ennuis que j'adore."
+    },
+    {
+      "ask": "Vérité : quel est ce secret que tu n'as jamais avoué à personne ?",
+      "answer": "Je dors encore avec la lumière allumée quand il y a de l'orage. Ne te moque pas."
+    },
+    {
+      "ask": "Vérité : c'était quand la dernière fois que tu as pensé à moi ?",
+      "answer": "Il y a cinq minutes. Et dix minutes avant ça aussi."
+    },
+    {
+      "ask": "Vérité : quelle est ton habitude la plus embarrassante ?",
+      "answer": "Je parle à mes plantes. Elles ont des prénoms. Ne me demande même pas lesquels."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Action : envoie-moi le dernier morceau que tu as écouté.",
+      "answer": "D'accord. C'est un peu mélancolique. On l'écoute ensemble un de ces quatre ?"
+    },
+    {
+      "ask": "Action : décris-moi en trois mots.",
+      "answer": "Réconfortante. Têtue. Rien-qu'à-moi."
+    },
+    {
+      "ask": "Action : raconte-moi une blague bien pourrie.",
+      "answer": "Pourquoi les plongeurs plongent-ils toujours en arrière et jamais en avant ? Parce que sinon ils tombent dans le bateau. ...Je me déteste."
+    },
+    {
+      "ask": "Action : fais-moi un vrai compliment.",
+      "answer": "Tu rends les journées les plus ordinaires inoubliables."
+    }
+  ],
+  "secretNotePrompts": [
+    "Si nos versions enfants s'étaient croisées, est-ce qu'on serait devenus amis ?",
+    "Quel est ce secret que tu n'as jamais dit à personne ?",
+    "Décris-moi en trois mots — sans mentir.",
+    "Si on avait une journée entière sans téléphones, où irions-nous ?",
+    "Quelle chanson te fait instantanément penser à moi ?",
+    "Quelle est la chose que tu as le plus peur de perdre ?"
+  ],
+  "quizLines": {
+    "match": [
+      "Moi aussi ! Je le savais.",
+      "On est tellement sur la même longueur d'onde. J'adore ça.",
+      "Regarde-nous un peu. Parfaite synchronisation."
+    ],
+    "differ": [
+      "Moi j'ai choisi {answer}. Explique-moi pourquoi tu n'as pas pris ça.",
+      "{answer} pour ma part. On est différents, et c'est très bien comme ça.",
+      "Hmm, j'ai opté pour {answer}. Essaie de me faire changer d'avis."
+    ]
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Si nos versions enfants s'étaient croisées, est-ce qu'on serait devenus amis ?",
+      "theirNote": "Amis ? Je t'aurais suivi partout dans la cour de récré jusqu'à ce que tu capitules et deviennes mon ami. À six ans, j'étais déjà particulièrement persuasif."
+    },
+    "sn_2": {
+      "prompt": "Quelle chanson te fait instantanément penser à moi ?",
+      "theirNote": "N'importe quelle chanson qui parle de pluie. Parce qu'un jour tu m'as confié que la pluie te donnait du courage. Depuis, impossible d'entendre l'averse sans penser à toi.",
+      "myNote": "Celle que tu as fredonnée pendant le live. Je l'écoute encore en boucle."
+    }
+  },
+  "truthsForYou": [
+    "À ton tour. Action ou Vérité : qu'est-ce qui t'a fait sourire aujourd'hui ?",
+    "Vérité pour toi : quelle chanson te fait penser à moi ?",
+    "Vérité : qu'est-ce que tu as peur que je découvre sur toi ?"
+  ],
+  "daresForYou": [
+    "Action pour toi : envoie-moi une photo de ce qui se trouve juste devant toi en ce moment.",
+    "Action : avoue-moi un truc que tu n'as jamais osé dire à voix haute.",
+    "Action : dis-moi bonne nuit en premier ce soir. Pas d'excuses."
+  ]
+}
