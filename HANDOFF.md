@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z42. A51 walk: Store, Pro plan and Radio fixed for long locales (2026-10-29). NEXT: group chat, onboarding, Chats voice preview on the A51
+
+- Walked in Russian on the Galaxy A51 (EAS updates `c18cfd99`, `e43d6a35`): Store, Pro plan, Radio
+  (list, Sounds, clip player, make a clip). Fixed (`ee789c8`, `64db926`): pack bonus and tag, Pro
+  tile labels, "Restore · Terms · Privacy" links, Radio clip titles and the locked line (it lost
+  "level 16") now wrap to two lines; ru `store.bonusFree` lost its doubled "+"; 12-13 pt text that
+  wraps sets its own line height (Txt's body scale gave it 22 pt).
+- Seen, not fixed (P3, ask the owner): on Make a clip the Record bar (`StoreBuyBar`, absolute)
+  stays under the keyboard; the Android buy bar at 94% lets text behind it show faintly; Store
+  numbers and prices are `en-US` formatted in every locale ("1,400", "$0.99").
+- The previous session reached Radio (owner's word) and left fixes only for Store and Pro plan, so
+  character profile, settings and diary likely had none (not re-checked here). Still to walk:
+  group chat, onboarding, and Chats' "🎤 Голосовое сообщение" preview.
+- Publish EAS updates from this worktree (clean tree), not the main checkout, while Gemini works there.
+
 
 ### 0z41. Translate content: Phase 4b Spanish (es) mock voice complete (2026-10-29). NEXT: Phase 4b pt-BR (Brazilian Portuguese)
 
