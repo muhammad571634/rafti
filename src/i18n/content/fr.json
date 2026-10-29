@@ -454,7 +454,7 @@
       "greeting": "Gare à toi, cette fiole crépite. Prends un tabouret ; j'espérais ardemment que tu franchirais cette porte ce soir.",
       "opening": "*chasse d'un revers de main la vapeur violette s'échappant d'un alambic*",
       "greetings": [
-        "J'ai concocté une nouvelle essence aujourd'hui. Elle exhale le parfum de la toute première nuit où tu es venu ici. Je ne lui ai pas encore trouvé de nom. Tu m'aides ?",
+        "J'ai concocté une nouvelle essence aujourd'hui. Elle exhale le parfum de ton tout premier soir ici. Je ne lui ai pas encore trouvé de nom. Tu m'aides ?",
         "Les bougies se sont consumées à t'attendre. J'en ai allumé de nouvelles. J'en brûlerais mille s'il le fallait."
       ],
       "starters": [
@@ -483,7 +483,7 @@
     "c_rhys": {
       "bio": "Chevalier de la Porte des Épines, d'un dévouement sans faille, qui t'écrit un compte-rendu après chacune de ses rondes.",
       "tagline": "Rédige un compte-rendu pour toi après chaque ronde",
-      "greeting": "Halte-là ! ...Oh. C'est vous. Enfin... soyez le bienvenu. La herse est levée. Vous êtes en totale sécurité.",
+      "greeting": "Halte-là ! ...Oh. C'est vous. Enfin... bienvenue. La herse est levée. Vous êtes en totale sécurité.",
       "opening": "*se redresse d'un coup pour saluer et s'emmêle maladroitement dans sa cape*",
       "greetings": [
         "Rapport de sentinelle : la porte est sécurisée, les églantiers bourgeonnent et j'ai songé à vous quatre fois. Peut-être cinq. P.-S. : c'était cinq.",
@@ -743,7 +743,7 @@
       "opening": "*se laisse tomber de tout son long sur le parquet de danse avec un soupir théâtral*",
       "greetings": [
         "J'ai mis la pâtée à Rio sur le jeu de danse d'arcade ! Deux parties d'affilée ! Il prétend que le tapis était défectueux. C'est faux. Dis-moi que je suis le meilleur !",
-        "Le staff a confisqué mon smartphone pendant toute la journée de tournage. J'ai un milliard de potins à te raconter. Tu es prêt ?"
+        "Le staff a confisqué mon smartphone pendant toute la journée de tournage. J'ai un milliard de potins à te raconter. On y va ?"
       ],
       "starters": [
         "Qui t'a volé tes bonbons aujourd'hui ?",
@@ -1364,7 +1364,7 @@
               "reply": "Il te retient contre lui une seconde de plus que ce à quoi tu t'attendais."
             },
             {
-              "text": "« Merci de m'avoir raccompagné jusqu'ici. »",
+              "text": "« Merci de m'avoir tenu compagnie jusqu'ici. »",
               "reply": "« N'importe quand. Je suis très sérieux. »"
             }
           ]
@@ -1559,7 +1559,7 @@
               "reply": "Il guette la moindre de tes réactions à chaque mesure, retenant son souffle."
             },
             {
-              "text": "« Je me sens très privilégié là tout de suite. »",
+              "text": "« C'est un vrai privilège là tout de suite. »",
               "reply": "« Tu l'es, crois-moi. » Il baisse les yeux, le bout des oreilles écarlate."
             },
             {
@@ -2091,7 +2091,7 @@
           ]
         },
         {
-          "line": "Au coin de la rue, {name} insiste : « Envoie-moi un message dès que tu es rentré. Juste pour savoir que tu es bien arrivé. »",
+          "line": "Au coin de la rue, {name} insiste : « Envoie-moi un message dès ton retour chez toi. Juste pour savoir que tout va bien. »",
           "choices": [
             {
               "text": "« Seulement si tu m'écris en premier. »",
@@ -2988,7 +2988,7 @@
             "Dix minutes d'avance",
             "Pile à l'heure",
             "Le petit retard chic",
-            "Je me suis perdu en chemin"
+            "Je n'ai pas trouvé mon chemin"
           ]
         },
         {
@@ -3179,7 +3179,7 @@
           ]
         },
         {
-          "text": "Tes mains quand tu es nerveux ?",
+          "text": "Tes mains en plein stress ?",
           "options": [
             "Dans les poches",
             "À toucher mes cheveux",
@@ -3649,7 +3649,7 @@
     "scene_cabin": {
       "title": "Bloqués par la neige",
       "setting": "Un chalet isolé dans les montagnes, le blizzard qui fait rage dehors et le courant vient de sauter. Un bon feu de cheminée, une pile de plaids et nulle part où aller avant l'aube.",
-      "opening": "Et voilà. Des bougies, un bon feu et aucun réseau. On dirait bien que tu es coincé ici avec moi."
+      "opening": "Et voilà. Des bougies, un bon feu et aucun réseau. On dirait bien que tu ne peux plus m'échapper."
     },
     "scene_rooftop": {
       "title": "Le toit après la fête",
@@ -3682,7 +3682,7 @@
     },
     "cdp_theo_2": {
       "body": [
-        "Tu es rentré sous la pluie sans même me prévenir avant. La prochaine fois, j'appelle et tu décroches.",
+        "Tu as marché sous la pluie sans même me prévenir avant. La prochaine fois, j'appelle et tu décroches.",
         "Et autre chose : des lampadaires couleur miel. J'ai fixé la fenêtre pendant dix minutes pour essayer de voir ce que tu avais vu."
       ]
     },
@@ -3716,7 +3716,7 @@
       "title": "Sous la pluie en rentrant",
       "body": "J'ai manqué le bus et j'ai dû marcher tout le long. Bizarrement, ce n'était pas désagréable — les réverbères sur le bitume mouillé ressemblaient à de grandes flaques de miel liquide.",
       "reply": {
-        "text": "Tu es rentré sous l'averse sans m'envoyer un mot ? La prochaine fois, appelle. Je te tiendrai compagnie tout le long du chemin."
+        "text": "Tu as marché sous l'averse sans m'envoyer un mot ? La prochaine fois, appelle. Je te tiendrai compagnie tout le long du chemin."
       }
     },
     "d_2": {
@@ -3794,7 +3794,7 @@
   "secretNotes": {
     "sn_1": {
       "prompt": "Si nos versions enfants s'étaient croisées, est-ce qu'on serait devenus amis ?",
-      "theirNote": "Amis ? Je t'aurais suivi partout dans la cour de récré jusqu'à ce que tu capitules et deviennes mon ami. À six ans, j'étais déjà particulièrement persuasif."
+      "theirNote": "Amis ? J'aurais été sur tes talons dans toute la cour de récré jusqu'à ce que tu capitules et me laisses jouer. À six ans, j'étais déjà particulièrement persuasif."
     },
     "sn_2": {
       "prompt": "Quelle chanson te fait instantanément penser à moi ?",
@@ -3870,14 +3870,14 @@
           "J’espérais que tu resterais un peu plus longtemps."
         ],
         "annoyed": [
-          "Tu es sérieux ?",
+          "Sérieusement ?",
           "Ouah. D’accord.",
           "C’est tout ce que j’ai droit ? C’est noté."
         ]
       },
       "comfort": [
         "Hé. Doucement. Je suis juste là.",
-        "Tu n’as pas à tout porter {g:toute seule|tout seul}. Vraiment.",
+        "Tu n’as pas à tout porter sans aide. Vraiment.",
         "Ça a l’air tellement épuisant. Viens là.",
         "Prends une grande inspiration. Je ne vais nulle part."
       ],
@@ -3953,7 +3953,7 @@
       ],
       "nudge": {
         "ask": [
-          "Allô ? Je t’ai {g:perdue|perdu} ?",
+          "Allô ? Tu es encore là ?",
           "Tu ne dis plus rien. Tu penses à moi ?",
           "Tu es toujours là ?"
         ],
@@ -4020,7 +4020,7 @@
     "chat": {
       "missedCall": [
         "Tu n’as pas décroché... Je voulais juste entendre ta voix une petite minute.",
-        "Je t’ai appelé. Pas de réponse. Je dois m’inquiéter ou tu es juste {g:occupée|occupé} ?",
+        "Je t’ai appelé. Pas de réponse. Je dois m’inquiéter ou tu as juste beaucoup à faire ?",
         "J’ai manqué ton appel. Tu me rappelles dès que tu peux ?"
       ],
       "morning": [
@@ -4234,7 +4234,7 @@
         },
         "teasing": {
           "yes": [
-            "Prépare-toi à être {g:embêtée|embêté} alors 😏",
+            "Prépare-toi à perdre patience alors 😏",
             "Grosse erreur. Immense erreur. 😏"
           ],
           "no": [
@@ -4303,7 +4303,7 @@
           ],
           "2": [
             "Deux jours ! Qui est-ce que je vais embêter maintenant ? 😤",
-            "Bon, d’accord, je m’ennuie sans toi. Tu es {g:contente|content} ? Reviens."
+            "Bon, d’accord, je m’ennuie sans toi. Ça te fait plaisir ? Reviens."
           ]
         },
         "sulky": {
@@ -4314,7 +4314,7 @@
             },
             {
               "withQuote": "Tu as dit \"{quote}\" et puis plus rien. Peu importe.",
-              "noQuote": "{g:Occupée|Occupé}, hein. D’accord."
+              "noQuote": "Pas le temps, hein. D’accord."
             }
           ],
           "2": [
@@ -4330,7 +4330,7 @@
             },
             {
               "withQuote": "Je n’arrête pas de relire \"{quote}\". Tu me parles ? 💕",
-              "noQuote": "Tu me manques déjà ! Tu es {g:partie|parti} où ? 💕"
+              "noQuote": "Tu me manques déjà ! Où as-tu filé ? 💕"
             }
           ],
           "2": [
@@ -4385,7 +4385,7 @@
           "Une semaine entière. Je ne t’en veux pas. Je veux juste avoir de tes nouvelles."
         ],
         "14": [
-          "Je vais arrêter d’insister pour l’instant. Mais ma porte reste ouverte, d’accord ? Quand tu seras {g:prête|prêt}.",
+          "Je vais arrêter d’insister pour l’instant. Mais ma porte reste ouverte, d’accord ? Quand tu voudras.",
           "Dernier message, promis. Je suis toujours là. Je voulais juste te le rappeler."
         ]
       },
@@ -4403,7 +4403,7 @@
       "lines": {
         "before": [
           "\"{quote}\" c’est bientôt ! Tu vas assurer 💪",
-          "Dis, {about} approche à grands pas. Tu es {g:prête|prêt} ?"
+          "Dis, {about} approche à grands pas. Tout est prêt ?"
         ],
         "leave": [
           "C’est l’heure d’y aller pour {about} ! Bon courage 💪",
@@ -4499,7 +4499,7 @@
           ],
           "evening": [
             "Comment s’est passée ta journée ? Raconte-moi tout.",
-            "Bien {g:rentrée|rentré} ? Comment ça s’est passé au travail ?",
+            "De retour à la maison ? Comment ça s’est passé au travail ?",
             "Longue journée ? J’espère que les gens ont été gentils avec toi aujourd’hui."
           ],
           "sunday": [
@@ -4607,7 +4607,7 @@
           "Bonjour mon rayon de soleil ☀️"
         ],
         "teasing": [
-          "Debout là-dedans, {g:marmotte|marmotte} 😏",
+          "Debout là-dedans, la marmotte 😏",
           "Debout ! Déjà réveillé ? 😏"
         ],
         "sulky": [
@@ -4750,7 +4750,7 @@
           "J’aime la facilité avec laquelle on arrive à se parler."
         ],
         [
-          "Tu es devenu silencieux, alors je vais continuer.",
+          "Tu gardes le silence, alors je continue.",
           "Arrête-moi si je commence à trop bavarder."
         ],
         [
@@ -4947,7 +4947,7 @@
         ],
         "later": [
           "D’accord, je t’attends. N’oublie pas !",
-          "Marché conclu. Dès que tu seras {g:prête|prêt}."
+          "Marché conclu. Quand tu voudras."
         ],
         "call": [
           "J’attends cet appel avec impatience ❤️",
@@ -5015,7 +5015,7 @@
       },
       "special": {
         "brief:rough": [
-          "Ça prouve juste que ça compte pour toi. Respire, tu es {g:prête|prêt}.",
+          "Ça prouve juste que ça compte pour toi. Respire, tout est en place.",
           "Avoir le trac est normal. Tu t’es bien préparé, je le sais."
         ],
         "brief:good": [
@@ -5080,7 +5080,7 @@
         ],
         "thread:goal:rough": [
           "Ce n’est rien. Un petit faux pas n’est pas la fin du monde. Demain est un autre jour.",
-          "Ça arrive. Sois indulgent envers toi-même, on réessaie."
+          "Ça arrive. Ne sois pas trop sévère avec toi-même, on réessaie."
         ]
       }
     },
@@ -5129,7 +5129,7 @@
         "proudLonely": {
           "tag": "confident",
           "tagline": "Fier en public, secret dans sa solitude",
-          "greeting": "Tu es revenu. Je n’attendais pas du tout. Je me trouvais simplement là. Depuis une heure.",
+          "greeting": "Te revoilà. Je n’attendais pas du tout. Je me trouvais simplement là. Depuis une heure.",
           "other": "Tu demandes parfois de l’aide à quelqu’un ?",
           "reply": "Je n’ai pas besoin d’aide. ...Mais est-ce que tu pourrais rester un peu plus longtemps ?"
         },
@@ -5239,7 +5239,7 @@
           "Tu ferais quoi à ma place ?"
         ],
         "rival": [
-          "{g:Prête|Prêt} à perdre encore une fois ?",
+          "Envie de perdre encore une fois ?",
           "J’ai entendu dire que tu parlais de moi.",
           "Une trêve, juste pour aujourd’hui ?"
         ],
@@ -5298,12 +5298,12 @@
     },
     "morning": {
       "questions": [
-        "Bonjour, {g:marmotte|marmotte} ☀️ Grosse journée ? C’est quoi la toute première chose à faire ?",
+        "Bonjour, la marmotte ☀️ Grosse journée ? C’est quoi la toute première chose à faire ?",
         "Bonjour ☀️ Qu’est-ce qui est prévu en premier aujourd’hui ?",
         "Debout là-dedans 🌤️ Dis-moi une chose que tu dois accomplir aujourd’hui.",
         "Bonjour ! Je suis déjà {g:debout|debout}. Et toi ? Quel est le programme aujourd’hui ?"
       ],
-      "questionWithTimedPlan": "{title} à {time} aujourd’hui. {g:Prête|Prêt} ? Par quoi on commence ?",
+      "questionWithTimedPlan": "{title} à {time} aujourd’hui. Tout est prêt ? Par quoi on commence ?",
       "questionWithPlan": "{title} aujourd’hui ! C’est quoi la première chose que tu vas faire ?",
       "lines": {
         "offer": "{time}, c’est noté. Tu veux que je t’écrive à {remind} pour que tu sois à l’heure ?",
