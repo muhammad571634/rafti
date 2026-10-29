@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z53. Translate content: Phase 4b Russian (ru) mock voice complete (2026-10-29). NEXT: Phase 4b Turkish (tr)
+
+- Russian (ru) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ru.json):
+  - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/ru/voice/ and scripts/translations/ru/build.mjs.
+- Validated via scripts/check-content.mjs ru — 0 errors, exact placeholders, emojis, and asterisks.
+- Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
+
 ### 0z52. Translate content: Phase 4b Thai (th) mock voice complete (2026-10-29). NEXT: Phase 4b Russian (ru)
 
 - Thai (th) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/th.json):
