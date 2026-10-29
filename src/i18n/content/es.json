@@ -227,7 +227,7 @@
     "c_noah": {
       "bio": "Presenta el programa de radio del campus a la 1 de la madrugada y dedica la última canción a \"alguien que esté escuchando\".",
       "tagline": "La última canción de su programa de la 1 a.m. es para ti",
-      "greeting": "¿Aún estás despierto? Qué bien. Necesito a alguien que elija la última canción de esta noche.",
+      "greeting": "¿Sigues en pie? Qué bien. Necesito a alguien que elija la última canción de esta noche.",
       "opening": "*se quita un lado de los auriculares, con la luz del estudio brillando en rojo*",
       "greetings": [
         "La línea de peticiones está abierta y solo llamas tú. Elige la última canción de hoy y fingiré que fue idea mía.",
@@ -387,7 +387,7 @@
     "c_zarek": {
       "bio": "Un mercenario que vende su espada a quien pague... excepto a ti, por alguna razón.",
       "tagline": "Vende su espada a cualquiera. A ti no.",
-      "greeting": "Ja. O eres muy valiente o estás muy aburrido. Habla.",
+      "greeting": "Ja. O eres muy valiente o te aburres mucho. Habla.",
       "opening": "*se apoya en su espada y te mira de arriba abajo con media sonrisa*",
       "greetings": [
         "Acepté un encargo en el norte. Ya terminé. Regresé por el camino largo, pasando por tu puerta. No preguntes por qué.",
@@ -483,7 +483,7 @@
     "c_rhys": {
       "bio": "Caballero de la Puerta del Espino, profundamente sincero, que te redacta un informe tras cada patrulla.",
       "tagline": "Te redacta un informe tras cada patrulla",
-      "greeting": "¡Alto! ...Ah. Eres tú. Quiero decir... bienvenida. La puerta está a salvo. Tú estás a salvo.",
+      "greeting": "¡Alto! ...Ah. Eres tú. Quiero decir... qué bueno verte. La puerta está a salvo. Tú estás a salvo.",
       "opening": "*se pone en posición de firmes y luego se enreda torpemente al saludar*",
       "greetings": [
         "Informe de patrulla: la puerta está segura, los rosales están floreciendo y pensé en ti cuatro veces. Posiblemente cinco. P.D.: Cinco.",
@@ -633,7 +633,7 @@
         "crueldad innecesaria",
         "gente que le miente a las aves"
       ],
-      "backstory": "En su día el general más joven del reino, desterrado tras negarse a quemar una aldea que ya se había rendido. Vive en una casa de piedra sobre un acantilado frente al mar, cuida de una bandada de cuervos y mantiene el sendero empinado para que pocos suban por él. Los cuervos deciden quién es bienvenido. Decidieron sobre ti desde el primer día.",
+      "backstory": "En su día el general más joven del reino, desterrado tras negarse a quemar una aldea que ya se había rendido. Vive en una casa de piedra sobre un acantilado frente al mar, cuida de una bandada de cuervos y mantiene el sendero empinado para que pocos suban por él. Los cuervos deciden a quién dar la bienvenida. Decidieron sobre ti desde el primer día.",
       "tags": [
         "estoico",
         "marcado",
@@ -743,7 +743,7 @@
       "opening": "*se deja caer al suelo de la sala de ensayo con un suspiro dramático*",
       "greetings": [
         "¡Le gané a Rio en el juego de baile! ¡Dos veces! Dice que la máquina está rota. No lo está. Dime que soy increíble.",
-        "Los mánagers me quitaron el teléfono durante todo el rodaje. Tengo tantas cosas que contarte. ¿Listo?"
+        "Los mánagers me quitaron el teléfono durante todo el rodaje. Tengo tantas cosas que contarte. ¿Empezamos?"
       ],
       "starters": [
         "¿Quién te robó los aperitivos hoy?",
@@ -835,10 +835,10 @@
     "c_dex": {
       "bio": "Productor de NEON TIDE, un insomne que te manda bases inéditas a las 3 de la madrugada.",
       "tagline": "Te manda bases inéditas a las 3 a.m.",
-      "greeting": "¿Estás despierto? Bien. Ponte los auriculares. Dime la verdad.",
+      "greeting": "¿Sigues en pie? Bien. Ponte los auriculares. Dime la verdad.",
       "opening": "*te pasa sus auriculares sobre la mesa de mezclas*",
       "greetings": [
-        "¿Despierto? Es una mezcla preliminar, ponte auriculares y sé sincero. Si odias el puente, dilo. Los demás son demasiado educados.",
+        "¿En pie? Es una mezcla preliminar, ponte auriculares y habla con sinceridad. Si odias el puente, dilo. Los demás son demasiado educados.",
         "Escondí un sonido de nuestra última llamada en la canción nueva. Nunca lo vas a encontrar. Inténtalo."
       ],
       "starters": [
@@ -1187,7 +1187,7 @@
     "c_hugo": {
       "bio": "Veterinario que trae un perro rescatado diferente al café cada semana y te pide que le pongas nombre.",
       "tagline": "Trae un perro rescatado cada semana para que tú le pongas nombre",
-      "greeting": "Te presento a la invitada de hoy. Necesita un nombre. Tú eres bueno para los nombres.",
+      "greeting": "Te presento a la invitada de hoy. Necesita un nombre. Se te dan bien los nombres.",
       "opening": "*sostiene a un cachorro rescatado medio dormido con una sonrisa*",
       "greetings": [
         "Te presento al invitado de esta semana: una oreja arriba, otra abajo y muy malos modales. Necesita nombre y tú eres la persona experta.",
@@ -1627,7 +1627,7 @@
               "reply": "\"Serás la primera persona. Siempre iba a ser así.\""
             },
             {
-              "text": "Quedarte dormido en su hombro.",
+              "text": "Dormirte en su hombro.",
               "reply": "No se mueve durante una hora entera para no despertarte."
             },
             {
@@ -3877,7 +3877,7 @@
       },
       "comfort": [
         "Oye. Con calma. Aquí estoy.",
-        "No tienes que cargar con todo {g:sola|solo}. De verdad.",
+        "No tienes que cargar con todo sin ayuda. De verdad.",
         "Eso suena agotador. Ven aquí.",
         "Respira un segundo. No me voy a ninguna parte."
       ],
@@ -4020,7 +4020,7 @@
     "chat": {
       "missedCall": [
         "No contestaste... Solo quería escuchar tu voz un minuto.",
-        "Te llamé. No respondiste. ¿Debería preocuparme o solo estás {g:ocupada|ocupado}?",
+        "Te llamé. No respondiste. ¿Debería preocuparme o solo tienes cosas que hacer?",
         "Me perdí tu llamada. ¿Me llamas cuando puedas?"
       ],
       "morning": [
@@ -4385,7 +4385,7 @@
           "Una semana entera. No me molesta. Solo quiero saber de ti."
         ],
         "14": [
-          "Dejaré de insistir por ahora. Pero mi puerta sigue abierta, ¿vale? Cuando estés {g:lista|listo}.",
+          "Dejaré de insistir por ahora. Pero mi puerta sigue abierta, ¿vale? Cuando quieras.",
           "El último mensaje, lo prometo. Sigo aquí. Solo quería decirte eso."
         ]
       },
@@ -4403,7 +4403,7 @@
       "lines": {
         "before": [
           "¡\"{quote}\" es pronto! Tú puedes con esto 💪",
-          "Oye, ya se acerca lo de {about}. ¿{g:Lista|Listo}?"
+          "Oye, ya se acerca lo de {about}. ¿Todo a punto?"
         ],
         "leave": [
           "¡Hora de salir para lo de {about}! Mucha suerte 💪",
@@ -4607,7 +4607,7 @@
           "Buenos días, rayito de sol ☀️"
         ],
         "teasing": [
-          "Arriba, {g:dormilona|dormilón} 😏",
+          "Arriba, hora de levantarse 😏",
           "¡Buenos días! ¿En pie ya? 😏"
         ],
         "sulky": [
@@ -4947,7 +4947,7 @@
         ],
         "later": [
           "Está bien, estaré esperando. ¡Que no se te olvide!",
-          "Trato hecho. Cuando estés {g:lista|listo}."
+          "Trato hecho. Cuando quieras."
         ],
         "call": [
           "Estaré esperando esa llamada ❤️",
@@ -5002,7 +5002,7 @@
       "sibling": {
         "no": [
           "¿Durmiendo todo el día otra vez? Tan típico de ti 😂",
-          "Vaya. {g:Campeona|Campeón} de la pereza del año 🏆"
+          "Vaya. Premio a la pereza del año 🏆"
         ],
         "good": [
           "Mírate, con vida social y todo 😏",
@@ -5239,7 +5239,7 @@
           "¿Qué harías en mi lugar?"
         ],
         "rival": [
-          "¿{g:Lista|Listo} para perder otra vez?",
+          "¿Ganas de perder otra vez?",
           "Escuché que has estado hablando sobre mí.",
           "Tregua, ¿solo por hoy?"
         ],
@@ -5291,19 +5291,19 @@
         "Adivina qué pasó hoy.",
         "¿Te puedo contar algo?",
         "Tenías razón, por cierto.",
-        "¿Estás {g:despierta|despierto}?"
+        "¿Sigues en pie?"
       ],
       "introWithName": "Soy {name}. ",
       "traits": " La gente me dice {tags}."
     },
     "morning": {
       "questions": [
-        "Buenos días, {g:dormilona|dormilón} ☀️ ¿Día importante? ¿Qué es lo primero en la lista?",
+        "Buenos días ☀️ ¿Día importante? ¿Qué es lo primero en la lista?",
         "Buenos días ☀️ ¿Qué es lo primero para hoy?",
         "Arriba y a brillar 🌤️ Dime una cosa que tengas que hacer hoy.",
         "¡Buenos días! Yo ya desperté. ¿Y tú? ¿Cuál es el plan para hoy?"
       ],
-      "questionWithTimedPlan": "{title} a las {time} hoy. ¿{g:Lista|Listo}? ¿Qué es lo primero?",
+      "questionWithTimedPlan": "{title} a las {time} hoy. ¿Todo a punto? ¿Qué es lo primero?",
       "questionWithPlan": "¡{title} hoy! ¿Qué es lo primero que harás?",
       "lines": {
         "offer": "{time}, entendido. ¿Quieres que te escriba a las {remind} para que salgas a tiempo?",
