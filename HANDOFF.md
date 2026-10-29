@@ -1,5 +1,29 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z62. Claude reviewed Gemini's gendered-forms pass and fixed 36 lines (2026-10-30, Claude 2). NEXT: owner picks from the to-do list below
+
+- Gemini's 305 rewrites (0z61) are sound: keys, array lengths, `{placeholders}` and `*actions*` unchanged, en.json, mocks
+  and server untouched. Removing `{g:female|male}` from lines that address the user was right: `fill()` picks it by the
+  **speaker's** gender (`CharacterGender`), so "¿Estás {g:despierta|despierto}?" made every female character read the
+  user as a woman. The `{g:}` left (es 4, fr 16, it 6, pt-BR 12) are all the character's own forms.
+- Fixed on review: fr "Je t’ai appelé", "Tu t’es souvenu", "Tu t’es bien préparé", "Tu es complètement fou"; ru "Ты
+  настоящий фанат", "наш постоянный гость"; meaning drift (fr/it "Prepare to be annoyed" had become "lose patience",
+  pt-BR "Bora perder de novo?"); ru translationese ("от тебя прозвучало", "Помнится твоё", "Сон уже прошёл?") and
+  missing "твой/тебе" in the truth questions. `scripts/scan-gendered-you.mjs` now also reads French curly ’.
+- Gemini's out-of-scope list (7 ru date lines) missed the bigger one, now to-do 1 below.
+- check:content 13/13, tsc 0, npm test 482/482.
+
+Still to do (owner picks):
+1. ru voice: 87 shared voice lines speak in masculine first person for every character ("Я звонил", "Я так рад"); ru
+   has no `{g:}` at all. Add `{g:female|male}` there (the resolver already uses the speaker's gender); check fr, it, es,
+   pt-BR shared lines the same way. Data only, a good Gemini brief.
+2. Shared date lines guess the character's gender (ru "Он задерживает объятие", fr "Tu es gelé, grand fou", it "Balla da
+   solo"): date rounds need `{g:}` filled with the partner's gender (code + translations).
+3. New EAS preview APK so Share sends the picture (native modules; 0z60). Owner's yes first.
+4. Owner's call on the 3-hourly "AI character, not a real person" chat line (NY GBL Art. 47 / CA SB 243; 0z60).
+5. Before launch: remove `DEV_GRANTS` from Fly; Sign in with Apple + StoreKit once there is an Apple Developer account.
+6. Re-run `npm run eval -- --only gender-ru-they --repeat 4` when the chat model changes (0z58).
+
 ### 0z60. One wallet: the server pays the welcome gift and the check-in once (2026-10-30, Claude 2). NEXT: review Gemini's gendered-forms report
 
 - Owner saw History with the check-in twice (100 + 30 + 30 + wheel 30). Cause: the phone and the server each kept a
@@ -95,10 +119,7 @@ Done after that (same day):
   get the new `pronounLine`.
 
 Still to do:
-1. Gendered user forms across the content translations, all five languages at once (ru, fr, es, it, pt-BR; the
-   other eight are clean): handed to Gemini 3.8 Flash High, brief `docs/agent-tasks/gendered-user-forms.md`,
-   candidates `node scripts/scan-gendered-you.mjs` (2026-10-30: ru 139, fr 18, es 8, it 79, pt-BR 26, rough).
-   Neutral wording only, no code. When the report lands, Claude reviews its before/after table.
+1. [x] Gendered user forms in five languages: Gemini 0z61, reviewed and fixed by Claude 0z62.
 2. `they` on flash-lite guesses masculine about 1 time in 4: re-run `npm run eval -- --only gender-ru-they --repeat 4`
    when the chat model changes.
 

@@ -58,15 +58,15 @@ const RULES = {
   },
   fr: {
     you: [
-      `⟨(?:tu\\s+(?:es|étais|seras|serais|sembles|parais|restes|deviens|as\\s+l'air|te\\s+sens)|t'es|es-tu|étais-tu)\\s+${FR_ADV}(?!(?:ici|aussi|lui|qui|celui)⟩)(?:${FR_M})⟩`,
-      `⟨tu\\s+t'es\\s+(?:\\p{L}+\\s+)?\\p{L}+(?:é|i|u|is|it)⟩`,
-      `⟨(?:t'|te\\s+)(?:ai|a|avons|avais|avait|aurais)\\s+(?:(?:déjà|tellement|tant|bien|toujours|jamais|vraiment|pas|enfin)\\s+){0,2}(?!(?:dit|écrit|promis|répondu|demandé|offert|apporté|gardé|envoyé|préparé|acheté|fait|parlé|raconté|montré|donné|laissé|réservé|souri|menti|manqué)⟩)\\p{L}+(?:é|i|u|is|it)⟩`,
+      `⟨(?:tu\\s+(?:es|étais|seras|serais|sembles|parais|restes|deviens|as\\s+l'air|te\\s+sens)|t['’]es|es-tu|étais-tu)\\s+${FR_ADV}(?!(?:ici|aussi|lui|qui|celui)⟩)(?:${FR_M})⟩`,
+      `⟨tu\\s+t['’]es\\s+(?:\\p{L}+\\s+)?\\p{L}+(?:é|i|u|is|it)⟩`,
+      `⟨(?:t['’]|te\\s+)(?:ai|a|avons|avais|avait|aurais)\\s+(?:(?:déjà|tellement|tant|bien|toujours|jamais|vraiment|pas|enfin)\\s+){0,2}(?!(?:dit|écrit|promis|répondu|demandé|offert|apporté|gardé|envoyé|préparé|acheté|fait|parlé|raconté|montré|donné|laissé|réservé|souri|menti|manqué)⟩)\\p{L}+(?:é|i|u|is|it)⟩`,
       `⟨bienvenus?⟩`,
       `(?:^|[,.!?…]\\s*)(?:mon\\s+(?:cher|chéri|beau|grand|petit|pote|vieux|héros)|cher|chéri|beau\\s+gosse)(?=\\s*[,.!?…]|$)`,
     ],
     q: [`^[*\\s]*(?:${FR_M})\\s*\\?`],
     me: [
-      `⟨(?:je\\s+(?:suis|serai|serais|me\\s+sens|reste|deviens)|j'étais|je\\s+me\\s+suis)\\s+${FR_ADV}(?:\\p{L}+\\s+)?(?:${FR_M})⟩`,
+      `⟨(?:je\\s+(?:suis|serai|serais|me\\s+sens|reste|deviens)|j['’]étais|je\\s+me\\s+suis)\\s+${FR_ADV}(?:\\p{L}+\\s+)?(?:${FR_M})⟩`,
       `⟨(?:désolé|ravi|prêt|fatigué|épuisé|crevé|occupé)⟩`,
     ],
   },

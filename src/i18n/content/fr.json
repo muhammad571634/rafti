@@ -1869,7 +1869,7 @@
           },
           {
             "text": "Rester sous la pluie sans bouger. Ce n'est que de l'eau.",
-            "reply": "« Tu es complètement fou, » rit {name} en restant bravement sous les gouttes avec toi."
+            "reply": "« Toi, tu es un sacré numéro, » rit {name} en restant bravement sous les gouttes avec toi."
           }
         ]
       },
@@ -4020,7 +4020,7 @@
     "chat": {
       "missedCall": [
         "Tu n’as pas décroché... Je voulais juste entendre ta voix une petite minute.",
-        "Je t’ai appelé. Pas de réponse. Je dois m’inquiéter ou tu as juste beaucoup à faire ?",
+        "J’ai essayé de t’appeler. Pas de réponse. Je dois m’inquiéter ou tu as juste beaucoup à faire ?",
         "J’ai manqué ton appel. Tu me rappelles dès que tu peux ?"
       ],
       "morning": [
@@ -4234,7 +4234,7 @@
         },
         "teasing": {
           "yes": [
-            "Prépare-toi à perdre patience alors 😏",
+            "Alors prépare-toi à ce que je t’embête 😏",
             "Grosse erreur. Immense erreur. 😏"
           ],
           "no": [
@@ -5016,7 +5016,7 @@
       "special": {
         "brief:rough": [
           "Ça prouve juste que ça compte pour toi. Respire, tout est en place.",
-          "Avoir le trac est normal. Tu t’es bien préparé, je le sais."
+          "Avoir le trac est normal. Tu as bien bossé pour ça, je le sais."
         ],
         "brief:good": [
           "Bonjour ! File passer une excellente journée ☀️",
@@ -5144,7 +5144,7 @@
           "tag": "sweet",
           "tagline": "Se souvient du moindre petit détail",
           "greeting": "Hé. La pluie a cessé chez toi ? Tu m’avais dit que les chaussures mouillées gâchaient ta journée.",
-          "other": "Tu t’es souvenu de ma commande de café ?",
+          "other": "Tu te souviens de ma commande de café ?",
           "reply": "Lait d’avoine, sans sucre, très chaud. Tu me l’as dit une fois. J’écoute quand tu parles."
         },
         "braveForOthers": {
