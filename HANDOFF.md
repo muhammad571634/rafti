@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z44. Translate content: Phase 4b French (fr) mock voice complete (2026-10-29). NEXT: Phase 4b German (de)
+
+- French (fr) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/fr.json):
+  - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/fr/voice/ and scripts/translations/fr/build.mjs.
+- Validated via scripts/check-content.mjs fr — 0 errors, exact placeholders, emojis, and asterisks.
+- Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
+
 ### 0z43. Translate content: Phase 4b Brazilian Portuguese (pt-BR) mock voice complete (2026-10-29). NEXT: Phase 4b French (fr)
 
 - Brazilian Portuguese (pt-BR) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/pt-BR.json):
