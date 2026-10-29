@@ -427,6 +427,8 @@
     },
     "aiCharacter": "AIキャラクター",
     "share": "シェア",
+    "shareTitle": "画像でシェア",
+    "shareHint": "{{name}}とのチャットをそのままカードに。ストーリーに投稿したり、友だちに送ったりできます。",
     "streakShort_other": "{{count}}日",
     "aiNotice": "{{name}}はAIキャラクターであり、実在の人物ではありません。",
     "voiceQuota": "今月の音声返信上限に達しました。{{date}}にリセットされます。テキストでの返信は継続します。",

@@ -40,9 +40,20 @@
   New native modules `react-native-view-shot` + `expo-sharing` (app.json plugin added). The installed preview APK lacks
   them: it gets this update and shares the text instead, no crash. Expo Go has both.
 - New key `chat.share` in 14 locales (the `a11y.share` word). tsc 0, npm test 482/482, check:locales pass.
+- Owner did not see the button at first: the OTA downloads at launch and applies on the next full restart. Checked
+  on the A51 over adb: the glyph shows and the sheet opens.
+- Card v2 (owner: "too plain", prototype `image copy 2.png` as direction only): sheet title "Share as a picture" + one
+  line saying what it is for (`chat.shareTitle`, `chat.shareHint`, 14 locales); the × in the header replaces Cancel.
+  Card head: avatar 52, name, a mint closeness pill ("Lv 1 · title"), world · "AI character"; the bubbles sit on a
+  white panel; foot: wordmark + `app.tagline`, the `peek` mascot bigger (60 → 92 wide, owner: bigger, same pose, never
+  over the chat). Not taken from the prototype: the dark purple card, "+30 shells" (sharing pays nothing), the
+  @handle and store badges (the app is not in the stores yet).
 
 Still to do:
 1. New EAS preview APK build (native modules), then check the picture share and the card on the A51 (owner's yes first).
+2. Owner asked to drop the 3-hourly "AI character, not a real person" line in chats and keep only the header label;
+   it is there for NY GBL Art. 47 / CA SB 243 (`noticeAiIfDue`, `noticeGroupAiIfDue` in the store). Waiting for the
+   owner's call on that legal line before removing it.
 
 ### 0z59. Today header: no shell counter, wordmark and your capsule on one line (2026-10-30, Claude 2). NEXT: owner checks the A51; Gemini's gendered-forms report (0z58 to-do 1)
 

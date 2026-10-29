@@ -427,6 +427,8 @@
     },
     "aiCharacter": "Karakter AI",
     "share": "Bagikan",
+    "shareTitle": "Bagikan sebagai gambar",
+    "shareHint": "Obrolanmu dengan {{name}} jadi kartu siap pakai: unggah ke story atau kirim ke teman.",
     "streakShort_other": "{{count}} hari",
     "aiNotice": "{{name}} adalah karakter AI, bukan orang sungguhan.",
     "voiceQuota": "Balasan suara habis bulan ini dan akan kembali pada {{date}}. Balasan teks tetap berlanjut.",

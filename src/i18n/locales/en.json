@@ -440,6 +440,8 @@
     },
     "aiCharacter": "AI character",
     "share": "Share",
+    "shareTitle": "Share as a picture",
+    "shareHint": "Your chat with {{name}} as a ready card: post it to your story or send it to a friend.",
     "streakShort_one": "{{count}} day",
     "streakShort_other": "{{count}} days",
     "aiNotice": "{{name}} is an AI character, not a real person.",

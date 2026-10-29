@@ -440,6 +440,8 @@
     },
     "aiCharacter": "Personaggio IA",
     "share": "Condividi",
+    "shareTitle": "Condividi come immagine",
+    "shareHint": "La tua chat con {{name}} in una scheda pronta: pubblicala nella tua storia o inviala a qualcuno.",
     "streakShort_one": "{{count}} giorno",
     "streakShort_other": "{{count}} giorni",
     "aiNotice": "{{name}} è un personaggio IA, non una persona reale.",

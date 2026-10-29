@@ -440,6 +440,8 @@
     },
     "aiCharacter": "KI-Figur",
     "share": "Teilen",
+    "shareTitle": "Als Bild teilen",
+    "shareHint": "Dein Chat mit {{name}} als fertige Karte: Poste sie in deiner Story oder schick sie jemandem.",
     "streakShort_one": "{{count}} Tag",
     "streakShort_other": "{{count}} Tage",
     "aiNotice": "{{name}} ist eine KI-Figur, kein echter Mensch.",

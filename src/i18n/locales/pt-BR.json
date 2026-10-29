@@ -440,6 +440,8 @@
     },
     "aiCharacter": "Personagem de IA",
     "share": "Compartilhar",
+    "shareTitle": "Compartilhar como imagem",
+    "shareHint": "Sua conversa com {{name}} em um cartão pronto: poste no seu story ou envie para alguém.",
     "streakShort_one": "{{count}} dia",
     "streakShort_other": "{{count}} dias",
     "aiNotice": "{{name}} é um personagem de IA, não uma pessoa real.",

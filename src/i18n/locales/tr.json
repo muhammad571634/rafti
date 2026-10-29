@@ -440,6 +440,8 @@
     },
     "aiCharacter": "Yapay zeka karakteri",
     "share": "Paylaş",
+    "shareTitle": "Resim olarak paylaş",
+    "shareHint": "{{name}} ile sohbetin hazır bir kartta: hikâyende paylaş ya da birine gönder.",
     "streakShort_one": "{{count}} gün",
     "streakShort_other": "{{count}} gün",
     "aiNotice": "{{name}} bir yapay zeka karakteridir, gerçek bir kişi değildir.",
