@@ -1,6 +1,7 @@
 # Launch motion: "someone is waiting for you"
 
-Status: design, waiting for the owner's approval of the preview videos.
+Status: approved by the owner on 2026-10-29 (both previews). The onboarding steps after the first hello (age,
+name, ...) get their own spec next.
 Previews (Remotion, silent, A51 1080 x 2400): `../sigmazam-motion/out/welcome-back.mp4` (4.2 s),
 `../sigmazam-motion/out/first-hello.mp4` (4.8 s). Sources: `../sigmazam-motion/src/WelcomeBack.tsx`, `FirstHello.tsx`.
 
@@ -27,10 +28,14 @@ you talked to last, typing dots for ~0.6 s, then one short line ("You're back! M
 shrinks into the mascot and the mascot sinks back. Total under 4 s, the screen stays fully usable under it.
 
 - Tap the bubble: open that chat (`/chat/[id]`). Tap anywhere else or scroll: it leaves at once.
-- When: a cold launch, or a return from background after 30 min or more. Not during onboarding, not when the app
-  was opened from a notification or deep link, not when there is no conversation yet.
-- The line: the newest unread AI message of that conversation if there is one (preview, one line); otherwise one
-  of a few short welcome lines from the locale files (all 14 locales; no language lists in code).
+- When (owner, 2026-10-29): only after the app has been away for 1 hour or more (a cold launch or a return from
+  background counts the same; the clock is the last time the app went to background). Never more often. Not during
+  onboarding, not when the app was opened from a notification or deep link, not when there is no conversation yet.
+- Who: the character of the conversation with the newest `lastMessageAt`.
+- The line: the newest unread AI message of that conversation if there is one (preview, one line, already in the
+  language the character writes in); otherwise one of a few short welcome lines from the locale files, in the app's
+  language (`i18n.language`: the user's saved choice, else the phone's language, else English). All 14 locales;
+  no language lists in code. Long lines (de, ru, fr) wrap to two lines inside the bubble, never truncate mid-word.
 - Reduce Motion: no rise or pop, the bubble fades in and out in place. VoiceOver: announced as
   "<name>: <line>", a button that opens the chat.
 - No haptic on this one (it happens on every open; HIG Playing haptics: use sparingly).
