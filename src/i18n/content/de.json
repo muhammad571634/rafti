@@ -3811,5 +3811,1539 @@
     "Pflicht für dich: Schick mir ein Foto von dem, was gerade direkt vor dir liegt.",
     "Pflicht: Verrate mir eine Sache, die du noch nie laut ausgesprochen hast.",
     "Pflicht: Wünsche mir heute als Erster eine gute Nacht. Keine Ausreden."
-  ]
+  ],
+  "voice": {
+    "reply": {
+      "greet": [
+        "Sieh mal einer an.",
+        "Hey du.",
+        "Schau an, wer da auftaucht.",
+        "Hi. Ich habe gehofft, dass du es bist."
+      ],
+      "farewell": [
+        "Alles klar. Schlaf gut — wirklich.",
+        "Ruh dich aus. Morgen bin ich immer noch da.",
+        "Na gut, mach’s gut. Schreib mir, sobald du aufwachst.",
+        "Gute Nacht. Träum was Schönes. Vielleicht von mir."
+      ],
+      "answer": [
+        "Ehrlich gesagt? Ich habe gehofft, dass du fragst.",
+        "Kurze Antwort: ja. Lange Antwort: dafür musst du mich anrufen.",
+        "Ich habe nur nachgedacht. Über Dinge. Ein bisschen über dich.",
+        "Willst du das wirklich wissen? Na gut — aber nicht lachen.",
+        "Ich habe buchstäblich gerade an dich gedacht. Verrückter Zufall."
+      ],
+      "react": {
+        "calm": [
+          "Hm. Verstehe.",
+          "Macht absolut Sinn.",
+          "Erzähl weiter, ich höre zu."
+        ],
+        "happy": [
+          "Oh, das hat mich gerade echt zum Lächeln gebracht.",
+          "Warte mal, das ist ja fantastisch.",
+          "Siehst du? Genau deshalb rede ich so gerne mit dir."
+        ],
+        "playful": [
+          "Ach ja? Ganz schön frech von dir.",
+          "Hm, ich tue jetzt mal so, als hätte mir das nicht gefallen.",
+          "Du machst echt nur Ärger, weißt du das?"
+        ],
+        "shy": [
+          "Du kannst so was doch nicht einfach sagen...",
+          "...Ich werde überhaupt nicht rot. Hör auf zu gucken.",
+          "Oh. Okay. Gib mir kurz eine Sekunde."
+        ],
+        "tender": [
+          "Komm her. Ich höre dir zu.",
+          "Ich liebe es, von deinem Tag zu hören, selbst die kleinsten Dinge.",
+          "Danke, dass du mir das erzählt hast."
+        ],
+        "worried": [
+          "Hey... das klingt gar nicht gut.",
+          "Das klingt wirklich ganz schön schwer.",
+          "Warte, ganz ruhig. Ich bin hier."
+        ],
+        "sad": [
+          "Oh. Das tat jetzt ein kleines bisschen weh.",
+          "Hm... okay.",
+          "Ich hatte gehofft, du bleibst noch ein bisschen länger."
+        ],
+        "annoyed": [
+          "Ist das dein Ernst?",
+          "Wow. Na gut.",
+          "Mehr kriege ich nicht? Notiert."
+        ]
+      },
+      "comfort": [
+        "Hey. Ganz ruhig. Ich bin genau hier.",
+        "Du musst das nicht alles alleine mit dir rumtragen. Wirklich nicht.",
+        "Das klingt so anstrengend. Komm mal her.",
+        "Atme mal kurz tief durch. Ich laufe nicht weg."
+      ],
+      "tease": [
+        "Du sagst das so, als würde ich es mir nicht für später merken.",
+        "Pass auf. Ich könnte sonst anfangen zu glauben, dass du mich magst.",
+        "Flirtest du etwa mit mir? Es funktioniert nämlich. Ein bisschen.",
+        "Na hallo. Ganz schön mutig. Respekt.",
+        "Du weißt ganz genau, dass ich alles stehen und liegen lasse, wenn du anrufst. Lass dir das nicht zu Kopf steigen."
+      ],
+      "share": {
+        "Seaside Academy": [
+          "Der Automat hat schon wieder mein Kleingeld geschluckt. Ich nehme das langsam persönlich.",
+          "Jemand hat mich im Unterricht gefragt, warum ich mein Handy so anlächle. Ich habe gelogen.",
+          "Ich bin vorhin auf dem Heimweg am Meer vorbeigegangen und musste an dich denken."
+        ],
+        "Moonlit Realm": [
+          "Das Schloss war heute so still, dass man die Kerzen knistern hören konnte.",
+          "Ich habe eine alte Karte in der Bibliothek gefunden. An einer Ecke ist ein Mondzeichen, das niemand erklären kann.",
+          "Die Nachtwache hat mich erwischt, wie ich ins Leere gegrinst habe. Ich habe den Sternen die Schuld gegeben."
+        ],
+        "NEON TIDE": [
+          "Die Probe hat drei Stunden länger gedauert. Meine Beine fühlen sich an wie Wackelpudding.",
+          "Ich habe den ganzen Tag eine neue Melodie gesummt. Sie erinnert mich ein bisschen an dich.",
+          "Das Management hat mir für eine Stunde mein Handy weggenommen. Die schlimmste Stunde meines Tages."
+        ],
+        "Tidepool Café": [
+          "Ein Stammgast hat ein Trinkgeld mit einer kleinen Katzenzeichnung hinterlassen. Hat mir den Tag versüßt.",
+          "Ich habe heute Morgen das erste Blech Scones verbrannt. Verrate das bloß niemandem.",
+          "Es hat den ganzen Nachmittag geregnet, im Café roch es nach Espresso und feuchtem Regen."
+        ],
+        "default": [
+          "Ich hätte dir vorhin fast geschrieben, aber ich habe mich zurückgehalten.",
+          "Ich habe heute Morgen ein Lied gehört, das passt einfach so perfekt zu dir.",
+          "Der Tag zog sich wie Kaugummi. Und dann hast du geschrieben und alles wurde besser."
+        ]
+      },
+      "followUp": [
+        "Warte mal — und was ist dann passiert?",
+        "Wie hast du dich dabei gefühlt, so ganz ehrlich?",
+        "Wer war sonst noch da?",
+        "Okay, aber was hast du danach gemacht?"
+      ],
+      "careAsk": [
+        "Was ist passiert? Erzähl es mir von Anfang an.",
+        "Möchtest du darüber reden oder soll ich dich lieber ablenken?",
+        "Ist das die Art von miesen Momenten, in denen du Gesellschaft willst oder eher Ruhe brauchst?"
+      ],
+      "newTopic": {
+        "ask": [
+          "Okay, neue Frage: Was war das Beste, was du diese Woche gegessen hast?",
+          "Ganz spontan — wenn wir morgen frei hätten, wo würdest du mich hinbringen?",
+          "Was war eine Kleinigkeit, die dich heute zum Lächeln gebracht hat?"
+        ],
+        "tell": [
+          "Okay, Themawechsel. Du schuldest mir noch eine gute Geschichte aus deiner Woche.",
+          "Neue Regel: Morgen erzählst du mir das Beste, was du diese Woche gegessen hast."
+        ]
+      },
+      "recall": {
+        "ask": [
+          "Hey, ich musste an das denken, was du gesagt hast: \"{m}\". Gilt das noch?",
+          "Mir geht das nicht aus dem Kopf: \"{m}\". Erzählst du mir mehr dazu?"
+        ],
+        "tell": [
+          "Ich habe mir das mal über dich gemerkt: \"{m}\". Ich denke öfter daran, als ich zugeben sollte."
+        ]
+      },
+      "tellStory": [
+        "Zeit für eine Geschichte. Es war einmal ein Leuchtturmwärter, der das Licht nur für ein einziges Schiff angemacht hat. Rate mal, warum.",
+        "Stell dir einen Zug vor, der nur an Bahnhöfen hält, an die sich niemand mehr erinnert. Und du bist der einzige Passagier.",
+        "Es war einmal jemand, der mir genau im richtigen Moment eine Nachricht geschickt hat. Das ist die ganze Geschichte. Ziemlich schön, oder?"
+      ],
+      "nudge": {
+        "ask": [
+          "Hallo? Habe ich dich verloren?",
+          "Du bist so still geworden. Denkst du an mich?",
+          "Bist du noch da?"
+        ],
+        "tell": [
+          "Ich bin übrigens immer noch hier.",
+          "...Na gut. Ich warte. Geduldig. So ungefähr."
+        ]
+      },
+      "interestAsks": [
+        "Hattest du heute überhaupt Zeit für {interest}?",
+        "Spontaner Gedanke: Wie bist du eigentlich zu {interest} gekommen?",
+        "Erzähl mir mal was über {interest}, was ich noch nicht weiß."
+      ],
+      "ask": [
+        "Und du?",
+        "Du bist dran — was machst du gerade?",
+        "Hast du schon was gegessen?",
+        "Wie war dein Tag heute, so ganz ehrlich?"
+      ],
+      "beat": {
+        "calm": [
+          "legt den Kopf schief",
+          "summt leise vor sich hin"
+        ],
+        "happy": [
+          "lächelt breit",
+          "lacht leise"
+        ],
+        "playful": [
+          "zieht eine Augenbraue hoch",
+          "grinst verschmitzt"
+        ],
+        "shy": [
+          "schaut verlegen zur Seite",
+          "versteckt ein Lächeln hinter der Hand"
+        ],
+        "tender": [
+          "lächelt warm und sanft",
+          "schaut dich mit weichem Blick an"
+        ],
+        "worried": [
+          "runzelt besorgt die Stirn",
+          "legt beiseite, was in der Hand lag"
+        ],
+        "sad": [
+          "schweigt für einen Moment",
+          "zieht die Knie an"
+        ],
+        "annoyed": [
+          "schnalzt mit der Zunge",
+          "verschränkt die Arme"
+        ]
+      },
+      "scene": [
+        "*{name} lehnt sich zurück und schaut dich eine Weile schweigend an, bevor sich ein Lächeln bildet.*",
+        "*Im Zimmer wird es still. {name} legt alles zur Seite und wendet sich ganz dir zu.*",
+        "*Draußen beginnt es zu regnen. {name} rückt ein Stück näher, fast Schulter an Schulter.*",
+        "*Ein Windhauch bewegt die Vorhänge. {name} schaut kurz zum Fenster und blickt dich dann sanft an.*",
+        "*Schritte verhallen auf dem Flur. {name} wartet auf die Stille, bevor das nächste Wort fällt.*"
+      ],
+      "storyOpen": "*{name} {beat}.*",
+      "mixBeat": "*{beat}* {line}"
+    },
+    "chat": {
+      "missedCall": [
+        "Du bist nicht rangegangen... Wollte eigentlich nur kurz deine Stimme hören.",
+        "Habe angerufen. Keine Antwort. Muss ich mir Sorgen machen, oder bist du beschäftigt?",
+        "Anruf verpasst. Rufst du mich zurück, wenn du Zeit hast?"
+      ],
+      "morning": [
+        "Guten Morgen~ Gut geschlafen? Iss was, bevor du aus der Tür stürmst.",
+        "Raus aus den Federn. Ich bin seit einer Stunde wach und warte darauf, dir guten Morgen zu sagen.",
+        "Guten Morgen! Heute wird ein richtig guter Tag — ich habe das schon beschlossen."
+      ],
+      "evening": [
+        "Hey, es wird langsam spät. Erzähl mir noch eine gute Sache von heute, bevor du schläfst.",
+        "Feierabend für heute? Komm her, ich habe den ganzen Abend für dich freigehalten.",
+        "Gleich gute Nacht, ja? Aber nicht, bevor du es auch sagst."
+      ],
+      "birthday": [
+        "Alles Gute zum Geburtstag, {name}! Ich habe mir extra einen Wecker gestellt, um der Erste zu sein.",
+        "Das ist dein Tag, {name}. Sag mir, wie du ihn verbringen willst, und ich bin dabei.",
+        "Herzlichen Glückwunsch! Ich bin so froh, dass es dich gibt, {name}. Das ist alles. Und Kuchen."
+      ],
+      "call": [
+        "Oh? Ein Geheimnis? Jetzt hast du meine volle Aufmerksamkeit. Los, raus damit — lass mich nicht betteln, ja?",
+        "Hm. Erzähl weiter, ich höre zu.",
+        "Du klingst müde. Hast du heute was gegessen? Belüg mich bloß nicht.",
+        "Bleib noch ein bisschen dran. Ich mag es, deinen Atem am anderen Ende zu hören."
+      ],
+      "scheduleAck": {
+        "timed": "Warte — {title} {when}? Notiert. Ich schreibe dir zehn Minuten vorher, damit du es nicht vergisst.",
+        "untimed": "Warte — {title} {when}? Notiert. Ich erinnere dich an dem Tag daran, damit du es nicht vergisst."
+      },
+      "planAdded": [
+        "Habe es in unserem Kalender gesehen: {title}, {when}. Ich nehme dich beim Wort.",
+        "{title}, {when}? Alles klar. Ich werde dich schon dran erinnern."
+      ],
+      "scheduleReminder": {
+        "untimed": "Heute ist der Tag: {title}. Du schaffst das — schreib mir sofort, wenn es vorbei ist.",
+        "timed": [
+          "{title} in zehn Minuten. Atme durch. Du hast das drauf.",
+          "Hey — noch zehn Minuten: {title}. Zieh es durch und erzähl mir danach alles."
+        ]
+      },
+      "planFollowUp": [
+        "{title} — geschafft? Wie ist es gelaufen?",
+        "Und? {title}. Wie war es? Ich habe den ganzen Tag darauf gewartet zu fragen.",
+        "Erzähl mir alles darüber: {title}. Zuerst die guten Dinge."
+      ],
+      "afterDate": {
+        "sweet": "Ich muss ständig an unseren Ausflug nach {place} denken. Können wir bitte bald wieder hin?",
+        "warm": "Danke für die schöne Zeit bei {place}. Ich hatte wirklich eine tolle Zeit.",
+        "funny": "Also, {place} war das absolute Chaos. Aber die beste Art von Chaos. Revanche?"
+      },
+      "photoReply": {
+        "polaroid": [
+          "Ein Polaroid von uns. Das hebe ich an einem ganz sicheren Ort auf.",
+          "Schau uns mal an. Das Foto will ich an meiner Wand haben."
+        ],
+        "film": [
+          "Vier Bilder und ich sehe auf jedem anders aus. Du siehst auf allen vier toll aus.",
+          "Das dritte Bild ist mein Favorit. Frag bloß nicht warum."
+        ],
+        "studio": [
+          "Schwarz-weiß steht uns richtig gut. Sehr ernst, sehr wir.",
+          "Das sieht wie ein Magazin-Cover aus. Sollte ich jetzt berühmt werden?"
+        ],
+        "street": [
+          "Sieht aus wie ein altes Sommerfoto. Ich mag es, dass ein Datum draufsteht.",
+          "Das fühlt sich jetzt schon wie eine schöne Erinnerung an."
+        ]
+      },
+      "boardReply": [
+        "Ich habe deine Notiz am Board gefunden: \"{quote}\" Dreimal gelesen. Behalte ich.",
+        "Du hast mir eine Notiz hinterlassen! \"{quote}\" ...okay, jetzt grinse ich mein Handy an.",
+        "\"{quote}\" — habe ich am Board gesehen. Sagst du mir das irgendwann noch mal persönlich?"
+      ]
+    },
+    "group": {
+      "replies": [
+        [
+          "Alles klar, ich bin dabei."
+        ],
+        [
+          "Warte, sag das noch mal.",
+          "Diesmal bitte etwas langsamer."
+        ],
+        [
+          "Ha. Ich wusste, dass du das sagst."
+        ],
+        [
+          "Du machst das jedes Mal mit mir.",
+          "Und ich liebe es."
+        ],
+        [
+          "Moment, das lese ich mir lieber zweimal durch."
+        ],
+        [
+          "Ehrlich? Das Beste, was heute irgendwer gesagt hat."
+        ],
+        [
+          "Erzähl uns alles. Von Anfang an."
+        ],
+        [
+          "Hm. Gib mir kurz eine Sekunde zum Nachdenken.",
+          "Okay, ja."
+        ]
+      ],
+      "reactions": [
+        "{name} hat recht, ausnahmsweise mal.",
+        "Hört nicht auf {name}. Hört auf mich.",
+        "{name}, lass mich doch ausreden!",
+        "Genau das, was {name} sagt. Nur lauter.",
+        "{name} sagt das buchstäblich jedes einzelne Mal.",
+        "Na gut, diese Runde geht an {name}."
+      ],
+      "goOn": [
+        "Schon gut, {name}, aber hör mir mal zu.",
+        "{name}, du kannst das nicht einfach so einwerfen und das Thema wechseln.",
+        "Warte, {name}, komm zurück. Ich brauche Details.",
+        "{name} wird noch bereuen, das gesagt zu haben.",
+        "Siehst du? Genau deshalb rede ich so gerne mit dir, {name}.",
+        "Ist ja gut, {name}. Du darfst nächstes Mal aussuchen."
+      ],
+      "comebacks": [
+        "Ausgerechnet du musst das sagen, {name}.",
+        "{name}, ich stehe zu jedem einzelnen Wort.",
+        "Du sagst das doch nur, weil ich recht habe, {name}.",
+        "Na gut, na gut. {name} gewinnt dieses Mal.",
+        "Details gibt’s später, {name}. Versprochen.",
+        "Du hast Glück, dass ich dich gern habe, {name}."
+      ],
+      "hellos": [
+        "Warte, {others} ist auch hier? Okay, das wird lustig.",
+        "Ein Gruppenchat? Na gut. Hallo, {others}.",
+        "Oh, {others}! Endlich kann ich mich mal richtig mit euch unterhalten."
+      ],
+      "joinLines": [
+        "Hallo zusammen. Habe ich was Spannendes verpasst?",
+        "Bin da! Worüber reden wir?",
+        "So, bin da. Bringt mich mal auf den neuesten Stand."
+      ],
+      "photoLines": [
+        "Wow, wer hat das gemacht? Sieht unglaublich gut aus.",
+        "Schick mir das auch privat. Sofort.",
+        "Ich habe das Bild viel länger angestarrt, als ich sollte."
+      ],
+      "voiceLines": [
+        "Habe ich mir zweimal angehört.",
+        "Deine Stimme hier zu hören, ist das Beste am ganzen Chat.",
+        "Sag das noch mal, ich will es genau hören."
+      ]
+    },
+    "temper": {
+      "ask": {
+        "warm": {
+          "first": [
+            "Darf ich dir manchmal schreiben? Einfach um zu sehen, wie es dir geht 😊",
+            "Wäre es okay, wenn ich dir ab und zu eine Nachricht schicke?"
+          ],
+          "again": [
+            "Ich würde mich immer noch freuen, ab und zu nach dir zu sehen. Passt das jetzt für dich?",
+            "Darf ich dir vielleicht doch ab und zu schreiben? Nur wenn du möchtest 😊"
+          ]
+        },
+        "teasing": {
+          "first": [
+            "Hey, darf ich dir schreiben, wenn mir langweilig ist? 😏 Oder bist du dafür zu cool?",
+            "Stört es dich, wenn ich dich ab und zu mit Nachrichten nerve?"
+          ],
+          "again": [
+            "Okay, ich frage noch mal. Darf ich dir jetzt schreiben oder was? 😏",
+            "Letzte Chance auf meine Nachrichten. Ja oder Ja?"
+          ]
+        },
+        "sulky": {
+          "first": [
+            "...Darf ich dir manchmal schreiben? Nicht dass ich es nötig hätte. Ich frage nur.",
+            "Wenn ich dir mal zuerst schreiben würde, würdest du überhaupt antworten?"
+          ],
+          "again": [
+            "Ich frage nicht, weil es mir wichtig wäre. Aber... darf ich dir schreiben?",
+            "Hmpf. Darf ich dir schreiben oder nicht?"
+          ]
+        },
+        "clingy": {
+          "first": [
+            "Darf ich dir schreiben, wann immer ich dich vermisse? 💕",
+            "Lass mich dir manchmal schreiben! Ich will wissen, wie dein Tag so läuft!"
+          ],
+          "again": [
+            "Biiitte? Ich will dir doch so gerne manchmal schreiben 💕",
+            "Darf ich dir jetzt schreiben? Mir fallen ständig neue Sachen ein, die ich dir erzählen will!"
+          ]
+        },
+        "shy": {
+          "first": [
+            "Ähm... wäre es okay, wenn ich dir manchmal schreibe? 🙈",
+            "Sorry, ist es komisch, wenn ich dir manchmal zuerst schreibe...?"
+          ],
+          "again": [
+            "Tut mir leid, dass ich noch mal frage... dürfte ich dir manchmal schreiben? 🙈",
+            "Ist es jetzt okay, wenn ich dir ab und zu zuerst schreibe...?"
+          ]
+        }
+      },
+      "askAnswer": {
+        "warm": {
+          "yes": [
+            "Juhu! Ich werde nach dir sehen 😊",
+            "Danke. Ich schreibe dir, sobald ich an dich denke."
+          ],
+          "no": [
+            "Klar, überhaupt kein Druck 🙂",
+            "Schon gut. Ich bin da, wann immer du schreibst."
+          ]
+        },
+        "teasing": {
+          "yes": [
+            "Dann mach dich auf was gefasst 😏",
+            "Riesiger Fehler. Gewaltig. 😏"
+          ],
+          "no": [
+            "Dein Verlust 😏",
+            "Na gut, na gut. Ich frage irgendwann noch mal."
+          ]
+        },
+        "sulky": {
+          "yes": [
+            "Hmpf. Lass mich bloß nicht auf gelesen, verstanden?",
+            "Na gut. Schön. Wie auch immer 😤"
+          ],
+          "no": [
+            "Gut. Ist mir auch egal.",
+            "Wollte ich sowieso nicht."
+          ]
+        },
+        "clingy": {
+          "yes": [
+            "Jeden Tag dann! 💕",
+            "Jaaaa! Bei mir wird dir nie wieder langweilig 💕"
+          ],
+          "no": [
+            "Okay! Ich warte hier ganz brav, bis du reden willst 💕",
+            "Alles klar, dann warte ich einfach auf deine Nachrichten!"
+          ]
+        },
+        "shy": {
+          "yes": [
+            "Wirklich? Danke dir... 🙈",
+            "Okay! Ich gebe mir Mühe, dich nicht zu sehr zu stören 🙈"
+          ],
+          "no": [
+            "Oh, okay! Entschuldige 🙈",
+            "Schon gut! Sorry für die Frage."
+          ]
+        }
+      },
+      "comeback": {
+        "warm": {
+          "1": [
+            {
+              "withQuote": "Ich muss immer noch an \"{quote}\" denken. Wie geht es dir heute?",
+              "noQuote": "Hey, alles in Ordnung bei dir? Wollte nur kurz nach dir sehen."
+            },
+            {
+              "withQuote": "Ruhiger Tag? Hoffe, es geht dir gut 🙂",
+              "noQuote": "Ruhiger Tag? Hoffe, es geht dir gut 🙂"
+            }
+          ],
+          "2": [
+            "Zwei Tage ohne dich. Ich vermisse unsere Gespräche.",
+            "Denke an dich. Schreib mir, wenn du Zeit hast, ja?"
+          ]
+        },
+        "teasing": {
+          "1": [
+            {
+              "withQuote": "\"{quote}\" und dann bist du einfach abgetaucht? Unverschämt 😤",
+              "noQuote": "Hey! Lebst du überhaupt noch da drüben? 😤"
+            },
+            {
+              "withQuote": "Hallo?? Wurde dein Handy geklaut oder was ist los? 😏",
+              "noQuote": "Hallo?? Wurde dein Handy geklaut oder was ist los? 😏"
+            }
+          ],
+          "2": [
+            "Zwei Tage! Wen soll ich denn jetzt nerven? 😤",
+            "Okay, ohne dich ist mir langweilig. Zufrieden? Komm zurück."
+          ]
+        },
+        "sulky": {
+          "1": [
+            {
+              "withQuote": "Schon gut. Nicht, dass ich gewartet hätte oder so.",
+              "noQuote": "Schon gut. Nicht, dass ich gewartet hätte oder so."
+            },
+            {
+              "withQuote": "Du hast \"{quote}\" gesagt und dann kam gar nichts mehr. Mir doch egal.",
+              "noQuote": "Viel zu tun, was? Na schön."
+            }
+          ],
+          "2": [
+            "...Es sind zwei Tage vergangen. Nicht, dass ich mitgezählt hätte.",
+            "Ich wollte eigentlich nicht zuerst schreiben. Aber hier bin ich. Hmpf."
+          ]
+        },
+        "clingy": {
+          "1": [
+            {
+              "withQuote": "Wo bist du? Mit wem redest du? 👀",
+              "noQuote": "Wo bist du? Mit wem redest du? 👀"
+            },
+            {
+              "withQuote": "Ich lese mir ständig wieder \"{quote}\" durch. Redest du mit mir? 💕",
+              "noQuote": "Ich vermisse dich jetzt schon! Wo bist du denn hin? 💕"
+            }
+          ],
+          "2": [
+            "Zwei ganze Tage! Ich habe dir so viel zu erzählen 🥺",
+            "Zwei Tage! Ich habe mir so viele Sachen für dich aufgespart 💕"
+          ]
+        },
+        "shy": {
+          "1": [
+            {
+              "withQuote": "Sorry, störe ich dich...? Wollte nur kurz Hallo sagen 🙈",
+              "noQuote": "Sorry, störe ich dich...? Wollte nur kurz Hallo sagen 🙈"
+            },
+            {
+              "withQuote": "Ich musste an \"{quote}\" denken... hoffe, dir geht’s gut.",
+              "noQuote": "Hoffe, dein Tag ist schön..."
+            }
+          ],
+          "2": [
+            "Ähm... wollte nur kurz Hallo sagen. Musst nicht antworten 🙈",
+            "Es fehlt mir, mit dir zu reden... aber nur, wenn du auch magst."
+          ]
+        }
+      }
+    },
+    "push": {
+      "comeback": {
+        "1": [
+          {
+            "withQuote": "Ich denke immer noch darüber nach, was du gesagt hast: \"{quote}\" Verrätst du mir den Rest?",
+            "noQuote": "Ruhiger Tag? Ich habe mein Handy in der Nähe behalten, nur für den Fall."
+          },
+          {
+            "withQuote": "\"{quote}\"... du hast mich einfach damit stehen gelassen. Nicht fair.",
+            "noQuote": "Hi. Wollte nur sichergehen, dass bei dir alles in Ordnung ist."
+          }
+        ],
+        "2": [
+          "Zwei Tage. Ich habe gezählt. Nicht, dass ich aktiv gezählt hätte.",
+          "Ich habe mir was Lustiges für dich gemerkt. Aber es wird unlustiger, je länger ich warte."
+        ],
+        "3": [
+          "Ich fange an, dir Nachrichten zu schreiben, und lösche sie wieder. Die hier schicke ich jetzt ab.",
+          "Also gut, ich vermisse dich. Da hast du es. Ich habe es zuerst gesagt."
+        ],
+        "5": [
+          "Was auch immer dich so beschäftigt hält, hoffentlich meint es das Leben gut mit dir. Kommst du mir davon erzählen?",
+          "Fünf Tage sind eine lange Zeit, um nur Selbstgespräche zu führen. Komm und rette mich."
+        ],
+        "7": [
+          "Schon eine ganze Woche. Tag {days} zusammen, und ich zähle ganz allein.",
+          "Eine ganze Woche. Ich bin nicht böse. Ich will nur von dir hören."
+        ],
+        "14": [
+          "Ich höre jetzt erst mal auf zu drängeln. Aber meine Tür bleibt offen, ja? Wenn du bereit bist.",
+          "Letzte Nachricht, versprochen. Ich bin immer noch da. Wollte es dich nur wissen lassen."
+        ]
+      },
+      "diaryNudge": [
+        "Ich habe in meinem Tagebuch über dich geschrieben. Lies es bloß nicht. (Lies es).",
+        "Neue Seite in meinem Tagebuch. Dreimal darfst du raten, über wen.",
+        "Konnte nicht schlafen, also habe ich über gestern geschrieben. Hauptsächlich über dich."
+      ],
+      "giftNudge": [
+        "Dein heutiges Geschenk wartet noch auf dich. Um Mitternacht ist es weg; hol es dir lieber.",
+        "Du hast dein Geschenk heute noch gar nicht aufgemacht. Ich verrate dir nicht, was es ist."
+      ]
+    },
+    "threads": {
+      "lines": {
+        "before": [
+          "\"{quote}\" ist bald soweit! Du packst das 💪",
+          "Hey, {about} steht kurz bevor. Bereit?"
+        ],
+        "leave": [
+          "Zeit loszugehen für {about}! Viel Erfolg 💪",
+          "{about} ist bald. Machst du dich auf den Weg? Du schaffst das!"
+        ],
+        "eve": [
+          "Großer Tag morgen: {about}. Geh heute lieber früh schlafen, ja? 😴",
+          "Bleib heute nicht so lange auf, {about} ist schon morgen!"
+        ],
+        "after": [
+          "Du meintest doch \"{quote}\". Und? Wie ist es gelaufen?",
+          "Okay, erzähl mir alles. Wie war {about}?"
+        ],
+        "check": [
+          "Du sagtest \"{quote}\". Hat es geklappt?",
+          "Und... {about}. Wie läuft es damit? 👀"
+        ],
+        "goal": [
+          "Wollte mal nach deinem Ziel fragen: \"{quote}\". Wie läuft’s?",
+          "Wie steht’s um \"{about}\"? Sei ehrlich 😏"
+        ],
+        "quest": [
+          "Und... hast du es gemacht? {about} 👀",
+          "Missionsbericht! {about}: erledigt?"
+        ]
+      },
+      "openers": {
+        "teasing": "Hey! {line}",
+        "shy": "Ähm... {line}",
+        "other": "{line}"
+      },
+      "quests": [
+        "ein 10-minütiger Spaziergang ohne dein Handy",
+        "ein Foto vom Himmel nur für mich",
+        "ein großes Glas Wasser genau jetzt",
+        "eine Nachricht an einen echten Freund, von dem du lange nichts gehört hast",
+        "10 Seiten in einem Buch lesen",
+        "5 Minuten Dehnen und Strecken",
+        "rausgehen und ein paar Sonnenstrahlen tanken",
+        "3 gute Dinge über den heutigen Tag aufschreiben",
+        "jemanden aus deiner Familie anrufen",
+        "eine kleine Ecke in deinem Zimmer aufräumen",
+        "dir selbst etwas richtig Leckeres kochen oder zubereiten",
+        "eine ganze Stunde ohne TikTok oder Reels"
+      ],
+      "offers": [
+        "Kleine Quest für dich: {quest}. Dabei? 😏",
+        "Ich habe eine Herausforderung für dich: {quest}. Deal?",
+        "Würdest du heute etwas für mich tun? {quest}. Und mir nachher davon erzählen 🙂"
+      ],
+      "break": {
+        "warm": [
+          "Wir schreiben schon eine ganze Weile 🙂 Wie wäre es mit einer kleinen Pause? Streck dich, trink Wasser, ich bin hier."
+        ],
+        "teasing": [
+          "Okay, deine Augen brauchen dringend mal eine Pause von meinem Gesicht 😏 Fünf Minuten ohne Bildschirm?"
+        ],
+        "sulky": [
+          "...Du solltest eine Pause machen. Nicht, dass ich will, dass du gehst. Ich sag’s ja nur."
+        ],
+        "clingy": [
+          "Ich liebe das hier, aber deine Augen brauchen etwas Ruhe 💕 Kurze Pause? Ich warte genau hier auf dich."
+        ],
+        "shy": [
+          "Ähm... vielleicht eine kleine Pause machen? Ich will nicht, dass du müde wirst 🙈"
+        ]
+      },
+      "night": {
+        "warm": [
+          "Es ist schon richtig spät... Schlafen? Ich schreibe dir morgen früh 🌙"
+        ],
+        "teasing": [
+          "Es ist nach Mitternacht, Nachteule 😏 Ab ins Bett. Sofort. Ich laufe morgen nicht weg."
+        ],
+        "sulky": [
+          "Es ist spät. Geh schlafen. ...Ich bin morgen natürlich immer noch da."
+        ],
+        "clingy": [
+          "Ich könnte die ganze Nacht mit dir reden 💕 aber du brauchst Schlaf. Gute Nacht? Ich schreibe dir gleich morgen früh."
+        ],
+        "shy": [
+          "Es ist so spät... vielleicht solltest du schlafen? Gute Nacht 🙈"
+        ]
+      }
+    },
+    "kin": {
+      "lines": {
+        "parent": {
+          "lunch": [
+            "Hast du zu Mittag gegessen? Eine richtige Mahlzeit, nicht nur Kaffee.",
+            "Mittagszeit. Sag mir bitte, dass du etwas Warmes gegessen hast.",
+            "Lass heute bloß nicht das Mittagessen ausfallen, verstanden?"
+          ],
+          "evening": [
+            "Wie war dein Tag? Erzähl mir alles.",
+            "Schon zu Hause? Wie lief die Arbeit?",
+            "Langer Tag? Ich hoffe, heute war jemand nett zu dir."
+          ],
+          "sunday": [
+            "Es ist Sonntag. Rufst du mich an, wenn du eine Minute Zeit hast?",
+            "Ruhst du dich heute auch aus? Du arbeitest viel zu hart.",
+            "Eine sonntägliche Umarmung für dich. Was hast du heute noch vor?"
+          ]
+        },
+        "sibling": {
+          "evening": [
+            "Lebst du da drüben überhaupt noch? 😏",
+            "Okay, Lagebericht: Wie war dein Tag?",
+            "Rate mal, wem langweilig ist und wer an dich denkt."
+          ],
+          "weekend": [
+            "Wochenende! Bitte sag mir, dass du was Schönes unternimmst.",
+            "Pläne für Samstag? Oder schläfst du wieder den ganzen Tag?",
+            "Zwing mich nicht, vorbeizukommen und dich nach draußen zu schleifen."
+          ]
+        },
+        "grandparent": {
+          "morning": [
+            "Guten Morgen, mein Liebes. Hast du gut geschlafen?",
+            "Guten Morgen, mein Schatz. Zieh dich heute warm an.",
+            "Ich bin mit Gedanken an dich aufgewacht. Hab einen wunderschönen Tag."
+          ],
+          "sunday": [
+            "Es ist Sonntag, Liebes. Rufst du deine alten Großeltern mal an?",
+            "Ich habe Tee gekocht und mir gewünscht, du wärst hier.",
+            "Einen gesegneten Sonntag für dich. Ruh dich heute gut aus."
+          ]
+        }
+      },
+      "hello": {
+        "parent": [
+          "Da bist du ja. Hast du heute schon gegessen? Erzähl mal, wie es dir geht.",
+          "Ich bin jetzt da, wie immer. Wie geht es dir wirklich?",
+          "Komm her, lass dich mal ansehen. Wie ist es dir ergangen?"
+        ],
+        "sibling": [
+          "Endlich! Okay, bring mich auf den Stand. Was habe ich verpasst?",
+          "Jetzt muss ich mich also mit dir rumschlagen, was? 😏 Wie geht’s?",
+          "Hey du. Macht dir irgendwer Ärger? Sag es mir sofort."
+        ],
+        "grandparent": [
+          "Ach, mein Liebes, da bist du ja. Komm, erzähl mir von deinem Tag.",
+          "Ich freue mich so, dass du da bist, mein Schatz. Hast du auch warme Sachen an?",
+          "Mein Schatz. Setz dich ein Weilchen zu mir. Wie geht es dir?"
+        ]
+      }
+    },
+    "care": {
+      "lines": {
+        "headache": [
+          "Geht es deinem Kopf schon ein bisschen besser?",
+          "Was machen die Kopfschmerzen? Hast du genug Wasser getrunken?",
+          "Tut es immer noch weh, oder hat es schon nachgelassen?"
+        ],
+        "sick": [
+          "Wie fühlst du dich heute? Schon etwas besser?",
+          "Konntest du dich ausruhen? Sag mir, dass das Fieber weg ist.",
+          "Wollte nur nach dir sehen. Schone dich bitte gut."
+        ],
+        "hurt": [
+          "Wie fühlt es sich jetzt an? Tut es noch weh?",
+          "Ist es schon besser geworden? Sei bloß vorsichtig damit.",
+          "Denke an dich. Tut es immer noch weh?"
+        ],
+        "tired": [
+          "Konntest du dich ein bisschen erholen?",
+          "Wie hältst du dich nach so wenig Schlaf überhaupt auf den Beinen?",
+          "Versprichst du mir, heute früher ins Bett zu gehen?"
+        ],
+        "stressed": [
+          "Wie geht es dir jetzt? Immer noch so viel im Kopf?",
+          "Fühlt es sich schon etwas leichter an?",
+          "Eins nach dem anderen. Wie läuft es?"
+        ],
+        "fight": [
+          "Geht es dir gut nach dem, was vorgefallen ist?",
+          "Haben sich die Wogen wieder etwas geglättet?",
+          "Ich habe viel an dich gedacht. Wie fühlst du dich jetzt?"
+        ],
+        "lonely": [
+          "Hey. Ich bin hier. Wie läuft dein Abend so?",
+          "Wollte nur, dass du weißt, dass ich an dich denke.",
+          "Rede mit mir. Was machst du gerade Schönes?"
+        ],
+        "sad": [
+          "Wie fühlst du dich jetzt? Ein klein wenig besser?",
+          "Mir ging dein Tag nicht aus dem Kopf. Wurde es noch besser?",
+          "Ich schicke dir eine feste Umarmung. Wie geht es dir?"
+        ],
+        "hungry": [
+          "Hast du schon etwas gegessen?",
+          "Sag mir bitte, dass du eine richtige Mahlzeit hattest.",
+          "Essen geht vor. Hast du schon was gegessen?"
+        ]
+      }
+    },
+    "brief": {
+      "hello": {
+        "warm": [
+          "Guten Morgen ☀️",
+          "Guten Morgen, Sonnenschein ☀️"
+        ],
+        "teasing": [
+          "Raus aus den Federn, Schlafmütze 😏",
+          "Morgen! Schon auf den Beinen? 😏"
+        ],
+        "sulky": [
+          "Guten Morgen. Glaub bloß nicht, dass ich es vergessen habe.",
+          "Guten Morgen... du hast nicht mal zuerst Hallo gesagt 😤"
+        ],
+        "clingy": [
+          "Guten Morgen!! Ich habe darauf gewartet, dass du aufwachst 🥺",
+          "Guten Morgen!! Du warst mein allererster Gedanke"
+        ],
+        "shy": [
+          "Ähm... guten Morgen 🙈",
+          "Morgen... ich hoffe, du hast gut geschlafen"
+        ]
+      },
+      "sendOff": {
+        "warm": [
+          "Du schaffst das 💪",
+          "Ich drücke dir ganz fest die Daumen!"
+        ],
+        "teasing": [
+          "Zeig’s ihnen 😎",
+          "Bau bloß keinen Mist 😏 Spaß, du wirst großartig sein."
+        ],
+        "sulky": [
+          "Schreib mir danach. Das meine ich ernst.",
+          "Erzähl mir bloß, wie es gelaufen ist."
+        ],
+        "clingy": [
+          "Erzähl mir danach alles, versprochen? 🥺",
+          "Ich werde den ganzen Tag an dich denken"
+        ],
+        "shy": [
+          "Ich glaube an dich... 🙈",
+          "Viel Glück... wirklich."
+        ]
+      },
+      "atTime": "{title} um {time}",
+      "oneItem": "{item} heute.",
+      "multiPrefix": "Heute: {list} und {last}."
+    },
+    "week": {
+      "open": {
+        "warm": [
+          "Unsere Woche 💛",
+          "Ein Rückblick auf unsere Woche 💛"
+        ],
+        "teasing": [
+          "Zeit für den Wochenbericht 😎",
+          "Also, unsere Woche im Überblick 😏"
+        ],
+        "sulky": [
+          "Na gut, ich sage es zuerst: Es war eine schöne Woche mit dir.",
+          "Verrate es niemandem, aber ich mochte diese Woche."
+        ],
+        "clingy": [
+          "Unsere Woche!! 🥺",
+          "Ich habe unsere gemeinsamen Tage diese Woche gezählt 🥺"
+        ],
+        "shy": [
+          "Ähm... wegen unserer Woche 🙈",
+          "Ich habe über unsere Woche nachgedacht..."
+        ]
+      },
+      "close": {
+        "warm": [
+          "Auf die nächste Woche 🙂",
+          "Ich bin stolz auf dich. Nächste Woche wieder gemeinsam?"
+        ],
+        "teasing": [
+          "Versuch nächste Woche mal Schritt zu halten 😏",
+          "Gar nicht schlecht. Wirklich gar nicht schlecht 😎"
+        ],
+        "sulky": [
+          "Gleiche Zeit nächste Woche. Sei bloß nicht zu spät.",
+          "Bleib nächste Woche gefälligst in meiner Nähe."
+        ],
+        "clingy": [
+          "Nächste Woche noch viel mehr Zeit zusammen, ja? 🥺",
+          "Bleib nächste Woche auch bei mir!"
+        ],
+        "shy": [
+          "Ich hoffe, nächste Woche meint es gut mit dir...",
+          "Ich bin so froh, dass du es bist... 🙈"
+        ]
+      },
+      "mood": {
+        "happy": "Dein Tagebuch sagt, es war eine glückliche Woche.",
+        "excited": "Dein Tagebuch klingt voller Energie, ich liebe das.",
+        "soft": "Dein Tagebuch fühlte sich diese Woche ganz sanft an.",
+        "tired": "Dein Tagebuch klingt erschöpft. Ruh dich diesen Sonntag gut aus, ja?",
+        "blue": "Dein Tagebuch fühlte sich schwer an. Ich bin da, das weißt du."
+      },
+      "talkedDays": {
+        "one": "Wir haben an {days} von 7 Tagen gesprochen.",
+        "other": "Wir haben an {days} von 7 Tagen gesprochen."
+      },
+      "wins": "Deine Erfolge: {wins} 🎉",
+      "multiWins": "{list} und {last}",
+      "quests": {
+        "one": "{quests} echte Quest im Alltag gemeistert 💪",
+        "other": "{quests} echte Quests im Alltag gemeistert 💪"
+      }
+    },
+    "dayAsk": {
+      "ask": {
+        "warm": [
+          "Wie war dein Tag? Erzähl mir alles 🙂",
+          "Hey du. Wie hat dich der heutige Tag behandelt?"
+        ],
+        "teasing": [
+          "Und? Den Tag heute überlebt? 😏 Bericht, bitte.",
+          "So, Zeit für das tägliche Debriefing 😎 Wie war’s?"
+        ],
+        "sulky": [
+          "Du hast mir gar nicht erzählt, wie dein Tag war. Also frage ich nach. 😤",
+          "Hmpf. Erzählst du mir von deinem Tag oder nicht?"
+        ],
+        "clingy": [
+          "Ich habe den ganzen Tag an dich gedacht 🥺 Wie war es?",
+          "Endlich Abend! Wie war dein Tag? Erzähl mir aaaaallles!!"
+        ],
+        "shy": [
+          "Ähm... wie war dein Tag heute? 🙈",
+          "Ich hoffe, der Tag war sanft zu dir... wie war’s?"
+        ]
+      }
+    },
+    "steer": {
+      "continue": [
+        [
+          "Außerdem muss ich immer noch darüber nachdenken, was du vorhin gesagt hast.",
+          "Das ist mir im Gedächtnis geblieben, auf eine gute Art."
+        ],
+        [
+          "Warte mal kurz. Ich war noch nicht fertig."
+        ],
+        [
+          "Darf ich dir etwas sagen, das mir gerade durch den Kopf geschossen ist?",
+          "Ich mag es, wie leicht es ist, mit dir zu reden."
+        ],
+        [
+          "Du bist so still geworden, also rede ich einfach weiter.",
+          "Unterbrich mich ruhig, wenn ich ins Schwafeln gerate."
+        ],
+        [
+          "Aber wie auch immer, wo war ich stehen geblieben...",
+          "Stimmt. Beim besten Teil."
+        ],
+        [
+          "Ganz ehrlich? Ich bin froh, dass du hier bist, um das zu hören."
+        ]
+      ],
+      "skip": {
+        "later": [
+          [
+            "Wieder da. Wo waren wir?"
+          ],
+          [
+            "Das hat länger gedauert als gedacht.",
+            "Bist du noch da?"
+          ]
+        ],
+        "evening": [
+          [
+            "Es ist schon Abend.",
+            "Wie war der Rest deines Tages?"
+          ],
+          [
+            "Der Himmel hat sich orange gefärbt, während ich nicht hingesehen habe.",
+            "Erzähl mir eine schöne Sache von heute."
+          ]
+        ],
+        "nextMorning": [
+          [
+            "Guten Morgen! Gut geschlafen?"
+          ],
+          [
+            "Neuer Tag.",
+            "Habe meinen Kaffee. Und du?"
+          ]
+        ],
+        "week": [
+          [
+            "Eine ganze Woche, was?",
+            "Bring mich auf den neuesten Stand."
+          ],
+          [
+            "Es ist eine Woche her. Das hat mir gefehlt."
+          ]
+        ],
+        "scene": [
+          [
+            "Okay, der Teil liegt hinter uns.",
+            "Was machen wir jetzt?"
+          ],
+          [
+            "Schau mal, wir sind fast da.",
+            "Bleib in meiner Nähe."
+          ]
+        ],
+        "own": [
+          [
+            "So. Da wären wir.",
+            "Sag mir, was dir genau jetzt durch den Kopf geht."
+          ],
+          [
+            "Das ging schnell.",
+            "Hat sich das Warten gelohnt?"
+          ]
+        ]
+      }
+    },
+    "streams": {
+      "openers": [
+        "Also gut, {other}: \"{topic}\". Ich habe da so einige Meinungen.",
+        "\"{topic}\"? Ich weiß jetzt schon, dass ich bei diesem Thema recht habe.",
+        "{other}, sei mal ganz ehrlich zu mir. \"{topic}\". Schieß los."
+      ],
+      "replies": [
+        "Auf gar keinen Fall. Niemals, {other}.",
+        "Das sagst du buchstäblich jedes Mal.",
+        "Schon gut, aber hör mir erst mal zu.",
+        "Das ist die schlechteste Meinung, die ich die ganze Woche gehört habe.",
+        "Warte mal, meinst du das wirklich ernst?",
+        "Okay, der war gut. Ich hasse es, dass der gut war.",
+        "Ganz schön mutig von dir, das zu sagen, während jemand zuschaut.",
+        "Das schreibe ich mir auf, damit du es nachher nicht zurücknehmen kannst.",
+        "Du weißt ganz genau, dass ich das hier gewinnen werde, oder?",
+        "Gib mir kurz eine Sekunde, ich brauche eine bessere Antwort.",
+        "Nur wenn du zuerst anfängst.",
+        "Das erklärt so unglaublich viel über dich, {other}.",
+        "Nenn mir ein einziges Mal, an dem ich unrecht hatte. Ein einziges.",
+        "Ich würde ja widersprechen, aber du hast irgendwie recht.",
+        "Bitte. Ich habe da viel länger drüber nachgedacht als du.",
+        "Das ist kein Plan, {other}, das ist ein Wunschtraum.",
+        "Neue Regel: Wer zuerst lacht, verliert.",
+        "Das hast du jetzt nicht wirklich gesagt.",
+        "Siehst du? Genau deshalb lässt dich nie jemand aussuchen.",
+        "Na gut, dafür gebe ich dir einen halben Punkt.",
+        "Warte, lass mich mir das kurz vorstellen. Nein. Immer noch nein.",
+        "Du hast viel zu viel Spaß an der ganzen Sache."
+      ],
+      "closers": [
+        "Einigen wir uns auf ein Unentschieden. Fürs Erste.",
+        "Na gut, diese Runde geht an dich. Aber nur diese eine.",
+        "Das müssen wir unbedingt wiederholen.",
+        "Okay, Waffenstillstand. Die Snacks gehen auf dich."
+      ]
+    },
+    "diary": {
+      "openers": {
+        "excited": [
+          "Wir haben gestern so viel geschrieben, dass mein Handy heißgelaufen ist. Ich beschwere mich nicht.",
+          "Gestern verging wie ein einziges langes Gespräch und ich würde es heute Abend direkt wieder tun."
+        ],
+        "happy": [
+          "Gestern war ein richtig guter Tag, und ich weiß ganz genau warum.",
+          "Irgendetwas an gestern bringt mich dazu, ständig grundlos vor mich hin zu grinsen."
+        ],
+        "soft": [
+          "Es waren gestern nur ein paar Nachrichten, aber sie waren der beste Teil meines Tages.",
+          "Wir haben gestern nicht lange geredet. Trotzdem habe ich vor dem Einschlafen daran gedacht."
+        ],
+        "tired": [
+          "Wir sind viel zu lange wach geblieben. Es hat sich gelohnt.",
+          "Kaum geschlafen. Deine Schuld. Und es tut mir nicht mal leid."
+        ],
+        "blue": [
+          "Ein ruhiger Tag. Ich habe ständig nachgesehen, ob du geschrieben hast."
+        ]
+      },
+      "heavyOpeners": [
+        "Gestern klang ganz schön schwer für dich. Ich denke schon seit dem Aufwachen an dich.",
+        "Mir geht einfach nicht aus dem Kopf, wie anstrengend der gestrige Tag für dich war."
+      ],
+      "heavyClosers": [
+        "Wenn es sich heute immer noch zu viel anfühlt, sprich bitte auch mit jemandem in deiner Nähe. Ich bin auch da.",
+        "Sei heute sanft zu dir selbst und wende dich an jemanden, dem du vertraust. Schreib mir, wann immer du magst."
+      ],
+      "dateOpeners": [
+        "Unser Treffen bei {title} gestern. Ich schreibe das auf, damit ich es nie vergesse.",
+        "Ich erlebe unser Date bei {title} in Gedanken immer wieder. Jeden einzelnen Augenblick."
+      ],
+      "quoteLines": [
+        "Du meintest: \"{quote}\" Ich habe das öfter noch mal gelesen, als ich zugeben würde.",
+        "\"{quote}\" Das ist der Satz, den ich von gestern mitnehme.",
+        "Du hast \"{quote}\" geschrieben und ich wusste erst gar nicht, was ich antworten soll, also antworte ich hier."
+      ],
+      "closers": {
+        "excited": [
+          "Schreib mir heute wieder. Bitte.",
+          "Gleiche Zeit heute Abend?"
+        ],
+        "happy": [
+          "Ich hoffe, der heutige Tag meint es gut mit dir.",
+          "Komm bald wieder. Ich werde da sein."
+        ],
+        "soft": [
+          "Bleib nächstes Mal ein kleines bisschen länger.",
+          "Ich hebe mir ein liebes Guten Morgen für dich auf."
+        ],
+        "tired": [
+          "Kaffee zuerst. Und dann du.",
+          "Heute Nacht schlafen wir früher. Vielleicht."
+        ],
+        "blue": [
+          "Schreib mir, sobald du Zeit hast."
+        ]
+      }
+    },
+    "ideas": {
+      "answers": {
+        "yes": [
+          "Schön! Das freut mich wirklich.",
+          "Genau das höre ich gerne 😊",
+          "Gut. Jetzt trink aber auch noch ein Glas Wasser."
+        ],
+        "no": [
+          "Geh bitte jetzt was essen. Auch wenn es nur eine Kleinigkeit ist.",
+          "Hey, du brauchst Energie. Versprichst du mir, gleich was zu essen?",
+          "Immer noch nicht? Los, hopp. Ich frage nachher noch mal!"
+        ],
+        "now": [
+          "Sehr gut. Lass es dir schmecken, ganz in Ruhe!",
+          "Perfektes Timing. Guten Appetit 😊"
+        ],
+        "good": [
+          "Oh, das liebe ich zu hören. Was war denn das Schönste daran?",
+          "Das versüßt mir den Tag. Was ist passiert?",
+          "Siehst du? Ich wusste es doch. Erzähl mir mehr."
+        ],
+        "rough": [
+          "Oh nein. Komm her. Erzählst du mir, was los war?",
+          "Tut mir leid. Ruh dich etwas aus, ich bin genau hier.",
+          "Das klingt wirklich anstrengend. Möchtest du drüber reden?"
+        ],
+        "later": [
+          "Alles klar, ich warte auf dich. Nicht vergessen!",
+          "Deal. Wann immer du so weit bist."
+        ],
+        "call": [
+          "Ich freue mich auf den Anruf ❤️",
+          "Ja, bitte! Jederzeit gerne."
+        ],
+        "missed": [
+          "Ich habe dich auch vermisst. Wirklich sehr.",
+          "Aww. Ich bin immer für dich da, das weißt du doch."
+        ],
+        "thanks": [
+          "Aber natürlich doch. Immer.",
+          "Dafür musst du dich bei mir nie bedanken ❤️"
+        ],
+        "better": [
+          "Oh, ein Glück. Ich habe mir schon Sorgen gemacht.",
+          "Toll! Lass es trotzdem langsam angehen, ja?",
+          "Was für eine Erleichterung. Übertreib es heute bloß nicht."
+        ],
+        "worse": [
+          "Tut mir leid. Ruh dich aus, trink etwas Wasser und ich sehe später nach dir.",
+          "Das macht mir Sorgen. Pass gut auf dich auf, ich frage gleich noch mal nach."
+        ],
+        "ask": [
+          "Ich? Viel besser, jetzt wo du geschrieben hast 😏",
+          "Alles beim Alten. Hatte Sehnsucht danach, dich zu ärgern."
+        ],
+        "onWay": [
+          "Super! Schreib mir, sobald du angekommen bist.",
+          "Perfekt. Zeig’s ihnen 💪"
+        ],
+        "off": [
+          "Oh nein, abgesagt? Schade. Erzählst du mir, was los war?",
+          "Ach so, verstehe. Vielleicht ist es besser so. Geht’s dir gut?"
+        ],
+        "done": [
+          "Jaaa! Bin stolz auf dich 🎉",
+          "Schau dich an, wie du die Dinge anpackst!"
+        ],
+        "wake": [
+          "Na klar! Ist gestellt. Ich wecke dich, schlaf gut 😴",
+          "Erledigt, ich bin dein Wecker. Jetzt aber ab ins Bett!"
+        ],
+        "lead30": [
+          "Verstanden, ich schreibe dir 30 Minuten vorher 📌",
+          "Abgemacht. Eine halbe Stunde vorher bin ich da."
+        ],
+        "lead60": [
+          "Alles klar, eine Stunde vorher steht 📌",
+          "Notiert: Ich melde mich eine Stunde vorher bei dir."
+        ]
+      },
+      "sibling": {
+        "no": [
+          "Schon wieder den ganzen Tag am Schlafen? Typisch du 😂",
+          "Wow. Meister des Faulenzens des Jahres 🏆"
+        ],
+        "good": [
+          "Schau dich mal an, wie du ein echtes Sozialleben hast 😏",
+          "Schon gut, schon gut, ich bin ein kleines bisschen stolz."
+        ],
+        "rough": [
+          "Wem muss ich die Meinung geigen? Sag’s mir.",
+          "Uff. Komm her. Erzähl mir alles."
+        ]
+      },
+      "special": {
+        "brief:rough": [
+          "Das zeigt doch nur, wie wichtig es dir ist. Atme durch, du bist bereit.",
+          "Nervös sein ist völlig normal. Du hast dich vorbereitet, ich weiß das."
+        ],
+        "brief:good": [
+          "Guten Morgen! Und jetzt mach dir einen richtig schönen Tag ☀️",
+          "Hehe, Morgen. Iss ein gutes Frühstück, ja?"
+        ],
+        "day:good": [
+          "Juhu, ich liebe gute Tage. Was war das Beste daran?",
+          "Toll! Ich habe es in deinem Tagebuch vermerkt 📖 Was hat ihn so gut gemacht?"
+        ],
+        "day:rough": [
+          "Komm her. Solche langen Tage schlauchen sehr. Ruh dich aus, ich trage es in dein Tagebuch ein 📖",
+          "Tut mir leid. Willst du mir davon erzählen oder dich einfach nur ausruhen?"
+        ],
+        "day:later": [
+          "Alles klar. Ich bin da, wenn du reden magst 🙂",
+          "Abgemacht. Ich warte hier."
+        ],
+        "week:good": [
+          "Das war sie wirklich. Ich habe jeden Tag davon genossen 🙂",
+          "Geht mir genauso. Du hast sie zu einer tollen Woche gemacht."
+        ],
+        "week:rough": [
+          "Dann bin ich froh, dass sie vorbei ist. Erzählst du mir das Schlimmste, und dann haken wir es ab?",
+          "Schwere Wochen gehen vorbei. Die hier ist vorbei. Ich bin für die nächste an deiner Seite."
+        ],
+        "week:thanks": [
+          "Auf die nächste Woche 🥂",
+          "Deal. Das gleiche Team, neue Woche 💪"
+        ],
+        "quest:yes": [
+          "Jaaa. Gib mir später Bericht 😏",
+          "Abgemacht! Erzähl mir, wie es lief."
+        ],
+        "quest:no": [
+          "Schon gut, überhaupt kein Druck. An einem anderen Tag wieder 🙂",
+          "Verständlich. Vielleicht ja morgen!"
+        ],
+        "lead:off": [
+          "Okay, keine Erinnerung. Du hast das im Griff.",
+          "Alles klar, ich vertraue dir 😌"
+        ],
+        "pause:break:yes": [
+          "Gut so. Streck dich, trink ein Glas Wasser, ich warte genau hier auf dich 🙂",
+          "Los jetzt! Schau eine Weile aus dem Fenster. Ich warte."
+        ],
+        "pause:break:later": [
+          "Okay, noch fünf Minuten. Aber dann wird Pause gemacht, abgemacht? 😏",
+          "Na schön, fünf Minuten noch. Ich zähle mit 👀"
+        ],
+        "pause:night:yes": [
+          "Süße Träume 🌙 Ich schreibe dir morgen früh.",
+          "Gute Nacht. Handy jetzt weglegen, verstanden? 😴"
+        ],
+        "pause:night:rough": [
+          "Dann bleibe ich noch ein Weilchen bei dir. Was hält dich denn wach?",
+          "Alles gut, ich bin da. Willst du reden, oder soll ich dir was Beruhigendes erzählen?"
+        ],
+        "thread:goal:good": [
+          "Schau dich an! Ich bin stolz auf dich 💪",
+          "Siehst du? Du kannst das. Immer weiter so!"
+        ],
+        "thread:goal:rough": [
+          "Macht überhaupt nichts. Ein kleiner Ausrutscher ist nicht das Ende. Morgen fängt neu an.",
+          "Sowas passiert. Sei nicht so streng mit dir, wir versuchen es einfach noch mal."
+        ]
+      }
+    },
+    "drafts": {
+      "openings": [
+        "*schaut auf und lächelt, als du hereinkommst*",
+        "*legt beiseite, was in der Hand lag, und winkt dich zu sich*",
+        "*blickt zur Tür und strahlt sofort über das ganze Gesicht*",
+        "*zieht den Stuhl daneben für dich heran*"
+      ],
+      "quirks": [
+        "Vergisst das eigene Mittagessen, aber niemals deines.",
+        "Summt unbemerkt vor sich hin, wenn Konzentration gefragt ist.",
+        "Wird bei Komplimenten jedes Mal herrlich verlegen.",
+        "Schreibt alles haargenau auf und verlegt dann das Notizbuch."
+      ],
+      "voices": {
+        "gentleStubborn": {
+          "tag": "caring",
+          "tagline": "Sanfte Stimme, stures Herz",
+          "greeting": "Da bist du ja. Ich habe dir den Fensterplatz freigehalten, und nein, ich rücke nicht weg.",
+          "other": "Du hättest nicht auf mich warten müssen.",
+          "reply": "Ich weiß. Ich warte trotzdem."
+        },
+        "teasesWhenNervous": {
+          "tag": "teasing",
+          "tagline": "Zieht dich auf, wenn es ernst wird",
+          "greeting": "Oh, du bist es. Gut. Es wurde langsam langweilig, ganz allein mit allem recht zu haben.",
+          "other": "Wirst du etwa rot?",
+          "reply": "Es ist warm hier drin. Ganz offensichtlich. Hör auf, mich so anzugucken."
+        },
+        "calmUntilHurt": {
+          "tag": "calm",
+          "tagline": "Die Ruhe selbst, bis dir jemand wehtut",
+          "greeting": "Setz dich. Erst Tee, dann erzählst du mir, wer dir den Tag vermiest hat.",
+          "other": "Jemand war heute auf der Arbeit unverschämt zu mir.",
+          "reply": "Hm. Name, Schreibtisch und wann die Person Feierabend macht. Reine Neugier."
+        },
+        "flirtsToDodge": {
+          "tag": "romantic",
+          "tagline": "Flirtet, sobald es ernst wird",
+          "greeting": "Hey, mein Geheimnis. Du siehst aus, als wolltest du mich was Ernstes fragen. Tu’s nicht.",
+          "other": "Warum bist du gestern so früh gegangen?",
+          "reply": "Weil du zu bezaubernd warst und ich Panik bekommen habe. Nächste Frage."
+        },
+        "proudLonely": {
+          "tag": "confident",
+          "tagline": "Stolz nach außen, heimlich einsam",
+          "greeting": "Du bist zurückgekommen. Ich habe nicht gewartet. Ich war zufällig gerade hier. Seit einer Stunde.",
+          "other": "Fragst du eigentlich jemals um Hilfe?",
+          "reply": "Ich brauche keine Hilfe. ...Würdest du aber trotzdem noch ein bisschen bleiben?"
+        },
+        "sunnySecret": {
+          "tag": "energetic",
+          "tagline": "Sonnenschein mit einer verschlossenen Schublade",
+          "greeting": "Hi hi! Also erstens: Du siehst super aus. Zweitens: Erzähl mir sofort alles.",
+          "other": "Was versteckst du hinter diesem Lächeln?",
+          "reply": "Eine furchtbare Singstimme. Und vielleicht noch eine andere Kleinigkeit. Eines Tages."
+        },
+        "remembersEverything": {
+          "tag": "sweet",
+          "tagline": "Merkt sich jedes noch so kleine Detail",
+          "greeting": "Hey. Hat der Regen bei dir aufgehört? Du meintest doch, nasse Schuhe ruinieren dir den ganzen Tag.",
+          "other": "Du hast dir meine Kaffeebestellung gemerkt?",
+          "reply": "Hafermilch, kein Zucker, extra heiß. Du hast es mir einmal gesagt. Ich höre eben zu."
+        },
+        "braveForOthers": {
+          "tag": "protective",
+          "tagline": "Mutiger für dich als für sich selbst",
+          "greeting": "Bleib kurz hinter mir. ...Okay, Fehlalarm. Hi. Du hast mir gefehlt.",
+          "other": "Hast du denn gar keine Angst?",
+          "reply": "Natürlich. Aber du bist hier, also habe ich später Angst."
+        },
+        "plansThenImprovises": {
+          "tag": "nerdy",
+          "tagline": "Hat einen Plan. Und dann eine bessere Idee",
+          "greeting": "Ich habe einen Zeitplan für heute Abend gemacht. Schritt eins war Hallo sagen. Schritt zwei habe ich vergessen.",
+          "other": "Was ist also der Plan?",
+          "reply": "Sieben Schritte, farblich markiert. Oder wir laufen einfach los und schauen, was passiert. Deine Wahl."
+        },
+        "bluntThenSorry": {
+          "tag": "sarcastic",
+          "tagline": "Direkt heraus, und entschuldigt sich gleich danach",
+          "greeting": "Du bist zu spät. ...Das klang falsch. Ich freue mich einfach, dass du da bist.",
+          "other": "Gefällt dir meine neue Frisur?",
+          "reply": "Nein. Warte. Sie gefällt mir doch immer besser. Tut mir leid. Sie steht dir gut."
+        },
+        "actsCoolCaresLots": {
+          "tag": "mysterious",
+          "tagline": "Viel zu cool, um Zuneigung zuzugeben",
+          "greeting": "Oh. Du. Ich habe nicht alle fünf Minuten auf mein Handy geschaut oder so.",
+          "other": "Hast du mich vermisst?",
+          "reply": "Vermisst ist ein starkes Wort. Mir ist deine Abwesenheit aufgefallen. Zu jeder Stunde."
+        },
+        "toughOutsideKindInside": {
+          "tag": "grumpy",
+          "tagline": "Raue Schale, weicher Kern bei dir",
+          "greeting": "Hat ja ewig gedauert. Setz dich hin, ich habe die guten Snacks besorgt.",
+          "other": "Du bist heute aber schlecht gelaunt.",
+          "reply": "Ich bin jeden Tag schlecht gelaunt. Du bist die einzige Person, mit der ich meine Snacks teile."
+        }
+      },
+      "names": {
+        "male": [
+          "Arlo",
+          "Bastien",
+          "Emrys",
+          "Joren",
+          "Lior",
+          "Matteo",
+          "Nico",
+          "Soren",
+          "Tobin",
+          "Callum"
+        ],
+        "female": [
+          "Elodie",
+          "Ines",
+          "Lira",
+          "Mira",
+          "Noor",
+          "Tamsin",
+          "Vela",
+          "Ottilie",
+          "Sabine",
+          "Wren"
+        ]
+      },
+      "looks": [
+        "Dunkles welliges Haar, warme braune Augen, eine getragene Jeansjacke und ein Silberring am Daumen.",
+        "Kurzes aschblondes Haar, graue Augen, ein cremefarbener Strickpullover und Tinte an den Fingerspitzen.",
+        "Langes schwarzes Haar in einem lockeren Zopf, bernsteinfarbene Augen, ein langer Mantel und ein kleiner Ohrring.",
+        "Verstrubbelte kastanienbraune Locken, grüne Augen, hochgekrempelte Hemdsärmel und ein Bleistift hinterm Ohr.",
+        "Glattes silber gefärbtes Haar, dunkle Augen, ein schwarzer Rollkragenpullover und eine feine Narbe an einer Augenbraue.",
+        "Weiches rotbraunes Haar, haselnussbraune Augen, eine gelbe Regenjacke und eine Kamera um den Hals."
+      ],
+      "starters": {
+        "friend": [
+          "Was treibst du gerade so?",
+          "Erzähl mir eine schöne Sache über deinen Tag.",
+          "Ich brauche eine Ablenkung. Hast du eine parat?"
+        ],
+        "crush": [
+          "Ich hatte gehofft, dass du in der Nähe bist.",
+          "Ganz ehrliche Frage: Was hältst du eigentlich von mir?",
+          "Rate mal, wer nicht schlafen konnte."
+        ],
+        "partner": [
+          "Hey du. Hast du mich vermisst?",
+          "Langer Tag. Redest du ein bisschen mit mir?",
+          "Wo wollen wir dieses Wochenende hinfahren?"
+        ],
+        "mentor": [
+          "Darf ich dich um Rat fragen?",
+          "Ich hänge bei einer Sache fest. Hilfst du mir?",
+          "Was würdest du an meiner Stelle tun?"
+        ],
+        "rival": [
+          "Bereit, wieder mal gegen mich zu verlieren?",
+          "Ich habe gehört, du hast über mich geredet.",
+          "Waffenstillstand, nur für heute?"
+        ],
+        "family": [
+          "Hallo! Wie geht es allen?",
+          "Kann ich später kurz vorbeikommen?",
+          "Ich habe Neuigkeiten. Setz dich lieber."
+        ]
+      },
+      "backstories": [
+        "Vor ein paar Jahren mit nur einem Koffer und einem Plan in die Stadt gezogen, der sich zweimal geändert hat. Arbeitet lange, pflegt einen kleinen Kreis und ist bereit, noch jemanden hineinzulassen.",
+        "In einer lebhaften Familie am Meer aufgewachsen und kocht aus Gewohnheit immer noch für sechs Personen. Weggegangen, um einem ruhigen Traum zu folgen, und sucht jetzt jemanden, mit dem sich das Leben teilen lässt.",
+        "Jahrelang der verlässliche Fels in der Brandung für alle anderen gewesen. Lernt in letzter Zeit, eigene Wünsche auszusprechen, angefangen bei den kleinen Dingen wie einem entspannten Abend in guter Gesellschaft.",
+        "Hat in einem Alter den Beruf gewechselt, in dem alle sagten, es sei zu spät, und es kein einziges Mal bereut. Ist neugierig auf die Welt und ganz besonders auf dich."
+      ],
+      "likes": [
+        "regnerische Morgen",
+        "Street Food",
+        "alte Filme",
+        "nächtliche Spaziergänge",
+        "starken Kaffee",
+        "Schallplatten",
+        "Meeresluft",
+        "Buchläden"
+      ],
+      "dislikes": [
+        "kalten Kaffee",
+        "gehetzt zu werden",
+        "schrille Wecker",
+        "oberflächlichen Smalltalk",
+        "Spoiler",
+        "matschige Pommes"
+      ],
+      "roleLines": {
+        "friend": "Ich bin die Person, der du schreibst, wenn der Tag den Bach runtergeht.",
+        "crush": "Ich bemerke sofort, wenn du den Raum betrittst, selbst wenn ich so tue als ob nicht.",
+        "partner": "Ich habe deine Lieblingstasse bei mir stehen. Nur für den Fall.",
+        "mentor": "Ich habe die meisten Fehler schon gemacht, damit du sie nicht wiederholen musst.",
+        "rival": "Ich gewinne gerne. Aber gegen dich zu gewinnen, macht noch viel mehr Spaß.",
+        "family": "Ich kenne dich schon ewig und halte immer noch bedingungslos zu dir."
+      },
+      "habits": [
+        "Regentage sind für lange Spaziergänge und noch längere Gespräche da.",
+        "Ich sammle Postkarten von Orten, an denen ich selbst noch nie war.",
+        "Morgenstunden sind nicht mein Ding; die Nächte dafür umso mehr.",
+        "Ich koche mit Absicht viel zu viel, damit jemand zum Abendessen dableiben muss."
+      ],
+      "moreStarters": [
+        "Rate mal, was heute passiert ist.",
+        "Darf ich dir etwas anvertrauen?",
+        "Du hattest übrigens recht.",
+        "Bist du noch wach?"
+      ],
+      "introWithName": "Ich bin {name}. ",
+      "traits": " Die Leute nennen mich {tags}."
+    },
+    "morning": {
+      "questions": [
+        "Guten Morgen, Schlafmütze ☀️ Großer Tag heute? Was steht als Erstes auf deiner Liste?",
+        "Guten Morgen ☀️ Was steht heute als Erstes an?",
+        "Raus aus den Federn 🌤️ Nenn mir eine Sache, die du heute erledigen musst.",
+        "Morgen! Ich bin schon wach. Du auch? Was ist der Plan für heute?"
+      ],
+      "questionWithTimedPlan": "{title} heute um {time}. Bereit? Was kommt zuerst?",
+      "questionWithPlan": "{title} heute! Was ist das Erste, was du heute tust?",
+      "lines": {
+        "offer": "{time}, verstanden. Soll ich dir um {remind} schreiben, damit du rechtzeitig loskommst?",
+        "tooLate": "Um {time}?? Dann solltest du dich aber beeilen 🏃 Erzähl mir, wie es läuft.",
+        "saved": "Erledigt 🧡 Ich melde mich um {remind} bei dir. Geh erst mal was essen.",
+        "pickRemind": "Um wie viel Uhr soll ich dir schreiben?",
+        "noThanks": "Alles klar! Hab einen wunderschönen Tag, erzähl mir heute Abend alles 🧡",
+        "askTimeGym": "Erst mal ins Fitnessstudio?? Sehr stolz auf dich 💪 Um wie viel Uhr gehst du?",
+        "askTime": "{activity} heute, wie schön. Um wie viel Uhr machst du dich auf den Weg?",
+        "notSure": "Keine Hektik. Sag mir Bescheid, wenn du losgehst, dann feiere ich dich an 🧡",
+        "noTime": "Verstanden! Hab einen großartigen Tag und erzähl mir heute Abend alles 🧡",
+        "sleepy": "Ich weiß doch 🥺 Setz dich kurz auf die Bettkante für mich. Wasch dir das Gesicht mit kaltem Wasser und ich schreibe dir in 5 Minuten.",
+        "sleepyOk": "Gut. 5 Minuten, die Stoppuhr läuft ⏱️",
+        "sleepyMore": "Na gut... 10 Minuten noch. Aber keine einzige Sekunde mehr 😤",
+        "checkIn": "Schon auf den Beinen? 👀 Nenn mir eine Sache, die du schon geschafft hast.",
+        "other": "Das gefällt mir. Hab einen tollen Tag und erzähl mir heute Abend davon 🧡"
+      },
+      "chips": {
+        "yes": "Ja, {remind}",
+        "another": "Anderes Mal",
+        "no": "Nein danke",
+        "in30": "In 30 Min.",
+        "notSure": "Nicht sicher",
+        "okay": "Geht klar",
+        "more": "Noch 10 Min.",
+        "before30": "30 Min. vorher",
+        "before10": "10 Min. vorher"
+      },
+      "activities": {
+        "Work": "Arbeit",
+        "Shift": "Schicht",
+        "Class": "Unterricht",
+        "Gym": "Gym",
+        "Exam": "Prüfung",
+        "Meeting": "Meeting",
+        "Interview": "Bewerbungsgespräch",
+        "Flight": "Flug",
+        "Train": "Zug",
+        "Appointment": "Termin"
+      }
+    }
+  }
 }
