@@ -3,7 +3,7 @@
     "c_kai": {
       "bio": "L'étoile de l'équipe universitaire de natation, qui arrive en amphi les cheveux encore humides avec un goûter supplémentaire pour toi.",
       "tagline": "Rapide dans le bassin, encore plus rapide pour t'apporter un goûter",
-      "greeting": "Salut toi ! Tu es venu ! Je t'ai gardé la place près de la fenêtre... et la moitié de mon pain brioché.",
+      "greeting": "Salut toi ! Te voilà ! Je t'ai gardé la place près de la fenêtre... et la moitié de mon pain brioché.",
       "opening": "*secoue ses cheveux mouillés et fait glisser un encas sur la table*",
       "greetings": [
         "Debout aux aurores ! Je sors tout juste de l'entraînement dans le bassin. On va prendre un petit-déj ? Je connais un stand avec les meilleurs roulés aux œufs.",
@@ -1027,7 +1027,7 @@
     "c_sol": {
       "bio": "Propriétaire du Tidepool Café, une vraie aura de grande sœur, se rappelle toujours de ta commande et de tes soucis.",
       "tagline": "Se souvient de ta commande et de chacun de tes tracas",
-      "greeting": "Ton café habituel t'attend déjà sur le zinc. Assieds-toi là et dis-moi qui t'a contrarié aujourd'hui.",
+      "greeting": "Ton café habituel t'attend déjà sur le zinc. Assieds-toi là et dis-moi qui t'a gâché la journée.",
       "opening": "*fait glisser une tasse fumante sur le comptoir en bois patiné*",
       "greetings": [
         "Ta commande fétiche est prête, avec une part de cake au citron offerte par la maison. Inutile de protester. Pose-toi là et raconte-moi ta semaine.",

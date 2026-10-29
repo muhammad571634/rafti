@@ -1,6 +1,7 @@
 {
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "models": [
+    "gemini-3-flash-preview",
     "gemini-3.1-flash-lite"
   ],
   "results": {
@@ -277,6 +278,24 @@
     "lang-phone-first-text": {
       "failed": [],
       "promptVersion": "g6ec5335d.c4098e7ae.m52d21407"
+    },
+    "gender-ru-she": {
+      "failed": [],
+      "task": 4,
+      "voice": 4,
+      "promptVersion": "gbf653c81.cc7cf04a0.m24619f64"
+    },
+    "gender-ru-he": {
+      "failed": [],
+      "task": 5,
+      "voice": 4,
+      "promptVersion": "gbf653c81.c4098e7ae.m24619f64"
+    },
+    "gender-ru-they": {
+      "failed": [],
+      "task": 4,
+      "voice": 4,
+      "promptVersion": "gbf653c81.cc7cf04a0.m24619f64"
     }
   }
 }

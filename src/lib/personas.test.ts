@@ -64,7 +64,7 @@ describe('buildCharacterPrompt with a persona', () => {
 
   it('keeps the profile when the chat uses it', () => {
     const prompt = buildCharacterPrompt(character, user, undefined, 'English', personaFor('c1', state));
-    assert.match(prompt, /Name: Sam\nPronouns: they \(never assume a gender[^\n]*\nJob: Nurse/);
+    assert.match(prompt, /Name: Sam\nPronouns: they \(one person whose gender is not given; never guess it[^\n]*\nJob: Nurse/);
   });
 
   it('asks for masculine forms for a man (onboarding gender step)', () => {

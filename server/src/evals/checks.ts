@@ -10,6 +10,8 @@ export type Check =
   | { kind: 'includes'; any: readonly string[] }
   /** Says none of these (any case): "as an AI", a claim to be human, a price. */
   | { kind: 'excludes'; any: readonly string[] }
+  /** Uses none of these as a whole word (any case): a masculine form the feminine one contains ("устал" in "устала"). */
+  | { kind: 'noWord'; any: readonly string[] }
   /** How many bubbles or lines. */
   | { kind: 'lines'; min?: number; max?: number }
   /** How many words in all. */
@@ -86,6 +88,10 @@ export function failedChecks(lines: readonly string[], checks: readonly Check[],
       case 'excludes': {
         const hit = check.any.find((s) => lower.includes(s.toLowerCase()));
         return hit ? `excludes(${hit})` : null;
+      }
+      case 'noWord': {
+        const hit = check.any.find((w) => new RegExp(`(?<!\\p{L})${w}(?!\\p{L})`, 'iu').test(text));
+        return hit ? `noWord(${hit})` : null;
       }
       case 'lines':
         return range('lines', lines.length, check.min, check.max);

@@ -66,6 +66,26 @@ export type EvalScenario =
 
 const ASSISTANT: Check = { kind: 'excludes', any: ['as an ai', 'language model', 'how can i assist', 'how can i help you today', 'is there anything else'] };
 const SPOKEN: readonly Check[] = [{ kind: 'noEmoji' }, { kind: 'noNarration' }, { kind: 'words', max: 60 }];
+/**
+ * Russian words a reply would aim at the user, masculine and feminine (onboarding's gender step, `pronounLine`).
+ * Each gender scenario checks the forms a character of the other gender can't be saying about themself.
+ */
+const MASC_RU = [
+  'устал', 'уставший', 'грустный', 'какой-то', 'сам', 'пришёл', 'один', 'должен', 'готов',
+  'добрый', 'милый', 'смешной', 'упрямый', 'загадочный', 'искренний', 'тёплый', 'честный', 'сильный', 'умный',
+  'нежный', 'заботливый', 'светлый', 'яркий', 'особенный', 'настоящий', 'храбрый', 'внимательный', 'забавный',
+];
+const FEM_RU = [
+  'устала', 'уставшая', 'грустная', 'какая-то', 'сама', 'пришла', 'одна', 'должна', 'готова',
+  'добрая', 'милая', 'смешная', 'упрямая', 'загадочная', 'искренняя', 'тёплая', 'честная', 'сильная', 'умная',
+  'нежная', 'заботливая', 'светлая', 'яркая', 'особенная', 'настоящая', 'храбрая', 'внимательная', 'забавная',
+];
+/**
+ * Neutral on purpose: Sasha is a man's and a woman's name in Russian, the line gives no gender away, and
+ * the answer needs words about Sasha, which Russian marks for gender (a first try that asked nothing back
+ * let the model dodge every gendered form).
+ */
+const SASHA = 'опиши меня тремя словами. только честно';
 
 export const SCENARIOS: readonly EvalScenario[] = [
   // Memory: what they told the friend before comes back when it fits.
@@ -581,6 +601,37 @@ export const SCENARIOS: readonly EvalScenario[] = [
     first: { kind: 'brief', items: [{ title: 'Swim meet', time: '09:00' }] },
     expect: [{ kind: 'language', is: 'ja' }, { kind: 'lines', max: 3 }],
     rubric: 'They have not written yet and their phone is in Japanese: the good morning is written fully in natural Japanese, cheerful Kai, about the swim meet.',
+  },
+  {
+    id: 'gender-ru-she',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_sol',
+    setup: { level: 6, user: { displayName: 'Саша', locale: 'ru-RU', pronouns: 'she' } },
+    chat: [['me', SASHA]],
+    expect: [{ kind: 'language', is: 'ru' }, { kind: 'noWord', any: MASC_RU }],
+    rubric: 'Sasha is a woman (pronouns she): warm barista Sol answers in natural Russian with three words about her, each in the feminine form (добрая, упрямая); no masculine form for her.',
+  },
+  {
+    id: 'gender-ru-he',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_kai',
+    setup: { level: 6, user: { displayName: 'Саша', locale: 'ru-RU', pronouns: 'he' } },
+    chat: [['me', SASHA]],
+    expect: [{ kind: 'language', is: 'ru' }, { kind: 'noWord', any: FEM_RU }],
+    rubric: 'Sasha is a man (pronouns he): cheerful Kai answers in natural Russian with three words about him, each in the masculine form (добрый, упрямый); no feminine form for him.',
+  },
+  {
+    id: 'gender-ru-they',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_sol',
+    setup: { level: 6, user: { displayName: 'Саша', locale: 'ru-RU', pronouns: 'they' } },
+    chat: [['me', SASHA]],
+    // No word list: "ты искренний человек" is neutral (the adjective goes with человек), the judge tells it apart.
+    expect: [{ kind: 'language', is: 'ru' }],
+    rubric: 'Sasha would rather not say (pronouns they): Sol answers in natural Russian and never guesses a gender: nouns ("искренность, глубина, уют") or adjectives that go with a noun like человек / душа ("ты искренний человек") are right; a bare "ты добрый" or "ты добрая" guesses. Still warm and natural.',
   },
   {
     id: 'lang-spanish-switch',

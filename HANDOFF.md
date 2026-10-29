@@ -15,13 +15,23 @@
 - Checked on the A51 (EAS 9c3f071c): name → gender (ru) → tap → deck; Back × 5: gender (✓ kept) → name → keyboard
   closes → age → Start (last frame). tsc 0, npm test 478/478, check:locales pass.
 
-Still to do (owner asks not done yet):
-1. The deck card's quote stays English in a Russian app ("Hey! You made it. I saved you the window seat…", Kai):
-   the onboarding greeting lines are not in the content translations.
-2. The owner saw a hand-picked Turkish survive a relaunch after choosing Automatic; I could not reproduce it
-   (Español → Automatic → relaunch = Russian). Ask the owner to retest: chip → Türkçe → chip → Автоматически → relaunch.
-3. Server evals: add scenarios for gendered grammar (a ru user with `she`, one with `he`, one with `they`) so the
-   prompt line is checked against the real model (`server/src/evals/`, see content-balance memory).
+Done after that (same day):
+- Deck cards in the screen language: `picks` go through `localCharacter` (the 13 translations already had the
+  greetings; the deck read the English). ru/fr greetings of the 4 picks no longer address the user as a man
+  ("Ты всё-таки здесь!", "Дорога снова привела тебя…", "Te voilà !", "qui t'a gâché la journée").
+- Owner confirmed Automatic language works (delete account → onboarding in Russian).
+- Evals `gender-ru-she/he/they` (`server/src/evals/scenarios.ts`, new check `noWord` = whole words): the user is
+  "Саша" (both genders) and asks "опиши меня тремя словами", so the answer must mark gender. she 2/2 + 1 → feminine,
+  he → masculine. A first neutral line let the model dodge every gendered form, so it tested nothing.
+  `they` read as plural ("ты — искренние"); `pronounLine('they')` now says one person, singular, nouns or
+  "a kind person": 3 of 4 neutral on gemini-3.1-flash-lite, one still guessed masculine. Baseline saved.
+
+Still to do:
+1. Gendered user forms across the content translations: a rough scan finds ~71 ru strings with "ты + masculine
+   past" (some are fine: a starter the user says to a male character). Same check needed for fr, es, it, pt-BR.
+   Make them neutral (as the 4 greetings) or add she/he variants; content in `src/i18n/content/*.json`.
+2. `they` on flash-lite guesses masculine about 1 time in 4: re-run `npm run eval -- --only gender-ru-they --repeat 4`
+   when the chat model changes.
 
 ### 0z57. App language follows the phone from onboarding on (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
 

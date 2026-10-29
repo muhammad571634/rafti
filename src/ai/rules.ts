@@ -107,7 +107,7 @@ export function pronounLine(pronouns: Pronouns): string {
     case 'he':
       return 'Pronouns: he (a man: wherever your language marks gender, use the masculine forms for him)';
     case 'they':
-      return 'Pronouns: they (never assume a gender: wherever your language marks gender, choose wording that avoids it)';
+      return 'Pronouns: they (one person whose gender is not given; never guess it: wherever your language marks gender, still speak to them in the singular, and use nouns or an adjective with a neutral noun such as "person" ("you are a kind person"), never a gendered adjective or past tense on its own)';
   }
 }
 

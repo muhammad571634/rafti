@@ -49,6 +49,7 @@ import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { morningGreetings } from '@/mock';
@@ -96,9 +97,12 @@ export default function OnboardingScreen() {
   const characters = useAppStore((s) => s.characters);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
 
+  // In the screen language (the deck's quote, the series chip), again when the Start chip changes it.
+  const lang = i18n.language;
   const picks = useMemo(
-    () => PICKS.map((id) => characters.find((c) => c.id === id)).filter((c) => c != null),
-    [characters],
+    () => PICKS.map((id) => characters.find((c) => c.id === id)).filter((c) => c != null).map((c) => localCharacter(c)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [characters, lang],
   );
 
   const [step, setStep] = useState<Step>('intro');
