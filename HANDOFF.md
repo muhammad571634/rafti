@@ -16,7 +16,7 @@
 - Validated via scripts/check-content.mjs pt-BR — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
-### 0z42. A51 walk: Store, Pro plan and Radio fixed for long locales (2026-10-29). NEXT: group chat, onboarding, Chats voice preview on the A51
+### 0z42. A51 walk: Store, Pro plan and Radio fixed for long locales (2026-10-29). NEXT: onboarding, Chats voice preview on the A51
 
 - Walked in Russian on the Galaxy A51 (EAS updates `c18cfd99`, `e43d6a35`): Store, Pro plan, Radio
   (list, Sounds, clip player, make a clip). Fixed (`ee789c8`, `64db926`): pack bonus and tag, Pro
@@ -28,7 +28,11 @@
   numbers and prices are `en-US` formatted in every locale ("1,400", "$0.99").
 - The previous session reached Radio (owner's word) and left fixes only for Store and Pro plan, so
   character profile, settings and diary likely had none (not re-checked here). Still to walk:
-  group chat, onboarding, and Chats' "🎤 Голосовое сообщение" preview.
+  onboarding and Chats' "🎤 Голосовое сообщение" preview.
+- Group chat walked (new group, chat, info; test group deleted again). Fixed (`f12dfbd`): the AI notice
+  said "Sol, Ivy and Matta" in every language (now keeps the title's "&"); "My Creations" added to
+  `phrases` in all 14 locales; the New sheet hints use Footnote leading 13/18 (HIG Typography).
+  Group replies are still English in Russian: the ru mock voice waits for Gemini's Phase 4b.
 - Publish EAS updates from this worktree (clean tree), not the main checkout, while Gemini works there.
 
 
