@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z57. App language follows the phone from onboarding on (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
+
+Rule: the app speaks the phone's language unless the user picks one by hand (`initI18n`: saved `rafti.locale` ??
+`deviceLocale()`). The A51 (phone in ru-RU) had a hand-picked `en` saved, and "Delete account" never cleared it.
+- `src/app/profile.tsx`: `confirmDelete` calls `pickLanguage(null)` after `deleteAccount()` (fc91a14, EAS c76097a5).
+- `src/app/onboarding.tsx`: the language sheet's ✓ stayed on the launch choice (picked Automatic, ✓ still on English).
+  Cause: `reactCompiler: true` caches the plain `getSavedLocaleSync()` read in render. Now kept in state, as
+  `src/app/language.tsx` does. Any other module read in render (not a hook) can freeze the same way.
+- Checked: only a user pick saves a language (onboarding sheet, Profile → Language); launch re-syncs `User.locale`.
+  The onboarding chip already shows the current language's own name ("Русский"); left as is.
+- On the A51: the owner set Automatic; relaunch shows Russian onboarding, ✓ on "Автоматически".
+- Checked: tsc 0, npm test 477/477.
+
 ### 0z56. Onboarding HIG pass (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
 
 - Owner: no prototype, code it fully on Apple's HIG. Changes in `src/app/onboarding.tsx`:

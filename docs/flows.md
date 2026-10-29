@@ -202,5 +202,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 4b (th) | done | Thai mock voice translation generated (800 strings, 2773 total in th.json), checked and registered | — |
 | F30 Content translation: Phase 4b (ru) | done | Russian mock voice translation generated (800 strings, 2773 total in ru.json), checked and registered | — |
 | F30 Content translation: Phase 4b (tr) | done | Turkish mock voice translation generated (800 strings, 2773 total in tr.json), checked and registered — Phase 4b complete for all 12 languages! | — |
+| Language follows the phone | done | Delete account clears the hand-picked language; onboarding's language sheet ✓ follows the pick (kept in state, React Compiler cached the plain read) | `src/app/profile.tsx`, `src/app/onboarding.tsx` |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

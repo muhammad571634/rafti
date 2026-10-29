@@ -99,6 +99,8 @@ export default function OnboardingScreen() {
   const [friendId, setFriendId] = useState(PICKS[0]);
   const [notifications, setNotifications] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  // Kept in state: the React Compiler caches a plain read during render, so the ✓ stayed on the launch choice.
+  const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
 
   useEffect(() => {
     void pushPermission().then((state) => {
@@ -143,9 +145,10 @@ export default function OnboardingScreen() {
   const languageSheet = (
     <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>
       <LanguageList
-        value={getSavedLocaleSync()}
+        value={savedLang}
         groupStyle={styles.langGroup}
         onPick={(code) => {
+          setSavedLang(code);
           void pickLanguage(code);
           setLangOpen(false);
         }}
