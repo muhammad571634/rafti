@@ -343,13 +343,13 @@ function PackRow({
       <View style={styles.packBody}>
         <View style={styles.packAmount}>
           <Txt style={styles.packTotal}>{total.toLocaleString('en-US')}</Txt>
-          <Txt style={styles.muted13} lines={1}>
+          <Txt style={styles.muted13} lines={2}>
             {detail}
           </Txt>
         </View>
         {tag ? (
           <View style={[styles.tag, { backgroundColor: tag.bg }]}>
-            <Txt style={[styles.tagText, { color: tag.ink }]} lines={1}>
+            <Txt style={[styles.tagText, { color: tag.ink }]} lines={2}>
               {tag.label}
             </Txt>
           </View>
@@ -437,10 +437,11 @@ const styles = StyleSheet.create({
   stack: { width: 46, height: 40 },
   stackShell: { position: 'absolute' },
   packBody: { flex: 1, minWidth: 0, gap: 3, paddingVertical: 12 },
-  packAmount: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
+  // The bonus line drops under the total when both do not fit (long locales, larger text).
+  packAmount: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 5 },
   packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: colors.text, fontVariant: ['tabular-nums'] },
   muted13: { flexShrink: 1, fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
-  tag: { alignSelf: 'flex-start', height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
+  tag: { alignSelf: 'flex-start', minHeight: 20, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
   tagText: { fontSize: 12, fontWeight: '700' },
   price: { alignItems: 'flex-end', gap: 1 },
   priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.text, fontVariant: ['tabular-nums'] },

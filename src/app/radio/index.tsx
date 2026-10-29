@@ -201,10 +201,11 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
         accessibilityLabel={t('radio.lockedA11y', { title: clip.title, level: clip.unlockLevel, name: clip.name })}>
         <CharacterAvatar character={clip.character} size={44} />
         <View style={styles.body}>
-          <Txt style={styles.title} lines={1}>
+          <Txt style={styles.title} lines={2}>
             {clip.title}
           </Txt>
-          <Txt style={styles.sub} lines={1}>
+          {/* Two lines: in Russian or French one cut off the level it opens at. */}
+          <Txt style={styles.sub} lines={2}>
             {t('radio.opensAt', { name: clip.name, level: clip.unlockLevel })}
           </Txt>
         </View>
@@ -228,7 +229,7 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
         <CharacterAvatar character={clip.character} size={44} />
         <View style={styles.body}>
           <View style={styles.titleRow}>
-            <Txt style={[styles.title, styles.titleShrink, on && styles.titleOn]} lines={1}>
+            <Txt style={[styles.title, styles.titleShrink, on && styles.titleOn]} lines={2}>
               {clip.title}
             </Txt>
             {clip.isNew ? (

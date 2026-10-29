@@ -793,7 +793,7 @@
     "popular": "Популярный",
     "save": "Скидка {{percent}}%",
     "saveLower": "скидка {{percent}}%",
-    "bonusFree": "+{{count}} бесплатно",
+    "bonusFree": "{{count}} бесплатно",
     "topUp": "Небольшое пополнение",
     "per100": "{{price}} за 100",
     "shellsUnit": "ракушек",

@@ -181,7 +181,7 @@ export function PlanPicker({
                 </Txt>
                 <View style={styles.proTileLabel}>
                   <Glyph glyph={tile.glyph} size={14} />
-                  <Txt style={styles.proTileText} lines={1}>
+                  <Txt style={styles.proTileText} lines={2}>
                     {tile.label}
                   </Txt>
                 </View>
@@ -397,7 +397,8 @@ const styles = StyleSheet.create({
     backgroundColor: aurora.separator,
   },
   renew: { marginTop: 14, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
-  links: { flexDirection: 'row', justifyContent: 'center', gap: 4, marginTop: 10, marginHorizontal: space.xl },
+  // Wraps: "Restore purchases · Terms · Privacy" runs wider than the screen in Russian or French.
+  links: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10, marginHorizontal: space.xl },
   link: { paddingVertical: 12, paddingHorizontal: 10 },
   linkText: { fontSize: 15, fontWeight: '600', color: colors.text },
 });
