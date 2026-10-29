@@ -1,6 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z39. Chats previews and group lines in the screen language; launch fix checked on the A51 (2026-10-29)
+### 0z39. Chats previews and group lines in the screen language; launch fix checked on the A51 (2026-10-29). NEXT: walk the remaining screens on the A51
+
+- **NEXT (owner, 2026-10-29): walk the remaining screens on the phone first** and fix P1/P2 layout
+  bugs (the MASTER PROMPT task of the android-insets session): character profile, character
+  settings, store, diary, radio, onboarding, group chat. On the way check that Chats shows
+  "🎤 Голосовое сообщение", not English (EAS update `eed9c277`, not yet seen on the phone). Then the
+  final engineering report in Uzbek (confirmed vs unverified; only the Galaxy A51 was tested, no iPhone).
+- How: Galaxy A51 over USB, adb at
+  `C:\Users\joray\AppData\Local\Microsoft\WinGet\Packages\Genymobile.scrcpy_Microsoft.Winget.Source_8wekyb3d8bbwe\scrcpy-win64-v4.0\adb.exe`,
+  app `com.sigmazam.app`. Screenshots: `adb shell screencap -p /sdcard/s.png`, then `adb pull`
+  (PowerShell `>` corrupts binary output). Gemini works on Phase 4 in the main checkout: edit in the
+  `.claude/worktrees/android-insets` worktree (fast-forward it to `origin/local-work` first), push
+  `HEAD:local-work`, then `git pull --ff-only` (no autostash) in the main checkout.
 
 - Owner (Russian UI) saw "🎤 Voice message" in Chats. `previewFor` (`src/store/use-app-store.ts`) now
   writes `chatList.previewVoice / previewPhoto / previewMissedCall / previewCall` (the words each
