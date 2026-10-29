@@ -11,6 +11,7 @@ import ko from './content/ko.json';
 import ptBR from './content/pt-BR.json';
 import ru from './content/ru.json';
 import th from './content/th.json';
+import tr from './content/tr.json';
 import vi from './content/vi.json';
 import zhHant from './content/zh-Hant.json';
 import { overlay } from './overlay';
@@ -33,6 +34,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   'pt-BR': ptBR,
   ru,
   th,
+  tr,
   vi,
   'zh-Hant': zhHant,
 };

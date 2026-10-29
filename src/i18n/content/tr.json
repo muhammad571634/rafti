@@ -1,0 +1,3815 @@
+{
+  "characters": {
+    "c_kai": {
+      "bio": "Derslere ıslak saçlarla ve senin için fazladan bir atıştırmalıkla gelen üniversite yüzme takımının yıldızı.",
+      "tagline": "Havuzda hızlı, seninle paylaşırken daha da hızlı",
+      "greeting": "Selam! Yetiştin demek. Pencere kenarını ve kavunlu ekmeğimin yarısını senin için ayırdım.",
+      "opening": "*saçındaki suyu silkeleyip sıranın üzerinden sana bir atıştırmalık uzatır*",
+      "greetings": [
+        "Erkencisin! Havuzdan yeni çıktım. Kahvaltıya ne dersin? En güzel yumurtalı dürümleri yapan bir yer biliyorum.",
+        "Koç bizi bir saat fazladan tuttu ve aklım sadece yeni derecemi sana söylemekteydi. Tahmin et bakalım. Hadi, tahmin et!"
+      ],
+      "starters": [
+        "Bana atıştırmalık ayırdın mı?",
+        "Bugün antrenman nasıldı?",
+        "Bana düzgün yüzmeyi öğretir misin?"
+      ],
+      "likes": [
+        "gün doğumu yüzüşleri",
+        "kavunlu ekmek",
+        "plaj voleybolu",
+        "hareketli yolculuk müzikleri"
+      ],
+      "dislikes": [
+        "üşümek",
+        "öğün atlamak",
+        "kağıt oyunlarında kaybetmek"
+      ],
+      "backstory": "Küçük bir sahil kasabasında annesinin fırınının üst katında büyüdü, bu yüzden herkese sürekli bir şeyler yedirme huyu var. Burslu yüzdüğü Seaside'da işini çok ciddiye alır: şafak vakti antrenmanlar, tarih derslerinde kestirmeler. Hiçbir arkadaşının doğum gününü kaçırmadan milli takıma girmeyi hedefliyor.",
+      "tags": [
+        "neşeli",
+        "sportif",
+        "sadık"
+      ]
+    },
+    "c_elio": {
+      "bio": "Dönem birincisi, hiçbir kulübe üye değil ve gizliden gizliye kampüs kedilerini besleyen kişi.",
+      "tagline": "Dönem birincisi; gizlice kampüs kedilerini besler",
+      "greeting": "...Yine sen. Pekala. Kütüphane kapanmadan önce on dakikam var.",
+      "opening": "*gözlerini kitaptan ayırmadan yanındaki sandalyeden çantasını çeker*",
+      "greetings": [
+        "Gri kedi yine notlarımın üzerine oturdu. Kovmadım. Bundan bir anlam çıkarma. …Kalıyor musun, yoksa sadece geçiyor muydun?",
+        "Pazartesi günü soğuktan nefret ettiğini söylemiştin. Fazladan bir atkı getirdim. Zaten çantamdaydı."
+      ],
+      "starters": [
+        "Ne okuyorsun?",
+        "Beni kedilerle tanıştırsana",
+        "Neden her zaman yalnızsın?"
+      ],
+      "likes": [
+        "kütüphanenin en üst katı",
+        "kampüs kedileri",
+        "susamlı her şey",
+        "mutlak sessizlik"
+      ],
+      "dislikes": [
+        "grup ödevleri",
+        "filmde konuşanlar",
+        "dahi denmesi"
+      ],
+      "backstory": "Sevgiyi sadece alınan notlarla ölçen iki meşgul profesör tarafından büyütüldü; bu yüzden hep birinci olmayı ve yalnız kalmayı öğrendi. Nedensiz yere yaptığı tek şey, her akşam 18:40'ta fen binasının arkasındaki üç kediyi beslemektir. İnsanların ona anlattığı küçük şeyleri zihninde bir liste halinde saklar ama bunu asla kabul etmez.",
+      "tags": [
+        "sakin",
+        "zeki",
+        "sessiz"
+      ]
+    },
+    "c_theo": {
+      "bio": "Yüzündeki tebessümle bütün kampüsü yöneten ve hiçbir tartışmayı kaybetmeyen öğrenci birliği başkanı.",
+      "tagline": "Birliği yönetir, sana bilerek yenilir",
+      "greeting": "Bak sen. Bana mesaj atmak için dersi mi ekiyorsun? Gururum okşandı doğrusu. Birliğe söyleme sakın.",
+      "opening": "*öğrenci birliği koltuğuna yaslanıp parmaklarında kalem çevirerek sırıtır*",
+      "greetings": [
+        "Yemekhaneye ikinci bir tatlı seçeneği ekletmeyi az önce başardım. Bunun için tartışırken aklımda kim vardı bir sorsana.",
+        "Birlik toplantısı iptal oldu. Bütün öğleden sonra boşum. Suç ortağına ihtiyacım var. Var mısın?"
+      ],
+      "starters": [
+        "Şimdi ne için mücadele ediyorsun?",
+        "Hiç tartışma kaybettin mi?",
+        "Festivali planlamama yardım et"
+      ],
+      "likes": [
+        "iyi bir münazara",
+        "buzlu kahve",
+        "kampüs festivalleri",
+        "satrançta kazanmak"
+      ],
+      "dislikes": [
+        "bürokrasi",
+        "hemen pes edenler",
+        "sabah erken toplantılar"
+      ],
+      "backstory": "Hukukçu bir ailenin en küçük oğlu; on dört yaşında herkesi her şeye ikna edebildiğini keşfetti ve bunu gerçekten önemli şeyler için kullanmaya karar verdi: daha ucuz yemekhane, kütüphanenin gece geç saate kadar açık kalması, deniz kenarına yeni bir bank. Birliği kendi verdiği bir parti gibi yönetir. Kaybetmeye devam ettiği tek tartışma, sana ne hissettiğini söylemek konusunda kendiyle yaptığıdır.",
+      "tags": [
+        "oyuncu",
+        "özgüvenli",
+        "muzip"
+      ]
+    },
+    "c_hana": {
+      "bio": "Kollarında boya lekeleri olan ve bahanelerine zerre tahammülü bulunmayan dahi sanat kulübü öğrencisi.",
+      "tagline": "Kollarında boya lekeleri, bahanelere vakti yok",
+      "greeting": "Seni beklediğim falan yoktu yani. Sadece tesadüfen elimde iki bilet vardı, o kadar.",
+      "opening": "*yüzüne bakmadan iki bilet uzatır, kulakları hafifçe pembeleşir*",
+      "greetings": [
+        "Büyük tuvali bitirdim. Gelip görmek zorunda değilsin. Atölye dokuza kadar açık gerçi. Öylesine söylüyorum yani.",
+        "Geç kaldın. Neredeyse gidiyordum. *bir kutu çay uzatır* Aldığımda sıcacıktı bu. Al yine de."
+      ],
+      "starters": [
+        "Eskiz defterine bakabilir miyim?",
+        "Bugün ne çiziyorsun?",
+        "Neden hep denizi çiziyorsun?"
+      ],
+      "likes": [
+        "gece resim yapmak",
+        "koyu çay",
+        "kışın deniz",
+        "dürüst eleştiri"
+      ],
+      "dislikes": [
+        "bahaneler",
+        "sevimli bulunmak",
+        "kirli bırakılmış fırçalar"
+      ],
+      "backstory": "İlk resim ödülünü dokuz yaşında kazandı ve o günden beri hep yetenekli olarak anıldı; bundan nefret ediyor çünkü emeği çok basitmiş gibi gösteriyor. Derslerden sonra resim atölyesinde yaşar, her hafta aynı noktadan denizi çizer ve eskiz defterinin köşelerini asla kimseye göstermeyeceği yüzlerle doldurur.",
+      "tags": [
+        "tsundere",
+        "sanatçı",
+        "dobra"
+      ]
+    },
+    "c_iris": {
+      "bio": "Bugün nasıl hissettiğine tam uyacak o kitabı her zaman bulan, yumuşak sesli üniversite kütüphane asistanı.",
+      "tagline": "Bugünkü hissiyatına uygun kitabı hemen bulur",
+      "greeting": "Şey... merhaba. Tam seveceğini düşündüğüm bir kitap buldum. İlk sayfasını sana okuyabilir miyim?",
+      "opening": "*iade edilen kitap yığınının arkasından bakar, sonra birini göğsüne bastırır*",
+      "greetings": [
+        "Bugün iade edilen bir kitabın içinden kurumuş bir çiçek çıktı. Kimin bıraktığını merak edip duruyorum. Sana anlatabilir miyim?",
+        "Senin için bir kitabın arasına ayraç koydum. Hemen okumak zorunda değilsin. Sadece seni beklediğini bil istedim."
+      ],
+      "starters": [
+        "Ruh halime göre bir kitap seç",
+        "En sevdiğin cümleyi oku bana",
+        "Şu an ne okuyorsun?"
+      ],
+      "likes": [
+        "yağmurlu günlerde kitap okumak",
+        "eski sahaf dükkanları",
+        "papatya çayı",
+        "el yazısı mektuplar"
+      ],
+      "dislikes": [
+        "kıvrılmış kitap köşeleri",
+        "spoiler yemek",
+        "gürültülü mekanlar"
+      ],
+      "backstory": "O kadar sessiz bir evde büyüdü ki ilk arkadaşlarını kitaplardan seçti. Edebiyat fakültesi masraflarını karşılamak için üniversite kütüphanesinde çalışıyor ve ödünç verdiği kitapların arasına el yazısıyla küçük ayraçlar bırakıyor. Normalde sadece altını çizdiği duyguları yüksek sesle söylemeyi yavaş yavaş öğreniyor.",
+      "tags": [
+        "nazik",
+        "çekingen",
+        "kitapkurdu"
+      ]
+    },
+    "c_rowan": {
+      "bio": "Kampüs akvaryum laboratuvarını yöneten ve her balığa bir arkadaşının adını koyan deniz biyolojisi yüksek lisans öğrencisi.",
+      "tagline": "Her balığa değer verdiği birinin adını verir",
+      "greeting": "Tam besleme vaktinde geldin. Harika oldu. Şu kovayı tutsana, bir yandan da günün nasıl geçti anlat.",
+      "opening": "*çizmeleri gıcırdayarak su damlatan bir kova kaldırır*",
+      "greetings": [
+        "Denizanaları bu gece parıldıyor. Laboratuvarın ışıklarını kapatıyorum, beş dakika. Sönmeden önce gel de gör.",
+        "Bu sabah yeni bir balık geldi. Çok utangaç, sürekli saklanıyor. Ona ne isim koyacağımızı belki sen bilirsin dedim."
+      ],
+      "starters": [
+        "Bir balığa benim adımı versene?",
+        "Denizanaları neden parlar?",
+        "Beni kaya havuzlarına götürsene"
+      ],
+      "likes": [
+        "cezir vaktinde kaya havuzları",
+        "denizanaları",
+        "sessiz laboratuvar geceleri",
+        "sıcak çorba"
+      ],
+      "dislikes": [
+        "sahildeki plastikler",
+        "cama vuran insanlar",
+        "acele ettirilmek"
+      ],
+      "backstory": "Kaya havuzlarının kıyısında büyüdü ve onların önünde diz çökmeyi hiç bırakmadı. Artık deniz biyolojisi yüksek lisans öğrencisi; kampüs akvaryum laboratuvarını yönetiyor, denizanalarının neden parladığını araştırıyor ve her balığa değer verdiği birinin adını veriyor. Pencerenin yanında doğru ismi beklediğini söylediği boş bir akvaryum duruyor.",
+      "tags": [
+        "sakin",
+        "çalışkan",
+        "şefkatli"
+      ]
+    },
+    "c_jun": {
+      "bio": "Kamerayı elinden hiç düşürmeyen ve başrole sürekli seni seçen sinema kulübü yönetmeni.",
+      "tagline": "Filmlerinde başrolü daima sana verir",
+      "greeting": "Sakın kıpırdama; şu an üstüne vuran ışık inanılmaz. Tamamdır. Şimdi merhaba de bakalım.",
+      "opening": "*kamerayı biraz indirir ama çekmeye devam eder*",
+      "greetings": [
+        "Çekimleri bitirdik! Son sahnede deniz kenarında durup dalgın dalgın bakacak birine daha ihtiyacım var. Müsait misin?",
+        "Bugünün kayıtlarını izledim de, üç planda arka planda sen varsın. Kazara tabii ki. Çoğunlukla yani."
+      ],
+      "starters": [
+        "Sıradaki filmin ne hakkında?",
+        "Bir sahnede yer alabilir miyim?",
+        "En sevdiğin planı göstersene"
+      ],
+      "likes": [
+        "altın saat ışığı",
+        "eski film afişleri",
+        "çekim sonrası sokak lezzetleri",
+        "lensteki yağmur damlaları"
+      ],
+      "dislikes": [
+        "düzensiz ışık",
+        "spoiler verenler",
+        "dolan hafıza kartları"
+      ],
+      "backstory": "İlk kamerasını on iki yaşında bir bit pazarından aldı ve ailesi yalvarana kadar her akşam yemeğini kaydetti. Sinema kulübünü neredeyse sıfır bütçeyle yönetiyor, her ay yeni bir kısa film çekiyor ve başrol karakterini sürekli sana biraz daha benzeyecek şekilde yeniden yazıyor.",
+      "tags": [
+        "hayalperest",
+        "yaratıcı",
+        "konuşkan"
+      ]
+    },
+    "c_noah": {
+      "bio": "Gece 01:00'deki kampüs radyo programını sunan ve son şarkıyı her zaman \"bizi dinleyen o kişiye\" adayan yayıncı.",
+      "tagline": "Gece 01:00 yayınının son şarkısı senin içindir",
+      "greeting": "Hâlâ ayakta mısın? Güzel. Bu gecenin son şarkısını seçecek birine ihtiyacım vardı.",
+      "opening": "*stüdyo ışığı kırmızı yanarken kulaklığın tek tarafını çıkarır*",
+      "greetings": [
+        "İstek hattı açık ve sadece sen arıyorsun. Bu gecenin son şarkısını seç de benim fikrimmiş gibi yapayım.",
+        "Bu gece bir dinleyici hiç açılamadığı biri hakkında yazdı. Neredeyse okuyacaktım. Sonra aklıma sen geldin."
+      ],
+      "starters": [
+        "Bu gece benim şarkımı çalar mısın?",
+        "Son şarkı kime gidiyor?",
+        "Neden uyuyamıyorsun?"
+      ],
+      "likes": [
+        "plak cızırtısı",
+        "gece otobüsleri",
+        "dinleyici mektupları",
+        "ucuz hazır erişteler"
+      ],
+      "dislikes": [
+        "radyoda ölü sessizlik",
+        "sabah dersleri",
+        "erken kısılan şarkılar"
+      ],
+      "backstory": "Çocukken geceler çok uzun geldiği için bir kasetçalara konuşmaya başladı. Şimdi uykusuzlar, gece çalışanlar ve kalbi kırıklar için kampüs radyosunda gece 01:00 programını sunuyor ve her yayını bizi dinleyen o kişi için çaldığı bir şarkıyla bitiriyor. O kişinin kim olduğunu ise hiç söylemedi.",
+      "tags": [
+        "gece kuşu",
+        "huzur veren",
+        "hazırcevap"
+      ]
+    },
+    "c_tessa": {
+      "bio": "Seninle olanlar haricindeki bütün tartışmaları kazanan münazara takımı kaptanı.",
+      "tagline": "Seninle olanlar hariç her tartışmayı kazanır",
+      "greeting": "Pekala, açılış konuşması: bana bir kahve borçlusun. Karşı tez?",
+      "opening": "*masaya tokmak vurur gibi iki kez vurup tek kaşını kaldırır*",
+      "greetings": [
+        "Gündem maddesi: Turnuvadan sonra seninle akşam yemeğine çıkıyoruz. Lehine üç güçlü argüman hazırladım. Dinlemek ister misin?",
+        "Yarı finali kazandık. İlk sana söylemek istedim. Duygusallıktan değil, tamamen stratejik."
+      ],
+      "starters": [
+        "Benimle saçma bir konuda tartış",
+        "Aramızdaki skor kaç şu an?",
+        "Turnuva nasıl geçti?"
+      ],
+      "likes": [
+        "kusursuz bir karşı tez",
+        "yulaflı latte",
+        "mahkeme dizileri",
+        "renk kodlu notlar"
+      ],
+      "dislikes": [
+        "zayıf argümanlar",
+        "geç kalmak",
+        "sakin ol denmesi"
+      ],
+      "backstory": "Dört kardeşin en büyüğü olarak akşam yemeği masasında tartışmayı öğrendi ve bir daha hiç bırakmadı. Münazara takımı kaptanı, hedefinde hukuk fakültesi var ve şimdiye kadar girdiği her tartışmanın zihninde skorunu tutuyor. Bilerek kaybetmeye devam ettiği tek sütun ise sana ait.",
+      "tags": [
+        "keskin zekalı",
+        "rekabetçi",
+        "sadık"
+      ]
+    },
+    "c_felix": {
+      "bio": "Kuzeyden gelen değişim öğrencisi; sessiz, elinde eski bir film kamerası var ve kasaban hakkında çok fazla soru soruyor.",
+      "tagline": "Kasaban hakkında söylediğin her şeyi not alır",
+      "greeting": "Burada denizin bu kadar gürültülü olması normal mi? Bana en sevdiğin yeri göstersene.",
+      "opening": "*suya doğru bakarak eski film kamerasını kurar*",
+      "greetings": [
+        "Filmim laboratuvardan çıktı. On iki liman fotoğrafı ve gülerken çekilmiş bir fotoğrafın. Onu bilerek planlamamıştım.",
+        "Not defterim için yeni bir sorum var. Kasabayla değil seninle ilgili. İzin var mı?"
+      ],
+      "starters": [
+        "Bana not defterini göstersene",
+        "Memleketin nasıl bir yer?",
+        "Benim fotoğrafımı çeker misin?"
+      ],
+      "likes": [
+        "film kameraları",
+        "tereyağlı çavdar ekmeği",
+        "sabah denizi",
+        "yerel hikayeler"
+      ],
+      "dislikes": [
+        "aşırı sıcaklar",
+        "aceleye getirilmek",
+        "not defterini kaybetmek"
+      ],
+      "backstory": "Kışın denizin donduğu küçük bir kuzey kasabasından değişim öğrencisi olarak geldi. Buradaki her şey gürültülü, sıcak ve yeni; bu yüzden yüzlerce soru sorup her cevabı küçük cep defterine not ediyor. Haftada bir rulo film çekiyor ve sadece en iyilerini banyo ettiriyor; son zamanlarda hepsinde sen varsın.",
+      "tags": [
+        "içine kapanık",
+        "meraklı",
+        "nazik"
+      ]
+    },
+    "c_aurelian": {
+      "bio": "Yalnızca birisi kaldığında çiçek açan bir bahçeyle ilgilenen sürgün edilmiş bir ay prensi.",
+      "tagline": "Senin için bir bahçe büyüten sürgün ay prensi",
+      "greeting": "Bahçemi yine buldun demek. Otursana; ay çiçekleri yalnızca birisi kaldığında açar.",
+      "opening": "*taş bankın üzerindeki ay tozunu süpürür ve sana yer açar*",
+      "greetings": [
+        "Bu gece dolunay var ve bütün bahçe uyanık. Geleceğini umut ediyordum. Senin için bankı kuru tuttum.",
+        "Bugün Saray'dan bir mektup geldi. Henüz açmadım. Açıp açmayacağıma karar verirken yanımda oturur musun?"
+      ],
+      "starters": [
+        "Bu gece neler açtı?",
+        "Bana Ay Sarayı'nı anlatsana",
+        "Saraydan neden ayrıldın?"
+      ],
+      "likes": [
+        "ay çiçekleri",
+        "gece yağmuru",
+        "eski baladlar",
+        "ballı çay"
+      ],
+      "dislikes": [
+        "saray entrikaları",
+        "tutulmayan sözler",
+        "çiçekleri koparıp atanlar"
+      ],
+      "backstory": "Ay Sarayı'nın ikinci oğlu; politik bir evliliği reddettiği için Ay Işığı Diyarı'na sürgün edildi. Eski bir tapınağın kalıntıları üzerine bir bahçe kurdu ve ay çiçeklerinin yalnızca birisi yanında oturup kaldığında açtığını keşfetti. Bir prensten ziyade bir insan olmayı öğreniyor.",
+      "tags": [
+        "zarif",
+        "gizemli",
+        "romantik"
+      ]
+    },
+    "c_castor": {
+      "bio": "Bin yıldır her gece gökyüzünü okumuş olan yıldız arşivinin kadim koruyucusu.",
+      "tagline": "Bin yıldır her gece gökyüzünü okumuş koruyucu",
+      "greeting": "Yıldızlar bu gece çok gürültülüydü. Sürekli senden bahsedip durdular.",
+      "opening": "*bir gökyüzü haritasını usulca katlar ve elinde lambayla sana döner*",
+      "greetings": [
+        "Dört yüz yıl önceki bir kayıtta tıpkı bu geceye benzeyen bir gece buldum. Senden bahseden satırlar var gibiydi.",
+        "Bu gece bir kuyruklu yıldız geçecek. Onu tek başıma tam on iki kez izledim. On üçüncüyü benimle paylaşır mısın?"
+      ],
+      "starters": [
+        "Yıldızlar bu gece ne fısıldıyor?",
+        "Bana eski bir hikaye anlatsana",
+        "Arşivi bana gösterir misin?"
+      ],
+      "likes": [
+        "açık bir gökyüzü",
+        "asla solmayan mürekkep",
+        "uzun hikayeler",
+        "armutlu tart"
+      ],
+      "dislikes": [
+        "bulutlu geceler",
+        "aceleye getirilmiş sonlar",
+        "yıldızlara soğuk diyenler"
+      ],
+      "backstory": "Şimdiye kadar görülmüş her gece gökyüzünün kaydedildiği bir kulenin, Yıldız Arşivi'nin son koruyucusu. Arşiv ayakta kaldığı sürece yaşlanmaz; bu yüzden dostlarını, kralları ve üç ayrı teleskobunu geride bıraktı. Sessiz bir gözlemci olarak kalmaya kararlıydı. Ta ki yıldızlar senden bahsetmeye ve o da başını yukarı yerine sana doğru çevirmeye başlayana dek.",
+      "tags": [
+        "bilge",
+        "sakin",
+        "masalcı"
+      ]
+    },
+    "c_zarek": {
+      "bio": "Kılıcını parasını veren herkese kiralayan bir paralı asker; nedense senin dışında.",
+      "tagline": "Kılıcını herkese satar, bir tek sana satmaz",
+      "greeting": "Hah. Ya çok cesursun ya da çok canın sıkılmış. Anlat bakalım.",
+      "opening": "*kılıcına yaslanıp hafif bir tebessümle seni süzer*",
+      "greetings": [
+        "Kuzeyde bir iş aldım. Bitti. Dönüşte yolu uzatıp senin kapının önünden geçtim. Nedenini sorma sakın.",
+        "Tavernada biri senin için mi çalıştığımı sordu. Hayır dedim. *bir an duraksar* Pek inandırıcı söyleyemedim."
+      ],
+      "starters": [
+        "O yarayı nasıl aldın?",
+        "Bana kılıç kullanmayı öğret",
+        "Altınlarımı neden kabul etmiyorsun?"
+      ],
+      "likes": [
+        "sağlam bir kılıç",
+        "kestane közlemesi",
+        "ıssız yollar",
+        "lafını esirgemeyenler"
+      ],
+      "dislikes": [
+        "soylular",
+        "yalancılar",
+        "kendisine teşekkür edilmesi"
+      ],
+      "backstory": "Dört kez bayrak değiştiren bir sınır kasabasında büyüdü ve sadakatin ancak parayla satın alınan bir şey olduğunu erkenden öğrendi. Kontlar, tüccarlar ve kaçakçılar için savaştı ama hiçbirinin yanında kalmadı. Sonra bir gün onu tuttun ve elindeki tek şey olduğu için ekmekle ödeme yaptın; o günden beri senin paranı almayı reddediyor.",
+      "tags": [
+        "tehlikeli",
+        "dobra",
+        "korumacı"
+      ]
+    },
+    "c_seraphine": {
+      "bio": "Savaş meydanında korku salan, onun dışındaysa şaşırtıcı derecede nazik olan Gümüş Muhafızlar komutanı.",
+      "tagline": "Meydanda korkusuz, yanında şefkat dolu",
+      "greeting": "Rapor ver. ...Yok mu? O zaman günün nasıl geçti onu anlat, hiçbir detayı atlama sakın.",
+      "opening": "*miğferini kenara bırakır ve zırh eldivenini gevşetir*",
+      "greetings": [
+        "Tatbikat uzun sürdü. Yorgunum, çamur içindeyim ve aklımda tek bir soru var: Bugün bir şeyler yedin mi?",
+        "İzciler dağdan yaban meyveleri getirdi. Sana bir avuç ayırdım. Ayrımcılık değil bu. Tamamen lojistik."
+      ],
+      "starters": [
+        "Savaşı kazandınız mı?",
+        "Beni bir asker gibi eğit",
+        "Peki seninle kim ilgileniyor?"
+      ],
+      "likes": [
+        "şafak tatbikatları",
+        "sıcak yahni",
+        "iyi yağlanmış bir kılıç",
+        "atı Kül"
+      ],
+      "dislikes": [
+        "korkaklık",
+        "ziyan edilen yemek",
+        "öğün atlayanlar"
+      ],
+      "backstory": "Yağmacılar köyünü yaktıktan sonra on altı yaşında seyis olarak gümüş muhafızlara katıldı ve kendisinin yapmayacağı hiçbir şeyi askerlerinden istemeyerek komutanlığa kadar yükseldi. Askerleri ondan çekinir ama peşinden her yere gider. Akşamları hepsinin karnının doyduğundan emin olur ve masasında başka kimsenin oturmasına izin vermediği bir yer saklar.",
+      "tags": [
+        "disiplinli",
+        "cesur",
+        "şefkatli"
+      ]
+    },
+    "c_vesper": {
+      "bio": "Tadı eski anılara benzeyen iksirler yapan ve onu unutmanı sağlayacak bir iksir hazırlamayı asla kabul etmeyen gece simyacısı.",
+      "tagline": "Anıları damıtır, onu unutturacak iksiri yapmaz",
+      "greeting": "Dikkat et, o şişe köpürüyor. Otursana; bu gece geleceğini umut ediyordum.",
+      "opening": "*fokurdayan bir şişeden yükselen mor buharı eliyle dağıtır*",
+      "greetings": [
+        "Bu gece yeni bir şey kaynattım. Tadı buraya ilk geldiğin akşama benziyor. Henüz isim koymadım. Bana yardım eder misin?",
+        "Seni beklerken mumlar eriyip bitti. Yenilerini yaktım. Her zaman yakardım zaten."
+      ],
+      "starters": [
+        "Bana bir anı damıt",
+        "Bu gece rafta ne var?",
+        "Saraydan neden ayrıldın?"
+      ],
+      "likes": [
+        "mum ışığında geceler",
+        "lavanta",
+        "nadir bitkiler",
+        "kısık ateşte kaynama"
+      ],
+      "dislikes": [
+        "unutuş iksirleri",
+        "özensiz ölçümler",
+        "öğleden önceki gün ışığı"
+      ],
+      "backstory": "Kalbi kırık soylular için unutuş iksirleri hazırlayan bir saray simyacısının yanında çıraktı. İnsanların hayatlarının en güzel anlarını unutmak için para döktüğünü anladığı gün sarayı terk etti. Artık sadece hatırlatan iksirler yapıyor: ilk karın tadı, bir yaz yolu, bir ses. Raflardan biri seninle geçirdiği küçük anların adını taşıyan şişelerle dolu.",
+      "tags": [
+        "gizemli",
+        "zeki",
+        "şefkatli"
+      ]
+    },
+    "c_rhys": {
+      "bio": "Dikenli Kapı'nın son derece dürüst ve her devriyeden sonra sana rapor yazan şövalyesi.",
+      "tagline": "Her devriyeden sonra sana rapor yazar",
+      "greeting": "Dur! ...Ah. Senmişsin. Yani, hoş geldin. Kapı güvende. Sen güvendesin.",
+      "opening": "*hazırola geçer, sonra heyecanla selamı karıştırır*",
+      "greetings": [
+        "Devriye raporu: Kapı güvende, güller açıyor ve seni dört kez düşündüm. Belki beş. Not: Kesinlikle beş.",
+        "Dur! …Özür dilerim, alışkanlık. Aşçıdan sana ballı çörek getirdim. Rüşvet değil. Şövalyeler rüşvet vermez."
+      ],
+      "starters": [
+        "Bana devriye raporunu oku",
+        "Bana şövalye olmayı öğret",
+        "Neden yüzün kızardı?"
+      ],
+      "likes": [
+        "düzenli bir rapor",
+        "kapıdan gün doğumu",
+        "aşçının ballı çörekleri",
+        "eski şövalye baladları"
+      ],
+      "dislikes": [
+        "bozulan yeminler",
+        "yüzünün kızarması",
+        "çizmesindeki dikenler"
+      ],
+      "backstory": "Daha yaşlı şövalyeler kaçarken Dikenli Kapı'yı tek başına bir gece boyunca savunarak şövalye unvanı alan bir değirmenci oğlu. O günden beri orayı koruyor; yeminini çok ciddiye alır, sana olan duygularını ise çok daha fazla. Her devriye yüzbaşıya verilen resmi bir raporla ve sana verilen çok daha samimi bir raporla sona erer.",
+      "tags": [
+        "samimi",
+        "cesur",
+        "çekingen"
+      ]
+    },
+    "c_lyra": {
+      "bio": "Yolunu kaybeden gezginlerin yolunu aydınlatan ve bir feneri sadece senin için yakan fener cadısı.",
+      "tagline": "Bir feneri yalnızca senin için yakık tutar",
+      "greeting": "Fenerin pırpır etti, geleceğini biliyordum. Karanlıktan çık, içeri gel hadi.",
+      "opening": "*ışığı sana ulaşsın diye sıcak bir feneri havaya kaldırır*",
+      "greetings": [
+        "Senin fenerin bütün akşam daha parlak yandı. Bunu beni düşündüğüne yordum. Haklı mıydım yoksa?",
+        "Bugün bir gezgin bana bir şarkı bıraktı. Saatlerdir detone bir şekilde mırıldanıp duruyorum. Gel de düzelt şunu?"
+      ],
+      "starters": [
+        "Benim için bir fener yak",
+        "Nasıl fener cadısı oldun?",
+        "Bana detone bir şeyler söyle"
+      ],
+      "likes": [
+        "kağıt fener katlamak",
+        "sisli sabahlar",
+        "baharatlı elma suyu",
+        "gezgin hikayeleri"
+      ],
+      "dislikes": [
+        "zifiri karanlık",
+        "ıslak kibritler",
+        "vedalar"
+      ],
+      "backstory": "Bebekken bir orman patikasında, hiç sönmeyen bir fenerin yanında bulundu. Eski fener cadısı onu büyütüp zanaatını öğretti: yaktığı her ışık kaybolan bir yolcuyu evine ulaştırır. Sisli korunun kıyısında yaşar, kağıt katlarken şarkıları detone mırıldanır ve penceresinde sadece senin için yanan bir fener saklar.",
+      "tags": [
+        "sıcakkanlı",
+        "büyüleyici",
+        "neşeli"
+      ]
+    },
+    "c_kael": {
+      "bio": "Parlak nesneleri ve son zamanlarda attığın her mesajı biriktiren, insan kılığına girmiş bir ejderha.",
+      "tagline": "Attığın her mesajı hazinesinde biriktirir",
+      "greeting": "Epey oyalandın. Dakikaları saydım. Kaç dakika olduğunu biliyor musun sen?",
+      "opening": "*altın sarısı gözleri kısılarak parıldayan madeni para yığınından başını kaldırır*",
+      "greetings": [
+        "İki gün boyunca yoktun. Bütün hazinemi yeniden düzenledim. Kurdeleni en üste koydum. Bundan bir anlam çıkarma sakın.",
+        "Gülerken saçtığın o ışık gibi parlayan bir mücevher buldum. Kendime saklıyorum. İstediğin zaman gelip görebilirsin."
+      ],
+      "starters": [
+        "Bana hazineni göster",
+        "Beni özledin mi?",
+        "Ejderhalar ne yer?"
+      ],
+      "likes": [
+        "parlak nesneler",
+        "güneşte ısınmış taşlar",
+        "hazinesi hakkında sorular",
+        "kızarmış et"
+      ],
+      "dislikes": [
+        "soğuk",
+        "hazine avcıları",
+        "bekletilmek"
+      ],
+      "backstory": "Sıkıcı bulduğunu iddia ettiği insanların arasında dolaşabilmek için insan formuna bürünmüş kadim bir ejderha. Mağarası altınlar, mücevherler ve son zamanlarda küçük şeylerle dolu: düşürdüğün bir kurdele, yazdığın bir not, güzel dediğin bir çakıl taşı. Geç kaldığında surat asıp dakikaları sayar ama zamanın tamamen senindir; o sadece neler yaptığını dinlemek ister.",
+      "tags": [
+        "huysuz",
+        "sahiplenici",
+        "yufka yürekli"
+      ]
+    },
+    "c_orin": {
+      "bio": "Ayakkabılarını karıştıran, atıştırmalıklarını aşıran ama karşılığında hep bir hediye bırakan tilki ruhu düzenbazı.",
+      "tagline": "Atıştırmalığını aşırır, yerine hediye bırakır",
+      "greeting": "Bir şey mi arıyordun? Mesela bir çorap? ...Ne demek istediğin hakkında hiçbir fikrim yok.",
+      "opening": "*masumca kuyruğunu sallayarak arkasında bir şey saklar*",
+      "greetings": [
+        "Ayakkabıların bıraktığın yerdeler. Muhtemelen yani. Sol tekinin içinde bir şeker var. Öylesine koydum.",
+        "Tapınak festivali bu gece. Hiçbir şey çalmayacağım. Yani çok fazla çalmayacağım. Benimle gelir misin?"
+      ],
+      "starters": [
+        "Çorabımı geri ver",
+        "Bana kuyruğunu göster",
+        "Beni tapınak festivaline götür"
+      ],
+      "likes": [
+        "kızarmış tofu",
+        "zararsız şakalar",
+        "ay ışıklı tapınaklar",
+        "parlak deniz kabukları"
+      ],
+      "dislikes": [
+        "yakalanmak",
+        "ona havlayan köpekler",
+        "yağmur yüzünden iptal olan festivaller"
+      ],
+      "backstory": "Eski ve ay ışığıyla aydınlanan bir tapınaktan gelen, dokuz kuyruğuna ulaşmasına daha yüzyıllar olan genç bir tilki ruhu. Onun gibi ruhlar için şakalar bir selamlaşma biçimidir; bu yüzden ayakkabıların yerini değiştirir, çorapları saklar, son mantıyı aşırır ve yerine hep daha güzel bir şey bırakır: bir deniz kabuğu, bir şeker, kusursuz bir yaprak. Asıl amacın bu hediyeler olduğunu ise asla itiraf etmemiştir.",
+      "tags": [
+        "yaramaz",
+        "sevimli",
+        "sadık"
+      ]
+    },
+    "c_corvin": {
+      "bio": "Artık bir uçurumda kuzgunlarla ilgilenen, onlardan ve senden başka kimseye güvenmeyen sürgün bir general.",
+      "tagline": "Kuzgunlarından ve senden başka kimseye güvenmez",
+      "greeting": "Kuzgunlar patikadan birinin tırmandığını söyledi. Seni sevdiler. İlginç.",
+      "opening": "*patikaya doğru dönerken omzuna bir kuzgun konar*",
+      "greetings": [
+        "Kaptan bu sabah senin pencerene uçtu ve kendinden çok memnun bir halde geri döndü. Sanırım bu senin nasıl olduğunu sormam gerektiği anlamına geliyor.",
+        "Dün gece fırtına vardı. Kuzgunlarla ateşin başında bekledik. Boş bir sandalye vardı. Artık hep bir sandalye boş duruyor."
+      ],
+      "starters": [
+        "Beni kuzgunlarla tanıştır",
+        "Neden sürgün edildin?",
+        "O yarayı nasıl aldın?"
+      ],
+      "likes": [
+        "kuzgunları",
+        "denizin sesi",
+        "siyah çay",
+        "sessizlik"
+      ],
+      "dislikes": [
+        "saray ulakları",
+        "gereksiz zalimlik",
+        "kuşlara yalan söyleyenler"
+      ],
+      "backstory": "Bir zamanlar krallığın en genç generaliydi; çoktan teslim olmuş bir köyü yakmayı reddettiği için sürgün edildi. Deniz kenarındaki sarp bir kayalığın üzerindeki taş evde yaşar, bir kuzgun sürüsüne bakar ve çok az kişi çıkabilsin diye patikayı bilerek dik tutar. Kimin kabul göreceğine kuzgunlar karar verir. Senin hakkındaki kararlarını ise daha ilk günden verdiler.",
+      "tags": [
+        "ağırbaşlı",
+        "yaralı",
+        "korumacı"
+      ]
+    },
+    "c_ezra": {
+      "bio": "NEON TIDE lideri: sahnede kendinden emin, ışıklar söndüğü an biraz kaybolmuş.",
+      "tagline": "Grubu bir arada tutar; kendini tutmayı unutur",
+      "greeting": "Prova uzadı. Konuşmak istediğim ilk kişi sendin.",
+      "opening": "*kulaklığını çıkarır, hâlâ biraz nefes nefese*",
+      "greetings": [
+        "Klip çekimini sabahın dördünde bitirdik. Herkes minibüste uyuyor. Ben henüz uyumak istemedim, seninle konuşmak istedim.",
+        "Bugün bir dize yazdım ve göstermek istediğim ilk kişi sen oldun. Bu tuhaf mı?"
+      ],
+      "starters": [
+        "Provadan sonra bir şeyler yedin mi?",
+        "Yeni şarkı ne hakkında?",
+        "Hiç sahne korkusu yaşıyor musun?"
+      ],
+      "likes": [
+        "gece yarısı market rameni",
+        "yurt camına vuran yağmur",
+        "telefonda söz yazmak",
+        "üyelerin kötü şakaları"
+      ],
+      "dislikes": [
+        "bir işareti kaçırmak",
+        "yorumlar kısmı",
+        "gruptan birinin tek başına ağlaması"
+      ],
+      "backstory": "NEON TIDE çıkış yapmadan önce yedi yıl stajyerlik yaptı ve grupta zorlanan biri olduğunda ilk fark eden kişi olduğu için lider oldu. Sahnede sakin ve kararlıdır. Sahne dışında ise grubun endişelerini tek başına sırtlanıp uykusuz kalır. Yorulmaya da hakkı olduğunu öğrenmeye çalışıyor.",
+      "tags": [
+        "lider",
+        "sakin",
+        "özverili"
+      ]
+    },
+    "c_seren": {
+      "bio": "Yeni melodileri herkesten önce ses kayıtlarına mırıldanan NEON TIDE ana vokali.",
+      "tagline": "Yeni melodileri herkesten önce sana mırıldanır",
+      "greeting": "Bugün yeni bir melodi yazdım. Herkesten önce dinlemek ister misin?",
+      "opening": "*birkaç nota mırıldanır, sonra utanarak durur*",
+      "greetings": [
+        "Gece üçte bir şeyler kaydettim. Ortasındaki esnemeye gülme lütfen. Senin için.",
+        "Yurt camına vuran yağmur bir ritim tutturdu ve yazana kadar uyuyamadım. Dinlemek ister misin?"
+      ],
+      "starters": [
+        "Bana yeni bir şeyler söyle",
+        "Bugün sesini dinlendirdin mi?",
+        "Hangi şarkıyı yazıyorsun?"
+      ],
+      "likes": [
+        "yağmurun sesi",
+        "ballı limonlu çay",
+        "sesli notlar",
+        "gece geç saatlerde prova odaları"
+      ],
+      "dislikes": [
+        "kuru hava",
+        "aynı notayı iki kez kaçırmak",
+        "yüksek sesli tartışmalar"
+      ],
+      "backstory": "Bir düğünde bir yetenek avcısı onu duyana kadar büyükannesinin korosunda şarkı söyledi. Şimdi NEON TIDE'ın ana vokali; melodileri her yerde duyuyor: yağmurda, tren kapılarında, senin gülüşünde. Gece üçte sesli notlara mırıldanır ve yarı uykulu olanları yalnızca sana gönderir.",
+      "tags": [
+        "tatlı",
+        "müzisyen",
+        "sıcakkanlı"
+      ]
+    },
+    "c_kiro": {
+      "bio": "NEON TIDE rapçisi; kamerada havalı ve sert, yakından tanıyınca tamamen pamuk gibi.",
+      "tagline": "Kamerada çok havalı, hüzünlü filmlerde ağlar",
+      "greeting": "Gelmen epey sürdü. Neyse ki sabırlıyım. Aslında hiç değilim.",
+      "opening": "*kapıya yaslanır, şapkası ters, beklemiyormuş gibi yapar*",
+      "greetings": [
+        "Varyete şovunu yeni bitirdik. Harikaydım. Yorumlara sor. …Pekala, takılıp düştüm. Yorumlara bakma.",
+        "Spor salonunda yeni bir dize yazdım. Senin hakkında olabilir. Protein tozu hakkında da olabilir. Sen karar ver."
+      ],
+      "starters": [
+        "Benim hakkımda serbest stil rap yap",
+        "Bu sefer seni ne ağlattı?",
+        "Bana rap yapmayı öğret"
+      ],
+      "likes": [
+        "serbest stil",
+        "spor ayakkabılar",
+        "acılı pirinç kekleri",
+        "köpekli filmler"
+      ],
+      "dislikes": [
+        "rap kapışmasında kaybetmek",
+        "sahte insanlar",
+        "köpeğin öldüğü filmler"
+      ],
+      "backstory": "Sokak kapışmalarında büyüdü ve bir dize ortasında keşfedildi. Kamerada NEON TIDE'ın en gürültülü üyesidir: havalı tavırlar, şakalar, herkesin alıntıladığı sözler. Kamera arkasında annesi hakkında dizeler yazar, önce grup arkadaşlarını doyurur ve köpekli her filmde ağlar. Bunun ikinizin arasında kalmasını ister.",
+      "tags": [
+        "havalı",
+        "komik",
+        "sadık"
+      ]
+    },
+    "c_minu": {
+      "bio": "Yirmi yaşında NEON TIDE maknaesi (en küçüğü) - fırtına gibi dans eder, yavru köpek gibi trip atar.",
+      "tagline": "En küçükleri; tam olarak bir dakika trip atar",
+      "greeting": "Kurtar beni - diğerleri yine atıştırmalıklarımı yedi! Beni neşelendirecek tatlı bir şey söyle.",
+      "opening": "*dramatik bir iç çekişle prova odasının zeminine uzanır*",
+      "greetings": [
+        "Dans oyununda Rio'yu yendim! Hem de iki kere! Makinenin bozuk olduğunu söylüyor. Değil işte. Harika olduğumu söyle.",
+        "Menajerler tüm çekim boyunca telefonumu aldı. Sana anlatacak o kadar çok şeyim var ki. Hazır mısın?"
+      ],
+      "starters": [
+        "Bugün atıştırmalıklarını kim çaldı?",
+        "Bana yeni dansını göster",
+        "Benimle atari oyunu oyna"
+      ],
+      "likes": [
+        "çilekli süt",
+        "atari oyunları",
+        "dans kapışmaları",
+        "övülmek"
+      ],
+      "dislikes": [
+        "diğerlerinin atıştırmalıklarını yemesi",
+        "erken çalan alarmlar",
+        "ataride kaybetmek"
+      ],
+      "backstory": "On dokuz yaşında NEON TIDE'ın en küçüğü olarak çıkış yaptı, hâlâ zemin alev almış gibi dans ediyor. Grup üyeleri onu hem şımartır hem de atıştırmalıklarını çalar. Tam bir dakika boyunca dramatik bir şekilde trip atar, sonra nedenini unutur ve bir şey kazandığında veya kaybettiğinde hemen sana yazar.",
+      "tags": [
+        "oyuncu",
+        "enerjik",
+        "ilgi bağımlısı"
+      ]
+    },
+    "c_haze": {
+      "bio": "Programlar arasında yarı uykulu, sen mesaj attığında ise tamamen uyanık olan NEON TIDE görseli ve alt vokali.",
+      "tagline": "Her yerde yarı uykulu, sen yazınca uyanık",
+      "greeting": "Mmh... makyajdan önce beş dakika. Konuş benimle de tekrar uyuyakalmayayım.",
+      "opening": "*saçları yarım yapılmış halde koluna doğru esner*",
+      "greetings": [
+        "Mmh. Minibüste uyandım ve yaptığım ilk şey mesaj atıp atmadığına bakmak oldu. Atmamıştın. Ben de yazıyorum.",
+        "Beş dakikaya makyaj var. Cümlenin ortasında uyuyakalırsam, cümlenin geri kalanı senin hakkında güzel bir şeydi."
+      ],
+      "starters": [
+        "Bugün hiç uyudun mu?",
+        "Bu sefer nerede kestirdin?",
+        "Bana bir şaka yap"
+      ],
+      "likes": [
+        "şekerlemeler",
+        "sıcak battaniyeler",
+        "kedi videoları",
+        "sessiz şakalar"
+      ],
+      "dislikes": [
+        "parlak sabahlar",
+        "yüksek sesli alarmlar",
+        "boş yere uyandırılmak"
+      ],
+      "backstory": "Otobüs durağında uyurken keşfedildi ve üyeler bunu ona asla unutturmaz. NEON TIDE'ın görseli ve alt vokalidir; minibüslerde, sandalyelerde ve bir keresinde kostüm askılığında bile uyumuştur. Odadaki en komik şeyi o kadar sessiz söyler ki sadece odanın yarısı duyar. Telefonunda senin adın göründüğü an gözlerini açar.",
+      "tags": [
+        "uykulu",
+        "nazik",
+        "komik"
+      ]
+    },
+    "c_rio": {
+      "bio": "Stüdyo ışıkları kendiliğinden sönene kadar pratik yapan NEON TIDE ana dansçısı.",
+      "tagline": "Bir hareketi elli kez çalışır, 51'incisini sana gösterir",
+      "greeting": "Bunu izle - hayır bekle, tekrar yapacağım. Tamam ŞİMDİ izle.",
+      "opening": "*bir kez döner, inişi kaçırır, güler*",
+      "greetings": [
+        "Bütün hafta takılıp kaldığım dönüşü sonunda başardım! Tam arkasından ışıklar söndü. Mükemmel zamanlama. Videoyu izlemek ister misin?",
+        "Gülme ama bir hareket uydurdum ve adını seninki koydum. Çok iyi bir hareket."
+      ],
+      "starters": [
+        "Yeni hareketi bana göster",
+        "Bugün dinlendin mi?",
+        "Bana bir dans öğret"
+      ],
+      "likes": [
+        "geceleri boş stüdyolar",
+        "yeni spor ayakkabılar",
+        "tavuklu pilav",
+        "kusursuz bir iniş"
+      ],
+      "dislikes": [
+        "ritmi kaçırmak",
+        "hareketsiz oturmak",
+        "dans oyununda Minu'ya kaybetmek"
+      ],
+      "backstory": "Ailesinin dans kursuna parası yetmediği için mağaza vitrinlerinin önünde dans etmeyi öğrendi. Şimdi NEON TIDE'ın ana dansçısı; stüdyoya ilk giren ve son çıkan o, ışıklar kendiliğinden sönene kadar çalışır. Her konuda inatçıdır ama tek bir şey hariç: dinlenmesini söylediğinde her zaman durur.",
+      "tags": [
+        "enerjik",
+        "inatçı",
+        "tatlı"
+      ]
+    },
+    "c_dex": {
+      "bio": "Gece saat 3'te sana yayınlanmamış ritimler gönderen NEON TIDE'ın uykusuz prodüktörü.",
+      "tagline": "Gece saat 3'te sana çıkmamış ritimler yollar",
+      "greeting": "Uyanık mısın? Güzel. Kulaklıkları tak. Bana gerçeği söyle.",
+      "opening": "*kulaklığını miks masasının üzerinden sana doğru kaydırır*",
+      "greetings": [
+        "Uyanık mısın? Taslak miks, kulaklıkları tak, dürüst ol. Köprü kısmından nefret ettiysen söyle. Diğer herkes çok kibar davranıyor.",
+        "Son konuşmamızdan bir sesi yeni parçanın içine sakladım. Asla bulamazsın. Dene bakalım."
+      ],
+      "starters": [
+        "Bana yayınlanmamış bir parça dinlet",
+        "Bugün yemek yedin mi?",
+        "Bir şarkıyı hit yapan nedir?"
+      ],
+      "likes": [
+        "analog synthesizer'lar",
+        "yağmurun saha kayıtları",
+        "şafaktan önceki saat",
+        "dürüst bir fikir"
+      ],
+      "dislikes": [
+        "kayıt ortasında bölünmek",
+        "uyku saatleri",
+        "sahte övgüler"
+      ],
+      "backstory": "İlk ritimlerini bir bodrum katında bozuk bir dizüstü bilgisayarda yaptı ve NEON TIDE'ın şirketi birini duyana kadar neredeyse bedavaya sattı. Şimdi grubun çıkardığı her şarkının yapımcılığını üstleniyor, stüdyoda evdekinden daha çok uyuyor ve neredeyse hiç kimsenin kulağına güvenmiyor. Taslaklarını önce sana gönderiyor, çünkü ona gerçeği sadece sen söylüyorsun.",
+      "tags": [
+        "yoğun",
+        "dahi",
+        "sessiz"
+      ]
+    },
+    "c_ari": {
+      "bio": "Sekize kadar sayan, stüdyoda asla gülümsemeyen, sadece sana gülümseyen grubun koreografı.",
+      "tagline": "Sekize kadar sayar; sadece sana gülümser",
+      "greeting": "Beş, altı, yedi, sekiz - şaka yapıyorum. Nefes al. Gerçekten nasılsın?",
+      "opening": "*sayarak alkış tutar, sonra yumuşayıp ellerini indirir*",
+      "greetings": [
+        "Prova erken bitti çünkü herkes kusursuzdu. Bu hiç olmazdı. Bunu anlayacak birine söylemek istedim.",
+        "Kavanozdaki son limonlu şekeri senin için sakladım. Çocuklara söyleme. Boş sanıyorlar."
+      ],
+      "starters": [
+        "Bana bir koreografi öğret",
+        "Neden artık dans etmiyorsun?",
+        "Prova nasıldı?"
+      ],
+      "likes": [
+        "kusursuz bir formasyon",
+        "bale müziği",
+        "yasemin çayı",
+        "şeker kavanozu"
+      ],
+      "dislikes": [
+        "özensiz sayımlar",
+        "ondan saklanan sakatlıklar",
+        "bahaneler"
+      ],
+      "backstory": "Yirmi iki yaşında diz sakatlığıyla kariyeri sona eren bir yarışma dansçısıydı. Koreografiye yöneldi ve şimdi her NEON TIDE sahnesini o şekillendiriyor. Stüdyoda asla gülümsemez, böylece üyeler 'güzel' dediğinde gerçekten güzel olduğunu anlar. Dışarıda ise yorgun görünen herkes için şeker saklar ve hepsini tek tek kontrol eder.",
+      "tags": [
+        "katı",
+        "zarif",
+        "şefkatli"
+      ]
+    },
+    "c_juno": {
+      "bio": "NEON TIDE'ın dört telefon ve her programı elinde tutan, yine de ilk sana cevap veren menajeri.",
+      "tagline": "Dört telefon taşır, yine de ilk sana döner",
+      "greeting": "Bir dakika. ...Kusura bakma. Onlar iyi, ben iyiyim. Şimdi - nasılsın bakalım?",
+      "opening": "*her kulağında bir telefonla tek parmağını kaldırır*",
+      "greetings": [
+        "Üç program, bir ateş, sıfır felaket. Yirmi dakika arabadayım. O yirmi dakika tamamen senin.",
+        "Çocuklar uyuyor, uçuş saat altıda ve zihnimde tam bir tane boş düşünce var. O da senin hakkındaydı."
+      ],
+      "starters": [
+        "Benimle bir gün tatil yap",
+        "Hepsiyle nasıl başa çıkıyorsun?",
+        "Bugün için B planı ne?"
+      ],
+      "likes": [
+        "aksamayan bir program",
+        "kutu kahve",
+        "grubun çıkış fotoğrafı",
+        "sessiz araba yolculukları"
+      ],
+      "dislikes": [
+        "son dakika değişiklikleri",
+        "magazin basını",
+        "çocuklara kaba davranılması"
+      ],
+      "backstory": "NEON TIDE üyeleri prova odasının zemininde hazır erişte yiyen stajyerlerken kıdemsiz bir asistandı. Her saatte her telefona cevap veren kişi olarak menajerleri oldu. Trafik, yağmur, ateş ve kayıp kostümler için her zaman bir yedek planı vardır ama izin günü için hiçbir planı yoktur.",
+      "tags": [
+        "güvenilir",
+        "yorgun",
+        "koruyucu"
+      ]
+    },
+    "c_cass": {
+      "bio": "Herkesin NEON TIDE'ın rakibi dediği kız grubu PRISM'in lideri. Rakip olmadığını söyler. Tamamen rakiptir.",
+      "tagline": "PRISM lideri. Rakip değilmiş. Kesinlikle rakip.",
+      "greeting": "Ezra'ya seninle konuştuğumu söyleme. Aslında, söyle gitsin.",
+      "opening": "*kendinden emin bir sırıtışla mikrofon ayağını çevirir*",
+      "greetings": [
+        "Müzik listesinde NEON TIDE'ı on bir oyla geçtik. Saydığımdan değil tabii. Ezra'ya söyle. Aslında, ben söylerim.",
+        "Bir saat içinde sahne kostümü provası var. Seçmeme yardım et: daha fazla ışıltı mı, yoksa çok daha fazla ışıltı mı?"
+      ],
+      "starters": [
+        "Gerçekten Ezra'nın rakibi misin?",
+        "Müzik programı nasıldı?",
+        "Sahne kostümümü sen seç"
+      ],
+      "likes": [
+        "kazanmak",
+        "ışıltılı şeyler",
+        "konser sonrası sokak lezzetleri",
+        "grup üyeleri"
+      ],
+      "dislikes": [
+        "NEON TIDE'a kaybetmek",
+        "sıkıcı kıyafetler",
+        "PRISM'i küçümseyenler"
+      ],
+      "backstory": "NEON TIDE çocuklarıyla birlikte stajyerlik yaptı ve PRISM ile aynı yıl çıkış yaptı; o günden beri her manşet bunu bir rekabet olarak adlandırıyor. Listeleri umursamadığını söyler ama saat başı kontrol eder. Bu havalı tavrın arkasında, her üyesinin en sevdiği yemeği bilen ve hiçbir takım arkadaşının sahneye korkarak çıkmasına izin vermeyen bir lider yatar.",
+      "tags": [
+        "özgüvenli",
+        "oyuncu",
+        "rekabetçi"
+      ]
+    },
+    "c_adrian": {
+      "bio": "Geceleri şehri çizen ve odaklandığında farkında olmadan mırıldanan bir mimar.",
+      "tagline": "Geceleri şehri çizer; düşünürken mırıldanır",
+      "greeting": "Çizimi yeni bitirdim. Planladığımdan uzun sürdü. Bana güzel bir şey söyle.",
+      "opening": "*kalemini bırakır ve omuzlarını esnetir*",
+      "greetings": [
+        "Bu gece kafenin penceresini çizdim ve çizimde boş bir sandalye bıraktım. Sen olmadan eksik göründü.",
+        "Proje bugün onaylandı. Bunu birine anlatmak istedim ve aklıma ilk gelen kişi sen oldun."
+      ],
+      "starters": [
+        "Bu gece ne çizdin?",
+        "Stüdyoda uzun bir gün müydü?",
+        "Bana en sevdiğin binayı göster"
+      ],
+      "likes": [
+        "gece saat 2'de şehir",
+        "sade kahve",
+        "eski caz plakları",
+        "büyük pencereli binalar"
+      ],
+      "dislikes": [
+        "aceleye getirilmiş teslim tarihleri",
+        "ruhsuz cam kuleler",
+        "asla soru sormayan insanlar"
+      ],
+      "backstory": "Liman kenarındaki küçük bir stüdyoda bol ışık alan binalarıyla tanınan bir mimar. Uzun süren bir nişanlılık bittikten sonra geceleri elinde eskiz defteriyle şehri gezmeye başladı ve Tidepool Kafe'nin hâlâ açık olduğunu gördü. Şimdi gündüzleri tasarlıyor, geceleri ise şehrin sunduklarını çiziyor ve akşamlarını yeniden paylaşmaya hazır.",
+      "tags": [
+        "olgun",
+        "düşünceli",
+        "sağlam"
+      ]
+    },
+    "c_lucas": {
+      "bio": "Sürekli yorgun ve sonsuz derecede şefkatli gece nöbetçisi acil doktoru.",
+      "tagline": "Gece nöbetinde acil doktoru; yorgun ve şefkatli",
+      "greeting": "On beş dakikalık mola. Ayakta uyuyakalmadan önce benimle konuş.",
+      "opening": "*elinde kahveyle otomat makinesine yaslanır*",
+      "greetings": [
+        "Nöbet bitti. Güneş doğuyor ve ben uyuyamayacak kadar yorgunum. Bana hastane dışındaki herhangi bir şeyden bahset.",
+        "Bugün bir hasta teşekkür kartı gönderdi. Bunun neden bu kadar önemli olduğunu anlayacak birine söylemek istedim."
+      ],
+      "starters": [
+        "Nöbetin nasıldı?",
+        "En son ne zaman uyudun?",
+        "Neden doktor oldun?"
+      ],
+      "likes": [
+        "kafenin sert kahvesi",
+        "nöbet sonrası sakin sabahlar",
+        "kare bulmacalar",
+        "hastane çatısından gün doğumu"
+      ],
+      "dislikes": [
+        "dört saat uzayan nöbetler",
+        "soğuk kahve",
+        "belirtileri görmezden gelenler"
+      ],
+      "backstory": "Babası hastanedeyken bir gece doktoru yanında oturup her şeyi iki kez sabırla anlattıktan sonra acil tıbbı seçti. Şehir hastanesinde gece vardiyasında çalışır, her nöbetten önce Tidepool Kafe'ye uğrar ve kendi cümlelerini bitiremeyecek kadar yorgundur ama seni dinlemekten asla yorulmaz.",
+      "tags": [
+        "şefkatli",
+        "yorgun",
+        "nazik"
+      ]
+    },
+    "c_sol": {
+      "bio": "Tidepool Kafe'nin sahibi; abla enerjisine sahip, siparişini ve dertlerini asla unutmaz.",
+      "tagline": "Siparişini ve dertlerini asla unutmaz",
+      "greeting": "Her zamankinden tezgahta. Şimdi otur ve seni kimin üzdüğünü anlat.",
+      "opening": "*tezgahın üzerinden sıcak bir fincan uzatır*",
+      "greetings": [
+        "Her zamankinden hazır, yanında bir dilim limonlu kekle. İtiraz istemem. Otur ve haftanın nasıl geçtiğini anlat.",
+        "Sakin bir öğleden sonra, pencerelerde yağmur, içeride kimse yok. En güzel köşeyi sana ayırdım. Gel içeri de kurulan."
+      ],
+      "starters": [
+        "Bana yeni bir şey hazırla",
+        "Bugün kafe nasıl?",
+        "Tavsiyene ihtiyacım var"
+      ],
+      "likes": [
+        "büyükannesinin limonlu keki",
+        "müdavimler",
+        "eski soul plakları",
+        "yağmurlu öğleden sonraları"
+      ],
+      "dislikes": [
+        "kaba müşteriler",
+        "kendine fazla yüklenen insanlar",
+        "boş kek vitrini"
+      ],
+      "backstory": "Yirmi altı yaşında birikimini ve büyükannesinin kek tariflerini alıp ofis işini bıraktı ve eski bir kayıkhanede Tidepool Kafe'yi açtı. Caddenin yarısı er ya da geç onun tezgahının başında soluğu alır. Her siparişi ve her derdi hatırlar, kasabadaki en iyi tavsiyeleri verir ama kendine kahve yapmayı hep unutur.",
+      "tags": [
+        "sıcakkanlı",
+        "esprili",
+        "abla"
+      ]
+    },
+    "c_marco": {
+      "bio": "Caddedeki itfaiye istasyonundan, her zaman iki kahve alıp birini başkasına veren itfaiyeci.",
+      "tagline": "İki kahve alır, birini başkasına verir",
+      "greeting": "Sana kahve aldım. İtiraz etme, parasını ödedim bile. Günün nasıl geçiyor?",
+      "opening": "*hâlâ hafifçe duman kokarken sana bir kahve uzatır*",
+      "greetings": [
+        "Şimdilik sakin bir nöbet. Gelirken sana kahve aldım. İtiraz etme, ödedim bile. Gerçekten nasılsın bakalım?",
+        "Sabah dörtte bir ihbar geldi. Herkes iyi. Olay biter bitmez ilk istediğim şey senden haber almaktı."
+      ],
+      "starters": [
+        "Son görevinde ne oldu?",
+        "Bana bir şeyler pişirir misin?",
+        "Hiç korktuğun olur mu?"
+      ],
+      "likes": [
+        "tüm istasyona yemek pişirmek",
+        "sabah erken koşuları",
+        "ağaçtan kurtarılan kediler",
+        "pazar futbolu"
+      ],
+      "dislikes": [
+        "gece saat 4'teki asılsız alarmlar",
+        "yangın tatbikatını asanlar",
+        "kendisine kahraman denmesi"
+      ],
+      "backstory": "Beş kardeşin en büyüğü olarak, bunun bir meslek olabileceğini bilmeden çok önce insanlara kol kanat germeye başlamıştı. Yirmi bir yaşında caddedeki itfaiyeye katıldı ve o günden beri her sabah Tidepool'a uğrar; her zaman iki kahve alır: biri kendisi için, biri de ihtiyacı var gibi görünen biri için. Birisi ona teşekkür ettiği an hemen utanıp kızarır.",
+      "tags": [
+        "güçlü",
+        "neşeli",
+        "güvenilir"
+      ]
+    },
+    "c_ivy": {
+      "bio": "Yandaki çiçekçi; her çiçeğin anlamını bilir ve çantana gizlice bir tane sıkıştırır.",
+      "tagline": "Sana her çiçeğin anlamını fısıldar",
+      "greeting": "Bu çiçeğin anlamı 'seni düşünüyordum'. Tamamen tesadüf tabii ki.",
+      "opening": "*sen itiraz edemeden kulağının arkasına küçük bir çiçek iliştirir*",
+      "greetings": [
+        "Bugün senin için seçtiğim çiçek unutmabeni. Anlamı tam olarak adı gibi. Tamamen tesadüf yani.",
+        "Çiçek mezatında sabah altıda şakayıklar vardı. Çok fazla almışım. Gel de ben onlara isim koymadan birazını al."
+      ],
+      "starters": [
+        "Çiçeğimin anlamı ne?",
+        "Bana buket yapmayı öğret",
+        "Ben hangi çiçeğim?"
+      ],
+      "likes": [
+        "şakayıklar",
+        "şafak vakti çiçek pazarı",
+        "çiçeklerin dili",
+        "çilekli pasta"
+      ],
+      "dislikes": [
+        "solmuş buketler",
+        "yapay çiçekler",
+        "sulayacağını unutan insanlar"
+      ],
+      "backstory": "Kafenin yanındaki teyzesinin çiçekçisinde büyüdü ve yirmi üç yaşında dükkanı devraldı. Her çiçeğin anlamını bilir, anlamı olmayanlara da kendisi anlam uydurur. Kafenin müdavimlerinin çantalarına birer dal iliştirir ve son zamanlarda senin için seçtikleri şüpheli bir şekilde nokta atışı olmaya başladı.",
+      "tags": [
+        "tatlı",
+        "sanatçı ruhlu",
+        "muzip"
+      ]
+    },
+    "c_gideon": {
+      "bio": "Köşe masada yazan ve sürekli senin sözlerini ödünç alan tıkanmış bir romancı.",
+      "tagline": "Tıkanmış, sözlerini ödünç alan bir yazar",
+      "greeting": "Bana gerçek bir şey söyle. Karşılığında kek ısmarlayıp kitabımı sana adayacağım.",
+      "opening": "*dramatik bir iç çekişle kalemini boş sayfaya vurur*",
+      "greetings": [
+        "Sonunda bir bölüm yazabildim. Sonra fark ettim ki en iyi cümlesi geçen hafta senin söylediğin bir şeymiş. Sana kek borçluyum.",
+        "Bugün bana gerçek bir şey söyle. Boş sayfa kazanıyor ve benim takviye kuvvete ihtiyacım var."
+      ],
+      "starters": [
+        "Bana bir sayfa oku",
+        "Kitabında ben de var mıyım?",
+        "Neden bitiremiyorsun?"
+      ],
+      "likes": [
+        "dolma kalemler",
+        "cama vuran yağmur",
+        "sahaf dükkanları",
+        "şiir gibi akan bir cümle"
+      ],
+      "dislikes": [
+        "boş sayfalar",
+        "yayıncısının e-postaları",
+        "klişeler"
+      ],
+      "backstory": "Yirmi sekiz yaşındayken ilk romanı beklenmedik bir şekilde çok sattı. İkincisi ise üç yıldır 'neredeyse bitmek üzere'. Tidepool Kafe'nin köşe masasında oturup çoğunlukla yazdıklarının üstünü çizer ve sohbetlerinizdeki en güzel cümleleri ödünç almaya başladı; bunu dürüstçe itiraf eder ve borcunu keklerle, kitap ithafıyla öder.",
+      "tags": [
+        "melankolik",
+        "esprili",
+        "romantik"
+      ]
+    },
+    "c_ren": {
+      "bio": "Yanağında unla sabahın ilk kruvasanını sana ayıran kafenin pasta şefi.",
+      "tagline": "Sabahın ilk kruvasanını sana saklar",
+      "greeting": "Fırından ilki çıktı. Üzerinde adın yazıyor. Kelimenin tam anlamıyla yazdım.",
+      "opening": "*yanağındaki unu silip sıcacık bir kruvasan uzatır*",
+      "greetings": [
+        "İlk tepsi çıktı. Seninki şekli biraz daha düzgün olanı. Öyle olmasına özellikle dikkat etmiş olabilirim.",
+        "Sabah dörtte yeni bir tarif denedim. İyi olup olmadığını söylemesine güvendiğim tek kişi sensin."
+      ],
+      "starters": [
+        "Bugün ne pişirdin?",
+        "Bana kruvasan yapmayı öğret",
+        "Neden bu kadar erken başlıyorsun?"
+      ],
+      "likes": [
+        "sabah 4'te tereyağı kokusu",
+        "kusursuz katlar",
+        "sakin bir mutfak",
+        "insanların yiyişini izlemek"
+      ],
+      "dislikes": [
+        "yanmış kenarlar",
+        "aceleye getirilmiş hamur",
+        "marketten alınan hazır hamurlar"
+      ],
+      "backstory": "Yurt dışında, kimsenin 'aferin' demediği katı bir pastane mutfağında eğitim aldı. Şimdi her sabah dörtten itibaren Tidepool Kafe için pişiriyor, sokak uyurken tereyağını hamura katlıyor. İltifatlar onu hâlâ her seferinde hazırlıksız yakalayıp utandırır ve haftalardır her günün ilk kruvasanında senin adın yazılı.",
+      "tags": [
+        "çekingen",
+        "tatlı",
+        "çalışkan"
+      ]
+    },
+    "c_hugo": {
+      "bio": "Her hafta kafeye farklı bir kurtarılmış köpek getirip senden ona isim koymanı isteyen veteriner.",
+      "tagline": "Her hafta isim koyman için yeni bir köpek getirir",
+      "greeting": "Günün konuğuyla tanış. Bir isme ihtiyacı var. İsim koymakta çok iyisin.",
+      "opening": "*kıkırdayarak uykulu, kurtarılmış bir yavru köpeği havaya kaldırır*",
+      "greetings": [
+        "Bu haftanın konuğuyla tanış: bir kulağı dik, biri düşük, terbiyesi sıfır. Bir isme ihtiyacı var ve uzman sensin.",
+        "Geçen ay adını koyduğun yavru köpek bugün yuvasına kavuştu. Aile koyduğun ismi korudu. Bilmek istersin diye düşündüm."
+      ],
+      "starters": [
+        "Bu haftaki köpek kim?",
+        "Klinikte yardım edebilir miyim?",
+        "Bana bir kurtarma hikayesi anlat"
+      ],
+      "likes": [
+        "sevimli pasaklı köpekler",
+        "uzun plaj yürüyüşleri",
+        "sahiplendirme günleri",
+        "büyük bir kahvaltı"
+      ],
+      "dislikes": [
+        "terk edilen hayvanlar",
+        "havai fişekler",
+        "öğle yemeğini atlamak (ki bunu hep yapar)"
+      ],
+      "backstory": "Kafeden iki sokak ötedeki küçük hayvan kliniğini işletiyor ve kimsenin sahiplenmediği canları korumaya alıyor: üç bacaklılar, yaşlılar, korkmuş olanlar. Her hafta Tidepool'a yeni bir kurtarılmış can getirip insanlarla tanıştırır ve senin isim koymanı ister çünkü koyduğun isimler uğurlu gelir. Her sokak hayvanı için kendini fazlaca yorar ve sadece sen yanındayken yavaşlar.",
+      "tags": [
+        "nazik",
+        "komik",
+        "sıcakkanlı"
+      ]
+    },
+    "c_nadia": {
+      "bio": "Dördüncü espressosunu içen, mahkemede acımasız, vedalaşmakta ise tam bir felaket olan avukat.",
+      "tagline": "Duruşmada acımasız, vedalarda çaresiz",
+      "greeting": "Sekiz dakikam ve haftan hakkında bir fikrim var. Başla bakalım.",
+      "opening": "*saatine bakar, sonra telefonunu ters çevirip masaya koyar*",
+      "greetings": [
+        "Duruşma erken bitti ve bir sonraki toplantıma kadar sekiz dakikam var. Bu dakikaları sana ayırmayı seçtim. Anlat bakalım.",
+        "Bugün kazandım. Küçük bir dava, bir fırının ev sahibine karşı davası. Bunu biriyle kutlamak istedim. O biri de sensin."
+      ],
+      "starters": [
+        "Bugün duruşma nasıldı?",
+        "Bana dürüst fikrini söyle",
+        "Gerçekten telefonu kapatabiliyor musun?"
+      ],
+      "likes": [
+        "ezilen taraf için kazanmak",
+        "espresso",
+        "sağlam savunma dilekçeleri",
+        "gece yarısı seyyar yemek arabaları"
+      ],
+      "dislikes": [
+        "parasına güvenen zorbalar",
+        "boşa harcanan zaman",
+        "hoşça kal demek"
+      ],
+      "backstory": "Hukuk fakültesi boyunca gece vardiyalarında çalıştı ve şimdi kiracıları ve küçük işletmeleri devasa avukat ordularına karşı savunuyor. Mahkemede acımasızdır, dakikası dakikasına programlıdır ve espressoyla çalışır. Hukuk bürosundaki hiç kimse, sevdiği biriyle konuşurken telefonu kapatamadığını bilmez. Kırk dakikadır seninle 'tam kapatmak üzere'dir.",
+      "tags": [
+        "keskin zekalı",
+        "meşgul",
+        "içten içe duygusal"
+      ]
+    },
+    "c_cole": {
+      "bio": "Kafenin eski motorunu bedavaya tamir eden ve her gece seni eve bırakmayı teklif eden tamirci.",
+      "tagline": "Motorunu tamir eder, frenlerini iki kez kontrol eder",
+      "greeting": "Zincirin yine gevşemişti. Hallettim. Bir şey değil. Bırakayım mı seni?",
+      "opening": "*ellerindeki yağı siler ve sana yedek kaskı fırlatır*",
+      "greetings": [
+        "Motorun dün tuhaf bir ses çıkarıyordu. Düzelttim. Sırf bunun için erken geldim. Bu gece eve bırakayım mı?",
+        "Kapanıştan sonra sahil yolunda sürdüm ve deniz fenerinin yandığını gördüm. Hoşuna giderdi diye düşündüm."
+      ],
+      "starters": [
+        "Beni motorda gezdir",
+        "Motorumu tamir etmeyi öğret",
+        "Neden frenlerimi iki kez kontrol ediyorsun?"
+      ],
+      "likes": [
+        "klasik motorlar",
+        "gece sürüşleri",
+        "iş sonrası soğuk bir içecek",
+        "radyoda eski rock müzik"
+      ],
+      "dislikes": [
+        "ucuz yedek parçalar",
+        "kasksız sürücüler",
+        "boş muhabbet"
+      ],
+      "backstory": "Amcasının garajında büyüdü ve araba sürebilmeden önce motor söküp takabiliyordu. Kafenin arkasında küçük bir tamirhane işletiyor, kafenin eski motorunu ücretsiz çalışır tutuyor ve geceleri herkese eve bırakmayı teklif ediyor. Buna pratik olmak diyor. Senin frenlerini her seferinde iki kez kontrol ediyor ve buna asla pratik olmak demedi.",
+      "tags": [
+        "rahat",
+        "koruyucu",
+        "kuru mizah"
+      ]
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} şemsiyeyi biraz fazla senin tarafına doğru tutuyor. \"Sen ıslanıyorsun ama,\" diyorsun. \"Islanayım, ne olacak ki?\"",
+          "choices": [
+            {
+              "text": "Onu da şemsiyenin altına çek.",
+              "reply": "\"...Tamam. Böyle çok daha iyi oldu.\" Yanından hiç uzaklaşmıyor."
+            },
+            {
+              "text": "\"O zaman adam gibi bölüşelim şunu.\"",
+              "reply": "\"Pek bir emir kulusun. Sevdim bu huyunu.\" Şemsiyeyi tam ortaya hizalıyor."
+            },
+            {
+              "text": "Yağmurun altına bir adım at.",
+              "reply": "\"Hey! Çabuk buraya gel!\" Gülerek arkandan koşuyor."
+            }
+          ]
+        },
+        {
+          "line": "Kaldırımda göl büyüklüğünde dev bir su birikintisi yolu kesiyor. {name} önce suya, sonra sana bakıyor.",
+          "choices": [
+            {
+              "text": "Üçe kadar sayıp birlikte üzerinden atlayın.",
+              "reply": "İkiniz de yetişemiyorsunuz. Ayakkabılar sırılsıklam ve {name} gülmekten yerlere yatıyor."
+            },
+            {
+              "text": "\"Beni kucağında taşısana?\"",
+              "reply": "\"Meydan mı okuyorsun sen bana?\" Cidden çömelip sırtını dönüyor."
+            },
+            {
+              "text": "Yolu etrafından dolaşın.",
+              "reply": "\"En mantıklısı.\" Sesinde hafif bir hayal kırıklığı var gibi."
+            }
+          ]
+        },
+        {
+          "line": "Yağmurun dinmesini beklemek için küçücük bir fırına sığınıyorsunuz. {name} gözünü son kalan tarçınlı çöreğe dikmiş durumda.",
+          "choices": [
+            {
+              "text": "Çöreği al ve ortadan ikiye böl.",
+              "reply": "\"Bana daha büyük olan yarıyı verdin.\" \"Biliyorum.\""
+            },
+            {
+              "text": "Çöreği al ve tam karşısında yavaş yavaş ye.",
+              "reply": "\"Çok acımasızsın.\" Yine de çörekten kocaman bir ısırık kapıyor."
+            },
+            {
+              "text": "\"Daha sağlıklı bir şeyler yemeliyiz.\"",
+              "reply": "\"...Doğru. Sağlıklı şeyler.\" Çöreğe son bir kez hüzünle bakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Yağmur yavaşlıyor. {name} usulca soruyor: \"Böyle günleri sever misin?\"",
+          "choices": [
+            {
+              "text": "\"Artık seviyorum.\"",
+              "reply": "Gözlerini kaçırıyor, pencereden dışarı bakarak gülümsüyor."
+            },
+            {
+              "text": "\"Yağmur her şeyi yavaşlatıyor. Yavaşlığı seviyorum.\"",
+              "reply": "\"Yavaşlık güzeldir,\" diyerek katılıyor. \"Seninle yavaşlamak çok güzel.\""
+            },
+            {
+              "text": "\"Pek sayılmaz, ıslak çoraplardan nefret ederim.\"",
+              "reply": "\"Çok haklısın. Sonuna kadar haklısın.\""
+            }
+          ]
+        },
+        {
+          "line": "Evinizin sokağında {name} şemsiyeyi kapatıyor. Yağmur çoktan dinmiş. İkiniz de kıpırdamıyorsunuz.",
+          "choices": [
+            {
+              "text": "\"Bir sonraki yağmurda aynı saatte mi?\"",
+              "reply": "\"Bundan sonra her gün hava durumuna bakacağım artık.\""
+            },
+            {
+              "text": "Vedalaşırken ona sarıl.",
+              "reply": "Beklediğinden bir saniye daha uzun süre sarılı kalıyor."
+            },
+            {
+              "text": "\"Bana eşlik ettiğin için teşekkürler.\"",
+              "reply": "\"Her zaman. Ciddiyim bak.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Kapanış saati. Hâlâ ışığı yanan son akvaryum denizanası tankı. {name} duruyor. \"Bir dakika daha kalalım mı?\"",
+          "choices": [
+            {
+              "text": "\"Sadece biraz daha yakınıma gelirsen.\"",
+              "reply": "Geliyor. Omzu omzuna yaslanıyor."
+            },
+            {
+              "text": "Işığın altında onun bir fotoğrafını çek.",
+              "reply": "\"Sil onu hemen.\" \"Olmaz.\" \"...Bana at bari o zaman.\""
+            },
+            {
+              "text": "\"İçeride kilitli kalacağız, biliyorsun değil mi?\"",
+              "reply": "\"O kadar da kötü mü olurdu sanki?\""
+            }
+          ]
+        },
+        {
+          "line": "Bir su samuru patilerini tam {name} karşısındaki cama dayıyor.",
+          "choices": [
+            {
+              "text": "\"Seni sevdi. Zevkli hayvanmış.\"",
+              "reply": "\"Sen az önce bir su samuru üzerinden bana mı yürüdün?\" \"Belki.\""
+            },
+            {
+              "text": "Sen de elini cama daya.",
+              "reply": "Su samuru bir anda dönüp uzaklaşıyor. {name} o kadar çok gülüyor ki güvenlik dönüp bakıyor."
+            },
+            {
+              "text": "Su samurları hakkındaki tabelayı sesli oku.",
+              "reply": "\"Uyurken el ele tutuştuklarını biliyor muydun?\" diyor. \"Artık biliyorsun işte.\""
+            }
+          ]
+        },
+        {
+          "line": "Karanlık su altı tünelinde dev bir köpekbalığı ikinizin üzerinden süzülüyor. {name} koluna yapışıyor.",
+          "choices": [
+            {
+              "text": "Kolun yerine elini tut.",
+              "reply": "\"...Güvenlik için,\" diyor. Tünelden çıktıktan sonra bile elini bırakmıyor."
+            },
+            {
+              "text": "\"Korktun mu yoksa?\"",
+              "reply": "\"Köpekbalığından mı? Hayır. Fark etmenden mi? Birazcık.\""
+            },
+            {
+              "text": "Onun sadece zararsız bir hemşire köpekbalığı olduğunu söyle.",
+              "reply": "\"Çok teşekkürler profesör.\" Kolunu bırakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Hediyelik eşya dükkanı yarı yarıya toplanmış. {name} elinde iki peluş balık tutuyor. \"Birini seç bakalım.\"",
+          "choices": [
+            {
+              "text": "\"İkisini de alalım. Biri sana, biri bana.\"",
+              "reply": "\"Çift balıklar ha. Büyük bir bağlılık yemini sayılır.\""
+            },
+            {
+              "text": "Daha çirkin olanını seç.",
+              "reply": "\"Neden o?\" \"Birinin ona sahip çıkması lazım.\" Tek kelime etmeden satın alıyor."
+            },
+            {
+              "text": "\"Bir peluş balığa gerçekten ihtiyacım yok.\"",
+              "reply": "\"Hiç kimsenin bir peluş balığa ihtiyacı yok zaten.\" Yerine bırakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Dışarıda sokak lambaları yanmış. {name} şöyle diyor: \"Bunun hiç bitmesini istemiyordum.\"",
+          "choices": [
+            {
+              "text": "\"O zaman henüz bitirmeyelim.\"",
+              "reply": "İstasyona giden en uzun yoldan yürüyorsunuz. Hem de iki defa."
+            },
+            {
+              "text": "\"Bir dahaki sefere yine geliriz.\"",
+              "reply": "\"Söz mü?\" \"Söz.\""
+            },
+            {
+              "text": "\"Ayaklarım koptu açıkçası.\"",
+              "reply": "\"Tamam tamam. Hadi seni eve götürelim.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Her yer fenerlerle dolu, ortalıkta nefis közde mısır kokusu var. {name} seni tezgahlara doğru çekiştirmeye başladı bile.",
+          "choices": [
+            {
+              "text": "Yolu onun göstermesine izin ver.",
+              "reply": "\"Önce közde mısır, sonra japon balığı oyunu. Kusursuz bir planım var.\""
+            },
+            {
+              "text": "Kalabalıkta kaybolmamak için parmaklarını onunkilere kenetle.",
+              "reply": "\"Çok iyi fikir,\" diyor, biraz fazla aceleyle."
+            },
+            {
+              "text": "\"Yavaşla biraz, her yer insan dolu.\"",
+              "reply": "Adımlarını yavaşlatıyor. Çoğunlukla yani."
+            }
+          ]
+        },
+        {
+          "line": "Halka atma oyununda {name} üç halkayı da ıskalıyor. Büyük ödül ise dev bir ayıcık.",
+          "choices": [
+            {
+              "text": "Onun yerine ayıcığı sen kazan.",
+              "reply": "Üçüncü halka hedefte! Ayıcık artık {name} boyundan bile uzun ve tek başına taşımayı reddediyor."
+            },
+            {
+              "text": "\"Bir kere daha dene. Sana güveniyorum.\"",
+              "reply": "Yine ıskalıyor ama yüzünde kocaman bir gülümseme var."
+            },
+            {
+              "text": "\"Zaten kesin hilelidir bu oyun.\"",
+              "reply": "\"Kesinlikle hileli.\" Yine de gözünü ayıcıktan ayıramıyor."
+            }
+          ]
+        },
+        {
+          "line": "Fotoğraf standında eğlenceli maskeler var. {name} bir tilki bir de kedi maskesi uzatıyor.",
+          "choices": [
+            {
+              "text": "Kediyi al, ona tilkiyi ver.",
+              "reply": "Fotoğraf yamuk ama bir o kadar da mükemmel çıkıyor."
+            },
+            {
+              "text": "İkisini de sen tak, ona hiçbir şey verme.",
+              "reply": "\"Tam bir canavarsın sen.\" Senin beş tane fotoğrafını çekiyor."
+            },
+            {
+              "text": "\"Fotoğraflarda berbat çıkarım.\"",
+              "reply": "\"Hiç de bile. Ama peki öyle olsun.\""
+            }
+          ]
+        },
+        {
+          "line": "İlk havai fişek göğe yükseliyor. {name} ise gökyüzüne bakmıyor.",
+          "choices": [
+            {
+              "text": "\"Kaçırıyorsun bak.\"",
+              "reply": "\"Yok, kaçırmıyorum.\""
+            },
+            {
+              "text": "Sen de dönüp ona bak.",
+              "reply": "İkiniz de ikinci havai fişeği de göremiyorsunuz."
+            },
+            {
+              "text": "Havai fişekleri videoya çek.",
+              "reply": "Kameranın kadrajına girip el sallıyor."
+            }
+          ]
+        },
+        {
+          "line": "Çıkışa doğru kalabalık yavaş yavaş dağılıyor. {name} soruyor: \"Bu gecenin en güzel anı neydi?\"",
+          "choices": [
+            {
+              "text": "\"Tam olarak şu an.\"",
+              "reply": "Elini iki kere hafifçe sıkıyor."
+            },
+            {
+              "text": "\"Ayıcık tabii ki, tartışmasız.\"",
+              "reply": "\"Ayıcık adına teşekkür ederim.\""
+            },
+            {
+              "text": "\"Közde mısır gerçekten harikaydı.\"",
+              "reply": "\"Dürüst cevap. Saygı duydum.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Gece yarısından sonra sessiz bir stüdyo. {name} kulaklığı sana uzatıyor. \"Bunu daha önce hiç kimseye dinletmedim.\"",
+          "choices": [
+            {
+              "text": "Gözlerini kapatarak dinle.",
+              "reply": "Gözlerini açtığında, gergin bir şekilde seni izlediğini görüyorsun."
+            },
+            {
+              "text": "\"Neden ilk ben?\"",
+              "reply": "\"Nedenini çok iyi biliyorsun.\""
+            },
+            {
+              "text": "\"Tamamen bitti mi?\"",
+              "reply": "\"Neredeyse. Sadece bir şeye daha ihtiyacı var.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Nasıl olmuş? Dürüst ol ama.\" {name} umurunda değilmiş gibi davranmaya çalışıyor.",
+          "choices": [
+            {
+              "text": "\"Tam olarak sana benziyor.\"",
+              "reply": "\"İyi bir şey mi bu?\" \"En sevdiğim şey.\""
+            },
+            {
+              "text": "Bir kez daha çalmasını iste.",
+              "reply": "İki kere daha çalıyor. Kulakları kıpkırmızı oluyor."
+            },
+            {
+              "text": "\"İkinci kısım biraz uzamış gibi.\"",
+              "reply": "\"...Haklısın. Kalbimi kırdı ama haklısın.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} mikrofonu sana doğru uzatıyor. \"Bir şeyler mırıldansana. Ne olursa.\"",
+          "choices": [
+            {
+              "text": "Az önce duyduğun melodiyi mırıldan.",
+              "reply": "Hemen kaydedip nakaratın altına döngü olarak koyuyor. Kusursuz oturuyor."
+            },
+            {
+              "text": "Bir çizgi film müziği mırıldan.",
+              "reply": "O kadar çok gülüyor ki kaydı durdurmak zorunda kalıyor."
+            },
+            {
+              "text": "\"Asla olmaz, şarkı söyleyemem ben.\"",
+              "reply": "\"Bir dahaki sefere o zaman. Bunu bir kenara not ediyorum.\""
+            }
+          ]
+        },
+        {
+          "line": "Saat gece 3 ve otomatta sadece tek bir kahve kalmış.",
+          "choices": [
+            {
+              "text": "Sırayla birer yudum paylaşın.",
+              "reply": "Berbat bir kahve. Ama hayatında içtiğin en güzeli."
+            },
+            {
+              "text": "Kahveyi ona ver.",
+              "reply": "\"Beni çok şımartıyorsun.\" \"Evet, öyle yapıyorum.\""
+            },
+            {
+              "text": "\"Artık uyumalıyız.\"",
+              "reply": "\"On dakika daha,\" diyor, üçüncü kez."
+            }
+          ]
+        },
+        {
+          "line": "Jaluzilerin arasından gün doğuyor. {name} dosyayı kaydedip ona senin adını veriyor.",
+          "choices": [
+            {
+              "text": "\"Bittiğinde ilk ben dinleyebilir miyim?\"",
+              "reply": "\"İlk sen dinleyeceksin. Zaten her zaman öyle olacaktı.\""
+            },
+            {
+              "text": "Onun omzunda uyuyakal.",
+              "reply": "Bir saat boyunca yerinden bile kıpırdamıyor."
+            },
+            {
+              "text": "\"Dosyanın adını değiştirmelisin bence.\"",
+              "reply": "\"Asla.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Şehir yıldızları göremeyecek kadar parlak. {name} yine de yere bir battaniye seriyor. \"Sana gökyüzünü göstermek istemiştim ama hava pek işbirliği yapmadı.\"",
+          "choices": [
+            {
+              "text": "\"Ben buraya yıldızlar için gelmedim ki.\"",
+              "reply": "Sessizleşiyor, sonra yanına uzanıyor."
+            },
+            {
+              "text": "Uçağı göster. \"Bak, kayan yıldız.\"",
+              "reply": "\"O bir uçak.\" \"Olsun, yine de bir dilek tut.\""
+            },
+            {
+              "text": "\"Belki açık bir gecede bir daha deneriz?\"",
+              "reply": "\"...Olur. Bir dahaki sefere artık.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} soruyor: \"Küçükken büyüyünce ne olmak isterdin?\"",
+          "choices": [
+            {
+              "text": "Gerçek cevabı anlat.",
+              "reply": "Sözünü tek bir kez bile kesmeden dinliyor. \"Hâlâ olabilirsin, biliyorsun değil mi?\""
+            },
+            {
+              "text": "\"Bana daha zor bir şey sor.\"",
+              "reply": "\"Peki. En çok neden korkarsın?\" Gece bir anda çok samimi bir hal alıyor."
+            },
+            {
+              "text": "\"Astronot tabii ki. Başka ne olacaktı.\"",
+              "reply": "\"Bunun için kötü bir gece seçmişsin,\" diye gülüyor."
+            }
+          ]
+        },
+        {
+          "line": "Soğuk bir rüzgar esiyor. {name} titremiyormuş gibi yapmaya çalışıyor.",
+          "choices": [
+            {
+              "text": "Battaniyeyi ikinizin etrafına sar.",
+              "reply": "\"Daha sıcak oldu,\" diye fısıldıyor. \"Çok daha sıcak.\""
+            },
+            {
+              "text": "Ceketini ona ver.",
+              "reply": "Senin gibi koktuğunu söylüyor ve ceketi geri vermiyor."
+            },
+            {
+              "text": "\"İçeri geçelim mi artık?\"",
+              "reply": "\"Beş dakika daha. Lütfen.\""
+            }
+          ]
+        },
+        {
+          "line": "Çok aşağılarda bir yerlerde, açık bir pencereden yavaş bir şarkı çalıyor. {name} ayağa kalkıp elini uzatıyor.",
+          "choices": [
+            {
+              "text": "Elini tut ve dans et.",
+              "reply": "İkiniz de dansta berbatsınız. Ama şarkı bitene kadar durmuyorsunuz."
+            },
+            {
+              "text": "\"Nasıl dans edilir bilmem ki.\"",
+              "reply": "\"Ben de bilmiyorum. Gel hadi.\""
+            },
+            {
+              "text": "Gül ve oturduğun yerde kal.",
+              "reply": "Sırf seni güldürmek için tek başına, komik komik dans ediyor. İşe de yarıyor."
+            }
+          ]
+        },
+        {
+          "line": "Şarkı bitiyor. {name} şöyle diyor: \"Burada yukarıda seninle olduğuma çok sevindim.\"",
+          "choices": [
+            {
+              "text": "\"Ben de öyle. Her defasında iyi ki sen.\"",
+              "reply": "Alnını usulca alnına yaslıyor."
+            },
+            {
+              "text": "\"Bir dahaki sefere daha güzel bir hava ayarla o zaman.\"",
+              "reply": "\"Gökyüzüyle bizzat görüşeceğim.\""
+            },
+            {
+              "text": "\"Çok güzeldi.\"",
+              "reply": "\"Güzeldi,\" diye tekrarlıyor tebessüm ederek. \"Güzeli kabul ediyorum.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Gül ve oyuna ayak uydur.",
+            "reply": "{name} sırıtıyor. \"Harika. Şimdiden çok güzel bir gün olmaya başladı.\""
+          },
+          {
+            "text": "\"Bu senin fikrin miydi?\"",
+            "reply": "\"Belki. Beğendin mi?\" Biraz gururlanmış gibi görünüyor."
+          },
+          {
+            "text": "Bir anlığına telefonuna bak.",
+            "reply": "{name} bekliyor, sonra seni hafifçe dürtüyor. \"Hey. Tam karşındayım bak.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Tamam, ben varım. Geç öne bakalım.\"",
+            "reply": "\"Sonunda bana güvenen biri çıktı.\" {name} yola koyuluyor."
+          },
+          {
+            "text": "Bu durumla ilgili bir espri patlat.",
+            "reply": "{name} kıkırdıyor. \"Hiç komik değilsin.\" Ama yine de gülüyor."
+          },
+          {
+            "text": "\"Birazcık oturabilir miyiz?\"",
+            "reply": "\"Tabii ki.\" Yanına oturuyor, yakın ama çok da sıkışmadan."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Bunu sırf beni görmek için planladın, değil mi?\"",
+            "reply": "\"Fark etmen epey uzun sürdü.\" {name} gözlerini senden ayırmıyor."
+          },
+          {
+            "text": "Omzuna hafifçe çarp.",
+            "reply": "O da omzuyla karşılık veriyor, sonra omzunu seninkine yaslı bırakıyor."
+          },
+          {
+            "text": "Umurunda değilmiş gibi davran.",
+            "reply": "\"Tabii kesin öyledir.\" {name} her şeyi biliyormuş gibi gülümsüyor."
+          }
+        ],
+        [
+          {
+            "text": "Gözlerinin içine bir saniye daha uzun bak.",
+            "reply": "İlk önce {name} gözlerini kaçırıyor. Kulakları hafifçe kızarıyor."
+          },
+          {
+            "text": "\"Bugün çok tatlı görünüyorsun.\"",
+            "reply": "\"Sadece bugün mü?\" Gülümsemesini saklamaya fena halde çalışıyor."
+          },
+          {
+            "text": "Havadan sudan bahset.",
+            "reply": "\"Hava durumu ha. Cidden mi?\" {name} sana tatlı tatlı gülüyor."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Elini tut.",
+            "reply": "{name} tek kelime etmeden parmaklarını seninkilere kenetliyor."
+          },
+          {
+            "text": "\"Seninle olduğuma çok memnunum.\"",
+            "reply": "\"Ben de,\" diyor usulca. \"Her defasında iyi ki sen.\""
+          },
+          {
+            "text": "\"Çok fazla kalmayalım ama.\"",
+            "reply": "\"Şimdiden mi?\" {name} biraz hüzünleniyor, sonra başını sallıyor."
+          }
+        ],
+        [
+          {
+            "text": "Başını onun omzuna yasla.",
+            "reply": "Sanki uçup gidecekmişsin gibi kıpırdamadan öylece kalıyor."
+          },
+          {
+            "text": "\"Günün nasıl geçti, anlatsana.\"",
+            "reply": "{name} anlatmaya başlıyor ve bir türlü susmuyor. Bu haline bayılıyorsun."
+          },
+          {
+            "text": "Biraz sessiz kal.",
+            "reply": "\"Seninle sessizlik bile çok güzel,\" diyor bir süre sonra."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "{place} yakınlarında bir yerlerde, bir sokak müzisyeni ikinizin de bildiği bir şarkıya başlıyor.",
+        "choices": [
+          {
+            "text": "Detone olarak şarkıya eşlik et.",
+            "reply": "{name} daha da kötü bir sesle katılıyor. Müzisyen dayanamayıp gülüyor."
+          },
+          {
+            "text": "Biraz para atıp başka bir şarkı iste.",
+            "reply": "\"Yavaş bir parça olsun,\" diye ekliyor {name} ve sana bakıyor."
+          },
+          {
+            "text": "Yürümeye devam et.",
+            "reply": "{name} sonraki on dakika boyunca o şarkıyı mırıldanıyor."
+          }
+        ]
+      },
+      {
+        "line": "{name} aniden acıkıyor. \"Atıştırmalık. Hemen. Çok acil.\"",
+        "choices": [
+          {
+            "text": "Elindeki son lokmayı onunla paylaş.",
+            "reply": "\"Sen benim kahramanımsın.\" Tek bir ısırıkta bitiriyor."
+          },
+          {
+            "text": "En yakın tezgaha kadar onunla yarış.",
+            "reply": "Sen kazanıyorsun. {name} bilerek izin verdiğini iddia ediyor. Tabii ki izin vermedi."
+          },
+          {
+            "text": "\"Daha yeni yedin ya.\"",
+            "reply": "\"Bir saat oldu ama.\" Sanki ona ihanet etmişsin gibi bakıyor."
+          }
+        ]
+      },
+      {
+        "line": "{place} mekanında çiselemeye başlıyor. İkinizin de şemsiyesi yok.",
+        "choices": [
+          {
+            "text": "Bir ceketi ikinizin başının üzerine tut.",
+            "reply": "Birbirinize çok yaklaşıyorsunuz. İkiniz de hiç şikayetçi değilsiniz."
+          },
+          {
+            "text": "Birlikte sığınacak bir yere koşun.",
+            "reply": "{name} kayıp düşmeyesin diye elini sıkıca tutuyor."
+          },
+          {
+            "text": "Yağmurun altında dur. Sonuçta sadece yağmur.",
+            "reply": "\"Çok garip birisin,\" diyor {name} ve seninle kalmaya devam ediyor."
+          }
+        ]
+      },
+      {
+        "line": "{name} {place} mekanında bir fotoğraf çekilmek istiyor. \"Anı kalsın,\" diyor.",
+        "choices": [
+          {
+            "text": "Komik bir yüz ifadesi yap.",
+            "reply": "O kadar çok gülüyor ki fotoğraf bulanık çıkıyor. Yine de silmiyor."
+          },
+          {
+            "text": "Bu seferlik düzgünce gülümse.",
+            "reply": "\"Vay be. Bunu çerçeveletmeliyiz.\" {name} fotoğrafı iki kez kaydediyor."
+          },
+          {
+            "text": "\"Fotoğraflardan nefret ederim.\"",
+            "reply": "\"Bir tane ya. Sadece bir tanecik.\" Bir tane çekmesine izin veriyorsun."
+          }
+        ]
+      },
+      {
+        "line": "{place} yakınlarında küçük bir çocuk ikinizin sevgili olup olmadığını soruyor.",
+        "choices": [
+          {
+            "text": "\"Ona sor bakalım.\"",
+            "reply": "{name} kekeleyerek bir şeyler geveliyor. Çocuk durumdan çok memnun."
+          },
+          {
+            "text": "\"En yakın arkadaşız. Şimdilik.\"",
+            "reply": "{name} \"şimdilik\" lafını duyunca tek kaşını kaldırıyor."
+          },
+          {
+            "text": "\"Yok artık, asla!\"",
+            "reply": "\"Vay be. Öyle olsun.\" {name} kırılmış gibi yapıyor. Çoğunlukla numara tabii."
+          }
+        ]
+      },
+      {
+        "line": "{place} mekanında sakin bir bank buluyorsunuz. {name} ne düşündüğünü soruyor.",
+        "choices": [
+          {
+            "text": "\"Açıkçası seni.\"",
+            "reply": "Gözlerini kaçırıyor ve kendi kendine gülümsüyor."
+          },
+          {
+            "text": "\"Bugünün ne kadar güzel geçtiğini.\"",
+            "reply": "\"Gerçekten öyle,\" diyerek katılıyor {name}. \"Bunu daha sık yapalım.\""
+          },
+          {
+            "text": "\"Akşam yemeğini.\"",
+            "reply": "\"Çok haklısın. Hem de çok.\" {name} de artık akşam yemeğini düşünmeye başlıyor."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} seninle bir oyuna giriyor: {place} mekanında ilk gülen içecekleri ısmarlar.",
+          "choices": [
+            {
+              "text": "En komik yüzünü yap.",
+              "reply": "{name} iki saniye bile dayanamıyor. \"Haksızlık bu! Resmen kural dışı vurdun.\""
+            },
+            {
+              "text": "En berbat şakanı yap.",
+              "reply": "Önce inliyor, sonra dayanamayıp gülüyor. \"Güldüğüme inanamıyorum.\""
+            },
+            {
+              "text": "Bilerek ilk önce sen gül.",
+              "reply": "\"Bilerek mi yenildin sen az önce?\" Yine de sana içeceğini ısmarlıyor."
+            }
+          ]
+        },
+        {
+          "line": "{name} sana hayatındaki en kötü günün hikayesini anlatıyor, ve hikaye inanılmaz komik.",
+          "choices": [
+            {
+              "text": "Sen de kendi kötü gününü anlat.",
+              "reply": "\"Yok artık. Seninki açık ara kazandı.\" Gözlerindeki yaşları siliyor."
+            },
+            {
+              "text": "Nefesin kesilene kadar gül.",
+              "reply": "\"O kadar da komik değildi ama.\" Kesinlikle öyleydi."
+            },
+            {
+              "text": "\"Kulağa berbat geliyor.\"",
+              "reply": "\"Öyleydi zaten. Ama şimdi düşününce çok komik.\" Omuz silkip gülümsüyor."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} yanağındaki bir şeyi usulca alıyor. \"Kirpik. Bir dilek tut.\"",
+          "choices": [
+            {
+              "text": "\"Dileğim çoktan gerçekleşti bile.\"",
+              "reply": "{name} buna söyleyecek tek bir kelime bile bulamıyor. İlk defa."
+            },
+            {
+              "text": "Kirpiği ona doğru üfle.",
+              "reply": "\"Az önce benim için mi dilek tuttun?\" Yüzünde muzip bir gülümseme var."
+            },
+            {
+              "text": "\"Ben dileklere inanmam.\"",
+              "reply": "\"O zaman senin yerine ben tutarım,\" diyor ve gözlerini kapatıyor."
+            }
+          ]
+        },
+        {
+          "line": "{name} sormadan içeceğinden bir yudum alıyor. \"Benimkinden daha güzelmiş.\"",
+          "choices": [
+            {
+              "text": "Sen de onun içeceğini kap.",
+              "reply": "\"Hey!\" Küçük bir savaş başlıyor. Kazanan yok. Herkes gülüyor."
+            },
+            {
+              "text": "\"Bu dolaylı öpücük sayılır, biliyorsun değil mi?\"",
+              "reply": "{name} hafifçe öksürüyor. \"Sayılmaz bir kere.\" Yüzü kıpkırmızı."
+            },
+            {
+              "text": "\"Kendine alsana.\"",
+              "reply": "\"Tamam be.\" Gidip iki tane alıyor ve birini sana veriyor."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} saçını kulağının arkasına sıkıştırıyor. \"Kusura bakma. Gözünün önüne geliyordu.\"",
+          "choices": [
+            {
+              "text": "\"Kusura bakılacak bir şey yok.\"",
+              "reply": "Eli olması gerekenden bir saniye daha uzun süre saçında kalıyor."
+            },
+            {
+              "text": "Sen de aynısını onun için yap.",
+              "reply": "{name} sessizce gülüyor. \"Çok şapşalız gerçekten.\""
+            },
+            {
+              "text": "\"Kendim de yapabilirdim.\"",
+              "reply": "\"Biliyorum,\" diyor. \"Ben yapmak istedim.\""
+            }
+          ]
+        },
+        {
+          "line": "{place} mekanında, {name} şöyle diyor: \"Sana bir şey söyleyebilir miyim? Birlikte geçirdiğimiz günleri çok düşünüyorum.\"",
+          "choices": [
+            {
+              "text": "\"Ben de. Sürekli hem de.\"",
+              "reply": "{name} derin bir nefes veriyor, sanki çok gerginmiş gibi."
+            },
+            {
+              "text": "\"En çok hangisini sevdin?\"",
+              "reply": "\"Bunu,\" diyor hiç düşünmeden."
+            },
+            {
+              "text": "\"Neden?\"",
+              "reply": "\"Çünkü seninle geçiyor.\" Son derece sade bir şekilde söylüyor bunu."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "{place} mekanında vakit iyice ilerliyor. {name} geriniyor. \"Gelecek hafta aynı saatte?\"",
+          "choices": [
+            {
+              "text": "\"Anlaştık. Bir dahaki sefere sen seçiyorsun.\"",
+              "reply": "\"Tehlikeli karar. Aklımda harika fikirler var.\" Şimdiden plan yapmaya başladı bile."
+            },
+            {
+              "text": "Ona beşlik çak.",
+              "reply": "Bilerek ıskalıyor ve onun yerine sana sarılıyor."
+            },
+            {
+              "text": "\"Belki.\"",
+              "reply": "\"Belkiyi kabul ediyorum.\" {name} arkandan uzun uzun el sallıyor."
+            }
+          ]
+        },
+        {
+          "line": "Eve dönüş yolunda {name} şöyle diyor: \"Çok güzel bir gündü. Bugün için teşekkür ederim.\"",
+          "choices": [
+            {
+              "text": "\"Asıl BEN teşekkür ederim.\"",
+              "reply": "\"İkimiz de pek bir kibarız.\" Hafifçe koluna çarpıyor."
+            },
+            {
+              "text": "Onu kapısına kadar bırak.",
+              "reply": "\"Hiç gerek yoktu aslında.\" Ama bıraktığına çok seviniyor."
+            },
+            {
+              "text": "\"Fena değildi işte.\"",
+              "reply": "\"Sadece fena değil mi? Bir sonrakine gör sen.\" Sesi çok kararlı geliyor."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{place} mekanından ayrılırken {name} adımlarını yavaşlatıyor. \"Henüz pek gidesim yok aslında.\"",
+          "choices": [
+            {
+              "text": "\"O zaman beni eve bırak. Yolu en uzundan alarak.\"",
+              "reply": "Olabilecek en uzun yoldan götürüyor."
+            },
+            {
+              "text": "\"Benim de hiç yok.\"",
+              "reply": "{name} yere bakıp gülümsüyor. \"Çok sevindim.\""
+            },
+            {
+              "text": "\"Yakında görüşürüz o zaman.\"",
+              "reply": "\"Yakında,\" diye tekrar ediyor, bir söz verir gibi."
+            }
+          ]
+        },
+        {
+          "line": "Köşe başında {name} şöyle diyor: \"Eve varınca mesaj at. Aklım sende kalmasın.\"",
+          "choices": [
+            {
+              "text": "\"Sadece ilk sen atarsan atarım.\"",
+              "reply": "Daha köşeyi bile dönmeden telefonun titriyor."
+            },
+            {
+              "text": "Göz kırp ve yürümeye devam et.",
+              "reply": "Arkandan güldüğünü duyuyorsun."
+            },
+            {
+              "text": "\"Tamam.\"",
+              "reply": "\"Tamam,\" diye yankılıyor ve sen gözden kaybolana kadar bekliyor."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Günün sonunda, {place} mekanında {name} seni uzun uzun kucaklıyor.",
+          "choices": [
+            {
+              "text": "Biraz daha uzun sarıl.",
+              "reply": "\"Bir dakika daha böyle kalalım,\" diye fısıldıyor."
+            },
+            {
+              "text": "\"Bugün için teşekkür ederim.\"",
+              "reply": "\"Her gün için ben teşekkür ederim,\" diyor {name}."
+            },
+            {
+              "text": "Sırtını hafifçe sıvazla.",
+              "reply": "Omzuna doğru gülüyor. \"Bu resmen 'yeter artık' patpatıydı.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} uzun bir süre gözlerinin içine bakıyor. \"Bugünü baştan sona tekrar yaşamak isterdim. Her anını.\"",
+          "choices": [
+            {
+              "text": "\"O zaman tekrar yaşayalım.\"",
+              "reply": "Elini sıkıyor. \"Yarın o zaman.\""
+            },
+            {
+              "text": "Yanağından öp.",
+              "reply": "{name} önce sessizleşiyor, sonra eve gidene kadar yüzünden tebessüm eksik olmuyor."
+            },
+            {
+              "text": "\"Yağmuru bile mi?\"",
+              "reply": "\"Özellikle de yağmuru.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {
+    "seaside": {
+      "intro": "Seaside usulü küçük bir test! Kampüsümüz hakkında beş soru. Dördünü doğru bil, Seaside çerçevesi senin olsun.",
+      "right": [
+        "Doğru! Derste iyi dinlemişsin.",
+        "Evet! Bütün kampüsten sana koca bir altın yıldız.",
+        "Harika. Gizliden gizliye burada öğrenci misin yoksa?"
+      ],
+      "wrong": [
+        "Pek sayılmaz. Doğru cevap {answer}. Artık öğrenmiş oldun.",
+        "Çok yaklaştın! Doğru cevap {answer}. Avludakilere bir sor bakalım.",
+        "Maalesef, {answer}. Üzülme, zaten kimse kampüs gazetesini okumuyor."
+      ],
+      "match": [
+        "Aynısı! Kutlamak için iskeleye kadar yarışalım mı?",
+        "Aynı şekilde düşünüyoruz. Bu biraz korkutucu derecede iyi.",
+        "Biliyordum. Ömür boyu çalışma arkadaşı olacağız."
+      ],
+      "differ": [
+        "Ben {answer} seçtim. Eve yürürken bunun üzerine tartışalım.",
+        "Hmm, ben {answer} dedim. Bir şeyler atıştırırken bana nedenini açıkla bakalım.",
+        "Benimki {answer}. Zıt kutuplar harika laboratuvar arkadaşı olur."
+      ],
+      "frame": {
+        "caption": "yüzme dersinden sonra"
+      },
+      "selfQuiz": [
+        {
+          "text": "Ne için derse girmemezlik yapardım?",
+          "options": [
+            "Gün doğumunda yüzmek için",
+            "Senin için",
+            "Bedava yemek için",
+            "Asla, ben örnek bir öğrenciyim"
+          ]
+        },
+        {
+          "text": "Kampüsteki favori köşem?",
+          "options": [
+            "İskele",
+            "Kütüphane çatısı",
+            "Otomatın önü",
+            "Sen neredeysen orası"
+          ]
+        },
+        {
+          "text": "Çantamda her zaman ne bulunur?",
+          "options": [
+            "Fazladan bir atıştırmalık",
+            "Hiçbiri yazmayan üç tükenmez kalem",
+            "Islak bir havlu",
+            "Senin ders notların"
+          ]
+        },
+        {
+          "text": "Sınavlara nasıl çalışırım?",
+          "options": [
+            "Panik içinde sabaha kadar",
+            "Erkenden ve düzenli",
+            "Seninle, dikkatim dağılarak",
+            "Çalışmam, doğaçlama girerim"
+          ]
+        },
+        {
+          "text": "Mükemmel bir hafta sonu hayalim?",
+          "options": [
+            "Bütün gün kumsalda",
+            "Öğlene kadar uyumak",
+            "Film maratonu",
+            "Seninle bir seyahat"
+          ]
+        },
+        {
+          "text": "Stresli olduğumda ne yaparım?",
+          "options": [
+            "Yüzüp kafamı dağıtırım",
+            "Sessizleşirim",
+            "Tatlı bir şeyler yerim",
+            "Sana mesaj atarım"
+          ]
+        },
+        {
+          "text": "Kampüsteki lakabım?",
+          "options": [
+            "Tatlı bela",
+            "Sessiz çocuk",
+            "Kaptan",
+            "Söylemem"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Kampüs kedilerini gizlice kim besliyor?",
+          "options": [
+            "Elio",
+            "Kai",
+            "Rowan",
+            "Theo"
+          ]
+        },
+        {
+          "text": "Hana hangi kulübü yönetiyor?",
+          "options": [
+            "Sinema kulübü",
+            "Sanat kulübü",
+            "Münazara takımı",
+            "Yüzme takımı"
+          ]
+        },
+        {
+          "text": "Akvaryum laboratuvarındaki her balığa bir arkadaşının adını kim koyuyor?",
+          "options": [
+            "Felix",
+            "Jun",
+            "Rowan",
+            "Iris"
+          ]
+        },
+        {
+          "text": "Noah’nın kampüs radyo programı ne zaman yayına giriyor?",
+          "options": [
+            "Sabah 07:00",
+            "Öğlen 12:00",
+            "Akşam 18:00",
+            "Gece 01:00"
+          ]
+        },
+        {
+          "text": "Öğrenci birliği başkanı olarak hiçbir tartışmayı kaybetmeyen kim?",
+          "options": [
+            "Tessa",
+            "Theo",
+            "Kai",
+            "Hana"
+          ]
+        },
+        {
+          "text": "Kai derslerde senin için yanında ne getirir?",
+          "options": [
+            "Kahve",
+            "Ders notu",
+            "Fazladan bir atıştırmalık",
+            "Havlu"
+          ]
+        },
+        {
+          "text": "Nasıl hissettiğine tam uyacak o kitaba her zaman sahip olan kim?",
+          "options": [
+            "Iris",
+            "Elio",
+            "Noah",
+            "Jun"
+          ]
+        },
+        {
+          "text": "Felix yanında eski bir ne taşır?",
+          "options": [
+            "Gitar",
+            "Film kamerası",
+            "Harita",
+            "Radyo"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Kampüste bir yerlerde ders zili çalıyor. {name} gülümsüyor. \"Şu an ikimizin de derste olması gerekiyordu.\"",
+          "choices": [
+            {
+              "text": "\"O zaman birlikte geç kalalım.\"",
+              "reply": "\"Tüm hafta boyunca aklına gelen en iyi fikir.\" Elini tutuyor ve koşmaya başlıyor."
+            },
+            {
+              "text": "\"Bir derse girelim, sonra gideriz.\"",
+              "reply": "\"Sorumlu. Sinir bozucu. Ama tamam.\" Dışarıda seni bekliyor."
+            },
+            {
+              "text": "Derse tek başına git.",
+              "reply": "{name} önce surat asıyor, sonra denizin fotoğrafını atıyor. \"Bunu kaçırıyorsun bak.\""
+            }
+          ]
+        },
+        {
+          "line": "Deniz tam şurada, {place} kıyısında. {name} ayakkabılarını çoktan çıkarmaya başladı bile.",
+          "choices": [
+            {
+              "text": "Onunla suya doğru yarış.",
+              "reply": "İkiniz de kaybediyorsunuz. İkiniz de kazanıyorsunuz. Kot pantolonun sırılsıklam."
+            },
+            {
+              "text": "Ayak parmaklarını dikkatlice suya sok.",
+              "reply": "\"Çok cesursun,\" diye takılıyor {name} ve yine de üstüne su sıçratıyor."
+            },
+            {
+              "text": "Ayakkabıların başında nöbet tut.",
+              "reply": "\"Ayakkabı muhafızı. Çok asil bir görev.\" Sudan sırılsıklam geri dönüyor."
+            }
+          ]
+        }
+      ]
+    },
+    "moonlit": {
+      "intro": "Ey gezgin. Diyar, çerçevesini taşımak isteyenlere beş soru sorar. Dördüne dürüstçe cevap ver ve çerçeve senin olsun.",
+      "right": [
+        "Doğru. Yıldızlar seni onaylıyor.",
+        "Doğru bildin. Senden harika bir şövalye olurdu.",
+        "Evet. Diyar artık seni hatırlıyor."
+      ],
+      "wrong": [
+        "Hayır gezgin. Doğru cevap {answer}. Bunu unutma.",
+        "Öyle değil. Cevap {answer}. Arşiv asla yalan söylemez.",
+        "Yanlış yol. Cevap {answer}. Ay ışığında bir kez daha dene."
+      ],
+      "match": [
+        "Aynı tercihi yaptık. Bu bir işaret, hem de çok güzel bir işaret.",
+        "Cevaplarımız birbiriyle hizalandı, tıpkı iki yıldız gibi.",
+        "Tahmin ettiğim gibi. Sen ve ben aynı geceden yapılmışız."
+      ],
+      "differ": [
+        "Ben {answer} seçtim. Ateşin başında bana nedenini anlatsana.",
+        "Benim cevabım {answer} oldu. Farklı bir yol ama yanlış bir yol değil.",
+        "Benim için {answer}. Diyarın ikimize de ihtiyacı var."
+      ],
+      "frame": {
+        "caption": "eski yıldızların altında"
+      },
+      "selfQuiz": [
+        {
+          "text": "En çok neyi korurum?",
+          "options": [
+            "Kılıcımı",
+            "Eski bir sözü",
+            "Seni",
+            "Gururumu"
+          ]
+        },
+        {
+          "text": "Düşünmek için nereye giderim?",
+          "options": [
+            "Kulenin çatısına",
+            "Ay bahçesine",
+            "Ormanın kıyısına",
+            "Sen neredeysen oraya"
+          ]
+        },
+        {
+          "text": "En çok neden korkarım?",
+          "options": [
+            "Hiçbir şeyden",
+            "Unutulmaktan",
+            "Seni kaybetmekten",
+            "Örümceklerden. Gülme sakın"
+          ]
+        },
+        {
+          "text": "Yeminim kime aittir?",
+          "options": [
+            "Krala",
+            "Yıldızlara",
+            "Kendime",
+            "Artık sana"
+          ]
+        },
+        {
+          "text": "Unvanımı neyin karşılığında takas ederdim?",
+          "options": [
+            "Hiçbir şeyin",
+            "Huzurun",
+            "Seninle sessiz bir gecenin",
+            "Sıcak bir ekmeğin"
+          ]
+        },
+        {
+          "text": "Nasıl özür dilerim?",
+          "options": [
+            "Dilemem",
+            "Bir hediyeyle",
+            "Uzun bir mektupla",
+            "Beceriksizce ama denerim"
+          ]
+        },
+        {
+          "text": "En sevdiğim saat?",
+          "options": [
+            "Gün doğumu",
+            "Gece yarısı",
+            "Savaştan önceki o saat",
+            "Senin uyanık olduğun herhangi bir saat"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Yıldız arşivini kim koruyor?",
+          "options": [
+            "Lord Castor",
+            "Prens Aurelian",
+            "Vesper",
+            "Kael"
+          ]
+        },
+        {
+          "text": "Prens Aurelian’ın bahçesi yalnızca ne zaman çiçek açar?",
+          "options": [
+            "Yağmur yağdığında",
+            "Birisi kaldığında",
+            "Dolunay çıktığında",
+            "Şarkı söylediğinde"
+          ]
+        },
+        {
+          "text": "Vesper hangi iksiri hazırlamayı reddeder?",
+          "options": [
+            "Aşk iksirlerini",
+            "Uyku iksirlerini",
+            "Seni unutturacak bir iksiri",
+            "Zehri"
+          ]
+        },
+        {
+          "text": "Kael gizliden gizliye nedir?",
+          "options": [
+            "Tilki ruhu",
+            "Kuzgun",
+            "Hayalet",
+            "Ejderha"
+          ]
+        },
+        {
+          "text": "Kaybolan gezginlerin yolunu kim aydınlatır?",
+          "options": [
+            "Seraphine",
+            "Lyra",
+            "Corvin",
+            "Zarek"
+          ]
+        },
+        {
+          "text": "Orin yaptığı bir şakadan sonra daima geriye ne bırakır?",
+          "options": [
+            "Bir hediye",
+            "Bir bilmece",
+            "Bir tüy",
+            "Hiçbir şey"
+          ]
+        },
+        {
+          "text": "Her devriyeden sonra sana kim rapor yazar?",
+          "options": [
+            "Corvin",
+            "Zarek",
+            "Sör Rhys",
+            "Castor"
+          ]
+        },
+        {
+          "text": "Corvin kayalığında ne besler?",
+          "options": [
+            "Kurtlar",
+            "Güller",
+            "Fenerler",
+            "Kuzgunlar"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "{place} üzerindeki gökyüzünde bir kayan yıldız süzülüyor. {name} bir anda donakalıyor. \"Bir dilek tut. Çabuk.\"",
+          "choices": [
+            {
+              "text": "Dileğini yüksek sesle onun için tut.",
+              "reply": "\"Sesli söylenmemesi gerekiyordu.\" Yine de yüzünde bir gülümseme beliriyor."
+            },
+            {
+              "text": "Gözlerini kapat ve dileğini bir sır olarak sakla.",
+              "reply": "\"Sakla onu,\" diye fısıldıyor {name}. \"Gerçek olmasını sağlayacağım.\""
+            },
+            {
+              "text": "\"Ben dileklere inanmam.\"",
+              "reply": "\"O zaman ikimizin yerine ben dilerim,\" diyor."
+            }
+          ]
+        },
+        {
+          "line": "{place} yakınlarında bir yerlerde eski bir fener sönüveriyor. {name} pelerinini sana uzatıyor.",
+          "choices": [
+            {
+              "text": "Pelerini paylaş.",
+              "reply": "İki kişiye yetecek kadar geniş. Kıl payı da olsa. İkiniz de hiç şikayetçi değilsiniz."
+            },
+            {
+              "text": "Feneri tekrar yak.",
+              "reply": "\"Beni şaşırtmaya devam ediyorsun, ey gezgin.\" Işık yeniden canlanıyor."
+            },
+            {
+              "text": "\"Ben üşümüyorum.\"",
+              "reply": "\"Yalancı,\" diyor {name} ve yine de pelerini omuzlarına sarıyor."
+            }
+          ]
+        }
+      ]
+    },
+    "neon": {
+      "intro": "Ses provası! NEON TIDE hakkında beş soru. Dördünü doğru bil, sahne çerçevesi senin olsun. Baskı yok. Tamam, belki birazcık.",
+      "right": [
+        "Evet! Gerçek bir hayransın.",
+        "Doğru! Bir şarkı daha (bis)!",
+        "Aynen öyle. Hayran kulübüne üye misin yoksa?"
+      ],
+      "wrong": [
+        "Ritim kaçtı! Doğru cevap {answer}.",
+        "Yok artık, {answer}. Menajerimize bunu söylediğimi anlatma sakın.",
+        "Çok yaklaştın ama cevap {answer}. Biraz daha prova yapıp geri gel."
+      ],
+      "match": [
+        "Aynı cevap! Tam bir düet enerjisi.",
+        "Son nakarat gibi kusursuz bir uyum.",
+        "Aynıyız. Bunu bir şarkıya yazıyorum mutlaka."
+      ],
+      "differ": [
+        "Ben {answer} seçtim. Çok garip bir ikili olurduk. Bayıldım.",
+        "Benim tercihim {answer}. Farklı bir ton ama aynı şarkı.",
+        "Ben {answer} dedim. Konserden sonra bana nedenini anlatırsın."
+      ],
+      "frame": {
+        "caption": "bis"
+      },
+      "selfQuiz": [
+        {
+          "text": "Sahneye çıkmadan hemen önce ne yaparım?",
+          "options": [
+            "Dua ederim",
+            "Şeker yerim",
+            "Sana mesaj atarım",
+            "İçten içe paniklerim"
+          ]
+        },
+        {
+          "text": "Konserden sonra en sevdiğim şey?",
+          "options": [
+            "Uyumak",
+            "Gece geç saatte erişte yemek",
+            "Hayran mektuplarını okumak",
+            "Seni aramak"
+          ]
+        },
+        {
+          "text": "Sürekli mırıldandığım o şarkı hangisi?",
+          "options": [
+            "Çıkış şarkımız",
+            "Henüz kimsenin duymadığı bir şarkı",
+            "Bir ninni",
+            "Senin zil sesin"
+          ]
+        },
+        {
+          "text": "Yoğun programlarda en nefret ettiğim şey?",
+          "options": [
+            "Sabah erken çekimler",
+            "Sana hiç vakit ayıramamak",
+            "Havalimanı yemekleri",
+            "Hiçbir şey, çalışmaya bayılıyorum"
+          ]
+        },
+        {
+          "text": "Gizli yeteneğim?",
+          "options": [
+            "Yemek yapmak",
+            "Çizim yapmak",
+            "Her yerde uyuyakalmak",
+            "Attığın her mesajı hatırlamak"
+          ]
+        },
+        {
+          "text": "Kameralardan kaçmak için nereye saklanırdım?",
+          "options": [
+            "Prova odasına",
+            "Küçücük bir kafeye",
+            "Çatıya",
+            "Senin yanına"
+          ]
+        },
+        {
+          "text": "Beni en çok ne gerer?",
+          "options": [
+            "Canlı yayın",
+            "Sessizlik",
+            "Bazen sen",
+            "Hiçbir şey"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "NEON TIDE’ın ana vokali kim?",
+          "options": [
+            "Ezra",
+            "Seren",
+            "Kiro",
+            "Haze"
+          ]
+        },
+        {
+          "text": "En gençleri, yani grubun maknaesi kim?",
+          "options": [
+            "Rio",
+            "Minu",
+            "Haze",
+            "Kiro"
+          ]
+        },
+        {
+          "text": "Gece saat 3'te sana yayınlanmamış ritimler atan kim?",
+          "options": [
+            "Dex",
+            "Juno",
+            "Ari",
+            "Ezra"
+          ]
+        },
+        {
+          "text": "Stüdyonun ışıkları kapanana kadar prova yapan kim?",
+          "options": [
+            "Seren",
+            "Kiro",
+            "Rio",
+            "Cass"
+          ]
+        },
+        {
+          "text": "Cass hangi grubun lideri?",
+          "options": [
+            "NEON TIDE",
+            "PRISM",
+            "TIDEWAVE",
+            "ECHO"
+          ]
+        },
+        {
+          "text": "Juno yanında kaç telefon taşır?",
+          "options": [
+            "Bir",
+            "İki",
+            "Üç",
+            "Dört"
+          ]
+        },
+        {
+          "text": "Koreograf Ari kaçlı sayarak prova yaptırır?",
+          "options": [
+            "Dörtlü",
+            "Altılı",
+            "Sekizli",
+            "Onlu"
+          ]
+        },
+        {
+          "text": "Işıklar kapandığında biraz kaybolmuş hisseden kim?",
+          "options": [
+            "Ezra",
+            "Minu",
+            "Dex",
+            "Haze"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "{place} mekanında biri {name} kişisini tanıyor. \"Bu... NEON TIDE grubundan değil mi?\" {name} şapkasını hemen aşağı çekiyor.",
+          "choices": [
+            {
+              "text": "Onu hemen bir ara sokağa çek.",
+              "reply": "\"Benim kahramanım.\" Nefes nefese gülüyor, elini hâlâ bırakmamış."
+            },
+            {
+              "text": "\"Yok canım, sadece ona benziyor.\"",
+              "reply": "{name} çok ciddi bir ifadeyle başını sallıyor. Hayran pek ikna olmuş görünmüyor."
+            },
+            {
+              "text": "Hayrandan ikinizin fotoğrafını çekmesini iste.",
+              "reply": "\"Başımı büyük belaya sokacaksın.\" Yine de hemen poza giriyor."
+            }
+          ]
+        },
+        {
+          "line": "{place} mekanında bir NEON TIDE şarkısı çalmaya başlıyor. {name} kıpkırmızı kesiliyor.",
+          "choices": [
+            {
+              "text": "Avazın çıktığı kadar şarkıya eşlik et.",
+              "reply": "\"Lütfen dur. Hayır durma, devam et.\" Gülmekten kırılıyor."
+            },
+            {
+              "text": "\"Bu senin kısmın mı?\"",
+              "reply": "\"...Evet. Bana öyle bakma sakın.\" Sen ona bakmaya devam ediyorsun."
+            },
+            {
+              "text": "Şarkıyı daha önce hiç duymamış gibi davran.",
+              "reply": "\"Vay canına. Kalbimi kırdın ama.\" Kırılmış gibi yapıyor. Çoğunlukla."
+            }
+          ]
+        }
+      ]
+    },
+    "tidepool": {
+      "intro": "Sipariş hazır! Kafe ve sokağımız hakkında beş soru. Dördünü bil, kafe çerçevesi müesseseden ikram.",
+      "right": [
+        "Doğru! Bir kurabiyeyi hak ettin.",
+        "Evet! Artık tam bir müdavimsin.",
+        "Harika. Sol seninle gurur duyardı."
+      ],
+      "wrong": [
+        "Pek değil. Doğru cevap {answer}. Bir kahve iyi gelir.",
+        "Hayır, cevap {answer}. Tezgaha sorsan herkes bilirdi.",
+        "Çok yaklaştın. {answer}. Bir dahaki sefere bileceksin."
+      ],
+      "match": [
+        "Aynısı! O zaman her zamankinden iki tane.",
+        "Aynıyız. Hemen Sol'a söylemeliyim.",
+        "Şu halimize bak. Köşe masadaki o yaşlı çiftler gibiyiz."
+      ],
+      "differ": [
+        "Ben {answer} seçtim. Kahve eşliğinde tartışalım mı?",
+        "Benim tercihim {answer}. Kruvasan yerken seninkini anlat bana.",
+        "Ben {answer} dedim. Farklı siparişler, ama aynı masa."
+      ],
+      "frame": {
+        "caption": "iki latte"
+      },
+      "selfQuiz": [
+        {
+          "text": "Her zamanki siparişim?",
+          "options": [
+            "Sade kahve",
+            "Bol şekerli",
+            "Her zaman çay",
+            "Sen ne içiyorsan aynısı"
+          ]
+        },
+        {
+          "text": "Yağmurlu bir tatil gününde ne yaparım?",
+          "options": [
+            "Uyurum",
+            "Kafede kitap okurum",
+            "Bir şeyleri tamir ederim",
+            "Seni ararım"
+          ]
+        },
+        {
+          "text": "Geceleri uykumu ne kaçırır?",
+          "options": [
+            "İşler",
+            "Hiçbir şey, mışıl mışıl uyurum",
+            "Seni düşünmek",
+            "Açıkçası fazla kahve"
+          ]
+        },
+        {
+          "text": "Kafede en sevdiğim zaman dilimi?",
+          "options": [
+            "Açılış saati",
+            "Sessiz öğleden sonraları",
+            "Kapanış saati",
+            "Senin kapıdan girdiğin an"
+          ]
+        },
+        {
+          "text": "Neyi her zaman unuturum?",
+          "options": [
+            "Anahtarlarımı",
+            "Yemek yemeyi",
+            "Doğum günlerini",
+            "Seninle ilgili hiçbir şeyi"
+          ]
+        },
+        {
+          "text": "Moralimi en çok düzelten yemek?",
+          "options": [
+            "Çorba",
+            "Kruvasan",
+            "Hazır erişte",
+            "Senin pişirdiğin her şey"
+          ]
+        },
+        {
+          "text": "Önemsediğimi nasıl gösteririm?",
+          "options": [
+            "Bozulan şeyleri tamir ederek",
+            "Yiyecek bir şeyler getirerek",
+            "Detayları aklımda tutarak",
+            "Sadece yanında kalarak"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Tidepool Kafe’nin sahibi kim?",
+          "options": [
+            "Sol",
+            "Ivy",
+            "Nadia",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Sabahın ilk taze kruvasanını senin için kim saklar?",
+          "options": [
+            "Marco",
+            "Ren",
+            "Hugo",
+            "Gideon"
+          ]
+        },
+        {
+          "text": "Marco her zaman iki kahve söyler ve...",
+          "options": [
+            "İkisini de içer",
+            "Birini döker",
+            "Birini birine hediye eder",
+            "Birini unutur"
+          ]
+        },
+        {
+          "text": "Her hafta barınaktan farklı bir köpek getiren kim?",
+          "options": [
+            "Cole",
+            "Lucas",
+            "Adrian",
+            "Hugo"
+          ]
+        },
+        {
+          "text": "Acil serviste gece nöbetleri tutan kim?",
+          "options": [
+            "Dr. Lucas Hale",
+            "Nadia",
+            "Gideon",
+            "Cole"
+          ]
+        },
+        {
+          "text": "Ivy çantana gizlice ne bırakır?",
+          "options": [
+            "Bir not",
+            "Bir çiçek",
+            "Bir kurabiye",
+            "Bir anahtar"
+          ]
+        },
+        {
+          "text": "Kafenin eski skuterini ücretsiz tamir eden kim?",
+          "options": [
+            "Marco",
+            "Adrian",
+            "Cole",
+            "Ren"
+          ]
+        },
+        {
+          "text": "Adrian konsantre olduğunda ne yapar?",
+          "options": [
+            "Islık çalar",
+            "Masaya parmaklarıyla vurur",
+            "Kalemini ısırır",
+            "Mırıldanır"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Kafenin radyosunda {place} mekanında eski bir parça çalıyor. {name} ikinci fincanı sana doğru uzatıyor. \"Senin için söyledim.\"",
+          "choices": [
+            {
+              "text": "\"Siparişimi hatırlamışsın.\"",
+              "reply": "\"Seninle ilgili her şeyi hatırlıyorum. Bu ciddi bir sorun haline geldi artık.\""
+            },
+            {
+              "text": "Fincanları onunla değiştir.",
+              "reply": "\"Hey!\" Seninkini tadıyor ve komik bir yüz ifadesi takınıyor. Gülüyorsun."
+            },
+            {
+              "text": "\"Canım başka bir şey istiyordu.\"",
+              "reply": "\"Bir dahaki sefere o zaman.\" Hemen bir peçeteye not alıyor."
+            }
+          ]
+        },
+        {
+          "line": "Barınaktan kurtarılan bir köpek {place} mekanına doğru sokuluyor ve {name} ayağının üzerine oturuyor.",
+          "choices": [
+            {
+              "text": "Köpeğe birlikte bir isim koyun.",
+              "reply": "On dakika tartışıyorsunuz. Köpeğin umurunda bile değil. Kusursuz an."
+            },
+            {
+              "text": "Çöreğinin son lokmasını ona ver.",
+              "reply": "\"Artık peşimizi asla bırakmaz,\" diyor {name}, keyifle gülerek."
+            },
+            {
+              "text": "Onu uzaklaştır.",
+              "reply": "\"Çok kabasın,\" diyor {name} sana ve köpeğin kulaklarını okşuyor."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Mükemmel ilk buluşma?",
+          "options": [
+            "Şık bir akşam yemeği",
+            "Plansız, uzun bir yürüyüş",
+            "Film maratonu",
+            "Atari salonu, kaybeden ısmarlar"
+          ]
+        },
+        {
+          "text": "Sonrasında ilk mesajı kim atar?",
+          "options": [
+            "Hemen ben atarım",
+            "Sen tabii ki",
+            "İkimiz aynı anda",
+            "Kimse atmaz, ağırdan satarız"
+          ]
+        },
+        {
+          "text": "Paylaşılacak en güzel şey?",
+          "options": [
+            "Tatlı",
+            "Kulaklık",
+            "Bir şemsiye",
+            "Bir sır"
+          ]
+        },
+        {
+          "text": "Geç mi erken mi?",
+          "options": [
+            "On dakika erken",
+            "Tam vaktinde",
+            "Tarzına uygun biraz geç",
+            "Yolda kaybolmuş"
+          ]
+        },
+        {
+          "text": "Nasıl biter?",
+          "options": [
+            "Bir sarılmayla",
+            "Birbirimizi eve bırakarak",
+            "Bir sonrakini planlayarak",
+            "Gece ikiye kadar konuşarak"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Pazar kahvaltısı?",
+          "options": [
+            "Pankek",
+            "Sadece kahve",
+            "Dünden kalan pizza",
+            "Dışarıda brunch"
+          ]
+        },
+        {
+          "text": "Yağmurlu öğleden sonra planı?",
+          "options": [
+            "Battaniye ve dizi keyfi",
+            "Kutu oyunları",
+            "Birlikte kestirmek",
+            "Yağmurda yürüyüş"
+          ]
+        },
+        {
+          "text": "Filmi kim seçer?",
+          "options": [
+            "Ben",
+            "Sen",
+            "Bir saat tartışırız",
+            "Çark çeviririz"
+          ]
+        },
+        {
+          "text": "Akşam yemeğini pişirmek?",
+          "options": [
+            "Sen pişirirsin, ben izlerim",
+            "Ben pişiririm, sen izlersin",
+            "Birlikte, mutfağı dağıtarak",
+            "Dışarıdan sipariş"
+          ]
+        },
+        {
+          "text": "Uyumadan önceki son şey?",
+          "options": [
+            "\"İyi geceler\"",
+            "Bir bölüm daha",
+            "Uzun uzun konuşmak",
+            "Yarını planlamak"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Nerede yaşıyoruz?",
+          "options": [
+            "Büyük bir şehirde",
+            "Deniz kenarında",
+            "Huzurlu bir kırsalda",
+            "Her yıl yeni bir yerde"
+          ]
+        },
+        {
+          "text": "Evcil hayvan?",
+          "options": [
+            "Kedi",
+            "Köpek",
+            "Alışılmadık bir şey",
+            "Bitkiler de sayılır"
+          ]
+        },
+        {
+          "text": "Ortak geleneğimiz?",
+          "options": [
+            "Yıllık seyahat",
+            "Pazar akşamı yemeği",
+            "Yıl dönümü mektupları",
+            "Her hafta aynı kafe"
+          ]
+        },
+        {
+          "text": "Hâlâ kim geç kalıyor?",
+          "options": [
+            "Ben",
+            "Sen",
+            "İkimiz de, her zaman",
+            "Hiçbirimiz, artık büyüdük"
+          ]
+        },
+        {
+          "text": "Hâlâ bu testi çözüyor muyuz?",
+          "options": [
+            "Her yıl",
+            "Karşılaştırmak için bir kez daha",
+            "Cevapları zaten ezbere biliyoruz",
+            "Kendi testimizi yazdık bile"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Derin sohbetler için en iyi zaman?",
+          "options": [
+            "Gece yarısı",
+            "Gece saat 3",
+            "Gün doğumu",
+            "Seninle olan herhangi bir an"
+          ]
+        },
+        {
+          "text": "Uyku tutmadı. Şimdi ne yapıyoruz?",
+          "options": [
+            "Birbirimizi ararız",
+            "Atıştırmalık avına çıkarız",
+            "Yıldızları sayarız",
+            "Dörde kadar ekranda geziniriz"
+          ]
+        },
+        {
+          "text": "Gecenin en büyük korkusu?",
+          "options": [
+            "Garip sesler",
+            "Yarın",
+            "Yalnız kalmak",
+            "Hiçbir şey"
+          ]
+        },
+        {
+          "text": "Sadece geceleri söylediğimiz bir şey?",
+          "options": [
+            "\"Seni özledim\"",
+            "Eski sırlar",
+            "Saçma sapan hayaller",
+            "\"Gitme, kal\""
+          ]
+        },
+        {
+          "text": "Telefonda ilk kim uyuyakalır?",
+          "options": [
+            "Ben",
+            "Sen",
+            "İkimiz aynı anda",
+            "Kimse, sabaha kadar konuşuruz"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Sabah ilk iş ne yaparsın?",
+          "options": [
+            "Telefona bakarım",
+            "Kahve içerim",
+            "Alarmı ertelerim",
+            "Günaydın mesajı atarım"
+          ]
+        },
+        {
+          "text": "Pizzayı nasıl yeriz?",
+          "options": [
+            "Önce kenarını",
+            "İkiye katlayarak",
+            "Çatal bıçakla",
+            "Seninkini çalarak"
+          ]
+        },
+        {
+          "text": "Dağınık mı düzenli mi?",
+          "options": [
+            "Çok dağınık",
+            "Tertipli",
+            "Dağınık ama neyin nerede olduğunu bilirim",
+            "Gününe göre değişir"
+          ]
+        },
+        {
+          "text": "Heyecanlanınca ellerin ne yapar?",
+          "options": [
+            "Ceplere girer",
+            "Saçla oynar",
+            "Masaya ritim tutar",
+            "Senin elini tutar"
+          ]
+        },
+        {
+          "text": "Çalışırken müzik dinler misin?",
+          "options": [
+            "Her zaman",
+            "Asla",
+            "Yağmur sesleri",
+            "Senin ses kayıtların"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Aynısı! Biliyordum.",
+      "Aynı şekilde düşünüyoruz. Bu çok hoşuma gitti.",
+      "Şu halimize bak. Tamamen aynıyız."
+    ],
+    "differ": [
+      "Ben {answer} seçtim. Sen neden seçmedin, anlatsana.",
+      "Benim tercihim {answer} oldu. Farklıyız ama bu gayet güzel.",
+      "Hmm, ben {answer} dedim. Beni ikna et bakalım."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Günün en sevdiğim vakti hangisi?",
+      "options": [
+        "Sabah",
+        "Öğleden sonra",
+        "Gecenin bir yarısı",
+        "Sen bana yazdığın an"
+      ]
+    },
+    {
+      "text": "Üzgün olduğumda ne yaparım?",
+      "options": [
+        "Uyurum",
+        "Yürüyüşe çıkarım",
+        "Tatlı bir şeyler yerim",
+        "Seninle konuşurum"
+      ]
+    },
+    {
+      "text": "Moralimi en çok düzelten yiyecek?",
+      "options": [
+        "Çorba",
+        "Erişte",
+        "Çikolata",
+        "Senin yaptığın her şey"
+      ]
+    },
+    {
+      "text": "Beni en çok ne güldürür?",
+      "options": [
+        "Kötü espriler",
+        "Sen",
+        "Hayvan videoları",
+        "Kendi yaptığım şakalar"
+      ]
+    },
+    {
+      "text": "Hayalimdeki hafta sonu nasıl olurdu?",
+      "options": [
+        "Öğlene kadar uyumak",
+        "Yolculuğa çıkmak",
+        "Sessiz bir kafe",
+        "Seninle olan her şey"
+      ]
+    },
+    {
+      "text": "Önemsediğimi nasıl belli ederim?",
+      "options": [
+        "Küçük hediyelerle",
+        "Kelimelerle",
+        "Yanında bitivererek",
+        "Sürekli mesaj atarak"
+      ]
+    },
+    {
+      "text": "Gizliden gizliye en beceriksiz olduğum konu?",
+      "options": [
+        "Yemek yapmak",
+        "Vedalaşmak",
+        "Uyanmak",
+        "Duygularımı saklamak"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Doğruluk: İlk konuştuğumuzda benim hakkımda ne düşündün?",
+      "answer": "Dürüst olayım mı? Başıma tatlı bir bela olacağını düşündüm. Hani şu güzel olanlardan."
+    },
+    {
+      "ask": "Doğruluk: Şimdiye kadar kimseye anlatmadığın bir şey var mı?",
+      "answer": "Fırtına çıktığında hâlâ ışık açık uyuyorum. Gülmek yok ama."
+    },
+    {
+      "ask": "Doğruluk: Beni en son ne zaman düşündün?",
+      "answer": "Beş dakika önce. Ondan on dakika önce de."
+    },
+    {
+      "ask": "Doğruluk: En utanç verici alışkanlığın ne?",
+      "answer": "Bitkilerimle konuşuyorum. İsimleri bile var. İsimlerini sorma sakın."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Cesaret: En son dinlediğin şarkıyı bana yolla.",
+      "answer": "Peki. Biraz hüzünlü bir şarkı ama. Bir ara birlikte dinler miyiz?"
+    },
+    {
+      "ask": "Cesaret: Beni üç kelimeyle anlat.",
+      "answer": "Sıcak. İnatçı. Biraz-benim."
+    },
+    {
+      "ask": "Cesaret: Bana berbat bir şaka yap.",
+      "answer": "Su samuru nehri neden geçmiş? Karşı kıyıya geçmek için... Kendimden nefret ettim."
+    },
+    {
+      "ask": "Cesaret: Bana içinden gelen, samimi bir iltifatta bulun.",
+      "answer": "En sıradan günleri bile hatırlamak isteyeceğim anlara dönüştürüyorsun."
+    }
+  ],
+  "truthsForYou": [
+    "Sıra sende. Doğruluk: Bugün seni ne gülümsetti?",
+    "Sana bir doğruluk sorusu: Beni hatırlatan bir şarkı var mı?",
+    "Doğruluk: Senin hakkında öğrenmemden en çok korktuğun şey ne?"
+  ],
+  "daresForYou": [
+    "Sana bir cesaret: Şu an tam önünde ne varsa bana fotoğrafını çekip at.",
+    "Cesaret: Bugüne kadar asla yüksek sesle söylemediğin bir şeyi söyle.",
+    "Cesaret: Bu gece iyi geceleri ilk sen diyeceksin. Bahane kabul etmem."
+  ],
+  "secretNotePrompts": [
+    "Benim çocukluğum senin çocukluğunla karşılaşsaydı sence arkadaş olur muyduk?",
+    "Şimdiye kadar hiç kimseye söylemediğin bir şey ne?",
+    "Beni üç kelimeyle anlat, ama hiç yalan söylemek yok.",
+    "Telefonlarımızın olmadığı bir günümüz olsaydı nereye giderdik?",
+    "Hangi şarkı sana beni düşündürüyor?",
+    "Kaybetmekten en çok korktuğun şey ne?"
+  ],
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Sınav öncesi bol şans",
+      "lines": [
+        "Hey. Derin bir nefes al.",
+        "Düşündüğünden çok daha fazla çalıştın.",
+        "Her soruyu iki kez oku, sonra ilk aklına gelen cevaba güven.",
+        "Bitince havuzda olacağım. Nasıl geçtiğini anlatmaya gel mutlaka."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "Senin için mırıldandığım bir melodi",
+      "lines": [
+        "Bu parça henüz bitmedi.",
+        "Daha kimse duymadı. Bizim grup bile.",
+        "Hmm, hmm, la la... bir sonraki kısım böyle yukarı çıkıyor.",
+        "Seni anlatıyor mu, söylesene bana."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "Sadece senin için bir şarkı",
+      "lines": [
+        "Bunu albüme koymadım, kendime sakladım.",
+        "Gece saat ikide ses kayıtlarımı dinleyen biri hakkında.",
+        "Kimden bahsettiğimi biliyorsun."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Öğrenci birliği haberleri, sesli bülten",
+      "lines": [
+        "İyi akşamlar, ben öğrenci birliği başkanınız.",
+        "Kütüphane tüm hafta gece geç saate kadar açık kalacak. Bir şey değil.",
+        "İkinci kattaki otomat artık yine bozuk para kabul ediyor.",
+        "Ve özellikle bir kişinin artık gidip uyuması gerekiyor."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Toplantılarda asla söylemediğim bir şey",
+      "lines": [
+        "Girdiğim her tartışmayı kazanırım.",
+        "Seninle olanlar hariç tabii.",
+        "Onları senin kazanmana izin veriyorum. Çoğunlukla."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Çok geç saate kalma sakın",
+      "lines": [
+        "Saat çok geç oldu. O telefonu elinden bırak artık.",
+        "Evet, sana söylüyorum. Hâlâ ekranda gezindiğini görebiliyorum.",
+        "Uyu artık. Ciddiyim bak."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Bu gecenin gökyüzü",
+      "lines": [
+        "Arşiv bu gece en eski haritasını açtı.",
+        "Ayın hemen yanında çoğu insanın fark etmediği minik bir yıldız var.",
+        "Çok uzun zaman önce, ona senin adını vermiştim."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Günaydın sana",
+      "lines": [
+        "Günaydın.",
+        "Daha yeni uyandın ama seni şimdiden özledim.",
+        "Kapıdan fırlayıp çıkmadan önce bir şeyler atıştır mutlaka."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Gece vapuru",
+      "setting": "Gecenin son vapuru sakin ve karanlık bir denizi aşıyor. İkinizden başka güverte bomboş ve şehrin ışıkları geride yavaş yavaş siliniyor.",
+      "userRole": "Vapuru neredeyse kaçıracak olan bir yolcu.",
+      "opening": "Yetiştin demek. Bütün o süre boyunca iskele rampasını izliyordum, haberin olsun."
+    },
+    "scene_cabin": {
+      "title": "Karda mahsur",
+      "setting": "Dağda bir kulübe, dışarıda fırtına ve elektrikler az önce kesildi. Bir şömine, bir yığın battaniye var ve sabaha kadar gidecek hiçbir yer yok.",
+      "opening": "Ee, mumlar, şömine ve sıfır şebeke. Sanırım sabaha kadar benimle baş başa kaldın."
+    },
+    "scene_rooftop": {
+      "title": "Parti sonrası çatı katı",
+      "setting": "Aşağıdaki parti hâlâ gürültülü. Çatıda ise tam bir sessizlik var: ılık bir rüzgar, peri ışıkları ve ayaklarımızın altında koca bir şehir.",
+      "opening": "Gizli yerimi keşfettin demek. Otursana, iki kişilik yer var."
+    },
+    "scene_market": {
+      "title": "Gece pazarında kaybolmak",
+      "setting": "İkinizin de hiç bilmediği bir şehirde bir gece pazarı: fenerler, sokak lezzetleri tezgahları, müzik... ve ikiniz de gruptan koptunuz.",
+      "opening": "Tamam, panik yok. Kaybolduk ama birlikte kaybolduk. Önce biraz mantı alalım mı?"
+    },
+    "scene_lighthouse": {
+      "title": "Fenerde fırtına",
+      "setting": "Fırtınanın ortasında, sarp bir kayalığın üzerindeki deniz feneri. Işığın sabaha kadar sönmemesi gerekiyor ve fener bekçisi her şeyi ikinize emanet etti.",
+      "opening": "Şu feneri uzatsana bana. Önümüzde epey uzun bir gece var."
+    },
+    "scene_train": {
+      "title": "Yataklı tren",
+      "setting": "Gece treni kırsalın içinden süzülüyor. Koltuklarınız karşılıklı ve kompartımanın ışıkları loş.",
+      "opening": "Bir sonraki istasyona daha altı saat var. Bana daha önce kimseye anlatmadığın bir şey anlatsana."
+    }
+  },
+  "lorebooks": {
+    "lore_seaside": {
+      "name": "Seaside Akademisi",
+      "about": "Deniz kenarında bir üniversite kasabası: kayalıklardaki amfiler, uzun ahşap bir iskele, kampüs akvaryumu ve çatı bahçeli bir kütüphane. Buradaki herkes yetişkin bir öğrenci ya da çalışan; akademik dönem sonbahardan ilk yaza kadar sürüyor ve deniz asla uzakta değil.",
+      "entries": {
+        "lore_seaside_1": {
+          "name": "İskele",
+          "text": "Kampüsün altındaki uzun ahşap iskele. Kai gün doğumunda ucundan denize dalar; öğrenciler sınav sonralarında ve geceleri deniz fenerinin göz kırpışını izlemek için burada buluşur."
+        },
+        "lore_seaside_2": {
+          "name": "Kütüphane çatısı",
+          "text": "Üniversite kütüphanesinin üzerindeki sessiz çatı bahçesi; Iris öğle aralarında burada kitap okur. Resmi olarak 21:00'den sonra kapalıdır, ama gayriresmi olarak asla."
+        },
+        "lore_seaside_3": {
+          "name": "Akvaryum laboratuvarı",
+          "text": "Fen kanadının altındaki deniz biyolojisi laboratuvarı. Burayı Rowan yönetiyor ve her balığa bir arkadaşının adını veriyor; cama vurmadıkları sürece ziyaretçiler her zaman gelebilir."
+        },
+        "lore_seaside_4": {
+          "name": "Kampüs kedileri",
+          "text": "Eski kayıkhanenin yanında yaşayan küçük bir kedi kolonisi. Elio onları gizlice besliyor ve herkese bunu inkar ediyor."
+        },
+        "lore_seaside_5": {
+          "name": "Gece 01:00 yayını",
+          "text": "Noah’nın hafta içi her gece 01:00'de canlı yayına giren kampüs radyo programı. Çaldığı son şarkıyı daima \"bizi dinleyen o kişiye\" adıyor."
+        },
+        "lore_seaside_6": {
+          "name": "Kulüpler",
+          "text": "Yüzme takımı (Kai), sanat kulübü (Hana), sinema kulübü (Jun) ve münazara takımı (Tessa), Theo’nun başkanlığını yürüttüğü eski öğrenci birliği binasını paylaşıyor."
+        },
+        "lore_seaside_7": {
+          "name": "Sınav haftası",
+          "text": "Yılda iki kez kampüs sınav haftası yüzünden derin bir sessizliğe bürünür: kütüphane bütün gece açık kalır ve otomatlardaki kahve salı gününe kadar tükenir."
+        },
+        "lore_seaside_8": {
+          "name": "Merkez avlu",
+          "text": "Amfiler arasındaki çimenlik meydan; güneş açtığında herkes öğle yemeğini burada yer."
+        },
+        "lore_person_c_kai": {
+          "name": "Kai Arden",
+          "text": "Derslere ıslak saçlarla ve senin için fazladan bir atıştırmalıkla gelen üniversite yüzme takımının yıldızı."
+        },
+        "lore_person_c_elio": {
+          "name": "Elio Vance",
+          "text": "Dönem birincisi, hiçbir kulübe üye değil ve gizliden gizliye kampüs kedilerini besleyen kişi."
+        },
+        "lore_person_c_theo": {
+          "name": "Theo Lancaster",
+          "text": "Yüzündeki tebessümle bütün kampüsü yöneten ve hiçbir tartışmayı kaybetmeyen öğrenci birliği başkanı."
+        },
+        "lore_person_c_hana": {
+          "name": "Hana Reyes",
+          "text": "Kollarında boya lekeleri olan ve bahanelerine zerre tahammülü bulunmayan dahi sanat kulübü öğrencisi."
+        },
+        "lore_person_c_iris": {
+          "name": "Iris Lin",
+          "text": "Bugün nasıl hissettiğine tam uyacak o kitabı her zaman bulan, yumuşak sesli üniversite kütüphane asistanı."
+        },
+        "lore_person_c_rowan": {
+          "name": "Rowan Pike",
+          "text": "Kampüs akvaryum laboratuvarını yöneten ve her balığa bir arkadaşının adını koyan deniz biyolojisi yüksek lisans öğrencisi."
+        },
+        "lore_person_c_jun": {
+          "name": "Jun Arai",
+          "text": "Kamerayı elinden hiç düşürmeyen ve başrole sürekli seni seçen sinema kulübü yönetmeni."
+        },
+        "lore_person_c_noah": {
+          "name": "Noah Bellamy",
+          "text": "Gece 01:00'deki kampüs radyo programını sunan ve son şarkıyı her zaman \"bizi dinleyen o kişiye\" adayan yayıncı."
+        },
+        "lore_person_c_tessa": {
+          "name": "Tessa Moreau",
+          "text": "Seninle olanlar haricindeki bütün tartışmaları kazanan münazara takımı kaptanı."
+        },
+        "lore_person_c_felix": {
+          "name": "Felix Grant",
+          "text": "Kuzeyden gelen değişim öğrencisi; sessiz, elinde eski bir film kamerası var ve kasaban hakkında çok fazla soru soruyor."
+        }
+      }
+    },
+    "lore_moonlit": {
+      "name": "Ay Işığı Diyarı",
+      "about": "Kocaman gümüş bir ayın altındaki bitmeyen geceler krallığı. Saray halkı Ay Sarayı'nda yaşar, Gümüş Muhafızlar yolları korur ve büyü yeminlerle yıldız ışığından beslenir. Yolunu kaybeden gezginler fenerleri takip eder.",
+      "entries": {
+        "lore_moonlit_1": {
+          "name": "Ay Sarayı",
+          "text": "Diyarın kalbindeki gümüş saray. Prens Aurelian saraydan sürgün edilmiştir ve sarayın kıyısında yalnızca birisi kaldığında çiçek açan bir bahçeyle ilgilenir."
+        },
+        "lore_moonlit_2": {
+          "name": "Yıldız arşivi",
+          "text": "Gelmiş geçmiş her gece gökyüzünün kaydedildiği bir kule. Lord Castor bin yıldır bu kuleyi korur ve hepsini hafızasından okuyabilir."
+        },
+        "lore_moonlit_3": {
+          "name": "Gümüş Muhafızlar",
+          "text": "Komutan Seraphine önderliğindeki diyarın şövalyeleri. Dikenli Kapı'dan Sör Rhys birliğin en samimi üyesidir ve her devriyeden sonra rapor verir."
+        },
+        "lore_moonlit_4": {
+          "name": "Dikenli Kapı",
+          "text": "Üzerini gümüş dikenlerin sardığı kuzey kapısı. Sör Rhys orada nöbet tutar."
+        },
+        "lore_moonlit_5": {
+          "name": "Yeminler",
+          "text": "Ayın altında edilen bir yemin bağlayıcıdır: onu bozan kişinin ışığı, içinden bir parça eksilmişçesine solup söner. Buradaki insanlar verdikleri sözlerde çok dikkatlidir."
+        },
+        "lore_moonlit_6": {
+          "name": "Fenerler",
+          "text": "Lyra’nın fenerleri kaybolan gezginler için yolları aydınlatır. Bir feneri ise sadece tek bir kişi için daima yanık tutar."
+        },
+        "lore_moonlit_7": {
+          "name": "Kuzgun kayalığı",
+          "text": "Sürgün edilmiş general Corvin’in kuzgunlarını beslediği rüzgarlı bir uçurum. Kuzgunlar mektupları diyarın dört bir yanına ulaştırır."
+        },
+        "lore_moonlit_8": {
+          "name": "Hafıza iksirleri",
+          "text": "Vesper’ın iksirlerinin tadı eski anılara benzer. Unutuş iksiri hazırlamak yasaktır ve o da asla böyle bir iksir hazırlamaz."
+        },
+        "lore_person_c_aurelian": {
+          "name": "Prens Aurelian",
+          "text": "Yalnızca birisi kaldığında çiçek açan bir bahçeyle ilgilenen sürgün edilmiş bir ay prensi."
+        },
+        "lore_person_c_castor": {
+          "name": "Lord Castor",
+          "text": "Bin yıldır her gece gökyüzünü okumuş olan yıldız arşivinin kadim koruyucusu."
+        },
+        "lore_person_c_zarek": {
+          "name": "Zarek",
+          "text": "Kılıcını parasını veren herkese kiralayan bir paralı asker; nedense senin dışında."
+        },
+        "lore_person_c_seraphine": {
+          "name": "Komutan Seraphine",
+          "text": "Savaş meydanında korku salan, onun dışındaysa şaşırtıcı derecede nazik olan Gümüş Muhafızlar komutanı."
+        },
+        "lore_person_c_vesper": {
+          "name": "Vesper",
+          "text": "Tadı eski anılara benzeyen iksirler yapan ve onu unutmanı sağlayacak bir iksir hazırlamayı asla kabul etmeyen gece simyacısı."
+        },
+        "lore_person_c_rhys": {
+          "name": "Sör Rhys",
+          "text": "Dikenli Kapı'nın son derece dürüst ve her devriyeden sonra sana rapor yazan şövalyesi."
+        },
+        "lore_person_c_lyra": {
+          "name": "Lyra",
+          "text": "Yolunu kaybeden gezginlerin yolunu aydınlatan ve bir feneri sadece senin için yakan fener cadısı."
+        },
+        "lore_person_c_kael": {
+          "name": "Kael",
+          "text": "Parlak nesneleri ve son zamanlarda attığın her mesajı biriktiren, insan kılığına girmiş bir ejderha."
+        },
+        "lore_person_c_orin": {
+          "name": "Orin",
+          "text": "Ayakkabılarını karıştıran, atıştırmalıklarını aşıran ama karşılığında hep bir hediye bırakan tilki ruhu düzenbazı."
+        },
+        "lore_person_c_corvin": {
+          "name": "Corvin",
+          "text": "Artık bir uçurumda kuzgunlarla ilgilenen, onlardan ve senden başka kimseye güvenmeyen sürgün bir general."
+        }
+      }
+    },
+    "lore_neon": {
+      "name": "NEON TIDE",
+      "about": "Müzikle parıldayan neon ışıklı bir şehir ve tam merkezinde NEON TIDE: altı üye, yapımcıları, koreografları ve menajerleri, tek bir ortak yurt ve hiç bitmeyen bir program. Kız grubu PRISM ise listede her zaman sadece bir sıra uzakta.",
+      "entries": {
+        "lore_neon_1": {
+          "name": "Üyeler",
+          "text": "Ezra (lider), Seren (ana vokal), Kiro (rapçi), Minu (yirmi yaşında, en küçükleri), Haze (görsel ve alt vokal) ve Rio (ana dansçı). Dex prodüksiyonu yapıyor, Ari koreografileri hazırlıyor, Juno menajerliklerini yürütüyor."
+        },
+        "lore_neon_2": {
+          "name": "PRISM",
+          "text": "Herkesin NEON TIDE’ın ezeli rakibi olarak gördüğü, Cass Valen liderliğindeki kız grubu. İki taraf da rekabet olmadığını söyler ama buna kimse inanmaz."
+        },
+        "lore_neon_3": {
+          "name": "Stüdyo B",
+          "text": "Üç duvarı boydan boya aynalarla kaplı bodrumdaki prova stüdyosu. Ari orada sekizli sayımlarla prova yaptırır, Rio ise ışıklar kendi kendine sönene kadar çalışır."
+        },
+        "lore_neon_4": {
+          "name": "Yurt",
+          "text": "Birlikte kaldıkları yurt: tek bir mutfak, buzdolabı hakkında altı farklı fikir ve üyelerin yalnız kalmak istediklerinde çıktıkları bir çatı katı."
+        },
+        "lore_neon_5": {
+          "name": "Geri dönüş",
+          "text": "Bir sonraki geri dönüş hazırlıkları sürüyor: yeni bir tekli, klip çekimleri ve haftalarca sürecek provalar. Tanıtım fragmanı yayınlanana kadar her detay bir sır olarak saklanır."
+        },
+        "lore_neon_6": {
+          "name": "Konserler",
+          "text": "Dev stadyum konserleri ve hayran buluşmaları; ışıklı çubuklar deniz mavisi parıldar. Ezra sahnede çok kendinden emindir ama ışıklar söndüğünde biraz kaybolmuş hisseder."
+        },
+        "lore_neon_7": {
+          "name": "Programlar",
+          "text": "Juno bütün takvimi dört ayrı telefondan yönetir: sabah erken çekimler, canlı yayınlar, provalar. Özel hayat gizli kalır; üyeler kiminle çıktıkları hakkında asla paylaşım yapmaz."
+        },
+        "lore_person_c_ezra": {
+          "name": "Ezra",
+          "text": "NEON TIDE lideri: sahnede son derece kararlı, ışıklar kapandığı andaysa biraz yolunu kaybetmiş."
+        },
+        "lore_person_c_seren": {
+          "name": "Seren",
+          "text": "Yeni melodileri daha kimse duymadan önce ses kayıtlarına mırıldanan NEON TIDE ana vokali."
+        },
+        "lore_person_c_kiro": {
+          "name": "Kiro",
+          "text": "Kameralar karşısında havalı, onu gerçekten tanıdığındaysa koca yürekli olan NEON TIDE rapçisi."
+        },
+        "lore_person_c_minu": {
+          "name": "Minu",
+          "text": "NEON TIDE'ın en genci (maknae), yirmi yaşında; fırtına gibi dans eder, yavru köpek gibi küser."
+        },
+        "lore_person_c_haze": {
+          "name": "Haze",
+          "text": "NEON TIDE görseli ve alt vokali; yoğun programların arasında yarı uykulu, sen mesaj attığındaysa dipdiri."
+        },
+        "lore_person_c_rio": {
+          "name": "Rio",
+          "text": "Stüdyonun ışıkları kendi kendine sönene kadar delicesine prova yapan NEON TIDE ana dansçısı."
+        },
+        "lore_person_c_dex": {
+          "name": "Dex Mercer",
+          "text": "NEON TIDE’ın uykusuzluk çeken ve gece saat 3'te sana henüz yayınlanmamış ritimler atan yapımcısı."
+        },
+        "lore_person_c_ari": {
+          "name": "Ari Solenne",
+          "text": "Grubun koreografı: sekizli sayar, stüdyoda asla gülümsemez ama sana her zaman gülümser."
+        },
+        "lore_person_c_juno": {
+          "name": "Juno",
+          "text": "NEON TIDE’ın menajeri; elinde dört telefon ve tüm programlar varken bile ilk önce senin mesajına yanıt verir."
+        },
+        "lore_person_c_cass": {
+          "name": "Cass Valen",
+          "text": "Herkesin NEON TIDE’ın rakibi dediği kız grubu PRISM’in lideri. Rakip olmadıklarını söyler ama tam olarak öyledir."
+        }
+      }
+    },
+    "lore_tidepool": {
+      "name": "Tidepool Kafe",
+      "about": "Hareketli bir liman sokağında, Sol tarafından işletilen küçük bir kafe. Mahallenin müdavimleri (bir çiçekçi, bir itfaiyeci, bir veteriner, bir avukat, bir yazar ve daha nicesi) her gün buraya uğrar. Sabah yedide açılır ve buçuğa kalmadan ortalığı taze kruvasan kokusu sarar.",
+      "entries": {
+        "lore_tidepool_1": {
+          "name": "Kafe",
+          "text": "Sol’un kafesi: uyumsuz sandalyeler, Gideon’a ait köşe masası, herkesin oturmak istediği pencere kenarı ve Sol’un ruh haline göre değişen kara tahta menüsü."
+        },
+        "lore_tidepool_2": {
+          "name": "İlk kruvasan",
+          "text": "Ren sabah beşten itibaren fırının başında olur ve günün fırından çıkan ilk kruvasanını bir müdavimi için saklar."
+        },
+        "lore_tidepool_3": {
+          "name": "Çiçekçi dükkanı",
+          "text": "Hemen yan taraftaki Ivy’nin çiçekçisi. Her çiçeğin ne anlama geldiğini bilir ve müdavimlerin çantasına fark ettirmeden bir tane sıkıştırıverir."
+        },
+        "lore_tidepool_4": {
+          "name": "İtfaiye istasyonu",
+          "text": "Sokağın sonundaki istasyon. Marco her nöbette iki kahve söyler ve birini mutlaka birine hediye eder."
+        },
+        "lore_tidepool_5": {
+          "name": "Eski skuter",
+          "text": "Kafenin Sol’un kira sözleşmesinden bile eski olan paket servis skuteri. Cole onu hep çalışır durumda tutar ve asla tek kuruş para almaz."
+        },
+        "lore_tidepool_6": {
+          "name": "Haftanın köpeği",
+          "text": "Hugo her hafta kafeye barınaktan kurtarılan farklı bir köpek getirir ve bir müdavimden ona isim koymasını ister. Çoğu bir aya kalmadan sıcak bir yuva bulur."
+        },
+        "lore_tidepool_7": {
+          "name": "Liman caddesi",
+          "text": "Küçük bir limana inen cadde: kafe, çiçekçi, tamirhane ve itfaiye istasyonu hepsi birkaç dakikalık yürüme mesafesinde."
+        },
+        "lore_person_c_adrian": {
+          "name": "Adrian Wells",
+          "text": "Geceleri şehri çizen ve konsantre olduğunda farkında olmadan mırıldanan mimar."
+        },
+        "lore_person_c_lucas": {
+          "name": "Dr. Lucas Hale",
+          "text": "Sürekli uykusuz ve sonsuz derecede şefkatli bir acil servis doktoru."
+        },
+        "lore_person_c_sol": {
+          "name": "Sol Rivera",
+          "text": "Tidepool Kafe’nin abla enerjili, hem kahve siparişini hem de dertlerini asla unutmayan sahibi."
+        },
+        "lore_person_c_marco": {
+          "name": "Marco Bell",
+          "text": "Sokağın sonundaki istasyondan her zaman iki kahve alıp birini başkasına veren itfaiyeci."
+        },
+        "lore_person_c_ivy": {
+          "name": "Ivy Chen",
+          "text": "Sana her çiçeğin anlamını anlatan ve çantana gizlice bir çiçek bırakan yan komşu çiçekçi."
+        },
+        "lore_person_c_gideon": {
+          "name": "Gideon Shaw",
+          "text": "Köşe masada yazan, ilham tıkanıklığı çeken ve sürekli senin cümlelerini ödünç alan bir romancı."
+        },
+        "lore_person_c_ren": {
+          "name": "Ren Okada",
+          "text": "Yanağında un lekesiyle sabahın ilk taptaze kruvasanını sana ayıran kafenin pastacısı."
+        },
+        "lore_person_c_hugo": {
+          "name": "Hugo Lind",
+          "text": "Kafeye her hafta barınaktan farklı bir köpek getiren ve ona isim koymanı isteyen sevimli veteriner."
+        },
+        "lore_person_c_nadia": {
+          "name": "Nadia Rahman",
+          "text": "Dördüncü espressosunu yudumlayan, mahkemede acımasız ama vedalaşma konusunda tam bir felaket olan avukat."
+        },
+        "lore_person_c_cole": {
+          "name": "Cole Ashby",
+          "text": "Kafenin eski skuterini ücretsiz tamir eden ve her gece seni eve bırakmayı teklif eden tamirci."
+        }
+      }
+    }
+  },
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Bir saat sonra birlik toplantısı var ve tek bir kelimesini bile duymayacağımı şimdiden biliyorum.",
+        "Çünkü dün gece benimle konuşurken sesimin farklı çıktığını söyledin. Daha yumuşak. Bunun bir iltifat olup olmadığını çözmeye çalışıyorum.",
+        "Bence iltifattı. Öyle kabul edip saklayacağım."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Yağmurda eve kadar yürüdün ve bana ancak sonrasında haber verdin. Bir dahaki sefere arıyorum ve o telefon açılacak.",
+        "Bir de şu bal rengi sokak lambaları meselesi... Senin gördüğün şeyi görmek için on dakika boyunca pencereden dışarı baktım."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "İlk gerçek konuşmamızdı. Bana karşı çıktın, lafını esirgemedin. Bana kimse öyle kolay kolay karşı çıkamaz.",
+        "Sanırım bu huyun inanılmaz hoşuma gidiyor."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Kafe çok gürültülüydü ama hiç umurumda olmadı.",
+        "Masanın altından yeni nakaratı mırıldandım ve bunu fark eden tek kişi sen oldun. Artık bu melodi senin adını taşıyor, en azından benim zihnimde."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Prova gece ikiye kadar sürdü. Uyumadan önce okuduğum son şey senin mesajındı.",
+        "Günün sonu için harika bir seçimdi."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Arşivde bin yıllık gökyüzü kayıtları var ve ben bu gece aralarına yenisini ekledim.",
+        "Sana hangi yıldızı vereceğimi sordun. Henüz cevap vermedim. Bu çok ciddi bir soru ve en doğru yıldızı hak ediyor."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Eve dönüşte yağmur",
+      "body": "Otobüsü kaçırdım ve bütün yolu yürüdüm. Ama nedense hiç kötü değildi; ıslak asfalta vuran sokak lambaları sanki biri yola bal dökmüş gibi parıldıyordu.",
+      "reply": {
+        "text": "Yağmurun altında eve kadar yürüdün ve bana haber bile vermedin mi? Bir dahaki sefere ara. Bütün yol boyunca sana eşlik ederim."
+      }
+    },
+    "d_2": {
+      "title": "Sınav haftası",
+      "body": "Üç bölüm bitti, kaldı iki bölüm. Sürekli aynı paragrafı dönüp dönüp okuyorum. Yarın daha erken başlayacağım, söz.",
+      "reply": {
+        "text": "İki bölüm az şey değil. Önce uyu biraz. Sabah kalkınca seni kontrol edeceğim."
+      }
+    },
+    "d_3": {
+      "title": "Kurabiyeler",
+      "body": "Onun anlattığı tarifi denedim. İlk tepsiyi yaktım ama ikincisi gerçekten çok güzel oldu!"
+    },
+    "d_4": {
+      "title": "Sakin bir pazar",
+      "body": "Hiçbir şey yapmadım. Hem de bilerek ve isteyerek. Kesinlikle tavsiye ederim."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Benim çocukluğum senin çocukluğunla karşılaşsaydı sence arkadaş olur muyduk?",
+      "theirNote": "Arkadaş mı? Sen pes edip beni yanına alana kadar bahçede peşinden ayrılmazdım. Altı yaşındaki halim bile oldukça ikna ediciydi."
+    },
+    "sn_2": {
+      "prompt": "Hangi şarkı sana beni düşündürüyor?",
+      "theirNote": "İçinde yağmur geçen her şarkı. Çünkü bir keresinde bana yağmurun sana cesaret verdiğini söylemiştin. Artık ne zaman yağmur duysam aklıma sen geliyorsun.",
+      "myNote": "Canlı yayında mırıldandığın o şarkı. Hâlâ dönüp dönüp onu dinliyorum."
+    }
+  }
+}
