@@ -30,9 +30,10 @@ Done after that (same day):
   get the new `pronounLine`.
 
 Still to do:
-1. Gendered user forms across the content translations: a rough scan finds ~71 ru strings with "ты + masculine
-   past" (some are fine: a starter the user says to a male character). Same check needed for fr, es, it, pt-BR.
-   Make them neutral (as the 4 greetings) or add she/he variants; content in `src/i18n/content/*.json`.
+1. Gendered user forms across the content translations, all five languages at once (ru, fr, es, it, pt-BR; the
+   other eight are clean): handed to Gemini 3.8 Flash High, brief `docs/agent-tasks/gendered-user-forms.md`,
+   candidates `node scripts/scan-gendered-you.mjs` (2026-10-30: ru 139, fr 18, es 8, it 79, pt-BR 26, rough).
+   Neutral wording only, no code. When the report lands, Claude reviews its before/after table.
 2. `they` on flash-lite guesses masculine about 1 time in 4: re-run `npm run eval -- --only gender-ru-they --repeat 4`
    when the chat model changes.
 
