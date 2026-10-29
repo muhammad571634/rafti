@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z59. Today header: no shell counter, wordmark and your capsule on one line (2026-10-30, Claude 2). NEXT: owner checks the A51; Gemini's gendered-forms report (0z58 to-do 1)
+
+- `src/app/(tabs)/index.tsx`: the glass shell balance left Today's top row (owner: "ugly, not Apple"). The row is now the
+  Sigmazam wordmark on the leading edge and your mascot + name capsule on the trailing one, under the Dynamic Island
+  (HIG Layout: respect the safe area; Status bars: never put controls in the status bar). The wordmark grew 44 → 48pt
+  and hangs so its letters (rows 154-351 of the 356px art) centre on the 40pt capsule; the top padding holds the hair.
+- Shell counters stay where shells are spent: chat and group headers, the date wallet (owner: "the user must see how
+  many are left"). The balance also lives in Profile, Store, Gifts and the paywall sheets.
+- tsc 0, npm test 478/478. Not looked at on a device yet (sent as an EAS update).
+
 ### 0z58. Onboarding: gender step, Android Back, no-photo name preview (2026-10-30, Claude 2). NEXT: the to-do list below
 
 - Gender step after the name (`src/app/onboarding.tsx`, owner approved): "As a woman / As a man / Rather not say"

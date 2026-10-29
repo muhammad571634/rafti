@@ -31,7 +31,6 @@ import {
   PressableScale,
   Screen,
   Sheet,
-  ShellIcon,
   Txt,
   UserAvatar,
   type ModuleKey,
@@ -70,13 +69,17 @@ const TILE_LABEL: Record<string, string> = {
 };
 const TILE = 52;
 const GALLERY_HEIGHT = 150;
-/** The wordmark's tallest size; on narrower phones it shrinks to what the row leaves beside the buttons. */
-const LOGO_MAX = 44;
+/** The wordmark's tallest size; on narrower phones it shrinks to what the row leaves beside your capsule. */
+const LOGO_MAX = 48;
+/** The letters of `sigmazam-logo.png` fill rows 154-351 of 356; this is their middle's height above the art's bottom. */
+const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
+/** Your capsule's height; the wordmark's letters centre on it. */
+const CAPSULE = 40;
 
 /**
  * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
  * changes throughout the day"; "choose between automatically displaying content and letting
- * people customize"): one top row with the Sigmazam wordmark, the glass wallet and your mascot
+ * people customize"): one top row with the Sigmazam wordmark and your mascot
  * with your name (six letters, the profile shows it whole), the friend you
  * talked with last, one "Waiting for you" row while chats are unread, the user's four widgets,
  * a sealed note when one is ready, then every module no widget stands in for as an app-icon
@@ -97,7 +100,6 @@ export default function HomeScreen() {
   const galleryHalf = galleryWidth ? Math.floor((galleryWidth - space.md) / 2) : undefined;
 
   const user = useAppStore((s) => s.user);
-  const wallet = useAppStore((s) => s.wallet);
   const conversations = useAppStore((s) => s.conversations);
   const messages = useAppStore((s) => s.messages);
   const characters = useAppStore((s) => s.characters);
@@ -174,7 +176,7 @@ export default function HomeScreen() {
         {/* One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max. */}
         <View style={styles.bar}>
           <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
-            <Image source={BRAND.logo} style={styles.fill} contentFit="contain" contentPosition="left" />
+            <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
           </View>
           {editing ? (
             <>
@@ -196,36 +198,21 @@ export default function HomeScreen() {
               </PressableScale>
             </>
           ) : (
-            <>
-              <PressableScale
-                scaleTo={0.92}
-                hitSlop={hitSlop}
-                accessibilityRole="button"
-                accessibilityLabel={`${wallet.shells} ${t('common.shells')}`}
-                onPress={() => router.push('/store/shell?tab=shells')}>
-                <AuroraGlass style={styles.wallet}>
-                  <ShellIcon size={18} />
-                  <Txt style={styles.walletText} maxFontSizeMultiplier={1.3}>
-                    {wallet.shells}
+            <PressableScale
+              scaleTo={0.92}
+              hitSlop={hitSlop}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
+              onPress={() => router.push('/profile')}>
+              <AuroraGlass style={styles.me}>
+                <UserAvatar user={user} size={34} />
+                {user.displayName.trim() ? (
+                  <Txt style={styles.meName} lines={1} maxFontSizeMultiplier={1.3}>
+                    {clipName(user.displayName)}
                   </Txt>
-                </AuroraGlass>
-              </PressableScale>
-              <PressableScale
-                scaleTo={0.92}
-                hitSlop={hitSlop}
-                accessibilityRole="button"
-                accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
-                onPress={() => router.push('/profile')}>
-                <AuroraGlass style={styles.me}>
-                  <UserAvatar user={user} size={34} />
-                  {user.displayName.trim() ? (
-                    <Txt style={styles.meName} lines={1} maxFontSizeMultiplier={1.3}>
-                      {clipName(user.displayName)}
-                    </Txt>
-                  ) : null}
-                </AuroraGlass>
-              </PressableScale>
-            </>
+                ) : null}
+              </AuroraGlass>
+            </PressableScale>
           )}
         </View>
 
@@ -493,21 +480,21 @@ function Slot({
 
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
-  // The top row: wordmark, wallet and your capsule, 44pt tall like an iOS bar.
+  // The top row under the Dynamic Island: wordmark on the leading edge, your capsule on the trailing one,
+  // 44pt tall like an iOS bar. The top padding is the room the mascot's hair rises into.
   bar: {
     minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
     paddingHorizontal: space.lg,
-    paddingTop: space.xs,
+    paddingTop: Math.ceil(LOGO_MAX - LOGO_BELOW_MID - 44 / 2),
   },
-  logo: { flex: 1, minWidth: 0, height: LOGO_MAX },
-  fill: { width: '100%', height: '100%' },
-  wallet: { height: 40, paddingHorizontal: 12, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  walletText: { fontSize: 15, fontWeight: '700', color: colors.text },
+  // As tall as the capsule; the wordmark hangs from it so its letters centre on the capsule.
+  logo: { flex: 1, minWidth: 0, height: CAPSULE },
+  logoArt: { position: 'absolute', left: 0, right: 0, bottom: CAPSULE / 2 - LOGO_BELOW_MID, height: LOGO_MAX },
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
-  me: { height: 40, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
+  me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
   meName: { fontSize: 15, fontWeight: '600', color: colors.text },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: colors.text },
