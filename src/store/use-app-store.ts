@@ -13,6 +13,7 @@ import { dueRing, SNOOZE_MIN } from '@/lib/alarms';
 import {
   addMinutes,
   CHAIN_LINES,
+  chipKey,
   CHIPS,
   countsAsWakeReply,
   likelyLeaveTime,
@@ -4909,14 +4910,15 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   const step = wake.step;
   if (!step) return false;
   setWake({ step: undefined });
+  const key = chipKey(text);
 
   if (step.kind === 'offerReminder') {
-    if (text === CHIPS.another || /\b(another|other|different)\b/i.test(text)) {
+    if (key === 'another' || text === CHIPS.another || /\b(another|other|different)\b/i.test(text)) {
       setWake({ step: { kind: 'pickRemind', title: step.title, time: step.time } });
       reply(CHAIN_LINES.pickRemind, [CHIPS.before30, CHIPS.before10]);
       return true;
     }
-    const yn = text.startsWith('Yes,') ? 'yes' : readYesNo(text);
+    const yn = key === 'yes' || text.startsWith('Yes,') ? 'yes' : key === 'no' ? 'no' : readYesNo(text);
     if (yn === 'yes') return savePlan(step.title, step.time, step.remind);
     if (yn === 'no') {
       reply(CHAIN_LINES.noThanks);
@@ -4928,18 +4930,18 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
 
   if (step.kind === 'pickRemind') {
     const remind =
-      text === CHIPS.before30 ? addMinutes(step.time, -30) : text === CHIPS.before10 ? addMinutes(step.time, -10) : readMorningTime(text, now);
+      key === 'before30' || text === CHIPS.before30 ? addMinutes(step.time, -30) : key === 'before10' || text === CHIPS.before10 ? addMinutes(step.time, -10) : readMorningTime(text, now);
     if (remind && remind > hmNow(now)) return savePlan(step.title, step.time, remind);
     reply(CHAIN_LINES.noTime);
     return true;
   }
 
   if (step.kind === 'askTime') {
-    if (text === CHIPS.notSure || /\b(not sure|dunno|don'?t know|idk)\b/i.test(text)) {
+    if (key === 'notSure' || text === CHIPS.notSure || /\b(not sure|dunno|don'?t know|idk)\b/i.test(text)) {
       reply(CHAIN_LINES.notSure);
       return true;
     }
-    const time = text === CHIPS.in30 ? addMinutes(hmNow(now), 30) : readMorningTime(text, now);
+    const time = key === 'in30' || text === CHIPS.in30 ? addMinutes(hmNow(now), 30) : readMorningTime(text, now);
     if (!time) {
       reply(CHAIN_LINES.noTime);
       return true;
@@ -4948,7 +4950,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   }
 
   // The sleepy branch: "Okay" keeps the 5-minute check, "10 more min" moves it.
-  const more = text === CHIPS.more || /\b10\b/.test(text);
+  const more = key === 'more' || text === CHIPS.more || /\b10\b/.test(text);
   setWake({ checkInAt: new Date(now.getTime() + (more ? 10 : SLEEPY_CHECK_MIN) * 60_000).toISOString() });
   reply(more ? CHAIN_LINES.sleepyMore : CHAIN_LINES.sleepyOk);
   return true;

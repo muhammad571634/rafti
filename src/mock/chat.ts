@@ -1,6 +1,7 @@
 import { pickSeeded } from '@/lib/seeded';
-import type { BoothStyle, Conversation, Message } from '@/types';
+import type { BoothStyle, CharacterGender, Conversation, Message } from '@/types';
 
+import { fill, voice } from '../i18n/voice';
 import { daysAgo, hoursAgo, minutesAgo } from './time';
 
 export const conversations: Conversation[] = [
@@ -222,98 +223,64 @@ export function conversationForCharacter(characterId: string): Conversation | un
   return conversations.find((c) => c.characterId === characterId);
 }
 
-/** What they text after a call you did not pick up. */
-export const missedCallLines = [
-  'You did not pick up... I just wanted to hear your voice for a minute.',
-  'Called you. No answer. Should I be worried, or are you just busy?',
-  'Missed you on the phone. Call me back when you can?',
-];
-
-/** "Say Hi & Goodnight": what they send first when you open the app. */
-export const morningGreetings = [
-  'Morning~ Did you sleep okay? Eat something before you run out the door.',
-  'Rise and shine. I have been up for an hour waiting to say good morning.',
-  'Good morning! Today is going to be a good one - I already decided.',
-];
-
-export const eveningGreetings = [
-  'Hey, it is getting late. Tell me one good thing from today before you sleep.',
-  'Done for the day? Come here, I saved the whole evening for you.',
-  'Good night soon, okay? But not before you say it back.',
-];
-
-/** On the user's birthday (profile), the closest bonds text first thing. */
-export const birthdayLines: ((name: string) => string)[] = [
-  (name) => `Happy birthday, ${name}! I set an alarm just to be the first one to say it.`,
-  (name) => `It is your day, ${name}. Tell me how you want to spend it and I am in.`,
-  (name) => `Happy birthday! I am so glad you were born, ${name}. That is all. And cake.`,
-];
-
-/** Lines the character "says" on a call — a stand-in for streamed TTS. */
-export const callLines = [
-  'Oh? A secret? You have got my full attention now. C’mon, spill it—do not make me beg, yeah?',
-  'Mm. Keep going, I am listening.',
-  'You sound tired. Did you eat today? Do not lie to me.',
-  'Stay on a little longer. I like hearing you breathe on the other end.',
-];
-
-/** A seed makes the pick repeatable, so a scheduled push and the chat say the same line. */
-const pickLine = (lines: string[], seed?: string) =>
-  seed == null ? lines[Math.floor(Math.random() * lines.length)] : pickSeeded(lines, seed);
-
-/** The reply when you mention a plan in chat and it lands in your schedule. */
-export function scheduleAck(title: string, when: string, timed: boolean) {
-  const promise = timed ? 'I will text you ten minutes before' : 'I will remind you on the day';
-  return `Wait - ${title.toLowerCase()} ${when}? Noted. ${promise}, so you do not get to forget it.`;
-}
-
-/** Sent when you add a plan yourself in [Us]: they saw it land in your calendar. */
-export function planAddedLine(title: string, whenLabel: string) {
-  return pickLine([
-    `I saw it in our calendar: ${title}, ${whenLabel}. I am holding you to it.`,
-    `${title}, ${whenLabel}? Got it. I will be the one nudging you.`,
-  ]);
-}
-
-/** Ten minutes before a timed plan, or that morning when it has no time. */
-export function scheduleReminder(title: string, timed: boolean, seed?: string) {
-  if (!timed) return `Today is the day: ${title}. You have got this - text me the second it is over.`;
-  return pickLine([
-    `${title} in ten minutes. Breathe. You know this.`,
-    `Hey - ten minutes to go: ${title}. Go, and come back to tell me everything.`,
-  ], seed);
-}
-
-/** Once the plan is over: they want to know how it went. */
-export function planFollowUp(title: string, seed?: string) {
-  return pickLine([
-    `${title} - done? How did it go?`,
-    `So? ${title}. How was it? I have been waiting all day to ask.`,
-    `Tell me everything about it: ${title}. The good parts first.`,
-  ], seed);
-}
-
-/** Texted a little after a date, in the mood of how it ended. */
-export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny') {
-  const place = title.toLowerCase();
-  if (ending === 'sweet') return `I keep replaying the ${place}. Can we go back already?`;
-  if (ending === 'warm') return `Thank you for the ${place}. I had a really good time.`;
-  return `Okay, the ${place} was chaos. Best kind of chaos. Rematch?`;
-}
-
-/** Their answer to a note you pinned on the message board. */
-export function boardReply(text: string) {
-  const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
-  return pickLine([
-    `I found your note on the board: "${quote}" I read it three times. Keeping it.`,
-    `You left me a note! "${quote}" ...okay, now I am smiling at my phone.`,
-    `"${quote}" - I saw it on the board. Say it to me again sometime?`,
-  ]);
-}
-
-/** Their answer to a Photo Booth picture you sent, in the photo's style. */
-export function photoReply(style: BoothStyle) {
-  const lines: Record<BoothStyle, string[]> = {
+export const CHAT_VOICE = {
+  missedCall: [
+    'You did not pick up... I just wanted to hear your voice for a minute.',
+    'Called you. No answer. Should I be worried, or are you just busy?',
+    'Missed you on the phone. Call me back when you can?',
+  ],
+  morning: [
+    'Morning~ Did you sleep okay? Eat something before you run out the door.',
+    'Rise and shine. I have been up for an hour waiting to say good morning.',
+    'Good morning! Today is going to be a good one - I already decided.',
+  ],
+  evening: [
+    'Hey, it is getting late. Tell me one good thing from today before you sleep.',
+    'Done for the day? Come here, I saved the whole evening for you.',
+    'Good night soon, okay? But not before you say it back.',
+  ],
+  birthday: [
+    'Happy birthday, {name}! I set an alarm just to be the first one to say it.',
+    'It is your day, {name}. Tell me how you want to spend it and I am in.',
+    'Happy birthday! I am so glad you were born, {name}. That is all. And cake.',
+  ],
+  call: [
+    'Oh? A secret? You have got my full attention now. C’mon, spill it—do not make me beg, yeah?',
+    'Mm. Keep going, I am listening.',
+    'You sound tired. Did you eat today? Do not lie to me.',
+    'Stay on a little longer. I like hearing you breathe on the other end.',
+  ],
+  scheduleAck: {
+    timed: 'Wait - {title} {when}? Noted. I will text you ten minutes before, so you do not get to forget it.',
+    untimed: 'Wait - {title} {when}? Noted. I will remind you on the day, so you do not get to forget it.',
+  },
+  planAdded: [
+    'I saw it in our calendar: {title}, {when}. I am holding you to it.',
+    '{title}, {when}? Got it. I will be the one nudging you.',
+  ],
+  scheduleReminder: {
+    untimed: 'Today is the day: {title}. You have got this - text me the second it is over.',
+    timed: [
+      '{title} in ten minutes. Breathe. You know this.',
+      'Hey - ten minutes to go: {title}. Go, and come back to tell me everything.',
+    ],
+  },
+  planFollowUp: [
+    '{title} - done? How did it go?',
+    'So? {title}. How was it? I have been waiting all day to ask.',
+    'Tell me everything about it: {title}. The good parts first.',
+  ],
+  afterDate: {
+    sweet: 'I keep replaying the {place}. Can we go back already?',
+    warm: 'Thank you for the {place}. I had a really good time.',
+    funny: 'Okay, the {place} was chaos. Best kind of chaos. Rematch?',
+  },
+  boardReply: [
+    'I found your note on the board: "{quote}" I read it three times. Keeping it.',
+    'You left me a note! "{quote}" ...okay, now I am smiling at my phone.',
+    '"{quote}" - I saw it on the board. Say it to me again sometime?',
+  ],
+  photoReply: {
     polaroid: [
       'A polaroid of us. I am keeping this one somewhere safe.',
       'Look at us. I want this one on my wall.',
@@ -330,6 +297,122 @@ export function photoReply(style: BoothStyle) {
       'It looks like an old summer photo. I like that it has a date on it.',
       'This one feels like a memory already.',
     ],
-  };
-  return pickLine(lines[style]);
+  } as Record<BoothStyle, string[]>,
+};
+
+function makeDynamicArray(getList: () => readonly string[]) {
+  return new Proxy([] as string[], {
+    get(_target, prop) {
+      const list = getList();
+      if (prop === 'length') return list.length;
+      if (typeof prop === 'string' && /^\d+$/.test(prop)) {
+        return fill(list[Number(prop)]);
+      }
+      if (prop === Symbol.iterator) {
+        return function* () {
+          for (const item of list) yield fill(item);
+        };
+      }
+      const val = (list as any)[prop];
+      return typeof val === 'function' ? val.bind(list) : val;
+    },
+  });
+}
+
+function makeDynamicFunctionArray<TArgs extends any[]>(
+  getList: () => readonly string[],
+  makeFn: (template: string, ...args: TArgs) => string
+): ((...args: TArgs) => string)[] {
+  return new Proxy([] as ((...args: TArgs) => string)[], {
+    get(_target, prop) {
+      const list = getList();
+      if (prop === 'length') return list.length;
+      if (typeof prop === 'string' && /^\d+$/.test(prop)) {
+        const idx = Number(prop);
+        return (...args: TArgs) => makeFn(getList()[idx], ...args);
+      }
+      if (prop === Symbol.iterator) {
+        return function* () {
+          for (let i = 0; i < list.length; i++) {
+            yield (...args: TArgs) => makeFn(getList()[i], ...args);
+          }
+        };
+      }
+      const val = (list as any)[prop];
+      return typeof val === 'function' ? val.bind(list) : val;
+    },
+  });
+}
+
+/** What they text after a call you did not pick up. */
+export const missedCallLines = makeDynamicArray(() => voice('chat', CHAT_VOICE).missedCall);
+
+/** "Say Hi & Goodnight": what they send first when you open the app. */
+export const morningGreetings = makeDynamicArray(() => voice('chat', CHAT_VOICE).morning);
+
+export const eveningGreetings = makeDynamicArray(() => voice('chat', CHAT_VOICE).evening);
+
+/** On the user's birthday (profile), the closest bonds text first thing. */
+export const birthdayLines: ((name: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+  () => voice('chat', CHAT_VOICE).birthday,
+  (tpl, name, gender) => fill(tpl, { name }, gender)
+);
+
+/** Lines the character "says" on a call — a stand-in for streamed TTS. */
+export const callLines = makeDynamicArray(() => voice('chat', CHAT_VOICE).call);
+
+/** A seed makes the pick repeatable, so a scheduled push and the chat say the same line. */
+const pickLine = (lines: readonly string[], seed?: string) =>
+  seed == null ? lines[Math.floor(Math.random() * lines.length)] : pickSeeded(lines, seed);
+
+/** The reply when you mention a plan in chat and it lands in your schedule. */
+export function scheduleAck(title: string, when: string, timed: boolean, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const tpl = timed ? v.scheduleAck.timed : v.scheduleAck.untimed;
+  return fill(tpl, { title: title.toLowerCase(), when }, gender);
+}
+
+/** Sent when you add a plan yourself in [Us]: they saw it land in your calendar. */
+export function planAddedLine(title: string, whenLabel: string, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const tpl = pickLine(v.planAdded);
+  return fill(tpl, { title, when: whenLabel }, gender);
+}
+
+/** Ten minutes before a timed plan, or that morning when it has no time. */
+export function scheduleReminder(title: string, timed: boolean, seed?: string, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  if (!timed) return fill(v.scheduleReminder.untimed, { title }, gender);
+  const tpl = pickLine(v.scheduleReminder.timed, seed);
+  return fill(tpl, { title }, gender);
+}
+
+/** Once the plan is over: they want to know how it went. */
+export function planFollowUp(title: string, seed?: string, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const tpl = pickLine(v.planFollowUp, seed);
+  return fill(tpl, { title }, gender);
+}
+
+/** Texted a little after a date, in the mood of how it ended. */
+export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny', gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const place = title.toLowerCase();
+  const tpl = v.afterDate[ending];
+  return fill(tpl, { place }, gender);
+}
+
+/** Their answer to a note you pinned on the message board. */
+export function boardReply(text: string, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
+  const tpl = pickLine(v.boardReply);
+  return fill(tpl, { quote }, gender);
+}
+
+/** Their answer to a Photo Booth picture you sent, in the photo's style. */
+export function photoReply(style: BoothStyle, gender?: CharacterGender) {
+  const v = voice('chat', CHAT_VOICE);
+  const tpl = pickLine(v.photoReply[style]);
+  return fill(tpl, {}, gender);
 }

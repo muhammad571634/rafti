@@ -16,6 +16,24 @@ import { radioGifts } from '@/mock/radio';
 import { officialScenes } from '@/mock/scenes';
 import { WORLDS } from '@/mock/worlds';
 
+import { BRIEF_VOICE } from '@/mock/brief';
+import { CARE_VOICE } from '@/mock/care';
+import { CHAT_VOICE } from '@/mock/chat';
+import { DRAFTS_VOICE } from '@/mock/character-drafts';
+import { DAY_ASK_VOICE } from '@/mock/day-ask';
+import { DIARY_VOICE } from '@/mock/diary-writer';
+import { GROUP_VOICE } from '@/mock/group';
+import { KIN_VOICE } from '@/mock/kin';
+import { MORNING_VOICE } from '@/lib/morning-chain';
+import { PUSH_VOICE } from '@/mock/push';
+import { IDEAS_VOICE } from '@/mock/reply-ideas';
+import { REPLY_VOICE } from '@/mock/reply-writer';
+import { STEER_VOICE } from '@/mock/steer';
+import { STREAMS_VOICE } from '@/mock/streams';
+import { TEMPER_VOICE } from '@/mock/temper';
+import { THREADS_VOICE } from '@/mock/threads';
+import { WEEK_VOICE } from '@/mock/week';
+
 function cleanStr(val: unknown): string | undefined {
   if (typeof val === 'string' && val.trim().length > 0) {
     return val;
@@ -240,6 +258,25 @@ const content = {
   diaryPages: diaryPagesSection,
   diaryEntries: diaryEntriesSection,
   secretNotes: secretNotesSection,
+  voice: {
+    reply: REPLY_VOICE,
+    chat: CHAT_VOICE,
+    group: GROUP_VOICE,
+    temper: TEMPER_VOICE,
+    push: PUSH_VOICE,
+    threads: THREADS_VOICE,
+    kin: KIN_VOICE,
+    care: CARE_VOICE,
+    brief: BRIEF_VOICE,
+    week: WEEK_VOICE,
+    dayAsk: DAY_ASK_VOICE,
+    steer: STEER_VOICE,
+    streams: STREAMS_VOICE,
+    diary: DIARY_VOICE,
+    ideas: IDEAS_VOICE,
+    drafts: DRAFTS_VOICE,
+    morning: MORNING_VOICE,
+  },
 };
 
 const outDir = join(process.cwd(), 'src', 'i18n', 'content');

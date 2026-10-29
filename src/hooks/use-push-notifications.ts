@@ -3,6 +3,8 @@ import { useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
+import i18n from '@/i18n';
+
 import { syncAlarms } from '@/notifications/alarms';
 import { nextPushLog, sentToday } from '@/notifications/budget';
 import { notificationsModule } from '@/notifications/native';
@@ -91,11 +93,20 @@ export function usePushNotifications() {
     const alarmsChanged = useAppStore.subscribe((next, prev) => {
       if (next.alarms !== prev.alarms || next.wake !== prev.wake) void syncAlarms(next.alarms, next.characters, next.wake);
     });
+    const onLanguage = async () => {
+      const store = useAppStore.getState();
+      await syncAlarms(store.alarms, store.characters, store.wake);
+      const now = new Date();
+      const plan = await syncPushes(store, now);
+      if (plan) store.setPushLog(nextPushLog(store.daily.pushLog, plan.filter(counts), now));
+    };
+    i18n.on?.('languageChanged', onLanguage);
     const state = AppState.addEventListener('change', (next) => {
       if (next === 'active') void comeBack();
       else if (next === 'background') void leave();
     });
     return () => {
+      i18n.off?.('languageChanged', onLanguage);
       alarmsChanged();
       tapped.remove();
       state.remove();

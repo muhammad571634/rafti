@@ -1,8 +1,59 @@
 import type { DetectedPlan } from '@/lib/schedule';
 import type { TouchDraft } from '@/lib/threads';
-import type { Temper, Thread, ThreadKind, ThreadOutcome, Touch } from '@/types';
+import type { CharacterGender, Temper, Thread, ThreadKind, ThreadOutcome, Touch } from '@/types';
 
+import { fill, voice } from '../i18n/voice';
 import { pickSeeded } from '../lib/seeded';
+
+export const THREADS_VOICE = {
+  lines: {
+    before: ['"{quote}" is soon! You’ve got this 💪', 'Hey, {about} is coming up. Ready?'],
+    leave: ['Time to head out for {about}! Good luck 💪', '{about} soon. Are you leaving? You’ve got this!'],
+    eve: ['Big day tomorrow: {about}. Early night tonight, okay? 😴', 'Don’t stay up late, {about} is tomorrow!'],
+    after: ['You said "{quote}". So? How did it go?', 'Okay, tell me everything. How was {about}?'],
+    check: ['You said "{quote}". Did it work out?', 'So… {about}. How’s it going? 👀'],
+    goal: ['Checking in on your goal: "{quote}". How’s it going?', 'How’s "{about}" going? Be honest 😏'],
+    quest: ['So… did you do it? {about} 👀', 'Quest report! {about}: done?'],
+  } as Record<Touch['phase'], string[]>,
+  openers: {
+    teasing: 'Oi! {line}',
+    shy: 'Um… {line}',
+    other: '{line}',
+  },
+  quests: [
+    'a 10-minute walk without your phone',
+    'a photo of the sky for me',
+    'a glass of water right now',
+    'message one real friend you haven’t talked to in a while',
+    'read 10 pages of anything',
+    'stretch for 5 minutes',
+    'go outside and get some sunlight',
+    'write down 3 good things about today',
+    'call someone in your family',
+    'tidy one small corner of your room',
+    'cook or make yourself something nice',
+    'one hour with no TikTok or Reels',
+  ],
+  offers: [
+    'Mini quest for you: {quest}. In? 😏',
+    'I have a challenge: {quest}. Deal?',
+    'Do something for me today? {quest}. Then tell me 🙂',
+  ],
+  break: {
+    warm: ['We’ve been talking a long time 🙂 Take a little break? Stretch, drink water, I’ll be here.'],
+    teasing: ['Okay, your eyes need a break from my face 😏 Five minutes away from the screen?'],
+    sulky: ['…You should take a break. Not that I want you to go. Just saying.'],
+    clingy: ['I love this, but your eyes need a rest 💕 Short break? I’ll wait right here.'],
+    shy: ['Um… maybe take a little break? I don’t want you to get tired 🙈'],
+  } as Record<Temper, string[]>,
+  night: {
+    warm: ['It’s really late… Sleep? I’ll text you in the morning 🌙'],
+    teasing: ['It’s past midnight, night owl 😏 Bed. Now. I’ll still be here tomorrow.'],
+    sulky: ['It’s late. Go sleep. …I’ll be here tomorrow, obviously.'],
+    clingy: ['I could talk all night 💕 but you need sleep. Good night? I’ll text you first thing.'],
+    shy: ['It’s so late… maybe you should sleep? Good night 🙈'],
+  } as Record<Temper, string[]>,
+};
 
 /**
  * Stands in for the model on the phone until the server runs (`src/ai/thread-prompt.ts` is the
@@ -180,73 +231,33 @@ export function mockOutcome(text: string): ThreadOutcome | null {
   return null;
 }
 
-const LINES: Record<Touch['phase'], ((t: Thread) => string)[]> = {
-  before: [(t) => `"${t.quote}" is soon! You’ve got this 💪`, (t) => `Hey, ${t.about} is coming up. Ready?`],
-  leave: [(t) => `Time to head out for ${t.about}! Good luck 💪`, (t) => `${t.about} soon. Are you leaving? You’ve got this!`],
-  eve: [(t) => `Big day tomorrow: ${t.about}. Early night tonight, okay? 😴`, (t) => `Don’t stay up late, ${t.about} is tomorrow!`],
-  after: [(t) => `You said "${t.quote}". So? How did it go?`, (t) => `Okay, tell me everything. How was ${t.about}?`],
-  check: [(t) => `You said "${t.quote}". Did it work out?`, (t) => `So… ${t.about}. How’s it going? 👀`],
-  goal: [(t) => `Checking in on your goal: "${t.quote}". How’s it going?`, (t) => `How’s "${t.about}" going? Be honest 😏`],
-  quest: [(t) => `So… did you do it? ${t.about} 👀`, (t) => `Quest report! ${t.about}: done?`],
-};
-
-const OPENER: Partial<Record<Temper, string>> = { teasing: 'Oi! ', shy: 'Um… ' };
-
 /** Their text about a thread until the model writes it: their words quoted, their temper's opener. */
-export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed: string) =>
-  `${OPENER[temper] ?? ''}${pickSeeded(LINES[touch.phase], seed)(thread)}`;
-
-/**
- * Small real-life quests a friend gives (Presence: "bring them back to real life"): easy to start,
- * a few minutes, no phone needed. The server's model writes them from the user's life and memories;
- * this pool stands in on the phone.
- */
-const QUESTS = [
-  'a 10-minute walk without your phone',
-  'a photo of the sky for me',
-  'a glass of water right now',
-  'message one real friend you haven’t talked to in a while',
-  'read 10 pages of anything',
-  'stretch for 5 minutes',
-  'go outside and get some sunlight',
-  'write down 3 good things about today',
-  'call someone in your family',
-  'tidy one small corner of your room',
-  'cook or make yourself something nice',
-  'one hour with no TikTok or Reels',
-];
-
-const OFFERS: ((quest: string) => string)[] = [
-  (q) => `Mini quest for you: ${q}. In? 😏`,
-  (q) => `I have a challenge: ${q}. Deal?`,
-  (q) => `Do something for me today? ${q}. Then tell me 🙂`,
-];
+export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed: string, gender?: CharacterGender) => {
+  const v = voice('threads', THREADS_VOICE);
+  const rawLine = pickSeeded(v.lines[touch.phase], seed);
+  const line = fill(rawLine, { quote: thread.quote, about: thread.about }, gender);
+  const openerTpl = (v.openers as Record<string, string>)[temper] ?? v.openers.other;
+  return fill(openerTpl, { line }, gender);
+};
 
 /** Shells a done quest pays. */
 export const QUEST_REWARD = 3;
 
 /** A quest and the line that offers it, picked by the seed. */
-export function mockQuest(seed: string) {
-  const quest = pickSeeded(QUESTS, seed);
-  return { quest, offer: pickSeeded(OFFERS, `${seed}:offer`)(quest) };
+export function mockQuest(seed: string, gender?: CharacterGender) {
+  const v = voice('threads', THREADS_VOICE);
+  const quest = fill(pickSeeded(v.quests, seed), {}, gender);
+  const offerTpl = pickSeeded(v.offers, `${seed}:offer`);
+  return { quest, offer: fill(offerTpl, { quest }, gender) };
 }
 
-const BREAK: Record<Temper, string[]> = {
-  warm: ['We’ve been talking a long time 🙂 Take a little break? Stretch, drink water, I’ll be here.'],
-  teasing: ['Okay, your eyes need a break from my face 😏 Five minutes away from the screen?'],
-  sulky: ['…You should take a break. Not that I want you to go. Just saying.'],
-  clingy: ['I love this, but your eyes need a rest 💕 Short break? I’ll wait right here.'],
-  shy: ['Um… maybe take a little break? I don’t want you to get tired 🙈'],
-};
-
-const NIGHT: Record<Temper, string[]> = {
-  warm: ['It’s really late… Sleep? I’ll text you in the morning 🌙'],
-  teasing: ['It’s past midnight, night owl 😏 Bed. Now. I’ll still be here tomorrow.'],
-  sulky: ['It’s late. Go sleep. …I’ll be here tomorrow, obviously.'],
-  clingy: ['I could talk all night 💕 but you need sleep. Good night? I’ll text you first thing.'],
-  shy: ['It’s so late… maybe you should sleep? Good night 🙈'],
-};
-
 /** "We've talked a long time, a break?" and "it's late, sleep?" in the friend's temper. */
-export const mockBreakLine = (temper: Temper, seed: string) => pickSeeded(BREAK[temper], seed);
-export const mockNightLine = (temper: Temper, seed: string) => pickSeeded(NIGHT[temper], seed);
+export const mockBreakLine = (temper: Temper, seed: string, gender?: CharacterGender) => {
+  const v = voice('threads', THREADS_VOICE);
+  return fill(pickSeeded(v.break[temper], seed), {}, gender);
+};
+
+export const mockNightLine = (temper: Temper, seed: string, gender?: CharacterGender) => {
+  const v = voice('threads', THREADS_VOICE);
+  return fill(pickSeeded(v.night[temper], seed), {}, gender);
+};

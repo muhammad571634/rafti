@@ -47,7 +47,9 @@ const placeholderRegex = /\{+[^{}]+\}+/g;
 const emojiRegex = /[\p{Extended_Pictographic}\uFE0F]/gu;
 
 function extractPlaceholders(str) {
-  const m = str.match(placeholderRegex);
+  // Strip valid {g:female|male} tokens before extracting placeholders
+  const stripped = str.replace(/\{g:[^|}]*\|[^}]*\}/g, '');
+  const m = stripped.match(placeholderRegex);
   return m ? m.sort() : [];
 }
 
@@ -87,6 +89,15 @@ for (const file of filesToCheck) {
       }
       if (localNode === enNode) {
         identicalStrings++;
+      }
+
+      // Check {g:...} token validity
+      if (localNode.includes('{g:')) {
+        const opens = (localNode.match(/\{g:/g) || []).length;
+        const valid = (localNode.match(/\{g:[^|}]*\|[^}]*\}/g) || []).length;
+        if (opens !== valid) {
+          errors.push(`${currentPath}: malformed {g:...} token (must be {g:female|male})`);
+        }
       }
 
       // Check placeholders
@@ -146,7 +157,11 @@ for (const file of filesToCheck) {
       const missing = enKeys.filter((k) => !(k in localNode));
       const extra = localKeys.filter((k) => !(k in enNode));
 
-      if (missing.length > 0) {
+      if (currentPath === '') {
+        for (const k of missing) {
+          console.warn(`[WARN] ${locale}: section '${k}' not translated yet.`);
+        }
+      } else if (missing.length > 0) {
         errors.push(`${currentPath}: missing keys: ${missing.slice(0, 10).join(', ')}${missing.length > 10 ? '...' : ''}`);
       }
       if (extra.length > 0) {

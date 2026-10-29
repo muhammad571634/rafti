@@ -186,5 +186,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 3 (th) | done | Thai content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (ru) | done | Russian content translation generated (1973 strings), checked and registered | — |
 | F30 Content translation: Phase 3 (tr) | done | Turkish content translation generated (1973 strings), checked and registered — all 13 languages complete! | — |
+| F30 Content translation: Phase 4a | done | Mock voice machinery: voice, fill, templates across 17 mock files, voice in en.json, chipKey mapping, push re-sync on language change | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

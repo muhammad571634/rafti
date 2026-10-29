@@ -1,3 +1,7 @@
+import type { CharacterGender } from '@/types';
+
+import { fill, voice } from '../i18n/voice';
+
 /**
  * The morning chain after a wake-up alarm (approved prototype
  * https://claude.ai/artifact/YKTHLBfcC9sTHnK6CoR8UC): a real reply turns the alarm off, then the
@@ -163,50 +167,164 @@ export function readYesNo(text: string): 'yes' | 'no' | null {
 
 const pick = <T,>(list: readonly T[], seed: number) => list[Math.abs(seed) % list.length];
 
+export const MORNING_VOICE = {
+  questions: [
+    "Morning, sleepyhead ☀️ Big day? What's the first thing on it?",
+    "Good morning ☀️ What's first today?",
+    'Rise and shine 🌤️ Tell me one thing you have to do today.',
+    "Morning! I'm up. Are you? What's the plan today?",
+  ],
+  questionWithTimedPlan: "{title} at {time} today. Ready? What's first?",
+  questionWithPlan: "{title} today! What's the first thing you'll do?",
+  lines: {
+    offer: "{time}, got it. Want me to text you at {remind} so you're out the door on time?",
+    tooLate: "{time}?? Then you'd better hurry 🏃 Tell me how it goes.",
+    saved: "Done 🧡 I'll ping you at {remind}. Go eat something.",
+    pickRemind: 'When should I text you?',
+    noThanks: 'Okay! Have a good one, tell me how it goes tonight 🧡',
+    askTimeGym: 'Gym first?? Proud of you 💪 What time are you heading out?',
+    askTime: '{activity} today, nice. What time are you heading out?',
+    notSure: "No rush. Tell me when you're off and I'll cheer you on 🧡",
+    noTime: 'Got it! Have a great day, tell me everything tonight 🧡',
+    sleepy: "I know 🥺 Sit up for me. Splash some cold water and I'll check on you in 5 minutes.",
+    sleepyOk: "Good. 5 minutes, I'm counting ⏱️",
+    sleepyMore: 'Fine… 10 minutes. Not one more 😤',
+    checkIn: 'Up yet? 👀 Tell me one thing you did.',
+    other: 'Love that. Have a good day and tell me how it goes tonight 🧡',
+  },
+  chips: {
+    yes: 'Yes, {remind}',
+    another: 'Another time',
+    no: 'No thanks',
+    in30: 'In 30 min',
+    notSure: 'Not sure',
+    okay: 'Okay',
+    more: '10 more min',
+    before30: '30 min before',
+    before10: '10 min before',
+  },
+  activities: {
+    Work: 'Work',
+    Shift: 'Shift',
+    Class: 'Class',
+    Gym: 'Gym',
+    Exam: 'Exam',
+    Meeting: 'Meeting',
+    Interview: 'Interview',
+    Flight: 'Flight',
+    Train: 'Train',
+    Appointment: 'Appointment',
+  } as Record<string, string>,
+};
+
 /** The question on the ringing screen and in the wake-up voice note. */
-export function wakeQuestion(seed: number, todayPlan?: { title: string; time?: string }) {
+export function wakeQuestion(seed: number, todayPlan?: { title: string; time?: string }, gender?: CharacterGender) {
+  const v = voice('morning', MORNING_VOICE);
   if (todayPlan) {
     return todayPlan.time
-      ? `${todayPlan.title} at ${sayTime(todayPlan.time)} today. Ready? What's first?`
-      : `${todayPlan.title} today! What's the first thing you'll do?`;
+      ? fill(v.questionWithTimedPlan, { title: todayPlan.title, time: sayTime(todayPlan.time) }, gender)
+      : fill(v.questionWithPlan, { title: todayPlan.title }, gender);
   }
-  return pick(
-    [
-      "Morning, sleepyhead ☀️ Big day? What's the first thing on it?",
-      "Good morning ☀️ What's first today?",
-      'Rise and shine 🌤️ Tell me one thing you have to do today.',
-      "Morning! I'm up. Are you? What's the plan today?",
-    ],
-    seed,
-  );
+  return fill(pick(v.questions, seed), {}, gender);
 }
 
 export const CHAIN_LINES = {
-  offer: (time: string, remind: string) =>
-    `${sayTime(time)}, got it. Want me to text you at ${sayTime(remind)} so you're out the door on time?`,
-  tooLate: (time: string) => `${sayTime(time)}?? Then you'd better hurry 🏃 Tell me how it goes.`,
-  saved: (remind: string) => `Done 🧡 I'll ping you at ${sayTime(remind)}. Go eat something.`,
-  pickRemind: 'When should I text you?',
-  noThanks: 'Okay! Have a good one, tell me how it goes tonight 🧡',
-  askTime: (activity: string) =>
-    `${activity === 'Gym' ? 'Gym first?? Proud of you 💪' : `${activity} today, nice.`} What time are you heading out?`,
-  notSure: "No rush. Tell me when you're off and I'll cheer you on 🧡",
-  noTime: 'Got it! Have a great day, tell me everything tonight 🧡',
-  sleepy: "I know 🥺 Sit up for me. Splash some cold water and I'll check on you in 5 minutes.",
-  sleepyOk: "Good. 5 minutes, I'm counting ⏱️",
-  sleepyMore: 'Fine… 10 minutes. Not one more 😤',
-  checkIn: 'Up yet? 👀 Tell me one thing you did.',
-  other: 'Love that. Have a good day and tell me how it goes tonight 🧡',
-} as const;
+  offer: (time: string, remind: string, gender?: CharacterGender) => {
+    const v = voice('morning', MORNING_VOICE);
+    return fill(v.lines.offer, { time: sayTime(time), remind: sayTime(remind) }, gender);
+  },
+  tooLate: (time: string, gender?: CharacterGender) => {
+    const v = voice('morning', MORNING_VOICE);
+    return fill(v.lines.tooLate, { time: sayTime(time) }, gender);
+  },
+  saved: (remind: string, gender?: CharacterGender) => {
+    const v = voice('morning', MORNING_VOICE);
+    return fill(v.lines.saved, { remind: sayTime(remind) }, gender);
+  },
+  get pickRemind() {
+    return fill(voice('morning', MORNING_VOICE).lines.pickRemind);
+  },
+  get noThanks() {
+    return fill(voice('morning', MORNING_VOICE).lines.noThanks);
+  },
+  askTime: (activity: string, gender?: CharacterGender) => {
+    const v = voice('morning', MORNING_VOICE);
+    if (activity === 'Gym') return fill(v.lines.askTimeGym, {}, gender);
+    const label = v.activities[activity] ?? activity;
+    return fill(v.lines.askTime, { activity: label }, gender);
+  },
+  get notSure() {
+    return fill(voice('morning', MORNING_VOICE).lines.notSure);
+  },
+  get noTime() {
+    return fill(voice('morning', MORNING_VOICE).lines.noTime);
+  },
+  get sleepy() {
+    return fill(voice('morning', MORNING_VOICE).lines.sleepy);
+  },
+  get sleepyOk() {
+    return fill(voice('morning', MORNING_VOICE).lines.sleepyOk);
+  },
+  get sleepyMore() {
+    return fill(voice('morning', MORNING_VOICE).lines.sleepyMore);
+  },
+  get checkIn() {
+    return fill(voice('morning', MORNING_VOICE).lines.checkIn);
+  },
+  get other() {
+    return fill(voice('morning', MORNING_VOICE).lines.other);
+  },
+};
 
 export const CHIPS = {
-  yes: (remind: string) => `Yes, ${sayTime(remind)}`,
-  another: 'Another time',
-  no: 'No thanks',
-  in30: 'In 30 min',
-  notSure: 'Not sure',
-  okay: 'Okay',
-  more: '10 more min',
-  before30: '30 min before',
-  before10: '10 min before',
-} as const;
+  yes: (remind: string, gender?: CharacterGender) => {
+    const v = voice('morning', MORNING_VOICE);
+    return fill(v.chips.yes, { remind: sayTime(remind) }, gender);
+  },
+  get another() {
+    return fill(voice('morning', MORNING_VOICE).chips.another);
+  },
+  get no() {
+    return fill(voice('morning', MORNING_VOICE).chips.no);
+  },
+  get in30() {
+    return fill(voice('morning', MORNING_VOICE).chips.in30);
+  },
+  get notSure() {
+    return fill(voice('morning', MORNING_VOICE).chips.notSure);
+  },
+  get okay() {
+    return fill(voice('morning', MORNING_VOICE).chips.okay);
+  },
+  get more() {
+    return fill(voice('morning', MORNING_VOICE).chips.more);
+  },
+  get before30() {
+    return fill(voice('morning', MORNING_VOICE).chips.before30);
+  },
+  get before10() {
+    return fill(voice('morning', MORNING_VOICE).chips.before10);
+  },
+};
+
+export function chipKey(text: string): string | null {
+  const v = voice('morning', MORNING_VOICE);
+  const trimmed = text.trim();
+  const staticKeys = [
+    'another',
+    'no',
+    'in30',
+    'notSure',
+    'okay',
+    'more',
+    'before30',
+    'before10',
+  ] as const;
+  for (const k of staticKeys) {
+    if (trimmed === v.chips[k] || trimmed === MORNING_VOICE.chips[k]) return k;
+  }
+  const enYesPrefix = MORNING_VOICE.chips.yes.split('{')[0].trim();
+  const locYesPrefix = v.chips.yes.split('{')[0].trim();
+  if (trimmed.startsWith(enYesPrefix) || trimmed.startsWith(locYesPrefix)) return 'yes';
+  return null;
+}

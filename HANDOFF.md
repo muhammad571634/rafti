@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+
+### 0z40. Translate content: Phase 4a complete — mock voice templates & machinery (2026-10-29). NEXT: Phase 4b (translate 13 languages one by one, starting with es)
+
+- Converted all 17 mock files into plain templates (~800 strings in voice section):
+  - `src/mock/reply-writer.ts`, `chat.ts`, `group.ts`, `temper.ts`, `push.ts`, `threads.ts`, `kin.ts`, `care.ts`, `brief.ts`, `week.ts`, `day-ask.ts`, `steer.ts`, `streams.ts`, `diary-writer.ts`, `reply-ideas.ts`, `character-drafts.ts`, `src/lib/morning-chain.ts`.
+- Pure lookup module `src/i18n/voice.ts` implemented with `voice`, `fill` (supporting named values `{name}` and gender forms `{g:female|male}`), and `phrase`. Unit tests in `src/i18n/voice.test.ts`.
+- Integrated `setVoiceSource` in `src/i18n/content.ts` with cache invalidation on language change.
+- `scripts/content-extract.ts` updated to extract all 17 mock pools into top-level `voice` section of `en.json`.
+- `scripts/check-content.mjs` enhanced to handle `{g:female|male}` syntax and allow missing `voice` sections for in-progress languages.
+- Chip mapping implemented with `chipKey(text)` in `src/lib/morning-chain.ts` and wired into `use-app-store.ts` for localized chip comparisons.
+- Push and alarm notifications re-sync on `languageChanged` in `usePushNotifications.ts`.
+- Checked: `npx tsc --noEmit` (0 errors), `npm test` (463/463 pass), `npm run check:locales` (all pass), `npm run check:content`.
+
 ### 0z39. Chats previews and group lines in the screen language; launch fix checked on the A51 (2026-10-29). NEXT: walk the remaining screens on the A51
 
 - **NEXT (owner, 2026-10-29): walk the remaining screens on the phone first** and fix P1/P2 layout

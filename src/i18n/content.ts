@@ -14,7 +14,9 @@ import th from './content/th.json';
 import tr from './content/tr.json';
 import vi from './content/vi.json';
 import zhHant from './content/zh-Hant.json';
+import { phrase } from './index';
 import { overlay } from './overlay';
+import { setPhraseSource, setVoiceSource } from './voice';
 
 export { overlay };
 
@@ -44,6 +46,15 @@ const cache = new Map<string, unknown>();
 i18n.on?.('languageChanged', () => {
   cache.clear();
 });
+
+setVoiceSource((section, en) => {
+  const lang = i18n.language || 'en';
+  const key = `${lang}:voice:${section}`;
+  if (!cache.has(key)) cache.set(key, overlay(en, (CONTENT[lang]?.voice as Record<string, unknown> | undefined)?.[section]));
+  return cache.get(key) as typeof en;
+});
+
+setPhraseSource(phrase);
 
 /** A content section in the screen language, e.g. `localized('datePlaces', DATE_PLACES)`; same object while the language stays. */
 export function localized<T>(section: string, enVal: T): T {
