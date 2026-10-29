@@ -461,6 +461,7 @@
       "thumbs": "палец вверх"
     },
     "aiCharacter": "ИИ-персонаж",
+    "share": "Поделиться",
     "streakShort_one": "{{count}} день",
     "streakShort_other": "{{count}} дней",
     "aiNotice": "{{name}} — ИИ-персонаж, а не реальный человек.",

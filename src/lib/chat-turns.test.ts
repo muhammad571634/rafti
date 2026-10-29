@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Message } from '@/types';
 
-import { canRewindTo, lastExchange, laterCount } from './chat-turns';
+import { canRewindTo, lastExchange, laterCount, shareQuote } from './chat-turns';
 
 const at = '2026-10-24T20:00:00.000Z';
 const me = (id: string, text = 'hi'): Message => ({ id, conversationId: 'c', author: 'me', kind: 'text', text, createdAt: at });
@@ -57,5 +57,34 @@ describe('laterCount', () => {
     assert.equal(laterCount(list, 'g'), 3);
     assert.equal(laterCount(list, 'm2'), 0);
     assert.equal(laterCount(list, 'nope'), 0);
+  });
+});
+
+describe('shareQuote', () => {
+  const steer = (id: string): Message => ({ ...card(id, 'continue'), author: 'me' });
+  const voice = (id: string): Message => ({ ...them(id), kind: 'voice', text: undefined });
+
+  it('is your newest line and their newest written line after it', () => {
+    const quote = shareQuote([them('g'), me('m1'), them('r1'), me('m2'), them('r2'), them('r3')]);
+    assert.equal(quote?.mine?.id, 'm2');
+    assert.equal(quote?.theirs.id, 'r3');
+  });
+
+  it('skips a voice note at the end of their reply', () => {
+    assert.equal(shareQuote([me('m'), them('r'), voice('v')])?.theirs.id, 'r');
+  });
+
+  it('shows theirs alone after a continue, and their greeting before you write', () => {
+    const quote = shareQuote([them('g'), me('m'), them('r1'), steer('s'), them('r2')]);
+    assert.equal(quote?.mine, undefined);
+    assert.equal(quote?.theirs.id, 'r2');
+    assert.deepEqual(shareQuote([them('g')]), { mine: undefined, theirs: them('g') });
+  });
+
+  it('is null while their reply has no words yet', () => {
+    assert.equal(shareQuote([them('g'), me('m')]), null);
+    assert.equal(shareQuote([me('m'), voice('v')]), null);
+    assert.equal(shareQuote([me('m'), them('r', '  ')]), null);
+    assert.equal(shareQuote(undefined), null);
   });
 });

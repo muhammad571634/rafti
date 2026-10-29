@@ -426,6 +426,7 @@
       "thumbs": "jempol"
     },
     "aiCharacter": "Karakter AI",
+    "share": "Bagikan",
     "streakShort_other": "{{count}} hari",
     "aiNotice": "{{name}} adalah karakter AI, bukan orang sungguhan.",
     "voiceQuota": "Balasan suara habis bulan ini dan akan kembali pada {{date}}. Balasan teks tetap berlanjut.",

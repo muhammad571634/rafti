@@ -439,6 +439,7 @@
       "thumbs": "beğeni"
     },
     "aiCharacter": "Yapay zeka karakteri",
+    "share": "Paylaş",
     "streakShort_one": "{{count}} gün",
     "streakShort_other": "{{count}} gün",
     "aiNotice": "{{name}} bir yapay zeka karakteridir, gerçek bir kişi değildir.",

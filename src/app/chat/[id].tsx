@@ -21,6 +21,7 @@ import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
+import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { useFollowNewest } from '@/components/chat/follow-newest';
@@ -36,7 +37,7 @@ import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
-import { canRewindTo, lastExchange, laterCount } from '@/lib/chat-turns';
+import { canRewindTo, lastExchange, laterCount, shareQuote } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
@@ -223,6 +224,9 @@ export default function ChatRoomScreen() {
   const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
   const rating = useMemo(() => (exchange ? ratingOf(exchange.burst) : undefined), [exchange]);
+  // Share under their newest reply: your line and theirs on a picture card.
+  const quote = useMemo(() => (typing ? null : shareQuote(data)), [data, typing]);
+  const [sharing, setSharing] = useState(false);
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
@@ -478,6 +482,7 @@ export default function ChatRoomScreen() {
                       onStep={stepVersion}
                       onRedo={canRedo ? () => redo() : undefined}
                       onContinue={block ? undefined : goOn}
+                      onShare={quote ? () => setSharing(true) : undefined}
                       rating={rating}
                       onRate={canRedo ? rate : undefined}
                     />
@@ -717,6 +722,8 @@ export default function ChatRoomScreen() {
           setReported(true);
         }}
       />
+
+      {quote ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} quote={quote} /> : null}
     </Screen>
   );
 }

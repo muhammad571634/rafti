@@ -439,6 +439,7 @@
       "thumbs": "Daumen hoch"
     },
     "aiCharacter": "KI-Figur",
+    "share": "Teilen",
     "streakShort_one": "{{count}} Tag",
     "streakShort_other": "{{count}} Tage",
     "aiNotice": "{{name}} ist eine KI-Figur, kein echter Mensch.",

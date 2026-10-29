@@ -15,7 +15,8 @@ const SWIPE = 48;
 /**
  * Under their newest reply (canvas `ChatRegen.dc.html`): 👍 👎 vote on how it was written
  * (`src/lib/reply-rating.ts`), ↻ asks for a new version, and once there are several, ‹ 2/3 › steps
- * between them; » lets them go on without the user writing (Continue, `src/lib/chat-steer.ts`).
+ * between them; » lets them go on without the user writing (Continue, `src/lib/chat-steer.ts`);
+ * and the share glyph puts the turn on a picture card (`share-sheet.tsx`).
  * Icons in the secondary grey, as quiet as a read receipt; a cast vote fills in peach.
  */
 export function ReplyControls({
@@ -24,6 +25,7 @@ export function ReplyControls({
   onStep,
   onRedo,
   onContinue,
+  onShare,
   rating,
   onRate,
 }: {
@@ -34,6 +36,8 @@ export function ReplyControls({
   onRedo?: () => void;
   /** »; left out while the chat waits for the user. */
   onContinue?: () => void;
+  /** Share; left out while their reply has no words yet (`shareQuote`). */
+  onShare?: () => void;
   /** The reply's vote, cast or from a happy sticker (`ratingOf`). */
   rating?: Rating;
   /** 👍 👎; left out where the reply cannot be voted on (their greeting, a crisis reply). */
@@ -77,7 +81,7 @@ export function ReplyControls({
               color={down ? colors.primary : colors.textSecondary}
             />
           </PressableScale>
-          {count > 1 || onRedo || onContinue ? <View style={styles.divider} /> : null}
+          {count > 1 || onRedo || onContinue || onShare ? <View style={styles.divider} /> : null}
         </>
       ) : null}
       {count > 1 ? (
@@ -125,6 +129,16 @@ export function ReplyControls({
           accessibilityRole="button"
           accessibilityLabel={t('chat.continue')}>
           <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={18} color={colors.textSecondary} />
+        </PressableScale>
+      ) : null}
+      {onShare ? (
+        <PressableScale
+          scaleTo={0.85}
+          onPress={onShare}
+          style={styles.redo}
+          accessibilityRole="button"
+          accessibilityLabel={t('chat.share')}>
+          <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={colors.textSecondary} />
         </PressableScale>
       ) : null}
     </View>

@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z60. Chat share card (2026-10-30, Claude 2). NEXT: owner checks the sheet; a new preview APK so Share sends the picture
+
+- Owner's ask: a Share button in the row under their reply and a preview sheet with a share card. The old uncommitted
+  attempt (`share-preview-modal.tsx`, its wiring) was removed and rewritten.
+- `ReplyControls` has a share glyph after » (`onShare`, quiet grey like the rest). It shows while `shareQuote(data)`
+  finds a written line of theirs in the newest reply (not while typing, not for a voice note alone).
+- `src/components/chat/share-sheet.tsx`: the system `Sheet` with a card on the aurora ground: avatar 44 + name + "AI
+  character", your line and theirs in the chat's own `MessageBubble`s (no reaction, receipt or edit note), the
+  Sigmazam wordmark and the `peek` mascot sitting on the card's bottom edge; then Share (primary, lg) and Cancel (ghost).
+  Scrim and Android Back close it. No reward for sharing (`src/lib/share.ts` rule).
+- `shareImage` (`src/lib/share.ts`): captures the card as a PNG and opens the system share sheet (iOS has Save Image).
+  New native modules `react-native-view-shot` + `expo-sharing` (app.json plugin added). The installed preview APK lacks
+  them: it gets this update and shares the text instead, no crash. Expo Go has both.
+- New key `chat.share` in 14 locales (the `a11y.share` word). tsc 0, npm test 482/482, check:locales pass.
+
+Still to do:
+1. New EAS preview APK build (native modules), then check the picture share and the card on the A51 (owner's yes first).
+
 ### 0z59. Today header: no shell counter, wordmark and your capsule on one line (2026-10-30, Claude 2). NEXT: owner checks the A51; Gemini's gendered-forms report (0z58 to-do 1)
 
 - `src/app/(tabs)/index.tsx`: the glass shell balance left Today's top row (owner: "ugly, not Apple"). The row is now the

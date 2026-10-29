@@ -439,6 +439,7 @@
       "thumbs": "thumbs up"
     },
     "aiCharacter": "AI character",
+    "share": "Share",
     "streakShort_one": "{{count}} day",
     "streakShort_other": "{{count}} days",
     "aiNotice": "{{name}} is an AI character, not a real person.",

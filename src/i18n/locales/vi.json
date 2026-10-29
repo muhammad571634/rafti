@@ -426,6 +426,7 @@
       "thumbs": "thích"
     },
     "aiCharacter": "Nhân vật AI",
+    "share": "Chia sẻ",
     "streakShort_other": "{{count}} ngày",
     "aiNotice": "{{name}} là một nhân vật AI, không phải người thật.",
     "voiceQuota": "Hạn mức phản hồi bằng giọng nói đã dùng hết trong tháng này và sẽ trở lại vào {{date}}. Phản hồi bằng văn bản vẫn tiếp tục.",

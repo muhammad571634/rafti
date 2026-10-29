@@ -49,6 +49,27 @@ export function lastExchange(messages: readonly Message[] | undefined) {
   };
 }
 
+/** A line with words in it: their voice notes and cards have none to put on a share card. */
+const isQuotable = (m: Message) => m.kind === 'text' && !m.card && !!m.text?.trim();
+
+/**
+ * What Share under their newest reply puts on the card: their newest written line and, when it
+ * answers a line of yours, that line. A continue or a skip has no words, so theirs stands alone;
+ * before you write, their greeting does. Null while their reply has no words yet (typing, a voice note).
+ */
+export function shareQuote(messages: readonly Message[] | undefined) {
+  const list = messages ?? [];
+  const exchange = lastExchange(list);
+  const theirs = exchange
+    ? exchange.burst.findLast(isQuotable)
+    : list.findLast((m) => m.author === 'them' && isQuotable(m));
+  if (!theirs) return null;
+  const mine = exchange?.anchor.author === 'me' && isQuotable(exchange.anchor) ? exchange.anchor : undefined;
+  return { mine, theirs };
+}
+
+export type ShareQuote = NonNullable<ReturnType<typeof shareQuote>>;
+
 /**
  * "Rewind to here" goes on their lines that came before your newest turn (a message, a continue or
  * a skip). On their newest reply there is nothing of yours to take back (↻ redoes it instead).

@@ -439,6 +439,7 @@
       "thumbs": "pollice in su"
     },
     "aiCharacter": "Personaggio IA",
+    "share": "Condividi",
     "streakShort_one": "{{count}} giorno",
     "streakShort_other": "{{count}} giorni",
     "aiNotice": "{{name}} è un personaggio IA, non una persona reale.",
