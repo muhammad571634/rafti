@@ -172,7 +172,8 @@ export default function GroupChatScreen() {
   // Only messages that arrive while the group is open animate in.
   const [openedAt] = useState(() => Date.now());
   const fallback = members[0];
-  const noticeText = t('group.aiNotice', { names: names.replace(' & ', ' and ') });
+  // The title's "&" as it is: an English "and" read wrong in every other language.
+  const noticeText = t('group.aiNotice', { names });
 
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {

@@ -1151,5 +1151,5 @@ const styles = StyleSheet.create({
   wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   wayText: { flex: 1, gap: 1 },
   wayTitle: { fontSize: 17, letterSpacing: -0.4 },
-  wayHint: { fontSize: 13, color: colors.textSecondary },
+  wayHint: { fontSize: 13, lineHeight: 18, color: colors.textSecondary },
 });
