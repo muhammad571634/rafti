@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z47. Translate content: Phase 4b Japanese (ja) mock voice complete (2026-10-29). NEXT: Phase 4b Korean (ko)
+
+- Japanese (ja) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ja.json):
+  - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/ja/voice/ and scripts/translations/ja/build.mjs.
+- Validated via scripts/check-content.mjs ja — 0 errors, exact placeholders, emojis, and asterisks.
+- Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
+
 ### 0z46. Translate content: Phase 4b Italian (it) mock voice complete (2026-10-29). NEXT: Phase 4b Japanese (ja)
 
 - Italian (it) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/it.json):
