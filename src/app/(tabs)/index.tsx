@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, TodayHero } from '@/components/today-hero';
+import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
@@ -168,6 +169,7 @@ export default function HomeScreen() {
     <Screen background="aurora">
       <ScrollView
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={hideWelcome}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         {/* One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max. */}
         <View style={styles.bar}>
@@ -385,6 +387,7 @@ export default function HomeScreen() {
 
       {/* The day's check-in shows here only, never over a chat or another tab. */}
       <DailyRewardSheet />
+      <WelcomeBack />
     </Screen>
   );
 }
