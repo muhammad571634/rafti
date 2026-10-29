@@ -264,6 +264,8 @@ except names and loanwords, and you have read 20 random strings back for tone.
 
 ## Phase 4 (later, ask the owner first): the mock voice
 
+Approved 2026-10-29; the full brief is `docs/agent-tasks/translate-voice.md`.
+
 `src/mock/reply-writer.ts`, `chat.ts`, `group.ts`, `temper.ts`, `push.ts`, `threads.ts`,
 `kin.ts`, `care.ts`, `brief.ts`, `day-ask.ts`, `week.ts`, `steer.ts`, `streams.ts`,
 `diary-writer.ts`, `reply-ideas.ts` (`ideaAnswer`), `character-drafts.ts`, and

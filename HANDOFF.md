@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z38. Brief for Phase 4, the mock voice (2026-10-29). NEXT: Gemini 3.8 Flash runs `docs/agent-tasks/translate-voice.md`, Step A first
+
+- Owner approved Phase 4 and hands it to Gemini 3.8 Flash in a terminal. Brief:
+  `docs/agent-tasks/translate-voice.md` (Step A: templates in 17 mock files, `src/i18n/voice.ts`
+  with `voice` + `fill` + `{g:female|male}`, a `voice` section in `en.json`, chip mapping, pushes
+  re-sync on language change; Step B: 13 languages, one commit each). About 700 strings.
+- Checked before writing it: `npm run check:content` passes for all 13 languages; the 105-125
+  strings per language identical to English are names only (world quiz options, lore entry names).
+
 ### 0z37. Translate content: Phase 3 Turkish (tr) complete — All 13 Languages Complete! (2026-10-29). NEXT: See roadmap / next priorities
 
 - Turkish (`tr`) content translation generated with full coverage across all 18 catalog sections (1973 strings):
