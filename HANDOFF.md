@@ -1,6 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
 
+### 0z41. Translate content: Phase 4b Spanish (es) mock voice complete (2026-10-29). NEXT: Phase 4b pt-BR (Brazilian Portuguese)
+
+- Spanish (es) mock voice generated with full coverage across all 17 voice sections (800 strings in oice, 2773 total strings in src/i18n/content/es.json):
+  - eply, chat, group, 	emper, push, 	hreads, kin, care, rief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/es/voice/ and scripts/translations/es/build.mjs.
+- Validated via scripts/check-content.mjs es — 0 errors, exact placeholders, emojis, and asterisks.
+- Checked: px tsc --noEmit (0 errors), pm test (463/463 pass), pm run check:locales (all pass), pm run check:content.
+
 ### 0z40. Translate content: Phase 4a complete — mock voice templates & machinery (2026-10-29). NEXT: Phase 4b (translate 13 languages one by one, starting with es)
 
 - Converted all 17 mock files into plain templates (~800 strings in voice section):

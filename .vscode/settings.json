@@ -6,6 +6,9 @@
   "terminal.integrated.environmentChangesIndicator": "off",
   "terminal.integrated.enableAudioBell": false,
 
+  // --- Terminalni butun o'rtani egallab to'liq (Maximized) ochilishi ---
+  "workbench.panel.opensMaximized": "always",
+
   // --- O'rtadagi Antigravity IDE / Welcome tablarini butunlay o'chirish ---
   "workbench.startupEditor": "none",
   "workbench.welcomePage.walkthroughs.openOnInstall": false,
