@@ -169,7 +169,7 @@ export default function HomeScreen() {
     <Screen background="aurora">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        onScrollBeginDrag={hideWelcome}
+        onTouchStart={hideWelcome}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         {/* One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max. */}
         <View style={styles.bar}>

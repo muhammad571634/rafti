@@ -69,6 +69,8 @@ export function WelcomeBack() {
   const [due, setDue] = useState<Shown | null>(null);
   const [shown, setShown] = useState<Shown | null>(null);
   const [typed, setTyped] = useState(false);
+  // Taps reach the bubble only while it can be seen (from the pop until it starts to leave).
+  const [live, setLive] = useState(false);
   const focused = useRef(false);
 
   useFocusEffect(
@@ -76,6 +78,8 @@ export function WelcomeBack() {
       focused.current = true;
       return () => {
         focused.current = false;
+        // Another tab or a pushed screen: the greeting must not keep playing on a hidden Today.
+        hideWelcome();
       };
     }, []),
   );
@@ -128,10 +132,18 @@ export function WelcomeBack() {
 
   useEffect(() => {
     if (!shown) return;
-    const hide = () => setShown(null);
+    const hide = () => {
+      setShown(null);
+      setTyped(false);
+      setLive(false);
+    };
     hiders.add(hide);
-    setTyped(false);
-    const timers = [setTimeout(() => setTyped(true), TEXT_AT), setTimeout(hide, GONE_AT)];
+    const timers = [
+      setTimeout(() => setTyped(true), TEXT_AT),
+      setTimeout(() => setLive(true), still ? RISE_AT : POP_AT),
+      setTimeout(() => setLive(false), LEAVE_AT),
+      setTimeout(hide, GONE_AT),
+    ];
     const label = t('welcomeBack.a11y', { name: shown.character.name, line: shown.line });
     timers.push(setTimeout(() => AccessibilityInfo.announceForAccessibility(label), POP_AT));
 
@@ -144,6 +156,8 @@ export function WelcomeBack() {
       fade.value = withSequence(withDelay(RISE_AT, withTiming(1, { duration: 250 })), withDelay(LEAVE_AT - RISE_AT - 250, withTiming(0, { duration: 300 })));
     } else {
       fade.value = 1;
+      // From below every time: a greeting cut short (tapped, scrolled) may have left it up.
+      rise.value = PEEK_H + 12;
       rise.value = withDelay(RISE_AT, withSpring(0, { damping: 11, stiffness: 170, mass: 0.8 }));
       // On a clock, not after the spring: a spring's settle time varies, the sink must not.
       timers.push(setTimeout(() => (rise.value = withTiming(PEEK_H + 12, { duration: 350, easing: Easing.in(Easing.cubic) })), SINK_AT));
@@ -172,7 +186,7 @@ export function WelcomeBack() {
   if (!shown) return null;
   const edge = barTop(insets.bottom) + PAW_DROP;
   const open = () => {
-    setShown(null);
+    hideWelcome();
     router.push(`/chat/${shown.conversationId}`);
   };
 
@@ -184,7 +198,7 @@ export function WelcomeBack() {
           <Image source={BRAND.peek} style={StyleSheet.absoluteFill} contentFit="contain" />
         </Animated.View>
       </View>
-      <Animated.View style={[styles.bubbleWrap, { bottom: edge + PEEK_H - 14, maxWidth: width - BUBBLE_LEFT - space.lg }, bubbleStyle]}>
+      <Animated.View pointerEvents={live ? 'auto' : 'none'} style={[styles.bubbleWrap, { bottom: edge + PEEK_H - 14, maxWidth: width - BUBBLE_LEFT - space.lg }, bubbleStyle]}>
         <Pressable
           onPress={open}
           accessibilityRole="button"
