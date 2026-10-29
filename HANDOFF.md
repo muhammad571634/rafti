@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z55. Translate content: Phase 4b Turkish (tr) mock voice complete — all 12 languages done! (2026-10-29). NEXT: onboarding steps redesign (HIG)
+
+- Turkish (tr) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/tr.json):
+  - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/tr/voice/ and scripts/translations/tr/build.mjs.
+- Validated via scripts/check-content.mjs tr — 0 errors, exact placeholders, emojis, and asterisks.
+- Phase 4b is now complete across all 12 target languages (es, pt-BR, fr, de, it, ja, ko, zh-Hant, id, vi, th, ru, tr).
+- Checked: npx tsc --noEmit (0 errors), npm test (477/477 pass), npm run check:locales (all pass), npm run check:content (all 12 locales pass).
+
 ### 0z54. Launch motion: Welcome back + First hello on the A51 (2026-10-29, Claude 2). NEXT: onboarding steps redesign (HIG), its own spec
 
 - Owner approved both Remotion previews (`../sigmazam-motion/out/welcome-back.mp4`, `first-hello.mp4`); spec
