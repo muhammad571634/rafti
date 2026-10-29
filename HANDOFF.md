@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z35. Translate content: Phase 3 Thai (th) complete (2026-10-29). NEXT: Phase 3 ru (Russian)
+
+- Thai (`th`) content translation generated with full coverage across all 18 catalog sections (1973 strings):
+  - 40 characters (bio, tagline, greeting, opening, greetings, starters, likes, dislikes, backstory, tags).
+  - 5 date places (situations and choices).
+  - 4 date themes (openers, shared, mood rounds, closers).
+  - 4 worlds (seaside, moonlit, neon, tidepool: quiz, selfQuiz, dateRounds, frames, reactions).
+  - 5 quiz packs (questions and options).
+  - 4 world books & lore entries.
+  - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
+- Registered `th` in `src/i18n/content.ts`.
+- Validated via `scripts/check-content.mjs th` — 0 errors, placeholders/asterisks/emojis exact.
+- Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
+
 ### 0z34. Translate content: Phase 3 Vietnamese (vi) complete (2026-10-29). NEXT: Phase 3 th (Thai)
 
 - Vietnamese (`vi`) content translation generated with full coverage across all 18 catalog sections (1973 strings):
