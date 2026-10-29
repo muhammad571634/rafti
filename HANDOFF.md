@@ -21,12 +21,16 @@ Done after that (same day):
   ("Ты всё-таки здесь!", "Дорога снова привела тебя…", "Te voilà !", "qui t'a gâché la journée").
 - Owner confirmed Automatic language works (delete account → onboarding in Russian).
 - Evals `gender-ru-she/he/they` (`server/src/evals/scenarios.ts`, new check `noWord` = whole words): the user is
-  "Саша" (both genders) and asks "опиши меня тремя словами", so the answer must mark gender. she 2/2 + 1 → feminine,
-  he → masculine. A first neutral line let the model dodge every gendered form, so it tested nothing.
+  "Саша" (both genders) and asks "опиши меня тремя словами", so the answer must mark gender: she → feminine and
+  he → masculine in every run (3/3 each). A first neutral line let the model dodge every gendered form, so it tested nothing.
   `they` read as plural ("ты — искренние"); `pronounLine('they')` now says one person, singular, nouns or
   "a kind person": 3 of 4 neutral on gemini-3.1-flash-lite, one still guessed masculine. Baseline saved.
 
 Still to do:
+0. Deploy the API: the server builds the chat prompt, so the new `pronounLine` reaches real chats only after it.
+   The auto-mode classifier blocked my deploy; the owner runs it (or allows it):
+   `C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+   Until then the live server still sends the old "Pronouns: she" line (the pronouns already arrive).
 1. Gendered user forms across the content translations: a rough scan finds ~71 ru strings with "ты + masculine
    past" (some are fine: a starter the user says to a male character). Same check needed for fr, es, it, pt-BR.
    Make them neutral (as the 4 greetings) or add she/he variants; content in `src/i18n/content/*.json`.
