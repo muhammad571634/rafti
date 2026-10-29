@@ -9,6 +9,7 @@ import it from './content/it.json';
 import ja from './content/ja.json';
 import ko from './content/ko.json';
 import ptBR from './content/pt-BR.json';
+import ru from './content/ru.json';
 import th from './content/th.json';
 import vi from './content/vi.json';
 import zhHant from './content/zh-Hant.json';
@@ -30,6 +31,7 @@ export const CONTENT: Record<string, Record<string, unknown> | undefined> = {
   ja,
   ko,
   'pt-BR': ptBR,
+  ru,
   th,
   vi,
   'zh-Hant': zhHant,
