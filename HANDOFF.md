@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z56. Onboarding HIG pass (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
+
+- Owner: no prototype, code it fully on Apple's HIG. Changes in `src/app/onboarding.tsx`:
+  - HIG Onboarding (brief, no repeat): the separate hello screen is gone; the first hello's last frame stays and Start +
+    the legal line + the language chip fade in over it (`FirstHello` tap now jumps to that frame).
+  - HIG Privacy (pre-alert screens): the notifications scene shows only while the system is undecided
+    (`pushPermission()`); its one button is Continue and opens the system prompt; no Allow / Not now, no back button;
+    going back from the gift skips it once asked. Progress counts the scenes actually shown.
+  - HIG Typography: titles Large Title 34/41 bold, body 17/22. HIG Playing haptics: the year wheel ticks per year.
+- Checked on the A51 through `sigmazam://onboarding` (not finished, owner data kept): intro end, age, name, meet,
+  gift; notify skipped there because the phone already allows notifications. tsc 0, tests 477/477, check:locales pass.
+- Not changed: age gate, name rules, deck, gift. Unused keys `onboarding.helloTitle/helloBody/allow/notNow` left in locales.
+
 ### 0z55. Translate content: Phase 4b Turkish (tr) mock voice complete — all 12 languages done! (2026-10-29). NEXT: onboarding steps redesign (HIG)
 
 - Turkish (tr) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/tr.json):

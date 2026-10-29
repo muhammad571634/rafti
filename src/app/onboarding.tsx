@@ -161,7 +161,7 @@ export default function OnboardingScreen() {
         {played ? (
           <>
             {SUPPORTED_LOCALES.length > 1 ? (
-              <Animated.View entering={FadeIn.duration(300)} style={[styles.top, styles.topEnd]}>
+              <Animated.View entering={FadeIn.duration(300)} style={[styles.top, styles.topEnd, { top: insets.top }]}>
                 <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)}>
                   <AuroraGlass style={styles.lang}>
                     <Txt style={styles.langText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
