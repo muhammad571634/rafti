@@ -25,6 +25,7 @@ import {
   UserAvatar,
 } from '@/components/ui';
 import { FirstHello } from '@/components/onboarding/first-hello';
+import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
@@ -190,6 +191,8 @@ export default function ProfileScreen() {
     if (result === 'failed') return setDeleteFailed(true);
     setDeleteOpen(false);
     deleteAccount();
+    // A fresh start speaks the phone's language again: a language picked by hand goes with the account.
+    await pickLanguage(null);
     if (router.canDismiss()) router.dismissAll();
     router.replace('/onboarding');
   };
