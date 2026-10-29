@@ -13,10 +13,13 @@ import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { useThemeReload } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
+import { startAwayClock } from '@/lib/away-clock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+// Today's welcome back needs to know how long the app was away (src/lib/welcome-back.ts).
+startAwayClock();
 /** Longest the splash waits for saved data before it lets go anyway. */
 const SPLASH_LIMIT_MS = 8000;
 // The window behind every screen (keyboard, transitions) in the launch theme's canvas colour.

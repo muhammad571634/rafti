@@ -1636,7 +1636,8 @@
     "sayHi": "Sapa {{name}}",
     "firstAsk": "Jadi, {{name}}, bagaimana harimu hari ini?",
     "step": "Langkah {{index}} dari {{count}}",
-    "meetNote": "Setiap karakter adalah AI, bukan orang sungguhan."
+    "meetNote": "Setiap karakter adalah AI, bukan orang sungguhan.",
+    "helloBubble": "Hai! Kami sudah menunggumu ✨"
   },
   "ledger": {
     "title": "Riwayat",
@@ -2420,5 +2421,12 @@
     "Moonlit Realm": "Alam Cahaya Bulan",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Kafe Tidepool"
+  },
+  "welcomeBack": {
+    "line1": "Kamu kembali! Aku kangen 💛",
+    "line2": "Nah, itu kamu! Aku nungguin kamu 😊",
+    "line3": "Hai! Ada waktu sebentar buat ngobrol?",
+    "line4": "Selamat datang kembali! Ceritain semuanya ✨",
+    "a11y": "{{name}}: {{line}}. Membuka obrolan."
   }
 }

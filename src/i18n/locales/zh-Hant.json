@@ -1636,7 +1636,8 @@
     "sayHi": "向{{name}}打聲招呼",
     "firstAsk": "{{name}}，今天過得怎麼樣呀？",
     "step": "步驟 {{index}} / {{count}}",
-    "meetNote": "世界中的每一位角色均為AI虛擬人物，並非真實人類。"
+    "meetNote": "世界中的每一位角色均為AI虛擬人物，並非真實人類。",
+    "helloBubble": "嗨！我們一直在等你 ✨"
   },
   "ledger": {
     "title": "資產明細",
@@ -2420,5 +2421,12 @@
     "Moonlit Realm": "月光之境",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "潮池咖啡館"
+  },
+  "welcomeBack": {
+    "line1": "你回來了！好想你 💛",
+    "line2": "你來啦！我一直在等你 😊",
+    "line3": "嘿！有空聊一下嗎？",
+    "line4": "歡迎回來！全部說給我聽 ✨",
+    "a11y": "{{name}}：{{line}}。開啟聊天。"
   }
 }

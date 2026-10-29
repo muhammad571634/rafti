@@ -1667,7 +1667,8 @@
     "sayHi": "Say hi to {{name}}",
     "firstAsk": "So, {{name}}, how was your day?",
     "step": "Step {{index}} of {{count}}",
-    "meetNote": "Every character is an AI, not a real person."
+    "meetNote": "Every character is an AI, not a real person.",
+    "helloBubble": "Hi! We've been waiting for you ✨"
   },
   "ledger": {
     "title": "History",
@@ -2460,5 +2461,12 @@
     "Moonlit Realm": "Moonlit Realm",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Tidepool Café"
+  },
+  "welcomeBack": {
+    "line1": "You're back! Missed you 💛",
+    "line2": "There you are! I was waiting 😊",
+    "line3": "Hey you! Got a minute to talk?",
+    "line4": "Welcome back! Tell me everything ✨",
+    "a11y": "{{name}}: {{line}}. Opens the chat."
   }
 }

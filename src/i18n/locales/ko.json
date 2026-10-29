@@ -1636,7 +1636,8 @@
     "sayHi": "{{name}}에게 인사하기",
     "firstAsk": "{{name}}, 오늘 하루는 어떻게 보냈어?",
     "step": "{{count}}단계 중 {{index}}단계",
-    "meetNote": "모든 캐릭터는 실제 사람이 아닌 인공지능(AI)입니다."
+    "meetNote": "모든 캐릭터는 실제 사람이 아닌 인공지능(AI)입니다.",
+    "helloBubble": "안녕하세요! 기다리고 있었어요 ✨"
   },
   "ledger": {
     "title": "이용 내역",
@@ -2420,5 +2421,12 @@
     "Moonlit Realm": "달빛의 영역",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "타이드풀 카페"
+  },
+  "welcomeBack": {
+    "line1": "돌아왔구나! 보고 싶었어 💛",
+    "line2": "왔구나! 기다리고 있었어 😊",
+    "line3": "안녕! 잠깐 얘기할 시간 있어?",
+    "line4": "다시 와서 반가워! 다 얘기해 줘 ✨",
+    "a11y": "{{name}}: {{line}}. 채팅을 엽니다."
   }
 }

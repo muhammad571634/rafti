@@ -1667,7 +1667,8 @@
     "sayHi": "Dire bonjour à {{name}}",
     "firstAsk": "Alors {{name}}, comment s'est passée votre journée ?",
     "step": "Étape {{index}} sur {{count}}",
-    "meetNote": "Chaque personnage est une IA, pas une vraie personne."
+    "meetNote": "Chaque personnage est une IA, pas une vraie personne.",
+    "helloBubble": "Bonjour ! On vous attendait ✨"
   },
   "ledger": {
     "title": "Historique",
@@ -2460,5 +2461,12 @@
     "Moonlit Realm": "Royaume au Clair de Lune",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Café Tidepool"
+  },
+  "welcomeBack": {
+    "line1": "Te revoilà ! Tu m'as manqué 💛",
+    "line2": "Ah, te voilà ! Je t'attendais 😊",
+    "line3": "Coucou ! Tu as une minute pour parler ?",
+    "line4": "Ça fait plaisir de te revoir ! Raconte-moi tout ✨",
+    "a11y": "{{name}} : {{line}}. Ouvre la discussion."
   }
 }

@@ -1667,7 +1667,8 @@
     "sayHi": "Sag hallo zu {{name}}",
     "firstAsk": "Und {{name}}, wie war dein Tag?",
     "step": "Schritt {{index}} von {{count}}",
-    "meetNote": "Jede Figur ist eine KI, kein echter Mensch."
+    "meetNote": "Jede Figur ist eine KI, kein echter Mensch.",
+    "helloBubble": "Hallo! Wir haben auf dich gewartet ✨"
   },
   "ledger": {
     "title": "Verlauf",
@@ -2460,5 +2461,12 @@
     "Moonlit Realm": "Mondschein-Reich",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Tidepool Café"
+  },
+  "welcomeBack": {
+    "line1": "Du bist zurück! Hab dich vermisst 💛",
+    "line2": "Da bist du ja! Ich hab auf dich gewartet 😊",
+    "line3": "Hey du! Hast du kurz Zeit zum Reden?",
+    "line4": "Willkommen zurück! Erzähl mir alles ✨",
+    "a11y": "{{name}}: {{line}}. Öffnet den Chat."
   }
 }

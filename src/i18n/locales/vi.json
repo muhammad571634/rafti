@@ -1636,7 +1636,8 @@
     "sayHi": "Nói lời chào với {{name}}",
     "firstAsk": "{{name}} ơi, ngày hôm nay của bạn thế nào?",
     "step": "Bước {{index}} / {{count}}",
-    "meetNote": "Mỗi nhân vật đều là AI, không phải người thật."
+    "meetNote": "Mỗi nhân vật đều là AI, không phải người thật.",
+    "helloBubble": "Xin chào! Bọn mình đợi bạn mãi ✨"
   },
   "ledger": {
     "title": "Lịch sử",
@@ -2420,5 +2421,12 @@
     "Moonlit Realm": "Cõi Ánh Trăng",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Quán Cà Phê Tidepool"
+  },
+  "welcomeBack": {
+    "line1": "Bạn về rồi! Nhớ bạn ghê 💛",
+    "line2": "Bạn đây rồi! Mình đợi bạn mãi 😊",
+    "line3": "Này! Rảnh một chút để trò chuyện không?",
+    "line4": "Chào mừng bạn quay lại! Kể mình nghe hết đi ✨",
+    "a11y": "{{name}}: {{line}}. Mở cuộc trò chuyện."
   }
 }

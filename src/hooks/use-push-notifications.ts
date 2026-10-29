@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
 import i18n from '@/i18n';
+import { markOpenedFromNotification } from '@/lib/away-clock';
 
 import { syncAlarms } from '@/notifications/alarms';
 import { nextPushLog, sentToday } from '@/notifications/budget';
@@ -44,6 +45,8 @@ export function usePushNotifications() {
     const open = (response: NotificationResponse | null) => {
       const data = response?.notification.request.content.data as unknown as PushData | undefined;
       if (!data?.id) return;
+      // The tap leads somewhere, so Today's welcome back stays quiet this time.
+      markOpenedFromNotification();
       land(data);
       // A reply idea's button ("I ate!") or a reply typed on the lock screen: the answer goes into
       // their chat, then the chat opens. Without shells for a typed one, it waits in the field.

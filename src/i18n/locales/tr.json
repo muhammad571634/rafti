@@ -1667,7 +1667,8 @@
     "sayHi": "{{name}} kişisine selam ver",
     "firstAsk": "Eee, {{name}}, günün nasıl geçti?",
     "step": "Adım {{index}} / {{count}}",
-    "meetNote": "Her karakter bir yapay zekadır, gerçek kişi değildir."
+    "meetNote": "Her karakter bir yapay zekadır, gerçek kişi değildir.",
+    "helloBubble": "Merhaba! Seni bekliyorduk ✨"
   },
   "ledger": {
     "title": "Geçmiş",
@@ -2460,5 +2461,12 @@
     "Moonlit Realm": "Ay Işığı Diyarı",
     "NEON TIDE": "NEON TIDE",
     "Tidepool Café": "Tidepool Kafe"
+  },
+  "welcomeBack": {
+    "line1": "Döndün! Seni özledim 💛",
+    "line2": "İşte buradasın! Seni bekliyordum 😊",
+    "line3": "Selam! Konuşmaya bir dakikan var mı?",
+    "line4": "Tekrar hoş geldin! Anlat bakalım her şeyi ✨",
+    "a11y": "{{name}}: {{line}}. Sohbeti açar."
   }
 }
