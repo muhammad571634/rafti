@@ -2067,7 +2067,10 @@ export const useAppStore = create<AppState>()(
           ledger: log(s.ledger, amount, reason),
         }));
         // Earnings with no rule on the server yet; a server that takes none puts the balance back.
-        if (serverWalletOn(get)) syncWallet(set, (token) => serverWallet.grant(token, { amount, reason, key: uid('gr') }));
+        // The server pays the welcome gift itself when it makes the account, so that one is only booked here.
+        if (serverWalletOn(get) && reason !== 'welcome') {
+          syncWallet(set, (token) => serverWallet.grant(token, { amount, reason, key: uid('gr') }));
+        }
       },
 
       expireFreeShells: () => {
@@ -3506,8 +3509,12 @@ type Setter = (fn: (s: AppState) => Partial<AppState>) => void;
 type Getter = () => AppState;
 type RawSetter = (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void;
 
-/** Development (B1.2): the wallet lives on the local server (Profile → Server wallet). */
-const serverWalletOn = (get: Getter) => !!get().settings.serverWallet && !!apiBase();
+/**
+ * The wallet lives on the server whenever the app has one (B1.2), so one ledger pays the welcome
+ * gift and each day's check-in. Profile (dev) → Server wallet off keeps it on the phone; switching
+ * mid-day leaves the phone's own rows of that day in History while the server pays its own.
+ */
+const serverWalletOn = (get: Getter) => get().settings.serverWallet !== false && !!apiBase();
 
 /** Wallet calls still out: only the last answer is applied, as it holds every booking before it. */
 let walletCallsOut = 0;

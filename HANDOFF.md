@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z60. One wallet: the server pays the welcome gift and the check-in once (2026-10-30, Claude 2). NEXT: review Gemini's gendered-forms report
+
+- Owner saw History with the check-in twice (100 + 30 + 30 + wheel 30). Cause: the phone and the server each kept a
+  wallet; Profile (dev) → Server wallet, switched on mid-day, let the server pay its own welcome and check-in while the
+  phone's rows stayed in History. The cloud ledger was right (welcome 100 + daily 30 − chats = 123).
+- `serverWalletOn` is now on whenever the app has a server (`settings.serverWallet !== false`; the dev toggle only turns
+  it off), and `addShells(…, 'welcome')` no longer asks the server for a grant (the server pays it on account creation).
+  Day one is 100 + 30 + the wheel's one spin a day (avg ~8, rarely 30-100). Sharing pays nothing (`src/lib/share.ts`).
+- Onboarding deck in Turkish showed the English quote at 02:05: the deck fix (d8f14ad) reached the phone at 01:52 as an
+  EAS update, which applies on the next cold start. Code checked: tr/ru greetings exist and `localCharacter` lays them on.
+- tsc 0, npm test 482/482. Sent as an EAS update.
+
 ### 0z61. Gendered user forms across 5 languages (2026-10-30, Antigravity / Gemini 3.8 Flash High). NEXT: Claude reviews before/after table in `docs/agent-tasks/gendered-user-forms-report.md`
 
 - Task `docs/agent-tasks/gendered-user-forms.md` completed across all five target content languages: `es`, `fr`, `pt-BR`, `it`, `ru`.

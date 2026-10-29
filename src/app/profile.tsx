@@ -403,7 +403,7 @@ export default function ProfileScreen() {
               fill={FILL.grey}
               right={
                 <Toggle
-                  value={!!settings.serverWallet}
+                  value={settings.serverWallet !== false}
                   onChange={(v) => {
                     setSetting('serverWallet', v);
                     if (v) void syncServerWallet();

@@ -925,7 +925,7 @@ export interface AppSettings {
   haptics: boolean;
   /** Development: replies come from the real model on the local server (`src/ai/server.ts`). */
   realAi?: boolean;
-  /** Development (B1.2): the wallet lives on the local server's database; the store keeps a cache. */
+  /** B1.2: the wallet lives on the server whenever the app has one; `false` (dev) keeps it on the phone. */
   serverWallet?: boolean;
   /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */
   serverMessages?: boolean;
