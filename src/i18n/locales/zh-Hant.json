@@ -249,7 +249,11 @@
     "typing": "正在輸入…",
     "markRead": "標記為已讀",
     "markUnread": "標記為未讀",
-    "read": "已讀"
+    "read": "已讀",
+    "previewVoice": "語音訊息",
+    "previewPhoto": "照片",
+    "previewMissedCall": "未接來電",
+    "previewCall": "語音通話"
   },
   "group": {
     "newChat": "新對話",
@@ -301,7 +305,12 @@
     "pickMemberBody": "這將開啟你們兩人的專屬對話。",
     "call": "群組通話",
     "callConnecting": "正在撥通全員…",
-    "notFound": "該群組已不存在。"
+    "notFound": "該群組已不存在。",
+    "madeLine": "你建立了群組",
+    "namedLine": "你將群組命名為「{{name}}」",
+    "unnamedLine": "你移除了群組名稱",
+    "joinedLine": "{{name}}加入了群組",
+    "removedLine": "你將{{name}}移出群組"
   },
   "chat": {
     "notifyOff": "通知已關閉，因此你將無法即時收到{{name}}傳來的訊息。",
@@ -1401,7 +1410,8 @@
     "snoozeFor": "稍後提醒 · {{count}}分鐘",
     "holdToStop": "長按3秒關閉",
     "stop": "關閉",
-    "ringBar": "鬧鐘響起中 · 回覆訊息以關閉"
+    "ringBar": "鬧鐘響起中 · 回覆訊息以關閉",
+    "planSaved": "計畫已儲存 · {{title}} · {{time}}"
   },
   "board": {
     "title": "留言板",

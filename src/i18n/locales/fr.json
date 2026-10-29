@@ -255,7 +255,11 @@
     "typing": "écrit…",
     "markRead": "Marquer comme lu",
     "markUnread": "Marquer comme non lu",
-    "read": "Lu"
+    "read": "Lu",
+    "previewVoice": "Message vocal",
+    "previewPhoto": "Photo",
+    "previewMissedCall": "Appel manqué",
+    "previewCall": "Appel vocal"
   },
   "group": {
     "newChat": "Nouvelle discussion",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Ce moment est rien que pour vous deux.",
     "call": "Appel de groupe",
     "callConnecting": "Connexion à tous…",
-    "notFound": "Ce groupe n'existe plus."
+    "notFound": "Ce groupe n'existe plus.",
+    "madeLine": "Vous avez créé le groupe",
+    "namedLine": "Vous avez nommé le groupe « {{name}} »",
+    "unnamedLine": "Vous avez supprimé le nom du groupe",
+    "joinedLine": "{{name}} a rejoint le groupe",
+    "removedLine": "Vous avez retiré {{name}}"
   },
   "chat": {
     "notifyOff": "Les notifications sont désactivées, les messages de {{name}} ne peuvent pas vous parvenir.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Répéter · {{count}} min",
     "holdToStop": "Maintenir 3 s pour couper",
     "stop": "Arrêter",
-    "ringBar": "Alarme en cours · répondez pour couper"
+    "ringBar": "Alarme en cours · répondez pour couper",
+    "planSaved": "Projet enregistré · {{title}} · {{time}}"
   },
   "board": {
     "title": "Panneau d'affichage",

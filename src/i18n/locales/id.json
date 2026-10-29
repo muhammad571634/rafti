@@ -249,7 +249,11 @@
     "typing": "sedang mengetik…",
     "markRead": "Tandai sudah dibaca",
     "markUnread": "Tandai belum dibaca",
-    "read": "Dibaca"
+    "read": "Dibaca",
+    "previewVoice": "Pesan suara",
+    "previewPhoto": "Foto",
+    "previewMissedCall": "Panggilan tak terjawab",
+    "previewCall": "Panggilan suara"
   },
   "group": {
     "newChat": "Obrolan baru",
@@ -301,7 +305,12 @@
     "pickMemberBody": "Obrolan ini hanya untuk kalian berdua.",
     "call": "Panggilan grup",
     "callConnecting": "Memanggil semua anggota…",
-    "notFound": "Grup ini sudah tidak ada."
+    "notFound": "Grup ini sudah tidak ada.",
+    "madeLine": "Kamu membuat grup",
+    "namedLine": "Kamu menamai grup \"{{name}}\"",
+    "unnamedLine": "Kamu menghapus nama grup",
+    "joinedLine": "{{name}} bergabung",
+    "removedLine": "Kamu mengeluarkan {{name}}"
   },
   "chat": {
     "notifyOff": "Notifikasi mati, sehingga pesan dari {{name}} tidak dapat sampai kepadamu.",
@@ -1401,7 +1410,8 @@
     "snoozeFor": "Tunda · {{count}} mnt",
     "holdToStop": "Tahan 3 dtk untuk mematikan",
     "stop": "Berhenti",
-    "ringBar": "Alarm menyala · balas untuk mematikan"
+    "ringBar": "Alarm menyala · balas untuk mematikan",
+    "planSaved": "Rencana disimpan · {{title}} · {{time}}"
   },
   "board": {
     "title": "Papan pesan",

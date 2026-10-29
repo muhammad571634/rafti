@@ -255,7 +255,11 @@
     "typing": "typing…",
     "markRead": "Mark as Read",
     "markUnread": "Mark as Unread",
-    "read": "Read"
+    "read": "Read",
+    "previewVoice": "Voice message",
+    "previewPhoto": "Photo",
+    "previewMissedCall": "Missed call",
+    "previewCall": "Voice call"
   },
   "group": {
     "newChat": "New chat",
@@ -308,7 +312,12 @@
     "pickMemberBody": "This one is just the two of you.",
     "call": "Group call",
     "callConnecting": "Calling everyone…",
-    "notFound": "This group is gone."
+    "notFound": "This group is gone.",
+    "madeLine": "You made the group",
+    "namedLine": "You named the group \"{{name}}\"",
+    "unnamedLine": "You removed the group name",
+    "joinedLine": "{{name}} joined",
+    "removedLine": "You removed {{name}}"
   },
   "chat": {
     "notifyOff": "Notifications are off, so {{name}}'s texts can't reach you.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Snooze · {{count}} min",
     "holdToStop": "Hold 3 s to turn off",
     "stop": "Stop",
-    "ringBar": "Alarm on · reply to turn it off"
+    "ringBar": "Alarm on · reply to turn it off",
+    "planSaved": "Plan saved · {{title}} · {{time}}"
   },
   "board": {
     "title": "Message board",

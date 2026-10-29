@@ -255,7 +255,11 @@
     "typing": "escribiendo…",
     "markRead": "Marcar como leído",
     "markUnread": "Marcar como no leído",
-    "read": "Leído"
+    "read": "Leído",
+    "previewVoice": "Mensaje de voz",
+    "previewPhoto": "Foto",
+    "previewMissedCall": "Llamada perdida",
+    "previewCall": "Llamada de voz"
   },
   "group": {
     "newChat": "Nuevo chat",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Esta vez solo serán ustedes dos.",
     "call": "Llamada grupal",
     "callConnecting": "Llamando a todos…",
-    "notFound": "Este grupo ya no existe."
+    "notFound": "Este grupo ya no existe.",
+    "madeLine": "Creaste el grupo",
+    "namedLine": "Nombraste el grupo «{{name}}»",
+    "unnamedLine": "Quitaste el nombre del grupo",
+    "joinedLine": "{{name}} se unió",
+    "removedLine": "Sacaste a {{name}} del grupo"
   },
   "chat": {
     "notifyOff": "Las notificaciones están apagadas, así que los mensajes de {{name}} no pueden llegarte.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Posponer · {{count}} min",
     "holdToStop": "Mantén 3 s para apagar",
     "stop": "Detener",
-    "ringBar": "Alarma sonando · responde para apagar"
+    "ringBar": "Alarma sonando · responde para apagar",
+    "planSaved": "Plan guardado · {{title}} · {{time}}"
   },
   "board": {
     "title": "Mural de notas",

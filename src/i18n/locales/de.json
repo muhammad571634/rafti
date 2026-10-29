@@ -255,7 +255,11 @@
     "typing": "tippt…",
     "markRead": "Als gelesen markieren",
     "markUnread": "Als ungelesen markieren",
-    "read": "Gelesen"
+    "read": "Gelesen",
+    "previewVoice": "Sprachnachricht",
+    "previewPhoto": "Foto",
+    "previewMissedCall": "Verpasster Anruf",
+    "previewCall": "Sprachanruf"
   },
   "group": {
     "newChat": "Neuer Chat",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Dieser Moment ist nur für euch zwei.",
     "call": "Gruppenanruf",
     "callConnecting": "Verbindet alle…",
-    "notFound": "Diese Gruppe existiert nicht mehr."
+    "notFound": "Diese Gruppe existiert nicht mehr.",
+    "madeLine": "Du hast die Gruppe erstellt",
+    "namedLine": "Du hast die Gruppe „{{name}}“ genannt",
+    "unnamedLine": "Du hast den Gruppennamen entfernt",
+    "joinedLine": "{{name}} ist der Gruppe beigetreten",
+    "removedLine": "Du hast {{name}} entfernt"
   },
   "chat": {
     "notifyOff": "Mitteilungen sind aus, du verpasst Nachrichten von {{name}}.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Schlummern · {{count}} Min.",
     "holdToStop": "3 Sek. halten zum Beenden",
     "stop": "Stopp",
-    "ringBar": "Wecker aktiv · antworte zum Beenden"
+    "ringBar": "Wecker aktiv · antworte zum Beenden",
+    "planSaved": "Plan gespeichert · {{title}} · {{time}}"
   },
   "board": {
     "title": "Pinnwand",

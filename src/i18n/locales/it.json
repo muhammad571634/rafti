@@ -255,7 +255,11 @@
     "typing": "sta scrivendo…",
     "markRead": "Segna come letto",
     "markUnread": "Segna come non letto",
-    "read": "Letti"
+    "read": "Letti",
+    "previewVoice": "Messaggio vocale",
+    "previewPhoto": "Foto",
+    "previewMissedCall": "Chiamata persa",
+    "previewCall": "Chiamata vocale"
   },
   "group": {
     "newChat": "Nuova chat",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Questa chat sarà solo per voi due.",
     "call": "Chiamata di gruppo",
     "callConnecting": "Chiamata in corso a tutti…",
-    "notFound": "Questo gruppo non esiste più."
+    "notFound": "Questo gruppo non esiste più.",
+    "madeLine": "Hai creato il gruppo",
+    "namedLine": "Hai chiamato il gruppo «{{name}}»",
+    "unnamedLine": "Hai rimosso il nome del gruppo",
+    "joinedLine": "Nuovo membro: {{name}}",
+    "removedLine": "Hai rimosso {{name}}"
   },
   "chat": {
     "notifyOff": "Le notifiche sono disattivate, quindi i messaggi di {{name}} non possono raggiungerti.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Posponi · {{count}} min",
     "holdToStop": "Tieni premuto per 3 s per spegnere",
     "stop": "Ferma",
-    "ringBar": "Sveglia attiva · rispondi per spegnere"
+    "ringBar": "Sveglia attiva · rispondi per spegnere",
+    "planSaved": "Piano salvato · {{title}} · {{time}}"
   },
   "board": {
     "title": "Bacheca dei messaggi",

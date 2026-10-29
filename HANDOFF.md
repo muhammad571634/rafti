@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z39. Chats previews and group lines in the screen language; launch fix checked on the A51 (2026-10-29)
+
+- Owner (Russian UI) saw "🎤 Voice message" in Chats. `previewFor` (`src/store/use-app-store.ts`) now
+  writes `chatList.previewVoice / previewPhoto / previewMissedCall / previewCall` (the words each
+  locale already had for chat voice, photo, missed call, voice call). `refreshPreviews()` rewrites
+  every chat's and group's preview after hydration and on `languageChanged` (only once hydrated,
+  so a boot-time language change never writes over the save).
+- Group system lines ("You made the group", named / unnamed, "X joined", "You removed X") and the
+  morning chain's "Plan saved · title · time" come from `group.*Line` and `alarms.planSaved` in all
+  14 locales. Old saved lines stay as they were written.
+- Checked on the Galaxy A51 (Android 13, 1080x2400, font scale 1.1): cold launch after `bf85a2b`
+  goes splash (#FBF6F1, no logo by config) → Today fading in at ~2.6 s; no blank #F2F2F7 frame.
+- Not done: the P0-P3 audit workflow of the previous session returned nothing (all 14 agents hit
+  the usage limit), so no code-wide audit exists yet; remaining screens not walked on the phone.
+
 ### 0z38. Brief for Phase 4, the mock voice (2026-10-29). NEXT: Gemini 3.8 Flash runs `docs/agent-tasks/translate-voice.md`, Step A first
 
 - Owner approved Phase 4 and hands it to Gemini 3.8 Flash in a terminal. Brief:

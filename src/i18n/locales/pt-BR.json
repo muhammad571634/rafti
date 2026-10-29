@@ -255,7 +255,11 @@
     "typing": "digitando…",
     "markRead": "Marcar como lida",
     "markUnread": "Marcar como não lida",
-    "read": "Lido"
+    "read": "Lido",
+    "previewVoice": "Mensagem de voz",
+    "previewPhoto": "Foto",
+    "previewMissedCall": "Chamada perdida",
+    "previewCall": "Chamada de voz"
   },
   "group": {
     "newChat": "Nova conversa",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Esta atividade é só entre vocês dois.",
     "call": "Chamada em grupo",
     "callConnecting": "Chamando todos…",
-    "notFound": "Este grupo não existe mais."
+    "notFound": "Este grupo não existe mais.",
+    "madeLine": "Você criou o grupo",
+    "namedLine": "Você deu ao grupo o nome \"{{name}}\"",
+    "unnamedLine": "Você removeu o nome do grupo",
+    "joinedLine": "{{name}} entrou",
+    "removedLine": "Você removeu {{name}}"
   },
   "chat": {
     "notifyOff": "As notificações estão desativadas, então as mensagens de {{name}} não chegam até você.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Soneca · {{count}} min",
     "holdToStop": "Segure 3 s para desligar",
     "stop": "Parar",
-    "ringBar": "Alarme tocando · responda para desligar"
+    "ringBar": "Alarme tocando · responda para desligar",
+    "planSaved": "Plano salvo · {{title}} · {{time}}"
   },
   "board": {
     "title": "Mural de recados",

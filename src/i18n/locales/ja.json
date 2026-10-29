@@ -249,7 +249,11 @@
     "typing": "入力中…",
     "markRead": "既読にする",
     "markUnread": "未読にする",
-    "read": "既読"
+    "read": "既読",
+    "previewVoice": "ボイスメッセージ",
+    "previewPhoto": "写真",
+    "previewMissedCall": "不在着信",
+    "previewCall": "音声通話"
   },
   "group": {
     "newChat": "新しいチャット",
@@ -301,7 +305,12 @@
     "pickMemberBody": "ふたりだけの会話になります。",
     "call": "グループ通話",
     "callConnecting": "全員に発信中…",
-    "notFound": "このグループは存在しません。"
+    "notFound": "このグループは存在しません。",
+    "madeLine": "グループを作成しました",
+    "namedLine": "グループ名を「{{name}}」にしました",
+    "unnamedLine": "グループ名を削除しました",
+    "joinedLine": "{{name}}が参加しました",
+    "removedLine": "{{name}}をグループから外しました"
   },
   "chat": {
     "notifyOff": "通知がオフになっているため、{{name}}からのメッセージが届きません。",
@@ -1401,7 +1410,8 @@
     "snoozeFor": "スヌーズ · {{count}}分",
     "holdToStop": "3秒長押しで停止",
     "stop": "停止",
-    "ringBar": "アラーム作動中 · 返信して停止"
+    "ringBar": "アラーム作動中 · 返信して停止",
+    "planSaved": "予定を保存しました · {{title}} · {{time}}"
   },
   "board": {
     "title": "掲示板",

@@ -249,7 +249,11 @@
     "typing": "đang nhập…",
     "markRead": "Đánh dấu đã đọc",
     "markUnread": "Đánh dấu chưa đọc",
-    "read": "Đã đọc"
+    "read": "Đã đọc",
+    "previewVoice": "Tin nhắn thoại",
+    "previewPhoto": "Ảnh",
+    "previewMissedCall": "Cuộc gọi nhỡ",
+    "previewCall": "Gọi thoại"
   },
   "group": {
     "newChat": "Cuộc trò chuyện mới",
@@ -301,7 +305,12 @@
     "pickMemberBody": "Cuộc trò chuyện này chỉ có hai người.",
     "call": "Cuộc gọi nhóm",
     "callConnecting": "Đang gọi cho mọi người…",
-    "notFound": "Nhóm này không còn tồn tại."
+    "notFound": "Nhóm này không còn tồn tại.",
+    "madeLine": "Bạn đã tạo nhóm",
+    "namedLine": "Bạn đã đặt tên nhóm là \"{{name}}\"",
+    "unnamedLine": "Bạn đã xóa tên nhóm",
+    "joinedLine": "{{name}} đã tham gia nhóm",
+    "removedLine": "Bạn đã xóa {{name}} khỏi nhóm"
   },
   "chat": {
     "notifyOff": "Thông báo đang tắt, nên tin nhắn của {{name}} không thể đến được với bạn.",
@@ -1401,7 +1410,8 @@
     "snoozeFor": "Báo lại · {{count}} phút",
     "holdToStop": "Giữ 3 giây để tắt",
     "stop": "Dừng",
-    "ringBar": "Báo thức đang bật · trả lời để tắt"
+    "ringBar": "Báo thức đang bật · trả lời để tắt",
+    "planSaved": "Đã lưu kế hoạch · {{title}} · {{time}}"
   },
   "board": {
     "title": "Bảng tin",

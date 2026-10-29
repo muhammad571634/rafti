@@ -255,7 +255,11 @@
     "typing": "yazıyor…",
     "markRead": "Okundu İşaretle",
     "markUnread": "Okunmadı İşaretle",
-    "read": "Okundu"
+    "read": "Okundu",
+    "previewVoice": "Sesli mesaj",
+    "previewPhoto": "Fotoğraf",
+    "previewMissedCall": "Cevapsız arama",
+    "previewCall": "Sesli arama"
   },
   "group": {
     "newChat": "Yeni sohbet",
@@ -308,7 +312,12 @@
     "pickMemberBody": "Bu sohbet sadece ikinizin arasında olacak.",
     "call": "Grup araması",
     "callConnecting": "Herkes aranıyor…",
-    "notFound": "Bu grup artık yok."
+    "notFound": "Bu grup artık yok.",
+    "madeLine": "Grubu oluşturdun",
+    "namedLine": "Grubun adını \"{{name}}\" yaptın",
+    "unnamedLine": "Grup adını kaldırdın",
+    "joinedLine": "{{name}} gruba katıldı",
+    "removedLine": "{{name}} gruptan çıkarıldı"
   },
   "chat": {
     "notifyOff": "Bildirimler kapalı olduğundan {{name}} mesajları sana ulaşamaz.",
@@ -1429,7 +1438,8 @@
     "snoozeFor": "Ertele · {{count}} dk",
     "holdToStop": "Kapatmak için 3 sn basılı tut",
     "stop": "Durdur",
-    "ringBar": "Alarm çalıyor · kapatmak için yanıtla"
+    "ringBar": "Alarm çalıyor · kapatmak için yanıtla",
+    "planSaved": "Plan kaydedildi · {{title}} · {{time}}"
   },
   "board": {
     "title": "Duyuru panosu",

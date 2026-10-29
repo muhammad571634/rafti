@@ -249,7 +249,11 @@
     "typing": "입력 중…",
     "markRead": "읽음으로 표시",
     "markUnread": "읽지 않음으로 표시",
-    "read": "읽음"
+    "read": "읽음",
+    "previewVoice": "음성 메시지",
+    "previewPhoto": "사진",
+    "previewMissedCall": "부재중 전화",
+    "previewCall": "음성 통화"
   },
   "group": {
     "newChat": "새 대화",
@@ -301,7 +305,12 @@
     "pickMemberBody": "둘만의 1:1 대화로 진행됩니다.",
     "call": "그룹 통화",
     "callConnecting": "모두에게 전화 거는 중…",
-    "notFound": "이 그룹을 찾을 수 없습니다."
+    "notFound": "이 그룹을 찾을 수 없습니다.",
+    "madeLine": "그룹을 만들었습니다",
+    "namedLine": "그룹 이름을 바꿨습니다: \"{{name}}\"",
+    "unnamedLine": "그룹 이름을 지웠습니다",
+    "joinedLine": "{{name}} 님이 참여했습니다",
+    "removedLine": "{{name}} 님을 내보냈습니다"
   },
   "chat": {
     "notifyOff": "알림이 꺼져 있어 {{name}}의 메시지를 받을 수 없습니다.",
@@ -1401,7 +1410,8 @@
     "snoozeFor": "다시 울림 · {{count}}분",
     "holdToStop": "3초간 눌러 끄기",
     "stop": "끄기",
-    "ringBar": "알람 울리는 중 · 답장하여 끄기"
+    "ringBar": "알람 울리는 중 · 답장하여 끄기",
+    "planSaved": "약속 저장됨 · {{title}} · {{time}}"
   },
   "board": {
     "title": "메모 게시판",

@@ -1339,7 +1339,7 @@ export const useAppStore = create<AppState>()(
           muted: false,
         };
         set((st) => ({ groups: [...st.groups, group], messages: { ...st.messages, [id]: [] } }));
-        appendGroupMessage(set, get, id, groupSystem(id, 'You made the group'), { quiet: true });
+        appendGroupMessage(set, get, id, groupSystem(id, i18n.t('group.madeLine')), { quiet: true });
         noticeGroupAiIfDue(set, get, id);
         // The first member says hello and names the others.
         const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
@@ -1501,7 +1501,7 @@ export const useAppStore = create<AppState>()(
           set,
           get,
           groupId,
-          groupSystem(groupId, clean ? `You named the group "${clean}"` : 'You removed the group name'),
+          groupSystem(groupId, clean ? i18n.t('group.namedLine', { name: clean }) : i18n.t('group.unnamedLine')),
           { quiet: true },
         );
       },
@@ -1521,7 +1521,7 @@ export const useAppStore = create<AppState>()(
         set((st) => ({
           groups: st.groups.map((g) => (g.id === groupId ? { ...g, memberIds: [...g.memberIds, characterId] } : g)),
         }));
-        appendGroupMessage(set, get, groupId, groupSystem(groupId, `${memberName(get(), characterId)} joined`), {
+        appendGroupMessage(set, get, groupId, groupSystem(groupId, i18n.t('group.joinedLine', { name: memberName(get(), characterId) })), {
           quiet: true,
         });
         scheduleGroupReplies(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines)] }]);
@@ -1537,7 +1537,7 @@ export const useAppStore = create<AppState>()(
             g.id === groupId ? { ...g, memberIds: g.memberIds.filter((id) => id !== characterId) } : g,
           ),
         }));
-        appendGroupMessage(set, get, groupId, groupSystem(groupId, `You removed ${name}`), { quiet: true });
+        appendGroupMessage(set, get, groupId, groupSystem(groupId, i18n.t('group.removedLine', { name })), { quiet: true });
         return true;
       },
 
@@ -3431,8 +3431,32 @@ async function finishHydration() {
     .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
   useAppStore.getState().expireFreeShells();
   useAppStore.getState().writeDueDiaryPages();
+  refreshPreviews();
   useAppStore.setState({ hydrated: true });
 }
+
+/** Every chat's and group's preview again from its last line, in the screen language. */
+function refreshPreviews() {
+  useAppStore.setState((s) => {
+    const lastOf = (id: string) => [...(s.messages[id] ?? [])].reverse().find((m) => m.kind !== 'system');
+    return {
+      conversations: s.conversations.map((c) => {
+        const last = lastOf(c.id);
+        return last ? { ...c, lastMessagePreview: previewFor(last) } : c;
+      }),
+      groups: s.groups.map((g) => {
+        const last = lastOf(g.id);
+        return last ? { ...g, lastMessagePreview: groupLinePreview(s, last) } : g;
+      }),
+    };
+  });
+}
+
+// A new screen language rewrites the previews Chats already shows ("🎤 Voice message").
+// Before hydration there is nothing saved to rewrite, and a write then would replace the save.
+i18n.on?.('languageChanged', () => {
+  if (useAppStore.getState().hydrated) refreshPreviews();
+});
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */
 
@@ -3633,11 +3657,11 @@ function appendMessage(
 export function previewFor(message: Message) {
   switch (message.kind) {
     case 'voice':
-      return '\u{1F3A4} Voice message';
+      return `\u{1F3A4} ${i18n.t('chatList.previewVoice')}`;
     case 'image':
-      return '\u{1F4F7} Photo';
+      return `\u{1F4F7} ${i18n.t('chatList.previewPhoto')}`;
     case 'call':
-      return message.missed ? '\u{1F4DE} Missed call' : '\u{1F4DE} Voice call';
+      return `\u{1F4DE} ${i18n.t(message.missed ? 'chatList.previewMissedCall' : 'chatList.previewCall')}`;
     default:
       // What they said, without the *narration* that would run into it ("grins Okay, that…");
       // a line that is only narration shows it as plain words.
@@ -4978,7 +5002,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
           set,
           get,
           conversationId,
-          { id: uid('m'), conversationId, author: 'them', kind: 'system', text: `Plan saved · ${title} · ${time}`, createdAt: new Date().toISOString() },
+          { id: uid('m'), conversationId, author: 'them', kind: 'system', text: i18n.t('alarms.planSaved', { title, time }), createdAt: new Date().toISOString() },
           { quiet: true },
         ),
       after,
