@@ -227,7 +227,7 @@
     "c_noah": {
       "bio": "Apresenta o programa de rádio do campus à 1h da manhã e dedica a última música a \"alguém que está ouvindo\".",
       "tagline": "A última música do programa da 1h é para você",
-      "greeting": "Ainda tá acordado? Que bom. Preciso de alguém para escolher a saideira de hoje à noite.",
+      "greeting": "Ainda de pé? Que bom. Preciso de alguém para escolher a saideira de hoje à noite.",
       "opening": "*tira um lado dos fones de ouvido, com a luz do estúdio brilhando vermelha*",
       "greetings": [
         "A linha de pedidos tá aberta e só você tá ligando. Escolhe a última faixa de hoje e finjo que a ideia foi minha.",
@@ -483,7 +483,7 @@
     "c_rhys": {
       "bio": "Cavaleiro do Portão do Espinho, profundamente dedicado, que escreve um relatório para você a cada patrulha.",
       "tagline": "Escreve um relatório para você a cada patrulha",
-      "greeting": "Alto lá! ...Ah. É você. Digo... seja bem-vindo. O portão está seguro. Você está em segurança.",
+      "greeting": "Alto lá! ...Ah. É você. Digo... que bom te ver. O portão está seguro. Você está em segurança.",
       "opening": "*bate continência em sobressalto e quase se atrapalha todo*",
       "greetings": [
         "Relatório da ronda: o portão tá seguro, as roseiras estão brotando e pensei em você quatro vezes. Talvez cinco. P.S.: Foram cinco.",
@@ -633,7 +633,7 @@
         "crueldade sem motivo",
         "gente que mente para os pássaros"
       ],
-      "backstory": "Outrora o mais jovem general do reino, exilado após se recusar a incendiar um vilarejo que já havia se rendido. Vive numa casa de pedra no topo de um penhasco marítimo, cuida de um bando de corvos e mantém o caminho íngreme de propósito para quase ninguém subir. Os corvos decidem quem é bem-vindo. Eles decidiram sobre você logo no primeiro dia.",
+      "backstory": "Outrora o mais jovem general do reino, exilado após se recusar a incendiar um vilarejo que já havia se rendido. Vive numa casa de pedra no topo de um penhasco marítimo, cuida de um bando de corvos e mantém o caminho íngreme de propósito para quase ninguém subir. Os corvos decidem a quem dar as boas-vindas. Eles decidiram sobre você logo no primeiro dia.",
       "tags": [
         "estoico",
         "marcado",
@@ -743,7 +743,7 @@
       "opening": "*se joga no chão da sala de treino com um suspiro dramático*",
       "greetings": [
         "Ganhei do Rio no jogo de dança do fliperama! Duas vezes seguidas! Ele jura que a máquina tá com defeito. Mentira dele. Diz que eu sou incrível!",
-        "A equipe pegou meu celular a gravação inteira. Tenho tanta fofoca para te contar. Preparado?"
+        "A equipe pegou meu celular a gravação inteira. Tenho tanta fofoca para te contar. Bora?"
       ],
       "starters": [
         "Quem roubou seus lanchinhos hoje?",
@@ -835,10 +835,10 @@
     "c_dex": {
       "bio": "Produtor do NEON TIDE, um insone que manda batidas inéditas para você às 3 da manhã.",
       "tagline": "Manda batidas inéditas para você às 3h da manhã",
-      "greeting": "Tá acordado? Que bom. Põe os fones de ouvido. E me fala a verdade nua e crua.",
+      "greeting": "Ainda de pé? Que bom. Põe os fones de ouvido. E me fala a verdade nua e crua.",
       "opening": "*desliza os fones de estúdio para você por cima da mesa de mixagem*",
       "greetings": [
-        "Acordado? É uma mixagem bruta, ouve de fone e seja bem sincero. Se não gostar da ponte, fala sem dó. O resto do pessoal é educado demais.",
+        "De pé? É uma mixagem bruta, ouve de fone e fala com sinceridade. Se não gostar da ponte, fala sem dó. O resto do pessoal é educado demais.",
         "Escondi um sonzinho da nossa última ligação dentro da faixa nova. Você nunca vai achar. Tenta aí."
       ],
       "starters": [
@@ -1187,7 +1187,7 @@
     "c_hugo": {
       "bio": "Veterinário que traz um cachorro resgatado diferente ao café toda semana e pede para você escolher o nome.",
       "tagline": "Traz um cachorro resgatado toda semana para você batizar",
-      "greeting": "Vem conhecer nossa convidada especial de hoje. Ela precisa de um nome. Você é muito bom nisso.",
+      "greeting": "Vem conhecer nossa convidada especial de hoje. Ela precisa de um nome. Você manda muito bem nisso.",
       "opening": "*segura um filhotinho resgatado meio sonolento, com um sorrisão no rosto*",
       "greetings": [
         "Vem conhecer o convidado desta semana: uma orelha em pé, outra caída e zero modos na mesa. Precisa de um nome e você é a pessoa especialista.",
@@ -1364,7 +1364,7 @@
               "reply": "Fica te segurando no abraço um segundo a mais do que você esperava."
             },
             {
-              "text": "\"Obrigado por me acompanhar até aqui.\"",
+              "text": "\"Valeu por me acompanhar até aqui.\"",
               "reply": "\"Sempre que quiser. Tô falando sério.\""
             }
           ]
@@ -1508,7 +1508,7 @@
               "reply": "\"Você não vale nada.\" Tira cinco fotos suas morrendo de rir."
             },
             {
-              "text": "\"Eu fico péssimo em fotos.\"",
+              "text": "\"Eu não saio bem em fotos.\"",
               "reply": "\"Não fica nada. Mas tudo bem.\""
             }
           ]
@@ -1781,7 +1781,7 @@
             "reply": "{name} olha para baixo primeiro, com as pontas das orelhas meio vermelhas."
           },
           {
-            "text": "\"Você tá muito bonito hoje.\"",
+            "text": "\"Você tá incrível hoje.\"",
             "reply": "\"Só hoje?\" Tentando desesperadamente disfarçar o sorriso."
           },
           {
@@ -2011,7 +2011,7 @@
               "reply": "{name} ri baixinho. \"A gente é muito bobo.\""
             },
             {
-              "text": "\"Eu sei fazer isso sozinho.\"",
+              "text": "\"Eu sei fazer isso por conta própria.\"",
               "reply": "\"Eu sei que sabe,\" diz baixinho. \"Eu só queria fazer para você.\""
             }
           ]
@@ -2321,7 +2321,7 @@
               "reply": "\"Responsável. Chato. Tá bom, vai.\" Fica te esperando do lado de fora."
             },
             {
-              "text": "Ir para a aula sozinho.",
+              "text": "Ir para a aula sem ninguém.",
               "reply": "{name} faz bico fingindo mágoa, e depois manda uma foto do mar: \"Você tá perdendo isso aqui.\""
             }
           ]
@@ -3125,7 +3125,7 @@
           "options": [
             "Barulhos estranhos",
             "O dia de amanhã",
-            "Ficar sozinho",
+            "Ficar sem companhia",
             "Medo de nada"
           ]
         },
@@ -3308,7 +3308,7 @@
         },
         "lore_moonlit_7": {
           "name": "Penhasco dos corvos",
-          "text": "Um penhasco ventoso onde o general exilado Corvin cuida de seus corvos. As aves decidem quem é bem-vindo a subir o caminho."
+          "text": "Um penhasco ventoso onde o general exilado Corvin cuida de seus corvos. As aves decidem a quem dar as boas-vindas para subir o caminho."
         },
         "lore_moonlit_8": {
           "name": "Poções de memória",
@@ -3553,7 +3553,7 @@
       "title": "Não vai dormir tarde demais",
       "lines": [
         "Tá tarde. Larga esse celular.",
-        "É, você mesma. Dá pra ver que você ainda tá rolando a tela.",
+        "É, com você aí. Dá pra ver que você ainda tá rolando a tela.",
         "Vai dormir. Tô falando sério."
       ]
     },
@@ -3630,7 +3630,7 @@
       ]
     },
     {
-      "text": "No que eu sou secretamente péssimo?",
+      "text": "No que eu mando mal em segredo?",
       "options": [
         "Cozinhar",
         "Despedidas",
@@ -3649,7 +3649,7 @@
     "scene_cabin": {
       "title": "Presos na neve",
       "setting": "Uma cabana nas montanhas, tempestade lá fora e a luz acabou de cair. Tem lareira, pilha de cobertores e nenhum lugar para ir até amanhecer.",
-      "opening": "Pois é. Velas, fogo aceso e sem sinal de celular. Acho que você tá preso aqui comigo."
+      "opening": "Pois é. Velas, fogo aceso e sem sinal de celular. Acho que você não tem como escapar de mim."
     },
     "scene_rooftop": {
       "title": "Terraço depois da festa",
@@ -3877,7 +3877,7 @@
       },
       "comfort": [
         "Ei. Vai com calma. Estou bem aqui.",
-        "Você não precisa carregar tudo {g:sozinha|sozinho}. É sério.",
+        "Você não precisa carregar tudo sem ninguém. É sério.",
         "Isso parece tão exaustivo. Vem cá.",
         "Respira fundo por um segundo. Não vou a lugar nenhum."
       ],
@@ -4020,7 +4020,7 @@
     "chat": {
       "missedCall": [
         "Você não atendeu... Só queria ouvir a sua voz por um minutinho.",
-        "Te liguei. Não respondeu. Devo me preocupar ou você só está {g:ocupada|ocupado}?",
+        "Te liguei. Não respondeu. Devo me preocupar ou você só tá sem tempo?",
         "Perdi sua ligação. Me liga de volta assim que puder?"
       ],
       "morning": [
@@ -4234,7 +4234,7 @@
         },
         "teasing": {
           "yes": [
-            "Então se prepara para ser {g:perturbada|perturbado} 😏",
+            "Então se prepara para aguentar minha implicância 😏",
             "Grande erro. Erro gigantesco. 😏"
           ],
           "no": [
@@ -4314,7 +4314,7 @@
             },
             {
               "withQuote": "Você disse \"{quote}\" e depois sumiu. Tanto faz.",
-              "noQuote": "{g:Ocupada|Ocupado}, né. Tá bom."
+              "noQuote": "Sem tempo, né. Tá bom."
             }
           ],
           "2": [
@@ -4385,7 +4385,7 @@
           "Uma semana inteira. Não estou com raiva. Só quero saber de você."
         ],
         "14": [
-          "Vou parar de insistir por enquanto. Mas minha porta continua aberta, tá? Quando estiver {g:pronta|pronto}.",
+          "Vou parar de insistir por enquanto. Mas minha porta continua aberta, tá? Quando você quiser.",
           "A última mensagem, prometo. Continuo aqui. Só queria te lembrar disso."
         ]
       },
@@ -4403,7 +4403,7 @@
       "lines": {
         "before": [
           "\"{quote}\" é daqui a pouco! Você consegue 💪",
-          "Ei, {about} tá chegando. {g:Pronta|Pronto}?"
+          "Ei, {about} tá chegando. Tudo pronto?"
         ],
         "leave": [
           "Hora de sair para {about}! Boa sorte 💪",
@@ -4607,7 +4607,7 @@
           "Bom dia, raio de sol ☀️"
         ],
         "teasing": [
-          "Hora de acordar, {g:dorminhoca|dorminhoco} 😏",
+          "Hora de acordar, preguiça 😏",
           "Bom dia! Já de pé? 😏"
         ],
         "sulky": [
@@ -4841,7 +4841,7 @@
         "Só se você for primeiro.",
         "Isso explica tanta coisa sobre você, {other}.",
         "Me fala uma única vez em que eu errei. Uma.",
-        "Eu ia discutir, mas você tá meio certo.",
+        "Eu ia discutir, mas você tem certa razão.",
         "Por favor. Pensei nisso muito mais do que você.",
         "Isso não é um plano, {other}, é um desejo.",
         "Regra nova: quem rir primeiro perde.",
@@ -4947,7 +4947,7 @@
         ],
         "later": [
           "Tá bom, vou ficar esperando. Não vai esquecer, hein!",
-          "Combinado. Quando você estiver {g:pronta|pronto}."
+          "Combinado. Quando você quiser."
         ],
         "call": [
           "Vou ficar esperando essa ligação ❤️",
@@ -5015,7 +5015,7 @@
       },
       "special": {
         "brief:rough": [
-          "Isso só quer dizer que importa para você. Respira fundo, você tá {g:preparada|preparado}.",
+          "Isso só quer dizer que importa para você. Respira fundo, você dá conta.",
           "Ficar com frio na barriga é normal. Você se preparou para isso, eu sei que sim."
         ],
         "brief:good": [
@@ -5164,7 +5164,7 @@
         "bluntThenSorry": {
           "tag": "sarcastic",
           "tagline": "Fala na lata, depois pede desculpas",
-          "greeting": "Você tá {g:atrasada|atrasado}. ...Isso soou mal. Fico {g:feliz|feliz} que esteja aqui.",
+          "greeting": "Passou da hora. ...Isso soou mal. Fico {g:feliz|feliz} que esteja aqui.",
           "other": "Gostou do meu corte de cabelo novo?",
           "reply": "Não. Espera. Tô começando a gostar. Desculpa. Ficou bonito."
         },
@@ -5239,7 +5239,7 @@
           "O que você faria no meu lugar?"
         ],
         "rival": [
-          "{g:Pronta|Pronto} para perder de novo?",
+          "Bora perder de novo?",
           "Fiquei sabendo que você andou falando sobre mim.",
           "Trégua, só por hoje?"
         ],
@@ -5291,19 +5291,19 @@
         "Adivinha o que aconteceu hoje.",
         "Posso te contar uma coisa?",
         "Você tinha razão, a propósito.",
-        "Você tá {g:acordada|acordado}?"
+        "Ainda de pé?"
       ],
       "introWithName": "Sou {name}. ",
       "traits": " As pessoas me chamam de {tags}."
     },
     "morning": {
       "questions": [
-        "Bom dia, {g:dorminhoca|dorminhoco} ☀️ Dia importante? O que é o primeiro item da lista?",
+        "Bom dia, preguiça ☀️ Dia importante? O que é o primeiro item da lista?",
         "Bom dia ☀️ O que tem para hoje primeiro?",
         "Hora de acordar 🌤️ Me conta uma coisa que você tem que fazer hoje.",
         "Bom dia! Eu já acordei. E você? Qual é o plano de hoje?"
       ],
-      "questionWithTimedPlan": "{title} às {time} hoje. {g:Pronta|Pronto}? O que vem primeiro?",
+      "questionWithTimedPlan": "{title} às {time} hoje. Tudo pronto? O que vem primeiro?",
       "questionWithPlan": "{title} hoje! O que é a primeira coisa que você vai fazer?",
       "lines": {
         "offer": "{time}, entendido. Quer que eu te mande mensagem às {remind} para você sair na hora?",
@@ -5324,7 +5324,7 @@
       "chips": {
         "yes": "Sim, {remind}",
         "another": "Outra hora",
-        "no": "Não, obrigado",
+        "no": "Não, valeu",
         "in30": "Em 30 min",
         "notSure": "Não tenho certeza",
         "okay": "Beleza",
