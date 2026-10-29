@@ -1,5 +1,28 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z58. Onboarding: gender step, Android Back, no-photo name preview (2026-10-30, Claude 2). NEXT: the to-do list below
+
+- Gender step after the name (`src/app/onboarding.tsx`, owner approved): "As a woman / As a man / Rather not say"
+  (14 locales, `onboarding.gender*`; ru "В каком роде к вам обращаться?"). One tap answers, the ✓ shows 250 ms, then
+  the deck. Saved as `user.pronouns` she / he / they (`completeOnboarding`), changeable in Edit Profile.
+- Characters know it: `pronounLine()` in `src/ai/rules.ts` tells the model to use feminine / masculine forms wherever
+  the language marks gender, or to avoid gendered wording for `they`. Profile and personas use the same line.
+- Android's system Back (bottom bar button or edge swipe) goes where the top-left arrow goes, and from the age step to
+  Start; on Start it leaves the app; the notifications pre-alert ignores it (HIG Privacy). iOS keeps the arrow only.
+  Back to Start shows the first hello's last frame (`FirstHello atEnd`), not the whole film again.
+- Name preview: no character's face before a friend is picked; iOS Contacts' no-photo avatar (grey gradient, white
+  person glyph) instead.
+- Checked on the A51 (EAS 9c3f071c): name → gender (ru) → tap → deck; Back × 5: gender (✓ kept) → name → keyboard
+  closes → age → Start (last frame). tsc 0, npm test 478/478, check:locales pass.
+
+Still to do (owner asks not done yet):
+1. The deck card's quote stays English in a Russian app ("Hey! You made it. I saved you the window seat…", Kai):
+   the onboarding greeting lines are not in the content translations.
+2. The owner saw a hand-picked Turkish survive a relaunch after choosing Automatic; I could not reproduce it
+   (Español → Automatic → relaunch = Russian). Ask the owner to retest: chip → Türkçe → chip → Автоматически → relaunch.
+3. Server evals: add scenarios for gendered grammar (a ru user with `she`, one with `he`, one with `they`) so the
+   prompt line is checked against the real model (`server/src/evals/`, see content-balance memory).
+
 ### 0z57. App language follows the phone from onboarding on (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
 
 Rule: the app speaks the phone's language unless the user picks one by hand (`initI18n`: saved `rafti.locale` ??

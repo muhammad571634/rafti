@@ -1,7 +1,7 @@
 import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ReplyPrefs } from '@/lib/reply-engine';
-import type { ActiveScene, Character, Relationship, User } from '@/types';
+import type { ActiveScene, Character, Pronouns, Relationship, User } from '@/types';
 
 import { familyLines, isFamilyLabel } from '../lib/kin';
 import { temperLines, temperOf } from '../lib/temper';
@@ -97,6 +97,21 @@ export const SAFETY_LAYERS = [
 ] as const;
 
 /**
+ * The user's gender as the character needs it (onboarding asks it, Profile changes it): in Russian,
+ * French, Arabic and other languages the verbs and adjectives aimed at them change with it.
+ */
+export function pronounLine(pronouns: Pronouns): string {
+  switch (pronouns) {
+    case 'she':
+      return 'Pronouns: she (a woman: wherever your language marks gender, use the feminine forms for her)';
+    case 'he':
+      return 'Pronouns: he (a man: wherever your language marks gender, use the masculine forms for him)';
+    case 'they':
+      return 'Pronouns: they (never assume a gender: wherever your language marks gender, choose wording that avoids it)';
+  }
+}
+
+/**
  * The rules, the persona and the user, as prompt parts in tiers (src/ai/prompt-layout.ts): what
  * every chat shares first, the bond, scene and lore last, after the history, as they change
  * between replies. `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's
@@ -148,12 +163,12 @@ export function characterParts(
   if (persona && !persona.profile) {
     // A persona they made (Character.AI's personas): who they are in this chat, instead of the profile.
     theUser.push(`Name: ${persona.name}`);
-    if (persona.pronouns) theUser.push(`Pronouns: ${persona.pronouns}`);
+    if (persona.pronouns) theUser.push(pronounLine(persona.pronouns));
     theUser.push('This is the persona they chose for your chat: treat it as who they are here.');
     if (persona.about) theUser.push(`About them, in their words: ${persona.about}`);
   } else {
     theUser.push(`Name: ${user.displayName}`);
-    if (user.pronouns) theUser.push(`Pronouns: ${user.pronouns}`);
+    if (user.pronouns) theUser.push(pronounLine(user.pronouns));
     if (user.job) theUser.push(`Job: ${user.job}`);
     if (user.interests?.length) theUser.push(`Interests: ${user.interests.join(', ')}`);
     if (user.about) theUser.push(`About them, in their words: ${user.about}`);

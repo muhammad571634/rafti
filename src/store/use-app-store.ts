@@ -485,6 +485,8 @@ interface AppState {
   completeOnboarding: (input: {
     name: string;
     birthYear: number;
+    /** How the characters speak to them (onboarding's gender step; "rather not say" is `they`). */
+    pronouns: Pronouns;
     characterId: string;
     notifications: boolean;
     /** The friend's first question, in the user's language */
@@ -1643,9 +1645,9 @@ export const useAppStore = create<AppState>()(
         return conversationId;
       },
 
-      completeOnboarding: ({ name, birthYear, characterId, notifications, firstAsk }) => {
+      completeOnboarding: ({ name, birthYear, pronouns, characterId, notifications, firstAsk }) => {
         set((s) => ({
-          user: { ...s.user, displayName: name, birthYear, onboardedAt: new Date().toISOString() },
+          user: { ...s.user, displayName: name, birthYear, pronouns, onboardedAt: new Date().toISOString() },
           settings: { ...s.settings, morningGreeting: notifications, eveningGreeting: notifications },
         }));
         // The welcome gift is paid once per account and never burns; it is gone only when spent

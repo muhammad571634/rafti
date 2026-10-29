@@ -57,13 +57,18 @@ describe('buildCharacterPrompt with a persona', () => {
 
   it('describes the persona instead of the profile', () => {
     const prompt = buildCharacterPrompt(character, user, undefined, 'English', personaFor('c1', { ...state, defaultPersonaId: 'p1' }));
-    assert.match(prompt, /THE USER:\nName: Ser Ada\nPronouns: she\nThis is the persona/);
+    assert.match(prompt, /THE USER:\nName: Ser Ada\nPronouns: she \(a woman: [^\n]*feminine forms[^\n]*\nThis is the persona/);
     assert.match(prompt, /About them, in their words: A wandering knight\./);
     assert.doesNotMatch(prompt, /Nurse|Night owl/);
   });
 
   it('keeps the profile when the chat uses it', () => {
     const prompt = buildCharacterPrompt(character, user, undefined, 'English', personaFor('c1', state));
-    assert.match(prompt, /Name: Sam\nPronouns: they\nJob: Nurse/);
+    assert.match(prompt, /Name: Sam\nPronouns: they \(never assume a gender[^\n]*\nJob: Nurse/);
+  });
+
+  it('asks for masculine forms for a man (onboarding gender step)', () => {
+    const prompt = buildCharacterPrompt(character, { ...user, pronouns: 'he' }, undefined, 'Russian');
+    assert.match(prompt, /Name: Sam\nPronouns: he \(a man: [^\n]*masculine forms/);
   });
 });

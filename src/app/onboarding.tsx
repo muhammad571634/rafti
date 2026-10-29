@@ -5,7 +5,9 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  BackHandler,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -53,7 +55,7 @@ import { morningGreetings } from '@/mock';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
-import type { Character } from '@/types';
+import type { Character, Pronouns } from '@/types';
 
 /** One friend from each world, so the first choice is about taste, not scrolling. */
 const PICKS = ['c_kai', 'c_aurelian', 'c_sol', 'c_seren'];
@@ -68,8 +70,15 @@ const NOTE_BG = isDark ? 'rgba(28,28,30,0.8)' : 'rgba(255,255,255,0.72)';
 const NOTE_BLOCKED = isDark ? 'rgba(255,69,58,0.18)' : 'rgba(255,59,48,0.10)';
 const SMOOTH = Easing.inOut(Easing.ease);
 
-type Step = 'intro' | 'age' | 'name' | 'meet' | 'notify' | 'gift';
-const ALL_STEPS: Step[] = ['intro', 'age', 'name', 'meet', 'notify', 'gift'];
+type Step = 'intro' | 'age' | 'name' | 'gender' | 'meet' | 'notify' | 'gift';
+const ALL_STEPS: Step[] = ['intro', 'age', 'name', 'gender', 'meet', 'notify', 'gift'];
+const GENDERS: { value: Pronouns; label: string }[] = [
+  { value: 'she', label: 'onboarding.genderShe' },
+  { value: 'he', label: 'onboarding.genderHe' },
+  { value: 'they', label: 'onboarding.genderThey' },
+];
+// iOS Contacts' avatar for someone with no photo (the name preview speaks for no one in particular).
+const NO_PHOTO: [string, string] = ['#A5ABB8', '#858A96'];
 
 /**
  * First launch, reworked on Apple's HIG (Onboarding, Privacy, Entering data; 2026-10-29): the first
@@ -100,6 +109,7 @@ export default function OnboardingScreen() {
   const asked = useRef(false);
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [name, setName] = useState('');
+  const [pronouns, setPronouns] = useState<Pronouns | null>(null);
   const [friendId, setFriendId] = useState(PICKS[0]);
   const [notifications, setNotifications] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -135,11 +145,33 @@ export default function OnboardingScreen() {
     setStep(steps[i]);
   };
 
+  // Android's own Back (the bottom bar's button or the edge swipe) goes where the arrow goes, and from the
+  // first question back to Start; on Start it leaves, as on any first screen. iOS has the arrow only.
+  // The notifications pre-alert keeps its one way on (HIG Privacy).
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (step === 'intro') return false;
+      if (step === 'age') setStep('intro');
+      else if (step !== 'notify') back();
+      return true;
+    });
+    return () => sub.remove();
+  });
+
+  // HIG Onboarding: one tap answers; the ✓ shows for a beat, then the next scene.
+  const choosePronouns = (value: Pronouns) => {
+    haptic.selection();
+    setPronouns(value);
+    setTimeout(next, 250);
+  };
+
   const finish = () => {
     if (!friend) return;
     const conversationId = completeOnboarding({
       name: trimmed,
       birthYear: year,
+      pronouns: pronouns ?? 'they',
       characterId: friend.id,
       notifications,
       firstAsk: t('onboarding.firstAsk', { name: trimmed }),
@@ -166,7 +198,7 @@ export default function OnboardingScreen() {
     // HIG Onboarding: the splash opens onboarding, so it ends on the one thing to do next.
     return (
       <Screen background="aurora">
-        <FirstHello onDone={() => setPlayed(true)} />
+        <FirstHello atEnd={played} onDone={() => setPlayed(true)} />
         {played ? (
           <>
             {SUPPORTED_LOCALES.length > 1 ? (
@@ -196,6 +228,9 @@ export default function OnboardingScreen() {
         return <Cta label={t('onboarding.continue')} disabled={minor} onPress={next} />;
       case 'name':
         return <Cta label={t('onboarding.continue')} disabled={!trimmed} onPress={next} />;
+      case 'gender':
+        // A tap on a row answers and moves on.
+        return null;
       case 'meet':
         return (
           <>
@@ -295,15 +330,37 @@ export default function OnboardingScreen() {
                     {name.length}/{NAME_MAX}
                   </Txt>
                 </View>
-                {friend ? (
-                  <View style={styles.preview}>
-                    <CharacterAvatar character={friend} size={40} />
-                    {/* Pops in again when the first letter arrives (and when the field empties). */}
-                    <Animated.View key={trimmed ? 'named' : 'empty'} entering={ZoomIn.springify().damping(14)} style={[styles.card, styles.bubble]}>
-                      <Txt style={styles.bubbleText}>{t('onboarding.namePreview', { name: trimmed || t('onboarding.nameYou') })}</Txt>
-                    </Animated.View>
-                  </View>
-                ) : null}
+                <View style={styles.preview}>
+                  {/* No friend is picked yet, so no character's face: the system's contact with no photo. */}
+                  <LinearGradient colors={NO_PHOTO} style={styles.noPhoto}>
+                    <Ionicons name="person" size={22} color="#FFFFFF" />
+                  </LinearGradient>
+                  {/* Pops in again when the first letter arrives (and when the field empties). */}
+                  <Animated.View key={trimmed ? 'named' : 'empty'} entering={ZoomIn.springify().damping(14)} style={[styles.card, styles.bubble]}>
+                    <Txt style={styles.bubbleText}>{t('onboarding.namePreview', { name: trimmed || t('onboarding.nameYou') })}</Txt>
+                  </Animated.View>
+                </View>
+              </>
+            ) : null}
+
+            {step === 'gender' ? (
+              <>
+                <Title title={t('onboarding.genderTitle')} body={t('onboarding.genderBody')} />
+                <View style={[styles.card, styles.choices]} accessibilityRole="radiogroup">
+                  {GENDERS.map((g, i) => (
+                    <Pressable
+                      key={g.value}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: pronouns === g.value }}
+                      onPress={() => choosePronouns(g.value)}
+                      style={({ pressed }) => [styles.choice, pressed && styles.choicePressed]}>
+                      <View style={[styles.choiceBody, i < GENDERS.length - 1 && styles.choiceLine]}>
+                        <Txt style={styles.choiceText}>{t(g.label)}</Txt>
+                        {pronouns === g.value ? <Ionicons name="checkmark" size={22} color={colors.primary} /> : null}
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
               </>
             ) : null}
 
@@ -655,6 +712,13 @@ const styles = StyleSheet.create({
   input: { flex: 1, minWidth: 0, fontSize: 20, fontWeight: '600', color: colors.text, paddingVertical: 0 },
   count: { fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
   preview: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm + 2, marginTop: 36 },
+  noPhoto: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  choices: { marginTop: 28, overflow: 'hidden' },
+  choice: { paddingLeft: 20 },
+  choicePressed: { backgroundColor: systemColors.fill },
+  choiceBody: { minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 20 },
+  choiceLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  choiceText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   bubble: { flexShrink: 1, paddingHorizontal: 15, paddingVertical: 11, borderRadius: 21, borderBottomLeftRadius: 6, transformOrigin: '0% 100%' },
   bubbleText: { fontSize: 17, lineHeight: 22, color: colors.text },
   deck: { alignSelf: 'center', marginTop: space.sm },

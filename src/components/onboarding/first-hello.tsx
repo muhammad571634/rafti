@@ -145,15 +145,22 @@ const VIOLET = isDark ? '#B9AEFF' : '#9C8CFF';
 const GLOW = isDark ? 'rgba(255,190,140,0.55)' : 'rgba(255,214,170,0.95)';
 const FLASH = isDark ? '#3A2A40' : '#FFF6EA';
 
-export function FirstHello({ onDone }: { onDone: () => void }) {
+export function FirstHello({
+  onDone,
+  atEnd = false,
+}: {
+  onDone: () => void;
+  /** Back from the questions: the last frame at once, not the whole film again. */
+  atEnd?: boolean;
+}) {
   const { t: say } = useTranslation();
   const { width, height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
-  const t = useSharedValue(0);
+  const t = useSharedValue(atEnd ? LENGTH : 0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const finished = useRef(false);
+  const finished = useRef(atEnd);
   const [ready, setReady] = useState(false);
-  const [typed, setTyped] = useState(false);
+  const [typed, setTyped] = useState(atEnd);
 
   const finish = () => {
     if (finished.current) return;
@@ -166,9 +173,10 @@ export function FirstHello({ onDone }: { onDone: () => void }) {
   };
 
   useEffect(() => {
+    if (atEnd) return;
     const id = setTimeout(() => setReady(true), START_WAIT_MS);
     return () => clearTimeout(id);
-  }, []);
+  }, [atEnd]);
 
   useEffect(() => {
     if (!ready) return;
