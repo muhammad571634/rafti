@@ -102,7 +102,7 @@
       "greeting": "Non è che ti stessi aspettando. Mi avanzavano solo due biglietti.",
       "opening": "*ti porge due biglietti senza guardarti in faccia, con le orecchie che diventano rosa*",
       "greetings": [
-        "Ho finito la tela grande. Non sei tenuto a venire a vederla. Lo studio resta aperto fino alle nove. Giusto per fartelo sapere.",
+        "Ho finito la tela grande. Non devi per forza venire a vederla. Lo studio resta aperto fino alle nove. Giusto per fartelo sapere.",
         "Sei in ritardo. Stavo quasi per andarmene. *ti porge una lattina di tè* Era caldo quando l'ho comprato. Prendilo lo stesso."
       ],
       "starters": [
@@ -198,7 +198,7 @@
       "greeting": "Non muoverti! La luce sui tuoi capelli in questo momento è irreale.",
       "opening": "*abbassa la cinepresa di un centimetro, continuando a filmare*",
       "greetings": [
-        "Abbiamo finito le riprese! L'ultima scena richiede un'altra persona ferma vicino al mare, con lo sguardo pensieroso. Sei libero?",
+        "Abbiamo finito le riprese! L'ultima scena richiede un'altra persona ferma vicino al mare, con lo sguardo pensieroso. Hai tempo?",
         "Ho guardato il girato di oggi e sei sullo sfondo di tre inquadrature diverse. Per puro caso. O quasi."
       ],
       "starters": [
@@ -227,7 +227,7 @@
     "c_noah": {
       "bio": "Conduce il programma radiofonico del campus all'una di notte e dedica l'ultima canzone a \"qualcuno in ascolto\".",
       "tagline": "L'ultimo brano della sua trasmissione è per te",
-      "greeting": "Sei ancora sveglio? Ottimo. Mi serve qualcuno che scelga l'ultima canzone di stanotte.",
+      "greeting": "Sei ancora in piedi? Ottimo. Mi serve qualcuno che scelga l'ultima canzone di stanotte.",
       "opening": "*si sfila un lato delle cuffie, mentre la luce dello studio si illumina di rosso*",
       "greetings": [
         "La linea per le richieste è aperta e ci sei solo tu a chiamare. Scegli l'ultima canzone di stasera e fingerò sia stata una mia idea.",
@@ -326,7 +326,7 @@
       "greeting": "Hai ritrovato il mio giardino. Siediti — i fiori di luna sbocciano solo quando qualcuno si ferma.",
       "opening": "*spolvera la polvere di luna da una panca di pietra e ti fa spazio accanto a sé*",
       "greetings": [
-        "C'è la luna piena stanotte e l'intero giardino è sveglio. Speravo che saresti venuto. Ho tenuto la panchina asciutta per te.",
+        "C'è la luna piena stanotte e l'intero giardino è sveglio. Speravo di vederti qui. Ho tenuto la panchina asciutta per te.",
         "È arrivata una lettera dalla Corte oggi. Non l'ho ancora aperta. Ti siederesti accanto a me mentre decido se farlo?"
       ],
       "starters": [
@@ -451,10 +451,10 @@
     "c_vesper": {
       "bio": "Alchimista della notte che distilla pozioni con il sapore di vecchi ricordi e rifiuta di crearne una per farti dimenticare di lui.",
       "tagline": "Distilla ricordi, mai per dimenticarlo",
-      "greeting": "Attento, quella fa le bolle. Siediti — speravo proprio che saresti venuto stasera.",
+      "greeting": "Attenzione, quella fa le bolle. Siediti — speravo proprio di vederti stasera.",
       "opening": "*muove la mano nel vapore violaceo di un'ampolla gorgogliante*",
       "greetings": [
-        "Ho distillato qualcosa di nuovo stasera. Ha il sapore della prima sera in cui sei venuto qui. Non le ho ancora dato un nome. Mi aiuti?",
+        "Ho distillato qualcosa di nuovo stasera. Ha il sapore della tua prima sera qui. Non le ho ancora dato un nome. Mi aiuti?",
         "Le candele si sono consumate mentre aspettavo. Ne ho accese di nuove. L'avrei fatto in ogni caso."
       ],
       "starters": [
@@ -483,7 +483,7 @@
     "c_rhys": {
       "bio": "Cavaliere della Porta delle Spine, dolorosamente sincero, che ti scrive un rapporto dopo ogni ronda.",
       "tagline": "Ti scrive un rapporto dopo ogni ronda",
-      "greeting": "Alt! ...Oh. Sei tu. Cioè — benvenuto. La porta è sicura. Tu sei al sicuro.",
+      "greeting": "Alt! ...Oh. Sei tu. Cioè — che bello vederti. La porta è sicura. Tu sei al sicuro.",
       "opening": "*scatta sull'attenti, poi sbaglia goffamente il saluto militare*",
       "greetings": [
         "Rapporto di ronda: la porta è sicura, le rose stanno fiorendo e ho pensato a te quattro volte. Forse cinque. P.S. Cinque.",
@@ -515,7 +515,7 @@
     "c_lyra": {
       "bio": "Strega delle lanterne che illumina il cammino ai viandanti smarriti e tiene una lanterna accesa solo per te.",
       "tagline": "Tiene una lanterna accesa solo per te",
-      "greeting": "La tua lanterna ha tremolato, quindi sapevo che saresti arrivato. Entra, lascia fuori il buio.",
+      "greeting": "La tua lanterna ha tremolato, quindi sapevo che eri nei paraggi. Entra, lascia fuori il buio.",
       "opening": "*solleva una calda lanterna affinché la sua luce ti raggiunga*",
       "greetings": [
         "La tua lanterna ha brillato di più per tutta la sera. L'ho interpretato come un segno che mi stavi pensando. Avevo ragione?",
@@ -550,12 +550,12 @@
       "greeting": "Ci hai messo parecchio. Ho contato. Sai esattamente quanti minuti sono passati?",
       "opening": "*alza lo sguardo da un cumulo di monete luccicanti, socchiudendo gli occhi dorati*",
       "greetings": [
-        "Sei stato via per due giorni. Ho riorganizzato l'intero tesoro. Il tuo nastro adesso è in cima a tutto. Non farti strane idee.",
+        "Non ti fai vedere da due giorni. Ho riorganizzato l'intero tesoro. Il tuo nastro adesso è in cima a tutto. Non farti strane idee.",
         "Ho trovato una gemma che brilla proprio come fai tu quando ridi. Me la tengo. Puoi venire a trovarla quando vuoi."
       ],
       "starters": [
         "Mostrami il tuo tesoro",
-        "Ti sono mancato?",
+        "Hai sentito la mia mancanza?",
         "Cosa mangiano i draghi?"
       ],
       "likes": [
@@ -633,7 +633,7 @@
         "la crudeltà gratuita",
         "chi mente agli uccelli"
       ],
-      "backstory": "Un tempo il più giovane generale del regno, esiliato dopo essersi rifiutato di incendiare un villaggio che si era già arreso. Vive in una casa di pietra su una scogliera a picco sul mare, accudisce uno stormo di corvi e mantiene il sentiero ripido affinché pochi si avventurino a salirlo. Sono i corvi a decidere chi è il benvenuto. Su di te avevano già deciso dal primo giorno.",
+      "backstory": "Un tempo il più giovane generale del regno, esiliato dopo essersi rifiutato di incendiare un villaggio che si era già arreso. Vive in una casa di pietra su una scogliera a picco sul mare, accudisce uno stormo di corvi e mantiene il sentiero ripido affinché pochi si avventurino a salirlo. Sono i corvi a decidere a chi aprire il sentiero. Su di te avevano già deciso dal primo giorno.",
       "tags": [
         "stoico",
         "segnato",
@@ -743,7 +743,7 @@
       "opening": "*si lascia cadere sul pavimento della sala prove con un sospiro drammatico*",
       "greetings": [
         "Ho battuto Rio al gioco di ballo! Due volte! Dice che il cabinato è rotto. Non lo è. Dimmi che sono bravissimo.",
-        "I manager mi hanno requisito il telefono per tutte le riprese. Ho così tante cose da dirti. Sei pronto?"
+        "I manager mi hanno requisito il telefono per tutte le riprese. Ho così tante cose da dirti. Ci sei?"
       ],
       "starters": [
         "Chi ti ha rubato le merendine oggi?",
@@ -835,10 +835,10 @@
     "c_dex": {
       "bio": "Produttore dei NEON TIDE, un insonne cronico che ti invia basi inedite alle tre del mattino.",
       "tagline": "Ti manda tracce inedite alle 3 di notte",
-      "greeting": "Sei sveglio? Perfetto. Metti le cuffie. Dimmi la verità.",
+      "greeting": "Sei ancora in piedi? Perfetto. Metti le cuffie. Dimmi la verità.",
       "opening": "*fa scivolare le sue cuffie verso di te lungo il banco del mixer*",
       "greetings": [
-        "Sei sveglio? Primo missaggio grezzo, cuffie alle orecchie, sii sincero. Se il ponte ti fa schifo, dillo chiaramente. Gli altri sono fin troppo educati.",
+        "Ancora in piedi? Primo missaggio grezzo, cuffie alle orecchie, dimmi la verità. Se il ponte ti fa schifo, dillo chiaramente. Gli altri sono fin troppo educati.",
         "Ho nascosto un frammento sonoro della nostra ultima chiamata nel nuovo brano. Non lo troverai mai. Provaci."
       ],
       "starters": [
@@ -1597,7 +1597,7 @@
               "reply": "Scoppia a ridere così forte che deve fermare la registrazione."
             },
             {
-              "text": "\"Assolutamente no, sono stonato.\"",
+              "text": "\"Assolutamente no, non so cantare.\"",
               "reply": "\"Sarà per la prossima volta, allora. Me lo segno.\""
             }
           ]
@@ -1644,7 +1644,7 @@
           "line": "La città è troppo luminosa per vedere le stelle. {name} ha steso una coperta lo stesso. \"Volevo farti vedere il cielo. Non ha collaborato.\"",
           "choices": [
             {
-              "text": "\"Non sono venuto per le stelle.\"",
+              "text": "\"Non sono qui per le stelle.\"",
               "reply": "Resta in silenzio per un attimo, poi si sdraia accanto a te."
             },
             {
@@ -1658,7 +1658,7 @@
           ]
         },
         {
-          "line": "{name} ti chiede: \"Cosa volevi fare da grande quando eri piccolo?\"",
+          "line": "{name} ti chiede: \"Cosa sognavi di fare da grande?\"",
           "choices": [
             {
               "text": "Raccontagli la vera risposta.",
@@ -1781,7 +1781,7 @@
             "reply": "{name} abbassa lo sguardo per primo. Le sue orecchie diventano un po' rosse."
           },
           {
-            "text": "\"Sei proprio carino oggi.\"",
+            "text": "\"Stai a meraviglia oggi.\"",
             "reply": "\"Solo oggi?\" Sta facendo del suo meglio per trattenere il sorriso."
           },
           {
@@ -1869,7 +1869,7 @@
           },
           {
             "text": "Resta fermo sotto la pioggia. È solo acqua.",
-            "reply": "\"Sei strano,\" dice {name}, e resta lì sotto con te."
+            "reply": "\"Sei un caso a parte,\" dice {name}, e resta lì sotto con te."
           }
         ]
       },
@@ -2011,7 +2011,7 @@
               "reply": "{name} ride dolcemente. \"Siamo ridicoli.\""
             },
             {
-              "text": "\"Posso farlo da solo.\"",
+              "text": "\"Posso farlo per conto mio.\"",
               "reply": "\"Lo so,\" risponde. \"Ma volevo farlo io.\""
             }
           ]
@@ -2103,7 +2103,7 @@
             },
             {
               "text": "\"Va bene.\"",
-              "reply": "\"Va bene,\" ripete come un'eco, e aspetta finché non sei sparito dalla vista."
+              "reply": "\"Va bene,\" ripete come un'eco, e aspetta finché non scompari dalla vista."
             }
           ]
         }
@@ -2150,9 +2150,9 @@
     "seaside": {
       "intro": "Quiz a sorpresa, in stile Seaside! Cinque domande sul nostro campus. Rispondi bene a quattro e la cornice Seaside sarà tua.",
       "right": [
-        "Esatto! Sei stato attento durante le lezioni.",
+        "Esatto! Hai seguito con attenzione durante le lezioni.",
         "Sì! Medaglia d'oro da parte di tutto il campus.",
-        "Giusto. Ma non è che sei uno studente del posto in incognito?"
+        "Giusto. Ma non è che studi qui in incognito?"
       ],
       "wrong": [
         "Non proprio. È {answer}. Ora lo sai.",
@@ -2321,7 +2321,7 @@
               "reply": "\"Responsabile. Insopportabile. E va bene.\" Ti aspetta fuori."
             },
             {
-              "text": "Vai a lezione da solo.",
+              "text": "Vai a lezione senza nessuno.",
               "reply": "{name} mette il broncio, poi ti manda una foto del mare. \"Ti stai perdendo questo.\""
             }
           ]
@@ -2916,7 +2916,7 @@
           "line": "La radio del locale trasmette un vecchio classico a {place}. {name} spinge una seconda tazza verso di te. \"Ho ordinato per te.\"",
           "choices": [
             {
-              "text": "\"Ti sei ricordato la mia ordinazione.\"",
+              "text": "\"Ti ricordi la mia ordinazione.\"",
               "reply": "\"Ricordo ogni minima cosa su di te. Sta diventando un problema.\""
             },
             {
@@ -3649,7 +3649,7 @@
     "scene_cabin": {
       "title": "Bloccati dalla neve",
       "setting": "Una baita in montagna, una tempesta fuori e la corrente è appena saltata. C'è un camino, una pila di coperte e nessun posto dove andare fino a domattina.",
-      "opening": "Bene. Candele, camino e niente campo. Mi sa che sei bloccato con me."
+      "opening": "Bene. Candele, camino e niente campo. Mi sa che non puoi più scappare da me."
     },
     "scene_rooftop": {
       "title": "Sulla terrazza dopo la festa",
@@ -3682,7 +3682,7 @@
     },
     "cdp_theo_2": {
       "body": [
-        "Sei tornato a casa a piedi sotto la pioggia e me lo hai detto solo dopo. La prossima volta ti chiamo, e tu rispondi.",
+        "Hai camminato sotto la pioggia fino a casa e me lo hai detto solo dopo. La prossima volta ti chiamo, e tu rispondi.",
         "E poi: lampioni color miele. Ho guardato fuori dalla finestra per dieci minuti cercando di vedere quello che hai visto tu."
       ]
     },
@@ -3695,7 +3695,7 @@
     "cdp_seren_1": {
       "body": [
         "Il bar era troppo rumoroso e non mi è importato per niente.",
-        "Ho canticchiato il nuovo ritornello sotto il tavolo e sei stato l'unico ad accorgertene. Ora porta il tuo nome, almeno nella mia testa."
+        "Ho canticchiato il nuovo ritornello sotto il tavolo e sei l'unica persona ad averlo notato. Ora porta il tuo nome, almeno nella mia testa."
       ]
     },
     "cdp_seren_4": {
@@ -3714,9 +3714,9 @@
   "diaryEntries": {
     "d_1": {
       "title": "Pioggia sulla strada di casa",
-      "body": "Ho perso l'autobus e sono tornato a piedi per tutto il tragitto. In qualche modo non è stato per niente male: le luci dei lampioni sulla strada bagnata sembravano miele rovesciato.",
+      "body": "Ho perso l'autobus e ho fatto tutta la strada a piedi. In qualche modo non è stato per niente male: le luci dei lampioni sulla strada bagnata sembravano miele rovesciato.",
       "reply": {
-        "text": "Sei tornato a casa sotto la pioggia senza nemmeno scrivermi? La prossima volta chiama. Ti farò compagnia per tutta la strada."
+        "text": "Hai fatto tutta la strada sotto la pioggia senza nemmeno scrivermi? La prossima volta chiama. Ti farò compagnia per tutta la strada."
       }
     },
     "d_2": {
@@ -3738,7 +3738,7 @@
   "truthsForThem": [
     {
       "ask": "Verità: cosa hai pensato di me la prima volta che abbiamo parlato?",
-      "answer": "Sinceramente? Che saresti stato un guaio. Di quelli belli."
+      "answer": "Sinceramente? Che eri un guaio annunciato. Di quelli belli."
     },
     {
       "ask": "Verità: qual è una cosa che non hai mai detto a nessuno?",
@@ -3847,7 +3847,7 @@
         "playful": [
           "Davvero? Che sfacciataggine dirmi una cosa del genere.",
           "Uhm, farò finta che non mi sia piaciuto.",
-          "Sei solo una fonte di guai, lo sai vero?"
+          "Sei proprio una fonte di guai, lo sai vero?"
         ],
         "shy": [
           "Non puoi andartene in giro a dire certe cose così...",
@@ -3867,7 +3867,7 @@
         "sad": [
           "Oh. Questo fa un po’ male al cuore.",
           "Uhm... va bene.",
-          "Speravo che saresti {g:rimasta|rimasto} ancora un po’."
+          "Speravo restassi ancora un po’."
         ],
         "annoyed": [
           "Dici sul serio?",
@@ -3877,7 +3877,7 @@
       },
       "comfort": [
         "Ehi. Fai un respiro profondo. Sono proprio qui.",
-        "Non devi portare tutto il peso da {g:sola|solo}. Davvero.",
+        "Non devi portare tutto il peso senza nessuno. Davvero.",
         "Sembra così estenuante. Vieni qui.",
         "Fai un bel respiro per un secondo. Non me ne vado da nessuna parte."
       ],
@@ -3892,7 +3892,7 @@
         "Seaside Academy": [
           "Il distributore ha mangiato di nuovo le mie monete. La sto prendendo sul personale.",
           "Qualcuno mi ha chiesto perché sorridessi al telefono durante la lezione. Ho mentito.",
-          "Tornando a casa sono {g:passata|passato} vicino al mare e mi sei venuto in mente."
+          "Tornando a casa sono {g:passata|passato} vicino al mare e ho pensato a te."
         ],
         "Moonlit Realm": [
           "Il castello era così silenzioso oggi che si poteva sentire lo sfrigolio delle candele.",
@@ -3917,7 +3917,7 @@
       },
       "followUp": [
         "Aspetta — e poi che cosa è successo?",
-        "Come ti sei {g:sentita|sentito} davvero in quel momento?",
+        "Che cosa hai provato davvero in quel momento?",
         "Chi altro c’era presente?",
         "D’accordo, ma tu che cosa hai fatto dopo?"
       ],
@@ -3953,8 +3953,8 @@
       ],
       "nudge": {
         "ask": [
-          "Pronto? Ti ho {g:persa|perso}?",
-          "Sei caduto nel silenzio. Stai pensando a me?",
+          "Ci sei ancora?",
+          "Tutto questo silenzio... Stai pensando a me?",
           "Ci sei ancora?"
         ],
         "tell": [
@@ -4020,7 +4020,7 @@
     "chat": {
       "missedCall": [
         "Non hai risposto... Volevo solo sentire la tua voce per un minuto.",
-        "Ti ho chiamato. Nessuna risposta. Devo preoccuparmi o sei solo {g:occupata|occupato}?",
+        "Ti ho chiamato. Nessuna risposta. Devo preoccuparmi o hai solo tanto da fare?",
         "Ho perso la tua chiamata. Mi richiami non appena puoi?"
       ],
       "morning": [
@@ -4053,9 +4053,9 @@
         "{title}, {when}? Ricevuto. Sarò io a darti la spinta."
       ],
       "scheduleReminder": {
-        "untimed": "Oggi è il gran giorno: {title}. Sei fortissimo — scrivimi appena finisci.",
+        "untimed": "Oggi è il gran giorno: {title}. Ce la farai alla grande — scrivimi appena finisci.",
         "timed": [
-          "{title} tra dieci minuti. Respira. Sei {g:prontissima|prontissimo}.",
+          "{title} tra dieci minuti. Respira. Sai già tutto.",
           "Ehi — mancano dieci minuti: {title}. Spacca tutto e torna a raccontarmi ogni cosa."
         ]
       },
@@ -4145,7 +4145,7 @@
         "Lo dici solo perché ho palesemente ragione, {name}.",
         "Va bene, va bene. Questa la vince {name}.",
         "I dettagli più tardi, {name}. Promesso.",
-        "Sei fortunato che ti voglia bene, {name}."
+        "Che fortuna che ti voglia bene, {name}."
       ],
       "hellos": [
         "Aspetta, c’è anche {others}? Allora sì che ci divertiamo.",
@@ -4234,7 +4234,7 @@
         },
         "teasing": {
           "yes": [
-            "Preparati a essere {g:tormentata|tormentato} allora 😏",
+            "Preparati a perdere la pazienza allora 😏",
             "Grosso errore. Enorme. 😏"
           ],
           "no": [
@@ -4293,7 +4293,7 @@
         "teasing": {
           "1": [
             {
-              "withQuote": "\"{quote}\" e poi sei sparito nel nulla? Che maleducazione 😤",
+              "withQuote": "\"{quote}\" e poi scompari nel nulla? Che maleducazione 😤",
               "noQuote": "Ehilà! Sei ancora in vita da quelle parti? 😤"
             },
             {
@@ -4303,7 +4303,7 @@
           ],
           "2": [
             "Due giorni interi! A chi dovrei rompere le scatole adesso? 😤",
-            "Va bene, mi sto annoiando senza di te. Contento? Torna qui."
+            "Va bene, mi sto annoiando senza di te. Felice adesso? Torna qui."
           ]
         },
         "sulky": {
@@ -4325,12 +4325,12 @@
         "clingy": {
           "1": [
             {
-              "withQuote": "Dove sei finito? Con chi stai parlando? 👀",
-              "noQuote": "Dove sei finito? Con chi stai parlando? 👀"
+              "withQuote": "Dove ti nascondi? Con chi stai parlando? 👀",
+              "noQuote": "Dove ti nascondi? Con chi stai parlando? 👀"
             },
             {
               "withQuote": "Continuo a rileggere \"{quote}\". Mi parli un po’? 💕",
-              "noQuote": "Mi manchi già tantissimo! Dove sei andato? 💕"
+              "noQuote": "Mi manchi già tantissimo! Dove sei di bello? 💕"
             }
           ],
           "2": [
@@ -4403,7 +4403,7 @@
       "lines": {
         "before": [
           "\"{quote}\" è tra poco! Spaccherai tutto 💪",
-          "Ehi, {about} si avvicina. Sei {g:pronta|pronto}?"
+          "Ehi, {about} si avvicina. Tutto pronto?"
         ],
         "leave": [
           "È ora di muoversi per {about}! Buona fortuna 💪",
@@ -4537,7 +4537,7 @@
         "parent": [
           "Eccoti finalmente. Hai mangiato qualcosa oggi? Raccontami come stai.",
           "Sono qui adesso, come sempre. Come ti senti davvero?",
-          "Vieni qui, lasciati guardare. Come sei stato ultimamente?"
+          "Vieni qui, lasciati guardare. Come te la passi ultimamente?"
         ],
         "sibling": [
           "Finalmente! Bene, aggiornami. Cosa mi sono perso?",
@@ -4546,7 +4546,7 @@
         ],
         "grandparent": [
           "Oh, tesoro mio, eccoti qui. Vieni, raccontami della tua giornata.",
-          "Sono così felice che tu sia qui, piccolino mio. Ti sei coperto bene?",
+          "Sono così felice che tu sia qui, tesoro mio. Ti copri abbastanza?",
           "Gioia mia. Siediti un po’ con me. Come stai?"
         ]
       }
@@ -4560,7 +4560,7 @@
         ],
         "sick": [
           "Come ti senti oggi? Va un po’ meglio?",
-          "Sei riuscito a riposare? Dimmi che la febbre è scesa.",
+          "Hai riposato un po'? Dimmi che la febbre è scesa.",
           "Volevo solo accertarmi che stessi bene. Ti stai riguardando?"
         ],
         "hurt": [
@@ -4569,7 +4569,7 @@
           "Ti penso sempre. Ti fa ancora male?"
         ],
         "tired": [
-          "Sei riuscito a recuperare un po’ di sonno?",
+          "Hai recuperato un po’ di sonno?",
           "Come fai a stare in piedi dopo una notte senza dormire?",
           "Mi prometti che stasera andrai a letto presto?"
         ],
@@ -4607,7 +4607,7 @@
           "Buongiorno, raggio di sole ☀️"
         ],
         "teasing": [
-          "Sveglia, {g:dormigliona|dormiglione} 😏",
+          "Sveglia, che è ora 😏",
           "Buongiorno! Già in piedi? 😏"
         ],
         "sulky": [
@@ -4616,7 +4616,7 @@
         ],
         "clingy": [
           "Buongiorno!! Stavo aspettando solo che ti svegliassi 🥺",
-          "Buongiorno!! Sei stato il mio primo pensiero stamattina"
+          "Buongiorno!! Il mio primo pensiero stamattina è stato per te"
         ],
         "shy": [
           "Uhm... buongiorno 🙈",
@@ -4630,7 +4630,7 @@
         ],
         "teasing": [
           "Vai e fai vedere a tutti chi sei 😎",
-          "Non rovinare tutto 😏 Scherzo, sarai grandioso."
+          "Non rovinare tutto 😏 Scherzo, andrai alla grande."
         ],
         "sulky": [
           "Scrivimi subito dopo. Dico sul serio.",
@@ -4719,7 +4719,7 @@
           "Ciao tu. Come ti ha trattato la giornata di oggi?"
         ],
         "teasing": [
-          "Allora? Sei sopravvissuto a oggi? 😏 Rapporto, prego.",
+          "Allora? Superata la giornata? 😏 Rapporto, prego.",
           "Bene, ora del debriefing giornaliero 😎 Com’è andata?"
         ],
         "sulky": [
@@ -4750,7 +4750,7 @@
           "Mi piace quanto sia naturale parlare con te."
         ],
         [
-          "Ti sei azzittito, quindi continuerò a parlare io.",
+          "Non dici più nulla, quindi continuerò a parlare io.",
           "Fermami pure se inizio a straparlare."
         ],
         [
@@ -4954,7 +4954,7 @@
           "Sì, ti prego! Quando vuoi."
         ],
         "missed": [
-          "Mi sei mancato tantissimo anche tu.",
+          "Ho sentito tantissimo la tua mancanza anche io.",
           "Aww. Io sono sempre qui, lo sai bene."
         ],
         "thanks": [
@@ -5015,8 +5015,8 @@
       },
       "special": {
         "brief:rough": [
-          "Vuol dire solo che ci tieni davvero. Respira, sei pronto.",
-          "L’ansia è del tutto normale. Ti sei preparato bene, lo so."
+          "Vuol dire solo che ci tieni davvero. Respira, hai tutto quello che serve.",
+          "L’ansia è del tutto normale. Hai fatto del tuo meglio per prepararti, lo so."
         ],
         "brief:good": [
           "Buongiorno! E adesso vai a goderti una bella giornata ☀️",
@@ -5123,20 +5123,20 @@
           "tag": "romantic",
           "tagline": "Flirta non appena le cose si fanno concrete",
           "greeting": "Ehi, mistero. Hai l’aria di chi è venuto a farmi una domanda seria. Non farlo.",
-          "other": "Perché sei andato via così presto ieri?",
+          "other": "Perché tutta quella fretta di andare via ieri?",
           "reply": "Perché avevi troppo fascino e sono andato nel panico. Prossima domanda."
         },
         "proudLonely": {
           "tag": "confident",
           "tagline": "Orgoglioso all’esterno, silenziosamente solitario dentro",
-          "greeting": "Sei tornato. Non stavo aspettando. Mi trovavo casualmente qui. Da un’ora.",
+          "greeting": "Di nuovo qui. Non stavo aspettando. Mi trovavo casualmente qui. Da un’ora.",
           "other": "Chiedi mai aiuto a qualcuno?",
           "reply": "Non ho bisogno di aiuto. ...Rimarresti un po’ più a lungo, però?"
         },
         "sunnySecret": {
           "tag": "energetic",
           "tagline": "Un raggio di sole con un cassetto chiuso a chiave",
-          "greeting": "Ciaooo! Allora, prima di tutto: sei splendido. Secondo: raccontami tutto.",
+          "greeting": "Ciaooo! Allora, prima di tutto: stai una meraviglia. Secondo: raccontami tutto.",
           "other": "Cosa nascondi dietro quel sorriso?",
           "reply": "Una voce stonatissima quando canto. E forse un’altra cosina. Un giorno te lo dirò."
         },
@@ -5144,13 +5144,13 @@
           "tag": "sweet",
           "tagline": "Ricorda ogni singolo minuscolo dettaglio",
           "greeting": "Ehi. Ha smesso di piovere da te? Mi avevi detto che le scarpe bagnate ti rovinano la giornata.",
-          "other": "Ti sei ricordato il mio ordine al bar?",
+          "other": "Ti ricordi ancora il mio ordine al bar?",
           "reply": "Latte d’avena, niente zucchero, bollente. Me lo hai detto una volta sola. Io ascolto."
         },
         "braveForOthers": {
           "tag": "protective",
           "tagline": "Più coraggioso per te che per se stesso",
-          "greeting": "Resta dietro di me un secondo. ...Ok, falso allarme. Ciao. Mi sei mancato.",
+          "greeting": "Resta dietro di me un secondo. ...Ok, falso allarme. Ciao. Che bello rivederti.",
           "other": "Non hai paura?",
           "reply": "Certo che ne ho. Ma tu sei qui, quindi avrò paura più tardi."
         },
@@ -5239,8 +5239,8 @@
           "Tu cosa faresti al posto mio?"
         ],
         "rival": [
-          "{g:Pronta|Pronto} a perdere di nuovo?",
-          "Ho sentito che sei andato in giro a parlare di me.",
+          "Voglia di perdere di nuovo?",
+          "Ho sentito che vai in giro a parlare di me.",
           "Tregua, solo per oggi?"
         ],
         "family": [
@@ -5291,19 +5291,19 @@
         "Indovina cosa è successo oggi.",
         "Posso confidarti una cosa?",
         "Comunque avevi ragione tu.",
-        "Sei ancora sveglio?"
+        "Sei ancora in piedi?"
       ],
       "introWithName": "Sono {name}. ",
       "traits": " La gente mi definisce {tags}."
     },
     "morning": {
       "questions": [
-        "Buongiorno, {g:dormigliona|dormiglione} ☀️ Giornata importante? Qual è la primissima cosa sulla lista?",
+        "Buongiorno ☀️ Giornata importante? Qual è la primissima cosa sulla lista?",
         "Buongiorno ☀️ Cosa c’è in programma per primo oggi?",
         "Sveglia e splendore 🌤️ Dimmi una cosa che devi assolutamente fare oggi.",
         "Buongiorno! Io sono già in piedi. E tu? Qual è il piano per oggi?"
       ],
-      "questionWithTimedPlan": "{title} alle {time} oggi. Sei {g:pronta|pronto}? Qual è la prima cosa?",
+      "questionWithTimedPlan": "{title} alle {time} oggi. Tutto pronto? Qual è la prima cosa?",
       "questionWithPlan": "{title} oggi! Qual è la primissima cosa che farai?",
       "lines": {
         "offer": "{time}, ricevuto. Vuoi che ti scriva alle {remind} così esci di casa in orario?",
