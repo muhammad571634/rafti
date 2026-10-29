@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z61. Gendered user forms across 5 languages (2026-10-30, Antigravity / Gemini 3.8 Flash High). NEXT: Claude reviews before/after table in `docs/agent-tasks/gendered-user-forms-report.md`
+
+- Task `docs/agent-tasks/gendered-user-forms.md` completed across all five target content languages: `es`, `fr`, `pt-BR`, `it`, `ru`.
+- Rewrote 305 content strings (es: 20, fr: 32, pt-BR: 33, it: 71, ru: 149) so no line assumes the user is male. Neutral wording used throughout (present/future tense, impersonal turns of phrase, neutral noun agreement per Rule 4).
+- Scanner count (`node scripts/scan-gendered-you.mjs --count`) dropped from 270 to 45 (es: 8→1, fr: 18→5, pt-BR: 26→10, it: 79→18, ru: 139→11). All 45 remaining hits verified valid (character self-forms, adverbs, impersonal idioms, or Rule 4 noun agreements).
+- Detailed audit and before/after table written to `docs/agent-tasks/gendered-user-forms-report.md`. Out-of-scope generic character-gender lines listed.
+- Commits per language:
+  - `9268076` fix(i18n): es content no longer assumes the user is a man
+  - `d706c79` fix(i18n): fr content no longer assumes the user is a man
+  - `f24c7d4` fix(i18n): pt-BR content no longer assumes the user is a man
+  - `929962b` fix(i18n): it content no longer assumes the user is a man
+  - `16799b8` fix(i18n): ru content no longer assumes the user is a man
+- Checks passed: `npm run check:content` (all 13 locales pass), `npm run check:locales` (pass), `npx tsc --noEmit` (0 errors), `npm test` (482/482 pass).
+
 ### 0z60. Chat share card (2026-10-30, Claude 2). NEXT: owner checks the sheet; a new preview APK so Share sends the picture
 
 - Owner's ask: a Share button in the row under their reply and a preview sheet with a share card. The old uncommitted
