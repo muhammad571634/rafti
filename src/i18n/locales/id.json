@@ -1569,7 +1569,8 @@
     "editPhoto": "Edit foto",
     "inviteOffer": "Undang +{{count}}",
     "versionRow": "Versi",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "Terjadi kesalahan.",

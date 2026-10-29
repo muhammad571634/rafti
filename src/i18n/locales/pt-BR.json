@@ -1600,7 +1600,8 @@
     "editPhoto": "Editar foto",
     "inviteOffer": "Convidar +{{count}}",
     "versionRow": "Versão",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "Algo deu errado.",

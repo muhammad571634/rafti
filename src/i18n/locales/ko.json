@@ -1569,7 +1569,8 @@
     "editPhoto": "사진 변경",
     "inviteOffer": "초대 시 +{{count}}",
     "versionRow": "버전",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "문제가 발생했습니다.",

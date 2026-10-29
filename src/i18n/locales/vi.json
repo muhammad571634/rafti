@@ -1569,7 +1569,8 @@
     "editPhoto": "Chỉnh sửa ảnh",
     "inviteOffer": "Mời +{{count}}",
     "versionRow": "Phiên bản",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "Đã xảy ra sự cố.",

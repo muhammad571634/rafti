@@ -1569,7 +1569,8 @@
     "editPhoto": "แก้ไขรูปถ่าย",
     "inviteOffer": "เชิญเพื่อน +{{count}}",
     "versionRow": "เวอร์ชัน",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "เกิดข้อผิดพลาดขึ้นบางอย่าง",

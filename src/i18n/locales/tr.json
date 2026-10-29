@@ -1600,7 +1600,8 @@
     "editPhoto": "Fotoğrafı düzenle",
     "inviteOffer": "Davet et +{{count}}",
     "versionRow": "Sürüm",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "Bir şeyler ters gitti.",

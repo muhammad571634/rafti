@@ -37,7 +37,7 @@ import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { ICONS } from '@/assets/icons/registry';
 import { LockPreview } from '@/components/notifications/lock-preview';
-import { Intro } from '@/components/onboarding/intro';
+import { FirstHello } from '@/components/onboarding/first-hello';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
@@ -121,7 +121,7 @@ export default function OnboardingScreen() {
   if (step === 'intro') {
     return (
       <Screen background="aurora">
-        <Intro onDone={() => setStep('hello')} />
+        <FirstHello onDone={() => setStep('hello')} />
       </Screen>
     );
   }

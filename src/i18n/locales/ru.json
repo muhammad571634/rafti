@@ -1662,7 +1662,8 @@
     "editPhoto": "Сменить фото",
     "inviteOffer": "Пригласить +{{count}}",
     "versionRow": "Версия",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "Что-то пошло не так.",

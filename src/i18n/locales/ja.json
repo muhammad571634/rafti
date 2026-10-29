@@ -1569,7 +1569,8 @@
     "editPhoto": "写真を変更",
     "inviteOffer": "招待で+{{count}}",
     "versionRow": "バージョン",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "問題が発生しました。",

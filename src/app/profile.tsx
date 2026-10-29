@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import * as Updates from 'expo-updates';
@@ -24,6 +24,7 @@ import {
   Txt,
   UserAvatar,
 } from '@/components/ui';
+import { FirstHello } from '@/components/onboarding/first-hello';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
@@ -79,6 +80,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const [hello, setHello] = useState(false);
 
   const user = useAppStore((s) => s.user);
   const wallet = useAppStore((s) => s.wallet);
@@ -387,6 +389,8 @@ export default function ProfileScreen() {
             />
             {/* The welcome back on Today shows on the next return from the background, as if after two hours away. */}
             <SettingsRow title={t('profile.welcomeTest')} icon="hand-left" fill={FILL.grey} meta={lastWelcomeCheck()} onPress={() => rewindAwayClock(2 * AWAY_MS)} />
+            {/* The first launch's hello, without clearing the app's data. */}
+            <SettingsRow title={t('profile.helloTest')} icon="moon" fill={FILL.grey} onPress={() => setHello(true)} />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <SettingsRow title={t('profile.serverAccount')} icon="cloud" fill={FILL.grey} meta={accountStatus} onPress={() => void checkAccount()} />
             {/* B1.2: shells are spent and earned on the server; turning it on loads the server's wallet. */}
@@ -513,6 +517,12 @@ export default function ProfileScreen() {
           ))}
         </View>
       </Sheet>
+
+      <Modal visible={hello} animationType="none" statusBarTranslucent onRequestClose={() => setHello(false)}>
+        <Screen background="aurora">
+          <FirstHello onDone={() => setHello(false)} />
+        </Screen>
+      </Modal>
     </Screen>
   );
 }

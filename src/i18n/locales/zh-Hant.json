@@ -1569,7 +1569,8 @@
     "editPhoto": "更換頭像",
     "inviteOffer": "每邀好友 +{{count}}",
     "versionRow": "版本",
-    "welcomeTest": "Test the welcome back"
+    "welcomeTest": "Test the welcome back",
+    "helloTest": "Play the first hello"
   },
   "errors": {
     "generic": "發生了一點意外狀況。",
