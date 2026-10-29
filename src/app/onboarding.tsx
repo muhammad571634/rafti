@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import Animated, {
   Easing,
+  FadeIn,
   FadeInRight,
   FadeInUp,
   type SharedValue,
@@ -43,15 +44,15 @@ import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
 import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
 import { shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { morningGreetings } from '@/mock';
-import { requestPushPermission } from '@/notifications/sync';
+import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
 /** One friend from each world, so the first choice is about taste, not scrolling. */
 const PICKS = ['c_kai', 'c_aurelian', 'c_sol', 'c_seren'];
-const QUESTIONS = 5;
 const MIN_AGE = 18;
 const NAME_MAX = 20;
 const YEAR_ROW = 44;
@@ -63,14 +64,15 @@ const NOTE_BG = isDark ? 'rgba(28,28,30,0.8)' : 'rgba(255,255,255,0.72)';
 const NOTE_BLOCKED = isDark ? 'rgba(255,69,58,0.18)' : 'rgba(255,59,48,0.10)';
 const SMOOTH = Easing.inOut(Easing.ease);
 
-type Step = 'intro' | 'hello' | 'age' | 'name' | 'meet' | 'notify' | 'gift';
-const STEPS: Step[] = ['intro', 'hello', 'age', 'name', 'meet', 'notify', 'gift'];
+type Step = 'intro' | 'age' | 'name' | 'meet' | 'notify' | 'gift';
+const ALL_STEPS: Step[] = ['intro', 'age', 'name', 'meet', 'notify', 'gift'];
 
 /**
- * First launch (owner's pick, canvas "B · Story cards", 2026-10-24): the 2.5 s intro, then Sigmazam
- * says hello and asks five short things on the aurora, one scene each: birth year (18+), name,
- * first friend from a deck of cards, notifications on a lock screen, and a welcome gift. It ends
- * in the first chat, where the new friend has already written.
+ * First launch, reworked on Apple's HIG (Onboarding, Privacy, Entering data; 2026-10-29): the first
+ * hello ends with Sigmazam's greeting and the one Start button, with no second hello screen. Then a
+ * few short things on the aurora, one scene each: birth year (18+), name, first friend from a deck
+ * of cards, notifications (only while the system has not decided; one button that opens the system
+ * prompt), and a welcome gift. It ends in the first chat, where the new friend has already written.
  */
 export default function OnboardingScreen() {
   const { t, i18n } = useTranslation();
@@ -87,14 +89,29 @@ export default function OnboardingScreen() {
   );
 
   const [step, setStep] = useState<Step>('intro');
+  // The first hello has played (or was tapped through): its last frame stays, Start comes up.
+  const [played, setPlayed] = useState(false);
+  // HIG Entering data: what the system already knows is not asked again.
+  const [askPush, setAskPush] = useState(true);
+  const asked = useRef(false);
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [name, setName] = useState('');
   const [friendId, setFriendId] = useState(PICKS[0]);
   const [notifications, setNotifications] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
 
-  // Steps after the intro: hello is 0, the five questions 1-5.
-  const index = STEPS.indexOf(step) - 1;
+  useEffect(() => {
+    void pushPermission().then((state) => {
+      if (state === 'undetermined') return;
+      setAskPush(false);
+      setNotifications(state === 'granted');
+    });
+  }, []);
+
+  const steps = useMemo(() => ALL_STEPS.filter((s) => s !== 'notify' || askPush), [askPush]);
+  const questions = steps.length - 1;
+  // The intro is 0, the questions 1 and up.
+  const index = steps.indexOf(step);
   const friendIndex = Math.max(0, picks.findIndex((c) => c.id === friendId));
   const friend = picks[friendIndex];
   const friendName = friend ? shortName(friend.name) : '';
@@ -102,8 +119,13 @@ export default function OnboardingScreen() {
   const minor = thisYear - year < MIN_AGE;
   const trimmed = name.trim();
 
-  const next = () => setStep(STEPS[Math.min(STEPS.indexOf(step) + 1, STEPS.length - 1)]);
-  const back = () => setStep(STEPS[Math.max(STEPS.indexOf(step) - 1, 1)]);
+  const next = () => setStep(steps[Math.min(index + 1, steps.length - 1)]);
+  // Once the system has asked, going back skips the notifications scene: there is nothing left to ask.
+  const back = () => {
+    let i = Math.max(index - 1, 1);
+    if (steps[i] === 'notify' && asked.current) i = Math.max(i - 1, 1);
+    setStep(steps[i]);
+  };
 
   const finish = () => {
     if (!friend) return;
@@ -118,23 +140,49 @@ export default function OnboardingScreen() {
     router.push(`/chat/${conversationId}`);
   };
 
+  const languageSheet = (
+    <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>
+      <LanguageList
+        value={getSavedLocaleSync()}
+        groupStyle={styles.langGroup}
+        onPick={(code) => {
+          void pickLanguage(code);
+          setLangOpen(false);
+        }}
+      />
+    </Sheet>
+  );
+
   if (step === 'intro') {
+    // HIG Onboarding: the splash opens onboarding, so it ends on the one thing to do next.
     return (
       <Screen background="aurora">
-        <FirstHello onDone={() => setStep('hello')} />
+        <FirstHello onDone={() => setPlayed(true)} />
+        {played ? (
+          <>
+            {SUPPORTED_LOCALES.length > 1 ? (
+              <Animated.View entering={FadeIn.duration(300)} style={[styles.top, styles.topEnd]}>
+                <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)}>
+                  <AuroraGlass style={styles.lang}>
+                    <Txt style={styles.langText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
+                    <Ionicons name="chevron-down" size={13} color={aurora.textMuted} />
+                  </AuroraGlass>
+                </PressableScale>
+              </Animated.View>
+            ) : null}
+            <Animated.View entering={FadeInUp.duration(360)} style={[styles.introFooter, { paddingBottom: bottomRoom(insets.bottom, space.lg) + 6 }]}>
+              <Cta label={t('onboarding.start')} onPress={next} />
+              <Txt style={styles.caption}>{t('onboarding.legal')}</Txt>
+            </Animated.View>
+          </>
+        ) : null}
+        {languageSheet}
       </Screen>
     );
   }
 
   const footer = (() => {
     switch (step) {
-      case 'hello':
-        return (
-          <>
-            <Cta label={t('onboarding.start')} onPress={next} />
-            <Txt style={styles.caption}>{t('onboarding.legal')}</Txt>
-          </>
-        );
       case 'age':
         return <Cta label={t('onboarding.continue')} disabled={minor} onPress={next} />;
       case 'name':
@@ -147,21 +195,19 @@ export default function OnboardingScreen() {
           </>
         );
       case 'notify':
+        // HIG Privacy, pre-alert screens: one button, it opens the system prompt, and whatever the
+        // answer the flow goes on. No "Allow" wording and no way round the prompt.
         return (
-          <>
-            <Cta
-              label={t('onboarding.allow')}
-              onPress={() => {
-                setNotifications(true);
-                // Step two of the ask: the system prompt, right after the user said yes here.
-                void requestPushPermission();
+          <Cta
+            label={t('onboarding.continue')}
+            onPress={() => {
+              void requestPushPermission().then((granted) => {
+                asked.current = true;
+                setNotifications(granted);
                 next();
-              }}
-            />
-            <PressableScale style={styles.notNow} scaleTo={0.96} accessibilityRole="button" onPress={next}>
-              <Txt style={styles.notNowText}>{t('onboarding.notNow')}</Txt>
-            </PressableScale>
-          </>
+              });
+            }}
+          />
         );
       case 'gift':
         return <Cta label={t('onboarding.sayHi', { name: friendName })} onPress={finish} />;
@@ -171,7 +217,8 @@ export default function OnboardingScreen() {
   return (
     <Screen background="aurora">
       <View style={styles.top}>
-        {index > 0 ? (
+        {/* HIG Privacy: a pre-alert screen offers no way out but the system prompt. */}
+        {index > 1 && step !== 'notify' ? (
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back}>
             <AuroraGlass style={styles.round}>
               <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
@@ -181,29 +228,13 @@ export default function OnboardingScreen() {
           <View style={styles.side} />
         )}
 
-        {index > 0 ? (
-          <View
-            style={styles.progress}
-            accessible
-            accessibilityLabel={t('onboarding.step', { index: Math.min(index, QUESTIONS), count: QUESTIONS })}>
-            {Array.from({ length: QUESTIONS }, (_, i) => (
-              <View key={i} style={[styles.segment, i < index && styles.segmentOn]} />
-            ))}
-          </View>
-        ) : (
-          <View style={styles.flex} />
-        )}
+        <View style={styles.progress} accessible accessibilityLabel={t('onboarding.step', { index, count: questions })}>
+          {Array.from({ length: questions }, (_, i) => (
+            <View key={i} style={[styles.segment, i < index && styles.segmentOn]} />
+          ))}
+        </View>
 
-        {index === 0 && SUPPORTED_LOCALES.length > 1 ? (
-          <PressableScale scaleTo={0.96} accessibilityRole="button" onPress={() => setLangOpen(true)}>
-            <AuroraGlass style={styles.lang}>
-              <Txt style={styles.langText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
-              <Ionicons name="chevron-down" size={13} color={aurora.textMuted} />
-            </AuroraGlass>
-          </PressableScale>
-        ) : (
-          <View style={styles.side} />
-        )}
+        <View style={styles.side} />
       </View>
 
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
@@ -213,16 +244,6 @@ export default function OnboardingScreen() {
             contentContainerStyle={styles.page}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            {step === 'hello' ? (
-              <View style={styles.hello}>
-                <HelloArt height={height} />
-                <Txt style={[styles.title, styles.center]} accessibilityRole="header">
-                  {t('onboarding.helloTitle')}
-                </Txt>
-                <Txt style={[styles.body, styles.center, styles.helloBody]}>{t('onboarding.helloBody')}</Txt>
-              </View>
-            ) : null}
-
             {step === 'age' ? (
               <>
                 <Title title={t('onboarding.ageTitle')} body={t('onboarding.ageBody')} />
@@ -340,16 +361,6 @@ export default function OnboardingScreen() {
         <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.lg) + 6 }]}>{footer}</View>
       </KeyboardAvoidingView>
 
-      <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>
-        <LanguageList
-          value={getSavedLocaleSync()}
-          groupStyle={styles.langGroup}
-          onPick={(code) => {
-            void pickLanguage(code);
-            setLangOpen(false);
-          }}
-        />
-      </Sheet>
     </Screen>
   );
 }
@@ -396,40 +407,6 @@ function useFloat(distance: number) {
   return useAnimatedStyle(() => ({
     transform: [{ translateY: y.value }, { rotate: `${-2 + (y.value / -distance) * 4}deg` }],
   }));
-}
-
-/** Hello: Sigmazam waving, three shells circling. */
-function HelloArt({ height }: { height: number }) {
-  const reduceMotion = useReducedMotion();
-  const size = Math.round(Math.min(200, Math.max(150, height * 0.24)));
-  const turn = useSharedValue(0);
-  const float = useFloat(10);
-  useEffect(() => {
-    if (!reduceMotion) turn.value = withRepeat(withTiming(1, { duration: 9000, easing: Easing.linear }), -1);
-  }, [reduceMotion, turn]);
-  const radius = size * 0.6;
-  return (
-    <View style={[styles.helloArt, { width: size * 1.3, height: size * 1.5 }]}>
-      <OrbitShell turn={turn} offset={0} radius={radius} size={36} opacity={1} />
-      <OrbitShell turn={turn} offset={1 / 3} radius={radius} size={28} opacity={0.85} />
-      <OrbitShell turn={turn} offset={2 / 3} radius={radius} size={22} opacity={0.7} />
-      <Animated.View style={[{ width: size, height: size / BRAND_ASPECT.hop }, float]}>
-        <Image source={BRAND.hop} style={StyleSheet.absoluteFill} contentFit="contain" accessibilityLabel="Sigmazam" />
-      </Animated.View>
-    </View>
-  );
-}
-
-function OrbitShell({ turn, offset, radius, size, opacity }: { turn: SharedValue<number>; offset: number; radius: number; size: number; opacity: number }) {
-  const style = useAnimatedStyle(() => {
-    const a = (turn.value + offset) * Math.PI * 2;
-    return { transform: [{ translateX: Math.cos(a) * radius }, { translateY: Math.sin(a) * radius }] };
-  });
-  return (
-    <Animated.View pointerEvents="none" style={[styles.orbit, { width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2, opacity }, style]}>
-      <Image source={ICONS.shell} style={StyleSheet.absoluteFill} contentFit="contain" />
-    </Animated.View>
-  );
 }
 
 /** Gift: Sigmazam hugging a heart, sparks bursting over its head (no shell here: the owner asked, 2026-10-24). */
@@ -554,7 +531,10 @@ function YearWheel({
   const settle = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const i = Math.round(e.nativeEvent.contentOffset.y / YEAR_ROW);
     const year = years[Math.max(0, Math.min(years.length - 1, i))];
-    if (year !== value) onChange(year);
+    if (year === value) return;
+    // A tick per year, as the system's wheels do (HIG Playing haptics).
+    haptic.selection();
+    onChange(year);
   };
 
   return (
@@ -621,12 +601,12 @@ const styles = StyleSheet.create({
   langText: { fontSize: 13, fontWeight: '600', color: colors.text },
   page: { flexGrow: 1, paddingHorizontal: 20, paddingTop: 18, paddingBottom: space.lg },
   titleBlock: { gap: space.sm },
-  title: { fontSize: 30, lineHeight: 36, fontWeight: '800', letterSpacing: 0.2, color: colors.text },
-  body: { fontSize: 16, lineHeight: 22, color: aurora.textMuted },
+  // HIG Typography: Large Title 34/41 bold for the question, Body 17/22 under it.
+  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
+  body: { fontSize: 17, lineHeight: 22, color: aurora.textMuted },
   hello: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  helloArt: { alignItems: 'center', justifyContent: 'center', marginBottom: space.xl },
-  helloBody: { marginTop: space.sm + 2, maxWidth: 300 },
-  orbit: { position: 'absolute', left: '50%', top: '50%' },
+  topEnd: { position: 'absolute', top: 0, left: 0, right: 0, justifyContent: 'flex-end' },
+  introFooter: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, gap: space.sm },
   card: { borderRadius: 26, backgroundColor: aurora.card, ...CARD_SHADOW },
   wheelWrap: { marginTop: 88 },
   peek: { position: 'absolute', right: 18, top: -82, width: PEEK_W, height: PEEK_W / BRAND_ASPECT.peek },
@@ -670,8 +650,6 @@ const styles = StyleSheet.create({
   cta: { height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.lg, backgroundColor: STORE.cta },
   ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
   caption: { fontSize: 12, lineHeight: 16, textAlign: 'center', color: aurora.textMuted },
-  notNow: { height: 44, alignItems: 'center', justifyContent: 'center' },
-  notNowText: { fontSize: 16, fontWeight: '600', color: aurora.textMuted },
   // Rows straight on the sheet, no card inside the card.
   langGroup: { marginHorizontal: 0, borderRadius: 0, backgroundColor: 'transparent' },
 });

@@ -141,7 +141,7 @@ export async function askIfNeverAsked(saidYesInApp: boolean) {
   if (status === N.PermissionStatus.UNDETERMINED && canAskAgain) await requestPushPermission();
 }
 
-/** The system prompt. Call it only after the user said yes in the app (two-step ask). */
+/** The system prompt. Call it from a screen whose one button opens it (HIG Privacy, pre-alert screens). */
 export async function requestPushPermission() {
   const N = notificationsModule();
   if (!N) return false;

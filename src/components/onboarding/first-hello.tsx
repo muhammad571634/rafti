@@ -159,6 +159,9 @@ export function FirstHello({ onDone }: { onDone: () => void }) {
     if (finished.current) return;
     finished.current = true;
     timers.current.forEach(clearTimeout);
+    // A tap skips to the last frame, which stays under onboarding's Start button.
+    t.value = LENGTH;
+    setTyped(true);
     onDone();
   };
 
@@ -279,7 +282,7 @@ export function FirstHello({ onDone }: { onDone: () => void }) {
         <Animated.View style={[styles.bubbleRow, bubble]}>
           <View style={styles.bubble}>
             {typed ? (
-              <Txt style={styles.bubbleText} lines={2} center>
+              <Txt style={styles.bubbleText} lines={2} center accessibilityRole="header">
                 {say('onboarding.helloBubble')}
               </Txt>
             ) : (
