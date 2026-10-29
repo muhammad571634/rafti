@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   proTile: { paddingVertical: 10, paddingHorizontal: 12, gap: 2, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.16)' },
   proTileValue: { fontSize: 24, lineHeight: 28, fontWeight: '800', color: colors.white, fontVariant: ['tabular-nums'] },
   proTileLabel: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  proTileText: { flexShrink: 1, fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.88)' },
+  proTileText: { flexShrink: 1, fontSize: 13, lineHeight: 17, fontWeight: '600', color: 'rgba(255,255,255,0.88)' },
   card: {
     marginHorizontal: GUTTER,
     marginTop: 22,

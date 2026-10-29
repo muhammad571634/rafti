@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   newPill: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: STORE.peachSoft },
   newText: { fontSize: 12, fontWeight: '700', color: STORE.peachInk },
   titleOn: { color: STORE.tint },
-  sub: { fontSize: 13, color: aurora.textMuted },
+  sub: { fontSize: 13, lineHeight: 18, color: aurora.textMuted },
   footnote: { marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
   play: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.peachSoft },
   playOn: { backgroundColor: aurora.tint },

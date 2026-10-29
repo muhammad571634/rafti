@@ -440,9 +440,9 @@ const styles = StyleSheet.create({
   // The bonus line drops under the total when both do not fit (long locales, larger text).
   packAmount: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 5 },
   packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: colors.text, fontVariant: ['tabular-nums'] },
-  muted13: { flexShrink: 1, fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  muted13: { flexShrink: 1, fontSize: 13, lineHeight: 18, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
   tag: { alignSelf: 'flex-start', minHeight: 20, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
-  tagText: { fontSize: 12, fontWeight: '700' },
+  tagText: { fontSize: 12, lineHeight: 16, fontWeight: '700' },
   price: { alignItems: 'flex-end', gap: 1 },
   priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.text, fontVariant: ['tabular-nums'] },
   packLine: {
