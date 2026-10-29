@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z54. Launch motion: Welcome back + First hello on the A51 (2026-10-29, Claude 2). NEXT: onboarding steps redesign (HIG), its own spec
+
+- Owner approved both Remotion previews (`../sigmazam-motion/out/welcome-back.mp4`, `first-hello.mp4`); spec
+  `docs/superpowers/specs/2026-10-29-launch-motion-design.md`, plan `docs/superpowers/plans/2026-10-29-launch-motion.md`.
+- Welcome back (`src/components/today/welcome-back.tsx`, logic `src/lib/welcome-back.ts` + tests, clock `src/lib/away-clock.ts`):
+  after the app was away 1 h or more (owner's number), the peek mascot rises from behind the tab bar on Today and a glass
+  bubble brings the last-talked character's unread line, else `welcomeBack.line1-4` (14 locales). Tap opens the chat;
+  scroll hides it; waits for the daily check-in sheet; quiet after a push tap; Reduce Motion fades. Owner saw it on the A51.
+- First hello (`src/components/onboarding/first-hello.tsx`) replaces `intro.tsx` (deleted): night, nine characters light up
+  as online lights, gather into the shell, burst, morning, the hop mascot says `onboarding.helloBubble`. Screen-recorded on the A51.
+- Profile dev rows (preview builds): "Test the welcome back" (rewinds the clock 2 h, shows the last check) and "Play the first hello".
+- Checked: tsc 0, npm test 477/477, check:locales pass. EAS update 1eaa3b81.
+- Not done: onboarding steps (hello, age, name, meet, notify, gift) redesign to HIG — the owner wants it next, logic + design.
+
 ### 0z53. Translate content: Phase 4b Russian (ru) mock voice complete (2026-10-29). NEXT: Phase 4b Turkish (tr)
 
 - Russian (ru) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ru.json):
