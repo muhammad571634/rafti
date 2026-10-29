@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z43. Translate content: Phase 4b Brazilian Portuguese (pt-BR) mock voice complete (2026-10-29). NEXT: Phase 4b French (fr)
+
+- Brazilian Portuguese (pt-BR) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/pt-BR.json):
+  - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
+- Built via scripts/translations/pt-BR/voice/ and scripts/translations/pt-BR/build.mjs.
+- Validated via scripts/check-content.mjs pt-BR — 0 errors, exact placeholders, emojis, and asterisks.
+- Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
+
 ### 0z42. A51 walk: Store, Pro plan and Radio fixed for long locales (2026-10-29). NEXT: group chat, onboarding, Chats voice preview on the A51
 
 - Walked in Russian on the Galaxy A51 (EAS updates `c18cfd99`, `e43d6a35`): Store, Pro plan, Radio
