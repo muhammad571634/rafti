@@ -1568,7 +1568,8 @@
     "manage": "Quản lý",
     "editPhoto": "Chỉnh sửa ảnh",
     "inviteOffer": "Mời +{{count}}",
-    "versionRow": "Phiên bản"
+    "versionRow": "Phiên bản",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Đã xảy ra sự cố.",

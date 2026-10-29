@@ -1568,7 +1568,8 @@
     "manage": "Kelola",
     "editPhoto": "Edit foto",
     "inviteOffer": "Undang +{{count}}",
-    "versionRow": "Versi"
+    "versionRow": "Versi",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Terjadi kesalahan.",

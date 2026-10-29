@@ -1568,7 +1568,8 @@
     "manage": "จัดการ",
     "editPhoto": "แก้ไขรูปถ่าย",
     "inviteOffer": "เชิญเพื่อน +{{count}}",
-    "versionRow": "เวอร์ชัน"
+    "versionRow": "เวอร์ชัน",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "เกิดข้อผิดพลาดขึ้นบางอย่าง",

@@ -1568,7 +1568,8 @@
     "manage": "관리",
     "editPhoto": "사진 변경",
     "inviteOffer": "초대 시 +{{count}}",
-    "versionRow": "버전"
+    "versionRow": "버전",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "문제가 발생했습니다.",

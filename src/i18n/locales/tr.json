@@ -1599,7 +1599,8 @@
     "manage": "Yönet",
     "editPhoto": "Fotoğrafı düzenle",
     "inviteOffer": "Davet et +{{count}}",
-    "versionRow": "Sürüm"
+    "versionRow": "Sürüm",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Bir şeyler ters gitti.",

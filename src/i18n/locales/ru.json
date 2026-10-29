@@ -1661,7 +1661,8 @@
     "manage": "Управление",
     "editPhoto": "Сменить фото",
     "inviteOffer": "Пригласить +{{count}}",
-    "versionRow": "Версия"
+    "versionRow": "Версия",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Что-то пошло не так.",

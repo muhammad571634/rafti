@@ -1599,7 +1599,8 @@
     "manage": "Verwalten",
     "editPhoto": "Foto ändern",
     "inviteOffer": "Einladen +{{count}}",
-    "versionRow": "Version"
+    "versionRow": "Version",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Etwas ist schiefgelaufen.",

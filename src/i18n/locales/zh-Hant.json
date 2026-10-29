@@ -1568,7 +1568,8 @@
     "manage": "方案管理",
     "editPhoto": "更換頭像",
     "inviteOffer": "每邀好友 +{{count}}",
-    "versionRow": "版本"
+    "versionRow": "版本",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "發生了一點意外狀況。",

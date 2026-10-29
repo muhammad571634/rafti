@@ -1599,7 +1599,8 @@
     "manage": "Gerenciar",
     "editPhoto": "Editar foto",
     "inviteOffer": "Convidar +{{count}}",
-    "versionRow": "Versão"
+    "versionRow": "Versão",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "Algo deu errado.",

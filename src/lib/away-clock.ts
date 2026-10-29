@@ -53,3 +53,8 @@ export function openedFromNotification() {
 export function markWelcomed(now: number) {
   save(now);
 }
+
+/** Dev (Profile, preview builds): pretend the app went away `ms` ago, to see the welcome on the next return. */
+export function rewindAwayClock(ms: number) {
+  save(Date.now() - ms);
+}

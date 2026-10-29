@@ -1568,7 +1568,8 @@
     "manage": "管理",
     "editPhoto": "写真を変更",
     "inviteOffer": "招待で+{{count}}",
-    "versionRow": "バージョン"
+    "versionRow": "バージョン",
+    "welcomeTest": "Test the welcome back"
   },
   "errors": {
     "generic": "問題が発生しました。",
