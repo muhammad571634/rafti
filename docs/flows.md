@@ -197,5 +197,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 4b (zh-Hant) | done | Traditional Chinese mock voice translation generated (800 strings, 2773 total in zh-Hant.json), checked and registered | — |
 | F30 Content translation: Phase 4b (id) | done | Indonesian mock voice translation generated (800 strings, 2773 total in id.json), checked and registered | — |
 | F30 Content translation: Phase 4b (vi) | done | Vietnamese mock voice translation generated (800 strings, 2773 total in vi.json), checked and registered | — |
+| F30 Content translation: Phase 4b (th) | done | Thai mock voice translation generated (800 strings, 2773 total in th.json), checked and registered | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
