@@ -193,5 +193,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | F30 Content translation: Phase 4b (de) | done | German mock voice translation generated (800 strings, 2773 total in de.json), checked and registered | — |
 | F30 Content translation: Phase 4b (it) | done | Italian mock voice translation generated (800 strings, 2773 total in it.json), checked and registered | — |
 | F30 Content translation: Phase 4b (ja) | done | Japanese mock voice translation generated (800 strings, 2773 total in ja.json), checked and registered | — |
+| F30 Content translation: Phase 4b (ko) | done | Korean mock voice translation generated (800 strings, 2773 total in ko.json), checked and registered | — |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

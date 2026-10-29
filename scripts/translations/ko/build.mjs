@@ -9,6 +9,7 @@ import { worlds } from './worlds.mjs';
 import { quizPacks } from './quiz-packs.mjs';
 import { lorebooks } from './lorebooks.mjs';
 import { small } from './small.mjs';
+import { voice } from './voice/index.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,7 +32,8 @@ const koContent = {
   lorebooks,
   diaryPages: small.diaryPages,
   diaryEntries: small.diaryEntries,
-  secretNotes: small.secretNotes
+  secretNotes: small.secretNotes,
+  voice
 };
 
 const targetPath = path.resolve(__dirname, '../../../src/i18n/content/ko.json');
