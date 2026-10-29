@@ -10,8 +10,16 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   `src/app/language.tsx` does. Any other module read in render (not a hook) can freeze the same way.
 - Checked: only a user pick saves a language (onboarding sheet, Profile → Language); launch re-syncs `User.locale`.
   The onboarding chip already shows the current language's own name ("Русский"); left as is.
-- On the A51: the owner set Automatic; relaunch shows Russian onboarding, ✓ on "Автоматически".
-- Checked: tsc 0, npm test 477/477.
+- On the A51: the owner set Automatic; relaunch shows Russian onboarding, ✓ on "Автоматически". Español → Automatic →
+  relaunch also comes up Russian. The owner once saw Turkish stay after a relaunch; not reproduced (maybe a
+  hand-picked Turkish, which sticks by design, or my adb taps racing theirs). Ask them to retest if it comes back.
+- Year wheel (owner: it shook and did not land at once): the changing `contentOffset` prop scrolled Android to each
+  new year mid-drag (screen recording: a ~0.4-row jump at every year). Now set once; and the band is drawn as
+  UIPickerView does: bold years in a clipped layer that follows `scrollY` on the UI thread (`WheelYear` fades the
+  rest), haptic + `onChange` per year from `useAnimatedReaction`. Recorded on the A51: steady motion, lands on one row.
+- Name step: with the keyboard up the footer kept the nav-bar inset, so Continue floated ~64 dp over the keyboard and
+  hid the name preview. Footer bottom is `space.sm` while `useKeyboardVisible()` (as `chat-input.tsx`). Checked on the A51.
+- Checked: tsc 0, npm test 477/477. EAS 404c0ba2.
 
 ### 0z56. Onboarding HIG pass (2026-10-30, Claude 2). NEXT: owner's call (Chats voice preview check, or the deferred launch-motion minors)
 

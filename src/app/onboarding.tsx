@@ -5,10 +5,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  type ScrollViewInstance,
   KeyboardAvoidingView,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,10 +15,15 @@ import {
 } from 'react-native';
 import Animated, {
   Easing,
+  Extrapolation,
   FadeIn,
   FadeInRight,
   FadeInUp,
+  interpolate,
   type SharedValue,
+  useAnimatedReaction,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -33,6 +35,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
@@ -42,6 +45,7 @@ import { FirstHello } from '@/components/onboarding/first-hello';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -99,6 +103,8 @@ export default function OnboardingScreen() {
   const [friendId, setFriendId] = useState(PICKS[0]);
   const [notifications, setNotifications] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  // The keyboard covers the system bar, so its inset would only lift the button over the name preview.
+  const keyboardUp = useKeyboardVisible();
   // Kept in state: the React Compiler caches a plain read during render, so the ✓ stayed on the launch choice.
   const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
 
@@ -361,7 +367,7 @@ export default function OnboardingScreen() {
           </ScrollView>
         </Animated.View>
 
-        <View style={[styles.footer, { paddingBottom: bottomRoom(insets.bottom, space.lg) + 6 }]}>{footer}</View>
+        <View style={[styles.footer, { paddingBottom: keyboardUp ? space.sm : bottomRoom(insets.bottom, space.lg) + 6 }]}>{footer}</View>
       </KeyboardAvoidingView>
 
     </Screen>
@@ -520,65 +526,85 @@ function YearWheel({
   onChange: (year: number) => void;
 }) {
   const years = useMemo(() => Array.from({ length: max - min + 1 }, (_, i) => max - i), [min, max]);
-  const ref = useRef<ScrollViewInstance>(null);
+  const ref = useAnimatedRef<Animated.ScrollView>();
   const pad = YEAR_ROW * Math.floor(YEAR_VISIBLE / 2);
+  // Set once: on Android a new `contentOffset` scrolls there, which yanked the wheel to each year mid-drag.
+  const [startOffset] = useState(() => ({ x: 0, y: years.indexOf(value) * YEAR_ROW }));
+  const scrollY = useSharedValue(startOffset.y);
 
   // Start on the current answer; `contentOffset` alone is ignored on web.
   useEffect(() => {
-    const id = setTimeout(() => ref.current?.scrollTo({ y: years.indexOf(value) * YEAR_ROW, animated: false }), 0);
+    const id = setTimeout(() => ref.current?.scrollTo({ y: startOffset.y, animated: false }), 0);
     return () => clearTimeout(id);
-    // Only on mount: later the wheel follows the finger, not the value.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ref, startOffset]);
 
-  const settle = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const i = Math.round(e.nativeEvent.contentOffset.y / YEAR_ROW);
-    const year = years[Math.max(0, Math.min(years.length - 1, i))];
-    if (year === value) return;
-    // A tick per year, as the system's wheels do (HIG Playing haptics).
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.value = e.contentOffset.y;
+  });
+
+  // A tick per year as it reaches the band, as the system's wheels do (HIG Playing haptics).
+  const reach = (i: number) => {
     haptic.selection();
-    onChange(year);
+    onChange(years[Math.max(0, Math.min(years.length - 1, i))]);
   };
+  useAnimatedReaction(
+    () => Math.round(scrollY.value / YEAR_ROW),
+    (i, prev) => {
+      if (prev !== null && i !== prev) scheduleOnRN(reach, i);
+    },
+  );
+
+  // The band's bold years ride the scroll on the UI thread, clipped to the band (as UIPickerView draws
+  // it), so the answer never trails the finger.
+  const bandYears = useAnimatedStyle(() => ({ transform: [{ translateY: -scrollY.value }] }));
 
   return (
     <View style={styles.wheel}>
-      <View pointerEvents="none" style={[styles.band, { top: pad }]} />
-      <ScrollView
+      <Animated.ScrollView
         ref={ref}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
         snapToInterval={YEAR_ROW}
         decelerationRate="fast"
         contentContainerStyle={{ paddingVertical: pad }}
-        contentOffset={{ x: 0, y: years.indexOf(value) * YEAR_ROW }}
-        onScroll={settle}
-        scrollEventThrottle={32}
-        onMomentumScrollEnd={settle}
+        contentOffset={startOffset}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         accessibilityLabel={String(value)}>
-        {years.map((y) => {
-          const d = Math.abs(y - value);
-          return (
-            <PressableScale
-              key={y}
-              scaleTo={1}
-              style={styles.yearRow}
-              onPress={() => {
-                onChange(y);
-                ref.current?.scrollTo({ y: years.indexOf(y) * YEAR_ROW, animated: true });
-              }}>
-              <Txt
-                style={[
-                  styles.year,
-                  d === 0 ? styles.yearOn : null,
-                  { color: d === 0 ? colors.text : d === 1 ? aurora.textMuted : colors.textFaint, fontSize: d === 0 ? 26 : d === 1 ? 21 : 19 },
-                ]}>
-                {y}
-              </Txt>
-            </PressableScale>
-          );
-        })}
-      </ScrollView>
+        {years.map((y, i) => (
+          <WheelYear key={y} year={y} index={i} scrollY={scrollY} onPress={() => ref.current?.scrollTo({ y: i * YEAR_ROW, animated: true })} />
+        ))}
+      </Animated.ScrollView>
+      <View pointerEvents="none" style={[styles.band, styles.bandCover, { top: pad }]}>
+        <View style={[StyleSheet.absoluteFill, styles.bandFill]} />
+        <Animated.View style={bandYears}>
+          {years.map((y) => (
+            <View key={y} style={styles.yearRow}>
+              <Txt style={[styles.year, styles.yearOn]}>{y}</Txt>
+            </View>
+          ))}
+        </Animated.View>
+      </View>
     </View>
+  );
+}
+
+/** A year outside the band: full size next to it, smaller and fainter further out, following the scroll. */
+function WheelYear({ year, index, scrollY, onPress }: { year: number; index: number; scrollY: SharedValue<number>; onPress: () => void }) {
+  const fade = useAnimatedStyle(() => {
+    const d = Math.abs(scrollY.value / YEAR_ROW - index);
+    return {
+      // Half the muted colour reads as the faint one, on the light card and on the dark one.
+      opacity: interpolate(d, [1, 2], [1, 0.5], Extrapolation.CLAMP),
+      transform: [{ scale: interpolate(d, [1, 2], [1, 19 / 21], Extrapolation.CLAMP) }],
+    };
+  });
+  return (
+    <PressableScale scaleTo={1} style={styles.yearRow} onPress={onPress}>
+      <Animated.View style={fade}>
+        <Txt style={[styles.year, styles.yearSide]}>{year}</Txt>
+      </Animated.View>
+    </PressableScale>
   );
 }
 
@@ -616,8 +642,11 @@ const styles = StyleSheet.create({
   wheel: { height: YEAR_ROW * YEAR_VISIBLE, marginVertical: 5 },
   band: { position: 'absolute', left: 12, right: 12, height: YEAR_ROW, borderRadius: 12, backgroundColor: systemColors.fill },
   yearRow: { height: YEAR_ROW, alignItems: 'center', justifyContent: 'center' },
+  bandCover: { overflow: 'hidden', backgroundColor: aurora.card },
+  bandFill: { backgroundColor: systemColors.fill },
   year: { fontWeight: '500', fontVariant: ['tabular-nums'] },
-  yearOn: { fontWeight: '700' },
+  yearOn: { fontWeight: '700', fontSize: 26, color: colors.text },
+  yearSide: { fontSize: 21, color: aurora.textMuted },
   note: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, marginTop: 14, paddingHorizontal: 14, paddingVertical: 12, borderRadius: 16, backgroundColor: NOTE_BG },
   noteBlocked: { backgroundColor: NOTE_BLOCKED },
   noteText: { flex: 1, fontSize: 15, lineHeight: 20, color: aurora.textMuted },
