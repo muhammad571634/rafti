@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { Anim, CharacterAvatar, glassStyle, Txt } from '@/components/ui';
-import { awayAt, markWelcomed, openedFromNotification } from '@/lib/away-clock';
+import { awayAt, markWelcomed, noteWelcomeCheck, openedFromNotification } from '@/lib/away-clock';
 import { pickWelcome, shouldWelcome, welcomeLineKey } from '@/lib/welcome-back';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -86,6 +86,8 @@ export function WelcomeBack() {
     const s = useAppStore.getState();
     const pick = pickWelcome(s.conversations, (id) => s.characters.some((c) => c.id === id));
     const ok = shouldWelcome({ now, awayAt: at, onboarded: !!s.user.onboardedAt, fromNotification: openedFromNotification(), hasConversation: !!pick });
+    const away = at === null ? 'never' : `${Math.round((now - at) / 60000)} min`;
+    noteWelcomeCheck(`${ok ? 'yes' : 'no'}, away ${away}${focused.current ? '' : ', not on Today'}${pick ? '' : ', no chat'}`);
     if (!ok || !pick || !focused.current) return;
     const character = s.characters.find((c) => c.id === pick.characterId);
     if (!character) return;

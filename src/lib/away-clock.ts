@@ -10,6 +10,8 @@ let started = false;
 let loaded: Promise<number | null> | null = null;
 let current: number | null = null;
 let notificationAt = 0;
+/** A dev rewind survives the one trip to the background it takes to see it. */
+let held = false;
 
 function save(at: number) {
   current = at;
@@ -22,7 +24,9 @@ export function startAwayClock() {
   started = true;
   void awayAt();
   AppState.addEventListener('change', (state) => {
-    if (state === 'background') save(Date.now());
+    if (state !== 'background') return;
+    if (held) held = false;
+    else save(Date.now());
   });
 }
 
@@ -57,4 +61,14 @@ export function markWelcomed(now: number) {
 /** Dev (Profile, preview builds): pretend the app went away `ms` ago, to see the welcome on the next return. */
 export function rewindAwayClock(ms: number) {
   save(Date.now() - ms);
+  held = true;
+}
+
+let lastCheck = '—';
+/** Dev: what Today's last welcome check decided, shown beside the test row in Profile. */
+export function noteWelcomeCheck(result: string) {
+  lastCheck = result;
+}
+export function lastWelcomeCheck() {
+  return lastCheck;
 }

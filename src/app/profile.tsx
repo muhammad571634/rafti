@@ -26,7 +26,7 @@ import {
 } from '@/components/ui';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
-import { rewindAwayClock } from '@/lib/away-clock';
+import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
@@ -386,7 +386,7 @@ export default function ProfileScreen() {
               }
             />
             {/* The welcome back on Today shows on the next return from the background, as if after two hours away. */}
-            <SettingsRow title={t('profile.welcomeTest')} icon="hand-left" fill={FILL.grey} onPress={() => rewindAwayClock(2 * AWAY_MS)} />
+            <SettingsRow title={t('profile.welcomeTest')} icon="hand-left" fill={FILL.grey} meta={lastWelcomeCheck()} onPress={() => rewindAwayClock(2 * AWAY_MS)} />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <SettingsRow title={t('profile.serverAccount')} icon="cloud" fill={FILL.grey} meta={accountStatus} onPress={() => void checkAccount()} />
             {/* B1.2: shells are spent and earned on the server; turning it on loads the server's wallet. */}
