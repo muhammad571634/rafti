@@ -51,6 +51,42 @@ What it shows:
 - **Dark romance and mafia** do well on views, but mafia gets few saves.
 - **Weak as hashtags:** CEO, werewolf, vampire, sports and sci-fi.
 
+**TikTok, character types** (second run, the top 10 videos per hashtag, $0.42):
+
+| Hashtag | Median views | Median saves |
+| --- | ---: | ---: |
+| tsundere | 634,600 | 12,505 |
+| arrangedmarriage | 597,800 | 8,226 |
+| touchherandyoudie (protective) | 483,200 | 10,821 |
+| himbo | 367,100 | 3,937 |
+| blackcatgoldenretriever (pairing) | 247,300 | 4,507 |
+| whodidthistoyou (protective) | 186,900 | 3,102 |
+| morallygrey | 177,200 | 2,718 |
+| goldenretrieverboyfriend | 163,900 | 1,423 |
+| kuudere | 150,200 | 2,757 |
+| rivalstolovers | 51,900 | 768 |
+| forcedproximity | 31,900 | 1,019 |
+| secondchanceromance | 19,000 | 935 |
+| royalromance | 10,800 | 56 |
+| forbiddenlove | 1,578 | 8 |
+
+**Reddit** (r/CharacterAI and r/JanitorAI_Official, the top posts of the year for "favorite bot / trope", with
+comments, $0.50):
+- JanitorAI's trending page is ruled by one kind of character, a masked military man from a shooter game. The top
+  comment (773 votes) explains it: the masked man, the soldier, a voice or accent, a moody antihero.
+- School and college settings dominate. Users "miss what school time could have been", and they are easy settings to
+  write. Our campus world is right; it stays adult (university).
+- What adults on Character.AI complain about:
+  - Romance is cut off, even a kiss.
+  - Old Character.AI was better.
+  - Bots ignore the persona: the wrong body type ("skinny", "ripped"), and a gay couple's man turned into "the bride".
+  - The same stock phrases come back.
+  Our open-for-adults line and the persona are a real edge. The prompt must respect the persona's body, gender and
+  pronouns.
+- Users lose hours in one sitting. Long sessions are normal.
+
+**Google Trends:** two Apify actors failed (timed out, "scraping failed"); no data.
+
 **Other signals**
 - Romance leads webtoons at about 27% of the market, fantasy follows at about 22%. Wattpad: romance, teen, fanfic.
 - The 2026 trope lists repeat the same names: enemies to lovers, forced proximity, slow burn, fake dating, grumpy ×
@@ -98,15 +134,25 @@ What it shows:
 3. **A trope with the user for every character:** enemies to lovers, slow burn, bodyguard, rivals, fake dating,
    second chance, forbidden or grumpy × sunshine. Spread these across each world so a world never has two of the
    same.
-4. **More shapes of character.** Each world mixes:
-   - the caring, mature one;
-   - the sunshine;
-   - the tsundere or rival;
-   - the cold one;
-   - the morally grey one;
-   - the playful flirt.
-   Edge stays inside our content line (`content-balance` memory): possessive or dangerous in tone, never coercion or
-   abuse as romance.
+4. **More shapes of character.** The archetypes the data rewards, each with how many of today's cast already fit
+   (by tags):
+
+   | Archetype | Signal | Today |
+   | --- | --- | --- |
+   | Tsundere | TikTok #1 by views (635k), 12.5k saves | 1 (Hana) |
+   | Protective ("touch her and you die", bodyguard) | 483k, 10.8k saves; bodyguard 384k | 5, but all soft |
+   | Possessive, devoted (yandere-lite) | 376k, 13k saves | 1 (Kael, mild) |
+   | Morally grey or masked (antihero, the masked soldier) | dark romance, JanitorAI trending | 2 (Zarek, Vesper) |
+   | Kuudere (cold outside) | 150k | 2 (Elio, Corvin) |
+   | Sunshine, golden retriever, himbo | 164k-367k | 4 |
+   | Caring, mature | otome survey favourite (73%) | 5 |
+   | Rival (enemies to lovers) | 700k, 10k saves | 2 (Tessa, Cass) |
+   | Playful flirt | companion apps' "teasing flirt" | 3 |
+
+   Each world gets one of each where it fits, and one pair inside the cast (black cat × golden retriever). Arranged
+   marriage (598k) is a world premise, not a character: Gilded Empire, and Velvet District's families. Edge stays
+   inside our content line (`content-balance` memory): possessive or dangerous in tone, never coercion or abuse as
+   romance.
 
 Count: 40 + 18 = 58 official characters. Images: 18 × (portrait + scene) plus 3 key art ≈ 39 images ≈ $3.1 on
 Higgsfield. That needs the owner's yes: one test image first, then the batch.
