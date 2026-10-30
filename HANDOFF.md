@@ -23,7 +23,7 @@
 - Full report: `docs/agent-tasks/gendered-character-forms-report.md`. Flow D133 updated to `done`.
 
 
-### 0z66. Share cards v3: the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: deploy the API (owner runs it)
+### 0z66. Share cards v3: the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: owner shares once on the A51 and sees +5
 
 - Owner: the cards were too plain (use a photo), the chat Share must be colourful and a bit bigger, the chat card
   should show the last 5-6 messages, and each share pays 5 shells, capped per user per day ("3 or 5 a day").
@@ -45,8 +45,8 @@
 - tsc 0, npm test 483/483, server tests 46/46, check:locales pass. EAS update sent.
 
 Still to do:
-1. Deploy the API (the agent's deploy was refused): `C:/Users/joray/.fly/bin/flyctl.exe deploy . --config
-   server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`. Until then a share pays nothing.
+1. ~~Deploy the API~~ Done: the owner ran the Fly deploy; `POST /v1/wallet/share` answers 401 without a token (live).
+   The agent's own deploys are refused by auto mode: hand the owner the `! flyctl deploy …` line.
 2. New preview APK so Share sends the picture (owner: not now).
 
 ### 0z65. Worlds 2.0: research and proposed architecture (2026-10-30, Claude 2). NEXT: owner picks the new worlds and the order (`docs/worlds-plan.md` §4)
