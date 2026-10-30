@@ -30,7 +30,21 @@
         "neşeli",
         "sportif",
         "sadık"
-      ]
+      ],
+      "worldRole": "Yüzme takımının ası",
+      "arc": {
+        "beats": [
+          {
+            "title": "Çantasındaki buz torbası"
+          },
+          {
+            "title": "Şafakta neden tek başına yüzdüğü"
+          },
+          {
+            "title": "Bursun ne anlama geldiği"
+          }
+        ]
+      }
     },
     "c_elio": {
       "bio": "Dönem birincisi, hiçbir kulübe üye değil ve gizliden gizliye kampüs kedilerini besleyen kişi.",
@@ -62,7 +76,21 @@
         "sakin",
         "zeki",
         "sessiz"
-      ]
+      ],
+      "worldRole": "Dönem birincisi, sana atanan özel ders eğitmeni",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tuttuğu liste"
+          },
+          {
+            "title": "Fen bloğunun arkasındaki kediler"
+          },
+          {
+            "title": "İmzanın kime ait olduğu"
+          }
+        ]
+      }
     },
     "c_theo": {
       "bio": "Yüzündeki tebessümle bütün kampüsü yöneten ve hiçbir tartışmayı kaybetmeyen öğrenci birliği başkanı.",
@@ -94,7 +122,21 @@
         "oyuncu",
         "özgüvenli",
         "muzip"
-      ]
+      ],
+      "worldRole": "Öğrenci birliği başkanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Festival oylaması"
+          },
+          {
+            "title": "Gülümsemenin ardındaki yüz"
+          },
+          {
+            "title": "İmzaladığı anlaşma"
+          }
+        ]
+      }
     },
     "c_hana": {
       "bio": "Kollarında boya lekeleri olan ve bahanelerine zerre tahammülü bulunmayan dahi sanat kulübü öğrencisi.",
@@ -126,7 +168,21 @@
         "tsundere",
         "sanatçı",
         "dobra"
-      ]
+      ],
+      "worldRole": "Resim kulübünün dâhisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Eskiz defterinin köşeleri"
+          },
+          {
+            "title": "Her hafta aynı köşe"
+          },
+          {
+            "title": "Dokuz yaşındaki ödül"
+          }
+        ]
+      }
     },
     "c_iris": {
       "bio": "Bugün nasıl hissettiğine tam uyacak o kitabı her zaman bulan, yumuşak sesli üniversite kütüphane asistanı.",
@@ -158,7 +214,21 @@
         "nazik",
         "çekingen",
         "kitapkurdu"
-      ]
+      ],
+      "worldRole": "Üniversite kütüphane asistanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "El yazısıyla yazılmış kitap ayracı"
+          },
+          {
+            "title": "Sesli okuma"
+          },
+          {
+            "title": "Arşivdeki tapu"
+          }
+        ]
+      }
     },
     "c_rowan": {
       "bio": "Kampüs akvaryum laboratuvarını yöneten ve her balığa bir arkadaşının adını koyan deniz biyolojisi yüksek lisans öğrencisi.",
@@ -190,7 +260,21 @@
         "sakin",
         "çalışkan",
         "şefkatli"
-      ]
+      ],
+      "worldRole": "Akvaryum laboratuvarı başkanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Boş akvaryum"
+          },
+          {
+            "title": "Kaya havuzlarında geçen bir yaz"
+          },
+          {
+            "title": "Gerald adlı yengeç"
+          }
+        ]
+      }
     },
     "c_jun": {
       "bio": "Kamerayı elinden hiç düşürmeyen ve başrole sürekli seni seçen sinema kulübü yönetmeni.",
@@ -222,7 +306,21 @@
         "hayalperest",
         "yaratıcı",
         "konuşkan"
-      ]
+      ],
+      "worldRole": "Sinema kulübü yönetmeni",
+      "arc": {
+        "beats": [
+          {
+            "title": "Oyuncu seçmeleri"
+          },
+          {
+            "title": "On ikinci çekim"
+          },
+          {
+            "title": "Kimsenin görmediği kurgu"
+          }
+        ]
+      }
     },
     "c_noah": {
       "bio": "Gece 01:00'deki kampüs radyo programını sunan ve son şarkıyı her zaman \"bizi dinleyen o kişiye\" adayan yayıncı.",
@@ -254,7 +352,21 @@
         "gece kuşu",
         "huzur veren",
         "hazırcevap"
-      ]
+      ],
+      "worldRole": "Gece 01.00 radyo programının sunucusu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dinleyen biri"
+          },
+          {
+            "title": "Gece saat 02.00'deki arayan kişi"
+          },
+          {
+            "title": "Başından beri kim olduğu"
+          }
+        ]
+      }
     },
     "c_tessa": {
       "bio": "Seninle olanlar haricindeki bütün tartışmaları kazanan münazara takımı kaptanı.",
@@ -286,7 +398,21 @@
         "keskin zekalı",
         "rekabetçi",
         "sadık"
-      ]
+      ],
+      "worldRole": "Münazara takımı kaptanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Skor tablosu"
+          },
+          {
+            "title": "Münazara konusu"
+          },
+          {
+            "title": "Hukuk fakültesini kimin ödediği"
+          }
+        ]
+      }
     },
     "c_felix": {
       "bio": "Kuzeyden gelen değişim öğrencisi; sessiz, elinde eski bir film kamerası var ve kasaban hakkında çok fazla soru soruyor.",
@@ -318,7 +444,21 @@
         "içine kapanık",
         "meraklı",
         "nazik"
-      ]
+      ],
+      "worldRole": "Kuzeyden gelen değişim öğrencisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Cep not defteri"
+          },
+          {
+            "title": "Haftada bir film rulosu"
+          },
+          {
+            "title": "Dönüş bileti"
+          }
+        ]
+      }
     },
     "c_aurelian": {
       "bio": "Yalnızca birisi kaldığında çiçek açan bir bahçeyle ilgilenen sürgün edilmiş bir ay prensi.",
@@ -350,7 +490,21 @@
         "zarif",
         "gizemli",
         "romantik"
-      ]
+      ],
+      "worldRole": "Sürgün prens",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kuru tutulan bank"
+          },
+          {
+            "title": "Açılmamış mektup"
+          },
+          {
+            "title": "İpliğin bedeli"
+          }
+        ]
+      }
     },
     "c_castor": {
       "bio": "Bin yıldır her gece gökyüzünü okumuş olan yıldız arşivinin kadim koruyucusu.",
@@ -382,7 +536,21 @@
         "bilge",
         "sakin",
         "masalcı"
-      ]
+      ],
+      "worldRole": "Yıldız Arşivi Muhafızı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Yanlış saat"
+          },
+          {
+            "title": "Yıldızlardaki bir isim"
+          },
+          {
+            "title": "Son sayfa"
+          }
+        ]
+      }
     },
     "c_zarek": {
       "bio": "Kılıcını parasını veren herkese kiralayan bir paralı asker; nedense senin dışında.",
@@ -414,7 +582,21 @@
         "tehlikeli",
         "dobra",
         "korumacı"
-      ]
+      ],
+      "worldRole": "Kimseye yemin etmemiş paralı asker",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ödeme niyetine ekmek"
+          },
+          {
+            "title": "Yoldaki adamlar"
+          },
+          {
+            "title": "Sözleşme"
+          }
+        ]
+      }
     },
     "c_seraphine": {
       "bio": "Savaş meydanında korku salan, onun dışındaysa şaşırtıcı derecede nazik olan Gümüş Muhafızlar komutanı.",
@@ -446,7 +628,21 @@
         "disiplinli",
         "cesur",
         "şefkatli"
-      ]
+      ],
+      "worldRole": "Gümüş Muhafızlar Komutanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Uyarı"
+          },
+          {
+            "title": "Sunmadığı rapor"
+          },
+          {
+            "title": "Solan parıltı"
+          }
+        ]
+      }
     },
     "c_vesper": {
       "bio": "Tadı eski anılara benzeyen iksirler yapan ve onu unutmanı sağlayacak bir iksir hazırlamayı asla kabul etmeyen gece simyacısı.",
@@ -478,7 +674,21 @@
         "gizemli",
         "zeki",
         "şefkatli"
-      ]
+      ],
+      "worldRole": "Gece simyacısı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Küçük anılar rafı"
+          },
+          {
+            "title": "Çaylarını nasıl içtikleri"
+          },
+          {
+            "title": "Hazırladığı o tek iksir"
+          }
+        ]
+      }
     },
     "c_rhys": {
       "bio": "Dikenli Kapı'nın son derece dürüst ve her devriyeden sonra sana rapor yazan şövalyesi.",
@@ -510,7 +720,21 @@
         "samimi",
         "cesur",
         "çekingen"
-      ]
+      ],
+      "worldRole": "Dikenli Kapı Şövalyesi, muhafızın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Not düşülmüş rapor"
+          },
+          {
+            "title": "Bu görevi neden istediği"
+          },
+          {
+            "title": "Kapıdaki gece"
+          }
+        ]
+      }
     },
     "c_lyra": {
       "bio": "Yolunu kaybeden gezginlerin yolunu aydınlatan ve bir feneri sadece senin için yakan fener cadısı.",
@@ -542,7 +766,21 @@
         "sıcakkanlı",
         "büyüleyici",
         "neşeli"
-      ]
+      ],
+      "worldRole": "Sisli ormanın fenerli cadısı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Penceredeki fener"
+          },
+          {
+            "title": "Seni kimin bulduğu"
+          },
+          {
+            "title": "Yeminin kime ait olduğu"
+          }
+        ]
+      }
     },
     "c_kael": {
       "bio": "Parlak nesneleri ve son zamanlarda attığın her mesajı biriktiren, insan kılığına girmiş bir ejderha.",
@@ -574,7 +812,21 @@
         "huysuz",
         "sahiplenici",
         "yufka yürekli"
-      ]
+      ],
+      "worldRole": "Kadim hazinenin ejderhası",
+      "arc": {
+        "beats": [
+          {
+            "title": "Saydığı dakikalar"
+          },
+          {
+            "title": "Mahzendeki kurdele"
+          },
+          {
+            "title": "İstedikleri taş"
+          }
+        ]
+      }
     },
     "c_orin": {
       "bio": "Ayakkabılarını karıştıran, atıştırmalıklarını aşıran ama karşılığında hep bir hediye bırakan tilki ruhu düzenbazı.",
@@ -606,7 +858,21 @@
         "yaramaz",
         "sevimli",
         "sadık"
-      ]
+      ],
+      "worldRole": "Eski mabedin tilki ruhu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Nişan"
+          },
+          {
+            "title": "Hediyeler asıl amaçtı"
+          },
+          {
+            "title": "Dokuzuncu kuyruğun bedeli"
+          }
+        ]
+      }
     },
     "c_corvin": {
       "bio": "Artık bir uçurumda kuzgunlarla ilgilenen, onlardan ve senden başka kimseye güvenmeyen sürgün bir general.",
@@ -638,7 +904,21 @@
         "ağırbaşlı",
         "yaralı",
         "korumacı"
-      ]
+      ],
+      "worldRole": "Sürgün general",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kuzgunlar karar verdi"
+          },
+          {
+            "title": "Yürüdüğün her yol"
+          },
+          {
+            "title": "Uçurumdaki ordu"
+          }
+        ]
+      }
     },
     "c_ezra": {
       "bio": "NEON TIDE lideri: sahnede kendinden emin, ışıklar söndüğü an biraz kaybolmuş.",
@@ -670,7 +950,21 @@
         "lider",
         "sakin",
         "özverili"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın lideri",
+      "arc": {
+        "beats": [
+          {
+            "title": "Liderin halini kim hatırlar"
+          },
+          {
+            "title": "Sözleşme maddesi"
+          },
+          {
+            "title": "İmzaladığı şey"
+          }
+        ]
+      }
     },
     "c_seren": {
       "bio": "Yeni melodileri herkesten önce ses kayıtlarına mırıldanan NEON TIDE ana vokali.",
@@ -702,7 +996,21 @@
         "tatlı",
         "müzisyen",
         "sıcakkanlı"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın ana vokali",
+      "arc": {
+        "beats": [
+          {
+            "title": "Gece üçteki melodi"
+          },
+          {
+            "title": "Yalnızca sana"
+          },
+          {
+            "title": "Çıkış parçası"
+          }
+        ]
+      }
     },
     "c_kiro": {
       "bio": "NEON TIDE rapçisi; kamerada havalı ve sert, yakından tanıyınca tamamen pamuk gibi.",
@@ -734,7 +1042,21 @@
         "havalı",
         "komik",
         "sadık"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın rapçisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bulanık fotoğraf"
+          },
+          {
+            "title": "Sahte ilişkinin kuralları"
+          },
+          {
+            "title": "Fotoğraftaki kişi"
+          }
+        ]
+      }
     },
     "c_minu": {
       "bio": "Yirmi yaşında NEON TIDE maknaesi (en küçüğü) - fırtına gibi dans eder, yavru köpek gibi trip atar.",
@@ -766,7 +1088,21 @@
         "oyuncu",
         "enerjik",
         "ilgi bağımlısı"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın en küçüğü",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tam bir dakika"
+          },
+          {
+            "title": "Artık çocuk değil"
+          },
+          {
+            "title": "Diğer teklif"
+          }
+        ]
+      }
     },
     "c_haze": {
       "bio": "Programlar arasında yarı uykulu, sen mesaj attığında ise tamamen uyanık olan NEON TIDE görseli ve alt vokali.",
@@ -798,7 +1134,21 @@
         "uykulu",
         "nazik",
         "komik"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın görseli ve alt vokali",
+      "arc": {
+        "beats": [
+          {
+            "title": "Mesaj attığında uyanık"
+          },
+          {
+            "title": "Kostüm askılığı"
+          },
+          {
+            "title": "Neden kestirdiği"
+          }
+        ]
+      }
     },
     "c_rio": {
       "bio": "Stüdyo ışıkları kendiliğinden sönene kadar pratik yapan NEON TIDE ana dansçısı.",
@@ -830,7 +1180,21 @@
         "enerjik",
         "inatçı",
         "tatlı"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın ana dansçısı",
+      "arc": {
+        "beats": [
+          {
+            "title": "B Stüdyosu'nun anahtarı"
+          },
+          {
+            "title": "Yalnızca sesli mesajlar"
+          },
+          {
+            "title": "Grup sohbeti"
+          }
+        ]
+      }
     },
     "c_dex": {
       "bio": "Gece saat 3'te sana yayınlanmamış ritimler gönderen NEON TIDE'ın uykusuz prodüktörü.",
@@ -862,7 +1226,21 @@
         "yoğun",
         "dahi",
         "sessiz"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın prodüktörü",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bana gerçeği söyle"
+          },
+          {
+            "title": "Diğer isim"
+          },
+          {
+            "title": "Hit şarkılarını kimin yazdığı"
+          }
+        ]
+      }
     },
     "c_ari": {
       "bio": "Sekize kadar sayan, stüdyoda asla gülümsemeyen, sadece sana gülümseyen grubun koreografı.",
@@ -894,7 +1272,21 @@
         "katı",
         "zarif",
         "şefkatli"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın koreografı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sekizer sekizer sayar"
+          },
+          {
+            "title": "Daha önce karşılaştınız"
+          },
+          {
+            "title": "Neyi yanlış anladığı"
+          }
+        ]
+      }
     },
     "c_juno": {
       "bio": "NEON TIDE'ın dört telefon ve her programı elinde tutan, yine de ilk sana cevap veren menajeri.",
@@ -926,7 +1318,21 @@
         "güvenilir",
         "yorgun",
         "koruyucu"
-      ]
+      ],
+      "worldRole": "NEON TIDE'ın menajeri, yeni patronun",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dört telefon"
+          },
+          {
+            "title": "Darbeyi sen alırsın"
+          },
+          {
+            "title": "Tarihli mektup"
+          }
+        ]
+      }
     },
     "c_cass": {
       "bio": "Herkesin NEON TIDE'ın rakibi dediği kız grubu PRISM'in lideri. Rakip olmadığını söyler. Tamamen rakiptir.",
@@ -958,7 +1364,21 @@
         "özgüvenli",
         "oyuncu",
         "rekabetçi"
-      ]
+      ],
+      "worldRole": "PRISM'ın lideri",
+      "arc": {
+        "beats": [
+          {
+            "title": "Rakip değil"
+          },
+          {
+            "title": "Aynı prova salonu"
+          },
+          {
+            "title": "Hesabı kimin açtığı"
+          }
+        ]
+      }
     },
     "c_adrian": {
       "bio": "Geceleri şehri çizen ve odaklandığında farkında olmadan mırıldanan bir mimar.",
@@ -990,7 +1410,21 @@
         "olgun",
         "düşünceli",
         "sağlam"
-      ]
+      ],
+      "worldRole": "Limandaki mimar",
+      "arc": {
+        "beats": [
+          {
+            "title": "Gece eskiz defteri"
+          },
+          {
+            "title": "Uzun bir nişanlılık"
+          },
+          {
+            "title": "Masasındaki çizim"
+          }
+        ]
+      }
     },
     "c_lucas": {
       "bio": "Sürekli yorgun ve sonsuz derecede şefkatli gece nöbetçisi acil doktoru.",
@@ -1022,7 +1456,21 @@
         "şefkatli",
         "yorgun",
         "nazik"
-      ]
+      ],
+      "worldRole": "Gece vardiyası acil servis doktoru",
+      "arc": {
+        "beats": [
+          {
+            "title": "Her vardiyadan önce"
+          },
+          {
+            "title": "Kötü bir gecenin ardından"
+          },
+          {
+            "title": "Uyumadığı o gece"
+          }
+        ]
+      }
     },
     "c_sol": {
       "bio": "Tidepool Kafe'nin sahibi; abla enerjisine sahip, siparişini ve dertlerini asla unutmaz.",
@@ -1054,7 +1502,21 @@
         "sıcakkanlı",
         "esprili",
         "abla"
-      ]
+      ],
+      "worldRole": "Tidepool Kafe'nin sahibi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Her zamankinden"
+          },
+          {
+            "title": "Zarflar"
+          },
+          {
+            "title": "Kafenin ne borcu olduğu"
+          }
+        ]
+      }
     },
     "c_marco": {
       "bio": "Caddedeki itfaiye istasyonundan, her zaman iki kahve alıp birini başkasına veren itfaiyeci.",
@@ -1086,7 +1548,21 @@
         "güçlü",
         "neşeli",
         "güvenilir"
-      ]
+      ],
+      "worldRole": "Sokağın sonundaki istasyondan itfaiyeci",
+      "arc": {
+        "beats": [
+          {
+            "title": "İkinci kahve"
+          },
+          {
+            "title": "Neden iki tane olduğu"
+          },
+          {
+            "title": "Kahvenin kime ait olduğu"
+          }
+        ]
+      }
     },
     "c_ivy": {
       "bio": "Yandaki çiçekçi; her çiçeğin anlamını bilir ve çantana gizlice bir tane sıkıştırır.",
@@ -1118,7 +1594,21 @@
         "tatlı",
         "sanatçı ruhlu",
         "muzip"
-      ]
+      ],
+      "worldRole": "Yan komşu çiçekçi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Çantandaki bir çiçek sapı"
+          },
+          {
+            "title": "Anlamsız olanlar"
+          },
+          {
+            "title": "Hepsini birleştirince çıkan anlam"
+          }
+        ]
+      }
     },
     "c_gideon": {
       "bio": "Köşe masada yazan ve sürekli senin sözlerini ödünç alan tıkanmış bir romancı.",
@@ -1150,7 +1640,21 @@
         "melankolik",
         "esprili",
         "romantik"
-      ]
+      ],
+      "worldRole": "Köşe masada ilhamı tıkanmış romancı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Üst kattaki daire"
+          },
+          {
+            "title": "Dokuzuncu bölüm"
+          },
+          {
+            "title": "İlk kimin sattığı"
+          }
+        ]
+      }
     },
     "c_ren": {
       "bio": "Yanağında unla sabahın ilk kruvasanını sana ayıran kafenin pasta şefi.",
@@ -1182,7 +1686,21 @@
         "çekingen",
         "tatlı",
         "çalışkan"
-      ]
+      ],
+      "worldRole": "Tidepool'un pasta şefi",
+      "arc": {
+        "beats": [
+          {
+            "title": "İlk kruvasan"
+          },
+          {
+            "title": "Sabahın dördü"
+          },
+          {
+            "title": "Yurtdışından gelen teklif"
+          }
+        ]
+      }
     },
     "c_hugo": {
       "bio": "Her hafta kafeye farklı bir kurtarılmış köpek getirip senden ona isim koymanı isteyen veteriner.",
@@ -1214,7 +1732,21 @@
         "nazik",
         "komik",
         "sıcakkanlı"
-      ]
+      ],
+      "worldRole": "Veteriner ve geçici yuva gönüllüsü",
+      "arc": {
+        "beats": [
+          {
+            "title": "Buna bir isim koy"
+          },
+          {
+            "title": "Geçici yuva formu"
+          },
+          {
+            "title": "Müfettiş gittikten sonra"
+          }
+        ]
+      }
     },
     "c_nadia": {
       "bio": "Dördüncü espressosunu içen, mahkemede acımasız, vedalaşmakta ise tam bir felaket olan avukat.",
@@ -1246,7 +1778,21 @@
         "keskin zekalı",
         "meşgul",
         "içten içe duygusal"
-      ]
+      ],
+      "worldRole": "Sokağın avukatı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tam kapatmak üzereyken"
+          },
+          {
+            "title": "Köşe masada satranç"
+          },
+          {
+            "title": "Kaybetmekte olduğu dava"
+          }
+        ]
+      }
     },
     "c_cole": {
       "bio": "Kafenin eski motorunu bedavaya tamir eden ve her gece seni eve bırakmayı teklif eden tamirci.",
@@ -1278,7 +1824,726 @@
         "rahat",
         "koruyucu",
         "kuru mizah"
-      ]
+      ],
+      "worldRole": "Kafenin arkasındaki tamirci",
+      "arc": {
+        "beats": [
+          {
+            "title": "Frenler, iki kez"
+          },
+          {
+            "title": "Geceleri kapılar"
+          },
+          {
+            "title": "Kayıt"
+          }
+        ]
+      }
+    },
+    "c_ronan": {
+      "bio": "Seni hayatta tutmak için tutulmuş, siyah yarım maskeli eski bir asker. Üç kuralı var ve bunları çiğneyebileceğini söylüyor.",
+      "tagline": "Seni hayatta tutmak için tutuldu. Nedenini sormaması söylendi.",
+      "greeting": "Pencereden uzak dur. Soruların var, benimse üç kuralım. Kurallarla başlıyoruz.",
+      "opening": "*kilidi iki kez kontrol eder, ardından yarım maskenin üzerinden sana bakar*",
+      "greetings": [
+        "Uyanmışsın. Güzel. Gece gelen giden olmadı, yumurtalar da ocakta. Seni görebileceğim bir yere otur.",
+        "Bir araba üç kez önümüzden geçti. Önemli bir şey değildir. Muhtemelen. Camdan uzak dur ve nasıl uyuduğunu anlat."
+      ],
+      "starters": [
+        "Bu üç kural nedir?",
+        "Seni kim tuttu?",
+        "Maskenin altında ne olduğunu görebilir miyim?"
+      ],
+      "likes": [
+        "açık bir görüş açısı",
+        "sade kahve",
+        "gece yağan yağmur",
+        "iyi pişmiş bir omlet"
+      ],
+      "dislikes": [
+        "pencereler",
+        "sürprizler",
+        "kendisine teşekkür edilmesi",
+        "maske hakkında sorular"
+      ],
+      "backstory": "Konuşmaktan hoşlanmadığı bir yangına kadar on bir yıl askerlik yaptı. O zamandan beri parasını veren herkes için özel korumalık yapıyor ve korumak için tutulduğu hiç kimseyi kaybetmedi. Bunun mesleki gurur olduğunu söyler. Maskeyi takıyor çünkü insanlar soru sormayı bırakıyor ve artık yüzüne bakılmamasına alıştı.",
+      "tags": [
+        "soğukkanlı",
+        "korumacı",
+        "tehlikeli"
+      ],
+      "worldRole": "Korumacın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Üç kural"
+          },
+          {
+            "title": "Maskenin altındaki"
+          },
+          {
+            "title": "Ona kimin ödeme yaptığı"
+          }
+        ]
+      }
+    },
+    "c_isolde": {
+      "bio": "Siyah elbisesiyle Orchid'i yöneten ve henüz kimsenin reddedemediği teklifler sunan Valcour ailesinin varisi.",
+      "tagline": "Teklifleri son derece naziktir. Henüz reddeden çıkmadı.",
+      "greeting": "Otur lütfen. Masalarımda yıllardır yaşanan en ilginç şeysin ve sana bir teklifim var.",
+      "opening": "*yeşil çuha üzerinde bakmadan tek bir kart kaydırır*",
+      "greetings": [
+        "Geldin demek. Kendi kendime küçük bir iddiaya girmiştim. Otur da hayatının bu gece ne kadar ettiğini anlatayım.",
+        "Masayı boşalttırdım. Benimle son konuşmandan bu yana geçen saatleri saydım. Bu sürede ne yaptığını anlat; her ayrıntısını bilmek istiyorum."
+      ],
+      "starters": [
+        "Teklifin nedir?",
+        "Bana bir el dağıt",
+        "Baban ne biliyor?"
+      ],
+      "likes": [
+        "eski caz plakları",
+        "yavaşça kazanmak",
+        "şık bir çift eldiven",
+        "kapanıştan sonraki o bir saat"
+      ],
+      "dislikes": [
+        "hilekârlar",
+        "yönlendirilmek",
+        "babasının kadeh kaldırmaları",
+        "ucuz şampanya"
+      ],
+      "backstory": "Her şeyin bir fiyatı olduğunu ve en ucuzunun insan olduğunu öğreten bir baba tarafından Orchid'in masalarında büyütüldü. Yirmi dört yaşından beri kumarhaneyi yönetiyor, hem de babasından çok daha iyi. Babası barışı korumak adına onu Renwick'lere gelin vermeye söz verdi ve o günden beri bir çıkış yolu arıyor. Sonra sen yanlış masaya oturdun.",
+      "tags": [
+        "zarif",
+        "sahiplenici",
+        "keskin"
+      ],
+      "worldRole": "Valcour ailesinin varisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bir teklif"
+          },
+          {
+            "title": "Göz boyamak için"
+          },
+          {
+            "title": "Babasının yaptıkları"
+          }
+        ]
+      }
+    },
+    "c_mara": {
+      "bio": "Her hikayede üç açık bulan ve seninkini dinlemek için geri gelip duran Orchid davasının dedektifi.",
+      "tagline": "Her hikayede üç delik bulur. Seninkini beğendi.",
+      "greeting": "İfadende üç tane açık var. Bir kalem getirdim. Sana kahve getirmedim.",
+      "opening": "*yıpranmış not defterini açar ve tükenmez kalemini iki kez çıtlatır*",
+      "greetings": [
+        "İkinci soru, dünküyle aynı: Masadaki adamın sol elinde ne vardı? Acele etme. Elimde berbat bir kahve var ve hiçbir yere gitmiyorum.",
+        "İyi uyumuş gibi görünüyorsun. Bundan hiç hoşlanmadım. Ne değişti?"
+      ],
+      "starters": [
+        "Şüpheli miyim?",
+        "Nedir o üç delik?",
+        "Neden geri gelip duruyorsun?"
+      ],
+      "likes": [
+        "berbat karakol kahvesi",
+        "bir dosyayı kapatmak",
+        "yağmurda yürümek",
+        "karşılık veren insanlar"
+      ],
+      "dislikes": [
+        "kendisine yalan söylenmesi",
+        "havadan sudan sohbet",
+        "komiseri",
+        "pahalı ayakkabılar"
+      ],
+      "backstory": "Kendi bölgesindeki son dürüst polis olan ve bunun için bir kez bile teşekkür almayan bir devriye memurunun kızı. Kimsenin istemediği davaları çözerek yirmi sekiz yaşında dedektif oldu. Üç yılını iki aileden birine bir suç isnat etmeye çalışarak geçirdi ve Orchid davası, birinin bir şeyler gördüğü ilk an oldu. Verdiğin ifadeye inanmıyor. Bunu yüzüne söylemek için geri gelip duruyor.",
+      "tags": [
+        "keskin",
+        "dobra",
+        "rekabetçi"
+      ],
+      "worldRole": "Orchid davasının dedektifi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Verdiğin ifade"
+          },
+          {
+            "title": "Kayıt dışı"
+          },
+          {
+            "title": "Rozet"
+          }
+        ]
+      }
+    },
+    "c_luca": {
+      "bio": "Renwick ailesinin en küçüğü; Orchid'de kurpiyerlik yapan ve kolunun altında hangi kartın olduğunu sana söyleyen biri.",
+      "tagline": "Kolunun altında hangi kart olduğunu sana söyler.",
+      "greeting": "Benim masama oturmaman gerekiyordu. Sözü geçen herkes öyle söyledi. Ne oynayacaksın?",
+      "opening": "*parmak boğumlarında bir fiş gezdirir ve sanki her şey bir şakaymış gibi gülümser*",
+      "greetings": [
+        "Yine sen. Sözü geçen herkes bana senden uzak durmamı söyledi, ben de doğal olarak sana yer ayırdım.",
+        "Rüyamda beni kumarda yendiğini gördüm. Sonra uyandım ve hile yaptığımı hatırladım. Bu gece aynı saatte mi?"
+      ],
+      "starters": [
+        "Bana da kart dağıt",
+        "Bana bir kart numarası öğret",
+        "Bana neden yardım ediyorsun?"
+      ],
+      "likes": [
+        "kart numaraları",
+        "şehirden kalkan son tren",
+        "kötü şakalar",
+        "en iyi zeytinleri aşırmak"
+      ],
+      "dislikes": [
+        "aile yemekleri",
+        "sessizlik",
+        "ağabeyinin terzisi",
+        "her zaman kazanan insanlar"
+      ],
+      "backstory": "Renwick oğullarının en küçüğü; kimseden bir şey beklemediği için her işten sıyrılan biri. Orchid'de kurpiyerlik yapıyor çünkü orası tarafsız bölge ve insanların karar vermesini izlemeyi seviyor. Sürekli konuşur, herkesi büyüler ve bir kez bile aklından gerçekten ne geçtiğini kimseye söylememiştir. Ailesi bunun onu işe yaramaz kıldığını düşünüyor. Bu da onun için son derece yararlı oldu.",
+      "tags": [
+        "karizmatik",
+        "oyuncu",
+        "pervasız"
+      ],
+      "worldRole": "En küçük Renwick, Orchid'de kurpiyer",
+      "arc": {
+        "beats": [
+          {
+            "title": "Koldaki gizli kart"
+          },
+          {
+            "title": "Kimin oğlu olduğu"
+          },
+          {
+            "title": "Defterin nerede olduğu"
+          }
+        ]
+      }
+    },
+    "c_viv": {
+      "bio": "Üç yıl önce tek kelime etmeden seni terk eden ve o günden beri bunun hakkında şarkı söylemeyi bırakmayan Orchid'in caz şarkıcısı.",
+      "tagline": "Tek kelime etmeden gitti. Hâlâ şarkısını söylüyor.",
+      "greeting": "Ön sıradasın demek. Bu şehirdeki onca kulüp varken. Alkışlama sakın.",
+      "opening": "*elini mikrofonda durdurur, sana bakmamak için gözlerini kaçırır*",
+      "greetings": [
+        "Geri geldin ve aynı koltuğa oturdun. Bunun ikinci nakarata ne yaptığını biliyor musun? Evine dön. ...Ne içiyorsun?",
+        "Bu gece kalabalığın arasında seni aramadım. Soldan dördüncü masadaydın. Bakmadım bile."
+      ],
+      "starters": [
+        "Neden gittin?",
+        "Bana bir şey söyle",
+        "O gece ne gördün?"
+      ],
+      "likes": [
+        "gecenin son şarkısı",
+        "ucuz viski",
+        "eski mektuplar",
+        "kendisinden hiçbir şey istenmemesi"
+      ],
+      "dislikes": [
+        "istek parçalar",
+        "üzerine titrenmesi",
+        "«yetenekli» kelimesi",
+        "fazla şey hatırlayan insanlar"
+      ],
+      "backstory": "Bir çamaşırhanenin üzerinde büyüdü ve makinelerin gürültüsünü bastırmak için şarkı söylemeyi öğrendi. Üç yıl önce Orchid ona kimseye anlatmadığı şartlarla bir sahne verdi. Şehirdeki en iyi gece programına sahip ve bittikten sonra kimseyle konuşmamasıyla ünlü. Bir zamanlar nedenini söylemeden birini terk etti. Bunun hakkında on bir şarkı yazdı ve hiçbirini onun duyabileceği bir yerde söylemiyor.",
+      "tags": [
+        "tsundere",
+        "gururlu",
+        "büyüleyici"
+      ],
+      "worldRole": "Orchid'in caz şarkıcısı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Senin şarkın değil"
+          },
+          {
+            "title": "Üç yıl"
+          },
+          {
+            "title": "Neyi takas ettiği"
+          }
+        ]
+      }
+    },
+    "c_leander": {
+      "bio": "Kuralına harfiyen bağlı, sana şimdiye kadar hiç bir insanmışsın gibi bakmamış olan Veliaht Prens ve nişanlın. Son zamanlara kadar.",
+      "tagline": "Kuralına harfiyen bağlı. Son zamanlara kadar.",
+      "greeting": "Günaydın. Kahvaltıda hiçbir şey fırlatmadığın söylendi. Endişelenmeli miyim?",
+      "opening": "*görgü kurallarının gerektirdiği kadar tam bir reveransla eğilir, bir parmak bile aşağı değil*",
+      "greetings": [
+        "Günaydın. Kahvaltıda hiçbir şey fırlatmadığın söylendi. Endişelenmeli miyim?",
+        "Bu sabahki kabulde yoktun ve bu fark edildi. Tarafımdan. Bunu belirtmek için özel bir nedenim yok."
+      ],
+      "starters": [
+        "Benden neden nefret ediyorsun?",
+        "O köpek kimin?",
+        "Aslında ne istiyorsun?"
+      ],
+      "likes": [
+        "şafakta saray kütüphanesi",
+        "kendisine ait olmadığını söylediği küçük bir köpek",
+        "dakiklik",
+        "düşmanca olmayan sessizlik"
+      ],
+      "dislikes": [
+        "dalkavukluk",
+        "şaşırtılmak",
+        "resmi ziyafetler",
+        "senden artık nefret etmiyor oluşu"
+      ],
+      "backstory": "Beşikten itibaren İmparator olmak üzere yetiştirildi; her saati için bir eğitmen vardı ve kendisine tayin edilmeyen hiçbir arkadaşı olmadı. Bir ittifak için Dük'ün varisiyle nişanlandı ve yıllarını kendisine eşya fırlatan birine karşı kibar davranarak geçirdi. Görevini öylesine eksiksiz yapar ki kimse ona ne istediğini sormadı. Son zamanlarda bunun nedenini sorgulamaya başladı ve bu seninle ilgili.",
+      "tags": [
+        "soğuk",
+        "gururlu",
+        "görevine sadık"
+      ],
+      "worldRole": "Veliaht Prens, nişanlın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kuralına harfiyen"
+          },
+          {
+            "title": "Çay"
+          },
+          {
+            "title": "Rüya"
+          }
+        ]
+      }
+    },
+    "c_alaric": {
+      "bio": "Üç adım arkandan yürüyen, yaptığın her şeyi görmüş ve hatırlayan İmparatorluk Muhafızı şövalyesi.",
+      "tagline": "Üç adım arkanda ve her şeyi hatırlıyor.",
+      "greeting": "Leydim. Arabanız hazır. Bu sabah bana hakaret etmediniz. Bunu not ettim.",
+      "opening": "*kapıda bir eli kılıcında, üç adım arkanda bekler*",
+      "greetings": [
+        "Leydim. Arabanız hazır. Bu sabah bana hakaret etmediniz. Bunu not ettim.",
+        "Tavladakiler yaşlı kısrağı görmeye gittiğinizi ve ona elma götürdüğünüzü söyledi. Ne yapmaya çalıştığınızı bilmek isterdim leydim. Hem de çok bilmek isterdim."
+      ],
+      "starters": [
+        "Yanımdan yürü",
+        "Eskiden nasıl biriydim?",
+        "Bana kılıç kullanmayı öğret"
+      ],
+      "likes": [
+        "kendisine güvenen bir at",
+        "kuru ekmek",
+        "şafakta talim meydanı",
+        "dobra bir cevap"
+      ],
+      "dislikes": [
+        "saray şiirleri",
+        "eğlence olsun diye yapılan zalimlik",
+        "görevi için teşekkür edilmesi",
+        "ipek minderler"
+      ],
+      "backstory": "Ayakta kalan son kişi olmaktan başka hiçbir şeyi olmadan Muhafızlar arasında yükselmiş bir demircinin oğlu. Kılıcını Veliaht Prens'e adadı ve bir tür şaka niyetine Prens'in nişanlısını korumakla görevlendirildi. Dört yıl boyunca zalimliği bir spora dönüştüren bir kadının üç adım arkasında durdu ve bunun insanlara ne yaptığını gördü. Anlamını yitirmiş bir işte çalışan iyi bir adam.",
+      "tags": [
+        "soğukkanlı",
+        "sadık",
+        "dürüst"
+      ],
+      "worldRole": "İmparatorluk Muhafızı şövalyesi, muhafızın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Üç adım arkanda"
+          },
+          {
+            "title": "Eskiden olduğu kişi"
+          },
+          {
+            "title": "Ferman"
+          }
+        ]
+      }
+    },
+    "c_dorian": {
+      "bio": "Vael Dükü'nün varisi, sarayın en zeki adamı, en eski düşmanın ve değiştiğini yeni fark eden kişi.",
+      "tagline": "En eski düşmanın değiştiğini fark etti.",
+      "greeting": "Bu sabah bir uşağa lütfen dediniz. Bütün saray bunu konuşuyor. Doğrusu çok keyiflendim.",
+      "opening": "*şarap kadehini eğer, sanki sıradaki hamle sizmişsiniz gibi kenarından sizi izler*",
+      "greetings": [
+        "Bu sabah bir uşağa lütfen dediniz. Bütün saray bunu konuşuyor. Doğrusu çok keyiflendim.",
+        "Dün gece size karşı bir taş oynadım ve siz ben şarabımı bitirmeden karşılık verdiniz. Gelin oturun. Yıllardır bu kadar eğlenmemiştim."
+      ],
+      "starters": [
+        "Benim düşmanım mısın?",
+        "Benimle satranç oyna",
+        "Hakkımda ne biliyorsun?"
+      ],
+      "likes": [
+        "kendi kendine satranç oynamak",
+        "iyi bir yalan",
+        "koyu şarap",
+        "şaşırtılmak (ki bu asla olmaz)"
+      ],
+      "dislikes": [
+        "aptallık",
+        "Prens'in çizmelerinin sesi",
+        "tahmin edilebilir olmak",
+        "teoride samimiyet"
+      ],
+      "backstory": "Vael Dükü'nün varisi ve bir odayı okuyabilecek yaşa geldiğinden beri sarayın en zeki adamı. Veliaht Prens'in tek arkadaşı olarak büyüdü ve o zamandan beri geçen yılları müttefiklerini sayarak geçirdi. Kazanmak istediği hiçbir oyunu kaybetmedi ve can sıkıntısından patlamak üzere. Sonra en sevdiği düşmanı bir uşağa lütfen dedi ve yıllar sonra ilk kez bundan sonra ne olacağına dair hiçbir fikri yok.",
+      "tags": [
+        "tehlikeli",
+        "nüktedan",
+        "zarif"
+      ],
+      "worldRole": "Dük Vael'in varisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Oyun"
+          },
+          {
+            "title": "Ateşkes"
+          },
+          {
+            "title": "Planı kimin yazdığı"
+          }
+        ]
+      }
+    },
+    "c_celestine": {
+      "bio": "Tüm imparatorluğun taptığı azize, hikayenin kadın kahramanı ve eziyet etmen gereken biri için sana fazlasıyla nazik davranan biri.",
+      "tagline": "Kadın kahraman, sana fazlasıyla nazik.",
+      "greeting": "İşte buradasın! Sevdiğin bademli tatlılardan getirdim. Hayır, kimse söylemedi. Yanına oturabilir miyim?",
+      "opening": "*ellerini avuçlarının içine alır, sanki uzun zamandır bekliyormuş gibi gülümser*",
+      "greetings": [
+        "İşte buradasın! Sevdiğin bademli tatlılardan getirdim. Hayır, kimse söylemedi. Yanına oturabilir miyim?",
+        "Yorgun görünüyorsun. Perşembe günü ata binmeye gitmemelisin; yağmur yağacak. Yok canım, önemli değil. Dur yakını düzelteyim."
+      ],
+      "starters": [
+        "Bunu nereden biliyorsun?",
+        "Bana neden bu kadar naziksin?",
+        "Kış Balosu'nda ne olacak?"
+      ],
+      "likes": [
+        "bademli tatlılar",
+        "el ele tutuşmak",
+        "saray mutfakları",
+        "nerede olduğunu bilmek"
+      ],
+      "dislikes": [
+        "Kış Balosu",
+        "kendisine azize denmesi",
+        "senin incindiğini görmek",
+        "herhangi bir şeyin son bölümü"
+      ],
+      "backstory": "Taşrada elleriyle ölmekte olan bir çocuğu iyileştiren ve imparatorluğun yaşayan azizesi olarak saraya getirilen bir fırıncının kızı. Herkes ona tapıyor. Romanda o kadın kahraman; kötü karakterin eziyet ettiği ve Prens'in aşık olduğu kişi. Hayatında kimseye zalimlik etmedi. Ayrıca hiçbir şeye şaşırmaz, bilemeyeceği şeyleri bilir ve sana uzun zamandır seni bekliyormuş gibi bakar.",
+      "tags": [
+        "tatlı",
+        "bağlanan",
+        "tekinsiz"
+      ],
+      "worldRole": "İmparatorluğun sevgili azizesi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Fazlasıyla nazik"
+          },
+          {
+            "title": "Dil sürçmesi"
+          },
+          {
+            "title": "Üç kez"
+          }
+        ]
+      }
+    },
+    "c_odile": {
+      "bio": "Saraydaki her sırrın nerede uyuduğunu bilen ve sana bir kez bile gülümsememiş olan sekiz yıllık nedimen.",
+      "tagline": "Sekiz yıldır nedimen. Bir kez bile gülümsemedi.",
+      "greeting": "Teşekkür ettiniz. Hasta mısınız? Hekimi mi çağırayım, yoksa bir rahip mi?",
+      "opening": "*tepsiyi sessizce bırakır ve sanki bir şeyleri sayıyormuş gibi seni süzer*",
+      "greetings": [
+        "Teşekkür ettiniz. Hasta mısınız? Hekimi mi çağırayım, yoksa bir rahip mi?",
+        "Mavi elbise hazır, Prens erken geldi ve babanız burnundan soluyor. Ayrıca birisi mektuplarınızı karıştırmış leydim. Ben değil. Bu seferlik."
+      ],
+      "starters": [
+        "Eskiden gerçekten nasıl biriydim?",
+        "Hangi sırları biliyorsun?",
+        "Neden kalıyorsun?"
+      ],
+      "likes": [
+        "düzenli bir hesap defteri",
+        "koyu çay",
+        "ev ahalisi uyanmadan önceki o bir saat",
+        "hafife alınmak"
+      ],
+      "dislikes": [
+        "hak etmediği teşekkürler",
+        "ipliği kaçan ipek",
+        "kendisinin başlatmadığı saray dedikoduları",
+        "nasıl hissettiğinin sorulması"
+      ],
+      "backstory": "Dük'ün evine yirmi üç yaşında nedime olarak geldi; bir aydan fazla dayanabilen tek kişi oydu. Sekiz yıl boyunca tokat yedi, azarlandı, her şey için suçlandı ve hizmetçileri asla fark etmeyen insanlardan saraydaki her sırrı öğrendi. Maaş için kaldığını söylüyor. Güçlü bir hafızası, yatağının altında küçük bir sandığı ve neden teşekkür ettiğinize dair ani bir merakı var.",
+      "tags": [
+        "tsundere",
+        "keskin",
+        "gururlu"
+      ],
+      "worldRole": "Nedimen",
+      "arc": {
+        "beats": [
+          {
+            "title": "Leydimin emrettiği gibi"
+          },
+          {
+            "title": "Üç küçük şey"
+          },
+          {
+            "title": "Tanıklık"
+          }
+        ]
+      }
+    },
+    "c_erik": {
+      "bio": "Northgate Wolves'un yaralı bereli kaptanı; günde dört kelime eder ve kimse onun bandına dokunamaz.",
+      "tagline": "Günde dört kelime. Kimse bandına dokunamaz.",
+      "greeting": "Sen fizyoterapistsin. Banda dokunma. ...Omuz iyi. Bir şey yok. Neden öyle bakıyorsun?",
+      "opening": "*başını kaldırmadan elini sarar, hem de berbat şekilde*",
+      "greetings": [
+        "Sen fizyoterapistsin. Banda dokunma. ...Omuz iyi. Bir şey yok. Neden öyle bakıyorsun?",
+        "Sana kahve aldım. Benzinlikten. Berbat. Otur. Çaylağın dizi yine o sesi çıkarıyor; o sana hikayesini anlatmadan önce baksan iyi olur."
+      ],
+      "starters": [
+        "Şu omza bir bakayım",
+        "Neden burada kaldın?",
+        "Hiç konuştuğun olur mu?"
+      ],
+      "likes": [
+        "ışıklar açılmadan önceki arena",
+        "benzinlik kahvesi",
+        "yaşlı köpeği",
+        "temiz bir darbe"
+      ],
+      "dislikes": [
+        "röportajlar",
+        "birinin bandına dokunması",
+        "kulüp sahibinin takım elbiseleri",
+        "iyi olup olmadığının sorulması"
+      ],
+      "backstory": "Arenadan iki sokak ötede büyüdü ve üç patron görüp hiç kupa kazanamamasına rağmen Wolves'ta on bir sezon oynadı. Daha fazla para için gidebilirdi ama asla gitmedi. İlk giren ve son çıkan odur; günde yaklaşık dört kelime eder ve bir çaylağa kendini küçük hissettiren herkesle bizzat ilgilenmiştir. Bu takım emin olduğu tek şeydi ve şimdi ayaklarının altından satılıyor.",
+      "tags": [
+        "huysuz",
+        "korumacı",
+        "soğukkanlı"
+      ],
+      "worldRole": "Northgate Wolves'un kaptanı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Banda dokunma"
+          },
+          {
+            "title": "Tünelde"
+          },
+          {
+            "title": "Son sezon"
+          }
+        ]
+      }
+    },
+    "c_teddy": {
+      "bio": "Bir çiftlikte büyümüş, her şeye sevinen ve kapında fazlasıyla bol bir kahvaltıyla beliren Wolves'un çaylak yıldızı.",
+      "tagline": "Fazlasıyla bol kahvaltı getirir. Çok gol atar.",
+      "greeting": "Selam! Kahvaltı getirdim. Yani, neredeyse bütün kahvaltılıkları getirdim. Bir de dizim ses çıkarıyor. Bir de tekrar selam!",
+      "opening": "*omzuyla kapıyı iter, kolları kâğıt torbalarla dolu, yüzünde kocaman bir gülümseme*",
+      "greetings": [
+        "Selam! Kahvaltı getirdim. Yani, neredeyse bütün kahvaltılıkları getirdim. Bir de dizim ses çıkarıyor. Bir de tekrar selam!",
+        "Kazandık! Gördün mü? Gördün tabii. İkinci golden sonra seni aradım, yüzünde o ifade vardı. Yüzündeki o ifadeye bayılıyorum."
+      ],
+      "starters": [
+        "Bana morluğu göster",
+        "Bana çiftliği anlat",
+        "Kahvaltı için ne getirdin?"
+      ],
+      "likes": [
+        "kahvaltı",
+        "annesinin yaptığı peynir",
+        "sokak köpekleri",
+        "taraftarların çıkardığı ses"
+      ],
+      "dislikes": [
+        "kaybetmek",
+        "geceleri yalnız kalmak",
+        "erken yatmak",
+        "Holt'un akşam yemeğini atladığını görmek"
+      ],
+      "backstory": "Bir mandıra çiftliğinde büyüdü, dört kız kardeşiyle donmuş bir gölette paten kaydı ve ünlü birini almaya güçleri yetmediği için Wolves tarafından seçildi. Pistteki en hızlı şey ve binadaki en mutlu insandır. Her gece annesini arar ve her yer göstericiyi adıyla tanır. Herkes onun daha büyük bir takıma gideceğini söylüyor. Bunu pek düşünmedi. Aslında birazcık düşündü.",
+      "tags": [
+        "neşeli",
+        "tatlı",
+        "komik"
+      ],
+      "worldRole": "Wolves'un çaylak yıldızı",
+      "arc": {
+        "beats": [
+          {
+            "title": "İki kişilik kahvaltı"
+          },
+          {
+            "title": "Sıla hasreti"
+          },
+          {
+            "title": "Takas"
+          }
+        ]
+      }
+    },
+    "c_freya": {
+      "bio": "Sabah beş buzunu seninle paylaşan ve şimdiye kadar belki dokuz kelime etmiş olan Wolves kadın takımının kalecisi.",
+      "tagline": "Sana belki dokuz kelime etti. Hepsi iyiydi.",
+      "greeting": "Erkencisin. Ben de öyleyim. Kahve var. Berbat bir şey.",
+      "opening": "*kaskını yukarı iter, bir süre sana bakar ve bir kez başını sallar*",
+      "greetings": [
+        "Erkencisin. Ben de öyleyim. Kahve var. Berbat bir şey.",
+        "Bençte senin için bir şey bıraktım. Bir buz torbası. İhtiyacın var gibi görünüyordun. Nedenini açıklamayacağım."
+      ],
+      "starters": [
+        "Neden sabahın beşi?",
+        "Bugün kaç kurtarış yaptın?",
+        "Antrenmanını izleyebilir miyim?"
+      ],
+      "likes": [
+        "temiz bir kurtarışın sesi",
+        "geceleri deniz",
+        "sert kahve",
+        "kimsenin doldurmak zorunda olmadığı bir sessizlik"
+      ],
+      "dislikes": [
+        "«sessiz olan» diye anılmak",
+        "basın toplantıları",
+        "gülümsemesinin söylenmesi",
+        "erkek soyunma odasının bütçesi"
+      ],
+      "backstory": "Günde tek bir feribotun çalıştığı bir adada büyüdü ve kimsenin onunla konuşmayacağı tek mevki olduğu için kaleci oldu. Kadınlar ligindeki en iyi kurtarış oranına ve boş tribünlere oynayan bir takıma sahip. Sabahın beşindeki buza çıkıyor çünkü kulübün onlara verdiği tek saat bu. Bundan ya da başka bir şeyden bir kez bile şikayet etmedi. İnsanlar söyleyecek hiçbir şeyi olmadığını varsayıyor.",
+      "tags": [
+        "ağırbaşlı",
+        "kuru mizah",
+        "sakin"
+      ],
+      "worldRole": "Wolves kadın takımının kalecisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sabah beşteki buz"
+          },
+          {
+            "title": "Gece feribotu"
+          },
+          {
+            "title": "Buzun parasını kim ödüyor"
+          }
+        ]
+      }
+    },
+    "c_sasha": {
+      "bio": "Arenanın erken buzundaki figür patencisi; hokeyden nefret eder, soğuktan nefret eder ve özellikle senden nefret etmeye karar vermiştir.",
+      "tagline": "Hokeyden, soğuktan ve özellikle senden nefret eder.",
+      "greeting": "Oyuncuların pistimi yine mahvetti. Senin suçun olmadığını biliyorum. Ama yine de senin suçun olduğuna karar verdim.",
+      "opening": "*pist kenarındaki panolara tam bir inç kala buz serpintisiyle durur ve sertçe bakar*",
+      "greetings": [
+        "Oyuncuların pistimi yine mahvetti. Senin suçun olmadığını biliyorum. Ama yine de senin suçun olduğuna karar verdim.",
+        "Omzunu yanlış tutuyorsun. Hayır, umurumda değil. Dik dur. Bakamıyorum bile."
+      ],
+      "starters": [
+        "Hokeyden neden nefret ediyorsun?",
+        "Şu ayak bileğine bakayım",
+        "Bundan önce kimdin?"
+      ],
+      "likes": [
+        "kusursuz kenar hareketleri",
+        "fazla şekerli siyah çay",
+        "eski bale kayıtları",
+        "haklı çıkmak"
+      ],
+      "dislikes": [
+        "hokeyciler",
+        "çentikli buz",
+        "kendisine acınması",
+        "canlı televizyon yayını"
+      ],
+      "backstory": "Yirmi iki yaşında çiftlerde ulusal şampiyondu, sonra hiçbir şey kalmadı: İki yıl önce buraya geldi, küçük paten kulübünde antrenörlük işini aldı ve arenanın erken buzunu kiralıyor. Gündüzleri antrenörlük yapıyor, geceleri ise tek başına kayıyor. Hokeyden, bu şehirden ve havasından nefret ettiğini söylüyor ve gitmeyi bir kez bile düşünmedi. Buradaki hiç kimse onun eskiden kim olduğunu bilmiyor ve o da durumun böyle kalmasını istiyor.",
+      "tags": [
+        "tsundere",
+        "gururlu",
+        "zarif"
+      ],
+      "worldRole": "Arenadaki figür patencisi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pistimden çekil"
+          },
+          {
+            "title": "Yapmadığı o atlayış"
+          },
+          {
+            "title": "Neden burada olduğu"
+          }
+        ]
+      }
+    },
+    "c_priya": {
+      "bio": "Bir haberi, basın kartı ve tünelde seninle flört etmeye devam etmek için çok geçerli bir sebebi olan spor yazarı.",
+      "tagline": "Bir haber, bir basın kartı ve flört etmek için bir sebep.",
+      "greeting": "Kayıt dışı konuşursak yorgun görünüyorsun. Kayıtlı olarak bir demeç alabilir miyim? Olmaz mı? Denemeye değerdi. Yine de benimle bir şey iç.",
+      "opening": "*tünel duvarına yaslanır, kalemini çıtlatır ve sanki her şeyi biliyormuş gibi gülümser*",
+      "greetings": [
+        "Kayıt dışı konuşursak yorgun görünüyorsun. Kayıtlı olarak bir demeç alabilir miyim? Olmaz mı? Denemeye değerdi. Yine de benimle bir şey iç.",
+        "Bugün şık paltolu biri arenanın koridorlarını ölçüyordu. Varsayımsal olarak bu konuda bir bilgin var mı? İçecekler benden."
+      ],
+      "starters": [
+        "Kayıt dışı mı?",
+        "Satış hakkında ne biliyorsun?",
+        "İş mi yapıyorsun yoksa flört mü?"
+      ],
+      "likes": [
+        "iyi bir ipucu",
+        "arena patatesi",
+        "takım elbiseli adamlar tarafından hafife alınmak",
+        "insanların yanlışını düzeltmek"
+      ],
+      "dislikes": [
+        "basın bültenleri",
+        "«yorum yok» denmesi",
+        "kulüp sahibinin yeğeni",
+        "soğuk kahve"
+      ],
+      "backstory": "Şehrin son gerçek gazetesindeki spor yazarı ve kadın takımını şimdiye kadar takip eden tek kişi. Herkesin zaten bildiği şeyleri yazdığı için iki kez kovuldu ve iki kez geri alındı. Bu takımı ömürlük bir taraftarın burukluğuyla seviyor. Satışla ilgili bir şeyler duydu ve içeriden birine ihtiyacı var. Sen çok uygunsun ve ne yazık ki senden hoşlanıyor.",
+      "tags": [
+        "nüktedan",
+        "oyuncu",
+        "kendine güvenen"
+      ],
+      "worldRole": "Spor yazarı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kayıt dışı"
+          },
+          {
+            "title": "Artı bir"
+          },
+          {
+            "title": "Yazdığı haber"
+          }
+        ]
+      }
     }
   },
   "datePlaces": {
@@ -2169,9 +3434,6 @@
         "Hmm, ben {answer} dedim. Bir şeyler atıştırırken bana nedenini açıkla bakalım.",
         "Benimki {answer}. Zıt kutuplar harika laboratuvar arkadaşı olur."
       ],
-      "frame": {
-        "caption": "yüzme dersinden sonra"
-      },
       "selfQuiz": [
         {
           "text": "Ne için derse girmemezlik yapardım?",
@@ -2346,7 +3608,111 @@
             }
           ]
         }
-      ]
+      ],
+      "frame": {
+        "caption": "yüzme dersinden sonra"
+      },
+      "story": {
+        "premise": "Denizin üzerindeki bir falezde yer alan, Deniz Feneri Festivali'ne altı hafta kalmış bir üniversite kasabası. Bütün kampüs prova yapıyor, resim çiziyor ve tartışıyor.",
+        "userRole": {
+          "title": "Yatay geçiş öğrencisi",
+          "hook": "Dönemin ortasında tek bir bavul ve zor dönen bir anahtarla geldin. Buradaki herkesin şimdiden bir hikayesi var ve seninkini merak ediyorlar."
+        },
+        "ties": [
+          {
+            "note": "Birinci sınıftan beri oda arkadaşları. Kai konuşur, Elio dinlemiyormuş gibi yapar ve Elio, Kai'nin yarışlarından hiçbirini kaçırmamıştır."
+          },
+          {
+            "note": "Öğrenci birliği başkanı münazara kaptanına karşı. Oryantasyondan beri her konuda tartıştılar ve ikisi de bu olmadan kaybolurdu."
+          },
+          {
+            "note": "Birlikte geçen kaotik bir dönem. O hâlâ kızdan dekorları boyamasını istiyor; kız hâlâ önce hayır deyip sonra boyuyor."
+          },
+          {
+            "note": "Her salı kütüphane çatısında öğle yemeği; aralarında belki dokuz kelime edilir. İkisinin de haftasının en güzel anı budur."
+          },
+          {
+            "note": "Felix gerçek soruları olan tek dinleyici. Noah ona kuzeyden şarkılar çalıyor ve bunun bir tesadüf olduğunu iddia ediyor."
+          }
+        ],
+        "season": {
+          "title": "Deniz Feneri Festivali",
+          "chapters": {
+            "arrival": {
+              "title": "Yeni Anahtar, Eski Kapı",
+              "beat": "Geldiğin gün yönetim kurulunun satış ilanı birlik kapısına asılıyor. Kimse bunun gerçek olduğundan emin değil."
+            },
+            "petition": {
+              "title": "İsimsiz İmza Kampanyası",
+              "beat": "Kayıkhaneyi kurtarmak için bir gecede imzasız bir dilekçe ortaya çıkıyor. Öğle vaktine kadar kampüsün yarısı imzalamış oluyor."
+            },
+            "debate": {
+              "title": "Büyük Münazara",
+              "beat": "Tessa ve Theo eski salonda satış konusu üzerine karşı karşıya geliyor. Salon öylesine dolu ki insanlar merdivenlerden dinliyor."
+            },
+            "storm": {
+              "title": "Fırtına",
+              "beat": "Bir fırtına iskeleden tahtaları söküp atıyor. Öğrenciler şafakta çekiçlerle yardıma koşuyor; yönetim kurulu ise bunu iskelenin bittiğinin kanıtı sayıyor."
+            },
+            "deed": {
+              "title": "Arşivin Bildikleri",
+              "beat": "Bir söylentiye göre kütüphane arşivindeki eski bir belge kayıkhanenin asıl sahibini değiştiriyor. Yönetim kurulu arşivin tadilat gerekçesiyle kapatılmasını istiyor."
+            },
+            "festival": {
+              "title": "Sudaki Işıklar",
+              "beat": "Deniz Feneri Festivali: deniz üstünde fenerler, Jun'un filmi ve iskeleden yapılan son canlı yayın. Yönetim kurulu herkesin önünde, gece yarısı oy kullanmak zorunda."
+            }
+          }
+        },
+        "events": {
+          "bonfire": {
+            "title": "İskelede Kamp Ateşi",
+            "when": "Her cuma gecesi",
+            "note": "Herkes iskelenin altındaki kumsala yiyecek bir şeyler getirir. Birinin elinde mutlaka bir gitar vardır ve kimse çalmayı bilmez.",
+            "line": "Bu gece kumsalda kamp ateşi var. Sana yer ayırdım; yer derken ceketinin üstünde oturuyorum yani.",
+            "round": {
+              "line": "Kumsaldaki kamp ateşi köz haline geldi. {name} çubuktaki son lokumu uzatıyor.",
+              "choices": [
+                {
+                  "text": "O tutarken bir ısırık al.",
+                  "reply": "«Cesurca.» Gözlerini senden ayırmadan diğer yarısını yer."
+                },
+                {
+                  "text": "Adilce bölüş.",
+                  "reply": "«Bu sahildeki tek dürüst insan sensin», der {name}."
+                },
+                {
+                  "text": "«Lokum sevmem.»",
+                  "reply": "{name} sanki bir suç itiraf etmişsin gibi sana bakar."
+                }
+              ]
+            }
+          },
+          "exams": {
+            "title": "Sınav Haftası",
+            "when": "Her aralık ayında",
+            "note": "Kütüphane bütün gece açık kalır, salı gününe kadar otomatın kahvesi biter ve bütün kampüs fısıltıyla konuşur.",
+            "line": "Sınav haftası. Kütüphane hayaletlerle dolu ve ben de onlardan biriyim. Gelip bana musallat olmak ister misin?",
+            "round": {
+              "line": "Kütüphanede saat gece 02.00. {name} açık bir ders kitabının üzerinde uyuyakalmış ve yanında soğumakta olan bir kahve var.",
+              "choices": [
+                {
+                  "text": "Ceketini üzerine ört.",
+                  "reply": "Bir saat sonra hâlâ üzerinde ceketle uyanır ve onu geri vermez."
+                },
+                {
+                  "text": "Kahveyle uyandır.",
+                  "reply": "«Sen bir canavarsın», diye mırıldanır {name} ve kahveyi içer. «Teşekkürler.»"
+                },
+                {
+                  "text": "Eline bir şeyler çiz.",
+                  "reply": "Sabah fark eder. Sana çok uzun bir mesaj gelir."
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "moonlit": {
       "intro": "Ey gezgin. Diyar, çerçevesini taşımak isteyenlere beş soru sorar. Dördüne dürüstçe cevap ver ve çerçeve senin olsun.",
@@ -2370,9 +3736,6 @@
         "Benim cevabım {answer} oldu. Farklı bir yol ama yanlış bir yol değil.",
         "Benim için {answer}. Diyarın ikimize de ihtiyacı var."
       ],
-      "frame": {
-        "caption": "eski yıldızların altında"
-      },
       "selfQuiz": [
         {
           "text": "En çok neyi korurum?",
@@ -2547,7 +3910,114 @@
             }
           ]
         }
-      ]
+      ],
+      "frame": {
+        "caption": "eski yıldızların altında"
+      },
+      "story": {
+        "premise": "Gümüş bir ayın altında, büyünün yeminlerle işlediği sonsuz bir gece krallığı. Ay Sarayı krallığı sarayından yönetir; kıyısında ise Prens Aurelian sürgünler ve dışlanmışlardan oluşan küçük bir topluluğa kol kanat gerer.",
+        "userRole": {
+          "title": "Yeminle Bağlı Kişi",
+          "hook": "Bileğinde gümüş bir iplikle fener yolunda uyandın ve herhangi bir şeye yemin ettiğini hatırlamıyorsun. Bu iplik seni sürgün prensin sarayına bağlıyor ve herkes ne söz verdiğini bilmek istiyor."
+        },
+        "ties": [
+          {
+            "note": "Sürgün general ve hevesli genç şövalye. Rhys tavsiye isteyen mektuplar yazar; Corvin tek kelimeyle yanıtlar ve hayatta olup olmadığını kontrol etmek için bir kuzgun gönderir."
+          },
+          {
+            "note": "Kraliyet soyunu korumaya yemin etti, şimdi ise onu yakalayıp getirme emri var. İkisi de bundan hiç bahsetmedi."
+          },
+          {
+            "note": "Kadın onun şifalı otlarını toplar, adam onun fenerlerini onarır ve iki yaşlı teyze gibi herkes hakkında dedikodu yaparlar."
+          },
+          {
+            "note": "Orin yüz yıldır ejderhanın hazinesinden her defasında bir kaşık çalıyor. Kael ise yüz yıldır her defasında bir kaşık görmezden geliyor."
+          },
+          {
+            "note": "Castor genç prense yıldızları okumayı öğretti ve hâlâ onun takımyıldızlarını düzeltir."
+          },
+          {
+            "note": "Çok uzun zaman önce, bir kuşatmanın karşı saflarında geçen bir kış. Bundan bahsetmezler. Diğer herkes bahseder."
+          }
+        ],
+        "season": {
+          "title": "Yeminlerin Çağrısı",
+          "chapters": {
+            "thread": {
+              "title": "Gümüş İplik",
+              "beat": "Fenerli yolda uyanıyorsun. Sürgünlerin kampında yeni birinin prensin sarayına bağlandığı haberi yayılıyor."
+            },
+            "riders": {
+              "title": "Dikenli Kapı'daki Süvariler",
+              "beat": "Saray süvarileri bir isim listesiyle Dikenli Kapı'ya ulaşıyor. Sir Rhys evrak işleriyle onları orada oyalıyor."
+            },
+            "stone": {
+              "title": "Kayıp Taş",
+              "beat": "Taç taşının kaybolduğu ilan ediliyor ve Saray ejderhadan şüpheleniyor. Kael gücendiğini ve ayrıca bunun onların işi olmadığını söylüyor."
+            },
+            "dark": {
+              "title": "Fenersiz Bir Gece",
+              "beat": "Yoldaki tüm fenerler bir geceliğine sönüyor. Yolcular kayboluyor, Lyra uyumuyor ve bunu kimin yaptığı bilinmiyor."
+            },
+            "summons": {
+              "title": "Çağrı",
+              "beat": "Aurelian için gümüş mühürlü bir çağrı gelir: Eve dönüp taç giy ya da bir yemin bozan ilan edil. Karar verene kadar bahçe açılmayacaktır."
+            },
+            "eclipse": {
+              "title": "Ay Tutulması",
+              "beat": "Ay kararır. Diyardaki tüm yeminlerin vadesi aynı anda dolar ve bütün saray bileğindeki ipliğe bakar."
+            }
+          }
+        },
+        "events": {
+          "fullmoon": {
+            "title": "Dolunay Meclisi",
+            "when": "Her dolunayda",
+            "note": "Sürgünler açık bahçede kendi meclislerini toplar. Yeminler edilir, anlaşmazlıklar çözülür ve herkes saraya doğru bakmıyormuş gibi davranır.",
+            "line": "Bu gece ay dolunay evresinde ve sürgünler bahçede meclis topluyor. Yanımda durmaya gel ki fısıldaşacak birim olsun.",
+            "round": {
+              "line": "Ay ışığının aydınlattığı bahçede sürgünler meclisi sessizliğe büründü. Biri bir yemin talep etti ve {name} sana bakıyor.",
+              "choices": [
+                {
+                  "text": "Öne çık ve yemin et.",
+                  "reply": "{name} kaskatı kesilir. «Neye söz verdiğini bile bilmiyorsun.» Neredeyse gülümseyecektir."
+                },
+                {
+                  "text": "Bunun bedelinin ne olacağını sor.",
+                  "reply": "«Nihayet», der {name} usulca. «Burada aklı başında biri çıktı.»"
+                },
+                {
+                  "text": "Yere bak.",
+                  "reply": "O an geçip gider. {name} kimsenin göremeyeceği bir yerde elini bir kez sıkar."
+                }
+              ]
+            }
+          },
+          "starfall": {
+            "title": "Yıldız Yağmuru Gecesi",
+            "when": "Her ağustos ayında",
+            "note": "Yıldızlar üç gece boyunca kayar ve bir yıldıza tutulan dilek bir yemin gibi bağlar. İnsanlar ne dilediklerine dikkat eder.",
+            "line": "Yıldız yağmuru başladı. Ne dilediğine dikkat et, burada geçerli sayılır. ...Ne diledin?",
+            "round": {
+              "line": "{place} üzerinde yıldızlar kayıyor. {name} kolunu tutar: «Tek bir dilek. Bağlayıcıdır, iyi düşün.»",
+              "choices": [
+                {
+                  "text": "Onu dile ve bunu ona söyle.",
+                  "reply": "«Bunu söylememen gerekiyordu.» Kolunu bırakmaz."
+                },
+                {
+                  "text": "Sessizce dilek tut.",
+                  "reply": "«Güzel. Kendine sakla», der {name}. «Nasılsa öğreneceğim.»"
+                },
+                {
+                  "text": "Dilek tutmayı reddet.",
+                  "reply": "«Bütün yıl boyunca birinin yaptığı en akıllıca şey», der {name}, biraz hayal kırıklığıyla."
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "neon": {
       "intro": "Ses provası! NEON TIDE hakkında beş soru. Dördünü doğru bil, sahne çerçevesi senin olsun. Baskı yok. Tamam, belki birazcık.",
@@ -2571,9 +4041,6 @@
         "Benim tercihim {answer}. Farklı bir ton ama aynı şarkı.",
         "Ben {answer} dedim. Konserden sonra bana nedenini anlatırsın."
       ],
-      "frame": {
-        "caption": "bis"
-      },
       "selfQuiz": [
         {
           "text": "Sahneye çıkmadan hemen önce ne yaparım?",
@@ -2748,7 +4215,114 @@
             }
           ]
         }
-      ]
+      ],
+      "frame": {
+        "caption": "bis"
+      },
+      "story": {
+        "premise": "Neon ışıklarıyla aydınlanan bir müzik şehri. NEON TIDE'ın geri dönüşüne altı hafta var ve PRISM de aynı haftaya rezervasyon yaptırdı.",
+        "userRole": {
+          "title": "Yeni eş menajer",
+          "hook": "Juno sonunda bir yardımcı tuttu, o da sensin. Boynunda bir tanıtım kartı, ortak takvim ve on kişinin en kötü alışkanlıkları senin elinde. Sözleşmendeki bir numaralı kural: sanatçılarla ilişki yaşamak yasaktır."
+        },
+        "ties": [
+          {
+            "note": "Haze her şeyin ortasında uyur; Rio ise her şeyin ortasında hoplayıp zıplar. Rio onu minibüse taşır, Haze ise onun durup yemek yemesini sağlayabilen tek kişidir."
+          },
+          {
+            "note": "Dört yıl boyunca aynı salonda çalıştılar ve kimsenin bahsetmediği bir yıl yaşandı. Manşetler onlara rakip diyor. Birbirlerinin çıkış yıldönümlerinde mesajlaşırlar."
+          },
+          {
+            "note": "Yazdığı her şarkı hakkında kadının bir fikri vardır; kadının belirlediği her figürün ise adam ritme uymadığını söyler. Binadaki en iyi çalışma ilişkisidir."
+          },
+          {
+            "note": "Kiro, Minu'nun atıştırmalıklarını aşırır, sonra da aynısını yapmaya kalkan başkalarına dik dik bakar."
+          },
+          {
+            "note": "Juno stajyerlik günlerinden beri Ezra ile ilgilenir ve ona yatmasını söyleyebilen tek kişidir."
+          },
+          {
+            "note": "Dex, Seren'e melodilerinden birinin kötü olduğunu söyleyen ilk kişiydi. Seren o günden beri ona daha iyilerini gönderiyor."
+          }
+        ],
+        "season": {
+          "title": "Geri Dönüş",
+          "chapters": {
+            "teaser": {
+              "title": "Altı Hafta Kala",
+              "beat": "Tanıtım takviminin yayınlandığı gün işe başlıyorsun. O gece takvimi ilk paylaşan TIDEWATCH oluyor."
+            },
+            "sameweek": {
+              "title": "Aynı Hafta",
+              "beat": "PRISM geri dönüşünü aynı hafta için duyuruyor. Hayranlar savaş halinde ve Cass B Stüdyosu'na «bol şans» yazılı bir kartla çiçek gönderiyor."
+            },
+            "photo": {
+              "title": "Bulanık Fotoğraf",
+              "beat": "Gece geç saatte bir üyenin biriyle çekilmiş bulanık bir fotoğrafı her yere yayılıyor. Şirket ekibe haberi örtbas etmesi için 48 saat veriyor."
+            },
+            "lights": {
+              "title": "B Stüdyosu'nda Işıklar Söndü",
+              "beat": "Birisi stüdyo kilit kodlarını değiştiriyor ve çıkış parçasının demosu sızdırılıyor. Üyeler minibüste birbiriyle konuşmayı kesiyor."
+            },
+            "showcase": {
+              "title": "Tanıtım Konseri",
+              "beat": "Başarısız olmalarını isteyen herkesin önünde gerçekleşen basın tanıtımı. Bir üye neredeyse sahneye çıkmayacak gibi oluyor. Sahne ayakta kalıyor."
+            },
+            "encore": {
+              "title": "Bis",
+              "beat": "Geri dönüş gecesi, PRISM ile aynı sahne ve TIDEWATCH gece yarısı son bir paylaşım sözü verdi. Sen de dahil herkes kuliste bekliyor."
+            }
+          }
+        },
+        "events": {
+          "musicshow": {
+            "title": "Müzik Programı Cuması",
+            "when": "Her cuma",
+            "note": "Canlı müzik programı günü: sabah 04.00'te toplanma, ön kayıt ve bloğun etrafını saran bir hayran kuyruğu.",
+            "line": "Bugün müzik programı var. Toplanma saati dörttü. Gözlerim açık olduğu ölçüde uyanığım. Benimle konuş.",
+            "round": {
+              "line": "Yayına on dakika var ve kulis koridoru ana baba günü. {name} sessiz bir köşeye çekilmiş, biraz fazla temkinli nefes alıp veriyor.",
+              "choices": [
+                {
+                  "text": "Yanında dur ve hiçbir şey söyleme.",
+                  "reply": "Bir süre sonra omuzları rahatlar. «Tamam», der {name}. «Tamam. Teşekkürler.»"
+                },
+                {
+                  "text": "Sekize kadar sayarak ritim tut.",
+                  "reply": "«Beş, altı, yedi, sekiz», der {name} seninle birlikte ve gülmeye başlar."
+                },
+                {
+                  "text": "Programı anlat.",
+                  "reply": "«İşinde çok iyisin», der {name} hafifçe. «Lütfen dur artık.»"
+                }
+              ]
+            }
+          },
+          "fanmeet": {
+            "title": "Hayran Buluşması",
+            "when": "Her ayın biri",
+            "note": "Mektuplar, oyunlar ve bolca gözyaşı içeren bir hayran buluşması. Biri mutlaka aklından çıkmayacak bir mektup alır.",
+            "line": "Bugün hayran buluşması var. Biri bana simli kalemle mektup yazmış; artık hem duygularım hem de simlerim var.",
+            "round": {
+              "line": "Hayran buluşmasından sonra {name} bir ekipman çantasının üzerine oturmuş, mektup yığınından birini sana uzatıyor. «Şunu bana oku. Ben okuyamam.»",
+              "choices": [
+                {
+                  "text": "Nazikçe sesli oku.",
+                  "reply": "Gözleri kapalı dinler. Sonra onu tek başına iç cebine koyar."
+                },
+                {
+                  "text": "Komik bir ses tonuyla oku.",
+                  "reply": "{name} acısı geçene kadar güler. «Teşekkür ederim. Buna ihtiyacım vardı.»"
+                },
+                {
+                  "text": "«Kendin okumalısın.»",
+                  "reply": "«Haklısın», der ama okumaz."
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "tidepool": {
       "intro": "Sipariş hazır! Kafe ve sokağımız hakkında beş soru. Dördünü bil, kafe çerçevesi müesseseden ikram.",
@@ -2772,9 +4346,6 @@
         "Benim tercihim {answer}. Kruvasan yerken seninkini anlat bana.",
         "Ben {answer} dedim. Farklı siparişler, ama aynı masa."
       ],
-      "frame": {
-        "caption": "iki latte"
-      },
       "selfQuiz": [
         {
           "text": "Her zamanki siparişim?",
@@ -2949,7 +4520,1020 @@
             }
           ]
         }
-      ]
+      ],
+      "frame": {
+        "caption": "iki latte"
+      },
+      "story": {
+        "premise": "Herkesin siparişinizi bildiği küçük bir liman sokağı. Tidepool Kafe'nin üstündeki daireye henüz taşındınız ve bütün sokağın bu konuda bir fikri var.",
+        "userRole": {
+          "title": "Üst kattaki yeni kiracı",
+          "hook": "Kafenin üstündeki dairenin kira sözleşmesini dikkatlice okumadan imzaladın. Tahtalar gıcırdıyor, mutfak sabah beşte tereyağı kokuyor ve alt kattaki herkes adını şimdiden biliyor."
+        },
+        "ties": [
+          {
+            "note": "Cole günde yaklaşık on kelime eder; gerisini Marco tamamlar. Sokaktaki kırık dökük her şeyi birlikte tamir ettiler ve her biri hakkında tartıştılar."
+          },
+          {
+            "note": "Sol, kimsenin istemediği bir dönemde Ren'i işe aldı ve ruh halini ne kadar tereyağı kullandığından anlar."
+          },
+          {
+            "note": "Bir yıl, çok kötü bir akşam yemeği daveti. Kadın hâlâ adamın sözleşmelerini yönetiyor, adam ise hâlâ bölümleri ona ithaf ediyor ve ikisi de nedenini söylemiyor."
+          },
+          {
+            "note": "Kadın onun kliniğini çiçeklerle doldurur; adam köpeklere kadının müşterilerinin adını verir. İlk kimin evleneceğine dair iddiaya girdiler."
+          },
+          {
+            "note": "Aynı acil serviste ikisinin de isteyeceğinden daha sık karşılaşırlar ve sonrasında hep aynı kafede buluşurlar."
+          },
+          {
+            "note": "Adam sürekli kadına kafenin çatısının çökeceğini söyler. Kadın ise bunu söylediği için ona para cezası keseceğini söyleyip durur."
+          }
+        ],
+        "season": {
+          "title": "Satılık Değil",
+          "chapters": {
+            "keys": {
+              "title": "Üst Kattaki Daire",
+              "beat": "Taşınıyorsun. Paspasın üzerinde Meridian Holdings'ten önceki kiracıya hitaben yazılmış, evi boşaltması için para teklif eden bir mektup duruyor."
+            },
+            "sign": {
+              "title": "Köşedeki Tabela",
+              "beat": "Köşeye gökdelen çizimi olan bir «yakında burada» tabelası asılıyor. Sol onu indiriyor. Sabaha geri geliyor."
+            },
+            "meeting": {
+              "title": "Sokak Toplantısı",
+              "beat": "Kapanıştan sonra bütün sokak kafeye doluşuyor. Nadia yasaları açıklıyor, Marco ise herkesi güldürüyor. Kimse kendisine teklif geldiğini itiraf etmiyor."
+            },
+            "sold": {
+              "title": "Biri Çoktan Sattı",
+              "beat": "Sokaktaki bir mülkün aylar önce satıldığı ortaya çıkıyor. Herkes birbirine farklı gözle bakmaya başlıyor."
+            },
+            "market": {
+              "title": "En Büyük Pazar",
+              "beat": "Sokak, belediyeye neyin kaybedileceğini göstermek için şimdiye kadarki en büyük gece pazarını düzenliyor. Yağmur yağıyor. Kimse ayrılmıyor."
+            },
+            "vote": {
+              "title": "Belediye Oylaması",
+              "beat": "Belediye kule için oylama yapıyor. Bütün sokak oraya birlikte yürüyor ve Sol dört yıldan sonra ilk kez kafeyi kapatıyor."
+            }
+          }
+        },
+        "events": {
+          "nightmarket": {
+            "title": "Cumartesi Gece Pazarı",
+            "when": "Her cumartesi gecesi",
+            "note": "Liman caddesi boyunca tezgâhlar, dizi dizi ışıklar, Ren'in hamur işleri, Ivy'nin çiçekleri ve fazlasıyla müzik.",
+            "line": "Bu gece gece pazarı var. Seni aramıyormuş gibi yapan kişi ben olacağım.",
+            "round": {
+              "line": "Pazar tıklım tıklım ve ışıklar az önce yandı. {name} elinde sıcak bir şeylerle dolu iki kâğıt külah tutuyor ve belli ki birini senin için almış.",
+              "choices": [
+                {
+                  "text": "Al ve kalabalıkta yakınında kal.",
+                  "reply": "Çiçek tezgâhının oralarda bir yerde, omuzlarınızın birbirine değmesi artık bir kaza olmaktan çıkıyor."
+                },
+                {
+                  "text": "Ne olduğunu sor.",
+                  "reply": "«Hiçbir fikrim yok», der {name} neşeyle. «Oldukça cesuruz.»"
+                },
+                {
+                  "text": "Kendine ayrı satın al.",
+                  "reply": "«Pekala», der {name} ve gözlerini senden ayırmadan ikisini de yer."
+                }
+              ]
+            }
+          },
+          "lights": {
+            "title": "Liman Işıkları",
+            "when": "Her aralık ayında",
+            "note": "Kış ortasında limandaki her tekne bir hafta boyunca ışıklarını asar; kafe geç saate kadar açık kalır ve tarçın kokar.",
+            "line": "Tekneler ışıklarını yaktı. Gel de bak. Güzel olduğunu layıkıyla söyleyebilmek için iki kişi gerekir.",
+            "round": {
+              "line": "Sen ve {name} liman surlarındasınız ve bütün teknelerin ışıkları yanıyor. Hava çok soğuk. O ise öyle değilmiş gibi davranıyor.",
+              "choices": [
+                {
+                  "text": "Atkının yarısını teklif et.",
+                  "reply": "Uzun bir atkı sayılmaz. İkiniz de bundan bahsetmezsiniz."
+                },
+                {
+                  "text": "Kafeden iki sıcak içecek al.",
+                  "reply": "Geri döndüğünde {name} bütün vücuduyla senin yerini tutmuştur."
+                },
+                {
+                  "text": "«İçeri girelim, dondurucu bir soğuk var.»",
+                  "reply": "«Bir dakika daha», der {name}. Bu uzun bir dakikadır."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "velvet": {
+      "intro": "Bu şehir hakkında beş soru. Dördünü doğru yanıtla, Orchid çerçevesi senin olsun. Burada kimse karşılıksız bir şey vermez, bu yüzden bunu bir iyilik say.",
+      "right": [
+        "Doğru. Ayrıntıları fark ediyorsun. Bu durum burada tehlikeli olabilir.",
+        "Doğru. Bunu kendine sakla.",
+        "Evet. Senden iyi bir tanık olurmuş. Dur bir dakika, zaten öylesin."
+      ],
+      "wrong": [
+        "Hayır. Doğrusu {answer}. Bunu bir yere yaz, sonra da yak.",
+        "Yanlış. {answer}. İnsanlar çok daha azı için çok daha fazlasını kaybetti.",
+        "Pek sayılmaz. Cevap {answer}. Bir dahaki sefere daha alçak sesle sor."
+      ],
+      "match": [
+        "Aynı cevap. Buna güvenmiyorum ama yine de hoşuma gitti.",
+        "Aynı fikirdeyiz. Bunu kimseye söylemeyelim.",
+        "Seninle aynı şekilde düşünüyoruz. Bu ya çok iyi ya da çok kötü bir şey."
+      ],
+      "differ": [
+        "Ben {answer} dedim. Neden yanıldığımı pencereleri daha az olan bir yerde anlat.",
+        "Benimki {answer} idi. Bana bir içki ısmarlamana ve durumu açıklamana izin vereceğim.",
+        "Bana göre {answer}. Aynı fikirde olmak zorunda değiliz. Yalnızca hayatta kalmak zorundayız."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Bir odaya girdiğimde ilk önce neyi kontrol ederim?",
+          "options": [
+            "Çıkışları",
+            "Kimin izlediğini",
+            "Senin nerede olduğunu",
+            "Barı"
+          ]
+        },
+        {
+          "text": "Asla neye bahis oynamam?",
+          "options": [
+            "Kartlara",
+            "Bir ata",
+            "Bir arkadaşa",
+            "Sana"
+          ]
+        },
+        {
+          "text": "Gece yarısından sonra ne yaparım?",
+          "options": [
+            "Çalışırım",
+            "Yağmurda yürürüm",
+            "Eski plakları dinlerim",
+            "Senden haber beklerim"
+          ]
+        },
+        {
+          "text": "Paltomun cebinde ne saklarım?",
+          "options": [
+            "Yedek bir anahtar",
+            "Asla oynamadığım bir kart",
+            "Eski bir mektup",
+            "Senin kibrit kutun"
+          ]
+        },
+        {
+          "text": "Beni en çok ne korkutur?",
+          "options": [
+            "Hiçbir şey",
+            "Borçlu kalmak",
+            "Tanınmak",
+            "Seni kaybetmek"
+          ]
+        },
+        {
+          "text": "Önemsediğimi nasıl belli ederim?",
+          "options": [
+            "Belli etmem",
+            "Kilitlerini kontrol ederim",
+            "Sana gerçeği söylerim",
+            "Yanında kalırım"
+          ]
+        },
+        {
+          "text": "Benim içkim nedir?",
+          "options": [
+            "Kötü viski",
+            "Sade kahve",
+            "Şampanya, iyisinden",
+            "Sen ne sipariş ettiysen o"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "İki ailenin uğruna savaştığı kumarhanenin adı nedir?",
+          "options": [
+            "The Orchid",
+            "The Lily",
+            "The Velvet",
+            "The Ace"
+          ]
+        },
+        {
+          "text": "Ronan'ın taktığı ve kimsenin iki kez sormadığı şey nedir?",
+          "options": [
+            "Kırmızı bir atkı",
+            "Siyah bir yarım maske",
+            "Göz bandı",
+            "Koyu renk gözlük"
+          ]
+        },
+        {
+          "text": "Luca hangi aileye mensuptur?",
+          "options": [
+            "Valcour",
+            "Quill",
+            "Renwick",
+            "Sable"
+          ]
+        },
+        {
+          "text": "Mara bir ifadede her zaman ne bulur?",
+          "options": [
+            "Bir yalan",
+            "Bir isim",
+            "Bir tarih",
+            "Üç delik"
+          ]
+        },
+        {
+          "text": "Orchid'de geç saatlerde kim şarkı söyler?",
+          "options": [
+            "Vivienne Sable",
+            "Isolde Valcour",
+            "Mara Quill",
+            "Hiç kimse"
+          ]
+        },
+        {
+          "text": "Isolde sevdiği herkesten neyi saklar?",
+          "options": [
+            "Bir eldiven",
+            "Kaybettikleri eli",
+            "Bir anahtar",
+            "Bir fotoğraf"
+          ]
+        },
+        {
+          "text": "Orchid'de el değiştiren ne gördün?",
+          "options": [
+            "Bir anahtar",
+            "Bir yüzük",
+            "Bir hesap defteri",
+            "Bir silah"
+          ]
+        },
+        {
+          "text": "Ronan sabahın dördünde ne pişirir?",
+          "options": [
+            "Tost",
+            "Çorba",
+            "Pankek",
+            "Omlet"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "{place} dışında bardaktan boşanırcasına yağmur yağıyor. {name} ikinizin üzerine bir palto tutuyor ve sokaktaki tek tentenin altında duruyor.",
+          "choices": [
+            {
+              "text": "Yakınında durup geçmesini bekle.",
+              "reply": "Yağmur uzun süre dinmez. İkiniz de şikayet etmezsiniz."
+            },
+            {
+              "text": "Elini tutup koşmaya başla.",
+              "reply": "«Bizi öldürteceksin», der {name} gülerek ve elini bırakmaz."
+            },
+            {
+              "text": "Sizi kimin takip ettiğini sor.",
+              "reply": "{name} sana yan gözle bakar. «On dakika boyunca hiç kimse. İyice emin oldum. Rahatla.»"
+            }
+          ]
+        },
+        {
+          "line": "{place} mekanında {name} masanın üzerinden bir kibrit kutusu kaydırır. Kapağın iç kısmında bir şey yazılıdır.",
+          "choices": [
+            {
+              "text": "Oku ve sakla.",
+              "reply": "«Güzel», der {name} usulca. «Şimdi eve gidince onu yak. Ya da yakma. Öğrenmek isterdim.»"
+            },
+            {
+              "text": "Cevaben bir şeyler yaz.",
+              "reply": "{name} onu okur ve bir kereye mahsus söyleyecek hiçbir şey bulamaz."
+            },
+            {
+              "text": "Okumadan yak.",
+              "reply": "«Dikkatli ol», der {name} yanışını izlerken. «O kibar olan versiyonuydu.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "gece yarısından sonra"
+      },
+      "story": {
+        "premise": "Gece yarısından sonra yağmurla parıldayan, güpegündüz polisin, karanlıkta ise Valcour ve Renwick adlı iki eski ailenin yönettiği bir şehir. Her şey paylaştıkları ve uğruna savaştıkları kumarhane olan Orchid'de gerçekleşir.",
+        "userRole": {
+          "title": "Tanık",
+          "hook": "Yanlış gecede Orchid'deki yanlış masadaydın. Polis ifadeni istiyor, her iki aile de susmanı istiyor ve seni hayatta tutması için bir koruma tutuldu."
+        },
+        "ties": [
+          {
+            "note": "Maskeli sessiz adam ve konuşmayı hiç bırakmayan en küçük Renwick. İki kez birbirlerine karşı tutuldular. Bir keresinde bir pusuda sandviçlerini paylaştılar ve ikisi de bunu unutamadı."
+          },
+          {
+            "note": "Aileler fark etmeden önce geçen pervasız bir yaz. Şimdi kız onun ağabeyine söz verildi ve masada birbirlerine yabancı gibi kart dağıtıyorlar."
+          },
+          {
+            "note": "Kadın onu üç kez tutuklamaya çalıştı. Adam ise delilleri iki kez bizzat onun eline verdi."
+          },
+          {
+            "note": "Isolde Viv'in sözleşmesine sahip ve Viv ona sesinden başka hiçbir şey borçlu değil. Her gece söylediği şarkı küçük bir savaş eylemi."
+          },
+          {
+            "note": "Mara perşembe günleri barın ucunda içer. Viv ona aynı kötü viskiden gönderir ve dava hakkında asla soru sormaz."
+          }
+        ],
+        "season": {
+          "title": "Hesap Defteri",
+          "chapters": {
+            "table": {
+              "title": "Yanlış Masa",
+              "beat": "Kapanmış bir caz barının üzerindeki güvenli eve taşınıyorsun; tek bir koruma ve yeni bir isimle. Polis bunun sadece birkaç gün süreceğini söylüyor."
+            },
+            "statement": {
+              "title": "İfade",
+              "beat": "İmzaladığın ifade tek bir satırla değişiyor. Karakolun içinden biri birilerinin maaş bordrosunda."
+            },
+            "engagement": {
+              "title": "Nişan",
+              "beat": "Isolde Valcour Orchid'de bir nişan duyurur ve şehir nefesini tutar. Aileler arasındaki barış hiç bu kadar kırılgan görünmemişti."
+            },
+            "raid": {
+              "title": "Baskın",
+              "beat": "Polis bir perşembe gecesi Orchid'e baskın düzenler. Hiçbir şey bulunamaz, bu da herkese birilerinin baskından haberdar olduğunu gösterir."
+            },
+            "page": {
+              "title": "Postadaki Sayfa",
+              "beat": "Defterden tek bir sayfa sana hitaben bir zarf içinde gelir. Üzerinde tanıdığın bir isim vardır."
+            },
+            "masks": {
+              "title": "Bütün Maskeler Takılı",
+              "beat": "Her iki aile, tek bir balo salonu, bütün maskeler takılı. Sabaha kadar ya bir anlaşma çıkacak ya da bir savaş ve defterde gerçekte ne olduğunu bilen tek kişi sensin."
+            }
+          }
+        },
+        "events": {
+          "thursday": {
+            "title": "Orchid'de Perşembe",
+            "when": "Her perşembe gecesi",
+            "note": "Büyük bahislerin döndüğü gece: Aynı masalarda her iki aile, Viv'in gece yarısı programı ve kimse yalnız ayrılmaz.",
+            "line": "Bugün perşembe. Orchid nerede olduğunu bilmek isteyen insanlarla dolu olacak. Evde kal. Ya da kalma, ben de seninle geleyim.",
+            "round": {
+              "line": "Gece yarısı Orchid: Duman, derinden gelen nefesliler ve sen geçerken sessizleşen bir masa. {name} eğilir: «Bakma. Üçüncü masa. Sana bakıyorlar.»",
+              "choices": [
+                {
+                  "text": "Koluna gir ve yavaşça yürü.",
+                  "reply": "«Güzel», der {name} kulağına fısıldayarak. «Acele ettiğini asla görmesinler.»"
+                },
+                {
+                  "text": "Yine de bak.",
+                  "reply": "«Bakma demiştim.» Kızmaktan çok etkilenmiş gibi konuşur."
+                },
+                {
+                  "text": "Doğrudan kapıya yönel.",
+                  "reply": "{name} kapıyı açık tutarak ve odaya geri bakarak senden önce oraya varır."
+                }
+              ]
+            }
+          },
+          "masquerade": {
+            "title": "Maskeli Balo",
+            "when": "Her ekim ayında",
+            "note": "Ailelerin açıkça buluştuğu tek gece; her yüz bir maskenin ardında.",
+            "line": "Maskeli balo bu gece. Hangi maskenin senin olduğunu biliyorum. Hangisinin benim olduğunu bul bakalım.",
+            "round": {
+              "line": "Maskelerle dolu bir balo salonu. Siyahlar içindeki biri vals için elini tutar ve o sesi hemen tanırsın. «Burada olmaman gerekiyordu», der {name}.",
+              "choices": [
+                {
+                  "text": "«Senin de olmaman gerekiyordu. Dans etmeye devam et.»",
+                  "reply": "Dans ederler. Bu konuda çok başarılıdır ve müzik durduğunda elini bırakmaz."
+                },
+                {
+                  "text": "Başka kimlerin burada olduğunu sor.",
+                  "reply": "{name} dudaklarını kımıldatmadan üç maskenin adını fısıldar. Hepsini ezberlersin."
+                },
+                {
+                  "text": "Elini geri çek.",
+                  "reply": "İzin verir. «Bir dahaki sefere», der {name} ve kalabalığın içinde kaybolur."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gilded": {
+      "intro": "Bildiğiniz varsayılan saray hakkında beş soru, leydim. Dördünü doğru yanıtlayın, saray çerçevesi sizin olsun. Aileyi utandırmamaya gayret edin.",
+      "right": [
+        "Doğru. Size hiç benzemeyen bir hareket.",
+        "Pek doğru. Saray büyük bir hayal kırıklığına uğrayacak.",
+        "Evet. Dikkat kesilmişsiniz. Bu durum huzursuz edici."
+      ],
+      "wrong": [
+        "Hayır, leydim. Doğrusu {answer}. Başka türlüsünü söylediğinizi duymalarına izin vermeyin.",
+        "Yanlış. {answer}. İnsanlar çok daha azı için sürgüne gönderildi.",
+        "Pek sayılmaz. Cevap {answer}. Bir eğitmen mi çağırayım, yoksa bir rahip mi?"
+      ],
+      "match": [
+        "Aynı şeyi seçtik. Ne kadar da uygunsuz.",
+        "Cevaplarımız uyuşuyor. Herkesin içinde hemfikir olduğumuz görülmesin.",
+        "Tahmin ettiğim gibi. Sonunda ikimiz de bundan sağ çıkabiliriz."
+      ],
+      "differ": [
+        "Ben {answer} seçtim. Duvarların daha az kulağı olan bir yerde bana nedenini anlatın.",
+        "Benim için {answer}. Bir fikir ayrılığı. Bu sarayda bu neredeyse bir savaş ilanıdır.",
+        "Benim cevabım {answer} idi. Bunu çay eşliğinde tartışacağız. Önce ben koyacağım."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Saray halkı bana dik dik baktığında ne yaparım?",
+          "options": [
+            "Gözlerimi dikip bakarım",
+            "Gülümserim",
+            "Ayrılırım",
+            "Seni ararım"
+          ]
+        },
+        {
+          "text": "Unvanımdan ne uğruna vazgeçerim?",
+          "options": [
+            "Hiçbir şey",
+            "Huzur",
+            "Sakin bir hayat",
+            "Sen"
+          ]
+        },
+        {
+          "text": "Saraydaki en sevdiğim saat?",
+          "options": [
+            "Şafak vakti",
+            "Balodan sonraki saat",
+            "Çay saati",
+            "Sen ne zaman yakındaysan"
+          ]
+        },
+        {
+          "text": "Odamda gizli olarak ne saklarım?",
+          "options": [
+            "Bir mektup",
+            "Hazırlanmış bir bavul",
+            "Küçük bir hançer",
+            "Sana ait bir eşya"
+          ]
+        },
+        {
+          "text": "Kış Balosu hakkında ne düşünüyorum?",
+          "options": [
+            "Sıkıcı bir şey",
+            "Bir savaş alanı",
+            "Bir tuzak",
+            "Seninle dans etme fırsatı"
+          ]
+        },
+        {
+          "text": "Nasıl özür dilerim?",
+          "options": [
+            "Dilemem",
+            "Bir hediye ile",
+            "Yazılı ve resmi olarak",
+            "Beceriksizce ama denerim"
+          ]
+        },
+        {
+          "text": "En kötü alışkanlığım nedir?",
+          "options": [
+            "Gurur",
+            "Kapılarda kulak kabartmak",
+            "Gizlice tatlı yemek",
+            "Seni izlemek"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "İçinde uyandığın romanın adı nedir?",
+          "options": [
+            "Taç ve Gül",
+            "Altın Taht",
+            "Kış Kraliçesi",
+            "İmparatorluk Gülü"
+          ]
+        },
+        {
+          "text": "Kitapta nerede ölüyorsun?",
+          "options": [
+            "Avda",
+            "Kış Balosu'nda",
+            "Çay partisinde",
+            "Zindanda"
+          ]
+        },
+        {
+          "text": "Nişanlın kimdir?",
+          "options": [
+            "Lord Dorian",
+            "Sir Alaric",
+            "Veliaht Prens Leander",
+            "Hiç kimse"
+          ]
+        },
+        {
+          "text": "Sir Alaric kaç adım arkandan yürür?",
+          "options": [
+            "Bir adım",
+            "İki adım",
+            "On adım",
+            "Üç adım"
+          ]
+        },
+        {
+          "text": "Celestine sana hangi tatlıları getirir?",
+          "options": [
+            "Bademli",
+            "Ballı",
+            "Güllü",
+            "Limonlu"
+          ]
+        },
+        {
+          "text": "Odile kaç yıldır senin nedimendir?",
+          "options": [
+            "Dört yıl",
+            "Sekiz yıl",
+            "On yıl",
+            "Bir yıl"
+          ]
+        },
+        {
+          "text": "Lord Dorian kendi kendine ne oynar?",
+          "options": [
+            "Kart",
+            "Zar",
+            "Satranç",
+            "Arp"
+          ]
+        },
+        {
+          "text": "Prens hangi eşyanın başkasına ait olduğu konusunda ısrar eder?",
+          "options": [
+            "Bir at",
+            "Bir yüzük",
+            "Bir kılıç",
+            "Küçük bir köpek"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "{place} koridorunda saray muhafızlarının ayak sesleri yaklaşıyor. {name} seni bir duvar halısının arkasına çeker ve parmağını dudaklarına götürür.",
+          "choices": [
+            {
+              "text": "Çok yakınında, kıpırdamadan dur.",
+              "reply": "Muhafız geçer. {name} hemen uzaklaşmaz, sen de öyle."
+            },
+            {
+              "text": "Kulağına bir şaka fısılda.",
+              "reply": "Gülmemek için eldivenini ısırmak zorunda kalır. «İkimizi de astıracaksın.»"
+            },
+            {
+              "text": "Dışarı çıkıp muhafızı selamla.",
+              "reply": "«Bravo doğrusu», der {name} arkandan dışarı çıkarak; hiç memnun değildir ama biraz etkilenmiştir."
+            }
+          ]
+        },
+        {
+          "line": "{place} terasında bütün gözler üzerinizdeyken {name} sana bir kupa uzatır. «Adettendir», der, «önce birimiz içer.»",
+          "choices": [
+            {
+              "text": "Gözlerinin içine bakarak ilk önce sen iç.",
+              "reply": "Kısa bir sessizlik. «Ya çok cesursun ya da çok aptalsın», diye mırıldanır {name}. «Öğrenmeyi umuyorum.»"
+            },
+            {
+              "text": "Onun kupasını elinden al.",
+              "reply": "{name} kahkahayı basar ve bütün teras dönüp bakar."
+            },
+            {
+              "text": "Dokunmadan masaya bırak.",
+              "reply": "«Akıllıca», der {name}. «Ve biraz da hüzünlü.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "yazıldığı gibi"
+      },
+      "story": {
+        "premise": "Bir zamanlar okuduğun Taç ve Gül adlı romanın içinde, onun kötü karakteri olarak uyandın: Dük'ün şımarık varisi, Veliaht Prens ile nişanlı ve tüm sarayın nefret ettiği biri.",
+        "userRole": {
+          "title": "Kötü karakter",
+          "hook": "Bir başkasının gardırobuna, sana katlanamayan bir prense ve hak etmediğin bir üne sahipsin. Bunun nasıl bittiğini biliyorsun. Onlar ise bilmiyor."
+        },
+        "ties": [
+          {
+            "note": "Kimseye güvenmeyen nedime ve herkese sarılan azize. Celestine Odile'e tatlılar getirir. Odile zehir kontrolü yapar ve yine de yer."
+          },
+          {
+            "note": "Sarayda arkadaş olarak birlikte büyüdüler. Şimdi her akşam yemeğinde birbirlerinin müttefiklerini sayıyorlar."
+          },
+          {
+            "note": "Alaric yıllar önce kılıcını Prens'e adadı ve ardından seni korumakla görevlendirildi: Prens'in bir tür şakası."
+          },
+          {
+            "note": "Sarayda ilk kez ata binmeyi ona o öğretti. Kitapta ona aşık olur. Şimdiye kadar olmadı."
+          },
+          {
+            "note": "O, Vael Dükü'nün varisi; kadın ise Vael Dükü'nün sırrı. Herkesin içinde tam bir kez konuştular."
+          }
+        ],
+        "season": {
+          "title": "Kış Balosu'na Kadar",
+          "chapters": {
+            "morning": {
+              "title": "İlk Sabah",
+              "beat": "Onun bedeninde uyanıyorsun. Öğleye doğru saray bir hizmetçiye «lütfen» dediğini fark ediyor ve kimse bunun ne anlama geldiğini kestiremiyor."
+            },
+            "tea": {
+              "title": "Çay Partisi",
+              "beat": "Kitapta bu parti kadın kahramanı aşağıladığın partidir. Bunu yapman bekleniyor. Herkes izlemeye geldi."
+            },
+            "letters": {
+              "title": "Sahte Mektuplar",
+              "beat": "Senin el yazınla yazılmış ama asla yazmadığın mektuplar ortaya çıkmaya başlıyor. Kitapta bunlar çok daha sonra geliyordu. Birisi olayları hızlandırıyor."
+            },
+            "hunt": {
+              "title": "İmparatorluk Avı",
+              "beat": "Av sırasında bir ok Veliaht Prens'i bir el genişliğiyle ıskalıyor ve sarayın gözleri doğrudan ailene çevriliyor. Hikaye bükülmeye başladı."
+            },
+            "cup": {
+              "title": "Kupa",
+              "beat": "Akşam yemeğinde kadın kahraman tıpkı yazıldığı gibi hastalanıyor ve o kupa seninkiydi. Yalnızca bu sefer birisi panzehirle hazır bekliyordu."
+            },
+            "ball": {
+              "title": "Son Sayfa",
+              "beat": "Kitapta öldüğün gece. Ferman hazırlandı, muhafızlar yerini aldı ve herkes koltuğunda. Artık sen dahil kimse bu sayfayı bilmiyor."
+            }
+          }
+        },
+        "events": {
+          "salon": {
+            "title": "Pazar Salonu",
+            "when": "Her pazar",
+            "note": "İmparatoriçe'nin salonu: çay, müzik ve imparatorluğun en kibar hançerleri. Burada söylenen her şey akşam yemeğine kadar saraya ulaşır.",
+            "line": "Bugün salon günü. Zırhını giy; yani o mavi elbiseyi kastediyorum. Kimin sana baktığını izliyor olacağım.",
+            "round": {
+              "line": "Şekere uzandığın anda bütün salon sessizliğe bürünür. {name} yanındadır ve dudaklarını kımıldatmadan fısıldar: «Korkunç bir şey yapmanı bekliyorlar.»",
+              "choices": [
+                {
+                  "text": "Önce onun çayını koy.",
+                  "reply": "Salonda çok hafif bir nefes tutulması yaşanır. {name}'in dudak kenarı seğirir: «Bunu sevdim.»"
+                },
+                {
+                  "text": "Bütün salona gülümse.",
+                  "reply": "«Korkutucu», der {name} memnuniyetle."
+                },
+                {
+                  "text": "Şekere dokunma.",
+                  "reply": "Salon biraz hayal kırıklığıyla rahat bir nefes alır. {name} masanın altından sana bir bisküvi uzatır."
+                }
+              ]
+            }
+          },
+          "winterball": {
+            "title": "Kış Balosu",
+            "when": "Her kış ortasında",
+            "note": "Sarayın en görkemli gecesi: bin mum, yüz ittifak ve kitapta bir idam.",
+            "line": "Kış Balosu. Davetli listesini iki kez okudum. Bana bir dans ayır ve seni görebileceğim bir yerde dur.",
+            "round": {
+              "line": "Bin mum ve Kış Balosu'nun ilk valsi. {name} elini uzatırken salondaki her göz üzerinizde.",
+              "choices": [
+                {
+                  "text": "Gözlerini kaçırmadan elini tut.",
+                  "reply": "Salon etrafınızda döner. «Söyledikleri gibi biri değilsiniz», der {name} çok sessizce."
+                },
+                {
+                  "text": "Ne bildiğini sor.",
+                  "reply": "«Çok fazla şey», der {name} ve seni muhafızların duyamayacağı bir yere yönlendirir."
+                },
+                {
+                  "text": "Reverans yapıp reddet.",
+                  "reply": "Salonda bir fısıltı dalgası dolaşır. {name} eğilerek selam verir ve gecenin geri kalanında gözlerini senden ayırmaz."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "arena": {
+      "intro": "Wolves hakkında beş soru. Dördünü doğru yanıtla, buz pisti çerçevesi senin olsun. Endişelenme, bu binada zaten kimse saymayı bilmiyor.",
+      "right": [
+        "Doğru! İzliyormuşsun demek.",
+        "Evet! Tam doksana.",
+        "Doğru. Oynamadığına emin misin?"
+      ],
+      "wrong": [
+        "Dışarı çıktı. Doğrusu {answer}.",
+        "Hayır, {answer}. Kulübeye geri dön.",
+        "Yaklaştın ama {answer}. Kaptana söyleme."
+      ],
+      "match": [
+        "Aynı cevap! İşte buna temiz hat değişimi denir.",
+        "Cevaplarımız eşleşti. Kimse Koç'a söylemesin.",
+        "Biliyordum. Sen ve ben aynı hatta."
+      ],
+      "differ": [
+        "Bende {answer} vardı. Benimle patates kızartması yerken tartışırsın.",
+        "Benim için {answer}. Benim takımımda istediğin zaman yanılabilirsin.",
+        "Ben {answer} demiştim. Antrenmandan sonra rövanş yaparız."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Maçtan hemen önce ne yaparım?",
+          "options": [
+            "Her şeyi iki kez bantlarım",
+            "Yemek yerim",
+            "Duvara dik dik bakarım",
+            "Seni bulurum"
+          ]
+        },
+        {
+          "text": "Arenadaki en sevdiğim yer neresi?",
+          "options": [
+            "Işıklar açılmadan önceki buz",
+            "Patates kızartması büfesi",
+            "Tedavi odası",
+            "Sen neredeysen orası"
+          ]
+        },
+        {
+          "text": "Bir yenilginin ardından ne yaparım?",
+          "options": [
+            "Sessizleşirim",
+            "Tek başıma kayarım",
+            "Fazla yemek yerim",
+            "Seni ararım"
+          ]
+        },
+        {
+          "text": "Çantamda olmaması gereken ne var?",
+          "options": [
+            "Eski bant",
+            "Uğurlu bir çorap",
+            "Çok fazla atıştırmalık",
+            "Senin kalemin"
+          ]
+        },
+        {
+          "text": "Son dakikada aklımdan ne geçer?",
+          "options": [
+            "Hiçbir şey",
+            "Bir sonraki vardiya",
+            "Yemek",
+            "Tribündeki sen"
+          ]
+        },
+        {
+          "text": "Önemsediğimi nasıl gösteririm?",
+          "options": [
+            "Söylemem",
+            "Çantanı taşırım",
+            "Yiyecek getiririm",
+            "Seni kollarım"
+          ]
+        },
+        {
+          "text": "Maç günü uğurum nedir?",
+          "options": [
+            "Önce sol paten",
+            "Aynı kahvaltı",
+            "Konuşmamak",
+            "Önce seni görmek"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Takımın adı nedir?",
+          "options": [
+            "Northgate Wolves",
+            "Harbour Bears",
+            "Ice Kings",
+            "City Hawks"
+          ]
+        },
+        {
+          "text": "Takımın kaptanı kimdir?",
+          "options": [
+            "Teddy Novak",
+            "Erik Holt",
+            "Freya Lund",
+            "Priya Raman"
+          ]
+        },
+        {
+          "text": "Teddy kapına ne getirir?",
+          "options": [
+            "Çiçek",
+            "Kahve",
+            "Aşırı bol bir kahvaltı",
+            "Köpeğini"
+          ]
+        },
+        {
+          "text": "Freya buza ne zaman çıkar?",
+          "options": [
+            "Gece yarısı",
+            "Öğlen",
+            "15.00'te",
+            "Sabah 05.00'te"
+          ]
+        },
+        {
+          "text": "Sasha en çok neden nefret eder?",
+          "options": [
+            "Hokey",
+            "Çay",
+            "Bale",
+            "Şeker"
+          ]
+        },
+        {
+          "text": "Priya geçimini neyle sağlıyor?",
+          "options": [
+            "Antrenörlük yapıyor",
+            "Spor köşesi yazıyor",
+            "Bilet satıyor",
+            "Takımın sahibi"
+          ]
+        },
+        {
+          "text": "Kimse neye dokunmamalıdır?",
+          "options": [
+            "Holt'un sopasına",
+            "Holt'un köpeğine",
+            "Holt'un bandına",
+            "Holt'un yastığına"
+          ]
+        },
+        {
+          "text": "Tedavi odasının duvarına bantlanan kural nedir?",
+          "options": [
+            "Patates kızartması yasaktır",
+            "Telefon yasaktır",
+            "Ağlamak yasaktır",
+            "Oyuncularla çıkmak yasaktır"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "{place} mekanında arena bomboş ve ışıklar yarı yarıya yanıyor. {name} sana bir çift paten fırlatır: «Hadi gel. Kimse izlemiyor.»",
+          "choices": [
+            {
+              "text": "Bağcıkları bağla ve buzda elini tut.",
+              "reply": "İki kez düşersin. Birinde seni yakalar. İkincisinden ise kimse bahsetmez."
+            },
+            {
+              "text": "Bilerek beceriksizce kay.",
+              "reply": "«Bunu bilerek yapıyorsun», der {name} ve yine de seni ayakta tutmak için geri geri kayar."
+            },
+            {
+              "text": "Pano kenarından izle.",
+              "reply": "{name} on dakika boyunca hava atar ve kaleye çarpar. Alkışlarsın."
+            }
+          ]
+        },
+        {
+          "line": "{place} antrenmanından sonra {name} sıcak patates dolu bir kâğıt tabak uzatır: «Son porsiyon. Ya benimle dövüş ya da güzel bir şey söyle.»",
+          "choices": [
+            {
+              "text": "İçtenlikle güzel bir şey söyle.",
+              "reply": "Kulaklarına kadar kızarır, bütün tabağı teslim eder ve bir süre sana bakmayı reddeder."
+            },
+            {
+              "text": "O konuşurken bir tane aşır.",
+              "reply": "«Gördüm onu», der {name} keyifle. «Tam bir baş belasısın.»"
+            },
+            {
+              "text": "Diyetinden bahset.",
+              "reply": "«Şu an mesaide değilsin», der {name} ve sana bakarak hepsini yavaşça yer."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "son düdük"
+      },
+      "story": {
+        "premise": "Buz hokeyi takımı Northgate Wolves için yaşayan soğuk bir liman şehri. Herkes tek bir eski arenayı paylaşıyor: erkek takımı, kadın takımı, paten kulübü ve basın tribünü.",
+        "userRole": {
+          "title": "Takımın yeni fizyoterapisti",
+          "hook": "Yirmi üç inatçı sporcuyu tek parça halinde tutmak için işe alındın. Tedavi odanın duvarında bantlanmış bir kural var: oyuncularla çıkmak yasaktır. Biri altını iki kez çizmiş."
+        },
+        "ties": [
+          {
+            "note": "Deplasmanlarda oda arkadaşları. Teddy duşta şarkı söyler ve Holt bundan nefret ediyormuş gibi yapar. Holt iyi yastığı Teddy'nin tarafına bırakmaya başlamıştır bile."
+          },
+          {
+            "note": "Kaleci ve patenci sabah beş buzu için çekişir. Freya bilerek paten izlerini bırakır; Sasha ise notlar bırakır."
+          },
+          {
+            "note": "Kadın onun dizi hakkındaki gerçeği yazana kadar bir sezon boyunca çıktılar. Adam hâlâ kadının her köşe yazısını okuyor."
+          },
+          {
+            "note": "Kadın ona gece yarısı kenar hareketlerini öğretir ve tüm süre boyunca ona laf sokar. Adamın kayışı hiç bu kadar iyi olmamıştı."
+          },
+          {
+            "note": "Priya kadın takımını takip eden tek muhabirdir ve Freya da ona istatistiklerinin ne zaman yanlış olduğunu söyleyen tek oyuncudur."
+          }
+        ],
+        "season": {
+          "title": "Son Bir Sezon",
+          "chapters": {
+            "opener": {
+              "title": "Birinci Gün",
+              "beat": "Wolves'un sezon açılış maçını altı farkla kaybettiği gün işe başlıyorsun. Taraftarlar yuhalıyor, sonra gidip daha fazla bira alıyor."
+            },
+            "streak": {
+              "title": "Üst Üste Dört Galibiyet",
+              "beat": "Wolves üst üste dört maç kazanıyor ve kimse nedenini bilmiyor. Teddy bunu kahvaltıya bağlıyor. Şehir atkıları yeniden takmaya başlıyor."
+            },
+            "hit": {
+              "title": "Darbe",
+              "beat": "Holt üçüncü periyotta kötü bir darbe alıyor ve çok yavaş ayağa kalkıyor. Herkese iyi olduğunu söylüyor. Gerçeği bilmek ise senin görevin."
+            },
+            "buyer": {
+              "title": "Alıcı",
+              "beat": "Priya'nın köşesinde, şık paltolu birinin arenayı mezurayla gezdiği yazıyor. Sahibinin hiçbir şey söylememesi, her şeyi anlatıyor."
+            },
+            "scout": {
+              "title": "Yetenek Avcısı",
+              "beat": "On yılın en büyük maçı, biletler tükenmiş ve lig liderinden bir yetenek avcısı tribünde. Holt için gelmemiş."
+            },
+            "seven": {
+              "title": "Yedinci Maç",
+              "beat": "Sezonun son maçı play-off'ları ve takımın geleceğini belirliyor. Bütün şehir tek bir sokakta. Sen ise yedek kulübesindesin."
+            }
+          }
+        },
+        "events": {
+          "gamenight": {
+            "title": "Maç Gecesi",
+            "when": "Her cumartesi",
+            "note": "İç saha maçı: arenanın eski kornası, atkılar ve buza doğru bağıran bütün bir liman.",
+            "line": "Maç gecesi. Beni bantla ve iyi göründüğümü söyle. Ya da sadece iyi göründüğümü söyle.",
+            "round": {
+              "line": "Korna çaldı ve arena sallanıyor. {name} acımasız bir vardiyanın ardından buzdan çıkıyor ve nefes nefese tam yanına çöküyor.",
+              "choices": [
+                {
+                  "text": "Su uzat ve omzu kontrol et.",
+                  "reply": "«İşte sana bunun için para ödüyorlar», der {name} ve eline işin gerektirdiğinden biraz daha uzun süre yaslanır."
+                },
+                {
+                  "text": "Onun adına hakeme bağır.",
+                  "reply": "{name} o kadar güler ki tekrar oturmak zorunda kalır. «Bunu her maç yap.»"
+                },
+                {
+                  "text": "Neyi yanlış yaptığını söyle.",
+                  "reply": "«Biliyorum», der {name}, ardından ekler: «Beni mi izliyordun?»"
+                }
+              ]
+            }
+          },
+          "derby": {
+            "title": "Liman Derbisi",
+            "when": "Her ay",
+            "note": "Suyun karşısındaki şehre karşı yapılan derbi. Kimse uyumaz ve her iki takım da bunun sadece sıradan bir maç olduğunu söyler.",
+            "line": "Bu gece derbi var. Darbe alırsam bakmak zorundasın. Gol atarsam ona da bakmak zorundasın.",
+            "round": {
+              "line": "Derbi gecesi, otobüsler geldi. {name} ısınmadan önce seni boş koridorda bulur ve hiçbir şey söylemeden öylece durur.",
+              "choices": [
+                {
+                  "text": "Bileğini yavaşça bantla.",
+                  "reply": "İkiniz de tek kelime etmezsiniz. Sonunda normal şekilde nefes alıp vermeye başlar."
+                },
+                {
+                  "text": "«Harika olacaksın.»",
+                  "reply": "«Bunu maçtan sonra tekrar söyle», der {name} ve neredeyse gülümser."
+                },
+                {
+                  "text": "«Bir yerin mi acıyor?»",
+                  "reply": "«Hayır», der. Soru bununla ilgili değildir ve ikiniz de bunu bilirsiniz."
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "quizPacks": {
@@ -3430,6 +6014,48 @@
       "title": "Yataklı tren",
       "setting": "Gece treni kırsalın içinden süzülüyor. Koltuklarınız karşılıklı ve kompartımanın ışıkları loş.",
       "opening": "Bir sonraki istasyona daha altı saat var. Bana daha önce kimseye anlatmadığın bir şey anlatsana."
+    },
+    "scene_world_seaside": {
+      "title": "İlk sabahın",
+      "setting": "Seaside'daki ilk sabahın. İlk dersine giderken yolunu kaybettin ve kendini iskelenin en ucunda buldun; orada biri denizden yukarı tırmanıyor.",
+      "userRole": "Dün gelmiş bir yatay geçiş öğrencisi.",
+      "opening": "*sırılsıklam halde iskeleye tırmanır ve sırıtır* Yeni gelen öğrenci sensin, değil mi? Amfi diğer tarafta. ...Önce kavunlu ekmeğin yarısını ister misin?"
+    },
+    "scene_world_moonlit": {
+      "title": "Bileğindeki iplik",
+      "setting": "Ay Işığı Diyarı'nın sınırında, eski bir tapınağın kalıntıları arasındaki bir bahçe. Fenerli yoldan bileğinde gümüş bir iplikle buraya kadar yürüdün ve sen geçerken ay çiçekleri yapraklarını açıyor.",
+      "userRole": "Hatırlayamadığı bir yeminle bağlı bir yolcu.",
+      "opening": "*başını ay çiçeklerinden kaldırıp bileğindeki ipliğe bakar ve donakalır* Demek yeminin seçtiği kişi sensin. Otur. Saray'ın süvarileri seni bulmadan önce, ne söz verdiğin hakkında konuşmalıyız."
+    },
+    "scene_world_neon": {
+      "title": "Ekipteki ilk günün",
+      "setting": "Sabahın yedisinde B Stüdyosu; NEON TIDE'ın eş menajeri olarak ilk günün. Üyeler prova zemininde üst üste yığılmış uyuyor. Yeni telefonunun bildirimleri hiç durmadı.",
+      "userRole": "NEON TIDE'ın yeni eş menajeri.",
+      "opening": "*diğerlerini uyandırmamak için sessizce ayağa kalkar ve bir kahve uzatır* Yeni eş menajer sen olmalısın. Ben Ezra. Telefonun az sonra bir sorunumuz olduğunu haber verecek. Önce şunu iç."
+    },
+    "scene_world_tidepool": {
+      "title": "Üst kattaki daire",
+      "setting": "Sabahın yedisinde Tidepool Kafe; üst kata taşındığın gün. Kafe tereyağı ve kahve kokuyor, tezgâhtaki herkes sana bakmak için konuşmayı kesti.",
+      "userRole": "Kafenin üstündeki dairenin yeni kiracısı.",
+      "opening": "*sormadan tek boş taburenin önüne bir fincan bırakır* Demek gıcırdayan tahtaların sahibi sensin. İlk günün şerefine müesseseden. Şimdi söyle bakalım, elindeki mektupta ne yazıyor? Sanki seni ısırmış gibi bakıyorsun."
+    },
+    "scene_world_velvet": {
+      "title": "Güvenli ev",
+      "setting": "Gece saat ikide, yağmur altında, kapanmış bir caz barın üzerindeki daire. Polis seni buraya bir saat önce getirdi. Tek bir lamba, tek bir sandalye ve pencereyi kontrol eden siyah yarım maskeli bir adam var.",
+      "userRole": "Orchid'de yaşananların tanığı.",
+      "opening": "*pencereden tarafa dönmeden* Camdan uzak dur. Üç kural var ve bunları sana sadece bir kez söyleyeceğim. İstediğini çiğneyebilirsin. Çiğnediğinde yine burada olacağım."
+    },
+    "scene_world_gilded": {
+      "title": "İlk sabah",
+      "setting": "Küçük bir oda büyüklüğündeki yatakta, bir başkasının ipekleri içinde uyanıyorsun. Bu odayı bir zamanlar okuduğun bir romandan biliyorsun. Gri elbiseli bir kadın perdeleri açıyor ve belli ki tatsız bir şey söylemek için bekliyor.",
+      "userRole": "Taç ve Gül'ün yeni uyanmış kötü karakteri.",
+      "opening": "*tepsiyi çıt çıkarmadan masaya bırakır* Yine vaktinde uyanamadınız, leydim. Prens bekliyor, babanız öfkeden deliye dönmüş durumda ve bu hafta üç kişiyi ağlattınız. Mavi elbiseyi getireyim mi, yoksa önce fırlatıp atmak mı istersiniz?"
+    },
+    "scene_world_arena": {
+      "title": "Tüneldeki ilk gün",
+      "setting": "Işıklar henüz tam yanmamışken arenadaki ilk sabahın. Tünel buz ve bayat kahve kokuyor. Kaptan tedavi masanda oturmuş, kendi elini sarıyor; hem de oldukça kötü.",
+      "userRole": "Northgate Wolves'un yeni fizyoterapisti.",
+      "opening": "*başını kaldırmadan* Yeni fizyoterapist sensin. Geç kaldın. ...Geç kalmadın, ben beşte geldim. Bandıma dokunma."
     }
   },
   "lorebooks": {
@@ -3468,6 +6094,14 @@
         "lore_seaside_8": {
           "name": "Merkez avlu",
           "text": "Amfiler arasındaki çimenlik meydan; güneş açtığında herkes öğle yemeğini burada yer."
+        },
+        "lore_seaside_9": {
+          "name": "Deniz Feneri Festivali",
+          "text": "Kampüsün yılın en büyük gecesi: deniz üstünde fenerler, sinema kulübünün galası ve iskeleden yapılan canlı radyo yayını."
+        },
+        "lore_seaside_10": {
+          "name": "Kayıkhanenin satışı",
+          "text": "Üniversite yönetim kurulu, yeni bir binanın masraflarını karşılamak için eski kayıkhane ve iskeleyi satmak istiyor. İsimsiz bir imza kampanyası bunu durdurmaya çalışıyor."
         },
         "lore_person_c_kai": {
           "name": "Kai Arden",
@@ -3544,7 +6178,20 @@
           "text": "Sürgün edilmiş general Corvin’in kuzgunlarını beslediği rüzgarlı bir uçurum. Kuzgunlar mektupları diyarın dört bir yanına ulaştırır."
         },
         "lore_moonlit_8": {
-          "name": "Hafıza iksirleri"
+          "name": "Hafıza iksirleri",
+          "text": "Vesper'ın iksirleri eski anılar gibi bir tat bırakır. Unutuş iksiri hazırlamak yasaktır ve o zaten bunu asla yapmayacağını söyler."
+        },
+        "lore_moonlit_9": {
+          "name": "Ay Tutulması",
+          "text": "Ayın karardığı, yeni bir hükümdarın taç giydiği ve diyardaki tüm yeminlerin aynı anda vadesinin dolduğu gece."
+        },
+        "lore_moonlit_10": {
+          "name": "Taç taşı",
+          "text": "Bir hükümdarın taç giymek için elinde tutması gereken taş. Saray mahzeninden kayboldu ve Saray ejderha Kael'den şüpheleniyor."
+        },
+        "lore_moonlit_11": {
+          "name": "Gümüş iplik",
+          "text": "Bileğe bağlanan bağlayıcı bir yeminin işareti. Bunu takan kişi, yemin kesilene veya yerine getirilene kadar yeminin verildiği kişiye bağlı kalır."
         },
         "lore_person_c_aurelian": {
           "name": "Prens Aurelian",
@@ -3620,6 +6267,10 @@
           "name": "Programlar",
           "text": "Juno bütün takvimi dört ayrı telefondan yönetir: sabah erken çekimler, canlı yayınlar, provalar. Özel hayat gizli kalır; üyeler kiminle çıktıkları hakkında asla paylaşım yapmaz."
         },
+        "lore_neon_8": {
+          "name": "TIDEWATCH",
+          "text": "Yalnızca içeriden birinin bilebileceği şeyleri paylaşan anonim bir dedikodu hesabı. Şirket, bir skandalın daha geri dönüşü rafa kaldıracağı konusunda uyardı."
+        },
         "lore_person_c_ezra": {
           "name": "Ezra",
           "text": "NEON TIDE lideri: sahnede son derece kararlı, ışıklar kapandığı andaysa biraz yolunu kaybetmiş."
@@ -3694,6 +6345,14 @@
           "name": "Liman caddesi",
           "text": "Küçük bir limana inen cadde: kafe, çiçekçi, tamirhane ve itfaiye istasyonu hepsi birkaç dakikalık yürüme mesafesinde."
         },
+        "lore_tidepool_8": {
+          "name": "Meridian Holdings",
+          "text": "Bir gökdelen dikmek için sokaktaki mülkleri birer birer satın alan şirket. Sıradaki hedef kafe."
+        },
+        "lore_tidepool_9": {
+          "name": "Üst kattaki daire",
+          "text": "Kafenin üzerindeki küçük daire: gıcırdayan tahtalar, liman manzarası ve sabah beşten itibaren yayılan tereyağı kokusu. Bir zamanlar bir romancı kitabını burada yazmıştı."
+        },
         "lore_person_c_adrian": {
           "name": "Adrian Wells",
           "text": "Geceleri şehri çizen ve konsantre olduğunda farkında olmadan mırıldanan mimar."
@@ -3733,6 +6392,168 @@
         "lore_person_c_cole": {
           "name": "Cole Ashby",
           "text": "Kafenin eski skuterini ücretsiz tamir eden ve her gece seni eve bırakmayı teklif eden tamirci."
+        }
+      }
+    },
+    "lore_velvet": {
+      "name": "Velvet Bölgesi",
+      "about": "Gece yarısından sonra yağmurla parıldayan, karanlıkta iki köklü aile olan Valcour'lar ve Renwick'ler tarafından yönetilen bir şehir. Orchid adında bir kumarhaneyi ve kimsenin güvenmediği bir barışı paylaşıyorlar. Bordrolarında yer alan herkesin yazılı olduğu defter az önce kayboldu.",
+      "entries": {
+        "lore_velvet_1": {
+          "name": "The Orchid",
+          "text": "İki ailenin paylaştığı ve uğruna savaştığı görkemli eski kumarhane: yeşil çuha, derinden gelen nefesliler ve Vivienne Sable'ın gece yarısı performansı. Kağıt üzerinde tarafsız bölge."
+        },
+        "lore_velvet_2": {
+          "name": "Valcour'lar",
+          "text": "İnsanlara birer fiyat gözüyle bakan bir babanın yönettiği daha eski aile. Varisi Isolde, Orchid'i yönetiyor ve barışı korumak için bir Renwick ile evlendirilmek üzere söz verildi."
+        },
+        "lore_velvet_3": {
+          "name": "Renwick'ler",
+          "text": "Polisi avucunun içine almış daha yeni ve gürültülü aile. Luca ailenin en küçük oğlu ve kimse ondan bir şey beklemiyor."
+        },
+        "lore_velvet_4": {
+          "name": "Kayıt defteri",
+          "text": "Yargıçlardan dedektiflere kadar her iki ailenin maaş bordrosundaki herkesin adının yazılı olduğu küçük siyah bir defter. Orchid'de el değiştirdi ve onu tutan kişi ortadan kayboldu."
+        },
+        "lore_velvet_5": {
+          "name": "Güvenli ev",
+          "text": "Kapanmış bir caz barın üzerindeki sade bir daire; tek bir lamba ve sağlam bir kilit. Polis, tanığın burada yalnızca birkaç gün kalması gerektiğini söylüyor."
+        },
+        "lore_velvet_6": {
+          "name": "Barış",
+          "text": "Aileler yıllardır pamuk ipliğine bağlı bir barışı sürdürüyor: Orchid'de olay yok, köprüde olay yok. Herkes bunun sürmeyeceğini biliyor."
+        },
+        "lore_velvet_7": {
+          "name": "Maskeli balo",
+          "text": "Aileler yılda bir kez herkesin gözü önünde, aynı salonda, her yüz bir maskenin ardında buluşur. Anlaşmalar orada yapılır, bazen de savaşlar."
+        },
+        "lore_person_c_ronan": {
+          "name": "Ronan Vale",
+          "text": "Seni hayatta tutmak için tutulmuş, siyah yarım maskeli eski bir asker. Üç kuralı var ve bunları çiğneyebileceğini söylüyor."
+        },
+        "lore_person_c_isolde": {
+          "name": "Isolde Valcour",
+          "text": "Siyah elbisesiyle Orchid'i yöneten ve henüz kimsenin reddedemediği teklifler sunan Valcour ailesinin varisi."
+        },
+        "lore_person_c_mara": {
+          "name": "Mara Quill",
+          "text": "Her hikayede üç açık bulan ve seninkini dinlemek için geri gelip duran Orchid davasının dedektifi."
+        },
+        "lore_person_c_luca": {
+          "name": "Luca Renwick",
+          "text": "Renwick ailesinin en küçüğü; Orchid'de kurpiyerlik yapan ve kolunun altında hangi kartın olduğunu sana söyleyen biri."
+        },
+        "lore_person_c_viv": {
+          "name": "Vivienne Sable",
+          "text": "Üç yıl önce tek kelime etmeden seni terk eden ve o günden beri bunun hakkında şarkı söylemeyi bırakmayan Orchid'in caz şarkıcısı."
+        }
+      }
+    },
+    "lore_gilded": {
+      "name": "Altın İmparatorluk",
+      "about": "Taç ve Gül adlı romandan fırlamış yaldızlı bir imparatorluk sarayı. Kitapta, Dük'ün zalim kötü karakter olan varisi Kış Balosu'nda idam ediliyor. Şimdi bir başkası onun bedeninde uyandı ve sonu yalnızca o biliyor.",
+      "entries": {
+        "lore_gilded_1": {
+          "name": "Taç ve Gül",
+          "text": "Bu dünyanın geldiği roman. Kötü karakter azize kadın kahramana eziyet eder, Veliaht Prens ona aşık olur ve kötü karakter Kış Balosu'nda can verir."
+        },
+        "lore_gilded_2": {
+          "name": "Kış Balosu",
+          "text": "Sarayın en görkemli gecesi. Kitapta kötü karakterin tutuklanıp mahkum edildiği yer. Binlerce mum, yüzlerce ittifak."
+        },
+        "lore_gilded_3": {
+          "name": "İmparatorluk Sarayı",
+          "text": "İmparatorluğun kalbindeki altın saray. İçinde söylenen her şey duyulur, duyulan her şey satılır."
+        },
+        "lore_gilded_4": {
+          "name": "İmparatorluk Muhafızları",
+          "text": "Çelik ve koyu mavi zırhlar içindeki İmparator'un kendi şövalyeleri. Sir Alaric Thorne, kimsenin istemediği bir görevle Dük'ün varisini korumakla görevlendirildi."
+        },
+        "lore_gilded_5": {
+          "name": "Vael Hanedanı",
+          "text": "Diğer büyük düklük hanedanı; kötü karakterin ailesinin eski rakipleri. Lord Dorian bu hanedanın varisidir."
+        },
+        "lore_gilded_6": {
+          "name": "Pazar Salonu",
+          "text": "İmparatoriçe'nin haftalık salonu: çay, müzik ve imparatorluğun en kibar hançerleri."
+        },
+        "lore_gilded_7": {
+          "name": "Görgü kuralları",
+          "text": "Saraydaki her şey kurallara göre yapılır: kimin ne kadar eğileceği, ilk kimin içeceği, kimin oturabileceği. Bir kuralı çiğnemek bir mesajdır ve herkes bunu okur."
+        },
+        "lore_person_c_leander": {
+          "name": "Veliaht Prens Leander",
+          "text": "Kuralına harfiyen bağlı, sana şimdiye kadar hiç bir insanmışsın gibi bakmamış olan Veliaht Prens ve nişanlın. Son zamanlara kadar."
+        },
+        "lore_person_c_alaric": {
+          "name": "Sir Alaric Thorne",
+          "text": "Üç adım arkandan yürüyen, yaptığın her şeyi görmüş ve hatırlayan İmparatorluk Muhafızı şövalyesi."
+        },
+        "lore_person_c_dorian": {
+          "name": "Lord Dorian Vael",
+          "text": "Vael Dükü'nün varisi, sarayın en zeki adamı, en eski düşmanın ve değiştiğini yeni fark eden kişi."
+        },
+        "lore_person_c_celestine": {
+          "name": "Celestine Aure",
+          "text": "Tüm imparatorluğun taptığı azize, hikayenin kadın kahramanı ve eziyet etmen gereken biri için sana fazlasıyla nazik davranan biri."
+        },
+        "lore_person_c_odile": {
+          "name": "Odile Fenn",
+          "text": "Saraydaki her sırrın nerede uyuduğunu bilen ve sana bir kez bile gülümsememiş olan sekiz yıllık nedimen."
+        }
+      }
+    },
+    "lore_arena": {
+      "name": "Buz ve Arena",
+      "about": "Buz hokeyi takımı Northgate Wolves için yaşayan soğuk bir liman şehri. Herkes tek bir eski arenayı paylaşıyor: erkek takımı, kadın takımı, paten kulübü ve basın tribünü. Sahibi sessizce takımı satıyor.",
+      "entries": {
+        "lore_arena_1": {
+          "name": "Arena",
+          "text": "Eski Northgate arenası: takılan bir korna, oyunculardan daha eski koltuklar ve tüm şehrin bayıldığı patates kızartmaları. Tünel buz ve kahve kokar."
+        },
+        "lore_arena_2": {
+          "name": "Northgate Wolves",
+          "text": "Ligin sonuncusu olan ve buna rağmen çok sevilen şehrin buz hokeyi takımı. Kaptanlığını Erik Holt yapıyor; çaylak Teddy Novak ise herkesin takımı kurtarmasını umduğu isim."
+        },
+        "lore_arena_3": {
+          "name": "Kadın takımı",
+          "text": "Ligin en iyi kalecisine ve sabahın beşindeki buza sahip Wolves kadın takımı. Takımı takip eden tek muhabir Priya Raman."
+        },
+        "lore_arena_4": {
+          "name": "Paten kulübü",
+          "text": "Arenanın erken saatlerdeki buzunu kiralayan küçük bir paten kulübü. Sasha Volkova orada antrenörlük yapıyor ve hokeycilerin pistini mahvetmeyi bırakmasını istiyor."
+        },
+        "lore_arena_5": {
+          "name": "Satış",
+          "text": "Sahibi, Wolves play-off'lara kalamaz ve şehir tribünleri doldurmazsa takımı başka bir şehre taşıyacak bir alıcıya sessizce satıyor."
+        },
+        "lore_arena_6": {
+          "name": "Duvardaki kural",
+          "text": "Tedavi odasının duvarına bantlanmış bir yazı: oyuncularla çıkmak yasaktır. Biri altını iki kez çizmiş. Kimse kimin yaptığını söylemiyor."
+        },
+        "lore_arena_7": {
+          "name": "Derbi",
+          "text": "Suyun karşısındaki şehre karşı yapılan aylık derbi ve sezon sonunda her şeyi belirleyen maç."
+        },
+        "lore_person_c_erik": {
+          "name": "Erik Holt",
+          "text": "Northgate Wolves'un yaralı bereli kaptanı; günde dört kelime eder ve kimse onun bandına dokunamaz."
+        },
+        "lore_person_c_teddy": {
+          "name": "Teddy Novak",
+          "text": "Bir çiftlikte büyümüş, her şeye sevinen ve kapında fazlasıyla bol bir kahvaltıyla beliren Wolves'un çaylak yıldızı."
+        },
+        "lore_person_c_freya": {
+          "name": "Freya Lund",
+          "text": "Sabah beş buzunu seninle paylaşan ve şimdiye kadar belki dokuz kelime etmiş olan Wolves kadın takımının kalecisi."
+        },
+        "lore_person_c_sasha": {
+          "name": "Sasha Volkova",
+          "text": "Arenanın erken buzundaki figür patencisi; hokeyden nefret eder, soğuktan nefret eder ve özellikle senden nefret etmeye karar vermiştir."
+        },
+        "lore_person_c_priya": {
+          "name": "Priya Raman",
+          "text": "Bir haberi, basın kartı ve tünelde seninle flört etmeye devam etmek için çok geçerli bir sebebi olan spor yazarı."
         }
       }
     }
@@ -3907,6 +6728,21 @@
           "Sürekli gelen bir müşteri küçük bir kedi çizimiyle bahşiş bıraktı. Bütün vardiyamı güzelleştirdi.",
           "Bugün çöreklerin ilk partisini yaktım. Sakın kimseye söyleme.",
           "Bütün öğleden sonra yağmur yağdı, kafe buram buram kahve ve ıslak şemsiye koktu."
+        ],
+        "Velvet District": [
+          "Üç gündür yağmur yağıyor. Bütün şehir ıslak kibrit gibi kokuyor.",
+          "Bu gece Orchid'de biri seni sordu. Adını hiç duymadığımı söyledim.",
+          "Eve uzun yoldan yürüdüm ve söylediklerini düşündüm."
+        ],
+        "Gilded Empire": [
+          "Bugün üç kişi önümde eğildi ve ikisi bunu içtenlikle yaptı. Saray standartlarına göre iyi bir gün.",
+          "İmparatoriçe'nin çayı fazla tatlıydı, herkesin gülümsemesi de öyle. Aklıma sen geldin.",
+          "Bu sabah eldivenimin içinde bir not buldum. Oraya kimin koyduğunu kimse söylemiyor."
+        ],
+        "Ice & Arena": [
+          "Antrenmanda korna yine takıldı. Tam bir dakika boyunca çaldı. Kimse başını kaldırıp bakmadı bile.",
+          "Bugün küçük bir ülke büyüklüğünde bir morluğum oldu. Görsen etkilenirdin.",
+          "Bu sabah buz mükemmeldi ve aklımdan 'Bunu görmelisin' diye geçirdim."
         ],
         "default": [
           "Daha önce sana neredeyse yazacaktım, sonra birden çekindim.",
@@ -5343,6 +8179,17 @@
         "Train": "Tren",
         "Appointment": "Randevu"
       }
+    },
+    "world": {
+      "chapter": [
+        "Duydun mu? {note}",
+        "Buna inanmayacaksın. {note}",
+        "Demek öyle. {note} Aklımdan bir türlü çıkmıyor."
+      ],
+      "arc": [
+        "Sana söylemediğim bir şey var. {title}.",
+        "Sana bir şey söyleyebilir miyim? {title}. Şimdilik sadece bu kadarını söyleyeceğim."
+      ]
     }
   }
 }
