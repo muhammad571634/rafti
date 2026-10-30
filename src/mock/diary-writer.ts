@@ -81,6 +81,7 @@ export function daysTogether(
 export function duePages(
   together: DayTogether[],
   existing: CharacterDiaryPage[],
+  genderOf: (characterId: string) => CharacterGender | undefined,
   today = dayKey(),
 ): CharacterDiaryPage[] {
   const taken = new Set(existing.map((p) => `${p.characterId}|${p.date}`));
@@ -93,7 +94,7 @@ export function duePages(
     const key = `${d.characterId}|${date}`;
     if (taken.has(key)) continue;
     taken.add(key);
-    out.push(writePage(d, date));
+    out.push(writePage(d, date, genderOf(d.characterId)));
   }
   return out;
 }
@@ -148,7 +149,7 @@ export const DIARY_VOICE = {
  * Writes the page itself. Until the model writes these on the server, it is put
  * together from a few honest lines that quote what the user actually said.
  */
-export function writePage(d: DayTogether, date: string, gender?: CharacterGender): CharacterDiaryPage {
+export function writePage(d: DayTogether, date: string, gender: CharacterGender | undefined): CharacterDiaryPage {
   const talk = d.said.length + d.extraTouches;
   const mood: DiaryMood = d.heavy
     ? 'soft'

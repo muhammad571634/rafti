@@ -22,7 +22,7 @@ export const CARE_VOICE = {
  * model writes it from `careCue`. The same seed (the check-in's id) gives the same line, so the
  * push and the chat say the same thing.
  */
-export function careLine(kind: CareKind, seed: string, gender?: CharacterGender): string {
+export function careLine(kind: CareKind, seed: string, gender: CharacterGender | undefined): string {
   const line = pickSeeded(voice('care', CARE_VOICE).lines[kind], seed);
   return fill(line, {}, gender);
 }

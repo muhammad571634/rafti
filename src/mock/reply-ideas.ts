@@ -58,7 +58,7 @@ export const IDEAS_VOICE = {
  * Their answer to a tapped reply idea (`src/lib/reply-ideas.ts`) until the server's model writes
  * it: it fits what the user meant, and a sibling teases where a parent would fuss.
  */
-export function ideaAnswer(reach: string | undefined, intent: IdeaIntent, seed: string, gender?: CharacterGender) {
+export function ideaAnswer(reach: string | undefined, intent: IdeaIntent, seed: string, gender: CharacterGender | undefined) {
   // "May I text you?": their answer follows their temper.
   const [source, temper] = reach?.split(':') ?? [];
   if (source === 'ask' && TEMPERS.includes(temper as Temper)) return askAnswer(temper as Temper, intent === 'yes', seed, gender);

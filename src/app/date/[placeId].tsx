@@ -14,6 +14,7 @@ import { Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt
 import { shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { localized } from '@/i18n/content';
+import { fill as fillLine } from '@/i18n/voice';
 import { DATE_PLACES, maxHearts } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
@@ -71,7 +72,8 @@ export default function DateScreen() {
   }
 
   const name = shortName(displayName(character, relationship));
-  const fill = (text: string) => text.replaceAll('{name}', name);
+  // A translated line's `{g:female|male}` follows the friend's gender.
+  const fill = (text: string) => fillLine(text, { name }, character.gender);
   const title = official ? t(`dating.places.${official.titleKey}`) : (kept.current?.title ?? '');
   const look = official ? placeLook(official.id) : artLook(ownArt ?? '');
   const scene = place.rounds[round];

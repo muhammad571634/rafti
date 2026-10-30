@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z64. Every shared line follows its speaker's gender; brief for the translations (2026-10-30, Claude 2). NEXT: Gemini runs `docs/agent-tasks/gendered-character-forms.md`, then Claude reviews
+
+- Bug found: `fill()` resolves `{g:female|male}` by the speaker's gender, but the store never passed one. Every mock
+  line took the female form, so in es/fr/it/pt-BR a male character spoke of himself as a woman, and the date screen
+  ignored `{g:}` altogether.
+- Now every mock line function takes `gender` as a required argument, so tsc flags a call that forgets it. Pools
+  that were proxies with no gender (`morningGreetings`, `eveningGreetings`, `missedCallLines`, `callLines`,
+  `groupReplies`, `groupJoinLines`, `groupPhotoLines`, `groupVoiceLines`, `diaryNudgeLines`, `giftNudgeLines`, and
+  the `CHAIN_LINES` getters) are now `(gender) => …`. The store (`genderOf`, `chatGender`), notifications (`plan.ts`,
+  `alarms.ts`), onboarding, the notification settings preview and the diary writer pass the character's gender. The date
+  screen fills its lines with the friend's gender.
+- `check:content` fails on `{g:` outside `voice`, `datePlaces`, `dateThemes` and `worlds.*.dateRounds`: anywhere else
+  it would show on screen as written.
+- `scripts/scan-gendered-you.mjs` gained three modes:
+  - `--self`: a shared line where the character speaks of itself in one gender. ru 104, fr 21, es 3, it 18, pt-BR 13.
+  - `--date`: date lines calling the character he or she. ru 128, de 171, fr 130, es 2, it 15, pt-BR 42, zh-Hant 129.
+  - `--cast`: a female character's own line in the masculine. It found one, fr Hana "Je suis sérieux", now fixed.
+  - Date choice `.text` lines now count as the user's, so the default scan sees ru "«Я так рад, что это именно ты»".
+- Brief `docs/agent-tasks/gendered-character-forms.md` covers 0z62 to-dos 1 and 2 (data only now).
+- tsc 0, npm test 483/483 (new: a pool follows its speaker), check:content 13/13, check:locales pass.
+
 ### 0z63. No 3-hourly AI line in one-to-one chats (2026-10-30, Claude 2). NEXT: owner checks a chat on the A51; groups below
 
 - Owner's call (told about NY GBL Art. 47 / CA SB 243 first): the "AI character" label under the name in the chat
@@ -29,10 +50,10 @@ Still to do:
 - check:content 13/13, tsc 0, npm test 482/482.
 
 Still to do (owner picks):
-1. ru voice: 87 shared voice lines speak in masculine first person for every character ("Я звонил", "Я так рад"); ru
+1. (0z64: code done, data in the Gemini brief) ru voice: 87 shared voice lines speak in masculine first person for every character ("Я звонил", "Я так рад"); ru
    has no `{g:}` at all. Add `{g:female|male}` there (the resolver already uses the speaker's gender); check fr, it, es,
    pt-BR shared lines the same way. Data only, a good Gemini brief.
-2. Shared date lines guess the character's gender (ru "Он задерживает объятие", fr "Tu es gelé, grand fou", it "Balla da
+2. (0z64: code done, data in the Gemini brief) Shared date lines guess the character's gender (ru "Он задерживает объятие", fr "Tu es gelé, grand fou", it "Balla da
    solo"): date rounds need `{g:}` filled with the partner's gender (code + translations).
 3. New EAS preview APK so Share sends the picture (native modules; 0z60). Owner's yes first.
 4. ~~Owner's call on the 3-hourly "AI character, not a real person" chat line~~ Done in 0z63 (dropped in chats).

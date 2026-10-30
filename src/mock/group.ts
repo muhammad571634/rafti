@@ -64,25 +64,6 @@ export const GROUP_VOICE = {
   ],
 };
 
-function makeDynamicArray(getList: () => readonly string[]) {
-  return new Proxy([] as string[], {
-    get(_target, prop) {
-      const list = getList();
-      if (prop === 'length') return list.length;
-      if (typeof prop === 'string' && /^\d+$/.test(prop)) {
-        return fill(list[Number(prop)]);
-      }
-      if (prop === Symbol.iterator) {
-        return function* () {
-          for (const item of list) yield fill(item);
-        };
-      }
-      const val = (list as any)[prop];
-      return typeof val === 'function' ? val.bind(list) : val;
-    },
-  });
-}
-
 function makeDynamicFunctionArray<TArgs extends any[]>(
   getList: () => readonly string[],
   makeFn: (template: string, ...args: TArgs) => string
@@ -109,50 +90,39 @@ function makeDynamicFunctionArray<TArgs extends any[]>(
 }
 
 /** A member's answer to the user, one or two texts. */
-export const groupReplies: string[][] = new Proxy([] as string[][], {
-  get(_target, prop) {
-    const list = voice('group', GROUP_VOICE).replies;
-    if (prop === 'length') return list.length;
-    if (typeof prop === 'string' && /^\d+$/.test(prop)) {
-      return list[Number(prop)].map((s) => fill(s));
-    }
-    if (prop === Symbol.iterator) {
-      return function* () {
-        for (const item of list) yield item.map((s) => fill(s));
-      };
-    }
-    const val = (list as any)[prop];
-    return typeof val === 'function' ? val.bind(list) : val;
-  },
-});
+export const groupReplies = (gender: CharacterGender | undefined) =>
+  voice('group', GROUP_VOICE).replies.map((texts) => texts.map((s) => fill(s, {}, gender)));
 
 /** A second member joins in, talking to the first by name. */
-export const groupReactions: ((name: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+export const groupReactions: ((name: string, gender: CharacterGender | undefined) => string)[] = makeDynamicFunctionArray(
   () => voice('group', GROUP_VOICE).reactions,
   (tpl, name, gender) => fill(tpl, { name }, gender)
 );
 
 /** Continue: a member answers the one who spoke last, by name, with the user only reading. */
-export const groupGoOn: ((name: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+export const groupGoOn: ((name: string, gender: CharacterGender | undefined) => string)[] = makeDynamicFunctionArray(
   () => voice('group', GROUP_VOICE).goOn,
   (tpl, name, gender) => fill(tpl, { name }, gender)
 );
 
 /** Continue: the one who spoke last answers back. */
-export const groupComebacks: ((name: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+export const groupComebacks: ((name: string, gender: CharacterGender | undefined) => string)[] = makeDynamicFunctionArray(
   () => voice('group', GROUP_VOICE).comebacks,
   (tpl, name, gender) => fill(tpl, { name }, gender)
 );
 
 /** The first line in a new group, from its first member, naming the others. */
-export const groupHellos: ((others: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+export const groupHellos: ((others: string, gender: CharacterGender | undefined) => string)[] = makeDynamicFunctionArray(
   () => voice('group', GROUP_VOICE).hellos,
   (tpl, others, gender) => fill(tpl, { others }, gender)
 );
 
 /** A member who was just added says hello. */
-export const groupJoinLines = makeDynamicArray(() => voice('group', GROUP_VOICE).joinLines);
+export const groupJoinLines = (gender: CharacterGender | undefined) =>
+  voice('group', GROUP_VOICE).joinLines.map((line) => fill(line, {}, gender));
 
-export const groupPhotoLines = makeDynamicArray(() => voice('group', GROUP_VOICE).photoLines);
+export const groupPhotoLines = (gender: CharacterGender | undefined) =>
+  voice('group', GROUP_VOICE).photoLines.map((line) => fill(line, {}, gender));
 
-export const groupVoiceLines = makeDynamicArray(() => voice('group', GROUP_VOICE).voiceLines);
+export const groupVoiceLines = (gender: CharacterGender | undefined) =>
+  voice('group', GROUP_VOICE).voiceLines.map((line) => fill(line, {}, gender));

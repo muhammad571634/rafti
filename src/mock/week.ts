@@ -37,7 +37,7 @@ export const WEEK_VOICE = {
   },
 };
 
-export function weekLine(week: WeekStats, temper: Temper, seed: string, gender?: CharacterGender) {
+export function weekLine(week: WeekStats, temper: Temper, seed: string, gender: CharacterGender | undefined) {
   const v = voice('week', WEEK_VOICE);
   const listed = (items: readonly string[]) =>
     items.length === 1 ? items[0] : fill(v.multiWins, { list: items.slice(0, -1).join(', '), last: items[items.length - 1] });

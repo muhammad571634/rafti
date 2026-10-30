@@ -56,30 +56,11 @@ export const PUSH_VOICE = {
   ],
 };
 
-function makeDynamicArray(getList: () => readonly string[]) {
-  return new Proxy([] as string[], {
-    get(_target, prop) {
-      const list = getList();
-      if (prop === 'length') return list.length;
-      if (typeof prop === 'string' && /^\d+$/.test(prop)) {
-        return fill(list[Number(prop)]);
-      }
-      if (prop === Symbol.iterator) {
-        return function* () {
-          for (const item of list) yield fill(item);
-        };
-      }
-      const val = (list as any)[prop];
-      return typeof val === 'function' ? val.bind(list) : val;
-    },
-  });
-}
-
 /**
  * One pool per step of the comeback ladder. Day 1 calls back to the last thing the
  * user said (`quote`, may be empty); the last step counts the days together.
  */
-export const comebackLines: Record<(typeof COMEBACK_DAYS)[number], ((quote: string, days: number, gender?: CharacterGender) => string)[]> = {
+export const comebackLines: Record<(typeof COMEBACK_DAYS)[number], ((quote: string, days: number, gender: CharacterGender | undefined) => string)[]> = {
   1: [
     (quote, _days, gender) => {
       const v = voice('push', PUSH_VOICE);
@@ -113,7 +94,9 @@ export const comebackLines: Record<(typeof COMEBACK_DAYS)[number], ((quote: stri
 };
 
 /** The morning after you talked: their diary has a page about you. */
-export const diaryNudgeLines = makeDynamicArray(() => voice('push', PUSH_VOICE).diaryNudge);
+export const diaryNudgeLines = (gender: CharacterGender | undefined) =>
+  voice('push', PUSH_VOICE).diaryNudge.map((line) => fill(line, {}, gender));
 
 /** 20:00 when today's check-in gift is still waiting. */
-export const giftNudgeLines = makeDynamicArray(() => voice('push', PUSH_VOICE).giftNudge);
+export const giftNudgeLines = (gender: CharacterGender | undefined) =>
+  voice('push', PUSH_VOICE).giftNudge.map((line) => fill(line, {}, gender));

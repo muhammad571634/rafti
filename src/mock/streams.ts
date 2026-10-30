@@ -49,7 +49,7 @@ function roundsBefore(index: number) {
 }
 
 /** The mock's line `index` of a stream; `last` closes the round. */
-export function mockStreamLine(streamId: string, index: number, last: boolean, other: string, topic: string, gender?: CharacterGender) {
+export function mockStreamLine(streamId: string, index: number, last: boolean, other: string, topic: string, gender: CharacterGender | undefined) {
   const v = voice('streams', STREAMS_VOICE);
   const start = hashSeed(streamId);
   const ended = roundsBefore(index);

@@ -300,25 +300,6 @@ export const CHAT_VOICE = {
   } as Record<BoothStyle, string[]>,
 };
 
-function makeDynamicArray(getList: () => readonly string[]) {
-  return new Proxy([] as string[], {
-    get(_target, prop) {
-      const list = getList();
-      if (prop === 'length') return list.length;
-      if (typeof prop === 'string' && /^\d+$/.test(prop)) {
-        return fill(list[Number(prop)]);
-      }
-      if (prop === Symbol.iterator) {
-        return function* () {
-          for (const item of list) yield fill(item);
-        };
-      }
-      const val = (list as any)[prop];
-      return typeof val === 'function' ? val.bind(list) : val;
-    },
-  });
-}
-
 function makeDynamicFunctionArray<TArgs extends any[]>(
   getList: () => readonly string[],
   makeFn: (template: string, ...args: TArgs) => string
@@ -345,42 +326,46 @@ function makeDynamicFunctionArray<TArgs extends any[]>(
 }
 
 /** What they text after a call you did not pick up. */
-export const missedCallLines = makeDynamicArray(() => voice('chat', CHAT_VOICE).missedCall);
+export const missedCallLines = (gender: CharacterGender | undefined) =>
+  voice('chat', CHAT_VOICE).missedCall.map((line) => fill(line, {}, gender));
 
 /** "Say Hi & Goodnight": what they send first when you open the app. */
-export const morningGreetings = makeDynamicArray(() => voice('chat', CHAT_VOICE).morning);
+export const morningGreetings = (gender: CharacterGender | undefined) =>
+  voice('chat', CHAT_VOICE).morning.map((line) => fill(line, {}, gender));
 
-export const eveningGreetings = makeDynamicArray(() => voice('chat', CHAT_VOICE).evening);
+export const eveningGreetings = (gender: CharacterGender | undefined) =>
+  voice('chat', CHAT_VOICE).evening.map((line) => fill(line, {}, gender));
 
 /** On the user's birthday (profile), the closest bonds text first thing. */
-export const birthdayLines: ((name: string, gender?: CharacterGender) => string)[] = makeDynamicFunctionArray(
+export const birthdayLines: ((name: string, gender: CharacterGender | undefined) => string)[] = makeDynamicFunctionArray(
   () => voice('chat', CHAT_VOICE).birthday,
   (tpl, name, gender) => fill(tpl, { name }, gender)
 );
 
 /** Lines the character "says" on a call — a stand-in for streamed TTS. */
-export const callLines = makeDynamicArray(() => voice('chat', CHAT_VOICE).call);
+export const callLines = (gender: CharacterGender | undefined) =>
+  voice('chat', CHAT_VOICE).call.map((line) => fill(line, {}, gender));
 
 /** A seed makes the pick repeatable, so a scheduled push and the chat say the same line. */
 const pickLine = (lines: readonly string[], seed?: string) =>
   seed == null ? lines[Math.floor(Math.random() * lines.length)] : pickSeeded(lines, seed);
 
 /** The reply when you mention a plan in chat and it lands in your schedule. */
-export function scheduleAck(title: string, when: string, timed: boolean, gender?: CharacterGender) {
+export function scheduleAck(title: string, when: string, timed: boolean, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const tpl = timed ? v.scheduleAck.timed : v.scheduleAck.untimed;
   return fill(tpl, { title: title.toLowerCase(), when }, gender);
 }
 
 /** Sent when you add a plan yourself in [Us]: they saw it land in your calendar. */
-export function planAddedLine(title: string, whenLabel: string, gender?: CharacterGender) {
+export function planAddedLine(title: string, whenLabel: string, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const tpl = pickLine(v.planAdded);
   return fill(tpl, { title, when: whenLabel }, gender);
 }
 
 /** Ten minutes before a timed plan, or that morning when it has no time. */
-export function scheduleReminder(title: string, timed: boolean, seed?: string, gender?: CharacterGender) {
+export function scheduleReminder(title: string, timed: boolean, seed: string | undefined, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   if (!timed) return fill(v.scheduleReminder.untimed, { title }, gender);
   const tpl = pickLine(v.scheduleReminder.timed, seed);
@@ -388,14 +373,14 @@ export function scheduleReminder(title: string, timed: boolean, seed?: string, g
 }
 
 /** Once the plan is over: they want to know how it went. */
-export function planFollowUp(title: string, seed?: string, gender?: CharacterGender) {
+export function planFollowUp(title: string, seed: string | undefined, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const tpl = pickLine(v.planFollowUp, seed);
   return fill(tpl, { title }, gender);
 }
 
 /** Texted a little after a date, in the mood of how it ended. */
-export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny', gender?: CharacterGender) {
+export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny', gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const place = title.toLowerCase();
   const tpl = v.afterDate[ending];
@@ -403,7 +388,7 @@ export function afterDateLine(title: string, ending: 'sweet' | 'warm' | 'funny',
 }
 
 /** Their answer to a note you pinned on the message board. */
-export function boardReply(text: string, gender?: CharacterGender) {
+export function boardReply(text: string, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
   const tpl = pickLine(v.boardReply);
@@ -411,7 +396,7 @@ export function boardReply(text: string, gender?: CharacterGender) {
 }
 
 /** Their answer to a Photo Booth picture you sent, in the photo's style. */
-export function photoReply(style: BoothStyle, gender?: CharacterGender) {
+export function photoReply(style: BoothStyle, gender: CharacterGender | undefined) {
   const v = voice('chat', CHAT_VOICE);
   const tpl = pickLine(v.photoReply[style]);
   return fill(tpl, {}, gender);

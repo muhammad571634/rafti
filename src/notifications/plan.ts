@@ -308,7 +308,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               kind: 'brief',
               at: when,
               characterId: brief.characterId,
-              line: briefLine(brief.items, temperOf(character, relationships[brief.characterId].label), `${slotKey}:brief:${brief.characterId}`),
+              line: briefLine(brief.items, temperOf(character, relationships[brief.characterId].label), `${slotKey}:brief:${brief.characterId}`, character.gender),
               reach: BRIEF_REACH,
             });
           }
@@ -336,7 +336,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               kind: 'day',
               at: when,
               characterId: asker,
-              line: dayLine(temperOf(character, relationships[asker].label), `${slotKey}:day:${asker}`),
+              line: dayLine(temperOf(character, relationships[asker].label), `${slotKey}:day:${asker}`, character.gender),
               reach: DAY_REACH,
             });
           }
@@ -347,7 +347,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               kind: slot === 'morning' ? 'morning' : 'evening',
               at: when,
               characterId: writer.id,
-              line: pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${writer.id}`),
+              line: pickSeeded((slot === 'morning' ? morningGreetings : eveningGreetings)(writer.gender), `${slotKey}:${writer.id}`),
             });
           }
         }
@@ -402,7 +402,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'week',
           at: recapWhen,
           characterId: recap.characterId,
-          line: weekLine(recap.week, temperOf(character, relationships[recap.characterId].label), `${key}:week:${recap.characterId}`),
+          line: weekLine(recap.week, temperOf(character, relationships[recap.characterId].label), `${key}:week:${recap.characterId}`, character.gender),
           reach: WEEK_REACH,
         });
       }
@@ -417,7 +417,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'birthday',
           at: when,
           characterId: writers[0].id,
-          line: pickSeeded(birthdayLines, `${day.getFullYear()}:${writers[0].id}`)(user.displayName),
+          line: pickSeeded(birthdayLines, `${day.getFullYear()}:${writers[0].id}`)(user.displayName, writers[0].gender),
         });
       }
     }
@@ -431,7 +431,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'gift',
           at: when,
           characterId: closest[0].id,
-          line: pickSeeded(giftNudgeLines, key),
+          line: pickSeeded(giftNudgeLines(closest[0].gender), key),
           route: '/',
           channel: 'gifts',
         });
@@ -460,7 +460,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'remind',
           at: when,
           characterId: item.characterId,
-          line: scheduleReminder(item.title, !!item.time, `${item.id}:remind`),
+          line: scheduleReminder(item.title, !!item.time, `${item.id}:remind`, byId.get(item.characterId)?.gender),
           channel: 'reminders',
           timeSensitive: true,
         });
@@ -474,7 +474,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'followUp',
           at: when,
           characterId: item.characterId,
-          line: planFollowUp(item.title, `${item.id}:followUp`),
+          line: planFollowUp(item.title, `${item.id}:followUp`, byId.get(item.characterId)?.gender),
         });
       }
     }
@@ -495,7 +495,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           kind: 'life',
           at: when,
           characterId: character.id,
-          line: lifeLine(group, moment.key, key),
+          line: lifeLine(group, moment.key, key, character.gender),
           reach: lifeReach(group, moment.key),
         });
       }
@@ -512,7 +512,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         kind: 'care',
         at: when,
         characterId: item.characterId,
-        line: careLine(item.kind, `${item.id}:care`),
+        line: careLine(item.kind, `${item.id}:care`, byId.get(item.characterId)?.gender),
         reach: careReach(item.kind, item.again),
       });
     }
@@ -532,7 +532,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         kind: 'touch',
         at: when,
         characterId: thread.characterId,
-        line: mockTouchLine(thread, touch, temperOf(character, relationships[thread.characterId].label), touch.id),
+        line: mockTouchLine(thread, touch, temperOf(character, relationships[thread.characterId].label), touch.id, character.gender),
         reach: threadReach(touch.phase, thread.id),
         ...(before ? { channel: 'reminders' as const, timeSensitive: true } : {}),
       });
@@ -567,7 +567,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         kind: 'diary',
         at: when,
         characterId: id,
-        line: pickSeeded(diaryNudgeLines, `${dayKey(days[1])}:${id}`),
+        line: pickSeeded(diaryNudgeLines(last.c.gender), `${dayKey(days[1])}:${id}`),
         route: '/diary',
       });
     }
@@ -585,8 +585,8 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         at: when,
         characterId: id,
         line:
-          temperComeback(temper, step, quote, `${today}:${step}:${id}`) ??
-          pickSeeded(comebackLines[step], `${today}:${step}:${id}`)(quote, together),
+          temperComeback(temper, step, quote, `${today}:${step}:${id}`, byId.get(id)?.gender) ??
+          pickSeeded(comebackLines[step], `${today}:${step}:${id}`)(quote, together, byId.get(id)?.gender),
         writesToChat: true,
       });
     }

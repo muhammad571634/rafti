@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test, { describe } from 'node:test';
 
+import { groupJoinLines } from '../mock/group';
 import { fill, setVoiceSource, voice } from './voice';
 
 describe('voice and fill', () => {
@@ -36,6 +37,13 @@ describe('voice and fill', () => {
     assert.equal(fill(template, {}, 'female'), 'Dear_f friend, I am ready_f.');
     assert.equal(fill(template, {}, 'male'), 'Dear_m friend, I am ready_m.');
     assert.equal(fill(template, {}, undefined), 'Dear_f friend, I am ready_f.');
+  });
+
+  test('a pool a character says follows that character', () => {
+    setVoiceSource((section, def) => (section === 'group' ? ({ ...def, joinLines: ['Je suis {g:prête|prêt}.'] } as typeof def) : def));
+    assert.deepEqual(groupJoinLines('male'), ['Je suis prêt.']);
+    assert.deepEqual(groupJoinLines('female'), ['Je suis prête.']);
+    setVoiceSource((_s, d) => d);
   });
 
   test('fill leaves {{char}} and {{user}} untouched when not in values', () => {

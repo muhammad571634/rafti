@@ -31,14 +31,14 @@ export const KIN_VOICE = {
  * Family's everyday lines (`src/lib/kin.ts`) until the server's model writes them. The seed is
  * the moment's key, so the push and the chat say the same line.
  */
-export function lifeLine(group: KinGroup, moment: LifeMomentKey, seed: string, gender?: CharacterGender) {
+export function lifeLine(group: KinGroup, moment: LifeMomentKey, seed: string, gender: CharacterGender | undefined) {
   const v = voice('kin', KIN_VOICE);
   const pool = v.lines[group]?.[moment] ?? v.lines.parent.evening!;
   return fill(pickSeeded(pool, seed), {}, gender);
 }
 
 /** The first thing they say on becoming family, before the day's rhythm starts. */
-export function familyHello(group: KinGroup, seed: string, gender?: CharacterGender) {
+export function familyHello(group: KinGroup, seed: string, gender: CharacterGender | undefined) {
   const v = voice('kin', KIN_VOICE);
   return fill(pickSeeded(v.hello[group], seed), {}, gender);
 }

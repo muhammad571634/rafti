@@ -218,7 +218,7 @@ export const MORNING_VOICE = {
 };
 
 /** The question on the ringing screen and in the wake-up voice note. */
-export function wakeQuestion(seed: number, todayPlan?: { title: string; time?: string }, gender?: CharacterGender) {
+export function wakeQuestion(seed: number, todayPlan: { title: string; time?: string } | undefined, gender: CharacterGender | undefined) {
   const v = voice('morning', MORNING_VOICE);
   if (todayPlan) {
     return todayPlan.time
@@ -229,55 +229,37 @@ export function wakeQuestion(seed: number, todayPlan?: { title: string; time?: s
 }
 
 export const CHAIN_LINES = {
-  offer: (time: string, remind: string, gender?: CharacterGender) => {
+  offer: (time: string, remind: string, gender: CharacterGender | undefined) => {
     const v = voice('morning', MORNING_VOICE);
     return fill(v.lines.offer, { time: sayTime(time), remind: sayTime(remind) }, gender);
   },
-  tooLate: (time: string, gender?: CharacterGender) => {
+  tooLate: (time: string, gender: CharacterGender | undefined) => {
     const v = voice('morning', MORNING_VOICE);
     return fill(v.lines.tooLate, { time: sayTime(time) }, gender);
   },
-  saved: (remind: string, gender?: CharacterGender) => {
+  saved: (remind: string, gender: CharacterGender | undefined) => {
     const v = voice('morning', MORNING_VOICE);
     return fill(v.lines.saved, { remind: sayTime(remind) }, gender);
   },
-  get pickRemind() {
-    return fill(voice('morning', MORNING_VOICE).lines.pickRemind);
-  },
-  get noThanks() {
-    return fill(voice('morning', MORNING_VOICE).lines.noThanks);
-  },
-  askTime: (activity: string, gender?: CharacterGender) => {
+  pickRemind: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.pickRemind, {}, gender),
+  noThanks: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.noThanks, {}, gender),
+  askTime: (activity: string, gender: CharacterGender | undefined) => {
     const v = voice('morning', MORNING_VOICE);
     if (activity === 'Gym') return fill(v.lines.askTimeGym, {}, gender);
     const label = v.activities[activity] ?? activity;
     return fill(v.lines.askTime, { activity: label }, gender);
   },
-  get notSure() {
-    return fill(voice('morning', MORNING_VOICE).lines.notSure);
-  },
-  get noTime() {
-    return fill(voice('morning', MORNING_VOICE).lines.noTime);
-  },
-  get sleepy() {
-    return fill(voice('morning', MORNING_VOICE).lines.sleepy);
-  },
-  get sleepyOk() {
-    return fill(voice('morning', MORNING_VOICE).lines.sleepyOk);
-  },
-  get sleepyMore() {
-    return fill(voice('morning', MORNING_VOICE).lines.sleepyMore);
-  },
-  get checkIn() {
-    return fill(voice('morning', MORNING_VOICE).lines.checkIn);
-  },
-  get other() {
-    return fill(voice('morning', MORNING_VOICE).lines.other);
-  },
+  notSure: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.notSure, {}, gender),
+  noTime: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.noTime, {}, gender),
+  sleepy: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.sleepy, {}, gender),
+  sleepyOk: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.sleepyOk, {}, gender),
+  sleepyMore: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.sleepyMore, {}, gender),
+  checkIn: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.checkIn, {}, gender),
+  other: (gender: CharacterGender | undefined) => fill(voice('morning', MORNING_VOICE).lines.other, {}, gender),
 };
 
 export const CHIPS = {
-  yes: (remind: string, gender?: CharacterGender) => {
+  yes: (remind: string, gender: CharacterGender | undefined) => {
     const v = voice('morning', MORNING_VOICE);
     return fill(v.chips.yes, { remind: sayTime(remind) }, gender);
   },

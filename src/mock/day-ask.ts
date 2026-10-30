@@ -17,7 +17,7 @@ export const DAY_ASK_VOICE = {
  * The evening question's words and a typed answer's mood until the server's model does both
  * (`src/ai/day-prompt.ts`). Seeded, so the push and the chat say the same line.
  */
-export function dayLine(temper: Temper, seed: string, gender?: CharacterGender): string {
+export function dayLine(temper: Temper, seed: string, gender: CharacterGender | undefined): string {
   const line = pickSeeded(voice('dayAsk', DAY_ASK_VOICE).ask[temper], seed);
   return fill(line, {}, gender);
 }

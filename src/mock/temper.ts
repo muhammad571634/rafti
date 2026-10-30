@@ -79,18 +79,18 @@ export const TEMPER_VOICE = {
  * them: the "may I text you?" ask (first time and again after a "Not now"), the answer to it, and
  * the first steps of the comeback ladder. Sulking is play; none of them guilt the user.
  */
-export const askLine = (temper: Temper, again: boolean, seed: string, gender?: CharacterGender) => {
+export const askLine = (temper: Temper, again: boolean, seed: string, gender: CharacterGender | undefined) => {
   const v = voice('temper', TEMPER_VOICE);
   return fill(pickSeeded(v.ask[temper][again ? 'again' : 'first'], seed), {}, gender);
 };
 
-export const askAnswer = (temper: Temper, yes: boolean, seed: string, gender?: CharacterGender) => {
+export const askAnswer = (temper: Temper, yes: boolean, seed: string, gender: CharacterGender | undefined) => {
   const v = voice('temper', TEMPER_VOICE);
   return fill(pickSeeded(v.askAnswer[temper][yes ? 'yes' : 'no'], seed), {}, gender);
 };
 
 /** The comeback line for day 1 or 2 in their temper, or null for the later steps. */
-export function temperComeback(temper: Temper, step: number, quote: string, seed: string, gender?: CharacterGender) {
+export function temperComeback(temper: Temper, step: number, quote: string, seed: string, gender: CharacterGender | undefined) {
   if (step !== 1 && step !== 2) return null;
   const v = voice('temper', TEMPER_VOICE);
   if (step === 1) {

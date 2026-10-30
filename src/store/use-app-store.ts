@@ -225,6 +225,7 @@ import type {
   BoothStyle,
   CallRecord,
   Character,
+  CharacterGender,
   Conversation,
   DailyState,
   CharacterDiaryPage,
@@ -1243,9 +1244,9 @@ export const useAppStore = create<AppState>()(
         // server gets them as `redo`, the mock avoids their lines).
         const anchor = exchange.anchor;
         const avoid = versions.flat().flatMap((m) => (m.kind === 'text' && m.text ? [m.text] : []));
-        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}`) : undefined;
+        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}`, chatGender(get(), conversationId)) : undefined;
         for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
-          steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`);
+          steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`, chatGender(get(), conversationId));
         }
         scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid, off });
         return 'sent';
@@ -1343,7 +1344,7 @@ export const useAppStore = create<AppState>()(
         noticeGroupAiIfDue(set, get, id);
         // The first member says hello and names the others.
         const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
-        scheduleGroupReplies(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others)] }]);
+        scheduleGroupReplies(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))] }]);
         return id;
       },
 
@@ -1361,7 +1362,7 @@ export const useAppStore = create<AppState>()(
           text: trimmed,
           createdAt: new Date().toISOString(),
         });
-        answerGroup(set, get, groupId, trimmed, () => pick(groupReplies));
+        answerGroup(set, get, groupId, trimmed, (gender) => pick(groupReplies(gender)));
         return 'sent';
       },
 
@@ -1379,7 +1380,7 @@ export const useAppStore = create<AppState>()(
           transcript,
           createdAt: new Date().toISOString(),
         });
-        answerGroup(set, get, groupId, transcript, () => [pick(groupVoiceLines)]);
+        answerGroup(set, get, groupId, transcript, (gender) => [pick(groupVoiceLines(gender))]);
         return 'sent';
       },
 
@@ -1396,7 +1397,7 @@ export const useAppStore = create<AppState>()(
           imageUri,
           createdAt: new Date().toISOString(),
         });
-        answerGroup(set, get, groupId, '', () => [pick(groupPhotoLines)]);
+        answerGroup(set, get, groupId, '', (gender) => [pick(groupPhotoLines(gender))]);
         return 'sent';
       },
 
@@ -1413,8 +1414,11 @@ export const useAppStore = create<AppState>()(
         appendGroupMessage(set, get, groupId, { id: uid('m'), ...steerMarker(groupId, 'continue') }, { quiet: true });
         // The server writes each line from the member's group prompt and `groupContinueCue`.
         scheduleGroupReplies(set, get, groupId, [
-          { characterId: first, lines: second ? [pick(groupGoOn)(memberName(get(), second))] : pick(groupReplies) },
-          ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first))] }] : []),
+          {
+            characterId: first,
+            lines: second ? [pick(groupGoOn)(memberName(get(), second), genderOf(get(), first))] : pick(groupReplies(genderOf(get(), first))),
+          },
+          ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first), genderOf(get(), second))] }] : []),
         ]);
         return 'sent';
       },
@@ -1435,8 +1439,8 @@ export const useAppStore = create<AppState>()(
         appendGroupMessage(set, get, groupId, marker, { quiet: true });
         // The server: the first member from `groupSkipCue`, the second from `groupContinueCue`.
         scheduleGroupReplies(set, get, groupId, [
-          { characterId: first, lines: mockSteerLines('skip', skip, marker.id) },
-          ...(second ? [{ characterId: second, lines: [pick(groupGoOn)(memberName(get(), first))] }] : []),
+          { characterId: first, lines: mockSteerLines('skip', skip, marker.id, genderOf(get(), first)) },
+          ...(second ? [{ characterId: second, lines: [pick(groupGoOn)(memberName(get(), first), genderOf(get(), second))] }] : []),
         ]);
         return 'sent';
       },
@@ -1465,7 +1469,7 @@ export const useAppStore = create<AppState>()(
         );
         scheduleGroupReplies(set, get, groupId, [
           { characterId, lines: [turn.answer] },
-          ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId))] }] : []),
+          ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId), genderOf(get(), other))] }] : []),
         ]);
         return turn.ask;
       },
@@ -1524,7 +1528,7 @@ export const useAppStore = create<AppState>()(
         appendGroupMessage(set, get, groupId, groupSystem(groupId, i18n.t('group.joinedLine', { name: memberName(get(), characterId) })), {
           quiet: true,
         });
-        scheduleGroupReplies(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines)] }]);
+        scheduleGroupReplies(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines(genderOf(get(), characterId)))] }]);
         return true;
       },
 
@@ -2025,7 +2029,7 @@ export const useAppStore = create<AppState>()(
         freeFamilyRole(set, get, label, characterId);
         updateRelationship(set, characterId, () => ({ label, nickname: familyName(name, label), messagesFirst: true }));
         const group = kinGroup(label)!;
-        const hello = { ...themText(conversationId, familyHello(group, `${conversationId}:${label}`)), ...withIdeas(helloReach(group)) };
+        const hello = { ...themText(conversationId, familyHello(group, `${conversationId}:${label}`, genderOf(get(), characterId))), ...withIdeas(helloReach(group)) };
         appendMessage(set, get, conversationId, hello, { countUnread: true });
         return conversationId;
       },
@@ -2229,7 +2233,7 @@ export const useAppStore = create<AppState>()(
 
       writeDueDiaryPages: () => {
         const { conversations, messages, moments, characterDiary } = get();
-        const fresh = duePages(daysTogether(conversations, messages, moments), characterDiary);
+        const fresh = duePages(daysTogether(conversations, messages, moments), characterDiary, (id) => genderOf(get(), id));
         if (fresh.length) set((s) => ({ characterDiary: [...s.characterDiary, ...fresh] }));
       },
 
@@ -2307,7 +2311,7 @@ export const useAppStore = create<AppState>()(
         // They noticed you did not pick up, and say so.
         const conversationId = get().addFriend(call.characterId);
         setTimeout(() => {
-          appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines)), { countUnread: true });
+          appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines(genderOf(get(), call.characterId)))), { countUnread: true });
         }, 1500);
       },
 
@@ -2424,7 +2428,7 @@ export const useAppStore = create<AppState>()(
         const todayPlan = get().schedules.find(
           (p) => p.date === todayKey() && (!friend || p.characterId === friend.id) && !p.followedUp,
         );
-        const question = wakeQuestion(now.getDate() + alarm.minute, todayPlan && { title: todayPlan.title, time: todayPlan.time });
+        const question = wakeQuestion(now.getDate() + alarm.minute, todayPlan && { title: todayPlan.title, time: todayPlan.time }, friend?.gender);
         const session: WakeSession = {
           alarmId,
           characterId: friend?.id,
@@ -2629,7 +2633,7 @@ export const useAppStore = create<AppState>()(
           return 'ring';
         }
         if (wake.checkInAt && Date.parse(wake.checkInAt) <= t && wake.conversationId) {
-          appendMessage(set, get, wake.conversationId, themText(wake.conversationId, CHAIN_LINES.checkIn));
+          appendMessage(set, get, wake.conversationId, themText(wake.conversationId, CHAIN_LINES.checkIn(genderOf(get(), wake.characterId))));
           set((s) => ({ wake: s.wake ? { ...s.wake, checkInAt: undefined } : null }));
           return null;
         }
@@ -2783,7 +2787,7 @@ export const useAppStore = create<AppState>()(
         // The 'dating' moment is what tomorrow's diary page is written from.
         addMoment(set, characterId, 'dating', { title });
         const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, themText(conversationId, afterDateLine(title, record.ending)), {
+        appendMessage(set, get, conversationId, themText(conversationId, afterDateLine(title, record.ending, genderOf(get(), characterId))), {
           countUnread: true,
         });
         return record;
@@ -2825,7 +2829,7 @@ export const useAppStore = create<AppState>()(
           createdAt: sentAt,
         });
         // Their answer is free, like the quiz's: the picture was already paid for by the plan.
-        scheduleReply(set, get, conversationId, { text: photoReply(photo.style), gain: INTIMACY.text });
+        scheduleReply(set, get, conversationId, { text: photoReply(photo.style, genderOf(get(), photo.characterId)), gain: INTIMACY.text });
         return true;
       },
 
@@ -2910,7 +2914,7 @@ export const useAppStore = create<AppState>()(
         }));
         addMoment(set, characterId, 'plan', { title: clean });
         const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, themText(conversationId, planAddedLine(clean, whenLabel)), {
+        appendMessage(set, get, conversationId, themText(conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId))), {
           countUnread: true,
         });
       },
@@ -2927,8 +2931,8 @@ export const useAppStore = create<AppState>()(
           const conversationId = get().addFriend(item.characterId);
           const line =
             step === 'remind'
-              ? scheduleReminder(item.title, !!item.time, `${item.id}:remind`)
-              : planFollowUp(item.title, `${item.id}:followUp`);
+              ? scheduleReminder(item.title, !!item.time, `${item.id}:remind`, genderOf(get(), item.characterId))
+              : planFollowUp(item.title, `${item.id}:followUp`, genderOf(get(), item.characterId));
           appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
         });
         if (steps.length) {
@@ -2956,7 +2960,7 @@ export const useAppStore = create<AppState>()(
             const at = lifeAt(now, moment).getTime();
             if (lifeSent.has(key) || now.getTime() < at || now.getTime() - at > LIFE_WINDOW_MS) continue;
             const conversationId = get().addFriend(characterId);
-            const line = { ...themText(conversationId, lifeLine(group, moment.key, key)), ...withIdeas(lifeReach(group, moment.key)) };
+            const line = { ...themText(conversationId, lifeLine(group, moment.key, key, genderOf(get(), characterId))), ...withIdeas(lifeReach(group, moment.key)) };
             appendMessage(set, get, conversationId, line, { countUnread: true });
             freshLife.push(key);
           }
@@ -2974,7 +2978,7 @@ export const useAppStore = create<AppState>()(
           if (step !== 'send' || !bond?.messagesFirst || !character || get().blockedIds.includes(thread.characterId)) return;
           if (!get().conversations.some((c) => c.characterId === thread.characterId)) return;
           const conversationId = get().addFriend(thread.characterId);
-          const line = mockTouchLine(thread, touch, temperOf(character, bond.label), touch.id);
+          const line = mockTouchLine(thread, touch, temperOf(character, bond.label), touch.id, character.gender);
           const recent = get().messages[conversationId] ?? [];
           const request: FirstTextRequest = {
             kind: 'thread',
@@ -2992,7 +2996,7 @@ export const useAppStore = create<AppState>()(
         careSteps.forEach(({ item, step }) => {
           if (step !== 'ask' || !exists(item.characterId) || get().blockedIds.includes(item.characterId)) return;
           const conversationId = get().addFriend(item.characterId);
-          const line = { ...themText(conversationId, careLine(item.kind, `${item.id}:care`)), ...withIdeas(careReach(item.kind, item.again)) };
+          const line = { ...themText(conversationId, careLine(item.kind, `${item.id}:care`, genderOf(get(), item.characterId))), ...withIdeas(careReach(item.kind, item.again)) };
           appendMessage(set, get, conversationId, line, { countUnread: true });
         });
         if (careSteps.length) {
@@ -3009,7 +3013,7 @@ export const useAppStore = create<AppState>()(
             return;
           }
           const conversationId = get().addFriend(post.characterId);
-          const line = post.reply ?? boardReply(post.text);
+          const line = post.reply ?? boardReply(post.text, genderOf(get(), post.characterId));
           appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
         });
         if (answered.length) {
@@ -3127,7 +3131,7 @@ export const useAppStore = create<AppState>()(
               text: clean,
               style,
               createdAt: createdAt.toISOString(),
-              reply: crisis ? undefined : boardReply(clean),
+              reply: crisis ? undefined : boardReply(clean, genderOf(get(), characterId)),
               replyAt: new Date(createdAt.getTime() + BOARD_REPLY_MS).toISOString(),
               replied: crisis,
             },
@@ -3169,7 +3173,7 @@ export const useAppStore = create<AppState>()(
           bonds.slice(0, 3).forEach((bond) => {
             const conversationId = get().addFriend(bond.characterId);
             // Seeded like the 07:00 push (src/notifications/plan.ts), so both say the same line.
-            const wish = pickSeeded(birthdayLines, `${now.getFullYear()}:${bond.characterId}`)(user.displayName);
+            const wish = pickSeeded(birthdayLines, `${now.getFullYear()}:${bond.characterId}`)(user.displayName, genderOf(get(), bond.characterId));
             appendMessage(set, get, conversationId, themText(conversationId, wish), {
               countUnread: true,
             });
@@ -3196,7 +3200,8 @@ export const useAppStore = create<AppState>()(
             if (bond.characterId === briefFrom || bond.characterId === asker) return;
             const conversationId = get().addFriend(bond.characterId);
             // Seeded like the scheduled push for this slot, so the notification and the chat agree.
-            const line = pickSeeded(slot === 'morning' ? morningGreetings : eveningGreetings, `${slotKey}:${bond.characterId}`);
+            const greetings = slot === 'morning' ? morningGreetings : eveningGreetings;
+            const line = pickSeeded(greetings(genderOf(get(), bond.characterId)), `${slotKey}:${bond.characterId}`);
             appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
           });
           set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));
@@ -3217,7 +3222,7 @@ export const useAppStore = create<AppState>()(
         // Free users are never rung: the same friend leaves a voice note from the free voice
         // lines instead (backend-plan §13.5). Its words differ from that friend's text greeting.
         if (!canRing(get().wallet.subscription, now.getTime())) {
-          const lines = slot === 'morning' ? morningGreetings : eveningGreetings;
+          const lines = (slot === 'morning' ? morningGreetings : eveningGreetings)(genderOf(get(), caller.characterId));
           const greeting = pickSeeded(lines, `${slotKey}:${caller.characterId}`);
           const said = pickSeeded(lines.filter((l) => l !== greeting), `voiceNote:${slotKey}:${caller.characterId}`);
           const conversationId = get().addFriend(caller.characterId);
@@ -3683,7 +3688,7 @@ function sendBrief(set: Setter, get: Getter, at: Date): string | null {
   const from = brief && characters.find((c) => c.id === brief.characterId);
   if (!brief || !from) return null;
   const conversationId = get().addFriend(brief.characterId);
-  const line = briefLine(brief.items, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:morning:brief:${from.id}`);
+  const line = briefLine(brief.items, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:morning:brief:${from.id}`, from.gender);
   const request: FirstTextRequest = {
     kind: 'brief',
     input: { character: from, user: get().user, relationship: relationships[from.id], brief, recent: get().messages[conversationId] ?? [], now: at.toISOString(), utcOffsetMin: -at.getTimezoneOffset() },
@@ -3773,7 +3778,7 @@ function sendDayAsk(set: Setter, get: Getter, at: Date): string | null {
   const from = asker && characters.find((c) => c.id === asker);
   if (!from) return null;
   const conversationId = get().addFriend(from.id);
-  const line = dayLine(temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:night:day:${from.id}`);
+  const line = dayLine(temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:night:day:${from.id}`, from.gender);
   const day = dayKey(at);
   const onDay = (iso?: string) => !!iso && dayKey(new Date(iso)) === day;
   const request: FirstTextRequest = {
@@ -3807,7 +3812,7 @@ function sendRecap(set: Setter, get: Getter, at: Date): string | null {
   if (!recap || !from) return null;
   const conversationId = get().addFriend(from.id);
   appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'week', week: recap.week, createdAt: new Date().toISOString() });
-  const line = weekLine(recap.week, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:week:${from.id}`);
+  const line = weekLine(recap.week, temperOf(from, relationships[from.id]?.label), `${dayKey(at)}:week:${from.id}`, from.gender);
   const request: FirstTextRequest = {
     kind: 'week',
     input: { character: from, user: get().user, relationship: relationships[from.id], week: recap.week, now: at.toISOString(), utcOffsetMin: -at.getTimezoneOffset() },
@@ -4175,7 +4180,7 @@ function answerLine(
   if (idea?.intent && !edited) askIdea(set, get, message.reach, idea.intent);
 
   // An edited line is the user's own words: the ordinary reply answers it (the ask keeps its answer).
-  const say = idea?.intent && (!edited || ask) ? ideaAnswer(message.reach, idea.intent, message.id) : undefined;
+  const say = idea?.intent && (!edited || ask) ? ideaAnswer(message.reach, idea.intent, message.id, chatGender(get(), conversationId)) : undefined;
   // An answer to a line that asked something has settled what it settles: no guessing from its words.
   answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say, answered: !!message.reach });
   return 'sent';
@@ -4227,7 +4232,7 @@ function answerText(
     }));
     get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
     addMoment(set, conversation.characterId, 'plan', { title: plan.title });
-    reply = scheduleAck(plan.title, plan.when, !!plan.time);
+    reply = scheduleAck(plan.title, plan.when, !!plan.time, genderOf(get(), conversation.characterId));
   }
 
   // Care check-ins: "I have a headache" now, "Is your head any better?" a few hours on, from
@@ -4303,7 +4308,7 @@ function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'cont
   appendMessage(set, get, conversationId, marker, { quiet: true });
   // A new turn: the versions of the reply before it are done.
   set((s) => ({ replyVersions: omitKey(s.replyVersions, conversationId) }));
-  scheduleReply(set, get, conversationId, { lines: mockSteerLines(kind, skip, marker.id), gain: 0 });
+  scheduleReply(set, get, conversationId, { lines: mockSteerLines(kind, skip, marker.id, chatGender(get(), conversationId)), gain: 0 });
   return 'sent';
 }
 
@@ -4524,7 +4529,7 @@ function maybeAskToReach(set: Setter, get: Getter, conversationId: string): bool
     set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
     const temper = temperOf(character, get().relationships[character.id]?.label);
     const id = uid('m');
-    const line = { ...themText(conversationId, askLine(temper, again, id)), id, ...withIdeas(askReach(temper)) };
+    const line = { ...themText(conversationId, askLine(temper, again, id, character.gender)), id, ...withIdeas(askReach(temper)) };
     appendMessage(set, get, conversationId, line);
   }, ASK_AFTER_MS);
   return true;
@@ -4561,9 +4566,9 @@ function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
   };
 
   const night = lateNight(now);
-  if (night && state.daily.nightDay !== night) return say(mockNightLine(temper, id), 'pause:night', { nightDay: night });
+  if (night && state.daily.nightDay !== night) return say(mockNightLine(temper, id, character.gender), 'pause:night', { nightDay: night });
   if (state.daily.breakDay !== today && sittingMinutes(messages, now.getTime()) >= LIFE.breakAfterMin && sittingCount(messages) >= LIFE.breakAfterMessages) {
-    return say(mockBreakLine(temper, id), 'pause:break', { breakDay: today });
+    return say(mockBreakLine(temper, id, character.gender), 'pause:break', { breakDay: today });
   }
   const hour = now.getHours();
   const openQuest = state.threads.some((t) => t.kind === 'quest' && t.status === 'open');
@@ -4576,7 +4581,7 @@ function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
     sittingCount(messages) >= LIFE.questAfterMessages
   ) {
     const threadId = uid('th');
-    const { quest, offer } = mockQuest(threadId);
+    const { quest, offer } = mockQuest(threadId, character.gender);
     const touches = ruleTouches([{ at: new Date(now.getTime() + LIFE.questCheckMin * 60_000).toISOString(), phase: 'quest', why: 'ask if they did the quest' }], threadId, now);
     const thread: Thread = { id: threadId, characterId: character.id, kind: 'quest', about: quest, quote: '', createdAt: now.toISOString(), reward: QUEST_REWARD, touches, status: 'open' };
     set((s) => ({ threads: addThread(pruneThreads(s.threads, now), thread) }));
@@ -4609,6 +4614,16 @@ function scheduleNudge(set: Setter, get: Getter, conversationId: string, afterId
 function memberName(state: AppState, characterId: string) {
   const character = state.characters.find((c) => c.id === characterId);
   return character ? shortName(displayName(character, state.relationships[characterId])) : '';
+}
+
+/** A character's gender, which `{g:female|male}` in their lines follows. */
+function genderOf(state: AppState, characterId?: string): CharacterGender | undefined {
+  return state.characters.find((c) => c.id === characterId)?.gender;
+}
+
+/** The gender of the character a chat is with. */
+function chatGender(state: AppState, conversationId: string) {
+  return genderOf(state, state.conversations.find((c) => c.id === conversationId)?.characterId);
 }
 
 /** "Kai: On my way" for a member's line, the plain preview for the user's own. */
@@ -4687,7 +4702,7 @@ function noticeGroupAiIfDue(set: Setter, get: Getter, groupId: string) {
  * a second one joins in by name. A crisis message gets the helpline card and one warm answer,
  * never a joke from the others; it never becomes a plan or a memory here either.
  */
-function answerGroup(set: Setter, get: Getter, groupId: string, text: string, firstLines: () => string[]) {
+function answerGroup(set: Setter, get: Getter, groupId: string, text: string, firstLines: (gender?: CharacterGender) => string[]) {
   const state = get();
   const group = state.groups.find((g) => g.id === groupId);
   if (!group) return;
@@ -4713,8 +4728,10 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
   // Two members named: both answer the user. Otherwise the second talks to the first.
   const bothAsked = namedMembers(text, names).length >= 2;
   scheduleGroupReplies(set, get, groupId, [
-    { characterId: first, lines: firstLines() },
-    ...(second ? [{ characterId: second, lines: bothAsked ? pick(groupReplies) : [pick(groupReactions)(names[first])] }] : []),
+    { characterId: first, lines: firstLines(genderOf(state, first)) },
+    ...(second
+      ? [{ characterId: second, lines: bothAsked ? pick(groupReplies(genderOf(state, second))) : [pick(groupReactions)(names[first], genderOf(state, second))] }]
+      : []),
   ]);
 }
 
@@ -4766,7 +4783,7 @@ function runStream(set: Setter, get: Getter, streamId: string) {
     const me = state.characters.find((c) => c.id === speaker);
     const other = state.characters.find((c) => c.id === otherId);
     const index = stream.lines.length;
-    const canned = mockStreamLine(stream.id, index, index === stream.target - 1, other ? shortName(other.name) : '', stream.topic);
+    const canned = mockStreamLine(stream.id, index, index === stream.target - 1, other ? shortName(other.name) : '', stream.topic, me?.gender);
     set((s) => ({ streamTyping: { ...s.streamTyping, [streamId]: speaker } }));
     const land = (text: string, after: number) =>
       setTimeout(() => {
@@ -4888,6 +4905,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   const now = new Date();
   const setWake = (patch: Partial<WakeSession>) => set((s) => ({ wake: s.wake ? { ...s.wake, ...patch } : null }));
   const reply = (line: string, chips?: string[]) => scheduleReply(set, get, conversationId, { text: line, gain: INTIMACY.text, chips });
+  const gender = genderOf(get(), wake.characterId);
 
   if (wake.state !== 'awake') {
     // Only a real reply turns it off; a crisis message always does, and gets the usual care.
@@ -4915,13 +4933,13 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   if (step.kind === 'offerReminder') {
     if (key === 'another' || text === CHIPS.another || /\b(another|other|different)\b/i.test(text)) {
       setWake({ step: { kind: 'pickRemind', title: step.title, time: step.time } });
-      reply(CHAIN_LINES.pickRemind, [CHIPS.before30, CHIPS.before10]);
+      reply(CHAIN_LINES.pickRemind(gender), [CHIPS.before30, CHIPS.before10]);
       return true;
     }
     const yn = key === 'yes' || text.startsWith('Yes,') ? 'yes' : key === 'no' ? 'no' : readYesNo(text);
     if (yn === 'yes') return savePlan(step.title, step.time, step.remind);
     if (yn === 'no') {
-      reply(CHAIN_LINES.noThanks);
+      reply(CHAIN_LINES.noThanks(gender));
       return true;
     }
     const typed = readMorningTime(text, now);
@@ -4932,18 +4950,18 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
     const remind =
       key === 'before30' || text === CHIPS.before30 ? addMinutes(step.time, -30) : key === 'before10' || text === CHIPS.before10 ? addMinutes(step.time, -10) : readMorningTime(text, now);
     if (remind && remind > hmNow(now)) return savePlan(step.title, step.time, remind);
-    reply(CHAIN_LINES.noTime);
+    reply(CHAIN_LINES.noTime(gender));
     return true;
   }
 
   if (step.kind === 'askTime') {
     if (key === 'notSure' || text === CHIPS.notSure || /\b(not sure|dunno|don'?t know|idk)\b/i.test(text)) {
-      reply(CHAIN_LINES.notSure);
+      reply(CHAIN_LINES.notSure(gender));
       return true;
     }
     const time = key === 'in30' || text === CHIPS.in30 ? addMinutes(hmNow(now), 30) : readMorningTime(text, now);
     if (!time) {
-      reply(CHAIN_LINES.noTime);
+      reply(CHAIN_LINES.noTime(gender));
       return true;
     }
     return startChain({ kind: 'time', activity: step.title, time });
@@ -4952,7 +4970,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   // The sleepy branch: "Okay" keeps the 5-minute check, "10 more min" moves it.
   const more = key === 'more' || text === CHIPS.more || /\b10\b/.test(text);
   setWake({ checkInAt: new Date(now.getTime() + (more ? 10 : SLEEPY_CHECK_MIN) * 60_000).toISOString() });
-  reply(more ? CHAIN_LINES.sleepyMore : CHAIN_LINES.sleepyOk);
+  reply(more ? CHAIN_LINES.sleepyMore(gender) : CHAIN_LINES.sleepyOk(gender));
   return true;
 
   function startChain(read: MorningRead): boolean {
@@ -4960,25 +4978,25 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
       const title = read.activity ?? 'Plan';
       const remind = reminderTimeFor(read.time, now);
       if (!remind) {
-        reply(CHAIN_LINES.tooLate(read.time));
+        reply(CHAIN_LINES.tooLate(read.time, gender));
         return true;
       }
       setWake({ step: { kind: 'offerReminder', title, time: read.time, remind } });
-      reply(CHAIN_LINES.offer(read.time, remind), [CHIPS.yes(remind), CHIPS.another, CHIPS.no]);
+      reply(CHAIN_LINES.offer(read.time, remind, gender), [CHIPS.yes(remind, gender), CHIPS.another, CHIPS.no]);
       return true;
     }
     if (read.kind === 'activity') {
       setWake({ step: { kind: 'askTime', title: read.activity } });
       const likely = likelyLeaveTime(now);
-      reply(CHAIN_LINES.askTime(read.activity), [CHIPS.in30, likely.replace(/^0/, ''), CHIPS.notSure]);
+      reply(CHAIN_LINES.askTime(read.activity, gender), [CHIPS.in30, likely.replace(/^0/, ''), CHIPS.notSure]);
       return true;
     }
     if (read.kind === 'sleepy') {
       setWake({ step: { kind: 'sleepy' }, checkInAt: new Date(now.getTime() + SLEEPY_CHECK_MIN * 60_000).toISOString() });
-      reply(CHAIN_LINES.sleepy, [CHIPS.okay, CHIPS.more]);
+      reply(CHAIN_LINES.sleepy(gender), [CHIPS.okay, CHIPS.more]);
       return true;
     }
-    reply(CHAIN_LINES.other);
+    reply(CHAIN_LINES.other(gender));
     return true;
   }
 
@@ -4995,7 +5013,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
     }));
     get().addMemory(characterId, planMemoryLine(plan), 'chat');
     addMoment(set, characterId, 'plan', { title });
-    reply(CHAIN_LINES.saved(remind));
+    reply(CHAIN_LINES.saved(remind, gender));
     // The "Plan saved" line lands under the friend's answer, once it has arrived.
     const after = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now()) + 300;
     setTimeout(
@@ -5225,5 +5243,5 @@ function noteReplyFor(prompt: string) {
 
 /** Lines for the call screen subtitles. */
 export function callScript(character: Character) {
-  return [character.greeting, ...callLines];
+  return [character.greeting, ...callLines(character.gender)];
 }

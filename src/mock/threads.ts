@@ -232,7 +232,7 @@ export function mockOutcome(text: string): ThreadOutcome | null {
 }
 
 /** Their text about a thread until the model writes it: their words quoted, their temper's opener. */
-export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed: string, gender?: CharacterGender) => {
+export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed: string, gender: CharacterGender | undefined) => {
   const v = voice('threads', THREADS_VOICE);
   const rawLine = pickSeeded(v.lines[touch.phase], seed);
   const line = fill(rawLine, { quote: thread.quote, about: thread.about }, gender);
@@ -244,7 +244,7 @@ export const mockTouchLine = (thread: Thread, touch: Touch, temper: Temper, seed
 export const QUEST_REWARD = 3;
 
 /** A quest and the line that offers it, picked by the seed. */
-export function mockQuest(seed: string, gender?: CharacterGender) {
+export function mockQuest(seed: string, gender: CharacterGender | undefined) {
   const v = voice('threads', THREADS_VOICE);
   const quest = fill(pickSeeded(v.quests, seed), {}, gender);
   const offerTpl = pickSeeded(v.offers, `${seed}:offer`);
@@ -252,12 +252,12 @@ export function mockQuest(seed: string, gender?: CharacterGender) {
 }
 
 /** "We've talked a long time, a break?" and "it's late, sleep?" in the friend's temper. */
-export const mockBreakLine = (temper: Temper, seed: string, gender?: CharacterGender) => {
+export const mockBreakLine = (temper: Temper, seed: string, gender: CharacterGender | undefined) => {
   const v = voice('threads', THREADS_VOICE);
   return fill(pickSeeded(v.break[temper], seed), {}, gender);
 };
 
-export const mockNightLine = (temper: Temper, seed: string, gender?: CharacterGender) => {
+export const mockNightLine = (temper: Temper, seed: string, gender: CharacterGender | undefined) => {
   const v = voice('threads', THREADS_VOICE);
   return fill(pickSeeded(v.night[temper], seed), {}, gender);
 };

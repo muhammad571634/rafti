@@ -125,7 +125,7 @@ export async function syncAlarms(alarms: Alarm[], characters: Character[], wake:
     identifier: id,
     content: {
       title: friend?.name ?? 'Sigmazam',
-      body: CHAIN_LINES.checkIn,
+      body: CHAIN_LINES.checkIn(friend?.gender),
       data: { id, kind: 'alarm', route, characterId: friend?.id, at: checkInAt } as unknown as Record<string, unknown>,
       sound: 'default',
       interruptionLevel: 'timeSensitive',

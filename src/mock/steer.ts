@@ -26,7 +26,7 @@ export const STEER_VOICE = {
 };
 
 /** Their lines after a continue or a skip; the same seed (the marker's id) gives the same lines. */
-export function mockSteerLines(kind: 'continue' | 'skip', skip: TimeSkip | undefined, seed: string, gender?: CharacterGender): string[] {
+export function mockSteerLines(kind: 'continue' | 'skip', skip: TimeSkip | undefined, seed: string, gender: CharacterGender | undefined): string[] {
   const v = voice('steer', STEER_VOICE);
   const lines = pickSeeded(kind === 'continue' ? v.continue : v.skip[skip ?? 'later'], seed);
   return lines.map((l) => fill(l, {}, gender));

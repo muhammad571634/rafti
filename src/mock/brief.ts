@@ -27,14 +27,14 @@ export const BRIEF_VOICE = {
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** "Exam at 09:00 today." / "Today: exam at 09:00, gym at 18:00 and call Mom." */
-function listOf(items: readonly BriefItem[], v: typeof BRIEF_VOICE, gender?: CharacterGender) {
+function listOf(items: readonly BriefItem[], v: typeof BRIEF_VOICE, gender: CharacterGender | undefined) {
   const said = (item: BriefItem) => (item.time ? fill(v.atTime, { title: item.title, time: item.time }, gender) : item.title);
   if (items.length === 1) return fill(v.oneItem, { item: capital(said(items[0])) }, gender);
   const parts = items.map(said);
   return fill(v.multiPrefix, { list: parts.slice(0, -1).join(', '), last: parts[parts.length - 1] }, gender);
 }
 
-export function briefLine(items: readonly BriefItem[], temper: Temper, seed: string, gender?: CharacterGender) {
+export function briefLine(items: readonly BriefItem[], temper: Temper, seed: string, gender: CharacterGender | undefined) {
   const v = voice('brief', BRIEF_VOICE);
   const hello = fill(pickSeeded(v.hello[temper], `${seed}:hello`), {}, gender);
   const sendOff = fill(pickSeeded(v.sendOff[temper], `${seed}:off`), {}, gender);

@@ -44,6 +44,7 @@ if (filesToCheck.length === 0) {
 }
 
 const placeholderRegex = /\{+[^{}]+\}+/g;
+const G_SECTIONS = /^(?:voice|datePlaces|dateThemes)\.|^worlds\.[^.]+\.dateRounds\b/;
 const emojiRegex = /[\p{Extended_Pictographic}\uFE0F]/gu;
 
 function extractPlaceholders(str) {
@@ -97,6 +98,10 @@ for (const file of filesToCheck) {
         const valid = (localNode.match(/\{g:[^|}]*\|[^}]*\}/g) || []).length;
         if (opens !== valid) {
           errors.push(`${currentPath}: malformed {g:...} token (must be {g:female|male})`);
+        }
+        // The app fills {g:} with the speaker's gender only in these sections; elsewhere it would show as written.
+        if (!G_SECTIONS.test(currentPath)) {
+          errors.push(`${currentPath}: {g:...} only works in voice, datePlaces, dateThemes and worlds.*.dateRounds; word this line neutrally`);
         }
       }
 

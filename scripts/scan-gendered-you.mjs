@@ -1,6 +1,10 @@
 // scripts/scan-gendered-you.mjs
 // Lists translated content strings that may assume the user's gender (docs/agent-tasks/gendered-user-forms.md).
 // Rough on purpose: it flags candidates, a reader decides. Usage: node scripts/scan-gendered-you.mjs [code] [--count]
+// --self: shared lines where the character speaks of itself in one gender (needs {g:female|male}).
+// --date: date lines that call the character "he" or "she" (needs {g:female|male}).
+// --cast: a female character's own lines that speak of herself in the masculine.
+// The three character modes: docs/agent-tasks/gendered-character-forms.md.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,7 +23,7 @@ function roleOf(p) {
   if (/^characters\.[^.]+\.starters\./.test(p)) return 'user';
   if (/^(truthsForThem|daresForThem)\.[^.]+\.ask$/.test(p)) return 'user';
   if (/^secretNotes\.[^.]+\.myNote$/.test(p)) return 'user';
-  if (/^datePlaces\..*\.choices\.\d+\.text$/.test(p)) return 'user';
+  if (/^(?:datePlaces|dateThemes)\..*\.text$|^worlds\.[^.]+\.dateRounds\..*\.text$/.test(p)) return 'user';
   if (/^diaryEntries\.[^.]+\.(title|body)$/.test(p)) return 'user';
   if (/^quizPacks\..*\.options\./.test(p)) return 'user';
   if (/^scenes\.[^.]+\.userRole$/.test(p) || /^datePlaces\..*\.line$/.test(p)) return 'about';
@@ -107,6 +111,23 @@ const RULES = {
   },
 };
 
+// Lines any character may say: the app fills their {g:female|male} with the speaker's gender (check-content's G_SECTIONS).
+const SHARED = /^(?:voice|datePlaces|dateThemes)\.|^worlds\.[^.]+\.dateRounds\./;
+const DATE = /^(?:datePlaces|dateThemes)\.|^worlds\.[^.]+\.dateRounds\./;
+// Shared lines the user says, not the character.
+const SHARED_USER = /^voice\.morning\.chips\.|^voice\.drafts\.(?:starters|moreStarters)\.|^voice\.drafts\.voices\.[^.]+\.other$|^(?:datePlaces|dateThemes|worlds)\..*\.text$/;
+
+// The character as "he" or "she" (or "{name}" with a gendered past tense in ru).
+const THIRD = {
+  ru: [`⟨(?:он|она|его|её|ее|ему|ей|ним|ней|него|неё|нему|сам|сама)⟩`, `\\{name\\}\\s+(?:\\p{L}+\\s+)?\\p{L}+(?:л|ла|лся|лась)⟩`],
+  de: [`⟨(?:er|ihn|ihm|sein|seine|seinen|seinem|seiner|seines|sie|ihr|ihre|ihren|ihrem|ihrer|ihres)⟩`],
+  fr: [`⟨(?:il|elle|lui|ils|elles)⟩`],
+  es: [`⟨(?:él|ella)⟩`],
+  it: [`⟨(?:lui|lei|gli)⟩`],
+  'pt-BR': [`⟨(?:ele|ela|dele|dela|nele|nela)⟩`],
+  'zh-Hant': [`[他她]`],
+};
+
 function* strings(node, p = '') {
   if (typeof node === 'string') yield [p, node];
   else if (Array.isArray(node)) for (let i = 0; i < node.length; i++) yield* strings(node[i], p ? `${p}.${i}` : `${i}`);
@@ -144,16 +165,44 @@ function scan(code) {
   return hits;
 }
 
+// The one character a line belongs to: its card, its diary pages, its radio gifts.
+const ownerOf = (p) => {
+  const m = p.match(/^characters\.(c_\w+)\.|^diaryPages\.cdp_([a-z]+)_|^radioGifts\.rg_([a-z]+)_/);
+  return m ? (m[1] ?? `c_${m[2] ?? m[3]}`) : null;
+};
+
+// --self: a shared line where the character speaks of itself in one gender. --date: a date line calling the
+// character he or she. --cast: a female character's own line that speaks of herself in the masculine.
+function scanCharacter(code, mode) {
+  const list = mode === 'date' ? THIRD[code] : RULES[code] && [...RULES[code].me, ...(RULES[code].s ?? [])];
+  if (!list) return [];
+  const res = list.map((s) => rx(s));
+  const json = JSON.parse(fs.readFileSync(path.join(contentDir, `${code}.json`), 'utf8'));
+  const hits = [];
+  for (const [p, text] of strings(json)) {
+    const owner = ownerOf(p);
+    if (mode === 'cast' ? castGender[owner] !== 'female' || roleOf(p) === 'user' || /\.(tags|likes|dislikes)\./.test(p)
+      : !(mode === 'date' ? DATE : SHARED).test(p) || (mode === 'self' && SHARED_USER.test(p))) continue;
+    // Forms already split by {g:} are fine.
+    const bare = text.replace(/\{g:[^|}]*\|[^}]*\}/g, '');
+    const sentences = bare.split(/(?<=[.!?…])\s+/);
+    if (res.some((re) => sentences.some((s) => re.test(s)))) hits.push({ path: p, role: owner ? `${mode}, ${owner}` : mode, text });
+  }
+  return hits;
+}
+
 const args = process.argv.slice(2);
 const countOnly = args.includes('--count');
+const mode = ['self', 'date', 'cast'].find((m) => args.includes(`--${m}`)) ?? null;
 const codes = args.filter((a) => !a.startsWith('--'));
 let total = 0;
-for (const code of codes.length ? codes : Object.keys(RULES)) {
-  if (!RULES[code]) {
-    console.error(`No rules for ${code}. Known: ${Object.keys(RULES).join(', ')}`);
+const known = mode === 'date' ? THIRD : RULES;
+for (const code of codes.length ? codes : Object.keys(known)) {
+  if (!known[code]) {
+    console.error(`No rules for ${code}. Known: ${Object.keys(known).join(', ')}`);
     process.exit(1);
   }
-  const hits = scan(code);
+  const hits = mode ? scanCharacter(code, mode) : scan(code);
   total += hits.length;
   if (countOnly) {
     console.log(`${code}: ${hits.length}`);

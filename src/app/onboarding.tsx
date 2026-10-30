@@ -399,7 +399,7 @@ export default function OnboardingScreen() {
                   day={tomorrow().toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
                   character={friend}
                   name={friend.name}
-                  line={morningGreetings[0]}
+                  line={morningGreetings(friend.gender)[0]}
                   dropIn
                   style={styles.lock}
                 />

@@ -89,7 +89,7 @@ export default function NotificationSettingsScreen() {
     const writer = characters
       .filter((c) => relationships[c.id]?.messagesFirst && conversations.some((x) => x.characterId === c.id))
       .sort((a, b) => relationships[b.id].intimacy - relationships[a.id].intimacy)[0];
-    const line = writer ? pickSeeded(morningGreetings, `${dayKey(tomorrow)}:morning:${writer.id}`) : '';
+    const line = writer ? pickSeeded(morningGreetings(writer.gender), `${dayKey(tomorrow)}:morning:${writer.id}`) : '';
     return { writer, line };
   }, [characters, relationships, conversations]);
 
