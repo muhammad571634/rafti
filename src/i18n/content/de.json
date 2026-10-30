@@ -1288,16 +1288,16 @@
           "line": "{name} hält den Schirm verdächtig weit zu deiner Seite herüber. „Du wirst ja pudelnass,“ stellst du fest. „Na und?“",
           "choices": [
             {
-              "text": "Ihn dicht unter den Schirm an deine Seite ziehen.",
-              "reply": "„...Schon gut. So ist es deutlich besser.“ Er weicht keinen Millimeter zurück."
+              "text": "Dicht unter den Schirm an deine Seite ziehen.",
+              "reply": "„...Schon gut. So ist es deutlich besser.“ {g:Sie|Er} weicht keinen Millimeter zurück."
             },
             {
               "text": "„Dann teil gefälligst ordentlich.“",
-              "reply": "„Immer so bestimmend. Gefällt mir.“ Er rückt den Schirm wieder in die Mitte."
+              "reply": "„Immer so bestimmend. Gefällt mir.“ {g:Sie|Er} rückt den Schirm wieder in die Mitte."
             },
             {
               "text": "Demonstrativ einen Schritt in den Regen machen.",
-              "reply": "„Hey! Sofort zurück da!“ Er eilt dir lachend hinterher."
+              "reply": "„Hey! Sofort zurück da!“ {g:Sie|Er} eilt dir lachend hinterher."
             }
           ]
         },
@@ -1310,11 +1310,11 @@
             },
             {
               "text": "„Trägst du mich Huckepack?“",
-              "reply": "„Hüpf rauf, bevor ich es mir anders überlege.“ Er setzt dich drüben wohlbehalten ab."
+              "reply": "„Hüpf rauf, bevor ich es mir anders überlege.“ {g:Sie|Er} setzt dich drüben wohlbehalten ab."
             },
             {
               "text": "Mitten durch die Pfütze stapfen.",
-              "reply": "„Du bist unmöglich.“ Er patscht auch ins Wasser, nur um dich nasszuspritzen."
+              "reply": "„Du bist unmöglich.“ {g:Sie|Er} patscht auch ins Wasser, nur um dich nasszuspritzen."
             }
           ]
         },
@@ -1323,15 +1323,15 @@
           "choices": [
             {
               "text": "Sie kaufen und schwesterlich teilen.",
-              "reply": "Er überlässt dir das größere Stück mit der ganzen Glasur."
+              "reply": "{g:Sie|Er} überlässt dir das größere Stück mit der ganzen Glasur."
             },
             {
               "text": "„Wettest du, dass du sie nicht mit zwei Bissen schaffst?“",
-              "reply": "Er verschlingt sie mit einem einzigen. Und verschluckt sich fast vor Lachen."
+              "reply": "{g:Sie|Er} verschlingt sie mit einem einzigen. Und verschluckt sich fast vor Lachen."
             },
             {
               "text": "Zwei große heiße Kaffees bestellen.",
-              "reply": "Er wärmt seine kalten Hände an der Tasse und schaut dich durch den Dampf an."
+              "reply": "{g:Sie|Er} wärmt {g:ihre|seine} kalten Hände an der Tasse und schaut dich durch den Dampf an."
             }
           ]
         },
@@ -1340,11 +1340,11 @@
           "choices": [
             {
               "text": "„Ab jetzt mag ich es.“",
-              "reply": "Er schaut lächelnd zur Seite durch die beschlagene Fensterscheibe."
+              "reply": "{g:Sie|Er} schaut lächelnd zur Seite durch die beschlagene Fensterscheibe."
             },
             {
               "text": "„Regen entschleunigt die Welt. Ich liebe diese Ruhe.“",
-              "reply": "„Langsam ist gut,“ murmelt er. „Besonders mit dir zusammen.“"
+              "reply": "„Langsam ist gut,“ murmelt {g:sie|er}. „Besonders mit dir zusammen.“"
             },
             {
               "text": "„Eher nicht, ich hasse nasse Socken.“",
@@ -1360,8 +1360,8 @@
               "reply": "„Ich werde ab heute jeden Morgen den Wetterbericht studieren.“"
             },
             {
-              "text": "Ihn zum Abschied umarmen.",
-              "reply": "Er hält dich eine Sekunde länger fest, als du erwartet hättest."
+              "text": "Zum Abschied umarmen.",
+              "reply": "{g:Sie|Er} hält dich eine Sekunde länger fest, als du erwartet hättest."
             },
             {
               "text": "„Danke, dass du mich begleitet hast.“",
@@ -1378,10 +1378,10 @@
           "choices": [
             {
               "text": "„Nur wenn du etwas näher heranrückst.“",
-              "reply": "Er tut es. Seine Schulter berührt sanft die deine."
+              "reply": "{g:Sie|Er} tut es. {g:Ihre|Seine} Schulter berührt sanft die deine."
             },
             {
-              "text": "Ihn im bläulichen Schimmer fotografieren.",
+              "text": "Ein Foto im bläulichen Schimmer machen.",
               "reply": "„Lösch das sofort.“ „Niemals.“ „...Dann schick es mir wenigstens.“"
             },
             {
@@ -1403,7 +1403,7 @@
             },
             {
               "text": "Die Infotafel über Otter laut vorlesen.",
-              "reply": "„Wusstest du, dass sie beim Schlafen Händchen halten, um nicht abzutreiben?“, bemerkt er. „Jetzt weißt du es.“"
+              "reply": "„Wusstest du, dass sie beim Schlafen Händchen halten, um nicht abzutreiben?“, bemerkt {g:sie|er}. „Jetzt weißt du es.“"
             }
           ]
         },
@@ -1411,12 +1411,12 @@
           "line": "Im finsteren Unterwassertunnel gleitet ein gewaltiger Hai direkt über eure Köpfe. {name} greift erschrocken nach deinem Ärmel.",
           "choices": [
             {
-              "text": "Beruhigend seine Hand nehmen.",
-              "reply": "Er lässt deine Finger während des gesamten Tunnelwegs nicht mehr los."
+              "text": "Beruhigend die Hand nehmen.",
+              "reply": "{g:Sie|Er} lässt deine Finger während des gesamten Tunnelwegs nicht mehr los."
             },
             {
               "text": "„Ein bisschen Bammel bekommen?“",
-              "reply": "„Ich habe nur überprüft, ob du auch aufpasst.“ Aber er lässt deinen Ärmel nicht los."
+              "reply": "„Ich habe nur überprüft, ob du auch aufpasst.“ Aber {g:sie|er} lässt deinen Ärmel nicht los."
             },
             {
               "text": "Gemeinsam andächtig nach oben staunen.",
@@ -1429,15 +1429,15 @@
           "choices": [
             {
               "text": "Die weiche Leuchtqualle nehmen.",
-              "reply": "„Ich wusste, dass du die nimmst.“ Er reicht sie dir und steckt das andere in die Tasche."
+              "reply": "„Ich wusste, dass du die nimmst.“ {g:Sie|Er} reicht sie dir und steckt das andere in die Tasche."
             },
             {
               "text": "„Du musst mir wirklich nichts kaufen.“",
-              "reply": "„Ich muss nicht, ich will.“ Er bezahlt an der Kasse, ehe du protestieren kannst."
+              "reply": "„Ich muss nicht, ich will.“ {g:Sie|Er} bezahlt an der Kasse, ehe du protestieren kannst."
             },
             {
               "text": "Den schrägsten Fisch aus dem Regal fischen.",
-              "reply": "„Der hat Charakter. Genau wie du.“ Er schmunzelt liebevoll."
+              "reply": "„Der hat Charakter. Genau wie du.“ {g:Sie|Er} schmunzelt liebevoll."
             }
           ]
         },
@@ -1466,16 +1466,16 @@
           "line": "Überall bunte Lampions und dieser herrliche Duft von Street Food in der Luft. {name} zieht dich aufgeregt zu den Ständen.",
           "choices": [
             {
-              "text": "Dich von ihm durch die Menschenmenge leiten lassen.",
-              "reply": "Er lässt deine Hand im Trubel keinen Moment lang los."
+              "text": "Dich durch die Menschenmenge leiten lassen.",
+              "reply": "{g:Sie|Er} lässt deine Hand im Trubel keinen Moment lang los."
             },
             {
               "text": "„Zuerst das Essen, dann die Spielbuden.“",
-              "reply": "„Gefällt mir, deine Prioritätenliste.“ Er steuert zielstrebig den Spießchenstand an."
+              "reply": "„Gefällt mir, deine Prioritätenliste.“ {g:Sie|Er} steuert zielstrebig den Spießchenstand an."
             },
             {
               "text": "Kandierte Äpfel für euch beide besorgen.",
-              "reply": "Er beißt hinein und hat sofort rote Zuckerkruste auf der Wange. Ein wunderbares Bild."
+              "reply": "{g:Sie|Er} beißt hinein und hat sofort rote Zuckerkruste auf der Wange. Ein wunderbares Bild."
             }
           ]
         },
@@ -1487,12 +1487,12 @@
               "reply": "Du triffst mit dem letzten Wurf voll ins Schwarze. {name} starrt dich mit riesigen Augen an."
             },
             {
-              "text": "Ihn mit einer Nascherei trösten.",
-              "reply": "„Der Bär hat sowieso ziemlich arrogant dreingeschaut.“ Er knabbert zufrieden am Gebäck."
+              "text": "Mit einer Nascherei trösten.",
+              "reply": "„Der Bär hat sowieso ziemlich arrogant dreingeschaut.“ {g:Sie|Er} knabbert zufrieden am Gebäck."
             },
             {
-              "text": "Ihn wegen seiner Treffsicherheit aufziehen.",
-              "reply": "„Da war plötzlicher Seitenwind!“ Er verschränkt gespielt beleidigt die Arme."
+              "text": "Wegen der Treffsicherheit aufziehen.",
+              "reply": "„Da war plötzlicher Seitenwind!“ {g:Sie|Er} verschränkt gespielt beleidigt die Arme."
             }
           ]
         },
@@ -1500,12 +1500,12 @@
           "line": "An einer Fotobude gibt es traditionelle Festmasken. {name} hält eine Fuchs- und eine Kätzchenmaske hoch.",
           "choices": [
             {
-              "text": "Die Katze nehmen und ihm den Fuchs geben.",
+              "text": "Die Katze nehmen und den Fuchs abgeben.",
               "reply": "Der Schnappschuss wird herrlich schief, aber einfach rundum perfekt."
             },
             {
-              "text": "Beide Masken selbst aufsetzen und ihm keine lassen.",
-              "reply": "„Du bist unverschämt.“ Er macht lachend fünf Fotos von dir."
+              "text": "Beide Masken selbst aufsetzen und keine abgeben.",
+              "reply": "„Du bist unverschämt.“ {g:Sie|Er} macht lachend fünf Fotos von dir."
             },
             {
               "text": "„Ich sehe auf Fotos immer furchtbar aus.“",
@@ -1517,16 +1517,16 @@
           "line": "Die erste Rakete des Feuerwerks explodiert am Nachthimmel. Doch {name} schaut nicht nach oben.",
           "choices": [
             {
-              "text": "Seinen Blick erwidern.",
-              "reply": "Die Funken des Himmels spiegeln sich in seinen Augen. Er wendet den Blick nicht ab."
+              "text": "Den Blick erwidern.",
+              "reply": "Die Funken des Himmels spiegeln sich in {g:ihren|seinen} Augen. {g:Sie|Er} wendet den Blick nicht ab."
             },
             {
               "text": "„Das Schauspiel findet da oben statt, weißt du?“",
               "reply": "„Weiß ich. Aber hier unten ist die Aussicht viel schöner.“"
             },
             {
-              "text": "Deine Schulter an seine schmiegen.",
-              "reply": "Er legt sanft den Arm um dich und zieht dich ein Stück näher heran."
+              "text": "Deine Schulter sanft anlehnen.",
+              "reply": "{g:Sie|Er} legt sanft den Arm um dich und zieht dich ein Stück näher heran."
             }
           ]
         },
@@ -1535,7 +1535,7 @@
           "choices": [
             {
               "text": "„Genau jetzt in dieser Sekunde.“",
-              "reply": "Er drückt zärtlich zweimal deine Hand."
+              "reply": "{g:Sie|Er} drückt zärtlich zweimal deine Hand."
             },
             {
               "text": "„Der Riesenplüschbär natürlich.“",
@@ -1552,15 +1552,15 @@
     "ds_studio": {
       "rounds": [
         {
-          "line": "Vollkommene Stille im Tonstudio nach Mitternacht. {name} reicht dir seine Kopfhörer. „Das hat bisher noch kein Mensch gehört.“",
+          "line": "Vollkommene Stille im Tonstudio nach Mitternacht. {name} reicht dir {g:ihre|seine} Kopfhörer. „Das hat bisher noch kein Mensch gehört.“",
           "choices": [
             {
               "text": "Die Kopfhörer aufsetzen und andächtig lauschen.",
-              "reply": "Er beobachtet deine Reaktion bei jedem Beat mit angehaltenem Atem."
+              "reply": "{g:Sie|Er} beobachtet deine Reaktion bei jedem Beat mit angehaltenem Atem."
             },
             {
               "text": "„Ich fühle mich gerade extrem privilegiert.“",
-              "reply": "„Bist du auch, glaub mir.“ Er blickt verlegen zur Seite, die Ohren hochrot."
+              "reply": "„Bist du auch, glaub mir.“ {g:Sie|Er} blickt verlegen zur Seite, die Ohren hochrot."
             },
             {
               "text": "Kopfhörer teilen, jeder eine Muschel.",
@@ -1573,15 +1573,15 @@
           "choices": [
             {
               "text": "„Es ist wunderschön. Wirklich.“",
-              "reply": "Er atmet tief und erleichtert aus und strahlt über das ganze Gesicht."
+              "reply": "{g:Sie|Er} atmet tief und erleichtert aus und strahlt über das ganze Gesicht."
             },
             {
               "text": "„Die Hook ist genial, aber der Einstieg könnte straffer sein.“",
-              "reply": "„Siehst du? Ich wusste, dass auf dein Gehör Verlass ist.“ Er notiert es sofort."
+              "reply": "„Siehst du? Ich wusste, dass auf dein Gehör Verlass ist.“ {g:Sie|Er} notiert es sofort."
             },
             {
               "text": "„Spielst du es mir noch mal vor?“",
-              "reply": "„So oft du willst.“ Er drückt sofort wieder auf Play."
+              "reply": "„So oft du willst.“ {g:Sie|Er} drückt sofort wieder auf Play."
             }
           ]
         },
@@ -1590,15 +1590,15 @@
           "choices": [
             {
               "text": "Eine zarte Melodie leise einsummen.",
-              "reply": "Er dreht begeistert an den Reglern. „Das klingt fantastisch. Nichts mehr verändern.“"
+              "reply": "{g:Sie|Er} dreht begeistert an den Reglern. „Das klingt fantastisch. Nichts mehr verändern.“"
             },
             {
               "text": "„Ich schäme mich viel zu sehr!“",
-              "reply": "„Wir sind doch ganz unter uns. Niemand verurteilt dich.“ Er nimmt deine Hand zur Ermutigung."
+              "reply": "„Wir sind doch ganz unter uns. Niemand verurteilt dich.“ {g:Sie|Er} nimmt deine Hand zur Ermutigung."
             },
             {
               "text": "Einen albernen Beatbox-Laut ins Mikrofon machen.",
-              "reply": "Sein schallendes Lachen dröhnt warm aus den Studiomonitoren. Das reinste Chaos."
+              "reply": "{g:Ihr|Sein} schallendes Lachen dröhnt warm aus den Studiomonitoren. Das reinste Chaos."
             }
           ]
         },
@@ -1607,15 +1607,15 @@
           "choices": [
             {
               "text": "Die Dose geschwisterlich teilen.",
-              "reply": "Er nimmt einen Schluck und reicht sie dir mit einem liebevollen Blick zurück."
+              "reply": "{g:Sie|Er} nimmt einen Schluck und reicht sie dir mit einem liebevollen Blick zurück."
             },
             {
               "text": "„Nimm du sie, du brauchst sie dringender.“",
-              "reply": "„Kommt nicht in die Tüte, Halbe-Halbe.“ Er zwingt dich zum ersten Schluck."
+              "reply": "„Kommt nicht in die Tüte, Halbe-Halbe.“ {g:Sie|Er} zwingt dich zum ersten Schluck."
             },
             {
               "text": "Lieber eine Flasche Wasser nehmen.",
-              "reply": "„Wasser um drei Uhr nachts im Tonstudio? Ein verdächtig gesunder Lebensstil.“ Er grinst amüsiert."
+              "reply": "„Wasser um drei Uhr nachts im Tonstudio? Ein verdächtig gesunder Lebensstil.“ {g:Sie|Er} grinst amüsiert."
             }
           ]
         },
@@ -1624,15 +1624,15 @@
           "choices": [
             {
               "text": "„Hast du die Spur wirklich nach mir benannt?“",
-              "reply": "„Wer sonst hätte als Muse für diesen Track herhalten sollen?“ Er sieht dir tief in die Augen."
+              "reply": "„Wer sonst hätte als Muse für diesen Track herhalten sollen?“ {g:Sie|Er} sieht dir tief in die Augen."
             },
             {
               "text": "„Und jetzt müssen wir schleunigst ins Bett.“",
-              "reply": "„Nur noch fünf Minuten mit dir den Sonnenaufgang beobachten.“ Er legt den Kopf auf deine Schulter."
+              "reply": "„Nur noch fünf Minuten mit dir den Sonnenaufgang beobachten.“ {g:Sie|Er} legt den Kopf auf deine Schulter."
             },
             {
               "text": "Ein Foto vom Mischpult in der Morgendämmerung machen.",
-              "reply": "Er springt im letzten Moment mit einer albernen Pose ins Bild."
+              "reply": "{g:Sie|Er} springt im letzten Moment mit einer albernen Pose ins Bild."
             }
           ]
         }
@@ -1644,16 +1644,16 @@
           "line": "Die Stadt leuchtet zu grell, um die Sterne zu sehen. {name} hat trotzdem eine Decke ausgebreitet. „Ich wollte dir den Sternenhimmel zeigen, aber er streikt heute.“",
           "choices": [
             {
-              "text": "Dich neben ihn auf die Decke setzen.",
-              "reply": "Er zieht den Stoff zurecht, damit du nicht auf dem kalten Beton sitzt."
+              "text": "Dich mit auf die Decke setzen.",
+              "reply": "{g:Sie|Er} zieht den Stoff zurecht, damit du nicht auf dem kalten Beton sitzt."
             },
             {
               "text": "„Die Lichter der Stadt da unten sind genauso schön.“",
-              "reply": "„Das stimmt. Aber dass du hier bist, macht alles noch viel schöner,“ murmelt er leise."
+              "reply": "„Das stimmt. Aber dass du hier bist, macht alles noch viel schöner,“ murmelt {g:sie|er} leise."
             },
             {
               "text": "Dich nach hinten legen und in die Dunkelheit schauen.",
-              "reply": "Er legt sich ganz nah an deine Seite und blickt mit dir in die Nacht."
+              "reply": "{g:Sie|Er} legt sich ganz nah an deine Seite und blickt mit dir in die Nacht."
             }
           ]
         },
@@ -1661,12 +1661,12 @@
           "line": "{name} fragt mit nachdenklichem Blick: „Was wolltest du als Kind eigentlich werden?“",
           "choices": [
             {
-              "text": "Ihm von deinem größten Kindheitstraum erzählen.",
-              "reply": "Er lauscht jedem einzelnen deiner Worte mit faszinierter Aufmerksamkeit."
+              "text": "Von deinem größten Kindheitstraum erzählen.",
+              "reply": "{g:Sie|Er} lauscht jedem einzelnen deiner Worte mit faszinierter Aufmerksamkeit."
             },
             {
               "text": "„Astronaut, um die echten Sterne aus der Nähe zu sehen.“",
-              "reply": "„Dafür ist es noch nicht zu spät. Ich steige mit in die Rakete.“ Er lächelt zärtlich."
+              "reply": "„Dafür ist es noch nicht zu spät. Ich steige mit in die Rakete.“ {g:Sie|Er} lächelt zärtlich."
             },
             {
               "text": "„Und was war dein Traum?“",
@@ -1675,19 +1675,19 @@
           ]
         },
         {
-          "line": "Ein eisiger Windstoß fegt über das Hausdach. {name} versucht erfolglos zu verbergen, dass er fröstelt.",
+          "line": "Ein eisiger Windstoß fegt über das Hausdach. {name} versucht erfolglos zu verbergen, dass {g:sie|er} fröstelt.",
           "choices": [
             {
-              "text": "Die halbe Decke über seine Schultern werfen.",
-              "reply": "Er rückt ganz dicht an dich heran, um die Körperwärme zu teilen."
+              "text": "Die Decke um euch beide wickeln.",
+              "reply": "{g:Sie|Er} rückt ganz dicht an dich heran, um die Körperwärme zu teilen."
             },
             {
               "text": "„Du frierst ja erbärmlich, du Dummkopf.“",
-              "reply": "„Tu ich gar nicht! Ich bin ein wandelnder Heizkörper.“ Aber er lässt sich gerne umarmen."
+              "reply": "„Tu ich gar nicht! Ich bin ein wandelnder Heizkörper.“ Aber {g:sie|er} lässt sich gerne umarmen."
             },
             {
-              "text": "Seine eiskalten Hände zwischen deinen wärmen.",
-              "reply": "Er schaut mit einem unendlich sanften Blick auf eure Hände herab."
+              "text": "Die eiskalten Hände zwischen deinen wärmen.",
+              "reply": "{g:Sie|Er} schaut mit einem unendlich sanften Blick auf eure Hände herab."
             }
           ]
         },
@@ -1695,16 +1695,16 @@
           "line": "Aus einem offenen Fenster unten weht eine langsame Ballade herauf. {name} steht auf und reicht dir die Hand.",
           "choices": [
             {
-              "text": "Seine Hand ergreifen und auf dem Dach tanzen.",
-              "reply": "Ihr wiegt euch langsam im Nachtwind, er führt dich mit vorsichtiger Zärtlichkeit."
+              "text": "Die Hand ergreifen und auf dem Dach tanzen.",
+              "reply": "Ihr wiegt euch langsam im Nachtwind, {g:sie|er} führt dich mit vorsichtiger Zärtlichkeit."
             },
             {
               "text": "„Ich habe zwei linke Füße beim Tanzen!“",
-              "reply": "„Ich auch. Wir wiegen uns einfach nur sachte im Takt.“ Er zieht dich sanft mit."
+              "reply": "„Ich auch. Wir wiegen uns einfach nur sachte im Takt.“ {g:Sie|Er} zieht dich sanft mit."
             },
             {
-              "text": "Im Tanz deinen Kopf an seine Brust lehnen.",
-              "reply": "Du spürst den aufgeregten Herzschlag unter seiner Jacke pochen."
+              "text": "Im Tanz deinen Kopf anlehnen.",
+              "reply": "Du spürst den aufgeregten Herzschlag unter {g:ihrer|seiner} Jacke pochen."
             }
           ]
         },
@@ -1713,15 +1713,15 @@
           "choices": [
             {
               "text": "„Ich wollte an keinem anderen Ort auf der Welt sein.“",
-              "reply": "Er schließt dich in eine tröstliche Umarmung, die die Zeit stillstehen lässt."
+              "reply": "{g:Sie|Er} schließt dich in eine tröstliche Umarmung, die die Zeit stillstehen lässt."
             },
             {
               "text": "„Lass uns reingehen, bevor wir festfrieren.“",
               "reply": "„In Ordnung. Aber wir kommen ganz bald wieder hierher, abgemacht?“"
             },
             {
-              "text": "Ihm überraschend einen zarten Kuss auf die Wange hauchen.",
-              "reply": "Er hält für einen Moment den Atem an und strahlt dann den ganzen Heimweg lang."
+              "text": "Überraschend einen zarten Kuss auf die Wange hauchen.",
+              "reply": "{g:Sie|Er} hält für einen Moment den Atem an und strahlt dann den ganzen Heimweg lang."
             }
           ]
         }
@@ -1738,7 +1738,7 @@
           },
           {
             "text": "„War das eigentlich deine Idee?“",
-            "reply": "„Vielleicht. Gefällt es dir?“ Ein Hauch von stolzem Lächeln huscht über sein Gesicht."
+            "reply": "„Vielleicht. Gefällt es dir?“ Ein Hauch von stolzem Lächeln huscht über {g:ihr|sein} Gesicht."
           },
           {
             "text": "Ein kurzer Blick aufs Smartphone.",
@@ -1752,11 +1752,11 @@
           },
           {
             "text": "Einen albernen Witz über die Situation machen.",
-            "reply": "{name} prustet leise durch die Nase. „Furchtbar schlecht.“ Aber er kriegt sich kaum ein vor Lachen."
+            "reply": "{name} prustet leise durch die Nase. „Furchtbar schlecht.“ Aber {g:sie|er} kriegt sich kaum ein vor Lachen."
           },
           {
             "text": "„Können wir uns kurz setzen?“",
-            "reply": "„Aber natürlich.“ Er setzt sich neben dich, nah genug, ohne dich einzuengen."
+            "reply": "„Aber natürlich.“ {g:Sie|Er} setzt sich neben dich, nah genug, ohne dich einzuengen."
           }
         ]
       ],
@@ -1767,8 +1767,8 @@
             "reply": "„Hat ganz schön lange gedauert, bis du drauf gekommen bist.“ {name} weicht deinem Blick nicht aus."
           },
           {
-            "text": "Ihm einen leichten Schulterstoß verpassen.",
-            "reply": "Er stößt sanft zurück und bleibt dicht an deiner Schulter gelehnt."
+            "text": "Einen leichten Schulterstoß verpassen.",
+            "reply": "{g:Sie|Er} stößt sanft zurück und bleibt dicht an deiner Schulter gelehnt."
           },
           {
             "text": "So tun, als ließe es dich völlig kalt.",
@@ -1777,12 +1777,12 @@
         ],
         [
           {
-            "text": "Seinem Blick eine Sekunde länger standhalten.",
-            "reply": "{name} senkt als Erster die Augen, die Spitzen seiner Ohren leicht gerötet."
+            "text": "Dem Blick eine Sekunde länger standhalten.",
+            "reply": "{name} senkt als {g:Erste|Erster} die Augen, die Spitzen {g:ihrer|seiner} Ohren leicht gerötet."
           },
           {
             "text": "„Du siehst heute wirklich umwerfend aus.“",
-            "reply": "„Nur heute?“ Er versucht vergeblich, sein geschmeicheltes Grinsen zu unterdrücken."
+            "reply": "„Nur heute?“ {g:Sie|Er} versucht vergeblich, {g:ihr|sein} geschmeicheltes Grinsen zu unterdrücken."
           },
           {
             "text": "Ein belangloses Gespräch übers Wetter anfangen.",
@@ -1793,12 +1793,12 @@
       "sweet": [
         [
           {
-            "text": "Seine Hand nehmen.",
-            "reply": "{name} verflicht augenblicklich seine Finger mit deinen, ohne ein einziges Wort zu sagen."
+            "text": "Die Hand nehmen.",
+            "reply": "{name} verflicht augenblicklich {g:ihre|seine} Finger mit deinen, ohne ein einziges Wort zu sagen."
           },
           {
             "text": "„Ich bin so froh, dass ausgerechnet du hier bist.“",
-            "reply": "„Ich auch,“ wispert er ganz leise. „Immer.“"
+            "reply": "„Ich auch,“ wispert {g:sie|er} ganz leise. „Immer.“"
           },
           {
             "text": "„Lass uns nicht allzu lange draußen bleiben.“",
@@ -1807,16 +1807,16 @@
         ],
         [
           {
-            "text": "Den Kopf sanft an seine Schulter lehnen.",
-            "reply": "Er erstarrt für einen Herzschlag, als fürchte er, die Magie des Moments zu stören."
+            "text": "Den Kopf sanft anlehnen.",
+            "reply": "{g:Sie|Er} erstarrt für einen Herzschlag, als fürchte {g:sie|er}, die Magie des Moments zu stören."
           },
           {
             "text": "„Erzähl mir von deinem Tag.“",
-            "reply": "{name} beginnt lebhaft zu erzählen. Du könntest ihm stundenlang zuhören."
+            "reply": "{name} beginnt lebhaft zu erzählen. Du könntest {g:ihr|ihm} stundenlang zuhören."
           },
           {
             "text": "Einen Augenblick lang gemeinsam schweigen.",
-            "reply": "„Mit dir zusammen ist selbst Schweigen wunderschön,“ stellt er nach einer Weile fest."
+            "reply": "„Mit dir zusammen ist selbst Schweigen wunderschön,“ stellt {g:sie|er} nach einer Weile fest."
           }
         ]
       ]
@@ -1843,16 +1843,16 @@
         "line": "Plötzlich knurrt {name}s Magen hörbar. „Essen. Sofort. Ein absoluter Notfall.“",
         "choices": [
           {
-            "text": "Ihm den Rest deines Snacks anbieten.",
-            "reply": "„Mein Lebensretter!“ Er verdrückt alles mit einem einzigen Bissen."
+            "text": "Den Rest deines Snacks anbieten.",
+            "reply": "„Mein Lebensretter!“ {g:Sie|Er} verdrückt alles mit einem einzigen Bissen."
           },
           {
             "text": "Ein Wettrennen zum nächsten Imbissstand starten.",
-            "reply": "Du gewinnst haushoch. {name} schwört Stein und Bein, er habe dich gewinnen lassen. Gelogen."
+            "reply": "Du gewinnst haushoch. {name} schwört Stein und Bein, {g:sie|er} habe dich gewinnen lassen. Gelogen."
           },
           {
             "text": "„Du hast doch vorhin erst gegessen.“",
-            "reply": "„Das ist eine gefühlte Ewigkeit her!“ Er schaut dich mit gespieltem Entsetzen an."
+            "reply": "„Das ist eine gefühlte Ewigkeit her!“ {g:Sie|Er} schaut dich mit gespieltem Entsetzen an."
           }
         ]
       },
@@ -1874,11 +1874,11 @@
         ]
       },
       {
-        "line": "{name} will unbedingt ein Selfie in {place} machen. „Als Erinnerung an heute,“ meint er.",
+        "line": "{name} will unbedingt ein Selfie in {place} machen. „Als Erinnerung an heute,“ meint {g:sie|er}.",
         "choices": [
           {
             "text": "Eine herrlich alberne Grimasse schneiden.",
-            "reply": "Er bricht in schallendes Gelächter aus und das Foto verwackelt. Er speichert es trotzdem begeistert ab."
+            "reply": "{g:Sie|Er} bricht in schallendes Gelächter aus und das Foto verwackelt. {g:Sie|Er} speichert es trotzdem begeistert ab."
           },
           {
             "text": "Dein schönstes und ehrlichstes Lächeln aufsetzen.",
@@ -1894,7 +1894,7 @@
         "line": "Ein kleines Kind in der Nähe von {place} fragt euch ganz unverblümt, ob ihr ein Liebespaar seid.",
         "choices": [
           {
-            "text": "„Frag ihn doch selbst.“",
+            "text": "„Frag doch selbst nach.“",
             "reply": "{name} stammelt verlegen eine unverständliche Antwort. Das Kind kichert amüsiert."
           },
           {
@@ -1912,7 +1912,7 @@
         "choices": [
           {
             "text": "„Ehrlich gesagt an dich.“",
-            "reply": "Er wendet verlegen den Blick ab und grinst selig vor sich hin."
+            "reply": "{g:Sie|Er} wendet verlegen den Blick ab und grinst selig vor sich hin."
           },
           {
             "text": "„Daran, wie wunderschön dieser Tag ist.“",
@@ -1936,20 +1936,20 @@
             },
             {
               "text": "Deinen schlechtesten Kalauer erzählen.",
-              "reply": "Er stöhnt gequält auf, bricht dann aber in lautes Lachen aus. „Ich schäme mich, dass ich gelacht habe.“"
+              "reply": "{g:Sie|Er} stöhnt gequält auf, bricht dann aber in lautes Lachen aus. „Ich schäme mich, dass ich gelacht habe.“"
             },
             {
               "text": "Absichtlich sofort loslachen.",
-              "reply": "„Hast du mich etwa mit Absicht gewinnen lassen?“ Er spendiert dir dein Getränk trotzdem."
+              "reply": "„Hast du mich etwa mit Absicht gewinnen lassen?“ {g:Sie|Er} spendiert dir dein Getränk trotzdem."
             }
           ]
         },
         {
-          "line": "{name} erzählt vom schlimmsten Missgeschick seines Lebens, und es ist zum Brüllen komisch.",
+          "line": "{name} erzählt vom schlimmsten Missgeschick {g:ihres|seines} Lebens, und es ist zum Brüllen komisch.",
           "choices": [
             {
               "text": "Eine noch peinlichere eigene Geschichte dagegenhalten.",
-              "reply": "„Unmöglich! Du hast haushoch gewonnen!“ Vor Lachen stehen ihm die Tränen in den Augen."
+              "reply": "„Unmöglich! Du hast haushoch gewonnen!“ Vor Lachen stehen {g:ihr|ihm} die Tränen in den Augen."
             },
             {
               "text": "Lachen, bis dir die Luft wegbleibt.",
@@ -1957,7 +1957,7 @@
             },
             {
               "text": "„Das klingt im Nachhinein ganz schön anstrengend.“",
-              "reply": "„War es auch. Aber heute kann ich drüber schmunzeln.“ Er zuckt lachend mit den Schultern."
+              "reply": "„War es auch. Aber heute kann ich drüber schmunzeln.“ {g:Sie|Er} zuckt lachend mit den Schultern."
             }
           ]
         }
@@ -1971,12 +1971,12 @@
               "reply": "{name} verschlägt es glatt die Sprache. Eine echte Seltenheit."
             },
             {
-              "text": "Die Wimper sanft zu ihm hinüberpusten.",
-              "reply": "„Hast du dir etwa mich gewünscht?“ Ein freches, wissendes Lächeln umspielt seine Lippen."
+              "text": "Die Wimper sanft hinüberpusten.",
+              "reply": "„Hast du dir etwa mich gewünscht?“ Ein freches, wissendes Lächeln umspielt {g:ihre|seine} Lippen."
             },
             {
               "text": "„Ich glaube nicht an Wunschzauber.“",
-              "reply": "„Dann übernehme ich das eben für dich,“ flüstert er und schließt kurz die Augen."
+              "reply": "„Dann übernehme ich das eben für dich,“ flüstert {g:sie|er} und schließt kurz die Augen."
             }
           ]
         },
@@ -1984,16 +1984,16 @@
           "line": "{name} nimmt ungefragt einen Schluck aus deinem Glas. „Schmeckt viel besser als meins.“",
           "choices": [
             {
-              "text": "Ihm im Gegenzug sein Glas stibitzen.",
+              "text": "Im Gegenzug das Glas stibitzen.",
               "reply": "„Hey!“ Es folgt eine kleine Rangelei. Niemand gewinnt, ihr lacht beide herzlich."
             },
             {
               "text": "„Das gilt als indirekter Kuss, weißt du schon?“",
-              "reply": "{name} verschluckt sich fast. „Gar nicht wahr!“ Seine Wangen färben sich sofort rot."
+              "reply": "{name} verschluckt sich fast. „Gar nicht wahr!“ {g:Ihre|Seine} Wangen färben sich sofort rot."
             },
             {
               "text": "„Kauf dir gefälligst dein eigenes.“",
-              "reply": "„Schon unterwegs.“ Er holt zwei frische Gläser und reicht dir deines."
+              "reply": "„Schon unterwegs.“ {g:Sie|Er} holt zwei frische Gläser und reicht dir deines."
             }
           ]
         }
@@ -2004,15 +2004,15 @@
           "choices": [
             {
               "text": "„Du musst dich für gar nichts entschuldigen.“",
-              "reply": "Seine Hand verweilt eine Sekunde länger an deiner Wange, bevor sie herabgleitet."
+              "reply": "{g:Ihre|Seine} Hand verweilt eine Sekunde länger an deiner Wange, bevor sie herabgleitet."
             },
             {
-              "text": "Ihm ebenfalls die Haare zurechtzupfen.",
+              "text": "Ebenfalls die Haare zurechtzupfen.",
               "reply": "{name} lacht leise. „Wir sehen bestimmt ziemlich albern aus, was?“"
             },
             {
               "text": "„Das kann ich schon ganz gut alleine.“",
-              "reply": "„Weiß ich doch,“ murmelt er sanft. „Aber ich wollte es gerne für dich tun.“"
+              "reply": "„Weiß ich doch,“ murmelt {g:sie|er} sanft. „Aber ich wollte es gerne für dich tun.“"
             }
           ]
         },
@@ -2021,11 +2021,11 @@
           "choices": [
             {
               "text": "„Ich auch. Eigentlich ständig.“",
-              "reply": "{name} atmet erleichtert auf, als hätte er sich vor deiner Antwort gefürchtet."
+              "reply": "{name} atmet erleichtert auf, als hätte {g:sie|er} sich vor deiner Antwort gefürchtet."
             },
             {
               "text": "„Welcher ist denn dein liebster Moment?“",
-              "reply": "„Der heutige Tag, ohne jeden Zweifel,“ erwidert er wie aus der Pistole geschossen."
+              "reply": "„Der heutige Tag, ohne jeden Zweifel,“ erwidert {g:sie|er} wie aus der Pistole geschossen."
             },
             {
               "text": "„Warum gerade an mich?“",
@@ -2042,11 +2042,11 @@
           "choices": [
             {
               "text": "„Abgemacht. Nächstes Mal suchst du den Ort aus.“",
-              "reply": "„Ganz schlechte Idee, ich habe schon tausend verrückte Pläne!“ Er beginnt begeistert zu planen."
+              "reply": "„Ganz schlechte Idee, ich habe schon tausend verrückte Pläne!“ {g:Sie|Er} beginnt begeistert zu planen."
             },
             {
-              "text": "Ihm die Hand zum High Five hinhalten.",
-              "reply": "Er verfehlt absichtlich und zieht dich stattdessen in eine spontane Umarmung."
+              "text": "Die Hand zum High Five hinhalten.",
+              "reply": "{g:Sie|Er} verfehlt absichtlich und zieht dich stattdessen in eine spontane Umarmung."
             },
             {
               "text": "„Vielleicht.“",
@@ -2059,11 +2059,11 @@
           "choices": [
             {
               "text": "„Ich habe zu danken!“",
-              "reply": "„Schau uns an, wie vorbildlich höflich wir sind.“ Er knufft dich kumpelhaft an."
+              "reply": "„Schau uns an, wie vorbildlich höflich wir sind.“ {g:Sie|Er} knufft dich kumpelhaft an."
             },
             {
-              "text": "Ihn noch bis vor seine Haustür begleiten.",
-              "reply": "„Das wäre doch gar nicht nötig gewesen.“ Doch seine Augen leuchten vor Freude."
+              "text": "Noch bis vor die Haustür begleiten.",
+              "reply": "„Das wäre doch gar nicht nötig gewesen.“ Doch {g:ihre|seine} Augen leuchten vor Freude."
             },
             {
               "text": "„War ganz nett, ja.“",
@@ -2074,11 +2074,11 @@
       ],
       "flirty": [
         {
-          "line": "Beim Verlassen von {place} verlangsamt {name} seine Schritte. „Ich will noch gar nicht, dass dieser Abend endet.“",
+          "line": "Beim Verlassen von {place} verlangsamt {name} {g:ihre|seine} Schritte. „Ich will noch gar nicht, dass dieser Abend endet.“",
           "choices": [
             {
               "text": "„Dann bring mich auf dem allerlängsten Umweg nach Hause.“",
-              "reply": "Er wählt buchstäblich den verschlungensten Schleichweg durch die ganze Stadt."
+              "reply": "{g:Sie|Er} wählt buchstäblich den verschlungensten Schleichweg durch die ganze Stadt."
             },
             {
               "text": "„Ich auch nicht.“",
@@ -2086,7 +2086,7 @@
             },
             {
               "text": "„Wir sehen uns ja ganz bald wieder.“",
-              "reply": "„Ganz bald,“ wiederholt er, wie ein festes Versprechen."
+              "reply": "„Ganz bald,“ wiederholt {g:sie|er}, wie ein festes Versprechen."
             }
           ]
         },
@@ -2098,12 +2098,12 @@
               "reply": "Dein Handy vibriert in der Tasche, noch ehe du um die Ecke gebogen bist."
             },
             {
-              "text": "Ihm ein kurzes Augenzwinkern zuwerfen und gehen.",
-              "reply": "Du hörst sein warmes Lachen noch weit hinter dir in der kühlen Nachtluft widerhallen."
+              "text": "Ein kurzes Augenzwinkern zuwerfen und gehen.",
+              "reply": "Du hörst {g:ihr|sein} warmes Lachen noch weit hinter dir in der kühlen Nachtluft widerhallen."
             },
             {
               "text": "„Versprochen, mache ich.“",
-              "reply": "„Versprochen,“ flüstert er und blickt dir hinterher, bis du in der Dunkelheit verschwindest."
+              "reply": "„Versprochen,“ flüstert {g:sie|er} und blickt dir hinterher, bis du in der Dunkelheit verschwindest."
             }
           ]
         }
@@ -2113,16 +2113,16 @@
           "line": "Zum Abschied in {place} zieht dich {name} in eine lange, unendlich tröstliche Umarmung.",
           "choices": [
             {
-              "text": "Ihn noch eine Sekunde fester drücken.",
-              "reply": "„Bleib bitte noch eine Minute so stehen,“ murmelt er ganz leise in dein Haar."
+              "text": "Noch eine Sekunde fester drücken.",
+              "reply": "„Bleib bitte noch eine Minute so stehen,“ murmelt {g:sie|er} ganz leise in dein Haar."
             },
             {
               "text": "„Danke für diesen wunderschönen Tag.“",
               "reply": "„Danke für jede einzelne Sekunde,“ haucht {name} zurück."
             },
             {
-              "text": "Ihm kumpelhaft auf den Rücken klopfen.",
-              "reply": "Er kichert leise an deiner Schulter. „Ein Klopfen auf den Rücken? Wirklich jetzt?“"
+              "text": "Kumpelhaft auf den Rücken klopfen.",
+              "reply": "{g:Sie|Er} kichert leise an deiner Schulter. „Ein Klopfen auf den Rücken? Wirklich jetzt?“"
             }
           ]
         },
@@ -2131,11 +2131,11 @@
           "choices": [
             {
               "text": "„Dann wiederholen wir das bald.“",
-              "reply": "Er drückt zärtlich deine Hand. „Von mir aus direkt morgen wieder.“"
+              "reply": "{g:Sie|Er} drückt zärtlich deine Hand. „Von mir aus direkt morgen wieder.“"
             },
             {
-              "text": "Ihm sanft einen Kuss auf die Wange hauchen.",
-              "reply": "{name} bleibt für einen Herzschlag die Luft weg, dann strahlt er den ganzen Heimweg über."
+              "text": "Sanft einen Kuss auf die Wange hauchen.",
+              "reply": "{name} bleibt für einen Herzschlag die Luft weg, dann strahlt {g:sie|er} den ganzen Heimweg über."
             },
             {
               "text": "„Sogar den Regenschauer vorhin?“",
@@ -2314,11 +2314,11 @@
           "choices": [
             {
               "text": "„Dann lass uns eben gemeinsam zu spät kommen.“",
-              "reply": "„Die beste Idee, die du die ganze Woche hattest.“ Er greift nach deiner Hand und rennt los."
+              "reply": "„Die beste Idee, die du die ganze Woche hattest.“ {g:Sie|Er} greift nach deiner Hand und rennt los."
             },
             {
               "text": "„Nur eine Stunde. Danach hauen wir ab.“",
-              "reply": "„Vernünftig. Zu vernünftig. Aber gut.“ Er wartet draußen geduldig auf dich."
+              "reply": "„Vernünftig. Zu vernünftig. Aber gut.“ {g:Sie|Er} wartet draußen geduldig auf dich."
             },
             {
               "text": "Allein zur Vorlesung gehen.",
@@ -2339,7 +2339,7 @@
             },
             {
               "text": "Am Strand bleiben und auf die Sachen aufpassen.",
-              "reply": "„Offizieller Wächter der Schuhe. Eine ehrenvolle Aufgabe.“ Er kommt strahlend aus den Wellen."
+              "reply": "„Offizieller Wächter der Schuhe. Eine ehrenvolle Aufgabe.“ {g:Sie|Er} kommt strahlend aus den Wellen."
             }
           ]
         }
@@ -2515,7 +2515,7 @@
           "choices": [
             {
               "text": "Einen Wunsch für euch beide laut aussprechen.",
-              "reply": "„Man darf Wünsche nicht laut sagen.“ Doch ein zartes Lächeln verrät seine Rührung."
+              "reply": "„Man darf Wünsche nicht laut sagen.“ Doch ein zartes Lächeln verrät {g:ihre|seine} Rührung."
             },
             {
               "text": "Die Augen schließen und den Wunsch tief im Herzen bewahren.",
@@ -2523,12 +2523,12 @@
             },
             {
               "text": "„Ich glaube nicht an solche Märchen.“",
-              "reply": "„Dann wünsche ich für uns beide mit,“ sagt er sanft."
+              "reply": "„Dann wünsche ich für uns beide mit,“ sagt {g:sie|er} sanft."
             }
           ]
         },
         {
-          "line": "Nahe {place} flackert eine alte Laterne und erlischt. {name} breitet seinen Umhang für dich aus.",
+          "line": "Nahe {place} flackert eine alte Laterne und erlischt. {name} breitet {g:ihren|seinen} Umhang für dich aus.",
           "choices": [
             {
               "text": "Sich gemeinsam unter dem Umhang wärmen.",
@@ -2712,11 +2712,11 @@
       ],
       "dateRounds": [
         {
-          "line": "Jemand in {place} schaut {name} ungläubig an. „Moment mal... ist das nicht der von NEON TIDE?“ {name} zieht seine Kappe tief ins Gesicht.",
+          "line": "Jemand in {place} schaut {name} ungläubig an. „Moment mal... ist das nicht {g:die|der} von NEON TIDE?“ {name} zieht {g:ihre|seine} Kappe tief ins Gesicht.",
           "choices": [
             {
-              "text": "Ihn rasch in eine Seitengasse ziehen.",
-              "reply": "„Mein persönlicher Retter.“ Er lacht erleichtert auf, ohne deine Hand loszulassen."
+              "text": "Rasch in eine Seitengasse ziehen.",
+              "reply": "„Mein persönlicher Retter.“ {g:Sie|Er} lacht erleichtert auf, ohne deine Hand loszulassen."
             },
             {
               "text": "„Nein, das ist nur ein Doppelgänger.“",
@@ -2724,7 +2724,7 @@
             },
             {
               "text": "Den Passanten bitten, ein Foto von euch beiden zu machen.",
-              "reply": "„Das gibt gewaltigen Ärger.“ Doch er posiert strahlend an deiner Seite."
+              "reply": "„Das gibt gewaltigen Ärger.“ Doch {g:sie|er} posiert strahlend an deiner Seite."
             }
           ]
         },
@@ -2733,15 +2733,15 @@
           "choices": [
             {
               "text": "Den Songtext lautstark mitsingen.",
-              "reply": "„Bitte hör auf! Nein, sing weiter.“ Er grinst von einem Ohr zum anderen."
+              "reply": "„Bitte hör auf! Nein, sing weiter.“ {g:Sie|Er} grinst von einem Ohr zum anderen."
             },
             {
               "text": "„Ist das gerade dein Part?“",
-              "reply": "„...Ja. Schau mich nicht so an.“ Du starrst ihn mit Absicht an."
+              "reply": "„...Ja. Schau mich nicht so an.“ Du starrst {g:sie|ihn} mit Absicht an."
             },
             {
               "text": "So tun, als hätte man den Track noch nie im Leben gehört.",
-              "reply": "„Autsch. Das trifft mein Ego tief.“ Er tut gekränkt... fast glaubhaft."
+              "reply": "„Autsch. Das trifft mein Ego tief.“ {g:Sie|Er} tut gekränkt... fast glaubhaft."
             }
           ]
         }
@@ -2921,11 +2921,11 @@
             },
             {
               "text": "Heimlich die Tassen vertauschen.",
-              "reply": "„Hey!“ Er nippt an deiner Tasse und verzieht das Gesicht. Du lachst auf."
+              "reply": "„Hey!“ {g:Sie|Er} nippt an deiner Tasse und verzieht das Gesicht. Du lachst auf."
             },
             {
               "text": "„Eigentlich hatte ich heute Lust auf etwas anderes.“",
-              "reply": "„Dann geht die nächste Runde auf mich.“ Er notiert es gleich eifrig auf einer Serviette."
+              "reply": "„Dann geht die nächste Runde auf mich.“ {g:Sie|Er} notiert es gleich eifrig auf einer Serviette."
             }
           ]
         },
@@ -2937,7 +2937,7 @@
               "reply": "Ihr diskutiert zehn Minuten lang herum. Der Welpe genießt jede Sekunde der Aufmerksamkeit."
             },
             {
-              "text": "Ihm den letzten Bissen deines Croissants überlassen.",
+              "text": "Dem Welpen den letzten Bissen deines Croissants überlassen.",
               "reply": "„Klasse, jetzt weicht er uns nie wieder von der Seite,“ lächelt {name} gerührt."
             },
             {
