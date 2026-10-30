@@ -20,6 +20,7 @@ import {
   UserAvatar,
 } from '@/components/ui';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { SharePill } from '@/components/share-card-sheet';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
@@ -30,7 +31,7 @@ import { phrase } from '@/i18n';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, hitSlop, isDark, radius, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
@@ -101,6 +102,7 @@ export default function UsScreen() {
   const [planOpen, setPlanOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>('all');
   const [sharing, setSharing] = useState(false);
+  const reward = useAppStore((s) => shareReward(s.daily));
   const unread = useInboxUnread();
 
   const bonds = useMemo(
@@ -293,13 +295,11 @@ export default function UsScreen() {
           <PressableScale
             style={styles.share}
             scaleTo={0.97}
+            haptic
             accessibilityRole="button"
-            accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}`}
+            accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
             onPress={() => setSharing(true)}>
-            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={16} color={colors.brandText} />
-            <Txt style={styles.planPillText} color={colors.brandText}>
-              {t('common.share')}
-            </Txt>
+            <SharePill label={t('common.share')} reward={reward} />
           </PressableScale>
         </View>
 
@@ -670,17 +670,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySofter,
   },
   planPillText: { fontSize: 15, fontWeight: '600' },
-  // The plan pill's tint, the card's width, under the three figures.
-  share: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.xs + 2,
-    height: 40,
-    marginTop: space.md,
-    borderRadius: 20,
-    backgroundColor: colors.primarySofter,
-  },
+  // The card's width, under the three figures.
+  share: { marginTop: space.md },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
   planBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
   timeTile: { minWidth: 48, justifyContent: 'center' },

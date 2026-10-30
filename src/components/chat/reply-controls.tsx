@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -6,9 +5,10 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
+import { SharePill } from '@/components/share-card-sheet';
+import { PressableScale, SFIcon, Txt } from '@/components/ui';
 import type { Rating } from '@/lib/reply-rating';
-import { colors, gradients, space } from '@/theme';
+import { colors, space } from '@/theme';
 
 /** How far a swipe on their reply must travel to switch the version. */
 const SWIPE = 48;
@@ -145,12 +145,8 @@ export function ReplyControls({
           style={styles.shareTarget}
           accessibilityRole="button"
           accessibilityLabel={shareReward ? `${t('common.share')}, +${shareReward} ${t('common.shells')}` : t('common.share')}>
-          <LinearGradient colors={gradients.primary} style={styles.share}>
-            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={15} color={colors.textOnPrimary} />
-            {/* With the version stepper the row is full: the shell alone says it pays. */}
-            {shareReward && count <= 1 ? <Txt style={styles.shareText}>{`+${shareReward}`}</Txt> : null}
-            {shareReward ? <ShellIcon size={13} /> : null}
-          </LinearGradient>
+          {/* With the version stepper the row is full: the shell alone says it pays. */}
+          <SharePill reward={shareReward} amount={count <= 1} />
         </PressableScale>
       ) : null}
     </View>
@@ -204,15 +200,4 @@ const styles = StyleSheet.create({
   count: { minWidth: 34, textAlign: 'center', fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   redo: { width: 44, height: 36, alignItems: 'center', justifyContent: 'center' },
   shareTarget: { height: 36, justifyContent: 'center', marginLeft: space.xs },
-  share: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    height: 30,
-    minWidth: 30,
-    paddingHorizontal: 9,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-  },
-  shareText: { fontSize: 13, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
 });

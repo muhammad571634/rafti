@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { ShareCardPhoto, ShareCardSheet, ShareLevelPill } from '@/components/share-card-sheet';
+import { ShareCardSheet, ShareLevelPill } from '@/components/share-card-sheet';
 import { CharacterAvatar, SFIcon, Txt, UserAvatar } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
@@ -9,16 +9,16 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, radius, space } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
-const PHOTO = 150;
 const FACE = 72;
 const RING = 3;
 const HEART = 28;
 
 /**
- * Share on Us (owner's streak-card prototype, 2026-10-30, as direction): their photo, you and them
- * face to face across its foot with a mint heart between, how many days together in the Today
- * hero's big figure, the level, and the three figures the Us card shows (intimacy, day streak,
- * first met) on a white panel. Only what the app really counts: no rank or "top %".
+ * Share on Us (owner's streak-card prototype, 2026-10-30, as direction): you and them face to face
+ * with a mint heart between and your names, how many days together in the Today hero's big figure,
+ * the level, and the three figures the Us card shows (intimacy, day streak, first met) on a white
+ * panel. No big photo and nothing besides (owner, as for the chat card). Only what the app really
+ * counts: no rank or "top %".
  */
 export function BondShareSheet({
   visible,
@@ -38,7 +38,6 @@ export function BondShareSheet({
   const name = shortName(displayName(character, relationship));
   // The title's "&" as it is, as groups write it: an English "and" reads wrong in other languages.
   const pair = user.displayName ? `${user.displayName} & ${name}` : name;
-  const about = [character.series ? phrase(character.series) : null, t('chat.aiCharacter')].filter(Boolean).join(' · ');
   const together = `${days} ${t('us.daysLabel', { count: days })}`;
   const level = `${t('closeness.level', { level: relationship.level })} · ${phrase(relationship.levelTitle)}`;
   const met = new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
@@ -49,10 +48,7 @@ export function BondShareSheet({
       onClose={onClose}
       hint={t('us.shareHint', { name })}
       fallback={[`${pair}: ${together}`, level, t('app.name')].join('\n\n')}>
-      <ShareCardPhoto character={character} height={PHOTO} />
-
       <View style={styles.head}>
-        {/* Half on the photo, half on the aurora: the two of you meet on its edge. */}
         <View style={styles.faces}>
           <View style={styles.ring}>
             <UserAvatar user={user} size={FACE} />
@@ -66,9 +62,6 @@ export function BondShareSheet({
         </View>
         <Txt variant="title" center lines={1}>
           {pair}
-        </Txt>
-        <Txt variant="caption" color={aurora.textMuted} center lines={1}>
-          {about}
         </Txt>
         <View style={styles.daysLine}>
           <Txt variant="heroFigure" style={styles.figure}>
@@ -103,9 +96,9 @@ function Stat({ value, label, divided }: { value: string; label: string; divided
 const SIZE = FACE + RING * 2;
 
 const styles = StyleSheet.create({
-  head: { alignItems: 'center', gap: 3, paddingHorizontal: space.lg, paddingBottom: space.lg, marginTop: -SIZE / 2 },
+  head: { alignItems: 'center', gap: 3, paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.lg },
   faces: { flexDirection: 'row', alignItems: 'center', marginBottom: space.sm },
-  // A white ring lifts each face off the photo and the aurora alike.
+  // A white ring lifts each face off the aurora.
   ring: { padding: RING, borderRadius: radius.pill, backgroundColor: colors.surface },
   overlap: { marginLeft: -space.lg },
   // A white coin on the seam between the two faces.

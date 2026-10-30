@@ -56,12 +56,20 @@ const isQuotable = (m: Message) => m.kind === 'text' && !m.card && !!m.text?.tri
 export const SHARE_LINES = 6;
 /** Past this many characters older lines stay off, so long replies still make a card, not a scroll. */
 const SHARE_CHARS = 700;
+/** What a photo and a voice note weigh against `SHARE_CHARS`: about the room their bubbles take. */
+const SHARE_WEIGHT = { image: 300, voice: 80 } as const;
+
+/** A line's weight on the card, or null for one it cannot show (a call row, an empty text). */
+function shareWeight(m: Message) {
+  if (m.kind === 'image' || m.kind === 'voice') return SHARE_WEIGHT[m.kind];
+  return m.kind === 'text' && m.text?.trim() ? m.text.trim().length : null;
+}
 
 /**
  * What Share under their newest reply puts on the card, oldest first: the conversation up to their
- * newest written line, yours and theirs, as many as `SHARE_LINES` back (at least two when there are
- * two). System lines and a continue or skip are passed over; a voice note, photo or call ends it,
- * since a card shows words. Null while their reply has no words yet (typing, a voice note).
+ * newest written line, yours and theirs, photos and voice notes in their own bubbles, as many as
+ * `SHARE_LINES` back (at least two when there are two). System lines and a continue or skip are
+ * passed over; a call ends it. Null while their reply has no words yet (typing, a voice note).
  */
 export function shareLines(messages: readonly Message[] | undefined) {
   const list = messages ?? [];
@@ -75,8 +83,9 @@ export function shareLines(messages: readonly Message[] | undefined) {
   for (let i = list.indexOf(theirs); i >= 0 && lines.length < SHARE_LINES; i--) {
     const m = list[i];
     if (m.kind === 'system' || m.card) continue;
-    if (!isQuotable(m)) break;
-    const size = m.text?.trim().length ?? 0;
+    if (m.kind === 'call') break;
+    const size = shareWeight(m);
+    if (size == null) continue;
     if (lines.length >= 2 && chars + size > SHARE_CHARS) break;
     lines.unshift(m);
     chars += size;

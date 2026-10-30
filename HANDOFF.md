@@ -23,7 +23,7 @@
 - Full report: `docs/agent-tasks/gendered-character-forms-report.md`. Flow D133 updated to `done`.
 
 
-### 0z66. Share cards v3: photos, the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: deploy the API (owner runs it), check both cards on the A51
+### 0z66. Share cards v3: the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: deploy the API (owner runs it)
 
 - Owner: the cards were too plain (use a photo), the chat Share must be colourful and a bit bigger, the chat card
   should show the last 5-6 messages, and each share pays 5 shells, capped per user per day ("3 or 5 a day").
@@ -33,11 +33,12 @@
   `share:<day>:<n>` ledger keys and books `n + 1` through `wallet_credit` (a race pays less, never more). No SQL
   migration. The app's `rewardShare` (store) calls it, or credits locally without a server wallet; `shareReward(daily)`
   says whether the buttons show "+5".
-- Chat: Share is a peach `gradients.primary` capsule at the end of the reply row, "+5 🐚" while paid shares last (the
-  shell alone when the version stepper fills the row). The card: their hero photo (else their picture, else their
-  avatar gradient) under a scrim with face, name, clear-glass "AI" tag, level pill and world along its foot; then
-  `shareLines` (up to 6 written lines, at most ~700 characters, ending at their newest line) in the chat's own runs.
-- Us: the photo on top, you and them meeting on its edge (white rings, mint heart), then days, level and figures.
+- Share pills: `SharePill` (peach `gradients.primary`) at the end of the chat reply row ("+5 🐚", the shell alone when
+  the version stepper fills the row) and full width under the Us hero ("Share" + a white "+5 🐚" chip).
+- Chat card (owner, after seeing a photo version on the A51: "only the chat and their name"): round face + name,
+  then `shareLines` (up to 6 lines ending at their newest written one, photos and voice notes in their own bubbles,
+  ~700 characters at most, a call ends it) in the chat's own runs, then the wordmark, tagline and mascot.
+- Us card, same rule: no big photo, no world/AI line: two round faces with a mint heart, names, days, level, figures.
 - Shared sheet: the Share button carries "+5 🐚" while it pays, a ✓ and a success haptic when a share paid.
 - tsc 0, npm test 483/483, server tests 46/46, check:locales pass. EAS update sent.
 

@@ -5,21 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
-import { HEROES } from '@/assets/heroes/registry';
-import { AuroraBackground, BrandArt, Button, characterImage, ShellIcon, SFIcon, Sheet, Txt } from '@/components/ui';
+import { AuroraBackground, BrandArt, Button, ShellIcon, SFIcon, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { haptic } from '@/lib/haptics';
 import { shareImage } from '@/lib/share';
 import { shareReward, useAppStore } from '@/store/use-app-store';
-import { aurora, avatarGradients, colors, palette, radius, space } from '@/theme';
-import type { Character } from '@/types';
+import { aurora, colors, gradients, palette, radius, space } from '@/theme';
 
 const LOGO_HEIGHT = 22;
 /** The mascot's width; its 720px art stays sharp well past this on a 3x screen. */
 const PEEK_WIDTH = 92;
 const PEEK_HEIGHT = PEEK_WIDTH / BRAND_ASPECT.peek;
-/** The Today hero's scrim ink, top to bottom: the photo stays clear, its foot holds white words. */
-const SCRIM = ['rgba(24,22,38,0)', 'rgba(24,22,38,0.25)', 'rgba(24,22,38,0.72)'] as const;
 /** How long the ✓ shows after a paid share before the sheet closes. */
 const PAID_MS = 800;
 
@@ -118,33 +114,29 @@ export function RewardChip({ amount, style }: { amount?: number; style?: StylePr
 }
 
 /**
- * The card's top: their photo (the hero art, else their picture) under a scrim, with `children`
- * in white along its foot. A character with no picture yet gets their avatar's own gradient.
+ * The peach Share pill that opens a card (owner, 2026-10-30: colourful, a bit bigger, so people
+ * tap it): the share symbol, an optional label, and what a share pays while today's paid shares
+ * last: "+5 🐚" on a white chip beside a label, inline without one (`amount` false: the shell alone).
  */
-export function ShareCardPhoto({ character, height, children }: { character: Character; height: number; children?: ReactNode }) {
-  const photo = HEROES[character.id] ?? characterImage(character);
+export function SharePill({
+  label,
+  reward,
+  amount = true,
+  style,
+}: {
+  label?: string;
+  reward: number;
+  amount?: boolean;
+  style?: StyleProp<ViewStyle>;
+}) {
   return (
-    <View style={{ height }}>
-      {photo ? (
-        <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" accessible={false} />
-      ) : (
-        <LinearGradient colors={avatarGradients[character.accentIndex % avatarGradients.length]} style={StyleSheet.absoluteFill} />
-      )}
-      <LinearGradient colors={SCRIM} locations={[0.3, 0.6, 1]} style={StyleSheet.absoluteFill} />
-      {children ? <View style={styles.overPhoto}>{children}</View> : null}
-    </View>
-  );
-}
-
-/** "AI" on a clear glass tag, as on their intro card: an AI character is marked as one (store rule). */
-export function AiTag() {
-  const { t } = useTranslation();
-  return (
-    <View style={styles.aiTag}>
-      <Txt style={styles.aiText} color={colors.onMedia}>
-        {t('safety.ai')}
-      </Txt>
-    </View>
+    <LinearGradient colors={gradients.primary} style={[styles.pill, label ? styles.pillWide : null, style]}>
+      <SFIcon ios="square.and.arrow.up" icon="share-outline" size={label ? 17 : 15} color={colors.textOnPrimary} />
+      {label ? <Txt style={styles.pillLabel}>{label}</Txt> : null}
+      {reward && label ? <RewardChip amount={amount ? reward : undefined} /> : null}
+      {reward && !label && amount ? <Txt style={styles.pillAmount}>{`+${reward}`}</Txt> : null}
+      {reward && !label ? <ShellIcon size={13} /> : null}
+    </LinearGradient>
   );
 }
 
@@ -181,18 +173,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   chipText: { fontSize: 13, fontWeight: '700', color: palette.shellText, fontVariant: ['tabular-nums'] },
-  overPhoto: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.md, gap: space.xs },
-  // Clear glass on the photo (HIG Materials: the clear variant is for rich media).
-  aiTag: {
-    height: 20,
-    paddingHorizontal: 7,
-    borderRadius: 6,
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.onMediaGlass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
+    gap: 4,
+    height: 30,
+    minWidth: 30,
+    paddingHorizontal: 9,
+    borderRadius: 15,
+    borderCurve: 'continuous',
   },
-  aiText: { fontSize: 12, fontWeight: '600' },
+  pillWide: { gap: space.sm, height: 44, borderRadius: 22 },
+  pillLabel: { fontSize: 16, fontWeight: '700', color: colors.textOnPrimary },
+  pillAmount: { fontSize: 13, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
   level: {
     flexDirection: 'row',
     alignItems: 'center',

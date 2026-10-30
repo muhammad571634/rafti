@@ -71,9 +71,12 @@ describe('shareLines', () => {
     assert.equal(SHARE_LINES, 6);
   });
 
-  it('passes over system lines and a continue, and stops at a voice note', () => {
-    const list = [me('m0'), voice('v'), me('m1'), card('n', 'voiceQuota'), them('r1'), steer('s'), them('r2')];
-    assert.deepEqual(ids(shareLines(list)), ['m1', 'r1', 'r2']);
+  it('keeps photos and voice notes, passes over system lines and a continue, and stops at a call', () => {
+    const photo: Message = { ...me('p'), kind: 'image', text: undefined, imageUri: 'file:///p.jpg' };
+    const call: Message = { ...them('c'), kind: 'call', text: undefined };
+    const list = [me('m0'), call, me('m1'), photo, voice('v'), card('n', 'voiceQuota'), them('r1'), steer('s'), them('r2')];
+    assert.deepEqual(ids(shareLines(list)), ['m1', 'p', 'v', 'r1', 'r2']);
+    // Their reply still ends on words: a voice note after their last line stays off the card.
     assert.deepEqual(ids(shareLines([me('m'), them('r'), voice('v2')])), ['m', 'r']);
   });
 
