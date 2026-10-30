@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z65. Worlds 2.0: research and proposed architecture (2026-10-30, Claude 2). NEXT: owner picks the new worlds and the order (`docs/worlds-plan.md` §4)
+
+- Owner: UI is mostly done; the next push is characters and their worlds (about 40 official, users make the rest; the
+  four worlds are too thin). Research and a proposal in `docs/worlds-plan.md`, nothing built yet.
+- Findings: relationship dynamics (enemies to lovers, slow burn, yandere, bodyguard) beat settings on TikTok;
+  romantasy and villainess are the strongest settings. Otome lesson (Love and Deepspace): a few deep leads, a season
+  story and events. Our worlds have no conflict, no user role, no story, no ties between the cast; every character is
+  "secretly soft".
+- Proposal: a first-class `World` record (premise, conflict, user role, ties, season chapters, events), a trope, an
+  archetype and an arc on each character. Deepen the four worlds first, then add Velvet District (noir), Gilded Empire
+  (villainess court) and one owner-picked world.
+- Apify spent $0.97 of the $5 monthly credit (Reddit and Google Trends runs timed out with little data; the TikTok
+  hashtag run worked). Direct access to chub.ai, character.ai, Talkie and Janitor is blocked from Uzbekistan.
+
 ### 0z65. Us: share the bond as a card (2026-10-30, Claude 2). NEXT: owner checks Us → Share on the A51; new APK for pictures
 
 - Owner's streak-card prototype (`image copy 3.png`, `image copy 4.png`, direction only: "think the logic through").
