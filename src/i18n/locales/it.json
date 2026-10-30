@@ -444,7 +444,6 @@
     "shareHint": "La tua chat con {{name}} in una scheda pronta: pubblicala nella tua storia o inviala a qualcuno.",
     "streakShort_one": "{{count}} giorno",
     "streakShort_other": "{{count}} giorni",
-    "aiNotice": "{{name}} è un personaggio IA, non una persona reale.",
     "voiceQuota": "Le risposte vocali sono esaurite per questo mese e torneranno il {{date}}. Le risposte di testo continuano.",
     "addMinutes": "Aggiungi minuti"
   },

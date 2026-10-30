@@ -430,7 +430,6 @@
     "shareTitle": "以圖片分享",
     "shareHint": "你和{{name}}的聊天已做成卡片：可以發到限時動態，或傳給朋友。",
     "streakShort_other": "{{count}}天",
-    "aiNotice": "{{name}}是AI角色，非真實人物。",
     "voiceQuota": "本月語音回覆額度已用完，將於{{date}}恢復。文字回覆仍正常進行。",
     "addMinutes": "增加通話時間"
   },

@@ -444,7 +444,6 @@
     "shareHint": "Dein Chat mit {{name}} als fertige Karte: Poste sie in deiner Story oder schick sie jemandem.",
     "streakShort_one": "{{count}} Tag",
     "streakShort_other": "{{count}} Tage",
-    "aiNotice": "{{name}} ist eine KI-Figur, kein echter Mensch.",
     "voiceQuota": "Sprachantworten für diesen Monat aufgebraucht. Neue ab {{date}}. Text geht weiter.",
     "addMinutes": "Minuten buchen"
   },

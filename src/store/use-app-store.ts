@@ -308,7 +308,7 @@ export interface IncomingCall {
 const STALE_RING_MS = 45_000;
 /** The welcome gift at the end of the first launch. */
 export const WELCOME_SHELLS = 100;
-/** The "not a real person" notice shows at the start of a session and again after this long (NY GBL 47). */
+/** A group's "not real people" line shows at the start of a session and again after this long (NY GBL 47). */
 const AI_NOTICE_MS = 3 * 3_600_000;
 
 export interface DailyRewardEvent {
@@ -1012,7 +1012,6 @@ export const useAppStore = create<AppState>()(
         const wakeHere = wakeFor(get(), conversationId);
         if (!wakeHere && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
         countMessage(set, get);
-        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -1035,7 +1034,6 @@ export const useAppStore = create<AppState>()(
         if (!conversation) return 'empty';
         if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
         countMessage(set, get);
-        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -1062,7 +1060,6 @@ export const useAppStore = create<AppState>()(
         if (!conversation) return 'empty';
         if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
         countMessage(set, get);
-        noticeAiIfDue(set, get, conversationId);
 
         appendMessage(set, get, conversationId, {
           id: uid('m'),
@@ -1104,9 +1101,9 @@ export const useAppStore = create<AppState>()(
         set({ activeConversationId: conversationId });
         if (!conversationId) return;
         get().markRead(conversationId);
-        // Opening a chat starts a session: the "not a real person" notice shows if it is due.
+        // Opening a group starts a session: the "not real people" line shows if it is due. A
+        // one-to-one chat's header says "AI character" instead (owner, 2026-10-30).
         if (get().groups.some((g) => g.id === conversationId)) noticeGroupAiIfDue(set, get, conversationId);
-        else noticeAiIfDue(set, get, conversationId);
       },
 
       clearChat: (conversationId) => {
@@ -3437,8 +3434,25 @@ async function finishHydration() {
     .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
   useAppStore.getState().expireFreeShells();
   useAppStore.getState().writeDueDiaryPages();
+  dropChatAiNotices();
   refreshPreviews();
   useAppStore.setState({ hydrated: true });
+}
+
+/**
+ * One-to-one chats no longer get the 3-hourly "not a real person" line (owner, 2026-10-30): their
+ * header's "AI character" says it. The lines saved before go too; a group keeps its own.
+ */
+function dropChatAiNotices() {
+  const { conversations, messages } = useAppStore.getState();
+  const stale = conversations.filter((c) => messages[c.id]?.some((m) => m.card === 'aiNotice'));
+  if (!stale.length) return;
+  useAppStore.setState((s) => ({
+    messages: {
+      ...s.messages,
+      ...Object.fromEntries(stale.map((c) => [c.id, (s.messages[c.id] ?? []).filter((m) => m.card !== 'aiNotice')])),
+    },
+  }));
 }
 
 /** Every chat's and group's preview again from its last line, in the screen language. */
@@ -3577,28 +3591,6 @@ function countMessage(set: Setter, get: Getter) {
   const today = todayKey();
   const sent = get().daily.messagesDay === today ? (get().daily.messagesSent ?? 0) : 0;
   set((s) => ({ daily: { ...s.daily, messagesDay: today, messagesSent: sent + 1 } }));
-}
-
-/**
- * The "not a real person" line: when a chat session starts and again every 3 hours of
- * talking (NY GBL Art. 47, CA SB 243). A quiet system line, never a preview or unread.
- */
-function noticeAiIfDue(set: Setter, get: Getter, conversationId: string) {
-  const conversation = get().conversations.find((c) => c.id === conversationId);
-  if (!conversation) return;
-  const now = Date.now();
-  if (conversation.aiNoticeAt && now - Date.parse(conversation.aiNoticeAt) < AI_NOTICE_MS) return;
-  const at = new Date(now).toISOString();
-  set((s) => ({
-    conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, aiNoticeAt: at } : c)),
-  }));
-  appendMessage(
-    set,
-    get,
-    conversationId,
-    { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'aiNotice', createdAt: at },
-    { quiet: true },
-  );
 }
 
 /** Takes voice-reply seconds from the plan or packs; false when none are left. */
@@ -4132,7 +4124,6 @@ function answerLine(
   // Being asked how you are never costs a shell; everyday ideas cost what a message does.
   if (!message.reach && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
   countMessage(set, get);
-  noticeAiIfDue(set, get, conversationId);
   set((s) => ({
     messages: {
       ...s.messages,

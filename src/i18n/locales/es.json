@@ -444,7 +444,6 @@
     "shareHint": "Tu chat con {{name}} en una tarjeta lista: publícala en tu historia o envíasela a alguien.",
     "streakShort_one": "{{count}} día",
     "streakShort_other": "{{count}} días",
-    "aiNotice": "{{name}} es un personaje de IA, no una persona real.",
     "voiceQuota": "Las respuestas de voz de este mes se han agotado y vuelven el {{date}}. Las respuestas de texto continúan.",
     "addMinutes": "Agregar minutos"
   },

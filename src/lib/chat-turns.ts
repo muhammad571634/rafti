@@ -28,7 +28,7 @@ export const isTurn =(m: Message) => (m.author === 'me' && isLine(m)) || isSteer
 /**
  * Your newest turn (a message, a continue or a skip) and their reply after it, the unit ↻ redoes
  * and versions switch between. The reply is every text and voice note of theirs after it; system
- * lines in between (the AI notice, a voice-minutes note) stay where they are. `crisis` marks a
+ * lines in between (a voice-minutes note, the notifications-off note) stay where they are. `crisis` marks a
  * reply that came with the helpline card: that one is never redone.
  */
 export function lastExchange(messages: readonly Message[] | undefined) {

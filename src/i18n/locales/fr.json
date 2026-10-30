@@ -444,7 +444,6 @@
     "shareHint": "Ta discussion avec {{name}} en carte prête : publie-la en story ou envoie-la à quelqu'un.",
     "streakShort_one": "{{count}} jour",
     "streakShort_other": "{{count}} jours",
-    "aiNotice": "{{name}} est un personnage IA, pas une vraie personne.",
     "voiceQuota": "Les réponses vocales du mois sont épuisées et reviendront le {{date}}. Les réponses textuelles continuent.",
     "addMinutes": "Ajouter des minutes"
   },

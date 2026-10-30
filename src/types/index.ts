@@ -213,7 +213,7 @@ export interface GroupChat {
   lastMessageAt: string;
   unreadCount: number;
   muted: boolean;
-  /** When the "not real people" notice last showed, as in a one-to-one chat. */
+  /** When the "not real people" line last showed: again at a session's start and every 3 hours. */
   aiNoticeAt?: string;
   /** The chat background, as a one-to-one chat's (`Relationship.backgroundId`); missing = plain. */
   backgroundId?: string;
@@ -261,8 +261,6 @@ export interface Conversation {
   unreadCount: number;
   pinned: boolean;
   muted: boolean;
-  /** When the "not a real person" notice last showed: again at session start and every 3 hours. */
-  aiNoticeAt?: string;
   /** The scene this chat is playing now, until the user ends it (`src/lib/scenes.ts`). */
   scene?: ActiveScene;
   /** Their story so far, kept short by the memory pass (B2, src/ai/memory-pass.ts); the prompt's YOUR STORY SO FAR. */

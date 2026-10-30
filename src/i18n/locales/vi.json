@@ -430,7 +430,6 @@
     "shareTitle": "Chia sẻ dạng ảnh",
     "shareHint": "Cuộc trò chuyện của bạn với {{name}} thành một thẻ sẵn sàng: đăng lên tin hoặc gửi cho bạn bè.",
     "streakShort_other": "{{count}} ngày",
-    "aiNotice": "{{name}} là một nhân vật AI, không phải người thật.",
     "voiceQuota": "Hạn mức phản hồi bằng giọng nói đã dùng hết trong tháng này và sẽ trở lại vào {{date}}. Phản hồi bằng văn bản vẫn tiếp tục.",
     "addMinutes": "Thêm số phút"
   },

@@ -444,7 +444,6 @@
     "shareHint": "Sua conversa com {{name}} em um cartão pronto: poste no seu story ou envie para alguém.",
     "streakShort_one": "{{count}} dia",
     "streakShort_other": "{{count}} dias",
-    "aiNotice": "{{name}} é um personagem de IA, não uma pessoa real.",
     "voiceQuota": "As respostas de voz deste mês acabaram e voltam em {{date}}. As respostas de texto continuam.",
     "addMinutes": "Adicionar minutos"
   },

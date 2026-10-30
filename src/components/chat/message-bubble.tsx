@@ -75,7 +75,8 @@ export const MessageBubble = memo(function MessageBubble({
   const named = !mine && showAvatar && !!senderName;
 
   if (message.card === 'helpline') return <HelplineCard />;
-  if (message.card === 'aiNotice') return <AiNotice name={name} text={aiNoticeText} />;
+  // Only groups still get the line; a one-to-one chat's header says "AI character" (2026-10-30).
+  if (message.card === 'aiNotice') return aiNoticeText ? <AiNotice text={aiNoticeText} /> : null;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.card === 'notifyOff') return <NotifyOffNote name={name.split(' ')[0]} />;
   if (message.card === 'week' && message.week) return <WeekCard week={message.week} />;
@@ -390,13 +391,12 @@ function WeekCard({ week }: { week: WeekStats }) {
   );
 }
 
-/** "Kai is an AI character, not a real person." At a session's start and every 3 hours. */
-function AiNotice({ name, text }: { name: string; text?: string }) {
-  const { t } = useTranslation();
+/** A group's "Kai & Mia are AI characters, not real people." At a session's start and every 3 hours. */
+function AiNotice({ text }: { text: string }) {
   return (
     <View style={styles.system}>
       <Txt style={styles.systemText} center>
-        {text ?? t('chat.aiNotice', { name })}
+        {text}
       </Txt>
     </View>
   );

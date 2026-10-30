@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z63. No 3-hourly AI line in one-to-one chats (2026-10-30, Claude 2). NEXT: owner checks a chat on the A51; groups below
+
+- Owner's call (told about NY GBL Art. 47 / CA SB 243 first): the "AI character" label under the name in the chat
+  header is the disclosure, so the "{name} is an AI character, not a real person." line at a session's start and every
+  3 hours is gone from one-to-one chats. `noticeAiIfDue`, `Conversation.aiNoticeAt` and `chat.aiNotice` (14 locales)
+  removed; `dropChatAiNotices` (store, `finishHydration`) drops the lines saved before, which the message sync then
+  deletes from the database and the server.
+- Groups keep their "Kai & Mia are AI characters, not real people." line (`noticeGroupAiIfDue`): the owner spoke of the
+  chat only, and the group header says just "3 members", with no AI label.
+- Checked in a clean worktree (another agent's gendered-lines work in the store and mocks is uncommitted and does not
+  compile yet; only my hunks were committed): tsc 0, npm test 482/482, check:locales pass.
+
+Still to do:
+1. Owner: groups too? Either drop their line as well and put "AI characters" in the group header caption, or keep it.
+
 ### 0z62. Claude reviewed Gemini's gendered-forms pass and fixed 36 lines (2026-10-30, Claude 2). NEXT: owner picks from the to-do list below
 
 - Gemini's 305 rewrites (0z61) are sound: keys, array lengths, `{placeholders}` and `*actions*` unchanged, en.json, mocks
@@ -20,7 +35,7 @@ Still to do (owner picks):
 2. Shared date lines guess the character's gender (ru "Он задерживает объятие", fr "Tu es gelé, grand fou", it "Balla da
    solo"): date rounds need `{g:}` filled with the partner's gender (code + translations).
 3. New EAS preview APK so Share sends the picture (native modules; 0z60). Owner's yes first.
-4. Owner's call on the 3-hourly "AI character, not a real person" chat line (NY GBL Art. 47 / CA SB 243; 0z60).
+4. ~~Owner's call on the 3-hourly "AI character, not a real person" chat line~~ Done in 0z63 (dropped in chats).
 5. Before launch: remove `DEV_GRANTS` from Fly; Sign in with Apple + StoreKit once there is an Apple Developer account.
 6. Re-run `npm run eval -- --only gender-ru-they --repeat 4` when the chat model changes (0z58).
 
@@ -75,9 +90,7 @@ Still to do (owner picks):
 
 Still to do:
 1. New EAS preview APK build (native modules), then check the picture share and the card on the A51 (owner's yes first).
-2. Owner asked to drop the 3-hourly "AI character, not a real person" line in chats and keep only the header label;
-   it is there for NY GBL Art. 47 / CA SB 243 (`noticeAiIfDue`, `noticeGroupAiIfDue` in the store). Waiting for the
-   owner's call on that legal line before removing it.
+2. ~~Drop the 3-hourly "AI character, not a real person" line in chats~~ Done in 0z63 (owner's call; groups keep theirs).
 
 ### 0z59. Today header: no shell counter, wordmark and your capsule on one line (2026-10-30, Claude 2). NEXT: owner checks the A51; Gemini's gendered-forms report (0z58 to-do 1)
 

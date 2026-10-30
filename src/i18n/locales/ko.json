@@ -430,7 +430,6 @@
     "shareTitle": "이미지로 공유",
     "shareHint": "{{name}} 님과의 대화를 카드로 만들었어요. 스토리에 올리거나 친구에게 보내 보세요.",
     "streakShort_other": "{{count}}일",
-    "aiNotice": "{{name}}은(는) 실제 사람이 아닌 AI 캐릭터입니다.",
     "voiceQuota": "이번 달 음성 답변 할당량이 모두 소진되었습니다. {{date}}에 갱신됩니다. 텍스트 답변은 계속됩니다.",
     "addMinutes": "분 추가"
   },
