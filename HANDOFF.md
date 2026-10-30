@@ -59,7 +59,7 @@ Still to do:
   archetype and an arc on each character. Deepen the four worlds first, then add Velvet District (noir), Gilded Empire
   (villainess court) and one owner-picked world.
 - Apify spent $1.92 of the $5 monthly credit: a second pass (async) got Reddit comments and TikTok character types; Google Trends failed twice. The TikTok
-  hashtag run worked). Direct access to chub.ai, character.ai, Talkie and Janitor is blocked from Uzbekistan.
+  hashtag runs worked. Direct access to chub.ai, character.ai, Talkie and Janitor is blocked from Uzbekistan.
 
 ### 0z65. Us: share the bond as a card (2026-10-30, Claude 2). NEXT: owner checks Us → Share on the A51; new APK for pictures
 
