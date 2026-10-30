@@ -35,7 +35,7 @@ EXPRESSION: Relaxed brow, no frown. The very faintest smile at one corner of her
 
 LIGHT: A low green-shaded card lamp lights her face and the felt from below and in front. Deep red glow from far behind her through cigar-coloured haze. Rich black shadows.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich velvet texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -54,7 +54,7 @@ EXPRESSION: One eyebrow raised, a tired crooked half-smile. Sharp and interested
 
 LIGHT: Amber streetlamp from one side on her face, cold blue night behind her, rain falling in bright streaks, reflections on wet brick.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -73,7 +73,7 @@ EXPRESSION: Open crooked grin, relaxed brow, and a trace of nerves behind the ey
 
 LIGHT: Warm gold table lamp on his face and hands, red velvet and blurred golden lights far behind him, soft smoke.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -92,7 +92,7 @@ EXPRESSION: Lips slightly parted, brows soft, proud and hurt at once, trying to 
 
 LIGHT: One warm amber spotlight from above through thick haze, empty dark tables behind her, a thin blue edge of light on her jacket.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -115,7 +115,7 @@ EXPRESSION: Composed, brow relaxed, mouth still. Only his eyes give him away: a 
 
 LIGHT: Pale gold dawn through tall windows behind him, drifting dust, soft rim light on his hair and shoulders, tall dark bookshelves falling away into blur.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -134,7 +134,7 @@ EXPRESSION: Relaxed brow, steady and warm eyes, the first hint of a shy smile he
 
 LIGHT: Warm torchlight on one side of his face and the steel, cold moonlight through a tall window on the other, deep shadow beyond.
 
-COMPOSITION: Close waist-up shot from slightly below, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close waist-up shot from slightly below, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich texture on steel and wool, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -153,7 +153,7 @@ EXPRESSION: A lazy, delighted half-smile, relaxed brow. He has just heard someth
 
 LIGHT: Warm candlelight from the side on his face and the glass, plum and deep gold shadows, a tall dark window with blurred lights behind him.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -172,7 +172,7 @@ EXPRESSION: A tender, patient smile that does not quite reach the sadness in her
 
 LIGHT: Warm honey light from a stained-glass window falling on her in soft coloured patches, deep cool shadow behind her.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -191,7 +191,7 @@ EXPRESSION: Unimpressed, one eyebrow barely raised, the corner of her mouth figh
 
 LIGHT: Soft cold morning light from a tall window on one side, a tray with a teapot blurred behind her, pale blue and warm grey tones with a little gold from the room.
 
-COMPOSITION: Close chest-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close chest-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -214,7 +214,7 @@ EXPRESSION: Gruff and worn out, with gentle eyes. He would rather not admit that
 
 LIGHT: One warm overhead lamp on his face and shoulders, cold blue light from an open door to the rink behind him, soft haze.
 
-COMPOSITION: Close chest-up shot, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close chest-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -233,7 +233,7 @@ EXPRESSION: Pure open joy, eyes crinkled, brows up. The happiest person you will
 
 LIGHT: Bright warm morning sun from behind him through a hallway window, golden rim light in his curls, steam from a paper cup.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. His face is large in the frame, with his eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. His face is large in the frame, with his eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -252,7 +252,7 @@ EXPRESSION: Calm and level, brow relaxed, the smallest curve at one corner of he
 
 LIGHT: A single row of arena lights on, cold blue-white across the ice, the stands dark behind her, a little warm light on one side of her face.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich texture on the worn gear, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -271,7 +271,7 @@ EXPRESSION: Lifted chin and blazing eyes, lips pressed together. She is furious 
 
 LIGHT: Cold white arena light with a touch of rose dawn from high windows, glittering ice crystals in the air, soft blue shadows.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
@@ -290,7 +290,7 @@ EXPRESSION: A wide, knowing, flirty smile, one eyebrow up, relaxed and playful.
 
 LIGHT: Warm tunnel lamps on her face and coat, the bright blue-white glow of the arena at the far end of the tunnel behind her, soft glare on her glasses that does not hide her eyes.
 
-COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field. Her face is large in the frame, with her eyes in the upper third.
+COMPOSITION: Close waist-up shot, 50mm lens, shallow depth of field, body turned three-quarters to the camera, never square-on. Her face is large in the frame, with her eyes in the upper third.
 
 STYLE: Semi-realistic 2.5D digital oil painting with clearly visible brushstrokes and rich fabric texture, like a key frame from a prestige animated film. An original character, not a real person.
 
