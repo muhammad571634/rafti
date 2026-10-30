@@ -30,7 +30,7 @@ Still to do:
 1. DONE 2026-10-30: owner ran the Fly deploy of `6c5364d` (image `deployment-01M66YJXY0A3EX5PJC7Q0BZH1Y`, `/health` 200). A real `world` first text has not been sent yet; that is part of item 5.
 2. DONE 2026-10-30 except Kai (0z69): `world-edge-devoted` and `world-role-velvet` fixed; `persona-body-respect` still vague in about half the runs.
 3. Translation batch: extracted and briefed (0z70). Owner hands `docs/agent-tasks/translate-worlds.md` to Gemini; until it finishes, new text is English and `check:content` is red. World names and UI strings are already in all 14 locales.
-4. Art, in this order, one test image first with count and price stated: 15 new (portrait + scene) + 3 key art, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots.
+4. Art, in this order, one test image first: 15 new (portrait + scene) + 3 key art = 33 images, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots. Owner, 2026-10-30: Higgsfield has no balance, so the owner draws in Nano Banana and Claude writes the prompts. Test prompt (Ronan's scene, 3:4 painterly) given; the other 32 prompts follow once the owner's test image is approved.
 5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.
 6. Run a full eval, then `--save`, and a code review of this change.
 
