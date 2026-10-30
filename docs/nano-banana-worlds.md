@@ -1,6 +1,6 @@
 # Nano Banana prompts: the 15 new Worlds 2.0 characters
 
-Owner draws these in Gemini (Nano Banana). Style was found over four tries on Ronan (2026-10-30, HANDOFF 0z71):
+Owner draws these in Gemini (Nano Banana). Style was found over four tries on Ronan (2026-10-30, HANDOFF 0z68 item 4):
 a painted scene with one action, a face large in the frame, a relaxed brow and something in the eyes. Never an ID shot.
 
 **How**
