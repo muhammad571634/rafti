@@ -1288,7 +1288,7 @@
           "line": "{name} segura o guarda-chuva um pouco inclinado demais para o seu lado. \"Você tá se molhando todo,\" você avisa. \"E daí?\"",
           "choices": [
             {
-              "text": "Puxar ele para baixo do guarda-chuva junto com você.",
+              "text": "Puxar para baixo do guarda-chuva junto com você.",
               "reply": "\"...Tá bom. Assim ficou bem melhor.\" Não se afasta nem um milímetro."
             },
             {
@@ -1374,14 +1374,14 @@
     "ds_aquarium": {
       "rounds": [
         {
-          "line": "Hora de fechar. O tanque das águas-vivas é o último ainda aceso. {name} para na frente dele. \"Fica mais um minutinho?\"",
+          "line": "Hora de fechar. O tanque das águas-vivas é o último ainda aceso. {name} para na frente do vidro. \"Fica mais um minutinho?\"",
           "choices": [
             {
               "text": "\"Só se você ficar mais pertinho.\"",
-              "reply": "Fica. O ombro dele encosta suavemente no seu."
+              "reply": "Fica. O ombro {g:dela|dele} encosta suavemente no seu."
             },
             {
-              "text": "Tirar uma foto dele no brilho azul.",
+              "text": "Tirar uma foto no brilho azul.",
               "reply": "\"Apaga isso aí.\" \"Não.\" \"...Então me manda depois.\""
             },
             {
@@ -1394,7 +1394,7 @@
           "line": "Uma lontrinha apoia as patinhas no vidro bem na frente de {name}.",
           "choices": [
             {
-              "text": "\"Ela gostou de você. Bom gosto o dela.\"",
+              "text": "\"Gostou de você. Bom gosto.\"",
               "reply": "\"Você tá dando em cima de mim usando uma lontra?\" \"Talvez.\""
             },
             {
@@ -1411,7 +1411,7 @@
           "line": "No túnel escuro do oceano, um tubarão gigante desliza bem por cima de vocês. {name} agarra a manga da sua blusa de susto.",
           "choices": [
             {
-              "text": "Segurar a mão dele para acalmar.",
+              "text": "Segurar a mão para acalmar.",
               "reply": "Não solta a sua mão pelo resto do caminho no túnel."
             },
             {
@@ -1437,7 +1437,7 @@
             },
             {
               "text": "Escolher o peixinho mais esquisito de todos.",
-              "reply": "\"Ele tem personalidade. Igualzinho a você.\" Ri todo bobo."
+              "reply": "\"Tem personalidade. Igualzinho a você.\" Ri {g:toda boba|todo bobo}."
             }
           ]
         },
@@ -1445,7 +1445,7 @@
           "line": "Lá fora, os postes da rua já se acenderam. {name} suspira baixinho: \"Eu não queria que essa noite acabasse.\"",
           "choices": [
             {
-              "text": "\"Então não vamos terminar ela ainda.\"",
+              "text": "\"Então não vamos terminar ainda.\"",
               "reply": "Vocês pegam o caminho mais longo até a estação. Duas vezes."
             },
             {
@@ -1466,7 +1466,7 @@
           "line": "Lanternas coloridas por toda parte e aquele cheiro maravilhoso de comida de rua. {name} já vai te puxando animado em direção às barracas.",
           "choices": [
             {
-              "text": "Deixar ele te guiar pela multidão.",
+              "text": "Deixar guiar pela multidão.",
               "reply": "Não solta a sua mão nem por um instante no meio do mar de gente."
             },
             {
@@ -1491,7 +1491,7 @@
               "reply": "\"Aquele urso tava com cara de antipático mesmo.\" Come o doce todo feliz."
             },
             {
-              "text": "Rir da mira horrível dele.",
+              "text": "Rir da mira horrível.",
               "reply": "\"O vento tava contra!\" Cruza os braços fingindo estar emburrado."
             }
           ]
@@ -1500,11 +1500,11 @@
           "line": "Uma barraquinha de fotos oferece máscaras divertidas de festival. {name} levanta uma máscara de raposa e uma de gatinho.",
           "choices": [
             {
-              "text": "Pegar a de gatinho e dar a de raposa para ele.",
+              "text": "Pegar a de gatinho e dar a de raposa.",
               "reply": "A foto sai toda torta e simplesmente perfeita."
             },
             {
-              "text": "Vestir as duas máscaras e não deixar nenhuma para ele.",
+              "text": "Vestir as duas máscaras e não deixar nenhuma sobrando.",
               "reply": "\"Você não vale nada.\" Tira cinco fotos suas morrendo de rir."
             },
             {
@@ -1517,15 +1517,15 @@
           "line": "O primeiro fogo de artifício explode no céu noturno. Mas {name} não está olhando para o alto.",
           "choices": [
             {
-              "text": "Olhar para ele de volta.",
-              "reply": "As cores do céu refletem nos olhos dele. Ele não desvia o olhar."
+              "text": "Olhar de volta nos olhos.",
+              "reply": "As cores do céu refletem nos olhos {g:dela|dele}. {g:Ela|Ele} não desvia o olhar."
             },
             {
               "text": "\"O céu tá do outro lado, sabia?\"",
               "reply": "\"Eu sei. Mas a vista daqui tá bem mais bonita.\""
             },
             {
-              "text": "Encostar seu ombro no dele.",
+              "text": "Encostar ombro a ombro.",
               "reply": "Passa o braço em volta dos seus ombros e te puxa para mais perto."
             }
           ]
@@ -1598,7 +1598,7 @@
             },
             {
               "text": "Fazer uma zoeira engraçada no microfone.",
-              "reply": "A gargalhada dele ecoa nos monitores do estúdio. Puro caos."
+              "reply": "A gargalhada {g:dela|dele} ecoa nos monitores do estúdio. Puro caos."
             }
           ]
         },
@@ -1620,7 +1620,7 @@
           ]
         },
         {
-          "line": "Os primeiros raios de sol atravessam a persiana. {name} salva o arquivo do projeto e coloca o seu nome nele.",
+          "line": "Os primeiros raios de sol atravessam a persiana. {name} salva o arquivo do projeto e batiza com o seu nome.",
           "choices": [
             {
               "text": "\"Colocou o meu nome de verdade?\"",
@@ -1641,10 +1641,10 @@
     "ds_rooftop": {
       "rounds": [
         {
-          "line": "A cidade é brilhante demais para ver as estrelas. {name} estendeu um cobertor no chão mesmo assim. \"Queria te mostrar o céu, mas ele não colaborou muito.\"",
+          "line": "A cidade é brilhante demais para ver as estrelas. {name} estendeu um cobertor no chão mesmo assim. \"Queria te mostrar o céu, mas o tempo não colaborou muito.\"",
           "choices": [
             {
-              "text": "Sentar ao lado dele no cobertor.",
+              "text": "Sentar no cobertor lado a lado.",
               "reply": "Ajeita o tecido para você não encostar no chão frio."
             },
             {
@@ -1678,15 +1678,15 @@
           "line": "Bate aquele vento gelado do topo do prédio. {name} tenta disfarçar que tá tremendo de frio.",
           "choices": [
             {
-              "text": "Puxar metade do cobertor por cima dele.",
+              "text": "Puxar metade do cobertor para dividir.",
               "reply": "Fica bem pertinho de você, dividindo o calor do corpo."
             },
             {
               "text": "\"Você tá congelando, bobo.\"",
-              "reply": "\"Tô nada! Sou feito de puro calor humano.\" Mas aceita o seu abraço na hora."
+              "reply": "\"Tô nada! Sou {g:feita|feito} de puro calor humano.\" Mas aceita o seu abraço na hora."
             },
             {
-              "text": "Esquentar as mãos dele entre as suas.",
+              "text": "Esquentar aquelas mãos frias entre as suas.",
               "reply": "Olha para as mãos unidas com um olhar tão doce que derrete qualquer frio."
             }
           ]
@@ -1695,7 +1695,7 @@
           "line": "Lá embaixo, alguém tá ouvindo uma música lenta com a janela aberta. {name} se levanta e estende a mão para você.",
           "choices": [
             {
-              "text": "Pegar a mão dele e dançar no terraço.",
+              "text": "Pegar pela mão e dançar no terraço.",
               "reply": "Dança devagarzinho sob o vento da noite, te segurando com todo o cuidado."
             },
             {
@@ -1703,8 +1703,8 @@
               "reply": "\"Eu também não. É só balançar de um lado para o outro.\" E te puxa com jeito."
             },
             {
-              "text": "Apoiar a cabeça no peito dele enquanto dançam.",
-              "reply": "Dá para ouvir o coração dele batendo acelerado e forte."
+              "text": "Apoiar a cabeça ao dançar bem perto.",
+              "reply": "Dá para ouvir o coração {g:dela|dele} batendo acelerado e forte."
             }
           ]
         },
@@ -1720,7 +1720,7 @@
               "reply": "\"Vamos. Mas a gente volta aqui qualquer dia desses, combinado?\""
             },
             {
-              "text": "Dar um beijo suave na bochecha dele de surpresa.",
+              "text": "Dar um beijo suave na bochecha de surpresa.",
               "reply": "Fica sem reação por alguns segundos, com a cara mais feliz do universo."
             }
           ]
@@ -1793,7 +1793,7 @@
       "sweet": [
         [
           {
-            "text": "Segurar a mão dele.",
+            "text": "Segurar pela mão com carinho.",
             "reply": "{name} entrelaça os dedos nos seus sem dizer uma única palavra."
           },
           {
@@ -1807,7 +1807,7 @@
         ],
         [
           {
-            "text": "Apoiar a cabeça no ombro dele.",
+            "text": "Apoiar a cabeça no ombro.",
             "reply": "Fica completamente imóvel, como se você pudesse voar para longe."
           },
           {
@@ -1894,7 +1894,7 @@
         "line": "Uma criancinha perto de {place} pergunta se vocês dois são namorados.",
         "choices": [
           {
-            "text": "\"Pergunta para ele.\"",
+            "text": "\"Pergunta ali.\"",
             "reply": "{name} gagueja qualquer coisa sem jeito. A criança cai na risada."
           },
           {
@@ -1971,7 +1971,7 @@
               "reply": "{name} fica sem palavras diante dessa. Pela primeira vez na vida."
             },
             {
-              "text": "Assoprar o cílio na direção dele.",
+              "text": "Assoprar o cílio com carinho.",
               "reply": "\"Você acabou de me pedir de presente?\" Abre aquele sorrisinho presunçoso."
             },
             {
@@ -1984,7 +1984,7 @@
           "line": "{name} rouba um gole da sua bebida sem pedir licença. \"Tá bem mais gostoso que o meu.\"",
           "choices": [
             {
-              "text": "Roubar a dele de volta.",
+              "text": "Roubar a bebida de volta.",
               "reply": "\"Ei!\" Começa uma mini guerrinha. Ninguém ganha. Todo mundo se diverte."
             },
             {
@@ -2004,10 +2004,10 @@
           "choices": [
             {
               "text": "\"Não precisa pedir desculpa.\"",
-              "reply": "A mão dele demora um instante a mais do que o necessário antes de descer."
+              "reply": "A mão {g:dela|dele} demora um instante a mais do que o necessário antes de descer."
             },
             {
-              "text": "Fazer o mesmo com o cabelo dele.",
+              "text": "Fazer o mesmo com o cabelo bagunçado.",
               "reply": "{name} ri baixinho. \"A gente é muito bobo.\""
             },
             {
@@ -2055,7 +2055,7 @@
           ]
         },
         {
-          "line": "No caminho de volta, {name} diz: \"Hoje foi muito legal. Obrigado pelo dia.\"",
+          "line": "No caminho de volta, {name} diz: \"Hoje foi muito legal. {g:Obrigada|Obrigado} pelo dia.\"",
           "choices": [
             {
               "text": "\"Eu que agradeço!\"",
@@ -2099,7 +2099,7 @@
             },
             {
               "text": "Dar uma piscadinha e ir embora.",
-              "reply": "Dá para ouvir a risada dele ecoando logo atrás de você."
+              "reply": "Dá para ouvir a risada {g:dela|dele} ecoando logo atrás de você."
             },
             {
               "text": "\"Tá bom.\"",
@@ -2117,11 +2117,11 @@
               "reply": "\"Fica assim mais um minutinho,\" sussurra baixinho."
             },
             {
-              "text": "\"Obrigado por hoje.\"",
-              "reply": "\"Obrigado por cada momento,\" {name} responde."
+              "text": "\"Valeu por hoje.\"",
+              "reply": "\"{g:Obrigada|Obrigado} por cada momento,\" {name} responde."
             },
             {
-              "text": "Dar tapinhas nas costas dele.",
+              "text": "Dar tapinhas nas costas.",
               "reply": "Dá uma risadinha encostado no seu ombro. \"Tapinhas nas costas, sério?\""
             }
           ]
@@ -2134,7 +2134,7 @@
               "reply": "Aperta a sua mão com ternura. \"Amanhã mesmo, então.\""
             },
             {
-              "text": "Dar um beijo na bochecha dele.",
+              "text": "Dar um beijo na bochecha.",
               "reply": "{name} fica sem ar por um segundo, e depois sorri o caminho inteiro até em casa."
             },
             {
@@ -2528,7 +2528,7 @@
           ]
         },
         {
-          "line": "Perto de {place}, uma antiga lanterna vacila e se apaga. {name} oferece a capa dele para você.",
+          "line": "Perto de {place}, uma antiga lanterna vacila e se apaga. {name} oferece a capa {g:dela|dele} para você.",
           "choices": [
             {
               "text": "Dividir a capa juntos.",
@@ -2715,11 +2715,11 @@
           "line": "Alguém em {place} reconhece {name}. \"Aquele ali não é... do NEON TIDE?\" {name} abaixa o boné na hora.",
           "choices": [
             {
-              "text": "Puxar ele para um beco lateral.",
+              "text": "Puxar pelo braço para um beco lateral.",
               "reply": "\"Meu herói da pátria.\" Dá risada sem fôlego, sem soltar a sua mão."
             },
             {
-              "text": "\"Não, ele só é parecido com ele.\"",
+              "text": "\"Não, é só alguém parecido.\"",
               "reply": "{name} balança a cabeça concordando com a cara mais séria do mundo. O fã não cai muito na história."
             },
             {
@@ -2737,7 +2737,7 @@
             },
             {
               "text": "\"Essa é a sua parte da música?\"",
-              "reply": "\"...É. Não olha para mim.\" Você olha fixamente para ele."
+              "reply": "\"...É. Não olha para mim.\" Você olha fixamente para {g:ela|ele}."
             },
             {
               "text": "Fingir que nunca tinha ouvido a música na vida.",
@@ -2920,7 +2920,7 @@
               "reply": "\"Eu lembro de tudo sobre você. Já tá virando um problema sério.\""
             },
             {
-              "text": "Trocar de xícara com ele.",
+              "text": "Trocar de xícara para experimentar.",
               "reply": "\"Ei!\" Experimenta o seu e faz careta. Você cai na risada."
             },
             {
@@ -2937,8 +2937,8 @@
               "reply": "Ficam discutindo por dez minutos inteiros. O cachorro nem liga. Perfeito."
             },
             {
-              "text": "Dar o último pedaço do seu folhado para ele.",
-              "reply": "\"Pronto, agora ele nunca mais vai embora daqui,\" {name} comenta, todo encantado."
+              "text": "Dar o último pedaço do seu folhado para o cachorro.",
+              "reply": "\"Pronto, agora não vai mais embora daqui,\" {name} comenta, {g:toda encantada|todo encantado}."
             },
             {
               "text": "Xô, cachorrinho!",
@@ -4036,7 +4036,7 @@
       "birthday": [
         "Feliz aniversário, {name}! Coloquei um alarme só para ser a primeira pessoa a te dar os parabéns.",
         "Hoje é o seu dia, {name}. Me diz como quer passar o dia e eu topo.",
-        "Feliz aniversário! Estou tão {g:feliz|feliz} por você ter nascido, {name}. É só isso. E bolo."
+        "Feliz aniversário! Estou tão feliz por você ter nascido, {name}. É só isso. E bolo."
       ],
       "call": [
         "Ah, é? Um segredo? Agora você tem toda a minha atenção. Vai, solta — não me faz implorar, viu?",
@@ -4066,7 +4066,7 @@
       ],
       "afterDate": {
         "sweet": "Fico revivendo a nossa ida a {place}. Já podemos voltar?",
-        "warm": "Obrigado por hoje em {place}. Eu me diverti de verdade.",
+        "warm": "{g:Obrigada|Obrigado} por hoje em {place}. Eu me diverti de verdade.",
         "funny": "Olha, aquilo em {place} foi um caos completo. O melhor tipo de caos. Revanche?"
       },
       "photoReply": {
@@ -4225,7 +4225,7 @@
         "warm": {
           "yes": [
             "Eba! Vou te mandar mensagem para ver como você tá 😊",
-            "Obrigado. Vou te escrever quando pensar em você."
+            "{g:Obrigada|Obrigado}. Vou te escrever quando pensar em você."
           ],
           "no": [
             "Claro, sem pressão nenhuma 🙂",
@@ -4546,7 +4546,7 @@
         ],
         "grandparent": [
           "Ah, meu bem, aí está você. Vem, me conta do seu dia.",
-          "Fico tão {g:feliz|feliz} de te ver aqui, meu anjo. Está se agasalhando bem?",
+          "Fico tão feliz de te ver aqui, meu anjo. Está se agasalhando bem?",
           "Minha bênção. Senta um pouquinho comigo. Como você está?"
         ]
       }
