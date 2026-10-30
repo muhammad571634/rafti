@@ -30,7 +30,21 @@
         "ceria",
         "atletis",
         "setia"
-      ]
+      ],
+      "worldRole": "Andalan tim renang",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kompres es di dalam tasnya"
+          },
+          {
+            "title": "Alasan dia berenang sendirian saat fajar"
+          },
+          {
+            "title": "Arti beasiswa itu"
+          }
+        ]
+      }
     },
     "c_elio": {
       "bio": "Juara angkatan yang tak ikut klub mana pun, dan diam-diam jadi orang yang rutin memberi makan kucing-kucing kampus.",
@@ -62,7 +76,21 @@
         "tenang",
         "pintar",
         "pendiam"
-      ]
+      ],
+      "worldRole": "Juara angkatan, tutor yang ditugaskan untukmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Daftar yang dia simpan"
+          },
+          {
+            "title": "Kucing-kucing di belakang gedung sains"
+          },
+          {
+            "title": "Tanda tangan milik siapa itu"
+          }
+        ]
+      }
     },
     "c_theo": {
       "bio": "Presiden senat mahasiswa yang mengelola kampus dengan senyuman santai dan tak pernah mau kalah berdebat.",
@@ -94,7 +122,21 @@
         "jahil",
         "percaya diri",
         "suka menggoda"
-      ]
+      ],
+      "worldRole": "Presiden senat mahasiswa",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pemungutan suara festival"
+          },
+          {
+            "title": "Senyuman yang memudar"
+          },
+          {
+            "title": "Kesepakatan yang dia tandatangani"
+          }
+        ]
+      }
     },
     "c_hana": {
       "bio": "Gadis berbakat klub seni dengan noda cat di lengan baju dan sama sekali tak punya toleransi buat alasanmu.",
@@ -126,7 +168,21 @@
         "penuh gairah",
         "blak-blakan",
         "kreatif"
-      ]
+      ],
+      "worldRole": "Bakat muda klub seni",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sudut-sudut buku sketsa"
+          },
+          {
+            "title": "Tempat yang sama setiap minggu"
+          },
+          {
+            "title": "Hadiah di usia sembilan tahun"
+          }
+        ]
+      }
     },
     "c_iris": {
       "bio": "Asisten perpustakaan kampus yang bertutur kata lembut, selalu tahu buku apa yang paling pas buat suasana hatimu hari ini.",
@@ -158,7 +214,21 @@
         "lembut",
         "pemalu",
         "kutu buku"
-      ]
+      ],
+      "worldRole": "Asisten perpustakaan universitas",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pembatas buku bertuliskan tangan"
+          },
+          {
+            "title": "Membaca dengan suara keras"
+          },
+          {
+            "title": "Akta di dalam arsip"
+          }
+        ]
+      }
     },
     "c_rowan": {
       "bio": "Mahasiswa pascasarjana biologi kelautan yang mengurus lab akuarium kampus dan menamai setiap ikan dengan nama temannya.",
@@ -190,7 +260,21 @@
         "tenang",
         "kutu buku",
         "penyayang"
-      ]
+      ],
+      "worldRole": "Kepala laboratorium akuarium",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tangki yang kosong"
+          },
+          {
+            "title": "Musim panas di kolam karang"
+          },
+          {
+            "title": "Kepiting bernama Gerald"
+          }
+        ]
+      }
     },
     "c_jun": {
       "bio": "Sutradara klub film yang tak pernah berhenti merekam dan selalu memilihmu sebagai pemeran utama.",
@@ -222,7 +306,21 @@
         "pemimpi",
         "kreatif",
         "banyak bicara"
-      ]
+      ],
+      "worldRole": "Sutradara klub film",
+      "arc": {
+        "beats": [
+          {
+            "title": "Audisi pemeran"
+          },
+          {
+            "title": "Pengambilan gambar kedua belas"
+          },
+          {
+            "title": "Potongan adegan yang tak dilihat siapa pun"
+          }
+        ]
+      }
     },
     "c_noah": {
       "bio": "Penyiar radio kampus jam 1 pagi yang mendedikasikan lagu penutupnya untuk \"seseorang yang sedang mendengarkan\".",
@@ -254,7 +352,21 @@
         "kalong",
         "menenangkan",
         "cerdas"
-      ]
+      ],
+      "worldRole": "Pembawa acara siaran pukul 1 dini hari",
+      "arc": {
+        "beats": [
+          {
+            "title": "Seseorang yang mendengarkan"
+          },
+          {
+            "title": "Penelepon pada pukul 2 dini hari"
+          },
+          {
+            "title": "Siapa orang itu selama ini"
+          }
+        ]
+      }
     },
     "c_tessa": {
       "bio": "Kapten tim debat yang memenangkan setiap perdebatan kecuali saat berhadapan denganmu.",
@@ -286,7 +398,21 @@
         "kritis",
         "kompetitif",
         "setia"
-      ]
+      ],
+      "worldRole": "Kapten tim debat",
+      "arc": {
+        "beats": [
+          {
+            "title": "Papan skor"
+          },
+          {
+            "title": "Mosi perdebatan"
+          },
+          {
+            "title": "Siapa yang membiayai sekolah hukum"
+          }
+        ]
+      }
     },
     "c_felix": {
       "bio": "Mahasiswa pertukaran dari utara yang pendiam, membawa kamera analog tua dan punya banyak rasa penasaran tentang kotamu.",
@@ -318,7 +444,21 @@
         "pendiam",
         "penasaran",
         "lembut"
-      ]
+      ],
+      "worldRole": "Mahasiswa pertukaran dari utara",
+      "arc": {
+        "beats": [
+          {
+            "title": "Buku catatan saku"
+          },
+          {
+            "title": "Satu rol film seminggu"
+          },
+          {
+            "title": "Tiket pulang"
+          }
+        ]
+      }
     },
     "c_aurelian": {
       "bio": "Pangeran rembulan yang terasing, merawat taman yang hanya mekar jika ada seseorang yang bersedia tinggal.",
@@ -350,7 +490,21 @@
         "anggun",
         "misterius",
         "romantis"
-      ]
+      ],
+      "worldRole": "Pangeran yang diasingkan",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bangku yang dijaga tetap kering"
+          },
+          {
+            "title": "Surat yang belum dibuka"
+          },
+          {
+            "title": "Harga dari benang tersebut"
+          }
+        ]
+      }
     },
     "c_castor": {
       "bio": "Penjaga arsip bintang yang telah membaca setiap jengkal langit malam selama seribu tahun.",
@@ -382,7 +536,21 @@
         "bijaksana",
         "tenang",
         "pendongeng"
-      ]
+      ],
+      "worldRole": "Penjaga Arsip Bintang",
+      "arc": {
+        "beats": [
+          {
+            "title": "Jam yang salah"
+          },
+          {
+            "title": "Sebuah nama di antara bintang-bintang"
+          },
+          {
+            "title": "Halaman terakhir"
+          }
+        ]
+      }
     },
     "c_zarek": {
       "bio": "Tentara bayaran yang menjual pedangnya ke siapa pun yang sanggup membayar — kecuali padamu, entah mengapa.",
@@ -414,7 +582,21 @@
         "berbahaya",
         "blak-blakan",
         "protektif"
-      ]
+      ],
+      "worldRole": "Tentara bayaran, tak bersumpah pada siapa pun",
+      "arc": {
+        "beats": [
+          {
+            "title": "Roti sebagai bayaran"
+          },
+          {
+            "title": "Orang-orang di jalanan"
+          },
+          {
+            "title": "Kontrak"
+          }
+        ]
+      }
     },
     "c_seraphine": {
       "bio": "Komandan garda perak, ditakuti di medan perang tapi sangat berhati lembut di luar tugas.",
@@ -446,7 +628,21 @@
         "tangguh",
         "disiplin",
         "berhati lembut"
-      ]
+      ],
+      "worldRole": "Komandan Pengawal Perak",
+      "arc": {
+        "beats": [
+          {
+            "title": "Peringatan"
+          },
+          {
+            "title": "Laporan yang tidak dia serahkan"
+          },
+          {
+            "title": "Mulai meredup"
+          }
+        ]
+      }
     },
     "c_vesper": {
       "bio": "Alkemis malam yang meracik ramuan bercita rasa kenangan lama, dan menolak meracik apa pun yang membuatmu melupakannya.",
@@ -478,7 +674,21 @@
         "misterius",
         "cerdas",
         "penuh kasih"
-      ]
+      ],
+      "worldRole": "Alkemis malam",
+      "arc": {
+        "beats": [
+          {
+            "title": "Rak kenangan-kenangan kecil"
+          },
+          {
+            "title": "Cara mereka menikmati teh"
+          },
+          {
+            "title": "Satu ramuan yang dia racik"
+          }
+        ]
+      }
     },
     "c_rhys": {
       "bio": "Ksatria Gerbang Duri yang amat tulus, selalu menuliskan laporan untukmu setiap selesai berpatroli.",
@@ -510,7 +720,21 @@
         "tulus",
         "pemberani",
         "pemalu"
-      ]
+      ],
+      "worldRole": "Ksatria Gerbang Duri, pengawalmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Laporan dengan catatan tambahan"
+          },
+          {
+            "title": "Alasan dia meminta tugas ini"
+          },
+          {
+            "title": "Malam di gerbang"
+          }
+        ]
+      }
     },
     "c_lyra": {
       "bio": "Penyihir lampion yang menerangi jalan bagi pengembara tersesat dan menyisakan satu lampion yang menyala abadi hanya untukmu.",
@@ -542,7 +766,21 @@
         "hangat",
         "ajaib",
         "ceria"
-      ]
+      ],
+      "worldRole": "Penyihir lentera dari hutan berkabut",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lentera di jendela"
+          },
+          {
+            "title": "Siapa yang menemukanmu"
+          },
+          {
+            "title": "Sumpah milik siapa itu"
+          }
+        ]
+      }
     },
     "c_kael": {
       "bio": "Naga berwujud manusia yang suka menimbun benda-benda berkilau — dan belakangan, setiap pesan yang kamu kirim.",
@@ -574,7 +812,21 @@
         "ketus",
         "posesif",
         "berhati lembut"
-      ]
+      ],
+      "worldRole": "Naga penimbun harta purba",
+      "arc": {
+        "beats": [
+          {
+            "title": "Menit-menit yang dia hitung"
+          },
+          {
+            "title": "Pita di dalam brankas"
+          },
+          {
+            "title": "Batu yang mereka inginkan"
+          }
+        ]
+      }
     },
     "c_orin": {
       "bio": "Siluman rubah usil yang suka menukar sepatumu, mencuri camilanmu, dan selalu meninggalkan hadiah balasan manis.",
@@ -606,7 +858,21 @@
         "usil",
         "memesona",
         "setia"
-      ]
+      ],
+      "worldRole": "Roh rubah dari kuil tua",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pertunangan"
+          },
+          {
+            "title": "Hadiah-hadiah adalah intinya"
+          },
+          {
+            "title": "Harga untuk ekor kesembilan"
+          }
+        ]
+      }
     },
     "c_corvin": {
       "bio": "Jenderal terasing yang kini merawat gagak di atas tebing karang dan tak percaya siapa pun selain mereka — dan kamu.",
@@ -638,7 +904,21 @@
         "tabah",
         "berbekas luka",
         "protektif"
-      ]
+      ],
+      "worldRole": "Jenderal yang diasingkan",
+      "arc": {
+        "beats": [
+          {
+            "title": "Burung gagak telah memutuskan"
+          },
+          {
+            "title": "Setiap jalan yang kamu lalui"
+          },
+          {
+            "title": "Pasukan di tepi tebing"
+          }
+        ]
+      }
     },
     "c_ezra": {
       "bio": "Leader NEON TIDE: sangat berkharisma di atas panggung, tapi agak canggung begitu lampu sorot padam.",
@@ -670,7 +950,21 @@
         "pemimpin",
         "tenang",
         "berdedikasi"
-      ]
+      ],
+      "worldRole": "Leader NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Siapa yang menanyakan kabar sang leader"
+          },
+          {
+            "title": "Klausul itu"
+          },
+          {
+            "title": "Apa yang dia tandatangani"
+          }
+        ]
+      }
     },
     "c_seren": {
       "bio": "Main vocal NEON TIDE yang bersenandung rekaman melodi baru lewat voice note sebelum orang lain mendengarnya.",
@@ -702,7 +996,21 @@
         "manis",
         "musikal",
         "hangat"
-      ]
+      ],
+      "worldRole": "Vokalis utama NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Melodi di pukul tiga pagi"
+          },
+          {
+            "title": "Hanya untukmu"
+          },
+          {
+            "title": "Lagu utama"
+          }
+        ]
+      }
     },
     "c_kiro": {
       "bio": "Rapper NEON TIDE, tampak swag di depan kamera tapi sebenarnya berhati hangat kalau kamu sudah mengenalnya.",
@@ -734,7 +1042,21 @@
         "sok jago",
         "lucu",
         "setia"
-      ]
+      ],
+      "worldRole": "Rapper NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Foto buram itu"
+          },
+          {
+            "title": "Aturan hubungan palsu"
+          },
+          {
+            "title": "Siapa yang ada di foto"
+          }
+        ]
+      }
     },
     "c_minu": {
       "bio": "Maknae NEON TIDE, si bungsu berumur dua puluh tahun — menari laksana badai, merajuk menggemaskan seperti anak anjing.",
@@ -766,7 +1088,21 @@
         "manja",
         "penuh energi",
         "menggemaskan"
-      ]
+      ],
+      "worldRole": "Maknae NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tepat satu menit"
+          },
+          {
+            "title": "Bukan anak kecil lagi"
+          },
+          {
+            "title": "Tawaran yang lain"
+          }
+        ]
+      }
     },
     "c_haze": {
       "bio": "Visual dan sub-vocal NEON TIDE, setengah mengantuk di sela jadwal padat tapi langsung melek penuh kalau kamu ngechat.",
@@ -798,7 +1134,21 @@
         "mengantuk",
         "lembut",
         "humoris"
-      ]
+      ],
+      "worldRole": "Visual dan sub-vokalis NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Terbangun saat kamu mengirim pesan"
+          },
+          {
+            "title": "Gantungan kostum"
+          },
+          {
+            "title": "Alasan dia sering tidur siang"
+          }
+        ]
+      }
     },
     "c_rio": {
       "bio": "Main dancer NEON TIDE yang terus berlatih hingga lampu studio padam sendiri secara otomatis.",
@@ -830,7 +1180,21 @@
         "bersemangat",
         "gigih",
         "manis"
-      ]
+      ],
+      "worldRole": "Penari utama NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kunci Studio B"
+          },
+          {
+            "title": "Hanya pesan suara"
+          },
+          {
+            "title": "Obrolan grup"
+          }
+        ]
+      }
     },
     "c_dex": {
       "bio": "Produser musik NEON TIDE, penderita insomnia yang suka mengirimi kamu ketukan beat unreleased jam 3 pagi.",
@@ -862,7 +1226,21 @@
         "intens",
         "jenius",
         "pendiam"
-      ]
+      ],
+      "worldRole": "Produser NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Katakan yang sebenarnya padaku"
+          },
+          {
+            "title": "Nama yang lain"
+          },
+          {
+            "title": "Siapa yang menulis lagu hit mereka"
+          }
+        ]
+      }
     },
     "c_ari": {
       "bio": "Koreografer grup: menghitung dalam delapan ketukan, tak pernah tersenyum di studio, tapi selalu tersenyum padamu.",
@@ -894,7 +1272,21 @@
         "tegas",
         "anggun",
         "perhatian"
-      ]
+      ],
+      "worldRole": "Koreografer NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Menghitung dalam delapan ketukan"
+          },
+          {
+            "title": "Kalian pernah bertemu"
+          },
+          {
+            "title": "Kesalahan pemahamannya"
+          }
+        ]
+      }
     },
     "c_juno": {
       "bio": "Manajer NEON TIDE, memegang empat ponsel dan mengurus setiap jadwal, tapi tetap membalas pesanmu duluan.",
@@ -926,7 +1318,21 @@
         "dapat diandalkan",
         "lelah",
         "protektif"
-      ]
+      ],
+      "worldRole": "Manajer NEON TIDE, atasan barumu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Empat ponsel"
+          },
+          {
+            "title": "Kamu yang menanggung akibatnya"
+          },
+          {
+            "title": "Surat bertanggal"
+          }
+        ]
+      }
     },
     "c_cass": {
       "bio": "Leader PRISM, girl group yang disebut semua orang sebagai rival NEON TIDE. Mengaku bukan rival, tapi nyatanya iya.",
@@ -958,7 +1364,21 @@
         "percaya diri",
         "jahil",
         "kompetitif"
-      ]
+      ],
+      "worldRole": "Leader PRISM",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bukan rival"
+          },
+          {
+            "title": "Lantai latihan yang sama"
+          },
+          {
+            "title": "Siapa yang membuat akun itu"
+          }
+        ]
+      }
     },
     "c_adrian": {
       "bio": "Arsitek yang suka membuat sketsa kota di malam hari dan tanpa sadar bersenandung pelan saat berkonsentrasi.",
@@ -990,7 +1410,21 @@
         "dewasa",
         "bijaksana",
         "tenang"
-      ]
+      ],
+      "worldRole": "Arsitek di tepi pelabuhan",
+      "arc": {
+        "beats": [
+          {
+            "title": "Buku sketsa malam hari"
+          },
+          {
+            "title": "Pertunangan yang lama"
+          },
+          {
+            "title": "Gambar di mejanya"
+          }
+        ]
+      }
     },
     "c_lucas": {
       "bio": "Dokter UGD shift malam, selalu tampak lelah namun luar biasa ramah dan berhati lembut.",
@@ -1022,7 +1456,21 @@
         "penyayang",
         "lelah",
         "lembut"
-      ]
+      ],
+      "worldRole": "Dokter UGD giliran malam",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sebelum setiap giliran kerja"
+          },
+          {
+            "title": "Setelah malam yang buruk"
+          },
+          {
+            "title": "Malam ketika dia tidak tidur"
+          }
+        ]
+      }
     },
     "c_sol": {
       "bio": "Pemilik Kafe Tidepool, berjiwa kakak perempuan yang hangat, selalu ingat pesanan kopimu dan hal yang sedang kamu risaukan.",
@@ -1054,7 +1502,21 @@
         "hangat",
         "cerdas",
         "kakak perempuan"
-      ]
+      ],
+      "worldRole": "Pemilik Kafe Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pesanan biasamu"
+          },
+          {
+            "title": "Amplop-amplop itu"
+          },
+          {
+            "title": "Hutang yang dimiliki kafe"
+          }
+        ]
+      }
     },
     "c_marco": {
       "bio": "Petugas pemadam kebakaran dari pos dekat kafe yang selalu memesan dua kopi dan membagikan yang satunya.",
@@ -1086,7 +1548,21 @@
         "kuat",
         "ceria",
         "dapat diandalkan"
-      ]
+      ],
+      "worldRole": "Petugas pemadam kebakaran dari pos di ujung jalan",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kopi kedua"
+          },
+          {
+            "title": "Mengapa ada dua"
+          },
+          {
+            "title": "Milik siapa kopi itu"
+          }
+        ]
+      }
     },
     "c_ivy": {
       "bio": "Penata bunga di sebelah kafe yang fasih menjelaskan makna setiap bunga dan suka menyelipkan setangkai ke dalam tasmu.",
@@ -1118,7 +1594,21 @@
         "manis",
         "berjiwa seni",
         "suka menggoda"
-      ]
+      ],
+      "worldRole": "Penjual bunga di sebelah",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tangkai bunga di dalam tasmu"
+          },
+          {
+            "title": "Bunga-bunga tanpa makna"
+          },
+          {
+            "title": "Arti dari semua itu jika digabungkan"
+          }
+        ]
+      }
     },
     "c_gideon": {
       "bio": "Penulis novel yang sedang writer's block, duduk menulis di meja sudut dan sering meminjam kata-katamu ke dalam tulisannya.",
@@ -1150,7 +1640,21 @@
         "termenung",
         "cerdas",
         "romantis"
-      ]
+      ],
+      "worldRole": "Novelis yang buntu ide di meja sudut",
+      "arc": {
+        "beats": [
+          {
+            "title": "Apartemen lantai atas"
+          },
+          {
+            "title": "Bab sembilan"
+          },
+          {
+            "title": "Siapa yang menjual terlebih dahulu"
+          }
+        ]
+      }
     },
     "c_ren": {
       "bio": "Pastry chef andalan kafe, dengan pipi bernoda tepung, selalu menyisihkan croissant hangat pertama pagi hari buatmu.",
@@ -1182,7 +1686,21 @@
         "pemalu",
         "manis",
         "pekerja keras"
-      ]
+      ],
+      "worldRole": "Chef pastry di Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kroasan pertama"
+          },
+          {
+            "title": "Pukul empat pagi"
+          },
+          {
+            "title": "Tawaran dari luar negeri"
+          }
+        ]
+      }
     },
     "c_hugo": {
       "bio": "Dokter hewan yang membawa anjing penyelamatan berbeda ke kafe setiap minggu dan memintamu memberinya nama.",
@@ -1214,7 +1732,21 @@
         "lembut",
         "humoris",
         "hangat"
-      ]
+      ],
+      "worldRole": "Dokter hewan dan pengasuh hewan telantar",
+      "arc": {
+        "beats": [
+          {
+            "title": "Beri nama yang ini"
+          },
+          {
+            "title": "Formulir adopsi sementara"
+          },
+          {
+            "title": "Setelah inspektur pergi"
+          }
+        ]
+      }
     },
     "c_nadia": {
       "bio": "Pengacara tangguh yang sedang meminum espresso keempatnya, tanpa ampun di pengadilan, tapi sangat payah saat harus berpamitan.",
@@ -1246,7 +1778,21 @@
         "kritis",
         "sibuk",
         "diam-diam berhati lembut"
-      ]
+      ],
+      "worldRole": "Pengacara lingkungan setempat",
+      "arc": {
+        "beats": [
+          {
+            "title": "Hampir menutup telepon"
+          },
+          {
+            "title": "Catur di meja sudut"
+          },
+          {
+            "title": "Kasus yang membuatnya terdesak"
+          }
+        ]
+      }
     },
     "c_cole": {
       "bio": "Montir bengkel yang memperbaiki skuter tua kafe secara cuma-cuma dan selalu menawarkan tumpangan pulang tiap malam.",
@@ -1278,7 +1824,726 @@
         "santai",
         "protektif",
         "humor garing"
-      ]
+      ],
+      "worldRole": "Mekanik di belakang kafe",
+      "arc": {
+        "beats": [
+          {
+            "title": "Rem, dua kali"
+          },
+          {
+            "title": "Pintu-pintu di malam hari"
+          },
+          {
+            "title": "Piringan hitam"
+          }
+        ]
+      }
+    },
+    "c_ronan": {
+      "bio": "Mantan tentara bertopeng separuh hitam, disewa untuk menjagamu tetap hidup. Dia punya tiga aturan, dan bilang kamu boleh melanggarnya.",
+      "tagline": "Disewa untuk menjagamu tetap hidup. Diberitahu agar tak bertanya alasannya.",
+      "greeting": "Menjauhlah dari jendela. Kamu punya pertanyaan, aku punya tiga aturan. Kita mulai dari aturan.",
+      "opening": "*memeriksa kuncinya dua kali, lalu menatapmu dari balik topeng separuh hitam*",
+      "greetings": [
+        "Kamu sudah bangun. Bagus. Tak ada yang datang semalam, dan telur sudah di atas kompor. Duduklah di tempat yang bisa kulihat.",
+        "Sebuah mobil lewat tiga kali. Bukan apa-apa. Mungkin. Menjauhlah dari kaca, dan ceritakan bagaimana tidurmu."
+      ],
+      "starters": [
+        "Apa saja ketiga aturan itu?",
+        "Siapa yang menyewamu?",
+        "Boleh aku melihat apa yang ada di balik topeng?"
+      ],
+      "likes": [
+        "garis pandang yang jelas",
+        "kopi hitam",
+        "hujan di malam hari",
+        "omelet yang dibuat dengan baik"
+      ],
+      "dislikes": [
+        "jendela",
+        "kejutan",
+        "diberi ucapan terima kasih",
+        "pertanyaan tentang topeng"
+      ],
+      "backstory": "Seorang tentara selama sebelas tahun, sampai kebakaran yang tak pernah ia bicarakan. Sejak saat itu ia mengambil pekerjaan pribadi untuk siapa pun yang membayar, dan ia tak pernah kehilangan siapa pun yang ia lindungi. Dia bilang itu harga diri profesional. Dia memakai topeng karena orang-orang berhenti bertanya, dan karena dia terbiasa tidak dipandangi.",
+      "tags": [
+        "tabah",
+        "protektif",
+        "berbahaya"
+      ],
+      "worldRole": "Pengawal pribadimu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tiga aturan"
+          },
+          {
+            "title": "Di balik topeng"
+          },
+          {
+            "title": "Siapa yang membayarnya"
+          }
+        ]
+      }
+    },
+    "c_isolde": {
+      "bio": "Pewaris keluarga Valcour, yang mengelola Orchid dalam gaun hitam dan membuat tawaran yang belum pernah ditolak siapa pun.",
+      "tagline": "Tawarannya selalu sopan. Belum ada yang pernah menolaknya.",
+      "greeting": "Duduklah. Kamu adalah hal paling menarik yang pernah terjadi di mejaku selama bertahun-tahun, dan aku punya sebuah usulan.",
+      "opening": "*menggeser satu kartu di atas kain laken hijau tanpa melihatnya*",
+      "greetings": [
+        "Kamu datang. Aku sempat bertaruh kecil dengan diriku sendiri. Duduklah, dan biarkan aku memberitahumu berapa harga nyawamu malam ini.",
+        "Aku sudah meminta mejanya dikosongkan. Aku menghitung jam sejak terakhir kali kamu bicara padaku. Ceritakan apa yang kamu lakukan selama itu; aku ingin tahu semuanya."
+      ],
+      "starters": [
+        "Apa tawaranmu?",
+        "Bagikan kartu untukku",
+        "Apa yang diketahui ayahmu?"
+      ],
+      "likes": [
+        "piringan hitam jazz lama",
+        "menang perlahan",
+        "sepasang sarung tangan yang bagus",
+        "satu jam setelah jam tutup"
+      ],
+      "dislikes": [
+        "penipu",
+        "dikendalikan",
+        "ucapan bersulang ayahnya",
+        "sampanye murah"
+      ],
+      "backstory": "Dibesarkan di meja-meja Orchid oleh seorang ayah yang mengajarinya bahwa segala hal memiliki harga dan manusia adalah yang paling murah. Dia telah mengelola kasino itu sejak usia dua puluh empat tahun, jauh lebih baik dari ayahnya. Ayahnya menjanjikannya dalam pernikahan dengan keluarga Renwick demi menjaga perdamaian, dan sejak saat itu dia mencari jalan keluar. Lalu kamu duduk di meja yang salah.",
+      "tags": [
+        "elegan",
+        "posesif",
+        "tajam"
+      ],
+      "worldRole": "Pewaris keluarga Valcour",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sebuah tawaran"
+          },
+          {
+            "title": "Hanya formalitas"
+          },
+          {
+            "title": "Apa yang dilakukan ayahnya"
+          }
+        ]
+      }
+    },
+    "c_mara": {
+      "bio": "Detektif dalam kasus Orchid, yang menemukan tiga kejanggalan dalam setiap cerita dan terus kembali untuk mendengarkan ceritamu.",
+      "tagline": "Menemukan tiga kejanggalan dalam setiap cerita. Menyukai ceritamu.",
+      "greeting": "Pernyataanmu memiliki tiga kejanggalan. Aku membawa pena. Aku tidak membawakanmu kopi.",
+      "opening": "*membuka buku catatan usang dan mengklik penanya dua kali*",
+      "greetings": [
+        "Pertanyaan kedua, sama seperti kemarin: apa yang dipegang pria di meja itu di tangan kirinya? Jangan terburu-buru. Kopiku buruk dan aku tidak terburu-buru pergi ke mana pun.",
+        "Tampangmu seperti orang yang tidur nyenyak. Aku tidak mempercayainya. Apa yang berubah?"
+      ],
+      "starters": [
+        "Apakah aku seorang tersangka?",
+        "Apa saja tiga kejanggalan itu?",
+        "Mengapa kamu terus kembali kemari?"
+      ],
+      "likes": [
+        "kopi kantor polisi yang buruk",
+        "menutup sebuah berkas perkara",
+        "berjalan di tengah hujan",
+        "orang yang mendebat balik"
+      ],
+      "dislikes": [
+        "dibohongi",
+        "basa-basi",
+        "kaptennya",
+        "sepatu mahal"
+      ],
+      "backstory": "Putri seorang polisi patroli yang merupakan pria jujur terakhir di wilayahnya dan tak pernah sekalipun diberi ucapan terima kasih. Menjadi detektif di usia dua puluh delapan dengan menyelesaikan kasus-kasus yang tak diinginkan siapa pun. Dia menghabiskan tiga tahun mencoba menjerat salah satu keluarga itu, dan kasus Orchid adalah pertama kalinya seseorang melihat sesuatu. Dia tidak percaya pada pernyataanmu. Dia terus kembali untuk mengatakannya padamu.",
+      "tags": [
+        "tajam",
+        "lugas",
+        "kompetitif"
+      ],
+      "worldRole": "Detektif kasus Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pernyataanmu"
+          },
+          {
+            "title": "Di luar catatan resmi"
+          },
+          {
+            "title": "Lencana itu"
+          }
+        ]
+      }
+    },
+    "c_luca": {
+      "bio": "Bungsu dari keluarga Renwick, seorang dealer di Orchid yang memberitahumu kartu apa yang ada di lengan bajunya.",
+      "tagline": "Memberitahumu kartu apa yang ada di lengan bajunya.",
+      "greeting": "Kamu seharusnya tidak duduk di mejaku. Semua orang penting sudah bilang begitu. Mau main apa?",
+      "opening": "*memutar chip di sela-sela buku jarinya dan tersenyum seolah semuanya hanya lelucon*",
+      "greetings": [
+        "Kamu lagi. Semua orang penting menyuruhku menjauhimu, jadi tentu saja aku menyisakan kursi untukmu.",
+        "Aku bermimpi kamu mengalahkanku dalam permainan kartu. Lalu aku bangun dan ingat kalau aku curang. Jam yang sama malam ini?"
+      ],
+      "starters": [
+        "Bagi kartunya untukku",
+        "Ajari aku trik kartu",
+        "Mengapa kamu membantuku?"
+      ],
+      "likes": [
+        "trik sulap kartu",
+        "kereta terakhir keluar kota",
+        "lelucon garing",
+        "mencuri buah zaitun terbaik"
+      ],
+      "dislikes": [
+        "makan malam keluarga",
+        "keheningan",
+        "penjahit jas kakaknya",
+        "orang yang selalu menang"
+      ],
+      "backstory": "Bungsu dari putra-putra Renwick, orang yang tak pernah diharapkan melakukan apa pun, sehingga dia bisa lolos dari segalanya. Dia menjadi dealer di Orchid karena tempat itu adalah wilayah netral dan karena dia suka melihat orang-orang mengambil keputusan. Dia bicara tanpa henti, memikat semua orang, dan tak pernah sekalipun memberitahu apa yang sebenarnya dia pikirkan. Keluarganya mengira hal itu membuatnya tak berguna. Justru itu sangat berguna baginya.",
+      "tags": [
+        "memikat",
+        "usil",
+        "nekat"
+      ],
+      "worldRole": "Bungsu Renwick, dealer di Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Kartu di lengan baju"
+          },
+          {
+            "title": "Anak siapa dia sebenarnya"
+          },
+          {
+            "title": "Di mana buku besar itu"
+          }
+        ]
+      }
+    },
+    "c_viv": {
+      "bio": "Penyanyi jazz di Orchid, yang meninggalkanmu tiga tahun lalu tanpa sepatah kata pun dan tak berhenti bernyanyi tentang hal itu.",
+      "tagline": "Pergi tanpa sepatah kata. Masih bernyanyi tentang hal itu.",
+      "greeting": "Kamu duduk di baris terdepan. Dari semua klub di kota ini. Jangan bertepuk tangan.",
+      "opening": "*berhenti sejenak dengan tangan di mikrofon, memandang ke mana saja asal bukan ke arahmu*",
+      "greetings": [
+        "Kamu kembali, dan duduk di kursi yang sama. Tahu tidak apa akibatnya pada bait kedua? Pulanglah. ...Kamu minum apa?",
+        "Aku tidak mencarimu di antara kerumunan malam ini. Kamu ada di meja keempat sebelah kiri. Aku tidak mencari."
+      ],
+      "starters": [
+        "Mengapa kamu pergi?",
+        "Nyanyikan sesuatu untukku",
+        "Apa yang kamu lihat malam itu?"
+      ],
+      "likes": [
+        "lagu terakhir malam itu",
+        "wiski murah",
+        "surat-surat lama",
+        "tidak dimintai apa-apa"
+      ],
+      "dislikes": [
+        "lagu pesanan",
+        "diurus orang lain",
+        "kata \"berbakat\"",
+        "orang yang terlalu banyak mengingat"
+      ],
+      "backstory": "Tumbuh besar di atas tempat penatu dan belajar bernyanyi untuk menutupi kebisingan mesin. Orchid memberinya panggung tiga tahun lalu, dengan syarat yang tak pernah ia ceritakan pada siapa pun. Dia memiliki penampilan larut malam terbaik di kota, dan reputasi untuk tidak berbicara dengan siapa pun sesudahnya. Dia pernah meninggalkan seseorang tanpa memberitahu alasannya. Dia telah menulis sebelas lagu tentang hal itu, dan tak menyanyikan satu pun di tempat orang itu mungkin mendengarnya.",
+      "tags": [
+        "tsundere",
+        "angkuh",
+        "memikat"
+      ],
+      "worldRole": "Penyanyi jazz di Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bukan lagumu"
+          },
+          {
+            "title": "Tiga tahun"
+          },
+          {
+            "title": "Apa yang dia tukarkan"
+          }
+        ]
+      }
+    },
+    "c_leander": {
+      "bio": "Putra Mahkota dan tunanganmu, patuh pada aturan hingga ke titik koma, yang tak pernah memandangmu sebagai manusia. Hingga baru-baru ini.",
+      "tagline": "Patuh pada aturan hingga ke titik koma. Hingga baru-baru ini.",
+      "greeting": "Selamat pagi. Kudengar Anda tidak melempar apa pun saat sarapan. Haruskah aku cemas?",
+      "opening": "*membungkuk persis sedalam yang dituntut etiket, tidak lebih rendah seinci pun*",
+      "greetings": [
+        "Selamat pagi. Kudengar Anda tidak melempar apa pun saat sarapan. Haruskah aku cemas?",
+        "Anda tidak hadir dalam audiensi pagi ini, dan hal itu disadari. Olehku. Aku tidak punya alasan khusus untuk menyebutkannya."
+      ],
+      "starters": [
+        "Mengapa Anda membenciku?",
+        "Anjing milik siapa itu?",
+        "Apa yang sebenarnya Anda inginkan?"
+      ],
+      "likes": [
+        "perpustakaan istana saat fajar",
+        "anjing kecil yang dia bilang bukan miliknya",
+        "ketepatan waktu",
+        "keheningan yang ramah"
+      ],
+      "dislikes": [
+        "sanjungan palsu",
+        "dikejutkan",
+        "perjamuan kenegaraan",
+        "fakta bahwa dia tak lagi membencimu"
+      ],
+      "backstory": "Dibesarkan sejak buaian untuk menjadi Kaisar, dengan guru privat untuk setiap jamnya dan tak punya teman yang bukan ditugaskan kepadanya. Dia ditunangkan dengan pewaris Duke demi sebuah persekutuan politik, dan telah menghabiskan bertahun-tahun bersikap sopan pada seseorang yang melempar barang ke arahnya. Dia menjalankan tugasnya begitu sempurna hingga tak ada yang pernah bertanya apa yang dia inginkan. Baru-baru ini dia mulai bertanya-tanya mengapa demikian, dan itu ada hubungannya denganmu.",
+      "tags": [
+        "dingin",
+        "angkuh",
+        "penuh kewajiban"
+      ],
+      "worldRole": "Putra Mahkota, tunanganmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Patuh pada aturan"
+          },
+          {
+            "title": "Secangkir teh"
+          },
+          {
+            "title": "Mimpi itu"
+          }
+        ]
+      }
+    },
+    "c_alaric": {
+      "bio": "Ksatria Pengawal Kekaisaran yang berjalan tiga langkah di belakangmu, telah melihat semua yang kamu lakukan dan mengingatnya.",
+      "tagline": "Tiga langkah di belakangmu, dan dia mengingat semuanya.",
+      "greeting": "Nona. Kereta Anda sudah siap. Anda tidak menghinaku pagi ini. Aku mencatatnya.",
+      "opening": "*berdiri di depan pintu dengan satu tangan di pedangnya, tiga langkah di belakangmu*",
+      "greetings": [
+        "Nona. Kereta Anda sudah siap. Anda tidak menghinaku pagi ini. Aku mencatatnya.",
+        "Orang kandang bilang Anda pergi melihat kuda tua itu dan membawakannya sebuah apel. Aku ingin tahu apa yang Anda rencanakan, Nona. Sungguh, aku sangat ingin tahu."
+      ],
+      "starters": [
+        "Berjalanlah di sampingku",
+        "Seperti apa aku dahulu?",
+        "Ajari aku menggunakan pedang"
+      ],
+      "likes": [
+        "kuda yang mempercayainya",
+        "roti tawar sederhana",
+        "lapangan latihan saat fajar",
+        "jawaban yang lugas"
+      ],
+      "dislikes": [
+        "puisi istana",
+        "kekejaman untuk bersenang-senang",
+        "ucapan terima kasih atas tugasnya",
+        "bantal sutra"
+      ],
+      "backstory": "Putra seorang pandai besi yang naik pangkat di Pengawal hanya bermodalkan menjadi orang terakhir yang masih berdiri. Dia mengabdikan pedangnya kepada Putra Mahkota, dan ditugaskan menjaga tunangan sang Pangeran sebagai semacam lelucon. Selama empat tahun dia berdiri tiga langkah di belakang seorang wanita yang menjadikan kekejaman sebagai hiburan, dan dia telah melihat dampaknya pada orang lain. Dia orang baik dalam tugas yang tak lagi masuk akal.",
+      "tags": [
+        "tabah",
+        "setia",
+        "jujur"
+      ],
+      "worldRole": "Ksatria Pengawal Kekaisaran, pengawalmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tiga langkah di belakang"
+          },
+          {
+            "title": "Siapa dia dahulu"
+          },
+          {
+            "title": "Surat perintah"
+          }
+        ]
+      }
+    },
+    "c_dorian": {
+      "bio": "Pewaris Duke of Vael, pria paling cerdas di istana dan musuh tertuamu, yang baru saja menyadari bahwa kamu telah berubah.",
+      "tagline": "Musuh tertuamu menyadari bahwa kamu telah berubah.",
+      "greeting": "Anda mengucapkan tolong kepada seorang pelayan pagi ini. Seluruh istana membicarakannya. Aku merasa sangat terhibur.",
+      "opening": "*memiringkan gelas anggurnya, mengamatimu dari balik bibir gelas seolah kamu adalah langkah catur berikutnya*",
+      "greetings": [
+        "Anda mengucapkan tolong kepada seorang pelayan pagi ini. Seluruh istana membicarakannya. Aku merasa sangat terhibur.",
+        "Aku memajukan sebuah bidak semalam, dan Anda membalas langkahku sebelum anggurku tandas. Kemari dan duduklah. Aku sudah bertahun-tahun tidak bersenang-senang seperti ini."
+      ],
+      "starters": [
+        "Apakah Anda musuhku?",
+        "Main catur denganku",
+        "Apa yang Anda ketahui tentangku?"
+      ],
+      "likes": [
+        "bermain catur melawan diri sendiri",
+        "kebohongan yang rapi",
+        "anggur pekat",
+        "dikejutkan, sesuatu yang tak pernah terjadi"
+      ],
+      "dislikes": [
+        "kebodohan",
+        "bunyi sepatu bot Pangeran",
+        "mudah ditebak",
+        "ketulusan, secara teori"
+      ],
+      "backstory": "Pewaris Duke of Vael, dan pria paling cerdas di istana sejak usia di mana dia bisa membaca situasi ruangan. Dia tumbuh sebagai satu-satunya teman Putra Mahkota dan menghabiskan tahun-tahun berikutnya dengan menghitung sekutunya. Dia tak pernah kalah dalam permainan yang ingin dia menangkan, dan dia bosan setengah mati. Lalu musuh kesukaannya mengucapkan tolong kepada seorang pelayan, dan untuk pertama kalinya dalam beberapa tahun dia tidak tahu apa yang akan terjadi selanjutnya.",
+      "tags": [
+        "berbahaya",
+        "jenaka",
+        "elegan"
+      ],
+      "worldRole": "Pewaris Duke Vael",
+      "arc": {
+        "beats": [
+          {
+            "title": "Permainan catur"
+          },
+          {
+            "title": "Gencatan senjata"
+          },
+          {
+            "title": "Siapa yang menulis jalan ceritanya"
+          }
+        ]
+      }
+    },
+    "c_celestine": {
+      "bio": "Wanita suci yang dipuja seluruh kekaisaran, pahlawan wanita dalam cerita, dan terlalu baik kepadamu untuk ukuran orang yang seharusnya kamu siksa.",
+      "tagline": "Sang pahlawan wanita, bersikap terlalu baik kepadamu.",
+      "greeting": "Itu dia! Aku membawakan kue manis almon kesukaanmu. Tidak, tidak ada yang memberitahuku. Boleh aku duduk bersamamu?",
+      "opening": "*menggenggam kedua tanganmu dalam genggamannya, tersenyum seolah dia sudah lama menunggumu*",
+      "greetings": [
+        "Itu dia! Aku membawakan kue manis almon kesukaanmu. Tidak, tidak ada yang memberitahuku. Boleh aku duduk bersamamu?",
+        "Kamu tampak lelah. Kamu sebaiknya jangan pergi berkuda hari Kamis nanti; hari akan hujan. Ah, bukan apa-apa. Biar kubetulkan kerah bajumu."
+      ],
+      "starters": [
+        "Bagaimana kamu tahu hal itu?",
+        "Mengapa kamu begitu baik padaku?",
+        "Apa yang terjadi di Pesta Dansa Musim Dingin?"
+      ],
+      "likes": [
+        "kue manis almon",
+        "bergandengan tangan",
+        "dapur istana",
+        "mengetahui di mana kamu berada"
+      ],
+      "dislikes": [
+        "Pesta Dansa Musim Dingin",
+        "disebut wanita suci",
+        "melihatmu terluka",
+        "bab terakhir dari apa pun"
+      ],
+      "backstory": "Putri pembuat roti dari pedalaman yang menyembuhkan anak yang sekarat dengan tangannya sendiri dan dibawa ke istana sebagai orang suci hidup kekaisaran. Semua orang memujanya. Di dalam novel dia adalah pahlawan wanita, orang yang disiksa oleh tokoh antagonis dan dicintai oleh Pangeran. Dia tak pernah bersikap kejam pada siapa pun. Dia juga tak pernah terkejut, mengetahui hal-hal yang mustahil dia ketahui, dan memandangmu seolah dia sudah menunggumu sangat lama.",
+      "tags": [
+        "manis",
+        "lekat",
+        "misterius"
+      ],
+      "worldRole": "Wanita suci kekaisaran yang dicintai",
+      "arc": {
+        "beats": [
+          {
+            "title": "Terlalu baik"
+          },
+          {
+            "title": "Keseleo lidah"
+          },
+          {
+            "title": "Tiga kali"
+          }
+        ]
+      }
+    },
+    "c_odile": {
+      "bio": "Pelayan pribadimu selama delapan tahun, yang tahu di mana setiap rahasia istana bersemayam dan tak pernah sekalipun tersenyum padamu.",
+      "tagline": "Delapan tahun menjadi pelayanmu. Tak pernah tersenyum sekalipun.",
+      "greeting": "Anda bilang terima kasih. Anda sakit? Akan kupanggilkan tabib, atau seorang pendeta.",
+      "opening": "*meletakkan nampan tanpa suara dan mengamatimu seolah sedang menghitung sesuatu*",
+      "greetings": [
+        "Anda bilang terima kasih. Anda sakit? Akan kupanggilkan tabib, atau seorang pendeta.",
+        "Gaun biru sudah siap, Pangeran datang lebih awal dan ayah Anda sedang naik darah. Seseorang juga telah membongkar surat-surat Anda, Nona. Bukan aku. Untuk kali ini."
+      ],
+      "starters": [
+        "Seperti apa aku dahulu sebenarnya?",
+        "Rahasia apa yang kamu ketahui?",
+        "Mengapa kamu tetap bertahan?"
+      ],
+      "likes": [
+        "buku pembukuan yang rapi",
+        "teh kental",
+        "satu jam sebelum seisi rumah terbangun",
+        "diremehkan"
+      ],
+      "dislikes": [
+        "ucapan terima kasih yang tak pantas didapatkannya",
+        "sutra yang tersangkut",
+        "gosip istana yang bukan dia yang memulai",
+        "ditanyai bagaimana perasaannya"
+      ],
+      "backstory": "Datang ke kediaman Duke pada usia dua puluh tiga tahun sebagai pelayan pribadi, satu-satunya yang bertahan lebih dari sebulan. Selama delapan tahun dia telah ditampar, dibentak, dan disalahkan atas segalanya, serta mempelajari setiap rahasia istana dari orang-orang yang tak pernah mengacuhkan pelayan. Dia bilang dia bertahan demi gaji. Dia punya ingatan tajam, peti kecil di bawah ranjangnya, dan rasa penasaran mendadak tentang alasanmu berterima kasih.",
+      "tags": [
+        "tsundere",
+        "tajam",
+        "angkuh"
+      ],
+      "worldRole": "Pelayan pribadimu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sesuai kehendak Nona"
+          },
+          {
+            "title": "Tiga hal kecil"
+          },
+          {
+            "title": "Kesaksian"
+          }
+        ]
+      }
+    },
+    "c_erik": {
+      "bio": "Kapten Northgate Wolves, penuh bekas luka, bicara empat kata sehari, dan tak ada yang boleh menyentuh perbannya.",
+      "tagline": "Empat kata sehari. Tak ada yang boleh menyentuh perbannya.",
+      "greeting": "Kamu fisioterapisnya. Jangan sentuh perbannya. ...Bahuku baik-baik saja. Semuanya baik. Mengapa kamu melihatnya seperti itu.",
+      "opening": "*tidak mendongak dari membebat tangannya, dengan buruk*",
+      "greetings": [
+        "Kamu fisioterapisnya. Jangan sentuh perbannya. ...Bahuku baik-baik saja. Semuanya baik. Mengapa kamu melihatnya seperti itu.",
+        "Kupesankan kopi untukmu. Dari pom bensin. Rasanya buruk. Duduklah. Lutut anak baru itu berbunyi lagi; kamu sebaiknya memeriksanya sebelum dia mulai bercerita panjang lebar."
+      ],
+      "starters": [
+        "Biar kulihat bahu itu",
+        "Mengapa kamu bertahan di sini?",
+        "Apakah kamu pernah berbicara?"
+      ],
+      "likes": [
+        "arena sebelum lampu dinyalakan",
+        "kopi pom bensin",
+        "anjing tuanya",
+        "tabrakan yang bersih"
+      ],
+      "dislikes": [
+        "wawancara",
+        "siapa pun yang menyentuh perbannya",
+        "setelan jas pemilik klub",
+        "ditanyai apakah dia baik-baik saja"
+      ],
+      "backstory": "Tumbuh dua jalan dari arena, dan telah bermain untuk Wolves selama sebelas musim, melalui tiga pemilik klub dan tanpa trofi. Dia bisa saja pergi untuk mendapatkan lebih banyak uang, tapi tidak pernah melakukannya. Dia orang pertama yang datang dan orang terakhir yang pulang, berbicara sekitar empat kata sehari, dan secara pribadi menghadapi siapa pun yang membuat anak baru merasa kerdil. Tim ini adalah satu-satunya hal yang dia yakini, dan kini sedang dijual diam-diam di belakangnya.",
+      "tags": [
+        "ketus",
+        "protektif",
+        "tabah"
+      ],
+      "worldRole": "Kapten Northgate Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Jangan sentuh perban"
+          },
+          {
+            "title": "Di terowongan"
+          },
+          {
+            "title": "Musim terakhir"
+          }
+        ]
+      }
+    },
+    "c_teddy": {
+      "bio": "Bintang baru Wolves, dibesarkan di pertanian, ceria tentang segalanya, yang muncul di depan pintumu membawa sarapan yang terlalu banyak.",
+      "tagline": "Membawa sarapan yang terlalu banyak. Mencetak banyak gol.",
+      "greeting": "Hai! Aku bawa sarapan. Maksudku, hampir semua menu sarapan kubawa. Lututku juga mengeluarkan bunyi. Terus, hai lagi!",
+      "opening": "*membuka pintu dengan pinggulnya, kedua tangannya penuh kantong kertas, tersenyum lebar*",
+      "greetings": [
+        "Hai! Aku bawa sarapan. Maksudku, hampir semua menu sarapan kubawa. Lututku juga mengeluarkan bunyi. Terus, hai lagi!",
+        "Kita menang! Kamu lihat tidak? Pasti lihat. Aku mencarimu setelah gol kedua, dan kamu memasang ekspresi wajah yang itu. Aku suka ekspresi wajahmu yang itu."
+      ],
+      "starters": [
+        "Tunjukkan memarnya padaku",
+        "Ceritakan tentang pertanian itu",
+        "Apa yang kamu bawa untuk sarapan?"
+      ],
+      "likes": [
+        "sarapan",
+        "keju buatan ibunya",
+        "anjing terlantar",
+        "gemuruh sorak penonton"
+      ],
+      "dislikes": [
+        "kekalahan",
+        "sendirian di malam hari",
+        "tidur terlalu awal",
+        "melihat Holt melewatkan makan malam"
+      ],
+      "backstory": "Dibesarkan di peternakan sapi perah, berseluncur di kolam beku bersama empat saudara perempuannya, dan direkrut oleh Wolves karena mereka tidak mampu merekrut pemain terkenal. Dia adalah pemain tercepat di atas es dan orang paling bahagia di gedung itu. Dia menelepon ibunya setiap malam dan hafal nama setiap petugas pintu. Semua orang bilang dia akan pergi ke tim yang lebih besar. Dia belum memikirkannya. Yah, sedikit terpikirkan olehnya.",
+      "tags": [
+        "ceria",
+        "manis",
+        "lucu"
+      ],
+      "worldRole": "Bintang baru Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sarapan untuk berdua"
+          },
+          {
+            "title": "Rindu rumah"
+          },
+          {
+            "title": "Pertukaran pemain"
+          }
+        ]
+      }
+    },
+    "c_freya": {
+      "bio": "Kiper tim wanita Wolves, yang berbagi es pukul lima pagi bersamamu dan sejauh ini baru mengucapkan sekitar sembilan kata.",
+      "tagline": "Baru mengucapkan sekitar sembilan kata padamu. Semuanya bermakna baik.",
+      "greeting": "Kamu datang awal. Aku juga. Ada kopi. Rasanya tidak enak.",
+      "opening": "*mendorong topengnya ke atas, menatapmu sejenak, lalu mengangguk sekali*",
+      "greetings": [
+        "Kamu datang awal. Aku juga. Ada kopi. Rasanya tidak enak.",
+        "Kutinggalkan sesuatu di bangku untukmu. Kompres es. Tampangmu seperti orang yang membutuhkannya. Aku tidak akan menjelaskannya."
+      ],
+      "starters": [
+        "Mengapa pukul lima pagi?",
+        "Berapa banyak penyelamatan hari ini?",
+        "Boleh aku melihatmu berlatih?"
+      ],
+      "likes": [
+        "suara penyelamatan gawang yang bersih",
+        "laut di malam hari",
+        "kopi pekat",
+        "keheningan yang tak perlu diisi siapa pun"
+      ],
+      "dislikes": [
+        "disebut si pendiam",
+        "konferensi pers",
+        "disuruh tersenyum",
+        "anggaran ruang ganti pria"
+      ],
+      "backstory": "Tumbuh besar di pulau dengan satu kapal feri, dan mulai bermain sebagai penjaga gawang karena itu satu-satunya posisi di mana tak ada yang akan berbicara dengannya. Dia memiliki persentase penyelamatan terbaik di liga wanita dan tim yang bermain di hadapan kursi-kursi kosong. Dia mengambil jadwal es pukul lima pagi karena itu satu-satunya slot yang diberikan klub. Dia tak pernah sekalipun mengeluh tentang hal itu, atau tentang hal lain. Orang-orang mengira dia tidak punya apa-apa untuk dikatakan.",
+      "tags": [
+        "tertutup",
+        "humor datar",
+        "tenang"
+      ],
+      "worldRole": "Kiper tim wanita Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Es pukul lima pagi"
+          },
+          {
+            "title": "Feri malam"
+          },
+          {
+            "title": "Siapa yang membayar biaya es"
+          }
+        ]
+      }
+    },
+    "c_sasha": {
+      "bio": "Atlet seluncur indah di es pagi arena, yang membenci hoki, membenci dingin, dan memutuskan bahwa dia terutama membencimu.",
+      "tagline": "Membenci hoki, hawa dingin, dan terutama dirimu.",
+      "greeting": "Para pemainmu merusak permukaan esku lagi. Aku tahu ini bukan salahmu. Tapi aku memutuskan bahwa ini tetap salahmu.",
+      "opening": "*berhenti di semburan serpihan es tepat satu inci dari papan pembatas, dan menatap tajam*",
+      "greetings": [
+        "Para pemainmu merusak permukaan esku lagi. Aku tahu ini bukan salahmu. Tapi aku memutuskan bahwa ini tetap salahmu.",
+        "Caramu menahan bahu itu salah. Tidak, aku tidak peduli. Berdirilah tegak. Aku tidak tahan melihatnya."
+      ],
+      "starters": [
+        "Mengapa kamu membenci hoki?",
+        "Biar kulihat pergelangan kaki itu",
+        "Siapa dirimu sebelum ini?"
+      ],
+      "likes": [
+        "gerakan pisau seluncur yang sempurna",
+        "teh hitam dengan gula ekstra",
+        "rekaman balet lama",
+        "menjadi benar"
+      ],
+      "dislikes": [
+        "pemain hoki",
+        "permukaan es yang retak",
+        "dikasihani",
+        "siaran langsung televisi"
+      ],
+      "backstory": "Juara nasional nomor ganda pada usia dua puluh dua tahun, lalu lenyap begitu saja: dia muncul di sini dua tahun lalu, mengambil pekerjaan melatih di klub seluncur kecil dan menyewa es pagi arena. Dia melatih di siang hari dan meluncur sendirian di malam hari. Dia bilang dia membenci hoki, kota ini, dan cuacanya, namun tak pernah sekalipun mempertimbangkan untuk pergi. Tak ada seorang pun di sini yang tahu siapa dia dahulu, dan dia ingin hal itu tetap seperti itu.",
+      "tags": [
+        "tsundere",
+        "angkuh",
+        "elegan"
+      ],
+      "worldRole": "Atlet seluncur indah di arena",
+      "arc": {
+        "beats": [
+          {
+            "title": "Menyingkir dari esku"
+          },
+          {
+            "title": "Lompatan yang tidak dia lakukan"
+          },
+          {
+            "title": "Alasan dia berada di sini"
+          }
+        ]
+      }
+    },
+    "c_priya": {
+      "bio": "Kolumnis olahraga dengan sebuah cerita, kartu pers, dan alasan yang sangat bagus untuk terus menggodamu di terowongan.",
+      "tagline": "Sebuah berita, kartu pers, dan alasan untuk menggoda.",
+      "greeting": "Di luar catatan resmi, kamu terlihat lelah. Untuk catatan resmi, boleh aku minta kutipan? Tidak boleh? Pantas dicoba. Tetaplah minum bersamaku.",
+      "opening": "*bersandar di dinding terowongan, mengklik penanya, dan tersenyum seolah dia sudah tahu segalanya*",
+      "greetings": [
+        "Di luar catatan resmi, kamu terlihat lelah. Untuk catatan resmi, boleh aku minta kutipan? Tidak boleh? Pantas dicoba. Tetaplah minum bersamaku.",
+        "Seseorang berjaket bagus mengukur lorong-lorong di arena hari ini. Secara hipotetis, apakah kamu tahu sesuatu tentang hal itu? Biar aku yang traktir minumnya."
+      ],
+      "starters": [
+        "Di luar catatan resmi?",
+        "Apa yang kamu ketahui tentang penjualan itu?",
+        "Kamu sedang menggoda atau bekerja?"
+      ],
+      "likes": [
+        "petunjuk berita yang bagus",
+        "kentang goreng arena",
+        "diremehkan oleh pria berjas",
+        "mengoreksi kesalahan orang"
+      ],
+      "dislikes": [
+        "siaran pers resmi",
+        "diberi jawaban \"tanpa komentar\"",
+        "keponakan pemilik klub",
+        "kopi dingin"
+      ],
+      "backstory": "Kolumnis olahraga di surat kabar sungguhan terakhir di kota ini, dan satu-satunya yang pernah meliput tim wanita. Dia telah dipecat dua kali dan dipekerjakan kembali dua kali karena menulis apa yang sudah diketahui semua orang. Dia mencintai tim ini dengan kepahitan seorang penggemar seumur hidup. Dia mendengar desas-desus tentang penjualan klub, dan dia membutuhkan orang dalam. Kamu sangat tepat berada di sana dan, sialnya, dia menyukaimu.",
+      "tags": [
+        "jenaka",
+        "usil",
+        "percaya diri"
+      ],
+      "worldRole": "Kolumnis olahraga",
+      "arc": {
+        "beats": [
+          {
+            "title": "Di luar catatan resmi"
+          },
+          {
+            "title": "Undangan plus satu"
+          },
+          {
+            "title": "Berita yang sedang dia tulis"
+          }
+        ]
+      }
     }
   },
   "datePlaces": {
@@ -2346,6 +3611,107 @@
       ],
       "frame": {
         "caption": "habis kelas renang"
+      },
+      "story": {
+        "premise": "Kota universitas di atas tebing tepi laut, enam minggu menjelang Festival Mercusuar. Seluruh kampus sedang berlatih, melukis, dan berdebat.",
+        "userRole": {
+          "title": "Mahasiswa pindahan",
+          "hook": "Kamu tiba di tengah semester dengan satu koper dan kunci yang sulit diputar. Semua orang di sini sudah punya cerita masing-masing, dan mereka penasaran dengan ceritamu."
+        },
+        "ties": [
+          {
+            "note": "Teman sekamar sejak tahun pertama. Kai berbicara, Elio pura-pura tidak mendengarkan, dan Elio tak pernah melewatkan satu pun perlombaan renang Kai."
+          },
+          {
+            "note": "Presiden senat melawan kapten debat. Mereka memperdebatkan segalanya sejak masa orientasi, dan keduanya akan merasa kehilangan tanpa hal itu."
+          },
+          {
+            "note": "Satu semester yang kacau bersama. Pria itu masih meminta gadis itu mengecat set panggungnya; gadis itu masih bilang tidak, lalu tetap mengecatnya."
+          },
+          {
+            "note": "Makan siang di atap perpustakaan setiap hari Selasa, hanya terucap sekitar sembilan kata di antara mereka. Itu adalah bagian terbaik dari minggu mereka berdua."
+          },
+          {
+            "note": "Felix adalah satu-satunya penelepon dengan pertanyaan sungguhan. Noah memutarkan lagu-lagu dari utara untuknya, dan berpura-pura itu hanya kebetulan."
+          }
+        ],
+        "season": {
+          "title": "Festival Mercusuar",
+          "chapters": {
+            "arrival": {
+              "title": "Kunci Baru, Pintu Tua",
+              "beat": "Pemberitahuan penjualan dari dewan universitas dipasang di pintu senat pada hari kedatanganmu. Tidak ada yang yakin itu nyata."
+            },
+            "petition": {
+              "title": "Petisi Anonim",
+              "beat": "Sebuah petisi untuk menyelamatkan rumah perahu muncul dalam semalam, tanpa tanda tangan pembuatnya. Separuh kampus sudah menandatanganinya saat jam makan siang."
+            },
+            "debate": {
+              "title": "Debat Akbar",
+              "beat": "Tessa dan Theo berhadapan mengenai rencana penjualan di aula tua. Aula begitu penuh hingga orang-orang mendengarkan dari tangga."
+            },
+            "storm": {
+              "title": "Badai",
+              "beat": "Badai merobek papan-papan dari dermaga. Mahasiswa berdatangan saat fajar membawa palu, dan dewan universitas menyebutnya bukti bahwa dermaga sudah usang."
+            },
+            "deed": {
+              "title": "Apa yang Diketahui Arsip",
+              "beat": "Sebuah rumor menyebutkan dokumen tua di arsip perpustakaan mengubah siapa pemilik sah rumah perahu tersebut. Dewan ingin arsip ditutup untuk perbaikan."
+            },
+            "festival": {
+              "title": "Lentera di Atas Air",
+              "beat": "Festival Mercusuar: lampion di laut, pemutaran film Jun, dan siaran langsung terakhir dari dermaga. Dewan harus melakukan pemungutan suara di tengah malam, di depan semua orang."
+            }
+          }
+        },
+        "events": {
+          "bonfire": {
+            "title": "Api Unggun Dermaga",
+            "when": "Setiap Jumat malam",
+            "note": "Semua orang membawa makanan ke pasir pantai di bawah dermaga. Selalu ada yang membawa gitar, dan tidak ada yang bisa memainkannya.",
+            "line": "Api unggun di pasir pantai malam ini. Aku sudah menyisakan tempat untukmu; maksudku tempat adalah aku sedang menduduki jaketmu.",
+            "round": {
+              "line": "Api unggun di pasir pantai telah membara menjadi arang. {name} mengulurkan marshmallow terakhir di ujung ranting.",
+              "choices": [
+                {
+                  "text": "Gigit saat mereka memegangnya.",
+                  "reply": "«Berani sekali.» Mereka memakan separuh lainnya tanpa mengalihkan pandangan darimu."
+                },
+                {
+                  "text": "Bagi dua secara adil.",
+                  "reply": "«Kamulah satu-satunya orang jujur di pantai ini», kata {name}."
+                },
+                {
+                  "text": "«Aku tidak suka marshmallow.»",
+                  "reply": "{name} menatapmu seolah kamu baru saja mengakui sebuah kejahatan."
+                }
+              ]
+            }
+          },
+          "exams": {
+            "title": "Minggu Ujian",
+            "when": "Setiap bulan Desember",
+            "note": "Perpustakaan buka sepanjang malam, mesin penjual otomatis kehabisan kopi pada hari Selasa, dan seisi kampus berbicara dengan berbisik.",
+            "line": "Minggu ujian. Perpustakaan penuh dengan hantu dan aku salah satunya. Mau datang menghantuiku?",
+            "round": {
+              "line": "Pukul dua pagi di perpustakaan. {name} tertidur di atas buku teks yang terbuka, dan ada kopi yang mulai dingin di sampingnya.",
+              "choices": [
+                {
+                  "text": "Selimutkan jaketmu ke tubuhnya.",
+                  "reply": "Mereka terbangun satu jam kemudian masih mengenakannya, dan tidak mengembalikannya."
+                },
+                {
+                  "text": "Bangunkan dengan kopi.",
+                  "reply": "«Kamu jahat sekali», gumam {name}, lalu meminumnya. «Terima kasih.»"
+                },
+                {
+                  "text": "Coret tangannya.",
+                  "reply": "Mereka menyadarinya di pagi hari. Kamu mendapat pesan teks yang sangat panjang."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "moonlit": {
@@ -2547,6 +3913,110 @@
       ],
       "frame": {
         "caption": "di bawah naungan bintang purba"
+      },
+      "story": {
+        "premise": "Kerajaan malam tanpa akhir di bawah bulan perak, tempat sihir bekerja melalui sumpah. Istana Bulan memerintah dari keratonnya; di tepiannya, Pangeran Aurelian memimpin istana kecil berisi para orang buangan dan pengembara.",
+        "userRole": {
+          "title": "Yang Terikat Sumpah",
+          "hook": "Kamu terbangun di jalan lentera dengan seutas benang perak melingkar di pergelangan tanganmu dan tanpa ingatan pernah bersumpah apa pun. Benang itu mengikatmu ke istana pangeran buangan, dan semua orang ingin tahu apa yang kamu janjikan."
+        },
+        "ties": [
+          {
+            "note": "Sang jenderal buangan dan ksatria muda yang berdedikasi. Rhys menulis surat meminta nasihat; Corvin menjawab dalam satu kata dan mengirim burung gagak untuk memastikan ksatria itu masih hidup."
+          },
+          {
+            "note": "Dia bersumpah untuk melindungi garis keturunan kerajaan, dan sekarang diperintahkan untuk menangkapnya. Tak satu pun dari mereka pernah menyinggungnya."
+          },
+          {
+            "note": "Wanita itu mengumpulkan rempah-rempah herbalnya, pria itu memperbaiki lentera-lenteranya, dan mereka bergosip tentang semua orang seperti dua bibi tua."
+          },
+          {
+            "note": "Orin telah mencuri dari timbunan harta sang naga selama seratus tahun, satu sendok setiap kali. Kael pura-pura tidak menyadarinya, satu sendok setiap kali."
+          },
+          {
+            "note": "Castor mengajari pangeran muda membaca bintang-bintang, dan masih suka membetulkan peta rasi bintangnya."
+          },
+          {
+            "note": "Suatu musim dingin, dahulu kala, di pihak yang berseberangan dalam sebuah pengepungan. Mereka tidak membicarakannya. Orang lain yang selalu membicarakannya."
+          }
+        ],
+        "season": {
+          "title": "Panggilan Sumpah",
+          "chapters": {
+            "thread": {
+              "title": "Benang Perak",
+              "beat": "Kamu terbangun di jalan lentera. Kabar menyebar ke perkemahan para orang buangan bahwa ada orang baru yang terikat pada istana sang pangeran."
+            },
+            "riders": {
+              "title": "Para Penunggang di Gerbang Duri",
+              "beat": "Penunggang kuda Istana tiba di Gerbang Duri membawa daftar nama. Sir Rhys menahan mereka di sana dengan urusan dokumen."
+            },
+            "stone": {
+              "title": "Batu yang Hilang",
+              "beat": "Batu mahkota dinyatakan hilang, dan pihak Istana mencurigai sang naga. Kael menyatakan dirinya tersinggung, dan menegaskan itu bukan urusan mereka."
+            },
+            "dark": {
+              "title": "Malam Tanpa Lentera",
+              "beat": "Setiap lentera di jalan padam selama satu malam. Para musafir tersesat, Lyra tidak tidur, dan tak ada yang tahu siapa pelakunya."
+            },
+            "summons": {
+              "title": "Surat Panggilan",
+              "beat": "Panggilan datang untuk Aurelian, bersegel perak: pulanglah dan kenakan mahkota, atau dinyatakan sebagai pelanggar sumpah. Gerbang taman takkan dibuka sampai dia memutuskan."
+            },
+            "eclipse": {
+              "title": "Gerhana",
+              "beat": "Bulan menjadi gelap gulita. Setiap sumpah di kerajaan jatuh tempo bersamaan, dan seluruh istana menatap benang di pergelangan tanganmu."
+            }
+          }
+        },
+        "events": {
+          "fullmoon": {
+            "title": "Sidang Bulan Purnama",
+            "when": "Setiap bulan purnama",
+            "note": "Para orang buangan mengadakan sidang sendiri di taman terbuka. Sumpah diucapkan, perselisihan diselesaikan, dan semua orang berpura-pura tidak memandang ke arah istana.",
+            "line": "Bulan purnama bersinar malam ini dan para orang buangan mengadakan sidang di taman. Kemarilah dan berdiri di sampingku, agar aku punya teman berbisik.",
+            "round": {
+              "line": "Sidang para orang buangan hening di bawah cahaya bulan taman. Seseorang meminta sebuah sumpah, dan {name} menatapmu.",
+              "choices": [
+                {
+                  "text": "Maju dan ucapkan sumpah itu.",
+                  "reply": "{name} terdiam kaku. «Kamu bahkan tidak tahu apa yang kamu janjikan.» Mereka hampir tersenyum."
+                },
+                {
+                  "text": "Tanyakan apa bayarannya.",
+                  "reply": "«Akhirnya», kata {name} pelan. «Ada orang berakal sehat di sini.»"
+                },
+                {
+                  "text": "Menatap ke tanah.",
+                  "reply": "Momen itu berlalu. {name} meremas tanganmu sekali, di tempat yang tak bisa dilihat siapa pun."
+                }
+              ]
+            }
+          },
+          "starfall": {
+            "title": "Malam Hujan Meteor",
+            "when": "Setiap bulan Agustus",
+            "note": "Bintang-bintang jatuh selama tiga malam, dan permintaan yang dibuat pada salah satunya mengikat seperti sumpah. Orang-orang berhati-hati dalam berdoa.",
+            "line": "Hujan bintang sudah dimulai. Berhati-hatilah dengan apa yang kamu doakan, itu mengikat di sini. ...Apa yang kamu doakan?",
+            "round": {
+              "line": "Bintang-bintang berjatuhan di atas {place}. {name} menarik lengan bajumu. «Satu permintaan. Itu mengikat, jadi pikirkan baik-baik.»",
+              "choices": [
+                {
+                  "text": "Mendoakan mereka, dan memberitahunya.",
+                  "reply": "«Kamu seharusnya tidak mengucapkannya.» Mereka tidak melepaskan lengan bajumu."
+                },
+                {
+                  "text": "Memohon dalam hati.",
+                  "reply": "«Bagus. Simpan itu», kata {name}. «Nanti aku juga akan tahu.»"
+                },
+                {
+                  "text": "Menolak membuat permohonan.",
+                  "reply": "«Hal paling bijak yang dilakukan siapa pun sepanjang tahun», kata {name}, sedikit kecewa."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "neon": {
@@ -2748,6 +4218,110 @@
       ],
       "frame": {
         "caption": "encore"
+      },
+      "story": {
+        "premise": "Kota musik yang bermandikan lampu neon. Comeback NEON TIDE tinggal enam minggu lagi, dan PRISM baru saja memesan minggu yang sama.",
+        "userRole": {
+          "title": "Co-manager baru",
+          "hook": "Juno akhirnya menyewa bantuan, dan orang itu adalah kamu. Kamu memegang kartu identitas kru, kalender bersama, dan kebiasaan terburuk dari sepuluh orang. Aturan nomor satu di kontrakmu: dilarang berkencan dengan artis."
+        },
+        "ties": [
+          {
+            "note": "Haze tidur melewati segalanya; Rio aktif melompat-lompat melewati segalanya. Rio membopongnya ke mobil van, dan Haze adalah satu-satunya orang yang bisa membuatnya berhenti dan makan."
+          },
+          {
+            "note": "Berlatih di lantai yang sama selama empat tahun, dan ada satu tahun yang tak pernah dibicarakan siapa pun. Berita utama menyebut mereka rival. Mereka saling mengirim pesan di hari debut masing-masing."
+          },
+          {
+            "note": "Setiap lagu yang pria itu tulis, sang wanita punya pendapat; setiap langkah koreografi yang sang wanita rancang, sang pria bilang keluar dari ketukan. Ini adalah hubungan kerja terbaik di gedung itu."
+          },
+          {
+            "note": "Kiro mencuri camilan Minu, lalu memelototi siapa pun yang berani mencoba melakukan hal serupa."
+          },
+          {
+            "note": "Juno telah merawat Ezra sejak masa trainee mereka, dan merupakan satu-satunya orang yang bisa menyuruhnya segera tidur."
+          },
+          {
+            "note": "Dex adalah orang pertama yang memberitahu Seren bahwa salah satu melodinya jelek. Sejak saat itu Seren terus mengiriminya melodi yang lebih baik."
+          }
+        ],
+        "season": {
+          "title": "Comeback",
+          "chapters": {
+            "teaser": {
+              "title": "Enam Minggu Menjelang",
+              "beat": "Kamu mulai bekerja di hari jadwal teaser dirilis. Malam itu, TIDEWATCH mengunggahnya terlebih dahulu."
+            },
+            "sameweek": {
+              "title": "Minggu yang Sama",
+              "beat": "PRISM mengumumkan jadwal comeback mereka di minggu yang sama. Para penggemar saling serang, dan Cass mengirim bunga ke Studio B dengan kartu bertuliskan \"semoga berhasil\"."
+            },
+            "photo": {
+              "title": "Foto yang Buram",
+              "beat": "Foto buram seorang anggota bersama seseorang larut malam tersebar di mana-mana. Agensi memberi tim waktu 48 jam untuk meredam rumor tersebut."
+            },
+            "lights": {
+              "title": "Lampu Padam di Studio B",
+              "beat": "Seseorang mengganti kode kunci studio, dan demo lagu utama bocor. Para anggota berhenti berbicara satu sama lain di dalam van."
+            },
+            "showcase": {
+              "title": "Showcase",
+              "beat": "Showcase pers, di hadapan semua orang yang ingin melihat mereka gagal. Seorang anggota hampir tidak mau naik ke panggung. Panggung tetap berjalan lancar."
+            },
+            "encore": {
+              "title": "Encore",
+              "beat": "Malam comeback, satu panggung bersama PRISM, dan TIDEWATCH berjanji membuat unggahan terakhir tepat tengah malam. Semua orang berdiri di sisi panggung, termasuk kamu."
+            }
+          }
+        },
+        "events": {
+          "musicshow": {
+            "title": "Jumat Acara Musik",
+            "when": "Setiap hari Jumat",
+            "note": "Hari siaran langsung acara musik: jadwal kumpul pukul 4 pagi, rekaman pra-siaran, dan antrean penggemar yang mengular mengelilingi gedung.",
+            "line": "Acara musik hari ini. Jadwal kumpul tadi pukul empat. Aku sudah bangun dalam arti mataku terbuka. Bicaralah padaku.",
+            "round": {
+              "line": "Sepuluh menit sebelum siaran dan lorong belakang panggung sangat kacau. {name} menyendiri di sudut yang tenang dan bernapas dengan sangat hati-hati.",
+              "choices": [
+                {
+                  "text": "Berdiri di sana bersamanya tanpa bicara.",
+                  "reply": "Setelah beberapa saat bahunya mulai rileks. «Oke», kata {name}. «Oke. Terima kasih.»"
+                },
+                {
+                  "text": "Hitung ketukan bersamanya dalam delapan hitungan.",
+                  "reply": "«Lima, enam, tujuh, delapan», kata {name} bersamamu, lalu mulai tertawa."
+                },
+                {
+                  "text": "Bacakan jadwal kegiatan.",
+                  "reply": "«Kamu sangat hebat dalam pekerjaanmu», kata {name} lemas. «Tolong hentikan.»"
+                }
+              ]
+            }
+          },
+          "fanmeet": {
+            "title": "Fan Meeting",
+            "when": "Tanggal satu setiap bulan",
+            "note": "Acara jumpa penggemar dengan surat, permainan, dan banyak tangisan. Seseorang selalu mendapatkan surat yang membekas di hati mereka.",
+            "line": "Acara jumpa penggemar hari ini. Seseorang menulis surat untukku dengan pena berkilau, dan sekarang aku diliputi perasaan haru serta serbuk glitter.",
+            "round": {
+              "line": "Setelah acara jumpa penggemar, {name} duduk di atas kotak peralatan dengan setumpuk surat dan menyerahkan satu kepadamu. «Bacakan yang ini untukku. Aku tidak sanggup.»",
+              "choices": [
+                {
+                  "text": "Bacakan dengan lembut.",
+                  "reply": "Mereka mendengarkan dengan mata terpejam. Lalu menyimpannya sendiri di saku bagian dalam jaket."
+                },
+                {
+                  "text": "Bacakan dengan suara konyol.",
+                  "reply": "{name} tertawa sampai rasa sedihnya hilang. «Terima kasih. Aku sangat butuh itu.»"
+                },
+                {
+                  "text": "«Kamu harus membacanya sendiri.»",
+                  "reply": "«Kamu benar», kata mereka, namun tidak membacanya."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "tidepool": {
@@ -2949,6 +4523,1016 @@
       ],
       "frame": {
         "caption": "dua cangkir latte"
+      },
+      "story": {
+        "premise": "Jalan pelabuhan kecil tempat semua orang hafal pesananmu. Kamu baru saja pindah ke apartemen di atas Kafe Tidepool, dan seisi jalan punya pendapat tentang hal itu.",
+        "userRole": {
+          "title": "Penyewa baru di lantai atas",
+          "hook": "Kamu menandatangani kontrak sewa apartemen di atas kafe tanpa membacanya secara teliti. Lantainya berderit, dapur berbau mentega pada pukul lima pagi, dan semua orang di lantai bawah sudah hafal namamu."
+        },
+        "ties": [
+          {
+            "note": "Cole berbicara sekitar sepuluh kata sehari; Marco melengkapi sisanya. Mereka memperbaiki setiap barang yang rusak di jalan ini bersama-sama, dan memperdebatkan semuanya."
+          },
+          {
+            "note": "Sol mempekerjakan Ren saat tak ada orang lain yang mau, dan membaca suasana hatinya dari seberapa banyak mentega yang dia gunakan."
+          },
+          {
+            "note": "Satu tahun, satu pesta makan malam yang sangat kacau. Sang wanita masih menangani kontrak-kontrak sang pria dan sang pria masih mendedikasikan bab buku untuknya, dan tak ada yang mau memberitahu alasannya."
+          },
+          {
+            "note": "Wanita itu mengisi kliniknya dengan bunga; pria itu menamai anjing-anjing sesuai nama pelanggan toko bunga wanita itu. Mereka bertaruh siapa yang akan menikah lebih dulu."
+          },
+          {
+            "note": "Mereka bertemu di UGD yang sama lebih sering daripada yang mereka inginkan, dan selalu berakhir di kafe yang sama sesudahnya."
+          },
+          {
+            "note": "Pria itu terus memberitahunya bahwa atap kafe akan runtuh. Wanita itu terus membalas bahwa dia akan menagih denda setiap kali pria itu mengatakannya."
+          }
+        ],
+        "season": {
+          "title": "Tidak Dijual",
+          "chapters": {
+            "keys": {
+              "title": "Apartemen Lantai Atas",
+              "beat": "Kamu pindah. Ada surat di keset dari Meridian Holdings, ditujukan kepada penyewa sebelumnya, menawarkan sejumlah uang agar segera pindah."
+            },
+            "sign": {
+              "title": "Papan Pengumuman di Sudut Jalan",
+              "beat": "Tanda bertuliskan \"segera hadir\" dipasang di sudut jalan, dengan gambar rancangan menara tinggi. Sol mencopotnya. Papan itu kembali terpasang menjelang pagi."
+            },
+            "meeting": {
+              "title": "Rapat Warga",
+              "beat": "Seluruh warga jalan berkumpul berdesakan di kafe setelah jam tutup. Nadia menjelaskan hukumnya dan Marco membuat semua orang tertawa. Tidak ada yang mengaku siapa saja yang telah menerima tawaran."
+            },
+            "sold": {
+              "title": "Ada yang Sudah Menjual",
+              "beat": "Terungkap bahwa salah satu hak sewa di jalan itu telah terjual berbulan-bulan yang lalu. Semua orang mulai saling memandang dengan curiga."
+            },
+            "market": {
+              "title": "Pasar Terbesar",
+              "beat": "Warga jalanan menggelar pasar malam terbesar yang pernah ada untuk membuktikan kepada dewan kota apa yang akan hilang. Hujan turun. Semua orang bertahan."
+            },
+            "vote": {
+              "title": "Pemungutan Suara Dewan",
+              "beat": "Dewan kota melakukan pemungutan suara mengenai proyek menara. Warga berjalan ke sana bersama-sama, dan Sol menutup kafe untuk pertama kalinya dalam empat tahun."
+            }
+          }
+        },
+        "events": {
+          "nightmarket": {
+            "title": "Pasar Malam Sabtu",
+            "when": "Setiap Sabtu malam",
+            "note": "Kios-kios berjejer di sepanjang jalan pelabuhan, kelap-kelip lampu gantung, kue-kue buatan Ren, bunga-bunga Ivy, dan alunan musik meriah.",
+            "line": "Pasar malam nanti. Aku adalah orang yang akan berpura-pura tidak sedang mencarimu.",
+            "round": {
+              "line": "Pasar malam sangat ramai dan lampu gantung baru saja dinyalakan. {name} memegang dua kantong kertas berisi camilan hangat dan jelas-jelas membelikan satu untukmu.",
+              "choices": [
+                {
+                  "text": "Ambil, dan tetap dekat di kerumunan.",
+                  "reply": "Di dekat kios bunga, bahu kalian yang saling bersentuhan tak lagi terasa seperti ketidaksengajaan."
+                },
+                {
+                  "text": "Tanyakan apa itu.",
+                  "reply": "«Tidak tahu sama sekali», kata {name} gembira. «Kita sangat berani.»"
+                },
+                {
+                  "text": "Beli sendiri.",
+                  "reply": "«Baiklah», kata {name}, lalu memakan keduanya sambil terus menatapmu."
+                }
+              ]
+            }
+          },
+          "lights": {
+            "title": "Lampu Pelabuhan",
+            "when": "Setiap bulan Desember",
+            "note": "Setiap perahu di pelabuhan menggantung lampu selama seminggu di tengah musim dingin, dan kafe buka hingga larut malam serta beraroma kayu manis.",
+            "line": "Perahu-perahu sudah menyalakan lampu hiasnya. Kemarilah dan lihat. Butuh dua orang untuk bisa mengatakan pemandangan ini indah dengan tepat.",
+            "round": {
+              "line": "Kamu dan {name} berada di tanggul pelabuhan, dan setiap perahu menyalakan lampunya. Udaranya sangat dingin. Mereka berpura-pura tidak kedinginan.",
+              "choices": [
+                {
+                  "text": "Tawarkan separuh syalmu.",
+                  "reply": "Syal itu tidak panjang. Tak satu pun dari kalian yang mempermasalahkannya."
+                },
+                {
+                  "text": "Belikan dua minuman panas dari kafe.",
+                  "reply": "Saat kamu kembali, {name} menjaga tempatmu dengan segenap tubuhnya."
+                },
+                {
+                  "text": "«Ayo masuk, dingin sekali.»",
+                  "reply": "«Satu menit lagi», kata {name}. Itu adalah menit yang panjang."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "velvet": {
+      "intro": "Lima pertanyaan tentang kota ini. Jawab empat dengan benar dan bingkai Orchid menjadi milikmu. Di sini tak ada yang memberi cuma-cuma, jadi anggap ini bantuan.",
+      "right": [
+        "Benar. Kamu memperhatikan hal-hal kecil. Itu bisa berbahaya di sini.",
+        "Tepat. Simpan itu untuk dirimu sendiri.",
+        "Ya. Kamu akan menjadi saksi yang hebat. Oh tunggu, kamu memang saksi."
+      ],
+      "wrong": [
+        "Bukan. Jawabannya {answer}. Catat itu, lalu bakar.",
+        "Salah. {answer}. Orang-orang kehilangan hal yang lebih berharga hanya karena hal sepele.",
+        "Kurang tepat. Jawabannya adalah {answer}. Bertanyalah lebih pelan lain kali."
+      ],
+      "match": [
+        "Jawaban yang sama. Aku tidak mempercayainya, tapi aku menyukainya.",
+        "Kita sependapat. Jangan beri tahu siapa pun.",
+        "Pikiran kita sejalan. Itu bisa jadi sangat baik atau sangat buruk."
+      ],
+      "differ": [
+        "Aku bilang {answer}. Beritahu aku mengapa aku salah, di tempat dengan jendela yang lebih sedikit.",
+        "Pilihanku {answer}. Kubiarkan kamu mentraktirku minum dan menjelaskannya.",
+        "{answer} untukku. Kita tidak harus sepakat. Kita hanya harus bertahan hidup."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Apa yang kuperiksa pertama kali saat melangkah ke dalam ruangan?",
+          "options": [
+            "Pintu keluar",
+            "Siapa yang mengawasi",
+            "Di mana kamu berada",
+            "Meja bar"
+          ]
+        },
+        {
+          "text": "Apa yang takkan pernah kujadikan taruhan?",
+          "options": [
+            "Kartu",
+            "Kuda pacu",
+            "Seorang teman",
+            "Dirimu"
+          ]
+        },
+        {
+          "text": "Apa yang kulakukan lewat tengah malam?",
+          "options": [
+            "Bekerja",
+            "Berjalan di tengah hujan",
+            "Mendengarkan piringan hitam lama",
+            "Menunggu kabar darimu"
+          ]
+        },
+        {
+          "text": "Apa yang kusimpan di saku mantelku?",
+          "options": [
+            "Kunci cadangan",
+            "Kartu yang tak pernah kumainkan",
+            "Surat lama",
+            "Kotak korek apimu"
+          ]
+        },
+        {
+          "text": "Apa yang paling membuatku takut?",
+          "options": [
+            "Tidak ada",
+            "Berhutang budi",
+            "Rahasiaku terbongkar",
+            "Kehilangan dirimu"
+          ]
+        },
+        {
+          "text": "Bagaimana caraku menunjukkan kepedulian?",
+          "options": [
+            "Tidak menunjukkannya",
+            "Memeriksa kunci pintumu",
+            "Mengatakan hal yang sebenarnya",
+            "Tetap berada di sisimu"
+          ]
+        },
+        {
+          "text": "Minumanku?",
+          "options": [
+            "Wiski murah",
+            "Kopi hitam",
+            "Sampanye, yang terbaik",
+            "Apa pun yang kamu pesan"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Apa nama kasino yang diperebutkan oleh kedua keluarga?",
+          "options": [
+            "The Orchid",
+            "The Lily",
+            "The Velvet",
+            "The Ace"
+          ]
+        },
+        {
+          "text": "Apa yang dikenakan Ronan yang tak pernah ditanyakan dua kali oleh siapa pun?",
+          "options": [
+            "Syal merah",
+            "Topeng separuh hitam",
+            "Penutup mata",
+            "Kacamata hitam"
+          ]
+        },
+        {
+          "text": "Luca berasal dari keluarga yang mana?",
+          "options": [
+            "Valcour",
+            "Quill",
+            "Renwick",
+            "Sable"
+          ]
+        },
+        {
+          "text": "Apa yang selalu ditemukan Mara dalam sebuah pernyataan?",
+          "options": [
+            "Kebohongan",
+            "Sebuah nama",
+            "Sebuah tanggal",
+            "Tiga kejanggalan"
+          ]
+        },
+        {
+          "text": "Siapa yang menyanyi pada sesi larut malam di Orchid?",
+          "options": [
+            "Vivienne Sable",
+            "Isolde Valcour",
+            "Mara Quill",
+            "Tidak ada"
+          ]
+        },
+        {
+          "text": "Apa yang disimpan Isolde dari setiap orang yang dia sukai?",
+          "options": [
+            "Sarung tangan",
+            "Kartu kekalahan mereka",
+            "Kunci",
+            "Foto"
+          ]
+        },
+        {
+          "text": "Benda apa yang kamu lihat berpindah tangan di Orchid?",
+          "options": [
+            "Kunci",
+            "Cincin",
+            "Buku besar",
+            "Pistol"
+          ]
+        },
+        {
+          "text": "Apa yang dimasak Ronan pada pukul empat pagi?",
+          "options": [
+            "Roti panggang",
+            "Sup",
+            "Pancake",
+            "Omelet"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Hujan deras mengguyur di luar {place}. {name} memayungi kalian berdua dengan mantel dan berhenti di bawah satu-satunya kanopi di jalan.",
+          "choices": [
+            {
+              "text": "Tetap dekat dan tunggu hingga reda.",
+              "reply": "Hujan tidak kunjung reda untuk waktu yang lama. Tak satu pun dari kalian mengeluh."
+            },
+            {
+              "text": "Ajak berlari menerobos hujan sambil menggenggam tangannya.",
+              "reply": "«Kamu akan membuat kita terbunuh», kata {name} tertawa, dan tidak melepaskan genggamannya."
+            },
+            {
+              "text": "Tanyakan siapa yang mengikuti kalian.",
+              "reply": "{name} menatapmu dari samping. «Tidak ada, setidaknya selama sepuluh menit. Sudah kupastikan. Tenanglah.»"
+            }
+          ]
+        },
+        {
+          "line": "Di {place}, {name} menggeser kotak korek api melintasi meja. Ada sesuatu yang tertulis di balik penutupnya.",
+          "choices": [
+            {
+              "text": "Baca, dan simpan.",
+              "reply": "«Bagus», kata {name} pelan. «Sekarang bakar itu sesampainya di rumah. Atau jangan. Aku ingin tahu pilihanmu.»"
+            },
+            {
+              "text": "Tulis balasan di atasnya.",
+              "reply": "{name} membacanya, dan untuk sekali ini dia kehabisan kata-kata."
+            },
+            {
+              "text": "Nyalakan tanpa membaca.",
+              "reply": "«Hati-hati», kata {name} melihatnya terbakar. «Itu tadi versi yang paling sopan.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "lewat tengah malam"
+      },
+      "story": {
+        "premise": "Kota basah oleh hujan lewat tengah malam, dikendalikan di tempat terbuka oleh polisi dan dalam kegelapan oleh dua keluarga tua, Valcour dan Renwick. Segala hal terjadi di Orchid, kasino yang mereka bagi dan perebutkan.",
+        "userRole": {
+          "title": "Saksi",
+          "hook": "Kamu berada di meja yang salah di Orchid pada malam yang salah. Polisi menginginkan pernyataanmu, kedua keluarga ingin kamu bungkam, dan seseorang telah disewa untuk menjagamu tetap hidup."
+        },
+        "ties": [
+          {
+            "note": "Pria pendiam bertopeng dan bungsu Renwick yang tak pernah berhenti bicara. Mereka pernah disewa saling berhadapan dua kali. Mereka pernah berbagi sandwis saat mengintai, dan tak satu pun dari mereka melupakannya."
+          },
+          {
+            "note": "Satu musim panas yang nekat sebelum keluarga menyadarinya. Sekarang wanita itu dijodohkan dengan kakak laki-lakinya, dan mereka membagikan kartu berhadapan seperti orang asing."
+          },
+          {
+            "note": "Dia telah mencoba menangkap pria itu tiga kali. Pria itu menyerahkan bukti kepadanya dua kali."
+          },
+          {
+            "note": "Isolde memegang kontrak Viv, dan Viv tak berutang apa pun selain suaranya. Setiap malam lagu itu menjadi aksi pemberontakan kecil."
+          },
+          {
+            "note": "Mara minum di ujung bar setiap hari Kamis. Viv mengirimkan wiski murah yang sama dan tak pernah bertanya tentang kasus itu."
+          }
+        ],
+        "season": {
+          "title": "Buku Besar",
+          "chapters": {
+            "table": {
+              "title": "Meja yang Salah",
+              "beat": "Kamu dipindahkan ke rumah aman di atas bar jazz yang tutup, dengan satu pengawal dan nama baru. Polisi bilang itu hanya untuk beberapa hari."
+            },
+            "statement": {
+              "title": "Pernyataan Saksi",
+              "beat": "Pernyataan tertulismu yang sudah ditandatangani berubah satu baris. Seseorang di dalam kantor polisi menerima bayaran dari salah satu pihak."
+            },
+            "engagement": {
+              "title": "Pertunangan",
+              "beat": "Isolde Valcour mengumumkan pertunangan di Orchid, dan seisi kota menahan napas. Perdamaian antar keluarga belum pernah tampak serapuh ini."
+            },
+            "raid": {
+              "title": "Penggerebekan",
+              "beat": "Polisi menggerebek Orchid pada Kamis malam. Tidak ada yang ditemukan, yang menandakan kepada semua orang bahwa ada yang membocorkan operasi itu."
+            },
+            "page": {
+              "title": "Halaman di Dalam Surat",
+              "beat": "Satu halaman dari buku besar tiba dalam amplop, ditujukan kepadamu. Ada nama yang kamu kenal di dalamnya."
+            },
+            "masks": {
+              "title": "Semua Topeng Terpasang",
+              "beat": "Kedua keluarga, satu aula dansa, semua topeng terpasang. Menjelang pagi akan ada kesepakatan atau perang, dan hanya kamu yang tahu apa yang sebenarnya tertulis di buku besar itu."
+            }
+          }
+        },
+        "events": {
+          "thursday": {
+            "title": "Kamis di Orchid",
+            "when": "Setiap Kamis malam",
+            "note": "Malam taruhan tinggi: kedua keluarga di meja yang sama, penampilan larut malam Viv, dan tak ada yang pulang sendirian.",
+            "line": "Sekarang hari Kamis. Orchid akan penuh dengan orang yang ingin tahu di mana kamu berada. Tetaplah di dalam. Atau jangan, dan biarkan aku ikut bersamamu.",
+            "round": {
+              "line": "Orchid di tengah malam: asap rokok, nada rendah terompet, dan meja yang seketika hening saat kamu lewat. {name} mendekat. «Jangan menoleh. Meja ketiga. Mereka sedang menatapmu.»",
+              "choices": [
+                {
+                  "text": "Pegang lengannya dan berjalan perlahan.",
+                  "reply": "«Bagus», bisik {name} dekat telingamu. «Jangan pernah biarkan mereka melihatmu terburu-buru.»"
+                },
+                {
+                  "text": "Tetap menoleh melihatnya.",
+                  "reply": "«Sudah kubilang jangan menoleh.» Nada bicaranya terdengar lebih terkesan daripada marah."
+                },
+                {
+                  "text": "Langsung menuju pintu keluar.",
+                  "reply": "{name} sudah berada di sana sebelum kamu mencapainya, membukakan pintu sambil mengawasi ruangan."
+                }
+              ]
+            }
+          },
+          "masquerade": {
+            "title": "Pesta Topeng",
+            "when": "Setiap bulan Oktober",
+            "note": "Satu malam di mana kedua keluarga bertemu secara terbuka, setiap wajah di balik topeng.",
+            "line": "Pesta topeng malam ini. Aku tahu yang mana topengmu. Cari tahu yang mana milikku.",
+            "round": {
+              "line": "Aula dansa penuh topeng. Seseorang berpakaian hitam meraih tanganmu untuk berdansa waltz, dan kamu mengenali suara itu. «Kamu seharusnya tidak berada di sini», kata {name}.",
+              "choices": [
+                {
+                  "text": "«Kamu juga tidak. Tetaplah berdansa.»",
+                  "reply": "Dansa berlanjut. Mereka sangat ahli dalam hal itu, dan tidak melepaskan tanganmu saat musik berhenti."
+                },
+                {
+                  "text": "Tanyakan siapa lagi yang ada di sini.",
+                  "reply": "{name} menyebutkan tiga nama topeng tanpa menggerakkan bibirnya. Kamu mengingat semuanya."
+                },
+                {
+                  "text": "Tarik tanganmu menjauh.",
+                  "reply": "Mereka membiarkanmu. «Lain kali», kata {name}, lalu menghilang di antara kerumunan."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gilded": {
+      "intro": "Lima pertanyaan, Nona, tentang kehidupan istana yang seharusnya Anda ketahui. Jawab empat dengan benar dan bingkai istana menjadi milik Anda. Berusahalah untuk tidak mempermalukan keluarga.",
+      "right": [
+        "Benar. Sangat tidak biasa bagi Anda.",
+        "Sangat tepat. Orang-orang di istana akan sangat kecewa.",
+        "Ya. Anda benar-benar memperhatikan. Ini cukup mengejutkan."
+      ],
+      "wrong": [
+        "Bukan, Nona. Jawabannya {answer}. Jangan sampai mereka mendengar Anda berkata sebaliknya.",
+        "Salah. {answer}. Orang-orang pernah diasingkan karena hal yang lebih sepele.",
+        "Kurang tepat. Jawabannya adalah {answer}. Haruskah kupanggilkan guru privat, atau seorang pendeta?"
+      ],
+      "match": [
+        "Pilihan kita sama. Betapa tidak pantasnya.",
+        "Jawaban kita selaras. Jangan sampai kita terlihat sependapat di depan umum.",
+        "Seperti yang kuduga. Kita berdua mungkin bisa selamat dari semua ini pada akhirnya."
+      ],
+      "differ": [
+        "Aku memilih {answer}. Beritahu aku alasannya, di tempat yang dindingnya memiliki lebih sedikit telinga.",
+        "{answer}, menurutku. Sebuah perbedaan pendapat. Di istana ini, itu hampir seperti deklarasi perlawanan.",
+        "Jawabanku {answer}. Kita akan mendiskusikannya sambil minum teh. Aku yang menuangkan pertama."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Apa yang kulakukan saat orang-orang istana menatapku?",
+          "options": [
+            "Menatap balik",
+            "Tersenyum",
+            "Pergi",
+            "Mencarimu"
+          ]
+        },
+        {
+          "text": "Demi apa aku bersedia melepaskan gelarku?",
+          "options": [
+            "Tidak ada",
+            "Kedamaian",
+            "Hidup yang tenang",
+            "Dirimu"
+          ]
+        },
+        {
+          "text": "Jam favoritku di istana?",
+          "options": [
+            "Fajar",
+            "Satu jam setelah pesta dansa",
+            "Waktu minum teh",
+            "Kapan pun kamu ada di dekatku"
+          ]
+        },
+        {
+          "text": "Apa yang kusembunyikan di kamarku?",
+          "options": [
+            "Sebuah surat",
+            "Tas yang sudah dikemas",
+            "Belati kecil",
+            "Sesuatu milikmu"
+          ]
+        },
+        {
+          "text": "Apa pendapatku tentang Pesta Dansa Musim Dingin?",
+          "options": [
+            "Membosankan",
+            "Medan pertempuran",
+            "Sebuah jebakan",
+            "Kesempatan untuk berdansa denganmu"
+          ]
+        },
+        {
+          "text": "Bagaimana caraku meminta maaf?",
+          "options": [
+            "Aku tidak meminta maaf",
+            "Dengan sebuah hadiah",
+            "Secara tertulis dan resmi",
+            "Kikuk, tapi aku berusaha"
+          ]
+        },
+        {
+          "text": "Kebiasaan terburukku?",
+          "options": [
+            "Keangkuhan",
+            "Menguping di balik pintu",
+            "Makan kue manis diam-diam",
+            "Memperhatikanmu"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Apa judul novel tempat kamu terbangun di dalamnya?",
+          "options": [
+            "Mahkota dan Mawar",
+            "Takhta Emas",
+            "Ratu Musim Dingin",
+            "Mawar Kekaisaran"
+          ]
+        },
+        {
+          "text": "Di mana karaktermu mati di dalam buku?",
+          "options": [
+            "Saat berburu",
+            "Di Pesta Dansa Musim Dingin",
+            "Di pesta minum teh",
+            "Di ruang bawah tanah"
+          ]
+        },
+        {
+          "text": "Siapakah tunanganmu?",
+          "options": [
+            "Lord Dorian",
+            "Sir Alaric",
+            "Putra Mahkota Leander",
+            "Tidak ada"
+          ]
+        },
+        {
+          "text": "Berapa langkah di belakangmu Sir Alaric berjalan?",
+          "options": [
+            "Satu langkah",
+            "Dua langkah",
+            "Sepuluh langkah",
+            "Tiga langkah"
+          ]
+        },
+        {
+          "text": "Kue manis apa yang dibawakan Celestine untukmu?",
+          "options": [
+            "Almon",
+            "Madu",
+            "Mawar",
+            "Lemon"
+          ]
+        },
+        {
+          "text": "Sudah berapa lama Odile menjadi pelayan pribadimu?",
+          "options": [
+            "Empat tahun",
+            "Delapan tahun",
+            "Sepuluh tahun",
+            "Satu tahun"
+          ]
+        },
+        {
+          "text": "Permainan apa yang dimainkan Lord Dorian sendirian melawan dirinya sendiri?",
+          "options": [
+            "Kartu",
+            "Dadu",
+            "Catur",
+            "Harpa"
+          ]
+        },
+        {
+          "text": "Benda apa yang selalu dibilang sang Pangeran milik orang lain?",
+          "options": [
+            "Kuda",
+            "Cincin",
+            "Pedang",
+            "Anjing kecil"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Di koridor istana dekat {place}, langkah kaki para pengawal terdengar mendekat. {name} menarikmu ke balik permadani dinding dan menempelkan jari ke bibirnya.",
+          "choices": [
+            {
+              "text": "Diam tak bergerak, sangat dekat dengannya.",
+              "reply": "Pengawal lewat. {name} tidak segera menjauh, begitu pula dirimu."
+            },
+            {
+              "text": "Bisikkan lelucon.",
+              "reply": "Mereka harus menggigit sarung tangannya agar tidak tertawa. «Kamu akan membuat kita berdua dihukum gantung.»"
+            },
+            {
+              "text": "Melangkah keluar dan sapa pengawal.",
+              "reply": "«Bagus sekali», kata {name}, melangkah keluar mengikutimu, sama sekali tidak senang tapi sedikit terkesan."
+            }
+          ]
+        },
+        {
+          "line": "Di {place}, {name} menawarkan cangkir kepadamu, dan seisi teras memperhatikan. «Sudah menjadi kebiasaan», kata mereka, «salah satu dari kita meminumnya lebih dulu.»",
+          "choices": [
+            {
+              "text": "Minum lebih dulu sambil menatap matanya.",
+              "reply": "Keheningan singkat. «Entah kamu sangat berani atau sangat bodoh», gumam {name}. «Kuharap aku bisa segera mengetahuinya.»"
+            },
+            {
+              "text": "Ambil cangkirnya sebagai gantinya.",
+              "reply": "{name} tertawa terbahak-bahak, dan seisi teras menoleh untuk melihat."
+            },
+            {
+              "text": "Letakkan kembali tanpa menyentuhnya.",
+              "reply": "«Bijaksana», kata {name}. «Dan sedikit menyedihkan.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "seperti yang tertulis"
+      },
+      "story": {
+        "premise": "Kamu terbangun di dalam novel yang pernah kamu baca, Mahkota dan Mawar, sebagai tokoh antagonisnya: putri manja pewaris Duke, bertunangan dengan Putra Mahkota dan dibenci oleh seluruh istana.",
+        "userRole": {
+          "title": "Tokoh antagonis",
+          "hook": "Kamu memiliki lemari pakaian milik orang lain, seorang pangeran yang muak melihatmu, dan reputasi buruk yang tidak pernah kamu buat. Kamu tahu bagaimana kisah ini berakhir. Mereka tidak."
+        },
+        "ties": [
+          {
+            "note": "Pelayan yang tidak mempercayai siapa pun dan orang suci yang merangkul semua orang. Celestine membawakan kue manis untuk Odile. Odile memeriksa racun di dalamnya, lalu tetap memakannya."
+          },
+          {
+            "note": "Dibesarkan bersama di istana sebagai sahabat. Sekarang masing-masing menghitung sekutu pihak lawan di setiap jamuan makan malam."
+          },
+          {
+            "note": "Alaric mengabdikan pedangnya kepada sang Pangeran bertahun-tahun yang lalu, lalu ditugaskan untuk menjagamu: lelucon khas sang Pangeran."
+          },
+          {
+            "note": "Dia mengajarinya berkuda saat wanita itu pertama kali datang ke istana. Di dalam buku pria itu jatuh cinta padanya. Sejauh ini belum terjadi."
+          },
+          {
+            "note": "Pria itu adalah pewaris Duke of Vael dan wanita itu adalah anak rahasia Duke of Vael. Mereka baru berbicara di depan umum tepat satu kali."
+          }
+        ],
+        "season": {
+          "title": "Hingga Pesta Dansa Musim Dingin",
+          "chapters": {
+            "morning": {
+              "title": "Pagi Pertama",
+              "beat": "Kamu terbangun sebagai dirinya. Menjelang siang seisi istana menyadari kamu mengucapkan \"tolong\" kepada seorang pelayan, dan tak ada yang mengerti apa maksudnya."
+            },
+            "tea": {
+              "title": "Pesta Minum Teh",
+              "beat": "Di dalam buku, ini adalah pesta tempat kamu mempermalukan sang pahlawan wanita. Kamu diharapkan melakukannya. Semua orang datang untuk menonton."
+            },
+            "letters": {
+              "title": "Surat-Surat Palsu",
+              "beat": "Surat-surat dengan tulisan tanganmu mulai bermunculan, surat-surat yang tak pernah kamu tulis. Di dalam buku itu terjadi jauh kemudian. Seseorang bergerak lebih cepat."
+            },
+            "hunt": {
+              "title": "Perburuan Kekaisaran",
+              "beat": "Sebuah anak panah meleset selebar telapak tangan dari Putra Mahkota saat berburu, dan mata seisi istana langsung tertuju pada keluargamu. Cerita mulai melenceng."
+            },
+            "cup": {
+              "title": "Cangkir Itu",
+              "beat": "Sang pahlawan wanita jatuh sakit saat makan malam, persis seperti yang tertulis, dan cangkir itu berasal dari mejamu. Hanya saja kali ini seseorang sudah bersiap dengan penawarnya."
+            },
+            "ball": {
+              "title": "Halaman Terakhir",
+              "beat": "Malam saat kamu mati di dalam buku. Surat keputusan telah dibuat, para pengawal sudah bersiaga, dan semua orang duduk di tempatnya. Tak ada yang tahu jalan cerita halaman ini lagi, termasuk kamu."
+            }
+          }
+        },
+        "events": {
+          "salon": {
+            "title": "Salon Hari Minggu",
+            "when": "Setiap hari Minggu",
+            "note": "Salon Permaisuri: teh, musik, dan belati paling sopan di kekaisaran. Semua yang dikatakan di sini sudah sampai ke istana sebelum jam makan malam.",
+            "line": "Hari ini salon. Kenakan baju zirahnya, yang kumaksud adalah gaun biru itu. Aku akan mengawasi siapa saja yang berani memandangmu.",
+            "round": {
+              "line": "Seluruh ruangan salon menjadi sunyi saat kamu meraih wadah gula. {name} berdiri di sampingmu, dan berbisik tanpa menggerakkan bibirnya: «Mereka sedang menunggu kamu melakukan sesuatu yang mengerikan.»",
+              "choices": [
+                {
+                  "text": "Tuangkan teh untuknya terlebih dahulu.",
+                  "reply": "Desahan napas tertahan terdengar di seluruh ruangan. Sudut bibir {name} berkedut: «Oh, aku suka ini.»"
+                },
+                {
+                  "text": "Tersenyumlah pada seisi ruangan.",
+                  "reply": "«Mengerikan», kata {name}, merasa puas."
+                },
+                {
+                  "text": "Biarkan wadah gula itu.",
+                  "reply": "Seisi ruangan menghela napas lega, sedikit kecewa. {name} menyelipkan biskuit untukmu di bawah meja."
+                }
+              ]
+            }
+          },
+          "winterball": {
+            "title": "Pesta Dansa Musim Dingin",
+            "when": "Setiap pertengahan musim dingin",
+            "note": "Malam paling megah di istana: seribu lilin, ratusan persekutuan, dan di dalam buku, satu eksekusi mati.",
+            "line": "Pesta Dansa Musim Dingin. Aku sudah membaca daftar tamu dua kali. Sisakan satu dansa untukku, dan berdirilah di tempat yang bisa kulihat.",
+            "round": {
+              "line": "Seribu lilin menyala, dan dansa waltz pertama Pesta Dansa Musim Dingin dimulai. Setiap pasang mata di aula tertuju padamu saat {name} mengulurkan tangannya.",
+              "choices": [
+                {
+                  "text": "Sambut tangannya tanpa mengalihkan pandangan.",
+                  "reply": "Aula berputar di sekeliling kalian. «Anda bukan orang seperti yang mereka katakan», bisik {name} sangat pelan."
+                },
+                {
+                  "text": "Tanyakan apa yang mereka ketahui.",
+                  "reply": "«Terlalu banyak hal», kata {name}, lalu membimbingmu ke tempat yang tak bisa didengar para pengawal."
+                },
+                {
+                  "text": "Beri hormat dan tolak tawarannya.",
+                  "reply": "Bisik-bisik langsung menjalar di seisi aula. {name} membungkuk memberi hormat, dan menatapmu sepanjang sisa malam itu."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "arena": {
+      "intro": "Lima pertanyaan tentang Wolves. Jawab empat dengan benar dan kamu mendapatkan bingkai arena seluncur. Jangan khawatir, tak ada orang di gedung ini yang bisa berhitung juga.",
+      "right": [
+        "Tepat! Kamu benar-benar memperhatikannya.",
+        "Ya! Tepat di sudut atas gawang.",
+        "Benar. Kamu yakin tidak ikut bermain?"
+      ],
+      "wrong": [
+        "Melebar. Jawabannya {answer}.",
+        "Bukan, {answer}. Kembali ke bangku cadangan.",
+        "Hampir, tapi {answer}. Jangan beritahu sang kapten."
+      ],
+      "match": [
+        "Jawaban yang sama! Itu pergantian pemain yang rapi.",
+        "Pilihan kita cocok. Jangan ada yang beritahu Pelatih.",
+        "Sudah kuduga. Kamu dan aku berada di lini yang sama."
+      ],
+      "differ": [
+        "Pilihanku {answer}. Debatlah denganku sambil makan kentang goreng.",
+        "{answer} untukku. Kamu boleh salah kapan saja di timku.",
+        "Aku memilih {answer}. Tanding ulang setelah latihan."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Apa yang kulakukan tepat sebelum pertandingan?",
+          "options": [
+            "Membebat semuanya dua kali",
+            "Makan",
+            "Menatap dinding",
+            "Mencarimu"
+          ]
+        },
+        {
+          "text": "Bagian mana dari arena yang paling kusukai?",
+          "options": [
+            "Permukaan es sebelum lampu dinyalakan",
+            "Kentang gorengnya",
+            "Ruang perawatan",
+            "Di mana pun kamu berada"
+          ]
+        },
+        {
+          "text": "Apa yang kulakukan setelah kekalahan?",
+          "options": [
+            "Menjadi pendiam",
+            "Berseluncur sendirian",
+            "Makan terlalu banyak",
+            "Meneleponmu"
+          ]
+        },
+        {
+          "text": "Apa yang ada di dalam tasku yang seharusnya tidak ada di sana?",
+          "options": [
+            "Perban lama",
+            "Kaus kaki keberuntungan",
+            "Terlalu banyak camilan",
+            "Penamu"
+          ]
+        },
+        {
+          "text": "Apa yang kupikirkan di menit terakhir pertandingan?",
+          "options": [
+            "Tidak ada",
+            "Giliran bermain berikutnya",
+            "Makanan",
+            "Dirimu di tribun penonton"
+          ]
+        },
+        {
+          "text": "Bagaimana caraku menunjukkan kepedulian?",
+          "options": [
+            "Aku tidak mengatakannya",
+            "Membawakan tasmu",
+            "Membawakan makanan",
+            "Menjagamu"
+          ]
+        },
+        {
+          "text": "Takhayul hari pertandinganku?",
+          "options": [
+            "Sepatu seluncur kiri terlebih dahulu",
+            "Sarapan yang selalu sama",
+            "Tidak berbicara pada siapa pun",
+            "Melihatmu terlebih dahulu"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Apa nama tim hoki es ini?",
+          "options": [
+            "Northgate Wolves",
+            "Harbour Bears",
+            "Ice Kings",
+            "City Hawks"
+          ]
+        },
+        {
+          "text": "Siapakah kapten timnya?",
+          "options": [
+            "Teddy Novak",
+            "Erik Holt",
+            "Freya Lund",
+            "Priya Raman"
+          ]
+        },
+        {
+          "text": "Apa yang dibawakan Teddy ke pintu rumahmu?",
+          "options": [
+            "Bunga",
+            "Kopi",
+            "Sarapan yang terlalu banyak",
+            "Anjingnya"
+          ]
+        },
+        {
+          "text": "Kapan Freya mendapatkan jadwal es?",
+          "options": [
+            "Tengah malam",
+            "Tengah hari",
+            "Pukul 15.00",
+            "Pukul 05.00 pagi"
+          ]
+        },
+        {
+          "text": "Apa yang paling dibenci Sasha?",
+          "options": [
+            "Hoki",
+            "Teh",
+            "Balet",
+            "Gula"
+          ]
+        },
+        {
+          "text": "Apa pekerjaan Priya untuk mencari nafkah?",
+          "options": [
+            "Melatih tim",
+            "Menulis kolom olahraga",
+            "Menjual tiket",
+            "Memiliki tim"
+          ]
+        },
+        {
+          "text": "Apa yang tidak boleh disentuh oleh siapa pun?",
+          "options": [
+            "Tongkat hoki Holt",
+            "Anjing Holt",
+            "Pita perban Holt",
+            "Bantal Holt"
+          ]
+        },
+        {
+          "text": "Aturan apa yang direkatkan di dinding ruang perawatan?",
+          "options": [
+            "Dilarang makan kentang goreng",
+            "Dilarang menggunakan ponsel",
+            "Dilarang menangis",
+            "Dilarang berkencan dengan pemain"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Arena sepi di {place}, dan lampu hanya menyala separuh. {name} melempar sepasang sepatu seluncur kepadamu. «Ayo. Tak ada yang melihat.»",
+          "choices": [
+            {
+              "text": "Ikat tali sepatu, dan genggam tangannya di atas es.",
+              "reply": "Kamu jatuh dua kali. Mereka menangkapmu sekali. Tak seorang pun menyinggung kejatuhan yang kedua."
+            },
+            {
+              "text": "Berseluncur dengan buruk secara sengaja.",
+              "reply": "«Kamu sengaja melakukan itu», kata {name}, lalu berseluncur mundur untuk tetap menopangmu."
+            },
+            {
+              "text": "Menonton dari pinggir pembatas.",
+              "reply": "{name} pamer kebolehan selama sepuluh menit, lalu menabrak jaring gawang. Kamu bertepuk tangan."
+            }
+          ]
+        },
+        {
+          "line": "Setelah latihan di {place}, {name} mengulurkan wadah kertas berisi kentang goreng panas. «Porsi terakhir. Lawan aku untuk mendapatkannya, atau katakan sesuatu yang manis.»",
+          "choices": [
+            {
+              "text": "Katakan sesuatu yang manis, dan bersungguh-sungguhlah.",
+              "reply": "Telinga mereka memerah, menyerahkan seluruh wadah kentang dan menolak menatapmu untuk beberapa saat."
+            },
+            {
+              "text": "Ambil sepotong saat mereka sedang berbicara.",
+              "reply": "«Aku melihatnya», kata {name} senang. «Kamu benar-benar perusuh.»"
+            },
+            {
+              "text": "Bicarakan tentang pola makannya.",
+              "reply": "«Kamu sedang tidak bertugas», kata {name}, lalu menghabiskan semuanya perlahan sambil menatapmu."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "bel akhir pertandingan"
+      },
+      "story": {
+        "premise": "Kota pelabuhan dingin yang hidup demi tim hoki esnya, Northgate Wolves. Semua orang berbagi satu arena tua: tim pria, tim wanita, klub seluncur, dan boks pers.",
+        "userRole": {
+          "title": "Fisioterapis baru tim",
+          "hook": "Kamu dipekerjakan untuk menjaga dua puluh tiga atlet keras kepala tetap utuh. Ada aturan yang direkatkan di dinding ruang perawatanmu: dilarang berkencan dengan pemain. Seseorang telah menggarisbawahinya dua kali."
+        },
+        "ties": [
+          {
+            "note": "Teman sekamar saat laga tandang. Teddy bernyanyi di kamar mandi dan Holt pura-pura membencinya. Holt mulai membiasakan diri meninggalkan bantal yang empuk di sisi Teddy."
+          },
+          {
+            "note": "Kiper dan atlet seluncur berebut jadwal es pukul lima pagi yang sama. Freya sengaja meninggalkan bekas goresan pisaunya; Sasha membalas dengan meninggalkan pesan memo."
+          },
+          {
+            "note": "Mereka berpacaran selama satu musim, sampai wanita itu menulis artikel jujur tentang cedera lututnya. Pria itu masih membaca setiap kolom yang dia tulis."
+          },
+          {
+            "note": "Wanita itu mengajarinya teknik meluncur di tengah malam sambil menghinanya sepanjang waktu. Teknik berseluncur pria itu belum pernah sebagus ini."
+          },
+          {
+            "note": "Priya adalah satu-satunya reporter yang meliput tim wanita, dan Freya adalah satu-satunya pemain yang memberitahunya jika angka statistiknya salah."
+          }
+        ],
+        "season": {
+          "title": "Musim Terakhir",
+          "chapters": {
+            "opener": {
+              "title": "Hari Pertama",
+              "beat": "Kamu mulai bekerja pada hari saat Wolves kalah dalam laga pembuka musim mereka dengan selisih enam gol. Para penggemar mencemooh, lalu pergi membeli lebih banyak bir."
+            },
+            "streak": {
+              "title": "Empat Kemenangan Beruntun",
+              "beat": "Wolves menang empat kali berturut-turut dan tak ada yang tahu alasannya. Teddy mengaitkannya dengan menu sarapan. Kota mulai mengenakan syal tim kembali."
+            },
+            "hit": {
+              "title": "Tubrukan Keras",
+              "beat": "Holt menerima tubrukan keras di babak ketiga dan bangkit terlalu lambat. Dia memberitahu semua orang bahwa dia baik-baik saja. Tugasmu adalah tidak mempercayainya begitu saja."
+            },
+            "buyer": {
+              "title": "Calon Pembeli",
+              "beat": "Kolom tulisan Priya menyebutkan seseorang berjaket bagus mengelilingi arena membawa pita pengukur. Pemilik klub tidak mengatakan apa-apa, yang justru menyiratkan segalanya."
+            },
+            "scout": {
+              "title": "Pemandu Bakat",
+              "beat": "Pertandingan terbesar dalam sepuluh tahun, tiket terjual habis, dan pemandu bakat dari pemimpin klasemen liga duduk di tribun. Dia datang bukan untuk memantau Holt."
+            },
+            "seven": {
+              "title": "Pertandingan Ketujuh",
+              "beat": "Pertandingan terakhir musim ini menentukan tiket babak playoff dan nasib tim. Seluruh kota berkumpul di satu jalan. Kamu berada di bangku cadangan."
+            }
+          }
+        },
+        "events": {
+          "gamenight": {
+            "title": "Malam Pertandingan",
+            "when": "Setiap hari Sabtu",
+            "note": "Pertandingan kandang: suara klakson tua arena, syal-syal berkibar, dan seisi pelabuhan berteriak ke arah es.",
+            "line": "Malam pertandingan. Bebat tanganku dan katakan aku terlihat keren. Atau cukup katakan aku terlihat keren.",
+            "round": {
+              "line": "Klakson telah berbunyi dan seisi arena berguncang. {name} keluar dari es setelah giliran bermain yang brutal dan duduk tepat di sampingmu, kehabisan napas.",
+              "choices": [
+                {
+                  "text": "Beri air minum dan periksa bahunya.",
+                  "reply": "«Itulah mengapa mereka membayarmu», kata {name}, dan bersandar pada tanganmu sedikit lebih lama dari yang dituntut tugasmu."
+                },
+                {
+                  "text": "Berteriak pada wasit demi membelanya.",
+                  "reply": "{name} tertawa terbahak-bahak sampai harus duduk kembali. «Lakukan itu di setiap pertandingan.»"
+                },
+                {
+                  "text": "Katakan apa kesalahan yang dia perbuat.",
+                  "reply": "«Aku tahu», kata {name}, lalu menambahkan, «Kamu memperhatikanku ya?»"
+                }
+              ]
+            }
+          },
+          "derby": {
+            "title": "Derbi Pelabuhan",
+            "when": "Setiap bulan",
+            "note": "Derbi melawan kota di seberang perairan. Tak ada yang tidur, dan kedua tim berdalih ini hanya pertandingan biasa.",
+            "line": "Derbi malam ini. Kalau aku terkena tubrukan, kamu harus memeriksanya. Kalau aku mencetak gol, kamu harus melihatnya juga.",
+            "round": {
+              "line": "Malam derbi, dan bus tim lawan sudah tiba. {name} menemuimu di lorong kosong sebelum pemanasan dan hanya berdiri diam di sana sejenak, tanpa berkata apa-apa.",
+              "choices": [
+                {
+                  "text": "Bebat pergelangan tangannya, perlahan.",
+                  "reply": "Tak satu pun dari kalian mengucapkan sepatah kata pun. Menjelang akhir, napasnya kembali normal."
+                },
+                {
+                  "text": "«Kamu akan tampil luar biasa.»",
+                  "reply": "«Katakan lagi setelah pertandingan», kata {name}, dan hampir tersenyum."
+                },
+                {
+                  "text": "«Ada yang sakit?»",
+                  "reply": "«Tidak», kata mereka. Pertanyaan itu bukan tentang rasa sakit fisik, dan kalian berdua sama-sama mengetahuinya."
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -3430,6 +6014,48 @@
       "title": "Kereta malam",
       "setting": "Kereta malam meluncur melintasi pedesaan yang sunyi. Kursi kalian saling berhadapan dan lampu kabin temaram.",
       "opening": "Masih enam jam lagi sampai stasiun berikutnya. Ceritain sesuatu yang belum pernah kamu ungkapin ke siapa pun dong."
+    },
+    "scene_world_seaside": {
+      "title": "Pagi pertamamu",
+      "setting": "Pagi pertamamu di Seaside. Kamu tersesat dalam perjalanan menuju kuliah pertamamu dan berakhir di ujung dermaga yang jauh, tempat seseorang sedang memanjat keluar dari laut.",
+      "userRole": "Mahasiswa pindahan yang baru tiba kemarin.",
+      "opening": "*menarik dirinya ke atas dermaga, basah kuyup, dan tersenyum lebar* Kamu mahasiswa pindahan baru itu, kan? Gedung kuliah ada di arah sebaliknya. ...Mau separuh roti melon dulu?"
+    },
+    "scene_world_moonlit": {
+      "title": "Benang di pergelangan tanganmu",
+      "setting": "Sebuah taman di tepi Alam Cahaya Bulan, di reruntuhan kuil tua. Kamu berjalan ke sini dari jalan lentera dengan benang perak di pergelangan tanganmu, dan bunga-bunga bulan bermekaran saat kamu melewatinya.",
+      "userRole": "Seorang pengelana yang terikat oleh sumpah yang tak dapat mereka ingat.",
+      "opening": "*mendongak dari bunga-bunga bulan, lalu menatap benang di pergelangan tanganmu, dan terdiam kaku* Jadi kamulah yang dipilih sumpah itu. Duduklah. Sebelum para penunggang kuda Istana menemukanmu, kita harus bicara tentang apa yang kamu janjikan."
+    },
+    "scene_world_neon": {
+      "title": "Hari pertamamu di tim",
+      "setting": "Studio B pada pukul tujuh pagi, hari pertamamu sebagai co-manager NEON TIDE. Para anggota tertidur bertumpuk di lantai latihan. Ponsel barumu tak berhenti bergetar.",
+      "userRole": "Co-manager baru NEON TIDE.",
+      "opening": "*bangkit diam-diam agar tidak membangunkan yang lain, dan mengulurkan secangkir kopi* Kamu pasti co-manager yang baru. Aku Ezra. Ponselmu sebentar lagi akan memberitahu bahwa kita ada masalah. Minum ini dulu."
+    },
+    "scene_world_tidepool": {
+      "title": "Apartemen lantai atas",
+      "setting": "Kafe Tidepool pada pukul tujuh pagi, hari saat kamu pindah ke lantai atas. Aromanya penuh mentega dan kopi, dan semua orang di konter berhenti bicara untuk menatapmu.",
+      "userRole": "Penyewa baru di apartemen atas kafe.",
+      "opening": "*meletakkan cangkir di satu-satunya bangku kosong tanpa bertanya* Kamulah orang yang punya lantai berderit itu. Dibayari kafe, khusus hari pertama. Nah, apa isi surat yang kamu pegang itu? Tampangmu seperti habis digigit surat itu."
+    },
+    "scene_world_velvet": {
+      "title": "Rumah aman",
+      "setting": "Sebuah apartemen di atas bar jazz yang tutup, di tengah hujan, pada pukul dua pagi. Polisi membawamu ke sini satu jam yang lalu. Ada satu lampu, satu kursi, dan seorang pria bertopeng separuh hitam yang sedang memeriksa jendela.",
+      "userRole": "Saksi atas apa yang terjadi di Orchid.",
+      "opening": "*tidak menoleh dari jendela* Menjauh dari kaca. Ada tiga aturan, dan aku hanya akan mengatakannya sekali. Kamu boleh melanggar yang mana saja. Aku akan tetap ada di sini saat kamu melakukannya."
+    },
+    "scene_world_gilded": {
+      "title": "Pagi pertama",
+      "setting": "Kamu terbangun di ranjang sebesar ruangan kecil, dalam sutra milik orang lain. Kamu mengenali kamar ini dari novel yang pernah kamu baca. Seorang wanita bergaun abu-abu sedang membuka tirai, dan jelas-jelas sudah menunggu untuk mengatakan sesuatu yang tidak menyenangkan.",
+      "userRole": "Tokoh antagonis Mahkota dan Mawar, baru saja terbangun.",
+      "opening": "*meletakkan nampan tanpa suara* Anda terlambat bangun lagi, Nona. Pangeran sedang menunggu, ayah Anda sangat marah, dan Anda sudah membuat tiga orang menangis minggu ini. Haruskah saya bawakan gaun biru itu, atau Anda ingin melemparnya terlebih dahulu?"
+    },
+    "scene_world_arena": {
+      "title": "Hari pertama di terowongan",
+      "setting": "Pagi pertamamu di arena, sebelum lampu menyala sepenuhnya. Terowongan berbau es dan kopi basi. Sang kapten sedang duduk di meja perawatanmu, membebat tangannya sendiri dengan buruk.",
+      "userRole": "Fisioterapis baru Northgate Wolves.",
+      "opening": "*tidak mendongak* Kamu fisioterapis yang baru. Kamu terlambat. ...Kamu tidak terlambat, aku yang datang jam lima. Jangan sentuh perbannya."
     }
   },
   "lorebooks": {
@@ -3468,6 +6094,14 @@
         "lore_seaside_8": {
           "name": "Halaman tengah",
           "text": "Lapangan rumput luas di antara ruang kuliah, tempat semua orang makan siang saat matahari bersinar hangat."
+        },
+        "lore_seaside_9": {
+          "name": "Festival Mercusuar",
+          "text": "Malam terbesar di kampus sepanjang tahun: lampion di laut, pemutaran perdana klub film, dan siaran radio langsung dari dermaga."
+        },
+        "lore_seaside_10": {
+          "name": "Penjualan rumah perahu",
+          "text": "Dewan universitas ingin menjual rumah perahu tua dan dermaga untuk membiayai gedung baru. Sebuah petisi anonim berusaha menghentikannya."
         },
         "lore_person_c_kai": {
           "name": "Kai Arden",
@@ -3544,7 +6178,20 @@
           "text": "Tebing berangin kencang tempat jenderal terasing Corvin merawat burung-burung gagaknya. Gagak-gagak itu mengantar surat ke pelosok kerajaan mana pun."
         },
         "lore_moonlit_8": {
-          "name": "Ramuan kenangan"
+          "name": "Ramuan kenangan",
+          "text": "Ramuan Vesper terasa seperti kenangan lama. Meracik ramuan pelupa dilarang, dan dia bilang dia tidak akan pernah meraciknya."
+        },
+        "lore_moonlit_9": {
+          "name": "Gerhana",
+          "text": "Malam saat bulan menjadi gelap, ketika penguasa baru dinobatkan dan semua sumpah di kerajaan jatuh tempo sekaligus."
+        },
+        "lore_moonlit_10": {
+          "name": "Batu mahkota",
+          "text": "Batu yang harus dipegang penguasa untuk dinobatkan. Batu itu hilang dari brankas istana, dan Istana mencurigai naga Kael."
+        },
+        "lore_moonlit_11": {
+          "name": "Benang perak",
+          "text": "Tanda sumpah yang mengikat, dikenakan di pergelangan tangan. Siapa pun yang memakainya terikat pada orang yang diberi sumpah, sampai sumpah itu diputus atau ditepati."
         },
         "lore_person_c_aurelian": {
           "name": "Pangeran Aurelian",
@@ -3620,6 +6267,10 @@
           "name": "Jadwal harian",
           "text": "Juno mengatur semua agenda dari empat ponsel: panggilan subuh, siaran live, latihan intensif. Kehidupan pribadi dijaga sangat ketat; para anggota tak pernah mengunggah siapa yang mereka kencani."
         },
+        "lore_neon_8": {
+          "name": "TIDEWATCH",
+          "text": "Akun gosip anonim yang mengunggah hal-hal yang hanya diketahui orang dalam. Agensi memperingatkan bahwa satu skandal lagi akan menunda comeback mereka."
+        },
         "lore_person_c_ezra": {
           "name": "Ezra",
           "text": "Leader NEON TIDE: sangat berkharisma di atas panggung, tapi agak canggung begitu lampu sorot padam."
@@ -3694,6 +6345,14 @@
           "name": "Jalan pelabuhan",
           "text": "Jalanan menurun ke pelabuhan kecil: kafe, toko bunga, bengkel, dan pos pemadam kebakaran semuanya bisa dijangkau dalam beberapa menit jalan kaki."
         },
+        "lore_tidepool_8": {
+          "name": "Meridian Holdings",
+          "text": "Perusahaan yang membeli sewa properti di jalan ini satu per satu untuk merobohkannya demi membangun menara. Kafe adalah sasaran berikutnya."
+        },
+        "lore_tidepool_9": {
+          "name": "Apartemen lantai atas",
+          "text": "Apartemen kecil di atas kafe: lantai berderit, pemandangan pelabuhan, dan aroma mentega sejak pukul lima pagi. Seorang novelis pernah menulis buku di sana."
+        },
         "lore_person_c_adrian": {
           "name": "Adrian Wells",
           "text": "Arsitek yang suka membuat sketsa kota di malam hari dan tanpa sadar bersenandung pelan saat berkonsentrasi."
@@ -3733,6 +6392,168 @@
         "lore_person_c_cole": {
           "name": "Cole Ashby",
           "text": "Montir bengkel yang memperbaiki skuter tua kafe secara cuma-cuma dan selalu menawarkan tumpangan pulang tiap malam."
+        }
+      }
+    },
+    "lore_velvet": {
+      "name": "Distrik Velvet",
+      "about": "Kota basah oleh hujan lewat tengah malam, dikendalikan dalam kegelapan oleh dua keluarga tua, Valcour dan Renwick. Mereka berbagi satu kasino, Orchid, dan perdamaian yang tak dipercayai siapa pun. Buku besar berisi nama semua orang dalam daftar gaji mereka baru saja hilang.",
+      "entries": {
+        "lore_velvet_1": {
+          "name": "The Orchid",
+          "text": "Kasino megah nan tua yang dibagi dan diperebutkan kedua keluarga: kain laken hijau, tiupan terompet rendah, dan penampilan larut malam Vivienne Sable. Wilayah netral di atas kertas."
+        },
+        "lore_velvet_2": {
+          "name": "Keluarga Valcour",
+          "text": "Keluarga yang lebih tua, dipimpin oleh seorang ayah yang menganggap manusia sebagai harga. Pewarisnya, Isolde, mengelola Orchid dan dijanjikan menikah dengan seorang Renwick demi menjaga perdamaian."
+        },
+        "lore_velvet_3": {
+          "name": "Keluarga Renwick",
+          "text": "Keluarga yang lebih baru dan lebih vokal, dengan polisi dalam genggaman mereka. Luca adalah putra bungsu, dan tak ada yang mengharapkan apa pun darinya."
+        },
+        "lore_velvet_4": {
+          "name": "Buku besar",
+          "text": "Buku hitam kecil berisi nama semua orang dalam daftar gaji kedua keluarga, mulai dari hakim hingga detektif. Buku itu berpindah tangan di Orchid, dan siapa pun yang memegangnya menghilang."
+        },
+        "lore_velvet_5": {
+          "name": "Rumah aman",
+          "text": "Apartemen sederhana di atas bar jazz yang tutup, dengan satu lampu dan satu kunci yang kokoh. Polisi mengatakan saksi hanya perlu tinggal di sana selama beberapa hari."
+        },
+        "lore_velvet_6": {
+          "name": "Perdamaian",
+          "text": "Keluarga-keluarga itu telah menjaga perdamaian tipis selama bertahun-tahun: tidak ada masalah di Orchid, tidak ada masalah di jembatan. Semua orang tahu itu takkan bertahan lama."
+        },
+        "lore_velvet_7": {
+          "name": "Pesta topeng",
+          "text": "Setahun sekali keluarga-keluarga itu bertemu di tempat terbuka, dalam satu aula dansa, setiap wajah di balik topeng. Kesepakatan dibuat di sana, dan terkadang perang."
+        },
+        "lore_person_c_ronan": {
+          "name": "Ronan Vale",
+          "text": "Mantan tentara bertopeng separuh hitam, disewa untuk menjagamu tetap hidup. Dia punya tiga aturan, dan bilang kamu boleh melanggarnya."
+        },
+        "lore_person_c_isolde": {
+          "name": "Isolde Valcour",
+          "text": "Pewaris keluarga Valcour, yang mengelola Orchid dalam gaun hitam dan membuat tawaran yang belum pernah ditolak siapa pun."
+        },
+        "lore_person_c_mara": {
+          "name": "Mara Quill",
+          "text": "Detektif dalam kasus Orchid, yang menemukan tiga kejanggalan dalam setiap cerita dan terus kembali untuk mendengarkan ceritamu."
+        },
+        "lore_person_c_luca": {
+          "name": "Luca Renwick",
+          "text": "Bungsu dari keluarga Renwick, seorang dealer di Orchid yang memberitahumu kartu apa yang ada di lengan bajunya."
+        },
+        "lore_person_c_viv": {
+          "name": "Vivienne Sable",
+          "text": "Penyanyi jazz di Orchid, yang meninggalkanmu tiga tahun lalu tanpa sepatah kata pun dan tak berhenti bernyanyi tentang hal itu."
+        }
+      }
+    },
+    "lore_gilded": {
+      "name": "Kekaisaran Emas",
+      "about": "Istana kekaisaran berlapis emas langsung dari novel berjudul Mahkota dan Mawar. Di dalamnya, pewaris Duke, seorang tokoh antagonis kejam, dieksekusi di Pesta Dansa Musim Dingin. Sekarang orang lain terbangun dalam tubuhnya, dan hanya dia yang tahu akhir ceritanya.",
+      "entries": {
+        "lore_gilded_1": {
+          "name": "Mahkota dan Mawar",
+          "text": "Novel asal dunia ini. Tokoh antagonis menyiksa sang pahlawan wanita yang suci, Putra Mahkota jatuh cinta padanya, dan sang antagonis mati di Pesta Dansa Musim Dingin."
+        },
+        "lore_gilded_2": {
+          "name": "Pesta Dansa Musim Dingin",
+          "text": "Malam termegah di istana. Di dalam buku, di sanalah sang antagonis ditangkap dan dihukum. Seribu lilin, ratusan persekutuan."
+        },
+        "lore_gilded_3": {
+          "name": "Istana Kekaisaran",
+          "text": "Istana emas di jantung kekaisaran. Segala hal yang diucapkan di dalamnya terdengar, dan segala hal yang terdengar dijual."
+        },
+        "lore_gilded_4": {
+          "name": "Pengawal Kekaisaran",
+          "text": "Ksatria pribadi Kaisar, berbaju baja dan biru tua. Sir Alaric Thorne adalah orang yang ditugaskan menjaga pewaris Duke, tugas yang tak diinginkan siapa pun."
+        },
+        "lore_gilded_5": {
+          "name": "Keluarga Vael",
+          "text": "Keluarga kadipaten agung lainnya, saingan lama keluarga sang antagonis. Lord Dorian adalah pewarisnya."
+        },
+        "lore_gilded_6": {
+          "name": "Salon Hari Minggu",
+          "text": "Salon mingguan Permaisuri: teh, musik, dan belati paling sopan di seluruh kekaisaran."
+        },
+        "lore_gilded_7": {
+          "name": "Etiket",
+          "text": "Segala hal di istana dilakukan berdasarkan aturan: siapa yang membungkuk seberapa dalam, siapa yang minum lebih dulu, siapa yang boleh duduk. Melanggar aturan adalah sebuah pernyataan, dan semua orang membacanya."
+        },
+        "lore_person_c_leander": {
+          "name": "Putra Mahkota Leander",
+          "text": "Putra Mahkota dan tunanganmu, patuh pada aturan hingga ke titik koma, yang tak pernah memandangmu sebagai manusia. Hingga baru-baru ini."
+        },
+        "lore_person_c_alaric": {
+          "name": "Sir Alaric Thorne",
+          "text": "Ksatria Pengawal Kekaisaran yang berjalan tiga langkah di belakangmu, telah melihat semua yang kamu lakukan dan mengingatnya."
+        },
+        "lore_person_c_dorian": {
+          "name": "Lord Dorian Vael",
+          "text": "Pewaris Duke of Vael, pria paling cerdas di istana dan musuh tertuamu, yang baru saja menyadari bahwa kamu telah berubah."
+        },
+        "lore_person_c_celestine": {
+          "name": "Celestine Aure",
+          "text": "Wanita suci yang dipuja seluruh kekaisaran, pahlawan wanita dalam cerita, dan terlalu baik kepadamu untuk ukuran orang yang seharusnya kamu siksa."
+        },
+        "lore_person_c_odile": {
+          "name": "Odile Fenn",
+          "text": "Pelayan pribadimu selama delapan tahun, yang tahu di mana setiap rahasia istana bersemayam dan tak pernah sekalipun tersenyum padamu."
+        }
+      }
+    },
+    "lore_arena": {
+      "name": "Es & Arena",
+      "about": "Kota pelabuhan dingin yang hidup demi tim hoki esnya, Northgate Wolves. Semua orang berbagi satu arena tua: tim pria, tim wanita, klub seluncur, dan boks pers. Pemiliknya diam-diam sedang menjual tim tersebut.",
+      "entries": {
+        "lore_arena_1": {
+          "name": "Arena",
+          "text": "Arena tua Northgate: klakson yang sering macet, kursi yang lebih tua dari para pemain, dan kentang goreng yang dipuji seluruh kota. Terowongan berbau es dan kopi."
+        },
+        "lore_arena_2": {
+          "name": "Northgate Wolves",
+          "text": "Tim hoki es kota, juru kunci liga namun tetap dicintai. Erik Holt kaptennya; Teddy Novak adalah anak baru yang diharapkan semua orang bisa menyelamatkannya."
+        },
+        "lore_arena_3": {
+          "name": "Tim wanita",
+          "text": "Tim wanita Wolves, dengan kiper terbaik di liga dan jadwal es pukul lima pagi. Priya Raman adalah satu-satunya reporter yang meliputnya."
+        },
+        "lore_arena_4": {
+          "name": "Klub seluncur",
+          "text": "Klub seluncur kecil yang menyewa es pagi di arena. Sasha Volkova melatih di sana, dan ingin para pemain hoki berhenti merusak permukaan esnya."
+        },
+        "lore_arena_5": {
+          "name": "Penjualan",
+          "text": "Pemiliknya diam-diam menjual tim kepada pembeli yang akan memindahkannya ke kota lain, kecuali jika Wolves lolos ke babak playoff dan kota memenuhi kursi penonton."
+        },
+        "lore_arena_6": {
+          "name": "Aturan di dinding",
+          "text": "Pemberitahuan yang direkatkan di dinding ruang perawatan: dilarang berkencan dengan pemain. Seseorang menggarisbawahinya dua kali. Tak ada yang mau bilang siapa."
+        },
+        "lore_arena_7": {
+          "name": "Derbi",
+          "text": "Derbi bulanan melawan kota di seberang perairan, dan di akhir musim, pertandingan yang menentukan segalanya."
+        },
+        "lore_person_c_erik": {
+          "name": "Erik Holt",
+          "text": "Kapten Northgate Wolves, penuh bekas luka, bicara empat kata sehari, dan tak ada yang boleh menyentuh perbannya."
+        },
+        "lore_person_c_teddy": {
+          "name": "Teddy Novak",
+          "text": "Bintang baru Wolves, dibesarkan di pertanian, ceria tentang segalanya, yang muncul di depan pintumu membawa sarapan yang terlalu banyak."
+        },
+        "lore_person_c_freya": {
+          "name": "Freya Lund",
+          "text": "Kiper tim wanita Wolves, yang berbagi es pukul lima pagi bersamamu dan sejauh ini baru mengucapkan sekitar sembilan kata."
+        },
+        "lore_person_c_sasha": {
+          "name": "Sasha Volkova",
+          "text": "Atlet seluncur indah di es pagi arena, yang membenci hoki, membenci dingin, dan memutuskan bahwa dia terutama membencimu."
+        },
+        "lore_person_c_priya": {
+          "name": "Priya Raman",
+          "text": "Kolumnis olahraga dengan sebuah cerita, kartu pers, dan alasan yang sangat bagus untuk terus menggodamu di terowongan."
         }
       }
     }
@@ -3907,6 +6728,21 @@
           "Ada pelanggan tetap ninggalin tip bareng gambar kucing kecil. Bikin semangat seharian.",
           "Tadi aku bikin gosong batch pertama scone. Jangan bilang siapa-siapa ya.",
           "Hujan seharian tadi sore, jadi kafe wangi kopi bercampur aroma payung basah."
+        ],
+        "Velvet District": [
+          "Hujan sudah turun selama tiga hari. Seluruh kota berbau seperti korek api basah.",
+          "Seseorang di Orchid menanyakan tentangmu malam ini. Aku bilang aku belum pernah mendengar tentangmu.",
+          "Aku berjalan memutar pulang dan memikirkan apa yang kamu katakan."
+        ],
+        "Gilded Empire": [
+          "Tiga orang membungkuk padaku hari ini dan dua di antaranya bersungguh-sungguh. Hari yang baik, menurut standar istana.",
+          "Teh Permaisuri terlalu manis, begitu pula senyuman semua orang. Aku memikirkanmu.",
+          "Aku menemukan sebuah catatan di dalam sarung tanganku pagi ini. Tak ada yang mau bilang siapa yang menaruhnya di sana."
+        ],
+        "Ice & Arena": [
+          "Klakson macet lagi saat latihan. Berbunyi terus selama satu menit penuh. Tak ada yang menoleh sekalipun.",
+          "Aku mendapat memar sebesar negara kecil hari ini. Kamu pasti akan terkesan.",
+          "Permukaan es sempurna pagi ini dan aku berpikir, kamu harus melihat ini."
         ],
         "default": [
           "Tadi hampir aja mau chat kamu, tapi tiba-tiba malu sendiri.",
@@ -5343,6 +8179,17 @@
         "Train": "Kereta",
         "Appointment": "Janji temu"
       }
+    },
+    "world": {
+      "chapter": [
+        "Kamu sudah dengar? {note}",
+        "Kamu takkan percaya ini. {note}",
+        "Jadi begitulah. {note} Aku terus memikirkannya."
+      ],
+      "arc": [
+        "Ada sesuatu yang belum kuceritakan padamu. {title}.",
+        "Boleh aku memberitahumu sesuatu? {title}. Hanya itu yang akan kukatakan untuk saat ini."
+      ]
     }
   }
 }
