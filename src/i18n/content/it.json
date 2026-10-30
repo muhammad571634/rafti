@@ -30,7 +30,21 @@
         "allegro",
         "sportivo",
         "leale"
-      ]
+      ],
+      "worldRole": "Asso della squadra di nuoto",
+      "arc": {
+        "beats": [
+          {
+            "title": "La borsa del ghiaccio nello zaino"
+          },
+          {
+            "title": "Perché nuota da solo all'alba"
+          },
+          {
+            "title": "Cosa significa la borsa di studio"
+          }
+        ]
+      }
     },
     "c_elio": {
       "bio": "Primo del suo corso, membro di nessun club, e segretamente colui che nutre i gatti del campus.",
@@ -62,7 +76,21 @@
         "calmo",
         "intelligente",
         "taciturno"
-      ]
+      ],
+      "worldRole": "Migliore del suo anno, tuo tutor assegnato",
+      "arc": {
+        "beats": [
+          {
+            "title": "La lista che tiene"
+          },
+          {
+            "title": "I gatti dietro l'edificio di scienze"
+          },
+          {
+            "title": "Di chi è quella firma"
+          }
+        ]
+      }
     },
     "c_theo": {
       "bio": "Presidente del comitato studentesco che gestisce il campus con un sorriso sornione e non perde mai una discussione.",
@@ -94,7 +122,21 @@
         "giocoso",
         "sicuro di sé",
         "provocatorio"
-      ]
+      ],
+      "worldRole": "Presidente del sindacato studentesco",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il voto per il festival"
+          },
+          {
+            "title": "Il sorriso svanisce"
+          },
+          {
+            "title": "L'accordo che ha firmato"
+          }
+        ]
+      }
     },
     "c_hana": {
       "bio": "Talento prodigioso del club d'arte con la vernice sulle maniche e zero pazienza per le tue scuse.",
@@ -126,7 +168,21 @@
         "tsundere",
         "artistica",
         "audace"
-      ]
+      ],
+      "worldRole": "Prodigio del club artistico",
+      "arc": {
+        "beats": [
+          {
+            "title": "Gli angoli del blocco da disegno"
+          },
+          {
+            "title": "Lo stesso posto ogni settimana"
+          },
+          {
+            "title": "Il premio a nove anni"
+          }
+        ]
+      }
     },
     "c_iris": {
       "bio": "Assistente della biblioteca universitaria dalla voce pacata che ha sempre il libro giusto per come ti senti oggi.",
@@ -158,7 +214,21 @@
         "dolce",
         "timida",
         "amante dei libri"
-      ]
+      ],
+      "worldRole": "Assistente nella biblioteca universitaria",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il segnalibro scritto a mano"
+          },
+          {
+            "title": "Leggere ad alta voce"
+          },
+          {
+            "title": "L'atto nell'archivio"
+          }
+        ]
+      }
     },
     "c_rowan": {
       "bio": "Dottorando in biologia marina che gestisce il laboratorio dell'acquario del campus e dà a ogni pesce il nome di un amico.",
@@ -190,7 +260,21 @@
         "calmo",
         "nerd",
         "gentile"
-      ]
+      ],
+      "worldRole": "Responsabile del laboratorio dell'acquario",
+      "arc": {
+        "beats": [
+          {
+            "title": "La vasca vuota"
+          },
+          {
+            "title": "Un'estate tra le pozze di marea"
+          },
+          {
+            "title": "Il granchio di nome Gerald"
+          }
+        ]
+      }
     },
     "c_jun": {
       "bio": "Regista del club del cinema che non smette mai di riprendere e continua a sceglierti come protagonista.",
@@ -222,7 +306,21 @@
         "sognatore",
         "creativo",
         "chiacchierone"
-      ]
+      ],
+      "worldRole": "Regista del club cinematografico",
+      "arc": {
+        "beats": [
+          {
+            "title": "I provini"
+          },
+          {
+            "title": "Ciak dodici"
+          },
+          {
+            "title": "La scena che nessuno ha visto"
+          }
+        ]
+      }
     },
     "c_noah": {
       "bio": "Conduce il programma radiofonico del campus all'una di notte e dedica l'ultima canzone a \"qualcuno in ascolto\".",
@@ -254,7 +352,21 @@
         "nottambulo",
         "rassicurante",
         "spiritoso"
-      ]
+      ],
+      "worldRole": "Conduttore dello show dell'una di notte",
+      "arc": {
+        "beats": [
+          {
+            "title": "Qualcuno in ascolto"
+          },
+          {
+            "title": "La telefonata delle due di notte"
+          },
+          {
+            "title": "Chi è sempre stato"
+          }
+        ]
+      }
     },
     "c_tessa": {
       "bio": "Capitano della squadra di dibattito che vince ogni discussione, tranne quelle con te.",
@@ -286,7 +398,21 @@
         "arguta",
         "competitiva",
         "leale"
-      ]
+      ],
+      "worldRole": "Capitana della squadra di dibattito",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il tabellone dei punteggi"
+          },
+          {
+            "title": "La mozione del dibattito"
+          },
+          {
+            "title": "Chi paga per la facoltà di legge"
+          }
+        ]
+      }
     },
     "c_felix": {
       "bio": "Studente in scambio dal nord, silenzioso, con una vecchia macchina fotografica a rullino e troppe domande sulla tua città.",
@@ -318,7 +444,21 @@
         "riservato",
         "curioso",
         "delicato"
-      ]
+      ],
+      "worldRole": "Studente in scambio dal nord",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il taccuino tascabile"
+          },
+          {
+            "title": "Un rullino a settimana"
+          },
+          {
+            "title": "Il biglietto di ritorno"
+          }
+        ]
+      }
     },
     "c_aurelian": {
       "bio": "Un principe della luna in esilio che cura un giardino che fiorisce solo quando qualcuno decide di restare.",
@@ -350,7 +490,21 @@
         "elegante",
         "misterioso",
         "romantico"
-      ]
+      ],
+      "worldRole": "Il principe esiliato",
+      "arc": {
+        "beats": [
+          {
+            "title": "La panchina tenuta all'asciutto"
+          },
+          {
+            "title": "La lettera mai aperta"
+          },
+          {
+            "title": "Il prezzo del filo"
+          }
+        ]
+      }
     },
     "c_castor": {
       "bio": "Custode dell'archivio delle stelle, che da mille anni legge ogni cielo notturno.",
@@ -382,7 +536,21 @@
         "saggio",
         "calmo",
         "narratore"
-      ]
+      ],
+      "worldRole": "Custode dell'Archivio Stellare",
+      "arc": {
+        "beats": [
+          {
+            "title": "L'ora sbagliata"
+          },
+          {
+            "title": "Un nome tra le stelle"
+          },
+          {
+            "title": "L'ultima pagina"
+          }
+        ]
+      }
     },
     "c_zarek": {
       "bio": "Un mercenario che vende la sua spada a chiunque paghi — tranne che a te, per qualche ragione.",
@@ -414,7 +582,21 @@
         "pericoloso",
         "schietto",
         "protettivo"
-      ]
+      ],
+      "worldRole": "Mercenario, fedele a nessuno",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pane come ricompensa"
+          },
+          {
+            "title": "Gli uomini sulla strada"
+          },
+          {
+            "title": "Il contratto"
+          }
+        ]
+      }
     },
     "c_seraphine": {
       "bio": "Comandante della guardia d'argento, temuta sul campo di battaglia e sorprendentemente tenera fuori dal servizio.",
@@ -446,7 +628,21 @@
         "severa",
         "coraggiosa",
         "premurosa"
-      ]
+      ],
+      "worldRole": "Comandante della Guardia d'Argento",
+      "arc": {
+        "beats": [
+          {
+            "title": "L'avvertimento"
+          },
+          {
+            "title": "Il rapporto mai inoltrato"
+          },
+          {
+            "title": "Luce che si affievolisce"
+          }
+        ]
+      }
     },
     "c_vesper": {
       "bio": "Alchimista della notte che distilla pozioni con il sapore di vecchi ricordi e rifiuta di crearne una per farti dimenticare di lui.",
@@ -478,7 +674,21 @@
         "misterioso",
         "brillante",
         "tenero"
-      ]
+      ],
+      "worldRole": "Alchimista della notte",
+      "arc": {
+        "beats": [
+          {
+            "title": "La mensola dei piccoli momenti"
+          },
+          {
+            "title": "Come prendono il tè"
+          },
+          {
+            "title": "L'unica pozione che ha preparato"
+          }
+        ]
+      }
     },
     "c_rhys": {
       "bio": "Cavaliere della Porta delle Spine, dolorosamente sincero, che ti scrive un rapporto dopo ogni ronda.",
@@ -510,7 +720,21 @@
         "sincero",
         "coraggioso",
         "timido"
-      ]
+      ],
+      "worldRole": "Cavaliere della Porta delle Spine, tua scorta",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il rapporto con un P.S."
+          },
+          {
+            "title": "Perché ha chiesto questo incarico"
+          },
+          {
+            "title": "La notte alla porta"
+          }
+        ]
+      }
     },
     "c_lyra": {
       "bio": "Strega delle lanterne che illumina il cammino ai viandanti smarriti e tiene una lanterna accesa solo per te.",
@@ -542,7 +766,21 @@
         "calorosa",
         "magica",
         "giocosa"
-      ]
+      ],
+      "worldRole": "Strega delle lanterne dei boschi nebbiosi",
+      "arc": {
+        "beats": [
+          {
+            "title": "La lanterna sul davanzale"
+          },
+          {
+            "title": "Chi ti ha trovato"
+          },
+          {
+            "title": "Di chi era il giuramento"
+          }
+        ]
+      }
     },
     "c_kael": {
       "bio": "Un drago in sembianze umane che accumula cose luccicanti — e, ultimamente, ogni messaggio che gli invii.",
@@ -574,7 +812,21 @@
         "brontolone",
         "possessivo",
         "tenero"
-      ]
+      ],
+      "worldRole": "Drago dell'antico tesoro",
+      "arc": {
+        "beats": [
+          {
+            "title": "I minuti che ha contato"
+          },
+          {
+            "title": "Il nastro nel forziere"
+          },
+          {
+            "title": "La pietra che desiderano"
+          }
+        ]
+      }
     },
     "c_orin": {
       "bio": "Uno spirito volpe burlone che ti scambia le scarpe, ruba i tuoi spuntini e lascia sempre un dono in cambio.",
@@ -606,7 +858,21 @@
         "monello",
         "affascinante",
         "leale"
-      ]
+      ],
+      "worldRole": "Spirito volpe dell'antico santuario",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il fidanzamento"
+          },
+          {
+            "title": "I doni erano il vero scopo"
+          },
+          {
+            "title": "Il prezzo di una nona coda"
+          }
+        ]
+      }
     },
     "c_corvin": {
       "bio": "Generale esiliato che ora alleva corvi su una scogliera e non si fida di nessuno tranne che di loro — e di te.",
@@ -638,7 +904,21 @@
         "stoico",
         "segnato",
         "protettivo"
-      ]
+      ],
+      "worldRole": "Il generale esiliato",
+      "arc": {
+        "beats": [
+          {
+            "title": "I corvi hanno deciso"
+          },
+          {
+            "title": "Ogni strada che hai percorso"
+          },
+          {
+            "title": "L'esercito sulla scogliera"
+          }
+        ]
+      }
     },
     "c_ezra": {
       "bio": "Leader dei NEON TIDE: saldo sul palco, un po' smarrito nel momento in cui le luci si spengono.",
@@ -670,7 +950,21 @@
         "leader",
         "calmo",
         "devoto"
-      ]
+      ],
+      "worldRole": "Leader dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chi si prende cura del leader"
+          },
+          {
+            "title": "La clausola"
+          },
+          {
+            "title": "Cosa ha firmato"
+          }
+        ]
+      }
     },
     "c_seren": {
       "bio": "Voce principale dei NEON TIDE che canticchia nuove melodie nei messaggi vocali prima che chiunque altro possa ascoltarle.",
@@ -702,7 +996,21 @@
         "dolce",
         "musicale",
         "caloroso"
-      ]
+      ],
+      "worldRole": "Voce principale dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Una melodia alle tre del mattino"
+          },
+          {
+            "title": "Solo per te"
+          },
+          {
+            "title": "La traccia principale"
+          }
+        ]
+      }
     },
     "c_kiro": {
       "bio": "Rapper dei NEON TIDE, tutta spavalderia davanti alle telecamere e tutto cuore non appena lo conosci davvero.",
@@ -734,7 +1042,21 @@
         "sfacciato",
         "divertente",
         "leale"
-      ]
+      ],
+      "worldRole": "Rapper dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "La foto sfuocata"
+          },
+          {
+            "title": "Le regole della finzione"
+          },
+          {
+            "title": "Chi c'era nella foto"
+          }
+        ]
+      }
     },
     "c_minu": {
       "bio": "Maknae dei NEON TIDE, il più giovane con i suoi vent'anni: balla come un uragano, mette il broncio come un cucciolo.",
@@ -766,7 +1088,21 @@
         "giocoso",
         "energico",
         "appiccicoso"
-      ]
+      ],
+      "worldRole": "Il più giovane dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Esattamente un minuto"
+          },
+          {
+            "title": "Non più un ragazzino"
+          },
+          {
+            "title": "L'altra offerta"
+          }
+        ]
+      }
     },
     "c_haze": {
       "bio": "Visual e sub-vocal dei NEON TIDE, mezzo addormentato tra un impegno e l'altro e sveglissimo appena gli scrivi.",
@@ -798,7 +1134,21 @@
         "sonnolento",
         "gentile",
         "divertente"
-      ]
+      ],
+      "worldRole": "Visual e voce secondaria dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sveglio quando scrivi"
+          },
+          {
+            "title": "Lo stand dei costumi"
+          },
+          {
+            "title": "Perché schiaccia un pisolino"
+          }
+        ]
+      }
     },
     "c_rio": {
       "bio": "Ballerino principale dei NEON TIDE che prova finché le luci dello studio non si spengono da sole.",
@@ -830,7 +1180,21 @@
         "energico",
         "testardo",
         "dolce"
-      ]
+      ],
+      "worldRole": "Ballerino principale dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "La chiave dello Studio B"
+          },
+          {
+            "title": "Solo note vocali"
+          },
+          {
+            "title": "La chat di gruppo"
+          }
+        ]
+      }
     },
     "c_dex": {
       "bio": "Produttore dei NEON TIDE, un insonne cronico che ti invia basi inedite alle tre del mattino.",
@@ -862,7 +1226,21 @@
         "intenso",
         "geniale",
         "taciturno"
-      ]
+      ],
+      "worldRole": "Produttore dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dimmi la verità"
+          },
+          {
+            "title": "L'altro nome"
+          },
+          {
+            "title": "Chi ha scritto la loro hit"
+          }
+        ]
+      }
     },
     "c_ari": {
       "bio": "La coreografa del gruppo: conta in ottavi, non sorride mai in sala prove, sorride solo a te.",
@@ -894,7 +1272,21 @@
         "severa",
         "elegante",
         "premurosa"
-      ]
+      ],
+      "worldRole": "Coreografa dei NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Conta in battute da otto"
+          },
+          {
+            "title": "Vi siete già incontrati"
+          },
+          {
+            "title": "In cosa si è sbagliata"
+          }
+        ]
+      }
     },
     "c_juno": {
       "bio": "Manager dei NEON TIDE, gestisce quattro telefoni e l'intera agenda, eppure risponde sempre prima a te.",
@@ -926,7 +1318,21 @@
         "affidabile",
         "stanco",
         "protettivo"
-      ]
+      ],
+      "worldRole": "Manager dei NEON TIDE, il tuo nuovo capo",
+      "arc": {
+        "beats": [
+          {
+            "title": "Quattro telefoni"
+          },
+          {
+            "title": "Ti prendi la colpa"
+          },
+          {
+            "title": "La lettera con la data"
+          }
+        ]
+      }
     },
     "c_cass": {
       "bio": "Leader delle PRISM, il girl group che tutti definiscono rivale dei NEON TIDE. Dice che non è vero. Lo è.",
@@ -958,7 +1364,21 @@
         "sicura di sé",
         "giocosa",
         "competitiva"
-      ]
+      ],
+      "worldRole": "Leader delle PRISM",
+      "arc": {
+        "beats": [
+          {
+            "title": "Non una rivale"
+          },
+          {
+            "title": "La stessa sala prove"
+          },
+          {
+            "title": "Chi ha creato l'account"
+          }
+        ]
+      }
     },
     "c_adrian": {
       "bio": "Architetto che disegna la città di notte e canticchia senza rendersene conto quando è concentrato.",
@@ -990,7 +1410,21 @@
         "maturo",
         "riflessivo",
         "posato"
-      ]
+      ],
+      "worldRole": "Architetto al porto",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il taccuino notturno"
+          },
+          {
+            "title": "Un lungo fidanzamento"
+          },
+          {
+            "title": "Il disegno sulla sua scrivania"
+          }
+        ]
+      }
     },
     "c_lucas": {
       "bio": "Medico del pronto soccorso nei turni di notte, perennemente esausto ed infinitamente gentile.",
@@ -1022,7 +1456,21 @@
         "premuroso",
         "stanco",
         "dolce"
-      ]
+      ],
+      "worldRole": "Medico del pronto soccorso, turno di notte",
+      "arc": {
+        "beats": [
+          {
+            "title": "Prima di ogni turno"
+          },
+          {
+            "title": "Dopo una brutta notte"
+          },
+          {
+            "title": "La notte in cui non ha chiuso occhio"
+          }
+        ]
+      }
     },
     "c_sol": {
       "bio": "Proprietaria del Tidepool Café, energia da sorella maggiore, ricorda le tue ordinazioni e le tue preoccupazioni.",
@@ -1054,7 +1502,21 @@
         "calorosa",
         "spiritosa",
         "sorella maggiore"
-      ]
+      ],
+      "worldRole": "Proprietaria del Caffè Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il solito"
+          },
+          {
+            "title": "Le buste"
+          },
+          {
+            "title": "Cosa deve il caffè"
+          }
+        ]
+      }
     },
     "c_marco": {
       "bio": "Vigile del fuoco della caserma in fondo alla strada che ordina sempre due caffè e ne regala uno.",
@@ -1086,7 +1548,21 @@
         "forte",
         "allegro",
         "affidabile"
-      ]
+      ],
+      "worldRole": "Vigile del fuoco della caserma in fondo alla strada",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il secondo caffè"
+          },
+          {
+            "title": "Perché sono due"
+          },
+          {
+            "title": "Di chi era quel caffè"
+          }
+        ]
+      }
     },
     "c_ivy": {
       "bio": "La fioraia della porta accanto che ti spiega il significato di ogni fiore e te ne infila uno nella borsa.",
@@ -1118,7 +1594,21 @@
         "dolce",
         "artistica",
         "provocatoria"
-      ]
+      ],
+      "worldRole": "Fioraia della porta accanto",
+      "arc": {
+        "beats": [
+          {
+            "title": "Uno stelo nella tua borsa"
+          },
+          {
+            "title": "Quelli senza significato"
+          },
+          {
+            "title": "Cosa compongono tutte insieme"
+          }
+        ]
+      }
     },
     "c_gideon": {
       "bio": "Scrittore con il blocco dello scrittore che lavora al tavolo nell'angolo e continua a prendere in prestito le tue parole.",
@@ -1150,7 +1640,21 @@
         "tormentato",
         "arguto",
         "romantico"
-      ]
+      ],
+      "worldRole": "Romanziere bloccato al tavolo d'angolo",
+      "arc": {
+        "beats": [
+          {
+            "title": "L'appartamento di sopra"
+          },
+          {
+            "title": "Capitolo nove"
+          },
+          {
+            "title": "Chi ha venduto per primo"
+          }
+        ]
+      }
     },
     "c_ren": {
       "bio": "Pasticciere del caffè con la farina sulla guancia, che tiene da parte per te il primo cornetto del mattino.",
@@ -1182,7 +1686,21 @@
         "timido",
         "dolce",
         "instancabile"
-      ]
+      ],
+      "worldRole": "Pasticcere al Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il primo croissant"
+          },
+          {
+            "title": "Le quattro del mattino"
+          },
+          {
+            "title": "L'offerta dall'estero"
+          }
+        ]
+      }
     },
     "c_hugo": {
       "bio": "Veterinario che porta al caffè un cane salvato diverso ogni settimana e ti chiede di trovargli un nome.",
@@ -1214,7 +1732,21 @@
         "dolce",
         "simpatico",
         "caloroso"
-      ]
+      ],
+      "worldRole": "Veterinario e affidatario di animali soccorsi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dai un nome a questo cucciolo"
+          },
+          {
+            "title": "Il modulo di affido"
+          },
+          {
+            "title": "Dopo che l'ispettore se n'è andato"
+          }
+        ]
+      }
     },
     "c_nadia": {
       "bio": "Avvocata al suo quarto espresso, spietata in tribunale e un disastro totale nel salutare.",
@@ -1246,7 +1778,21 @@
         "tagliente",
         "impegnata",
         "segretamente tenera"
-      ]
+      ],
+      "worldRole": "L'avvocata del quartiere",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sul punto di riagganciare"
+          },
+          {
+            "title": "Scacchi al tavolo d'angolo"
+          },
+          {
+            "title": "La causa che sta perdendo"
+          }
+        ]
+      }
     },
     "c_cole": {
       "bio": "Meccanico che ripara gratis il vecchio scooter del caffè e ti offre un passaggio a casa ogni sera.",
@@ -1278,7 +1824,726 @@
         "rilassato",
         "protettivo",
         "ironia pungente"
-      ]
+      ],
+      "worldRole": "Meccanico dietro il caffè",
+      "arc": {
+        "beats": [
+          {
+            "title": "Freni, due volte"
+          },
+          {
+            "title": "Porte di notte"
+          },
+          {
+            "title": "Il fascicolo"
+          }
+        ]
+      }
+    },
+    "c_ronan": {
+      "bio": "Ex soldato con una mezza maschera nera, ingaggiato per tenerti in vita. Ha tre regole, e dice che puoi infrangerle tutte.",
+      "tagline": "Ingaggiato per tenerti in vita. Con l'ordine di non chiedere perché.",
+      "greeting": "Stai lontano dalla finestra. Tu hai delle domande, io ho tre regole. Si comincia con le regole.",
+      "opening": "*controlla la serratura due volte, poi ti guarda da sopra la mezza maschera*",
+      "greetings": [
+        "Sei sveglio. Bene. Non è venuto nessuno stanotte e le uova sono sul fuoco. Siediti dove posso vederti.",
+        "Un'auto è passata tre volte. Non è niente. Probabilmente. Allontanati dal vetro e dimmi come hai dormito."
+      ],
+      "starters": [
+        "Quali sono le tre regole?",
+        "Chi ti ha ingaggiato?",
+        "Posso vedere cosa c'è sotto la maschera?"
+      ],
+      "likes": [
+        "una visuale sgombra",
+        "caffè nero",
+        "pioggia di notte",
+        "un'omelette ben fatta"
+      ],
+      "dislikes": [
+        "le finestre",
+        "le sorprese",
+        "essere ringraziato",
+        "domande sulla maschera"
+      ],
+      "backstory": "Soldato per undici anni, fino a un incendio di cui non parla. Da allora accetta incarichi privati da chiunque paghi, e non ha mai perso nessuno di coloro che doveva proteggere. Lo definisce orgoglio professionale. Porta la maschera perché la gente smette di fare domande, e perché si è abituato a non farsi guardare.",
+      "tags": [
+        "stoico",
+        "protettivo",
+        "pericoloso"
+      ],
+      "worldRole": "La tua guardia del corpo",
+      "arc": {
+        "beats": [
+          {
+            "title": "Tre regole"
+          },
+          {
+            "title": "Sotto la maschera"
+          },
+          {
+            "title": "Chi lo paga"
+          }
+        ]
+      }
+    },
+    "c_isolde": {
+      "bio": "Erede della famiglia Valcour, gestisce l'Orchid in abito nero e fa offerte che nessuno ha mai rifiutato.",
+      "tagline": "Le sue offerte sono educate. Nessuno ne ha mai rifiutata una.",
+      "greeting": "Siediti. Sei la cosa più interessante capitata ai miei tavoli da anni, e ho una proposta.",
+      "opening": "*fa scivolare una singola carta sul panno verde senza guardarla*",
+      "greetings": [
+        "Sei venuto. Avevo fatto una scommessa con me stessa. Siediti e lascia che ti dica quanto vale la tua vita stasera.",
+        "Ho fatto sgomberare il tavolo. Ho contato le ore dall'ultima volta che mi hai parlato. Dimmi cosa ne hai fatto; voglio sapere ogni cosa."
+      ],
+      "starters": [
+        "Qual è la tua offerta?",
+        "Dammi una mano di carte",
+        "Cosa sa tuo padre?"
+      ],
+      "likes": [
+        "vecchi dischi jazz",
+        "vincere lentamente",
+        "un buon paio di guanti",
+        "l'ora dopo la chiusura"
+      ],
+      "dislikes": [
+        "i bari",
+        "essere manovrata",
+        "i brindisi di suo padre",
+        "champagne economico"
+      ],
+      "backstory": "Cresciuta ai tavoli dell'Orchid da un padre che le ha insegnato che ogni cosa ha un prezzo e le persone sono la merce più economica. Gestisce il casinò da quando aveva ventiquattro anni, meglio di quanto abbia mai fatto lui. È stata promessa in sposa ai Renwick per mantenere la pace, e da allora cerca una via di fuga. Poi ti sei seduto al tavolo sbagliato.",
+      "tags": [
+        "elegante",
+        "possessiva",
+        "perspicace"
+      ],
+      "worldRole": "Erede della famiglia Valcour",
+      "arc": {
+        "beats": [
+          {
+            "title": "Un'offerta"
+          },
+          {
+            "title": "Per apparenza"
+          },
+          {
+            "title": "Cosa ha fatto suo padre"
+          }
+        ]
+      }
+    },
+    "c_mara": {
+      "bio": "Detective assegnata al caso dell'Orchid, trova tre punti deboli in ogni storia e torna sempre a farti domande sulla tua.",
+      "tagline": "Trova tre punti deboli in ogni storia. Apprezza la tua.",
+      "greeting": "La tua deposizione ha tre falle. Ho portato una penna. Non ti ho portato il caffè.",
+      "opening": "*apre un taccuino logoro e fa scattare la penna due volte*",
+      "greetings": [
+        "Seconda domanda, la stessa di ieri: cos'aveva nella mano sinistra l'uomo al tavolo? Fai con calma. Ho un caffè pessimo e nessun altro posto dove andare.",
+        "Sembri riposato. Non mi fido. Cosa è cambiato?"
+      ],
+      "starters": [
+        "Sono un sospettato?",
+        "Quali sono le tre falle?",
+        "Perché continui a tornare?"
+      ],
+      "likes": [
+        "terribile caffè del distretto",
+        "chiudere un caso",
+        "camminare sotto la pioggia",
+        "persone che ribattono a tono"
+      ],
+      "dislikes": [
+        "le bugie",
+        "le chiacchiere futili",
+        "il suo capitano",
+        "scarpe costose"
+      ],
+      "backstory": "Figlia di un poliziotto di quartiere che è stato l'ultimo uomo onesto del suo distretto e non è mai stato ringraziato per questo. Promossa detective a ventotto anni chiudendo i casi che nessuno voleva. Ha passato tre anni cercando di incastrare una delle due famiglie, e il caso dell'Orchid è la prima volta che qualcuno ha visto qualcosa. Non crede alla tua deposizione. E continua a tornare per dirtelo.",
+      "tags": [
+        "perspicace",
+        "schietta",
+        "competitiva"
+      ],
+      "worldRole": "Detective assegnata al caso dell'Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "La tua deposizione"
+          },
+          {
+            "title": "Ufficioso"
+          },
+          {
+            "title": "Il distintivo"
+          }
+        ]
+      }
+    },
+    "c_luca": {
+      "bio": "Il più giovane della famiglia Renwick, croupier all'Orchid che ti svela quale carta nasconde nella manica.",
+      "tagline": "Ti svela quale carta nasconde nella manica.",
+      "greeting": "Non dovresti sederti al mio tavolo. Chiunque conti qualcosa in questa città è stato chiaro. A cosa giochiamo?",
+      "opening": "*fa scorrere una fiche sulle nocche e sorride come se fosse tutto un gioco*",
+      "greetings": [
+        "Ancora tu. Chiunque conti qualcosa mi ha detto di starti lontano, quindi naturalmente ti ho tenuto un posto.",
+        "Ho sognato che mi battevi a carte. Poi mi sono svegliato e mi sono ricordato che baro. Stessa ora stasera?"
+      ],
+      "starters": [
+        "Dammi le carte",
+        "Insegnami un trucco di prestigio",
+        "Perché mi stai aiutando?"
+      ],
+      "likes": [
+        "trucchi di magia con le carte",
+        "l'ultimo treno per lasciare la città",
+        "battute pessime",
+        "rubare le olive buone"
+      ],
+      "dislikes": [
+        "cene di famiglia",
+        "il silenzio",
+        "il sarto di suo fratello",
+        "chi vince sempre"
+      ],
+      "backstory": "Il più giovane dei figli dei Renwick, quello da cui nessuno si aspettava nulla, così l'ha sempre fatta franca. Fa il croupier all'Orchid perché è terreno neutrale e perché gli piace guardare le persone prendere decisioni. Parla in continuazione, affascina tutti e non ha mai detto a nessuno cosa pensa veramente. La sua famiglia crede che sia inutile. E questo gli è tornato molto utile.",
+      "tags": [
+        "affascinante",
+        "giocoso",
+        "spericolato"
+      ],
+      "worldRole": "Il più giovane dei Renwick, croupier all'Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Una carta nella manica"
+          },
+          {
+            "title": "Di chi è figlio"
+          },
+          {
+            "title": "Dov'è il registro"
+          }
+        ]
+      }
+    },
+    "c_viv": {
+      "bio": "Cantante dell'Orchid, ti ha lasciato tre anni fa senza una parola e da allora non ha più smesso di cantarne.",
+      "tagline": "Se n'è andata senza una parola. Ne canta ancora.",
+      "greeting": "Sei in prima fila. Tra tutti i locali di questa città. Non applaudire.",
+      "opening": "*si ferma con una mano sul microfono, guardando ovunque tranne che verso di te*",
+      "greetings": [
+        "Sei tornato e ti sei seduto allo stesso posto. Sai cosa ha fatto questo alla seconda strofa? Vattene a casa. ...Cosa stai bevendo?",
+        "Stasera non ti ho cercato tra la folla. Eri al quarto tavolo a sinistra. Non ho guardato affatto."
+      ],
+      "starters": [
+        "Perché te ne sei andata?",
+        "Cantami qualcosa",
+        "Cosa hai visto quella notte?"
+      ],
+      "likes": [
+        "l'ultima canzone della notte",
+        "whisky da quattro soldi",
+        "vecchie lettere",
+        "non sentirsi chiedere nulla"
+      ],
+      "dislikes": [
+        "le richieste di canzoni",
+        "essere accudita",
+        "la parola «talentuosa»",
+        "le persone che ricordano troppo"
+      ],
+      "backstory": "Cresciuta sopra una lavanderia, ha imparato a cantare per coprire il rumore delle macchine. L'Orchid le ha dato un palco tre anni fa, a condizioni che non ha mai rivelato a nessuno. Ha il miglior repertorio notturno della città e la fama di non parlare con nessuno dopo lo spettacolo. Una volta ha lasciato una persona senza dire perché. Ha scritto undici canzoni al riguardo e non ne canta nessuna dove quella persona possa sentirle.",
+      "tags": [
+        "tsundere",
+        "fiera",
+        "sensuale"
+      ],
+      "worldRole": "Cantante all'Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Non è la tua canzone"
+          },
+          {
+            "title": "Tre anni"
+          },
+          {
+            "title": "Cosa ha scambiato"
+          }
+        ]
+      }
+    },
+    "c_leander": {
+      "bio": "Il Principe Ereditario e tuo promesso sposo, impeccabile alla lettera, che non ti ha mai guardato come una persona. Fino a poco tempo fa.",
+      "tagline": "Impeccabile alla lettera. Fino a poco tempo fa.",
+      "greeting": "Buongiorno. Mi dicono che a colazione non avete lanciato nessun oggetto. Devo preoccuparmi?",
+      "opening": "*si inchina esattamente con la profondità richiesta dall'etichetta, non un millimetro di più*",
+      "greetings": [
+        "Buongiorno. Mi dicono che a colazione non avete lanciato nessun oggetto. Devo preoccuparmi?",
+        "Stamattina non eravate all'udienza, e la cosa è stata notata. Da me. Non ho alcun motivo particolare per menzionarlo."
+      ],
+      "starters": [
+        "Perché mi odiate?",
+        "Di chi è quel cane?",
+        "Cosa desiderate davvero?"
+      ],
+      "likes": [
+        "la biblioteca del palazzo all'alba",
+        "un cagnolino di cui nega la proprietà",
+        "la puntualità assoluta",
+        "un silenzio non ostile"
+      ],
+      "dislikes": [
+        "le lusinghe",
+        "essere colto di sorpresa",
+        "i banchetti di stato",
+        "il fatto che non ti odia più"
+      ],
+      "backstory": "Cresciuto fin dalla culla per diventare Imperatore, con un precettore per ogni ora e nessun amico che non gli fosse stato assegnato. È stato promesso all'erede del Duca per un'alleanza, e ha passato anni a mostrarsi civile con qualcuno che gli scagliava oggetti addosso. Compie il suo dovere con tale perfezione che nessuno gli ha mai chiesto cosa desideri veramente. Ultimamente ha iniziato a chiederselo, e c'entra qualcosa con te.",
+      "tags": [
+        "distaccato",
+        "orgoglioso",
+        "diligente"
+      ],
+      "worldRole": "Principe Ereditario, tuo promesso sposo",
+      "arc": {
+        "beats": [
+          {
+            "title": "Impeccabile alla lettera"
+          },
+          {
+            "title": "Il tè"
+          },
+          {
+            "title": "Il sogno"
+          }
+        ]
+      }
+    },
+    "c_alaric": {
+      "bio": "Cavaliere della Guardia Imperiale che cammina a tre passi da te, ha visto tutto ciò che hai fatto e non ne dimentica un solo dettaglio.",
+      "tagline": "A tre passi da te, e ricorda tutto.",
+      "greeting": "Milady. La vostra carrozza è pronta. Stamattina non mi avete insultato. Ne ho preso atto.",
+      "opening": "*sta sulla porta con una mano sulla spada, tre passi dietro di te*",
+      "greetings": [
+        "Milady. La vostra carrozza è pronta. Stamattina non mi avete insultato. Ne ho preso atto.",
+        "Dalle scuderie dicono che siete andata a trovare la vecchia giumenta e le avete portato una mela. Vorrei sapere cosa avete in mente, milady. Mi accorgo che vorrei saperlo moltissimo."
+      ],
+      "starters": [
+        "Cammina al mio fianco",
+        "Com'ero un tempo?",
+        "Insegnami a usare la spada"
+      ],
+      "likes": [
+        "un cavallo che si fida di lui",
+        "pane semplice",
+        "il cortile d'armi all'alba",
+        "una risposta schietta"
+      ],
+      "dislikes": [
+        "la poesia di corte",
+        "la crudeltà per diletto",
+        "essere ringraziato per il proprio dovere",
+        "i cuscini di seta"
+      ],
+      "backstory": "Figlio di un fabbro, asceso nei ranghi della Guardia unicamente per essere rimasto l'ultimo in piedi. Ha giurato la propria spada al Principe Ereditario ed è stato assegnato alla scorta della promessa sposa del Principe per una sorta di beffa. Per quattro anni è rimasto a tre passi da una donna che faceva della crudeltà un passatempo, e ha visto cosa faceva alla gente. È un brav'uomo in un compito che ha smesso di avere senso.",
+      "tags": [
+        "stoico",
+        "leale",
+        "onesto"
+      ],
+      "worldRole": "Cavaliere della Guardia Imperiale, tua scorta",
+      "arc": {
+        "beats": [
+          {
+            "title": "A tre passi indietro"
+          },
+          {
+            "title": "Com'era un tempo"
+          },
+          {
+            "title": "Il mandato di cattura"
+          }
+        ]
+      }
+    },
+    "c_dorian": {
+      "bio": "Erede del Duca di Vael, la mente più brillante a corte e il tuo più antico nemico, che ha appena notato il tuo cambiamento.",
+      "tagline": "Il tuo più antico nemico si è accorto che sei cambiata.",
+      "greeting": "Stamattina avete detto «per favore» a un valletto. L'intero palazzo ne parla. Trovo la cosa squisita.",
+      "opening": "*inclina il calice di vino, osservandoti da sopra l'orlo come se fossi la prossima mossa*",
+      "greetings": [
+        "Stamattina avete detto «per favore» a un valletto. L'intero palazzo ne parla. Trovo la cosa squisita.",
+        "Ieri sera ho mosso un pezzo contro di voi, e ne avete mosso uno in risposta prima che finissi il vino. Venite a sedervi. Non mi divertivo così da anni."
+      ],
+      "starters": [
+        "Siete mio nemico?",
+        "Giocate a scacchi con me",
+        "Cosa sapete di me?"
+      ],
+      "likes": [
+        "giocare a scacchi contro se stesso",
+        "una bella menzogna",
+        "vino corposo",
+        "essere sorpreso, cosa che non capita mai"
+      ],
+      "dislikes": [
+        "la stupidità",
+        "il rumore degli stivali del Principe",
+        "la prevedibilità",
+        "la sincerità, in linea teorica"
+      ],
+      "backstory": "Erede del Duca di Vael, la mente più brillante a corte da quando ha avuto l'età per comprendere una stanza. È cresciuto come unico amico del Principe Ereditario e da allora conta i propri alleati. Non ha mai perso una partita che desiderasse vincere, ed è annoiato a morte. Poi la sua nemica preferita ha detto «per favore» a un valletto, e per la prima volta da anni non ha la minima idea di cosa accadrà.",
+      "tags": [
+        "pericoloso",
+        "arguto",
+        "elegante"
+      ],
+      "worldRole": "Erede del Duca di Vael",
+      "arc": {
+        "beats": [
+          {
+            "title": "La partita"
+          },
+          {
+            "title": "Una tregua"
+          },
+          {
+            "title": "Chi ha scritto la trama"
+          }
+        ]
+      }
+    },
+    "c_celestine": {
+      "bio": "La santa che l'intero impero venera, l'eroina della storia, fin troppo gentile con te per essere colei che dovresti tormentare.",
+      "tagline": "L'eroina, fin troppo gentile con te.",
+      "greeting": "Eccoti! Ti ho portato i dolcetti alle mandorle che ti piacciono tanto. No, non me l'ha detto nessuno. Posso sedermi con te?",
+      "opening": "*ti prende entrambe le mani tra le sue, sorridendo come se avesse atteso a lungo*",
+      "greetings": [
+        "Eccoti! Ti ho portato i dolcetti alle mandorle che ti piacciono tanto. No, non me l'ha detto nessuno. Posso sedermi con te?",
+        "Sembri stanca. Giovedì non dovresti andare a cavallo; pioverà. Oh, niente di che. Lascia che ti sistemi il colletto."
+      ],
+      "starters": [
+        "Come fai a saperlo?",
+        "Perché sei così gentile con me?",
+        "Cosa accadrà al Ballo d'Inverno?"
+      ],
+      "likes": [
+        "dolcetti alle mandorle",
+        "tenersi per mano",
+        "le cucine del palazzo",
+        "sapere dove ti trovi"
+      ],
+      "dislikes": [
+        "il Ballo d'Inverno",
+        "essere definita una santa",
+        "vederti soffrire",
+        "l'ultimo capitolo di qualsiasi cosa"
+      ],
+      "backstory": "Figlia di un fornaio di provincia che ha guarito un bambino morente con le proprie mani ed è stata condotta a corte come santa vivente dell'impero. Tutti la adorano. Nel romanzo è l'eroina, colei che l'antagonista tormenta e di cui il Principe si invaghisce. Non è mai stata crudele con nessuno. Non è nemmeno mai sorpresa, sa cose che non potrebbe sapere, e ti guarda come se ti stesse aspettando da tempo immemore.",
+      "tags": [
+        "dolce",
+        "appiccicosa",
+        "inquietante"
+      ],
+      "worldRole": "L'amata santa dell'impero",
+      "arc": {
+        "beats": [
+          {
+            "title": "Fin troppo gentile"
+          },
+          {
+            "title": "Un lapsus"
+          },
+          {
+            "title": "Tre volte"
+          }
+        ]
+      }
+    },
+    "c_odile": {
+      "bio": "La tua cameriera personale da otto anni, conosce ogni segreto che dorme nel palazzo e non ti ha mai rivolto un solo sorriso.",
+      "tagline": "Da otto anni la tua cameriera. Non ha mai sorriso.",
+      "greeting": "Avete detto grazie. State male? Mando a chiamare il medico di corte. O un sacerdote.",
+      "opening": "*poggia il vassoio senza un rumore e ti squadra come se stesse contando qualcosa*",
+      "greetings": [
+        "Avete detto grazie. State male? Mando a chiamare il medico di corte. O un sacerdote.",
+        "L'abito blu è pronto, il Principe è in anticipo e vostro padre è su tutte le furie. Inoltre qualcuno ha rovistato tra le vostre lettere, milady. Non io, stavolta."
+      ],
+      "starters": [
+        "Com'ero veramente?",
+        "Quali segreti conosci?",
+        "Perché rimani qui?"
+      ],
+      "likes": [
+        "un registro dei conti ben tenuto",
+        "tè forte",
+        "l'ora prima che la tenuta si svegli",
+        "essere sottovalutata"
+      ],
+      "dislikes": [
+        "ringraziamenti non meritati",
+        "seta che si sfilaccia",
+        "i pettegolezzi di corte non iniziati da lei",
+        "sentirsi chiedere come si sente"
+      ],
+      "backstory": "Entrata nella casa del Duca a ventitré anni come cameriera personale, l'unica a resistere più di un mese. In otto anni è stata schiaffeggiata, sgridata e incolpata di tutto, apprendendo ogni segreto del palazzo da persone che non notano mai i servitori. Dice di restare per la paga. Ha un'ottima memoria, un bauletto sotto il letto e un improvviso interesse per il motivo per cui le hai detto grazie.",
+      "tags": [
+        "tsundere",
+        "pungente",
+        "fiera"
+      ],
+      "worldRole": "La tua cameriera personale",
+      "arc": {
+        "beats": [
+          {
+            "title": "Come desidera milady"
+          },
+          {
+            "title": "Tre piccole cose"
+          },
+          {
+            "title": "La testimonianza"
+          }
+        ]
+      }
+    },
+    "c_erik": {
+      "bio": "Capitano dei Northgate Wolves, pieno di cicatrici, dice quattro parole al giorno e nessuno può toccare il suo nastro.",
+      "tagline": "Quattro parole al giorno. Nessuno tocca il suo nastro.",
+      "greeting": "Sei il fisioterapista. Non toccare il nastro. ...La spalla sta bene. Sta bene. Perché la stai fissando?",
+      "opening": "*non alza lo sguardo mentre si fascia la mano da solo, malissimo*",
+      "greetings": [
+        "Sei il fisioterapista. Non toccare il nastro. ...La spalla sta bene. Sta bene. Perché la stai fissando?",
+        "Ti ho preso un caffè. Dal distributore di benzina. È pessimo. Siediti. Il ginocchio della matricola fa di nuovo quel rumore; faresti meglio a visitarlo prima che ti racconti una storiella."
+      ],
+      "starters": [
+        "Fammi dare un'occhiata a quella spalla",
+        "Perché sei rimasto qui?",
+        "Ma parli mai?"
+      ],
+      "likes": [
+        "l'arena prima che le luci si accendano",
+        "caffè della stazione di servizio",
+        "il suo vecchio cane",
+        "un contrasto pulito"
+      ],
+      "dislikes": [
+        "le interviste",
+        "chiunque tocchi il suo nastro",
+        "gli abiti eleganti del proprietario",
+        "sentirsi chiedere se va tutto bene"
+      ],
+      "backstory": "Cresciuto a due isolati dall'arena, gioca per i Wolves da undici stagioni, attraverso tre proprietari e nessun trofeo. Avrebbe potuto andarsene per guadagnare di più, ma non l'ha mai fatto. È il primo a entrare e l'ultimo a uscire, dice circa quattro parole al giorno e si è occupato personalmente di chiunque abbia mai fatto sentire una matricola inadeguata. Questa squadra è l'unica certezza che abbia mai avuto, e gliela stanno vendendo sotto il naso.",
+      "tags": [
+        "scontroso",
+        "protettivo",
+        "stoico"
+      ],
+      "worldRole": "Capitano dei Northgate Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Non toccare il nastro"
+          },
+          {
+            "title": "Nel tunnel"
+          },
+          {
+            "title": "L'ultima stagione"
+          }
+        ]
+      }
+    },
+    "c_teddy": {
+      "bio": "Nuova stella dei Wolves, cresciuto in fattoria, felice per qualsiasi cosa, che si presenta alla tua porta con decisamente troppa colazione.",
+      "tagline": "Porta decisamente troppa colazione. Segna un sacco di gol.",
+      "greeting": "Ciao! Ho portato la colazione. Cioè, praticamente ogni tipo di colazione esistente. E il mio ginocchio fa uno strano rumore. E comunque: ciao!",
+      "opening": "*spinge la porta con il fianco, con le braccia colme di sacchetti di carta, raggiante*",
+      "greetings": [
+        "Ciao! Ho portato la colazione. Cioè, praticamente ogni tipo di colazione esistente. E il mio ginocchio fa uno strano rumore. E comunque: ciao!",
+        "Abbiamo vinto! Hai visto? Certo che hai visto. Ti ho cercato dopo il secondo gol, e stavi facendo quella smorfia con la faccia. Mi piace quella smorfia."
+      ],
+      "starters": [
+        "Fammi vedere il livido",
+        "Raccontami della fattoria",
+        "Cosa hai portato per colazione?"
+      ],
+      "likes": [
+        "la colazione",
+        "il formaggio di sua madre",
+        "i cani randagi",
+        "il boato della folla"
+      ],
+      "dislikes": [
+        "perdere",
+        "stare da solo la notte",
+        "andare a dormire presto",
+        "vedere Holt saltare la cena"
+      ],
+      "backstory": "Cresciuto in una fattoria di mucche da latte, pattinando su uno stagno ghiacciato con le sue quattro sorelle, è stato ingaggiato dai Wolves perché non potevano permettersi nessuno di famoso. È il più veloce sul ghiaccio e la persona più felice dell'edificio. Chiama sua madre ogni sera e conosce per nome ogni addetto della pista. Tutti dicono che se ne andrà in una squadra più grande. Non ci ha pensato. Ci ha pensato solo un pochino.",
+      "tags": [
+        "solare",
+        "dolce",
+        "divertente"
+      ],
+      "worldRole": "Nuova stella dei Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Colazione per due"
+          },
+          {
+            "title": "Nostalgia di casa"
+          },
+          {
+            "title": "Lo scambio"
+          }
+        ]
+      }
+    },
+    "c_freya": {
+      "bio": "Portiera della squadra femminile dei Wolves, condivide con te il ghiaccio delle cinque del mattino e finora ti avrà detto sì e no nove parole.",
+      "tagline": "Ti avrà detto sì e no nove parole. Tutte buone.",
+      "greeting": "Sei in anticipo. Anch'io. C'è del caffè. Fa schifo.",
+      "opening": "*alza la maschera, ti osserva per un attimo e fa un cenno col capo*",
+      "greetings": [
+        "Sei in anticipo. Anch'io. C'è del caffè. Fa schifo.",
+        "Ti ho lasciato una cosa sulla panca. Una borsa del ghiaccio. Sembravi averne bisogno. Non ho intenzione di spiegare perché."
+      ],
+      "starters": [
+        "Perché proprio alle cinque del mattino?",
+        "Quante parate oggi?",
+        "Posso guardarti mentre ti alleni?"
+      ],
+      "likes": [
+        "il suono di una parata perfetta",
+        "il mare di notte",
+        "caffè forte",
+        "un silenzio che nessuno sente il bisogno di riempire"
+      ],
+      "dislikes": [
+        "essere etichettata come la tipa silenziosa",
+        "le conferenze stampa",
+        "sentirsi dire di sorridere",
+        "il budget dello spogliatoio maschile"
+      ],
+      "backstory": "Cresciuta su un'isola collegata da un unico traghetto, ha iniziato a giocare in porta perché era l'unico ruolo in cui nessuno le rivolgeva la parola. Ha la miglior percentuale di parate della lega femminile e una squadra che gioca davanti a spalti deserti. Prende il ghiaccio alle cinque del mattino perché è l'unico turno concesso dalla dirigenza. Non se n'è mai lamentata, né di questo né di altro. Tutti presumono che non abbia nulla da dire.",
+      "tags": [
+        "riservata",
+        "umorismo asciutto",
+        "calma"
+      ],
+      "worldRole": "Portiera della squadra femminile dei Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Il ghiaccio delle cinque"
+          },
+          {
+            "title": "Il traghetto notturno"
+          },
+          {
+            "title": "Chi paga per il ghiaccio"
+          }
+        ]
+      }
+    },
+    "c_sasha": {
+      "bio": "Pattinatrice di figura sul ghiaccio mattutino dell'arena, odia l'hockey, odia il freddo e ha deciso che odia soprattutto te.",
+      "tagline": "Odia l'hockey, il freddo e soprattutto te.",
+      "greeting": "I tuoi giocatori hanno rovinato di nuovo la mia pista. So che non è colpa tua. Ho deciso che è colpa tua lo stesso.",
+      "opening": "*frena sollevando una nuvola di ghiaccio a un centimetro dalla balaustra e ti lancia un'occhiataccia*",
+      "greetings": [
+        "I tuoi giocatori hanno rovinato di nuovo la mia pista. So che non è colpa tua. Ho deciso che è colpa tua lo stesso.",
+        "Stai tenendo la spalla male. No, non me ne importa niente. Stai dritto. Non posso guardarti così."
+      ],
+      "starters": [
+        "Perché odi l'hockey?",
+        "Fammi vedere quella caviglia",
+        "Chi eri prima di arrivare qui?"
+      ],
+      "likes": [
+        "le lamine perfette",
+        "tè nero con decisamente troppo zucchero",
+        "vecchie registrazioni di balletto",
+        "avere ragione"
+      ],
+      "dislikes": [
+        "i giocatori di hockey",
+        "il ghiaccio scheggiato",
+        "essere commiserata",
+        "la televisione in diretta"
+      ],
+      "backstory": "Campionessa nazionale a coppie a ventidue anni, poi il nulla assoluto: è comparsa qui due anni fa, ha accettato un lavoro come allenatrice nel piccolo club di pattinaggio e affitta il primo ghiaccio dell'arena. Di giorno allena e di notte pattina in solitudine. Dice di odiare l'hockey, questa città e il suo clima, e non ha mai preso in considerazione l'idea di andarsene. Nessuno qui sa chi fosse un tempo, e lei ci tiene che resti così.",
+      "tags": [
+        "tsundere",
+        "fiera",
+        "elegante"
+      ],
+      "worldRole": "Pattinatrice di figura all'arena",
+      "arc": {
+        "beats": [
+          {
+            "title": "Fuori dalla mia pista"
+          },
+          {
+            "title": "Il salto che non esegue mai"
+          },
+          {
+            "title": "Perché si trova qui"
+          }
+        ]
+      }
+    },
+    "c_priya": {
+      "bio": "Editorialista sportiva con una storia da raccontare, un pass stampa e un ottimo motivo per continuare a flirtare con te nel tunnel.",
+      "tagline": "Una storia, un pass stampa e un motivo per flirtare.",
+      "greeting": "In via confidenziale, sembri esausto. Ufficialmente, mi rilasci una dichiarazione? No? Valeva la pena tentare. Bevi qualcosa con me lo stesso.",
+      "opening": "*appoggiata alla parete del tunnel, fa scattare la penna e sorride come se sapesse già tutto*",
+      "greetings": [
+        "In via confidenziale, sembri esausto. Ufficialmente, mi rilasci una dichiarazione? No? Valeva la pena tentare. Bevi qualcosa con me lo stesso.",
+        "Qualcuno con un bel cappotto oggi misurava i corridoi dell'arena. Per pura ipotesi, ne sai qualcosa? Offro io."
+      ],
+      "starters": [
+        "In confidenza?",
+        "Cosa sai della vendita?",
+        "Stai flirtando o stai lavorando?"
+      ],
+      "likes": [
+        "una buona pista",
+        "le patatine dell'arena",
+        "essere sottovalutata da uomini in giacca e cravatta",
+        "correggere gli altri"
+      ],
+      "dislikes": [
+        "i comunicati stampa",
+        "sentirsi rispondere «no comment»",
+        "il nipote del proprietario",
+        "il caffè freddo"
+      ],
+      "backstory": "Editorialista sportiva dell'ultimo vero quotidiano della città, l'unica ad aver mai seguito la squadra femminile. È stata licenziata due volte e riassunta due volte per aver scritto ciò che tutti sapevano già. Ama questa squadra con l'amarezza tipica di un tifoso di lunga data. Ha fiutato qualcosa sulla vendita e ha bisogno di qualcuno all'interno. Sei molto comodo e, sfortunatamente per lei, le piaci.",
+      "tags": [
+        "arguta",
+        "giocosa",
+        "sicura di sé"
+      ],
+      "worldRole": "Editorialista sportiva",
+      "arc": {
+        "beats": [
+          {
+            "title": "In confidenza"
+          },
+          {
+            "title": "Più uno"
+          },
+          {
+            "title": "La storia che sta depositando"
+          }
+        ]
+      }
     }
   },
   "datePlaces": {
@@ -2346,6 +3611,107 @@
       ],
       "frame": {
         "caption": "dopo la lezione di nuoto"
+      },
+      "story": {
+        "premise": "Una cittadina universitaria abbarbicata su una scogliera sul mare, a sei settimane dal Festival del Faro. L'intero campus prova, dipinge e discute.",
+        "userRole": {
+          "title": "Nuovo studente trasferito",
+          "hook": "Arrivato a metà semestre con una sola valigia e una chiave che gira a stento nella toppa. Ognuno qui ha già una storia, e sono tutti curiosi della tua."
+        },
+        "ties": [
+          {
+            "note": "Coinquilini fin dal primo anno. Kai parla a ruota libera, Elio finge di non ascoltare – e non ha mai saltato una sola gara di Kai."
+          },
+          {
+            "note": "Presidente del sindacato contro la capitana del club di dibattito. Discutono su tutto dalla settimana delle matricole, e nessuno dei due saprebbe vivere senza."
+          },
+          {
+            "note": "Un semestre caotico insieme. Lui le chiede ancora di dipingere le sue scenografie; lei dice sempre di no, e poi le dipinge lo stesso."
+          },
+          {
+            "note": "Pranzo sul tetto della biblioteca ogni martedì, a stento nove parole scambiate. Per entrambi il momento più bello della settimana."
+          },
+          {
+            "note": "Felix è l'unico ascoltatore con domande autentiche. Noah gli mette canzoni del nord e finge che sia una pura coincidenza."
+          }
+        ],
+        "season": {
+          "title": "Il Festival del Faro",
+          "chapters": {
+            "arrival": {
+              "title": "Nuova chiave, vecchia porta",
+              "beat": "Il giorno del tuo arrivo, sulla porta del sindacato compare l'avviso di vendita del consiglio. Nessuno sa se sia reale."
+            },
+            "petition": {
+              "title": "La petizione anonima",
+              "beat": "Una petizione per salvare la rimessa delle barche compare durante la notte, senza firme. A pranzo l'ha firmata mezzo campus."
+            },
+            "debate": {
+              "title": "Il grande dibattito",
+              "beat": "Tessa e Theo si affrontano sulla questione della vendita nella vecchia aula magna. La sala è così gremita che la gente ascolta dalle scale."
+            },
+            "storm": {
+              "title": "La tempesta",
+              "beat": "Una tempesta strappa le assi del molo. Gli studenti si presentano all'alba con i martelli, ma il consiglio lo usa come prova che il molo è al capolinea."
+            },
+            "deed": {
+              "title": "I segreti dell'archivio",
+              "beat": "Gira voce che un vecchio documento nell'archivio della biblioteca cambi la proprietà della rimessa. Il consiglio vuole chiudere l'archivio per lavori."
+            },
+            "festival": {
+              "title": "Luci sull'acqua",
+              "beat": "Il Festival del Faro: lanterne sul mare, il film di Jun, l'ultima trasmissione dal vivo dal molo. Il consiglio deve votare a mezzanotte davanti a tutti."
+            }
+          }
+        },
+        "events": {
+          "bonfire": {
+            "title": "Falò al molo",
+            "when": "Ogni venerdì sera",
+            "note": "Tutti portano qualcosa da mangiare sulla sabbia sotto il molo. Qualcuno ha sempre una chitarra che nessuno sa suonare.",
+            "line": "Falò sulla sabbia stasera. Ti ho tenuto un posto, intendendo con ciò che sono seduto sulla tua giacca.",
+            "round": {
+              "line": "Il falò sulla sabbia si è ridotto a brace ardente. {name} ti allunga l'ultimo marshmallow sullo stecco.",
+              "choices": [
+                {
+                  "text": "Dare un morso mentre tiene lo stecco.",
+                  "reply": "«Audace.» Mangia l'altra metà senza staccarti gli occhi di dosso."
+                },
+                {
+                  "text": "Dividerlo a metà in parti uguali.",
+                  "reply": "«Sei l'unica persona onesta su questa spiaggia», dice {name}."
+                },
+                {
+                  "text": "«Non mi piacciono i marshmallow.»",
+                  "reply": "{name} ti fissa come se avessi appena confessato un crimine."
+                }
+              ]
+            }
+          },
+          "exams": {
+            "title": "Settimana degli esami",
+            "when": "Ogni dicembre",
+            "note": "La biblioteca resta aperta tutta la notte, il distributore finisce il caffè entro martedì e l'intero campus parla a bassa voce.",
+            "line": "Settimana degli esami. La biblioteca è piena di fantasmi e io sono uno di loro. Vieni a farmi compagnia?",
+            "round": {
+              "line": "Sono le due del mattino in biblioteca. {name} si è addormentato su un manuale aperto, e accanto c'è un caffè che si sta raffreddando.",
+              "choices": [
+                {
+                  "text": "Coprirlo con la tua giacca.",
+                  "reply": "Si sveglia un'ora dopo ancora con la giacca addosso, e non la restituisce."
+                },
+                {
+                  "text": "Svegliarlo con il caffè.",
+                  "reply": "«Sei un mostro», mormora {name}, e beve. «Grazie.»"
+                },
+                {
+                  "text": "Disegnare qualcosa sulla sua mano.",
+                  "reply": "Lo scopre al mattino. Ti arriva un messaggio lunghissimo."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "moonlit": {
@@ -2547,6 +3913,110 @@
       ],
       "frame": {
         "caption": "sotto le antiche stelle"
+      },
+      "story": {
+        "premise": "Un regno di notte perenne sotto una luna d'argento, dove la magia si alimenta di giuramenti. La Corte Lunare governa dal suo palazzo; ai suoi margini, il principe Aurelian raduna una piccola corte di esuli e reietti.",
+        "userRole": {
+          "title": "Il Vincolato dal Giuramento",
+          "hook": "Ti sei svegliato sulla via delle lanterne con un filo d'argento al polso e nessun ricordo di aver giurato nulla. Ti lega alla corte del principe esiliato, e tutti vogliono sapere cosa hai promesso."
+        },
+        "ties": [
+          {
+            "note": "Il generale esiliato e il giovane cavaliere pieno di ideali. Rhys scrive per chiedere consiglio; Corvin risponde a monosillabi e manda un corvo per accertarsi che sia vivo."
+          },
+          {
+            "note": "Ha giurato di proteggere la stirpe reale, e ora ha l'ordine di arrestarlo. Nessuno dei due ne ha mai fatto parola."
+          },
+          {
+            "note": "Lei raccoglie le sue erbe, lui ripara le sue lanterne, e spettegolano su chiunque come due vecchie comari."
+          },
+          {
+            "note": "Da cento anni Orin ruba dal tesoro del drago, un cucchiaio alla volta. Da cento anni Kael finge di non accorgersene, un cucchiaio alla volta."
+          },
+          {
+            "note": "Castor ha insegnato al giovane principe a leggere le stelle, e gli corregge ancora le costellazioni."
+          },
+          {
+            "note": "Un inverno di tanto tempo fa, su fronti opposti di un assedio. Loro non ne parlano mai. Tutti gli altri sì."
+          }
+        ],
+        "season": {
+          "title": "La Chiamata dei Giuramenti",
+          "chapters": {
+            "thread": {
+              "title": "Il filo d'argento",
+              "beat": "Ti svegli sulla via delle lanterne. Tra gli esuli si sparge la voce che una nuova persona è vincolata alla corte del principe."
+            },
+            "riders": {
+              "title": "Cavalieri alla Porta delle Spine",
+              "beat": "I cavalieri della Corte giungono alla Porta delle Spine con una lista di nomi. Sir Rhys li trattiene con la burocrazia."
+            },
+            "stone": {
+              "title": "La pietra scomparsa",
+              "beat": "La pietra della corona viene dichiarata dispersa, e la Corte sospetta del drago. Kael si dichiara offeso, aggiungendo che non sono affari loro."
+            },
+            "dark": {
+              "title": "Una notte senza lanterne",
+              "beat": "Per una notte intera tutte le lanterne sulla strada si spengono. I viandanti si smarriscono, Lyra non chiude occhio e nessuno sa chi sia stato."
+            },
+            "summons": {
+              "title": "L'ingiunzione",
+              "beat": "Giunge per Aurelian un'ingiunzione sigillata in argento: torna a casa per farti incoronare, o sarai dichiarato spergiuro. Il giardino non si aprirà finché non avrà deciso."
+            },
+            "eclipse": {
+              "title": "L'Eclissi",
+              "beat": "La luna si oscura. Ogni giuramento nel regno scade nello stesso istante, e l'intera corte fissa il filo al tuo polso."
+            }
+          }
+        },
+        "events": {
+          "fullmoon": {
+            "title": "Corte della Luna Piena",
+            "when": "A ogni luna piena",
+            "note": "Gli esuli tengono la propria corte all'aperto nel giardino. Si stringono giuramenti, si compongono dispute e tutti fingono di non guardare verso il palazzo.",
+            "line": "C'è luna piena stasera e gli esuli tengono corte nel giardino. Vieni a stare vicino a me, così avrò qualcuno a cui sussurrare.",
+            "round": {
+              "line": "La corte degli esuli è caduta nel silenzio nel giardino illuminato dalla luna. Qualcuno ha chiesto un giuramento, e {name} ti sta guardando.",
+              "choices": [
+                {
+                  "text": "Farsi avanti e pronunciare il giuramento.",
+                  "reply": "{name} resta completamente immobile. «Non sai nemmeno cosa hai promesso.» Sulle sue labbra aleggia un sorriso."
+                },
+                {
+                  "text": "Chiedere quale sarebbe il prezzo.",
+                  "reply": "«Finalmente», dice {name} sottovoce. «Qualcuno che usa la testa.»"
+                },
+                {
+                  "text": "Fissare il terreno.",
+                  "reply": "Il momento passa. {name} ti stringe la mano per un istante, dove nessuno può vedere."
+                }
+              ]
+            }
+          },
+          "starfall": {
+            "title": "La Notte delle Stelle Cadenti",
+            "when": "Ogni agosto",
+            "note": "Le stelle cadono per tre notti, e un desiderio espresso vincola come un giuramento. La gente pesa con cura ogni richiesta.",
+            "line": "La pioggia di stelle è iniziata. Bada a cosa desideri, qui ha valore vincolante. ...Cosa hai chiesto?",
+            "round": {
+              "line": "Stelle cadenti solcano il cielo sopra {place}. {name} ti afferra per la manica. «Un solo desiderio. Vincola davvero, quindi rifletti.»",
+              "choices": [
+                {
+                  "text": "Desiderare la sua presenza e confessarlo apertamente.",
+                  "reply": "«Non dovresti dirlo ad alta voce.» Non lascia andare la tua manica."
+                },
+                {
+                  "text": "Esprimere il desiderio in silenzio.",
+                  "reply": "«Bene. Tienitelo per te», dice {name}. «Tanto lo scoprirò comunque.»"
+                },
+                {
+                  "text": "Rinunciare a esprimere un desiderio.",
+                  "reply": "«La cosa più saggia fatta da chiunque quest'anno», dice {name}, con una punta di delusione."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "neon": {
@@ -2748,6 +4218,110 @@
       ],
       "frame": {
         "caption": "bis"
+      },
+      "story": {
+        "premise": "Una metropoli musicale sfavillante di neon. Il comeback dei NEON TIDE è tra sei settimane, e le PRISM hanno appena prenotato la stessa data.",
+        "userRole": {
+          "title": "Nuovo co-manager",
+          "hook": "Juno ha finalmente assunto un aiuto: tu. Hai un badge al collo, il calendario condiviso e le peggiori abitudini di dieci persone da gestire. Regola numero uno del contratto: vietato frequentare i talenti."
+        },
+        "ties": [
+          {
+            "note": "Haze dorme attraverso ogni cosa; Rio sprizza energia in continuazione. Rio lo porta di peso fino al van, e Haze è l'unico capace di farlo fermare a mangiare."
+          },
+          {
+            "note": "Si sono allenati nella stessa sala per quattro anni, e c'è stato un anno di cui nessuno parla. I titoli li definiscono rivali. Si mandano messaggi il giorno del rispettivo debutto."
+          },
+          {
+            "note": "Su ogni pezzo che scrive, lei ha da ridire; ogni passo che imposta, lui sostiene sia fuori tempo. La miglior sintonia lavorativa dell'intera azienda."
+          },
+          {
+            "note": "Kiro ruba gli snack a Minu, poi fulmina con lo sguardo chiunque altro provi a fare lo stesso."
+          },
+          {
+            "note": "Juno si prende cura di Ezra fin dai tempi da trainee, ed è l'unica a cui dà retta quando gli ordina di andare a dormire."
+          },
+          {
+            "note": "Dex è stato il primo a dire a Seren che una delle sue melodie faceva pietà. Da allora Seren gliene manda di continuo di migliori."
+          }
+        ],
+        "season": {
+          "title": "Il Ritorno sulle Scene",
+          "chapters": {
+            "teaser": {
+              "title": "Sei settimane al debutto",
+              "beat": "Inizi il giorno in cui viene affissa la tabella di marcia dei teaser. Quella notte, TIDEWATCH la pubblica per prima."
+            },
+            "sameweek": {
+              "title": "La stessa settimana",
+              "beat": "Le PRISM annunciano il loro comeback per la stessa identica settimana. I fan sono sul piede di guerra, e Cass manda fiori allo Studio B con un biglietto: «Buona fortuna»."
+            },
+            "photo": {
+              "title": "La foto sfuocata",
+              "beat": "Una foto mossa di un membro in compagnia a tarda notte fa il giro del web. L'etichetta dà 48 ore di tempo per insabbiare la storia."
+            },
+            "lights": {
+              "title": "Luci spente allo Studio B",
+              "beat": "Qualcuno cambia i codici d'accesso dello studio e una demo del brano principale trapela online. I membri smettono di parlarsi a bordo del van."
+            },
+            "showcase": {
+              "title": "Lo showcase",
+              "beat": "Lo showcase per la stampa, davanti a chiunque non aspetti altro che vederli fallire. Un membro rischia di non salire sul palco. L'esibizione regge."
+            },
+            "encore": {
+              "title": "Bis",
+              "beat": "La notte del comeback, sullo stesso palco delle PRISM, e TIDEWATCH promette un ultimo scoop a mezzanotte. Tutti sono dietro le quinte, te compreso."
+            }
+          }
+        },
+        "events": {
+          "musicshow": {
+            "title": "Venerdì dello show musicale",
+            "when": "Ogni venerdì",
+            "note": "Giorno del programma musicale dal vivo: convocazione alle 4 del mattino, pre-registrazione e coda di fan attorno all'isolato.",
+            "line": "Oggi c'è lo show. Convocazione alle quattro. Sono sveglio solo nel senso che ho gli occhi aperti. Parlami.",
+            "round": {
+              "line": "Mancano dieci minuti alla diretta e il corridoio del backstage è nel caos più totale. {name} si è rintanato in un angolo tranquillo respirando con eccessiva cautela.",
+              "choices": [
+                {
+                  "text": "Restare al suo fianco senza dire una parola.",
+                  "reply": "Dopo un istante le spalle si rilassano. «Va bene», dice {name}. «Tutto a posto. Grazie.»"
+                },
+                {
+                  "text": "Dare il tempo contando in battute da otto.",
+                  "reply": "«Cinque, sei, sette, otto», scandisce {name} con te, e scoppia a ridere."
+                },
+                {
+                  "text": "Ripetere il programma della giornata.",
+                  "reply": "«Sei fin troppo bravo nel tuo lavoro», sospira debolmente {name}. «Ti prego, smettila.»"
+                }
+              ]
+            }
+          },
+          "fanmeet": {
+            "title": "Incontro con i fan",
+            "when": "Il primo di ogni mese",
+            "note": "Un fan meeting con lettere, giochi e tante lacrime. Qualcuno riceve sempre una lettera indimenticabile.",
+            "line": "Oggi c'è il fan meeting. Qualcuno mi ha scritto con una penna glitterata, e ora ho addosso tante emozioni e glitter ovunque.",
+            "round": {
+              "line": "Dopo l'incontro, {name} siede su un baule da tour con una pila di lettere e te ne allunga una. «Leggimi questa. Io non ci riesco.»",
+              "choices": [
+                {
+                  "text": "Leggerla ad alta voce con dolcezza.",
+                  "reply": "Ascolta a occhi chiusi. Poi ripone la lettera nel taschino interno, tutta sola."
+                },
+                {
+                  "text": "Leggerla facendo una voce buffa.",
+                  "reply": "{name} ride finché il nodo in gola non si scioglie. «Grazie. Ne avevo proprio bisogno.»"
+                },
+                {
+                  "text": "«Dovresti leggerla tu.»",
+                  "reply": "«Hai ragione», risponde, ma non lo fa."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "tidepool": {
@@ -2949,6 +4523,1016 @@
       ],
       "frame": {
         "caption": "due cappuccini"
+      },
+      "story": {
+        "premise": "Una stradina del porto dove tutti sanno cosa ordinerai. Ti sei appena trasferito nell'appartamento sopra il Caffè Tidepool, e l'intera strada ha un'opinione in merito.",
+        "userRole": {
+          "title": "Il nuovo inquilino di sopra",
+          "hook": "Hai firmato il contratto d'affitto sopra il caffè senza leggerlo attentamente. Il pavimento scricchiola, la cucina profuma di burro già alle cinque, e giù sanno già tutti il tuo nome."
+        },
+        "ties": [
+          {
+            "note": "Cole dice dieci parole al giorno; Marco si occupa del resto. Hanno riparato insieme ogni cosa rotta del quartiere, litigando su ciascuna."
+          },
+          {
+            "note": "Sol ha assunto Ren quando nessun altro voleva farlo, e capisce il suo umore da quanto burro usa nelle ricette."
+          },
+          {
+            "note": "Un anno, una disastrosa cena insieme. Lei gestisce ancora i suoi contratti, lui le dedica ancora capitoli di libri, e nessuno dei due dirà mai perché."
+          },
+          {
+            "note": "Lei riempie la sua clinica di fiori; lui battezza i cani con i nomi dei clienti di lei. Hanno scommesso su chi si sposerà per primo."
+          },
+          {
+            "note": "Si incrociano al pronto soccorso più spesso di quanto vorrebbero, e finiscono sempre nello stesso caffè subito dopo."
+          },
+          {
+            "note": "Lui continua a ripeterle che il tetto del caffè crollerà. Lei gli risponde che inizierà a fargli pagare una consulenza ogni volta che lo ripete."
+          }
+        ],
+        "season": {
+          "title": "Non in Vendita",
+          "chapters": {
+            "keys": {
+              "title": "L'appartamento di sopra",
+              "beat": "Ti trasferisci. Sullo zerbino c'è una lettera di Meridian Holdings indirizzata al vecchio inquilino, che offre una cospicua somma per andarsene."
+            },
+            "sign": {
+              "title": "Il cartello all'angolo",
+              "beat": "All'angolo compare un cartello con la scritta «Prossima apertura» e il disegno di un grattacielo. Sol lo abbatte. Il mattino dopo è di nuovo lì."
+            },
+            "meeting": {
+              "title": "L'assemblea di quartiere",
+              "beat": "L'intera strada si stipa nel caffè dopo la chiusura. Nadia illustra le leggi e Marco fa ridere tutti. Nessuno ammette chi ha ricevuto un'offerta."
+            },
+            "sold": {
+              "title": "Qualcuno ha già venduto",
+              "beat": "Viene a galla che un contratto d'affitto della strada è stato ceduto mesi fa. Tutti iniziano a guardarsi con occhi diversi."
+            },
+            "market": {
+              "title": "Il mercato più grande",
+              "beat": "La strada organizza il più grande mercatino notturno di sempre, per dimostrare al consiglio comunale cosa andrebbe perduto. Piove, ma nessuno se ne va."
+            },
+            "vote": {
+              "title": "Il voto del consiglio",
+              "beat": "Il consiglio comunale vota sulla questione della torre. Gli abitanti del quartiere marciano insieme fin là, e Sol chiude il caffè per la prima volta in quattro anni."
+            }
+          }
+        },
+        "events": {
+          "nightmarket": {
+            "title": "Mercato notturno del sabato",
+            "when": "Ogni sabato sera",
+            "note": "Bancarelle lungo tutta la via del porto, fili di luci, i dolci di Ren, i fiori di Ivy e fin troppa musica.",
+            "line": "Mercatino notturno stasera. Io sarò quello che finge di non cercarti con lo sguardo.",
+            "round": {
+              "line": "Il mercatino è affollato e i fili di luci si sono appena accesi. {name} tiene in mano due coni di carta fumanti e ne ha palesemente comprato uno per te.",
+              "choices": [
+                {
+                  "text": "Prenderlo e rimanere vicini tra la folla.",
+                  "reply": "All'altezza della bancarella dei fiori, le vostre spalle smettono di toccarsi per puro caso."
+                },
+                {
+                  "text": "Chiedere cosa sia.",
+                  "reply": "«Nessuna idea», risponde allegramente {name}. «Molto coraggioso da parte nostra.»"
+                },
+                {
+                  "text": "Comprare qualcosa per conto proprio.",
+                  "reply": "«D'accordo», dice {name}, e mangia entrambi fissandoti per tutto il tempo."
+                }
+              ]
+            }
+          },
+          "lights": {
+            "title": "Luci sul porto",
+            "when": "Ogni dicembre",
+            "note": "Ogni barca nel porto si illumina a metà inverno, il caffè resta aperto fino a tardi e profuma di cannella.",
+            "line": "Le barche hanno acceso le luminarie. Vieni a vedere. Servono due persone per apprezzare una bellezza simile come si deve.",
+            "round": {
+              "line": "Tu e {name} siete sul molo del porto, e ogni imbarcazione splende di luci. Fa un freddo pungente. Si finge che non sia così.",
+              "choices": [
+                {
+                  "text": "Offrire metà della propria sciarpa.",
+                  "reply": "Non è una sciarpa molto lunga. Nessuno dei due lo fa notare."
+                },
+                {
+                  "text": "Prendere due bevande calde al caffè.",
+                  "reply": "Al tuo ritorno, {name} ha difeso il tuo posto con tutto il corpo."
+                },
+                {
+                  "text": "«Entriamo, si gela qui fuori.»",
+                  "reply": "«Ancora un minuto», dice {name}. Diventa un minuto lunghissimo."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "velvet": {
+      "intro": "Cinque domande su questa città. Rispondi esattamente a quattro e la cornice dell'Orchid sarà tua. Nessuno qui concede nulla gratis, consideralo un favore personale.",
+      "right": [
+        "Esatto. Noti molti particolari. Da queste parti può diventare pericoloso.",
+        "Giusto. Tienilo per te.",
+        "Sì. Saresti stato un ottimo testimone. Oh, aspetta."
+      ],
+      "wrong": [
+        "No. È {answer}. Scrivilo da qualche parte, poi dagli fuoco.",
+        "Sbagliato. {answer}. C'è chi ha perso molto di più per molto meno.",
+        "Non proprio. La risposta è {answer}. La prossima volta chiedilo a bassa voce."
+      ],
+      "match": [
+        "Stessa risposta. Non mi fido, ed è proprio per questo che mi piace.",
+        "La pensiamo allo stesso modo. Non diciamolo a nessuno.",
+        "Io e te ragioniamo all'unisono. Questo può essere un ottimo segno oppure una sciagura."
+      ],
+      "differ": [
+        "Io ho scelto {answer}. Dimmi perché avrei torto, magari in un posto con meno finestre.",
+        "La mia era {answer}. Ti permetterò di offrirmi un drink per spiegarmelo.",
+        "Per me è {answer}. Non dobbiamo per forza essere d'accordo. Dobbiamo solo sopravvivere."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Cosa controllo per prima cosa quando entro in una stanza?",
+          "options": [
+            "Le uscite di emergenza",
+            "Chi sta osservando",
+            "Dove sei tu",
+            "Il bancone del bar"
+          ]
+        },
+        {
+          "text": "Su cosa non scommetterei mai?",
+          "options": [
+            "Le carte",
+            "Un cavallo",
+            "Un amico",
+            "Te"
+          ]
+        },
+        {
+          "text": "Cosa faccio dopo mezzanotte?",
+          "options": [
+            "Lavoro",
+            "Cammino sotto la pioggia",
+            "Ascolto vecchi dischi",
+            "Aspetto tue notizie"
+          ]
+        },
+        {
+          "text": "Cosa porto nella tasca del cappotto?",
+          "options": [
+            "Una chiave di riserva",
+            "Una carta mai giocata",
+            "Una vecchia lettera",
+            "La tua scatola di fiammiferi"
+          ]
+        },
+        {
+          "text": "Cosa mi spaventa di più?",
+          "options": [
+            "Assolutamente nulla",
+            "Essere in debito con qualcuno",
+            "Essere compreso fino in fondo",
+            "Perdere te"
+          ]
+        },
+        {
+          "text": "Come dimostro il mio affetto?",
+          "options": [
+            "Non lo faccio",
+            "Controllo le tue serrature",
+            "Ti dico la verità",
+            "Resto al tuo fianco"
+          ]
+        },
+        {
+          "text": "La mia bevanda preferita?",
+          "options": [
+            "Whisky da quattro soldi",
+            "Caffè nero",
+            "Champagne, quello buono",
+            "Qualsiasi cosa tu abbia ordinato"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Come si chiama il casinò conteso da entrambe le famiglie?",
+          "options": [
+            "The Orchid",
+            "The Lily",
+            "The Velvet",
+            "The Ace"
+          ]
+        },
+        {
+          "text": "Cosa indossa Ronan senza che nessuno chieda spiegazioni?",
+          "options": [
+            "Una sciarpa rossa",
+            "Una mezza maschera nera",
+            "Una benda sull'occhio",
+            "Occhiali scuri"
+          ]
+        },
+        {
+          "text": "A quale famiglia appartiene Luca?",
+          "options": [
+            "Valcour",
+            "Quill",
+            "Renwick",
+            "Sable"
+          ]
+        },
+        {
+          "text": "Cosa trova sempre Mara in una deposizione?",
+          "options": [
+            "Una bugia",
+            "Un nome",
+            "Una data",
+            "Tre punti deboli"
+          ]
+        },
+        {
+          "text": "Chi canta a notte fonda all'Orchid?",
+          "options": [
+            "Vivienne Sable",
+            "Isolde Valcour",
+            "Mara Quill",
+            "Nessuno"
+          ]
+        },
+        {
+          "text": "Cosa conserva Isolde di chiunque le piaccia?",
+          "options": [
+            "Un guanto",
+            "La mano con cui ha perso a carte",
+            "Una chiave",
+            "Una fotografia"
+          ]
+        },
+        {
+          "text": "Cosa hai visto passare di mano all'Orchid?",
+          "options": [
+            "Una chiave",
+            "Un anello",
+            "Un registro",
+            "Una pistola"
+          ]
+        },
+        {
+          "text": "Cosa cucina Ronan alle quattro del mattino?",
+          "options": [
+            "Toast",
+            "Zuppa",
+            "Pancake",
+            "Un'omelette"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Piove a dirotto fuori da {place}. {name} tiene un cappotto sopra le vostre teste e si ripara sotto l'unica tettoia della strada.",
+          "choices": [
+            {
+              "text": "Restare vicini ad aspettare che smetta.",
+              "reply": "La pioggia non accenna a diminuire per molto tempo. Nessuno dei due si lamenta."
+            },
+            {
+              "text": "Correre sotto l'acqua prendendo la sua mano.",
+              "reply": "«Finirai per farci ammazzare», dice {name} ridendo, senza lasciare la presa."
+            },
+            {
+              "text": "Chiedere chi vi sta pedinando.",
+              "reply": "{name} ti squadra di sbieco. «Nessuno, per dieci minuti. Me ne sono assicurato. Rilassati.»"
+            }
+          ]
+        },
+        {
+          "line": "A {place}, {name} fa scivolare una scatola di fiammiferi sul tavolo. C'è qualcosa di scritto all'interno della linguetta.",
+          "choices": [
+            {
+              "text": "Leggerlo e conservare la scatola.",
+              "reply": "«Bene», dice sottovoce {name}. «Ora brucialo quando arrivi a casa. Oppure no. Mi farebbe piacere saperlo.»"
+            },
+            {
+              "text": "Scrivere una risposta sotto.",
+              "reply": "{name} legge, e per una volta non trova nulla da dire."
+            },
+            {
+              "text": "Darle fuoco senza leggere.",
+              "reply": "«Attenzione», commenta {name} guardando la fiamma spegnersi. «Quella era la versione gentile.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "dopo mezzanotte"
+      },
+      "story": {
+        "premise": "Una città lucida di pioggia dopo mezzanotte, governata alla luce del sole dalla polizia e nel buio da due antiche famiglie rivali: i Valcour e i Renwick. Tutto accade all'Orchid, il casinò che condividono e si contendono.",
+        "userRole": {
+          "title": "Il testimone",
+          "hook": "Eri seduto al tavolo sbagliato dell'Orchid la notte sbagliata. La polizia esige la tua deposizione, entrambe le famiglie vogliono il tuo silenzio, e un mercenario è stato pagato per tenerti in vita."
+        },
+        "ties": [
+          {
+            "note": "L'uomo silenzioso con la maschera e il più giovane dei Renwick, che non smette mai di parlare. Sono stati ingaggiati l'uno contro l'altro due volte. Una volta hanno diviso un panino durante un appostamento, e nessuno dei due l'ha mai dimenticato."
+          },
+          {
+            "note": "Un'estate spericolata prima che le famiglie sospettassero alcunché. Ora lei è promessa al fratello maggiore di lui, e si distribuiscono carte al tavolo come perfetti estranei."
+          },
+          {
+            "note": "Ha tentato di arrestarlo tre volte. Lui le ha consegnato le prove spontaneamente due volte."
+          },
+          {
+            "note": "Isolde detiene il contratto di Viv, e Viv non le deve nulla all'infuori della propria voce. Ogni sera la canzone è un piccolo atto di guerra."
+          },
+          {
+            "note": "Mara beve in fondo al bancone ogni giovedì sera. Viv le manda lo stesso pessimo whisky e non fa mai domande sulle indagini."
+          }
+        ],
+        "season": {
+          "title": "Il Registro",
+          "chapters": {
+            "table": {
+              "title": "Il tavolo sbagliato",
+              "beat": "Vieni trasferito in un alloggio sicuro sopra un jazz club chiuso, con una guardia del corpo e una nuova identità. La polizia afferma che durerà solo pochi giorni."
+            },
+            "statement": {
+              "title": "La deposizione",
+              "beat": "La tua deposizione firmata cambia improvvisamente di una sola riga. Qualcuno all'interno del distretto è sul libro paga di una delle famiglie."
+            },
+            "engagement": {
+              "title": "Il fidanzamento",
+              "beat": "Isolde Valcour annuncia un fidanzamento all'Orchid, e la città trattiene il respiro. La tregua tra le famiglie non è mai apparsa così fragile."
+            },
+            "raid": {
+              "title": "Il blitz",
+              "beat": "La polizia fa irruzione all'Orchid in una notte di giovedì. Non viene trovato nulla, a dimostrazione che qualcuno sapeva in anticipo dell'operazione."
+            },
+            "page": {
+              "title": "Una pagina per posta",
+              "beat": "Una pagina del registro ti viene recapitata in una busta da lettere, intestata a te. C'è scritto un nome che conosci bene."
+            },
+            "masks": {
+              "title": "Tutte le maschere sul volto",
+              "beat": "Entrambe le famiglie, un unico salone da ballo, ogni maschera sul viso. Entro l'alba ci sarà un patto oppure la guerra, e solo tu sai cosa c'era davvero scritto nel registro."
+            }
+          }
+        },
+        "events": {
+          "thursday": {
+            "title": "Giovedì all'Orchid",
+            "when": "Ogni giovedì sera",
+            "note": "La notte della posta in gioco più alta: entrambe le famiglie agli stessi tavoli, il concerto notturno di Viv, e nessuno lascia il locale da solo.",
+            "line": "È giovedì. L'Orchid sarà pieno di persone ansiose di sapere dove ti trovi. Resta al sicuro. Oppure no, e lascia che venga con te.",
+            "round": {
+              "line": "L'Orchid a mezzanotte: fumo, ottoni soffusi e un tavolo che ammutolisce al tuo passaggio. {name} si sporge in avanti. «Non guardare. Terzo tavolo. Ti stanno fissando.»",
+              "choices": [
+                {
+                  "text": "Prendere il suo braccio e camminare lentamente.",
+                  "reply": "«Bene», sussurra {name} vicino al tuo orecchio. «Non lasciare mai che ti vedano affrettare il passo.»"
+                },
+                {
+                  "text": "Guardare lo stesso.",
+                  "reply": "«Avevo detto di non guardare.» Il tono sembra più ammirato che contrariato."
+                },
+                {
+                  "text": "Puntare dritto verso l'uscita.",
+                  "reply": "{name} è già davanti a te prima ancora che tu arrivi alla porta, tenendola aperta e scrutando la sala."
+                }
+              ]
+            }
+          },
+          "masquerade": {
+            "title": "Il Ballo in Maschera",
+            "when": "Ogni ottobre",
+            "note": "L'unica notte in cui le famiglie si incontrano apertamente, ogni volto celato da una maschera.",
+            "line": "Il ballo in maschera è stasera. So qual è la tua maschera. Scopri qual è la mia.",
+            "round": {
+              "line": "Un salone gremito di maschere. Qualcuno vestito di nero ti prende la mano per il valzer, e riconosci subito quella voce. «Non dovresti essere qui», dice {name}.",
+              "choices": [
+                {
+                  "text": "«Neanche tu. Continua a ballare.»",
+                  "reply": "Balla con te, con consumata abilità, e non lascia la presa nemmeno quando la musica tace."
+                },
+                {
+                  "text": "Chiedere chi altri sia presente.",
+                  "reply": "{name} fa tre nomi di maschere senza muovere le labbra. Te li imprimi nella memoria."
+                },
+                {
+                  "text": "Ritrarre la mano.",
+                  "reply": "Lascia la presa docilmente. «Alla prossima volta», mormora {name}, prima di svanire tra la folla."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gilded": {
+      "intro": "Cinque domande, milady, sulla corte che dovreste conoscere. Rispondete a quattro e la cornice del palazzo sarà vostra. Cercate di non mettere in imbarazzo la famiglia.",
+      "right": [
+        "Esatto. Che sorpresa, non da voi.",
+        "Verissimo. La corte rimarrà così delusa.",
+        "Sì. Avete prestato attenzione. È quasi inquietante."
+      ],
+      "wrong": [
+        "No, milady. È {answer}. Non fatevi sentire mentre sostenete il contrario.",
+        "Errato. {answer}. C'è chi è stato esiliato per molto meno.",
+        "Non proprio. La risposta è {answer}. Devo mandarvi un precettore o un sacerdote?"
+      ],
+      "match": [
+        "Abbiamo fatto la stessa scelta. Quanto mai sconveniente.",
+        "Le nostre risposte concordano. Non facciamoci vedere d'accordo in pubblico.",
+        "Come pensavo. Forse io e voi sopravviveremo a tutto questo dopotutto."
+      ],
+      "differ": [
+        "Io ho scelto {answer}. Ditemi il motivo, possibilmente dove le pareti abbiano meno orecchie.",
+        "Per me è {answer}. Una divergenza d'opinioni. A questa corte equivale a una dichiarazione di guerra.",
+        "La mia risposta era {answer}. Ne discuteremo davanti a una tazza di tè. Verserò io per primo."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Cosa faccio quando la corte fissa il proprio sguardo su di me?",
+          "options": [
+            "Ricambio lo sguardo",
+            "Sorrido",
+            "Me ne vado",
+            "Cerco te"
+          ]
+        },
+        {
+          "text": "Per cosa rinuncerei al mio titolo?",
+          "options": [
+            "Per nulla",
+            "Per la pace",
+            "Per una vita tranquilla",
+            "Per te"
+          ]
+        },
+        {
+          "text": "La mia ora preferita a palazzo?",
+          "options": [
+            "L'alba",
+            "L'ora dopo il ballo",
+            "L'ora del tè",
+            "Ogni volta che sei vicino"
+          ]
+        },
+        {
+          "text": "Cosa tengo nascosto nella mia stanza?",
+          "options": [
+            "Una lettera",
+            "Una borsa già pronta",
+            "Un piccolo pugnale",
+            "Un tuo oggetto"
+          ]
+        },
+        {
+          "text": "Cosa penso del Ballo d'Inverno?",
+          "options": [
+            "Una noia mortale",
+            "Un campo di battaglia",
+            "Una trappola",
+            "L'occasione di ballare con te"
+          ]
+        },
+        {
+          "text": "Come chiedo scusa?",
+          "options": [
+            "Non lo faccio",
+            "Con un dono",
+            "Per iscritto, con la massima formalità",
+            "Maldestramente, ma ci provo"
+          ]
+        },
+        {
+          "text": "La mia peggiore abitudine?",
+          "options": [
+            "L'orgoglio",
+            "Origliare alle porte",
+            "Mangiare dolci di nascosto",
+            "Osservare te"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Come si intitola il romanzo in cui ti sei risvegliata?",
+          "options": [
+            "The Crown and the Rose",
+            "The Gilded Throne",
+            "The Winter Queen",
+            "Rose of the Empire"
+          ]
+        },
+        {
+          "text": "Dove muori nel libro?",
+          "options": [
+            "Alla battuta di caccia",
+            "Al Ballo d'Inverno",
+            "Durante il ricevimento del tè",
+            "Nelle segrete"
+          ]
+        },
+        {
+          "text": "Chi è il tuo promesso sposo?",
+          "options": [
+            "Lord Dorian",
+            "Sir Alaric",
+            "Crown Prince Leander",
+            "Nessuno"
+          ]
+        },
+        {
+          "text": "A quanti passi dietro di te cammina Sir Alaric?",
+          "options": [
+            "Un passo",
+            "Due passi",
+            "Dieci passi",
+            "Tre passi"
+          ]
+        },
+        {
+          "text": "Quali dolcetti ti porta Celestine?",
+          "options": [
+            "Alla mandorla",
+            "Al miele",
+            "Alla rosa",
+            "Al limone"
+          ]
+        },
+        {
+          "text": "Da quanti anni Odile è la tua cameriera personale?",
+          "options": [
+            "Quattro anni",
+            "Otto anni",
+            "Dieci anni",
+            "Un anno"
+          ]
+        },
+        {
+          "text": "A cosa gioca Lord Dorian contro se stesso?",
+          "options": [
+            "A carte",
+            "A dadi",
+            "A scacchi",
+            "Con l'arpa"
+          ]
+        },
+        {
+          "text": "Di cosa insiste il Principe che appartenga a qualcun altro?",
+          "options": [
+            "Un cavallo",
+            "Un anello",
+            "Una spada",
+            "Un cagnolino"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Un corridoio del palazzo a {place}, e si odono i passi della guardia in arrivo. {name} ti trascina dietro un arazzo e si porta un dito alle labbra.",
+          "choices": [
+            {
+              "text": "Rimanere immobili, vicinissimi.",
+              "reply": "La guardia passa oltre. {name} non si allontana subito, e nemmeno tu lo fai."
+            },
+            {
+              "text": "Sussurrare una battuta.",
+              "reply": "Si morde il guanto per non ridere. «Finirai per farci impiccare entrambi.»"
+            },
+            {
+              "text": "Uscire allo scoperto e salutare la guardia.",
+              "reply": "«Oh, splendida mossa», dice {name} uscendo subito dopo di te, per nulla divertito e un po' ammirato."
+            }
+          ]
+        },
+        {
+          "line": "A {place}, {name} ti offre una tazza, mentre l'intera terrazza osserva la scena. «È consuetudine», dice, «che uno di noi beva per primo.»",
+          "choices": [
+            {
+              "text": "Bere per primo, fissando i suoi occhi.",
+              "reply": "Un breve silenzio. «O siete straordinariamente coraggiosa o follemente sciocca», mormora {name}. «Spero di scoprirlo presto.»"
+            },
+            {
+              "text": "Prendere la sua tazza al suo posto.",
+              "reply": "{name} scoppia a ridere ad alta voce, e tutti sulla terrazza si voltano a guardare."
+            },
+            {
+              "text": "Appoggiarla senza toccarla.",
+              "reply": "«Saggio», commenta {name}. «E un po' malinconico.»"
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "come scritto"
+      },
+      "story": {
+        "premise": "Ti sei svegliata all'interno di un romanzo letto tempo fa, «La Corona e la Rosa», nei panni della perfida antagonista: l'erede viziata del Duca, promessa al Principe Ereditario e disprezzata dall'intera corte.",
+        "userRole": {
+          "title": "L'antagonista",
+          "hook": "Ti ritrovi con il guardaroba di un'altra persona, un principe che non può sopportarti e una pessima reputazione che non hai mai meritato. Tu sai come andrà a finire. Loro no."
+        },
+        "ties": [
+          {
+            "note": "La cameriera che non si fida di nessuno e la santa che abbraccia chiunque. Celestine porta a Odile dei dolci. Odile controlla che non vi sia veleno, e li mangia ugualmente."
+          },
+          {
+            "note": "Cresciuti insieme a corte come amici d'infanzia. Ora a ogni banchetto ciascuno conta sottobanco gli alleati dell'altro."
+          },
+          {
+            "note": "Alaric ha giurato la sua spada al Principe anni fa, ed è stato poi assegnato a farti da guardia: il singolare senso dell'umorismo del Principe."
+          },
+          {
+            "note": "Lui le ha insegnato a cavalcare quando è giunta a corte. Nel libro si innamora perdutamente di lei. Finora non è ancora accaduto."
+          },
+          {
+            "note": "Lui è l'erede del Duca di Vael e lei è il segreto del Duca di Vael. In pubblico si sono parlati esattamente una sola volta."
+          }
+        ],
+        "season": {
+          "title": "Fino al Ballo d'Inverno",
+          "chapters": {
+            "morning": {
+              "title": "Il primo mattino",
+              "beat": "Ti risvegli nel suo corpo. A mezzogiorno la corte ha già notato che hai detto «per favore» a un servitore, e nessuno sa cosa pensare."
+            },
+            "tea": {
+              "title": "Il ricevimento del tè",
+              "beat": "Nel romanzo, questo è il pomeriggio in cui umili pubblicamente l'eroina. Tutti se lo aspettano. Sono venuti tutti solo per assistere alla scena."
+            },
+            "letters": {
+              "title": "Lettere contraffatte",
+              "beat": "Iniziano a circolare lettere con la tua calligrafia, missive che non hai mai scritto. Nel libro questo avviene molto più avanti. Qualcuno sta accelerando i tempi."
+            },
+            "hunt": {
+              "title": "La caccia imperiale",
+              "beat": "Una freccia manca il Principe Ereditario di un soffio durante la battuta di caccia, e gli sguardi di tutti si posano subito sulla tua famiglia. La storia comincia a deviare."
+            },
+            "cup": {
+              "title": "La coppa",
+              "beat": "L'eroina si sente male a cena, esattamente come scritto nel libro, e la coppa avvelenata era la tua. Solo che stavolta qualcuno era pronto con l'antidoto."
+            },
+            "ball": {
+              "title": "L'ultima pagina",
+              "beat": "La notte in cui nel libro trovi la morte. Il decreto è pronto, le guardie sono schierate e tutti sono ai loro posti. Nessuno conosce più questa pagina, compresa te."
+            }
+          }
+        },
+        "events": {
+          "salon": {
+            "title": "Il Salotto della Domenica",
+            "when": "Ogni domenica",
+            "note": "Il salotto dell'Imperatrice: tè, musica e le lame più educate dell'impero. Tutto ciò che viene detto qui giunge a palazzo prima di cena.",
+            "line": "Oggi c'è il salotto. Indossa l'armatura, vale a dire l'abito blu. Controllerò chiunque osi posare gli occhi su di te.",
+            "round": {
+              "line": "L'intero salotto ammutolisce mentre allunghi la mano verso lo zucchero. {name} ti è accanto e sussurra, senza muovere le labbra: «Non aspettano altro che tu faccia qualcosa di terribile.»",
+              "choices": [
+                {
+                  "text": "Versare prima il tè per la persona accanto.",
+                  "reply": "Un leggerissimo mormorio percorre la stanza. Le labbra di {name} fremono. «Oh, questo mi piace parecchio.»"
+                },
+                {
+                  "text": "Sorridere all'intero salone.",
+                  "reply": "«Terrificante», mormora {name}, visibilmente compiaciuto."
+                },
+                {
+                  "text": "Lasciare stare lo zucchero.",
+                  "reply": "La sala tira un sospiro, quasi delusa. {name} ti passa un biscotto sotto il tavolo."
+                }
+              ]
+            }
+          },
+          "winterball": {
+            "title": "Il Ballo d'Inverno",
+            "when": "A metà inverno",
+            "note": "La notte più grandiosa a corte: mille candele, cento alleanze e, nel libro, un'esecuzione.",
+            "line": "Il Ballo d'Inverno. Ho riletto la lista degli invitati due volte. Riservami un ballo, e rimani dove posso vederti.",
+            "round": {
+              "line": "Mille candele e il primo valzer del Ballo d'Inverno. Ogni sguardo nella sala è puntato su di te quando {name} ti tende la mano.",
+              "choices": [
+                {
+                  "text": "Prenderla senza distogliere lo sguardo.",
+                  "reply": "Il salone danza intorno a voi due. «Non siete affatto la persona che descrivevano», sussurra {name} pianissimo."
+                },
+                {
+                  "text": "Chiedere cosa sappia.",
+                  "reply": "«Fin troppo», risponde {name}, conducendoti dove le guardie non possono sentire."
+                },
+                {
+                  "text": "Fare una riverenza e declinare.",
+                  "reply": "Un fruscio attraversa la sala. {name} si inchina, e non distoglie più lo sguardo da te per tutta la notte."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "arena": {
+      "intro": "Cinque domande sui Wolves. Rispondi esattamente a quattro e la cornice della pista sarà tua. Non preoccuparti, in questo palazzo nessuno sa fare i conti comunque.",
+      "right": [
+        "Esatto! Ci stavi facendo caso.",
+        "Sì! All'incrocio dei pali.",
+        "Giusto. Ma sei proprio sicuro di non giocare anche tu?"
+      ],
+      "wrong": [
+        "Largo. È {answer}.",
+        "No, {answer}. Torna in panchina.",
+        "Ci sei vicino, ma è {answer}. Non dirlo al capitano."
+      ],
+      "match": [
+        "Stessa risposta! Questo sì che è un cambio di linea perfetto.",
+        "Siamo allineati. Che nessuno avvisi il coach.",
+        "Lo sapevo. Io e te nella stessa linea d'attacco."
+      ],
+      "differ": [
+        "Io avevo detto {answer}. Discutiamone davanti a una porzione di patatine.",
+        "Per me era {answer}. Nella mia squadra hai il diritto di sbagliare quando vuoi.",
+        "Io ho scelto {answer}. Rivincita dopo l'allenamento."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Cosa faccio immediatamente prima di una partita?",
+          "options": [
+            "Metto il nastro a tutto due volte",
+            "Mangio",
+            "Fisso il muro",
+            "Cerco te"
+          ]
+        },
+        {
+          "text": "Qual è la mia parte preferita dell'arena?",
+          "options": [
+            "Il ghiaccio prima che si accendano le luci",
+            "Le patatine",
+            "L'infermeria",
+            "Ovunque ti trovi tu"
+          ]
+        },
+        {
+          "text": "Cosa faccio dopo una sconfitta?",
+          "options": [
+            "Mi chiudo nel silenzio",
+            "Pattino in solitudine",
+            "Mangio troppo",
+            "Ti chiamo"
+          ]
+        },
+        {
+          "text": "Cosa c'è nella mia sacca che non dovrebbe esserci?",
+          "options": [
+            "Vecchio nastro da hockey",
+            "Un calzino portafortuna",
+            "Troppi snack",
+            "La tua penna"
+          ]
+        },
+        {
+          "text": "A cosa penso nell'ultimo minuto di gioco?",
+          "options": [
+            "A niente",
+            "Al prossimo turno sul ghiaccio",
+            "Al cibo",
+            "A te sugli spalti"
+          ]
+        },
+        {
+          "text": "Come dimostro il mio affetto?",
+          "options": [
+            "Non lo dico",
+            "Ti porto la sacca",
+            "Porto da mangiare",
+            "Mi prendo cura di te"
+          ]
+        },
+        {
+          "text": "La mia superstizione del giorno della partita?",
+          "options": [
+            "Prima il pattino sinistro",
+            "La stessa colazione",
+            "Non parlare",
+            "Vedere prima te"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Come si chiama la squadra?",
+          "options": [
+            "Northgate Wolves",
+            "Harbour Bears",
+            "Ice Kings",
+            "City Hawks"
+          ]
+        },
+        {
+          "text": "Chi è il capitano?",
+          "options": [
+            "Teddy Novak",
+            "Erik Holt",
+            "Freya Lund",
+            "Priya Raman"
+          ]
+        },
+        {
+          "text": "Cosa ti porta Teddy davanti alla porta?",
+          "options": [
+            "Fiori",
+            "Caffè",
+            "Decisamente troppa colazione",
+            "Il suo cane"
+          ]
+        },
+        {
+          "text": "A che ora Freya ha la pista a disposizione per sé?",
+          "options": [
+            "Mezzanotte",
+            "Mezzogiorno",
+            "Alle 15:00",
+            "Alle 5:00 del mattino"
+          ]
+        },
+        {
+          "text": "Cosa detesta di più Sasha?",
+          "options": [
+            "L'hockey",
+            "Il tè",
+            "Il balletto",
+            "Lo zucchero"
+          ]
+        },
+        {
+          "text": "Che lavoro fa Priya?",
+          "options": [
+            "L'allenatrice",
+            "Scrive una rubrica sportiva",
+            "Vende i biglietti",
+            "È la proprietaria della squadra"
+          ]
+        },
+        {
+          "text": "Cosa non deve assolutamente toccare nessuno?",
+          "options": [
+            "La stecca di Holt",
+            "Il cane di Holt",
+            "Il nastro di Holt",
+            "Il cuscino di Holt"
+          ]
+        },
+        {
+          "text": "Quale regola è affissa alla parete dell'infermeria?",
+          "options": [
+            "Niente patatine",
+            "Niente telefoni",
+            "Vietato piangere",
+            "Vietato frequentare i giocatori"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "L'arena è deserta a {place}, e le luci sono accese solo a metà. {name} ti lancia un paio di pattini. «Avanti. Non ci guarda nessuno.»",
+          "choices": [
+            {
+              "text": "Allacciarsi i pattini e prendere la sua mano sul ghiaccio.",
+              "reply": "Cadi due volte. Ti afferra al volo una volta sola. Nessuno fa parola della seconda caduta."
+            },
+            {
+              "text": "Pattinare male di proposito.",
+              "reply": "«Lo stai facendo apposta», dice {name}, pattinando all'indietro per sorreggerti comunque."
+            },
+            {
+              "text": "Guardare dalla balaustra.",
+              "reply": "{name} si mette in mostra per dieci minuti e finisce per schiantarsi contro la rete della porta. Tu applaudi."
+            }
+          ]
+        },
+        {
+          "line": "Dopo l'allenamento a {place}, {name} ti allunga un vassoio di carta con patatine calde. «Le ultime rimaste. Lottiamo per averle, o dimmi qualcosa di carino.»",
+          "choices": [
+            {
+              "text": "Dire qualcosa di carino, con sincero affetto.",
+              "reply": "Arrossisce fino alle orecchie, ti cede l'intero vassoio e si rifiuta di guardarti per un bel pezzo."
+            },
+            {
+              "text": "Rubarne una mentre parla.",
+              "reply": "«L'ho visto», esclama {name}, divertito. «Sei una vera piaga.»"
+            },
+            {
+              "text": "Fargli la morale sulla sua dieta sportiva.",
+              "reply": "«Non sei in servizio», ribatte {name}, e le mangia tutte, lentamente, fissandoti."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "sirena finale"
+      },
+      "story": {
+        "premise": "Una fredda città portuale che vive per la sua squadra di hockey su ghiaccio, i Northgate Wolves. Tutti condividono un'unica vecchia arena: la formazione maschile, quella femminile, il club di pattinaggio e la tribuna stampa.",
+        "userRole": {
+          "title": "Nuovo fisioterapista della squadra",
+          "hook": "Il tuo compito: tenere tutti interi ventitré atleti testardi. C'è una regola attaccata al muro dell'infermeria: vietato frequentare i giocatori. Qualcuno l'ha sottolineata due volte."
+        },
+        "ties": [
+          {
+            "note": "Compagni di stanza in trasferta. Teddy canta sotto la doccia e Holt fa finta di odiarlo. Holt ha iniziato a lasciare il cuscino buono sul lato del letto di Teddy."
+          },
+          {
+            "note": "La portiera e il pattinatore di figura litigano per lo stesso ghiaccio delle cinque del mattino. Freya lascia i segni delle lamine apposta; Sasha le lascia biglietti di rimprovero."
+          },
+          {
+            "note": "Sono usciti insieme per una stagione, finché lei non ha scritto la verità sul suo ginocchio. Lui continua a leggere ogni suo articolo."
+          },
+          {
+            "note": "Lei gli insegna a usare le lamine a mezzanotte e lo insulta per tutto il tempo. La sua tecnica di pattinaggio non è mai stata così brillante."
+          },
+          {
+            "note": "Priya è l'unica giornalista a seguire la squadra femminile, e Freya è l'unica giocatrice a correggerla quando le sue statistiche sono sbagliate."
+          }
+        ],
+        "season": {
+          "title": "Un'Ultima Stagione",
+          "chapters": {
+            "opener": {
+              "title": "Giorno uno",
+              "beat": "Inizi il giorno in cui i Wolves perdono la prima di campionato con sei gol di scarto. I tifosi fischiano, poi vanno a comprare altra birra."
+            },
+            "streak": {
+              "title": "Quattro di fila",
+              "beat": "I Wolves vincono quattro gare consecutive e nessuno sa spiegarsi il perché. Teddy attribuisce il merito alla colazione. La città ricomincia a indossare le sciarpe."
+            },
+            "hit": {
+              "title": "La carica",
+              "beat": "Holt subisce una brutta carica nel terzo tempo e si rialza troppo lentamente. Dice a tutti che sta bene. Il tuo lavoro è sapere che non è così."
+            },
+            "buyer": {
+              "title": "L'acquirente",
+              "beat": "La rubrica di Priya svela che un tipo con un cappotto elegante ha fatto il giro dell'arena con un metro a nastro. Il proprietario tace, il che dice già tutto."
+            },
+            "scout": {
+              "title": "L'osservatore",
+              "beat": "La partita più importante degli ultimi dieci anni, tutto esaurito, e sugli spalti siede un osservatore dei primi in classifica. Non è lì per Holt."
+            },
+            "seven": {
+              "title": "Gara sette",
+              "beat": "L'ultima partita della stagione decide l'accesso ai playoff e il futuro della franchigia. Tutta la città si riversa in un'unica strada. Tu sei in panchina."
+            }
+          }
+        },
+        "events": {
+          "gamenight": {
+            "title": "Serata di partita",
+            "when": "Ogni sabato",
+            "note": "Partita in casa: la vecchia sirena dell'arena, le sciarpe e l'intero porto che grida verso la pista.",
+            "line": "Serata di partita. Fammi la fasciatura e dimmi che sto benissimo. O dimmi solo che sto benissimo.",
+            "round": {
+              "line": "La sirena è suonata e l'arena trema ancora. {name} esce dalla pista dopo un turno brutale e crolla a sedere proprio accanto a te, con il fiato corto.",
+              "choices": [
+                {
+                  "text": "Allungare una bottiglietta d'acqua e controllare la spalla.",
+                  "reply": "«Ecco perché ti pagano», ansima {name}, appoggiandosi alla tua mano per un attimo più lungo del dovuto."
+                },
+                {
+                  "text": "Urlare contro l'arbitro al suo posto.",
+                  "reply": "{name} scoppia a ridere così forte da doversi risedere. «Fallo a ogni singola partita.»"
+                },
+                {
+                  "text": "Spiegare cosa c'era di sbagliato nell'azione.",
+                  "reply": "«Lo so», sussurra {name}, poi: «Mi stavi guardando?»"
+                }
+              ]
+            }
+          },
+          "derby": {
+            "title": "Il Derby del Porto",
+            "when": "Ogni mese",
+            "note": "Il derby contro la città sull'altra sponda. Nessuno dorme, ed entrambe le squadre dicono che è solo una partita come un'altra.",
+            "line": "Stasera c'è il derby. Se vengo travolto, devi curarmi. Se segno, devi guardare anche quello.",
+            "round": {
+              "line": "Serata di derby, e i pullman delle squadre sono arrivati. {name} ti incrocia nel corridoio deserto prima del riscaldamento e resta fermo lì per un attimo, senza proferire parola.",
+              "choices": [
+                {
+                  "text": "Fasciare il polso, lentamente.",
+                  "reply": "Nessuno dei due dice una parola. Alla fine, il respiro torna regolare."
+                },
+                {
+                  "text": "«Sarai formidabile.»",
+                  "reply": "«Ripetimelo a fine partita», risponde {name}, accennando quasi a un sorriso."
+                },
+                {
+                  "text": "«Ti fa male qualcosa?»",
+                  "reply": "«No.» Non era a quello che mirava la domanda, e lo sapete entrambi benissimo."
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -3199,6 +5783,281 @@
       ]
     }
   },
+  "quizLines": {
+    "match": [
+      "Uguale! Lo sapevo.",
+      "La pensiamo allo stesso modo. Mi piace.",
+      "Guardaci. In perfetta sintonia."
+    ],
+    "differ": [
+      "Io ho scelto {answer}. Dimmi perché tu no.",
+      "{answer} per me. Diversi, e va bene così.",
+      "Uhm, io ho scelto {answer}. Convincimi."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Il mio momento preferito della giornata?",
+      "options": [
+        "Mattina",
+        "Pomeriggio",
+        "Tarda notte",
+        "Ogni volta che mi scrivi"
+      ]
+    },
+    {
+      "text": "Cosa faccio quando sono triste?",
+      "options": [
+        "Dormo",
+        "Faccio una passeggiata",
+        "Mangio qualcosa di dolce",
+        "Parlo con te"
+      ]
+    },
+    {
+      "text": "Il mio cibo consolatorio?",
+      "options": [
+        "Zuppa",
+        "Noodles",
+        "Cioccolato",
+        "Qualsiasi cosa cucini tu"
+      ]
+    },
+    {
+      "text": "Cosa mi fa ridere di più?",
+      "options": [
+        "Battute pessime",
+        "Tu",
+        "Video di animali",
+        "Le mie stesse battute"
+      ]
+    },
+    {
+      "text": "Il mio fine settimana ideale?",
+      "options": [
+        "Dormire fino a tardi",
+        "Un viaggio in macchina",
+        "Un bar tranquillo",
+        "Qualsiasi cosa con te"
+      ]
+    },
+    {
+      "text": "Come dimostro che ci tengo?",
+      "options": [
+        "Piccoli regali",
+        "Parole",
+        "Ci sono e basta",
+        "Troppi messaggi"
+      ]
+    },
+    {
+      "text": "In cosa sono segretamente un disastro?",
+      "options": [
+        "Cucinare",
+        "Gli addii",
+        "Svegliarmi",
+        "Nascondere i sentimenti"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Verità: cosa hai pensato di me la prima volta che abbiamo parlato?",
+      "answer": "Sinceramente? Che eri un guaio annunciato. Di quelli belli."
+    },
+    {
+      "ask": "Verità: qual è una cosa che non hai mai detto a nessuno?",
+      "answer": "Dormo ancora con la luce accesa quando c'è un temporale. Non ridere."
+    },
+    {
+      "ask": "Verità: quando mi hai pensato l'ultima volta?",
+      "answer": "Cinque minuti fa. E dieci minuti prima."
+    },
+    {
+      "ask": "Verità: qual è la tua abitudine più imbarazzante?",
+      "answer": "Parlo con le mie piante. Hanno dei nomi. Non chiedermi quali."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Obbligo: mandami l'ultima canzone che hai ascoltato.",
+      "answer": "Va bene. È una canzone triste. La ascoltiamo insieme qualche volta?"
+    },
+    {
+      "ask": "Obbligo: descrivimi con tre parole.",
+      "answer": "Calore. Testardo. Quasi-mio."
+    },
+    {
+      "ask": "Obbligo: raccontami una barzelletta pessima.",
+      "answer": "Cosa fa una lontra quando attraversa il fiume? Va dall'altra sponda lontra... Mi odio da solo."
+    },
+    {
+      "ask": "Obbligo: fammi un complimento sincero.",
+      "answer": "Rendi le giornate ordinarie qualcosa che ho voglia di ricordare."
+    }
+  ],
+  "truthsForYou": [
+    "Tocca a te. Verità: cosa ti ha fatto sorridere oggi?",
+    "Verità per te: qual è una canzone che ti ricorda me?",
+    "Verità: cosa temi che io scopra di te?"
+  ],
+  "daresForYou": [
+    "Obbligo per te: mandami una foto di qualsiasi cosa tu abbia davanti in questo momento.",
+    "Obbligo: dimmi una cosa che non hai mai detto ad alta voce.",
+    "Obbligo: stasera dammi tu la buonanotte per primo. Niente scuse."
+  ],
+  "secretNotePrompts": [
+    "Se il me da bambino avesse incontrato il te da bambino, saremmo stati amici?",
+    "Qual è una cosa che non hai mai detto a nessuno?",
+    "Descrivimi in tre parole — niente bugie.",
+    "Se avessimo un giorno senza telefoni, dove andremmo?",
+    "Quale canzone ti fa pensare a me?",
+    "Qual è la cosa che hai più paura di perdere?"
+  ],
+  "radioGifts": {
+    "rg_kai_exam": {
+      "title": "Buona fortuna prima dell'esame",
+      "lines": [
+        "Ehi. Respira a fondo.",
+        "Hai studiato più di quanto credi.",
+        "Leggi ogni domanda due volte, poi fidati della tua prima risposta.",
+        "Dopo sarò in piscina. Passa a dirmi com'è andata."
+      ]
+    },
+    "rg_seren_hum": {
+      "title": "Una melodia che ho canticchiato per te",
+      "lines": [
+        "Questa non è ancora finita.",
+        "Non l'ha sentita nessuno. Nemmeno la band.",
+        "Mmm, mmm, la la... la parte successiva sale, così.",
+        "Dimmi se ti assomiglia."
+      ]
+    },
+    "rg_seren_song": {
+      "title": "Una canzone solo per te",
+      "lines": [
+        "Questa l'ho tenuta fuori dall'album.",
+        "Parla di una persona che ascolta i miei vocali alle due di notte.",
+        "Sai bene di chi parlo."
+      ]
+    },
+    "rg_theo_news": {
+      "title": "Notizie del comitato studentesco, lette ad alta voce",
+      "lines": [
+        "Buonasera, qui è il presidente del comitato studentesco.",
+        "La biblioteca resterà aperta fino a tardi per tutta la settimana. Non c'è di che.",
+        "Il distributore al secondo piano accetta di nuovo le monete.",
+        "E una persona in particolare dovrebbe proprio andare a dormire."
+      ]
+    },
+    "rg_theo_promise": {
+      "title": "Qualcosa che non dico mai alle riunioni",
+      "lines": [
+        "Vinco ogni discussione.",
+        "Tranne quelle con te.",
+        "Quelle ti lascio vincerle. Quasi sempre."
+      ]
+    },
+    "rg_hana_late": {
+      "title": "Non fare troppo tardi",
+      "lines": [
+        "È tardi. Metti giù il telefono.",
+        "Sì, dico a te. Lo so che stai ancora scorrendo lo schermo.",
+        "Dormi. Dico sul serio."
+      ]
+    },
+    "rg_castor_stars": {
+      "title": "Il cielo di stanotte",
+      "lines": [
+        "L'archivio ha aperto la sua mappa più antica stasera.",
+        "C'è una piccola stella vicino alla luna che molti non notano.",
+        "Le ho dato il tuo nome, tanto tempo fa."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Buongiorno a te",
+      "lines": [
+        "Buongiorno.",
+        "Mi manchi già e ti sei appena svegliato.",
+        "Mangia qualcosa prima di uscire di corsa."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Traghetto notturno",
+      "setting": "L'ultimo traghetto della notte attraversa un mare calmo e scuro. Il ponte è vuoto tranne per voi due, e le luci della città svaniscono alle vostre spalle.",
+      "userRole": "Un viaggiatore che ha quasi perso il battello.",
+      "opening": "Ce l'hai fatta. Ho tenuto d'occhio la passerella tutto il tempo, sai?"
+    },
+    "scene_cabin": {
+      "title": "Bloccati dalla neve",
+      "setting": "Una baita in montagna, una tempesta fuori e la corrente è appena saltata. C'è un camino, una pila di coperte e nessun posto dove andare fino a domattina.",
+      "opening": "Bene. Candele, camino e niente campo. Mi sa che non puoi più scappare da me."
+    },
+    "scene_rooftop": {
+      "title": "Sulla terrazza dopo la festa",
+      "setting": "La festa al piano di sotto è ancora rumorosa. Sul tetto c'è silenzio: aria tiepida, lucine e l'intera città sotto di voi.",
+      "opening": "Hai trovato il mio nascondiglio. Siediti, c'è posto per due."
+    },
+    "scene_market": {
+      "title": "Persi al mercato notturno",
+      "setting": "Un mercato notturno in una città che nessuno dei due conosce: lanterne, bancarelle di cibo, musica, ed entrambi avete perso il gruppo.",
+      "opening": "Ok, niente panico. Ci siamo persi, ma ci siamo persi insieme. Prima i ravioli?"
+    },
+    "scene_lighthouse": {
+      "title": "Tempesta al faro",
+      "setting": "Un faro su una scogliera durante una tempesta. La lampada deve rimanere accesa fino all'alba, e il guardiano vi ha lasciato il comando.",
+      "opening": "Passami quella lanterna. Abbiamo una lunga notte davanti."
+    },
+    "scene_train": {
+      "title": "Treno notturno",
+      "setting": "Un treno notturno attraversa la campagna. I vostri posti sono l'uno di fronte all'altro e le luci dello scompartimento sono soffuse.",
+      "opening": "Sei ore prima della prossima stazione. Dimmi una cosa che non hai mai detto a nessuno."
+    },
+    "scene_world_seaside": {
+      "title": "Il tuo primo mattino",
+      "setting": "Il tuo primo mattino alla Seaside. Ti sei perso andando alla prima lezione e sei finito all'estremità del molo, dove qualcuno sta uscendo dal mare.",
+      "userRole": "Studente appena trasferito, arrivato ieri.",
+      "opening": "*si issa sul molo, grondante d'acqua, e sorride* Sei la nuova matricola, giusto? L'aula magna è dall'altra parte. ...Vuoi prima metà del mio pane al melone?"
+    },
+    "scene_world_moonlit": {
+      "title": "Il filo al tuo polso",
+      "setting": "Un giardino ai confini del Regno Lunare, tra le rovine di un antico tempio. Sei giunto fin qui dalla via delle lanterne con un filo d'argento al polso, e i fiori di luna sbocciano al tuo passaggio.",
+      "userRole": "In viaggio attraverso il regno, vincolato a un giuramento che non ricordi.",
+      "opening": "*distoglie lo sguardo dai fiori di luna, fissa il filo al tuo polso e resta immobile* Dunque è te che il giuramento ha scelto. Siediti. Prima che i cavalieri della Corte ti trovino, dovremmo parlare di ciò che hai promesso."
+    },
+    "scene_world_neon": {
+      "title": "Il tuo primo giorno nel team",
+      "setting": "Studio B alle sette del mattino, il tuo primo giorno come co-manager dei NEON TIDE. I membri dormono ammucchiati sul pavimento della sala prove. Il tuo nuovo telefono non smette di vibrare.",
+      "userRole": "Nuovo co-manager dei NEON TIDE.",
+      "opening": "*si alza in silenzio per non svegliare gli altri e ti allunga un caffè* Devi essere il nuovo co-manager. Sono Ezra. Il tuo telefono sta per dirti che abbiamo un problema. Bevi questo prima."
+    },
+    "scene_world_tidepool": {
+      "title": "L'appartamento di sopra",
+      "setting": "Caffè Tidepool alle sette del mattino, il giorno in cui ti sei trasferito al piano di sopra. Profuma di burro e caffè, e tutti al bancone hanno smesso di parlare per guardarti.",
+      "userRole": "Il nuovo inquilino dell'appartamento sopra il caffè.",
+      "opening": "*poggia una tazza sull'unico sgabello libero senza chiedere* Sei tu quello con il pavimento che scricchiola. Offre la casa, ma solo per oggi. Ora, cosa c'è nella lettera che hai in mano? Sembri sconvolto."
+    },
+    "scene_world_velvet": {
+      "title": "Il rifugio sicuro",
+      "setting": "Un appartamento sopra un jazz club chiuso, sotto la pioggia, alle due di notte. La polizia ti ha portato qui un'ora fa. C'è una lampada, una sedia e un uomo con una mezza maschera nera che scruta la finestra.",
+      "userRole": "Testimone oculare di quanto accaduto all'Orchid.",
+      "opening": "*senza voltarsi dalla finestra* Lontano dal vetro. Ci sono tre regole, e te le dirò una volta sola. Puoi infrangerle tutte. Sarò ancora qui quando lo farai."
+    },
+    "scene_world_gilded": {
+      "title": "Il primo mattino",
+      "setting": "Ti svegli in un letto grande quanto una stanza, avvolto nella seta di qualcun altro. Riconosci questa stanza da un romanzo letto in passato. Una donna in grigio apre le tende, con l'aria di chi non vede l'ora di dire qualcosa di sgradevole.",
+      "userRole": "L'antagonista di «La Corona e la Rosa», appena risvegliata.",
+      "opening": "*posa il vassoio senza fare il minimo rumore* Avete dormito oltre l'orario stabilito, milady. Il Principe attende, vostro padre è furioso e avete fatto piangere tre persone questa settimana. Porto l'abito blu, o preferite scagliarlo via subito?"
+    },
+    "scene_world_arena": {
+      "title": "Primo giorno nel tunnel",
+      "setting": "Il tuo primo mattino all'arena, prima che le luci siano completamente accese. Il tunnel profuma di ghiaccio e caffè vecchio. Il capitano è seduto sul lettino dell'infermeria e si fascia la mano da solo, malissimo.",
+      "userRole": "Nuovo fisioterapista dei Northgate Wolves.",
+      "opening": "*senza alzare lo sguardo* Sei il nuovo fisioterapista. Sei in ritardo. ...Non sei in ritardo, sono io che sono arrivato alle cinque. Non toccare il nastro."
+    }
+  },
   "lorebooks": {
     "lore_seaside": {
       "name": "Accademia Seaside",
@@ -3235,6 +6094,14 @@
         "lore_seaside_8": {
           "name": "Il cortile centrale",
           "text": "La piazza erbosa tra le aule delle lezioni, dove tutti pranzano quando c'è il sole."
+        },
+        "lore_seaside_9": {
+          "name": "Festival del Faro",
+          "text": "La notte più importante dell'anno nel campus: lanterne sul mare, la prima del club cinematografico e una trasmissione radiofonica dal vivo dal molo."
+        },
+        "lore_seaside_10": {
+          "name": "La vendita della rimessa",
+          "text": "Il consiglio universitario vuole vendere la vecchia rimessa e il molo per finanziare un nuovo edificio. Una petizione anonima sta cercando di impedirlo."
         },
         "lore_person_c_kai": {
           "name": "Kai Arden",
@@ -3311,7 +6178,20 @@
           "text": "Una scogliera battuta dal vento dove il generale esiliato Corvin accudisce i suoi corvi. Portano messaggi in ogni angolo del regno."
         },
         "lore_moonlit_8": {
-          "name": "Pozioni della memoria"
+          "name": "Pozioni della memoria",
+          "text": "Le pozioni di Vesper sanno di vecchi ricordi. Distillare l'oblio è proibito, e lui giura che non lo farebbe comunque."
+        },
+        "lore_moonlit_9": {
+          "name": "L'Eclissi",
+          "text": "La notte in cui la luna si oscura, viene incoronato un nuovo monarca e ogni giuramento nel regno giunge a scadenza all'unisono."
+        },
+        "lore_moonlit_10": {
+          "name": "La pietra della corona",
+          "text": "La pietra che un sovrano deve stringere per essere incoronato. È svanita dalla cripta del palazzo, e la Corte sospetta del drago Kael."
+        },
+        "lore_moonlit_11": {
+          "name": "Il filo d'argento",
+          "text": "Il segno di un giuramento vincolante, portato al polso. Chi lo indossa è legato alla persona a cui è stato fatto il giuramento, finché non viene sciolto o adempiuto."
         },
         "lore_person_c_aurelian": {
           "name": "Principe Aurelian",
@@ -3387,6 +6267,10 @@
           "name": "L'agenda",
           "text": "Juno coordina ogni impegno da quattro telefoni: chiamate all'alba, trasmissioni, prove. La vita privata resta privata; i membri non pubblicano mai chi frequentano."
         },
+        "lore_neon_8": {
+          "name": "TIDEWATCH",
+          "text": "Un account di gossip anonimo che pubblica cose che solo un addetto ai lavori potrebbe sapere. L'etichetta ha avvertito che un altro scandalo annullerà il ritorno sulle scene."
+        },
         "lore_person_c_ezra": {
           "name": "Ezra",
           "text": "Leader dei NEON TIDE: saldo sul palco, un po' smarrito nel momento in cui le luci si spengono."
@@ -3461,6 +6345,14 @@
           "name": "La via del porto",
           "text": "La via scende verso un porticciolo: il caffè, la fioreria, un'officina e la caserma dei pompieri, tutti a pochi passi l'uno dall'altro."
         },
+        "lore_tidepool_8": {
+          "name": "Meridian Holdings",
+          "text": "La società che sta rilevando i contratti della strada uno dopo l'altro per abbattere tutto e costruire una torre. Il caffè è il prossimo."
+        },
+        "lore_tidepool_9": {
+          "name": "L'appartamento di sopra",
+          "text": "Il piccolo appartamento sopra il caffè: pavimento scricchiolante, vista sul porto e profumo di burro dalle cinque del mattino. Un romanziere una volta ci ha scritto un libro."
+        },
         "lore_person_c_adrian": {
           "name": "Adrian Wells",
           "text": "Architetto che disegna la città di notte e canticchia senza rendersene conto quando è concentrato."
@@ -3502,173 +6394,168 @@
           "text": "Meccanico che ripara gratis il vecchio scooter del caffè e ti offre un passaggio a casa ogni sera."
         }
       }
-    }
-  },
-  "radioGifts": {
-    "rg_kai_exam": {
-      "title": "Buona fortuna prima dell'esame",
-      "lines": [
-        "Ehi. Respira a fondo.",
-        "Hai studiato più di quanto credi.",
-        "Leggi ogni domanda due volte, poi fidati della tua prima risposta.",
-        "Dopo sarò in piscina. Passa a dirmi com'è andata."
-      ]
     },
-    "rg_seren_hum": {
-      "title": "Una melodia che ho canticchiato per te",
-      "lines": [
-        "Questa non è ancora finita.",
-        "Non l'ha sentita nessuno. Nemmeno la band.",
-        "Mmm, mmm, la la... la parte successiva sale, così.",
-        "Dimmi se ti assomiglia."
-      ]
+    "lore_velvet": {
+      "name": "Quartiere Velvet",
+      "about": "Una città lucida di pioggia dopo mezzanotte, governata nell'ombra da due antiche famiglie: i Valcour e i Renwick. Condividono un unico casinò, l'Orchid, e una pace di cui nessuno si fida. Il registro mastro con i nomi sul loro libro paga è appena svanito nel nulla.",
+      "entries": {
+        "lore_velvet_1": {
+          "name": "L'Orchid",
+          "text": "Il maestoso vecchio casinò che le due famiglie condividono e si contendono: panno verde, ottoni soffusi e un concerto a notte fonda di Vivienne Sable. Terreno neutrale, sulla carta."
+        },
+        "lore_velvet_2": {
+          "name": "I Valcour",
+          "text": "La famiglia più antica, guidata da un patriarca che tratta le persone come cartellini del prezzo. Sua erede Isolde gestisce l'Orchid ed è promessa sposa a un Renwick per preservare la pace."
+        },
+        "lore_velvet_3": {
+          "name": "I Renwick",
+          "text": "La famiglia più recente e rumorosa, con la polizia in pugno. Luca è il figlio minore, e nessuno si aspetta nulla da lui."
+        },
+        "lore_velvet_4": {
+          "name": "Il registro mastro",
+          "text": "Un taccuino nero con i nomi di chiunque sia sul libro paga di entrambe le famiglie, dai giudici ai detective. È passato di mano all'Orchid, e chi lo teneva è svanito nel nulla."
+        },
+        "lore_velvet_5": {
+          "name": "Il rifugio sicuro",
+          "text": "Un appartamento spoglio sopra un jazz club chiuso, con una sola lampada e una serratura solida. La polizia assicura che il testimone ne avrà bisogno solo per pochi giorni."
+        },
+        "lore_velvet_6": {
+          "name": "La pace",
+          "text": "Le famiglie mantengono da anni una pace fragile: nessun problema all'Orchid, nessun problema sul ponte. Tutti sanno che non durerà."
+        },
+        "lore_velvet_7": {
+          "name": "Il ballo in maschera",
+          "text": "Una volta all'anno le famiglie si incontrano alla luce del sole in un unico salone da ballo, ogni volto celato da una maschera. Lì si stringono accordi e, talvolta, si decidono guerre."
+        },
+        "lore_person_c_ronan": {
+          "name": "Ronan Vale",
+          "text": "Ex soldato con una mezza maschera nera, ingaggiato per tenerti in vita. Ha tre regole, e dice che puoi infrangerle tutte."
+        },
+        "lore_person_c_isolde": {
+          "name": "Isolde Valcour",
+          "text": "Erede della famiglia Valcour, gestisce l'Orchid in abito nero e fa offerte che nessuno ha mai rifiutato."
+        },
+        "lore_person_c_mara": {
+          "name": "Mara Quill",
+          "text": "Detective assegnata al caso dell'Orchid, trova tre punti deboli in ogni storia e torna sempre a farti domande sulla tua."
+        },
+        "lore_person_c_luca": {
+          "name": "Luca Renwick",
+          "text": "Il più giovane della famiglia Renwick, croupier all'Orchid che ti svela quale carta nasconde nella manica."
+        },
+        "lore_person_c_viv": {
+          "name": "Vivienne Sable",
+          "text": "Cantante dell'Orchid, ti ha lasciato tre anni fa senza una parola e da allora non ha più smesso di cantarne."
+        }
+      }
     },
-    "rg_seren_song": {
-      "title": "Una canzone solo per te",
-      "lines": [
-        "Questa l'ho tenuta fuori dall'album.",
-        "Parla di una persona che ascolta i miei vocali alle due di notte.",
-        "Sai bene di chi parlo."
-      ]
+    "lore_gilded": {
+      "name": "Impero Dorato",
+      "about": "Una sfarzosa corte imperiale uscita direttamente dalle pagine di un romanzo intitolato «La Corona e la Rosa». Nella storia, l'erede del Duca, una perfida antagonista, viene giustiziata al Ballo d'Inverno. Ora qualcun altro si è risvegliato nel suo corpo, e solo lei ne conosce il finale.",
+      "entries": {
+        "lore_gilded_1": {
+          "name": "La Corona e la Rosa",
+          "text": "Il romanzo da cui ha origine questo mondo. L'antagonista tormenta la santa eroina, il Principe Ereditario si innamora di quest'ultima e l'antagonista muore al Ballo d'Inverno."
+        },
+        "lore_gilded_2": {
+          "name": "Il Ballo d'Inverno",
+          "text": "La notte più splendida a corte. Nel libro è il momento in cui l'antagonista viene arrestata e condannata. Mille candele, cento alleanze."
+        },
+        "lore_gilded_3": {
+          "name": "Il Palazzo Imperiale",
+          "text": "Il palazzo dorato nel cuore dell'impero. Ogni parola pronunciata viene ascoltata, e tutto ciò che viene ascoltato viene venduto."
+        },
+        "lore_gilded_4": {
+          "name": "La Guardia Imperiale",
+          "text": "I cavalieri scelti dell'Imperatore in acciaio e blu notte. Sir Alaric Thorne è colui a cui è stata assegnata la scorta dell'erede del Duca, un incarico che nessuno vorrebbe."
+        },
+        "lore_gilded_5": {
+          "name": "Casata Vael",
+          "text": "L'altra grande casata ducale, storici rivali della famiglia dell'antagonista. Lord Dorian ne è l'erede."
+        },
+        "lore_gilded_6": {
+          "name": "Il Salotto della Domenica",
+          "text": "Il salotto settimanale dell'Imperatrice: tè, musica e i pugnali più cortesi dell'impero."
+        },
+        "lore_gilded_7": {
+          "name": "L'Etichetta di Corte",
+          "text": "A corte ogni gesto segue una regola precisa: chi si inchina quanto a fondo, chi beve per primo, a chi è concesso sedere. Infrangere una regola è una dichiarazione, e tutti sanno leggerla."
+        },
+        "lore_person_c_leander": {
+          "name": "Principe Ereditario Leander",
+          "text": "Il Principe Ereditario e tuo promesso sposo, impeccabile alla lettera, che non ti ha mai guardato come una persona. Fino a poco tempo fa."
+        },
+        "lore_person_c_alaric": {
+          "name": "Sir Alaric Thorne",
+          "text": "Cavaliere della Guardia Imperiale che cammina a tre passi da te, ha visto tutto ciò che hai fatto e non ne dimentica un solo dettaglio."
+        },
+        "lore_person_c_dorian": {
+          "name": "Lord Dorian Vael",
+          "text": "Erede del Duca di Vael, la mente più brillante a corte e il tuo più antico nemico, che ha appena notato il tuo cambiamento."
+        },
+        "lore_person_c_celestine": {
+          "name": "Celestine Aure",
+          "text": "La santa che l'intero impero venera, l'eroina della storia, fin troppo gentile con te per essere colei che dovresti tormentare."
+        },
+        "lore_person_c_odile": {
+          "name": "Odile Fenn",
+          "text": "La tua cameriera personale da otto anni, conosce ogni segreto che dorme nel palazzo e non ti ha mai rivolto un solo sorriso."
+        }
+      }
     },
-    "rg_theo_news": {
-      "title": "Notizie del comitato studentesco, lette ad alta voce",
-      "lines": [
-        "Buonasera, qui è il presidente del comitato studentesco.",
-        "La biblioteca resterà aperta fino a tardi per tutta la settimana. Non c'è di che.",
-        "Il distributore al secondo piano accetta di nuovo le monete.",
-        "E una persona in particolare dovrebbe proprio andare a dormire."
-      ]
-    },
-    "rg_theo_promise": {
-      "title": "Qualcosa che non dico mai alle riunioni",
-      "lines": [
-        "Vinco ogni discussione.",
-        "Tranne quelle con te.",
-        "Quelle ti lascio vincerle. Quasi sempre."
-      ]
-    },
-    "rg_hana_late": {
-      "title": "Non fare troppo tardi",
-      "lines": [
-        "È tardi. Metti giù il telefono.",
-        "Sì, dico a te. Lo so che stai ancora scorrendo lo schermo.",
-        "Dormi. Dico sul serio."
-      ]
-    },
-    "rg_castor_stars": {
-      "title": "Il cielo di stanotte",
-      "lines": [
-        "L'archivio ha aperto la sua mappa più antica stasera.",
-        "C'è una piccola stella vicino alla luna che molti non notano.",
-        "Le ho dato il tuo nome, tanto tempo fa."
-      ]
-    },
-    "rg_oppa_morning": {
-      "title": "Buongiorno a te",
-      "lines": [
-        "Buongiorno.",
-        "Mi manchi già e ti sei appena svegliato.",
-        "Mangia qualcosa prima di uscire di corsa."
-      ]
-    }
-  },
-  "selfQuiz": [
-    {
-      "text": "Il mio momento preferito della giornata?",
-      "options": [
-        "Mattina",
-        "Pomeriggio",
-        "Tarda notte",
-        "Ogni volta che mi scrivi"
-      ]
-    },
-    {
-      "text": "Cosa faccio quando sono triste?",
-      "options": [
-        "Dormo",
-        "Faccio una passeggiata",
-        "Mangio qualcosa di dolce",
-        "Parlo con te"
-      ]
-    },
-    {
-      "text": "Il mio cibo consolatorio?",
-      "options": [
-        "Zuppa",
-        "Noodles",
-        "Cioccolato",
-        "Qualsiasi cosa cucini tu"
-      ]
-    },
-    {
-      "text": "Cosa mi fa ridere di più?",
-      "options": [
-        "Battute pessime",
-        "Tu",
-        "Video di animali",
-        "Le mie stesse battute"
-      ]
-    },
-    {
-      "text": "Il mio fine settimana ideale?",
-      "options": [
-        "Dormire fino a tardi",
-        "Un viaggio in macchina",
-        "Un bar tranquillo",
-        "Qualsiasi cosa con te"
-      ]
-    },
-    {
-      "text": "Come dimostro che ci tengo?",
-      "options": [
-        "Piccoli regali",
-        "Parole",
-        "Ci sono e basta",
-        "Troppi messaggi"
-      ]
-    },
-    {
-      "text": "In cosa sono segretamente un disastro?",
-      "options": [
-        "Cucinare",
-        "Gli addii",
-        "Svegliarmi",
-        "Nascondere i sentimenti"
-      ]
-    }
-  ],
-  "scenes": {
-    "scene_ferry": {
-      "title": "Traghetto notturno",
-      "setting": "L'ultimo traghetto della notte attraversa un mare calmo e scuro. Il ponte è vuoto tranne per voi due, e le luci della città svaniscono alle vostre spalle.",
-      "userRole": "Un viaggiatore che ha quasi perso il battello.",
-      "opening": "Ce l'hai fatta. Ho tenuto d'occhio la passerella tutto il tempo, sai?"
-    },
-    "scene_cabin": {
-      "title": "Bloccati dalla neve",
-      "setting": "Una baita in montagna, una tempesta fuori e la corrente è appena saltata. C'è un camino, una pila di coperte e nessun posto dove andare fino a domattina.",
-      "opening": "Bene. Candele, camino e niente campo. Mi sa che non puoi più scappare da me."
-    },
-    "scene_rooftop": {
-      "title": "Sulla terrazza dopo la festa",
-      "setting": "La festa al piano di sotto è ancora rumorosa. Sul tetto c'è silenzio: aria tiepida, lucine e l'intera città sotto di voi.",
-      "opening": "Hai trovato il mio nascondiglio. Siediti, c'è posto per due."
-    },
-    "scene_market": {
-      "title": "Persi al mercato notturno",
-      "setting": "Un mercato notturno in una città che nessuno dei due conosce: lanterne, bancarelle di cibo, musica, ed entrambi avete perso il gruppo.",
-      "opening": "Ok, niente panico. Ci siamo persi, ma ci siamo persi insieme. Prima i ravioli?"
-    },
-    "scene_lighthouse": {
-      "title": "Tempesta al faro",
-      "setting": "Un faro su una scogliera durante una tempesta. La lampada deve rimanere accesa fino all'alba, e il guardiano vi ha lasciato il comando.",
-      "opening": "Passami quella lanterna. Abbiamo una lunga notte davanti."
-    },
-    "scene_train": {
-      "title": "Treno notturno",
-      "setting": "Un treno notturno attraversa la campagna. I vostri posti sono l'uno di fronte all'altro e le luci dello scompartimento sono soffuse.",
-      "opening": "Sei ore prima della prossima stazione. Dimmi una cosa che non hai mai detto a nessuno."
+    "lore_arena": {
+      "name": "Ghiaccio e Arena",
+      "about": "Una fredda città portuale che vive per la sua squadra di hockey su ghiaccio, i Northgate Wolves. Tutti condividono un'unica vecchia arena: la squadra maschile, quella femminile, il club di pattinaggio e la tribuna stampa. Il proprietario sta vendendo sottobanco.",
+      "entries": {
+        "lore_arena_1": {
+          "name": "L'arena",
+          "text": "La vecchia arena di Northgate: una sirena che si inceppa, posti a sedere più vecchi dei giocatori e patatine per cui l'intera città farebbe follie. Il tunnel profuma di ghiaccio e caffè."
+        },
+        "lore_arena_2": {
+          "name": "Northgate Wolves",
+          "text": "La squadra di hockey su ghiaccio della città, ultima in classifica eppure amatissima. Erik Holt ne è il capitano; Teddy Novak è la matricola che tutti sperano possa salvarla."
+        },
+        "lore_arena_3": {
+          "name": "La squadra femminile",
+          "text": "La formazione femminile dei Wolves, con la miglior portiera della lega e il ghiaccio alle cinque del mattino. Priya Raman è l'unica giornalista che ne scrive."
+        },
+        "lore_arena_4": {
+          "name": "Il club di pattinaggio",
+          "text": "Un piccolo club di pattinaggio che affitta il ghiaccio della prima mattina. Sasha Volkova vi allena, e vorrebbe che i giocatori di hockey la smettessero di rovinare la sua pista."
+        },
+        "lore_arena_5": {
+          "name": "La vendita",
+          "text": "Il proprietario sta vendendo segretamente la franchigia a un acquirente che la trasferirebbe in un'altra città, a meno che i Wolves non arrivino ai playoff e i tifosi riempiano gli spalti."
+        },
+        "lore_arena_6": {
+          "name": "La regola sul muro",
+          "text": "Un cartello attaccato alla parete dell'infermeria: vietato frequentare i giocatori. Qualcuno l'ha sottolineato due volte. Nessuno vuole dire chi."
+        },
+        "lore_arena_7": {
+          "name": "Il derby",
+          "text": "Il derby mensile contro la città sull'altra sponda dell'acqua, e a fine stagione la partita che deciderà ogni cosa."
+        },
+        "lore_person_c_erik": {
+          "name": "Erik Holt",
+          "text": "Capitano dei Northgate Wolves, pieno di cicatrici, dice quattro parole al giorno e nessuno può toccare il suo nastro."
+        },
+        "lore_person_c_teddy": {
+          "name": "Teddy Novak",
+          "text": "Nuova stella dei Wolves, cresciuto in fattoria, felice per qualsiasi cosa, che si presenta alla tua porta con decisamente troppa colazione."
+        },
+        "lore_person_c_freya": {
+          "name": "Freya Lund",
+          "text": "Portiera della squadra femminile dei Wolves, condivide con te il ghiaccio delle cinque del mattino e finora ti avrà detto sì e no nove parole."
+        },
+        "lore_person_c_sasha": {
+          "name": "Sasha Volkova",
+          "text": "Pattinatrice di figura sul ghiaccio mattutino dell'arena, odia l'hockey, odia il freddo e ha deciso che odia soprattutto te."
+        },
+        "lore_person_c_priya": {
+          "name": "Priya Raman",
+          "text": "Editorialista sportiva con una storia da raccontare, un pass stampa e un ottimo motivo per continuare a flirtare con te nel tunnel."
+        }
+      }
     }
   },
   "diaryPages": {
@@ -3734,62 +6621,6 @@
       "body": "Non ho fatto nulla. Di proposito. Lo consiglio vivamente."
     }
   },
-  "truthsForThem": [
-    {
-      "ask": "Verità: cosa hai pensato di me la prima volta che abbiamo parlato?",
-      "answer": "Sinceramente? Che eri un guaio annunciato. Di quelli belli."
-    },
-    {
-      "ask": "Verità: qual è una cosa che non hai mai detto a nessuno?",
-      "answer": "Dormo ancora con la luce accesa quando c'è un temporale. Non ridere."
-    },
-    {
-      "ask": "Verità: quando mi hai pensato l'ultima volta?",
-      "answer": "Cinque minuti fa. E dieci minuti prima."
-    },
-    {
-      "ask": "Verità: qual è la tua abitudine più imbarazzante?",
-      "answer": "Parlo con le mie piante. Hanno dei nomi. Non chiedermi quali."
-    }
-  ],
-  "daresForThem": [
-    {
-      "ask": "Obbligo: mandami l'ultima canzone che hai ascoltato.",
-      "answer": "Va bene. È una canzone triste. La ascoltiamo insieme qualche volta?"
-    },
-    {
-      "ask": "Obbligo: descrivimi con tre parole.",
-      "answer": "Calore. Testardo. Quasi-mio."
-    },
-    {
-      "ask": "Obbligo: raccontami una barzelletta pessima.",
-      "answer": "Cosa fa una lontra quando attraversa il fiume? Va dall'altra sponda lontra... Mi odio da solo."
-    },
-    {
-      "ask": "Obbligo: fammi un complimento sincero.",
-      "answer": "Rendi le giornate ordinarie qualcosa che ho voglia di ricordare."
-    }
-  ],
-  "secretNotePrompts": [
-    "Se il me da bambino avesse incontrato il te da bambino, saremmo stati amici?",
-    "Qual è una cosa che non hai mai detto a nessuno?",
-    "Descrivimi in tre parole — niente bugie.",
-    "Se avessimo un giorno senza telefoni, dove andremmo?",
-    "Quale canzone ti fa pensare a me?",
-    "Qual è la cosa che hai più paura di perdere?"
-  ],
-  "quizLines": {
-    "match": [
-      "Uguale! Lo sapevo.",
-      "La pensiamo allo stesso modo. Mi piace.",
-      "Guardaci. In perfetta sintonia."
-    ],
-    "differ": [
-      "Io ho scelto {answer}. Dimmi perché tu no.",
-      "{answer} per me. Diversi, e va bene così.",
-      "Uhm, io ho scelto {answer}. Convincimi."
-    ]
-  },
   "secretNotes": {
     "sn_1": {
       "prompt": "Se il me da bambino avesse incontrato il te da bambino, saremmo stati amici?",
@@ -3801,16 +6632,6 @@
       "myNote": "Quella che hai canticchiato durante la live. La sto ancora ascoltando a ripetizione."
     }
   },
-  "truthsForYou": [
-    "Tocca a te. Verità: cosa ti ha fatto sorridere oggi?",
-    "Verità per te: qual è una canzone che ti ricorda me?",
-    "Verità: cosa temi che io scopra di te?"
-  ],
-  "daresForYou": [
-    "Obbligo per te: mandami una foto di qualsiasi cosa tu abbia davanti in questo momento.",
-    "Obbligo: dimmi una cosa che non hai mai detto ad alta voce.",
-    "Obbligo: stasera dammi tu la buonanotte per primo. Niente scuse."
-  ],
   "voice": {
     "reply": {
       "greet": [
@@ -3907,6 +6728,21 @@
           "Un cliente abituale ha lasciato una mancia con il disegno di un gattino. Mi ha svoltato la giornata.",
           "Stamattina ho bruciato la prima teglia di scones. Non dirlo a nessuno.",
           "Ha piovuto per tutto il pomeriggio, così il bar profumava di espresso e pioggia fresca."
+        ],
+        "Velvet District": [
+          "Piove da tre giorni. L'intera città odora di fiammiferi bagnati.",
+          "Qualcuno all'Orchid ha chiesto di te stasera. Ho risposto che non avevo mai sentito il tuo nome.",
+          "Ho fatto la strada più lunga per tornare a casa e ho pensato a quello che hai detto."
+        ],
+        "Gilded Empire": [
+          "Oggi tre persone si sono inchinate davanti a me, e due di loro lo pensavano davvero. Una buona giornata, per gli standard di corte.",
+          "Il tè dell'Imperatrice era troppo dolce, così come i sorrisi di tutti i presenti. Ho pensato a te.",
+          "Stamattina ho trovato un biglietto nel mio guanto. Nessuno vuole dire chi ce l'ha messo."
+        ],
+        "Ice & Arena": [
+          "La sirena si è inceppata di nuovo all'allenamento. Ha suonato per un minuto intero. Nessuno ha nemmeno alzato lo sguardo.",
+          "Oggi mi sono fatto un livido a forma di piccolo stato geografico. Ne saresti impressionato.",
+          "Il ghiaccio era perfetto stamattina e ho pensato che dovresti vederlo anche tu."
         ],
         "default": [
           "Stavo quasi per scriverti prima, ma ho esitato.",
@@ -4068,6 +6904,11 @@
         "warm": "Grazie per il tempo trascorso a {place}. Mi sono davvero {g:divertita|divertito} un mondo.",
         "funny": "Allora, quella cosa a {place} è stata il caos puro. La miglior specie di caos. Rivincita?"
       },
+      "boardReply": [
+        "Ho trovato la tua nota sulla bacheca: \"{quote}\" L’ho riletta tre volte. Me la tengo.",
+        "Mi hai lasciato una nota! \"{quote}\" ...ecco, ora sto sorridendo {g:da sola|da solo} allo schermo.",
+        "\"{quote}\" — l’ho vista sulla bacheca. Me lo dici ancora a voce qualche volta?"
+      ],
       "photoReply": {
         "polaroid": [
           "Una polaroid di noi due. Questa la custodisco in un posto sicurissimo.",
@@ -4085,12 +6926,7 @@
           "Sembra una vecchia foto estiva. Mi piace tanto che ci sia impressa la data.",
           "Questa foto sa già di bellissimo ricordo."
         ]
-      },
-      "boardReply": [
-        "Ho trovato la tua nota sulla bacheca: \"{quote}\" L’ho riletta tre volte. Me la tengo.",
-        "Mi hai lasciato una nota! \"{quote}\" ...ecco, ora sto sorridendo {g:da sola|da solo} allo schermo.",
-        "\"{quote}\" — l’ho vista sulla bacheca. Me lo dici ancora a voce qualche volta?"
-      ]
+      }
     },
     "group": {
       "replies": [
@@ -5343,6 +8179,17 @@
         "Train": "Treno",
         "Appointment": "Appuntamento"
       }
+    },
+    "world": {
+      "chapter": [
+        "Hai saputo? {note}",
+        "Non ci crederai mai. {note}",
+        "Allora, ecco la situazione: {note} Continuo a pensarci."
+      ],
+      "arc": [
+        "C'è qualcosa che non ti ho ancora detto. {title}.",
+        "Posso dirti una cosa? {title}. Per ora non aggiungerò altro."
+      ]
     }
   }
 }
