@@ -1704,7 +1704,7 @@
             },
             {
               "text": "Reírte y quedarte en tu sitio.",
-              "reply": "Baila solo de forma ridícula para hacerte reír. Funciona a la perfección."
+              "reply": "Baila {g:sola|solo} de forma ridícula para hacerte reír. Funciona a la perfección."
             }
           ]
         },
@@ -1895,7 +1895,7 @@
         "choices": [
           {
             "text": "\"Pregúntale.\"",
-            "reply": "{name} balbucea algo nervioso. El niño queda encantado."
+            "reply": "{name} balbucea algo {g:nerviosa|nervioso}. El niño queda fascinado."
           },
           {
             "text": "\"Mejores amigos. Por ahora.\"",
@@ -2540,7 +2540,7 @@
             },
             {
               "text": "\"No tengo frío.\"",
-              "reply": "\"Mentiroso,\" dice {name}, y te envuelve con ella de todos modos."
+              "reply": "\"Qué mentira,\" dice {name}, y te envuelve de todos modos."
             }
           ]
         }
@@ -2719,7 +2719,7 @@
               "reply": "\"Mi salvador.\" Se ríe sin aliento, aún sosteniendo tu mano."
             },
             {
-              "text": "\"No, solo se parece a él.\"",
+              "text": "\"No, solo se parece.\"",
               "reply": "{name} asiente con mucha seriedad. El fan no queda muy convencido."
             },
             {
@@ -2938,7 +2938,7 @@
             },
             {
               "text": "Darle el último bocado de tu bollo.",
-              "reply": "\"Ahora nunca se irá,\" dice {name}, encantado."
+              "reply": "\"Ahora nunca se irá,\" dice {name}, {g:encantada|encantado}."
             },
             {
               "text": "Espantarlo.",
