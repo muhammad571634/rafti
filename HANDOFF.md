@@ -1,5 +1,28 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z67. Shared lines follow the character's gender across all languages (2026-10-30, Antigravity)
+
+- Full task completed per `docs/agent-tasks/gendered-character-forms.md`.
+- All shared lines (`voice.*`, `datePlaces.*`, `dateThemes.*`, `worlds.*.dateRounds.*`) now follow the speaking/featured character's gender via `{g:female|male}` (female form first).
+- All user choice lines (`.text`) strictly avoid `{g:}` and are neutrally rephrased.
+- 722 strings updated across 7 languages in separate commits:
+  - `zh-Hant`: 129 strings (`fix(i18n): zh-Hant shared lines follow the character's gender`)
+  - `es`: 5 strings (`fix(i18n): es shared lines follow the character's gender`)
+  - `pt-BR`: 50 strings (`fix(i18n): pt-BR shared lines follow the character's gender`)
+  - `it`: 33 strings (`fix(i18n): it shared lines follow the character's gender`)
+  - `fr`: 132 strings (`fix(i18n): fr shared lines follow the character's gender`)
+  - `de`: 148 strings (`fix(i18n): de shared lines follow the character's gender`)
+  - `ru`: 225 strings (`fix(i18n): ru shared lines follow the character's gender`)
+- Verified `ja`, `ko`, `vi`, `th`, `tr`, `id` date narration: 0 character 3rd-person pronouns.
+- Scans before → after:
+  - `--date`: 617 → 65 (all 65 remaining are verified false positives: nouns, plural 2nd person, animals, impersonal).
+  - `--self`: 159 → 25 (all 25 remaining are verified false positives: nouns, already split, impersonal).
+  - `--count` (user): 49 → 47.
+  - `--cast`: 0 → 0.
+- Quality gates: `npm run check:content` (all 13 locales PASS), `npm run check:locales` (PASS), `npx tsc --noEmit` (0 errors), `npm test` (483/483 pass).
+- Full report: `docs/agent-tasks/gendered-character-forms-report.md`. Flow D133 updated to `done`.
+
+
 ### 0z66. Share cards v3: photos, the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: deploy the API (owner runs it), check both cards on the A51
 
 - Owner: the cards were too plain (use a photo), the chat Share must be colourful and a bit bigger, the chat card
