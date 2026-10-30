@@ -50,3 +50,5 @@ example
 /android
 modules/*/android/build/
 modules/*/android/.gradle/
+# Nano Banana pictures waiting to be wired in (docs/nano-banana-worlds.md)
+art-new/
