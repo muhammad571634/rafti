@@ -1,5 +1,30 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z71. Worlds 2.0 translation complete for all 13 languages (2026-10-31, Antigravity). NEXT: owner checks art (item 4) and on device (item 5)
+
+- Full task completed per `docs/agent-tasks/translate-worlds.md`.
+- All 13 target languages translated (1,285 missing strings per language, total 16,705 strings): `es`, `pt-BR`, `fr`, `de`, `it`, `ru`, `tr`, `id`, `vi`, `th`, `ja`, `ko`, `zh-Hant`.
+- Each language committed individually to `local-work` and pushed to remote:
+  - `es`: `5bced69`
+  - `pt-BR`: `bc1e1fd`
+  - `fr`: `ea3e105`
+  - `de`: `20f7679`
+  - `it`: `17499e7`
+  - `ru`: `e0e7d58`
+  - `tr`: `503abda`
+  - `id`: `e06438b`
+  - `vi`: `9f33956`
+  - `th`: `24d8e68`
+  - `ja`: `846a383`
+  - `ko`: `5ffbe05`
+  - `zh-Hant`: `2db0f02`
+- Full suite verification passes:
+  - `npm run check:content`: 13/13 PASS (0 strings left across all locales, valid keys/arrays/placeholders/asterisks/emojis).
+  - `npm run check:locales`: PASS for all 13 locales.
+  - `npx tsc --noEmit`: PASS (0 errors).
+  - `npm test`: PASS (522/522 passing across 170 suites).
+- Flow D135 marked done in `docs/flows.md`.
+
 ### 0z70. Worlds translation batch is ready for Gemini (2026-10-30, Claude 2). NEXT: owner gives `docs/agent-tasks/translate-worlds.md` to Gemini; meanwhile the art (0z68 item 4)
 
 - `en.json` is regenerated: 1,285 new strings per language, about 11,800 words, 13 languages. **`npm run check:content` now FAILS for all 13 languages until Gemini finishes; this is expected.** Nothing shows broken: a missing string falls back to English. Do not read that red as a new bug.
@@ -29,7 +54,7 @@
 Still to do:
 1. DONE 2026-10-30: owner ran the Fly deploy of `6c5364d` (image `deployment-01M66YJXY0A3EX5PJC7Q0BZH1Y`, `/health` 200). A real `world` first text has not been sent yet; that is part of item 5.
 2. DONE 2026-10-30 except Kai (0z69): `world-edge-devoted` and `world-role-velvet` fixed; `persona-body-respect` still vague in about half the runs.
-3. Translation batch: extracted and briefed (0z70). Owner hands `docs/agent-tasks/translate-worlds.md` to Gemini; until it finishes, new text is English and `check:content` is red. World names and UI strings are already in all 14 locales.
+3. DONE 2026-10-31 (0z71): translation batch is 100% complete for all 13 languages (es, pt-BR, fr, de, it, ru, tr, id, vi, th, ja, ko, zh-Hant). All checks pass: check:content 13/13 PASS (0 left), check:locales PASS, tsc PASS, npm test 522/522 PASS.
 4. Art, in this order, one test image first: 15 new (portrait + scene) + 3 key art = 33 images, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots. Owner, 2026-10-30: Higgsfield has no balance, so the owner draws in Nano Banana and Claude writes the prompts. Ronan's scene is done and all prompts are in `docs/nano-banana-worlds.md`: 29 images left (14 scenes, 15 avatars). The 3 key art are dropped: nothing in the app shows `keyArt`, the world page uses its lead's scene. Once the owner hands over the pictures, Claude compresses them into `assets/heroes` and `assets/avatars` and adds them to the registries. Ronan's mask moved to one side of the face (four tries showed a mask over the mouth reads as a medical mask or a muzzle); his `look` is updated. After Gemini's translation, change his `opening` ("looks at you over the half-mask" no longer fits) and regenerate that one string.
 5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.
 6. Run a full eval, then `--save`, and a code review of this change.
