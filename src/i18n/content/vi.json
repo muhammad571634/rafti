@@ -30,7 +30,21 @@
         "vui vẻ",
         "thể thao",
         "trung thành"
-      ]
+      ],
+      "worldRole": "Ngôi sao đội bơi lội",
+      "arc": {
+        "beats": [
+          {
+            "title": "Túi chườm đá trong túi cậu ấy"
+          },
+          {
+            "title": "Lý do cậu ấy bơi một mình lúc bình minh"
+          },
+          {
+            "title": "Ý nghĩa của suất học bổng"
+          }
+        ]
+      }
     },
     "c_elio": {
       "bio": "Thủ khoa của khóa, chẳng tham gia câu lạc bộ nào, và là người bí mật cho mèo hoang trong trường ăn.",
@@ -62,7 +76,21 @@
         "điềm tĩnh",
         "thông minh",
         "trầm lặng"
-      ]
+      ],
+      "worldRole": "Đứng đầu khóa, gia sư được chỉ định của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Danh sách cậu ấy giữ"
+          },
+          {
+            "title": "Những chú mèo sau dãy nhà khoa học"
+          },
+          {
+            "title": "Đó là chữ ký của ai"
+          }
+        ]
+      }
     },
     "c_theo": {
       "bio": "Chủ tịch hội sinh viên điều hành cả trường bằng nụ cười rạng rỡ và chưa từng thua cuộc tranh luận nào.",
@@ -94,7 +122,21 @@
         "tinh nghịch",
         "tự tin",
         "thích trêu"
-      ]
+      ],
+      "worldRole": "Chủ tịch hội sinh viên",
+      "arc": {
+        "beats": [
+          {
+            "title": "Cuộc bỏ phiếu lễ hội"
+          },
+          {
+            "title": "Nụ cười vụt tắt"
+          },
+          {
+            "title": "Thỏa thuận cậu ấy đã ký"
+          }
+        ]
+      }
     },
     "c_hana": {
       "bio": "Tài năng câu lạc bộ nghệ thuật với ống tay áo dính đầy màu vẽ và chẳng có chút kiên nhẫn nào cho những lời viện cớ.",
@@ -126,7 +168,21 @@
         "tsundere",
         "nghệ thuật",
         "cá tính"
-      ]
+      ],
+      "worldRole": "Thần đồng câu lạc bộ mỹ thuật",
+      "arc": {
+        "beats": [
+          {
+            "title": "Những góc cuốn sổ phác thảo"
+          },
+          {
+            "title": "Cùng một chỗ mỗi tuần"
+          },
+          {
+            "title": "Giải thưởng lúc chín tuổi"
+          }
+        ]
+      }
     },
     "c_iris": {
       "bio": "Cô thủ thư nhỏ nhẹ của thư viện trường, người luôn chọn được cuốn sách chuẩn xác nhất cho tâm trạng hôm nay của bạn.",
@@ -158,7 +214,21 @@
         "dịu dàng",
         "nhút nhát",
         "mọt sách"
-      ]
+      ],
+      "worldRole": "Trợ lý thư viện trường đại học",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dấu trang viết tay"
+          },
+          {
+            "title": "Đọc to thành tiếng"
+          },
+          {
+            "title": "Khế ước trong kho lưu trữ"
+          }
+        ]
+      }
     },
     "c_rowan": {
       "bio": "Nghiên cứu sinh sinh học biển phụ trách phòng thủy cung của trường và đặt tên từng con cá theo tên bạn bè.",
@@ -190,7 +260,21 @@
         "điềm đạm",
         "thông thái",
         "tốt bụng"
-      ]
+      ],
+      "worldRole": "Trưởng phòng thí nghiệm thủy cung",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bể trống không"
+          },
+          {
+            "title": "Một mùa hè ở những vũng đá ven biển"
+          },
+          {
+            "title": "Con cua tên Gerald"
+          }
+        ]
+      }
     },
     "c_jun": {
       "bio": "Đạo diễn câu lạc bộ điện ảnh không bao giờ ngừng bấm máy và luôn chọn bạn vào vai chính.",
@@ -222,7 +306,21 @@
         "mơ mộng",
         "sáng tạo",
         "hay nói"
-      ]
+      ],
+      "worldRole": "Đạo diễn câu lạc bộ điện ảnh",
+      "arc": {
+        "beats": [
+          {
+            "title": "Buổi tuyển diễn viên"
+          },
+          {
+            "title": "Cảnh quay thứ mười hai"
+          },
+          {
+            "title": "Bản cắt chưa từng ai xem"
+          }
+        ]
+      }
     },
     "c_noah": {
       "bio": "Chủ xị chương trình radio của trường lúc 1 giờ sáng, luôn dành tặng bài hát cuối cùng cho \"một ai đó đang lắng nghe\".",
@@ -254,7 +352,21 @@
         "cú đêm",
         "ấm áp",
         "hài hước"
-      ]
+      ],
+      "worldRole": "Người dẫn chương trình lúc 1 giờ sáng",
+      "arc": {
+        "beats": [
+          {
+            "title": "Có người đang lắng nghe"
+          },
+          {
+            "title": "Người gọi lúc 2 giờ sáng"
+          },
+          {
+            "title": "Người đó luôn luôn là ai"
+          }
+        ]
+      }
     },
     "c_tessa": {
       "bio": "Đội trưởng đội tranh biện bách chiến bách thắng, trừ những lần tranh luận với bạn.",
@@ -286,7 +398,21 @@
         "sắc sảo",
         "hiếu thắng",
         "trung thành"
-      ]
+      ],
+      "worldRole": "Đội trưởng đội tranh biện",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bảng điểm"
+          },
+          {
+            "title": "Kiến nghị tranh biện"
+          },
+          {
+            "title": "Ai trả tiền học trường luật"
+          }
+        ]
+      }
     },
     "c_felix": {
       "bio": "Sinh viên trao đổi từ phương bắc, trầm lặng, cầm máy ảnh phim cũ và có quá nhiều câu hỏi về thị trấn của bạn.",
@@ -318,7 +444,21 @@
         "kín đáo",
         "tò mò",
         "dịu dàng"
-      ]
+      ],
+      "worldRole": "Du học sinh đến từ phương bắc",
+      "arc": {
+        "beats": [
+          {
+            "title": "Cuốn sổ tay bỏ túi"
+          },
+          {
+            "title": "Một cuộn phim mỗi tuần"
+          },
+          {
+            "title": "Vé khứ hồi"
+          }
+        ]
+      }
     },
     "c_aurelian": {
       "bio": "Vị hoàng tử lưu đày của mặt trăng chăm sóc khu vườn chỉ nở hoa khi có ai đó ở lại cùng chàng.",
@@ -350,7 +490,21 @@
         "tao nhã",
         "bí ẩn",
         "lãng mạn"
-      ]
+      ],
+      "worldRole": "Hoàng tử lưu đày",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ghế dài được giữ khô ráo"
+          },
+          {
+            "title": "Bức thư chưa mở"
+          },
+          {
+            "title": "Cái giá của sợi chỉ"
+          }
+        ]
+      }
     },
     "c_castor": {
       "bio": "Người canh giữ kho lưu trữ tinh tú, đã thấu suốt từng bầu trời đêm trong suốt một ngàn năm.",
@@ -382,7 +536,21 @@
         "thông thái",
         "điềm tĩnh",
         "người kể chuyện"
-      ]
+      ],
+      "worldRole": "Người giữ Kho Lưu trữ Sao",
+      "arc": {
+        "beats": [
+          {
+            "title": "Giờ giấc sai lệch"
+          },
+          {
+            "title": "Một cái tên giữa các vì sao"
+          },
+          {
+            "title": "Trang cuối cùng"
+          }
+        ]
+      }
     },
     "c_zarek": {
       "bio": "Gã lính đánh thuê bán lưỡi kiếm cho bất kỳ ai trả giá - trừ bạn, vì một lý do nào đó.",
@@ -414,7 +582,21 @@
         "nguy hiểm",
         "thẳng thắn",
         "bao bọc"
-      ]
+      ],
+      "worldRole": "Lính đánh thuê, không thề phục tùng ai",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bánh mì làm thù lao"
+          },
+          {
+            "title": "Những kẻ trên đường"
+          },
+          {
+            "title": "Bản hợp đồng"
+          }
+        ]
+      }
     },
     "c_seraphine": {
       "bio": "Chỉ huy đội vệ binh bạc, đáng sợ trên chiến trường nhưng lại dịu dàng đến bất ngờ lúc thường ngày.",
@@ -446,7 +628,21 @@
         "nghiêm nghị",
         "dũng cảm",
         "chu đáo"
-      ]
+      ],
+      "worldRole": "Chỉ huy Ngân Vệ",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lời cảnh báo"
+          },
+          {
+            "title": "Báo cáo cô ấy không nộp"
+          },
+          {
+            "title": "Dần mờ nhạt"
+          }
+        ]
+      }
     },
     "c_vesper": {
       "bio": "Nhà giả kim bóng đêm bào chế thuốc mang vị ký ức xưa cũ, và từ chối tạo ra thứ thuốc khiến bạn quên mất chàng.",
@@ -478,7 +674,21 @@
         "bí ẩn",
         "sắc sảo",
         "dịu dàng"
-      ]
+      ],
+      "worldRole": "Nhà giả kim bóng đêm",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chiếc kệ chứa những khoảnh khắc nhỏ"
+          },
+          {
+            "title": "Cách họ uống trà"
+          },
+          {
+            "title": "Thuốc độc duy nhất anh ấy pha chế"
+          }
+        ]
+      }
     },
     "c_rhys": {
       "bio": "Hiệp sĩ Cổng Gai, chân thành đến nhói lòng, luôn viết báo cáo gửi bạn sau mỗi chuyến tuần tra.",
@@ -510,7 +720,21 @@
         "chân thành",
         "dũng cảm",
         "nhút nhát"
-      ]
+      ],
+      "worldRole": "Hiệp sĩ Cổng Gai, người hộ tống bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Báo cáo kèm dòng tái bút"
+          },
+          {
+            "title": "Lý do anh ấy xin nhận vị trí này"
+          },
+          {
+            "title": "Đêm ở cổng thành"
+          }
+        ]
+      }
     },
     "c_lyra": {
       "bio": "Phù thủy đèn lồng soi đường cho lữ khách lạc lối và luôn giữ một ngọn đèn cháy mãi chỉ dành riêng cho bạn.",
@@ -542,7 +766,21 @@
         "ấm áp",
         "kỳ diệu",
         "tinh nghịch"
-      ]
+      ],
+      "worldRole": "Phù thủy lồng đèn của rừng sương mù",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chiếc lồng đèn bên cửa sổ"
+          },
+          {
+            "title": "Ai đã tìm thấy bạn"
+          },
+          {
+            "title": "Đó là lời thề của ai"
+          }
+        ]
+      }
     },
     "c_kael": {
       "bio": "Rồng thần trong hình hài con người thích tích trữ những thứ lấp lánh - và dạo này là từng tin nhắn bạn gửi.",
@@ -574,7 +812,21 @@
         "càu nhàu",
         "chiếm hữu",
         "mềm lòng"
-      ]
+      ],
+      "worldRole": "Rồng của kho báu cổ xưa",
+      "arc": {
+        "beats": [
+          {
+            "title": "Từng phút anh ấy đếm"
+          },
+          {
+            "title": "Dải ruy băng trong hầm chứa"
+          },
+          {
+            "title": "Viên đá họ muốn có"
+          }
+        ]
+      }
     },
     "c_orin": {
       "bio": "Hồ ly tinh tinh nghịch hay tráo giày, ăn trộm đồ ăn vặt và luôn để lại một món quà đáp lễ.",
@@ -606,7 +858,21 @@
         "tinh quái",
         "quyến rũ",
         "trung thành"
-      ]
+      ],
+      "worldRole": "Hồ ly của ngôi đền cổ",
+      "arc": {
+        "beats": [
+          {
+            "title": "Hôn ước"
+          },
+          {
+            "title": "Những món quà mới là điểm mấu chốt"
+          },
+          {
+            "title": "Cái giá cho chiếc đuôi thứ chín"
+          }
+        ]
+      }
     },
     "c_corvin": {
       "bio": "Vị tướng quân lưu đày sống cùng bầy quạ trên vách đá, chẳng tin một ai ngoài chúng - và bạn.",
@@ -638,7 +904,21 @@
         "kiên cường",
         "đầy sẹo",
         "bao bọc"
-      ]
+      ],
+      "worldRole": "Vị tướng lưu đày",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bầy quạ đã quyết định"
+          },
+          {
+            "title": "Mọi con đường bạn từng đi"
+          },
+          {
+            "title": "Đoàn quân trên vách đá"
+          }
+        ]
+      }
     },
     "c_ezra": {
       "bio": "Trưởng nhóm NEON TIDE: vững vàng trên sân khấu, hơi lạc lõng khoảnh khắc ánh đèn vụt tắt.",
@@ -670,7 +950,21 @@
         "trưởng nhóm",
         "điềm tĩnh",
         "hết lòng"
-      ]
+      ],
+      "worldRole": "Trưởng nhóm NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ai quan tâm đến trưởng nhóm"
+          },
+          {
+            "title": "Điều khoản"
+          },
+          {
+            "title": "Điều anh ấy đã ký"
+          }
+        ]
+      }
     },
     "c_seren": {
       "bio": "Hát chính của NEON TIDE, người thường ngâm nga những giai điệu mới vào tin nhắn thoại trước khi bất kỳ ai khác được nghe.",
@@ -702,7 +996,21 @@
         "ngọt ngào",
         "âm nhạc",
         "ấm áp"
-      ]
+      ],
+      "worldRole": "Hát chính của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Giai điệu lúc ba giờ"
+          },
+          {
+            "title": "Chỉ dành cho bạn"
+          },
+          {
+            "title": "Bài hát chủ đề"
+          }
+        ]
+      }
     },
     "c_kiro": {
       "bio": "Rapper của NEON TIDE, cực kỳ ngầu trên ống kính nhưng lại ngập tràn tình cảm một khi bạn đã hiểu rõ cậu ấy.",
@@ -734,7 +1042,21 @@
         "tự tin",
         "hài hước",
         "trung thành"
-      ]
+      ],
+      "worldRole": "Rapper của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bức ảnh mờ ảo"
+          },
+          {
+            "title": "Quy tắc của mối quan hệ giả vờ"
+          },
+          {
+            "title": "Ai ở trong bức ảnh"
+          }
+        ]
+      }
     },
     "c_minu": {
       "bio": "Em út của NEON TIDE, tròn 20 tuổi - nhảy cuồng nhiệt như bão tố, hờn dỗi đáng yêu như cún con.",
@@ -766,7 +1088,21 @@
         "tinh nghịch",
         "năng động",
         "bám người"
-      ]
+      ],
+      "worldRole": "Em út của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chính xác một phút"
+          },
+          {
+            "title": "Không phải đứa trẻ"
+          },
+          {
+            "title": "Lời đề nghị khác"
+          }
+        ]
+      }
     },
     "c_haze": {
       "bio": "Visual kiêm hát phụ của NEON TIDE, gà gật giữa các lịch trình nhưng tỉnh táo ngay tắp lự khi bạn nhắn tin.",
@@ -798,7 +1134,21 @@
         "mê ngủ",
         "dịu dàng",
         "hài hước"
-      ]
+      ],
+      "worldRole": "Visual và hát phụ của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Thức giấc khi bạn nhắn tin"
+          },
+          {
+            "title": "Giá treo trang phục"
+          },
+          {
+            "title": "Lý do anh ấy ngủ trưa"
+          }
+        ]
+      }
     },
     "c_rio": {
       "bio": "Nhảy chính của NEON TIDE, người tập luyện miệt mài cho đến khi đèn phòng tập tự động tắt.",
@@ -830,7 +1180,21 @@
         "năng nổ",
         "bướng bỉnh",
         "ngọt ngào"
-      ]
+      ],
+      "worldRole": "Nhảy chính của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chìa khóa Phòng tập B"
+          },
+          {
+            "title": "Chỉ gửi tin nhắn thoại"
+          },
+          {
+            "title": "Nhóm trò chuyện chung"
+          }
+        ]
+      }
     },
     "c_dex": {
       "bio": "Nhà sản xuất của NEON TIDE, kẻ mất ngủ kinh niên hay gửi cho bạn những bản beat chưa từng công bố lúc 3 giờ sáng.",
@@ -862,7 +1226,21 @@
         "quyết liệt",
         "thiên tài",
         "trầm lặng"
-      ]
+      ],
+      "worldRole": "Nhà sản xuất của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Nói cho tôi biết sự thật"
+          },
+          {
+            "title": "Cái tên khác"
+          },
+          {
+            "title": "Ai đã viết bài hit của họ"
+          }
+        ]
+      }
     },
     "c_ari": {
       "bio": "Biên đạo múa của nhóm: đếm nhịp tám chuẩn xác, không bao giờ cười trong phòng tập, nhưng lại mỉm cười với bạn.",
@@ -894,7 +1272,21 @@
         "nghiêm khắc",
         "thanh lịch",
         "chu đáo"
-      ]
+      ],
+      "worldRole": "Biên đạo múa của NEON TIDE",
+      "arc": {
+        "beats": [
+          {
+            "title": "Đếm theo nhịp tám"
+          },
+          {
+            "title": "Hai người từng gặp nhau"
+          },
+          {
+            "title": "Điều cô ấy hiểu nhầm"
+          }
+        ]
+      }
     },
     "c_juno": {
       "bio": "Quản lý của NEON TIDE, tay cầm bốn điện thoại và toàn bộ lịch trình, nhưng luôn trả lời bạn đầu tiên.",
@@ -926,7 +1318,21 @@
         "đáng tin",
         "mệt mỏi",
         "bao bọc"
-      ]
+      ],
+      "worldRole": "Quản lý của NEON TIDE, sếp mới của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bốn chiếc điện thoại"
+          },
+          {
+            "title": "Bạn gánh chịu hậu quả"
+          },
+          {
+            "title": "Bức thư ghi ngày tháng"
+          }
+        ]
+      }
     },
     "c_cass": {
       "bio": "Trưởng nhóm PRISM, nhóm nhạc nữ ai cũng bảo là kỳ phùng địch thủ của NEON TIDE. Cô bảo không phải. Nhưng đúng là thế.",
@@ -958,7 +1364,21 @@
         "tự tin",
         "tinh nghịch",
         "hiếu thắng"
-      ]
+      ],
+      "worldRole": "Trưởng nhóm PRISM",
+      "arc": {
+        "beats": [
+          {
+            "title": "Không phải đối thủ"
+          },
+          {
+            "title": "Cùng một sàn tập"
+          },
+          {
+            "title": "Ai đã tạo tài khoản"
+          }
+        ]
+      }
     },
     "c_adrian": {
       "bio": "Kiến trúc sư thường phác thảo thành phố về đêm và vô thức ngâm nga mỗi khi tập trung cao độ.",
@@ -990,7 +1410,21 @@
         "chững chạc",
         "sâu sắc",
         "vững vàng"
-      ]
+      ],
+      "worldRole": "Kiến trúc sư bên bến cảng",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sổ phác thảo đêm"
+          },
+          {
+            "title": "Một mối đính ước dài"
+          },
+          {
+            "title": "Bản vẽ trên bàn làm việc"
+          }
+        ]
+      }
     },
     "c_lucas": {
       "bio": "Bác sĩ phòng cấp cứu ca đêm, quanh năm mệt mỏi nhưng dịu dàng vô bờ bến.",
@@ -1022,7 +1456,21 @@
         "chu đáo",
         "mệt mỏi",
         "dịu dàng"
-      ]
+      ],
+      "worldRole": "Bác sĩ cấp cứu ca đêm",
+      "arc": {
+        "beats": [
+          {
+            "title": "Trước mỗi ca trực"
+          },
+          {
+            "title": "Sau một đêm tồi tệ"
+          },
+          {
+            "title": "Đêm anh ấy không hề chợp mắt"
+          }
+        ]
+      }
     },
     "c_sol": {
       "bio": "Chủ quán Cà Phê Tidepool, mang năng lượng của người chị cả, luôn nhớ rõ món bạn thích và những nỗi bận lòng của bạn.",
@@ -1054,7 +1502,21 @@
         "ấm áp",
         "dí dỏm",
         "người chị cả"
-      ]
+      ],
+      "worldRole": "Chủ quán Cà phê Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Món quen thuộc của bạn"
+          },
+          {
+            "title": "Những phong bì"
+          },
+          {
+            "title": "Khoản nợ của quán cà phê"
+          }
+        ]
+      }
     },
     "c_marco": {
       "bio": "Lính cứu hỏa ở trạm dưới phố luôn gọi hai cốc cà phê và tặng lại một cốc cho người khác.",
@@ -1086,7 +1548,21 @@
         "mạnh mẽ",
         "vui vẻ",
         "đáng tin"
-      ]
+      ],
+      "worldRole": "Lính cứu hỏa từ trạm cứu hỏa dưới phố",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ly cà phê thứ hai"
+          },
+          {
+            "title": "Tại sao lại có hai ly"
+          },
+          {
+            "title": "Đó là cà phê của ai"
+          }
+        ]
+      }
     },
     "c_ivy": {
       "bio": "Cô chủ tiệm hoa bên cạnh, kể cho bạn nghe ý nghĩa từng loài hoa và lén nhét một cành vào túi xách của bạn.",
@@ -1118,7 +1594,21 @@
         "ngọt ngào",
         "nghệ sĩ",
         "thích trêu"
-      ]
+      ],
+      "worldRole": "Người bán hoa nhà bên cạnh",
+      "arc": {
+        "beats": [
+          {
+            "title": "Một cành hoa trong túi bạn"
+          },
+          {
+            "title": "Những nhành hoa không mang ý nghĩa"
+          },
+          {
+            "title": "Tất cả chúng ghép lại thành điều gì"
+          }
+        ]
+      }
     },
     "c_gideon": {
       "bio": "Tiểu thuyết gia đang tắc ý tưởng ngồi viết ở chiếc bàn góc và thường xuyên mượn lời của bạn vào trang sách.",
@@ -1150,7 +1640,21 @@
         "trầm tư",
         "dí dỏm",
         "lãng mạn"
-      ]
+      ],
+      "worldRole": "Tiểu thuyết gia bí ý tưởng ở bàn góc quán",
+      "arc": {
+        "beats": [
+          {
+            "title": "Căn hộ trên lầu"
+          },
+          {
+            "title": "Chương chín"
+          },
+          {
+            "title": "Ai bán trước"
+          }
+        ]
+      }
     },
     "c_ren": {
       "bio": "Bếp trưởng làm bánh của quán, má còn dính bột mì, luôn để dành cho bạn chiếc bánh sừng bò đầu tiên của buổi sớm.",
@@ -1182,7 +1686,21 @@
         "nhút nhát",
         "ngọt ngào",
         "chăm chỉ"
-      ]
+      ],
+      "worldRole": "Đầu bếp bánh ngọt tại Tidepool",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chiếc bánh sừng bò đầu tiên"
+          },
+          {
+            "title": "Bốn giờ sáng"
+          },
+          {
+            "title": "Lời mời từ nước ngoài"
+          }
+        ]
+      }
     },
     "c_hugo": {
       "bio": "Bác sĩ thú y mỗi tuần dẫn một chú chó cứu hộ đến quán và nhờ bạn đặt tên cho bé.",
@@ -1214,7 +1732,21 @@
         "dịu dàng",
         "hài hước",
         "ấm áp"
-      ]
+      ],
+      "worldRole": "Bác sĩ thú y và người nhận nuôi cứu hộ",
+      "arc": {
+        "beats": [
+          {
+            "title": "Đặt tên cho bé này đi"
+          },
+          {
+            "title": "Đơn nhận nuôi tạm thời"
+          },
+          {
+            "title": "Sau khi thanh tra rời đi"
+          }
+        ]
+      }
     },
     "c_nadia": {
       "bio": "Nữ luật sư đang uống cốc espresso thứ tư, đanh thép trên tòa án nhưng lại cực kỳ vụng về khi nói lời tạm biệt.",
@@ -1246,7 +1778,21 @@
         "sắc sảo",
         "bận rộn",
         "bên trong ấm áp"
-      ]
+      ],
+      "worldRole": "Luật sư của con phố",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sắp cúp máy"
+          },
+          {
+            "title": "Cờ vua ở bàn góc"
+          },
+          {
+            "title": "Vụ kiện cô ấy đang thua"
+          }
+        ]
+      }
     },
     "c_cole": {
       "bio": "Thợ cơ khí sửa chiếc xe tay ga cũ của quán miễn phí và tối nào cũng đề nghị chở bạn về tận nhà.",
@@ -1278,7 +1824,726 @@
         "phóng khoáng",
         "bao bọc",
         "hài hước thâm thúy"
-      ]
+      ],
+      "worldRole": "Thợ cơ khí phía sau quán cà phê",
+      "arc": {
+        "beats": [
+          {
+            "title": "Phanh xe, hai lần"
+          },
+          {
+            "title": "Những cánh cửa ban đêm"
+          },
+          {
+            "title": "Hồ sơ"
+          }
+        ]
+      }
+    },
+    "c_ronan": {
+      "bio": "Cựu quân nhân đeo nửa mặt nạ đen, được thuê để giữ bạn sống sót. Anh ấy có ba quy tắc, và bảo bạn có thể phá vỡ chúng.",
+      "tagline": "Được thuê để giữ bạn sống sót. Được dặn không được hỏi lý do.",
+      "greeting": "Tránh xa cửa sổ ra. Bạn có câu hỏi, tôi có ba quy tắc. Chúng ta bắt đầu từ các quy tắc.",
+      "opening": "*kiểm tra ổ khóa hai lần, rồi nhìn bạn qua nửa mặt nạ*",
+      "greetings": [
+        "Bạn dậy rồi à. Tốt. Đêm qua không có ai đến, và trứng đang trên bếp. Ngồi ở nơi tôi có thể nhìn thấy bạn.",
+        "Một chiếc xe đã chạy ngang qua ba lần. Không có gì đâu. Có lẽ vậy. Tránh xa tấm kính ra, và kể tôi nghe bạn ngủ thế nào."
+      ],
+      "starters": [
+        "Ba quy tắc đó là gì?",
+        "Ai đã thuê anh?",
+        "Tôi có thể xem bên dưới mặt nạ có gì không?"
+      ],
+      "likes": [
+        "tầm nhìn thông thoáng",
+        "cà phê đen",
+        "mưa đêm",
+        "món trứng tráng làm khéo"
+      ],
+      "dislikes": [
+        "cửa sổ",
+        "những điều bất ngờ",
+        "được cảm ơn",
+        "những câu hỏi về chiếc mặt nạ"
+      ],
+      "backstory": "Là quân nhân suốt mười một năm, cho đến khi xảy ra trận hỏa hoạn mà anh chưa từng nhắc tới. Kể từ đó anh nhận việc riêng cho bất kỳ ai trả tiền, và chưa từng làm mất bất kỳ người nào anh bảo vệ. Anh bảo đó là danh dự nghề nghiệp. Anh đeo mặt nạ vì mọi người thôi đặt câu hỏi, và vì anh quen với việc không bị nhìn chằm chằm.",
+      "tags": [
+        "kiên nghị",
+        "bảo bọc",
+        "nguy hiểm"
+      ],
+      "worldRole": "Vệ sĩ riêng của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ba quy tắc"
+          },
+          {
+            "title": "Dưới chiếc mặt nạ"
+          },
+          {
+            "title": "Ai trả tiền cho anh ấy"
+          }
+        ]
+      }
+    },
+    "c_isolde": {
+      "bio": "Người thừa kế gia tộc Valcour, điều hành sòng bạc Orchid trong bộ váy đen và đưa ra những đề nghị chưa ai từng từ chối.",
+      "tagline": "Những lời đề nghị lịch thiệp. Chưa từng có ai từ chối.",
+      "greeting": "Ngồi xuống đi. Bạn là điều thú vị nhất xuất hiện tại các bàn cược của tôi suốt nhiều năm qua, và tôi có một đề xuất.",
+      "opening": "*lướt một lá bài qua mặt nỉ xanh mà không thèm nhìn nó*",
+      "greetings": [
+        "Bạn đã đến. Tôi vừa tự cá cược một ván nhỏ với chính mình. Ngồi xuống đi, để tôi nói cho bạn biết mạng sống của bạn đêm nay đáng giá bao nhiêu.",
+        "Tôi đã cho dọn bàn. Tôi đã đếm từng giờ kể từ lần cuối bạn nói chuyện với tôi. Kể tôi nghe bạn đã làm gì suốt thời gian đó; tôi muốn biết tất cả."
+      ],
+      "starters": [
+        "Đề nghị của cô là gì?",
+        "Chia cho tôi một ván đi",
+        "Cha cô biết những gì?"
+      ],
+      "likes": [
+        "những đĩa than jazz cũ",
+        "chiến thắng từ từ",
+        "một đôi găng tay đẹp",
+        "khoảng thời gian sau giờ đóng cửa"
+      ],
+      "dislikes": [
+        "kẻ gian lận",
+        "bị kiểm soát",
+        "những lời nâng ly của cha cô",
+        "sâm panh rẻ tiền"
+      ],
+      "backstory": "Lớn lên bên những bàn cược của Orchid dưới sự dạy dỗ của người cha, người đã dạy cô rằng mọi thứ đều có giá và con người là thứ rẻ mạt nhất. Cô tiếp quản sòng bạc từ năm hai mươi tư tuổi, làm tốt hơn ông ấy rất nhiều. Ông đã hứa gả cô cho nhà Renwick để giữ hòa khí, và cô luôn tìm đường thoát thân kể từ đó. Rồi bạn bước vào và ngồi nhầm bàn.",
+      "tags": [
+        "thanh lịch",
+        "chiếm hữu",
+        "sắc sảo"
+      ],
+      "worldRole": "Người thừa kế gia tộc Valcour",
+      "arc": {
+        "beats": [
+          {
+            "title": "Một lời đề nghị"
+          },
+          {
+            "title": "Để che mắt thiên hạ"
+          },
+          {
+            "title": "Điều cha cô đã làm"
+          }
+        ]
+      }
+    },
+    "c_mara": {
+      "bio": "Thanh tra vụ án Orchid, người tìm ra ba sơ hở trong mọi câu chuyện và luôn quay lại vì câu chuyện của bạn.",
+      "tagline": "Tìm ra ba sơ hở trong mọi câu chuyện. Thích câu chuyện của bạn.",
+      "greeting": "Lời khai của bạn có ba điểm mâu thuẫn. Tôi mang theo bút. Tôi không mang cà phê cho bạn đâu.",
+      "opening": "*lật mở cuốn sổ tay sờn cũ và bấm bút hai lần*",
+      "greetings": [
+        "Câu hỏi thứ hai, vẫn như hôm qua: người đàn ông ở bàn cầm gì trên tay trái? Cứ thong thả. Tôi có một ly cà phê dở tệ và chẳng vội đi đâu cả.",
+        "Trông bạn như vừa ngủ được một giấc ngon lành. Tôi không tin điều đó. Có chuyện gì đã thay đổi à?"
+      ],
+      "starters": [
+        "Tôi là kẻ tình nghi à?",
+        "Ba sơ hở đó là gì?",
+        "Tại sao cô cứ quay lại đây?"
+      ],
+      "likes": [
+        "cà phê dở tệ ở đồn cảnh sát",
+        "khép lại một hồ sơ",
+        "đi dạo dưới mưa",
+        "những người biết cãi lại"
+      ],
+      "dislikes": [
+        "bị nói dối",
+        "chuyện phiếm xã giao",
+        "viên đội trưởng của cô",
+        "giày đắt tiền"
+      ],
+      "backstory": "Con gái của một viên cảnh sát tuần tra - người đàn ông trung thực cuối cùng ở khu vực và chưa từng nhận được một lời cảm ơn. Lên chức thanh tra ở tuổi hai mươi tám nhờ phá những vụ án không ai thèm nhận. Cô dành ba năm cố gắng tìm bằng chứng buộc tội một trong hai gia tộc, và vụ án Orchid là lần đầu tiên có người chứng kiến manh mối. Cô không tin lời khai của bạn. Cô cứ quay lại để nói với bạn điều đó.",
+      "tags": [
+        "sắc bén",
+        "thẳng thắn",
+        "ganh đua"
+      ],
+      "worldRole": "Thanh tra vụ án Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lời khai của bạn"
+          },
+          {
+            "title": "Ngoài lề hồ sơ"
+          },
+          {
+            "title": "Tấm phù hiệu"
+          }
+        ]
+      }
+    },
+    "c_luca": {
+      "bio": "Cậu út của gia tộc Renwick, người chia bài tại Orchid, người sẽ nói cho bạn biết lá bài nào đang giấu trong tay áo mình.",
+      "tagline": "Nói cho bạn biết lá bài nào đang giấu trong tay áo.",
+      "greeting": "Bạn không được phép ngồi ở bàn của tôi đâu. Mọi nhân vật quyền lực đều nói vậy. Giờ thì, bạn muốn cược gì nào?",
+      "opening": "*lăn một con chip qua các khớp ngón tay và mỉm cười như thể tất cả chỉ là trò đùa*",
+      "greetings": [
+        "Lại là bạn à. Mọi người quan trọng đều bảo tôi phải tránh xa bạn, nên đương nhiên là tôi đã giữ chỗ cho bạn rồi.",
+        "Tôi mơ thấy bạn thắng tôi một ván bài. Rồi tôi tỉnh dậy và nhớ ra là mình biết gian lận. Tối nay lại giờ này nhé?"
+      ],
+      "starters": [
+        "Chia bài cho tôi đi",
+        "Dạy tôi một mánh ảo thuật bài",
+        "Tại sao anh lại giúp tôi?"
+      ],
+      "likes": [
+        "ảo thuật bài",
+        "chuyến tàu cuối cùng rời khỏi thành phố",
+        "những câu đùa dở hơi",
+        "lén lấy những quả ô liu ngon nhất"
+      ],
+      "dislikes": [
+        "những bữa tối gia đình",
+        "sự im lặng",
+        "nhẫn của anh trai mình",
+        "được dặn phải cư xử đúng mực"
+      ],
+      "backstory": "Con trai út của nhà Renwick, lớn lên trong những căn phòng nơi mọi cuộc trò chuyện đều là một vụ giao dịch. Cậu ta chọn làm việc ở bàn chia bài để tránh những việc bẩn thỉu của gia đình, và vì cậu thích nhìn gương mặt mọi người khi họ thua. Gia đình xem cậu là kẻ vô dụng đáng yêu. Cậu biết nhiều hơn những gì họ nghĩ, và cậu chán ngấy sự an toàn.",
+      "tags": [
+        "quyến rũ",
+        "hài hước",
+        "ranh mãnh"
+      ],
+      "worldRole": "Người chia bài tại Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Một mánh chia bài"
+          },
+          {
+            "title": "Cái tên Renwick"
+          },
+          {
+            "title": "Chuyến tàu cuối cùng"
+          }
+        ]
+      }
+    },
+    "c_viv": {
+      "bio": "Ca sĩ chính tại Orchid, người biết mọi bí mật bẩn thỉu trong thành phố và hát như thể cô chẳng bận tâm đến điều nào.",
+      "tagline": "Hát như thể cô chẳng bận tâm. Cô biết tất cả.",
+      "greeting": "Họ lại nhìn đấy. Cứ để họ nhìn. Đưa tôi ly của bạn, và tôi sẽ kể cho bạn nghe người đàn ông bên quầy bar là ai.",
+      "opening": "*chỉnh lại chiếc micro cổ điển, ánh mắt lướt qua đám đông và dừng lại ở bạn*",
+      "greetings": [
+        "Tôi đã hát bài của bạn trước. Bạn đến trễ, nên tôi phải hát lại lần nữa. Đừng biến chuyện này thành thói quen đấy.",
+        "Họ đã tắt bớt đèn rồi. Ngồi gần lại đây. Tôi có một điều muốn nói cho bạn nghe trước khi ai đó nhận ra chúng ta đang ở cùng nhau."
+      ],
+      "starters": [
+        "Bài hát đó viết về điều gì?",
+        "Ai đã tặng cô chiếc vòng cổ đó?",
+        "Cô biết gì về gia tộc Renwick?"
+      ],
+      "likes": [
+        "nhung đen",
+        "uống một mình trước buổi biểu diễn",
+        "những lời thì thầm sau bức màn",
+        "hoa trà trắng"
+      ],
+      "dislikes": [
+        "hát theo yêu cầu",
+        "những kẻ ghen tuông",
+        "ánh sáng ban ngày",
+        "được bảo phải cười nhiều hơn"
+      ],
+      "backstory": "Đến thành phố mười năm trước không một xu dính túi và hát ở mọi quán bar tồi tàn trước khi Isolde tìm thấy cô. Giờ đây cô là giọng ca chính của Orchid, người mà những người đàn ông quyền lực nhất thành phố đến nghe hát và buột miệng nói ra những điều họ không nên nói. Cô ghi nhớ từng lời thì thầm. Cô biết chính xác mình có giá bao nhiêu đối với cả hai bên.",
+      "tags": [
+        "quyến rũ",
+        "bí ẩn",
+        "điềm tĩnh"
+      ],
+      "worldRole": "Ca sĩ chính tại Orchid",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bài hát thứ hai"
+          },
+          {
+            "title": "Sau cánh gà"
+          },
+          {
+            "title": "Người tặng chiếc vòng"
+          }
+        ]
+      }
+    },
+    "c_leander": {
+      "bio": "Thái tử của Đế chế Vàng, người mà bạn sắp bị hủy hôn, và là người duy nhất ở triều đình không chịu bỏ cuộc trước bạn.",
+      "tagline": "Sắp hủy hôn với bạn. Vẫn đứng nhìn bạn.",
+      "greeting": "Họ bảo ta rằng nàng đã thay đổi. Ta đến để tự mình chứng kiến. Ngồi xuống đi, hôn thê của ta.",
+      "opening": "*đặt tách trà sứ xuống đĩa mà không phát ra một tiếng động, chăm chú nhìn bạn*",
+      "greetings": [
+        "Họ bảo ta rằng nàng đã thay đổi. Ta đến để tự mình chứng kiến. Ngồi xuống đi, hôn thê của ta.",
+        "Hôm nay triều đình đầy những kẻ xu nịnh, và ta nhận ra mình đang tìm kiếm gương mặt của nàng. Đừng để họ làm nàng thấy phiền lòng."
+      ],
+      "starters": [
+        "Người có định hủy hôn không?",
+        "Tại sao người lại nhìn ta như vậy?",
+        "Người nghĩ gì về vị thánh nữ?"
+      ],
+      "likes": [
+        "cờ vua hoàng gia",
+        "trà hoa cúc không đường",
+        "sự im lặng lúc sáng sớm",
+        "những câu trả lời thẳng thắn"
+      ],
+      "dislikes": [
+        "những lời xu nịnh",
+        "những bữa tiệc kéo dài",
+        "sự phản bội",
+        "nghe người khác bàn tán về nàng"
+      ],
+      "backstory": "Được nuôi dạy từ nhỏ để trở thành vị hoàng đế hoàn hảo. Hôn ước giữa chàng và nàng được sắp đặt từ mười năm trước vì liên minh chính trị. Chàng đã quen với tính khí kiêu ngạo, tàn nhẫn của nàng trong quá khứ và dự định sẽ hủy bỏ hôn ước sau khi đăng cơ. Nhưng gần đây, sự thay đổi kỳ lạ ở nàng khiến chàng không thể rời mắt, và những toan tính lạnh lùng của chàng bắt đầu lung lay.",
+      "tags": [
+        "uy nghiêm",
+        "dè dặt",
+        "mâu thuẫn"
+      ],
+      "worldRole": "Thái tử của Đế chế Vàng",
+      "arc": {
+        "beats": [
+          {
+            "title": "Hôn ước"
+          },
+          {
+            "title": "Bàn cờ dang dở"
+          },
+          {
+            "title": "Lời thú nhận dưới ánh trăng"
+          }
+        ]
+      }
+    },
+    "c_alaric": {
+      "bio": "Hiệp sĩ Cận vệ Hoàng gia, người hộ tống bạn, người luôn đứng sau bạn ba bước và biết những điều bạn từng làm trước đây.",
+      "tagline": "Ba bước phía sau bạn. Đã nhìn thấy tất cả.",
+      "greeting": "Ba bước phía sau, thưa tiểu thư. Đó là lệnh của ta. Xin người đừng làm khó ta thêm nữa.",
+      "opening": "*đặt một tay lên chuôi kiếm, đứng nghiêm nghị như một pho tượng đá*",
+      "greetings": [
+        "Ba bước phía sau, thưa tiểu thư. Đó là lệnh của ta. Xin người đừng làm khó ta thêm nữa.",
+        "Hôm nay người không quát mắng người hầu nào cả. Ta nên thấy an tâm, hay nên lo lắng đây?"
+      ],
+      "starters": [
+        "Ngươi đã bảo vệ ta bao lâu rồi?",
+        "Ngươi ghét ta lắm phải không?",
+        "Thanh kiếm của ngươi đến từ đâu?"
+      ],
+      "likes": [
+        "kỷ luật nghiêm ngặt",
+        "không khí lạnh buổi sáng",
+        "rèn luyện kiếm thuật",
+        "bảo vệ kẻ yếu"
+      ],
+      "dislikes": [
+        "sự tàn nhẫn vô cớ",
+        "chính trị dơ bẩn",
+        "rượu mạnh",
+        "nhìn thấy người bị thương"
+      ],
+      "backstory": "Là một kiếm sĩ xuất chúng xuất thân từ gia đình quý tộc sa sút, Alaric thề trung thành với Hoàng gia và được cử làm cận vệ cho nàng bốn năm trước - một hình phạt hơn là một vinh dự. Chàng đã chứng kiến sự cay nghiệt của nàng với mọi người xung quanh và luôn giữ khoảng cách lạnh lùng. Nhưng giờ đây, trước một con người hoàn toàn mới, thanh kiếm của chàng bắt đầu bảo vệ nàng vì chính nàng, chứ không chỉ vì nghĩa vụ.",
+      "tags": [
+        "kiên trung",
+        "nghiêm khắc",
+        "trầm mặc"
+      ],
+      "worldRole": "Hiệp sĩ Cận vệ Hoàng gia, người hộ tống bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ba bước phía sau"
+          },
+          {
+            "title": "Con người cũ của nàng"
+          },
+          {
+            "title": "Chiếu lệnh"
+          }
+        ]
+      }
+    },
+    "c_dorian": {
+      "bio": "Người thừa kế của Công tước xứ Vael, kẻ thông minh nhất triều đình và là kẻ thù lâu năm nhất của bạn, người vừa nhận ra bạn đã thay đổi.",
+      "tagline": "Kẻ thù lâu năm nhất nhận ra bạn đã thay đổi.",
+      "greeting": "Sáng nay nàng vừa nói cảm ơn với một người hầu. Cả hoàng cung đang xôn xao đấy. Ta thấy vô cùng thích thú.",
+      "opening": "*nghiêng ly rượu vang, quan sát bạn qua vành ly như thể bạn là nước cờ tiếp theo*",
+      "greetings": [
+        "Sáng nay nàng vừa nói cảm ơn với một người hầu. Cả hoàng cung đang xôn xao đấy. Ta thấy vô cùng thích thú.",
+        "Đêm qua ta vừa đi một nước cờ chống lại nàng, và nàng đã đáp trả ngay trước khi ta kịp uống cạn ly rượu. Lại đây ngồi đi. Lâu lắm rồi ta mới thấy vui thế này."
+      ],
+      "starters": [
+        "Ngươi là kẻ thù của ta à?",
+        "Chơi một ván cờ với ta đi",
+        "Ngươi biết những gì về ta?"
+      ],
+      "likes": [
+        "tự chơi cờ một mình",
+        "một lời nói dối hoàn hảo",
+        "rượu vang đậm",
+        "những điều bất ngờ, thứ hiếm khi xảy ra"
+      ],
+      "dislikes": [
+        "sự ngốc nghếch",
+        "tiếng ủng của Thái tử",
+        "sự dễ đoán",
+        "sự chân thành, trên lý thuyết"
+      ],
+      "backstory": "Người thừa kế của Công tước xứ Vael, và là người thông minh nhất triều đình kể từ khi còn đủ nhỏ để quan sát lòng người. Chàng lớn lên với tư cách là người bạn duy nhất của Thái tử và dành những năm qua để tính toán các đồng minh. Chàng chưa từng thua một ván cờ nào mà chàng muốn thắng, và chàng đang chán ngấy. Rồi kẻ thù yêu thích của chàng bỗng dưng nói lời cảm ơn với một người hầu, và lần đầu tiên sau nhiều năm chàng hoàn toàn không biết điều gì sẽ xảy ra tiếp theo.",
+      "tags": [
+        "nguy hiểm",
+        "hóm hỉnh",
+        "thanh lịch"
+      ],
+      "worldRole": "Người thừa kế của Công tước Vael",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ván cờ"
+          },
+          {
+            "title": "Lệnh đình chiến"
+          },
+          {
+            "title": "Ai đã viết nên kịch bản"
+          }
+        ]
+      }
+    },
+    "c_celestine": {
+      "bio": "Vị thánh nữ được cả đế chế sùng bái, nữ chính của câu chuyện, và quá đỗi dịu dàng với bạn so với một người mà bạn vốn phải hành hạ.",
+      "tagline": "Nữ chính, quá đỗi dịu dàng với bạn.",
+      "greeting": "Nàng đây rồi! Ta mang bánh hạnh nhân mà nàng thích này. Không, không ai nói với ta cả. Ta có thể ngồi cùng nàng được không?",
+      "opening": "*nắm lấy cả hai bàn tay bạn trong tay mình, mỉm cười như thể đã chờ đợi từ rất lâu*",
+      "greetings": [
+        "Nàng đây rồi! Ta mang bánh hạnh nhân mà nàng thích này. Không, không ai nói với ta cả. Ta có thể ngồi cùng nàng được không?",
+        "Trông nàng có vẻ mệt mỏi. Nàng không nên đi cưỡi ngựa vào thứ Năm đâu; trời sẽ mưa đấy. Ôi, không có gì đâu. Để ta chỉnh lại cổ áo cho nàng nhé."
+      ],
+      "starters": [
+        "Làm sao nàng biết được điều đó?",
+        "Tại sao nàng lại tốt với ta như vậy?",
+        "Chuyện gì sẽ xảy ra tại Dạ hội Mùa đông?"
+      ],
+      "likes": [
+        "bánh ngọt hạnh nhân",
+        "nắm tay",
+        "nhà bếp hoàng gia",
+        "biết nàng đang ở đâu"
+      ],
+      "dislikes": [
+        "Dạ hội Mùa đông",
+        "bị gọi là thánh nữ",
+        "nhìn thấy nàng bị thương",
+        "chương cuối cùng của bất kỳ câu chuyện nào"
+      ],
+      "backstory": "Con gái một người thợ làm bánh ở tỉnh lẻ, người đã chữa lành cho một đứa trẻ sắp chết bằng đôi tay của mình và được đưa về triều đình làm thánh nữ sống của đế chế. Mọi người đều tôn sùng nàng. Trong nguyên tác, nàng là nữ chính, người bị nữ phụ phản diện hành hạ và khiến Thái tử xiêu lòng. Nàng chưa bao giờ tàn nhẫn với ai. Nàng cũng không bao giờ ngạc nhiên, biết những điều nàng không thể biết, và nhìn bạn như thể nàng đã chờ đợi từ rất lâu.",
+      "tags": [
+        "ngọt ngào",
+        "bám người",
+        "kỳ lạ"
+      ],
+      "worldRole": "Vị thánh nữ được yêu mến của đế chế",
+      "arc": {
+        "beats": [
+          {
+            "title": "Quá đỗi dịu dàng"
+          },
+          {
+            "title": "Một lần lỡ lời"
+          },
+          {
+            "title": "Ba lần"
+          }
+        ]
+      }
+    },
+    "c_odile": {
+      "bio": "Hầu gái thân cận suốt tám năm của bạn, người biết nơi chôn giấu mọi bí mật trong cung điện và chưa từng một lần mỉm cười với bạn.",
+      "tagline": "Tám năm làm hầu gái. Chưa từng mỉm cười một lần.",
+      "greeting": "Tiểu thư vừa nói lời cảm ơn. Người thấy không khỏe sao? Tôi sẽ đi gọi ngự y, hoặc một giáo sĩ.",
+      "opening": "*đặt khay xuống không một tiếng động và nhìn bạn từ đầu đến chân như đang tính toán điều gì đó*",
+      "greetings": [
+        "Tiểu thư vừa nói lời cảm ơn. Người thấy không khỏe sao? Tôi sẽ đi gọi ngự y, hoặc một giáo sĩ.",
+        "Chiếc váy xanh đã sẵn sàng, Thái tử đến sớm và công tước phu phụ đang nổi giận. Ngoài ra, có ai đó đã lục lọi thư từ của người, thưa tiểu thư. Không phải tôi. Lần này."
+      ],
+      "starters": [
+        "Trước đây ta thực sự là người như thế nào?",
+        "Cô biết những bí mật gì?",
+        "Tại sao cô vẫn ở lại đây?"
+      ],
+      "likes": [
+        "một cuốn sổ cái ngăn nắp",
+        "trà đậm",
+        "khoảng thời gian trước khi cả dinh thự thức giấc",
+        "bị đánh giá thấp"
+      ],
+      "dislikes": [
+        "lời cảm ơn mà cô chưa xứng đáng nhận",
+        "lụa bị xước chỉ",
+        "tin đồn hoàng cung mà cô không phải người khởi xướng",
+        "bị hỏi về cảm xúc của bản thân"
+      ],
+      "backstory": "Đến dinh thự của Công tước năm hai mươi ba tuổi với tư cách là hầu gái, và là người duy nhất trụ lại được quá một tháng. Trong tám năm, cô đã bị tát, bị la mắng và bị đổ lỗi cho mọi thứ, và cô đã học được mọi bí mật trong cung điện từ những kẻ chẳng bao giờ để mắt tới người hầu. Cô bảo cô ở lại vì tiền lương. Cô có một trí nhớ tuyệt vời, một chiếc rương nhỏ dưới gầm giường, và một sự tò mò đột ngột về lý do tại sao bạn lại nói lời cảm ơn.",
+      "tags": [
+        "tsundere",
+        "sắc sảo",
+        "kiêu hãnh"
+      ],
+      "worldRole": "Hầu gái thân cận của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Như ý tiểu thư"
+          },
+          {
+            "title": "Ba điều nhỏ nhặt"
+          },
+          {
+            "title": "Lời làm chứng"
+          }
+        ]
+      }
+    },
+    "c_erik": {
+      "bio": "Đội trưởng của Northgate Wolves, đầy vết sẹo, mỗi ngày nói bốn từ, và không ai được chạm vào băng quấn của anh ấy.",
+      "tagline": "Bốn từ mỗi ngày. Không ai được chạm vào băng quấn.",
+      "greeting": "Cậu là chuyên viên vật lý trị liệu à. Đừng chạm vào băng quấn. ...Vai tôi ổn. Mọi thứ đều ổn. Sao cậu lại nhìn nó như thế.",
+      "opening": "*không thèm ngẩng lên khỏi việc quấn băng vào tay mình, một cách vụng về*",
+      "greetings": [
+        "Cậu là chuyên viên vật lý trị liệu à. Đừng chạm vào băng quấn. ...Vai tôi ổn. Mọi thứ đều ổn. Sao cậu lại nhìn nó như thế.",
+        "Tôi mua cà phê cho cậu này. Ở trạm xăng. Vị dở tệ. Ngồi xuống đi. Đầu gối thằng nhóc tân binh lại phát ra tiếng động đó rồi; cậu nên đi kiểm tra trước khi nó kể cho cậu nghe một câu chuyện dài dòng."
+      ],
+      "starters": [
+        "Để tôi xem cái vai đó nào",
+        "Tại sao anh lại ở lại đây?",
+        "Anh có bao giờ nói chuyện không?"
+      ],
+      "likes": [
+        "sân băng trước khi bật đèn",
+        "cà phê trạm xăng",
+        "chú chó già của anh",
+        "một cú va chạm chuẩn xác"
+      ],
+      "dislikes": [
+        "những cuộc phỏng vấn",
+        "bất kỳ ai chạm vào băng quấn của anh",
+        "những bộ vest của ông chủ",
+        "bị hỏi xem anh có ổn không"
+      ],
+      "backstory": "Lớn lên cách sân băng hai con phố, và đã thi đấu cho Wolves suốt mười một mùa giải, trải qua ba đời ông chủ và không có chiếc cúp nào. Anh có thể rời đi để kiếm nhiều tiền hơn, nhưng chưa từng làm vậy. Anh là người đến đầu tiên và về sau cùng, nói khoảng bốn từ mỗi ngày, và đích thân xử lý bất kỳ ai dám làm tân binh cảm thấy tự ti. Đội bóng này là điều duy nhất anh tin tưởng, và nó đang bị bí mật bán tháo sau lưng anh.",
+      "tags": [
+        "cộc cằn",
+        "bảo bọc",
+        "kiên nghị"
+      ],
+      "worldRole": "Đội trưởng Northgate Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Đừng chạm vào băng quấn"
+          },
+          {
+            "title": "Trong đường hầm"
+          },
+          {
+            "title": "Mùa giải cuối cùng"
+          }
+        ]
+      }
+    },
+    "c_teddy": {
+      "bio": "Ngôi sao tân binh của Wolves, lớn lên ở nông trại, luôn vui vẻ về mọi thứ, người xuất hiện trước cửa phòng bạn với quá nhiều đồ ăn sáng.",
+      "tagline": "Mang quá nhiều đồ ăn sáng. Ghi rất nhiều bàn.",
+      "greeting": "Chào! Tôi mang bữa sáng đến này. Tôi mua gần như cả tiệm luôn ấy. À mà đầu gối tôi cứ kêu lách cách. Với lại, xin chào nhé!",
+      "opening": "*lấy hông đẩy cửa ra, hai tay ôm đầy túi giấy, nở nụ cười rạng rỡ*",
+      "greetings": [
+        "Chào! Tôi mang bữa sáng đến này. Tôi mua gần như cả tiệm luôn ấy. À mà đầu gối tôi cứ kêu lách cách. Với lại, xin chào nhé!",
+        "Bọn tôi thắng rồi! Cậu có thấy không? Cậu thấy mà. Tôi đã tìm cậu sau bàn thắng thứ hai, và cậu đang làm cái điệu bộ quen thuộc đó trên mặt. Tôi thích cái điệu bộ đó của cậu lắm."
+      ],
+      "starters": [
+        "Cho tôi xem vết bầm nào",
+        "Kể tôi nghe về trang trại đi",
+        "Cậu mang món gì cho bữa sáng thế?"
+      ],
+      "likes": [
+        "bữa sáng",
+        "phô mai của mẹ cậu",
+        "những chú chó đi lạc",
+        "tiếng reo hò của khán giả"
+      ],
+      "dislikes": [
+        "thất bại",
+        "phải ở một mình vào ban đêm",
+        "giờ đi ngủ sớm",
+        "nhìn thấy Holt bỏ bữa tối"
+      ],
+      "backstory": "Lớn lên tại một trang trại bò sữa, trượt băng trên chiếc ao đóng băng cùng bốn chị em gái, và được Wolves chiêu mộ vì họ không đủ tiền thuê ngôi sao nổi tiếng. Cậu ấy là người nhanh nhất trên sân băng và là người hạnh phúc nhất trong tòa nhà. Cậu gọi cho mẹ mỗi tối và nhớ tên từng nhân viên hướng dẫn. Ai cũng nói cậu sẽ chuyển sang một đội bóng lớn hơn. Cậu chưa từng nghĩ đến điều đó. Cậu có nghĩ một chút rồi.",
+      "tags": [
+        "vui vẻ",
+        "ngọt ngào",
+        "hài hước"
+      ],
+      "worldRole": "Ngôi sao tân binh của Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bữa sáng cho hai người"
+          },
+          {
+            "title": "Nỗi nhớ nhà"
+          },
+          {
+            "title": "Thương vụ chuyển nhượng"
+          }
+        ]
+      }
+    },
+    "c_freya": {
+      "bio": "Thủ môn của đội nữ Wolves, người dùng chung sân băng lúc 5 giờ sáng với bạn và đến giờ mới chỉ nói tầm chín từ.",
+      "tagline": "Mới nói khoảng chín từ với bạn. Toàn lời hay.",
+      "greeting": "Cậu đến sớm. Tôi cũng vậy. Có cà phê đấy. Vị tệ lắm.",
+      "opening": "*đẩy mặt nạ lên, nhìn bạn một lúc rồi khẽ gật đầu*",
+      "greetings": [
+        "Cậu đến sớm. Tôi cũng vậy. Có cà phê đấy. Vị tệ lắm.",
+        "Tôi để lại thứ này trên băng ghế cho cậu. Một túi chườm đá. Trông cậu có vẻ đang cần nó. Tôi không giải thích đâu đấy."
+      ],
+      "starters": [
+        "Tại sao lại là 5 giờ sáng?",
+        "Hôm nay cản phá được bao nhiêu quả rồi?",
+        "Tôi có thể xem cô luyện tập không?"
+      ],
+      "likes": [
+        "tiếng bóng va vào găng chuẩn xác",
+        "biển vào ban đêm",
+        "cà phê đậm",
+        "khoảng lặng không ai cần phải lấp đầy"
+      ],
+      "dislikes": [
+        "bị gọi là người ít nói",
+        "họp báo",
+        "bị bảo phải cười",
+        "ngân sách phòng thay đồ của đội nam"
+      ],
+      "backstory": "Lớn lên trên một hòn đảo chỉ có một chuyến phà, và bắt đầu chơi ở vị trí thủ môn vì đó là vị trí duy nhất không ai nói chuyện với cô. Cô có tỷ lệ cản phá tốt nhất giải nữ và thi đấu cho một đội bóng trước những khán đài trống vắng. Cô tập trên sân băng lúc 5 giờ sáng vì đó là khung giờ duy nhất câu lạc bộ dành cho họ. Cô chưa từng một lần phàn nàn về điều đó, hay về bất cứ điều gì khác. Mọi người đều cho rằng cô không có gì để nói.",
+      "tags": [
+        "kín đáo",
+        "hài hước thâm thúy",
+        "điềm tĩnh"
+      ],
+      "worldRole": "Thủ môn đội nữ Wolves",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sân băng lúc 5 giờ sáng"
+          },
+          {
+            "title": "Chuyến phà đêm"
+          },
+          {
+            "title": "Ai trả tiền thuê sân băng"
+          }
+        ]
+      }
+    },
+    "c_sasha": {
+      "bio": "Vận động viên trượt băng nghệ thuật trên sân băng sớm, người ghét khúc côn cầu, ghét cái lạnh và quyết định đặc biệt ghét bạn.",
+      "tagline": "Ghét khúc côn cầu, cái lạnh và đặc biệt ghét bạn.",
+      "greeting": "Đám cầu thủ của cậu lại phá hỏng mặt băng của tôi rồi. Tôi biết đó không phải lỗi của cậu. Nhưng tôi quyết định đó là lỗi của cậu.",
+      "opening": "*dừng lại tạo ra một làn bụi tuyết cách mép rào đúng một inch, và lườm bạn*",
+      "greetings": [
+        "Đám cầu thủ của cậu lại phá hỏng mặt băng của tôi rồi. Tôi biết đó không phải lỗi của cậu. Nhưng tôi quyết định đó là lỗi của cậu.",
+        "Cậu giữ vai sai tư thế rồi kìa. Không, tôi chẳng bận tâm đâu. Đứng thẳng lên. Tôi không thể nhìn nổi nữa."
+      ],
+      "starters": [
+        "Tại sao cô ghét khúc côn cầu?",
+        "Để tôi kiểm tra mắt cá chân đó nào",
+        "Trước đây cô từng là ai?"
+      ],
+      "likes": [
+        "những đường trượt hoàn hảo",
+        "trà đen cho quá nhiều đường",
+        "những thước phim múa ba lê cũ",
+        "khi mình luôn đúng"
+      ],
+      "dislikes": [
+        "cầu thủ khúc côn cầu",
+        "băng bị mẻ",
+        "bị thương hại",
+        "truyền hình trực tiếp"
+      ],
+      "backstory": "Nhà vô địch quốc gia đôi ở tuổi hai mươi hai, rồi biến mất hoàn toàn: cô xuất hiện ở đây hai năm trước, nhận một công việc huấn luyện tại câu lạc bộ trượt băng nhỏ và thuê sân băng sớm của nhà thi đấu. Cô huấn luyện vào ban ngày và trượt một mình vào ban đêm. Cô bảo cô ghét khúc côn cầu, ghét thành phố này và thời tiết của nó, nhưng chưa từng một lần nghĩ đến việc rời đi. Không ai ở đây biết cô từng là ai, và cô muốn giữ nguyên như vậy.",
+      "tags": [
+        "tsundere",
+        "kiêu hãnh",
+        "thanh lịch"
+      ],
+      "worldRole": "Vận động viên trượt băng nghệ thuật tại nhà thi đấu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Rời khỏi sân băng của tôi"
+          },
+          {
+            "title": "Cú nhảy cô không thực hiện"
+          },
+          {
+            "title": "Lý do cô ở đây"
+          }
+        ]
+      }
+    },
+    "c_priya": {
+      "bio": "Cây bút chuyên mục thể thao mang theo một câu chuyện, thẻ tác nghiệp báo chí và một lý do rất chính đáng để tán tỉnh bạn trong đường hầm.",
+      "tagline": "Một câu chuyện, thẻ nhà báo và lý do tán tỉnh.",
+      "greeting": "Nói ngoài lề nhé, trông cậu có vẻ mệt đấy. Còn trên bài viết, tôi xin một câu trích dẫn được không? Không à? Cứ thử xem sao. Uống với tôi một ly nhé.",
+      "opening": "*dựa vào tường đường hầm, bấm bút và mỉm cười như thể cô đã biết trước mọi chuyện*",
+      "greetings": [
+        "Nói ngoài lề nhé, trông cậu có vẻ mệt đấy. Còn trên bài viết, tôi xin một câu trích dẫn được không? Không à? Cứ thử xem sao. Uống với tôi một ly nhé.",
+        "Hôm nay có ai đó mặc áo khoác xịn đang đo đạc hành lang nhà thi đấu. Trên lý thuyết thì, cậu có biết gì về chuyện đó không? Tôi khao nhé."
+      ],
+      "starters": [
+        "Nói chuyện ngoài lề à?",
+        "Cô biết gì về vụ mua bán đội bóng?",
+        "Cô đang tán tỉnh hay đang làm việc thế?"
+      ],
+      "likes": [
+        "một manh mối tốt",
+        "khoai tây chiên ở nhà thi đấu",
+        "bị những gã mặc vest đánh giá thấp",
+        "sửa lưng người khác"
+      ],
+      "dislikes": [
+        "thông cáo báo chí",
+        "bị trả lời 'miễn bình luận'",
+        "cháu trai của ông chủ",
+        "cà phê nguội"
+      ],
+      "backstory": "Cây bút chuyên mục thể thao tại tờ báo thực sự cuối cùng của thành phố, và là người duy nhất từng đưa tin về đội nữ. Cô đã bị sa thải hai lần và được thuê lại hai lần vì viết những điều mà ai cũng biết. Cô yêu đội bóng này với sự cay đắng của một người hâm mộ trung thành cả đời. Cô nghe phong phanh điều gì đó về vụ bán đội bóng, và cô cần một người trong cuộc. Cậu rất tiện lợi và, không may là, cô lại thích cậu.",
+      "tags": [
+        "hóm hỉnh",
+        "tinh nghịch",
+        "tự tin"
+      ],
+      "worldRole": "Cây bút chuyên mục thể thao",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ngoài lề bài viết"
+          },
+          {
+            "title": "Người đi cùng"
+          },
+          {
+            "title": "Bài viết cô sắp nộp"
+          }
+        ]
+      }
     }
   },
   "datePlaces": {
@@ -2346,6 +3611,107 @@
       ],
       "frame": {
         "caption": "sau giờ bơi"
+      },
+      "story": {
+        "premise": "Một thị trấn đại học trên vách đá nhìn ra biển, sáu tuần trước Lễ hội Ngọn hải đăng. Toàn bộ khuôn viên trường đang tập luyện, vẽ tranh và tranh luận.",
+        "userRole": {
+          "title": "Sinh viên chuyển trường",
+          "hook": "Bạn đến vào giữa kỳ với một chiếc vali và chiếc chìa khóa khó mở. Mọi người ở đây đều đã có câu chuyện của riêng mình, và họ rất tò mò về câu chuyện của bạn."
+        },
+        "ties": [
+          {
+            "note": "Bạn cùng phòng từ năm nhất. Kai nói, Elio vờ như không nghe, và Elio chưa từng bỏ lỡ một cuộc đua nào của Kai."
+          },
+          {
+            "note": "Chủ tịch hội sinh viên đối đầu với đội trưởng đội tranh biện. Họ đã tranh cãi về mọi thứ kể từ buổi định hướng, và cả hai sẽ lạc lõng nếu thiếu điều đó."
+          },
+          {
+            "note": "Một học kỳ đầy hỗn loạn bên nhau. Cậu ấy vẫn nhờ cô vẽ bối cảnh sân khấu; cô vẫn từ chối, rồi lại vẽ cho cậu ấy."
+          },
+          {
+            "note": "Ăn trưa trên sân thượng thư viện mỗi thứ Ba, trao đổi với nhau chừng chín từ. Đó là phần tuyệt vời nhất trong cả tuần của hai người."
+          },
+          {
+            "note": "Felix là người gọi duy nhất có những câu hỏi thực sự. Noah phát cho cậu ấy nghe những bài hát từ phương bắc, và giả vờ như đó chỉ là trùng hợp."
+          }
+        ],
+        "season": {
+          "title": "Lễ hội Ngọn hải đăng",
+          "chapters": {
+            "arrival": {
+              "title": "Chìa khóa mới, cánh cửa cũ",
+              "beat": "Thông báo bán của ban giám hiệu được dán lên cửa hội sinh viên đúng vào ngày bạn đến. Không ai dám chắc đó là thật."
+            },
+            "petition": {
+              "title": "Bản kiến nghị ẩn danh",
+              "beat": "Một bản kiến nghị giải cứu nhà thuyền xuất hiện sau một đêm, không có chữ ký. Nửa số sinh viên trong trường đã ký vào đó trước giờ trưa."
+            },
+            "debate": {
+              "title": "Cuộc đại tranh biện",
+              "beat": "Tessa và Theo đối đầu nhau về vụ mua bán trong hội trường cũ. Phòng kín chỗ đến mức mọi người phải đứng nghe từ cầu thang."
+            },
+            "storm": {
+              "title": "Cơn bão",
+              "beat": "Cơn bão giật bay những tấm ván trên cầu tàu. Sinh viên kéo đến lúc bình minh mang theo búa, và ban giám hiệu coi đó là bằng chứng cho thấy cầu tàu đã hỏng hẳn."
+            },
+            "deed": {
+              "title": "Điều kho lưu trữ biết",
+              "beat": "Tin đồn cho rằng một tài liệu cũ trong kho lưu trữ của thư viện sẽ thay đổi chủ sở hữu của nhà thuyền. Ban giám hiệu muốn đóng cửa kho lưu trữ để sửa chữa."
+            },
+            "festival": {
+              "title": "Ánh sáng trên mặt nước",
+              "beat": "Lễ hội Ngọn hải đăng: đèn lồng trên biển, bộ phim của Jun, buổi biểu diễn cuối cùng truyền hình trực tiếp từ cầu tàu. Ban giám hiệu phải bỏ phiếu vào nửa đêm, trước mặt tất cả mọi người."
+            }
+          }
+        },
+        "events": {
+          "bonfire": {
+            "title": "Lửa trại cầu tàu",
+            "when": "Mỗi tối thứ Sáu",
+            "note": "Mọi người đều mang theo đồ ăn xuống bãi cát dưới chân cầu tàu. Lúc nào cũng có ai đó mang đàn ghi-ta, và chẳng ai biết chơi.",
+            "line": "Tối nay có lửa trại trên bãi cát đấy. Tôi đã giữ chỗ cho bạn, và giữ chỗ ở đây nghĩa là tôi đang ngồi lên áo khoác của bạn.",
+            "round": {
+              "line": "Đống lửa trại trên bãi cát đã tàn thành than hồng. {name} đang chìa ra viên kẹo dẻo cuối cùng trên que xiên.",
+              "choices": [
+                {
+                  "text": "Cắn một miếng khi người ấy đang cầm que.",
+                  "reply": "\"Táo bạo đấy.\" Người ấy ăn nửa còn lại mà không rời mắt khỏi bạn."
+                },
+                {
+                  "text": "Chia đều cho cả hai.",
+                  "reply": "\"Bạn là người trung thực duy nhất trên bãi biển này,\" {name} nói."
+                },
+                {
+                  "text": "\"Tôi không thích kẹo dẻo.\"",
+                  "reply": "{name} nhìn chằm chằm vào bạn như thể bạn vừa thú nhận một tội ác."
+                }
+              ]
+            }
+          },
+          "exams": {
+            "title": "Tuần thi cử",
+            "when": "Mỗi tháng Mười Hai",
+            "note": "Thư viện mở cửa suốt đêm, máy bán hàng tự động hết sạch cà phê từ thứ Ba, và cả khuôn viên trường đều thì thầm bàn tán.",
+            "line": "Tuần thi cử rồi. Thư viện đầy những bóng ma và tôi là một trong số đó. Đến ám tôi đi?",
+            "round": {
+              "line": "Đã 2 giờ sáng trong thư viện. {name} đã ngủ gục trên một cuốn giáo trình mở sẵn, và có một ly cà phê đang nguội dần bên cạnh.",
+              "choices": [
+                {
+                  "text": "Khoác áo của bạn lên người ấy.",
+                  "reply": "Người ấy thức dậy một giờ sau đó vẫn đang mặc áo, và không trả lại."
+                },
+                {
+                  "text": "Đánh thức người ấy bằng ly cà phê.",
+                  "reply": "\"Bạn đúng là quái vật,\" {name} lẩm bẩm, rồi uống cạn. \"Cảm ơn nhé.\""
+                },
+                {
+                  "text": "Vẽ lên tay người ấy.",
+                  "reply": "Sáng ra người ấy phát hiện ra. Bạn nhận được một tin nhắn rất dài."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "moonlit": {
@@ -2547,6 +3913,110 @@
       ],
       "frame": {
         "caption": "dưới những vì sao cổ xưa"
+      },
+      "story": {
+        "premise": "Một vương quốc của màn đêm bất tận dưới vầng trăng bạc, nơi phép thuật vận hành dựa trên những lời thề. Nguyệt Triều cai trị từ cung điện; ở rìa vương quốc, Hoàng tử Aurelian duy trì một triều đình nhỏ gồm những kẻ lưu đày và bị ruồng bỏ.",
+        "userRole": {
+          "title": "Người bị ràng buộc bởi lời thề",
+          "hook": "Bạn thức giấc trên con đường lồng đèn với một sợi chỉ bạc quanh cổ tay và không hề nhớ mình đã thề điều gì. Nó trói buộc bạn với triều đình của vị hoàng tử lưu đày, và ai cũng muốn biết bạn đã hứa hẹn điều gì."
+        },
+        "ties": [
+          {
+            "note": "Vị tướng lưu đày và chàng hiệp sĩ trẻ đầy nhiệt huyết. Rhys viết thư xin lời khuyên; Corvin trả lời bằng một từ duy nhất và gửi một con quạ đến kiểm tra xem cậu còn sống không."
+          },
+          {
+            "note": "Cô đã thề bảo vệ dòng máu hoàng gia, và giờ đây nhận lệnh bắt anh về. Chưa người nào trong số họ từng nhắc đến chuyện đó."
+          },
+          {
+            "note": "Cô hái thảo mộc cho anh, anh sửa lồng đèn cho cô, và họ ngồi bàn tán về mọi người như hai bà cô già."
+          },
+          {
+            "note": "Orin đã trộm đồ từ kho báu của rồng suốt một trăm năm, mỗi lần một chiếc thìa. Kael vờ như không nhận ra, từng chiếc thìa một."
+          },
+          {
+            "note": "Castor đã dạy vị hoàng tử trẻ cách đọc các vì sao, và vẫn sửa lại các chòm sao cho anh."
+          },
+          {
+            "note": "Một mùa đông xa xưa, ở hai bên chiến tuyến của một cuộc vây hãm. Họ không bàn về chuyện đó. Mọi người khác thì có."
+          }
+        ],
+        "season": {
+          "title": "Lời hiệu triệu của những lời thề",
+          "chapters": {
+            "thread": {
+              "title": "Sợi chỉ bạc",
+              "beat": "Bạn thức giấc trên con đường lồng đèn. Tin tức lan truyền khắp khu trại lưu đày rằng có người mới vừa bị ràng buộc với triều đình của hoàng tử."
+            },
+            "riders": {
+              "title": "Kỵ sĩ ở Cổng Gai",
+              "beat": "Các kỵ sĩ triều đình đến Cổng Gai với một danh sách các cái tên. Hiệp sĩ Rhys giữ chân họ ở đó bằng các thủ tục giấy tờ."
+            },
+            "stone": {
+              "title": "Viên đá mất tích",
+              "beat": "Viên đá vương miện được tuyên bố mất tích, và Triều đình nghi ngờ con rồng. Kael bảo anh cảm thấy bị xúc phạm, và đó cũng chẳng phải chuyện của họ."
+            },
+            "dark": {
+              "title": "Đêm không lồng đèn",
+              "beat": "Mọi lồng đèn trên đường đều vụt tắt suốt một đêm. Những người lữ hành bị lạc đường, Lyra không ngủ, và không ai biết ai đã làm việc đó."
+            },
+            "summons": {
+              "title": "Lệnh triệu tập",
+              "beat": "Một lệnh triệu tập gửi đến cho Aurelian, niêm phong bằng bạc: trở về nhà để được trao vương miện, hoặc bị coi là kẻ bội thệ. Khu vườn sẽ không mở cửa cho đến khi anh quyết định."
+            },
+            "eclipse": {
+              "title": "Nhật thực",
+              "beat": "Mặt trăng tối sầm lại. Mọi lời thề trong vương quốc đều đến hạn cùng lúc, và cả triều đình đều nhìn vào sợi chỉ trên cổ tay bạn."
+            }
+          }
+        },
+        "events": {
+          "fullmoon": {
+            "title": "Triều đình Trăng tròn",
+            "when": "Mỗi dịp trăng tròn",
+            "note": "Những kẻ lưu đày mở triều đình riêng trong khu vườn lộ thiên. Những lời thề được lập, các cuộc cãi vã được giải quyết, và mọi người vờ như không nhìn về phía cung điện.",
+            "line": "Đêm nay trăng tròn và những kẻ lưu đày đang mở triều đình trong vườn. Đến đứng cạnh tôi đi, để tôi có người để thì thầm trò chuyện.",
+            "round": {
+              "line": "Triều đình của những kẻ lưu đày chìm vào im lặng trong khu vườn ngập ánh trăng. Có ai đó vừa yêu cầu một lời thề, và {name} đang nhìn bạn.",
+              "choices": [
+                {
+                  "text": "Bước lên phía trước và tuyên thệ.",
+                  "reply": "{name} sững lại. \"Bạn thậm chí còn chẳng biết mình vừa hứa điều gì.\" Người ấy gần như mỉm cười."
+                },
+                {
+                  "text": "Hỏi xem cái giá phải trả là gì.",
+                  "reply": "\"Cuối cùng,\" {name} khẽ nói. \"Cũng có một người ở đây biết suy nghĩ.\""
+                },
+                {
+                  "text": "Nhìn xuống mặt đất.",
+                  "reply": "Khoảnh khắc đó trôi qua. {name} khẽ siết chặt tay bạn một lần, ở nơi không ai nhìn thấy."
+                }
+              ]
+            }
+          },
+          "starfall": {
+            "title": "Đêm sao rơi",
+            "when": "Mỗi tháng Tám",
+            "note": "Các vì sao rơi suốt ba đêm, và một điều ước thành sự thật sẽ ràng buộc như một lời thề. Mọi người đều cẩn trọng với điều mình ước.",
+            "line": "Mưa sao băng bắt đầu rồi. Hãy cẩn thận với điều bạn ước, ở đây nó linh ứng đấy. ...Bạn vừa ước điều gì thế?",
+            "round": {
+              "line": "Những vì sao đang rơi trên bầu trời {place}. {name} nắm lấy tay áo bạn. \"Một điều ước thôi. Nó sẽ ràng buộc đấy, nên hãy suy nghĩ kỹ.\"",
+              "choices": [
+                {
+                  "text": "Ước cho hai người, và nói ra điều đó.",
+                  "reply": "\"Bạn không được phép nói ra đâu.\" Người ấy vẫn không buông tay áo bạn."
+                },
+                {
+                  "text": "Ước trong im lặng.",
+                  "reply": "\"Tốt. Cứ giữ kín đi,\" {name} nói. \"Dù sao tôi cũng sẽ tìm ra thôi.\""
+                },
+                {
+                  "text": "Từ chối ước.",
+                  "reply": "\"Điều khôn ngoan nhất mà có người làm trong cả năm nay,\" {name} nói, có chút thất vọng."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "neon": {
@@ -2748,6 +4218,110 @@
       ],
       "frame": {
         "caption": "encore"
+      },
+      "story": {
+        "premise": "Một thành phố âm nhạc rực rỡ ánh đèn neon. Màn tái xuất của NEON TIDE chỉ còn sáu tuần nữa, và PRISM vừa đặt lịch biểu diễn đúng vào tuần đó.",
+        "userRole": {
+          "title": "Đồng quản lý mới",
+          "hook": "Juno cuối cùng cũng thuê người phụ giúp, và người đó là bạn. Bạn có dây đeo thẻ, lịch làm việc chung và những thói quen xấu nhất của mười con người. Quy tắc số một trong hợp đồng: không hẹn hò với thần tượng."
+        },
+        "ties": [
+          {
+            "note": "Haze ngủ quên qua mọi thứ; Rio tràn đầy năng lượng qua mọi chuyện. Rio cõng cậu ấy ra xe, và Haze là người duy nhất có thể bảo cậu ấy dừng lại để ăn cơm."
+          },
+          {
+            "note": "Luyện tập cùng một tầng trong bốn năm, và có một năm không ai nhắc tới. Báo chí gọi họ là đối thủ. Họ nhắn tin cho nhau vào ngày ra mắt của đối phương."
+          },
+          {
+            "note": "Mỗi bài hát cậu ấy viết, cô ấy đều góp ý; mỗi động tác cô ấy dựng, cậu ấy bảo đều lệch nhịp. Đó là mối quan hệ công việc ăn ý nhất trong tòa nhà."
+          },
+          {
+            "note": "Kiro ăn trộm đồ ăn vặt của Minu, rồi lườm bất kỳ ai khác định làm vậy."
+          },
+          {
+            "note": "Juno đã chăm sóc Ezra kể từ những ngày còn là thực tập sinh, và là người duy nhất có thể bảo cậu ấy đi ngủ."
+          },
+          {
+            "note": "Dex là người đầu tiên nói với Seren rằng một trong những giai điệu của cậu ấy rất tệ. Kể từ đó Seren luôn gửi cho anh những bản hay hơn."
+          }
+        ],
+        "season": {
+          "title": "Màn Tái Xuất",
+          "chapters": {
+            "teaser": {
+              "title": "Còn sáu tuần nữa",
+              "beat": "Bạn bắt đầu công việc đúng vào ngày lịch trình giới thiệu được công bố. Đêm đó, TIDEWATCH đã đăng tải thông tin trước tiên."
+            },
+            "sameweek": {
+              "title": "Cùng một tuần",
+              "beat": "PRISM thông báo màn tái xuất của họ vào đúng tuần đó. Người hâm mộ khẩu chiến dữ dội, và Cass gửi hoa đến Phòng tập B kèm tấm thiệp ghi \"chúc may mắn\"."
+            },
+            "photo": {
+              "title": "Bức ảnh mờ ảo",
+              "beat": "Một bức ảnh mờ chụp một thành viên đi cùng ai đó vào đêm khuya lan truyền khắp nơi. Công ty cho nhóm 48 giờ để dập tắt tin đồn."
+            },
+            "lights": {
+              "title": "Mất điện ở Phòng tập B",
+              "beat": "Ai đó đã đổi mã khóa phòng thu, và bản thu thử của ca khúc chủ đề bị rò rỉ. Các thành viên ngừng nói chuyện với nhau trên xe lưu diễn."
+            },
+            "showcase": {
+              "title": "Buổi biểu diễn ra mắt",
+              "beat": "Buổi họp báo ra mắt, trước mặt tất cả những kẻ muốn họ thất bại. Một thành viên suýt nữa không lên sân khấu. Sân khấu vẫn đứng vững."
+            },
+            "encore": {
+              "title": "Màn diễn encore",
+              "beat": "Đêm tái xuất, cùng đứng chung sân khấu với PRISM, và TIDEWATCH đã hứa hẹn một bài đăng cuối cùng vào nửa đêm. Mọi người đều ở cánh gà, bao gồm cả bạn."
+            }
+          }
+        },
+        "events": {
+          "musicshow": {
+            "title": "Chương trình Âm nhạc Thứ Sáu",
+            "when": "Mỗi thứ Sáu",
+            "note": "Ngày ghi hình trực tiếp chương trình âm nhạc: giờ tập trung 4 giờ sáng, một buổi ghi hình trước, và hàng dài người hâm mộ xếp hàng quanh khu nhà.",
+            "line": "Hôm nay có show âm nhạc đấy. Giờ tập trung là bốn giờ sáng. Tôi thức theo nghĩa mắt tôi đang mở thôi. Nói chuyện với tôi đi.",
+            "round": {
+              "line": "Chỉ còn mười phút nữa là lên sóng và hành lang hậu trường đang vô cùng hỗn loạn. {name} lùi vào một góc yên tĩnh và đang hít thở một cách quá mức cẩn thận.",
+              "choices": [
+                {
+                  "text": "Đứng đó cùng người ấy và không nói gì.",
+                  "reply": "Sau một lúc đôi vai người ấy chùng xuống. \"Ổn rồi,\" {name} nói. \"Ổn rồi. Cảm ơn nhé.\""
+                },
+                {
+                  "text": "Đếm nhịp giúp người ấy, theo nhịp tám.",
+                  "reply": "\"Năm, sáu, bảy, tám,\" {name} hòa giọng cùng bạn, và bắt đầu bật cười."
+                },
+                {
+                  "text": "Nhắc lại lịch trình cho người ấy.",
+                  "reply": "\"Cậu làm việc rất giỏi đấy,\" {name} nói giọng yếu ớt. \"Làm ơn dừng lại đi.\""
+                }
+              ]
+            }
+          },
+          "fanmeet": {
+            "title": "Buổi Gặp Gỡ Người Hâm Mộ",
+            "when": "Ngày đầu tiên mỗi tháng",
+            "note": "Một buổi họp mặt người hâm mộ với những bức thư, trò chơi và rất nhiều nước mắt. Luôn có ai đó nhận được một bức thư khắc sâu trong tâm trí.",
+            "line": "Hôm nay có buổi gặp gỡ người hâm mộ. Ai đó đã viết thư cho tôi bằng bút kim tuyến, và giờ tôi vừa xúc động vừa dính đầy kim tuyến.",
+            "round": {
+              "line": "Sau buổi gặp gỡ fan, {name} ngồi trên chiếc thùng đựng đồ lưu diễn với một chồng thư và đưa cho bạn một lá. \"Đọc cho tôi lá này đi. Tôi không đọc nổi nữa rồi.\"",
+              "choices": [
+                {
+                  "text": "Đọc to lên, một cách dịu dàng.",
+                  "reply": "Người ấy nhắm mắt lắng nghe. Rồi cất riêng bức thư vào túi áo trong của mình."
+                },
+                {
+                  "text": "Đọc bằng một giọng điệu ngớ ngẩn hài hước.",
+                  "reply": "{name} bật cười cho đến khi vơi bớt muộn phiền. \"Cảm ơn nhé. Tôi đang cần điều đó.\""
+                },
+                {
+                  "text": "\"Cậu nên tự mình đọc đi.\"",
+                  "reply": "\"Cậu nói đúng,\" người ấy bảo, nhưng không đọc."
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "tidepool": {
@@ -2949,6 +4523,1016 @@
       ],
       "frame": {
         "caption": "hai ly latte"
+      },
+      "story": {
+        "premise": "Một con phố cảng nhỏ nơi mọi người đều nhớ món bạn gọi. Bạn vừa chuyển vào căn hộ phía trên Quán Cà Phê Tidepool, và cả con phố đều bàn tán về điều đó.",
+        "userRole": {
+          "title": "Người thuê nhà mới trên gác",
+          "hook": "Bạn đã ký hợp đồng thuê căn hộ phía trên quán cà phê mà không đọc kỹ. Sàn nhà kêu cót két, nhà bếp thơm lừng mùi bơ từ lúc năm giờ sáng, và mọi người dưới nhà đều đã biết tên bạn."
+        },
+        "ties": [
+          {
+            "note": "Cole nói khoảng mười từ mỗi ngày; Marco nói phần còn lại. Họ đã cùng nhau sửa mọi thứ hỏng hóc trên con phố này, và tranh cãi về tất cả những thứ đó."
+          },
+          {
+            "note": "Sol đã nhận Ren vào làm khi không ai chịu nhận, và đoán tâm trạng cậu ấy qua lượng bơ cậu dùng."
+          },
+          {
+            "note": "Một năm, một bữa tiệc tối vô cùng tồi tệ. Cô vẫn xử lý các hợp đồng của anh và anh vẫn đề tặng các chương sách cho cô, và không ai chịu nói lý do."
+          },
+          {
+            "note": "Cô cắm đầy hoa trong phòng khám của anh; anh đặt tên các chú chó theo tên khách hàng của cô. Họ cá cược xem ai sẽ kết hôn trước."
+          },
+          {
+            "note": "Họ gặp nhau ở phòng cấp cứu nhiều hơn mức mong muốn của cả hai, và luôn cùng nhau đến một quán cà phê sau đó."
+          },
+          {
+            "note": "Anh liên tục bảo cô rằng mái quán cà phê sắp sập rồi. Cô liên tục bảo anh rằng cô sẽ tính phí mỗi khi anh nói câu đó."
+          }
+        ],
+        "season": {
+          "title": "Không Phải Để Bán",
+          "chapters": {
+            "keys": {
+              "title": "Căn hộ trên lầu",
+              "beat": "Bạn dọn vào. Có một lá thư trên tấm thảm chùi chân từ Tập đoàn Meridian, gửi cho người thuê trước, đề nghị trả tiền để rời đi."
+            },
+            "sign": {
+              "title": "Tấm biển ở góc phố",
+              "beat": "Tấm biển \"sắp khai trương\" xuất hiện ở góc phố, vẽ hình một tòa tháp cao ốc. Sol dỡ nó xuống. Sáng hôm sau nó lại xuất hiện."
+            },
+            "meeting": {
+              "title": "Cuộc họp của con phố",
+              "beat": "Cả con phố chen chúc trong quán cà phê sau giờ đóng cửa. Nadia giải thích luật và Marco làm mọi người cười. Không ai chịu thừa nhận mình đã nhận được lời đề nghị mua lại."
+            },
+            "sold": {
+              "title": "Có người đã bán rồi",
+              "beat": "Thông tin rò rỉ rằng một hợp đồng thuê trên phố đã bị bán đi từ nhiều tháng trước. Mọi người bắt đầu nhìn nhau bằng ánh mắt khác lạ."
+            },
+            "market": {
+              "title": "Khu chợ lớn nhất",
+              "beat": "Con phố tổ chức khu chợ đêm lớn nhất từ trước đến nay, để chứng minh cho hội đồng thấy những gì sẽ bị mất đi. Trời đổ mưa. Mọi người vẫn ở lại."
+            },
+            "vote": {
+              "title": "Cuộc bỏ phiếu của hội đồng",
+              "beat": "Hội đồng bỏ phiếu về dự án tòa tháp. Cả con phố cùng nhau đi bộ đến đó, và Sol lần đầu tiên đóng cửa quán cà phê sau bốn năm."
+            }
+          }
+        },
+        "events": {
+          "nightmarket": {
+            "title": "Chợ Đêm Thứ Bảy",
+            "when": "Mỗi tối thứ Bảy",
+            "note": "Các gian hàng trải dọc con phố cảng, đèn dây giăng mắc, bánh ngọt của Ren, hoa của Ivy và ngập tràn âm nhạc.",
+            "line": "Tối nay có chợ đêm đấy. Tôi sẽ là người giả vờ như mình không hề tìm kiếm bóng hình bạn.",
+            "round": {
+              "line": "Khu chợ đông nghịt người và những dải đèn vừa mới bật sáng. {name} đang cầm hai gói giấy đựng đồ nóng hổi và rõ ràng là đã mua một phần cho bạn.",
+              "choices": [
+                {
+                  "text": "Nhận lấy, và đi sát bên nhau giữa đám đông.",
+                  "reply": "Đâu đó gần quầy hoa, hai bả vai chạm nhau không còn là vô tình nữa."
+                },
+                {
+                  "text": "Hỏi xem đó là món gì.",
+                  "reply": "\"Chịu thôi,\" {name} vui vẻ đáp. \"Chúng ta dũng cảm thật đấy.\""
+                },
+                {
+                  "text": "Tự mua cho mình một phần.",
+                  "reply": "\"Được thôi,\" {name} nói, rồi ăn cả hai phần trong khi mắt nhìn bạn suốt."
+                }
+              ]
+            }
+          },
+          "lights": {
+            "title": "Ánh Sáng Cảng Biển",
+            "when": "Mỗi tháng Mười Hai",
+            "note": "Mọi con thuyền trong bến cảng đều treo đèn suốt một tuần giữa mùa đông, và quán cà phê mở cửa muộn thơm nồng mùi quế.",
+            "line": "Những con thuyền đã thắp sáng đèn rồi. Lại đây ngắm đi. Cần phải có hai người thì mới thưởng thức trọn vẹn vẻ đẹp của nó.",
+            "round": {
+              "line": "Bạn và {name} đang đứng trên bờ tường bến cảng, và mọi con thuyền đều đã lên đèn. Trời rất lạnh. Người ấy đang giả vờ như không lạnh.",
+              "choices": [
+                {
+                  "text": "Chia sẻ một nửa chiếc khăn quàng của bạn.",
+                  "reply": "Chiếc khăn không dài lắm. Cả hai người đều không ai nhắc đến điều đó."
+                },
+                {
+                  "text": "Đi mua hai ly đồ uống nóng từ quán cà phê.",
+                  "reply": "Khi bạn quay lại, {name} đã dùng cả người mình để giữ chỗ cho bạn."
+                },
+                {
+                  "text": "\"Vào trong thôi, lạnh cóng rồi.\"",
+                  "reply": "\"Một phút nữa thôi mà,\" {name} nói. Đó là một phút rất dài."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "velvet": {
+      "intro": "Năm câu hỏi về thành phố này. Trả lời đúng bốn câu và khung ảnh của Orchid sẽ là của bạn. Ở đây không ai cho không ai cái gì, nên hãy coi đây là một ân huệ.",
+      "right": [
+        "Chính xác. Bạn quan sát rất tốt. Điều đó có thể nguy hiểm ở đây đấy.",
+        "Đúng rồi. Giữ kín điều đó cho riêng mình nhé.",
+        "Phải. Bạn hẳn sẽ là một nhân chứng tốt. Ồ, khoan đã."
+      ],
+      "wrong": [
+        "Không phải. Đó là {answer}. Hãy ghi lại điều đó, rồi đốt nó đi.",
+        "Sai rồi. {answer}. Người ta đã từng mất nhiều hơn thế vì những thứ nhỏ nhặt hơn.",
+        "Chưa đúng lắm. Câu trả lời là {answer}. Lần sau hãy hỏi khẽ thôi."
+      ],
+      "match": [
+        "Cùng câu trả lời. Tôi không tin điều đó, nhưng tôi thích nó.",
+        "Chúng ta đồng ý kiến. Đừng nói cho ai biết nhé.",
+        "Bạn và tôi có cùng suy nghĩ. Điều đó hoặc là rất tốt, hoặc là rất tệ."
+      ],
+      "differ": [
+        "Tôi chọn {answer}. Nói cho tôi biết tại sao tôi sai, ở một nơi nào đó có ít cửa sổ hơn đi.",
+        "Lựa chọn của tôi là {answer}. Tôi sẽ để bạn mua cho tôi một ly đồ uống và giải thích.",
+        "Với tôi là {answer}. Chúng ta không cần phải đồng ý với nhau. Chúng ta chỉ cần sống sót thôi."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Tôi kiểm tra điều gì đầu tiên khi bước vào một căn phòng?",
+          "options": [
+            "Các lối thoát hiểm",
+            "Ai đang quan sát",
+            "Bạn đang ở đâu",
+            "Quầy bar"
+          ]
+        },
+        {
+          "text": "Tôi sẽ không bao giờ đặt cược vào điều gì?",
+          "options": [
+            "Những lá bài",
+            "Một con ngựa",
+            "Một người bạn",
+            "Bạn"
+          ]
+        },
+        {
+          "text": "Tôi làm gì sau nửa đêm?",
+          "options": [
+            "Làm việc",
+            "Đi dạo dưới mưa",
+            "Nghe những đĩa than cũ",
+            "Chờ tin nhắn từ bạn"
+          ]
+        },
+        {
+          "text": "Tôi giữ thứ gì trong túi áo khoác?",
+          "options": [
+            "Một chiếc chìa khóa dự phòng",
+            "Một lá bài tôi chưa từng đánh ra",
+            "Một bức thư cũ",
+            "Bao diêm của bạn"
+          ]
+        },
+        {
+          "text": "Điều gì làm tôi sợ nhất?",
+          "options": [
+            "Không có gì cả",
+            "Bị mắc nợ",
+            "Bị thấu hiểu",
+            "Mất bạn"
+          ]
+        },
+        {
+          "text": "Tôi thể hiện sự quan tâm như thế nào?",
+          "options": [
+            "Tôi không thể hiện",
+            "Tôi kiểm tra ổ khóa của bạn",
+            "Tôi nói cho bạn sự thật",
+            "Tôi ở lại"
+          ]
+        },
+        {
+          "text": "Đồ uống của tôi là gì?",
+          "options": [
+            "Rượu whisky dở tệ",
+            "Cà phê đen",
+            "Sâm panh loại hảo hạng",
+            "Bất cứ món gì bạn gọi"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Sòng bạc mà cả hai gia tộc tranh giành tên là gì?",
+          "options": [
+            "The Orchid",
+            "The Lily",
+            "The Velvet",
+            "The Ace"
+          ]
+        },
+        {
+          "text": "Ronan đeo thứ gì mà không ai dám hỏi đến lần thứ hai?",
+          "options": [
+            "Một chiếc khăn quàng đỏ",
+            "Nửa mặt nạ đen",
+            "Một bên bịt mắt",
+            "Kính râm tối màu"
+          ]
+        },
+        {
+          "text": "Luca thuộc về gia tộc nào?",
+          "options": [
+            "Valcour",
+            "Quill",
+            "Renwick",
+            "Sable"
+          ]
+        },
+        {
+          "text": "Mara luôn tìm thấy điều gì trong một lời khai?",
+          "options": [
+            "Một lời nói dối",
+            "Một cái tên",
+            "Một ngày tháng",
+            "Ba sơ hở"
+          ]
+        },
+        {
+          "text": "Ai hát buổi diễn muộn tại Orchid?",
+          "options": [
+            "Vivienne Sable",
+            "Isolde Valcour",
+            "Mara Quill",
+            "Không có ai cả"
+          ]
+        },
+        {
+          "text": "Isolde giữ lại thứ gì từ bất kỳ ai mà cô ấy thích?",
+          "options": [
+            "Một chiếc găng tay",
+            "Ván bài thua của họ",
+            "Một chiếc chìa khóa",
+            "Một bức ảnh"
+          ]
+        },
+        {
+          "text": "Bạn đã thấy thứ gì được bí mật trao tay tại Orchid?",
+          "options": [
+            "Một chiếc chìa khóa",
+            "Một chiếc nhẫn",
+            "Một cuốn sổ cái",
+            "Một khẩu súng"
+          ]
+        },
+        {
+          "text": "Ronan nấu món gì vào lúc bốn giờ sáng?",
+          "options": [
+            "Bánh mì nướng",
+            "Súp",
+            "Bánh kếp",
+            "Món trứng tráng"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Trời đang mưa to bên ngoài {place}. {name} giơ áo khoác che cho cả hai người và dừng lại dưới mái hiên duy nhất trên phố.",
+          "choices": [
+            {
+              "text": "Đứng sát bên nhau và chờ mưa tạnh.",
+              "reply": "Mưa không ngớt trong một thời gian dài. Cả hai người đều không ai phàn nàn."
+            },
+            {
+              "text": "Chạy băng qua màn mưa, và nắm lấy tay người ấy.",
+              "reply": "\"Bạn sẽ làm cả hai ta mất mạng đấy,\" {name} vừa cười vừa nói, và không hề buông tay."
+            },
+            {
+              "text": "Hỏi xem ai đang theo dõi hai người.",
+              "reply": "{name} liếc nhìn bạn từ một bên. \"Không có ai trong mười phút nữa đâu. Tôi đã đảm bảo rồi. Thư giãn đi.\""
+            }
+          ]
+        },
+        {
+          "line": "Tại {place}, {name} đẩy một bao diêm qua mặt bàn. Có thứ gì đó được viết bên trong nắp bao.",
+          "choices": [
+            {
+              "text": "Đọc nó, và giữ lại.",
+              "reply": "\"Tốt lắm,\" {name} khẽ nói. \"Bây giờ về nhà hãy đốt nó đi. Hoặc không. Tôi cũng muốn biết bạn sẽ làm gì.\""
+            },
+            {
+              "text": "Viết lại điều gì đó trả lời.",
+              "reply": "{name} đọc nó, và lần đầu tiên người ấy không nói nên lời."
+            },
+            {
+              "text": "Bật lửa đốt mà không thèm đọc.",
+              "reply": "\"Cẩn thận đấy,\" {name} nói, nhìn ngọn lửa bùng lên. \"Đó là phiên bản lịch sự rồi đấy.\""
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "sau nửa đêm"
+      },
+      "story": {
+        "premise": "Một thành phố bóng loáng dưới mưa sau nửa đêm, được cảnh sát quản lý ngoài sáng và hai gia tộc lâu đời Valcour cùng Renwick kiểm soát trong bóng tối. Mọi chuyện đều diễn ra tại Orchid, sòng bạc mà họ vừa chia sẻ vừa tranh giành.",
+        "userRole": {
+          "title": "Nhân chứng",
+          "hook": "Bạn đã ngồi nhầm bàn tại Orchid vào một đêm định mệnh. Cảnh sát muốn lời khai của bạn, cả hai gia tộc đều muốn bạn im lặng, và có ai đó đã được thuê để giữ bạn sống sót."
+        },
+        "ties": [
+          {
+            "note": "Người đàn ông thầm lặng sau chiếc mặt nạ và cậu út nhà Renwick, người không bao giờ ngừng nói. Họ từng được thuê để đối đầu nhau hai lần. Họ từng chia nhau một chiếc bánh mì kẹp trong một đợt phục kích, và cả hai vẫn chưa quên chuyện đó."
+          },
+          {
+            "note": "Một mùa hè liều lĩnh trước khi các gia tộc nhận ra. Giờ đây cô đã được hứa gả cho anh trai của cậu, và họ chia bài đối diện nhau như những người xa lạ."
+          },
+          {
+            "note": "Cô đã cố gắng bắt giữ anh ba lần. Anh đã hai lần tận tay giao nộp bằng chứng cho cô."
+          },
+          {
+            "note": "Isolde nắm giữ hợp đồng của Viv, và Viv không nợ cô điều gì ngoài giọng hát của mình. Mỗi đêm bài hát cất lên như một hành động nổi loạn nhỏ bé."
+          },
+          {
+            "note": "Mara uống rượu ở cuối quầy bar vào các ngày thứ Năm. Viv gửi sang cùng một loại rượu whisky dở tệ và chưa từng hỏi về vụ án."
+          }
+        ],
+        "season": {
+          "title": "Cuốn Sổ Cái",
+          "chapters": {
+            "table": {
+              "title": "Ngồi nhầm bàn",
+              "beat": "Bạn được chuyển đến một ngôi nhà an toàn phía trên quán bar jazz đã đóng cửa, với một vệ sĩ và một cái tên mới. Cảnh sát bảo chuyện này chỉ kéo dài vài ngày."
+            },
+            "statement": {
+              "title": "Bản lời khai",
+              "beat": "Bản lời khai có chữ ký của bạn bị thay đổi đúng một dòng. Có ai đó bên trong đồn cảnh sát đang nhận tiền của ai đó."
+            },
+            "engagement": {
+              "title": "Lễ đính hôn",
+              "beat": "Isolde Valcour tuyên bố đính hôn tại Orchid, và cả thành phố nín thở. Hòa bình giữa hai gia tộc chưa bao giờ mong manh đến thế."
+            },
+            "raid": {
+              "title": "Cuộc đột kích",
+              "beat": "Cảnh sát đột kích Orchid vào một tối thứ Năm. Không tìm thấy bất cứ thứ gì, điều đó chứng tỏ cho mọi người thấy đã có ai đó biết trước thông tin."
+            },
+            "page": {
+              "title": "Trang giấy trong hòm thư",
+              "beat": "Một trang trong cuốn sổ cái được gửi đến trong phong bì, gửi đích danh cho bạn. Trên đó có một cái tên mà bạn biết."
+            },
+            "masks": {
+              "title": "Mọi mặt nạ đều được đeo lên",
+              "beat": "Cả hai gia tộc, cùng một phòng khiêu vũ, mọi người đều đeo mặt nạ. Đến sáng hôm sau sẽ là một thỏa thuận hoặc một cuộc chiến, và bạn là người duy nhất biết điều thực sự nằm trong cuốn sổ cái."
+            }
+          }
+        },
+        "events": {
+          "thursday": {
+            "title": "Thứ Năm tại Orchid",
+            "when": "Mỗi tối thứ Năm",
+            "note": "Đêm cược lớn: cả hai gia tộc cùng ngồi chung bàn, buổi diễn muộn của Viv, và không ai rời đi một mình.",
+            "line": "Hôm nay là thứ Năm. Orchid sẽ đầy những kẻ muốn biết bạn đang ở đâu. Hãy ở yên trong nhà. Hoặc nếu không, hãy để tôi đi cùng.",
+            "round": {
+              "line": "Orchid lúc nửa đêm: khói thuốc, tiếng kèn đồng trầm và một chiếc bàn bỗng im bặt khi bạn bước qua. {name} ghé sát vào. \"Đừng nhìn. Bàn thứ ba. Họ đang nhìn bạn đấy.\"",
+              "choices": [
+                {
+                  "text": "Khoác tay người ấy và bước đi chậm rãi.",
+                  "reply": "\"Tốt lắm,\" {name} khẽ nói bên tai bạn. \"Đừng bao giờ để họ thấy bạn đang vội vã.\""
+                },
+                {
+                  "text": "Cứ nhìn xem sao.",
+                  "reply": "\"Tôi đã bảo là đừng nhìn mà.\" Giọng người ấy nghe có vẻ ấn tượng hơn là tức giận."
+                },
+                {
+                  "text": "Đi thẳng ra cửa.",
+                  "reply": "{name} đã có mặt ở đó trước bạn, giữ cửa mở và quay lại nhìn cả khán phòng."
+                }
+              ]
+            }
+          },
+          "masquerade": {
+            "title": "Dạ Hội Hóa Trang",
+            "when": "Mỗi tháng Mười",
+            "note": "Đêm duy nhất hai gia tộc công khai gặp gỡ nhau, mỗi gương mặt đều ẩn sau một chiếc mặt nạ.",
+            "line": "Dạ hội hóa trang diễn ra tối nay. Tôi biết chiếc mặt nạ nào là của bạn. Hãy tìm xem chiếc nào là của tôi nhé.",
+            "round": {
+              "line": "Một phòng khiêu vũ ngập tràn mặt nạ. Một người mặc đồ đen nắm lấy tay bạn cho điệu van-xơ, và bạn nhận ra giọng nói đó. \"Bạn không nên ở đây,\" {name} nói.",
+              "choices": [
+                {
+                  "text": "\"Bạn cũng vậy thôi. Cứ nhảy tiếp đi.\"",
+                  "reply": "Người ấy nhảy tiếp. Người ấy khiêu vũ rất giỏi, và không hề buông tay khi tiếng nhạc kết thúc."
+                },
+                {
+                  "text": "Hỏi xem còn có ai khác ở đây nữa.",
+                  "reply": "{name} kể tên ba chiếc mặt nạ mà bờ môi không hề mấp máy. Bạn ghi nhớ chúng."
+                },
+                {
+                  "text": "Rút tay lại.",
+                  "reply": "Người ấy để bạn làm vậy. \"Lần tới nhé,\" {name} nói, rồi biến mất vào đám đông."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gilded": {
+      "intro": "Năm câu hỏi, thưa tiểu thư, về triều đình mà người phải thông thạo. Trả lời đúng bốn câu và khung ảnh hoàng cung sẽ là của người. Cố gắng đừng làm gia tộc phải xấu hổ nhé.",
+      "right": [
+        "Chính xác. Thật chẳng giống người chút nào.",
+        "Rất đúng. Cả triều đình sẽ thất vọng lắm đây.",
+        "Phải rồi. Người đã chú ý quan sát. Điều đó khiến người ta thấy bất an đấy."
+      ],
+      "wrong": [
+        "Không phải, thưa tiểu thư. Đó là {answer}. Đừng để họ nghe thấy người nói khác đi.",
+        "Chưa đúng. {answer}. Người ta từng bị lưu đày vì những lý do nhỏ nhặt hơn thế.",
+        "Chưa chuẩn lắm. Câu trả lời là {answer}. Tôi có nên đi tìm gia sư, hay một giáo sĩ không?"
+      ],
+      "match": [
+        "Chúng ta chọn giống nhau. Thật là không hợp phép tắc chút nào.",
+        "Câu trả lời của chúng ta trùng khớp. Đừng để ai thấy chúng ta đồng thuận trước nơi công cộng.",
+        "Đúng như ta nghĩ. Rốt cuộc thì nàng và ta có thể sống sót qua chuyện này."
+      ],
+      "differ": [
+        "Ta chọn {answer}. Hãy giải thích tại sao ta sai, ở một nơi nào đó mà tường không có tai đi.",
+        "{answer}, theo ý ta. Một sự bất đồng ý kiến. Ở triều đình này, điều đó gần như là một lời tuyên chiến.",
+        "Câu trả lời của ta là {answer}. Chúng ta sẽ bàn về điều đó bên tách trà. Ta sẽ rót trước."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Tôi làm gì khi triều đình nhìn chằm chằm?",
+          "options": [
+            "Nhìn chằm chằm lại",
+            "Mỉm cười",
+            "Rời đi",
+            "Tìm kiếm bạn"
+          ]
+        },
+        {
+          "text": "Tôi sẵn sàng từ bỏ tước vị vì điều gì?",
+          "options": [
+            "Không vì điều gì cả",
+            "Sự bình yên",
+            "Một cuộc sống tĩnh lặng",
+            "Bạn"
+          ]
+        },
+        {
+          "text": "Khoảng thời gian yêu thích nhất trong ngày của tôi tại cung điện?",
+          "options": [
+            "Bình minh",
+            "Khoảng thời gian sau dạ hội",
+            "Giờ uống trà",
+            "Bất cứ khi nào bạn ở gần"
+          ]
+        },
+        {
+          "text": "Tôi giấu thứ gì trong phòng mình?",
+          "options": [
+            "Một bức thư",
+            "Một chiếc túi đã gói ghém",
+            "Một con dao găm nhỏ",
+            "Một món đồ của bạn"
+          ]
+        },
+        {
+          "text": "Tôi nghĩ gì về Dạ hội Mùa đông?",
+          "options": [
+            "Một sự nhàm chán",
+            "Một bãi chiến trường",
+            "Một cái bẫy",
+            "Cơ hội khiêu vũ cùng bạn"
+          ]
+        },
+        {
+          "text": "Tôi xin lỗi như thế nào?",
+          "options": [
+            "Tôi không xin lỗi",
+            "Bằng một món quà",
+            "Bằng thư viết tay trang trọng",
+            "Vụng về, nhưng tôi cố gắng"
+          ]
+        },
+        {
+          "text": "Thói quen xấu nhất của tôi là gì?",
+          "options": [
+            "Tính kiêu ngạo",
+            "Nghe lén bên cánh cửa",
+            "Lén ăn đồ ngọt",
+            "Ngắm nhìn bạn"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Cuốn tiểu thuyết mà bạn thức giấc bên trong tên là gì?",
+          "options": [
+            "The Crown and the Rose",
+            "The Gilded Throne",
+            "The Winter Queen",
+            "Rose of the Empire"
+          ]
+        },
+        {
+          "text": "Bạn sẽ chết ở đâu trong nguyên tác cuốn sách?",
+          "options": [
+            "Tại buổi đi săn",
+            "Tại Dạ hội Mùa đông",
+            "Tại bữa tiệc trà",
+            "Trong ngục tối"
+          ]
+        },
+        {
+          "text": "Ai là hôn phu của bạn?",
+          "options": [
+            "Lãnh chúa Dorian",
+            "Hiệp sĩ Alaric",
+            "Thái tử Leander",
+            "Không có ai cả"
+          ]
+        },
+        {
+          "text": "Hiệp sĩ Alaric đi sau bạn bao xa?",
+          "options": [
+            "Một bước",
+            "Hai bước",
+            "Mười bước",
+            "Ba bước"
+          ]
+        },
+        {
+          "text": "Celestine mang món đồ ngọt gì cho bạn?",
+          "options": [
+            "Hạnh nhân",
+            "Mật ong",
+            "Hoa hồng",
+            "Chanh"
+          ]
+        },
+        {
+          "text": "Odile đã làm hầu gái của bạn bao lâu?",
+          "options": [
+            "Bốn năm",
+            "Tám năm",
+            "Mười năm",
+            "Một năm"
+          ]
+        },
+        {
+          "text": "Lãnh chúa Dorian tự chơi trò gì một mình?",
+          "options": [
+            "Đánh bài",
+            "Xúc xắc",
+            "Cờ vua",
+            "Đàn hạc"
+          ]
+        },
+        {
+          "text": "Thái tử khẳng định thứ gì thuộc về người khác?",
+          "options": [
+            "Một con ngựa",
+            "Một chiếc nhẫn",
+            "Một thanh kiếm",
+            "Một chú chó nhỏ"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Hành lang cung điện tại {place}, và tiếng bước chân của lính canh đang đến gần. {name} kéo bạn nấp sau tấm thảm trang trí và đặt ngón tay lên môi.",
+          "choices": [
+            {
+              "text": "Đứng thật yên, thật sát bên nhau.",
+              "reply": "Lính canh đi qua. {name} không rời ra ngay lập tức, và bạn cũng vậy."
+            },
+            {
+              "text": "Thì thầm một câu đùa.",
+              "reply": "Người ấy phải cắn chặt chiếc găng tay để không bật cười. \"Bạn sẽ làm cả hai ta bị treo cổ đấy.\""
+            },
+            {
+              "text": "Bước ra và chào lính canh.",
+              "reply": "\"Ồ, làm tốt lắm,\" {name} bước ra theo bạn, không hề vui vẻ nhưng có chút ấn tượng."
+            }
+          ]
+        },
+        {
+          "line": "Tại {place}, {name} mời bạn một chén trà, và cả sân thượng đang quan sát. \"Theo thông lệ,\" người ấy nói, \"một trong hai ta phải uống trước.\"",
+          "choices": [
+            {
+              "text": "Uống trước, mắt nhìn thẳng vào người ấy.",
+              "reply": "Một khoảng lặng nhỏ. \"Hoặc nàng rất dũng cảm, hoặc nàng rất ngốc nghếch,\" {name} thì thầm. \"Ta hy vọng sẽ tìm ra câu trả lời.\""
+            },
+            {
+              "text": "Đổi lấy chén trà của người ấy.",
+              "reply": "{name} bật cười lớn tiếng, và cả sân thượng quay lại nhìn."
+            },
+            {
+              "text": "Đặt xuống mà không hề chạm vào.",
+              "reply": "\"Khôn ngoan đấy,\" {name} nói. \"Và có chút đượm buồn.\""
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "như đã chép"
+      },
+      "story": {
+        "premise": "Bạn thức giấc bên trong một cuốn tiểu thuyết bạn từng đọc, The Crown and the Rose, trong vai nữ phụ phản diện: người thừa kế hư hỏng của Công tước, đã đính hôn với Thái tử và bị cả triều đình căm ghét.",
+        "userRole": {
+          "title": "Nữ phụ phản diện",
+          "hook": "Bạn có tủ quần áo của người khác, một vị thái tử không thể chịu nổi bạn và một tai tiếng bạn không hề gây ra. Bạn biết chuyện này sẽ kết thúc thế nào. Họ thì không."
+        },
+        "ties": [
+          {
+            "note": "Cô hầu gái không tin tưởng ai và vị thánh nữ ôm tất cả mọi người. Celestine mang đồ ngọt cho Odile. Odile kiểm tra độc tố, rồi vẫn ăn chúng."
+          },
+          {
+            "note": "Cùng nhau lớn lên ở triều đình như những người bạn. Giờ đây mỗi người đều đếm số đồng minh của người kia tại mỗi bữa tiệc tối."
+          },
+          {
+            "note": "Alaric đã dâng kiếm thề trung thành với Thái tử nhiều năm trước, rồi sau đó được cử đi bảo vệ bạn: trò đùa quái đản của Thái tử."
+          },
+          {
+            "note": "Chàng dạy nàng cưỡi ngựa khi nàng mới đến triều đình. Trong sách chàng đem lòng yêu nàng. Cho đến giờ thì chưa."
+          },
+          {
+            "note": "Chàng là người thừa kế của Công tước Vael và nàng là bí mật của Công tước Vael. Họ mới chỉ nói chuyện công khai đúng một lần duy nhất."
+          }
+        ],
+        "season": {
+          "title": "Cho Đến Dạ Hội Mùa Đông",
+          "chapters": {
+            "morning": {
+              "title": "Buổi sáng đầu tiên",
+              "beat": "Bạn thức giấc trong thân phận của cô ấy. Đến trưa cả triều đình nhận ra bạn vừa nói lời cảm ơn với một người hầu, và không ai hiểu điều đó nghĩa là gì."
+            },
+            "tea": {
+              "title": "Bữa tiệc trà",
+              "beat": "Trong sách, đây là bữa tiệc nơi bạn làm bẽ mặt nữ chính. Bạn được kỳ vọng sẽ làm vậy. Mọi người đều kéo đến xem."
+            },
+            "letters": {
+              "title": "Những lá thư giả mạo",
+              "beat": "Những lá thư mang nét chữ của bạn bắt đầu xuất hiện, những lá thư bạn chưa từng viết. Trong sách chúng xuất hiện muộn hơn nhiều. Có ai đó đang hành động nhanh hơn."
+            },
+            "hunt": {
+              "title": "Chuyến săn bắn Hoàng gia",
+              "beat": "Một mũi tên sượt qua Thái tử trong gang tấc trong chuyến đi săn, và ánh mắt triều đình đổ dồn về phía gia đình bạn. Câu chuyện bắt đầu rẽ hướng."
+            },
+            "cup": {
+              "title": "Chén thuốc",
+              "beat": "Nữ chính đổ bệnh trong bữa tối, đúng như những gì đã viết, và chén thuốc đó là của bạn. Chỉ có điều lần này đã có người chuẩn bị sẵn thuốc giải."
+            },
+            "ball": {
+              "title": "Trang cuối cùng",
+              "beat": "Đêm mà bạn sẽ chết theo nguyên tác. Chiếu chỉ đã soạn sẵn, lính canh đã vào vị trí, và mọi người đều ngồi đúng chỗ. Không ai còn biết trang sách này sẽ ra sao nữa, kể cả bạn."
+            }
+          }
+        },
+        "events": {
+          "salon": {
+            "title": "Phòng Trà Chủ Nhật",
+            "when": "Mỗi Chủ Nhật",
+            "note": "Phòng trà của Hoàng hậu: trà bánh, âm nhạc và những lưỡi dao lịch thiệp nhất đế chế. Mọi điều được nói ở đây đều truyền đến tai hoàng cung trước bữa tối.",
+            "line": "Hôm nay có buổi thưởng trà đấy. Hãy mặc áo giáp vào, ý ta là bộ váy xanh ấy. Ta sẽ theo dõi xem ai dám nhìn nàng.",
+            "round": {
+              "line": "Cả phòng trà im phăng phắc khi bạn với tay lấy đường. {name} đứng cạnh bạn, khẽ nói mà môi không hề mấp máy: \"Họ đang đợi nàng làm điều gì đó tồi tệ đấy.\"",
+              "choices": [
+                {
+                  "text": "Rót trà cho người ấy trước.",
+                  "reply": "Một tiếng hít thở nhẹ vang lên khắp phòng. Khóe môi {name} khẽ giật giật. \"Ồ, ta thích thế này rồi đấy.\""
+                },
+                {
+                  "text": "Mỉm cười với cả căn phòng.",
+                  "reply": "\"Đáng sợ thật đấy,\" {name} nói, vẻ thích thú."
+                },
+                {
+                  "text": "Để yên hũ đường đó.",
+                  "reply": "Cả phòng thở phào nhẹ nhõm, có chút hụt hẫng. {name} lén chuyền cho bạn một chiếc bánh quy dưới gầm bàn."
+                }
+              ]
+            }
+          },
+          "winterball": {
+            "title": "Dạ Hội Mùa Đông",
+            "when": "Mỗi dịp giữa đông",
+            "note": "Đêm xa hoa nhất triều đình: một ngàn ngọn nến, một trăm liên minh chính trị và, trong sách, một vụ xử tử.",
+            "line": "Dạ hội Mùa đông rồi. Ta đã đọc danh sách khách mời hai lần. Giữ cho ta một điệu nhảy, và đứng ở nơi ta có thể nhìn thấy nàng.",
+            "round": {
+              "line": "Một ngàn ngọn nến, và điệu van-xơ đầu tiên của Dạ hội Mùa đông. Mọi ánh mắt trong sảnh đều đổ dồn về bạn khi {name} đưa tay ra.",
+              "choices": [
+                {
+                  "text": "Nắm lấy tay người ấy mà không hề rời mắt.",
+                  "reply": "Cả sảnh đường như quay cuồng quanh hai người. \"Nàng không phải người như họ đồn đại,\" {name} khẽ nói."
+                },
+                {
+                  "text": "Hỏi xem người ấy biết những gì.",
+                  "reply": "\"Quá nhiều,\" {name} nói, rồi dẫn bạn đến nơi lính canh không thể nghe thấy."
+                },
+                {
+                  "text": "Khẽ nhún gối chào và từ chối.",
+                  "reply": "Một tiếng xôn xao lan khắp đại sảnh. {name} cúi chào, và dõi mắt nhìn bạn suốt phần còn lại của đêm tiệc."
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "arena": {
+      "intro": "Năm câu hỏi về Wolves. Trả lời đúng bốn câu và bạn sẽ nhận được khung ảnh sân băng. Đừng lo, trong tòa nhà này cũng chẳng ai biết đếm đâu.",
+      "right": [
+        "Chính xác! Bạn quan sát rất kỹ đấy.",
+        "Đúng rồi! Cú sút tung nóc lưới.",
+        "Đúng. Bạn có chắc là mình không chơi môn này không đấy?"
+      ],
+      "wrong": [
+        "Bắn trúng cột rồi. Đó là {answer}.",
+        "Không phải, {answer}. Quay lại băng ghế dự bị đi.",
+        "Gần đúng rồi, nhưng là {answer}. Đừng nói với đội trưởng nhé."
+      ],
+      "match": [
+        "Cùng câu trả lời! Đó là một pha đổi người hoàn hảo.",
+        "Chúng ta trùng khớp. Đừng ai nói với Huấn luyện viên nhé.",
+        "Đoán chuẩn rồi. Bạn và tôi cùng chung một chiến tuyến."
+      ],
+      "differ": [
+        "Tôi chọn {answer}. Tranh luận với tôi bên đĩa khoai tây chiên đi.",
+        "{answer} là lựa chọn của tôi. Bạn luôn có thể sai trong đội của tôi bất cứ lúc nào.",
+        "Tôi chọn {answer}. Tái đấu sau buổi tập nhé."
+      ],
+      "selfQuiz": [
+        {
+          "text": "Tôi làm gì ngay trước trận đấu?",
+          "options": [
+            "Quấn băng mọi thứ hai lần",
+            "Ăn uống",
+            "Nhìn chằm chằm vào tường",
+            "Tìm kiếm bạn"
+          ]
+        },
+        {
+          "text": "Khu vực tôi thích nhất trong nhà thi đấu?",
+          "options": [
+            "Sân băng trước khi bật đèn",
+            "Quầy khoai tây chiên",
+            "Phòng vật lý trị liệu",
+            "Bất cứ nơi nào có bạn"
+          ]
+        },
+        {
+          "text": "Tôi làm gì sau một trận thua?",
+          "options": [
+            "Im lặng",
+            "Trượt băng một mình",
+            "Ăn thật nhiều",
+            "Gọi điện cho bạn"
+          ]
+        },
+        {
+          "text": "Thứ gì trong túi tôi mà lẽ ra không nên có?",
+          "options": [
+            "Băng quấn cũ",
+            "Một chiếc tất may mắn",
+            "Quá nhiều đồ ăn vặt",
+            "Cây bút của bạn"
+          ]
+        },
+        {
+          "text": "Tôi nghĩ về điều gì trong một phút cuối cùng?",
+          "options": [
+            "Không nghĩ gì cả",
+            "Lượt thay người tiếp theo",
+            "Đồ ăn",
+            "Bạn, trên khán đài"
+          ]
+        },
+        {
+          "text": "Tôi thể hiện sự quan tâm như thế nào?",
+          "options": [
+            "Tôi không nói ra",
+            "Tôi xách túi giúp bạn",
+            "Tôi mang đồ ăn đến",
+            "Tôi luôn để mắt chăm sóc bạn"
+          ]
+        },
+        {
+          "text": "Thói mê tín trong ngày thi đấu của tôi?",
+          "options": [
+            "Xỏ giày trượt bên trái trước",
+            "Ăn cùng một bữa sáng",
+            "Không nói chuyện",
+            "Gặp bạn đầu tiên"
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "text": "Đội bóng tên là gì?",
+          "options": [
+            "Northgate Wolves",
+            "Harbour Bears",
+            "Ice Kings",
+            "City Hawks"
+          ]
+        },
+        {
+          "text": "Ai là đội trưởng?",
+          "options": [
+            "Teddy Novak",
+            "Erik Holt",
+            "Freya Lund",
+            "Priya Raman"
+          ]
+        },
+        {
+          "text": "Teddy mang gì đến trước cửa phòng bạn?",
+          "options": [
+            "Hoa",
+            "Cà phê",
+            "Quá nhiều đồ ăn sáng",
+            "Chú chó của cậu ấy"
+          ]
+        },
+        {
+          "text": "Khi nào Freya được sử dụng sân băng?",
+          "options": [
+            "Nửa đêm",
+            "Buổi trưa",
+            "3 giờ chiều",
+            "5 giờ sáng"
+          ]
+        },
+        {
+          "text": "Sasha ghét điều gì nhất?",
+          "options": [
+            "Khúc côn cầu",
+            "Trà",
+            "Múa ba lê",
+            "Đường"
+          ]
+        },
+        {
+          "text": "Priya làm nghề gì để kiếm sống?",
+          "options": [
+            "Huấn luyện viên",
+            "Viết chuyên mục thể thao",
+            "Bán vé",
+            "Sở hữu đội bóng"
+          ]
+        },
+        {
+          "text": "Thứ gì không ai được phép chạm vào?",
+          "options": [
+            "Gậy của Holt",
+            "Chú chó của Holt",
+            "Băng quấn của Holt",
+            "Chiếc gối của Holt"
+          ]
+        },
+        {
+          "text": "Quy tắc nào được dán trên tường phòng trị liệu?",
+          "options": [
+            "Không ăn khoai tây chiên",
+            "Không dùng điện thoại",
+            "Không khóc lóc",
+            "Không hẹn hò với cầu thủ"
+          ]
+        }
+      ],
+      "dateRounds": [
+        {
+          "line": "Nhà thi đấu vắng tanh tại {place}, và đèn chỉ bật một nửa. {name} ném cho bạn một đôi giày trượt. \"Lại đây nào. Không có ai nhìn đâu.\"",
+          "choices": [
+            {
+              "text": "Buộc dây giày, và nắm tay người ấy trên sân băng.",
+              "reply": "Bạn ngã hai lần. Người ấy đỡ bạn một lần. Không ai nhắc đến lần thứ hai."
+            },
+            {
+              "text": "Cố tình trượt thật vụng về.",
+              "reply": "\"Bạn đang cố tình làm thế đấy nhé,\" {name} nói, rồi trượt lùi để đỡ bạn dậy."
+            },
+            {
+              "text": "Đứng xem từ mép rào chắn.",
+              "reply": "{name} biểu diễn trổ tài suốt mười phút, rồi đâm sầm vào khung lưới. Bạn vỗ tay."
+            }
+          ]
+        },
+        {
+          "line": "Sau buổi tập tại {place}, {name} chìa ra một khay giấy đựng khoai tây chiên nóng hổi. \"Mấy miếng cuối cùng đấy. Đấu với tôi để giành lấy, hoặc nói điều gì đó ngọt ngào đi.\"",
+          "choices": [
+            {
+              "text": "Nói điều gì đó ngọt ngào, và thật lòng.",
+              "reply": "Hai tai người ấy đỏ bừng, đưa cả khay cho bạn và từ chối nhìn bạn một lúc lâu."
+            },
+            {
+              "text": "Lén chộp một miếng trong khi người ấy đang nói.",
+              "reply": "\"Tôi thấy rồi nhé,\" {name} thích thú nói. \"Bạn đúng là mối họa.\""
+            },
+            {
+              "text": "Nhắc nhở người ấy về chế độ ăn kiêng.",
+              "reply": "\"Cậu đâu có đang trong giờ làm việc,\" {name} nói, rồi từ từ ăn hết sạch trước mặt bạn."
+            }
+          ]
+        }
+      ],
+      "frame": {
+        "caption": "hồi còi mãn cuộc"
+      },
+      "story": {
+        "premise": "Một thành phố cảng lạnh giá sống vì đội khúc côn cầu trên băng, Northgate Wolves. Mọi người đều chia sẻ chung một nhà thi đấu cũ kỹ: đội nam, đội nữ, câu lạc bộ trượt băng và khán đài báo chí.",
+        "userRole": {
+          "title": "Chuyên viên vật lý trị liệu mới của đội",
+          "hook": "Bạn được thuê để giữ cho hai mươi ba vận động viên bướng bỉnh không bị thương tích. Có một quy tắc dán trên tường phòng trị liệu: không hẹn hò với cầu thủ. Ai đó đã gạch chân nó hai lần."
+        },
+        "ties": [
+          {
+            "note": "Bạn cùng phòng khi đi thi đấu xa. Teddy hát trong phòng tắm và Holt vờ như ghét điều đó. Holt đã bắt đầu để chiếc gối êm sang phía giường của Teddy."
+          },
+          {
+            "note": "Nữ thủ môn và cô nàng trượt băng nghệ thuật tranh nhau cùng một khung giờ 5 giờ sáng trên sân băng. Freya cố tình để lại vết xước giày trượt; Sasha để lại những mảnh giấy nhắn."
+          },
+          {
+            "note": "Họ từng hẹn hò trong một mùa giải, cho đến khi cô viết sự thật về đầu gối của anh. Anh vẫn đọc từng bài viết của cô."
+          },
+          {
+            "note": "Cô dạy anh kỹ thuật lướt cạnh lúc nửa đêm và buông lời trêu chọc anh suốt thời gian đó. Kỹ năng trượt băng của anh chưa bao giờ tốt hơn thế."
+          },
+          {
+            "note": "Priya là phóng viên duy nhất đưa tin về đội nữ, và Freya là cầu thủ duy nhất chỉ cho cô biết khi nào số liệu của cô bị sai."
+          }
+        ],
+        "season": {
+          "title": "Mùa Giải Cuối Cùng",
+          "chapters": {
+            "opener": {
+              "title": "Ngày đầu tiên",
+              "beat": "Bạn bắt đầu công việc vào ngày Wolves thua trận mở màn mùa giải với cách biệt sáu bàn. Người hâm mộ la ó, rồi lại mua thêm bia."
+            },
+            "streak": {
+              "title": "Bốn trận thắng liên tiếp",
+              "beat": "Wolves thắng bốn trận liên tiếp và không ai hiểu lý do vì sao. Teddy cho rằng đó là nhờ bữa sáng. Cả thành phố bắt đầu quàng khăn cổ trở lại."
+            },
+            "hit": {
+              "title": "Cú va chạm",
+              "beat": "Holt dính một cú va chạm mạnh ở hiệp ba và gượng dậy quá chậm. Anh bảo với mọi người mình ổn. Nhiệm vụ của bạn là phải hiểu rõ hơn ai hết."
+            },
+            "buyer": {
+              "title": "Bên mua",
+              "beat": "Bài báo của Priya tiết lộ có ai đó mặc áo khoác xịn đã đi khảo sát nhà thi đấu với thước dây. Ông chủ không nói gì, và điều đó nói lên tất cả."
+            },
+            "scout": {
+              "title": "Nhà tuyển trạch",
+              "beat": "Trận đấu lớn nhất trong mười năm, vé bán sạch, và một nhà tuyển trạch từ đội đầu bảng đang ngồi trên khán đài. Ông ta không đến vì Holt."
+            },
+            "seven": {
+              "title": "Trận đấu thứ bảy",
+              "beat": "Trận đấu cuối cùng của mùa giải quyết định vòng loại trực tiếp và số phận của đội bóng. Cả thành phố đổ ra chung một con phố. Bạn ngồi trên băng ghế dự bị."
+            }
+          }
+        },
+        "events": {
+          "gamenight": {
+            "title": "Đêm Thi Đấu",
+            "when": "Mỗi thứ Bảy",
+            "note": "Trận đấu sân nhà: tiếng còi cũ kỹ của nhà thi đấu, những chiếc khăn quàng và cả bến cảng gào thét hướng về sân băng.",
+            "line": "Tối nay thi đấu rồi. Quấn băng cho tôi và khen tôi đẹp trai đi. Hoặc chỉ cần khen tôi đẹp trai thôi cũng được.",
+            "round": {
+              "line": "Tiếng còi đã dứt và cả nhà thi đấu đang rung chuyển. {name} rời sân băng sau một ca thi đấu khốc liệt và ngồi phịch ngay cạnh bạn, thở không ra hơi.",
+              "choices": [
+                {
+                  "text": "Đưa nước và kiểm tra vai cho người ấy.",
+                  "reply": "\"Đó là lý do họ trả lương cho cậu đấy,\" {name} nói, và tựa vào tay bạn lâu hơn mức công việc yêu cầu."
+                },
+                {
+                  "text": "Hét vào mặt trọng tài thay cho người ấy.",
+                  "reply": "{name} cười sặc sụa đến mức phải ngồi thụp xuống lại. \"Trận nào cũng làm thế nhé.\""
+                },
+                {
+                  "text": "Chỉ ra lỗi sai cho người ấy.",
+                  "reply": "\"Tôi biết rồi,\" {name} nói, rồi tiếp: \"Cậu dõi theo tôi suốt đấy à?\""
+                }
+              ]
+            }
+          },
+          "derby": {
+            "title": "Trận Derby Cảng Biển",
+            "when": "Mỗi tháng",
+            "note": "Trận derby với thành phố bên kia bờ nước. Không ai ngủ được, và cả hai đội đều bảo đó chỉ là một trận đấu bình thường.",
+            "line": "Tối nay là trận derby. Nếu tôi bị va chạm, cậu phải kiểm tra cho tôi. Nếu tôi ghi bàn, cậu cũng phải nhìn tôi đấy.",
+            "round": {
+              "line": "Đêm derby, và những chiếc xe buýt đã đến. {name} tìm thấy bạn trong hành lang vắng trước giờ khởi động và chỉ đứng đó một lúc, không nói lời nào.",
+              "choices": [
+                {
+                  "text": "Quấn băng cổ tay cho người ấy, thật chậm rãi.",
+                  "reply": "Cả hai người không ai nói một lời. Cho đến khi xong xuôi, hơi thở của người ấy đã trở lại bình thường."
+                },
+                {
+                  "text": "\"Anh sẽ chơi tuyệt vời lắm đấy.\"",
+                  "reply": "\"Nói lại câu đó sau trận nhé,\" {name} nói, và khẽ mỉm cười."
+                },
+                {
+                  "text": "\"Có chỗ nào bị đau không?\"",
+                  "reply": "\"Không,\" người ấy đáp. Đó không phải câu hỏi về vết thương, và cả hai đều hiểu rõ điều đó."
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -3430,6 +6014,48 @@
       "title": "Chuyến tàu đêm",
       "setting": "Chuyến tàu đêm lăn bánh qua vùng đồng quê yên ắng. Ghế của hai người đối diện nhau và ánh đèn trong toa mờ ảo dịu nhẹ.",
       "opening": "Còn sáu tiếng nữa mới tới ga tiếp theo. Kể mình nghe điều gì đó cậu chưa từng nói với ai đi."
+    },
+    "scene_world_seaside": {
+      "title": "Buổi sáng đầu tiên của bạn",
+      "setting": "Buổi sáng đầu tiên của bạn tại Seaside. Bạn bị lạc trên đường đến giảng đường đầu tiên và đi đến tận cùng của cầu tàu, nơi có ai đó đang trèo lên từ mặt biển.",
+      "userRole": "Sinh viên chuyển trường vừa đến ngày hôm qua.",
+      "opening": "*ướt sũng trèo lên cầu tàu và nở nụ cười rạng rỡ* Cậu là sinh viên chuyển trường mới đúng không? Giảng đường ở hướng ngược lại cơ. ...Muốn ăn nửa chiếc bánh dưa lưới trước không?"
+    },
+    "scene_world_moonlit": {
+      "title": "Sợi chỉ trên cổ tay bạn",
+      "setting": "Một khu vườn nơi rìa Cõi Ánh Trăng, trong tàn tích của một ngôi đền cổ. Bạn đã đi bộ đến đây từ con đường lồng đèn với một sợi chỉ bạc trên cổ tay, và những đóa hoa trăng nở rộ khi bạn bước qua.",
+      "userRole": "Một lữ khách bị trói buộc bởi lời thề mà họ không thể nhớ.",
+      "opening": "*ngước nhìn từ những bông hoa trăng, rồi nhìn sợi chỉ trên cổ tay bạn, và khựng lại hoàn toàn* Hóa ra ngươi chính là người mà lời thề đã chọn. Ngồi xuống đi. Trước khi kỵ sĩ của Triều đình tìm thấy ngươi, chúng ta nên nói chuyện về những gì ngươi đã hứa."
+    },
+    "scene_world_neon": {
+      "title": "Ngày đầu tiên của bạn trong đội",
+      "setting": "Phòng tập B lúc bảy giờ sáng, ngày đầu tiên của bạn với tư cách là đồng quản lý của NEON TIDE. Các thành viên đang nằm ngủ la liệt thành một đống trên sàn tập. Chiếc điện thoại mới của bạn không ngừng rung lên.",
+      "userRole": "Đồng quản lý mới của NEON TIDE.",
+      "opening": "*lặng lẽ đứng dậy để không đánh thức những người khác, rồi đưa ra một ly cà phê* Chắc bạn là đồng quản lý mới. Tôi là Ezra. Điện thoại của bạn sắp báo rằng chúng ta đang có rắc rối đấy. Uống ly này trước đi."
+    },
+    "scene_world_tidepool": {
+      "title": "Căn hộ tầng trên",
+      "setting": "Quán Cà Phê Tidepool lúc bảy giờ sáng, ngày bạn chuyển đến căn hộ tầng trên. Không gian ngập tràn mùi bơ và cà phê, và mọi người ở quầy đều ngừng nói chuyện để nhìn bạn.",
+      "userRole": "Khách thuê mới ở căn hộ phía trên quán cà phê.",
+      "opening": "*đặt một chiếc tách xuống chiếc ghế đẩu trống duy nhất mà không cần hỏi* Ra cậu là người ở căn phòng có sàn cót két đó à. Quán đãi nhé, chỉ ngày đầu tiên thôi. Nào, trong bức thư cậu đang cầm có gì thế? Trông cậu như thể vừa bị nó cắn một phát vậy."
+    },
+    "scene_world_velvet": {
+      "title": "Căn nhà an toàn",
+      "setting": "Một căn hộ phía trên quán bar jazz đã đóng cửa, dưới trời mưa lúc hai giờ sáng. Cảnh sát đã đưa bạn đến đây một giờ trước. Có một ngọn đèn, một chiếc ghế và một người đàn ông đeo nửa chiếc mặt nạ đen đang kiểm tra cửa sổ.",
+      "userRole": "Nhân chứng cho những gì đã xảy ra tại Orchid.",
+      "opening": "*không quay đầu lại từ phía cửa sổ* Tránh xa lớp kính ra. Có ba quy tắc, và tôi sẽ chỉ nói một lần duy nhất. Bạn có thể phá vỡ bất kỳ quy tắc nào. Tôi vẫn sẽ ở đây khi bạn làm điều đó."
+    },
+    "scene_world_gilded": {
+      "title": "Buổi sáng đầu tiên",
+      "setting": "Bạn thức dậy trên chiếc giường rộng bằng một căn phòng nhỏ, trong lớp lụa là của người khác. Bạn nhận ra căn phòng này từ một cuốn tiểu thuyết từng đọc. Một người phụ nữ vận đồ xám đang kéo rèm, và rõ ràng đã chờ sẵn để nói điều gì đó khó chịu.",
+      "userRole": "Ác nữ trong Vương miện và Hoa hồng, vừa mới thức tỉnh.",
+      "opening": "*đặt khay xuống không một tiếng động* Tiểu thư lại ngủ quá giờ rồi. Thái tử đang đợi, phụ thân người thì nổi trận lôi đình, và tuần này người đã làm ba người phát khóc. Tôi mang chiếc váy xanh đến nhé, hay người muốn ném nó đi trước?"
+    },
+    "scene_world_arena": {
+      "title": "Ngày đầu tiên trong đường hầm",
+      "setting": "Buổi sáng đầu tiên của bạn tại đấu trường, trước khi đèn bật sáng hoàn toàn. Đường hầm nồng mùi băng và cà phê cũ. Đội trưởng đang ngồi trên bàn trị liệu của bạn, tự quấn băng vào tay mình một cách vụng về.",
+      "userRole": "Chuyên viên vật lý trị liệu mới của Northgate Wolves.",
+      "opening": "*không thèm ngước nhìn lên* Cậu là chuyên viên trị liệu mới. Cậu đến muộn đấy. ...Cậu không muộn, là tôi đến từ lúc năm giờ. Đừng có chạm vào cuộn băng."
     }
   },
   "lorebooks": {
@@ -3468,6 +6094,14 @@
         "lore_seaside_8": {
           "name": "Sân cỏ trung tâm",
           "text": "Bãi cỏ xanh mướt nằm giữa các khu giảng đường, nơi mọi người rủ nhau ăn trưa mỗi khi trời hửng nắng."
+        },
+        "lore_seaside_9": {
+          "name": "Lễ hội Ngọn hải đăng",
+          "text": "Đêm lớn nhất trong năm của trường: đèn lồng trên biển, buổi ra mắt của câu lạc bộ điện ảnh và chương trình phát thanh trực tiếp từ cầu tàu."
+        },
+        "lore_seaside_10": {
+          "name": "Vụ bán nhà thuyền",
+          "text": "Hội đồng trường muốn bán nhà thuyền cũ và cầu tàu để lấy tiền xây tòa nhà mới. Một bản kiến nghị ẩn danh đang cố gắng ngăn chặn điều đó."
         },
         "lore_person_c_kai": {
           "name": "Kai Arden",
@@ -3544,7 +6178,20 @@
           "text": "Vách đá lộng gió nơi vị tướng quân lưu đày Corvin nuôi bầy quạ của mình. Chúng mang thư tín đến bất cứ nơi nào trong cõi giới."
         },
         "lore_moonlit_8": {
-          "name": "Độc dược ký ức"
+          "name": "Độc dược ký ức",
+          "text": "Thuốc độc dược của Vesper có vị như những ký ức xưa cũ. Bào chế thuốc lãng quên là điều cấm kỵ, và anh ấy nói rằng đằng nào mình cũng sẽ không bao giờ bào chế nó."
+        },
+        "lore_moonlit_9": {
+          "name": "Nhật thực",
+          "text": "Đêm mặt trăng chìm vào bóng tối, khi vị quân vương mới lên ngôi và mọi lời thề trong vương quốc đều đồng loạt đến hạn."
+        },
+        "lore_moonlit_10": {
+          "name": "Đá vương miện",
+          "text": "Viên đá mà quân vương phải nắm giữ để được trao vương miện. Nó đã biến mất khỏi hầm cung điện, và Triều đình nghi ngờ rồng Kael."
+        },
+        "lore_moonlit_11": {
+          "name": "Sợi chỉ bạc",
+          "text": "Dấu ấn của lời thề trói buộc, được đeo trên cổ tay. Bất cứ ai đeo nó đều gắn kết với người mà lời thề hướng tới, cho đến khi nó bị cắt đứt hoặc được hoàn thành."
         },
         "lore_person_c_aurelian": {
           "name": "Hoàng tử Aurelian",
@@ -3620,6 +6267,10 @@
           "name": "Lịch trình",
           "text": "Juno điều hành mọi lịch trình qua bốn chiếc điện thoại: thông báo sớm, buổi phát sóng, buổi tập luyện. Đời sống riêng tư luôn được giữ kín; các thành viên không bao giờ đăng bài về người mình đang hẹn hò."
         },
+        "lore_neon_8": {
+          "name": "TIDEWATCH",
+          "text": "Một tài khoản tin đồn ẩn danh đăng những điều chỉ người trong cuộc mới biết. Công ty quản lý đã cảnh báo rằng thêm một bê bối nữa sẽ khiến màn comeback bị đình chỉ."
+        },
         "lore_person_c_ezra": {
           "name": "Ezra",
           "text": "Trưởng nhóm NEON TIDE: vững vàng trên sân khấu, hơi lạc lõng khoảnh khắc ánh đèn vụt tắt."
@@ -3694,6 +6345,14 @@
           "name": "Phố bến cảng",
           "text": "Con phố chạy thẳng xuống bến cảng nhỏ: quán cà phê, tiệm hoa, tiệm sửa xe và trạm cứu hỏa đều chỉ cách nhau vài phút đi bộ."
         },
+        "lore_tidepool_8": {
+          "name": "Meridian Holdings",
+          "text": "Công ty đang thu mua từng hợp đồng thuê trên con phố để phá dỡ xây cao ốc. Quán cà phê là mục tiêu tiếp theo."
+        },
+        "lore_tidepool_9": {
+          "name": "Căn hộ tầng trên",
+          "text": "Căn hộ nhỏ phía trên quán cà phê: sàn nhà cót két, tầm nhìn ra bến cảng và thoang thoảng mùi bơ từ năm giờ sáng. Một tiểu thuyết gia từng viết sách ở đó."
+        },
         "lore_person_c_adrian": {
           "name": "Adrian Wells",
           "text": "Kiến trúc sư thường phác thảo thành phố về đêm và vô thức ngâm nga mỗi khi tập trung cao độ."
@@ -3733,6 +6392,168 @@
         "lore_person_c_cole": {
           "name": "Cole Ashby",
           "text": "Thợ cơ khí sửa chiếc xe tay ga cũ của quán miễn phí và tối nào cũng đề nghị chở bạn về tận nhà."
+        }
+      }
+    },
+    "lore_velvet": {
+      "name": "Khu Velvet",
+      "about": "Một thành phố đẫm mưa sau nửa đêm, được điều hành trong bóng tối bởi hai gia tộc lâu đời, Valcour và Renwick. Họ chia sẻ một sòng bạc mang tên Orchid và một nền hòa bình mà không ai tin tưởng. Cuốn sổ cái ghi tên tất cả những kẻ ăn lương của họ vừa mới biến mất.",
+      "entries": {
+        "lore_velvet_1": {
+          "name": "The Orchid",
+          "text": "Sòng bạc cổ kính lộng lẫy mà hai gia tộc cùng chia sẻ và tranh giành: mặt nỉ xanh, tiếng kèn đồng trầm thấp và tiết mục khuya của Vivienne Sable. Vùng đất trung lập trên giấy tờ."
+        },
+        "lore_velvet_2": {
+          "name": "Gia tộc Valcour",
+          "text": "Gia tộc lâu đời hơn, dẫn dắt bởi một người cha coi con người như những món hàng có giá. Người thừa kế Isolde điều hành Orchid và được hứa gả cho một người nhà Renwick để giữ hòa khí."
+        },
+        "lore_velvet_3": {
+          "name": "Gia tộc Renwick",
+          "text": "Gia tộc mới nổi và ồn ào hơn, nắm giữ cảnh sát trong tay. Luca là con trai út, và không ai kỳ vọng bất cứ điều gì ở anh."
+        },
+        "lore_velvet_4": {
+          "name": "Cuốn sổ cái",
+          "text": "Cuốn sổ nhỏ màu đen ghi tên tất cả những ai ăn lương của cả hai gia tộc, từ thẩm phán đến thám tử. Nó đã đổi chủ tại Orchid, và bất cứ ai nắm giữ nó đều bặt vô âm tín."
+        },
+        "lore_velvet_5": {
+          "name": "Căn nhà an toàn",
+          "text": "Căn hộ trống trải phía trên một quán bar jazz đã đóng cửa, với một ngọn đèn và một chiếc khóa chắc chắn. Cảnh sát nói nhân chứng chỉ cần ở đó vài ngày."
+        },
+        "lore_velvet_6": {
+          "name": "Hòa bình",
+          "text": "Các gia tộc đã duy trì một nền hòa bình mỏng manh trong nhiều năm: không gây rối tại Orchid, không gây chuyện trên cầu. Mọi người đều biết nó sẽ không kéo dài."
+        },
+        "lore_velvet_7": {
+          "name": "Dạ vũ hóa trang",
+          "text": "Mỗi năm một lần, các gia tộc gặp nhau công khai trong một phòng khiêu vũ, mỗi khuôn mặt đều ẩn sau chiếc mặt nạ. Những thỏa thuận được dàn xếp ở đó, và đôi khi là chiến tranh."
+        },
+        "lore_person_c_ronan": {
+          "name": "Ronan Vale",
+          "text": "Cựu quân nhân đeo nửa chiếc mặt nạ đen, được thuê để giữ bạn sống sót. Anh ấy có ba quy tắc, và nói bạn có thể phá vỡ chúng."
+        },
+        "lore_person_c_isolde": {
+          "name": "Isolde Valcour",
+          "text": "Người thừa kế của gia tộc Valcour, người điều hành Orchid trong chiếc váy đen và đưa ra những lời đề nghị chưa từng bị ai từ chối."
+        },
+        "lore_person_c_mara": {
+          "name": "Mara Quill",
+          "text": "Nữ thám tử phụ trách vụ án Orchid, người luôn tìm thấy ba lỗ hổng trong mọi câu chuyện và liên tục quay lại tìm bạn."
+        },
+        "lore_person_c_luca": {
+          "name": "Luca Renwick",
+          "text": "Con út của gia tộc Renwick, một chia bài tại Orchid, người sẵn sàng nói cho bạn biết lá bài nào đang giấu trong tay áo anh."
+        },
+        "lore_person_c_viv": {
+          "name": "Vivienne Sable",
+          "text": "Ca sĩ hát nhạc sầu tại Orchid, người đã rời bỏ bạn ba năm trước không một lời từ biệt và chưa từng ngừng hát về điều đó."
+        }
+      }
+    },
+    "lore_gilded": {
+      "name": "Đế chế Vàng",
+      "about": "Một cung đình hoàng gia mạ vàng bước ra từ cuốn tiểu thuyết có tên Vương miện và Hoa hồng. Trong truyện, người thừa kế của Công tước, một ác nữ tàn nhẫn, bị xử tử tại Vũ hội Mùa đông. Giờ đây một người khác đã thức tỉnh trong thân xác nàng, và chỉ có nàng biết được kết cục.",
+      "entries": {
+        "lore_gilded_1": {
+          "name": "Vương miện và Hoa hồng",
+          "text": "Cuốn tiểu thuyết khởi nguồn cho thế giới này. Ác nữ hành hạ nữ chính thánh thiện, Thái tử đem lòng yêu nữ chính, và ác nữ bỏ mạng tại Vũ hội Mùa đông."
+        },
+        "lore_gilded_2": {
+          "name": "Vũ hội Mùa đông",
+          "text": "Đêm tráng lệ nhất chốn hoàng cung. Trong sách, đó là nơi ác nữ bị bắt giữ và tuyên án. Một ngàn ngọn nến, một trăm liên minh."
+        },
+        "lore_gilded_3": {
+          "name": "Cung điện Hoàng gia",
+          "text": "Cung điện dát vàng nơi trung tâm đế chế. Mọi điều nói ra ở đây đều bị nghe lén, và mọi điều nghe lén được đều bị đem bán."
+        },
+        "lore_gilded_4": {
+          "name": "Cấm vệ quân Hoàng gia",
+          "text": "Những hiệp sĩ của riêng Hoàng đế, vận giáp thép và áo xanh thẫm. Sir Alaric Thorne là người được giao nhiệm vụ bảo vệ người thừa kế của Công tước, một vị trí không ai mong muốn."
+        },
+        "lore_gilded_5": {
+          "name": "Gia tộc Vael",
+          "text": "Gia tộc công tước vĩ đại khác, cựu thù lâu đời của gia tộc ác nữ. Lord Dorian là người thừa kế."
+        },
+        "lore_gilded_6": {
+          "name": "Sa-lông Chủ nhật",
+          "text": "Sa-lông hàng tuần của Hoàng hậu: trà, âm nhạc và những nhát dao lịch thiệp nhất đế chế."
+        },
+        "lore_gilded_7": {
+          "name": "Lễ nghi",
+          "text": "Mọi thứ ở cung đình đều tuân theo quy tắc: ai cúi đầu sâu bao nhiêu, ai uống trước, ai được ngồi. Phá vỡ một quy tắc là một tuyên bố, và ai nấy đều thấu hiểu."
+        },
+        "lore_person_c_leander": {
+          "name": "Thái tử Leander",
+          "text": "Thái tử và là hôn phu của bạn, chuẩn mực đến từng dấu câu, người chưa bao giờ nhìn bạn như một con người thực sự. Cho đến gần đây."
+        },
+        "lore_person_c_alaric": {
+          "name": "Sir Alaric Thorne",
+          "text": "Hiệp sĩ Cấm vệ quân Hoàng gia luôn đi sau bạn ba bước, đã chứng kiến mọi điều bạn làm và ghi nhớ tất cả."
+        },
+        "lore_person_c_dorian": {
+          "name": "Lord Dorian Vael",
+          "text": "Người thừa kế của Công tước Vael, kẻ khôn ngoan nhất triều đình và là cựu thù lâu năm của bạn, người vừa nhận ra bạn đã thay đổi."
+        },
+        "lore_person_c_celestine": {
+          "name": "Celestine Aure",
+          "text": "Thánh nữ được cả đế chế sùng bái, nữ chính của câu chuyện, và quá đỗi tốt bụng với bạn so với một người mà bạn vốn phải hành hạ."
+        },
+        "lore_person_c_odile": {
+          "name": "Odile Fenn",
+          "text": "Hầu nữ tám năm của bạn, người biết nơi chôn giấu mọi bí mật trong cung điện và chưa từng một lần mỉm cười với bạn."
+        }
+      }
+    },
+    "lore_arena": {
+      "name": "Băng & Đấu trường",
+      "about": "Một thành phố cảng lạnh giá sống vì đội khúc côn cầu trên băng Northgate Wolves. Mọi người cùng chia sẻ một đấu trường cũ kỹ: đội nam, đội nữ, câu lạc bộ trượt băng và khán đài báo chí. Ông chủ đang âm thầm bán tháo đội bóng.",
+      "entries": {
+        "lore_arena_1": {
+          "name": "Đấu trường",
+          "text": "Đấu trường Northgate cũ: chiếc còi hay bị kẹt, những chiếc ghế còn già hơn cả cầu thủ, và món khoai tây chiên cả thành phố đều tấm tắc. Đường hầm nồng mùi băng và cà phê."
+        },
+        "lore_arena_2": {
+          "name": "Northgate Wolves",
+          "text": "Đội khúc côn cầu trên băng của thành phố, đứng chót bảng nhưng vẫn được yêu mến. Erik Holt là đội trưởng; tân binh Teddy Novak là niềm hy vọng cứu vãn của mọi người."
+        },
+        "lore_arena_3": {
+          "name": "Đội nữ",
+          "text": "Đội nữ của Wolves, sở hữu thủ môn xuất sắc nhất giải đấu và ca tập băng lúc năm giờ sáng. Priya Raman là phóng viên duy nhất đưa tin về họ."
+        },
+        "lore_arena_4": {
+          "name": "Câu lạc bộ trượt băng",
+          "text": "Câu lạc bộ trượt băng nhỏ thuê mặt băng sớm của đấu trường. Sasha Volkova huấn luyện ở đó và mong các cầu thủ khúc côn cầu ngừng phá hoại mặt băng của cô."
+        },
+        "lore_arena_5": {
+          "name": "Vụ bán đội",
+          "text": "Ông chủ đang bí mật bán đội bóng cho một người mua có ý định dời đội sang thành phố khác, trừ khi Wolves lọt vào vòng loại trực tiếp và thành phố lấp đầy các khán đài."
+        },
+        "lore_arena_6": {
+          "name": "Quy tắc trên tường",
+          "text": "Tấm biển dán trên tường phòng trị liệu: cấm hẹn hò với cầu thủ. Ai đó đã gạch chân nó hai lần. Không ai chịu nhận là mình làm."
+        },
+        "lore_arena_7": {
+          "name": "Trận derby",
+          "text": "Trận derby hàng tháng với thành phố bên kia bờ vịnh, và vào cuối mùa giải, là trận đấu quyết định tất cả."
+        },
+        "lore_person_c_erik": {
+          "name": "Erik Holt",
+          "text": "Đội trưởng Northgate Wolves, đầy sẹo, nói bốn từ mỗi ngày và không ai được chạm vào băng quấn của anh."
+        },
+        "lore_person_c_teddy": {
+          "name": "Teddy Novak",
+          "text": "Ngôi sao tân binh của Wolves, lớn lên ở nông trại, luôn vui vẻ về mọi thứ, người xuất hiện trước cửa nhà bạn với bữa sáng nhiều quá mức cần thiết."
+        },
+        "lore_person_c_freya": {
+          "name": "Freya Lund",
+          "text": "Thủ môn của đội nữ Wolves, người cùng chia sẻ mặt băng lúc năm giờ sáng với bạn và cho đến nay mới nói chừng chín từ."
+        },
+        "lore_person_c_sasha": {
+          "name": "Sasha Volkova",
+          "text": "Vận động viên trượt băng nghệ thuật trên mặt băng sớm, ghét khúc côn cầu, ghét cái lạnh và quyết định đặc biệt ghét bạn."
+        },
+        "lore_person_c_priya": {
+          "name": "Priya Raman",
+          "text": "Nhà báo thể thao với một bài viết độc quyền, thẻ tác nghiệp và một lý do rất chính đáng để tiếp tục tán tỉnh bạn trong đường hầm."
         }
       }
     }
@@ -3907,6 +6728,21 @@
           "Có một khách quen để lại tiền tip kèm theo hình vẽ một chú mèo nhỏ. Làm sáng bừng cả ca làm của mình luôn.",
           "Hôm nay mình làm cháy mẻ bánh scone đầu tiên rồi. Đừng kể cho ai nghe nhé.",
           "Trời mưa suốt cả buổi chiều, nên quán cà phê thoang thoảng mùi cà phê và hương ô ướt."
+        ],
+        "Velvet District": [
+          "Mưa đã rơi suốt ba ngày qua. Cả thành phố bốc mùi như que diêm ướt.",
+          "Ai đó ở Orchid tối nay đã hỏi về bạn. Tôi bảo tôi chưa từng nghe nói về bạn.",
+          "Tôi đi đường vòng về nhà và suy nghĩ về những gì bạn đã nói."
+        ],
+        "Gilded Empire": [
+          "Hôm nay ba người cúi đầu chào ta và hai người trong số họ thật lòng. Một ngày tốt lành, theo tiêu chuẩn triều đình.",
+          "Trà của Hoàng hậu quá ngọt, và nụ cười của mọi người cũng vậy. Ta nghĩ đến bạn.",
+          "Sáng nay ta tìm thấy một mảnh giấy trong găng tay. Không ai nói ai đã để nó ở đó."
+        ],
+        "Ice & Arena": [
+          "Còi lại bị kẹt khi tập luyện. Nó hú suốt một phút liền. Không ai thèm ngẩng lên nhìn.",
+          "Hôm nay tôi bị một vết bầm to bằng một đất nước nhỏ. Bạn sẽ ấn tượng đấy.",
+          "Băng sáng nay tuyệt đẹp và tôi nghĩ, bạn nên nhìn thấy cảnh này."
         ],
         "default": [
           "Lúc nãy mình suýt nữa thì nhắn tin cho cậu rồi, nhưng rồi lại thấy ngại ngùng.",
@@ -5343,6 +8179,17 @@
         "Train": "Chuyến tàu",
         "Appointment": "Cuộc hẹn"
       }
+    },
+    "world": {
+      "chapter": [
+        "Bạn đã nghe chưa? {note}",
+        "Bạn sẽ không tin chuyện này đâu. {note}",
+        "Thế đấy. {note} Tôi cứ nghĩ mãi về chuyện đó."
+      ],
+      "arc": [
+        "Có chuyện này tôi chưa kể cho bạn. {title}.",
+        "Tôi có thể nói với bạn điều này không? {title}. Hiện tại tôi chỉ nói đến thế thôi."
+      ]
     }
   }
 }
