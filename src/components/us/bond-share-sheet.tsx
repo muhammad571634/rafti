@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { ShareCardSheet, ShareLevelPill } from '@/components/share-card-sheet';
+import { ShareCardPhoto, ShareCardSheet, ShareLevelPill } from '@/components/share-card-sheet';
 import { CharacterAvatar, SFIcon, Txt, UserAvatar } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
@@ -9,14 +9,16 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, radius, space } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
-const FACE = 64;
-const HEART = 26;
+const PHOTO = 150;
+const FACE = 72;
+const RING = 3;
+const HEART = 28;
 
 /**
- * Share on Us (owner's streak-card prototype, 2026-10-30, as direction): you and them face to
- * face with a mint heart between, how many days together in the Today hero's big figure, the
- * level, and the three figures the Us card shows (intimacy, day streak, first met) on a white
- * panel. Only what the app really counts: no rank or "top %", no reward for sharing.
+ * Share on Us (owner's streak-card prototype, 2026-10-30, as direction): their photo, you and them
+ * face to face across its foot with a mint heart between, how many days together in the Today
+ * hero's big figure, the level, and the three figures the Us card shows (intimacy, day streak,
+ * first met) on a white panel. Only what the app really counts: no rank or "top %".
  */
 export function BondShareSheet({
   visible,
@@ -47,12 +49,19 @@ export function BondShareSheet({
       onClose={onClose}
       hint={t('us.shareHint', { name })}
       fallback={[`${pair}: ${together}`, level, t('app.name')].join('\n\n')}>
+      <ShareCardPhoto character={character} height={PHOTO} />
+
       <View style={styles.head}>
+        {/* Half on the photo, half on the aurora: the two of you meet on its edge. */}
         <View style={styles.faces}>
-          <UserAvatar user={user} size={FACE} />
-          <CharacterAvatar character={character} size={FACE} style={styles.overlap} />
+          <View style={styles.ring}>
+            <UserAvatar user={user} size={FACE} />
+          </View>
+          <View style={[styles.ring, styles.overlap]}>
+            <CharacterAvatar character={character} size={FACE} />
+          </View>
           <View style={styles.heart}>
-            <SFIcon ios="heart.fill" icon="heart" size={13} color={colors.bond} />
+            <SFIcon ios="heart.fill" icon="heart" size={14} color={colors.bond} />
           </View>
         </View>
         <Txt variant="title" center lines={1}>
@@ -91,14 +100,18 @@ function Stat({ value, label, divided }: { value: string; label: string; divided
   );
 }
 
+const SIZE = FACE + RING * 2;
+
 const styles = StyleSheet.create({
-  head: { alignItems: 'center', gap: 3, paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.lg },
+  head: { alignItems: 'center', gap: 3, paddingHorizontal: space.lg, paddingBottom: space.lg, marginTop: -SIZE / 2 },
   faces: { flexDirection: 'row', alignItems: 'center', marginBottom: space.sm },
-  overlap: { marginLeft: -space.md },
+  // A white ring lifts each face off the photo and the aurora alike.
+  ring: { padding: RING, borderRadius: radius.pill, backgroundColor: colors.surface },
+  overlap: { marginLeft: -space.lg },
   // A white coin on the seam between the two faces.
   heart: {
     position: 'absolute',
-    left: FACE - space.md / 2 - HEART / 2,
+    left: SIZE - space.lg / 2 - HEART / 2,
     bottom: -space.xxs,
     width: HEART,
     height: HEART,

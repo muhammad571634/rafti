@@ -1,5 +1,28 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z66. Share cards v3: photos, the thread, a peach Share, 5 shells a share (2026-10-30, Claude 2). NEXT: deploy the API (owner runs it), check both cards on the A51
+
+- Owner: the cards were too plain (use a photo), the chat Share must be colourful and a bit bigger, the chat card
+  should show the last 5-6 messages, and each share pays 5 shells, capped per user per day ("3 or 5 a day").
+- Reward: `SHARE_REWARD = 5`, `PAID_SHARES_PER_DAY = 3` (`src/economy/shells.ts`): at most 15 free shells a day
+  (free bucket, burns at midnight like the wheel). The share sheet cannot tell whether anyone saw a share, so the cap
+  is the whole guard and the server keeps it: `POST /v1/wallet/share` → `walletShare` counts today's
+  `share:<day>:<n>` ledger keys and books `n + 1` through `wallet_credit` (a race pays less, never more). No SQL
+  migration. The app's `rewardShare` (store) calls it, or credits locally without a server wallet; `shareReward(daily)`
+  says whether the buttons show "+5".
+- Chat: Share is a peach `gradients.primary` capsule at the end of the reply row, "+5 🐚" while paid shares last (the
+  shell alone when the version stepper fills the row). The card: their hero photo (else their picture, else their
+  avatar gradient) under a scrim with face, name, clear-glass "AI" tag, level pill and world along its foot; then
+  `shareLines` (up to 6 written lines, at most ~700 characters, ending at their newest line) in the chat's own runs.
+- Us: the photo on top, you and them meeting on its edge (white rings, mint heart), then days, level and figures.
+- Shared sheet: the Share button carries "+5 🐚" while it pays, a ✓ and a success haptic when a share paid.
+- tsc 0, npm test 483/483, server tests 46/46, check:locales pass. EAS update sent.
+
+Still to do:
+1. Deploy the API (the agent's deploy was refused): `C:/Users/joray/.fly/bin/flyctl.exe deploy . --config
+   server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`. Until then a share pays nothing.
+2. New preview APK so Share sends the picture (owner: not now).
+
 ### 0z65. Worlds 2.0: research and proposed architecture (2026-10-30, Claude 2). NEXT: owner picks the new worlds and the order (`docs/worlds-plan.md` §4)
 
 - Owner: UI is mostly done; the next push is characters and their worlds (about 40 official, users make the rest; the

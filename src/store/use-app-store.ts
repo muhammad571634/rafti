@@ -84,7 +84,7 @@ import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
-import { creditFree } from '@/economy/shells';
+import { creditFree, PAID_SHARES_PER_DAY, SHARE_REWARD } from '@/economy/shells';
 import { byMemoryOrder, hasFullMemory, isActiveMemory, splitMemories } from '@/economy/memory-limit';
 import { PASS_FACTS_MAX, PASS_LINES_MAX, type MemoryPassRequest } from '@/ai/memory-pass';
 import { applyMemoryPass } from '@/lib/memory-ops';
@@ -589,6 +589,8 @@ interface AppState {
   settleInvite: () => number;
   /** The wheel's result, drawn by the server when the wallet lives there (Profile → Server wallet). */
   spinWheel: () => Promise<{ index: number; reward: number } | null>;
+  /** A card went out through the share sheet: the shells it paid, 0 once today's paid shares are used. */
+  rewardShare: () => Promise<number>;
   /** Development (B1.2): reads the wallet from the server and takes it as the truth. */
   syncServerWallet: () => Promise<void>;
   /**
@@ -2176,6 +2178,33 @@ export const useAppStore = create<AppState>()(
         return { index, reward };
       },
 
+      rewardShare: async () => {
+        const today = todayKey();
+        const paid = sharesPaid(get().daily, today);
+
+        // With the wallet on the server, the server keeps the daily cap and pays; the count here
+        // only tells the share buttons whether to show "+5".
+        if (serverWalletOn(get)) {
+          const result = await withAccount((token) => serverWallet.share(token));
+          if (!result) return 0;
+          applyServerWallet(set, result.wallet);
+          set((s) => ({
+            daily: { ...s.daily, shareDay: today, sharesPaid: PAID_SHARES_PER_DAY - result.left },
+            ledger: result.amount > 0 ? log(s.ledger, result.amount, 'share') : s.ledger,
+          }));
+          return result.amount;
+        }
+
+        if (paid >= PAID_SHARES_PER_DAY) return 0;
+        get().expireFreeShells();
+        set((s) => ({
+          daily: { ...s.daily, shareDay: today, sharesPaid: paid + 1 },
+          wallet: creditFree(s.wallet, SHARE_REWARD, today),
+          ledger: log(s.ledger, SHARE_REWARD, 'share'),
+        }));
+        return SHARE_REWARD;
+      },
+
       syncServerWallet: async () => {
         const wallet = await withAccount((token) => serverWallet.state(token));
         if (wallet) applyServerWallet(set, wallet);
@@ -3494,6 +3523,12 @@ export const memberActive = (wallet: Wallet, now = Date.now()) => !!rollSubscrip
  */
 export const memoryAccess = (memories: MemoryItem[], wallet: Wallet, characterId: string, now = Date.now()) =>
   splitMemories(memories, characterId, hasFullMemory(wallet.subscription, now));
+
+const sharesPaid = (daily: DailyState, today: string) => (daily.shareDay === today ? (daily.sharesPaid ?? 0) : 0);
+
+/** What sharing a card pays now: `SHARE_REWARD` while today's paid shares last, then 0. */
+export const shareReward = (daily: DailyState, today = todayKey()) =>
+  sharesPaid(daily, today) < PAID_SHARES_PER_DAY ? SHARE_REWARD : 0;
 
 /** Quick creates left today on the user's plan. */
 export const quickCreatesToday = (use: QuickCreateUse | undefined, wallet: Wallet, today = todayKey()) =>

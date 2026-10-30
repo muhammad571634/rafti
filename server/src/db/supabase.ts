@@ -8,6 +8,7 @@ import {
   type Db,
   type MemoriesState,
   type MessagesPage,
+  type ShareResult,
   type SpinResult,
   type UsageEvent,
   type WalletState,
@@ -80,6 +81,29 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
 
     walletSpin: (userId, { segments, weights, freeSpins }) =>
       rpc<SpinResult>('wallet_spin', { p_user: userId, p_segments: segments, p_weights: weights, p_free_spins: freeSpins }),
+
+    // The day's paid shares are its `share:<day>:<n>` rows. Two shares at once take the same key, and
+    // `wallet_credit` books a key once: a race can only pay less, never more than the cap.
+    async walletShare(userId, { amount, perDay }): Promise<ShareResult> {
+      const before = await rpc<WalletState>('wallet_state', { p_user: userId });
+      const { count, error } = await client
+        .from('shell_ledger')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .like('idempotency_key', `share:${before.today}:%`);
+      if (error) throw new Error(`shell_ledger: ${error.message}`);
+      const used = count ?? 0;
+      if (used >= perDay) return { amount: 0, left: 0, wallet: before };
+      const wallet = await rpc<WalletState>('wallet_credit', {
+        p_user: userId,
+        p_amount: amount,
+        p_reason: 'share',
+        p_key: `share:${before.today}:${used + 1}`,
+        p_free: true,
+      });
+      const paid = wallet.shells > before.shells ? amount : 0;
+      return { amount: paid, left: Math.max(0, perDay - used - (paid ? 1 : 0)), wallet };
+    },
 
     async syncMessages(userId, { droppedChats, deletedIds, upserts }) {
       const seq = await rpc<number | null>('sync_messages', {

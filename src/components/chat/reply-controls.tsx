@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -5,9 +6,9 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { PressableScale, SFIcon, Txt } from '@/components/ui';
+import { PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import type { Rating } from '@/lib/reply-rating';
-import { colors, space } from '@/theme';
+import { colors, gradients, space } from '@/theme';
 
 /** How far a swipe on their reply must travel to switch the version. */
 const SWIPE = 48;
@@ -16,8 +17,10 @@ const SWIPE = 48;
  * Under their newest reply (canvas `ChatRegen.dc.html`): 👍 👎 vote on how it was written
  * (`src/lib/reply-rating.ts`), ↻ asks for a new version, and once there are several, ‹ 2/3 › steps
  * between them; » lets them go on without the user writing (Continue, `src/lib/chat-steer.ts`);
- * and the share glyph puts the turn on a picture card (`share-sheet.tsx`).
- * Icons in the secondary grey, as quiet as a read receipt; a cast vote fills in peach.
+ * and Share puts the thread on a picture card (`share-sheet.tsx`).
+ * Icons in the secondary grey, as quiet as a read receipt; a cast vote fills in peach. Share alone
+ * wears the primary peach (owner, 2026-10-30: "colourful, a bit bigger, so people tap it"), with
+ * "+5 🐚" while today's paid shares last.
  */
 export function ReplyControls({
   count,
@@ -26,6 +29,7 @@ export function ReplyControls({
   onRedo,
   onContinue,
   onShare,
+  shareReward = 0,
   rating,
   onRate,
 }: {
@@ -36,8 +40,10 @@ export function ReplyControls({
   onRedo?: () => void;
   /** »; left out while the chat waits for the user. */
   onContinue?: () => void;
-  /** Share; left out while their reply has no words yet (`shareQuote`). */
+  /** Share; left out while their reply has no words yet (`shareLines`). */
   onShare?: () => void;
+  /** Shells the next share pays (`shareReward`); 0 once today's paid shares are used. */
+  shareReward?: number;
   /** The reply's vote, cast or from a happy sticker (`ratingOf`). */
   rating?: Rating;
   /** 👍 👎; left out where the reply cannot be voted on (their greeting, a crisis reply). */
@@ -133,12 +139,18 @@ export function ReplyControls({
       ) : null}
       {onShare ? (
         <PressableScale
-          scaleTo={0.85}
+          scaleTo={0.92}
+          haptic
           onPress={onShare}
-          style={styles.redo}
+          style={styles.shareTarget}
           accessibilityRole="button"
-          accessibilityLabel={t('common.share')}>
-          <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={colors.textSecondary} />
+          accessibilityLabel={shareReward ? `${t('common.share')}, +${shareReward} ${t('common.shells')}` : t('common.share')}>
+          <LinearGradient colors={gradients.primary} style={styles.share}>
+            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={15} color={colors.textOnPrimary} />
+            {/* With the version stepper the row is full: the shell alone says it pays. */}
+            {shareReward && count <= 1 ? <Txt style={styles.shareText}>{`+${shareReward}`}</Txt> : null}
+            {shareReward ? <ShellIcon size={13} /> : null}
+          </LinearGradient>
         </PressableScale>
       ) : null}
     </View>
@@ -191,4 +203,16 @@ const styles = StyleSheet.create({
   divider: { width: StyleSheet.hairlineWidth * 2, height: 16, marginHorizontal: space.xs, backgroundColor: colors.borderStrong },
   count: { minWidth: 34, textAlign: 'center', fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   redo: { width: 44, height: 36, alignItems: 'center', justifyContent: 'center' },
+  shareTarget: { height: 36, justifyContent: 'center', marginLeft: space.xs },
+  share: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    height: 30,
+    minWidth: 30,
+    paddingHorizontal: 9,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+  },
+  shareText: { fontSize: 13, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
 });

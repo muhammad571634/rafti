@@ -52,23 +52,37 @@ export function lastExchange(messages: readonly Message[] | undefined) {
 /** A line with words in it: their voice notes and cards have none to put on a share card. */
 const isQuotable = (m: Message) => m.kind === 'text' && !m.card && !!m.text?.trim();
 
+/** The most lines a chat's share card holds (owner: the last 5-6, so a thread reads as one). */
+export const SHARE_LINES = 6;
+/** Past this many characters older lines stay off, so long replies still make a card, not a scroll. */
+const SHARE_CHARS = 700;
+
 /**
- * What Share under their newest reply puts on the card: their newest written line and, when it
- * answers a line of yours, that line. A continue or a skip has no words, so theirs stands alone;
- * before you write, their greeting does. Null while their reply has no words yet (typing, a voice note).
+ * What Share under their newest reply puts on the card, oldest first: the conversation up to their
+ * newest written line, yours and theirs, as many as `SHARE_LINES` back (at least two when there are
+ * two). System lines and a continue or skip are passed over; a voice note, photo or call ends it,
+ * since a card shows words. Null while their reply has no words yet (typing, a voice note).
  */
-export function shareQuote(messages: readonly Message[] | undefined) {
+export function shareLines(messages: readonly Message[] | undefined) {
   const list = messages ?? [];
   const exchange = lastExchange(list);
   const theirs = exchange
     ? exchange.burst.findLast(isQuotable)
     : list.findLast((m) => m.author === 'them' && isQuotable(m));
   if (!theirs) return null;
-  const mine = exchange?.anchor.author === 'me' && isQuotable(exchange.anchor) ? exchange.anchor : undefined;
-  return { mine, theirs };
+  const lines: Message[] = [];
+  let chars = 0;
+  for (let i = list.indexOf(theirs); i >= 0 && lines.length < SHARE_LINES; i--) {
+    const m = list[i];
+    if (m.kind === 'system' || m.card) continue;
+    if (!isQuotable(m)) break;
+    const size = m.text?.trim().length ?? 0;
+    if (lines.length >= 2 && chars + size > SHARE_CHARS) break;
+    lines.unshift(m);
+    chars += size;
+  }
+  return lines;
 }
-
-export type ShareQuote = NonNullable<ReturnType<typeof shareQuote>>;
 
 /**
  * "Rewind to here" goes on their lines that came before your newest turn (a message, a continue or

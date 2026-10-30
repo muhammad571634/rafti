@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Message } from '@/types';
 
-import { canRewindTo, lastExchange, laterCount, shareQuote } from './chat-turns';
+import { canRewindTo, lastExchange, laterCount, SHARE_LINES, shareLines } from './chat-turns';
 
 const at = '2026-10-24T20:00:00.000Z';
 const me = (id: string, text = 'hi'): Message => ({ id, conversationId: 'c', author: 'me', kind: 'text', text, createdAt: at });
@@ -60,31 +60,33 @@ describe('laterCount', () => {
   });
 });
 
-describe('shareQuote', () => {
+describe('shareLines', () => {
   const steer = (id: string): Message => ({ ...card(id, 'continue'), author: 'me' });
   const voice = (id: string): Message => ({ ...them(id), kind: 'voice', text: undefined });
+  const ids = (lines: Message[] | null) => lines?.map((m) => m.id);
 
-  it('is your newest line and their newest written line after it', () => {
-    const quote = shareQuote([them('g'), me('m1'), them('r1'), me('m2'), them('r2'), them('r3')]);
-    assert.equal(quote?.mine?.id, 'm2');
-    assert.equal(quote?.theirs.id, 'r3');
+  it('is the thread up to their newest written line, six lines at most, oldest first', () => {
+    const list = [them('g'), me('m1'), them('r1'), me('m2'), them('r2'), me('m3'), them('r3'), them('r4')];
+    assert.deepEqual(ids(shareLines(list)), ['r1', 'm2', 'r2', 'm3', 'r3', 'r4']);
+    assert.equal(SHARE_LINES, 6);
   });
 
-  it('skips a voice note at the end of their reply', () => {
-    assert.equal(shareQuote([me('m'), them('r'), voice('v')])?.theirs.id, 'r');
+  it('passes over system lines and a continue, and stops at a voice note', () => {
+    const list = [me('m0'), voice('v'), me('m1'), card('n', 'voiceQuota'), them('r1'), steer('s'), them('r2')];
+    assert.deepEqual(ids(shareLines(list)), ['m1', 'r1', 'r2']);
+    assert.deepEqual(ids(shareLines([me('m'), them('r'), voice('v2')])), ['m', 'r']);
   });
 
-  it('shows theirs alone after a continue, and their greeting before you write', () => {
-    const quote = shareQuote([them('g'), me('m'), them('r1'), steer('s'), them('r2')]);
-    assert.equal(quote?.mine, undefined);
-    assert.equal(quote?.theirs.id, 'r2');
-    assert.deepEqual(shareQuote([them('g')]), { mine: undefined, theirs: them('g') });
+  it('keeps long lines off, but never fewer than two', () => {
+    const long = 'x'.repeat(400);
+    assert.deepEqual(ids(shareLines([me('m1', long), them('r1', long), me('m2', long), them('r2', long)])), ['m2', 'r2']);
+    assert.deepEqual(ids(shareLines([them('g')])), ['g']);
   });
 
   it('is null while their reply has no words yet', () => {
-    assert.equal(shareQuote([them('g'), me('m')]), null);
-    assert.equal(shareQuote([me('m'), voice('v')]), null);
-    assert.equal(shareQuote([me('m'), them('r', '  ')]), null);
-    assert.equal(shareQuote(undefined), null);
+    assert.equal(shareLines([them('g'), me('m')]), null);
+    assert.equal(shareLines([me('m'), voice('v')]), null);
+    assert.equal(shareLines([me('m'), them('r', '  ')]), null);
+    assert.equal(shareLines(undefined), null);
   });
 });

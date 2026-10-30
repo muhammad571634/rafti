@@ -84,6 +84,13 @@ export interface SpinResult {
   wallet: WalletState;
 }
 
+/** `POST /v1/wallet/share`: what this share paid (0 once today's paid shares are used) and how many paid ones are left today. */
+export interface ShareResult {
+  amount: number;
+  left: number;
+  wallet: WalletState;
+}
+
 /** `GET /v1/client-config`: where the app signs in. The publishable key is public by design. */
 export interface ClientConfig {
   supabaseUrl: string;

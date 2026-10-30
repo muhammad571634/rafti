@@ -29,7 +29,15 @@ import {
   type MemorySyncRequest,
   type MessageSyncRequest,
 } from '../../src/ai/session-types.ts';
-import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP, FREE_SPINS_PER_DAY, WHEEL_SEGMENTS, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
+import {
+  DAILY_CHECK_IN,
+  DAILY_CHECK_IN_TOP,
+  FREE_SPINS_PER_DAY,
+  PAID_SHARES_PER_DAY,
+  SHARE_REWARD,
+  WHEEL_SEGMENTS,
+  WHEEL_WEIGHTS,
+} from '../../src/economy/shells.ts';
 import type { LedgerReason, MemoryItem } from '../../src/types/index.ts';
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
@@ -356,6 +364,9 @@ export function createApp(
   app.post('/v1/wallet/spin', (c) =>
     wallet(c, (userId) => db!.walletSpin(userId, { segments: WHEEL_SEGMENTS, weights: WHEEL_WEIGHTS, freeSpins: FREE_SPINS_PER_DAY })),
   );
+
+  // A shared card pays the first few shares of the user's day; the cap lives here, not on the phone.
+  app.post('/v1/wallet/share', (c) => wallet(c, (userId) => db!.walletShare(userId, { amount: SHARE_REWARD, perDay: PAID_SHARES_PER_DAY })));
 
   // Earnings whose rules are not on the server yet (purchases until RevenueCat, quests, invites):
   // the test server takes the app's word when DEV_GRANTS=1; anywhere else this is off.

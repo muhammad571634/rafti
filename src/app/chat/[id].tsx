@@ -37,7 +37,7 @@ import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
-import { canRewindTo, lastExchange, laterCount, shareQuote } from '@/lib/chat-turns';
+import { canRewindTo, lastExchange, laterCount, shareLines } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
@@ -46,7 +46,7 @@ import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
-import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
+import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, shadows, space } from '@/theme';
 import type { Message, ReplyIdea, TimeSkip } from '@/types';
 
@@ -225,7 +225,9 @@ export default function ChatRoomScreen() {
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
   const rating = useMemo(() => (exchange ? ratingOf(exchange.burst) : undefined), [exchange]);
   // Share under their newest reply: your line and theirs on a picture card.
-  const quote = useMemo(() => (typing ? null : shareQuote(data)), [data, typing]);
+  // The thread a share card shows (as many as six lines); null while their reply has no words yet.
+  const shared = useMemo(() => (typing ? null : shareLines(data)), [data, typing]);
+  const reward = useAppStore((s) => shareReward(s.daily));
   const [sharing, setSharing] = useState(false);
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
@@ -482,7 +484,8 @@ export default function ChatRoomScreen() {
                       onStep={stepVersion}
                       onRedo={canRedo ? () => redo() : undefined}
                       onContinue={block ? undefined : goOn}
-                      onShare={quote ? () => setSharing(true) : undefined}
+                      onShare={shared ? () => setSharing(true) : undefined}
+                      shareReward={reward}
                       rating={rating}
                       onRate={canRedo ? rate : undefined}
                     />
@@ -723,7 +726,7 @@ export default function ChatRoomScreen() {
         }}
       />
 
-      {quote ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} quote={quote} /> : null}
+      {shared ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} lines={shared} /> : null}
     </Screen>
   );
 }

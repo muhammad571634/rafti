@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { DAILY_CHECK_IN, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
+import { DAILY_CHECK_IN, PAID_SHARES_PER_DAY, SHARE_REWARD, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import { MEMORY_SYNC_LIMITS } from '../../src/ai/session-types.ts';
 import { cleanLocale, cleanMemorySync, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
 import {
@@ -31,6 +31,7 @@ function makeDb(overrides: Partial<Db>): Db {
     walletCredit: unused,
     walletCheckIn: unused,
     walletSpin: unused,
+    walletShare: unused,
     syncMessages: unused,
     messagesAfter: unused,
     syncMemories: unused,
@@ -329,6 +330,18 @@ describe('the wallet API', () => {
     assert.equal(((await (await call(app, '/v1/wallet/spin', {})).json()) as { index: number }).index, 2);
     assert.deepEqual((rules[0] as { ladder: unknown }).ladder, DAILY_CHECK_IN);
     assert.deepEqual((rules[1] as { weights: unknown }).weights, WHEEL_WEIGHTS);
+  });
+
+  it('pays a shared card by the app’s own numbers, on every server', async () => {
+    const rules: unknown[] = [];
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({ walletShare: async (_user, r) => (rules.push(r), { amount: 5, left: 2, wallet: state }) }),
+    });
+    const res = await call(app, '/v1/wallet/share', {});
+    assert.equal(res.status, 200);
+    assert.equal(((await res.json()) as { left: number }).left, 2);
+    assert.deepEqual(rules, [{ amount: SHARE_REWARD, perDay: PAID_SHARES_PER_DAY }]);
   });
 
   it('takes grants only on a test server that allows them; ads and shares burn, purchases stay', async () => {

@@ -11,6 +11,14 @@ export const DAILY_CHECK_IN_TOP = 100;
 /** The lucky wheel's one spin a day; the app has no ads to buy more (owner, 2026-10-22). */
 export const FREE_SPINS_PER_DAY = 1;
 
+/**
+ * Sharing a card (a chat's lines, a bond on Us) pays a few free shells, but only the first shares
+ * of the day (owner, 2026-10-30: free advertising, never a shell farm). The share sheet cannot tell
+ * whether anyone saw it, so the daily cap is the whole guard; the server keeps it.
+ */
+export const SHARE_REWARD = 5;
+export const PAID_SHARES_PER_DAY = 3;
+
 /** Lucky Wheel segments, clockwise from the pointer. */
 export const WHEEL_SEGMENTS = [5, 20, 10, 50, 5, 30, 10, 100] as const;
 /** Relative odds per segment: the big prizes are rare, and a spin pays about 8 shells on average. */

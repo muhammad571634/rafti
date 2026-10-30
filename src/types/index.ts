@@ -864,8 +864,9 @@ export interface DailyState {
   adsWatched: number;
   spinDay?: string;
   spinsUsed: number;
-  /** The day the share reward was last paid */
+  /** The day `sharesPaid` counts: shared cards that paid shells (`PAID_SHARES_PER_DAY` a day). */
   shareDay?: string;
+  sharesPaid?: number;
   /** Messages sent today, for the members' fair-use limit */
   messagesDay?: string;
   messagesSent?: number;

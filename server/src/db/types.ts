@@ -7,6 +7,7 @@ import type {
   MemorySyncRequest,
   MessageSyncRequest,
   MessagesPage,
+  ShareResult,
   SpendRequest,
   SpinResult,
   WalletState,
@@ -21,6 +22,7 @@ export type {
   MemorySyncRequest,
   MessageSyncRequest,
   MessagesPage,
+  ShareResult,
   SpendRequest,
   SpinResult,
   WalletState,
@@ -56,6 +58,8 @@ export interface Db {
   walletCredit(userId: string, request: GrantRequest & { free: boolean }): Promise<WalletState>;
   walletCheckIn(userId: string, rules: { ladder: readonly number[]; top: number }): Promise<CheckInResult>;
   walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
+  /** A shared card: `amount` free shells for each of the first `perDay` shares of the user's day, then nothing. */
+  walletShare(userId: string, rules: { amount: number; perDay: number }): Promise<ShareResult>;
 
   // The chats (B1.3b, supabase/migrations/*_b1_message_sync.sql).
   /** One sync, all or nothing; answers the user's newest `seq`. */

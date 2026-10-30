@@ -17,6 +17,7 @@ import type {
   MessageSyncRequest,
   MessageSyncResult,
   MessagesPage,
+  ShareResult,
   SpendRequest,
   SpinResult,
   WalletState,
@@ -96,6 +97,7 @@ export const serverWallet = {
   grant: (accessToken: string, request: GrantRequest) => call<WalletState>('/v1/wallet/grant', post(accessToken, request), 8000),
   checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
   spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
+  share: (accessToken: string) => call<ShareResult>('/v1/wallet/share', post(accessToken, {}), 8000),
 };
 
 /**
