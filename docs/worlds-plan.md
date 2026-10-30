@@ -87,6 +87,26 @@ comments, $0.50):
 
 **Google Trends:** two Apify actors failed (timed out, "scraping failed"); no data.
 
+**TikTok, genre pass** (2026-10-30, top 10 videos per hashtag, medians; "tag" = the hashtag's all-time views), to pick
+the third new world:
+
+| Hashtag | Views | Saves | Tag |
+| --- | ---: | ---: | ---: |
+| villainess | 459k | 15.0k | 387M |
+| darkromance | 331k | 4.0k | 41B |
+| hockeyromance | 77k | 1.5k | 4.1B |
+| mafiaromance | 53k | 0.8k | 6.1B |
+| werewolfromance | 39k | 0.1k | 293M |
+| fantasyromance | 36k | 0.2k | 4.2B |
+| sportsromance | 34k | 1.5k | 3.6B |
+| vampireromance | 18k | 0.3k | 470M |
+| monsterromance | 9k | 0.9k | 1.0B |
+| paranormalromance | 6k | 0.1k | 1.1B |
+| spaceromance | 2k | 0 | 0.9M |
+| scifiromance | 2k | 0 | 173M |
+
+Villainess and dark romance lead by far. Sports (hockey) beats paranormal, and sci-fi is nearly absent on TikTok.
+
 **Other signals**
 - Romance leads webtoons at about 27% of the market, fantasy follows at about 22%. Wattpad: romance, teen, fanfic.
 - The 2026 trope lists repeat the same names: enemies to lovers, forced proximity, slow burn, fake dating, grumpy ×
