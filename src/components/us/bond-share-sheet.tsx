@@ -1,24 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { ShareCardSheet, ShareLevelPill } from '@/components/share-card-sheet';
+import type { Ionicons } from '@expo/vector-icons';
+import type { SFSymbol } from 'sf-symbols-typescript';
+
+import { ShareCardSheet } from '@/components/share-card-sheet';
 import { CharacterAvatar, SFIcon, Txt, UserAvatar } from '@/components/ui';
-import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, radius, space } from '@/theme';
+import { colors, radius, space, systemColors } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
 const FACE = 72;
 const RING = 3;
 const HEART = 28;
+const TILE = 34;
 
 /**
  * Share on Us (owner's streak-card prototype, 2026-10-30, as direction): you and them face to face
- * with a mint heart between and your names, how many days together in the Today hero's big figure,
- * the level, and the three figures the Us card shows (intimacy, day streak, first met) on a white
- * panel. No big photo and nothing besides (owner, as for the chat card). Only what the app really
- * counts: no rank or "top %".
+ * with a mint heart between and your names, then how many days together, big, and the three figures
+ * the Us card shows (intimacy, day streak, first met), each under its own colour glyph as Us draws
+ * its moments, on a white panel. Owner: no big photo, no world, AI or level line; only what the app
+ * really counts (no rank or "top %").
  */
 export function BondShareSheet({
   visible,
@@ -39,7 +42,6 @@ export function BondShareSheet({
   // The title's "&" as it is, as groups write it: an English "and" reads wrong in other languages.
   const pair = user.displayName ? `${user.displayName} & ${name}` : name;
   const together = `${days} ${t('us.daysLabel', { count: days })}`;
-  const level = `${t('closeness.level', { level: relationship.level })} · ${phrase(relationship.levelTitle)}`;
   const met = new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
 
   return (
@@ -47,7 +49,7 @@ export function BondShareSheet({
       visible={visible}
       onClose={onClose}
       hint={t('us.shareHint', { name })}
-      fallback={[`${pair}: ${together}`, level, t('app.name')].join('\n\n')}>
+      fallback={[`${pair}: ${together}`, t('app.name')].join('\n\n')}>
       <View style={styles.head}>
         <View style={styles.faces}>
           <View style={styles.ring}>
@@ -63,28 +65,44 @@ export function BondShareSheet({
         <Txt variant="title" center lines={1}>
           {pair}
         </Txt>
-        <View style={styles.daysLine}>
-          <Txt variant="heroFigure" style={styles.figure}>
-            {days}
-          </Txt>
-          <Txt variant="heroUnit">{t('us.daysLabel', { count: days })}</Txt>
-        </View>
-        <ShareLevelPill level={relationship.level} title={relationship.levelTitle} />
+        {/* The milestone itself, as big as the card allows. */}
+        <Txt variant="heroFigure" style={styles.days}>
+          {days}
+        </Txt>
+        <Txt variant="heroUnit" center>
+          {t('us.daysLabel', { count: days })}
+        </Txt>
       </View>
 
       {/* Content on the aurora stays solid (design-style §1): the Us card's three figures. */}
       <View style={styles.panel}>
-        <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-        <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
-        <Stat value={met} label={t('us.statMet')} />
+        <Stat ios="heart.fill" icon="heart" fill={colors.bond} value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
+        <Stat ios="flame.fill" icon="flame" fill={systemColors.orange} value={String(relationship.streakDays)} label={t('us.statStreak')} />
+        <Stat ios="sparkles" icon="sparkles" fill={systemColors.purple} value={met} label={t('us.statMet')} />
       </View>
     </ShareCardSheet>
   );
 }
 
-function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
+/** One figure under its glyph: a system-colour circle with a white symbol, as Us draws its moments. */
+function Stat({
+  ios,
+  icon,
+  fill,
+  value,
+  label,
+}: {
+  ios: SFSymbol;
+  icon: keyof typeof Ionicons.glyphMap;
+  fill: string;
+  value: string;
+  label: string;
+}) {
   return (
-    <View style={[styles.stat, divided && styles.statDivided]}>
+    <View style={styles.stat}>
+      <View style={[styles.tile, { backgroundColor: fill }]}>
+        <SFIcon ios={ios} icon={icon} size={16} color={colors.white} />
+      </View>
       <Txt style={styles.statValue}>{value}</Txt>
       <Txt variant="caption" color={colors.textSecondary} lines={1}>
         {label}
@@ -113,8 +131,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.surface,
   },
-  daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, marginTop: space.sm, marginBottom: space.xs },
-  figure: { fontVariant: ['tabular-nums'] },
+  // The Today hero's figure face, nearly twice its size.
+  days: { marginTop: space.sm, fontSize: 80, lineHeight: 86, fontVariant: ['tabular-nums'] },
   panel: {
     flexDirection: 'row',
     marginHorizontal: space.md,
@@ -124,10 +142,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   stat: { flex: 1, alignItems: 'center', gap: 2, paddingHorizontal: space.xs },
-  statDivided: {
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: aurora.separator,
-  },
+  tile: { width: TILE, height: TILE, borderRadius: TILE / 2, alignItems: 'center', justifyContent: 'center', marginBottom: space.xs },
   statValue: { fontSize: 20, fontWeight: '700', fontVariant: ['tabular-nums'], color: colors.text },
 });

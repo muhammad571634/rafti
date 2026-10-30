@@ -6,7 +6,6 @@ import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } f
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { AuroraBackground, BrandArt, Button, ShellIcon, SFIcon, Sheet, Txt } from '@/components/ui';
-import { phrase } from '@/i18n';
 import { haptic } from '@/lib/haptics';
 import { shareImage } from '@/lib/share';
 import { shareReward, useAppStore } from '@/store/use-app-store';
@@ -140,19 +139,6 @@ export function SharePill({
   );
 }
 
-/** "Lv 33 · Beloved" in the bond's mint, as the cards show how close you are. */
-export function ShareLevelPill({ level, title }: { level: number; title: string }) {
-  const { t } = useTranslation();
-  return (
-    <View style={styles.level}>
-      <SFIcon ios="heart.fill" icon="heart" size={11} color={colors.bond} />
-      <Txt style={styles.levelText} lines={1}>
-        {`${t('closeness.level', { level })} · ${phrase(title)}`}
-      </Txt>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   hint: { marginTop: -space.sm, marginBottom: space.lg, paddingHorizontal: space.sm },
   // Concentric with the sheet: its 38pt corner less the 16pt inset.
@@ -187,14 +173,4 @@ const styles = StyleSheet.create({
   pillWide: { gap: space.sm, height: 44, borderRadius: 22 },
   pillLabel: { fontSize: 16, fontWeight: '700', color: colors.textOnPrimary },
   pillAmount: { fontSize: 13, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
-  level: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: space.sm,
-    paddingVertical: 2,
-    borderRadius: radius.pill,
-    backgroundColor: colors.bondSoft,
-  },
-  levelText: { fontSize: 12, fontWeight: '600', color: colors.bondText },
 });

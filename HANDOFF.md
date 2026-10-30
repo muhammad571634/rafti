@@ -38,7 +38,9 @@
 - Chat card (owner, after seeing a photo version on the A51: "only the chat and their name"): round face + name,
   then `shareLines` (up to 6 lines ending at their newest written one, photos and voice notes in their own bubbles,
   ~700 characters at most, a call ends it) in the chat's own runs, then the wordmark, tagline and mascot.
-- Us card, same rule: no big photo, no world/AI line: two round faces with a mint heart, names, days, level, figures.
+- Us card, same rule (owner: drop "world · AI character" and "Level 4 · Friend", make the days bigger, be creative in
+  the white panel): two round faces with a mint heart, names, the day count at 80pt, and the three figures each under
+  a system-colour glyph as Us draws its moments (mint heart, orange flame, purple sparkles).
 - Shared sheet: the Share button carries "+5 🐚" while it pays, a ✓ and a success haptic when a share paid.
 - tsc 0, npm test 483/483, server tests 46/46, check:locales pass. EAS update sent.
 
