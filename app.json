@@ -2,7 +2,7 @@
   "expo": {
     "name": "Sigmazam",
     "slug": "sigmazam",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "sigmazam",
@@ -30,7 +30,6 @@
     },
     "android": {
       "package": "com.sigmazam.app",
-      "versionCode": 2,
       "adaptiveIcon": {
         "backgroundColor": "#FDF6EE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
