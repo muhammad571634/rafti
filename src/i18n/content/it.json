@@ -1285,7 +1285,7 @@
     "ds_rain": {
       "rounds": [
         {
-          "line": "{name} tiene l'ombrello un po' troppo inclinato dalla tua parte. \"Ti stai bagnando,\" gli fai notare. \"E allora?\"",
+          "line": "{name} tiene l'ombrello un po' troppo inclinato dalla tua parte. \"Ti stai bagnando,\" {g:le|gli} fai notare. \"E allora?\"",
           "choices": [
             {
               "text": "Tiralo sotto l'ombrello con te.",
@@ -1394,7 +1394,7 @@
           "line": "Una lontra appoggia le zampette contro il vetro proprio davanti a {name}.",
           "choices": [
             {
-              "text": "\"Gli piaci. Ha buon gusto.\"",
+              "text": "\"Le piaci. Ha buon gusto.\"",
               "reply": "\"Stai flirtando tramite una lontra?\" \"Forse.\""
             },
             {
@@ -1466,7 +1466,7 @@
           "line": "Lanterne ovunque e profumo di mais arrostito. {name} ti sta già trascinando verso le bancarelle.",
           "choices": [
             {
-              "text": "Lascia che sia lui a fare strada.",
+              "text": "Lascia fare strada con entusiasmo.",
               "reply": "\"Prima il mais, poi la pesca dei pesci rossi. Ho un piano dettagliato.\""
             },
             {
@@ -1484,7 +1484,7 @@
           "choices": [
             {
               "text": "Vinciglielo tu.",
-              "reply": "Terzo centro. L'orso ora è più alto di {name}, che si rifiuta di portarlo da solo."
+              "reply": "Terzo centro. L'orso ora è più alto di {name}, che si rifiuta di portarlo {g:da sola|da solo}."
             },
             {
               "text": "\"Ancora un tentativo. Credo in te.\"",
@@ -1620,7 +1620,7 @@
           ]
         },
         {
-          "line": "L'alba filtra dalle veneziane. {name} salva il file e gli dà il tuo nome.",
+          "line": "L'alba filtra dalle veneziane. {name} salva il file e lo battezza col tuo nome.",
           "choices": [
             {
               "text": "\"Potrò ascoltarla quando sarà pronta?\"",
@@ -1704,7 +1704,7 @@
             },
             {
               "text": "Ridi e resta seduto.",
-              "reply": "Balla da solo, malissimo, solo per farti ridere. Funziona."
+              "reply": "Balla {g:da sola|da solo}, malissimo, solo per farti ridere. Funziona."
             }
           ]
         },
@@ -1826,7 +1826,7 @@
         "line": "Da qualche parte vicino a {place}, un musicista di strada intona una canzone che conoscete entrambi.",
         "choices": [
           {
-            "text": "Canta insieme a lui, stonando.",
+            "text": "Canta insieme, stonando.",
             "reply": "{name} si unisce a te, ancora più stonato. Il musicista si arrende e si mette a ridere."
           },
           {
@@ -1886,7 +1886,7 @@
           },
           {
             "text": "\"Odio le foto.\"",
-            "reply": "\"Una sola. Solo una.\" Gli concedi uno scatto."
+            "reply": "\"Una sola. Solo una.\" {g:Le|Gli} concedi uno scatto."
           }
         ]
       },
@@ -1894,7 +1894,7 @@
         "line": "Un bambino vicino a {place} vi chiede se siete fidanzati.",
         "choices": [
           {
-            "text": "\"Chiedilo a lui.\"",
+            "text": "\"Chiedilo a chi sa.\"",
             "reply": "{name} balbetta qualcosa. Il bambino è entusiasta."
           },
           {
@@ -1971,7 +1971,7 @@
               "reply": "{name} non sa cosa ribattere. Per una volta."
             },
             {
-              "text": "Soffialo verso di lui.",
+              "text": "Soffialo in quella direzione.",
               "reply": "\"Hai appena desiderato me?\" Fa un sorrisetto malizioso."
             },
             {
@@ -2007,7 +2007,7 @@
               "reply": "La sua mano indugia un attimo più del necessario."
             },
             {
-              "text": "Fai la stessa cosa a lui.",
+              "text": "Fai la stessa cosa con i suoi capelli.",
               "reply": "{name} ride dolcemente. \"Siamo ridicoli.\""
             },
             {
@@ -2719,7 +2719,7 @@
               "reply": "\"La mia salvezza.\" Ride senza fiato, tenendoti ancora la mano."
             },
             {
-              "text": "\"No, gli assomiglia e basta.\"",
+              "text": "\"No, somiglia soltanto.\"",
               "reply": "{name} annuisce serissimo. Il fan non è affatto convinto."
             },
             {
@@ -2920,7 +2920,7 @@
               "reply": "\"Ricordo ogni minima cosa su di te. Sta diventando un problema.\""
             },
             {
-              "text": "Scambia le tazze con lui.",
+              "text": "Scambia le tazze per assaggiare.",
               "reply": "\"Ehi!\" Assaggia il tuo e fa una smorfia. Tu ridi."
             },
             {
@@ -2942,7 +2942,7 @@
             },
             {
               "text": "Scaccialo via.",
-              "reply": "\"Che crudeltà,\" ti dice {name}, e gli gratta le orecchie."
+              "reply": "\"Che crudeltà,\" ti dice {name}, e accarezza le orecchie al cagnolino."
             }
           ]
         }
@@ -3943,7 +3943,7 @@
           "Continuo a pensare a questo: \"{m}\". Mi racconti qualcosa di più?"
         ],
         "tell": [
-          "Una volta mi ero segnato questa cosa su di te: \"{m}\". Ci penso più spesso di quanto dovrei."
+          "Una volta mi ero {g:segnata|segnato} questa cosa su di te: \"{m}\". Ci penso più spesso di quanto dovrei."
         ]
       },
       "tellStory": [
@@ -4075,7 +4075,7 @@
           "Ma guardaci un po’. Voglio assolutamente questa foto sulla mia parete."
         ],
         "film": [
-          "Quattro scatti e sono diverso in ognuno. Tu invece sei splendida in tutte e quattro.",
+          "Quattro scatti e sono {g:diversa|diverso} in ognuno. Tu invece sei splendida in tutte e quattro.",
           "La terza foto è la mia preferita. Non chiedermi il perché."
         ],
         "studio": [
@@ -4089,7 +4089,7 @@
       },
       "boardReply": [
         "Ho trovato la tua nota sulla bacheca: \"{quote}\" L’ho riletta tre volte. Me la tengo.",
-        "Mi hai lasciato una nota! \"{quote}\" ...ecco, ora sto sorridendo da solo allo schermo.",
+        "Mi hai lasciato una nota! \"{quote}\" ...ecco, ora sto sorridendo {g:da sola|da solo} allo schermo.",
         "\"{quote}\" — l’ho vista sulla bacheca. Me lo dici ancora a voce qualche volta?"
       ]
     },
@@ -4160,7 +4160,7 @@
       "photoLines": [
         "Wow, chi ha scattato questa foto? È stupenda.",
         "Mandala subito anche a me in privato.",
-        "Sono rimasto a fissare questa immagine molto più a lungo del dovuto."
+        "Sono {g:rimasta|rimasto} a fissare questa immagine molto più a lungo del dovuto."
       ],
       "voiceLines": [
         "L’ho ascoltato due volte di seguito.",
@@ -4370,7 +4370,7 @@
         ],
         "2": [
           "Due giorni. Ho contato. Non che stessi attivamente tenendo il conto.",
-          "Mi ero tenuto da parte una cosa divertente da dirti. Ma perde di senso più aspetto."
+          "Mi ero {g:tenuta|tenuto} da parte una cosa divertente da dirti. Ma perde di senso più aspetto."
         ],
         "3": [
           "Inizio a scriverti messaggi e poi li cancello. Ma questo qui te lo mando.",
@@ -4381,8 +4381,8 @@
           "Cinque giorni sono davvero troppi per parlare solo con me stesso. Vieni a salvarmi."
         ],
         "7": [
-          "È già passata una settimana. Giorno {days} insieme, e sto contando tutto da solo.",
-          "Una settimana intera. Non sono arrabbiato. Vorrei solo avere tue notizie."
+          "È già passata una settimana. Giorno {days} insieme, e sto contando tutto {g:da sola|da solo}.",
+          "Una settimana intera. Non sono {g:arrabbiata|arrabbiato}. Vorrei solo avere tue notizie."
         ],
         "14": [
           "Smetterò di insistere per adesso. Ma la mia porta resta aperta, va bene? Quando te la sentirai.",
@@ -4524,7 +4524,7 @@
           "morning": [
             "Buongiorno, tesoro mio. Hai riposato bene?",
             "Buongiorno, amore. Copriti bene che fa fresco oggi.",
-            "Mi sono svegliato pensando a te. Ti auguro una splendida giornata."
+            "Mi sono {g:svegliata|svegliato} pensando a te. Ti auguro una splendida giornata."
           ],
           "sunday": [
             "È domenica, tesoro. Li chiami i tuoi vecchi nonni?",
@@ -4540,7 +4540,7 @@
           "Vieni qui, lasciati guardare. Come te la passi ultimamente?"
         ],
         "sibling": [
-          "Finalmente! Bene, aggiornami. Cosa mi sono perso?",
+          "Finalmente! Bene, aggiornami. Cosa mi sono {g:persa|perso}?",
           "Così adesso devo sopportarti, eh? 😏 Come stai?",
           "Ehi tu. C’è qualcuno che ti dà fastidio? Dimmelo subito."
         ],
@@ -4675,7 +4675,7 @@
       "close": {
         "warm": [
           "Pronti per la prossima 🙂",
-          "Sono fiero di te. La prossima settimana insieme?"
+          "Sono {g:fiera|fiero} di te. La prossima settimana insieme?"
         ],
         "teasing": [
           "La prossima settimana cerca di stare al mio passo 😏",
@@ -4866,7 +4866,7 @@
         ],
         "happy": [
           "Ieri è stata una giornata stupenda, e so esattamente il perché.",
-          "C’è qualcosa di ieri che continua a farmi sorridere da solo nel vuoto."
+          "C’è qualcosa di ieri che continua a farmi sorridere {g:da sola|da solo} nel vuoto."
         ],
         "soft": [
           "Solo qualche messaggio scambiato ieri, eppure sono stati la parte migliore della giornata.",
@@ -4881,7 +4881,7 @@
         ]
       },
       "heavyOpeners": [
-        "Ieri sembrava una giornata pesante per te. Ti ho pensato fin dal momento in cui mi sono svegliato.",
+        "Ieri sembrava una giornata pesante per te. Ti ho pensato fin dal momento in cui mi sono {g:svegliata|svegliato}.",
         "Continuo a ripensare a quanto sia stata dura la giornata di ieri per te."
       ],
       "heavyClosers": [
@@ -4893,7 +4893,7 @@
         "Rivivo continuamente il nostro momento speciale a {title}. Ogni singolo attimo."
       ],
       "quoteLines": [
-        "Hai detto: \"{quote}\". L’ho riletto più volte di quante sarei disposto ad ammettere.",
+        "Hai detto: \"{quote}\". L’ho riletto più volte di quante sarei {g:disposta|disposto} ad ammettere.",
         "\"{quote}\". Questa è la frase che porto con me della giornata di ieri.",
         "Hai scritto \"{quote}\" e non sapevo bene cosa rispondere al momento, quindi ti rispondo qui."
       ],
@@ -4983,7 +4983,7 @@
           "Ah, capisco. Forse è meglio così. Tu stai bene?"
         ],
         "done": [
-          "Sììì! Sono così fiero di te 🎉",
+          "Sììì! Sono così {g:fiera|fiero} di te 🎉",
           "Ma guardati, come porti a termine tutto!"
         ],
         "wake": [
@@ -5040,7 +5040,7 @@
         ],
         "week:rough": [
           "Allora sono felice che sia finita. Mi dici il momento peggiore e poi lo archiviamo per sempre?",
-          "Le settimane dure finiscono. Questa è finita. Sono pronto per la prossima insieme a te."
+          "Le settimane dure finiscono. Questa è finita. Sono {g:pronta|pronto} per la prossima insieme a te."
         ],
         "week:thanks": [
           "Alla prossima settimana 🥂",
@@ -5075,7 +5075,7 @@
           "Va bene, sono qui. Ti va di parlare o preferisci che ti racconti qualcosa di rilassante?"
         ],
         "thread:goal:good": [
-          "Ma guardati! Sono così fiero di te 💪",
+          "Ma guardati! Sono così {g:fiera|fiero} di te 💪",
           "Visto? Ce la puoi fare benissimo. Continua così!"
         ],
         "thread:goal:rough": [
@@ -5108,7 +5108,7 @@
         "teasesWhenNervous": {
           "tag": "teasing",
           "tagline": "Ti stuzzica quando la situazione si fa seria",
-          "greeting": "Oh, sei tu. Meno male. Mi stavo annoiando ad avere ragione su tutto da solo.",
+          "greeting": "Oh, sei tu. Meno male. Mi stavo annoiando ad avere ragione su tutto {g:da sola|da solo}.",
           "other": "Stai arrossendo per caso?",
           "reply": "Fa caldo qui dentro. Ovviamente. Smettila di guardarmi in quel modo."
         },
@@ -5124,7 +5124,7 @@
           "tagline": "Flirta non appena le cose si fanno concrete",
           "greeting": "Ehi, mistero. Hai l’aria di chi è venuto a farmi una domanda seria. Non farlo.",
           "other": "Perché tutta quella fretta di andare via ieri?",
-          "reply": "Perché avevi troppo fascino e sono andato nel panico. Prossima domanda."
+          "reply": "Perché avevi troppo fascino e sono {g:andata|andato} nel panico. Prossima domanda."
         },
         "proudLonely": {
           "tag": "confident",
@@ -5173,7 +5173,7 @@
           "tagline": "Troppo sulle sue per ammettere quanto ci tenga",
           "greeting": "Oh. Tu. Non è mica che controllassi il telefono ogni cinque minuti, sia chiaro.",
           "other": "Ti sono mancato?",
-          "reply": "Mancato è una parola grossa. Mi sono accorto della tua assenza. Ogni singola ora."
+          "reply": "Mancato è una parola grossa. Mi sono {g:accorta|accorto} della tua assenza. Ogni singola ora."
         },
         "toughOutsideKindInside": {
           "tag": "grumpy",
