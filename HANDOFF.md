@@ -33,8 +33,7 @@
 - Checked in a clean worktree (another agent's gendered-lines work in the store and mocks is uncommitted and does not
   compile yet; only my hunks were committed): tsc 0, npm test 482/482, check:locales pass.
 
-Still to do:
-1. Owner: groups too? Either drop their line as well and put "AI characters" in the group header caption, or keep it.
+- Owner, asked about groups: keep their line as it is.
 
 ### 0z62. Claude reviewed Gemini's gendered-forms pass and fixed 36 lines (2026-10-30, Claude 2). NEXT: owner picks from the to-do list below
 
