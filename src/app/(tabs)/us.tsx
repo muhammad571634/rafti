@@ -20,6 +20,7 @@ import {
   UserAvatar,
 } from '@/components/ui';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
@@ -99,6 +100,7 @@ export default function UsScreen() {
   const [publishOpen, setPublishOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>('all');
+  const [sharing, setSharing] = useState(false);
   const unread = useInboxUnread();
 
   const bonds = useMemo(
@@ -246,45 +248,60 @@ export default function UsScreen() {
         </ScrollView>
 
         {/* The bond at a glance: the level ring, days and title, then three figures; it opens the chat. */}
-        <PressableScale
-          scaleTo={0.99}
-          style={styles.hero}
-          disabled={!conversation}
-          accessibilityRole="button"
-          accessibilityLabel={`${displayName(character, relationship)}, ${t('us.level', { level: relationship.level })}, ${days} ${t('us.daysLabel', { count: days })}`}
-          onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
-          <View style={styles.together}>
-            <LevelRing progress={progress} level={relationship.level} label={t('us.ringLevel')} />
-            <View style={styles.grow}>
-              <View style={styles.daysLine}>
-                <Txt style={styles.days}>{days}</Txt>
-                <Txt style={styles.daysLabel}>{t('us.daysShort', { count: days })}</Txt>
+        <View style={styles.hero}>
+          <PressableScale
+            scaleTo={0.99}
+            disabled={!conversation}
+            accessibilityRole="button"
+            accessibilityLabel={`${displayName(character, relationship)}, ${t('us.level', { level: relationship.level })}, ${days} ${t('us.daysLabel', { count: days })}`}
+            onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
+            <View style={styles.together}>
+              <LevelRing progress={progress} level={relationship.level} label={t('us.ringLevel')} />
+              <View style={styles.grow}>
+                <View style={styles.daysLine}>
+                  <Txt style={styles.days}>{days}</Txt>
+                  <Txt style={styles.daysLabel}>{t('us.daysShort', { count: days })}</Txt>
+                </View>
+                <Txt style={styles.levelText} lines={1}>
+                  {phrase(relationship.levelTitle)}
+                </Txt>
+                <Txt style={styles.levelMeta} lines={1}>
+                  {t('us.toLevel', {
+                    count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
+                    level: relationship.level + 1,
+                  })}
+                </Txt>
               </View>
-              <Txt style={styles.levelText} lines={1}>
-                {phrase(relationship.levelTitle)}
-              </Txt>
-              <Txt style={styles.levelMeta} lines={1}>
-                {t('us.toLevel', {
-                  count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
-                  level: relationship.level + 1,
-                })}
-              </Txt>
+              <View style={styles.pair}>
+                <UserAvatar user={user} size={PAIR} />
+                <CharacterAvatar character={character} size={PAIR} ring ringColor={aurora.card} style={styles.overlap} />
+              </View>
             </View>
-            <View style={styles.pair}>
-              <UserAvatar user={user} size={PAIR} />
-              <CharacterAvatar character={character} size={PAIR} ring ringColor={aurora.card} style={styles.overlap} />
-            </View>
-          </View>
 
-          <View style={styles.stats}>
-            <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
-            <Stat
-              value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
-              label={t('us.statMet')}
-            />
-          </View>
-        </PressableScale>
+            <View style={styles.stats}>
+              <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
+              <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
+              <Stat
+                value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
+                label={t('us.statMet')}
+              />
+            </View>
+          </PressableScale>
+
+          {/* The system Share symbol opens the bond's card (HIG Activity views): one quiet control, a
+              sibling of the chat button above so VoiceOver reaches it on its own. */}
+          <PressableScale
+            style={styles.share}
+            scaleTo={0.97}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}`}
+            onPress={() => setSharing(true)}>
+            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={16} color={colors.brandText} />
+            <Txt style={styles.planPillText} color={colors.brandText}>
+              {t('common.share')}
+            </Txt>
+          </PressableScale>
+        </View>
 
         <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} style={styles.card} />
 
@@ -417,6 +434,13 @@ export default function UsScreen() {
         day={day}
         character={selected?.character}
         onSubmit={submitPlan}
+      />
+      <BondShareSheet
+        visible={sharing}
+        onClose={() => setSharing(false)}
+        character={character}
+        relationship={relationship}
+        days={days}
       />
     </Screen>
   );
@@ -646,6 +670,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySofter,
   },
   planPillText: { fontSize: 15, fontWeight: '600' },
+  // The plan pill's tint, the card's width, under the three figures.
+  share: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.xs + 2,
+    height: 40,
+    marginTop: space.md,
+    borderRadius: 20,
+    backgroundColor: colors.primarySofter,
+  },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
   planBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
   timeTile: { minWidth: 48, justifyContent: 'center' },

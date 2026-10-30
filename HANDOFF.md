@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z65. Us: share the bond as a card (2026-10-30, Claude 2). NEXT: owner checks Us → Share on the A51; new APK for pictures
+
+- Owner's streak-card prototype (`image copy 3.png`, `image copy 4.png`, direction only: "think the logic through").
+  HIG read first: Designing for iOS (few onscreen controls, actions within thumb reach) and Activity views (the Share
+  button opens the share sheet; no second way to do it).
+- Us hero card: a quiet full-width Share capsule (square.and.arrow.up, the "+ Plan" pill's tint) under the three
+  figures, a sibling of the chat button so VoiceOver reaches it; not the prototype's gradient banner.
+- `src/components/us/bond-share-sheet.tsx`: you and them face to face with a mint heart coin, "You & Name", world ·
+  "AI character", the day count in the Today hero's `heroFigure`/`heroUnit`, the mint level pill, and intimacy · day
+  streak · first met on a white panel. Not taken: "Top 1%" (the app ranks nobody), "Official milestone", the
+  find-a-partner link (a picture cannot be tapped), any reward for sharing.
+- `src/components/share-card-sheet.tsx`: the sheet both cards share (title, hint, the card on the aurora with the
+  wordmark, tagline and peeking mascot, Share). The chat card now uses it; `ShareLevelPill` is shared too.
+- Keys: `chat.share`/`chat.shareTitle` moved to `common.share`/`common.shareAsPicture`; new `us.shareHint` (14 locales).
+- tsc 0, npm test 483/483, check:locales pass. The installed APK shares the text until the new build.
+
 ### 0z64. Every shared line follows its speaker's gender; brief for the translations (2026-10-30, Claude 2). NEXT: Gemini runs `docs/agent-tasks/gendered-character-forms.md`, then Claude reviews
 
 - Bug found: `fill()` resolves `{g:female|male}` by the speaker's gender, but the store never passed one. Every mock

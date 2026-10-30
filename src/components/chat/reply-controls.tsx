@@ -137,7 +137,7 @@ export function ReplyControls({
           onPress={onShare}
           style={styles.redo}
           accessibilityRole="button"
-          accessibilityLabel={t('chat.share')}>
+          accessibilityLabel={t('common.share')}>
           <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={colors.textSecondary} />
         </PressableScale>
       ) : null}
