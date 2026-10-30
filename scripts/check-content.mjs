@@ -44,7 +44,7 @@ if (filesToCheck.length === 0) {
 }
 
 const placeholderRegex = /\{+[^{}]+\}+/g;
-const G_SECTIONS = /^(?:voice|datePlaces|dateThemes)\.|^worlds\.[^.]+\.dateRounds\b/;
+const G_SECTIONS = /^(?:voice|datePlaces|dateThemes)\.|^worlds\.[^.]+\.(?:dateRounds\b|story\.events\.[^.]+\.(?:line|round)\b)/;
 const emojiRegex = /[\p{Extended_Pictographic}\uFE0F]/gu;
 
 function extractPlaceholders(str) {
@@ -101,7 +101,7 @@ for (const file of filesToCheck) {
         }
         // The app fills {g:} with the speaker's gender only in these sections; elsewhere it would show as written.
         if (!G_SECTIONS.test(currentPath)) {
-          errors.push(`${currentPath}: {g:...} only works in voice, datePlaces, dateThemes and worlds.*.dateRounds; word this line neutrally`);
+          errors.push(`${currentPath}: {g:...} only works in voice, datePlaces, dateThemes, worlds.*.dateRounds and worlds.*.story.events.*.line/round; word this line neutrally`);
         }
       }
 

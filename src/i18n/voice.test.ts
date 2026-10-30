@@ -2,9 +2,16 @@ import assert from 'node:assert/strict';
 import test, { describe } from 'node:test';
 
 import { groupJoinLines } from '../mock/group';
+import { worldNewsLine } from '../mock/world-voice';
 import { fill, setVoiceSource, voice } from './voice';
 
 describe('voice and fill', () => {
+  test('an event line follows the gender of the friend who texts it', () => {
+    const news = { key: 'world:event', note: 'Bonfire', line: '{g:Заняла|Занял} тебе место.' };
+    assert.equal(worldNewsLine(news, 'female'), 'Заняла тебе место.');
+    assert.equal(worldNewsLine(news, 'male'), 'Занял тебе место.');
+  });
+
   test('voice defaults to english when no source is set', () => {
     const en = { hello: 'Hello' };
     assert.deepEqual(voice('test', en), en);

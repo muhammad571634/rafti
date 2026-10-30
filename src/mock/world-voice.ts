@@ -1,6 +1,7 @@
 import { fill, voice } from '../i18n/voice';
 import { pickSeeded } from '../lib/seeded';
 import type { WorldNews } from '../lib/world-story';
+import type { CharacterGender } from '../types';
 
 /**
  * The stand-in for a friend bringing up their world or their own story, when the model is off.
@@ -12,10 +13,11 @@ export const WORLD_VOICE = {
 };
 
 /** What they text about a chapter or an event: the event's own line, or the chapter's beat in a frame. */
-export function worldNewsLine(news: Pick<WorldNews, 'key' | 'note' | 'line'>) {
-  if (news.line) return news.line;
-  return fill(pickSeeded(voice('world', WORLD_VOICE).chapter, news.key), { note: news.note });
+export function worldNewsLine(news: Pick<WorldNews, 'key' | 'note' | 'line'>, gender: CharacterGender | undefined) {
+  if (news.line) return fill(news.line, {}, gender);
+  return fill(pickSeeded(voice('world', WORLD_VOICE).chapter, news.key), { note: news.note }, gender);
 }
 
 /** The line a beat that has just opened adds to a stand-in reply. */
-export const arcLine = (title: string, seed: string) => fill(pickSeeded(voice('world', WORLD_VOICE).arc, seed), { title });
+export const arcLine = (title: string, seed: string, gender: CharacterGender | undefined) =>
+  fill(pickSeeded(voice('world', WORLD_VOICE).arc, seed), { title }, gender);

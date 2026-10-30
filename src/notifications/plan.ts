@@ -425,7 +425,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
         const joinedAt = worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships);
         const news = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now: newsWhen });
         if (!news || told.some((k) => k.startsWith(`${news.key}|`))) continue;
-        say({ id: `world:${news.key}`, kind: 'world', at: newsWhen, characterId: character.id, line: worldNewsLine(news) });
+        say({ id: `world:${news.key}`, kind: 'world', at: newsWhen, characterId: character.id, line: worldNewsLine(news, character.gender) });
         break;
       }
     }

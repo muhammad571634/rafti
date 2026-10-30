@@ -3941,7 +3941,7 @@ function sendWorldNews(set: Setter, get: Getter, at: Date, force = false): strin
         utcOffsetMin: -at.getTimezoneOffset(),
       },
     };
-    writeFirst(set, get, conversationId, worldNewsLine(news), 'world', request, 'nothing');
+    writeFirst(set, get, conversationId, worldNewsLine(news, character.gender), 'world', request, 'nothing');
     return id;
   }
   return null;
@@ -4501,7 +4501,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   const beat = text == null && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
   const standIn = () => {
     const lines = text != null ? [text] : (given ?? (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoided, interests: state.user.interests }) : []));
-    return beat ? [...lines, arcLine(beat.title, `${character?.id}:${beat.atLevel}`)] : lines;
+    return beat ? [...lines, arcLine(beat.title, `${character?.id}:${beat.atLevel}`, character?.gender)] : lines;
   };
 
   const deliver = (written: string[]) => {

@@ -37,6 +37,8 @@ server/.env
 server/node_modules/
 # Every answer of an eval run (server/src/evals/run.ts); only baseline.json is kept
 server/eval-results/
+# A translator's working files (scripts/content-todo.mjs)
+.content-todo/
 
 # typescript
 *.tsbuildinfo
