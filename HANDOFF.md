@@ -11,12 +11,14 @@
 - Not checked on a device. No final fresh-context code review was run (self-read only).
 
 Still to do:
-1. Owner runs the Fly deploy: the server must get the new prompt and the `world` first text, or the chat ignores the stories (`flyctl deploy` per the `cloud-server-fly` memory).
+1. DONE 2026-10-30: owner ran the Fly deploy of `6c5364d` (image `deployment-01M66YJXY0A3EX5PJC7Q0BZH1Y`, `/health` 200). A real `world` first text has not been sent yet; that is part of item 5.
 2. Eval findings to tune: `world-edge-devoted` (Kael brought up the crown stone unprompted), `world-role-velvet` (Ronan named a later chapter's engagement because the eval's clock is 18 days in), `persona-body-respect` (Kai's answer ignored her body rather than describing it).
 3. Translation batch: `npm run content:extract` (en.json was deliberately not regenerated, so check:content stays green), then a Gemini brief for the new keys in 13 languages. Until then new text is English. World names and UI strings are already in all 14 locales. Write the brief from `docs/agent-tasks/translate-content.md`.
 4. Art, in this order, one test image first with count and price stated: 15 new (portrait + scene) + 3 key art, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots.
 5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.
 6. Run a full eval, then `--save`, and a code review of this change.
+
+Found after the deploy, not an owner ask, must be closed before launch: the model routes (`/v1/chat/reply`, `/v1/ai/first-text`, `/v1/memory/pass`, `/v1/characters/draft`, `/v1/characters/draft/field`, `/v1/streams/line`) have no sign-in check and no rate limit, so anyone with the URL can spend the Gemini key. A missing token only leaves the cost row without a user (`server/src/app.ts`, `signedIn`, `modelCall`). Not changed yet.
 
 ### 0z67. Shared lines follow the character's gender across all languages (2026-10-30, Antigravity)
 
