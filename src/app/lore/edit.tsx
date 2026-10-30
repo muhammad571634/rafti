@@ -10,7 +10,7 @@ import { GlassBar, GlassButton, InsetGroup, LargeTitle, Screen, Txt, useScrolled
 import { perkLimit } from '@/economy/perks';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
-import { LORE_ABOUT_MAX, LORE_NAME_MAX } from '@/lib/lorebook';
+import { LORE_ABOUT_MAX, LORE_NAME_MAX, LORE_ROLE_MAX } from '@/lib/lorebook';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
 
@@ -35,6 +35,7 @@ export default function LorebookEditScreen() {
 
   const [name, setName] = useState(existing?.name ?? '');
   const [about, setAbout] = useState(existing?.about ?? '');
+  const [userRole, setUserRole] = useState(existing?.userRole ?? '');
   const [linked, setLinked] = useState<string[]>(existing?.characterIds ?? (linkTo ? [linkTo] : []));
   const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +47,7 @@ export default function LorebookEditScreen() {
   };
 
   const save = () => {
-    const result = saveLorebook({ name, about, characterIds: linked }, existing?.id);
+    const result = saveLorebook({ name, about, characterIds: linked, userRole }, existing?.id);
     if ('problem' in result) {
       haptic.error();
       return setError(t(`lore.problems.${result.problem}`, { max: limit }));
@@ -114,6 +115,19 @@ export default function LorebookEditScreen() {
           </InsetGroup>
           <Txt style={styles.footer}>{t('lore.aboutHint')}</Txt>
 
+          <GroupLabel>{t('lore.yourRole')}</GroupLabel>
+          <InsetGroup>
+            <TextInput
+              value={userRole}
+              onChangeText={setUserRole}
+              placeholder={t('lore.rolePlaceholder')}
+              placeholderTextColor={colors.textFaint}
+              style={styles.roleInput}
+              maxLength={LORE_ROLE_MAX}
+              accessibilityLabel={t('lore.yourRole')}
+            />
+          </InsetGroup>
+
           <GroupLabel>{t('lore.whoKnows')}</GroupLabel>
           {friends.length ? (
             <InsetGroup>
@@ -153,6 +167,7 @@ const styles = StyleSheet.create({
   first: { marginTop: 14 },
   gap: { marginTop: space.xxl },
   nameInput: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  roleInput: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   area: { minHeight: 96, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
   countRow: { paddingHorizontal: space.lg, paddingBottom: 10 },
   count: { textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },

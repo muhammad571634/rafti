@@ -2,6 +2,7 @@ import type { Character, LoreEntry, LoreKind, Lorebook, Message } from '@/types'
 
 import { detectCrisis } from '../ai/safety';
 import { contentProblems } from './create-character';
+import type { WorldPrompt } from './world-story';
 
 /**
  * World books, after Character.AI's Lorebook: what is true in a world (its people, places, things,
@@ -16,6 +17,8 @@ import { contentProblems } from './create-character';
 
 export const LORE_NAME_MAX = 40;
 export const LORE_ABOUT_MAX = 300;
+/** Who the user is in a world they made. */
+export const LORE_ROLE_MAX = 120;
 export const LORE_TEXT_MAX = 400;
 export const LORE_KEYWORD_MAX = 30;
 export const LORE_KEYWORDS_MAX = 6;
@@ -42,11 +45,11 @@ function textProblems(text: string): ('crisis' | 'minors' | 'explicit')[] {
  * an edit, so a lapsed plan never locks what is there), and `max` what the plan allows
  * (`perkLimit('lorebooks', …)`; the worlds' books are free).
  */
-export function checkLorebook(input: { name: string; about: string }, count: number, max: number): LorebookProblem[] {
+export function checkLorebook(input: { name: string; about: string; userRole?: string }, count: number, max: number): LorebookProblem[] {
   const problems: LorebookProblem[] = [];
   if (!input.name.trim()) problems.push('name');
   if (count >= max) problems.push('full');
-  problems.push(...textProblems(`${input.name} ${input.about}`));
+  problems.push(...textProblems(`${input.name} ${input.about} ${input.userRole ?? ''}`));
   return problems;
 }
 
@@ -178,15 +181,19 @@ export function triggeredLore(
 /** What the prompt carries from a chat's books (`buildCharacterPrompt`). */
 export interface LorePrompt {
   /** Each book's few lines, always there: stable, so they sit in the cached part of the prompt. */
-  worlds: { name: string; about: string; official: boolean }[];
+  worlds: { name: string; about: string; official: boolean; role?: string }[];
   /** The entries this reply brought up; they change with the chat, so they come last. */
   entries: LoreEntry[];
+  /** An official world's story, the speaker's ties and what is on now (`worldPromptOf`). */
+  story?: WorldPrompt;
 }
 
 /** A chat's lore for its next reply: every book's lines, and the entries its last lines bring up. */
 export function lorePrompt(books: Lorebook[], lines: string[], characterId?: string): LorePrompt {
   return {
-    worlds: books.filter((book) => book.about.trim()).map((book) => ({ name: book.name, about: book.about.trim(), official: !!book.official })),
+    worlds: books
+      .filter((book) => book.about.trim())
+      .map((book) => ({ name: book.name, about: book.about.trim(), official: !!book.official, ...(book.userRole?.trim() ? { role: book.userRole.trim() } : {}) })),
     entries: triggeredLore(books, lines, characterId).map((hit) => hit.entry),
   };
 }

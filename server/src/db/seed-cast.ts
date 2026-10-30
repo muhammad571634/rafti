@@ -24,6 +24,10 @@ const PERSONA_KEYS = [
   'temper',
   'role',
   'voicePreset',
+  'worldRole',
+  'trope',
+  'archetype',
+  'arc',
 ] as const satisfies readonly (keyof Character)[];
 
 export const text = (value: string | undefined | null) => (value == null ? 'null' : `'${value.replaceAll("'", "''")}'`);

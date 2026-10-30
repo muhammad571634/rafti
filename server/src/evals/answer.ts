@@ -9,6 +9,9 @@ import { characterParts, groupParts } from '../../../src/ai/rules.ts';
 import { parseTouchReply } from '../../../src/ai/thread-prompt.ts';
 import { planReply } from '../../../src/lib/reply-engine/index.ts';
 import { characters } from '../../../src/mock/characters.ts';
+import { worldPromptOf } from '../../../src/lib/world-story.ts';
+import { officialLorebooks } from '../../../src/mock/lorebooks.ts';
+import { worldOf } from '../../../src/mock/worlds.ts';
 import { tierForLevel } from '../../../src/mock/user.ts';
 import type { Character, MemoryItem, Message, Relationship, Thread, User } from '../../../src/types/index.ts';
 import { followUserLanguage } from '../../../src/ai/reply-language.ts';
@@ -84,6 +87,19 @@ function bondOf(s: EvalScenario, character: Character): Relationship {
     messagesFirst: true,
     replyStyle: s.setup?.style,
     replyLength: s.setup?.length,
+    arcDue: s.setup?.arcDue,
+  };
+}
+
+/** As the app sends it: their world's lines and story, this week's chapter a few weeks in. */
+function loreOf(character: Character): ChatPromptInput['lore'] {
+  const world = worldOf(character);
+  if (!world) return undefined;
+  const book = officialLorebooks.find((b) => b.series === world.series);
+  return {
+    worlds: book ? [{ name: book.name, about: book.about, official: true }] : [],
+    entries: [],
+    story: worldPromptOf(world.story, character.id, (id) => cast(id).name, '2026-10-10T12:00:00.000Z', new Date(EVAL_NOW)),
   };
 }
 
@@ -111,6 +127,7 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
           mode: s.mode,
           ...persona,
           prefs: { style: s.setup?.style ?? 'mix', length: s.setup?.length ?? 'auto' },
+          lore: loreOf(character),
           pinned,
           summary: s.setup?.summary,
           messages,
@@ -131,6 +148,8 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
             return { kind: 'day', input: { ...persona, today: recent, threads: [], now } };
           case 'week':
             return { kind: 'week', input: { ...persona, week: { days: first.days, messages: first.messages, wins: [...first.wins], winCount: first.wins.length, quests: 0, pages: 0 }, now } };
+          case 'world':
+            return { kind: 'world', input: { ...persona, news: { kind: 'chapter', title: first.title, note: first.note }, recent, now } };
           case 'thread': {
             const thread = { id: 't1', characterId: character.id, kind: 'follow', about: first.about, quote: first.quote, happensAt: '2026-10-28T15:00:00.000Z', status: 'open', touches: [], createdAt: recent[0]?.createdAt ?? now } as unknown as Thread;
             return { kind: 'thread', input: { ...persona, thread, touch: { id: 't1:1', at: now, phase: first.phase, why: first.why }, recent, now } };

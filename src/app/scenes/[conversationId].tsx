@@ -98,7 +98,8 @@ export default function ScenesScreen() {
 
         <GroupLabel>{t('scenes.ready')}</GroupLabel>
         <InsetGroup>
-          {localized('scenes', officialScenes).map((scene, i, list) => (
+          {/* A world's entry scene starts from its world page, with its own host. */}
+          {localized('scenes', officialScenes).filter((scene) => !scene.series).map((scene, i, list) => (
             <SceneRow key={scene.id} scene={scene} last={i === list.length - 1} onPress={() => start(scene)} />
           ))}
         </InsetGroup>

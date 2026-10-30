@@ -939,7 +939,9 @@
       "comesUpText": "Una voce viene inclusa nella risposta quando il suo nome o una parola chiave compaiono nella chat.",
       "yours": "I tuoi per qualsiasi amico",
       "yoursText": "Scrivi il tuo libro e collegalo agli amici che dovrebbero conoscerlo."
-    }
+    },
+    "yourRole": "Chi sei qui",
+    "rolePlaceholder": "Il tuo ruolo in questo mondo"
   },
   "streams": {
     "title": "Dirette",
@@ -1487,7 +1489,8 @@
       "photo": "Avete scattato una foto insieme",
       "plan": "Pianificato: {{title}}",
       "board": "Fissata una nota in bacheca",
-      "quiz": "Quiz di coppia: {{title}} · {{score}}"
+      "quiz": "Quiz di coppia: {{title}} · {{score}}",
+      "arc": "Si è aperto: {{title}}"
     },
     "showMore": "Mostra altri {{count}}",
     "daysLabel_one": "giorno insieme",
@@ -2470,7 +2473,10 @@
     "My Creations": "Le mie creazioni",
     "Moonlit Realm": "Regno Lunare",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Caffè Tidepool"
+    "Tidepool Café": "Caffè Tidepool",
+    "Velvet District": "Quartiere Velvet",
+    "Gilded Empire": "Impero Dorato",
+    "Ice & Arena": "Ghiaccio e Arena"
   },
   "welcomeBack": {
     "line1": "Eccoti di nuovo! Sentivo la tua mancanza 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Ciao! Hai un minuto per parlare?",
     "line4": "Che bello rivederti! Raccontami tutto ✨",
     "a11y": "{{name}}: {{line}}. Apre la chat."
+  },
+  "world": {
+    "yourRole": "Tu sei",
+    "start": "Inizia da qui",
+    "continue": "Continua",
+    "season": "Questa stagione",
+    "chapterOf": "Capitolo {{n}} di {{total}}",
+    "day": "Giorno {{n}}",
+    "events": "Eventi",
+    "now": "Ora",
+    "ties": "Tra loro",
+    "crew": "Chat di gruppo",
+    "story": "La vostra storia",
+    "level": "Livello {{level}}",
+    "dynamic": "La vostra dinamica",
+    "kinds": {
+      "rivals": "Rivali",
+      "siblings": "Fratelli",
+      "exes": "Ex",
+      "best friends": "Migliori amici",
+      "mentor": "Mentore",
+      "sworn": "Giuramento",
+      "black cat × golden retriever": "Gatto nero × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Da nemici ad amanti",
+      "slow-burn": "Amore lento",
+      "bodyguard": "Guardia del corpo",
+      "rivals": "Da rivali ad amanti",
+      "fake-dating": "Finta relazione",
+      "second-chance": "Seconda possibilità",
+      "forbidden": "Amore proibito",
+      "grumpy-sunshine": "Burbero × raggio di sole",
+      "friends-to-lovers": "Da amici ad amanti",
+      "forced-proximity": "Vicinanza forzata",
+      "secret-admirer": "Ammiratore segreto",
+      "ticking-clock": "Il tempo stringe",
+      "arranged-marriage": "Matrimonio combinato"
+    }
   }
 }

@@ -939,7 +939,9 @@
       "comesUpText": "Une entrée rejoint la réponse quand son nom ou mot-clé apparaît.",
       "yours": "Les vôtres pour n'importe quel ami",
       "yoursText": "Rédigez votre propre livre et reliez-le aux amis qui doivent le connaître."
-    }
+    },
+    "yourRole": "Qui tu es ici",
+    "rolePlaceholder": "Ton rôle dans ce monde"
   },
   "streams": {
     "title": "Directs",
@@ -1487,7 +1489,8 @@
       "photo": "Photo prise ensemble",
       "plan": "Projet : {{title}}",
       "board": "Mot épinglé sur le panneau",
-      "quiz": "Quiz de couple : {{title}} · {{score}}"
+      "quiz": "Quiz de couple : {{title}} · {{score}}",
+      "arc": "S'est confié : {{title}}"
     },
     "showMore": "Afficher {{count}} de plus",
     "daysLabel_one": "jour ensemble",
@@ -2470,7 +2473,10 @@
     "My Creations": "Mes créations",
     "Moonlit Realm": "Royaume au Clair de Lune",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool"
+    "Tidepool Café": "Café Tidepool",
+    "Velvet District": "Quartier Velvet",
+    "Gilded Empire": "Empire Doré",
+    "Ice & Arena": "Glace et Arène"
   },
   "welcomeBack": {
     "line1": "Te revoilà ! Tu m'as manqué 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Coucou ! Tu as une minute pour parler ?",
     "line4": "Ça fait plaisir de te revoir ! Raconte-moi tout ✨",
     "a11y": "{{name}} : {{line}}. Ouvre la discussion."
+  },
+  "world": {
+    "yourRole": "Tu es",
+    "start": "Commencer ici",
+    "continue": "Continuer",
+    "season": "Cette saison",
+    "chapterOf": "Chapitre {{n}} sur {{total}}",
+    "day": "Jour {{n}}",
+    "events": "Événements",
+    "now": "En cours",
+    "ties": "Entre eux",
+    "crew": "Discussion de groupe",
+    "story": "Votre histoire",
+    "level": "Niveau {{level}}",
+    "dynamic": "Votre dynamique",
+    "kinds": {
+      "rivals": "Rivaux",
+      "siblings": "Frère et sœur",
+      "exes": "Ex",
+      "best friends": "Meilleurs amis",
+      "mentor": "Mentor",
+      "sworn": "Serment",
+      "black cat × golden retriever": "Chat noir × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "D'ennemis à amants",
+      "slow-burn": "Amour lent",
+      "bodyguard": "Garde du corps",
+      "rivals": "De rivaux à amants",
+      "fake-dating": "Faux couple",
+      "second-chance": "Seconde chance",
+      "forbidden": "Amour interdit",
+      "grumpy-sunshine": "Grincheux × rayon de soleil",
+      "friends-to-lovers": "D'amis à amants",
+      "forced-proximity": "Proximité forcée",
+      "secret-admirer": "Admirateur secret",
+      "ticking-clock": "Compte à rebours",
+      "arranged-marriage": "Mariage arrangé"
+    }
   }
 }

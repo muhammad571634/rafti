@@ -10,13 +10,13 @@ describe('the seeded cast', () => {
     assert.equal(file, castSeedSql());
   });
 
-  it('is the forty officials, each an adult with a full profile', () => {
+  it('is the fifty-five officials, each an adult with a full profile', () => {
     const cast = officialCast();
-    assert.equal(cast.length, 40);
+    assert.equal(cast.length, 55);
     for (const c of cast) {
       const persona = personaOf(c);
       assert.ok((persona.age as number) >= 18, c.id);
-      for (const key of ['tagline', 'heightCm', 'backstory', 'likes', 'dislikes', 'definition', 'starters']) assert.ok(persona[key], `${c.id} ${key}`);
+      for (const key of ['tagline', 'heightCm', 'backstory', 'likes', 'dislikes', 'definition', 'starters', 'worldRole', 'trope', 'archetype', 'arc']) assert.ok(persona[key], `${c.id} ${key}`);
     }
   });
 

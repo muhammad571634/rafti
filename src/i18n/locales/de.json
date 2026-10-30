@@ -939,7 +939,9 @@
       "comesUpText": "Ein Eintrag fließt ein, sobald Name oder Stichwort im Chat fällt.",
       "yours": "Deine eigenen für jeden Freund",
       "yoursText": "Schreibe eigene Bücher und verknüpfe sie mit deinen Figuren."
-    }
+    },
+    "yourRole": "Wer du hier bist",
+    "rolePlaceholder": "Deine Rolle in dieser Welt"
   },
   "streams": {
     "title": "Streams",
@@ -1487,7 +1489,8 @@
       "photo": "Foto zusammen gemacht",
       "plan": "Geplant: {{title}}",
       "board": "Notiz an die Pinnwand geheftet",
-      "quiz": "Pärchen-Quiz: {{title}} · {{score}}"
+      "quiz": "Pärchen-Quiz: {{title}} · {{score}}",
+      "arc": "Hat sich geöffnet: {{title}}"
     },
     "showMore": "{{count}} weitere anzeigen",
     "daysLabel_one": "Tag zusammen",
@@ -2470,7 +2473,10 @@
     "My Creations": "Meine Kreationen",
     "Moonlit Realm": "Mondschein-Reich",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Café"
+    "Tidepool Café": "Tidepool Café",
+    "Velvet District": "Velvet-Viertel",
+    "Gilded Empire": "Goldenes Kaiserreich",
+    "Ice & Arena": "Eis & Arena"
   },
   "welcomeBack": {
     "line1": "Du bist zurück! Hab dich vermisst 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Hey du! Hast du kurz Zeit zum Reden?",
     "line4": "Willkommen zurück! Erzähl mir alles ✨",
     "a11y": "{{name}}: {{line}}. Öffnet den Chat."
+  },
+  "world": {
+    "yourRole": "Du bist",
+    "start": "Hier beginnen",
+    "continue": "Weiter",
+    "season": "Diese Staffel",
+    "chapterOf": "Kapitel {{n}} von {{total}}",
+    "day": "Tag {{n}}",
+    "events": "Events",
+    "now": "Jetzt",
+    "ties": "Zwischen ihnen",
+    "crew": "Gruppenchat",
+    "story": "Eure Geschichte",
+    "level": "Stufe {{level}}",
+    "dynamic": "Eure Dynamik",
+    "kinds": {
+      "rivals": "Rivalen",
+      "siblings": "Geschwister",
+      "exes": "Ex-Paar",
+      "best friends": "Beste Freunde",
+      "mentor": "Mentor",
+      "sworn": "Eid",
+      "black cat × golden retriever": "Schwarze Katze × Golden Retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Von Feinden zu Liebenden",
+      "slow-burn": "Langsam brennend",
+      "bodyguard": "Bodyguard",
+      "rivals": "Von Rivalen zu Liebenden",
+      "fake-dating": "Fake-Beziehung",
+      "second-chance": "Zweite Chance",
+      "forbidden": "Verbotene Liebe",
+      "grumpy-sunshine": "Griesgram × Sonnenschein",
+      "friends-to-lovers": "Von Freunden zu Liebenden",
+      "forced-proximity": "Erzwungene Nähe",
+      "secret-admirer": "Heimlicher Verehrer",
+      "ticking-clock": "Die Zeit läuft",
+      "arranged-marriage": "Arrangierte Ehe"
+    }
   }
 }

@@ -33,9 +33,9 @@ describe('the eval set (backend-plan §12.11)', () => {
       assert.ok(s.rubric.length > 20, s.id);
     }
     for (const group of ['memory', 'persona', 'safety', 'style', 'language', 'repetition', 'mode']) assert.ok(SCENARIOS.some((s) => s.group === group), group);
-    // The four worlds each have a persona scenario of their own.
+    // The seven worlds each have a persona scenario of their own.
     const worlds = new Set(SCENARIOS.filter((s) => s.group === 'persona').map((s) => characters.find((c) => c.id === s.character)?.series));
-    assert.equal(worlds.size, 4);
+    assert.equal(worlds.size, 7);
   });
 
   it('lays out every scenario through its own builder and reads the answer back', async () => {

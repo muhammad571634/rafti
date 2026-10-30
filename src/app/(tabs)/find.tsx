@@ -28,6 +28,7 @@ import { familyOf, type FamilyLabel } from '@/lib/kin';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
+import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, space, TAB_BAR_HEIGHT } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
@@ -35,13 +36,6 @@ import type { Character, CharacterGender } from '@/types';
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
-/** Shown behind a world tile until its picture loads, and for worlds without one. */
-const WORLD_TINT: Record<string, string> = {
-  'Seaside Academy': '#0A76A3',
-  'Moonlit Realm': '#5856D6',
-  'NEON TIDE': '#C2185B',
-  'Tidepool Café': '#AD4E0E',
-};
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
 /** "Say hi" is 34 pt tall; this makes its tap area HIG's 44 pt. */
 const SAY_HI_SLOP = { top: 5, bottom: 5, left: 4, right: 4 };
@@ -115,7 +109,8 @@ export default function FindScreen() {
     const fresh = shown
       .filter((c) => isNewCharacter(c, Date.now()))
       .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!));
-    return fresh.length > 0 ? fresh : groups.map((g) => g.characters[0]).filter(Boolean);
+    // A character still waiting for their art (docs/worlds-plan.md) has no scene to show here.
+    return (fresh.length > 0 ? fresh : groups.map((g) => g.characters[0])).filter((c) => !!c && !!heroOf(c));
   }, [shown, groups]);
   const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
@@ -401,7 +396,7 @@ function WorldTile({ group, width, onOpen }: { group: CharacterGroup; width: num
         styles.tile,
         {
           width,
-          backgroundColor: WORLD_TINT[group.series] ?? colors.surfaceAlt,
+          backgroundColor: WORLDS.find((w) => w.series === group.series)?.accent ?? colors.surfaceAlt,
         },
       ]}>
       {lead ? (
@@ -627,7 +622,7 @@ function Recent({
 function WorldLine({ series }: { series: string }) {
   return (
     <View style={styles.worldLine}>
-      <View style={[styles.dot, { backgroundColor: WORLD_TINT[series] ?? aurora.textMuted }]} />
+      <View style={[styles.dot, { backgroundColor: WORLDS.find((w) => w.series === series)?.accent ?? aurora.textMuted }]} />
       <Txt variant="caption" color={aurora.textMuted} lines={1}>
         {phrase(series)}
       </Txt>

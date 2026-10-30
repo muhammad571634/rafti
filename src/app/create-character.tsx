@@ -146,6 +146,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const { t } = useTranslation();
   const router = useRouter();
   const addCharacter = useAppStore((s) => s.addCharacter);
+  const ownWorlds = useAppStore((s) => s.lorebooks);
+  const setLoreLink = useAppStore((s) => s.setLoreLink);
   const updateCharacter = useAppStore((s) => s.updateCharacter);
   const spendShells = useAppStore((s) => s.spendShells);
   const shells = useAppStore((s) => s.wallet.shells);
@@ -193,6 +195,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [gender, setGender] = useState<CharacterGender | undefined>(editing?.gender);
   const [age, setAge] = useState(editing?.age != null ? String(editing.age) : '');
   const [category, setCategory] = useState<CharacterCategory>(editing?.category ?? 'original');
+  /** A world the user made (a book of theirs, `src/lib/lorebook.ts`) the new character lives in. */
+  const [ownWorld, setOwnWorld] = useState<string | null>(null);
   const [traits, setTraits] = useState<string[]>(() => (editing?.tags ?? []).filter(isTrait));
   const [style, setStyle] = useState<SpeakingStyle>(editing?.speakingStyle ?? 'casual');
   const [role, setRole] = useState<CharacterRole>(editing?.role ?? 'friend');
@@ -453,7 +457,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         if (!alive.current) return;
         if (drawn && payForPortrait()) avatarUri = drawn;
       }
-      const { conversationId } = addCharacter({
+      const { characterId, conversationId } = addCharacter({
         ...fields(),
         avatarUri,
         handle: '@you',
@@ -463,6 +467,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         isOfficial: false,
         review: isPublic ? 'pending' : undefined,
       });
+      if (ownWorld) setLoreLink(ownWorld, characterId, true);
       setCreating(false);
       router.replace(`/chat/${conversationId}`);
     };
@@ -805,6 +810,22 @@ function CharacterForm({ editing }: { editing?: Character }) {
                   </InsetGroup>
                 </>
               )}
+
+              {!editing && ownWorlds.length ? (
+                <>
+                  <GroupLabel>{t('find.worlds')}</GroupLabel>
+                  <InsetGroup style={styles.pills}>
+                    {ownWorlds.map((book) => (
+                      <Pill
+                        key={book.id}
+                        label={book.name}
+                        active={ownWorld === book.id}
+                        onPress={() => setOwnWorld((id) => (id === book.id ? null : book.id))}
+                      />
+                    ))}
+                  </InsetGroup>
+                </>
+              ) : null}
 
               <GroupLabel>{t('find.category')}</GroupLabel>
               <InsetGroup style={styles.pills}>

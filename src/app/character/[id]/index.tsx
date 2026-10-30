@@ -28,7 +28,7 @@ import { heightLabel } from '@/lib/character-facts';
 import { daysBetween } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
 /**
@@ -116,6 +116,11 @@ export default function CharacterProfileScreen() {
             {character.handle}
             {character.series ? ` · ${phrase(character.series)}` : ''}
           </Txt>
+          {shown.worldRole ? (
+            <Txt style={styles.handle} center>
+              {shown.worldRole}
+            </Txt>
+          ) : null}
           {locked ? (
             <Txt variant="caption" color={colors.textSecondary} center style={styles.bold}>
               {t('find.proFirst')}
@@ -213,6 +218,8 @@ export default function CharacterProfileScreen() {
 
         <AboutCard character={shown} locale={locale} />
 
+        <StoryCard character={shown} level={relationship?.level ?? 0} />
+
         {isFriend && relationship ? (
           <BondCard
             relationship={relationship}
@@ -233,6 +240,7 @@ export default function CharacterProfileScreen() {
 function AboutCard({ character, locale }: { character: Character; locale: string }) {
   const { t } = useTranslation();
   const rows = [
+    character.trope ? { key: 'dynamic', label: t('world.dynamic'), value: t(`world.tropes.${character.trope}`) } : null,
     character.age ? { key: 'age', label: t('createCharacter.age'), value: String(character.age) } : null,
     character.heightCm ? { key: 'height', label: t('characterProfile.height'), value: heightLabel(character.heightCm, locale) } : null,
     character.likes?.length ? { key: 'loves', label: t('intro.loves'), value: character.likes.join(', ') } : null,
@@ -254,6 +262,39 @@ function AboutCard({ character, locale }: { character: Character; locale: string
           <Txt style={styles.aboutValue}>{row.value}</Txt>
         </View>
       ))}
+    </InsetGroup>
+  );
+}
+
+/**
+ * What they hold back, opening with the bond (`src/lib/world-story.ts`): a beat's title once its
+ * level is reached, a lock and the level before that. The secret itself only comes up in the chat.
+ */
+function StoryCard({ character, level }: { character: Character; level: number }) {
+  const { t } = useTranslation();
+  const beats = character.arc?.beats;
+  if (!beats?.length) return null;
+  return (
+    <InsetGroup style={styles.about}>
+      <View style={[styles.storyHead, styles.aboutLine]}>
+        <Txt style={styles.aboutLabel} accessibilityRole="header">
+          {t('world.story')}
+        </Txt>
+      </View>
+      {beats.map((beat, i) => {
+        const open = level >= beat.atLevel;
+        return (
+          <View key={beat.atLevel} style={[styles.storyRow, i < beats.length - 1 && styles.aboutLine]}>
+            <SFIcon
+              ios={open ? 'key.fill' : 'lock.fill'}
+              icon={open ? 'key' : 'lock-closed'}
+              size={16}
+              color={open ? systemColors.pink : colors.textFaint}
+            />
+            <Txt style={[styles.aboutValue, styles.grow, !open && styles.storyLocked]}>{open ? beat.title : t('world.level', { level: beat.atLevel })}</Txt>
+          </View>
+        );
+      })}
     </InsetGroup>
   );
 }
@@ -329,6 +370,9 @@ const styles = StyleSheet.create({
   aboutStory: { paddingHorizontal: space.lg, paddingVertical: 12, gap: 4 },
   aboutRow: { paddingHorizontal: space.lg, paddingVertical: 11, gap: 2 },
   aboutLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  storyHead: { paddingHorizontal: space.lg, paddingVertical: 11 },
+  storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: 12 },
+  storyLocked: { color: colors.textSecondary },
   aboutLabel: { fontSize: 13, color: colors.textSecondary },
   aboutText: { fontSize: 15, lineHeight: 21 },
   aboutValue: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },

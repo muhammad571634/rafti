@@ -4,14 +4,15 @@ import { part, type PromptPart } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { touchParts, type TouchInput } from './thread-prompt';
 import { weekParts, type WeekInput } from './week-prompt';
+import { worldNewsParts, type WorldNewsInput } from './world-news-prompt';
 
 /**
  * A text a friend writes first, unprompted (B1.4a): a thread's text, the morning brief, the evening
- * "how was today?" and the Sunday recap. Code picks who writes, when and about what (unchanged);
- * the model on the server writes the words. One request shape for all four, so the app and the
- * server share it; `now` travels as an ISO string.
+ * "how was today?", the Sunday recap and news from their world. Code picks who writes, when and
+ * about what (unchanged); the model on the server writes the words. One request shape for all, so
+ * the app and the server share it; `now` travels as an ISO string.
  */
-export type FirstTextKind = 'thread' | 'brief' | 'day' | 'week';
+export type FirstTextKind = 'thread' | 'brief' | 'day' | 'week' | 'world';
 
 type Wire<T> = Omit<T, 'now'> & { now: string };
 
@@ -19,9 +20,10 @@ export type FirstTextRequest =
   | { kind: 'thread'; input: Wire<TouchInput> }
   | { kind: 'brief'; input: Wire<BriefInput> }
   | { kind: 'day'; input: Wire<DayAskInput> }
-  | { kind: 'week'; input: Wire<WeekInput> };
+  | { kind: 'week'; input: Wire<WeekInput> }
+  | { kind: 'world'; input: Wire<WorldNewsInput> };
 
-export const FIRST_TEXT_KINDS: readonly FirstTextKind[] = ['thread', 'brief', 'day', 'week'];
+export const FIRST_TEXT_KINDS: readonly FirstTextKind[] = ['thread', 'brief', 'day', 'week', 'world'];
 
 /**
  * The prompt parts for one first text; every kind answers in the thread texts' shape
@@ -41,6 +43,8 @@ export function firstTextParts(request: FirstTextRequest): PromptPart[] {
       return [...dayAskParts({ ...request.input, now }), cue];
     case 'week':
       return [...weekParts({ ...request.input, now }), cue];
+    case 'world':
+      return [...worldNewsParts({ ...request.input, now }), cue];
   }
 }
 
@@ -84,6 +88,12 @@ export function cleanFirstText(body: unknown): FirstTextRequest | null {
       const week = input.week;
       if (!isObject(week) || !Number.isFinite(week.days) || !Number.isFinite(week.messages) || !Array.isArray(week.wins)) return null;
       return { kind: 'week', input } as unknown as FirstTextRequest;
+    }
+    case 'world': {
+      const recent = lines('recent');
+      const news = input.news;
+      if (!recent || !isObject(news) || typeof news.title !== 'string' || typeof news.note !== 'string') return null;
+      return { kind: 'world', input: { ...input, ...recent } as FirstTextRequest['input'] } as FirstTextRequest;
     }
   }
 }

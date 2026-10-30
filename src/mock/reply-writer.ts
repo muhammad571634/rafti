@@ -72,6 +72,21 @@ export const REPLY_VOICE = {
       'I burned the first batch of scones today. Do not tell anyone.',
       'It rained all afternoon, so the café smelled like coffee and wet umbrellas.',
     ],
+    'Velvet District': [
+      'It has been raining for three days. The whole city smells like wet matches.',
+      'Someone at the Orchid asked about you tonight. I said I had never heard of you.',
+      'I walked the long way home and thought about what you said.',
+    ],
+    'Gilded Empire': [
+      'Three people bowed to me today and two of them meant it. A good day, by court standards.',
+      'The Empress’s tea was too sweet, and so was everyone’s smile. I thought of you.',
+      'I found a note in my glove this morning. Nobody will say who put it there.',
+    ],
+    'Ice & Arena': [
+      'The horn stuck again at practice. It went off for a full minute. Nobody even looked up.',
+      'I got a bruise the shape of a small country today. You would be impressed.',
+      'The ice was perfect this morning and I thought, you should see this.',
+    ],
     default: [
       'I almost texted you earlier, then got shy about it.',
       'I found a song this morning that sounds like you.',

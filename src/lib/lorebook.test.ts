@@ -181,7 +181,7 @@ describe('world books in the prompt', () => {
 
 describe('the worlds’ books', () => {
   it('has one book per world, within every limit and the content rules', () => {
-    assert.deepEqual(officialLorebooks.map((b) => b.series), ['Seaside Academy', 'Moonlit Realm', 'NEON TIDE', 'Tidepool Café']);
+    assert.deepEqual(officialLorebooks.map((b) => b.series), ['Seaside Academy', 'Moonlit Realm', 'NEON TIDE', 'Tidepool Café', 'Velvet District', 'Gilded Empire', 'Ice & Arena']);
     for (const b of officialLorebooks) {
       assert.ok(b.official && b.name.length <= LORE_NAME_MAX && b.about.length <= LORE_ABOUT_MAX, b.name);
       assert.deepEqual(checkLorebook(b, 0, 1), [], b.name);

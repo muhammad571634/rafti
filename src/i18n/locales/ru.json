@@ -985,7 +985,9 @@
     "entryCount_few": "{{count}} статьи",
     "entryCount_many": "{{count}} статей",
     "bookCount_few": "{{count}} книги",
-    "bookCount_many": "{{count}} книг"
+    "bookCount_many": "{{count}} книг",
+    "yourRole": "Кто ты здесь",
+    "rolePlaceholder": "Твоя роль в этом мире"
   },
   "streams": {
     "title": "Стримы",
@@ -1543,7 +1545,8 @@
       "photo": "Сделали совместное фото",
       "plan": "Запланировано: {{title}}",
       "board": "Прикрепил(а) записку на доску",
-      "quiz": "Викторина для двоих: {{title}} · {{score}}"
+      "quiz": "Викторина для двоих: {{title}} · {{score}}",
+      "arc": "Открылись: {{title}}"
     },
     "showMore": "Показать еще {{count}}",
     "daysLabel_one": "день вместе",
@@ -2550,7 +2553,10 @@
     "My Creations": "Мои творения",
     "Moonlit Realm": "Лунное королевство",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Кафе Тайдпул"
+    "Tidepool Café": "Кафе Тайдпул",
+    "Velvet District": "Вельветный квартал",
+    "Gilded Empire": "Золотая империя",
+    "Ice & Arena": "Лёд и арена"
   },
   "welcomeBack": {
     "line1": "Ты снова здесь! Мне тебя не хватало 💛",
@@ -2558,5 +2564,44 @@
     "line3": "Привет! Есть минутка поболтать?",
     "line4": "С возвращением! Рассказывай всё ✨",
     "a11y": "{{name}}: {{line}}. Открывает чат."
+  },
+  "world": {
+    "yourRole": "Ты здесь",
+    "start": "Начать",
+    "continue": "Продолжить",
+    "season": "Этот сезон",
+    "chapterOf": "Глава {{n}} из {{total}}",
+    "day": "День {{n}}",
+    "events": "События",
+    "now": "Сейчас",
+    "ties": "Между ними",
+    "crew": "Групповой чат",
+    "story": "Ваша история",
+    "level": "Уровень {{level}}",
+    "dynamic": "Ваша динамика",
+    "kinds": {
+      "rivals": "Соперники",
+      "siblings": "Родня",
+      "exes": "Бывшие",
+      "best friends": "Лучшие друзья",
+      "mentor": "Наставник",
+      "sworn": "Клятва",
+      "black cat × golden retriever": "Чёрный кот × золотистый ретривер"
+    },
+    "tropes": {
+      "enemies-to-lovers": "От вражды к любви",
+      "slow-burn": "Медленное пламя",
+      "bodyguard": "Телохранитель",
+      "rivals": "От соперничества к любви",
+      "fake-dating": "Фиктивные отношения",
+      "second-chance": "Второй шанс",
+      "forbidden": "Запретная любовь",
+      "grumpy-sunshine": "Ворчун × солнышко",
+      "friends-to-lovers": "От дружбы к любви",
+      "forced-proximity": "Вынужденная близость",
+      "secret-admirer": "Тайный поклонник",
+      "ticking-clock": "Время на исходе",
+      "arranged-marriage": "Брак по договору"
+    }
   }
 }

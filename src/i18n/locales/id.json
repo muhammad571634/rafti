@@ -916,7 +916,9 @@
       "comesUpText": "Sebuah entri akan ikut dalam balasan saat nama atau kata kuncinya ada dalam obrolan.",
       "yours": "Bebas untuk teman mana saja",
       "yoursText": "Tulis bukumu sendiri dan tautkan ke teman yang perlu mengetahuinya."
-    }
+    },
+    "yourRole": "Siapa kamu di sini",
+    "rolePlaceholder": "Peranmu di dunia ini"
   },
   "streams": {
     "title": "Siaran",
@@ -1459,7 +1461,8 @@
       "photo": "Berfoto bersama",
       "plan": "Rencana: {{title}}",
       "board": "Menyematkan catatan di papan",
-      "quiz": "Kuis pasangan: {{title}} · {{score}}"
+      "quiz": "Kuis pasangan: {{title}} · {{score}}",
+      "arc": "Mulai terbuka: {{title}}"
     },
     "showMore": "Tampilkan {{count}} lainnya",
     "daysLabel_other": "hari bersama",
@@ -2430,7 +2433,10 @@
     "My Creations": "Kreasiku",
     "Moonlit Realm": "Alam Cahaya Bulan",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Kafe Tidepool"
+    "Tidepool Café": "Kafe Tidepool",
+    "Velvet District": "Distrik Velvet",
+    "Gilded Empire": "Kekaisaran Emas",
+    "Ice & Arena": "Es & Arena"
   },
   "welcomeBack": {
     "line1": "Kamu kembali! Aku kangen 💛",
@@ -2438,5 +2444,44 @@
     "line3": "Hai! Ada waktu sebentar buat ngobrol?",
     "line4": "Selamat datang kembali! Ceritain semuanya ✨",
     "a11y": "{{name}}: {{line}}. Membuka obrolan."
+  },
+  "world": {
+    "yourRole": "Kamu adalah",
+    "start": "Mulai di sini",
+    "continue": "Lanjutkan",
+    "season": "Musim ini",
+    "chapterOf": "Bab {{n}} dari {{total}}",
+    "day": "Hari ke-{{n}}",
+    "events": "Acara",
+    "now": "Sekarang",
+    "ties": "Di antara mereka",
+    "crew": "Obrolan grup",
+    "story": "Kisah kalian",
+    "level": "Level {{level}}",
+    "dynamic": "Dinamika kalian",
+    "kinds": {
+      "rivals": "Rival",
+      "siblings": "Saudara",
+      "exes": "Mantan",
+      "best friends": "Sahabat",
+      "mentor": "Mentor",
+      "sworn": "Bersumpah",
+      "black cat × golden retriever": "Kucing hitam × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Dari musuh jadi kekasih",
+      "slow-burn": "Cinta perlahan",
+      "bodyguard": "Pengawal pribadi",
+      "rivals": "Dari rival jadi kekasih",
+      "fake-dating": "Pacar pura-pura",
+      "second-chance": "Kesempatan kedua",
+      "forbidden": "Cinta terlarang",
+      "grumpy-sunshine": "Pemurung × ceria",
+      "friends-to-lovers": "Dari teman jadi kekasih",
+      "forced-proximity": "Terpaksa berdekatan",
+      "secret-admirer": "Pengagum rahasia",
+      "ticking-clock": "Waktu yang terbatas",
+      "arranged-marriage": "Perjodohan"
+    }
   }
 }

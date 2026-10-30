@@ -916,7 +916,9 @@
       "comesUpText": "Một mục sẽ tham gia vào câu trả lời khi tên hoặc từ khóa xuất hiện trong trò chuyện.",
       "yours": "Của bạn dành cho bất kỳ người bạn nào",
       "yoursText": "Tự viết cuốn sách của riêng bạn và liên kết với những người bạn cần biết."
-    }
+    },
+    "yourRole": "Bạn là ai ở đây",
+    "rolePlaceholder": "Vai trò của bạn trong thế giới này"
   },
   "streams": {
     "title": "Phát trực tiếp",
@@ -1459,7 +1461,8 @@
       "photo": "Đã chụp ảnh cùng nhau",
       "plan": "Đã lên kế hoạch: {{title}}",
       "board": "Đã ghim một ghi chú lên bảng tin",
-      "quiz": "Đố vui đôi lứa: {{title}} · {{score}}"
+      "quiz": "Đố vui đôi lứa: {{title}} · {{score}}",
+      "arc": "Đã mở lòng: {{title}}"
     },
     "showMore": "Hiển thị thêm {{count}}",
     "daysLabel_other": "ngày bên nhau",
@@ -2430,7 +2433,10 @@
     "My Creations": "Sáng tạo của tôi",
     "Moonlit Realm": "Cõi Ánh Trăng",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Quán Cà Phê Tidepool"
+    "Tidepool Café": "Quán Cà Phê Tidepool",
+    "Velvet District": "Khu Velvet",
+    "Gilded Empire": "Đế chế Vàng",
+    "Ice & Arena": "Băng & Đấu trường"
   },
   "welcomeBack": {
     "line1": "Bạn về rồi! Nhớ bạn ghê 💛",
@@ -2438,5 +2444,44 @@
     "line3": "Này! Rảnh một chút để trò chuyện không?",
     "line4": "Chào mừng bạn quay lại! Kể mình nghe hết đi ✨",
     "a11y": "{{name}}: {{line}}. Mở cuộc trò chuyện."
+  },
+  "world": {
+    "yourRole": "Bạn là",
+    "start": "Bắt đầu tại đây",
+    "continue": "Tiếp tục",
+    "season": "Mùa này",
+    "chapterOf": "Chương {{n}}/{{total}}",
+    "day": "Ngày {{n}}",
+    "events": "Sự kiện",
+    "now": "Đang diễn ra",
+    "ties": "Giữa họ",
+    "crew": "Trò chuyện nhóm",
+    "story": "Câu chuyện của hai bạn",
+    "level": "Cấp độ {{level}}",
+    "dynamic": "Mối quan hệ của hai bạn",
+    "kinds": {
+      "rivals": "Đối thủ",
+      "siblings": "Anh chị em",
+      "exes": "Người yêu cũ",
+      "best friends": "Bạn thân",
+      "mentor": "Thầy trò",
+      "sworn": "Lời thề",
+      "black cat × golden retriever": "Mèo đen × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Từ kẻ thù thành người yêu",
+      "slow-burn": "Tình yêu chậm rãi",
+      "bodyguard": "Vệ sĩ",
+      "rivals": "Từ đối thủ thành người yêu",
+      "fake-dating": "Giả vờ hẹn hò",
+      "second-chance": "Cơ hội thứ hai",
+      "forbidden": "Tình yêu cấm đoán",
+      "grumpy-sunshine": "Cau có × tỏa nắng",
+      "friends-to-lovers": "Từ bạn thành người yêu",
+      "forced-proximity": "Buộc phải gần nhau",
+      "secret-admirer": "Người ngưỡng mộ thầm kín",
+      "ticking-clock": "Thời gian có hạn",
+      "arranged-marriage": "Hôn nhân sắp đặt"
+    }
   }
 }

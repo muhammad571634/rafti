@@ -916,7 +916,9 @@
       "comesUpText": "항목의 이름이나 키워드가 대화에 나오면 설정이 반영됩니다.",
       "yours": "어떤 친구에게든 적용 가능",
       "yoursText": "직접 월드북을 만들어 원하는 친구에게 연결해 보세요."
-    }
+    },
+    "yourRole": "여기서의 나",
+    "rolePlaceholder": "이 세계에서 나의 역할"
   },
   "streams": {
     "title": "방송",
@@ -1459,7 +1461,8 @@
       "photo": "함께 사진을 찍었습니다",
       "plan": "약속: {{title}}",
       "board": "게시판에 메모를 남겼습니다",
-      "quiz": "커플 퀴즈: {{title}} · 스코어 {{score}}"
+      "quiz": "커플 퀴즈: {{title}} · 스코어 {{score}}",
+      "arc": "마음을 열었어요: {{title}}"
     },
     "showMore": "{{count}}개 더 보기",
     "daysLabel_other": "함께한 날들",
@@ -2430,7 +2433,10 @@
     "My Creations": "내 작품",
     "Moonlit Realm": "달빛의 영역",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "타이드풀 카페"
+    "Tidepool Café": "타이드풀 카페",
+    "Velvet District": "벨벳 디스트릭트",
+    "Gilded Empire": "황금 제국",
+    "Ice & Arena": "얼음과 아레나"
   },
   "welcomeBack": {
     "line1": "돌아왔구나! 보고 싶었어 💛",
@@ -2438,5 +2444,44 @@
     "line3": "안녕! 잠깐 얘기할 시간 있어?",
     "line4": "다시 와서 반가워! 다 얘기해 줘 ✨",
     "a11y": "{{name}}: {{line}}. 채팅을 엽니다."
+  },
+  "world": {
+    "yourRole": "당신은",
+    "start": "여기서 시작",
+    "continue": "계속하기",
+    "season": "이번 시즌",
+    "chapterOf": "{{total}}장 중 {{n}}장",
+    "day": "{{n}}일째",
+    "events": "이벤트",
+    "now": "진행 중",
+    "ties": "그들 사이",
+    "crew": "그룹 채팅",
+    "story": "두 사람의 이야기",
+    "level": "레벨 {{level}}",
+    "dynamic": "두 사람의 관계",
+    "kinds": {
+      "rivals": "라이벌",
+      "siblings": "남매",
+      "exes": "전 연인",
+      "best friends": "절친",
+      "mentor": "스승과 제자",
+      "sworn": "맹세",
+      "black cat × golden retriever": "검은 고양이 × 골든 리트리버"
+    },
+    "tropes": {
+      "enemies-to-lovers": "적에서 연인으로",
+      "slow-burn": "천천히 타오르는 사랑",
+      "bodyguard": "보디가드",
+      "rivals": "라이벌에서 연인으로",
+      "fake-dating": "가짜 연애",
+      "second-chance": "두 번째 기회",
+      "forbidden": "금지된 사랑",
+      "grumpy-sunshine": "투덜이 × 햇살",
+      "friends-to-lovers": "친구에서 연인으로",
+      "forced-proximity": "어쩔 수 없는 가까움",
+      "secret-admirer": "비밀스러운 팬",
+      "ticking-clock": "남은 시간",
+      "arranged-marriage": "정략결혼"
+    }
   }
 }

@@ -939,7 +939,9 @@
       "comesUpText": "Uma entrada se junta à resposta quando seu nome ou palavra-chave aparece.",
       "yours": "Seus para qualquer amigo",
       "yoursText": "Escreva seus próprios livros e conecte-os aos amigos que devem conhecê-los."
-    }
+    },
+    "yourRole": "Quem você é aqui",
+    "rolePlaceholder": "Seu papel neste mundo"
   },
   "streams": {
     "title": "Transmissões",
@@ -1487,7 +1489,8 @@
       "photo": "Tiraram uma foto juntos",
       "plan": "Planejaram: {{title}}",
       "board": "Fixou um recado no mural",
-      "quiz": "Quiz de casal: {{title}} · {{score}}"
+      "quiz": "Quiz de casal: {{title}} · {{score}}",
+      "arc": "Se abriu: {{title}}"
     },
     "showMore": "Mostrar mais {{count}}",
     "daysLabel_one": "dia juntos",
@@ -2470,7 +2473,10 @@
     "My Creations": "Minhas criações",
     "Moonlit Realm": "Reino do Luar",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool"
+    "Tidepool Café": "Café Tidepool",
+    "Velvet District": "Distrito Velvet",
+    "Gilded Empire": "Império Dourado",
+    "Ice & Arena": "Gelo e Arena"
   },
   "welcomeBack": {
     "line1": "Você voltou! Senti sua falta 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Oi! Tem um minutinho pra conversar?",
     "line4": "Que bom te ver de novo! Me conta tudo ✨",
     "a11y": "{{name}}: {{line}}. Abre a conversa."
+  },
+  "world": {
+    "yourRole": "Você é",
+    "start": "Comece aqui",
+    "continue": "Continuar",
+    "season": "Nesta temporada",
+    "chapterOf": "Capítulo {{n}} de {{total}}",
+    "day": "Dia {{n}}",
+    "events": "Eventos",
+    "now": "Agora",
+    "ties": "Entre eles",
+    "crew": "Chat em grupo",
+    "story": "A história de vocês",
+    "level": "Nível {{level}}",
+    "dynamic": "A dinâmica de vocês",
+    "kinds": {
+      "rivals": "Rivais",
+      "siblings": "Irmãos",
+      "exes": "Ex",
+      "best friends": "Melhores amigos",
+      "mentor": "Mentor",
+      "sworn": "Juramento",
+      "black cat × golden retriever": "Gato preto × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "De inimigos a amantes",
+      "slow-burn": "Amor lento",
+      "bodyguard": "Guarda-costas",
+      "rivals": "De rivais a amantes",
+      "fake-dating": "Namoro de mentira",
+      "second-chance": "Segunda chance",
+      "forbidden": "Amor proibido",
+      "grumpy-sunshine": "Ranzinza × raio de sol",
+      "friends-to-lovers": "De amigos a amantes",
+      "forced-proximity": "Proximidade forçada",
+      "secret-admirer": "Admirador secreto",
+      "ticking-clock": "Contra o relógio",
+      "arranged-marriage": "Casamento arranjado"
+    }
   }
 }

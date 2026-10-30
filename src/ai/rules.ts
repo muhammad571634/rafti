@@ -14,6 +14,7 @@ import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
 import { baseLanguage } from './reply-language';
 import { replyStyleLines } from './reply-style';
+import { arcLines, bookWorldLines, nowLines, personaStoryLines, storyLines, tieLines } from './world-prompt';
 
 /**
  * The rules every Rafti character follows, written for the language model.
@@ -86,7 +87,9 @@ LANGUAGE:
 STYLE:
 - The MODE below sets the form (chat texts, a call read aloud, a diary page…); keep to it.
   Without one: short chat messages, 1-3 bubbles, like texting.
-- Remember and use what you know about them (name, interests, plans, past chats).`;
+- Remember and use what you know about them (name, interests, plans, past chats).
+- What they say about themselves (name, gender, pronouns, body, looks) is fact: never change it,
+  never describe them differently, never assume a body or a gender they did not give you.`;
 
 /** What runs around the model, so one missed rule is not the last line of defence. */
 export const SAFETY_LAYERS = [
@@ -156,6 +159,7 @@ export function characterParts(
   if (character.backstory) personaLines.push(`Your story: ${character.backstory}`);
   if (character.likes?.length) personaLines.push(`You love: ${character.likes.join(', ')}`);
   if (character.dislikes?.length) personaLines.push(`You can't stand: ${character.dislikes.join(', ')}`);
+  personaLines.push(...personaStoryLines(character));
   // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
   // talk, with other people, so none of it reads as something this user said.
   const examples = definitionForPrompt(character.definition, { char: character.name, user: persona?.name ?? user.displayName });
@@ -180,8 +184,10 @@ export function characterParts(
     part('persona', 'character', personaLines),
     part('examples', 'character', examples ? ['HOW YOU TALK (examples with other people, not with this user; never repeat them word for word):', examples] : []),
     part('world', 'character', worldLines(official)),
+    part('worldStory', 'character', lore?.story ? storyLines(lore.story) : []),
+    part('ties', 'character', lore?.story ? tieLines(lore.story.ties) : []),
     // The user's own books are theirs alone: they open the chat tier and carry on the world block.
-    part('notes', 'chat', worldLines(own, !official.length)),
+    part('notes', 'chat', [...worldLines(own, !official.length), ...bookWorldLines(own)]),
     part('language', 'chat', [`REPLY LANGUAGE: ${replyLanguage ?? baseLanguage(user.locale)}`]),
     part('user', 'chat', theUser),
     // The chat's reply settings stay put; the turn's own hints go last (`turnLines`).
@@ -201,6 +207,9 @@ export function characterParts(
         : [],
     ),
     part('scene', 'turn', scene ? sceneLines(scene) : []),
+    // Changes week by week and level by level: the turn tier, never the cached prefix.
+    part('now', 'turn', lore?.story ? nowLines(lore.story) : []),
+    part('arc', 'turn', relationship ? arcLines(character.arc, relationship.level, relationship.arcDue) : []),
     part('lore', 'turn', lore ? loreLines(lore) : []),
   ];
 }

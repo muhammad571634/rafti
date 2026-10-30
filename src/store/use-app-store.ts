@@ -107,6 +107,7 @@ import {
   checkLorebook,
   LORE_ABOUT_MAX,
   LORE_NAME_MAX,
+  LORE_ROLE_MAX,
   LORE_TEXT_MAX,
   type LoreEntryProblem,
   type LorebookProblem,
@@ -205,6 +206,8 @@ import {
 } from '@/mock';
 import { themePools } from '@/mock/date-themes';
 import { WORLDS, worldByKey, worldOf, type WorldKey } from '@/mock/worlds';
+import { arcLine, worldNewsLine } from '@/mock/world-voice';
+import { beatsCrossed, chapterAt, dueWorldNews, eventOn, WORLD_NEWS_HOUR, worldJoinedAt, worldPromptOf, type WorldNews } from '@/lib/world-story';
 import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
@@ -481,7 +484,11 @@ interface AppState {
   markRadioGiftHeard: (giftId: string) => void;
 
   /* bonds */
-  addFriend: (characterId: string) => string;
+  addFriend: (characterId: string, opts?: { quiet?: boolean }) => string;
+  /** A world's way in (`WorldStory.entry`): its host's chat, with the entry scene the first time. */
+  enterWorld: (worldKey: string) => string | null;
+  /** A group of the user's closest friends in a world; null with fewer than two there. */
+  startWorldGroup: (worldKey: string, name: string) => string | null;
   /** Finishes the first launch: who the user is, their first friend and the welcome gift. Returns the chat. */
   completeOnboarding: (input: {
     name: string;
@@ -522,7 +529,7 @@ interface AppState {
   /** The user's own world books (`src/lib/lorebook.ts`); the worlds' are `officialLorebooks`. */
   lorebooks: Lorebook[];
   /** Saves a new book (or the one with `id`); returns its id, or the first problem. */
-  saveLorebook: (input: { name: string; about: string; characterIds: string[] }, id?: string) => { id: string } | { problem: LorebookProblem };
+  saveLorebook: (input: { name: string; about: string; characterIds: string[]; userRole?: string }, id?: string) => { id: string } | { problem: LorebookProblem };
   deleteLorebook: (id: string) => void;
   /** Links one of the user's books to a friend, or takes it off them; their next reply sees it. */
   setLoreLink: (bookId: string, characterId: string, linked: boolean) => void;
@@ -1612,14 +1619,15 @@ export const useAppStore = create<AppState>()(
 
       /* ── bonds ────────────────────────────────────────────────────────── */
 
-      addFriend: (characterId) => {
+      addFriend: (characterId, opts) => {
         const existing = get().conversations.find((c) => c.characterId === characterId);
         const character = get().characters.find((c) => c.id === characterId);
         if (existing) return existing.id;
 
         const conversationId = uid('conv');
         const now = new Date().toISOString();
-        const greeting = character ? openingFor(get(), character, conversationId) : '';
+        // `quiet`: a scene opens the chat instead of their greeting.
+        const greeting = character && !opts?.quiet ? openingFor(get(), character, conversationId) : '';
 
         set((s) => ({
           conversations: [
@@ -1646,6 +1654,32 @@ export const useAppStore = create<AppState>()(
         }));
         addMoment(set, characterId, 'met');
         return conversationId;
+      },
+
+      enterWorld: (worldKey) => {
+        const entry = worldByKey(worldKey)?.story.entry;
+        if (!entry || get().blockedIds.includes(entry.characterId) || !get().characters.some((c) => c.id === entry.characterId)) return null;
+        const known = get().conversations.find((c) => c.characterId === entry.characterId);
+        const conversationId = known?.id ?? get().addFriend(entry.characterId, { quiet: true });
+        // Once only: back on the page later, the button just opens the chat.
+        if (!(get().messages[conversationId] ?? []).some((m) => m.card === 'scene' && m.sceneId === entry.sceneId)) {
+          get().startScene(conversationId, entry.sceneId);
+        }
+        return conversationId;
+      },
+
+      startWorldGroup: (worldKey, name) => {
+        const world = worldByKey(worldKey);
+        if (!world) return null;
+        const { characters, conversations, relationships, blockedIds, groups } = get();
+        const ids = characters
+          .filter((c) => c.series === world.series && !blockedIds.includes(c.id) && conversations.some((v) => v.characterId === c.id))
+          .sort((a, b) => (relationships[b.id]?.intimacy ?? 0) - (relationships[a.id]?.intimacy ?? 0))
+          .slice(0, GROUP_MAX)
+          .map((c) => c.id);
+        if (ids.length < GROUP_MIN) return null;
+        const same = groups.find((g) => g.memberIds.length === ids.length && ids.every((id) => g.memberIds.includes(id)));
+        return same?.id ?? get().createGroup(ids, name);
       },
 
       completeOnboarding: ({ name, birthYear, pronouns, characterId, notifications, firstAsk }) => {
@@ -1743,7 +1777,7 @@ export const useAppStore = create<AppState>()(
           set,
           get,
           conversationId,
-          { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'scene', text: scene.title, setting: scene.setting, createdAt: new Date(now).toISOString() },
+          { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'scene', text: scene.title, setting: scene.setting, sceneId: scene.id, createdAt: new Date(now).toISOString() },
           { quiet: true },
         );
         // Their first line: the scene's own, else one they write (the server asks `buildSceneOpeningPrompt`).
@@ -1788,6 +1822,7 @@ export const useAppStore = create<AppState>()(
           about: input.about.trim().slice(0, LORE_ABOUT_MAX),
           entries: existing?.entries ?? [],
           characterIds: [...new Set(input.characterIds)],
+          userRole: input.userRole?.trim().slice(0, LORE_ROLE_MAX) || undefined,
           createdAt: existing?.createdAt ?? new Date().toISOString(),
         };
         set((s) => ({ lorebooks: existing ? s.lorebooks.map((x) => (x.id === book.id ? book : x)) : [...s.lorebooks, book] }));
@@ -1972,6 +2007,8 @@ export const useAppStore = create<AppState>()(
         const next = levelForIntimacy(intimacy);
         // Levels tick up quietly; the celebration is for reaching a new stage.
         const levelledUp = next.level > existing.level && tierForLevel(next.level).key !== tierForLevel(existing.level).key;
+        // What they hold back opens with the bond (`src/lib/world-story.ts`): their next reply brings it up.
+        const arcOpened = beatsCrossed(get().characters.find((c) => c.id === characterId)?.arc, existing.level, next.level);
 
         set((s) => ({
           relationships: {
@@ -1982,6 +2019,7 @@ export const useAppStore = create<AppState>()(
               level: next.level,
               levelTitle: next.levelTitle,
               nextLevelAt: next.nextLevelAt,
+              arcDue: arcOpened.length ? arcOpened[arcOpened.length - 1].atLevel : existing.arcDue,
             },
           },
           levelUp: levelledUp
@@ -1992,6 +2030,7 @@ export const useAppStore = create<AppState>()(
         if (levelledUp) {
           addMoment(set, characterId, 'levelUp', { level: next.level, title: next.levelTitle });
         }
+        for (const beat of arcOpened) addMoment(set, characterId, 'arc', { level: beat.atLevel, title: beat.title });
 
         // A clip this level opens is not just unlocked: the friend sends it, as a voice message in
         // the chat, and Radio marks it New. The server does the same with the real audio file.
@@ -2557,6 +2596,8 @@ export const useAppStore = create<AppState>()(
           care: s.care.map((c) => (!c.done && may(c.characterId) ? (sent++, { ...c, dueAt: due }) : c)),
         }));
         get().runTimers();
+        // The next chapter of the closest friend's world, without waiting for the week.
+        if (sendWorldNews(set, get, now, true)) sent++;
         return { sent, waiting };
       },
 
@@ -2789,7 +2830,9 @@ export const useAppStore = create<AppState>()(
         const character = get().characters.find((c) => c.id === characterId);
         const worlds = localized('worlds', WORLDS);
         const world = character ? worlds.find((w) => w.series === character.series) : undefined;
-        const rounds = buildThemeRounds(theme, localized('dateThemes', themePools), `${theme.id}:${Date.now()}`, world?.dateRounds);
+        // While one of the world's events is on, the date starts in it.
+        const event = world ? eventOn(world.story, new Date()) : undefined;
+        const rounds = buildThemeRounds(theme, localized('dateThemes', themePools), `${theme.id}:${Date.now()}`, event ? [event.round] : world?.dateRounds);
         set({ activeDate: { characterId, placeId: theme.id, theme: { title: theme.title, rounds } } });
         return 'ok';
       },
@@ -3213,6 +3256,9 @@ export const useAppStore = create<AppState>()(
         // Sunday evening: the friend of the most days looks back on the week (B7, once a week).
         const recapTime = recapAt(now);
         if (settings.weeklyRecap && recapTime && now >= recapTime) sendRecap(set, get, now);
+
+        // Late afternoon: a new chapter or an event in a world, from the closest friend there.
+        if (hour >= WORLD_NEWS_HOUR) sendWorldNews(set, get, now);
 
         if (!slot) return {};
         const slotKey = `${today}:${slot}`;
@@ -3857,6 +3903,50 @@ function sendRecap(set: Setter, get: Getter, at: Date): string | null {
   return from.id;
 }
 
+/** How many news keys are kept: more than a season's worth for every world. */
+const WORLD_NEWS_KEPT = 60;
+
+/**
+ * One piece of world news at `at` (`dueWorldNews`), told by the closest friend in that world who may
+ * write first; at most one a day, and each only once. `force` (dev only) tells the current chapter
+ * of the closest friend's world, due or not. Returns who told it.
+ */
+function sendWorldNews(set: Setter, get: Getter, at: Date, force = false): string | null {
+  const { characters, conversations, relationships, messages, daily, user } = get();
+  const today = dayKey(at);
+  if (!force && (daily.worldNewsSent ?? []).some((key) => key.endsWith(`|${today}`))) return null;
+  for (const id of chatWriters(get)) {
+    const character = characters.find((c) => c.id === id);
+    const world = character ? localized('worlds', WORLDS).find((w) => w.series === character.series) : undefined;
+    if (!character || !world) continue;
+    const joinedAt = worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships);
+    let news: WorldNews | null = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now: at });
+    if (!news && force) {
+      const chapter = chapterAt(world.story.season, joinedAt, at);
+      news = chapter ? { key: `${world.key}:chapter:${chapter.id}:dev${at.getTime()}`, kind: 'chapter', title: chapter.title, note: chapter.beat } : null;
+    }
+    if (!news || (daily.worldNewsSent ?? []).some((key) => key.startsWith(`${news.key}|`))) continue;
+    const told = `${news.key}|${today}`;
+    set((s) => ({ daily: { ...s.daily, worldNewsSent: [...(s.daily.worldNewsSent ?? []), told].slice(-WORLD_NEWS_KEPT) } }));
+    const conversationId = conversations.find((c) => c.characterId === id)!.id;
+    const request: FirstTextRequest = {
+      kind: 'world',
+      input: {
+        character,
+        user,
+        relationship: relationships[id],
+        news: { kind: news.kind, title: news.title, note: news.note },
+        recent: (messages[conversationId] ?? []).slice(-12),
+        now: at.toISOString(),
+        utcOffsetMin: -at.getTimezoneOffset(),
+      },
+    };
+    writeFirst(set, get, conversationId, worldNewsLine(news), 'world', request, 'nothing');
+    return id;
+  }
+  return null;
+}
+
 const DIARY_MOODS: DiaryMood[] = ['happy', 'soft', 'blue', 'excited', 'tired'];
 
 /**
@@ -4407,8 +4497,12 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       : null;
   const turn = ctx ? planReply(ctx) : null;
   const avoided = avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid;
-  const standIn = () =>
-    text != null ? [text] : (given ?? (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoided, interests: state.user.interests }) : []));
+  // An arc beat that has just opened: the model brings it up in its own words (`arcLines`), a stand-in adds a line.
+  const beat = text == null && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
+  const standIn = () => {
+    const lines = text != null ? [text] : (given ?? (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoided, interests: state.user.interests }) : []));
+    return beat ? [...lines, arcLine(beat.title, `${character?.id}:${beat.atLevel}`)] : lines;
+  };
 
   const deliver = (written: string[]) => {
     const lines = enforceStyle(written, replyPrefs(bond).style);
@@ -4485,6 +4579,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         if (!last) return;
         // How they feel now carries into the next reply, and fades with time (`currentMood`).
         if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
+        // This reply carried the beat; before the gain below, which may open the next one.
+        if (beat) updateRelationship(set, conversation.characterId, () => ({ arcDue: undefined }));
         if (gain) get().addIntimacy(conversation.characterId, gain);
         if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
         queueMemoryPass(set, get, conversationId);
@@ -4509,7 +4605,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // Who they are here, the scene and the world books: the same as the stand-in reads.
       persona: personaFor(conversationId, state),
       scene: conversation.scene,
-      lore: lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id),
+      lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
       // Memory (B2): what they pinned, every other open fact, and their story so far. Locked
       // memories (no plan, past the free 20) stay out, as on the Memories screen.
       pinned: ctx.memories.filter((m) => m.pinned),
@@ -4535,6 +4631,15 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     return;
   }
   deliver(standIn());
+}
+
+/** What a chat's prompt carries of the character's official world (`worldPromptOf`); none for a creation. */
+function worldStoryOf(state: AppState, character: Character) {
+  const world = worldOf(character);
+  if (!world) return undefined;
+  const cast = state.characters.filter((c) => c.series === world.series);
+  const names = new Map(cast.map((c) => [c.id, c.name]));
+  return worldPromptOf(world.story, character.id, (id) => names.get(id) ?? id, worldJoinedAt(cast.map((c) => c.id), state.relationships), new Date());
 }
 
 /** A beat after their reply, before the ask: long enough to read it, short enough to still be here. */

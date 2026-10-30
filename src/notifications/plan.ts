@@ -28,6 +28,10 @@ import { lifeLine } from '@/mock/kin';
 import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
 import { temperComeback } from '@/mock/temper';
 import { mockTouchLine } from '@/mock/threads';
+import { worldNewsLine } from '@/mock/world-voice';
+import { WORLDS } from '@/mock/worlds';
+import { dueWorldNews, WORLD_NEWS_HOUR, worldJoinedAt } from '@/lib/world-story';
+import { content } from '@/i18n/voice';
 
 import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budget';
 import type {
@@ -61,6 +65,7 @@ export type PushKind =
   | 'evening'
   | 'day'
   | 'week'
+  | 'world'
   | 'call'
   | 'voiceNote'
   | 'remind'
@@ -151,6 +156,7 @@ const PRIORITY: Record<PushKind, number> = {
   brief: 2,
   day: 2,
   week: 3,
+  world: 4,
   unread: 2,
   morning: 3,
   evening: 3,
@@ -223,7 +229,7 @@ function quoteOf(messages: readonly Message[] | undefined) {
 }
 
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
-const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'week', 'life', 'care', 'comeback', 'touch']);
+const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'week', 'world', 'life', 'care', 'comeback', 'touch']);
 // The brief is not flexible: it has to come before the things it wishes luck for.
 
 /** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
@@ -405,6 +411,22 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
           line: weekLine(recap.week, temperOf(character, relationships[recap.characterId].label), `${key}:week:${recap.characterId}`, character.gender),
           reach: WEEK_REACH,
         });
+      }
+    }
+
+    // A new chapter or an event in a world, one a day, from the closest friend there (the same as the app).
+    const newsWhen = at(day, WORLD_NEWS_HOUR);
+    if (inHorizon(newsWhen)) {
+      const told = daily.worldNewsSent ?? [];
+      const worlds = content('worlds', WORLDS);
+      for (const character of writers) {
+        const world = worlds.find((w) => w.series === character.series);
+        if (!world) continue;
+        const joinedAt = worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships);
+        const news = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now: newsWhen });
+        if (!news || told.some((k) => k.startsWith(`${news.key}|`))) continue;
+        say({ id: `world:${news.key}`, kind: 'world', at: newsWhen, characterId: character.id, line: worldNewsLine(news) });
+        break;
       }
     }
 

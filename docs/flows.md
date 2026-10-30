@@ -214,4 +214,6 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | Onboarding gender step | done | After the name: woman / man / rather not say → `user.pronouns`; the prompt's `pronounLine` sets gendered grammar. Android system Back follows the arrow; the name preview uses a no-photo avatar | `src/app/onboarding.tsx`, `src/ai/rules.ts`, `src/store/use-app-store.ts` |
 | Gendered user forms in content translations | done (2026-10-30) | All five languages (ru, fr, es, it, pt-BR) rewritten so no line assumes the user is a man (305 strings changed, scanner hits 270 → 45, all remaining hits verified; full audit in docs/agent-tasks/gendered-user-forms-report.md) | docs/agent-tasks/gendered-user-forms.md |
 
+| Worlds 2.0 | code done (2026-10-30), not yet on a device; server deploy, translations and art open | 55 characters in 7 worlds (Velvet District, Gilded Empire, Ice & Arena new); role, season, events, ties on the world page; arcs on the profile and in Us; stories in the prompt | docs/worlds-plan.md |
+
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb

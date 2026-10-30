@@ -939,7 +939,9 @@
       "comesUpText": "Bir girdi, adı veya anahtar kelimesi sohbette geçtiğinde yanıta eklenir.",
       "yours": "Tüm arkadaşlar için senin kitabın",
       "yoursText": "Kendi kitabını yaz ve bilmesi gereken arkadaşlarınla ilişkilendir."
-    }
+    },
+    "yourRole": "Burada kimsin",
+    "rolePlaceholder": "Bu dünyadaki rolün"
   },
   "streams": {
     "title": "Canlı Yayınlar",
@@ -1487,7 +1489,8 @@
       "photo": "Birlikte bir fotoğraf çektiniz",
       "plan": "Planlandı: {{title}}",
       "board": "Panoya bir not iliştirdi",
-      "quiz": "Çift testi: {{title}} · {{score}}"
+      "quiz": "Çift testi: {{title}} · {{score}}",
+      "arc": "Açıldı: {{title}}"
     },
     "showMore": "{{count}} tane daha göster",
     "daysLabel_one": "birlikte gün",
@@ -2470,7 +2473,10 @@
     "My Creations": "Oluşturduklarım",
     "Moonlit Realm": "Ay Işığı Diyarı",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Kafe"
+    "Tidepool Café": "Tidepool Kafe",
+    "Velvet District": "Velvet Bölgesi",
+    "Gilded Empire": "Altın İmparatorluk",
+    "Ice & Arena": "Buz ve Arena"
   },
   "welcomeBack": {
     "line1": "Döndün! Seni özledim 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Selam! Konuşmaya bir dakikan var mı?",
     "line4": "Tekrar hoş geldin! Anlat bakalım her şeyi ✨",
     "a11y": "{{name}}: {{line}}. Sohbeti açar."
+  },
+  "world": {
+    "yourRole": "Sen",
+    "start": "Buradan başla",
+    "continue": "Devam et",
+    "season": "Bu sezon",
+    "chapterOf": "Bölüm {{n}} / {{total}}",
+    "day": "{{n}}. gün",
+    "events": "Etkinlikler",
+    "now": "Şimdi",
+    "ties": "Aralarında",
+    "crew": "Grup sohbeti",
+    "story": "Sizin hikâyeniz",
+    "level": "Seviye {{level}}",
+    "dynamic": "Aranızdaki dinamik",
+    "kinds": {
+      "rivals": "Rakipler",
+      "siblings": "Kardeşler",
+      "exes": "Eski sevgililer",
+      "best friends": "En yakın arkadaşlar",
+      "mentor": "Akıl hocası",
+      "sworn": "Yemin",
+      "black cat × golden retriever": "Kara kedi × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Düşmanlıktan aşka",
+      "slow-burn": "Ağır ağır gelişen aşk",
+      "bodyguard": "Koruma",
+      "rivals": "Rekabetten aşka",
+      "fake-dating": "Sahte ilişki",
+      "second-chance": "İkinci şans",
+      "forbidden": "Yasak aşk",
+      "grumpy-sunshine": "Huysuz × neşeli",
+      "friends-to-lovers": "Arkadaşlıktan aşka",
+      "forced-proximity": "Zoraki yakınlık",
+      "secret-admirer": "Gizli hayran",
+      "ticking-clock": "Zamana karşı",
+      "arranged-marriage": "Görücü usulü evlilik"
+    }
   }
 }

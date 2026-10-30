@@ -28,6 +28,7 @@ import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
@@ -66,6 +67,7 @@ const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionic
   plan: { ios: 'calendar', icon: 'calendar', fill: systemColors.red },
   board: moduleTile('board'),
   quiz: { ios: 'questionmark', icon: 'help', fill: systemColors.indigo },
+  arc: { ios: 'key.fill', icon: 'key', fill: systemColors.pink },
 };
 
 /** Moment filters; a chip shows only when the bond has moments of that kind. */
@@ -390,7 +392,17 @@ export default function UsScreen() {
                   kind={moment.kind}
                   text={t(
                     `us.momentText.${moment.kind}`,
-                    { ...moment.params, ...(moment.params?.title ? { title: phrase(String(moment.params.title)) } : {}) },
+                    {
+                      ...moment.params,
+                      ...(moment.params?.title
+                        ? {
+                            // An arc beat's title is the character's own text, in the screen language.
+                            title:
+                              (moment.kind === 'arc' ? localCharacter(selected.character).arc?.beats.find((b) => b.atLevel === moment.params?.level)?.title : undefined) ??
+                              phrase(String(moment.params.title)),
+                          }
+                        : {}),
+                    },
                   )}
                   when={relativeStamp(moment.createdAt)}
                   last={last}

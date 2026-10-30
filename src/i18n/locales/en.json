@@ -939,7 +939,9 @@
       "comesUpText": "An entry joins a reply when its name or a keyword is in the chat.",
       "yours": "Yours for any friend",
       "yoursText": "Write your own book and link it to the friends who should know it."
-    }
+    },
+    "yourRole": "Who you are here",
+    "rolePlaceholder": "Your role in this world"
   },
   "streams": {
     "title": "Streams",
@@ -1487,7 +1489,8 @@
       "photo": "Took a photo together",
       "plan": "Planned: {{title}}",
       "board": "Pinned a note on the board",
-      "quiz": "Couple quiz: {{title}} · {{score}}"
+      "quiz": "Couple quiz: {{title}} · {{score}}",
+      "arc": "Opened up: {{title}}"
     },
     "showMore": "Show {{count}} more",
     "daysLabel_one": "day together",
@@ -2470,7 +2473,10 @@
     "My Creations": "My Creations",
     "Moonlit Realm": "Moonlit Realm",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Café"
+    "Tidepool Café": "Tidepool Café",
+    "Velvet District": "Velvet District",
+    "Gilded Empire": "Gilded Empire",
+    "Ice & Arena": "Ice & Arena"
   },
   "welcomeBack": {
     "line1": "You're back! Missed you 💛",
@@ -2478,5 +2484,44 @@
     "line3": "Hey you! Got a minute to talk?",
     "line4": "Welcome back! Tell me everything ✨",
     "a11y": "{{name}}: {{line}}. Opens the chat."
+  },
+  "world": {
+    "yourRole": "You are",
+    "start": "Start here",
+    "continue": "Continue",
+    "season": "This season",
+    "chapterOf": "Chapter {{n}} of {{total}}",
+    "day": "Day {{n}}",
+    "events": "Events",
+    "now": "Now",
+    "ties": "Between them",
+    "crew": "Group chat",
+    "story": "Your story",
+    "level": "Level {{level}}",
+    "dynamic": "Your dynamic",
+    "kinds": {
+      "rivals": "Rivals",
+      "siblings": "Siblings",
+      "exes": "Exes",
+      "best friends": "Best friends",
+      "mentor": "Mentor",
+      "sworn": "Sworn",
+      "black cat × golden retriever": "Black cat × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "Enemies to lovers",
+      "slow-burn": "Slow burn",
+      "bodyguard": "Bodyguard",
+      "rivals": "Rivals to lovers",
+      "fake-dating": "Fake dating",
+      "second-chance": "Second chance",
+      "forbidden": "Forbidden love",
+      "grumpy-sunshine": "Grumpy × sunshine",
+      "friends-to-lovers": "Friends to lovers",
+      "forced-proximity": "Forced proximity",
+      "secret-admirer": "Secret admirer",
+      "ticking-clock": "A ticking clock",
+      "arranged-marriage": "Arranged marriage"
+    }
   }
 }

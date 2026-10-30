@@ -916,7 +916,9 @@
       "comesUpText": "項目名やキーワードが会話に含まれると、設定が返信に反映されます。",
       "yours": "どの友達にも適用可能",
       "yoursText": "自作のブックを書いて、知っていてほしい友達に紐付けましょう。"
-    }
+    },
+    "yourRole": "ここでのあなた",
+    "rolePlaceholder": "この世界でのあなたの役割"
   },
   "streams": {
     "title": "配信",
@@ -1459,7 +1461,8 @@
       "photo": "一緒に写真を撮りました",
       "plan": "予定: {{title}}",
       "board": "掲示板にメモを貼りました",
-      "quiz": "カップルクイズ: {{title}} · スコア{{score}}"
+      "quiz": "カップルクイズ: {{title}} · スコア{{score}}",
+      "arc": "打ち明けた:{{title}}"
     },
     "showMore": "他{{count}}件を表示",
     "daysLabel_other": "一緒に過ごした日数",
@@ -2430,7 +2433,10 @@
     "My Creations": "マイ作品",
     "Moonlit Realm": "月光の領域",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "タイドプール・カフェ"
+    "Tidepool Café": "タイドプール・カフェ",
+    "Velvet District": "ベルベット地区",
+    "Gilded Empire": "黄金の帝国",
+    "Ice & Arena": "氷とアリーナ"
   },
   "welcomeBack": {
     "line1": "おかえり！会いたかったよ 💛",
@@ -2438,5 +2444,44 @@
     "line3": "ねえ、ちょっとお話しできる？",
     "line4": "おかえりなさい！全部聞かせて ✨",
     "a11y": "{{name}}：{{line}}。チャットを開きます。"
+  },
+  "world": {
+    "yourRole": "あなたは",
+    "start": "ここから始める",
+    "continue": "続ける",
+    "season": "今シーズン",
+    "chapterOf": "第{{n}}章 / 全{{total}}章",
+    "day": "{{n}}日目",
+    "events": "イベント",
+    "now": "開催中",
+    "ties": "彼らの関係",
+    "crew": "グループチャット",
+    "story": "ふたりの物語",
+    "level": "レベル {{level}}",
+    "dynamic": "ふたりの関係",
+    "kinds": {
+      "rivals": "ライバル",
+      "siblings": "きょうだい",
+      "exes": "元恋人",
+      "best friends": "親友",
+      "mentor": "師弟",
+      "sworn": "誓い",
+      "black cat × golden retriever": "黒猫 × ゴールデンレトリバー"
+    },
+    "tropes": {
+      "enemies-to-lovers": "敵から恋人へ",
+      "slow-burn": "じれじれ",
+      "bodyguard": "ボディガード",
+      "rivals": "ライバルから恋人へ",
+      "fake-dating": "偽装恋人",
+      "second-chance": "セカンドチャンス",
+      "forbidden": "禁断の恋",
+      "grumpy-sunshine": "ツンツン × 太陽",
+      "friends-to-lovers": "友達から恋人へ",
+      "forced-proximity": "逃げられない距離",
+      "secret-admirer": "ひそかな想い",
+      "ticking-clock": "残された時間",
+      "arranged-marriage": "政略結婚"
+    }
   }
 }

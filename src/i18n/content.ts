@@ -16,7 +16,7 @@ import vi from './content/vi.json';
 import zhHant from './content/zh-Hant.json';
 import { phrase } from './index';
 import { overlay } from './overlay';
-import { setPhraseSource, setVoiceSource } from './voice';
+import { setContentSource, setPhraseSource, setVoiceSource } from './voice';
 
 export { overlay };
 
@@ -63,6 +63,8 @@ export function localized<T>(section: string, enVal: T): T {
   if (!cache.has(key)) cache.set(key, overlay(enVal, CONTENT[lang]?.[section]));
   return cache.get(key) as T;
 }
+
+setContentSource(localized);
 
 /** An official character as the user sees it; anyone else's character is theirs and unchanged. */
 export function localCharacter<T extends { id: string; isOfficial?: boolean }>(c: T): T {

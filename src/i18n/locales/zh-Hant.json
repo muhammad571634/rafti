@@ -916,7 +916,9 @@
       "comesUpText": "當對話提及條目名稱或關鍵字時，專屬知識庫將即刻啟動。",
       "yours": "隨心賦予任何好友",
       "yoursText": "自由撰寫你的世界，並將其連結給應當知曉它的好友。"
-    }
+    },
+    "yourRole": "你在這裡的身分",
+    "rolePlaceholder": "你在這個世界的角色"
   },
   "streams": {
     "title": "連麥直播",
@@ -1459,7 +1461,8 @@
       "photo": "定格了一張合影相片",
       "plan": "約定：{{title}}",
       "board": "在留言板上留下一張專屬便簽",
-      "quiz": "情侶問答：{{title}} · 默契得分 {{score}}"
+      "quiz": "情侶問答：{{title}} · 默契得分 {{score}}",
+      "arc": "敞開心扉:{{title}}"
     },
     "showMore": "展開其餘 {{count}} 條記錄",
     "daysLabel_other": "相伴相知天數",
@@ -2430,7 +2433,10 @@
     "My Creations": "我的創作",
     "Moonlit Realm": "月光之境",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "潮池咖啡館"
+    "Tidepool Café": "潮池咖啡館",
+    "Velvet District": "絲絨街區",
+    "Gilded Empire": "鎏金帝國",
+    "Ice & Arena": "冰與競技場"
   },
   "welcomeBack": {
     "line1": "你回來了！好想你 💛",
@@ -2438,5 +2444,44 @@
     "line3": "嘿！有空聊一下嗎？",
     "line4": "歡迎回來！全部說給我聽 ✨",
     "a11y": "{{name}}：{{line}}。開啟聊天。"
+  },
+  "world": {
+    "yourRole": "你是",
+    "start": "從這裡開始",
+    "continue": "繼續",
+    "season": "本季",
+    "chapterOf": "第 {{n}} 章,共 {{total}} 章",
+    "day": "第 {{n}} 天",
+    "events": "活動",
+    "now": "進行中",
+    "ties": "他們之間",
+    "crew": "群組聊天",
+    "story": "你們的故事",
+    "level": "等級 {{level}}",
+    "dynamic": "你們的關係",
+    "kinds": {
+      "rivals": "勁敵",
+      "siblings": "手足",
+      "exes": "前任",
+      "best friends": "摯友",
+      "mentor": "師徒",
+      "sworn": "誓約",
+      "black cat × golden retriever": "黑貓 × 黃金獵犬"
+    },
+    "tropes": {
+      "enemies-to-lovers": "從敵人到戀人",
+      "slow-burn": "慢熱之戀",
+      "bodyguard": "貼身保鑣",
+      "rivals": "從勁敵到戀人",
+      "fake-dating": "假戀人",
+      "second-chance": "第二次機會",
+      "forbidden": "禁忌之戀",
+      "grumpy-sunshine": "臭臉 × 陽光",
+      "friends-to-lovers": "從朋友到戀人",
+      "forced-proximity": "被迫靠近",
+      "secret-admirer": "暗中傾慕",
+      "ticking-clock": "倒數計時",
+      "arranged-marriage": "政治聯姻"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import type { TileName } from '@/assets/brand/registry';
+import type { DateRound } from '@/mock/dates';
 
 export type CharacterCategory = 'school' | 'fantasy' | 'idol' | 'daily' | 'original';
 export type CharacterGender = 'male' | 'female';
@@ -67,6 +68,104 @@ export interface Character {
    * 7 days later (`src/economy/early-access.ts`). Left out for the launch cast and creations.
    */
   releasedAt?: string;
+  /** Official cast (`src/mock/character-stories.ts`): who they are in their world, "Captain of the Silver Guard". */
+  worldRole?: string;
+  /** The dynamic with the user. */
+  trope?: Trope;
+  /** The shape of the character, which the prompt plays. */
+  archetype?: Archetype;
+  /** What they hold back, opening with the bond (`src/lib/world-story.ts`). */
+  arc?: CharacterArc;
+}
+
+/** The dynamic a character has with the user; a world never has two of the same. */
+export type Trope =
+  | 'enemies-to-lovers'
+  | 'slow-burn'
+  | 'bodyguard'
+  | 'rivals'
+  | 'fake-dating'
+  | 'second-chance'
+  | 'forbidden'
+  | 'grumpy-sunshine'
+  | 'friends-to-lovers'
+  | 'forced-proximity'
+  | 'secret-admirer'
+  | 'ticking-clock'
+  | 'arranged-marriage';
+
+/** The kinds of character the market rewards (docs/worlds-plan.md §3.1). */
+export type Archetype = 'tsundere' | 'protective' | 'devoted' | 'antihero' | 'kuudere' | 'sunshine' | 'caring' | 'rival' | 'flirt';
+
+/** One step of an arc: `title` shows on the profile once open, `beat` is for the model only. */
+export interface ArcBeat {
+  atLevel: number;
+  title: string;
+  beat: string;
+}
+
+/** What a character holds back. `secret` is for the model only; it reaches the prompt with the last beat. */
+export interface CharacterArc {
+  secret: string;
+  beats: ArcBeat[];
+}
+
+export type WorldGenre = 'campus' | 'romantasy' | 'idol' | 'slice-of-life' | 'noir' | 'court' | 'sports';
+export type TieKind = 'rivals' | 'siblings' | 'exes' | 'best friends' | 'mentor' | 'sworn' | 'black cat × golden retriever';
+
+/** Two of the cast and what is between them. */
+export interface WorldTie {
+  a: string;
+  b: string;
+  kind: TieKind;
+  note: string;
+}
+
+/** One beat of a world's season; it opens that many days after the user joined the world. */
+export interface WorldChapter {
+  id: string;
+  title: string;
+  beat: string;
+  opensOnDay: number;
+}
+
+/**
+ * Something that comes round in a world (`isEventOn`): every week on `weekday` (0 = Sunday), every
+ * month on `day`, or every year on `month` (1-12) and `day`; it lasts `days`.
+ */
+export interface WorldEvent {
+  id: string;
+  title: string;
+  /** How the calendar says it, for the world page ("Every Saturday night"). */
+  when: string;
+  /** What is going on, for the prompt and the page. */
+  note: string;
+  every: 'week' | 'month' | 'year';
+  weekday?: number;
+  month?: number;
+  day?: number;
+  days: number;
+  /** The text a friend sends the day it starts, when the model is off. */
+  line: string;
+  /** Played first in a date while it is on (`src/mock/dates.ts`). */
+  round: DateRound;
+}
+
+/**
+ * What makes a world more than a backdrop (docs/worlds-plan.md §3.2): why it is in trouble, who the
+ * user is in it, how its people stand with each other, and a season that moves week by week.
+ */
+export interface WorldStory {
+  genre: WorldGenre;
+  tone: { edge: 'cozy' | 'tense' | 'dark'; heat: 'sweet' | 'warm' | 'spicy' };
+  premise: string;
+  conflict: string;
+  userRole: { title: string; hook: string };
+  /** The scene the world page starts (`officialScenes`) and who opens it. */
+  entry: { sceneId: string; characterId: string };
+  ties: WorldTie[];
+  season: { title: string; chapters: WorldChapter[] };
+  events: WorldEvent[];
 }
 
 export type SpeakingStyle = 'casual' | 'gentle' | 'playful' | 'formal' | 'poetic' | 'dry';
@@ -102,6 +201,8 @@ export interface Relationship {
   replyLength?: ReplyLength;
   /** How they feel right now; carries from one reply to the next and fades with time. */
   mood?: Mood;
+  /** An arc beat just opened (its level): their next reply brings it up, then this clears. */
+  arcDue?: number;
 }
 
 /**
@@ -167,6 +268,8 @@ export interface Message {
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
   card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week';
+  /** A `scene` card: which scene began, so a world's entry scene plays once. */
+  sceneId?: string;
   /** week cards: the week's numbers with this friend (`src/lib/week.ts`). */
   week?: WeekStats;
   /** voiceQuota lines: when the plan's voice minutes come back */
@@ -283,6 +386,8 @@ export interface Scene {
   opening?: string;
   /** Comes with the app (`src/mock/scenes.ts`); the user's own are editable. */
   official?: boolean;
+  /** A world's entry scene: offered only to that world's cast (`Character.series`). */
+  series?: string;
   createdAt: string;
 }
 
@@ -349,6 +454,8 @@ export interface Lorebook {
   entries: LoreEntry[];
   /** The friends a book of the user's serves; an official one serves its world's cast (`series`). */
   characterIds: string[];
+  /** A book of the user's made into a world: who they are in it, in their words (`bookWorldLines`). */
+  userRole?: string;
   /** Official books: the world (`Character.series`) whose whole cast it serves. */
   series?: string;
   /** Comes with the app (`src/mock/lorebooks.ts`); read-only. */
@@ -461,7 +568,7 @@ export type MemoryType =
   | 'event';
 
 /** The [Us] timeline: every sweet moment with a character is recorded. */
-export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board' | 'quiz';
+export type MomentKind = 'met' | 'levelUp' | 'call' | 'diary' | 'secretNote' | 'dating' | 'photo' | 'plan' | 'board' | 'quiz' | 'arc';
 
 export interface Moment {
   id: string;
@@ -860,6 +967,8 @@ export interface DailyState {
   greetedSlots: string[];
   /** e.g. "2026-09-27:night" — calls already placed */
   calledSlots: string[];
+  /** World news already told (`WorldNews.key`), so a chapter or an event's date goes once. */
+  worldNewsSent?: string[];
   adsDay?: string;
   adsWatched: number;
   spinDay?: string;

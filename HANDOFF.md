@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z68. Worlds 2.0: 55 characters, 7 worlds, stories in the prompt and on the world page (2026-10-30, Claude 2). NEXT: to-do list below
+
+- Owner approved `docs/worlds-plan.md` and set: 55 official characters (40 + 15 new); art only after all worlds are ready; then the old 40 are redrawn too (today's read like passport photos). The owner's message was cut off at "for them too".
+- Rulings: third world = Ice & Arena (genre pass: hockey beat paranormal and sci-fi; the owner named none, cheap to swap). 3 worlds of 5, 8 women + 7 men. Tropes never repeat inside a world, so the list grew to 13. No pilot stop between worlds. Event frames left out (a world keeps one frame). Arc beats at levels 2/4/6 as planned.
+- Data: `src/mock/world-stories.ts` (premise, conflict, user role, ties, 6 chapters, 2 events for all 7), `src/mock/character-stories.ts` (role, trope, archetype, secret, 3 beats for all 55), 15 new in `characters.ts` + `character-profiles.ts`, new worlds in `worlds.ts`, `lorebooks.ts`, entry scenes in `scenes.ts`, `supabase/seed.sql` regenerated (not run on the cloud).
+- Logic: `src/lib/world-story.ts`, prompt `src/ai/world-prompt.ts` + `world-news-prompt.ts`, first text kind `world`, push kind `world`, store `enterWorld`, `startWorldGroup`, `arcDue`, `sendWorldNews` (Profile dev "Next planned texts" also sends the current chapter). New rule line: what the user says about their body and gender is fact.
+- UI: world page (role card with Start, season card, role under each name, group chat, events, ties), profile (world role, dynamic, Your story with locks), Us moment `arc`, lore editor "Who you are here", create-character world pick. New characters show a monogram until their art exists; Find's feature row skips them.
+- Checks: tsc 0, npm test 520/520, server tests 46/46, check:locales pass, check:content 13/13, 11 new evals on the real model 11/11 checks (task 3.64, voice 3.91). The whole eval set was not rerun and `--save` not used.
+- Not checked on a device. No final fresh-context code review was run (self-read only).
+
+Still to do:
+1. Owner runs the Fly deploy: the server must get the new prompt and the `world` first text, or the chat ignores the stories (`flyctl deploy` per the `cloud-server-fly` memory).
+2. Eval findings to tune: `world-edge-devoted` (Kael brought up the crown stone unprompted), `world-role-velvet` (Ronan named a later chapter's engagement because the eval's clock is 18 days in), `persona-body-respect` (Kai's answer ignored her body rather than describing it).
+3. Translation batch: `npm run content:extract` (en.json was deliberately not regenerated, so check:content stays green), then a Gemini brief for the new keys in 13 languages. Until then new text is English. World names and UI strings are already in all 14 locales. Write the brief from `docs/agent-tasks/translate-content.md`.
+4. Art, in this order, one test image first with count and price stated: 15 new (portrait + scene) + 3 key art, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots.
+5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.
+6. Run a full eval, then `--save`, and a code review of this change.
+
 ### 0z67. Shared lines follow the character's gender across all languages (2026-10-30, Antigravity)
 
 - Full task completed per `docs/agent-tasks/gendered-character-forms.md`.

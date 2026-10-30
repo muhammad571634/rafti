@@ -1,15 +1,19 @@
 import type { ClayIconName } from '@/assets/brand/registry';
 import type { DateRound } from '@/mock/dates';
-import type { PhotoFrame } from '@/types';
+import type { PhotoFrame, WorldStory } from '@/types';
+
+import { WORLD_STORIES } from './world-stories';
 
 /**
- * The four worlds of the official cast (`Character.series`) and what the mock says in each,
+ * The seven worlds of the official cast (`Character.series`) and what the mock says in each,
  * until the server's model writes it from the persona (src/ai/content-prompts.ts). A friend
  * talks like their world: the sea and campus at Seaside Academy, stars and oaths in the Moonlit
- * Realm, stages and schedules in NEON TIDE, coffee and the street in Tidepool Café.
+ * Realm, stages and schedules in NEON TIDE, coffee and the street in Tidepool Café, cards and rain
+ * in Velvet District, tea and knives in the Gilded Empire, ice and tape at Ice & Arena. Each one's
+ * story (conflict, role, season, events) is in `world-stories.ts`.
  */
 
-export type WorldKey = 'seaside' | 'moonlit' | 'neon' | 'tidepool';
+export type WorldKey = 'seaside' | 'moonlit' | 'neon' | 'tidepool' | 'velvet' | 'gilded' | 'arena';
 
 /** How a Photo Booth frame dresses a picture's card (src/components/photo-booth/frame-card.tsx). */
 export type FrameLook = PhotoFrame & { stickers: ClayIconName[] };
@@ -26,6 +30,8 @@ export interface World {
   series: string;
   /** Soft wash behind the world's art on cards. */
   tint: string;
+  /** Its strong colour: behind a tile until the picture loads, and on the dot by its name. */
+  accent: string;
   frame: FrameLook;
   /** What the host says before the world quiz. */
   intro: string;
@@ -41,13 +47,16 @@ export interface World {
   quiz: WorldQuestion[];
   /** Date rounds that feel like this world, played before the shared ones. */
   dateRounds: DateRound[];
+  /** What is going on here: conflict, the user's role, ties, season, events. */
+  story: WorldStory;
 }
 
-export const WORLDS: World[] = [
+const BASE: Omit<World, 'story'>[] = [
   {
     key: 'seaside',
     series: 'Seaside Academy',
     tint: '#DCEBF7',
+    accent: '#0A76A3',
     frame: {
       bg: '#CFE6F5',
       pattern: 'waves',
@@ -173,6 +182,7 @@ export const WORLDS: World[] = [
     key: 'moonlit',
     series: 'Moonlit Realm',
     tint: '#DCE2F5',
+    accent: '#5856D6',
     frame: {
       bg: '#1E2550',
       pattern: 'stars',
@@ -282,6 +292,7 @@ export const WORLDS: World[] = [
     key: 'neon',
     series: 'NEON TIDE',
     tint: '#F2DDF0',
+    accent: '#C2185B',
     frame: {
       bg: '#17151F',
       pattern: 'none',
@@ -385,6 +396,7 @@ export const WORLDS: World[] = [
     key: 'tidepool',
     series: 'Tidepool Café',
     tint: '#F3E6D8',
+    accent: '#AD4E0E',
     frame: {
       bg: '#EAD9C2',
       pattern: 'stripes',
@@ -485,7 +497,202 @@ export const WORLDS: World[] = [
       },
     ],
   },
+  {
+    key: 'velvet',
+    series: 'Velvet District',
+    tint: '#EBD9DE',
+    accent: '#7A1F3D',
+    frame: {
+      bg: '#1B1418',
+      pattern: 'none',
+      patternColor: '#1B1418',
+      ink: '#E7C9A0',
+      stickers: ['nightSky', 'music'],
+      caption: 'after midnight',
+      outline: ['#8C2F45', '#E7C9A0'],
+    },
+    intro: 'Five questions about this city. Get four right and the Orchid’s frame is yours. Nobody here gives anything away for free, so consider this a favour.',
+    right: ['Correct. You notice things. That can be dangerous here.', 'Right. Keep that to yourself.', 'Yes. You would have made a good witness. Oh, wait.'],
+    wrong: [
+      'No. It is {answer}. Write that down, then burn it.',
+      'Wrong. {answer}. People have lost more for less.',
+      'Not quite. The answer is {answer}. Ask quietly next time.',
+    ],
+    match: ['Same answer. I do not trust that, and I like it.', 'We agree. Let us not tell anyone.', 'You and I think alike. That is either very good or very bad.'],
+    differ: [
+      'I said {answer}. Tell me why I am wrong, somewhere with fewer windows.',
+      'Mine was {answer}. I will let you buy me a drink and explain.',
+      '{answer} for me. We do not have to agree. We only have to survive.',
+    ],
+    selfQuiz: [
+      { text: 'What do I check first when I walk into a room?', options: ['The exits', 'Who is watching', 'Where you are', 'The bar'] },
+      { text: 'What would I never bet on?', options: ['Cards', 'A horse', 'A friend', 'You'] },
+      { text: 'What do I do after midnight?', options: ['Work', 'Walk in the rain', 'Listen to old records', 'Wait to hear from you'] },
+      { text: 'What do I keep in my coat pocket?', options: ['A spare key', 'A card I never played', 'An old letter', 'Your matchbook'] },
+      { text: 'What scares me most?', options: ['Nothing', 'Being owed', 'Being known', 'Losing you'] },
+      { text: 'How do I say I care?', options: ['I do not', 'I check your locks', 'I tell you the truth', 'I stay'] },
+      { text: 'My drink?', options: ['Bad whisky', 'Black coffee', 'Champagne, the good one', 'Whatever you ordered'] },
+    ],
+    quiz: [
+      { text: 'What is the casino both families fight over called?', options: ['The Orchid', 'The Lily', 'The Velvet', 'The Ace'], answer: 0 },
+      { text: 'What does Ronan wear that nobody asks about twice?', options: ['A red scarf', 'A black half-mask', 'An eyepatch', 'Dark glasses'], answer: 1 },
+      { text: 'Which family does Luca belong to?', options: ['Valcour', 'Quill', 'Renwick', 'Sable'], answer: 2 },
+      { text: 'What does Mara always find in a statement?', options: ['A lie', 'A name', 'A date', 'Three holes'], answer: 3 },
+      { text: 'Who sings the late set at the Orchid?', options: ['Vivienne Sable', 'Isolde Valcour', 'Mara Quill', 'Nobody'], answer: 0 },
+      { text: 'What does Isolde keep from anyone she likes?', options: ['A glove', 'Their losing hand', 'A key', 'A photograph'], answer: 1 },
+      { text: 'What did you see change hands at the Orchid?', options: ['A key', 'A ring', 'A ledger', 'A gun'], answer: 2 },
+      { text: 'What does Ronan cook at four in the morning?', options: ['Toast', 'Soup', 'Pancakes', 'An omelette'], answer: 3 },
+    ],
+    dateRounds: [
+      {
+        line: 'It is raining hard outside {place}. {name} holds a coat over both of you and stops under the only awning on the street.',
+        choices: [
+          { text: 'Stay close and wait it out.', reply: 'The rain does not stop for a long time. Neither of you complains.', hearts: 3 },
+          { text: 'Run for it, and take their hand.', reply: '"You are going to get us killed," {name} says, laughing, and does not let go.', hearts: 2 },
+          { text: 'Ask who is following you.', reply: '{name} looks at you sideways. "Nobody, for ten minutes. I made sure. Relax."', hearts: 1 },
+        ],
+      },
+      {
+        line: 'At {place}, {name} slides a matchbook across the table. Something is written inside the flap.',
+        choices: [
+          { text: 'Read it, and keep it.', reply: '"Good," {name} says quietly. "Now burn it when you get home. Or do not. I would like to know."', hearts: 3 },
+          { text: 'Write something back.', reply: '{name} reads it, and for once has nothing to say.', hearts: 2 },
+          { text: 'Light it without reading.', reply: '"Careful," {name} says, watching it go. "That was the nice version."', hearts: 1 },
+        ],
+      },
+    ],
+  },
+  {
+    key: 'gilded',
+    series: 'Gilded Empire',
+    tint: '#F3E8CF',
+    accent: '#94701C',
+    frame: {
+      bg: '#F4EBD6',
+      pattern: 'dots',
+      patternColor: 'rgba(168,128,48,0.28)',
+      ink: '#6B4E16',
+      stickers: ['sparkles', 'cake'],
+      caption: 'as written',
+    },
+    intro: 'Five questions, my lady, on the court you are supposed to know. Get four right and the palace frame is yours. Do try not to embarrass the family.',
+    right: ['Correct. How unlike you.', 'Quite right. The court will be so disappointed.', 'Yes. You have been paying attention. It is unsettling.'],
+    wrong: [
+      'No, my lady. It is {answer}. Do not let them hear you say otherwise.',
+      'Incorrect. {answer}. People have been exiled for less.',
+      'Not quite. The answer is {answer}. Shall I fetch a tutor, or a priest?',
+    ],
+    match: ['We chose the same. How very improper.', 'Our answers align. Let us not be seen agreeing in public.', 'As I thought. You and I may survive this after all.'],
+    differ: [
+      'I chose {answer}. Tell me why, somewhere the walls have fewer ears.',
+      '{answer}, for me. A difference of opinion. In this court, that is nearly a declaration.',
+      'My answer was {answer}. We shall discuss it over tea. I will pour first.',
+    ],
+    selfQuiz: [
+      { text: 'What do I do when the court stares?', options: ['Stare back', 'Smile', 'Leave', 'Look for you'] },
+      { text: 'What would I give up my title for?', options: ['Nothing', 'Peace', 'A quiet life', 'You'] },
+      { text: 'My favourite hour at the palace?', options: ['Dawn', 'The hour after the ball', 'Teatime', 'Whenever you are near'] },
+      { text: 'What do I keep hidden in my room?', options: ['A letter', 'A packed bag', 'A small dagger', 'Something of yours'] },
+      { text: 'What do I think of the Winter Ball?', options: ['A bore', 'A battlefield', 'A trap', 'A chance to dance with you'] },
+      { text: 'How do I apologise?', options: ['I do not', 'With a gift', 'In writing, formally', 'Badly, but I try'] },
+      { text: 'What is my worst habit?', options: ['Pride', 'Listening at doors', 'Eating sweets in secret', 'Watching you'] },
+    ],
+    quiz: [
+      { text: 'What is the novel you woke up in called?', options: ['The Crown and the Rose', 'The Gilded Throne', 'The Winter Queen', 'Rose of the Empire'], answer: 0 },
+      { text: 'Where do you die in the book?', options: ['At the hunt', 'At the Winter Ball', 'At the tea party', 'In the dungeon'], answer: 1 },
+      { text: 'Who is your betrothed?', options: ['Lord Dorian', 'Sir Alaric', 'Crown Prince Leander', 'Nobody'], answer: 2 },
+      { text: 'How far behind you does Sir Alaric walk?', options: ['One pace', 'Two paces', 'Ten paces', 'Three paces'], answer: 3 },
+      { text: 'What sweets does Celestine bring you?', options: ['Almond', 'Honey', 'Rose', 'Lemon'], answer: 0 },
+      { text: 'How long has Odile been your maid?', options: ['Four years', 'Eight years', 'Ten years', 'One year'], answer: 1 },
+      { text: 'What does Lord Dorian play against himself?', options: ['Cards', 'Dice', 'Chess', 'The harp'], answer: 2 },
+      { text: 'What does the Prince insist belongs to someone else?', options: ['A horse', 'A ring', 'A sword', 'A small dog'], answer: 3 },
+    ],
+    dateRounds: [
+      {
+        line: 'A palace corridor at {place}, and the footsteps of the guard are coming. {name} pulls you behind a tapestry and puts a finger to their lips.',
+        choices: [
+          { text: 'Stay very still, very close.', reply: 'The guard passes. {name} does not move away at once, and neither do you.', hearts: 3 },
+          { text: 'Whisper a joke.', reply: 'They have to bite their glove not to laugh. "You are going to get us both hanged."', hearts: 2 },
+          { text: 'Step out and greet the guard.', reply: '"Oh, well done," {name} says, stepping out after you, not at all pleased and a little impressed.', hearts: 1 },
+        ],
+      },
+      {
+        line: 'At {place}, {name} offers you a cup, and the whole terrace is watching. "It is customary," they say, "for one of us to drink first."',
+        choices: [
+          { text: 'Drink first, looking at them.', reply: 'A small silence. "Either you are very brave or very stupid," {name} murmurs. "I hope to find out."', hearts: 3 },
+          { text: 'Take their cup instead.', reply: '{name} laughs out loud, and the whole terrace turns to look.', hearts: 2 },
+          { text: 'Set it down untouched.', reply: '"Wise," {name} says. "And a little sad."', hearts: 1 },
+        ],
+      },
+    ],
+  },
+  {
+    key: 'arena',
+    series: 'Ice & Arena',
+    tint: '#DCE8F2',
+    accent: '#1F5F8B',
+    frame: {
+      bg: '#E6F0F7',
+      pattern: 'stripes',
+      patternColor: 'rgba(255,255,255,0.7)',
+      ink: '#1E4A6E',
+      stickers: ['camera', 'sparkles'],
+      caption: 'final buzzer',
+    },
+    intro: 'Five questions on the Wolves. Four right and you get the rink frame. Do not worry, nobody in this building can count either.',
+    right: ['Correct! You have been watching.', 'Yes! Top shelf.', 'Right. Are you sure you do not play?'],
+    wrong: [
+      'Wide. It is {answer}.',
+      'Nope, {answer}. Back to the bench.',
+      'Close, but {answer}. Do not tell the captain.',
+    ],
+    match: ['Same answer! That is a clean line change.', 'We match. Nobody tell Coach.', 'Called it. You and me on the same line.'],
+    differ: [
+      'I had {answer}. Argue with me over fries.',
+      '{answer} for me. You can be wrong on my team anytime.',
+      'I went with {answer}. Rematch after practice.',
+    ],
+    selfQuiz: [
+      { text: 'What do I do right before a game?', options: ['Tape everything twice', 'Eat', 'Stare at the wall', 'Find you'] },
+      { text: 'What is my favourite part of the arena?', options: ['The ice before the lights', 'The fries', 'The treatment room', 'Wherever you are'] },
+      { text: 'What do I do after a loss?', options: ['Go quiet', 'Skate alone', 'Eat too much', 'Call you'] },
+      { text: 'What is in my bag that should not be?', options: ['Old tape', 'A lucky sock', 'Too many snacks', 'Your pen'] },
+      { text: 'What do I think about in the last minute?', options: ['Nothing', 'The next shift', 'Food', 'You, in the stands'] },
+      { text: 'How do I show I care?', options: ['I do not say', 'I carry your bag', 'I bring food', 'I look out for you'] },
+      { text: 'My game-day superstition?', options: ['Left skate first', 'Same breakfast', 'No talking', 'Seeing you first'] },
+    ],
+    quiz: [
+      { text: 'What is the team called?', options: ['Northgate Wolves', 'Harbour Bears', 'Ice Kings', 'City Hawks'], answer: 0 },
+      { text: 'Who is the captain?', options: ['Teddy Novak', 'Erik Holt', 'Freya Lund', 'Priya Raman'], answer: 1 },
+      { text: 'What does Teddy bring to your door?', options: ['Flowers', 'Coffee', 'Far too much breakfast', 'His dog'], answer: 2 },
+      { text: 'When does Freya get the ice?', options: ['Midnight', 'Noon', '3 p.m.', '5 a.m.'], answer: 3 },
+      { text: 'What does Sasha hate most?', options: ['Hockey', 'Tea', 'Ballet', 'Sugar'], answer: 0 },
+      { text: 'What does Priya do for a living?', options: ['Coaches', 'Writes a sports column', 'Sells tickets', 'Owns the team'], answer: 1 },
+      { text: 'What must nobody touch?', options: ['Holt’s stick', 'Holt’s dog', 'Holt’s tape', 'Holt’s pillow'], answer: 2 },
+      { text: 'What rule is taped to the treatment room wall?', options: ['No fries', 'No phones', 'No crying', 'No dating the players'], answer: 3 },
+    ],
+    dateRounds: [
+      {
+        line: 'The arena is empty at {place}, and the lights are half on. {name} tosses you a pair of skates. "Come on. Nobody is watching."',
+        choices: [
+          { text: 'Lace up, and take their hand on the ice.', reply: 'You fall twice. They catch you once. Nobody mentions the second time.', hearts: 3 },
+          { text: 'Skate badly on purpose.', reply: '"You are doing that on purpose," {name} says, and skates backwards to hold you up anyway.', hearts: 2 },
+          { text: 'Watch from the boards.', reply: '{name} shows off for ten minutes, and crashes into the net. You clap.', hearts: 1 },
+        ],
+      },
+      {
+        line: 'After practice at {place}, {name} holds out a paper tray of hot fries. "Last ones. Fight me for them, or say something nice."',
+        choices: [
+          { text: 'Say something nice, and mean it.', reply: 'They go red to the ears, hand over the whole tray and refuse to look at you for a while.', hearts: 3 },
+          { text: 'Steal one while they are talking.', reply: '"I saw that," {name} says, delighted. "You are a menace."', hearts: 2 },
+          { text: 'Tell them about their diet.', reply: '"You are not on the clock," {name} says, and eats them all, slowly, at you.', hearts: 1 },
+        ],
+      },
+    ],
+  },
 ];
+
+export const WORLDS: World[] = BASE.map((world) => ({ ...world, story: WORLD_STORIES[world.key] }));
 
 export const worldByKey = (key: string) => WORLDS.find((w) => w.key === key);
 

@@ -33,6 +33,7 @@ import { STREAMS_VOICE } from '@/mock/streams';
 import { TEMPER_VOICE } from '@/mock/temper';
 import { THREADS_VOICE } from '@/mock/threads';
 import { WEEK_VOICE } from '@/mock/week';
+import { WORLD_VOICE } from '@/mock/world-voice';
 
 function cleanStr(val: unknown): string | undefined {
   if (typeof val === 'string' && val.trim().length > 0) {
@@ -61,6 +62,9 @@ for (const c of characters.filter((c) => c.isOfficial)) {
   if (cleanStrArray(c.dislikes)) item.dislikes = c.dislikes;
   if (cleanStr(c.backstory)) item.backstory = c.backstory;
   if (cleanStrArray(c.tags)) item.tags = c.tags;
+  if (cleanStr(c.worldRole)) item.worldRole = c.worldRole;
+  // Only a beat's title shows on screen; the secret and the beats are for the model and stay English.
+  if (c.arc) item.arc = { beats: c.arc.beats.map((b) => ({ title: b.title })) };
   if (Object.keys(item).length > 0) {
     charactersSection[c.id] = item;
   }
@@ -138,6 +142,28 @@ for (const w of WORLDS) {
     })),
     frame: {
       caption: w.frame.caption,
+    },
+    // What the world page shows; `conflict` is for the model and stays English.
+    story: {
+      premise: w.story.premise,
+      userRole: w.story.userRole,
+      ties: w.story.ties.map((t) => ({ note: t.note })),
+      season: {
+        title: w.story.season.title,
+        chapters: Object.fromEntries(w.story.season.chapters.map((c) => [c.id, { title: c.title, beat: c.beat }])),
+      },
+      events: Object.fromEntries(
+        w.story.events.map((e) => [
+          e.id,
+          {
+            title: e.title,
+            when: e.when,
+            note: e.note,
+            line: e.line,
+            round: { line: e.round.line, choices: e.round.choices.map((ch) => ({ text: ch.text, reply: ch.reply })) },
+          },
+        ]),
+      ),
     },
   };
 }
@@ -276,6 +302,7 @@ const content = {
     ideas: IDEAS_VOICE,
     drafts: DRAFTS_VOICE,
     morning: MORNING_VOICE,
+    world: WORLD_VOICE,
   },
 };
 

@@ -2,7 +2,7 @@
 
 The owner wants the next big push on characters and their worlds: we ship about 40 official characters, users make
 the rest, and today's four worlds feel thin. This file is the research and a proposed architecture. Nothing here is
-built yet; the owner picks first.
+built yet at first; the owner approved it on 2026-10-30 (55 characters, third world Ice & Arena: see HANDOFF 0z68).
 
 ## 1. Where we are
 

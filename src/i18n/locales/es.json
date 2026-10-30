@@ -939,7 +939,9 @@
       "comesUpText": "Una entrada se activa en la respuesta cuando su nombre o clave aparece en el chat.",
       "yours": "Tuyo para cualquier personaje",
       "yoursText": "Crea tus propios libros y vincúlalos a los amigos que deban conocerlos."
-    }
+    },
+    "yourRole": "Quién eres aquí",
+    "rolePlaceholder": "Tu papel en este mundo"
   },
   "streams": {
     "title": "Transmisiones",
@@ -1487,7 +1489,8 @@
       "photo": "Se tomaron una foto juntos",
       "plan": "Planearon: {{title}}",
       "board": "Fijaron una nota en el mural",
-      "quiz": "Quiz de pareja: {{title}} · {{score}}"
+      "quiz": "Quiz de pareja: {{title}} · {{score}}",
+      "arc": "Se abrió: {{title}}"
     },
     "showMore": "Mostrar {{count}} más",
     "daysLabel_one": "día juntos",
@@ -2470,7 +2473,10 @@
     "My Creations": "Mis creaciones",
     "Moonlit Realm": "Reino Lunar",
     "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool"
+    "Tidepool Café": "Café Tidepool",
+    "Velvet District": "Distrito Velvet",
+    "Gilded Empire": "Imperio Dorado",
+    "Ice & Arena": "Hielo y Arena"
   },
   "welcomeBack": {
     "line1": "¡Volviste! Te extrañé 💛",
@@ -2478,5 +2484,44 @@
     "line3": "¡Hola! ¿Tienes un minuto para hablar?",
     "line4": "¡Qué bueno verte de nuevo! Cuéntamelo todo ✨",
     "a11y": "{{name}}: {{line}}. Abre el chat."
+  },
+  "world": {
+    "yourRole": "Eres",
+    "start": "Empieza aquí",
+    "continue": "Continuar",
+    "season": "Esta temporada",
+    "chapterOf": "Capítulo {{n}} de {{total}}",
+    "day": "Día {{n}}",
+    "events": "Eventos",
+    "now": "Ahora",
+    "ties": "Entre ellos",
+    "crew": "Chat de grupo",
+    "story": "Vuestra historia",
+    "level": "Nivel {{level}}",
+    "dynamic": "Vuestra dinámica",
+    "kinds": {
+      "rivals": "Rivales",
+      "siblings": "Hermanos",
+      "exes": "Ex",
+      "best friends": "Mejores amigos",
+      "mentor": "Mentor",
+      "sworn": "Juramento",
+      "black cat × golden retriever": "Gato negro × golden retriever"
+    },
+    "tropes": {
+      "enemies-to-lovers": "De enemigos a amantes",
+      "slow-burn": "A fuego lento",
+      "bodyguard": "Guardaespaldas",
+      "rivals": "De rivales a amantes",
+      "fake-dating": "Relación falsa",
+      "second-chance": "Segunda oportunidad",
+      "forbidden": "Amor prohibido",
+      "grumpy-sunshine": "Gruñón × sol",
+      "friends-to-lovers": "De amigos a amantes",
+      "forced-proximity": "Cercanía forzada",
+      "secret-admirer": "Admirador secreto",
+      "ticking-clock": "Contra el reloj",
+      "arranged-marriage": "Matrimonio concertado"
+    }
   }
 }
