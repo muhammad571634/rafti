@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z69. Worlds eval findings tuned; Kai stays open (2026-10-30, Claude 2). NEXT: owner reruns the Fly deploy, then the translation batch (0z68 item 3)
+
+- Kael raising the crown stone unprompted: the `nowLines` header said "bring it up only when it fits". Now: only when they ask about the world or the chat is already in it, and left out when they talk about their own life, plans or friends. `world-edge-devoted` 4/5 before, 6/6 after (the check now excludes the stone, the Court and the Eclipse). Other side, new `world-now-asked`: asked outright, Kael still talks about the stone, 6/6.
+- Ronan naming the engagement: not a prompt bug. The eval's fixed join date put the user on day 18, where the engagement is the real chapter. New `setup.joinedAt` (`server/src/evals/answer.ts`); `world-role-velvet` joins that day, 5/5, task 5.
+- Kai vague about her body: NOT solved. Base 3/5. Tried a rule in `CHARACTER_RULES` (3/6, reverted), an instruction on the "About them" line (4/8, reverted), and reading "describe ..." as a request in `read.ts` (4/8, kept: the plan used to say "react and ask back", and replies now answer). Stopped after three fixes that did not move the number. The hard line holds: 28 of 28 runs never slimmed her. About half the replies stay vague ("radiant"), probably the model's own caution on bodies; untested on a stronger model. It is a rubric line now, not a machine check, because a check that fails half the time would fail runs against the baseline. New `persona-body-unknown`: nothing told, nothing assumed, 8/8.
+- Checks: tsc 0, npm test 521/521, server tests 46/46, the 13 world and body evals 13/13 checks (task 4.23, voice 3.92). Judge notes left: `world-edge-devoted` task 3 (no counting the minutes, "come back here" reads as slightly guilting), `persona-body-respect` task 3 (vague). The full eval is still 0z68 item 6.
+- The prompt line reaches users only after a Fly deploy, which the owner runs.
+
 ### 0z68. Worlds 2.0: 55 characters, 7 worlds, stories in the prompt and on the world page (2026-10-30, Claude 2). NEXT: to-do list below
 
 - Owner approved `docs/worlds-plan.md` and set: 55 official characters (40 + 15 new); art only after all worlds are ready; then the old 40 are redrawn too (today's read like passport photos). The owner's message was cut off at "for them too".
@@ -12,7 +20,7 @@
 
 Still to do:
 1. DONE 2026-10-30: owner ran the Fly deploy of `6c5364d` (image `deployment-01M66YJXY0A3EX5PJC7Q0BZH1Y`, `/health` 200). A real `world` first text has not been sent yet; that is part of item 5.
-2. Eval findings to tune: `world-edge-devoted` (Kael brought up the crown stone unprompted), `world-role-velvet` (Ronan named a later chapter's engagement because the eval's clock is 18 days in), `persona-body-respect` (Kai's answer ignored her body rather than describing it).
+2. DONE 2026-10-30 except Kai (0z69): `world-edge-devoted` and `world-role-velvet` fixed; `persona-body-respect` still vague in about half the runs.
 3. Translation batch: `npm run content:extract` (en.json was deliberately not regenerated, so check:content stays green), then a Gemini brief for the new keys in 13 languages. Until then new text is English. World names and UI strings are already in all 14 locales. Write the brief from `docs/agent-tasks/translate-content.md`.
 4. Art, in this order, one test image first with count and price stated: 15 new (portrait + scene) + 3 key art, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots.
 5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.

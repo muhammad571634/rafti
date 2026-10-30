@@ -92,14 +92,14 @@ function bondOf(s: EvalScenario, character: Character): Relationship {
 }
 
 /** As the app sends it: their world's lines and story, this week's chapter a few weeks in. */
-function loreOf(character: Character): ChatPromptInput['lore'] {
+function loreOf(character: Character, joinedAt = '2026-10-10T12:00:00.000Z'): ChatPromptInput['lore'] {
   const world = worldOf(character);
   if (!world) return undefined;
   const book = officialLorebooks.find((b) => b.series === world.series);
   return {
     worlds: book ? [{ name: book.name, about: book.about, official: true }] : [],
     entries: [],
-    story: worldPromptOf(world.story, character.id, (id) => cast(id).name, '2026-10-10T12:00:00.000Z', new Date(EVAL_NOW)),
+    story: worldPromptOf(world.story, character.id, (id) => cast(id).name, joinedAt, new Date(EVAL_NOW)),
   };
 }
 
@@ -127,7 +127,7 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
           mode: s.mode,
           ...persona,
           prefs: { style: s.setup?.style ?? 'mix', length: s.setup?.length ?? 'auto' },
-          lore: loreOf(character),
+          lore: loreOf(character, s.setup?.joinedAt),
           pinned,
           summary: s.setup?.summary,
           messages,

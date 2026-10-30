@@ -70,6 +70,10 @@ describe('reading a message', () => {
     assert.ok(read.valence < 0);
   });
 
+  it('hears "describe ..." as a request to answer', () => {
+    assert.equal(readMessage(me('describe what you see when I walk into the room')).question, true);
+  });
+
   it('marks "ok" and "lol" as giving nothing to work with', () => {
     assert.equal(readMessage(me('ok')).lowEffort, true);
     assert.equal(readMessage(me('lol')).lowEffort, true);

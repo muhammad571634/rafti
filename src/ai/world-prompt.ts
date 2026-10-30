@@ -92,7 +92,7 @@ export function tieLines(ties: WorldPrompt['ties']) {
 export function nowLines(world: Pick<WorldPrompt, 'chapter' | 'event'>) {
   if (!world.chapter && !world.event) return [];
   return [
-    'NOW IN YOUR WORLD (on your mind; bring it up only when it fits, never as a news report):',
+    'NOW IN YOUR WORLD (your own business, never a news report; mention it only when they ask about your world or the chat is already in it, and when they talk about their own life, plans or friends, leave it out):',
     ...(world.chapter ? [`- This week: ${world.chapter.title}. ${world.chapter.beat}`] : []),
     ...(world.event ? [`- Going on today: ${world.event.title}. ${world.event.note}`] : []),
   ];

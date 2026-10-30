@@ -33,7 +33,7 @@ const VALENCE: Partial<Record<Cue, number>> = {
 
 const LOW_EFFORT = /^(ok(ay)?|k+|lol|haha+|hm+|mhm|yeah|yep|yes|no|nah|sure|cool|nice|idk|fine|true|same|wow|oh)[.!]*$/i;
 /** Asking without a question mark counts too: "tell me about your day" wants an answer. */
-const QUESTION_START = /^(what|why|how|when|where|who|which|do you|are you|can you|would you|did you|have you|will you|tell me)\b/i;
+const QUESTION_START = /^(what|why|how|when|where|who|which|do you|are you|can you|would you|did you|have you|will you|tell me|describe)\b/i;
 /** Emoji or punctuation only (no `\p{...}` escapes: not every JS engine RN runs on has them). */
 const NO_WORDS = /^[^\w]+$/;
 
