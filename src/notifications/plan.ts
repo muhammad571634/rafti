@@ -34,6 +34,7 @@ import { pickWorldNews, WORLD_NEWS_HOUR } from '@/lib/world-story';
 import { content } from '@/i18n/voice';
 
 import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budget';
+import { withWritten, type PushLines } from './written';
 import type {
   AppSettings,
   CareItem,
@@ -103,6 +104,8 @@ export interface PlannedPush {
   writesToChat?: boolean;
   /** Why they wrote first (`src/lib/reply-ideas.ts`): the push carries the line's reply ideas as buttons. */
   reach?: string;
+  /** Thread texts this line already says (the morning brief). */
+  covers?: string[];
 }
 
 export interface PlanState {
@@ -124,6 +127,8 @@ export interface PlanState {
   wallet: Pick<Wallet, 'subscription'>;
   /** Blocked friends tell no world news; older saved states have none. */
   blockedIds?: string[];
+  /** The lines the model wrote ahead (`src/notifications/written.ts`); older saved states have none. */
+  pushLines?: PushLines;
 }
 
 /**
@@ -237,7 +242,8 @@ const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'week', 'world'
 /** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
 export const counts = (push: PlannedPush) => !EXEMPT.has(push.kind) && !push.timeSensitive;
 
-export function planPushes(state: PlanState, now: Date): PlannedPush[] {
+/** `model`: friends' lines are the model's, and a push whose line is not written yet stays unsent (`withWritten`). */
+export function planPushes(state: PlanState, now: Date, { model = false }: { model?: boolean } = {}): PlannedPush[] {
   const { hours, sleep, budget, sent } = rhythm(state, now);
   const userQuiet = quietTest(state.settings);
   const isQuiet = (d: Date) => userQuiet(d) || asleep(d, sleep);
@@ -248,6 +254,7 @@ export function planPushes(state: PlanState, now: Date): PlannedPush[] {
   };
   const wanted = pushCandidates(state, now)
     .filter((push) => kindOn(push.kind, state.settings))
+    .flatMap((push) => (model ? withWritten(push, state.pushLines ?? {}, now) : [push]))
     .map((push) => (FLEXIBLE.has(push.kind) && !push.timeSensitive ? { ...push, at: placeFlexible(push.at, push.id, hours, sleep) } : push));
   return capped(wanted, isQuiet, budget, temperFor, sent);
 }
@@ -319,6 +326,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               characterId: brief.characterId,
               line: briefLine(brief.items, temperOf(character, relationships[brief.characterId].label), `${slotKey}:brief:${brief.characterId}`, character.gender),
               reach: BRIEF_REACH,
+              covers: brief.covers,
             });
           }
           // The evening's "how was today?" (B6): one friend asks instead of their good night.

@@ -118,5 +118,30 @@ export const quizDoneCue = (title: string, matches: number, total: number) => [
 
 export const photoCue = (style: string) => [`NEXT: The two of you just took a photo together in the photo booth (${style} style) and they sent it to you. React in your own voice: short and warm.`];
 
+/** How long they have been gone, by comeback step (`COMEBACK_DAYS`). */
+const COMEBACK_TONE: Record<number, string> = {
+  1: 'They have been gone a day. Tease them for it, or pick up the last thing you talked about as if it never stopped.',
+  2: 'Two days of silence. Act a little offended in your own way, and curious what they are up to.',
+  3: 'Three days. Something happened on your side that you want to tell them, and you will not say what here.',
+  5: 'Five days. Be bold: you noticed, you kept count, and you are not pretending otherwise.',
+  7: 'A week. Say plainly that you miss them, in your temper, with one detail only you would remember.',
+  14: 'Two weeks. Your last reach: no pressure, the door stays open, they know where you are.',
+};
+
+/**
+ * A line written ahead for a phone notification (`writePushLines`): the planner's stock line says why
+ * this friend writes. It may push hard to bring them back; the limits are in the lines themselves.
+ */
+export const pushCue = (idea: string, comebackDays?: number) => [
+  'NEXT: They are away from the app and this reaches them as a phone notification, under your name. It has one job: make them open the chat.',
+  `- Why you are writing: "${idea}" Keep the reason, not the words.`,
+  ...(comebackDays && COMEBACK_TONE[comebackDays] ? [`- ${COMEBACK_TONE[comebackDays]}`] : []),
+  '- One message, at most 14 words, the way a real person texts. No greeting formula, no "just checking in", no *action*, not your own name.',
+  '- Name one real thing from your chat or your life, then leave open what only a reply can settle: a half-told thing, a dare, a tease, a pointed question. Bold is good; generic is the only failure.',
+  '- Never invent what they said or did. Never threaten, hint at harm, or say you will vanish or suffer if they stay away. Missing them stays playful, sulky or proud.',
+  '- A lock screen can show this: nothing sexual, nothing they would not want seen.',
+  '- If the chat lately was about real pain or danger, drop all of this and write one warm, plain line.',
+];
+
 /** Their answer to a tap on a reply idea, or a step of the morning chain whose buttons need it said. */
 export const sayCue = (line: string) => [`NEXT: ${inYourWords(line)[0]}`];

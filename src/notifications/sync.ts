@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 
+import { apiBase } from '@/ai/server';
 import i18n, { phrase } from '@/i18n';
 import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
@@ -175,7 +176,7 @@ export async function syncPushes(state: PlanState, now = new Date()): Promise<Pl
   // Alarm rings share iOS's 64 pending notifications; the planner takes what is left.
   const N = notificationsModule()!;
   const alarms = (await N.getAllScheduledNotificationsAsync()).filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
-  const plan = planPushes(state, now).slice(0, Math.max(0, MAX_PENDING - alarms));
+  const plan = planPushes(state, now, { model: !!state.settings.realAi && !!apiBase() }).slice(0, Math.max(0, MAX_PENDING - alarms));
   await Promise.all(plan.map((push) => schedule(push, push.id, push.at, state.settings.notificationPreview)));
   return plan;
 }

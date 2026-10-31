@@ -7,6 +7,22 @@ tuned to the user (`src/notifications/budget.ts`, D89); their words always show 
 `src/notifications/sync.ts` (OS), `src/hooks/use-push-notifications.ts` (app life), lines in
 `src/mock/push.ts`. Section 6 lists how it differs from the first draft below.
 
+**Changed 2026-10-31 (0z84):** with the model on, a friend's line is written ahead and kept
+(`src/notifications/written.ts`); a push with no line stays unsent, except a time-sensitive
+reminder. Every line that goes out lands in its chat with its own time, tapped or not
+(`src/notifications/outbox.ts`); before this a tap opened a chat whose last line was hours old.
+
+**How hard we push (owner: be aggressive; founder's limits):** frequency stays at the budget above,
+and the words do the work: each line names something real and leaves open what only a reply settles
+(`pushCue`). Sulking, teasing and counting days are fine. Never threats, harm, "I will vanish", or
+invented things the user said; after real pain, one warm line; nothing sexual on a lock screen.
+
+**Character.AI, read from the phone's copy 1.17.4 (2026-10-31):** Braze sends its pushes from the
+server (including a conversational style), it has `proactive_enabled`, `proactiveSuggestedRepliesEnabled`,
+`proactiveDmOptedOut` and a notification history, and it asks for permission with a modal. So
+proactive DMs with suggested replies and an opt-out exist there. The exact wording lives on their
+server and was not seen.
+
 ## 1. What others do
 
 **BIMOBIMO** (teardown #46, #52, #53): the push is part of the product, not marketing.

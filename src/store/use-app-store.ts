@@ -60,7 +60,11 @@ import {
   voiceNoteCue,
   wakeCheckInCue,
   worldQuizCue,
+  pushCue,
 } from '@/ai/moment-prompt';
+import { dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
+import { planPushes } from '@/notifications/plan';
+import { comebackDays, prunePushLines, pushesToWrite, writtenKey, type PushLines } from '@/notifications/written';
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
@@ -402,6 +406,8 @@ interface AppState {
   schedules: ScheduleItem[];
   /** Check-ins friends owe after the user said how they were (`src/lib/care.ts`). */
   care: CareItem[];
+  pushOutbox: OutboxItem[];
+  pushLines: PushLines;
   /** What the user said that has a future, followed up like a person would (`src/lib/threads.ts`). */
   threads: Thread[];
   /** Notes the user pinned on the message board, oldest first */
@@ -594,6 +600,12 @@ interface AppState {
   takeQuickCreate: () => boolean;
   /** The counted pushes handed to the OS (`src/notifications/budget.ts`), kept in `daily`. */
   setPushLog: (log: PushSent[]) => void;
+  /** What the phone will show while the app is away (`src/notifications/outbox.ts`). */
+  setPushOutbox: (outbox: OutboxItem[]) => void;
+  /** Lines whose push has gone out go into their chats with that time. Safe to call often. */
+  landDuePushes: () => void;
+  /** The model writes the next pushes' lines ahead (`src/notifications/written.ts`); how many it wrote. */
+  writePushLines: () => Promise<number>;
   /** Pays for a drawn portrait: one of the plan's free ones, else shells. False when neither is there. */
   payForPortrait: (characterId?: string) => boolean;
   /**
@@ -839,6 +851,8 @@ export type ProfilePatch = Partial<
 >;
 
 type PersistedKeys =
+  | 'pushOutbox'
+  | 'pushLines'
   | 'user'
   | 'wallet'
   | 'characters'
@@ -1041,6 +1055,8 @@ export const useAppStore = create<AppState>()(
       moments: [],
       schedules: [],
       care: [],
+      pushOutbox: [],
+      pushLines: {},
       threads: [],
       boardPosts: [],
       dates: [],
@@ -2038,6 +2054,57 @@ export const useAppStore = create<AppState>()(
       },
 
       setPushLog: (pushLog) => set((s) => ({ daily: { ...s.daily, pushLog } })),
+      setPushOutbox: (pushOutbox) => set({ pushOutbox }),
+
+      landDuePushes: () => {
+        const now = new Date();
+        const due = dueOutbox(get().pushOutbox, now);
+        if (!due.length) return;
+        due.forEach(({ id, characterId, line, at, reach }) => get().receivePushLine({ id, characterId, text: line, at, reach }));
+        const marks = landedMarks(due);
+        const left = new Set(due.map((item) => item.id));
+        set((s) => ({
+          pushOutbox: s.pushOutbox.filter((item) => !left.has(item.id)),
+          daily: {
+            ...s.daily,
+            greetedSlots: [...new Set([...s.daily.greetedSlots, ...marks.slots])].slice(-8),
+            lifeSent: [...(s.daily.lifeSent ?? []), ...marks.life],
+            worldNewsSent: [...(s.daily.worldNewsSent ?? []), ...marks.worlds],
+          },
+          schedules: s.schedules.map((x) => (marks.reminded.includes(x.id) ? { ...x, reminded: true } : marks.followedUp.includes(x.id) ? { ...x, followedUp: true } : x)),
+          care: s.care.map((x) => (marks.care.includes(x.id) ? { ...x, done: true } : x)),
+          threads: marks.touches.length ? markTouches(s.threads, new Set(marks.touches)) : s.threads,
+          user: marks.birthdayYear ? { ...s.user, birthdayWishedYear: marks.birthdayYear } : s.user,
+        }));
+      },
+
+      writePushLines: async () => {
+        if (!modelOn(get) || pushWriting || Date.now() < pushWritingPausedUntil) return 0;
+        const now = new Date();
+        const todo = pushesToWrite(planPushes(get(), now), get().pushLines, now);
+        if (!todo.length) return 0;
+        pushWriting = true;
+        let wrote = 0;
+        try {
+          const token = await accessToken();
+          for (const push of todo) {
+            const conversationId = get().conversations.find((c) => c.characterId === push.characterId)?.id;
+            if (!conversationId || !push.line) continue;
+            const reply = await serverFirstText(momentRequest(get, conversationId, pushCue(push.line, comebackDays(push)), push.at), token);
+            // Busy: the plan goes out with what is written, and the next open tries again.
+            if (!reply) {
+              pushWritingPausedUntil = Date.now() + PUSH_WRITING_PAUSE_MS;
+              break;
+            }
+            const kept = { line: reply.skip ? '' : reply.lines.join(' '), writtenAt: new Date().toISOString() };
+            set((s) => ({ pushLines: { ...prunePushLines(s.pushLines, new Date()), [writtenKey(push)]: kept } }));
+            wrote += 1;
+          }
+        } finally {
+          pushWriting = false;
+        }
+        return wrote;
+      },
 
       takeQuickCreate: () => {
         const next = spendQuickCreate(get().quickCreates, todayKey(), quickCreatesPerDay(get().wallet.subscription, Date.now()));
@@ -3149,6 +3216,8 @@ export const useAppStore = create<AppState>()(
       },
 
       runTimers: () => {
+        // What the phone already showed comes first, so nothing below says it again.
+        get().landDuePushes();
         const now = new Date();
         const exists = (id: string) => get().characters.some((c) => c.id === id);
 
@@ -3620,6 +3689,8 @@ export const useAppStore = create<AppState>()(
         moments: s.moments,
         schedules: s.schedules,
         care: s.care,
+        pushOutbox: s.pushOutbox,
+        pushLines: s.pushLines,
         threads: s.threads,
         boardPosts: s.boardPosts,
         dates: s.dates,
@@ -4001,18 +4072,18 @@ function writeFirst(
 /** The model writes a friend's words right now; otherwise the stock lines play. */
 const modelOn = (get: Getter) => get().settings.realAi && !!apiBase();
 
-/**
- * A text a friend sends because something just happened: `cue` says what, the model writes it
- * (src/ai/moment-prompt.ts). Busy for good: they stay quiet. `stock` is for the model off.
- */
-function sayFirst(set: Setter, get: Getter, conversationId: string, stock: string, cue: readonly string[], reach?: string) {
+/** Only one run of `writePushLines` at a time, and a busy model gets a rest. */
+const PUSH_WRITING_PAUSE_MS = 5 * 60_000;
+let pushWriting = false;
+let pushWritingPausedUntil = 0;
+
+/** A `moment` first text: the friend, their memories and the chat's latest lines; `at` is when it will be read. */
+function momentRequest(get: Getter, conversationId: string, cue: readonly string[], at: Date): FirstTextRequest {
   const state = get();
-  const conversation = state.conversations.find((c) => c.id === conversationId);
-  const character = state.characters.find((c) => c.id === conversation?.characterId);
-  if (!conversation || !character) return;
-  const now = new Date();
+  const conversation = state.conversations.find((c) => c.id === conversationId)!;
+  const character = state.characters.find((c) => c.id === conversation.characterId)!;
   const memories = memoryAccess(state.memories, state.wallet, character.id).open;
-  const request: FirstTextRequest = {
+  return {
     kind: 'moment',
     input: {
       character,
@@ -4023,12 +4094,22 @@ function sayFirst(set: Setter, get: Getter, conversationId: string, stock: strin
       facts: memories.filter((m) => !m.pinned),
       summary: conversation.summary,
       recent: (state.messages[conversationId] ?? []).slice(-12),
-      now: now.toISOString(),
-      utcOffsetMin: -now.getTimezoneOffset(),
+      now: at.toISOString(),
+      utcOffsetMin: -at.getTimezoneOffset(),
       cue,
     },
   };
-  writeFirst(set, get, conversationId, stock, reach, request, 'nothing');
+}
+
+/**
+ * A text a friend sends because something just happened: `cue` says what, the model writes it
+ * (src/ai/moment-prompt.ts). Busy for good: they stay quiet. `stock` is for the model off.
+ */
+function sayFirst(set: Setter, get: Getter, conversationId: string, stock: string, cue: readonly string[], reach?: string) {
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  if (!conversation || !state.characters.some((c) => c.id === conversation.characterId)) return;
+  writeFirst(set, get, conversationId, stock, reach, momentRequest(get, conversationId, cue, new Date()), 'nothing');
 }
 
 /**

@@ -26,13 +26,13 @@ stream, a first text left out); never pass a stock line off as the character.
 | Quizzes | yes since D138: their picks and lines, their own weekly quiz; a world quiz keeps its written facts and the model writes the host |
 | Diary pages, secret notes, the answer to a shared diary page | yes since D138 |
 | Photos the user sends | yes since 0z80, one-to-one and group; needs the server deployed and a new APK (a new native module) |
-| Push notifications | stock lines: the phone schedules them ahead. Real words need pushes sent from the server |
+| Push notifications | yes since 0z84: the model writes lines ahead and the phone shows them; each one lands in its chat at its own time. Sending from the server still needs Firebase, an Apple account and a new APK |
 | Calls | no: `callScript`, and they need voice |
 | Character art | waits for the redraw |
 
 ## Order
 
-1. Done (D138): everything a person reads comes from the model. Left over: pushes, in the table above. Photos done in 0z80.
+1. Done (D138): everything a person reads comes from the model. Photos done in 0z80, pushes in 0z84.
 2. Done (D139): group, tap a member's avatar to make them answer, as Character.AI does (`invoke-character`).
 3. Cost: `cached=0` is not a bug (measured 2026-10-31, 0z75): Gemini's implicit cache needs a prompt of about 4,096 tokens or more, ours is about 3,100. A real reply costs about $0.0012, input is 85% of it. Left as is; revisit when traffic is real (another provider with automatic cache, `openai-compat.ts`, or a longer shared prefix).
 4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there. Owner, 2026-10-31: leave it until real users and payments (RevenueCat); the per-account limits cap the harm meanwhile. What is already there: server wallet (`wallet_spend`, ledger, idempotent keys, `/v1/wallet/*`); the app spends locally and mirrors to the server. When it is time: the server charges on `/v1/chat/reply` and `/v1/chat/group` by an idempotent key (`spend:<key>`, so the app's mirror cannot double it), the free cases (hello, join) get their own route or flag, and a `ENFORCE_WALLET` env switch ships off first.

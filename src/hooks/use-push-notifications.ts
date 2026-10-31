@@ -19,14 +19,20 @@ import {
   syncPushes,
   type PushData,
 } from '@/notifications/sync';
+import { toOutbox } from '@/notifications/outbox';
 import { counts } from '@/notifications/plan';
 import { useAppStore } from '@/store/use-app-store';
 import type { IdeaIntent } from '@/types';
 
+/** The app settles first; opening it is not the moment to wait on the model. */
+const WRITE_AHEAD_DELAY_MS = 20_000;
+
 /**
  * Pushes follow the app's life (docs/push-plan.md): leaving the app plans the next
- * two days and the comeback ladder; coming back clears them, writes any line that
- * only arrived as a push into its chat, and a tapped push opens where it points.
+ * two days and the comeback ladder; coming back clears them and lands every line that went
+ * out into its chat with the time it went (`src/notifications/outbox.ts`), and a tapped push
+ * opens where it points. With the model on, the lines are written ahead while it can be
+ * reached (`src/notifications/written.ts`).
  */
 export function usePushNotifications() {
   const router = useRouter();
@@ -36,7 +42,9 @@ export function usePushNotifications() {
   useEffect(() => {
     const N = notificationsModule();
     if (!N || !hydrated || !onboarded) return;
+    let writing: ReturnType<typeof setTimeout> | undefined;
 
+    // A push from a plan made before the outbox: it says itself whether it lands.
     const land = (data: PushData) => {
       if (data.writesToChat && data.characterId && data.line) {
         useAppStore.getState().receivePushLine({ id: data.id, characterId: data.characterId, text: data.line, at: data.at });
@@ -47,6 +55,7 @@ export function usePushNotifications() {
       if (!data?.id) return;
       // The tap leads somewhere, so Today's welcome back stays quiet this time.
       markOpenedFromNotification();
+      useAppStore.getState().landDuePushes();
       land(data);
       // A reply idea's button ("I ate!") or a reply typed on the lock screen: the answer goes into
       // their chat, then the chat opens. Without shells for a typed one, it waits in the field.
@@ -66,7 +75,24 @@ export function usePushNotifications() {
       }
       router.push(data.route as Href);
     };
+    const replan = async () => {
+      const now = new Date();
+      const store = useAppStore.getState();
+      const plan = await syncPushes(store, now);
+      store.setPushOutbox(toOutbox(plan ?? []));
+      if (plan) store.setPushLog(nextPushLog(store.daily.pushLog, plan.filter(counts), now));
+    };
+    // New lines change what can go out, so a plan already handed over is made again.
+    const writeAhead = async () => {
+      const wrote = await useAppStore.getState().writePushLines();
+      if (wrote && AppState.currentState !== 'active') await replan();
+    };
     const comeBack = async () => {
+      useAppStore.getState().landDuePushes();
+      // What was still to come is cancelled below.
+      useAppStore.getState().setPushOutbox([]);
+      clearTimeout(writing);
+      writing = setTimeout(() => void writeAhead(), WRITE_AHEAD_DELAY_MS);
       (await deliveredPushes()).forEach(land);
       await clearPushes();
       // What was still to come was just cancelled: the log keeps only what already went out.
@@ -78,9 +104,9 @@ export function usePushNotifications() {
     };
     // The counted pushes go into the log, so today's budget holds across every re-plan.
     const leave = async () => {
-      const now = new Date();
-      const plan = await syncPushes(useAppStore.getState(), now);
-      if (plan) useAppStore.getState().setPushLog(nextPushLog(useAppStore.getState().daily.pushLog, plan.filter(counts), now));
+      clearTimeout(writing);
+      await replan();
+      await writeAhead();
     };
 
     const { settings } = useAppStore.getState();
@@ -99,9 +125,7 @@ export function usePushNotifications() {
     const onLanguage = async () => {
       const store = useAppStore.getState();
       await syncAlarms(store.alarms, store.characters, store.wake);
-      const now = new Date();
-      const plan = await syncPushes(store, now);
-      if (plan) store.setPushLog(nextPushLog(store.daily.pushLog, plan.filter(counts), now));
+      await replan();
     };
     i18n.on?.('languageChanged', onLanguage);
     const state = AppState.addEventListener('change', (next) => {
@@ -109,6 +133,7 @@ export function usePushNotifications() {
       else if (next === 'background') void leave();
     });
     return () => {
+      clearTimeout(writing);
       i18n.off?.('languageChanged', onLanguage);
       alarmsChanged();
       tapped.remove();
