@@ -1,12 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z83. Chat & character depth audit, default Real AI on, and Russian group plural fix (2026-10-31, Gemini 4 Argon). NEXT: owner deploys the server (0z80); phone notifications (Claude 2)
+### 0z84. Notifications: the model's words, and every line lands in its chat (2026-10-31, Claude 2). NEXT: owner deploys the server; try it on the A51
+
+- Owner's bug: tap a notification, the chat shows a line from hours ago ("always around 1-2 pm"). Root cause: only comeback pushes were written into the chat; the rest only made the app write its own line on open, and only inside its time window, so a tapped morning push opened on the last old message. Chats on the A51 showed exactly that (last lines at 12:05 to 13:03). The clock itself was right.
+- Fix: `src/notifications/outbox.ts`. Leaving keeps what the phone will show; coming back lands each line whose time passed into its chat with that time, tapped or swiped away, and marks what it settles (greeted slot, plan, care, thread, world news, birthday) so the app does not say it again. A week recap, diary or gift nudge does not land: the card, the diary and the gift screen carry those.
+- Model words: `src/notifications/written.ts`, `pushCue`, store `writePushLines`. Local notifications can only be scheduled ahead, so up to 5 lines per run are written 20 s after opening and on leaving (next 30 h, plus the comeback steps, kept 14 days); `/v1/ai/first-text` kind `moment`, no server change. With the model on, a push without a line stays unsent, except a time-sensitive reminder. Cost about $0.001 a line.
+- Aggressive, founder's call: the words do the work, the budget stays 6 free / 20 plan (protect the channel). Limits in `pushCue` and `docs/push-plan.md`.
+- Read on the real model (test text): "Morning. Still terrorizing the cones, or did you actually get some sleep?", comeback day 1 "Still terrorizing the cones, Sam? Or have you finally mastered the art of parking?".
+- Checks: tsc 0, npm test 576/576.
+
+Still to do:
+1. Read comeback days 3 and 7 and the after-a-loss line on the model (Google 503 on the first try).
+2. On the A51 (needs `eas update`, Expo Go on Android has no notifications): a push lands with its own time.
+3. Sending from the server when the app is long closed: Firebase, an Apple account and a new APK, after the grant and domain gate.
+
+### 0z83. Chat & character depth audit, default Real AI on, Russian group plural fix, and Fly.io server deployed (2026-10-31, Gemini 4 Argon). NEXT: phone notifications (Claude 2)
 
 - Audited all 57 characters across `src/mock/characters.ts`, `src/mock/character-profiles.ts`, and `src/mock/character-stories.ts`, plus the Character.AI (`C:\Users\joray\rea-work\cai`) and BIMOBIMO teardown dumps: all 55 official characters across 7 worlds have complete definitions, openings, healthy quirks, level-gated 3-beat secrets (`arcLines`), cast ties (`tieLines`), and weekly world progression (`nowLines`).
 - Closed `0z80` item 4: set `realAi: true` in `initialSettings` (`src/mock/user.ts`) so fresh installs and production Store builds use the real AI model by default whenever the server is reachable, while dev/preview builds can still toggle it off in Profile.
 - Closed `0z80` item 5: fixed Russian animate accusative in `group.needFriends` and `group.noFriends` (`"Сначала добавьте двух друзей"` in `src/i18n/locales/ru.json`) and verified all 13 other locales.
 - Updated `.agents/rules/project-memory.md` §6 with Gemini 4 Argon's competitive intelligence / REA and character/chat depth audit responsibilities.
-- Checks: tsc 0, npm test 565/565, check:locales 13/13.
+- Checks: tsc 0, npm test 565/565, server tests 64/64, check:locales 13/13; `sigmazam-api.fly.dev` deployed and `/health` verified (`200`).
 
 ### 0z82. How the three agents work together (2026-10-31, Claude 2). NEXT: owner deploys the server (0z80); phone notifications in progress
 
@@ -25,7 +39,7 @@
 - Checks: tsc 0, npm test 565/565, server tests 64/64, check:locales, check:content.
 
 Still to do:
-1. Owner deploys the server (with the 0z79 rules). Until then the cloud server ignores the pictures.
+1. DONE 2026-10-31 (0z83): Server deployed to `sigmazam-api.fly.dev` (with 0z79, 0z80 photo vision, and 0z83); `/health` returns 200.
 2. `expo-image-manipulator` is a new native module: Expo Go has it, the preview APK does not, so the feature needs a new APK with a new `version` (`runtimeVersion` follows it). No `eas update` for this until then. Before any build the grant and domain come first (memory `grant-and-domain-before-build`).
 3. Before launch: a paid key before real photos go out (the free tier may use them), and the privacy policy must name photos sent to Google.
 4. DONE 2026-10-31 (0z83): `settings.realAi` now defaults to `true` in `initialSettings` (`src/mock/user.ts`).
