@@ -43,7 +43,8 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
 - **Grant & Domain gate (before any release APK / store docs)**:
   - ElevenLabs won the voice blind test (`docs/voice-provider-fish-audio.md`). Applying for the ElevenLabs startup grant + `sigmazam.app` domain (`docs/elevenlabs-grant-application.md`) comes **before** any release build or store submission.
   - Owner paused domain purchase for ~1 week from 2026-10-31 (until ~2026-11-07): focus on chat, characters, and memory meanwhile; remind before any build step, not every message.
-  - **Native module note (`0z80`)**: `expo-image-manipulator` was added in `0z80` (works in Expo Go, absent from the older preview APK). Do **not** push JS-only `eas update` to `preview` until a bumped APK is built.
+  - **Native module note (`0z80`)**: `expo-image-manipulator` was added in `0z80` (works in Expo Go, absent from the older preview APK), so photos are seen only after a bumped APK. `eas update` to `preview` is safe again since `948f05e`, checked on the A51: the old APK says it cannot make the photo out.
+  - **Any new native module**: loading its JS on a build without its native side is fatal to the whole app, and `catch` does not save it. Check with `requireOptionalNativeModule` first, and send a real test on the installed APK after every `eas update` that touches it.
 - **Cloud API (`https://sigmazam-api.fly.dev`, Fly app `sigmazam-api`, Tokyo `nrt`)**:
   - Do not run `flyctl deploy` directly. Commit and push server changes, then give the owner:
     `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`

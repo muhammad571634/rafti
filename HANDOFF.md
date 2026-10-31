@@ -1,18 +1,24 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z84. Notifications: the model's words, and every line lands in its chat (2026-10-31, Claude 2). NEXT: owner deploys the server; try it on the A51
+### 0z84. Notifications: the model's words, and every line lands in its chat (2026-10-31, Claude 2). NEXT: owner watches real notifications on the A51 for a day
 
 - Owner's bug: tap a notification, the chat shows a line from hours ago ("always around 1-2 pm"). Root cause: only comeback pushes were written into the chat; the rest only made the app write its own line on open, and only inside its time window, so a tapped morning push opened on the last old message. Chats on the A51 showed exactly that (last lines at 12:05 to 13:03). The clock itself was right.
 - Fix: `src/notifications/outbox.ts`. Leaving keeps what the phone will show; coming back lands each line whose time passed into its chat with that time, tapped or swiped away, and marks what it settles (greeted slot, plan, care, thread, world news, birthday) so the app does not say it again. A week recap, diary or gift nudge does not land: the card, the diary and the gift screen carry those.
 - Model words: `src/notifications/written.ts`, `pushCue`, store `writePushLines`. Local notifications can only be scheduled ahead, so up to 5 lines per run are written 20 s after opening and on leaving (next 30 h, plus the comeback steps, kept 14 days); `/v1/ai/first-text` kind `moment`, no server change. With the model on, a push without a line stays unsent, except a time-sensitive reminder. Cost about $0.001 a line.
 - Aggressive, founder's call: the words do the work, the budget stays 6 free / 20 plan (protect the channel). Limits in `pushCue` and `docs/push-plan.md`.
 - Read on the real model (test text): "Morning. Still terrorizing the cones, or did you actually get some sleep?", comeback day 1 "Still terrorizing the cones, Sam? Or have you finally mastered the art of parking?".
+- Comeback day 3 "I had a weird dream about those cones of yours. Want to hear it?", day 7 "It's been a week, Sam. Have you finally learned to avoid the cones?" (weak: it does not say it misses them; lines lean on one topic). After a loss, 2 of 2 warm: "Hey Sam. I've been thinking about you. Are you doing okay today?".
+- A51, preview APK, `eas update` (groups `cdbd99d3`, then the fix `d1ef4c0b`): a test plan at 23:50 brought a push at 23:40 in the model's words ("Десять минут до полуночи. Не думай, что я буду ждать тебя вечно, Сукут."); the chat list showed 23:40, the line stood once in Ronan's chat, no second copy. Only this reminder kind was tried on the phone; the night's quiet hours block the others.
+- My mistake, caught on the A51: I published over the old APK, reasoning that a photo there would fail softly. Loading `expo-image-manipulator` with no native side was fatal: white screen on sending a photo, for about 7 minutes. Fixed in `948f05e` (`requireOptionalNativeModule` first). Checked after the fix: the old APK stays up and the character says it cannot make the photo out ("Что это за мешанина из теней, Сукут?"); Expo Go still sees it ("The way the wood grain flows around the card", 4,805 tokens in).
+- Owner deployed the server (Fly v11, 2026-10-31 about 23:20), so 0z79 and 0z80 are live there.
+- Test leftovers on the owner's APK: three test lines and the picture in Ronan's chat. The plan and the picture file are removed.
 - Checks: tsc 0, npm test 576/576.
 
 Still to do:
-1. Read comeback days 3 and 7 and the after-a-loss line on the model (Google 503 on the first try).
-2. On the A51 (needs `eas update`, Expo Go on Android has no notifications): a push lands with its own time.
-3. Sending from the server when the app is long closed: Firebase, an Apple account and a new APK, after the grant and domain gate.
+1. Owner watches a day of real notifications: tap one, the line and its time should be there, no second copy.
+2. Measure how often a push gets a line: free-key 503s and 429s leave pushes unwritten and so unsent.
+3. Day-7 tone and variety between lines, on the paid model (`docs/road-to-launch.md`).
+4. Sending from the server when the app is long closed: Firebase, an Apple account and a new APK, after the grant and domain gate.
 
 ### 0z83. Chat & character depth audit, default Real AI on, Russian group plural fix, and Fly.io server deployed (2026-10-31, Gemini 4 Argon). NEXT: phone notifications (Claude 2)
 
