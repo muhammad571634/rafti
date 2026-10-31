@@ -94,6 +94,12 @@ describe('buildThemeRounds', () => {
     assert.equal(rounds.length, 5);
   });
 
+  it("plays an event's round first and keeps the world's own", () => {
+    const rounds = buildThemeRounds({ ...THEME, rounds: 8 }, POOLS, 'seed', [round('w1'), round('w2')], round('event'));
+    assert.equal(rounds[1].line, 'event');
+    assert.ok(rounds.some((r) => r.line === 'w1') && rounds.some((r) => r.line === 'w2'));
+  });
+
   it('comes out the same for the same seed', () => {
     assert.deepEqual(buildThemeRounds(THEME, POOLS, 'a'), buildThemeRounds(THEME, POOLS, 'a'));
   });

@@ -93,6 +93,8 @@ export function buildThemeRounds(
   seed: string,
   /** Rounds from the friend's world (src/mock/worlds.ts); one comes first, so the date feels like theirs. */
   worldRounds: DateRound[] = [],
+  /** A world event's round while it is on (`WorldEvent.round`): played before the world's own. */
+  eventRound?: DateRound,
 ): DateRound[] {
   const place = cleanTitle(theme.title);
   const openers = pools.openers[theme.mood];
@@ -100,7 +102,7 @@ export function buildThemeRounds(
     line: cleanScene(theme.scene),
     choices: openers[hashSeed(`${seed}:open`) % openers.length],
   };
-  const world = shuffled(worldRounds, `${seed}:world`);
+  const world = [...(eventRound ? [eventRound] : []), ...shuffled(worldRounds, `${seed}:world`)];
   const middle = [
     ...world.slice(0, 1),
     ...shuffled(pools.moodRounds[theme.mood], `${seed}:mood`),

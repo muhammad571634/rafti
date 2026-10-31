@@ -205,9 +205,9 @@ import {
   wallet as seedWallet,
 } from '@/mock';
 import { themePools } from '@/mock/date-themes';
-import { WORLDS, worldByKey, worldOf, type WorldKey } from '@/mock/worlds';
+import { WORLDS, worldByKey, worldOf, type World, type WorldKey } from '@/mock/worlds';
 import { arcLine, worldNewsLine } from '@/mock/world-voice';
-import { beatsCrossed, chapterAt, dueWorldNews, eventOn, WORLD_NEWS_HOUR, worldJoinedAt, worldPromptOf, type WorldNews } from '@/lib/world-story';
+import { beatsCrossed, chapterAt, eventOn, pickWorldNews, WORLD_NEWS_HOUR, worldJoinedAt, worldPromptOf, type WorldNews } from '@/lib/world-story';
 import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
@@ -1661,8 +1661,10 @@ export const useAppStore = create<AppState>()(
         if (!entry || get().blockedIds.includes(entry.characterId) || !get().characters.some((c) => c.id === entry.characterId)) return null;
         const known = get().conversations.find((c) => c.characterId === entry.characterId);
         const conversationId = known?.id ?? get().addFriend(entry.characterId, { quiet: true });
-        // Once only: back on the page later, the button just opens the chat.
-        if (!(get().messages[conversationId] ?? []).some((m) => m.card === 'scene' && m.sceneId === entry.sceneId)) {
+        const messages = get().messages[conversationId] ?? [];
+        // Once, and only into a chat not yet begun: a friend they already talk to is not a stranger
+        // opening a scene, so the button just opens the chat.
+        if (!messages.some((m) => m.author === 'me' || (m.card === 'scene' && m.sceneId === entry.sceneId))) {
           get().startScene(conversationId, entry.sceneId);
         }
         return conversationId;
@@ -2832,7 +2834,7 @@ export const useAppStore = create<AppState>()(
         const world = character ? worlds.find((w) => w.series === character.series) : undefined;
         // While one of the world's events is on, the date starts in it.
         const event = world ? eventOn(world.story, new Date()) : undefined;
-        const rounds = buildThemeRounds(theme, localized('dateThemes', themePools), `${theme.id}:${Date.now()}`, event ? [event.round] : world?.dateRounds);
+        const rounds = buildThemeRounds(theme, localized('dateThemes', themePools), `${theme.id}:${Date.now()}`, world?.dateRounds, event?.round);
         set({ activeDate: { characterId, placeId: theme.id, theme: { title: theme.title, rounds } } });
         return 'ok';
       },
@@ -3913,36 +3915,41 @@ const WORLD_NEWS_KEPT = 60;
  */
 function sendWorldNews(set: Setter, get: Getter, at: Date, force = false): string | null {
   const { characters, conversations, relationships, messages, daily, user } = get();
-  const today = dayKey(at);
-  if (!force && (daily.worldNewsSent ?? []).some((key) => key.endsWith(`|${today}`))) return null;
-  for (const id of chatWriters(get)) {
-    const character = characters.find((c) => c.id === id);
-    const world = character ? localized('worlds', WORLDS).find((w) => w.series === character.series) : undefined;
-    if (!character || !world) continue;
-    const joinedAt = worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships);
-    let news: WorldNews | null = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now: at });
-    if (!news && force) {
-      const chapter = chapterAt(world.story.season, joinedAt, at);
-      news = chapter ? { key: `${world.key}:chapter:${chapter.id}:dev${at.getTime()}`, kind: 'chapter', title: chapter.title, note: chapter.beat } : null;
-    }
-    if (!news || (daily.worldNewsSent ?? []).some((key) => key.startsWith(`${news.key}|`))) continue;
-    const told = `${news.key}|${today}`;
-    set((s) => ({ daily: { ...s.daily, worldNewsSent: [...(s.daily.worldNewsSent ?? []), told].slice(-WORLD_NEWS_KEPT) } }));
-    const conversationId = conversations.find((c) => c.characterId === id)!.id;
-    const request: FirstTextRequest = {
-      kind: 'world',
-      input: {
-        character,
-        user,
-        relationship: relationships[id],
-        news: { kind: news.kind, title: news.title, note: news.note },
-        recent: (messages[conversationId] ?? []).slice(-12),
-        now: at.toISOString(),
-        utcOffsetMin: -at.getTimezoneOffset(),
-      },
-    };
-    writeFirst(set, get, conversationId, worldNewsLine(news, character.gender), 'world', request, 'nothing');
-    return id;
+  const worlds = localized('worlds', WORLDS);
+  const writers = chatWriters(get).flatMap((id) => characters.find((c) => c.id === id) ?? []);
+  const picked = pickWorldNews({ writers, worlds, cast: characters, relationships, told: daily.worldNewsSent ?? [], now: at }) ?? (force ? devWorldNews(writers, characters, worlds, relationships, at) : null);
+  const character = picked && characters.find((c) => c.id === picked.characterId);
+  if (!picked || !character) return null;
+  const { news } = picked;
+  const told = `${news.key}|${dayKey(at)}`;
+  set((s) => ({ daily: { ...s.daily, worldNewsSent: [...(s.daily.worldNewsSent ?? []), told].slice(-WORLD_NEWS_KEPT) } }));
+  const conversationId = conversations.find((c) => c.characterId === character.id)!.id;
+  const request: FirstTextRequest = {
+    kind: 'world',
+    input: {
+      character,
+      user,
+      relationship: relationships[character.id],
+      news: { kind: news.kind, title: news.title, note: news.note },
+      recent: (messages[conversationId] ?? []).slice(-12),
+      now: at.toISOString(),
+      utcOffsetMin: -at.getTimezoneOffset(),
+    },
+  };
+  writeFirst(set, get, conversationId, worldNewsLine(news, character.gender), 'world', request, 'nothing');
+  return character.id;
+}
+
+/** Dev only: the current chapter of the closest friend's world, due or not, under a key that is never "told". */
+function devWorldNews(writers: Character[], cast: Character[], worlds: World[], relationships: Record<string, Relationship>, at: Date) {
+  for (const writer of writers) {
+    const world = worlds.find((w) => w.series === writer.series);
+    if (!world) continue;
+    const joinedAt = worldJoinedAt(cast.filter((c) => c.series === world.series).map((c) => c.id), relationships);
+    const chapter = chapterAt(world.story.season, joinedAt, at);
+    if (!chapter) continue;
+    const news: WorldNews = { key: `${world.key}:chapter:${chapter.id}:dev${at.getTime()}`, kind: 'chapter', title: chapter.title, note: chapter.beat };
+    return { characterId: writer.id, world, news };
   }
   return null;
 }
@@ -4580,7 +4587,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         // How they feel now carries into the next reply, and fades with time (`currentMood`).
         if (mood) updateRelationship(set, conversation.characterId, () => ({ mood }));
         // This reply carried the beat; before the gain below, which may open the next one.
-        if (beat) updateRelationship(set, conversation.characterId, () => ({ arcDue: undefined }));
+        if (beat) updateRelationship(set, conversation.characterId, (r) => (r.arcDue === beat.atLevel ? { arcDue: undefined } : {}));
         if (gain) get().addIntimacy(conversation.characterId, gain);
         if (trigger === 'message' && !chips?.length && !ideas?.length) afterReply(set, get, conversationId);
         queueMemoryPass(set, get, conversationId);

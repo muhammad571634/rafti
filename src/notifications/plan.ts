@@ -30,7 +30,7 @@ import { temperComeback } from '@/mock/temper';
 import { mockTouchLine } from '@/mock/threads';
 import { worldNewsLine } from '@/mock/world-voice';
 import { WORLDS } from '@/mock/worlds';
-import { dueWorldNews, WORLD_NEWS_HOUR, worldJoinedAt } from '@/lib/world-story';
+import { pickWorldNews, WORLD_NEWS_HOUR } from '@/lib/world-story';
 import { content } from '@/i18n/voice';
 
 import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budget';
@@ -122,6 +122,8 @@ export interface PlanState {
   threads?: Thread[];
   /** Free users get a voice note instead of the daily call (`canRing`). */
   wallet: Pick<Wallet, 'subscription'>;
+  /** Blocked friends tell no world news; older saved states have none. */
+  blockedIds?: string[];
 }
 
 /**
@@ -283,6 +285,7 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
   const days = [0, 1, 2].map((n) => at(new Date(now.getTime() + n * DAY_MS), 0));
   // Thread texts a planned morning brief already says ("before" texts later that day).
   const covered = new Set<string>();
+  const newsTold = [...(daily.worldNewsSent ?? [])];
 
   for (const day of days) {
     const key = dayKey(day);
@@ -417,16 +420,19 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
     // A new chapter or an event in a world, one a day, from the closest friend there (the same as the app).
     const newsWhen = at(day, WORLD_NEWS_HOUR);
     if (inHorizon(newsWhen)) {
-      const told = daily.worldNewsSent ?? [];
-      const worlds = content('worlds', WORLDS);
-      for (const character of writers) {
-        const world = worlds.find((w) => w.series === character.series);
-        if (!world) continue;
-        const joinedAt = worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships);
-        const news = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now: newsWhen });
-        if (!news || told.some((k) => k.startsWith(`${news.key}|`))) continue;
-        say({ id: `world:${news.key}`, kind: 'world', at: newsWhen, characterId: character.id, line: worldNewsLine(news, character.gender) });
-        break;
+      const picked = pickWorldNews({
+        writers: writers.filter((c) => !state.blockedIds?.includes(c.id)),
+        worlds: content('worlds', WORLDS),
+        cast: characters,
+        relationships,
+        told: newsTold,
+        now: newsWhen,
+      });
+      const teller = picked && byId.get(picked.characterId);
+      if (picked && teller) {
+        say({ id: `world:${picked.news.key}`, kind: 'world', at: newsWhen, characterId: teller.id, line: worldNewsLine(picked.news, teller.gender) });
+        // The app will tell it that day: a later day in this plan moves on to what comes next.
+        newsTold.push(`${picked.news.key}|${key}`);
       }
     }
 

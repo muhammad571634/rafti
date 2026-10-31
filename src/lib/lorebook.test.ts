@@ -166,6 +166,14 @@ describe('world books in the prompt', () => {
     assert.doesNotMatch(prompt, /Kai Arden \(person\)/);
   });
 
+  it('keeps "who you are here" for a book with no about, and prints no empty world line', () => {
+    const roleOnly = lorePrompt([book('b', [], { name: 'Ashfall', about: '  ', userRole: 'The last courier' })], []);
+    assert.deepEqual(roleOnly.worlds, [{ name: 'Ashfall', about: '', official: false, role: 'The last courier' }]);
+    const prompt = buildCharacterPrompt(character, user, undefined, 'English', undefined, undefined, roleOnly);
+    assert.match(prompt, /Who the user is in Ashfall: The last courier/);
+    assert.doesNotMatch(prompt, /Ashfall[^\n]*notes the user wrote/);
+  });
+
   it('leaves the blocks out when there is nothing to say', () => {
     const quiet = buildCharacterPrompt(character, user, undefined, 'English', undefined, undefined, lorePrompt([book('b', [])], ['hi']));
     assert.doesNotMatch(quiet, /YOUR WORLD|WORLD NOTES/);

@@ -100,21 +100,27 @@ export function nowLines(world: Pick<WorldPrompt, 'chapter' | 'event'>) {
 
 /**
  * How far their own story has come. Only what the bond has opened reaches the model, so it cannot
- * tell the secret early. `due` is the level of a beat that has just opened (`Relationship.arcDue`).
+ * tell the secret early. `due` is the level of a beat that has just opened (`Relationship.arcDue`),
+ * which only a chat reply passes. Everything else a friend writes (`quiet`) keeps the beat to itself:
+ * the reply to the user is where it comes up, and only that reply marks it said.
  */
-export function arcLines(arc: CharacterArc | undefined, level: number, due?: number) {
+export function arcLines(arc: CharacterArc | undefined, level: number, due?: number, quiet = false) {
   if (!arc) return [];
   const stage = arcStage(arc, level);
   if (!stage.now) return [];
   const earlier = stage.opened.slice(0, -1);
+  const moment = quiet
+    ? '- Let this colour what you write, and do not say it here.'
+    : due === stage.now.atLevel
+      ? '- This has just become possible: bring it up in this reply, in your own words, as if it slipped out.'
+      : '- If you have not said this yet, find the moment; if you have, let it colour things and do not repeat it.';
   return [
     'YOUR OWN STORY WITH THEM (what the bond has opened so far):',
-    ...(earlier.length ? [`- Already came up: ${earlier.map((b) => b.beat).join(' ')}`] : []),
+    // Friends who were already this close when arcs arrived never had these moments: go by the chat.
+    ...(earlier.length ? [`- Earlier in your story (it may not have come up yet; never claim you said it unless the chat shows it): ${earlier.map((b) => b.beat).join(' ')}`] : []),
     ...(stage.secretOut ? [`- What you have been holding back: ${arc.secret}`] : []),
     `- Where you are now: ${stage.now.beat}`,
-    due === stage.now.atLevel
-      ? '- This has just become possible: bring it up in this reply, in your own words, as if it slipped out.'
-      : '- If you have not said this yet, find the moment; if you have, let it colour things and do not repeat it.',
+    moment,
     ...(stage.next ? ['- There is more you are not ready to say. Do not invent it.'] : []),
   ];
 }

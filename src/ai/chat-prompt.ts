@@ -149,7 +149,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
   const { character, user, relationship, replyLanguage, persona, scene, lore, prefs } = input;
   const summary = input.summary?.trim();
   return [
-    ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs),
+    ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs, { due: relationship?.arcDue }),
     modePart(input.mode ?? 'chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('facts', 'chat', factLines(input.facts ?? [])),

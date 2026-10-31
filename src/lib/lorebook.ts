@@ -192,7 +192,8 @@ export interface LorePrompt {
 export function lorePrompt(books: Lorebook[], lines: string[], characterId?: string): LorePrompt {
   return {
     worlds: books
-      .filter((book) => book.about.trim())
+      // A book with only "Who you are here" still counts: its role reaches the prompt (`bookWorldLines`).
+      .filter((book) => book.about.trim() || book.userRole?.trim())
       .map((book) => ({ name: book.name, about: book.about.trim(), official: !!book.official, ...(book.userRole?.trim() ? { role: book.userRole.trim() } : {}) })),
     entries: triggeredLore(books, lines, characterId).map((hit) => hit.entry),
   };
@@ -204,11 +205,9 @@ export function lorePrompt(books: Lorebook[], lines: string[], characterId?: str
  * theirs), so the second leaves out the heading when it carries on the first (`header` false).
  */
 export function worldLines(worlds: LorePrompt['worlds'], header = true) {
-  if (!worlds.length) return [];
-  return [
-    ...(header ? ['YOUR WORLD (true in your story; let it colour what you say, never recite it):'] : []),
-    ...worlds.map((w) => `- ${w.name}${w.official ? '' : ' (notes the user wrote for your story)'}: ${w.about}`),
-  ];
+  const lines = worlds.filter((w) => w.about).map((w) => `- ${w.name}${w.official ? '' : ' (notes the user wrote for your story)'}: ${w.about}`);
+  if (!lines.length) return [];
+  return [...(header ? ['YOUR WORLD (true in your story; let it colour what you say, never recite it):'] : []), ...lines];
 }
 
 /** The notes this reply brought up, last in the prompt: true in the story, used only where they fit. */

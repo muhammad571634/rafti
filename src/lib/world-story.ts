@@ -131,21 +131,55 @@ export interface WorldNews {
   line?: string;
 }
 
+const wasTold = (told: readonly string[], key: string) => told.some((k) => k.startsWith(`${key}|`));
+
 /**
- * What a friend in the world brings up today: a chapter on the day it opens (never the first, which
- * the user just walked into), else an event on the day it starts. Nothing before the user joined.
+ * What a friend in the world brings up today: the current chapter until it has been told (never the
+ * first, which the user just walked into), so a day away does not lose it, else an event on the day
+ * it starts. Nothing before the user joined, or on that day: it belongs to the entry scene.
+ * `told` holds the keys already said, as `key|day`.
  */
-export function dueWorldNews(input: { worldKey: string; story: WorldStory; joinedAt: string | undefined; now: Date }): WorldNews | null {
-  const { worldKey, story, joinedAt, now } = input;
-  if (!joinedAt) return null;
-  const day = worldDay(joinedAt, now);
-  const chapter = story.season.chapters.find((c) => c.opensOnDay === day && c.opensOnDay > 0);
-  if (chapter) return { key: `${worldKey}:chapter:${chapter.id}`, kind: 'chapter', title: chapter.title, note: chapter.beat };
+export function dueWorldNews(input: { worldKey: string; story: WorldStory; joinedAt: string | undefined; now: Date; told?: readonly string[] }): WorldNews | null {
+  const { worldKey, story, joinedAt, now, told = [] } = input;
+  if (!joinedAt || worldDay(joinedAt, now) === 0) return null;
+  const chapter = chapterAt(story.season, joinedAt, now);
+  if (chapter && chapter.opensOnDay > 0) {
+    const key = `${worldKey}:chapter:${chapter.id}`;
+    if (!wasTold(told, key)) return { key, kind: 'chapter', title: chapter.title, note: chapter.beat };
+  }
   const event = story.events.find((e) => {
     const start = eventStart(e, now);
     return !!start && daysFrom(start, now) === 0;
   });
-  if (event) return { key: `${worldKey}:event:${event.id}:${dateKey(now)}`, kind: 'event', title: event.title, note: event.note, line: event.line };
+  if (event) {
+    const key = `${worldKey}:event:${event.id}:${dateKey(now)}`;
+    if (!wasTold(told, key)) return { key, kind: 'event', title: event.title, note: event.note, line: event.line };
+  }
+  return null;
+}
+
+/**
+ * Who tells what today, one piece of news a day, from the closest friend who may write first. The
+ * app and the push planner both ask here, so a push never announces what the chat will not get.
+ * `writers` come closest first.
+ */
+export function pickWorldNews<W extends { key: string; series: string; story: WorldStory }>(input: {
+  writers: readonly { id: string; series?: string }[];
+  worlds: readonly W[];
+  cast: readonly { id: string; series?: string }[];
+  relationships: Record<string, { anniversary: string } | undefined>;
+  told: readonly string[];
+  now: Date;
+}): { characterId: string; world: W; news: WorldNews } | null {
+  const { writers, worlds, cast, relationships, told, now } = input;
+  if (told.some((k) => k.endsWith(`|${dateKey(now)}`))) return null;
+  for (const writer of writers) {
+    const world = worlds.find((w) => w.series === writer.series);
+    if (!world) continue;
+    const joinedAt = worldJoinedAt(cast.filter((c) => c.series === world.series).map((c) => c.id), relationships);
+    const news = dueWorldNews({ worldKey: world.key, story: world.story, joinedAt, now, told });
+    if (news) return { characterId: writer.id, world, news };
+  }
   return null;
 }
 

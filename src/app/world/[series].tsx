@@ -77,7 +77,8 @@ export default function WorldScreen() {
   );
 
   const lead = people[0];
-  const joinedAt = world ? worldJoinedAt(people.map((c) => c.id), relationships) : undefined;
+  // The whole cast, as the chat and the pushes count it: blocking a friend does not rewind the season.
+  const joinedAt = world ? worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships) : undefined;
   const friendsHere = people.filter((c) => friendIds.has(c.id));
   const host = world ? characters.find((c) => c.id === world.story.entry.characterId) : undefined;
   const begin = () => {

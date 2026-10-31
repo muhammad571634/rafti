@@ -10,6 +10,7 @@ import {
   chapterAt,
   dueWorldNews,
   isEventOn,
+  pickWorldNews,
   tiesOf,
   worldDay,
   worldJoinedAt,
@@ -144,19 +145,65 @@ describe('what a chat carries of its world', () => {
 describe('world news: a chapter or an event a friend brings up', () => {
   const args = { worldKey: 'seaside', story, joinedAt: '2026-10-01T09:00:00' };
 
-  it('says the chapter the day it opens, not on the day the user joined', () => {
+  const toldChapters = ['seaside:chapter:two|2026-10-08', 'seaside:chapter:three|2026-10-15'];
+
+  it('says the current chapter until it is told, not on the day the user joined', () => {
     assert.equal(dueWorldNews({ ...args, now: day('2026-10-01') }), null);
+    assert.equal(dueWorldNews({ ...args, now: day('2026-10-02') }), null);
     assert.equal(dueWorldNews({ ...args, now: day('2026-10-08') })?.key, 'seaside:chapter:two');
-    assert.equal(dueWorldNews({ ...args, now: day('2026-10-09') }), null);
+    // A day away does not lose it, and once told it is not said again.
+    assert.equal(dueWorldNews({ ...args, now: day('2026-10-09') })?.key, 'seaside:chapter:two');
+    assert.equal(dueWorldNews({ ...args, told: ['seaside:chapter:two|2026-10-09'], now: day('2026-10-09') }), null);
   });
 
-  it('says an event the day it starts', () => {
-    const news = dueWorldNews({ ...args, now: day('2026-10-31') });
+  it('says only the newest chapter after a long time away', () => {
+    assert.equal(dueWorldNews({ ...args, now: day('2026-10-16') })?.key, 'seaside:chapter:three');
+  });
+
+  it('says an event the day it starts, once the chapter is told', () => {
+    assert.equal(dueWorldNews({ ...args, now: day('2026-10-31') })?.kind, 'chapter');
+    const news = dueWorldNews({ ...args, told: toldChapters, now: day('2026-10-31') });
     assert.equal(news?.key, 'seaside:event:sat:2026-10-31');
     assert.equal(news?.kind, 'event');
+    assert.equal(dueWorldNews({ ...args, told: [...toldChapters, 'seaside:event:sat:2026-10-31|2026-10-31'], now: day('2026-10-31') }), null);
+  });
+
+  it('keeps the day the user joins for the entry scene, even with an event on', () => {
+    assert.equal(dueWorldNews({ ...args, joinedAt: '2026-10-31T09:00:00', now: day('2026-10-31') }), null);
   });
 
   it('skips a world the user has not joined', () => {
     assert.equal(dueWorldNews({ ...args, joinedAt: undefined, now: day('2026-10-31') }), null);
+  });
+
+  describe('who tells it', () => {
+    const worlds = [
+      { key: 'seaside', series: 'Seaside', story },
+      { key: 'moon', series: 'Moon', story },
+    ];
+    const cast = [
+      { id: 'a', series: 'Seaside' },
+      { id: 'b', series: 'Moon' },
+      { id: 'c', series: 'Moon' },
+    ];
+    const relationships = { a: { anniversary: '2026-10-01T09:00:00' }, b: { anniversary: '2026-10-01T09:00:00' } };
+    const pick = (told: string[], writers = cast.slice(0, 2)) => pickWorldNews({ writers, worlds, cast, relationships, told, now: day('2026-10-08') });
+
+    it('takes the closest writer with news', () => {
+      assert.equal(pick([])?.characterId, 'a');
+      assert.equal(pick([], [cast[1], cast[0]])?.characterId, 'b');
+    });
+
+    it('moves to the next world once the first has told its own', () => {
+      assert.equal(pick(['seaside:chapter:two|2026-10-07'])?.characterId, 'b');
+    });
+
+    it('says one piece of news a day', () => {
+      assert.equal(pick(['seaside:chapter:two|2026-10-08']), null);
+    });
+
+    it('never picks a writer outside any world', () => {
+      assert.equal(pick([], [{ id: 'z', series: 'Own' }]), null);
+    });
   });
 });
