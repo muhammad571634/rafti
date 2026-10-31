@@ -35,18 +35,6 @@ export function checkStream(input: { characterIds: string[]; topic: string }): S
   return problems;
 }
 
-/** Ideas under the topic field; `{user}` is the watcher's name. */
-export const STREAM_TOPICS = [
-  'Who would last longer in a horror movie',
-  'The perfect first date, and why the other one is wrong',
-  'What they would cook for {user}',
-  'Swap jobs for a day',
-  'Rate each other’s style, honestly',
-  'The worst advice they ever got',
-  'Plan a surprise for {user}',
-  'A week on a desert island together',
-] as const;
-
 export const fillTopic = (topic: string, userName: string) => topic.replaceAll('{user}', userName);
 
 /** More lines are still coming: fewer than the rounds paid for, and not paused. */

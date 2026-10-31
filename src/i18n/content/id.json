@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Siapa yang bertahan paling lama di film horor",
+        "Kencan pertama yang sempurna, dan kenapa yang lain salah",
+        "Apa yang akan mereka masak untuk {user}",
+        "Bertukar pekerjaan selama sehari",
+        "Menilai gaya masing-masing dengan jujur",
+        "Nasihat terburuk yang pernah mereka terima",
+        "Merencanakan kejutan untuk {user}",
+        "Seminggu bersama di pulau terpencil"
+      ],
       "openers": [
         "Oke, {other}. Soal \"{topic}\", ada yang pengen aku omongin nih.",
         "\"{topic}\"? Udah pasti akulah yang bener.",

@@ -100,6 +100,3 @@ export const groupReactCue = (to: string) => [
   `NEXT: ${to} just answered the user. Join in with one short message: react to what ${to} said, or to the user, in your own voice.`,
   '- Leave room for the user: do not take over the conversation.',
 ];
-
-/** The user's last line is this member's turn at truth or dare. */
-export const groupGameCue = () => ['NEXT: You are playing truth or dare with the group, and the user’s last line is your turn. Answer it honestly or do it, as yourself, in one or two short messages.'];

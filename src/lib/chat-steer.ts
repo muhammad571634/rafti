@@ -169,5 +169,16 @@ export function groupContinueCue(to: string): string[] {
   ];
 }
 
+/** Truth or dare: the user's last line is this character's turn. */
+export const gameAnswerCue = () => ['NEXT: You are playing truth or dare, and the user’s last line is your turn. Answer it honestly or do it, as yourself, in one or two short messages.'];
+
+/** Truth or dare: the wheel landed on the user, and this character asks. */
+export const gameAskCue = (kind: 'truth' | 'dare') => [
+  kind === 'truth'
+    ? 'NEXT: You are playing truth or dare and the wheel landed on the user: ask them one truth, a question you really want answered, in your own voice.'
+    : 'NEXT: You are playing truth or dare and the wheel landed on the user: give them one small, playful dare they can do right now, in your own voice.',
+  '- One short message. Keep it within the rules above.',
+];
+
 /** A marker as the chat history shows it to the model: a skip says how far or where to; a continue says nothing. */
 export const historyText = (m: Message) => (m.card === 'skip' ? `[Time skip: ${skipLabel(m.skip, m.skipTo)}]` : null);

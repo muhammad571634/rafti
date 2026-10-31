@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Ai sống sót lâu hơn trong phim kinh dị",
+        "Buổi hẹn đầu hoàn hảo, và vì sao người kia sai",
+        "Họ sẽ nấu gì cho {user}",
+        "Đổi công việc cho nhau một ngày",
+        "Thành thật chấm điểm phong cách của nhau",
+        "Lời khuyên tệ nhất họ từng nhận",
+        "Lên kế hoạch tạo bất ngờ cho {user}",
+        "Một tuần cùng nhau trên đảo hoang"
+      ],
       "openers": [
         "Được rồi, {other}. Về chủ đề \"{topic}\", tôi có đôi lời muốn nói này.",
         "\"{topic}\" á? Khỏi phải bàn, tôi chắc chắn là người đúng rồi.",

@@ -100,18 +100,17 @@ export function nowLines(world: Pick<WorldPrompt, 'chapter' | 'event'>) {
 
 /**
  * How far their own story has come. Only what the bond has opened reaches the model, so it cannot
- * tell the secret early. `due` is the level of a beat that has just opened (`Relationship.arcDue`),
- * which only a chat reply passes. Everything else a friend writes (`quiet`) keeps the beat to itself:
- * the reply to the user is where it comes up, and only that reply marks it said.
+ * tell the secret early. `due` is the level of a beat that has just opened (`Relationship.arcDue`).
+ * Only a one-to-one reply carries these lines (`characterParts`): a group or a first text never sees
+ * them, since a model told "do not say it here" said it in a group all the same.
  */
-export function arcLines(arc: CharacterArc | undefined, level: number, due?: number, quiet = false) {
+export function arcLines(arc: CharacterArc | undefined, level: number, due?: number) {
   if (!arc) return [];
   const stage = arcStage(arc, level);
   if (!stage.now) return [];
   const earlier = stage.opened.slice(0, -1);
-  const moment = quiet
-    ? '- Let this colour what you write, and do not say it here.'
-    : due === stage.now.atLevel
+  const moment =
+    due === stage.now.atLevel
       ? '- This has just become possible: bring it up in this reply, in your own words, as if it slipped out.'
       : '- If you have not said this yet, find the moment; if you have, let it colour things and do not repeat it.';
   return [

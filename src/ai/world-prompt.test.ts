@@ -5,6 +5,7 @@ import type { Character, Relationship, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { firstTextParts, type FirstTextRequest } from './first-text';
+import { groupReplyParts } from './group-reply';
 import { joinParts, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { ARCHETYPE_LINES, arcLines, bookWorldLines, nowLines, storyLines, TROPE_LINES, tieLines } from './world-prompt';
@@ -114,13 +115,13 @@ describe('the arc in the prompt', () => {
     assert.doesNotMatch(arcLines(vesper.arc, 4).join('\n'), /Already came up/);
   });
 
-  it('asks for a due beat only in a chat reply', () => {
-    const reply = chatParts({ character: vesper, user: sam, relationship: bond(4, 4), messages: [] });
+  it('keeps the beat and the secret to a one-to-one reply: a first text or a group never sees them', () => {
+    const reply = chatParts({ character: vesper, user: sam, relationship: bond(6, 6), messages: [] });
     assert.match(text(reply, 'arc'), /in this reply/);
-    const firstText = characterParts(vesper, sam, bond(4, 4));
-    assert.doesNotMatch(text(firstText, 'arc'), /in this reply/);
-    assert.doesNotMatch(text(firstText, 'arc'), /find the moment/);
-    assert.match(text(firstText, 'arc'), /do not say it here/);
+    for (const parts of [characterParts(vesper, sam, bond(6, 6)), groupReplyParts({ character: vesper, others: [{ ...vesper, id: 'c_lyra', name: 'Lyra' }], user: sam, relationship: bond(6, 6), messages: [] })]) {
+      assert.equal(text(parts, 'arc'), '');
+      assert.doesNotMatch(parts.map((p) => p.text).join('\n'), /forgetting potion/);
+    }
   });
 });
 

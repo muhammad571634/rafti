@@ -28,7 +28,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { checkSkipTo, cleanSkipTo, groupContinueCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
+import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
@@ -37,7 +37,7 @@ import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
-import { groupGameCue, groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
+import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
 import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
@@ -1483,7 +1483,7 @@ export const useAppStore = create<AppState>()(
         if (!group || !group.memberIds.includes(characterId)) return '';
         if (target === 'you') {
           const ask = pick(kind === 'truth' ? localized('truthsForYou', TRUTHS_FOR_YOU) : localized('daresForYou', DARES_FOR_YOU));
-          appendGroupMessage(set, get, groupId, memberText(groupId, characterId, ask));
+          writeGroupTurns(set, get, groupId, [{ characterId, lines: [ask], cue: gameAskCue(kind), quiet: true }]);
           return ask;
         }
         const turn = pick(kind === 'truth' ? localized('truthsForThem', TRUTHS_FOR_THEM) : localized('daresForThem', DARES_FOR_THEM));
@@ -1501,7 +1501,7 @@ export const useAppStore = create<AppState>()(
           speakersIn(get(), groupId),
         );
         writeGroupTurns(set, get, groupId, [
-          { characterId, lines: [turn.answer], cue: groupGameCue() },
+          { characterId, lines: [turn.answer], cue: gameAnswerCue() },
           ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId), genderOf(get(), other))], cue: groupReactCue(memberName(get(), characterId)) }] : []),
         ]);
         return turn.ask;
@@ -3197,7 +3197,7 @@ export const useAppStore = create<AppState>()(
         const conversationId = get().addFriend(characterId);
         if (target === 'you') {
           const ask = pick(kind === 'truth' ? localized('truthsForYou', TRUTHS_FOR_YOU) : localized('daresForYou', DARES_FOR_YOU));
-          appendMessage(set, get, conversationId, themText(conversationId, ask));
+          scheduleReply(set, get, conversationId, { lines: [ask], gain: 0, cue: gameAskCue(kind) });
           return ask;
         }
         const turn = pick(kind === 'truth' ? localized('truthsForThem', TRUTHS_FOR_THEM) : localized('daresForThem', DARES_FOR_THEM));
@@ -3209,7 +3209,7 @@ export const useAppStore = create<AppState>()(
           text: turn.ask,
           createdAt: new Date().toISOString(),
         });
-        scheduleReply(set, get, conversationId, { text: turn.answer, gain: INTIMACY.truthOrDare });
+        scheduleReply(set, get, conversationId, { lines: [turn.answer], gain: INTIMACY.truthOrDare, cue: gameAnswerCue() });
         return turn.ask;
       },
 
@@ -4512,10 +4512,12 @@ interface ReplyRequest {
   trigger?: TurnTrigger;
   /** A continue or a time skip: the model answers it from `steerCue`, `lines` are only its stand-in. */
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** A game's turn: the model answers it from this cue, `lines` are only its stand-in. */
+  cue?: readonly string[];
 }
 
 function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
-  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer } = request;
+  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer, cue } = request;
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4552,7 +4554,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   const turn = ctx ? planReply(ctx) : null;
   const avoided = avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid;
   // The model writes this turn when it is on; only `text` keeps its words. A continue or a skip brings its own stand-in.
-  const modelTurn = text == null && (given == null || !!steer);
+  const modelTurn = text == null && (given == null || !!steer || !!cue);
   // An arc beat that has just opened: the model brings it up in its own words (`arcLines`), a stand-in adds a line.
   const beat = modelTurn && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
   const standIn = () => {
@@ -4658,6 +4660,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       user: state.user,
       relationship: bond,
       steer,
+      cue,
       prefs: replyPrefs(bond),
       // Who they are here, the scene and the world books: the same as the stand-in reads.
       persona: personaFor(conversationId, state),

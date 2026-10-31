@@ -139,7 +139,7 @@ export function characterParts(
    * chats, streams and the other tasks set their own shape.
    */
   prefs?: ReplyPrefs,
-  /** A chat reply says so: only there may a character's arc beat come up (`arcLines`). */
+  /** A one-to-one reply says so: nothing else a character writes carries their arc (`arcLines`). */
   arc?: { due?: number },
 ): PromptPart[] {
   const personaLines = [
@@ -211,7 +211,7 @@ export function characterParts(
     part('scene', 'turn', scene ? sceneLines(scene) : []),
     // Changes week by week and level by level: the turn tier, never the cached prefix.
     part('now', 'turn', lore?.story ? nowLines(lore.story) : []),
-    part('arc', 'turn', relationship ? arcLines(character.arc, relationship.level, arc?.due, !arc) : []),
+    part('arc', 'turn', relationship && arc ? arcLines(character.arc, relationship.level, arc.due) : []),
     part('lore', 'turn', lore ? loreLines(lore) : []),
   ];
 }

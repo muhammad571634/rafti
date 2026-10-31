@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Qui survivrait le plus longtemps dans un film d’horreur",
+        "Le premier rendez-vous parfait, et pourquoi l’autre a tort",
+        "Ce qu’ils cuisineraient pour {user}",
+        "Échanger leurs métiers pendant une journée",
+        "Noter le style de l’autre, en toute honnêteté",
+        "Le pire conseil qu’on leur ait donné",
+        "Préparer une surprise pour {user}",
+        "Une semaine ensemble sur une île déserte"
+      ],
       "openers": [
         "Bon, {other} : \"{topic}\". J’ai quelques avis là-dessus.",
         "\"{topic}\" ? Je sais déjà que j’ai raison sur ce coup-là.",

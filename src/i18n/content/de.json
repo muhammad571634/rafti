@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Wer in einem Horrorfilm länger überleben würde",
+        "Das perfekte erste Date, und warum der andere falschliegt",
+        "Was sie für {user} kochen würden",
+        "Einen Tag lang die Jobs tauschen",
+        "Den Stil des anderen bewerten, ganz ehrlich",
+        "Der schlechteste Rat, den sie je bekommen haben",
+        "Eine Überraschung für {user} planen",
+        "Eine Woche zusammen auf einer einsamen Insel"
+      ],
       "openers": [
         "Also gut, {other}: \"{topic}\". Ich habe da so einige Meinungen.",
         "\"{topic}\"? Ich weiß jetzt schon, dass ich bei diesem Thema recht habe.",

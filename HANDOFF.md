@@ -17,14 +17,16 @@
 - Eval, checks only, before `25a9d26`: 88/90. `first-thread` said "the chair" instead of "dentist", a good answer, so the check now takes it. `memory-earlier-in-chat` already failed in the baseline.
 - The owner handed over the whole product. The plan is `docs/road-to-launch.md`.
 
+- Live, owner deployed `821fe16` (2026-10-31): all six model routes answer 401 without an account; a group message on the A51 came from the model, 1.2 and 1.3 s a member. In that test Ronan told his level 2 beat in the group although the prompt said not to, so a group or a first text no longer carries the arc at all.
+- Truth or dare now comes from the model too, one-to-one and in groups (`gameAnswerCue`, `gameAskCue`, the `cue` on a chat reply). Stream topics are in the voice file and translated into 13 languages. Both are on the phone by OTA; the two prompt changes need the server deploy below.
+
 Still to do:
-1. Owner: deploy the server, or group chat stays on its stand-in with the model off path and the routes stay open. Line: `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`. Today, with the app updated and the server not, a group message shows Not Delivered.
-2. After that, on the A51: a group message from the model.
-3. Translate `STREAM_TOPICS` into the 13 languages.
-4. Then `docs/road-to-launch.md`, in order.
-5. Cloud DB has the old 40 characters; the agent's seed run was refused (shared resource). Nothing in the app reads that table today, so it waits for launch. Owner runs `supabase/seed.sql` in the Supabase SQL editor.
-6. Eval: full run with the judge, then `--save`.
-7. Art: redraw, when the owner says.
+1. Owner: deploy the server once more. `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+2. After that, on the A51: truth or dare, and a beat that stays out of a group.
+3. Then `docs/road-to-launch.md`, in order: quizzes, dates, diary and notes.
+4. Cloud DB has the old 40 characters; the agent's seed run was refused (shared resource). Nothing in the app reads that table today, so it waits for launch. Owner runs `supabase/seed.sql` in the Supabase SQL editor.
+5. Eval: full run with the judge, then `--save`.
+6. Art: redraw, when the owner says.
 
 ### 0z71. Worlds 2.0 translation complete for all 13 languages (2026-10-31, Antigravity). NEXT: owner checks art (item 4) and on device (item 5)
 

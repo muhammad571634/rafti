@@ -19,16 +19,17 @@ stream, a first text left out); never pass a stock line off as the character.
 | First texts (morning, evening, week, threads, world news) | yes |
 | Memory | yes |
 | Streams | yes, lines retry, then the stream pauses |
-| Group chat | yes in code, live after the owner's server deploy |
+| Group chat | yes, seen on the A51 |
+| Truth or dare, one-to-one and group | yes, from a cue; the questions the user asks still come from a list |
 | Dates | no: `buildThemeRounds` pools. BIMOBIMO runs `date_round` and `date_chat` on its server |
-| Truth or dare, quizzes (one-to-one) | no: `buildQuizAnswerPrompt` has no route |
+| Quizzes | no: `buildQuizAnswerPrompt` has no route |
 | Diary pages, secret notes | no: eval modes exist, no route |
 | Calls | no: `callScript`, and they need voice |
 | Character art | waits for the redraw |
 
 ## Order
 
-1. Everything a person reads comes from the model: truth or dare and quizzes, dates, diary and notes.
+1. Everything a person reads comes from the model: quizzes, dates, diary and notes.
 2. Group: tap a member to make them answer, as Character.AI does (`invoke-character`).
 3. Cost: prompts show `cached=0` in the server log, so the provider's cache is not working. Fix it before paying for traffic.
 4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there.

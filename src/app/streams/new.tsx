@@ -13,7 +13,8 @@ import { CharacterAvatar, GlassBar, InsetGroup, LargeTitle, Screen, Txt, useScro
 import { freeRoundsLeft, STREAM_SHELLS } from '@/economy/streams';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { haptic } from '@/lib/haptics';
-import { fillTopic, STREAM_TOPIC_MAX, STREAM_TOPICS } from '@/lib/streams';
+import { fillTopic, STREAM_TOPIC_MAX } from '@/lib/streams';
+import { streamTopics } from '@/mock/streams';
 import { phrase } from '@/i18n';
 import { groupBySeries } from '@/mock/characters';
 import { todayKey } from '@/mock/time';
@@ -122,7 +123,7 @@ export default function NewStreamScreen() {
             keyboardShouldPersistTaps="handled"
             style={styles.ideasStrip}
             contentContainerStyle={styles.ideas}>
-            {STREAM_TOPICS.map((idea) => {
+            {streamTopics().map((idea) => {
               const text = fillTopic(idea, userName);
               return <Pill key={idea} label={text} active={topic === text} onPress={() => setTopic(text)} />;
             })}

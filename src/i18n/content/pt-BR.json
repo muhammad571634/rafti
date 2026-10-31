@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Quem duraria mais em um filme de terror",
+        "O primeiro encontro perfeito, e por que o outro está errado",
+        "O que cozinhariam para {user}",
+        "Trocar de trabalho por um dia",
+        "Avaliar o estilo um do outro, com sinceridade",
+        "O pior conselho que já receberam",
+        "Planejar uma surpresa para {user}",
+        "Uma semana juntos em uma ilha deserta"
+      ],
       "openers": [
         "Beleza, {other}: \"{topic}\". Eu tenho várias opiniões.",
         "\"{topic}\"? Eu já sei que tô com a razão nisso aqui.",

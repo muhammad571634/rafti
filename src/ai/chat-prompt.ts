@@ -130,6 +130,8 @@ export interface ChatPromptInput {
   memories?: readonly (MemoryNote & { pinned?: boolean })[];
   /** A continue or a time skip in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** What this turn is for, when it is not simply answering the user (a game's turn). */
+  cue?: readonly string[];
   /** ↻: what earlier versions of this reply said; the new one takes another angle (`redoCue`). */
   redo?: readonly string[];
   /** ↻ after 👎 on the version before: what was off (`offCue`). */
@@ -158,7 +160,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill
     // the cached history if this sat in the prefix, so it rides in the turn tier.
     part('taste', 'turn', tasteLines(input.messages)),
-    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : []),
+    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : (input.cue ?? [])),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
     part('openers', 'turn', openerLines(input.messages)),

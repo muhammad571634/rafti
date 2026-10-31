@@ -5,6 +5,17 @@ import { hashSeed } from '../lib/seeded';
 import { STREAM_FIRST_LINES, STREAM_MORE_LINES } from '../lib/streams';
 
 export const STREAMS_VOICE = {
+  /** Ideas under the topic field; `{user}` is the user's name (`fillTopic`). */
+  topics: [
+    'Who would last longer in a horror movie',
+    'The perfect first date, and why the other one is wrong',
+    'What they would cook for {user}',
+    'Swap jobs for a day',
+    'Rate each other’s style, honestly',
+    'The worst advice they ever got',
+    'Plan a surprise for {user}',
+    'A week on a desert island together',
+  ],
   openers: [
     'Okay, {other}: “{topic}”. I have opinions.',
     '“{topic}”? I already know I’m right about this one.',
@@ -47,6 +58,9 @@ function roundsBefore(index: number) {
   const firstEnd = STREAM_FIRST_LINES - 1;
   return index <= firstEnd ? 0 : Math.floor((index - firstEnd - 1) / STREAM_MORE_LINES) + 1;
 }
+
+/** The topic ideas in the screen's language. */
+export const streamTopics = () => voice('streams', STREAMS_VOICE).topics;
 
 /** The mock's line `index` of a stream; `last` closes the round. */
 export function mockStreamLine(streamId: string, index: number, last: boolean, other: string, topic: string, gender: CharacterGender | undefined) {

@@ -7657,6 +7657,16 @@
       }
     },
     "streams": {
+      "topics": [
+        "Bir korku filminde kim daha uzun dayanırdı",
+        "Mükemmel ilk buluşma ve diğerinin neden yanıldığı",
+        "{user} için ne pişirirlerdi",
+        "Bir günlüğüne işlerini değiştirmek",
+        "Birbirlerinin tarzını dürüstçe puanlamak",
+        "Aldıkları en kötü tavsiye",
+        "{user} için bir sürpriz planlamak",
+        "Issız bir adada birlikte bir hafta"
+      ],
       "openers": [
         "Pekala, {other}: konu “{topic}”. Benim bu konuda kesin fikirlerim var.",
         "“{topic}” mi? Bu konuda kesinlikle haklı çıkacağımı şimdiden biliyorum.",
