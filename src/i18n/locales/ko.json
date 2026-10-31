@@ -322,6 +322,12 @@
     "read": "읽음",
     "delivered": "전송됨",
     "sending": "전송 중",
+    "photoConsent": {
+      "title": "사진을 보여 줄까요?",
+      "body": "캐릭터가 사진을 볼 수 있도록 사진이 AI 서비스인 Google Gemini로 전송됩니다.",
+      "allow": "허용",
+      "notNow": "나중에"
+    },
     "notDelivered": "전송 실패",
     "tryAgain": "탭하여 다시 시도",
     "tapToPlay": "탭하여 재생 · 길게 눌러 텍스트 보기",

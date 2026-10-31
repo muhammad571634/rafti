@@ -329,6 +329,12 @@
     "read": "Letto",
     "delivered": "Consegnato",
     "sending": "Invio in corso",
+    "photoConsent": {
+      "title": "Vuoi fargli vedere le tue foto?",
+      "body": "Perché il tuo personaggio veda una foto, questa viene inviata al nostro servizio di IA, Google Gemini.",
+      "allow": "Consenti",
+      "notNow": "Non ora"
+    },
     "notDelivered": "Non consegnato",
     "tryAgain": "Tocca per riprovare",
     "tapToPlay": "Tocca per ascoltare · tieni premuto per il testo",

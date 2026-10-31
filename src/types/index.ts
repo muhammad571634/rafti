@@ -243,6 +243,8 @@ export interface Message {
   transcript?: string;
   durationSec?: number;
   imageUri?: string;
+  /** What a photo the user sent shows, in the character's words: how the chat remembers it (`src/ai/photo-prompt.ts`). */
+  photoNote?: string;
   /** A Photo Booth picture sent to the chat (drawn from the kept photo, not a file). */
   photoId?: string;
   createdAt: string;
@@ -1035,6 +1037,8 @@ export interface AppSettings {
   haptics: boolean;
   /** Development: replies come from the real model on the local server (`src/ai/server.ts`). */
   realAi?: boolean;
+  /** The user agreed that photos they send in a chat go to the AI service (`usePickPhoto`). */
+  photosToAi?: boolean;
   /** B1.2: the wallet lives on the server whenever the app has one; `false` (dev) keeps it on the phone. */
   serverWallet?: boolean;
   /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */

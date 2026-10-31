@@ -322,6 +322,12 @@
     "read": "已讀",
     "delivered": "已送達",
     "sending": "傳送中",
+    "photoConsent": {
+      "title": "要讓對方看你的照片嗎?",
+      "body": "為了讓角色看到照片,照片會傳送到我們的 AI 服務 Google Gemini。",
+      "allow": "允許",
+      "notNow": "稍後再說"
+    },
     "notDelivered": "未送達",
     "tryAgain": "點擊重試",
     "tapToPlay": "點擊播放 · 長按顯示文字",

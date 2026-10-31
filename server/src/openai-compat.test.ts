@@ -16,6 +16,16 @@ describe('OpenAI-compatible providers', () => {
     ]);
   });
 
+  it('sends a picture with this reply’s lines, as a data URL', () => {
+    assert.deepEqual(toMessages({ ...layout, images: [{ mimeType: 'image/jpeg', data: 'AAAA' }] }).at(-1), {
+      role: 'user',
+      content: [
+        { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,AAAA' } },
+        { type: 'text', text: 'JSON only.' },
+      ],
+    });
+  });
+
   it('lets the next provider answer when one is busy or fails, and says busy when all are', async () => {
     const busy: LlmProvider = { name: 'a', complete: async () => Promise.reject(new LlmBusyError('quota')) };
     const broken: LlmProvider = { name: 'b', complete: async () => Promise.reject(new Error('500')) };

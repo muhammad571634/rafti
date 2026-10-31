@@ -23,9 +23,9 @@ const ANY = JSON.stringify({
 });
 
 describe('the eval set (backend-plan §12.11)', () => {
-  it('has 40 to 90 scenarios with unique ids, real cast members and a rubric each', () => {
-    // backend-plan §12.11 asked for 40-60; the crisis check (B1.6) and the memory pass (B2) added more.
-    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 90, String(SCENARIOS.length));
+  it('has 40 to 100 scenarios with unique ids, real cast members and a rubric each', () => {
+    // backend-plan §12.11 asked for 40-60; the crisis check (B1.6), the memory pass (B2) and photos added more.
+    assert.ok(SCENARIOS.length >= 40 && SCENARIOS.length <= 100, String(SCENARIOS.length));
     assert.equal(new Set(SCENARIOS.map((s) => s.id)).size, SCENARIOS.length);
     const cast = new Set(characters.map((c) => c.id));
     for (const s of SCENARIOS) {

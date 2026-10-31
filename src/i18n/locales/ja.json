@@ -322,6 +322,12 @@
     "read": "既読",
     "delivered": "配信済み",
     "sending": "送信中",
+    "photoConsent": {
+      "title": "写真を見せますか?",
+      "body": "キャラクターが写真を見るために、写真は当社のAIサービス Google Gemini に送信されます。",
+      "allow": "許可",
+      "notNow": "今はしない"
+    },
     "notDelivered": "未配信",
     "tryAgain": "タップして再試行",
     "tapToPlay": "タップして再生 · 長押しでテキスト",

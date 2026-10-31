@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +26,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { usePickPhoto } from '@/components/chat/use-pick-photo';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
@@ -249,11 +249,9 @@ export default function GroupChatScreen() {
     if (skipGroupTime(groupId, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
-  const pickPhoto = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
-    const uri = result.canceled ? undefined : result.assets[0]?.uri;
-    if (uri && sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
-  };
+  const pickPhoto = usePickPhoto((uri) => {
+    if (sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+  });
 
   const attach = (key: AttachKey) => {
     setAttachOpen(false);

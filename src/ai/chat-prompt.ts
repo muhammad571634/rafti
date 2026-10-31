@@ -13,6 +13,7 @@ import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
+import { seeingLines, type ChatImage } from './photo-prompt';
 import { REPLY_SHAPE, turnLines } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
@@ -140,6 +141,8 @@ export interface ChatPromptInput {
   repeated?: string;
   /** The crisis check (server only): the user may be in danger, so the reply follows `CRISIS_CUE`. */
   crisis?: boolean;
+  /** Photos the user just sent (`src/ai/photo-prompt.ts`). */
+  images?: readonly ChatImage[];
   /** This reply's plan (`planReply`), as hints. */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
@@ -161,6 +164,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // the cached history if this sat in the prefix, so it rides in the turn tier.
     part('taste', 'turn', tasteLines(input.messages)),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : (input.cue ?? [])),
+    part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
     part('openers', 'turn', openerLines(input.messages)),
@@ -178,5 +182,5 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
 
 /** One reply's prompt, laid out for the cache (`PromptLayout`). */
 export function layoutChatPrompt(input: ChatPromptInput, window?: Partial<HistoryWindow>) {
-  return layoutPrompt(chatParts(input), chatTurns(input.messages), window);
+  return { ...layoutPrompt(chatParts(input), chatTurns(input.messages), window), images: input.images };
 }

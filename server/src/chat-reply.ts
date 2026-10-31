@@ -3,6 +3,7 @@ import type { PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { findRepeat, type Repeat } from '../../src/ai/repetition.ts';
 import { userLines } from '../../src/ai/reply-language.ts';
 import { parseModelReply, type ModelReply } from '../../src/ai/reply-style.ts';
+import { imageCue } from '../../src/ai/photo-prompt.ts';
 import { detectCrisis } from '../../src/ai/safety.ts';
 import type { LlmProvider, LlmResult } from './llm/types.ts';
 
@@ -40,7 +41,8 @@ const CRISIS_MIN_LEFT_MS = 3000;
  * that echoes one of their recent replies (or a version a ↻ replaces) is asked for once more with
  * the echoed line named, while half the wait is left, and the second try goes out unless it echoes
  * as much. One second try at most, the crisis first. Busy or slow the second time, the first draft
- * goes out after all.
+ * goes out after all. A picture the provider refused comes back with no words: asked once more
+ * without it, the character says they cannot see it, and no reason is kept.
  */
 export async function chatReply<I extends ChatPromptInput>(
   provider: LlmProvider,
@@ -60,8 +62,10 @@ export async function chatReply<I extends ChatPromptInput>(
 
   const repeat = reply.bubbles.length && !crisis ? findRepeat(reply.bubbles, input.messages, input.redo) : null;
   const left = timeoutMs - (Date.now() - started);
-  const retry =
-    crisis && !caught && left > CRISIS_MIN_LEFT_MS
+  const refused = !reply.bubbles.length && !!input.images?.length;
+  const retry = refused
+    ? { mode: `${mode}Blind`, input: { ...input, images: undefined, cue: [...(input.cue ?? []), ...imageCue()], ...(caught ? { crisis: true } : {}) } }
+    : crisis && !caught && left > CRISIS_MIN_LEFT_MS
       ? { mode: `${mode}Crisis`, input: { ...input, crisis: true } }
       : repeat && left > timeoutMs / 2
         ? { mode: `${mode}Repeat`, input: { ...input, repeated: repeat.line } }

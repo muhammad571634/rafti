@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { BlurTargetView } from 'expo-blur';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +32,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Screen, Txt } from '@/components/ui';
+import { usePickPhoto } from '@/components/chat/use-pick-photo';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
@@ -393,12 +393,9 @@ export default function ChatRoomScreen() {
       },
     });
 
-  const pickPhoto = async () => {
-    setAttachOpen(false);
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
-    const uri = result.canceled ? undefined : result.assets[0]?.uri;
-    if (uri && sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
-  };
+  const pickPhoto = usePickPhoto((uri) => {
+    if (sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+  });
 
   const attach = (key: AttachKey) => {
     setAttachOpen(false);

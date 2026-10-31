@@ -329,6 +329,12 @@
     "read": "Okundu",
     "delivered": "İletildi",
     "sending": "Gönderiliyor",
+    "photoConsent": {
+      "title": "Fotoğraflarını görebilsin mi?",
+      "body": "Karakterinin bir fotoğrafı görebilmesi için fotoğraf, yapay zekâ hizmetimiz Google Gemini'ye gönderilir.",
+      "allow": "İzin ver",
+      "notNow": "Şimdi değil"
+    },
     "notDelivered": "İletilemedi",
     "tryAgain": "Tekrar denemek için dokun",
     "tapToPlay": "Dinlemek için dokun · metin için basılı tut",

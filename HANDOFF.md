@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z80. The model sees photos the user sends (2026-10-31, Claude 2). NEXT: owner deploys the server; phone notifications (road-to-launch)
+
+- The phone makes each photo small (long edge 1024, `src/lib/photo-for-model.ts`) and sends the ones the character has not answered with the reply request; the picture is not stored on the server. The model answers with one line about each (`Message.photoNote`), and later replies read that line, so they cost no picture. A refused or unreadable picture: the character says they cannot see it. First photo asks for consent once (`usePickPhoto`, App Store 5.1.2(i)). Rules in `src/ai/photo-prompt.ts`.
+- A51 in Expo Go on the local server, `gemini-3.1-flash-lite`, a 4000x3000 test picture with a sideways word: consent asked once; Aurelian read it ("Вторник...", 4,589 tokens in, $0.0013); asked later what else was there, he said "a yellow circle" with no picture sent (3,428 in); a Not Delivered photo answered on retry; in a group Aurelian saw it and Theo answered him. Google answered 503 for several stretches in the test, the Not Delivered path held each time.
+- Fixed from reading the code: a refused picture's second try lost the crisis cue.
+- Not tried: an old APK (by the code it says it cannot make out the photo), a real phone photo, nudity or a face, `gemini-3-flash-preview` (429).
+- Checks: tsc 0, npm test 565/565, server tests 64/64, check:locales, check:content.
+
+Still to do:
+1. Owner deploys the server (with the 0z79 rules). Until then the cloud server ignores the pictures.
+2. `expo-image-manipulator` is a new native module: Expo Go has it, the preview APK does not, so the feature needs a new APK with a new `version` (`runtimeVersion` follows it). No `eas update` for this until then. Before any build the grant and domain come first (memory `grant-and-domain-before-build`).
+3. Before launch: a paid key before real photos go out (the free tier may use them), and the privacy policy must name photos sent to Google.
+4. Found on the A51, not touched: `settings.realAi` is off on a new install and its switch shows only in dev and preview builds (`src/app/profile.tsx`), so by the code a store build would never use the model. Must be fixed before launch.
+5. Found on the A51, not touched: ru `group.needFriends` and `noFriends` say "2 друзей" (should be "двух друзей"); check the other plural languages.
+
 ### 0z79. Memory in replies: a friend names the thing (2026-10-31, Claude 2). NEXT: owner deploys the server; the full eval waits for a paid key; the domain and grant wait about a week
 
 - Measured (`npm run eval -- --group memory --no-judge`, writer `gemini-3.1-flash-lite`): memory writing 7/7 (`mempass-*`); memory use in replies 3 of 6 failed: the model got the fact (it is in the prompt) but answered vaguely ("you've got this" instead of "the driving test"; "Typical" instead of "Mira cancelled again?").

@@ -134,6 +134,7 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
           summary: s.setup?.summary,
           messages,
           redo: s.setup?.redo,
+          images: s.setup?.images,
           plan,
         },
       };

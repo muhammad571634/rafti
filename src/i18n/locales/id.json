@@ -322,6 +322,12 @@
     "read": "Dibaca",
     "delivered": "Terkirim",
     "sending": "Mengirim",
+    "photoConsent": {
+      "title": "Izinkan mereka melihat fotomu?",
+      "body": "Agar karaktermu bisa melihat foto, foto itu dikirim ke layanan AI kami, Google Gemini.",
+      "allow": "Izinkan",
+      "notNow": "Nanti saja"
+    },
     "notDelivered": "Gagal terkirim",
     "tryAgain": "Ketuk untuk coba lagi",
     "tapToPlay": "Ketuk untuk memutar · tahan untuk teks",

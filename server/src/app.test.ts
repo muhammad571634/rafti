@@ -206,6 +206,117 @@ describe('sigmazam-api', () => {
     assert.deepEqual([calm.crisis, turns.length], [false, 1]);
   });
 
+  describe('a photo in the request', () => {
+    const jpeg = { mimeType: 'image/jpeg', data: '/9j/4AAQSkZJRg==' };
+    const withPhoto = { ...body, redo: undefined, images: [jpeg] };
+    const postTo = (app: ReturnType<typeof createApp>, route: string, json: unknown) =>
+      app.request(route, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(json) });
+
+    it('reaches the model, and the line that remembers it comes back', async () => {
+      let seen: readonly unknown[] | undefined;
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async (layout) => {
+          seen = layout.images;
+          return { text: '{"messages":["Cute dog."],"photos":["A beagle on a sofa."]}', usage: {} };
+        },
+      };
+      const res = await post(createApp(provider, { timeoutMs: 1000 }), withPhoto);
+      const json = await res.json();
+      assert.deepEqual(seen, [jpeg]);
+      assert.deepEqual(json.messages, ['Cute dog.']);
+      assert.deepEqual(json.photos, ['A beagle on a sofa.']);
+    });
+
+    it('reaches the model in a group too', async () => {
+      let seen: readonly unknown[] | undefined;
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async (layout) => {
+          seen = layout.images;
+          return { text: '{"messages":["Nice."],"photos":["A boat."]}', usage: {} };
+        },
+      };
+      const res = await postTo(createApp(provider, { timeoutMs: 1000 }), '/v1/chat/group', { ...withPhoto, others: [{ ...kai, id: 'c_bo', name: 'Bo' }] });
+      assert.equal(res.status, 200);
+      assert.deepEqual(seen, [jpeg]);
+      assert.deepEqual((await res.json()).photos, ['A boat.']);
+    });
+
+    it('turns away what is not a picture before any model call', async () => {
+      let calls = 0;
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async () => {
+          calls++;
+          return { text: '{"messages":["x"]}', usage: {} };
+        },
+      };
+      const app = createApp(provider, { timeoutMs: 1000 });
+      assert.equal((await post(app, { ...body, images: [{ mimeType: 'image/png', data: 'iVBOR' }] })).status, 400);
+      assert.equal((await postTo(app, '/v1/chat/group', { ...body, others: [kai], images: 'x' })).status, 400);
+      assert.equal(calls, 0);
+    });
+
+    it('answers 413 to a body far too big, with no model call', async () => {
+      let calls = 0;
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async () => {
+          calls++;
+          return { text: '{"messages":["x"]}', usage: {} };
+        },
+      };
+      const res = await post(createApp(provider, { timeoutMs: 1000 }), { ...body, padding: 'x'.repeat(9_000_000) });
+      assert.equal(res.status, 413);
+      assert.equal(calls, 0);
+    });
+
+    it('asks once more without a picture the provider refused, and the character says they cannot see it', async () => {
+      const layouts: { images?: readonly unknown[]; turn: string }[] = [];
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async (layout) => {
+          layouts.push(layout);
+          return { text: layouts.length === 1 ? '' : '{"messages":["I cannot make this out, what is it?"]}', usage: {} };
+        },
+      };
+      const res = await post(createApp(provider, { timeoutMs: 1000 }), withPhoto);
+      const json = await res.json();
+      assert.equal(layouts.length, 2);
+      assert.deepEqual(layouts[0].images, [jpeg]);
+      assert.equal(layouts[1].images, undefined);
+      assert.match(layouts[1].turn, /cannot make out what is in it/);
+      assert.deepEqual(json.messages, ['I cannot make this out, what is it?']);
+    });
+
+    it('keeps the crisis cue when it asks again without a refused picture', async () => {
+      const turns: string[] = [];
+      const provider: LlmProvider = {
+        name: 'fake',
+        complete: async (layout) => {
+          turns.push(layout.turn);
+          return { text: turns.length === 1 ? '' : '{"messages":["I am right here. Are you safe right now?"]}', usage: {} };
+        },
+      };
+      const messages = [...body.messages, { id: 'm9', conversationId: 'c', author: 'me', kind: 'text', text: 'I want to die', createdAt: '2026-10-26T10:00:00.000Z' }];
+      const json = await (await post(createApp(provider, { timeoutMs: 1000 }), { ...withPhoto, messages })).json();
+      assert.equal(turns.length, 2);
+      assert.match(turns[1], /SAFETY NOW/);
+      assert.equal(json.crisis, true);
+    });
+
+    it('says empty when the model has no words and no picture was sent', async () => {
+      const provider: LlmProvider = { name: 'fake', complete: async () => ({ text: '', usage: {} }) };
+      assert.equal((await post(createApp(provider, { timeoutMs: 1000 }), { ...body, redo: undefined })).status, 502);
+    });
+  });
+
+  it('gives Gemini the pictures just before this turn\'s lines', () => {
+    const contents = toContents({ system: [], history: [{ role: 'user', text: 'Hi' }], turn: 'JSON only.', cut: 0, images: [{ mimeType: 'image/jpeg', data: 'AAAA' }] });
+    assert.deepEqual(contents.at(-1)?.parts, [{ text: 'Hi' }, { inlineData: { mimeType: 'image/jpeg', data: 'AAAA' } }, { text: 'JSON only.' }]);
+  });
+
   it('gives Gemini a conversation that opens on the user side, with this turn last', () => {
     const contents = toContents({ system: [], history: [{ role: 'assistant', text: 'Hey!' }, { role: 'user', text: 'Hi' }], turn: 'Reply with JSON only.', cut: 0 });
     assert.deepEqual(

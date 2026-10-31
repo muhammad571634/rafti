@@ -81,6 +81,13 @@ export function historyStart(turns: readonly HistoryTurn[], window: Partial<Hist
   return start;
 }
 
+/** A picture for the model to look at, sent with this reply's own lines. */
+export interface PromptImage {
+  mimeType: string;
+  /** The file, base64. */
+  data: string;
+}
+
 /** A prompt laid out for the cache, for the server's adapter to send. */
 export interface PromptLayout {
   /** One block per system tier that has text, in tier order; each ends at a cache point. */
@@ -91,6 +98,8 @@ export interface PromptLayout {
   turn: string;
   /** Turns left out before the history starts. */
   cut: number;
+  /** Pictures this reply looks at; after the cached prefix, like `turn`. */
+  images?: readonly PromptImage[];
 }
 
 export function layoutPrompt(parts: readonly PromptPart[], turns: readonly HistoryTurn[] = [], window?: Partial<HistoryWindow>): PromptLayout {

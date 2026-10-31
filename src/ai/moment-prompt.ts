@@ -116,8 +116,6 @@ export const quizDoneCue = (title: string, matches: number, total: number) => [
   `NEXT: You and they just finished a quiz together, "${title}", and matched on ${matches} of ${total}. React to the score in your own voice: short, and true to how you feel about it.`,
 ];
 
-export const imageCue = () => ['NEXT: They just sent you a photo, and you cannot make out what is in it. React to being sent it in your own voice and ask what you are looking at. Never describe it or pretend you saw it.'];
-
 export const photoCue = (style: string) => [`NEXT: The two of you just took a photo together in the photo booth (${style} style) and they sent it to you. React in your own voice: short and warm.`];
 
 /** Their answer to a tap on a reply idea, or a step of the morning chain whose buttons need it said. */

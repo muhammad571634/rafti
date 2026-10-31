@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 
 import { CHAT_MODES, type ChatMode, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import {
@@ -41,6 +42,7 @@ import {
   WHEEL_WEIGHTS,
 } from '../../src/economy/shells.ts';
 import type { LedgerReason, MemoryItem } from '../../src/types/index.ts';
+import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-prompt.ts';
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
@@ -60,6 +62,8 @@ const MAX_GROUP_OTHERS = 4;
 
 /** Every route that calls the model and so costs money (`modelGuard`). */
 const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
+/** A reply request: its photos, and room for the chat and everything else it carries. */
+const CHAT_BODY_MAX_BYTES = PHOTOS_MAX * PHOTO_CHARS_MAX + 2_000_000;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
@@ -291,6 +295,9 @@ export function createApp(
     await next();
   };
   for (const route of MODEL_ROUTES) app.use(route, modelGuard);
+  for (const route of ['/v1/chat/reply', '/v1/chat/group']) {
+    app.use(route, bodyLimit({ maxSize: CHAT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
+  }
 
   /**
    * A wallet call for the signed-in user. A wallet not made yet (bootstrap never ran) is made first;
@@ -573,9 +580,12 @@ export function createApp(
     if (!raw?.character?.name || !raw.user || !Array.isArray(raw.messages) || !Array.isArray(raw.others) || !raw.others.length || raw.others.length > MAX_GROUP_OTHERS) {
       return c.json({ error: 'badInput' }, 400);
     }
+    const images = cleanImages(raw.images);
+    if (images === null) return c.json({ error: 'badInput' }, 400);
     const user = { ...raw.user, locale: raw.user.locale || 'en-US' };
     const input: GroupPromptInput = {
       ...raw,
+      images,
       mode: undefined,
       user,
       messages: raw.messages.slice(-MAX_MESSAGES),
@@ -601,7 +611,7 @@ export function createApp(
       console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}`);
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: lines, crisis, model: result.model ?? provider.name });
+      return c.json({ messages: lines, crisis, photos: reply.photos, model: result.model ?? provider.name });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
       console.error('[group] failed', error);
@@ -618,12 +628,15 @@ export function createApp(
       return c.json({ error: 'badJson' }, 400);
     }
     if (!input?.character?.name || !input?.user || !Array.isArray(input.messages)) return c.json({ error: 'badInput' }, 400);
+    const images = cleanImages(input.images);
+    if (images === null) return c.json({ error: 'badInput' }, 400);
     // A profile without a locale is written to in English. Until the database keeps each chat's
     // language lock, the model follows the language the user writes in, whatever it is, reminded
     // with their latest words (`languageCue`), so nobody gets answered in a language they did not use.
     const user = { ...input.user, locale: input.user.locale || 'en-US' };
     input = {
       ...input,
+      images,
       mode: CHAT_MODES.includes(input.mode as ChatMode) ? input.mode : undefined,
       user,
       messages: input.messages.slice(-MAX_MESSAGES),
@@ -662,7 +675,7 @@ export function createApp(
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, model: result.model ?? provider.name, ms });
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

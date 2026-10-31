@@ -168,7 +168,7 @@ export function messageText(message: Message): string | null {
   if (message.kind === 'call') return message.missed ? '[Missed call]' : '[Call]';
   const text = (message.text ?? message.transcript ?? '').trim();
   if (text) return text;
-  if (message.kind === 'image') return '[Image message]';
+  if (message.kind === 'image') return message.photoNote ? `[Image message: ${message.photoNote}]` : '[Image message]';
   if (message.kind === 'voice') return '[Voice message]';
   return null;
 }

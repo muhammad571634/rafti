@@ -47,7 +47,6 @@ import {
   dateDoneCue,
   familyHelloCue,
   greetingCue,
-  imageCue,
   lifeCue,
   missedCallCue,
   nightCue,
@@ -62,9 +61,11 @@ import {
   wakeCheckInCue,
   worldQuizCue,
 } from '@/ai/moment-prompt';
+import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
+import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
 import { messageText } from '@/lib/story-continuity';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
@@ -1153,7 +1154,7 @@ export const useAppStore = create<AppState>()(
             ]),
           ],
           gain: INTIMACY.text,
-          cue: imageCue(),
+          photo: true,
         });
         return 'sent';
       },
@@ -4839,10 +4840,38 @@ interface ReplyRequest {
   steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
   /** A game's turn: the model answers it from this cue, `lines` are only its stand-in. */
   cue?: readonly string[];
+  /** A photo they sent: the model looks at it (`unseenPhotos`), `lines` are only its stand-in. */
+  photo?: boolean;
+}
+
+/**
+ * The photos a reply looks at. One that could not be read leaves the character saying so, unless the
+ * turn has a cue of its own.
+ */
+async function lookAtPhotos(messages: readonly Message[], cue: readonly string[] | undefined) {
+  const unseen = unseenPhotos(messages);
+  const photos = await photosForModel(unseen);
+  return {
+    photos,
+    images: photos.length ? photos.map((p) => p.image) : undefined,
+    cue: cue ?? (unseen.length && !photos.length ? imageCue() : undefined),
+  };
+}
+
+/** Keeps the model's line about each photo: later replies read it instead of the picture. */
+function rememberPhotos(set: Setter, chatId: string, photos: readonly PreparedPhoto[], notes: readonly string[] | undefined) {
+  const noteOf = new Map(photos.flatMap((photo, i) => (notes?.[i] ? [[photo.id, notes[i]] as const] : [])));
+  if (!noteOf.size) return;
+  set((s) => ({
+    messages: {
+      ...s.messages,
+      [chatId]: (s.messages[chatId] ?? []).map((m) => (noteOf.has(m.id) ? { ...m, photoNote: noteOf.get(m.id) } : m)),
+    },
+  }));
 }
 
 function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
-  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer, cue } = request;
+  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer, cue, photo } = request;
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4879,7 +4908,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   const turn = ctx ? planReply(ctx) : null;
   const avoided = avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid;
   // The model writes this turn when it is on; only `text` keeps its words. A continue or a skip brings its own stand-in.
-  const modelTurn = text == null && (given == null || !!steer || !!cue);
+  const modelTurn = text == null && (given == null || !!steer || !!cue || !!photo);
   // An arc beat that has just opened: the model brings it up in its own words (`arcLines`), a stand-in adds a line.
   const beat = modelTurn && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
   const standIn = () => {
@@ -5004,15 +5033,20 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       redoOff: off,
     };
     // The account's token lets the server log the reply's cost against this user (B1).
-    void accessToken()
-      .then((token) => serverReply(input, token))
-      .then((reply) => {
-        if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
-        if (!reply) return failReply(set, conversationId, request);
-        // The server's crisis check (any language): the helpline card, as a caught phrase gets.
-        if (reply.crisis) appendHelplineCard(set, get, conversationId);
-        deliver(reply.lines);
-      });
+    void (async () => {
+      const { photos, ...looking } = await lookAtPhotos(messages, cue);
+      const reply = await accessToken()
+        .then((token) => serverReply({ ...input, ...looking }, token))
+        .catch(() => null);
+      return { reply, photos };
+    })().then(({ reply, photos }) => {
+      if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
+      if (!reply) return failReply(set, conversationId, request);
+      rememberPhotos(set, conversationId, photos, reply.photos);
+      // The server's crisis check (any language): the helpline card, as a caught phrase gets.
+      if (reply.crisis) appendHelplineCard(set, get, conversationId);
+      deliver(reply.lines);
+    });
     return;
   }
   deliver(standIn());
@@ -5321,8 +5355,9 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
       const input = group && groupInput(get(), group, turn, said);
       if (!input) return;
       startGroupTyping(set, groupId, turn.characterId);
+      const { photos, ...looking } = await lookAtPhotos(input.messages, input.cue);
       const reply = await accessToken()
-        .then((token) => serverGroupReply(input, token))
+        .then((token) => serverGroupReply({ ...input, ...looking }, token))
         .catch(() => null);
       stopGroupTyping(set, groupId, turn.characterId);
       if (!reply) {
@@ -5332,6 +5367,7 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
       if (reply.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
         appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
       }
+      rememberPhotos(set, groupId, photos, reply.photos);
       said.push(...reply.lines.map((line) => memberText(groupId, turn.characterId, line)));
       scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines: reply.lines }]);
       if (reply.crisis) return;

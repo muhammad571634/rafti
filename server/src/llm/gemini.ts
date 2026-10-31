@@ -68,10 +68,11 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
 export function toContents(layout: PromptLayout): Content[] {
   const out: Content[] = layout.history.map((turn) => ({ role: turn.role === 'assistant' ? 'model' : 'user', parts: [{ text: turn.text }] }));
   if (out[0]?.role !== 'user') out.unshift({ role: 'user', parts: [{ text: '(The chat opens.)' }] });
-  if (layout.turn) {
+  const parts = [...(layout.images ?? []).map(({ mimeType, data }) => ({ inlineData: { mimeType, data } })), ...(layout.turn ? [{ text: layout.turn }] : [])];
+  if (parts.length) {
     const last = out[out.length - 1];
-    if (last.role === 'user') last.parts = [...(last.parts ?? []), { text: layout.turn }];
-    else out.push({ role: 'user', parts: [{ text: layout.turn }] });
+    if (last.role === 'user') last.parts = [...(last.parts ?? []), ...parts];
+    else out.push({ role: 'user', parts });
   }
   return out;
 }

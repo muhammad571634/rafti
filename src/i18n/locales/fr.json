@@ -329,6 +329,12 @@
     "read": "Lu",
     "delivered": "Distribué",
     "sending": "Envoi en cours",
+    "photoConsent": {
+      "title": "Partager tes photos ?",
+      "body": "Pour que ton personnage voie une photo, elle est envoyée à notre service d’IA, Google Gemini.",
+      "allow": "Autoriser",
+      "notNow": "Pas maintenant"
+    },
     "notDelivered": "Non distribué",
     "tryAgain": "Toucher pour réessayer",
     "tapToPlay": "Toucher pour lire · maintenir pour le texte",

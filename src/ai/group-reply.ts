@@ -4,6 +4,7 @@ import { messageText } from '../lib/story-continuity';
 
 import type { ChatPromptInput } from './chat-prompt';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
+import { seeingLines } from './photo-prompt';
 import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
@@ -59,6 +60,7 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
       'Most messages here need no narration. When one does, it is brief and has no "I": *leans back*.',
     ]),
     part('cue', 'turn', input.cue ?? []),
+    part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('openers', 'turn', openerLines(own)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
     part('languageNow', 'turn', followsUser(replyLanguage) ? languageCue(userLines(messages), user.locale) : []),
@@ -69,7 +71,7 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
 
 /** One member's prompt, laid out for the cache. */
 export function layoutGroupReply(input: GroupPromptInput, window?: Partial<HistoryWindow>) {
-  return layoutPrompt(groupReplyParts(input), groupTurns(input), window);
+  return { ...layoutPrompt(groupReplyParts(input), groupTurns(input), window), images: input.images };
 }
 
 const escaped = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

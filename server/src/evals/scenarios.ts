@@ -2,6 +2,8 @@ import type { ChatMode } from '../../../src/ai/chat-prompt.ts';
 import type { ReplyPrefs } from '../../../src/lib/reply-engine/types.ts';
 import type { TouchPhase, User } from '../../../src/types/index.ts';
 import type { Check } from './checks.ts';
+import type { ChatImage } from '../../../src/ai/photo-prompt.ts';
+import { RED_BALL } from './photo-fixture.ts';
 
 /**
  * The eval set (backend-plan §12.11): fixed scenarios run against the real model before any change to
@@ -36,6 +38,8 @@ export interface Setup {
   arcDue?: number;
   /** When the user joined this world, which picks the chapter (a few weeks before `EVAL_NOW` unless set). */
   joinedAt?: string;
+  /** Photos the user just sent. */
+  images?: readonly ChatImage[];
 }
 
 interface Base {
@@ -140,6 +144,16 @@ export const SCENARIOS: readonly EvalScenario[] = [
     ],
     expect: [{ kind: 'includes', any: ['Mira', 'sister', 'weekend', 'visit'] }],
     rubric: 'Understands “she” is Mira the sister; reacts in Hana’s bold, tsundere way that still shows she cares.',
+  },
+  {
+    id: 'memory-sees-photo',
+    group: 'memory',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5, images: [RED_BALL] },
+    chat: [['me', 'found this today']],
+    expect: [{ kind: 'includes', any: ['red', 'ball', 'circle', 'round', 'blue'] }, ASSISTANT],
+    rubric: 'Sees the red ball on blue and reacts to it in Hana’s bold way, naming what is actually there, inventing nothing.',
   },
   {
     id: 'memory-vegetarian',

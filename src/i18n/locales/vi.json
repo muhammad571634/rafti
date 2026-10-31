@@ -322,6 +322,12 @@
     "read": "Đã đọc",
     "delivered": "Đã gửi",
     "sending": "Đang gửi",
+    "photoConsent": {
+      "title": "Cho họ xem ảnh của bạn?",
+      "body": "Để nhân vật thấy được ảnh, ảnh sẽ được gửi đến dịch vụ AI của chúng tôi là Google Gemini.",
+      "allow": "Cho phép",
+      "notNow": "Để sau"
+    },
     "notDelivered": "Chưa được gửi",
     "tryAgain": "Chạm để thử lại",
     "tapToPlay": "Chạm để nghe · giữ để xem văn bản",

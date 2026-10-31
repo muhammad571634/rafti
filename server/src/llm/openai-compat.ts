@@ -34,12 +34,16 @@ export function openAiCompatProvider(opts: { baseUrl: string; apiKey: string; mo
   };
 }
 
-type Message = { role: 'system' | 'user' | 'assistant'; content: string };
+type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
+type Message = { role: 'system' | 'user' | 'assistant'; content: string | Part[] };
 
 export function toMessages(layout: PromptLayout): Message[] {
   const out: Message[] = [{ role: 'system', content: layout.system.map((block) => block.text).join('\n\n') }];
   out.push(...layout.history.map((turn) => ({ role: turn.role, content: turn.text })));
-  if (layout.turn) out.push({ role: 'user', content: layout.turn });
+  if (layout.images?.length) {
+    const pictures = layout.images.map(({ mimeType, data }): Part => ({ type: 'image_url', image_url: { url: `data:${mimeType};base64,${data}` } }));
+    out.push({ role: 'user', content: layout.turn ? [...pictures, { type: 'text', text: layout.turn }] : pictures });
+  } else if (layout.turn) out.push({ role: 'user', content: layout.turn });
   return out;
 }
 

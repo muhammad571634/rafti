@@ -329,6 +329,12 @@
     "read": "Gelesen",
     "delivered": "Zugestellt",
     "sending": "Senden...",
+    "photoConsent": {
+      "title": "Dürfen sie deine Fotos sehen?",
+      "body": "Damit dein Charakter ein Foto sehen kann, geht es an unseren KI-Dienst, Google Gemini.",
+      "allow": "Erlauben",
+      "notNow": "Nicht jetzt"
+    },
     "notDelivered": "Nicht zugestellt",
     "tryAgain": "Tippen zum Wiederholen",
     "tapToPlay": "Tippen zum Abspielen · halten für Text",

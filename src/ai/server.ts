@@ -45,6 +45,8 @@ const STREAM_LINE_TIMEOUT_MS = 22_000;
 const GROUP_REPLY_TIMEOUT_MS = 22_000;
 /** A note, a page or a round: as long as the server tries its models (`LLM_TIMEOUT_MS`). */
 const WRITE_TIMEOUT_MS = 22_000;
+/** A reply that looks at a photo also uploads it, on whatever connection the phone has. */
+const PHOTO_TIMEOUT_EXTRA_MS = 12_000;
 /** Nobody waits on the memory pass. */
 const MEMORY_PASS_TIMEOUT_MS = 30_000;
 
@@ -130,14 +132,18 @@ export const serverMemories = {
  * account's token the server ties the call's cost to this user (`usage_events`); without one it
  * still answers.
  */
-export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean }>('/v1/chat/reply', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
-    body: JSON.stringify(input),
-  });
+export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[] } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[] }>(
+    '/v1/chat/reply',
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+      body: JSON.stringify(input),
+    },
+    TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+  );
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? { lines, crisis: reply?.crisis === true } : null;
+  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos } : null;
 }
 
 const withOptionalToken = (accessToken: string | null | undefined, body: unknown): RequestInit => ({
@@ -173,10 +179,14 @@ export async function serverStreamLine(request: StreamLineRequest, accessToken?:
 }
 
 /** One group member's next message in their own voice, or null (off, busy or slow: the caller writes the stand-in). */
-export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean }>('/v1/chat/group', withOptionalToken(accessToken, input), GROUP_REPLY_TIMEOUT_MS);
+export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[] } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[] }>(
+    '/v1/chat/group',
+    withOptionalToken(accessToken, input),
+    GROUP_REPLY_TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+  );
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? { lines, crisis: reply?.crisis === true } : null;
+  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos } : null;
 }
 
 /** What a friend writes on a screen of its own (src/ai/writes.ts), or null (off, busy, slow or a broken answer). */
