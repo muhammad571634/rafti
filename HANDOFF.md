@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z72. Worlds 2.0 checked on the A51, its bugs fixed, group chat on the real model (2026-10-31, Claude 2). NEXT: owner deploys the server, then the to-do list
+
+- Owner: check everything, then fix it all and decide as founder; art is out (it will be redrawn, the current `art-new/` pictures are not needed). Then: characters must talk like real people in chat, group chat, stream and the rest; take from Character.AI and BIMOBIMO, REA allowed. A conversation simulator was built on a misreading and removed: the owner wanted the product, not a test rig.
+- Passed on the A51 (ru) before the fixes: Find with the 7 worlds, world page, Start and the entry scene, a real reply from Ronan, profile locks, Group chat appears with two friends, a real `world` text from Kai.
+- Fixed, `e035080`: world title on its own line (it broke mid-word beside Surprise on the A51); Ronan's opening in 14 languages; the burn out of his `look` so level 1 cannot name it; his three rules in `definition` so he never invents them; his level 2 beat is new, since the opening already says the rules; seed regenerated.
+- Fixed, `8e89767` (the code review's 10): a due beat reaches only the chat reply, first texts keep it to themselves (`arcLines` `quiet`); delivery clears only the beat it carried; "Already came up" is now "may not have come up"; the current chapter waits until told instead of being lost after its day; `pickWorldNews` is shared by the app and the push planner (one a day, no blocked friend); nothing on the join day; the entry scene stays out of a chat already begun; a book with only a role keeps it; an event round is added to the world's date rounds; the world page counts the season as the chat does.
+- Group chat, `1594f40`: `POST /v1/chat/group`, one model call per member who answers (`src/ai/group-reply.ts`, the one-to-one guards through `chatReply`), the next member reads what the one before said; hello, join, continue, skip and truth or dare have cues. Canned lines remain only as the stand-in when the server is off, busy or slow. Tried on the real model in English and Russian: in character, in the world, keeps its language.
+- Security, `240db7d`: every model route needs a signed-in account (anonymous counts) and has limits per account and per address (`server/src/rate-limit.ts`). Closes the 0z68 note.
+- Android plurals, `61568c6`: Hermes has no `Intl.PluralRules`, so i18next knew only one and other: Russian said "2 ИИ-персонажей", and ja, ko, zh, th, vi, id fell back to English on a count of 1. `src/i18n/plural.ts` fills it in, checked against the real rules for 0 to 1200 in every language.
+- Founder's call: Gilded Empire keeps its villainess. Genre first; the rule "what the user says about their gender is fact" already covers a man who says so.
+- Checks: tsc 0, npm test 543/543, server tests 54/54, check:locales pass, check:content 13/13.
+
+Still to do:
+1. Owner: deploy the server, or group chat stays on canned lines and the routes stay open. The agent cannot; the line is in the reply and in the cloud-server memory.
+2. After that, on the A51: a group message from the model, plurals ("2 ИИ-персонажа"), the world title; then a stream, which is on the model already but was not tried on the phone.
+3. Other places still on canned text, the owner's "and the rest", one at a time: dates (`buildThemeRounds` pools, BIMOBIMO has `date_round` and `date_chat` on its server), calls (`callScript`, needs voice too), one-to-one truth or dare and quizzes (`buildQuizAnswerPrompt` has no route), diary pages and secret notes (eval modes exist, no route).
+4. Character.AI lets the user tap a member to make them answer (`GroupChat.invoke-character`, `invoke-random`, seen in its bundle; REA MCP is not connected in Claude 2, the strings in `rea-work/cai` were enough). Ours answers by name or in turn only.
+5. Cloud DB has the old 40 characters; the agent's seed run was refused (shared resource). Nothing in the app reads that table today, so it waits for launch. Owner runs `supabase/seed.sql` in the Supabase SQL editor.
+6. Eval: rerun after the deploy, then `--save`. The checks-only run on this code is in the session report.
+7. Art: redraw, when the owner says.
+
 ### 0z71. Worlds 2.0 translation complete for all 13 languages (2026-10-31, Antigravity). NEXT: owner checks art (item 4) and on device (item 5)
 
 - Full task completed per `docs/agent-tasks/translate-worlds.md`.
