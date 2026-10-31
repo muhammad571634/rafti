@@ -20,7 +20,7 @@ import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
-import type { Context } from 'hono';
+import type { Context, MiddlewareHandler } from 'hono';
 
 import {
   MEMORY_SYNC_LIMITS,
@@ -44,6 +44,7 @@ import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
+import { MODEL_LIMITS, windowLimiter, type ModelLimits } from './rate-limit.ts';
 
 /**
  * Until each chat's language lock is stored, the reply follows what the user writes, and before
@@ -55,6 +56,13 @@ const replyLanguageOf = (input: { replyLanguage?: string; user: { locale?: strin
 const MAX_MESSAGES = 120;
 /** A group is the user and two or three characters; a little room for a member just added. */
 const MAX_GROUP_OTHERS = 4;
+
+/** Every route that calls the model and so costs money (`modelGuard`). */
+const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line'];
+const MINUTE_MS = 60_000;
+const DAY_MS = 86_400_000;
+const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
+const MAX_KNOWN_TOKENS = 20_000;
 
 /** A BCP 47 tag the profile may keep ("en-US", "uz-Latn-UZ"); anything else is dropped. */
 export function cleanLocale(value: unknown): string | undefined {
@@ -246,10 +254,42 @@ function logUsage(db: Db | null, userId: Promise<string | null>, event: Omit<Usa
  */
 export function createApp(
   provider: LlmProvider | null,
-  opts: { timeoutMs: number; db?: Db | null; client?: ClientConfig | null; devGrants?: boolean },
+  opts: { timeoutMs: number; db?: Db | null; client?: ClientConfig | null; devGrants?: boolean; limits?: Partial<ModelLimits> },
 ) {
   const app = new Hono();
   const db = opts.db ?? null;
+  const limits = { ...MODEL_LIMITS, ...opts.limits };
+  const userMinute = windowLimiter(limits.userPerMinute, MINUTE_MS);
+  const userDay = windowLimiter(limits.userPerDay, DAY_MS);
+  const addressMinute = windowLimiter(limits.addressPerMinute, MINUTE_MS);
+  const addressDay = windowLimiter(limits.addressPerDay, DAY_MS);
+  const knownTokens = new Map<string, { userId: string; until: number }>();
+
+  /** The account behind a token, asked once in a while: every reply must not wait on the sign-in service. */
+  async function accountOf(token: string) {
+    const known = knownTokens.get(token);
+    if (known && known.until > Date.now()) return known.userId;
+    const userId = await db!.userIdFromToken(token).catch(() => null);
+    if (!userId) return null;
+    if (knownTokens.size >= MAX_KNOWN_TOKENS) knownTokens.clear();
+    knownTokens.set(token, { userId, until: Date.now() + TOKEN_KNOWN_MS });
+    return userId;
+  }
+
+  // Whoever spends the model's money: a signed-in account (anonymous counts, every install has one)
+  // within its limits. A server with no database has no accounts, so it only counts addresses.
+  const modelGuard: MiddlewareHandler = async (c, next) => {
+    const address = c.req.header('fly-client-ip') ?? 'local';
+    if (!addressMinute(address) || !addressDay(address)) return c.json({ error: 'busy' }, 429);
+    if (db) {
+      const token = bearer(c.req.header('authorization'));
+      const userId = token ? await accountOf(token) : null;
+      if (!userId) return c.json({ error: 'signIn' }, 401);
+      if (!userMinute(userId) || !userDay(userId)) return c.json({ error: 'busy' }, 429);
+    }
+    await next();
+  };
+  for (const route of MODEL_ROUTES) app.use(route, modelGuard);
 
   /**
    * A wallet call for the signed-in user. A wallet not made yet (bootstrap never ran) is made first;

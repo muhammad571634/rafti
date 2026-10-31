@@ -54,7 +54,7 @@ const body = {
 };
 
 const post = (app: ReturnType<typeof createApp>, json: unknown) =>
-  app.request('/v1/chat/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(json) });
+  app.request('/v1/chat/reply', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: JSON.stringify(json) });
 
 describe('sigmazam-api', () => {
   it('lays out the chat prompt, asks the model and returns its bubbles', async () => {
@@ -257,15 +257,55 @@ describe('the cost log of a reply', () => {
     assert.match(promptVersion ?? '', /^g[0-9a-f]{8}\.c[0-9a-f]{8}\.m[0-9a-f]{8}$/);
   });
 
-  it('still answers without an account or with a stale token, and logs no user then', async () => {
+  it('spends nothing on a request without an account or with a stale token', async () => {
     logged.length = 0;
-    assert.equal((await send()).status, 200);
-    assert.equal((await send({ authorization: 'Bearer stale' })).status, 200);
+    let calls = 0;
+    const counting: LlmProvider = {
+      name: 'counting',
+      async complete() {
+        calls += 1;
+        return { text: '{"messages":["Hi."]}', usage: {} };
+      },
+    };
+    const post = (headers: Record<string, string>) =>
+      createApp(counting, { timeoutMs: 1000, db }).request('/v1/chat/reply', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+    assert.equal((await post({})).status, 401);
+    assert.equal((await post({ authorization: 'Bearer stale' })).status, 401);
     await settle();
-    assert.deepEqual(
-      logged.map((row) => row.userId),
-      [null, null],
-    );
+    assert.equal(calls, 0);
+    assert.deepEqual(logged, []);
+  });
+
+  it('guards every route that calls the model', async () => {
+    const app = createApp(provider, { timeoutMs: 1000, db });
+    for (const route of ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line']) {
+      const res = await app.request(route, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
+      assert.equal(res.status, 401, route);
+    }
+  });
+
+  it('says busy above an account’s limit, and above an address’s', async () => {
+    const byUser = createApp(provider, { timeoutMs: 1000, db, limits: { userPerMinute: 1 } });
+    const post = (app: ReturnType<typeof createApp>, headers: Record<string, string>) =>
+      app.request('/v1/chat/reply', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good', ...headers }, body: JSON.stringify(body) });
+    assert.equal((await post(byUser, {})).status, 200);
+    assert.equal((await post(byUser, {})).status, 429);
+    const byAddress = createApp(provider, { timeoutMs: 1000, db, limits: { addressPerMinute: 1 } });
+    assert.equal((await post(byAddress, { 'fly-client-ip': '1.1.1.1' })).status, 200);
+    assert.equal((await post(byAddress, { 'fly-client-ip': '1.1.1.1' })).status, 429);
+    assert.equal((await post(byAddress, { 'fly-client-ip': '2.2.2.2' })).status, 200);
+  });
+
+  it('asks the sign-in service once in a while, not on every reply', async () => {
+    let asked = 0;
+    const app = createApp(provider, { timeoutMs: 1000, db: makeDb({ userIdFromToken: async () => { asked += 1; return 'user-1'; } }) });
+    const post = () => app.request('/v1/chat/reply', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: JSON.stringify(body) });
+    await post();
+    await post();
+    await settle();
+    // Once by the guard; the cost log's own lookup is not on the reply's path.
+    assert.ok(asked <= 3);
+    assert.equal((await post()).status, 200);
   });
 });
 
