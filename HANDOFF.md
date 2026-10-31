@@ -12,13 +12,18 @@
 - Founder's call: Gilded Empire keeps its villainess. Genre first; the rule "what the user says about their gender is fact" already covers a man who says so.
 - Checks: tsc 0, npm test 543/543, server tests 54/54, check:locales pass, check:content 13/13.
 
+- With the model on, every line is the model's, `25a9d26`: one-to-one Continue and time skip never reached the model and now do (seen in the live log); a busy stream retries, then pauses; a busy group line shows Not Delivered with Try again (`retryGroupReply`); a busy first text retries twice, then stays out, and world news stays due. The server rounds its models twice; the app waits 22 s. Measured on the free key the same day: one short prompt took 2.7 to 12.9 s, sometimes nothing in 20 s or a 429, so most of a test stream was stock lines. That is the cause of the owner's "two different people".
+- A51 after the OTA: world title on one line, "2 ИИ-персонажа", "Поиск: Вельветный квартал". Stream topics are still English in every language (`STREAM_TOPICS`, `src/lib/streams.ts`).
+- Eval, checks only, before `25a9d26`: 88/90. `first-thread` said "the chair" instead of "dentist", a good answer, so the check now takes it. `memory-earlier-in-chat` already failed in the baseline.
+- The owner handed over the whole product. The plan is `docs/road-to-launch.md`.
+
 Still to do:
-1. Owner: deploy the server, or group chat stays on canned lines and the routes stay open. The agent cannot; the line is in the reply and in the cloud-server memory.
-2. After that, on the A51: a group message from the model, plurals ("2 ИИ-персонажа"), the world title; then a stream, which is on the model already but was not tried on the phone.
-3. Other places still on canned text, the owner's "and the rest", one at a time: dates (`buildThemeRounds` pools, BIMOBIMO has `date_round` and `date_chat` on its server), calls (`callScript`, needs voice too), one-to-one truth or dare and quizzes (`buildQuizAnswerPrompt` has no route), diary pages and secret notes (eval modes exist, no route).
-4. Character.AI lets the user tap a member to make them answer (`GroupChat.invoke-character`, `invoke-random`, seen in its bundle; REA MCP is not connected in Claude 2, the strings in `rea-work/cai` were enough). Ours answers by name or in turn only.
+1. Owner: deploy the server, or group chat stays on its stand-in with the model off path and the routes stay open. Line: `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`. Today, with the app updated and the server not, a group message shows Not Delivered.
+2. After that, on the A51: a group message from the model.
+3. Translate `STREAM_TOPICS` into the 13 languages.
+4. Then `docs/road-to-launch.md`, in order.
 5. Cloud DB has the old 40 characters; the agent's seed run was refused (shared resource). Nothing in the app reads that table today, so it waits for launch. Owner runs `supabase/seed.sql` in the Supabase SQL editor.
-6. Eval: rerun after the deploy, then `--save`. The checks-only run on this code is in the session report.
+6. Eval: full run with the judge, then `--save`.
 7. Art: redraw, when the owner says.
 
 ### 0z71. Worlds 2.0 translation complete for all 13 languages (2026-10-31, Antigravity). NEXT: owner checks art (item 4) and on device (item 5)
