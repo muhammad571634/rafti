@@ -121,6 +121,6 @@ export function failedChecks(lines: readonly string[], checks: readonly Check[],
         return crisis === check.is ? null : `crisis ${check.is} (got ${crisis})`;
     }
   });
-  if (!lines.length) fails.unshift('answered');
+  if (!lines.some((line) => line.trim())) fails.unshift('answered');
   return fails.filter((f): f is string => f !== null);
 }

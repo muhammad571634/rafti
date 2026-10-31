@@ -47,6 +47,14 @@ stream, a first text left out); never pass a stock line off as the character.
 Founder's call, 2026-10-31: test on Android first. The owner has an A51 and no iPhone; the 2026-10-27
 App Store first decision waits until there is an Apple account and a device.
 
+## Waits for a paid model key
+
+Owner, 2026-10-31: free keys run out before a test ends, so the full check happens once there is a paid key.
+Choose the model the app will ship on first, because rules behave differently per model. Then, on that model:
+the full eval with the judge and `--save`, question endings, how often replies use the user's name,
+`memory-profile-job`, Kai's vagueness (HANDOFF 0z69 and 0z79). Before that, only small targeted runs on the
+free keys, with test text only.
+
 ## Owner only
 
 - Run the server deploy line (auto mode refuses the agent's own).
