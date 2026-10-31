@@ -84,6 +84,7 @@ describe('the eval set (backend-plan §12.11)', () => {
     assert.match(failedChecks(['Long days are the worst. Come sit with me and tell me everything!'], [{ kind: 'noRepeat' }], { chat })[0], /^noRepeat \(1\.00/);
     assert.equal(failedChecks(['Fine, but this one is new.'], [{ kind: 'noRepeat' }], { redo: ['Fine, but this one is new!'] }).length, 1);
     assert.deepEqual(failedChecks([], []), ['answered']);
+    assert.deepEqual(failedChecks(['', '  '], []), ['answered']);
     assert.deepEqual(failedChecks(['I am here.'], [{ kind: 'crisis', is: true }], { crisis: true }), []);
     assert.deepEqual(failedChecks(['Ha.'], [{ kind: 'crisis', is: true }]), ['crisis true (got false)']);
   });
