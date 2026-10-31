@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z83. Chat & character depth audit, default Real AI on, and Russian group plural fix (2026-10-31, Gemini 4 Argon). NEXT: owner deploys the server (0z80); phone notifications (Claude 2)
+
+- Audited all 57 characters across `src/mock/characters.ts`, `src/mock/character-profiles.ts`, and `src/mock/character-stories.ts`, plus the Character.AI (`C:\Users\joray\rea-work\cai`) and BIMOBIMO teardown dumps: all 55 official characters across 7 worlds have complete definitions, openings, healthy quirks, level-gated 3-beat secrets (`arcLines`), cast ties (`tieLines`), and weekly world progression (`nowLines`).
+- Closed `0z80` item 4: set `realAi: true` in `initialSettings` (`src/mock/user.ts`) so fresh installs and production Store builds use the real AI model by default whenever the server is reachable, while dev/preview builds can still toggle it off in Profile.
+- Closed `0z80` item 5: fixed Russian animate accusative in `group.needFriends` and `group.noFriends` (`"Сначала добавьте двух друзей"` in `src/i18n/locales/ru.json`) and verified all 13 other locales.
+- Updated `.agents/rules/project-memory.md` §6 with Gemini 4 Argon's competitive intelligence / REA and character/chat depth audit responsibilities.
+- Checks: tsc 0, npm test 565/565, check:locales 13/13.
+
 ### 0z82. How the three agents work together (2026-10-31, Claude 2). NEXT: owner deploys the server (0z80); phone notifications in progress
 
 - Owner: Gemini 4 Argon works on this project and writes code too; find a logic for it. Rules: `.agents/rules/project-memory.md` section 6. Claims live in `.agents/now.md` (not in git): add a line before the first edit, remove it when done. Commit named paths only.
@@ -20,8 +28,8 @@ Still to do:
 1. Owner deploys the server (with the 0z79 rules). Until then the cloud server ignores the pictures.
 2. `expo-image-manipulator` is a new native module: Expo Go has it, the preview APK does not, so the feature needs a new APK with a new `version` (`runtimeVersion` follows it). No `eas update` for this until then. Before any build the grant and domain come first (memory `grant-and-domain-before-build`).
 3. Before launch: a paid key before real photos go out (the free tier may use them), and the privacy policy must name photos sent to Google.
-4. Found on the A51, not touched: `settings.realAi` is off on a new install and its switch shows only in dev and preview builds (`src/app/profile.tsx`), so by the code a store build would never use the model. Must be fixed before launch.
-5. Found on the A51, not touched: ru `group.needFriends` and `noFriends` say "2 друзей" (should be "двух друзей"); check the other plural languages.
+4. DONE 2026-10-31 (0z83): `settings.realAi` now defaults to `true` in `initialSettings` (`src/mock/user.ts`).
+5. DONE 2026-10-31 (0z83): ru `group.needFriends` and `noFriends` fixed to `"Сначала добавьте двух друзей"`; other 13 locales verified.
 
 ### 0z79. Memory in replies: a friend names the thing (2026-10-31, Claude 2). NEXT: owner deploys the server; the full eval waits for a paid key; the domain and grant wait about a week
 

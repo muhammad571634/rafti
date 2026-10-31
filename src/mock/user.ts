@@ -23,6 +23,7 @@ export const initialDaily: DailyState = {
 };
 
 export const initialSettings: AppSettings = {
+  realAi: true,
   morningGreeting: true,
   eveningGreeting: true,
   weeklyRecap: true,
