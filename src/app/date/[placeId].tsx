@@ -10,12 +10,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Polaroid, sceneImage } from '@/components/date/polaroid';
 import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
-import { Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { Anim, Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { localized } from '@/i18n/content';
 import { fill as fillLine } from '@/i18n/voice';
-import { DATE_PLACES, maxHearts } from '@/mock/dates';
+import { DATE_PLACES, maxHearts, type DateRound } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
 import type { DateRecord } from '@/types';
@@ -43,6 +43,10 @@ export default function DateScreen() {
   const conversation = useAppStore((s) => s.conversations.find((c) => c.characterId === characterId));
   const finishDate = useAppStore((s) => s.finishDate);
   const leaveDate = useAppStore((s) => s.leaveDate);
+  const pickDateChoice = useAppStore((s) => s.pickDateChoice);
+  const retryDateRound = useAppStore((s) => s.retryDateRound);
+  // A date the model plays writes each round after the answer to the one before.
+  const live = useAppStore((s) => (s.activeDate?.placeId === placeId ? s.activeDate?.live : undefined));
   // Only a date paid for on the map plays here; a stray link gets the way back.
   const paid = useAppStore((s) => s.activeDate?.placeId === placeId && s.activeDate?.characterId === characterId);
 
@@ -76,14 +80,17 @@ export default function DateScreen() {
   const fill = (text: string) => fillLine(text, { name }, character.gender);
   const title = official ? t(`dating.places.${official.titleKey}`) : (kept.current?.title ?? '');
   const look = official ? placeLook(official.id) : artLook(ownArt ?? '');
-  const scene = place.rounds[round];
-  const choice = picked != null ? scene.choices[picked] : null;
-  const last = round === place.rounds.length - 1;
+  const total = live?.total ?? place.rounds.length;
+  // Undefined while the model is still writing this round.
+  const scene: DateRound | undefined = (live?.rounds ?? place.rounds)[round];
+  const choice = picked != null && scene ? scene.choices[picked] : null;
+  const last = round === total - 1;
 
   const pick = (index: number) => {
-    if (picked != null) return;
+    if (picked != null || !scene) return;
     setPicked(index);
     setHearts((h) => h + scene.choices[index].hearts);
+    if (live) pickDateChoice(index);
   };
 
   const next = () => {
@@ -175,7 +182,19 @@ export default function DateScreen() {
         </View>
 
         <View style={[styles.sceneCard, shadows.card]}>
-          <Txt style={styles.sceneText}>{fill(scene.line)}</Txt>
+          {scene ? (
+            <Txt style={styles.sceneText}>{fill(scene.line)}</Txt>
+          ) : live?.busy ? (
+            <View style={styles.waiting}>
+              <Txt style={styles.waitingText}>{t('games.busy', { name })}</Txt>
+              <Button label={t('common.retry')} size="sm" variant="secondary" onPress={retryDateRound} />
+            </View>
+          ) : (
+            <View style={styles.waiting} accessibilityLiveRegion="polite">
+              <Anim name="typing" size={26} tint={look.ink} />
+              <Txt style={styles.waitingText}>{t('common.thinking')}</Txt>
+            </View>
+          )}
           {choice ? (
             <Animated.View entering={FadeInDown.duration(300)} style={styles.replyRow}>
               <CharacterAvatar character={character} size={28} />
@@ -193,7 +212,7 @@ export default function DateScreen() {
         </View>
 
         <View style={styles.choices}>
-          {scene.choices.map((c, index) => {
+          {scene?.choices.map((c, index) => {
             const chosen = picked === index;
             return (
               <Pressable
@@ -231,8 +250,8 @@ export default function DateScreen() {
         <View
           style={styles.progress}
           accessible
-          accessibilityLabel={t('date.round', { n: round + 1, total: place.rounds.length })}>
-          {place.rounds.map((_, i) => (
+          accessibilityLabel={t('date.round', { n: round + 1, total })}>
+          {Array.from({ length: total }, (_, i) => (
             <View key={i} style={[styles.segment, i <= round && styles.segmentOn]} />
           ))}
         </View>
@@ -256,7 +275,7 @@ export default function DateScreen() {
             {t('date.leaveTitle', { name })}
           </Txt>
           <Txt variant="small" color={colors.textMuted} center>
-            {t('date.leaveHint', { count: maxHearts(place) })}
+            {t('date.leaveHint', { count: live ? total * 3 : maxHearts(place) })}
           </Txt>
           <Button label={t('date.stay')} full onPress={() => setLeaving(false)} />
           <Button
@@ -314,6 +333,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   sceneText: { fontSize: 20, lineHeight: 27, fontWeight: '500', letterSpacing: -0.3, color: colors.text },
+  waiting: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  waitingText: { flex: 1, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.textSecondary },
   replyRow: { marginTop: 14, flexDirection: 'row', alignItems: 'flex-end', gap: 8 },
   bubble: {
     flexShrink: 1,

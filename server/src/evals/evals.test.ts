@@ -16,7 +16,8 @@ const ANY = JSON.stringify({
   text: 'A quiet page about a quiet day.',
   line: 'Fine, but I pick the snacks.',
   answer: 1,
-  rounds: [{ line: 'One.' }, { line: 'Two.' }, { line: 'Three.' }],
+  picks: [{ answer: 1, same: 'Fine, but I pick the snacks.', differ: 'Your loss.' }],
+  choices: [1, 2, 3].map(() => ({ text: 'Go on.', reply: 'He goes on.', hearts: 2 })),
   summary: 'They talked about Biscuit.',
   ops: [{ op: 'add', text: 'Has a beagle', about: 'you', importance: 0.9, confidence: 0.9 }],
 });

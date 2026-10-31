@@ -24,6 +24,9 @@ export function themeCost(rounds: number) {
   return rounds * SHELLS_PER_ROUND;
 }
 
+/** The warmest mood a level allows: a date on the map plays in it. */
+export const moodAt = (level: number | undefined): DateMood => ([...DATE_MOODS].reverse().find((mood) => moodOpen(mood, level)) ?? 'friendly');
+
 export function moodOpen(mood: DateMood, level: number | undefined) {
   return (level ?? 0) >= MOOD_LEVEL[mood];
 }
@@ -48,7 +51,7 @@ export function checkTheme(input: { scene: string; title: string }): ThemeProble
   return null;
 }
 
-/** Canned rounds the mock builds a date from (src/mock/date-themes.ts); the server's model replaces them. */
+/** Canned rounds the mock builds a date from (src/mock/date-themes.ts), with the model off. */
 export interface ThemePools {
   /** Answers to the user's own scene, per mood. */
   openers: Record<DateMood, [DateChoice, DateChoice, DateChoice][]>;

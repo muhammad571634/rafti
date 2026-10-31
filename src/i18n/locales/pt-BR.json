@@ -1778,6 +1778,7 @@
     "albumEmpty": "Nenhum encontro ainda"
   },
   "games": {
+    "busy": "{{name}} não pode responder agora.",
     "quiz": "Quiz de casal",
     "packs": {
       "firstDate": "Primeiro encontro",

@@ -4,7 +4,9 @@ import { describe, it } from 'node:test';
 import type { Character, Message, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
-import { buildDateRoundsPrompt, buildQuizAnswerPrompt, buildSelfQuizPrompt, streamLineParts } from './content-prompts';
+import { streamLineParts } from './content-prompts';
+import { joinParts } from './prompt-layout';
+import { writeParts } from './writes';
 import { firstTextParts, type FirstTextRequest } from './first-text';
 import { MODE_BLOCKS, PROMPT_MODES } from './modes';
 import { layoutPrompt, orderParts, type PromptPart } from './prompt-layout';
@@ -43,9 +45,11 @@ describe('mode templates (backend-plan §12.5)', () => {
 
     const input = { character: kai, user: sam };
     for (const [prompt, mode] of [
-      [buildSelfQuizPrompt(input, '2026-W44'), 'game'],
-      [buildQuizAnswerPrompt(input, 'Tea or coffee?', ['Tea', 'Coffee']), 'game'],
-      [buildDateRoundsPrompt(input, { title: 'Pier', scene: 'Sunset on the pier.', rounds: 3, mood: 'sweet' }), 'date'],
+      [joinParts(writeParts({ kind: 'selfQuiz', input, week: '2026-W44' })), 'game'],
+      [joinParts(writeParts({ kind: 'quizPicks', input, title: 'Mornings', questions: [{ text: 'Tea or coffee?', options: ['Tea', 'Coffee'] }] })), 'game'],
+      [joinParts(writeParts({ kind: 'dateRound', input, date: { title: 'Pier', scene: 'Sunset on the pier.', total: 3, mood: 'sweet' }, soFar: [] })), 'date'],
+      [joinParts(writeParts({ kind: 'note', input, question: 'What scares you?' })), 'secretNote'],
+      [joinParts(writeParts({ kind: 'diary', input, day: { lines: [] } })), 'diary'],
     ] as const) {
       assert.equal(prompt.split('MODE: ').length - 1, 1, mode);
       assert.ok(prompt.includes(MODE_BLOCKS[mode].join('\n')), mode);

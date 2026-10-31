@@ -514,6 +514,8 @@ export interface SecretNote {
   myNote: string;
   theirNote?: string;
   status: SecretNoteStatus;
+  /** The model was busy and their note is not written yet. */
+  busy?: boolean;
 }
 
 export interface CallRecord {

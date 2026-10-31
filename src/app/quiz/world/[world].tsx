@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,11 +9,12 @@ import { BoothPicture } from '@/components/photo-booth/booth-picture';
 import { CARD_SHADOW, BUY_BAR_SPACE, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
+import type { WriteResults } from '@/ai/writes';
 import { lineFor, pickSome, WORLD_PASS, WORLD_QUESTIONS } from '@/lib/quiz';
 import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
 import { aurora, colors, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
@@ -63,6 +64,23 @@ export default function WorldQuizScreen() {
     [world, attempt, shotAt],
   );
 
+  // The questions are facts and stay as written; what the host says is the model's, one call an
+  // attempt. Busy, the quiz still plays and the host just gives the verdict.
+  const hostId = host?.id;
+  const [said, setSaid] = useState<WriteResults['worldLines'] | null>(null);
+  useEffect(() => {
+    if (!world || !hostId || !modelIsOn()) return;
+    const base = writeBase(hostId, true);
+    if (!base) return;
+    let live = true;
+    setSaid(null);
+    void writeWithModel({ ...base, kind: 'worldLines', world: world.series, questions }).then((written) => {
+      if (live) setSaid(written);
+    });
+    return () => {
+      live = false;
+    };
+  }, [world, hostId, questions]);
 
   const back = (onPress: () => void = () => router.back(), icon: 'chevron-back' | 'close' = 'chevron-back') => (
     <PressableScale
@@ -113,6 +131,8 @@ export default function WorldQuizScreen() {
     setScore(0);
     setPhase('play');
   };
+  // The first Start plays the questions the host already has lines for; after leaving a quiz, new ones.
+  const startPlay = () => (index > 0 || picked != null ? restart() : setPhase('play'));
 
   // 1. The host's intro and the prize.
   if (phase === 'intro') {
@@ -124,12 +144,12 @@ export default function WorldQuizScreen() {
           <View style={styles.prize}>
             <BoothPicture photo={framed} character={host} width={176} style={styles.tilt} />
           </View>
-          <Says host={host} text={world.intro} />
+          {modelIsOn() ? said ? <Says host={host} text={said.intro} /> : null : <Says host={host} text={world.intro} />}
           <Txt style={styles.rule} center>
             {already ? t('worldQuiz.alreadyBody') : t('worldQuiz.rule')}
           </Txt>
         </ScrollView>
-        <StoreBuyBar label={t('worldQuiz.start')} onPress={restart} />
+        <StoreBuyBar label={t('worldQuiz.start')} onPress={startPlay} />
       </Screen>
     );
   }
@@ -259,7 +279,13 @@ export default function WorldQuizScreen() {
             host={host}
             label={right ? t('worldQuiz.right') : t('worldQuiz.wrong')}
             labelColor={right ? systemColors.green : systemColors.red}
-            text={right ? lineFor(world.right, seed) : lineFor(world.wrong, seed, question.options[question.answer])}
+            text={
+              modelIsOn()
+                ? (said && (right ? said.lines[index].right : said.lines[index].wrong)) || ''
+                : right
+                  ? lineFor(world.right, seed)
+                  : lineFor(world.wrong, seed, question.options[question.answer])
+            }
           />
         ) : (
           <Txt style={styles.rule} center>
@@ -282,7 +308,7 @@ function Says({ host, text, label, labelColor }: { host: Character; text: string
       <CharacterAvatar character={host} size={32} />
       <View style={styles.bubble}>
         {label ? <Txt style={[styles.verdict, { color: labelColor }]}>{label}</Txt> : null}
-        <Txt style={styles.bubbleText}>{text}</Txt>
+        {text ? <Txt style={styles.bubbleText}>{text}</Txt> : null}
       </View>
     </View>
   );

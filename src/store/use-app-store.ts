@@ -38,7 +38,34 @@ import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
+import {
+  askToReachCue,
+  birthdayCue,
+  boardCue,
+  breakCue,
+  dateDoneCue,
+  familyHelloCue,
+  greetingCue,
+  imageCue,
+  lifeCue,
+  missedCallCue,
+  nightCue,
+  photoCue,
+  planAddedCue,
+  planFollowUpCue,
+  planRemindCue,
+  questCue,
+  quizDoneCue,
+  sayCue,
+  voiceNoteCue,
+  wakeCheckInCue,
+  worldQuizCue,
+} from '@/ai/moment-prompt';
+import { languageName } from '@/ai/reply-language';
+import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
+import { fill as fillVoice } from '@/i18n/voice';
+import { messageText } from '@/lib/story-continuity';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -59,7 +86,7 @@ import {
   pickResponders,
   withoutMember,
 } from '@/lib/group-chat';
-import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
+import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodAt, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages } from '@/lib/storage-caps';
@@ -67,7 +94,7 @@ import type { MemorySyncState } from '@/lib/memory-sync';
 import { resetMemorySync, startMemorySync } from '@/store/memory-sync';
 import { messagesInDb, resetMessages, restoreMessages } from '@/store/message-sync';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
-import { addCare, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
+import { addCare, careCue, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
 import { askedOnce, askReach, isAskReach, shouldAskToReach, sittingCount } from '@/lib/reach-ask';
 import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches } from '@/lib/threads';
@@ -209,7 +236,7 @@ import { themePools } from '@/mock/date-themes';
 import { WORLDS, worldByKey, worldOf, type World, type WorldKey } from '@/mock/worlds';
 import { arcLine, worldNewsLine } from '@/mock/world-voice';
 import { beatsCrossed, chapterAt, eventOn, pickWorldNews, WORLD_NEWS_HOUR, worldJoinedAt, worldPromptOf, type WorldNews } from '@/lib/world-story';
-import { dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
+import { DATE_PLACES, dateEnding, datePlaceById, maxHearts, type DateRound } from '@/mock/dates';
 import {
   DARES_FOR_THEM,
   DARES_FOR_YOU,
@@ -217,7 +244,7 @@ import {
   TRUTHS_FOR_THEM,
   TRUTHS_FOR_YOU,
 } from '@/mock/games';
-import { daysTogether, duePages } from '@/mock/diary-writer';
+import { daysTogether, dueDays, duePages, type DayTogether } from '@/mock/diary-writer';
 import type {
   AppSettings,
   Alarm,
@@ -240,6 +267,7 @@ import type {
   GroupChat,
   RadioClip,
   DiaryEntry,
+  DateMood,
   DiaryMood,
   LedgerEntry,
   LedgerReason,
@@ -402,11 +430,13 @@ interface AppState {
   dailyReward: DailyRewardEvent | null;
   /** The date that has been paid for and not finished yet; the date screen only plays this one. */
   /** The date being played; a user's own date carries the rounds written for this play. */
-  activeDate: { characterId: string; placeId: string; theme?: { title: string; rounds: DateRound[] } } | null;
+  activeDate: { characterId: string; placeId: string; theme?: { title: string; rounds: DateRound[] }; live?: LiveDate } | null;
   /** Dates the user wrote (F28); played from the map's "Your own" card. */
   dateThemes: DateTheme[];
   /** Quizzes the user wrote (F29). */
   userQuizzes: UserQuiz[];
+  /** Each friend's quiz about themselves, written by the model, kept for its week. */
+  selfQuizzes: Record<string, { week: string; questions: SelfQuizItem[] }>;
   /** Worlds whose Photo Booth frame the user won in the world quiz (F29). */
   wonFrames: WorldKey[];
   /** Photo Booth frames the user made (F29). */
@@ -626,6 +656,8 @@ interface AppState {
   ensureSecretNote: (characterId: string) => void;
   newSecretNote: (characterId: string) => void;
   writeNote: (noteId: string, text: string) => void;
+  /** Asks again for the note the model was too busy to write. */
+  retrySecretNote: (noteId: string) => void;
   exchangeNote: (noteId: string) => SpendResult;
 
   /* calls */
@@ -721,6 +753,10 @@ interface AppState {
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
+  /** The user's pick on a date the model plays: the next round is asked for at once, knowing it. */
+  pickDateChoice: (index: number) => void;
+  /** Asks again for the round the model was too busy to write. */
+  retryDateRound: () => void;
   /** Saves a new date, or the one with `id`. Free; playing it costs 2 shells a round. */
   saveDateTheme: (input: Omit<DateTheme, 'id' | 'createdAt'>, id?: string) => ThemeResult;
   deleteDateTheme: (id: string) => void;
@@ -773,6 +809,27 @@ interface AppState {
   setSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
 }
 
+/**
+ * A date the model plays (`beginDate`): each round is written after the user answered the one
+ * before, so it follows what they chose (BIMOBIMO's `date_round`).
+ */
+export interface LiveDate {
+  /** One play of a date: an answer for an earlier play is dropped. */
+  key: string;
+  title: string;
+  scene: string;
+  mood: DateMood;
+  total: number;
+  cost: number;
+  happening?: string;
+  /** Paid once the first round is here, so a busy model costs nothing. */
+  paid: boolean;
+  rounds: DateRound[];
+  picks: number[];
+  /** The model was busy and the next round is not here. */
+  busy?: boolean;
+}
+
 /** The fields the profile screen edits. */
 export type ProfilePatch = Partial<
   Pick<User, 'displayName' | 'avatarUri' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about'>
@@ -788,6 +845,7 @@ type PersistedKeys =
   | 'newRadioGifts'
   | 'dateThemes'
   | 'userQuizzes'
+  | 'selfQuizzes'
   | 'wonFrames'
   | 'frames'
   | 'messages'
@@ -1011,6 +1069,7 @@ export const useAppStore = create<AppState>()(
       activeDate: null,
       dateThemes: [],
       userQuizzes: [],
+      selfQuizzes: {},
       wonFrames: [],
       frames: [],
 
@@ -1084,12 +1143,15 @@ export const useAppStore = create<AppState>()(
         });
         touchStreak(set, get, conversation.characterId);
         scheduleReply(set, get, conversationId, {
-          text: pick([
-            'Wait, you took this? Send more. Right now.',
-            'Okay, this is going in my favourites folder.',
-            'I am looking at this way longer than I should be.',
-          ]),
+          lines: [
+            pick([
+              'Wait, you took this? Send more. Right now.',
+              'Okay, this is going in my favourites folder.',
+              'I am looking at this way longer than I should be.',
+            ]),
+          ],
           gain: INTIMACY.text,
+          cue: imageCue(),
         });
         return 'sent';
       },
@@ -2096,8 +2158,7 @@ export const useAppStore = create<AppState>()(
         freeFamilyRole(set, get, label, characterId);
         updateRelationship(set, characterId, () => ({ label, nickname: familyName(name, label), messagesFirst: true }));
         const group = kinGroup(label)!;
-        const hello = { ...themText(conversationId, familyHello(group, `${conversationId}:${label}`, genderOf(get(), characterId))), ...withIdeas(helloReach(group)) };
-        appendMessage(set, get, conversationId, hello, { countUnread: true });
+        sayFirst(set, get, conversationId, familyHello(group, `${conversationId}:${label}`, genderOf(get(), characterId)), familyHelloCue(label), helloReach(group));
         return conversationId;
       },
 
@@ -2312,7 +2373,9 @@ export const useAppStore = create<AppState>()(
           const line = diaryMemoryLine(entry.body);
           if (line) get().addMemory(characterId, line, 'diary');
           if (detectCrisis(entry.body)) answerCrisisInChat(set, get, characterId);
-          setTimeout(() => answerDiary(set, id), 2200);
+          // Care after a crisis keeps its words.
+          if (modelOn(get) && !detectCrisis(entry.body)) writeDiaryReply(set, id, characterId, entry.body);
+          else setTimeout(() => answerDiary(set, id), 2200);
         }
 
         return id;
@@ -2327,7 +2390,9 @@ export const useAppStore = create<AppState>()(
 
       writeDueDiaryPages: () => {
         const { conversations, messages, moments, characterDiary } = get();
-        const fresh = duePages(daysTogether(conversations, messages, moments), characterDiary, (id) => genderOf(get(), id));
+        const together = daysTogether(conversations, messages, moments);
+        if (modelOn(get)) return writePagesWithModel(set, get, dueDays(together, characterDiary));
+        const fresh = duePages(together, characterDiary, (id) => genderOf(get(), id));
         if (fresh.length) set((s) => ({ characterDiary: [...s.characterDiary, ...fresh] }));
       },
 
@@ -2337,6 +2402,9 @@ export const useAppStore = create<AppState>()(
         const latest = latestNote(get().notes, characterId);
         if (!latest || (latest.status === 'exchanged' && latest.date !== todayKey())) {
           get().newSecretNote(characterId);
+        } else if (latest.status === 'composing') {
+          // Left waiting by a restart: asked again.
+          askSecretNote(set, get, latest.id);
         }
       },
 
@@ -2353,8 +2421,10 @@ export const useAppStore = create<AppState>()(
         }));
 
         // The character writes theirs first; it stays sealed until you exchange.
-        setTimeout(() => sealNote(set, id), 2600);
+        askSecretNote(set, get, id);
       },
+
+      retrySecretNote: (noteId) => askSecretNote(set, get, noteId),
 
       writeNote: (noteId, text) =>
         set((s) => ({
@@ -2405,7 +2475,7 @@ export const useAppStore = create<AppState>()(
         // They noticed you did not pick up, and say so.
         const conversationId = get().addFriend(call.characterId);
         setTimeout(() => {
-          appendMessage(set, get, conversationId, themText(conversationId, pick(missedCallLines(genderOf(get(), call.characterId)))), { countUnread: true });
+          sayFirst(set, get, conversationId, pick(missedCallLines(genderOf(get(), call.characterId))), missedCallCue());
         }, 1500);
       },
 
@@ -2729,7 +2799,7 @@ export const useAppStore = create<AppState>()(
           return 'ring';
         }
         if (wake.checkInAt && Date.parse(wake.checkInAt) <= t && wake.conversationId) {
-          appendMessage(set, get, wake.conversationId, themText(wake.conversationId, CHAIN_LINES.checkIn(genderOf(get(), wake.characterId))));
+          sayFirst(set, get, wake.conversationId, CHAIN_LINES.checkIn(genderOf(get(), wake.characterId)), wakeCheckInCue());
           set((s) => ({ wake: s.wake ? { ...s.wake, checkInAt: undefined } : null }));
           return null;
         }
@@ -2815,12 +2885,39 @@ export const useAppStore = create<AppState>()(
         const place = datePlaceById(placeId);
         const bond = get().relationships[characterId];
         if (!place || !bond || bond.level < place.levelRequired) return 'locked';
+        const character = get().characters.find((c) => c.id === characterId);
+        if (modelOn(get) && character) {
+          get().expireFreeShells();
+          if (get().wallet.shells < place.cost) return 'noShells';
+          const shown = localized('datePlaces', DATE_PLACES).find((p) => p.id === placeId) ?? place;
+          const name = shortName(displayName(character, bond));
+          startLiveDate(set, get, characterId, placeId, undefined, {
+            title: i18n.t(`dating.places.${place.titleKey}`),
+            scene: fillVoice(shown.rounds[0].line, { name }, character.gender),
+            mood: moodAt(bond.level),
+            total: place.rounds.length,
+            cost: place.cost,
+            happening: worldEventNote(character),
+          });
+          return 'ok';
+        }
         if (!get().spendShells(place.cost, 'date', characterId)) return 'noShells';
         set({ activeDate: { characterId, placeId } });
         return 'ok';
       },
 
       leaveDate: () => set({ activeDate: null }),
+
+      pickDateChoice: (index) => {
+        set((s) => {
+          const live = s.activeDate?.live;
+          if (!live || live.picks.length >= live.rounds.length) return s;
+          return { activeDate: { ...s.activeDate!, live: { ...live, picks: [...live.picks, index] } } };
+        });
+        askDateRound(set, get);
+      },
+
+      retryDateRound: () => askDateRound(set, get),
 
       saveDateTheme: (input, id) => {
         const problem = checkTheme(input);
@@ -2850,6 +2947,20 @@ export const useAppStore = create<AppState>()(
         const bond = get().relationships[characterId];
         if (!theme || !bond || (theme.characterId && theme.characterId !== characterId)) return 'locked';
         if (!moodOpen(theme.mood, bond.level)) return 'locked';
+        const friend = get().characters.find((c) => c.id === characterId);
+        if (modelOn(get) && friend) {
+          get().expireFreeShells();
+          if (get().wallet.shells < themeCost(theme.rounds)) return 'noShells';
+          startLiveDate(set, get, characterId, theme.id, { title: theme.title, rounds: [] }, {
+            title: cleanTitle(theme.title),
+            scene: cleanScene(theme.scene),
+            mood: theme.mood,
+            total: theme.rounds,
+            cost: themeCost(theme.rounds),
+            happening: worldEventNote(friend),
+          });
+          return 'ok';
+        }
         if (!get().spendShells(themeCost(theme.rounds), 'date', characterId)) return 'noShells';
         // The mock builds the rounds from canned pools; the server's model writes them from the scene.
         // The friend's world colours the date (src/mock/worlds.ts); the server writes it from the persona.
@@ -2868,7 +2979,7 @@ export const useAppStore = create<AppState>()(
         const place = datePlaceById(placeId) ?? active?.theme;
         if (!place || active?.characterId !== characterId || active.placeId !== placeId) return null;
         set({ activeDate: null });
-        const max = maxHearts(place);
+        const max = active.live ? active.live.total * 3 : maxHearts(place);
         const record: DateRecord = {
           id: uid('date'),
           characterId,
@@ -2885,9 +2996,8 @@ export const useAppStore = create<AppState>()(
         // The 'dating' moment is what tomorrow's diary page is written from.
         addMoment(set, characterId, 'dating', { title });
         const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, themText(conversationId, afterDateLine(title, record.ending, genderOf(get(), characterId))), {
-          countUnread: true,
-        });
+        const story = active.live ? active.live.rounds.flatMap((r, i) => (r.choices[active.live!.picks[i]] ? [`${r.line} They chose: ${r.choices[active.live!.picks[i]].text}`] : [])) : [];
+        sayFirst(set, get, conversationId, afterDateLine(title, record.ending, genderOf(get(), characterId)), dateDoneCue(title, record.ending, story));
         return record;
       },
 
@@ -2927,7 +3037,7 @@ export const useAppStore = create<AppState>()(
           createdAt: sentAt,
         });
         // Their answer is free, like the quiz's: the picture was already paid for by the plan.
-        scheduleReply(set, get, conversationId, { text: photoReply(photo.style, genderOf(get(), photo.characterId)), gain: INTIMACY.text });
+        scheduleReply(set, get, conversationId, { lines: [photoReply(photo.style, genderOf(get(), photo.characterId))], gain: INTIMACY.text, cue: photoCue(photo.style) });
         return true;
       },
 
@@ -3012,9 +3122,7 @@ export const useAppStore = create<AppState>()(
         }));
         addMoment(set, characterId, 'plan', { title: clean });
         const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, themText(conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId))), {
-          countUnread: true,
-        });
+        sayFirst(set, get, conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId)), planAddedCue(clean, whenLabel));
       },
 
       runTimers: () => {
@@ -3031,7 +3139,7 @@ export const useAppStore = create<AppState>()(
             step === 'remind'
               ? scheduleReminder(item.title, !!item.time, `${item.id}:remind`, genderOf(get(), item.characterId))
               : planFollowUp(item.title, `${item.id}:followUp`, genderOf(get(), item.characterId));
-          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+          sayFirst(set, get, conversationId, line, step === 'remind' ? planRemindCue(item.title, !!item.time) : planFollowUpCue(item.title));
         });
         if (steps.length) {
           const byId = new Map(steps.map((x) => [x.item.id, x.step]));
@@ -3058,8 +3166,7 @@ export const useAppStore = create<AppState>()(
             const at = lifeAt(now, moment).getTime();
             if (lifeSent.has(key) || now.getTime() < at || now.getTime() - at > LIFE_WINDOW_MS) continue;
             const conversationId = get().addFriend(characterId);
-            const line = { ...themText(conversationId, lifeLine(group, moment.key, key, genderOf(get(), characterId))), ...withIdeas(lifeReach(group, moment.key)) };
-            appendMessage(set, get, conversationId, line, { countUnread: true });
+            sayFirst(set, get, conversationId, lifeLine(group, moment.key, key, genderOf(get(), characterId)), lifeCue(moment.key), lifeReach(group, moment.key));
             freshLife.push(key);
           }
         }
@@ -3094,8 +3201,7 @@ export const useAppStore = create<AppState>()(
         careSteps.forEach(({ item, step }) => {
           if (step !== 'ask' || !exists(item.characterId) || get().blockedIds.includes(item.characterId)) return;
           const conversationId = get().addFriend(item.characterId);
-          const line = { ...themText(conversationId, careLine(item.kind, `${item.id}:care`, genderOf(get(), item.characterId))), ...withIdeas(careReach(item.kind, item.again)) };
-          appendMessage(set, get, conversationId, line, { countUnread: true });
+          sayFirst(set, get, conversationId, careLine(item.kind, `${item.id}:care`, genderOf(get(), item.characterId)), careCue(item.kind), careReach(item.kind, item.again));
         });
         if (careSteps.length) {
           const doneIds = new Set(careSteps.map((x) => x.item.id));
@@ -3111,8 +3217,7 @@ export const useAppStore = create<AppState>()(
             return;
           }
           const conversationId = get().addFriend(post.characterId);
-          const line = post.reply ?? boardReply(post.text, genderOf(get(), post.characterId));
-          appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+          sayFirst(set, get, conversationId, post.reply ?? boardReply(post.text, genderOf(get(), post.characterId)), boardCue(post.text));
         });
         if (answered.length) {
           const ids = new Set(answered.map((p) => p.id));
@@ -3134,8 +3239,9 @@ export const useAppStore = create<AppState>()(
         });
         addMoment(set, characterId, 'quiz', { title, score: `${matches}/${total}` });
         scheduleReply(set, get, conversationId, {
-          text: quizReply(matches, total),
+          lines: [quizReply(matches, total)],
           gain: INTIMACY.quizMatch * matches + INTIMACY.quizMatch,
+          cue: quizDoneCue(title, matches, total),
         });
       },
 
@@ -3168,7 +3274,7 @@ export const useAppStore = create<AppState>()(
           const text = won
             ? `${score}/${total}. You know ${info.series} better than half the people who live here. The frame is yours.`
             : `${score}/${total}. Not bad for a visitor. Come back and try again, I will be here.`;
-          appendMessage(set, get, conversationId, themText(conversationId, text), { countUnread: true });
+          sayFirst(set, get, conversationId, text, worldQuizCue(info.series, score, total, won));
         }
         if (won) get().addIntimacy(hostId, INTIMACY.quizMatch * 2);
         return won && !already;
@@ -3272,9 +3378,7 @@ export const useAppStore = create<AppState>()(
             const conversationId = get().addFriend(bond.characterId);
             // Seeded like the 07:00 push (src/notifications/plan.ts), so both say the same line.
             const wish = pickSeeded(birthdayLines, `${now.getFullYear()}:${bond.characterId}`)(user.displayName, genderOf(get(), bond.characterId));
-            appendMessage(set, get, conversationId, themText(conversationId, wish), {
-              countUnread: true,
-            });
+            sayFirst(set, get, conversationId, wish, birthdayCue(user.displayName));
           });
           set((s) => ({ user: { ...s.user, birthdayWishedYear: now.getFullYear() } }));
         }
@@ -3303,7 +3407,7 @@ export const useAppStore = create<AppState>()(
             // Seeded like the scheduled push for this slot, so the notification and the chat agree.
             const greetings = slot === 'morning' ? morningGreetings : eveningGreetings;
             const line = pickSeeded(greetings(genderOf(get(), bond.characterId)), `${slotKey}:${bond.characterId}`);
-            appendMessage(set, get, conversationId, themText(conversationId, line), { countUnread: true });
+            sayFirst(set, get, conversationId, line, greetingCue(slot));
           });
           set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));
         }
@@ -3327,6 +3431,10 @@ export const useAppStore = create<AppState>()(
           const greeting = pickSeeded(lines, `${slotKey}:${caller.characterId}`);
           const said = pickSeeded(lines.filter((l) => l !== greeting), `voiceNote:${slotKey}:${caller.characterId}`);
           const conversationId = get().addFriend(caller.characterId);
+          if (modelOn(get)) {
+            sayFirst(set, get, conversationId, said, voiceNoteCue(slot));
+            return {};
+          }
           appendMessage(
             set,
             get,
@@ -3470,6 +3578,7 @@ export const useAppStore = create<AppState>()(
         newRadioGifts: s.newRadioGifts,
         dateThemes: s.dateThemes,
         userQuizzes: s.userQuizzes,
+        selfQuizzes: s.selfQuizzes,
         wonFrames: s.wonFrames,
         frames: s.frames,
         // Once the on-device database holds the messages (B1.3a) the save leaves them out. Until
@@ -3820,7 +3929,7 @@ function writeFirst(
   get: Getter,
   conversationId: string,
   scripted: string,
-  reach: string,
+  reach: string | undefined,
   request: FirstTextRequest,
   onSkip: 'nothing' | 'scripted',
   /** The model never answered and the text is dropped. */
@@ -3864,6 +3973,199 @@ function writeFirst(
       if (!reply.skip) send(reply.lines);
       else if (onSkip === 'scripted') send([scripted]);
     });
+}
+
+/** The model writes a friend's words right now; otherwise the stock lines play. */
+const modelOn = (get: Getter) => get().settings.realAi && !!apiBase();
+
+/**
+ * A text a friend sends because something just happened: `cue` says what, the model writes it
+ * (src/ai/moment-prompt.ts). Busy for good: they stay quiet. `stock` is for the model off.
+ */
+function sayFirst(set: Setter, get: Getter, conversationId: string, stock: string, cue: readonly string[], reach?: string) {
+  const state = get();
+  const conversation = state.conversations.find((c) => c.id === conversationId);
+  const character = state.characters.find((c) => c.id === conversation?.characterId);
+  if (!conversation || !character) return;
+  const now = new Date();
+  const memories = memoryAccess(state.memories, state.wallet, character.id).open;
+  const request: FirstTextRequest = {
+    kind: 'moment',
+    input: {
+      character,
+      user: state.user,
+      relationship: state.relationships[character.id],
+      persona: personaFor(conversationId, state),
+      pinned: memories.filter((m) => m.pinned),
+      facts: memories.filter((m) => !m.pinned),
+      summary: conversation.summary,
+      recent: (state.messages[conversationId] ?? []).slice(-12),
+      now: now.toISOString(),
+      utcOffsetMin: -now.getTimezoneOffset(),
+      cue,
+    },
+  };
+  writeFirst(set, get, conversationId, stock, reach, request, 'nothing');
+}
+
+/**
+ * What every write starts from (src/ai/writes.ts): the friend as every prompt knows them, their
+ * memories and the chat's latest lines. `screen`: the text sits on a screen in the app's language
+ * (a quiz, a date), so it follows the app rather than the chat.
+ */
+export function writeBase(characterId: string, screen = false) {
+  const state = useAppStore.getState();
+  const character = state.characters.find((c) => c.id === characterId);
+  if (!character) return null;
+  const conversation = state.conversations.find((c) => c.characterId === characterId);
+  const messages = (conversation && state.messages[conversation.id]) || [];
+  const memories = memoryAccess(state.memories, state.wallet, characterId).open;
+  return {
+    input: {
+      character,
+      user: state.user,
+      relationship: state.relationships[characterId],
+      persona: conversation ? personaFor(conversation.id, state) : undefined,
+      lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
+      replyLanguage: screen ? languageName(i18n.language) : undefined,
+    },
+    recent: messages.filter((m) => !m.pending).slice(-12).map(({ author, card, text, transcript }) => ({ author, card, text, transcript })),
+    memory: { pinned: memories.filter((m) => m.pinned), facts: memories.filter((m) => !m.pinned), summary: conversation?.summary },
+  };
+}
+
+const WRITE_RETRY_MS = 3000;
+
+/** The model is on: the screen plays its words, and says so when it is busy, never stock lines. */
+export const modelIsOn = () => modelOn(useAppStore.getState);
+
+/** Asks the model to write it; a busy model is asked once more. Null: still busy. */
+export async function writeWithModel<K extends WriteKind>(request: WriteRequest & { kind: K }): Promise<WriteResults[K] | null> {
+  const first = await serverWrite<K>(request, await accessToken());
+  if (first) return first;
+  await new Promise((done) => setTimeout(done, WRITE_RETRY_MS));
+  return serverWrite<K>(request, await accessToken());
+}
+
+/** This week's quiz about themselves: the one already written, else the model writes it. Null: busy. */
+export async function askSelfQuiz(characterId: string, week: string): Promise<SelfQuizItem[] | null> {
+  const kept = useAppStore.getState().selfQuizzes[characterId];
+  if (kept?.week === week) return kept.questions;
+  const base = writeBase(characterId, true);
+  if (!base) return null;
+  const written = await writeWithModel({ ...base, kind: 'selfQuiz', week });
+  if (!written) return null;
+  useAppStore.setState((s) => ({ selfQuizzes: { ...s.selfQuizzes, [characterId]: { week, questions: written.questions } } }));
+  return written.questions;
+}
+
+/** Notes being asked for, so opening the screen twice asks once. */
+const notesAsked = new Set<string>();
+
+/** Their side of a secret note: the model writes it, sealed until you swap. Busy: the screen offers to try again. */
+function askSecretNote(set: RawSetter, get: Getter, noteId: string) {
+  const note = get().notes.find((n) => n.id === noteId);
+  if (!note || note.status !== 'composing' || notesAsked.has(noteId)) return;
+  notesAsked.add(noteId);
+  const base = modelOn(get) ? writeBase(note.characterId, true) : null;
+  if (!base) {
+    setTimeout(() => {
+      notesAsked.delete(noteId);
+      sealNote(set, noteId);
+    }, NOTE_SEAL_MS);
+    return;
+  }
+  const update = (patch: Partial<SecretNote>) => set((s) => ({ notes: s.notes.map((n) => (n.id === noteId && n.status === 'composing' ? { ...n, ...patch } : n)) }));
+  update({ busy: undefined });
+  void writeWithModel({ ...base, kind: 'note', question: note.prompt }).then((written) => {
+    notesAsked.delete(noteId);
+    update(written ? { status: 'ready', theirNote: written.note, busy: undefined } : { busy: true });
+  });
+}
+
+/** How many diary pages one pass asks for: a week away must not become twenty calls at once. */
+const PAGES_AT_ONCE = 3;
+/** A page the model was too busy for waits this long before it is asked for again. */
+const PAGE_RETRY_MS = 10 * 60_000;
+const pagesAsked = new Map<string, number>();
+
+/** The due diary pages, the newest first, each in the model's words. Busy: the page comes on a later pass. */
+function writePagesWithModel(set: Setter, get: Getter, due: { day: DayTogether; date: string }[]) {
+  const now = Date.now();
+  const keyOf = (x: { day: DayTogether; date: string }) => `${x.day.characterId}|${x.date}`;
+  const fresh = [...due].reverse().filter((x) => now - (pagesAsked.get(keyOf(x)) ?? 0) > PAGE_RETRY_MS).slice(0, PAGES_AT_ONCE);
+  for (const item of fresh) {
+    pagesAsked.set(keyOf(item), now);
+    const { day, date } = item;
+    const state = get();
+    const conversation = state.conversations.find((c) => c.characterId === day.characterId);
+    const base = writeBase(day.characterId);
+    if (!conversation || !base) continue;
+    // A heavy day is written from nothing it could quote.
+    const lines = day.heavy
+      ? []
+      : (state.messages[conversation.id] ?? []).filter((m) => dayKey(m.createdAt) === day.day).flatMap((m) => {
+          const text = messageText(m);
+          return text ? [{ mine: m.author === 'them', text }] : [];
+        });
+    void writeWithModel({ ...base, kind: 'diary', day: { lines, dateTitle: day.dateTitle, heavy: day.heavy } }).then((page) => {
+      if (!page) return;
+      const id = `cdp_${day.characterId}_${date}`;
+      set((s) =>
+        s.characterDiary.some((p) => p.id === id)
+          ? s
+          : { characterDiary: [...s.characterDiary, { id, characterId: day.characterId, date, writtenAt: new Date().toISOString(), mood: page.mood, source: day.dateTitle != null ? 'date' : 'chat', body: page.body }] },
+      );
+    });
+  }
+}
+
+/** Their answer to a shared diary page, in the model's words. Busy: the page simply has no answer yet. */
+function writeDiaryReply(set: Setter, entryId: string, characterId: string, body: string) {
+  const base = writeBase(characterId);
+  if (!base) return;
+  void writeWithModel({ ...base, recent: [{ author: 'me', text: body }], kind: 'diaryReply', entry: body }).then((written) => {
+    if (!written) return;
+    set((s) => ({
+      diary: s.diary.map((d) => (d.id === entryId && !d.reply ? { ...d, reply: { characterId, text: written.reply, createdAt: new Date().toISOString() } } : d)),
+    }));
+    addMoment(set, characterId, 'diary');
+  });
+}
+
+/** A date the model plays round by round (`LiveDate`). It is paid for when its first round arrives. */
+function startLiveDate(set: Setter, get: Getter, characterId: string, placeId: string, theme: { title: string; rounds: DateRound[] } | undefined, plan: Omit<LiveDate, 'key' | 'paid' | 'rounds' | 'picks'>) {
+  set(() => ({ activeDate: { characterId, placeId, theme, live: { ...plan, key: uid('live'), paid: false, rounds: [], picks: [] } } }));
+  askDateRound(set, get);
+}
+
+/** Dates with a round on its way, so a tap and a retry never ask twice. */
+const dateAsking = new Set<string>();
+
+/** The next round of the date, knowing what the user chose so far. Busy: the screen offers to try again. */
+function askDateRound(set: Setter, get: Getter) {
+  const active = get().activeDate;
+  const live = active?.live;
+  if (!active || !live || live.rounds.length >= live.total || live.picks.length < live.rounds.length || dateAsking.has(live.key)) return;
+  const base = writeBase(active.characterId, true);
+  if (!base) return;
+  const patch = (next: Partial<LiveDate>) =>
+    set((s) => (s.activeDate?.live?.key === live.key ? { activeDate: { ...s.activeDate, live: { ...s.activeDate.live, ...next } } } : s));
+  dateAsking.add(live.key);
+  patch({ busy: undefined });
+  const soFar = live.rounds.map((round, i) => {
+    const choice = round.choices[live.picks[i]];
+    return { line: round.line, picked: choice.text, reply: choice.reply };
+  });
+  const { title, scene, mood, total, happening } = live;
+  void writeWithModel({ ...base, kind: 'dateRound', date: { title, scene, mood, total, happening }, soFar }).then((round) => {
+    dateAsking.delete(live.key);
+    const now = get().activeDate?.live;
+    if (now?.key !== live.key) return;
+    if (!round) return patch({ busy: true });
+    if (!now.paid && !get().spendShells(now.cost, 'date', active.characterId)) return set(() => ({ activeDate: null }));
+    patch({ paid: true, rounds: [...now.rounds, round] });
+  });
 }
 
 /** The writers in closeness order who have a chat: who may brief or ask about the day. */
@@ -4458,7 +4760,8 @@ function answerText(
     return;
   }
   scheduleReply(set, get, conversationId, {
-    text: scripted,
+    // Care after a crisis keeps its words; the answer to a tapped idea is theirs to word.
+    ...(reply != null ? { text: reply } : say != null ? { lines: [say], cue: sayCue(say) } : {}),
     gain: gain + replyBatch.take(conversationId),
     avoid,
     ...(lead && !crisis ? { reach: lead, ideas: leadIdeas(lead, !!plan && isBig(text) && (plan.time ?? '99') < LIFE.wakeOfferBefore) } : {}),
@@ -4693,6 +4996,13 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   deliver(standIn());
 }
 
+/** One of their world's events while it is on: a date happens inside it. */
+function worldEventNote(character: Character) {
+  const world = localized('worlds', WORLDS).find((w) => w.series === character.series);
+  const event = world ? eventOn(world.story, new Date()) : undefined;
+  return event ? `${event.title}: ${event.note}` : undefined;
+}
+
 /** What a chat's prompt carries of the character's official world (`worldPromptOf`); none for a creation. */
 function worldStoryOf(state: AppState, character: Character) {
   const world = worldOf(character);
@@ -4728,9 +5038,7 @@ function maybeAskToReach(set: Setter, get: Getter, conversationId: string): bool
     if ((replyEpoch.get(conversationId) ?? 0) !== epoch || get().messages[conversationId]?.at(-1)?.id !== afterId) return;
     set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
     const temper = temperOf(character, get().relationships[character.id]?.label);
-    const id = uid('m');
-    const line = { ...themText(conversationId, askLine(temper, again, id, character.gender)), id, ...withIdeas(askReach(temper)) };
-    appendMessage(set, get, conversationId, line);
+    sayFirst(set, get, conversationId, askLine(temper, again, uid('m'), character.gender), askToReachCue(), askReach(temper));
   }, ASK_AFTER_MS);
   return true;
 }
@@ -4760,15 +5068,15 @@ function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
   const today = dayKey(now);
   const temper = temperOf(character, bond.label);
   const id = uid('m');
-  const say = (text: string, reach: string, daily: Partial<DailyState>) => {
+  const say = (text: string, cue: readonly string[], reach: string, daily: Partial<DailyState>) => {
     set((s) => ({ daily: { ...s.daily, ...daily } }));
-    appendMessage(set, get, conversationId, { ...themText(conversationId, text), id, ...withIdeas(reach) });
+    sayFirst(set, get, conversationId, text, cue, reach);
   };
 
   const night = lateNight(now);
-  if (night && state.daily.nightDay !== night) return say(mockNightLine(temper, id, character.gender), 'pause:night', { nightDay: night });
+  if (night && state.daily.nightDay !== night) return say(mockNightLine(temper, id, character.gender), nightCue(), 'pause:night', { nightDay: night });
   if (state.daily.breakDay !== today && sittingMinutes(messages, now.getTime()) >= LIFE.breakAfterMin && sittingCount(messages) >= LIFE.breakAfterMessages) {
-    return say(mockBreakLine(temper, id, character.gender), 'pause:break', { breakDay: today });
+    return say(mockBreakLine(temper, id, character.gender), breakCue(), 'pause:break', { breakDay: today });
   }
   const hour = now.getHours();
   const openQuest = state.threads.some((t) => t.kind === 'quest' && t.status === 'open');
@@ -4785,7 +5093,7 @@ function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
     const touches = ruleTouches([{ at: new Date(now.getTime() + LIFE.questCheckMin * 60_000).toISOString(), phase: 'quest', why: 'ask if they did the quest' }], threadId, now);
     const thread: Thread = { id: threadId, characterId: character.id, kind: 'quest', about: quest, quote: '', createdAt: now.toISOString(), reward: QUEST_REWARD, touches, status: 'open' };
     set((s) => ({ threads: addThread(pruneThreads(s.threads, now), thread) }));
-    say(offer, `quest:${threadId}`, { questDay: today });
+    say(offer, questCue(quest), `quest:${threadId}`, { questDay: today });
   }
 }
 
@@ -5197,7 +5505,7 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
   const wake = get().wake!;
   const now = new Date();
   const setWake = (patch: Partial<WakeSession>) => set((s) => ({ wake: s.wake ? { ...s.wake, ...patch } : null }));
-  const reply = (line: string, chips?: string[]) => scheduleReply(set, get, conversationId, { text: line, gain: INTIMACY.text, chips });
+  const reply = (line: string, chips?: string[]) => scheduleReply(set, get, conversationId, { lines: [line], gain: INTIMACY.text, chips, cue: sayCue(line) });
   const gender = genderOf(get(), wake.characterId);
 
   if (wake.state !== 'awake') {
@@ -5432,6 +5740,9 @@ function openingFor(state: AppState, character: Character, seed: string) {
   const style = replyPrefs(state.relationships[character.id]).style;
   return fillNames(withOpening(local, pickOpening(local, seed), style), { char: character.name, user: defaultPersona(state).name });
 }
+
+/** How long a stock note takes to "write", with the model off. */
+const NOTE_SEAL_MS = 2600;
 
 /** The reply each chat could not get, kept for "Try again" (`retryReply`). */
 const failedTurns = new Map<string, ReplyRequest>();

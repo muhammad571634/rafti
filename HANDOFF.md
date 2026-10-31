@@ -1,5 +1,22 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z73. Everything a character says now comes from the model (2026-10-31, Claude 2). NEXT: owner deploys the server, then OTA, then the A51
+
+- Seen on the A51 before this: truth or dare comes from the model ("«Очередная проблема, которую придется нести на руках»"), "Не доставлено" shows when Google is busy and the tap retries, and asked for a secret in the group Ronan kept it. Those three items of 0z72 are closed.
+- Found: `docs/road-to-launch.md` said first texts were done, but greetings, birthday, plan reminders, care, family, missed call, board answers, the morning chain, a sent photo and more still wrote stock lines with the model on. Now they go through the model too (`sayFirst`, kind `moment`, `src/ai/moment-prompt.ts`), or are model turns with a cue. Crisis care keeps its fixed words on purpose.
+- Notes, diary pages, the answer to a shared page, quizzes and dates: `POST /v1/ai/write`, `src/ai/writes.ts`. Each answer is checked (`parseWrite`), a broken one is null. A date asks one round at a time, knowing what the user chose, and is paid when its first round arrives, so a busy model costs nothing. A world quiz keeps its written facts; the model writes the host and the quiz still plays if it is busy. Text on a game screen follows the app's language; a diary page follows the chat's.
+- Read real output for Ronan and Kai, in English and Russian (`scratchpad/writes-live.ts`). Fixed from it: a date round is told as "I" (the model did that anyway and it reads better), and choices are written from the user's side ("Take Ronan's hand").
+- Checks: tsc 0, npm test 549/549, server tests 55/55, check:locales pass, check:content 13/13.
+
+Still to do:
+1. Owner: deploy the server. `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+2. Agent, only after that: `eas update`. Before the deploy the app's new calls would fail and greetings would stay quiet.
+3. A51: a note, a quiz, a date, a greeting.
+4. Then `docs/road-to-launch.md` from item 2: tap a member in a group.
+5. Cloud DB has the old 40 characters; owner runs `supabase/seed.sql` in the Supabase SQL editor (nothing reads that table yet).
+6. Eval: full run with the judge, then `--save`.
+7. Art: redraw, when the owner says.
+
 ### 0z72. Worlds 2.0 checked on the A51, its bugs fixed, group chat on the real model (2026-10-31, Claude 2). NEXT: owner deploys the server, then the to-do list
 
 - Owner: check everything, then fix it all and decide as founder; art is out (it will be redrawn, the current `art-new/` pictures are not needed). Then: characters must talk like real people in chat, group chat, stream and the rest; take from Character.AI and BIMOBIMO, REA allowed. A conversation simulator was built on a misreading and removed: the owner wanted the product, not a test rig.

@@ -1745,6 +1745,7 @@
     "albumEmpty": "デートの記録はまだありません"
   },
   "games": {
+    "busy": "{{name}}は今、返事ができません。",
     "quiz": "カップルクイズ",
     "packs": {
       "firstDate": "初デート",

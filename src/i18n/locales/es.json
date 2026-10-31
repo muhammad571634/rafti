@@ -1778,6 +1778,7 @@
     "albumEmpty": "Aún no hay citas"
   },
   "games": {
+    "busy": "{{name}} no puede responder ahora mismo.",
     "quiz": "Quiz de pareja",
     "packs": {
       "firstDate": "Primera cita",

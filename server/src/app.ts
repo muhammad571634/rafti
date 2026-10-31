@@ -14,6 +14,7 @@ import {
 } from '../../src/ai/character-draft.ts';
 import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
+import { cleanWrite, parseWrite, WRITE_MODE, writeParts } from '../../src/ai/writes.ts';
 import { cleanGroupLines, layoutGroupReply, type GroupPromptInput } from '../../src/ai/group-reply.ts';
 import { cleanMemoryPass, memoryPassParts, parseMemoryPass } from '../../src/ai/memory-pass.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
@@ -58,7 +59,7 @@ const MAX_MESSAGES = 120;
 const MAX_GROUP_OTHERS = 4;
 
 /** Every route that calls the model and so costs money (`modelGuard`). */
-const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line'];
+const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
@@ -550,6 +551,17 @@ export function createApp(
     const persona = { ...input, user, replyLanguage: replyLanguageOf({ ...input, user }) };
     const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
     return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }), 'stream');
+  });
+
+  // What a friend writes on a screen of its own (src/ai/writes.ts): a note, a diary page, a quiz, a
+  // round of a date. A broken answer is `{ result: null }`: the app says they are busy, no stock line.
+  app.post('/v1/ai/write', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const request = cleanWrite(await readJson(c));
+    if (!request) return c.json({ error: 'badInput' }, 400);
+    const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
+    request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
+    return modelCall(c, request.kind, layoutPrompt(writeParts(request)), (text) => ({ result: parseWrite(request, text) }), WRITE_MODE[request.kind]);
   });
 
   // One group member's next message: their persona, the group as they read it, this turn's cue. The

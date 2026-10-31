@@ -1745,6 +1745,7 @@
     "albumEmpty": "尚無約會紀錄"
   },
   "games": {
+    "busy": "{{name}} 現在無法回覆。",
     "quiz": "情侶默契大考驗",
     "packs": {
       "firstDate": "初次相遇",

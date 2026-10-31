@@ -278,7 +278,7 @@ describe('the cost log of a reply', () => {
 
   it('guards every route that calls the model', async () => {
     const app = createApp(provider, { timeoutMs: 1000, db });
-    for (const route of ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line']) {
+    for (const route of ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write']) {
       const res = await app.request(route, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
       assert.equal(res.status, 401, route);
     }
@@ -681,6 +681,15 @@ describe('quick create and streams on the server (B1.4b)', () => {
     assert.equal((await postJson(app, '/v1/streams/line', { ...body, turn: { index: -1, total: 4 } })).status, 400);
     const broken = await postJson(createApp(answering('nope'), { timeoutMs: 1000 }), '/v1/streams/line', body);
     assert.equal((await broken.json()).line, null);
+  });
+
+  it('writes what a friend writes on a screen of its own, and checks it', async () => {
+    const body = { kind: 'note', input: { character: kai, user: { id: 'u1', displayName: 'Sam' } }, question: 'What scares you?' };
+    const res = await postJson(createApp(answering('{"note":"The quiet."}'), { timeoutMs: 1000 }), '/v1/ai/write', body);
+    assert.deepEqual((await res.json()).result, { note: 'The quiet.' });
+    const broken = await postJson(createApp(answering('nope'), { timeoutMs: 1000 }), '/v1/ai/write', body);
+    assert.equal((await broken.json()).result, null);
+    assert.equal((await postJson(createApp(answering('{}'), { timeoutMs: 1000 }), '/v1/ai/write', { ...body, kind: 'poem' })).status, 400);
   });
 
   describe('a group member’s next message', () => {

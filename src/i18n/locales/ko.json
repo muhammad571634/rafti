@@ -1745,6 +1745,7 @@
     "albumEmpty": "아직 다녀온 데이트가 없습니다"
   },
   "games": {
+    "busy": "{{name}}이(가) 지금은 답할 수 없어요.",
     "quiz": "커플 퀴즈",
     "packs": {
       "firstDate": "첫 데이트",

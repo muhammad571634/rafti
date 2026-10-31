@@ -75,17 +75,12 @@ export function daysTogether(
 }
 
 /**
- * The pages that are due but not written yet: one for the morning after each day
+ * The days whose page is due but not written yet, oldest first: one for the morning after each day
  * spent together, never two for the same character on the same morning.
  */
-export function duePages(
-  together: DayTogether[],
-  existing: CharacterDiaryPage[],
-  genderOf: (characterId: string) => CharacterGender | undefined,
-  today = dayKey(),
-): CharacterDiaryPage[] {
+export function dueDays(together: DayTogether[], existing: CharacterDiaryPage[], today = dayKey()) {
   const taken = new Set(existing.map((p) => `${p.characterId}|${p.date}`));
-  const out: CharacterDiaryPage[] = [];
+  const out: { day: DayTogether; date: string }[] = [];
 
   for (const d of together.sort((a, b) => a.day.localeCompare(b.day))) {
     if (!d.said.length && !d.extraTouches && d.dateTitle == null) continue;
@@ -94,9 +89,19 @@ export function duePages(
     const key = `${d.characterId}|${date}`;
     if (taken.has(key)) continue;
     taken.add(key);
-    out.push(writePage(d, date, genderOf(d.characterId)));
+    out.push({ day: d, date });
   }
   return out;
+}
+
+/** The due pages as the stock lines write them, with the model off. */
+export function duePages(
+  together: DayTogether[],
+  existing: CharacterDiaryPage[],
+  genderOf: (characterId: string) => CharacterGender | undefined,
+  today = dayKey(),
+): CharacterDiaryPage[] {
+  return dueDays(together, existing, today).map(({ day, date }) => writePage(day, date, genderOf(day.characterId)));
 }
 
 export const DIARY_VOICE = {
@@ -146,8 +151,8 @@ export const DIARY_VOICE = {
 };
 
 /**
- * Writes the page itself. Until the model writes these on the server, it is put
- * together from a few honest lines that quote what the user actually said.
+ * Writes the page itself, with the model off: put together from a few honest lines that quote
+ * what the user actually said.
  */
 export function writePage(d: DayTogether, date: string, gender: CharacterGender | undefined): CharacterDiaryPage {
   const talk = d.said.length + d.extraTouches;

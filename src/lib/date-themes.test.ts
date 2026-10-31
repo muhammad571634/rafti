@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import type { DateRound } from '../mock/dates';
 import {
   buildThemeRounds,
+  moodAt,
   checkTheme,
   cleanScene,
   cleanTitle,
@@ -62,6 +63,15 @@ describe('clean and check', () => {
     assert.equal(checkTheme({ scene: 'A walk', title: '' }), 'noTitle');
     assert.equal(checkTheme({ scene: 'I want to die tonight', title: 'Lake' }), 'crisis');
     assert.equal(checkTheme({ scene: 'A walk', title: 'Lake' }), null);
+  });
+});
+
+describe('moodAt', () => {
+  it('is the warmest mood the level opens', () => {
+    assert.equal(moodAt(undefined), 'friendly');
+    assert.equal(moodAt(5), 'friendly');
+    assert.equal(moodAt(6), 'flirty');
+    assert.equal(moodAt(16), 'sweet');
   });
 });
 

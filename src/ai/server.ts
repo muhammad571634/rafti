@@ -6,6 +6,7 @@ import type { StreamLineRequest } from './content-prompts';
 import type { FirstTextRequest } from './first-text';
 import type { GroupPromptInput } from './group-reply';
 import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
+import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
   BootstrapInput,
   BootstrapResult,
@@ -28,8 +29,8 @@ import type {
  * The phone's side of the Sigmazam API (`server/`). Every build talks to the cloud server
  * (`server/fly.toml`, Tokyo) unless `EXPO_PUBLIC_API_URL` names another one; `local` means the
  * laptop's test server at Metro's host on port 8787. Every call has a deadline and any failure
- * returns null: the caller then writes the stand-in reply, so the chat never stalls on a network
- * or a free-tier daily cap.
+ * returns null: the caller then says so (Not Delivered, a paused stream, a Retry) or stays quiet, so
+ * the chat never stalls on a network or a free-tier daily cap and no stock line passes for a reply.
  */
 const CLOUD_API = 'https://sigmazam-api.fly.dev';
 const DEV_PORT = 8787;
@@ -42,6 +43,8 @@ const DRAFT_TIMEOUT_MS = 40_000;
 const STREAM_LINE_TIMEOUT_MS = 22_000;
 /** The group waits on one member at a time, as long as the server tries its models (`LLM_TIMEOUT_MS`). */
 const GROUP_REPLY_TIMEOUT_MS = 22_000;
+/** A note, a page or a round: as long as the server tries its models (`LLM_TIMEOUT_MS`). */
+const WRITE_TIMEOUT_MS = 22_000;
 /** Nobody waits on the memory pass. */
 const MEMORY_PASS_TIMEOUT_MS = 30_000;
 
@@ -174,6 +177,12 @@ export async function serverGroupReply(input: GroupPromptInput, accessToken?: st
   const reply = await call<{ messages?: string[]; crisis?: boolean }>('/v1/chat/group', withOptionalToken(accessToken, input), GROUP_REPLY_TIMEOUT_MS);
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
   return lines?.length ? { lines, crisis: reply?.crisis === true } : null;
+}
+
+/** What a friend writes on a screen of its own (src/ai/writes.ts), or null (off, busy, slow or a broken answer). */
+export async function serverWrite<K extends WriteKind>(request: WriteRequest & { kind: K }, accessToken?: string | null): Promise<WriteResults[K] | null> {
+  const reply = await call<{ result?: WriteResults[K] | null }>('/v1/ai/write', withOptionalToken(accessToken, request), WRITE_TIMEOUT_MS);
+  return reply?.result ?? null;
 }
 
 /**

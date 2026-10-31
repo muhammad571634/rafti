@@ -1778,6 +1778,7 @@
     "albumEmpty": "Henüz buluşma yok"
   },
   "games": {
+    "busy": "{{name}} şu anda cevap veremiyor.",
     "quiz": "Çift testi",
     "packs": {
       "firstDate": "İlk buluşma",

@@ -1778,6 +1778,7 @@
     "albumEmpty": "Noch keine Dates"
   },
   "games": {
+    "busy": "{{name}} kann gerade nicht antworten.",
     "quiz": "Pärchen-Quiz",
     "packs": {
       "firstDate": "Erstes Date",

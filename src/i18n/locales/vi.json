@@ -1745,6 +1745,7 @@
     "albumEmpty": "Chưa có buổi hẹn nào"
   },
   "games": {
+    "busy": "{{name}} chưa thể trả lời lúc này.",
     "quiz": "Đố vui đôi lứa",
     "packs": {
       "firstDate": "Buổi hẹn đầu tiên",

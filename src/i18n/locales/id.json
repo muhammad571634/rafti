@@ -1745,6 +1745,7 @@
     "albumEmpty": "Belum ada kencan"
   },
   "games": {
+    "busy": "{{name}} belum bisa menjawab sekarang.",
     "quiz": "Kuis pasangan",
     "packs": {
       "firstDate": "Kencan pertama",

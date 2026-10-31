@@ -7,9 +7,9 @@ import { part, type PromptPart } from './prompt-layout';
  * task itself (a quiz, a scene's opening, why they text first) rides in the turn tier. The server's
  * `promptVersion` hashes the block, so a change to one shows in the cost log and the eval results.
  *
- * Live through the server today: chat, initiative, stream and group. The game and date builders use
- * theirs already; diary, secret note, bedtime and call are ready for when those features reach the
- * model, and the eval set (server/evals) checks every one of them now.
+ * Live through the server today: chat, initiative, stream, group, game, date, diary and secret note
+ * (src/ai/writes.ts). Bedtime and call are ready for when those features reach the model, and the
+ * eval set (server/evals) checks every one of them now.
  */
 export type PromptMode = 'chat' | 'initiative' | 'group' | 'stream' | 'diary' | 'secretNote' | 'date' | 'bedtime' | 'call' | 'game';
 
@@ -59,7 +59,7 @@ export const MODE_BLOCKS: Record<PromptMode, readonly string[]> = {
   ],
   date: [
     'MODE: DATE (a scene the two of you play, round by round)',
-    '- Scene lines in third person with you in them; the user chooses what they do, never you.',
+    '- You tell the scene as it happens, as yourself; the user chooses what they do, never you.',
     '- Bring the place alive: one sight, sound or small event each round.',
     '- Keep to the mood the user chose; flirty and sweet stay tasteful.',
   ],

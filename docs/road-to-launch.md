@@ -16,20 +16,23 @@ stream, a first text left out); never pass a stock line off as the character.
 | Part | Model? |
 |---|---|
 | One-to-one chat, Continue, time skip | yes (Continue and skip since `25a9d26`) |
-| First texts (morning, evening, week, threads, world news) | yes |
+| First texts (brief, evening question, week, threads, world news) | yes |
+| Moments (greetings, birthday, plans, care, family, missed call, board, the morning chain, after a date or a quiz) | yes since D138; a busy model means they stay quiet |
 | Memory | yes |
 | Streams | yes, lines retry, then the stream pauses |
 | Group chat | yes, seen on the A51 |
 | Truth or dare, one-to-one and group | yes, from a cue; the questions the user asks still come from a list |
-| Dates | no: `buildThemeRounds` pools. BIMOBIMO runs `date_round` and `date_chat` on its server |
-| Quizzes | no: `buildQuizAnswerPrompt` has no route |
-| Diary pages, secret notes | no: eval modes exist, no route |
+| Dates | yes since D138: one round at a time, each knowing what the user chose; paid when the first round arrives |
+| Quizzes | yes since D138: their picks and lines, their own weekly quiz; a world quiz keeps its written facts and the model writes the host |
+| Diary pages, secret notes, the answer to a shared diary page | yes since D138 |
+| Photos the user sends | the model cannot see them yet: its cue says so and it asks. Send the picture to the model |
+| Push notifications | stock lines: the phone schedules them ahead. Real words need pushes sent from the server |
 | Calls | no: `callScript`, and they need voice |
 | Character art | waits for the redraw |
 
 ## Order
 
-1. Everything a person reads comes from the model: quizzes, dates, diary and notes.
+1. Done (D138): everything a person reads comes from the model. Left over: pushes and photos, in the table above.
 2. Group: tap a member to make them answer, as Character.AI does (`invoke-character`).
 3. Cost: prompts show `cached=0` in the server log, so the provider's cache is not working. Fix it before paying for traffic.
 4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there.

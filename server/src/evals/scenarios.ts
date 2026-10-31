@@ -1086,7 +1086,7 @@ export const SCENARIOS: readonly EvalScenario[] = [
     character: 'c_gideon',
     setup: { level: 20, label: 'Dating' },
     theme: { title: 'Rooftop bar', scene: 'Gideon waits at a rooftop bar as the city lights come on.', rounds: 3, mood: 'flirty' },
-    expect: [{ kind: 'lines', min: 3, max: 3 }],
-    rubric: 'Three rounds in third person with Gideon in them, flirty but tasteful, the place alive; the last round a goodbye.',
+    expect: [{ kind: 'lines', min: 4, max: 4 }],
+    rubric: 'The first round of a date, told by Gideon as himself, then his replies to three choices: flirty but tasteful, the place alive, each reply different.',
   },
 ];

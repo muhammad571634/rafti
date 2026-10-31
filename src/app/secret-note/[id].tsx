@@ -38,6 +38,7 @@ export default function SecretNoteScreen() {
   const newSecretNote = useAppStore((s) => s.newSecretNote);
   const writeNote = useAppStore((s) => s.writeNote);
   const exchangeNote = useAppStore((s) => s.exchangeNote);
+  const retrySecretNote = useAppStore((s) => s.retrySecretNote);
 
   const [paywall, setPaywall] = useState<number | null>(null);
   const [justOpened, setJustOpened] = useState(false);
@@ -108,6 +109,13 @@ export default function SecretNoteScreen() {
                 {justOpened ? <Anim name="loveLetter" size={120} loop={false} style={styles.letter} /> : null}
                 <Txt style={styles.noteText}>{note.theirNote}</Txt>
               </>
+            ) : composing && note.busy ? (
+              <View style={styles.row}>
+                <Txt style={[styles.muted, styles.flex]}>{t('games.busy', { name })}</Txt>
+                <PressableScale scaleTo={0.95} accessibilityRole="button" onPress={() => retrySecretNote(note.id)}>
+                  <Txt style={styles.againText}>{t('common.retry')}</Txt>
+                </PressableScale>
+              </View>
             ) : composing ? (
               <View style={styles.row}>
                 <Anim name="typing" size={26} tint={aurora.tint} />

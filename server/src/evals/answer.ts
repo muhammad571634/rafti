@@ -1,5 +1,6 @@
 import type { ChatPromptInput } from '../../../src/ai/chat-prompt.ts';
-import { buildDateRoundsPrompt, buildQuizAnswerPrompt, parseStreamLine, streamLineParts } from '../../../src/ai/content-prompts.ts';
+import { parseStreamLine, streamLineParts } from '../../../src/ai/content-prompts.ts';
+import { parseWrite, writeParts } from '../../../src/ai/writes.ts';
 import { firstTextParts, type FirstTextRequest } from '../../../src/ai/first-text.ts';
 import { cleanGroupLines, layoutGroupReply } from '../../../src/ai/group-reply.ts';
 import { memoryPassParts, parseMemoryPass, type MemoryPassRequest } from '../../../src/ai/memory-pass.ts';
@@ -14,7 +15,7 @@ import { worldPromptOf } from '../../../src/lib/world-story.ts';
 import { officialLorebooks } from '../../../src/mock/lorebooks.ts';
 import { worldOf } from '../../../src/mock/worlds.ts';
 import { tierForLevel } from '../../../src/mock/user.ts';
-import type { Character, MemoryItem, Message, Relationship, Thread, User } from '../../../src/types/index.ts';
+import type { Character, DateMood, MemoryItem, Message, Relationship, Thread, User } from '../../../src/types/index.ts';
 import { followUserLanguage } from '../../../src/ai/reply-language.ts';
 import { chatReply } from '../chat-reply.ts';
 import type { LlmProvider } from '../llm/types.ts';
@@ -192,29 +193,20 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
       return { layout, read: (raw) => cleanGroupLines(parseModelReply(raw).bubbles, character, others), chat };
     }
     case 'game': {
-      const prompt = buildQuizAnswerPrompt(persona, s.question, [...s.options]);
+      const request = { kind: 'quizPicks', input: persona, title: 'A quiz', questions: [{ text: s.question, options: [...s.options] }] } as const;
       const read = (raw: string) => {
-        try {
-          const json = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '');
-          const ok = Number.isInteger(json?.answer) && json.answer >= 0 && json.answer < s.options.length && typeof json.line === 'string';
-          return ok ? [`[${s.options[json.answer]}] ${json.line.trim()}`] : [];
-        } catch {
-          return [];
-        }
+        const pick = parseWrite(request, raw)?.picks[0];
+        return pick ? [`[${s.options[pick.answer]}] ${pick.same}`] : [];
       };
-      return { layout: layoutPrompt([part('task', 'turn', [prompt])]), read, chat: [] };
+      return { layout: layoutPrompt(writeParts(request)), read, chat: [] };
     }
     case 'date': {
-      const prompt = buildDateRoundsPrompt(persona, s.theme);
+      const request = { kind: 'dateRound', input: persona, date: { title: s.theme.title, scene: s.theme.scene, mood: s.theme.mood as DateMood, total: s.theme.rounds }, soFar: [] } as const;
       const read = (raw: string) => {
-        try {
-          const rounds = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '')?.rounds;
-          return Array.isArray(rounds) ? rounds.map((r: { line?: unknown }) => (typeof r?.line === 'string' ? r.line.trim() : '')).filter(Boolean) : [];
-        } catch {
-          return [];
-        }
+        const round = parseWrite(request, raw);
+        return round ? [round.line, ...round.choices.map((c) => c.reply)] : [];
       };
-      return { layout: layoutPrompt([part('task', 'turn', [prompt])]), read, chat: [] };
+      return { layout: layoutPrompt(writeParts(request)), read, chat: [] };
     }
     case 'memoryPass': {
       const chat = messagesOf(s.chat);

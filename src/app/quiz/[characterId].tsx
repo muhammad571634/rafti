@@ -1,13 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import {
+  Anim,
   AuroraGlass,
+  Button,
   CharacterAvatar,
   LargeTitle,
   MODULE_GLYPH,
@@ -20,11 +22,12 @@ import {
 } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
+import type { QuizItem, QuizPick } from '@/ai/writes';
 import { lineFor, partnerPick, pickSome, QUIZ_MAX_QUESTIONS, weekKey } from '@/lib/quiz';
 import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { askSelfQuiz, displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
 import { aurora, colors, hitSlop, isDark, moduleFills, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
@@ -32,7 +35,16 @@ import type { Character } from '@/types';
 interface Run {
   id: string;
   title: string;
-  questions: { text: string; options: readonly string[] }[];
+  questions: QuizItem[];
+  /** Their answers and lines, one a question, when the model plays. */
+  picks?: QuizPick[];
+}
+
+/** What the model is asked for: a quiz of questions already there, or this week's own (no `questions`). */
+interface Asked {
+  id: string;
+  title: string;
+  questions?: QuizItem[];
 }
 
 const NEW_PACKS = ['qp_late_night', 'qp_habits'];
@@ -65,6 +77,10 @@ export default function QuizScreen() {
   const [mine, setMine] = useState<number | null>(null);
   const [matches, setMatches] = useState(0);
   const [done, setDone] = useState(false);
+  const [asked, setAsked] = useState<Asked | null>(null);
+  const [busy, setBusy] = useState(false);
+  // Left the wait before the answer came: it must not start a quiz behind the user's back.
+  const asking = useRef(0);
 
   const worlds = localized('worlds', WORLDS);
   const world = character ? worlds.find((w) => w.series === character.series) : undefined;
@@ -94,12 +110,64 @@ export default function QuizScreen() {
   const name = shortName(displayName(character, relationship));
   const backToChat = () => (conversation ? router.replace(`/chat/${conversation.id}`) : router.back());
   const start = (next: Run) => {
+    setAsked(null);
     setRun(next);
     setIndex(0);
     setMine(null);
     setMatches(0);
     setDone(false);
   };
+
+  /** With the model on, it plays their side; with it off, the question list and stock lines do. */
+  const ask = async (next: Asked) => {
+    const ticket = ++asking.current;
+    setAsked(next);
+    setBusy(false);
+    let run: Run | null = null;
+    if (next.questions) {
+      const base = writeBase(character.id, true);
+      const written = base && (await writeWithModel({ ...base, kind: 'quizPicks', title: next.title, questions: next.questions }));
+      if (written) run = { id: next.id, title: next.title, questions: next.questions, picks: written.picks };
+    } else {
+      const questions = await askSelfQuiz(character.id, week);
+      if (questions) run = { id: next.id, title: next.title, questions, picks: questions };
+    }
+    if (ticket !== asking.current) return;
+    if (run) start(run);
+    else setBusy(true);
+  };
+  const leaveAsking = () => {
+    asking.current += 1;
+    setAsked(null);
+  };
+
+  if (asked) {
+    return (
+      <Screen background="aurora">
+        <View style={styles.bar}>{back(leaveAsking)}</View>
+        <View style={styles.asking}>
+          <CharacterAvatar character={character} size={80} />
+          {busy ? (
+            <>
+              <Txt style={styles.askingText} center>
+                {t('games.busy', { name })}
+              </Txt>
+              <Button label={t('common.retry')} variant="secondary" onPress={() => void ask(asked)} />
+            </>
+          ) : (
+            <>
+              <Anim name="typing" size={32} tint={aurora.tint} />
+              <Txt style={styles.askingText} center>
+                {t('common.thinking')}
+              </Txt>
+            </>
+          )}
+        </View>
+      </Screen>
+    );
+  }
+
+  const play = (next: Run) => (modelIsOn() ? void ask(next) : start(next));
 
   // 1. Home: their quiz, their world's quiz, packs, yours.
   if (!run) {
@@ -127,7 +195,7 @@ export default function QuizScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('quizHome.selfPlay', { name })}
             style={[styles.card, styles.selfCard]}
-            onPress={() => start(selfRun)}>
+            onPress={() => (modelIsOn() ? void ask({ id: selfRun.id, title: selfRun.title }) : start(selfRun))}>
             <View style={[styles.selfHero, { backgroundColor: world?.tint ?? aurora.glassOn }]}>
               {/* The world's pastel, quieter in dark mode (HIG Dark Mode: dimmer colours). */}
               {isDark ? <View style={styles.heroShade} /> : null}
@@ -179,7 +247,7 @@ export default function QuizScreen() {
                 scaleTo={0.985}
                 accessibilityRole="button"
                 style={[styles.row, i < list.length - 1 && styles.rowLine]}
-                onPress={() => start({ id: p.id, title: t(`games.packs.${p.titleKey}`), questions: p.questions })}>
+                onPress={() => play({ id: p.id, title: t(`games.packs.${p.titleKey}`), questions: p.questions })}>
                 <SymbolTile {...p.look} />
                 <View style={styles.flex}>
                   <Txt style={styles.rowTitle}>{t(`games.packs.${p.titleKey}`)}</Txt>
@@ -213,7 +281,7 @@ export default function QuizScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={q.title}
                   style={styles.rowOpen}
-                  onPress={() => start({ id: q.id, title: q.title, questions: q.questions })}>
+                  onPress={() => play({ id: q.id, title: q.title, questions: q.questions })}>
                   <SymbolTile fill={QUIZ_FILL} ios="questionmark" icon="help" />
                   <View style={styles.flex}>
                     <Txt style={styles.rowTitle} lines={1}>
@@ -269,12 +337,14 @@ export default function QuizScreen() {
 
   // 2. A question.
   const question = run.questions[index];
-  const theirs = partnerPick(character.id, run.id, index, question.options.length);
+  const modelPick = run.picks?.[index];
+  const theirs = modelPick ? modelPick.answer : partnerPick(character.id, run.id, index, question.options.length);
   const last = index === total - 1;
   const lines = world ?? localized('quizLines', QUIZ_LINES);
   const seed = `${character.id}:${run.id}:${index}`;
   const same = mine != null && mine === theirs;
-  const line = mine == null ? '' : same ? lineFor(lines.match, seed) : lineFor(lines.differ, seed, question.options[theirs]);
+  const stockLine = () => (same ? lineFor(lines.match, seed) : lineFor(lines.differ, seed, question.options[theirs]));
+  const line = mine == null ? '' : modelPick ? (same ? modelPick.same : modelPick.differ) : stockLine();
 
   const answer = (option: number) => {
     if (mine != null) return;
@@ -470,6 +540,8 @@ const styles = StyleSheet.create({
   },
   verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
   bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  asking: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingHorizontal: space.xl, paddingBottom: space.huge },
+  askingText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: aurora.textMuted },
   result: { alignItems: 'center', gap: space.md, paddingHorizontal: space.xl },
   resultTop: { paddingTop: space.huge },
   pair: { flexDirection: 'row' },
