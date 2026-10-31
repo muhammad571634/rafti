@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z79. Memory in replies: a friend names the thing (2026-10-31, Claude 2). NEXT: owner buys sigmazam.app; I build the site and the grant application; memory retrieval past the cap (B2.4) when facts pass 60
+
+- Measured (`npm run eval -- --group memory --no-judge`, writer `gemini-3.1-flash-lite`): memory writing 7/7 (`mempass-*`); memory use in replies 3 of 6 failed: the model got the fact (it is in the prompt) but answered vaguely ("you've got this" instead of "the driving test"; "Typical" instead of "Mira cancelled again?").
+- Fix: one rule in `CHARACTER_RULES` STYLE (`src/ai/rules.ts`): name the thing you know when today ties to it, never recite. Repeat x4: summary-yesterday 0/4 to 3/4, earlier-in-chat 0/4 to 1/4, profile-job 0/4 to 0/4 (one single run passed it). Group run 11/13. Runs vary; the stronger `gemini-3-flash-preview` was out of free quota, so no comparison. Baseline not saved.
+- Checks: tsc 0, npm test 550/550. Reminder: before any build or store document the ElevenLabs grant and the domain come first (memory `grant-and-domain-before-build`).
+
 ### 0z78. Voice: ElevenLabs grant, domain, launch plan (2026-10-31, Claude 2). NEXT: owner buys a domain and email, I build a one-page site and finish the application
 
 - Draft: `docs/elevenlabs-grant-application.md`. Needs: a company-domain email (not Gmail), a real website with privacy and terms and, once approved, the ElevenLabs Grants logo plus a link at the bottom for 12 months. No official approval rate exists; third-party notes name rejections for personal email, thin site and facts that do not match.
