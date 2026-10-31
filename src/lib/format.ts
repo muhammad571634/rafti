@@ -54,3 +54,12 @@ export function daysBetween(iso: string, to = new Date()) {
   const ms = to.getTime() - new Date(iso).getTime();
   return Math.max(0, Math.floor(ms / 86_400_000));
 }
+
+// Lives apart from i18n so server-portable code (world books, tests) can use it too.
+export { shortName } from './names';
+
+/** A name cut for a tight spot like the Today profile capsule: "Sevinchoy" -> "Sevinc…" (by letters, so emoji stay whole). */
+export function clipName(name: string, max = 6) {
+  const letters = Array.from(name.trim());
+  return letters.length > max ? `${letters.slice(0, max).join('')}…` : letters.join('');
+}

@@ -1,0 +1,84 @@
+# Road to launch
+
+The owner handed the whole product to the agent on 2026-10-31: decide as founder, CEO, PM and senior
+developer, in the owner's interest. The owner does not read code. Work from this file, in order,
+and tick items off. Only the "Owner only" list needs the owner.
+
+## The bar
+
+A person should feel they are talking to someone real, in every part of the app, as in Character.AI
+and BIMOBIMO. With the model on, every line a character says comes from the model. Stock lines
+exist only for running with the model off. When the model is busy, say so (Not Delivered, a paused
+stream, a first text left out); never pass a stock line off as the character.
+
+## Where it stands
+
+| Part | Model? |
+|---|---|
+| One-to-one chat, Continue, time skip | yes (Continue and skip since `25a9d26`) |
+| First texts (brief, evening question, week, threads, world news) | yes |
+| Moments (greetings, birthday, plans, care, family, missed call, board, the morning chain, after a date or a quiz) | yes since D138; a busy model means they stay quiet |
+| Memory | yes |
+| Streams | yes, lines retry, then the stream pauses |
+| Group chat | yes, seen on the A51 |
+| Truth or dare, one-to-one and group | yes, from a cue; the questions the user asks still come from a list |
+| Dates | yes since D138: one round at a time, each knowing what the user chose; paid when the first round arrives |
+| Quizzes | yes since D138: their picks and lines, their own weekly quiz; a world quiz keeps its written facts and the model writes the host |
+| Diary pages, secret notes, the answer to a shared diary page | yes since D138 |
+| Photos the user sends | the model cannot see them yet: its cue says so and it asks. Send the picture to the model |
+| Push notifications | stock lines: the phone schedules them ahead. Real words need pushes sent from the server |
+| Calls | no: `callScript`, and they need voice |
+| Character art | waits for the redraw |
+
+## Order
+
+1. Done (D138): everything a person reads comes from the model. Left over: pushes and photos, in the table above.
+2. Done (D139): group, tap a member's avatar to make them answer, as Character.AI does (`invoke-character`).
+3. Cost: `cached=0` is not a bug (measured 2026-10-31, 0z75): Gemini's implicit cache needs a prompt of about 4,096 tokens or more, ours is about 3,100. A real reply costs about $0.0012, input is 85% of it. Left as is; revisit when traffic is real (another provider with automatic cache, `openai-compat.ts`, or a longer shared prefix).
+4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there. Owner, 2026-10-31: leave it until real users and payments (RevenueCat); the per-account limits cap the harm meanwhile. What is already there: server wallet (`wallet_spend`, ledger, idempotent keys, `/v1/wallet/*`); the app spends locally and mirrors to the server. When it is time: the server charges on `/v1/chat/reply` and `/v1/chat/group` by an idempotent key (`spend:<key>`, so the app's mirror cannot double it), the free cases (hello, join) get their own route or flag, and a `ENFORCE_WALLET` env switch ships off first.
+5. Art: the owner redraws, the agent wires it.
+6. Voice: replies first, live calls after.
+7. Payments: Google Play Billing, then StoreKit.
+8. Account and safety review before strangers use it: age gate, report, block, delete account, moderation of what users create, terms and privacy reviewed by a lawyer.
+9. Measure: retention (D1, D7), messages a day, paying share. No measuring, no learning.
+10. Closed test on Google Play, real strangers, fix what they hit. A new personal account must keep 12 testers opted in for 14 days before production.
+11. Launch, then short-video marketing built on the tropes that already travel (`docs/worlds-plan.md`).
+
+Founder's call, 2026-10-31: test on Android first. The owner has an A51 and no iPhone; the 2026-10-27
+App Store first decision waits until there is an Apple account and a device.
+
+## Waits for a paid model key
+
+Owner, 2026-10-31: free keys run out before a test ends, so the full check happens once there is a paid key.
+Choose the model the app will ship on first, because rules behave differently per model. Then, on that model:
+the full eval with the judge and `--save`, question endings, how often replies use the user's name,
+`memory-profile-job`, Kai's vagueness (HANDOFF 0z69 and 0z79). Before that, only small targeted runs on the
+free keys, with test text only.
+
+## Owner only
+
+- Run the server deploy line (auto mode refuses the agent's own).
+- Pay: Google Play account, later Apple, the paid model key, voice.
+- A paid model key before any stranger uses the app. On the free tier Google may use prompts to improve its products, which is not acceptable for private chats, and the free queue makes characters slow or silent. Swapping is one secret on the server (`GEMINI_API_KEY`, `CHAT_MODELS`), no code.
+- A legal identity for the stores, and a lawyer's read of the terms.
+- Find the first 12+ testers.
+- Taste: say in plain words what feels fake. That is the one thing the agent cannot measure.
+
+## How to win
+
+Do not fight Character.AI on the number of characters or on ad money. The market is top-heavy: the
+top 10% of apps took 89% of revenue (Appfigures via TechCrunch, 2025). Bet on what those apps do
+least, and check each bet against retention:
+
+- Characters who live: they write first, remember, and have a story that moves week by week.
+- Depth over a catalogue: 55 characters in 7 worlds, with secrets that open with closeness.
+- Languages done properly, gender included, in markets with fewer strong apps.
+- Chat, group and stream inside one story.
+
+## Money
+
+Plans in `src/economy/plans.ts`: Basic $9.99 a month, Pro $29.99 a month, yearly $239.99, plus shells.
+Measured at list price in the server log on 2026-10-31: about $0.001 to $0.0014 per reply, about
+$0.0005 per memory pass. A heavy user at 100 messages a day costs roughly $4 to $5 a month, so
+text alone leaves margin on Basic after the store's cut. Voice will change that sum: measure it
+before pricing it. Recheck the prices when the paid key is in.

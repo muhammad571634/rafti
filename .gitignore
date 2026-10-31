@@ -32,6 +32,13 @@ yarn-error.*
 
 # local env files
 .env*.local
+# The server's secrets (server/.env.local is covered above; this guards a plain .env too)
+server/.env
+server/node_modules/
+# Every answer of an eval run (server/src/evals/run.ts); only baseline.json is kept
+server/eval-results/
+# A translator's working files (scripts/content-todo.mjs)
+.content-todo/
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +48,7 @@ example
 # generated native folders
 /ios
 /android
+modules/*/android/build/
+modules/*/android/.gradle/
+# Nano Banana pictures waiting to be wired in (docs/nano-banana-worlds.md)
+art-new/

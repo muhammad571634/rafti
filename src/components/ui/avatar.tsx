@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { AVATARS } from '@/assets/avatars/registry';
@@ -13,12 +14,16 @@ import { Txt } from './text';
 export interface AvatarProps {
   /** A remote/local uri (string) or a bundled `require` (number). */
   source?: string | number;
+  /** Shown if `source` fails to load (a character's bundled art); the monogram after that. */
+  fallback?: string | number;
   name: string;
   size?: number;
   /** Index into the pastel gradient set; keeps a character's colour stable. */
   accentIndex?: number;
   /** Green check overlay used on discovery cards when the voice model is ready. */
   verified?: boolean;
+  /** What the green badge shows: a check (voice ready) or a phone (they can be called). */
+  badge?: 'check' | 'call';
   ring?: boolean;
   ringColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -32,15 +37,20 @@ function initials(name: string) {
 /** An avatar without a picture renders a stable pastel monogram instead of an empty circle. */
 export function Avatar({
   source,
+  fallback,
   name,
   size = 48,
   accentIndex = 0,
   verified,
+  badge: badgeKind = 'check',
   ring,
   ringColor = colors.primary,
   style,
 }: AvatarProps) {
   const gradient = avatarGradients[accentIndex % avatarGradients.length];
+  // Sources that failed to load; a new source simply is not in the list.
+  const [failed, setFailed] = useState<(string | number)[]>([]);
+  const shown = [source, fallback].find((s) => s != null && !failed.includes(s));
   const badge = Math.max(14, size * 0.3);
 
   return (
@@ -56,14 +66,15 @@ export function Avatar({
             borderColor: ringColor,
           },
         ]}>
-        {source != null ? (
+        {shown != null ? (
           <Image
-            source={typeof source === 'string' ? { uri: source } : source}
+            source={typeof shown === 'string' ? { uri: shown } : shown}
+            onError={() => setFailed((f) => [...f, shown])}
             style={StyleSheet.absoluteFill}
             contentFit="cover"
             // Bundled art is instant; on web a cached image can also miss the fade's
             // load event and stay invisible, so only remote native images cross-fade.
-            transition={typeof source === 'string' && Platform.OS !== 'web' ? 160 : undefined}
+            transition={typeof shown === 'string' && Platform.OS !== 'web' ? 160 : undefined}
           />
         ) : (
           <LinearGradient colors={gradient} style={styles.fill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
@@ -79,7 +90,7 @@ export function Avatar({
 
       {verified ? (
         <View style={[styles.badge, { width: badge, height: badge, borderRadius: badge / 2 }]}>
-          <Ionicons name="checkmark" size={badge * 0.66} color={colors.white} />
+          <Ionicons name={badgeKind === 'call' ? 'call' : 'checkmark'} size={badge * (badgeKind === 'call' ? 0.55 : 0.66)} color={colors.white} />
         </View>
       ) : null}
     </View>
@@ -97,6 +108,7 @@ export function CharacterAvatar({
   return (
     <Avatar
       source={characterImage(character)}
+      fallback={character.avatarUri ? AVATARS[character.id] : undefined}
       name={character.name}
       accentIndex={character.accentIndex}
       {...rest}

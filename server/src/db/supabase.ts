@@ -1,0 +1,173 @@
+import { createClient } from '@supabase/supabase-js';
+
+import {
+  WalletError,
+  type BootstrapInput,
+  type BootstrapResult,
+  type CheckInResult,
+  type Db,
+  type MemoriesState,
+  type MessagesPage,
+  type ShareResult,
+  type SpinResult,
+  type UsageEvent,
+  type WalletState,
+} from './types.ts';
+
+/** The API's own cap on the rows one read answers. */
+const MEMORY_PAGE = 1000;
+
+/**
+ * Supabase with the server's secret key (service role): RLS does not apply to it, so every write
+ * goes through here and through the SQL functions that keep the ledger and the wallet together
+ * (`book_shells`, `bootstrap_user` in supabase/migrations). The key never leaves the server.
+ */
+export function supabaseDb(opts: { url: string; secretKey: string }): Db {
+  const client = createClient(opts.url, opts.secretKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+
+  /** A wallet function; its own refusals (`raise exception 'noShells'` …) come back as WalletError. */
+  async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+    const { data, error } = await client.rpc(fn, args);
+    if (!error) return data as T;
+    if (error.message === 'noShells' || error.message === 'noWallet' || error.message === 'badAmount') throw new WalletError(error.message);
+    throw new Error(`${fn}: ${error.message}`);
+  }
+
+  return {
+    name: 'supabase',
+
+    async userIdFromToken(token) {
+      const { data, error } = await client.auth.getUser(token);
+      return error || !data.user ? null : data.user.id;
+    },
+
+    async bootstrap(userId, input: BootstrapInput) {
+      const { data, error } = await client.rpc('bootstrap_user', {
+        p_user: userId,
+        p_locale: input.locale ?? null,
+        p_time_zone: input.timeZone ?? null,
+      });
+      if (error) throw new Error(`bootstrap_user: ${error.message}`);
+      return data as BootstrapResult;
+    },
+
+    async logUsage(event: UsageEvent) {
+      const { error } = await client.from('usage_events').insert({
+        user_id: event.userId,
+        kind: event.kind,
+        mode: event.mode ?? null,
+        model: event.model ?? null,
+        prompt_version: event.promptVersion ?? null,
+        input_tokens: event.inputTokens ?? null,
+        cached_tokens: event.cachedTokens ?? null,
+        output_tokens: event.outputTokens ?? null,
+        seconds: event.seconds ?? null,
+        cost_usd: event.costUsd ?? null,
+      });
+      if (error) throw new Error(`usage_events: ${error.message}`);
+    },
+
+    walletState: (userId) => rpc<WalletState>('wallet_state', { p_user: userId }),
+
+    walletSpend: (userId, { amount, reason, key, characterId }) =>
+      rpc<WalletState>('wallet_spend', { p_user: userId, p_amount: amount, p_reason: reason, p_key: key, p_character_id: characterId ?? null }),
+
+    walletCredit: (userId, { amount, reason, key, free }) =>
+      rpc<WalletState>('wallet_credit', { p_user: userId, p_amount: amount, p_reason: reason, p_key: key, p_free: free }),
+
+    walletCheckIn: (userId, { ladder, top }) => rpc<CheckInResult>('wallet_check_in', { p_user: userId, p_ladder: ladder, p_top: top }),
+
+    walletSpin: (userId, { segments, weights, freeSpins }) =>
+      rpc<SpinResult>('wallet_spin', { p_user: userId, p_segments: segments, p_weights: weights, p_free_spins: freeSpins }),
+
+    // The day's paid shares are its `share:<day>:<n>` rows. Two shares at once take the same key, and
+    // `wallet_credit` books a key once: a race can only pay less, never more than the cap.
+    async walletShare(userId, { amount, perDay }): Promise<ShareResult> {
+      const before = await rpc<WalletState>('wallet_state', { p_user: userId });
+      const { count, error } = await client
+        .from('shell_ledger')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .like('idempotency_key', `share:${before.today}:%`);
+      if (error) throw new Error(`shell_ledger: ${error.message}`);
+      const used = count ?? 0;
+      if (used >= perDay) return { amount: 0, left: 0, wallet: before };
+      const wallet = await rpc<WalletState>('wallet_credit', {
+        p_user: userId,
+        p_amount: amount,
+        p_reason: 'share',
+        p_key: `share:${before.today}:${used + 1}`,
+        p_free: true,
+      });
+      const paid = wallet.shells > before.shells ? amount : 0;
+      return { amount: paid, left: Math.max(0, perDay - used - (paid ? 1 : 0)), wallet };
+    },
+
+    async syncMessages(userId, { droppedChats, deletedIds, upserts }) {
+      const seq = await rpc<number | null>('sync_messages', {
+        p_user: userId,
+        p_dropped: droppedChats,
+        p_deleted: deletedIds,
+        p_upserts: upserts,
+      });
+      return seq == null ? null : Number(seq);
+    },
+
+    async messagesAfter(userId, after, limit) {
+      const { data, error } = await client
+        .from('messages')
+        .select('chat_id, seq, body')
+        .eq('user_id', userId)
+        .gt('seq', after)
+        .order('seq')
+        .limit(limit);
+      if (error) throw new Error(`messages: ${error.message}`);
+      const rows = (data ?? []) as { chat_id: string; seq: number; body: MessagesPage['messages'][number]['message'] }[];
+      return {
+        messages: rows.map((r) => ({ chatId: r.chat_id, seq: Number(r.seq), message: r.body })),
+        next: rows.length === limit ? Number(rows[rows.length - 1].seq) : null,
+      };
+    },
+
+    async syncMemories(userId, { characters, chats }) {
+      await rpc<null>('sync_memories', { p_user: userId, p_characters: characters, p_chats: chats });
+    },
+
+    async memoriesOf(userId) {
+      // The API answers at most 1000 rows a call, so the memories come in pages.
+      const items: { character_id: string; body: MemoriesState['characters'][number]['items'][number] }[] = [];
+      for (let from = 0; ; from += MEMORY_PAGE) {
+        const { data, error } = await client
+          .from('memories')
+          .select('character_id, body')
+          .eq('user_id', userId)
+          .order('created_at')
+          .order('client_id')
+          .range(from, from + MEMORY_PAGE - 1);
+        if (error) throw new Error(`memories: ${error.message}`);
+        items.push(...((data ?? []) as typeof items));
+        if ((data ?? []).length < MEMORY_PAGE) break;
+      }
+      const { data, error } = await client.from('chat_memory').select('chat_id, summary, mark').eq('user_id', userId).limit(MEMORY_PAGE);
+      if (error) throw new Error(`chat_memory: ${error.message}`);
+
+      const lists = new Map<string, MemoriesState['characters'][number]['items']>();
+      for (const row of items) lists.set(row.character_id, [...(lists.get(row.character_id) ?? []), row.body]);
+      return {
+        characters: [...lists].map(([characterId, list]) => ({ characterId, items: list })),
+        chats: ((data ?? []) as { chat_id: string; summary: string | null; mark: string | null }[]).map((r) => ({
+          chatId: r.chat_id,
+          ...(r.summary ? { summary: r.summary } : {}),
+          ...(r.mark ? { mark: r.mark } : {}),
+        })),
+      };
+    },
+
+    async deleteUser(userId) {
+      const { error } = await client.auth.admin.deleteUser(userId);
+      if (error) throw new Error(`deleteUser: ${error.message}`);
+    },
+  };
+}

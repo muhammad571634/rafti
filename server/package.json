@@ -1,0 +1,24 @@
+{
+  "name": "sigmazam-api",
+  "private": true,
+  "type": "module",
+  "description": "Sigmazam's server: the real model behind the characters (docs/backend-plan.md).",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/index.ts",
+    "dev": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --watch --import ../scripts/ts-test-hooks.mjs src/index.ts",
+    "models": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/models.ts",
+    "test": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs --test \"src/**/*.test.ts\"",
+    "eval": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/evals/run.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:seed-file": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/db/write-seed.ts"
+  },
+  "dependencies": {
+    "@google/genai": "2.28.0",
+    "@hono/node-server": "2.1.4",
+    "@supabase/supabase-js": "2.117.3",
+    "hono": "4.13.13"
+  },
+  "devDependencies": {
+    "supabase": "2.120.0"
+  }
+}

@@ -6,12 +6,22 @@ import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { PressableScale, Txt } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, palette, radius } from '@/theme';
+import { colors, fonts, isDark, palette, radius, systemColors } from '@/theme';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
-/** Calm alternating slices; only the jackpot gets colour (mint). */
-const FILLS = [palette.gray100, palette.white];
+/** Pastel iOS colours, led by Sigmazam's peach brand accent. */
+const FILLS = [
+  colors.primaryFill,
+  systemColors.purple,
+  systemColors.mint,
+  systemColors.yellow,
+  systemColors.pink,
+  systemColors.blue,
+  systemColors.green,
+];
+const FILL_OPACITY = isDark ? 0.72 : 0.38;
 const SPIN_MS = 3600;
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
@@ -35,21 +45,33 @@ export function LuckyWheel({
 }: {
   size?: number;
   disabled?: boolean;
-  /** Returns the winning segment index, or null when no spin is available. */
-  onSpin: () => number | null;
+  /** Returns the winning segment index, or null when no spin is available; the server's draw arrives later. */
+  onSpin: () => number | null | Promise<number | null>;
   onStop: (index: number) => void;
 }) {
   const { t } = useTranslation();
   const rotation = useSharedValue(0);
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
+  const hubSize = Math.min(68, Math.max(52, Math.round(size * 0.32)));
+  const pointerSize = Math.max(20, Math.round(size * 0.11));
+  const pointerInset = pointerSize * 0.14;
 
-  const spin = () => {
+  const land = (index: number) => {
+    haptic.success();
+    onStop(index);
+  };
+
+  const spin = async () => {
     if (spinning || disabled) return;
-    const index = onSpin();
-    if (index == null) return;
-
+    // Locked while the result comes (the server may draw it), so a second tap cannot spin twice.
     setSpinning(true);
+    const index = await onSpin();
+    if (index == null) {
+      setSpinning(false);
+      return;
+    }
+
     // Land the middle of the winning slice under the pointer, after five full turns.
     const current = rotation.value % 360;
     const target = 360 - (index * SEGMENT + SEGMENT / 2);
@@ -61,7 +83,7 @@ export function LuckyWheel({
       (finished) => {
         if (finished) {
           scheduleOnRN(setSpinning, false);
-          scheduleOnRN(onStop, index);
+          scheduleOnRN(land, index);
         }
       },
     );
@@ -73,7 +95,7 @@ export function LuckyWheel({
     <View style={{ width: size, height: size + 14, alignItems: 'center' }}>
       <Animated.View style={[{ width: size, height: size, marginTop: 14 }, wheelStyle]}>
         <Svg width={size} height={size}>
-          <Circle cx={r} cy={r} r={r - 1} fill={palette.white} stroke={palette.gray200} strokeWidth={1} />
+          <Circle cx={r} cy={r} r={r - 1} fill={colors.surface} stroke={colors.border} strokeWidth={1} />
           <G>
             {WHEEL_SEGMENTS.map((value, i) => {
               const from = -90 + i * SEGMENT;
@@ -81,19 +103,20 @@ export function LuckyWheel({
               const rad = (mid * Math.PI) / 180;
               const tx = r + r * 0.64 * Math.cos(rad);
               const ty = r + r * 0.64 * Math.sin(rad);
-              const jackpot = value === Math.max(...WHEEL_SEGMENTS);
+              const labelColor = isDark && [0, 2, 3, 6].includes(i) ? palette.gray900 : colors.text;
               return (
                 <G key={i}>
                   <Path
                     d={slice(r, r, r - 1, from, from + SEGMENT)}
-                    fill={jackpot ? palette.mint50 : FILLS[i % FILLS.length]}
-                    stroke={palette.gray200}
-                    strokeWidth={1}
+                    fill={FILLS[i % FILLS.length]}
+                    fillOpacity={FILL_OPACITY}
+                    stroke={colors.surface}
+                    strokeWidth={1.5}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
-                    fill={jackpot ? palette.mint600 : palette.gray900}
+                    fill={labelColor}
                     fontSize={size * 0.075}
                     fontFamily={fonts.display}
                     fontWeight="700"
@@ -110,8 +133,13 @@ export function LuckyWheel({
       </Animated.View>
 
       {/* pointer */}
-      <Svg width={30} height={30} style={styles.pointer}>
-        <Path d="M15 28 L4 6 Q15 0 26 6 Z" fill={colors.text} stroke={colors.white} strokeWidth={2} />
+      <Svg width={pointerSize} height={pointerSize} style={styles.pointer}>
+        <Path
+          d={`M${pointerSize / 2} ${pointerSize - 2} L${pointerInset} ${pointerInset} Q${pointerSize / 2} 0 ${pointerSize - pointerInset} ${pointerInset} Z`}
+          fill={colors.text}
+          stroke={colors.white}
+          strokeWidth={2}
+        />
       </Svg>
 
       <PressableScale
@@ -121,7 +149,7 @@ export function LuckyWheel({
         haptic
         style={[
           styles.hub,
-          { top: 14 + r - 34 },
+          { top: 14 + r - hubSize / 2, width: hubSize, height: hubSize, borderRadius: hubSize / 2 },
           (spinning || disabled) && styles.hubDisabled,
         ]}>
         <Txt variant="bodyStrong" color={colors.textOnPrimary}>
@@ -139,11 +167,11 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     borderWidth: 4,
     borderColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hubDisabled: { backgroundColor: palette.gray400 },
+  hubDisabled: { backgroundColor: colors.textFaint },
 });

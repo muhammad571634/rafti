@@ -1,0 +1,18 @@
+# The server image (server/Dockerfile) needs only server/, src/ and scripts/ts-test-hooks.mjs.
+**/node_modules
+.git
+.claude
+.expo
+dist
+assets
+android
+ios
+design-prototypes
+docs
+supabase
+server/eval-results
+**/.env*
+**/*.png
+**/*.jpg
+**/*.mp3
+**/*.mp4

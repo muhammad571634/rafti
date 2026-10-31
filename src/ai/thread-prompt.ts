@@ -1,0 +1,179 @@
+import { modePart } from './modes';
+import { part, type PromptPart } from './prompt-layout';
+import { characterParts } from './rules';
+import { temperOf } from '../lib/temper';
+import type { TouchDraft } from '../lib/threads';
+import type { Character, Message, Relationship, Thread, ThreadOutcome, Touch, TouchPhase, User } from '@/types';
+
+/**
+ * The model's side of open threads (`src/lib/threads.ts`): no topic list and no wording on our
+ * side. With every reply the model may open threads on anything the user said that has a future,
+ * move them, or settle them (`THREAD_RULES_LINES` + `threadLines`, parsed by `parseThreadOps`). When
+ * one of its texts is due, one call writes it in the character's own words from the chat and the
+ * memories, with reply ideas, or skips it if the chat already settled it (`touchParts`,
+ * `parseTouchReply`). Code only applies `THREAD_RULES` to what comes back.
+ */
+
+/** The standing instruction (global tier: the same for every chat, cached). */
+export const THREAD_RULES_LINES = [
+  'THREADS: you remember what the user tells you that has a future, and you come back to it like a real person texting.',
+  '- Anything can be a thread, on any topic: an exam, a job interview, a report to finish, a fight, a trip, a doctor visit, results to wait for, something they want to start, a habit they want to change. Small talk with no future is not.',
+  '- For each thread decide when you would text and why: the evening before ("eve": sleep early, offer to wake them), before it ("before": luck), at leaving time ("leave"), after it ("after": how did it go?), a check on a task ("check"), a goal they set ("goal": every few days, cheer, never scold). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then. A small thing may need none.',
+  '- When the user says how it went or that it is off, settle the thread. When the time moves, move it.',
+  '- Now and then (at most once a day) give a small real-life quest ("quest"): a few minutes, easy to start, away from the screen, from their life (a walk, the sky, a friend to message). Never preach; they can always say no.',
+  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"ISO time or null","touches":[{"at":"ISO time","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"ISO","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Leave it out when nothing changed.',
+  'REAL LIFE: you care about their life away from the screen (sleep, food, friends, outdoors). When they have been here a long time or it is late, you may suggest a break or sleep, in your own way, and accept what they choose.',
+];
+
+/** A time as the user's clock shows it ("2026-10-28 07:30"); UTC without an offset. */
+export const wallClock = (iso?: string, utcOffsetMin = 0) =>
+  iso ? new Date(Date.parse(iso) + utcOffsetMin * 60_000).toISOString().slice(0, 16).replace('T', ' ') : 'no set time';
+const when = (iso?: string) => wallClock(iso);
+
+/** The friend's open threads for this reply (turn tier), so the model can follow, move or settle them. */
+export function threadLines(threads: readonly Thread[]) {
+  const open = threads.filter((t) => t.status === 'open');
+  // The user sees these in the app (Keeping in mind) and may change a time or turn texts off.
+  const quiet = threads.filter((t) => t.status === 'closed' && t.outcome === 'quiet');
+  return [
+    ...(open.length
+      ? [
+          'OPEN THREADS (what the user told you that has a future):',
+          ...open.map((t) => {
+            const next = t.touches.find((x) => !x.sent);
+            return `- [${t.id}] ${t.about} (${when(t.happensAt)}${t.userSet ? ', they set this time themselves' : ''}); they said "${t.quote}"${next ? `; you plan to text at ${when(next.at)}: ${next.why}` : ''}`;
+          }),
+        ]
+      : []),
+    ...(quiet.length
+      ? ['NO TEXTS ABOUT (the user turned these off; do not open them again unless they bring it up):', ...quiet.map((t) => `- ${t.about}`)]
+      : []),
+  ];
+}
+
+export interface ThreadOps {
+  add: { about: string; quote: string; happensAt?: string; touches: TouchDraft[] }[];
+  move: { id: string; happensAt?: string; touches: TouchDraft[] }[];
+  close: { id: string; outcome: ThreadOutcome }[];
+}
+
+const PHASES: readonly TouchPhase[] = ['before', 'leave', 'eve', 'after', 'check', 'goal', 'quest'];
+const OUTCOMES: readonly ThreadOutcome[] = ['good', 'bad', 'done', 'off'];
+
+const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+const iso = (v: unknown) => {
+  const s = str(v);
+  return s && !Number.isNaN(Date.parse(s)) ? new Date(s).toISOString() : undefined;
+};
+const drafts = (v: unknown): TouchDraft[] =>
+  (Array.isArray(v) ? v : []).flatMap((x) => {
+    const at = iso(x?.at);
+    const phase = PHASES.find((p) => p === x?.phase);
+    const why = str(x?.why);
+    return at && phase && why ? [{ at, phase, why }] : [];
+  });
+
+/** The `threads` field of the model's JSON reply; anything malformed is dropped, never guessed. */
+export function parseThreadOps(raw: string): ThreadOps {
+  const empty: ThreadOps = { add: [], move: [], close: [] };
+  let threads: Record<string, unknown> | undefined;
+  try {
+    threads = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '{}')?.threads;
+  } catch {
+    return empty;
+  }
+  if (!threads || typeof threads !== 'object') return empty;
+  const list = (key: string) => (Array.isArray(threads![key]) ? (threads![key] as Record<string, unknown>[]) : []);
+  return {
+    add: list('add').flatMap((x) => {
+      const about = str(x.about);
+      return about ? [{ about: about.slice(0, 60), quote: str(x.quote).slice(0, 160), happensAt: iso(x.happensAt), touches: drafts(x.touches) }] : [];
+    }),
+    move: list('move').flatMap((x) => (str(x.id) ? [{ id: str(x.id), happensAt: iso(x.happensAt), touches: drafts(x.touches) }] : [])),
+    close: list('close').flatMap((x) => {
+      const outcome = OUTCOMES.find((o) => o === x.outcome);
+      return str(x.id) && outcome ? [{ id: str(x.id), outcome }] : [];
+    }),
+  };
+}
+
+const PHASE_TEXT: Record<TouchPhase, string> = {
+  before: 'before it',
+  leave: 'at the time to leave for it',
+  eve: 'the evening before it',
+  after: 'after it',
+  check: 'to check on it',
+  goal: 'about a goal they set',
+  quest: 'about a small real-life quest you gave them',
+};
+
+/** The shape of a text they write first; the language is named first, so the model looks before it writes (`REPLY_SHAPE`). */
+export const TOUCH_SHAPE =
+  'Reply with JSON only: {"language":"the REPLY LANGUAGE, named","skip":false,"messages":[""],"ideas":[{"label":"2-3 words","text":"what the user would send"}]}. ' +
+  'One to three short texts, like a real person, and two or three ideas the user could tap, all in that language. "skip":true if the chat already settled it or it would be odd now.';
+
+export interface TouchInput {
+  character: Character;
+  user: User;
+  relationship?: Relationship;
+  thread: Thread;
+  touch: Touch;
+  /** The chat's last lines, oldest first: what was said since the thread began. */
+  recent: readonly Message[];
+  now: Date;
+  /** The user's clock, in minutes east of UTC: every time in the prompt is theirs (UTC when missing). */
+  utcOffsetMin?: number;
+  replyLanguage?: string;
+}
+
+/**
+ * The prompt for one text they write first about a thread: the persona (with the temper and the
+ * bond), the last lines, the thread and why they write now. Nothing tells it what to say.
+ */
+export function touchParts(input: TouchInput): PromptPart[] {
+  const { character, user, relationship, thread, touch, now } = input;
+  const at = (iso?: string) => wallClock(iso, input.utcOffsetMin);
+  const recent = input.recent
+    .filter((m) => m.kind === 'text' && m.text && !m.card)
+    .slice(-12)
+    .map((m) => `${m.author === 'me' ? 'User' : 'You'}: ${m.text}`);
+  return [
+    ...characterParts(character, user, relationship, input.replyLanguage),
+    modePart('initiative'),
+    part('recent', 'turn', recent.length ? ['THE CHAT LATELY:', ...recent] : []),
+    part('touch', 'turn', [
+      `You are texting first, unprompted. It is ${at(now.toISOString())} where they are.`,
+      `The thread: ${thread.about} (${at(thread.happensAt)}). They told you: "${thread.quote}".`,
+      `You planned this text (${PHASE_TEXT[touch.phase]}) because: ${touch.why}.`,
+      `Write it in your own words and your temper (${temperOf(character, relationship?.label)}); bring back what you remember about them when it fits.`,
+    ]),
+    part('shape', 'turn', [TOUCH_SHAPE]),
+  ];
+}
+
+export interface TouchReply {
+  skip: boolean;
+  lines: string[];
+  ideas: { label: string; text: string }[];
+}
+
+/** Reads the model's text-first JSON; a broken answer is a skip, never a half-written text. */
+export function parseTouchReply(raw: string): TouchReply {
+  try {
+    const json = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '');
+    const lines = (Array.isArray(json.messages) ? json.messages : []).map(str).filter(Boolean).slice(0, 3);
+    const ideas = (Array.isArray(json.ideas) ? json.ideas : [])
+      .map((x: { label?: unknown; text?: unknown }) => ({ label: str(x?.label).slice(0, 24), text: str(x?.text) }))
+      .filter((x: { label: string; text: string }) => x.label && x.text)
+      .slice(0, 3);
+    return { skip: json.skip === true || !lines.length, lines, ideas };
+  } catch {
+    return { skip: true, lines: [], ideas: [] };
+  }
+}
+
+/** The parts for one reply's prompt that carry the threads: the standing rule and this friend's open ones. */
+export const threadParts = (threads: readonly Thread[]): PromptPart[] => [
+  part('threadRules', 'global', THREAD_RULES_LINES),
+  part('threads', 'turn', threadLines(threads)),
+];
