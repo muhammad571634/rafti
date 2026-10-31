@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z75. `cached=0` is the model's limit, not a bug (2026-10-31, Claude 2). NEXT: A51 check of 0z74, then road-to-launch item 4
+
+- Measured on `gemini-3.1-flash-lite` with the owner's key: the prefix of five real consecutive chat replies is byte-identical for about 2,500 tokens (the tier layout works), yet `cached` stays 0. A synthetic prompt shows why: 1,155 / 2,025 / 3,305 tokens never cache, 6,715 caches only some calls, 10,125 caches 6,123. Google's page lists a 4,096-token minimum for the newer Flash models. Our prompt is about 3,100.
+- Cost today: about $0.0012 a reply, 85% of it input. A cache hit would save roughly half. Not worth padding the prompt. Revisit with real traffic: a provider with automatic cache (DeepSeek, `openai-compat.ts` already reads `prompt_cache_hit_tokens`) or a longer shared prefix.
+- No code change.
+
 ### 0z74. Tap a group member to make them speak (2026-10-31, Claude 2). NEXT: A51 check, then road-to-launch item 3
 
 - Tap the avatar next to a member's line in a group: that member answers now (`invokeGroupMember`, cue `groupInvokeCue` in `src/lib/chat-steer.ts`, `onAvatarPress` on `MessageBubble`). One text shell. Not while someone types, not before the first line, not after the helpline card. The server takes any cue, so no deploy is needed.
