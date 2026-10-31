@@ -4,7 +4,10 @@
 
 - Full numbers and risks in `docs/voice-provider-fish-audio.md`. Fish API: $15 per 1M bytes (about $0.011 to $0.024 a minute of speech) against ElevenLabs Flash about $0.031 and v3 about $0.062. Full-use margin of Pro yearly: about $3.8 with Fish, $0.7 with ElevenLabs Flash, negative with v3. The business plan's call minute ($0.015) was too low; a reply costs $0.0012, not $0.0006.
 - Not known yet: Russian and Portuguese support, quality in our 14 languages, the exact Terms. The Fish API is free for developers until 2026-11-30.
-- No code change. Next: the owner's key, then a blind test of the same lines in en, ru, tr, ja, th (earshot measures, the owner listens).
+- Key: the owner pasted a free Fish key in chat (2026-10-31) and it is now the Windows user variable `FISH_API_KEY` (the model header is `model: s2.1-pro-free`). It sits in this chat's history: rotate it after the test.
+- First test, no voice chosen (Fish picks a default each call): 24 clips, 8 languages (en ru tr ja th pt vi id), 3 lines each, `POST https://api.fish.audio/v1/tts`, 2.0 to 3.5 s a whole clip (not streamed). earshot: raw loudness from -21.3 to -3.3 LUFS (an 18 dB spread, so the app must normalise), peaks up to -0.2 dBFS, no clipped samples, bandwidth 16 kHz in most (vi-3 only 5.1 kHz, id-2 8.1 kHz), noise floor median -59 dBFS but th-1 -36, th-3 -38, en-3 -26 (to check by ear).
+- The owner listens in `Downloads/fish-test/index.html` (loudness-matched copies). No ElevenLabs comparison yet: it costs money, ask first.
+- Next: the owner's verdict by ear; then a fixed voice per character (`reference_id`, own or licensed voices only), streaming latency over WebSocket, then the adapter.
 
 ### 0z76. Server-side shell enforcement postponed by the owner (2026-10-31, Claude 2). NEXT: A51 check of 0z74, then road-to-launch item 5 (art, when the owner says) or 6 (voice)
 
