@@ -216,7 +216,7 @@
     "recentSearches": "История поиска",
     "clear": "Очистить",
     "surprise": "Удивите меня",
-    "searchWorld": "Искать в {{world}}",
+    "searchWorld": "Поиск: {{world}}",
     "addFriend": "Добавить {{name}}",
     "isFriend": "{{name}} уже в друзьях"
   },
@@ -225,7 +225,7 @@
     "opensOn": "С Pro сейчас · Для всех {{date}}"
   },
   "intro": {
-    "age": "{{count}} лет",
+    "age": "Возраст: {{count}}",
     "loves": "Любит",
     "cantStand": "Терпеть не может",
     "open": "О персонаже {{name}}",

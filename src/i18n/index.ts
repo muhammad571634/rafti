@@ -17,6 +17,7 @@ import th from './locales/th.json';
 import tr from './locales/tr.json';
 import vi from './locales/vi.json';
 import zhHant from './locales/zh-Hant.json';
+import { installPluralRules } from './plural';
 
 const STORAGE_KEY = 'rafti.locale';
 
@@ -138,6 +139,7 @@ export async function initI18n() {
   savedLocale = await AsyncStorage.getItem(STORAGE_KEY).catch(() => null);
   savedLocaleLoaded = true;
 
+  installPluralRules();
   await i18n.use(initReactI18next).init({
     resources,
     lng: savedLocale ?? deviceLocale(),
