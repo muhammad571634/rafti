@@ -54,3 +54,23 @@ Real users use a fraction of the allowance, so these are ceilings.
 - Community voices: sharing one grants other users a licence "as permitted by the functionality of the Services"; whether that covers commercial use in an app is not clear, and using content you do not own needs the owner's consent. The public library holds game characters and announcers uploaded by strangers, so Fish's permission is not the rights holder's. Not used.
 - Uploaded content "may be used to develop, train, or enhance" Fish's models and may not be fully deletable. For user voice cloning this must be said to the user in the consent step and in our privacy policy.
 - Do before launch: write to Fish for written answers on (1) commercial use of outputs in a consumer app, (2) AI companion use, (3) opting uploads out of training, (4) retention and deletion of cloned voices.
+
+## Update 2026-10-31 (evening): the owner's blind test says ElevenLabs
+
+- Owner, after the 40-clip blind test (Fish vs ElevenLabs v3 / flash v2.5 / multilingual v2, 5 languages): ElevenLabs is clearly better. Cleaner, no background noise, "speaks like a person up close"; Fish had stumbles in delivery and style. Which ElevenLabs model they liked best is not known yet (the letters key is `scratchpad/fish/cmp/key.json`). An English reference clip also lost its native accent in ru/tr/ja, and Fish's tag voices were uneven.
+- Decision direction: ElevenLabs is the voice for the paid product; Fish stays out unless a price squeeze needs it. The adapter stays so a provider can be swapped.
+- Market (blogs, undated pages, treat as leads): independent arena snapshots in 2026 rank Cartesia Sonic 3.6 first (about $49 per 1M characters), Gemini 3.8 Flash TTS close behind at about $16, Eleven v3 12th at about $100. Gemini TTS is on our existing key (`gemini-3.8-flash-tts`); the free key ran out of TTS quota after 4 of 10 clips and the first try read our style instruction aloud (about 15 s for 95 characters; a short "Say warmly and softly:" fixed it to about 8 to 10 s), so it is untested. Worth a proper blind round with billing on, together with Cartesia.
+- Who pays for voice: Kindroid, Nomi, Replika keep voice or calls behind paid plans or credits; Character.AI and Talkie give it free because they run their own voices. No source says which apps rent ElevenLabs.
+- ElevenLabs policy (read 2026-10-31): bans visual depictions of explicit sexual acts, incest/bestiality/necrophilia erotica, non-consensual intimate content, impersonation of a living person without consent, cloning without consent, voice recordings of under-18s; apps for under-18s need written approval. Companion apps are not mentioned. Our app is 18+. Get written confirmation of the companion use case before launch.
+- Startup grant (`elevenlabs.io/startup-grants`): 33,000,000 characters free for 12 months, full platform (TTS, Agents, STT, cloning), needs a business plan and a valid business email, fewer than 25 employees, not for under-18 products, one application, no reselling of characters; answer within a week; converts to Free at the end or at 10,000 credits left. Apply at `elevenlabs.io/grants-application` before paying anything.
+
+### Margins with ElevenLabs list prices (Pro: 120 min voice, 180 min calls with the character talking half the time; 5,000 replies at $0.0012; speech 900 characters a minute, measured 870 to 966)
+
+| | cost of a speech minute | Pro $29.99 (net $25.49) full use / 40% use | Pro yearly $20 (net $17.00) full use / 40% use |
+|---|---|---|---|
+| Flash $0.04 per 1k | $0.036 | +$8.2 / +$18.6 | -$0.3 / +$10.1 |
+| v3 $0.08 per 1k | $0.072 | +$0.6 / +$15.5 | -$7.9 / +$7.0 |
+
+- Extra minutes sold for shells (10 min call = 120 shells, 10 min voice = 100 shells, about $1.25 to $1.50): cost $0.39 and $0.36 on Flash, $0.57 and $0.72 on v3: still a margin.
+- The 33M-character grant covers about 175 Pro user-months at full use, 437 at 40%: it carries the launch, then costs come back.
+- Levers: Flash for calls and live voice, v3 only where the extra quality is audible (voice messages); pre-record the free tier's voice letters once (about 250k characters, about $20 on v3); cache repeated lines; lower the Pro yearly allowance or raise its price; cap minutes per day.
