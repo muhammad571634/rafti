@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z77. Voice provider check: Fish Audio looks like the pick, needs the owner's key and ears (2026-10-31, Claude 2). NEXT: owner makes a Fish account and sets FISH_API_KEY, then the listening test
+
+- Full numbers and risks in `docs/voice-provider-fish-audio.md`. Fish API: $15 per 1M bytes (about $0.011 to $0.024 a minute of speech) against ElevenLabs Flash about $0.031 and v3 about $0.062. Full-use margin of Pro yearly: about $3.8 with Fish, $0.7 with ElevenLabs Flash, negative with v3. The business plan's call minute ($0.015) was too low; a reply costs $0.0012, not $0.0006.
+- Not known yet: Russian and Portuguese support, quality in our 14 languages, the exact Terms. The Fish API is free for developers until 2026-11-30.
+- No code change. Next: the owner's key, then a blind test of the same lines in en, ru, tr, ja, th (earshot measures, the owner listens).
+
 ### 0z76. Server-side shell enforcement postponed by the owner (2026-10-31, Claude 2). NEXT: A51 check of 0z74, then road-to-launch item 5 (art, when the owner says) or 6 (voice)
 
 - Read the code: the server already has the wallet (`wallet_spend`, ledger, idempotent keys, `/v1/wallet/*`); the app spends locally and mirrors each spend with a random key. The model routes neither check nor charge. A rigorous fix needs the server to own the price of each route and the free cases (hello, join, first texts) to be told apart on the server, which is a change to the live paid flow.
