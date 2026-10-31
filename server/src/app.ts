@@ -14,6 +14,7 @@ import {
 } from '../../src/ai/character-draft.ts';
 import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
+import { cleanGroupLines, layoutGroupReply, type GroupPromptInput } from '../../src/ai/group-reply.ts';
 import { cleanMemoryPass, memoryPassParts, parseMemoryPass } from '../../src/ai/memory-pass.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
@@ -52,6 +53,8 @@ const replyLanguageOf = (input: { replyLanguage?: string; user: { locale?: strin
 
 /** How much of the chat a request may carry; the prompt layout cuts it further. */
 const MAX_MESSAGES = 120;
+/** A group is the user and two or three characters; a little room for a member just added. */
+const MAX_GROUP_OTHERS = 4;
 
 /** A BCP 47 tag the profile may keep ("en-US", "uz-Latn-UZ"); anything else is dropped. */
 export function cleanLocale(value: unknown): string | undefined {
@@ -507,6 +510,51 @@ export function createApp(
     const persona = { ...input, user, replyLanguage: replyLanguageOf({ ...input, user }) };
     const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
     return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }), 'stream');
+  });
+
+  // One group member's next message: their persona, the group as they read it, this turn's cue. The
+  // app asks once per member who answers (`pickResponders`), so every voice stays its own.
+  app.post('/v1/chat/group', async (c) => {
+    if (!provider) return c.json({ error: 'noModel' }, 503);
+    const body = await readJson(c);
+    const raw = body as unknown as GroupPromptInput | null;
+    if (!raw?.character?.name || !raw.user || !Array.isArray(raw.messages) || !Array.isArray(raw.others) || !raw.others.length || raw.others.length > MAX_GROUP_OTHERS) {
+      return c.json({ error: 'badInput' }, 400);
+    }
+    const user = { ...raw.user, locale: raw.user.locale || 'en-US' };
+    const input: GroupPromptInput = {
+      ...raw,
+      mode: undefined,
+      user,
+      messages: raw.messages.slice(-MAX_MESSAGES),
+      replyLanguage: replyLanguageOf({ ...raw, user }),
+      cue: Array.isArray(raw.cue) ? raw.cue.filter((l) => typeof l === 'string').slice(0, 8) : undefined,
+    };
+    const userId = signedIn(c);
+    const started = Date.now();
+    try {
+      const { reply, result, calls, crisis } = await chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply });
+      for (const call of calls) {
+        logUsage(db, userId, {
+          kind: 'llm',
+          mode: call.mode,
+          model: call.result.model ?? provider.name,
+          promptVersion: promptVersion(call.layout, 'group'),
+          inputTokens: call.result.usage.input,
+          cachedTokens: call.result.usage.cached,
+          outputTokens: call.result.usage.output,
+          costUsd: costUsd(call.result.model, call.result.usage),
+        });
+      }
+      console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}`);
+      const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
+      if (!lines.length) return c.json({ error: 'empty' }, 502);
+      return c.json({ messages: lines, crisis, model: result.model ?? provider.name });
+    } catch (error) {
+      if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
+      console.error('[group] failed', error);
+      return c.json({ error: 'failed' }, 502);
+    }
   });
 
   app.post('/v1/chat/reply', async (c) => {

@@ -1,11 +1,12 @@
-import { chatTurns, type ChatPromptInput } from '../../../src/ai/chat-prompt.ts';
+import type { ChatPromptInput } from '../../../src/ai/chat-prompt.ts';
 import { buildDateRoundsPrompt, buildQuizAnswerPrompt, parseStreamLine, streamLineParts } from '../../../src/ai/content-prompts.ts';
 import { firstTextParts, type FirstTextRequest } from '../../../src/ai/first-text.ts';
+import { cleanGroupLines, layoutGroupReply } from '../../../src/ai/group-reply.ts';
 import { memoryPassParts, parseMemoryPass, type MemoryPassRequest } from '../../../src/ai/memory-pass.ts';
 import { modePart } from '../../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../../src/ai/prompt-layout.ts';
-import { parseModelReply, REPLY_SHAPE } from '../../../src/ai/reply-style.ts';
-import { characterParts, groupParts } from '../../../src/ai/rules.ts';
+import { parseModelReply } from '../../../src/ai/reply-style.ts';
+import { characterParts } from '../../../src/ai/rules.ts';
 import { parseTouchReply } from '../../../src/ai/thread-prompt.ts';
 import { planReply } from '../../../src/lib/reply-engine/index.ts';
 import { characters } from '../../../src/mock/characters.ts';
@@ -186,8 +187,9 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
     }
     case 'group': {
       const chat = messagesOf(s.chat);
-      const parts = [...groupParts(character, s.others.map(cast), user, relationship, replyLanguage), part('shape', 'turn', [REPLY_SHAPE])];
-      return { layout: layoutPrompt(parts, chatTurns(chat)), read: (raw) => parseModelReply(raw).bubbles, chat };
+      const others = s.others.map(cast);
+      const layout = layoutGroupReply({ ...persona, others, lore: loreOf(character, s.setup?.joinedAt), messages: chat });
+      return { layout, read: (raw) => cleanGroupLines(parseModelReply(raw).bubbles, character, others), chat };
     }
     case 'game': {
       const prompt = buildQuizAnswerPrompt(persona, s.question, [...s.options]);

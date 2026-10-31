@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { DAILY_CHECK_IN, PAID_SHARES_PER_DAY, SHARE_REWARD, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
+import type { PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { MEMORY_SYNC_LIMITS } from '../../src/ai/session-types.ts';
 import { cleanLocale, cleanMemorySync, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
 import {
@@ -640,5 +641,51 @@ describe('quick create and streams on the server (B1.4b)', () => {
     assert.equal((await postJson(app, '/v1/streams/line', { ...body, turn: { index: -1, total: 4 } })).status, 400);
     const broken = await postJson(createApp(answering('nope'), { timeoutMs: 1000 }), '/v1/streams/line', body);
     assert.equal((await broken.json()).line, null);
+  });
+
+  describe('a group member’s next message', () => {
+    const mira = { ...kai, id: 'c_mira', name: 'Mira Vale' };
+    const body = {
+      character: kai,
+      others: [mira],
+      user: { id: 'u1', displayName: 'Sam' },
+      messages: [
+        { id: 'm1', conversationId: 'g', author: 'me', kind: 'text', text: 'who is swimming tomorrow?', createdAt: '2026-10-31T10:00:00.000Z' },
+        { id: 'm2', conversationId: 'g', author: 'them', kind: 'text', text: 'Not me.', characterId: 'c_mira', createdAt: '2026-10-31T10:00:30.000Z' },
+      ],
+      cue: ['NEXT: join in.'],
+    };
+
+    it('writes it in the member’s voice, with the group as they read it, and cleans it', async () => {
+      const seen: { layout?: PromptLayout } = {};
+      const provider: LlmProvider = {
+        name: 'fake',
+        async complete(layout) {
+          seen.layout = layout;
+          return { text: JSON.stringify({ messages: ['Kai: Me, at dawn.', 'Mira Vale: No way.', 'You should come.'] }), usage: {} };
+        },
+      };
+      const res = await postJson(createApp(provider, { timeoutMs: 1000 }), '/v1/chat/group', body);
+      assert.equal(res.status, 200);
+      const json = await res.json();
+      assert.deepEqual(json.messages, ['Me, at dawn.', 'You should come.']);
+      assert.equal(json.crisis, false);
+      assert.match(seen.layout!.history[0].text, /Sam: who is swimming tomorrow\?\nMira Vale: Not me\./);
+      assert.match(seen.layout!.turn, /NEXT: join in\./);
+      assert.match(seen.layout!.system.map((s) => s.text).join('\n'), /MODE: GROUP CHAT/);
+    });
+
+    it('says when the user may be in danger, whatever the language', async () => {
+      const res = await postJson(createApp(answering(JSON.stringify({ messages: ['I am here.'], crisis: true })), { timeoutMs: 1000 }), '/v1/chat/group', body);
+      assert.equal((await res.json()).crisis, true);
+    });
+
+    it('refuses a request without the others, and an empty answer', async () => {
+      const app = createApp(answering('{"messages":["Hi."]}'), { timeoutMs: 1000 });
+      assert.equal((await postJson(app, '/v1/chat/group', { ...body, others: [] })).status, 400);
+      assert.equal((await postJson(app, '/v1/chat/group', { ...body, messages: 'x' })).status, 400);
+      const empty = await postJson(createApp(answering('{"messages":["Mira: only hers."]}'), { timeoutMs: 1000 }), '/v1/chat/group', body);
+      assert.equal(empty.status, 502);
+    });
   });
 });

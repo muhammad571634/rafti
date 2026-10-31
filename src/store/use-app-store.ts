@@ -28,7 +28,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker } from '@/lib/chat-steer';
+import { checkSkipTo, cleanSkipTo, groupContinueCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
@@ -37,7 +37,8 @@ import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
-import { apiBase, serverFirstText, serverMemoryPass, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
+import { groupGameCue, groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
+import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverStreamLine, serverWallet } from '@/ai/server';
 import type { WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -1353,7 +1354,7 @@ export const useAppStore = create<AppState>()(
         noticeGroupAiIfDue(set, get, id);
         // The first member says hello and names the others.
         const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
-        scheduleGroupReplies(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))] }]);
+        writeGroupTurns(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))], cue: groupHelloCue(others) }]);
         return id;
       },
 
@@ -1420,14 +1421,16 @@ export const useAppStore = create<AppState>()(
         if (!first) return 'empty';
         if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
         countMessage(set, get);
+        const lastSpeaker = speakersIn(state, groupId).at(-1);
         appendGroupMessage(set, get, groupId, { id: uid('m'), ...steerMarker(groupId, 'continue') }, { quiet: true });
         // The server writes each line from the member's group prompt and `groupContinueCue`.
-        scheduleGroupReplies(set, get, groupId, [
+        writeGroupTurns(set, get, groupId, [
           {
             characterId: first,
             lines: second ? [pick(groupGoOn)(memberName(get(), second), genderOf(get(), first))] : pick(groupReplies(genderOf(get(), first))),
+            cue: groupContinueCue(lastSpeaker ? memberName(get(), lastSpeaker) : 'the group'),
           },
-          ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first), genderOf(get(), second))] }] : []),
+          ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first), genderOf(get(), second))], cue: groupContinueCue(memberName(get(), first)) }] : []),
         ]);
         return 'sent';
       },
@@ -1447,9 +1450,9 @@ export const useAppStore = create<AppState>()(
         const marker: Message = { id: uid('m'), ...steerMarker(groupId, 'skip', skip, new Date(), words) };
         appendGroupMessage(set, get, groupId, marker, { quiet: true });
         // The server: the first member from `groupSkipCue`, the second from `groupContinueCue`.
-        scheduleGroupReplies(set, get, groupId, [
-          { characterId: first, lines: mockSteerLines('skip', skip, marker.id, genderOf(get(), first)) },
-          ...(second ? [{ characterId: second, lines: [pick(groupGoOn)(memberName(get(), first), genderOf(get(), second))] }] : []),
+        writeGroupTurns(set, get, groupId, [
+          { characterId: first, lines: mockSteerLines('skip', skip, marker.id, genderOf(get(), first)), cue: groupSkipCue(skip, words) },
+          ...(second ? [{ characterId: second, lines: [pick(groupGoOn)(memberName(get(), first), genderOf(get(), second))], cue: groupContinueCue(memberName(get(), first)) }] : []),
         ]);
         return 'sent';
       },
@@ -1476,9 +1479,9 @@ export const useAppStore = create<AppState>()(
           group.memberIds.filter((id) => id !== characterId),
           speakersIn(get(), groupId),
         );
-        scheduleGroupReplies(set, get, groupId, [
-          { characterId, lines: [turn.answer] },
-          ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId), genderOf(get(), other))] }] : []),
+        writeGroupTurns(set, get, groupId, [
+          { characterId, lines: [turn.answer], cue: groupGameCue() },
+          ...(other ? [{ characterId: other, lines: [pick(groupReactions)(memberName(get(), characterId), genderOf(get(), other))], cue: groupReactCue(memberName(get(), characterId)) }] : []),
         ]);
         return turn.ask;
       },
@@ -1537,7 +1540,7 @@ export const useAppStore = create<AppState>()(
         appendGroupMessage(set, get, groupId, groupSystem(groupId, i18n.t('group.joinedLine', { name: memberName(get(), characterId) })), {
           quiet: true,
         });
-        scheduleGroupReplies(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines(genderOf(get(), characterId)))] }]);
+        writeGroupTurns(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines(genderOf(get(), characterId)))], cue: groupJoinCue() }]);
         return true;
       },
 
@@ -4869,17 +4872,82 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
       { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() },
       { quiet: true },
     );
-    scheduleGroupReplies(set, get, groupId, [{ characterId: first, lines: [pick(crisisReplies)] }]);
+    writeGroupTurns(set, get, groupId, [{ characterId: first, lines: [pick(crisisReplies)] }]);
     return;
   }
   // Two members named: both answer the user. Otherwise the second talks to the first.
   const bothAsked = namedMembers(text, names).length >= 2;
-  scheduleGroupReplies(set, get, groupId, [
+  writeGroupTurns(set, get, groupId, [
     { characterId: first, lines: firstLines(genderOf(state, first)) },
     ...(second
-      ? [{ characterId: second, lines: bothAsked ? pick(groupReplies(genderOf(state, second))) : [pick(groupReactions)(names[first], genderOf(state, second))] }]
+      ? [
+          bothAsked
+            ? { characterId: second, lines: pick(groupReplies(genderOf(state, second))) }
+            : { characterId: second, lines: [pick(groupReactions)(names[first], genderOf(state, second))], cue: groupReactCue(names[first]) },
+        ]
       : []),
   ]);
+}
+
+interface GroupTurn {
+  characterId: string;
+  /** The stand-in, for when the model is off, busy or slow. */
+  lines: string[];
+  /** What this turn is for, when it is not simply answering the user (`groupReplyParts`). */
+  cue?: readonly string[];
+}
+
+/** What one member's reply sends: their persona and world, the group so far, and the lines still landing. */
+function groupInput(state: AppState, group: GroupChat, turn: GroupTurn, said: readonly Message[]): GroupPromptInput | null {
+  const character = state.characters.find((c) => c.id === turn.characterId);
+  if (!character) return null;
+  const others = group.memberIds.filter((id) => id !== turn.characterId).flatMap((id) => state.characters.find((c) => c.id === id) ?? []);
+  const landed = (state.messages[group.id] ?? []).filter((m) => !m.pending);
+  const messages = [...landed, ...said.filter((s) => !landed.some((m) => m.characterId === s.characterId && m.text === s.text))];
+  return {
+    character,
+    others,
+    user: state.user,
+    relationship: state.relationships[character.id],
+    persona: personaFor(group.id, state),
+    lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
+    messages,
+    cue: turn.cue,
+  };
+}
+
+/**
+ * The members' replies, one model call each, in their own voices. The next member reads what the
+ * one before said, so they can answer each other. They type while the model thinks; off, busy or
+ * slow, the stand-in goes out instead. A crisis the model noticed brings the helpline card, and no
+ * one else joins in.
+ */
+function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: GroupTurn[]) {
+  const { settings } = get();
+  if (!settings.realAi || !apiBase()) {
+    scheduleGroupReplies(set, get, groupId, turns);
+    return;
+  }
+  void (async () => {
+    const said: Message[] = [];
+    for (const turn of turns) {
+      const group = get().groups.find((g) => g.id === groupId);
+      const input = group && groupInput(get(), group, turn, said);
+      if (!input) return;
+      startGroupTyping(set, groupId, turn.characterId);
+      const reply = await accessToken()
+        .then((token) => serverGroupReply(input, token))
+        .catch(() => null);
+      stopGroupTyping(set, groupId, turn.characterId);
+      const lines = reply?.lines ?? turn.lines;
+      if (reply?.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
+        appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
+      }
+      said.push(...lines.map((line) => memberText(groupId, turn.characterId, line)));
+      scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines }]);
+      if (reply?.crisis) return;
+    }
+  })();
 }
 
 /** A stream's runner generation: a pause, a delete or a new run makes the older one stop. */

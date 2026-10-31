@@ -42,11 +42,16 @@ const CRISIS_MIN_LEFT_MS = 3000;
  * as much. One second try at most, the crisis first. Busy or slow the second time, the first draft
  * goes out after all.
  */
-export async function chatReply(provider: LlmProvider, input: ChatPromptInput, timeoutMs: number): Promise<GuardedReply> {
+export async function chatReply<I extends ChatPromptInput>(
+  provider: LlmProvider,
+  input: I,
+  timeoutMs: number,
+  /** A group member's reply goes through the same guards with its own prompt (`layoutGroupReply`). */
+  { mode = input.mode ?? 'chat', layoutOf = layoutChatPrompt as (input: I) => PromptLayout }: { mode?: string; layoutOf?: (input: I) => PromptLayout } = {},
+): Promise<GuardedReply> {
   const started = Date.now();
-  const mode = input.mode ?? 'chat';
   const caught = userLines(input.messages).slice(-1).some(detectCrisis);
-  const layout = layoutChatPrompt(caught ? { ...input, crisis: true } : input);
+  const layout = layoutOf(caught ? { ...input, crisis: true } : input);
   const first = await provider.complete(layout, { timeoutMs });
   const calls: ChatCall[] = [{ mode, layout, result: first }];
   let reply = parseModelReply(first.text);
@@ -62,7 +67,7 @@ export async function chatReply(provider: LlmProvider, input: ChatPromptInput, t
         ? { mode: `${mode}Repeat`, input: { ...input, repeated: repeat.line } }
         : null;
   if (retry) {
-    const again = layoutChatPrompt(retry.input);
+    const again = layoutOf(retry.input);
     try {
       const second = await provider.complete(again, { timeoutMs: left });
       calls.push({ mode: retry.mode, layout: again, result: second });

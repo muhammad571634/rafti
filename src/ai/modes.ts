@@ -7,7 +7,7 @@ import { part, type PromptPart } from './prompt-layout';
  * task itself (a quiz, a scene's opening, why they text first) rides in the turn tier. The server's
  * `promptVersion` hashes the block, so a change to one shows in the cost log and the eval results.
  *
- * Live through the server today: chat, initiative and stream. The group, game and date builders use
+ * Live through the server today: chat, initiative, stream and group. The game and date builders use
  * theirs already; diary, secret note, bedtime and call are ready for when those features reach the
  * model, and the eval set (server/evals) checks every one of them now.
  */
