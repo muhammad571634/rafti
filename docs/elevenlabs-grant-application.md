@@ -3,7 +3,8 @@
 Apply at `https://elevenlabs.io/grants-application` with a company-domain email. Facts below come from the repo (`docs/business-plan.md`, `src/economy/plans.ts`); fill the brackets.
 
 ## Before applying
-1. Domain and email: `sigmazam.com` is taken (GoDaddy name servers). `.app`, `.ai`, `.io`, `.co` showed no DNS records (not proof they are free). Buy one at Cloudflare Registrar (sold at cost; roughly $10 to $15 a year for .com or .app, .ai far more: check at checkout). Email on it: Zoho Mail Free (one domain, up to 5 users, 5 GB each, no IMAP) or Google Workspace Business Starter (about $7 a user a month on the annual plan; third-party price).
+1. DECIDED 2026-10-31: `sigmazam.app` at Porkbun, nothing else added. Porkbun list (third-party fetch, confirm at checkout): .app $8.75 first year then $14.93, .io $28.12 then $51.80, .com $11.08, .co $15.76 then $31.20; WHOIS privacy and 20 free email forwards are included. Email: free forwarding at first (receive only), Zoho Mail Free later if the owner wants to send from the domain.
+1. (older note) Domain and email: `sigmazam.com` is taken (GoDaddy name servers). `.app`, `.ai`, `.io`, `.co` showed no DNS records (not proof they are free). Buy one at Cloudflare Registrar (sold at cost; roughly $10 to $15 a year for .com or .app, .ai far more: check at checkout). Email on it: Zoho Mail Free (one domain, up to 5 users, 5 GB each, no IMAP) or Google Workspace Business Starter (about $7 a user a month on the annual plan; third-party price).
 2. A real website, not a placeholder: what the app is, the plans, privacy policy, terms. The grant also requires the "ElevenLabs Grants" logo and a link to ElevenLabs at the bottom of the site for 12 months.
 3. Keep the same company facts everywhere (site, store listing, application).
 
