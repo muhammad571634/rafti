@@ -1,5 +1,9 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z82. How the three agents work together (2026-10-31, Claude 2). NEXT: owner deploys the server (0z80); phone notifications in progress
+
+- Owner: Gemini 4 Argon works on this project and writes code too; find a logic for it. Rules: `.agents/rules/project-memory.md` section 6. Claims live in `.agents/now.md` (not in git): add a line before the first edit, remove it when done. Commit named paths only.
+
 ### 0z81. Shared cross-agent memory wired for Gemini 4 Argon & Claude (2026-10-31, Antigravity). NEXT: owner deploys the server (0z80); phone notifications (`docs/road-to-launch.md`)
 
 - Distilled all standing Sigmazam project decisions, owner workflow rules, Expo/Metro rules, Fly/Supabase/ADB/EAS setup, and launch gates into `.agents/rules/project-memory.md` (`trigger: always_on` for Antigravity/Gemini) and linked it from `CLAUDE.md` and `AGENTS.md` so Claude 1, Claude 2, and Gemini 4 Argon read and update the same shared memory.

@@ -60,3 +60,16 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
   - `Claude 1`, `Claude 2`, and `Gemini` share `C:\Users\joray\BIMOBIMO` on branch `local-work`.
   - Run `git fetch origin` and `git pull --ff-only origin local-work` before starting and before pushing. Leave uncommitted files from the owner or other agents untouched.
   - Required checks before finishing code: `npx tsc --noEmit` and `npm test` (plus `server` tests / `check:locales` / `check:content` when touched).
+
+## 6. Working Together (Claude 1, Claude 2, Gemini 4 Argon)
+Equal engineers on one checkout. Nobody waits for another agent's permission; these rules only stop collisions.
+- **Say what you hold**: `.agents/now.md` (not in git) has one line per agent: who, task, files or area, start time. Read it after pulling, add your line before your first edit, remove it when you finish. A line older than 2 hours with no matching commit is stale: delete it. Another agent's area is off limits: take other work, or wait if you must have it, and tell the owner only when truly blocked.
+- **Hot files**: `src/store/use-app-store.ts`, `HANDOFF.md`, `src/i18n/locales/*`, `package.json`. One agent at a time; edit, commit and push quickly.
+- **Commit only your own files**: name each path. Never `git add -A`, `git add .` or `git add -u`: they sweep up another agent's half-done work. A change you did not make is not yours to commit, revert or reformat.
+- **Who does what, unless the owner says otherwise**: Claude leads architecture, server, wallet and money, safety and prompts, and the store. Gemini leads batch work from a brief in `docs/agent-tasks/` (translations, content, scans, research, mechanical changes). Either can write any code. Whoever the owner asks does the task. When an agent hits its limit, another continues from `HANDOFF.md`.
+- **Big jobs handed over get a brief**: scope, files allowed, checks, what done means, in `docs/agent-tasks/<name>.md`.
+- **A second reader**: work on money, safety, prompts or more than 20 files gets read by a different agent before deploy (Claude found 36 errors in a Gemini pass, 0z62). The writer owns the fix. Check a finding in the code before acting on it; redesign ideas are only suggestions.
+- **One at a time**: the A51, evals and the free model keys are shared. Note them in your `.agents/now.md` line. Never restart Metro or the 8787 server another agent is using.
+- **Disagreeing**: do not undo another agent's commit on your own. Write the problem in `HANDOFF.md` and fix forward; a product or taste question goes to the owner.
+- **HANDOFF**: pull first, take the next block number, put your agent's name in the title, and leave other blocks as they are.
+
