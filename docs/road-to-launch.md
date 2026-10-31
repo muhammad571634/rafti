@@ -35,7 +35,7 @@ stream, a first text left out); never pass a stock line off as the character.
 1. Done (D138): everything a person reads comes from the model. Left over: pushes and photos, in the table above.
 2. Done (D139): group, tap a member's avatar to make them answer, as Character.AI does (`invoke-character`).
 3. Cost: `cached=0` is not a bug (measured 2026-10-31, 0z75): Gemini's implicit cache needs a prompt of about 4,096 tokens or more, ours is about 3,100. A real reply costs about $0.0012, input is 85% of it. Left as is; revisit when traffic is real (another provider with automatic cache, `openai-compat.ts`, or a longer shared prefix).
-4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there.
+4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there. Owner, 2026-10-31: leave it until real users and payments (RevenueCat); the per-account limits cap the harm meanwhile. What is already there: server wallet (`wallet_spend`, ledger, idempotent keys, `/v1/wallet/*`); the app spends locally and mirrors to the server. When it is time: the server charges on `/v1/chat/reply` and `/v1/chat/group` by an idempotent key (`spend:<key>`, so the app's mirror cannot double it), the free cases (hello, join) get their own route or flag, and a `ENFORCE_WALLET` env switch ships off first.
 5. Art: the owner redraws, the agent wires it.
 6. Voice: replies first, live calls after.
 7. Payments: Google Play Billing, then StoreKit.

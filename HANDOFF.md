@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z76. Server-side shell enforcement postponed by the owner (2026-10-31, Claude 2). NEXT: A51 check of 0z74, then road-to-launch item 5 (art, when the owner says) or 6 (voice)
+
+- Read the code: the server already has the wallet (`wallet_spend`, ledger, idempotent keys, `/v1/wallet/*`); the app spends locally and mirrors each spend with a random key. The model routes neither check nor charge. A rigorous fix needs the server to own the price of each route and the free cases (hello, join, first texts) to be told apart on the server, which is a change to the live paid flow.
+- Owner chose "leave it for now": per-account limits cap the harm until real users and RevenueCat. The plan for later is in `docs/road-to-launch.md` item 4. No code change.
+
 ### 0z75. `cached=0` is the model's limit, not a bug (2026-10-31, Claude 2). NEXT: A51 check of 0z74, then road-to-launch item 4
 
 - Measured on `gemini-3.1-flash-lite` with the owner's key: the prefix of five real consecutive chat replies is byte-identical for about 2,500 tokens (the tier layout works), yet `cached` stays 0. A synthetic prompt shows why: 1,155 / 2,025 / 3,305 tokens never cache, 6,715 caches only some calls, 10,125 caches 6,123. Google's page lists a 4,096-token minimum for the newer Flash models. Our prompt is about 3,100.
