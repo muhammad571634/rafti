@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z78. Voice: ElevenLabs grant, domain, launch plan (2026-10-31, Claude 2). NEXT: owner buys a domain and email, I build a one-page site and finish the application
+
+- Draft: `docs/elevenlabs-grant-application.md`. Needs: a company-domain email (not Gmail), a real website with privacy and terms and, once approved, the ElevenLabs Grants logo plus a link at the bottom for 12 months. No official approval rate exists; third-party notes name rejections for personal email, thin site and facts that do not match.
+- Owner decisions today: enter the market on ElevenLabs with 100 to 300 payers; the free tier gets pre-recorded voice letters (about $20 one-time); we also do (a) a cache for repeated lines, (b) a daily minute cap like the other apps; stay inside what the market does.
+- To do, in order: domain + email (Cloudflare Registrar + Zoho Mail Free), one-page site, grant application, then the voice adapter with ElevenLabs (replies, then user voice messages with speech to text, then calls), then the pre-recorded letters, the line cache and the daily minute caps.
+- Numbers (Flash, 40% use, 300 payers split 165 Basic / 90 Pro yearly / 45 Pro): about $3,000 a month margin before fixed cost and free users; the 33M-character grant lasts about 10 months at 100 payers and about 3 months at 300.
+
 ### 0z77. Voice provider check: Fish Audio looks like the pick, needs the owner's key and ears (2026-10-31, Claude 2). NEXT: owner makes a Fish account and sets FISH_API_KEY, then the listening test
 
 - Full numbers and risks in `docs/voice-provider-fish-audio.md`. Fish API: $15 per 1M bytes (about $0.011 to $0.024 a minute of speech) against ElevenLabs Flash about $0.031 and v3 about $0.062. Full-use margin of Pro yearly: about $3.8 with Fish, $0.7 with ElevenLabs Flash, negative with v3. The business plan's call minute ($0.015) was too low; a reply costs $0.0012, not $0.0006.
