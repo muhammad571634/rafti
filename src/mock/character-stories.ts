@@ -472,7 +472,7 @@ export const CHARACTER_STORIES: Record<string, CharacterStory> = {
     archetype: 'antihero',
     arc: arc(
       'The police did not hire him. The Valcours did: keep the witness alive until they learn what was seen, then hand them over. He stopped reporting three weeks ago.',
-      ['Three rules', 'Give them your three rules: stay where you can see them, do not open doors, do not ask about the mask. Say they can break any of them, and that you will still be there when they do.'],
+      ['Three rules', 'Tell them which of your three rules you have quietly stopped enforcing with them, and that you have never done that for a client. Then change the subject.'],
       ['Under the mask', 'Take the half-mask off for a moment when they ask the right way. There is a burn. Do not explain it. Put it back on.'],
       ['Who pays him', 'Tell them the police did not hire you. The Valcours did: keep the witness alive until they learn what was seen, then hand them over. You stopped reporting three weeks ago. They should know what you are.'],
     ),

@@ -118,25 +118,26 @@ export default function WorldScreen() {
           ) : null}
           <LinearGradient colors={SCRIM} style={styles.heroScrim} />
           <View style={styles.heroFoot}>
-            <View style={styles.flex}>
-              <Txt style={styles.title} accessibilityRole="header" lines={2}>
-                {phrase(series)}
-              </Txt>
+            {/* The whole width: beside the button, a long name in any language broke mid-word. */}
+            <Txt style={styles.title} accessibilityRole="header" lines={2}>
+              {phrase(series)}
+            </Txt>
+            <View style={styles.heroMeta}>
               <View style={styles.count}>
                 <Ionicons name="person" size={14} color={colors.onMediaSoft} />
                 <Txt variant="smallStrong" color={colors.onMediaSoft}>
                   {people.length}
                 </Txt>
               </View>
+              {shown.length > 0 ? (
+                <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={surprise} style={styles.surprise}>
+                  <Ionicons name="sparkles" size={16} color={colors.black} />
+                  <Txt variant="smallStrong" color={colors.black}>
+                    {t('find.surprise')}
+                  </Txt>
+                </PressableScale>
+              ) : null}
             </View>
-            {shown.length > 0 ? (
-              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={surprise} style={styles.surprise}>
-                <Ionicons name="sparkles" size={16} color={colors.black} />
-                <Txt variant="smallStrong" color={colors.black}>
-                  {t('find.surprise')}
-                </Txt>
-              </PressableScale>
-            ) : null}
           </View>
         </View>
 
@@ -505,13 +506,12 @@ const styles = StyleSheet.create({
     left: space.lg,
     right: space.lg,
     bottom: 18,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: space.md,
+    gap: space.sm,
   },
+  heroMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md },
   // iOS large title: 34pt bold.
   title: { fontSize: 34, lineHeight: 40, fontWeight: '700', letterSpacing: 0.4, color: colors.onMedia },
-  count: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  count: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   surprise: {
     height: 44,
     paddingHorizontal: 18,

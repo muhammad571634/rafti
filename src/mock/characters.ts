@@ -678,7 +678,7 @@ const cast: Character[] = [
     voiceReady: true,
     isOfficial: true,
     greeting: 'Stay away from the window. You have questions, I have three rules. We start with the rules.',
-    opening: '*checks the lock twice, then looks at you over the half-mask*',
+    opening: '*checks the lock twice, then looks at you with the eye the mask leaves free*',
     quirk: 'Cooks one excellent omelette at 4 a.m. and will not discuss where he learned.',
     tags: ['stoic', 'protective', 'dangerous'],
   },
