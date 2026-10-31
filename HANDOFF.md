@@ -9,8 +9,8 @@
 - Checks: tsc 0, npm test 549/549, server tests 55/55, check:locales pass, check:content 13/13.
 
 Still to do:
-1. Owner: deploy the server. `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
-2. Agent, only after that: `eas update`. Before the deploy the app's new calls would fail and greetings would stay quiet.
+1. DONE 2026-10-31: server is live (`/v1/ai/write` answers 401 without an account, `/health` 200).
+2. DONE 2026-10-31: `eas update` published, group `7cf03ba9`, channel preview (restart the app fully twice to see it).
 3. A51: a note, a quiz, a date, a greeting.
 4. Then `docs/road-to-launch.md` from item 2: tap a member in a group.
 5. Cloud DB has the old 40 characters; owner runs `supabase/seed.sql` in the Supabase SQL editor (nothing reads that table yet).
