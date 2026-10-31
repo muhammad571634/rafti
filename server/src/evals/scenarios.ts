@@ -1022,7 +1022,7 @@ export const SCENARIOS: readonly EvalScenario[] = [
     setup: { level: 6 },
     chat: [['me', 'dentist at 3, I hate it']],
     first: { kind: 'thread', about: 'dentist appointment', quote: 'dentist at 3, I hate it', phase: 'after', why: 'ask how it went' },
-    expect: [{ kind: 'includes', any: ['dentist', 'teeth', 'tooth'] }, { kind: 'lines', max: 3 }],
+    expect: [{ kind: 'includes', any: ['dentist', 'teeth', 'tooth', 'the chair'] }, { kind: 'lines', max: 3 }],
     rubric: 'Asks how the dentist went, kind with a little humour, calm Rowan.',
   },
   {

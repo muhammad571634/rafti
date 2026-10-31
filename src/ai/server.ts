@@ -39,9 +39,9 @@ const FIRST_TEXT_TIMEOUT_MS = 15_000;
 /** A whole character is the longest answer the model writes. */
 const DRAFT_TIMEOUT_MS = 40_000;
 /** A stream line is short; a stuck one would stall the stream, so the stand-in goes sooner. */
-const STREAM_LINE_TIMEOUT_MS = 12_000;
-/** The group waits on one member at a time: long enough for the guards, short enough to fall back. */
-const GROUP_REPLY_TIMEOUT_MS = 15_000;
+const STREAM_LINE_TIMEOUT_MS = 22_000;
+/** The group waits on one member at a time, as long as the server tries its models (`LLM_TIMEOUT_MS`). */
+const GROUP_REPLY_TIMEOUT_MS = 22_000;
 /** Nobody waits on the memory pass. */
 const MEMORY_PASS_TIMEOUT_MS = 30_000;
 

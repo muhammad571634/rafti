@@ -9,7 +9,9 @@ import { LlmBusyError, type LlmProvider } from './types.ts';
  *
  * Free-tier requests queue behind paid ones, so a model is sometimes "experiencing high demand" or
  * retired for new keys: `models` is tried in order, each with its own deadline, and the next one
- * answers instead. Only when every one is busy does the app fall back to its stand-in.
+ * answers instead. Only when every one is busy is the answer "busy", and the app says so: it never
+ * puts a stock line in a character's mouth while the model is on. A paid key is the same code: set
+ * the `GEMINI_API_KEY` secret (and `CHAT_MODELS` if the models change) on the server.
  * `temperature`: 0.9 for the characters; the eval set's judge reads at a low one.
  */
 export function geminiProvider(apiKey: string, models: readonly string[], { temperature = 0.9 } = {}): LlmProvider {
@@ -19,9 +21,11 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
     async complete(layout, { timeoutMs, temperature: callTemperature }) {
       const deadline = Date.now() + timeoutMs;
       let last: unknown;
-      for (const model of models) {
+      // Round twice: a model that just said "high demand" is often free again a moment later.
+      for (const [i, model] of [...models, ...models].entries()) {
         const left = deadline - Date.now();
         if (left < 1500) break;
+        const tried = Date.now();
         try {
           const res = await ai.models.generateContent({
             model,
@@ -30,9 +34,9 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
               systemInstruction: layout.system.map((block) => block.text).join('\n\n'),
               responseMimeType: 'application/json',
               temperature: callTemperature ?? temperature,
-              // One model may not take the whole wait: leave room for the next.
-              // Whole milliseconds: a half (an odd wait halved) throws before the call is made.
-              abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(6000, timeoutMs / 2)))),
+              // One model may not take the whole wait: the first gets half, each next a quarter.
+              // Whole milliseconds: a fraction throws before the call is made.
+              abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(5000, timeoutMs / (i === 0 ? 2 : 4))))),
             },
           });
           const usage = res.usageMetadata;
@@ -51,6 +55,8 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
         } catch (error) {
           last = error;
           console.warn(`[gemini] ${model}: ${String((error as Error).message).slice(0, 140)}`);
+          // Turned away at once (a quota, high demand): a short breath before the next.
+          if (Date.now() - tried < 1000) await new Promise((resolve) => setTimeout(resolve, 400));
         }
       }
       throw new LlmBusyError(String((last as Error | undefined)?.message ?? 'no model answered'));

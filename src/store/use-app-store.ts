@@ -438,6 +438,8 @@ interface AppState {
   setComposing: (conversationId: string, typing: boolean) => void;
   /** Asks again for the reply that failed ("Not Delivered", tap). */
   retryReply: (conversationId: string) => void;
+  /** The same in a group: asks the members again for the line that got no answer. */
+  retryGroupReply: (groupId: string) => void;
   /** Shows another version of their newest reply (‹ › or a swipe). */
   showReplyVersion: (conversationId: string, index: number) => void;
   /** Changes your newest text and asks them again; their answer to the old words goes. Costs a message. */
@@ -1230,6 +1232,19 @@ export const useAppStore = create<AppState>()(
         scheduleReply(set, get, conversationId, turn);
       },
 
+      retryGroupReply: (groupId) => {
+        const failed = (get().messages[groupId] ?? []).findLast((m) => m.failed);
+        if (!failed || get().groupTyping[groupId]?.length) return;
+        set((s) => ({
+          messages: { ...s.messages, [groupId]: (s.messages[groupId] ?? []).map((m) => (m.id === failed.id ? { ...m, failed: undefined } : m)) },
+        }));
+        const turns = failedGroupTurns.get(groupId);
+        failedGroupTurns.delete(groupId);
+        // After a restart the turns are gone; answering the same line again still fits.
+        if (turns) writeGroupTurns(set, get, groupId, turns);
+        else answerGroup(set, get, groupId, failed.text ?? '', (gender) => pick(groupReplies(gender)));
+      },
+
       regenerateReply: (conversationId, off) => {
         const state = get();
         const exchange = lastExchange(state.messages[conversationId]);
@@ -1258,7 +1273,13 @@ export const useAppStore = create<AppState>()(
         for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
           steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`, chatGender(get(), conversationId));
         }
-        scheduleReply(set, get, conversationId, { lines: steer, gain: 0, avoid, off });
+        scheduleReply(set, get, conversationId, {
+          lines: steer,
+          gain: 0,
+          avoid,
+          off,
+          steer: isSteer(anchor) ? { kind: anchor.card as 'continue' | 'skip', skip: anchor.skip, to: anchor.skipTo } : undefined,
+        });
         return 'sent';
       },
 
@@ -1354,7 +1375,7 @@ export const useAppStore = create<AppState>()(
         noticeGroupAiIfDue(set, get, id);
         // The first member says hello and names the others.
         const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
-        writeGroupTurns(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))], cue: groupHelloCue(others) }]);
+        writeGroupTurns(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))], cue: groupHelloCue(others), quiet: true }]);
         return id;
       },
 
@@ -1540,7 +1561,7 @@ export const useAppStore = create<AppState>()(
         appendGroupMessage(set, get, groupId, groupSystem(groupId, i18n.t('group.joinedLine', { name: memberName(get(), characterId) })), {
           quiet: true,
         });
-        writeGroupTurns(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines(genderOf(get(), characterId)))], cue: groupJoinCue() }]);
+        writeGroupTurns(set, get, groupId, [{ characterId, lines: [pick(groupJoinLines(genderOf(get(), characterId)))], cue: groupJoinCue(), quiet: true }]);
         return true;
       },
 
@@ -3791,6 +3812,9 @@ function sendBrief(set: Setter, get: Getter, at: Date): string | null {
  * wake-up call, the diary mood, a settled thread). Server off, busy or slow: the scripted line, as
  * before. `onSkip` is what the model's skip sends: nothing, or the scripted line.
  */
+/** How long a first text waits before asking the model again. */
+const FIRST_TEXT_RETRIES_MS = [45_000, 180_000];
+
 function writeFirst(
   set: Setter,
   get: Getter,
@@ -3799,6 +3823,9 @@ function writeFirst(
   reach: string,
   request: FirstTextRequest,
   onSkip: 'nothing' | 'scripted',
+  /** The model never answered and the text is dropped. */
+  onGiveUp?: () => void,
+  attempt = 0,
 ) {
   const send = (lines: string[]) =>
     lines.forEach((text, i) =>
@@ -3814,14 +3841,27 @@ function writeFirst(
   // A reply already "typing…" in this chat keeps the indicator; this text does not take it over.
   const owns = !get().typing[conversationId];
   if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: true } }));
+  const asked = Date.now();
   void accessToken()
     .then((token) => serverFirstText(request, token))
     .then((reply) => {
       if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
       // The chat (or the whole account) was deleted meanwhile: nothing to write into.
       if (!get().conversations.some((c) => c.id === conversationId)) return;
-      if (!reply) send([scripted]);
-      else if (!reply.skip) send(reply.lines);
+      if (!reply) {
+        // Busy or slow: asked again a little later, then left out. A friend who stays quiet is
+        // better than a stock line in their mouth.
+        const wait = FIRST_TEXT_RETRIES_MS[attempt];
+        if (wait === undefined) return onGiveUp?.();
+        setTimeout(() => {
+          const last = get().messages[conversationId]?.at(-1);
+          // The chat moved on meanwhile: this text would answer nothing.
+          if (last && Date.parse(last.createdAt) > asked) return onGiveUp?.();
+          writeFirst(set, get, conversationId, scripted, reach, request, onSkip, onGiveUp, attempt + 1);
+        }, wait);
+        return;
+      }
+      if (!reply.skip) send(reply.lines);
       else if (onSkip === 'scripted') send([scripted]);
     });
 }
@@ -3939,7 +3979,9 @@ function sendWorldNews(set: Setter, get: Getter, at: Date, force = false): strin
       utcOffsetMin: -at.getTimezoneOffset(),
     },
   };
-  writeFirst(set, get, conversationId, worldNewsLine(news, character.gender), 'world', request, 'nothing');
+  // Not told after all: it stays due for the next time the day is checked.
+  const untell = () => set((s) => ({ daily: { ...s.daily, worldNewsSent: (s.daily.worldNewsSent ?? []).filter((k) => k !== told) } }));
+  writeFirst(set, get, conversationId, worldNewsLine(news, character.gender), 'world', request, 'nothing', untell);
   return character.id;
 }
 
@@ -4443,7 +4485,7 @@ function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'cont
   appendMessage(set, get, conversationId, marker, { quiet: true });
   // A new turn: the versions of the reply before it are done.
   set((s) => ({ replyVersions: omitKey(s.replyVersions, conversationId) }));
-  scheduleReply(set, get, conversationId, { lines: mockSteerLines(kind, skip, marker.id, chatGender(get(), conversationId)), gain: 0 });
+  scheduleReply(set, get, conversationId, { lines: mockSteerLines(kind, skip, marker.id, chatGender(get(), conversationId)), gain: 0, steer: { kind, skip, to: words } });
   return 'sent';
 }
 
@@ -4468,10 +4510,12 @@ interface ReplyRequest {
   off?: OffReason;
   /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
   trigger?: TurnTrigger;
+  /** A continue or a time skip: the model answers it from `steerCue`, `lines` are only its stand-in. */
+  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
 }
 
 function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
-  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message' } = request;
+  const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer } = request;
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return;
@@ -4507,8 +4551,10 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       : null;
   const turn = ctx ? planReply(ctx) : null;
   const avoided = avoid == null ? undefined : typeof avoid === 'string' ? [avoid] : avoid;
+  // The model writes this turn when it is on; only `text` keeps its words. A continue or a skip brings its own stand-in.
+  const modelTurn = text == null && (given == null || !!steer);
   // An arc beat that has just opened: the model brings it up in its own words (`arcLines`), a stand-in adds a line.
-  const beat = text == null && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
+  const beat = modelTurn && given == null && bond?.arcDue && character?.arc ? localCharacter(character).arc?.beats.find((b) => b.atLevel === bond.arcDue) : undefined;
   const standIn = () => {
     const lines = text != null ? [text] : (given ?? (ctx && turn ? writeMockReply(turn.plan, ctx, { avoid: avoided, interests: state.user.interests }) : []));
     return beat ? [...lines, arcLine(beat.title, `${character?.id}:${beat.atLevel}`, character?.gender)] : lines;
@@ -4605,12 +4651,13 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   // a scripted line keeps its words. "Typing…" shows while it thinks. A failure (offline, the free
   // tier's daily cap, a slow answer) says so under the user's line with a way to try again, as iOS
   // Messages does, instead of passing the stand-in off as their reply.
-  if (text == null && given == null && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
+  if (modelTurn && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
     const messages = ctx.history.filter((m) => !m.pending);
     const input = {
       character,
       user: state.user,
       relationship: bond,
+      steer,
       prefs: replyPrefs(bond),
       // Who they are here, the scene and the world books: the same as the stand-in reads.
       persona: personaFor(conversationId, state),
@@ -4895,6 +4942,8 @@ interface GroupTurn {
   lines: string[];
   /** What this turn is for, when it is not simply answering the user (`groupReplyParts`). */
   cue?: readonly string[];
+  /** Nobody asked for this one (a hello): if the model is busy it is just left out. */
+  quiet?: boolean;
 }
 
 /** What one member's reply sends: their persona and world, the group so far, and the lines still landing. */
@@ -4916,11 +4965,15 @@ function groupInput(state: AppState, group: GroupChat, turn: GroupTurn, said: re
   };
 }
 
+/** What a group could not get, kept for "Try again" (`retryGroupReply`). */
+const failedGroupTurns = new Map<string, GroupTurn[]>();
+
 /**
  * The members' replies, one model call each, in their own voices. The next member reads what the
- * one before said, so they can answer each other. They type while the model thinks; off, busy or
- * slow, the stand-in goes out instead. A crisis the model noticed brings the helpline card, and no
- * one else joins in.
+ * one before said, so they can answer each other. They type while the model thinks. Busy or slow:
+ * the user's line says "Not Delivered" with a way to ask again, as in a one-to-one chat, and a
+ * member who was only joining in stays quiet. A stock line goes out only with the model off (the
+ * UI's stand-in). A crisis the model noticed brings the helpline card, and no one else joins in.
  */
 function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: GroupTurn[]) {
   const { settings } = get();
@@ -4939,19 +4992,35 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
         .then((token) => serverGroupReply(input, token))
         .catch(() => null);
       stopGroupTyping(set, groupId, turn.characterId);
-      const lines = reply?.lines ?? turn.lines;
-      if (reply?.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
+      if (!reply) {
+        if (!said.length && !turn.quiet) failGroupTurns(set, groupId, turns);
+        return;
+      }
+      if (reply.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
         appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
       }
-      said.push(...lines.map((line) => memberText(groupId, turn.characterId, line)));
-      scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines }]);
-      if (reply?.crisis) return;
+      said.push(...reply.lines.map((line) => memberText(groupId, turn.characterId, line)));
+      scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines: reply.lines }]);
+      if (reply.crisis) return;
     }
   })();
 }
 
+/** The user's newest line in the group got no answer. */
+function failGroupTurns(set: Setter, groupId: string, turns: GroupTurn[]) {
+  failedGroupTurns.set(groupId, turns);
+  set((s) => {
+    const list = s.messages[groupId] ?? [];
+    const mine = list.findLast((m) => m.author === 'me');
+    if (!mine) return {};
+    return { messages: { ...s.messages, [groupId]: list.map((m) => (m.id === mine.id ? { ...m, failed: true } : m)) } };
+  });
+}
+
 /** A stream's runner generation: a pause, a delete or a new run makes the older one stop. */
 const streamEpoch = new Map<string, number>();
+/** How long a stream line waits before asking a busy model once more. */
+const STREAM_RETRY_MS = 3000;
 
 /** One round of a stream: free while today's free rounds last, else shells (`src/economy/streams.ts`). */
 function payStreamRound(set: Setter, get: Getter) {
@@ -5020,12 +5089,17 @@ function runStream(set: Setter, get: Getter, streamId: string) {
       turn: { index, total: stream.target },
     };
     const started = Date.now();
-    void accessToken()
-      .then((token) => serverStreamLine(request, token))
-      .then((line) => {
-        const text = line ?? canned;
-        land(text, Math.max(0, typingMs(text) - (Date.now() - started)));
-      });
+    const ask = (again: boolean) =>
+      void accessToken()
+        .then((token) => serverStreamLine(request, token))
+        .then((line) => {
+          if (!live()) return;
+          if (line) land(line, Math.max(0, typingMs(line) - (Date.now() - started)));
+          else if (again) setTimeout(() => live() && ask(false), STREAM_RETRY_MS);
+          // Still busy: the stream pauses with the round's lines kept, never a stock line in their voice.
+          else get().pauseStream(streamId);
+        });
+    ask(true);
   };
   step();
 }
@@ -5063,7 +5137,8 @@ function scheduleGroupReplies(
   set((s) => ({
     messages: {
       ...s.messages,
-      [groupId]: (s.messages[groupId] ?? []).map((m) => (m.author === 'me' && !m.readAt ? { ...m, readAt } : m)),
+      // A new reply answers a line that failed before too, so it is no longer "Not Delivered".
+      [groupId]: (s.messages[groupId] ?? []).map((m) => (m.author === 'me' && (!m.readAt || m.failed) ? { ...m, readAt: m.readAt ?? readAt, failed: undefined } : m)),
     },
   }));
 

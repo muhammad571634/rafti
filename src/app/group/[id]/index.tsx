@@ -70,6 +70,7 @@ export default function GroupChatScreen() {
   const sendGroupVoice = useAppStore((s) => s.sendGroupVoice);
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
   const continueGroup = useAppStore((s) => s.continueGroup);
+  const retryGroupReply = useAppStore((s) => s.retryGroupReply);
   const skipGroupTime = useAppStore((s) => s.skipGroupTime);
   const playGroupTruthOrDare = useAppStore((s) => s.playGroupTruthOrDare);
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
@@ -200,12 +201,13 @@ export default function GroupChatScreen() {
               senderName={author ? nameOf(author) : undefined}
               aiNoticeText={noticeText}
               onLongPress={openMenu}
+              onRetry={item.failed && groupId ? () => retryGroupReply(groupId) : undefined}
             />
           </View>
         </View>
       );
     },
-    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu],
+    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, groupId, retryGroupReply],
   );
 
   if (!group || !groupId || members.length < 2) {
