@@ -45,3 +45,12 @@ Real users use a fraction of the allowance, so these are ceilings.
 1. Owner makes a Fish account and API key, sets `FISH_API_KEY` as a Windows user variable (never in chat or files). The key is free until 2026-11-30, so the test costs nothing.
 2. Agent renders the same 6 lines in 5 languages (en, ru, tr, ja, th) with Fish and, if the owner agrees to the small cost, with ElevenLabs; earshot measures, owner picks by ear.
 3. If Fish wins: add the voice adapter behind the existing provider interface (`backend-plan.md` section 4), then voice replies, then LiveKit calls.
+
+## Fish Terms read (2026-10-31, `https://fish.audio/terms/`; not legal advice, the page we could read may be older than today's)
+
+- Free plans: personal, non-commercial use only (the iOS section says the same). Paid plans are licensed for commercial use. So a launch needs a paid plan or the pay-as-you-go API; the owner's "8000 credits" are the free plan's monthly credits (about 7 minutes of speech), not a paid balance.
+- Output ownership is not stated. AI companions are not mentioned. Fish "encourages" saying content is AI-made and forbids passing it off as human (we already say "AI character").
+- No voice-cloning section. General rules only: no infringing anyone's rights, no impersonation, the user alone is responsible for what they submit and indemnifies Fish.
+- Community voices: sharing one grants other users a licence "as permitted by the functionality of the Services"; whether that covers commercial use in an app is not clear, and using content you do not own needs the owner's consent. The public library holds game characters and announcers uploaded by strangers, so Fish's permission is not the rights holder's. Not used.
+- Uploaded content "may be used to develop, train, or enhance" Fish's models and may not be fully deletable. For user voice cloning this must be said to the user in the consent step and in our privacy policy.
+- Do before launch: write to Fish for written answers on (1) commercial use of outputs in a consumer app, (2) AI companion use, (3) opting uploads out of training, (4) retention and deletion of cloned voices.
