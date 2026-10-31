@@ -4,6 +4,8 @@
 
 - Measured (`npm run eval -- --group memory --no-judge`, writer `gemini-3.1-flash-lite`): memory writing 7/7 (`mempass-*`); memory use in replies 3 of 6 failed: the model got the fact (it is in the prompt) but answered vaguely ("you've got this" instead of "the driving test"; "Typical" instead of "Mira cancelled again?").
 - Fix: one rule in `CHARACTER_RULES` STYLE (`src/ai/rules.ts`): name the thing you know when today ties to it, never recite. Repeat x4: summary-yesterday 0/4 to 3/4, earlier-in-chat 0/4 to 1/4, profile-job 0/4 to 0/4 (one single run passed it). Group run 11/13. Runs vary; the stronger `gemini-3-flash-preview` was out of free quota, so no comparison. Baseline not saved.
+- Pattern count over 111 saved chat answers (`server/eval-results`): 46% end on a question, 26% open with a `*action*`, 54% of English replies say the user's name (people do not). Two rules added in `MODE: CHAT` (`src/ai/modes.ts`: name rarely, no stock `*sighs*`) and the name dropped from the "use what you know" list in `rules.ts`. On 12 scenarios: action openers 26% to 1/12, name 9/12 to 7/12 (still high on the lite model), summary-yesterday now passes. Question rate left alone: the planner already limits it (`flow.ts`).
+- Free Gemini quota ran out during a full eval (429/503), so the full 90 did not finish. Rerun when it resets, ideally on the paid key.
 - Checks: tsc 0, npm test 550/550. Reminder: before any build or store document the ElevenLabs grant and the domain come first (memory `grant-and-domain-before-build`).
 
 ### 0z78. Voice: ElevenLabs grant, domain, launch plan (2026-10-31, Claude 2). NEXT: owner buys a domain and email, I build a one-page site and finish the application

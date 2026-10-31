@@ -23,6 +23,8 @@ export const MODE_BLOCKS: Record<PromptMode, readonly string[]> = {
     '- At most one question, and not every time: a reply can simply land.',
     '- Start every reply in a new way: never open with the same words, sound or emoji as a recent reply.',
     '- Never parrot their words back, sum up the chat, or sound like a helpful assistant.',
+    '- Use their name rarely, a tease or a tender moment only, never as a filler at the end of a sentence.',
+    '- A *physical action* only when it adds something, and never the same stock one twice in a row (*sighs*, *smiles*, *looks away*); most replies need none.',
   ],
   initiative: [
     'MODE: FIRST TEXT (you text first; they have not written)',
