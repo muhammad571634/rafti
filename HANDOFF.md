@@ -1,5 +1,9 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z81. Shared cross-agent memory wired for Gemini 4 Argon & Claude (2026-10-31, Antigravity). NEXT: owner deploys the server (0z80); phone notifications (`docs/road-to-launch.md`)
+
+- Distilled all standing Sigmazam project decisions, owner workflow rules, Expo/Metro rules, Fly/Supabase/ADB/EAS setup, and launch gates into `.agents/rules/project-memory.md` (`trigger: always_on` for Antigravity/Gemini) and linked it from `CLAUDE.md` and `AGENTS.md` so Claude 1, Claude 2, and Gemini 4 Argon read and update the same shared memory.
+
 ### 0z80. The model sees photos the user sends (2026-10-31, Claude 2). NEXT: owner deploys the server; phone notifications (road-to-launch)
 
 - The phone makes each photo small (long edge 1024, `src/lib/photo-for-model.ts`) and sends the ones the character has not answered with the reply request; the picture is not stored on the server. The model answers with one line about each (`Message.photoNote`), and later replies read that line, so they cost no picture. A refused or unreadable picture: the character says they cannot see it. First photo asks for consent once (`usePickPhoto`, App Store 5.1.2(i)). Rules in `src/ai/photo-prompt.ts`.

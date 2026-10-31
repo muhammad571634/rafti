@@ -5,6 +5,7 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 # Sigmazam — any agent (Claude, Gemini/Antigravity, Codex) starts here
 
 1. Read `HANDOFF.md` in this repo — its top block says exactly what to do next.
+   Shared cross-agent memory (standing decisions, infra, owner workflow for Claude & Gemini/Antigravity): `.agents/rules/project-memory.md`.
    Flow order and status: `docs/flows.md`.
 2. Read `AGENT-START.md` in the sibling strategy repo `rafti-research`
    (`../rafti-research/`, branch `claude/bimobimo-teardown`). It gives the reading

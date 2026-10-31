@@ -1,4 +1,5 @@
 @AGENTS.md
+@.agents/rules/project-memory.md
 
 ## Development Server & Expo Go
 - The app runs on Expo Go (port 8081).
