@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z74. Tap a group member to make them speak (2026-10-31, Claude 2). NEXT: A51 check, then road-to-launch item 3
+
+- Tap the avatar next to a member's line in a group: that member answers now (`invokeGroupMember`, cue `groupInvokeCue` in `src/lib/chat-steer.ts`, `onAvatarPress` on `MessageBubble`). One text shell. Not while someone types, not before the first line, not after the helpline card. The server takes any cue, so no deploy is needed.
+- Checks: tsc 0, npm test 550/550.
+- A51: open a group, tap a member's avatar, a line from that member should land. Then `docs/road-to-launch.md` item 3 (prompt cache shows `cached=0`).
+
 ### 0z73. Everything a character says now comes from the model (2026-10-31, Claude 2). NEXT: owner deploys the server, then OTA, then the A51
 
 - Seen on the A51 before this: truth or dare comes from the model ("«Очередная проблема, которую придется нести на руках»"), "Не доставлено" shows when Google is busy and the tap retries, and asked for a secret in the group Ronan kept it. Those three items of 0z72 are closed.

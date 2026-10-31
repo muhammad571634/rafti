@@ -40,6 +40,8 @@ export interface MessageBubbleProps {
   pinned?: boolean;
   /** A line of yours that got no reply: "Not Delivered" under it asks again. */
   onRetry?: () => void;
+  /** Group chats: a tap on the member's avatar asks them to speak. */
+  onAvatarPress?: (character: Character) => void;
 }
 
 const AVATAR = 28;
@@ -64,6 +66,7 @@ export const MessageBubble = memo(function MessageBubble({
   aiNoticeText,
   pinned,
   onRetry,
+  onAvatarPress,
 }: MessageBubbleProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -152,7 +155,19 @@ export const MessageBubble = memo(function MessageBubble({
       ) : (
         <>
           <View style={styles.avatarSlot}>
-            {runEnd ? <CharacterAvatar character={character} size={AVATAR} /> : null}
+            {runEnd ? (
+              onAvatarPress ? (
+                <PressableScale
+                  accessibilityRole="button"
+                  accessibilityLabel={name}
+                  onPress={() => onAvatarPress(character)}
+                  hitSlop={8}>
+                  <CharacterAvatar character={character} size={AVATAR} />
+                </PressableScale>
+              ) : (
+                <CharacterAvatar character={character} size={AVATAR} />
+              )
+            ) : null}
           </View>
           {named ? (
             <View style={styles.named}>

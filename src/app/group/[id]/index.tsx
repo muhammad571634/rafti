@@ -71,6 +71,7 @@ export default function GroupChatScreen() {
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
   const continueGroup = useAppStore((s) => s.continueGroup);
   const retryGroupReply = useAppStore((s) => s.retryGroupReply);
+  const invokeGroupMember = useAppStore((s) => s.invokeGroupMember);
   const skipGroupTime = useAppStore((s) => s.skipGroupTime);
   const playGroupTruthOrDare = useAppStore((s) => s.playGroupTruthOrDare);
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
@@ -176,6 +177,15 @@ export default function GroupChatScreen() {
   // The title's "&" as it is: an English "and" read wrong in every other language.
   const noticeText = t('group.aiNotice', { names });
 
+  // A tap on a member's avatar: they speak now.
+  const invoke = useCallback(
+    (member: Character) => {
+      if (!groupId) return;
+      if (invokeGroupMember(groupId, member.id) === 'noShells') setPaywall(shellCosts.textMessage);
+    },
+    [groupId, invokeGroupMember],
+  );
+
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       const author = item.characterId ? byId.get(item.characterId) : undefined;
@@ -202,12 +212,13 @@ export default function GroupChatScreen() {
               aiNoticeText={noticeText}
               onLongPress={openMenu}
               onRetry={item.failed && groupId ? () => retryGroupReply(groupId) : undefined}
+              onAvatarPress={author ? invoke : undefined}
             />
           </View>
         </View>
       );
     },
-    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, groupId, retryGroupReply],
+    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, groupId, retryGroupReply, invoke],
   );
 
   if (!group || !groupId || members.length < 2) {

@@ -11,7 +11,7 @@ import {
   SKIP_TO_MAX,
   skipLabel,
 } from './chat-steer';
-import { groupContinueCue, historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
+import { groupContinueCue, groupInvokeCue, historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
 import { canRewindTo, lastExchange } from './chat-turns';
 
 const at = '2026-10-25T20:00:00.000Z';
@@ -100,6 +100,13 @@ describe('continue in a group', () => {
     const cue = groupContinueCue('Theo').join('\n');
     assert.match(cue, /without them writing/);
     assert.match(cue, /Answer what Theo just said/);
+  });
+
+  it('asks a tapped member to speak, naming who spoke before', () => {
+    const cue = groupInvokeCue('Theo').join('\n');
+    assert.match(cue, /tapped you to speak/);
+    assert.match(cue, /Theo spoke before you/);
+    assert.match(cue, /Never write lines for the others/);
   });
 });
 

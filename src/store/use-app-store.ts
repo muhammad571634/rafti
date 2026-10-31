@@ -28,7 +28,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
+import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupInvokeCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
 import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
@@ -492,6 +492,8 @@ interface AppState {
   sendGroupImage: (groupId: string, imageUri: string) => SendResult;
   /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
   continueGroup: (groupId: string) => SendResult;
+  /** A tap on a member's avatar: they speak now (Character.AI's invoke). */
+  invokeGroupMember: (groupId: string, characterId: string) => SendResult;
   /** A time skip in a group: one member picks up at the new time, another answers; a message's price. */
   skipGroupTime: (groupId: string, skip: TimeSkip, to?: string) => SendResult;
   /** Truth or dare with one member in the group; another member joins in. Returns the question. */
@@ -1514,6 +1516,26 @@ export const useAppStore = create<AppState>()(
             cue: groupContinueCue(lastSpeaker ? memberName(get(), lastSpeaker) : 'the group'),
           },
           ...(second ? [{ characterId: second, lines: [pick(groupComebacks)(memberName(get(), first), genderOf(get(), second))], cue: groupContinueCue(memberName(get(), first)) }] : []),
+        ]);
+        return 'sent';
+      },
+
+      invokeGroupMember: (groupId, characterId) => {
+        const state = get();
+        const group = state.groups.find((g) => g.id === groupId);
+        if (!group?.memberIds.includes(characterId) || state.groupTyping[groupId]?.length) return 'empty';
+        // Nothing to answer before the first line, and not after a crisis (the one-to-one rules).
+        const last = state.messages[groupId]?.at(-1);
+        if (!last || last.card === 'helpline') return 'empty';
+        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        countMessage(set, get);
+        const lastSpeaker = speakersIn(state, groupId).findLast((id) => id !== characterId);
+        writeGroupTurns(set, get, groupId, [
+          {
+            characterId,
+            lines: pick(groupReplies(genderOf(state, characterId))),
+            cue: groupInvokeCue(lastSpeaker ? memberName(state, lastSpeaker) : 'the group'),
+          },
         ]);
         return 'sent';
       },

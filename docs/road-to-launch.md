@@ -33,7 +33,7 @@ stream, a first text left out); never pass a stock line off as the character.
 ## Order
 
 1. Done (D138): everything a person reads comes from the model. Left over: pushes and photos, in the table above.
-2. Group: tap a member to make them answer, as Character.AI does (`invoke-character`).
+2. Done (D139): group, tap a member's avatar to make them answer, as Character.AI does (`invoke-character`).
 3. Cost: prompts show `cached=0` in the server log, so the provider's cache is not working. Fix it before paying for traffic.
 4. Shells on the server: the reply routes do not check the wallet, the app counts. Paid features must be enforced there.
 5. Art: the owner redraws, the agent wires it.

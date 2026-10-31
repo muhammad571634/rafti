@@ -169,6 +169,18 @@ export function groupContinueCue(to: string): string[] {
   ];
 }
 
+/**
+ * A member the user tapped to speak (Character.AI's invoke): they answer now, to whoever spoke
+ * last, even if the talk was not about them.
+ */
+export function groupInvokeCue(to: string): string[] {
+  return [
+    'NEXT: The user tapped you to speak: they want to hear from you now.',
+    `- Say what you really think about where the talk is. ${to} spoke before you; answer them if it fits, or bring something of your own.`,
+    '- One or two short messages, in your voice. Never write lines for the others or for the user.',
+  ];
+}
+
 /** Truth or dare: the user's last line is this character's turn. */
 export const gameAnswerCue = () => ['NEXT: You are playing truth or dare, and the user’s last line is your turn. Answer it honestly or do it, as yourself, in one or two short messages.'];
 
