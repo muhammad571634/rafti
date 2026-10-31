@@ -1,3 +1,5 @@
+import { requireOptionalNativeModule } from 'expo';
+
 import { PHOTO_CHARS_MAX, type ChatImage } from '@/ai/photo-prompt';
 
 /** Long enough to read a screenshot of a chat, small enough for a slow connection. */
@@ -11,6 +13,9 @@ export interface PreparedPhoto {
 
 /** One picture as the model gets it, or null when its file is gone or cannot be read. */
 async function prepare(uri: string): Promise<ChatImage | null> {
+  // A build from before this module has no native side, and loading its JS there is fatal to the
+  // whole app, not an error to catch (seen on the A51, 0z84).
+  if (!requireOptionalNativeModule('ExpoImageManipulator')) return null;
   // Loaded here, so the store and its tests never touch the native module.
   const { ImageManipulator, SaveFormat } = await import('expo-image-manipulator');
   const original = await ImageManipulator.manipulate(uri).renderAsync();
