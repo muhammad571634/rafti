@@ -10,7 +10,7 @@
 - Checks: tsc 0, npm test 631/631, server tests 64/64, check:locales and check:content pass. A51, update `f5b28db0`, Hana's chat: hold opens the menu over the live keyboard; a pick sent "Daha uyumadin mi" whispered (one test line stays in that chat, 1 shell), the mark shows, and the real reply came quiet ("Sessizce yatağa uzanırken telefonuna bakar: Uyuyamadım..."). The tip sat half behind the field; moved, and read whole in Expo Go. Closing the menu by tapping outside was not tried on the phone. Not looked into: the keyboard was down by the time the reply had landed.
 
 Still to do:
-1. Owner deploys the server (`chatParts`).
+1. Done: owner deployed the server from `d9758d4` with a clean tree (2026-11-02); `/health` 200, a wallet route 401 without a token. The crisis retry now drops the tone.
 2. On the paid model: how strongly each tone shows; tune the cues then (`docs/road-to-launch.md`). A native speaker reads the zh-Hant and ja "flirting" labels before the store.
 3. Hold the mic to talk (owner's idea 3); tones in groups.
 4. The lists in 0z86 and 0z89.
