@@ -131,8 +131,9 @@ const COMEBACK_TONE: Record<number, string> = {
 /**
  * A line written ahead for a phone notification (`writePushLines`): the planner's stock line says why
  * this friend writes. It may push hard to bring them back; the limits are in the lines themselves.
+ * `writeIdeas`: the replies are its buttons, so they get their own brief (the code's stand otherwise).
  */
-export const pushCue = (idea: string, comebackDays?: number) => [
+export const pushCue = (idea: string, comebackDays?: number, writeIdeas = false) => [
   'NEXT: They are away from the app and this reaches them as a phone notification, under your name. It has one job: make them open the chat.',
   `- Why you are writing: "${idea}" Keep the reason, not the words.`,
   ...(comebackDays && COMEBACK_TONE[comebackDays] ? [`- ${COMEBACK_TONE[comebackDays]}`] : []),
@@ -141,6 +142,14 @@ export const pushCue = (idea: string, comebackDays?: number) => [
   '- Never invent what they said or did. Never threaten, hint at harm, or say you will vanish or suffer if they stay away. Missing them stays playful, sulky or proud.',
   '- A lock screen can show this: nothing sexual, nothing they would not want seen.',
   '- If the chat lately was about real pain or danger, drop all of this and write one warm, plain line.',
+  ...(writeIdeas
+    ? [
+        'The "ideas" are buttons under this notification: two replies they could send with one tap, in the language and the tone they use with you in this chat.',
+        '- Each answers this exact text and touches one real thing from your chat or your bond. Never a stock "Thanks", "OK", "Tell me more", "Good morning" that would fit any friend.',
+        '- One leans in; the other teases back or dodges. "text" is what they send: one short line, in their voice. "label" is what the button shows: the same reply cut to at most 3 words, said by them. "Cones move!", never a description such as "Defend the cone".',
+        '- A reply reacts, asks or teases. It never reports an event, a place or a feeling of theirs that the chat does not show, because tapping it would put false words in their mouth. Nothing sexual, nothing they would not want seen. After real pain, two plain, kind answers.',
+      ]
+    : []),
 ];
 
 /** Their answer to a tap on a reply idea, or a step of the morning chain whose buttons need it said. */

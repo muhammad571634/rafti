@@ -199,8 +199,11 @@ export async function serverWrite<K extends WriteKind>(request: WriteRequest & {
  * A text they write first, in the model's words (B1.4a): `skip` when the model passed (the chat
  * already settled it), null when the server is off, busy or slow (the caller writes the scripted line).
  */
-export async function serverFirstText(request: FirstTextRequest, accessToken?: string | null): Promise<{ skip: boolean; lines: string[] } | null> {
-  const reply = await call<{ skip?: boolean; lines?: unknown[] }>(
+export async function serverFirstText(
+  request: FirstTextRequest,
+  accessToken?: string | null,
+): Promise<{ skip: boolean; lines: string[]; ideas: { label: string; text: string }[] } | null> {
+  const reply = await call<{ skip?: boolean; lines?: unknown[]; ideas?: { label?: unknown; text?: unknown }[] }>(
     '/v1/ai/first-text',
     {
       method: 'POST',
@@ -211,5 +214,7 @@ export async function serverFirstText(request: FirstTextRequest, accessToken?: s
   );
   if (!reply) return null;
   const lines = (reply.lines ?? []).filter((line): line is string => typeof line === 'string' && !!line.trim());
-  return { skip: reply.skip === true || !lines.length, lines };
+  // The answer comes over the network, so only strings count as a reply's words.
+  const ideas = (reply.ideas ?? []).flatMap((idea) => (typeof idea?.label === 'string' && typeof idea.text === 'string' ? [{ label: idea.label, text: idea.text }] : []));
+  return { skip: reply.skip === true || !lines.length, lines, ideas };
 }

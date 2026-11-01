@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import { dueOutbox, landedMarks, toOutbox } from './outbox';
 import type { PlannedPush, PushKind } from './plan';
-import { pushesToWrite, prunePushLines, withWritten, writtenKey, type PushLines } from './written';
+import { PUSH_REACH, pushIdeas, pushLine, pushesToWrite, prunePushLines, withWritten, writesIdeas, writtenCategory, writtenKey, type PushLines } from './written';
 
 const now = new Date(2026, 9, 31, 12, 0);
 const hours = (n: number) => new Date(now.getTime() + n * 3_600_000);
@@ -48,6 +48,107 @@ describe('the words of a push (model on)', () => {
     assert.equal(writtenKey(push('comeback', 'comeback:2026-10-31:3:c_kai', hours(72))), 'comeback:3:c_kai');
     const later = push('comeback', 'comeback:2026-11-02:3:c_kai', hours(100));
     assert.deepEqual(withWritten(later, { 'comeback:3:c_kai': written('Three days.', 200) }, now).map((p) => p.line), ['Three days.']);
+  });
+});
+
+describe('the replies under a push (model on)', () => {
+  const ideas = [
+    { label: 'Cones won', text: 'The cones won again, I parked on the grass' },
+    { label: 'You first', text: 'You first. What was the dream?' },
+  ];
+  const kept = { ...written('Up yet?'), ideas };
+
+  it('rides on the push, with a reach so a tap stays free', () => {
+    const morning = push('morning', 'm', hours(20));
+    const [sent] = withWritten(morning, { m: kept }, now);
+    assert.deepEqual(sent.ideas, ideas);
+    assert.equal(sent.reach, PUSH_REACH);
+  });
+
+  it('keeps the reach a push already has', () => {
+    const week = push('week', 'w', hours(5), { reach: 'week' });
+    const [sent] = withWritten(week, { w: kept }, now);
+    assert.deepEqual(sent.ideas, ideas);
+    assert.equal(sent.reach, 'week');
+  });
+
+  it('leaves the buttons that do something to the code: a check-in, a thread', () => {
+    for (const kind of ['care', 'touch'] as const) {
+      const [sent] = withWritten(push(kind, 'x', hours(2), { reach: 'care:sick' }), { x: kept }, now);
+      assert.equal(sent.line, 'Up yet?');
+      assert.equal(sent.ideas, undefined);
+      assert.equal(sent.reach, 'care:sick');
+    }
+    assert.equal(writesIdeas(push('care', 'x', hours(2))), false);
+    assert.equal(writesIdeas(push('touch', 'x', hours(2))), false);
+    assert.equal(writesIdeas(push('comeback', 'x', hours(2))), true);
+  });
+
+  it('adds nothing when the model wrote no replies', () => {
+    const [sent] = withWritten(push('morning', 'm', hours(20)), { m: written('Up yet?') }, now);
+    assert.equal(sent.ideas, undefined);
+    assert.equal(sent.reach, undefined);
+  });
+
+  it('cleans what the model wrote', () => {
+    assert.deepEqual(
+      pushIdeas([
+        { label: '  Cones won ', text: ' The cones won ' },
+        { label: 'cones won', text: 'A second one with the same button' },
+        { label: 'You first', text: 'You first.' },
+        { label: '', text: 'No button' },
+        { label: 'Third', text: 'A third.' },
+        { label: 'Fourth', text: 'One too many.' },
+      ]),
+      [
+        { label: 'Cones won', text: 'The cones won' },
+        { label: 'You first', text: 'You first.' },
+        { label: 'Third', text: 'A third.' },
+      ],
+    );
+  });
+
+  it('wants at least two, or none: one button is not a choice', () => {
+    assert.equal(pushIdeas([{ label: 'Only', text: 'Only one.' }]), undefined);
+    assert.equal(pushIdeas(undefined), undefined);
+  });
+
+  it('never puts a line about self-harm on a button', () => {
+    const safe = { label: 'You first', text: 'You first.' };
+    assert.equal(pushIdeas([{ label: 'Bye', text: 'I want to kill myself' }, safe]), undefined);
+  });
+
+  it('shows a line as plain text: bold loses its stars, narration goes', () => {
+    assert.equal(pushLine(['Are you **practicing parking** again?', '*sighs* Friday.']), 'Are you practicing parking again? Friday.');
+  });
+
+  it('leaves a star that is part of the words alone', () => {
+    assert.equal(pushLine(['What the f*ck, 2*3 is six']), 'What the f*ck, 2*3 is six');
+  });
+
+  it('keeps the buttons fixed with previews off, as a tap must match what the chat holds', () => {
+    const [sent] = withWritten(push('morning', 'm', hours(20)), { m: kept }, now, false);
+    assert.equal(sent.line, 'Up yet?');
+    assert.equal(sent.ideas, undefined);
+    assert.equal(sent.reach, undefined);
+  });
+
+  it('leaves the evening question to the code: its buttons say what goes in the diary', () => {
+    assert.equal(writesIdeas(push('day', 'x', hours(2))), false);
+    assert.equal(writesIdeas(push('life', 'x', hours(2))), false);
+  });
+
+  it('names a category the OS accepts, stable for the push', () => {
+    const id = 'morning:2026-11-01:morning:c_kai';
+    assert.match(writtenCategory(id), /^written_\d+$/);
+    assert.equal(writtenCategory(id), writtenCategory(id));
+    assert.notEqual(writtenCategory(id), writtenCategory('comeback:2026-11-01:1:c_kai'));
+  });
+
+  it('lands in the chat with the push', () => {
+    const [item] = toOutbox([push('morning', 'morning:2026-11-01:morning:c_kai', hours(20), { ideas, reach: PUSH_REACH })]);
+    assert.deepEqual(item.ideas, ideas);
+    assert.equal(item.reach, PUSH_REACH);
   });
 });
 

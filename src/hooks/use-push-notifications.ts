@@ -17,6 +17,7 @@ import {
   IDEA_ACTION,
   REPLY_ACTION,
   syncPushes,
+  WRITTEN_ACTION,
   type PushData,
 } from '@/notifications/sync';
 import { toOutbox } from '@/notifications/outbox';
@@ -64,6 +65,16 @@ export function usePushNotifications() {
       if (action.startsWith(IDEA_ACTION) && data.reach && data.characterId && data.line) {
         const intent = action.slice(IDEA_ACTION.length) as IdeaIntent;
         store.answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, intent });
+      }
+      // A reply the model wrote for this push, from their chat.
+      const written = action.startsWith(WRITTEN_ACTION) ? data.ideas?.[Number(action.slice(WRITTEN_ACTION.length))] : undefined;
+      if (written && data.reach && data.characterId && data.line) {
+        const sent = store.answerFromPush({ characterId: data.characterId, line: data.line, reach: data.reach, idea: written, ideas: data.ideas });
+        // A line that cannot go free and no shells: it waits in the field, like a typed one.
+        if (sent === 'noShells') {
+          router.push({ pathname: data.route as never, params: { draft: written.text } } as Href);
+          return;
+        }
       }
       const typed = response?.userText?.trim();
       if (action === REPLY_ACTION && typed && data.characterId) {

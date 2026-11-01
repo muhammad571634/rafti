@@ -48,6 +48,7 @@ import type {
   Message,
   PushSent,
   Relationship,
+  ReplyIdea,
   ScheduleItem,
   User,
   Wallet,
@@ -105,6 +106,8 @@ export interface PlannedPush {
   writesToChat?: boolean;
   /** Why they wrote first (`src/lib/reply-ideas.ts`): the push carries the line's reply ideas as buttons. */
   reach?: string;
+  /** Replies the model wrote from this chat (`src/notifications/written.ts`): they take the buttons. */
+  ideas?: ReplyIdea[];
   /** Thread texts this line already says (the morning brief). */
   covers?: string[];
 }
@@ -253,7 +256,7 @@ export function planPushes(state: PlanState, now: Date, { model = false }: { mod
   };
   const wanted = pushCandidates(state, now)
     .filter((push) => kindOn(push.kind, state.settings))
-    .flatMap((push) => (model ? withWritten(push, state.pushLines ?? {}, now) : [push]))
+    .flatMap((push) => (model ? withWritten(push, state.pushLines ?? {}, now, state.settings.notificationPreview) : [push]))
     .map((push) => (FLEXIBLE.has(push.kind) && !push.timeSensitive ? { ...push, at: placeFlexible(push.at, push.id, hours, sleep) } : push));
   return capped(wanted, isQuiet, budget, temperFor, sent);
 }

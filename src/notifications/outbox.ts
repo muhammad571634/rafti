@@ -1,6 +1,7 @@
 import { dayKey } from '../mock/time';
 
 import type { PlannedPush, PushKind } from './plan';
+import type { ReplyIdea } from '@/types';
 
 /**
  * What the phone will show while the app is away. A notification is a message: once its time passes,
@@ -15,6 +16,8 @@ export interface OutboxItem {
   line: string;
   at: string;
   reach?: string;
+  /** The push's written replies: the chat shows the same ones under the line. */
+  ideas?: ReplyIdea[];
   /** Thread texts this line already says (the morning brief). */
   covers?: string[];
 }
@@ -25,7 +28,7 @@ const LANDS = new Set<PushKind>(['morning', 'evening', 'brief', 'day', 'week', '
 export function toOutbox(plan: readonly PlannedPush[]): OutboxItem[] {
   return plan.flatMap((push) =>
     LANDS.has(push.kind) && push.characterId && push.line
-      ? [{ id: push.id, kind: push.kind, characterId: push.characterId, line: push.line, at: push.at.toISOString(), reach: push.reach, covers: push.covers }]
+      ? [{ id: push.id, kind: push.kind, characterId: push.characterId, line: push.line, at: push.at.toISOString(), reach: push.reach, ideas: push.ideas, covers: push.covers }]
       : [],
   );
 }

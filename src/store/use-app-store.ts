@@ -66,7 +66,7 @@ import {
 } from '@/ai/moment-prompt';
 import { dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
 import { planPushes } from '@/notifications/plan';
-import { comebackDays, prunePushLines, pushesToWrite, writtenKey, type PushLines } from '@/notifications/written';
+import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pushLine, writesIdeas, writtenKey, type PushLines } from '@/notifications/written';
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
@@ -614,7 +614,7 @@ interface AppState {
    * A line that reached the user only as a notification (the comeback ladder) lands in
    * the chat once the app sees it. Written once per notification id.
    */
-  receivePushLine: (push: { id: string; characterId: string; text: string; at: string; reach?: string }) => void;
+  receivePushLine: (push: { id: string; characterId: string; text: string; at: string; reach?: string; ideas?: ReplyIdea[] }) => void;
   /** Edits a character the user made; seed characters are not editable. */
   updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
   resetRelationship: (characterId: string) => void;
@@ -729,7 +729,7 @@ interface AppState {
    * in the chat if it is not there yet, then the answer goes; a typed reply to a line that asked
    * nothing is an ordinary message.
    */
-  answerFromPush: (push: { characterId: string; line?: string; reach?: string; intent?: IdeaIntent; text?: string }) => SendResult;
+  answerFromPush: (push: { characterId: string; line?: string; reach?: string; intent?: IdeaIntent; text?: string; idea?: ReplyIdea; ideas?: ReplyIdea[] }) => SendResult;
   /** The user said "Yes, text me!" but the system blocks pushes: a card with a way to Settings. */
   noteNotifyOff: (conversationId: string) => void;
   /**
@@ -2062,10 +2062,10 @@ export const useAppStore = create<AppState>()(
         const now = new Date();
         const due = dueOutbox(get().pushOutbox, now);
         if (!due.length) return;
-        due.forEach(({ id, kind, characterId, line, at, reach }) => {
+        due.forEach(({ id, kind, characterId, line, at, reach, ideas }) => {
           // Only over a line that lands: `receivePushLine` drops a crisis line, and a card alone is no recap.
           if (kind === 'week' && !detectCrisis(line)) landWeekCard(set, get, id, characterId, at);
-          get().receivePushLine({ id, characterId, text: line, at, reach });
+          get().receivePushLine({ id, characterId, text: line, at, reach, ideas });
         });
         const marks = landedMarks(due);
         const left = new Set(due.map((item) => item.id));
@@ -2096,13 +2096,14 @@ export const useAppStore = create<AppState>()(
           for (const push of todo) {
             const conversationId = get().conversations.find((c) => c.characterId === push.characterId)?.id;
             if (!conversationId || !push.line) continue;
-            const reply = await serverFirstText(momentRequest(get, conversationId, pushCue(push.line, comebackDays(push)), push.at), token);
+            const reply = await serverFirstText(momentRequest(get, conversationId, pushCue(push.line, comebackDays(push), writesIdeas(push)), push.at), token);
             // Busy: the plan goes out with what is written, and the next open tries again.
             if (!reply) {
               pushWritingPausedUntil = Date.now() + PUSH_WRITING_PAUSE_MS;
               break;
             }
-            const kept = { line: reply.skip ? '' : reply.lines.join(' '), writtenAt: new Date().toISOString() };
+            const ideas = reply.skip || !writesIdeas(push) ? undefined : pushIdeas(reply.ideas);
+            const kept = { line: reply.skip ? '' : pushLine(reply.lines), writtenAt: new Date().toISOString(), ...(ideas ? { ideas } : {}) };
             set((s) => ({ pushLines: { ...prunePushLines(s.pushLines, new Date()), [writtenKey(push)]: kept } }));
             wrote += 1;
           }
@@ -2126,7 +2127,7 @@ export const useAppStore = create<AppState>()(
         return { characterId, conversationId };
       },
 
-      receivePushLine: ({ id, characterId, text, at, reach }) => {
+      receivePushLine: ({ id, characterId, text, at, reach, ideas }) => {
         // A push planned by an older build from a crisis "plan" never lands in the chat.
         if (detectCrisis(text)) return;
         const conversation = get().conversations.find((c) => c.characterId === characterId);
@@ -2137,7 +2138,7 @@ export const useAppStore = create<AppState>()(
           set,
           get,
           conversation.id,
-          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at, ...withIdeas(reach) },
+          { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at, ...withIdeas(reach), ...(ideas?.length ? { ideas } : {}) },
           { countUnread: true },
         );
       },
@@ -2749,22 +2750,23 @@ export const useAppStore = create<AppState>()(
       answerIdea: (conversationId, messageId, idea, edited) =>
         answerLine(set, get, conversationId, messageId, edited ?? phrase(idea.text), idea, edited != null),
 
-      answerFromPush: ({ characterId, line, reach, intent, text }) => {
+      answerFromPush: ({ characterId, line, reach, intent, text, idea: written, ideas }) => {
         // The moment's line may not be in the chat yet: the clock writes what is due, else it lands here.
         get().runTimers();
         const conversation = get().conversations.find((c) => c.characterId === characterId);
         if (!conversation) return 'empty';
         const typed = text?.trim();
-        if (reach && line) {
+        // `receivePushLine` keeps a crisis line out of the chat, so it stays out here too.
+        if (reach && line && !detectCrisis(line)) {
           const find = () => get().messages[conversation.id]?.findLast((m) => m.author === 'them' && m.reach === reach && m.text === line);
           const landed = find();
           // Answered already (the same tap seen twice): a typed line is just a message, a button nothing.
           if (landed && !landed.ideas) return typed ? get().sendText(conversation.id, typed) : 'empty';
-          if (!landed) appendMessage(set, get, conversation.id, { ...themText(conversation.id, line), ...withIdeas(reach) }, { countUnread: false });
+          if (!landed) appendMessage(set, get, conversation.id, { ...themText(conversation.id, line), ...withIdeas(reach), ...(ideas?.length ? { ideas } : {}) }, { countUnread: false });
           const message = find();
-          const idea = intent ? ideasFor(reach).find((x) => x.intent === intent) : undefined;
-          if (message && idea) return answerLine(set, get, conversation.id, message.id, phrase(idea.text), idea);
-          if (message && typed) return answerLine(set, get, conversation.id, message.id, typed);
+          const idea = written ?? (intent ? ideasFor(reach).find((x) => x.intent === intent) : undefined);
+          if (message && idea) return answerLine(set, get, conversation.id, message.id, phrase(idea.text), idea, false, true);
+          if (message && typed) return answerLine(set, get, conversation.id, message.id, typed, undefined, false, true);
         }
         return typed ? get().sendText(conversation.id, typed) : 'empty';
       },
@@ -4722,13 +4724,15 @@ function answerLine(
   text: string,
   idea?: ReplyIdea,
   edited = false,
+  /** From a push's button: it answers that line even when newer ones came since, and stays free. */
+  fromPush = false,
 ): SendResult {
   const state = get();
   const messages = state.messages[conversationId] ?? [];
   const message = messages.find((m) => m.id === messageId);
   const line = text.trim();
   if (!line) return 'empty';
-  const shown = message ? shownIdeas(message, messages) : null;
+  const shown = message ? (fromPush ? (message.ideas ?? null) : shownIdeas(message, messages)) : null;
   if (!message || !shown || (idea && !shown.some((x) => x.label === idea.label))) return get().sendText(conversationId, line);
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return 'empty';
@@ -4788,7 +4792,8 @@ function answerLine(
   // An edited line is the user's own words: the ordinary reply answers it (the ask keeps its answer).
   const say = idea?.intent && (!edited || ask) ? ideaAnswer(message.reach, idea.intent, message.id, chatGender(get(), conversationId)) : undefined;
   // An answer to a line that asked something has settled what it settles: no guessing from its words.
-  answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say, answered: !!message.reach });
+  // A push with no reason of its own asked nothing it could settle: their words may still hold a plan.
+  answerText(set, get, conversationId, line, { wakeHere: false, gain: INTIMACY.text, say, answered: !!message.reach && message.reach !== PUSH_REACH });
   return 'sent';
 }
 

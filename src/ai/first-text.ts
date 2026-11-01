@@ -57,6 +57,8 @@ const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v =
 
 /** How many chat lines a first text may carry; the prompts use the last 12 to 16. */
 const MAX_LINES = 40;
+/** A moment's brief past this is cut, so a cue's last rule must stand inside it (`pushCue`). */
+export const MAX_CUE_LINES = 12;
 
 /**
  * A request the prompt code can lay out, or null. Only the shape is checked: the words come from
@@ -102,7 +104,7 @@ export function cleanFirstText(body: unknown): FirstTextRequest | null {
     }
     case 'moment': {
       const recent = lines('recent');
-      const cue = Array.isArray(input.cue) ? input.cue.filter((l): l is string => typeof l === 'string').slice(0, 12) : [];
+      const cue = Array.isArray(input.cue) ? input.cue.filter((l): l is string => typeof l === 'string').slice(0, MAX_CUE_LINES) : [];
       if (!recent || !cue.length) return null;
       return { kind: 'moment', input: { ...input, ...recent, cue } } as unknown as FirstTextRequest;
     }

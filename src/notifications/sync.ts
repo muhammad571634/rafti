@@ -6,6 +6,8 @@ import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
 import { notificationsModule } from './native';
 import { planPushes, type PlannedPush, type PlanState, type PushChannel } from './plan';
+import { writtenCategory } from './written';
+import type { ReplyIdea } from '@/types';
 
 /**
  * Hands the planner's list to the OS (docs/push-plan.md). The app owns everything while
@@ -45,10 +47,14 @@ export interface PushData {
   test?: boolean;
   /** Why they wrote first; its reply ideas are the push's buttons (`IDEA_ACTION` + intent). */
   reach?: string;
+  /** Replies the model wrote for this push; they take the buttons (`WRITTEN_ACTION` + place). */
+  ideas?: ReplyIdea[];
 }
 
 /** A reply idea's button on a push: `idea_` and the idea's intent. */
 export const IDEA_ACTION = 'idea_';
+/** A written reply's button on a push: `written_` and its place in `PushData.ideas`. */
+export const WRITTEN_ACTION = 'written_';
 /** The typed reply on a push (iOS text input action, Android RemoteInput). */
 export const REPLY_ACTION = 'reply_text';
 /** The action set of a friend's push that carries no ideas: just the typed reply. */
@@ -86,12 +92,7 @@ export async function configurePushes() {
   }
   // A friend's push answers like a text: reply ideas as buttons ("I ate!") and a typed reply, from
   // the lock screen. Best effort: where categories are missing the push still comes, without them.
-  const reply = {
-    identifier: REPLY_ACTION,
-    buttonTitle: i18n.t('push.reply'),
-    textInput: { submitButtonTitle: i18n.t('push.send'), placeholder: i18n.t('push.replyPlaceholder') },
-    options: { opensAppToForeground: true },
-  };
+  const reply = replyButton();
   try {
     await Promise.all([
       N.setNotificationCategoryAsync(CHAT_CATEGORY, [reply]),
@@ -108,6 +109,44 @@ export async function configurePushes() {
         ]),
       ),
     ]);
+  } catch {
+    // No buttons here; the push itself still works.
+  }
+}
+
+function replyButton() {
+  return {
+    identifier: REPLY_ACTION,
+    buttonTitle: i18n.t('push.reply'),
+    textInput: { submitButtonTitle: i18n.t('push.send'), placeholder: i18n.t('push.replyPlaceholder') },
+    options: { opensAppToForeground: true },
+  };
+}
+
+/** The buttons the model wrote are this plan's alone: each gets its action set, and old sets go. Best effort, as above. */
+async function syncWrittenCategories(plan: readonly PlannedPush[]) {
+  const N = notificationsModule()!;
+  const written = plan.filter((push) => push.ideas?.length);
+  const keep = new Set(written.map((push) => writtenCategory(push.id)));
+  try {
+    const old = await N.getNotificationCategoriesAsync();
+    await Promise.all(
+      old
+        .filter((category) => category.identifier.startsWith(WRITTEN_ACTION) && !keep.has(category.identifier))
+        .map((category) => N.deleteNotificationCategoryAsync(category.identifier)),
+    );
+    await Promise.all(
+      written.map((push) =>
+        N.setNotificationCategoryAsync(writtenCategory(push.id), [
+          ...push.ideas!.slice(0, IDEA_BUTTONS).map((idea, i) => ({
+            identifier: `${WRITTEN_ACTION}${i}`,
+            buttonTitle: idea.label,
+            options: { opensAppToForeground: true },
+          })),
+          replyButton(),
+        ]),
+      ),
+    );
   } catch {
     // No buttons here; the push itself still works.
   }
@@ -177,6 +216,7 @@ export async function syncPushes(state: PlanState, now = new Date()): Promise<Pl
   const N = notificationsModule()!;
   const alarms = (await N.getAllScheduledNotificationsAsync()).filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
   const plan = planPushes(state, now, { model: !!state.settings.realAi && !!apiBase() }).slice(0, Math.max(0, MAX_PENDING - alarms));
+  await syncWrittenCategories(plan);
   await Promise.all(plan.map((push) => schedule(push, push.id, push.at, state.settings.notificationPreview)));
   return plan;
 }
@@ -216,6 +256,7 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
     at: at.toISOString(),
     test: test || undefined,
     reach: push.reach,
+    ideas: push.ideas,
   };
   return N.scheduleNotificationAsync({
     identifier,
@@ -235,7 +276,8 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
 
 /** A push that opens a friend's chat can be answered from the lock screen. */
 function categoryFor(push: PlannedPush) {
-  if (push.reach) return ideaCategory(push.reach);
+  if (push.ideas?.length) return writtenCategory(push.id);
+  if (push.reach && ideasFor(push.reach).length) return ideaCategory(push.reach);
   return push.characterId && push.route.startsWith('/chat/') && push.kind !== 'call' ? CHAT_CATEGORY : undefined;
 }
 
