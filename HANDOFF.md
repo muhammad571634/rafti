@@ -1,4 +1,4 @@
-﻿# HANDOFF вЂ” keyingi sessiya shu fayldan boshlasin
+# HANDOFF — keyingi sessiya shu fayldan boshlasin
 
 ### 0z91. Send with a tone: hold the plane (2026-11-02, Claude 2). NEXT: owner tries it; owner deploys the server
 
@@ -21,7 +21,7 @@ Still to do:
 - Shells, cause proven: the A51's server profile had `time_zone` UTC (`set_at` null, locale en-US), as does another account. Only a dev toggle ever sent the phone's zone; the wallet route bootstraps with `{}`. So the server's "today" began at 05:00 Tashkent time. From 00:00 to 05:00 the app burnt yesterday's free bucket and booked a row, the server's answer brought the bucket back, and each sync booked another. The server's ledger held only real spends: 128 to 124 was a note (-3) and a chat (-1). Local history was wrong; the balance was not. Check-in, the wheel and free shell expiry ran on the wrong day for every user.
 - Fix: `withAccount` tells the server the phone's zone once a launch, before the first wallet call. `expiryBooked` allows one row per midnight; `oneExpiryPerMidnight` cleans old rows at launch. No server deploy or migration.
 - Checked after `eas update` on the A51, 00:48: server profile `Asia/Tashkent`, set 19:48:16 UTC; the server booked one `expired:2026-11-01` of -20, then check-in +30 (`daily:2026-11-02`, streak 2); balance 130, free 30 of today. The phone's history shows one -20 at 00:00 and +30 at 00:48, and the repeated rows are gone. No fatal or JS errors.
-- 18:49 / 18:54, cause found: Sunday recap, 18:30 + the stable jitter of `week:2026-11-01:c_ronan`, which computes to 19. The recap did not land; the push's reply button ("AГ§Д±kГ§asД± zor bir haftaydД±") wrote the line at the tap's time through `answerFromPush`, and because that line counts as this week's recap, the card never came.
+- 18:49 / 18:54, cause found: Sunday recap, 18:30 + the stable jitter of `week:2026-11-01:c_ronan`, which computes to 19. The recap did not land; the push's reply button ("Açıkçası zor bir haftaydı") wrote the line at the tap's time through `answerFromPush`, and because that line counts as this week's recap, the card never came.
 - Fix: `week` lands from the outbox like other lines, with its card at the push's time (`landWeekCard`, once per push, not over a crisis line). Not seen on the phone: it needs a Sunday 18:30 push (2026-11-08).
 - The other unmatched pushes (11:05:53, 13:12:02, 15:22:04) have non-zero seconds, unlike timed pushes, which fits "unread", 30 minutes after leaving. Unread does not land by design, as its line is already in the chat. Inference, not proof.
 - Second reader (a fresh agent, read-only) found three defects; I checked each in the code. Fixed: a stale "zone told" flag after account deletion; a possible second week card or a card with no line. Open: see Still to do.
@@ -60,9 +60,9 @@ Still to do: see 0z86.
 ### 0z86. The time under chat messages (2026-11-02, Claude 2). NEXT: owner reads chats on the phone
 
 - Owner's ask, logic approved: the time stands small and grey under a message; a same-minute burst from one speaker carries it once, under the last line (`showsTime`, `src/components/chat/runs.ts`). Chats and groups; streams and share cards stay clean.
-- The line between messages now says only the day ("Today"); the hour-of-quiet line is gone, though an hour of quiet still ends a run of bubbles. The receipt reads "Read В· 21:03" with the message's own time, not the read time.
+- The line between messages now says only the day ("Today"); the hour-of-quiet line is gone, though an hour of quiet still ends a run of bubbles. The receipt reads "Read · 21:03" with the message's own time, not the read time.
 - Clock: the phone's time and zone, no location. `clockTime` now follows the phone's 12/24-hour setting (`getCalendars`, `src/lib/clock.ts`), so call history, the ledger and thread sheets follow too. `expo-localization` is already in the APK (`i18n` uses it).
-- Checks: tsc 0, npm test 593/593. A51 after `eas update` (reopened twice): Ronan's chat reads "21:03", "Okundu В· 21:03", "21:04", the day line "BugГјn", avatars level with the bubbles, no fatal or JS errors. Groups not opened on the phone; they use the same bubble.
+- Checks: tsc 0, npm test 593/593. A51 after `eas update` (reopened twice): Ronan's chat reads "21:03", "Okundu · 21:03", "21:04", the day line "Bugün", avatars level with the bubbles, no fatal or JS errors. Groups not opened on the phone; they use the same bubble.
 - Found while checking, not fixed: the shell history on the A51 lists "unused free shells expired" -24 at least five times today, all at 00:00, while the balance went only 128 to 124. Unproven guess: `applyServerWallet` puts back a `free` bucket dated yesterday, and `expireFreeShells` books the expiry again on each sync. My reopens may have added rows. Money code: needs its own look and a second reader.
 - My slip: I emptied `.agents/now.md` instead of removing only my line, around the time 0z87 landed. Any other agent's line then went with it.
 
@@ -93,8 +93,8 @@ Still to do:
 - Aggressive, founder's call: the words do the work, the budget stays 6 free / 20 plan (protect the channel). Limits in `pushCue` and `docs/push-plan.md`.
 - Read on the real model (test text): "Morning. Still terrorizing the cones, or did you actually get some sleep?", comeback day 1 "Still terrorizing the cones, Sam? Or have you finally mastered the art of parking?".
 - Comeback day 3 "I had a weird dream about those cones of yours. Want to hear it?", day 7 "It's been a week, Sam. Have you finally learned to avoid the cones?" (weak: it does not say it misses them; lines lean on one topic). After a loss, 2 of 2 warm: "Hey Sam. I've been thinking about you. Are you doing okay today?".
-- A51, preview APK, `eas update` (groups `cdbd99d3`, then the fix `d1ef4c0b`): a test plan at 23:50 brought a push at 23:40 in the model's words ("Р”РµСЃСЏС‚СЊ РјРёРЅСѓС‚ РґРѕ РїРѕР»СѓРЅРѕС‡Рё. РќРµ РґСѓРјР°Р№, С‡С‚Рѕ СЏ Р±СѓРґСѓ Р¶РґР°С‚СЊ С‚РµР±СЏ РІРµС‡РЅРѕ, РЎСѓРєСѓС‚."); the chat list showed 23:40, the line stood once in Ronan's chat, no second copy. Only this reminder kind was tried on the phone; the night's quiet hours block the others.
-- My mistake, caught on the A51: I published over the old APK, reasoning that a photo there would fail softly. Loading `expo-image-manipulator` with no native side was fatal: white screen on sending a photo, for about 7 minutes. Fixed in `948f05e` (`requireOptionalNativeModule` first). Checked after the fix: the old APK stays up and the character says it cannot make the photo out ("Р§С‚Рѕ СЌС‚Рѕ Р·Р° РјРµС€Р°РЅРёРЅР° РёР· С‚РµРЅРµР№, РЎСѓРєСѓС‚?"); Expo Go still sees it ("The way the wood grain flows around the card", 4,805 tokens in).
+- A51, preview APK, `eas update` (groups `cdbd99d3`, then the fix `d1ef4c0b`): a test plan at 23:50 brought a push at 23:40 in the model's words ("Десять минут до полуночи. Не думай, что я буду ждать тебя вечно, Сукут."); the chat list showed 23:40, the line stood once in Ronan's chat, no second copy. Only this reminder kind was tried on the phone; the night's quiet hours block the others.
+- My mistake, caught on the A51: I published over the old APK, reasoning that a photo there would fail softly. Loading `expo-image-manipulator` with no native side was fatal: white screen on sending a photo, for about 7 minutes. Fixed in `948f05e` (`requireOptionalNativeModule` first). Checked after the fix: the old APK stays up and the character says it cannot make the photo out ("Что это за мешанина из теней, Сукут?"); Expo Go still sees it ("The way the wood grain flows around the card", 4,805 tokens in).
 - Owner deployed the server (Fly v11, 2026-10-31 about 23:20), so 0z79 and 0z80 are live there.
 - Test leftovers on the owner's APK: three test lines and the picture in Ronan's chat. The plan and the picture file are removed.
 - Checks: tsc 0, npm test 576/576.
@@ -109,8 +109,8 @@ Still to do:
 
 - Audited all 57 characters across `src/mock/characters.ts`, `src/mock/character-profiles.ts`, and `src/mock/character-stories.ts`, plus the Character.AI (`C:\Users\joray\rea-work\cai`) and BIMOBIMO teardown dumps: all 55 official characters across 7 worlds have complete definitions, openings, healthy quirks, level-gated 3-beat secrets (`arcLines`), cast ties (`tieLines`), and weekly world progression (`nowLines`).
 - Closed `0z80` item 4: set `realAi: true` in `initialSettings` (`src/mock/user.ts`) so fresh installs and production Store builds use the real AI model by default whenever the server is reachable, while dev/preview builds can still toggle it off in Profile.
-- Closed `0z80` item 5: fixed Russian animate accusative in `group.needFriends` and `group.noFriends` (`"РЎРЅР°С‡Р°Р»Р° РґРѕР±Р°РІСЊС‚Рµ РґРІСѓС… РґСЂСѓР·РµР№"` in `src/i18n/locales/ru.json`) and verified all 13 other locales.
-- Updated `.agents/rules/project-memory.md` В§6 with Gemini 4 Argon's competitive intelligence / REA and character/chat depth audit responsibilities.
+- Closed `0z80` item 5: fixed Russian animate accusative in `group.needFriends` and `group.noFriends` (`"Сначала добавьте двух друзей"` in `src/i18n/locales/ru.json`) and verified all 13 other locales.
+- Updated `.agents/rules/project-memory.md` §6 with Gemini 4 Argon's competitive intelligence / REA and character/chat depth audit responsibilities.
 - Checks: tsc 0, npm test 565/565, server tests 64/64, check:locales 13/13; `sigmazam-api.fly.dev` deployed and `/health` verified (`200`).
 
 ### 0z82. How the three agents work together (2026-10-31, Claude 2). NEXT: owner deploys the server (0z80); phone notifications in progress
@@ -124,7 +124,7 @@ Still to do:
 ### 0z80. The model sees photos the user sends (2026-10-31, Claude 2). NEXT: owner deploys the server; phone notifications (road-to-launch)
 
 - The phone makes each photo small (long edge 1024, `src/lib/photo-for-model.ts`) and sends the ones the character has not answered with the reply request; the picture is not stored on the server. The model answers with one line about each (`Message.photoNote`), and later replies read that line, so they cost no picture. A refused or unreadable picture: the character says they cannot see it. First photo asks for consent once (`usePickPhoto`, App Store 5.1.2(i)). Rules in `src/ai/photo-prompt.ts`.
-- A51 in Expo Go on the local server, `gemini-3.1-flash-lite`, a 4000x3000 test picture with a sideways word: consent asked once; Aurelian read it ("Р’С‚РѕСЂРЅРёРє...", 4,589 tokens in, $0.0013); asked later what else was there, he said "a yellow circle" with no picture sent (3,428 in); a Not Delivered photo answered on retry; in a group Aurelian saw it and Theo answered him. Google answered 503 for several stretches in the test, the Not Delivered path held each time.
+- A51 in Expo Go on the local server, `gemini-3.1-flash-lite`, a 4000x3000 test picture with a sideways word: consent asked once; Aurelian read it ("Вторник...", 4,589 tokens in, $0.0013); asked later what else was there, he said "a yellow circle" with no picture sent (3,428 in); a Not Delivered photo answered on retry; in a group Aurelian saw it and Theo answered him. Google answered 503 for several stretches in the test, the Not Delivered path held each time.
 - Fixed from reading the code: a refused picture's second try lost the crisis cue.
 - Not tried: an old APK (by the code it says it cannot make out the photo), a real phone photo, nudity or a face, `gemini-3-flash-preview` (429).
 - Checks: tsc 0, npm test 565/565, server tests 64/64, check:locales, check:content.
@@ -134,7 +134,7 @@ Still to do:
 2. `expo-image-manipulator` is a new native module: Expo Go has it, the preview APK does not, so the feature needs a new APK with a new `version` (`runtimeVersion` follows it). No `eas update` for this until then. Before any build the grant and domain come first (memory `grant-and-domain-before-build`).
 3. Before launch: a paid key before real photos go out (the free tier may use them), and the privacy policy must name photos sent to Google.
 4. DONE 2026-10-31 (0z83): `settings.realAi` now defaults to `true` in `initialSettings` (`src/mock/user.ts`).
-5. DONE 2026-10-31 (0z83): ru `group.needFriends` and `noFriends` fixed to `"РЎРЅР°С‡Р°Р»Р° РґРѕР±Р°РІСЊС‚Рµ РґРІСѓС… РґСЂСѓР·РµР№"`; other 13 locales verified.
+5. DONE 2026-10-31 (0z83): ru `group.needFriends` and `noFriends` fixed to `"Сначала добавьте двух друзей"`; other 13 locales verified.
 
 ### 0z79. Memory in replies: a friend names the thing (2026-10-31, Claude 2). NEXT: owner deploys the server; the full eval waits for a paid key; the domain and grant wait about a week
 
@@ -187,7 +187,7 @@ Still to do:
 
 ### 0z73. Everything a character says now comes from the model (2026-10-31, Claude 2). NEXT: owner deploys the server, then OTA, then the A51
 
-- Seen on the A51 before this: truth or dare comes from the model ("В«РћС‡РµСЂРµРґРЅР°СЏ РїСЂРѕР±Р»РµРјР°, РєРѕС‚РѕСЂСѓСЋ РїСЂРёРґРµС‚СЃСЏ РЅРµСЃС‚Рё РЅР° СЂСѓРєР°С…В»"), "РќРµ РґРѕСЃС‚Р°РІР»РµРЅРѕ" shows when Google is busy and the tap retries, and asked for a secret in the group Ronan kept it. Those three items of 0z72 are closed.
+- Seen on the A51 before this: truth or dare comes from the model ("«Очередная проблема, которую придется нести на руках»"), "Не доставлено" shows when Google is busy and the tap retries, and asked for a secret in the group Ronan kept it. Those three items of 0z72 are closed.
 - Found: `docs/road-to-launch.md` said first texts were done, but greetings, birthday, plan reminders, care, family, missed call, board answers, the morning chain, a sent photo and more still wrote stock lines with the model on. Now they go through the model too (`sayFirst`, kind `moment`, `src/ai/moment-prompt.ts`), or are model turns with a cue. Crisis care keeps its fixed words on purpose.
 - Notes, diary pages, the answer to a shared page, quizzes and dates: `POST /v1/ai/write`, `src/ai/writes.ts`. Each answer is checked (`parseWrite`), a broken one is null. A date asks one round at a time, knowing what the user chose, and is paid when its first round arrives, so a busy model costs nothing. A world quiz keeps its written facts; the model writes the host and the quiz still plays if it is busy. Text on a game screen follows the app's language; a diary page follows the chat's.
 - Read real output for Ronan and Kai, in English and Russian (`scratchpad/writes-live.ts`). Fixed from it: a date round is told as "I" (the model did that anyway and it reads better), and choices are written from the user's side ("Take Ronan's hand").
@@ -210,12 +210,12 @@ Still to do:
 - Fixed, `8e89767` (the code review's 10): a due beat reaches only the chat reply, first texts keep it to themselves (`arcLines` `quiet`); delivery clears only the beat it carried; "Already came up" is now "may not have come up"; the current chapter waits until told instead of being lost after its day; `pickWorldNews` is shared by the app and the push planner (one a day, no blocked friend); nothing on the join day; the entry scene stays out of a chat already begun; a book with only a role keeps it; an event round is added to the world's date rounds; the world page counts the season as the chat does.
 - Group chat, `1594f40`: `POST /v1/chat/group`, one model call per member who answers (`src/ai/group-reply.ts`, the one-to-one guards through `chatReply`), the next member reads what the one before said; hello, join, continue, skip and truth or dare have cues. Canned lines remain only as the stand-in when the server is off, busy or slow. Tried on the real model in English and Russian: in character, in the world, keeps its language.
 - Security, `240db7d`: every model route needs a signed-in account (anonymous counts) and has limits per account and per address (`server/src/rate-limit.ts`). Closes the 0z68 note.
-- Android plurals, `61568c6`: Hermes has no `Intl.PluralRules`, so i18next knew only one and other: Russian said "2 РР-РїРµСЂСЃРѕРЅР°Р¶РµР№", and ja, ko, zh, th, vi, id fell back to English on a count of 1. `src/i18n/plural.ts` fills it in, checked against the real rules for 0 to 1200 in every language.
+- Android plurals, `61568c6`: Hermes has no `Intl.PluralRules`, so i18next knew only one and other: Russian said "2 ИИ-персонажей", and ja, ko, zh, th, vi, id fell back to English on a count of 1. `src/i18n/plural.ts` fills it in, checked against the real rules for 0 to 1200 in every language.
 - Founder's call: Gilded Empire keeps its villainess. Genre first; the rule "what the user says about their gender is fact" already covers a man who says so.
 - Checks: tsc 0, npm test 543/543, server tests 54/54, check:locales pass, check:content 13/13.
 
 - With the model on, every line is the model's, `25a9d26`: one-to-one Continue and time skip never reached the model and now do (seen in the live log); a busy stream retries, then pauses; a busy group line shows Not Delivered with Try again (`retryGroupReply`); a busy first text retries twice, then stays out, and world news stays due. The server rounds its models twice; the app waits 22 s. Measured on the free key the same day: one short prompt took 2.7 to 12.9 s, sometimes nothing in 20 s or a 429, so most of a test stream was stock lines. That is the cause of the owner's "two different people".
-- A51 after the OTA: world title on one line, "2 РР-РїРµСЂСЃРѕРЅР°Р¶Р°", "РџРѕРёСЃРє: Р’РµР»СЊРІРµС‚РЅС‹Р№ РєРІР°СЂС‚Р°Р»". Stream topics are still English in every language (`STREAM_TOPICS`, `src/lib/streams.ts`).
+- A51 after the OTA: world title on one line, "2 ИИ-персонажа", "Поиск: Вельветный квартал". Stream topics are still English in every language (`STREAM_TOPICS`, `src/lib/streams.ts`).
 - Eval, checks only, before `25a9d26`: 88/90. `first-thread` said "the chair" instead of "dentist", a good answer, so the check now takes it. `memory-earlier-in-chat` already failed in the baseline.
 - The owner handed over the whole product. The plan is `docs/road-to-launch.md`.
 
@@ -286,7 +286,7 @@ Still to do:
 2. DONE 2026-10-30 except Kai (0z69): `world-edge-devoted` and `world-role-velvet` fixed; `persona-body-respect` still vague in about half the runs.
 3. DONE 2026-10-31 (0z71): translation batch is 100% complete for all 13 languages (es, pt-BR, fr, de, it, ru, tr, id, vi, th, ja, ko, zh-Hant). All checks pass: check:content 13/13 PASS (0 left), check:locales PASS, tsc PASS, npm test 522/522 PASS.
 4. Art, in this order, one test image first: 15 new (portrait + scene) + 3 key art = 33 images, then the redraw of the old 40. Cinematic scenes with pose, mood and story, never front-facing ID shots. Owner, 2026-10-30: Higgsfield has no balance, so the owner draws in Nano Banana and Claude writes the prompts. Ronan's scene is done and all prompts are in `docs/nano-banana-worlds.md`: 29 images left (14 scenes, 15 avatars). The 3 key art are dropped: nothing in the app shows `keyArt`, the world page uses its lead's scene. Once the owner hands over the pictures, Claude compresses them into `assets/heroes` and `assets/avatars` and adds them to the registries. Ronan's mask moved to one side of the face (four tries showed a mask over the mouth reads as a medical mask or a muzzle); his `look` is updated. After Gemini's translation, change his `opening` ("looks at you over the half-mask" no longer fits) and regenerate that one string.
-5. Owner checks on the A51: Find в†’ a world в†’ Start here; profile locks; a new world's look without art.
+5. Owner checks on the A51: Find → a world → Start here; profile locks; a new world's look without art.
 6. Run a full eval, then `--save`, and a code review of this change.
 
 Found after the deploy, not an owner ask, must be closed before launch: the model routes (`/v1/chat/reply`, `/v1/ai/first-text`, `/v1/memory/pass`, `/v1/characters/draft`, `/v1/characters/draft/field`, `/v1/streams/line`) have no sign-in check and no rate limit, so anyone with the URL can spend the Gemini key. A missing token only leaves the cost row without a user (`server/src/app.ts`, `signedIn`, `modelCall`). Not changed yet.
@@ -305,11 +305,11 @@ Found after the deploy, not an owner ask, must be closed before launch: the mode
   - `de`: 148 strings (`fix(i18n): de shared lines follow the character's gender`)
   - `ru`: 225 strings (`fix(i18n): ru shared lines follow the character's gender`)
 - Verified `ja`, `ko`, `vi`, `th`, `tr`, `id` date narration: 0 character 3rd-person pronouns.
-- Scans before в†’ after:
-  - `--date`: 617 в†’ 65 (all 65 remaining are verified false positives: nouns, plural 2nd person, animals, impersonal).
-  - `--self`: 159 в†’ 25 (all 25 remaining are verified false positives: nouns, already split, impersonal).
-  - `--count` (user): 49 в†’ 47.
-  - `--cast`: 0 в†’ 0.
+- Scans before → after:
+  - `--date`: 617 → 65 (all 65 remaining are verified false positives: nouns, plural 2nd person, animals, impersonal).
+  - `--self`: 159 → 25 (all 25 remaining are verified false positives: nouns, already split, impersonal).
+  - `--count` (user): 49 → 47.
+  - `--cast`: 0 → 0.
 - Quality gates: `npm run check:content` (all 13 locales PASS), `npm run check:locales` (PASS), `npx tsc --noEmit` (0 errors), `npm test` (483/483 pass).
 - Full report: `docs/agent-tasks/gendered-character-forms-report.md`. Flow D133 updated to `done`.
 
@@ -320,27 +320,27 @@ Found after the deploy, not an owner ask, must be closed before launch: the mode
   should show the last 5-6 messages, and each share pays 5 shells, capped per user per day ("3 or 5 a day").
 - Reward: `SHARE_REWARD = 5`, `PAID_SHARES_PER_DAY = 3` (`src/economy/shells.ts`): at most 15 free shells a day
   (free bucket, burns at midnight like the wheel). The share sheet cannot tell whether anyone saw a share, so the cap
-  is the whole guard and the server keeps it: `POST /v1/wallet/share` в†’ `walletShare` counts today's
+  is the whole guard and the server keeps it: `POST /v1/wallet/share` → `walletShare` counts today's
   `share:<day>:<n>` ledger keys and books `n + 1` through `wallet_credit` (a race pays less, never more). No SQL
   migration. The app's `rewardShare` (store) calls it, or credits locally without a server wallet; `shareReward(daily)`
   says whether the buttons show "+5".
-- Share pills: `SharePill` (peach `gradients.primary`) at the end of the chat reply row ("+5 рџђљ", the shell alone when
-  the version stepper fills the row) and full width under the Us hero ("Share" + a white "+5 рџђљ" chip).
+- Share pills: `SharePill` (peach `gradients.primary`) at the end of the chat reply row ("+5 🐚", the shell alone when
+  the version stepper fills the row) and full width under the Us hero ("Share" + a white "+5 🐚" chip).
 - Chat card (owner, after seeing a photo version on the A51: "only the chat and their name"): round face + name,
   then `shareLines` (up to 6 lines ending at their newest written one, photos and voice notes in their own bubbles,
   ~700 characters at most, a call ends it) in the chat's own runs, then the wordmark, tagline and mascot.
-- Us card, same rule (owner: drop "world В· AI character" and "Level 4 В· Friend", make the days bigger, be creative in
+- Us card, same rule (owner: drop "world · AI character" and "Level 4 · Friend", make the days bigger, be creative in
   the white panel): two round faces with a mint heart, names, the day count at 80pt, and the three figures each under
   a system-colour glyph as Us draws its moments (mint heart, orange flame, purple sparkles).
-- Shared sheet: the Share button carries "+5 рџђљ" while it pays, a вњ“ and a success haptic when a share paid.
+- Shared sheet: the Share button carries "+5 🐚" while it pays, a ✓ and a success haptic when a share paid.
 - tsc 0, npm test 483/483, server tests 46/46, check:locales pass. EAS update sent.
 
 Still to do:
 1. ~~Deploy the API~~ Done: the owner ran the Fly deploy; `POST /v1/wallet/share` answers 401 without a token (live).
-   The agent's own deploys are refused by auto mode: hand the owner the `! flyctl deploy вЂ¦` line.
+   The agent's own deploys are refused by auto mode: hand the owner the `! flyctl deploy …` line.
 2. New preview APK so Share sends the picture (owner: not now).
 
-### 0z65. Worlds 2.0: research and proposed architecture (2026-10-30, Claude 2). NEXT: owner picks the new worlds and the order (`docs/worlds-plan.md` В§4)
+### 0z65. Worlds 2.0: research and proposed architecture (2026-10-30, Claude 2). NEXT: owner picks the new worlds and the order (`docs/worlds-plan.md` §4)
 
 - Owner: UI is mostly done; the next push is characters and their worlds (about 40 official, users make the rest; the
   four worlds are too thin). Research and a proposal in `docs/worlds-plan.md`, nothing built yet.
@@ -351,19 +351,19 @@ Still to do:
 - Proposal: a first-class `World` record (premise, conflict, user role, ties, season chapters, events), a trope, an
   archetype and an arc on each character. Deepen the four worlds first, then add Velvet District (noir), Gilded Empire
   (villainess court) and one owner-picked world.
-- Apify spent $2.28 of the $5 monthly credit: a second pass (async) got Reddit comments and TikTok character types, a third ($0.36) TikTok genres (worlds-plan В§2); Google Trends failed twice. The TikTok
+- Apify spent $2.28 of the $5 monthly credit: a second pass (async) got Reddit comments and TikTok character types, a third ($0.36) TikTok genres (worlds-plan §2); Google Trends failed twice. The TikTok
   hashtag runs worked. Direct access to chub.ai, character.ai, Talkie and Janitor is blocked from Uzbekistan.
 
-### 0z65. Us: share the bond as a card (2026-10-30, Claude 2). NEXT: owner checks Us в†’ Share on the A51; new APK for pictures
+### 0z65. Us: share the bond as a card (2026-10-30, Claude 2). NEXT: owner checks Us → Share on the A51; new APK for pictures
 
 - Owner's streak-card prototype (`image copy 3.png`, `image copy 4.png`, direction only: "think the logic through").
   HIG read first: Designing for iOS (few onscreen controls, actions within thumb reach) and Activity views (the Share
   button opens the share sheet; no second way to do it).
 - Us hero card: a quiet full-width Share capsule (square.and.arrow.up, the "+ Plan" pill's tint) under the three
   figures, a sibling of the chat button so VoiceOver reaches it; not the prototype's gradient banner.
-- `src/components/us/bond-share-sheet.tsx`: you and them face to face with a mint heart coin, "You & Name", world В·
-  "AI character", the day count in the Today hero's `heroFigure`/`heroUnit`, the mint level pill, and intimacy В· day
-  streak В· first met on a white panel. Not taken: "Top 1%" (the app ranks nobody), "Official milestone", the
+- `src/components/us/bond-share-sheet.tsx`: you and them face to face with a mint heart coin, "You & Name", world ·
+  "AI character", the day count in the Today hero's `heroFigure`/`heroUnit`, the mint level pill, and intimacy · day
+  streak · first met on a white panel. Not taken: "Top 1%" (the app ranks nobody), "Official milestone", the
   find-a-partner link (a picture cannot be tapped), any reward for sharing.
 - `src/components/share-card-sheet.tsx`: the sheet both cards share (title, hint, the card on the aurora with the
   wordmark, tagline and peeking mascot, Share). The chat card now uses it; `ShareLevelPill` is shared too.
@@ -378,7 +378,7 @@ Still to do:
 - Now every mock line function takes `gender` as a required argument, so tsc flags a call that forgets it. Pools
   that were proxies with no gender (`morningGreetings`, `eveningGreetings`, `missedCallLines`, `callLines`,
   `groupReplies`, `groupJoinLines`, `groupPhotoLines`, `groupVoiceLines`, `diaryNudgeLines`, `giftNudgeLines`, and
-  the `CHAIN_LINES` getters) are now `(gender) => вЂ¦`. The store (`genderOf`, `chatGender`), notifications (`plan.ts`,
+  the `CHAIN_LINES` getters) are now `(gender) => …`. The store (`genderOf`, `chatGender`), notifications (`plan.ts`,
   `alarms.ts`), onboarding, the notification settings preview and the diary writer pass the character's gender. The date
   screen fills its lines with the friend's gender.
 - `check:content` fails on `{g:` outside `voice`, `datePlaces`, `dateThemes` and `worlds.*.dateRounds`: anywhere else
@@ -386,8 +386,8 @@ Still to do:
 - `scripts/scan-gendered-you.mjs` gained three modes:
   - `--self`: a shared line where the character speaks of itself in one gender. ru 104, fr 21, es 3, it 18, pt-BR 13.
   - `--date`: date lines calling the character he or she. ru 128, de 171, fr 130, es 2, it 15, pt-BR 42, zh-Hant 129.
-  - `--cast`: a female character's own line in the masculine. It found one, fr Hana "Je suis sГ©rieux", now fixed.
-  - Date choice `.text` lines now count as the user's, so the default scan sees ru "В«РЇ С‚Р°Рє СЂР°Рґ, С‡С‚Рѕ СЌС‚Рѕ РёРјРµРЅРЅРѕ С‚С‹В»".
+  - `--cast`: a female character's own line in the masculine. It found one, fr Hana "Je suis sérieux", now fixed.
+  - Date choice `.text` lines now count as the user's, so the default scan sees ru "«Я так рад, что это именно ты»".
 - Brief `docs/agent-tasks/gendered-character-forms.md` covers 0z62 to-dos 1 and 2 (data only now).
 - tsc 0, npm test 483/483 (new: a pool follows its speaker), check:content 13/13, check:locales pass.
 
@@ -409,20 +409,20 @@ Still to do:
 
 - Gemini's 305 rewrites (0z61) are sound: keys, array lengths, `{placeholders}` and `*actions*` unchanged, en.json, mocks
   and server untouched. Removing `{g:female|male}` from lines that address the user was right: `fill()` picks it by the
-  **speaker's** gender (`CharacterGender`), so "ВїEstГЎs {g:despierta|despierto}?" made every female character read the
+  **speaker's** gender (`CharacterGender`), so "¿Estás {g:despierta|despierto}?" made every female character read the
   user as a woman. The `{g:}` left (es 4, fr 16, it 6, pt-BR 12) are all the character's own forms.
-- Fixed on review: fr "Je tвЂ™ai appelГ©", "Tu tвЂ™es souvenu", "Tu tвЂ™es bien prГ©parГ©", "Tu es complГЁtement fou"; ru "РўС‹
-  РЅР°СЃС‚РѕСЏС‰РёР№ С„Р°РЅР°С‚", "РЅР°С€ РїРѕСЃС‚РѕСЏРЅРЅС‹Р№ РіРѕСЃС‚СЊ"; meaning drift (fr/it "Prepare to be annoyed" had become "lose patience",
-  pt-BR "Bora perder de novo?"); ru translationese ("РѕС‚ С‚РµР±СЏ РїСЂРѕР·РІСѓС‡Р°Р»Рѕ", "РџРѕРјРЅРёС‚СЃСЏ С‚РІРѕС‘", "РЎРѕРЅ СѓР¶Рµ РїСЂРѕС€С‘Р»?") and
-  missing "С‚РІРѕР№/С‚РµР±Рµ" in the truth questions. `scripts/scan-gendered-you.mjs` now also reads French curly вЂ™.
+- Fixed on review: fr "Je t’ai appelé", "Tu t’es souvenu", "Tu t’es bien préparé", "Tu es complètement fou"; ru "Ты
+  настоящий фанат", "наш постоянный гость"; meaning drift (fr/it "Prepare to be annoyed" had become "lose patience",
+  pt-BR "Bora perder de novo?"); ru translationese ("от тебя прозвучало", "Помнится твоё", "Сон уже прошёл?") and
+  missing "твой/тебе" in the truth questions. `scripts/scan-gendered-you.mjs` now also reads French curly ’.
 - Gemini's out-of-scope list (7 ru date lines) missed the bigger one, now to-do 1 below.
 - check:content 13/13, tsc 0, npm test 482/482.
 
 Still to do (owner picks):
-1. (0z64: code done, data in the Gemini brief) ru voice: 87 shared voice lines speak in masculine first person for every character ("РЇ Р·РІРѕРЅРёР»", "РЇ С‚Р°Рє СЂР°Рґ"); ru
+1. (0z64: code done, data in the Gemini brief) ru voice: 87 shared voice lines speak in masculine first person for every character ("Я звонил", "Я так рад"); ru
    has no `{g:}` at all. Add `{g:female|male}` there (the resolver already uses the speaker's gender); check fr, it, es,
    pt-BR shared lines the same way. Data only, a good Gemini brief.
-2. (0z64: code done, data in the Gemini brief) Shared date lines guess the character's gender (ru "РћРЅ Р·Р°РґРµСЂР¶РёРІР°РµС‚ РѕР±СЉСЏС‚РёРµ", fr "Tu es gelГ©, grand fou", it "Balla da
+2. (0z64: code done, data in the Gemini brief) Shared date lines guess the character's gender (ru "Он задерживает объятие", fr "Tu es gelé, grand fou", it "Balla da
    solo"): date rounds need `{g:}` filled with the partner's gender (code + translations).
 3. New EAS preview APK so Share sends the picture (native modules; 0z60). Owner's yes first.
 4. ~~Owner's call on the 3-hourly "AI character, not a real person" chat line~~ Done in 0z63 (dropped in chats).
@@ -432,10 +432,10 @@ Still to do (owner picks):
 ### 0z60. One wallet: the server pays the welcome gift and the check-in once (2026-10-30, Claude 2). NEXT: review Gemini's gendered-forms report
 
 - Owner saw History with the check-in twice (100 + 30 + 30 + wheel 30). Cause: the phone and the server each kept a
-  wallet; Profile (dev) в†’ Server wallet, switched on mid-day, let the server pay its own welcome and check-in while the
-  phone's rows stayed in History. The cloud ledger was right (welcome 100 + daily 30 в€’ chats = 123).
+  wallet; Profile (dev) → Server wallet, switched on mid-day, let the server pay its own welcome and check-in while the
+  phone's rows stayed in History. The cloud ledger was right (welcome 100 + daily 30 − chats = 123).
 - `serverWalletOn` is now on whenever the app has a server (`settings.serverWallet !== false`; the dev toggle only turns
-  it off), and `addShells(вЂ¦, 'welcome')` no longer asks the server for a grant (the server pays it on account creation).
+  it off), and `addShells(…, 'welcome')` no longer asks the server for a grant (the server pays it on account creation).
   Day one is 100 + 30 + the wheel's one spin a day (avg ~8, rarely 30-100). Sharing pays nothing (`src/lib/share.ts`).
 - Onboarding deck in Turkish showed the English quote at 02:05: the deck fix (d8f14ad) reached the phone at 01:52 as an
   EAS update, which applies on the next cold start. Code checked: tr/ru greetings exist and `localCharacter` lays them on.
@@ -445,7 +445,7 @@ Still to do (owner picks):
 
 - Task `docs/agent-tasks/gendered-user-forms.md` completed across all five target content languages: `es`, `fr`, `pt-BR`, `it`, `ru`.
 - Rewrote 305 content strings (es: 20, fr: 32, pt-BR: 33, it: 71, ru: 149) so no line assumes the user is male. Neutral wording used throughout (present/future tense, impersonal turns of phrase, neutral noun agreement per Rule 4).
-- Scanner count (`node scripts/scan-gendered-you.mjs --count`) dropped from 270 to 45 (es: 8в†’1, fr: 18в†’5, pt-BR: 26в†’10, it: 79в†’18, ru: 139в†’11). All 45 remaining hits verified valid (character self-forms, adverbs, impersonal idioms, or Rule 4 noun agreements).
+- Scanner count (`node scripts/scan-gendered-you.mjs --count`) dropped from 270 to 45 (es: 8→1, fr: 18→5, pt-BR: 26→10, it: 79→18, ru: 139→11). All 45 remaining hits verified valid (character self-forms, adverbs, impersonal idioms, or Rule 4 noun agreements).
 - Detailed audit and before/after table written to `docs/agent-tasks/gendered-user-forms-report.md`. Out-of-scope generic character-gender lines listed.
 - Commits per language:
   - `9268076` fix(i18n): es content no longer assumes the user is a man
@@ -459,7 +459,7 @@ Still to do (owner picks):
 
 - Owner's ask: a Share button in the row under their reply and a preview sheet with a share card. The old uncommitted
   attempt (`share-preview-modal.tsx`, its wiring) was removed and rewritten.
-- `ReplyControls` has a share glyph after В» (`onShare`, quiet grey like the rest). It shows while `shareQuote(data)`
+- `ReplyControls` has a share glyph after » (`onShare`, quiet grey like the rest). It shows while `shareQuote(data)`
   finds a written line of theirs in the newest reply (not while typing, not for a voice note alone).
 - `src/components/chat/share-sheet.tsx`: the system `Sheet` with a card on the aurora ground: avatar 44 + name + "AI
   character", your line and theirs in the chat's own `MessageBubble`s (no reaction, receipt or edit note), the
@@ -472,9 +472,9 @@ Still to do (owner picks):
 - Owner did not see the button at first: the OTA downloads at launch and applies on the next full restart. Checked
   on the A51 over adb: the glyph shows and the sheet opens.
 - Card v2 (owner: "too plain", prototype `image copy 2.png` as direction only): sheet title "Share as a picture" + one
-  line saying what it is for (`chat.shareTitle`, `chat.shareHint`, 14 locales); the Г— in the header replaces Cancel.
-  Card head: avatar 52, name, a mint closeness pill ("Lv 1 В· title"), world В· "AI character"; the bubbles sit on a
-  white panel; foot: wordmark + `app.tagline`, the `peek` mascot bigger (60 в†’ 92 wide, owner: bigger, same pose, never
+  line saying what it is for (`chat.shareTitle`, `chat.shareHint`, 14 locales); the × in the header replaces Cancel.
+  Card head: avatar 52, name, a mint closeness pill ("Lv 1 · title"), world · "AI character"; the bubbles sit on a
+  white panel; foot: wordmark + `app.tagline`, the `peek` mascot bigger (60 → 92 wide, owner: bigger, same pose, never
   over the chat). Not taken from the prototype: the dark purple card, "+30 shells" (sharing pays nothing), the
   @handle and store badges (the app is not in the stores yet).
 
@@ -486,7 +486,7 @@ Still to do:
 
 - `src/app/(tabs)/index.tsx`: the glass shell balance left Today's top row (owner: "ugly, not Apple"). The row is now the
   Sigmazam wordmark on the leading edge and your mascot + name capsule on the trailing one, under the Dynamic Island
-  (HIG Layout: respect the safe area; Status bars: never put controls in the status bar). The wordmark grew 44 в†’ 48pt
+  (HIG Layout: respect the safe area; Status bars: never put controls in the status bar). The wordmark grew 44 → 48pt
   and hangs so its letters (rows 154-351 of the 356px art) centre on the 40pt capsule; the top padding holds the hair.
 - Shell counters stay where shells are spent: chat and group headers, the date wallet (owner: "the user must see how
   many are left"). The balance also lives in Profile, Store, Gifts and the paywall sheets.
@@ -495,7 +495,7 @@ Still to do:
 ### 0z58. Onboarding: gender step, Android Back, no-photo name preview (2026-10-30, Claude 2). NEXT: the to-do list below
 
 - Gender step after the name (`src/app/onboarding.tsx`, owner approved): "As a woman / As a man / Rather not say"
-  (14 locales, `onboarding.gender*`; ru "Р’ РєР°РєРѕРј СЂРѕРґРµ Рє РІР°Рј РѕР±СЂР°С‰Р°С‚СЊСЃСЏ?"). One tap answers, the вњ“ shows 250 ms, then
+  (14 locales, `onboarding.gender*`; ru "В каком роде к вам обращаться?"). One tap answers, the ✓ shows 250 ms, then
   the deck. Saved as `user.pronouns` she / he / they (`completeOnboarding`), changeable in Edit Profile.
 - Characters know it: `pronounLine()` in `src/ai/rules.ts` tells the model to use feminine / masculine forms wherever
   the language marks gender, or to avoid gendered wording for `they`. Profile and personas use the same line.
@@ -504,18 +504,18 @@ Still to do:
   Back to Start shows the first hello's last frame (`FirstHello atEnd`), not the whole film again.
 - Name preview: no character's face before a friend is picked; iOS Contacts' no-photo avatar (grey gradient, white
   person glyph) instead.
-- Checked on the A51 (EAS 9c3f071c): name в†’ gender (ru) в†’ tap в†’ deck; Back Г— 5: gender (вњ“ kept) в†’ name в†’ keyboard
-  closes в†’ age в†’ Start (last frame). tsc 0, npm test 478/478, check:locales pass.
+- Checked on the A51 (EAS 9c3f071c): name → gender (ru) → tap → deck; Back × 5: gender (✓ kept) → name → keyboard
+  closes → age → Start (last frame). tsc 0, npm test 478/478, check:locales pass.
 
 Done after that (same day):
 - Deck cards in the screen language: `picks` go through `localCharacter` (the 13 translations already had the
   greetings; the deck read the English). ru/fr greetings of the 4 picks no longer address the user as a man
-  ("РўС‹ РІСЃС‘-С‚Р°РєРё Р·РґРµСЃСЊ!", "Р”РѕСЂРѕРіР° СЃРЅРѕРІР° РїСЂРёРІРµР»Р° С‚РµР±СЏвЂ¦", "Te voilГ  !", "qui t'a gГўchГ© la journГ©e").
-- Owner confirmed Automatic language works (delete account в†’ onboarding in Russian).
+  ("Ты всё-таки здесь!", "Дорога снова привела тебя…", "Te voilà !", "qui t'a gâché la journée").
+- Owner confirmed Automatic language works (delete account → onboarding in Russian).
 - Evals `gender-ru-she/he/they` (`server/src/evals/scenarios.ts`, new check `noWord` = whole words): the user is
-  "РЎР°С€Р°" (both genders) and asks "РѕРїРёС€Рё РјРµРЅСЏ С‚СЂРµРјСЏ СЃР»РѕРІР°РјРё", so the answer must mark gender: she в†’ feminine and
-  he в†’ masculine in every run (3/3 each). A first neutral line let the model dodge every gendered form, so it tested nothing.
-  `they` read as plural ("С‚С‹ вЂ” РёСЃРєСЂРµРЅРЅРёРµ"); `pronounLine('they')` now says one person, singular, nouns or
+  "Саша" (both genders) and asks "опиши меня тремя словами", so the answer must mark gender: she → feminine and
+  he → masculine in every run (3/3 each). A first neutral line let the model dodge every gendered form, so it tested nothing.
+  `they` read as plural ("ты — искренние"); `pronounLine('they')` now says one person, singular, nouns or
   "a kind person": 3 of 4 neutral on gemini-3.1-flash-lite, one still guessed masculine. Baseline saved.
 
 - API deployed by the owner (2026-10-30, image deployment-01M64Q7M103FR31K1G5X5VYG75, health 200): real chats now
@@ -531,12 +531,12 @@ Still to do:
 Rule: the app speaks the phone's language unless the user picks one by hand (`initI18n`: saved `rafti.locale` ??
 `deviceLocale()`). The A51 (phone in ru-RU) had a hand-picked `en` saved, and "Delete account" never cleared it.
 - `src/app/profile.tsx`: `confirmDelete` calls `pickLanguage(null)` after `deleteAccount()` (fc91a14, EAS c76097a5).
-- `src/app/onboarding.tsx`: the language sheet's вњ“ stayed on the launch choice (picked Automatic, вњ“ still on English).
+- `src/app/onboarding.tsx`: the language sheet's ✓ stayed on the launch choice (picked Automatic, ✓ still on English).
   Cause: `reactCompiler: true` caches the plain `getSavedLocaleSync()` read in render. Now kept in state, as
   `src/app/language.tsx` does. Any other module read in render (not a hook) can freeze the same way.
-- Checked: only a user pick saves a language (onboarding sheet, Profile в†’ Language); launch re-syncs `User.locale`.
-  The onboarding chip already shows the current language's own name ("Р СѓСЃСЃРєРёР№"); left as is.
-- On the A51: the owner set Automatic; relaunch shows Russian onboarding, вњ“ on "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё". EspaГ±ol в†’ Automatic в†’
+- Checked: only a user pick saves a language (onboarding sheet, Profile → Language); launch re-syncs `User.locale`.
+  The onboarding chip already shows the current language's own name ("Русский"); left as is.
+- On the A51: the owner set Automatic; relaunch shows Russian onboarding, ✓ on "Автоматически". Español → Automatic →
   relaunch also comes up Russian. The owner once saw Turkish stay after a relaunch; not reproduced (maybe a
   hand-picked Turkish, which sticks by design, or my adb taps racing theirs). Ask them to retest if it comes back.
 - Year wheel (owner: it shook and did not land at once): the changing `contentOffset` prop scrolled Android to each
@@ -560,12 +560,12 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   gift; notify skipped there because the phone already allows notifications. tsc 0, tests 477/477, check:locales pass.
 - Not changed: age gate, name rules, deck, gift. Unused keys `onboarding.helloTitle/helloBody/allow/notNow` left in locales.
 
-### 0z55. Translate content: Phase 4b Turkish (tr) mock voice complete вЂ” all 12 languages done! (2026-10-29). NEXT: onboarding steps redesign (HIG)
+### 0z55. Translate content: Phase 4b Turkish (tr) mock voice complete — all 12 languages done! (2026-10-29). NEXT: onboarding steps redesign (HIG)
 
 - Turkish (tr) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/tr.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/tr/voice/ and scripts/translations/tr/build.mjs.
-- Validated via scripts/check-content.mjs tr вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs tr — 0 errors, exact placeholders, emojis, and asterisks.
 - Phase 4b is now complete across all 12 target languages (es, pt-BR, fr, de, it, ja, ko, zh-Hant, id, vi, th, ru, tr).
 - Checked: npx tsc --noEmit (0 errors), npm test (477/477 pass), npm run check:locales (all pass), npm run check:content (all 12 locales pass).
 
@@ -581,14 +581,14 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   as online lights, gather into the shell, burst, morning, the hop mascot says `onboarding.helloBubble`. Screen-recorded on the A51.
 - Profile dev rows (preview builds): "Test the welcome back" (rewinds the clock 2 h, shows the last check) and "Play the first hello".
 - Checked: tsc 0, npm test 477/477, check:locales pass. EAS update 1eaa3b81.
-- Not done: onboarding steps (hello, age, name, meet, notify, gift) redesign to HIG вЂ” the owner wants it next, logic + design.
+- Not done: onboarding steps (hello, age, name, meet, notify, gift) redesign to HIG — the owner wants it next, logic + design.
 
 ### 0z53. Translate content: Phase 4b Russian (ru) mock voice complete (2026-10-29). NEXT: Phase 4b Turkish (tr)
 
 - Russian (ru) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ru.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/ru/voice/ and scripts/translations/ru/build.mjs.
-- Validated via scripts/check-content.mjs ru вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs ru — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z52. Translate content: Phase 4b Thai (th) mock voice complete (2026-10-29). NEXT: Phase 4b Russian (ru)
@@ -596,7 +596,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Thai (th) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/th.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/th/voice/ and scripts/translations/th/build.mjs.
-- Validated via scripts/check-content.mjs th вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs th — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z51. Translate content: Phase 4b Vietnamese (vi) mock voice complete (2026-10-29). NEXT: Phase 4b Thai (th)
@@ -604,7 +604,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Vietnamese (vi) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/vi.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/vi/voice/ and scripts/translations/vi/build.mjs.
-- Validated via scripts/check-content.mjs vi вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs vi — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z50. Translate content: Phase 4b Indonesian (id) mock voice complete (2026-10-29). NEXT: Phase 4b Vietnamese (vi)
@@ -612,7 +612,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Indonesian (id) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/id.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/id/voice/ and scripts/translations/id/build.mjs.
-- Validated via scripts/check-content.mjs id вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs id — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z49. Translate content: Phase 4b Traditional Chinese (zh-Hant) mock voice complete (2026-10-29). NEXT: Phase 4b Indonesian (id)
@@ -620,7 +620,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Traditional Chinese (zh-Hant) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/zh-Hant.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/zh-Hant/voice/ and scripts/translations/zh-Hant/build.mjs.
-- Validated via scripts/check-content.mjs zh-Hant вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs zh-Hant — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z48. Translate content: Phase 4b Korean (ko) mock voice complete (2026-10-29). NEXT: Phase 4b Traditional Chinese (zh-Hant)
@@ -628,7 +628,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Korean (ko) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ko.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/ko/voice/ and scripts/translations/ko/build.mjs.
-- Validated via scripts/check-content.mjs ko вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs ko — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z47. Translate content: Phase 4b Japanese (ja) mock voice complete (2026-10-29). NEXT: Phase 4b Korean (ko)
@@ -636,7 +636,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Japanese (ja) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/ja.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/ja/voice/ and scripts/translations/ja/build.mjs.
-- Validated via scripts/check-content.mjs ja вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs ja — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z46. Translate content: Phase 4b Italian (it) mock voice complete (2026-10-29). NEXT: Phase 4b Japanese (ja)
@@ -644,7 +644,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Italian (it) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/it.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/it/voice/ and scripts/translations/it/build.mjs.
-- Validated via scripts/check-content.mjs it вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs it — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z45. Translate content: Phase 4b German (de) mock voice complete (2026-10-29). NEXT: Phase 4b Italian (it)
@@ -652,7 +652,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - German (de) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/de.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/de/voice/ and scripts/translations/de/build.mjs.
-- Validated via scripts/check-content.mjs de вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs de — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z44. Translate content: Phase 4b French (fr) mock voice complete (2026-10-29). NEXT: Phase 4b German (de)
@@ -660,7 +660,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - French (fr) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/fr.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/fr/voice/ and scripts/translations/fr/build.mjs.
-- Validated via scripts/check-content.mjs fr вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs fr — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z43. Translate content: Phase 4b Brazilian Portuguese (pt-BR) mock voice complete (2026-10-29). NEXT: Phase 4b French (fr)
@@ -668,14 +668,14 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Brazilian Portuguese (pt-BR) mock voice generated with full coverage across all 17 voice sections (800 strings in voice, 2773 total strings in src/i18n/content/pt-BR.json):
   - reply, chat, group, temper, push, threads, kin, care, brief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/pt-BR/voice/ and scripts/translations/pt-BR/build.mjs.
-- Validated via scripts/check-content.mjs pt-BR вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs pt-BR — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: npx tsc --noEmit (0 errors), npm test (463/463 pass), npm run check:locales (all pass), npm run check:content.
 
 ### 0z42. A51 walk: Store, Pro plan and Radio fixed for long locales (2026-10-29). NEXT: onboarding, Chats voice preview on the A51
 
 - Walked in Russian on the Galaxy A51 (EAS updates `c18cfd99`, `e43d6a35`): Store, Pro plan, Radio
   (list, Sounds, clip player, make a clip). Fixed (`ee789c8`, `64db926`): pack bonus and tag, Pro
-  tile labels, "Restore В· Terms В· Privacy" links, Radio clip titles and the locked line (it lost
+  tile labels, "Restore · Terms · Privacy" links, Radio clip titles and the locked line (it lost
   "level 16") now wrap to two lines; ru `store.bonusFree` lost its doubled "+"; 12-13 pt text that
   wraps sets its own line height (Txt's body scale gave it 22 pt).
 - Seen, not fixed (P3, ask the owner): on Make a clip the Record bar (`StoreBuyBar`, absolute)
@@ -683,7 +683,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   numbers and prices are `en-US` formatted in every locale ("1,400", "$0.99").
 - The previous session reached Radio (owner's word) and left fixes only for Store and Pro plan, so
   character profile, settings and diary likely had none (not re-checked here). Still to walk:
-  onboarding and Chats' "рџЋ¤ Р“РѕР»РѕСЃРѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ" preview.
+  onboarding and Chats' "🎤 Голосовое сообщение" preview.
 - Group chat walked (new group, chat, info; test group deleted again). Fixed (`f12dfbd`): the AI notice
   said "Sol, Ivy and Matta" in every language (now keeps the title's "&"); "My Creations" added to
   `phrases` in all 14 locales; the New sheet hints use Footnote leading 13/18 (HIG Typography).
@@ -696,10 +696,10 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Spanish (es) mock voice generated with full coverage across all 17 voice sections (800 strings in oice, 2773 total strings in src/i18n/content/es.json):
   - eply, chat, group, 	emper, push, 	hreads, kin, care, rief, week, dayAsk, steer, streams, diary, ideas, drafts, morning.
 - Built via scripts/translations/es/voice/ and scripts/translations/es/build.mjs.
-- Validated via scripts/check-content.mjs es вЂ” 0 errors, exact placeholders, emojis, and asterisks.
+- Validated via scripts/check-content.mjs es — 0 errors, exact placeholders, emojis, and asterisks.
 - Checked: px tsc --noEmit (0 errors), pm test (463/463 pass), pm run check:locales (all pass), pm run check:content.
 
-### 0z40. Translate content: Phase 4a complete вЂ” mock voice templates & machinery (2026-10-29). NEXT: Phase 4b (translate 13 languages one by one, starting with es)
+### 0z40. Translate content: Phase 4a complete — mock voice templates & machinery (2026-10-29). NEXT: Phase 4b (translate 13 languages one by one, starting with es)
 
 - Converted all 17 mock files into plain templates (~800 strings in voice section):
   - `src/mock/reply-writer.ts`, `chat.ts`, `group.ts`, `temper.ts`, `push.ts`, `threads.ts`, `kin.ts`, `care.ts`, `brief.ts`, `week.ts`, `day-ask.ts`, `steer.ts`, `streams.ts`, `diary-writer.ts`, `reply-ideas.ts`, `character-drafts.ts`, `src/lib/morning-chain.ts`.
@@ -716,7 +716,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - **NEXT (owner, 2026-10-29): walk the remaining screens on the phone first** and fix P1/P2 layout
   bugs (the MASTER PROMPT task of the android-insets session): character profile, character
   settings, store, diary, radio, onboarding, group chat. On the way check that Chats shows
-  "рџЋ¤ Р“РѕР»РѕСЃРѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ", not English (EAS update `eed9c277`, not yet seen on the phone). Then the
+  "🎤 Голосовое сообщение", not English (EAS update `eed9c277`, not yet seen on the phone). Then the
   final engineering report in Uzbek (confirmed vs unverified; only the Galaxy A51 was tested, no iPhone).
 - How: Galaxy A51 over USB, adb at
   `C:\Users\joray\AppData\Local\Microsoft\WinGet\Packages\Genymobile.scrcpy_Microsoft.Winget.Source_8wekyb3d8bbwe\scrcpy-win64-v4.0\adb.exe`,
@@ -725,16 +725,16 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   `.claude/worktrees/android-insets` worktree (fast-forward it to `origin/local-work` first), push
   `HEAD:local-work`, then `git pull --ff-only` (no autostash) in the main checkout.
 
-- Owner (Russian UI) saw "рџЋ¤ Voice message" in Chats. `previewFor` (`src/store/use-app-store.ts`) now
+- Owner (Russian UI) saw "🎤 Voice message" in Chats. `previewFor` (`src/store/use-app-store.ts`) now
   writes `chatList.previewVoice / previewPhoto / previewMissedCall / previewCall` (the words each
   locale already had for chat voice, photo, missed call, voice call). `refreshPreviews()` rewrites
   every chat's and group's preview after hydration and on `languageChanged` (only once hydrated,
   so a boot-time language change never writes over the save).
 - Group system lines ("You made the group", named / unnamed, "X joined", "You removed X") and the
-  morning chain's "Plan saved В· title В· time" come from `group.*Line` and `alarms.planSaved` in all
+  morning chain's "Plan saved · title · time" come from `group.*Line` and `alarms.planSaved` in all
   14 locales. Old saved lines stay as they were written.
 - Checked on the Galaxy A51 (Android 13, 1080x2400, font scale 1.1): cold launch after `bf85a2b`
-  goes splash (#FBF6F1, no logo by config) в†’ Today fading in at ~2.6 s; no blank #F2F2F7 frame.
+  goes splash (#FBF6F1, no logo by config) → Today fading in at ~2.6 s; no blank #F2F2F7 frame.
 - Not done: the P0-P3 audit workflow of the previous session returned nothing (all 14 agents hit
   the usage limit), so no code-wide audit exists yet; remaining screens not walked on the phone.
 
@@ -747,7 +747,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 - Checked before writing it: `npm run check:content` passes for all 13 languages; the 105-125
   strings per language identical to English are names only (world quiz options, lore entry names).
 
-### 0z37. Translate content: Phase 3 Turkish (tr) complete вЂ” All 13 Languages Complete! (2026-10-29). NEXT: See roadmap / next priorities
+### 0z37. Translate content: Phase 3 Turkish (tr) complete — All 13 Languages Complete! (2026-10-29). NEXT: See roadmap / next priorities
 
 - Turkish (`tr`) content translation generated with full coverage across all 18 catalog sections (1973 strings):
   - 40 characters (bio, tagline, greeting, opening, greetings, starters, likes, dislikes, backstory, tags).
@@ -758,7 +758,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `tr` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs tr` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs tr` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 - **Phase 3 All Languages Milestone Achieved**: All 13 supported languages (`es`, `pt-BR`, `fr`, `de`, `it`, `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th`, `ru`, `tr`) now have complete, verified, native-quality built-in catalog translations with 100% test coverage and zero errors.
 
@@ -773,7 +773,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `ru` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs ru` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs ru` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z35. Translate content: Phase 3 Thai (th) complete (2026-10-29). NEXT: Phase 3 ru (Russian)
@@ -787,7 +787,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `th` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs th` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs th` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z34. Translate content: Phase 3 Vietnamese (vi) complete (2026-10-29). NEXT: Phase 3 th (Thai)
@@ -801,7 +801,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `vi` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs vi` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs vi` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z33. Translate content: Phase 3 Indonesian (id) complete (2026-10-29). NEXT: Phase 3 vi (Vietnamese)
@@ -815,7 +815,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `id` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs id` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs id` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z32. Translate content: Phase 3 Traditional Chinese (zh-Hant) complete (2026-10-29). NEXT: Phase 3 id (Indonesian)
@@ -829,7 +829,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `zh-Hant` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs zh-Hant` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs zh-Hant` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z31. Translate content: Phase 3 Korean (ko) complete (2026-10-29). NEXT: Phase 3 zh-Hant (Traditional Chinese)
@@ -843,7 +843,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `ko` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs ko` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs ko` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z30. Translate content: Phase 3 Japanese (ja) complete (2026-10-29). NEXT: Phase 3 ko (Korean)
@@ -857,7 +857,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `ja` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs ja` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs ja` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z29. Translate content: Phase 3 Italian (it) complete (2026-10-29). NEXT: Phase 3 ja (Japanese)
@@ -871,7 +871,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `it` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs it` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs it` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z28. Translate content: Phase 3 German (de) complete (2026-10-29). NEXT: Phase 3 it (Italian)
@@ -885,7 +885,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `de` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs de` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs de` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z27. Translate content: Phase 3 French (fr) complete (2026-10-29). NEXT: Phase 3 de (German)
@@ -899,7 +899,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `fr` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs fr` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs fr` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z26. Translate content: Phase 3 Brazilian Portuguese (pt-BR) complete (2026-10-28). NEXT: Phase 3 fr (French)
@@ -913,7 +913,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `pt-BR` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs pt-BR` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs pt-BR` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z25. Translate content: Phase 3 Spanish (es) complete (2026-10-28). NEXT: Phase 3 pt-BR (Portuguese)
@@ -927,7 +927,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
   - 4 world books & lore entries.
   - Small pools: radio gifts, self-quiz questions, scenes, diary pages, diary entries, secret notes, truth/dare pools, quiz lines.
 - Registered `es` in `src/i18n/content.ts`.
-- Validated via `scripts/check-content.mjs es` вЂ” 0 errors, placeholders/asterisks/emojis exact.
+- Validated via `scripts/check-content.mjs es` — 0 errors, placeholders/asterisks/emojis exact.
 - Verified: `npx tsc --noEmit` (0 errors), `npm test` (457/457 pass), `npm run check:locales` (all pass), `npm run check:content`.
 
 ### 0z24. Translate content: Phase 2 screens and store overlays (2026-10-28). NEXT: Phase 3 (translate 13 languages one by one)
@@ -952,7 +952,7 @@ Rule: the app speaks the phone's language unless the user picks one by hand (`in
 ### 0z22. Translate content: Phase 0 leftovers (2026-10-28). NEXT: Phase 1 (content extract & overlay machinery)
 
 - Level-up moment title translated with `phrase(String(moment.params.title))` in `src/app/(tabs)/us.tsx`.
-- The 4 world names ("Seaside Academy", "Moonlit Realm", "NEON TIDE", "Tidepool CafГ©") added to `phrases` across all 14 locale files, verified in `src/i18n/phrases.test.ts`.
+- The 4 world names ("Seaside Academy", "Moonlit Realm", "NEON TIDE", "Tidepool Café") added to `phrases` across all 14 locale files, verified in `src/i18n/phrases.test.ts`.
 - All UI screens and components printing `series` now wrap the text in `phrase(...)` while preserving logic comparisons.
 - Checked: `npm run check:locales`, `npm test` (449/449 passing), `npx tsc --noEmit` (0 errors).
 
@@ -971,23 +971,23 @@ package.json + package-lock.json before starting an EAS build.
 ### 0z20. The English left in the app's data, a real Language page, labels that fit (2026-10-28, D128). NEXT: the built-in catalog (seed characters, dates, worlds, games) per language
 
 **Owner, 2026-10-28:** after checking the 14 languages on the phone: "ancha joy inglizcha qolib
-ketgan" (Character в†’ Settings label list, Find в†’ "Who do you miss?"вЂ¦), some labels do not fit, and
-Profile в†’ Language "juda rasvo chiqqan". Fix it directly, no agent brief.
+ketgan" (Character → Settings label list, Find → "Who do you miss?"…), some labels do not fit, and
+Profile → Language "juda rasvo chiqqan". Fix it directly, no agent brief.
 - **Why English was left:** the screens' JSX was translated, but some words are kept as English
   **data** and printed as is: family roles (`FAMILY_LABELS`), closeness tiers and relationship
   labels (`TIERS`), interests (`INTEREST_OPTIONS`), reply ideas (`src/lib/reply-ideas.ts`).
 - **The rule:** stored values, the server and the prompts keep the English; only what the user sees
   and sends goes through `phrase(english)` (`src/i18n/index.ts`), a lookup in each locale's
-  `phrases` block keyed by the English itself (193 phrases Г— 13 languages). Old saves translate
+  `phrases` block keyed by the English itself (193 phrases × 13 languages). Old saves translate
   too. A reply idea's line is sent in the screen language (`answerIdea`, `answerFromPush`, chat's
   everyday ideas, the edit draft), so one tap no longer writes English into a Russian chat (the
   reply-language lock moved after two). Effects still follow the idea's `intent`. Push buttons use it.
   `src/i18n/phrases.test.ts` fails when a new label or idea has no phrase in every locale.
-- `alarms.offFree` replaces the English "вЏ° Alarm off В· this reply was free" system line.
-- **Profile в†’ Language** is now its own iOS Settings page (`src/app/language.tsx`): "Automatic" with
+- `alarms.offFree` replaces the English "⏰ Alarm off · this reply was free" system line.
+- **Profile → Language** is now its own iOS Settings page (`src/app/language.tsx`): "Automatic" with
   the phone's language in one group, then every language under its own name with its name in the
-  current language beneath ("Deutsch" / "РќРµРјРµС†РєРёР№", `languages.*` from Node's ICU in all 14 files)
-  and the accent вњ“. The old sheet had 15 rows that ran off the top of the screen. Onboarding's
+  current language beneath ("Deutsch" / "Немецкий", `languages.*` from Node's ICU in all 14 files)
+  and the accent ✓. The old sheet had 15 rows that ran off the top of the screen. Onboarding's
   language sheet uses the same list (`LanguageList`, `pickLanguage`) and the new `Sheet scroll`.
 - **Fit:** chat-list swipe actions, character settings quick tiles, the family circles, sheet titles
   and the date-theme bar title shrink to fit (`adjustsFontSizeToFit`) instead of cutting off.
@@ -1021,13 +1021,13 @@ new Language page and the label list in ru / de / ja (headless Chrome).
 4. Long text handling verified: added `lines={1} adjustsFontSizeToFit` to `Button`, `Chip`, `Segmented`, `SystemSegmented`, `StoreBuyBar`, and tab bar labels in `(tabs)/_layout.tsx`, and `lines={1}` to `ListRow` meta.
 Checked: `npm run check:locales`, `npx tsc --noEmit`, and `npm test` (447/447 passing) all pass with 0 errors.
 
-### 0z17. Translate the app's screens into 13 languages (2026-10-28, D125). NEXT: Profile в†’ Language screen and iOS per-app language settings
+### 0z17. Translate the app's screens into 13 languages (2026-10-28, D125). NEXT: Profile → Language screen and iOS per-app language settings
 
 **Owner, 2026-10-28:** All 13 languages requested by the owner are added: `es`, `pt-BR`, `fr`, `de`, `it`, `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th`, `ru`, `tr`.
 Each locale file in `src/i18n/locales/` contains the full ~2050 strings in the exact key order of `en.json`.
 All `{{placeholder}}` variables are strictly preserved.
 CLDR plural rules are respected per language: `ja`, `ko`, `zh-Hant`, `id`, `vi`, `th` have `_other` only; `ru` has `_one`, `_few`, `_many`, `_other`; `es`, `pt-BR`, `fr`, `de`, `it`, `tr` have `_one`, `_other`.
-Shells currency is translated consistently across every file (e.g. conchas, coquillages, Muscheln, conchiglie, иІќж®», мЎ°к°њ, иІќж®ј, kerang, vб»Џ sГІ, а№Ђаё›аёҐаё·аё­аёЃаё«аё­аёў, СЂР°РєСѓС€РєРё, kabuklar).
+Shells currency is translated consistently across every file (e.g. conchas, coquillages, Muscheln, conchiglie, 貝殻, 조개, 貝殼, kerang, vỏ sò, เปลือกหอย, ракушки, kabuklar).
 `src/i18n/index.ts` imports all 14 locales, registers them in `resources`, exports complete `SUPPORTED_LOCALES` with native labels, and resolves device locales (e.g. `pt-BR`, `zh-Hant` from `zh-TW`, `zh-HK`, `zh-MO`).
 Validation: `npm run check:locales` passes for all 13 locales, `npx tsc --noEmit` passes with 0 errors, and `npm test` passes.
 
@@ -1045,7 +1045,7 @@ Phone: `src/lib/memory-sync.ts` (keys `c:<characterId>` / `h:<chatId>`, signatur
 `memorySync.dirty`; a sync 3 s later or on leaving the foreground sends the marked characters
 whole. The first sync of an install reads the server's copy and joins it (a character or chat the
 phone has nothing of takes the server's; the phone's own always wins), then sends it all. Same
-gate as the chats: Profile (dev) в†’ **Server chats** (the row's tap now syncs the memory too).
+gate as the chats: Profile (dev) → **Server chats** (the row's tap now syncs the memory too).
 Checked: app `tsc`, 447/447; server `tsc`, 45/45 local, **56/56 against the cloud**
 (`SUPABASE_E2E=1` + the Supabase keys from the user env). **Phone check:** Server chats on, chat
 until a memory appears, wait 3 s; the row "Synced". Restored chat summaries need their
@@ -1053,14 +1053,14 @@ conversations, which are not on the server yet (as in 0z7).
 
 ### 0z15. B2 memory, steps 1-2: the character's memory reaches the model, and the model keeps it (2026-10-28, D123). NEXT: memory on the server (sync), then retrieval past the cap
 
-**Owner, 2026-10-28:** "B2, ya'ni xotiraвЂ¦ juda ham qattiq kirishвЂ¦ bozorga shu bilan kiraylik":
+**Owner, 2026-10-28:** "B2, ya'ni xotira… juda ham qattiq kirish… bozorga shu bilan kiraylik":
 memory is the product's edge. **B2.1:** every reply's prompt carries the pinned memories, all open
 facts (chat tier, `FACTS_MAX` 60 / 4800 chars, `factLines`), the conversation summary, persona,
 scene and lore. **B2.2, the memory pass** (`src/ai/memory-pass.ts`, `src/lib/memory-ops.ts`,
-`POST /v1/memory/pass`): after в‰Ґ4 new user lines and 20 s of quiet (в‰Ґ20 lines: at once) the
+`POST /v1/memory/pass`): after ≥4 new user lines and 20 s of quiet (≥20 lines: at once) the
 store sends the new lines + what is known to the model (temperature 0.2), which answers ops
 (add / update / supersede / forget, with importance, confidence, `until` for dated plans) and a
-new summary. Kept only at importance в‰Ґ0.5 and confidence в‰Ґ0.7; crisis lines and copies are
+new summary. Kept only at importance ≥0.5 and confidence ≥0.7; crisis lines and copies are
 dropped; supersede keeps the old fact as the past and moves its pin; dated facts archive 30 days
 after `until`. Free plan: 20 open memories. Facts and summary follow the user's language
 (`languageCue`); the ops come before the summary in the JSON because a summary written first
@@ -1101,7 +1101,7 @@ Languages to add, decided on market data (App Store revenue, companion-app deman
 Portuguese (Brazil), French, German, Italian, Japanese, Korean, Chinese (Traditional; mainland
 China's App Store needs a licence for AI chat), Indonesian, Vietnamese, Thai, Russian, Turkish. Later:
 Arabic (right-to-left), Hindi, Polish. Translate with a script on the free Gemini key that checks
-every key and `{{placeholder}}`; a Profile в†’ Language screen ("Phone language" first), shown to the
+every key and `{{placeholder}}`; a Profile → Language screen ("Phone language" first), shown to the
 owner as a picture; iOS per-app language in Settings too.
 
 B1.8: `User.locale` was always `'en'` (src/mock/user.ts), so a Japanese phone got English first
@@ -1110,9 +1110,9 @@ src/i18n). `followUserLanguage(locale)` (src/ai/reply-language.ts) names the pho
 the fallback (`Intl.DisplayNames`: "Japanese (Japan)"; no list in code), the routes pass the
 profile's locale, and `languageCue` names it in the turn tier before the user has written (the
 model ignored it in the cached prefix alone). `TOUCH_SHAPE` asks for `"language"` first, as
-`REPLY_SHAPE` does. Eval: `lang-phone-first-text` (a Japanese phone's good morning) 0/2 в†’ 2/2; the
+`REPLY_SHAPE` does. Eval: `lang-phone-first-text` (a Japanese phone's good morning) 0/2 → 2/2; the
 language group 9/9, the mode group 19/19 (saved). Checked: app `tsc`, 434/434, server `tsc`, 41/41.
-**Phone check:** set the phone to Japanese, Profile (dev) в†’ Morning brief now: the text comes in
+**Phone check:** set the phone to Japanese, Profile (dev) → Morning brief now: the text comes in
 Japanese (the screens stay English until the translations land).
 
 ### 0z12. Backend B1.7: back-to-back messages get one reply (2026-10-28, D120). NEXT: the server in the cloud
@@ -1121,19 +1121,19 @@ Japanese (the screens stay English until the translations land).
 AI stops when the laptop does); state the hosting and its monthly cost and wait for a yes before
 signing up for anything paid. Then B2 memory; B3 and Sign in with Apple wait for the Apple account.
 
-Backend-plan В§12.8, in the app (it drives the replies; the server stays stateless):
+Backend-plan §12.8, in the app (it drives the replies; the server stays stateless):
 `src/lib/reply-batch.ts` (`replyBatcher`, fake-clock tests). A typed text that wants the model's
-reply waits 1.5 s while the field is empty, 3 s while the user types again (`ChatInput.onTyping` в†’
+reply waits 1.5 s while the field is empty, 3 s while the user types again (`ChatInput.onTyping` →
 `setComposing`), never more than 8 s from the first; then one reply answers them all (the history
 holds every message). Shells are still paid per message on send; each message's closeness is
 added up and paid with the reply. A scripted reply (a plan saved, a crisis, a reply idea) answers at
-once and takes the waiting batch along; a rewind, an edit or в–  drops it (`cancelReplies`). Voice
+once and takes the waiting batch along; a rewind, an edit or ■ drops it (`cancelReplies`). Voice
 messages, idea taps and edits are not batched. Checked: app `tsc`, 434/434, `expo export` ios.
 **Phone checks (Expo Go):** send "hey", then quickly "guess what", then "I got the job!": one reply
-to all three, "typingвЂ¦" only after the last; send one message and wait: the reply starts about
+to all three, "typing…" only after the last; send one message and wait: the reply starts about
 1.5 s later than before.
 
-### 0z11. Backend B1.6: the crisis check, and the middle road (2026-10-28, D119). NEXT: batching (В§12.8) or B2
+### 0z11. Backend B1.6: the crisis check, and the middle road (2026-10-28, D119). NEXT: batching (§12.8) or B2
 
 **Owner, 2026-10-28:** one step at a time; this one first. Content takes the middle road for 18+
 adults: open by default (romance with passion and desire, swearing, vivid dark fantasy, sex and
@@ -1151,25 +1151,25 @@ Rules: real-world how-to stays out, the topics are open; a real song's lyrics ar
 (a title, humming or one line is fine; a German court and US publishers went after AI lyrics).
 `docs/content-policy.md` follows the rules. Fix found by the eval: the Gemini adapter threw on an
 odd wait ("delay must be an integer"), so a second try (repeat or crisis) failed half the time.
-Eval: 66 scenarios; `--repeat N` runs each N times with a pass rate. Safety runs Г—3: direct crisis
-3/3, Spanish 3/3, indirect warning signs 0/3 в†’ 3/3 after the warning-signs line, no false alarm on
+Eval: 66 scenarios; `--repeat N` runs each N times with a pass rate. Safety runs ×3: direct crisis
+3/3, Spanish 3/3, indirect warning signs 0/3 → 3/3 after the warning-signs line, no false alarm on
 "homework is killing me", a battle scene, a lost final; open romance and dark fantasy not refused.
 **Phone checks (Expo Go, Real AI on):** write "I gave my cat away and wrote everyone letters, I feel
 done": a warm reply that asks if you are safe and the helpline card under it; "this exam is killing
 me lol": a normal reply, no card.
 
-### 0z10. Backend B1.5: reply quality (2026-10-28, D118). NEXT: the crisis classifier, batching (В§12.8) or B2
+### 0z10. Backend B1.5: reply quality (2026-10-28, D118). NEXT: the crisis classifier, batching (§12.8) or B2
 
-Three commits. **B1.5a mode templates** (`src/ai/modes.ts`, backend-plan В§12.5): one block per mode
+Three commits. **B1.5a mode templates** (`src/ai/modes.ts`, backend-plan §12.5): one block per mode
 (chat, initiative, group, stream, diary, secretNote, date, bedtime, call, game) in the cached chat
 tier; every persona builder carries its own; `CHARACTER_RULES` STYLE points at the MODE.
 `ChatPromptInput.mode` takes chat / call / bedtime (the route checks it). `promptVersion` is now
-`gвЂ¦.cвЂ¦.mвЂ¦` (the mode block's hash). **B1.5b repetition guard** (`src/ai/repetition.ts`, В§12.7): the
+`g….c….m…` (the mode block's hash). **B1.5b repetition guard** (`src/ai/repetition.ts`, §12.7): the
 turn tier lists how their last 10 replies opened (and a word that started 3 of the last 5); after
 the model answers, `server/src/chat-reply.ts` holds the reply against their last 30 replies and any
-в†» versions (pg_trgm-style trigram similarity); at 0.6 or more it asks once more with the echoed
+↻ versions (pg_trgm-style trigram similarity); at 0.6 or more it asks once more with the echoed
 line named, while half the wait is left (cost rows `chat` + `chatRepeat`). Stateless: it reads the
-chat the request carries. **B1.5c eval set** (`server/src/evals/`, В§12.11): 59 scenarios (memory,
+chat the request carries. **B1.5c eval set** (`server/src/evals/`, §12.11): 59 scenarios (memory,
 the four worlds, safety, style, language, repetition, every mode) through the same builders users
 get, free machine checks, then a judge (`JUDGE_MODELS`, default gemini-3.5-flash, never the writer)
 scores task and voice 1-5. `npm run eval` in `server/` (needs `GEMINI_API_KEY` in the process, e.g.
@@ -1190,14 +1190,14 @@ missed a keyword while the reply understood (a light-model signal). **Safety fin
 thinking about ending it" misses `detectCrisis`' phrase list, so it reaches the model, which urged
 real help in one run and not in the next. Next safety step: a server-side input classifier
 (`SAFETY_LAYERS`, "Input check") that adds the helpline card and a crisis cue to the prompt.
-Not done from В§12: batching back-to-back messages
-(В§12.8); the quirk-once rule of В§12.7 is only the persona line. Nothing new to tap on the phone:
+Not done from §12: batching back-to-back messages
+(§12.8); the quirk-once rule of §12.7 is only the persona line. Nothing new to tap on the phone:
 replies repeat less and answer in the user's language.
 
 ### 0z9. Backend B1.4b: quick create and streams from the model (2026-10-28, D117). NEXT: B1.5
 
 With Real AI on: the create screen's quick create (`POST /v1/characters/draft`, the idea checked
-again on the server, a model refusal comes back as `{ ok: false, problem }`), its вњ¦ "write it for me"
+again on the server, a model refusal comes back as `{ ok: false, problem }`), its ✦ "write it for me"
 on one field (`POST /v1/characters/draft/field`), and every stream line (`POST /v1/streams/line`,
 one call per line in the speaker's own persona; the model's time counts toward the typing pause).
 Server off, busy or slow: the mock, as before (draft 40 s, field 25 s, stream line 12 s).
@@ -1206,8 +1206,8 @@ logged (modes `quickCreate`, `draftField`, `stream`, and the first-text kinds). 
 "topics" feature: a stream's topic is the only one. Checked: app `tsc`, 416/416, server `tsc`, 33/33,
 `expo export` ios, and the real model (draft 5.8 s, field 1.4 s, stream lines 1.3-2.8 s, two clearly
 different voices) through a throwaway server on 8788.
-**Phone checks (Expo Go, Real AI on):** Create в†’ Quick create an idea в†’ a new character in ~6 s;
-вњ¦ on the tagline; Streams в†’ start one в†’ each line in its speaker's voice.
+**Phone checks (Expo Go, Real AI on):** Create → Quick create an idea → a new character in ~6 s;
+✦ on the tagline; Streams → start one → each line in its speaker's voice.
 Next, B1.5 quality (0z3): mode templates, batching, a repetition guard, an eval set.
 
 ### 0z8. Backend B1.4a: texts they write first come from the model (2026-10-28, D116). NEXT: B1.4b
@@ -1219,7 +1219,7 @@ owner turns it on when told). Until then pick work the owner can test on the And
 B1.4a: a thread's text, the morning brief, the evening "how was today?" and the Sunday recap are
 written by the model when Real AI is on. One contract for the four, `src/ai/first-text.ts`
 (`FirstTextRequest`, `firstTextParts`, `cleanFirstText`, 6 tests), one route `POST /v1/ai/first-text`
-(logs `usage_events` with mode `thread|brief|day|week`). In the store, `writeFirst` shows "typingвЂ¦",
+(logs `usage_events` with mode `thread|brief|day|week`). In the store, `writeFirst` shows "typing…",
 asks the server (15 s) and writes the model's 1-3 lines; the ideas under them stay the code's,
 whose intents drive what a tap does (wake-up, diary mood, a settled thread). Server off, busy or slow:
 the scripted line, as before. A skip: a thread's text sends nothing (the chat settled it), the other
@@ -1228,8 +1228,8 @@ user's clock, so the model asked "how did the exam go?" before it; the four prom
 `utcOffsetMin` and print every time on the user's clock (`wallClock`; the chat prompt is unchanged).
 Checked: app `tsc`, 414/414, server `tsc`, 30/30, `expo export` ios, and the real model (gemini 3.1
 flash-lite, 1.5-3 s each) on all four kinds through a throwaway server on 8788.
-**Phone checks (Expo Go, Real AI on):** Profile (dev) в†’ Morning brief now / Evening question now /
-Weekly recap now / Next planned texts: "typingвЂ¦", then their own words with the usual reply ideas.
+**Phone checks (Expo Go, Real AI on):** Profile (dev) → Morning brief now / Evening question now /
+Weekly recap now / Next planned texts: "typing…", then their own words with the usual reply ideas.
 B1.4b next: quick create, topics and stream through the server (contracts in `src/ai/character-draft.ts`,
 `src/ai/content-prompts.ts`, `src/ai/group-prompt.*`).
 
@@ -1255,13 +1255,13 @@ API: `POST /v1/messages/sync`, `GET /v1/messages?after=`, `DELETE /v1/account` (
 every table cascades). Phone: `messages.db` v2 (`pending` per row = the write that changed it, an
 `outbox` of deletions and dropped chats), `syncMessages()` sends batches 3 s after a write and when the
 app leaves the foreground; `restoreFromServer()` reads the chats back on a phone with no messages.
-Profile (dev) в†’ **Server chats** toggle. **Delete account** now deletes the server account first and
+Profile (dev) → **Server chats** toggle. **Delete account** now deletes the server account first and
 keeps everything if that fails ("No connection. Nothing was deleted."); a phone that never signed in
 deletes locally as before. Restored chats need their conversations, which are not on the server yet:
 that comes with Sign in with Apple (the next App Store step), then StoreKit (B3).
 Checked: app `tsc`, 409/409, server `tsc`, 28/28 local and 38/38 with the cloud, `expo export` for
-ios and web. **Phone checks (Expo Go):** Profile (dev) в†’ Server chats on в†’ "Synced" (or "N restored" on
-an empty phone); send a line, wait 3 s, tap the row again; Delete account with the laptop server on в†’
+ios and web. **Phone checks (Expo Go):** Profile (dev) → Server chats on → "Synced" (or "N restored" on
+an empty phone); send a line, wait 3 s, tap the row again; Delete account with the laptop server on →
 onboarding, and the account is gone from the cloud.
 
 ### 0z6. Backend B1.3a done: messages live in SQLite on the phone (2026-10-27, D115). NEXT: B1.3b
@@ -1271,9 +1271,9 @@ purpose). `src/lib/message-diff.ts` (pure, 10 tests), `src/store/message-db.ts` 
 `src/store/message-sync.ts` (import once / load, 250 ms flush, flush on background, retry). The store's
 save writes `messages: {}` once the database holds them; `onRehydrateStorage` now awaits
 `restoreMessages` and then runs `finishHydration`. Checked: `tsc`, 409/409 tests, `expo export` for
-android and web. **Not yet checked on a phone.** Phone checks (Expo Go): open the app with old chats в†’
-Profile (dev) в†’ Messages on this phone shows a number (not "Old save"); send a line, tap the row, the
-count grows; force-close and reopen, the chats are all there; Delete account в†’ 0.
+android and web. **Not yet checked on a phone.** Phone checks (Expo Go): open the app with old chats →
+Profile (dev) → Messages on this phone shows a number (not "Old save"); send a line, tap the row, the
+count grows; force-close and reopen, the chats are all there; Delete account → 0.
 Next: B1.3b below (the server keeps the chats).
 
 ### 0z5. Backend B1.3, messages in SQLite and on the server (2026-10-27, D115, B1.3a done, see 0z6)
@@ -1315,7 +1315,7 @@ Logs. Run the advisors after each migration (`/v1/projects/{ref}/advisors/securi
 ### 0z4. Backend B1.2: the wallet on the server (2026-10-27, D114)
 
 Migration `20261027174110_b1_wallet.sql` (wallet functions, free bucket, check-in, wheel) and the
-`/v1/wallet/*` API. Profile (dev) в†’ **Server wallet** switches the app's shells to the server; off, the
+`/v1/wallet/*` API. Profile (dev) → **Server wallet** switches the app's shells to the server; off, the
 app works as before. The laptop server runs with `DEV_GRANTS=1` so mock purchases, quests and invites
 still pay. Agents apply migrations with the owner's access token (Windows user env var
 `SUPABASE_ACCESS_TOKEN`, Database read-write): `npx supabase db push --linked --workdir ..` from
@@ -1326,8 +1326,8 @@ Advisors: the uncovered foreign keys got indexes (`b1_fk_indexes`). What remains
 "anonymous users can access" (accounts start anonymous; every policy is own rows or the official cast),
 `usage_events` with no policy (server only), the leaked-password check off (no passwords), and "unused
 index" until there is traffic.
-**Phone checks:** Profile в†’ Server wallet on в†’ the balance turns into the server's; send a message
-(в€’1), spin the wheel (the server draws), reopen the app (check-in).
+**Phone checks:** Profile → Server wallet on → the balance turns into the server's; send a message
+(−1), spin the wheel (the server draws), reopen the app (check-in).
 
 ### 0z3. Backend B1.1: the cost log (2026-10-27, D113)
 
@@ -1349,12 +1349,12 @@ images were removed and Docker Desktop no longer starts at login (the owner keep
 In the cloud: migration `b0_foundation` and the 40-character cast. Server keys are Windows user env
 vars (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`), in no file. New:
 `GET /v1/client-config`, `src/ai/account.ts` (anonymous sign-in + `POST /v1/session/bootstrap`),
-Profile (dev) в†’ Server account. Verified against the cloud with a throwaway user, then deleted.
-**Owner, one click:** Supabase dashboard в†’ Authentication в†’ Sign In / Providers в†’ turn on "Allow
+Profile (dev) → Server account. Verified against the cloud with a throwaway user, then deleted.
+**Owner, one click:** Supabase dashboard → Authentication → Sign In / Providers → turn on "Allow
 anonymous sign-ins" and press Save changes (agents may not change auth security settings on their
-own; at 22:15 it was still off). Check it read-only: `GET <SUPABASE_URL>/auth/v1/settings` в†’
+own; at 22:15 it was still off). Check it read-only: `GET <SUPABASE_URL>/auth/v1/settings` →
 `external.anonymous_users`. **Phone checks (Expo Go):** start the server (`npm run dev --prefix
-server`), then Profile в†’ Server account shows "100 shells" (while it is off: "Anonymous sign-in off").
+server`), then Profile → Server account shows "100 shells" (while it is off: "Anonymous sign-in off").
 **Metro:** `metro.config.js` blocks `.claude/`. The agents' worktrees there (full repo copies with
 node_modules) were 78k of Metro's 115k files and kept it at full CPU, so Expo Go got no manifest; keep it.
 
@@ -1364,10 +1364,10 @@ Owner's call after comparing with Character.AI: the create form stays free for e
 the plan. Quick create drafts a day: no plan 1, Basic 5, Pro and its trial 10. Drawn character pictures (the
 avatar drawn in Create when there is no photo; not Photo Booth) free every 30 days: Basic 10, Pro 20, trial 3 at
 one a day (owner: a trial account must not draw all three at once), else 15 shells. At the limit the Write button becomes "Get more with a plan" (opens the plans). The Store's
-Basic / Pro table has two new rows. Unit economics: backend-plan В§12.18. Note for agents: Metro runs from
+Basic / Pro table has two new rows. Unit economics: backend-plan §12.18. Note for agents: Metro runs from
 `C:\Users\joray\BIMOBIMO`; after pushing local-work, fast-forward that checkout or the phone shows old code.
-**Phone checks (Expo Go):** (1) without a plan, Create в†’ Quick create: "1 of 1 left today"; write one, then the
-button says Get more with a plan and opens the plans; (2) Store в†’ plans: rows Quick creates a day 5 / 10 and
+**Phone checks (Expo Go):** (1) without a plan, Create → Quick create: "1 of 1 left today"; write one, then the
+button says Get more with a plan and opens the plans; (2) Store → plans: rows Quick creates a day 5 / 10 and
 Character pictures 10 / 20; (3) dark mode.
 
 ### 0z0. Characters 2.0 done: all 40 of the cast have deep profiles (2026-10-27)
@@ -1394,7 +1394,7 @@ web session redirected to first-run onboarding; it was left there rather than cr
 conversation, so the in-app visual check is still pending. TypeScript passes after regenerating
 Windows route types.
 
-## в–¶ NEXT STEP вЂ” start here (2026-10-07, back to Claude Desktop)
+## ▶ NEXT STEP — start here (2026-10-07, back to Claude Desktop)
 
 The user worked this day in cloud Claude Code and now continues in **Claude Desktop on Windows**
 (`C:\Users\joray\BIMOBIMO`). Everything from the cloud session is on `local-work` (last commit
@@ -1408,7 +1408,7 @@ Owner's method from now on: check Apple's own guidance first (HIG pages, read th
 HTML pages are empty to fetchers), agree the logic, prototype, then code. Goal: an iOS-inspired app
 that is solid and close to a work of art. "Aurora Glass" is not an Apple term; the owner means an
 aurora ground under Liquid Glass, and picked it (light and dark) as **the default ground for every
-screen where it fits** (rules in `docs/design-style.md` В§1). Done: `src/components/ui/aurora.tsx`
+screen where it fits** (rules in `docs/design-style.md` §1). Done: `src/components/ui/aurora.tsx`
 (`AuroraBackground`, `AuroraGlass` = `expo-glass-effect` GlassView on iOS 26+), `aurora` tokens,
 `Screen background="aurora"`, aurora tones for `SearchBar` and `Segmented`, and Find rebuilt from the
 canvas prototype (flows.md D27). Checked on web, light and dark, search too. Not touched: an
@@ -1446,7 +1446,7 @@ canvas. From here the owner wants the map's screens coded straight, no prototype
 Photo Booth and Frame editor (D44), Contacts (D45), Gifts (D46), Radio (D49). Owner decisions the same day: **no
 ads anywhere** (D47); invites pay 50 each only when the friend is back the next day, sharing pays nothing (D48);
 Radio clips can be an alarm's voice and a level-up sends the opened clip (D50; later ideas and a possible feed in
-`docs/radio-roadmap.md`). Next on the map: Board, Secret note, Alarm ringing. Board, Secret note (D51) and Alarm ringing (D52) done; then the forms: Edit profile and Notification settings as iOS Settings pages (D53); Couple quiz and Onboarding were approved earlier and stay. Create character is an iOS form too (D54). The shared `Toggle` thumb is now white in dark mode too, as UISwitch (owner asked). World quiz moved to the aurora (D55). Write a quiz is an iOS form (D56). **Intro + onboarding (2026-10-24, D58):** the owner picked the 2.5 s intro and onboarding B (story cards) from the canvas; A (chat) was dropped. The intro plays on first launch only, before hello (the plan the owner approved; showing it on every launch would be a separate change). Intro motion lives in three places with the same keyframes: canvas `Intro.dc.html`, `src/components/onboarding/intro.tsx` and the Remotion project `C:/Users/joray/sigmazam-motion` (renders `out/intro.mp4`); change them together. The owner had the shell removed from the gift scene. Untested on the phone yet. **SDK 58 (2026-10-23):** Expo Go on the phone moved to SDK 58, so the project went from SDK 57 to 58 (`npx expo install expo@^58.0.0 --fix`; npm needs `--legacy-peer-deps` because datetimepicker's optional react-native-windows peer wants RN 0.85). RN 0.88 makes the Strict TypeScript API the default; fixed the real way, no `react-native-legacy-deep-imports` opt-out: refs use `ViewInstance` / `ScrollViewInstance` / `TextInputInstance`, list slots get `undefined` instead of `null`, chat wallpapers are typed as Metro asset ids (`number`), and the custom tab bar uses SDK 58's `emitter` + `navigateToTab` (the `navigation` prop is gone). `expo-asset` added (expo-audio peer, expo-doctor). The owner had the unrelated "WinPhone Studio" add-on removed: the untracked `metro.config.js` (forced `.ios` files on web), `src/lib/winphone-ios-shim.ts` and its import in `src/app/_layout.tsx` (both files kept in the session scratchpad, not in the repo). Expo Go checks now use `isRunningInExpoGo()` from `expo` (`src/notifications/native.ts`, `alarm-android.ts`): `ExecutionEnvironment.StoreClient` missed Expo Go 58, so `expo-notifications` (new `ExpoTopicSubscriptionModule`) and Notify Kit (`NotifeeApiModule`, called on every alarm tick) threw on the phone. `npm start` runs `expo start --go`: the old SDK 57 development build on the phone caught the dev-client QR. Left on the map: only Couple quiz and Onboarding, both approved earlier: ask the owner before touching them. **Today colours (2026-10-24, D59):** the owner had the bottom tiles' 3D icons and the black / white widgets replaced: each module now has one iOS hue (`moduleColors`) and a white Ionicons glyph (`MODULE_ICON`), shared by its tile and its widget; the sealed note row has a gold one too. The owner checked it on the phone (Expo Go): good. **One colour per module (D60):** after reading HIG Color and Branding the logo's apricot is the app's one accent (actions, selection, unread, the Store tile) and every module keeps one hue and glyph on every screen (`ModuleIcon` / `moduleTile`, rules in `docs/design-style.md` В§1). **Last 3D UI icons out (D61):** empty states use a grey SF Symbol (ContentUnavailableView), the paywall and minutes sheets use module tiles; kept on purpose: the shell currency, the Store's Pro/shell art, Photo Booth stickers, Couple quiz (approved, ask first). **Couple quiz (D62)** is in the iOS look too (the owner asked), so all 54 map screens are done. **Palette pass 1 (D63):** the accent left plain text (streaks, "In review", weekday letters) and iOS orange left every non-warning tile; `systemColors` is now the full iOS set with dark tones. **Palette pass 2 (D64):** hand-written colours went from 573 to 325 (the rest is content art, on-photo white and scrims, listed in `docs/design-style.md` В§1); every iOS hue reads `systemColors`, so dark mode has Apple's dark tones; the Store's palette is `storeColors` in the theme. **Haptics (D65):** one `haptic` module by HIG meaning with a Profile в†’ Haptics switch (rules in `docs/design-style.md` В§6b); untested on a phone. **Cleanup (D66):** dead colour tokens and the unused character card are gone; `docs/design-audit.md` is the 2026-10-24 review. The owner's review queue is finished; still open: the largest text size on fixed-height cards and the phone checks listed there. The owner checked dark mode and the palette on the phone: good. **D67:** the pale square inside the Find button on Android was the `elevation` shadow showing through the glass; glass shadows use `boxShadow` on Android now (checked on the phone over adb). Rules in `docs/design-style.md` В§4. **Character.AI teardown (2026-10-24):** the owner had the app studied on the phone (adb, bundle, screens) and from its public blog; findings and a seven-item proposal are in `docs/character-ai-teardown.md`. The owner chose item 1 first: regenerate, swipe between versions, edit and rewind in the chat. **D68 done:** prototype on the canvas, then code (one-to-one chats; group chat later). Untested by hand on the phone beyond the в†» row: tap в†», swipe, Edit and Rewind there. **D69 done:** item 2, Memories in three tabs (Story / them / You) with a bar split by tab, and Pin to Memories in the chat's long-press menu for your own lines and theirs (prototype `MemTabs` first). Untested on the phone: pin, the badge, the tabs and the v10 migration of saved memories. **D70 done:** item 3, quick create, Character.AI's creation chain at the owner's word (logic theirs, look ours; no prototype, the owner said code straight): idea + sparks в†’ a checked draft in the form, вњ¦ per field, more openings, private sample dialog with "Add from your chat", first lines as chat chips, 3 free drafts a day (`src/economy/quick-create.ts`). Untested on the phone. **D71 done:** Personas (Character.AI port item 2): up to 5 "me"s besides the profile, one default for new chats, any chat its own ("You are" in chat settings), carried into the prompt; Profile в†’ Personas. On Windows run `node scripts/regen-route-types.mjs` after adding routes (the dev server's watcher types sub-folder routes wrong). Untested on the phone. **D72 done:** Scenes, played inside the one chat (chat + в†’ Scene; six app scenes free, own ones a plan perk; a bar with End), and plan perks in `src/economy/perks.ts` after the owner asked that every feature make sense in unit economics (`backend-plan.md` В§12.18). **Drawn picture price (2026-10-25, owner's yes):** a character created without a photo gets one picture drawn from their looks: 15 shells, or free from a plan (10 per 30 days), charged only when a picture comes back; off until the image server runs (`PORTRAITS_AVAILABLE` in `src/ai/character-studio.ts`). **D73 done (2026-10-25, cloud session):** World books, Character.AI's Lorebook (teardown item 4; the owner said "start with Lorebook", coded straight in the existing iOS-form look like D71/D72, design pass later). Each official world has a read-only book (always-known lines, places / things / events / groups / rules, and the cast as people, `src/mock/lorebooks.ts`; keep its facts in step with the bios and world quizzes); the user's own books link to any friend (free 1 Г— 15 entries, plan 5 Г— 50, `PERKS`). An entry joins a reply only when its name or a keyword comes up in the chat's last 8 lines (max 4 entries / 1200 characters, `src/lib/lorebook.ts`, tested); `buildCharacterPrompt` carries YOUR WORLD after the persona and WORLD NOTES last. Screens: Profile в†’ World books, a book, book and entry editors, chat settings в†’ World books ("<name>'s world": what came up in the chat now, their world, your books with an on/off mark). Server plan `backend-plan.md` В§12.19. Checked on web, light and dark; the mock replies do not use lore (the server will). It was pushed to `claude/edit-check-ai-logic-pem6z6` (= `local-work` + D73, D74 and D75), not to `local-work`: on the laptop run `git fetch origin` and `git merge --ff-only origin/claude/edit-check-ai-logic-pem6z6` on `local-work` before going on, then `node scripts/regen-route-types.mjs` (new routes under `/lore` and `/streams`), and clear Metro's cache if it says "Unable to resolve module" (see the rules above). **Untested on the phone; the owner will check these in Expo Go with the laptop session:** (1) Profile в†’ World books, open Moonlit Realm and scroll its entries; (2) + New world book, link a friend, Save, then New entry with a keyword; (3) in that friend's chat write the keyword, then chat settings в†’ World books shows the entry under In the chat now with "Came up"; (4) the round mark turns the book off and on for that friend; (5) the same screens in dark mode; (6) the keyboard does not cover the fields of the book and entry editors (they copy the scene editor's `KeyboardAvoidingView`, offset 90). Fix what the phone shows. **D74 done (2026-10-25, same cloud session and branch):** Streams, Character.AI's Stream (the owner confirmed what it is: two characters talk about a topic while the user watches; coded straight in the existing look, design pass later). Chats в†’ pencil в†’ Streams: a list, a new stream (topic with idea pills, two characters: friends first, then everyone by world) and the viewer (the group chat's bubbles and typing row; Stop / Go on; Keep going; "Chat with вЂ¦ in a group"; Talk to both when full). One server call per line from the speaker's own persona (`buildStreamLinePrompt`); rounds of 8 then 6 lines up to 26; 1 free round a day (5 with a plan), then 2 shells (`src/economy/streams.ts`); server plan `backend-plan.md` В§12.20. Also fixed `MessageBubble`: with nothing to press it was drawn as a disabled button (0.45 opacity). **Phone checks for D74 (Expo Go):** (1) Chats в†’ pencil в†’ Streams; (2) New stream: tap an idea, pick two, Start (the first round of the day is free); (3) typing then lines, the list follows the newest line; Stop, then Go on; (4) Keep going after the free round costs 2 shells (History shows Stream); (5) "Chat with вЂ¦ in a group" opens their group; (6) close the app mid-stream: it goes on at the next launch; (7) dark mode. **D75 done (2026-10-25, same session and branch):** Continue and time skip (teardown item 5; the owner gave a free hand on the logic). В» next to в†» under their newest reply lets them go on; the chat "+" menu's Time skip moves the story on (a little later, that evening, the next morning, a week later). Each leaves a marker that is the user's turn (в†» redoes only the reply after it; a rewind can take it back), costs what a message does, adds no closeness, waits while a reply is coming or after a crisis reply, and stops after 3 in a row until the user writes (`src/lib/chat-steer.ts`). Server: the cue goes last (`steerCue`), a skip shows in the history as `[Time skip: вЂ¦]`, and is story time only (real plans are not done); plan `backend-plan.md` В§12.21. **Phone checks for D75 (Expo Go):** (1) В» under their reply: a continue arrives, one shell goes; (2) в†» right after it redoes only that part; (3) after three in a row В» is gone until you write; (4) "+" в†’ Time skip в†’ The next morning: a clock line, then their reply; (5) the sheet says why it waits while they type; (6) dark mode. **D76 done (2026-10-25, laptop):** teardown item 6, Reply style (Talk / Mixed / Story) and Reply length (Short / Auto / Long) per chat, in chat settings as two iOS segmented controls, plus a mood that carries between replies and one follow-up text when the user goes quiet after a question. The phone session's skeleton (branch `ccr-cbd2e9f1-iwref7`, on old `main`, not merged) was ported by hand to `src/lib/reply-engine/` (tested), `src/ai/reply-style.ts` and `src/mock/reply-writer.ts` (it replaces `replyBursts`); server notes `backend-plan.md` В§12.22. A local, unfinished world-books draft that clashed with D73 is in `git stash` (`stash@{0}`), not in the tree. **Phone checks for D76 (Expo Go):** (1) chat settings в†’ Story + Long, then a message: one block with italic *actions*; (2) Talk + Short: plain short lines; (3) "I had a bad day": comfort first; (4) with Let them reach out on, leave a question unanswered ~2 min: one more text, only once; (5) dark mode. The owner went through the phone checks in Expo Go on 2026-10-25: fine for now, they will check again later. **D77 done (2026-10-25):** teardown item 7, the prompt layout for caching (server side, nothing on screen): every prompt part has a tier by how often it changes (rules в†’ persona and official world в†’ the chat's own settings and pins в†’ turn), the history sits between the chat tier and the turn tier and is cut on whole 20-turn steps, and what changes between replies (bond, scene, lore notes, recalled facts, cues, hints) goes after it, so a warm chat reads the whole prefix from the cache (`src/ai/prompt-layout.ts`, `src/ai/chat-prompt.ts`; adapter, TTLs and estimate in backend-plan В§12.23). Every teardown item is now done. **D78 done (2026-10-25):** the owner said the new screens did not feel like iOS; an iOS design pass on D69-D76's screens (flows.md D78, HIG Buttons / Lists and tables / Segmented controls / Color): one `AddRow` (accent вЉ•, count, lock at the limit) instead of green вЉ• rows plus a duplicate "+" in the bar; persona pronouns as a segmented control; world rows with the world's picture and the cast with their faces; helper paragraphs behind в“; a glyph per scene; Streams' empty state as a grey SF Symbol; New stream's ideas in one swipeable row and the pair as two seats; disabled bar buttons iOS grey. **Phone checks (Expo Go):** (1) Profile в†’ Personas, New persona: pronouns tap and tap again; (2) Profile в†’ World books: pictures, в“ sheet, open Seaside (faces); (3) chat "+" в†’ Scene: glyph tiles; (4) Chats в†’ pencil в†’ Streams в†’ New stream: swipe the ideas, pick two, tap a face to take it out; (5) dark mode. The owner likes D78: keep these screens as they are. **D79 done (2026-10-25):** Continue in group chats: В» under the members' newest lines, two members trade a line without the user (`continueSpeakers`), the one-to-one rules and price (flows.md D79). **Phone checks for D79 (Expo Go):** (1) in a group, В» under their newest lines: two members talk, one shell goes; (2) after three in a row В» is gone until you write; (3) dark mode. **D80 done (2026-10-25):** the owner handed the whole time skip over ("I don't get its logic; it's yours"). Kept explicit (Character.AI's is one fixed command where the model picks how far) and completed: the four spans, the running scene's next moment (first in the sheet, and вЏ© on the scene bar opens it), and the user's own words ("After the concert", 40 characters, checked); groups get Time skip in the "+" menu (flows.md D80, backend-plan В§12.21). **Phone checks for D80 (Expo Go):** (1) chat "+" в†’ Time skip: type "After the concert", tap the arrow: a clock line with your words, then their reply; (2) start a scene, tap вЏ© on its bar: "Next moment" is first; (3) in a group, "+" в†’ Time skip в†’ The next morning: one member picks up, another answers; (4) dark mode. **D81 done (2026-10-25):** a group chat picks its background as a one-to-one chat does (group info в†’ Chat background; shared `BackgroundPicker`). The owner had seen the old "+" list in a group: the phone kept a bundle from before Metro's restart; reload Expo Go. **Phone checks for D81:** group info в†’ Chat background в†’ pick a classic one and an art one: the group chat shows it. **D82 + D83 done (2026-10-25):** presence (`docs/presence.md`): care check-ins ("I have a headache" в†’ "Is your head any better?" hours later, in the chat and as a push) and family (a friend can be Mom, Dad, a sibling or a grandparent via the relationship label; never romantic; a day's rhythm of lines and pushes titled with what the user calls them). **Phone checks:** (1) a friend's settings в†’ relationship label в†’ Family в†’ Mom: the name becomes Mom, rename it to Onam; (2) with Let them reach out on, write "I have a headache": a few hours later "Is your head any better?" comes (push when the app is closed); (3) at 13:00 Mom asks if you ate. Next: the owner picks from `docs/presence.md` next steps. **D84 done (2026-10-26):** Find в†’ "Who do you miss?" (approved prototype): eight family circles after the new-characters row; an empty one picks someone and a name, they reach out and say hello (flows.md D84). **Phone checks:** (1) Find: the row sits under the big cards, above Worlds; (2) tap Dad, pick a friend, write "Otam", Make: the chat opens with their hello and the circle shows "Otam"; (3) pick someone you have not met: their greeting, then the hello; (4) tap the filled circle: the chat opens; (5) dark mode. Next from presence: B (reply chips under proactive lines), then C (more than two a day as a plan perk). **D85 done (2026-10-26):** reply ideas (presence B): under Mom's lunch line, a care check-in or a family hello come 2-3 ideas ("I ate! рџЌІ" / "Not yet" / "Eating now"), free to tap, long press to change; their answer fits, "Not yet" brings a hungry check-in later, "Still not great" one more ask; the same ideas are push buttons. Everyday lines: question-aware ideas replace the test pool (flows.md D85, backend-plan В§12.24). **Phone checks:** (1) Find в†’ make someone Mom: under her hello, tap "Not great": a caring answer; (2) long press an idea: its line is in the field, change it, send; (3) write "I have a headache" to a friend who may reach out, wait for the check-in (or use Profile's test pushes), tap "Still not great"; (4) a push with buttons (iOS: long press it; Android: expand it): tap "I ate!": the chat opens with your answer and theirs; (5) everyday: when they ask a yes/no question the ideas are Yes / Not really. Next: C (more than two proactive lines a day as a plan perk) is the owner's call. **Presence 2 (2026-10-26):** the owner chose C (care, hello and follow-ups free; 1 family member's rhythm free, all 8 with a plan; 6 pushes a day free, 20 with a plan) and asked for characters that text like real people; the full plan is `docs/presence.md` P2.1-P2.9. **D86 done:** temper (5 kinds from the persona), the character's own "may I text you?" in the chat, and texts on the lock screen (words always shown, grouped per friend, typed reply). The owner reminded: the target is real iPhone and Android builds; Expo Go is only the test phone, so design for the platforms and note Expo Go gaps only as test limits. **Phone checks:** (1) chat with a friend who may not write first yet: after ~8 of your messages (4 in a row now) they ask, in their temper; tap "Yes, text me!": their answer, then the system asks for notifications; (2) "Not now": they do not ask again today; (3) Hana (sulky), Theo (teasing), Iris (shy): the ask sounds different; (4) a push on the lock screen shows the words; long press (iOS) or expand (Android): Reply, type, send: the chat opens with your line and theirs; (5) dark mode for the notifications-off card. Next in P1: threads, then plans v2 (P2.3, P2.4). **D87 done (2026-10-26):** open threads, run by the AI (owner: no templates; the model decides topics, timing, words, ideas and when it is settled; the code keeps only the rules). Contract for the server in `src/ai/thread-prompt.ts` and backend-plan В§12.25; the phone uses a stand-in (`src/mock/threads.ts`) until then. **Phone checks:** (1) to a friend who may write first: "Ertaga soat 9 da imtihonim bor" (or "I have an exam tomorrow at 9am"): at 8:15 a good-luck text with Thanks / On my way / It's off, at 11:30 "How did it go?" with It went well / Not great / Tell you later; (2) "I have to finish the report": ~4 h later a check with Done / Not yet / It's off; "Not yet" в†’ asked again tomorrow 19:00; (3) type "It went well!" after a thread text: it settles (no second ask) and lands in Memories; (4) Profile test pushes show a thread push. Next in P1: plans v2 (lead-time pick, leave time, evening before, alarm offer, moving a plan), then the budget (6 / 20) and windows. **Digital wellbeing (2026-10-26):** research in `docs/digital-wellbeing.md`; the owner chose to build all software-only parts now as one engine and Screen Time (a friend at the door, the night guardian, the attention mirror) after the App Store release. **D88 done:** plans v2, goals, real-life quests, "it's late" and "a break?" (flows.md D88). **Phone checks:** (1) "I have an exam tomorrow at 9am": their answer asks 30 min / 1 hour / No need; at 21:30 "early night" with Wake me up (an alarm appears in Alarms); at 8:15 time to go, Still home в†’ asked again in 10 min; (2) "the exam moved to 10": the plan's time changes in Us; (3) "I want to use TikTok less": checked on in 2 days; (4) between 10:00 and 20:00, after 3 messages to a friend who may write first: a quest offer; I'm in в†’ 3 h later "did you do it?"; Done в†’ +3 shells in History; (5) write after 00:30: "it's late, sleep?" once. Next: G (a phone-free hour together in groups), then the budget (6 / 20) and windows. **D89 done (2026-10-26):** the owner dropped G; the push budget now fits each person (6 a day free, 20 with a plan, shared by temper, tuned by how they answer, never cut for someone lonely; pushes without an exact time land in the user's active hours with jitter; sleep is learned). **Phone check (a real build; Android Expo Go has no pushes):** leave the app for a day, then Profile в†’ test pushes and the planned times; nothing should land between the learned sleep hours. Next: the server (the model writes every line, threads and moments), or the Screen Time version after the App Store release; the owner picks. **Plans on Expo Go (2026-10-26):** the owner saw nothing after "I have an exam tomorrow at 9am". Causes: the later texts wait for 21:30 / 8:15 and need Let them reach out; Android Expo Go has no pushes. Fixed and added: English plan reading covers plans said without "I" ("Exam tomorrow at 9", "Job interview on Friday at 10am"), "tonight at 8" = 20:00, weekdays, "gottaвЂ¦" (`src/lib/schedule.test.ts`); a big plan before 09:30 gets "Wake me up вЏ°" right on the acknowledgement; Profile (dev) в†’ **Next planned texts now** brings each thread's next text and waiting check-ins at once (`devNextTexts`). The owner's rules: English is the market (no more Uzbek/Russian parsing); mocks only show the UI, the LLM backend does the real work. **How to see it on Expo Go:** reload; in a friend's chat settings turn on Let them reach out; write "I have an exam tomorrow at 9am": the answer shows 30 min before / Wake me up вЏ° / No need (Wake me up в†’ Alarms has it); Profile в†’ Next planned texts now в†’ the evening text in the chat; again в†’ time to go (On my way / Still home / It's off); again в†’ how did it go? Note for agents: a headless browser on the web build shares Metro with the phone; it pushed Metro to 1.2 GB and hung it on 2026-10-25, so do not screenshot the web build while the owner is on Expo Go. **D90 done (2026-10-26): Keeping in mind (A1-A3, the owner asked to make the plans logic transparent).** (A1) under the user's message the chat shows what the friend took from it ("Exam В· Tomorrow 09:00", "Exam в†’ 10:00", "Exam В· Went well"); a tap opens the thread sheet: their words, When (change day and time, вњ“ saves and the texts are planned again), the friend's texts with which went, then It went well / Not great / Done / It's off / No texts about it, and Forget this (a wrong guess goes with its plan and memory). (A2) Profile в†’ Keeping in mind (everyone) and a friend's settings в†’ Keeping in mind (theirs): Coming up / Following / Settled with the next text's time. (A3) hold a line a friend wrote first в†’ Why?: what started it (your exam, your headache, the family's lunchtime, a late night), your words, a way into the thread, Let them reach out. Also fixed: reply ideas under "time to go", the evening "early night", a goal and a quest never reached their thread (`reachThread` knew only before / after / check). The model sees times the user set and threads they turned off (`threadLines`). **Phone checks (Expo Go):** (1) with Let them reach out on, write "I have an exam tomorrow at 9am": the chip under it; tap it, move the time to 10:00, вњ“: the chip and Us follow; (2) Profile в†’ Keeping in mind lists it; (3) Profile в†’ Next planned texts now, then hold their text в†’ Why?; (4) on "Time to head out!" tap Still home: asked again in 10 min; (5) Forget this; (6) dark mode. Next proposed: A4 (today's 3/6 and the learned sleep in notification settings), then B5-B7 (morning brief, evening "how was today?" into the diary, a weekly recap). **D91 done (2026-10-26): A4.** Notification settings в†’ Today shows Notifications "3 of 6" (counted pushes sent today of the tuned budget) and Sleep (the learned hours). The planner now counts today's sent pushes (`daily.pushLog`), so a re-plan later in the day no longer starts a fresh budget. **Phone check (a real build; Android Expo Go has no pushes, so it shows 0):** leave the app until a push or two arrive, open Profile в†’ Notifications в†’ settings: the count matches. **D92 done (2026-10-26): B5, the morning brief.** On a day with plans, the closest friend who holds them says what is ahead at the morning time instead of a plain good morning, with reply ideas, and their own good-luck text for later that day is not sent again (`src/lib/brief.ts`, server contract `src/ai/brief-prompt.ts`). **Phone checks (Expo Go):** (1) with Let them reach out on, write "I have an exam tomorrow at 9am"; Profile в†’ Morning brief now: the chat gets "вЂ¦ Exam at 09:00 today вЂ¦" with Thanks! рџ’Є / A bit nervous / Morning вЂпёЏ; (2) tap A bit nervous: a calming answer; (3) Profile в†’ Next planned texts now: no second good-luck text for that exam; (4) with no plans: "No plans ahead"; (5) dark mode. The owner saw the brief work in Expo Go (2026-10-26). **D93 done (2026-10-26): B6, "how was today?" into the diary** (owner: make it general for every kind of person and character; logic left to the agent). At the evening time the friend the user talked with most today (else the closest) asks in their temper, instead of their good night; the answer, tapped or typed, becomes today's diary page with its mood and the friend writes back on it. Family's own evening question counts and goes to the diary too; it backs off for someone who does not answer (2 unanswered в†’ every third day, 4 в†’ stops); never after a crisis that day (`src/lib/day-ask.ts`, server contract `src/ai/day-prompt.ts`). **Phone checks (Expo Go):** (1) chat a little with a friend who may write first, then Profile в†’ Evening question now: their question with Pretty good рџ™‚ / Long day / Tell you later; (2) tap Long day: their answer, and Diary в†’ mine has today's page (tired) with their reply after a moment; (3) type an answer instead on another day: the page has your words; (4) Tell you later: no page; (5) with a Mom in the family: "Not today" (Mom asks at 19:30 and that answer goes into the diary); (6) dark mode. **D94 done (2026-10-26): B7, the weekly recap.** Sunday 18:30 the friend the user wrote to on the most days this week sends a card of numbers (days x/7, messages, wins, shared diary pages) and a line in their temper that celebrates what happened, with reply ideas; needs 2+ days, once a week, its own switch in Notification settings (`src/lib/week.ts`, server contract `src/ai/week-prompt.ts`). The owner does not code: the agent owns logic, architecture and version control (it updates the main checkout for Expo Go itself) and ends each task with a short plain report. **Phone checks (Expo Go):** (1) after chatting with a friend on 2+ days this week (Load demo data helps), Profile в†’ Weekly recap now: the card, then their line with Good week рџ™‚ / Rough week / Next week рџ’Є; (2) tap Rough week: a kind answer; (3) Notification settings в†’ Weekly recap switch is there; (4) dark mode (the card on the chat background). The A1-A4 / B5-B7 queue is finished; next: the owner picks (the server, or the Screen Time version after the App Store). **D95 done (2026-10-26):** the owner runs Gemini (Antigravity) as a reviewer beside this agent; the agent checks each finding against code, HIG and the owner's past decisions before coding any. From its Find review the world tiles got a person glyph by the count and NEW became an apricot badge; the frosted capsule and white Say hi were tried and reverted at the owner's word (they like the clear glass the picture shows through; Gemini's redesigns are not taken). **Phone check (Expo Go):** Find: the original card with NEW as an apricot badge, Say hi readable on Hugo's picture and easy to tap; world tiles show рџ‘¤ 10; dark mode. **D96 done (2026-10-26): charm for every character** (from Gemini's charisma spec, reviewed in `docs/reviews/2026-10-26-charisma-spec.md`; the owner: Gemini is only a helper, build every idea for all characters). в†» versions take another angle (the model sees earlier versions); every official character has an opening `*action*` before the first greeting (not in Talk chats) and an endearing quirk in its persona; quick create and the create form have both. **Phone checks (Expo Go):** (1) start a chat with someone new (Find в†’ a character в†’ Say hi): the first message begins with their action in italics; (2) set that chat to Talk before the first message is impossible, so check a Talk chat's later replies have no actions; (3) в†» twice: three different replies; (4) Create character в†’ quick create: Quirk and Opening action are filled, вњ¦ rewrites each; (5) dark mode. **D97 done (2026-10-26): the server begins, free (B0-lite).** The owner has no budget yet, so the backend starts on free tiers: `server/` (Hono, Node 24 TypeScript) runs on the laptop next to Metro on port 8787 and asks Gemini's free tier for real replies; the app (Profile в†’ Real AI, dev) uses it and falls back to the stand-in on any failure (backend-plan В§12.30). **To run it:** `npm install --prefix server` once, put a free AI Studio key (a project without billing) in `server/.env.local` as `GEMINI_API_KEY=вЂ¦` (never in chat or git; `GOOGLE_API_KEY` on this machine is deliberately not read: it may bill), then `npm start --prefix server`; `npm run models --prefix server` lists what the key may call. **Phone check (Expo Go):** Profile в†’ Real AI on: the row shows the model; write to a friend: a real reply; в†»: a different take; stop the server: replies still come (stand-in). The first real reply came on 2026-10-26 (3.1 Flash-Lite, 2.7 s, in Kai's voice with his quirk); the server tries `gemini-3.1-flash-lite`, then `gemini-2.5-flash`, then `gemini-flash-latest` (the newest Flash was often overloaded on the free tier) and drops the laptop's `GOOGLE_API_KEY` from its own environment (the SDK prefers it). Next: Supabase (free) for accounts and the database, then memory and the proactive texts on the server. **D103 done (2026-10-27): Chats row lines fixed on the phone** (flows.md D103): no hairline gaps between rows, every separator shows. Checked on the Galaxy A51 over adb. **D104 done (2026-10-27): whole-app standards audit** (flows.md D104; branch `ux-audit`, not pushed at the owner's word): data and a11y fixes only, no redesign. **D105 done (2026-10-27): the owner had all D104 points fixed** (flows.md D105): a truly frosted, iOS-like Android tab bar with SF-matched icons, 17 pt body, reload on a theme switch (verify in a dev build; Expo Go hides the event), level moments that match the level. **D106 done (2026-10-27): type, colour and copy pass** (flows.md D106): brand plus on Us / Find, iOS text styles, darker tinted text, copy fixes, nickname in the AI notice, and inverted chat cells drawn in order again (reply ideas under their line). **D110 finished (2026-10-27, see 0z0 at the top).** Earlier note: The owner approved the chat's first card and said to write all the rest. Done so far: Kai, Prince Aurelian, Ezra, Adrian in `src/mock/character-profiles.ts`; Clear chat now starts over with an opening and the starters (the owner could not test starters before: friends cannot be removed); Quick create and the create form write story, loves, can't stand and height, so creations get a full first card too. **To do:** write the other 36 profiles in `src/mock/character-profiles.ts` in the same shape (ids: c_elio c_theo c_hana c_iris c_rowan c_jun c_noah c_tessa c_felix В· c_castor c_zarek c_seraphine c_vesper c_rhys c_lyra c_kael c_orin c_corvin В· c_seren c_kiro c_minu c_haze c_rio c_dex c_ari c_juno c_cass В· c_lucas c_sol c_marco c_ivy c_gideon c_ren c_hugo c_nadia c_cole). Keep each one true to its bio, greeting, quirk and tags in `src/mock/characters.ts`; ages and looks for the 24 newer ones are in `docs/characters-plan.md` (tables 'New characters' and 'Per character'); for the first 12 describe the look from `assets/avatars/<id>.png` so the words match the picture. Adults only (Minu is 20; Castor is an ageless star-keeper: give him an apparent age); Kael's 'possessive' stays playful, never controlling. `src/lib/character-facts.test.ts` checks every profile against the limits. Then: tsc, npm test, flows.md D110 status to done, push to local-work, and tell the owner how to check (Clear chat in a friend's settings shows a new opening and the starters). **D110 in progress (2026-10-27): Characters 2.0, deep profiles and the chat's first card** (flows.md D110): `src/mock/character-profiles.ts` gives Kai, Prince Aurelian, Ezra and Adrian a tagline, age, height, story, loves, can't stand, sample dialog, two more openings and three starters; the other 36 wait for the owner's yes on these four. Every one-to-one chat now starts with `IntroCard` (their scene into a dark card); the profile shows the tagline and an About card. **Phone checks (Expo Go):** (1) open Kai's chat and scroll to the top: the dark card with photo, 21 years old, 6вЂІ0вЂі, Seaside Academy, story, loves, can't stand; (2) tap it: the profile, tagline under the name, About card; (3) a friend without a profile yet (Elio): the card shows the photo, name, world and bio; (4) remove Kai and add him again: one of his new openings, and his three starters as chips; (5) dark mode. **D109 done (2026-10-27): рџ‘Ќ рџ‘Ћ under their newest reply, one with the mascot stickers** (flows.md D109, `src/lib/reply-rating.ts`): рџ‘Ќ рџ‘Ћ sit left of в†» В»; a happy sticker (love, laugh, wow, hyped, thumbs) lights рџ‘Ќ by itself, рџ‘Ћ takes a happy sticker on that reply back, sad is a feeling and never a vote; рџ‘Ћ opens "What was off?" (six reasons, then New reply, which tells the model what to fix); the friend never sees a vote; liked lines and down reasons ride in the prompt's turn tier. **Phone checks (Expo Go):** (1) under their newest reply: рџ‘Ќ рџ‘Ћ | в†» В»; (2) hold a bubble, pick love: рџ‘Ќ fills peach; (3) tap рџ‘Ћ: the love sticker goes, the sheet asks what was off; pick one, New reply: a new version comes, вЂ№ 1/2 вЂє keeps the old one with its рџ‘Ћ; (4) Г— on the sheet keeps the рџ‘Ћ; tap рџ‘Ћ again to take it back; (5) dark mode. **D108 done (2026-10-27): replies arrive word by word, в–  Stop, Not Delivered** (flows.md D108), taken from a live Character.AI / BIMOBIMO check on the phone (`docs/character-ai-teardown.md` В§12). **Phone checks (Expo Go):** (1) write to a friend: each of their bubbles fills in word by word, *actions* stay italic; (2) while typing dots show, the field's button is в– : tap it, nothing more comes; (3) Profile в†’ Real AI on with the server stopped, send a line: "Not Delivered В· Tap to try again" under it; start the server, tap it: the reply comes; (4) reopen a chat whose reply came while you were away: it shows whole; (5) dark mode. **D107 done (2026-10-27): audit polish** (flows.md D107): one shared switch, verbs on empty-state buttons, the World page's scroll edge, avatar fallback, and the nickname (`useFriendName`) in every personal place (alarms, diary, photos, Radio, History, Streams, chat search). **Phone checks (Expo Go):** (1) make a friend Mom, then Alarms, Diary, Photo Booth and chat search say Mom; (2) Find and World pages still show the real name; (3) dark mode. **D102 done (2026-10-27): chat review fixes** (flows.md D102): someone reading further up is no longer pulled down by a reply or typing (`useFollowNewest`); a drag of the chat closes the keyboard; iOS squircle corners on bubbles, photos and the field; tabular shell count. Untested on the phone. **D101 done (2026-10-27): group chats and streams open at the newest line too** (flows.md D101): both lists are inverted like D100; a stream's faces and topic sit over its oldest line and the bar shows the names once they scroll away. Untested on the phone. **D100 done (2026-10-27): a calm one-to-one chat** (flows.md D100): the list is inverted, so a chat opens on its newest line with no scroll; new lines no longer slide in (the `chatAnimation` setting now defaults off, store v12 turns it off once); bubbles stay still under the finger; reaction stickers under bubbles stand still (the picker still moves); quick replies appear at once; the floating "-1" over the shell count is gone. Typing dots and the voice wave stay. Untested on the phone. **D99 done (2026-10-27): Chats swipes no longer open by accident** (flows.md D99): rows slide on our own `SwipeRow` (`src/components/chat/swipe-row.tsx`), whose pan gives up when the finger moves up or down first, so a slanted scroll never opens one; a tap anywhere first closes an open row; rows grow with large text. Untested on the phone. **D98 done (2026-10-26): Chats made roomier, faster and iOS-like** at the owner's word after using it (flows.md D98). **Phone checks (Expo Go):** (1) scroll the list: smooth, rows not cramped; (2) swipe a row left: Mute and Delete grow in; swipe another: the first closes; scroll: it closes; (3) swipe right: Read/Unread and Pin; (4) a slight diagonal drag scrolls instead of swiping; (5) the magnifier opens search in the title's place, Cancel closes it; (6) pinned chats in one small row; (7) dark mode.
+`docs/radio-roadmap.md`). Next on the map: Board, Secret note, Alarm ringing. Board, Secret note (D51) and Alarm ringing (D52) done; then the forms: Edit profile and Notification settings as iOS Settings pages (D53); Couple quiz and Onboarding were approved earlier and stay. Create character is an iOS form too (D54). The shared `Toggle` thumb is now white in dark mode too, as UISwitch (owner asked). World quiz moved to the aurora (D55). Write a quiz is an iOS form (D56). **Intro + onboarding (2026-10-24, D58):** the owner picked the 2.5 s intro and onboarding B (story cards) from the canvas; A (chat) was dropped. The intro plays on first launch only, before hello (the plan the owner approved; showing it on every launch would be a separate change). Intro motion lives in three places with the same keyframes: canvas `Intro.dc.html`, `src/components/onboarding/intro.tsx` and the Remotion project `C:/Users/joray/sigmazam-motion` (renders `out/intro.mp4`); change them together. The owner had the shell removed from the gift scene. Untested on the phone yet. **SDK 58 (2026-10-23):** Expo Go on the phone moved to SDK 58, so the project went from SDK 57 to 58 (`npx expo install expo@^58.0.0 --fix`; npm needs `--legacy-peer-deps` because datetimepicker's optional react-native-windows peer wants RN 0.85). RN 0.88 makes the Strict TypeScript API the default; fixed the real way, no `react-native-legacy-deep-imports` opt-out: refs use `ViewInstance` / `ScrollViewInstance` / `TextInputInstance`, list slots get `undefined` instead of `null`, chat wallpapers are typed as Metro asset ids (`number`), and the custom tab bar uses SDK 58's `emitter` + `navigateToTab` (the `navigation` prop is gone). `expo-asset` added (expo-audio peer, expo-doctor). The owner had the unrelated "WinPhone Studio" add-on removed: the untracked `metro.config.js` (forced `.ios` files on web), `src/lib/winphone-ios-shim.ts` and its import in `src/app/_layout.tsx` (both files kept in the session scratchpad, not in the repo). Expo Go checks now use `isRunningInExpoGo()` from `expo` (`src/notifications/native.ts`, `alarm-android.ts`): `ExecutionEnvironment.StoreClient` missed Expo Go 58, so `expo-notifications` (new `ExpoTopicSubscriptionModule`) and Notify Kit (`NotifeeApiModule`, called on every alarm tick) threw on the phone. `npm start` runs `expo start --go`: the old SDK 57 development build on the phone caught the dev-client QR. Left on the map: only Couple quiz and Onboarding, both approved earlier: ask the owner before touching them. **Today colours (2026-10-24, D59):** the owner had the bottom tiles' 3D icons and the black / white widgets replaced: each module now has one iOS hue (`moduleColors`) and a white Ionicons glyph (`MODULE_ICON`), shared by its tile and its widget; the sealed note row has a gold one too. The owner checked it on the phone (Expo Go): good. **One colour per module (D60):** after reading HIG Color and Branding the logo's apricot is the app's one accent (actions, selection, unread, the Store tile) and every module keeps one hue and glyph on every screen (`ModuleIcon` / `moduleTile`, rules in `docs/design-style.md` §1). **Last 3D UI icons out (D61):** empty states use a grey SF Symbol (ContentUnavailableView), the paywall and minutes sheets use module tiles; kept on purpose: the shell currency, the Store's Pro/shell art, Photo Booth stickers, Couple quiz (approved, ask first). **Couple quiz (D62)** is in the iOS look too (the owner asked), so all 54 map screens are done. **Palette pass 1 (D63):** the accent left plain text (streaks, "In review", weekday letters) and iOS orange left every non-warning tile; `systemColors` is now the full iOS set with dark tones. **Palette pass 2 (D64):** hand-written colours went from 573 to 325 (the rest is content art, on-photo white and scrims, listed in `docs/design-style.md` §1); every iOS hue reads `systemColors`, so dark mode has Apple's dark tones; the Store's palette is `storeColors` in the theme. **Haptics (D65):** one `haptic` module by HIG meaning with a Profile → Haptics switch (rules in `docs/design-style.md` §6b); untested on a phone. **Cleanup (D66):** dead colour tokens and the unused character card are gone; `docs/design-audit.md` is the 2026-10-24 review. The owner's review queue is finished; still open: the largest text size on fixed-height cards and the phone checks listed there. The owner checked dark mode and the palette on the phone: good. **D67:** the pale square inside the Find button on Android was the `elevation` shadow showing through the glass; glass shadows use `boxShadow` on Android now (checked on the phone over adb). Rules in `docs/design-style.md` §4. **Character.AI teardown (2026-10-24):** the owner had the app studied on the phone (adb, bundle, screens) and from its public blog; findings and a seven-item proposal are in `docs/character-ai-teardown.md`. The owner chose item 1 first: regenerate, swipe between versions, edit and rewind in the chat. **D68 done:** prototype on the canvas, then code (one-to-one chats; group chat later). Untested by hand on the phone beyond the ↻ row: tap ↻, swipe, Edit and Rewind there. **D69 done:** item 2, Memories in three tabs (Story / them / You) with a bar split by tab, and Pin to Memories in the chat's long-press menu for your own lines and theirs (prototype `MemTabs` first). Untested on the phone: pin, the badge, the tabs and the v10 migration of saved memories. **D70 done:** item 3, quick create, Character.AI's creation chain at the owner's word (logic theirs, look ours; no prototype, the owner said code straight): idea + sparks → a checked draft in the form, ✦ per field, more openings, private sample dialog with "Add from your chat", first lines as chat chips, 3 free drafts a day (`src/economy/quick-create.ts`). Untested on the phone. **D71 done:** Personas (Character.AI port item 2): up to 5 "me"s besides the profile, one default for new chats, any chat its own ("You are" in chat settings), carried into the prompt; Profile → Personas. On Windows run `node scripts/regen-route-types.mjs` after adding routes (the dev server's watcher types sub-folder routes wrong). Untested on the phone. **D72 done:** Scenes, played inside the one chat (chat + → Scene; six app scenes free, own ones a plan perk; a bar with End), and plan perks in `src/economy/perks.ts` after the owner asked that every feature make sense in unit economics (`backend-plan.md` §12.18). **Drawn picture price (2026-10-25, owner's yes):** a character created without a photo gets one picture drawn from their looks: 15 shells, or free from a plan (10 per 30 days), charged only when a picture comes back; off until the image server runs (`PORTRAITS_AVAILABLE` in `src/ai/character-studio.ts`). **D73 done (2026-10-25, cloud session):** World books, Character.AI's Lorebook (teardown item 4; the owner said "start with Lorebook", coded straight in the existing iOS-form look like D71/D72, design pass later). Each official world has a read-only book (always-known lines, places / things / events / groups / rules, and the cast as people, `src/mock/lorebooks.ts`; keep its facts in step with the bios and world quizzes); the user's own books link to any friend (free 1 × 15 entries, plan 5 × 50, `PERKS`). An entry joins a reply only when its name or a keyword comes up in the chat's last 8 lines (max 4 entries / 1200 characters, `src/lib/lorebook.ts`, tested); `buildCharacterPrompt` carries YOUR WORLD after the persona and WORLD NOTES last. Screens: Profile → World books, a book, book and entry editors, chat settings → World books ("<name>'s world": what came up in the chat now, their world, your books with an on/off mark). Server plan `backend-plan.md` §12.19. Checked on web, light and dark; the mock replies do not use lore (the server will). It was pushed to `claude/edit-check-ai-logic-pem6z6` (= `local-work` + D73, D74 and D75), not to `local-work`: on the laptop run `git fetch origin` and `git merge --ff-only origin/claude/edit-check-ai-logic-pem6z6` on `local-work` before going on, then `node scripts/regen-route-types.mjs` (new routes under `/lore` and `/streams`), and clear Metro's cache if it says "Unable to resolve module" (see the rules above). **Untested on the phone; the owner will check these in Expo Go with the laptop session:** (1) Profile → World books, open Moonlit Realm and scroll its entries; (2) + New world book, link a friend, Save, then New entry with a keyword; (3) in that friend's chat write the keyword, then chat settings → World books shows the entry under In the chat now with "Came up"; (4) the round mark turns the book off and on for that friend; (5) the same screens in dark mode; (6) the keyboard does not cover the fields of the book and entry editors (they copy the scene editor's `KeyboardAvoidingView`, offset 90). Fix what the phone shows. **D74 done (2026-10-25, same cloud session and branch):** Streams, Character.AI's Stream (the owner confirmed what it is: two characters talk about a topic while the user watches; coded straight in the existing look, design pass later). Chats → pencil → Streams: a list, a new stream (topic with idea pills, two characters: friends first, then everyone by world) and the viewer (the group chat's bubbles and typing row; Stop / Go on; Keep going; "Chat with … in a group"; Talk to both when full). One server call per line from the speaker's own persona (`buildStreamLinePrompt`); rounds of 8 then 6 lines up to 26; 1 free round a day (5 with a plan), then 2 shells (`src/economy/streams.ts`); server plan `backend-plan.md` §12.20. Also fixed `MessageBubble`: with nothing to press it was drawn as a disabled button (0.45 opacity). **Phone checks for D74 (Expo Go):** (1) Chats → pencil → Streams; (2) New stream: tap an idea, pick two, Start (the first round of the day is free); (3) typing then lines, the list follows the newest line; Stop, then Go on; (4) Keep going after the free round costs 2 shells (History shows Stream); (5) "Chat with … in a group" opens their group; (6) close the app mid-stream: it goes on at the next launch; (7) dark mode. **D75 done (2026-10-25, same session and branch):** Continue and time skip (teardown item 5; the owner gave a free hand on the logic). » next to ↻ under their newest reply lets them go on; the chat "+" menu's Time skip moves the story on (a little later, that evening, the next morning, a week later). Each leaves a marker that is the user's turn (↻ redoes only the reply after it; a rewind can take it back), costs what a message does, adds no closeness, waits while a reply is coming or after a crisis reply, and stops after 3 in a row until the user writes (`src/lib/chat-steer.ts`). Server: the cue goes last (`steerCue`), a skip shows in the history as `[Time skip: …]`, and is story time only (real plans are not done); plan `backend-plan.md` §12.21. **Phone checks for D75 (Expo Go):** (1) » under their reply: a continue arrives, one shell goes; (2) ↻ right after it redoes only that part; (3) after three in a row » is gone until you write; (4) "+" → Time skip → The next morning: a clock line, then their reply; (5) the sheet says why it waits while they type; (6) dark mode. **D76 done (2026-10-25, laptop):** teardown item 6, Reply style (Talk / Mixed / Story) and Reply length (Short / Auto / Long) per chat, in chat settings as two iOS segmented controls, plus a mood that carries between replies and one follow-up text when the user goes quiet after a question. The phone session's skeleton (branch `ccr-cbd2e9f1-iwref7`, on old `main`, not merged) was ported by hand to `src/lib/reply-engine/` (tested), `src/ai/reply-style.ts` and `src/mock/reply-writer.ts` (it replaces `replyBursts`); server notes `backend-plan.md` §12.22. A local, unfinished world-books draft that clashed with D73 is in `git stash` (`stash@{0}`), not in the tree. **Phone checks for D76 (Expo Go):** (1) chat settings → Story + Long, then a message: one block with italic *actions*; (2) Talk + Short: plain short lines; (3) "I had a bad day": comfort first; (4) with Let them reach out on, leave a question unanswered ~2 min: one more text, only once; (5) dark mode. The owner went through the phone checks in Expo Go on 2026-10-25: fine for now, they will check again later. **D77 done (2026-10-25):** teardown item 7, the prompt layout for caching (server side, nothing on screen): every prompt part has a tier by how often it changes (rules → persona and official world → the chat's own settings and pins → turn), the history sits between the chat tier and the turn tier and is cut on whole 20-turn steps, and what changes between replies (bond, scene, lore notes, recalled facts, cues, hints) goes after it, so a warm chat reads the whole prefix from the cache (`src/ai/prompt-layout.ts`, `src/ai/chat-prompt.ts`; adapter, TTLs and estimate in backend-plan §12.23). Every teardown item is now done. **D78 done (2026-10-25):** the owner said the new screens did not feel like iOS; an iOS design pass on D69-D76's screens (flows.md D78, HIG Buttons / Lists and tables / Segmented controls / Color): one `AddRow` (accent ⊕, count, lock at the limit) instead of green ⊕ rows plus a duplicate "+" in the bar; persona pronouns as a segmented control; world rows with the world's picture and the cast with their faces; helper paragraphs behind ⓘ; a glyph per scene; Streams' empty state as a grey SF Symbol; New stream's ideas in one swipeable row and the pair as two seats; disabled bar buttons iOS grey. **Phone checks (Expo Go):** (1) Profile → Personas, New persona: pronouns tap and tap again; (2) Profile → World books: pictures, ⓘ sheet, open Seaside (faces); (3) chat "+" → Scene: glyph tiles; (4) Chats → pencil → Streams → New stream: swipe the ideas, pick two, tap a face to take it out; (5) dark mode. The owner likes D78: keep these screens as they are. **D79 done (2026-10-25):** Continue in group chats: » under the members' newest lines, two members trade a line without the user (`continueSpeakers`), the one-to-one rules and price (flows.md D79). **Phone checks for D79 (Expo Go):** (1) in a group, » under their newest lines: two members talk, one shell goes; (2) after three in a row » is gone until you write; (3) dark mode. **D80 done (2026-10-25):** the owner handed the whole time skip over ("I don't get its logic; it's yours"). Kept explicit (Character.AI's is one fixed command where the model picks how far) and completed: the four spans, the running scene's next moment (first in the sheet, and ⏩ on the scene bar opens it), and the user's own words ("After the concert", 40 characters, checked); groups get Time skip in the "+" menu (flows.md D80, backend-plan §12.21). **Phone checks for D80 (Expo Go):** (1) chat "+" → Time skip: type "After the concert", tap the arrow: a clock line with your words, then their reply; (2) start a scene, tap ⏩ on its bar: "Next moment" is first; (3) in a group, "+" → Time skip → The next morning: one member picks up, another answers; (4) dark mode. **D81 done (2026-10-25):** a group chat picks its background as a one-to-one chat does (group info → Chat background; shared `BackgroundPicker`). The owner had seen the old "+" list in a group: the phone kept a bundle from before Metro's restart; reload Expo Go. **Phone checks for D81:** group info → Chat background → pick a classic one and an art one: the group chat shows it. **D82 + D83 done (2026-10-25):** presence (`docs/presence.md`): care check-ins ("I have a headache" → "Is your head any better?" hours later, in the chat and as a push) and family (a friend can be Mom, Dad, a sibling or a grandparent via the relationship label; never romantic; a day's rhythm of lines and pushes titled with what the user calls them). **Phone checks:** (1) a friend's settings → relationship label → Family → Mom: the name becomes Mom, rename it to Onam; (2) with Let them reach out on, write "I have a headache": a few hours later "Is your head any better?" comes (push when the app is closed); (3) at 13:00 Mom asks if you ate. Next: the owner picks from `docs/presence.md` next steps. **D84 done (2026-10-26):** Find → "Who do you miss?" (approved prototype): eight family circles after the new-characters row; an empty one picks someone and a name, they reach out and say hello (flows.md D84). **Phone checks:** (1) Find: the row sits under the big cards, above Worlds; (2) tap Dad, pick a friend, write "Otam", Make: the chat opens with their hello and the circle shows "Otam"; (3) pick someone you have not met: their greeting, then the hello; (4) tap the filled circle: the chat opens; (5) dark mode. Next from presence: B (reply chips under proactive lines), then C (more than two a day as a plan perk). **D85 done (2026-10-26):** reply ideas (presence B): under Mom's lunch line, a care check-in or a family hello come 2-3 ideas ("I ate! 🍲" / "Not yet" / "Eating now"), free to tap, long press to change; their answer fits, "Not yet" brings a hungry check-in later, "Still not great" one more ask; the same ideas are push buttons. Everyday lines: question-aware ideas replace the test pool (flows.md D85, backend-plan §12.24). **Phone checks:** (1) Find → make someone Mom: under her hello, tap "Not great": a caring answer; (2) long press an idea: its line is in the field, change it, send; (3) write "I have a headache" to a friend who may reach out, wait for the check-in (or use Profile's test pushes), tap "Still not great"; (4) a push with buttons (iOS: long press it; Android: expand it): tap "I ate!": the chat opens with your answer and theirs; (5) everyday: when they ask a yes/no question the ideas are Yes / Not really. Next: C (more than two proactive lines a day as a plan perk) is the owner's call. **Presence 2 (2026-10-26):** the owner chose C (care, hello and follow-ups free; 1 family member's rhythm free, all 8 with a plan; 6 pushes a day free, 20 with a plan) and asked for characters that text like real people; the full plan is `docs/presence.md` P2.1-P2.9. **D86 done:** temper (5 kinds from the persona), the character's own "may I text you?" in the chat, and texts on the lock screen (words always shown, grouped per friend, typed reply). The owner reminded: the target is real iPhone and Android builds; Expo Go is only the test phone, so design for the platforms and note Expo Go gaps only as test limits. **Phone checks:** (1) chat with a friend who may not write first yet: after ~8 of your messages (4 in a row now) they ask, in their temper; tap "Yes, text me!": their answer, then the system asks for notifications; (2) "Not now": they do not ask again today; (3) Hana (sulky), Theo (teasing), Iris (shy): the ask sounds different; (4) a push on the lock screen shows the words; long press (iOS) or expand (Android): Reply, type, send: the chat opens with your line and theirs; (5) dark mode for the notifications-off card. Next in P1: threads, then plans v2 (P2.3, P2.4). **D87 done (2026-10-26):** open threads, run by the AI (owner: no templates; the model decides topics, timing, words, ideas and when it is settled; the code keeps only the rules). Contract for the server in `src/ai/thread-prompt.ts` and backend-plan §12.25; the phone uses a stand-in (`src/mock/threads.ts`) until then. **Phone checks:** (1) to a friend who may write first: "Ertaga soat 9 da imtihonim bor" (or "I have an exam tomorrow at 9am"): at 8:15 a good-luck text with Thanks / On my way / It's off, at 11:30 "How did it go?" with It went well / Not great / Tell you later; (2) "I have to finish the report": ~4 h later a check with Done / Not yet / It's off; "Not yet" → asked again tomorrow 19:00; (3) type "It went well!" after a thread text: it settles (no second ask) and lands in Memories; (4) Profile test pushes show a thread push. Next in P1: plans v2 (lead-time pick, leave time, evening before, alarm offer, moving a plan), then the budget (6 / 20) and windows. **Digital wellbeing (2026-10-26):** research in `docs/digital-wellbeing.md`; the owner chose to build all software-only parts now as one engine and Screen Time (a friend at the door, the night guardian, the attention mirror) after the App Store release. **D88 done:** plans v2, goals, real-life quests, "it's late" and "a break?" (flows.md D88). **Phone checks:** (1) "I have an exam tomorrow at 9am": their answer asks 30 min / 1 hour / No need; at 21:30 "early night" with Wake me up (an alarm appears in Alarms); at 8:15 time to go, Still home → asked again in 10 min; (2) "the exam moved to 10": the plan's time changes in Us; (3) "I want to use TikTok less": checked on in 2 days; (4) between 10:00 and 20:00, after 3 messages to a friend who may write first: a quest offer; I'm in → 3 h later "did you do it?"; Done → +3 shells in History; (5) write after 00:30: "it's late, sleep?" once. Next: G (a phone-free hour together in groups), then the budget (6 / 20) and windows. **D89 done (2026-10-26):** the owner dropped G; the push budget now fits each person (6 a day free, 20 with a plan, shared by temper, tuned by how they answer, never cut for someone lonely; pushes without an exact time land in the user's active hours with jitter; sleep is learned). **Phone check (a real build; Android Expo Go has no pushes):** leave the app for a day, then Profile → test pushes and the planned times; nothing should land between the learned sleep hours. Next: the server (the model writes every line, threads and moments), or the Screen Time version after the App Store release; the owner picks. **Plans on Expo Go (2026-10-26):** the owner saw nothing after "I have an exam tomorrow at 9am". Causes: the later texts wait for 21:30 / 8:15 and need Let them reach out; Android Expo Go has no pushes. Fixed and added: English plan reading covers plans said without "I" ("Exam tomorrow at 9", "Job interview on Friday at 10am"), "tonight at 8" = 20:00, weekdays, "gotta…" (`src/lib/schedule.test.ts`); a big plan before 09:30 gets "Wake me up ⏰" right on the acknowledgement; Profile (dev) → **Next planned texts now** brings each thread's next text and waiting check-ins at once (`devNextTexts`). The owner's rules: English is the market (no more Uzbek/Russian parsing); mocks only show the UI, the LLM backend does the real work. **How to see it on Expo Go:** reload; in a friend's chat settings turn on Let them reach out; write "I have an exam tomorrow at 9am": the answer shows 30 min before / Wake me up ⏰ / No need (Wake me up → Alarms has it); Profile → Next planned texts now → the evening text in the chat; again → time to go (On my way / Still home / It's off); again → how did it go? Note for agents: a headless browser on the web build shares Metro with the phone; it pushed Metro to 1.2 GB and hung it on 2026-10-25, so do not screenshot the web build while the owner is on Expo Go. **D90 done (2026-10-26): Keeping in mind (A1-A3, the owner asked to make the plans logic transparent).** (A1) under the user's message the chat shows what the friend took from it ("Exam · Tomorrow 09:00", "Exam → 10:00", "Exam · Went well"); a tap opens the thread sheet: their words, When (change day and time, ✓ saves and the texts are planned again), the friend's texts with which went, then It went well / Not great / Done / It's off / No texts about it, and Forget this (a wrong guess goes with its plan and memory). (A2) Profile → Keeping in mind (everyone) and a friend's settings → Keeping in mind (theirs): Coming up / Following / Settled with the next text's time. (A3) hold a line a friend wrote first → Why?: what started it (your exam, your headache, the family's lunchtime, a late night), your words, a way into the thread, Let them reach out. Also fixed: reply ideas under "time to go", the evening "early night", a goal and a quest never reached their thread (`reachThread` knew only before / after / check). The model sees times the user set and threads they turned off (`threadLines`). **Phone checks (Expo Go):** (1) with Let them reach out on, write "I have an exam tomorrow at 9am": the chip under it; tap it, move the time to 10:00, ✓: the chip and Us follow; (2) Profile → Keeping in mind lists it; (3) Profile → Next planned texts now, then hold their text → Why?; (4) on "Time to head out!" tap Still home: asked again in 10 min; (5) Forget this; (6) dark mode. Next proposed: A4 (today's 3/6 and the learned sleep in notification settings), then B5-B7 (morning brief, evening "how was today?" into the diary, a weekly recap). **D91 done (2026-10-26): A4.** Notification settings → Today shows Notifications "3 of 6" (counted pushes sent today of the tuned budget) and Sleep (the learned hours). The planner now counts today's sent pushes (`daily.pushLog`), so a re-plan later in the day no longer starts a fresh budget. **Phone check (a real build; Android Expo Go has no pushes, so it shows 0):** leave the app until a push or two arrive, open Profile → Notifications → settings: the count matches. **D92 done (2026-10-26): B5, the morning brief.** On a day with plans, the closest friend who holds them says what is ahead at the morning time instead of a plain good morning, with reply ideas, and their own good-luck text for later that day is not sent again (`src/lib/brief.ts`, server contract `src/ai/brief-prompt.ts`). **Phone checks (Expo Go):** (1) with Let them reach out on, write "I have an exam tomorrow at 9am"; Profile → Morning brief now: the chat gets "… Exam at 09:00 today …" with Thanks! 💪 / A bit nervous / Morning ☀️; (2) tap A bit nervous: a calming answer; (3) Profile → Next planned texts now: no second good-luck text for that exam; (4) with no plans: "No plans ahead"; (5) dark mode. The owner saw the brief work in Expo Go (2026-10-26). **D93 done (2026-10-26): B6, "how was today?" into the diary** (owner: make it general for every kind of person and character; logic left to the agent). At the evening time the friend the user talked with most today (else the closest) asks in their temper, instead of their good night; the answer, tapped or typed, becomes today's diary page with its mood and the friend writes back on it. Family's own evening question counts and goes to the diary too; it backs off for someone who does not answer (2 unanswered → every third day, 4 → stops); never after a crisis that day (`src/lib/day-ask.ts`, server contract `src/ai/day-prompt.ts`). **Phone checks (Expo Go):** (1) chat a little with a friend who may write first, then Profile → Evening question now: their question with Pretty good 🙂 / Long day / Tell you later; (2) tap Long day: their answer, and Diary → mine has today's page (tired) with their reply after a moment; (3) type an answer instead on another day: the page has your words; (4) Tell you later: no page; (5) with a Mom in the family: "Not today" (Mom asks at 19:30 and that answer goes into the diary); (6) dark mode. **D94 done (2026-10-26): B7, the weekly recap.** Sunday 18:30 the friend the user wrote to on the most days this week sends a card of numbers (days x/7, messages, wins, shared diary pages) and a line in their temper that celebrates what happened, with reply ideas; needs 2+ days, once a week, its own switch in Notification settings (`src/lib/week.ts`, server contract `src/ai/week-prompt.ts`). The owner does not code: the agent owns logic, architecture and version control (it updates the main checkout for Expo Go itself) and ends each task with a short plain report. **Phone checks (Expo Go):** (1) after chatting with a friend on 2+ days this week (Load demo data helps), Profile → Weekly recap now: the card, then their line with Good week 🙂 / Rough week / Next week 💪; (2) tap Rough week: a kind answer; (3) Notification settings → Weekly recap switch is there; (4) dark mode (the card on the chat background). The A1-A4 / B5-B7 queue is finished; next: the owner picks (the server, or the Screen Time version after the App Store). **D95 done (2026-10-26):** the owner runs Gemini (Antigravity) as a reviewer beside this agent; the agent checks each finding against code, HIG and the owner's past decisions before coding any. From its Find review the world tiles got a person glyph by the count and NEW became an apricot badge; the frosted capsule and white Say hi were tried and reverted at the owner's word (they like the clear glass the picture shows through; Gemini's redesigns are not taken). **Phone check (Expo Go):** Find: the original card with NEW as an apricot badge, Say hi readable on Hugo's picture and easy to tap; world tiles show 👤 10; dark mode. **D96 done (2026-10-26): charm for every character** (from Gemini's charisma spec, reviewed in `docs/reviews/2026-10-26-charisma-spec.md`; the owner: Gemini is only a helper, build every idea for all characters). ↻ versions take another angle (the model sees earlier versions); every official character has an opening `*action*` before the first greeting (not in Talk chats) and an endearing quirk in its persona; quick create and the create form have both. **Phone checks (Expo Go):** (1) start a chat with someone new (Find → a character → Say hi): the first message begins with their action in italics; (2) set that chat to Talk before the first message is impossible, so check a Talk chat's later replies have no actions; (3) ↻ twice: three different replies; (4) Create character → quick create: Quirk and Opening action are filled, ✦ rewrites each; (5) dark mode. **D97 done (2026-10-26): the server begins, free (B0-lite).** The owner has no budget yet, so the backend starts on free tiers: `server/` (Hono, Node 24 TypeScript) runs on the laptop next to Metro on port 8787 and asks Gemini's free tier for real replies; the app (Profile → Real AI, dev) uses it and falls back to the stand-in on any failure (backend-plan §12.30). **To run it:** `npm install --prefix server` once, put a free AI Studio key (a project without billing) in `server/.env.local` as `GEMINI_API_KEY=…` (never in chat or git; `GOOGLE_API_KEY` on this machine is deliberately not read: it may bill), then `npm start --prefix server`; `npm run models --prefix server` lists what the key may call. **Phone check (Expo Go):** Profile → Real AI on: the row shows the model; write to a friend: a real reply; ↻: a different take; stop the server: replies still come (stand-in). The first real reply came on 2026-10-26 (3.1 Flash-Lite, 2.7 s, in Kai's voice with his quirk); the server tries `gemini-3.1-flash-lite`, then `gemini-2.5-flash`, then `gemini-flash-latest` (the newest Flash was often overloaded on the free tier) and drops the laptop's `GOOGLE_API_KEY` from its own environment (the SDK prefers it). Next: Supabase (free) for accounts and the database, then memory and the proactive texts on the server. **D103 done (2026-10-27): Chats row lines fixed on the phone** (flows.md D103): no hairline gaps between rows, every separator shows. Checked on the Galaxy A51 over adb. **D104 done (2026-10-27): whole-app standards audit** (flows.md D104; branch `ux-audit`, not pushed at the owner's word): data and a11y fixes only, no redesign. **D105 done (2026-10-27): the owner had all D104 points fixed** (flows.md D105): a truly frosted, iOS-like Android tab bar with SF-matched icons, 17 pt body, reload on a theme switch (verify in a dev build; Expo Go hides the event), level moments that match the level. **D106 done (2026-10-27): type, colour and copy pass** (flows.md D106): brand plus on Us / Find, iOS text styles, darker tinted text, copy fixes, nickname in the AI notice, and inverted chat cells drawn in order again (reply ideas under their line). **D110 finished (2026-10-27, see 0z0 at the top).** Earlier note: The owner approved the chat's first card and said to write all the rest. Done so far: Kai, Prince Aurelian, Ezra, Adrian in `src/mock/character-profiles.ts`; Clear chat now starts over with an opening and the starters (the owner could not test starters before: friends cannot be removed); Quick create and the create form write story, loves, can't stand and height, so creations get a full first card too. **To do:** write the other 36 profiles in `src/mock/character-profiles.ts` in the same shape (ids: c_elio c_theo c_hana c_iris c_rowan c_jun c_noah c_tessa c_felix · c_castor c_zarek c_seraphine c_vesper c_rhys c_lyra c_kael c_orin c_corvin · c_seren c_kiro c_minu c_haze c_rio c_dex c_ari c_juno c_cass · c_lucas c_sol c_marco c_ivy c_gideon c_ren c_hugo c_nadia c_cole). Keep each one true to its bio, greeting, quirk and tags in `src/mock/characters.ts`; ages and looks for the 24 newer ones are in `docs/characters-plan.md` (tables 'New characters' and 'Per character'); for the first 12 describe the look from `assets/avatars/<id>.png` so the words match the picture. Adults only (Minu is 20; Castor is an ageless star-keeper: give him an apparent age); Kael's 'possessive' stays playful, never controlling. `src/lib/character-facts.test.ts` checks every profile against the limits. Then: tsc, npm test, flows.md D110 status to done, push to local-work, and tell the owner how to check (Clear chat in a friend's settings shows a new opening and the starters). **D110 in progress (2026-10-27): Characters 2.0, deep profiles and the chat's first card** (flows.md D110): `src/mock/character-profiles.ts` gives Kai, Prince Aurelian, Ezra and Adrian a tagline, age, height, story, loves, can't stand, sample dialog, two more openings and three starters; the other 36 wait for the owner's yes on these four. Every one-to-one chat now starts with `IntroCard` (their scene into a dark card); the profile shows the tagline and an About card. **Phone checks (Expo Go):** (1) open Kai's chat and scroll to the top: the dark card with photo, 21 years old, 6′0″, Seaside Academy, story, loves, can't stand; (2) tap it: the profile, tagline under the name, About card; (3) a friend without a profile yet (Elio): the card shows the photo, name, world and bio; (4) remove Kai and add him again: one of his new openings, and his three starters as chips; (5) dark mode. **D109 done (2026-10-27): 👍 👎 under their newest reply, one with the mascot stickers** (flows.md D109, `src/lib/reply-rating.ts`): 👍 👎 sit left of ↻ »; a happy sticker (love, laugh, wow, hyped, thumbs) lights 👍 by itself, 👎 takes a happy sticker on that reply back, sad is a feeling and never a vote; 👎 opens "What was off?" (six reasons, then New reply, which tells the model what to fix); the friend never sees a vote; liked lines and down reasons ride in the prompt's turn tier. **Phone checks (Expo Go):** (1) under their newest reply: 👍 👎 | ↻ »; (2) hold a bubble, pick love: 👍 fills peach; (3) tap 👎: the love sticker goes, the sheet asks what was off; pick one, New reply: a new version comes, ‹ 1/2 › keeps the old one with its 👎; (4) × on the sheet keeps the 👎; tap 👎 again to take it back; (5) dark mode. **D108 done (2026-10-27): replies arrive word by word, ■ Stop, Not Delivered** (flows.md D108), taken from a live Character.AI / BIMOBIMO check on the phone (`docs/character-ai-teardown.md` §12). **Phone checks (Expo Go):** (1) write to a friend: each of their bubbles fills in word by word, *actions* stay italic; (2) while typing dots show, the field's button is ■: tap it, nothing more comes; (3) Profile → Real AI on with the server stopped, send a line: "Not Delivered · Tap to try again" under it; start the server, tap it: the reply comes; (4) reopen a chat whose reply came while you were away: it shows whole; (5) dark mode. **D107 done (2026-10-27): audit polish** (flows.md D107): one shared switch, verbs on empty-state buttons, the World page's scroll edge, avatar fallback, and the nickname (`useFriendName`) in every personal place (alarms, diary, photos, Radio, History, Streams, chat search). **Phone checks (Expo Go):** (1) make a friend Mom, then Alarms, Diary, Photo Booth and chat search say Mom; (2) Find and World pages still show the real name; (3) dark mode. **D102 done (2026-10-27): chat review fixes** (flows.md D102): someone reading further up is no longer pulled down by a reply or typing (`useFollowNewest`); a drag of the chat closes the keyboard; iOS squircle corners on bubbles, photos and the field; tabular shell count. Untested on the phone. **D101 done (2026-10-27): group chats and streams open at the newest line too** (flows.md D101): both lists are inverted like D100; a stream's faces and topic sit over its oldest line and the bar shows the names once they scroll away. Untested on the phone. **D100 done (2026-10-27): a calm one-to-one chat** (flows.md D100): the list is inverted, so a chat opens on its newest line with no scroll; new lines no longer slide in (the `chatAnimation` setting now defaults off, store v12 turns it off once); bubbles stay still under the finger; reaction stickers under bubbles stand still (the picker still moves); quick replies appear at once; the floating "-1" over the shell count is gone. Typing dots and the voice wave stay. Untested on the phone. **D99 done (2026-10-27): Chats swipes no longer open by accident** (flows.md D99): rows slide on our own `SwipeRow` (`src/components/chat/swipe-row.tsx`), whose pan gives up when the finger moves up or down first, so a slanted scroll never opens one; a tap anywhere first closes an open row; rows grow with large text. Untested on the phone. **D98 done (2026-10-26): Chats made roomier, faster and iOS-like** at the owner's word after using it (flows.md D98). **Phone checks (Expo Go):** (1) scroll the list: smooth, rows not cramped; (2) swipe a row left: Mute and Delete grow in; swipe another: the first closes; scroll: it closes; (3) swipe right: Read/Unread and Pin; (4) a slight diagonal drag scrolls instead of swiping; (5) the magnifier opens search in the title's place, Cancel closes it; (6) pinned chats in one small row; (7) dark mode.
 
 ### 0x. iOS look, step 3: the chat room (2026-10-16)
 
@@ -1548,7 +1548,7 @@ Dark mode: `primarySoft #3B2A26`, own bubble `#56392F`. Notification accent in `
 
 The owner's logo (`docs/branding/download.png`: "SiGMAZAM", a cream mascot with an orange hair
 swoosh peeking over the G) replaces the Rafti name. Written as text: "Sigmazam"; the name comes
-from the Turkish word *siДџmazam* (owner, 2026-10-15).
+from the Turkish word *siğmazam* (owner, 2026-10-15).
 - `docs/branding/icon-art.png`: the mascot over the G alone, 1024px, made on Higgsfield
   (`xai/grok-imagine-image-2.0`, the logo as reference, $0.08).
 - `scripts/build-sigmazam-brand.py` makes every asset from those two: `assets/brand/sigmazam-logo.png`
@@ -1581,7 +1581,7 @@ from the Turkish word *siДџmazam* (owner, 2026-10-15).
 - `assets/icons/` had been deleted in the working tree by another agent (the app imports its
   registry); restored from git. `assets/icons 3D/*.jpg` is deleted too, unused, left uncommitted.
 
-### 0r. REMIND THE OWNER вЂ” saved tasks (2026-10-15, owner: "write them down, remind me later")
+### 0r. REMIND THE OWNER — saved tasks (2026-10-15, owner: "write them down, remind me later")
 
 At the start of the next session, before anything else, remind the owner of these three in Uzbek
 and ask which one to start (each with a prototype first, as usual):
@@ -1615,7 +1615,7 @@ Also saved for later (owner liked both, 2026-10-15):
    since 2026-10-09, so that card is where people see it) and on `DailyRewardSheet` if the popup
    comes back. Original note: Rafti peeks over the top edge of the check-in sheet (slides up from behind
    the card, small squash, paws on the edge, now and then ducks and pops up again; a tap makes him
-   hop). Prototype https://claude.ai/artifact/SFsyqQWjSeYMQezTD9JZcT, artboard "3 В· Daily check-in вЂ”
+   hop). Prototype https://claude.ai/artifact/SFsyqQWjSeYMQezTD9JZcT, artboard "3 · Daily check-in —
    peek" (the other six moods there were NOT wanted). Idea from BIMOBIMO's screen recording: their
    cat peeks over the check-in popup and its ears pop up (a pose change); elsewhere their mascot is
    still art. Build in `src/components/daily-reward-sheet.tsx` with Reanimated; the sheet itself
@@ -1658,9 +1658,9 @@ Logic
    memories (`isActiveMemory`). Backend note: for a free user pass only `memoryAccess(...).open` to
    the builder, so locked memories never reach the prompt.
 Docs
-7. [x] business-plan.md В§4-В§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
-   Done: В§0, В§4 (plans table with Free, trial, packs, what shells buy and what is Pro only), В§5 (net per
-   plan from В§15.10, 55/30/15 mix, ~$14.2 net revenue and ~$9.7 profit per payer, free MAU $0.17,
+7. [x] business-plan.md §4-§5 to the credit model (Basic / Pro / Pro yearly, Pro-only features).
+   Done: §0, §4 (plans table with Free, trial, packs, what shells buy and what is Pro only), §5 (net per
+   plan from §15.10, 55/30/15 mix, ~$14.2 net revenue and ~$9.7 profit per payer, free MAU $0.17,
    break-even ~2% at 10k MAU, new revenue table), KPI ARPPU >= $12, decision 2, terms line.
 8. [x] README "How the app behaves" to the current rules.
    Done: the table now states the credit model, free shells at midnight, the plans and trial, Pro-only
@@ -1668,16 +1668,16 @@ Docs
    Run; Store / My plan / History in Screens; RevenueCat and the continuity builder in the backend
    seams. The stale "members chat for free" comment in `src/mock/misc.ts` is fixed too.
 9. [-] Legal: memory export; account deletion that will also cover server data.
-   Owner (2026-10-13): skip memory export for now. Note: business-plan В§7 lists it as a legal item
+   Owner (2026-10-13): skip memory export for now. Note: business-plan §7 lists it as a legal item
    (EU data portability), so add it before an EU launch. Server-side deletion comes with the backend.
 From BIMOBIMO (our own look and words)
 10. [x] Chats list: closeness heart with the level; a sad face after a long silence.
    Done (prototype https://claude.ai/artifact/S2YsDCX1euvfZ2X7NxtpUH, approved): the Today mint chip
    moved to `src/components/bond-chip.tsx` and sits after each name on the Chats tab (level 1+, as on
-   Today; the row label says "bond level N"). The sad face is left out: the BIMOBIMO teardown В§6 lists
+   Today; the row label says "bond level N"). The sad face is left out: the BIMOBIMO teardown §6 lists
    it as a guilt pattern we do not use.
 11. [x] Chat header status line, e.g. "Together 12 days".
-   Already in the app: the chat header reads "AI character В· рџ§Ў N days" (the streak).
+   Already in the app: the chat header reads "AI character · 🧡 N days" (the streak).
 12. [~] Wake-up alarm (owner 2026-10-13: for every plan, any time, iOS Clock style, a real ring with
     a melody; prototype https://claude.ai/artifact/JYkzQxvxXUV9x9brU1DhZn v3, approved with the
     wake-up task). Stage 1 done (branch `feat/wake-up-alarms`): `Alarm` type, `src/lib/alarms.ts`
@@ -1751,7 +1751,7 @@ From BIMOBIMO (our own look and words)
    LANGUAGE block (one language in every bubble, also in the character's own messages, no mixing even
    for a foreign persona); `buildCharacterPrompt(..., replyLanguage)` adds `REPLY LANGUAGE`, falling
    back to the app language. Server: detect each user message's language into `messages.lang`, keep
-   the lock in `conversations.reply_language` (backend-plan В§4). content-policy "Language" section.
+   the lock in `conversations.reply_language` (backend-plan §4). content-policy "Language" section.
 15. [x] Dark mode (2026-10-15, owner: straight to code, no prototype).
    Follows the phone, read once at launch (`isDark` in `src/theme/colors.ts`): `colors` becomes
    `nightColors` (the Bedtime palette), so every screen that reads tokens turns dark; switching the
@@ -1783,7 +1783,7 @@ From BIMOBIMO (our own look and words)
    `pickResponders` (`src/lib/group-chat.ts`, tested): a named member first (two named: both), else
    the one who spoke least recently; every other message a second member joins in by name (mock
    lines `src/mock/group.ts`). Crisis: helpline card + one warm answer, no plan, no memory. Backend
-   seam: `buildGroupPrompt` (`src/ai/rules.ts`, tested; backend-plan В§12.13). Screens: Chats tab
+   seam: `buildGroupPrompt` (`src/ai/rules.ts`, tested; backend-plan §12.13). Screens: Chats tab
    (groups in the list with `GroupAvatar`, pencil sheet New chat / New group, tab badge counts
    groups), `/group/new`, `/group/[id]` (name over each member's run, "X is typing", "+" sheet:
    voice, photo and truth or dare in the group; secret note, quiz, date (`/dating?partner=`) and
@@ -1798,7 +1798,7 @@ From BIMOBIMO (our own look and words)
    call on the trial.
 The 2026-10-13 queue is finished (9 skipped by the owner). Next: the saved tasks in 0r above.
 
-### 0p. 2026-10-14 вЂ” animated Rafti mascot (Reanimated 3)
+### 0p. 2026-10-14 — animated Rafti mascot (Reanimated 3)
 
 - Prototype approved in `design-prototypes/rafti-mascot/index.html`.
 - Implemented in `src/components/ui/mascot.tsx`: 60-120fps GPU-driven breathing float with subtle
@@ -1814,7 +1814,7 @@ The 2026-10-13 queue is finished (9 skipped by the owner). Next: the saved tasks
 - Same session (also from Gemini, uncommitted until 2026-10-15): scroll lists and bottom bars on ~25
   screens add `insets.bottom` (`Screen` pads only the top), so the last row clears the home indicator.
 
-### 0d. 2026-10-13 вЂ” owner decisions after the audit (`docs/audit-2026-10-13.md`)
+### 0d. 2026-10-13 — owner decisions after the audit (`docs/audit-2026-10-13.md`)
 
 1. **Done (branch `fix/memory-crisis-guard`, merged into local-work 2026-10-13):** crisis text never becomes a
    lasting memory. `src/ai/memory-guard.ts` (pure) is used by `addMemory` (manual, plan and diary
@@ -1826,11 +1826,11 @@ The 2026-10-13 queue is finished (9 skipped by the owner). Next: the saved tasks
 2. **Next task, decided:** memory quality is the same on every plan. The Store copy that says
    otherwise is not changed yet; list the files and copy options first, then wait for approval.
 3. **Next task, decided:** free users get no automatic real call. Propose a voice note from the
-   free voice-line library (backend-plan В§13.5) and list the functions and tests before coding.
-4. Still open from the audit: backend-plan В§4 vs В§14.2 schema and the free-shell bucket (document
+   free voice-line library (backend-plan §13.5) and list the functions and tests before coding.
+4. Still open from the audit: backend-plan §4 vs §14.2 schema and the free-shell bucket (document
    separately); diary replies, board replies and voice transcripts do not check for crisis yet.
 
-### 0e. 2026-10-13 вЂ” crisis text in plans, voice, board and diary (branch `fix/crisis-paths`)
+### 0e. 2026-10-13 — crisis text in plans, voice, board and diary (branch `fix/crisis-paths`)
 
 Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the owner tested it on the phone. Closes the crisis part of 0d item 4.
 - Chat: a crisis message never becomes a plan ("I'm going to kill myself tomorrow" used to make a
@@ -1846,7 +1846,7 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Open: a private crisis diary page (shared with nobody) gets no help (needs UI); the phrase list
   is English-only and narrow (Uzbek is not detected); no new UI or copy was added.
 
-### 0f. 2026-10-13 вЂ” per-character chat art wallpapers
+### 0f. 2026-10-13 — per-character chat art wallpapers
 
 - Implemented locally on `feat/credit-plans` from the approved `design-prototypes/chat-backgrounds/` preview.
 - The background picker keeps all six classic gradients and adds a separate Art collection with 30 original wallpapers; image captions are removed and selection stays per character through the existing relationship store.
@@ -1855,33 +1855,33 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - `npx tsc --noEmit` passes; all 30 image files and accessibility labels are present. Metro responds on ports 8081 and 8082, but no phone is attached to this local session for a screenshot check.
 - Committed on `feat/credit-plans` (e151cf8) and merged into local-work with the credit plans. Free-plan locks checked on web: call button and call screen open the Pro sheet, a message costs 1 shell and the reply is text only.
 
-### 0j. 2026-10-13 вЂ” free plan memory limit (branch `feat/free-memory-limit`, merged into local-work)
+### 0j. 2026-10-13 — free plan memory limit (branch `feat/free-memory-limit`, merged into local-work)
 
 - `src/economy/memory-limit.ts` (`FREE_MEMORY_LIMIT = 20`, `hasFullMemory`, `splitMemories`, tested) and
   the store selector `memoryAccess`. Pinned first, then the newest 20 stay open; the oldest lock first;
   locked memories stay saved and any plan or the trial opens them all.
 - Memories screen (prototype https://claude.ai/artifact/CEexinhaHmUsATByxKJu7S, owner approved A+B):
   free users see "N of 20 open" with a bar on top, locked rows with no text at the end, and a bottom
-  bar "Unlock with Basic"; a locked row or the bar opens the unlock sheet ("Get Basic вЂ” $9.99"). Checked
+  bar "Unlock with Basic"; a locked row or the bar opens the unlock sheet ("Get Basic — $9.99"). Checked
   on web with 23 memories: 20 open + 3 locked; after Basic all 23 open and the lock is gone.
-- Not built: option C (a chat line when the 20 fill up). Server side (В§15.10) must send only the open
+- Not built: option C (a chat line when the 20 fill up). Server side (§15.10) must send only the open
   20 to the AI prompt.
 
-### 0k. 2026-10-13 вЂ” Photo Booth is Pro only (branch `feat/photo-booth-pro`, merged into local-work)
+### 0k. 2026-10-13 — Photo Booth is Pro only (branch `feat/photo-booth-pro`, merged into local-work)
 
-- backend-plan В§15.10: pictures come only from Pro's allowance (30 a period, 3 on the trial) and are
+- backend-plan §15.10: pictures come only from Pro's allowance (30 a period, 3 on the trial) and are
   never sold for shells. `takePhoto` returns `'locked'` without Pro or the trial and `'usedUp'` when the
   period's pictures are gone; no shells are spent. `photoQuota` (plans.ts, tested) gives left, total and
   the reset date.
 - Screen (prototype https://claude.ai/artifact/WZQ6jJY8JzmqUQryg6az5N, approved): free and Basic see a
   "Pro" pill, a lock on "Take a photo" and "Comes with Pro"; the tap opens `PhotoPaywallSheet` (Pro
   offer, pictures first; starting the trial takes the picture). Pro sees pictures left in the header,
-  "N of 30 left В· Resets <date>" and, when used up, a disabled "Back on <date>". Store cost list: Photo
+  "N of 30 left · Resets <date>" and, when used up, a disabled "Back on <date>". Store cost list: Photo
   Booth reads "With Pro". `photoBooth.closer` copy removed. `shellCosts.photoBooth` stays only for old
   ledger rows.
 - Checked on web: Basic with 2,099 shells is locked; the trial shoots 3 and then waits; shells unchanged.
 
-### 0l. 2026-10-13 вЂ” Bedtime is Pro only (branch `feat/bedtime-pro`, merged into local-work)
+### 0l. 2026-10-13 — Bedtime is Pro only (branch `feat/bedtime-pro`, merged into local-work)
 
 - Plans promised "Bedtime whispers every night" for Pro; it was open to everyone. Now `hasPro`
   (plans.ts, tested: Pro, Pro yearly or the trial; not Basic) gates "Sleep together".
@@ -1893,7 +1893,7 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Checked on web: free user locked; trial starts the timer; voice minutes stay at 0.
 - Left from the Pro list: "New characters first".
 
-### 0m. 2026-10-13 вЂ” New characters first (branch `feat/new-characters-first`, merged into local-work)
+### 0m. 2026-10-13 — New characters first (branch `feat/new-characters-first`, merged into local-work)
 
 - There was no idea of a "new" character before. `Character.releasedAt` (official only; the server sets
   it when a character goes live). `src/economy/early-access.ts` (tested): not visible before release;
@@ -1902,7 +1902,7 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
 - Mock: `c_hugo` released 2 days ago, `c_cole` 4 days ago (relative, so the row always shows).
 - UI (prototype https://claude.ai/artifact/Eh1sTEJfUc7jPvy91w7Gn6, approved): Find "New" row on top
   (newest first); `CharacterCard` `fresh` prop: "Pro first" + lock on add, or "New" for Pro. World pages
-  and the profile ("Pro first" line, lock on Add friend, "Pro now В· everyone on <date>") share
+  and the profile ("Pro first" line, lock on Add friend, "Pro now · everyone on <date>") share
   `useEarlyAccess` (`src/components/plans/early-access.tsx`). `PhotoPaywallSheet` became
   `ProPaywallSheet` (`kind: 'photo' | 'newCharacter'`).
 - The gate is in the UI only; `addFriend` itself does not check. The server must refuse early adds.
@@ -1910,9 +1910,9 @@ Built on `fix/memory-crisis-guard`; merged into local-work 2026-10-13 after the 
   the chat; Pro sees "New".
 - All Pro promises on the Plans tab now work.
 
-### 0n. 2026-10-13 вЂ” remove the time-based Today heading
+### 0n. 2026-10-13 — remove the time-based Today heading
 
-- Removed the top вЂњGood morning / Good afternoon / Good evening / Still up?вЂќ greeting from Today, including its reserved spacing and unused locale strings. The hero and all Today content remain in place.
+- Removed the top “Good morning / Good afternoon / Good evening / Still up?” greeting from Today, including its reserved spacing and unused locale strings. The hero and all Today content remain in place.
 
 ### 0. Sync the local folder first
 
@@ -1928,15 +1928,15 @@ npx tsc --noEmit                # must be clean
 ```
 
 `../rafti-research` (branch `claude/bimobimo-teardown`) has the BIMOBIMO teardown; its
-`AGENT-START.md` section 6 is out of date (says F9) вЂ” this file wins.
+`AGENT-START.md` section 6 is out of date (says F9) — this file wins.
 
-### 0c. 2026-10-12 вЂ” story continuity builder (branch `strategy/story-continuity-v1`)
+### 0c. 2026-10-12 — story continuity builder (branch `strategy/story-continuity-v1`)
 
 - ChatGPT wrote a product strategy, an architecture note and `src/lib/story-continuity.ts` on an old
   base; the branch is now rebased onto `local-work`. Approved decisions (business-plan, backend-plan
-  В§13вЂ“В§15) win over the ChatGPT strategy; a precedence note sits at its top.
+  §13–§15) win over the ChatGPT strategy; a precedence note sits at its top.
 - The builder is pure and not wired anywhere: mock replies are unchanged and stay mock.
-  It follows backend-plan В§7/В§12.1вЂ“12.3 (30 messages, all pinned facts, 8вЂ“12 relevant active facts,
+  It follows backend-plan §7/§12.1–12.3 (30 messages, all pinned facts, 8–12 relevant active facts,
   0.6/0.3/0.1 ranking, only active facts). `MemoryItem` got optional `type`, `importance`, `status`
   and `supersededBy` for that; extraction and archiving stay server work (12.1-12.2).
 - Tests: `npm test` (Node's built-in `node:test`, no new packages; `scripts/ts-test-hooks.mjs`
@@ -1945,34 +1945,34 @@ npx tsc --noEmit                # must be clean
   Test files are left out of the app `tsc`; `npm run typecheck:test` checks them (`tsconfig.test.json`).
 - Merged into `local-work` on 2026-10-13 (queue item 6).
 
-### 0a. Session 2026-10-09 (cloud) вЂ” backend plan additions, docs only
+### 0a. Session 2026-10-09 (cloud) — backend plan additions, docs only
 
 - The user shared `rafti_codex_ready.zip` (Codex, 2026-10-08): the code in it equals old `main`
   (16 characters); only a context pack of docs was new. Its own `AGENTS.md` was NOT taken (ours wins).
-- `docs/backend-plan.md` В§12 now holds the 6 new ideas from that pack, adapted to the current app
+- `docs/backend-plan.md` §12 now holds the 6 new ideas from that pack, adapted to the current app
   (40 characters, Closeness v2): memory type/importance, memory lifecycle (superseded facts),
   structured persona JSON, relationship event stream, a prompt block per mode, a mock LLM provider.
   Plus 6 of ours: repetition guard, batching quick user messages, `memory_uses`, per-user daily cost
-  cap, an eval set with prompt versions, memory privacy and "forget this". В§4 and В§11 updated to match.
+  cap, an eval set with prompt versions, memory privacy and "forget this". §4 and §11 updated to match.
 - No code or design touched. Backend is still "not now" (see 0b); the plan waits for the user.
-- `docs/audit-2026-10-09.md` (Uzbek, the user asked for it): audit of `src/` at `0b63fd5` вЂ”
+- `docs/audit-2026-10-09.md` (Uzbek, the user asked for it): audit of `src/` at `0b63fd5` —
   architecture, mock AI flow, LLM seams, memory, relationship, voice/call, economy, top 10
   production risks. Two small bugs found there are not fixed yet: Android back on the call
   screen skips `hangUp` (call time not charged) and diary pages / comeback pushes can quote a
   crisis message.
-- `docs/backend-plan.md` В§13 (user's direction): unit economics on 2027 prices, new plan limits
+- `docs/backend-plan.md` §13 (user's direction): unit economics on 2027 prices, new plan limits
   (calls 60/150/180 min, voice replies 30/90/120 min, no live voice for free users, 3-day store
   trial instead of the 15-minute call trial), free tier ~40 shells/day with country-based ad
   rewards, invisible per-message model routing that is the same on every plan (users never see
-  model names or tiers), and in-app conversion moments. Approved on 2026-10-09 (В§15, items 5вЂ“6);
+  model names or tiers), and in-app conversion moments. Approved on 2026-10-09 (§15, items 5–6);
   no code changed.
 - Later the same day the user handed over the founder role ("choose the business model, build it end to
   end"). Done:
   - `docs/business-plan.md` (Uzbek): market, competitors, positioning, subscription-first revenue,
-    launch order (CA/AU/NZ в†’ US/UK в†’ CIS via Telegram), payouts and legal entity from Uzbekistan,
+    launch order (CA/AU/NZ → US/UK → CIS via Telegram), payouts and legal entity from Uzbekistan,
     break-even model, KPIs, compliance (NY GBL 47, CA SB 243, age laws), roadmap with B3 (payments)
     moved before B2.
-  - `docs/backend-plan.md` В§14 explains how plans and limits work in the backend and the UI; В§15 holds
+  - `docs/backend-plan.md` §14 explains how plans and limits work in the backend and the UI; §15 holds
     the decisions. A yearly plan ($79.99, Basic limits) was added as a founder decision.
   - Prototype of the plan screens for approval (Design canvas, 6 artboards):
     https://claude.ai/artifact/7efEmQx5jBq6YvhJF2dzpv. Do not build these screens before the user
@@ -1981,7 +1981,7 @@ npx tsc --noEmit                # must be clean
     page with no quote); the call screen books the time talked however it closes (Android back
     included); creating a character charges the 60-shell voice clone only when the character is
     actually made, and leaving the screen cancels it.
-  - Next: B0 once the user opens the accounts (В§15.4) and makes the repo private.
+  - Next: B0 once the user opens the accounts (§15.4) and makes the repo private.
 - The user approved the prototype and the screens are now built (F17 "Plans and limits", done):
   - Rules live in `src/economy/plans.ts` (pure, server-portable): plans, the 3-day trial, periods,
     minutes (plan first, then packs bought with shells; packs last 90 days; no rollover), fair use
@@ -1989,9 +1989,9 @@ npx tsc --noEmit                # must be clean
     call-time balance are gone (persist v7 moves a running membership to the same plan from today).
   - Store: Plans / Shells tabs (`/store/shell?tab=shells&plan=pro`), Basic with Monthly / 3 months /
     Yearly, Pro, fine print, Restore; a one-time starter pack (300 for $0.99) until the first purchase.
-  - `src/app/my-plan.tsx` (Profile в†’ My plan): member, trial and free views, minutes left with bars,
-    top-ups (10 min calls 120 shells, 10 min voice 100), manage and restore. Dev builds: Profile в†’
-    Developer в†’ End plan.
+  - `src/app/my-plan.tsx` (Profile → My plan): member, trial and free views, minutes left with bars,
+    top-ups (10 min calls 120 shells, 10 min voice 100), manage and restore. Dev builds: Profile →
+    Developer → End plan.
   - Sheets in `src/components/plans/`: free user's call sheet (mock 6-second voice sample, trial
     starts the call), out-of-minutes sheet (before a call, and mid-call where adding minutes
     resumes it). Out-of-shells sheet redone with three equal ways on (ad or spin, shells, Basic).
@@ -1999,9 +1999,9 @@ npx tsc --noEmit                # must be clean
     session start and every 3 hours, voice replies only with plan minutes (a once-a-day note links
     to My plan when they run out), fair-use line and a locked composer until 00:00. Call screen:
     "N min left" pill from 2 minutes.
-  - Checked on web at 375Г—812 (screens, trial в†’ call, top-up в†’ resume, paywall в†’ store, v6 в†’ v7
+  - Checked on web at 375×812 (screens, trial → call, top-up → resume, paywall → store, v6 → v7
     migration). Purchases are mocked: real builds plug StoreKit / Play Billing (RevenueCat) into
-    `subscribe`, `topUpMinutes` and `addShells` (backend-plan В§14).
+    `subscribe`, `topUpMinutes` and `addShells` (backend-plan §14).
 - The user liked the F17 look and made it the design method for the whole app: `docs/design-style.md`
   (rule added to `AGENTS.md`). Backend waits; first the frontend flows are fixed and older screens
   are brought to this style. `docs/design-audit.md` grades every screen (fits / small / medium /
@@ -2009,7 +2009,7 @@ npx tsc --noEmit                # must be clean
   then the "medium" screens one by one with a prototype each. Approved screens only on request.
 - Codex review on PR #4 (owner agreed 2026-10-09): a new install now starts empty (no sample chats,
   bonds, diary pages or calls; 0 shells until the welcome gift), with only the friend picked in
-  onboarding. Development builds: Profile в†’ Developer в†’ "Load sample chats" adds the old sample
+  onboarding. Development builds: Profile → Developer → "Load sample chats" adds the old sample
   history. Leaving a paid date ends it (`leaveDate`); blocking drops pending board replies. Real-person
   photo checks wait for server moderation (backend plan), not the client.
 - Calm cards step 1 built (prototype approved: https://claude.ai/artifact/LBoVbxLo3LkBedbjmGPQTf):
@@ -2026,7 +2026,7 @@ npx tsc --noEmit                # must be clean
   camera badge, bordered About box), Secret note (no header avatar, h3 "Your note", white action bar),
   Board (line "+" icon button, `bgPlain`), Our dates (`bgPlain`). `EmptyState` uses a `secondary`
   button and the new empty-state art: the user asked to replace Rafti's empty box, so Rafti now
-  listens to a seashell (Higgsfield, grok-imagine-image-2.0, 1 image в‰€ $0.08; raw in
+  listens to a seashell (Higgsfield, grok-imagine-image-2.0, 1 image ≈ $0.08; raw in
   `../BIMOBIMOdesignraw/empty_state.png/rafti-empty-shell.jpg`, cut with `key_out`). Next: the
   "medium" screens, Free gifts first, each with a prototype.
 
@@ -2041,7 +2041,7 @@ npx tsc --noEmit                # must be clean
 - Create character restyled (2026-10-10, prototype approved: https://claude.ai/artifact/39JVNxjNiCZkVHP8cvTgDb):
   only the look of `src/app/create-character.tsx` changed (state, checks, charging and edit mode are
   as before). Sections with h3 titles, sub-field labels in grey, no red asterisks (the error line in
-  the action bar names what is missing), chips grey в†’ white with a 2px ink border when chosen, ink
+  the action bar names what is missing), chips grey → white with a 2px ink border when chosen, ink
   checkboxes, line camera / mic icons instead of clay art, `Segmented` for stock vs cloned voice,
   bottom action bar (error, Create button, "Only you can see them" / review note).
   Next "medium" screen: Contacts (prototype first).
@@ -2054,7 +2054,7 @@ npx tsc --noEmit                # must be clean
 
 - Photo Booth restyled (2026-10-10, prototype approved: https://claude.ai/artifact/CuA2RSMFXEjpDmWW9U1ER3):
   white preview card (portrait on grey, "You & Name", style), With (avatars with names, ink ring),
-  Style as 2Г—2 option buttons, "Your photos" after the first shot, action bar "Take a photo В· 8".
+  Style as 2×2 option buttons, "Your photos" after the first shot, action bar "Take a photo · 8".
   The header shows the shell balance; the film count was shown but never spent, so it is gone.
   Still a mock: no image is generated, the style is not sent anywhere, shots vanish when the
   screen closes; a shot spends 8 shells, adds 6 closeness and a photo moment on Us. A real build
@@ -2097,7 +2097,7 @@ npx tsc --noEmit                # must be clean
   - D1 `src/app/dating.tsx`: white place cards (art on tint, lock badge, price or level), partner
     pill with level, white action bar. Partner sheet, place sheet, paywall and rounds unchanged;
     Rooftop moved to x 0.24 so cards do not overlap.
-  - H1 `src/app/diary/index.tsx`: same cards/sort/calendar logic; covers lean В±7В° and fade, arrows
+  - H1 `src/app/diary/index.tsx`: same cards/sort/calendar logic; covers lean ±7° and fade, arrows
     step through them, grey date pill with calendar icon, My diary uses the diary cover art, action
     bar. The blurred backdrop behind the carousel was removed to match the prototype.
   - H2 diary page: own header with avatar, round pager, ruled paper with date, mint mood and
@@ -2109,16 +2109,16 @@ npx tsc --noEmit                # must be clean
     stale `.expo/types/router.d.ts` (`/notifications/index`). Restart Metro (`npx expo start -c`)
     if tsc complains about `/notifications`.
 
-### 0f. 2026-10-13 вЂ” Plans tab: same memory on every plan (branch `fix/plans-memory-copy`)
+### 0f. 2026-10-13 — Plans tab: same memory on every plan (branch `fix/plans-memory-copy`)
 
-- Owner decision (backend-plan В§15.8): memory quality is the same on every plan; paid plans add only
+- Owner decision (backend-plan §15.8): memory quality is the same on every plan; paid plans add only
   call and voice minutes. Preview approved, then built in `src/components/plans/plan-picker.tsx` and
   `en.json`: the Plans subtitle reads "Every plan gets the same memory quality. Paid plans add call and
   voice minutes."; "Remembers everything you share" (Basic) and "Deepest memory" (Pro) are gone, keys
   `plans.remembers` / `plans.deepestMemory` deleted. Nothing else on the screen changed.
-- Checked on web at 375Г—812 against the approved preview; merged into local-work 2026-10-13.
+- Checked on web at 375×812 against the approved preview; merged into local-work 2026-10-13.
 
-### 0g. 2026-10-13 вЂ” free users get a voice note, not a call (branch `feat/free-voice-note`)
+### 0g. 2026-10-13 — free users get a voice note, not a call (branch `feat/free-voice-note`)
 
 - Owner decision 3 (prototype approved): without a plan or trial nothing rings. `canRing` in
   `src/economy/plans.ts` (tested). `runDailyInitiative` leaves the caller's voice note + its text in
@@ -2128,20 +2128,20 @@ npx tsc --noEmit                # must be clean
   Good-night voice note" for free users. Plan and trial users: unchanged.
 - Correction to the audit (B9): `ring()` already refused users with no call minutes, so free users were
   never rung in the app; the real problem was the "Incoming call" push that led to nothing.
-- Checked on web: free в†’ voice note in chat, no ring; Basic в†’ `/call/incoming/<id>`, no voice note.
+- Checked on web: free → voice note in chat, no ring; Basic → `/call/incoming/<id>`, no voice note.
 
-### 0h. 2026-10-13 вЂ” all free shells burn at midnight (branch `feat/free-shells-expire`)
+### 0h. 2026-10-13 — all free shells burn at midnight (branch `feat/free-shells-expire`)
 
-- Owner decision (backend-plan В§15.9): check-in, wheel, ads, share and invite go into today's free bucket
+- Owner decision (backend-plan §15.9): check-in, wheel, ads, share and invite go into today's free bucket
   (`creditFree`, `src/economy/shells.ts`, tested) and burn to zero at midnight (`expireFreeShells`,
   unchanged). Bought shells and the one-time welcome gift (100) never expire. BIMOBIMO has no shell welcome
-  gift (only +15 call minutes, teardown #8). History copy: "Free shells are spent firstвЂ¦".
-- Checked on web: 150 free в†’ 0 after midnight; 500 with 100 free в†’ 400.
+  gift (only +15 call minutes, teardown #8). History copy: "Free shells are spent first…".
+- Checked on web: 150 free → 0 after midnight; 500 with 100 free → 400.
 - Open: memory on the free plan (owner leans to none; see the 2026-10-13 chat).
 
-### 0i. 2026-10-13 вЂ” credit model and the new plans (built on branch `feat/credit-plans`, not merged)
+### 0i. 2026-10-13 — credit model and the new plans (built on branch `feat/credit-plans`, not merged)
 
-- backend-plan В§15.10вЂ“12: every message costs 1 shell for everyone (no unlimited chat); plans are Basic
+- backend-plan §15.10–12: every message costs 1 shell for everyone (no unlimited chat); plans are Basic
   monthly $9.99 (2,000 shells/mo, full memory, chat only), Pro monthly $29.99 and Pro yearly $239.99
   (5,000 shells/mo, 3 h calls, 2 h voice, 30 photos, Bedtime, new characters first). Basic yearly and
   Quarterly go. Plan shells arrive monthly and never burn. Free plan: 20 memories per character, the rest
@@ -2149,7 +2149,7 @@ npx tsc --noEmit                # must be clean
 - Next build: `src/economy/plans.ts` (plans, monthly shell grants, Pro quotas), message charge for members,
   memory limit + lock card, Plans tab per the approved prototype.
 
-### 0b. Session 2026-10-07 evening (Desktop) вЂ” done and waiting
+### 0b. Session 2026-10-07 evening (Desktop) — done and waiting
 
 User's answers to the options: 1 Backend = **not now** (frontend design not finished);
 2 Edit character = **done**; 3 fixes = **done** (clean, in the shared component);
@@ -2159,22 +2159,22 @@ the last conversation = **done**.
 - Today hero: the character you last wrote to / spoke with on a call (`lastTalkedAt`,
   `featuredFriend`); rules and the chain in `docs/today-hero.md`. 24 characters have no wide
   scene yet: ready prompts in `docs/nano-banana-heroes.md` (user makes them in Nano Banana).
-- Edit character: Settings в†’ Edit character (own creations only) в†’ `/create-character?id=`.
+- Edit character: Settings → Edit character (own creations only) → `/create-character?id=`.
   Not clicked through with a real photo on web (the web image picker could not be fed in the
   test); validation, prefill and the not-found guard were checked.
-- Fixed: `EmptyState compact` collapsed on web (`flex: 0` в†’ `flex-basis: 0%`), which made the
+- Fixed: `EmptyState compact` collapsed on web (`flex: 0` → `flex-basis: 0%`), which made the
   mascot overlap the History card; History call tab no longer shows the shells hint.
 - Push **built** (F16, local notifications): user chose 8 a day, stop after day 14, text hidden by
-  default; support e-mail stays a mock. How it works and what is left: `docs/push-plan.md` В§6.
+  default; support e-mail stays a mock. How it works and what is left: `docs/push-plan.md` §6.
   The user tests on the phone in parallel. Note: after `npx expo install`, the first web bundle
   took minutes; restart the dev server if the page stays blank.
-- Profile в†’ Notifications screen built from the approved prototype (artifact
+- Profile → Notifications screen built from the approved prototype (artifact
   https://claude.ai/artifact/1Zm9bcWHmJ1XXNr8kCtypx). Gemini is building the Android dev build
   (`docs/agent-tasks/android-dev-build.md`; its result goes at the end of that file).
 - Hero scenes: all 40 characters have one. Unused renders sit untracked in
   `assets/raw/heroes-review/` and `assets/raw/heroes-rejected/` (the user's to keep or delete).
-- Home reordered at the user's request (2026-10-07): Today card в†’ 10 module icons (4 columns,
-  large clay art on the bare canvas, no label) в†’ Chats в†’ Today rows в†’ Daily gift. Logic unchanged.
+- Home reordered at the user's request (2026-10-07): Today card → 10 module icons (4 columns,
+  large clay art on the bare canvas, no label) → Chats → Today rows → Daily gift. Logic unchanged.
 - Home below the icons made minimal (2026-10-07, user's request): Chats and Today as bold `h2`
   headings in ink (`SectionLabel tone="title"`), plain rows on the canvas with no card, no lines,
   no grey tiles (`ListRow size="large"`, clay art `tile={false}`). The Daily gift card left Home
@@ -2193,7 +2193,7 @@ the last conversation = **done**.
 
 All 40 characters now have a portrait (`assets/avatars/c_<id>.png`, raws in
 `assets/raw/avatars/c_<id>.jpg`); checked in Find, a world list and a profile at 375x812.
-Nadia had two takes; the user picked `802fb1e0вЂ¦` (the unused one stays untracked in
+Nadia had two takes; the user picked `802fb1e0…` (the unused one stays untracked in
 `assets/images/`). Next: offer the section 2 options below (and, optionally, hero scenes).
 
 The original instructions, kept for reference:
@@ -2205,31 +2205,31 @@ The user has **finished all portraits in Nano Banana** and will hand them over (
    c_kael, c_orin, c_corvin, c_haze, c_rio, c_dex, c_ari, c_juno, c_cass, c_marco, c_ivy,
    c_gideon, c_ren, c_hugo, c_nadia, c_cole. (c_rowan is already in.) If the user sends files
    with other names, match them by the face/description in `docs/characters-plan.md` and ask
-   when unsure вЂ” never guess silently.
+   when unsure — never guess silently.
 2. Look at each image before using it: an adult, not Kai's face, no text or logo. Report any that
    look off and ask for a redo instead of shipping it.
-3. `python scripts/build-brand-art.py characters` вЂ” crops to 512px squares into
+3. `python scripts/build-brand-art.py characters` — crops to 512px squares into
    `assets/avatars/c_<id>.png` and rewrites `assets/avatars/registry.ts` from what is in
    `assets/avatars/` (the existing 17 stay). Commit the raw files too.
-4. `npx tsc --noEmit`, then `npx expo start --web` (`.claude/launch.json` в†’ `bimobimo-web`,
-   375Г—812): check Find (all four worlds, Everyone / Him / Her) and a character profile.
+4. `npx tsc --noEmit`, then `npx expo start --web` (`.claude/launch.json` → `bimobimo-web`,
+   375×812): check Find (all four worlds, Everyone / Him / Her) and a character profile.
 5. Update `docs/characters-plan.md` status, a line here, commit and push to `local-work`
    (standing permission), tell the user in Uzbek what was done.
 
 Optional after that: hero scenes (16:9, Today card). The prompt is in `docs/characters-plan.md`
 ("Shared hero scene prompt" + each character's `{PLACE}`); attach the character's new portrait
 plus `assets/heroes/c_sol.jpg`. Files go to `assets/raw/heroes/c_<id>.png`, same build command.
-Not asked for yet вЂ” offer, don't do.
+Not asked for yet — offer, don't do.
 
 ### 2. Then offer the user these, in this order (they choose)
 
-1. **Backend** вЂ” the real AI (Claude API), moderation and voices. Plan: `docs/backend-plan.md`
+1. **Backend** — the real AI (Claude API), moderation and voices. Plan: `docs/backend-plan.md`
    (Uzbek); open decisions in its section 12, first one: which Claude model for chat.
    Character rules for the model are ready in `src/ai/rules.ts`.
 2. **Edit a created character** (F15 follow-up): there is no edit screen yet.
-3. Small fixes: History "Call time" empty state вЂ” the mascot overlaps the rule card
+3. Small fixes: History "Call time" empty state — the mascot overlaps the rule card
    (`src/app/store/ledger.tsx`); the support address `SUPPORT_EMAIL` in `src/ai/safety.ts` is a
-   placeholder вЂ” ask the user for the real one.
+   placeholder — ask the user for the real one.
 4. Push notifications (`expo-notifications` is not installed; reminders, birthday wishes and
    morning messages only arrive while the app is open).
 
@@ -2239,8 +2239,8 @@ Not asked for yet вЂ” offer, don't do.
 - Cast: 40 originals, 10 per world, `gender` on every character, Find filter Everyone / Him / Her
   (`src/mock/characters.ts`, `docs/characters-plan.md`; faces are a global mix by the user's decision).
 - 18+ content rules approved: `docs/content-policy.md` (human) and `src/ai/rules.ts` (model).
-  Built: Report in chat, Block (character settings) / Unblock (Profile в†’ Blocked), helpline card
-  after crisis messages (`src/ai/safety.ts`), "AI" mark on profiles, Profile в†’ Support.
+  Built: Report in chat, Block (character settings) / Unblock (Profile → Blocked), helpline card
+  after crisis messages (`src/ai/safety.ts`), "AI" mark on profiles, Profile → Support.
 - F15 create character: traits, speaking style, role, stock or cloned voice, 18+ and rights checks
   (`src/app/create-character.tsx`, `src/lib/create-character.ts`).
 - 3D clay icons: four sheets wired everywhere listed in `docs/icons-3d.md`.
@@ -2258,7 +2258,7 @@ Not asked for yet вЂ” offer, don't do.
 
 ---
 
-## Cloud session log (2026-10-07) вЂ” details of what was built
+## Cloud session log (2026-10-07) — details of what was built
 
 ### Earlier top block (kept for detail)
 Foydalanuvchi lokal Claude Desktop'dan (Windows, `C:\Users\joray\BIMOBIMO`) **bulutdagi Claude Code**'ga o'tdi.
@@ -2275,15 +2275,15 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
    3. Butunlay yangi ekran bo'lsa, avval HTML prototip (claude.ai Artifact) ko'rsating va tasdiq oling.
       Mavjud ekranni kengaytirish bo'lsa, to'g'ridan-to'g'ri kodga ruxsat bor ("next" = davom et).
    4. Kod yozing. Mantiq zanjirga ulanadi: oqim avvalgi va keyingi oqimga ta'sir qiladi
-      (chat в†’ kundalik, uchrashuv в†’ yaqinlik + ertasi kundalik, reja в†’ eslatma, ulashish в†’ +6).
-   5. `npx tsc --noEmit` toza o'tadi; `npx expo start --web` va brauzerda 375Г—812 tekshiriladi.
+      (chat → kundalik, uchrashuv → yaqinlik + ertasi kundalik, reja → eslatma, ulashish → +6).
+   5. `npx tsc --noEmit` toza o'tadi; `npx expo start --web` va brauzerda 375×812 tekshiriladi.
    6. Bu faylga qisqa yozuv, `docs/flows.md` holatini yangilang.
    7. `local-work` ga commit va push (foydalanuvchi har tugagan oqim uchun doimiy ruxsat bergan).
    8. Foydalanuvchiga o'zbekcha, qisqa: nima qilindi, BIMOBIMO'dan farqi, keyingi qadam.
-3. **F14 Profil вЂ” kodda tayyor** (BIMOBIMO #130, #131, #133). Foydalanuvchi "to'liq tayyorla" dedi, prototipsiz qurildi:
+3. **F14 Profil — kodda tayyor** (BIMOBIMO #130, #131, #133). Foydalanuvchi "to'liq tayyorla" dedi, prototipsiz qurildi:
    - `src/app/profile.tsx`: katta avatar va ism, "Edit profile" kartasi foiz chizig'i bilan, taklif kodi kartasi
-     (nusxa + "+50 вЂє" в†’ Free gifts, u yerda qoidalar va "Have a code?"), Account: Membership, Free gifts;
-     til qatori faqat 2+ til bo'lsa ko'rinadi; eng pastda "Delete account" в†’ markaziy tasdiq oynasi в†’
+     (nusxa + "+50 ›" → Free gifts, u yerda qoidalar va "Have a code?"), Account: Membership, Free gifts;
+     til qatori faqat 2+ til bo'lsa ko'rinadi; eng pastda "Delete account" → markaziy tasdiq oynasi →
      `deleteAccount()` store'ni boshlang'ich holatga qaytaradi (`getInitialState`) va `/onboarding` ga o'tadi
      (server hisobni keyin o'chiradi);
    - `src/app/edit-profile.tsx`: rasm (image picker, 2 MB gacha), Name, Pronouns, Birthday (oy+kun; yil 18+
@@ -2295,7 +2295,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      tugaydi (`interestLines`). Server AI bo'lganda profil promptga beriladi.
    - Bulutda Metro fayl o'zgarishini ko'rmay qolishi mumkin: `npx expo start --web --clear` bilan qayta ishga tushiring.
 4. **Ochiq ishlar (foydalanuvchi bilan kelishilgan, unutmang):**
-   - **3D clay ikonkalar вЂ” 2-to'plam ulandi (2026-10-07):** `assets/raw/icons-3d-sheet-2.jpg` (sovg'a, do'kon,
+   - **3D clay ikonkalar — 2-to'plam ulandi (2026-10-07):** `assets/raw/icons-3d-sheet-2.jpg` (sovg'a, do'kon,
      do'stlar, radio, igna, oy, kamera, kalendar, lupa, kompas, nota, qulf). Skript endi bir nechta varaqni
      o'qiydi (`ICON_SHEETS`). Ulangan joylar: Home Explore (10 tasi), Home Today qatorlari, Us "+" va momentlar,
      Free gifts, Profil "They reach out"; `ClayIcon` ga `dot` va `radius` qo'shildi. 3-to'plam ham ulandi
@@ -2307,29 +2307,29 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
    - Ko'rildi, tuzatilmagan: History "Call time" bo'sh holatida maskot rasmi tepadagi qoida kartasiga tegib turadi.
    - **Personajlar katalogi** (foydalanuvchi so'ragan, 2026-10-07): BIMOBIMO'dagi real idol/franchise personajlar
      bizda TAQIQ (huquq va App Store xavfi). Katalog ikki yo'l bilan o'sadi: (a) F15 da foydalanuvchi
-     personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 в†’ ~50 ga
+     personajlarini "hammaga ochiq" qilish + moderatsiya + shikoyat; (b) Rafti original personajlarini 16 → ~50 ga
      oshirish (har dunyoda 8-10), rasmlarni foydalanuvchi Nano Banana'da chizadi, bio'ni agent yozadi.
      **(b) tanlandi va kodda (2026-10-07):** 24 yangi personaj, har dunyo 10 tadan, jami 40
      (`src/mock/characters.ts`, reja va promptlar `docs/characters-plan.md`). `Character.gender` qo'shildi, Find'da
      Everyone / Him / Her filtri (BIMOBIMO'da bunday filtr yo'q, katalogi deyarli faqat erkaklar).
-     Rasmlar kutilmoqda: birinchi sinovda bo'sh `{...}` li umumiy prompt ikki namuna bilan berilib, Kai chiqdi вЂ”
+     Rasmlar kutilmoqda: birinchi sinovda bo'sh `{...}` li umumiy prompt ikki namuna bilan berilib, Kai chiqdi —
      endi tayyor promptlar bor (portretga faqat `c_kai.png`, sahnaga yangi portret + `c_sol.jpg`).
      Rasm kelganda: `assets/raw/avatars/c_<id>.png|jpg` (sahna: `assets/raw/heroes/`) ga qo'ying va
-     `python scripts/build-brand-art.py characters` вЂ” portret 512px bo'lib `assets/avatars/` ga tushadi, registry
+     `python scripts/build-brand-art.py characters` — portret 512px bo'lib `assets/avatars/` ga tushadi, registry
      o'zi yangilanadi. Rowan (`c_rowan`) birinchi bo'lib ulandi, sinov muvaffaqiyatli.
-   - **Kontent qoidalari (18+):** [`docs/content-policy.md`](docs/content-policy.md) вЂ” ochiq, lekin chegaralari bor
+   - **Kontent qoidalari (18+):** [`docs/content-policy.md`](docs/content-policy.md) — ochiq, lekin chegaralari bor
      (romantika va kuchli xarakterlar ha; aniq jinsiy kontent "fade to black", voyaga yetmaganlar, real odamlar,
      zo'ravonlikni romantika qilish yo'q). Foydalanuvchi tasdiqladi va qurildi
      (2026-10-07): chatda Report (sabablar oynasi, `reports`), personaj sozlamalarida Block (bog'lanishni o'chiradi,
-     Find'dan yashiradi; Profil в†’ Blocked'da qaytarish), Profil в†’ Support (`SUPPORT_EMAIL` вЂ” vaqtinchalik manzil,
+     Find'dan yashiradi; Profil → Blocked'da qaytarish), Profil → Support (`SUPPORT_EMAIL` — vaqtinchalik manzil,
      haqiqiysini qo'yish kerak), inqiroz xabaridan keyin yordam liniyasi kartasi (`src/ai/safety.ts`), profilda "AI"
      belgisi. LLM uchun qoidalar: `src/ai/rules.ts` (server keyin system promptga qo'yadi + moderatsiya).
-   - **F15 Personaj yaratish вЂ” kodda tayyor (2026-10-07):** `src/app/create-character.tsx` qayta qurildi. BIMOBIMO
+   - **F15 Personaj yaratish — kodda tayyor (2026-10-07):** `src/app/create-character.tsx` qayta qurildi. BIMOBIMO
      tuzilmasi (rasm, ovoz klipi, tavsif, salom, ko'rinish) + standart (Character.AI/Talkie): xarakter belgilari (5 tagacha),
      gapirish uslubi, munosabat turi, tayyor ovoz (bepul) yoki klon (60 chig'anoq + rozilik belgisi), rasm huquqi
      belgisi, yosh 18+ majburiy. `checkCreation` (`src/lib/create-character.ts`): voyaga yetmagan va aniq jinsiy
      so'zlarni rad etadi; asosiy moderatsiya serverda. Ommaviy personaj `review: 'pending'` (profilda "Public after
-     review"). Yangi `Character` maydonlari: `age`, `speakingStyle`, `role`, `voicePreset`, `visibility`, `review` вЂ”
+     review"). Yangi `Character` maydonlari: `age`, `speakingStyle`, `role`, `voicePreset`, `visibility`, `review` —
      `buildCharacterPrompt` ularni ishlatadi. Keyin: tahrirlash, rasmni AI bilan chizish (server), tayyor ovozlarni
      tinglash (TTS bo'lganda).
    - **Yuzlar (foydalanuvchi qarori):** global ilova, har dunyoda turli kelib chiqish; har bir portret promptida
@@ -2338,12 +2338,12 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
      tilida (AGENTS.md ga yozildi). Foydalanuvchiga javob o'zbekcha.
    - Push bildirishnomalar yo'q (`expo-notifications` o'rnatilmagan): reja eslatmalari hozircha faqat chatda.
 5. **Dizayn qoidalari** (2026-10-09 dan asosiy uslub: `docs/design-style.md`): interfeys faqat ingliz tilida; oddiy, zamonaviy minimal; matn minimal (sarlavha, raqam,
-   ikonka вЂ” tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
+   ikonka — tushuntirish matnlari yo'q); asosiy matnlar katta va qalin (`src/theme/typography.ts`); bitta asosiy
    to'q sariq tugma; mint faqat munosabat uchun; tasdiqlangan ekranlarni (Diary, Onboarding, Home) qayta chizmang.
    Yozish maydoni bor sheet'larda `Sheet avoidKeyboard`, maydonga `autoFocus` qo'ymang.
 6. **Muhit (bulut):**
    - Repo: `muhammad571634/rafti` (public), branch **`local-work`**. Strategiya hujjatlari: private
-     `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown` вЂ” repo yonidagi `../rafti-research/` ga
+     `muhammad571634/rafti-research`, branch `claude/bimobimo-teardown` — repo yonidagi `../rafti-research/` ga
      klon qilinadi (agar ruxsat bo'lmasa, foydalanuvchidan GitHub kirishini so'rang). `#100`, `#102-#133`
      skrinshotlari `muhammad571634/rafti-research-2` da.
    - Expo typed routes ba'zan eskirib `tsc` yiqiladi (`/board/index` yoki yangi marshrut ko'rinmaydi): dev serverni
@@ -2353,10 +2353,10 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 
 ## Foydalanuvchi afzalliklari (lokal xotiradan ko'chirildi, 2026-10-07)
 - **Animatsiya:** popup/sheet'lar animatsiyasiz darhol chiqadi; yozyapti nuqtalari, ovoz to'lqini va boshqa
-  harakatlar qoladi. "Animatsiyani o'zgartir" desa вЂ” faqat ko'rsatilganini o'zgartiring, qolganini so'rang.
-- **Minimal matn:** ekranlarda faqat sarlavha, ism, raqam, ikonka. Qoida tushuntirish kerak bo'lsa вЂ” ikonka
+  harakatlar qoladi. "Animatsiyani o'zgartir" desa — faqat ko'rsatilganini o'zgartiring, qolganini so'rang.
+- **Minimal matn:** ekranlarda faqat sarlavha, ism, raqam, ikonka. Qoida tushuntirish kerak bo'lsa — ikonka
   ortidagi info sheet'da, qisqa. Tugma matnlari qisqa ("Claim +60").
-- **Rasmlar:** foydalanuvchi Gemini (Nano Banana) da o'zi chizadi вЂ” prompt bering, uslub namunasini biriktirishni
+- **Rasmlar:** foydalanuvchi Gemini (Nano Banana) da o'zi chizadi — prompt bering, uslub namunasini biriktirishni
   ayting. Alternativa: Higgsfield API (`HF_CREDENTIALS` env, `xai/grok-imagine-image-2.0`, ~$0.08/rasm; foydalanuvchi
   uni "Hugging Face" deb ataydi). Qoida: bitta sinov rasm, ko'rsating, keyin soni va narxi aytilgan to'plam.
 - **Animatsiya fayllari:** faqat LottieFiles (HyperFrames rad etilgan). Web uchun `@lottiefiles/dotlottie-react` kerak.
@@ -2365,8 +2365,8 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 
 
 ## Ish qoidalari (foydalanuvchi bilan)
-- Foydalanuvchi o'zbek tilida yozadi вЂ” javoblar o'zbekcha. Kod izohlari inglizcha.
-- `AGENTS.md`: Expo SDK 57 вЂ” kod yozishdan oldin https://docs.expo.dev/versions/v57.0.0/ ga qarash.
+- Foydalanuvchi o'zbek tilida yozadi — javoblar o'zbekcha. Kod izohlari inglizcha.
+- `AGENTS.md`: Expo SDK 57 — kod yozishdan oldin https://docs.expo.dev/versions/v57.0.0/ ga qarash.
 - Ish branch'i `local-work`. Har tugagan oqimdan keyin commit va push (foydalanuvchining doimiy ruxsati).
   `main`ga PR keyinroq (`gh` o'rnatilmagan: PR'ni foydalanuvchi `.../pull/new/<branch>` havolasi bilan ochadi).
 - Repo PUBLIC: https://github.com/muhammad571634/rafti (foydalanuvchi ataylab shunday tanlagan).
@@ -2375,11 +2375,11 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   namunasi qilib biriktirishini ayt. Tayyor rasm `../BIMOBIMOdesignraw/<name>.png/` papkasiga yoki repodagi
   `assets/raw/` ga tushadi; ko'rib, yaroqli bo'lsa `python scripts/build-brand-art.py`.
 - Har o'zgarishdan keyin: `npx tsc --noEmit` + brauzerda tekshirish
-  (`.claude/launch.json` в†’ `bimobimo-web`, port 8081, mobil o'lcham 375Г—812).
+  (`.claude/launch.json` → `bimobimo-web`, port 8081, mobil o'lcham 375×812).
 - Metro "Unable to resolve module" bersa (ayniqsa `git checkout`dan keyin): serverni to'xtatib,
   `%TEMP%\metro-cache` va `%TEMP%\metro-file-map-*`ni o'chirib, qayta ishga tushir.
 
-## Hozirgi holat (2026-10-07) вЂ” YANGI SESSIYA SHU YERDAN BOSHLASIN
+## Hozirgi holat (2026-10-07) — YANGI SESSIYA SHU YERDAN BOSHLASIN
 - **Ish branch'i: `local-work`.** Unda Today redesign'i:
   - hero karta (`today-hero.tsx`) va kunlik sovg'a kartasi (`daily-gift-card.tsx`);
   - Explore **B varianti**: rangli Phosphor duotone ikonkalar, foydalanuvchi tanlagan;
@@ -2393,7 +2393,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - dizayn va oqimlar rejasi: `spec/design-plan.md`.
 
   **Har bir yangi dizayn ishi shu hujjatlardan boshlanadi.**
-- **F8 Heartbeat Diary вЂ” kodda tayyor (2026-10-07).** Prototip foydalanuvchi tomonidan tasdiqlangan:
+- **F8 Heartbeat Diary — kodda tayyor (2026-10-07).** Prototip foydalanuvchi tomonidan tasdiqlangan:
   https://claude.ai/artifact/DtV8DUHfbUTYjf5RMiWD2T
   - `src/app/diary/index.tsx`: muqovalar karuseli ("My diary" birinchi, keyin suhbati bor personajlar),
     orqa fon oldingi muqovaning xira rasmi, "New page" belgisi, sahifasi yo'q personaj kulrang + "No page yet",
@@ -2402,7 +2402,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
     kalendari tuzilishida: Cancel + Confirm, qo'shni oy kunlari xira; sahifa bor kunlarda nuqta). Tanlangan kun
     kartalarni o'sha kunga qarab ko'rsatadi.
   - `src/app/diary/page/[characterId].tsx`: personaj sahifasi (Caveat qo'lyozma, chiziqli qog'oz, kayfiyat, qaysi
-    suhbatdan keyin yozilgani, sahifalar orasida o'tish, "Reply to X in chat" в†’ chat `draft` parametri bilan ochiladi).
+    suhbatdan keyin yozilgani, sahifalar orasida o'tish, "Reply to X in chat" → chat `draft` parametri bilan ochiladi).
   - `src/app/diary/mine.tsx`: foydalanuvchining o'z sahifalari (avvalgi `diary/index` shu yerga ko'chdi).
   - `src/components/diary/rules-sheet.tsx`: "How their diary works" oynasi. Rasm hozircha Rafti stikeri.
   - Ma'lumot: `CharacterDiaryPage` turi, `mock/diary.ts` dagi `characterDiaryPages` (keyin server yozadi),
@@ -2412,73 +2412,73 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
   - Ulangan: kecha suhbat/uchrashuv bo'lsa, ertalab personaj kundalik yozadi (`src/mock/diary-writer.ts`,
     store'da `writeDueDiaryPages`, ilova ochilganda va Diary ekraniga kirilganda chaqiriladi).
-  - **F1 Onboarding вЂ” kodda tayyor** (prototip tasdiqlangan: https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF):
-    `src/app/onboarding.tsx`. Salom в†’ 18+ yil в†’ ism в†’ birinchi do'st (Kai, Aurelian, Sol, Seren) в†’ bildirishnoma
-    в†’ +100 (`WELCOME_SHELLS`) в†’ birinchi chat (personaj ismingiz bilan savol beradi). `(tabs)/_layout` onboarding
+  - **F1 Onboarding — kodda tayyor** (prototip tasdiqlangan: https://claude.ai/artifact/M4ci9hVBBQMbtDkeuxBcUF):
+    `src/app/onboarding.tsx`. Salom → 18+ yil → ism → birinchi do'st (Kai, Aurelian, Sol, Seren) → bildirishnoma
+    → +100 (`WELCOME_SHELLS`) → birinchi chat (personaj ismingiz bilan savol beradi). `(tabs)/_layout` onboarding
     tugamaguncha `/onboarding` ga yo'naltiradi; store v4 migratsiyasi eski foydalanuvchilarni o'tkazib yuboradi.
     1-kun check-in onboarding ichida jim beriladi; personajlar tashabbusi (qo'ng'iroq, salom) onboarding'dan keyin.
     Bildirishnoma hozircha faqat sozlama (`expo-notifications` hali o'rnatilmagan).
-  - `shortName()` (`src/lib/format.ts`): "Prince Aurelian" в†’ "Aurelian". Gaplarda ism uchun shuni ishlating.
+  - `shortName()` (`src/lib/format.ts`): "Prince Aurelian" → "Aurelian". Gaplarda ism uchun shuni ishlating.
 - **Til qarori (2026-10-07):** butun interfeys hozircha faqat ingliz tilida (asosiy til). Boshqa tillar keyin
   `src/i18n/locales/` orqali qo'shiladi; til tanlash tugmasi bitta til bo'lganda ko'rinmaydi.
-  - **F2 Home вЂ” kodda tayyor:** "Today" bo'limi hero kartadan keyin darhol turadi. Unda bugun yozilgan, hali
+  - **F2 Home — kodda tayyor:** "Today" bo'limi hero kartadan keyin darhol turadi. Unda bugun yozilgan, hali
     o'qilmagan kundalik sahifalar ("Theo wrote about you", to'q sariq nuqta bilan), chatda aytilgan bugungi
     rejalar, maxfiy xatlar va g'ildirak bor. Home ochilganda navbatdagi kundalik sahifalar yoziladi.
-  - **F3 Chat yadrosi вЂ” kodda tayyor** (BIMOBIMO #34-#39):
+  - **F3 Chat yadrosi — kodda tayyor** (BIMOBIMO #34-#39):
     - javob 1-4 ta qisqa xabar bo'lib birma-bir keladi, oralarida "yozyapti" (`replyBursts`, `scheduleReply`);
     - kun ajratgichlari: Today / Yesterday / sana;
     - xabarni uzoq bosish menyusi: 6 reaksiya, Copy (`expo-clipboard`), Delete for me; reaksiya pufak burchagida;
     - xabar yuborilganda chig'anoq belgisidan "-1" ko'tarilib yo'qoladi (narx ko'rinadi);
     - ro'yxatdan o'tilgan kuni boshqa personajlar o'zi qo'ng'iroq qilmaydi (birinchi kun yangi do'stniki).
-  - **F4/F5 вЂ” kodda tayyor** (BIMOBIMO #2-#8):
+  - **F4/F5 — kodda tayyor** (BIMOBIMO #2-#8):
     - har bir chig'anoq harakati tarixga yoziladi (`ledger`, `LedgerEntry`, store'dagi `log()`; 6 oy saqlanadi);
     - kunlik check-in chig'anoqlari (`wallet.free`) birinchi sarflanadi va yarim tunda tugaydi, tarixda
       "Unused free shells expired" bo'lib yoziladi; sotib olinganlar tugamaydi (`expireFreeShells`);
     - `/store/ledger` ekrani: kunlar bo'yicha, bir kunda bitta personaj bilan xabarlar bitta qatorga yig'iladi;
-      do'kon sarlavhasidagi chek belgisi orqali ochiladi; Home'dagi sovg'a kartasida "N free left В· gone at midnight";
+      do'kon sarlavhasidagi chek belgisi orqali ochiladi; Home'dagi sovg'a kartasida "N free left · gone at midnight";
     - paywall: reklama (+10) va g'ildirak chatdan chiqmasdan; yozilgan matn saqlanadi;
     - ketma-ket yuborilgan xabarlarga javoblar navbat bilan keladi, aralashmaydi (`replyingUntil`).
-  - **Rafti reaksiya stikerlari вЂ” ulandi:** xom varaq `assets/raw/reactions-sheet.jpg` (Nano Banana, 3x3).
+  - **Rafti reaksiya stikerlari — ulandi:** xom varaq `assets/raw/reactions-sheet.jpg` (Nano Banana, 3x3).
     `scripts/build-brand-art.py` dagi `build_reactions()` 6 tasini kesadi (fon kulrang qog'oz, oq die-cut chegara
-    saqlanadi) в†’ `assets/brand/reaction-{love,laugh,wow,sad,hyped,thumbs}.png`, registry'da `REACTION_STICKERS`.
+    saqlanadi) → `assets/brand/reaction-{love,laugh,wow,sad,hyped,thumbs}.png`, registry'da `REACTION_STICKERS`.
     Chat menyusi va pufak burchagidagi reaksiya shu stikerlar.
-  - **F7 Munosabat v2 вЂ” kodda tayyor** (BIMOBIMO #21-#23, #41): darajalar 0-100, 5 bosqich (`TIERS` in
+  - **F7 Munosabat v2 — kodda tayyor** (BIMOBIMO #21-#23, #41): darajalar 0-100, 5 bosqich (`TIERS` in
     `src/mock/user.ts`): Stranger 0, Friend 1-5, More than friends 6-15, Beloved 16-49, Family 50-100.
     `levelThreshold(n) = 2*n^2.3` (1 xabar ~2 intimacy). Har bosqich yorliqlar ochadi (romantik: Crush, Partner,
     Soulmate...; BIMOBIMO'dagi aka/opa yorliqlari olinmadi), `relationship.label`, `setRelationshipLabel`.
     Level-up oynasi faqat yangi bosqichda chiqadi. Personaj sozlamalarida munosabat kartasi (daraja, progress,
     yorliq tanlash), kontaktlarda va sozlamalarda "How closeness works" oynasi (`closeness-sheet.tsx`).
     Store v5 migratsiyasi darajalarni intimacy'dan qayta hisoblaydi. Date ssenariylari darajalari 1/3/6/10/16.
-  - **F6 Qo'ng'iroqlar вЂ” kodda tayyor** (BIMOBIMO #8, #29, #40, #46):
+  - **F6 Qo'ng'iroqlar — kodda tayyor** (BIMOBIMO #8, #29, #40, #46):
     - qo'ng'iroq vaqti alohida balans: `wallet.callSeconds`; onboarding'da 15 daqiqa sinov (`CALL_TRIAL_SECONDS`),
       obunalar 2/8/6 soat qo'shadi (`membershipPlans[].callMinutes`); store v6 eski foydalanuvchilarga sinov beradi;
-    - qo'ng'iroq ekrani "Live call В· 14:57 left", vaqt tugasa o'zi yakunlanadi, balans 0 bo'lsa "Get more call time";
+    - qo'ng'iroq ekrani "Live call · 14:57 left", vaqt tugasa o'zi yakunlanadi, balans 0 bo'lsa "Get more call time";
     - chatdagi qo'ng'iroq tugmasi birinchi marta (yoki vaqt tugaganda) sinov haqida oyna ochadi (`user.callIntroSeen`);
     - tarix ekrani ikki bo'limli: Shells | Call time (`LedgerEntry.unit = 'seconds'`);
     - javob berilmagan qo'ng'iroqdan keyin personaj chatga yozadi (`missedCallLines`); vaqt bo'lmasa personaj
       qo'ng'iroq qilmaydi.
-  - **F9 Us va kalendar вЂ” kodda tayyor** (BIMOBIMO #49-#55; prototip tasdiqlangan:
+  - **F9 Us va kalendar — kodda tayyor** (BIMOBIMO #49-#55; prototip tasdiqlangan:
     https://claude.ai/artifact/VFqxdBJ4mnTbzLtQh6zXu3):
     - Us tabida "Coming up" o'rniga oy kalendari (`src/components/us/plan-calendar.tsx`): reja bor kunda nuqta,
       kun bosilsa pastda o'sha kunning rejalari (vaqt, eslatma vaqti, bajarilgani);
-    - "+" в†’ `PublishSheet`: Plan (`plan-sheet.tsx`: nom, kun, ixtiyoriy vaqt В±15 daq), Diary (`/diary/write`),
+    - "+" → `PublishSheet`: Plan (`plan-sheet.tsx`: nom, kun, ixtiyoriy vaqt ±15 daq), Diary (`/diary/write`),
       Board (`/board/write`). Qo'lda qo'shilgan reja haqida personaj chatda yozadi (`planAddedLine`);
     - chatdagi `detectPlan` endi vaqtni ham oladi ("at 3pm", "15:30", "at 7" = 19:00); `ScheduleItem.time`,
       `followedUp`, `source`;
     - `runTimers()` (store): vaqtli rejada 10 daqiqa oldin, vaqtsizda ertalab 8:00 da eslatma; tugagach
       (vaqtli: +2 soat, vaqtsiz: 20:00) "how did it go?" xabari, 36 soatdan keyin so'ramaydi
-      (`src/lib/schedule.ts` в†’ `planStep`). Ilova ochiq bo'lsa har 30 soniyada, ochilganda va foreground'da chaqiriladi.
+      (`src/lib/schedule.ts` → `planStep`). Ilova ochiq bo'lsa har 30 soniyada, ochilganda va foreground'da chaqiriladi.
       Push bildirishnoma hali yo'q (`expo-notifications` o'rnatilmagan);
     - "Our moments" filtri: All / Plans / Dates / Calls / Notes / Diary (faqat bor turlar). Yangi moment turlari
       `plan`, `board`;
-    - **Message board** (BIMOBIMO doskasi tuzilishida, rasmlarsiz): `src/app/board/write.tsx` вЂ” kimga (sheet),
+    - **Message board** (BIMOBIMO doskasi tuzilishida, rasmlarsiz): `src/app/board/write.tsx` — kimga (sheet),
       300 belgi, Clear, 7 ta qog'oz uslubi (`src/components/board/stationery.tsx`, hammasi SVG + Phosphor bilan
       kodda chizilgan), "Pin it" 2 chig'anoq (`shellCosts.boardNote`, ledger `board`). 8 soniyadan keyin personaj
-      chatda javob beradi, +6 intimacy. `src/app/board/index.tsx` вЂ” ilingan eslatmalar panjarasi (eski "oxirgi
+      chatda javob beradi, +6 intimacy. `src/app/board/index.tsx` — ilingan eslatmalar panjarasi (eski "oxirgi
       xabarlar" doskasi o'rniga). Store'da `boardPosts` (persist);
-    - Home'dagi bugungi reja qatorida vaqt: "15:00 В· Theo will remind you".
-  - **F10 Bepul sovg'alar вЂ” kodda tayyor** (BIMOBIMO #26-#28):
-    - Free gifts ekranida "Invite friends В· +50": o'z kodi (`src/lib/invite.ts`, 6 belgi, 0/O/1/I yo'q,
+    - Home'dagi bugungi reja qatorida vaqt: "15:00 · Theo will remind you".
+  - **F10 Bepul sovg'alar — kodda tayyor** (BIMOBIMO #26-#28):
+    - Free gifts ekranida "Invite friends · +50": o'z kodi (`src/lib/invite.ts`, 6 belgi, 0/O/1/I yo'q,
       akkauntdan hosil qilinadi; server keyin haqiqiy kod beradi), nusxa olish, haftalik progress 0/6
       (`user.inviteCredits`, server to'ldiradi), "Invite" ulashish oynasini ochadi;
     - "Have a code?": do'st kodini bir marta kiritish, +50 (`redeemInvite`: invalid / own / used), ledger `invite`;
@@ -2492,80 +2492,80 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
       `.expo/types/router.d.ts` ni o'chirish, qayta ishga tushirish.
   - **Reja oynasi (F9) foydalanuvchi talabi bilan yangilandi:** ekranning ~72% balandligi, sarlavha h1 va
     do'stning avatari, katta qalin matnlar; kun tanlash uchta teng tugma (Today | Tomorrow | kalendar, boshqa
-    kun tanlansa tugmada sana), vaqt katta raqam va katta В± tugmalari. Kalendar `CalendarPopover` ning
+    kun tanlansa tugmada sana), vaqt katta raqam va katta ± tugmalari. Kalendar `CalendarPopover` ning
     `allow="future"` rejimi (Diary'da o'zgarish yo'q). Oyna faqat ochilganda tozalanadi.
   - **Klaviatura (foydalanuvchi talabi):** reja oynasi ochilganda klaviatura o'zi chiqmaydi (autoFocus yo'q).
     `Sheet` ga `avoidKeyboard` qo'shildi: oyna klaviatura ustidagi joydan baland bo'lmaydi, ichi scroll bo'ladi
     (Android oynani o'zi kichraytiradi, iOS'da `KeyboardAvoidingView`). Yozish maydoni bor har yangi sheet shu
-    parametrni ishlatsin. `useKeyboardVisible()` (`src/hooks`) вЂ” klaviatura ochiqligida reja oynasi balandligini bo'shatadi.
+    parametrni ishlatsin. `useKeyboardVisible()` (`src/hooks`) — klaviatura ochiqligida reja oynasi balandligini bo'shatadi.
   - Doskaga eslatma yuborilgach oldingi ekranga qaytiladi (`router.back()`), shunda typed routes xatosiga bog'liq emas.
-  - **F11 Date вЂ” kodda tayyor** (BIMOBIMO #9-#12; prototip tasdiqlangan:
+  - **F11 Date — kodda tayyor** (BIMOBIMO #9-#12; prototip tasdiqlangan:
     https://claude.ai/artifact/XQk64zfZuwBGR9vT8QPszv):
-    - `src/app/dating.tsx` вЂ” xarita: 5 joy (`src/mock/dates.ts`, `DATE_PLACES`: joy, emoji, narx, daraja, xaritadagi
-      o'rni, 5 raund Г— 3 javob, har javob 0-3 yurak). Dengiz, nuqtali yo'l, daraxtlar SVG bilan kodda. Daraja yetmasa
+    - `src/app/dating.tsx` — xarita: 5 joy (`src/mock/dates.ts`, `DATE_PLACES`: joy, emoji, narx, daraja, xaritadagi
+      o'rni, 5 raund × 3 javob, har javob 0-3 yurak). Dengiz, nuqtali yo'l, daraxtlar SVG bilan kodda. Daraja yetmasa
       joy kulrang + qulf; bu sherik bilan borilgan joy yalpiz hoshiyali. Tepada sherik tanlash sheet'i va balans;
       joy bosilsa oyna (raundlar, daraja, narx, "Start date with X");
-    - `src/app/date/[placeId].tsx` вЂ” raundlar: personaj hero rasmi, raund nuqtalari, yuraklar, sahna matni, 3 javob,
+    - `src/app/date/[placeId].tsx` — raundlar: personaj hero rasmi, raund nuqtalari, yuraklar, sahna matni, 3 javob,
       javobdan keyin personaj reaksiyasi va "Next"; oxirida polaroid (`src/components/date/polaroid.tsx`, Caveat),
-      yakun (sweet/warm/funny), Share (`shareForReward`, kunlik +6), Back to chat. вњ• "Leave X here?" so'raydi,
+      yakun (sweet/warm/funny), Share (`shareForReward`, kunlik +6), Back to chat. ✕ "Leave X here?" so'raydi,
       swipe-back o'chirilgan. Ekran faqat to'langan uchrashuvni o'ynaydi (`activeDate`, `beginDate` qo'yadi,
-      `finishDate` tozalaydi) вЂ” to'g'ridan-to'g'ri havola bepul o'ynatmaydi;
+      `finishDate` tozalaydi) — to'g'ridan-to'g'ri havola bepul o'ynatmaydi;
     - `finishDate`: yaqinlik `INTIMACY.date + yuraklar`, `dates` (persist, `DateRecord`), `dating` moment (ertasi kundalik
       sahifasi shundan), personaj chatda kayfiyatga qarab yozadi (`afterDateLine`);
-    - `src/app/date/album.tsx` вЂ” "Our dates": polaroidlar panjarasi;
+    - `src/app/date/album.tsx` — "Our dates": polaroidlar panjarasi;
     - eski `dateScenarios` va `startDate` olib tashlandi (uchrashuv endi chatda emas, o'z ekranida).
     - Qilinmadi: foydalanuvchilar yaratadigan mavzular (P3), joylar uchun rasm (hozir emoji tile).
-  - **F12 Chat "+" o'yinlari вЂ” kodda tayyor** (BIMOBIMO #42-#48; prototip tasdiqlangan:
+  - **F12 Chat "+" o'yinlari — kodda tayyor** (BIMOBIMO #42-#48; prototip tasdiqlangan:
     https://claude.ai/artifact/Vr4YPbc6z9LZLGmrfXzRS8):
-    - "+" endi 4Г—2 panjara, Explore B uslubidagi rangli Phosphor duotone ikonkalar (`moduleTints`: voice, secretNote,
+    - "+" endi 4×2 panjara, Explore B uslubidagi rangli Phosphor duotone ikonkalar (`moduleTints`: voice, secretNote,
       quiz, truthOrDare qo'shildi): Voice, Photo, Secret note, Couple quiz, Truth or dare, Date, Daily calls, Diary.
-      Foydalanuvchi emoji ikonkalarni yoqtirmadi вЂ” shu uslub tanlandi;
-    - **Couple quiz** `src/app/quiz/[characterId].tsx`: 3 to'plam Г— 5 savol (`src/mock/games.ts`), personaj javobi
+      Foydalanuvchi emoji ikonkalarni yoqtirmadi — shu uslub tanlandi;
+    - **Couple quiz** `src/app/quiz/[characterId].tsx`: 3 to'plam × 5 savol (`src/mock/games.ts`), personaj javobi
       `partnerAnswer` (personaj+savol bo'yicha barqaror hash), javob tanlangach darhol ochiladi; natija chatga system
-      karta ("рџ’ћ First date В· 4/5"), personaj izohi (`quizReply`), yaqinlik `2 + 2Г—moslik`, `quiz` moment (Us filtri "Games");
+      karta ("💞 First date · 4/5"), personaj izohi (`quizReply`), yaqinlik `2 + 2×moslik`, `quiz` moment (Us filtri "Games");
     - **Truth or dare** `src/components/chat/truth-or-dare-sheet.tsx`: SVG g'ildirak (Reanimated aylanish), personajga
-      tushsa siz Truth/Dare tanlaysiz вЂ” savol chatga ketadi, u javob beradi (+3); sizga tushsa u chatda savol beradi;
+      tushsa siz Truth/Dare tanlaysiz — savol chatga ketadi, u javob beradi (+3); sizga tushsa u chatda savol beradi;
     - **Daily calls** `src/components/chat/daily-calls-sheet.tsx`: kim qo'ng'iroq qiladi (ovozi bor do'stlar),
-      ertalab/kechki vaqt (В±30 daq.) va o'chirgichlar. `settings.morningCallTime`, `nightCallTime`, `callerId`;
+      ertalab/kechki vaqt (±30 daq.) va o'chirgichlar. `settings.morningCallTime`, `nightCallTime`, `callerId`;
       `runDailyInitiative` endi shu vaqtdan boshlab 4 soat ichida qo'ng'iroq qiladi (`inWindow`).
-  - **F13 Find вЂ” kodda tayyor** (BIMOBIMO #56, #59): mavjud ekran kengaytirildi (prototipsiz, HANDOFF qoidasi bo'yicha):
-    - "All" tabi birinchi va standart; har bir dunyo alohida karta: sarlavha, soni, "вЂє" в†’ `src/app/world/[series].tsx`
-      (hamma personajlar, "N characters В· M can call"); kartada 3 tadan sahifalar (gorizontal paging) va nuqtalar;
+  - **F13 Find — kodda tayyor** (BIMOBIMO #56, #59): mavjud ekran kengaytirildi (prototipsiz, HANDOFF qoidasi bo'yicha):
+    - "All" tabi birinchi va standart; har bir dunyo alohida karta: sarlavha, soni, "›" → `src/app/world/[series].tsx`
+      (hamma personajlar, "N characters · M can call"); kartada 3 tadan sahifalar (gorizontal paging) va nuqtalar;
     - avatarda yashil telefon belgisi = ovozi bor, qo'ng'iroq qilsa bo'ladi (`Avatar badge="call"`; Onboarding'dagi
       belgi o'zgarmadi);
     - qidiruv kartalarni olib tashlab, barcha dunyolardan tekis "N found" ro'yxatini ko'rsatadi;
     - `CharacterRow` umumiy komponentga chiqdi (`src/components/character-row.tsx`).
-  - **F14 Profil вЂ” kodda tayyor** (tafsilot eng tepadagi KEYINGI QADAM 3-bandida).
+  - **F14 Profil — kodda tayyor** (tafsilot eng tepadagi KEYINGI QADAM 3-bandida).
 - **Tipografiya (foydalanuvchi talabi, 2026-10-07):** asosiy matnlar kattaroq va qalinroq, interfeys oddiy,
   zamonaviy minimal. `src/theme/typography.ts`: body 16/22, small 14/19, title 17 bold, h1 30 heavy,
   h2 24 heavy. Yangi ekranlar shu o'lchamlardan foydalanadi, o'lchamni joyida qo'lda kattalashtirmang.
 - **Keyingi ish:**
   - qoida oynasi uchun Rafti kundalik yozayotgan rasm (1 ta sinov, keyin `assets/brand/`);
   - shu uslubdagi Secret note, Gifts va Date qoida oynalari;
-  - keyin `design-plan.md` dagi P0 oqimlari (F1вЂ“F5).
+  - keyin `design-plan.md` dagi P0 oqimlari (F1–F5).
 - **Higgsfield API** (bulut muhitida `HF_CREDENTIALS` environment variable bor):
   - `GET https://api.higgsfield.ai/models` modellar ro'yxatini beradi (84 ta, 17 tasi rasm);
   - `POST https://api.higgsfield.ai/<slug>`, header `Authorization: Key $HF_CREDENTIALS`;
   - holatni kuzatish: `GET /requests/<id>/status`;
   - uslub namunasi bilan rasm: `alibaba/qwen-image-3/edit`. Maydonlar: `prompt`, `image_urls` (ochiq URL, masalan repodagi
-    `raw.githubusercontent.com/.../assets/brand/tile-diary.png`), `aspect_ratio` (`1:1`вЂ¦), `resolution` (`1k`/`2k`);
+    `raw.githubusercontent.com/.../assets/brand/tile-diary.png`), `aspect_ratio` (`1:1`…), `resolution` (`1k`/`2k`);
   - natija rasmlari `d3u0tzju9qaucj.cloudfront.net` da. Bu domen bulut muhitining Allowed domains ro'yxatida bo'lishi kerak;
   - birinchi sinov rasmi (diary qoida oynasi uchun Rafti) chizildi, lekin CDN yopiq bo'lgani uchun hali yuklab olinmadi.
 
 ## Avvalgi holat (2026-10-06, kechroq)
 - PR #3 (`redesign`) `main`ga merge qilindi (`4625509`). `redesign` branch'i `main`ga tenglashtirildi.
-- **Backend rejasi yozildi: `docs/backend-plan.md`** вЂ” foydalanuvchi tasdig'ini kutmoqda.
+- **Backend rejasi yozildi: `docs/backend-plan.md`** — foydalanuvchi tasdig'ini kutmoqda.
   - Tavsiya: Supabase (Postgres + pgvector, Auth, Storage, Realtime) + o'z serverimiz
     (Node + Hono + pg-boss, Fly.io), Claude API, RevenueCat, AdMob SSV, keyin LiveKit.
-  - Bosqichlar B0вЂ“B6. B0 вЂ” poydevor, B1 вЂ” haqiqiy chat.
+  - Bosqichlar B0–B6. B0 — poydevor, B1 — haqiqiy chat.
   - Muhim topilma: hozirgi iqtisodda bepul chig'anoq ko'p (kuniga ~130 xabar) va "unlimited" a'zolik
     LLM xarajatini qoplamasligi mumkin. Raqamlar rejaning 9-bo'limida.
   - B1'dan boshlab Expo Go yetmaydi, EAS development build kerak.
   - Ochiq savollar (12-bo'lim): stack, chat modeli, server kodi shu repodami yoki private repoda, hisoblar.
 
 ## Oldingi holat (2026-10-06)
-- Chat redesign va to'liq ilova redesign'i (0вЂ“3-bosqich) TUGADI, `redesign` branch'ida:
-  `77e07ae` (0вЂ“1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
+- Chat redesign va to'liq ilova redesign'i (0–3-bosqich) TUGADI, `redesign` branch'ida:
+  `77e07ae` (0–1), `e352a8e` (2), `ac2cd56` (3). `redesign` `mobile-ux-audit` ustiga qurilgan,
   shuning uchun PR `main`ga ikkala ishni ham olib kiradi.
   PR havolasi: https://github.com/muhammad571634/rafti/pull/new/redesign (push tugagach).
 - Dizayn qoidalari (har yangi ekranda shu qoidalarga amal qil):
@@ -2581,23 +2581,23 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   Skript CRLF va 2 bo'shliqli formatni saqlaydi.
 
 ## Oldingi holat (2026-10-05)
-- **Rafti** вЂ” AI kompanion ilova (BIMOBIMO/Beemo'dan ilhomlangan, lekin o'z brendi va IP'si).
-  Expo SDK 57 / RN 0.86 / expo-router / zustand. Tavsif вЂ” `README.md`.
+- **Rafti** — AI kompanion ilova (BIMOBIMO/Beemo'dan ilhomlangan, lekin o'z brendi va IP'si).
+  Expo SDK 57 / RN 0.86 / expo-router / zustand. Tavsif — `README.md`.
 - UI, iqtisod (chig'anoq), qo'ng'iroqlar, diary, secret note va boshqalar ishlaydi.
   **AI hali mock** (`src/store/use-app-store.ts` + `src/mock/*`), backend yo'q.
-- Maskot: **Rafti** вЂ” yalpiz sharfli suv samuri (eski nomi "Popo", nemis/ispan tilidagi
+- Maskot: **Rafti** — yalpiz sharfli suv samuri (eski nomi "Popo", nemis/ispan tilidagi
   ma'nosi sabab almashtirildi). Valyuta: **shells** (chig'anoq).
 - Personajlar: 16 ta original, kattalar (18+), 4 dunyo, 2D anime portretlar (`assets/avatars`).
 - Git:
   - `main` = PR #1 merge qilingan (butun ilova + rebrend).
   - `mobile-ux-audit` branch push qilingan, **PR hali ochilmagan**:
     https://github.com/muhammad571634/rafti/pull/new/mobile-ux-audit
-- Foydalanuvchi telefonda Expo Go orqali sinab ko'rgan вЂ” ishlagan.
+- Foydalanuvchi telefonda Expo Go orqali sinab ko'rgan — ishlagan.
 
 ## Brend
 - Palitra "Kakao va yalpiz": o'rik `#FF9F5A`, yalpiz `#3CCFB4`, osmon `#6BB8FF`,
   krem fon `#FFF7EC`, karamel `#C98B5E`, matn `#2A2E45` (`src/theme/colors.ts`).
-- Xom rasmlar: `C:\Users\joray\BIMOBIMOdesignraw\` вЂ” har bir `*.png` aslida PAPKA,
+- Xom rasmlar: `C:\Users\joray\BIMOBIMOdesignraw\` — har bir `*.png` aslida PAPKA,
   ichida Gemini `.jpg`; eng yangisi olinadi. Namuna: `_refs\ref_popo_square.png`,
   kanvaslar `_refs\canvas_1x1.png`, `canvas_3x4_vertical.png`, `canvas_wide_banner.png`.
   `mascot_main.png` ISHLATILMAYDI.
@@ -2634,12 +2634,12 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - Skript fayllarni avval `.part` nomi bilan yozib, keyin almashtiradi. Shunda Metro
     yarim yozilgan faylni ko'rmaydi va `TransformError: empty file` chiqmaydi.
 - Lottie'lar qayta bo'yaldi (`scripts/recolor-lottie.js`):
-  - `typing`: `ff3d7f` в†’ `FF9F5A`.
-  - `level-up`: pushti в†’ o'rik, qizg'ish-pushti в†’ `FF8A70`, ko'k в†’ `6BB8FF`, binafsha в†’ `3CCFB4`.
-  - `love-letter`: lavanda в†’ yalpiz (`138A75`, `3CCFB4`, `B5EDE2`, `9FE3D6`), pushti в†’ o'rik.
+  - `typing`: `ff3d7f` → `FF9F5A`.
+  - `level-up`: pushti → o'rik, qizg'ish-pushti → `FF8A70`, ko'k → `6BB8FF`, binafsha → `3CCFB4`.
+  - `love-letter`: lavanda → yalpiz (`138A75`, `3CCFB4`, `B5EDE2`, `9FE3D6`), pushti → o'rik.
   - `assets/lottie/README.md` shunga mos yangilandi.
 - Brauzerda tekshirildi:
-  - Level-up haqiqiy holatda chiqdi: Megumi chatida 6 ta xabar yuborildi, intimacy 18 в†’ 30, Level 2.
+  - Level-up haqiqiy holatda chiqdi: Megumi chatida 6 ta xabar yuborildi, intimacy 18 → 30, Level 2.
   - Love-letter xat almashishda chiqdi (Secret Note).
   - Typing nuqtalari o'rik rangda.
   - Home, Store, Gifts va Chat ekranlari ham ko'rib chiqildi. Yangi tabda konsolda xato yo'q.
@@ -2656,16 +2656,16 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - **Moonlit Realm:** Aurelian, Castor, Zarek, Seraphine.
   - **NEON TIDE:** Ezra, Seren, Kiro, Minu. "Noa" nomidan voz kechildi, chunki real
     qo'shiqchi Noa Kazama bor.
-  - **Tidepool CafГ©:** Adrian, Lucas, Sol.
+  - **Tidepool Café:** Adrian, Lucas, Sol.
 - Kategoriyalar `school | fantasy | idol | daily | original` bo'ldi (Find, create-character, en.json).
 - **Barcha personajlar kattalar (18+).** Seaside Academy universitet, Find'da "Campus" deb ko'rinadi.
   Romantik ilovada voyaga yetmagan personaj bo'lmasligi kerak (App Store qoidasi).
-- Namuna ma'lumotlar yangi personajlarga o'tkazildi: gojoв†’theo, felixв†’seren, zhongliв†’castor, megumiв†’elio.
+- Namuna ma'lumotlar yangi personajlarga o'tkazildi: gojo→theo, felix→seren, zhongli→castor, megumi→elio.
 - Store'ning saqlash kaliti endi `rafti.store`. Eski `bimobimo.store` bir marta o'qiladi, keyin o'chiriladi.
   Persist versiyasi 3 ga ko'tarildi, `recastSeed` quyidagilarni qiladi:
   - eski litsenziyali personajlar va ularga tegishli ma'lumotlarni o'chiradi;
   - foydalanuvchi yaratgan personajlarni saqlab qoladi, kategoriyasini yangisiga moslaydi
-    (kpopв†’idol, animeв†’school, gameв†’fantasy);
+    (kpop→idol, anime→school, game→fantasy);
   - kundalik sahifalarini qoldiradi, lekin o'chirilgan personajlar bilan ulashishni bekor qiladi.
   - Brauzerda qo'lda yaratilgan v2 holat bilan sinab ko'rildi.
 - Eski DiceBear avatarlari o'chirildi, hozircha avatar o'rnida monogramma turibdi.
@@ -2674,9 +2674,9 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 
 - Store `merge`: rasmiy personajlar har doim koddan olinadi. Shuning uchun seed matnidagi
   o'zgarish saqlangan qurilmalarga ham yetib boradi, foydalanuvchi yaratganlari esa saqlanib qoladi.
-- Avatarlar: вњ… 16/16 tayyor (Campus, Moonlit Realm, NEON TIDE, Tidepool CafГ©). Uslub namunalari:
+- Avatarlar: ✅ 16/16 tayyor (Campus, Moonlit Realm, NEON TIDE, Tidepool Café). Uslub namunalari:
   Campus va Ezra uchun avatar_kai, Moonlit uchun avatar_aurelian, qolgan NEON TIDE uchun avatar_ezra,
-  CafГ© uchun avatar_adrian. Oppa va Luna вЂ” "My Creations" misoli, monogramma bilan qoldi.
+  Café uchun avatar_adrian. Oppa va Luna — "My Creations" misoli, monogramma bilan qoldi.
 
 ## Qilingan ishlar (2026-09-30): mobil UX auditi (/mobile-design)
 - Chat: `MessageBubble` endi `memo` qilingan, `renderItem`/`onCallBack` barqaror.
@@ -2686,10 +2686,10 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   `accessibilityLabel` qabul qiladi.
 - Ichma-ich tugmalar ajratildi: chat sarlavhasidagi ShellBadge va Call History'dagi qo'ng'iroq tugmasi.
   Qoida: tugma ichiga tugma qo'yilmaydi (VoiceOver yetib bormaydi, vebda `<button>` ichida `<button>`).
-- Tegish maydonlari в‰Ґ44pt (`hitSlop`): Chip, ShellBadge, Home profil tugmasi, Shell Store'dagi Free,
+- Tegish maydonlari ≥44pt (`hitSlop`): Chip, ShellBadge, Home profil tugmasi, Shell Store'dagi Free,
   Us'dagi reja o'chirish, qidiruvni tozalash, klipni o'chirish, diary tool.
 - `src/app/_layout.tsx`: root `ErrorBoundary` ("Rafti tripped over a pebble" + Retry), sinab ko'rildi.
-- Us в†’ Moments sahifalab ko'rsatiladi (20 tadan, "Show N more"). Diary sana ro'yxati `FlatList`da.
+- Us → Moments sahifalab ko'rsatiladi (20 tadan, "Show N more"). Diary sana ro'yxati `FlatList`da.
 - Tekshirildi: 23 ekranda nomsiz yoki ichma-ich tugma yo'q (DOM tekshiruvi), `tsc` toza.
 - Eslatma: `git checkout` fayllarni vaqtincha o'chirsa, Metro fayl-xaritasi eskirib qoladi
   ("Unable to resolve module"). Yechim: dev serverni to'xtatish, `%TEMP%\metro-cache` va
@@ -2702,32 +2702,32 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 - Brauzerda sinaldi: `chatAnimation` va `spinsUsed` yo'q eski holat yuklanganda ular standart qiymat
   bilan to'ldi, foydalanuvchi tanlovi (`morningCall: false`) va balans saqlanib qoldi. `tsc` toza.
 - Keyinga qoldirildi: `clearChat`dan keyin keladigan javob (backend ulanganda so'rovni bekor qilish
-  bilan hal bo'ladi) va `app.json` (bundle ID, ruxsat matnlari, `supportsTablet`) вЂ” nashrdan oldin.
+  bilan hal bo'ladi) va `app.json` (bundle ID, ruxsat matnlari, `supportsTablet`) — nashrdan oldin.
 
-## 2026-10-05/06: pastki 4 tez tugma (Voice, Photo, Secret Note, Memory) вЂ” QAYTARILDI
+## 2026-10-05/06: pastki 4 tez tugma (Voice, Photo, Secret Note, Memory) — QAYTARILDI
 - Qo'shilgan edi, foydalanuvchi telefonda ko'rdi va rad etdi: "UI UX dizaynni buzib turibdi".
   Hamma fayllar `HEAD` holatiga qaytarildi: `chat-quick-actions.tsx`, `voice.png` va `memory.png` o'chirildi,
   `ChatInput` yana "+", galereya, emoji va yuborish tugmalari bilan. Bu yo'nalishni qayta taklif qilma.
 - Saqlab qolingan: `Sheet` animatsiyasiz (pastda) va store `merge` tuzatishi.
-## Qilingan ishlar (2026-10-06): yozish paneli redesign вЂ” A varianti (ChatGPT uslubi)
+## Qilingan ishlar (2026-10-06): yozish paneli redesign — A varianti (ChatGPT uslubi)
 - Foydalanuvchi ish tartibi: avval maket rasmi (`show_widget`), tasdiqlangach kod. A va B taklif qilindi,
-  A tanlandi (B вЂ” Gemini uslubidagi ikki qavatli kartochka edi).
+  A tanlandi (B — Gemini uslubidagi ikki qavatli kartochka edi).
 - `src/components/chat/chat-input.tsx` qayta yozildi:
   - To'liq kenglikdagi oq panel o'rniga chat foni ustida suzuvchi oq pill bo'ldi
     (`radius.xxl`, `colors.border`, `shadows.card`, chetlardan 12pt).
   - Ichida: "+" (`IconButton`, `surfaceAlt` fon), matn maydoni va bitta asosiy o'rik tugma.
-    Bo'sh maydonda tugma `mic` (`onVoice` в†’ VoiceSheet), matn yozilganda `arrow-up` (yuborish, haptic).
+    Bo'sh maydonda tugma `mic` (`onVoice` → VoiceSheet), matn yozilganda `arrow-up` (yuborish, haptic).
     Almashish animatsiyasiz.
   - Galereya va emoji tugmalari olib tashlandi: Photo "+" oynasida bor, emoji tugmasi hech narsa qilmasdi.
   - Matn maydoni bitta qatorda tugmalar bilan bir tekisda turadi, 5 qatorgacha o'sadi.
     Webda `rows: 1` (react-native-web aks holda 2 qatorli textarea chizadi).
 - API: `ChatInput({ placeholder, onSend, onAttach, onVoice })`. Yozuv chat ekranidan
-  `t('chat.inputPlaceholder', { name })` orqali beriladi: "Message {{name}}вЂ¦".
+  `t('chat.inputPlaceholder', { name })` orqali beriladi: "Message {{name}}…".
 - `IconButton`ga `haptic` prop qo'shildi.
 - `en.json`: `a11y.gallery` va `a11y.emoji` o'chirildi, `a11y.voiceMessage` qo'shildi.
-- Tekshirildi (375Г—812, `tsc` toza, konsolda xato yo'q):
-  - Bo'sh holat: + / Message SerenвЂ¦ / mikrofon. Yozilganda "Send" tugmasi chiqdi.
-  - Yuborilgan xabar ro'yxatga tushdi, Seren javob berdi, balans 128 в†’ 127.
+- Tekshirildi (375×812, `tsc` toza, konsolda xato yo'q):
+  - Bo'sh holat: + / Message Seren… / mikrofon. Yozilganda "Send" tugmasi chiqdi.
+  - Yuborilgan xabar ro'yxatga tushdi, Seren javob berdi, balans 128 → 127.
   - Mikrofon VoiceSheet'ni ochdi, "+" esa Voice, Photo, Secret Note, Date va Diary'ni ko'rsatdi.
 
 ## Qilingan ishlar (2026-10-05): oynalar endi sakramaydi
@@ -2745,7 +2745,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 - Tekshirildi: `tsc` toza. Brauzerda Voice va "+" oynalari darhol joyida chiqdi (`getAnimations()` bo'sh),
   yopilganda darhol yo'qoldi.
 
-## Redesign rejasi (2026-10-06, taklif вЂ” foydalanuvchi tasdig'ini kutmoqda)
+## Redesign rejasi (2026-10-06, taklif — foydalanuvchi tasdig'ini kutmoqda)
 - Maqsad: ilova "AI chizgan" emas, senior dizayner qilgandek ko'rinsin. Uslub ChatGPT kabi zamonaviy
   minimal, lekin Rafti'ning o'z dizayni (BIMOBIMO nusxasi emas).
 - Hozirgi "AI belgilari": har narsa soyali kartochkada, gradientlar (Us, Store, tugmalar),
@@ -2760,15 +2760,15 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - Shriftlar: tizim shrifti va Fredoka. Fredoka faqat wordmark va katta raqamlarda.
   - Maskot faqat 3 joyda: logo, bo'sh ekranlar, bayram lahzalari.
 - Bosqichlar:
-  - 0 вЂ” umumiy komponentlar: ListRow, Section, SheetList, Button turlari, TabBar, Switch rangi.
-  - 1 вЂ” Home ("Today"), Chats ro'yxati, personaj profili, chatdagi "+" menyusi.
+  - 0 — umumiy komponentlar: ListRow, Section, SheetList, Button turlari, TabBar, Switch rangi.
+  - 1 — Home ("Today"), Chats ro'yxati, personaj profili, chatdagi "+" menyusi.
     Prototip `show_widget` bilan ko'rsatilgan.
-  - 2 вЂ” Find, Us, Profile/sozlamalar, Shell Store.
-  - 3 вЂ” qolgan ekranlar: Diary, Secret Note, Gifts, Dating, Photo booth, Radio, Bedtime,
+  - 2 — Find, Us, Profile/sozlamalar, Shell Store.
+  - 3 — qolgan ekranlar: Diary, Secret Note, Gifts, Dating, Photo booth, Radio, Bedtime,
     qo'ng'iroqlar, Create character, Memories, Call history.
 - Ish tartibi: har bosqichda avval prototip, tasdiqdan keyin kod, keyin `tsc`, brauzer va telefonda tekshirish.
 
-## Qilingan ishlar (2026-10-06): redesign 0 va 1-bosqich вЂ” TAYYOR (telefonda ko'rib chiqish kutilmoqda)
+## Qilingan ishlar (2026-10-06): redesign 0 va 1-bosqich — TAYYOR (telefonda ko'rib chiqish kutilmoqda)
 - 0-bosqich, umumiy komponentlar (`src/components/ui`):
   - `ListRow`: left, `titleAccessory`, meta, trailing, chevron.
   - `IconTile`: chiziqli ikonka, iliq kulrang squircle ichida, `dot` bilan.
@@ -2778,8 +2778,8 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - Ranglar: `colors.bond` va `bondText` (yalpiz, faqat munosabat uchun). `tabActive` endi ink, `tabInactive` esa gray500.
   - Pastki tablar: yassi oq panel va hairline, ikonkalar chatbubble va compass. O'qilmagan xabarlar son bilan emas, bitta o'rik nuqta bilan.
     Tab nomi "Chats".
-- 1-bosqich ekranlari (workflow: quruvchi agent, 2 tekshiruvchi вЂ” dizayn va to'g'rilik вЂ” keyin tuzatuvchi):
-  - `(tabs)/index.tsx` вЂ” "Today" hubi:
+- 1-bosqich ekranlari (workflow: quruvchi agent, 2 tekshiruvchi — dizayn va to'g'rilik — keyin tuzatuvchi):
+  - `(tabs)/index.tsx` — "Today" hubi:
     - Salomlashish soatga qarab o'zgaradi. Ostida kutayotganlar qatori.
     - Kartochkada o'qilmagan chatlar (bo'lmasa, oxirgi 2 ta chat).
     - Today bo'limi: bepul spin va tayyor secret note'lar.
@@ -2801,12 +2801,12 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   `home.greetingBanner*` va `chat.cost` o'chirildi.
 - Tekshirildi:
   - `tsc` toza, konsolda xato yo'q.
-  - 375Г—812 o'lchamda to'rttala ekran prototipga mos chiqdi. Qidiruvda "cas" yozilsa Castor va Lancaster topiladi,
+  - 375×812 o'lchamda to'rttala ekran prototipga mos chiqdi. Qidiruvda "cas" yozilsa Castor va Lancaster topiladi,
     "zzz" yozilsa "Nothing matches" chiqadi.
   - "+" menyusi narxlarni to'g'ri ko'rsatadi.
 - 0 va 1-bosqich `redesign` branch'iga commit qilindi (`77e07ae`), hali push qilinmagan.
 
-## Qilingan ishlar (2026-10-06): redesign 2-bosqich вЂ” TAYYOR (commit qilinmagan)
+## Qilingan ishlar (2026-10-06): redesign 2-bosqich — TAYYOR (commit qilinmagan)
 - Bu safar workflow emas, o'zim yozdim (ultracode o'chiq edi).
 - `ListRow`ga `right` slot qo'shildi (Switch yoki kichik tugma uchun).
 - `Toggle` endi ink rangda, oq thumb bilan. U hamma joyda ishlatiladi.
@@ -2814,7 +2814,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
 - `find.tsx`:
   - FAB olib tashlandi, uning o'rniga sarlavhada "+" turadi.
   - Kategoriyalar tagiga chizilgan tablar ko'rinishida.
-  - Dunyo nomi ostida `ListRow` ro'yxati, yonida "Add" (`addFriend`, ekran o'zgarmaydi) yoki "вњ“ Friends".
+  - Dunyo nomi ostida `ListRow` ro'yxati, yonida "Add" (`addFriend`, ekran o'zgarmaydi) yoki "✓ Friends".
   - "Add" qator tugmasining ICHIDA emas, YONIDA turadi (ichma-ich tugma bo'lmasligi uchun).
 - `us.tsx`:
   - Gradient o'rniga outlined kartochka: kun soni Fredoka'da, yalpiz progress va 3 ta stat
@@ -2824,12 +2824,12 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - Bo'limlar: Account, They reach out, Chat, About.
   - "Chat animations" QOLDI, chunki u xabarlar animatsiyasini haqiqatan boshqaradi. Prototipda xato
     "ishlamaydi" deb yozgandim, foydalanuvchiga aytildi.
-- `store/shell.tsx` вЂ” halol "value framing", hamma narx ochiq:
+- `store/shell.tsx` — halol "value framing", hamma narx ochiq:
   - Paketlar kattadan kichikka tartiblangan (langar). `popular` paket oldindan tanlangan va "Most popular" yorlig'iga ega.
   - "Best value" va tejash foizlari haqiqiy narxdan hisoblanadi (`buildOffers`). 100 chig'anoq narxi
     ko'rsatiladi, bonus yalpiz rangda "N free".
-  - Pastda bitta "Get N shells В· $X" tugmasi, platformaga qarab "paid through the App Store/Google Play".
-  - `ShellPack.best` в†’ `popular` deb qayta nomlandi, `amount` (son narx) qo'shildi.
+  - Pastda bitta "Get N shells · $X" tugmasi, platformaga qarab "paid through the App Store/Google Play".
+  - `ShellPack.best` → `popular` deb qayta nomlandi, `amount` (son narx) qo'shildi.
 - Tekshirildi:
   - `tsc` toza, konsolda xato yo'q.
   - Paket tanlanganda tugma o'zgaradi, `aria-checked` to'g'ri ishlaydi.
@@ -2837,12 +2837,12 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   - Bu sinovlar vebdagi localStorage'ni o'zgartirdi, telefonga ta'sir qilmaydi.
 - 2-bosqich commit qilindi (`e352a8e`).
 
-## Qilingan ishlar (2026-10-06): redesign 3-bosqich вЂ” TAYYOR (commit qilinmagan)
+## Qilingan ishlar (2026-10-06): redesign 3-bosqich — TAYYOR (commit qilinmagan)
 - Diary:
   - Har sahifada takrorlangan otter muqovasi o'rniga sahifaning o'zi: katta sana (Fredoka), sarlavha,
     matndan parcha va "X wrote back".
   - Sahifalarni surish (pan gesture) saqlandi. FAB o'rniga "Write today's page" tugmasi.
-- Secret note: markazda kunning savoli, muhrlangan xat yalpiz qulf bilan, pastda "Swap notes В· 3".
+- Secret note: markazda kunning savoli, muhrlangan xat yalpiz qulf bilan, pastda "Swap notes · 3".
 - Gifts: 7 kunlik doiralar qatori, g'ildirak tinch ranglarda (jackpot yalpiz, "Spin" o'rik).
   Aylanish animatsiyasi qoldi. Video ko'rish pastki qator.
 - Qo'ng'iroq: Mute, End va Speaker tugmalari, yozuvlari bir qatorda.
@@ -2857,7 +2857,7 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   o'chirilgan tugmalar butun ilovada yoqilgandek ko'rinardi. Endi `disabled` holatda oddiy `Pressable`
   0.45 opacity bilan chiziladi. Natijada `onPress`siz `Chip` xira bo'lib qolardi, shuning uchun
   bunday Chip endi oddiy `View` bo'lib chiziladi.
-- Matnlar sentence case'ga o'tkazildi ("ADD CHARACTER" в†’ "New character", Settings va boshqalar).
+- Matnlar sentence case'ga o'tkazildi ("ADD CHARACTER" → "New character", Settings va boshqalar).
   Mahsulot nomlari (Shell Store, Heartbeat Diary, Photo Booth, Bulletin Board) bosh harfda qoldi.
 - Tekshirildi: `tsc` toza, 18 ta ekran xatosiz render bo'ldi (iframe orqali). Mute toggle'i ishlaydi.
   Bo'sh xatda Swap tugmasi 0.45, yozilgandan keyin 1.
@@ -2865,24 +2865,24 @@ Ish **chalg'imasdan** shu tartibda davom etadi. Lokal xotiradagi qoidalar ham sh
   HMR'dan qolgan, hozirgi kodda yo'q.
 
 ## BIMOBIMO raqobat tahlili (2026-10-05, xulosa)
-- BIMOBIMO: App Store (US) 4.9 / ~5.5K baho; kuchi вЂ” ovoz va "haqiqiyday" suhbat.
+- BIMOBIMO: App Store (US) 4.9 / ~5.5K baho; kuchi — ovoz va "haqiqiyday" suhbat.
 - Sharhlardagi asosiy shikoyatlar: xotira (unutadi), takroriy iboralar, acorn devori
   ("hamma narsa pullik"), rasmni tanimaydi, til xatolari, rus tili yo'q, widget/qo'ng'iroq buglari.
 - Rafti'ning ajralib turish yo'li: (1) ko'rinadigan va boshqariladigan xotira (Memories ekrani bor),
-  (2) adolatli iqtisod вЂ” qo'ng'iroqlar bepul, javob o'rtada kesilmaydi, (3) rus/o'zbek/turkiy tillar,
-  (4) original "tirik dunyo" (voqealar, guruh chati вЂ” NEON TIDE), (5) rasmni tushunish,
+  (2) adolatli iqtisod — qo'ng'iroqlar bepul, javob o'rtada kesilmaydi, (3) rus/o'zbek/turkiy tillar,
+  (4) original "tirik dunyo" (voqealar, guruh chati — NEON TIDE), (5) rasmni tushunish,
   (6) xavfsizlik (yosh tekshiruvi, AI ekanini oshkor qilish, inqiroz yordami).
 - Arxitektura xavflari: barcha xabarlar bitta AsyncStorage kalitida (Android ~2MB qator
-  chegarasi) в†’ `expo-sqlite`; hisob/sinxron yo'q; balans faqat qurilmada; push yo'q;
+  chegarasi) → `expo-sqlite`; hisob/sinxron yo'q; balans faqat qurilmada; push yo'q;
   store ~1000 qator monolit; test/analitika/Sentry yo'q; dark mode yo'q; faqat ingliz tili.
 
 ## Keyingi ishlar (tavsiya etilgan tartib)
-1. вњ… `redesign` PR'i merge qilindi (#3).
-2. вњ… Backend rejasi yozildi (`docs/backend-plan.md`). Keyingi qadam: 12-bo'limdagi savollarga
+1. ✅ `redesign` PR'i merge qilindi (#3).
+2. ✅ Backend rejasi yozildi (`docs/backend-plan.md`). Keyingi qadam: 12-bo'limdagi savollarga
    javob olish, keyin B0 (poydevor).
 3. Xabarlarni `expo-sqlite`ga ko'chirish + sahifalash.
 4. Push bildirishnomalar (VoIP/CallKit qo'ng'iroqlar uchun), Sentry, analitika.
 5. Xavfsizlik: yosh tekshiruvi, AI disclosure, moderatsiya, UGC shikoyat, ovoz klonlash roziligi.
-6. Tillar: rus, o'zbek (i18n tayyor вЂ” har til bitta JSON).
+6. Tillar: rus, o'zbek (i18n tayyor — har til bitta JSON).
 7. Keyin: dark mode, widget, guruh chati, dunyo voqealari, rasmlarni WebP'ga o'tkazish.
 8. Ixtiyoriy: Oppa va Luna portretlari. Nashrdan oldin "Rafti" tovar belgisi tekshiruvi.
