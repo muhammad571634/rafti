@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z88. Kept drafts, and the keyboard key adds a line (2026-11-02, Claude 2). NEXT: owner tries both on the phone
+
+- Owner picked two composer ideas. Unsent text now waits in each chat and group, also after a restart (`src/lib/draft-store.ts`, tested; `use-kept-draft.ts`). It saves 300 ms after typing stops and on leaving; an edit's text is never kept; a diary reply's text goes before a kept draft.
+- On a phone the keyboard's key starts a new line and only the plane sends, so a slip spends no shells. Web keeps Enter to send.
+- Drafts live in their own AsyncStorage key, not in the store. The store held another agent's uncommitted work, so the deletes are wired where they are called: chat list and group info forget the draft, clear chat clears it, account delete clears all.
+- Published from a clean worktree for the same reason.
+- Checks: tsc 0, npm test 605/605 (includes another agent's uncommitted tests).
+
+Still to do:
+1. Hold the mic to talk, and send with a tone (hold the plane): owner's ideas 3 and 4, chosen order 1, 2, then 4. The tone touches prompts, so a second reader reads it.
+2. The lists in 0z86.
+
 ### 0z87. A larger composer and a paper plane for send (2026-11-02, Claude 2). NEXT: owner tries it on the phone
 
 - Owner's ask: the field and its icons a little larger, easier to hit; send keeps the brand circle but gets a more creative glyph, as on Instagram.

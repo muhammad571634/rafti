@@ -9,6 +9,8 @@ import { IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { bottomRoom, colors, radius, shadows, space } from '@/theme';
 
+import { useKeptDraft } from './use-kept-draft';
+
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
 const BUTTON = ICON + space.lg;
@@ -18,8 +20,12 @@ const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
 
-/** react-native-web draws a two-row textarea unless told otherwise. */
-const webSingleRow = Platform.OS === 'web' ? { rows: 1 } : {};
+/**
+ * On a phone the keyboard's key starts a new line and only the plane sends, as in iOS Messages: a
+ * slip of the thumb must not spend shells. On the web Enter sends and Shift+Enter adds a line, and
+ * react-native-web draws a two-row textarea unless told otherwise.
+ */
+const webField = Platform.OS === 'web' ? ({ rows: 1, submitBehavior: 'submit', blurOnSubmit: true, returnKeyType: 'send' } as const) : {};
 
 export interface ChatInputProps {
   placeholder: string;
@@ -42,6 +48,8 @@ export interface ChatInputProps {
   onStop?: () => void;
   /** The field has text (true) or is empty (false): a reply waiting for more messages waits longer while they type. */
   onTyping?: (typing: boolean) => void;
+  /** Keeps the unsent text for this chat, so it waits in the field after leaving. Key the input by it. */
+  draftId?: string;
 }
 
 /**
@@ -50,7 +58,7 @@ export interface ChatInputProps {
  * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
  * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
@@ -60,6 +68,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   const inputRef = useRef<TextInputInstance>(null);
   /** The unsent draft waits here while a message is edited, and comes back after. */
   const draft = useRef<string | null>(null);
+  useKeptDraft(draftId, value, setValue, draft, !!initialValue);
   const editingId = editing?.id;
   const editingText = editing?.text;
 
@@ -144,12 +153,8 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           style={styles.input}
           multiline
           maxLength={2000}
-          onSubmitEditing={submit}
-          submitBehavior="submit"
-          // Web reads the legacy prop: Enter sends, Shift+Enter adds a line.
-          blurOnSubmit={Platform.OS === 'web' ? true : undefined}
-          returnKeyType="send"
-          {...webSingleRow}
+          onSubmitEditing={Platform.OS === 'web' ? submit : undefined}
+          {...webField}
         />
 
         {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach send once there is text. */}

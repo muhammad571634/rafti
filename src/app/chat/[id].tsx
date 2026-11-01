@@ -535,6 +535,8 @@ export default function ChatRoomScreen() {
           </View>
 
           <ChatInput
+            key={conversationId}
+            draftId={conversationId}
             placeholder={t('chat.inputPlaceholder', { name })}
             onSend={send}
             onAttach={() => setAttachOpen(true)}

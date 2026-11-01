@@ -345,6 +345,8 @@ export default function GroupChatScreen() {
           </View>
 
           <ChatInput
+            key={groupId}
+            draftId={groupId}
             placeholder={t('group.inputPlaceholder', { names })}
             onSend={send}
             onAttach={() => setAttachOpen(true)}

@@ -29,6 +29,7 @@ import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
+import { chatDrafts } from '@/lib/chat-drafts';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
@@ -191,6 +192,7 @@ export default function ProfileScreen() {
     if (result === 'failed') return setDeleteFailed(true);
     setDeleteOpen(false);
     deleteAccount();
+    chatDrafts.clearAll();
     // A fresh start speaks the phone's language again: a language picked by hand goes with the account.
     await pickLanguage(null);
     if (router.canDismiss()) router.dismissAll();

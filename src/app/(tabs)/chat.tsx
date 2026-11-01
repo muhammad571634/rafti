@@ -24,6 +24,7 @@ import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
 import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
 import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
+import { chatDrafts } from '@/lib/chat-drafts';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
@@ -218,7 +219,10 @@ export default function ChatListScreen() {
         t('chatList.deleteTitle'),
         item.kind === 'chat' ? t('chatList.deleteBody', { name: item.name }) : t('chatList.deleteGroupBody'),
         t('common.delete'),
-        () => (item.kind === 'chat' ? deleteChat(item.id) : deleteGroup(item.id)),
+        () => {
+          chatDrafts.forget(item.id);
+          return item.kind === 'chat' ? deleteChat(item.id) : deleteGroup(item.id);
+        },
         t('common.cancel'),
       ),
     [t, deleteChat, deleteGroup],

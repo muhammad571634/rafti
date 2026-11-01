@@ -27,6 +27,7 @@ import { phrase } from '@/i18n';
 import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
+import { chatDrafts } from '@/lib/chat-drafts';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor } from '@/lib/lorebook';
@@ -135,7 +136,11 @@ export default function CharacterSettingsScreen() {
           t('characterSettings.clearChat'),
           t('characterSettings.clearChatConfirm'),
           t('common.delete'),
-          () => conversation && clearChat(conversation.id),
+          () => {
+            if (!conversation) return;
+            chatDrafts.clear(conversation.id);
+            clearChat(conversation.id);
+          },
           t('common.cancel'),
         );
       case 'reset':
