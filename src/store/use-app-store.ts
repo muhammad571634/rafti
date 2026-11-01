@@ -69,6 +69,7 @@ import { planPushes } from '@/notifications/plan';
 import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pushLine, writesIdeas, writtenKey, type PushLines } from '@/notifications/written';
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
+import { toneCue } from '@/ai/tone';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -291,6 +292,7 @@ import type {
   MemoryItem,
   MemorySource,
   Message,
+  MessageTone,
   Moment,
   MomentKind,
   PlanId,
@@ -452,7 +454,7 @@ interface AppState {
   frames: UserFrame[];
 
   /* chat */
-  sendText: (conversationId: string, text: string) => SendResult;
+  sendText: (conversationId: string, text: string, tone?: MessageTone) => SendResult;
   sendVoice: (conversationId: string, durationSec: number, transcript: string) => SendResult;
   sendImage: (conversationId: string, imageUri: string) => SendResult;
   markRead: (conversationId: string) => void;
@@ -1096,7 +1098,7 @@ export const useAppStore = create<AppState>()(
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
-      sendText: (conversationId, text) => {
+      sendText: (conversationId, text, tone) => {
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
@@ -1112,6 +1114,7 @@ export const useAppStore = create<AppState>()(
           author: 'me',
           kind: 'text',
           text: trimmed,
+          tone,
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
@@ -5123,7 +5126,6 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       user: state.user,
       relationship: bond,
       steer,
-      cue,
       prefs: replyPrefs(bond),
       // Who they are here, the scene and the world books: the same as the stand-in reads.
       persona: personaFor(conversationId, state),
@@ -5144,8 +5146,11 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     // The account's token lets the server log the reply's cost against this user (B1).
     void (async () => {
       const { photos, ...looking } = await lookAtPhotos(messages, cue);
+      // A game's or a steer's turn has its own cue; a plain answer hears how the text was said,
+      // beside the note that a photo could not be read.
+      const heard = !cue && !steer && trigger === 'message' ? toneCue(messages) : undefined;
       const reply = await accessToken()
-        .then((token) => serverReply({ ...input, ...looking }, token))
+        .then((token) => serverReply({ ...input, ...looking, cue: heard ? [...(looking.cue ?? []), ...heard] : looking.cue }, token))
         .catch(() => null);
       return { reply, photos };
     })().then(({ reply, photos }) => {

@@ -12,6 +12,7 @@ import { offCue } from '../lib/reply-rating';
 
 import { chatParts, chatTurns, FACTS_MAX, factLines, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
 import { CHARACTER_RULES } from './rules';
+import { toneCue } from './tone';
 
 const kai = {
   id: 'c_kai',
@@ -273,5 +274,19 @@ describe('factLines (B2: what they know)', () => {
     const parts = chatParts({ character: kai, user: sam, messages: [], facts: [fact('2', 'Dog called Biscuit')], summary: 'They met at the pool.' });
     const names = parts.filter((p) => p.tier === 'chat' && p.text).map((p) => p.name);
     assert.ok(names.indexOf('facts') < names.indexOf('summary'), names.join());
+  });
+});
+
+describe('the tone of a text', () => {
+  const said = [{ id: 'm1', conversationId: 'c', author: 'me', kind: 'text', text: 'Come here.', tone: 'flirty', createdAt: '' }] as Message[];
+  const cueOf = (crisis: boolean) => chatParts({ character: kai, user: sam, messages: said, cue: ['A game cue.', ...(toneCue(said) ?? [])], crisis }).find((p) => p.name === 'cue')?.text ?? '';
+
+  it('rides in the cue of this reply', () => {
+    assert.match(cueOf(false), /HOW THEY SAID IT/);
+  });
+
+  it('is gone in a crisis, and the rest of the cue stays', () => {
+    assert.doesNotMatch(cueOf(true), /HOW THEY SAID IT/);
+    assert.match(cueOf(true), /A game cue/);
   });
 });

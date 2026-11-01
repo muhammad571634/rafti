@@ -9,6 +9,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { TONE_LOOK } from '@/components/chat/tone-menu';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
@@ -113,6 +114,14 @@ export const MessageBubble = memo(function MessageBubble({
           accessible
           accessibilityLabel={t('chat.pinnedToast')}>
           <Ionicons name="pin" size={12} color={colors.textSecondary} />
+        </View>
+      ) : null}
+      {mine && message.tone ? (
+        <View
+          style={[styles.pinBadge, pinned ? styles.toneByPin : styles.pinMine, { backgroundColor: TONE_LOOK[message.tone].fill }]}
+          accessible
+          accessibilityLabel={t(`chat.tones.${message.tone}`)}>
+          <Ionicons name={TONE_LOOK[message.tone].icon} size={12} color={colors.white} />
         </View>
       ) : null}
       {message.reaction && message.reaction in REACTION_STICKERS ? (
@@ -547,6 +556,8 @@ const styles = StyleSheet.create({
   },
   pinMine: { left: -6 },
   pinTheirs: { right: -6 },
+  // A text's tone (`TONE_LOOK`) wears the pin's shape and steps aside for a pin.
+  toneByPin: { left: 20 },
   // Bubbles of one run sit 2pt apart; a new run starts 10pt lower.
   row: {
     flexDirection: 'row',

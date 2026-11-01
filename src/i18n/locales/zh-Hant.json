@@ -361,6 +361,13 @@
     "edited": "已編輯",
     "cancelEdit": "取消編輯",
     "saveEdit": "發送修改",
+    "toneTip": "長按選擇語氣",
+    "tones": {
+      "whisper": "悄悄說",
+      "playful": "開玩笑",
+      "flirty": "調情",
+      "serious": "認真說"
+    },
     "newReply": "重新回覆",
     "rateUp": "回覆得很好",
     "rateDown": "回覆不佳",

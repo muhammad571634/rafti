@@ -369,6 +369,13 @@
     "edited": "Düzenlendi",
     "cancelEdit": "Düzenlemeyi iptal et",
     "saveEdit": "Düzenlemeyi gönder",
+    "toneTip": "Ton seçmek için basılı tut",
+    "tones": {
+      "whisper": "Fısıldayarak",
+      "playful": "Şakayla",
+      "flirty": "Flört ederek",
+      "serious": "Ciddiyetle"
+    },
     "newReply": "Yeni yanıt",
     "rateUp": "İyi yanıt",
     "rateDown": "Kötü yanıt",

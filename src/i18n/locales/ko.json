@@ -361,6 +361,13 @@
     "edited": "수정됨",
     "cancelEdit": "수정 취소",
     "saveEdit": "수정본 보내기",
+    "toneTip": "길게 눌러 말투 고르기",
+    "tones": {
+      "whisper": "속삭이듯",
+      "playful": "장난스럽게",
+      "flirty": "플러팅하듯",
+      "serious": "진지하게"
+    },
     "newReply": "다른 답변 받기",
     "rateUp": "좋은 답변",
     "rateDown": "어색한 답변",

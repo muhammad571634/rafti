@@ -233,12 +233,17 @@ export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
 export type TimeSkip = 'later' | 'evening' | 'nextMorning' | 'week' | 'scene' | 'own';
 export type MessageAuthor = 'me' | 'them';
 
+/** How a text was said, picked by holding send (`src/ai/tone.ts`). */
+export type MessageTone = 'whisper' | 'playful' | 'flirty' | 'serious';
+
 export interface Message {
   id: string;
   conversationId: string;
   author: MessageAuthor;
   kind: MessageKind;
   text?: string;
+  /** The tone the user sent this text in; the model hears it for this reply. */
+  tone?: MessageTone;
   /** Speech-to-text of a voice message, rendered as a muted sub-bubble */
   transcript?: string;
   durationSec?: number;

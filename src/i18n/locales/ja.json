@@ -361,6 +361,13 @@
     "edited": "編集済み",
     "cancelEdit": "編集をキャンセル",
     "saveEdit": "編集内容を送信",
+    "toneTip": "長押しでトーンを選ぶ",
+    "tones": {
+      "whisper": "ささやいて",
+      "playful": "ふざけて",
+      "flirty": "口説くように",
+      "serious": "真剣に"
+    },
     "newReply": "別の返信",
     "rateUp": "良い返信",
     "rateDown": "気になる返信",

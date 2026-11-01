@@ -361,6 +361,13 @@
     "edited": "Diedit",
     "cancelEdit": "Batalkan edit",
     "saveEdit": "Kirim editan",
+    "toneTip": "Tahan untuk memilih nada",
+    "tones": {
+      "whisper": "Berbisik",
+      "playful": "Bercanda",
+      "flirty": "Menggoda",
+      "serious": "Serius"
+    },
     "newReply": "Balasan baru",
     "rateUp": "Balasan bagus",
     "rateDown": "Balasan kurang pas",

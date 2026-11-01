@@ -369,6 +369,13 @@
     "edited": "Bearbeitet",
     "cancelEdit": "Bearbeitung abbrechen",
     "saveEdit": "Änderung senden",
+    "toneTip": "Halten, um einen Ton zu wählen",
+    "tones": {
+      "whisper": "Flüsternd",
+      "playful": "Scherzhaft",
+      "flirty": "Flirtend",
+      "serious": "Ernst"
+    },
     "newReply": "Neue Antwort",
     "rateUp": "Gute Antwort",
     "rateDown": "Schlechte Antwort",

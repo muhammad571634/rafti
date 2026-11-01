@@ -23,6 +23,7 @@ import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
 import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
+import { ToneMenu } from '@/components/chat/tone-menu';
 import { useFollowNewest } from '@/components/chat/follow-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
@@ -48,7 +49,7 @@ import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, shadows, space } from '@/theme';
-import type { Message, ReplyIdea, TimeSkip } from '@/types';
+import type { Message, MessageTone, ReplyIdea, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -109,6 +110,9 @@ export default function ChatRoomScreen() {
   const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const [toneOpen, setToneOpen] = useState(false);
+  /** Sends what the field holds in the tone picked; set when send is held. */
+  const sendToned = useRef<((tone: MessageTone) => void) | null>(null);
   /** The message a search result pointed at, tinted for a moment. */
   const [flash, setFlash] = useState<string | null>(null);
   const blurTarget = useRef<ViewInstance>(null);
@@ -340,11 +344,13 @@ export default function ChatRoomScreen() {
     return false;
   };
 
-  const send = (text: string) => {
+  const send = (text: string, tone?: MessageTone) => {
     // A changed reply idea still answers the line it came from.
     const draftIdea = ideaDraft;
     setIdeaDraft(null);
-    const result = draftIdea ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text) : sendText(conversation.id, text);
+    // The composer stays live under the tone menu: a plain send closes it too.
+    setToneOpen(false);
+    const result = draftIdea ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text) : sendText(conversation.id, text, tone);
     if (draftIdea && result === 'sent') afterIdea(data.find((m) => m.id === draftIdea.messageId), draftIdea.idea);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
@@ -532,6 +538,14 @@ export default function ChatRoomScreen() {
                 </View>
               </View>
             ) : null}
+            <ToneMenu
+              visible={toneOpen}
+              onClose={() => setToneOpen(false)}
+              onPick={(tone) => {
+                setToneOpen(false);
+                sendToned.current?.(tone);
+              }}
+            />
           </View>
 
           <ChatInput
@@ -539,6 +553,15 @@ export default function ChatRoomScreen() {
             draftId={conversationId}
             placeholder={t('chat.inputPlaceholder', { name })}
             onSend={send}
+            // An answer to a reply idea is worded by the idea; a tone would go unheard.
+            onHoldSend={
+              ideaDraft
+                ? undefined
+                : (sendIt) => {
+                    sendToned.current = sendIt;
+                    setToneOpen(true);
+                  }
+            }
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
             initialValue={typeof draft === 'string' ? draft : undefined}

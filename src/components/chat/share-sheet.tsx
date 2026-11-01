@@ -10,8 +10,8 @@ import type { Character, Message } from '@/types';
 
 const FACE = 44;
 
-/** The line as the chat first drew it: no reaction, receipt or edit note, and its own reveal id so it shows whole. */
-const plain = (m: Message): Message => ({ ...m, id: `share:${m.id}`, reaction: undefined, editedAt: undefined, failed: undefined });
+/** The line as the chat first drew it: no reaction, tone, receipt or edit note, and its own reveal id so it shows whole. */
+const plain = (m: Message): Message => ({ ...m, id: `share:${m.id}`, reaction: undefined, tone: undefined, editedAt: undefined, failed: undefined });
 
 /**
  * Share under their newest reply: the card is the chat and nothing else (owner, 2026-10-30): their

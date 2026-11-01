@@ -10,6 +10,7 @@ import { messageText } from '../lib/story-continuity';
 
 import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
+import { withoutTone } from './tone';
 import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
@@ -163,7 +164,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill
     // the cached history if this sat in the prefix, so it rides in the turn tier.
     part('taste', 'turn', tasteLines(input.messages)),
-    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : (input.cue ?? [])),
+    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : input.crisis ? withoutTone(input.cue ?? []) : (input.cue ?? [])),
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.

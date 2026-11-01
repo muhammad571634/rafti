@@ -7,9 +7,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { haptic } from '@/lib/haptics';
 import { bottomRoom, colors, radius, shadows, space } from '@/theme';
+import type { MessageTone } from '@/types';
 
 import { useKeptDraft } from './use-kept-draft';
+import { useToneTip } from './use-tone-tip';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
@@ -30,7 +33,9 @@ const webField = Platform.OS === 'web' ? ({ rows: 1, submitBehavior: 'submit', b
 export interface ChatInputProps {
   placeholder: string;
   /** Return false to keep the draft (e.g. out of shells). */
-  onSend: (text: string) => boolean;
+  onSend: (text: string, tone?: MessageTone) => boolean;
+  /** Send was held: the chat offers the tones, then calls `send` with the one picked. Without it a hold does nothing. */
+  onHoldSend?: (send: (tone: MessageTone) => void) => void;
   onAttach: () => void;
   onVoice: () => void;
   /** Text already in the field when the chat opens (e.g. replying to a diary page). */
@@ -58,7 +63,7 @@ export interface ChatInputProps {
  * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
  * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
@@ -108,15 +113,29 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
   }, [typingNow]);
   useEffect(() => () => reportTyping.current?.(false), []);
 
-  const submit = () => {
+  const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
+
+  const submit = (tone?: MessageTone) => {
     if (!hasText) return;
     if (editing) {
       editing.onSave(value);
       return;
     }
-    if (onSend(value)) setValue('');
+    toneTip.done();
+    if (onSend(value, tone)) setValue('');
     // react-native-web only submits a multiline field by blurring it; take focus back.
     if (Platform.OS === 'web') setTimeout(() => inputRef.current?.focus(), 30);
+  };
+  // The menu stays open over a live keyboard, so a pick sends what the field holds by then.
+  const latestSubmit = useRef(submit);
+  useEffect(() => {
+    latestSubmit.current = submit;
+  });
+  const holdSend = () => {
+    if (!onHoldSend) return;
+    haptic.lift();
+    toneTip.done();
+    onHoldSend((tone) => latestSubmit.current(tone));
   };
 
   // A draft typed before the lock stays in state and comes back with the field.
@@ -134,6 +153,13 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
 
   return (
     <View style={[styles.bar, { paddingBottom: barBottom }]}>
+      {toneTip.show ? (
+        <View pointerEvents="none" style={styles.tip}>
+          <Txt variant="caption" color={colors.textOnInk}>
+            {t('chat.toneTip')}
+          </Txt>
+        </View>
+      ) : null}
       <PressableScale
         scaleTo={0.9}
         onPress={editing ? editing.onCancel : onAttach}
@@ -153,7 +179,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           style={styles.input}
           multiline
           maxLength={2000}
-          onSubmitEditing={Platform.OS === 'web' ? submit : undefined}
+          onSubmitEditing={Platform.OS === 'web' ? () => submit() : undefined}
           {...webField}
         />
 
@@ -167,7 +193,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
             background={hasText ? colors.primaryFill : colors.surfaceAlt}
             haptic={hasText}
             accessibilityLabel={t('chat.saveEdit')}
-            onPress={submit}
+            onPress={() => submit()}
             style={styles.action}
           />
         ) : onStop && !hasText ? (
@@ -183,11 +209,14 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           />
         ) : hasText ? (
           <PressableScale
-            onPress={submit}
+            onPress={() => submit()}
+            onLongPress={onHoldSend ? holdSend : undefined}
+            delayLongPress={400}
             hitSlop={8}
             scaleTo={0.88}
             haptic
             accessibilityLabel={t('a11y.send')}
+            accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
             style={[styles.action, styles.send]}>
             <PaperPlaneTiltIcon size={23} weight="fill" color={colors.textOnPrimary} />
           </PressableScale>
@@ -237,6 +266,16 @@ const styles = StyleSheet.create({
   // A 38pt circle that sits 4pt inside the 46pt field.
   action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
+  // Once, over the send button (`useToneTip`).
+  tip: {
+    position: 'absolute',
+    right: space.md,
+    bottom: '100%',
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs,
+    borderRadius: radius.pill,
+    backgroundColor: colors.text,
+  },
   locked: {
     flex: 1,
     height: BUTTON + space.xs * 2 + 2,

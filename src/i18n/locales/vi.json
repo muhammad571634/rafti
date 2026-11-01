@@ -361,6 +361,13 @@
     "edited": "Đã chỉnh sửa",
     "cancelEdit": "Hủy chỉnh sửa",
     "saveEdit": "Gửi chỉnh sửa",
+    "toneTip": "Giữ để chọn giọng điệu",
+    "tones": {
+      "whisper": "Thì thầm",
+      "playful": "Đùa vui",
+      "flirty": "Tán tỉnh",
+      "serious": "Nghiêm túc"
+    },
     "newReply": "Câu trả lời mới",
     "rateUp": "Phản hồi tốt",
     "rateDown": "Phản hồi kém",
