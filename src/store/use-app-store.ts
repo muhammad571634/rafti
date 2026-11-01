@@ -5,6 +5,8 @@ import { createJSONStorage, persist, type StateStorage } from 'zustand/middlewar
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
+import { greeters } from '@/lib/greeters';
+import { lastTalkedAt } from '@/lib/talk';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { fillNames, pickOpening, withOpening } from '@/ai/character-draft';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
@@ -3485,7 +3487,7 @@ export const useAppStore = create<AppState>()(
         if (!slot) return {};
         const slotKey = `${today}:${slot}`;
 
-        // 2. "Say Hi & Goodnight" — the top two bonds text first.
+        // 2. "Say Hi & Goodnight" — the closest bond and one who takes a turn (`greeters`) text first.
         const greet = slot === 'morning' ? settings.morningGreeting : settings.eveningGreeting;
         if (greet && !daily.greetedSlots.includes(slotKey)) {
           // On a day with something on, the closest friend who holds it sends the morning brief
@@ -3493,12 +3495,16 @@ export const useAppStore = create<AppState>()(
           const briefFrom = slot === 'morning' ? sendBrief(set, get, clockOn(now, settings.morningCallTime)) : null;
           // The evening's "how was today?" (B6): one friend asks instead of their good night.
           const asker = slot === 'night' ? sendDayAsk(set, get, clockOn(now, settings.nightCallTime)) : null;
-          bonds.slice(0, 2).forEach((bond) => {
-            if (bond.characterId === briefFrom || bond.characterId === asker) return;
-            const conversationId = get().addFriend(bond.characterId);
+          const talkedAt = (id: string) => {
+            const chat = get().conversations.find((c) => c.characterId === id);
+            return chat ? lastTalkedAt(get().messages[chat.id]) : 0;
+          };
+          greeters(bonds.map((bond) => bond.characterId), talkedAt, slotKey, now).forEach((characterId) => {
+            if (characterId === briefFrom || characterId === asker) return;
+            const conversationId = get().addFriend(characterId);
             // Seeded like the scheduled push for this slot, so the notification and the chat agree.
             const greetings = slot === 'morning' ? morningGreetings : eveningGreetings;
-            const line = pickSeeded(greetings(genderOf(get(), bond.characterId)), `${slotKey}:${bond.characterId}`);
+            const line = pickSeeded(greetings(genderOf(get(), characterId)), `${slotKey}:${characterId}`);
             sayFirst(set, get, conversationId, line, greetingCue(slot));
           });
           set((s) => ({ daily: { ...s.daily, greetedSlots: [...s.daily.greetedSlots, slotKey].slice(-8) } }));

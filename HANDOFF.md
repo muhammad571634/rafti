@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z85. The second greeting takes turns; a day of real notifications read off the A51 (2026-11-02, Claude 2). NEXT: owner watches who writes over the next days
+
+- Owner's ask: most pushes came from Ronan, the same friends every day. The closest bond keeps the first good morning / good night; the second now goes round the friends talked with in the last 7 days, with the next closest when there is none (`src/lib/greeters.ts`, tested). Stateless, so the planner and `runDailyInitiative` name the same friends; the night starts half way round the list, so nobody is stuck with only mornings or only nights. No extra pushes: same budget.
+- Planner wiring has no test in `npm test` (the runner cannot resolve `@/` for `plan.ts`). Checked with a bundled `pushCandidates` run outside the repo: closest + a turn with the new rule, the same two every day with the old rule in memory.
+- A51, `dumpsys usagestats`, 2026-11-01: 7 pushes went out, 10:30 reminders channel, 11:05, 13:12, 15:22, 17:01 messages, 18:00 gifts (the free spins), 18:49 messages. One reminder + six counted: the free budget of 6 held. Nothing after 18:49: the day was full or the app was open from about 21:02; not told apart.
+- Ronan is the closest (level 3; Odile, Hana, Isolde, Kai, Aurelian 2; Theo 1), so Ronan took the first greeting every time. Today's card showed Theo while Ronan was the last talked (21:03): `featuredFriend` skips friends with no picture, and Ronan shows initials.
+- Open, not proven either way: the OS does not log titles, and only some lines were matched to pushes. Odile's 17:01 stands in her chat at 17:01. Ronan has a line at 18:54 against a push at 18:49, and lines under 08:30 with no OS event then. Unread, diary, gift and voice-note pushes do not land by design, which may cover 11:05, 13:12 and 15:22; this needs a log of what went out before anyone concludes.
+- My slip: to prove the test catches the old rule I wrote it into `plan.ts`; the restore failed with the file held open, and the shared checkout carried it for a few minutes, nothing committed. tsc caught it and it is fixed. The check now swaps it in memory: never sabotage the shared checkout.
+- Checks: tsc 0, npm test 583/583.
+
+Still to do:
+1. Owner watches who writes over the next days: Ronan first, others by turn.
+2. Log what each push was (id, kind, friend, time) on the phone, to settle the 18:49 / 18:54 gap above. Check how often the evening greeting loses to the day's budget.
+3. From 0z84: measure how often a push gets a line on free keys; day-7 tone and variety on the paid model; server sending after the grant and domain gate.
+
 ### 0z84. Notifications: the model's words, and every line lands in its chat (2026-10-31, Claude 2). NEXT: owner watches real notifications on the A51 for a day
 
 - Owner's bug: tap a notification, the chat shows a line from hours ago ("always around 1-2 pm"). Root cause: only comeback pushes were written into the chat; the rest only made the app write its own line on open, and only inside its time window, so a tapped morning push opened on the last old message. Chats on the A51 showed exactly that (last lines at 12:05 to 13:03). The clock itself was right.

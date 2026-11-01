@@ -64,8 +64,8 @@ chat (or call), and the same line is already in the chat. No "X wants to talk" p
 
 | # | Kind | When | Who | Example body | Channel |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Good morning text | user's morning time (08:00) | top 2 bonds with "Let them reach out" | "Morning. Did you sleep or did you scroll again?" | messages |
-| 2 | Good night text | 21:00 | top 2 bonds | "Long day? Tell me one good thing before you sleep." | messages |
+| 1 | Good morning text | user's morning time (08:00) | closest bond with "Let them reach out" + one by turn (`src/lib/greeters.ts`) | "Morning. Did you sleep or did you scroll again?" | messages |
+| 2 | Good night text | 21:00 | closest bond + one by turn | "Long day? Tell me one good thing before you sleep." | messages |
 | 3 | Daily call | morning / night call time | caller from Daily calls, else closest with a voice | "Incoming call" + name | calls |
 | 4 | Plan reminder | 10 min before | the friend who set it | "10 minutes to your interview. You've got this." | reminders |
 | 5 | "How did it go?" | after the plan ends | same | "So? How did it go?" | messages |
@@ -130,7 +130,9 @@ plan later with real AI lines.
   pending, because the app does it all itself while open. Pushes still in the tray that carry a
   line only sent by push (comeback) are written into that chat (`receivePushLine`, once per id);
   a tapped push does the same, then opens its route.
-- Greetings come from the **top two** bonds that allow it (same as `runDailyInitiative`), the
+- Greetings come from the closest bond that allows it and a second who takes a turn, slot by slot,
+  among the friends talked with in the last 7 days; with none, the next closest (`src/lib/greeters.ts`,
+  owner 2026-11-01; same in `runDailyInitiative`). The
   daily call 20 minutes after the greeting of its slot; nothing from others on the onboarding day.
 - The line of a greeting, birthday, plan reminder and follow-up is picked with a seed
   (`src/lib/seeded.ts`) shared with the store, so the push and the chat say the same thing.

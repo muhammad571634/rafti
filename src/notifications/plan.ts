@@ -2,6 +2,7 @@ import { detectCrisis } from '@/ai/safety';
 import { canRing } from '@/economy/plans';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { DAY_REACH, dayAsker } from '@/lib/day-ask';
+import { greeters } from '@/lib/greeters';
 import { recapAt, WEEK_REACH, weeklyRecap } from '@/lib/week';
 import { kinGroup, lifeAt, lifeKey, lifeMoments } from '@/lib/kin';
 import { isBirthday } from '@/lib/profile';
@@ -137,8 +138,6 @@ export interface PlanState {
  */
 export const PUSH_RULES = {
   horizonMs: 48 * 3_600_000,
-  /** As in runDailyInitiative: the top two bonds say good morning / good night. */
-  greeters: 2,
   /** The daily call rings a little after the greeting of the same slot. */
   callAfterGreetingMin: 20,
   unreadAfterMin: 30,
@@ -357,7 +356,13 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
               reach: DAY_REACH,
             });
           }
-          for (const writer of writers.slice(0, PUSH_RULES.greeters)) {
+          const greeting = greeters(
+            writers.map((c) => c.id),
+            (id) => lastTalkedAt(messages[chatOf.get(id)!.id]),
+            slotKey,
+            when,
+          );
+          for (const writer of writers.filter((c) => greeting.includes(c.id))) {
             if (writer.id === brief?.characterId || writer.id === asker) continue;
             say({
               id: `${slot === 'morning' ? 'morning' : 'evening'}:${slotKey}:${writer.id}`,
