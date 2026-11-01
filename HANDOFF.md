@@ -14,9 +14,13 @@ Still to do: see 0z85.
 - Owner's ask, logic approved: the time stands small and grey under a message; a same-minute burst from one speaker carries it once, under the last line (`showsTime`, `src/components/chat/runs.ts`). Chats and groups; streams and share cards stay clean.
 - The line between messages now says only the day ("Today"); the hour-of-quiet line is gone, though an hour of quiet still ends a run of bubbles. The receipt reads "Read · 21:03" with the message's own time, not the read time.
 - Clock: the phone's time and zone, no location. `clockTime` now follows the phone's 12/24-hour setting (`getCalendars`, `src/lib/clock.ts`), so call history, the ledger and thread sheets follow too. `expo-localization` is already in the APK (`i18n` uses it).
-- Checks: tsc 0, npm test 593/593.
+- Checks: tsc 0, npm test 593/593. A51 after `eas update` (reopened twice): Ronan's chat reads "21:03", "Okundu · 21:03", "21:04", the day line "Bugün", avatars level with the bubbles, no fatal or JS errors. Groups not opened on the phone; they use the same bubble.
+- Found while checking, not fixed: the shell history on the A51 lists "unused free shells expired" -24 at least five times today, all at 00:00, while the balance went only 128 to 124. Unproven guess: `applyServerWallet` puts back a `free` bucket dated yesterday, and `expireFreeShells` books the expiry again on each sync. My reopens may have added rows. Money code: needs its own look and a second reader.
+- My slip: I emptied `.agents/now.md` instead of removing only my line, around the time 0z87 landed. Any other agent's line then went with it.
 
-Still to do: see 0z85.
+Still to do:
+1. The repeated shell expiry rows above: read the server's wallet answer around midnight, then fix.
+2. The list in 0z85.
 
 ### 0z85. The second greeting takes turns; a day of real notifications read off the A51 (2026-11-02, Claude 2). NEXT: owner watches who writes over the next days
 
