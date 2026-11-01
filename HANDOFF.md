@@ -5,9 +5,9 @@
 - Owner's ask: the field and its icons a little larger, easier to hit; send keeps the brand circle but gets a more creative glyph, as on Instagram.
 - `chat-input.tsx`: field and "+" 40 to 46pt, action circle 32 to 38pt (still 4pt inside), mic 21 to 25, "+" 24 to 27, stop and check in step. Send is a filled Phosphor `PaperPlaneTilt` (23pt) on `primaryFill`, no arrow. `attach-menu.tsx` follows, so its close button still lands on the "+". Chats and groups share this; the photo screen's small arrow is left as it was.
 - Stop's circle was slightly squared (its radius came from the small icon); the action style now sets the radius.
-- Checks: tsc 0, npm test 593/593.
+- Checks: tsc 0, npm test 593/593. A51 after `eas update` (group `1e7e4e4d`, reopened twice): Ronan's chat shows the new field, mic and plane with one letter typed (deleted again); the "+" menu opens and its close button sits exactly on the "+"; no JS or fatal errors in logcat. Nothing was sent, so the plane was not pressed on the phone (its `submit` is unchanged). Groups not opened; they use the same component.
 
-Still to do: see 0z85.
+Still to do: see 0z86.
 
 ### 0z86. The time under chat messages (2026-11-02, Claude 2). NEXT: owner reads chats on the phone
 
