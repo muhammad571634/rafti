@@ -12,6 +12,8 @@ tuned to the user (`src/notifications/budget.ts`, D89); their words always show 
 reminder. Every line that goes out lands in its chat with its own time, tapped or not
 (`src/notifications/outbox.ts`); before this a tap opened a chat whose last line was hours old.
 
+**Changed 2026-11-02 (0z90):** with the model on and previews on, the buttons under a friend's push are replies the model wrote from that chat (`pushCue`, `pushIdeas`), and the same replies stand under the line in the chat. A check-in, a thread, the evening question and a family day keep the code's buttons, whose answers do something.
+
 **How hard we push (owner: be aggressive; founder's limits):** frequency stays at the budget above,
 and the words do the work: each line names something real and leaves open what only a reply settles
 (`pushCue`). Sulking, teasing and counting days are fine. Never threats, harm, "I will vanish", or

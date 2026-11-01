@@ -15,6 +15,24 @@ Still to do:
 3. Hold the mic to talk (owner's idea 3); tones in groups.
 4. The lists in 0z86 and 0z89.
 
+### 0z90. The buttons under a notification come from the chat with that friend (2026-11-02, Claude 2). NEXT: owner taps a button on the next real notification
+
+- Owner's ask: the replies under a pulled-down notification should draw on the chat with that character, and be more creative. The server's first-text answer already carried `ideas`; the app dropped them. No server change, no extra call.
+- With the model on: `pushCue(..., writeIdeas)` briefs the buttons; `pushIdeas` cleans them (2 or 3, different, no crisis text); they are kept with the line, get one notification category per push (`syncWrittenCategories`, `written_<hash>`, action `written_<place>`), and land under the line in the chat so button and chip agree. `PUSH_REACH` makes a tap free for pushes with no reason of their own. Morning, evening, brief, week, world, reminder, follow-up, birthday and comeback.
+- Stay the code's, because their answers do something: check-ins, threads, the evening question and family days. With previews off every push keeps fixed buttons: written ones would tell what the hidden text is about. With no written ideas, it falls back as before.
+- `pushLine`: bold loses its stars and *narration* goes, because a lock screen draws neither. Other stars stay (`f*ck`, `2*3`).
+- Real model on made-up chats (`gemini-3.5-flash-lite`, free key, 4 cases; test text only). First run: labels described the reply ("Admission of guilt") and put invented events in the user's mouth. After tuning: "Cones move!" / "Studying instead", "Сам ты заснул" / "Снова не сплю", "Boş sayfa" / "Gel bak". Still a stretch at times: "Studying instead" states something the chat does not show, and "Снова не сплю" fits a chat about staying up. Tune further on the paid model.
+- Second reader (a fresh agent, read-only) found 7 defects, each checked in the code and fixed: the server keeps 12 cue lines and a comeback's cue had 13, cutting the safety rule (`MAX_CUE_LINES`, tested); a free tap charged with previews off; a lost answer on `noShells` (now waits in the field); an older push's button charged (`fromPush` in `answerLine`); a dodge on the evening question made a diary page; a crisis line re-entering by tap; `pushLine` damaging text. Also: a typed answer under `PUSH_REACH` still notes plans.
+- Left as is: the code's `idea_` buttons ignore `noShells` as before; they are free when the line is theirs to answer. Sexual buttons are stopped by the prompt only.
+- Not checked on the phone: no real push fired with written buttons yet, so the labels on the A51 and a tap are unseen. The update ran there: reopened twice, left the app, no fatal or JS errors. Long labels may be cut on Android (3 actions in a row).
+- Store commit: another agent's uncommitted lines sat in `use-app-store.ts`, so only my hunks were staged from a filtered patch, and all checks ran on a clean worktree of the commit: tsc 0, npm test 620/620 (625/625 in the shared checkout with the other agent's tests). Published from that worktree.
+
+Still to do:
+1. Owner taps a written button on a real notification: the label reads right, the reply lands in the chat and the friend answers, no shell spent.
+2. See how labels fit on Android and iPhone; shorten the brief if they are cut.
+3. Tune the buttons on the paid model; decide if the evening question should get written buttons that keep its diary meaning.
+4. The lists in 0z85, 0z86 and 0z89.
+
 ### 0z89. Shells follow the phone's day; the Sunday recap lands at its own time (2026-11-02, Claude 2). NEXT: owner watches the shell history after the next midnight
 
 - Commit `85add7b` says 0z88 in its title; another agent's block took that number first.
