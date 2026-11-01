@@ -88,14 +88,14 @@ describe('a push that reached the phone lands in its chat', () => {
 
   it('holds only lines a chat should get, with the time they go out', () => {
     const outbox = toOutbox(plan);
-    assert.deepEqual(outbox.map((o) => o.kind), ['comeback', 'morning']);
+    assert.deepEqual(outbox.map((o) => o.kind), ['comeback', 'morning', 'week']);
     assert.equal(outbox[1].at, hours(20).toISOString());
     assert.equal(outbox[1].reach, 'r');
   });
 
   it('lands what is due in time order, the rest waits', () => {
     const outbox = toOutbox(plan);
-    assert.deepEqual(dueOutbox(outbox, hours(40)).map((o) => o.kind), ['morning', 'comeback']);
+    assert.deepEqual(dueOutbox(outbox, hours(40)).map((o) => o.kind), ['morning', 'comeback', 'week']);
     assert.deepEqual(dueOutbox(outbox, hours(25)).map((o) => o.kind), ['morning']);
     assert.deepEqual(dueOutbox(outbox, hours(1)), []);
   });

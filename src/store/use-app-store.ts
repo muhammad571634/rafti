@@ -109,7 +109,7 @@ import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
 import { answeredQuestion, DAY_REACH, dayAsker, moodOfIntent } from '@/lib/day-ask';
-import { recapAt, WEEK_REACH, weeklyRecap } from '@/lib/week';
+import { recapAt, WEEK_REACH, weeklyRecap, weekWith } from '@/lib/week';
 import { detectPlan, planStep, type DetectedPlan } from '@/lib/schedule';
 import { careLine } from '@/mock/care';
 import { ideaAnswer } from '@/mock/reply-ideas';
@@ -119,7 +119,7 @@ import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
-import { creditFree, PAID_SHARES_PER_DAY, SHARE_REWARD } from '@/economy/shells';
+import { creditFree, expiryBooked, oneExpiryPerMidnight, PAID_SHARES_PER_DAY, SHARE_REWARD } from '@/economy/shells';
 import { byMemoryOrder, hasFullMemory, isActiveMemory, splitMemories } from '@/economy/memory-limit';
 import { PASS_FACTS_MAX, PASS_LINES_MAX, type MemoryPassRequest } from '@/ai/memory-pass';
 import { applyMemoryPass } from '@/lib/memory-ops';
@@ -2062,7 +2062,11 @@ export const useAppStore = create<AppState>()(
         const now = new Date();
         const due = dueOutbox(get().pushOutbox, now);
         if (!due.length) return;
-        due.forEach(({ id, characterId, line, at, reach }) => get().receivePushLine({ id, characterId, text: line, at, reach }));
+        due.forEach(({ id, kind, characterId, line, at, reach }) => {
+          // Only over a line that lands: `receivePushLine` drops a crisis line, and a card alone is no recap.
+          if (kind === 'week' && !detectCrisis(line)) landWeekCard(set, get, id, characterId, at);
+          get().receivePushLine({ id, characterId, text: line, at, reach });
+        });
         const marks = landedMarks(due);
         const left = new Set(due.map((item) => item.id));
         set((s) => ({
@@ -2302,9 +2306,10 @@ export const useAppStore = create<AppState>()(
         // Booked at the midnight they ran out, so the history reads in order.
         const midnight = dateFromKey(free.day);
         midnight.setDate(midnight.getDate() + 1);
+        const at = midnight.toISOString();
         set((s) => ({
           wallet: { ...s.wallet, shells: s.wallet.shells - gone, free: undefined },
-          ledger: gone > 0 ? log(s.ledger, -gone, 'expired', undefined, midnight.toISOString()) : s.ledger,
+          ledger: gone > 0 && !expiryBooked(s.ledger, at) ? log(s.ledger, -gone, 'expired', undefined, at) : s.ledger,
         }));
       },
 
@@ -3747,6 +3752,7 @@ async function finishHydration() {
     .getState()
     .streams.filter(isPlaying)
     .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
+  useAppStore.setState((s) => ({ ledger: oneExpiryPerMidnight(s.ledger) }));
   useAppStore.getState().expireFreeShells();
   useAppStore.getState().writeDueDiaryPages();
   dropChatAiNotices();
@@ -4358,6 +4364,17 @@ function sendRecap(set: Setter, get: Getter, at: Date): string | null {
   // The card with the numbers is already there, so a skip still gets the scripted line under it.
   writeFirst(set, get, conversationId, line, WEEK_REACH, request, 'scripted');
   return from.id;
+}
+
+/** The recap went out as a push: the card with the numbers lands over its line, at the push's time, once. */
+function landWeekCard(set: Setter, get: Getter, pushId: string, characterId: string, at: string) {
+  const { conversations, messages, threads, diary } = get();
+  const conversationId = conversations.find((c) => c.characterId === characterId)?.id;
+  if (!conversationId) return;
+  const id = `m_week_${pushId}`;
+  if (messages[conversationId]?.some((m) => m.id === id)) return;
+  const week = weekWith(characterId, messages[conversationId] ?? [], threads, diary, new Date(at));
+  appendMessage(set, get, conversationId, { id, conversationId, author: 'them', kind: 'system', card: 'week', week, createdAt: at });
 }
 
 /** How many news keys are kept: more than a season's worth for every world. */

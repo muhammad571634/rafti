@@ -19,8 +19,8 @@ export interface OutboxItem {
   covers?: string[];
 }
 
-/** A diary or gift nudge points elsewhere, an unread line is in the chat already, the week brings its card. */
-const LANDS = new Set<PushKind>(['morning', 'evening', 'brief', 'day', 'world', 'remind', 'followUp', 'life', 'care', 'touch', 'birthday', 'comeback']);
+/** A diary or gift nudge points elsewhere, an unread line is in the chat already. */
+const LANDS = new Set<PushKind>(['morning', 'evening', 'brief', 'day', 'week', 'world', 'remind', 'followUp', 'life', 'care', 'touch', 'birthday', 'comeback']);
 
 export function toOutbox(plan: readonly PlannedPush[]): OutboxItem[] {
   return plan.flatMap((push) =>

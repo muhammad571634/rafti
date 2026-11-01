@@ -77,10 +77,27 @@ export async function accessToken(waitMs = 2500): Promise<string | null> {
   return Promise.race([token, late]);
 }
 
+let phoneTold: Promise<unknown> | null = null;
+
+/**
+ * Once a launch, before the first wallet call: the server's "today" (free shells, check-in, wheel)
+ * is the date in the profile's time zone, which stays UTC until it hears the phone's. A failure
+ * (`serverBootstrap` gives null, never a throw) asks again on the next call.
+ */
+function tellPhoneZone(token: string) {
+  const { locale, timeZone } = Intl.DateTimeFormat().resolvedOptions();
+  phoneTold ??= serverBootstrap(token, { locale, timeZone }).then((session) => {
+    if (!session) phoneTold = null;
+  });
+  return phoneTold;
+}
+
 /** Runs a call with the account's token; null when there is no account to run it with. */
 export async function withAccount<T>(run: (accessToken: string) => Promise<T | null>): Promise<T | null> {
   const token = await accessToken();
-  return token ? run(token) : null;
+  if (!token) return null;
+  await tellPhoneZone(token);
+  return run(token);
 }
 
 /** Signs in (anonymously the first time) and returns the server's view of this account. */
@@ -114,5 +131,7 @@ export async function deleteServerAccount(): Promise<'deleted' | 'none' | 'faile
   const done = await serverMessages.deleteAccount(data.session.access_token);
   if (!done) return 'failed';
   await auth.signOut({ scope: 'local' }).catch(() => {});
+  // The next anonymous account starts at UTC again, so it has to hear the phone's zone too.
+  phoneTold = null;
   return 'deleted';
 }

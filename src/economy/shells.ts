@@ -1,4 +1,4 @@
-import type { Wallet } from '@/types';
+import type { LedgerEntry, Wallet } from '@/types';
 
 /**
  * The 7-day check-in ladder ("Log in daily to unlock surprise shells"): shells for
@@ -32,4 +32,20 @@ export const WHEEL_WEIGHTS = [75, 8, 55, 2, 75, 2, 30, 1] as const;
 export function creditFree(wallet: Wallet, amount: number, today: string): Wallet {
   const already = wallet.free && wallet.free.day === today ? wallet.free.amount : 0;
   return { ...wallet, shells: wallet.shells + amount, free: { day: today, amount: already + amount } };
+}
+
+/** A bucket burns once. The server's answer can bring back a bucket the app already burnt (its day ends later). */
+export const expiryBooked = (ledger: readonly LedgerEntry[], midnight: string) =>
+  ledger.some((entry) => entry.reason === 'expired' && entry.at === midnight);
+
+/** History made before `expiryBooked`: the newest row of each midnight stays (the ledger runs newest first). */
+export function oneExpiryPerMidnight(ledger: LedgerEntry[]): LedgerEntry[] {
+  const seen = new Set<string>();
+  const kept = ledger.filter((entry) => {
+    if (entry.reason !== 'expired') return true;
+    if (seen.has(entry.at)) return false;
+    seen.add(entry.at);
+    return true;
+  });
+  return kept.length === ledger.length ? ledger : kept;
 }
