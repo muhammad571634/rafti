@@ -26,8 +26,8 @@ Still to do:
 - Owner picked two composer ideas. Unsent text now waits in each chat and group, also after a restart (`src/lib/draft-store.ts`, tested; `use-kept-draft.ts`). It saves 300 ms after typing stops and on leaving; an edit's text is never kept; a diary reply's text goes before a kept draft.
 - On a phone the keyboard's key starts a new line and only the plane sends, so a slip spends no shells. Web keeps Enter to send.
 - Drafts live in their own AsyncStorage key, not in the store. The store held another agent's uncommitted work, so the deletes are wired where they are called: chat list and group info forget the draft, clear chat clears it, account delete clears all.
-- Published from a clean worktree for the same reason.
-- Checks: tsc 0, npm test 605/605 (includes another agent's uncommitted tests).
+- My own publish from a clean worktree did not land (exit -1, cause not seen: my filter hid the output). It was not needed: the wallet update `0a054c65` (`85add7b`) was built on top of this commit and carries it.
+- Checks: tsc 0, npm test 601/601 on the clean commit. A51, Hana's chat, on that update: the key adds a line and sends nothing (the keyboard shows a return arrow); a two-line draft comes back after leaving the chat and after a force-stop; deleting it leaves "Mesaj" and the mic after reopening; no JS or fatal errors in logcat. Not tried on the phone: groups, an edit during a draft, deleting a chat with a draft.
 
 Still to do:
 1. Hold the mic to talk, and send with a tone (hold the plane): owner's ideas 3 and 4, chosen order 1, 2, then 4. The tone touches prompts, so a second reader reads it.
