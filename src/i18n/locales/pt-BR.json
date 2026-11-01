@@ -329,6 +329,10 @@
     "read": "Lido",
     "delivered": "Entregue",
     "sending": "Enviando",
+    "voiceConsent": {
+      "title": "Deixar ouvir sua voz?",
+      "body": "Para entender uma mensagem de voz, seu personagem a envia ao nosso serviço de IA, Google Gemini."
+    },
     "photoConsent": {
       "title": "Deixar ver suas fotos?",
       "body": "Para o seu personagem ver uma foto, ela é enviada ao nosso serviço de IA, o Google Gemini.",
@@ -358,7 +362,10 @@
       "title": "Mensagem de voz",
       "hold": "Segure para falar",
       "release": "Solte para enviar",
-      "tooShort": "Segure por mais tempo"
+      "tooShort": "Segure por mais tempo",
+      "slideCancel": "Deslize para cancelar",
+      "noSpeech": "Não deu para entender",
+      "noMic": "Permita o microfone nos Ajustes para enviar mensagens de voz"
     },
     "shellCost_one": "{{count}} concha",
     "shellCost_other": "{{count}} conchas",

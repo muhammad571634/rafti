@@ -6,6 +6,7 @@ import type { StreamLineRequest } from './content-prompts';
 import type { FirstTextRequest } from './first-text';
 import type { GroupPromptInput } from './group-reply';
 import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
+import type { VoiceClip } from './voice-prompt';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
   BootstrapInput,
@@ -35,6 +36,8 @@ import type {
 const CLOUD_API = 'https://sigmazam-api.fly.dev';
 const DEV_PORT = 8787;
 const TIMEOUT_MS = 25_000;
+/** A minute of voice on a slow connection. */
+const TRANSCRIBE_TIMEOUT_MS = 40_000;
 /** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
 const FIRST_TEXT_TIMEOUT_MS = 15_000;
 /** A whole character is the longest answer the model writes. */
@@ -170,6 +173,12 @@ export const serverStudio = {
 export async function serverMemoryPass(request: MemoryPassRequest, accessToken?: string | null): Promise<MemoryPassResult | null> {
   const reply = await call<MemoryPassResult>('/v1/memory/pass', withOptionalToken(accessToken, request), MEMORY_PASS_TIMEOUT_MS);
   return reply && Array.isArray(reply.ops) ? { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops } : null;
+}
+
+/** What a voice message says: the words, '' when none were made out, or null (off, busy, slow or a broken answer). */
+export async function serverTranscribe(clip: VoiceClip, accessToken?: string | null): Promise<string | null> {
+  const reply = await call<{ text?: string | null }>('/v1/voice/transcribe', withOptionalToken(accessToken, { clip }), TRANSCRIBE_TIMEOUT_MS);
+  return typeof reply?.text === 'string' ? reply.text : null;
 }
 
 /** The next stream line in the speaker's voice (B1.4b), or null (off, busy, slow or no usable line). */

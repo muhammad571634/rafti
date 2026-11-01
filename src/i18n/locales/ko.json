@@ -322,6 +322,10 @@
     "read": "읽음",
     "delivered": "전송됨",
     "sending": "전송 중",
+    "voiceConsent": {
+      "title": "목소리를 들려줄까요?",
+      "body": "음성 메시지를 이해하기 위해 캐릭터가 메시지를 AI 서비스 Google Gemini로 보냅니다."
+    },
     "photoConsent": {
       "title": "사진을 보여 줄까요?",
       "body": "캐릭터가 사진을 볼 수 있도록 사진이 AI 서비스인 Google Gemini로 전송됩니다.",
@@ -351,7 +355,10 @@
       "title": "음성 메시지",
       "hold": "누른 상태로 말하기",
       "release": "손을 떼어 보내기",
-      "tooShort": "조금 더 길게 눌러주세요"
+      "tooShort": "조금 더 길게 눌러주세요",
+      "slideCancel": "밀어서 취소",
+      "noSpeech": "잘 들리지 않았어요",
+      "noMic": "음성 메시지를 보내려면 설정에서 마이크를 허용하세요"
     },
     "shellCost_other": "{{count}} 조개",
     "dayToday": "오늘",

@@ -329,6 +329,10 @@
     "read": "Gelesen",
     "delivered": "Zugestellt",
     "sending": "Senden...",
+    "voiceConsent": {
+      "title": "Darf man deine Stimme hören?",
+      "body": "Um eine Sprachnachricht zu verstehen, sendet dein Charakter sie an unseren KI-Dienst Google Gemini."
+    },
     "photoConsent": {
       "title": "Dürfen sie deine Fotos sehen?",
       "body": "Damit dein Charakter ein Foto sehen kann, geht es an unseren KI-Dienst, Google Gemini.",
@@ -358,7 +362,10 @@
       "title": "Sprachnachricht",
       "hold": "Halten zum Sprechen",
       "release": "Loslassen zum Senden",
-      "tooShort": "Etwas länger halten"
+      "tooShort": "Etwas länger halten",
+      "slideCancel": "Zum Abbrechen wischen",
+      "noSpeech": "Nicht verstanden",
+      "noMic": "Erlaube das Mikrofon in den Einstellungen, um Sprachnachrichten zu senden"
     },
     "shellCost_one": "{{count}} Muschel",
     "shellCost_other": "{{count}} Muscheln",

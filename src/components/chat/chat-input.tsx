@@ -2,17 +2,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTilt';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconButton, PressableScale, Txt } from '@/components/ui';
+import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { bottomRoom, colors, radius, shadows, space } from '@/theme';
+import { bottomRoom, colors, radius, shadows, space, systemColors } from '@/theme';
 import type { MessageTone } from '@/types';
 
+import { HoldMic } from './hold-mic';
 import { useKeptDraft } from './use-kept-draft';
 import { useToneTip } from './use-tone-tip';
+import { useVoiceNote, type VoiceNote } from './use-voice-note';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
@@ -38,6 +41,10 @@ export interface ChatInputProps {
   onHoldSend?: (send: (tone: MessageTone) => void) => void;
   onAttach: () => void;
   onVoice: () => void;
+  /** A voice message made by holding the mic. */
+  onVoiceNote?: (note: VoiceNote) => void;
+  /** Asked before recording: false when the note could not be paid for (the chat says why). */
+  canRecord?: () => boolean;
   /** Text already in the field when the chat opens (e.g. replying to a diary page). */
   initialValue?: string;
   /** When set, the field is closed and shows this line instead (the daily fair-use limit). */
@@ -63,7 +70,7 @@ export interface ChatInputProps {
  * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
  * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, onVoiceNote, canRecord, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
@@ -114,6 +121,8 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
   useEffect(() => () => reportTyping.current?.(false), []);
 
   const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
+  const voice = useVoiceNote(draftId, (note) => onVoiceNote?.(note), canRecord);
+  const voiceBusy = voice.phase !== 'idle';
 
   const submit = (tone?: MessageTone) => {
     if (!hasText) return;
@@ -196,7 +205,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             onPress={() => submit()}
             style={styles.action}
           />
-        ) : onStop && !hasText ? (
+        ) : onStop && !hasText && !voiceBusy ? (
           // Typing a new line brings send back; the reply then answers both.
           <IconButton
             icon="stop"
@@ -220,7 +229,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             style={[styles.action, styles.send]}>
             <PaperPlaneTiltIcon size={23} weight="fill" color={colors.textOnPrimary} />
           </PressableScale>
-        ) : (
+        ) : Platform.OS === 'web' || !onVoiceNote ? (
           <IconButton
             icon="mic-outline"
             size={25}
@@ -229,7 +238,49 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             onPress={onVoice}
             style={styles.action}
           />
+        ) : (
+          <HoldMic
+            recording={voice.phase === 'recording'}
+            onTap={onVoice}
+            onHoldStart={voice.start}
+            onHoldEnd={voice.finish}
+            accessibilityLabel={t('a11y.voiceMessage')}
+            accessibilityHint={t('chat.voice.hold')}
+            style={styles.action}
+          />
         )}
+
+        {/* Over the empty field, beside the mic the finger is still on. */}
+        {voiceBusy || voice.notice ? (
+          <View style={styles.voiceRow}>
+            {voice.phase === 'recording' ? (
+              <>
+                <Anim name="voiceWave" size={26} tint={systemColors.red} />
+                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
+                <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                  {t('chat.voice.slideCancel')}
+                </Txt>
+              </>
+            ) : voice.phase === 'sending' ? (
+              <>
+                <ActivityIndicator color={colors.textSecondary} />
+                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
+              </>
+            ) : voice.phase === 'failed' ? (
+              <>
+                <Txt variant="small" color={colors.danger} numberOfLines={1} style={styles.voiceHint}>
+                  {t('chat.notDelivered')}
+                </Txt>
+                <IconButton icon="refresh" size={20} color={colors.text} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
+                <IconButton icon="trash-outline" size={20} color={colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
+              </>
+            ) : (
+              <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : t('chat.voice.noSpeech')}
+              </Txt>
+            )}
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -266,6 +317,23 @@ const styles = StyleSheet.create({
   // A 38pt circle that sits 4pt inside the 46pt field.
   action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
+  // Covers the field up to the mic while a voice message is made.
+  voiceRow: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: FIELD,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingLeft: space.lg,
+    borderRadius: FIELD / 2,
+    backgroundColor: colors.surface,
+  },
+  voiceClock: { fontSize: 17, fontVariant: ['tabular-nums'] },
+  voiceHint: { flex: 1 },
+  voiceAction: { width: 34, height: 34 },
   // Once, over the send button (`useToneTip`); from the top edge, so a grown field never covers it.
   tip: {
     position: 'absolute',

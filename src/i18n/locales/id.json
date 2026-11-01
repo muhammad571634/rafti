@@ -322,6 +322,10 @@
     "read": "Dibaca",
     "delivered": "Terkirim",
     "sending": "Mengirim",
+    "voiceConsent": {
+      "title": "Izinkan mendengar suaramu?",
+      "body": "Untuk memahami pesan suara, karaktermu mengirimnya ke layanan AI kami, Google Gemini."
+    },
     "photoConsent": {
       "title": "Izinkan mereka melihat fotomu?",
       "body": "Agar karaktermu bisa melihat foto, foto itu dikirim ke layanan AI kami, Google Gemini.",
@@ -351,7 +355,10 @@
       "title": "Pesan suara",
       "hold": "Tahan untuk bicara",
       "release": "Lepas untuk kirim",
-      "tooShort": "Tahan sedikit lebih lama"
+      "tooShort": "Tahan sedikit lebih lama",
+      "slideCancel": "Geser untuk batal",
+      "noSpeech": "Tidak terdengar",
+      "noMic": "Izinkan mikrofon di Pengaturan untuk mengirim pesan suara"
     },
     "shellCost_other": "{{count}} kerang",
     "dayToday": "Hari ini",

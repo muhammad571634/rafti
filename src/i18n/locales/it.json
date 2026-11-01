@@ -329,6 +329,10 @@
     "read": "Letto",
     "delivered": "Consegnato",
     "sending": "Invio in corso",
+    "voiceConsent": {
+      "title": "Vuoi far sentire la tua voce?",
+      "body": "Per capire un messaggio vocale, il tuo personaggio lo invia al nostro servizio di IA, Google Gemini."
+    },
     "photoConsent": {
       "title": "Vuoi fargli vedere le tue foto?",
       "body": "Perché il tuo personaggio veda una foto, questa viene inviata al nostro servizio di IA, Google Gemini.",
@@ -358,7 +362,10 @@
       "title": "Messaggio vocale",
       "hold": "Tieni premuto per parlare",
       "release": "Rilascia per inviare",
-      "tooShort": "Tieni premuto un po' più a lungo"
+      "tooShort": "Tieni premuto un po' più a lungo",
+      "slideCancel": "Scorri per annullare",
+      "noSpeech": "Non ho capito",
+      "noMic": "Consenti il microfono nelle Impostazioni per inviare messaggi vocali"
     },
     "shellCost_one": "{{count}} conchiglia",
     "shellCost_other": "{{count}} conchiglie",

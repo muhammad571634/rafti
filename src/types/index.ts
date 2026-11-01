@@ -247,6 +247,8 @@ export interface Message {
   /** Speech-to-text of a voice message, rendered as a muted sub-bubble */
   transcript?: string;
   durationSec?: number;
+  /** The name of a voice message's file on this phone (`noteUri`); the sound is never kept anywhere else. */
+  audioFile?: string;
   imageUri?: string;
   /** What a photo the user sent shows, in the character's words: how the chat remembers it (`src/ai/photo-prompt.ts`). */
   photoNote?: string;
@@ -1044,6 +1046,8 @@ export interface AppSettings {
   realAi?: boolean;
   /** The user agreed that photos they send in a chat go to the AI service (`usePickPhoto`). */
   photosToAi?: boolean;
+  /** The user agreed that voice messages go to the AI service to be written out (`useVoiceNote`). */
+  voiceToAi?: boolean;
   /** B1.2: the wallet lives on the server whenever the app has one; `false` (dev) keeps it on the phone. */
   serverWallet?: boolean;
   /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */

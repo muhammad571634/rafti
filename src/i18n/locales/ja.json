@@ -322,6 +322,10 @@
     "read": "既読",
     "delivered": "配信済み",
     "sending": "送信中",
+    "voiceConsent": {
+      "title": "声を聞かせますか？",
+      "body": "ボイスメッセージを理解するため、キャラクターは当社のAIサービスGoogle Geminiに送信します。"
+    },
     "photoConsent": {
       "title": "写真を見せますか?",
       "body": "キャラクターが写真を見るために、写真は当社のAIサービス Google Gemini に送信されます。",
@@ -351,7 +355,10 @@
       "title": "ボイスメッセージ",
       "hold": "長押しで録音",
       "release": "離して送信",
-      "tooShort": "もう少し長押ししてください"
+      "tooShort": "もう少し長押ししてください",
+      "slideCancel": "スライドでキャンセル",
+      "noSpeech": "聞き取れませんでした",
+      "noMic": "ボイスメッセージを送るには設定でマイクを許可してください"
     },
     "shellCost_other": "{{count}}シェル",
     "dayToday": "今日",

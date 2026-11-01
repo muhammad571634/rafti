@@ -55,7 +55,8 @@ export function daysTogether(
       if (m.author !== 'me') continue;
       const entry = slot(conv.characterId, m.createdAt);
       if (!entry) continue;
-      if (m.kind === 'text' && m.text && detectCrisis(m.text)) {
+      const words = m.kind === 'voice' ? m.transcript : m.kind === 'text' ? m.text : undefined;
+      if (words && detectCrisis(words)) {
         entry.heavy = true;
         entry.extraTouches += 1;
       } else if (m.kind === 'text' && m.text) entry.said.push(m.text);

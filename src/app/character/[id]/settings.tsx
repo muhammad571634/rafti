@@ -28,6 +28,7 @@ import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { chatDrafts } from '@/lib/chat-drafts';
+import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor } from '@/lib/lorebook';
@@ -139,6 +140,7 @@ export default function CharacterSettingsScreen() {
           () => {
             if (!conversation) return;
             chatDrafts.clear(conversation.id);
+            void forgetNotes(conversation.id);
             clearChat(conversation.id);
           },
           t('common.cancel'),

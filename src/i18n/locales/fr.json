@@ -329,6 +329,10 @@
     "read": "Lu",
     "delivered": "Distribué",
     "sending": "Envoi en cours",
+    "voiceConsent": {
+      "title": "Laisser entendre ta voix ?",
+      "body": "Pour comprendre un message vocal, ton personnage l'envoie à notre service d'IA, Google Gemini."
+    },
     "photoConsent": {
       "title": "Partager tes photos ?",
       "body": "Pour que ton personnage voie une photo, elle est envoyée à notre service d’IA, Google Gemini.",
@@ -358,7 +362,10 @@
       "title": "Message vocal",
       "hold": "Maintenir pour parler",
       "release": "Relâcher pour envoyer",
-      "tooShort": "Maintenir un peu plus longtemps"
+      "tooShort": "Maintenir un peu plus longtemps",
+      "slideCancel": "Glisse pour annuler",
+      "noSpeech": "Pas bien compris",
+      "noMic": "Autorise le micro dans les Réglages pour envoyer des messages vocaux"
     },
     "shellCost_one": "{{count}} coquillage",
     "shellCost_other": "{{count}} coquillages",

@@ -322,6 +322,10 @@
     "read": "已讀",
     "delivered": "已送達",
     "sending": "傳送中",
+    "voiceConsent": {
+      "title": "讓對方聽見你的聲音？",
+      "body": "為了理解語音訊息，角色會將其傳送至我們的 AI 服務 Google Gemini。"
+    },
     "photoConsent": {
       "title": "要讓對方看你的照片嗎?",
       "body": "為了讓角色看到照片,照片會傳送到我們的 AI 服務 Google Gemini。",
@@ -351,7 +355,10 @@
       "title": "語音訊息",
       "hold": "按住說話",
       "release": "鬆開發送",
-      "tooShort": "請按住稍長一點時間"
+      "tooShort": "請按住稍長一點時間",
+      "slideCancel": "滑動以取消",
+      "noSpeech": "沒聽清楚",
+      "noMic": "請在設定中允許麥克風以傳送語音訊息"
     },
     "shellCost_other": "{{count}}個貝殼",
     "dayToday": "今天",

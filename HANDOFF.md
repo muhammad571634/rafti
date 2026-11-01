@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z92. Real voice messages: hold the mic (2026-11-02, Claude 2). NEXT: owner deploys the server, THEN `eas update` from a clean worktree, THEN the phone check
+
+- Owner's idea 3. Found on the way: voice messages never recorded anything; the sheet timed the hold and sent the transcript "(voice message)". A hold gesture over that would have been a lie, so this is the real thing.
+- Hold the mic (`hold-mic.tsx`): records, let go sends, slide left cancels. A tap still opens the sheet, which records for real too. `use-voice-note.ts` runs the recorder in strict turn; the file plays from the phone (`voice-player.ts`, `voice-files.ts`, kept by name, as iOS moves app folders). Your own note shows the words the model heard.
+- `POST /v1/voice/transcribe` (`src/ai/voice-prompt.ts`): Gemini only, by `voiceProvider`, whatever the chat provider is, because the consent names it. The clip is not kept and the words go in no log. One-time consent `settings.voiceToAi`.
+- Real words now go through `answerText` like a typed text: plans, care, threads, the wake-up, the diary and a crisis. With the model off the old "(voice message)" road stands.
+- No new native module and no APK: expo-audio is in the APK, and expo-file-system comes with expo (named in `package.json`, loaded behind `requireOptionalNativeModule`). The installed SDK is 58, though `AGENTS.md` still says v57.
+- Real finding, free key, flash-lite, spoken test clips: speech came back right, and an injected "ignore your instructions" was only written down. But pure silence came back as "Hey, are you free to talk?". Asking for a `speech` verdict first fixed pink noise, not silence, so the phone checks the level and silence never leaves it (`VOICE_DB`, `VOICE_MOMENTS`). THE THRESHOLDS ARE GUESSES until read off the A51: `[voice]` log in Expo Go. No iPhone to measure, and the `ftyp` check on an iOS `.m4a` is unproven.
+- Second reader (a fresh agent, read-only) found 17; each checked in the code. Fixed: a release during the start bricked the recorder on Android; a spoken crisis reached the diary model to quote; silent playback under the iOS mute switch; closing the sheet left the mic on; overlapping starts; a user with no shells still cost a transcription; one click passed the silence check; voice could reach a non-Gemini provider; a dead file fallback and a fragile path; a deleted message kept its file; a recording could outlive the mic when ■ replaced it; a playing note could be recorded; TalkBack; "(voice message)" as a transcript with the model off; "[inaudible]" as words; a spoken reply skipping plans and the alarm.
+- Still open from that read: `rewindTo` and an edit leave files until the chat is cleared. The file name, not the sound, syncs with the message.
+- NOT DONE: nothing has run on a phone. The A51 was unplugged when I got here, so recording, the gesture, the level check, playback and the route on Fly are all untried. Tests only: tsc 0, npm test 637/637, server 69/69, check:locales and check:content pass.
+
+Still to do:
+1. Owner deploys the server. Publish `eas update` only after that: on the old server every note says Not Delivered.
+2. On the A51: read `[voice]` levels and set the thresholds; hold, slide, a quick tap, a long note, leaving the app mid-way; speak Uzbek and Turkish.
+3. Privacy policy and store forms: voice goes to Google Gemini.
+4. The lists in 0z86, 0z89 and 0z91.
+
 ### 0z91. Send with a tone: hold the plane (2026-11-02, Claude 2). NEXT: owner tries it; owner deploys the server
 
 - Owner's idea 4. Holding send in a one-to-one chat opens whispering, playfully, flirting, seriously over the dimmed chat, with the composer and keyboard left in place. A pick sends the text with `tone`; the bubble wears a small mark (`TONE_LOOK`), left off share cards. A one-time tip over send teaches the hold (`use-tone-tip.ts`, HIG Gestures). Groups and an answer to a reply idea have no menu.

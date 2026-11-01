@@ -24,6 +24,7 @@ import {
 } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { chatDrafts } from '@/lib/chat-drafts';
+import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -113,6 +114,7 @@ export default function GroupInfoScreen() {
   const askDelete = () =>
     confirm(t('group.deleteTitle'), t('group.deleteBody'), t('group.delete'), () => {
       chatDrafts.forget(groupId);
+      void forgetNotes(groupId);
       deleteGroup(groupId);
       if (router.canDismiss()) router.dismissAll();
       router.replace('/(tabs)/chat');

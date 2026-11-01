@@ -329,6 +329,10 @@
     "read": "Okundu",
     "delivered": "İletildi",
     "sending": "Gönderiliyor",
+    "voiceConsent": {
+      "title": "Sesini duyabilsin mi?",
+      "body": "Karakterinin bir sesli mesajı anlayabilmesi için mesaj, yapay zekâ hizmetimiz Google Gemini’ye gönderilir."
+    },
     "photoConsent": {
       "title": "Fotoğraflarını görebilsin mi?",
       "body": "Karakterinin bir fotoğrafı görebilmesi için fotoğraf, yapay zekâ hizmetimiz Google Gemini'ye gönderilir.",
@@ -358,7 +362,10 @@
       "title": "Sesli mesaj",
       "hold": "Konuşmak için basılı tut",
       "release": "Göndermek için bırak",
-      "tooShort": "Biraz daha uzun basılı tut"
+      "tooShort": "Biraz daha uzun basılı tut",
+      "slideCancel": "İptal için kaydır",
+      "noSpeech": "Anlaşılamadı",
+      "noMic": "Sesli mesaj göndermek için Ayarlar’dan mikrofona izin ver"
     },
     "shellCost_one": "{{count}} kabuk",
     "shellCost_other": "{{count}} kabuk",

@@ -849,3 +849,46 @@ describe('quick create and streams on the server (B1.4b)', () => {
     });
   });
 });
+
+describe('POST /v1/voice/transcribe', () => {
+  const clip = { mimeType: 'audio/mp4', data: btoa('   ftypmp42') };
+  const ask = (app: ReturnType<typeof createApp>, body: unknown) =>
+    app.request('/v1/voice/transcribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const answering = (text: string, seen: PromptLayout[] = []): LlmProvider => ({
+    name: 'fake',
+    complete: async (layout) => {
+      seen.push(layout);
+      return { text, usage: {} };
+    },
+  });
+
+  it('hands the clip to the model and returns the words', async () => {
+    const seen: PromptLayout[] = [];
+    const res = await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{"speech":true,"text":"salom"}', seen) }), { clip });
+    assert.equal(res.status, 200);
+    assert.equal(((await res.json()) as { text: string }).text, 'salom');
+    assert.deepEqual(seen[0].images, [clip]);
+  });
+
+  it('says so when no words were made out, or the answer is broken', async () => {
+    assert.equal(((await (await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{"speech":false,"text":""}') }), { clip })).json()) as { text: string }).text, '');
+    assert.equal(((await (await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('nope') }), { clip })).json()) as { text: null }).text, null);
+  });
+
+  it('turns away what is not a clip, and anyone without an account', async () => {
+    assert.equal((await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{}') }), { clip: { mimeType: 'audio/mp4', data: btoa('not a movie file') } })).status, 400);
+    assert.equal((await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{}'), db: makeDb({}) }), { clip })).status, 401);
+  });
+
+  it('never sends the voice to the chat provider', async () => {
+    const chat: PromptLayout[] = [];
+    const res = await ask(createApp(answering('{"speech":true,"text":"x"}', chat), { timeoutMs: 1000 }), { clip });
+    assert.equal(res.status, 503);
+    assert.equal(chat.length, 0);
+  });
+
+  it('turns away a clip over the limit', async () => {
+    const data = clip.data.padEnd(1_100_000, 'A');
+    assert.equal((await ask(createApp(answering('{}'), { timeoutMs: 1000 }), { clip: { ...clip, data } })).status, 413);
+  });
+});

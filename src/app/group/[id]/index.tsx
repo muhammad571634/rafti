@@ -11,6 +11,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { useFollowNewest } from '@/components/chat/follow-newest';
+import type { VoiceNote } from '@/components/chat/use-voice-note';
+import { dropNote } from '@/lib/voice-files';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
@@ -235,6 +237,17 @@ export default function GroupChatScreen() {
     return false;
   };
 
+  const sendNote = (note: VoiceNote) => {
+    if (sendGroupVoice(groupId, note.seconds, note.transcript, note.audioFile) !== 'noShells') return;
+    outOfShells(shellCosts.voiceMessage);
+    if (note.audioFile) void dropNote(note.audioFile);
+  };
+  const canRecord = () => {
+    if (shells >= shellCosts.voiceMessage) return true;
+    outOfShells(shellCosts.voiceMessage);
+    return false;
+  };
+
   const send = (text: string) => {
     const result = sendGroupText(groupId, text);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
@@ -351,6 +364,8 @@ export default function GroupChatScreen() {
             onSend={send}
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
+            onVoiceNote={sendNote}
+            canRecord={canRecord}
           />
         </KeyboardAvoidingView>
 
@@ -407,9 +422,11 @@ export default function GroupChatScreen() {
       <VoiceSheet
         visible={voiceOpen}
         onClose={() => setVoiceOpen(false)}
-        onSend={(seconds) => {
+        chatId={groupId}
+        canRecord={canRecord}
+        onSend={(note) => {
           setVoiceOpen(false);
-          if (sendGroupVoice(groupId, seconds, '(voice message)') === 'noShells') outOfShells(shellCosts.voiceMessage);
+          sendNote(note);
         }}
       />
 
@@ -455,6 +472,7 @@ export default function GroupChatScreen() {
         }}
         onDelete={(message) => {
           deleteMessage(groupId, message.id);
+          if (message.audioFile) void dropNote(message.audioFile);
           setMenu(null);
         }}
       />

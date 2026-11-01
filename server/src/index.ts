@@ -14,7 +14,9 @@ if (config.geminiKey) providers.push(geminiProvider(config.geminiKey, config.cha
 const provider = chainProviders(providers);
 const db = config.supabase.url && config.supabase.secretKey ? supabaseDb(config.supabase) : null;
 const client = db && config.supabase.publishableKey ? { supabaseUrl: config.supabase.url, supabaseKey: config.supabase.publishableKey } : null;
-const app = createApp(provider, { timeoutMs: config.timeoutMs, db, client, devGrants: config.devGrants });
+// Voice messages go to Gemini alone, as the app's consent says.
+const voiceProvider = config.geminiKey ? geminiProvider(config.geminiKey, config.chatModels) : null;
+const app = createApp(provider, { timeoutMs: config.timeoutMs, voiceProvider, db, client, devGrants: config.devGrants });
 
 serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => {
   console.log(`Sigmazam API on http://${config.host}:${info.port}`);

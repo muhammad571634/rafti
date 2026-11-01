@@ -43,6 +43,7 @@ import {
 } from '../../src/economy/shells.ts';
 import type { LedgerReason, MemoryItem } from '../../src/types/index.ts';
 import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-prompt.ts';
+import { cleanClip, CLIP_CHARS_MAX, parseTranscript, transcribeLayout } from '../../src/ai/voice-prompt.ts';
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
@@ -61,9 +62,11 @@ const MAX_MESSAGES = 120;
 const MAX_GROUP_OTHERS = 4;
 
 /** Every route that calls the model and so costs money (`modelGuard`). */
-const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
+const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
 /** A reply request: its photos, and room for the chat and everything else it carries. */
 const CHAT_BODY_MAX_BYTES = PHOTOS_MAX * PHOTO_CHARS_MAX + 2_000_000;
+/** A voice message: its clip and the little around it. */
+const VOICE_BODY_MAX_BYTES = CLIP_CHARS_MAX + 1000;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
@@ -259,7 +262,7 @@ function logUsage(db: Db | null, userId: Promise<string | null>, event: Omit<Usa
  */
 export function createApp(
   provider: LlmProvider | null,
-  opts: { timeoutMs: number; db?: Db | null; client?: ClientConfig | null; devGrants?: boolean; limits?: Partial<ModelLimits> },
+  opts: { timeoutMs: number; voiceProvider?: LlmProvider | null; db?: Db | null; client?: ClientConfig | null; devGrants?: boolean; limits?: Partial<ModelLimits> },
 ) {
   const app = new Hono();
   const db = opts.db ?? null;
@@ -298,6 +301,7 @@ export function createApp(
   for (const route of ['/v1/chat/reply', '/v1/chat/group']) {
     app.use(route, bodyLimit({ maxSize: CHAT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   }
+  app.use('/v1/voice/transcribe', bodyLimit({ maxSize: VOICE_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
 
   /**
    * A wallet call for the signed-in user. A wallet not made yet (bootstrap never ran) is made first;
@@ -338,12 +342,12 @@ export function createApp(
    * `template` is the mode block the prompt carries (src/ai/modes.ts), for `promptVersion`;
    * `temperature` is for work that must be exact (the memory pass).
    */
-  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode, temperature?: number) {
-    if (!provider) return c.json({ error: 'noModel' }, 503);
+  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode, temperature?: number, using: LlmProvider | null = provider) {
+    if (!using) return c.json({ error: 'noModel' }, 503);
     const started = Date.now();
     try {
-      const result = await provider.complete(layout, { timeoutMs: opts.timeoutMs, temperature });
-      const model = result.model ?? provider.name;
+      const result = await using.complete(layout, { timeoutMs: opts.timeoutMs, temperature });
+      const model = result.model ?? using.name;
       const cost = costUsd(result.model, result.usage);
       logUsage(db, signedIn(c), {
         kind: 'llm',
@@ -569,6 +573,15 @@ export function createApp(
     const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
     request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
     return modelCall(c, request.kind, layoutPrompt(writeParts(request)), (text) => ({ result: parseWrite(request, text) }), WRITE_MODE[request.kind]);
+  });
+
+  // What a voice message says, so the chat reads it as words. The clip is only passed on to the
+  // model: it is not kept, and the words go in no log. `text` is '' when no words were made out.
+  // Only `voiceProvider`: the app's consent names the service the voice goes to.
+  app.post('/v1/voice/transcribe', async (c) => {
+    const clip = cleanClip((await readJson(c))?.clip);
+    if (!clip) return c.json({ error: 'badInput' }, 400);
+    return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => ({ text: parseTranscript(text) }), undefined, 0, opts.voiceProvider ?? null);
   });
 
   // One group member's next message: their persona, the group as they read it, this turn's cue. The

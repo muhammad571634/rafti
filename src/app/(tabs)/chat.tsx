@@ -25,6 +25,7 @@ import { GroupAvatar } from '@/components/group-avatar';
 import { AuroraGlass, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
 import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
 import { chatDrafts } from '@/lib/chat-drafts';
+import { forgetNotes } from '@/lib/voice-files';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
@@ -221,6 +222,7 @@ export default function ChatListScreen() {
         t('common.delete'),
         () => {
           chatDrafts.forget(item.id);
+          void forgetNotes(item.id);
           return item.kind === 'chat' ? deleteChat(item.id) : deleteGroup(item.id);
         },
         t('common.cancel'),

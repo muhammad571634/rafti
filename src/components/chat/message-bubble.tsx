@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { memo, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -9,10 +9,12 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { playNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
+import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
 import { useReveal } from '@/lib/reveal';
@@ -244,19 +246,44 @@ function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; 
 /** Heights of the still waveform on a voice message (iOS draws one from the clip). */
 const WAVE = [6, 10, 14, 8, 16, 12, 18, 10, 6, 12, 16, 20, 14, 8, 12, 16, 10, 6, 14, 18, 12, 8];
 
-/** Play button, waveform and length; tap plays (mock), long-press reveals what was said. */
+/** Play button, waveform and length; tap plays, long-press shows or hides what was said. Their notes have no file yet: the clock runs. */
 function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: boolean; tail: boolean; wide?: boolean }) {
   const { t } = useTranslation();
   const [playing, setPlaying] = useState(false);
-  const [showTranscript, setShowTranscript] = useState(false);
+  // Your own note shows what the model heard, so a wrong hearing is seen and not only answered.
+  const [showTranscript, setShowTranscript] = useState(!!message.audioFile && message.transcript !== VOICE_NO_WORDS);
+  /** It is this bubble that plays, so scrolling it away stops the sound. */
+  const sounding = useRef(false);
+  useEffect(
+    () => () => {
+      if (sounding.current) stopNote();
+    },
+    [],
+  );
   const seconds = message.durationSec ?? 0;
   const ink = mine ? colors.bubbleSelfText : colors.bubbleOtherText;
   const faint = mine ? colors.bubbleSelfText : colors.textSecondary;
 
   const play = () => {
-    if (playing) return setPlaying(false);
+    if (playing) {
+      if (sounding.current) stopNote();
+      return setPlaying(false);
+    }
     setPlaying(true);
-    // Real builds stream the clip with expo-audio; the mock just runs the clock.
+    if (message.audioFile) {
+      sounding.current = true;
+      const done = () => {
+        sounding.current = false;
+        setPlaying(false);
+      };
+      void playNote(message.audioFile, done).then((found) => {
+        // Not on this phone (a chat restored from the server): the clock runs instead.
+        if (found) return;
+        sounding.current = false;
+        setTimeout(() => setPlaying(false), Math.min(seconds, 12) * 1000);
+      });
+      return;
+    }
     setTimeout(() => setPlaying(false), Math.min(seconds, 12) * 1000);
   };
 

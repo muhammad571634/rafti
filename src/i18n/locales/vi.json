@@ -322,6 +322,10 @@
     "read": "Đã đọc",
     "delivered": "Đã gửi",
     "sending": "Đang gửi",
+    "voiceConsent": {
+      "title": "Cho nghe giọng của bạn nhé?",
+      "body": "Để hiểu tin nhắn thoại, nhân vật của bạn gửi nó đến dịch vụ AI của chúng tôi, Google Gemini."
+    },
     "photoConsent": {
       "title": "Cho họ xem ảnh của bạn?",
       "body": "Để nhân vật thấy được ảnh, ảnh sẽ được gửi đến dịch vụ AI của chúng tôi là Google Gemini.",
@@ -351,7 +355,10 @@
       "title": "Tin nhắn thoại",
       "hold": "Giữ để nói",
       "release": "Thả để gửi",
-      "tooShort": "Giữ lâu hơn một chút"
+      "tooShort": "Giữ lâu hơn một chút",
+      "slideCancel": "Trượt để hủy",
+      "noSpeech": "Không nghe rõ",
+      "noMic": "Hãy cho phép micrô trong Cài đặt để gửi tin nhắn thoại"
     },
     "shellCost_other": "{{count}} vỏ sò",
     "dayToday": "Hôm nay",

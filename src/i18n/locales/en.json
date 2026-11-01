@@ -329,6 +329,10 @@
     "read": "Read",
     "delivered": "Delivered",
     "sending": "Sending",
+    "voiceConsent": {
+      "title": "Let them hear your voice?",
+      "body": "To understand a voice message, your character sends it to our AI service, Google Gemini."
+    },
     "photoConsent": {
       "title": "Let them see your photos?",
       "body": "To see a photo, your character sends it to our AI service, Google Gemini.",
@@ -358,7 +362,10 @@
       "title": "Voice message",
       "hold": "Hold to talk",
       "release": "Release to send",
-      "tooShort": "Hold a little longer"
+      "tooShort": "Hold a little longer",
+      "slideCancel": "Slide to cancel",
+      "noSpeech": "Didn't catch that",
+      "noMic": "Allow the microphone in Settings to send voice messages"
     },
     "shellCost_one": "{{count}} shell",
     "shellCost_other": "{{count}} shells",

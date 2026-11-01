@@ -1,77 +1,63 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Anim, Sheet, Txt } from '@/components/ui';
 import { duration as fmtDuration } from '@/lib/format';
 import { colors, space, systemColors } from '@/theme';
 
-const MIN_SECONDS = 1;
-const MAX_SECONDS = 60;
+import { useVoiceNote, type VoiceNote } from './use-voice-note';
 
-/**
- * Hold-to-talk recorder. The skeleton measures how long you held and sends a voice
- * note of that length; real builds capture audio with expo-audio and upload it.
- */
+/** The recorder a tap on the mic or "+" opens: hold the red button to talk, let go to send. */
 export function VoiceSheet({
   visible,
   onClose,
   onSend,
+  chatId,
+  canRecord,
 }: {
   visible: boolean;
   onClose: () => void;
-  onSend: (seconds: number) => void;
+  onSend: (note: VoiceNote) => void;
+  chatId?: string;
+  canRecord?: () => boolean;
 }) {
   const { t } = useTranslation();
-  const [recording, setRecording] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const [tooShort, setTooShort] = useState(false);
-  const startedAt = useRef(0);
-
-  useEffect(() => {
-    if (!recording) return;
-    const tick = setInterval(() => {
-      const elapsed = (Date.now() - startedAt.current) / 1000;
-      setSeconds(Math.min(MAX_SECONDS, Math.floor(elapsed)));
-    }, 200);
-    return () => clearInterval(tick);
-  }, [recording]);
-
-  const start = () => {
-    startedAt.current = Date.now();
-    setSeconds(0);
-    setTooShort(false);
-    setRecording(true);
-  };
-
-  const stop = () => {
-    if (!recording) return;
-    setRecording(false);
-    const held = Math.min(MAX_SECONDS, Math.round((Date.now() - startedAt.current) / 1000));
-    if (held < MIN_SECONDS) return setTooShort(true);
-    onSend(held);
+  const voice = useVoiceNote(chatId, onSend, canRecord);
+  const recording = voice.phase === 'recording';
+  const close = () => {
+    voice.finish(false);
+    voice.discard();
+    onClose();
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('chat.voice.title')}>
+    <Sheet visible={visible} onClose={close} title={t('chat.voice.title')}>
       {/* Voice Memos look (approved prototype `SheetVoice.dc.html`): big timer, red wave, red record button. */}
       <View style={styles.body}>
-        <Txt style={[styles.timer, recording && styles.timerLive]}>{fmtDuration(seconds)}</Txt>
+        <Txt style={[styles.timer, recording && styles.timerLive]}>{fmtDuration(voice.seconds)}</Txt>
 
         <View style={styles.meter}>
           {recording ? (
             <Anim name="voiceWave" size={72} tint={RECORD_RED} />
+          ) : voice.phase === 'sending' ? (
+            <ActivityIndicator color={colors.textSecondary} />
+          ) : voice.phase === 'failed' ? (
+            <Pressable onPress={() => void voice.retry()} hitSlop={10} accessibilityRole="button" accessibilityLabel={t('chat.tryAgain')}>
+              <Txt style={styles.hint} color={colors.danger}>
+                {t('chat.notDelivered')} · {t('chat.tryAgain')}
+              </Txt>
+            </Pressable>
           ) : (
-            <Txt style={styles.hint} color={tooShort ? colors.danger : colors.textSecondary}>
-              {tooShort ? t('chat.voice.tooShort') : t('chat.voice.hold')}
+            <Txt style={styles.hint} color={voice.notice ? colors.danger : colors.textSecondary}>
+              {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : voice.notice === 'noSpeech' ? t('chat.voice.noSpeech') : t('chat.voice.hold')}
             </Txt>
           )}
         </View>
 
         <Pressable
-          onPressIn={start}
-          onPressOut={stop}
+          onPressIn={voice.start}
+          onPressOut={() => voice.finish(true)}
           accessibilityRole="button"
           accessibilityLabel={t('chat.voice.hold')}
           style={styles.ring}>

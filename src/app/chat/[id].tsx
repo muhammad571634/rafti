@@ -24,6 +24,8 @@ import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { ToneMenu } from '@/components/chat/tone-menu';
+import type { VoiceNote } from '@/components/chat/use-voice-note';
+import { dropNote } from '@/lib/voice-files';
 import { useFollowNewest } from '@/components/chat/follow-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
@@ -356,6 +358,17 @@ export default function ChatRoomScreen() {
     return result === 'sent';
   };
 
+  const sendNote = (note: VoiceNote) => {
+    if (sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile) !== 'noShells') return;
+    outOfShells(shellCosts.voiceMessage);
+    if (note.audioFile) void dropNote(note.audioFile);
+  };
+  const canRecord = () => {
+    if (shells >= shellCosts.voiceMessage) return true;
+    outOfShells(shellCosts.voiceMessage);
+    return false;
+  };
+
   // A new version and an edit are new replies, so each costs what a message does.
   const redo = (off?: OffReason) => {
     if (regenerateReply(conversation.id, off) === 'noShells') outOfShells(shellCosts.textMessage);
@@ -564,6 +577,8 @@ export default function ChatRoomScreen() {
             }
             onAttach={() => setAttachOpen(true)}
             onVoice={() => setVoiceOpen(true)}
+            onVoiceNote={sendNote}
+            canRecord={canRecord}
             initialValue={typeof draft === 'string' ? draft : undefined}
             fill={ideaDraft ? { text: phrase(ideaDraft.idea.text), at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
@@ -620,11 +635,11 @@ export default function ChatRoomScreen() {
       <VoiceSheet
         visible={voiceOpen}
         onClose={() => setVoiceOpen(false)}
-        onSend={(seconds) => {
+        chatId={conversation.id}
+        canRecord={canRecord}
+        onSend={(note) => {
           setVoiceOpen(false);
-          if (sendVoice(conversation.id, seconds, '(voice message)') === 'noShells') {
-            outOfShells(shellCosts.voiceMessage);
-          }
+          sendNote(note);
         }}
       />
 
@@ -671,6 +686,7 @@ export default function ChatRoomScreen() {
         }}
         onDelete={(message) => {
           deleteMessage(conversation.id, message.id);
+          if (message.audioFile) void dropNote(message.audioFile);
           setMenu(null);
         }}
         onEdit={

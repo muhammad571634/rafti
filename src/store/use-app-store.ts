@@ -70,6 +70,7 @@ import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pus
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
+import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -455,7 +456,7 @@ interface AppState {
 
   /* chat */
   sendText: (conversationId: string, text: string, tone?: MessageTone) => SendResult;
-  sendVoice: (conversationId: string, durationSec: number, transcript: string) => SendResult;
+  sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string) => SendResult;
   sendImage: (conversationId: string, imageUri: string) => SendResult;
   markRead: (conversationId: string) => void;
   /** Chats "Mark as Unread": the chat or group shows its dot again until it is opened. */
@@ -499,7 +500,7 @@ interface AppState {
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
   createGroup: (memberIds: string[], name?: string) => string | null;
   sendGroupText: (groupId: string, text: string) => SendResult;
-  sendGroupVoice: (groupId: string, durationSec: number, transcript: string) => SendResult;
+  sendGroupVoice: (groupId: string, durationSec: number, transcript: string, audioFile?: string) => SendResult;
   sendGroupImage: (groupId: string, imageUri: string) => SendResult;
   /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
   continueGroup: (groupId: string) => SendResult;
@@ -1125,10 +1126,13 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendVoice: (conversationId, durationSec, transcript) => {
+      sendVoice: (conversationId, durationSec, transcript, audioFile) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
+        const heard = !!transcript && transcript !== VOICE_NO_WORDS;
+        // A spoken answer to the alarm costs nothing either, as a typed one does.
+        const wakeHere = heard ? wakeFor(get(), conversationId) : undefined;
+        if (!wakeHere && !chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
         countMessage(set, get);
 
         appendMessage(set, get, conversationId, {
@@ -1138,9 +1142,15 @@ export const useAppStore = create<AppState>()(
           kind: 'voice',
           durationSec,
           transcript,
+          audioFile,
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
+        if (heard) {
+          dayToDiary(set, get, conversationId, transcript);
+          answerText(set, get, conversationId, transcript, { wakeHere: !!wakeHere, gain: INTIMACY.voice, batch: true });
+          return 'sent';
+        }
         // A spoken crisis gets the same care as a typed one.
         const crisis = !!transcript && detectCrisis(transcript);
         if (crisis) appendHelplineCard(set, get, conversationId);
@@ -1483,7 +1493,7 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendGroupVoice: (groupId, durationSec, transcript) => {
+      sendGroupVoice: (groupId, durationSec, transcript, audioFile) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
         if (!get().spendShells(shellCosts.voiceMessage, 'voice')) return 'noShells';
         countMessage(set, get);
@@ -1495,6 +1505,7 @@ export const useAppStore = create<AppState>()(
           kind: 'voice',
           durationSec,
           transcript,
+          audioFile,
           createdAt: new Date().toISOString(),
         });
         answerGroup(set, get, groupId, transcript, (gender) => [pick(groupVoiceLines(gender))]);
