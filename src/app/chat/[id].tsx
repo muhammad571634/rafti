@@ -269,6 +269,7 @@ export default function ChatRoomScreen() {
           showAvatar={run.runStart}
           runEnd={run.runEnd}
           receipt={item.id === lastMine}
+          showTime={run.showTime}
           onCallBack={callBack}
           onLongPress={openMenu}
           pinned={pinnedIds.has(item.id)}
@@ -279,7 +280,7 @@ export default function ChatRoomScreen() {
         // One View: an inverted list lays each cell out column-reverse, so a Fragment's
         // children would draw bottom to top (the day chip under its line).
         <View>
-          {run.timeBreak ? <DayChip iso={item.createdAt} /> : null}
+          {run.dayBreak ? <DayChip iso={item.createdAt} /> : null}
           <View>
             {item.id === flash ? (
               <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />

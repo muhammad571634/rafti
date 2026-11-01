@@ -28,6 +28,8 @@ export interface MessageBubbleProps {
   runEnd: boolean;
   /** The user's last message shows "Read" or "Delivered" under it. */
   receipt?: boolean;
+  /** The time under the message (`showsTime`). */
+  showTime?: boolean;
   animate?: boolean;
   onCallBack?: () => void;
   /** Long-press on a text or photo opens the message menu (react, copy, delete). */
@@ -59,6 +61,7 @@ export const MessageBubble = memo(function MessageBubble({
   showAvatar,
   runEnd,
   receipt,
+  showTime,
   animate = true,
   onCallBack,
   onLongPress,
@@ -76,6 +79,9 @@ export const MessageBubble = memo(function MessageBubble({
   const mine = message.author === 'me';
   const photoId = message.photoId;
   const named = !mine && showAvatar && !!senderName;
+  const time = showTime ? clockTime(message.createdAt) : undefined;
+  // Their bubble with a name over it or a time under it: the column holds the width cap.
+  const column = named || (!mine && !!time);
 
   if (message.card === 'helpline') return <HelplineCard />;
   // Only groups still get the line; a one-to-one chat's header says "AI character" (2026-10-30).
@@ -91,8 +97,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
-  // The bubble itself; in a group it sits under the member's name, which then holds the width cap.
-  const holdStyle = [styles.holdable, named && styles.wide, message.reaction ? styles.withReaction : null];
+  const holdStyle = [styles.holdable, column && styles.wide, message.reaction ? styles.withReaction : null];
   const inner = (
     <>
       {message.kind === 'image' && message.photoId ? (
@@ -121,7 +126,7 @@ export const MessageBubble = memo(function MessageBubble({
   );
   const content =
     message.kind === 'voice' ? (
-      <VoiceBubble message={message} mine={mine} tail={runEnd} wide={named} />
+      <VoiceBubble message={message} mine={mine} tail={runEnd} wide={column} />
     ) : !onLongPress && !photoId ? (
       // Nothing to press (a stream's lines): a plain view.
       <View style={holdStyle}>{inner}</View>
@@ -139,22 +144,24 @@ export const MessageBubble = memo(function MessageBubble({
   return (
     <Animated.View
       entering={animate ? FadeInDown.duration(220).springify().damping(18) : undefined}
-      style={[styles.row, runEnd && styles.runEnd]}>
+      style={[styles.row, !!time && styles.timedRow, runEnd && styles.runEnd]}>
       {mine ? (
         // The user's side: no avatar, as in iOS Messages; the last message says Read or Delivered.
         <View style={styles.mine}>
           {content}
           {message.failed ? (
-            <NotDelivered onRetry={onRetry} />
+            <NotDelivered onRetry={onRetry} time={time} />
           ) : receipt ? (
-            <ReadReceipt message={message} />
+            <ReadReceipt message={message} time={time} />
           ) : message.editedAt ? (
-            <EditedNote />
+            <EditedNote time={time} />
+          ) : time ? (
+            <Txt style={styles.receipt}>{time}</Txt>
           ) : null}
         </View>
       ) : (
         <>
-          <View style={styles.avatarSlot}>
+          <View style={[styles.avatarSlot, !!time && styles.avatarOverTime]}>
             {runEnd ? (
               onAvatarPress ? (
                 <PressableScale
@@ -169,12 +176,15 @@ export const MessageBubble = memo(function MessageBubble({
               )
             ) : null}
           </View>
-          {named ? (
-            <View style={styles.named}>
-              <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.sender}>
-                {senderName}
-              </Txt>
+          {column ? (
+            <View style={styles.column}>
+              {named ? (
+                <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.sender}>
+                  {senderName}
+                </Txt>
+              ) : null}
               {content}
+              {time ? <Txt style={[styles.receipt, styles.timeTheirs]}>{time}</Txt> : null}
             </View>
           ) : (
             content
@@ -284,7 +294,7 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
   );
 }
 
-function ReadReceipt({ message }: { message: Message }) {
+function ReadReceipt({ message, time }: { message: Message; time?: string }) {
   const { t } = useTranslation();
 
   return (
@@ -298,24 +308,28 @@ function ReadReceipt({ message }: { message: Message }) {
       {message.pending ? (
         t('chat.sending')
       ) : message.readAt ? (
-        <>
-          <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.read')}</Txt> {clockTime(message.readAt)}
-        </>
+        <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.read')}</Txt>
       ) : (
         <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.delivered')}</Txt>
       )}
+      {time ? ` · ${time}` : null}
     </Txt>
   );
 }
 
 /** "Edited" under a message you changed (iOS Messages), once a newer one carries the receipt. */
-function EditedNote() {
+function EditedNote({ time }: { time?: string }) {
   const { t } = useTranslation();
-  return <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>;
+  return (
+    <Txt style={styles.receipt}>
+      <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>
+      {time ? ` · ${time}` : null}
+    </Txt>
+  );
 }
 
 /** iOS Messages' "Not Delivered" in system red under the line; a tap asks for the reply again. */
-function NotDelivered({ onRetry }: { onRetry?: () => void }) {
+function NotDelivered({ onRetry, time }: { onRetry?: () => void; time?: string }) {
   const { t } = useTranslation();
   return (
     <Pressable
@@ -329,6 +343,7 @@ function NotDelivered({ onRetry }: { onRetry?: () => void }) {
       <Txt style={[styles.receipt, styles.failedText]}>
         <Txt style={[styles.receipt, styles.receiptStrong, styles.failedText]}>{t('chat.notDelivered')}</Txt>
         {onRetry ? ` · ${t('chat.tryAgain')}` : null}
+        {time ? ` · ${time}` : null}
       </Txt>
     </Pressable>
   );
@@ -506,9 +521,10 @@ function BoothPhotoMessage({ photoId, character }: { photoId: string; character:
 const styles = StyleSheet.create({
   // The held area carries the bubble's width cap, so the text bubble fills it.
   holdable: { flexShrink: 1, maxWidth: '72%' },
-  // In a group the name and bubble share one column, which carries the cap instead.
-  named: { flexShrink: 1, maxWidth: '72%', alignItems: 'flex-start', gap: 3 },
+  // A bubble with a member's name or a time shares one column with them, which carries the cap instead.
+  column: { flexShrink: 1, maxWidth: '72%', alignItems: 'flex-start', gap: 3 },
   sender: { paddingLeft: space.xs },
+  timeTheirs: { paddingTop: 0, paddingRight: 0, paddingLeft: space.xs },
   wide: { maxWidth: '100%' },
   fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
@@ -539,9 +555,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     marginBottom: 2,
   },
+  timedRow: { marginBottom: space.sm },
   runEnd: { marginBottom: space.sm + 2 },
   mine: { flex: 1, alignItems: 'flex-end' },
   avatarSlot: { width: AVATAR },
+  // The avatar stays level with the bubble, above the time's line (14pt + the 3pt gap).
+  avatarOverTime: { marginBottom: 17 },
   bubble: {
     maxWidth: '72%',
     paddingHorizontal: 13,

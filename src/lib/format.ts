@@ -1,9 +1,12 @@
+import { getCalendars } from 'expo-localization';
+
 import i18n from '@/i18n';
 
-/** "21:44" — used on message rows and call logs. */
+import { clockText } from './clock';
+
+/** "21:44" or "9:44 PM", as the phone reads time — used on message rows and call logs. */
 export function clockTime(iso: string) {
-  const d = new Date(iso);
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  return clockText(new Date(iso), getCalendars()[0]?.uses24hourClock ?? true, i18n.language);
 }
 
 /** "0:06" — voice bubble and call timer. */

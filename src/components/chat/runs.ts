@@ -1,25 +1,32 @@
-import { dayKey } from '@/mock';
+import { dayKey } from '../../mock/time';
 import type { Message } from '@/types';
 
 const HOUR = 3_600_000;
+const MINUTE = 60_000;
 
 /** Calls, system lines and cards stand alone: no run of bubbles reaches across them. */
 const standsAlone = (m: Message) => m.kind === 'call' || m.kind === 'system' || !!m.card;
 
-/** A new day, or an hour of quiet: the list shows "Today 00:58" above the next message. */
-export const timeBreak = (prev: Message | undefined, next: Message) =>
-  !prev ||
-  dayKey(prev.createdAt) !== dayKey(next.createdAt) ||
-  Date.parse(next.createdAt) - Date.parse(prev.createdAt) >= HOUR;
+const sameSpeaker = (a: Message, b: Message) => a.author === b.author && a.characterId === b.characterId;
+
+/** A new day: the list shows "Today" above the next message. */
+export const dayBreak = (prev: Message | undefined, next: Message) => !prev || dayKey(prev.createdAt) !== dayKey(next.createdAt);
+
+/** A message shows its time, except when the same speaker's next line says the same minute. */
+export const showsTime = (message: Message, next: Message | undefined) =>
+  !next ||
+  !sameSpeaker(message, next) ||
+  standsAlone(next) ||
+  Math.floor(Date.parse(message.createdAt) / MINUTE) !== Math.floor(Date.parse(next.createdAt) / MINUTE);
 
 const sameRun = (a: Message | undefined, b: Message | undefined) =>
   !!a &&
   !!b &&
-  a.author === b.author &&
-  a.characterId === b.characterId &&
+  sameSpeaker(a, b) &&
   !standsAlone(a) &&
   !standsAlone(b) &&
-  !timeBreak(a, b);
+  !dayBreak(a, b) &&
+  Date.parse(b.createdAt) - Date.parse(a.createdAt) < HOUR;
 
 /**
  * Where a message sits in its run of bubbles (iOS Messages): the run's first bubble carries a
@@ -28,7 +35,8 @@ const sameRun = (a: Message | undefined, b: Message | undefined) =>
 export function runOf(data: readonly Message[], index: number) {
   const message = data[index];
   return {
-    timeBreak: timeBreak(data[index - 1], message),
+    dayBreak: dayBreak(data[index - 1], message),
+    showTime: showsTime(message, data[index + 1]),
     runStart: !sameRun(data[index - 1], message),
     runEnd: !sameRun(message, data[index + 1]),
   };

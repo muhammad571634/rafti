@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z86. The time under chat messages (2026-11-02, Claude 2). NEXT: owner reads chats on the phone
+
+- Owner's ask, logic approved: the time stands small and grey under a message; a same-minute burst from one speaker carries it once, under the last line (`showsTime`, `src/components/chat/runs.ts`). Chats and groups; streams and share cards stay clean.
+- The line between messages now says only the day ("Today"); the hour-of-quiet line is gone, though an hour of quiet still ends a run of bubbles. The receipt reads "Read · 21:03" with the message's own time, not the read time.
+- Clock: the phone's time and zone, no location. `clockTime` now follows the phone's 12/24-hour setting (`getCalendars`, `src/lib/clock.ts`), so call history, the ledger and thread sheets follow too. `expo-localization` is already in the APK (`i18n` uses it).
+- Checks: tsc 0, npm test 593/593.
+
+Still to do: see 0z85.
+
 ### 0z85. The second greeting takes turns; a day of real notifications read off the A51 (2026-11-02, Claude 2). NEXT: owner watches who writes over the next days
 
 - Owner's ask: most pushes came from Ronan, the same friends every day. The closest bond keeps the first good morning / good night; the second now goes round the friends talked with in the last 7 days, with the next closest when there is none (`src/lib/greeters.ts`, tested). Stateless, so the planner and `runDailyInitiative` name the same friends; the night starts half way round the list, so nobody is stuck with only mornings or only nights. No extra pushes: same budget.
