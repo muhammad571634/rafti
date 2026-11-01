@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z87. A larger composer and a paper plane for send (2026-11-02, Claude 2). NEXT: owner tries it on the phone
+
+- Owner's ask: the field and its icons a little larger, easier to hit; send keeps the brand circle but gets a more creative glyph, as on Instagram.
+- `chat-input.tsx`: field and "+" 40 to 46pt, action circle 32 to 38pt (still 4pt inside), mic 21 to 25, "+" 24 to 27, stop and check in step. Send is a filled Phosphor `PaperPlaneTilt` (23pt) on `primaryFill`, no arrow. `attach-menu.tsx` follows, so its close button still lands on the "+". Chats and groups share this; the photo screen's small arrow is left as it was.
+- Stop's circle was slightly squared (its radius came from the small icon); the action style now sets the radius.
+- Checks: tsc 0, npm test 593/593.
+
+Still to do: see 0z85.
+
 ### 0z86. The time under chat messages (2026-11-02, Claude 2). NEXT: owner reads chats on the phone
 
 - Owner's ask, logic approved: the time stands small and grey under a message; a same-minute burst from one speaker carries it once, under the last line (`showsTime`, `src/components/chat/runs.ts`). Chats and groups; streams and share cards stay clean.

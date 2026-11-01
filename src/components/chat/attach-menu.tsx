@@ -30,8 +30,8 @@ const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: strin
   { key: 'voice', icon: 'mic', fill: systemColors.red },
 ];
 
-/** The chat input's "+" and field are 40pt, 12pt in from the edge (`ChatInput`). */
-const FIELD = 40;
+/** The chat input's "+" and field are 46pt, 12pt in from the edge (`ChatInput`). */
+const FIELD = 46;
 
 /**
  * The chat's "+" menu, as in iOS Messages: the chat blurs, the "+" turns into a close button
@@ -97,7 +97,7 @@ export function AttachMenu({
         accessibilityRole="button"
         accessibilityLabel={t('common.close')}
         style={[styles.close, { bottom }]}>
-        <Ionicons name="close" size={24} color={colors.text} />
+        <Ionicons name="close" size={27} color={colors.text} />
       </PressableScale>
     </View>
   );

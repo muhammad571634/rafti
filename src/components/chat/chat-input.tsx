@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTilt';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
@@ -11,8 +12,8 @@ import { bottomRoom, colors, radius, shadows, space } from '@/theme';
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
 const BUTTON = ICON + space.lg;
-/** The "+" circle and the one-line field are both 40pt tall. */
-const FIELD = 40;
+/** The "+" circle and the one-line field are both 46pt tall. */
+const FIELD = 46;
 const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
@@ -130,7 +131,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
         accessibilityRole="button"
         accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
         style={[styles.glass, styles.plus]}>
-        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 22 : 24} color={colors.text} />
+        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 24 : 27} color={colors.text} />
       </PressableScale>
 
       <View style={[styles.glass, styles.field]}>
@@ -156,7 +157,7 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
           <IconButton
             icon="checkmark"
-            size={19}
+            size={22}
             color={hasText ? colors.textOnPrimary : colors.textFaint}
             background={hasText ? colors.primaryFill : colors.surfaceAlt}
             haptic={hasText}
@@ -168,22 +169,30 @@ export function ChatInput({ placeholder, onSend, onAttach, onVoice, initialValue
           // Typing a new line brings send back; the reply then answers both.
           <IconButton
             icon="stop"
-            size={13}
+            size={15}
             color={colors.textOnPrimary}
             background={colors.primaryFill}
             accessibilityLabel={t('a11y.stopReply')}
             onPress={onStop}
             style={styles.action}
           />
+        ) : hasText ? (
+          <PressableScale
+            onPress={submit}
+            hitSlop={8}
+            scaleTo={0.88}
+            haptic
+            accessibilityLabel={t('a11y.send')}
+            style={[styles.action, styles.send]}>
+            <PaperPlaneTiltIcon size={23} weight="fill" color={colors.textOnPrimary} />
+          </PressableScale>
         ) : (
           <IconButton
-            icon={hasText ? 'arrow-up' : 'mic-outline'}
-            size={hasText ? 18 : 21}
-            color={hasText ? colors.textOnPrimary : colors.textSecondary}
-            background={hasText ? colors.primaryFill : undefined}
-            haptic={hasText}
-            accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
-            onPress={hasText ? submit : onVoice}
+            icon="mic-outline"
+            size={25}
+            color={colors.textSecondary}
+            accessibilityLabel={t('a11y.voiceMessage')}
+            onPress={onVoice}
             style={styles.action}
           />
         )}
@@ -220,8 +229,9 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     borderColor: colors.borderStrong,
   },
-  // A 32pt circle that sits 4pt inside the 40pt field.
-  action: { width: 32, height: 32, marginBottom: 4 },
+  // A 38pt circle that sits 4pt inside the 46pt field.
+  action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
+  send: { backgroundColor: colors.primaryFill },
   locked: {
     flex: 1,
     height: BUTTON + space.xs * 2 + 2,
