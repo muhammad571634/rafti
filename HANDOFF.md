@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z89. Shells follow the phone's day; the Sunday recap lands at its own time (2026-11-02, Claude 2). NEXT: owner watches the shell history after the next midnight
+
+- Commit `85add7b` says 0z88 in its title; another agent's block took that number first.
+- Shells, cause proven: the A51's server profile had `time_zone` UTC (`set_at` null, locale en-US), as does another account. Only a dev toggle ever sent the phone's zone; the wallet route bootstraps with `{}`. So the server's "today" began at 05:00 Tashkent time. From 00:00 to 05:00 the app burnt yesterday's free bucket and booked a row, the server's answer brought the bucket back, and each sync booked another. The server's ledger held only real spends: 128 to 124 was a note (-3) and a chat (-1). Local history was wrong; the balance was not. Check-in, the wheel and free shell expiry ran on the wrong day for every user.
+- Fix: `withAccount` tells the server the phone's zone once a launch, before the first wallet call. `expiryBooked` allows one row per midnight; `oneExpiryPerMidnight` cleans old rows at launch. No server deploy or migration.
+- Checked after `eas update` on the A51, 00:48: server profile `Asia/Tashkent`, set 19:48:16 UTC; the server booked one `expired:2026-11-01` of -20, then check-in +30 (`daily:2026-11-02`, streak 2); balance 130, free 30 of today. The phone's history shows one -20 at 00:00 and +30 at 00:48, and the repeated rows are gone. No fatal or JS errors.
+- 18:49 / 18:54, cause found: Sunday recap, 18:30 + the stable jitter of `week:2026-11-01:c_ronan`, which computes to 19. The recap did not land; the push's reply button ("Açıkçası zor bir haftaydı") wrote the line at the tap's time through `answerFromPush`, and because that line counts as this week's recap, the card never came.
+- Fix: `week` lands from the outbox like other lines, with its card at the push's time (`landWeekCard`, once per push, not over a crisis line). Not seen on the phone: it needs a Sunday 18:30 push (2026-11-08).
+- The other unmatched pushes (11:05:53, 13:12:02, 15:22:04) have non-zero seconds, unlike timed pushes, which fits "unread", 30 minutes after leaving. Unread does not land by design, as its line is already in the chat. Inference, not proof.
+- Second reader (a fresh agent, read-only) found three defects; I checked each in the code. Fixed: a stale "zone told" flag after account deletion; a possible second week card or a card with no line. Open: see Still to do.
+- Tests are helper-level: `landWeekCard` and `tellPhoneZone` have none (the runner cannot load the store or account code). tsc 0, npm test 605/605, both in a clean worktree of the commit.
+- Published from that clean worktree: `eas update` bundles the working tree, and other work was in progress in the shared checkout. Do this whenever another agent's files are uncommitted.
+
+Still to do:
+1. Owner looks at the shell history after the next midnight: one expiry row.
+2. On Sunday 2026-11-08 after 18:30: the recap's card and line stand in the chat at the push's time.
+3. Before launch, server (migration, needs a second reader): a zone moving west puts "today" back. `wallet_check_in` then resets the streak and answers `amount > 0` though `wallet_credit` pays nothing (key already booked), so the app logs a phantom + row; a bucket dated ahead of today stops expiring. Travellers only: new accounts tell the zone before the wallet exists.
+4. Before launch, server: `cleanTimeZone` checks with Node's Intl only. A zone Postgres does not know would make `user_today` raise on every wallet call for that user. Unproven; every user now sends a zone, so check it.
+5. While the server lags (failed tell, once-a-day limit), a bucket credited again for an already-booked midnight burns with no new row; the balance stays right.
+6. The lists in 0z85 and 0z86.
+
 ### 0z88. Kept drafts, and the keyboard key adds a line (2026-11-02, Claude 2). NEXT: owner tries both on the phone
 
 - Owner picked two composer ideas. Unsent text now waits in each chat and group, also after a restart (`src/lib/draft-store.ts`, tested; `use-kept-draft.ts`). It saves 300 ms after typing stops and on leaving; an edit's text is never kept; a diary reply's text goes before a kept draft.
