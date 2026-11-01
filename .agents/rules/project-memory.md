@@ -55,6 +55,7 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
   - Always use `C:\Users\joray\AppData\Local\Android\Sdk\platform-tools\adb.exe` — never the `scrcpy` `adb` on `PATH` (it drops the A51 connection).
 - **EAS OTA (`sukuts-team`, `EXPO_TOKEN` User env)**:
   - When native modules match the installed preview APK, publish JS-only updates with `$env:CI='1'` and `npx eas-cli update --channel preview --environment preview --message "<summary>"`. Tell the owner to swipe close and reopen the app **twice**.
+  - **No killing builds/OTA (owner rule 2026-11-02)**: Never interfere with, stop, or kill active `eas update` or `flyctl deploy` processes during RAM cleanup or other system tasks. Let them finish; only clean up true zombie/orphan tasks.
 - **Art & Worlds (57 official characters = 40 + 15 new)**:
   - Worlds text and logic come first. Owner generates scene-rich art in Nano Banana from `docs/nano-banana-worlds.md` into `art-new/` (do not call Higgsfield API while its balance is empty).
 - **Parallel Agents & Git (`local-work`)**:
