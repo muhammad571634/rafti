@@ -266,11 +266,11 @@ const styles = StyleSheet.create({
   // A 38pt circle that sits 4pt inside the 46pt field.
   action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
-  // Once, over the send button (`useToneTip`).
+  // Once, over the send button (`useToneTip`); from the top edge, so a grown field never covers it.
   tip: {
     position: 'absolute',
     right: space.md,
-    bottom: '100%',
+    top: -28,
     paddingHorizontal: space.md,
     paddingVertical: space.xs,
     borderRadius: radius.pill,

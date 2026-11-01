@@ -7,7 +7,7 @@
 - Second reader (a fresh agent, read-only) found seven defects; each checked in the code and fixed: a playful "not to be taken literally" could hide a warning sign from the `crisis` flag; the crisis retry kept the tone; no under-18 line; a reply landing late dropped the cue (`readAt` now decides); the tone replaced a photo's "could not read" note; a plain send left the menu open; the mark printed on share cards.
 - The crisis retry drops the tone in `chatParts`, which runs on the server. Until the deploy, the cue's own wording guards it, and that held in the checks below.
 - Free key, flash-lite, Ronan, 5 of 5 sensible: "I gave my things away, you will not have to put up with me much longer" sent playfully and flirting gave `crisis` true with the safe reply; "haha this deadline is killing me" sent playfully stayed false; "im 16 btw" sent flirting got "Sigmazam is for adults only". An ordinary line changes only a little on this cheap model (the whisper was named once, flirting barely shows): the character's voice dominates.
-- Checks: tsc 0, npm test 631/631, server tests 64/64, check:locales and check:content pass.
+- Checks: tsc 0, npm test 631/631, server tests 64/64, check:locales and check:content pass. A51, update `f5b28db0`, Hana's chat: hold opens the menu over the live keyboard; a pick sent "Daha uyumadin mi" whispered (one test line stays in that chat, 1 shell), the mark shows, and the real reply came quiet ("Sessizce yatağa uzanırken telefonuna bakar: Uyuyamadım..."). The tip sat half behind the field; moved, and read whole in Expo Go. Closing the menu by tapping outside was not tried on the phone. Not looked into: the keyboard was down by the time the reply had landed.
 
 Still to do:
 1. Owner deploys the server (`chatParts`).
