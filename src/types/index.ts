@@ -246,6 +246,8 @@ export interface Message {
   tone?: MessageTone;
   /** Speech-to-text of a voice message, rendered as a muted sub-bubble */
   transcript?: string;
+  /** The language the transcript was heard in ("Uzbek"), for this message's reply (`spokenCue`). */
+  transcriptLanguage?: string;
   durationSec?: number;
   /** The name of a voice message's file on this phone (`noteUri`); the sound is never kept anywhere else. */
   audioFile?: string;

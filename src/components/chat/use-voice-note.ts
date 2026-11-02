@@ -46,6 +46,8 @@ export interface VoiceNote {
   transcript: string;
   /** The kept file (`keepNote`), when it could be kept. */
   audioFile?: string;
+  /** The language it was heard in. */
+  language?: string;
 }
 
 export type VoicePhase = 'idle' | 'recording' | 'sending' | 'failed';
@@ -90,9 +92,9 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     latestOnNote.current = onNote;
   });
 
-  const hand = async (clip: { uri: string; seconds: number }, transcript: string) => {
+  const hand = async (clip: { uri: string; seconds: number }, transcript: string, language?: string) => {
     const audioFile = chatId ? await keepNote(clip.uri, chatId) : undefined;
-    latestOnNote.current({ seconds: clip.seconds, transcript, audioFile });
+    latestOnNote.current({ seconds: clip.seconds, transcript, audioFile, language });
   };
 
   const deliver = async () => {
@@ -105,12 +107,12 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
       return hand(clip, VOICE_NO_WORDS);
     }
     const read = await readClip(clip.uri);
-    const words = read ? await accessToken().then((token) => serverTranscribe(read, token)).catch(() => null) : null;
+    const heard = read ? await accessToken().then((token) => serverTranscribe(read, token)).catch(() => null) : null;
     if (waiting.current !== clip) return;
-    if (words === null) return setPhase('failed');
+    if (heard === null) return setPhase('failed');
     waiting.current = null;
     setPhase('idle');
-    if (words) return hand(clip, words);
+    if (heard.text) return hand(clip, heard.text, heard.language);
     setNotice('noSpeech');
     void dropClip(clip.uri);
   };
@@ -125,7 +127,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   const begin = async () => {
     if (live.current || !wanted.current) return;
     // Look before asking: asking opens a system screen even when the answer is already yes, which
-    // sends the app to the background and so throws the recording away (seen on the A51, 0z93).
+    // sends the app to the background and so throws the recording away (seen on the A51, 0z94).
     const { granted, canAskAgain } = await AudioModule.getRecordingPermissionsAsync();
     if (!granted) {
       // The prompt takes the touch, so this hold records nothing and the next one does.

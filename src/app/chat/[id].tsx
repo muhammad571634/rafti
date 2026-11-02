@@ -359,7 +359,7 @@ export default function ChatRoomScreen() {
   };
 
   const sendNote = (note: VoiceNote) => {
-    if (sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile) !== 'noShells') return;
+    if (sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile, note.language) !== 'noShells') return;
     outOfShells(shellCosts.voiceMessage);
     if (note.audioFile) void dropNote(note.audioFile);
   };

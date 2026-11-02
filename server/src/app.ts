@@ -581,7 +581,7 @@ export function createApp(
   app.post('/v1/voice/transcribe', async (c) => {
     const clip = cleanClip((await readJson(c))?.clip);
     if (!clip) return c.json({ error: 'badInput' }, 400);
-    return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => ({ text: parseTranscript(text) }), undefined, 0, opts.voiceProvider ?? null);
+    return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => parseTranscript(text) ?? { text: null }, undefined, 0, opts.voiceProvider ?? null);
   });
 
   // One group member's next message: their persona, the group as they read it, this turn's cue. The

@@ -6,7 +6,7 @@ import type { StreamLineRequest } from './content-prompts';
 import type { FirstTextRequest } from './first-text';
 import type { GroupPromptInput } from './group-reply';
 import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
-import type { VoiceClip } from './voice-prompt';
+import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
   BootstrapInput,
@@ -175,10 +175,10 @@ export async function serverMemoryPass(request: MemoryPassRequest, accessToken?:
   return reply && Array.isArray(reply.ops) ? { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops } : null;
 }
 
-/** What a voice message says: the words, '' when none were made out, or null (off, busy, slow or a broken answer). */
-export async function serverTranscribe(clip: VoiceClip, accessToken?: string | null): Promise<string | null> {
-  const reply = await call<{ text?: string | null }>('/v1/voice/transcribe', withOptionalToken(accessToken, { clip }), TRANSCRIBE_TIMEOUT_MS);
-  return typeof reply?.text === 'string' ? reply.text : null;
+/** What a voice message says: the words ('' when none were made out) and their language, or null (off, busy, slow or a broken answer). */
+export async function serverTranscribe(clip: VoiceClip, accessToken?: string | null): Promise<Transcript | null> {
+  const reply = await call<{ text?: string | null; language?: unknown }>('/v1/voice/transcribe', withOptionalToken(accessToken, { clip }), TRANSCRIBE_TIMEOUT_MS);
+  return typeof reply?.text === 'string' ? { text: reply.text, language: cleanLanguage(reply.language) } : null;
 }
 
 /** The next stream line in the speaker's voice (B1.4b), or null (off, busy, slow or no usable line). */

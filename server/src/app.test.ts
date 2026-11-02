@@ -864,9 +864,9 @@ describe('POST /v1/voice/transcribe', () => {
 
   it('hands the clip to the model and returns the words', async () => {
     const seen: PromptLayout[] = [];
-    const res = await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{"speech":true,"text":"salom"}', seen) }), { clip });
+    const res = await ask(createApp(null, { timeoutMs: 1000, voiceProvider: answering('{"speech":true,"language":"Uzbek","text":"salom"}', seen) }), { clip });
     assert.equal(res.status, 200);
-    assert.equal(((await res.json()) as { text: string }).text, 'salom');
+    assert.deepEqual(await res.json(), { text: 'salom', language: 'Uzbek', model: 'fake' });
     assert.deepEqual(seen[0].images, [clip]);
   });
 

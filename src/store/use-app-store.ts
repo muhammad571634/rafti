@@ -70,7 +70,7 @@ import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pus
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
-import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
+import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -456,7 +456,7 @@ interface AppState {
 
   /* chat */
   sendText: (conversationId: string, text: string, tone?: MessageTone) => SendResult;
-  sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string) => SendResult;
+  sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string, language?: string) => SendResult;
   sendImage: (conversationId: string, imageUri: string) => SendResult;
   markRead: (conversationId: string) => void;
   /** Chats "Mark as Unread": the chat or group shows its dot again until it is opened. */
@@ -1126,7 +1126,7 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendVoice: (conversationId, durationSec, transcript, audioFile) => {
+      sendVoice: (conversationId, durationSec, transcript, audioFile, language) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
         const heard = !!transcript && transcript !== VOICE_NO_WORDS;
@@ -1142,6 +1142,7 @@ export const useAppStore = create<AppState>()(
           kind: 'voice',
           durationSec,
           transcript,
+          transcriptLanguage: heard ? language : undefined,
           audioFile,
           createdAt: new Date().toISOString(),
         });
@@ -5157,9 +5158,10 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     // The account's token lets the server log the reply's cost against this user (B1).
     void (async () => {
       const { photos, ...looking } = await lookAtPhotos(messages, cue);
-      // A game's or a steer's turn has its own cue; a plain answer hears how the text was said,
+      // A game's or a steer's turn has its own cue; a plain answer hears how the text was said, or
+      // in which language a voice message was,
       // beside the note that a photo could not be read.
-      const heard = !cue && !steer && trigger === 'message' ? toneCue(messages) : undefined;
+      const heard = !cue && !steer && trigger === 'message' ? (toneCue(messages) ?? spokenCue(messages)) : undefined;
       const reply = await accessToken()
         .then((token) => serverReply({ ...input, ...looking, cue: heard ? [...(looking.cue ?? []), ...heard] : looking.cue }, token))
         .catch(() => null);

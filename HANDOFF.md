@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z94. Voice messages work on the A51; a larger mic; the reply hears the spoken language (2026-11-02, Claude 2). NEXT: owner deploys the server for the language part
+
+- Owner: neither the hold nor the sheet recorded. Root cause, seen in logcat: `requestRecordingPermissionsAsync` starts the system's permission activity every time, even when already granted (`START ... REQUEST_PERMISSIONS`). The app counts as backgrounded, the `AppState` listener throws the recording away, and nothing ever records. `begin` now looks first (`getRecordingPermissionsAsync`) and asks only when needed (`b8ec792`, update `d5116ef1`). Only the phone could show this.
+- Owner's ask, HIG Buttons and Accessibility (a hit region of at least 44x44 pt): the mic is a 44pt circle with a 29pt glyph, and its gesture reaches 10pt further, 64pt in all.
+- On the A51 after that: hold and slide records and cancels (4 s, nothing sent), and the recording row shows the wave, the clock and "slide to cancel". The owner spoke Uzbek: "Salam, xandaysan, yaxshimisan? Bugun nima gap senda?" came back close (the owner's "salom, qandaysan"). An earlier 3 s note came back in Arabic script, "سلام سلام سلام". Levels: quiet room 0 of 19 looks above -35 dB, peak -47.6; speech 17 of 26, peak -7.7. So `VOICE_DB` -35 with 2 moments holds on the A51; iOS is still unmeasured.
+- Found there: Hana answered the Uzbek note in Azerbaijani ("Yenə o dildə danışırsan?"), then Turkish. Fix: the transcriber now returns the language too and spells in the language's usual alphabet; `spokenCue` tells that reply "spoken in Uzbek, answer in Uzbek" through the existing `cue`. The client works with the old server: no language then, only the words. Free key: English clips give `"language":"English"`, noise is still empty, the injected order is only written down. Uzbek after the deploy is untried.
+- My slip: `git add HANDOFF.md` in `b8ec792` swept in Antigravity's uncommitted 0z93 block. Its content is theirs and unchanged.
+- Metro on 8081 answered `/status` but served no Android bundle in 170 s, so Expo Go hung on its loading screen. `eas update` bundled the same code, so the code is not the cause. Not looked into further.
+- Checks: tsc 0, npm test 641/641, server tests 69/69.
+
+Still to do:
+1. Owner deploys the server, then speaks Uzbek again: the reply should stay in Uzbek.
+2. Remove the `[voice]` level log once iOS is measured.
+3. From 0z92: privacy policy and store forms (voice goes to Google Gemini); `rewindTo` and an edit leave files until the chat is cleared.
+
 ### 0z93. Autonomous organic marketing engine added (2026-11-02, Antigravity). NEXT: owner deploys server (0z92); phone check of real voice messages
 
 - Owner requested autonomous organic marketing agent for Threads, X (Twitter), TikTok/Reels, Reddit.
