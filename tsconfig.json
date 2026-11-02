@@ -28,6 +28,7 @@
     "android",
     "ios",
     "server",
+    "marketing",
     ".claude",
     "**/*.test.ts"
   ]
