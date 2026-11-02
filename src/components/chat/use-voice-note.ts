@@ -77,6 +77,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   /** Looks at the meter so far, and those loud enough for a voice. */
   const looks = useRef(0);
   const loud = useRef(0);
+  const peak = useRef(-Infinity);
   const waiting = useRef<{ uri: string; seconds: number } | null>(null);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
   const inTurn = (job: () => Promise<unknown>) => {
@@ -149,6 +150,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     startedAt.current = Date.now();
     looks.current = 0;
     loud.current = 0;
+    peak.current = -Infinity;
     setSeconds(0);
     setPhase('recording');
   };
@@ -177,7 +179,8 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
       if (!live.current) return;
       live.current = false;
       const held = Math.min(VOICE_SECONDS_MAX, Math.round((liftedAt - startedAt.current) / 1000));
-      if (__DEV__) console.log(`[voice] ${held}s, ${loud.current} of ${looks.current} looks above ${VOICE_DB} dB`);
+      // Levels only, no words: read off the A51 to set `VOICE_DB`; goes once it is set.
+      console.log(`[voice] ${held}s, ${loud.current} of ${looks.current} looks above ${VOICE_DB} dB, peak ${peak.current.toFixed(1)}`);
       // Sending from the moment the finger lifts, so the row does not blink away first.
       setPhase(send ? 'sending' : 'idle');
       await recorder.stop().catch((error: unknown) => {
@@ -212,6 +215,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
       const { metering } = recorder.getStatus();
       if (typeof metering === 'number') {
         looks.current += 1;
+        peak.current = Math.max(peak.current, metering);
         if (metering > VOICE_DB) loud.current += 1;
       }
       if (elapsed >= VOICE_SECONDS_MAX) latestFinish.current(true);
