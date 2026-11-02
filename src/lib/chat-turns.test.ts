@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Message } from '@/types';
 
-import { canRewindTo, lastExchange, laterCount, SHARE_LINES, shareLines } from './chat-turns';
+import { canRewindTo, lastExchange, laterCount, laterNotes, SHARE_LINES, shareLines } from './chat-turns';
 
 const at = '2026-10-24T20:00:00.000Z';
 const me = (id: string, text = 'hi'): Message => ({ id, conversationId: 'c', author: 'me', kind: 'text', text, createdAt: at });
@@ -57,6 +57,18 @@ describe('laterCount', () => {
     assert.equal(laterCount(list, 'g'), 3);
     assert.equal(laterCount(list, 'm2'), 0);
     assert.equal(laterCount(list, 'nope'), 0);
+  });
+});
+
+describe('laterNotes', () => {
+  const note = (id: string, audioFile?: string): Message => ({ ...me(id), kind: 'voice', text: undefined, audioFile });
+
+  it('names the voice files a rewind deletes, not the ones it keeps', () => {
+    const list = [note('v0', 'c--1.m4a'), them('g'), note('v1', 'c--2.m4a'), them('r1'), note('v2'), me('m2'), note('v3', 'c--3.m4a')];
+    assert.deepEqual(laterNotes(list, 'g'), ['c--2.m4a', 'c--3.m4a']);
+    assert.deepEqual(laterNotes(list, 'v3'), []);
+    assert.deepEqual(laterNotes(list, 'nope'), []);
+    assert.deepEqual(laterNotes(undefined, 'g'), []);
   });
 });
 

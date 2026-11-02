@@ -40,7 +40,7 @@ import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
-import { canRewindTo, lastExchange, laterCount, shareLines } from '@/lib/chat-turns';
+import { canRewindTo, lastExchange, laterCount, laterNotes, shareLines } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
@@ -409,7 +409,10 @@ export default function ChatRoomScreen() {
       cancel: t('common.cancel'),
       onConfirm: () => {
         setEditing(null);
+        // Read at the tap, not from the render: a note may have landed while the sheet was open.
+        const notes = laterNotes(useAppStore.getState().messages[conversation.id], message.id);
         rewindTo(conversation.id, message.id);
+        for (const name of notes) void dropNote(name);
       },
     });
 

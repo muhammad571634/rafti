@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z95. A rewind deletes the voice files of the notes it takes away (2026-11-02, Claude 2). NEXT: owner deploys the server for 0z94's language part
+
+- From 0z92's open list. A rewind now drops the kept `.m4a` of each voice note after the rewind point (`laterNotes`, `src/lib/chat-turns.ts`, tested); the list is read at the tap, not from the render. Groups have no rewind.
+- An edit was on that list too, but it leaves no file: it removes only their reply (`lastExchange().burst` is `author: 'them'`), and only the user's notes carry `audioFile`.
+- The server is still Fly v13 from about 09:30, before `7ddc322`, so the language cue is not live; the 0z94 client is published (`a9c7e1a2`).
+- Not checked on the phone: the release APK's files cannot be read over adb, and the code path is the same `dropNote` the delete uses.
+- Checks: tsc 0, npm test 642/642.
+
+Still to do:
+1. Owner deploys the server, then speaks Uzbek again: the reply should stay in Uzbek.
+2. The rest of the 0z94 list.
+
 ### 0z94. Voice messages work on the A51; a larger mic; the reply hears the spoken language (2026-11-02, Claude 2). NEXT: owner deploys the server for the language part
 
 - Owner: neither the hold nor the sheet recorded. Root cause, seen in logcat: `requestRecordingPermissionsAsync` starts the system's permission activity every time, even when already granted (`START ... REQUEST_PERMISSIONS`). The app counts as backgrounded, the `AppState` listener throws the recording away, and nothing ever records. `begin` now looks first (`getRecordingPermissionsAsync`) and asks only when needed (`b8ec792`, update `d5116ef1`). Only the phone could show this.

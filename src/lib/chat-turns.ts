@@ -110,3 +110,10 @@ export function laterCount(messages: readonly Message[] | undefined, messageId: 
   const at = list.findIndex((m) => m.id === messageId);
   return at < 0 ? 0 : list.slice(at + 1).filter((m) => m.kind !== 'system' && !m.card).length;
 }
+
+/** The kept voice files of the messages a rewind to `messageId` deletes: they go with them. */
+export function laterNotes(messages: readonly Message[] | undefined, messageId: string) {
+  const list = messages ?? [];
+  const at = list.findIndex((m) => m.id === messageId);
+  return at < 0 ? [] : list.slice(at + 1).flatMap((m) => (m.audioFile ? [m.audioFile] : []));
+}
