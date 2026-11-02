@@ -124,13 +124,17 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
 
   const begin = async () => {
     if (live.current || !wanted.current) return;
-    const { granted, canAskAgain } = await AudioModule.requestRecordingPermissionsAsync();
+    // Look before asking: asking opens a system screen even when the answer is already yes, which
+    // sends the app to the background and so throws the recording away (seen on the A51, 0z93).
+    const { granted, canAskAgain } = await AudioModule.getRecordingPermissionsAsync();
     if (!granted) {
+      // The prompt takes the touch, so this hold records nothing and the next one does.
       wanted.current = false;
-      if (!canAskAgain) Alert.alert(t('chat.voice.noMic'));
+      if (canAskAgain) await AudioModule.requestRecordingPermissionsAsync();
+      else Alert.alert(t('chat.voice.noMic'));
       return;
     }
-    // Let go during the permission prompt: nothing was meant.
+    // Let go while looking: nothing was meant.
     if (!wanted.current) return;
     try {
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });

@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z93. Autonomous organic marketing engine added (2026-11-02, Antigravity). NEXT: owner deploys server (0z92); phone check of real voice messages
+
+- Owner requested autonomous organic marketing agent for Threads, X (Twitter), TikTok/Reels, Reddit.
+- Built `marketing/playbook.md` (viral otome/romance companion playbook, US/UK/Canada/Australia target audience, English-only content rule).
+- Built `marketing/generator.ts` and `marketing/dispatcher.ts`: pulls live character lore (57 characters), generates customized multi-platform packs:
+  1. Threads conversational relatable POV posts.
+  2. X (Twitter) punchy text drops.
+  3. TikTok / Reels / Shorts 15s timed screenplays (visual cues, audio vibes, text overlays).
+  4. Reddit authentic community discussion drafts for r/CharacterAI and r/AICompanions.
+  5. Visual thumbnail / prompt briefs.
+- Generated today's 3 live packs (`Ronan Vale`, `Luca Renwick`, `Isolde Valcour`) in `marketing/queue/2026-11-02/` and compiled `marketing/TODAY.md` for 1-click access. All marketing text 100% in English.
+- Excluded `marketing/` in `tsconfig.json`. Passed: `npx tsc --noEmit` 0, `npm test` 637/637. Committed and pushed to `local-work`.
+
 ### 0z92. Real voice messages: hold the mic (2026-11-02, Claude 2). NEXT: owner deploys the server, THEN `eas update` from a clean worktree, THEN the phone check
 
 - Owner's idea 3. Found on the way: voice messages never recorded anything; the sheet timed the hold and sent the transcript "(voice message)". A hold gesture over that would have been a lie, so this is the real thing.

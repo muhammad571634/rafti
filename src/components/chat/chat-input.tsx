@@ -246,7 +246,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             onHoldEnd={voice.finish}
             accessibilityLabel={t('a11y.voiceMessage')}
             accessibilityHint={t('chat.voice.hold')}
-            style={styles.action}
+            style={styles.mic}
           />
         )}
 
@@ -317,13 +317,15 @@ const styles = StyleSheet.create({
   // A 38pt circle that sits 4pt inside the 46pt field.
   action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
+  // The mic is held as well as tapped, so it takes nearly the whole height of the field.
+  mic: { width: 44, height: 44, borderRadius: 22, marginBottom: 1, alignItems: 'center', justifyContent: 'center' },
   // Covers the field up to the mic while a voice message is made.
   voiceRow: {
     position: 'absolute',
     left: 0,
     top: 0,
     bottom: 0,
-    right: FIELD,
+    right: 48,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,

@@ -11,6 +11,8 @@ import { colors, systemColors } from '@/theme';
 const HOLD_MS = 220;
 /** How far left the finger goes to throw the recording away. */
 const CANCEL_AT = 90;
+/** Past the circle: an easy target for a thumb (HIG: at least 44pt, more on the move). */
+const REACH = 10;
 
 export interface HoldMicProps {
   recording: boolean;
@@ -50,6 +52,7 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
   const gesture = useMemo(() => {
     const hold = Gesture.Pan()
       .runOnJS(true)
+      .hitSlop(REACH)
       .activateAfterLongPress(HOLD_MS)
       .onBegin(() => {
         pressed.value = withSpring(1, { damping: 22, stiffness: 420 });
@@ -75,6 +78,7 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
       });
     const tap = Gesture.Tap()
       .runOnJS(true)
+      .hitSlop(REACH)
       .onEnd((_e, success) => {
         if (success) latest.current.onTap();
       });
@@ -91,9 +95,8 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
         onAccessibilityTap={onTap}
         accessibilityActions={[{ name: 'activate' }]}
         onAccessibilityAction={onTap}
-        hitSlop={8}
         style={[style, recording && styles.recording, animated]}>
-        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={25} color={recording ? colors.white : colors.textSecondary} />
+        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={29} color={recording ? colors.white : colors.textSecondary} />
       </Animated.View>
     </GestureDetector>
   );
