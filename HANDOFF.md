@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z108. Design direction: simpler, on trend, "not made by an AI tool", inspired by Replika (2026-11-03, Claude 2). NEXT: owner says yes to starting with Today (or corrects the plan)
+
+- Owner: the logic is good; the look must get simpler and more on trend, so people do not feel an AI tool made it. Owner installed Replika on the A51 for study ("take what you want"), then: Replika is only inspiration, we do not become it; our own principles stay.
+- Replika on the A51 (2026-11-03, 19:42-19:48; `screencap` to a file hangs on its 3D view, `adb exec-out screencap -p` works):
+  - Home: the avatar full body in a pale room; only a name pill on top ("sukut / Your Friend", a yellow dot), a flower (store) and a gear in small glass circles, and the composer pill. A tooltip "New entry / Read Replika's thoughts" with "New entry" in neon yellow.
+  - Chat: the same room; white bubbles with dark text, thumbs under them, a "Today" pill, the AI notice as a glass pill; three glass circles on top (home, chats, training).
+  - Profile sheet: one saturated blue ground, the avatar fading into it, the name big and "Female"; sections (Relationship pills with locks, Diary with a red dot and a preview card, Memories with an empty state, Voice, Backstory), each a 20 pt bold title, a chevron circle and one translucent white card.
+  - Store: a story-style card (segments on top) with a photo, "NEW DROP" in the same neon yellow, a heavy white title, an "Explore" glass pill; three glass pills (Clothes, Appearance, Room); the room blurred behind.
+  - Training: dark, a heavy left-aligned headline, one grey card with a big number, two pills (dark secondary, white primary).
+- What reads "made by an AI tool" in ours (A51 screens, 0z103 notes): a rainbow of module colours on Today (green, brown, pink, indigo tiles + six coloured icons), the pastel aurora ground on every hub, three icon sets, colour with no meaning.
+- Proposed to the owner (taste is theirs; white tiles were rejected as mockups in 0z104, so asked before building): take Replika's rules, not its look. (1) The character is the colour: UI chrome neutral, colour comes from faces and art. (2) One accent, our apricot, only for "new" and the main action; mint stays the bond. (3) One shape family: pills for buttons and chips, one card radius, glass only on photos. (4) Confident type: big heavy titles, plain body, no coloured words. (5) A plain warm ground instead of the aurora. Keep ours: 4 tabs, Today's 10 modules, mascot and shells, calm cards, HIG, clear glass on photos, approved screens (Heartbeat diary), existing animations, model-first. First step: Today only, on the phone, then the other tabs one by one.
+
+Still to do:
+1. Owner's yes (or correction) to start with Today.
+2. From 0z107: owner's word on the bigger, living Today card.
+
 ### 0z107. Today: the friend's card grows to half the screen and comes alive (2026-11-03, Claude 2). NEXT: owner looks at Today on the A51 and says yes or what to change
 
 - Owner said yes to the 0z106 intro card ("maqul"). Then: Today with Replika's feel, the hero card a bit bigger and like Replika; asked the agent to think up the logic.
