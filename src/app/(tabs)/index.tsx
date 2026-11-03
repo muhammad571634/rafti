@@ -189,19 +189,11 @@ export default function HomeScreen() {
   const heroBottom = hero ? heroTopHeight(windowHeight, insets.top) : 0;
   // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
   const bar = (
-    <View style={[styles.bar, onPhoto && styles.photoBar]}>
-      {onPhoto ? (
-        <View style={styles.photoLogo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
-          <Image source={BRAND.sticker} style={styles.photoMark} contentFit="contain" />
-          <Txt style={styles.photoWord} color={colors.onMedia} lines={1} maxFontSizeMultiplier={1.2}>
-            Sigmazam
-          </Txt>
-        </View>
-      ) : (
-        <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
-          <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
-        </View>
-      )}
+    <View style={styles.bar}>
+      {/* The wordmark in its own colours with the mascot over the G, on the picture too (owner, 2026-11-03). */}
+      <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
+        <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
+      </View>
       {editing ? (
         <>
           {firstEmpty >= 0 ? (
@@ -543,19 +535,6 @@ const styles = StyleSheet.create({
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
   me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
   meName: { fontSize: 15, fontWeight: '600', color: colors.text },
-  // On the picture: no room for the wordmark art's hair, the mascot and a plain word in white.
-  photoBar: { paddingTop: space.xs, minHeight: 52 },
-  photoLogo: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  photoMark: { width: 34, height: 34 },
-  photoWord: {
-    flexShrink: 1,
-    fontSize: 23,
-    fontWeight: '800',
-    letterSpacing: -0.6,
-    textShadowColor: colors.onMediaShadow,
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
   photoName: { color: colors.onMedia },
   photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },

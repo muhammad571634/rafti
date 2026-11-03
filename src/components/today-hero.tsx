@@ -50,8 +50,8 @@ const typedIn = new Set<string>();
 
 /** The card's height for a screen this tall. */
 export const heroHeight = (windowHeight: number) => Math.round(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, windowHeight * SHARE)));
-/** Room for Today's top row over the picture. */
-const BAR = 52;
+/** Room for Today's top row over the picture: 44 pt plus the room the wordmark's mascot rises into. */
+const BAR = 56;
 const BOTTOM_RADIUS = 32;
 /** The picture from the screen's top edge (owner, 2026-11-03, prototype B): the status bar and the top row sit on it. */
 export const heroTopHeight = (windowHeight: number, topInset: number) => heroHeight(windowHeight) + topInset + BAR;
