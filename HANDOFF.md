@@ -8,7 +8,8 @@
 
 Still to do:
 1. Owner reopens the app twice and checks the logo on the picture.
-2. Agent writes the style prompt (`docs/nano-banana-3d-style.md`) and one test prompt for Theo; owner draws it in Nano Banana into `art-new/`; we look together, then the batch (55 characters).
+2. Test 1 (Theo in soft 3D, `docs/nano-banana-3d-style.md`): the owner did not like it at all. Then asked the agent to take matching pictures straight from Pinterest for our characters ("I take responsibility"). Declined to ship them: other people's work, and App Store Guideline 5.2.1 rejects content we do not own or license, a risk to the owner's developer account. Also no Chrome extension in this session to browse their Pinterest. Offered test 2 instead: the owner picks a pin they love, attaches our character's picture plus the pin to Nano Banana with the two-image prompt in the same doc; the result is ours.
+3. Owner's pick of a pin for one woman and one man of the cast, then test 2; then the batch (55 characters, count stated).
 
 ### 0z109. Today: the friend's picture from the screen's top, the top row as glass on it (2026-11-03, Claude 2). NEXT: owner looks on the A51; then the next tab, or more from prototype A if asked
 

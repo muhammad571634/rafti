@@ -26,7 +26,25 @@ Framing: vertical 3:4, waist-up, centred, face in the upper third, some space ab
 No text, no logos, no watermark, no other people.
 ```
 
-## Test 1: Theo Lancaster (`c_theo`)
+## Test 2: a style reference the owner picks (after test 1 was not liked)
+
+The owner did not like test 1 and wants the look of particular Pinterest pins. Those pins are other
+people's work, so they never ship (App Store Review Guideline 5.2.1: only content you created or
+are licensed to use). They may serve as a style reference: the owner attaches our character's
+current picture first and the chosen pin second, with this prompt. The result is a new picture of
+our character.
+
+```
+Image 1 is our character. Image 2 is only a style reference.
+Draw the person from image 1, with the same face, hair, eye colour, marks and outfit, in the visual
+style of image 2: its rendering, lighting, colours, proportions and mood.
+Do not copy the person, the clothes, the pose or the background of image 2.
+Keep them clearly an adult: grown-up facial proportions, no childlike or teen features.
+Vertical 3:4, waist-up, face in the upper third, a soft background that fits who they are.
+No text, no logos, no watermark.
+```
+
+## Test 1: Theo Lancaster (`c_theo`, not liked)
 
 Attach: `assets/heroes/c_theo.jpg` (his current scene). Save the result to `art-new/` as
 `theo 3d.png`.
