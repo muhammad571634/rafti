@@ -82,12 +82,14 @@ export function cleanLocale(value: unknown): string | undefined {
   return typeof value === 'string' && value.length <= 35 && /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(value) ? value : undefined;
 }
 
-/** An IANA time zone the runtime knows ("Asia/Tashkent"); anything else is dropped. */
+/**
+ * An IANA time zone the runtime knows ("Asia/Tashkent"), in its proper case, as the database
+ * keeps only names it knows (`profiles_known_time_zone`); anything else is dropped.
+ */
 export function cleanTimeZone(value: unknown): string | undefined {
   if (typeof value !== 'string' || value.length > 64) return undefined;
   try {
-    new Intl.DateTimeFormat('en-US', { timeZone: value });
-    return value;
+    return new Intl.DateTimeFormat('en-US', { timeZone: value }).resolvedOptions().timeZone;
   } catch {
     return undefined;
   }

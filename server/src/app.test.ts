@@ -558,6 +558,8 @@ describe('POST /v1/session/bootstrap', () => {
     assert.equal(cleanLocale(42), undefined);
     assert.equal(cleanTimeZone('America/New_York'), 'America/New_York');
     assert.equal(cleanTimeZone('Nowhere/Land'), undefined);
+    // The database keeps only names it knows, in their own case.
+    assert.equal(cleanTimeZone('asia/tashkent'), 'Asia/Tashkent');
   });
 });
 
