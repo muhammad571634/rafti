@@ -27,7 +27,7 @@ stream, a first text left out); never pass a stock line off as the character.
 | Diary pages, secret notes, the answer to a shared diary page | yes since D138 |
 | Photos the user sends | yes since 0z80, one-to-one and group; needs the server deployed and a new APK (a new native module) |
 | Push notifications | yes since 0z84: the model writes lines ahead and the phone shows them; each one lands in its chat at its own time. Sending from the server still needs Firebase, an Apple account and a new APK |
-| Calls | no: `callScript`, and they need voice |
+| Calls | yes since 0z102: hands-free, the model talks, live captions; the voice (ElevenLabs Flash) turns on with `ELEVENLABS_API_KEY` on the server, signed lines only, 20k characters a user a day |
 | Character art | waits for the redraw |
 
 ## Order
