@@ -12,6 +12,7 @@ import { haptic } from '@/lib/haptics';
 import { bottomRoom, colors, radius, shadows, space, systemColors } from '@/theme';
 import type { MessageTone } from '@/types';
 
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { HoldMic } from './hold-mic';
 import { useKeptDraft } from './use-kept-draft';
 import { useToneTip } from './use-tone-tip';
@@ -123,6 +124,8 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
   const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
   const voice = useVoiceNote(draftId, (note) => onVoiceNote?.(note), canRecord);
   const voiceBusy = voice.phase !== 'idle';
+  const onPhoto = useOnPhoto();
+  const glass = [styles.glass, onPhoto && styles.photoGlass];
 
   const submit = (tone?: MessageTone) => {
     if (!hasText) return;
@@ -174,18 +177,18 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
         onPress={editing ? editing.onCancel : onAttach}
         accessibilityRole="button"
         accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
-        style={[styles.glass, styles.plus]}>
-        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 24 : 27} color={colors.text} />
+        style={[...glass, styles.plus]}>
+        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 24 : 27} color={onPhoto ? colors.onMedia : colors.text} />
       </PressableScale>
 
-      <View style={[styles.glass, styles.field]}>
+      <View style={[...glass, styles.field]}>
         <TextInput
           ref={inputRef}
           value={value}
           onChangeText={setValue}
           placeholder={placeholder}
-          placeholderTextColor={colors.textFaint}
-          style={styles.input}
+          placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
+          style={[styles.input, onPhoto && styles.photoInput]}
           multiline
           maxLength={2000}
           onSubmitEditing={Platform.OS === 'web' ? () => submit() : undefined}
@@ -233,7 +236,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
           <IconButton
             icon="mic-outline"
             size={25}
-            color={colors.textSecondary}
+            color={onPhoto ? colors.onMediaSoft : colors.textSecondary}
             accessibilityLabel={t('a11y.voiceMessage')}
             onPress={onVoice}
             style={styles.action}
@@ -366,4 +369,7 @@ const styles = StyleSheet.create({
     paddingVertical: (FIELD - LINE) / 2,
     maxHeight: LINE * MAX_LINES + (FIELD - LINE),
   },
+  // On their picture (`useOnPhoto`): dark glass and white words.
+  photoGlass: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
+  photoInput: { color: colors.onMedia },
 });

@@ -40,6 +40,16 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
   black (#000000) with #1C1C1E cards. Exceptions that keep their own canvas: the chat
   (wallpaper), the call screens (blurred portrait), the Today hero photo, diary covers and pages,
   Bedtime (`sleepColors`, navy).
+- **The chat on their picture (owner, 2026-11-03, Replika's feel inside our design).** A one-to-one
+  chat opens on the character's own picture (`PORTRAIT_BG`, `src/components/chat/chat-ground.tsx`):
+  the tall portrait (`assets/portraits`), else their wide scene slid so the face sits mid-screen,
+  else a creator's photo; no picture falls back to the plain ground. `gradients.portraitScrim`
+  darkens the top (header) and the lower part (the conversation). Inside it (`useOnPhoto`) their
+  bubbles, the typing dots, reply ideas and the intro card are dark glass (`onMediaBubble` with an
+  `onMediaHairline` rim); times, receipts, day and system lines are white with `onMediaShadow`;
+  the header turns to clear glass (`onMediaGlass`) and the composer to dark glass (`onMediaField`);
+  your bubble stays peach. Every control stays where it was. The picker's Art side leads with
+  their picture; a chosen Classic or Art wallpaper keeps the light chat. Groups keep wallpapers.
 - Tab bar: the system bar on iOS (Liquid Glass on iOS 26+, `(tabs)/_layout.ios.tsx`); on Android
   and web a floating frosted pill (Today, Chats, Us) with Find as a round button beside it
   (`(tabs)/_layout.tsx`). Bold labels; icons stay ink (HIG Tab bars: one colour over a colourful

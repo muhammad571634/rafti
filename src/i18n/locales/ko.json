@@ -208,6 +208,8 @@
   },
   "intro": {
     "age": "{{count}}세",
+    "male": "남성",
+    "female": "여성",
     "loves": "좋아하는 것",
     "cantStand": "싫어하는 것",
     "open": "{{name}} 소개",

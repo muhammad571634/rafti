@@ -208,6 +208,8 @@
   },
   "intro": {
     "age": "{{count}} tahun",
+    "male": "Pria",
+    "female": "Wanita",
     "loves": "Menyukai",
     "cantStand": "Tidak tahan dengan",
     "open": "Tentang {{name}}",

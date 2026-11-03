@@ -8,6 +8,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { playNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
@@ -19,7 +20,7 @@ import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
 import { useReveal } from '@/lib/reveal';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, radius, shadows, space, systemColors } from '@/theme';
+import { colors, palette, radius, shadows, space, systemColors } from '@/theme';
 import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
@@ -79,6 +80,7 @@ export const MessageBubble = memo(function MessageBubble({
   // The name the user gave them ("Mom") is the one the chat header shows, so notes use it too.
   const nickname = useAppStore((s) => s.relationships[character.id]?.nickname);
   const name = nickname || character.name;
+  const onPhoto = useOnPhoto();
   const mine = message.author === 'me';
   const photoId = message.photoId;
   const named = !mine && showAvatar && !!senderName;
@@ -167,7 +169,7 @@ export const MessageBubble = memo(function MessageBubble({
           ) : message.editedAt ? (
             <EditedNote time={time} />
           ) : time ? (
-            <Txt style={styles.receipt}>{time}</Txt>
+            <Txt style={[styles.receipt, onPhoto && onPhotoText]}>{time}</Txt>
           ) : null}
         </View>
       ) : (
@@ -195,7 +197,7 @@ export const MessageBubble = memo(function MessageBubble({
                 </Txt>
               ) : null}
               {content}
-              {time ? <Txt style={[styles.receipt, styles.timeTheirs]}>{time}</Txt> : null}
+              {time ? <Txt style={[styles.receipt, styles.timeTheirs, onPhoto && onPhotoText]}>{time}</Txt> : null}
             </View>
           ) : (
             content
@@ -207,6 +209,7 @@ export const MessageBubble = memo(function MessageBubble({
 });
 
 function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; tail: boolean }) {
+  const onPhoto = useOnPhoto();
   const muted = message.muted;
   const parts = useMemo(() => segments(message.text ?? ''), [message.text]);
   const total = useMemo(() => segmentWords(parts), [parts]);
@@ -221,17 +224,18 @@ function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; 
         styles.fill,
         mine ? styles.bubbleMine : styles.bubbleTheirs,
         tail && (mine ? styles.tailMine : styles.tailTheirs),
+        !mine && onPhoto && styles.photoBubble,
         muted && styles.bubbleMuted,
       ]}>
       <Txt
         style={styles.text}
-        color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : colors.bubbleOtherText}
+        color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : onPhoto ? colors.onMedia : colors.bubbleOtherText}
         // A screen reader hears the whole line at once, not each word as it lands.
         accessibilityLabel={revealing ? message.text : undefined}>
         {/* *Narration* (Mixed and Story replies) reads as an aside: italic and quieter than speech. */}
         {(revealing ? cutSegments(parts, shown) : parts).map((part, i) =>
           part.kind === 'action' ? (
-            <Txt key={i} style={[styles.text, styles.action, mine ? styles.actionMine : styles.actionTheirs]}>
+            <Txt key={i} style={[styles.text, styles.action, mine ? styles.actionMine : onPhoto ? styles.photoAction : styles.actionTheirs]}>
               {part.text}
             </Txt>
           ) : (
@@ -260,9 +264,11 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
     },
     [],
   );
+  const onPhoto = useOnPhoto();
   const seconds = message.durationSec ?? 0;
-  const ink = mine ? colors.bubbleSelfText : colors.bubbleOtherText;
-  const faint = mine ? colors.bubbleSelfText : colors.textSecondary;
+  const theirsOnPhoto = !mine && onPhoto;
+  const ink = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMedia : colors.bubbleOtherText;
+  const faint = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMediaMuted : colors.textSecondary;
 
   const play = () => {
     if (playing) {
@@ -299,9 +305,10 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
           styles.voiceBubble,
           mine ? styles.bubbleMine : styles.bubbleTheirs,
           tail && (mine ? styles.tailMine : styles.tailTheirs),
+          theirsOnPhoto && styles.photoBubble,
         ]}>
         <View style={[styles.play, { backgroundColor: ink }]}>
-          <Ionicons name={playing ? 'pause' : 'play'} size={13} color={mine ? colors.bubbleSelf : colors.bubbleOther} />
+          <Ionicons name={playing ? 'pause' : 'play'} size={13} color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther} />
         </View>
         {playing ? (
           <View style={styles.wave}>
@@ -332,21 +339,22 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
 
 function ReadReceipt({ message, time }: { message: Message; time?: string }) {
   const { t } = useTranslation();
+  const meta = [styles.receipt, useOnPhoto() && onPhotoText];
 
   return (
-    <Txt style={styles.receipt}>
+    <Txt style={meta}>
       {message.editedAt ? (
         <>
-          <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>
+          <Txt style={[...meta, styles.receiptStrong]}>{t('chat.edited')}</Txt>
           {' · '}
         </>
       ) : null}
       {message.pending ? (
         t('chat.sending')
       ) : message.readAt ? (
-        <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.read')}</Txt>
+        <Txt style={[...meta, styles.receiptStrong]}>{t('chat.read')}</Txt>
       ) : (
-        <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.delivered')}</Txt>
+        <Txt style={[...meta, styles.receiptStrong]}>{t('chat.delivered')}</Txt>
       )}
       {time ? ` · ${time}` : null}
     </Txt>
@@ -356,9 +364,10 @@ function ReadReceipt({ message, time }: { message: Message; time?: string }) {
 /** "Edited" under a message you changed (iOS Messages), once a newer one carries the receipt. */
 function EditedNote({ time }: { time?: string }) {
   const { t } = useTranslation();
+  const meta = [styles.receipt, useOnPhoto() && onPhotoText];
   return (
-    <Txt style={styles.receipt}>
-      <Txt style={[styles.receipt, styles.receiptStrong]}>{t('chat.edited')}</Txt>
+    <Txt style={meta}>
+      <Txt style={[...meta, styles.receiptStrong]}>{t('chat.edited')}</Txt>
       {time ? ` · ${time}` : null}
     </Txt>
   );
@@ -387,9 +396,10 @@ function NotDelivered({ onRetry, time }: { onRetry?: () => void; time?: string }
 
 /** System lines are plain grey text between the bubbles, as in iOS Messages. */
 function SystemLine({ text }: { text: string }) {
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.system}>
-      <Txt style={styles.systemText} center>
+      <Txt style={[styles.systemText, onPhoto && styles.photoSystem]} center>
         {text}
       </Txt>
     </View>
@@ -398,11 +408,12 @@ function SystemLine({ text }: { text: string }) {
 
 /** Where the story moved on (a time skip): the new time, centred like the chat's own notes. */
 function SkipLine({ text }: { text: string }) {
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.system} accessibilityRole="header">
       <View style={styles.sceneHead}>
-        <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
-        <Txt style={[styles.systemText, styles.systemStrong]}>{text}</Txt>
+        <Ionicons name="time-outline" size={14} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+        <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{text}</Txt>
       </View>
     </View>
   );
@@ -410,14 +421,15 @@ function SkipLine({ text }: { text: string }) {
 
 /** Where a scene starts in the chat: its title and set-up, centred like the chat's own notes. */
 function SceneCard({ title, setting }: { title: string; setting?: string }) {
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.system} accessibilityRole="header">
       <View style={styles.sceneHead}>
-        <Ionicons name="film-outline" size={14} color={colors.textSecondary} />
-        <Txt style={[styles.systemText, styles.systemStrong]}>{title}</Txt>
+        <Ionicons name="film-outline" size={14} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+        <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{title}</Txt>
       </View>
       {setting ? (
-        <Txt style={[styles.systemText, styles.sceneSetting]} center>
+        <Txt style={[styles.systemText, styles.sceneSetting, onPhoto && styles.photoSystem]} center>
           {setting}
         </Txt>
       ) : null}
@@ -472,12 +484,13 @@ function AiNotice({ text }: { text: string }) {
 function VoiceQuotaNote({ until }: { until?: string }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.quota}>
-      <Ionicons name="mic-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
-      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+      <Ionicons name="mic-off-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
         {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
-        <Txt variant="smallStrong" color={colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
+        <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
           {t('chat.addMinutes')}
         </Txt>
       </Txt>
@@ -488,12 +501,13 @@ function VoiceQuotaNote({ until }: { until?: string }) {
 /** "Yes, text me!" while the phone blocks pushes: their texts cannot reach the lock screen yet. */
 function NotifyOffNote({ name }: { name: string }) {
   const { t } = useTranslation();
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.quota}>
-      <Ionicons name="notifications-off-outline" size={15} color={colors.textSecondary} style={styles.quotaIcon} />
-      <Txt variant="small" color={colors.textSecondary} style={styles.quotaText}>
+      <Ionicons name="notifications-off-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
+      <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
         {t('chat.notifyOff', { name })}{' '}
-        <Txt variant="smallStrong" color={colors.text} onPress={() => void Linking.openSettings()} accessibilityRole="link">
+        <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => void Linking.openSettings()} accessibilityRole="link">
           {t('chat.notifyOffAction')}
         </Txt>
       </Txt>
@@ -523,22 +537,24 @@ function HelplineCard() {
 
 function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () => void }) {
   const { t } = useTranslation();
+  const onPhoto = useOnPhoto();
   const missed = !!message.missed;
+  const quiet = onPhoto ? colors.onMediaSoft : colors.textSecondary;
 
   return (
     <View style={styles.system}>
       <PressableScale style={styles.callLine} onPress={onCallBack} disabled={!onCallBack} scaleTo={0.96}>
-        <Ionicons name={missed ? 'call-outline' : 'call'} size={13} color={missed ? colors.danger : colors.textSecondary} />
-        <Txt style={styles.systemText} color={missed ? colors.danger : colors.textSecondary}>
+        <Ionicons name={missed ? 'call-outline' : 'call'} size={13} color={missed ? colors.danger : quiet} />
+        <Txt style={[styles.systemText, onPhoto && styles.photoShadow]} color={missed ? colors.danger : quiet}>
           {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
         </Txt>
         {missed && onCallBack ? (
-          <Txt style={[styles.systemText, styles.systemStrong]} color={colors.brandText}>
+          <Txt style={[styles.systemText, styles.systemStrong]} color={onPhoto ? palette.apricot300 : colors.brandText}>
             {' · '}
             {t('chat.callBack')}
           </Txt>
         ) : null}
-        <Txt style={styles.systemText}>
+        <Txt style={[styles.systemText, onPhoto && styles.photoSystem]}>
           {'  '}
           {clockTime(message.createdAt)}
         </Txt>
@@ -617,6 +633,11 @@ const styles = StyleSheet.create({
   tailMine: { borderBottomRightRadius: TAIL },
   tailTheirs: { borderBottomLeftRadius: TAIL },
   bubbleMuted: { backgroundColor: colors.bubbleTranscript },
+  // Their bubble on a picture ground: dark glass with a hairline rim (`useOnPhoto`).
+  photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  photoAction: { color: colors.onMediaMuted },
+  photoSystem: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
+  photoShadow: { textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
   voiceWrap: { alignItems: 'flex-start', gap: space.xs, maxWidth: '72%' },
   voiceWrapMine: { alignItems: 'flex-end' },
   voiceBubble: {

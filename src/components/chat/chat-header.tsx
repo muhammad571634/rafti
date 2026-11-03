@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { glassStyle, IconButton, PressableScale, ShellIcon, Txt } from '@/components/ui';
 import { colors, hitSlop, space } from '@/theme';
 
@@ -63,6 +64,8 @@ export function ChatHeader({
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const onPhoto = useOnPhoto();
+  const glass = [glassStyle, onPhoto && styles.photoGlass];
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
@@ -73,8 +76,8 @@ export function ChatHeader({
           scaleTo={0.88}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
-          style={[glassStyle, styles.round]}>
-          <Ionicons name="chevron-back" size={24} color={colors.text} style={styles.backGlyph} />
+          style={[...glass, styles.round]}>
+          <Ionicons name="chevron-back" size={24} color={onPhoto ? colors.onMedia : colors.text} style={styles.backGlyph} />
         </PressableScale>
 
         <PressableScale
@@ -84,16 +87,16 @@ export function ChatHeader({
           accessibilityLabel={identityLabel}
           onPress={onIdentity}>
           {avatar}
-          <View style={[glassStyle, styles.nameChip]}>
-            <Txt style={styles.nameText} lines={1}>
+          <View style={[...glass, styles.nameChip]}>
+            <Txt style={styles.nameText} color={onPhoto ? colors.onMedia : undefined} lines={1}>
               {title}
             </Txt>
-            <Ionicons name="chevron-forward" size={11} color={colors.textSecondary} />
+            <Ionicons name="chevron-forward" size={11} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
           </View>
           <View style={styles.caption}>{caption}</View>
         </PressableScale>
 
-        <View style={[glassStyle, styles.capsule]}>
+        <View style={[...glass, styles.capsule]}>
           <PressableScale
             scaleTo={0.92}
             onPress={() => router.push('/store/shell?tab=shells')}
@@ -101,10 +104,12 @@ export function ChatHeader({
             accessibilityLabel={`${shells} ${t('common.shells')}`}
             style={styles.shells}>
             <ShellIcon size={16} />
-            <Txt style={styles.shellCount}>{shells}</Txt>
+            <Txt style={styles.shellCount} color={onPhoto ? colors.onMedia : undefined}>
+              {shells}
+            </Txt>
           </PressableScale>
-          <View style={styles.capsuleLine} />
-          <IconButton icon="call-outline" size={20} dot={missedCall} style={styles.callButton} accessibilityLabel={callLabel} onPress={onCall} />
+          <View style={[styles.capsuleLine, onPhoto && styles.photoLine]} />
+          <IconButton icon="call-outline" size={20} color={onPhoto ? colors.onMedia : undefined} dot={missedCall} style={styles.callButton} accessibilityLabel={callLabel} onPress={onCall} />
         </View>
       </View>
       {below ? <View style={styles.below}>{below}</View> : null}
@@ -114,12 +119,12 @@ export function ChatHeader({
 
 /** Caption text under the name chip ("AI character", "2 members"). */
 export function CaptionText({ children }: { children: React.ReactNode }) {
-  return <Txt style={styles.captionText}>{children}</Txt>;
+  return <Txt style={[styles.captionText, useOnPhoto() && styles.photoCaption]}>{children}</Txt>;
 }
 
 /** The small dot between caption parts. */
 export function CaptionDot() {
-  return <View style={styles.captionDot} />;
+  return <View style={[styles.captionDot, useOnPhoto() && styles.photoDot]} />;
 }
 
 const styles = StyleSheet.create({
@@ -151,4 +156,9 @@ const styles = StyleSheet.create({
   capsuleLine: { width: StyleSheet.hairlineWidth, height: 20, backgroundColor: colors.borderStrong },
   callButton: { width: 40, height: 36 },
   below: { marginTop: space.sm },
+  // On their picture (`useOnPhoto`): clear glass, as on the Today hero.
+  photoGlass: { backgroundColor: colors.onMediaGlass, borderColor: colors.onMediaHairline },
+  photoLine: { backgroundColor: colors.onMediaHairline },
+  photoCaption: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
+  photoDot: { backgroundColor: colors.onMediaSoft },
 });

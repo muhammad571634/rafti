@@ -64,6 +64,7 @@ export {
   TIERS,
   unlockedLabels,
   newRelationship,
+  PORTRAIT_BG,
   relationships,
   relationshipsByCharacter,
   wallet,

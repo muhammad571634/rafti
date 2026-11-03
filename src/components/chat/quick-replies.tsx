@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Anim, PressableScale, Txt } from '@/components/ui';
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { phrase } from '@/i18n';
-import { colors, radius, space } from '@/theme';
+import { colors, palette, radius, space } from '@/theme';
 import type { ReplyIdea } from '@/types';
 
 /**
@@ -22,6 +23,7 @@ export function QuickReplies({
   onEdit?: (idea: ReplyIdea) => void;
 }) {
   const { t } = useTranslation();
+  const onPhoto = useOnPhoto();
   return (
     // One row that scrolls sideways when it does not fit: wrapping cut the last pill off on Android.
     <View>
@@ -36,11 +38,11 @@ export function QuickReplies({
             onPress={() => onPick(idea)}
             onLongPress={onEdit ? () => onEdit(idea) : undefined}
             scaleTo={0.95}
-            style={styles.chip}
+            style={[styles.chip, onPhoto && styles.photoChip]}
             accessibilityRole="button"
             accessibilityLabel={phrase(idea.text)}
             accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
-            <Txt style={styles.chipText} color={colors.brandText} lines={1}>
+            <Txt style={styles.chipText} color={onPhoto ? palette.apricot300 : colors.brandText} lines={1}>
               {phrase(idea.label)}
             </Txt>
           </PressableScale>
@@ -123,5 +125,7 @@ const styles = StyleSheet.create({
     borderColor: colors.borderStrong,
   },
   chipText: { fontSize: 15, fontWeight: '500', letterSpacing: -0.2 },
+  // On their picture: dark glass under a peach rim.
+  photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricot300 },
   bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primaryFill },
 });

@@ -1,39 +1,46 @@
 import { Image, type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ChatCircleDotsIcon } from 'phosphor-react-native/src/icons/ChatCircleDots';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
+import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { characterImage, PressableScale, Txt } from '@/components/ui';
-import { daysBetween } from '@/lib/format';
+import { daysBetween, relativeStamp } from '@/lib/format';
+import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
-import { displayName } from '@/store/use-app-store';
-import { colors, gradients, gradientStops, palette, radius, space } from '@/theme';
+import { displayName, useAppStore } from '@/store/use-app-store';
+import { colors, gradients, gradientStops, radius, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
-const HEIGHT = 204;
-const ACTION = 44;
+const HEIGHT = 300;
 /** Hero scenes are framed with the face up and to the right of centre. */
 const SCENE_FOCUS: ImageContentPosition = { left: '62%', top: '30%' };
+/** Tall scenes (assets/portraits) keep the face in their upper third. */
+const TALL_FOCUS: ImageContentPosition = { left: '50%', top: '18%' };
 /** Portraits are square with the face in the upper middle. */
 const PORTRAIT_FOCUS: ImageContentPosition = { left: '50%', top: '35%' };
+const FOCUS = { scene: SCENE_FOCUS, tall: TALL_FOCUS, face: PORTRAIT_FOCUS } as const;
+/** How far back their line may sit and still show: after a helpline card it waits a while. */
+const RECENT = 8;
 
 export interface HeroFriend {
   character: Character;
   relationship: Relationship;
   conversation: Conversation;
-  /** A wide scene from assets/heroes, else the portrait. */
+  /** A wide scene from assets/heroes, a tall one from assets/portraits, else the portrait. */
   image: string | number;
-  scene: boolean;
+  framing: keyof typeof FOCUS;
 }
 
 /**
  * The friend the Today hero features: the one you talked with last (docs/today-hero.md).
  * Before your first conversation it is the closest bond. A friend is a character you
  * have a bond and a chat with, the same rule as the Us tab. The picture is their wide
- * scene when one exists, else their portrait. Undefined when there is no one to show.
+ * scene, else their tall one, else their portrait. Undefined when there is no one to show.
  */
 export function featuredFriend(
   characters: Character[],
@@ -52,17 +59,33 @@ export function featuredFriend(
 
   for (const { talkedAt: _, ...friend } of friends) {
     const scene = HEROES[friend.character.id];
-    if (scene != null) return { ...friend, image: scene, scene: true };
+    if (scene != null) return { ...friend, image: scene, framing: 'scene' };
+    const tall = PORTRAITS[friend.character.id];
+    if (tall != null) return { ...friend, image: tall, framing: 'tall' };
     const portrait = characterImage(friend.character);
-    if (portrait != null) return { ...friend, image: portrait, scene: false };
+    if (portrait != null) return { ...friend, image: portrait, framing: 'face' };
   }
   return undefined;
 }
 
 /**
- * The closest friend in their own world: name, days together and bond level, nothing
- * more. The whole card is one button that opens the chat; the round
- * chat mark is a visual cue inside it, not a second control.
+ * Their newest written line for the card, as said out loud (narration only when there is nothing
+ * else), and when it came. None while a helpline card is among the last lines: a hard moment does
+ * not belong on the home screen.
+ */
+export function waitingLine(messages: readonly Message[] | undefined): { text: string; at: string } | undefined {
+  const list = messages ?? [];
+  if (list.slice(-RECENT).some((m) => m.card === 'helpline')) return undefined;
+  const line = list.findLast((m) => m.author === 'them' && m.kind === 'text' && !m.card && !!m.text?.trim());
+  if (!line?.text) return undefined;
+  const text = speechOnly(line.text) || plainText(line.text);
+  return text ? { text, at: line.createdAt } : undefined;
+}
+
+/**
+ * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): their picture,
+ * name with days and level, their newest line in dark glass and a "Message" field under it. The
+ * whole card is one button that opens the chat; the field is a cue, not a second control.
  */
 export function TodayHero({
   friend,
@@ -72,55 +95,66 @@ export function TodayHero({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
-  const { character, relationship, image, scene } = friend;
+  const { character, relationship, conversation, image, framing } = friend;
+  const messages = useAppStore((s) => s.messages[conversation.id]);
+  const line = useMemo(() => waitingLine(messages), [messages]);
   const name = displayName(character, relationship);
   // Counted like the Us tab: the day you met is day 1.
   const days = daysBetween(relationship.anniversary) + 1;
+  const together = `${days} ${t('home.hero.days', { count: days })}`;
   const level = t('home.hero.level', { level: relationship.level });
 
   return (
     <PressableScale
       style={styles.card}
       scaleTo={0.985}
-      accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level].join(', ')}
+      accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level, line?.text]
+        .filter(Boolean)
+        .join(', ')}
       onPress={onPress}>
       <Image
         source={typeof image === 'string' ? { uri: image } : image}
         style={StyleSheet.absoluteFill}
         contentFit="cover"
-        contentPosition={scene ? SCENE_FOCUS : PORTRAIT_FOCUS}
+        contentPosition={FOCUS[framing]}
       />
-      <LinearGradient
-        colors={gradients.heroScrim}
-        locations={gradientStops.heroScrim}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={StyleSheet.absoluteFill}
-      />
+      <LinearGradient colors={gradients.portraitCardScrim} locations={gradientStops.portraitCardScrim} style={StyleSheet.absoluteFill} />
 
-      <View style={styles.copy}>
-        <Txt variant="smallStrong" color={colors.onMediaSoft} lines={1}>
+      <View style={styles.top}>
+        <Txt variant="smallStrong" color={colors.onMedia} lines={1} style={styles.shrink}>
           {name}
         </Txt>
-        <View style={styles.daysLine}>
-          <Txt variant="heroFigure" color={colors.onMedia}>
-            {days}
+        <View style={styles.chip}>
+          <Txt variant="chip" color={colors.onMedia} lines={1}>
+            {together}
           </Txt>
-          <Txt variant="heroUnit" color={colors.onMedia}>
-            {t('home.hero.days', { count: days })}
-          </Txt>
-        </View>
-        <View style={[styles.glass, styles.level]}>
-          <HeartIcon size={13} color={colors.bondOnMedia} weight="fill" />
-          <Txt variant="chip" color={colors.onMedia} lines={1} style={styles.shrink}>
+          <View style={styles.dot} />
+          <HeartIcon size={12} color={colors.bondOnMedia} weight="fill" />
+          <Txt variant="chip" color={colors.onMedia} lines={1}>
             {level}
           </Txt>
         </View>
       </View>
 
-      <View style={styles.action}>
-        {/* The button stays white on the photo in both themes, so its glyph keeps dark ink. */}
-        <ChatCircleDotsIcon size={22} color={palette.gray900} weight="regular" />
+      <View style={styles.bottom}>
+        {line ? (
+          <View style={styles.said}>
+            <Txt variant="caption" color={colors.onMediaMuted} style={styles.when}>
+              {relativeStamp(line.at)}
+            </Txt>
+            <View style={styles.bubble}>
+              <Txt style={styles.lineText} color={colors.onMedia} lines={3}>
+                {line.text}
+              </Txt>
+            </View>
+          </View>
+        ) : null}
+        <View style={styles.field}>
+          <Txt style={styles.fieldText} color={colors.onMediaMuted} lines={1}>
+            {t('chat.inputPlaceholder')}
+          </Txt>
+          <MicrophoneIcon size={19} color={colors.onMediaSoft} />
+        </View>
       </View>
     </PressableScale>
   );
@@ -135,38 +169,56 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: colors.surfaceAlt,
   },
-  glass: {
+  shrink: { flexShrink: 1 },
+  top: {
+    position: 'absolute',
+    top: space.md + 2,
+    left: space.lg,
+    right: space.lg,
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: space.xs + 1,
-    height: 26,
+    gap: space.sm,
+  },
+  // Clear glass on the photo (HIG Materials: the clear variant is for rich media).
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    height: 24,
     paddingHorizontal: space.sm + 2,
     borderRadius: radius.pill,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
     backgroundColor: colors.onMediaGlass,
   },
-  shrink: { flexShrink: 1 },
-  copy: {
-    position: 'absolute',
-    left: space.lg + 2,
-    bottom: space.lg,
-    // Leaves the round chat mark its own corner.
-    right: space.lg + ACTION + space.md,
-    gap: 2,
+  dot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.onMediaSoft },
+  bottom: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, gap: space.sm },
+  said: { alignItems: 'flex-start', gap: 3 },
+  when: { paddingLeft: space.xs },
+  // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
+  bubble: {
+    maxWidth: '86%',
+    paddingHorizontal: 13,
+    paddingVertical: space.sm,
+    borderRadius: 18,
+    borderBottomLeftRadius: 6,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
+    backgroundColor: colors.onMediaBubble,
   },
-  daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: space.xs },
-  level: { marginTop: space.sm, maxWidth: '100%' },
-  action: {
-    position: 'absolute',
-    right: space.md + 2,
-    bottom: space.md + 2,
-    width: ACTION,
-    height: ACTION,
-    borderRadius: radius.pill,
+  lineText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2 },
+  field: {
+    height: 40,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.onMediaButton,
+    justifyContent: 'space-between',
+    paddingLeft: space.lg,
+    paddingRight: space.md,
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
+    backgroundColor: colors.onMediaField,
   },
+  fieldText: { flex: 1, fontSize: 15 },
 });

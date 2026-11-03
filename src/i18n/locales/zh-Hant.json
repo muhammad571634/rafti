@@ -208,6 +208,8 @@
   },
   "intro": {
     "age": "{{count}}歲",
+    "male": "男性",
+    "female": "女性",
     "loves": "喜愛",
     "cantStand": "討厭",
     "open": "關於{{name}}",

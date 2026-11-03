@@ -208,6 +208,8 @@
   },
   "intro": {
     "age": "{{count}} tuổi",
+    "male": "Nam",
+    "female": "Nữ",
     "loves": "Yêu thích",
     "cantStand": "Không thích",
     "open": "Về {{name}}",

@@ -1,16 +1,27 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z104. Design direction, round 2: our design + Replika's feel (2026-11-03, Claude 1). NEXT: owner reacts to the merge mockups
+### 0z104. Our design + Replika's feel: the chat on their picture, the waiting friend on Today, faces for 12 (2026-11-03, Claude 1). NEXT: owner opens a chat and Today on the A51
 
-- Continues 0z103. No code changed. Mobbin MCP is connected but every call answers "requires a paid plan"; mobbin.com pages give 403. References came from the web (Apple's Liquid Glass gallery, screensdesign.com store shots of Replika, Tolan, Finch, PolyBuzz) and the A51 (Today, Chats, Us, Find, Ronan's chat).
+- Built (owner approved the merge mockups, "kodlab ko'r"; design note `docs/superpowers/specs/2026-11-03-replika-feel-design.md`):
+  - Chat ground (`src/components/chat/chat-ground.tsx`): `PORTRAIT_BG` (`bg_portrait`, defined in `src/mock/user.ts`) is the default for new relationships and for old ones on `bg_plain` (store v14); `portraitOf` picks the tall portrait, else the wide scene slid to the face (`SCENE_FACE`, measured by eye per hero), else `avatarUri`; none = plain ground. `PortraitGround` sits outside the KeyboardAvoidingView so the keyboard does not move it. `ChatGroundProvider` / `useOnPhoto` give the on-photo look to message bubbles (their text and voice bubbles, receipts, times, system / skip / scene / call lines, notes), day chips, typing dots, quick replies, reply controls, header (clear glass), composer and mic (dark glass), intro card (dark glass, no scene of its own). New colours: `onMediaBubble`, `onMediaField`, `onMediaShadow`, gradients `portraitScrim`, `portraitCardScrim`. Groups untouched.
+  - Background picker: their picture leads the Art side, labelled with their name (`portrait`, `portraitLabel` props; the one-to-one route passes them).
+  - Intro card: a gender chip (`intro.male` / `intro.female`, 14 locales).
+  - Today card (`src/components/today-hero.tsx`): 300 pt, name + glass chip (days, level), `waitingLine` (their newest written line, speech only; none while a helpline card is in the last 8 lines) in dark glass with its time, a "Message" field with a mic; `framing` replaces `scene` (wide / tall / face). Docs: `docs/today-hero.md`, `docs/design-style.md`, `docs/flows.md`.
+  - Art: close-ups from `art-new/` to `assets/avatars/c_<id>.png` (512, registry rebuilt like `build-brand-art.py` does) and tall scenes to `assets/portraits/c_<id>.jpg` + `PORTRAITS` for Alaric, Celestine, Dorian (`c_doria.jpg` was his scene), Erik, Isolde, Leander, Luca, Mara, Odile, Ronan (`ronan 1.1 avatar.jpg`), Teddy, Viv. Freya, Sasha, Priya, Oppa, Luna have no art yet.
+- My slip: `npm run lint` is `expo lint`, which installs eslint into package.json / package-lock.json and writes `eslint.config.js`. Reverted at once (`git checkout` of both files, config deleted, `npm install` pruned 234 packages). Do not run `npm run lint`.
+- Checks: tsc 0, npm test 649/649, check:locales passes.
+- Continues 0z103. Mobbin MCP is connected but every call answers "requires a paid plan"; mobbin.com pages give 403. References came from the web (Apple's Liquid Glass gallery, screensdesign.com store shots of Replika, Tolan, Finch, PolyBuzz) and the A51 (Today, Chats, Us, Find, Ronan's chat).
 - Owner's answers: the user should feel a character is waiting for them, like Replika. A full-screen Replika Today (three variants) was too far; three calmer Today variants (white tiles, one clay-icon card, two live tiles + clay grid) were also rejected. Owner likes our current design and logic (4 tabs, Today's 10 modules) and wants Replika's feel merged in, polished, nothing working lost.
 - Current proposal (browser mockups, brainstorming companion, files in the session scratchpad): Today keeps everything but its character card grows, shows their last line and a "write to …" pill that opens the chat; the chat gets the character's art as its ground with glass header, glass composer, dark glass bubbles, the intro card as a glass card over the art (every control kept: shells, call, intro, scene, read receipt, quick replies, vote/regenerate/continue/share); Chats keeps its look with faces instead of letter avatars.
 - Owner notes: IV / RV / OF are characters with no art yet; owner drew them in Nano Banana into `art-new/` and allows wiring them in (replace later what they dislike). "Edit" under Today's icons is not a bug: it sits behind the tab bar because Today should also show items like secret notes, which do not show now.
 
 Still to do:
-1. Owner's verdict on the merge mockups; then the design doc, then code (one screen first).
-2. Wire `art-new/` art for Isolde, Ronan, Odile (and the others there) into the app.
+1. Done: owner approved the merge mockups; built as above. Left: owner looks at it on the A51 (a chat on a tall portrait, Ronan; one on a wide scene, Hana; the picker; Today).
+2. Done: `art-new/` art wired for 12 characters.
 3. Find why Today shows no secret notes (or similar items) now.
+4. The intro card: the owner wants deeper work on it ("bio"); gender is in, ask what else when they look.
+5. Second reader (more than 20 files): a fresh agent reads the change before it goes past the preview channel.
+6. Art for Freya, Sasha, Priya, Oppa, Luna; tall portraits for the first 40 would look best in the new chat (their wide scenes are 900 px tall, soft when filling a phone).
 
 ### 0z103. Design direction: is the iOS look boring? (2026-11-03, Claude 2). NEXT: owner names an app whose look they like, or says "you pick"
 

@@ -214,6 +214,8 @@
   },
   "intro": {
     "age": "{{count}} yaşında",
+    "male": "Erkek",
+    "female": "Kadın",
     "loves": "Sever",
     "cantStand": "Katlanamaz",
     "open": "{{name}} hakkında",

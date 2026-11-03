@@ -233,6 +233,7 @@ import {
   scheduleReminder,
   planAddedLine,
   planFollowUp,
+  PORTRAIT_BG,
   boardReply,
   photoReply,
   afterDateLine,
@@ -3643,7 +3644,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 13,
+      version: 14,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -3713,6 +3714,15 @@ export const useAppStore = create<AppState>()(
             ...state.moments.map((m) => seeds.get(m.id) ?? m),
             ...[...seeds.values()].filter((m) => !saved.has(m.id)),
           ];
+        }
+        // v14: their own picture becomes the chat's ground (owner, 2026-11-03); a chosen wallpaper stays.
+        if (version < 14 && state.relationships) {
+          state.relationships = Object.fromEntries(
+            Object.entries(state.relationships).map(([id, r]) => [
+              id,
+              r.backgroundId === 'bg_plain' ? { ...r, backgroundId: PORTRAIT_BG } : r,
+            ]),
+          );
         }
         return state as AppState;
       },

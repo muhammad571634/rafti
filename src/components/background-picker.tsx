@@ -6,12 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { Portrait } from '@/components/chat/chat-ground';
 import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
-import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds } from '@/mock';
-import { colors, space } from '@/theme';
+import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, PORTRAIT_BG } from '@/mock';
+import { colors, gradients, gradientStops, space } from '@/theme';
 
 type BackgroundCollection = 'classic' | 'art';
-type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
+/** Their own picture, first on the Art side of a one-to-one chat. */
+type PortraitOption = { id: string; portrait: Portrait; label: string };
+type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number] | PortraitOption;
 
 const COLUMNS = 3;
 const GAP = 10;
@@ -19,20 +22,32 @@ const GAP = 10;
 /**
  * The chat background, iOS style (approved prototype `Background.dc.html`): a large title, a
  * preview with the chat's own bubbles and glass field, an iOS segmented control, then tiles.
- * A tap picks the background (`onPick`); one-to-one chats and group chats both use it.
+ * A tap picks the background (`onPick`); one-to-one chats and group chats both use it. A one-to-one
+ * chat passes the character's `portrait`: it leads the Art side and is the default.
  */
-export function BackgroundPicker({ savedId, onPick }: { savedId?: string; onPick: (backgroundId: string) => void }) {
+export function BackgroundPicker({
+  savedId,
+  onPick,
+  portrait,
+  portraitLabel = '',
+}: {
+  savedId?: string;
+  onPick: (backgroundId: string) => void;
+  portrait?: Portrait;
+  /** Under the portrait tile: their name. */
+  portraitLabel?: string;
+}) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
 
-  const savedBackgroundId = savedId ?? 'bg_plain';
-  const backgroundId =
-    backgroundsById[savedBackgroundId] || chatArtBackgroundsById[savedBackgroundId]
-      ? savedBackgroundId
-      : 'bg_plain';
+  const fallback = portrait ? PORTRAIT_BG : 'bg_plain';
+  const known = (id: string) => (id === PORTRAIT_BG ? !!portrait : !!(backgroundsById[id] || chatArtBackgroundsById[id]));
+  const savedBackgroundId = savedId ?? fallback;
+  const backgroundId = known(savedBackgroundId) ? savedBackgroundId : fallback;
+  const onPortrait = backgroundId === PORTRAIT_BG ? portrait : undefined;
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
-    chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
+    onPortrait || chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
   // Past the large title, the bar shows it (iOS scroll edge).
   const { scrolled, onScroll } = useScrolledPast(44);
@@ -40,7 +55,10 @@ export function BackgroundPicker({ savedId, onPick }: { savedId?: string; onPick
   const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
   const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
-  const data: BackgroundOption[] = collection === 'art' ? [...chatArtBackgrounds] : chatBackgrounds;
+  const data: BackgroundOption[] =
+    collection === 'art'
+      ? [...(portrait ? [{ id: PORTRAIT_BG, portrait, label: portraitLabel }] : []), ...chatArtBackgrounds]
+      : chatBackgrounds;
   const tabs: { value: BackgroundCollection; label: string }[] = [
     { value: 'classic', label: t('background.collections.classic') },
     { value: 'art', label: t('background.collections.art') },
@@ -66,12 +84,17 @@ export function BackgroundPicker({ savedId, onPick }: { savedId?: string; onPick
             <LargeTitle>{t('background.title')}</LargeTitle>
 
             <View style={[styles.preview, { height: previewHeight }]} accessibilityLabel={t('background.preview')}>
-              {selectedArt ? (
+              {onPortrait ? (
+                <>
+                  <Image source={onPortrait.source} contentFit="cover" contentPosition={onPortrait.position} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={gradients.portraitScrim} locations={gradientStops.portraitScrim} style={StyleSheet.absoluteFill} />
+                </>
+              ) : selectedArt ? (
                 <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
               ) : (
                 <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
               )}
-              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs]} />
+              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs, onPortrait && styles.previewTheirsOnPhoto]} />
               <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
               <View pointerEvents="none" style={[glassStyle, styles.previewField]} />
             </View>
@@ -97,7 +120,8 @@ export function BackgroundPicker({ savedId, onPick }: { savedId?: string; onPick
         renderItem={({ item }) => {
           const art = 'image' in item;
           const selected = backgroundId === item.id;
-          const label = art ? t(`background.artItems.${item.nameKey}`) : t(`background.${item.nameKey}`);
+          const label =
+            'portrait' in item ? item.label : art ? t(`background.artItems.${item.nameKey}`) : t(`background.${item.nameKey}`);
 
           return (
             <PressableScale
@@ -108,7 +132,9 @@ export function BackgroundPicker({ savedId, onPick }: { savedId?: string; onPick
               accessibilityState={{ selected }}
               onPress={() => onPick(item.id)}>
               <View style={[styles.tile, { height: tileWidth * 1.4 }]}>
-                {art ? (
+                {'portrait' in item ? (
+                  <Image source={item.portrait.source} contentFit="cover" contentPosition={item.portrait.position} style={StyleSheet.absoluteFill} />
+                ) : art ? (
                   <Image source={item.image} contentFit="cover" style={StyleSheet.absoluteFill} />
                 ) : (
                   <LinearGradient colors={item.colors} style={StyleSheet.absoluteFill} />
@@ -145,6 +171,8 @@ const styles = StyleSheet.create({
   previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
   previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderBottomLeftRadius: 5 },
   previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: colors.bubbleSelf, borderBottomRightRadius: 5 },
+  // Their bubble as the chat draws it on their picture (`useOnPhoto`).
+  previewTheirsOnPhoto: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   previewField: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, height: 32, borderRadius: 16 },
   segment: {
     flexDirection: 'row',

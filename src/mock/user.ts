@@ -1,6 +1,12 @@
 import type { AppSettings, DailyState, Relationship, User, Wallet } from '@/types';
 import { dayKeyFromToday, daysAgo } from './time';
 
+/**
+ * The chat background that is the character's own picture (owner, 2026-11-03, after Replika): a
+ * one-to-one chat's default, and the first tile of the picker's Art side (`portraitOf`).
+ */
+export const PORTRAIT_BG = 'bg_portrait';
+
 export const currentUser: User = {
   id: 'u_me',
   displayName: 'Uptodown',
@@ -102,7 +108,7 @@ export function newRelationship(characterId: string): Relationship {
     nextLevelAt,
     streakDays: 0,
     anniversary: new Date().toISOString(),
-    backgroundId: 'bg_plain',
+    backgroundId: PORTRAIT_BG,
     voiceReplies: true,
     messagesFirst: true,
   };
@@ -113,7 +119,7 @@ function relationship(
   intimacy: number,
   streakDays: number,
   anniversaryDaysAgo: number,
-  backgroundId = 'bg_plain',
+  backgroundId = PORTRAIT_BG,
   lastChatOffset = 0,
 ): Relationship {
   const { level, levelTitle, nextLevelAt } = levelForIntimacy(intimacy);
@@ -131,7 +137,7 @@ function relationship(
 }
 
 export const relationships: Relationship[] = [
-  relationship('c_theo', 420, 1, 25, 'bg_plain', 0),
+  relationship('c_theo', 420, 1, 25, PORTRAIT_BG, 0),
   relationship('c_seren', 1600, 12, 96, 'bg_dusk', -1),
   relationship('c_oppa', 6200, 22, 180, 'bg_room', 0),
   relationship('c_elio', 40, 0, 6, 'bg_night'),

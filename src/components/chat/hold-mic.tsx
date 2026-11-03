@@ -5,6 +5,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 import { haptic } from '@/lib/haptics';
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { colors, systemColors } from '@/theme';
 
 /** Past a tap, before the thumb would expect anything else. */
@@ -31,6 +32,7 @@ export interface HoldMicProps {
  * cancel. The tap stays, so the hold is a shortcut and never the only way (HIG Gestures).
  */
 export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilityLabel, accessibilityHint, style }: HoldMicProps) {
+  const onPhoto = useOnPhoto();
   const pressed = useSharedValue(0);
   const animated = useAnimatedStyle(() => ({ transform: [{ scale: 1 - pressed.value * 0.12 }], opacity: 1 - pressed.value * 0.15 }));
 
@@ -96,7 +98,7 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
         accessibilityActions={[{ name: 'activate' }]}
         onAccessibilityAction={onTap}
         style={[style, recording && styles.recording, animated]}>
-        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={29} color={recording ? colors.white : colors.textSecondary} />
+        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={29} color={recording ? colors.white : onPhoto ? colors.onMediaSoft : colors.textSecondary} />
       </Animated.View>
     </GestureDetector>
   );

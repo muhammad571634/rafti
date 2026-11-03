@@ -214,6 +214,8 @@
   },
   "intro": {
     "age": "{{count}} años",
+    "male": "Hombre",
+    "female": "Mujer",
     "loves": "Le encanta",
     "cantStand": "No soporta",
     "open": "Sobre {{name}}",

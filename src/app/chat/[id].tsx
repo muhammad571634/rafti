@@ -5,13 +5,14 @@ import { Image } from 'expo-image';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
+import { ChatGroundProvider, PORTRAIT_BG, PortraitGround, portraitOf } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
 import { IntroCard } from '@/components/chat/intro-card';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
@@ -211,8 +212,15 @@ export default function ChatRoomScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages?.length, typing]);
 
-  const backgroundId = relationship?.backgroundId ?? 'bg_plain';
-  const artWallpaper = chatArtBackgroundsById[backgroundId];
+  const { width, height } = useWindowDimensions();
+  const backgroundId = relationship?.backgroundId ?? PORTRAIT_BG;
+  // Their own picture, the default (owner, 2026-11-03, after Replika): the conversation over them.
+  // A character with no picture falls back to the plain ground.
+  const portrait = useMemo(
+    () => (backgroundId === PORTRAIT_BG && character ? portraitOf(character, width / height) : undefined),
+    [backgroundId, character, width, height],
+  );
+  const artWallpaper = portrait ? undefined : chatArtBackgroundsById[backgroundId];
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
@@ -458,15 +466,18 @@ export default function ChatRoomScreen() {
     router.push(route);
   };
   const streak = relationship?.streakDays ?? 0;
-  const dark = !!wallpaper.dark;
+  const dark = !!portrait || !!wallpaper.dark;
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen background={background as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
+    <Screen background={(portrait ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
+      <ChatGroundProvider value={!!portrait}>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
+        {/* Outside the keyboard's room, so the picture stays put while the keyboard is up. */}
+        {portrait ? <PortraitGround portrait={portrait} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           {artWallpaper ? (
             <>
@@ -480,7 +491,7 @@ export default function ChatRoomScreen() {
             </>
           ) : null}
           <View style={styles.flex}>
-            {!artWallpaper ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
+            {!artWallpaper && !portrait ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
@@ -536,7 +547,7 @@ export default function ChatRoomScreen() {
               }}
             />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
-            {!artWallpaper ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
+            {!artWallpaper && !portrait ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
             {/* While you edit, the chat fades back; a tap on it cancels the edit. */}
             {editing ? (
               <Pressable
@@ -604,7 +615,7 @@ export default function ChatRoomScreen() {
               {streak > 0 ? (
                 <>
                   <CaptionDot />
-                  <Ionicons name="heart" size={10} color={colors.textSecondary} />
+                  <Ionicons name="heart" size={10} color={portrait ? colors.onMediaSoft : colors.textSecondary} />
                   <CaptionText>{t('chat.streakShort', { count: streak })}</CaptionText>
                 </>
               ) : null}
@@ -769,6 +780,7 @@ export default function ChatRoomScreen() {
       />
 
       {shared ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} lines={shared} /> : null}
+      </ChatGroundProvider>
     </Screen>
   );
 }

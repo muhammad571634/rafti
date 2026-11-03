@@ -5,6 +5,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { SharePill } from '@/components/share-card-sheet';
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
 import type { Rating } from '@/lib/reply-rating';
@@ -54,6 +55,8 @@ export function ReplyControls({
   const last = index === count - 1;
   const up = rating === 'up';
   const down = rating === 'down';
+  const onPhoto = useOnPhoto();
+  const quiet = onPhoto ? colors.onMediaSoft : colors.textSecondary;
 
   return (
     <View style={styles.row}>
@@ -70,7 +73,7 @@ export function ReplyControls({
               ios={up ? 'hand.thumbsup.fill' : 'hand.thumbsup'}
               icon={up ? 'thumbs-up' : 'thumbs-up-outline'}
               size={17}
-              color={up ? colors.primary : colors.textSecondary}
+              color={up ? colors.primary : quiet}
             />
           </PressableScale>
           <PressableScale
@@ -84,10 +87,10 @@ export function ReplyControls({
               ios={down ? 'hand.thumbsdown.fill' : 'hand.thumbsdown'}
               icon={down ? 'thumbs-down' : 'thumbs-down-outline'}
               size={17}
-              color={down ? colors.primary : colors.textSecondary}
+              color={down ? colors.primary : quiet}
             />
           </PressableScale>
-          {count > 1 || onRedo || onContinue || onShare ? <View style={styles.divider} /> : null}
+          {count > 1 || onRedo || onContinue || onShare ? <View style={[styles.divider, onPhoto && styles.photoDivider]} /> : null}
         </>
       ) : null}
       {count > 1 ? (
@@ -99,9 +102,9 @@ export function ReplyControls({
             style={[styles.button, first && styles.off]}
             accessibilityRole="button"
             accessibilityLabel={t('chat.prevVersion')}>
-            <SFIcon ios="chevron.left" icon="chevron-back" size={15} color={colors.textSecondary} />
+            <SFIcon ios="chevron.left" icon="chevron-back" size={15} color={quiet} />
           </PressableScale>
-          <Txt style={styles.count} accessibilityLabel={t('chat.versionOf', { index: index + 1, count })}>
+          <Txt style={[styles.count, onPhoto && onPhotoCount]} accessibilityLabel={t('chat.versionOf', { index: index + 1, count })}>
             {`${index + 1}/${count}`}
           </Txt>
           <PressableScale
@@ -111,7 +114,7 @@ export function ReplyControls({
             style={[styles.button, last && styles.off]}
             accessibilityRole="button"
             accessibilityLabel={t('chat.nextVersion')}>
-            <SFIcon ios="chevron.right" icon="chevron-forward" size={15} color={colors.textSecondary} />
+            <SFIcon ios="chevron.right" icon="chevron-forward" size={15} color={quiet} />
           </PressableScale>
         </>
       ) : null}
@@ -123,7 +126,7 @@ export function ReplyControls({
           style={styles.redo}
           accessibilityRole="button"
           accessibilityLabel={t('chat.newReply')}>
-          <SFIcon ios="arrow.clockwise" icon="refresh" size={18} color={colors.textSecondary} />
+          <SFIcon ios="arrow.clockwise" icon="refresh" size={18} color={quiet} />
         </PressableScale>
       ) : null}
       {onContinue ? (
@@ -134,7 +137,7 @@ export function ReplyControls({
           style={styles.redo}
           accessibilityRole="button"
           accessibilityLabel={t('chat.continue')}>
-          <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={18} color={colors.textSecondary} />
+          <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={18} color={quiet} />
         </PressableScale>
       ) : null}
       {onShare ? (
@@ -200,4 +203,7 @@ const styles = StyleSheet.create({
   count: { minWidth: 34, textAlign: 'center', fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   redo: { width: 44, height: 36, alignItems: 'center', justifyContent: 'center' },
   shareTarget: { height: 36, justifyContent: 'center', marginLeft: space.xs },
+  photoDivider: { backgroundColor: colors.onMediaHairline },
 });
+
+const onPhotoCount = { color: colors.onMediaSoft };

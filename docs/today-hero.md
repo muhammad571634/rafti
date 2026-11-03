@@ -19,8 +19,9 @@ that person. Sigmazam does the same.
 3. **Tie or nobody yet** (fresh install, only greetings so far): the closest bond
    (highest closeness) wins.
 4. **Picture:** the character's wide scene (`assets/heroes/c_<id>.jpg`) if there is one,
-   else the portrait (`assets/avatars`, or the photo of a character you created), cropped
-   to the card. A candidate with no picture at all is skipped.
+   else their tall scene (`assets/portraits/c_<id>.jpg`, the owner's Nano Banana art), else the
+   portrait (`assets/avatars`, or the photo of a character you created), cropped to the card. A
+   candidate with no picture at all is skipped.
 
 ## The chain (what moves the card)
 
@@ -40,11 +41,18 @@ immediately; there is nothing to refresh.
 
 ## On the card
 
-Name, "N days together" (the day you met is day 1), the bond level chip. The whole card
-opens that chat.
+The friend waiting for you (owner, 2026-11-03, Replika's feel): 300 pt tall. On top, the name
+and one clear-glass chip with "N days" (the day you met is day 1) and the bond level. At the
+bottom, their newest written line in a dark-glass bubble with its time (`waitingLine`: speech
+only, narration when there is nothing else; none while a helpline card is among the last 8
+lines), then a dark-glass "Message" field with a mic. The whole card is one button that opens
+that chat; the field is a cue, not a second control.
 
 ## Pictures
 
-All 40 characters have a portrait and a wide scene (2026-10-07). A created character uses its
+All 40 characters have a portrait and a wide scene (2026-10-07). Twelve of the newer ones (Alaric,
+Celestine, Dorian, Erik, Isolde, Leander, Luca, Mara, Odile, Ronan, Teddy, Viv) have the owner's
+close-up as their portrait and a tall scene in `assets/portraits` (2026-11-03, from `art-new/`);
+Freya, Sasha, Priya, Oppa and Luna have none yet. A created character uses its
 photo. New scenes: prompts in `docs/nano-banana-heroes.md` (attach the portrait only), files to
 `assets/raw/heroes/c_<id>.png`, then `python scripts/build-brand-art.py characters`.

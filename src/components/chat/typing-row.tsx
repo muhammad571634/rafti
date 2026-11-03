@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { useOnPhoto } from '@/components/chat/chat-ground';
 import { Anim, CharacterAvatar, Txt } from '@/components/ui';
 import { colors, space } from '@/theme';
 import type { Character } from '@/types';
@@ -16,11 +17,12 @@ const SMALL = 22;
  * faces overlapping (up to three) and `label` naming them ("Kai and Elio are typing").
  */
 export function TypingRow({ characters, label }: { characters: Character[]; label?: string }) {
+  const onPhoto = useOnPhoto();
   if (characters.length === 0) return null;
   const faces = characters.slice(0, MAX_FACES);
   const bubble = (
-    <View style={styles.bubble}>
-      <Anim name="typing" size={34} tint={colors.textSecondary} />
+    <View style={[styles.bubble, onPhoto && styles.photoBubble]}>
+      <Anim name="typing" size={34} tint={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
     </View>
   );
   return (
@@ -84,4 +86,5 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 6,
     backgroundColor: colors.bubbleOther,
   },
+  photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
 });
