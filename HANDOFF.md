@@ -1,5 +1,27 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z105. The daily note on the A51, the second reader on 0z104, diary answers from the model (2026-11-03, Claude 2). NEXT: the intro card ("bio") with the owner
+
+- Continues 0z104 (owner: "HANDOFF'dagi 0z104 dan davom et").
+- Second reader (a fresh agent, read-only) on `be1a8d0` (round 2) and `981e0bd` (daily note). Each finding checked in the code and fixed in `3289f33`:
+  - Serious: Today asked for the note during launch, before `restoreMessages` had brought the chats back (`hydrated` false), so `dailyNoteStep` saw an empty chat (a helpline card missed; the hero picked by intimacy, not by last talk). `leaveDailyNote` returns until `hydrated`; Today's focus effect depends on `hydrated` and `today` (also covers Today left open past midnight).
+  - A sealed note stayed on Today after a helpline card came up later that day: the row skips a friend whose chat had one today (`helplineToday`, exported from `src/lib/daily-note.ts`, tested).
+  - The group AI notice (`AiNotice`) had no on-photo colour on Art wallpapers (the AI disclosure at ~3:1); now `photoSystem` like the other system lines.
+  - Reply controls were 44x40: `hitSlop` 2 pt top and bottom (`TALL`), so every button is a 44 pt target. Look unchanged.
+  - Older (from `a1362b6`, 0z80): `usePickPhoto` was called after the early returns of the one-to-one and group chat screens, so a chat or group removed while open would break the hooks order. The hook now takes the send with the tap (`pickPhoto(send)`) and is called with the other hooks.
+- Model-first, found by me (0z104's "seen, not touched"): with the model on, a shared diary page left unanswered got the stock `diaryReplyFor` on every launch, and the evening "how was today?" page (`dayToDiary`) always did. Now `finishHydration` asks `writeDiaryReply` again (`PAGES_AT_ONCE` pages a launch) and `dayToDiary` asks the model; stock words only with the model off or as the care words after a crisis page.
+- OTA `13c1629e` (from `3289f33`). A51 (Russian locale), two restarts: Today shows "Записка от Theo · Запечатано" under the widgets; the Fly log has the `[note]` call at 13:40:32Z (gemini-3.1-flash-lite), so the model wrote it. The owner then opened it and swapped (their "Привет"; Theo's note in Russian, in character, about losing arguments on purpose); level 1 → 2; the row left Today, and no second note that day. Done.
+- OTA `b300f04a` (from `286041c`, the diary-page wait below): two restarts, Today opens normally.
+- Checks: tsc 0, npm test 654/654.
+
+Still to do:
+1. Done: the daily note seen and swapped on the A51.
+2. The intro card: the owner wants deeper work on it ("bio"); gender is in, ask what else when they look (0z104 item 4).
+3. Owner's yes or no on round 2 of the chat look (0z104 item 1).
+4. Art for Freya, Sasha, Priya, Oppa, Luna; tall portraits for the first 40 (0z104 item 6).
+5. Other "waiting for you" items on Today (a friend's quiz, an answered board note, a radio gift): ask before adding any (0z104 item 7).
+6. Done in `286041c`: `writeDueDiaryPages` ran on Today's (and the diary's) focus before `hydrated`, with the chats still empty; `daysTogether` then made a day from a date or call moment alone (nothing said, `heavy` false), so a crisis day could get a light page that is never rewritten. It now returns until `hydrated`, and `finishHydration` calls it right after setting `hydrated` (store only; the approved diary screen untouched).
+
 ### 0z104. Our design + Replika's feel: the chat on their picture, the waiting friend on Today, faces for 12 (2026-11-03, Claude 1, handed to Claude 2 at the owner's word). NEXT (Claude 2): publish the daily-note OTA, check it on the A51, then the intro card with the owner
 
 - Built (owner approved the merge mockups, "kodlab ko'r"; design note `docs/superpowers/specs/2026-11-03-replika-feel-design.md`):
