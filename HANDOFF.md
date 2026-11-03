@@ -11,7 +11,7 @@
 
 Still to do:
 1. Done: owner deployed from `9bbf128` with a clean `src`/`server` (Fly v18, 2026-11-03), `/health` 200.
-2. Owner tries a call on the A51: the opener, a held and a tapped line, a retry, hanging up mid-reply; then a chat line that refers to the call.
+2. Owner tried it (14:42): no reply showed. Cause in the Fly log: every free Gemini model answered 503 "high demand", so Not Delivered was right. The owner also said holding a mic is a walkie-talkie, not a live call, and asked how Character.AI and BIMOBIMO do it (hands-free). Done in `beefc87` (update `f8f60c67`): `useHandsFree` keeps the mic open while the call wants it, starts a turn after a few loud looks (`VOICE_DB`, `VOICE_MOMENTS`, now exported from `use-voice-note.ts`) and ends it after 1.2 s of quiet; under 0.5 s is dropped; 15 s of nothing starts over; Mute closes the mic; rings round the avatar while their captions run; talking over them stops the captions. `HoldMic` is back as it was. Not tried on the A51: adb showed it offline. Left: owner tries a call (opener, a few turns, Mute, hanging up mid-reply), then a chat line about the call; watch for false turns from room noise.
 3. Step 2 after the ElevenLabs grant: read the lines aloud (Flash for calls), then step 3 (no mic), and decide a daily cap for Pro yearly.
 4. The group call (`src/app/group/[id]/call.tsx`) still runs stock subtitles.
 
