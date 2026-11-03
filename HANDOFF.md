@@ -8,7 +8,7 @@
 - Checks: tsc 0, server tsc 0, server tests 71/71.
 
 Still to do:
-1. Owner deploys the server.
+1. Done: owner deployed from `701d9c2` with a clean `src`/`server` (Fly v17, 2026-11-03), `/health` 200.
 2. 0z89's to-do 3 (a zone moving west and the check-in streak) is still open.
 
 ### 0z99. Terms of use draft (2026-11-03, Claude 2). NEXT: the gates in its first section
