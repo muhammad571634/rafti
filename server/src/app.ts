@@ -738,8 +738,9 @@ export function createApp(
       const lang = followsUser(input.replyLanguage) ? `follow:${input.user.locale}` : input.replyLanguage;
       const redone = result === calls[0].result ? 'kept' : 'redone';
       const guard = crisis ? ` crisis ${calls.length > 1 ? redone : 'cued'}` : repeat ? ` repeat=${repeat.score.toFixed(2)} ${redone}` : '';
+      // No words of the chat in the log: the privacy policy says so (docs/legal/privacy-policy.md).
       console.log(
-        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} "${(reply.bubbles[0] ?? '').slice(0, 50)}"`,
+        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} bubbles=${reply.bubbles.length}`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
