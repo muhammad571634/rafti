@@ -10,7 +10,7 @@
 - Checks: tsc 0, npm test 649/649, server tsc 0, server tests 71/71. Not run on the A51 yet (it needs a voice).
 
 Still to do:
-1. Owner deploys the server (history reads call lines).
+1. Done: owner deployed from `9bbf128` with a clean `src`/`server` (Fly v18, 2026-11-03), `/health` 200.
 2. Owner tries a call on the A51: the opener, a held and a tapped line, a retry, hanging up mid-reply; then a chat line that refers to the call.
 3. Step 2 after the ElevenLabs grant: read the lines aloud (Flash for calls), then step 3 (no mic), and decide a daily cap for Pro yearly.
 4. The group call (`src/app/group/[id]/call.tsx`) still runs stock subtitles.
