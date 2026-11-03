@@ -51,6 +51,7 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
   - Probe deployment health with `/health` (`200`) or unauthenticated route checks (`401`), never paid model calls.
 - **Supabase Cloud (`yhelqgpwputlayawwtne`, Tokyo `ap-northeast-1`)**:
   - Never run `supabase start` or local Docker stack (keep Docker Desktop installed, just stopped).
+  - Migrations: auto mode refuses an agent's migration call even after the owner's yes. Commit the file, then give the owner `! node scripts/apply-migration.mjs supabase/migrations/<file>.sql` (forward slashes), rename the file to the version it answers, and check it with read-only SQL.
 - **Phone (Galaxy A51 `R58N628VFGY`, package `com.sigmazam.app`)**:
   - Always use `C:\Users\joray\AppData\Local\Android\Sdk\platform-tools\adb.exe` — never the `scrcpy` `adb` on `PATH` (it drops the A51 connection).
 - **EAS OTA (`sukuts-team`, `EXPO_TOKEN` User env)**:
