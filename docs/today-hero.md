@@ -49,6 +49,16 @@ helpline card sits up to 4 lines before it or anywhere after it), then a dark-gl
 field with a mic. The whole card is one button that opens
 that chat; the field is a cue, not a second control.
 
+## The day's sealed note
+
+Under the widgets, Today shows "<name>'s note · Sealed" while a secret note waits to be opened.
+Until 2026-11-03 a note existed only once the user opened Secret note, so a new install never had
+one there. Now the friend on the card writes it by themselves (`leaveDailyNote`, called when Today
+comes into view; the rules in `dailyNoteStep`, `src/lib/daily-note.ts`): one a day, none while
+another sealed note waits, none on a day with a helpline card in that chat; a note the busy model
+left unwritten is asked again at most every 10 minutes. With the model on, its words only (a note
+it had not finished stays unwritten after a restart, no stock line); the swap still costs shells.
+
 ## Pictures
 
 All 40 characters have a portrait and a wide scene (2026-10-07). Twelve of the newer ones (Alaric,

@@ -7,6 +7,7 @@ import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
 import { greeters } from '@/lib/greeters';
 import { lastTalkedAt } from '@/lib/talk';
+import { dailyNoteStep } from '@/lib/daily-note';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { fillNames, pickOpening, withOpening } from '@/ai/character-draft';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
@@ -677,6 +678,8 @@ interface AppState {
   /* secret note */
   ensureSecretNote: (characterId: string) => void;
   newSecretNote: (characterId: string) => void;
+  /** Today's sealed note from the friend you talked with last (`dailyNoteStep`). Safe to call often. */
+  leaveDailyNote: (characterId: string) => void;
   writeNote: (noteId: string, text: string) => void;
   /** Asks again for the note the model was too busy to write. */
   retrySecretNote: (noteId: string) => void;
@@ -2544,6 +2547,21 @@ export const useAppStore = create<AppState>()(
         askSecretNote(set, get, id);
       },
 
+      leaveDailyNote: (characterId) => {
+        const s = get();
+        const chatId = s.conversations.find((c) => c.characterId === characterId)?.id;
+        const step = dailyNoteStep(s.notes, characterId, chatId ? (s.messages[chatId] ?? []) : []);
+        const now = Date.now();
+        // Every visit to Today calls this: a busy model is asked again only now and then.
+        if (!step || now - (dailyNoteTries.get(characterId) ?? 0) < NOTE_RETRY_MS) return;
+        dailyNoteTries.set(characterId, now);
+        if (step === 'new') get().newSecretNote(characterId);
+        else {
+          const latest = latestNote(s.notes, characterId);
+          if (latest) askSecretNote(set, get, latest.id);
+        }
+      },
+
       retrySecretNote: (noteId) => askSecretNote(set, get, noteId),
 
       writeNote: (noteId, text) =>
@@ -3832,7 +3850,9 @@ async function finishHydration() {
   const locale = saved ?? phoneLanguage();
   if (useAppStore.getState().user.locale !== locale) useAppStore.setState((s) => ({ user: { ...s.user, locale } }));
   const { notes, diary } = useAppStore.getState();
-  notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));
+  // With the model on, a note it had not written stays for it (Today or the note screen asks again):
+  // a stock line in its place would be the silent stand-in the model-first rule forbids.
+  if (!modelOn(useAppStore.getState)) notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));
   diary
     .filter((d) => d.sharedWithCharacterId && !d.reply)
     .forEach((d) => answerDiary(useAppStore.setState, d.id));
@@ -4336,6 +4356,9 @@ export async function askSelfQuiz(characterId: string, week: string): Promise<Se
 
 /** Notes being asked for, so opening the screen twice asks once. */
 const notesAsked = new Set<string>();
+/** Today asks for a friend's daily note at most this often (a busy model is not asked on every visit). */
+const NOTE_RETRY_MS = 10 * 60_000;
+const dailyNoteTries = new Map<string, number>();
 
 /** Their side of a secret note: the model writes it, sealed until you swap. Busy: the screen offers to try again. */
 function askSecretNote(set: RawSetter, get: Getter, noteId: string) {

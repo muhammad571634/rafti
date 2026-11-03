@@ -82,7 +82,7 @@ const CAPSULE = 40;
  * people customize"): one top row with the Sigmazam wordmark and your mascot
  * with your name (six letters, the profile shows it whole), the friend you
  * talked with last, one "Waiting for you" row while chats are unread, the user's four widgets,
- * a sealed note when one is ready, then every module no widget stands in for as an app-icon
+ * a sealed note when one is ready (that friend leaves one a day), then every module no widget stands in for as an app-icon
  * tile, so all ten stay one tap away.
  *
  * Edit like the iPhone Home Screen: a long press on a widget or "Edit" makes the widgets jiggle
@@ -105,6 +105,7 @@ export default function HomeScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
+  const leaveDailyNote = useAppStore((s) => s.leaveDailyNote);
   const writeDuePages = useAppStore((s) => s.writeDueDiaryPages);
   const slots = useAppStore((s) => s.todayWidgets);
   const setSlots = useAppStore((s) => s.setTodayWidgets);
@@ -126,6 +127,13 @@ export default function HomeScreen() {
 
   // Coming back in the morning: pages written overnight should be waiting here.
   useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
+  // And the day's sealed note from the friend on the card (`dailyNoteStep`).
+  const heroId = hero?.character.id;
+  useFocusEffect(
+    useCallback(() => {
+      if (heroId) leaveDailyNote(heroId);
+    }, [heroId, leaveDailyNote]),
+  );
 
   const unread = [...conversations]
     .filter((c) => c.unreadCount > 0)

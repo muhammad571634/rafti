@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z104. Our design + Replika's feel: the chat on their picture, the waiting friend on Today, faces for 12 (2026-11-03, Claude 1). NEXT: owner checks round 2 on the A51
+### 0z104. Our design + Replika's feel: the chat on their picture, the waiting friend on Today, faces for 12 (2026-11-03, Claude 1, handed to Claude 2 at the owner's word). NEXT (Claude 2): publish the daily-note OTA, check it on the A51, then the intro card with the owner
 
 - Built (owner approved the merge mockups, "kodlab ko'r"; design note `docs/superpowers/specs/2026-11-03-replika-feel-design.md`):
   - Chat ground (`src/components/chat/chat-ground.tsx`): `PORTRAIT_BG` (`bg_portrait`, defined in `src/mock/user.ts`) is the default for new relationships and for old ones on `bg_plain` (store v14); `portraitOf` picks the tall portrait, else the wide scene slid to the face (`SCENE_FACE`, measured by eye per hero), else `avatarUri`; none = plain ground. `PortraitGround` sits outside the KeyboardAvoidingView so the keyboard does not move it. `ChatGroundProvider` / `useOnPhoto` give the on-photo look to message bubbles (their text and voice bubbles, receipts, times, system / skip / scene / call lines, notes), day chips, typing dots, quick replies, reply controls, header (clear glass), composer and mic (dark glass), intro card (dark glass, no scene of its own). New colours: `onMediaBubble`, `onMediaField`, `onMediaShadow`, gradients `portraitScrim`, `portraitCardScrim`. Groups untouched.
@@ -20,13 +20,19 @@
 - Current proposal (browser mockups, brainstorming companion, files in the session scratchpad): Today keeps everything but its character card grows, shows their last line and a "write to …" pill that opens the chat; the chat gets the character's art as its ground with glass header, glass composer, dark glass bubbles, the intro card as a glass card over the art (every control kept: shells, call, intro, scene, read receipt, quick replies, vote/regenerate/continue/share); Chats keeps its look with faces instead of letter avatars.
 - Owner notes: IV / RV / OF are characters with no art yet; owner drew them in Nano Banana into `art-new/` and allows wiring them in (replace later what they dislike). "Edit" under Today's icons is not a bug: it sits behind the tab bar because Today should also show items like secret notes, which do not show now.
 
+- Round 2 on the A51 (OTA `76ebdfbb` from `be1a8d0`, Russian locale): Today card right; Hana (wide scene) and Odile (tall portrait) match the owner's prototype (face on top, list from 36% with the fading edge, dark-glass bubbles, white call lines); Ronan was on an Art wallpaper (someone picked it), the picture look on it right; the picker shows the preview, the "Portrait / Ronan Vale" row and Classic / Art; a tap on the row went back to the chat on his masked portrait, as in the prototype. Android Back from a chat opened on the Today card left the app once, right after the two OTA restarts; not again on a cold start nor from Chats, so an update-reload quirk, not the app's path.
+- Secret notes on Today (Still to do 3), found and fixed: a note existed only once the user opened Secret note (`ensureSecretNote`), so a new install never had one on Today (the demo history used to seed ready ones). Now `leaveDailyNote(characterId)` (store), called by Today on focus for the friend on the card, follows `dailyNoteStep` (`src/lib/daily-note.ts`, tests in `daily-note.test.ts`): one a day, none while any sealed note waits, none on a day with a helpline card in that chat, a composing note the busy model left is asked again (`NOTE_RETRY_MS` 10 min per friend, so Today visits never spam the model). Also: `finishHydration` sealed every composing note with the stock `noteReplyFor` line on launch, even with the model on; now only with the model off (model-first). Docs: `docs/today-hero.md` ("The day's sealed note"), `docs/flows.md` F2.
+- Seen, not touched (not mine): `finishHydration` also answers a shared diary page with the stock `diaryReplyFor` on launch whatever the model state; same model-first question as the notes.
+- Checks: tsc 0, npm test 653/653. The daily note is not in an OTA yet and was not seen on the phone.
+
 Still to do:
-1. Owner looks at round 2 on the A51: a chat on a portrait (Isolde), on a wide scene (Hana), on an Art wallpaper, on Classic; the Portrait row; Today. Ronan's chat keeps the Classic "Dusk" someone picked before (a chosen wallpaper stays).
+1. Done: round 2 seen on the A51 (above). Owner has not said yes or no to it yet.
 2. Done: `art-new/` art wired for 12 characters.
-3. Find why Today shows no secret notes (or similar items) now.
+3. Daily note: publish an OTA (`$env:CI='1'; npx eas-cli update --channel preview --environment preview --message "..."`), restart the app twice, open Today: the note row ("<name>'s note · Sealed") should appear once the model answers; tap it, write, swap.
 4. The intro card: the owner wants deeper work on it ("bio"); gender is in, ask what else when they look.
-5. Done: second reader on `5b6fd2d`. Round 2 changed under 20 code files; no second pass yet.
+5. Done: second reader on `5b6fd2d`. Round 2 plus the daily note (store, a hot file) have had no second pass yet.
 6. Art for Freya, Sasha, Priya, Oppa, Luna; tall portraits for the first 40 would look best in the new chat (their wide scenes are 900 px tall, soft when filling a phone).
+7. Other "waiting for you" items on Today the owner may mean by "secret notes and the like" (a friend's quiz, an answered board note, a radio gift): ask before adding any.
 
 ### 0z103. Design direction: is the iOS look boring? (2026-11-03, Claude 2). NEXT: owner names an app whose look they like, or says "you pick"
 
