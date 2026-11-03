@@ -19,8 +19,8 @@ import { useAppStore } from '@/store/use-app-store';
 
 import { PLAYBACK_MODE, stopNote } from './voice-player';
 
-/** Small and clear enough for speech; a minute stays near 240 KB (`CLIP_CHARS_MAX`). */
-const OPTIONS: RecordingOptions = {
+/** Small and clear enough for speech; a minute stays near 240 KB (`CLIP_CHARS_MAX`). Calls record the same. */
+export const OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
   extension: '.m4a',
   sampleRate: 16000,
@@ -37,9 +37,9 @@ const MIN_SECONDS = 1;
  * talk?", 2026-11-02), so a clip that stays below it never leaves the phone. Android reports the peak
  * since the last look, iOS the average, so they differ.
  */
-const VOICE_DB = Platform.OS === 'ios' ? -40 : -35;
+export const VOICE_DB = Platform.OS === 'ios' ? -40 : -35;
 /** Moments (one a look, 5 a second) a clip must be that loud: one click is not speech. */
-const VOICE_MOMENTS = 2;
+export const VOICE_MOMENTS = 2;
 
 export interface VoiceNote {
   seconds: number;

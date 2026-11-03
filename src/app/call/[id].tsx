@@ -11,8 +11,7 @@ import { captionMs, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
 import { detectCrisis, HELPLINE_URL } from '@/ai/safety';
 import { apiBase } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
-import { HoldMic } from '@/components/chat/hold-mic';
-import { useVoiceNote } from '@/components/chat/use-voice-note';
+import { useHandsFree } from '@/components/call/use-hands-free';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
@@ -35,10 +34,11 @@ const SUBTITLE_INTERVAL_MS = 5000;
  * The in-call screen (canvas "CallVoice", 2026-10-21): blurred portrait, avatar, name and timer,
  * the live line in a glass caption, then mute / end / speaker — nothing else competes with the voice.
  *
- * With the model on, the call is a real talk (0z102): the character opens it, the user holds the mic
- * (or taps it twice) to speak, the server writes out the words, and the character answers in
- * `mode: 'call'`; the lines show as captions until a voice reads them (ElevenLabs, later). A busy
- * model says Not Delivered with a retry, never a stock line. With the model off, the old subtitles run.
+ * With the model on, the call is a real talk (0z102): the character opens it, the user just talks
+ * (the mic is open, a pause ends their turn, Mute closes it), the server writes out the words, and the
+ * character answers in `mode: 'call'`; the lines show as captions, with rings round the avatar while
+ * they run, until a voice reads them (ElevenLabs, later). A busy model says Not Delivered with a
+ * retry, never a stock line. With the model off, the old subtitles run.
  */
 export default function CallScreen() {
   const insets = useSafeAreaInsets();
@@ -103,11 +103,15 @@ export default function CallScreen() {
     [],
   );
 
+  // They "speak" while their captions run: rings round the avatar, as a voice will later.
+  const [speaking, setSpeaking] = useState(false);
+
   /** Their lines one after another, each up about as long as it takes to say. */
   const play = (theirs: string[], i = 0) => {
     clearTimeout(captionTimer.current);
     setCaption({ author: 'them', text: theirs[i] });
-    if (i + 1 < theirs.length) captionTimer.current = setTimeout(() => play(theirs, i + 1), captionMs(theirs[i]));
+    setSpeaking(true);
+    captionTimer.current = setTimeout(() => (i + 1 < theirs.length ? play(theirs, i + 1) : setSpeaking(false)), captionMs(theirs[i]));
   };
 
   /** Asks for their next words on what has been said so far; a retry asks the same again. */
@@ -126,18 +130,27 @@ export default function CallScreen() {
     });
   };
 
-  // The user's words, written out by the server: they show, and the character answers them. Words
-  // that arrive after the hang-up ask nothing, but a crisis in them still reaches the chat.
-  const voice = useVoiceNote(undefined, (note) => {
-    if (detectCrisis(note.transcript)) markCrisis();
+  // The open mic: the user just talks, and a pause ends their turn. It closes while muted and while
+  // their answer is on its way. The words show and the character answers them; words that arrive
+  // after the hang-up ask nothing, but a crisis in them still reaches the chat.
+  const mic = useHandsFree(!!live && state === 'active' && !muted && !waiting, (words) => {
+    if (detectCrisis(words.text)) markCrisis();
     if (!mounted.current || booked.current) return;
-    const line: CallLine = { author: 'me', text: note.transcript, language: note.language };
+    const line: CallLine = { author: 'me', text: words.text, language: words.language };
     said.current = [...said.current, line];
     clearTimeout(captionTimer.current);
+    setSpeaking(false);
     setCaption(line);
     ask();
   });
-  const recording = voice.phase === 'recording';
+  const userTalking = mic.phase === 'speaking';
+
+  // Talking over them stops their captions, as a voice would stop.
+  useEffect(() => {
+    if (!userTalking) return;
+    clearTimeout(captionTimer.current);
+    setSpeaking(false);
+  }, [userTalking]);
 
   // The character speaks first, once the call is up.
   useEffect(() => {
@@ -147,11 +160,6 @@ export default function CallScreen() {
     // `ask` reads refs; once per call.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [live, state]);
-
-  // Muted, or the minutes ran out: what was being said goes nowhere.
-  useEffect(() => {
-    if ((muted || state !== 'active') && recording) voice.finish(false);
-  }, [muted, state, recording, voice]);
 
   useEffect(() => {
     secondsRef.current = seconds;
@@ -273,8 +281,8 @@ export default function CallScreen() {
 
       <View style={styles.head}>
         <View style={styles.avatarWrap}>
-          {state === 'connecting' ? (
-            <Anim name="calling" size={230} tint="rgba(255,255,255,0.7)" style={styles.rings} />
+          {state === 'connecting' || speaking ? (
+            <Anim name="calling" size={230} tint={speaking ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.7)'} style={styles.rings} />
           ) : null}
           <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.85)" />
         </View>
@@ -314,32 +322,15 @@ export default function CallScreen() {
             </PressableScale>
           ) : null}
           <LiveCaption
-            recording={recording}
-            seconds={voice.seconds}
-            hearing={voice.phase === 'sending'}
-            hearingFailed={voice.phase === 'failed'}
-            notice={voice.notice ? t(`chat.voice.${voice.notice}`) : null}
+            talking={userTalking}
+            hearing={mic.phase === 'sending'}
+            hearingFailed={mic.phase === 'failed'}
             caption={caption}
             waiting={waiting}
             failed={failed}
-            onRetryHearing={() => void voice.retry()}
+            onRetryHearing={mic.retry}
             onRetry={ask}
           />
-          <View style={styles.micRow}>
-            <HoldMic
-              recording={recording}
-              onTap={() => (recording ? voice.finish(true) : voice.start())}
-              onHoldStart={voice.start}
-              onHoldEnd={voice.finish}
-              accessibilityLabel={t('chat.voice.hold')}
-              accessibilityHint={t('chat.voice.release')}
-              style={[callGlass.glass, styles.mic]}
-              iconColor={colors.onMedia}
-              iconSize={34}
-              // A recording can always be stopped; only a new one waits.
-              disabled={!recording && (muted || waiting || voice.phase === 'sending')}
-            />
-          </View>
         </>
       ) : null}
 
@@ -380,22 +371,18 @@ export default function CallScreen() {
  * a retry when the model is busy.
  */
 function LiveCaption({
-  recording,
-  seconds,
+  talking,
   hearing,
   hearingFailed,
-  notice,
   caption,
   waiting,
   failed,
   onRetryHearing,
   onRetry,
 }: {
-  recording: boolean;
-  seconds: number;
+  talking: boolean;
   hearing: boolean;
   hearingFailed: boolean;
-  notice: string | null;
   caption: CallLine | null;
   waiting: boolean;
   failed: boolean;
@@ -415,13 +402,8 @@ function LiveCaption({
   const mine = caption?.author === 'me';
   return (
     <View style={[callGlass.glass, callGlass.caption, styles.caption]} accessibilityLiveRegion="polite">
-      {recording ? (
-        <View style={styles.listening}>
-          <Anim name="voiceWave" size={34} tint={colors.onMedia} />
-          <Txt style={styles.captionClock}>{callClock(seconds)}</Txt>
-        </View>
-      ) : notice ? (
-        <Txt style={styles.captionSoft}>{notice}</Txt>
+      {talking ? (
+        <Anim name="voiceWave" size={34} tint={colors.onMedia} />
       ) : (
         <>
           {caption && !hearing ? (
@@ -438,11 +420,8 @@ function LiveCaption({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  caption: { marginBottom: 20, minHeight: 56, justifyContent: 'center' },
+  caption: { minHeight: 56, justifyContent: 'center' },
   captionSoft: { fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
-  captionClock: { fontSize: 15, color: colors.onMedia, fontVariant: ['tabular-nums'] },
-  listening: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  micRow: { alignItems: 'center', marginBottom: 28 },
   helpline: {
     alignSelf: 'center',
     flexDirection: 'row',
@@ -454,7 +433,6 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   helplineText: { fontSize: 16, fontWeight: '600', color: colors.onMedia },
-  mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
   missing: { padding: space.xl },
   share: {
     position: 'absolute',
