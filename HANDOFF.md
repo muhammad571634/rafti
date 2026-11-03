@@ -10,7 +10,7 @@
 
 Still to do:
 1. Owner looks at Today and says yes or what to change (size, the breath, the evening/night light).
-2. Check the breath on the A51 (two screenshots a few seconds apart differ inside the card).
+2. Done: OTA `acc15ac` on the A51, two screenshots 3 s apart: 14.6% of the card's pixels changed, the tiles 0%, so it breathes; the progress line sits on the chip's bottom edge and no longer reads as an underline.
 3. From 0z105/0z106: owner's yes or no on round 2 of the chat look; art for Freya, Sasha, Priya, Oppa, Luna and tall portraits for the first 40; other "waiting for you" items on Today (ask first).
 
 ### 0z106. The intro card: who they are to you and the story the bond opens (2026-11-03, Claude 2). NEXT: owner looks at the card in a chat and says yes or what to change
