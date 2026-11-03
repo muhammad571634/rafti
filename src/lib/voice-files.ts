@@ -53,7 +53,20 @@ export async function noteUri(name: string): Promise<string | null> {
   }
 }
 
-/** A recording that will not be sent. */
+/** A line the character says on a call, saved in the cache to play once; null when it cannot be. */
+export async function keepSpeech(base64: string): Promise<string | null> {
+  try {
+    const fs = await files();
+    if (!fs) return null;
+    const file = new fs.File(fs.Paths.cache, `speech-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mp3`);
+    file.write(base64, { encoding: 'base64' });
+    return file.uri;
+  } catch {
+    return null;
+  }
+}
+
+/** A recording that will not be sent (or a call's spoken line, once played). */
 export async function dropClip(uri: string) {
   try {
     const fs = await files();

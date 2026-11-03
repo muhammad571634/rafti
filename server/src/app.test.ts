@@ -3,8 +3,8 @@ import { describe, it } from 'node:test';
 
 import { DAILY_CHECK_IN, PAID_SHARES_PER_DAY, SHARE_REWARD, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import type { PromptLayout } from '../../src/ai/prompt-layout.ts';
-import { MEMORY_SYNC_LIMITS, REPORT_LIMITS, type ReportRequest } from '../../src/ai/session-types.ts';
-import { cleanLocale, cleanMemorySync, cleanReport, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
+import { MEMORY_SYNC_LIMITS, REPORT_LIMITS, SPEAK_CHARS_MAX, type ReportRequest } from '../../src/ai/session-types.ts';
+import { cleanLocale, cleanMemorySync, cleanReport, cleanSpeak, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
 import {
   WalletError,
   type BootstrapInput,
@@ -684,6 +684,46 @@ describe('the memory on the server (B2.3)', () => {
     assert.equal((await app.request('/v1/memories/sync', { method: 'POST', headers: auth, body: '{"characters":3}' })).status, 400);
     assert.deepEqual(await (await app.request('/v1/memories', { headers: auth })).json(), state);
     assert.equal((await app.request('/v1/memories')).status, 401);
+  });
+});
+
+describe('POST /v1/voice/speak', () => {
+  const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
+  const line = { text: 'Hey, you picked up.', characterId: 'c_kai', gender: 'male' };
+
+  it('takes a line to say and refuses anything else', () => {
+    assert.deepEqual(cleanSpeak(line), line);
+    assert.deepEqual(cleanSpeak({ ...line, gender: 'robot' }), { text: line.text, characterId: 'c_kai' });
+    assert.equal(cleanSpeak({ ...line, text: '  ' }), null);
+    assert.equal(cleanSpeak({ ...line, text: 'x'.repeat(SPEAK_CHARS_MAX + 1) }), null);
+    assert.equal(cleanSpeak({ ...line, characterId: 3 }), null);
+  });
+
+  it('says noVoice without a voice service, so the app shows captions', async () => {
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({}) });
+    assert.equal((await app.request('/v1/voice/speak', { method: 'POST', headers: auth, body: JSON.stringify(line) })).status, 503);
+  });
+
+  it('reads the line in the voice for the character, signed in only, and logs the cost', async () => {
+    const said: [string, string][] = [];
+    const logged: UsageEvent[] = [];
+    const provider = {
+      name: 'fake',
+      voiceFor: (r: { characterId: string; gender?: string }) => (r.gender === 'male' ? 'v_male' : 'v_female'),
+      speak: async (text: string, voiceId: string) => {
+        said.push([text, voiceId]);
+        return { audio: Buffer.from('mp3'), model: 'flash' };
+      },
+    };
+    const app = createApp(null, { timeoutMs: 1000, speech: { provider, pricePer1k: 0.04 }, db: makeDb({ logUsage: async (e) => void logged.push(e) }) });
+    const body = JSON.stringify(line);
+    assert.equal((await app.request('/v1/voice/speak', { method: 'POST', body })).status, 401);
+    const res = await app.request('/v1/voice/speak', { method: 'POST', headers: auth, body });
+    assert.deepEqual(await res.json(), { audio: Buffer.from('mp3').toString('base64') });
+    assert.deepEqual(said, [[line.text, 'v_male']]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(logged[0]?.kind, 'tts');
+    assert.equal(logged[0]?.userId, 'user-1');
   });
 });
 

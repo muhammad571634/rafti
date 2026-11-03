@@ -7,17 +7,20 @@ import { Linking, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { accessToken } from '@/ai/account';
 import { captionMs, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
 import { detectCrisis, HELPLINE_URL } from '@/ai/safety';
-import { apiBase } from '@/ai/server';
+import { apiBase, serverSpeak } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
 import { useHandsFree } from '@/components/call/use-hands-free';
+import { playOnce, stopNote } from '@/components/chat/voice-player';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
 import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
+import { dropClip, keepSpeech } from '@/lib/voice-files';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, space, systemColors } from '@/theme';
 
@@ -99,19 +102,73 @@ export default function CallScreen() {
     () => () => {
       mounted.current = false;
       clearTimeout(captionTimer.current);
+      // Hanging up stops their voice mid-line.
+      stopNote();
     },
     [],
   );
 
-  // They "speak" while their captions run: rings round the avatar, as a voice will later.
+  // They speak: in their voice when the server has one (ElevenLabs), else as captions timed like
+  // speech; rings round the avatar either way. The mic stays closed while their voice plays, so it
+  // never hears itself; captions alone can be talked over.
   const [speaking, setSpeaking] = useState(false);
+  const [voicePlaying, setVoicePlaying] = useState(false);
+  const noVoice = useRef(false);
+  const sayTurn = useRef(0);
+  const endPause = useRef<(() => void) | undefined>(undefined);
 
-  /** Their lines one after another, each up about as long as it takes to say. */
-  const play = (theirs: string[], i = 0) => {
+  /** Stops whatever they are saying (talked over, hung up). */
+  const hush = () => {
+    sayTurn.current += 1;
     clearTimeout(captionTimer.current);
-    setCaption({ author: 'them', text: theirs[i] });
-    setSpeaking(true);
-    captionTimer.current = setTimeout(() => (i + 1 < theirs.length ? play(theirs, i + 1) : setSpeaking(false)), captionMs(theirs[i]));
+    endPause.current?.();
+    stopNote();
+    setSpeaking(false);
+    setVoicePlaying(false);
+  };
+
+  /** A caption's time on screen when there is no voice; `hush` ends it early. */
+  const pause = (ms: number) =>
+    new Promise<void>((resolve) => {
+      endPause.current = resolve;
+      captionTimer.current = setTimeout(resolve, ms);
+    });
+
+  /** Their line in their voice: a file to play, or null (no voice service, or it failed this time). */
+  const voiceOf = async (text: string) => {
+    if (noVoice.current || !character) return null;
+    const audio = await accessToken()
+      .then((token) => serverSpeak({ text, characterId: character.id, gender: character.gender }, token))
+      .catch(() => null);
+    if (audio === 'off') noVoice.current = true;
+    return audio && audio !== 'off' ? keepSpeech(audio) : null;
+  };
+
+  /** Their lines one after another, each as long as it takes to say; `started` runs as the first shows. */
+  const play = async (theirs: string[], started: () => void) => {
+    hush();
+    const mine = sayTurn.current;
+    // Every line's voice is asked for at once, so the lines follow each other without a gap.
+    const voices = theirs.map(voiceOf);
+    for (let i = 0; i < theirs.length; i++) {
+      const file = await voices[i];
+      if (mine !== sayTurn.current || !mounted.current) {
+        if (file) void dropClip(file);
+        continue;
+      }
+      if (i === 0) started();
+      setSpeaking(true);
+      setCaption({ author: 'them', text: theirs[i] });
+      if (file) {
+        setVoicePlaying(true);
+        await playOnce(file);
+        void dropClip(file);
+      } else await pause(captionMs(theirs[i]));
+    }
+    if (mine === sayTurn.current) {
+      setSpeaking(false);
+      setVoicePlaying(false);
+    }
   };
 
   /** Asks for their next words on what has been said so far; a retry asks the same again. */
@@ -123,33 +180,35 @@ export default function CallScreen() {
     void callReply(character.id, sent, placedBy).then(({ lines: theirs, crisis }) => {
       if (crisis) markCrisis();
       if (!mounted.current || said.current !== sent) return;
-      setWaiting(false);
-      if (!theirs) return setFailed(true);
+      if (!theirs) {
+        setWaiting(false);
+        return setFailed(true);
+      }
       said.current = [...sent, ...theirs.map((text) => ({ author: 'them' as const, text }))];
-      play(theirs);
+      // The dots stay until their first line shows (with its voice, when there is one).
+      void play(theirs, () => setWaiting(false));
     });
   };
 
   // The open mic: the user just talks, and a pause ends their turn. It closes while muted and while
   // their answer is on its way. The words show and the character answers them; words that arrive
   // after the hang-up ask nothing, but a crisis in them still reaches the chat.
-  const mic = useHandsFree(!!live && state === 'active' && !muted && !waiting, (words) => {
+  const mic = useHandsFree(!!live && state === 'active' && !muted && !waiting && !voicePlaying, (words) => {
     if (detectCrisis(words.text)) markCrisis();
     if (!mounted.current || booked.current) return;
     const line: CallLine = { author: 'me', text: words.text, language: words.language };
     said.current = [...said.current, line];
-    clearTimeout(captionTimer.current);
-    setSpeaking(false);
+    hush();
     setCaption(line);
     ask();
   });
   const userTalking = mic.phase === 'speaking';
 
-  // Talking over them stops their captions, as a voice would stop.
+  // Talking over their captions stops them, as a voice would stop.
   useEffect(() => {
-    if (!userTalking) return;
-    clearTimeout(captionTimer.current);
-    setSpeaking(false);
+    if (userTalking) hush();
+    // `hush` reads refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userTalking]);
 
   // The character speaks first, once the call is up.

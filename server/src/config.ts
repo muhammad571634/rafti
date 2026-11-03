@@ -12,6 +12,17 @@ try {
 // one that may bill. The server only ever uses its own key.
 delete process.env.GOOGLE_API_KEY;
 
+/** `ELEVENLABS_VOICES`: a JSON object of character id → voice id; anything else is ignored. */
+function voiceMap(raw: string | undefined): Record<string, string> {
+  try {
+    const parsed: unknown = JSON.parse(raw ?? '{}');
+    if (!parsed || typeof parsed !== 'object') return {};
+    return Object.fromEntries(Object.entries(parsed).filter((e): e is [string, string] => typeof e[1] === 'string'));
+  } catch {
+    return {};
+  }
+}
+
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   /** 0.0.0.0 so a phone on the same Wi-Fi reaches the laptop during testing. */
@@ -50,6 +61,20 @@ export const config = {
    * on the server yet (mock purchases, quests, invites; `POST /v1/wallet/grant`). Off anywhere else.
    */
   devGrants: process.env.DEV_GRANTS === '1',
+  /**
+   * The character's voice on calls (ElevenLabs). Without `ELEVENLABS_API_KEY` calls show captions
+   * only. The default voices are ElevenLabs' stock ones until each character gets a voice picked by
+   * ear (`ELEVENLABS_VOICES`, a JSON object of character id → voice id). `ELEVENLABS_PRICE_PER_1K`
+   * is the list price per 1,000 characters, for the cost log.
+   */
+  elevenlabs: {
+    apiKey: process.env.ELEVENLABS_API_KEY ?? '',
+    model: process.env.ELEVENLABS_MODEL ?? 'eleven_flash_v2_5',
+    voiceFemale: process.env.ELEVENLABS_VOICE_FEMALE ?? 'EXAVITQu4vr4xnSDxMaL',
+    voiceMale: process.env.ELEVENLABS_VOICE_MALE ?? 'JBFqnCBsd6RMkjVDRZzb',
+    voices: voiceMap(process.env.ELEVENLABS_VOICES),
+    pricePer1k: Number(process.env.ELEVENLABS_PRICE_PER_1K ?? 0.04),
+  },
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
 } as const;

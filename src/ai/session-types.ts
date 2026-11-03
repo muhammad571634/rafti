@@ -1,5 +1,5 @@
 import type { ReportReason } from '@/ai/safety';
-import type { LedgerReason, MemoryItem, Message, PlanId } from '@/types';
+import type { CharacterGender, LedgerReason, MemoryItem, Message, PlanId } from '@/types';
 
 /**
  * What `POST /v1/session/bootstrap` takes and returns, shared by the app (`src/ai/account.ts`) and
@@ -170,6 +170,20 @@ export interface ReportRequest {
   /** In a group, `characterId` names the member who wrote a line. */
   context: { author: 'me' | 'them'; text: string; characterId?: string }[];
 }
+
+/**
+ * `POST /v1/voice/speak`: one of the character's lines read aloud (a call). The server picks the
+ * voice from the character (or their gender); the answer is `{ audio }`, base64 mp3. 503 `noVoice`
+ * while no voice service is set, and the app shows captions only.
+ */
+export interface SpeakRequest {
+  text: string;
+  characterId: string;
+  gender?: CharacterGender;
+}
+
+/** The longest line read aloud at once (a call's lines are one to three sentences). */
+export const SPEAK_CHARS_MAX = 600;
 
 /** The most one report carries (lines before the message, characters a line), and reports an account a day. */
 export const REPORT_LIMITS = { context: 8, textChars: 2000, perDay: 30 } as const;

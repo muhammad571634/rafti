@@ -22,6 +22,7 @@ import type {
   MessagesPage,
   ReportRequest,
   ShareResult,
+  SpeakRequest,
   SpendRequest,
   SpinResult,
   WalletState,
@@ -39,6 +40,8 @@ const DEV_PORT = 8787;
 const TIMEOUT_MS = 25_000;
 /** A minute of voice on a slow connection. */
 const TRANSCRIBE_TIMEOUT_MS = 40_000;
+/** A spoken line; later than this and the call shows its caption alone. */
+const SPEAK_TIMEOUT_MS = 12_000;
 /** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
 const FIRST_TEXT_TIMEOUT_MS = 15_000;
 /** A whole character is the longest answer the model writes. */
@@ -123,6 +126,23 @@ export const serverMessages = {
   deleteAccount: (accessToken: string) =>
     call<{ ok: true }>('/v1/account', withToken(accessToken, { method: 'DELETE' }), 15_000),
 };
+
+/**
+ * One of the character's lines in their voice (a call): base64 mp3, `'off'` while the server has no
+ * voice service (calls then show captions alone), or null when it failed this time.
+ */
+export async function serverSpeak(request: SpeakRequest, accessToken?: string | null): Promise<string | 'off' | null> {
+  const base = apiBase();
+  if (!base) return 'off';
+  try {
+    const res = await fetch(`${base}/v1/voice/speak`, { ...withOptionalToken(accessToken, request), signal: AbortSignal.timeout(SPEAK_TIMEOUT_MS) });
+    const body = (await res.json().catch(() => null)) as { audio?: unknown; error?: unknown } | null;
+    if (res.ok && typeof body?.audio === 'string' && body.audio) return body.audio;
+    return res.status === 503 && body?.error === 'noVoice' ? 'off' : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * A report on a character's message, for a person to review. `refused`: the server will never take

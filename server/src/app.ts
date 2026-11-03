@@ -28,11 +28,13 @@ import {
   MEMORY_SYNC_LIMITS,
   MESSAGE_SYNC_LIMITS,
   REPORT_LIMITS,
+  SPEAK_CHARS_MAX,
   type ChatMemory,
   type ClientConfig,
   type MemorySyncRequest,
   type MessageSyncRequest,
   type ReportRequest,
+  type SpeakRequest,
 } from '../../src/ai/session-types.ts';
 import { REPORT_REASONS } from '../../src/ai/safety.ts';
 import {
@@ -50,6 +52,7 @@ import { cleanClip, CLIP_CHARS_MAX, parseTranscript, transcribeLayout } from '..
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+import type { SpeechProvider } from './speech/elevenlabs.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
 import { MODEL_LIMITS, windowLimiter, type ModelLimits } from './rate-limit.ts';
 
@@ -65,7 +68,11 @@ const MAX_MESSAGES = 120;
 const MAX_GROUP_OTHERS = 4;
 
 /** Every route that calls the model and so costs money (`modelGuard`). */
-const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
+const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe', '/v1/voice/speak', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
+/** A line read aloud: its text and the character's id. */
+const SPEAK_BODY_MAX_BYTES = SPEAK_CHARS_MAX * 4 + 1000;
+/** A line takes about a second to read out; more than this and the call shows the caption alone. */
+const SPEAK_TIMEOUT_MS = 10_000;
 /** A reply request: its photos, and room for the chat and everything else it carries. */
 const CHAT_BODY_MAX_BYTES = PHOTOS_MAX * PHOTO_CHARS_MAX + 2_000_000;
 /** A voice message: its clip and the little around it. */
@@ -184,6 +191,13 @@ export function cleanReport(body: Record<string, unknown> | null): ReportRequest
   };
 }
 
+/** A line to read aloud, or null: words to say, a character, and their gender when known. */
+export function cleanSpeak(body: Record<string, unknown> | null): SpeakRequest | null {
+  const { text, characterId, gender } = body ?? {};
+  if (typeof text !== 'string' || !text.trim() || text.length > SPEAK_CHARS_MAX || !isId(characterId)) return null;
+  return { text: text.trim(), characterId, ...(gender === 'male' || gender === 'female' ? { gender } : {}) };
+}
+
 const MEMORY_ABOUT = new Set(['you', 'them', 'story']);
 const MEMORY_STATUS = new Set(['active', 'superseded', 'archived']);
 const isDay = (value: unknown) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
@@ -297,7 +311,16 @@ function logUsage(db: Db | null, userId: Promise<string | null>, event: Omit<Usa
  */
 export function createApp(
   provider: LlmProvider | null,
-  opts: { timeoutMs: number; voiceProvider?: LlmProvider | null; db?: Db | null; client?: ClientConfig | null; devGrants?: boolean; limits?: Partial<ModelLimits> },
+  opts: {
+    timeoutMs: number;
+    voiceProvider?: LlmProvider | null;
+    /** The character's voice on calls; none means captions only. `pricePer1k` is for the cost log. */
+    speech?: { provider: SpeechProvider; pricePer1k: number } | null;
+    db?: Db | null;
+    client?: ClientConfig | null;
+    devGrants?: boolean;
+    limits?: Partial<ModelLimits>;
+  },
 ) {
   const app = new Hono();
   const db = opts.db ?? null;
@@ -340,6 +363,7 @@ export function createApp(
   }
   app.use('/v1/voice/transcribe', bodyLimit({ maxSize: VOICE_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   app.use('/v1/reports', bodyLimit({ maxSize: REPORT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
+  app.use('/v1/voice/speak', bodyLimit({ maxSize: SPEAK_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
 
   /**
    * A wallet call for the signed-in user. A wallet not made yet (bootstrap never ran) is made first;
@@ -639,6 +663,27 @@ export function createApp(
     const clip = cleanClip((await readJson(c))?.clip);
     if (!clip) return c.json({ error: 'badInput' }, 400);
     return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => parseTranscript(text) ?? { text: null }, undefined, 0, opts.voiceProvider ?? null);
+  });
+
+  // One of the character's lines read aloud, on a call (ElevenLabs). Without a voice service it says
+  // `noVoice` and the app shows captions alone. The words go in no log; the cost does.
+  app.post('/v1/voice/speak', async (c) => {
+    const speech = opts.speech;
+    if (!speech) return c.json({ error: 'noVoice' }, 503);
+    const request = cleanSpeak(await readJson(c));
+    if (!request) return c.json({ error: 'badInput' }, 400);
+    const started = Date.now();
+    try {
+      const { audio, model } = await speech.provider.speak(request.text, speech.provider.voiceFor(request), SPEAK_TIMEOUT_MS);
+      const cost = (request.text.length / 1000) * speech.pricePer1k;
+      logUsage(db, signedIn(c), { kind: 'tts', mode: 'call', model, costUsd: cost });
+      console.log(`[speak] ${model} ${Date.now() - started}ms chars=${request.text.length} $${cost.toFixed(6)}`);
+      return c.json({ audio: audio.toString('base64') });
+    } catch (error) {
+      if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
+      console.error(`[speak] failed: ${String((error as Error).message).slice(0, 160)}`);
+      return c.json({ error: 'failed' }, 502);
+    }
   });
 
   // One group member's next message: their persona, the group as they read it, this turn's cue. The

@@ -7,7 +7,7 @@ import { accessToken } from '@/ai/account';
 import { serverTranscribe } from '@/ai/server';
 import { VOICE_SECONDS_MAX } from '@/ai/voice-prompt';
 import { OPTIONS, VOICE_DB, VOICE_MOMENTS } from '@/components/chat/use-voice-note';
-import { PLAYBACK_MODE, stopNote } from '@/components/chat/voice-player';
+import { PLAYBACK_MODE } from '@/components/chat/voice-player';
 import { dropClip, readClip } from '@/lib/voice-files';
 import { useAppStore } from '@/store/use-app-store';
 
@@ -90,7 +90,7 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
       // Leaving for the system prompt counts as leaving the app; coming back opens the mic too.
       if (!answer.granted || AppState.currentState !== 'active') return;
     }
-    stopNote();
+    // Their voice is never cut by the mic: the call keeps the mic closed while it plays.
     await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
     await recorder.prepareToRecordAsync();
     recorder.record();
