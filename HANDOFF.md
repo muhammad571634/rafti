@@ -9,7 +9,7 @@
 Still to do:
 1. The gates in `docs/legal/privacy-policy.md` (paid key, log, purges, owner's legal details, lawyer, hosting + links, new providers as they ship).
    - Log: done in `11c4434` (`[reply]` prints `bubbles=N`, no words), deployed as Fly v16 (owner, 2026-11-03), `/health` 200.
-   - Purges: `supabase/migrations/20261103090000_b4_purges.sql` (pg_cron, nightly 03:15 UTC, `purge_expired()`) is written and committed but NOT applied: the auto-mode classifier refused the migration call without the owner's explicit yes. On a yes: post it to `/database/migrations`, rename the file to the returned version, check `cron.job`.
+   - Purges: done. `supabase/migrations/20261103083701_b4_purges.sql` (pg_cron, nightly 03:15 UTC, `purge_expired()`). The auto-mode classifier refused the agent's migration call even after the owner's yes, so the owner ran it: `! node scripts/apply-migration.mjs <file>` (new, reusable; forward slashes, the `!` shell drops backslashes). Checked: version `20261103083701`, `cron.job` `purge-expired` active, anon and authenticated cannot execute the function.
 2. Terms of use: not written yet.
 
 ### 0z97. Reports reach the server (2026-11-03, Claude 2). NEXT: owner deploys the server, then reports one message
