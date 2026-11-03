@@ -15,24 +15,7 @@ Still to do:
 3. Step 2 after the ElevenLabs grant: read the lines aloud (Flash for calls), then step 3 (no mic), and decide a daily cap for Pro yearly.
 4. The group call (`src/app/group/[id]/call.tsx`) still runs stock subtitles.
 
-### 0z102. Sigmazam Marketing Studio & Telegram Preview Bot (2026-11-03, Gemini). NEXT: autonomous scheduled growth dispatch
-
-- Built visual node-based AI marketing workflow studio (`marketing/studio/index.html`, `start-studio.bat`):
-  - 11 categorized nodes matching viral otome/companion growth pipeline: Character Source (57 characters), X Post Scraper, Prompt Templates (BookTok POV), Gemini 3.8 Flash generation, Dark iOS Chat Mockup generator, Telegram Admin Preview, Threads publisher.
-  - Interactive canvas with SVG bezier connectors, status pills, execution engine, real-time Terminal & Execution Logs, Mini Map, and Media & Post Library modal.
-- Dark iOS Chat Mockup Card generator (`marketing/cards/chat-mockup.html`): renders pixel-perfect Apple-style dark chat screenshot with Dynamic Island, character header, dialogue bubbles, and episodic memory badge.
-- Telegram Bot Dispatcher (`@sigmazam_preview_bot`, `marketing/send-preview.ts`, `marketing/dispatcher.ts`):
-  - Token and admin `chat_id` safely stored in user environment and git-ignored `.env.marketing.local`.
-  - Tested live: sends daily formatted packs and 2.5D character stills directly to admin Telegram.
-- Meta Threads Publisher (`marketing/threads-poster.ts`): standalone publisher for `@sigmazam.app` via official Meta Threads API.
-- Checks: `npx tsc --noEmit` passed (0 errors), `npm test` passed (647/647 tests).
-
-
-
-- 0z89's to-do 3. `20261103085820_b6_zone_moves_west.sql` (applied by the owner; checked: all four functions live, `authenticated` cannot execute them, the three wallets unchanged): `wallet_check_in` pays 0 and keeps the streak when `check_in_day >= today`, and when `daily:<today>` is already booked it moves `check_in_day` up to today; `wallet_credit` keeps the later of the bucket's day and today and adds to it; `wallet_spend` spends a bucket dated after today first; `wallet_settle` gives a day's second burn its own key (`expired:<day>:<n>`), as `book_shells` skipped a repeated key while the bucket was still cleared, so those free shells never burned.
-- App (`59bf6b1`, update `896ce668`): `creditFree`, `spendShells`, My plan and History count a bucket dated after today as live (tested).
-- Second reader (a fresh agent, read-only): nothing serious in the change; the double-burn key, the `check_in_day` move and the app's `>=` came from it. Left as is: going west replays that day's unused spins and shares (per-day keys); the once-a-day zone limit caps it.
-- Checks: tsc 0, npm test 643/643. No server code changed.
+### 0z101. A time zone moving west neither pays twice nor keeps free shells (2026-11-03, Claude 2). NEXT: owner picks the next task
 
 ### 0z100. The profile keeps only a time zone Postgres knows (2026-11-03, Claude 2). NEXT: owner deploys the server
 
