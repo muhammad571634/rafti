@@ -71,6 +71,7 @@ import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
 import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
+import { callCue, callMessages, keptCallLines, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -684,7 +685,13 @@ interface AppState {
   ring: (characterId: string, slot?: CallSlot) => void;
   acceptCall: () => string | null;
   declineCall: () => void;
-  addCall: (record: Omit<CallRecord, 'id'>) => void;
+  /** Books a call; `lines` (a call on the model) stay on its chat row, so later replies know what was said. */
+  addCall: (record: Omit<CallRecord, 'id'>, lines?: readonly CallLine[]) => void;
+  /**
+   * The character's next words on a call (`mode: 'call'`), with the chat and memory behind them;
+   * null when the model is off, out of reach or busy. Nothing lands in the chat until the call ends.
+   */
+  callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: string[] } | null>;
 
   /* safety */
   reports: MessageReport[];
@@ -2965,8 +2972,46 @@ export const useAppStore = create<AppState>()(
         }));
       },
 
-      addCall: (record) => {
+      callReply: async (characterId, said, placedBy) => {
+        const state = get();
+        const character = state.characters.find((c) => c.id === characterId);
+        const bond = state.relationships[characterId];
+        if (!character || !bond || !state.settings.realAi || !apiBase()) return null;
+        const conversation = state.conversations.find((c) => c.characterId === characterId);
+        const chat = conversation ? (state.messages[conversation.id] ?? []).filter((m) => !m.pending) : [];
+        // The call so far reads as the newest turns, after the chat it grew out of.
+        const messages = [...chat, ...callMessages(said, conversation?.id ?? '', new Date().toISOString())];
+        const memories = memoryAccess(state.memories, state.wallet, characterId).open;
+        const input = {
+          mode: 'call' as const,
+          character,
+          user: state.user,
+          relationship: bond,
+          prefs: replyPrefs(bond),
+          persona: conversation ? personaFor(conversation.id, state) : undefined,
+          scene: conversation?.scene,
+          lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
+          pinned: memories.filter((m) => m.pinned),
+          facts: memories.filter((m) => !m.pinned),
+          summary: conversation?.summary,
+          messages,
+          threads: state.threads.filter((t) => t.characterId === characterId),
+          cue: [...callCue(placedBy, said), ...(spokenCue(messages) ?? [])],
+        };
+        const reply = await accessToken()
+          .then((token) => serverReply(input, token))
+          .catch(() => null);
+        if (!reply) return null;
+        // The server's crisis check: the reply is already the safe one; the chat gets the helpline card.
+        if (reply.crisis) appendHelplineCard(set, get, get().addFriend(characterId));
+        // Captions say only what is spoken, as a voice will: narration has no place on a call.
+        const spoken = reply.lines.map((line) => speechOnly(line)).filter(Boolean);
+        return spoken.length ? { lines: spoken } : null;
+      },
+
+      addCall: (record, lines) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
+        const kept = lines?.length ? keptCallLines(lines) : [];
 
         // The call also lands in the chat, like a phone's call log line.
         const conversationId = get().addFriend(record.characterId);
@@ -2981,10 +3026,13 @@ export const useAppStore = create<AppState>()(
             kind: 'call',
             durationSec: record.durationSec,
             missed: record.missed,
+            ...(kept.length ? { callLines: kept } : {}),
             createdAt: record.startedAt,
           },
           { countUnread: record.missed },
         );
+        // What was said on the call goes to memory like a chat does.
+        if (kept.length) queueMemoryPass(set, get, conversationId);
 
         if (record.missed) return;
         // Minutes go second by second: the plan's first, then bought ones. The call
@@ -5908,10 +5956,16 @@ function sinceMark(messages: readonly Message[], mark?: string) {
   return { at, fresh: messages.slice(at + 1) };
 }
 
-/** A line the memory pass may read: what was said, never a card, a call row or a crisis line. */
-const passLine = (m: Message) => {
-  const text = m.card || m.pending || m.kind === 'system' || m.kind === 'call' ? '' : (m.text ?? m.transcript ?? '').trim();
-  return text && !detectCrisis(text) ? { author: m.author, text, at: m.createdAt } : null;
+/**
+ * The lines the memory pass may read from a message: what was said, never a card or a crisis line.
+ * A call row gives what was said on the call (`callLines`), each line under its own speaker.
+ */
+const passLines = (m: Message): { author: Message['author']; text: string; at: string }[] => {
+  if (m.card || m.pending || m.kind === 'system') return [];
+  const said = m.kind === 'call' ? (m.callLines ?? []) : [{ author: m.author, text: m.text ?? m.transcript ?? '' }];
+  return said
+    .map((l) => ({ author: l.author, text: l.text.trim(), at: m.createdAt }))
+    .filter((l) => l.text && !detectCrisis(l.text));
 };
 
 /** After a reply: once enough is new, the memory pass waits for a quiet moment (each reply resets the wait). */
@@ -5920,7 +5974,7 @@ function queueMemoryPass(set: Setter, get: Getter, conversationId: string) {
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation || !state.settings.realAi || !apiBase()) return;
   const { fresh } = sinceMark(state.messages[conversationId] ?? [], conversation.memoryMark);
-  const said = fresh.filter((m) => m.author === 'me' && passLine(m)).length;
+  const said = fresh.flatMap(passLines).filter((l) => l.author === 'me').length;
   if (said < MEMORY_EVERY) return;
   clearTimeout(memoryTimers.get(conversationId));
   memoryTimers.set(
@@ -5943,13 +5997,12 @@ async function runMemoryPass(set: Setter, get: Getter, conversationId: string) {
   if (!conversation || !character) return;
   const messages = (state.messages[conversationId] ?? []).filter((m) => !m.pending);
   const { at, fresh } = sinceMark(messages, conversation.memoryMark);
-  const lines = fresh.map(passLine).filter((l): l is NonNullable<ReturnType<typeof passLine>> => !!l).slice(-PASS_LINES_MAX);
+  const lines = fresh.flatMap(passLines).slice(-PASS_LINES_MAX);
   const lastId = fresh.at(-1)?.id;
   if (!lines.length || !lastId) return;
   const before = messages
     .slice(Math.max(0, at - 5), at + 1)
-    .map(passLine)
-    .filter((l): l is NonNullable<ReturnType<typeof passLine>> => !!l)
+    .flatMap(passLines)
     .map(({ author, text }) => ({ author, text }));
   const facts = state.memories
     .filter((m) => m.characterId === character.id && isActiveMemory(m))

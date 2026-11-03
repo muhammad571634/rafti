@@ -274,6 +274,8 @@ export interface Message {
   editedAt?: string;
   /** Call rows: the call was not picked up. */
   missed?: boolean;
+  /** Call rows: what was said on a call with the model (`keptCallLines`), so later replies know it. */
+  callLines?: { author: MessageAuthor; text: string }[];
   /**
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.

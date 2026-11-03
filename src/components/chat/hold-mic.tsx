@@ -24,13 +24,29 @@ export interface HoldMicProps {
   accessibilityLabel: string;
   accessibilityHint: string;
   style?: StyleProp<ViewStyle>;
+  /** The glyph's colour at rest and its size (a call's larger mic on a dark portrait). */
+  iconColor?: string;
+  iconSize?: number;
+  /** Takes no touch (a call while muted or while they answer). */
+  disabled?: boolean;
 }
 
 /**
  * The composer's mic, as in WhatsApp and Instagram: hold to record, let go to send, slide left to
  * cancel. The tap stays, so the hold is a shortcut and never the only way (HIG Gestures).
  */
-export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilityLabel, accessibilityHint, style }: HoldMicProps) {
+export function HoldMic({
+  recording,
+  onTap,
+  onHoldStart,
+  onHoldEnd,
+  accessibilityLabel,
+  accessibilityHint,
+  style,
+  iconColor = colors.textSecondary,
+  iconSize = 29,
+  disabled = false,
+}: HoldMicProps) {
   const pressed = useSharedValue(0);
   const animated = useAnimatedStyle(() => ({ transform: [{ scale: 1 - pressed.value * 0.12 }], opacity: 1 - pressed.value * 0.15 }));
 
@@ -82,8 +98,8 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
       .onEnd((_e, success) => {
         if (success) latest.current.onTap();
       });
-    return Gesture.Exclusive(hold, tap);
-  }, [pressed]);
+    return Gesture.Exclusive(hold.enabled(!disabled), tap.enabled(!disabled));
+  }, [pressed, disabled]);
 
   return (
     <GestureDetector gesture={gesture}>
@@ -92,11 +108,12 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
-        onAccessibilityTap={onTap}
+        accessibilityState={{ disabled }}
+        onAccessibilityTap={disabled ? undefined : onTap}
         accessibilityActions={[{ name: 'activate' }]}
-        onAccessibilityAction={onTap}
-        style={[style, recording && styles.recording, animated]}>
-        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={29} color={recording ? colors.white : colors.textSecondary} />
+        onAccessibilityAction={disabled ? undefined : onTap}
+        style={[style, recording && styles.recording, disabled && styles.disabled, animated]}>
+        <Ionicons name={recording ? 'mic' : 'mic-outline'} size={iconSize} color={recording ? colors.white : iconColor} />
       </Animated.View>
     </GestureDetector>
   );
@@ -104,4 +121,5 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
 
 const styles = StyleSheet.create({
   recording: { backgroundColor: systemColors.red },
+  disabled: { opacity: 0.4 },
 });

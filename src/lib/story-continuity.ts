@@ -1,5 +1,6 @@
 import type { Character, MemoryItem, Message, Relationship } from '@/types';
 
+import { callText } from '../ai/call-prompt';
 import { historyText } from './chat-steer';
 
 /**
@@ -165,7 +166,7 @@ export function messageText(message: Message): string | null {
   // A time skip is part of the story: later replies must know the time moved on.
   if (message.card === 'skip') return historyText(message);
   if (message.pending || message.kind === 'system' || message.card) return null;
-  if (message.kind === 'call') return message.missed ? '[Missed call]' : '[Call]';
+  if (message.kind === 'call') return message.missed ? '[Missed call]' : callText(message.callLines);
   const text = (message.text ?? message.transcript ?? '').trim();
   if (text) return text;
   if (message.kind === 'image') return message.photoNote ? `[Image message: ${message.photoNote}]` : '[Image message]';

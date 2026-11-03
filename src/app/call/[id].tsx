@@ -7,7 +7,11 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { captionMs, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
+import { apiBase } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
+import { HoldMic } from '@/components/chat/hold-mic';
+import { useVoiceNote } from '@/components/chat/use-voice-note';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
@@ -29,6 +33,11 @@ const SUBTITLE_INTERVAL_MS = 5000;
 /**
  * The in-call screen (canvas "CallVoice", 2026-10-21): blurred portrait, avatar, name and timer,
  * the live line in a glass caption, then mute / end / speaker — nothing else competes with the voice.
+ *
+ * With the model on, the call is a real talk (0z102): the character opens it, the user holds the mic
+ * (or taps it twice) to speak, the server writes out the words, and the character answers in
+ * `mode: 'call'`; the lines show as captions until a voice reads them (ElevenLabs, later). A busy
+ * model says Not Delivered with a retry, never a stock line. With the model off, the old subtitles run.
  */
 export default function CallScreen() {
   const insets = useSafeAreaInsets();
@@ -64,6 +73,71 @@ export default function CallScreen() {
 
   const lines = useMemo(() => (character ? callScript(character) : []), [character]);
 
+  // A call on the model: what has been said, the caption up now, and a reply on its way.
+  const live = useAppStore((s) => s.settings.realAi) && !!apiBase();
+  const callReply = useAppStore((s) => s.callReply);
+  const placedBy: CallPlacedBy = answered ? 'character' : 'user';
+  const said = useRef<CallLine[]>([]);
+  const [caption, setCaption] = useState<CallLine | null>(null);
+  const [waiting, setWaiting] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const opened = useRef(false);
+  const mounted = useRef(true);
+  const captionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(
+    () => () => {
+      mounted.current = false;
+      clearTimeout(captionTimer.current);
+    },
+    [],
+  );
+
+  /** Their lines one after another, each up about as long as it takes to say. */
+  const play = (theirs: string[], i = 0) => {
+    clearTimeout(captionTimer.current);
+    setCaption({ author: 'them', text: theirs[i] });
+    if (i + 1 < theirs.length) captionTimer.current = setTimeout(() => play(theirs, i + 1), captionMs(theirs[i]));
+  };
+
+  /** Asks for their next words on what has been said so far; a retry asks the same again. */
+  const ask = () => {
+    if (!character) return;
+    setWaiting(true);
+    setFailed(false);
+    const sent = said.current;
+    void callReply(character.id, sent, placedBy).then((reply) => {
+      if (!mounted.current || said.current !== sent) return;
+      setWaiting(false);
+      if (!reply) return setFailed(true);
+      said.current = [...sent, ...reply.lines.map((text) => ({ author: 'them' as const, text }))];
+      play(reply.lines);
+    });
+  };
+
+  // The user's words, written out by the server: they show, and the character answers them.
+  const voice = useVoiceNote(undefined, (note) => {
+    const line: CallLine = { author: 'me', text: note.transcript, language: note.language };
+    said.current = [...said.current, line];
+    clearTimeout(captionTimer.current);
+    setCaption(line);
+    ask();
+  });
+  const recording = voice.phase === 'recording';
+
+  // The character speaks first, once the call is up.
+  useEffect(() => {
+    if (!live || state !== 'active' || opened.current) return;
+    opened.current = true;
+    ask();
+    // `ask` reads refs; once per call.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, state]);
+
+  // Muted, or the minutes ran out: what was being said goes nowhere.
+  useEffect(() => {
+    if ((muted || state !== 'active') && recording) voice.finish(false);
+  }, [muted, state, recording, voice]);
+
   useEffect(() => {
     secondsRef.current = seconds;
   }, [seconds]);
@@ -79,12 +153,13 @@ export default function CallScreen() {
   useEffect(() => {
     if (state !== 'active') return;
     const tick = setInterval(() => setSeconds((s) => s + 1), 1000);
-    const subtitle = setInterval(() => setLine((l) => (l + 1) % Math.max(1, lines.length)), SUBTITLE_INTERVAL_MS);
+    // The old subtitles run only with the model off.
+    const subtitle = live ? undefined : setInterval(() => setLine((l) => (l + 1) % Math.max(1, lines.length)), SUBTITLE_INTERVAL_MS);
     return () => {
       clearInterval(tick);
       clearInterval(subtitle);
     };
-  }, [state, lines.length]);
+  }, [state, lines.length, live]);
 
   const remaining = Math.max(0, budget.current - seconds);
 
@@ -107,13 +182,16 @@ export default function CallScreen() {
     const talked = secondsRef.current;
     if (booked.current || talked <= 0) return;
     booked.current = true;
-    addCall({
-      characterId: character.id,
-      startedAt: startedAt.current,
-      durationSec: talked,
-      direction: answered ? 'incoming' : 'outgoing',
-      missed: false,
-    });
+    addCall(
+      {
+        characterId: character.id,
+        startedAt: startedAt.current,
+        durationSec: talked,
+        direction: answered ? 'incoming' : 'outgoing',
+        missed: false,
+      },
+      said.current,
+    );
   };
   bookRef.current = book;
 
@@ -197,7 +275,7 @@ export default function CallScreen() {
 
       <View style={styles.flex} />
 
-      {state === 'active' ? (
+      {state === 'active' && !live ? (
         <Animated.View
           key={line}
           entering={FadeIn.duration(320)}
@@ -206,6 +284,37 @@ export default function CallScreen() {
           accessibilityLiveRegion="polite">
           <Txt style={callGlass.captionText}>{`“${lines[line]}”`}</Txt>
         </Animated.View>
+      ) : null}
+
+      {state === 'active' && live ? (
+        <>
+          <LiveCaption
+            recording={recording}
+            seconds={voice.seconds}
+            hearing={voice.phase === 'sending'}
+            hearingFailed={voice.phase === 'failed'}
+            notice={voice.notice ? t(`chat.voice.${voice.notice}`) : null}
+            caption={caption}
+            waiting={waiting}
+            failed={failed}
+            onRetryHearing={() => void voice.retry()}
+            onRetry={ask}
+          />
+          <View style={styles.micRow}>
+            <HoldMic
+              recording={recording}
+              onTap={() => (recording ? voice.finish(true) : voice.start())}
+              onHoldStart={voice.start}
+              onHoldEnd={voice.finish}
+              accessibilityLabel={t('chat.voice.hold')}
+              accessibilityHint={t('chat.voice.release')}
+              style={[callGlass.glass, styles.mic]}
+              iconColor={colors.onMedia}
+              iconSize={34}
+              disabled={muted || waiting || voice.phase === 'sending'}
+            />
+          </View>
+        </>
       ) : null}
 
       <CallControls
@@ -239,8 +348,76 @@ export default function CallScreen() {
   );
 }
 
+/**
+ * The live caption on a call on the model: their line in quotes, the user's own words softer, a wave
+ * while the user speaks, dots while the words are written out or they answer, and Not Delivered with
+ * a retry when the model is busy.
+ */
+function LiveCaption({
+  recording,
+  seconds,
+  hearing,
+  hearingFailed,
+  notice,
+  caption,
+  waiting,
+  failed,
+  onRetryHearing,
+  onRetry,
+}: {
+  recording: boolean;
+  seconds: number;
+  hearing: boolean;
+  hearingFailed: boolean;
+  notice: string | null;
+  caption: CallLine | null;
+  waiting: boolean;
+  failed: boolean;
+  onRetryHearing: () => void;
+  onRetry: () => void;
+}) {
+  const { t } = useTranslation();
+  const retry = hearingFailed ? onRetryHearing : failed ? onRetry : null;
+  if (retry) {
+    return (
+      <PressableScale style={[callGlass.glass, callGlass.caption, styles.caption]} onPress={retry} accessibilityRole="button" accessibilityLabel={t('chat.tryAgain')}>
+        <Txt style={callGlass.captionText}>{t('chat.notDelivered')}</Txt>
+        <Txt style={styles.captionSoft}>{t('chat.tryAgain')}</Txt>
+      </PressableScale>
+    );
+  }
+  const mine = caption?.author === 'me';
+  return (
+    <View style={[callGlass.glass, callGlass.caption, styles.caption]} accessibilityLiveRegion="polite">
+      {recording ? (
+        <View style={styles.listening}>
+          <Anim name="voiceWave" size={34} tint={colors.onMedia} />
+          <Txt style={styles.captionClock}>{callClock(seconds)}</Txt>
+        </View>
+      ) : notice ? (
+        <Txt style={styles.captionSoft}>{notice}</Txt>
+      ) : (
+        <>
+          {caption && !hearing ? (
+            <Animated.View key={caption.text} entering={FadeIn.duration(320)}>
+              <Txt style={mine ? styles.captionSoft : callGlass.captionText}>{mine ? caption.text : `“${caption.text}”`}</Txt>
+            </Animated.View>
+          ) : null}
+          {hearing || waiting ? <Anim name="typing" size={30} tint={colors.onMedia} /> : null}
+        </>
+      )}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  caption: { marginBottom: 20, minHeight: 56, justifyContent: 'center' },
+  captionSoft: { fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
+  captionClock: { fontSize: 15, color: colors.onMedia, fontVariant: ['tabular-nums'] },
+  listening: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  micRow: { alignItems: 'center', marginBottom: 28 },
+  mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
   missing: { padding: space.xl },
   share: {
     position: 'absolute',
