@@ -9,8 +9,9 @@
 - Checks: tsc 0, npm test 642/642.
 
 Still to do:
-1. Owner reopens the app twice; the server should then show today's check-in row for the A51 account.
-2. Item 9: a read-only metrics script (active days, D1, D7, replies a day), test accounts excluded.
+1. Done: after the owner reopened, `daily:2026-11-03` +35 landed at 12:39 (streak day 3).
+2. Done: `npm run metrics` (`scripts/metrics.mjs`): accounts, D1, D7, paying, and per day active users, new accounts, replies and replies per active user. Read-only. `--exclude` / `METRICS_EXCLUDE` leave test accounts out; `--since` starts the cohort at a date. Today all 3 accounts are ours (A51 `9d8d2e57…`, `64bfe9bd…`, `ac0de710…`), so the numbers mean nothing yet. Before the closed test: run it with those three excluded and `--since` the test's first day.
+3. Later, when there is traffic: a user with the model off is not seen; if that matters, add a cheap "opened" mark (the launch already calls `/v1/session/bootstrap` once).
 
 ### 0z95. A rewind deletes the voice files of the notes it takes away (2026-11-02, Claude 2). NEXT: owner deploys the server for 0z94's language part
 
