@@ -132,8 +132,11 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     if (!granted) {
       // The prompt takes the touch, so this hold records nothing and the next one does.
       wanted.current = false;
-      if (canAskAgain) await AudioModule.requestRecordingPermissionsAsync();
-      else Alert.alert(t('chat.voice.noMic'));
+      // Ask even when the answer says not to: an "only this time" yes that ran out reads as "never"
+      // on Android (seen on the A51), yet the system still shows its prompt. A real "never" returns
+      // at once, and then only Settings can help.
+      const answer = await AudioModule.requestRecordingPermissionsAsync();
+      if (!answer.granted && !answer.canAskAgain && !canAskAgain) Alert.alert(t('chat.voice.noMic'));
       return;
     }
     // Let go while looking: nothing was meant.

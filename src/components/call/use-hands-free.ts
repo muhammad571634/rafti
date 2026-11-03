@@ -53,6 +53,7 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
   const heardFrom = useRef(0);
   const waiting = useRef<string | null>(null);
   const asked = useRef(false);
+  const refused = useRef(false);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
   const inTurn = (job: () => Promise<unknown>) => {
     queue.current = queue.current.then(job).catch((error: unknown) => {
@@ -85,10 +86,18 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
     // Look before asking: asking opens a system screen even when the answer is yes (0z94).
     const { granted, canAskAgain } = await AudioModule.getRecordingPermissionsAsync();
     if (!granted) {
-      if (!canAskAgain) return Alert.alert(t('chat.voice.noMic'));
+      // Once a call: a no is not asked again until the next call.
+      if (refused.current) return;
+      // Ask even when the answer says not to: an "only this time" yes that ran out reads as "never"
+      // on Android (seen on the A51), yet the system still shows its prompt.
       const answer = await AudioModule.requestRecordingPermissionsAsync();
+      if (!answer.granted) {
+        refused.current = true;
+        if (!answer.canAskAgain && !canAskAgain) Alert.alert(t('chat.voice.noMic'));
+        return;
+      }
       // Leaving for the system prompt counts as leaving the app; coming back opens the mic too.
-      if (!answer.granted || AppState.currentState !== 'active') return;
+      if (AppState.currentState !== 'active') return;
     }
     // Their voice is never cut by the mic: the call keeps the mic closed while it plays.
     await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
