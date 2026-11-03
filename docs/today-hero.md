@@ -41,11 +41,17 @@ immediately; there is nothing to refresh.
 
 ## On the card
 
-The friend waiting for you (owner, 2026-11-03, Replika's feel): about half the screen tall
-(`heroHeight`: 54% of the window, 380-520 pt; 300 pt before 0z107), a wide scene slid so the face
-sits mid-frame (`sceneFocus`, shared with the chat ground). On top, the name and one clear-glass
-chip with "N days" (the day you met is day 1) and the bond level, the progress to the next level
-as a mint line along the chip's bottom edge. At the bottom, their newest written line in a
+The friend waiting for you (owner, 2026-11-03, Replika's feel). Since 0z109 (prototype B) the
+picture runs full width from the screen's top edge, under the status bar or the Dynamic Island,
+rounded only at the bottom (32 pt): `heroTopHeight` = `heroHeight` (54% of the window, 380-520 pt)
++ the top safe-area inset + 52 pt for Today's top row. That row (the mascot sticker, "Sigmazam" in
+white, your capsule; in Edit mode "+" and Done) sits on the picture as clear glass just below the
+safe area (`PhotoGlass` in `(tabs)/index.tsx`), the same on iPhone and Android because both read
+`insets.top`. The status bar is light on the picture and dark again once it has scrolled away;
+with no friend to show, Today keeps its old header on the aurora. A wide scene is slid so the face
+sits mid-frame (`sceneFocus`, shared with the chat ground). At the picture's foot, the name large
+(30 pt) and one clear-glass chip with "N days" (the day you met is day 1) and the bond level, the
+progress to the next level as a mint line along the chip's bottom edge. Under them, their newest written line in a
 dark-glass bubble with its time (`waitingLine`: speech only, the narration when nothing is said
 aloud; an echo of your own words is skipped; none when a helpline card sits up to 4 lines before
 it or anywhere after it), then a dark-glass "Message" field with a mic. The whole card is one

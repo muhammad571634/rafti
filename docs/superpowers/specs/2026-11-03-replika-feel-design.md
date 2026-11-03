@@ -61,3 +61,12 @@ chat control) and wants Replika's feel merged in and polished, nothing working l
 - Left out on purpose: a "what they are doing now" status. With the model on every character line
   comes from the model, and a status per visit would be a paid call; stock statuses would break
   the model-first rule.
+
+## Round 4: the picture from the top (0z108-0z109)
+
+- After a Replika study on the A51, the agent proposed a simpler, neutral Today (prototype A, clean
+  white cards; prototype B, the same with the friend's picture full width from the top and the top
+  row over it). The owner took only B's top: the picture from the screen's edge with the mascot,
+  "Sigmazam" and the profile capsule on it as glass; everything below stays as it was (colours,
+  tiles, aurora). Owner also asked that iPhone (Dynamic Island) and Android look the same: the row
+  sits below `insets.top` on both, the picture runs under it.

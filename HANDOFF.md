@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z109. Today: the friend's picture from the screen's top, the top row as glass on it (2026-11-03, Claude 2). NEXT: owner looks on the A51; then the next tab, or more from prototype A if asked
+
+- Owner on the 0z108 prototype (opened as a local browser tab with the brainstorming companion, after the claude.ai canvas link showed nothing for them): take only B's hero, "the picture at the very top like a window, the mascot, the profile button and the Sigmazam text on it like glass; do not touch the rest". Then: make sure iPhone (Dynamic Island) and Android come out the same.
+- Built (`1d90d8e`): `TodayHero` takes `header` and `topInset`; full width, bottom corners 32, `heroTopHeight` = `heroHeight` + `insets.top` + 52; `gradients.heroTopScrim`; the press no longer scales (opacity only); name 30 pt at the foot with the chip, then the line and the field. `(tabs)/index.tsx`: the top row is built once (`bar`), on the picture with `PhotoGlass` (clear glass: `onMediaGlass` + hairline, per the clear-glass rule), the mascot sticker + "Sigmazam" in white instead of the wordmark art, white name in the capsule, "+" white in Edit; `Screen edgeToEdge` while a friend is on the card; status bar light until the picture scrolls past (`pastHero`). No friend: the old header on the aurora. Everything below untouched.
+- OTA `d9fa1b88`. A51 20:20 (Russian): the picture under the status bar with white icons, mascot + "Sigmazam" + the "Ali" capsule on it, "Theo Lancaster" large at the foot, the modules as before. Not seen on an iPhone (none here); the row sits below `insets.top`, which is the Dynamic Island's bottom on iPhone.
+- Checks: tsc 0, npm test 654/654. Docs: `docs/today-hero.md`, `docs/flows.md` F2, the design note's round 4.
+
+Still to do:
+1. Owner's word on the A51 (and on an iPhone once there is one: TestFlight / the owner's device).
+2. The rest of prototype A (neutral tiles, one icon set, warm ground) only if the owner asks; they said to keep the rest as it is.
+
 ### 0z108. Design direction: simpler, on trend, "not made by an AI tool", inspired by Replika (2026-11-03, Claude 2). NEXT: owner picks A or B on the Today prototype, then code
 
 - Owner: the logic is good; the look must get simpler and more on trend, so people do not feel an AI tool made it. Owner installed Replika on the A51 for study ("take what you want"), then: Replika is only inspiration, we do not become it; our own principles stay.
