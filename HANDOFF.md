@@ -10,7 +10,7 @@
 - Checks: tsc 0 (app and server), npm test 642/642, server tests 71/71, check:locales passes. Not run: the cloud suite, and a real report on the phone (needs the deploy).
 
 Still to do:
-1. Done: owner deployed from `c2e4526` with a clean `src`/`server` (Fly v15, 2026-11-03); `/health` 200, `/v1/reports` 401 without a token, `public.reports` empty. A51: the owner's report was made while the old bundle still ran (the update downloaded at 13:01 and applies on the next launch), so it stayed on the phone; after a force-stop and relaunch the resend path delivered it (13:04:57, Isolde, `other`, 0 context lines, as old reports carry none). Left: one report made on the new bundle, to see its context lines.
+1. Done: owner deployed from `c2e4526` with a clean `src`/`server` (Fly v15, 2026-11-03); `/health` 200, `/v1/reports` 401 without a token, `public.reports` empty. A51: the owner's report was made while the old bundle still ran (the update downloaded at 13:01 and applies on the next launch), so it stayed on the phone; after a force-stop and relaunch the resend path delivered it (13:04:57, Isolde, `other`, 0 context lines, as old reports carry none). Then a report on the new bundle (13:08:57, Odile, `offCharacter`) came with 8 context lines, `them`/`me` in turn, read in the row. Done.
 2. Privacy policy: a report sends the message and up to 8 lines before it, the user's own included, kept until the account is deleted. Decide a purge after review.
 3. A way for a person to read the queue (for now SQL; the metrics script's `query` can serve).
 
