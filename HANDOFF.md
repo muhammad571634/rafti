@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z110. The old wordmark back on Today's picture; the owner's art direction from Pinterest (2026-11-03, Claude 2). NEXT: owner checks the logo on the A51; one test portrait in the new style before any batch
+
+- Owner: 0z109 is good for now, but the Sigmazam logo must be the old one, in its own colours and look, mascot included. Done in `bef9599` (`BRAND.logo` on the picture as on the aurora; the white "Sigmazam" + sticker are gone; `BAR` 56 for the art's mascot). OTA `c4bbe13b`. Not seen on the phone: the A51 dropped off adb right after the publish.
+- Owner's art idea: a Pinterest search "ai charakter" (their logged-in account; screenshot `image copy 3.png` in the repo root, not ours) shows soft 3D animated-film-style people (big eyes, smooth skin, plain studio grounds, everyday clothes), "very different and Apple-like"; asked to download what fits, and to redraw ours in that manner with Nano Banana or GPT Image where nothing fits. Also sent https://developer.apple.com/design/ (our UI rule book already).
+- Agent's answer: yes to the direction as a style reference, with three rules: (1) no Pinterest image goes into the app or the repo (others' work, licences unknown); we write our own prompts from the look; (2) every character must read clearly as an adult (late 20s+ faces and proportions): big-eyed cartoon styles read young, and our chats are romance; App Store and our own line on minors are strict; (3) one test portrait first (Theo), then a batch with the count stated.
+
+Still to do:
+1. Owner reopens the app twice and checks the logo on the picture.
+2. Agent writes the style prompt (`docs/nano-banana-3d-style.md`) and one test prompt for Theo; owner draws it in Nano Banana into `art-new/`; we look together, then the batch (55 characters).
+
 ### 0z109. Today: the friend's picture from the screen's top, the top row as glass on it (2026-11-03, Claude 2). NEXT: owner looks on the A51; then the next tab, or more from prototype A if asked
 
 - Owner on the 0z108 prototype (opened as a local browser tab with the brainstorming companion, after the claude.ai canvas link showed nothing for them): take only B's hero, "the picture at the very top like a window, the mascot, the profile button and the Sigmazam text on it like glass; do not touch the rest". Then: make sure iPhone (Dynamic Island) and Android come out the same.
