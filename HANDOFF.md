@@ -10,7 +10,7 @@
 - Checks: tsc 0 (app and server), npm test 642/642, server tests 71/71, check:locales passes. Not run: the cloud suite, and a real report on the phone (needs the deploy).
 
 Still to do:
-1. Owner deploys the server; then report one message on the A51 and read the row in `public.reports`.
+1. Done: owner deployed from `c2e4526` with a clean `src`/`server` (Fly v15, 2026-11-03); `/health` 200, `/v1/reports` 401 without a token, `public.reports` empty. Left: report one message on the A51 and read the row.
 2. Privacy policy: a report sends the message and up to 8 lines before it, the user's own included, kept until the account is deleted. Decide a purge after review.
 3. A way for a person to read the queue (for now SQL; the metrics script's `query` can serve).
 
