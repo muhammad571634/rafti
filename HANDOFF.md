@@ -1,6 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z101. A time zone moving west neither pays twice nor keeps free shells (2026-11-03, Claude 2). NEXT: owner picks the next task
+### 0z102. Sigmazam Marketing Studio & Telegram Preview Bot (2026-11-03, Gemini). NEXT: autonomous scheduled growth dispatch
+
+- Built visual node-based AI marketing workflow studio (`marketing/studio/index.html`, `start-studio.bat`):
+  - 11 categorized nodes matching viral otome/companion growth pipeline: Character Source (57 characters), X Post Scraper, Prompt Templates (BookTok POV), Gemini 3.8 Flash generation, Dark iOS Chat Mockup generator, Telegram Admin Preview, Threads publisher.
+  - Interactive canvas with SVG bezier connectors, status pills, execution engine, real-time Terminal & Execution Logs, Mini Map, and Media & Post Library modal.
+- Dark iOS Chat Mockup Card generator (`marketing/cards/chat-mockup.html`): renders pixel-perfect Apple-style dark chat screenshot with Dynamic Island, character header, dialogue bubbles, and episodic memory badge.
+- Telegram Bot Dispatcher (`@sigmazam_preview_bot`, `marketing/send-preview.ts`, `marketing/dispatcher.ts`):
+  - Token and admin `chat_id` safely stored in user environment and git-ignored `.env.marketing.local`.
+  - Tested live: sends daily formatted packs and 2.5D character stills directly to admin Telegram.
+- Meta Threads Publisher (`marketing/threads-poster.ts`): standalone publisher for `@sigmazam.app` via official Meta Threads API.
+- Checks: `npx tsc --noEmit` passed (0 errors), `npm test` passed (647/647 tests).
+
+
 
 - 0z89's to-do 3. `20261103085820_b6_zone_moves_west.sql` (applied by the owner; checked: all four functions live, `authenticated` cannot execute them, the three wallets unchanged): `wallet_check_in` pays 0 and keeps the streak when `check_in_day >= today`, and when `daily:<today>` is already booked it moves `check_in_day` up to today; `wallet_credit` keeps the later of the bucket's day and today and adds to it; `wallet_spend` spends a bucket dated after today first; `wallet_settle` gives a day's second burn its own key (`expired:<day>:<n>`), as `book_shells` skipped a repeated key while the bucket was still cleared, so those free shells never burned.
 - App (`59bf6b1`, update `896ce668`): `creditFree`, `spendShells`, My plan and History count a bucket dated after today as live (tested).

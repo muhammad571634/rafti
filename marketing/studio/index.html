@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sigmazam Workflow Studio — Autonomous AI Marketing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-app: #0c0e14;
+      --bg-surface: #141721;
+      --bg-surface-elevated: #1a1e2b;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: #6366f1;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      
+      --accent-purple: #a855f7;
+      --accent-gold: #f59e0b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-pink: #ec4899;
+      --accent-teal: #14b8a6;
+      --accent-red: #ef4444;
+
+      --node-header-ai: rgba(168, 85, 247, 0.15);
+      --node-header-agent: rgba(245, 158, 11, 0.15);
+      --node-header-source: rgba(16, 185, 129, 0.15);
+      --node-header-publish: rgba(236, 72, 153, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    .topbar {
+      height: 52px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 50;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .project-name-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .topbar-center {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 5px 11px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    .nav-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--text-subtle);
+    }
+
+    .valid-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 3px 9px;
+      border-radius: 12px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .run-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+      color: #fff;
+      border: none;
+      padding: 7px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+      transition: all 0.2s;
+    }
+
+    .run-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    }
+
+    .run-btn.running {
+      background: #ef4444;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Main Workspace Layout */
+    .workspace {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar: Node Library */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .badge-count {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .node-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .node-group-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+      padding-left: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .group-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .node-card-item {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: grab;
+      transition: all 0.15s;
+      margin-bottom: 6px;
+    }
+
+    .node-card-item:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .node-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .node-card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+
+    /* Canvas / Flow Area */
+    .canvas-container {
+      flex: 1;
+      background-color: #0d0f17;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .svg-connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Flow Nodes in Canvas */
+    .flow-node {
+      position: absolute;
+      width: 320px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      cursor: default;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .flow-node.selected {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4), 0 12px 36px rgba(0, 0, 0, 0.6);
+    }
+
+    .flow-node.running {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4);
+    }
+
+    .flow-node.success {
+      border-color: #10b981;
+    }
+
+    .node-header {
+      padding: 10px 14px;
+      border-top-left-radius: 11px;
+      border-top-right-radius: 11px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .node-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .node-status-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-done {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-running {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-idle {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-subtle);
+    }
+
+    .node-body {
+      padding: 12px 14px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .node-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .node-label {
+      color: var(--text-muted);
+      font-size: 11.5px;
+    }
+
+    .node-value {
+      color: var(--text-main);
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .node-preview-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      max-height: 90px;
+      overflow-y: auto;
+    }
+
+    /* Connection Ports */
+    .port {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #1e2230;
+      border: 2px solid #6366f1;
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .port:hover {
+      transform: scale(1.3);
+      background: #6366f1;
+    }
+
+    .port-input {
+      left: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .port-output {
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Mini Map */
+    .minimap-panel {
+      position: absolute;
+      right: 20px;
+      bottom: 180px;
+      width: 170px;
+      height: 110px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      z-index: 30;
+    }
+
+    .minimap-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+    }
+
+    .minimap-canvas-area {
+      flex: 1;
+      background: #090b10;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .minimap-node-box {
+      position: absolute;
+      background: #10b981;
+      border-radius: 2px;
+    }
+
+    /* Bottom Execution / Terminal Panel */
+    .terminal-panel {
+      height: 160px;
+      background: #090b10;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+    }
+
+    .terminal-header {
+      height: 36px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .terminal-status-badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+    }
+
+    .terminal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .log-line {
+      display: flex;
+      gap: 12px;
+    }
+
+    .log-time {
+      color: var(--text-subtle);
+      flex-shrink: 0;
+    }
+
+    .log-tag {
+      color: #818cf8;
+      flex-shrink: 0;
+    }
+
+    .log-success {
+      color: #34d399;
+    }
+
+    .log-info {
+      color: #cbd5e1;
+    }
+
+    /* Modal: Media & Post Library */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 900px;
+      max-height: 85vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title-group h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-title-group p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .library-sidebar {
+      width: 380px;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .library-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 12px;
+      gap: 6px;
+    }
+
+    .lib-tab {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .lib-tab.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .library-items-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .lib-item-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lib-item-card:hover, .lib-item-card.selected {
+      border-color: #6366f1;
+    }
+
+    .lib-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .lib-item-snippet {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .library-detail-pane {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .detail-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      align-self: flex-start;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-logo">
+        <div class="logo-badge">🦦</div>
+        <span>Sigmazam Studio</span>
+      </div>
+      <div class="project-name-btn">
+        <span>⚡ Velvet District Growth Flow</span>
+        <span style="font-size: 10px; opacity: 0.6;">▼</span>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <button class="nav-btn" onclick="openLibraryModal()">
+        <span>📁 Library</span>
+        <span class="kbd">L</span>
+      </button>
+      <button class="nav-btn active">
+        <span>🔄 Workflows</span>
+        <span class="kbd">W</span>
+      </button>
+      <button class="nav-btn" onclick="alignNodes()">
+        <span>▦ Align</span>
+        <span class="kbd">A</span>
+      </button>
+      <div class="valid-chip">
+        <span>✓</span>
+        <span>Valid Graph</span>
+      </div>
+      <button class="nav-btn" onclick="saveWorkflow()">
+        <span>💾 Save</span>
+        <span class="kbd">^S</span>
+      </button>
+    </div>
+
+    <div class="topbar-right">
+      <button class="nav-btn" onclick="window.open('../cards/chat-mockup.html', '_blank')">
+        <span>📱 Open Chat Card</span>
+      </button>
+      <button class="run-btn" id="runPipelineBtn" onclick="runPipeline()">
+        <span id="runBtnIcon">▶</span>
+        <span id="runBtnText">Run Flow</span>
+        <span class="kbd" style="background: rgba(255,255,255,0.2); color: #fff;">^R</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspace Container -->
+  <div class="workspace">
+
+    <!-- Left Sidebar: Node Library -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span>Node Library</span>
+        <span class="badge-count">11 Available</span>
+      </div>
+
+      <div class="node-list">
+
+        <!-- AI Category -->
+        <div>
+          <div class="node-group-title">
+            <div class="group-dot" style="background: var(--accent-purple);"></div>
+            <span>AI Models & Prompts</span>
+          </div>
+          <div class="node-card-item" onclick="addNode('prompt_template')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-purple);">{ }</span>
+              <span>Prompt Template</span>
+            </div>
+            <div class="node-card-desc">Compose structured prompt with {system_prompt} and {style}</div>
+          </div>
+          <div class="node-card-item" onclick="addNode('prompt_files')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-purple);">📄</span>
+              <span>Prompt Files</span>
+            </div>
+            <div class="node-card-desc">Load BookTok, Otome POV, or Noir character rulebooks</div>
+          </div>
+        </div>
+
+        <!-- AGENT Category -->
+        <div>
+          <div class="node-group-title">
+            <div class="group-dot" style="background: var(--accent-gold);"></div>
+            <span>Antigravity Agent</span>
+          </div>
+          <div class="node-card-item" onclick="addNode('antigravity_gemini')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-gold);">🤖</span>
+              <span>Gemini 3.8 Flash Node</span>
+            </div>
+            <div class="node-card-desc">Autonomous generation via Gemini 3.8 Flash (fast, 0 token limit)</div>
+          </div>
+          <div class="node-card-item" onclick="addNode('translate_agent')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-gold);">🌐</span>
+              <span>Localize / Translate</span>
+            </div>
+            <div class="node-card-desc">Multi-lingual adapter (Uzbek, English, Russian)</div>
+          </div>
+        </div>
+
+        <!-- SOURCE Category -->
+        <div>
+          <div class="node-group-title">
+            <div class="group-dot" style="background: var(--accent-green);"></div>
+            <span>Source & Data</span>
+          </div>
+          <div class="node-card-item" onclick="addNode('character_source')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-green);">👤</span>
+              <span>Sigmazam Character</span>
+            </div>
+            <div class="node-card-desc">Pulls from 57 official companion characters & backstories</div>
+          </div>
+          <div class="node-card-item" onclick="addNode('x_post')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-green);">🐦</span>
+              <span>X / Trend Post</span>
+            </div>
+            <div class="node-card-desc">Scrapes viral hooks or trending discussions from X</div>
+          </div>
+        </div>
+
+        <!-- PUBLISH Category -->
+        <div>
+          <div class="node-group-title">
+            <div class="group-dot" style="background: var(--accent-pink);"></div>
+            <span>Publish & Preview</span>
+          </div>
+          <div class="node-card-item" onclick="addNode('telegram_preview')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-pink);">✈️</span>
+              <span>Send Preview (Admin)</span>
+            </div>
+            <div class="node-card-desc">Sends generated pack directly to Admin Telegram Bot</div>
+          </div>
+          <div class="node-card-item" onclick="addNode('threads_publish')">
+            <div class="node-card-top">
+              <span style="color: var(--accent-pink);">🧵</span>
+              <span>Threads Publisher</span>
+            </div>
+            <div class="node-card-desc">Auto-posts to @sigmazam.app via Meta Threads API</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="canvas-container" id="canvas">
+      <svg class="svg-connections" id="svgConnections">
+        <!-- Dynamic connection bezier curves rendered by JS -->
+      </svg>
+
+      <!-- Node 1: Source (Ronan Vale) -->
+      <div class="flow-node selected" id="node-1" style="left: 40px; top: 30px;">
+        <div class="node-header" style="background: var(--node-header-source);">
+          <div class="node-title-group">
+            <span style="color: var(--accent-green);">👤</span>
+            <span>Character Source</span>
+          </div>
+          <div class="node-status-pill status-done">✓ Ready</div>
+        </div>
+        <div class="node-body">
+          <div class="node-row">
+            <span class="node-label">Character:</span>
+            <span class="node-value">Ronan Vale (c_ronan)</span>
+          </div>
+          <div class="node-row">
+            <span class="node-label">World:</span>
+            <span class="node-value">Velvet District</span>
+          </div>
+          <div class="node-row">
+            <span class="node-label">Trope:</span>
+            <span class="node-value">Ex-Soldier Bodyguard</span>
+          </div>
+          <div class="node-preview-box">
+            "Hired to keep you alive. Told not to ask why. Cooks one excellent omelette at 4 a.m."
+          </div>
+        </div>
+        <div class="port port-output" title="Character Data Output" style="top: 50%;"></div>
+      </div>
+
+      <!-- Node 2: Prompt Template -->
+      <div class="flow-node" id="node-2" style="left: 400px; top: 30px;">
+        <div class="node-header" style="background: var(--node-header-ai);">
+          <div class="node-title-group">
+            <span style="color: var(--accent-purple);">{ }</span>
+            <span>Prompt Template</span>
+          </div>
+          <div class="node-status-pill status-done">✓ Wired</div>
+        </div>
+        <div class="node-body">
+          <div class="node-row">
+            <span class="node-label">Vibe Hook:</span>
+            <span class="node-value">POV / Midnight Rules</span>
+          </div>
+          <div class="node-preview-box">
+            {system_prompt}<br>
+            ## Style Rule<br>
+            Write 1-2 punchy sentences with minimal fluff. Focus on immediate romantic tension.
+          </div>
+          <div class="node-row">
+            <span class="node-label">Max Length:</span>
+            <span class="node-value">350 chars</span>
+          </div>
+        </div>
+        <div class="port port-input" style="top: 50%;"></div>
+        <div class="port port-output" style="top: 50%;"></div>
+      </div>
+
+      <!-- Node 3: Antigravity Node (Gemini 3.8 Flash) -->
+      <div class="flow-node" id="node-3" style="left: 760px; top: 30px;">
+        <div class="node-header" style="background: var(--node-header-agent);">
+          <div class="node-title-group">
+            <span style="color: var(--accent-gold);">🤖</span>
+            <span>Gemini 3.8 Flash Node</span>
+          </div>
+          <div class="node-status-pill status-idle" id="node3-status">Idle</div>
+        </div>
+        <div class="node-body">
+          <div class="node-row">
+            <span class="node-label">Model:</span>
+            <span class="node-value">gemini-3.8-flash</span>
+          </div>
+          <div class="node-row">
+            <span class="node-label">Generation Time:</span>
+            <span class="node-value" id="node3-time">~13.6s</span>
+          </div>
+          <div class="node-preview-box" id="node3-output">
+            Click "Run Flow" to generate live character post via Gemini 3.8 Flash...
+          </div>
+        </div>
+        <div class="port port-input" style="top: 50%;"></div>
+        <div class="port port-output" style="top: 50%;"></div>
+      </div>
+
+      <!-- Node 4: Dispatcher / Publish -->
+      <div class="flow-node" id="node-4" style="left: 1120px; top: 30px;">
+        <div class="node-header" style="background: var(--node-header-publish);">
+          <div class="node-title-group">
+            <span style="color: var(--accent-pink);">🚀</span>
+            <span>Publish & Preview</span>
+          </div>
+          <div class="node-status-pill status-idle" id="node4-status">Queued</div>
+        </div>
+        <div class="node-body">
+          <div class="node-row">
+            <span class="node-label">Telegram Admin:</span>
+            <span class="node-value">Enabled (Preview)</span>
+          </div>
+          <div class="node-row">
+            <span class="node-label">Threads:</span>
+            <span class="node-value">@sigmazam.app</span>
+          </div>
+          <div class="node-row">
+            <span class="node-label">Chat Mockup:</span>
+            <span class="node-value">Auto-Attached</span>
+          </div>
+          <div class="node-preview-box" id="node4-output">
+            Ready to dispatch payload to Telegram / Threads.
+          </div>
+        </div>
+        <div class="port port-input" style="top: 50%;"></div>
+      </div>
+
+      <!-- Mini Map Panel -->
+      <div class="minimap-panel">
+        <div class="minimap-header">
+          <span>MINI MAP</span>
+          <span>4 NODES</span>
+        </div>
+        <div class="minimap-canvas-area">
+          <div class="minimap-node-box" style="left: 10px; top: 15px; width: 25px; height: 18px; background: #10b981;"></div>
+          <div class="minimap-node-box" style="left: 45px; top: 15px; width: 25px; height: 18px; background: #a855f7;"></div>
+          <div class="minimap-node-box" style="left: 80px; top: 15px; width: 25px; height: 18px; background: #f59e0b;"></div>
+          <div class="minimap-node-box" style="left: 115px; top: 15px; width: 25px; height: 18px; background: #ec4899;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Terminal & Execution Logs Panel -->
+    <div class="terminal-panel">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <span>>_ Terminal & Execution Logs</span>
+          <span class="terminal-status-badge" id="terminalStatus">READY</span>
+        </div>
+        <span style="color: var(--text-subtle); font-size: 11px;">Sigmazam Growth Engine v2.0</span>
+      </div>
+      <div class="terminal-body" id="terminalLogs">
+        <div class="log-line">
+          <span class="log-time">14:20:00</span>
+          <span class="log-tag">system [*]</span>
+          <span class="log-info">Sigmazam Autonomous Workflow Studio initialized.</span>
+        </div>
+        <div class="log-line">
+          <span class="log-time">14:20:01</span>
+          <span class="log-tag">characters [*]</span>
+          <span class="log-info">Loaded 57 official characters across 7 worlds (Velvet District active).</span>
+        </div>
+        <div class="log-line">
+          <span class="log-time">14:20:02</span>
+          <span class="log-tag">network [*]</span>
+          <span class="log-info">Meta Threads & Instagram (@sigmazam.app) targets configured.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Library Modal -->
+  <div class="modal-overlay" id="libraryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2>Media & Post Library</h2>
+          <p>Review downloaded assets, inspect lifecycle status, and load into canvas.</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeLibraryModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="library-sidebar">
+          <div class="library-tabs">
+            <button class="lib-tab active">All (57)</button>
+            <button class="lib-tab">Planned (6)</button>
+            <button class="lib-tab">Draft (12)</button>
+            <button class="lib-tab">Posted (3)</button>
+          </div>
+          <div class="library-items-list">
+            <div class="lib-item-card selected">
+              <div class="lib-item-title">
+                <span>Ronan Vale</span>
+                <span style="font-size: 11px; color: #10b981;">Planned</span>
+              </div>
+              <div class="lib-item-snippet">"Stay away from the window. You have questions, I have three rules."</div>
+            </div>
+            <div class="lib-item-card">
+              <div class="lib-item-title">
+                <span>Luca Renwick</span>
+                <span style="font-size: 11px; color: #f59e0b;">Draft</span>
+              </div>
+              <div class="lib-item-snippet">"pov: you sat at his table and he literally whispered which card was up his sleeve 😭"</div>
+            </div>
+            <div class="lib-item-card">
+              <div class="lib-item-title">
+                <span>Isolde Valcour</span>
+                <span style="font-size: 11px; color: #f59e0b;">Draft</span>
+              </div>
+              <div class="lib-item-snippet">"pov: she slid a face-down card across the velvet table and looked you in the eyes..."</div>
+            </div>
+            <div class="lib-item-card">
+              <div class="lib-item-title">
+                <span>Leander Sterling</span>
+                <span style="font-size: 11px; color: #10b981;">Planned</span>
+              </div>
+              <div class="lib-item-snippet">"The crown prince refused to acknowledge anyone until you gave his hound a treat."</div>
+            </div>
+          </div>
+        </div>
+        <div class="library-detail-pane">
+          <div class="detail-badge">STATUS: PLANNED FOR LAUNCH</div>
+          <h3 style="color: #fff; font-size: 18px;">Ronan Vale — Velvet District</h3>
+          <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5;">
+            <strong>Hook:</strong> pov: you tried to open the window at 3 AM and your 191cm bodyguard pulled you back 😭<br><br>
+            <strong>Episodic Memory:</strong> He remembers boundaries, user's sleeping habits, and keeps three protective rules.
+          </p>
+          <div style="margin-top: 10px;">
+            <button class="run-btn" onclick="closeLibraryModal()">Load into Active Canvas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Draw Bezier Connection Lines
+    function drawConnections() {
+      const svg = document.getElementById('svgConnections');
+      svg.innerHTML = '';
+
+      const connections = [
+        { from: 'node-1', to: 'node-2', color: '#10b981' },
+        { from: 'node-2', to: 'node-3', color: '#a855f7' },
+        { from: 'node-3', to: 'node-4', color: '#f59e0b' }
+      ];
+
+      connections.forEach(conn => {
+        const fromNode = document.getElementById(conn.from);
+        const toNode = document.getElementById(conn.to);
+        if (!fromNode || !toNode) return;
+
+        const fromRect = fromNode.getBoundingClientRect();
+        const toRect = toNode.getBoundingClientRect();
+        const canvasRect = document.getElementById('canvas').getBoundingClientRect();
+
+        const x1 = fromRect.right - canvasRect.left;
+        const y1 = fromRect.top + fromRect.height / 2 - canvasRect.top;
+        const x2 = toRect.left - canvasRect.left;
+        const y2 = toRect.top + toRect.height / 2 - canvasRect.top;
+
+        const dx = Math.max(Math.abs(x2 - x1) * 0.5, 40);
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', conn.color);
+        path.setAttribute('stroke-width', '2.5');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('opacity', '0.85');
+        svg.appendChild(path);
+      });
+    }
+
+    window.addEventListener('resize', drawConnections);
+    setTimeout(drawConnections, 100);
+
+    // Logging helper
+    function appendLog(tag, message, isSuccess = false) {
+      const logs = document.getElementById('terminalLogs');
+      const time = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = 'log-line';
+      div.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-tag">${tag}</span>
+        <span class="${isSuccess ? 'log-success' : 'log-info'}">${message}</span>
+      `;
+      logs.appendChild(div);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    // Pipeline Execution Engine
+    let isRunning = false;
+    async function runPipeline() {
+      if (isRunning) return;
+      isRunning = true;
+
+      const runBtn = document.getElementById('runPipelineBtn');
+      const runIcon = document.getElementById('runBtnIcon');
+      const runText = document.getElementById('runBtnText');
+      const statusBadge = document.getElementById('terminalStatus');
+
+      runBtn.classList.add('running');
+      runIcon.textContent = '⏹';
+      runText.textContent = 'Running...';
+      statusBadge.textContent = 'EXECUTING';
+      statusBadge.style.color = '#fbbf24';
+      statusBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+
+      // Step 1: Character Source
+      appendLog('source [*]', 'Extracting character metadata: Ronan Vale (Velvet District, Ex-Soldier)...');
+      await new Promise(r => setTimeout(r, 600));
+
+      // Step 2: Prompt Templates
+      appendLog('template [*]', 'Compiling {system_prompt} and BookTok POV Hook formula...');
+      await new Promise(r => setTimeout(r, 800));
+
+      // Step 3: Antigravity Node (Gemini 3.8 Flash)
+      const node3 = document.getElementById('node-3');
+      const node3Status = document.getElementById('node3-status');
+      const node3Output = document.getElementById('node3-output');
+      node3.classList.add('running');
+      node3Status.className = 'node-status-pill status-running';
+      node3Status.textContent = 'Generating...';
+
+      appendLog('gen_agent [*]', 'Generating viral post with Antigravity (model=gemini-3.8-flash)...');
+      await new Promise(r => setTimeout(r, 1600));
+
+      const generatedPost = 'pov: you tried to open the window at 3 AM and your 191cm bodyguard pulled you back 😭\n\nMe: "What are the three rules?"\nRonan Vale: "Stay away from the window. We start with the rules."';
+      node3Output.textContent = generatedPost;
+      node3.classList.remove('running');
+      node3.classList.add('success');
+      node3Status.className = 'node-status-pill status-done';
+      node3Status.textContent = '✓ Done (355 chars)';
+      appendLog('gen_agent [✓]', 'Post generated successfully (355 chars, 1.6s).', true);
+
+      // Step 4: Dispatcher & Preview
+      const node4 = document.getElementById('node-4');
+      const node4Status = document.getElementById('node4-status');
+      const node4Output = document.getElementById('node4-output');
+      node4.classList.add('success');
+      node4Status.className = 'node-status-pill status-done';
+      node4Status.textContent = '✓ Dispatched';
+      node4Output.innerHTML = '<strong>Target:</strong> @sigmazam.app<br><strong>Status:</strong> Media payload attached & ready for scheduled posting.';
+      appendLog('publish [✓]', 'Attached iOS Dark Chat Mockup & saved to daily growth queue.', true);
+
+      // Finish
+      runBtn.classList.remove('running');
+      runIcon.textContent = '▶';
+      runText.textContent = 'Run Flow';
+      statusBadge.textContent = 'SUCCESS';
+      statusBadge.style.color = '#34d399';
+      statusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+      isRunning = false;
+    }
+
+    // Modal controls
+    function openLibraryModal() {
+      document.getElementById('libraryModal').classList.add('open');
+    }
+
+    function closeLibraryModal() {
+      document.getElementById('libraryModal').classList.remove('open');
+    }
+
+    function alignNodes() {
+      appendLog('ui [*]', 'Nodes auto-aligned cleanly on grid.');
+      drawConnections();
+    }
+
+    function saveWorkflow() {
+      appendLog('ui [✓]', 'Workflow state saved to marketing/queue/workflow.json', true);
+      alert('Workflow saved successfully!');
+    }
+
+    function addNode(type) {
+      appendLog('ui [*]', `Added new node from library: ${type}`);
+    }
+  </script>
+
+</body>
+</html>
+

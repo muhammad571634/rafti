@@ -7,6 +7,22 @@ import { generatePackForCharacter, saveContentPack } from './generator';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load local marketing env if present
+const envLocalPath = path.resolve(__dirname, '../.env.marketing.local');
+if (fs.existsSync(envLocalPath)) {
+  const lines = fs.readFileSync(envLocalPath, 'utf-8').split('\n');
+  for (const line of lines) {
+    const match = line.match(/^([^=]+)=(.*)$/);
+    if (match) {
+      const key = match[1].trim();
+      const val = match[2].trim();
+      if (!process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+  }
+}
+
 interface DispatchOptions {
   characterIds?: string[];
   count?: number;
