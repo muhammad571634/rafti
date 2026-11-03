@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z104. Design direction, round 2: our design + Replika's feel (2026-11-03, Claude 1). NEXT: owner reacts to the merge mockups
+
+- Continues 0z103. No code changed. Mobbin MCP is connected but every call answers "requires a paid plan"; mobbin.com pages give 403. References came from the web (Apple's Liquid Glass gallery, screensdesign.com store shots of Replika, Tolan, Finch, PolyBuzz) and the A51 (Today, Chats, Us, Find, Ronan's chat).
+- Owner's answers: the user should feel a character is waiting for them, like Replika. A full-screen Replika Today (three variants) was too far; three calmer Today variants (white tiles, one clay-icon card, two live tiles + clay grid) were also rejected. Owner likes our current design and logic (4 tabs, Today's 10 modules) and wants Replika's feel merged in, polished, nothing working lost.
+- Current proposal (browser mockups, brainstorming companion, files in the session scratchpad): Today keeps everything but its character card grows, shows their last line and a "write to …" pill that opens the chat; the chat gets the character's art as its ground with glass header, glass composer, dark glass bubbles, the intro card as a glass card over the art (every control kept: shells, call, intro, scene, read receipt, quick replies, vote/regenerate/continue/share); Chats keeps its look with faces instead of letter avatars.
+- Owner notes: IV / RV / OF are characters with no art yet; owner drew them in Nano Banana into `art-new/` and allows wiring them in (replace later what they dislike). "Edit" under Today's icons is not a bug: it sits behind the tab bar because Today should also show items like secret notes, which do not show now.
+
+Still to do:
+1. Owner's verdict on the merge mockups; then the design doc, then code (one screen first).
+2. Wire `art-new/` art for Isolde, Ronan, Odile (and the others there) into the app.
+3. Find why Today shows no secret notes (or similar items) now.
+
 ### 0z103. Design direction: is the iOS look boring? (2026-11-03, Claude 2). NEXT: owner names an app whose look they like, or says "you pick"
 
 - Owner's ask: next to current apps and trends, our iOS/HIG look may feel boring; make it simpler and closer to today's trends and apps like these. Taste is the owner's call. No code changed.
