@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type LayoutRectangle, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { type LayoutRectangle, ScrollView, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
-import { featuredFriend, TodayHero } from '@/components/today-hero';
+import { featuredFriend, heroTopHeight, TodayHero } from '@/components/today-hero';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
@@ -94,10 +94,12 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height: windowHeight } = useWindowDimensions();
   // Two widgets to a row on every phone width; percentages plus a fixed gap overflow on narrow Androids.
   const half = Math.floor((width - space.lg * 2 - space.md) / 2);
   const [galleryWidth, setGalleryWidth] = useState(0);
+  /** The picture has scrolled away from under the status bar. */
+  const [pastHero, setPastHero] = useState(false);
   const galleryHalf = galleryWidth ? Math.floor((galleryWidth - space.md) / 2) : undefined;
 
   const user = useAppStore((s) => s.user);
@@ -179,56 +181,84 @@ export default function HomeScreen() {
     setSlots(next);
   };
 
+  // With a friend on the card, their picture runs from the screen's top, under the status bar or the
+  // Dynamic Island, and this row sits on it as clear glass just below that safe area (owner,
+  // 2026-11-03, prototype B); the status bar turns dark again once the picture has scrolled away.
+  const onPhoto = !!hero;
+  const Glass = onPhoto ? PhotoGlass : AuroraGlass;
+  const heroBottom = hero ? heroTopHeight(windowHeight, insets.top) : 0;
+  // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
+  const bar = (
+    <View style={[styles.bar, onPhoto && styles.photoBar]}>
+      {onPhoto ? (
+        <View style={styles.photoLogo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
+          <Image source={BRAND.sticker} style={styles.photoMark} contentFit="contain" />
+          <Txt style={styles.photoWord} color={colors.onMedia} lines={1} maxFontSizeMultiplier={1.2}>
+            Sigmazam
+          </Txt>
+        </View>
+      ) : (
+        <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
+          <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
+        </View>
+      )}
+      {editing ? (
+        <>
+          {firstEmpty >= 0 ? (
+            <PressableScale
+              scaleTo={0.9}
+              accessibilityRole="button"
+              accessibilityLabel={t('home.widget.add')}
+              onPress={() => setGallerySlot(firstEmpty)}>
+              <Glass style={styles.round}>
+                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : colors.text} />
+              </Glass>
+            </PressableScale>
+          ) : null}
+          <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
+            <Txt style={styles.doneText} maxFontSizeMultiplier={1.3}>
+              {t('home.widget.done')}
+            </Txt>
+          </PressableScale>
+        </>
+      ) : (
+        <PressableScale
+          scaleTo={0.92}
+          hitSlop={hitSlop}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
+          onPress={() => router.push('/profile')}>
+          <Glass style={styles.me}>
+            <UserAvatar user={user} size={34} />
+            {user.displayName.trim() ? (
+              <Txt style={[styles.meName, onPhoto && styles.photoName]} lines={1} maxFontSizeMultiplier={1.3}>
+                {clipName(user.displayName)}
+              </Txt>
+            ) : null}
+          </Glass>
+        </PressableScale>
+      )}
+    </View>
+  );
+
   return (
-    <Screen background="aurora">
+    <Screen background="aurora" edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         onTouchStart={hideWelcome}
+        scrollEventThrottle={32}
+        onScroll={onPhoto ? (e) => setPastHero(e.nativeEvent.contentOffset.y > heroBottom - insets.top - space.md) : undefined}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
-        {/* One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max. */}
-        <View style={styles.bar}>
-          <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
-            <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
-          </View>
-          {editing ? (
-            <>
-              {firstEmpty >= 0 ? (
-                <PressableScale
-                  scaleTo={0.9}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('home.widget.add')}
-                  onPress={() => setGallerySlot(firstEmpty)}>
-                  <AuroraGlass style={styles.round}>
-                    <Ionicons name="add" size={24} color={colors.text} />
-                  </AuroraGlass>
-                </PressableScale>
-              ) : null}
-              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-                <Txt style={styles.doneText} maxFontSizeMultiplier={1.3}>
-                  {t('home.widget.done')}
-                </Txt>
-              </PressableScale>
-            </>
-          ) : (
-            <PressableScale
-              scaleTo={0.92}
-              hitSlop={hitSlop}
-              accessibilityRole="button"
-              accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
-              onPress={() => router.push('/profile')}>
-              <AuroraGlass style={styles.me}>
-                <UserAvatar user={user} size={34} />
-                {user.displayName.trim() ? (
-                  <Txt style={styles.meName} lines={1} maxFontSizeMultiplier={1.3}>
-                    {clipName(user.displayName)}
-                  </Txt>
-                ) : null}
-              </AuroraGlass>
-            </PressableScale>
-          )}
-        </View>
-
-        {hero ? <TodayHero friend={hero} onPress={() => router.push(`/chat/${hero.conversation.id}`)} /> : null}
+        {hero ? (
+          <TodayHero
+            friend={hero}
+            header={bar}
+            topInset={insets.top}
+            onPress={() => router.push(`/chat/${hero.conversation.id}`)}
+          />
+        ) : (
+          bar
+        )}
 
         {unread.length > 0 ? (
           <PressableScale
@@ -396,6 +426,11 @@ export default function HomeScreen() {
  * dragged onto another slot; out of it, the widget works as itself and a long press starts
  * editing.
  */
+/** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
+function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
+  return <View style={[style, styles.photoGlass]}>{children}</View>;
+}
+
 function Slot({
   index,
   width,
@@ -508,6 +543,21 @@ const styles = StyleSheet.create({
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
   me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
   meName: { fontSize: 15, fontWeight: '600', color: colors.text },
+  // On the picture: no room for the wordmark art's hair, the mascot and a plain word in white.
+  photoBar: { paddingTop: space.xs, minHeight: 52 },
+  photoLogo: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  photoMark: { width: 34, height: 34 },
+  photoWord: {
+    flexShrink: 1,
+    fontSize: 23,
+    fontWeight: '800',
+    letterSpacing: -0.6,
+    textShadowColor: colors.onMediaShadow,
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  photoName: { color: colors.onMedia },
+  photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: colors.text },
   doneText: { fontSize: 17, fontWeight: '600', color: colors.textOnInk },

@@ -458,6 +458,8 @@ export const gradients = {
   heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
   /** The Today card's shade, top to bottom: the name on top, their line and the field at the bottom. */
   portraitCardScrim: ['rgba(15,18,32,0.45)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.2)', 'rgba(15,18,32,0.86)'] as const,
+  /** The Today picture from the screen's top: dark under the status bar and top row, clear on the face, dark under the words. */
+  heroTopScrim: ['rgba(15,18,32,0.55)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.12)', 'rgba(15,18,32,0.9)'] as const,
   /**
    * Top to bottom over an Art wallpaper in a chat: dark under the header, the picture clear, then
    * dark under the conversation, the controls and the composer. Stops: `gradientStops`.
@@ -473,6 +475,7 @@ export const gradients = {
 export const gradientStops = {
   heroScrim: [0, 0.45, 0.7] as const,
   portraitCardScrim: [0, 0.24, 0.4, 1] as const,
+  heroTopScrim: [0, 0.22, 0.46, 1] as const,
   pictureScrim: [0, 0.2, 0.4, 0.66, 1] as const,
   pictureEdge: [0, 0.38, 1] as const,
 } as const;

@@ -3,7 +3,7 @@ import { Image, type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
 import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
@@ -50,6 +50,11 @@ const typedIn = new Set<string>();
 
 /** The card's height for a screen this tall. */
 export const heroHeight = (windowHeight: number) => Math.round(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, windowHeight * SHARE)));
+/** Room for Today's top row over the picture. */
+const BAR = 52;
+const BOTTOM_RADIUS = 32;
+/** The picture from the screen's top edge (owner, 2026-11-03, prototype B): the status bar and the top row sit on it. */
+export const heroTopHeight = (windowHeight: number, topInset: number) => heroHeight(windowHeight) + topInset + BAR;
 
 /** The light over their picture follows the user's hour, the way Replika's room does. */
 export function dayLight(hour: number): 'dawn' | 'day' | 'evening' | 'night' {
@@ -128,9 +133,15 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
  */
 export function TodayHero({
   friend,
+  header,
+  topInset = 0,
   onPress,
 }: {
   friend: HeroFriend;
+  /** Today's top row (wordmark, your capsule), laid over the picture's top like glass. */
+  header?: ReactNode;
+  /** The status bar's height: the picture runs up under it. */
+  topInset?: number;
   onPress: () => void;
 }) {
   const { t } = useTranslation();
@@ -145,8 +156,8 @@ export function TodayHero({
   const progress = levelForIntimacy(relationship.intimacy).progress;
 
   const { width, height: windowHeight } = useWindowDimensions();
-  const height = heroHeight(windowHeight);
-  const position = framing === 'scene' ? sceneFocus(character.id, (width - space.lg * 2) / height) : FOCUS[framing];
+  const height = heroTopHeight(windowHeight, topInset);
+  const position = framing === 'scene' ? sceneFocus(character.id, width / height) : FOCUS[framing];
 
   const still = useReducedMotion();
   const breath = useSharedValue(0);
@@ -177,9 +188,10 @@ export function TodayHero({
   }, [fresh, lineKey]);
 
   return (
+    <View style={[styles.card, { height }]}>
     <PressableScale
-      style={[styles.card, { height }]}
-      scaleTo={0.985}
+      style={StyleSheet.absoluteFill}
+      scaleTo={1}
       accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level, line?.text]
         .filter(Boolean)
         .join(', ')}
@@ -193,10 +205,11 @@ export function TodayHero({
         />
       </Animated.View>
       {light !== 'day' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[light] }]} /> : null}
-      <LinearGradient colors={gradients.portraitCardScrim} locations={gradientStops.portraitCardScrim} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={gradients.heroTopScrim} locations={gradientStops.heroTopScrim} style={StyleSheet.absoluteFill} />
 
-      <View style={styles.top}>
-        <Txt variant="bodyStrong" color={colors.onMedia} lines={1} style={styles.shrink}>
+      <View style={styles.bottom}>
+        <View style={styles.who}>
+        <Txt color={colors.onMedia} lines={1} style={styles.name}>
           {name}
         </Txt>
         <View style={styles.chip}>
@@ -213,9 +226,7 @@ export function TodayHero({
             <View style={[styles.fill, { width: `${Math.round(progress * 100)}%` }]} />
           </View>
         </View>
-      </View>
-
-      <View style={styles.bottom}>
+        </View>
         {line && typing ? (
           <View style={styles.said}>
             <View style={[styles.bubble, styles.typing]}>
@@ -242,27 +253,27 @@ export function TodayHero({
         </View>
       </View>
     </PressableScale>
+      {header ? (
+        <View style={[styles.header, { top: topInset }]} pointerEvents="box-none">
+          {header}
+        </View>
+      ) : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  // Full width from the screen's top edge, rounded only where Today's modules begin.
   card: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    borderRadius: radius.xl,
+    borderBottomLeftRadius: BOTTOM_RADIUS,
+    borderBottomRightRadius: BOTTOM_RADIUS,
+    borderCurve: 'continuous',
     overflow: 'hidden',
     backgroundColor: colors.surfaceAlt,
   },
-  shrink: { flexShrink: 1 },
-  top: {
-    position: 'absolute',
-    top: space.md + 2,
-    left: space.lg,
-    right: space.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
+  header: { position: 'absolute', left: 0, right: 0 },
+  who: { alignItems: 'flex-start', gap: 6, marginBottom: 2 },
+  name: { maxWidth: '100%', fontSize: 30, lineHeight: 35, fontWeight: '800', letterSpacing: -0.6 },
   // Clear glass on the photo (HIG Materials: the clear variant is for rich media).
   chip: {
     flexDirection: 'row',
@@ -287,7 +298,7 @@ const styles = StyleSheet.create({
   },
   fill: { height: 2, backgroundColor: colors.bondOnMedia },
   typing: { paddingVertical: 2 },
-  bottom: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, gap: space.sm },
+  bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.lg, gap: space.sm },
   said: { alignItems: 'flex-start', gap: 3 },
   when: { paddingLeft: space.xs, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
   // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
