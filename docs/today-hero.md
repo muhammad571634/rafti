@@ -58,6 +58,9 @@ comes into view; the rules in `dailyNoteStep`, `src/lib/daily-note.ts`): one a d
 another sealed note waits, none on a day with a helpline card in that chat; a note the busy model
 left unwritten is asked again at most every 10 minutes. With the model on, its words only (a note
 it had not finished stays unwritten after a restart, no stock line); the swap still costs shells.
+It waits for launch to finish (`hydrated`: before that the chats are still loading and a helpline
+card would be missed), asks again after midnight if Today stays open, and a sealed note from a friend
+whose chat had a helpline card today stays off Today until tomorrow (`helplineToday`).
 
 ## Pictures
 

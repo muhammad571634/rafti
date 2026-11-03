@@ -108,6 +108,7 @@ export default function ChatRoomScreen() {
   const alarmRinging = useAppStore((s) => s.wake?.state === 'ringing' && s.wake.conversationId === conversationId);
   const sendVoice = useAppStore((s) => s.sendVoice);
   const sendImage = useAppStore((s) => s.sendImage);
+  const pickPhoto = usePickPhoto();
   const setActiveConversation = useAppStore((s) => s.setActiveConversation);
   const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
 
@@ -427,10 +428,6 @@ export default function ChatRoomScreen() {
       },
     });
 
-  const pickPhoto = usePickPhoto((uri) => {
-    if (sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
-  });
-
   const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
@@ -441,7 +438,9 @@ export default function ChatRoomScreen() {
       case 'voice':
         return setVoiceOpen(true);
       case 'photo':
-        return pickPhoto();
+        return pickPhoto((uri) => {
+          if (sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+        });
       case 'secretNote':
         return router.push(`/secret-note/${character.id}`);
       case 'quiz':

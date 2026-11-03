@@ -471,9 +471,10 @@ function WeekCard({ week }: { week: WeekStats }) {
 
 /** A group's "Kai & Mia are AI characters, not real people." At a session's start and every 3 hours. */
 function AiNotice({ text }: { text: string }) {
+  const onPhoto = useOnPhoto();
   return (
     <View style={styles.system}>
-      <Txt style={styles.systemText} center>
+      <Txt style={[styles.systemText, onPhoto && styles.photoSystem]} center>
         {text}
       </Txt>
     </View>

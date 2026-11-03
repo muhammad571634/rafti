@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { dayKey } from '../mock/time';
-import { dailyNoteStep } from './daily-note';
+import { dailyNoteStep, helplineToday } from './daily-note';
 import type { Message, SecretNote } from '@/types';
 
 const now = new Date(2026, 10, 3, 9, 0);
@@ -42,5 +42,10 @@ describe("Today's sealed note", () => {
     assert.equal(dailyNoteStep([note('composing', today)], 'kai', [helpline(new Date(2026, 10, 3, 8, 0))], now), null);
     // Yesterday's card does not keep today's note away.
     assert.equal(dailyNoteStep([], 'kai', [helpline(new Date(2026, 10, 2, 23, 0))], now), 'new');
+  });
+
+  it('keeps a sealed note off Today only on the helpline day', () => {
+    assert.equal(helplineToday([helpline(new Date(2026, 10, 3, 8, 0))], now), true);
+    assert.equal(helplineToday([helpline(new Date(2026, 10, 2, 23, 0))], now), false);
   });
 });

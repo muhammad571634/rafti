@@ -66,6 +66,7 @@ export function ReplyControls({
             scaleTo={0.85}
             onPress={() => onRate('up')}
             style={styles.button}
+            hitSlop={TALL}
             accessibilityRole="button"
             accessibilityLabel={t('chat.rateUp')}
             accessibilityState={{ selected: up }}>
@@ -80,6 +81,7 @@ export function ReplyControls({
             scaleTo={0.85}
             onPress={() => onRate('down')}
             style={styles.button}
+            hitSlop={TALL}
             accessibilityRole="button"
             accessibilityLabel={t('chat.rateDown')}
             accessibilityState={{ selected: down }}>
@@ -100,6 +102,7 @@ export function ReplyControls({
             disabled={first}
             onPress={() => onStep(-1)}
             style={[styles.button, first && styles.off]}
+            hitSlop={TALL}
             accessibilityRole="button"
             accessibilityLabel={t('chat.prevVersion')}>
             <SFIcon ios="chevron.left" icon="chevron-back" size={17} color={quiet} />
@@ -112,6 +115,7 @@ export function ReplyControls({
             disabled={last}
             onPress={() => onStep(1)}
             style={[styles.button, last && styles.off]}
+            hitSlop={TALL}
             accessibilityRole="button"
             accessibilityLabel={t('chat.nextVersion')}>
             <SFIcon ios="chevron.right" icon="chevron-forward" size={17} color={quiet} />
@@ -124,6 +128,7 @@ export function ReplyControls({
           haptic
           onPress={onRedo}
           style={styles.redo}
+          hitSlop={TALL}
           accessibilityRole="button"
           accessibilityLabel={t('chat.newReply')}>
           <SFIcon ios="arrow.clockwise" icon="refresh" size={21} color={quiet} />
@@ -135,6 +140,7 @@ export function ReplyControls({
           haptic
           onPress={onContinue}
           style={styles.redo}
+          hitSlop={TALL}
           accessibilityRole="button"
           accessibilityLabel={t('chat.continue')}>
           <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={21} color={quiet} />
@@ -146,6 +152,7 @@ export function ReplyControls({
           haptic
           onPress={onShare}
           style={styles.shareTarget}
+          hitSlop={TALL}
           accessibilityRole="button"
           accessibilityLabel={shareReward ? `${t('common.share')}, +${shareReward} ${t('common.shells')}` : t('common.share')}>
           {/* With the version stepper the row is full: the shell alone says it pays. */}
@@ -193,6 +200,9 @@ export function VersionSwipe({
     </GestureDetector>
   );
 }
+
+/** The row is 40 pt tall: two points each way make every button a full 44 pt target. */
+const TALL = { top: 2, bottom: 2 };
 
 const styles = StyleSheet.create({
   // Starts under their bubbles: 12 gutter + 28 avatar + 8 gap, less the button's own inset.

@@ -21,10 +21,16 @@ export function dailyNoteStep(
   now = new Date(),
 ): 'new' | 'ask' | null {
   if (notes.some((n) => n.status === 'ready')) return null;
-  const today = dayKey(now);
-  if (chat.some((m) => m.card === 'helpline' && dayKey(m.createdAt) === today)) return null;
+  if (helplineToday(chat, now)) return null;
   // The newest note comes first (`newSecretNote` puts it on top).
   const latest = notes.find((n) => n.characterId === characterId);
   if (latest?.status === 'composing') return 'ask';
+  const today = dayKey(now);
   return notes.some((n) => n.date === today) ? null : 'new';
+}
+
+/** A helpline card came up in this chat today: no note is written, and a sealed one waits off Today until tomorrow. */
+export function helplineToday(chat: readonly Message[], now = new Date()): boolean {
+  const today = dayKey(now);
+  return chat.some((m) => m.card === 'helpline' && dayKey(m.createdAt) === today);
 }

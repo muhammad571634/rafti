@@ -2549,6 +2549,8 @@ export const useAppStore = create<AppState>()(
 
       leaveDailyNote: (characterId) => {
         const s = get();
+        // Before launch finishes the chats are still loading: an empty chat would hide a helpline card.
+        if (!s.hydrated) return;
         const chatId = s.conversations.find((c) => c.characterId === characterId)?.id;
         const step = dailyNoteStep(s.notes, characterId, chatId ? (s.messages[chatId] ?? []) : []);
         const now = Date.now();
@@ -3853,9 +3855,14 @@ async function finishHydration() {
   // With the model on, a note it had not written stays for it (Today or the note screen asks again):
   // a stock line in its place would be the silent stand-in the model-first rule forbids.
   if (!modelOn(useAppStore.getState)) notes.filter((n) => n.status === 'composing').forEach((n) => sealNote(useAppStore.setState, n.id));
-  diary
-    .filter((d) => d.sharedWithCharacterId && !d.reply)
-    .forEach((d) => answerDiary(useAppStore.setState, d.id));
+  // A shared page left unanswered: the model is asked again, a few pages a launch. A stock answer
+  // only with the model off, or as the care words after a crisis page (as when it was shared).
+  let asked = 0;
+  for (const d of diary) {
+    if (!d.sharedWithCharacterId || d.reply) continue;
+    if (!modelOn(useAppStore.getState) || detectCrisis(d.body)) answerDiary(useAppStore.setState, d.id);
+    else if (asked++ < PAGES_AT_ONCE) writeDiaryReply(useAppStore.setState, d.id, d.sharedWithCharacterId, d.body);
+  }
   // A stream the app closed on goes on with the round it had paid for.
   useAppStore
     .getState()
@@ -4645,7 +4652,8 @@ function dayToDiary(set: Setter, get: Getter, conversationId: string, text: stri
     source: 'evening',
   };
   set((s) => ({ diary: [entry, ...s.diary] }));
-  setTimeout(() => answerDiary(useAppStore.setState, id), 2200);
+  if (modelOn(get)) writeDiaryReply(set, id, characterId, text);
+  else setTimeout(() => answerDiary(useAppStore.setState, id), 2200);
 }
 
 /** `HH:MM` on the day of `day`: the morning time the brief and its push are planned for. */

@@ -35,6 +35,7 @@ import {
   UserAvatar,
   type ModuleKey,
 } from '@/components/ui';
+import { helplineToday } from '@/lib/daily-note';
 import { clipName, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
@@ -127,12 +128,14 @@ export default function HomeScreen() {
 
   // Coming back in the morning: pages written overnight should be waiting here.
   useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
-  // And the day's sealed note from the friend on the card (`dailyNoteStep`).
+  // And the day's sealed note from the friend on the card (`dailyNoteStep`), once the chats have
+  // loaded, and again after midnight if Today stays open.
   const heroId = hero?.character.id;
+  const hydrated = useAppStore((s) => s.hydrated);
   useFocusEffect(
     useCallback(() => {
-      if (heroId) leaveDailyNote(heroId);
-    }, [heroId, leaveDailyNote]),
+      if (hydrated && heroId && today) leaveDailyNote(heroId);
+    }, [hydrated, heroId, today, leaveDailyNote]),
   );
 
   const unread = [...conversations]
@@ -148,7 +151,8 @@ export default function HomeScreen() {
   const namesLine =
     names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${t('home.and')} ${names[names.length - 1]}`;
 
-  const note = notes.find((n) => n.status === 'ready' && charactersById.has(n.characterId));
+  const chatOf = (characterId: string) => messages[conversations.find((c) => c.characterId === characterId)?.id ?? ''] ?? [];
+  const note = notes.find((n) => n.status === 'ready' && charactersById.has(n.characterId) && !helplineToday(chatOf(n.characterId)));
   const noteFrom = note ? charactersById.get(note.characterId) : undefined;
   const noteName = noteFrom ? shortName(displayName(noteFrom, relationships[noteFrom.id])) : '';
 

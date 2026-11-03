@@ -71,6 +71,7 @@ export default function GroupChatScreen() {
   const sendGroupText = useAppStore((s) => s.sendGroupText);
   const sendGroupVoice = useAppStore((s) => s.sendGroupVoice);
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
+  const pickPhoto = usePickPhoto();
   const continueGroup = useAppStore((s) => s.continueGroup);
   const retryGroupReply = useAppStore((s) => s.retryGroupReply);
   const invokeGroupMember = useAppStore((s) => s.invokeGroupMember);
@@ -266,17 +267,15 @@ export default function GroupChatScreen() {
     if (skipGroupTime(groupId, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
-  const pickPhoto = usePickPhoto((uri) => {
-    if (sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
-  });
-
   const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
       case 'voice':
         return setVoiceOpen(true);
       case 'photo':
-        return pickPhoto();
+        return pickPhoto((uri) => {
+          if (sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+        });
       case 'truthOrDare':
         return setTruthWith(members[Math.floor(Math.random() * members.length)]);
       case 'diary':
