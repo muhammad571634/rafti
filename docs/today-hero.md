@@ -41,13 +41,21 @@ immediately; there is nothing to refresh.
 
 ## On the card
 
-The friend waiting for you (owner, 2026-11-03, Replika's feel): 300 pt tall. On top, the name
-and one clear-glass chip with "N days" (the day you met is day 1) and the bond level. At the
-bottom, their newest written line in a dark-glass bubble with its time (`waitingLine`: speech
-only, the narration when nothing is said aloud; an echo of your own words is skipped; none when a
-helpline card sits up to 4 lines before it or anywhere after it), then a dark-glass "Message"
-field with a mic. The whole card is one button that opens
-that chat; the field is a cue, not a second control.
+The friend waiting for you (owner, 2026-11-03, Replika's feel): about half the screen tall
+(`heroHeight`: 54% of the window, 380-520 pt; 300 pt before 0z107), a wide scene slid so the face
+sits mid-frame (`sceneFocus`, shared with the chat ground). On top, the name and one clear-glass
+chip with "N days" (the day you met is day 1) and the bond level, the progress to the next level
+as a mint line along the chip's bottom edge. At the bottom, their newest written line in a
+dark-glass bubble with its time (`waitingLine`: speech only, the narration when nothing is said
+aloud; an echo of your own words is skipped; none when a helpline card sits up to 4 lines before
+it or anywhere after it), then a dark-glass "Message" field with a mic. The whole card is one
+button that opens that chat; the field is a cue, not a second control.
+
+Alive, as Replika's friend is in their room (0z107): the picture breathes (scale 1 to 1.045 and
+back, 7 s each way) while Today is on screen; a light over it follows the user's hour (`dayLight`:
+dawn 5-8 peach, evening 17-21 rose, night 21-5 blue, none by day; read on each visit); a line
+still unread types in for 1.4 s once a session before it shows. Reduce Motion: no breath, no
+typing. Nothing here writes a character line: what shows is what the chat holds.
 
 ## The day's sealed note
 

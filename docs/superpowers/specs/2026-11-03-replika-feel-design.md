@@ -48,3 +48,16 @@ chat control) and wants Replika's feel merged in and polished, nothing working l
   (`SCENE_FACE`); tall scenes are used as they are.
 - The Today card shows no line when a helpline card sits up to 4 lines before theirs or after it.
 - The intro card's gender glyph is one person icon for both (SF draws a woman only from iOS 18).
+
+## Round 3: the Today card grows and comes alive (0z107)
+
+- Owner's ask: Today with Replika's feel, the hero card a bit bigger and like Replika; the agent
+  thinks up the logic (no mockups, owner looks on the A51).
+- Considered: (1) a full-screen friend with the modules under the fold, rejected before (anti-goal
+  above); (2) a pager of several friends on the card, Replika has one companion and our card already
+  follows the one you talked with last; (3) **picked, the agent's call:** the same card, about half
+  the screen, and alive without new words: a slow breath on the picture, a light for the user's
+  hour (Replika's room light), an unread line typing in once, the bond's progress on the level chip.
+- Left out on purpose: a "what they are doing now" status. With the model on every character line
+  comes from the model, and a status per visit would be a paid call; stock statuses would break
+  the model-first rule.

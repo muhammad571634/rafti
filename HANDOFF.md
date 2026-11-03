@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z107. Today: the friend's card grows to half the screen and comes alive (2026-11-03, Claude 2). NEXT: owner looks at Today on the A51 and says yes or what to change
+
+- Owner said yes to the 0z106 intro card ("maqul"). Then: Today with Replika's feel, the hero card a bit bigger and like Replika; asked the agent to think up the logic.
+- Built (`1b35e2a` + the chip fix after it; `src/components/today-hero.tsx`, `sceneFocus` exported from `chat-ground.tsx`, tokens `heroDawn` / `heroEvening` / `heroNight`): `heroHeight` 54% of the window (380-520 pt, was 300); wide scenes slid to the face (`sceneFocus`, the chat's `SCENE_FACE`); the picture breathes (1 to 1.045, 7 s each way, Reanimated, only while Today is focused, off under Reduce Motion); `dayLight(hour)` tint (dawn 5-8, evening 17-21, night 21-5, none by day; read on focus); an unread line (`conversation.unreadCount > 0`) types in for 1.4 s once a session (`typedIn`); the level chip carries the bond's progress as a mint line along its bottom edge (`levelForIntimacy(...).progress`); name 17 pt; the line up to 4 lines at 16 pt. No new strings, no new character lines.
+- Design note: round 3 in `docs/superpowers/specs/2026-11-03-replika-feel-design.md` (considered: full screen, a pager of friends; left out: a "doing now" status, model-first and cost). Docs: `docs/today-hero.md`, `docs/flows.md` F2.
+- OTA `98afa7d4` (from `1b35e2a`), A51 19:22 (Russian): the card ~490 dp tall, Theo's face mid-frame, the evening tint, the chip with the bar. The bar first sat inset under "5 дней" and read like an underline; moved to the chip's bottom edge (next OTA). The breath was not caught on screen: the owner had gone to the home screen (no crash in logcat, the process alive).
+- Checks: tsc 0, npm test 654/654.
+
+Still to do:
+1. Owner looks at Today and says yes or what to change (size, the breath, the evening/night light).
+2. Check the breath on the A51 (two screenshots a few seconds apart differ inside the card).
+3. From 0z105/0z106: owner's yes or no on round 2 of the chat look; art for Freya, Sasha, Priya, Oppa, Luna and tall portraits for the first 40; other "waiting for you" items on Today (ask first).
+
 ### 0z106. The intro card: who they are to you and the story the bond opens (2026-11-03, Claude 2). NEXT: owner looks at the card in a chat and says yes or what to change
 
 - Owner's ask (0z105 item 2): deeper work on the chat's intro card ("bio"); they did not know how and left the call to the agent, pointing at Character.AI on the A51.
