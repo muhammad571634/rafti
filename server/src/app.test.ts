@@ -3,8 +3,8 @@ import { describe, it } from 'node:test';
 
 import { DAILY_CHECK_IN, PAID_SHARES_PER_DAY, SHARE_REWARD, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import type { PromptLayout } from '../../src/ai/prompt-layout.ts';
-import { MEMORY_SYNC_LIMITS } from '../../src/ai/session-types.ts';
-import { cleanLocale, cleanMemorySync, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
+import { MEMORY_SYNC_LIMITS, REPORT_LIMITS, type ReportRequest } from '../../src/ai/session-types.ts';
+import { cleanLocale, cleanMemorySync, cleanReport, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
 import {
   WalletError,
   type BootstrapInput,
@@ -37,6 +37,7 @@ function makeDb(overrides: Partial<Db>): Db {
     messagesAfter: unused,
     syncMemories: unused,
     memoriesOf: unused,
+    saveReport: unused,
     deleteUser: unused,
     ...overrides,
   };
@@ -681,6 +682,40 @@ describe('the memory on the server (B2.3)', () => {
     assert.equal((await app.request('/v1/memories/sync', { method: 'POST', headers: auth, body: '{"characters":3}' })).status, 400);
     assert.deepEqual(await (await app.request('/v1/memories', { headers: auth })).json(), state);
     assert.equal((await app.request('/v1/memories')).status, 401);
+  });
+});
+
+describe('POST /v1/reports', () => {
+  const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
+  const report = { id: 'rep_1', characterId: 'c_kai', reason: 'harmful', text: 'A bad line', context: [{ author: 'me', text: 'Hi' }] };
+
+  it('takes a whole report and refuses a broken one', () => {
+    assert.deepEqual(cleanReport(report), report);
+    assert.equal(cleanReport({ ...report, reason: 'boring' }), null);
+    assert.equal(cleanReport({ ...report, id: '' }), null);
+    assert.equal(cleanReport({ ...report, text: 'x'.repeat(REPORT_LIMITS.textChars + 1) }), null);
+    assert.equal(cleanReport({ ...report, context: [{ author: 'system', text: 'x' }] }), null);
+    assert.equal(cleanReport({ ...report, context: Array.from({ length: REPORT_LIMITS.context + 1 }, () => ({ author: 'me', text: 'x' })) }), null);
+    // Only the known fields go on.
+    assert.deepEqual(cleanReport({ ...report, context: [{ author: 'them', text: 'Yo', extra: 1 }], extra: 2 }), { ...report, context: [{ author: 'them', text: 'Yo' }] });
+    // A group names who wrote a line.
+    assert.deepEqual(cleanReport({ ...report, context: [{ author: 'them', text: 'Yo', characterId: 'c_hana' }] })?.context, [{ author: 'them', text: 'Yo', characterId: 'c_hana' }]);
+    assert.equal(cleanReport({ ...report, context: [{ author: 'them', text: 'Yo', characterId: 7 }] }), null);
+    // What the database would refuse for good is cleaned: a NUL, half an emoji after a cut.
+    const nul = String.fromCharCode(0);
+    const halfEmoji = '\u{1F600}'.slice(0, 1);
+    assert.equal(cleanReport({ ...report, text: `a${nul}b${halfEmoji}` })?.text, 'ab�');
+  });
+
+  it('keeps it for the signed-in user only', async () => {
+    const kept: [string, ReportRequest][] = [];
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ saveReport: async (userId, r) => void kept.push([userId, r]) }) });
+    const body = JSON.stringify(report);
+    assert.equal((await app.request('/v1/reports', { method: 'POST', body })).status, 401);
+    assert.equal((await app.request('/v1/reports', { method: 'POST', headers: auth, body: '{"id":3}' })).status, 400);
+    const res = await app.request('/v1/reports', { method: 'POST', headers: auth, body });
+    assert.deepEqual(await res.json(), { ok: true });
+    assert.deepEqual(kept, [['user-1', report]]);
   });
 });
 

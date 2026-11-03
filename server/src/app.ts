@@ -27,11 +27,14 @@ import type { Context, MiddlewareHandler } from 'hono';
 import {
   MEMORY_SYNC_LIMITS,
   MESSAGE_SYNC_LIMITS,
+  REPORT_LIMITS,
   type ChatMemory,
   type ClientConfig,
   type MemorySyncRequest,
   type MessageSyncRequest,
+  type ReportRequest,
 } from '../../src/ai/session-types.ts';
+import { REPORT_REASONS } from '../../src/ai/safety.ts';
 import {
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
@@ -67,6 +70,8 @@ const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe'
 const CHAT_BODY_MAX_BYTES = PHOTOS_MAX * PHOTO_CHARS_MAX + 2_000_000;
 /** A voice message: its clip and the little around it. */
 const VOICE_BODY_MAX_BYTES = CLIP_CHARS_MAX + 1000;
+/** A report: the message and the lines before it, at up to 4 bytes a character. */
+const REPORT_BODY_MAX_BYTES = (REPORT_LIMITS.context + 1) * REPORT_LIMITS.textChars * 4 + 4000;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
@@ -146,6 +151,34 @@ export function cleanSync(body: Record<string, unknown> | null): { request: Mess
   return {
     request: { droppedChats: droppedChats as string[], deletedIds: deletedIds as string[], upserts: [...kept.values()] },
     skipped,
+  };
+}
+
+const REPORT_REASON_SET = new Set<string>(REPORT_REASONS);
+const isReportText = (value: unknown): value is string => typeof value === 'string' && value.length <= REPORT_LIMITS.textChars;
+/** Postgres takes no NUL and no lone surrogate (half an emoji after a cut): either would refuse the report for good. */
+const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
+const storable = (text: string) => text.replace(LONE_SURROGATE, '�').replaceAll(String.fromCharCode(0), '');
+
+/** A report the database can take, or null. Unlike a sync nothing is dropped: a report is kept whole or refused. */
+export function cleanReport(body: Record<string, unknown> | null): ReportRequest | null {
+  const { id, characterId, reason, text, context } = body ?? {};
+  if (!isId(id) || !isId(characterId) || !REPORT_REASON_SET.has(reason as string) || !isReportText(text)) return null;
+  if (!Array.isArray(context) || context.length > REPORT_LIMITS.context) return null;
+  const lines = context as { author?: unknown; text?: unknown; characterId?: unknown }[];
+  const lineOk = (l: (typeof lines)[number]) =>
+    (l?.author === 'me' || l?.author === 'them') && isReportText(l.text) && (l.characterId === undefined || isId(l.characterId));
+  if (!lines.every(lineOk)) return null;
+  return {
+    id,
+    characterId,
+    reason: reason as ReportRequest['reason'],
+    text: storable(text),
+    context: lines.map((l) => ({
+      author: l.author as 'me' | 'them',
+      text: storable(l.text as string),
+      ...(l.characterId === undefined ? {} : { characterId: l.characterId as string }),
+    })),
   };
 }
 
@@ -269,6 +302,8 @@ export function createApp(
   const limits = { ...MODEL_LIMITS, ...opts.limits };
   const userMinute = windowLimiter(limits.userPerMinute, MINUTE_MS);
   const userDay = windowLimiter(limits.userPerDay, DAY_MS);
+  // Accounts start anonymous and free, so reports have their own cap.
+  const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
   const addressMinute = windowLimiter(limits.addressPerMinute, MINUTE_MS);
   const addressDay = windowLimiter(limits.addressPerDay, DAY_MS);
   const knownTokens = new Map<string, { userId: string; until: number }>();
@@ -302,6 +337,7 @@ export function createApp(
     app.use(route, bodyLimit({ maxSize: CHAT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   }
   app.use('/v1/voice/transcribe', bodyLimit({ maxSize: VOICE_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
+  app.use('/v1/reports', bodyLimit({ maxSize: REPORT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
 
   /**
    * A wallet call for the signed-in user. A wallet not made yet (bootstrap never ran) is made first;
@@ -487,6 +523,25 @@ export function createApp(
       return c.json(await db.memoriesOf(userId));
     } catch (error) {
       console.error('[memories] read failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  // A report on a character's message reaches a person (road-to-launch item 8). The same id sent
+  // again (a retry after a lost answer) is kept once.
+  app.post('/v1/reports', async (c) => {
+    if (!db) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const report = cleanReport(await readJson(c));
+    if (!report) return c.json({ error: 'badInput' }, 400);
+    if (!reportDay(userId)) return c.json({ error: 'busy' }, 429);
+    try {
+      await db.saveReport(userId, report);
+      console.log(`[report] ${report.reason} ${report.characterId}`);
+      return c.json({ ok: true });
+    } catch (error) {
+      console.error('[report] not kept', error);
       return c.json({ error: 'failed' }, 500);
     }
   });

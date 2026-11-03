@@ -1,3 +1,4 @@
+import type { ReportReason } from '@/ai/safety';
 import type { LedgerReason, MemoryItem, Message, PlanId } from '@/types';
 
 /**
@@ -156,3 +157,19 @@ export interface MemorySyncResult {
   /** Items the server could not take (a bad date, too big): they stay on the phone only. */
   skipped: number;
 }
+
+/**
+ * `POST /v1/reports`: a user's report on a character's message, with the lines before it so a
+ * person can review it in context. The phone's id makes a resend book it once.
+ */
+export interface ReportRequest {
+  id: string;
+  characterId: string;
+  reason: ReportReason;
+  text: string;
+  /** In a group, `characterId` names the member who wrote a line. */
+  context: { author: 'me' | 'them'; text: string; characterId?: string }[];
+}
+
+/** The most one report carries (lines before the message, characters a line), and reports an account a day. */
+export const REPORT_LIMITS = { context: 8, textChars: 2000, perDay: 30 } as const;

@@ -365,6 +365,10 @@ export interface MessageReport {
   text?: string;
   reason: 'harmful' | 'sexual' | 'offCharacter' | 'other';
   createdAt: string;
+  /** The lines before the message, kept at the tap so a deleted chat still reaches the review. */
+  context?: { author: MessageAuthor; text: string; characterId?: string }[];
+  /** The server has it, or refused it for good (`POST /v1/reports`); until then it goes again on each open. */
+  sent?: boolean;
 }
 
 export interface Conversation {

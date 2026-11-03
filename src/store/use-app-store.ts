@@ -40,7 +40,7 @@ import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
 import {
   askToReachCue,
   birthdayCue,
@@ -75,7 +75,7 @@ import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/w
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
 import { messageText } from '@/lib/story-continuity';
-import type { WalletState } from '@/ai/session-types';
+import { REPORT_LIMITS, type WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
@@ -2335,6 +2335,8 @@ export const useAppStore = create<AppState>()(
         payPlanShells(set, get);
         // An invite code entered on an earlier day pays out on this open.
         get().settleInvite();
+        // A report that could not reach the server goes again.
+        sendReports(set, get);
         // With the wallet on the server, the server checks in (in the user's time zone) and the
         // shells arrive quietly a moment later, as they do here.
         if (serverWalletOn(get)) {
@@ -2594,7 +2596,13 @@ export const useAppStore = create<AppState>()(
         // In a group the report names the member who wrote it.
         const characterId = conversation?.characterId ?? message?.characterId;
         if (!characterId || !message) return;
-        // The server takes these with the surrounding chat for review.
+        // The server takes these with the lines before the message, for review in context.
+        const chat = get().messages[conversationId] ?? [];
+        const context = chat
+          .slice(0, chat.indexOf(message))
+          .map((m) => ({ author: m.author, text: m.text || m.transcript || '', ...(m.characterId ? { characterId: m.characterId } : {}) }))
+          .filter((l) => l.text)
+          .slice(-REPORT_LIMITS.context);
         set((s) => ({
           reports: [
             ...s.reports,
@@ -2603,12 +2611,14 @@ export const useAppStore = create<AppState>()(
               conversationId,
               characterId,
               messageId,
-              text: message.text,
+              text: message.text || message.transcript,
               reason,
               createdAt: new Date().toISOString(),
+              context,
             },
           ],
         }));
+        sendReports(set, get);
       },
 
       blockCharacter: (characterId) =>
@@ -3917,6 +3927,44 @@ function serverCheckIn(set: Setter, attempt = 0) {
       if (result.amount > 0) {
         set((s) => ({ ledger: log(s.ledger, result.amount, 'daily'), daily: { ...s.daily, checkInAmount: result.amount } }));
       }
+    });
+}
+
+/**
+ * Reports go to the server for a person to review (road-to-launch item 8). One that could not go
+ * (offline, no account yet) waits on the phone and goes with the next report or on the next open.
+ */
+let sendingReports = false;
+/** A lone high surrogate at the end: half an emoji, which the database would refuse. */
+const HALF_EMOJI = /[\uD800-\uDBFF]$/;
+
+function sendReports(set: Setter, get: Getter) {
+  const unsent = get().reports.filter((r) => !r.sent);
+  if (sendingReports || !unsent.length || !apiBase()) return;
+  sendingReports = true;
+  const cut = (text: string) => text.slice(0, REPORT_LIMITS.textChars).replace(HALF_EMOJI, '');
+  void withAccount(async (token) => {
+    const settled: string[] = [];
+    for (const r of unsent) {
+      const request = {
+        id: r.id,
+        characterId: r.characterId,
+        reason: r.reason,
+        text: cut(r.text ?? ''),
+        context: (r.context ?? []).slice(-REPORT_LIMITS.context).map((l) => ({ ...l, text: cut(l.text) })),
+      };
+      // A refused report would be refused again: it stays on the phone, but is not sent again.
+      if (await serverReports.send(token, request)) settled.push(r.id);
+    }
+    return settled;
+  }, CHECK_IN_WAIT_MS)
+    .catch(() => null)
+    .then((settled) => {
+      sendingReports = false;
+      if (!settled?.length) return;
+      set((s) => ({ reports: s.reports.map((r) => (settled.includes(r.id) ? { ...r, sent: true } : r)) }));
+      // A report made while this batch was out goes now, not on the next open.
+      if (get().reports.some((r) => !r.sent && !unsent.includes(r))) sendReports(set, get);
     });
 }
 

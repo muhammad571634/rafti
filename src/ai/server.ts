@@ -20,6 +20,7 @@ import type {
   MessageSyncRequest,
   MessageSyncResult,
   MessagesPage,
+  ReportRequest,
   ShareResult,
   SpendRequest,
   SpinResult,
@@ -121,6 +122,25 @@ export const serverMessages = {
   page: (accessToken: string, after: number) => call<MessagesPage>(`/v1/messages?after=${after}`, withToken(accessToken), 20_000),
   deleteAccount: (accessToken: string) =>
     call<{ ok: true }>('/v1/account', withToken(accessToken, { method: 'DELETE' }), 15_000),
+};
+
+/**
+ * A report on a character's message, for a person to review. `refused`: the server will never take
+ * it (400, 413), so sending again is no use; null: it did not get there (offline, busy, an old
+ * server without the route) and goes again later.
+ */
+export const serverReports = {
+  send: async (accessToken: string, request: ReportRequest): Promise<'kept' | 'refused' | null> => {
+    const base = apiBase();
+    if (!base) return null;
+    try {
+      const res = await fetch(`${base}/v1/reports`, { ...post(accessToken, request), signal: AbortSignal.timeout(15_000) });
+      if (res.ok) return 'kept';
+      return res.status === 400 || res.status === 413 ? 'refused' : null;
+    } catch {
+      return null;
+    }
+  },
 };
 
 /** The memory on the server (B2.3): the characters the phone changed go up whole; a new phone reads it all back. */

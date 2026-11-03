@@ -7,6 +7,7 @@ import type {
   MemorySyncRequest,
   MessageSyncRequest,
   MessagesPage,
+  ReportRequest,
   ShareResult,
   SpendRequest,
   SpinResult,
@@ -22,6 +23,7 @@ export type {
   MemorySyncRequest,
   MessageSyncRequest,
   MessagesPage,
+  ReportRequest,
   ShareResult,
   SpendRequest,
   SpinResult,
@@ -72,6 +74,9 @@ export interface Db {
   syncMemories(userId: string, request: MemorySyncRequest): Promise<void>;
   /** Everything the server keeps of the user's memory. */
   memoriesOf(userId: string): Promise<MemoriesState>;
+
+  /** Keeps a report for review (supabase/migrations/*_b3_reports.sql); one sent twice is kept once. */
+  saveReport(userId: string, report: ReportRequest): Promise<void>;
 
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
   deleteUser(userId: string): Promise<void>;

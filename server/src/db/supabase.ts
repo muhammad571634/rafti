@@ -165,6 +165,21 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       };
     },
 
+    async saveReport(userId, report) {
+      const { error } = await client.from('reports').upsert(
+        {
+          user_id: userId,
+          client_id: report.id,
+          character_id: report.characterId,
+          reason: report.reason,
+          message_text: report.text,
+          context: report.context,
+        },
+        { onConflict: 'user_id,client_id', ignoreDuplicates: true },
+      );
+      if (error) throw new Error(`reports: ${error.message}`);
+    },
+
     async deleteUser(userId) {
       const { error } = await client.auth.admin.deleteUser(userId);
       if (error) throw new Error(`deleteUser: ${error.message}`);
