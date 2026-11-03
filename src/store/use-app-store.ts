@@ -2338,13 +2338,7 @@ export const useAppStore = create<AppState>()(
         // With the wallet on the server, the server checks in (in the user's time zone) and the
         // shells arrive quietly a moment later, as they do here.
         if (serverWalletOn(get)) {
-          void withAccount((token) => serverWallet.checkIn(token)).then((result) => {
-            if (!result) return;
-            applyServerWallet(set, result.wallet);
-            if (result.amount > 0) {
-              set((s) => ({ ledger: log(s.ledger, result.amount, 'daily'), daily: { ...s.daily, checkInAmount: result.amount } }));
-            }
-          });
+          serverCheckIn(set);
           return 0;
         }
         const today = todayKey();
@@ -2936,6 +2930,8 @@ export const useAppStore = create<AppState>()(
         // its message database included.
         void resetMessages();
         resetMemorySync();
+        // A new account checks in on its own first day.
+        checkedInDay = null;
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
       },
 
@@ -3889,6 +3885,38 @@ function syncWallet(set: Setter, run: (accessToken: string) => Promise<WalletSta
     .then((wallet) => {
       walletCallsOut--;
       if (wallet && walletCallsOut === 0) applyServerWallet(set, wallet);
+    });
+}
+
+/**
+ * The server's check-in runs in the background, so it waits for the sign-in as long as a cold
+ * start needs and tries again until the server has answered for the phone's day. Giving up after
+ * the usual 2.5 s lost whole days on the A51, and with them the streak (0z96).
+ */
+const CHECK_IN_WAIT_MS = 20_000;
+const CHECK_IN_RETRIES_MS = [30_000, 120_000, 600_000];
+let checkedInDay: string | null = null;
+let checkingIn = false;
+
+function serverCheckIn(set: Setter, attempt = 0) {
+  const today = todayKey();
+  if (checkedInDay === today || checkingIn) return;
+  checkingIn = true;
+  void withAccount((token) => serverWallet.checkIn(token), CHECK_IN_WAIT_MS)
+    .catch(() => null)
+    .then((result) => {
+      checkingIn = false;
+      if (!result) {
+        const wait = CHECK_IN_RETRIES_MS[attempt];
+        if (wait !== undefined) setTimeout(() => serverCheckIn(set, attempt + 1), wait);
+        return;
+      }
+      // An amount of 0 is an answer too: today was already claimed.
+      checkedInDay = today;
+      applyServerWallet(set, result.wallet);
+      if (result.amount > 0) {
+        set((s) => ({ ledger: log(s.ledger, result.amount, 'daily'), daily: { ...s.daily, checkInAmount: result.amount } }));
+      }
     });
 }
 

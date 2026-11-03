@@ -92,9 +92,12 @@ function tellPhoneZone(token: string) {
   return phoneTold;
 }
 
-/** Runs a call with the account's token; null when there is no account to run it with. */
-export async function withAccount<T>(run: (accessToken: string) => Promise<T | null>): Promise<T | null> {
-  const token = await accessToken();
+/**
+ * Runs a call with the account's token; null when there is no account to run it with. A call
+ * nobody waits on can wait longer for the sign-in (`waitMs`), as a cold start may need more.
+ */
+export async function withAccount<T>(run: (accessToken: string) => Promise<T | null>, waitMs?: number): Promise<T | null> {
+  const token = await accessToken(waitMs);
   if (!token) return null;
   await tellPhoneZone(token);
   return run(token);
