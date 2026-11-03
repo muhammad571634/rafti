@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z96. The daily check-in waits for a slow sign-in and tries again (2026-11-03, Claude 2). NEXT: owner reopens the app; then road-to-launch item 9 (measure)
+
+- Found while looking at what the server already records for item 9. On the A51 account, 2026-11-03: model calls from 11:58 and a wheel spin at 12:02, but no `daily:2026-11-03` row, and the wallet's `check_in_day` still 11-02. On earlier days the check-in landed long after the first activity (11-02: first call 00:02, check-in 00:48; another account 00:18 vs 10:30).
+- Cause, from the code (not caught in the act: a release build logs no JS): `claimDailyLogin` ran once per launch or foreground, and `withAccount` gives up on a token after 2.5 s. A cold start that refreshes an expired session (or asks `/v1/client-config`) can take longer, so the check-in was skipped until the next foreground. A missed day also resets the streak.
+- Fix (`2f3b5ca`): `serverCheckIn` waits up to 20 s for the sign-in (`withAccount(run, waitMs)`), retries after 30 s, 2 min and 10 min, and stops once the server answered for the phone's day (an amount of 0 counts). Account deletion clears that day. Update `cb5bb23e`.
+- Measuring (item 9): `usage_events` already holds every model call with its user and time, and `shell_ledger` every wallet move, so active days, D1/D7 and replies a day can be read with SQL (Supabase management API, `read_only`), no new table. A user with the model off, or whose calls all fail, is not counted.
+- Checks: tsc 0, npm test 642/642.
+
+Still to do:
+1. Owner reopens the app twice; the server should then show today's check-in row for the A51 account.
+2. Item 9: a read-only metrics script (active days, D1, D7, replies a day), test accounts excluded.
+
 ### 0z95. A rewind deletes the voice files of the notes it takes away (2026-11-02, Claude 2). NEXT: owner deploys the server for 0z94's language part
 
 - From 0z92's open list. A rewind now drops the kept `.m4a` of each voice note after the rewind point (`laterNotes`, `src/lib/chat-turns.ts`, tested); the list is read at the tap, not from the render. Groups have no rewind.
