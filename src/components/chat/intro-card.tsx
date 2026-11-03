@@ -11,8 +11,8 @@ import { characterImage, PressableScale, SFIcon, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
-import { colors, space } from '@/theme';
-import type { Character } from '@/types';
+import { colors, space, systemColors } from '@/theme';
+import type { ArcBeat, Character } from '@/types';
 
 /** The card's own night: the photo fades into it, as the hero scrims do (`gradients.heroScrim`). */
 const NIGHT = 'rgb(24,22,38)';
@@ -26,21 +26,27 @@ type Fact = Glyph & { key: string; label: string };
 /**
  * Who they are, at the very top of a one-to-one chat (owner, 2026-10-27, after Character.AI shows
  * the character before its first message): their scene fading into a dark card, name, tagline,
- * gender, age, height and world as clear-glass chips, their story, then what they love and can't
- * stand.
- * The facts come from `src/mock/character-profiles.ts` (or the creator's form); a character
- * without them still shows the photo, name and bio. A tap opens the profile.
+ * who they are in their world and what the two of you are (Character.AI's tags, 2026-11-03),
+ * gender, age, height and world as clear-glass chips, their story, what they love and can't
+ * stand, then the story that opens with the bond: a beat's title once its level is reached, a
+ * lock and the level before that (`world-story.ts`; the secret itself only comes up in the chat).
+ * The facts come from `src/mock/character-profiles.ts` and `character-stories.ts` (or the
+ * creator's form); a character without them still shows the photo, name and bio. A tap opens
+ * the profile.
  */
 export function IntroCard({
   character,
   name,
   locale,
+  level = 1,
   onPress,
 }: {
   character: Character;
   /** What the user calls them (nickname or name). */
   name: string;
   locale: string;
+  /** The bond level, which opens their story beat by beat. */
+  level?: number;
   onPress: () => void;
 }) {
   const { t } = useTranslation();
@@ -49,6 +55,9 @@ export function IntroCard({
   // The tall scenes (owner's art, 2026-11-03) stand in for a wide one, framed from the top.
   const tall = scene == null ? PORTRAITS[character.id] : undefined;
   const photo = scene ?? tall ?? characterImage(character);
+  const who: Fact[] = [];
+  if (shown.worldRole) who.push({ key: 'role', ios: 'person.text.rectangle', icon: 'id-card-outline', label: shown.worldRole });
+  if (character.trope) who.push({ key: 'dynamic', ios: 'person.2', icon: 'people-outline', label: t(`world.tropes.${character.trope}`) });
   const facts: Fact[] = [];
   // One glyph for both, the word says which: SF Symbols draws a woman only from iOS 18.
   if (character.gender) facts.push({ key: 'gender', ios: 'person', icon: 'person-outline', label: t(`intro.${character.gender}`) });
@@ -86,25 +95,60 @@ export function IntroCard({
             {shown.tagline}
           </Txt>
         ) : null}
-        {facts.length ? (
-          <View style={styles.chips}>
-            {facts.map((f) => (
-              <View key={f.key} style={styles.chip}>
-                <SFIcon ios={f.ios} icon={f.icon} size={13} color={colors.onMedia} />
-                <Txt style={styles.chipText} color={colors.onMedia}>
-                  {f.label}
-                </Txt>
-              </View>
-            ))}
-          </View>
-        ) : null}
+        <Chips facts={who} />
+        <Chips facts={facts} />
         <Txt style={styles.story} color={colors.onMediaMuted}>
           {shown.backstory ?? shown.bio}
         </Txt>
         <Things ios="heart.fill" icon="heart" label={t('intro.loves')} items={shown.likes} />
         <Things ios="heart.slash" icon="heart-dislike-outline" label={t('intro.cantStand')} items={shown.dislikes} />
+        <Path beats={shown.arc?.beats} level={level} />
       </View>
     </PressableScale>
+  );
+}
+
+/** A row of clear-glass chips, each an icon and a word or two. */
+function Chips({ facts }: { facts: Fact[] }) {
+  if (!facts.length) return null;
+  return (
+    <View style={styles.chips}>
+      {facts.map((f) => (
+        <View key={f.key} style={styles.chip}>
+          <SFIcon ios={f.ios} icon={f.icon} size={13} color={colors.onMedia} />
+          <Txt style={styles.chipText} color={colors.onMedia}>
+            {f.label}
+          </Txt>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/** Their story as the bond opens it: a key and the beat's title, or a lock and the level it opens at. */
+function Path({ beats, level }: { beats?: ArcBeat[]; level: number }) {
+  const { t } = useTranslation();
+  if (!beats?.length) return null;
+  return (
+    <View style={styles.path}>
+      <Txt variant="title" color={colors.onMedia} accessibilityRole="header">
+        {t('world.story')}
+      </Txt>
+      {beats.map((beat) => {
+        const open = level >= beat.atLevel;
+        const label = open ? beat.title : t('world.level', { level: beat.atLevel });
+        return (
+          <View key={beat.atLevel} style={styles.beat} accessible accessibilityLabel={label}>
+            <View style={styles.thingsIcon}>
+              <SFIcon ios={open ? 'key.fill' : 'lock.fill'} icon={open ? 'key' : 'lock-closed'} size={14} color={open ? systemColors.pink : colors.onMediaMuted} />
+            </View>
+            <Txt style={[styles.beatText, open && styles.beatOpen]} color={open ? colors.onMedia : colors.onMediaMuted}>
+              {label}
+            </Txt>
+          </View>
+        );
+      })}
+    </View>
   );
 }
 
@@ -165,4 +209,8 @@ const styles = StyleSheet.create({
   story: { fontSize: 15, lineHeight: 21 },
   things: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
   thingsIcon: { width: 20, height: 28, alignItems: 'center', justifyContent: 'center' },
+  path: { marginTop: space.xs, gap: 2 },
+  beat: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
+  beatText: { flex: 1, fontSize: 15, lineHeight: 20, paddingVertical: 4 },
+  beatOpen: { fontWeight: '600' },
 });

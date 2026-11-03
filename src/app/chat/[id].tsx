@@ -532,6 +532,7 @@ export default function ChatRoomScreen() {
                   character={character}
                   name={name}
                   locale={locale}
+                  level={relationship?.level}
                   onPress={() => router.push(`/character/${character.id}`)}
                 />
               }
