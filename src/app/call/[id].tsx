@@ -383,7 +383,7 @@ export default function CallScreen() {
           <LiveCaption
             talking={userTalking}
             hearing={mic.phase === 'sending'}
-            hearingFailed={mic.phase === 'failed'}
+            hearingFailed={mic.failed}
             caption={caption}
             waiting={waiting}
             failed={failed}

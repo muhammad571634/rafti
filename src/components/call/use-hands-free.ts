@@ -22,9 +22,9 @@ const IDLE_RESTART_MS = 15_000;
 
 /**
  * `listening`: the mic is open, nobody speaks; `speaking`: the user is talking; `sending`: their
- * words are being written out; `failed`: that did not reach the server (tap to send again).
+ * words are being written out.
  */
-export type ListenPhase = 'off' | 'listening' | 'speaking' | 'sending' | 'failed';
+export type ListenPhase = 'off' | 'listening' | 'speaking' | 'sending';
 
 /**
  * A call's open microphone (0z102): while `on`, it listens, notices when the user starts talking
@@ -40,6 +40,8 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
   const recorder = useAudioRecorder(OPTIONS);
 
   const [phase, setPhase] = useState<ListenPhase>('off');
+  // The last words did not reach the server: a tap sends them again, and talking on replaces them.
+  const [failed, setFailed] = useState(false);
   const [awake, setAwake] = useState(AppState.currentState === 'active');
   const phaseRef = useRef<ListenPhase>('off');
   const go = (next: ListenPhase) => {
@@ -68,11 +70,16 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
   const send = async () => {
     const uri = waiting.current;
     if (!uri) return;
+    setFailed(false);
     go('sending');
     const clip = await readClip(uri);
     const heard = clip ? await accessToken().then((token) => serverTranscribe(clip, token)).catch(() => null) : null;
     if (waiting.current !== uri) return;
-    if (heard === null) return go('failed');
+    // Not through: the call says so, and the mic opens again, as on a phone call.
+    if (heard === null) {
+      setFailed(true);
+      return go('off');
+    }
     waiting.current = null;
     void dropClip(uri);
     // The words first, so the call stops wanting the mic before it could open again; noise with
@@ -161,6 +168,12 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
         lastLoud.current = now;
         if (phaseRef.current === 'listening' && loudRun.current >= VOICE_MOMENTS) {
           heardFrom.current = now - loudRun.current * LOOK_MS;
+          // Talking on after words that did not get through: the new words take their place.
+          if (waiting.current) {
+            void dropClip(waiting.current);
+            waiting.current = null;
+            setFailed(false);
+          }
           go('speaking');
         }
       } else loudRun.current = 0;
@@ -181,7 +194,11 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
 
   return {
     phase,
-    /** Sends a clip the server did not get again. */
-    retry: () => inTurn(send),
+    failed,
+    /** Sends the words the server did not get again; the open mic closes first and reopens after. */
+    retry: () => {
+      latestEnd.current(false);
+      inTurn(send);
+    },
   };
 }
