@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z106. The intro card: who they are to you and the story the bond opens (2026-11-03, Claude 2). NEXT: owner looks at the card in a chat and says yes or what to change
+
+- Owner's ask (0z105 item 2): deeper work on the chat's intro card ("bio"); they did not know how and left the call to the agent, pointing at Character.AI on the A51.
+- Character.AI on the A51 (Russian locale): the chat's top is one line ("Автором … является @creator") and then the greeting, a long scene in narration; a tap on the header opens a sheet (picture, name, tagline, chats and likes, created / updated, like and share, "View character profile", "View author profile", away messages, refresh, new chat); the profile has the description cut at two lines with "…Ещё". Discovery cards carry tags ("Arranged Marriage", "Romance").
+- Decided: our card already shows more than theirs (picture, name, AI mark, tagline, facts, full story, loves, can't stand), so nothing was cut; added what every official character has (localized) and the card did not show:
+  - Two clear-glass chips above the facts: `worldRole` (`person.text.rectangle` / `id-card-outline`) and the dynamic with the user, `world.tropes.<trope>` (`person.2` / `people-outline`), the tag Character.AI puts on its cards.
+  - At the card's end "Your story" (`world.story`, `title` type): each arc beat's title with a pink key once `relationship.level` reaches its `atLevel`, else a lock and `world.level`. Same rule as the profile's `StoryCard`; the secret itself only comes up in the chat.
+  - No new strings; a created character without these fields shows the card as before. `IntroCard` takes `level` (default 1).
+  - Skipped: `quirk` (not in the content overlays, it would show English in other locales); a "More" fold on the story (the card sits in an inverted list, so unfolding would push the text up out of view).
+- `a1dddb5`, OTA `713aa125`. A51, Theo (level 2, Russian): "Глава студсовета", "От соперничества к любви", then the facts; at the end "Ваша история": key + "Голосование по фестивалю", locks "Уровень 4", "Уровень 6". Read fine on the dark card.
+- Checks: tsc 0, npm test 654/654, check:locales passes.
+- Seen, not touched: Theo's chat is on an Art wallpaper (a woman's portrait), picked on the phone; the header says "1 день" while Today's card says "5 дней" (streak vs days together, both by design?).
+
+Still to do:
+1. Owner looks at the card (any chat, scroll to the top) and says yes or what to change.
+2. From 0z105: owner's yes or no on round 2 of the chat look; art for Freya, Sasha, Priya, Oppa, Luna and tall portraits for the first 40; other "waiting for you" items on Today (ask first).
+3. If the owner wants Character.AI's sheet: a tap on the chat header could open a short sheet (picture, name, tagline, profile, new chat) instead of the profile. Not built; ask.
+
 ### 0z105. The daily note on the A51, the second reader on 0z104, diary answers from the model (2026-11-03, Claude 2). NEXT: the intro card ("bio") with the owner
 
 - Continues 0z104 (owner: "HANDOFF'dagi 0z104 dan davom et").
