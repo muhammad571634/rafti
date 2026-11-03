@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z98. Privacy policy draft and store forms (2026-11-03, Claude 2). NEXT: the gates in its first section, when each comes due
+
+- There was none, and Profile → Privacy / Terms do nothing. `docs/legal/privacy-policy.md`: the public text (adults only, anonymous account, what the server keeps, Gemini / Supabase / Fly as processors, retention, deletion, rights) and drafts of Apple's App Privacy and Google's Data safety, all from what the code does today (checked: the profile keeps only locale and time zone; the name goes to the model with each chat; the birth year stays on the phone; photos and recordings are not stored on the server, their descriptions and transcripts are).
+- Its first section lists 7 gates before it may be published. The two that are code: the `[reply]` log prints 50 characters of the reply, and the 12-month report / 13-month usage purges do not exist yet.
+- No code changed.
+
+Still to do:
+1. The gates in `docs/legal/privacy-policy.md` (paid key, log, purges, owner's legal details, lawyer, hosting + links, new providers as they ship).
+2. Terms of use: not written yet.
+
 ### 0z97. Reports reach the server (2026-11-03, Claude 2). NEXT: owner deploys the server, then reports one message
 
 - Road-to-launch item 8: a report on a character's message stayed on the phone. Now `reportMessage` keeps up to 8 lines before it (`context`, the member's `characterId` in a group) and `sendReports` posts each unsent report to `POST /v1/reports` (`cleanReport`, own body limit, 30 a day an account). It goes again with the next report and on each open (`claimDailyLogin`); a 400 or 413 is final, so a broken report is not resent forever. Reports from before this go up with no context.
