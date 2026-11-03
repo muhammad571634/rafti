@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z108. Design direction: simpler, on trend, "not made by an AI tool", inspired by Replika (2026-11-03, Claude 2). NEXT: owner says yes to starting with Today (or corrects the plan)
+### 0z108. Design direction: simpler, on trend, "not made by an AI tool", inspired by Replika (2026-11-03, Claude 2). NEXT: owner picks A or B on the Today prototype, then code
 
 - Owner: the logic is good; the look must get simpler and more on trend, so people do not feel an AI tool made it. Owner installed Replika on the A51 for study ("take what you want"), then: Replika is only inspiration, we do not become it; our own principles stay.
 - Replika on the A51 (2026-11-03, 19:42-19:48; `screencap` to a file hangs on its 3D view, `adb exec-out screencap -p` works):
@@ -12,8 +12,11 @@
 - What reads "made by an AI tool" in ours (A51 screens, 0z103 notes): a rainbow of module colours on Today (green, brown, pink, indigo tiles + six coloured icons), the pastel aurora ground on every hub, three icon sets, colour with no meaning.
 - Proposed to the owner (taste is theirs; white tiles were rejected as mockups in 0z104, so asked before building): take Replika's rules, not its look. (1) The character is the colour: UI chrome neutral, colour comes from faces and art. (2) One accent, our apricot, only for "new" and the main action; mint stays the bond. (3) One shape family: pills for buttons and chips, one card radius, glass only on photos. (4) Confident type: big heavy titles, plain body, no coloured words. (5) A plain warm ground instead of the aurora. Keep ours: 4 tabs, Today's 10 modules, mascot and shells, calm cards, HIG, clear glass on photos, approved screens (Heartbeat diary), existing animations, model-first. First step: Today only, on the phone, then the other tabs one by one.
 
+- Owner: yes, start with Today, but a prototype first, no code. Canvas https://claude.ai/artifact/3f3pJZCKES7ALxLJ5WG9EZ (Design type; files in the session scratchpad `proto/`): "Hozirgi" (two A51 screenshots, 19:57); "Yangi A · toza kartalar" (warm off-white ground #F6F4F1, a plain ink wordmark beside the mascot, the hero card as now, white widgets / note row / app squircles with one line-icon set in ink, faces for colour, apricot #EF8A4E only on new things, a neutral tab bar with the current tab in ink); "Yangi B · rasm tepada" (the same below, but the friend's picture runs full width from the top with the header in white over it and the name large at its foot). Tweaks: hero light (day / dawn / evening / night) and the accent. Russian copy as on the A51.
+- REA: the owner pointed at https://github.com/morluto/rea. The REA MCP is not loaded in this Claude 2 session; Replika's APK was pulled with the SDK adb to `C:\Users\joray\rea-work\replika` (base + splits). It is native Android (Kotlin, `res/`); fonts Pangea (Pangram Pangram, commercial), Moderat, Mulish, Optimistic VF. We take no font or art, only proportions seen on screen.
+
 Still to do:
-1. Owner's yes (or correction) to start with Today.
+1. Owner picks A or B (or a mix) on the canvas; then build Today in code, then the other tabs one by one.
 2. From 0z107: owner's word on the bigger, living Today card.
 
 ### 0z107. Today: the friend's card grows to half the screen and comes alive (2026-11-03, Claude 2). NEXT: owner looks at Today on the A51 and says yes or what to change
