@@ -16,7 +16,7 @@
 Still to do:
 1. Owner looks at the card (any chat, scroll to the top) and says yes or what to change.
 2. From 0z105: owner's yes or no on round 2 of the chat look; art for Freya, Sasha, Priya, Oppa, Luna and tall portraits for the first 40; other "waiting for you" items on Today (ask first).
-3. If the owner wants Character.AI's sheet: a tap on the chat header could open a short sheet (picture, name, tagline, profile, new chat) instead of the profile. Not built; ask.
+3. Dropped (owner asked what it would add; the agent's call): Character.AI's header sheet. Our profile already holds what their sheet and profile split (chat, call, secret note, settings, about, story, bond, memories), so a sheet would only add a step.
 
 ### 0z105. The daily note on the A51, the second reader on 0z104, diary answers from the model (2026-11-03, Claude 2). NEXT: the intro card ("bio") with the owner
 
