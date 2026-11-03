@@ -13,6 +13,16 @@ export interface CallLine {
   language?: string;
 }
 
+/**
+ * One of their lines on a call: `text` is what shows and is said, `line` the server's words as
+ * written, and `sig` the server's leave to read that line aloud (none when it has no voice service).
+ */
+export interface CallReplyLine {
+  text: string;
+  line: string;
+  sig?: string;
+}
+
 /** Who placed the call: the user, or the character (an incoming call the user picked up). */
 export type CallPlacedBy = 'user' | 'character';
 

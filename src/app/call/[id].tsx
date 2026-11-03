@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { accessToken } from '@/ai/account';
-import { captionMs, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
+import { captionMs, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
 import { detectCrisis, HELPLINE_URL } from '@/ai/safety';
 import { apiBase, serverSpeak } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
@@ -32,6 +32,11 @@ const WARN_SECONDS = 120;
 
 /** How long each subtitle line stays up — a stand-in for streamed TTS. */
 const SUBTITLE_INTERVAL_MS = 5000;
+
+/** How long a line waits for its voice; past it the caption shows alone, so the talk never stalls. */
+const VOICE_WAIT_MS = 2500;
+/** Longer than any line takes to say (about 15 characters a second): a voice that never ends is let go. */
+const voiceMaxMs = (text: string) => Math.max(8000, text.length * 120);
 
 /**
  * The in-call screen (canvas "CallVoice", 2026-10-21): blurred portrait, avatar, name and timer,
@@ -101,8 +106,10 @@ export default function CallScreen() {
   useEffect(
     () => () => {
       mounted.current = false;
+      // Hanging up stops their voice mid-line, and a caption's wait, so their files are dropped.
+      sayTurn.current += 1;
       clearTimeout(captionTimer.current);
-      // Hanging up stops their voice mid-line.
+      endPause.current?.();
       stopNote();
     },
     [],
@@ -135,39 +142,60 @@ export default function CallScreen() {
     });
 
   /** Their line in their voice: a file to play, or null (no voice service, or it failed this time). */
-  const voiceOf = async (text: string) => {
-    if (noVoice.current || !character) return null;
+  const voiceOf = async ({ line, sig }: CallReplyLine) => {
+    // Only a line the server signed is read aloud; with no voice service none is.
+    if (!sig || noVoice.current || !character) return null;
     const audio = await accessToken()
-      .then((token) => serverSpeak({ text, characterId: character.id, gender: character.gender }, token))
+      .then((token) => serverSpeak({ text: line, characterId: character.id, gender: character.gender, sig }, token))
       .catch(() => null);
     if (audio === 'off') noVoice.current = true;
     return audio && audio !== 'off' ? keepSpeech(audio) : null;
   };
 
+  /** A line's voice if it comes in time; one that comes later is dropped and the caption shows alone. */
+  const inTime = (voice: Promise<string | null>) =>
+    new Promise<string | null>((resolve) => {
+      let done = false;
+      const late = setTimeout(() => {
+        done = true;
+        resolve(null);
+      }, VOICE_WAIT_MS);
+      void voice.then((file) => {
+        clearTimeout(late);
+        if (!done) resolve(file);
+        else if (file) void dropClip(file);
+      });
+    });
+
   /** Their lines one after another, each as long as it takes to say; `started` runs as the first shows. */
-  const play = async (theirs: string[], started: () => void) => {
+  const play = async (theirs: CallReplyLine[], started: () => void) => {
     hush();
     const mine = sayTurn.current;
+    const current = () => mine === sayTurn.current && mounted.current;
     // Every line's voice is asked for at once, so the lines follow each other without a gap.
     const voices = theirs.map(voiceOf);
-    for (let i = 0; i < theirs.length; i++) {
-      const file = await voices[i];
-      if (mine !== sayTurn.current || !mounted.current) {
-        if (file) void dropClip(file);
-        continue;
+    try {
+      for (let i = 0; i < theirs.length; i++) {
+        const file = await inTime(voices[i]);
+        if (!current()) {
+          if (file) void dropClip(file);
+          continue;
+        }
+        if (i === 0) started();
+        setSpeaking(true);
+        setCaption({ author: 'them', text: theirs[i].text });
+        if (file) {
+          setVoicePlaying(true);
+          await playOnce(file, voiceMaxMs(theirs[i].text));
+          void dropClip(file);
+        } else await pause(captionMs(theirs[i].text));
       }
-      if (i === 0) started();
-      setSpeaking(true);
-      setCaption({ author: 'them', text: theirs[i] });
-      if (file) {
-        setVoicePlaying(true);
-        await playOnce(file);
-        void dropClip(file);
-      } else await pause(captionMs(theirs[i]));
-    }
-    if (mine === sayTurn.current) {
-      setSpeaking(false);
-      setVoicePlaying(false);
+    } finally {
+      // Whatever happened, the mic opens again once they are done.
+      if (mine === sayTurn.current) {
+        setSpeaking(false);
+        setVoicePlaying(false);
+      }
     }
   };
 
@@ -184,7 +212,7 @@ export default function CallScreen() {
         setWaiting(false);
         return setFailed(true);
       }
-      said.current = [...sent, ...theirs.map((text) => ({ author: 'them' as const, text }))];
+      said.current = [...sent, ...theirs.map(({ text }) => ({ author: 'them' as const, text }))];
       // The dots stay until their first line shows (with its voice, when there is one).
       void play(theirs, () => setWaiting(false));
     });
@@ -204,12 +232,19 @@ export default function CallScreen() {
   });
   const userTalking = mic.phase === 'speaking';
 
-  // Talking over their captions stops them, as a voice would stop.
+  // Talking over their captions stops them, as a voice would stop. Never while their voice plays:
+  // what the mic hears then, as it closes, is their own voice from the speaker.
   useEffect(() => {
-    if (userTalking) hush();
+    if (userTalking && !voicePlaying) hush();
     // `hush` reads refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userTalking]);
+
+  // Out of minutes: they stop talking while the sheet is up.
+  useEffect(() => {
+    if (state === 'out') hush();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   // The character speaks first, once the call is up.
   useEffect(() => {

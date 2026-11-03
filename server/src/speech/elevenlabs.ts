@@ -39,7 +39,8 @@ export function elevenLabsSpeech(opts: ElevenLabsOptions): SpeechProvider {
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (res.status === 429) throw new LlmBusyError('elevenlabs: busy');
-      if (!res.ok) throw new Error(`elevenlabs ${res.status}: ${(await res.text().catch(() => '')).slice(0, 160)}`);
+      // The status only: an error body can echo the text back, and the words go in no log.
+      if (!res.ok) throw new Error(`elevenlabs ${res.status}`);
       return { audio: Buffer.from(await res.arrayBuffer()), model: opts.model };
     },
   };

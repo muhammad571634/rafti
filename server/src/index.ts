@@ -18,7 +18,14 @@ const client = db && config.supabase.publishableKey ? { supabaseUrl: config.supa
 // Voice messages go to Gemini alone, as the app's consent says.
 const voiceProvider = config.geminiKey ? geminiProvider(config.geminiKey, config.chatModels) : null;
 // The character's voice on calls; without the key, calls show captions only.
-const speech = config.elevenlabs.apiKey ? { provider: elevenLabsSpeech(config.elevenlabs), pricePer1k: config.elevenlabs.pricePer1k } : null;
+const speech = config.elevenlabs.apiKey
+  ? {
+      provider: elevenLabsSpeech(config.elevenlabs),
+      pricePer1k: config.elevenlabs.pricePer1k,
+      userCharsPerDay: config.elevenlabs.userCharsPerDay,
+      charsPerDay: config.elevenlabs.charsPerDay,
+    }
+  : null;
 const app = createApp(provider, { timeoutMs: config.timeoutMs, voiceProvider, speech, db, client, devGrants: config.devGrants });
 
 serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => {

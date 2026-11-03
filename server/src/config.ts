@@ -74,6 +74,10 @@ export const config = {
     voiceMale: process.env.ELEVENLABS_VOICE_MALE ?? 'JBFqnCBsd6RMkjVDRZzb',
     voices: voiceMap(process.env.ELEVENLABS_VOICES),
     pricePer1k: Number(process.env.ELEVENLABS_PRICE_PER_1K ?? 0.04),
+    /** About 20 minutes of a character speaking, per user a day (900 characters a minute). */
+    userCharsPerDay: Number(process.env.SPEECH_USER_CHARS_PER_DAY ?? 20_000),
+    /** The whole service a day: about $40 at Flash's list price, a stop on the bill. */
+    charsPerDay: Number(process.env.SPEECH_CHARS_PER_DAY ?? 1_000_000),
   },
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),

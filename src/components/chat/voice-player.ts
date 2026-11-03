@@ -36,20 +36,25 @@ export async function playNote(name: string, done: () => void): Promise<boolean>
   return true;
 }
 
-/** Longer than any spoken line of a call: a file that never says it finished is let go after this. */
-const ONCE_MAX_MS = 30_000;
-
-/** Plays a file once (a call's spoken line) and resolves when it ends or is stopped. */
-export async function playOnce(uri: string): Promise<void> {
+/**
+ * Plays a file once (a call's spoken line) and resolves when it ends, is stopped, cannot play, or
+ * runs past `maxMs` (a file that never says it finished).
+ */
+export async function playOnce(uri: string, maxMs: number): Promise<void> {
   stopNote();
   const mine = turn;
   await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
   if (mine !== turn) return;
   await new Promise<void>((resolve) => {
-    const player = createAudioPlayer(uri);
+    let player: AudioPlayer;
+    try {
+      player = createAudioPlayer(uri);
+    } catch {
+      return resolve();
+    }
     const guard = setTimeout(() => {
       if (current?.player === player) stopNote();
-    }, ONCE_MAX_MS);
+    }, maxMs);
     current = {
       player,
       done: () => {

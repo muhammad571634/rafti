@@ -22,6 +22,28 @@ export const MODEL_LIMITS: ModelLimits = {
 /** Old windows are swept once this many keys are held, so an attacker's many keys cannot fill the memory. */
 const SWEEP_AT = 50_000;
 
+/**
+ * True, and counted, while `key` stays within `limit` units (characters read aloud) in the running
+ * window; an amount that would go over is refused and not counted.
+ */
+export function windowBudget(limit: number, windowMs: number, now: () => number = Date.now) {
+  const used = new Map<string, { amount: number; resetAt: number }>();
+  return (key: string, amount: number) => {
+    const t = now();
+    let entry = used.get(key);
+    if (!entry || entry.resetAt <= t) {
+      if (used.size >= SWEEP_AT) {
+        for (const [k, e] of used) if (e.resetAt <= t) used.delete(k);
+      }
+      entry = { amount: 0, resetAt: t + windowMs };
+      used.set(key, entry);
+    }
+    if (entry.amount + amount > limit) return false;
+    entry.amount += amount;
+    return true;
+  };
+}
+
 /** True while `key` has made at most `limit` hits in the running window. */
 export function windowLimiter(limit: number, windowMs: number, now: () => number = Date.now) {
   const hits = new Map<string, { count: number; resetAt: number }>();

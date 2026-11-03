@@ -175,8 +175,11 @@ export const serverMemories = {
  * account's token the server ties the call's cost to this user (`usage_events`); without one it
  * still answers.
  */
-export async function serverReply(input: ChatPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[] } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[] }>(
+export async function serverReply(
+  input: ChatPromptInput,
+  accessToken?: string | null,
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[] } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -185,8 +188,19 @@ export async function serverReply(input: ChatPromptInput, accessToken?: string |
     },
     TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
-  const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos } : null;
+  // On a call the server signs each line it may read aloud (`voice`, one per message); the
+  // signatures stay paired with their lines.
+  const signs = Array.isArray(reply?.voice) ? reply.voice : [];
+  const kept = (reply?.messages ?? [])
+    .map((line, i) => ({ line, sig: typeof signs[i] === 'string' ? (signs[i] as string) : undefined }))
+    .filter(({ line }) => typeof line === 'string' && line.trim());
+  if (!kept.length) return null;
+  return {
+    lines: kept.map((k) => k.line),
+    crisis: reply?.crisis === true,
+    photos: reply?.photos,
+    voice: signs.length ? kept.map((k) => k.sig) : undefined,
+  };
 }
 
 const withOptionalToken = (accessToken: string | null | undefined, body: unknown): RequestInit => ({

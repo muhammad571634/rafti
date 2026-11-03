@@ -19,6 +19,8 @@ const SILENCE_MS = 1200;
 const MIN_SPEECH_MS = 500;
 /** With no speech for this long the recording starts over, so a clip never carries much silence. */
 const IDLE_RESTART_MS = 15_000;
+/** After the recorder could not start, the next try. */
+const RETRY_MS = 3000;
 
 /**
  * `listening`: the mic is open, nobody speaks; `speaking`: the user is talking; `sending`: their
@@ -63,9 +65,13 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
     });
   };
   const latestOnWords = useRef(onWords);
+  // Whether the call wants the mic now, read after each wait in `begin`.
+  const wanted = useRef(on);
   useEffect(() => {
     latestOnWords.current = onWords;
+    wanted.current = on;
   });
+  const [retryTick, setRetryTick] = useState(0);
 
   const send = async () => {
     const uri = waiting.current;
@@ -106,9 +112,22 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
       // Leaving for the system prompt counts as leaving the app; coming back opens the mic too.
       if (AppState.currentState !== 'active') return;
     }
-    // Their voice is never cut by the mic: the call keeps the mic closed while it plays.
-    await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
-    await recorder.prepareToRecordAsync();
+    // The call may no longer want the mic (their voice began) while this waited.
+    if (!wanted.current) return;
+    try {
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await recorder.prepareToRecordAsync();
+    } catch (error) {
+      // Another app holds the mic (a phone call): try again in a moment.
+      await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+      setTimeout(() => setRetryTick((n) => n + 1), RETRY_MS);
+      throw error;
+    }
+    if (!wanted.current) {
+      await recorder.stop().catch(() => {});
+      await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+      return;
+    }
     recorder.record();
     live.current = true;
     startedAt.current = Date.now();
@@ -155,12 +174,14 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
     if ((!on || !awake) && (phase === 'listening' || phase === 'speaking')) latestEnd.current(false);
     // `begin` and `inTurn` read refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, allowed, awake, phase]);
+  }, [on, allowed, awake, phase, retryTick]);
 
   // The level: speech starts after a few loud looks and ends after a quiet pause.
   useEffect(() => {
     if (phase !== 'listening' && phase !== 'speaking') return;
     const look = setInterval(() => {
+      // Closing (the call stopped wanting the mic): nothing it hears now is the user's turn.
+      if (!live.current || !wanted.current) return;
       const now = Date.now();
       const { metering } = recorder.getStatus();
       if (typeof metering === 'number' && metering > VOICE_DB) {

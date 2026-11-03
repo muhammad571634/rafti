@@ -71,7 +71,7 @@ import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
 import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
-import { callCue, callMessages, keptCallLines, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
+import { callCue, callMessages, keptCallLines, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -691,7 +691,7 @@ interface AppState {
    * The character's next words on a call (`mode: 'call'`), with the chat and memory behind them;
    * null when the model is off, out of reach or busy. Nothing lands in the chat until the call ends.
    */
-  callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: string[] | null; crisis: boolean }>;
+  callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: CallReplyLine[] | null; crisis: boolean }>;
   /** A crisis on a call: the helpline card goes to the chat at once (the call screen shows its own). */
   helplineToChat: (characterId: string) => void;
 
@@ -3005,9 +3005,12 @@ export const useAppStore = create<AppState>()(
           .then((token) => serverReply(input, token))
           .catch(() => null);
         if (!reply) return { lines: null, crisis: false };
-        // Captions say only what is spoken, as a voice will: narration has no place on a call.
+        // Captions say only what is spoken, as a voice will: narration has no place on a call. Each
+        // line keeps its words as the server wrote them and their signature, for the voice.
         // `crisis` is the server's check; the reply is already the safe one.
-        const spoken = reply.lines.map((line) => speechOnly(line)).filter(Boolean);
+        const spoken = reply.lines
+          .map((line, i) => ({ text: speechOnly(line), line, sig: reply.voice?.[i] }))
+          .filter((l) => l.text);
         return { lines: spoken.length ? spoken : null, crisis: reply.crisis };
       },
 

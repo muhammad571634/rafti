@@ -53,8 +53,10 @@ import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
 import type { SpeechProvider } from './speech/elevenlabs.ts';
+import { lineSigner } from './speech/sign.ts';
+import { speechOnly } from '../../src/lib/reply-engine/narration.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
-import { MODEL_LIMITS, windowLimiter, type ModelLimits } from './rate-limit.ts';
+import { MODEL_LIMITS, windowBudget, windowLimiter, type ModelLimits } from './rate-limit.ts';
 
 /**
  * Until each chat's language lock is stored, the reply follows what the user writes, and before
@@ -193,9 +195,11 @@ export function cleanReport(body: Record<string, unknown> | null): ReportRequest
 
 /** A line to read aloud, or null: words to say, a character, and their gender when known. */
 export function cleanSpeak(body: Record<string, unknown> | null): SpeakRequest | null {
-  const { text, characterId, gender } = body ?? {};
+  const { text, characterId, gender, sig } = body ?? {};
   if (typeof text !== 'string' || !text.trim() || text.length > SPEAK_CHARS_MAX || !isId(characterId)) return null;
-  return { text: text.trim(), characterId, ...(gender === 'male' || gender === 'female' ? { gender } : {}) };
+  if (typeof sig !== 'string' || !sig || sig.length > 64) return null;
+  // The text exactly as the reply gave it: the signature is over those characters.
+  return { text, characterId, sig, ...(gender === 'male' || gender === 'female' ? { gender } : {}) };
 }
 
 const MEMORY_ABOUT = new Set(['you', 'them', 'story']);
@@ -314,8 +318,13 @@ export function createApp(
   opts: {
     timeoutMs: number;
     voiceProvider?: LlmProvider | null;
-    /** The character's voice on calls; none means captions only. `pricePer1k` is for the cost log. */
-    speech?: { provider: SpeechProvider; pricePer1k: number } | null;
+    /**
+     * The character's voice on calls; none means captions only. `pricePer1k` is for the cost log;
+     * the two budgets cap the characters read aloud a day per user and for the whole service.
+     */
+    speech?: { provider: SpeechProvider; pricePer1k: number; userCharsPerDay: number; charsPerDay: number } | null;
+    /** Signs call lines for `/v1/voice/speak`; a fresh key per process when not given (tests give one). */
+    signer?: ReturnType<typeof lineSigner>;
     db?: Db | null;
     client?: ClientConfig | null;
     devGrants?: boolean;
@@ -329,6 +338,10 @@ export function createApp(
   const userDay = windowLimiter(limits.userPerDay, DAY_MS);
   // Accounts start anonymous and free, so reports have their own cap.
   const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
+  // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
+  const userVoiceDay = windowBudget(opts.speech?.userCharsPerDay ?? 0, DAY_MS);
+  const serviceVoiceDay = windowBudget(opts.speech?.charsPerDay ?? 0, DAY_MS);
+  const signer = opts.signer ?? lineSigner();
   const addressMinute = windowLimiter(limits.addressPerMinute, MINUTE_MS);
   const addressDay = windowLimiter(limits.addressPerDay, DAY_MS);
   const knownTokens = new Map<string, { userId: string; until: number }>();
@@ -667,21 +680,30 @@ export function createApp(
 
   // One of the character's lines read aloud, on a call (ElevenLabs). Without a voice service it says
   // `noVoice` and the app shows captions alone. The words go in no log; the cost does.
+  // Only a line the model wrote for this user on a call (its `sig`), within the user's and the
+  // whole service's daily characters; past either, `noVoice` and the call goes on in captions.
   app.post('/v1/voice/speak', async (c) => {
     const speech = opts.speech;
     if (!speech) return c.json({ error: 'noVoice' }, 503);
     const request = cleanSpeak(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    if (!signer.check(userId, request.text, request.sig)) return c.json({ error: 'badInput' }, 400);
+    // What a voice can say: the narration in *stars* stays on the screen.
+    const words = speechOnly(request.text).trim();
+    if (!words) return c.json({ error: 'badInput' }, 400);
+    if (!userVoiceDay(userId, words.length) || !serviceVoiceDay('all', words.length)) return c.json({ error: 'noVoice' }, 503);
     const started = Date.now();
     try {
-      const { audio, model } = await speech.provider.speak(request.text, speech.provider.voiceFor(request), SPEAK_TIMEOUT_MS);
-      const cost = (request.text.length / 1000) * speech.pricePer1k;
-      logUsage(db, signedIn(c), { kind: 'tts', mode: 'call', model, costUsd: cost });
-      console.log(`[speak] ${model} ${Date.now() - started}ms chars=${request.text.length} $${cost.toFixed(6)}`);
+      const { audio, model } = await speech.provider.speak(words, speech.provider.voiceFor(request), SPEAK_TIMEOUT_MS);
+      const cost = (words.length / 1000) * speech.pricePer1k;
+      logUsage(db, Promise.resolve(userId), { kind: 'tts', mode: 'call', model, costUsd: cost });
+      console.log(`[speak] ${model} ${Date.now() - started}ms chars=${words.length} $${cost.toFixed(6)}`);
       return c.json({ audio: audio.toString('base64') });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
-      console.error(`[speak] failed: ${String((error as Error).message).slice(0, 160)}`);
+      console.error(`[speak] failed: ${String((error as Error).message).slice(0, 80)}`);
       return c.json({ error: 'failed' }, 502);
     }
   });
@@ -790,8 +812,12 @@ export function createApp(
         `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} bubbles=${reply.bubbles.length}`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
+      // On a call with a voice service, each line comes signed for this user: only these lines are
+      // read aloud (`/v1/voice/speak`).
+      const caller = input.mode === 'call' && opts.speech ? await userId : null;
+      const voice = caller ? reply.bubbles.map((line) => signer.sign(caller, line)) : undefined;
       // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, model: result.model ?? provider.name, ms });
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

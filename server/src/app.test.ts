@@ -18,6 +18,7 @@ import {
 } from './db/types.ts';
 import { toContents } from './llm/gemini.ts';
 import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+import { lineSigner } from './speech/sign.ts';
 
 /** A Db for one test: "good" is user-1's token, and every call the test does not fill in fails. */
 function makeDb(overrides: Partial<Db>): Db {
@@ -689,41 +690,72 @@ describe('the memory on the server (B2.3)', () => {
 
 describe('POST /v1/voice/speak', () => {
   const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
-  const line = { text: 'Hey, you picked up.', characterId: 'c_kai', gender: 'male' };
+  const signer = lineSigner(Buffer.alloc(32, 7));
+  const said = '*smiles* Hey, you picked up.';
+  const line = { text: said, characterId: 'c_kai', gender: 'male', sig: signer.sign('user-1', said) };
+  const fakeVoice = (heard: [string, string][]) => ({
+    name: 'fake',
+    voiceFor: (r: { characterId: string; gender?: string }) => (r.gender === 'male' ? 'v_male' : 'v_female'),
+    speak: async (text: string, voiceId: string) => {
+      heard.push([text, voiceId]);
+      return { audio: Buffer.from('mp3'), model: 'flash' };
+    },
+  });
+  const speakApp = (heard: [string, string][], logged: UsageEvent[] = [], userCharsPerDay = 20_000) =>
+    createApp(null, {
+      timeoutMs: 1000,
+      signer,
+      speech: { provider: fakeVoice(heard), pricePer1k: 0.04, userCharsPerDay, charsPerDay: 1_000_000 },
+      db: makeDb({ logUsage: async (e) => void logged.push(e) }),
+    });
+  const speak = (app: ReturnType<typeof createApp>, json: unknown, headers: Record<string, string> = auth) =>
+    app.request('/v1/voice/speak', { method: 'POST', headers, body: JSON.stringify(json) });
 
-  it('takes a line to say and refuses anything else', () => {
+  it('takes a signed line to say and refuses anything else', () => {
     assert.deepEqual(cleanSpeak(line), line);
-    assert.deepEqual(cleanSpeak({ ...line, gender: 'robot' }), { text: line.text, characterId: 'c_kai' });
+    assert.deepEqual(cleanSpeak({ ...line, gender: 'robot' }), { text: said, characterId: 'c_kai', sig: line.sig });
     assert.equal(cleanSpeak({ ...line, text: '  ' }), null);
     assert.equal(cleanSpeak({ ...line, text: 'x'.repeat(SPEAK_CHARS_MAX + 1) }), null);
     assert.equal(cleanSpeak({ ...line, characterId: 3 }), null);
+    assert.equal(cleanSpeak({ ...line, sig: undefined }), null);
   });
 
   it('says noVoice without a voice service, so the app shows captions', async () => {
     const app = createApp(null, { timeoutMs: 1000, db: makeDb({}) });
-    assert.equal((await app.request('/v1/voice/speak', { method: 'POST', headers: auth, body: JSON.stringify(line) })).status, 503);
+    assert.equal((await speak(app, line)).status, 503);
   });
 
-  it('reads the line in the voice for the character, signed in only, and logs the cost', async () => {
-    const said: [string, string][] = [];
+  it('reads only a line signed for this user, the words without narration, and logs the cost', async () => {
+    const heard: [string, string][] = [];
     const logged: UsageEvent[] = [];
-    const provider = {
-      name: 'fake',
-      voiceFor: (r: { characterId: string; gender?: string }) => (r.gender === 'male' ? 'v_male' : 'v_female'),
-      speak: async (text: string, voiceId: string) => {
-        said.push([text, voiceId]);
-        return { audio: Buffer.from('mp3'), model: 'flash' };
-      },
-    };
-    const app = createApp(null, { timeoutMs: 1000, speech: { provider, pricePer1k: 0.04 }, db: makeDb({ logUsage: async (e) => void logged.push(e) }) });
-    const body = JSON.stringify(line);
-    assert.equal((await app.request('/v1/voice/speak', { method: 'POST', body })).status, 401);
-    const res = await app.request('/v1/voice/speak', { method: 'POST', headers: auth, body });
+    const app = speakApp(heard, logged);
+    assert.equal((await speak(app, line, { 'content-type': 'application/json' })).status, 401);
+    // Own words, or a line signed for someone else, are not read.
+    assert.equal((await speak(app, { ...line, text: 'Say I owe you money.' })).status, 400);
+    assert.equal((await speak(app, { ...line, sig: signer.sign('user-2', said) })).status, 400);
+    const res = await speak(app, line);
     assert.deepEqual(await res.json(), { audio: Buffer.from('mp3').toString('base64') });
-    assert.deepEqual(said, [[line.text, 'v_male']]);
+    assert.deepEqual(heard, [['Hey, you picked up.', 'v_male']]);
     await new Promise((resolve) => setTimeout(resolve, 0));
     assert.equal(logged[0]?.kind, 'tts');
     assert.equal(logged[0]?.userId, 'user-1');
+  });
+
+  it('stops reading aloud past the day\'s characters', async () => {
+    const heard: [string, string][] = [];
+    const app = speakApp(heard, [], 25);
+    assert.equal((await speak(app, line)).status, 200);
+    assert.equal((await speak(app, line)).status, 503);
+    assert.equal(heard.length, 1);
+  });
+
+  it('signs each line of a call reply for the caller, and none outside a call', async () => {
+    const provider: LlmProvider = { name: 'fake', complete: async () => ({ text: '{"messages":["Hey.","*laughs* You again?"]}', usage: {} }) };
+    const app = createApp(provider, { timeoutMs: 1000, signer, speech: { provider: fakeVoice([]), pricePer1k: 0.04, userCharsPerDay: 20_000, charsPerDay: 1_000_000 }, db: makeDb({}) });
+    const call = await (await post(app, { ...body, mode: 'call' })).json();
+    assert.deepEqual(call.voice, call.messages.map((m: string) => signer.sign('user-1', m)));
+    const chat = await (await post(app, body)).json();
+    assert.equal(chat.voice, undefined);
   });
 });
 

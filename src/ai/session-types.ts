@@ -174,12 +174,15 @@ export interface ReportRequest {
 /**
  * `POST /v1/voice/speak`: one of the character's lines read aloud (a call). The server picks the
  * voice from the character (or their gender); the answer is `{ audio }`, base64 mp3. 503 `noVoice`
- * while no voice service is set, and the app shows captions only.
+ * with no voice service or past the day's characters, and the app shows captions only.
  */
 export interface SpeakRequest {
+  /** The line exactly as the call reply gave it (narration and all); the server says only the words. */
   text: string;
   characterId: string;
   gender?: CharacterGender;
+  /** The server's signature that came with the line (`voice` in the call reply): only those are read aloud. */
+  sig: string;
 }
 
 /** The longest line read aloud at once (a call's lines are one to three sentences). */
