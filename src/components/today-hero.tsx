@@ -1,31 +1,64 @@
+import { useFocusEffect } from 'expo-router';
 import { Image, type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
 import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  FadeIn,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { characterImage, PressableScale, Txt } from '@/components/ui';
+import { sceneFocus } from '@/components/chat/chat-ground';
+import { Anim, characterImage, PressableScale, Txt } from '@/components/ui';
 import { daysBetween, relativeStamp } from '@/lib/format';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
+import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, radius, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
-const HEIGHT = 300;
-/** Hero scenes are framed with the face up and to the right of centre. */
-const SCENE_FOCUS: ImageContentPosition = { left: '62%', top: '30%' };
+/** About half the screen (owner, 2026-11-03: bigger, like Replika), so the modules still start on it. */
+const SHARE = 0.54;
+const MIN_HEIGHT = 380;
+const MAX_HEIGHT = 520;
 /** Tall scenes (assets/portraits) keep the face in their upper third. */
 const TALL_FOCUS: ImageContentPosition = { left: '50%', top: '18%' };
 /** Portraits are square with the face in the upper middle. */
 const PORTRAIT_FOCUS: ImageContentPosition = { left: '50%', top: '35%' };
-const FOCUS = { scene: SCENE_FOCUS, tall: TALL_FOCUS, face: PORTRAIT_FOCUS } as const;
+/** Wide scenes slide to each face (`sceneFocus`); this is only their fallback. */
+const FOCUS = { scene: { left: '62%', top: '30%' }, tall: TALL_FOCUS, face: PORTRAIT_FOCUS } as const;
 /** Lines before theirs that a helpline card may sit in and still hold the card back. */
 const BEFORE = 4;
+/** One slow breath of the picture, in and then out: the friend is there, not a poster. */
+const BREATH_MS = 7000;
+const BREATH_SCALE = 1.045;
+/** Their unread line types in once a session, as if said now. */
+const TYPING_MS = 1400;
+const typedIn = new Set<string>();
+
+/** The card's height for a screen this tall. */
+export const heroHeight = (windowHeight: number) => Math.round(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, windowHeight * SHARE)));
+
+/** The light over their picture follows the user's hour, the way Replika's room does. */
+export function dayLight(hour: number): 'dawn' | 'day' | 'evening' | 'night' {
+  if (hour >= 5 && hour < 8) return 'dawn';
+  if (hour >= 8 && hour < 17) return 'day';
+  if (hour >= 17 && hour < 21) return 'evening';
+  return 'night';
+}
+const LIGHT = { dawn: colors.heroDawn, evening: colors.heroEvening, night: colors.heroNight } as const;
 
 export interface HeroFriend {
   character: Character;
@@ -87,9 +120,11 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
 }
 
 /**
- * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): their picture,
- * name with days and level, their newest line in dark glass and a "Message" field under it. The
- * whole card is one button that opens the chat; the field is a cue, not a second control.
+ * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): about half the
+ * screen of their picture, breathing slowly and lit for the user's hour; name with days and level
+ * (the bond's progress as a line under it); their newest line in dark glass, typed in first while
+ * it is unread; a "Message" field under it. The whole card is one button that opens the chat; the
+ * field is a cue, not a second control. Reduce Motion: no breath, no typing.
  */
 export function TodayHero({
   friend,
@@ -107,25 +142,61 @@ export function TodayHero({
   const days = daysBetween(relationship.anniversary) + 1;
   const together = `${days} ${t('home.hero.days', { count: days })}`;
   const level = t('home.hero.level', { level: relationship.level });
+  const progress = levelForIntimacy(relationship.intimacy).progress;
+
+  const { width, height: windowHeight } = useWindowDimensions();
+  const height = heroHeight(windowHeight);
+  const position = framing === 'scene' ? sceneFocus(character.id, (width - space.lg * 2) / height) : FOCUS[framing];
+
+  const still = useReducedMotion();
+  const breath = useSharedValue(0);
+  const [hour, setHour] = useState(() => new Date().getHours());
+  // Breathes only while Today is on screen; the light is read again on each visit.
+  useFocusEffect(
+    useCallback(() => {
+      setHour(new Date().getHours());
+      if (still) return;
+      breath.value = withRepeat(withTiming(1, { duration: BREATH_MS, easing: Easing.inOut(Easing.sin) }), -1, true);
+      return () => cancelAnimation(breath);
+    }, [still, breath]),
+  );
+  const breathing = useAnimatedStyle(() => ({ transform: [{ scale: 1 + breath.value * (BREATH_SCALE - 1) }] }));
+  const light = dayLight(hour);
+
+  const lineKey = line ? `${conversation.id}|${line.at}` : undefined;
+  const fresh = !!lineKey && conversation.unreadCount > 0 && !still && !typedIn.has(lineKey);
+  const [typing, setTyping] = useState(fresh);
+  useEffect(() => {
+    if (!fresh || !lineKey) return;
+    setTyping(true);
+    const timer = setTimeout(() => {
+      typedIn.add(lineKey);
+      setTyping(false);
+    }, TYPING_MS);
+    return () => clearTimeout(timer);
+  }, [fresh, lineKey]);
 
   return (
     <PressableScale
-      style={styles.card}
+      style={[styles.card, { height }]}
       scaleTo={0.985}
       accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level, line?.text]
         .filter(Boolean)
         .join(', ')}
       onPress={onPress}>
-      <Image
-        source={typeof image === 'string' ? { uri: image } : image}
-        style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        contentPosition={FOCUS[framing]}
-      />
+      <Animated.View style={[StyleSheet.absoluteFill, breathing]}>
+        <Image
+          source={typeof image === 'string' ? { uri: image } : image}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          contentPosition={position}
+        />
+      </Animated.View>
+      {light !== 'day' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[light] }]} /> : null}
       <LinearGradient colors={gradients.portraitCardScrim} locations={gradientStops.portraitCardScrim} style={StyleSheet.absoluteFill} />
 
       <View style={styles.top}>
-        <Txt variant="smallStrong" color={colors.onMedia} lines={1} style={styles.shrink}>
+        <Txt variant="bodyStrong" color={colors.onMedia} lines={1} style={styles.shrink}>
           {name}
         </Txt>
         <View style={styles.chip}>
@@ -137,21 +208,31 @@ export function TodayHero({
           <Txt variant="chip" color={colors.onMedia} lines={1}>
             {level}
           </Txt>
+          {/* How far to the next level, Replika's bar in a hairline. */}
+          <View style={styles.track}>
+            <View style={[styles.fill, { width: `${Math.round(progress * 100)}%` }]} />
+          </View>
         </View>
       </View>
 
       <View style={styles.bottom}>
-        {line ? (
+        {line && typing ? (
           <View style={styles.said}>
+            <View style={[styles.bubble, styles.typing]}>
+              <Anim name="typing" size={34} tint={colors.onMediaSoft} />
+            </View>
+          </View>
+        ) : line ? (
+          <Animated.View entering={FadeIn.duration(220)} style={styles.said}>
             <Txt variant="caption" color={colors.onMediaMuted} style={styles.when}>
               {relativeStamp(line.at)}
             </Txt>
             <View style={styles.bubble}>
-              <Txt style={styles.lineText} color={colors.onMedia} lines={3}>
+              <Txt style={styles.lineText} color={colors.onMedia} lines={4}>
                 {line.text}
               </Txt>
             </View>
-          </View>
+          </Animated.View>
         ) : null}
         <View style={styles.field}>
           <Txt style={styles.fieldText} color={colors.onMediaMuted} lines={1}>
@@ -166,7 +247,6 @@ export function TodayHero({
 
 const styles = StyleSheet.create({
   card: {
-    height: HEIGHT,
     marginHorizontal: space.lg,
     marginTop: space.lg,
     borderRadius: radius.xl,
@@ -188,7 +268,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.xs,
-    height: 24,
+    height: 26,
     paddingHorizontal: space.sm + 2,
     borderRadius: radius.pill,
     borderWidth: StyleSheet.hairlineWidth,
@@ -196,6 +276,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.onMediaGlass,
   },
   dot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.onMediaSoft },
+  track: {
+    position: 'absolute',
+    left: space.sm + 2,
+    right: space.sm + 2,
+    bottom: 2,
+    height: 2,
+    borderRadius: 1,
+    overflow: 'hidden',
+    backgroundColor: colors.onMediaHairline,
+  },
+  fill: { height: 2, borderRadius: 1, backgroundColor: colors.bondOnMedia },
+  typing: { paddingVertical: 2 },
   bottom: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, gap: space.sm },
   said: { alignItems: 'flex-start', gap: 3 },
   when: { paddingLeft: space.xs, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
@@ -211,7 +303,7 @@ const styles = StyleSheet.create({
     borderColor: colors.onMediaHairline,
     backgroundColor: colors.onMediaBubble,
   },
-  lineText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2 },
+  lineText: { fontSize: 16, lineHeight: 21, letterSpacing: -0.2 },
   field: {
     height: 40,
     flexDirection: 'row',

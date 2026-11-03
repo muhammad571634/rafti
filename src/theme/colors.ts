@@ -124,6 +124,10 @@ const lightColors = {
   onMediaField: 'rgba(28,28,34,0.58)',
   /** Under white words that sit straight on a picture (times, notes), so a bright patch never swallows them. */
   onMediaShadow: 'rgba(0,0,0,0.6)',
+  /** The Today card's light over their picture, following the user's hour (Replika's room light); none by day. */
+  heroDawn: 'rgba(255,164,110,0.16)',
+  heroEvening: 'rgba(255,112,84,0.14)',
+  heroNight: 'rgba(16,24,72,0.34)',
 
   // Bond: the only place mint carries meaning (level progress, "voice ready").
   bond: palette.mint400,

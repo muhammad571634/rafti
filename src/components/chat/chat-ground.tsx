@@ -46,14 +46,17 @@ export function portraitOf(character: Character, aspect: number): Picture | unde
   const tall = PORTRAITS[character.id];
   if (tall != null) return { source: tall, position: { top: 0, left: '50%' } };
   const scene = HEROES[character.id];
-  if (scene != null) {
-    const face = SCENE_FACE[character.id] ?? 0.62;
-    // Cover fills the height and crops the sides; an object-position of `left` puts `face` mid-frame.
-    const left = aspect > 0 && aspect < SCENE_ASPECT ? (face * SCENE_ASPECT - aspect / 2) / (SCENE_ASPECT - aspect) : 0.5;
-    return { source: scene, position: { top: '30%', left: `${Math.round(Math.min(1, Math.max(0, left)) * 100)}%` } };
-  }
+  if (scene != null) return { source: scene, position: sceneFocus(character.id, aspect) };
   if (character.avatarUri) return { source: { uri: character.avatarUri }, position: 'center' };
   return undefined;
+}
+
+/** Where a wide scene sits in a frame `aspect` (width / height) wide, so their face is mid-frame. */
+export function sceneFocus(characterId: string, aspect: number): ImageContentPosition {
+  const face = SCENE_FACE[characterId] ?? 0.62;
+  // Cover fills the height and crops the sides; an object-position of `left` puts `face` mid-frame.
+  const left = aspect > 0 && aspect < SCENE_ASPECT ? (face * SCENE_ASPECT - aspect / 2) / (SCENE_ASPECT - aspect) : 0.5;
+  return { top: '30%', left: `${Math.round(Math.min(1, Math.max(0, left)) * 100)}%` };
 }
 
 const OnPhoto = createContext(false);
