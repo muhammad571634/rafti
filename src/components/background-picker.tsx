@@ -6,15 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Portrait } from '@/components/chat/chat-ground';
+import type { Picture } from '@/components/chat/chat-ground';
 import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, PORTRAIT_BG } from '@/mock';
 import { colors, gradients, gradientStops, space } from '@/theme';
 
 type BackgroundCollection = 'classic' | 'art';
-/** Their own picture, first on the Art side of a one-to-one chat. */
-type PortraitOption = { id: string; portrait: Portrait; label: string };
-type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number] | PortraitOption;
+type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
 
 const COLUMNS = 3;
 const GAP = 10;
@@ -23,19 +21,20 @@ const GAP = 10;
  * The chat background, iOS style (approved prototype `Background.dc.html`): a large title, a
  * preview with the chat's own bubbles and glass field, an iOS segmented control, then tiles.
  * A tap picks the background (`onPick`); one-to-one chats and group chats both use it. A one-to-one
- * chat passes the character's `portrait`: it leads the Art side and is the default.
+ * chat passes the character's `portrait`, its default: it sits on its own row above Classic and Art
+ * (owner, 2026-11-03: their picture is not one of the wallpapers), the way back after trying one.
  */
 export function BackgroundPicker({
   savedId,
   onPick,
   portrait,
-  portraitLabel = '',
+  name = '',
 }: {
   savedId?: string;
   onPick: (backgroundId: string) => void;
-  portrait?: Portrait;
-  /** Under the portrait tile: their name. */
-  portraitLabel?: string;
+  portrait?: Picture;
+  /** Theirs, under the portrait row's title. */
+  name?: string;
 }) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -47,7 +46,7 @@ export function BackgroundPicker({
   const backgroundId = known(savedBackgroundId) ? savedBackgroundId : fallback;
   const onPortrait = backgroundId === PORTRAIT_BG ? portrait : undefined;
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
-    onPortrait || chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
+    chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
   // Past the large title, the bar shows it (iOS scroll edge).
   const { scrolled, onScroll } = useScrolledPast(44);
@@ -55,10 +54,7 @@ export function BackgroundPicker({
   const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
   const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
-  const data: BackgroundOption[] =
-    collection === 'art'
-      ? [...(portrait ? [{ id: PORTRAIT_BG, portrait, label: portraitLabel }] : []), ...chatArtBackgrounds]
-      : chatBackgrounds;
+  const data: BackgroundOption[] = collection === 'art' ? [...chatArtBackgrounds] : chatBackgrounds;
   const tabs: { value: BackgroundCollection; label: string }[] = [
     { value: 'classic', label: t('background.collections.classic') },
     { value: 'art', label: t('background.collections.art') },
@@ -87,17 +83,49 @@ export function BackgroundPicker({
               {onPortrait ? (
                 <>
                   <Image source={onPortrait.source} contentFit="cover" contentPosition={onPortrait.position} style={StyleSheet.absoluteFill} />
-                  <LinearGradient colors={gradients.portraitScrim} locations={gradientStops.portraitScrim} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={gradients.pictureScrim} locations={gradientStops.pictureScrim} style={StyleSheet.absoluteFill} />
                 </>
               ) : selectedArt ? (
-                <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
+                <>
+                  <Image source={selectedArt.image} contentFit="cover" style={StyleSheet.absoluteFill} />
+                  {/* As the chat draws a picture: shaded, dark glass bubbles and field (`chat-ground.tsx`). */}
+                  <LinearGradient colors={gradients.pictureScrim} locations={gradientStops.pictureScrim} style={StyleSheet.absoluteFill} />
+                </>
               ) : (
                 <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
               )}
-              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs, onPortrait && styles.previewTheirsOnPhoto]} />
+              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs, (onPortrait || selectedArt) && styles.previewTheirsOnPicture]} />
               <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
-              <View pointerEvents="none" style={[glassStyle, styles.previewField]} />
+              <View pointerEvents="none" style={[glassStyle, styles.previewField, (onPortrait || selectedArt) && styles.previewFieldOnPicture]} />
             </View>
+
+            {portrait ? (
+              // Their own picture, the default: a row of its own, not a wallpaper tile.
+              <PressableScale
+                scaleTo={0.98}
+                onPress={() => onPick(PORTRAIT_BG)}
+                accessibilityRole="button"
+                accessibilityLabel={[t('background.portrait'), name].filter(Boolean).join(', ')}
+                accessibilityState={{ selected: !!onPortrait }}
+                style={[styles.portraitRow, onPortrait && styles.portraitRowOn]}>
+                <Image source={portrait.source} contentFit="cover" contentPosition={portrait.position} style={styles.portraitThumb} />
+                <View style={styles.portraitCopy}>
+                  <Txt style={styles.portraitTitle} lines={1}>
+                    {t('background.portrait')}
+                  </Txt>
+                  {name ? (
+                    <Txt style={styles.portraitName} lines={1}>
+                      {name}
+                    </Txt>
+                  ) : null}
+                </View>
+                {onPortrait ? (
+                  <View style={styles.portraitCheck}>
+                    <Ionicons name="checkmark" size={14} color={colors.white} />
+                  </View>
+                ) : null}
+              </PressableScale>
+            ) : null}
 
             {/* iOS segmented control: a grey track, the chosen side as a raised white pill. */}
             <View style={styles.segment} accessibilityRole="tablist">
@@ -120,8 +148,7 @@ export function BackgroundPicker({
         renderItem={({ item }) => {
           const art = 'image' in item;
           const selected = backgroundId === item.id;
-          const label =
-            'portrait' in item ? item.label : art ? t(`background.artItems.${item.nameKey}`) : t(`background.${item.nameKey}`);
+          const label = art ? t(`background.artItems.${item.nameKey}`) : t(`background.${item.nameKey}`);
 
           return (
             <PressableScale
@@ -132,9 +159,7 @@ export function BackgroundPicker({
               accessibilityState={{ selected }}
               onPress={() => onPick(item.id)}>
               <View style={[styles.tile, { height: tileWidth * 1.4 }]}>
-                {'portrait' in item ? (
-                  <Image source={item.portrait.source} contentFit="cover" contentPosition={item.portrait.position} style={StyleSheet.absoluteFill} />
-                ) : art ? (
+                {art ? (
                   <Image source={item.image} contentFit="cover" style={StyleSheet.absoluteFill} />
                 ) : (
                   <LinearGradient colors={item.colors} style={StyleSheet.absoluteFill} />
@@ -171,9 +196,29 @@ const styles = StyleSheet.create({
   previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
   previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderBottomLeftRadius: 5 },
   previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: colors.bubbleSelf, borderBottomRightRadius: 5 },
-  // Their bubble as the chat draws it on their picture (`useOnPhoto`).
-  previewTheirsOnPhoto: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   previewField: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, height: 32, borderRadius: 16 },
+  previewTheirsOnPicture: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  previewFieldOnPicture: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
+  // Their picture's own row (a Settings-style select row): thumbnail, title, name, the check when chosen.
+  portraitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    marginTop: space.lg,
+    marginHorizontal: space.lg,
+    padding: space.sm,
+    paddingRight: space.md,
+    borderRadius: 18,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
+    backgroundColor: colors.surface,
+  },
+  portraitRowOn: { borderWidth: 2, borderColor: colors.primary },
+  portraitThumb: { width: 44, height: 58, borderRadius: 10, backgroundColor: colors.surfaceAlt },
+  portraitCopy: { flex: 1, gap: 2 },
+  portraitTitle: { fontSize: 17, fontWeight: '600' },
+  portraitName: { fontSize: 13, color: colors.textSecondary },
+  portraitCheck: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary },
   segment: {
     flexDirection: 'row',
     height: 36,

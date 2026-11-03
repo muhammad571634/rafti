@@ -178,7 +178,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
         accessibilityRole="button"
         accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
         style={[...glass, styles.plus]}>
-        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 24 : 27} color={onPhoto ? colors.onMedia : colors.text} />
+        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 26 : 30} color={onPhoto ? colors.onMedia : colors.text} />
       </PressableScale>
 
       <View style={[...glass, styles.field]}>
@@ -230,12 +230,12 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             accessibilityLabel={t('a11y.send')}
             accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
             style={[styles.action, styles.send]}>
-            <PaperPlaneTiltIcon size={23} weight="fill" color={colors.textOnPrimary} />
+            <PaperPlaneTiltIcon size={25} weight="fill" color={colors.textOnPrimary} />
           </PressableScale>
         ) : Platform.OS === 'web' || !onVoiceNote ? (
           <IconButton
             icon="mic-outline"
-            size={25}
+            size={27}
             color={onPhoto ? colors.onMediaSoft : colors.textSecondary}
             accessibilityLabel={t('a11y.voiceMessage')}
             onPress={onVoice}
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     paddingVertical: (FIELD - LINE) / 2,
     maxHeight: LINE * MAX_LINES + (FIELD - LINE),
   },
-  // On their picture (`useOnPhoto`): dark glass and white words.
+  // On a picture (an Art wallpaper, `useOnPhoto`): dark glass and white words.
   photoGlass: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
   photoInput: { color: colors.onMedia },
 });

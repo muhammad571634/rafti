@@ -44,8 +44,9 @@ immediately; there is nothing to refresh.
 The friend waiting for you (owner, 2026-11-03, Replika's feel): 300 pt tall. On top, the name
 and one clear-glass chip with "N days" (the day you met is day 1) and the bond level. At the
 bottom, their newest written line in a dark-glass bubble with its time (`waitingLine`: speech
-only, narration when there is nothing else; none while a helpline card is among the last 8
-lines), then a dark-glass "Message" field with a mic. The whole card is one button that opens
+only, the narration when nothing is said aloud; an echo of your own words is skipped; none when a
+helpline card sits up to 4 lines before it or anywhere after it), then a dark-glass "Message"
+field with a mic. The whole card is one button that opens
 that chat; the field is a cue, not a second control.
 
 ## Pictures

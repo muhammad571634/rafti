@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     borderColor: colors.borderStrong,
   },
   chipText: { fontSize: 15, fontWeight: '500', letterSpacing: -0.2 },
-  // On their picture: dark glass under a peach rim.
+  // On a picture (an Art wallpaper): dark glass under a peach rim.
   photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricot300 },
   bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primaryFill },
 });

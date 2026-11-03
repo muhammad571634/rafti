@@ -7,7 +7,6 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { useOnPhoto } from '@/components/chat/chat-ground';
 import { characterImage, PressableScale, SFIcon, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
@@ -28,7 +27,7 @@ type Fact = Glyph & { key: string; label: string };
  * Who they are, at the very top of a one-to-one chat (owner, 2026-10-27, after Character.AI shows
  * the character before its first message): their scene fading into a dark card, name, tagline,
  * gender, age, height and world as clear-glass chips, their story, then what they love and can't
- * stand. On their own picture (`useOnPhoto`) the card is dark glass with no scene of its own.
+ * stand.
  * The facts come from `src/mock/character-profiles.ts` (or the creator's form); a character
  * without them still shows the photo, name and bio. A tap opens the profile.
  */
@@ -46,16 +45,13 @@ export function IntroCard({
 }) {
   const { t } = useTranslation();
   const shown = localCharacter(character);
-  const onPhoto = useOnPhoto();
   const scene = HEROES[character.id];
+  // The tall scenes (owner's art, 2026-11-03) stand in for a wide one, framed from the top.
   const tall = scene == null ? PORTRAITS[character.id] : undefined;
-  // On their picture the ground already shows them.
-  const photo = onPhoto ? undefined : (scene ?? tall ?? characterImage(character));
+  const photo = scene ?? tall ?? characterImage(character);
   const facts: Fact[] = [];
-  if (character.gender) {
-    const male = character.gender === 'male';
-    facts.push({ key: 'gender', ios: male ? 'figure.stand' : 'figure.stand.dress', icon: male ? 'male-outline' : 'female-outline', label: t(`intro.${character.gender}`) });
-  }
+  // One glyph for both, the word says which: SF Symbols draws a woman only from iOS 18.
+  if (character.gender) facts.push({ key: 'gender', ios: 'person', icon: 'person-outline', label: t(`intro.${character.gender}`) });
   if (character.age) facts.push({ key: 'age', ios: 'birthday.cake', icon: 'gift-outline', label: t('intro.age', { count: character.age }) });
   if (character.heightCm) facts.push({ key: 'height', ios: 'ruler', icon: 'resize-outline', label: heightLabel(character.heightCm, locale) });
   if (character.series) facts.push({ key: 'world', ios: 'globe', icon: 'globe-outline', label: phrase(character.series) });
@@ -66,7 +62,7 @@ export function IntroCard({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={t('intro.open', { name })}
-      style={[styles.card, onPhoto && styles.glassCard]}>
+      style={styles.card}>
       {photo ? (
         <View style={styles.photo}>
           <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={tall != null ? 'top' : 'center'} transition={150} accessible={false} />
@@ -135,8 +131,6 @@ function Things({ ios, icon, label, items }: Glyph & { label: string; items?: st
 
 const styles = StyleSheet.create({
   card: { marginHorizontal: space.md, marginTop: space.sm, marginBottom: space.lg, borderRadius: 24, overflow: 'hidden', backgroundColor: NIGHT },
-  // Dark glass over their picture: the ground carries the face, the card the words.
-  glassCard: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   photo: { height: PHOTO },
   // The words start on the photo's dark end, so the card reads as one piece.
   body: { paddingHorizontal: space.lg, paddingTop: space.lg, paddingBottom: space.lg, gap: space.sm + 2 },

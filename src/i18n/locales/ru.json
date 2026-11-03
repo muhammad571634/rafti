@@ -650,6 +650,7 @@
   "background": {
     "title": "Фон чата",
     "preview": "Предпросмотр обоев чата",
+    "portrait": "Портрет",
     "collections": {
       "classic": "Классика",
       "art": "Арт"

@@ -30,10 +30,15 @@ chat control) and wants Replika's feel merged in and polished, nothing working l
 - Today card: 300 pt, name + one glass chip (days, level), their newest line in dark glass
   with its time, a "Message" field with a mic; one button that opens the chat.
 - Chat: their picture is the default ground (`bg_portrait`), also for existing chats on the
-  plain ground (store v14); a chosen wallpaper stays. Their bubbles, typing dots, reply ideas
-  and the intro card are dark glass; meta text is white with a soft shadow; the header is
-  clear glass, the composer dark glass; your bubble stays peach.
-- Background picker: their picture is the first tile of Art, under their name.
+  plain ground (store v14); a chosen wallpaper stays. The look is the owner's prototype: the
+  face on top, the conversation from 36% down on a dark shade (up to the header while typing),
+  dark-glass bubbles, typing dots and reply ideas, white meta text with a soft shadow, a
+  clear-glass header and a dark-glass composer; your bubble stays peach.
+- Background picker (after the owner's correction, same day): their picture is not one of the
+  wallpapers. It is a row of its own above Classic and Art ("Portrait", their name), the way back
+  after trying a wallpaper. An Art wallpaper takes the same picture look (one-to-one and group
+  chats); Classic keeps the light chat.
+- Chat icons a step larger (header, reply controls, share pill, composer, marks in the chat).
 - Intro card: gender joins age, height and world (14 locales).
 - Art: close-ups to `assets/avatars`, tall scenes to `assets/portraits` (12 characters).
 
@@ -41,5 +46,5 @@ chat control) and wants Replika's feel merged in and polished, nothing working l
 
 - Wide scenes (the first 40) fill the chat by sliding to a per-character face position
   (`SCENE_FACE`); tall scenes are used as they are.
-- The Today card shows no line while a helpline card is among the last 8 lines.
-- Group chats keep their wallpapers and look.
+- The Today card shows no line when a helpline card sits up to 4 lines before theirs or after it.
+- The intro card's gender glyph is one person icon for both (SF draws a woman only from iOS 18).

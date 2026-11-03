@@ -24,8 +24,8 @@ const TALL_FOCUS: ImageContentPosition = { left: '50%', top: '18%' };
 /** Portraits are square with the face in the upper middle. */
 const PORTRAIT_FOCUS: ImageContentPosition = { left: '50%', top: '35%' };
 const FOCUS = { scene: SCENE_FOCUS, tall: TALL_FOCUS, face: PORTRAIT_FOCUS } as const;
-/** How far back their line may sit and still show: after a helpline card it waits a while. */
-const RECENT = 8;
+/** Lines before theirs that a helpline card may sit in and still hold the card back. */
+const BEFORE = 4;
 
 export interface HeroFriend {
   character: Character;
@@ -70,15 +70,19 @@ export function featuredFriend(
 
 /**
  * Their newest written line for the card, as said out loud (narration only when there is nothing
- * else), and when it came. None while a helpline card is among the last lines: a hard moment does
+ * else), and when it came. None when a helpline card sits near it or after it: a hard moment does
  * not belong on the home screen.
  */
 export function waitingLine(messages: readonly Message[] | undefined): { text: string; at: string } | undefined {
   const list = messages ?? [];
-  if (list.slice(-RECENT).some((m) => m.card === 'helpline')) return undefined;
-  const line = list.findLast((m) => m.author === 'them' && m.kind === 'text' && !m.card && !!m.text?.trim());
+  // A muted line is an echo of the user's own words, not theirs.
+  const at = list.findLastIndex((m) => m.author === 'them' && m.kind === 'text' && !m.card && !m.muted && !!m.text?.trim());
+  const line = list[at];
   if (!line?.text) return undefined;
-  const text = speechOnly(line.text) || plainText(line.text);
+  if (list.slice(Math.max(0, at - BEFORE)).some((m) => m.card === 'helpline')) return undefined;
+  // "*smiles* ..." says nothing aloud: then the narration, without its asterisks.
+  const said = speechOnly(line.text);
+  const text = /[\p{L}\p{N}]/u.test(said) ? said : plainText(line.text);
   return text ? { text, at: line.createdAt } : undefined;
 }
 
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   dot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.onMediaSoft },
   bottom: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, gap: space.sm },
   said: { alignItems: 'flex-start', gap: 3 },
-  when: { paddingLeft: space.xs },
+  when: { paddingLeft: space.xs, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
   // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
   bubble: {
     maxWidth: '86%',

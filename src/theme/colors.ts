@@ -118,9 +118,9 @@ const lightColors = {
   onMediaHairline: 'rgba(255,255,255,0.28)',
   /** The solid round action sitting on a photo (the Today hero's chat button). */
   onMediaButton: 'rgba(255,255,255,0.92)',
-  /** Their bubble, a card or a chip on a picture ground (the chat on their portrait): dark glass under white words. */
+  /** Their line on a picture (the Today card, a chat on an Art wallpaper): dark glass under white words. */
   onMediaBubble: 'rgba(22,22,28,0.62)',
-  /** The composer's field and "+" on a picture ground. */
+  /** A field drawn on a picture (the Today card's "Message", the composer on an Art wallpaper). */
   onMediaField: 'rgba(28,28,34,0.58)',
   /** Under white words that sit straight on a picture (times, notes), so a bright patch never swallows them. */
   onMediaShadow: 'rgba(0,0,0,0.6)',
@@ -452,13 +452,15 @@ export const gradients = {
    * Not decoration: it is the one gradient the flat design allows. Stops: `gradientStops`.
    */
   heroScrim: ['rgba(24,22,38,0.62)', 'rgba(24,22,38,0.28)', 'rgba(24,22,38,0)'] as const,
+  /** The Today card's shade, top to bottom: the name on top, their line and the field at the bottom. */
+  portraitCardScrim: ['rgba(15,18,32,0.45)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.2)', 'rgba(15,18,32,0.86)'] as const,
   /**
-   * Top-to-bottom shade over a character's picture as the chat's ground: dark under the header,
-   * their face clear, then dark under the conversation and the composer. Stops: `gradientStops`.
+   * Top to bottom over an Art wallpaper in a chat: dark under the header, the picture clear, then
+   * dark under the conversation, the controls and the composer. Stops: `gradientStops`.
    */
-  portraitScrim: ['rgba(10,10,14,0.6)', 'rgba(10,10,14,0.05)', 'rgba(10,10,14,0.3)', 'rgba(10,10,14,0.82)', 'rgba(10,10,14,0.94)'] as const,
-  /** The Today card's shade: the name on top, their line and the field at the bottom. */
-  portraitCardScrim: ['rgba(15,18,32,0.45)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.8)'] as const,
+  pictureScrim: ['rgba(10,10,14,0.6)', 'rgba(10,10,14,0.05)', 'rgba(10,10,14,0.3)', 'rgba(10,10,14,0.82)', 'rgba(10,10,14,0.94)'] as const,
+  /** Where the conversation ends on a picture (iOS has no fading edge): a soft dark valley. */
+  pictureEdge: ['rgba(10,10,14,0)', 'rgba(10,10,14,0.5)', 'rgba(10,10,14,0)'] as const,
   /** Pro's own colour: violet into peach, on the Pro card, the Pro pill and a chosen Pro plan. */
   pro: ['#5B3FD9', '#A64BD6', '#F0795A'] as const,
 } as const;
@@ -466,8 +468,9 @@ export const gradients = {
 /** `locations` for the gradients above that do not spread their colours evenly. */
 export const gradientStops = {
   heroScrim: [0, 0.45, 0.7] as const,
-  portraitScrim: [0, 0.2, 0.4, 0.66, 1] as const,
-  portraitCardScrim: [0, 0.28, 0.42, 1] as const,
+  portraitCardScrim: [0, 0.24, 0.4, 1] as const,
+  pictureScrim: [0, 0.2, 0.4, 0.66, 1] as const,
+  pictureEdge: [0, 0.38, 1] as const,
 } as const;
 
 /** Deterministic pastel pair for an avatar with no image yet. */

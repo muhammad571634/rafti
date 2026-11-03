@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { BlurTargetView } from 'expo-blur';
-import { Image } from 'expo-image';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
-import { ChatGroundProvider, PORTRAIT_BG, PortraitGround, portraitOf } from '@/components/chat/chat-ground';
+import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
 import { IntroCard } from '@/components/chat/intro-card';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
@@ -51,7 +50,7 @@ import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, shadows, space } from '@/theme';
+import { colors, shadows, space } from '@/theme';
 import type { Message, MessageTone, ReplyIdea, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -214,13 +213,17 @@ export default function ChatRoomScreen() {
 
   const { width, height } = useWindowDimensions();
   const backgroundId = relationship?.backgroundId ?? PORTRAIT_BG;
-  // Their own picture, the default (owner, 2026-11-03, after Replika): the conversation over them.
-  // A character with no picture falls back to the plain ground.
+  // Their own picture is the default ground; an Art wallpaper is a picture too. Either takes the
+  // owner's prototype look (2026-11-03): the face at the top, the conversation below it. A Classic
+  // wallpaper keeps the light chat; a character with no picture falls back to the plain ground.
   const portrait = useMemo(
     () => (backgroundId === PORTRAIT_BG && character ? portraitOf(character, width / height) : undefined),
     [backgroundId, character, width, height],
   );
-  const artWallpaper = portrait ? undefined : chatArtBackgroundsById[backgroundId];
+  const artWallpaper = chatArtBackgroundsById[backgroundId];
+  const picture = portrait ?? (artWallpaper ? { source: artWallpaper.image } : undefined);
+  const onPicture = !!picture;
+  const pictureTop = usePictureListTop(onPicture, insets.top + HEADER_ROOM + (alarmRinging || conversation?.scene ? ALARM_ROOM : 0));
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
@@ -466,32 +469,21 @@ export default function ChatRoomScreen() {
     router.push(route);
   };
   const streak = relationship?.streakDays ?? 0;
-  const dark = !!portrait || !!wallpaper.dark;
+  const dark = onPicture || !!wallpaper.dark;
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen background={(portrait ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
-      <ChatGroundProvider value={!!portrait}>
+    <Screen background={(onPicture ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
+      <ChatGroundProvider value={onPicture}>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         {/* Outside the keyboard's room, so the picture stays put while the keyboard is up. */}
-        {portrait ? <PortraitGround portrait={portrait} /> : null}
+        {picture ? <PictureGround picture={picture} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
-          {artWallpaper ? (
-            <>
-              <Image
-                source={artWallpaper.image}
-                contentFit="cover"
-                style={styles.artWallpaper}
-                accessible={false}
-              />
-              <View pointerEvents="none" style={styles.artWallpaperVeil} />
-            </>
-          ) : null}
           <View style={styles.flex}>
-            {!artWallpaper && !portrait ? <ChatWallpaper hidden={dark || backgroundId === 'bg_plain'} /> : null}
+            {!onPicture ? <ChatWallpaper hidden={dark || wallpaper.id === 'bg_plain'} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
@@ -502,7 +494,11 @@ export default function ChatRoomScreen() {
               // The keyboard goes with a drag of the chat (iOS follows the finger).
               keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
               // Inverted: the bottom padding is the room under the header at the top of the screen.
-              contentContainerStyle={[styles.list, { paddingBottom: headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
+              contentContainerStyle={[styles.list, { paddingBottom: onPicture ? space.md : headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
+              // On a picture the list starts under the header (lower while the keyboard is down), and
+              // its older lines fade out there: inverted, so the list's end is the top (Android).
+              style={onPicture ? { marginTop: pictureTop } : undefined}
+              fadingEdgeLength={onPicture ? { start: 0, end: PICTURE_EDGE } : undefined}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
               // The header of an inverted list sits under the newest line.
@@ -546,8 +542,9 @@ export default function ChatRoomScreen() {
                 setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }), 120);
               }}
             />
+            {onPicture ? <PictureEdge top={pictureTop} /> : null}
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
-            {!artWallpaper && !portrait ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
+            {!onPicture ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
             {/* While you edit, the chat fades back; a tap on it cancels the edit. */}
             {editing ? (
               <Pressable
@@ -615,7 +612,7 @@ export default function ChatRoomScreen() {
               {streak > 0 ? (
                 <>
                   <CaptionDot />
-                  <Ionicons name="heart" size={10} color={portrait ? colors.onMediaSoft : colors.textSecondary} />
+                  <Ionicons name="heart" size={11} color={onPicture ? colors.onMediaSoft : colors.textSecondary} />
                   <CaptionText>{t('chat.streakShort', { count: streak })}</CaptionText>
                 </>
               ) : null}
@@ -789,11 +786,6 @@ export default function ChatRoomScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
-  artWallpaper: { ...StyleSheet.absoluteFill },
-  artWallpaperVeil: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)',
-  },
   missing: { padding: space.xl },
   list: { paddingTop: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },

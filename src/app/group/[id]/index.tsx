@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
-import { Image } from 'expo-image';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +16,7 @@ import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
+import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { ReplyControls } from '@/components/chat/reply-controls';
@@ -36,7 +36,7 @@ import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { backgroundsById, chatArtBackgroundsById, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space } from '@/theme';
+import { colors, space } from '@/theme';
 import type { Character, Message, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -172,6 +172,9 @@ export default function GroupChatScreen() {
   const backgroundId = group?.backgroundId ?? 'bg_plain';
   const artWallpaper = chatArtBackgroundsById[backgroundId];
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
+  // An Art wallpaper is a picture: the one-to-one chat's picture look (`chat-ground.tsx`).
+  const onPicture = !!artWallpaper;
+  const pictureTop = usePictureListTop(onPicture, insets.top + HEADER_ROOM);
 
   // Only messages that arrive while the group is open animate in.
   const [openedAt] = useState(() => Date.now());
@@ -316,16 +319,15 @@ export default function GroupChatScreen() {
   const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen background={wallpaper.colors as readonly [string, string]} statusBarStyle={wallpaper.dark ? 'light' : 'dark'} edgeToEdge>
+    <Screen
+      background={(onPicture ? [colors.black, colors.black] : wallpaper.colors) as readonly [string, string]}
+      statusBarStyle={onPicture || wallpaper.dark ? 'light' : 'dark'}
+      edgeToEdge>
+      <ChatGroundProvider value={onPicture}>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
+        {artWallpaper ? <PictureGround picture={{ source: artWallpaper.image }} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
-          {artWallpaper ? (
-            <>
-              <Image source={artWallpaper.image} contentFit="cover" style={StyleSheet.absoluteFill} accessible={false} />
-              <View pointerEvents="none" style={styles.artVeil} />
-            </>
-          ) : null}
           <View style={styles.flex}>
             {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain'} /> : null}
             <FlatList
@@ -338,7 +340,9 @@ export default function GroupChatScreen() {
               // The keyboard goes with a drag of the chat (iOS follows the finger).
               keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
               // Inverted: the bottom padding is the room under the header at the top of the screen.
-              contentContainerStyle={[styles.list, { paddingBottom: headerRoom }]}
+              contentContainerStyle={[styles.list, { paddingBottom: onPicture ? space.md : headerRoom }]}
+              style={onPicture ? { marginTop: pictureTop } : undefined}
+              fadingEdgeLength={onPicture ? { start: 0, end: PICTURE_EDGE } : undefined}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
               // The header of an inverted list sits under the newest line.
@@ -354,6 +358,7 @@ export default function GroupChatScreen() {
                 setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }), 120);
               }}
             />
+            {onPicture ? <PictureEdge top={pictureTop} /> : null}
             {!artWallpaper ? <HeaderFade color={wallpaper.colors[0]} room={headerRoom} /> : null}
           </View>
 
@@ -486,6 +491,7 @@ export default function GroupChatScreen() {
           setReported(true);
         }}
       />
+      </ChatGroundProvider>
     </Screen>
   );
 }
@@ -497,7 +503,6 @@ const NO_ONE: string[] = [];
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   // As the one-to-one chat's art veil: the picture stays, the bubbles stay easy to read.
-  artVeil: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(14,18,48,0.45)' : 'rgba(255,250,241,0.18)' },
   missing: { padding: space.xl },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   list: { paddingTop: space.sm },

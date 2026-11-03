@@ -599,6 +599,7 @@
   "background": {
     "title": "대화방 배경",
     "preview": "배경화면 미리보기",
+    "portrait": "초상화",
     "collections": {
       "classic": "클래식",
       "art": "아트"

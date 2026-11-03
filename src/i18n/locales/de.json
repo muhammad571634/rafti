@@ -616,6 +616,7 @@
   "background": {
     "title": "Chat-Hintergrund",
     "preview": "Vorschau des Hintergrunds",
+    "portrait": "Porträt",
     "collections": {
       "classic": "Klassisch",
       "art": "Kunst"

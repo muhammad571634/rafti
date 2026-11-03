@@ -45,7 +45,7 @@ export function TypingRow({ characters, label }: { characters: Character[]; labe
       )}
       {label ? (
         <View style={styles.named}>
-          <Txt variant="caption" color={colors.textSecondary} style={styles.label} lines={1}>
+          <Txt variant="caption" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.label} lines={1}>
             {label}
           </Txt>
           {bubble}

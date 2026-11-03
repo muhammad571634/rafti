@@ -6,7 +6,7 @@ import { BackgroundPicker } from '@/components/background-picker';
 import { portraitOf } from '@/components/chat/chat-ground';
 import { displayName, useAppStore } from '@/store/use-app-store';
 
-/** A one-to-one chat's background, from its settings (`BackgroundPicker`); their own picture leads Art. */
+/** A one-to-one chat's background, from its settings (`BackgroundPicker`); their picture is the default row. */
 export default function ChangeBackgroundScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
@@ -23,7 +23,7 @@ export default function ChangeBackgroundScreen() {
     <BackgroundPicker
       savedId={savedId}
       portrait={portrait}
-      portraitLabel={character ? displayName(character, relationship) : ''}
+      name={character ? displayName(character, relationship) : ''}
       onPick={(backgroundId) => {
         if (characterId) setBackground(characterId, backgroundId);
         // Straight back to the chat to see it there (not one step, to the settings).

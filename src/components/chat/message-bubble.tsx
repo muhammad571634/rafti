@@ -117,7 +117,7 @@ export const MessageBubble = memo(function MessageBubble({
           style={[styles.pinBadge, mine ? styles.pinMine : styles.pinTheirs]}
           accessible
           accessibilityLabel={t('chat.pinnedToast')}>
-          <Ionicons name="pin" size={12} color={colors.textSecondary} />
+          <Ionicons name="pin" size={14} color={colors.textSecondary} />
         </View>
       ) : null}
       {mine && message.tone ? (
@@ -125,7 +125,7 @@ export const MessageBubble = memo(function MessageBubble({
           style={[styles.pinBadge, pinned ? styles.toneByPin : styles.pinMine, { backgroundColor: TONE_LOOK[message.tone].fill }]}
           accessible
           accessibilityLabel={t(`chat.tones.${message.tone}`)}>
-          <Ionicons name={TONE_LOOK[message.tone].icon} size={12} color={colors.white} />
+          <Ionicons name={TONE_LOOK[message.tone].icon} size={14} color={colors.white} />
         </View>
       ) : null}
       {message.reaction && message.reaction in REACTION_STICKERS ? (
@@ -192,7 +192,7 @@ export const MessageBubble = memo(function MessageBubble({
           {column ? (
             <View style={styles.column}>
               {named ? (
-                <Txt variant="caption" color={colors.textSecondary} lines={1} style={styles.sender}>
+                <Txt variant="caption" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} lines={1} style={[styles.sender, onPhoto && styles.photoShadow]}>
                   {senderName}
                 </Txt>
               ) : null}
@@ -308,7 +308,7 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
           theirsOnPhoto && styles.photoBubble,
         ]}>
         <View style={[styles.play, { backgroundColor: ink }]}>
-          <Ionicons name={playing ? 'pause' : 'play'} size={13} color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther} />
+          <Ionicons name={playing ? 'pause' : 'play'} size={15} color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther} />
         </View>
         {playing ? (
           <View style={styles.wave}>
@@ -384,7 +384,7 @@ function NotDelivered({ onRetry, time }: { onRetry?: () => void; time?: string }
       accessibilityRole="button"
       accessibilityLabel={`${t('chat.notDelivered')}. ${t('chat.tryAgain')}`}
       style={styles.failed}>
-      <Ionicons name="alert-circle" size={13} color={systemColors.red} />
+      <Ionicons name="alert-circle" size={15} color={systemColors.red} />
       <Txt style={[styles.receipt, styles.failedText]}>
         <Txt style={[styles.receipt, styles.receiptStrong, styles.failedText]}>{t('chat.notDelivered')}</Txt>
         {onRetry ? ` · ${t('chat.tryAgain')}` : null}
@@ -412,7 +412,7 @@ function SkipLine({ text }: { text: string }) {
   return (
     <View style={styles.system} accessibilityRole="header">
       <View style={styles.sceneHead}>
-        <Ionicons name="time-outline" size={14} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+        <Ionicons name="time-outline" size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
         <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{text}</Txt>
       </View>
     </View>
@@ -425,7 +425,7 @@ function SceneCard({ title, setting }: { title: string; setting?: string }) {
   return (
     <View style={styles.system} accessibilityRole="header">
       <View style={styles.sceneHead}>
-        <Ionicons name="film-outline" size={14} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+        <Ionicons name="film-outline" size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
         <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{title}</Txt>
       </View>
       {setting ? (
@@ -453,13 +453,13 @@ function WeekCard({ week }: { week: WeekStats }) {
     <View style={styles.system}>
       <View style={styles.weekCard} accessibilityRole="summary" accessibilityLabel={[t('chat.week.title'), ...stats.map((x) => x.label)].join(', ')}>
         <View style={styles.sceneHead}>
-          <Ionicons name="sparkles-outline" size={14} color={colors.textSecondary} />
+          <Ionicons name="sparkles-outline" size={16} color={colors.textSecondary} />
           <Txt style={[styles.systemText, styles.systemStrong]}>{t('chat.week.title')}</Txt>
         </View>
         <View style={styles.weekRow}>
           {stats.map((x) => (
             <View key={x.icon} style={styles.weekStat}>
-              <Ionicons name={x.icon} size={18} color={colors.primary} />
+              <Ionicons name={x.icon} size={20} color={colors.primary} />
               <Txt style={styles.weekValue}>{x.value}</Txt>
             </View>
           ))}
@@ -487,7 +487,7 @@ function VoiceQuotaNote({ until }: { until?: string }) {
   const onPhoto = useOnPhoto();
   return (
     <View style={styles.quota}>
-      <Ionicons name="mic-off-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
+      <Ionicons name="mic-off-outline" size={17} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
       <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
         {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
         <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
@@ -504,7 +504,7 @@ function NotifyOffNote({ name }: { name: string }) {
   const onPhoto = useOnPhoto();
   return (
     <View style={styles.quota}>
-      <Ionicons name="notifications-off-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
+      <Ionicons name="notifications-off-outline" size={17} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
       <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
         {t('chat.notifyOff', { name })}{' '}
         <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => void Linking.openSettings()} accessibilityRole="link">
@@ -544,12 +544,13 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
   return (
     <View style={styles.system}>
       <PressableScale style={styles.callLine} onPress={onCallBack} disabled={!onCallBack} scaleTo={0.96}>
-        <Ionicons name={missed ? 'call-outline' : 'call'} size={13} color={missed ? colors.danger : quiet} />
-        <Txt style={[styles.systemText, onPhoto && styles.photoShadow]} color={missed ? colors.danger : quiet}>
+        <Ionicons name={missed ? 'call-outline' : 'call'} size={15} color={missed ? colors.danger : quiet} />
+        {/* The colour goes in the style: `Txt` lays `style` over its `color`. */}
+        <Txt style={[styles.systemText, { color: missed ? colors.danger : quiet }, onPhoto && styles.photoShadow]}>
           {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
         </Txt>
         {missed && onCallBack ? (
-          <Txt style={[styles.systemText, styles.systemStrong]} color={onPhoto ? palette.apricot300 : colors.brandText}>
+          <Txt style={[styles.systemText, styles.systemStrong, { color: onPhoto ? palette.apricot300 : colors.brandText }]}>
             {' · '}
             {t('chat.callBack')}
           </Txt>
@@ -588,19 +589,19 @@ const styles = StyleSheet.create({
   // A pinned line's mark, on the corner away from the tail (canvas `MenuPin.dc.html`).
   pinBadge: {
     position: 'absolute',
-    top: -6,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    top: -7,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surface,
     ...shadows.card,
   },
-  pinMine: { left: -6 },
-  pinTheirs: { right: -6 },
+  pinMine: { left: -7 },
+  pinTheirs: { right: -7 },
   // A text's tone (`TONE_LOOK`) wears the pin's shape and steps aside for a pin.
-  toneByPin: { left: 20 },
+  toneByPin: { left: 21 },
   // Bubbles of one run sit 2pt apart; a new run starts 10pt lower.
   row: {
     flexDirection: 'row',
@@ -633,11 +634,11 @@ const styles = StyleSheet.create({
   tailMine: { borderBottomRightRadius: TAIL },
   tailTheirs: { borderBottomLeftRadius: TAIL },
   bubbleMuted: { backgroundColor: colors.bubbleTranscript },
-  // Their bubble on a picture ground: dark glass with a hairline rim (`useOnPhoto`).
+  // Their bubble on a picture (an Art wallpaper): dark glass with a hairline rim (`useOnPhoto`).
   photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   photoAction: { color: colors.onMediaMuted },
-  photoSystem: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
-  photoShadow: { textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
+  photoSystem: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
+  photoShadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
   voiceWrap: { alignItems: 'flex-start', gap: space.xs, maxWidth: '72%' },
   voiceWrapMine: { alignItems: 'flex-end' },
   voiceBubble: {
@@ -650,7 +651,7 @@ const styles = StyleSheet.create({
     paddingLeft: space.sm,
     paddingRight: space.md,
   },
-  play: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', paddingLeft: 2 },
+  play: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center', paddingLeft: 2 },
   wave: { flexDirection: 'row', alignItems: 'center', gap: 2, height: 20, minWidth: 40 },
   waveBar: { width: 2, borderRadius: 1, opacity: 0.6 },
   voiceLength: { fontSize: 13, marginLeft: space.xs },

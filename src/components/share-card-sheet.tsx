@@ -130,11 +130,11 @@ export function SharePill({
 }) {
   return (
     <LinearGradient colors={gradients.primary} style={[styles.pill, label ? styles.pillWide : null, style]}>
-      <SFIcon ios="square.and.arrow.up" icon="share-outline" size={label ? 17 : 15} color={colors.textOnPrimary} />
+      <SFIcon ios="square.and.arrow.up" icon="share-outline" size={17} color={colors.textOnPrimary} />
       {label ? <Txt style={styles.pillLabel}>{label}</Txt> : null}
       {reward && label ? <RewardChip amount={amount ? reward : undefined} /> : null}
       {reward && !label && amount ? <Txt style={styles.pillAmount}>{`+${reward}`}</Txt> : null}
-      {reward && !label ? <ShellIcon size={13} /> : null}
+      {reward && !label ? <ShellIcon size={15} /> : null}
     </LinearGradient>
   );
 }
@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    height: 30,
-    minWidth: 30,
-    paddingHorizontal: 9,
-    borderRadius: 15,
+    height: 34,
+    minWidth: 34,
+    paddingHorizontal: 10,
+    borderRadius: 17,
     borderCurve: 'continuous',
   },
   pillWide: { gap: space.sm, height: 44, borderRadius: 22 },
   pillLabel: { fontSize: 16, fontWeight: '700', color: colors.textOnPrimary },
-  pillAmount: { fontSize: 13, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
+  pillAmount: { fontSize: 14, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
 });

@@ -77,7 +77,7 @@ export function ChatHeader({
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
           style={[...glass, styles.round]}>
-          <Ionicons name="chevron-back" size={24} color={onPhoto ? colors.onMedia : colors.text} style={styles.backGlyph} />
+          <Ionicons name="chevron-back" size={26} color={onPhoto ? colors.onMedia : colors.text} style={styles.backGlyph} />
         </PressableScale>
 
         <PressableScale
@@ -91,7 +91,7 @@ export function ChatHeader({
             <Txt style={styles.nameText} color={onPhoto ? colors.onMedia : undefined} lines={1}>
               {title}
             </Txt>
-            <Ionicons name="chevron-forward" size={11} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
+            <Ionicons name="chevron-forward" size={12} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
           </View>
           <View style={styles.caption}>{caption}</View>
         </PressableScale>
@@ -103,13 +103,13 @@ export function ChatHeader({
             accessibilityRole="button"
             accessibilityLabel={`${shells} ${t('common.shells')}`}
             style={styles.shells}>
-            <ShellIcon size={16} />
+            <ShellIcon size={18} />
             <Txt style={styles.shellCount} color={onPhoto ? colors.onMedia : undefined}>
               {shells}
             </Txt>
           </PressableScale>
           <View style={[styles.capsuleLine, onPhoto && styles.photoLine]} />
-          <IconButton icon="call-outline" size={20} color={onPhoto ? colors.onMedia : undefined} dot={missedCall} style={styles.callButton} accessibilityLabel={callLabel} onPress={onCall} />
+          <IconButton icon="call-outline" size={23} color={onPhoto ? colors.onMedia : undefined} dot={missedCall} style={styles.callButton} accessibilityLabel={callLabel} onPress={onCall} />
         </View>
       </View>
       {below ? <View style={styles.below}>{below}</View> : null}
@@ -137,28 +137,28 @@ const styles = StyleSheet.create({
   identity: { flex: 1, alignItems: 'center', marginHorizontal: space.sm },
   nameChip: {
     marginTop: space.xs,
-    height: 26,
+    height: 28,
     maxWidth: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
     paddingLeft: space.md,
     paddingRight: space.sm + 2,
-    borderRadius: 13,
+    borderRadius: 14,
   },
-  nameText: { fontSize: 13, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
+  nameText: { fontSize: 14, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
   caption: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
-  captionText: { fontSize: 11, color: colors.textSecondary },
+  captionText: { fontSize: 12, color: colors.textSecondary },
   captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
   capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
   shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },
-  shellCount: { fontSize: 15, fontWeight: '600', fontVariant: ['tabular-nums'] },
-  capsuleLine: { width: StyleSheet.hairlineWidth, height: 20, backgroundColor: colors.borderStrong },
-  callButton: { width: 40, height: 36 },
+  shellCount: { fontSize: 16, fontWeight: '600', fontVariant: ['tabular-nums'] },
+  capsuleLine: { width: StyleSheet.hairlineWidth, height: 22, backgroundColor: colors.borderStrong },
+  callButton: { width: 42, height: 38 },
   below: { marginTop: space.sm },
-  // On their picture (`useOnPhoto`): clear glass, as on the Today hero.
+  // On a picture (an Art wallpaper, `useOnPhoto`): clear glass, as on the Today hero.
   photoGlass: { backgroundColor: colors.onMediaGlass, borderColor: colors.onMediaHairline },
   photoLine: { backgroundColor: colors.onMediaHairline },
-  photoCaption: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowRadius: 4 },
+  photoCaption: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
   photoDot: { backgroundColor: colors.onMediaSoft },
 });

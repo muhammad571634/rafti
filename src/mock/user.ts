@@ -2,8 +2,8 @@ import type { AppSettings, DailyState, Relationship, User, Wallet } from '@/type
 import { dayKeyFromToday, daysAgo } from './time';
 
 /**
- * The chat background that is the character's own picture (owner, 2026-11-03, after Replika): a
- * one-to-one chat's default, and the first tile of the picker's Art side (`portraitOf`).
+ * The chat background that is the character's own picture (owner, 2026-11-03): a one-to-one chat's
+ * default; Chat background lists it on its own row above Classic and Art (`portraitOf`).
  */
 export const PORTRAIT_BG = 'bg_portrait';
 

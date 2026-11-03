@@ -40,16 +40,24 @@ It uses the existing tokens (`src/theme`) and kit (`src/components/ui`). This fi
   black (#000000) with #1C1C1E cards. Exceptions that keep their own canvas: the chat
   (wallpaper), the call screens (blurred portrait), the Today hero photo, diary covers and pages,
   Bedtime (`sleepColors`, navy).
-- **The chat on their picture (owner, 2026-11-03, Replika's feel inside our design).** A one-to-one
-  chat opens on the character's own picture (`PORTRAIT_BG`, `src/components/chat/chat-ground.tsx`):
-  the tall portrait (`assets/portraits`), else their wide scene slid so the face sits mid-screen,
-  else a creator's photo; no picture falls back to the plain ground. `gradients.portraitScrim`
-  darkens the top (header) and the lower part (the conversation). Inside it (`useOnPhoto`) their
-  bubbles, the typing dots, reply ideas and the intro card are dark glass (`onMediaBubble` with an
-  `onMediaHairline` rim); times, receipts, day and system lines are white with `onMediaShadow`;
-  the header turns to clear glass (`onMediaGlass`) and the composer to dark glass (`onMediaField`);
-  your bubble stays peach. Every control stays where it was. The picker's Art side leads with
-  their picture; a chosen Classic or Art wallpaper keeps the light chat. Groups keep wallpapers.
+- **The chat on a picture (owner, 2026-11-03, Replika's feel inside our design; the owner's chat
+  prototype is the reference).** A one-to-one chat opens on the character's own picture by default
+  (`PORTRAIT_BG`, `portraitOf` in `src/components/chat/chat-ground.tsx`): the tall portrait
+  (`assets/portraits`), else their wide scene slid so the face sits mid-screen, else a creator's
+  photo; no picture falls back to the plain ground. Who does not like it opens Chat background:
+  their picture is a row of its own on top ("Portrait", their name, a check), never one of the
+  wallpaper tiles; under it Classic and Art. An Art wallpaper (one-to-one or group) is a picture
+  too and takes the same look; a Classic one keeps the light chat. The look: `gradients.pictureScrim`
+  darkens the top (header) and the lower part (conversation, controls, composer); the conversation
+  starts at 36% of the screen while the keyboard is down, so the face stays in view, and fades out
+  at that edge (Android's fading edge, a dark valley on iOS); with the keyboard up it reaches the
+  header. Inside it (`useOnPhoto`) their bubbles, typing dots and reply ideas are dark glass
+  (`onMediaBubble`, `onMediaHairline` rim); times, receipts, day, system and call lines and group
+  names are white with `onMediaShadow` (iOS needs `textShadowOffset` for a shadow); the header is
+  clear glass (`onMediaGlass`), the composer dark glass (`onMediaField`); your bubble stays peach.
+  Every control stays where it was. Chat icons are a step larger (owner, same day).
+- `Txt` lays `style` over its `color` prop: a style that sets a colour wins, so a colour that must
+  change goes in the style array after it.
 - Tab bar: the system bar on iOS (Liquid Glass on iOS 26+, `(tabs)/_layout.ios.tsx`); on Android
   and web a floating frosted pill (Today, Chats, Us) with Find as a round button beside it
   (`(tabs)/_layout.tsx`). Bold labels; icons stay ink (HIG Tab bars: one colour over a colourful

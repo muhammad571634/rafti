@@ -72,7 +72,7 @@ export function ReplyControls({
             <SFIcon
               ios={up ? 'hand.thumbsup.fill' : 'hand.thumbsup'}
               icon={up ? 'thumbs-up' : 'thumbs-up-outline'}
-              size={17}
+              size={20}
               color={up ? colors.primary : quiet}
             />
           </PressableScale>
@@ -86,7 +86,7 @@ export function ReplyControls({
             <SFIcon
               ios={down ? 'hand.thumbsdown.fill' : 'hand.thumbsdown'}
               icon={down ? 'thumbs-down' : 'thumbs-down-outline'}
-              size={17}
+              size={20}
               color={down ? colors.primary : quiet}
             />
           </PressableScale>
@@ -102,7 +102,7 @@ export function ReplyControls({
             style={[styles.button, first && styles.off]}
             accessibilityRole="button"
             accessibilityLabel={t('chat.prevVersion')}>
-            <SFIcon ios="chevron.left" icon="chevron-back" size={15} color={quiet} />
+            <SFIcon ios="chevron.left" icon="chevron-back" size={17} color={quiet} />
           </PressableScale>
           <Txt style={[styles.count, onPhoto && onPhotoCount]} accessibilityLabel={t('chat.versionOf', { index: index + 1, count })}>
             {`${index + 1}/${count}`}
@@ -114,7 +114,7 @@ export function ReplyControls({
             style={[styles.button, last && styles.off]}
             accessibilityRole="button"
             accessibilityLabel={t('chat.nextVersion')}>
-            <SFIcon ios="chevron.right" icon="chevron-forward" size={15} color={quiet} />
+            <SFIcon ios="chevron.right" icon="chevron-forward" size={17} color={quiet} />
           </PressableScale>
         </>
       ) : null}
@@ -126,7 +126,7 @@ export function ReplyControls({
           style={styles.redo}
           accessibilityRole="button"
           accessibilityLabel={t('chat.newReply')}>
-          <SFIcon ios="arrow.clockwise" icon="refresh" size={18} color={quiet} />
+          <SFIcon ios="arrow.clockwise" icon="refresh" size={21} color={quiet} />
         </PressableScale>
       ) : null}
       {onContinue ? (
@@ -137,7 +137,7 @@ export function ReplyControls({
           style={styles.redo}
           accessibilityRole="button"
           accessibilityLabel={t('chat.continue')}>
-          <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={18} color={quiet} />
+          <SFIcon ios="chevron.right.2" icon="play-forward-outline" size={21} color={quiet} />
         </PressableScale>
       ) : null}
       {onShare ? (
@@ -196,13 +196,13 @@ export function VersionSwipe({
 
 const styles = StyleSheet.create({
   // Starts under their bubbles: 12 gutter + 28 avatar + 8 gap, less the button's own inset.
-  row: { flexDirection: 'row', alignItems: 'center', height: 36, paddingLeft: 36, marginTop: -space.xs },
-  button: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
+  row: { flexDirection: 'row', alignItems: 'center', height: 40, paddingLeft: 34, marginTop: -space.xs },
+  button: { width: 44, height: 40, alignItems: 'center', justifyContent: 'center' },
   off: { opacity: 0.3 },
-  divider: { width: StyleSheet.hairlineWidth * 2, height: 16, marginHorizontal: space.xs, backgroundColor: colors.borderStrong },
-  count: { minWidth: 34, textAlign: 'center', fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  redo: { width: 44, height: 36, alignItems: 'center', justifyContent: 'center' },
-  shareTarget: { height: 36, justifyContent: 'center', marginLeft: space.xs },
+  divider: { width: StyleSheet.hairlineWidth * 2, height: 18, marginHorizontal: space.xs, backgroundColor: colors.borderStrong },
+  count: { minWidth: 34, textAlign: 'center', fontSize: 14, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  redo: { width: 46, height: 40, alignItems: 'center', justifyContent: 'center' },
+  shareTarget: { height: 40, justifyContent: 'center', marginLeft: space.xs },
   photoDivider: { backgroundColor: colors.onMediaHairline },
 });
 
