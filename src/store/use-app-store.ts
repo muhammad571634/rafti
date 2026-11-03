@@ -2512,6 +2512,9 @@ export const useAppStore = create<AppState>()(
       markInboxSeen: () => set({ inboxSeenAt: new Date().toISOString() }),
 
       writeDueDiaryPages: () => {
+        // Before launch finishes the chats are still loading: a page from the moments alone would
+        // miss what was said, and a crisis day would read as a light one. Launch writes them after.
+        if (!get().hydrated) return;
         const { conversations, messages, moments, characterDiary } = get();
         const together = daysTogether(conversations, messages, moments);
         if (modelOn(get)) return writePagesWithModel(set, get, dueDays(together, characterDiary));
@@ -3870,10 +3873,10 @@ async function finishHydration() {
     .forEach((stream) => runStream(useAppStore.setState, useAppStore.getState, stream.id));
   useAppStore.setState((s) => ({ ledger: oneExpiryPerMidnight(s.ledger) }));
   useAppStore.getState().expireFreeShells();
-  useAppStore.getState().writeDueDiaryPages();
   dropChatAiNotices();
   refreshPreviews();
   useAppStore.setState({ hydrated: true });
+  useAppStore.getState().writeDueDiaryPages();
 }
 
 /**
