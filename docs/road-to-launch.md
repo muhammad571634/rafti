@@ -40,7 +40,7 @@ stream, a first text left out); never pass a stock line off as the character.
 6. Voice: replies first, live calls after.
 7. Payments: Google Play Billing, then StoreKit.
 8. Account and safety review before strangers use it: age gate, report, block, delete account, moderation of what users create, terms and privacy reviewed by a lawyer.
-9. Measure: retention (D1, D7), messages a day, paying share. No measuring, no learning.
+9. Measure: retention (D1, D7), messages a day, paying share. No measuring, no learning. Since 0z96 `npm run metrics` reads them from the server; paying share waits for payments.
 10. Closed test on Google Play, real strangers, fix what they hit. A new personal account must keep 12 testers opted in for 14 days before production.
 11. Launch, then short-video marketing built on the tropes that already travel (`docs/worlds-plan.md`).
 
