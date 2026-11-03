@@ -30,8 +30,9 @@ export const WHEEL_WEIGHTS = [75, 8, 55, 2, 75, 2, 30, 1] as const;
  * gift stay (owner decision 2026-10-13). Pure on purpose, like plans.ts: the server copies it.
  */
 export function creditFree(wallet: Wallet, amount: number, today: string): Wallet {
-  const already = wallet.free && wallet.free.day === today ? wallet.free.amount : 0;
-  return { ...wallet, shells: wallet.shells + amount, free: { day: today, amount: already + amount } };
+  // A bucket dated after today (the time zone moved west) is still live: it keeps its later day.
+  const live = wallet.free && wallet.free.day >= today ? wallet.free : undefined;
+  return { ...wallet, shells: wallet.shells + amount, free: { day: live?.day ?? today, amount: (live?.amount ?? 0) + amount } };
 }
 
 /** A bucket burns once. The server's answer can bring back a bucket the app already burnt (its day ends later). */

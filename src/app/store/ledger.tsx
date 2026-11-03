@@ -79,7 +79,7 @@ export default function LedgerScreen() {
     () => groupByDay(fold(ledger.filter((e) => (e.unit ?? 'shells') === tab))),
     [ledger, tab],
   );
-  const freeToday = free && free.day === todayKey() ? free.amount : 0;
+  const freeToday = free && free.day >= todayKey() ? free.amount : 0;
 
   const dayTitle = (key: string) => {
     if (key === todayKey()) return t('ledger.today');

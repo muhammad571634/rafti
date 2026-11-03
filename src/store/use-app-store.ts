@@ -2283,9 +2283,10 @@ export const useAppStore = create<AppState>()(
         const { wallet } = get();
         if (wallet.shells < amount) return false;
         const today = todayKey();
-        // Today's free shells go first, so bought ones last longer.
+        // Today's free shells go first, so bought ones last longer (a bucket dated after today too:
+        // the time zone moved west).
         const free =
-          wallet.free && wallet.free.day === today
+          wallet.free && wallet.free.day >= today
             ? { ...wallet.free, amount: Math.max(0, wallet.free.amount - amount) }
             : wallet.free;
         set((s) => ({

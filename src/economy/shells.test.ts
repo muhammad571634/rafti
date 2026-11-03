@@ -26,4 +26,9 @@ describe('creditFree: every free source lands in today\'s bucket', () => {
     assert.deepEqual(next.free, { day: TODAY, amount: 10 });
     assert.equal(next.shells, 510);
   });
+
+  it('adds to a bucket dated after today, keeping its day (the time zone moved west)', () => {
+    const wallet: Wallet = { shells: 40, film: 0, free: { day: '2026-10-14', amount: 40 } };
+    assert.deepEqual(creditFree(wallet, 10, TODAY).free, { day: '2026-10-14', amount: 50 });
+  });
 });

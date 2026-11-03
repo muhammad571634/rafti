@@ -48,7 +48,7 @@ export default function MyPlanScreen() {
   const status = planStatus(wallet.subscription, now);
   const calls = minutesOf(wallet, 'call', now);
   const voice = minutesOf(wallet, 'voice', now);
-  const freeToday = wallet.free && wallet.free.day === todayKey() ? wallet.free.amount : 0;
+  const freeToday = wallet.free && wallet.free.day >= todayKey() ? wallet.free.amount : 0;
   // Pro and the trial carry minutes; Basic is chat only.
   const withCalls = callsIncluded(wallet, now);
   const pro = !!status && (status.trial || status.plan !== 'basic');
