@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z97. Reports reach the server (2026-11-03, Claude 2). NEXT: owner deploys the server, then reports one message
+
+- Road-to-launch item 8: a report on a character's message stayed on the phone. Now `reportMessage` keeps up to 8 lines before it (`context`, the member's `characterId` in a group) and `sendReports` posts each unsent report to `POST /v1/reports` (`cleanReport`, own body limit, 30 a day an account). It goes again with the next report and on each open (`claimDailyLogin`); a 400 or 413 is final, so a broken report is not resent forever. Reports from before this go up with no context.
+- `public.reports` (`20261103074838_b3_reports.sql`, applied to the cloud with the owner's yes for this task): RLS on, no policy, anon and authenticated revoked (checked); `unique (user_id, client_id)` makes a resend book once; cascades with the account.
+- Second reader (a fresh agent, read-only) found nothing serious and six smaller things, each checked in the code. Fixed: a NUL or half an emoji (the 2000-character cut) would make Postgres refuse a report for good, so the server cleans both and the phone never cuts an emoji in half; a 400/413 counted as offline; a report made while a batch was out waited for the next open; no cap on reports; no speaker in group lines. Open: privacy, below.
+- My slip: a Python write with a bad escape emptied `use-app-store.ts` on disk for a minute (truncate, then the write failed). Restored from HEAD and redone with Edit; checks ran after. Never write the store through a script.
+- Before the deploy the app gets 404 and keeps the reports unsent: harmless. Update `52bd3245`.
+- Checks: tsc 0 (app and server), npm test 642/642, server tests 71/71, check:locales passes. Not run: the cloud suite, and a real report on the phone (needs the deploy).
+
+Still to do:
+1. Owner deploys the server; then report one message on the A51 and read the row in `public.reports`.
+2. Privacy policy: a report sends the message and up to 8 lines before it, the user's own included, kept until the account is deleted. Decide a purge after review.
+3. A way for a person to read the queue (for now SQL; the metrics script's `query` can serve).
+
 ### 0z96. The daily check-in waits for a slow sign-in and tries again (2026-11-03, Claude 2). NEXT: owner reopens the app; then road-to-launch item 9 (measure)
 
 - Found while looking at what the server already records for item 9. On the A51 account, 2026-11-03: model calls from 11:58 and a wheel spin at 12:02, but no `daily:2026-11-03` row, and the wallet's `check_in_day` still 11-02. On earlier days the check-in landed long after the first activity (11-02: first call 00:02, check-in 00:48; another account 00:18 vs 10:30).
