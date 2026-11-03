@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z102. Calls on the model, step 1: live captions (2026-11-03, Claude 2). NEXT: owner deploys the server, then tries a call on the A51
+
+- Owner asked how calls work and what they cost: BIMOBIMO sells a 15-minute real-time call trial (teardown #40), Character.AI has voice calls; ours were stock subtitles. Plan told to the owner: step 1 the model talks (now), step 2 ElevenLabs reads the lines, step 3 talking without the mic. Costs per `docs/voice-provider-fish-audio.md`: words about $0.001 a line, voice is the cost.
+- With the model on (`src/app/call/[id].tsx`): the character opens the call (`callCue`: who placed it), the user holds the mic or taps it twice (`HoldMic` got `disabled` / `iconColor` / `iconSize`), `useVoiceNote` without a chat writes out the words, `callReply` (store) answers in `mode: 'call'` with the chat, memory, lore and threads behind it; captions show their lines one by one (`captionMs`), the user's words softer, a wave while recording, dots while waiting, Not Delivered + retry when busy. Model off: the old subtitles. No new strings; no server route change.
+- The call's lines (`keptCallLines`, last 30, 300 characters, no half emoji) stay on its chat row as `Message.callLines`: `chatTurns` gives each under its speaker (`callTurnLines`, `[Voice call]` on the first), the memory pass reads them (`passLines` replaces `passLine`), the diary splits them and drops crisis lines, and a crisis said on a call makes the day heavy (`daysTogether`).
+- Safety: every transcript is checked on the phone (`detectCrisis`) and the server's `crisis` comes back from `callReply`; either shows a helpline button on the call and puts the card in the chat, once a call (`helplineToChat`). Words that arrive after the hang-up ask nothing. Calls use `talk` / `short` prefs, so a story-style chat cannot ask for narration.
+- Second reader (a fresh agent, read-only) found 8; checked in the code and fixed: no help on the call screen for a spoken crisis (and none when the server failed); the diary could quote a crisis line from a call; half an emoji could block message sync; the chat's story style fought call mode; the model saw the user's call lines inside its own turn; a model call after the hang-up; the mic stuck in tap mode while Not Delivered showed. Its 8th: the server builds history from these src files, so later replies read the call only after a deploy.
+- Checks: tsc 0, npm test 649/649, server tsc 0, server tests 71/71. Not run on the A51 yet (it needs a voice).
+
+Still to do:
+1. Owner deploys the server (history reads call lines).
+2. Owner tries a call on the A51: the opener, a held and a tapped line, a retry, hanging up mid-reply; then a chat line that refers to the call.
+3. Step 2 after the ElevenLabs grant: read the lines aloud (Flash for calls), then step 3 (no mic), and decide a daily cap for Pro yearly.
+4. The group call (`src/app/group/[id]/call.tsx`) still runs stock subtitles.
+
 ### 0z102. Sigmazam Marketing Studio & Telegram Preview Bot (2026-11-03, Gemini). NEXT: autonomous scheduled growth dispatch
 
 - Built visual node-based AI marketing workflow studio (`marketing/studio/index.html`, `start-studio.bat`):

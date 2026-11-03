@@ -41,12 +41,20 @@ export function callMessages(said: readonly CallLine[], conversationId: string, 
   );
 }
 
+/** A lone high surrogate at the end: half an emoji after a cut, which the database refuses. */
+const HALF_EMOJI = /[\uD800-\uDBFF]$/;
+
 /** The lines a finished call keeps on its row in the chat. */
 export function keptCallLines(said: readonly CallLine[]): { author: MessageAuthor; text: string }[] {
   return said
     .filter((line) => line.text.trim())
     .slice(-CALL_LINES_KEPT)
-    .map((line) => ({ author: line.author, text: line.text.trim().slice(0, CALL_LINE_CHARS) }));
+    .map((line) => ({ author: line.author, text: line.text.trim().slice(0, CALL_LINE_CHARS).replace(HALF_EMOJI, '') }));
+}
+
+/** A call's lines as history turns (`chatTurns`): each under its speaker, the first marked as a call. */
+export function callTurnLines(lines: readonly { author: MessageAuthor; text: string }[]): { author: MessageAuthor; text: string }[] {
+  return lines.map((line, i) => ({ author: line.author, text: i === 0 ? `[Voice call] ${line.text}` : line.text }));
 }
 
 /** A call row as the model reads it later, in the chat and in the memory pass. */

@@ -7,6 +7,7 @@ import { steerCue } from '../lib/chat-steer';
 import { redoCue } from '../lib/chat-turns';
 import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
 import { messageText } from '../lib/story-continuity';
+import { callTurnLines } from './call-prompt';
 
 import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
@@ -90,17 +91,24 @@ export function recallLines(memories: readonly (MemoryNote & { pinned?: boolean 
 /**
  * A one-to-one chat as the model reads it: the lines it may see (`messageText`), one turn per run
  * of one side. A time skip is the user's turn, as they moved the story on; a continue is not shown,
- * so their lines on both sides of it read as one turn.
+ * so their lines on both sides of it read as one turn. A call on the model gives its lines, each
+ * under its own speaker, so the model never reads the user's words as its own.
  */
 export function chatTurns(messages: readonly Message[]): HistoryTurn[] {
   const turns: HistoryTurn[] = [];
-  for (const message of messages) {
-    const text = messageText(message);
-    if (text === null) continue;
-    const role = message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant';
+  const add = (role: HistoryTurn['role'], text: string) => {
     const last = turns[turns.length - 1];
     if (last?.role === role) last.text = `${last.text}\n${text}`;
     else turns.push({ role, text });
+  };
+  for (const message of messages) {
+    if (message.kind === 'call' && !message.missed && message.callLines?.length) {
+      for (const line of callTurnLines(message.callLines)) add(line.author === 'me' ? 'user' : 'assistant', line.text);
+      continue;
+    }
+    const text = messageText(message);
+    if (text === null) continue;
+    add(message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant', text);
   }
   return turns;
 }

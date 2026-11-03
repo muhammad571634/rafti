@@ -52,6 +52,15 @@ export function daysTogether(
 
   for (const conv of conversations) {
     for (const m of messages[conv.id] ?? []) {
+      // A crisis said on a call (whoever placed it) makes the day heavy, as a typed one does.
+      if (m.kind === 'call' && m.callLines?.some((l) => l.author === 'me' && detectCrisis(l.text))) {
+        const entry = slot(conv.characterId, m.createdAt);
+        if (entry) {
+          entry.heavy = true;
+          entry.extraTouches += 1;
+        }
+        continue;
+      }
       if (m.author !== 'me') continue;
       const entry = slot(conv.characterId, m.createdAt);
       if (!entry) continue;

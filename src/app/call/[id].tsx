@@ -3,11 +3,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { captionMs, type CallLine, type CallPlacedBy } from '@/ai/call-prompt';
+import { detectCrisis, HELPLINE_URL } from '@/ai/safety';
 import { apiBase } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
 import { HoldMic } from '@/components/chat/hold-mic';
@@ -76,7 +77,17 @@ export default function CallScreen() {
   // A call on the model: what has been said, the caption up now, and a reply on its way.
   const live = useAppStore((s) => s.settings.realAi) && !!apiBase();
   const callReply = useAppStore((s) => s.callReply);
+  const helplineToChat = useAppStore((s) => s.helplineToChat);
   const placedBy: CallPlacedBy = answered ? 'character' : 'user';
+  // A crisis on the call: help shows on the call at once and the chat gets the card, once a call.
+  const [helpline, setHelpline] = useState(false);
+  const crisisSeen = useRef(false);
+  const markCrisis = () => {
+    if (crisisSeen.current || !characterId) return;
+    crisisSeen.current = true;
+    helplineToChat(characterId);
+    if (mounted.current) setHelpline(true);
+  };
   const said = useRef<CallLine[]>([]);
   const [caption, setCaption] = useState<CallLine | null>(null);
   const [waiting, setWaiting] = useState(false);
@@ -105,17 +116,21 @@ export default function CallScreen() {
     setWaiting(true);
     setFailed(false);
     const sent = said.current;
-    void callReply(character.id, sent, placedBy).then((reply) => {
+    void callReply(character.id, sent, placedBy).then(({ lines: theirs, crisis }) => {
+      if (crisis) markCrisis();
       if (!mounted.current || said.current !== sent) return;
       setWaiting(false);
-      if (!reply) return setFailed(true);
-      said.current = [...sent, ...reply.lines.map((text) => ({ author: 'them' as const, text }))];
-      play(reply.lines);
+      if (!theirs) return setFailed(true);
+      said.current = [...sent, ...theirs.map((text) => ({ author: 'them' as const, text }))];
+      play(theirs);
     });
   };
 
-  // The user's words, written out by the server: they show, and the character answers them.
+  // The user's words, written out by the server: they show, and the character answers them. Words
+  // that arrive after the hang-up ask nothing, but a crisis in them still reaches the chat.
   const voice = useVoiceNote(undefined, (note) => {
+    if (detectCrisis(note.transcript)) markCrisis();
+    if (!mounted.current || booked.current) return;
     const line: CallLine = { author: 'me', text: note.transcript, language: note.language };
     said.current = [...said.current, line];
     clearTimeout(captionTimer.current);
@@ -288,6 +303,16 @@ export default function CallScreen() {
 
       {state === 'active' && live ? (
         <>
+          {helpline ? (
+            <PressableScale
+              style={[callGlass.glass, styles.helpline]}
+              onPress={() => void Linking.openURL(HELPLINE_URL)}
+              accessibilityRole="link"
+              accessibilityLabel={t('safety.helplineTitle')}>
+              <Ionicons name="heart" size={17} color={colors.onMedia} />
+              <Txt style={styles.helplineText}>{t('safety.helplineAction')}</Txt>
+            </PressableScale>
+          ) : null}
           <LiveCaption
             recording={recording}
             seconds={voice.seconds}
@@ -311,7 +336,8 @@ export default function CallScreen() {
               style={[callGlass.glass, styles.mic]}
               iconColor={colors.onMedia}
               iconSize={34}
-              disabled={muted || waiting || voice.phase === 'sending'}
+              // A recording can always be stopped; only a new one waits.
+              disabled={!recording && (muted || waiting || voice.phase === 'sending')}
             />
           </View>
         </>
@@ -417,6 +443,17 @@ const styles = StyleSheet.create({
   captionClock: { fontSize: 15, color: colors.onMedia, fontVariant: ['tabular-nums'] },
   listening: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   micRow: { alignItems: 'center', marginBottom: 28 },
+  helpline: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    minHeight: 44,
+    paddingHorizontal: 18,
+    borderRadius: 22,
+    marginBottom: 14,
+  },
+  helplineText: { fontSize: 16, fontWeight: '600', color: colors.onMedia },
   mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
   missing: { padding: space.xl },
   share: {

@@ -691,7 +691,9 @@ interface AppState {
    * The character's next words on a call (`mode: 'call'`), with the chat and memory behind them;
    * null when the model is off, out of reach or busy. Nothing lands in the chat until the call ends.
    */
-  callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: string[] } | null>;
+  callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: string[] | null; crisis: boolean }>;
+  /** A crisis on a call: the helpline card goes to the chat at once (the call screen shows its own). */
+  helplineToChat: (characterId: string) => void;
 
   /* safety */
   reports: MessageReport[];
@@ -2976,7 +2978,7 @@ export const useAppStore = create<AppState>()(
         const state = get();
         const character = state.characters.find((c) => c.id === characterId);
         const bond = state.relationships[characterId];
-        if (!character || !bond || !state.settings.realAi || !apiBase()) return null;
+        if (!character || !bond || !state.settings.realAi || !apiBase()) return { lines: null, crisis: false };
         const conversation = state.conversations.find((c) => c.characterId === characterId);
         const chat = conversation ? (state.messages[conversation.id] ?? []).filter((m) => !m.pending) : [];
         // The call so far reads as the newest turns, after the chat it grew out of.
@@ -2987,7 +2989,8 @@ export const useAppStore = create<AppState>()(
           character,
           user: state.user,
           relationship: bond,
-          prefs: replyPrefs(bond),
+          // Spoken, not written: the chat's story or long style would ask for narration a call cannot say.
+          prefs: { ...replyPrefs(bond), style: 'talk' as const, length: 'short' as const },
           persona: conversation ? personaFor(conversation.id, state) : undefined,
           scene: conversation?.scene,
           lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
@@ -3001,13 +3004,14 @@ export const useAppStore = create<AppState>()(
         const reply = await accessToken()
           .then((token) => serverReply(input, token))
           .catch(() => null);
-        if (!reply) return null;
-        // The server's crisis check: the reply is already the safe one; the chat gets the helpline card.
-        if (reply.crisis) appendHelplineCard(set, get, get().addFriend(characterId));
+        if (!reply) return { lines: null, crisis: false };
         // Captions say only what is spoken, as a voice will: narration has no place on a call.
+        // `crisis` is the server's check; the reply is already the safe one.
         const spoken = reply.lines.map((line) => speechOnly(line)).filter(Boolean);
-        return spoken.length ? { lines: spoken } : null;
+        return { lines: spoken.length ? spoken : null, crisis: reply.crisis };
       },
+
+      helplineToChat: (characterId) => appendHelplineCard(set, get, get().addFriend(characterId)),
 
       addCall: (record, lines) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
@@ -4363,6 +4367,10 @@ function writePagesWithModel(set: Setter, get: Getter, due: { day: DayTogether; 
     const lines = day.heavy
       ? []
       : (state.messages[conversation.id] ?? []).filter((m) => dayKey(m.createdAt) === day.day).flatMap((m) => {
+          // A call gives its lines under their own speakers, and never a crisis line to quote.
+          if (m.kind === 'call' && m.callLines?.length) {
+            return m.callLines.filter((l) => !detectCrisis(l.text)).map((l) => ({ mine: l.author === 'them', text: l.text }));
+          }
           const text = messageText(m);
           return text ? [{ mine: m.author === 'them', text }] : [];
         });

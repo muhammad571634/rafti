@@ -229,6 +229,8 @@ BIMOBIMO screenshot numbers (`#N`) map to files in `rafti-research/teardown/scre
 | Real voice messages | code done (2026-11-02), not yet on a device; needs the server deployed | Hold the mic: records, let go sends, slide cancels; the server writes out the words and the character answers them; the note plays back (HANDOFF 0z92) | `src/components/chat/use-voice-note.ts`, `src/ai/voice-prompt.ts` |
 | The model sees photos the user sends | done in code, checked on the A51 in Expo Go (2026-10-31) | One-to-one and group; consent once; one line about each photo remembers it. Needs the server deployed and a new APK (HANDOFF 0z80) | `src/ai/photo-prompt.ts`, `src/lib/photo-for-model.ts`, `src/components/chat/use-pick-photo.ts` |
 
+| Calls on the model (step 1) | code done (2026-11-03, 0z102), not yet checked on the A51 | The character opens the call and answers what the user says (hold or tap the mic, the server writes out the words), as live captions; Not Delivered with a retry when busy; the call's lines stay on its chat row for later replies, the memory pass and the diary; helpline on the call. Voice (ElevenLabs) is step 2, talking without the mic step 3. Needs the server deployed for later replies to read the call | `src/app/call/[id].tsx`, `src/ai/call-prompt.ts` |
+
 | Worlds 2.0 | code done (2026-10-30), server deployed with the prompt tuning (0z69), not yet on a device; translations and art open | 55 characters in 7 worlds (Velvet District, Gilded Empire, Ice & Arena new); role, season, events, ties on the world page; arcs on the profile and in Us; stories in the prompt | docs/worlds-plan.md |
 
 Live map of the same table (Uzbek): https://claude.ai/artifact/UChkXuUa9vNDyFHNTHHNUb
