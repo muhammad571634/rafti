@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z100. The profile keeps only a time zone Postgres knows (2026-11-03, Claude 2). NEXT: owner deploys the server
+
+- 0z89's to-do 4: `cleanTimeZone` checked with Node's Intl only, and `user_today` would raise on every wallet call for a zone Postgres does not know. `20261103084650_b5_known_time_zone.sql` (applied by the owner with `scripts/apply-migration.mjs`; checked: version, trigger enabled, the three zones unchanged): a `before insert or update of time_zone` trigger checks `pg_timezone_names`; an update keeps the old zone and `time_zone_set_at` (the once-a-day limit is not spent), a new profile gets UTC. Old rows with an unknown zone go to UTC (none). The name check is stricter than `AT TIME ZONE` on purpose: '+05:00' would be read as POSIX with the sign flipped.
+- Server (`18686b7`): `cleanTimeZone` sends the zone's proper case (`asia/tashkent` → `Asia/Tashkent`), tested. Needs the deploy.
+- Second reader (a fresh agent, read-only): nothing serious; its fixes for old rows and case are in. Left: the insert trigger scans `pg_timezone_names` on each bootstrap (a few ms a launch); `bootstrap_user` could insert only when the profile is missing.
+- Checks: tsc 0, server tsc 0, server tests 71/71.
+
+Still to do:
+1. Owner deploys the server.
+2. 0z89's to-do 3 (a zone moving west and the check-in streak) is still open.
+
 ### 0z99. Terms of use draft (2026-11-03, Claude 2). NEXT: the gates in its first section
 
 - `docs/legal/terms-of-use.md`: 18+, the AI disclaimer and crisis line, the content rules (the hard lines of `docs/content-policy.md`, in user words), licenses for messages, made characters and AI output, shells (no cash value; daily free shells expire at midnight, the welcome gift, bought and plan shells do not), plans through the stores with auto-renew and trial, refunds by the store, suspension and appeal, liability, disputes, the App Store third-party-beneficiary clause.
