@@ -9,7 +9,7 @@
 - Checks: tsc 0, npm test 642/642.
 
 Still to do:
-1. Owner deploys the server, then speaks Uzbek again: the reply should stay in Uzbek.
+1. Done: owner deployed the server from `ff42a33` with a clean `src`/`server` (Fly v14, 2026-11-03); `/health` 200, `/v1/voice/transcribe` 401 without a token. Left: owner speaks Uzbek again, the reply should stay in Uzbek.
 2. The rest of the 0z94 list.
 
 ### 0z94. Voice messages work on the A51; a larger mic; the reply hears the spoken language (2026-11-02, Claude 2). NEXT: owner deploys the server for the language part
