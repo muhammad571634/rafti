@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z103. Design direction: is the iOS look boring? (2026-11-03, Claude 2). NEXT: owner names an app whose look they like, or says "you pick"
+
+- Owner's ask: next to current apps and trends, our iOS/HIG look may feel boring; make it simpler and closer to today's trends and apps like these. Taste is the owner's call. No code changed.
+- What the A51 showed (Turkish locale, 15:50): Today reads as a phone home screen (4 loud module tiles + 6 icons, 10 doors on one screen); Chats is a plain Messages clone, many rows show letter avatars (IV, RV, OF) instead of faces; Us reads as a fitness app (level ring, numbers, calendar); every hub has the same aurora ground with white cards; Find is closest to the trend (big photo card), but its "who do you miss" row is empty plus circles.
+- Trend read (web, light): in character apps the character art is the screen: large art, a dark immersive ground, few controls, see-through glass over the art (HIG: glass is chrome, not content).
+- Mobbin: not connected in this Claude 2 session. Its MCP (`https://api.mobbin.com/mcp`, streamable HTTP, OAuth) needs a paid Pro plan (docs.mobbin.com/mcp/introduction); the free plan does not include it. Its MIT skills (`redesign-screen`, `search`) ship in the Antigravity partner catalog. Not needed to start: real apps can be studied on the A51 and the web.
+- Asked the owner: which app's look they liked (name or screenshot), dark and cinematic vs light and playful; or the agent picks and tries one screen first.
+
+Still to do:
+1. Owner answers that question.
+2. Then: two or three directions → short design doc → owner's yes → one screen first. Keep approved screens (Heartbeat diary), clear glass on photos, popups instant, existing animations.
+
 ### 0z102. Calls on the model, step 1: live captions (2026-11-03, Claude 2). NEXT: owner deploys the server, then tries a call on the A51
 
 - Owner asked how calls work and what they cost: BIMOBIMO sells a 15-minute real-time call trial (teardown #40), Character.AI has voice calls; ours were stock subtitles. Plan told to the owner: step 1 the model talks (now), step 2 ElevenLabs reads the lines, step 3 talking without the mic. Costs per `docs/voice-provider-fish-audio.md`: words about $0.001 a line, voice is the cost.
