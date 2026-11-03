@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z101. A time zone moving west neither pays twice nor keeps free shells (2026-11-03, Claude 2). NEXT: owner picks the next task
+
+- 0z89's to-do 3. `20261103085820_b6_zone_moves_west.sql` (applied by the owner; checked: all four functions live, `authenticated` cannot execute them, the three wallets unchanged): `wallet_check_in` pays 0 and keeps the streak when `check_in_day >= today`, and when `daily:<today>` is already booked it moves `check_in_day` up to today; `wallet_credit` keeps the later of the bucket's day and today and adds to it; `wallet_spend` spends a bucket dated after today first; `wallet_settle` gives a day's second burn its own key (`expired:<day>:<n>`), as `book_shells` skipped a repeated key while the bucket was still cleared, so those free shells never burned.
+- App (`59bf6b1`, update `896ce668`): `creditFree`, `spendShells`, My plan and History count a bucket dated after today as live (tested).
+- Second reader (a fresh agent, read-only): nothing serious in the change; the double-burn key, the `check_in_day` move and the app's `>=` came from it. Left as is: going west replays that day's unused spins and shares (per-day keys); the once-a-day zone limit caps it.
+- Checks: tsc 0, npm test 643/643. No server code changed.
+
 ### 0z100. The profile keeps only a time zone Postgres knows (2026-11-03, Claude 2). NEXT: owner deploys the server
 
 - 0z89's to-do 4: `cleanTimeZone` checked with Node's Intl only, and `user_today` would raise on every wallet call for a zone Postgres does not know. `20261103084650_b5_known_time_zone.sql` (applied by the owner with `scripts/apply-migration.mjs`; checked: version, trigger enabled, the three zones unchanged): a `before insert or update of time_zone` trigger checks `pg_timezone_names`; an update keeps the old zone and `time_zone_set_at` (the once-a-day limit is not spent), a new profile gets UTC. Old rows with an unknown zone go to UTC (none). The name check is stricter than `AT TIME ZONE` on purpose: '+05:00' would be read as POSIX with the sign flipped.
@@ -9,7 +16,7 @@
 
 Still to do:
 1. Done: owner deployed from `701d9c2` with a clean `src`/`server` (Fly v17, 2026-11-03), `/health` 200.
-2. 0z89's to-do 3 (a zone moving west and the check-in streak) is still open.
+2. Done in 0z101: a zone moving west.
 
 ### 0z99. Terms of use draft (2026-11-03, Claude 2). NEXT: the gates in its first section
 
