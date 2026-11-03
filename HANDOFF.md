@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z99. Terms of use draft (2026-11-03, Claude 2). NEXT: the gates in its first section
+
+- `docs/legal/terms-of-use.md`: 18+, the AI disclaimer and crisis line, the content rules (the hard lines of `docs/content-policy.md`, in user words), licenses for messages, made characters and AI output, shells (no cash value; daily free shells expire at midnight, the welcome gift, bought and plan shells do not), plans through the stores with auto-renew and trial, refunds by the store, suspension and appeal, liability, disputes, the App Store third-party-beneficiary clause.
+- Checked against the code: plan shells go into the main balance and never burn (`payPlanShells`); minutes are per period (`plans.ts`).
+- Gates in its first section: owner's legal details and governing law, a lawyer ([Lawyer] marks), payments shipped, the public catalogue, hosting + links. No code changed.
+
+Still to do:
+1. Those gates; with the privacy policy, both go on the site once `sigmazam.app` exists.
+
 ### 0z98. Privacy policy draft and store forms (2026-11-03, Claude 2). NEXT: the gates in its first section, when each comes due
 
 - There was none, and Profile → Privacy / Terms do nothing. `docs/legal/privacy-policy.md`: the public text (adults only, anonymous account, what the server keeps, Gemini / Supabase / Fly as processors, retention, deletion, rights) and drafts of Apple's App Privacy and Google's Data safety, all from what the code does today (checked: the profile keeps only locale and time zone; the name goes to the model with each chat; the birth year stays on the phone; photos and recordings are not stored on the server, their descriptions and transcripts are).
