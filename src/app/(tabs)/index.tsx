@@ -27,7 +27,7 @@ import {
   AuroraGlass,
   CharacterAvatar,
   FrostIcon,
-  ModuleIcon,
+  ModuleLine,
   PressableScale,
   Screen,
   Sheet,
@@ -335,7 +335,10 @@ export default function HomeScreen() {
             accessibilityLabel={t('home.todo.note', { name: noteName })}
             onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
             style={[styles.card, styles.noteRow]}>
-            <ModuleIcon name="note" size={46} />
+            {/* The envelope as a thin black line, like the tiles below (owner, 2026-11-05). */}
+            <View style={styles.noteIcon}>
+              <ModuleLine name="note" size={24} />
+            </View>
             <View style={styles.flex}>
               <Txt style={styles.rowTitle} lines={1}>
                 {t('home.todo.note', { name: noteName })}
@@ -591,6 +594,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderStrong,
   },
+  // iOS's tertiary fill on the white row: a soft grey squircle the line glyph sits in.
+  noteIcon: { width: 46, height: 46, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(120,120,128,0.12)' },
   noteRow: {
     marginHorizontal: space.lg,
     marginTop: space.md,

@@ -7,15 +7,18 @@ import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { featuredFriend } from '@/components/today-hero';
-import { CharacterAvatar, ModuleLine, PressableScale, Txt, type ModuleKey } from '@/components/ui';
+import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { useDayKey } from '@/hooks/use-day-key';
 import { nextAlarmAt } from '@/lib/alarms';
 import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
-import { FREE_SPINS_PER_DAY } from '@/mock';
+import { FREE_SPINS_PER_DAY, levelForIntimacy } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleColors, systemColors } from '@/theme';
+import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
+import type { SFSymbol } from 'sf-symbols-typescript';
+
 import type { Character, WidgetKind } from '@/types';
 
 /** Every widget, in the gallery's order. */
@@ -77,8 +80,23 @@ export interface WidgetModel {
   line: string;
   photo?: string | number;
   onPress: () => void;
-  /** A face in the corner that does its own thing (Calls: ring them). */
-  action?: { character: Character; label: string; onPress: () => void };
+  /** A friend as a contact card: their face in the middle, `title` their name, `line` under it (Calls). */
+  person?: Character;
+  /** Words shown as they are, large: the widget is the thing itself (the board's note). */
+  quote?: string;
+  /** How far toward the next step, 0-1, as a filling bar (Bond). */
+  progress?: number;
+  /** Round buttons that each do one thing (HIG Widgets: a few clear actions), in the corner or under a person. */
+  buttons?: WidgetButton[];
+  /** The one main thing as a dark pill along the foot (Gifts: Spin). */
+  pill?: { label: string; onPress: () => void };
+}
+
+/** One round widget button: a glyph, what it says to VoiceOver, what it does. */
+export interface WidgetButton {
+  glyph: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
+  label: string;
+  onPress: () => void;
 }
 
 const hhmm = (h: number, m: number) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
@@ -121,6 +139,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
   // Calls
   const caller = hero?.character.voiceReady ? hero.character : friends.find((c) => c.voiceReady);
   const callMinutes = Math.floor(minutesOf(wallet, 'call', now).total / 60);
+  const callerChat = caller ? conversations.find((c) => c.characterId === caller.id) : undefined;
 
   // Diary
   const fresh = diaryPages.filter((p) => p.date === today && !pagesRead.includes(p.id));
@@ -171,16 +190,22 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       kind: 'calls',
       label: label('calls'),
       faces: [],
-      title: caller ? t('home.widget.call', { name: nameOf(caller) }) : label('calls'),
+      title: caller ? nameOf(caller) : label('calls'),
       line: callMinutes > 0 ? t('home.widget.minutesLeft', { count: callMinutes }) : t('home.widget.hearVoice'),
       onPress: () => router.push('/call-history'),
-      action: caller
+      ...(caller
         ? {
-            character: caller,
-            label: t('home.widget.call', { name: nameOf(caller) }),
-            onPress: () => router.push(`/call/${caller.id}`),
+            person: caller,
+            buttons: [
+              { glyph: { ios: 'phone.fill', icon: 'call' }, label: t('home.widget.call', { name: nameOf(caller) }), onPress: () => router.push(`/call/${caller.id}`) },
+              {
+                glyph: { ios: 'message.fill', icon: 'chatbubble' },
+                label: t('characterProfile.chat'),
+                onPress: () => (callerChat ? router.push(`/chat/${callerChat.id}`) : router.push(`/character/${caller.id}`)),
+              },
+            ],
           }
-        : undefined,
+        : {}),
     },
     diary: {
       kind: 'diary',
@@ -227,6 +252,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       title: spinReady ? t('home.todo.spin') : giftWaiting ? t('home.widget.dailyGift') : label('gifts'),
       line: spinReady ? t('home.widget.readyNow') : giftWaiting ? t('home.waiting') : t('home.widget.tomorrow'),
       onPress: () => router.push('/gifts'),
+      pill: spinReady ? { label: t('gifts.spin'), onPress: () => router.push('/gifts') } : undefined,
     },
     store: {
       kind: 'store',
@@ -236,6 +262,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       unit: t('home.widget.shells'),
       line: label('store'),
       onPress: () => router.push('/store/shell'),
+      buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('profile.getMore'), onPress: () => router.push('/store/shell?tab=shells') }],
     },
     photos: {
       kind: 'photos',
@@ -245,6 +272,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       title: t('home.modules.photoBooth'),
       line: photo && photoFriend ? t('home.widget.withName', { name: nameOf(photoFriend) }) : t('home.widget.takeOne'),
       onPress: () => router.push('/photo-booth'),
+      buttons: [{ glyph: { ios: 'camera', icon: 'camera-outline' }, label: t('home.modules.photoBooth'), onPress: () => router.push('/photo-booth') }],
     },
     radio: {
       kind: 'radio',
@@ -253,12 +281,14 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       title: clipFriend ? t('home.widget.onAir') : label('radio'),
       line: clipFriend ? `${nameOf(clipFriend)} · ${label('radio')}` : t('home.widget.tuneIn'),
       onPress: () => router.push('/radio'),
+      buttons: [{ glyph: { ios: 'play.fill', icon: 'play' }, label: label('radio'), onPress: () => router.push('/radio') }],
     },
     board: {
       kind: 'board',
       label: label('board'),
       faces: postFriend ? [postFriend] : [],
       title: label('board'),
+      quote: post && postFriend ? (post.replied && post.reply ? post.reply : post.text) : undefined,
       line: postFriend
         ? post?.replied
           ? t('home.widget.answered', { name: nameOf(postFriend) })
@@ -269,11 +299,12 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     contacts: {
       kind: 'contacts',
       label: label('contacts'),
-      faces: friends.slice(0, 2),
+      faces: friends.slice(0, 3),
       figure: String(friends.length),
       unit: t('home.widget.friends', { count: friends.length }),
       line: label('contacts'),
       onPress: () => router.push('/contacts'),
+      buttons: [{ glyph: { ios: 'person.badge.plus', icon: 'person-add-outline' }, label: t('home.todo.meet'), onPress: () => router.push('/(tabs)/find') }],
     },
     bond: {
       kind: 'bond',
@@ -282,6 +313,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       ...(bond && bondFriend
         ? {
             figure: t('home.hero.level', { level: bond.level }),
+            progress: levelForIntimacy(bond.intimacy).progress,
             line: t('home.widget.toNext', { name: nameOf(bondFriend), count: toGo }),
           }
         : { title: label('bond'), line: t('home.todo.meet') }),
@@ -291,8 +323,12 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
 }
 
 /**
- * One widget card. `preview` draws it inert, for the gallery. The face button (Calls) is a
- * sibling of the card's own press area, never inside it: a button in a button breaks on web.
+ * One widget card. `preview` draws it inert, for the gallery. Its buttons are siblings of the
+ * card's own press area, never inside it: a button in a button breaks on web.
+ *
+ * Each widget shows what it does by its face, as iOS widgets do (owner, 2026-11-04): a friend to
+ * call is a contact card with call and message buttons, the board shows the note itself, the bond
+ * a bar filling toward the next level, the shells a balance with "+", the daily spin a dark pill.
  */
 export function WidgetView({
   model,
@@ -315,13 +351,65 @@ export function WidgetView({
   // (owner, 2026-11-04: muted like an iOS widget, not a saturated block).
   const onPhoto = model.photo != null;
   const ink = onPhoto ? colors.white : colors.text;
+  const sub = onPhoto ? SUB : aurora.textMuted;
+  const buttons = model.buttons ?? [];
+  // In edit mode (or the gallery) a tap belongs to the card, so its buttons do nothing.
+  const inert = preview || !!onPress;
+  const person = model.person;
 
-  const body = (
+  const words = (
+    <View style={model.pill ? styles.abovePill : undefined}>
+      {model.quote ? (
+        <Txt style={[styles.quote, { color: ink }]} lines={3}>
+          {model.quote}
+        </Txt>
+      ) : model.figure ? (
+        <View style={styles.figureLine}>
+          <Txt style={[styles.figure, { color: ink }]} lines={1}>
+            {model.figure}
+          </Txt>
+          {model.unit ? <Txt style={[styles.unit, { color: ink }]}>{model.unit}</Txt> : null}
+        </View>
+      ) : (
+        <Txt style={[styles.title, { color: ink }]} lines={1}>
+          {model.title}
+        </Txt>
+      )}
+      {model.progress != null ? (
+        <View style={styles.track}>
+          <View style={[styles.bar, { width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%` }]} />
+        </View>
+      ) : null}
+      {model.pill ? null : (
+        <Txt variant="caption" color={sub} lines={1}>
+          {model.line}
+        </Txt>
+      )}
+    </View>
+  );
+
+  const body = person ? (
+    // A contact card: the face in the middle, the name, a word on it; the buttons sit below.
+    <View style={styles.person}>
+      <View>
+        <CharacterAvatar character={person} size={46} ring ringColor={colors.white} />
+        <View style={styles.callDot}>
+          <Ionicons name="call" size={10} color={colors.white} />
+        </View>
+      </View>
+      <Txt style={[styles.personName, { color: ink }]} lines={1}>
+        {model.title}
+      </Txt>
+      <Txt style={[styles.personLine, { color: sub }]} lines={1}>
+        {model.line}
+      </Txt>
+    </View>
+  ) : (
     <>
       <View style={styles.top}>
         {onPhoto ? <View /> : <ModuleLine name={key} size={28} color={ink} />}
-        <View style={styles.faces}>
-          {model.faces.slice(0, 2).map((c, i) => (
+        <View style={[styles.faces, buttons.length > 0 && { marginRight: buttons.length * (BUTTON + 8) }]}>
+          {model.faces.slice(0, 3).map((c, i) => (
             <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
           ))}
           {model.badge ? (
@@ -331,23 +419,7 @@ export function WidgetView({
           ) : null}
         </View>
       </View>
-      <View>
-        {model.figure ? (
-          <View style={styles.figureLine}>
-            <Txt style={[styles.figure, { color: ink }]} lines={1}>
-              {model.figure}
-            </Txt>
-            {model.unit ? <Txt style={[styles.unit, { color: ink }]}>{model.unit}</Txt> : null}
-          </View>
-        ) : (
-          <Txt style={[styles.title, { color: ink }]} lines={1}>
-            {model.title}
-          </Txt>
-        )}
-        <Txt variant="caption" color={onPhoto ? SUB : aurora.textMuted} lines={1}>
-          {model.line}
-        </Txt>
-      </View>
+      {words}
     </>
   );
 
@@ -374,31 +446,37 @@ export function WidgetView({
           {body}
         </PressableScale>
       )}
-      {model.action && preview ? (
-        <View style={styles.action}>
-          <CharacterAvatar character={model.action.character} size={34} />
-          <View style={styles.callDot}>
-            <Ionicons name="call" size={10} color={colors.white} />
-          </View>
+      {buttons.length ? (
+        <View style={person ? styles.buttonsFoot : styles.buttonsTop} pointerEvents={inert ? 'none' : 'box-none'}>
+          {buttons.map((b) => (
+            <PressableScale
+              key={b.label}
+              scaleTo={0.88}
+              hitSlop={4}
+              accessibilityRole="button"
+              accessibilityLabel={b.label}
+              onPress={b.onPress}
+              style={[styles.button, onPhoto && styles.buttonOnPhoto]}>
+              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={18} color={ink} weight="medium" />
+            </PressableScale>
+          ))}
         </View>
-      ) : model.action ? (
-        <PressableScale
-          scaleTo={0.9}
-          disabled={!!onPress}
-          accessibilityRole="button"
-          accessibilityLabel={model.action.label}
-          onPress={model.action.onPress}
-          style={styles.action}>
-          <CharacterAvatar character={model.action.character} size={34} />
-          <View style={styles.callDot}>
-            <Ionicons name="call" size={10} color={colors.white} />
-          </View>
-        </PressableScale>
+      ) : null}
+      {model.pill ? (
+        <View style={styles.pillWrap} pointerEvents={inert ? 'none' : 'box-none'}>
+          <PressableScale scaleTo={0.94} accessibilityRole="button" accessibilityLabel={model.pill.label} onPress={model.pill.onPress} style={styles.pill}>
+            <Txt style={styles.pillText} lines={1}>
+              {model.pill.label}
+            </Txt>
+          </PressableScale>
+        </View>
       ) : null}
     </View>
   );
 }
 
+/** A widget button's size: an iOS glass circle the thumb finds (44 pt with its hit slop). */
+const BUTTON = 36;
 const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
 /** The line under a widget's title: white, a step quieter. */
 const SUB = 'rgba(255,255,255,0.85)';
@@ -429,7 +507,33 @@ const styles = StyleSheet.create({
   figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5 },
   unit: { fontSize: 15, fontWeight: '600' },
   title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
-  action: { position: 'absolute', top: 14, right: 14 },
+  // The note itself, in its own words: the widget is the note.
+  quote: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2, marginBottom: 4 },
+  // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
+  // stays, no colour added inside).
+  track: { height: 8, borderRadius: 4, marginTop: 8, marginBottom: 6, backgroundColor: 'rgba(120,120,128,0.18)', overflow: 'hidden' },
+  bar: { height: 8, borderRadius: 4, backgroundColor: colors.text },
+  person: { flex: 1, alignItems: 'center', paddingTop: 0 },
+  personName: { marginTop: 6, fontSize: 15, lineHeight: 19, fontWeight: '700' },
+  personLine: { fontSize: 12, lineHeight: 15, fontWeight: '500' },
+  // iOS's tertiary fill: a soft grey circle on milk in light and dark alike.
+  button: {
+    width: BUTTON,
+    height: BUTTON,
+    borderRadius: BUTTON / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(120,120,128,0.16)',
+  },
+  // Clear glass on a picture (the clear-glass rule), never a white disc.
+  buttonOnPhoto: { backgroundColor: 'rgba(255,255,255,0.22)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.5)' },
+  buttonsTop: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 },
+  buttonsFoot: { position: 'absolute', left: 0, right: 0, bottom: 12, flexDirection: 'row', justifyContent: 'center', gap: 14 },
+  abovePill: { marginBottom: 44 },
+  pillWrap: { position: 'absolute', left: 14, right: 14, bottom: 14 },
+  // The one main thing, as a dark pill (the Payme and iOS wallet buttons).
+  pill: { height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.text },
+  pillText: { fontSize: 15, fontWeight: '700', color: colors.textOnInk },
   callDot: {
     position: 'absolute',
     right: -3,

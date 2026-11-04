@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z115. Widgets that show what they do; the note's envelope as a line (2026-11-05, Claude 1). NEXT: owner looks on the A51
+
+- Owner: the envelope like the tiles; and a picture (`image.png` in the repo root, a widget mood board, not ours): widgets whose inside shows what they do (a contact card with call / message buttons, a balance with buttons, a charging bar, a player), "ultra" iOS look. Then, mid-work: the milk colour stays, only the inside changes, no colours.
+- Built in `src/components/today/widgets.tsx`: `WidgetModel` gets `person`, `quote`, `progress`, `buttons` (`WidgetButton`: glyph, label, onPress) and `pill`; `action` is gone. Calls: a contact card (the friend's face 46 pt with the green phone dot, name, minutes left; round call and message buttons under it). Board: the note itself (or their answer once it came) in 15 pt semibold, 3 lines. Bond: an ink bar toward the next level (`levelForIntimacy`). Store: "+" (Get more). Gifts: a dark "Spin" pill while a spin is free. Radio: play. Contacts: up to three faces and "+" (Meet someone new). Photos: a camera in clear glass on the picture. Date, Sleep, Diary as before. Buttons are iOS tertiary-fill circles (36 pt) with ink glyphs, siblings of the card's press area, inert in edit mode and the gallery. Only existing strings. Note row: the envelope as `ModuleLine` on a tertiary-fill squircle (the row is white, so frost would not show).
+- Checks: tsc 0, npm test 659/659.
+
+Still to do:
+1. Owner's word on the A51 (Edit → the gallery shows every widget's new face).
+
 ### 0z114. Today's four widgets in one milky colour, Payme-style (2026-11-04, Claude 1). NEXT: owner looks on the A51; if yes, the six small tiles next
 
 - Owner sent a Payme screenshot (`image copy.png` in the repo root, not ours; their new design: milky see-through tiles, ink words and line icons, big rounded corners) plus a Pinterest "ios widget ui" search and Apple's design site: make Today's big widgets like that, muted, all four in one colour (no green / blue / red / purple), everything inside them as it is (icons, the call's face with the phone dot, figures, actions). The six small tiles below stay as they are for now; they follow if the owner likes the widgets. We take only the look, no Payme art or text.
