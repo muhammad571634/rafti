@@ -274,6 +274,13 @@ const auroraLight = {
   /** Top highlight and outer edge of a glass control (iOS 27: brighter rims, darker edges). */
   glassRim: 'rgba(255,255,255,0.85)',
   glassEdge: 'rgba(0,0,0,0.10)',
+  /**
+   * Today's widgets (owner, 2026-11-04, from a Payme screenshot): one milky colour for every widget,
+   * ink on it, instead of a saturated block per module; opaque enough that the aurora's peach and
+   * lavender do not make neighbours differ. A plain fill, not a blur: cheap on Android.
+   */
+  frost: 'rgba(255,255,255,0.72)',
+  frostRim: 'rgba(255,255,255,0.9)',
   /** The selected segment's thumb. */
   thumb: '#FFFFFF',
   textMuted: '#5C5C63',
@@ -297,6 +304,8 @@ const auroraDark: typeof auroraLight = {
   glassOn: 'rgba(255,255,255,0.22)',
   glassRim: 'rgba(255,255,255,0.28)',
   glassEdge: 'rgba(0,0,0,0.6)',
+  frost: 'rgba(255,255,255,0.12)',
+  frostRim: 'rgba(255,255,255,0.24)',
   thumb: 'rgba(255,255,255,0.24)',
   textMuted: '#B4B4BE',
   card: '#1C1C1E',

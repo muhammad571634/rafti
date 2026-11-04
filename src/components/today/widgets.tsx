@@ -15,7 +15,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, moduleColors, systemColors } from '@/theme';
+import { aurora, colors, moduleColors, systemColors } from '@/theme';
 import type { Character, WidgetKind } from '@/types';
 
 /** Every widget, in the gallery's order. */
@@ -312,18 +312,22 @@ export function WidgetView({
   const key = WIDGET_MODULE[model.kind] ?? 'bond';
   const tone = moduleColors[key];
   const glyph = MODULE_GLYPH[key];
+  // A picture keeps its scrim and white words; every other widget is frosted, ink on milk
+  // (owner, 2026-11-04: muted like an iOS widget, not a saturated block).
+  const onPhoto = model.photo != null;
+  const ink = onPhoto ? colors.white : colors.text;
 
   const body = (
     <>
       <View style={styles.top}>
-        {model.photo == null ? <SFIcon ios={glyph.ios} icon={glyph.icon} size={30} color={colors.white} /> : <View />}
+        {onPhoto ? <View /> : <SFIcon ios={glyph.ios} icon={glyph.icon} size={28} color={ink} />}
         <View style={styles.faces}>
           {model.faces.slice(0, 2).map((c, i) => (
             <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
           ))}
           {model.badge ? (
-            <View style={styles.badge}>
-              <Txt style={[styles.badgeText, { color: tone[1] }]}>{model.badge}</Txt>
+            <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
+              <Txt style={[styles.badgeText, { color: onPhoto ? tone[1] : colors.textOnInk }]}>{model.badge}</Txt>
             </View>
           ) : null}
         </View>
@@ -331,17 +335,17 @@ export function WidgetView({
       <View>
         {model.figure ? (
           <View style={styles.figureLine}>
-            <Txt style={styles.figure} lines={1}>
+            <Txt style={[styles.figure, { color: ink }]} lines={1}>
               {model.figure}
             </Txt>
-            {model.unit ? <Txt style={styles.unit}>{model.unit}</Txt> : null}
+            {model.unit ? <Txt style={[styles.unit, { color: ink }]}>{model.unit}</Txt> : null}
           </View>
         ) : (
-          <Txt style={styles.title} lines={1}>
+          <Txt style={[styles.title, { color: ink }]} lines={1}>
             {model.title}
           </Txt>
         )}
-        <Txt variant="caption" color={SUB} lines={1}>
+        <Txt variant="caption" color={onPhoto ? SUB : aurora.textMuted} lines={1}>
           {model.line}
         </Txt>
       </View>
@@ -349,10 +353,10 @@ export function WidgetView({
   );
 
   return (
-    <View style={[styles.card, { height }]}>
-      <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
-      {model.photo != null ? (
+    <View style={[styles.card, !onPhoto && styles.frost, { height }]}>
+      {onPhoto ? (
         <>
+          <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
           <Image source={model.photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
           <LinearGradient colors={PHOTO_SCRIM} style={StyleSheet.absoluteFill} />
         </>
@@ -401,7 +405,14 @@ const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
 const SUB = 'rgba(255,255,255,0.85)';
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 24, overflow: 'hidden' },
+  card: { borderRadius: 28, overflow: 'hidden' },
+  // Milk the aurora shows through, a bright top rim and a fine edge, as the glass controls have.
+  frost: {
+    backgroundColor: aurora.frost,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: aurora.glassEdge,
+    borderTopColor: aurora.frostRim,
+  },
   fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   faces: { flexDirection: 'row', alignItems: 'center' },
@@ -413,11 +424,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.white,
   },
+  badgeInk: { backgroundColor: colors.text },
   badgeText: { fontSize: 12, fontWeight: '700' },
   figureLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5, color: colors.white },
-  unit: { fontSize: 15, fontWeight: '600', color: colors.white },
-  title: { fontSize: 17, lineHeight: 22, fontWeight: '700', color: colors.white },
+  figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5 },
+  unit: { fontSize: 15, fontWeight: '600' },
+  title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
   action: { position: 'absolute', top: 14, right: 14 },
   callDot: {
     position: 'absolute',

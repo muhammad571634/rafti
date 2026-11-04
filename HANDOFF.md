@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z114. Today's four widgets in one milky colour, Payme-style (2026-11-04, Claude 1). NEXT: owner looks on the A51; if yes, the six small tiles next
+
+- Owner sent a Payme screenshot (`image copy.png` in the repo root, not ours; their new design: milky see-through tiles, ink words and line icons, big rounded corners) plus a Pinterest "ios widget ui" search and Apple's design site: make Today's big widgets like that, muted, all four in one colour (no green / blue / red / purple), everything inside them as it is (icons, the call's face with the phone dot, figures, actions). The six small tiles below stay as they are for now; they follow if the owner likes the widgets. We take only the look, no Payme art or text.
+- Built: `aurora.frost` (light `rgba(255,255,255,0.72)`, dark 0.12) + `aurora.frostRim`; `WidgetView`: widgets without a picture get the frost fill, a bright top rim and a fine edge, radius 28 (was 24), the module glyph (28 pt) and the words in ink (`colors.text`), the line in `aurora.textMuted`, a count badge as an ink pill; widgets with a picture keep the scrim and white words (clear-glass rule). The gallery sheet uses the same view.
+- Checks: tsc 0, npm test 659/659.
+
+Still to do:
+1. Owner's word on the A51; then the six small tiles in the same manner.
+
 ### 0z113. Group calls on the model (2026-11-04, Claude 1). NEXT: owner tries a group call on the A51 (model on)
 
 - Owner: the 0z111 logo is good ("logo maqul"), go on to the next task. Picked by the agent: the group call still ran stock subtitles with the model on (0z102 item 4), against the model-first rule.
