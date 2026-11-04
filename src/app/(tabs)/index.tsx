@@ -69,7 +69,8 @@ const TILE_LABEL: Record<string, string> = {
   board: 'home.short.board',
 };
 const TILE = 52;
-const GALLERY_HEIGHT = 150;
+/** The gallery shows each widget at its real size, so its words sit as they will on Today. */
+const GALLERY_HEIGHT = WIDGET_HEIGHT;
 /** The wordmark's tallest size; on narrower phones it shrinks to what the row leaves beside your capsule. */
 const LOGO_MAX = 48;
 /** The letters of `sigmazam-logo.png` fill rows 154-351 of 356; this is their middle's height above the art's bottom. */

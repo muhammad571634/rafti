@@ -13,7 +13,7 @@ import { useDayKey } from '@/hooks/use-day-key';
 import { nextAlarmAt } from '@/lib/alarms';
 import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
-import { FREE_SPINS_PER_DAY, levelForIntimacy } from '@/mock';
+import { dateFromKey, dayKey, FREE_SPINS_PER_DAY, levelForIntimacy } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { aurora, colors, moduleColors, systemColors } from '@/theme';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
@@ -65,7 +65,8 @@ const LABEL_KEY: Record<WidgetKind, string> = {
   bond: 'home.widget.bond',
 };
 
-export const WIDGET_HEIGHT = 158;
+/** Near square, as an iOS small widget, so a plan's or a note's words fit whole (owner, 2026-11-05). */
+export const WIDGET_HEIGHT = 172;
 
 /** What one widget shows; `WidgetView` draws it the same way in every slot and in the gallery. */
 export interface WidgetModel {
@@ -77,7 +78,13 @@ export interface WidgetModel {
   figure?: string;
   unit?: string;
   title?: string;
+  /** How many lines the title may take (a plan's name: two); it shrinks a little before it is cut. */
+  titleLines?: number;
   line: string;
+  /** One more quiet line under `line` (the plan after the next). */
+  after?: string;
+  /** A row of seven: weekday letters (an alarm's days) or dots (the check-in week); `on` in ink. */
+  days?: { label?: string; on: boolean }[];
   photo?: string | number;
   onPress: () => void;
   /** A friend as a contact card: their face in the middle, `title` their name, `line` under it (Calls). */
@@ -150,16 +157,22 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
   const lastWriter = lastPage ? byId.get(lastPage.characterId) : undefined;
   const openPage = fresh[0] ?? lastPage;
 
-  // Date: the next plan on any day
-  const plan = schedules
+  // Date: the coming plans on any day, nearest first; the widget shows the next and names the one after.
+  const plans = schedules
     .filter((p) => (p.date === today ? !p.time || planStart(p).getTime() > now : p.date > today))
-    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))[0];
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''));
+  const [plan, nextPlan] = plans;
   const planFriend = plan ? byId.get(plan.characterId) : undefined;
   const planChat = plan ? conversations.find((c) => c.characterId === plan.characterId) : undefined;
-  const planDay =
-    plan && plan.date !== today
-      ? new Date(`${plan.date}T12:00:00`).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short' })
-      : undefined;
+  const tomorrow = dateFromKey(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  /** "Today", "Tomorrow", else "Fri, Nov 7" in the app's language. */
+  const dayWord = (date: string) =>
+    date === today
+      ? t('common.today')
+      : date === dayKey(tomorrow)
+        ? t('common.tomorrow')
+        : new Date(`${date}T12:00:00`).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short' });
 
   // Sleep
   const alarm = alarms
@@ -167,16 +180,22 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     .map((a) => ({ a, at: nextAlarmAt(a, new Date(now)).getTime() }))
     .sort((x, y) => x.at - y.at)[0]?.a;
   const waker = alarm?.characterId ? byId.get(alarm.characterId) : undefined;
+  // Monday first; 2026-11-01 is a Sunday, so day d of that week is weekday d.
+  const weekday = (d: number) => new Date(2026, 10, 1 + d).toLocaleDateString(i18n.language, { weekday: 'narrow' });
 
   // Gifts
   const spinReady = daily.spinDay !== today || daily.spinsUsed < FREE_SPINS_PER_DAY;
-  const giftWaiting = !checkInStatus(daily, today).claimed;
+  const checkIn = checkInStatus(daily, today);
+  const giftWaiting = !checkIn.claimed;
+  // The check-in week: the days already taken, today's once it is.
+  const daysTaken = checkIn.claimed ? checkIn.day : checkIn.day - 1;
 
   // Photos, Radio, Board
   const photo = newest(photos);
   const photoFriend = photo ? byId.get(photo.characterId) : hero?.character;
   const clip = newest(radioClips);
   const clipFriend = clip ? byId.get(clip.characterId) : undefined;
+  const clipLength = clip ? `${Math.floor(clip.durationSec / 60)}:${String(Math.round(clip.durationSec % 60)).padStart(2, '0')}` : '';
   const post = newest(boardPosts);
   const postFriend = post ? byId.get(post.characterId) : undefined;
 
@@ -210,11 +229,16 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     diary: {
       kind: 'diary',
       label: label('diary'),
-      faces: lastWriter ? [lastWriter] : writers.slice(0, 2),
+      faces: lastWriter ? [lastWriter] : writers.slice(0, 3),
+      // New pages: how many and who wrote them, never their words before they are opened. Else the
+      // last page read, its first lines, as a diary app's widget shows the newest entry.
       ...(fresh.length
-        ? { figure: String(fresh.length), unit: t('home.widget.newPages', { count: fresh.length }), line: label('diary') }
+        ? { figure: String(fresh.length), unit: t('home.widget.newPages', { count: fresh.length }), line: writers.map(nameOf).join(', ') }
         : lastWriter && lastPage
-          ? { title: t('home.widget.pageOf', { name: nameOf(lastWriter) }), line: relativeStamp(lastPage.writtenAt) }
+          ? {
+              quote: lastPage.body[0],
+              line: `${t('home.widget.pageOf', { name: nameOf(lastWriter) })} · ${relativeStamp(lastPage.writtenAt)}`,
+            }
           : { title: label('diary'), line: t('home.widget.writeToday') }),
       onPress: () =>
         openPage
@@ -226,8 +250,16 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       kind: 'date',
       label: label('date'),
       faces: planFriend ? [planFriend] : [],
+      // The next plan whole: its time and day, its name on up to two lines, who with; then the one after.
       ...(plan
-        ? { figure: plan.time ?? t('home.today'), line: planDay ? `${planDay} · ${plan.title}` : plan.title }
+        ? {
+            figure: plan.time ?? dayWord(plan.date),
+            unit: plan.time ? dayWord(plan.date) : undefined,
+            title: plan.title,
+            titleLines: 2,
+            line: planFriend && !nextPlan ? nameOf(planFriend) : '',
+            after: nextPlan ? `${dayWord(nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` : undefined,
+          }
         : { title: label('date'), line: t('home.widget.planDate') }),
       onPress: () => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating')),
       buttons: plan ? undefined : [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.planDate'), onPress: () => router.push('/dating') }],
@@ -235,10 +267,12 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     sleep: {
       kind: 'sleep',
       label: label('sleep'),
-      faces: [],
+      faces: waker ? [waker] : [],
       ...(alarm
         ? {
             figure: hhmm(alarm.hour, alarm.minute),
+            // The days it rings, Monday first, as the Clock app shows them; none when it rings once.
+            days: alarm.repeat.length ? [1, 2, 3, 4, 5, 6, 0].map((d) => ({ label: weekday(d), on: alarm.repeat.includes(d) })) : undefined,
             line: waker
               ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(waker) })
               : alarm.label || t('home.widget.wakeUp'),
@@ -252,7 +286,8 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       label: label('gifts'),
       faces: [],
       badge: spinReady ? t('home.widget.oneFree') : undefined,
-      title: spinReady ? t('home.todo.spin') : giftWaiting ? t('home.widget.dailyGift') : label('gifts'),
+      title: t('gifts.day', { count: checkIn.day }),
+      days: Array.from({ length: 7 }, (_, i) => ({ on: i < daysTaken })),
       line: spinReady ? t('home.widget.readyNow') : giftWaiting ? t('home.waiting') : t('home.widget.tomorrow'),
       onPress: () => router.push('/gifts'),
       pill: spinReady ? { label: t('gifts.spin'), onPress: () => router.push('/gifts') } : undefined,
@@ -281,8 +316,9 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       kind: 'radio',
       label: label('radio'),
       faces: clipFriend ? [clipFriend] : [],
-      title: clipFriend ? t('home.widget.onAir') : label('radio'),
-      line: clipFriend ? `${nameOf(clipFriend)} · ${label('radio')}` : t('home.widget.tuneIn'),
+      title: clip && clipFriend ? clip.title : label('radio'),
+      titleLines: 2,
+      line: clip && clipFriend ? `${t('home.widget.onAir')} · ${nameOf(clipFriend)} · ${clipLength}` : t('home.widget.tuneIn'),
       onPress: () => router.push('/radio'),
       buttons: [{ glyph: { ios: 'play.fill', icon: 'play' }, label: label('radio'), onPress: () => router.push('/radio') }],
     },
@@ -294,8 +330,8 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       quote: post && postFriend ? (post.replied && post.reply ? post.reply : post.text) : undefined,
       line: postFriend
         ? post?.replied
-          ? t('home.widget.answered', { name: nameOf(postFriend) })
-          : t('home.widget.noteTo', { name: nameOf(postFriend) })
+          ? `${t('home.widget.answered', { name: nameOf(postFriend) })} · ${relativeStamp(post.replyAt)}`
+          : `${t('home.widget.noteTo', { name: nameOf(postFriend) })} · ${relativeStamp(post?.createdAt ?? '')}`
         : t('home.widget.pinNote'),
       onPress: () => router.push('/board'),
     },
@@ -363,31 +399,67 @@ export function WidgetView({
   const words = (
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
-        <Txt style={[styles.quote, { color: ink }]} lines={3}>
+        // The thing itself, whole where it fits: it shrinks a little before it is cut.
+        <Txt style={[styles.quote, { color: ink }]} lines={4} adjustsFontSizeToFit minimumFontScale={0.85}>
           {model.quote}
         </Txt>
-      ) : model.figure ? (
-        <View style={styles.figureLine}>
-          <Txt style={[styles.figure, { color: ink }]} lines={1}>
-            {model.figure}
-          </Txt>
-          {model.unit ? <Txt style={[styles.unit, { color: ink }]}>{model.unit}</Txt> : null}
-        </View>
       ) : (
-        <Txt style={[styles.title, { color: ink }]} lines={1}>
-          {model.title}
-        </Txt>
+        <>
+          {model.figure ? (
+            <View style={styles.figureLine}>
+              <Txt style={[styles.figure, { color: ink }]} lines={1}>
+                {model.figure}
+              </Txt>
+              {model.unit ? (
+                <Txt style={[styles.unit, { color: sub }]} lines={1}>
+                  {model.unit}
+                </Txt>
+              ) : null}
+            </View>
+          ) : null}
+          {model.title ? (
+            <Txt
+              style={[model.figure ? styles.subtitle : styles.title, { color: ink }]}
+              lines={model.titleLines ?? 1}
+              adjustsFontSizeToFit={(model.titleLines ?? 1) > 1}
+              minimumFontScale={0.85}>
+              {model.title}
+            </Txt>
+          ) : null}
+        </>
       )}
+      {model.days ? (
+        <View style={styles.days}>
+          {model.days.map((d, i) =>
+            d.label != null ? (
+              <Txt key={i} style={[styles.dayLetter, { color: d.on ? ink : aurora.textMuted, opacity: d.on ? 1 : 0.55 }]}>
+                {d.label}
+              </Txt>
+            ) : (
+              <View key={i} style={[styles.dayDot, d.on && { backgroundColor: ink }]} />
+            ),
+          )}
+        </View>
+      ) : null}
       {model.progress != null ? (
         <View style={styles.track}>
           <View style={[styles.bar, { width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%` }]} />
         </View>
       ) : null}
-      {model.pill ? null : (
+      {model.pill || !model.line ? null : (
         <Txt variant="caption" color={sub} lines={1}>
           {model.line}
         </Txt>
       )}
+      {model.after && !model.pill ? (
+        // The next one in line, as a list row under the first (a forecast's next days).
+        <View style={styles.afterRow}>
+          <View style={[styles.afterDot, { backgroundColor: ink }]} />
+          <Txt variant="caption" color={sub} lines={1} style={styles.flexText}>
+            {model.after}
+          </Txt>
+        </View>
+      ) : null}
     </View>
   );
 
@@ -507,9 +579,18 @@ const styles = StyleSheet.create({
   badgeInk: { backgroundColor: colors.text },
   badgeText: { fontSize: 12, fontWeight: '700' },
   figureLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  figure: { flexShrink: 1, fontSize: 30, lineHeight: 34, fontWeight: '800', letterSpacing: -0.5 },
-  unit: { fontSize: 15, fontWeight: '600' },
+  // The number is the widget's headline (a clock's time, a balance): large, tight, heavy.
+  figure: { flexShrink: 1, fontSize: 36, lineHeight: 40, fontWeight: '800', letterSpacing: -1 },
+  unit: { flexShrink: 1, fontSize: 15, fontWeight: '600' },
   title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
+  // Under a number: what it is for (a plan's name), up to two lines.
+  subtitle: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2 },
+  days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
+  dayLetter: { width: 16, textAlign: 'center', fontSize: 12, lineHeight: 15, fontWeight: '700' },
+  dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: 'rgba(120,120,128,0.24)' },
+  afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
+  afterDot: { width: 5, height: 5, borderRadius: 2.5, opacity: 0.5 },
+  flexText: { flexShrink: 1 },
   // The note itself, in its own words: the widget is the note.
   quote: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2, marginBottom: 4 },
   // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
