@@ -254,10 +254,9 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       ...(plan
         ? {
             figure: plan.time ?? dayWord(plan.date),
-            unit: plan.time ? dayWord(plan.date) : undefined,
             title: plan.title,
             titleLines: 2,
-            line: planFriend && !nextPlan ? nameOf(planFriend) : '',
+            line: [plan.time ? dayWord(plan.date) : '', planFriend && !nextPlan ? nameOf(planFriend) : ''].filter(Boolean).join(' · '),
             after: nextPlan ? `${dayWord(nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` : undefined,
           }
         : { title: label('date'), line: t('home.widget.planDate') }),
