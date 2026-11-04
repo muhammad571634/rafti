@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -42,9 +42,12 @@ export function LuckyWheel({
   disabled,
   onSpin,
   onStop,
+  autoSpin,
 }: {
   size?: number;
   disabled?: boolean;
+  /** Spin once on its own, a moment after it shows (Today's "Spin" button opened it). */
+  autoSpin?: boolean;
   /** Returns the winning segment index, or null when no spin is available; the server's draw arrives later. */
   onSpin: () => number | null | Promise<number | null>;
   onStop: (index: number) => void;
@@ -88,6 +91,17 @@ export function LuckyWheel({
       },
     );
   };
+
+  // Today's Spin button: the wheel turns by itself once, as soon as the screen has settled.
+  const autoSpun = useRef(false);
+  useEffect(() => {
+    if (!autoSpin || disabled || autoSpun.current) return;
+    autoSpun.current = true;
+    const timer = setTimeout(() => void spin(), 600);
+    return () => clearTimeout(timer);
+    // `spin` reads the latest state; once per mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSpin, disabled]);
 
   const wheelStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
 

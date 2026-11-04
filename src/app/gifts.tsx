@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
@@ -68,6 +68,8 @@ export default function GiftsScreen() {
   const shells = useAppStore((s) => s.wallet.shells);
   const daily = useAppStore((s) => s.daily);
   const spinWheel = useAppStore((s) => s.spinWheel);
+  // Today's Spin button opens the screen with `spin=1`: the wheel turns at once.
+  const { spin: spinParam } = useLocalSearchParams<{ spin?: string }>();
   const user = useAppStore((s) => s.user);
   const redeemInvite = useAppStore((s) => s.redeemInvite);
 
@@ -189,6 +191,7 @@ export default function GiftsScreen() {
             disabled={!canSpin}
             onSpin={() => spinWheel().then((result) => result?.index ?? null)}
             onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
+            autoSpin={spinParam === '1'}
           />
         </View>
 

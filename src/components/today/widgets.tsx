@@ -254,7 +254,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
         openPage
           ? router.push({ pathname: '/diary/page/[characterId]', params: { characterId: openPage.characterId, date: openPage.date } })
           : router.push('/diary'),
-      buttons: fresh.length ? undefined : [{ glyph: { ios: 'square.and.pencil', icon: 'create-outline' }, label: t('home.widget.writeToday'), onPress: () => router.push('/diary') }],
+      buttons: fresh.length ? undefined : [{ glyph: { ios: 'square.and.pencil', icon: 'create-outline' }, label: t('home.widget.writeToday'), onPress: () => router.push('/diary/write') }],
     },
     date: {
       kind: 'date',
@@ -273,7 +273,6 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
           }
         : { title: label('date'), line: t('home.widget.planDate') }),
       onPress: () => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating')),
-      buttons: plan ? undefined : [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.planDate'), onPress: () => router.push('/dating') }],
     },
     sleep: {
       kind: 'sleep',
@@ -294,8 +293,8 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
               : alarm.label || t('home.widget.wakeUp'),
           }
         : { title: label('sleep'), line: t('home.widget.setWake') }),
-      onPress: () => router.push('/bedtime'),
-      buttons: [{ glyph: { ios: 'alarm', icon: 'alarm-outline' }, label: t('home.widget.setWake'), onPress: () => router.push('/bedtime') }],
+      onPress: () => (alarm ? router.push('/alarms') : router.push('/bedtime')),
+      buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: () => router.push('/alarms/edit') }],
     },
     gifts: {
       kind: 'gifts',
@@ -306,7 +305,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       days: Array.from({ length: 7 }, (_, i) => ({ on: i < daysTaken })),
       line: spinReady ? t('home.widget.readyNow') : giftWaiting ? t('home.waiting') : t('home.widget.tomorrow'),
       onPress: () => router.push('/gifts'),
-      pill: spinReady ? { label: t('gifts.spin'), onPress: () => router.push('/gifts') } : undefined,
+      pill: spinReady ? { label: t('gifts.spin'), onPress: () => router.push({ pathname: '/gifts', params: { spin: '1' } }) } : undefined,
     },
     store: {
       kind: 'store',
@@ -315,7 +314,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       figure: String(wallet.shells),
       unit: t('home.widget.shells'),
       line: label('store'),
-      onPress: () => router.push('/store/shell'),
+      onPress: () => router.push('/store/shell?tab=shells'),
       buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('profile.getMore'), onPress: () => router.push('/store/shell?tab=shells') }],
     },
     photos: {
@@ -325,7 +324,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       photo: photoFriend ? (HEROES[photoFriend.id] ?? characterImage(photoFriend)) : undefined,
       title: t('home.modules.photoBooth'),
       line: photo && photoFriend ? t('home.widget.withName', { name: nameOf(photoFriend) }) : t('home.widget.takeOne'),
-      onPress: () => router.push('/photo-booth'),
+      onPress: () => (photo ? router.push({ pathname: '/photo/[id]', params: { id: photo.id } }) : router.push('/photo-booth')),
       buttons: [{ glyph: { ios: 'camera', icon: 'camera-outline' }, label: t('home.modules.photoBooth'), onPress: () => router.push('/photo-booth') }],
     },
     radio: {
@@ -336,7 +335,9 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       titleLines: 2,
       line: clip && clipFriend ? `${t('home.widget.onAir')} · ${nameOf(clipFriend)} · ${clipLength}` : t('home.widget.tuneIn'),
       onPress: () => router.push('/radio'),
-      buttons: [{ glyph: { ios: 'play.fill', icon: 'play' }, label: label('radio'), onPress: () => router.push('/radio') }],
+      buttons: clip
+        ? [{ glyph: { ios: 'play.fill', icon: 'play' }, label: clip.title, onPress: () => router.push({ pathname: '/radio/[id]', params: { id: clip.id } }) }]
+        : undefined,
     },
     board: {
       kind: 'board',
@@ -350,6 +351,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
           : `${t('home.widget.noteTo', { name: nameOf(postFriend) })} · ${relativeStamp(post?.createdAt ?? '')}`
         : t('home.widget.pinNote'),
       onPress: () => router.push('/board'),
+      buttons: [{ glyph: { ios: 'square.and.pencil', icon: 'create-outline' }, label: t('home.widget.pinNote'), onPress: () => router.push('/board/write') }],
     },
     contacts: {
       kind: 'contacts',
