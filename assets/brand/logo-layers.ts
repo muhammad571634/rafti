@@ -3,6 +3,7 @@ export const LOGO_ART = { width: 1670, height: 356, pad: 14 } as const;
 
 /** Each layer's left edge and width on the wordmark; every layer spans the art's height plus `pad` above and below. */
 export const LOGO_LAYERS = {
+  hop: { x: 287, width: 337, source: require('./sigmazam-logo-hop.png') },
   si: { x: -14, width: 312, source: require('./sigmazam-logo-si.png') },
   mascot: { x: 279, width: 350, source: require('./sigmazam-logo-mascot.png') },
   mazam: { x: 542, width: 1142, source: require('./sigmazam-logo-mazam.png') },

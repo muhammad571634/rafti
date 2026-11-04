@@ -23,15 +23,16 @@ const FOLD = { duration: 520, dampingRatio: 1 } as const;
 /** The letters drift this far out from behind the mascot while they appear. */
 const DRIFT = 5;
 
-const { si, mascot, mazam } = LOGO_LAYERS;
+const { hop, si, mascot, mazam } = LOGO_LAYERS;
 const LAYER_H = LOGO_ART.height + LOGO_ART.pad * 2;
 
 /**
- * Today's logo: only the mascot on its G, where it sits in the wordmark, so the friend's picture
- * stays clear ("branding defers to content", HIG Branding). A tap unfolds "Si" and "MAZAM" out
- * of the G and the whole Sigmazam word reads; it folds back by itself after ten seconds, or at
- * once on a second tap ("let people cancel motion"). The mascot never moves; it only squishes
- * softly under the finger. Under Reduce Motion the word just fades in and out.
+ * Today's logo: only the mascot, full body and waving, where it sits in the wordmark, so the
+ * friend's picture stays clear ("branding defers to content", HIG Branding; owner 2026-11-04: no
+ * G, only the mascot). A tap lands it on its G and unfolds "Si" and "MAZAM" out of the G, so the
+ * whole Sigmazam word reads; it folds back by itself after ten seconds, or at once on a second
+ * tap ("let people cancel motion"), and the mascot is alone again. It squishes softly under the
+ * finger. Under Reduce Motion the poses and the word just cross-fade.
  *
  * Fills its parent; the art is `maxHeight` tall at most (smaller when the row is narrow, as the
  * whole wordmark must fit) and its bottom sits `bottom` points above the parent's bottom.
@@ -58,23 +59,38 @@ export function FoldingLogo({ maxHeight, bottom, label }: { maxHeight: number; b
     return () => clearTimeout(timer);
   }, [open, progress, reduceMotion]);
 
-  // "Si" unfolds leftward out of the G, "MAZAM" rightward; the wipe runs a little ahead of the
-  // fade so a letter's edge is never hard, and both drift the last few points out from behind.
+  // First the mascot settles onto its G (the lone pose fades as the one holding the G drops in
+  // from a few points above), then "Si" unfolds leftward out of the G and "MAZAM" rightward; the
+  // wipe runs a little ahead of the fade so a letter's edge is never hard, and both drift the
+  // last few points out from behind. Closing runs the same path backward.
+  const hopStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.3], [1, 0], 'clamp'),
+    transform: [
+      { translateY: reduceMotion ? 0 : interpolate(progress.value, [0, 0.3], [0, 3], 'clamp') },
+      { scale: squish.value * (reduceMotion ? 1 : interpolate(progress.value, [0, 0.3], [1, 0.96], 'clamp')) },
+    ],
+  }));
+  const onGStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0.06, 0.34], [0, 1], 'clamp'),
+    transform: [
+      { translateY: reduceMotion ? 0 : interpolate(progress.value, [0.06, 0.45], [-4, 0], 'clamp') },
+      { scale: squish.value },
+    ],
+  }));
   const siClip = useAnimatedStyle(() => ({
-    width: reduceMotion ? siW : siW * interpolate(progress.value, [0, 0.85], [0, 1], 'clamp'),
-    opacity: interpolate(progress.value, [0, 1], [0, 1]),
+    width: reduceMotion ? siW : siW * interpolate(progress.value, [0.18, 0.92], [0, 1], 'clamp'),
+    opacity: interpolate(progress.value, [0.18, 1], [0, 1], 'clamp'),
   }));
   const siArt = useAnimatedStyle(() => ({
     transform: [{ translateX: reduceMotion ? 0 : (1 - progress.value) * DRIFT }],
   }));
   const mazamClip = useAnimatedStyle(() => ({
-    width: reduceMotion ? mazamW : mazamW * interpolate(progress.value, [0, 0.85], [0, 1], 'clamp'),
-    opacity: interpolate(progress.value, [0, 1], [0, 1]),
+    width: reduceMotion ? mazamW : mazamW * interpolate(progress.value, [0.18, 0.92], [0, 1], 'clamp'),
+    opacity: interpolate(progress.value, [0.18, 1], [0, 1], 'clamp'),
   }));
   const mazamArt = useAnimatedStyle(() => ({
     transform: [{ translateX: reduceMotion ? 0 : (progress.value - 1) * DRIFT }],
   }));
-  const mascotStyle = useAnimatedStyle(() => ({ transform: [{ scale: squish.value }] }));
 
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
@@ -99,7 +115,14 @@ export function FoldingLogo({ maxHeight, bottom, label }: { maxHeight: number; b
           </Animated.View>
         </Animated.View>
 
-        {/* The mascot on its G, above the letters, and the only thing you can press. */}
+        {/* The mascot on its G, above the letters. */}
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.layer, { left: mascot.x * s, width: mascot.width * s, height: layerH }, onGStyle]}>
+          <Image source={mascot.source} style={styles.fill} contentFit="fill" />
+        </Animated.View>
+
+        {/* The mascot alone, on top; this spot is the only thing you can press. */}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={label}
@@ -116,9 +139,9 @@ export function FoldingLogo({ maxHeight, bottom, label }: { maxHeight: number; b
             haptic.selection();
             setOpen((o) => !o);
           }}
-          style={[styles.mascot, { left: mascot.x * s, width: mascot.width * s, height: layerH }]}>
-          <Animated.View style={[styles.fill, mascotStyle]}>
-            <Image source={mascot.source} style={styles.fill} contentFit="fill" />
+          style={[styles.layer, { left: hop.x * s, width: hop.width * s, height: layerH }]}>
+          <Animated.View style={[styles.fill, hopStyle]}>
+            <Image source={hop.source} style={styles.fill} contentFit="fill" />
           </Animated.View>
         </Pressable>
       </View>
@@ -131,6 +154,6 @@ const styles = StyleSheet.create({
   clip: { position: 'absolute', top: 0, overflow: 'hidden' },
   anchorLeft: { position: 'absolute', top: 0, left: 0 },
   anchorRight: { position: 'absolute', top: 0, right: 0 },
-  mascot: { position: 'absolute', top: 0 },
+  layer: { position: 'absolute', top: 0 },
   fill: { width: '100%', height: '100%' },
 });

@@ -1,11 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z111. Today's logo: only the mascot; "Sigmazam" unfolds on a tap and folds back after 10 s (2026-11-04, cloud Claude). NEXT: owner checks it on the A51 / iPhone
+### 0z111. Today's logo: only the mascot (no G); "Sigmazam" unfolds on a tap and folds back after 10 s (2026-11-04, cloud Claude). NEXT: owner checks it on the A51 / iPhone
 
 - Owner: the 0z110 wordmark on the picture covers and spoils the friend's picture. Keep only the mascot, in its current place; "Sigmazam" opens when the mascot is tapped and closes after 10 seconds; better quality, soft and light motion; follow Apple's design site (HIG Branding, Motion).
-- Built: `FoldingLogo` (`src/components/today/folding-logo.tsx`) in `(tabs)/index.tsx` instead of `BRAND.logo`; same box and sizing as before (48 pt max, shrinks on narrow rows), so the mascot sits where it sat in the wordmark. Three layers cut from `sigmazam-logo.png` by `scripts/build-logo-layers.py` -> `sigmazam-logo-si/-mascot/-mazam.png` + `assets/brand/logo-layers.ts` (positions). Re-run the script if the logo art changes.
+- Owner, second message: "the G is not needed, only the mascot". The logo's mascot cannot be cut from its G cleanly (its body is behind the G), so the closed state shows the full-body hop pose (`sigmazam-hop.png`, the same one that lands on the G in the onboarding intro), its face over the wordmark mascot's face, as tall as the mascot on its G. A tap cross-fades it into the mascot holding the G (a 4 pt drop), then the letters unfold; closing runs backward.
+- Built: `FoldingLogo` (`src/components/today/folding-logo.tsx`) in `(tabs)/index.tsx` instead of `BRAND.logo`; same box and sizing as before (48 pt max, shrinks on narrow rows), so the mascot sits where it sat in the wordmark. Three layers cut from `sigmazam-logo.png` by `scripts/build-logo-layers.py` -> `sigmazam-logo-hop/-si/-mascot/-mazam.png` + `assets/brand/logo-layers.ts` (positions). Re-run the script if the logo art changes.
 - Motion: wipe out of the G + fade + 5 pt drift, spring `dampingRatio 1` (620 ms open, 520 ms close); 10 s timer; a second tap closes at once; the mascot squishes to 0.9 and settles with a soft jelly; selection haptic; Reduce Motion = fade only. a11y: one button "Sigmazam" with `expanded` state.
-- Checked on web 375x812 (Theo on the hero and the aurora without a friend): closed = mascot only; open = the whole word, seamless; closes by itself after 10 s. tsc 0, npm test 654/654. Not seen on a phone yet; not sent as OTA.
+- Checked on web 375x812 (Theo on the hero and the aurora without a friend): closed = the full-body mascot only, no G; open = the whole word, seamless; closes by itself after 10 s. tsc 0, npm test 654/654. Not seen on a phone yet; not sent as OTA.
 - This was coded without a prototype round because the owner described the behaviour exactly; say so if a canvas is wanted next time.
 
 ### 0z110. The old wordmark back on Today's picture; the owner's art direction from Pinterest (2026-11-03, Claude 2). NEXT: owner checks the logo on the A51; one test portrait in the new style before any batch

@@ -1,9 +1,11 @@
-"""Cut the Sigmazam wordmark into three layers for Today's folding logo.
+"""Cut the Sigmazam wordmark into layers for Today's folding logo.
 
-Today shows only the mascot on its G; a tap unfolds "Si" to its left and "MAZAM" to its right,
-and they fold back after a while (owner, 2026-11-04). The layers are cut from the finished
-wordmark, so put together they are the wordmark pixel for pixel and the mascot never moves.
+Today shows only the mascot, full body (the hop pose), where the mascot sits in the wordmark; a
+tap lands it on its G and unfolds "Si" to the left and "MAZAM" to the right, and the word folds
+back after a while (owner, 2026-11-04: "no G, only the mascot"). The wordmark layers are cut from
+the finished wordmark, so put together they are the wordmark pixel for pixel.
 
+  sigmazam-logo-hop.png     the mascot alone, full body, waving (from sigmazam-hop.png)
   sigmazam-logo-si.png      "Si"
   sigmazam-logo-mascot.png  the mascot on its G, with its two motion lines
   sigmazam-logo-mazam.png   "MAZAM"
@@ -22,6 +24,7 @@ from PIL import Image, ImageFilter
 ROOT = Path(__file__).resolve().parent.parent
 BRAND = ROOT / 'assets/brand'
 SRC = BRAND / 'sigmazam-logo.png'
+HOP = BRAND / 'sigmazam-hop.png'
 
 # Where the letters part (wordmark pixels, 1670 x 356). The "i" ends at 284 and the motion
 # lines start at 293; the M's stem starts at 557 and touches the mascot's cream body only
@@ -29,6 +32,12 @@ SRC = BRAND / 'sigmazam-logo.png'
 SI_END = 290
 M_START = 556
 M_TOP = 145
+# The lone mascot: as tall as the mascot on its G (a little room above the hair), its face over
+# the wordmark mascot's face (x 440), so it reads as the same one in the same place.
+HOP_HEIGHT = 344
+HOP_BOTTOM = 354
+HOP_FACE_X = 440
+HOP_FACE_AT = 0.45  # the face's centre across the hop art's width (its waving arm is on the left)
 
 OUT_HEIGHT = 48 * 3  # 3x of the header's tallest wordmark
 PAD = 14  # wordmark pixels of room for the shadow on every side
@@ -90,15 +99,26 @@ def main():
     # The mascot's cream body touches the M's stem; those few pixels stay with the mascot.
     mazam = (xs >= M_START) & (ys >= M_TOP) & ~(is_cream(a) & (xs < M_START + 24) & (ys < 200))
     mascot = ~si & ~mazam
-    masks = {'si': si, 'mascot': mascot, 'mazam': mazam}
-
-    scale = OUT_HEIGHT / (h + 2 * PAD)
-    boxes = {}
-    for name, mask in masks.items():
+    layers = {}
+    for name, mask in {'si': si, 'mascot': mascot, 'mazam': mazam}.items():
         layer = a.copy()
         layer[..., 3] *= mask
         if name == 'mascot':
             heal_seam(layer)
+        layers[name] = layer
+
+    # The hop pose on a wordmark-sized canvas, in the mascot's place.
+    hop = Image.open(HOP).convert('RGBA')
+    hop = hop.crop(hop.getchannel('A').getbbox())
+    size = (round(hop.width * HOP_HEIGHT / hop.height), HOP_HEIGHT)
+    hop = hop.convert('RGBa').resize(size, Image.LANCZOS).convert('RGBA')
+    on_mark = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    on_mark.paste(hop, (round(HOP_FACE_X - HOP_FACE_AT * size[0]), HOP_BOTTOM - HOP_HEIGHT))
+    layers = {'hop': np.asarray(on_mark).astype(np.float32), **layers}
+
+    scale = OUT_HEIGHT / (h + 2 * PAD)
+    boxes = {}
+    for name, layer in layers.items():
         alpha = layer[..., 3]
         cols = np.where(alpha.max(axis=0) > 0)[0]
         x0, x1 = int(cols[0]) - PAD, int(cols[-1]) + 1 + PAD
