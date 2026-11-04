@@ -73,6 +73,7 @@ import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
 import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import { callCue, callMessages, keptCallLines, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
+import { groupCallCue, groupCallMessages, groupCallResponders, type GroupCallLine } from '@/ai/group-call';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
@@ -514,7 +515,8 @@ interface AppState {
   /** Truth or dare with one member in the group; another member joins in. Returns the question. */
   playGroupTruthOrDare: (groupId: string, characterId: string, target: 'them' | 'you', kind: 'truth' | 'dare') => string;
   /** A finished group call: its line in the chat and the call minutes it used. */
-  addGroupCall: (groupId: string, startedAt: string, durationSec: number) => void;
+  /** Books a group call; `lines` (a call on the model) stay on its row, each member's under their name, so later replies know what was said. */
+  addGroupCall: (groupId: string, startedAt: string, durationSec: number, lines?: readonly GroupCallLine[]) => void;
   renameGroup: (groupId: string, name: string) => void;
   /** The group chat's background, picked as a one-to-one chat's is. */
   setGroupBackground: (groupId: string, backgroundId: string) => void;
@@ -698,6 +700,23 @@ interface AppState {
   callReply: (characterId: string, said: readonly CallLine[], placedBy: CallPlacedBy) => Promise<{ lines: CallReplyLine[] | null; crisis: boolean }>;
   /** A crisis on a call: the helpline card goes to the chat at once (the call screen shows its own). */
   helplineToChat: (characterId: string) => void;
+  /**
+   * The members' next words on a group call (0z113): one or two answer, each through the group route
+   * in their own persona, with the group chat and the call behind them; spoken words only. Null when
+   * the model is off, out of reach or busy for the first; a busy second just stays quiet.
+   */
+  groupCallReply: (
+    groupId: string,
+    said: readonly GroupCallLine[],
+    opts?: {
+      /** Each member's lines as soon as they come, so the first speaks while the second is asked. */
+      onTurn?: (turn: { characterId: string; lines: string[] }) => void;
+      /** False once the call has hung up or moved on: no further member is asked. */
+      alive?: () => boolean;
+    },
+  ) => Promise<{ turns: { characterId: string; lines: string[] }[] | null; crisis: boolean }>;
+  /** A crisis on a group call: the helpline card goes to the group chat, once. */
+  groupHelplineToChat: (groupId: string) => void;
 
   /* safety */
   reports: MessageReport[];
@@ -1638,8 +1657,13 @@ export const useAppStore = create<AppState>()(
         return turn.ask;
       },
 
-      addGroupCall: (groupId, startedAt, durationSec) => {
+      addGroupCall: (groupId, startedAt, durationSec, lines) => {
         if (durationSec <= 0 || !get().groups.some((g) => g.id === groupId)) return;
+        // A call row has no speaker per line, so a member's line carries their name, as the chat shows it.
+        const named = (lines ?? []).map((line) =>
+          line.author === 'them' && line.characterId ? { ...line, text: `${memberName(get(), line.characterId) || 'Someone'}: ${line.text}` } : line,
+        );
+        const kept = keptCallLines(named);
         appendGroupMessage(set, get, groupId, {
           id: uid('m'),
           conversationId: groupId,
@@ -1647,6 +1671,7 @@ export const useAppStore = create<AppState>()(
           kind: 'call',
           durationSec,
           missed: false,
+          ...(kept.length ? { callLines: kept } : {}),
           createdAt: startedAt,
         });
         // The same call minutes as a one-to-one call: the plan's first, then bought ones.
@@ -3039,6 +3064,51 @@ export const useAppStore = create<AppState>()(
       },
 
       helplineToChat: (characterId) => appendHelplineCard(set, get, get().addFriend(characterId)),
+
+      groupCallReply: async (groupId, said, { onTurn, alive } = {}) => {
+        const state = get();
+        const group = state.groups.find((g) => g.id === groupId);
+        if (!group || !state.settings.realAi || !apiBase()) return { turns: null, crisis: false };
+        const names = Object.fromEntries(
+          group.memberIds.map((id) => [id, memberName(state, id)] as const).filter(([, name]) => !!name),
+        );
+        const { responders, crisis: heard } = groupCallResponders(group.memberIds, names, said, speakersIn(state, groupId));
+        const opening = !said.some((line) => line.author === 'me');
+        const at = new Date().toISOString();
+        const turns: { characterId: string; lines: string[] }[] = [];
+        let crisis = heard;
+        for (const characterId of responders) {
+          // Hung up or talked over: nobody else is asked (a model call nobody would see).
+          if (alive && !alive()) break;
+          // The next member hears what the one before just said.
+          const sofar = [...said, ...turns.flatMap((t) => t.lines.map((text) => ({ author: 'them' as const, text, characterId: t.characterId })))];
+          const first = turns[0] ? names[turns[0].characterId] : undefined;
+          const chat = groupInput(get(), group, { characterId, lines: [], cue: groupCallCue({ opening, first }) }, []);
+          if (!chat) break;
+          // The call after the chat, added as is: `groupInput`'s de-duplication would drop the user's
+          // spoken lines against any of their earlier messages without text.
+          const input = { ...chat, messages: [...chat.messages, ...groupCallMessages(sofar, groupId, at)] };
+          const reply = await accessToken()
+            .then((token) => serverGroupReply(input, token))
+            .catch(() => null);
+          if (!reply) break;
+          crisis ||= reply.crisis;
+          // Spoken words only; a line that was all narration keeps its plain words rather than vanish.
+          const lines = reply.lines.map((line) => speechOnly(line) || plainText(line)).filter(Boolean);
+          if (lines.length) {
+            turns.push({ characterId, lines });
+            onTurn?.({ characterId, lines });
+          }
+          if (crisis) break;
+        }
+        return { turns: turns.length ? turns : null, crisis };
+      },
+
+      groupHelplineToChat: (groupId) => {
+        if (!get().groups.some((g) => g.id === groupId)) return;
+        if ((get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) return;
+        appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
+      },
 
       addCall: (record, lines) => {
         set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));

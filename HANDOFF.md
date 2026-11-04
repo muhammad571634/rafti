@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z113. Group calls on the model (2026-11-04, Claude 1). NEXT: owner tries a group call on the A51 (model on)
+
+- Owner: the 0z111 logo is good ("logo maqul"), go on to the next task. Picked by the agent: the group call still ran stock subtitles with the model on (0z102 item 4), against the model-first rule.
+- Built: `src/ai/group-call.ts` (+ tests): `GROUP_CALL_FORM` cue (spoken words, one or two short sentences, no narration), `groupCallCue` (opening hellos, the second reacts via `groupReactCue`), `groupCallMessages` (the user as voice transcripts, members under their ids), `groupCallResponders` (`pickResponders` over chat + call speakers; a crisis gets one). Store `groupCallReply(groupId, said, { onTurn, alive })`: one `/v1/chat/group` call per member, sequential, the group chat from `groupInput` plus the call appended as is (its de-duplication would drop the user's spoken lines against their earlier textless messages); `speechOnly`, else `plainText`. `groupHelplineToChat`. `addGroupCall` now keeps the call's lines on its row (members as "Kai: ..."), so later group replies read the call through `callText`. Screen `group/[id]/call.tsx`: `useHandsFree`, captions under the speaker's name, their face lit; the first member plays while the second is asked; talking over them, a new ask, hang-up or out of minutes make the older ask stale (no more members asked); Not Delivered + retry; helpline pill. The one-to-one call's caption and helpline pill moved unchanged to `src/components/call/live-caption.tsx`. No server change, no new strings, no native module.
+- Second reader (a fresh agent, read-only): no crash-level bugs; 4 found and fixed (the call forgotten after hang-up; the first member held until the second answered, up to ~44 s; members still asked after hang-up; an all-narration line dropped).
+- Checks: tsc 0, npm test 659/659, check:locales pass.
+
+Still to do:
+1. Owner on the A51 with the model on: open a group, call; two hellos, then talk, name a member, talk over them, Mute, hang up mid-answer; then a line in the group chat about the call.
+2. Voice for group calls: the group route would need to sign lines (`server/src/speech/sign.ts`) as the call route does; after the ElevenLabs key.
+
 ### 0z112. The phone session's 0z111 checked, merged into local-work and sent as OTA (2026-11-04, Claude 1). NEXT: owner taps the mascot on Today and says yes or what to change
 
 - 0z111 was built from the owner's phone in a cloud session on branch `ccr-3c80a66a-7z91e2` and never reached `local-work` or the phone. Checked here: tsc 0, npm test 654/654, the four logo layers look clean (hop pose, mascot on its G, "Si", "MAZAM"). Dropped a committed `scripts/__pycache__/*.pyc` (`cb6dd54`). `local-work` fast-forwarded to `cb6dd54`.

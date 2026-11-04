@@ -3,15 +3,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { accessToken } from '@/ai/account';
 import { captionMs, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
-import { detectCrisis, HELPLINE_URL } from '@/ai/safety';
+import { detectCrisis } from '@/ai/safety';
 import { apiBase, serverSpeak } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
+import { CallHelpline, LiveCaption } from '@/components/call/live-caption';
 import { useHandsFree } from '@/components/call/use-hands-free';
 import { playOnce, stopNote } from '@/components/chat/voice-player';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
@@ -405,16 +406,7 @@ export default function CallScreen() {
 
       {state === 'active' && live ? (
         <>
-          {helpline ? (
-            <PressableScale
-              style={[callGlass.glass, styles.helpline]}
-              onPress={() => void Linking.openURL(HELPLINE_URL)}
-              accessibilityRole="link"
-              accessibilityLabel={t('safety.helplineTitle')}>
-              <Ionicons name="heart" size={17} color={colors.onMedia} />
-              <Txt style={styles.helplineText}>{t('safety.helplineAction')}</Txt>
-            </PressableScale>
-          ) : null}
+          {helpline ? <CallHelpline /> : null}
           <LiveCaption
             talking={userTalking}
             hearing={mic.phase === 'sending'}
@@ -459,74 +451,8 @@ export default function CallScreen() {
   );
 }
 
-/**
- * The live caption on a call on the model: their line in quotes, the user's own words softer, a wave
- * while the user speaks, dots while the words are written out or they answer, and Not Delivered with
- * a retry when the model is busy.
- */
-function LiveCaption({
-  talking,
-  hearing,
-  hearingFailed,
-  caption,
-  waiting,
-  failed,
-  onRetryHearing,
-  onRetry,
-}: {
-  talking: boolean;
-  hearing: boolean;
-  hearingFailed: boolean;
-  caption: CallLine | null;
-  waiting: boolean;
-  failed: boolean;
-  onRetryHearing: () => void;
-  onRetry: () => void;
-}) {
-  const { t } = useTranslation();
-  const retry = hearingFailed ? onRetryHearing : failed ? onRetry : null;
-  if (retry) {
-    return (
-      <PressableScale style={[callGlass.glass, callGlass.caption, styles.caption]} onPress={retry} accessibilityRole="button" accessibilityLabel={t('chat.tryAgain')}>
-        <Txt style={callGlass.captionText}>{t('chat.notDelivered')}</Txt>
-        <Txt style={styles.captionSoft}>{t('chat.tryAgain')}</Txt>
-      </PressableScale>
-    );
-  }
-  const mine = caption?.author === 'me';
-  return (
-    <View style={[callGlass.glass, callGlass.caption, styles.caption]} accessibilityLiveRegion="polite">
-      {talking ? (
-        <Anim name="voiceWave" size={34} tint={colors.onMedia} />
-      ) : (
-        <>
-          {caption && !hearing ? (
-            <Animated.View key={caption.text} entering={FadeIn.duration(320)}>
-              <Txt style={mine ? styles.captionSoft : callGlass.captionText}>{mine ? caption.text : `“${caption.text}”`}</Txt>
-            </Animated.View>
-          ) : null}
-          {hearing || waiting ? <Anim name="typing" size={30} tint={colors.onMedia} /> : null}
-        </>
-      )}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  caption: { minHeight: 56, justifyContent: 'center' },
-  captionSoft: { fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
-  helpline: {
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    minHeight: 44,
-    paddingHorizontal: 18,
-    borderRadius: 22,
-    marginBottom: 14,
-  },
-  helplineText: { fontSize: 16, fontWeight: '600', color: colors.onMedia },
   missing: { padding: space.xl },
   share: {
     position: 'absolute',
