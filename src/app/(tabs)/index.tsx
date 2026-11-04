@@ -26,6 +26,7 @@ import { useDayKey } from '@/hooks/use-day-key';
 import {
   AuroraGlass,
   CharacterAvatar,
+  FrostIcon,
   ModuleIcon,
   PressableScale,
   Screen,
@@ -358,7 +359,7 @@ export default function HomeScreen() {
                 accessibilityLabel={t(TILE_LABEL[tile.key])}
                 onPress={() => router.push(tile.route as never)}
                 style={styles.tileCell}>
-                <ModuleIcon name={tile.key} size={TILE} />
+                <FrostIcon name={tile.key} size={TILE} />
                 {badge ? (
                   <View style={styles.badge}>
                     <Txt style={styles.badgeText}>1</Txt>

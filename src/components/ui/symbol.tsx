@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { type AnimationSpec, SymbolView } from 'expo-symbols';
+import { type AnimationSpec, SymbolView, type SymbolWeight } from 'expo-symbols';
 import { Platform } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -13,12 +13,15 @@ export function SFIcon({
   size = 22,
   color,
   animation,
+  weight,
 }: {
   ios: SFSymbol;
   icon: keyof typeof Ionicons.glyphMap;
   size?: number;
   color: string;
   animation?: AnimationSpec;
+  /** The SF Symbol's stroke (iOS only), e.g. `light` for the thin line icons. */
+  weight?: SymbolWeight;
 }) {
   const fallback = <Ionicons name={icon} size={size} color={color} />;
   if (Platform.OS !== 'ios') return fallback;
@@ -28,6 +31,7 @@ export function SFIcon({
       size={size}
       tintColor={color}
       animationSpec={animation}
+      weight={weight}
       fallback={fallback}
       style={{ width: size, height: size }}
     />

@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { featuredFriend } from '@/components/today-hero';
-import { CharacterAvatar, MODULE_GLYPH, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
+import { CharacterAvatar, ModuleLine, PressableScale, Txt, type ModuleKey } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { useDayKey } from '@/hooks/use-day-key';
 import { nextAlarmAt } from '@/lib/alarms';
@@ -311,7 +311,6 @@ export function WidgetView({
   // Photos is `photo`; Bond is the only widget with no module tile.
   const key = WIDGET_MODULE[model.kind] ?? 'bond';
   const tone = moduleColors[key];
-  const glyph = MODULE_GLYPH[key];
   // A picture keeps its scrim and white words; every other widget is frosted, ink on milk
   // (owner, 2026-11-04: muted like an iOS widget, not a saturated block).
   const onPhoto = model.photo != null;
@@ -320,7 +319,7 @@ export function WidgetView({
   const body = (
     <>
       <View style={styles.top}>
-        {onPhoto ? <View /> : <SFIcon ios={glyph.ios} icon={glyph.icon} size={28} color={ink} />}
+        {onPhoto ? <View /> : <ModuleLine name={key} size={28} color={ink} />}
         <View style={styles.faces}>
           {model.faces.slice(0, 2).map((c, i) => (
             <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
