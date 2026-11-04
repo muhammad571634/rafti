@@ -73,8 +73,10 @@ const GALLERY_HEIGHT = 150;
 const LOGO_MAX = 48;
 /** The letters of `sigmazam-logo.png` fill rows 154-351 of 356; this is their middle's height above the art's bottom. */
 const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
-/** Your capsule's height; the wordmark's letters centre on it. */
+/** Your capsule's height; the logo's glass capsule matches it. */
 const CAPSULE = 40;
+/** The wordmark art's height inside its capsule: the lone mascot fills the circle as your face fills yours, the word reads at ~19 pt. */
+const LOGO_IN_CAPSULE = 34;
 
 /**
  * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
@@ -189,10 +191,10 @@ export default function HomeScreen() {
   // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
   const bar = (
     <View style={styles.bar}>
-      {/* Only the mascot on its G, where it sits in the wordmark; a tap unfolds "Sigmazam" for ten
+      {/* Only the mascot, in the same glass as your capsule; a tap unfolds "Sigmazam" for ten
           seconds, so the friend's picture stays clear (owner, 2026-11-04). */}
       <View style={styles.logo}>
-        <FoldingLogo maxHeight={LOGO_MAX} bottom={CAPSULE / 2 - LOGO_BELOW_MID} label="Sigmazam" />
+        <FoldingLogo height={CAPSULE} artHeight={LOGO_IN_CAPSULE} label="Sigmazam" Glass={Glass} />
       </View>
       {editing ? (
         <>

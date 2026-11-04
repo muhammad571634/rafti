@@ -48,10 +48,10 @@ rounded only at the bottom (32 pt): `heroTopHeight` = `heroHeight` (54% of the w
 safe area (`PhotoGlass` in `(tabs)/index.tsx`), the same on iPhone and Android because both read
 `insets.top`. The status bar is light on the picture and dark again once it has scrolled away;
 with no friend to show, Today keeps its old header on the aurora.
-The logo is only the mascot, full body (the hop pose, no G), where the mascot sits in the
-wordmark (0z111, `FoldingLogo` in `src/components/today/folding-logo.tsx`): a tap lands it on its
-G and unfolds "Si" and "MAZAM" out of the G; it folds back after 10 s or on a second tap, so the
-picture stays clear. A wide scene is slid so the face
+The logo is a glass circle in the leading corner, the same glass as your capsule, with only the
+mascot in it, full body (the hop pose, no G) (0z111, `FoldingLogo` in
+`src/components/today/folding-logo.tsx`): a tap grows it into a capsule, the mascot settles on its
+G and "Si" and "MAZAM" unfold; it folds back after 10 s or on a second tap, so the picture stays clear. A wide scene is slid so the face
 sits mid-frame (`sceneFocus`, shared with the chat ground). At the picture's foot, the name large
 (30 pt) and one clear-glass chip with "N days" (the day you met is day 1) and the bond level, the
 progress to the next level as a mint line along the chip's bottom edge. Under them, their newest written line in a
