@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z112. The phone session's 0z111 checked, merged into local-work and sent as OTA (2026-11-04, Claude 1). NEXT: owner reopens the app twice on good Wi-Fi and taps the mascot
+
+- 0z111 was built from the owner's phone in a cloud session on branch `ccr-3c80a66a-7z91e2` and never reached `local-work` or the phone. Checked here: tsc 0, npm test 654/654, the four logo layers look clean (hop pose, mascot on its G, "Si", "MAZAM"). Dropped a committed `scripts/__pycache__/*.pyc` (`cb6dd54`). `local-work` fast-forwarded to `cb6dd54`.
+- OTA group `a6300872-d7f1-44ad-b7ea-1e38bd2b472e` (preview, runtime 1.0.0; no new native module). On the A51 after four cold starts Today still showed the 0z110 wordmark: logcat `dev.expo.updates` "Failed to download remote update" (UpdateFailedToLoad, a socket read timeout; ping to u.expo.dev 200 ms, so a slow link, not the code). The A51 then dropped off adb.
+
+Still to do:
+1. Owner: on good Wi-Fi, close and reopen the app twice; the top-left should be a glass circle with the mascot alone; a tap opens "Sigmazam" for 10 s. Then say yes or what to change.
+2. The 0z110 art items (a Pinterest pin as a style reference, test 2, then the batch) and the open owner reviews in 0z104-0z109 stay as written there.
+
 ### 0z111. Today's logo: only the mascot (no G); "Sigmazam" unfolds on a tap and folds back after 10 s (2026-11-04, cloud Claude). NEXT: owner checks it on the A51 / iPhone
 
 - Owner: the 0z110 wordmark on the picture covers and spoils the friend's picture. Keep only the mascot, in its current place; "Sigmazam" opens when the mascot is tapped and closes after 10 seconds; better quality, soft and light motion; follow Apple's design site (HIG Branding, Motion).
