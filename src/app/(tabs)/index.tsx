@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,9 +17,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BRAND } from '@/assets/brand/registry';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, heroTopHeight, TodayHero } from '@/components/today-hero';
+import { FoldingLogo } from '@/components/today/folding-logo';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
@@ -190,9 +189,10 @@ export default function HomeScreen() {
   // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
   const bar = (
     <View style={styles.bar}>
-      {/* The wordmark in its own colours with the mascot over the G, on the picture too (owner, 2026-11-03). */}
-      <View style={styles.logo} accessible accessibilityRole="header" accessibilityLabel="Sigmazam">
-        <Image source={BRAND.logo} style={styles.logoArt} contentFit="contain" contentPosition="left bottom" />
+      {/* Only the mascot on its G, where it sits in the wordmark; a tap unfolds "Sigmazam" for ten
+          seconds, so the friend's picture stays clear (owner, 2026-11-04). */}
+      <View style={styles.logo}>
+        <FoldingLogo maxHeight={LOGO_MAX} bottom={CAPSULE / 2 - LOGO_BELOW_MID} label="Sigmazam" />
       </View>
       {editing ? (
         <>
@@ -531,7 +531,6 @@ const styles = StyleSheet.create({
   },
   // As tall as the capsule; the wordmark hangs from it so its letters centre on the capsule.
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
-  logoArt: { position: 'absolute', left: 0, right: 0, bottom: CAPSULE / 2 - LOGO_BELOW_MID, height: LOGO_MAX },
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
   me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
   meName: { fontSize: 15, fontWeight: '600', color: colors.text },
