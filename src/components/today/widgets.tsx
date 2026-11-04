@@ -81,8 +81,8 @@ export interface WidgetModel {
   /** How many lines the title may take (a plan's name: two); it shrinks a little before it is cut. */
   titleLines?: number;
   line: string;
-  /** One more quiet line under `line` (the plan after the next). */
-  after?: string;
+  /** What comes after the main thing, as list rows with a small face each (the next plans, more alarms). */
+  list?: { face?: Character; text: string }[];
   /** A row of seven: weekday letters (an alarm's days) or dots (the check-in week); `on` in ink. */
   days?: { label?: string; on: boolean }[];
   photo?: string | number;
@@ -174,12 +174,22 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
         ? t('common.tomorrow')
         : new Date(`${date}T12:00:00`).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short' });
 
-  // Sleep
-  const alarm = alarms
+  // Sleep: every alarm that is on, the next to ring first; the widget shows it large and the rest as rows.
+  const ringing = alarms
     .filter((a) => a.enabled)
     .map((a) => ({ a, at: nextAlarmAt(a, new Date(now)).getTime() }))
-    .sort((x, y) => x.at - y.at)[0]?.a;
-  const waker = alarm?.characterId ? byId.get(alarm.characterId) : undefined;
+    .sort((x, y) => x.at - y.at)
+    .map(({ a }) => a);
+  const [alarm, ...laterAlarms] = ringing;
+  const wakerOf = (a: (typeof ringing)[number]) => (a.characterId ? byId.get(a.characterId) : undefined);
+  const waker = alarm ? wakerOf(alarm) : undefined;
+  const wakers = [...new Set(ringing.map(wakerOf).filter((c): c is Character => !!c))];
+  // Two rows fit under the next alarm; any more fold into "+N" on the second.
+  const alarmRows = laterAlarms.slice(0, laterAlarms.length > 2 ? 1 : 2).map((a) => ({
+    face: wakerOf(a),
+    text: `${hhmm(a.hour, a.minute)} · ${wakerOf(a) ? nameOf(wakerOf(a)!) : a.label || t('home.widget.wakeUp')}`,
+  }));
+  if (laterAlarms.length > 2) alarmRows.push({ face: undefined, text: `+${laterAlarms.length - 1}` });
   // Monday first; 2026-11-01 is a Sunday, so day d of that week is weekday d.
   const weekday = (d: number) => new Date(2026, 10, 1 + d).toLocaleDateString(i18n.language, { weekday: 'narrow' });
 
@@ -257,7 +267,9 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
             title: plan.title,
             titleLines: 2,
             line: [plan.time ? dayWord(plan.date) : '', planFriend && !nextPlan ? nameOf(planFriend) : ''].filter(Boolean).join(' · '),
-            after: nextPlan ? `${dayWord(nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` : undefined,
+            list: nextPlan
+              ? [{ face: byId.get(nextPlan.characterId), text: `${dayWord(nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` }]
+              : undefined,
           }
         : { title: label('date'), line: t('home.widget.planDate') }),
       onPress: () => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating')),
@@ -266,12 +278,17 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     sleep: {
       kind: 'sleep',
       label: label('sleep'),
-      faces: waker ? [waker] : [],
+      // Everyone who wakes you, side by side; the next alarm large, the others as rows with their face.
+      faces: wakers,
       ...(alarm
         ? {
             figure: hhmm(alarm.hour, alarm.minute),
-            // The days it rings, Monday first, as the Clock app shows them; none when it rings once.
-            days: alarm.repeat.length ? [1, 2, 3, 4, 5, 6, 0].map((d) => ({ label: weekday(d), on: alarm.repeat.includes(d) })) : undefined,
+            // The days it rings, Monday first, as the Clock app shows them: only for a lone repeating alarm.
+            days:
+              alarm.repeat.length && !laterAlarms.length
+                ? [1, 2, 3, 4, 5, 6, 0].map((d) => ({ label: weekday(d), on: alarm.repeat.includes(d) }))
+                : undefined,
+            list: alarmRows.length ? alarmRows : undefined,
             line: waker
               ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(waker) })
               : alarm.label || t('home.widget.wakeUp'),
@@ -450,15 +467,23 @@ export function WidgetView({
           {model.line}
         </Txt>
       )}
-      {model.after && !model.pill ? (
-        // The next one in line, as a list row under the first (a forecast's next days).
-        <View style={styles.afterRow}>
-          <View style={[styles.afterDot, { backgroundColor: ink }]} />
-          <Txt variant="caption" color={sub} lines={1} style={styles.flexText}>
-            {model.after}
-          </Txt>
-        </View>
-      ) : null}
+      {model.list && !model.pill
+        ? // What comes after, as list rows under the first (a forecast's next days), each with its face.
+          model.list.map((row, i) => (
+            <View key={i} style={styles.afterRow}>
+              {row.face ? (
+                <CharacterAvatar character={row.face} size={18} />
+              ) : (
+                <View style={styles.afterDotBox}>
+                  <View style={[styles.afterDot, { backgroundColor: ink }]} />
+                </View>
+              )}
+              <Txt variant="caption" color={sub} lines={1} style={styles.flexText}>
+                {row.text}
+              </Txt>
+            </View>
+          ))
+        : null}
     </View>
   );
 
@@ -587,7 +612,8 @@ const styles = StyleSheet.create({
   days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
   dayLetter: { width: 16, textAlign: 'center', fontSize: 12, lineHeight: 15, fontWeight: '700' },
   dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: 'rgba(120,120,128,0.24)' },
-  afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
+  afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   afterDot: { width: 5, height: 5, borderRadius: 2.5, opacity: 0.5 },
   flexText: { flexShrink: 1 },
   // The note itself, in its own words: the widget is the note.
