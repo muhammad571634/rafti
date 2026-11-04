@@ -220,6 +220,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
         openPage
           ? router.push({ pathname: '/diary/page/[characterId]', params: { characterId: openPage.characterId, date: openPage.date } })
           : router.push('/diary'),
+      buttons: fresh.length ? undefined : [{ glyph: { ios: 'square.and.pencil', icon: 'create-outline' }, label: t('home.widget.writeToday'), onPress: () => router.push('/diary') }],
     },
     date: {
       kind: 'date',
@@ -229,6 +230,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
         ? { figure: plan.time ?? t('home.today'), line: planDay ? `${planDay} · ${plan.title}` : plan.title }
         : { title: label('date'), line: t('home.widget.planDate') }),
       onPress: () => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating')),
+      buttons: plan ? undefined : [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.planDate'), onPress: () => router.push('/dating') }],
     },
     sleep: {
       kind: 'sleep',
@@ -243,6 +245,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
           }
         : { title: label('sleep'), line: t('home.widget.setWake') }),
       onPress: () => router.push('/bedtime'),
+      buttons: [{ glyph: { ios: 'alarm', icon: 'alarm-outline' }, label: t('home.widget.setWake'), onPress: () => router.push('/bedtime') }],
     },
     gifts: {
       kind: 'gifts',
