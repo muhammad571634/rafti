@@ -2,7 +2,22 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { MAX_CUE_LINES } from './first-text';
-import { pushCue } from './moment-prompt';
+import { photoCue, pushCue } from './moment-prompt';
+
+describe('the brief for a Photo Booth picture', () => {
+  it('with the user in it: side by side, and the friend never invents how anyone looks', () => {
+    const cue = photoCue('polaroid', true);
+    assert.ok(cue.length <= MAX_CUE_LINES, `${cue.length} lines`);
+    assert.match(cue[0], /polaroid/);
+    assert.match(cue.join('\n'), /cannot see the picture/);
+  });
+
+  it('without a selfie (a picture from before): the friend alone', () => {
+    const cue = photoCue('film', false);
+    assert.match(cue[0], /picture of you/);
+    assert.doesNotMatch(cue.join('\n'), /side/);
+  });
+});
 
 describe('the brief for a pushed line', () => {
   it('fits what the server keeps, so its last rule is never cut', () => {

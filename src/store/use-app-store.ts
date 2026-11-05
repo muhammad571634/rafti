@@ -3306,10 +3306,14 @@ export const useAppStore = create<AppState>()(
           author: 'me',
           kind: 'image',
           photoId,
+          // How later replies remember it ("[Image message: ...]"): a booth picture never leaves the phone.
+          photoNote: photo.selfie
+            ? `A photo booth picture of the two of you side by side (${photo.style})`
+            : `A photo booth picture of you (${photo.style})`,
           createdAt: sentAt,
         });
         // Their answer is free, like the quiz's: the picture was already paid for by the plan.
-        scheduleReply(set, get, conversationId, { lines: [photoReply(photo.style, genderOf(get(), photo.characterId))], gain: INTIMACY.text, cue: photoCue(photo.style) });
+        scheduleReply(set, get, conversationId, { lines: [photoReply(photo.style, genderOf(get(), photo.characterId))], gain: INTIMACY.text, cue: photoCue(photo.style, !!photo.selfie) });
         return true;
       },
 

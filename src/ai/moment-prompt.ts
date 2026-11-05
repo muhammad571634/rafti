@@ -116,7 +116,19 @@ export const quizDoneCue = (title: string, matches: number, total: number) => [
   `NEXT: You and they just finished a quiz together, "${title}", and matched on ${matches} of ${total}. React to the score in your own voice: short, and true to how you feel about it.`,
 ];
 
-export const photoCue = (style: string) => [`NEXT: The two of you just took a photo together in the photo booth (${style} style) and they sent it to you. React in your own voice: short and warm.`];
+/**
+ * A Photo Booth picture they sent you. With `withThem`, it is the two of you side by side, their half
+ * from their phone's camera (0z116). The picture never leaves the phone, so the friend cannot see it:
+ * they react to having it and never invent how anyone in it looks.
+ */
+export const photoCue = (style: string, withThem: boolean) =>
+  withThem
+    ? [
+        `NEXT: They just took a photo with you in the photo booth (${style} style), you on one side and them on the other from their phone's camera, and sent it to you.`,
+        '- You cannot see the picture itself: never describe their face, clothes, anyone else in it or the place. React to having a photo of the two of you.',
+        '- In your own voice: short and warm, the way a friend does when a photo of you both lands.',
+      ]
+    : [`NEXT: They just made a picture of you in the photo booth (${style} style) and sent it to you. React in your own voice: short and warm.`];
 
 /** How long they have been gone, by comeback step (`COMEBACK_DAYS`). */
 const COMEBACK_TONE: Record<number, string> = {
