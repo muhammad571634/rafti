@@ -1283,6 +1283,8 @@
   "photoBooth": {
     "title": "Buồng chụp ảnh",
     "shoot": "Chụp ảnh",
+    "cameraOff": "Máy ảnh đang tắt",
+    "cameraOffBody": "Cho phép máy ảnh trong Cài đặt để chụp ảnh cùng nhau.",
     "withPro": "Đi kèm với Pro",
     "proTitle": "Chụp ảnh đi kèm với gói Pro",
     "left": "còn {{left}} / {{total}}",

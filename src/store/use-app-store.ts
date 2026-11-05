@@ -820,7 +820,8 @@ interface AppState {
    * Pro only: 'locked' without Pro or the trial, 'usedUp' when this period's pictures are gone.
    * Otherwise the new picture, kept in the album, with closeness and a moment on Us.
    */
-  takePhoto: (characterId: string, style: BoothStyle, frame?: PhotoFrame) => BoothPhoto | 'locked' | 'usedUp';
+  /** `selfie`: the user's half from the front camera (a kept file's name), beside the friend. */
+  takePhoto: (characterId: string, style: BoothStyle, frame?: PhotoFrame, selfie?: string) => BoothPhoto | 'locked' | 'usedUp';
   /** Sends a kept picture to the friend's chat once; they answer it (free). False if already sent. */
   sendPhoto: (photoId: string) => boolean;
 
@@ -3271,7 +3272,7 @@ export const useAppStore = create<AppState>()(
         return record;
       },
 
-      takePhoto: (characterId, style, frame) => {
+      takePhoto: (characterId, style, frame, selfie) => {
         // Pictures come only from Pro's (or the trial's) allowance; shells never buy one
         // (backend-plan §15.10).
         const now = Date.now();
@@ -3285,6 +3286,7 @@ export const useAppStore = create<AppState>()(
           createdAt: new Date(now).toISOString(),
           seed: Math.floor(Math.random() * 1000),
           ...(frame ? { frame } : {}),
+          ...(selfie ? { selfie } : {}),
         };
         set((s) => ({ wallet: { ...s.wallet, subscription: fromPlan }, photos: [photo, ...s.photos] }));
         get().addIntimacy(characterId, INTIMACY.photo);

@@ -1310,6 +1310,8 @@
   "photoBooth": {
     "title": "Fotoğraf Kabini",
     "shoot": "Fotoğraf çek",
+    "cameraOff": "Kamera kapalı",
+    "cameraOffBody": "Birlikte fotoğraf çekmek için Ayarlar'dan kameraya izin ver.",
     "withPro": "Pro ile birlikte gelir",
     "proTitle": "Fotoğraflar Pro ile gelir",
     "left": "{{total}} haktan {{left}} kaldı",

@@ -8,11 +8,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { FrameSwatch } from '@/components/photo-booth/frame-card';
 import { SendPill } from '@/components/photo-booth/send-pill';
+import { useTakeSelfie } from '@/components/photo-booth/take-selfie';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import {
-  Anim,
   AuroraGlass,
   Button,
   CharacterAvatar,
@@ -93,8 +93,10 @@ export default function PhotoBoothScreen() {
   const [style, setStyle] = useState<BoothStyle>('polaroid');
   // The picture just taken: the preview shows it (with Send) until the friend or style changes.
   const [freshId, setFreshId] = useState<string>();
+  // The camera is open (or its picture is being kept): one shot at a time.
   const [shooting, setShooting] = useState(false);
   const [locked, setLocked] = useState(false);
+  const takeSelfie = useTakeSelfie();
 
   const partner = known.find((c) => c.id === partnerId);
   const frames: FrameChoice[] = [
@@ -148,17 +150,26 @@ export default function PhotoBoothScreen() {
     setFreshId(undefined);
   };
 
-  const shoot = () => {
-    if (!partner) return;
-    const result = takePhoto(partner.id, style, look);
-    if (result === 'locked') return setLocked(true);
-    if (result === 'usedUp') return;
-
+  // A booth shot: the front camera takes the user's half, then the print develops with the friend
+  // beside them (owner, 2026-11-05: in BIMOBIMO the user stood beside the character; ours only
+  // re-printed the friend's art, so "Take a photo" looked as if nothing happened). The allowance is
+  // checked before the camera opens and spent only once there is a selfie: closing it costs nothing.
+  const shoot = async () => {
+    if (!partner || shooting) return;
+    const allowance = photoQuota(subscription, Date.now());
+    if (!allowance) return setLocked(true);
+    if (allowance.left <= 0) return;
     setShooting(true);
-    setTimeout(() => {
+    try {
+      const selfie = await takeSelfie();
+      if (!selfie) return;
+      const result = takePhoto(partner.id, style, look, selfie);
+      if (result === 'locked') return setLocked(true);
+      if (result === 'usedUp') return;
       setFreshId(result.id);
+    } finally {
       setShooting(false);
-    }, 1600);
+    }
   };
 
   return (
@@ -189,9 +200,7 @@ export default function PhotoBoothScreen() {
 
         <View style={[styles.card, styles.previewCard]}>
           <View style={[styles.preview, { height: previewHeight }]}>
-            {shooting ? (
-              <Anim name="typing" size={48} tint={aurora.textMuted} />
-            ) : fresh && partner ? (
+            {fresh && partner ? (
               <>
                 <BoothPicture
                   key={fresh.id}
@@ -204,11 +213,12 @@ export default function PhotoBoothScreen() {
                 <SendPill photo={fresh} style={styles.send} />
               </>
             ) : partner ? (
-              // What this style makes with this friend, before the shot.
+              // What this style makes with this friend, before the shot: the user's half a silhouette.
               <BoothPicture
                 photo={{ style, seed: 0, createdAt: new Date().toISOString(), frame: look }}
                 character={partner}
                 width={fitWidth(style, stage)}
+                withYou
                 style={style === 'polaroid' ? styles.tilt : undefined}
               />
             ) : (
@@ -355,7 +365,14 @@ export default function PhotoBoothScreen() {
         caption={quota ? undefined : t('photoBooth.withPro')}
         disabled={!partner || shooting || (quota != null && quota.left <= 0)}
         onPress={shoot}
-        left={quota ? undefined : <Ionicons name="lock-closed" size={17} color={STORE.ctaInk} />}>
+        left={
+          quota ? (
+            // The shutter: this button opens the camera.
+            quota.left > 0 ? <Ionicons name="camera" size={19} color={STORE.ctaInk} /> : undefined
+          ) : (
+            <Ionicons name="lock-closed" size={17} color={STORE.ctaInk} />
+          )
+        }>
         {quota ? (
           <View style={styles.meter}>
             <View style={styles.meterHead}>

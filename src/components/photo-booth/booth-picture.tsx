@@ -6,8 +6,9 @@ import { Image as RNImage, Platform, StyleSheet, View, type StyleProp, type View
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
-import { CharacterAvatar, characterImage, Txt } from '@/components/ui';
+import { CharacterAvatar, characterImage, SFIcon, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
+import { useSelfieUri } from '@/lib/booth-selfies';
 import { colors, fonts, palette, shadows } from '@/theme';
 import type { BoothPhoto, BoothStyle, Character } from '@/types';
 
@@ -27,29 +28,45 @@ const RATIO: Record<BoothStyle, number> = {
 export const fitWidth = (style: BoothStyle, box: { width: number; height: number }) =>
   Math.floor(Math.min(box.width, box.height / RATIO[style]));
 
-type Picture = Pick<BoothPhoto, 'style' | 'seed' | 'createdAt' | 'frame'>;
+type Picture = Pick<BoothPhoto, 'style' | 'seed' | 'createdAt' | 'frame' | 'selfie'>;
+
+/** The user's half of a photo: their selfie, a silhouette before the shot, or blank while it loads. */
+type You = { uri?: string; silhouette?: boolean; zoom?: number };
 
 /**
  * A Photo Booth picture, drawn on the phone from the friend's own art: Polaroid (portrait on white
  * card stock), Film (a four-frame strip), Studio (black-and-white portrait), Street (a disposable
- * camera shot with its date stamp). The same record draws the same picture in the booth, the
- * album, the chat and Us. `develop` fades it in from white, as a fresh print does.
+ * camera shot with its date stamp). With a selfie, every photo in it is the friend on the left and
+ * the user on the right, side by side as in a booth (owner, 2026-11-05). The same record draws the
+ * same picture in the booth, the album, the chat and Us. `develop` fades it in from white, as a fresh
+ * print does; `withYou` leaves the user's half as a silhouette when there is no selfie yet.
  */
 export function BoothPicture({
   photo,
   character,
   width,
   develop,
+  withYou,
   style,
 }: {
   photo: Picture;
   character: Character;
   width: number;
   develop?: boolean;
+  withYou?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const friendName = useFriendName();
   const { t } = useTranslation();
+  const selfieUri = useSelfieUri(photo.selfie);
+  // A selfie that is not on this phone (a chat restored elsewhere) leaves the friend alone, as before.
+  const you: You | undefined = photo.selfie
+    ? selfieUri === null
+      ? undefined
+      : { uri: selfieUri }
+    : withYou
+      ? { silhouette: true }
+      : undefined;
   const date = new Date(photo.createdAt);
   const portrait = characterImage(character);
   const scene: Art | undefined = HEROES[character.id]
@@ -79,7 +96,15 @@ export function BoothPicture({
       <View style={[styles.strip, { width, padding: pad, paddingBottom: 0, gap: pad * 0.7 }, shadows.card, style]}>
         {look ? <FrameBackdrop look={look} radius={3} /> : null}
         {[0, 1, 2, 3].map((i) => (
-          <Frame key={i} shot={shots[(first + i) % shots.length]} width={frameW} height={frameH} character={character} develop={develop}>
+          <Frame
+            key={i}
+            shot={shots[(first + i) % shots.length]}
+            width={frameW}
+            height={frameH}
+            character={character}
+            develop={develop}
+            // One selfie, four framings, as a booth's four shots of one sitting.
+            you={you && { ...you, zoom: SELFIE_ZOOMS[i] }}>
             <View style={[StyleSheet.absoluteFill, styles.warm, { mixBlendMode: 'soft-light' }]} />
           </Frame>
         ))}
@@ -97,7 +122,7 @@ export function BoothPicture({
     return (
       <View style={[styles.mat, { width, padding: pad, paddingBottom: 0 }, shadows.card, style]}>
         {look ? <FrameBackdrop look={look} radius={3} /> : null}
-        <Frame shot={{ art: face, zoom: 1.12, x: 0.5, y: 0.4 }} width={photoW} height={photoW * 1.18} character={character} develop={develop}>
+        <Frame shot={{ art: face, zoom: 1.12, x: 0.5, y: 0.4 }} width={photoW} height={photoW * 1.18} character={character} develop={develop} you={you}>
           {/* Saturation from a grey layer leaves only light and shade: black and white on both platforms. */}
           <View style={[StyleSheet.absoluteFill, styles.mono, { mixBlendMode: 'saturation' }]} />
           <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.28)']} style={StyleSheet.absoluteFill} />
@@ -125,6 +150,7 @@ export function BoothPicture({
         height={width * RATIO.street}
         character={character}
         develop={develop}
+        you={you}
         style={[shadows.card, style]}>
         <View style={[StyleSheet.absoluteFill, styles.sun, { mixBlendMode: 'soft-light' }]} />
         <LinearGradient
@@ -154,7 +180,7 @@ export function BoothPicture({
   return (
     <View style={[styles.polaroid, { width, padding: pad, paddingBottom: 0 }, shadows.card, style]}>
       {look ? <FrameBackdrop look={look} /> : null}
-      <Frame shot={{ art: face, zoom: 1, x: 0.5, y: 0.4 }} width={photoW} height={photoW} character={character} develop={develop} />
+      <Frame shot={{ art: face, zoom: 1, x: 0.5, y: 0.4 }} width={photoW} height={photoW} character={character} develop={develop} you={you} />
       <View style={[styles.polaroidFoot, { height: width * 0.2 }]}>
         {small ? null : (
           <>
@@ -175,9 +201,13 @@ export function BoothPicture({
 type Art = { source: ImageSource | string | number; aspect: number };
 type Shot = { art: Art | undefined; zoom: number; x: number; y: number };
 
+/** A little closer in each of the film strip's four shots, so one selfie reads as four. */
+const SELFIE_ZOOMS = [1, 1.14, 1.3, 1.07];
+
 /**
  * One photo inside a picture: the art cropped round a point (`x`, `y` as fractions of the image)
- * and zoomed, then the look's layers on top. Without art, the friend's monogram.
+ * and zoomed, then the look's layers on top. Without art, the friend's monogram. With `you`, the
+ * friend takes the left half and the user the right, under the same layers, so they read as one shot.
  */
 function Frame({
   shot,
@@ -185,6 +215,7 @@ function Frame({
   height,
   character,
   develop,
+  you,
   style,
   children,
 }: {
@@ -193,25 +224,58 @@ function Frame({
   height: number;
   character: Character;
   develop?: boolean;
+  you?: You;
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
 }) {
-  const { art } = shot;
-  let image: React.ReactNode = <CharacterAvatar character={character} size={Math.min(width, height) * 0.6} />;
-  if (art) {
-    // Cover the frame first, then zoom, then centre the point and keep the frame filled.
-    const cover = art.aspect > width / height ? { w: height * art.aspect, h: height } : { w: width, h: width / art.aspect };
-    const w = cover.w * shot.zoom;
-    const h = cover.h * shot.zoom;
-    const left = Math.min(0, Math.max(width - w, width / 2 - shot.x * w));
-    const top = Math.min(0, Math.max(height - h, height / 2 - shot.y * h));
-    image = <Image source={art.source} style={{ position: 'absolute', left, top, width: w, height: h }} contentFit="cover" />;
-  }
+  const half = width / 2;
   return (
     <View style={[styles.frame, { width, height }, style]}>
-      {image}
+      {you ? (
+        <View style={styles.duo}>
+          <View style={[styles.pane, { width: half, height }]}>
+            <ShotImage shot={shot} width={half} height={height} character={character} />
+          </View>
+          <View style={[styles.pane, { width: half, height }]}>
+            <YouImage you={you} size={Math.min(half, height)} />
+          </View>
+        </View>
+      ) : (
+        <ShotImage shot={shot} width={width} height={height} character={character} />
+      )}
       {children}
       {develop ? <Developer /> : null}
+    </View>
+  );
+}
+
+/** The friend's art in a box: covered, zoomed, centred on the shot's point; else their monogram. */
+function ShotImage({ shot, width, height, character }: { shot: Shot; width: number; height: number; character: Character }) {
+  const { art } = shot;
+  if (!art) return <CharacterAvatar character={character} size={Math.min(width, height) * 0.6} />;
+  // Cover the box first, then zoom, then centre the point and keep the box filled.
+  const cover = art.aspect > width / height ? { w: height * art.aspect, h: height } : { w: width, h: width / art.aspect };
+  const w = cover.w * shot.zoom;
+  const h = cover.h * shot.zoom;
+  const left = Math.min(0, Math.max(width - w, width / 2 - shot.x * w));
+  const top = Math.min(0, Math.max(height - h, height / 2 - shot.y * h));
+  return <Image source={art.source} style={{ position: 'absolute', left, top, width: w, height: h }} contentFit="cover" />;
+}
+
+/** The user's half: their selfie, or where they will stand before the shot. */
+function YouImage({ you, size }: { you: You; size: number }) {
+  if (you.uri) {
+    return (
+      <Image
+        source={{ uri: you.uri }}
+        style={[StyleSheet.absoluteFill, you.zoom && you.zoom !== 1 ? { transform: [{ scale: you.zoom }] } : null]}
+        contentFit="cover"
+      />
+    );
+  }
+  return (
+    <View style={[StyleSheet.absoluteFill, styles.youEmpty]}>
+      {you.silhouette ? <SFIcon ios="person.fill" icon="person" size={Math.round(size * 0.42)} color={colors.textFaint} /> : null}
     </View>
   );
 }
@@ -232,6 +296,9 @@ const styles = StyleSheet.create({
   // Its own stacking context, so the look's blend layers mix only with this photo.
   frame: { overflow: 'hidden', isolation: 'isolate', backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
   fog: { backgroundColor: palette.white },
+  duo: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row' },
+  pane: { overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  youEmpty: { backgroundColor: palette.gray100, alignItems: 'center', justifyContent: 'center' },
   polaroid: { backgroundColor: colors.surface, borderRadius: 4 },
   polaroidFoot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
   hand: { fontFamily: fonts.hand, color: palette.gray800, flexShrink: 1 },

@@ -1310,6 +1310,8 @@
   "photoBooth": {
     "title": "Photomaton",
     "shoot": "Prendre une photo",
+    "cameraOff": "L'appareil photo est désactivé",
+    "cameraOffBody": "Autorisez l'appareil photo dans les Réglages pour prendre une photo ensemble.",
     "withPro": "Inclus avec Pro",
     "proTitle": "Les photos sont incluses avec Pro",
     "left": "{{left}} sur {{total}} restantes",

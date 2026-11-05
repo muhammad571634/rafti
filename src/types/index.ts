@@ -617,6 +617,11 @@ export interface BoothPhoto {
   sentAt?: string;
   /** The frame it was taken in (F29), kept with the picture so it never changes. */
   frame?: PhotoFrame;
+  /**
+   * The user's half of the picture, from the phone's front camera: a file name in the app's folder
+   * (`src/lib/booth-selfies.ts`), only on this phone. Pictures from before it show the friend alone.
+   */
+  selfie?: string;
 }
 
 /** How a Photo Booth frame dresses a picture's card: a world's frame or one the user made. */

@@ -1283,6 +1283,8 @@
   "photoBooth": {
     "title": "포토부스",
     "shoot": "사진 찍기",
+    "cameraOff": "카메라가 꺼져 있어요",
+    "cameraOffBody": "함께 사진을 찍으려면 설정에서 카메라를 허용해 주세요.",
     "withPro": "Pro 혜택",
     "proTitle": "사진은 Pro 전용 혜택입니다",
     "left": "{{total}}장 중 {{left}}장 남음",

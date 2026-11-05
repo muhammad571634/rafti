@@ -1310,6 +1310,8 @@
   "photoBooth": {
     "title": "Fotobox",
     "shoot": "Foto machen",
+    "cameraOff": "Kamera ist aus",
+    "cameraOffBody": "Erlaube die Kamera in den Einstellungen, um ein gemeinsames Foto zu machen.",
     "withPro": "In Pro enthalten",
     "proTitle": "Fotos gibt es mit Pro",
     "left": "Noch {{left}} von {{total}} übrig",

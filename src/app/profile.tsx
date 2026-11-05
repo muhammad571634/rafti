@@ -30,6 +30,7 @@ import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
 import { chatDrafts } from '@/lib/chat-drafts';
+import { forgetAllSelfies } from '@/lib/booth-selfies';
 import { forgetAllNotes } from '@/lib/voice-files';
 import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
@@ -195,6 +196,7 @@ export default function ProfileScreen() {
     deleteAccount();
     chatDrafts.clearAll();
     void forgetAllNotes();
+    void forgetAllSelfies();
     // A fresh start speaks the phone's language again: a language picked by hand goes with the account.
     await pickLanguage(null);
     if (router.canDismiss()) router.dismissAll();

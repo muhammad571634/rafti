@@ -1283,6 +1283,8 @@
   "photoBooth": {
     "title": "Stan Foto",
     "shoot": "Ambil foto",
+    "cameraOff": "Kamera mati",
+    "cameraOffBody": "Izinkan kamera di Pengaturan untuk berfoto bersama.",
     "withPro": "Tersedia dengan Pro",
     "proTitle": "Foto tersedia dengan Pro",
     "left": "Sisa {{left}} dari {{total}}",

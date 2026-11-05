@@ -1310,6 +1310,8 @@
   "photoBooth": {
     "title": "Photo Booth",
     "shoot": "Take a photo",
+    "cameraOff": "Camera is off",
+    "cameraOffBody": "Allow the camera in Settings to take a photo together.",
     "withPro": "Comes with Pro",
     "proTitle": "Photos come with Pro",
     "left": "{{left}} of {{total}} left",

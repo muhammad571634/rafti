@@ -1283,6 +1283,8 @@
   "photoBooth": {
     "title": "フォトブース",
     "shoot": "写真を撮る",
+    "cameraOff": "カメラがオフです",
+    "cameraOffBody": "一緒に写真を撮るには、設定でカメラを許可してください。",
     "withPro": "Pro特典",
     "proTitle": "写真はPro特典です",
     "left": "残り {{left}} / {{total}}",

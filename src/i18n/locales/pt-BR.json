@@ -1310,6 +1310,8 @@
   "photoBooth": {
     "title": "Cabine de Fotos",
     "shoot": "Tirar foto",
+    "cameraOff": "A câmera está desativada",
+    "cameraOffBody": "Permita a câmera nos Ajustes para tirar uma foto juntos.",
     "withPro": "Incluso no Pro",
     "proTitle": "Fotos estão inclusas no Pro",
     "left": "Restam {{left}} de {{total}}",

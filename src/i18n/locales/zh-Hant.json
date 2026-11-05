@@ -1283,6 +1283,8 @@
   "photoBooth": {
     "title": "拍照館",
     "shoot": "拍張合影",
+    "cameraOff": "相機已關閉",
+    "cameraOffBody": "請在設定中允許使用相機，才能一起拍照。",
     "withPro": "Pro專屬權益",
     "proTitle": "拍照功能為Pro會員專屬",
     "left": "剩餘 {{left}} / {{total}} 次",

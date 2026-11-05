@@ -79,7 +79,14 @@
       "expo-audio",
       "@react-native-community/datetimepicker",
       "expo-asset",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Sigmazam uses the camera so you can take a photo together with your friends in the Photo Booth.",
+          "photosPermission": "Sigmazam opens your photos so you can send one in a chat or choose a picture for a character."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
