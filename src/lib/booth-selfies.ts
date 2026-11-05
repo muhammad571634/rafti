@@ -16,7 +16,8 @@ async function files() {
  * Moves a Photo Booth selfie out of the camera's cache, where the system may delete it, into the
  * app's own folder. Gives its name, not its path: iOS moves an app's folder across updates, so the
  * path is worked out when it shows (`useSelfieUri`). Without the file system, the cache path itself.
- * The selfie stays on this phone: it is never sent to the server or a model.
+ * The selfie stays on this phone: it is never sent to our server or a model (the phone's own
+ * backup, iCloud or Android's, may still carry the app's folder, as it does the voice notes).
  */
 export async function keepSelfie(uri: string): Promise<string> {
   try {
@@ -35,15 +36,38 @@ export async function keepSelfie(uri: string): Promise<string> {
 /** Looked-up paths, so a picture drawn again (the album, a chat) shows its selfie at once. */
 const found = new Map<string, string | null>();
 
+type Fs = NonNullable<Awaited<ReturnType<typeof files>>>;
+
+/** The file a kept name (or a path, when the move failed) stands for. */
+function fileOf(fs: Fs, name: string) {
+  return name.startsWith('file:') ? new fs.File(name) : new fs.File(new fs.Directory(fs.Paths.document, FOLDER), name);
+}
+
 async function lookUp(name: string): Promise<string | null> {
-  // Kept as a path when the file system was missing.
-  if (name.startsWith('file:')) return name;
   try {
     const fs = await files();
-    const file = fs && new fs.File(new fs.Directory(fs.Paths.document, FOLDER), name);
-    return file?.exists ? file.uri : null;
+    // No file system to ask: a path is shown as it is, a name cannot be found.
+    if (!fs) return name.startsWith('file:') ? name : null;
+    // A path left in the cache is gone once the system clears it: then the friend shows alone.
+    const file = fileOf(fs, name);
+    return file.exists ? file.uri : null;
   } catch {
     return null;
+  }
+}
+
+/**
+ * A selfie no picture shows any more: a shot the allowance refused after the camera, or a blocked
+ * friend's photos. The user's face is not left on the phone with nothing pointing at it.
+ */
+export async function dropSelfie(name: string) {
+  found.delete(name);
+  try {
+    const fs = await files();
+    const file = fs && fileOf(fs, name);
+    if (file?.exists) file.delete();
+  } catch {
+    // Goes with the account.
   }
 }
 

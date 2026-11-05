@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { FrameSwatch } from '@/components/photo-booth/frame-card';
 import { SendPill } from '@/components/photo-booth/send-pill';
 import { useTakeSelfie } from '@/components/photo-booth/take-selfie';
+import { dropSelfie } from '@/lib/booth-selfies';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
@@ -43,6 +44,8 @@ const CARD_PAD = 14;
 const WELL = colors.well;
 /** Room under the content for the meter above the shoot button. */
 const METER_SPACE = 44;
+/** Long enough for the Pro sheet to finish closing before the camera opens. */
+const SHEET_GONE_MS = 450;
 
 /** One choice in the frame row: plain, a world's frame (won in its quiz) or one the user made. */
 interface FrameChoice {
@@ -156,7 +159,8 @@ export default function PhotoBoothScreen() {
   // checked before the camera opens and spent only once there is a selfie: closing it costs nothing.
   const shoot = async () => {
     if (!partner || shooting) return;
-    const allowance = photoQuota(subscription, Date.now());
+    // The store's plan as it is now: a trial started a moment ago is not in this render yet.
+    const allowance = photoQuota(useAppStore.getState().wallet.subscription, Date.now());
     if (!allowance) return setLocked(true);
     if (allowance.left <= 0) return;
     setShooting(true);
@@ -164,13 +168,29 @@ export default function PhotoBoothScreen() {
       const selfie = await takeSelfie();
       if (!selfie) return;
       const result = takePhoto(partner.id, style, look, selfie);
-      if (result === 'locked') return setLocked(true);
-      if (result === 'usedUp') return;
+      if (result === 'locked' || result === 'usedUp') {
+        // The period turned while the camera was open: no picture, so no selfie kept either.
+        void dropSelfie(selfie);
+        if (result === 'locked') setLocked(true);
+        return;
+      }
       setFreshId(result.id);
     } finally {
       setShooting(false);
     }
   };
+
+  // The trial just started on the Pro sheet: the camera opens once the sheet has gone, never under
+  // a closing modal (iOS will not present one there). A ref, so clearing it cancels no timer.
+  const shootAfterSheet = useRef(false);
+  useEffect(() => {
+    if (locked || !shootAfterSheet.current) return;
+    shootAfterSheet.current = false;
+    const timer = setTimeout(() => void shoot(), SHEET_GONE_MS);
+    return () => clearTimeout(timer);
+    // `shoot` reads the latest plan from the store; this runs when the sheet closes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locked]);
 
   return (
     <Screen background="aurora">
@@ -445,8 +465,8 @@ export default function PhotoBoothScreen() {
         kind="photo"
         onClose={() => setLocked(false)}
         onStarted={() => {
+          shootAfterSheet.current = true;
           setLocked(false);
-          shoot();
         }}
       />
     </Screen>

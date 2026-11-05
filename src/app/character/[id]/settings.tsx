@@ -28,6 +28,7 @@ import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { chatDrafts } from '@/lib/chat-drafts';
+import { dropSelfie } from '@/lib/booth-selfies';
 import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -159,7 +160,12 @@ export default function CharacterSettingsScreen() {
           t('safety.blockBody'),
           t('safety.block'),
           () => {
+            // Their photos go with the block; the user's selfies in them must not stay behind.
+            const selfies = useAppStore
+              .getState()
+              .photos.flatMap((p) => (p.characterId === character.id && p.selfie ? [p.selfie] : []));
             blockCharacter(character.id);
+            for (const name of selfies) void dropSelfie(name);
             if (router.canDismiss()) router.dismissAll();
             router.replace('/(tabs)/chat');
           },

@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
@@ -451,7 +451,7 @@ export function WidgetView({
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
         // The thing itself, whole where it fits: a step smaller before it is cut, never tiny.
-        <FitText text={model.quote} lines={4} sizes={QUOTE_SIZES} style={styles.quote} color={ink} />
+        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={styles.quote} color={ink} />
       ) : (
         <>
           {model.figure ? (
@@ -469,6 +469,7 @@ export function WidgetView({
           {model.title && model.titleLines && model.titleLines > 1 ? (
             // A plan's or a clip's name, whole where it fits.
             <FitText
+              key={model.title}
               text={model.title}
               lines={model.titleLines}
               sizes={model.figure ? SUBTITLE_SIZES : TITLE_SIZES}
@@ -631,8 +632,8 @@ function FitText({
   style: StyleProp<TextStyle>;
   color: string;
 }) {
+  // New words start again from the largest size: callers key this by its text.
   const [step, setStep] = useState(0);
-  useEffect(() => setStep(0), [text]);
   const last = sizes.length - 1;
   const size = sizes[Math.min(step, last)];
   const fit = { fontSize: size, lineHeight: Math.round(size * 1.27) };
@@ -647,7 +648,8 @@ function FitText({
           accessible={false}
           importantForAccessibility="no-hide-descendants"
           onTextLayout={(e) => {
-            if (e.nativeEvent.lines.length > lines) setStep((s) => Math.min(s + 1, last));
+            // Only from the size it measured: a late layout of an older size moves nothing.
+            if (e.nativeEvent.lines.length > lines) setStep((s) => (s === step ? Math.min(s + 1, last) : s));
           }}>
           {text}
         </Txt>
