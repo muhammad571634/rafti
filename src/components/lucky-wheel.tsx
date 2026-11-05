@@ -166,7 +166,8 @@ export function LuckyWheel({
           { top: 14 + r - hubSize / 2, width: hubSize, height: hubSize, borderRadius: hubSize / 2 },
           (spinning || disabled) && styles.hubDisabled,
         ]}>
-        <Txt variant="bodyStrong" color={colors.textOnPrimary}>
+        {/* One word on one line: Russian "Крутить" broke in two in the hub (A51 2026-11-05). */}
+        <Txt variant="bodyStrong" color={colors.textOnPrimary} lines={1} adjustsFontSizeToFit minimumFontScale={0.6} style={styles.hubLabel}>
           {t('gifts.spin')}
         </Txt>
       </PressableScale>
@@ -188,4 +189,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   hubDisabled: { backgroundColor: colors.textFaint },
+  hubLabel: { maxWidth: '100%', paddingHorizontal: 6 },
 });

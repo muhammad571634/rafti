@@ -79,6 +79,7 @@ const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
 const CAPSULE = 40;
 /** The wordmark art's height inside its capsule: the lone mascot fills the circle as your face fills yours, the word reads at ~19 pt. */
 const LOGO_IN_CAPSULE = 34;
+const noop = () => {};
 
 /**
  * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
@@ -504,10 +505,20 @@ function Slot({
   return (
     <GestureDetector gesture={drag}>
       <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(e.nativeEvent.layout)}>
-        <WidgetView model={model} onPress={editing ? onReplace : undefined} onLongPress={editing ? undefined : () => {
-            haptic.lift();
-            onStartEditing();
-          }} />
+        {/* In edit mode a long press still has a handler: without one, the finger that just started
+            editing would also open the gallery as it lifts (A51 2026-11-05). */}
+        <WidgetView
+          model={model}
+          onPress={editing ? onReplace : undefined}
+          onLongPress={
+            editing
+              ? noop
+              : () => {
+                  haptic.lift();
+                  onStartEditing();
+                }
+          }
+        />
         {editing ? (
           <PressableScale
             scaleTo={0.88}

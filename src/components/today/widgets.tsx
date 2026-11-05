@@ -3,9 +3,10 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
+import { useRadioClips, type ClipView } from '@/components/radio/use-clips';
 import { featuredFriend } from '@/components/today-hero';
 import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
@@ -78,9 +79,11 @@ export interface WidgetModel {
   figure?: string;
   unit?: string;
   title?: string;
-  /** How many lines the title may take (a plan's name: two); it shrinks a little before it is cut. */
+  /** How many lines the title may take (a plan's name: two); on iOS it shrinks a little before it is cut. */
   titleLines?: number;
   line: string;
+  /** How many lines `line` may take (Bond's "7 to the next level" runs long in Russian): one by default. */
+  lineLines?: number;
   /** What comes after the main thing, as list rows with a small face each (the next plans, more alarms). */
   list?: { face?: Character; text: string }[];
   /** A row of seven: weekday letters (an alarm's days) or dots (the check-in week); `on` in ink. */
@@ -105,6 +108,12 @@ export interface WidgetButton {
   label: string;
   onPress: () => void;
 }
+
+/**
+ * Long words shrink to fit only on iOS: Android's `adjustsFontSizeToFit` has no floor (it ignores
+ * `minimumFontScale`), and a diary page came out microscopic on the A51 (2026-11-05). There they are cut.
+ */
+const SHRINKS = Platform.OS === 'ios';
 
 const hhmm = (h: number, m: number) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 
@@ -190,6 +199,16 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
     text: `${hhmm(a.hour, a.minute)} · ${wakerOf(a) ? nameOf(wakerOf(a)!) : a.label || t('home.widget.wakeUp')}`,
   }));
   if (laterAlarms.length > 2) alarmRows.push({ face: undefined, text: `+${laterAlarms.length - 1}` });
+  /** A diary page's day: "Today", "Yesterday", else "Nov 3" (a page is dated by its day, never "00:00"). */
+  const pageDay = (date: string) => {
+    const yesterday = dateFromKey(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    return date === today
+      ? t('common.today')
+      : date === dayKey(yesterday)
+        ? t('common.yesterday')
+        : new Date(`${date}T12:00:00`).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' });
+  };
   // Monday first; 2026-11-01 is a Sunday, so day d of that week is weekday d.
   const weekday = (d: number) => new Date(2026, 10, 1 + d).toLocaleDateString(i18n.language, { weekday: 'narrow' });
 
@@ -203,8 +222,15 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
   // Photos, Radio, Board
   const photo = newest(photos);
   const photoFriend = photo ? byId.get(photo.characterId) : hero?.character;
-  const clip = newest(radioClips);
-  const clipFriend = clip ? byId.get(clip.characterId) : undefined;
+  // Radio as Radio lists it: a friend's clip a level just opened comes first (not played yet), then the
+  // user's newest, then any open gift (A51 2026-11-05: three open gifts, and the widget said "Tune in").
+  const { gifts: friendClips, mine: myClips } = useRadioClips();
+  const ownClip = newest(radioClips);
+  const clip: ClipView | undefined =
+    friendClips.find((c) => c.isNew && !c.locked) ??
+    (ownClip ? myClips.find((c) => c.id === ownClip.id) : undefined) ??
+    friendClips.find((c) => !c.locked);
+  const clipFriend = clip?.character;
   const clipLength = clip ? `${Math.floor(clip.durationSec / 60)}:${String(Math.round(clip.durationSec % 60)).padStart(2, '0')}` : '';
   const post = newest(boardPosts);
   const postFriend = post ? byId.get(post.characterId) : undefined;
@@ -247,7 +273,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
         : lastWriter && lastPage
           ? {
               quote: lastPage.body[0],
-              line: `${t('home.widget.pageOf', { name: nameOf(lastWriter) })} · ${relativeStamp(lastPage.writtenAt)}`,
+              line: `${t('home.widget.pageOf', { name: nameOf(lastWriter) })} · ${pageDay(lastPage.date)}`,
             }
           : { title: label('diary'), line: t('home.widget.writeToday') }),
       onPress: () =>
@@ -272,7 +298,12 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
               : undefined,
           }
         : { title: label('date'), line: t('home.widget.planDate') }),
-      onPress: () => (planChat ? router.push(`/chat/${planChat.id}`) : router.push('/dating')),
+      // The heart is Dating's own door, plan or not: going into the plan's chat left no way to set up
+      // a date (owner, 2026-11-05). The plan's friend is one tap away on the bubble.
+      onPress: () => router.push('/dating'),
+      buttons: planChat
+        ? [{ glyph: { ios: 'message', icon: 'chatbubble-outline' }, label: t('characterProfile.chat'), onPress: () => router.push(`/chat/${planChat.id}`) }]
+        : undefined,
     },
     sleep: {
       kind: 'sleep',
@@ -314,7 +345,8 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
       figure: String(wallet.shells),
       unit: t('home.widget.shells'),
       line: label('store'),
-      onPress: () => router.push('/store/shell?tab=shells'),
+      // The balance opens where it came from and went (a bank card's history); "+" buys more.
+      onPress: () => router.push('/store/ledger'),
       buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('profile.getMore'), onPress: () => router.push('/store/shell?tab=shells') }],
     },
     photos: {
@@ -372,6 +404,7 @@ export function useWidgetModels(): Record<WidgetKind, WidgetModel> {
             figure: t('home.hero.level', { level: bond.level }),
             progress: levelForIntimacy(bond.intimacy).progress,
             line: t('home.widget.toNext', { name: nameOf(bondFriend), count: toGo }),
+            lineLines: 2,
           }
         : { title: label('bond'), line: t('home.todo.meet') }),
       onPress: () => (bondFriend ? router.push(`/character/${bondFriend.id}`) : router.push('/(tabs)/find')),
@@ -418,7 +451,7 @@ export function WidgetView({
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
         // The thing itself, whole where it fits: it shrinks a little before it is cut.
-        <Txt style={[styles.quote, { color: ink }]} lines={4} adjustsFontSizeToFit minimumFontScale={0.85}>
+        <Txt style={[styles.quote, { color: ink }]} lines={4} adjustsFontSizeToFit={SHRINKS} minimumFontScale={0.85}>
           {model.quote}
         </Txt>
       ) : (
@@ -439,7 +472,7 @@ export function WidgetView({
             <Txt
               style={[model.figure ? styles.subtitle : styles.title, { color: ink }]}
               lines={model.titleLines ?? 1}
-              adjustsFontSizeToFit={(model.titleLines ?? 1) > 1}
+              adjustsFontSizeToFit={SHRINKS && (model.titleLines ?? 1) > 1}
               minimumFontScale={0.85}>
               {model.title}
             </Txt>
@@ -465,7 +498,7 @@ export function WidgetView({
         </View>
       ) : null}
       {model.pill || !model.line ? null : (
-        <Txt variant="caption" color={sub} lines={1}>
+        <Txt variant="caption" color={sub} lines={model.lineLines ?? 1}>
           {model.line}
         </Txt>
       )}
@@ -604,7 +637,9 @@ const styles = StyleSheet.create({
   },
   badgeInk: { backgroundColor: colors.text },
   badgeText: { fontSize: 12, fontWeight: '700' },
-  figureLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  // A word that does not fit beside its number goes under it; the number is never cut ("… new pages"
+  // in the gallery's narrow card, Russian, A51 2026-11-05).
+  figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
   // The number is the widget's headline (a clock's time, a balance): large, tight, heavy.
   figure: { flexShrink: 1, fontSize: 36, lineHeight: 40, fontWeight: '800', letterSpacing: -1 },
   unit: { flexShrink: 1, fontSize: 15, fontWeight: '600' },
