@@ -3,7 +3,8 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { useRadioClips, type ClipView } from '@/components/radio/use-clips';
@@ -109,11 +110,10 @@ export interface WidgetButton {
   onPress: () => void;
 }
 
-/**
- * Long words shrink to fit only on iOS: Android's `adjustsFontSizeToFit` has no floor (it ignores
- * `minimumFontScale`), and a diary page came out microscopic on the A51 (2026-11-05). There they are cut.
- */
-const SHRINKS = Platform.OS === 'ios';
+/** The sizes words step down through to fit (`FitText`); the last is the floor, then they are cut. */
+const QUOTE_SIZES = [15, 14, 13, 12] as const;
+const SUBTITLE_SIZES = [15, 14, 13] as const;
+const TITLE_SIZES = [17, 16, 15] as const;
 
 const hhmm = (h: number, m: number) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 
@@ -450,10 +450,8 @@ export function WidgetView({
   const words = (
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
-        // The thing itself, whole where it fits: it shrinks a little before it is cut.
-        <Txt style={[styles.quote, { color: ink }]} lines={4} adjustsFontSizeToFit={SHRINKS} minimumFontScale={0.85}>
-          {model.quote}
-        </Txt>
+        // The thing itself, whole where it fits: a step smaller before it is cut, never tiny.
+        <FitText text={model.quote} lines={4} sizes={QUOTE_SIZES} style={styles.quote} color={ink} />
       ) : (
         <>
           {model.figure ? (
@@ -468,12 +466,17 @@ export function WidgetView({
               ) : null}
             </View>
           ) : null}
-          {model.title ? (
-            <Txt
-              style={[model.figure ? styles.subtitle : styles.title, { color: ink }]}
-              lines={model.titleLines ?? 1}
-              adjustsFontSizeToFit={SHRINKS && (model.titleLines ?? 1) > 1}
-              minimumFontScale={0.85}>
+          {model.title && model.titleLines && model.titleLines > 1 ? (
+            // A plan's or a clip's name, whole where it fits.
+            <FitText
+              text={model.title}
+              lines={model.titleLines}
+              sizes={model.figure ? SUBTITLE_SIZES : TITLE_SIZES}
+              style={model.figure ? styles.subtitle : styles.title}
+              color={ink}
+            />
+          ) : model.title ? (
+            <Txt style={[model.figure ? styles.subtitle : styles.title, { color: ink }]} lines={1}>
               {model.title}
             </Txt>
           ) : null}
@@ -609,6 +612,50 @@ export function WidgetView({
   );
 }
 
+/**
+ * Words that should show whole: at their size when they fit in `lines`, else a step smaller, down to
+ * the last of `sizes`, then cut. A hidden twin with no line limit counts the lines. Not
+ * `adjustsFontSizeToFit`: Android ignores its `minimumFontScale`, and a diary page came out
+ * microscopic on the A51 (2026-11-05), while plain cutting lost the end of a short note.
+ */
+function FitText({
+  text,
+  lines,
+  sizes,
+  style,
+  color,
+}: {
+  text: string;
+  lines: number;
+  sizes: readonly number[];
+  style: StyleProp<TextStyle>;
+  color: string;
+}) {
+  const [step, setStep] = useState(0);
+  useEffect(() => setStep(0), [text]);
+  const last = sizes.length - 1;
+  const size = sizes[Math.min(step, last)];
+  const fit = { fontSize: size, lineHeight: Math.round(size * 1.27) };
+  return (
+    <View>
+      <Txt style={[style, fit, { color }]} lines={lines}>
+        {text}
+      </Txt>
+      {step < last ? (
+        <Txt
+          style={[style, fit, styles.twin]}
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          onTextLayout={(e) => {
+            if (e.nativeEvent.lines.length > lines) setStep((s) => Math.min(s + 1, last));
+          }}>
+          {text}
+        </Txt>
+      ) : null}
+    </View>
+  );
+}
+
 /** A widget button's size: an iOS glass circle the thumb finds (44 pt with its hit slop). */
 const BUTTON = 36;
 const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
@@ -655,6 +702,8 @@ const styles = StyleSheet.create({
   flexText: { flexShrink: 1 },
   // The note itself, in its own words: the widget is the note.
   quote: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2, marginBottom: 4 },
+  // FitText's line counter: laid out like the words, never seen.
+  twin: { position: 'absolute', top: 0, left: 0, right: 0, opacity: 0 },
   // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
   // stays, no colour added inside).
   track: { height: 8, borderRadius: 4, marginTop: 8, marginBottom: 6, backgroundColor: 'rgba(120,120,128,0.18)', overflow: 'hidden' },
