@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z125. Chats coded in the playful skin; seen on the A51 (2026-11-07, Claude 1). NEXT: Find in the playful skin (worlds as folders), then Us, then Today
+
+- Tokens (`src/theme/colors.ts`, exported from `@/theme`): `playful` (ground cream #FBF6EE / #1A1613, ink, chip, chipOn, round, card, group mint, Streams plum, red) and `friendHues` (8 light/dark `{fill, ink}` pairs from 0z124 step 1); `friendColor(characterId)` picks one with `friendHueIndex` (`src/lib/friend-color.ts`, pure FNV-1a, 4 tests). Use `friendColor` for a friend's ring and colour on Find and Us too, so a friend keeps one hue everywhere.
+- Chats (`e0e3dfe`): as in the prototype. Bubble = `PressableScale` in the friend's hue inside `SwipeRow` (container: no fill, no clip); the tail is an SVG inside the moving child, the row gap is the wrapper's `paddingBottom` so the tail stays inside the FlatList cell (Android `removeClippedSubviews`). Swipe actions: a rounded strip of full-height columns (blue Read, orange Pin, indigo Mute, red Delete) that fades in over the first 12 % of the slide, so closed corners show cream. Edit's remove button sits beside the bubble. Unread count now always on the Unread pill; the old chevron and unread dot are gone (the ink count replaces the dot).
+- A51 (Turkish UI, OTA Android-only `01a1b582`): bubbles, tails both ways, level chips, blue bubble with white text, swipe left shows Mute / Delete, pencil sheet shows the three tiles with "CANLI". Dark mode not seen on a device.
+- Checks: tsc 0, npm test 667/667.
+
+Still to do:
+1. Find → Us → Today in the playful skin per `docs/main-tabs-inventory.md`, each on the A51.
+2. From 0z121: second reader on migration b7, then the owner applies it.
+3. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z123-124. Check-in approved and coded; the four tabs inventoried and prototyped with an engineering check (2026-11-07, Claude 1). NEXT: owner's word on the four-tab prototype, then code in the plan's order (tokens + friendColor → Chats → Find → Us → Today)
 
 - Check-in: owner approved the prototype's design as is ("logic must be right"). Coded (`b9516d1` … `e030b1f`): full-screen yellow `DailyRewardSheet` with `LiveMascot` (body behind the card, paws on it via `part`), Nunito (`fonts.playful`, `@expo-google-fonts/nunito`: Fredoka has no Cyrillic, seen on the A51), collect flight + count-up + laugh + hop + mint day. A51 (Turkish): 76 → 131 (+55), 7/7, laugh, mint. Lessons: Android elevation drew the card over the later mascot; absolute `bottom` and padding: placed from a margin.
