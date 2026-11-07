@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z132. Today prototype approved and coded (2026-11-07, Claude 1). NEXT: owner's next ask; open items below
+
+- Owner approved the Today prototype ("Ha, kodla"): https://claude.ai/artifact/6tYCFRyhcRAWGyb5sN6TbJ. Direction (owner): simple and clear like iOS, in our own playful skin, fit for an AI companion; not Apple's design, not more decoration.
+- Coded (`457fa2e`): the sealed note sits right under "Waiting for you" (straight under the picture when no chat waits); Date and Sleep show the friend as a small face beside the line (`WidgetModel.lineFace`), so every widget keeps one shape (icon top left, one button top right, the main thing below); a missed call's call-back is white on green (`WidgetButton.tone: 'go'`).
+- A51 (OTA Android-only `0a7c86cd`): Today renders, no errors in logcat. Not seen: the note under the bubble, a missed call, lineFace on Date / Sleep (the phone had no unread chat, note, missed call, plan or alarm; no fake alarm was added to the owner's phone).
+- Checks: tsc 0 in `src`, npm test 710/710.
+
+Still to do:
+1. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan / alarm with the friend's face.
+2. Widgets next steps in `docs/today-widgets.md` (mood by state, play in place on Radio, sentence lines, Bond milestones).
+3. Tab switch: the new screen's first frames take 130-150 ms on the A51; profile the screen attach.
+4. On the first iPhone: swipe back from mid-screen on most screens; in a chat, a sideways swipe on a reply's versions must not go back.
+5. Owner has more questions about the tabs' logic.
+6. From 0z121: second reader on migration b7, then the owner applies it.
+7. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z131. Today's widgets re-architected; the app idles at 0 frames; tab bar and status bar fixed (2026-11-07, Claude 1). NEXT: Today's look "ultra" (owner allowed it), prototype first
 
 - Owner: make the widgets' logic and architecture right (what each shows and does), decide yourself as a senior RN dev, base every call on real apps and do better than them (not blind), keep screens light on every phone with world standards written down, App Store / iOS first. References read: Apple HIG Widgets (JSON), Duolingo's widget from its APK on the A51 (REA: state machine extended / frozen / inactive, 354 mood drawables, cached timeline, add-widget reward), Pinterest boards (contact card, balance pills, play-in-place, sentence lines, Fito's mood bear, milestone claims), nativecook.dev (ideas only). Spec: `docs/today-widgets.md`.
