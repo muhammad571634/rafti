@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 
 import { CHAT_MODES, type ChatMode, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
+import { cleanClock, cleanTogether } from '../../src/ai/together-prompt.ts';
 import {
   buildDraftPrompt,
   buildFieldPrompt,
@@ -778,6 +779,9 @@ export function createApp(
       user,
       messages: input.messages.slice(-MAX_MESSAGES),
       replyLanguage: replyLanguageOf({ ...input, user }),
+      // The user's clock and what they set up with this friend (0z135); malformed ones are dropped.
+      clock: cleanClock(input.clock),
+      together: cleanTogether(input.together),
     };
 
     // Who is asking, looked up while the model writes: the reply never waits on it, and a missing or

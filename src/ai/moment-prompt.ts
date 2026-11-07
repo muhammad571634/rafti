@@ -75,6 +75,11 @@ export const wakeCheckInCue = () => ['You woke them up this morning, and some ti
 
 export const planAddedCue = (title: string, when: string) => [`They just put a plan on your list: "${title}", ${when}. Say something real about it: that you will remember, what you think of it, or what you would do.`];
 
+/** They set an alarm that this friend wakes them with (0z135): the friend knows, as with a plan. */
+export const alarmSetCue = (at: string, days: string) => [
+  `They just asked you to wake them up at ${at} (${days}). Say something real about it: that you will be there to wake them, how, or that they should sleep in time.`,
+];
+
 export const planRemindCue = (title: string, timed: boolean) => [`Their plan "${title}" is coming up ${timed ? 'soon' : 'today'}. Remind them, in your own way.`];
 
 export const planFollowUpCue = (title: string) => [`Their plan "${title}" has passed. Ask how it went, as someone who wants to know.`];

@@ -28,10 +28,11 @@ export const THREAD_RULES_LINES = [
 /** A time as the user's clock shows it ("2026-10-28 07:30"); UTC without an offset. */
 export const wallClock = (iso?: string, utcOffsetMin = 0) =>
   iso ? new Date(Date.parse(iso) + utcOffsetMin * 60_000).toISOString().slice(0, 16).replace('T', ' ') : 'no set time';
-const when = (iso?: string) => wallClock(iso);
 
 /** The friend's open threads for this reply (turn tier), so the model can follow, move or settle them. */
-export function threadLines(threads: readonly Thread[]) {
+export function threadLines(threads: readonly Thread[], utcOffsetMin = 0) {
+  // On the user's clock, the same one `clockLines` names, so "18:30" means the same in both.
+  const when = (iso?: string) => wallClock(iso, utcOffsetMin);
   const open = threads.filter((t) => t.status === 'open');
   // The user sees these in the app (Keeping in mind) and may change a time or turn texts off.
   const quiet = threads.filter((t) => t.status === 'closed' && t.outcome === 'quiet');
@@ -173,7 +174,7 @@ export function parseTouchReply(raw: string): TouchReply {
 }
 
 /** The parts for one reply's prompt that carry the threads: the standing rule and this friend's open ones. */
-export const threadParts = (threads: readonly Thread[]): PromptPart[] => [
+export const threadParts = (threads: readonly Thread[], utcOffsetMin?: number): PromptPart[] => [
   part('threadRules', 'global', THREAD_RULES_LINES),
-  part('threads', 'turn', threadLines(threads)),
+  part('threads', 'turn', threadLines(threads, utcOffsetMin)),
 ];

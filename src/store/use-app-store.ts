@@ -42,6 +42,7 @@ import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
 import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
+import { chatClock, togetherWith } from '@/lib/together';
 import {
   askToReachCue,
   birthdayCue,
@@ -54,6 +55,7 @@ import {
   missedCallCue,
   nightCue,
   photoCue,
+  alarmSetCue,
   planAddedCue,
   planFollowUpCue,
   planRemindCue,
@@ -2733,15 +2735,35 @@ export const useAppStore = create<AppState>()(
 
       saveAlarm: ({ id, ...fields }) => {
         const existing = id ? get().alarms.find((a) => a.id === id) : undefined;
+        // The friend who wakes them hears about it in their chat, as with a plan (0z135): on a new
+        // alarm, or when the time, the days or the friend changed, not on a label or sound edit.
+        const waker = fields.characterId;
+        const told =
+          !!waker &&
+          get().characters.some((c) => c.id === waker) &&
+          (!existing ||
+            existing.characterId !== waker ||
+            existing.hour !== fields.hour ||
+            existing.minute !== fields.minute ||
+            existing.repeat.join() !== fields.repeat.join());
+        let savedId: string;
         if (existing) {
           const armedAt = new Date().toISOString();
           set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...fields, enabled: true, armedAt } : a)) }));
-          return existing.id;
+          savedId = existing.id;
+        } else {
+          const now = new Date().toISOString();
+          const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: now, armedAt: now };
+          set((s) => ({ alarms: [...s.alarms, alarm] }));
+          savedId = alarm.id;
         }
-        const now = new Date().toISOString();
-        const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: now, armedAt: now };
-        set((s) => ({ alarms: [...s.alarms, alarm] }));
-        return alarm.id;
+        if (told && waker) {
+          const at = `${String(fields.hour).padStart(2, '0')}:${String(fields.minute).padStart(2, '0')}`;
+          const days = alarmDaysWord(fields.repeat);
+          const title = fields.label.trim() || i18n.t('home.widget.wakeUp');
+          sayFirst(set, get, get().addFriend(waker), planAddedLine(title, at, genderOf(get(), waker)), alarmSetCue(at, days));
+        }
+        return savedId;
       },
       deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id) })),
       setAlarmEnabled: (id, enabled) =>
@@ -3052,6 +3074,8 @@ export const useAppStore = create<AppState>()(
           summary: conversation?.summary,
           messages,
           threads: state.threads.filter((t) => t.characterId === characterId),
+          clock: chatClock(),
+          together: togetherWith(state, characterId, todayKey()),
           cue: [...callCue(placedBy, said), ...(spokenCue(messages) ?? [])],
         };
         const reply = await accessToken()
@@ -4043,6 +4067,17 @@ export const displayName = (character: Character, relationship?: Relationship) =
   relationship?.nickname || character.name;
 
 /* ── helpers ───────────────────────────────────────────────────────────────── */
+
+/** An alarm's days for the friend's cue (`alarmSetCue`): "every day", "weekdays", "once"… */
+function alarmDaysWord(repeat: readonly number[]) {
+  const days = [...new Set(repeat)].sort();
+  if (!days.length) return 'once';
+  if (days.length === 7) return 'every day';
+  if (days.join() === '1,2,3,4,5') return 'on weekdays';
+  if (days.join() === '0,6') return 'on weekends';
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return `on ${days.map((d) => names[d]).join(', ')}`;
+}
 
 type Setter = (fn: (s: AppState) => Partial<AppState>) => void;
 type Getter = () => AppState;
@@ -5414,6 +5449,10 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       messages,
       plan: turn.plan,
       threads: state.threads.filter((t) => t.characterId === character.id),
+      // The hour where they are and what they set up with this friend (0z135): before, a plan from
+      // Us reached the friend only as the line they said when it was added, and a reply had no clock.
+      clock: chatClock(),
+      together: togetherWith(state, character.id, todayKey()),
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
       redo: Array.isArray(avoid) ? avoid : undefined,
       redoOff: off,

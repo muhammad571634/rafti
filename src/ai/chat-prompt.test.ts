@@ -290,3 +290,38 @@ describe('the tone of a text', () => {
     assert.match(cueOf(true), /A game cue/);
   });
 });
+
+describe('the clock and what they set up together reach the reply (0z135)', () => {
+  const clock = { now: '2026-11-07T13:20:00.000Z', utcOffsetMin: 300 };
+  const parts = chatParts({
+    character: kai,
+    user: sam,
+    messages: [],
+    clock,
+    together: { plans: [{ title: 'Coffee at the pier', date: '2026-11-08', time: '18:30' }], wakes: [{ hour: 7, minute: 0, repeat: [] }] },
+    threads: [
+      { id: 't1', characterId: 'c_kai', about: 'exam', quote: 'exam tomorrow', status: 'open', happensAt: '2026-11-08T04:00:00.000Z', touches: [], createdAt: clock.now } as never,
+    ],
+  });
+  const text = (name: string) => parts.find((p) => p.name === name)?.text ?? '';
+
+  it('tells the friend the hour where the user is, in the turn tier', () => {
+    assert.match(text('clock'), /Saturday 2026-11-07 18:20/);
+    assert.equal(parts.find((p) => p.name === 'clock')?.tier, 'turn');
+  });
+
+  it('lists the plan and the wake-up made in the app', () => {
+    assert.match(text('together'), /"Coffee at the pier"/);
+    assert.match(text('together'), /wake them up at 07:00/);
+  });
+
+  it('writes thread times on the same clock', () => {
+    assert.match(text('threads'), /2026-11-08 09:00/);
+  });
+
+  it('adds nothing without them', () => {
+    const bare = chatParts({ character: kai, user: sam, messages: [] });
+    assert.equal(bare.find((p) => p.name === 'clock')?.text ?? '', '');
+    assert.equal(bare.find((p) => p.name === 'together')?.text ?? '', '');
+  });
+});

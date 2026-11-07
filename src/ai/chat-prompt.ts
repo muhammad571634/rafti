@@ -20,6 +20,7 @@ import { REPLY_SHAPE, turnLines } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
+import { clockLines, togetherLines, type ChatClock, type Together } from './together-prompt';
 
 /**
  * The prompt for one reply in a one-to-one chat (teardown item 7), laid out for the provider's
@@ -156,6 +157,10 @@ export interface ChatPromptInput {
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
   threads?: readonly Thread[];
+  /** The user's clock, so the friend knows the hour and the day (`clockLines`). */
+  clock?: ChatClock;
+  /** Plans and wake-ups the two of them set up in the app (`togetherLines`). */
+  together?: Together;
 }
 
 /** The parts of one reply's prompt, every tier; the history comes from `chatTurns`. */
@@ -181,7 +186,10 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // Bedtime asks nothing (its mode block): the plan's "end with a question" would undo that. In a
     // crisis the plan (a tease, a new topic) gives way to `CRISIS_CUE`.
     part('hints', 'turn', input.plan && !input.crisis ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
-    ...threadParts(input.threads ?? []),
+    // The hour and what they set up together: in the turn tier, as they change by the minute.
+    part('clock', 'turn', clockLines(input.clock)),
+    part('together', 'turn', togetherLines(input.together, input.clock)),
+    ...threadParts(input.threads ?? [], input.clock?.utcOffsetMin),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
