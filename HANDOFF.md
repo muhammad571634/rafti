@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z144. The friend's own day: what they said they did stays true, today and tomorrow (2026-11-08, Claude 1). NEXT: owner deploys the server; then chat with a friend on the A51 about their day, and again tomorrow
+
+- **Seen first**: 0z143 is live (Fly v28 at ~23:24, after `1b38dda`).
+- **Why**: every reply made up the friend's day again from the persona and the hour, so it drifted once its lines left the history window ("overslept" at noon, "calm morning at the gym" at six), and "how was practice yesterday?" had nothing behind it (HANDOFF 0z141 Still to do 2).
+- **Built**: `src/ai/own-day.ts`. The model adds a `day` field (a few English words per new thing of its own day) to the reply it already writes (`OWN_DAY_RULES_LINES`, global tier, plus one reminder line in the turn tier); `parseModelReply` reads it, the reply route returns it (not after a crisis), `serverReply` cleans it, the store keeps it on `Relationship.ownDay` (`keepOwnDay`: today on the phone's calendar and the last earlier day with notes, at most 10 a day, a note whose words are all in one already there is dropped). Chat and call replies send `ownDay` (`ownDayOf`), the server cleans it (`cleanOwnDay`), the prompt reads YOUR DAY SO FAR (with each note's hour on the user's clock) and YOUR LAST DAY ("yesterday" or the weekday). No extra call; cost row 11 in `docs/cost-ledger.md`.
+- **Probe** (`gemini-3.1-flash-lite`, Hana, Sunday 13:30 Tashkent, 18 calls on the machine's Google key, which the SDK picks over `GEMINI_API_KEY`): the cached rule alone wrote the field in 4-5 of 6 replies; with the turn reminder 6 of 6. With "overslept, missed the bus" kept, all 6 answers kept it and built on it. Eval: new `human-own-day-keeps`, `human-own-day-yesterday` (checks 3/3 with `human-own-life`; the judge keys are 401, so read by hand: "my ink spill wasted hours", "sold one small piece... pays for more paint").
+- Not yet: group chats, the friend's first texts (moments, thread texts, world news, the evening ask) read and write it next; a memory-pass catch for days the model forgot to note.
+- Checks: app tsc 0, npm test 787/787 (new `own-day.test.ts`); server tsc 0, 78/78.
+
 ### 0z143. A plan card opens over the chat; replies the size of a text (2026-11-07, Claude 1). NEXT: owner deploys the server; then the friend's own day (characters keep what they did today)
 
 - **Plan card** (`481ff89`): the Done plan card opens `PlanDetailSheet` over the chat (friend, day and hour, reminder, Us, Delete with confirm) instead of switching to the Us tab (Back then landed on Today). Seen on the A51: "Sinema ile Hana · Mon 9 Nov 19:00 · 🔔18:50", Delete → the card faded, the cancel card struck through, Hana: "you deleted Monday's cinema, what happened?". Alarm cards still open the alarm editor (a stack screen, Back returns to the chat).
