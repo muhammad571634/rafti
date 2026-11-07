@@ -96,6 +96,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'notifyOff') return <NotifyOffNote name={name.split(' ')[0]} />;
   if (message.card === 'week' && message.week) return <WeekCard week={message.week} />;
   if (message.card === 'setup') return <SetupCard message={message} />;
+  if (message.card === 'board') return <BoardNoteLine text={message.text ?? ''} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   // A continue is the user's turn without words: nothing to show, their lines follow.
@@ -408,6 +409,29 @@ function SystemLine({ text }: { text: string }) {
   );
 }
 
+/**
+ * A note the user pinned for this friend on the board, on the user's side of the chat (0z138): what
+ * the friend's answer below it is about. A tap opens the board.
+ */
+function BoardNoteLine({ text }: { text: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.boardWrap}>
+      <PressableScale
+        onPress={() => router.push('/board')}
+        accessibilityRole="button"
+        accessibilityLabel={`${t('board.title')}: ${text}`}
+        style={styles.boardNote}>
+        <Ionicons name="pin" size={16} color={palette.apricot300} style={styles.boardPin} />
+        <Txt style={styles.boardText} lines={4}>
+          {text}
+        </Txt>
+      </PressableScale>
+    </View>
+  );
+}
+
 /** Where the story moved on (a time skip): the new time, centred like the chat's own notes. */
 function SkipLine({ text }: { text: string }) {
   const onPhoto = useOnPhoto();
@@ -676,6 +700,21 @@ const styles = StyleSheet.create({
   system: { alignItems: 'center', paddingVertical: space.sm + 2, paddingHorizontal: space.xxl },
   systemText: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
   systemStrong: { fontWeight: '600' },
+  boardWrap: { alignItems: 'flex-end', paddingHorizontal: space.md, paddingVertical: space.xs },
+  boardNote: {
+    maxWidth: '78%',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: space.xs,
+    paddingVertical: space.sm + 2,
+    paddingHorizontal: space.md,
+    borderRadius: 18,
+    backgroundColor: '#EFE8FF',
+    transform: [{ rotate: '-1.5deg' }],
+    ...shadows.card,
+  },
+  boardPin: { marginTop: 2 },
+  boardText: { flexShrink: 1, fontSize: 15, lineHeight: 20, color: '#2B2350' },
   sceneHead: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   sceneSetting: { marginTop: 2, fontStyle: 'italic' },
   weekCard: {

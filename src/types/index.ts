@@ -280,7 +280,7 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week' | 'setup';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week' | 'setup' | 'board';
   /** setup cards: the alarm or plan the friend offered to set up; one tap makes it (`answerSetup`). */
   setup?: SetupOffer;
   /** A `scene` card: which scene began, so a world's entry scene plays once. */

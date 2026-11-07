@@ -79,7 +79,7 @@ import { groupCallCue, groupCallMessages, groupCallResponders, type GroupCallLin
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
-import { messageText } from '@/lib/story-continuity';
+import { boardNoteText, messageText } from '@/lib/story-continuity';
 import { REPORT_LIMITS, type WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
@@ -3727,10 +3727,13 @@ export const useAppStore = create<AppState>()(
           ],
         }));
         if (crisis) answerCrisisInChat(set, get, characterId);
-        // They remember what you pinned for them, as a diary page they read (`diaryMemoryLine`
-        // keeps its first sentence and never a crisis line).
-        const line = diaryMemoryLine(clean);
-        if (line) get().addMemory(characterId, line, 'board');
+        // The note lands in their chat as a small card on your side: they answer it right under it,
+        // later replies read it, and the memory pass keeps what matters in its own words. A crisis
+        // note is never quoted back.
+        if (!crisis) {
+          const conversationId = get().addFriend(characterId);
+          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'system', card: 'board', text: clean, createdAt: createdAt.toISOString() }, { quiet: true });
+        }
         get().addIntimacy(characterId, INTIMACY.boardNote);
         addMoment(set, characterId, 'board');
         setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
@@ -6368,6 +6371,10 @@ function sinceMark(messages: readonly Message[], mark?: string) {
  * A call row gives what was said on the call (`callLines`), each line under its own speaker.
  */
 const passLines = (m: Message): { author: Message['author']; text: string; at: string }[] => {
+  if (m.card === 'board') {
+    const text = boardNoteText(m.text);
+    return text && !detectCrisis(m.text ?? '') ? [{ author: 'me', text, at: m.createdAt }] : [];
+  }
   if (m.card || m.pending || m.kind === 'system') return [];
   const said = m.kind === 'call' ? (m.callLines ?? []) : [{ author: m.author, text: m.text ?? m.transcript ?? '' }];
   return said

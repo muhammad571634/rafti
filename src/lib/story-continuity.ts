@@ -161,10 +161,15 @@ function memoryScore(memory: MemoryItem, overlap: number, querySize: number, now
   return Number((similarity * 0.6 + importanceOf(memory) * 0.3 + recency * 0.1).toFixed(4));
 }
 
+/** A board note as the model and the memory pass read it, on the user's side. */
+export const boardNoteText = (text?: string) => (text?.trim() ? `[Pinned for you on the board] ${text.trim()}` : null);
+
 /** What the model may see of a message; app-only rows return null. Local URIs never leave. */
 export function messageText(message: Message): string | null {
   // A time skip is part of the story: later replies must know the time moved on.
   if (message.card === 'skip') return historyText(message);
+  // A note the user pinned for them on the board: theirs to answer and remember (0z138).
+  if (message.card === 'board') return boardNoteText(message.text);
   if (message.pending || message.kind === 'system' || message.card) return null;
   if (message.kind === 'call') return message.missed ? '[Missed call]' : callText(message.callLines);
   const text = (message.text ?? message.transcript ?? '').trim();
