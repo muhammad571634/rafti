@@ -1446,7 +1446,15 @@
     "holdToStop": "長按3秒關閉",
     "stop": "關閉",
     "ringBar": "鬧鐘響起中 · 回覆訊息以關閉",
-    "planSaved": "計畫已儲存 · {{title}} · {{time}}"
+    "planSaved": "計畫已儲存 · {{title}} · {{time}}",
+    "setAlarm": "設定鬧鐘",
+    "wakeMe": "叫我起床",
+    "done": "完成",
+    "voice": "聲音",
+    "reply": "回覆",
+    "melodyOnly": "旋律",
+    "earlier": "提早 {{count}} 分鐘",
+    "later": "延後 {{count}} 分鐘"
   },
   "board": {
     "title": "留言板",

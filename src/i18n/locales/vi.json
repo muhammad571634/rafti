@@ -1446,7 +1446,15 @@
     "holdToStop": "Giữ 3 giây để tắt",
     "stop": "Dừng",
     "ringBar": "Báo thức đang bật · trả lời để tắt",
-    "planSaved": "Đã lưu kế hoạch · {{title}} · {{time}}"
+    "planSaved": "Đã lưu kế hoạch · {{title}} · {{time}}",
+    "setAlarm": "Đặt báo thức",
+    "wakeMe": "Đánh thức tôi",
+    "done": "Xong",
+    "voice": "Giọng",
+    "reply": "Trả lời",
+    "melodyOnly": "Giai điệu",
+    "earlier": "Sớm hơn {{count}} phút",
+    "later": "Muộn hơn {{count}} phút"
   },
   "board": {
     "title": "Bảng tin",

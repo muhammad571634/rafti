@@ -1474,7 +1474,15 @@
     "holdToStop": "Segure 3 s para desligar",
     "stop": "Parar",
     "ringBar": "Alarme tocando · responda para desligar",
-    "planSaved": "Plano salvo · {{title}} · {{time}}"
+    "planSaved": "Plano salvo · {{title}} · {{time}}",
+    "setAlarm": "Definir alarme",
+    "wakeMe": "Me acorda",
+    "done": "OK",
+    "voice": "Voz",
+    "reply": "Responder",
+    "melodyOnly": "Melodia",
+    "earlier": "{{count}} min antes",
+    "later": "{{count}} min depois"
   },
   "board": {
     "title": "Mural de recados",

@@ -1474,7 +1474,15 @@
     "holdToStop": "Hold 3 s to turn off",
     "stop": "Stop",
     "ringBar": "Alarm on · reply to turn it off",
-    "planSaved": "Plan saved · {{title}} · {{time}}"
+    "planSaved": "Plan saved · {{title}} · {{time}}",
+    "setAlarm": "Set alarm",
+    "wakeMe": "Wake me up",
+    "done": "Done",
+    "voice": "Voice",
+    "reply": "Reply",
+    "melodyOnly": "Melody",
+    "earlier": "{{count}} min earlier",
+    "later": "{{count}} min later"
   },
   "board": {
     "title": "Message board",

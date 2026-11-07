@@ -1446,7 +1446,15 @@
     "holdToStop": "3秒長押しで停止",
     "stop": "停止",
     "ringBar": "アラーム作動中 · 返信して停止",
-    "planSaved": "予定を保存しました · {{title}} · {{time}}"
+    "planSaved": "予定を保存しました · {{title}} · {{time}}",
+    "setAlarm": "アラームをセット",
+    "wakeMe": "起こして",
+    "done": "完了",
+    "voice": "声",
+    "reply": "返信",
+    "melodyOnly": "メロディ",
+    "earlier": "{{count}}分早く",
+    "later": "{{count}}分遅く"
   },
   "board": {
     "title": "掲示板",

@@ -1474,7 +1474,15 @@
     "holdToStop": "Kapatmak için 3 sn basılı tut",
     "stop": "Durdur",
     "ringBar": "Alarm çalıyor · kapatmak için yanıtla",
-    "planSaved": "Plan kaydedildi · {{title}} · {{time}}"
+    "planSaved": "Plan kaydedildi · {{title}} · {{time}}",
+    "setAlarm": "Alarm kur",
+    "wakeMe": "Beni uyandır",
+    "done": "Tamam",
+    "voice": "Ses",
+    "reply": "Yanıt",
+    "melodyOnly": "Melodi",
+    "earlier": "{{count}} dk erken",
+    "later": "{{count}} dk geç"
   },
   "board": {
     "title": "Duyuru panosu",

@@ -1446,7 +1446,15 @@
     "holdToStop": "3초간 눌러 끄기",
     "stop": "끄기",
     "ringBar": "알람 울리는 중 · 답장하여 끄기",
-    "planSaved": "약속 저장됨 · {{title}} · {{time}}"
+    "planSaved": "약속 저장됨 · {{title}} · {{time}}",
+    "setAlarm": "알람 설정",
+    "wakeMe": "깨워 줘",
+    "done": "완료",
+    "voice": "목소리",
+    "reply": "답장",
+    "melodyOnly": "멜로디",
+    "earlier": "{{count}}분 일찍",
+    "later": "{{count}}분 늦게"
   },
   "board": {
     "title": "메모 게시판",

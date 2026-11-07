@@ -1474,7 +1474,15 @@
     "holdToStop": "Maintenir 3 s pour couper",
     "stop": "Arrêter",
     "ringBar": "Alarme en cours · répondez pour couper",
-    "planSaved": "Projet enregistré · {{title}} · {{time}}"
+    "planSaved": "Projet enregistré · {{title}} · {{time}}",
+    "setAlarm": "Régler l’alarme",
+    "wakeMe": "Réveille-moi",
+    "done": "OK",
+    "voice": "Voix",
+    "reply": "Répondre",
+    "melodyOnly": "Mélodie",
+    "earlier": "{{count}} min plus tôt",
+    "later": "{{count}} min plus tard"
   },
   "board": {
     "title": "Panneau d'affichage",

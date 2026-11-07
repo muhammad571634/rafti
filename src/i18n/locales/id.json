@@ -1446,7 +1446,15 @@
     "holdToStop": "Tahan 3 dtk untuk mematikan",
     "stop": "Berhenti",
     "ringBar": "Alarm menyala · balas untuk mematikan",
-    "planSaved": "Rencana disimpan · {{title}} · {{time}}"
+    "planSaved": "Rencana disimpan · {{title}} · {{time}}",
+    "setAlarm": "Pasang alarm",
+    "wakeMe": "Bangunkan aku",
+    "done": "Selesai",
+    "voice": "Suara",
+    "reply": "Balas",
+    "melodyOnly": "Melodi",
+    "earlier": "{{count}} mnt lebih awal",
+    "later": "{{count}} mnt lebih lambat"
   },
   "board": {
     "title": "Papan pesan",

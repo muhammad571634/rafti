@@ -1474,7 +1474,15 @@
     "holdToStop": "3 Sek. halten zum Beenden",
     "stop": "Stopp",
     "ringBar": "Wecker aktiv · antworte zum Beenden",
-    "planSaved": "Plan gespeichert · {{title}} · {{time}}"
+    "planSaved": "Plan gespeichert · {{title}} · {{time}}",
+    "setAlarm": "Wecker stellen",
+    "wakeMe": "Weck mich",
+    "done": "Fertig",
+    "voice": "Stimme",
+    "reply": "Antworten",
+    "melodyOnly": "Melodie",
+    "earlier": "{{count}} Min. früher",
+    "later": "{{count}} Min. später"
   },
   "board": {
     "title": "Pinnwand",
