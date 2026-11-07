@@ -16,7 +16,7 @@ import { inQuietHours } from './plan';
  *
  * A reply that comes in several bubbles is one announcement: the sound plays on the first and rests
  * for `SOUND_REST_MS`. Away, a reply's bubbles arrive together (timers sleep in the background, so
- * the store lands them at once) and the banner shows the last, once per chat. Quiet hours keep both
+ * the store lands them at once) and the banner shows the first, once per chat (`SAME_REPLY_MS`). Quiet hours keep both
  * quiet (messages wait for the morning, as the planned pushes do).
  */
 
@@ -62,9 +62,9 @@ export const MESSAGE_SOUND = hasMessageSound ? 'message.wav' : 'default';
 
 let player: AudioPlayer | null = null;
 let lastSound = 0;
-/** Away: the newest message per chat, posted once the bubbles landing together are in (a microtask: timers sleep there). */
-const waiting = new Map<string, Incoming>();
-let posting = false;
+/** Away: when each chat's banner went up; the bubbles of the same reply that follow at once do not ring again. */
+const posted = new Map<string, number>();
+const SAME_REPLY_MS = 3_000;
 
 function chime() {
   const now = Date.now();
@@ -79,12 +79,11 @@ function chime() {
   }
 }
 
-async function banner(message: Incoming, preview: boolean) {
+/** Posted straight away: no awaits before it (seen on the A51: in the background a wait first never came back). */
+function banner(message: Incoming, preview: boolean) {
   const N = notificationsModule();
-  if (!N) return;
-  const { granted } = await N.getPermissionsAsync();
-  if (!granted) return;
-  await N.scheduleNotificationAsync({
+  if (!N) return Promise.resolve('');
+  return N.scheduleNotificationAsync({
     identifier: `${LIVE_PREFIX}${message.conversationId}`,
     content: {
       title: message.title,
@@ -107,16 +106,10 @@ export function announceIncoming(message: Incoming, settings: AppSettings, muted
     chime();
     return;
   }
-  // Several bubbles of one reply: one banner, with the last of them.
-  waiting.set(message.conversationId, message);
-  if (posting) return;
-  posting = true;
-  void Promise.resolve().then(() => {
-    posting = false;
-    const all = [...waiting.values()];
-    waiting.clear();
-    all.forEach((m) => void banner(m, settings.notificationPreview).catch(() => {}));
-  });
+  // Several bubbles of one reply land together: one banner, with the first of them.
+  if (now.getTime() - (posted.get(message.conversationId) ?? 0) < SAME_REPLY_MS) return;
+  posted.set(message.conversationId, now.getTime());
+  banner(message, settings.notificationPreview).catch(() => {});
 }
 
 /** Back in the app: the banners of messages now on screen go, as Telegram clears them. */
