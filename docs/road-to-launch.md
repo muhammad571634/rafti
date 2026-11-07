@@ -82,3 +82,5 @@ Measured at list price in the server log on 2026-10-31: about $0.001 to $0.0014 
 $0.0005 per memory pass. A heavy user at 100 messages a day costs roughly $4 to $5 a month, so
 text alone leaves margin on Basic after the store's cut. Voice will change that sum: measure it
 before pricing it. Recheck the prices when the paid key is in.
+Every cost found since (cache misses, calls a feature adds, voice, photos) is listed with measured
+numbers in `docs/cost-ledger.md`: count all of it in the unit economics.
