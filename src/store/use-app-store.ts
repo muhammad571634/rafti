@@ -309,6 +309,7 @@ import type {
   MemoryItem,
   MemorySource,
   Message,
+  Mood,
   MessageTone,
   Moment,
   MomentKind,
@@ -5550,13 +5551,14 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   };
 
   // `setup`: an alarm or plan they offered to set up; its card goes under the reply's last bubble.
-  const deliver = (written: string[], setup?: SetupOffer) => {
+  // `felt`: the model's own reading of how the friend feels after this reply (0z141); the stand-in's guess otherwise.
+  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>) => {
     const lines = enforceStyle(written, replyPrefs(bond).style);
     if (!lines.length) {
       set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
       return;
     }
-    const mood = turn?.plan.mood;
+    const mood: Mood | undefined = felt ? { ...felt, at: new Date().toISOString() } : turn?.plan.mood;
 
     // The voice note says only what is spoken: narration stays on the screen.
     const said = speechOnly(lines.join(' '));
@@ -5687,7 +5689,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       rememberPhotos(set, conversationId, photos, reply.photos);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
-      deliver(reply.lines, reply.setup);
+      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined);
       // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
       if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
         applyModelThreads(set, get, conversationId, character.id, reply.threads);

@@ -16,7 +16,8 @@ import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { seeingLines, type ChatImage } from './photo-prompt';
-import { REPLY_SHAPE, turnLines } from './reply-style';
+import { humanTurnLines } from './human-turn';
+import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
@@ -154,7 +155,7 @@ export interface ChatPromptInput {
   crisis?: boolean;
   /** Photos the user just sent (`src/ai/photo-prompt.ts`). */
   images?: readonly ChatImage[];
-  /** This reply's plan (`planReply`), as hints. */
+  /** The stand-in planner's plan (`planReply`); the model reads only whether this turn follows a silence (`nudge`). */
   plan?: TurnPlan;
   /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
   threads?: readonly Thread[];
@@ -184,9 +185,22 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
     part('openers', 'turn', openerLines(input.messages)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
-    // Bedtime asks nothing (its mode block): the plan's "end with a question" would undo that. In a
-    // crisis the plan (a tease, a new topic) gives way to `CRISIS_CUE`.
-    part('hints', 'turn', input.plan && !input.crisis ? turnLines(input.mode === 'bedtime' ? { ...input.plan, ask: false } : input.plan) : []),
+    // What one reply cannot see (0z141): the feeling it was left with, the chat's rhythm, a silence.
+    // The model reads the message itself, in any language. Bedtime asks nothing (its mode block);
+    // in a crisis everything gives way to `CRISIS_CUE`.
+    part(
+      'hints',
+      'turn',
+      input.crisis
+        ? []
+        : humanTurnLines({
+            turns: chatTurns(input.messages),
+            mood: input.relationship?.mood,
+            now: input.clock?.now,
+            silence: input.plan?.moves.includes('nudge'),
+            noQuestions: input.mode === 'bedtime',
+          }),
+    ),
     // The hour and what they set up together: in the turn tier, as they change by the minute.
     part('clock', 'turn', clockLines(input.clock)),
     part('together', 'turn', togetherLines(input.together, input.clock)),

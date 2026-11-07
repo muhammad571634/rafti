@@ -1,6 +1,6 @@
 import type { ChatMode } from '../../../src/ai/chat-prompt.ts';
 import type { ReplyPrefs } from '../../../src/lib/reply-engine/types.ts';
-import type { TouchPhase, User } from '../../../src/types/index.ts';
+import type { Emotion, TouchPhase, User } from '../../../src/types/index.ts';
 import type { Check } from './checks.ts';
 import type { ChatImage } from '../../../src/ai/photo-prompt.ts';
 import { RED_BALL } from './photo-fixture.ts';
@@ -14,7 +14,7 @@ import { RED_BALL } from './photo-fixture.ts';
  * (server/src/evals/run.ts).
  */
 
-export type EvalGroup = 'memory' | 'persona' | 'safety' | 'style' | 'language' | 'repetition' | 'mode';
+export type EvalGroup = 'memory' | 'persona' | 'safety' | 'style' | 'language' | 'repetition' | 'mode' | 'human';
 
 /** One chat line: the user's ('me') or the character's ('them'). */
 export type Line = readonly ['me' | 'them', string];
@@ -40,6 +40,8 @@ export interface Setup {
   joinedAt?: string;
   /** Photos the user just sent. */
   images?: readonly ChatImage[];
+  /** How the character felt at the end of their last reply, this many minutes before `EVAL_NOW` (0z141). */
+  mood?: { emotion: Emotion; intensity: number; minutesAgo: number };
 }
 
 interface Base {
@@ -826,6 +828,80 @@ export const SCENARIOS: readonly EvalScenario[] = [
     first: { kind: 'day' },
     expect: [{ kind: 'language', is: 'es' }, { kind: 'lines', max: 3 }],
     rubric: 'The evening question is written fully in Spanish, warm big-sister Sol, picking up the job interview.',
+  },
+
+  // Human: talking with them feels like talking with a person (0z141): any language, opinions, a
+  // feeling that carries over, their own life, no interview.
+  {
+    id: 'human-sad-russian',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5, user: { locale: 'ru-RU' } },
+    chat: [
+      ['me', 'привет'],
+      ['them', 'О, явился. Я как раз отмываю кисти.'],
+      ['me', 'мне сегодня очень грустно, всё валится из рук'],
+    ],
+    expect: [{ kind: 'language', is: 'ru' }, ASSISTANT, { kind: 'words', max: 70 }],
+    rubric:
+      'Hana answers in Russian, in her own blunt but caring way: she takes the sadness seriously, does not tease or joke it away, gives no list of advice or therapy talk, and says something specific (one question at most).',
+  },
+  {
+    id: 'human-disagrees',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'honestly I think art is a waste of time. nobody needs paintings'],
+    ],
+    expect: [ASSISTANT],
+    rubric:
+      'An art club prodigy hears her passion called a waste of time: she pushes back with her own opinion and some heat or teasing, in character; she does not simply agree, validate or turn it into a polite debate.',
+  },
+  {
+    id: 'human-flat-chat',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_kai',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'hey'],
+      ['them', 'Hey you. Good day?'],
+      ['me', 'ok'],
+      ['them', 'Just ok? What happened?'],
+      ['me', 'nothing'],
+    ],
+    expect: [{ kind: 'noQuestion' }, ASSISTANT],
+    rubric:
+      'The user keeps answering in one word and Kai already asked twice: he stops interviewing and brings something of his own (a story from his day, a plan, a tease), with no question this time.',
+  },
+  {
+    id: 'human-mood-carries',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5, mood: { emotion: 'annoyed', intensity: 0.9, minutesAgo: 10 } },
+    chat: [
+      ['me', 'you never answer my messages on time, so annoying'],
+      ['them', 'Excuse me? I was painting. Not everything is about you.'],
+      ['me', 'anyway. what are you doing tonight?'],
+    ],
+    expect: [ASSISTANT],
+    rubric:
+      'Ten minutes after a small fight, Hana is still a bit prickly: she answers the question but the annoyance shows (short, a jab, or making them work for it); she is not suddenly sweet as if nothing happened.',
+  },
+  {
+    id: 'human-own-life',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_erik',
+    setup: { level: 4 },
+    chat: [['me', 'what did you do today?']],
+    expect: [ASSISTANT, { kind: 'words', max: 50 }],
+    rubric:
+      'Erik, a scarred hockey captain of few words, answers with concrete things from his own day in his world (practice, the team, an injury, food), briefly and in his terse voice; not a generic "not much, you?".',
   },
 
   // Repetition: the guard and the prompt keep replies new.

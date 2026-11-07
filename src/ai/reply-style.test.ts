@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, turnLines } from './reply-style';
+import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -24,16 +24,6 @@ const character: Character = {
 };
 const user = { id: 'u', displayName: 'Sam', locale: 'en' } as User;
 
-const plan: TurnPlan = {
-  style: 'mix',
-  moves: ['react', 'followUp'],
-  mood: { emotion: 'happy', intensity: 0.6, at: '2026-10-25T20:00:00.000Z' },
-  words: 20,
-  bubbles: 2,
-  ask: true,
-  memory: 'Loves rainy mornings.',
-};
-
 describe('reply style in the prompt', () => {
   it('goes in the one-to-one persona prompt only when the chat passes it', () => {
     const chat = buildCharacterPrompt(character, user, undefined, 'English', undefined, undefined, undefined, { style: 'story', length: 'long' });
@@ -47,15 +37,6 @@ describe('reply style in the prompt', () => {
     const lines = replyStyleLines({ style: 'talk', length: 'auto' });
     assert.equal(lines[0], 'REPLY STYLE:');
     assert.match(lines[1], /no asterisks/);
-  });
-
-  it('gives this turn as hints: the feeling, the moves, the size and whether to ask', () => {
-    const text = turnLines(plan).join('\n');
-    assert.match(text, /You feel happy \(0\.6 of 1\)/);
-    assert.match(text, /react to what they said.*; then ask about what they just told you/);
-    assert.match(text, /About 20 words in 2 messages/);
-    assert.match(text, /End with a question/);
-    assert.match(text, /"Loves rainy mornings\."/);
   });
 });
 
@@ -95,7 +76,9 @@ describe('the crisis cue in the chat prompt', () => {
     assert.deepEqual(names.slice(-2), ['crisis', 'shape']);
     assert.ok(!names.includes('hints'));
     assert.ok(joinParts(parts).includes(CRISIS_CUE.join('\n')));
-    assert.ok(chatParts(input).some((p) => p.name === 'hints' && p.text.includes('tease')));
+    assert.ok(chatParts(input).some((p) => p.name === 'hints' && p.text.includes('THIS TURN')));
+    // The stand-in planner's dice no longer reach the model (0z141).
+    assert.ok(!joinParts(chatParts(input)).includes('tease them'));
     assert.ok(!joinParts(chatParts(input)).includes('SAFETY NOW'));
   });
 });

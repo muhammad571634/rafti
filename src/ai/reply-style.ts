@@ -1,4 +1,4 @@
-import type { Move, ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
+import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { Emotion, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
@@ -39,34 +39,6 @@ const LENGTH_GUIDE: Record<ReplyPrefs['length'], string> = {
 /** The chat's reply settings, for the persona prompt. */
 export function replyStyleLines(prefs: ReplyPrefs) {
   return ['REPLY STYLE:', `- ${STYLE_GUIDE[prefs.style]}`, `- Length: ${LENGTH_GUIDE[prefs.length]}`];
-}
-
-const MOVE_GUIDE: Record<Move, string> = {
-  greet: 'greet them',
-  farewell: 'say goodbye warmly; ask nothing new',
-  answer: 'answer what they asked, in character, with a concrete detail',
-  react: 'react to what they said with real feeling first',
-  comfort: 'slow down and be there for them; no advice dumps, no forced cheer',
-  tease: 'tease them a little, kindly',
-  share: 'share something small from your own day or thoughts',
-  followUp: 'ask about what they just told you',
-  newTopic: 'the chat went flat: steer it somewhere new and specific',
-  recall: 'bring back something you remember about them',
-  scene: 'move the scene on with a new detail or event',
-  nudge: 'they went quiet after your last message: one light follow-up, not needy',
-};
-
-/** This turn's hints, last in the prompt. */
-export function turnLines(plan: TurnPlan) {
-  return [
-    'THIS TURN (hints; stay natural):',
-    `- You feel ${plan.mood.emotion} (${plan.mood.intensity.toFixed(1)} of 1).`,
-    `- What to do: ${plan.moves.map((m) => MOVE_GUIDE[m]).join('; then ')}.`,
-    `- About ${plan.words} words in ${plan.bubbles} message${plan.bubbles > 1 ? 's' : ''}.`,
-    plan.ask ? '- End with a question.' : '- Do not end with a question.',
-    ...(plan.memory ? [`- Bring this back naturally: "${plan.memory}"`] : []),
-    '- Never reuse a line you already said in this chat.',
-  ];
 }
 
 /**

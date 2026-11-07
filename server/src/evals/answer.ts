@@ -90,6 +90,9 @@ function bondOf(s: EvalScenario, character: Character): Relationship {
     replyStyle: s.setup?.style,
     replyLength: s.setup?.length,
     arcDue: s.setup?.arcDue,
+    ...(s.setup?.mood
+      ? { mood: { emotion: s.setup.mood.emotion, intensity: s.setup.mood.intensity, at: new Date(Date.parse(EVAL_NOW) - s.setup.mood.minutesAgo * 60_000).toISOString() } }
+      : {}),
   };
 }
 
@@ -136,6 +139,8 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
           redo: s.setup?.redo,
           images: s.setup?.images,
           plan,
+          // As the app sends it (0z135): the user's clock, here UTC.
+          clock: { now: EVAL_NOW, utcOffsetMin: 0 },
         },
       };
     }
