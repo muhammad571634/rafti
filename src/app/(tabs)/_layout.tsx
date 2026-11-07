@@ -1,9 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Redirect, Tabs, useIsFocused } from 'expo-router';
-import { memo, useEffect, useState, type ReactNode } from 'react';
+import { Redirect, Tabs } from 'expo-router';
+import { memo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { cancelAnimation, Easing, runOnJS, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SFIcon, Txt } from '@/components/ui';
@@ -31,8 +30,6 @@ const ICONS: Record<string, { off: Pick<Icon, 'ios' | 'icon'>; on: Pick<Icon, 'i
 const BAR = 62;
 /** How far above the bar the content starts to fade. */
 const FADE_ABOVE = 28;
-/** The incoming tab's fade (Material "fade through" for navigation bars: about 200 ms, ease out). */
-const SCENE_FADE_MS = 180;
 
 /**
  * Android and web. iOS uses the system tab bar instead (`_layout.ios.tsx`), Liquid Glass on
@@ -45,61 +42,16 @@ export default function TabsLayout() {
   if (gate === 'loading') return null;
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
-  // Tabs stay attached and the ones not shown are see-through (TabScene): detaching ran a fragment
-  // transaction on every switch, 37-50 ms of mounting on the UI thread on a Galaxy A51 (atrace,
-  // 0z134), and Android skips drawing a view at opacity 0, so the hidden tabs cost no frames.
+  // Inactive tabs stay detached (the default). Keeping them attached as see-through layers with a
+  // 180 ms fade-in was tried (0z134) and measured worse on a Galaxy A51: the 90th percentile frame of
+  // a switch went from 65 to 133-150 ms, and the 25-40 ms mount on the switch stayed.
   return (
-    <Tabs
-      detachInactiveScreens={false}
-      screenOptions={{ headerShown: false, sceneStyle: styles.clearScene }}
-      screenLayout={({ children }) => <TabScene>{children}</TabScene>}
-      tabBar={(props) => <PlayfulTabBar {...props} />}>
+    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <PlayfulTabBar {...props} />}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="chat" />
       <Tabs.Screen name="us" />
       <Tabs.Screen name="find" />
     </Tabs>
-  );
-}
-
-/**
- * One tab's screen. Shown, it paints the cream ground at once and its content fades in over it
- * (UI thread, a hardware layer only while fading, so the fade is a cheap texture blend); hidden, it
- * is see-through, takes no touches and is hidden from TalkBack. Reduce Motion: no fade.
- */
-function TabScene({ children }: { children: ReactNode }) {
-  const focused = useIsFocused();
-  const still = useReducedMotion();
-  const opacity = useSharedValue(0);
-  const [fading, setFading] = useState(false);
-
-  useEffect(() => {
-    cancelAnimation(opacity);
-    if (!focused) {
-      opacity.value = 0;
-      return;
-    }
-    if (still) {
-      opacity.value = 1;
-      return;
-    }
-    setFading(true);
-    opacity.value = withTiming(1, { duration: SCENE_FADE_MS, easing: Easing.out(Easing.cubic) }, (done) => {
-      if (done) runOnJS(setFading)(false);
-    });
-  }, [focused, still, opacity]);
-
-  const fade = useAnimatedStyle(() => ({ opacity: opacity.value }));
-  return (
-    <View
-      style={[styles.scene, focused && styles.sceneShown]}
-      pointerEvents={focused ? 'auto' : 'none'}
-      importantForAccessibility={focused ? 'auto' : 'no-hide-descendants'}
-      accessibilityElementsHidden={!focused}>
-      <Animated.View style={[styles.scene, fade]} renderToHardwareTextureAndroid={fading}>
-        {children}
-      </Animated.View>
-    </View>
   );
 }
 
@@ -233,10 +185,6 @@ const TabItem = memo(function TabItem({
 });
 
 const styles = StyleSheet.create({
-  // The navigator's own scene background would stay opaque under a hidden tab.
-  clearScene: { backgroundColor: 'transparent' },
-  scene: { flex: 1 },
-  sceneShown: { backgroundColor: playful.ground },
   fade: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   wrap: {
     position: 'absolute',
