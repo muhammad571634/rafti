@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z123-124. Check-in approved and coded; the four tabs inventoried and prototyped with an engineering check (2026-11-07, Claude 1). NEXT: owner's word on the four-tab prototype, then code in the plan's order (tokens + friendColor → Chats → Find → Us → Today)
+
+- Check-in: owner approved the prototype's design as is ("logic must be right"). Coded (`b9516d1` … `e030b1f`): full-screen yellow `DailyRewardSheet` with `LiveMascot` (body behind the card, paws on it via `part`), Nunito (`fonts.playful`, `@expo-google-fonts/nunito`: Fredoka has no Cyrillic, seen on the A51), collect flight + count-up + laugh + hop + mint day. A51 (Turkish): 76 → 131 (+55), 7/7, laugh, mint. Lessons: Android elevation drew the card over the later mascot; absolute `bottom` and padding: placed from a margin.
+- Owner: all four main tabs (Today, Chats, Us, Find) in the playful style with everything they hold; Today keeps the big picture of the friend you talked with last (`featuredFriend`); think like a senior RN dev: links between screens, standards, phones, colours; no blind prototype.
+- `docs/main-tabs-inventory.md`: every element, tap and route of the four tabs, plus the engineering plan (links, WCAG contrast numbers and the two fixes, colour system with `moduleFills` + new `friendColor`, dark variants, phones, what code changes, order).
+- Prototype: https://claude.ai/artifact/ML6J9csLoh3ZVHMMrncrvg (scratchpad `proto2/tabs-template.html`, `patch.py`, `eng-panel.html`; also localhost:8790/tabs.html this session). Live: Today (hero, waiting as a bubble, tinted module widgets with Edit jiggle, note row, tiles in module colours), Chats (filters, pinned faces in friend colours, bubbles with level/mute/voice/photo/missed call/typing/group faces, swipe both ways, long-press menu, pencil → New chat / New group / Streams), Us (friend picker in friend colours, mint bond card with ring, week chips, plan row, moment filters, ×9 merge proposal, + sheet), Find (search → recent, Who, featured with New sticker and clear-glass Say hi, family seats → picker sheet, worlds as folders incl. My characters, Talk now). Each phone has an Uzbek checklist; an engineering-check section under them.
+
+Still to do:
+1. Owner's word on the four-tab prototype; then code in order, each on the A51.
+2. From 0z121: second reader on migration b7, then the owner applies it.
+3. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z122. Playful on iOS: the new main yardstick; prototype of three screens (2026-11-07, Claude 1). NEXT: owner's word on the prototype, then code screen 1 (daily check-in)
 
 - Owner: the app should feel like a game, alive, never boring, but stay on Apple's iOS base; every screen except Today (for now). References: their Pinterest pins (a full-yellow mood check-in with a big cartoon face; chats as coloured speech bubbles; saved items as coloured folders). Not 1:1, inspiration at a simple level. Then: **prototype first** for these redesigns (this overrides the 10-30 "no preview pictures" rule for the playful work). Owner also shared their Pinterest (pin 435512226491061144, signed in in their Chrome) to draw inspiration from freely; pins stay references, never shipped (App Store 5.2.1).
