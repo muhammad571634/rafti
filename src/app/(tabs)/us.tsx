@@ -19,6 +19,7 @@ import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
+import { groupMoments } from '@/lib/moment-groups';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
@@ -150,10 +151,17 @@ export default function UsScreen() {
     allMoments.some((m) => (FILTERS[key] as MomentKind[]).includes(m.kind)),
   );
   const activeFilter: FilterKey = filter !== 'all' && filters.includes(filter) ? filter : 'all';
-  const timeline =
-    activeFilter === 'all'
-      ? allMoments
-      : allMoments.filter((m) => (FILTERS[activeFilter] as MomentKind[]).includes(m.kind));
+  // A day's run of secret notes (or board notes, diary replies) reads as one row with a count.
+  const timeline = useMemo(
+    () =>
+      groupMoments(
+        activeFilter === 'all' ? allMoments : allMoments.filter((m) => (FILTERS[activeFilter] as MomentKind[]).includes(m.kind)),
+      ),
+    [allMoments, activeFilter],
+  );
+
+  // One lookup per photo moment instead of a scan of every photo for each row.
+  const photoById = useMemo(() => new Map(photos.map((p) => [p.id, p])), [photos]);
 
   const plans = useMemo(
     () => schedules.filter((x) => x.characterId === selected?.character.id),
@@ -415,13 +423,14 @@ export default function UsScreen() {
           <Txt style={styles.hint}>{t('us.noMoments')}</Txt>
         ) : (
           <View style={styles.moments}>
-            {shownMoments.map((moment, i) => {
-              const photo = moment.photoId ? photos.find((p) => p.id === moment.photoId) : undefined;
+            {shownMoments.map(({ moment, count }, i) => {
+              const photo = moment.photoId ? photoById.get(moment.photoId) : undefined;
               const last = i === shownMoments.length - 1;
               return (
                 <MomentRow
                   key={moment.id}
                   kind={moment.kind}
+                  count={count}
                   text={t(
                     `us.momentText.${moment.kind}`,
                     {
@@ -518,6 +527,7 @@ function TimeTile({ time }: { time?: string }) {
 /** One moment on the thread: its kind's coloured circle, the line, when (and the photo, if any). */
 function MomentRow({
   kind,
+  count,
   text,
   when,
   thumb,
@@ -525,6 +535,8 @@ function MomentRow({
   onPress,
 }: {
   kind: MomentKind;
+  /** How many moments of one day this row stands for; shown as "×N" past one. */
+  count: number;
   text: string;
   when: string;
   thumb?: React.ReactNode;
@@ -537,16 +549,23 @@ function MomentRow({
       style={({ pressed }) => [styles.moment, pressed && onPress ? styles.pressed : null]}
       disabled={!onPress}
       accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityLabel={`${text}, ${when}`}
+      accessibilityLabel={count > 1 ? `${text}, ×${count}, ${when}` : `${text}, ${when}`}
       onPress={onPress}>
       {/* The thread to the next moment, from under this circle. */}
       {last ? null : <View style={styles.thread} pointerEvents="none" />}
       <View style={[styles.momentIcon, { backgroundColor: look.fill }]}>
         <SFIcon ios={look.ios} icon={look.icon} size={19} color={colors.white} />
       </View>
-      <Txt style={[styles.momentText, styles.grow]} lines={2}>
-        {text}
-      </Txt>
+      <View style={[styles.grow, styles.momentLine]}>
+        <Txt style={[styles.momentText, styles.momentTextShrink]} lines={2}>
+          {text}
+        </Txt>
+        {count > 1 ? (
+          <View style={styles.times}>
+            <Txt style={styles.timesText} maxFontSizeMultiplier={1.2}>{`×${count}`}</Txt>
+          </View>
+        ) : null}
+      </View>
       <View style={styles.momentEnd}>
         {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
         <Txt style={styles.when}>{when}</Txt>
@@ -758,7 +777,11 @@ const styles = StyleSheet.create({
     backgroundColor: playful.dash,
   },
   momentIcon: { width: MOMENT_ICON, height: MOMENT_ICON, borderRadius: MOMENT_ICON / 2, alignItems: 'center', justifyContent: 'center' },
+  momentLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   momentText: { fontSize: 14.5, lineHeight: 19, color: playful.ink },
+  momentTextShrink: { flexShrink: 1 },
+  times: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: playful.chipOn },
+  timesText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: playful.chipOnText },
   momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   when: { fontSize: 12, color: colors.textSecondary },
   thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
