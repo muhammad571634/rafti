@@ -21,7 +21,7 @@ export interface ChipProps {
 export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipProps) {
   const activeBg = tone === 'accent' ? colors.accentSoft : tone === 'neutral' ? colors.surfaceAlt : colors.text;
   const activeFg =
-    tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnPrimary;
+    tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnInk;
   const activeBorder = tone === 'primary' ? colors.text : activeFg;
 
   const pillStyle = [
@@ -32,7 +32,12 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
     style,
   ];
   const text = (
-    <Txt variant="smallStrong" color={active ? activeFg : colors.textSecondary}>
+    <Txt
+      variant="smallStrong"
+      color={active ? activeFg : colors.textSecondary}
+      lines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.8}>
       {label}
     </Txt>
   );

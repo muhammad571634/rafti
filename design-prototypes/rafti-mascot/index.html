@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rafti Maskot Animatsiya Prototiplari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F8F7F4;
+      --card-bg: #FFFFFF;
+      --ink: #1C1917;
+      --ink-muted: #78716C;
+      --border: rgba(0, 0, 0, 0.08);
+      --mint: #34D399;
+      --mint-soft: rgba(52, 211, 153, 0.15);
+      --apricot: #F97316;
+      --pink: #FB7185;
+      --pink-soft: rgba(251, 113, 133, 0.2);
+      --shell-glow: rgba(253, 164, 175, 0.45);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #121214;
+      --card-bg: #1C1C20;
+      --ink: #F5F5F7;
+      --ink-muted: #9E9EA7;
+      --border: rgba(255, 255, 255, 0.1);
+      --shell-glow: rgba(251, 113, 133, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      transition: background-color 0.4s var(--ease-smooth);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    .title-group h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      background: var(--mint-soft);
+      color: #059669;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 999px;
+    }
+
+    .title-group p {
+      color: var(--ink-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* Tabs & Controls */
+    .controls-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 6px;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+    }
+
+    .tab-btn.active {
+      background: var(--ink);
+      color: var(--card-bg);
+    }
+
+    .theme-toggle {
+      margin-left: auto;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Main Showcase Stage */
+    .stage-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .stage-grid {
+        grid-template-columns: 1.35fr 1fr;
+      }
+    }
+
+    .canvas-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      height: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      cursor: pointer;
+    }
+
+    .click-hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      background: rgba(120, 113, 108, 0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.3s;
+    }
+
+    /* ANIMATED MASCOT 1: THE SEASHELL LISTENER */
+    .mascot-container {
+      position: relative;
+      width: 240px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .mascot-wrapper {
+      position: relative;
+      width: 220px;
+      height: 275px;
+      transform-origin: 50% 90%;
+      will-change: transform;
+      animation: floatBreath 3.6s ease-in-out infinite;
+    }
+
+    .mascot-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,0.08));
+    }
+
+    /* Shadow underneath mascot */
+    .ground-shadow {
+      position: absolute;
+      bottom: 4px;
+      width: 170px;
+      height: 18px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      z-index: 0;
+      animation: shadowPulse 3.6s ease-in-out infinite;
+    }
+
+    [data-theme="dark"] .ground-shadow {
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    /* Seashell Glowing Pulse Aura */
+    .shell-glow-aura {
+      position: absolute;
+      right: 28px;
+      top: 92px;
+      width: 85px;
+      height: 95px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--shell-glow) 0%, rgba(251, 113, 133, 0) 75%);
+      pointer-events: none;
+      z-index: 2;
+      animation: shellGlowPulse 2.8s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    /* Acoustic Sound Wave Rings Emitters */
+    .sound-waves {
+      position: absolute;
+      right: 50px;
+      top: 110px;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .wave-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border: 2px solid rgba(52, 211, 153, 0.65);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      animation: soundWaveEmit 3.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    }
+
+    .wave-ring:nth-child(2) {
+      animation-delay: 1.1s;
+      border-color: rgba(251, 113, 133, 0.7);
+    }
+
+    .wave-ring:nth-child(3) {
+      animation-delay: 2.2s;
+      border-color: rgba(249, 115, 22, 0.6);
+    }
+
+    /* Floating Dream Notes & Bubbles */
+    .floating-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 4;
+    }
+
+    .particle {
+      position: absolute;
+      font-size: 16px;
+      opacity: 0;
+      animation: floatUpParticle 4.5s ease-in-out infinite;
+    }
+
+    .p1 { left: 58%; bottom: 45%; animation-delay: 0.3s; }
+    .p2 { left: 68%; bottom: 50%; animation-delay: 1.8s; font-size: 13px; }
+    .p3 { left: 52%; bottom: 58%; animation-delay: 3.2s; font-size: 18px; }
+
+    /* Interactive Tap Animation Class */
+    .mascot-wrapper.interactive-tap {
+      animation: mascotSquashSpring 0.75s var(--spring) forwards !important;
+    }
+
+    /* Heart Burst on Tap */
+    .burst-particle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 20px;
+      animation: popFly 0.8s ease-out forwards;
+      z-index: 10;
+    }
+
+    /* KEYFRAME ANIMATIONS */
+    @keyframes floatBreath {
+      0% {
+        transform: translateY(0px) rotate(0deg) scale(1, 1);
+      }
+      35% {
+        transform: translateY(-8px) rotate(0.8deg) scale(1.012, 0.988);
+      }
+      65% {
+        transform: translateY(-12px) rotate(-0.6deg) scale(1.02, 0.98);
+      }
+      100% {
+        transform: translateY(0px) rotate(0deg) scale(1, 1);
+      }
+    }
+
+    @keyframes shadowPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(0.88);
+        opacity: 0.45;
+      }
+    }
+
+    @keyframes shellGlowPulse {
+      0%, 100% {
+        transform: scale(0.95);
+        opacity: 0.55;
+      }
+      50% {
+        transform: scale(1.35);
+        opacity: 0.95;
+      }
+    }
+
+    @keyframes soundWaveEmit {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0.9;
+      }
+      60% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(5.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes floatUpParticle {
+      0% {
+        transform: translateY(10px) translateX(0) scale(0.6);
+        opacity: 0;
+      }
+      25% {
+        opacity: 0.85;
+      }
+      80% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-75px) translateX(18px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes mascotSquashSpring {
+      0% {
+        transform: scale(1, 1) translateY(0);
+      }
+      20% {
+        transform: scale(1.14, 0.86) translateY(10px) rotate(-2deg);
+      }
+      45% {
+        transform: scale(0.92, 1.1) translateY(-22px) rotate(3deg);
+      }
+      70% {
+        transform: scale(1.04, 0.96) translateY(-4px) rotate(-1deg);
+      }
+      85% {
+        transform: scale(0.98, 1.02) translateY(-1px) rotate(0.5deg);
+      }
+      100% {
+        transform: scale(1, 1) translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes popFly {
+      0% {
+        transform: translate(-50%, -50%) scale(0.4);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    /* SIDE PANEL: SETTINGS & DETAILS */
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .panel-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mode-btn {
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mode-btn span {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-muted);
+    }
+
+    .mode-btn.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--card-bg);
+    }
+
+    .mode-btn.active span {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #E2E8F0;
+      transition: .3s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    input:checked + .slider {
+      background-color: var(--mint);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    /* IN-APP REAL SCREEN MOCKUP ACCORDION */
+    .preview-context {
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .preview-context-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+
+    .inapp-empty-state {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .empty-p {
+      font-size: 13px;
+      color: var(--ink-muted);
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    .empty-btn {
+      margin-top: 6px;
+      padding: 8px 18px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="title-group">
+        <h1>Rafti Maskot Animatsiyasi <span class="badge">Interaktiv Prototip</span></h1>
+        <p>EmptyState (Bo‘sh sahifalar) va asosiy ekranlar uchun "Listening to the Sea" animatsiyasi</p>
+      </div>
+
+      <div class="controls-bar">
+        <button class="tab-btn active" id="tabSeashell" onclick="selectModel('seashell')">🐚 Chig‘anoq (EmptyState)</button>
+        <button class="tab-btn" id="tabSticker" onclick="selectModel('sticker')">✨ Kichik stiker</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Tun</button>
+      </div>
+    </header>
+
+    <div class="stage-grid">
+      <!-- Interactive Stage -->
+      <div class="canvas-card" id="canvasCard" onclick="triggerTapReaction(event)">
+        
+        <!-- Ambient Particles -->
+        <div class="floating-particles" id="particlesContainer">
+          <div class="particle p1">✨</div>
+          <div class="particle p2">🐚</div>
+          <div class="particle p3">🎵</div>
+        </div>
+
+        <div class="mascot-container">
+          <!-- Radial Sound Waves -->
+          <div class="sound-waves" id="soundWaves">
+            <div class="wave-ring"></div>
+            <div class="wave-ring"></div>
+            <div class="wave-ring"></div>
+          </div>
+
+          <!-- Seashell Glow Aura -->
+          <div class="shell-glow-aura" id="shellGlow"></div>
+
+          <!-- Ground shadow -->
+          <div class="ground-shadow" id="groundShadow"></div>
+
+          <!-- Mascot Artwork Wrapper -->
+          <div class="mascot-wrapper" id="mascotWrapper">
+            <img 
+              id="mascotImg" 
+              class="mascot-img" 
+              src="../../assets/brand/rafti-empty.png" 
+              alt="Rafti Mascot"
+            >
+          </div>
+        </div>
+
+        <div class="click-hint">
+          <span>👆</span> Bosib ko‘ring (Squash & Spring effekti)
+        </div>
+      </div>
+
+      <!-- Controls & Context Panel -->
+      <div class="panel-card">
+        <div>
+          <div class="panel-section-title">Animatsiya rejimi</div>
+          <div class="option-grid" style="margin-top: 10px;">
+            <button class="mode-btn active" id="modeBreathe" onclick="setMode('breathe')">
+              🌱 Sokin nafas
+              <span>Default (60-120fps)</span>
+            </button>
+            <button class="mode-btn" id="modePlayful" onclick="setMode('playful')">
+              ⚡️ Quvnoq tebranish
+              <span>Faolroq amplituda</span>
+            </button>
+            <button class="mode-btn" id="modeSleepy" onclick="setMode('sleepy')">
+              🌙 Uyqu / Bedtime
+              <span>Juda sokin suzish</span>
+            </button>
+            <button class="mode-btn" id="modeCelebration" onclick="setMode('celebration')">
+              🎉 Bayramona
+              <span>Level-up / Sovg‘a</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel-section-title">Vizual qatlamlar</div>
+          <div style="margin-top: 8px;">
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Chig‘anoq ovoz to‘lqinlari</div>
+                <div class="toggle-desc">Seashell acoustic sound waves</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleWaves" checked onchange="updateLayers()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Iliq nur (Seashell Glow)</div>
+                <div class="toggle-desc">Yumshoq ichki yorug‘lik nuri</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleGlow" checked onchange="updateLayers()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Mayin zarrachalar (Particles)</div>
+                <div class="toggle-desc">Nota va yulduzchalar parvozi</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleParticles" checked onchange="updateLayers()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- In-app context preview -->
+        <div class="preview-context">
+          <div class="preview-context-title">Ilovada ko‘rinishi (EmptyState)</div>
+          <div class="inapp-empty-state">
+            <div class="empty-h3">Hali xabarlar yo‘q</div>
+            <div class="empty-p">Rafti bilan yangi suhbat boshlang va birgalikdagi kundaligingizni to‘ldiring.</div>
+            <button class="empty-btn">Personajlarni topish</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentModel = 'seashell';
+    let currentMode = 'breathe';
+    const mascotWrapper = document.getElementById('mascotWrapper');
+    const mascotImg = document.getElementById('mascotImg');
+    const canvasCard = document.getElementById('canvasCard');
+    const soundWaves = document.getElementById('soundWaves');
+    const shellGlow = document.getElementById('shellGlow');
+    const particlesContainer = document.getElementById('particlesContainer');
+
+    function selectModel(model) {
+      currentModel = model;
+      document.getElementById('tabSeashell').classList.toggle('active', model === 'seashell');
+      document.getElementById('tabSticker').classList.toggle('active', model === 'sticker');
+
+      if (model === 'seashell') {
+        mascotImg.src = '../../assets/brand/rafti-empty.png';
+        mascotWrapper.style.width = '220px';
+        mascotWrapper.style.height = '275px';
+        soundWaves.style.display = 'block';
+        shellGlow.style.display = 'block';
+      } else {
+        mascotImg.src = '../../assets/brand/rafti-sticker.png';
+        mascotWrapper.style.width = '180px';
+        mascotWrapper.style.height = '180px';
+        soundWaves.style.display = 'none';
+        shellGlow.style.display = 'none';
+      }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('mode' + mode.charAt(0).toUpperCase() + mode.slice(1));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (mode === 'breathe') {
+        mascotWrapper.style.animation = 'floatBreath 3.6s ease-in-out infinite';
+      } else if (mode === 'playful') {
+        mascotWrapper.style.animation = 'floatBreath 2.0s ease-in-out infinite';
+      } else if (mode === 'sleepy') {
+        mascotWrapper.style.animation = 'floatBreath 5.5s ease-in-out infinite';
+      } else if (mode === 'celebration') {
+        mascotWrapper.style.animation = 'floatBreath 1.4s var(--spring) infinite';
+        burstConfetti();
+      }
+    }
+
+    function updateLayers() {
+      const showWaves = document.getElementById('toggleWaves').checked;
+      const showGlow = document.getElementById('toggleGlow').checked;
+      const showParticles = document.getElementById('toggleParticles').checked;
+
+      soundWaves.style.opacity = showWaves ? '1' : '0';
+      shellGlow.style.opacity = showGlow ? '1' : '0';
+      particlesContainer.style.opacity = showParticles ? '1' : '0';
+    }
+
+    function triggerTapReaction(event) {
+      mascotWrapper.classList.remove('interactive-tap');
+      // Force reflow
+      void mascotWrapper.offsetWidth;
+      mascotWrapper.classList.add('interactive-tap');
+
+      // Pop micro burst particles
+      const rect = canvasCard.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+
+      const emojis = ['💖', '✨', '🐚', '🎵', '🌸'];
+      for (let i = 0; i < 6; i++) {
+        const p = document.createElement('div');
+        p.className = 'burst-particle';
+        p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = clickX + 'px';
+        p.style.top = clickY + 'px';
+
+        const angle = (Math.PI * 2 * i) / 6 + (Math.random() - 0.5) * 0.5;
+        const dist = 50 + Math.random() * 45;
+        p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+        p.style.setProperty('--dy', `${Math.sin(angle) * dist - 25}px`);
+
+        canvasCard.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+      }
+
+      // Web Audio Subtle Cute "Pop" Chime
+      playSoftPopTone();
+
+      setTimeout(() => {
+        mascotWrapper.classList.remove('interactive-tap');
+        setMode(currentMode);
+      }, 750);
+    }
+
+    function burstConfetti() {
+      const emojis = ['🎉', '⭐', '✨', '💖'];
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+          const p = document.createElement('div');
+          p.className = 'burst-particle';
+          p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+          p.style.left = (40 + Math.random() * 20) + '%';
+          p.style.top = (45 + Math.random() * 20) + '%';
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 60 + Math.random() * 60;
+          p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+          p.style.setProperty('--dy', `${Math.sin(angle) * dist - 40}px`);
+          canvasCard.appendChild(p);
+          setTimeout(() => p.remove(), 800);
+        }, i * 60);
+      }
+    }
+
+    // Web Audio Gentle Tone
+    let audioCtx = null;
+    function playSoftPopTone() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        // Gentle pentatonic chime
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        osc.frequency.setValueAtTime(notes[Math.floor(Math.random() * notes.length)], audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      } catch (e) {
+        // Audio optional
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('themeBtn').innerText = isDark ? '🌙 Tun' : '☀️ Kun';
+    }
+  </script>
+</body>
+</html>

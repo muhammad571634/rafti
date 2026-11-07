@@ -55,7 +55,7 @@ export function IconButton({
       <Ionicons name={icon} size={size} color={color} />
       {badge != null && badge > 0 ? (
         <View style={styles.badge}>
-          <Txt variant="tiny" color={colors.white}>
+          <Txt variant="tiny" color={colors.textOnPrimary}>
             {badge > 99 ? '99+' : badge}
           </Txt>
         </View>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     height: 16,
     paddingHorizontal: 4,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryFill,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,20 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useIsFocused, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StatusBar } from 'expo-status-bar';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, hitSlop, HEADER_HEIGHT, space } from '@/theme';
+import { colors, hitSlop, HEADER_HEIGHT, isDark, space } from '@/theme';
 
+import { AuroraBackground } from './aurora';
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 export interface ScreenProps {
   children: React.ReactNode;
-  /** Solid background, or a two-stop gradient. */
-  background?: string | readonly [string, string, ...string[]];
+  /** Solid background, a two-stop gradient, or `'aurora'`: the app's default ground (`AuroraBackground`). */
+  background?: 'aurora' | string | readonly [string, string, ...string[]];
   style?: StyleProp<ViewStyle>;
   /** Skip the top inset when the screen paints its own header art. */
   edgeToEdge?: boolean;
@@ -28,15 +29,21 @@ export function Screen({
   background = colors.bg,
   style,
   edgeToEdge,
-  statusBarStyle = 'dark',
+  statusBarStyle = isDark ? 'light' : 'dark',
   backdrop,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
+  // Only the screen on top sets the status bar. Tabs stay mounted, and the status bar follows the
+  // last StatusBar mounted, so Today's light icons on its picture turned dark after a visit to
+  // Chats or Find (A51, 0z131). Unmounted on blur, mounted again on focus, it is always the last.
+  const focused = useIsFocused();
 
   return (
     <View style={styles.root}>
-      <StatusBar style={statusBarStyle} />
-      {typeof background === 'string' ? (
+      {focused ? <StatusBar style={statusBarStyle} /> : null}
+      {background === 'aurora' ? (
+        <AuroraBackground />
+      ) : typeof background === 'string' ? (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: background }]} />
       ) : (
         <LinearGradient colors={background} style={StyleSheet.absoluteFill} />

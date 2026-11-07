@@ -1,113 +1,375 @@
-import { useRef, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTilt';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconButton } from '@/components/ui';
-import { colors, radius, shadows, space, type } from '@/theme';
+import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { duration as fmtDuration } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
+import { bottomRoom, colors, radius, shadows, space, systemColors } from '@/theme';
+import type { MessageTone } from '@/types';
+
+import { useOnPhoto } from '@/components/chat/chat-ground';
+import { HoldMic } from './hold-mic';
+import { useKeptDraft } from './use-kept-draft';
+import { useToneTip } from './use-tone-tip';
+import { useVoiceNote, type VoiceNote } from './use-voice-note';
 
 /** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
 const ICON = 24;
 const BUTTON = ICON + space.lg;
-const LINE = type.body.lineHeight ?? 21;
+/** The "+" circle and the one-line field are both 46pt tall. */
+const FIELD = 46;
+const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
 
-/** react-native-web draws a two-row textarea unless told otherwise. */
-const webSingleRow = Platform.OS === 'web' ? { rows: 1 } : {};
+/**
+ * On a phone the keyboard's key starts a new line and only the plane sends, as in iOS Messages: a
+ * slip of the thumb must not spend shells. On the web Enter sends and Shift+Enter adds a line, and
+ * react-native-web draws a two-row textarea unless told otherwise.
+ */
+const webField = Platform.OS === 'web' ? ({ rows: 1, submitBehavior: 'submit', blurOnSubmit: true, returnKeyType: 'send' } as const) : {};
 
 export interface ChatInputProps {
   placeholder: string;
   /** Return false to keep the draft (e.g. out of shells). */
-  onSend: (text: string) => boolean;
+  onSend: (text: string, tone?: MessageTone) => boolean;
+  /** Send was held: the chat offers the tones, then calls `send` with the one picked. Without it a hold does nothing. */
+  onHoldSend?: (send: (tone: MessageTone) => void) => void;
   onAttach: () => void;
   onVoice: () => void;
+  /** A voice message made by holding the mic. */
+  onVoiceNote?: (note: VoiceNote) => void;
+  /** Asked before recording: false when the note could not be paid for (the chat says why). */
+  canRecord?: () => boolean;
+  /** Text already in the field when the chat opens (e.g. replying to a diary page). */
+  initialValue?: string;
+  /** When set, the field is closed and shows this line instead (the daily fair-use limit). */
+  locked?: string;
+  /**
+   * Editing your newest message (canvas `ChatEdit.dc.html`): the field holds its text, ✕ takes the
+   * place of "+" and ✓ of send. `onSave` returns false to stay in the edit (e.g. out of shells).
+   */
+  editing?: { id: string; text: string; onSave: (text: string) => boolean; onCancel: () => void };
+  /** Puts this text in the field and focuses it (a long-pressed reply idea); `at` makes each fill new. */
+  fill?: { text: string; at: number };
+  /** Set while their reply is on its way: an empty field shows ■ to stop it (Character.AI). */
+  onStop?: () => void;
+  /** The field has text (true) or is empty (false): a reply waiting for more messages waits longer while they type. */
+  onTyping?: (typing: boolean) => void;
+  /** Keeps the unsent text for this chat, so it waits in the field after leaving. Key the input by it. */
+  draftId?: string;
 }
 
 /**
  * The composer: a floating pill over the wallpaper with "+" for attachments, the
  * text field, and one primary button that records a voice message while the field
- * is empty and sends once there is text. The swap is instant; nothing here animates.
+ * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
+ * is instant; nothing here animates.
  */
-export function ChatInput({ placeholder, onSend, onAttach, onVoice }: ChatInputProps) {
+export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, onVoiceNote, canRecord, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const [value, setValue] = useState('');
-  const inputRef = useRef<TextInput>(null);
+  // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
+  const keyboardUp = useKeyboardVisible();
+  const barBottom = keyboardUp ? space.sm : bottomRoom(insets.bottom, space.md);
+  const [value, setValue] = useState(initialValue);
+  const inputRef = useRef<TextInputInstance>(null);
+  /** The unsent draft waits here while a message is edited, and comes back after. */
+  const draft = useRef<string | null>(null);
+  useKeptDraft(draftId, value, setValue, draft, !!initialValue);
+  const editingId = editing?.id;
+  const editingText = editing?.text;
+
+  useEffect(() => {
+    if (editingId) {
+      if (draft.current === null) draft.current = value;
+      setValue(editingText ?? '');
+      const timer = setTimeout(() => inputRef.current?.focus(), 60);
+      return () => clearTimeout(timer);
+    }
+    if (draft.current !== null) {
+      setValue(draft.current);
+      draft.current = null;
+    }
+    // Runs when an edit starts or ends, not on every keystroke.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingId]);
+
+  const fillAt = fill?.at;
+  useEffect(() => {
+    if (!fillAt || !fill) return;
+    setValue(fill.text);
+    const timer = setTimeout(() => inputRef.current?.focus(), 60);
+    return () => clearTimeout(timer);
+    // A new fill only, not every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fillAt]);
 
   const hasText = value.trim().length > 0;
 
-  const submit = () => {
+  // Typing a new message (not an edit) tells a waiting reply to wait for it; leaving the chat stops that.
+  const typingNow = hasText && !editingId;
+  const reportTyping = useRef(onTyping);
+  reportTyping.current = onTyping;
+  useEffect(() => {
+    reportTyping.current?.(typingNow);
+  }, [typingNow]);
+  useEffect(() => () => reportTyping.current?.(false), []);
+
+  const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
+  const voice = useVoiceNote(draftId, (note) => onVoiceNote?.(note), canRecord);
+  const voiceBusy = voice.phase !== 'idle';
+  const onPhoto = useOnPhoto();
+  const glass = [styles.glass, onPhoto && styles.photoGlass];
+
+  const submit = (tone?: MessageTone) => {
     if (!hasText) return;
-    if (onSend(value)) setValue('');
+    if (editing) {
+      editing.onSave(value);
+      return;
+    }
+    toneTip.done();
+    if (onSend(value, tone)) setValue('');
     // react-native-web only submits a multiline field by blurring it; take focus back.
     if (Platform.OS === 'web') setTimeout(() => inputRef.current?.focus(), 30);
   };
+  // The menu stays open over a live keyboard, so a pick sends what the field holds by then.
+  const latestSubmit = useRef(submit);
+  useEffect(() => {
+    latestSubmit.current = submit;
+  });
+  const holdSend = () => {
+    if (!onHoldSend) return;
+    haptic.lift();
+    toneTip.done();
+    onHoldSend((tone) => latestSubmit.current(tone));
+  };
+
+  // A draft typed before the lock stays in state and comes back with the field.
+  if (locked) {
+    return (
+      <View style={[styles.bar, { paddingBottom: barBottom }]}>
+        <View style={styles.locked} accessibilityRole="text">
+          <Txt variant="bodyStrong" color={colors.textSecondary} center>
+            {locked}
+          </Txt>
+        </View>
+      </View>
+    );
+  }
 
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
-      <View style={[styles.pill, shadows.card]}>
-        <IconButton
-          icon="add"
-          size={ICON}
-          background={colors.surfaceAlt}
-          accessibilityLabel={t('a11y.attach')}
-          onPress={onAttach}
-        />
+    <View style={[styles.bar, { paddingBottom: barBottom }]}>
+      {toneTip.show ? (
+        <View pointerEvents="none" style={styles.tip}>
+          <Txt variant="caption" color={colors.textOnInk}>
+            {t('chat.toneTip')}
+          </Txt>
+        </View>
+      ) : null}
+      <PressableScale
+        scaleTo={0.9}
+        onPress={editing ? editing.onCancel : onAttach}
+        accessibilityRole="button"
+        accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
+        style={[...glass, styles.plus]}>
+        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 26 : 30} color={onPhoto ? colors.onMedia : colors.text} />
+      </PressableScale>
 
+      <View style={[...glass, styles.field]}>
         <TextInput
           ref={inputRef}
           value={value}
           onChangeText={setValue}
           placeholder={placeholder}
-          placeholderTextColor={colors.textFaint}
-          style={styles.input}
+          placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
+          style={[styles.input, onPhoto && styles.photoInput]}
           multiline
           maxLength={2000}
-          onSubmitEditing={submit}
-          submitBehavior="submit"
-          // Web reads the legacy prop: Enter sends, Shift+Enter adds a line.
-          blurOnSubmit={Platform.OS === 'web' ? true : undefined}
-          returnKeyType="send"
-          {...webSingleRow}
+          onSubmitEditing={Platform.OS === 'web' ? () => submit() : undefined}
+          {...webField}
         />
 
-        <IconButton
-          icon={hasText ? 'arrow-up' : 'mic'}
-          size={ICON}
-          color={colors.textOnPrimary}
-          background={colors.primary}
-          haptic={hasText}
-          accessibilityLabel={hasText ? t('a11y.send') : t('a11y.voiceMessage')}
-          onPress={hasText ? submit : onVoice}
-        />
+        {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach send once there is text. */}
+        {editing ? (
+          // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
+          <IconButton
+            icon="checkmark"
+            size={22}
+            color={hasText ? colors.textOnPrimary : colors.textFaint}
+            background={hasText ? colors.primaryFill : colors.surfaceAlt}
+            haptic={hasText}
+            accessibilityLabel={t('chat.saveEdit')}
+            onPress={() => submit()}
+            style={styles.action}
+          />
+        ) : onStop && !hasText && !voiceBusy ? (
+          // Typing a new line brings send back; the reply then answers both.
+          <IconButton
+            icon="stop"
+            size={15}
+            color={colors.textOnPrimary}
+            background={colors.primaryFill}
+            accessibilityLabel={t('a11y.stopReply')}
+            onPress={onStop}
+            style={styles.action}
+          />
+        ) : hasText ? (
+          <PressableScale
+            onPress={() => submit()}
+            onLongPress={onHoldSend ? holdSend : undefined}
+            delayLongPress={400}
+            hitSlop={8}
+            scaleTo={0.88}
+            haptic
+            accessibilityLabel={t('a11y.send')}
+            accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
+            style={[styles.action, styles.send]}>
+            <PaperPlaneTiltIcon size={25} weight="fill" color={colors.textOnPrimary} />
+          </PressableScale>
+        ) : Platform.OS === 'web' || !onVoiceNote ? (
+          <IconButton
+            icon="mic-outline"
+            size={27}
+            color={onPhoto ? colors.onMediaSoft : colors.textSecondary}
+            accessibilityLabel={t('a11y.voiceMessage')}
+            onPress={onVoice}
+            style={styles.action}
+          />
+        ) : (
+          <HoldMic
+            recording={voice.phase === 'recording'}
+            onTap={onVoice}
+            onHoldStart={voice.start}
+            onHoldEnd={voice.finish}
+            accessibilityLabel={t('a11y.voiceMessage')}
+            accessibilityHint={t('chat.voice.hold')}
+            style={styles.mic}
+          />
+        )}
+
+        {/* Over the empty field, beside the mic the finger is still on. */}
+        {voiceBusy || voice.notice ? (
+          <View style={styles.voiceRow}>
+            {voice.phase === 'recording' ? (
+              <>
+                <Anim name="voiceWave" size={26} tint={systemColors.red} />
+                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
+                <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                  {t('chat.voice.slideCancel')}
+                </Txt>
+              </>
+            ) : voice.phase === 'sending' ? (
+              <>
+                <ActivityIndicator color={colors.textSecondary} />
+                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
+              </>
+            ) : voice.phase === 'failed' ? (
+              <>
+                <Txt variant="small" color={colors.danger} numberOfLines={1} style={styles.voiceHint}>
+                  {t('chat.notDelivered')}
+                </Txt>
+                <IconButton icon="refresh" size={20} color={colors.text} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
+                <IconButton icon="trash-outline" size={20} color={colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
+              </>
+            ) : (
+              <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : t('chat.voice.noSpeech')}
+              </Txt>
+            )}
+          </View>
+        ) : null}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  // "+" in its own glass circle, then the glass field (approved iOS prototype).
   bar: {
-    paddingHorizontal: space.md,
-    paddingTop: space.xs,
-  },
-  pill: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: space.sm,
-    padding: space.xs,
-    borderRadius: radius.xxl,
-    borderWidth: 1,
-    borderColor: colors.border,
+    paddingHorizontal: space.md,
+    paddingTop: space.xs,
+  },
+  glass: {
+    backgroundColor: colors.glass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.glassLine,
+    ...shadows.glassButton,
+  },
+  plus: { width: FIELD, height: FIELD, borderRadius: FIELD / 2, alignItems: 'center', justifyContent: 'center' },
+  field: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    minHeight: FIELD,
+    paddingLeft: space.lg,
+    paddingRight: 4,
+    borderRadius: FIELD / 2,
+    // A grown, multi-line field keeps iOS squircle corners; Android ignores it.
+    borderCurve: 'continuous',
+    borderColor: colors.borderStrong,
+  },
+  // A 38pt circle that sits 4pt inside the 46pt field.
+  action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
+  send: { backgroundColor: colors.primaryFill },
+  // The mic is held as well as tapped, so it takes nearly the whole height of the field.
+  mic: { width: 44, height: 44, borderRadius: 22, marginBottom: 1, alignItems: 'center', justifyContent: 'center' },
+  // Covers the field up to the mic while a voice message is made.
+  voiceRow: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingLeft: space.lg,
+    borderRadius: FIELD / 2,
     backgroundColor: colors.surface,
   },
+  voiceClock: { fontSize: 17, fontVariant: ['tabular-nums'] },
+  voiceHint: { flex: 1 },
+  voiceAction: { width: 34, height: 34 },
+  // Once, over the send button (`useToneTip`); from the top edge, so a grown field never covers it.
+  tip: {
+    position: 'absolute',
+    right: space.md,
+    top: -28,
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs,
+    borderRadius: radius.pill,
+    backgroundColor: colors.text,
+  },
+  locked: {
+    flex: 1,
+    height: BUTTON + space.xs * 2 + 2,
+    borderRadius: radius.xxl,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.lg,
+  },
   input: {
-    ...type.body,
+    fontSize: 17,
+    letterSpacing: -0.4,
+    lineHeight: LINE,
     flex: 1,
     color: colors.text,
-    // One line sits level with the buttons; past MAX_LINES the field scrolls.
+    // One line sits level with the "+"; past MAX_LINES the field scrolls.
     paddingHorizontal: 0,
-    paddingVertical: (BUTTON - LINE) / 2,
-    maxHeight: LINE * MAX_LINES + (BUTTON - LINE),
+    paddingVertical: (FIELD - LINE) / 2,
+    maxHeight: LINE * MAX_LINES + (FIELD - LINE),
   },
+  // On a picture (an Art wallpaper, `useOnPhoto`): dark glass and white words.
+  photoGlass: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
+  photoInput: { color: colors.onMedia },
 });

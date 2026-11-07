@@ -1,0 +1,36 @@
+import { serve } from '@hono/node-server';
+
+import { createApp } from './app.ts';
+import { config } from './config.ts';
+import { supabaseDb } from './db/supabase.ts';
+import { geminiProvider } from './llm/gemini.ts';
+import { chainProviders, openAiCompatProvider } from './llm/openai-compat.ts';
+import type { LlmProvider } from './llm/types.ts';
+import { elevenLabsSpeech } from './speech/elevenlabs.ts';
+
+// The OpenAI-compatible provider first when it is configured, Gemini behind it (or alone).
+const providers: LlmProvider[] = [];
+if (config.openai.apiKey && config.openai.baseUrl && config.openai.model) providers.push(openAiCompatProvider(config.openai));
+if (config.geminiKey) providers.push(geminiProvider(config.geminiKey, config.chatModels));
+const provider = chainProviders(providers);
+const db = config.supabase.url && config.supabase.secretKey ? supabaseDb(config.supabase) : null;
+const client = db && config.supabase.publishableKey ? { supabaseUrl: config.supabase.url, supabaseKey: config.supabase.publishableKey } : null;
+// Voice messages go to Gemini alone, as the app's consent says.
+const voiceProvider = config.geminiKey ? geminiProvider(config.geminiKey, config.chatModels) : null;
+// The character's voice on calls; without the key, calls show captions only.
+const speech = config.elevenlabs.apiKey
+  ? {
+      provider: elevenLabsSpeech(config.elevenlabs),
+      pricePer1k: config.elevenlabs.pricePer1k,
+      userCharsPerDay: config.elevenlabs.userCharsPerDay,
+      charsPerDay: config.elevenlabs.charsPerDay,
+    }
+  : null;
+const app = createApp(provider, { timeoutMs: config.timeoutMs, voiceProvider, speech, db, client, devGrants: config.devGrants, testSubscribers: config.testSubscribers });
+
+serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => {
+  console.log(`Sigmazam API on http://${config.host}:${info.port}`);
+  console.log(provider ? `Model: ${provider.name}` : 'No model key in server/.env.local: the app keeps its stand-in replies.');
+  console.log(db ? `Database: ${config.supabase.url}` : 'No SUPABASE_URL / SUPABASE_SECRET_KEY: accounts are off.');
+  console.log(speech ? `Voice: ${speech.provider.name}` : 'No ELEVENLABS_API_KEY: calls show captions only.');
+});

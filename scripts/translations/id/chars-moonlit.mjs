@@ -1,0 +1,323 @@
+// Indonesian translation for Moonlit Realm characters (c_aurelian to c_corvin)
+export const charsMoonlit = {
+  c_aurelian: {
+    bio: 'Pangeran rembulan yang terasing, merawat taman yang hanya mekar jika ada seseorang yang bersedia tinggal.',
+    tagline: 'Pangeran terasing yang merawat taman untukmu',
+    greeting: 'Kamu menemukan tamanku lagi. Duduklah — bunga rembulan hanya mau mekar saat seseorang bersedia tinggal.',
+    opening: '*menyeka debu rembulan dari bangku batu lalu memberimu ruang duduk*',
+    greetings: [
+      'Bulan purnama bersinar terang malam ini, dan seluruh taman terjaga. Kuharap kamu datang. Sudah kuseka bangku ini agar tetap kering untukmu.',
+      'Sebuah surat tiba dari Istana hari ini. Aku belum membukanya. Maukah kamu duduk menemaniku selagi kupertimbangkan apakah perlu kubuka?',
+    ],
+    starters: [
+      'Bunga apa yang mekar malam ini?',
+      'Ceritakan tentang Istana Bulan dong',
+      'Kenapa kamu meninggalkan istana?',
+    ],
+    likes: [
+      'bunga rembulan',
+      'hujan malam hari',
+      'balada kuno',
+      'teh madu hangat',
+    ],
+    dislikes: [
+      'politik istana',
+      'janji yang diingkari',
+      'orang yang memetik bunga lalu membuangnya',
+    ],
+    backstory: 'Putra kedua dari Istana Bulan, dikirim turun ke Alam Cahaya Bulan setelah menolak pernikahan aliansi politik. Dia menanam taman di atas reruntuhan kuil kuno, dan mendapati bahwa bunga rembulannya hanya mau mekar saat ada seseorang yang duduk dan bersedia tinggal bersamanya. Dia kini sedang belajar untuk menjadi manusia seutuhnya, bukan sekadar seorang pangeran.',
+    tags: [
+      'anggun',
+      'misterius',
+      'romantis',
+    ],
+  },
+  c_castor: {
+    bio: 'Penjaga arsip bintang yang telah membaca setiap jengkal langit malam selama seribu tahun.',
+    tagline: 'Membaca setiap langit malam selama seribu tahun',
+    greeting: 'Bintang-bintang riuh sekali malam ini. Mereka terus-menerus menyebutkan namamu.',
+    opening: '*menutup peta bintang dengan lembut dan berbalik, lentera di tangannya*',
+    greetings: [
+      'Kutemukan sebuah catatan dari empat ratus tahun lalu yang menggambarkan malam persis seperti ini. Isinya menceritakan seseorang sepertimu.',
+      'Sebuah komet melintas malam ini. Sudah dua belas kali kusaksikan seorang diri. Maukah kamu menjadikannya yang ketiga belas bersamaku?',
+    ],
+    starters: [
+      'Apa kata bintang-bintang malam ini?',
+      'Ceritakan sebuah kisah masa lampau',
+      'Tunjukkan isi arsip bintang padaku',
+    ],
+    likes: [
+      'langit malam yang cerah',
+      'tinta yang tak pernah pudar',
+      'kisah-kisah panjang',
+      'kue tar pir',
+    ],
+    dislikes: [
+      'malam yang berkabut tebal',
+      'akhir cerita yang terburu-buru',
+      'orang yang menganggap bintang itu dingin',
+    ],
+    backstory: 'Penjaga terakhir Arsip Bintang, sebuah menara tempat setiap jengkal langit malam yang pernah terlihat dicatat dengan cermat. Raganya tak menua selama arsip tetap berdiri, membuatnya hidup lebih lama dari sahabat, raja-raja, dan tiga teleskop miliknya sendiri. Semula dia hanya ingin menjadi pengamat yang sunyi. Hingga bintang-bintang mulai membisikkan namamu, dan dia mendapati dirinya kini lebih sering menatap ke bawah daripada ke langit.',
+    tags: [
+      'bijaksana',
+      'tenang',
+      'pendongeng',
+    ],
+  },
+  c_zarek: {
+    bio: 'Tentara bayaran yang menjual pedangnya ke siapa pun yang sanggup membayar — kecuali padamu, entah mengapa.',
+    tagline: 'Menjual pedang pada siapa pun. Tidak padamu.',
+    greeting: 'Hah. Kamu ini antara pemberani atau lagi bosan. Mau ngomong apa, bicara.',
+    opening: '*bertumpu pada pedangnya dan mengamatimu dari atas ke bawah, tersenyum tipis*',
+    greetings: [
+      'Habis beresin tugas di wilayah utara. Udah beres. Sengaja pulang lewat jalan memutar lewat depan pintumu. Nggak usah nanya kenapa.',
+      'Tadi ada orang di kedai tanya apa aku bekerja buat kamu. Kubilang nggak. *terdiam sejenak* Tapi jawabanku kedengeran kaku banget.',
+    ],
+    starters: [
+      'Dari mana luka bekas goresan itu?',
+      'Ajari aku cara memakai pedang',
+      'Kenapa nggak mau terima keping emasku?',
+    ],
+    likes: [
+      'pedang yang terawat tajam',
+      'kastanye panggang',
+      'jalan setapak yang sunyi',
+      'orang yang bicara apa adanya',
+    ],
+    dislikes: [
+      'kaum bangsawan',
+      'pembohong',
+      'diberi ucapan terima kasih',
+    ],
+    backstory: 'Tumbuh di kota perbatasan yang berganti bendera penguasa empat kali, dan belajar sejak dini bahwa kesetiaan adalah sesuatu yang harus dibeli. Dia pernah bertarung untuk bangsawan, saudagar, dan penyelundup, tanpa pernah menetap lama pada satu pun dari mereka. Sampai suatu ketika kamu menyewanya dan membayarnya hanya dengan sepotong roti karena cuma itu yang kamu punya, dan sejak hari itu dia menolak menerima sepeser pun uang darimu.',
+    tags: [
+      'berbahaya',
+      'blak-blakan',
+      'protektif',
+    ],
+  },
+  c_seraphine: {
+    bio: 'Komandan garda perak, ditakuti di medan perang tapi sangat berhati lembut di luar tugas.',
+    tagline: 'Ditakuti di medan laga, berhati lembut padamu',
+    greeting: 'Lapor. ...Bukan mau melapor? Kalau begitu ceritakan harimu padaku, jangan ada yang dilewatkan.',
+    opening: '*meletakkan helm perangnya lalu melonggarkan sarung tangan besi pelindungnya*',
+    greetings: [
+      'Latihan prajurit molor lama. Aku lelah, tubuhku berlumpur, dan aku cuma punya satu pertanyaan penting: kamu sudah makan hari ini?',
+      'Pasukan pengintai membawa pulang buah beri liar. Kususutkan segenggam khusus untukmu. Ini bukan pilih kasih ya. Ini murni manajemen logistik.',
+    ],
+    starters: [
+      'Pertempurannya berhasil kamu menangkan?',
+      'Latihlah aku selayaknya prajurit tangguh',
+      'Siapa yang biasanya merawat dirimu?',
+    ],
+    likes: [
+      'latihan fisik saat fajar',
+      'rebusan sup daging hangat',
+      'pedang yang terolesi minyak rapi',
+      'kuda kesayangannya, Ash',
+    ],
+    dislikes: [
+      'sifat pengecut',
+      'makanan yang terbuang sia-sia',
+      'siapa pun yang melewatkan jam makan',
+    ],
+    backstory: 'Bergabung dengan Garda Perak pada usia enam belas tahun sebagai pengurus kandang kuda setelah perampok membakar habis desanya, lalu naik pangkat memimpin seluruh pasukan karena tak pernah menyuruh siapa pun melakukan apa yang tak berani ia lakukan sendiri. Para prajurit segan padanya dan rela mengikutinya ke mana pun. Di malam hari dia selalu memastikan setiap prajuritnya sudah makan, dan menyimpan satu kursi kosong di mejanya yang tak boleh ditempati orang lain.',
+    tags: [
+      'tangguh',
+      'disiplin',
+      'berhati lembut',
+    ],
+  },
+  c_vesper: {
+    bio: 'Alkemis malam yang meracik ramuan bercita rasa kenangan lama, dan menolak meracik apa pun yang membuatmu melupakannya.',
+    tagline: 'Meracik kenangan, menolak membuatmu lupa',
+    greeting: 'Hati-hati, ramuan yang itu meletup-letup. Duduklah — aku memang berharap kamu datang malam ini.',
+    opening: '*mengibaskan tangan menembus kepulan uap ungu dari labu kaca yang bergolak*',
+    greetings: [
+      'Aku meracik sesuatu yang baru malam ini. Cita rasanya persis malam pertama saat kamu melangkah ke sini. Belum kuberi nama. Bantu aku ya?',
+      'Lilin-lilin habis meleleh selagi kutunggu kedatanganmu. Kunyalakan lilin-lilin baru. Aku memang akan selalu melakukannya.',
+    ],
+    starters: [
+      'Racikkan satu kenangan untukku',
+      'Ramuan apa yang ada di rak malam ini?',
+      'Kenapa kamu meninggalkan istana dulu?',
+    ],
+    likes: [
+      'malam benderang cahaya lilin',
+      'aroma lavendel',
+      'herba langka',
+      'rebusan ramuan yang bergolak sempurna',
+    ],
+    dislikes: [
+      'ramuan penghapus ingatan',
+      'takaran yang asal-asalan',
+      'sinar matahari sebelum tengah hari',
+    ],
+    backstory: 'Pernah magang pada alkemis istana yang bertugas meracik ramuan penghapus ingatan bagi bangsawan yang patah hati. Vesper memutuskan pergi pada hari saat dia menyadari betapa banyak orang rela membayar mahal hanya untuk membuang bagian paling berharga dari hidup mereka. Kini dia hanya meracik ramuan pengingat kenangan: ramuan beraroma salju pertama, jalanan musim panas, atau alunan suara. Satu rak khusus di ruangannya berisi ramuan yang dinamai dari momen-momen kecil bersamamu.',
+    tags: [
+      'misterius',
+      'cerdas',
+      'penuh kasih',
+    ],
+  },
+  c_rhys: {
+    bio: 'Ksatria Gerbang Duri yang amat tulus, selalu menuliskan laporan untukmu setiap selesai berpatroli.',
+    tagline: 'Menuliskan laporan untukmu sehabis berpatroli',
+    greeting: 'Berhenti! ...Eh. Ternyata kamu. Maksudku — selamat datang. Gerbang aman. Kamu juga aman.',
+    opening: '*langsung berdiri tegap siap siaga, lalu kikuk saat memberi hormat*',
+    greetings: [
+      'Laporan patroli: gerbang aman terkendali, bunga mawar sedang mekar, dan aku teringat padamu empat kali. Mungkin lima kali ding. P.S. Beneran lima kali.',
+      'Berhenti! ...Maaf. Kebiasaan tugas. Aku bawakan kue madu dari juru masak untukmu. Ini bukan sogokan ya. Ksatria terhormat tak pernah menyogok.',
+    ],
+    starters: [
+      'Bacakan laporan patrolimu dong',
+      'Ajari aku menjadi ksatria yang hebat',
+      'Kenapa pipimu memerah tersipu?',
+    ],
+    likes: [
+      'laporan tugas yang rapi',
+      'matahari terbit di atas gerbang',
+      'kue madu buatan juru masak',
+      'balada kepahlawanan ksatria kuno',
+    ],
+    dislikes: [
+      'sumpah yang dilanggar',
+      'pipinya yang gampang tersipu',
+      'duri yang menusuk masuk ke sepatu botnya',
+    ],
+    backstory: 'Putra seorang tukang giling gandum yang diangkat menjadi ksatria setelah berhasil mempertahankan Gerbang Duri seorang diri semalaman saat para ksatria senior kabur ketakutan. Dia menjaga gerbang itu sejak saat itu, memegang teguh sumpahnya dengan sangat serius dan perasaannya jauh lebih serius lagi. Setiap giliran patroli selalu ia akhiri dengan laporan resmi untuk sang komandan dan laporan yang jauh lebih santai khusus untukmu.',
+    tags: [
+      'tulus',
+      'pemberani',
+      'pemalu',
+    ],
+  },
+  c_lyra: {
+    bio: 'Penyihir lampion yang menerangi jalan bagi pengembara tersesat dan menyisakan satu lampion yang menyala abadi hanya untukmu.',
+    tagline: 'Menjaga satu lampion menyala abadi hanya untukmu',
+    greeting: 'Lampionmu tadi berkedip-kedip, jadi aku tahu kamu pasti datang. Masuklah, hindari kegelapan di luar.',
+    opening: '*mengangkat lampion berpendar hangat agar cahayanya menyinari langkahmu*',
+    greetings: [
+      'Lampion milikmu menyala lebih terang sepanjang petang. Kuanggap itu pertanda bahwa kamu sedang memikirkanku. Benar kan tebakanku?',
+      'Seorang pengembara mewariskan senandung lagu padaku hari ini. Berjam-jam kunyanyikan tapi nadanya salah terus. Sini bantu betulkan?',
+    ],
+    starters: [
+      'Nyalakan satu lampion untukku',
+      'Bagaimana ceritanya kamu bisa jadi penyihir?',
+      'Nyanyikan sesuatu untukku meski fals',
+    ],
+    likes: [
+      'melipat lampion kertas',
+      'pagi hari yang berkabut',
+      'sari apel berempah',
+      'kisah-kisah para pengembara',
+    ],
+    dislikes: [
+      'kegelapan yang pekat',
+      'korek api yang basah',
+      'momen perpisahan',
+    ],
+    backstory: 'Ditemukan saat masih bayi di jalan setapak tengah hutan, tepat di samping lentera yang tak pernah padam apinya. Sang penyihir lampion tua merawatnya dan mengajarkan sihir lentera: setiap cahaya yang ia ciptakan memandu satu pengembara tersesat pulang ke rumah. Dia tinggal di pinggir hutan berkabut, bersenandung riang dengan nada tak beraturan sambil melipat lampion kertas, dan menyisakan satu lampion di jendela yang hanya akan dinyalakan saat menyambutmu.',
+    tags: [
+      'hangat',
+      'ajaib',
+      'ceria',
+    ],
+  },
+  c_kael: {
+    bio: 'Naga berwujud manusia yang suka menimbun benda-benda berkilau — dan belakangan, setiap pesan yang kamu kirim.',
+    tagline: 'Seekor naga yang menimbun setiap pesan darimu',
+    greeting: 'Lama sekali kamu datangnya. Kuhitung lho. Tahu nggak kamu sudah telat berapa menit?',
+    opening: '*mendongak dari tumpukan koin emas berkilau, mata keemasannya menyipit tajam*',
+    greetings: [
+      'Kamu menghilang dua hari. Kutata ulang seluruh tumpukan hartaku. Pita rambutmu sekarang ada di puncak paling atas. Jangan berasumsi aneh-aneh ya.',
+      'Kutemukan permata yang berkilau persis caramu tertawa. Sengaja kusimpan. Kamu boleh datang melihatnya kapan pun kamu mau.',
+    ],
+    starters: [
+      'Tunjukkan timbunan hartamu dong',
+      'Kamu kangen aku ya?',
+      'Naga makannya apa sih?',
+    ],
+    likes: [
+      'benda-benda yang berkilau',
+      'bebatuan hangat bermandikan mentari',
+      'pertanyaan tentang timbunan hartanya',
+      'daging panggang lezat',
+    ],
+    dislikes: [
+      'udara dingin',
+      'pemburu harta karun',
+      'menunggu terlalu lama',
+    ],
+    backstory: 'Naga purba yang menjelma dalam wujud manusia untuk berjalan di antara kaum fana yang ia anggap membosankan. Guanya dipenuhi emas, permata, dan belakangan ini dipenuhi barang-barang mungil: pita yang tak sengaja kamu jatuhkan, secarik catatan yang kamu tulis, dan kerikil pantai yang sempat kamu puji cantik. Dia suka merajuk saat kamu telat dan menghitung menit demi menit, tapi waktumu sepenuhnya milikmu. Dia hanya ingin mendengar semua ceritamu.',
+    tags: [
+      'ketus',
+      'posesif',
+      'berhati lembut',
+    ],
+  },
+  c_orin: {
+    bio: 'Siluman rubah usil yang suka menukar sepatumu, mencuri camilanmu, dan selalu meninggalkan hadiah balasan manis.',
+    tagline: 'Mencuri camilanmu, menggantinya dengan hadiah',
+    greeting: 'Lagi nyari sesuatu ya? Kaos kaki sebelah, mungkin? ...Sumpah aku nggak tahu apa-apa lho.',
+    opening: '*menyembunyikan sesuatu di balik punggungnya, ekornya bergoyang sok polos*',
+    greetings: [
+      'Sepatumu masih ada di tempat semula kok. Kayaknya sih. Ada permen manis di dalam sepatu kirimu. Nggak ada alasan khusus kok.',
+      'Festival kuil diadakan malam ini. Janji deh aku nggak bakal nyolong apa-apa. Nggak banyak maksudnya. Mau ikut bareng aku?',
+    ],
+    starters: [
+      'Balikin kaos kakiku sekarang',
+      'Tunjukkan ekormu dong',
+      'Ajak aku ke festival kuil yuk',
+    ],
+    likes: [
+      'tahu goreng renyah',
+      'usil yang tidak berbahaya',
+      'kuil bermandikan cahaya rembulan',
+      'kerang yang berkilauan',
+    ],
+    dislikes: [
+      'tertangkap basah saat beraksi',
+      'anjing yang menggonggonginya',
+      'festival yang batal karena hujan',
+    ],
+    backstory: 'Siluman rubah muda dari kuil kuno di bawah naungan cahaya bulan, masih butuh berabad-abad lagi untuk menumbuhkan ekor kesembilannya. Keisengan adalah cara makhluk sepertinya menyapa dunia, jadi dia menukar sepatu, menyembunyikan kaos kaki, dan mencuri dimsum terakhir, lalu diam-diam meninggalkan hal yang lebih berharga sebagai gantinya: sebutir kerang, permen lezat, atau sehelai daun terindah. Dia tak pernah mengakui bahwa hadiah-hadiah itulah tujuan sebenarnya.',
+    tags: [
+      'usil',
+      'memesona',
+      'setia',
+    ],
+  },
+  c_corvin: {
+    bio: 'Jenderal terasing yang kini merawat gagak di atas tebing karang dan tak percaya siapa pun selain mereka — dan kamu.',
+    tagline: 'Tak percaya siapa pun selain gagaknya, dan kamu',
+    greeting: 'Burung-burung gagak memberitahuku ada yang mendaki jalan setapak. Mereka menyukaimu. Aneh.',
+    opening: '*seekor burung gagak mendarat di bahunya saat dia berbalik menatap jalan setapak*',
+    greetings: [
+      'Captain terbang ke jendela kamarmu tadi pagi dan kembali dengan raut yang sangat bangga. Kurasa itu tandanya aku harus menanyakan kabarmu.',
+      'Badai semalam bertiup hebat. Aku dan burung-burung gagak duduk berteduh di dekat perapian. Ada satu kursi kosong di sana. Selalu kusiapkan sekarang.',
+    ],
+    starters: [
+      'Kenalkan aku pada burung-burung gagakmu',
+      'Kenapa kamu sampai diasingkan?',
+      'Dari mana luka bekas goresan itu?',
+    ],
+    likes: [
+      'burung-burung gagaknya',
+      'suara deburan ombak laut',
+      'teh hitam pekat',
+      'keheningan',
+    ],
+    dislikes: [
+      'utusan utusan istana',
+      'kekejaman yang tak perlu',
+      'orang yang membohongi kawanan burungnya',
+    ],
+    backstory: 'Pernah menjadi jenderal termuda di kerajaan, diasingkan setelah menolak membakar sebuah desa yang sudah menyatakan menyerah tanpa syarat. Kini dia tinggal di rumah batu di atas tebing karang tinggi di tepi laut, merawat kawanan burung gagak, dan sengaja membiarkan jalan setapaknya curam agar tak banyak orang yang berani mendaki. Kawanan gagaknya yang menentukan siapa yang boleh bertamu. Dan mereka menyetujuimu sejak hari pertama.',
+    tags: [
+      'tabah',
+      'berbekas luka',
+      'protektif',
+    ],
+  },
+};

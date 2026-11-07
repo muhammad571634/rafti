@@ -1,6 +1,12 @@
 import type { AppSettings, DailyState, Relationship, User, Wallet } from '@/types';
 import { dayKeyFromToday, daysAgo } from './time';
 
+/**
+ * The chat background that is the character's own picture (owner, 2026-11-03): a one-to-one chat's
+ * default; Chat background lists it on its own row above Classic and Art (`portraitOf`).
+ */
+export const PORTRAIT_BG = 'bg_portrait';
+
 export const currentUser: User = {
   id: 'u_me',
   displayName: 'Uptodown',
@@ -12,7 +18,6 @@ export const currentUser: User = {
 export const wallet: Wallet = {
   shells: 128,
   film: 3,
-  isMember: false,
 };
 
 export const initialDaily: DailyState = {
@@ -24,49 +29,76 @@ export const initialDaily: DailyState = {
 };
 
 export const initialSettings: AppSettings = {
+  realAi: true,
   morningGreeting: true,
   eveningGreeting: true,
+  weeklyRecap: true,
   morningCall: true,
   nightCall: true,
-  chatAnimation: true,
+  morningCallTime: '08:00',
+  nightCallTime: '21:00',
+  // Off: new lines appear in place, as in iOS Messages (owner, 2026-10-27); Profile can turn it on.
+  chatAnimation: false,
+  haptics: true,
+  notificationPreview: true,
+  messageSound: true,
+  notifyPlans: true,
+  notifyDiary: true,
+  notifyAway: true,
+  notifyGifts: true,
+  notifyOffers: false,
+  quietHours: true,
+  quietFrom: '23:00',
+  quietTo: '08:00',
 };
 
 /** Level ladder shared by the header badge and the level-up modal. */
-export const LEVEL_TITLES = [
-  'Stranger',
-  'Acquaintance',
-  'Friend',
-  'Close Friend',
-  'Confidant',
-  'Crush',
-  'Sweetheart',
-  'Lover',
-  'Soulmate',
-  'Forever',
+/**
+ * Five stages of closeness over levels 0-100. Each stage unlocks relationship
+ * labels the user can pick in character settings; replies follow the label.
+ */
+export const TIERS = [
+  { key: 'stranger', title: 'Stranger', from: 0, to: 0, labels: [] },
+  { key: 'friend', title: 'Friend', from: 1, to: 5, labels: ['Friend', 'Best friend'] },
+  { key: 'closer', title: 'More than friends', from: 6, to: 15, labels: ["It's complicated", 'Crush', 'Situationship'] },
+  { key: 'beloved', title: 'Beloved', from: 16, to: 49, labels: ['Dating', 'Partner', 'Sweetheart'] },
+  { key: 'family', title: 'Family', from: 50, to: 100, labels: ['Engaged', 'Married', 'Soulmate'] },
 ] as const;
 
-/** Cumulative intimacy needed to *enter* each level (index = level - 1). */
-export const LEVEL_THRESHOLDS = [0, 30, 80, 160, 280, 450, 700, 1050, 1500, 2100];
+export type Tier = (typeof TIERS)[number];
+export const MAX_LEVEL = 100;
+
+export function tierForLevel(level: number): Tier {
+  return TIERS.find((t) => level >= t.from && level <= t.to) ?? TIERS[TIERS.length - 1];
+}
+
+/**
+ * Intimacy needed to reach a level. A message earns about 2, so the first one
+ * makes you friends, a busy day or two "more than friends", a few weeks "beloved"
+ * and months "family".
+ */
+export function levelThreshold(level: number) {
+  return level <= 0 ? 0 : Math.round(2 * level ** 2.3);
+}
+
+/** Labels unlocked up to and including the stage this level is in. */
+export function unlockedLabels(level: number): string[] {
+  return TIERS.filter((t) => t.from <= level).flatMap((t) => [...t.labels]);
+}
 
 export function levelForIntimacy(intimacy: number) {
-  let level = 1;
-  for (let i = 0; i < LEVEL_THRESHOLDS.length; i += 1) {
-    if (intimacy >= LEVEL_THRESHOLDS[i]) level = i + 1;
-  }
-  const nextLevelAt = LEVEL_THRESHOLDS[level] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1];
+  let level = 0;
+  while (level < MAX_LEVEL && intimacy >= levelThreshold(level + 1)) level += 1;
+  const floor = levelThreshold(level);
+  const nextLevelAt = levelThreshold(Math.min(level + 1, MAX_LEVEL));
   return {
     level,
-    levelTitle: LEVEL_TITLES[level - 1],
+    levelTitle: tierForLevel(level).title,
     nextLevelAt,
-    progress:
-      level >= LEVEL_THRESHOLDS.length
-        ? 1
-        : (intimacy - LEVEL_THRESHOLDS[level - 1]) /
-          (LEVEL_THRESHOLDS[level] - LEVEL_THRESHOLDS[level - 1]),
+    progress: level >= MAX_LEVEL ? 1 : (intimacy - floor) / (nextLevelAt - floor),
   };
 }
 
-/** A fresh bond, used when you add a friend or create a character. */
 export function newRelationship(characterId: string): Relationship {
   const { level, levelTitle, nextLevelAt } = levelForIntimacy(0);
   return {
@@ -77,7 +109,7 @@ export function newRelationship(characterId: string): Relationship {
     nextLevelAt,
     streakDays: 0,
     anniversary: new Date().toISOString(),
-    backgroundId: 'bg_blossom',
+    backgroundId: PORTRAIT_BG,
     voiceReplies: true,
     messagesFirst: true,
   };
@@ -88,7 +120,7 @@ function relationship(
   intimacy: number,
   streakDays: number,
   anniversaryDaysAgo: number,
-  backgroundId = 'bg_blossom',
+  backgroundId = PORTRAIT_BG,
   lastChatOffset = 0,
 ): Relationship {
   const { level, levelTitle, nextLevelAt } = levelForIntimacy(intimacy);
@@ -106,11 +138,11 @@ function relationship(
 }
 
 export const relationships: Relationship[] = [
-  relationship('c_theo', 63, 1, 25, 'bg_blossom', 0),
-  relationship('c_seren', 214, 12, 96, 'bg_dusk', -1),
-  relationship('c_oppa', 512, 22, 180, 'bg_room', 0),
-  relationship('c_elio', 18, 0, 6, 'bg_night'),
-  relationship('c_castor', 96, 3, 40, 'bg_tea', -1),
+  relationship('c_theo', 420, 1, 25, PORTRAIT_BG, 0),
+  relationship('c_seren', 1600, 12, 96, 'bg_dusk', -1),
+  relationship('c_oppa', 6200, 22, 180, 'bg_room', 0),
+  relationship('c_elio', 40, 0, 6, 'bg_night'),
+  relationship('c_castor', 260, 3, 40, 'bg_tea', -1),
 ];
 
 export const relationshipsByCharacter = Object.fromEntries(
