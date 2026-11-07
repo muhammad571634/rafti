@@ -1,6 +1,8 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z119. Secret Note's letter (Native Cook Envelope Gift Reveal, 1:1); SafeMoment (2026-11-07, Claude 1). NEXT: the daily check-in, rebuilt 1:1 from Coin Drop Reward's own page
+### 0z119. Secret Note's letter (Native Cook Envelope Gift Reveal, 1:1); SafeMoment (2026-11-07, Claude 1). NEXT: the daily check-in, rebuilt 1:1 from Coin Drop Reward's own page — brief: `docs/agent-tasks/native-cook-blocks.md`
+
+- Tools for the next session (in the repo now): `scripts/native-cook-fetch.mjs` (a block's source from their public repo) and `scripts/a51.mjs` (reload, deep link, tap by text, swipe, screenshot on the A51).
 
 - Owner: the ported animations did not look like the prompts' blocks; from now on **bring each block's animation over 1:1**, change only our mascot, icons, names and colours, polish the rest to fit; make everything "ultra"; the daily check-in is still the old sheet with a small drop: redo it. Then: "make something that always works and never falls over".
 - Built (`0827ffb` … this block): `src/components/envelope/` = the block's `use-envelope.ts` and `motion.ts` unchanged, its scene and screen line for line; only the words are ours (`EnvelopeContent`): the friend's initial in the wax, the user's name on the pocket, Sigmazam's letterpress and the day on the card's face, their note on its back, four new strings in all 14 locales (`secretNote.envelopeFrom`, `envelopeHeadline`, `liftFlap`, `fromWithLove`). Shown when notes are swapped; an opened note is read again as the letter by tapping it. The letter keeps a snapshot of its words (today's new question replaced the note under it and closed the letter).
