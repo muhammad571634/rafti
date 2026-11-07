@@ -9,6 +9,7 @@
 - Header: the chat header already shows the balance (shell pill) and the call button; nothing changed there.
 - Also seen: the server's Gemini free quota ran out at 22:45 (429), so replies showed Not Delivered, as designed.
 - Checks: app tsc 0, npm test 766/766; server tsc 0, 78/78. Money change: needs a second reader before any store build.
+- **Seen after the deploy**: Supabase has the test row (proAnnual, active, store test, 2026-11-07 → 2027-11-07) and the ledger row `+5000 plan`, key `plan:2026-11-07T17:57:12.709Z`; wallet 5,024; the owner saw 5,024 in the chat header. The phone's history had no plan row (it lists the phone's own bookings) → `868d510` books it when the server takes the plan and once per later period (OTA `d2aa92a9`). The owner's phone took the plan before that OTA, so its +5,000 row is the one booked locally on 2026-11-06.
 
 ### 0z141. Characters feel human: model-read turns, a feeling that carries over, BEING A PERSON rules (2026-11-07, Claude 1). NEXT: owner deploys the server; then try a few chats on the A51
 
