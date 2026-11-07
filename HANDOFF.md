@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z141. Characters feel human: model-read turns, a feeling that carries over, BEING A PERSON rules (2026-11-07, Claude 1). NEXT: owner deploys the server; then try a few chats on the A51
+
+- **Owner's ask**: talking with a character must feel like talking with a real person (the product's first job).
+- **Found**: with the model on, every reply's THIS TURN hints came from the stand-in planner (`planTurn`): English keyword cues (`readMessage`) and dice decided "you feel happy (0.4)", the move ("tease them a little") and "end with a question" / "do not". Any non-English sadness went unseen (a Russian "мне грустно" could get "tease them"), and random question endings made chats an interview. The model's own emotion, returned with every reply, was dropped by the app.
+- **Built (`4a326ab`)**: `src/ai/human-turn.ts` (`humanTurnLines`, `turnRhythm`, `carriedMood`): the hints now carry only what one reply cannot see, in any language: the feeling left from the last reply (the model's own emotion, halved every 2 h, gone under 0.2), own replies ending in questions twice (? ？ ؟), the user answering in <= 12 characters twice (chat going flat), and the silence nudge. `turnLines` / `MOVE_GUIDE` removed. The app stores the model's emotion and intensity as the friend's mood (`serverReply` returns them, `deliver(…, felt)`). CHARACTER_RULES got BEING A PERSON (own life between messages, opinions and pushback, feelings carry over, react to the exact thing, text like they do, carry the talk without interviewing, not always available, no assistant / therapy voice, imperfect is human). The stand-in planner still drives the mock (model off) and the silence timer.
+- **Eval**: new group `human` (5: `human-sad-russian`, `human-disagrees`, `human-flat-chat`, `human-mood-carries`, `human-own-life`); eval chats now send the clock. Run on 2026-11-07: `GEMINI_KEY_NEW` and `JUDGE_GEMINI_KEY` answer 401 "API key not valid" (expired or revoked); the writer fell back to `gemini-3.1-flash-lite`, the judge did not run. Machine checks 5/5. Read by hand: Russian sadness answered in Russian, blunt and caring, no tease; art "a waste of time" got real pushback; the flat chat got her own evening and no question; Erik terse and concrete (ice pack, Teddy). Mood-carries was only a little prickly (judge it again with a working judge). Server-side parts need the deploy.
+- Checks: tsc 0, npm test 766/766, server tsc 0, 76/76. OTA `89a79dbf` (the app keeping the model's mood).
+
+Still to do:
+1. Owner: new free Gemini keys (`GEMINI_KEY_NEW`, `JUDGE_GEMINI_KEY` are 401), or the paid key; then `npm run eval -- --group human` with the judge, and the full eval.
+2. Next human-likeness steps: the character's own day as state (what they did today, kept across replies and days, from the world's story), opinions as persona fields for user-made characters, group chats and calls on the same hints.
+
 ### 0z140. Message sound in the app, Telegram-like banner outside it: PAUSED by the owner (2026-11-07, Claude 1). NEXT: owner's next task; come back here with the paid model key and/or the first iPhone
 
 - **Owner's ask**: when a friend writes and their chat is not on screen (another screen, the app pressed away with Home, even while in another app like Instagram) a small banner at the top with our own short sound, as Telegram does; tied to the red unread count. Owner paused it ("Gemini free keys may run out; write it down, we look again with the paid API, maybe on an iPhone").
