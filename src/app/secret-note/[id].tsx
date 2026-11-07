@@ -3,19 +3,21 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { Easing, FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
+import { OpenedNote, SealedRow } from '@/components/secret-note/opened-note';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { localSecretNote } from '@/i18n/content';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space } from '@/theme';
+import { aurora, colors, space } from '@/theme';
 
 const MAX_LENGTH = 400;
-/** The sealed note's lock: mint, the bond colour. */
-const LOCK_BG = isDark ? 'rgba(48,209,88,0.18)' : '#E3F7EF';
+/** Cards glide to their new height when a note opens or arrives (on-screen move: ease-in-out). */
+const GLIDE = LinearTransition.duration(320).easing(Easing.bezier(0.77, 0, 0.175, 1));
 
 /**
  * Secret Note: a daily question, two sealed notes. The character writes theirs first
@@ -103,12 +105,15 @@ export default function SecretNoteScreen() {
           </View>
 
           <GroupLabel>{t('secretNote.theirNote', { name })}</GroupLabel>
-          <View style={[styles.card, styles.pad]}>
+          <Animated.View layout={GLIDE} style={[styles.card, styles.pad]}>
             {exchanged ? (
-              <>
-                {justOpened ? <Anim name="loveLetter" size={120} loop={false} style={styles.letter} /> : null}
-                <Txt style={styles.noteText}>{note.theirNote}</Txt>
-              </>
+              <OpenedNote
+                key={note.id}
+                text={note.theirNote ?? ''}
+                sealedTitle={t('secretNote.sealedTitle', { name })}
+                sealedHint={t('secretNote.sealedHint')}
+                reveal={justOpened}
+              />
             ) : composing && note.busy ? (
               <View style={styles.row}>
                 <Txt style={[styles.muted, styles.flex]}>{t('games.busy', { name })}</Txt>
@@ -122,20 +127,16 @@ export default function SecretNoteScreen() {
                 <Txt style={styles.muted}>{t('secretNote.thinking')}</Txt>
               </View>
             ) : (
-              <View style={styles.row}>
-                <View style={styles.lock}>
-                  <Ionicons name="lock-closed" size={18} color={colors.bondText} />
-                </View>
-                <View style={styles.flex}>
-                  <Txt style={styles.sealed}>{t('secretNote.sealedTitle', { name })}</Txt>
-                  <Txt style={styles.muted}>{t('secretNote.sealedHint')}</Txt>
-                </View>
-              </View>
+              <Animated.View entering={FadeIn.duration(220)}>
+                <SealedRow title={t('secretNote.sealedTitle', { name })} hint={t('secretNote.sealedHint')} />
+              </Animated.View>
             )}
-          </View>
+          </Animated.View>
 
-          <GroupLabel>{t('secretNote.yourNote')}</GroupLabel>
-          <View style={[styles.card, styles.pad]}>
+          <Animated.View layout={GLIDE}>
+            <GroupLabel>{t('secretNote.yourNote')}</GroupLabel>
+          </Animated.View>
+          <Animated.View layout={GLIDE} style={[styles.card, styles.pad]}>
             <TextInput
               value={note.myNote}
               onChangeText={(text) => writeNote(note.id, text.slice(0, MAX_LENGTH))}
@@ -148,10 +149,12 @@ export default function SecretNoteScreen() {
               accessibilityLabel={t('secretNote.yourNote')}
             />
             <Txt style={styles.counter}>{t('secretNote.counter', { count: note.myNote.length })}</Txt>
-          </View>
+          </Animated.View>
 
           {exchanged ? (
-            <View style={styles.doneBlock}>
+            <Animated.View
+              entering={justOpened ? FadeInDown.delay(560).duration(320).easing(Easing.bezier(0.23, 1, 0.32, 1)) : undefined}
+              style={styles.doneBlock}>
               <View style={styles.done}>
                 <Ionicons name="checkmark-circle" size={18} color={colors.bondText} />
                 <Txt style={styles.doneText}>{t('secretNote.exchanged')}</Txt>
@@ -167,7 +170,7 @@ export default function SecretNoteScreen() {
                 <Ionicons name="refresh" size={16} color={STORE.peachInk} />
                 <Txt style={styles.againText}>{t('secretNote.newQuestion')}</Txt>
               </PressableScale>
-            </View>
+            </Animated.View>
           ) : null}
         </ScrollView>
 
@@ -197,11 +200,7 @@ const styles = StyleSheet.create({
   promptLabel: { marginTop: 4, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: aurora.textMuted, textTransform: 'uppercase' },
   promptText: { fontSize: 22, lineHeight: 29, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  lock: { width: 38, height: 38, borderRadius: 10, backgroundColor: LOCK_BG, alignItems: 'center', justifyContent: 'center' },
-  sealed: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
   muted: { fontSize: 13, lineHeight: 18, color: aurora.textMuted },
-  letter: { alignSelf: 'center', marginTop: -space.md },
-  noteText: { fontSize: 17, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
   input: { minHeight: 120, padding: 0, fontSize: 17, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
   counter: { alignSelf: 'flex-end', marginTop: space.sm, fontSize: 12, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
   doneBlock: { alignItems: 'center', gap: space.md, marginTop: 22 },

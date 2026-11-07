@@ -26,6 +26,7 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
   - Minimal text UI: headings, numbers, and icons only — no helper subtitles on screens.
   - Photo cards keep a dark scrim + clear see-through glass buttons (never solid white buttons or opaque frosted capsules covering character art).
   - Motion: popups appear instantly; typing dots, voice waves, and existing animations stay untouched unless specifically requested.
+  - Own motion (owner, 2026-11-07): keep our existing screens and polish them with animations we design ourselves in Apple iOS manner (Reanimated springs, haptics, our Lottie). Native Cook / other blocks are ideas only, never ported 1:1. Remotion / HyperFrames are for videos, not in-app motion.
   - Never redesign screens already approved by the owner (e.g. Heartbeat diary in `src/app/diary/`).
 - **Expo Go & Metro (Port 8081)**:
   - Ensure Metro is running via `node scripts/ensure-expo.mjs`. Never start duplicate web servers or take headless web screenshots against shared Metro `8081` (it hangs Expo Go).
