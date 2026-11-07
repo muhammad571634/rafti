@@ -1131,6 +1131,8 @@ export interface SetupOffer {
   replacesId?: string;
   /** A newer offer took this one's place: no buttons any more. */
   replaced?: boolean;
+  /** The alarm or plan it made was deleted later (Us, Alarms). */
+  removed?: boolean;
   madeId?: string;
   declined?: boolean;
 }

@@ -56,6 +56,7 @@ export function cleanSetup(value: unknown): SetupOffer | undefined {
 /** Where an offer stands, in the words the model reads. */
 function offerState(card: Partial<SetupOffer>) {
   if (card.replaced === true) return 'replaced by a newer offer';
+  if (card.removed === true) return 'they set it, then deleted it: it is off';
   if (typeof card.madeId === 'string' && card.madeId) return 'they set it';
   if (card.declined === true) return 'they said not now';
   return 'not set yet, the card waits for their tap (it does not exist until they tap)';

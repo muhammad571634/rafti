@@ -2778,7 +2778,7 @@ export const useAppStore = create<AppState>()(
         }
         return savedId;
       },
-      deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id) })),
+      deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id), messages: setupRemoved(s.messages, id) })),
       setAlarmEnabled: (id, enabled) =>
         set((s) => ({
           alarms: s.alarms.map((a) =>
@@ -3411,7 +3411,14 @@ export const useAppStore = create<AppState>()(
         return true;
       },
 
-      removeSchedule: (id) => set((s) => ({ schedules: s.schedules.filter((x) => x.id !== id) })),
+      // A plan deleted on Us is off: its thread closes (no "good luck" or "how did it go?" for it,
+      // and the friend stops bringing it up), and its setup card in the chat says it is gone.
+      removeSchedule: (id) =>
+        set((s) => ({
+          schedules: s.schedules.filter((x) => x.id !== id),
+          threads: s.threads.map((t) => (t.scheduleId === id && t.status === 'open' ? { ...t, status: 'closed', outcome: 'off', closedAt: new Date().toISOString() } : t)),
+          messages: setupRemoved(s.messages, id),
+        })),
 
       addSchedule: ({ characterId, title, date, time, whenLabel, quiet }) => {
         const clean = title.trim();
@@ -3488,8 +3495,8 @@ export const useAppStore = create<AppState>()(
           );
         } else if (offer.kind === 'plan') {
           madeId = get().addSchedule({ characterId, title: offer.title, date: offer.date, time: offer.time, whenLabel: '', quiet: true });
-          if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
           if (madeId) linkPlanThread(set, get, characterId, madeId, offer, replaces);
+          if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
         }
         if (!madeId) return 'gone';
         if (cost) get().spendShells(cost, 'setup', characterId);
@@ -3513,6 +3520,15 @@ export const useAppStore = create<AppState>()(
         get().landDuePushes();
         const now = new Date();
         const exists = (id: string) => get().characters.some((c) => c.id === id);
+        // A thread whose plan was deleted (before 0z138 deleting did not close it) is off.
+        const planIds = new Set(get().schedules.map((x) => x.id));
+        if (get().threads.some((t) => t.status === 'open' && t.scheduleId && !planIds.has(t.scheduleId))) {
+          set((s) => ({
+            threads: s.threads.map((t) =>
+              t.status === 'open' && t.scheduleId && !planIds.has(t.scheduleId) ? { ...t, status: 'closed', outcome: 'off', closedAt: now.toISOString() } : t,
+            ),
+          }));
+        }
 
         const steps = get()
           .schedules.map((item) => ({ item, step: planStep(item, now) }))
@@ -5671,6 +5687,21 @@ function linkPlanThread(set: Setter, get: Getter, characterId: string, scheduleI
     threads: s.threads.map((t) => (t.id === thread.id ? { ...t, scheduleId } : t)),
     schedules: asksAfter ? s.schedules.map((x) => (x.id === scheduleId ? { ...x, followedUp: true } : x)) : s.schedules,
   }));
+}
+
+/** Setup cards in any chat that stood for an alarm or plan that is now deleted: they say so. */
+function setupRemoved(messages: AppState['messages'], madeId: string): AppState['messages'] {
+  let changed = false;
+  const next: AppState['messages'] = {};
+  for (const [id, list] of Object.entries(messages)) {
+    if (!list.some((m) => m.setup?.madeId === madeId && !m.setup.removed)) {
+      next[id] = list;
+      continue;
+    }
+    changed = true;
+    next[id] = list.map((m) => (m.setup?.madeId === madeId ? { ...m, setup: { ...m.setup, removed: true } } : m));
+  }
+  return changed ? next : messages;
 }
 
 /** The alarm or plan with this friend that already is what the offer asks for, by its id. */
