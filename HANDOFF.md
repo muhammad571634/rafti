@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z143. A plan card opens over the chat; replies the size of a text (2026-11-07, Claude 1). NEXT: owner deploys the server; then the friend's own day (characters keep what they did today)
+
+- **Plan card** (`481ff89`): the Done plan card opens `PlanDetailSheet` over the chat (friend, day and hour, reminder, Us, Delete with confirm) instead of switching to the Us tab (Back then landed on Today). Seen on the A51: "Sinema ile Hana · Mon 9 Nov 19:00 · 🔔18:50", Delete → the card faded, the cancel card struck through, Hana: "you deleted Monday's cinema, what happened?". Alarm cards still open the alarm editor (a stack screen, Back returns to the chat).
+- **Missing cards, found**: twice Hana said "noted / I added it" with no card. A client log on the A51 showed the next reply carrying `setup`, and the live route returned it 2 of 2 and the model 6 of 6 in probes (including the A51's real chat, read from the server's message copy): the model sometimes leaves the field out. Setup rule now says the field goes in every reply that agrees.
+- **Length (owner)**: "short" set, paragraphs came back; tiring and costly. `lengthLine` puts a word budget in THIS TURN (short ~18, auto ≈ their length, long ~60, 1-3 bubbles of one or two lines; story prose), the chat mode says a longer thought is several short bubbles, and the app cuts a bubble wider than ~3 lines at sentence ends (`splitBubbles`, any script). Probe on the real Hana chat: short 17-27 words in 2 bubbles (was 60-80). Server parts need the deploy; the split works now (OTA `f65fb174`).
+- Also in the deploy: 0z141's "their moment" rule.
+- Checks: app tsc 0, npm test 771/771; server 78/78.
+
 ### 0z142. Pro's monthly shells come from the server; minutes checked (2026-11-07, Claude 1). NEXT: owner deploys the server, then reopen the app twice: the balance should jump by 5,000
 
 - **Owner's ask**: Pro yearly is on but the balance stays at 27; Pro gives 5,000 shells a month. Also: are call minutes right, and the shells at the top of the chat.
