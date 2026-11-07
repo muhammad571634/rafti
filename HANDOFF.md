@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z133. The tab bar: approved playful look, a real unread count (iPhone had none), back to top on re-tap (2026-11-07, Claude 1). NEXT: see it on the A51
+
+- Owner: improve the tab bar, judge its design, own ideas welcome. Findings: the Android/web bar was still the aurora bar (orange tint on a near-invisible white capsule) although the approved four-tab prototype (0z124) drew it playful; on iPhone the NativeTabs badge had no text, and a badge without text is not drawn, so iPhone showed no unread mark at all; tapping the current tab did nothing (iOS scrolls to the top).
+- Coded (`3e71823`): Android/web bar as the prototype: white floating pill and round Find (`playful.bar`, soft shadow), current tab an ink capsule with white icon and label, the rest `playful.tabOff`; content fades out under the bar (`playful.groundFade`, the iOS 26 scroll edge effect as a gradient). Chats shows the number of chats waiting (`useUnreadChats`, same number as Today's bubble and Chats' Unread pill; red, 99+). iPhone: the badge shows that count in the system red, tint `playful.ink`. `useScrollToTop` on Today, Chats, Us and Find.
+- Tried and dropped: `detachInactiveScreens={false}` keeps all four tab screens attached and stacked, so Android would draw all four every frame; the 130-150 ms first frames on a tab switch stay open.
+- A51 (OTA `e4f214b7`): not seen yet. On launch the app opened an alarm ring screen ("Утро! Я уже на ногах…", Maniki love, Утренний прилив) at 17:47; not set by this session, left untouched for the owner. Check after it is dismissed: the bar, the count on Chats, re-tap to top.
+- Checks: tsc 0 in `src`, npm test 710/710.
+
+Still to do:
+1. On the A51: the new tab bar, the Chats count, re-tap to top; why an alarm rang at 17:47 with a morning line (who set it?).
+2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
+3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan / alarm with the friend's face.
+4. Tab switch: the new screen's first frames take 130-150 ms on the A51; profile with systrace.
+5. Widgets next steps in `docs/today-widgets.md`.
+6. Owner has more questions about the tabs' logic.
+7. From 0z121: second reader on migration b7, then the owner applies it.
+8. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z132. Today prototype approved and coded (2026-11-07, Claude 1). NEXT: owner's next ask; open items below
 
 - Owner approved the Today prototype ("Ha, kodla"): https://claude.ai/artifact/6tYCFRyhcRAWGyb5sN6TbJ. Direction (owner): simple and clear like iOS, in our own playful skin, fit for an AI companion; not Apple's design, not more decoration.
