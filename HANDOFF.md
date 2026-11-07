@@ -6,7 +6,7 @@
 - `own-day.ts` no longer imports `thread-prompt.ts` (its own `wallClock`), so the two do not import each other.
 - **Probe** (`gemini-3.1-flash-lite`, Hana with "overslept" and "spilled ink" kept, 4 calls): group 2/2 and first text 2/2 wrote the field and built on the ink spill; the group knew it was Sunday evening. A group call timed out once at 30 s on the free key, fine at 60 s.
 - Not yet: screens of their own (`/v1/ai/write`: notes, diary pages, date rounds) and streams; a memory-pass catch for days the model forgot to note.
-- Checks: app tsc 0, npm test 791/791; server tsc 0, 78/78.
+- Checks: app tsc 0, npm test 791/791; server tsc 0, 78/78. OTA `5614888a`.
 
 ### 0z144. The friend's own day: what they said they did stays true, today and tomorrow (2026-11-08, Claude 1). NEXT: owner deploys the server; then chat with a friend on the A51 about their day, and again tomorrow
 
