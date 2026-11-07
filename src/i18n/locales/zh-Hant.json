@@ -738,11 +738,7 @@
     "sealedTitle": "{{name}}的便籤目前密封中",
     "sealedHint": "交換便籤後即可拆開閱讀",
     "yourNote": "你的便籤",
-    "swap": "交換便籤",
-    "envelopeFrom": "來自 {{name}}",
-    "envelopeHeadline": "給你的\n一封信",
-    "liftFlap": "掀開封口",
-    "fromWithLove": "{{name}}\n滿懷心意"
+    "swap": "交換便籤"
   },
   "store": {
     "title": "商店",

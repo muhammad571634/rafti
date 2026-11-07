@@ -738,11 +738,7 @@
     "sealedTitle": "Lời nhắn của {{name}} đã được niêm phong",
     "sealedHint": "Nó sẽ mở ra khi hai bạn trao đổi lời nhắn",
     "yourNote": "Lời nhắn của bạn",
-    "swap": "Trao đổi lời nhắn",
-    "envelopeFrom": "Từ {{name}}",
-    "envelopeHeadline": "Có điều này\ncho bạn",
-    "liftFlap": "Mở nắp phong bì",
-    "fromWithLove": "Thân gửi,\n{{name}}"
+    "swap": "Trao đổi lời nhắn"
   },
   "store": {
     "title": "Cửa hàng",

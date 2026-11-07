@@ -758,11 +758,7 @@
     "sealedTitle": "Notiz von {{name}} ist versiegelt",
     "sealedHint": "Öffnet sich, sobald ihr Notizen tauscht",
     "yourNote": "Deine Notiz",
-    "swap": "Notizen tauschen",
-    "envelopeFrom": "Von {{name}}",
-    "envelopeHeadline": "Etwas\nfür dich",
-    "liftFlap": "Klappe öffnen",
-    "fromWithLove": "Von {{name}},\nin Liebe"
+    "swap": "Notizen tauschen"
   },
   "store": {
     "title": "Shop",

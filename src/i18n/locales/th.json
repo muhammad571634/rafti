@@ -738,11 +738,7 @@
     "sealedTitle": "โน้ตของ {{name}} ถูกปิดผนึกอยู่",
     "sealedHint": "โน้ตจะเปิดออกเมื่อคุณแลกเปลี่ยนโน้ตกัน",
     "yourNote": "โน้ตของคุณ",
-    "swap": "แลกเปลี่ยนโน้ต",
-    "envelopeFrom": "จาก {{name}}",
-    "envelopeHeadline": "มีบางอย่าง\nให้คุณ",
-    "liftFlap": "เปิดซอง",
-    "fromWithLove": "ด้วยรัก\nจาก {{name}}"
+    "swap": "แลกเปลี่ยนโน้ต"
   },
   "store": {
     "title": "ร้านค้า",

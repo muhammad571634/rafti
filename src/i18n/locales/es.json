@@ -758,11 +758,7 @@
     "sealedTitle": "La nota de {{name}} está sellada",
     "sealedHint": "Se abrirá cuando intercambien notas",
     "yourNote": "Tu nota",
-    "swap": "Intercambiar notas",
-    "envelopeFrom": "De {{name}}",
-    "envelopeHeadline": "Algo\npara ti",
-    "liftFlap": "Levanta la solapa",
-    "fromWithLove": "De {{name}},\ncon cariño"
+    "swap": "Intercambiar notas"
   },
   "store": {
     "title": "Tienda",

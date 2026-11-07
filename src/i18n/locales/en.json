@@ -758,11 +758,7 @@
     "sealedTitle": "{{name}}'s note is sealed",
     "sealedHint": "It opens when you swap notes",
     "yourNote": "Your note",
-    "swap": "Swap notes",
-    "envelopeFrom": "From {{name}}",
-    "envelopeHeadline": "Something\nfor you",
-    "liftFlap": "Lift the flap",
-    "fromWithLove": "From {{name}},\nwith love"
+    "swap": "Swap notes"
   },
   "store": {
     "title": "Store",
