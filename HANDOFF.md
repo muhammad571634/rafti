@@ -1,15 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z133. The tab bar: approved playful look, a real unread count (iPhone had none), back to top on re-tap (2026-11-07, Claude 1). NEXT: see it on the A51
+### 0z133. The tab bar: approved playful look, a real unread count (iPhone had none), back to top on re-tap (2026-11-07, Claude 1). NEXT: owner's next ask
 
 - Owner: improve the tab bar, judge its design, own ideas welcome. Findings: the Android/web bar was still the aurora bar (orange tint on a near-invisible white capsule) although the approved four-tab prototype (0z124) drew it playful; on iPhone the NativeTabs badge had no text, and a badge without text is not drawn, so iPhone showed no unread mark at all; tapping the current tab did nothing (iOS scrolls to the top).
 - Coded (`3e71823`): Android/web bar as the prototype: white floating pill and round Find (`playful.bar`, soft shadow), current tab an ink capsule with white icon and label, the rest `playful.tabOff`; content fades out under the bar (`playful.groundFade`, the iOS 26 scroll edge effect as a gradient). Chats shows the number of chats waiting (`useUnreadChats`, same number as Today's bubble and Chats' Unread pill; red, 99+). iPhone: the badge shows that count in the system red, tint `playful.ink`. `useScrollToTop` on Today, Chats, Us and Find.
 - Tried and dropped: `detachInactiveScreens={false}` keeps all four tab screens attached and stacked, so Android would draw all four every frame; the 130-150 ms first frames on a tab switch stay open.
-- A51 (OTA `e4f214b7`): not seen yet. On launch the app opened an alarm ring screen ("Утро! Я уже на ногах…", Maniki love, Утренний прилив) at 17:47; not set by this session, left untouched for the owner. Check after it is dismissed: the bar, the count on Chats, re-tap to top.
+- A51 (OTA `e4f214b7`), after the owner turned off an alarm that had rung at 17:47 ("Утро! Я уже на ногах…", Maniki love; not set by this session): the ink capsule on Сегодня, a red "1" on Чаты matching "Ждут вас · 1", content fading under the bar, a re-tap on Сегодня scrolled Today from the widgets back to the top. Also seen live for the first time: the Waiting bubble, Store "102 ракушки · осталось 2 бесплатных · сгорят в полночь", Sleep 07:24 with faces on its rows, Radio with Kai's clip.
 - Checks: tsc 0 in `src`, npm test 710/710.
 
 Still to do:
-1. On the A51: the new tab bar, the Chats count, re-tap to top; why an alarm rang at 17:47 with a morning line (who set it?).
+1. Why an alarm rang at 17:47 with a morning line (who set it: the owner, a friend's wake-up, a snooze?).
 2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
 3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan / alarm with the friend's face.
 4. Tab switch: the new screen's first frames take 130-150 ms on the A51; profile with systrace.
