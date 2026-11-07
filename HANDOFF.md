@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z121. Daily check-in: our own collect moment; check-in shells for free users only (2026-11-07, Claude 1). NEXT: second reader on migration b7, then the owner applies it; owner names the next screen to polish
+
+- Built (`a96a6c8`, `31fbc78`): `src/components/daily-reward-sheet.tsx` without the Coin Drop port (Gifts keeps it). The week rises day by day on one shared clock (`RiseIn`; layout `entering` left days at opacity 0 inside the sheet's Modal in one A51 shot, the owner saw all days on theirs; the clock cannot leave a day hidden). Collect: today's +N lifts, five shells fly on an arc (560 ms each, 70 ms apart) into the wallet pill, which swells per landing while the number counts up (selection haptic each); on the last: kalimba note `assets/sounds/shells-in.wav` (earshot: rank z 3.79 for "soft warm premium chime", reads as a real kalimba z 4.6; the bank's `mallet/flourish` read as an 8-bit beep z 3.05 and was dropped), success haptic, mint fill and a springing check in today's cell, mascot hop (`PeekingMascot cheer`), close after 900 ms. Reduced motion: in place.
+- A51 (OTA, Android only; Russian UI), recorded at 12 fps: days rise, +55 lifts, shells reach the pill, 77 → 132, the check turns mint, the mascot hops. The owner tried it on the phone too.
+- Owner's logic questions: yes, the sheet shows on the first open of each new day (launch and every return to the app, `use-character-initiative.ts`), on Today; the shells are credited at that open, so Collect is the celebration and closing the sheet loses nothing.
+- Owner: check-in shells only for free users. Agreed: a plan pays 2,000 / 5,000 shells a month, the ladder ~1,200; a trial pays none, so trials keep it. `onPaidPlan` (`src/economy/plans.ts`, tests) gates the local path; `supabase/migrations/20261107092000_b7_check_in_free_only.sql` gives `wallet_check_in` the same rule (active / grace subscription with term not ended: amount 0, streak untouched). No paid subscriptions exist on the server yet (no StoreKit), so nothing changes for anyone today.
+- Checks: tsc 0, npm test 663/663.
+
+Still to do:
+1. Second reader (money rule, Gemini or Claude 2) reads b7, then the owner runs `! node scripts/apply-migration.mjs supabase/migrations/20261107092000_b7_check_in_free_only.sql`; then rename to the version it answers and check with read-only SQL.
+2. Owner's word on the check-in moment and the Secret Note (0z120); then the next screen for our own motion.
+3. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro (Android-only works).
+
 ### 0z120. Our own motion from now on; Secret Note's open moment (2026-11-07, Claude 1). NEXT: owner swaps a note on the phone; then the next screen to polish with our own motion (daily check-in first)
 
 - Owner: the envelope is not needed (already reverted in `496fc05`); keep our existing screens and polish them; **make the animations ourselves, in Apple iOS manner**; Remotion / HyperFrames may be used if useful. The 0z119 "1:1 port" rule is over: Native Cook blocks are ideas only. Written to shared memory (`.agents/rules/project-memory.md`, section 3) and Claude memory (`sell-emotion`, `nativecook-blocks`). Remotion / HyperFrames make videos (promo, App Store preview), not in-app motion; in-app stays Reanimated + haptics + our Lottie.
