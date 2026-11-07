@@ -398,6 +398,12 @@
       "scene": "次の瞬間",
       "own": "後ほど"
     },
+    "setup": {
+      "set": "セット",
+      "add": "追加",
+      "notNow": "今はしない",
+      "done": "完了"
+    },
     "week": {
       "title": "今週の記録",
       "days_other": "一緒に{{count}}日",

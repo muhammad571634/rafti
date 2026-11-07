@@ -280,7 +280,9 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week' | 'setup';
+  /** setup cards: the alarm or plan the friend offered to set up; one tap makes it (`answerSetup`). */
+  setup?: SetupOffer;
   /** A `scene` card: which scene began, so a world's entry scene plays once. */
   sceneId?: string;
   /** week cards: the week's numbers with this friend (`src/lib/week.ts`). */
@@ -1107,6 +1109,24 @@ export interface ShellPack {
 export type AlarmSound = 'morningTide' | 'shellChimes' | 'seaBreeze' | 'softBells' | 'lighthouse';
 
 /** A wake-up alarm (Bedtime → Alarms), for every plan. Times are the phone's local time. */
+/**
+ * An alarm or a plan the friend offered to set up in the chat (`src/ai/setup-prompt.ts`), on the
+ * user's clock. `madeId` once the user tapped Set (the alarm's or the plan's id); `declined` on No.
+ */
+export interface SetupOffer {
+  kind: 'alarm' | 'plan';
+  /** A few words in the chat's language ("Exam", "Coffee"); may be empty for an alarm. */
+  title: string;
+  /** YYYY-MM-DD: the plan's day, or the day a one-time alarm rings. */
+  date: string;
+  /** HH:MM; an alarm always has one. */
+  time?: string;
+  /** Alarms: weekdays it repeats, 0 = Sunday; empty = once. */
+  repeat?: number[];
+  madeId?: string;
+  declined?: boolean;
+}
+
 export interface Alarm {
   id: string;
   /** 0-23 */

@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z136. Set up an alarm or a plan from the chat; 0z135 seen on the A51 (2026-11-07, Claude 1). NEXT: the owner deploys the server, then check the card on the A51
+
+- **0z135 on the A51** (server v20 deployed by the owner, OTA `97e3c777` after two restarts): (a) an alarm with Hana -> she said it in her chat ("22:10'da seni uyandırmamı istedin"); (c) "günaydın" at 19:12 -> "Günaydın mı? Saat akşam yediyi geçti" and she named her 07:24 alarm. Small gap: she has 07:24 and 22:10 and named only 07:24; the `together` alarm lines could say which rings next (todo below). Test alarm: the first one was deleted; the second (22:10 today, Hana, once) is still on the owner's phone: delete it after it rings or with a swipe.
+- **Owner's ask**: "if I tell a character in the chat 'set this for me at this time', can they? And does it cost much?" Before: the friend only kept it as a thread and texted at that time; no real alarm or plan was made. Owner said yes to building it.
+- **Found on the way**: (1) chat plans were made by a regex detector (`detectPlan` English, `localPlan` Uzbek / Russian) even with the model on, with a stock acknowledgement (`scheduleAck`): against model-first, and no other language worked. (2) The model is asked for a `threads` field (`THREAD_RULES_LINES`) but nobody reads it: the server returns only the bubbles and the app still opens threads with the mock (`noteThreads` -> `mockThread`). Output tokens are paid for nothing. Not fixed in this block (todo 1).
+- **Built**: `src/ai/setup-prompt.ts` (`SETUP_RULES_LINES` in the cached global tier, left out on calls; `cleanSetup`; `setupUsable`). `parseModelReply` reads `setup`; the reply route returns it (not on a call, not after a crisis); `serverReply` cleans it again. The store appends a `setup` card after the reply's last bubble (`deliver(lines, setup)`); `answerSetup(conversationId, messageId, yes)` makes the alarm (`saveAlarm(..., { quiet: true })`, reply to wake on, the friend's voice if ready) or the plan (`addSchedule({ ..., quiet: true })`, now returns its id), or puts the card away. The card (`src/components/chat/setup-card.tsx`): icon, title, day · time, Not now / Set (Add for a plan); Done with a check, tap opens the alarm or Us. With the model on, the regex plan detector is off (`answerText`). Cost: no extra call; a few cached instruction lines and a small field in the same reply.
+- Checks: tsc 0, npm test 741/741 (new `setup-prompt.test.ts`, 2 in `chat-prompt.test.ts`); server tsc 0, 76/76; check:locales, check:content pass. 4 new strings in all 14 locales (`chat.setup.*`).
+
+**Continue exactly here (next session):**
+1. Owner deploys the server (the prompt rule and the `setup` pass-through live there): `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`, then `/health` 200.
+2. A51: in Hana's chat "beni yarın 7'de uyandırır mısın?" -> her reply + the card -> Set -> the alarm is in Alarms, Done on the card; "cumartesi kahve içelim, planlara ekle" -> plan card -> Add -> on Us. Delete the test alarm and plan afterwards.
+3. Then 0z135's part 2 list below (alarm setup made easy, Us + steps, memory, BIMOBIMO / Character.AI compare, pushes).
+
+Still to do:
+1. Apply the model's `threads` ops (server returns them, the app runs `parseThreadOps` and opens / moves / settles threads with the model on; the mock `noteThreads` only with the model off), or drop the rule; today it is paid output that nothing reads.
+2. `together` alarm lines: say which one rings next (today / tomorrow) so the friend names the right one.
+3. Everything in 0z135's "Still to do".
+
 ### 0z135. Chain audit, part 1: the friend knows the hour and what you set up together; an alarm tells its friend (2026-11-07, Claude 1). NEXT: the owner deploys the server, then "Continue exactly here" below
 
 - **The product's first job (owner, 2026-11-07)**: talking with a character must feel like talking with a real person, in chat and in voice; characters behave like people (character, moods, opinions, carry a conversation); memory is part of it; everything set up with a friend (a plan from Us' +, a diary page, a board note, an alarm that friend wakes you with) is tied to that friend: they remember it, talk about it, and pushes follow it. Setting these up must be easy to understand. Saved in `.agents/rules/project-memory.md` §4.

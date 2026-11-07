@@ -821,7 +821,9 @@ export function createApp(
       const caller = input.mode === 'call' && opts.speech ? await userId : null;
       const voice = caller ? reply.bubbles.map((line) => signer.sign(caller, line)) : undefined;
       // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, voice, model: result.model ?? provider.name, ms });
+      // `setup`: an alarm or plan the user asked for, shown as a card to confirm; never on a call or after a crisis.
+      const setup = input.mode === 'call' || crisis ? undefined : reply.setup;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

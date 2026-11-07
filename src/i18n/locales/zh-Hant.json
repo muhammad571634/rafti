@@ -398,6 +398,12 @@
       "scene": "下一刻",
       "own": "不久之後"
     },
+    "setup": {
+      "set": "設定",
+      "add": "加入",
+      "notNow": "稍後再說",
+      "done": "完成"
+    },
     "week": {
       "title": "本週回顧",
       "days_other": "相伴{{count}}天",

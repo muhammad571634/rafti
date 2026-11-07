@@ -398,6 +398,12 @@
       "scene": "다음 순간",
       "own": "이후에"
     },
+    "setup": {
+      "set": "설정",
+      "add": "추가",
+      "notNow": "나중에",
+      "done": "완료"
+    },
     "week": {
       "title": "이번 주",
       "days_other": "함께한 지 {{count}}일",

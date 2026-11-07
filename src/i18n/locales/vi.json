@@ -398,6 +398,12 @@
       "scene": "Khoảnh khắc tiếp theo",
       "own": "Sau đó"
     },
+    "setup": {
+      "set": "Đặt",
+      "add": "Thêm",
+      "notNow": "Để sau",
+      "done": "Xong"
+    },
     "week": {
       "title": "Tuần này",
       "days_other": "{{count}} ngày bên nhau",

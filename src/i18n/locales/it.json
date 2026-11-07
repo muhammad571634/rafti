@@ -406,6 +406,12 @@
       "scene": "Momento successivo",
       "own": "Più tardi"
     },
+    "setup": {
+      "set": "Imposta",
+      "add": "Aggiungi",
+      "notNow": "Non ora",
+      "done": "Fatto"
+    },
     "week": {
       "title": "Questa settimana",
       "days_one": "{{count}} giorno insieme",

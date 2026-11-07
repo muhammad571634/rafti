@@ -325,3 +325,14 @@ describe('the clock and what they set up together reach the reply (0z135)', () =
     assert.equal(bare.find((p) => p.name === 'together')?.text ?? '', '');
   });
 });
+
+describe('chatParts: setting things up from the chat (0z136)', () => {
+  const rules = (mode?: 'call') => chatParts({ character: kai, user: sam, messages: [], mode }).find((p) => p.name === 'setupRules');
+  it('rides in the cached global tier of a chat reply', () => {
+    assert.equal(rules()?.tier, 'global');
+    assert.match(rules()?.text ?? '', /"setup"/);
+  });
+  it('is left out of a call, which has no card to tap', () => {
+    assert.equal(rules('call')?.text ?? '', '');
+  });
+});

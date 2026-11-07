@@ -124,6 +124,7 @@ import { askLine } from '@/mock/temper';
 import { briefLine } from '@/mock/brief';
 import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
+import { setupUsable } from '@/ai/setup-prompt';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree, expiryBooked, oneExpiryPerMidnight, PAID_SHARES_PER_DAY, SHARE_REWARD } from '@/economy/shells';
@@ -264,6 +265,7 @@ import { daysTogether, dueDays, duePages, type DayTogether } from '@/mock/diary-
 import type {
   AppSettings,
   Alarm,
+  SetupOffer,
   WakeSession,
   DateRecord,
   BoardPost,
@@ -744,7 +746,7 @@ interface AppState {
   /* wake-up alarms (Bedtime → Alarms), for every plan */
   alarms: Alarm[];
   /** Adds a new alarm (no id yet) or replaces the one with the same id; it is switched on. */
-  saveAlarm: (alarm: Omit<Alarm, 'id' | 'createdAt' | 'enabled'> & { id?: string }) => string;
+  saveAlarm: (alarm: Omit<Alarm, 'id' | 'createdAt' | 'enabled'> & { id?: string }, opts?: { quiet?: boolean }) => string;
   deleteAlarm: (id: string) => void;
   setAlarmEnabled: (id: string, enabled: boolean) => void;
   /** The morning after a ring (src/lib/morning-chain.ts); null when no alarm is going. */
@@ -839,8 +841,16 @@ interface AppState {
   /** Rewrites a memory's text; source, date and pin stay. False when the text is empty or reads like a crisis. */
   editMemory: (id: string, text: string) => boolean;
   removeSchedule: (id: string) => void;
-  /** A plan added by hand in [Us]; the character acknowledges it in chat. */
-  addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string }) => void;
+  /**
+   * A plan added by hand in [Us]; the character acknowledges it in chat (not when `quiet`: a plan
+   * they offered in the chat was already talked about). Its id, or undefined when nothing was added.
+   */
+  addSchedule: (input: { characterId: string; title: string; date: string; time?: string; whenLabel: string; quiet?: boolean }) => string | undefined;
+  /**
+   * The user's answer to a setup card in the chat (`src/ai/setup-prompt.ts`): Set makes the alarm
+   * or the plan with this friend, No puts the card away. False when it cannot be made any more.
+   */
+  answerSetup: (conversationId: string, messageId: string, yes: boolean) => boolean;
   /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
   runTimers: () => void;
   /** Ends a couple quiz: the score lands in chat as a card, they react, closeness grows. */
@@ -2733,7 +2743,7 @@ export const useAppStore = create<AppState>()(
 
       /* ── profile ──────────────────────────────────────────────────────── */
 
-      saveAlarm: ({ id, ...fields }) => {
+      saveAlarm: ({ id, ...fields }, opts) => {
         const existing = id ? get().alarms.find((a) => a.id === id) : undefined;
         // The friend who wakes them hears about it in their chat, as with a plan (0z135): on a new
         // alarm, or when the time, the days or the friend changed, not on a label or sound edit.
@@ -2757,7 +2767,7 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ alarms: [...s.alarms, alarm] }));
           savedId = alarm.id;
         }
-        if (told && waker) {
+        if (told && waker && !opts?.quiet) {
           const at = `${String(fields.hour).padStart(2, '0')}:${String(fields.minute).padStart(2, '0')}`;
           const days = alarmDaysWord(fields.repeat);
           const title = fields.label.trim() || i18n.t('home.widget.wakeUp');
@@ -3400,19 +3410,20 @@ export const useAppStore = create<AppState>()(
 
       removeSchedule: (id) => set((s) => ({ schedules: s.schedules.filter((x) => x.id !== id) })),
 
-      addSchedule: ({ characterId, title, date, time, whenLabel }) => {
+      addSchedule: ({ characterId, title, date, time, whenLabel, quiet }) => {
         const clean = title.trim();
-        if (!clean) return;
+        if (!clean) return undefined;
         // Crisis text is never kept as a plan; help goes to their chat instead.
         if (detectCrisis(clean)) {
           answerCrisisInChat(set, get, characterId);
-          return;
+          return undefined;
         }
+        const id = uid('sch');
         set((s) => ({
           schedules: [
             ...s.schedules,
             {
-              id: uid('sch'),
+              id,
               characterId,
               title: clean,
               date,
@@ -3424,8 +3435,46 @@ export const useAppStore = create<AppState>()(
           ],
         }));
         addMoment(set, characterId, 'plan', { title: clean });
-        const conversationId = get().addFriend(characterId);
-        sayFirst(set, get, conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId)), planAddedCue(clean, whenLabel));
+        if (!quiet) {
+          const conversationId = get().addFriend(characterId);
+          sayFirst(set, get, conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId)), planAddedCue(clean, whenLabel));
+        }
+        return id;
+      },
+
+      answerSetup: (conversationId, messageId, yes) => {
+        const conversation = get().conversations.find((c) => c.id === conversationId);
+        const offer = get().messages[conversationId]?.find((m) => m.id === messageId)?.setup;
+        if (!conversation || !offer || offer.madeId || offer.declined) return false;
+        const mark = (patch: Partial<SetupOffer>) =>
+          set((s) => ({
+            messages: {
+              ...s.messages,
+              [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === messageId && m.setup ? { ...m, setup: { ...m.setup, ...patch } } : m)),
+            },
+          }));
+        if (!yes) {
+          mark({ declined: true });
+          return true;
+        }
+        if (!setupUsable(offer, new Date())) return false;
+        const characterId = conversation.characterId;
+        const character = get().characters.find((c) => c.id === characterId);
+        if (!character) return false;
+        // Quiet: the friend already said so in the reply the card came with.
+        let madeId: string | undefined;
+        if (offer.kind === 'alarm' && offer.time) {
+          const [hour, minute] = offer.time.split(':').map(Number);
+          madeId = get().saveAlarm(
+            { hour, minute, repeat: offer.repeat ?? [], label: offer.title, characterId, voice: !!character.voiceReady, sound: 'morningTide', replyToWake: true, snooze: true },
+            { quiet: true },
+          );
+        } else if (offer.kind === 'plan') {
+          madeId = get().addSchedule({ characterId, title: offer.title, date: offer.date, time: offer.time, whenLabel: '', quiet: true });
+        }
+        if (!madeId) return false;
+        mark({ madeId });
+        return true;
       },
 
       runTimers: () => {
@@ -5133,9 +5182,11 @@ function answerText(
   // The morning chain: a real reply turns the alarm off and the friend helps with the day.
   if (wakeHere && wakeReply(set, get, conversationId, text, crisis)) return;
 
-  // "Smart Auto Schedule": a plan in the message becomes a reminder.
-  // English from `detectPlan`; Uzbek and Russian from the stand-in until the server's model reads plans.
-  const plan = crisis ? null : (detectPlan(text) ?? localPlan(text, new Date()));
+  // "Smart Auto Schedule": a plan in the message becomes a reminder, while the model is off (English
+  // from `detectPlan`, Uzbek and Russian from the stand-in). With the model on, the friend answers in
+  // their own words in any language and offers the plan or alarm as a card to confirm (`setup`), so
+  // no stock "Got it, I'll remind you" and no plan from a guessed date.
+  const plan = crisis || modelOn(get) ? null : (detectPlan(text) ?? localPlan(text, new Date()));
   let reply: string | undefined;
   const scheduleId = plan ? uid('sch') : undefined;
   if (plan) {
@@ -5338,7 +5389,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     return beat ? [...lines, arcLine(beat.title, `${character?.id}:${beat.atLevel}`, character?.gender)] : lines;
   };
 
-  const deliver = (written: string[]) => {
+  // `setup`: an alarm or plan they offered to set up; its card goes under the reply's last bubble.
+  const deliver = (written: string[], setup?: SetupOffer) => {
     const lines = enforceStyle(written, replyPrefs(bond).style);
     if (!lines.length) {
       set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
@@ -5392,6 +5444,9 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         // It shows word by word, as a streamed reply would (`src/lib/reveal.ts`).
         markFresh(message.id);
         appendMessage(set, get, conversationId, message);
+        if (last && setup && setupUsable(setup, new Date())) {
+          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'setup', setup, createdAt: new Date().toISOString() }, { quiet: true });
+        }
         if (last && noteVoice && voiceBack != null) {
           appendMessage(
             set,
@@ -5474,7 +5529,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       rememberPhotos(set, conversationId, photos, reply.photos);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
-      deliver(reply.lines);
+      deliver(reply.lines, reply.setup);
     });
     return;
   }

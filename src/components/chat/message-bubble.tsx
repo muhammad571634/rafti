@@ -10,6 +10,7 @@ import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { SetupCard } from '@/components/chat/setup-card';
 import { playNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
@@ -94,6 +95,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
   if (message.card === 'notifyOff') return <NotifyOffNote name={name.split(' ')[0]} />;
   if (message.card === 'week' && message.week) return <WeekCard week={message.week} />;
+  if (message.card === 'setup') return <SetupCard message={message} />;
   if (message.card === 'scene') return <SceneCard title={message.text ?? ''} setting={message.setting} />;
   if (message.card === 'sceneEnd') return <SystemLine text={t('scenes.ended', { title: message.text ?? '' })} />;
   // A continue is the user's turn without words: nothing to show, their lines follow.

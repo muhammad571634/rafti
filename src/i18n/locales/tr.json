@@ -406,6 +406,12 @@
       "scene": "Sonraki an",
       "own": "Daha sonra"
     },
+    "setup": {
+      "set": "Kur",
+      "add": "Ekle",
+      "notNow": "Şimdi değil",
+      "done": "Tamam"
+    },
     "week": {
       "title": "Bu hafta",
       "days_one": "birlikte {{count}} gün",

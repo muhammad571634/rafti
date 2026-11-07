@@ -398,6 +398,12 @@
       "scene": "Momen berikutnya",
       "own": "Nanti"
     },
+    "setup": {
+      "set": "Pasang",
+      "add": "Tambah",
+      "notNow": "Nanti saja",
+      "done": "Selesai"
+    },
     "week": {
       "title": "Minggu ini",
       "days_other": "bersama {{count}} hari",

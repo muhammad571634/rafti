@@ -1,8 +1,9 @@
 import type { Move, ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
-import type { Emotion } from '@/types';
+import type { Emotion, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
+import { cleanSetup } from './setup-prompt';
 
 /**
  * Reply style and length in the prompt (Character.AI's "Personalization": response length and
@@ -89,6 +90,8 @@ export interface ModelReply {
   crisis?: boolean;
   /** One line about each photo it was shown (`src/ai/photo-prompt.ts`). */
   photos?: string[];
+  /** An alarm or a plan the user asked it to set up (`src/ai/setup-prompt.ts`). */
+  setup?: SetupOffer;
 }
 
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
@@ -96,18 +99,20 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown };
+      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
       if (bubbles.length) {
         const photos = cleanPhotoNotes(data.photos);
+        const setup = cleanSetup(data.setup);
         return {
           bubbles,
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
           intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
           ...(data.crisis === true ? { crisis: true } : {}),
           ...(photos ? { photos } : {}),
+          ...(setup ? { setup } : {}),
         };
       }
     } catch {
