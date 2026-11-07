@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
 import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type LayoutRectangle, ScrollView, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
+import { type LayoutRectangle, ScrollView, type ScrollViewInstance, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
@@ -106,6 +106,10 @@ export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width, height: windowHeight } = useWindowDimensions();
+  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
+  // tabPress on the current tab too).
+  const scrollRef = useRef<ScrollViewInstance>(null);
+  useScrollToTop(scrollRef);
   // Two widgets to a row on every phone width; percentages plus a fixed gap overflow on narrow Androids.
   const half = Math.floor((width - space.lg * 2 - space.md) / 2);
   const [galleryWidth, setGalleryWidth] = useState(0);
@@ -271,6 +275,7 @@ export default function HomeScreen() {
   return (
     <Screen background={playful.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
         onTouchStart={hideWelcome}
         scrollEventThrottle={32}

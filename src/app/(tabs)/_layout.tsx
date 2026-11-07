@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, Tabs } from 'expo-router';
 import { memo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -5,8 +6,8 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
-import { useTabsGate, useUnreadTotal } from '@/hooks/use-tabs-gate';
-import { aurora, colors, isDark, radius, shadows, space } from '@/theme';
+import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
+import { colors, playful, space } from '@/theme';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -27,6 +28,8 @@ const ICONS: Record<string, { off: Pick<Icon, 'ios' | 'icon'>; on: Pick<Icon, 'i
 
 /** The bar's height; `TAB_BAR_HEIGHT` leaves room for it. */
 const BAR = 62;
+/** How far above the bar the content starts to fade. */
+const FADE_ABOVE = 28;
 
 /**
  * Android and web. iOS uses the system tab bar instead (`_layout.ios.tsx`), Liquid Glass on
@@ -40,7 +43,7 @@ export default function TabsLayout() {
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
   return (
-    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <GlassTabBar {...props} />}>
+    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <PlayfulTabBar {...props} />}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="chat" />
       <Tabs.Screen name="us" />
@@ -50,86 +53,88 @@ export default function TabsLayout() {
 }
 
 /**
- * Frosted glass: a dense fill and a bright top rim. No live blur here: on Android it redraws the
- * whole screen into a full-size layer for each glass shape on every frame (atrace on a Galaxy A51:
- * two 1080x2400 BlurView layers per frame), and iPhone has the system tab bar (`_layout.ios.tsx`).
- * So no screen needs a BlurTargetView for the bar either (Chats keeps its own, for its menus).
+ * A white floating shape with a soft shadow. No live blur: on Android it redraws the whole screen
+ * into a full-size layer for each glass shape on every frame (atrace on a Galaxy A51), and iPhone
+ * has the system tab bar (`_layout.ios.tsx`).
  */
-function Glass({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
-  return (
-    <View style={[styles.glass, style]}>
-      <View style={[StyleSheet.absoluteFill, styles.clip, styles.frost]} pointerEvents="none" />
-      {children}
-    </View>
-  );
+function Floating({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
+  return <View style={[styles.floating, style]}>{children}</View>;
 }
 
 /**
- * A floating frosted pill holding Today, Chats and Us, with Find as its own round button beside
- * it, the way iOS sets the search tab apart (approved prototype
- * https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg). As on iOS, the current tab takes the tint
- * (icon filled) inside a soft capsule and the rest stay in the label colour; unread chats show
- * one small dot.
+ * The playful tab bar of the approved four-tab prototype (0z124): a white pill holding Today,
+ * Chats and Us, with Find as its own round button beside it, the way iOS sets the search tab apart.
+ * The current tab is an ink capsule with a white icon and label; the rest are ink at 60 %. Chats
+ * carries the number of chats waiting, the same number Today's bubble and Chats' Unread pill show.
+ * Content fades out under the bar instead of showing through the navigation bar area (the iOS 26
+ * scroll edge effect, as a plain gradient). Tapping the current tab again scrolls it to the top
+ * (`useScrollToTop` in each tab), as on iOS.
  */
-function GlassTabBar({ state, emitter, navigateToTab }: TabBarProps) {
+function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const unread = useUnreadTotal();
+  const unread = useUnreadChats();
 
   const open = (key: string, focused: boolean) => {
+    // Always emitted: on the current tab it is the "back to the top" tap.
     const event = emitter.emit({ type: 'tabPress', target: key, canPreventDefault: true });
     if (!focused && !event.defaultPrevented) navigateToTab(key);
   };
 
   const tabs = state.routes.map((route, index) => ({ route, focused: state.index === index }));
   const find = tabs.find(({ route }) => route.name === 'find');
+  const bottom = insets.bottom + space.md;
 
-  // The same views on every switch: only the old and new tab's tint and capsule change. (It used to
-  // be keyed by the current screen, so each tap rebuilt the whole bar for a blur Android never drew.)
+  // The same views on every switch: only the old and new tab's capsule change.
   return (
-    <View pointerEvents="box-none" style={[styles.wrap, { bottom: insets.bottom + space.md }]}>
-      <Glass style={styles.pill}>
-        {tabs
-          .filter(({ route }) => route.name !== 'find')
-          .map(({ route, focused }) => {
-            const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
-            const icon = ICONS[route.name] ?? ICONS.index;
-            const tint = focused ? colors.primary : colors.text;
-            const hasUnread = route.name === 'chat' && unread > 0;
-            return (
-              <TabItem
-                key={route.key}
-                routeKey={route.key}
-                label={label}
-                icon={focused ? icon.on : icon.off}
-                tint={tint}
-                focused={focused}
-                unread={hasUnread ? unread : 0}
-                a11yLabel={hasUnread ? t('a11y.unreadTab', { label, count: unread }) : label}
-                onOpen={open}
-              />
-            );
-          })}
-      </Glass>
+    <>
+      <LinearGradient
+        colors={playful.groundFade}
+        pointerEvents="none"
+        style={[styles.fade, { height: bottom + BAR + FADE_ABOVE }]}
+      />
+      <View pointerEvents="box-none" style={[styles.wrap, { bottom }]}>
+        <Floating style={styles.pill}>
+          {tabs
+            .filter(({ route }) => route.name !== 'find')
+            .map(({ route, focused }) => {
+              const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
+              const icon = ICONS[route.name] ?? ICONS.index;
+              const count = route.name === 'chat' ? unread : 0;
+              return (
+                <TabItem
+                  key={route.key}
+                  routeKey={route.key}
+                  label={label}
+                  icon={focused ? icon.on : icon.off}
+                  focused={focused}
+                  count={count}
+                  a11yLabel={count > 0 ? t('a11y.unreadTab', { label, count }) : label}
+                  onOpen={open}
+                />
+              );
+            })}
+        </Floating>
 
-      {find ? (
-        <Glass style={styles.round}>
-          <PressableScale
-            style={styles.roundPress}
-            scaleTo={0.92}
-            dimOnPress={false}
-            accessibilityRole="tab"
-            accessibilityLabel={t('tabs.find')}
-            accessibilityState={{ selected: find.focused }}
-            onPress={() => open(find.route.key, find.focused)}>
-            {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
-            <View collapsable={false} style={[styles.roundInner, find.focused && styles.itemOn]}>
-              <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? colors.primary : colors.text} />
-            </View>
-          </PressableScale>
-        </Glass>
-      ) : null}
-    </View>
+        {find ? (
+          <Floating style={styles.round}>
+            <PressableScale
+              style={styles.roundPress}
+              scaleTo={0.92}
+              dimOnPress={false}
+              accessibilityRole="tab"
+              accessibilityLabel={t('tabs.find')}
+              accessibilityState={{ selected: find.focused }}
+              onPress={() => open(find.route.key, find.focused)}>
+              {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
+              <View collapsable={false} style={[styles.roundInner, find.focused && styles.on]}>
+                <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? playful.chipOnText : playful.ink} />
+              </View>
+            </PressableScale>
+          </Floating>
+        ) : null}
+      </View>
+    </>
   );
 }
 
@@ -138,24 +143,23 @@ const TabItem = memo(function TabItem({
   routeKey,
   label,
   icon,
-  tint,
   focused,
-  unread,
+  count,
   a11yLabel,
   onOpen,
 }: {
   routeKey: string;
   label: string;
   icon: Pick<Icon, 'ios' | 'icon'>;
-  tint: string;
   focused: boolean;
-  unread: number;
+  count: number;
   a11yLabel: string;
   onOpen: (key: string, focused: boolean) => void;
 }) {
+  const tint = focused ? playful.chipOnText : playful.tabOff;
   return (
     <PressableScale
-      style={[styles.item, focused && styles.itemOn]}
+      style={[styles.item, focused && styles.on]}
       scaleTo={0.94}
       dimOnPress={false}
       accessibilityRole="tab"
@@ -164,7 +168,13 @@ const TabItem = memo(function TabItem({
       onPress={() => onOpen(routeKey, focused)}>
       <View>
         <SFIcon {...icon} size={24} color={tint} />
-        {unread > 0 ? <View style={styles.dot} /> : null}
+        {count > 0 ? (
+          <View style={styles.badge}>
+            <Txt style={styles.badgeText} maxFontSizeMultiplier={1.1}>
+              {badgeText(count)}
+            </Txt>
+          </View>
+        ) : null}
       </View>
       <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
         {label}
@@ -174,6 +184,7 @@ const TabItem = memo(function TabItem({
 });
 
 const styles = StyleSheet.create({
+  fade: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   wrap: {
     position: 'absolute',
     left: space.lg,
@@ -182,16 +193,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm + 2,
   },
-  glass: {
+  // The prototype's soft shadow: iOS draws it; Android uses a low elevation (the bar sits above all).
+  floating: {
     borderRadius: BAR / 2,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: aurora.glassEdge,
-    borderTopColor: aurora.glassRim,
-    ...shadows.glass,
+    backgroundColor: playful.bar,
+    shadowColor: '#281E14',
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
   },
-  clip: { borderRadius: BAR / 2, overflow: 'hidden' },
-  // A dense fill keeps the labels crisp over whatever scrolls beneath.
-  frost: { backgroundColor: isDark ? 'rgba(30,30,32,0.9)' : 'rgba(255,255,255,0.9)' },
   pill: {
     flex: 1,
     height: BAR,
@@ -207,20 +218,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 2,
   },
-  itemOn: { backgroundColor: aurora.glassOn },
+  on: { backgroundColor: playful.chipOn },
   label: { fontWeight: '700' },
   round: { width: BAR, height: BAR },
   roundPress: { flex: 1, padding: space.xs },
   roundInner: { flex: 1, borderRadius: (BAR - space.sm) / 2, alignItems: 'center', justifyContent: 'center' },
-  dot: {
+  // The count of chats waiting, in the same red as Chats' Unread pill, ringed in the bar's white.
+  badge: {
     position: 'absolute',
-    top: -1,
-    right: -4,
-    width: 9,
-    height: 9,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    borderWidth: 1.5,
-    borderColor: colors.surface,
+    top: -6,
+    left: 14,
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 5,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: playful.card,
+    backgroundColor: playful.red,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '800', color: colors.white },
 });

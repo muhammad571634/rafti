@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useScrollToTop } from 'expo-router';
 import { memo, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  type ScrollViewInstance,
   StyleSheet,
   type TextInputInstance,
   useWindowDimensions,
@@ -75,6 +76,10 @@ export default function FindScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
+  // tabPress on the current tab too).
+  const scrollRef = useRef<ScrollViewInstance>(null);
+  useScrollToTop(scrollRef);
   const allCharacters = useAppStore((s) => s.characters);
   const blockedIds = useAppStore((s) => s.blockedIds);
   // A character before its release day is hidden from everyone.
@@ -239,6 +244,7 @@ export default function FindScreen() {
         />
       ) : (
         <ScrollView
+          ref={scrollRef}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"

@@ -16,10 +16,15 @@ export function useTabsGate(): 'loading' | 'onboarding' | 'ready' {
   return onboarded ? 'ready' : 'onboarding';
 }
 
-/** Unread messages across chats and groups: one dot on the Chats tab. */
-export function useUnreadTotal() {
+/**
+ * Chats waiting, not messages: the number Today's "Waiting for you" and Chats' Unread pill show, so
+ * the tab badge, the bubble and the pill always agree (one chat with 5 new lines is 1).
+ */
+export function useUnreadChats() {
   return useAppStore(
-    (s) =>
-      s.conversations.reduce((sum, c) => sum + c.unreadCount, 0) + s.groups.reduce((sum, g) => sum + g.unreadCount, 0),
+    (s) => s.conversations.filter((c) => c.unreadCount > 0).length + s.groups.filter((g) => g.unreadCount > 0).length,
   );
 }
+
+/** A badge's text: the count, or "99+". */
+export const badgeText = (count: number) => (count > 99 ? '99+' : String(count));

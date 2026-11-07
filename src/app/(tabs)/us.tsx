@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient as Gradient } from 'expo-linear-gradient';
-import { type Href, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { type Href, useRouter, useScrollToTop } from 'expo-router';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
@@ -105,6 +105,10 @@ export default function UsScreen() {
   const router = useRouter();
   // The tab bar grows by the phone's bottom inset (home indicator, navigation bar).
   const insets = useSafeAreaInsets();
+  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
+  // tabPress on the current tab too).
+  const scrollRef = useRef<ScrollViewInstance>(null);
+  useScrollToTop(scrollRef);
 
   const user = useAppStore((s) => s.user);
   const relationships = useAppStore((s) => s.relationships);
@@ -256,6 +260,7 @@ export default function UsScreen() {
       </View>
 
       <ScrollView
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>

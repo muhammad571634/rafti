@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
@@ -153,6 +153,10 @@ export default function ChatListScreen() {
   /** The chat a long press opened the menu for. */
   const [held, setHeld] = useState<ChatItem | null>(null);
   // On Android the tab bar blurs this same target (one target per screen, never nested).
+  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
+  // tabPress on the current tab too).
+  const listRef = useRef<FlatList<ChatItem>>(null);
+  useScrollToTop(listRef);
   const tabTarget = useTabBlurTarget();
   const ownTarget = useRef<ViewInstance>(null);
   const blurTarget = tabTarget ?? ownTarget;
@@ -424,6 +428,7 @@ export default function ChatListScreen() {
             {searching ? null : <Filters value={filter} unread={unreadChats} onChange={setFilter} />}
 
             <FlatList
+              ref={listRef}
               data={rows}
               keyExtractor={(item) => item.id}
               renderItem={renderItem}

@@ -521,6 +521,10 @@ export const playful = isDark
       /** Today's "Waiting for you" bubble and the sealed note's envelope, and what reads on them. */
       sun: '#8A6400',
       sunInk: '#FFFFFF',
+      /** The floating tab bar's fill, a tab that is off, and the fade under the bar. */
+      bar: 'rgba(42,36,32,0.95)',
+      tabOff: 'rgba(255,255,255,0.62)',
+      groundFade: ['rgba(26,22,19,0)', 'rgba(26,22,19,0.94)'] as const,
     }
   : {
       ground: '#FBF6EE',
@@ -538,6 +542,9 @@ export const playful = isDark
       red: systemColors.red,
       sun: '#FFC93C',
       sunInk: '#1F1A17',
+      bar: 'rgba(255,255,255,0.95)',
+      tabOff: 'rgba(31,26,23,0.6)',
+      groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
     };
 
 /** A fill and the text that reads on it (WCAG 4.5 or more, docs/main-tabs-inventory.md). */
