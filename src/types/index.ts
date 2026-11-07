@@ -1135,6 +1135,13 @@ export interface SetupOffer {
   removed?: boolean;
   madeId?: string;
   declined?: boolean;
+  /**
+   * Set up, changed or cancelled outside the chat (Us, Alarms), 0z139: a card on the user's side
+   * that the model reads in the history, so the friend knows what happened and answers it.
+   */
+  from?: 'app';
+  /** An `app` card saying the user cancelled it. */
+  cancelled?: boolean;
 }
 
 export interface Alarm {

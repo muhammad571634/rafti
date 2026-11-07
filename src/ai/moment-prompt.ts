@@ -80,7 +80,17 @@ export const alarmSetCue = (at: string, days: string) => [
   `They just asked you to wake them up at ${at} (${days}). Say something real about it: that you will be there to wake them, how, or that they should sleep in time.`,
 ];
 
-export const planRemindCue = (title: string, timed: boolean) => [`Their plan "${title}" is coming up ${timed ? 'soon' : 'today'}. Remind them, in your own way.`];
+/**
+ * They cancelled something set up with this friend, outside the chat (0z139): the friend notices,
+ * as a person would, and keeps the talk going.
+ */
+export const setupCancelledCue = (kind: 'alarm' | 'plan', title: string, when: string) => [
+  kind === 'plan'
+    ? `They just took your plan "${title}" (${when}) off your plans together. React as a person who notices: ask lightly what happened or what changed, or say how you feel about it. No guilt, no lecture.`
+    : `They just cancelled the wake-up you were going to give them (${when}${title ? `, "${title}"` : ''}). React as a person who notices: ask lightly whether their plans changed, or tease a little. No guilt, no lecture.`,
+];
+
+export const planRemindCue =(title: string, timed: boolean) => [`Their plan "${title}" is coming up ${timed ? 'soon' : 'today'}. Remind them, in your own way.`];
 
 export const planFollowUpCue = (title: string) => [`Their plan "${title}" has passed. Ask how it went, as someone who wants to know.`];
 

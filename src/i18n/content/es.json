@@ -6887,6 +6887,9 @@
         "Lo vi en nuestro calendario: {title}, {when}. No te dejaré faltar.",
         "¿{title}, {when}? Entendido. Seré quien te dé el empujoncito."
       ],
+      "setupCancelled": [
+        "¿Se cancela {title}? ¿Qué pasó?"
+      ],
       "scheduleReminder": {
         "untimed": "Hoy es el día: {title}. Tú puedes con esto; escríbeme apenas termine.",
         "timed": [

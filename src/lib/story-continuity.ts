@@ -1,6 +1,7 @@
 import type { Character, MemoryItem, Message, Relationship } from '@/types';
 
 import { callText } from '../ai/call-prompt';
+import { setupHistoryText } from '../ai/setup-prompt';
 import { historyText } from './chat-steer';
 
 /**
@@ -170,6 +171,8 @@ export function messageText(message: Message): string | null {
   if (message.card === 'skip') return historyText(message);
   // A note the user pinned for them on the board: theirs to answer and remember (0z138).
   if (message.card === 'board') return boardNoteText(message.text);
+  // An alarm or plan set up, changed or cancelled on Us or in Alarms (0z139).
+  if (message.card === 'setup') return setupHistoryText(message);
   if (message.pending || message.kind === 'system' || message.card) return null;
   if (message.kind === 'call') return message.missed ? '[Missed call]' : callText(message.callLines);
   const text = (message.text ?? message.transcript ?? '').trim();

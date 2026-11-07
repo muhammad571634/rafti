@@ -12,6 +12,7 @@ export {
   scheduleAck,
   scheduleReminder,
   planAddedLine,
+  setupCancelledLine,
   planFollowUp,
   boardReply,
   photoReply,

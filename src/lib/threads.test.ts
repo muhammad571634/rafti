@@ -107,6 +107,9 @@ describe('threads: the rules a model must keep', () => {
     assert.equal(lastAsked([asked], 'c_kai', new Date(Date.parse(at(2, 10)))), null);
     const extended = extendThread([asked], 'th1', [{ at: at(1, 19), phase: 'check', why: 'ask again' }], now);
     assert.equal(extended[0].touches.length, 2);
+    // The same text asked again near the one already waiting is not added twice.
+    const again = extendThread(extended, 'th1', [{ at: at(1, 19, 5), phase: 'check', why: 'ask again' }], now);
+    assert.equal(again[0].touches.length, 2);
     assert.equal(pruneThreads([asked], new Date(Date.parse(at(20, 10)))).length, 0);
     assert.equal(pruneThreads([asked], now).length, 1);
   });

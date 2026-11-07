@@ -6887,6 +6887,9 @@
         "I saw it in our calendar: {title}, {when}. I am holding you to it.",
         "{title}, {when}? Got it. I will be the one nudging you."
       ],
+      "setupCancelled": [
+        "{title} is off? What happened?"
+      ],
       "scheduleReminder": {
         "untimed": "Today is the day: {title}. You have got this - text me the second it is over.",
         "timed": [

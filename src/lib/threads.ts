@@ -146,7 +146,11 @@ export function extendThread(threads: readonly Thread[], id: string, drafts: rea
   return threads.map((t) => {
     if (t.id !== id || t.status !== 'open') return t;
     const pending = t.touches.filter((x) => !x.sent);
-    const fresh = ruleTouches(drafts, `${t.id}:${t.touches.length}`, now, t.happensAt).slice(
+    // A text already waiting near that moment is the same text asked twice ("Good luck" x2 at 16:00).
+    const near = (at: string) => pending.some((x) => Math.abs(Date.parse(x.at) - Date.parse(at)) < THREAD_RULES.minGapMs);
+    const fresh = ruleTouches(drafts, `${t.id}:${t.touches.length}`, now, t.happensAt)
+      .filter((x) => !near(x.at))
+      .slice(
       0,
       Math.max(0, THREAD_RULES.maxTouches - pending.length),
     );

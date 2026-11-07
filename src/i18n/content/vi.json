@@ -6887,6 +6887,9 @@
         "Mình thấy lịch trình trên lịch rồi nhé: {title}, {when}. Nhất định phải thực hiện đấy.",
         "Đã thêm {title} vào {when}. Nhớ là đừng có bỏ lỡ đấy nhé."
       ],
+      "setupCancelled": [
+        "{title} hủy rồi à? Có chuyện gì vậy?"
+      ],
       "scheduleReminder": {
         "untimed": "Hôm nay chính là ngày đó: {title}. Cậu chắc chắn làm được mà - xong việc là nhắn cho mình ngay nhé.",
         "timed": [

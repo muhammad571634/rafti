@@ -6887,6 +6887,9 @@
         "我在日曆上看到了：{when} {title}。說好就不能反悔喔。",
         "日曆加上了{when} {title}。記得一定要去喔。"
       ],
+      "setupCancelled": [
+        "{title}取消了？發生什麼事了？"
+      ],
       "scheduleReminder": {
         "untimed": "今天就是這一天：{title}。你絕對沒問題的 - 一結束馬上傳訊息給我喔。",
         "timed": [

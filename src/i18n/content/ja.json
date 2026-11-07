@@ -6887,6 +6887,9 @@
         "カレンダーに入ってるの見たよ。{when}に{title}ね。絶対だよ。",
         "{when}に{title}ね、了解。サボらないように私がつつきに来るから。"
       ],
+      "setupCancelled": [
+        "{title}、なしになったの？何かあった？"
+      ],
       "scheduleReminder": {
         "untimed": "今日がその日だね、{title}！ 君なら絶対大丈夫。終わったらすぐ連絡してね。",
         "timed": [

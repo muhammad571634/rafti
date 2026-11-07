@@ -68,7 +68,8 @@ function offerState(card: Partial<SetupOffer>) {
  */
 export function offerLines(messages: readonly Message[]): string[] {
   const offers = messages
-    .filter((m) => m.card === 'setup')
+    // Cards from the app (Us, Alarms) are in the history itself (`setupHistoryText`).
+    .filter((m) => m.card === 'setup' && m.setup?.from !== 'app')
     .slice(-4)
     .flatMap((m) => {
       const offer = cleanSetup(m.setup);
@@ -82,6 +83,24 @@ export function offerLines(messages: readonly Message[]): string[] {
       return `- ${o.kind} ${JSON.stringify(o.title)} ${o.date}${o.time ? ` ${o.time}` : ''}${days}: ${state}`;
     }),
   ];
+}
+
+/**
+ * What the model reads in the history for a card the app put in the chat (0z139): the user set
+ * something up with this friend on Us or in Alarms, changed it, or cancelled it. In its place in
+ * the history, so the friend's answer right under it and every later reply know what happened.
+ * The friend's own offers return null: `offerLines` says where they stand.
+ */
+export function setupHistoryText(message: Pick<Message, 'card' | 'setup'>): string | null {
+  const card = message.setup;
+  if (message.card !== 'setup' || card?.from !== 'app') return null;
+  const o = cleanSetup(card);
+  if (!o) return null;
+  const days = o.repeat?.length ? `, repeats on weekdays ${o.repeat.join(',')}` : '';
+  const what = `${o.kind === 'alarm' ? 'an alarm you wake them with' : 'a plan'}${o.title ? ` ${JSON.stringify(o.title)}` : ''}, ${o.date}${o.time ? ` ${o.time}` : ''}${days}`;
+  if (card.cancelled) return `[They cancelled it in the app: ${what}]`;
+  const later = card.replaced ? ' (later changed)' : card.removed ? ' (later cancelled)' : '';
+  return `[They set it up in the app: ${what}]${later}`;
 }
 
 /**

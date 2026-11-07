@@ -6887,6 +6887,9 @@
         "Aku lihat di kalender kita nih: {title}, {when}. Wajib ditepati ya.",
         "Jadwal {title} jam {when} udah masuk kalender. Jangan sampai kelewat ya."
       ],
+      "setupCancelled": [
+        "{title} batal? Ada apa?"
+      ],
       "scheduleReminder": {
         "untimed": "Hari ini harinya: {title}. Kamu pasti bisa - beres acara langsung kabari aku ya.",
         "timed": [

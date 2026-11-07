@@ -258,6 +258,7 @@ export const CHAT_VOICE = {
     'I saw it in our calendar: {title}, {when}. I am holding you to it.',
     '{title}, {when}? Got it. I will be the one nudging you.',
   ],
+  setupCancelled: ['{title} is off? What happened?'],
   scheduleReminder: {
     untimed: 'Today is the day: {title}. You have got this - text me the second it is over.',
     timed: [
@@ -362,6 +363,12 @@ export function planAddedLine(title: string, whenLabel: string, gender: Characte
   const v = voice('chat', CHAT_VOICE);
   const tpl = pickLine(v.planAdded);
   return fill(tpl, { title, when: whenLabel }, gender);
+}
+
+/** They cancelled a plan or wake-up outside the chat (0z139); only with the model off. */
+export function setupCancelledLine(title: string, gender: CharacterGender | undefined) {
+  const v = voice('chat', CHAT_VOICE);
+  return fill(pickLine(v.setupCancelled), { title }, gender);
 }
 
 /** Ten minutes before a timed plan, or that morning when it has no time. */

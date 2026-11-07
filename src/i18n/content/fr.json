@@ -6887,6 +6887,9 @@
         "Je l’ai vu sur notre calendrier : {title}, {when}. Je compte sur toi.",
         "{title}, {when} ? Compris. Je serai là pour te donner le petit coup de pouce."
       ],
+      "setupCancelled": [
+        "{title}, c’est annulé ? Qu’est-ce qui s’est passé ?"
+      ],
       "scheduleReminder": {
         "untimed": "C’est aujourd’hui le grand jour : {title}. Tu vas assurer — écris-moi dès que c’est terminé.",
         "timed": [

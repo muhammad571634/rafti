@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { parseModelReply } from './reply-style';
-import { cleanSetup, offerLines, sameSetup, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
+import { messageText } from '../lib/story-continuity';
+import { cleanSetup, offerLines, sameSetup, SETUP_RULES_LINES, setupHistoryText, setupUsable } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, wallTime, wallToIso } from './thread-prompt';
 
 // Saturday, Nov 7 2026, 19:10 on the phone's clock.
@@ -107,6 +108,23 @@ describe('a change and where each offer stands (0z136, seen on the A51)', () => 
     assert.match(lines[2], /08:30: they set it/);
     assert.match(lines[3], /plan "Kahve" 2026-11-14: not set yet/);
     assert.match(lines[4], /they said not now/);
+  });
+
+  it('reads cards from Us and Alarms in the history, where they happened, not as offers (0z139)', () => {
+    const mine = (setup: object, id: string) => ({ ...card({ from: 'app', ...setup }, id), author: 'me' }) as never;
+    const set = mine({ kind: 'plan', title: 'Sinema', date: '2026-11-13', time: '20:00', madeId: 'sch_1', removed: true }, 'm1');
+    const off = mine({ kind: 'plan', title: 'Sinema', date: '2026-11-13', time: '20:00', madeId: 'sch_1', cancelled: true }, 'm2');
+    const wake = mine({ kind: 'alarm', title: '', date: '2026-11-08', time: '07:24', repeat: [1, 2], madeId: 'alarm_1' }, 'm3');
+    assert.equal(setupHistoryText(set), '[They set it up in the app: a plan "Sinema", 2026-11-13 20:00] (later cancelled)');
+    assert.equal(setupHistoryText(off), '[They cancelled it in the app: a plan "Sinema", 2026-11-13 20:00]');
+    assert.equal(setupHistoryText(wake), '[They set it up in the app: an alarm you wake them with, 2026-11-08 07:24, repeats on weekdays 1,2]');
+    assert.equal(messageText(off), setupHistoryText(off));
+    // The friend's own offers stay in the offers list, not in the history.
+    const offered = card({ kind: 'plan', title: 'Kahve', date: '2026-11-14' }, 'm4');
+    assert.equal(setupHistoryText(offered), null);
+    assert.equal(messageText(offered), null);
+    assert.deepEqual(offerLines([set, off, wake]), []);
+    assert.equal(offerLines([set, offered]).length, 2);
   });
 
   it('says nothing without cards, and skips a broken one', () => {

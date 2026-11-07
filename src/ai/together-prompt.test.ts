@@ -59,6 +59,32 @@ describe('togetherLines: plans and wake-ups set up together', () => {
     assert.match(wake([1, 3]), /on Mon, Wed/);
   });
 
+  it('says when each wake-up rings next and which one comes first (18:20 Saturday)', () => {
+    const lines = togetherLines(
+      {
+        plans: [],
+        wakes: [
+          { hour: 7, minute: 24, repeat: [] },
+          { hour: 22, minute: 10, repeat: [] },
+          { hour: 7, minute: 0, repeat: [1, 2, 3, 4, 5] },
+        ],
+      },
+      CLOCK,
+    );
+    assert.match(lines[1], /07:24 once.*next rings tomorrow 07:24;?\.$/);
+    assert.doesNotMatch(lines[1], /the next of your/);
+    assert.match(lines[2], /next rings today 22:10 \(the next of your wake-ups\)/);
+    assert.match(lines[3], /next rings Mon 2026-11-09 07:00\./);
+  });
+
+  it('a lone wake-up says when it rings without calling itself the next of several', () => {
+    const [, line] = togetherLines({ plans: [], wakes: [{ hour: 19, minute: 0, repeat: [6] }] }, CLOCK);
+    assert.match(line, /next rings today 19:00\.$/);
+    // Saturday only, 18:20 now: 18:00 already rang today, so a week on.
+    const [, later] = togetherLines({ plans: [], wakes: [{ hour: 18, minute: 0, repeat: [6] }] }, CLOCK);
+    assert.match(later, /next rings Sat 2026-11-14 18:00\./);
+  });
+
   it('says nothing when nothing was set up', () => {
     assert.deepEqual(togetherLines({ plans: [], wakes: [] }), []);
     assert.deepEqual(togetherLines(undefined), []);

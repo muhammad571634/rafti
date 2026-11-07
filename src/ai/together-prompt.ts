@@ -79,19 +79,55 @@ function repeatLabel(repeat: readonly number[]) {
 }
 
 /**
+ * When a wake-up rings next on the user's clock, as minutes from the local midnight of `local`'s
+ * day (a clock whose UTC fields are the user's wall time); null if it never rings again.
+ */
+export function nextRing(w: Pick<TogetherWake, 'hour' | 'minute' | 'repeat'>, local: Date): number | null {
+  const nowMin = local.getUTCHours() * 60 + local.getUTCMinutes();
+  const at = w.hour * 60 + w.minute;
+  for (let d = 0; d <= 7; d++) {
+    const weekday = (local.getUTCDay() + d) % 7;
+    if (w.repeat.length && !w.repeat.includes(weekday)) continue;
+    if (d === 0 && at <= nowMin) continue;
+    return d * 1440 + at;
+  }
+  return null;
+}
+
+/** "today 22:10", "tomorrow 07:24", "Mon 2026-11-09 07:00". */
+function ringLabel(minutes: number, local: Date) {
+  const days = Math.floor(minutes / 1440);
+  const time = `${pad(Math.floor((minutes % 1440) / 60))}:${pad(minutes % 60)}`;
+  if (days === 0) return `today ${time}`;
+  if (days === 1) return `tomorrow ${time}`;
+  const d = new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() + days, 12));
+  return `${dayOf(d.toISOString().slice(0, 10))} ${time}`;
+}
+
+/**
  * The plans and wake-ups the two of them set up in the app, so the friend remembers them like
  * anything else they agreed on: brings them up before and after, never reads them out as a list.
+ * With the clock, each wake-up says when it rings next and the soonest one is named, so a friend
+ * with two alarms (07:24 and 22:10) names the right one.
  */
 export function togetherLines(together?: Together, clock?: ChatClock): string[] {
   const plans = together?.plans ?? [];
   const wakes = together?.wakes ?? [];
   if (!plans.length && !wakes.length) return [];
-  const nowLocal = clock ? new Date(Date.parse(clock.now) + clock.utcOffsetMin * 60_000).toISOString().slice(0, 16).replace('T', ' ') : undefined;
+  const local = clock ? new Date(Date.parse(clock.now) + clock.utcOffsetMin * 60_000) : undefined;
+  const nowLocal = local && !Number.isNaN(local.getTime()) ? local.toISOString().slice(0, 16).replace('T', ' ') : undefined;
   const passed = (p: TogetherPlan) => !!nowLocal && `${p.date} ${p.time ?? '23:59'}` < nowLocal;
+  const rings = wakes.map((w) => (local && nowLocal ? nextRing(w, local) : null));
+  const soonest = rings.reduce<number | null>((min, r) => (r !== null && (min === null || r < min) ? r : min), null);
+  const when = (i: number) => {
+    const r = rings[i];
+    if (r === null || !local) return '';
+    return `; next rings ${ringLabel(r, local)}${wakes.length > 1 && r === soonest ? ' (the next of your wake-ups)' : ''}`;
+  };
   return [
     'WHAT YOU SET UP TOGETHER IN THE APP (you both know this; remember it like anything you agreed on, bring it up when it fits, before it or after, never as a list):',
     ...plans.map((p) => `- Plan: ${dayOf(p.date)}${p.time ? ` ${p.time}` : ' (no set time)'}: "${p.title}"${passed(p) ? ' (already passed; you may ask how it went)' : ''}`),
-    ...wakes.map((w) => `- You wake them up at ${pad(w.hour)}:${pad(w.minute)} ${repeatLabel(w.repeat)}${w.label ? ` ("${w.label}")` : ''}.`),
+    ...wakes.map((w, i) => `- You wake them up at ${pad(w.hour)}:${pad(w.minute)} ${repeatLabel(w.repeat)}${w.label ? ` ("${w.label}")` : ''}${when(i)}.`),
   ];
 }
 

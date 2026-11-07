@@ -18,6 +18,8 @@ import type { Message } from '@/types';
 /**
  * The alarm or plan the friend offered to set up (`src/ai/setup-prompt.ts`), under their reply: what
  * and when, Not now / Set. Nothing exists until Set; then it reads Done and opens what was made.
+ * One set up, changed or cancelled on Us or in Alarms (`from: 'app'`, 0z139) sits on the user's
+ * side: set (a check, opens it), changed (faded) or cancelled (struck through).
  */
 export function SetupCard({ message }: { message: Message }) {
   const { t, i18n } = useTranslation();
@@ -29,10 +31,12 @@ export function SetupCard({ message }: { message: Message }) {
   if (!offer || offer.declined) return null;
 
   const alarm = offer.kind === 'alarm';
+  const mine = offer.from === 'app';
+  const cancelled = !!offer.cancelled;
   // A set one that a newer offer changed stands for nothing now: faded, no check.
-  const made = !!offer.madeId && !offer.replaced && !offer.removed;
+  const made = !!offer.madeId && !offer.replaced && !offer.removed && !cancelled;
   // A plan whose hour has passed, or an alarm whose day has, can no longer be set: no buttons.
-  const open = !made && !offer.replaced && !offer.removed && setupUsable(offer, new Date());
+  const open = !mine && !made && !offer.replaced && !offer.removed && setupUsable(offer, new Date());
   const [hh, mm] = (offer.time ?? '').split(':').map(Number);
   const shown = offer.time ? alarmTime(hh, mm) : null;
   const clock = shown ? (shown.period ? `${shown.time} ${t(`alarms.${shown.period}`)}` : shown.time) : null;
@@ -71,7 +75,7 @@ export function SetupCard({ message }: { message: Message }) {
         <Ionicons name={alarm ? 'alarm' : 'calendar'} size={22} color={colors.primary} />
       </View>
       <View style={styles.what}>
-        <Txt variant="bodyStrong" numberOfLines={1}>
+        <Txt variant="bodyStrong" numberOfLines={1} style={cancelled && styles.struck}>
           {title}
         </Txt>
         <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.when}>
@@ -79,11 +83,12 @@ export function SetupCard({ message }: { message: Message }) {
         </Txt>
       </View>
       {made ? <Ionicons name="checkmark-circle" size={24} color={colors.success} accessibilityLabel={t('chat.setup.done')} /> : null}
+      {cancelled ? <Ionicons name="close-circle" size={24} color={colors.textSecondary} accessibilityLabel={t('mind.outcome.off')} /> : null}
     </View>
   );
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, mine && styles.wrapMine]}>
       <View style={[styles.card, !open && !made && styles.faded]}>
         {made ? (
           <PressableScale onPress={show} accessibilityRole="button" accessibilityLabel={`${title}, ${day}${clock ? `, ${clock}` : ''}, ${t('chat.setup.done')}`}>
@@ -122,6 +127,9 @@ export function SetupCard({ message }: { message: Message }) {
 const styles = StyleSheet.create({
   // Lines up with their bubbles: past the avatar column.
   wrap: { paddingLeft: space.md + 28 + space.sm, paddingRight: space.xxl, paddingVertical: space.xs },
+  // Set up by them on Us or in Alarms: on their side, like their own messages.
+  wrapMine: { alignItems: 'flex-end', paddingLeft: space.xxl, paddingRight: space.md },
+  struck: { textDecorationLine: 'line-through' },
   card: {
     maxWidth: 320,
     gap: space.md,

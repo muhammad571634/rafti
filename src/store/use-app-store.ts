@@ -60,6 +60,7 @@ import {
   planFollowUpCue,
   planRemindCue,
   questCue,
+  setupCancelledCue,
   quizDoneCue,
   sayCue,
   voiceNoteCue,
@@ -241,6 +242,7 @@ import {
   scheduleAck,
   scheduleReminder,
   planAddedLine,
+  setupCancelledLine,
   planFollowUp,
   PORTRAIT_BG,
   boardReply,
@@ -750,7 +752,8 @@ interface AppState {
   alarms: Alarm[];
   /** Adds a new alarm (no id yet) or replaces the one with the same id; it is switched on. */
   saveAlarm: (alarm: Omit<Alarm, 'id' | 'createdAt' | 'enabled'> & { id?: string }, opts?: { quiet?: boolean }) => string;
-  deleteAlarm: (id: string) => void;
+  /** `quiet`: no card and no word from the friend (a change made from the chat). */
+  deleteAlarm: (id: string, opts?: { quiet?: boolean }) => void;
   setAlarmEnabled: (id: string, enabled: boolean) => void;
   /** The morning after a ring (src/lib/morning-chain.ts); null when no alarm is going. */
   wake: WakeSession | null;
@@ -843,7 +846,8 @@ interface AppState {
   deleteMemory: (id: string) => void;
   /** Rewrites a memory's text; source, date and pin stay. False when the text is empty or reads like a crisis. */
   editMemory: (id: string, text: string) => boolean;
-  removeSchedule: (id: string) => void;
+  /** `quiet`: no card and no word from the friend (a change made from the chat). */
+  removeSchedule: (id: string, opts?: { quiet?: boolean }) => void;
   /**
    * A plan added by hand in [Us]; the character acknowledges it in chat (not when `quiet`: a plan
    * they offered in the chat was already talked about). Its id, or undefined when nothing was added.
@@ -2774,11 +2778,21 @@ export const useAppStore = create<AppState>()(
           const at = `${String(fields.hour).padStart(2, '0')}:${String(fields.minute).padStart(2, '0')}`;
           const days = alarmDaysWord(fields.repeat);
           const title = fields.label.trim() || i18n.t('home.widget.wakeUp');
-          sayFirst(set, get, get().addFriend(waker), planAddedLine(title, at, genderOf(get(), waker)), alarmSetCue(at, days));
+          // The card first, on their side; then the friend's word under it (0z139).
+          const conversationId = setupInChat(set, get, waker, alarmOffer(fields), savedId);
+          sayFirst(set, get, conversationId, planAddedLine(title, at, genderOf(get(), waker)), alarmSetCue(at, days));
         }
         return savedId;
       },
-      deleteAlarm: (id) => set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id), messages: setupRemoved(s.messages, id) })),
+      deleteAlarm: (id, opts) => {
+        const alarm = get().alarms.find((a) => a.id === id);
+        set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id), messages: setupRemoved(s.messages, id) }));
+        // A wake-up still to come, with a friend: they see it is off and ask what changed (0z139).
+        if (!opts?.quiet && alarm?.enabled && alarm.characterId && get().characters.some((c) => c.id === alarm.characterId)) {
+          const at = `${String(alarm.hour).padStart(2, '0')}:${String(alarm.minute).padStart(2, '0')}`;
+          setupCancelled(set, get, alarm.characterId, alarmOffer(alarm), id, `${at} ${alarmDaysWord(alarm.repeat)}`);
+        }
+      },
       setAlarmEnabled: (id, enabled) =>
         set((s) => ({
           alarms: s.alarms.map((a) =>
@@ -3413,12 +3427,19 @@ export const useAppStore = create<AppState>()(
 
       // A plan deleted on Us is off: its thread closes (no "good luck" or "how did it go?" for it,
       // and the friend stops bringing it up), and its setup card in the chat says it is gone.
-      removeSchedule: (id) =>
+      removeSchedule: (id, opts) => {
+        const plan = get().schedules.find((x) => x.id === id);
         set((s) => ({
           schedules: s.schedules.filter((x) => x.id !== id),
           threads: s.threads.map((t) => (t.scheduleId === id && t.status === 'open' ? { ...t, status: 'closed', outcome: 'off', closedAt: new Date().toISOString() } : t)),
           messages: setupRemoved(s.messages, id),
-        })),
+        }));
+        // A plan still ahead: its friend sees it is off and asks what happened (0z139). A past one
+        // tidied away says nothing.
+        if (!opts?.quiet && plan && planAhead(plan, new Date()) && get().characters.some((c) => c.id === plan.characterId)) {
+          setupCancelled(set, get, plan.characterId, planOffer(plan), id, `${plan.date}${plan.time ? ` ${plan.time}` : ''}`);
+        }
+      },
 
       addSchedule: ({ characterId, title, date, time, whenLabel, quiet }) => {
         const clean = title.trim();
@@ -3446,7 +3467,8 @@ export const useAppStore = create<AppState>()(
         }));
         addMoment(set, characterId, 'plan', { title: clean });
         if (!quiet) {
-          const conversationId = get().addFriend(characterId);
+          // The card first, on their side; then the friend's word under it (0z139).
+          const conversationId = setupInChat(set, get, characterId, planOffer({ title: clean, date, time }), id);
           sayFirst(set, get, conversationId, planAddedLine(clean, whenLabel, genderOf(get(), characterId)), planAddedCue(clean, whenLabel));
         }
         return id;
@@ -3496,7 +3518,7 @@ export const useAppStore = create<AppState>()(
         } else if (offer.kind === 'plan') {
           madeId = get().addSchedule({ characterId, title: offer.title, date: offer.date, time: offer.time, whenLabel: '', quiet: true });
           if (madeId) linkPlanThread(set, get, characterId, madeId, offer, replaces);
-          if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
+          if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces, { quiet: true });
         }
         if (!madeId) return 'gone';
         if (cost) get().spendShells(cost, 'setup', characterId);
@@ -5689,6 +5711,75 @@ function linkPlanThread(set: Setter, get: Getter, characterId: string, scheduleI
   }));
 }
 
+/** A plan as a setup card: its day and hour. */
+const planOffer = (plan: Pick<ScheduleItem, 'title' | 'date' | 'time'>): SetupOffer => ({ kind: 'plan', title: plan.title, date: plan.date, ...(plan.time ? { time: plan.time } : {}) });
+
+/** An alarm as a setup card: its time, its days, and the day it rings next. */
+function alarmOffer(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat' | 'label'>): SetupOffer {
+  const now = new Date();
+  const at = new Date(now);
+  at.setHours(alarm.hour, alarm.minute, 0, 0);
+  if (at.getTime() <= now.getTime()) at.setDate(at.getDate() + 1);
+  const time = `${String(alarm.hour).padStart(2, '0')}:${String(alarm.minute).padStart(2, '0')}`;
+  return { kind: 'alarm', title: alarm.label.trim(), date: dayKey(at), time, repeat: [...alarm.repeat] };
+}
+
+/** Whether a plan is still ahead on the phone's clock (one with no hour lasts its whole day). */
+const planAhead = (plan: Pick<ScheduleItem, 'date' | 'time'>, now: Date) => new Date(`${plan.date}T${plan.time ?? '23:59'}:00`).getTime() > now.getTime();
+
+/**
+ * Something set up with a friend outside the chat (Us' +, the Alarms editor), or changed there,
+ * shows in their chat as a card on the user's side (0z139). The model reads it in its place in the
+ * history (`setupHistoryText`), so the friend's word right under it and every later reply know it
+ * happened. A change marks the card it changes; the new one says where it stands now.
+ */
+function setupInChat(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, cancelled = false) {
+  const conversationId = get().addFriend(characterId);
+  set((s) => ({ messages: markSetupCards(s.messages, madeId, cancelled ? { removed: true } : { replaced: true }) }));
+  appendMessage(
+    set,
+    get,
+    conversationId,
+    { id: uid('m'), conversationId, author: 'me', kind: 'system', card: 'setup', setup: { ...offer, from: 'app', madeId, ...(cancelled ? { cancelled: true } : {}) }, createdAt: new Date().toISOString() },
+    { quiet: true },
+  );
+  return conversationId;
+}
+
+/** One word from a friend per this many minutes about cancelled things: three deleted at once get one answer. */
+const CANCEL_WORD_MS = 2 * 60_000;
+const lastCancelWord = new Map<string, number>();
+
+/**
+ * The user cancelled a plan or a wake-up with this friend outside the chat (0z139): a card on their
+ * side says it is off, and the friend notices like a person ("the cinema's off? what happened?"),
+ * so the talk goes on from there.
+ */
+function setupCancelled(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, when: string) {
+  const conversationId = setupInChat(set, get, characterId, offer, madeId, true);
+  const now = Date.now();
+  if (now - (lastCancelWord.get(characterId) ?? 0) < CANCEL_WORD_MS) return;
+  lastCancelWord.set(characterId, now);
+  const title = offer.title || i18n.t('home.widget.wakeUp');
+  sayFirst(set, get, conversationId, setupCancelledLine(title, genderOf(get(), characterId)), setupCancelledCue(offer.kind, offer.title, when));
+}
+
+/** Setup cards in every chat that stand for this alarm or plan and are still live, with this patch. */
+function markSetupCards(messages: AppState['messages'], madeId: string, patch: Partial<SetupOffer>): AppState['messages'] {
+  let changed = false;
+  const next: AppState['messages'] = {};
+  const live = (m: Message) => m.setup?.madeId === madeId && !m.setup.cancelled && !m.setup.replaced && !m.setup.removed;
+  for (const [id, list] of Object.entries(messages)) {
+    if (!list.some(live)) {
+      next[id] = list;
+      continue;
+    }
+    changed = true;
+    next[id] = list.map((m) => (live(m) && m.setup ? { ...m, setup: { ...m.setup, ...patch } } : m));
+  }
+  return changed ? next : messages;
+}
+
 /** Setup cards in any chat that stood for an alarm or plan that is now deleted: they say so. */
 function setupRemoved(messages: AppState['messages'], madeId: string): AppState['messages'] {
   let changed = false;
@@ -5725,12 +5816,13 @@ function existingSetup(get: Getter, characterId: string, offer: SetupOffer): str
 function appendSetupCard(set: Setter, get: Getter, conversationId: string, offer: SetupOffer) {
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
   // The same thing offered again ("you set it"): its card is already there, or it is already set.
-  const shown = (get().messages[conversationId] ?? []).some((m) => m.card === 'setup' && m.setup && !m.setup.replaced && !m.setup.declined && sameSetup(m.setup, offer));
+  const live = (o?: SetupOffer): o is SetupOffer => !!o && !o.replaced && !o.declined && !o.removed && !o.cancelled;
+  const shown = (get().messages[conversationId] ?? []).some((m) => m.card === 'setup' && live(m.setup) && sameSetup(m.setup, offer));
   if (!offer.change && (shown || (characterId && existingSetup(get, characterId, offer)))) return;
   let next: SetupOffer = { ...offer };
   if (offer.change) {
     const prev = (get().messages[conversationId] ?? []).findLast(
-      (m) => m.card === 'setup' && m.setup?.kind === offer.kind && !m.setup.replaced && !m.setup.declined,
+      (m) => m.card === 'setup' && m.setup?.kind === offer.kind && live(m.setup),
     );
     if (prev?.setup?.madeId) next = { ...next, replacesId: prev.setup.madeId };
     else if (prev?.setup) {
