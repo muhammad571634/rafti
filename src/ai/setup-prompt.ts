@@ -83,6 +83,17 @@ export function offerLines(messages: readonly Message[]): string[] {
   ];
 }
 
+/**
+ * Whether two offers are the same thing (seen on the A51: "set it at 9" then "you set it" gave a
+ * second 09:00 card and two alarms): same kind and time, and the same days for a repeating alarm,
+ * else the same date. Titles may differ ("Wake up" / "Morning"); the moment is what counts.
+ */
+export function sameSetup(a: Pick<SetupOffer, 'kind' | 'date' | 'time' | 'repeat'>, b: Pick<SetupOffer, 'kind' | 'date' | 'time' | 'repeat'>) {
+  if (a.kind !== b.kind || (a.time ?? '') !== (b.time ?? '')) return false;
+  const days = (o: typeof a) => (o.repeat ?? []).join();
+  return a.kind === 'alarm' && (a.repeat?.length || b.repeat?.length) ? days(a) === days(b) : a.date === b.date;
+}
+
 const dayKeyOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 /**

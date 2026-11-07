@@ -92,15 +92,21 @@ export function ruleTouches(drafts: readonly TouchDraft[], threadId: string, now
 
 const norm = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
 
+/** Two things that happen within this of each other, with the same friend, are one thing told twice. */
+const SAME_MOMENT_MS = 15 * 60_000;
+
 /**
- * The threads with one added: the same thing again (its plan, or the same words with the same
- * friend) replaces the old one's texts; past `maxOpen` the oldest open one of that friend fades.
+ * The threads with one added: the same thing again (its plan, the same words, or the same moment
+ * with the same friend: "Morning wake-up" and "Waking up", both at 09:00) replaces the old one's
+ * texts; past `maxOpen` the oldest open one of that friend fades.
  */
 export function addThread(threads: readonly Thread[], thread: Thread): Thread[] {
+  const sameMoment = (t: Thread) =>
+    !!t.happensAt && !!thread.happensAt && Math.abs(Date.parse(t.happensAt) - Date.parse(thread.happensAt)) <= SAME_MOMENT_MS;
   const same = (t: Thread) =>
     t.status === 'open' &&
     t.characterId === thread.characterId &&
-    ((!!thread.scheduleId && t.scheduleId === thread.scheduleId) || norm(t.about) === norm(thread.about));
+    ((!!thread.scheduleId && t.scheduleId === thread.scheduleId) || norm(t.about) === norm(thread.about) || sameMoment(t));
   const rest = threads.filter((t) => !same(t));
   const open = rest.filter((t) => t.status === 'open' && t.characterId === thread.characterId);
   const drop = new Set(

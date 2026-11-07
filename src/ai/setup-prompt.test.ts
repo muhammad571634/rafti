@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { parseModelReply } from './reply-style';
-import { cleanSetup, offerLines, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
+import { cleanSetup, offerLines, sameSetup, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, wallTime, wallToIso } from './thread-prompt';
 
 // Saturday, Nov 7 2026, 19:10 on the phone's clock.
@@ -152,5 +152,18 @@ describe('the model’s threads reach the app (0z136: they were paid for and nev
     const reply = parseModelReply('{"messages":["ok"],"threads":{"close":[{"id":"th_9","outcome":"done"}]}}');
     assert.deepEqual(reply.threads?.close, [{ id: 'th_9', outcome: 'done' }]);
     assert.equal(parseModelReply('{"messages":["ok"],"threads":{}}').threads, undefined);
+  });
+});
+
+describe('the same thing offered twice stays one (seen on the A51: two 09:00 alarms)', () => {
+  it('same kind and moment is the same, whatever the title', () => {
+    assert.equal(sameSetup({ kind: 'alarm', date: '2026-11-08', time: '09:00', repeat: [] }, { kind: 'alarm', date: '2026-11-08', time: '09:00', repeat: [] }), true);
+    assert.equal(sameSetup({ kind: 'plan', date: '2026-11-08', time: '15:00' }, { kind: 'plan', date: '2026-11-08', time: '15:00' }), true);
+  });
+  it('another time, day or set of days is another thing', () => {
+    assert.equal(sameSetup({ kind: 'alarm', date: '2026-11-08', time: '09:00', repeat: [] }, { kind: 'alarm', date: '2026-11-08', time: '09:30', repeat: [] }), false);
+    assert.equal(sameSetup({ kind: 'plan', date: '2026-11-08', time: '15:00' }, { kind: 'plan', date: '2026-11-09', time: '15:00' }), false);
+    assert.equal(sameSetup({ kind: 'alarm', date: '2026-11-08', time: '07:00', repeat: [1, 2, 3, 4, 5] }, { kind: 'alarm', date: '2026-11-09', time: '07:00', repeat: [0, 6] }), false);
+    assert.equal(sameSetup({ kind: 'alarm', date: '2026-11-08', time: '09:00' }, { kind: 'plan', date: '2026-11-08', time: '09:00' }), false);
   });
 });

@@ -68,6 +68,14 @@ describe('threads: the rules a model must keep', () => {
     for (let i = 1; i < touches.length; i++) assert.ok(Date.parse(touches[i].at) - Date.parse(touches[i - 1].at) >= THREAD_RULES.minGapMs);
   });
 
+  it('the same moment with the same friend is one thing, whatever it is called (A51: two 09:00 wake-ups)', () => {
+    let threads = addThread([], thread({ id: 'a', about: 'Утренний подъем', happensAt: at(1, 9) }));
+    threads = addThread(threads, thread({ id: 'b', about: 'Пробуждение', happensAt: at(1, 9, 5) }));
+    assert.deepEqual(threads.map((t) => t.id), ['b']);
+    threads = addThread(threads, thread({ id: 'c', about: 'Gym', happensAt: at(1, 18) }));
+    assert.deepEqual(threads.map((t) => t.id), ['b', 'c']);
+  });
+
   it('replace the same thing and keep a few open per friend', () => {
     let threads = addThread([], thread({ id: 'a', about: 'Exam' }));
     threads = addThread(threads, thread({ id: 'b', about: 'exam!' }));
@@ -75,7 +83,7 @@ describe('threads: the rules a model must keep', () => {
       threads.map((t) => t.id),
       ['b'],
     );
-    for (let i = 0; i < 7; i++) threads = addThread(threads, thread({ id: `x${i}`, about: `thing ${i}`, createdAt: at(0, 11 + i) }));
+    for (let i = 0; i < 7; i++) threads = addThread(threads, thread({ id: `x${i}`, about: `thing ${i}`, createdAt: at(0, 11 + i), happensAt: at(2 + i, 10) }));
     assert.equal(threads.filter((t) => t.characterId === 'c_kai' && t.status === 'open').length, THREAD_RULES.maxOpen);
   });
 

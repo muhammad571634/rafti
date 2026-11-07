@@ -124,7 +124,7 @@ import { askLine } from '@/mock/temper';
 import { briefLine } from '@/mock/brief';
 import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
-import { setupUsable } from '@/ai/setup-prompt';
+import { sameSetup, setupUsable } from '@/ai/setup-prompt';
 import { alarmSetupCost } from '@/economy/setup-cost';
 export { alarmSetupCost };
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
@@ -3466,6 +3466,12 @@ export const useAppStore = create<AppState>()(
         const characterId = conversation.characterId;
         const character = get().characters.find((c) => c.id === characterId);
         if (!character) return 'gone';
+        // Already there (set from another card or by hand): this card stands for it, nothing new, nothing paid.
+        const there = replaces ? undefined : existingSetup(get, characterId, offer);
+        if (there) {
+          mark({ madeId: there });
+          return 'ok';
+        }
         // Priced as from Us or the Alarms screen; moving one already paid for is free.
         const cost = replaces ? 0 : offer.kind === 'alarm' ? shellCosts.alarmSetup : shellCosts.planSetup;
         if (cost && get().wallet.shells < cost) return 'noShells';
@@ -5660,12 +5666,29 @@ function linkPlanThread(set: Setter, get: Getter, characterId: string, scheduleI
   }));
 }
 
+/** The alarm or plan with this friend that already is what the offer asks for, by its id. */
+function existingSetup(get: Getter, characterId: string, offer: SetupOffer): string | undefined {
+  if (offer.kind === 'alarm') {
+    return get().alarms.find(
+      (a) =>
+        a.enabled &&
+        a.characterId === characterId &&
+        sameSetup({ kind: 'alarm', date: offer.date, time: `${String(a.hour).padStart(2, '0')}:${String(a.minute).padStart(2, '0')}`, repeat: a.repeat }, offer),
+    )?.id;
+  }
+  return get().schedules.find((x) => x.characterId === characterId && sameSetup({ kind: 'plan', date: x.date, time: x.time }, offer))?.id;
+}
+
 /**
  * A setup card under the friend's reply. A change ("no, 8:30 instead") takes the place of their
  * last offer of that kind: a card still waiting loses its buttons, and one already set is moved
  * when the new one is set (`replacesId`), so it stays one alarm or one plan.
  */
 function appendSetupCard(set: Setter, get: Getter, conversationId: string, offer: SetupOffer) {
+  const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+  // The same thing offered again ("you set it"): its card is already there, or it is already set.
+  const shown = (get().messages[conversationId] ?? []).some((m) => m.card === 'setup' && m.setup && !m.setup.replaced && !m.setup.declined && sameSetup(m.setup, offer));
+  if (!offer.change && (shown || (characterId && existingSetup(get, characterId, offer)))) return;
   let next: SetupOffer = { ...offer };
   if (offer.change) {
     const prev = (get().messages[conversationId] ?? []).findLast(
