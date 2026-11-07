@@ -4,6 +4,7 @@ import { apiBase } from '@/ai/server';
 import i18n, { phrase } from '@/i18n';
 import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
+import { MESSAGE_CHANNEL, MESSAGE_SOUND, hasMessageSound } from './incoming';
 import { notificationsModule } from './native';
 import { planPushes, type PlannedPush, type PlanState, type PushChannel } from './plan';
 import { writtenCategory } from './written';
@@ -36,8 +37,8 @@ const CHANNELS: Record<PushChannel, { name: string; importance: 'HIGH' | 'MAX' |
 /** What a push carries back to the app when it is tapped or seen. */
 export interface PushData {
   id: string;
-  /** `alarm`: a wake-up alarm ring (`src/notifications/alarms.ts`), not a planned push. */
-  kind: PlannedPush['kind'] | 'alarm';
+  /** `alarm`: a wake-up alarm ring (`src/notifications/alarms.ts`); `live`: a message that just came (`incoming.ts`). */
+  kind: PlannedPush['kind'] | 'alarm' | 'live';
   route: string;
   characterId?: string;
   line?: string;
@@ -82,13 +83,17 @@ export async function configurePushes() {
   if (Platform.OS === 'android') {
     await Promise.all(
       (Object.keys(CHANNELS) as PushChannel[]).map((id) =>
-        N.setNotificationChannelAsync(id, {
+        N.setNotificationChannelAsync(channelOf(id), {
           name: i18n.t(CHANNELS[id].name),
           importance: N.AndroidImportance[CHANNELS[id].importance],
           vibrationPattern: [0, 250, 200, 250],
+          // Friends' messages ring with our own sound where the APK carries it (`incoming.ts`).
+          ...(id === 'messages' && hasMessageSound ? { sound: MESSAGE_SOUND } : {}),
         }),
       ),
     );
+    // The old messages channel (default sound) goes once ours exists: one "Messages" in Settings.
+    if (hasMessageSound) await N.deleteNotificationChannelAsync('messages').catch(() => {});
   }
   // A friend's push answers like a text: reply ideas as buttons ("I ate!") and a typed reply, from
   // the lock screen. Best effort: where categories are missing the push still comes, without them.
@@ -264,15 +269,18 @@ function schedule(push: PlannedPush, identifier: string, at: Date, preview: bool
       title: push.title ?? 'Sigmazam',
       body: bodyFor(push, preview),
       data: data as unknown as Record<string, unknown>,
-      sound: 'default',
+      sound: push.channel === 'messages' ? MESSAGE_SOUND : 'default',
       interruptionLevel: push.timeSensitive ? 'timeSensitive' : 'active',
       categoryIdentifier: categoryFor(push),
       // One friend's texts stack together, as a person's messages do (iOS thread, Android group).
       threadIdentifier: push.characterId ? `friend_${push.characterId}` : undefined,
     },
-    trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: push.channel },
+    trigger: { type: N.SchedulableTriggerInputTypes.DATE, date: at, channelId: channelOf(push.channel) },
   });
 }
+
+/** The Android channel a planned push goes to: friends' messages share the live banners' channel. */
+const channelOf = (channel: PushChannel) => (channel === 'messages' ? MESSAGE_CHANNEL : channel);
 
 /** A push that opens a friend's chat can be answered from the lock screen. */
 function categoryFor(push: PlannedPush) {

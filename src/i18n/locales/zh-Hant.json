@@ -1995,6 +1995,7 @@
     "off": "通知權限目前處於關閉狀態",
     "openSettings": "前往系統設定",
     "turnOn": "立刻開啟",
+    "messageSound": "新訊息",
     "notificationPreview": "在通知中顯示訊息文字內容",
     "morningGreeting": "清晨早安訊息",
     "eveningGreeting": "深夜晚安問候",
@@ -2022,6 +2023,7 @@
     "settingsTitle": "推播偏好設定",
     "quietNote": "在設定的勿擾時段內將不會發出任何響鈴或震動。所有訊息將在清晨溫柔呈獻。",
     "hint": {
+      "messageSound": "有人傳訊息時播放音效並顯示橫幅",
       "morningGreeting": "在新的一天啟程時奉上一句朝氣蓬勃的問候",
       "eveningGreeting": "在安然入夢前傳來的一聲溫柔晚安",
       "weeklyRecap": "每逢週日：為你細細回顧一整週相伴的點滴足跡",

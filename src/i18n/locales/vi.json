@@ -1995,6 +1995,7 @@
     "off": "Thông báo đang tắt",
     "openSettings": "Mở cài đặt",
     "turnOn": "Bật",
+    "messageSound": "Tin nhắn mới",
     "notificationPreview": "Hiển thị nội dung tin nhắn",
     "morningGreeting": "Tin nhắn buổi sáng",
     "eveningGreeting": "Tin nhắn ban đêm",
@@ -2022,6 +2023,7 @@
     "settingsTitle": "Cài đặt thông báo",
     "quietNote": "Không có chuông trong những giờ này. Tin nhắn sẽ chờ đến sáng.",
     "hint": {
+      "messageSound": "Âm thanh và biểu ngữ khi họ nhắn",
       "morningGreeting": "Lời chào khi ngày mới bắt đầu",
       "eveningGreeting": "Lời chúc ngủ ngon trước khi bạn đi ngủ",
       "weeklyRecap": "Chủ nhật: một tuần của hai bạn bên nhau",

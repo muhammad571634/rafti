@@ -208,6 +208,9 @@ function quietTest(settings: AppSettings): (d: Date) => boolean {
   };
 }
 
+/** Whether this moment falls in the user's quiet hours. */
+export const inQuietHours = (settings: AppSettings, at: Date) => quietTest(settings)(at);
+
 /** Which kinds the user switched off (Profile → Notifications). Greetings and calls use their own settings. */
 function kindOn(kind: PushKind, settings: AppSettings) {
   switch (kind) {

@@ -2028,6 +2028,7 @@
     "off": "Mitteilungen sind aus",
     "openSettings": "Einstellungen öffnen",
     "turnOn": "Einschalten",
+    "messageSound": "Neue Nachrichten",
     "notificationPreview": "Nachrichtentext anzeigen",
     "morningGreeting": "Morgengrüße",
     "eveningGreeting": "Abendgrüße",
@@ -2055,6 +2056,7 @@
     "settingsTitle": "Mitteilungseinstellungen",
     "quietNote": "In dieser Zeit klingelt nichts. Nachrichten warten bis zum Morgen.",
     "hint": {
+      "messageSound": "Ein Ton und ein Banner, wenn sie schreiben",
       "morningGreeting": "Ein Gruß zum Start in den Tag",
       "eveningGreeting": "Gute Nacht vor dem Schlafen",
       "weeklyRecap": "Sonntag: eure gemeinsame Woche",

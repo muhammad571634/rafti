@@ -24,6 +24,7 @@ const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: str
   {
     title: 'reachOut',
     rows: [
+      { key: 'messageSound', icon: 'chatbubble', fill: systemColors.green, hint: true },
       { key: 'morningGreeting', icon: 'sunny', fill: systemColors.yellow, hint: true },
       { key: 'eveningGreeting', icon: 'moon', fill: systemColors.indigo, hint: true },
       { key: 'weeklyRecap', icon: 'sparkles', fill: systemColors.pink, hint: true },

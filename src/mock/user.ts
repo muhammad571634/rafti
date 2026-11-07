@@ -41,6 +41,7 @@ export const initialSettings: AppSettings = {
   chatAnimation: false,
   haptics: true,
   notificationPreview: true,
+  messageSound: true,
   notifyPlans: true,
   notifyDiary: true,
   notifyAway: true,

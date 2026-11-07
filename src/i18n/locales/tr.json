@@ -2028,6 +2028,7 @@
     "off": "Bildirimler kapalı",
     "openSettings": "Ayarları aç",
     "turnOn": "Aç",
+    "messageSound": "Yeni mesajlar",
     "notificationPreview": "Mesaj metnini göster",
     "morningGreeting": "Sabah mesajları",
     "eveningGreeting": "Gece mesajları",
@@ -2055,6 +2056,7 @@
     "settingsTitle": "Bildirim ayarları",
     "quietNote": "Bu saatlerde hiçbir ses çalmaz. Mesajlar sabaha kadar bekler.",
     "hint": {
+      "messageSound": "Yazdıklarında bir ses ve bir bildirim",
       "morningGreeting": "Günün başladığında bir merhaba",
       "eveningGreeting": "Uyumadan önce iyi geceler",
       "weeklyRecap": "Pazar: Birlikte geçirdiğiniz hafta",

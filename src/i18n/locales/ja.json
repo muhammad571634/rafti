@@ -1995,6 +1995,7 @@
     "off": "通知がオフです",
     "openSettings": "設定を開く",
     "turnOn": "オンにする",
+    "messageSound": "新着メッセージ",
     "notificationPreview": "メッセージ本文を表示",
     "morningGreeting": "朝のメッセージ",
     "eveningGreeting": "夜のメッセージ",
@@ -2022,6 +2023,7 @@
     "settingsTitle": "通知設定",
     "quietNote": "この時間帯は音が鳴りません。メッセージは朝まで待機します。",
     "hint": {
+      "messageSound": "届いたらサウンドとバナーでお知らせ",
       "morningGreeting": "一日が始まるときの挨拶",
       "eveningGreeting": "寝る前のおやすみ挨拶",
       "weeklyRecap": "日曜日: 一緒に過ごした1週間のまとめ",

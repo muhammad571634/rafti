@@ -1995,6 +1995,7 @@
     "off": "Notifikasi mati",
     "openSettings": "Buka pengaturan",
     "turnOn": "Nyalakan",
+    "messageSound": "Pesan baru",
     "notificationPreview": "Tampilkan teks pesan",
     "morningGreeting": "Pesan pagi",
     "eveningGreeting": "Pesan malam",
@@ -2022,6 +2023,7 @@
     "settingsTitle": "Pengaturan notifikasi",
     "quietNote": "Tidak ada suara berdering pada jam-jam ini. Pesan akan menunggu hingga pagi.",
     "hint": {
+      "messageSound": "Suara dan banner saat mereka menulis",
       "morningGreeting": "Sapaan hangat saat harimu dimulai",
       "eveningGreeting": "Ucapan selamat malam sebelum kamu tidur",
       "weeklyRecap": "Minggu: rekaman kebersamaan sepekan ini",

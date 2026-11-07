@@ -2028,6 +2028,7 @@
     "off": "Notifications are off",
     "openSettings": "Open settings",
     "turnOn": "Turn on",
+    "messageSound": "New messages",
     "notificationPreview": "Show message text",
     "morningGreeting": "Morning messages",
     "eveningGreeting": "Night messages",
@@ -2055,6 +2056,7 @@
     "settingsTitle": "Notification settings",
     "quietNote": "Nothing rings in these hours. Messages wait for the morning.",
     "hint": {
+      "messageSound": "A sound and a banner when they write",
       "morningGreeting": "A hello when your day starts",
       "eveningGreeting": "Good night before you sleep",
       "weeklyRecap": "Sunday: your week together",

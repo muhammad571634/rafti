@@ -2028,6 +2028,7 @@
     "off": "Le notifiche sono disattivate",
     "openSettings": "Apri impostazioni",
     "turnOn": "Attiva",
+    "messageSound": "Nuovi messaggi",
     "notificationPreview": "Mostra testo del messaggio",
     "morningGreeting": "Messaggi del mattino",
     "eveningGreeting": "Messaggi della notte",
@@ -2055,6 +2056,7 @@
     "settingsTitle": "Impostazioni notifiche",
     "quietNote": "Niente suonerà in queste ore. I messaggi aspetteranno il mattino.",
     "hint": {
+      "messageSound": "Un suono e un banner quando ti scrivono",
       "morningGreeting": "Un saluto all'inizio della giornata",
       "eveningGreeting": "La buonanotte prima di dormire",
       "weeklyRecap": "Domenica: la vostra settimana insieme",

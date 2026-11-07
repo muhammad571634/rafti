@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState as AppLife } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
@@ -69,6 +70,7 @@ import {
   pushCue,
 } from '@/ai/moment-prompt';
 import { dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
+import { announceIncoming } from '@/notifications/incoming';
 import { planPushes } from '@/notifications/plan';
 import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pushLine, writesIdeas, writtenKey, type PushLines } from '@/notifications/written';
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
@@ -4395,7 +4397,8 @@ function appendMessage(
     set((s) => ({ messages: { ...s.messages, [conversationId]: [...(s.messages[conversationId] ?? []), message] }, ...fresh(s) }));
     return;
   }
-  const unseen = countUnread && get().activeConversationId !== conversationId;
+  // Their chat on screen but the app in the background counts too: they have not seen it.
+  const unseen = countUnread && (get().activeConversationId !== conversationId || AppLife.currentState !== 'active');
   const preview = previewFor(message);
 
   set((s) => ({
@@ -4412,6 +4415,17 @@ function appendMessage(
         : c,
     ),
   }));
+  if (unseen) {
+    const conversation = get().conversations.find((c) => c.id === conversationId);
+    const name = get().characters.find((c) => c.id === conversation?.characterId)?.name;
+    if (conversation && name) {
+      announceIncoming(
+        { conversationId, title: name, body: preview, route: `/chat/${conversationId}`, characterId: conversation.characterId, createdAt: message.createdAt },
+        get().settings,
+        !!conversation.muted,
+      );
+    }
+  }
 }
 
 /** The one-line preview on the conversation list (and the Chats long-press preview). */
@@ -6012,7 +6026,7 @@ function appendGroupMessage(
     set((s) => ({ messages: { ...s.messages, [groupId]: [...(s.messages[groupId] ?? []), message] } }));
     return;
   }
-  const unseen = message.author === 'them' && get().activeConversationId !== groupId;
+  const unseen = message.author === 'them' && (get().activeConversationId !== groupId || AppLife.currentState !== 'active');
   const preview = groupLinePreview(get(), message);
   set((s) => ({
     messages: { ...s.messages, [groupId]: [...(s.messages[groupId] ?? []), message] },
@@ -6027,6 +6041,14 @@ function appendGroupMessage(
         : g,
     ),
   }));
+  const group = get().groups.find((g) => g.id === groupId);
+  if (unseen && group) {
+    announceIncoming(
+      { conversationId: groupId, title: group.name ?? 'Sigmazam', body: preview, route: `/group/${groupId}`, characterId: message.characterId, createdAt: message.createdAt },
+      get().settings,
+      !!group.muted,
+    );
+  }
 }
 
 /** The "not real people" line in a group: at a session's start and every 3 hours, as in a chat. */

@@ -8,6 +8,7 @@ import { markOpenedFromNotification } from '@/lib/away-clock';
 
 import { syncAlarms } from '@/notifications/alarms';
 import { nextPushLog, sentToday } from '@/notifications/budget';
+import { clearLiveBanners } from '@/notifications/incoming';
 import { notificationsModule } from '@/notifications/native';
 import {
   askIfNeverAsked,
@@ -99,6 +100,10 @@ export function usePushNotifications() {
       if (wrote && AppState.currentState !== 'active') await replan();
     };
     const comeBack = async () => {
+      // The chat left on screen is read now, and the banners of what came while away go.
+      const { activeConversationId, markRead } = useAppStore.getState();
+      if (activeConversationId) markRead(activeConversationId);
+      void clearLiveBanners().catch(() => {});
       useAppStore.getState().landDuePushes();
       // What was still to come is cancelled below.
       useAppStore.getState().setPushOutbox([]);

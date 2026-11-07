@@ -1995,6 +1995,7 @@
     "off": "알림이 꺼져 있습니다",
     "openSettings": "설정 열기",
     "turnOn": "켜기",
+    "messageSound": "새 메시지",
     "notificationPreview": "메시지 내용 미리보기",
     "morningGreeting": "아침 인사 메시지",
     "eveningGreeting": "취침 전 메시지",
@@ -2022,6 +2023,7 @@
     "settingsTitle": "알림 설정",
     "quietNote": "이 시간에는 소리가 울리지 않습니다. 메시지는 아침까지 보관됩니다.",
     "hint": {
+      "messageSound": "메시지가 오면 소리와 배너로 알려줘요",
       "morningGreeting": "하루가 시작될 때 건네는 인사",
       "eveningGreeting": "잠들기 전 건네는 잘 자라는 인사",
       "weeklyRecap": "일요일: 한 주 동안 함께한 추억 정리",

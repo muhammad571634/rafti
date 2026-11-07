@@ -72,7 +72,8 @@
             "./assets/sounds/alarms/shell_chimes.wav",
             "./assets/sounds/alarms/sea_breeze.wav",
             "./assets/sounds/alarms/soft_bells.wav",
-            "./assets/sounds/alarms/lighthouse.wav"
+            "./assets/sounds/alarms/lighthouse.wav",
+            "./assets/sounds/message.wav"
           ]
         }
       ],

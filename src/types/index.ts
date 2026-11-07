@@ -1069,6 +1069,8 @@ export interface AppSettings {
   serverWallet?: boolean;
   /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */
   serverMessages?: boolean;
+  /** A friend's message outside its chat: our sound in the app, a banner outside it (`src/notifications/incoming.ts`). */
+  messageSound: boolean;
   /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */
   notificationPreview: boolean;
   /** Push kinds the user can switch off (Profile → Notifications, docs/push-plan.md). */
