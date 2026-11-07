@@ -1,12 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { CoinDropReward, type Point, wobbleAt } from '@/components/coin-drop';
 import { LuckyWheel } from '@/components/lucky-wheel';
 import { PeekingMascot } from '@/components/peeking-mascot';
 import { CARD_SHADOW, GroupLabel, STORE } from '@/components/plans/store-look';
@@ -81,6 +83,38 @@ export default function GiftsScreen() {
   const [rulesOpen, setRulesOpen] = useState(false);
   const [accepted, setAccepted] = useState(false);
 
+  // The wheel's prize poured into the wallet by hand (Coin Drop Reward, on builds with Skia). Until
+  // the drop lands the capsule keeps the old balance, then wobbles and shows the new one.
+  const [pour, setPour] = useState<{ amount: number; from: Point; wallet: Point & { left: number } } | null>(null);
+  const [pending, setPending] = useState(0);
+  const wobble = useSharedValue(1);
+  const scroll = useRef<ScrollViewInstance>(null);
+  const scrollY = useRef(0);
+  const wheelCard = useRef<ViewInstance>(null);
+  const capsuleBox = useRef<ViewInstance>(null);
+  const shellMark = useRef<ViewInstance>(null);
+  const capsuleStyle = useAnimatedStyle(() => {
+    const w = wobbleAt(wobble.get());
+    return { transform: [{ scaleX: 1 + 0.1 * w }, { scaleY: 1 - 0.08 * w }] };
+  });
+
+  const prizeWon = (amount: number) => {
+    if (!CoinDropReward) return setReward(amount);
+    setPending(amount);
+    // The wallet sits at the top: bring it into view before measuring where the drop goes.
+    const scrolled = scrollY.current > 1;
+    if (scrolled) scroll.current?.scrollTo({ y: 0, animated: true });
+    setTimeout(() => {
+      wheelCard.current?.measureInWindow((wx, wy, ww, wh) => {
+        capsuleBox.current?.measureInWindow((cx) => {
+          shellMark.current?.measureInWindow((sx, sy, sw, sh) => {
+            setPour({ amount, from: { x: wx + ww / 2, y: wy + wh / 2 }, wallet: { x: sx + sw / 2, y: sy + sh / 2, left: cx } });
+          });
+        });
+      });
+    }, scrolled ? 380 : 0);
+  };
+
   const code = inviteCodeFor(user);
   const invited = Math.min(INVITES_PER_WEEK, invitesThisWeek(user.inviteCredits));
   const wheelSize = Math.max(0, Math.min(224, width - space.lg * 2 - space.md * 2));
@@ -118,19 +152,30 @@ export default function GiftsScreen() {
 
   return (
     <Screen background="aurora">
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
+      <ScrollView
+        ref={scroll}
+        onScroll={(e) => {
+          scrollY.current = e.nativeEvent.contentOffset.y;
+        }}
+        scrollEventThrottle={32}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
         <View style={styles.bar}>
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
             <AuroraGlass style={styles.round}>
               <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
             </AuroraGlass>
           </PressableScale>
-          <AuroraGlass style={styles.capsule}>
-            <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: shells })}>
-              <ShellIcon size={18} />
-              <Txt style={styles.capsuleText}>{shells.toLocaleString('en-US')}</Txt>
-            </View>
-          </AuroraGlass>
+          <Animated.View ref={capsuleBox} style={capsuleStyle}>
+            <AuroraGlass style={styles.capsule}>
+              <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
+                <View ref={shellMark}>
+                  <ShellIcon size={18} />
+                </View>
+                <Txt style={styles.capsuleText}>{Math.max(0, shells - pending).toLocaleString('en-US')}</Txt>
+              </View>
+            </AuroraGlass>
+          </Animated.View>
         </View>
         <LargeTitle>{t('gifts.title')}</LargeTitle>
 
@@ -185,12 +230,12 @@ export default function GiftsScreen() {
             <Txt style={styles.statusText}>{spinStatus}</Txt>
           </View>
         </View>
-        <View style={[styles.card, styles.wheel]}>
+        <View ref={wheelCard} style={[styles.card, styles.wheel]}>
           <LuckyWheel
             size={wheelSize}
             disabled={!canSpin}
             onSpin={() => spinWheel().then((result) => result?.index ?? null)}
-            onStop={(index) => setReward(WHEEL_SEGMENTS[index])}
+            onStop={(index) => prizeWon(WHEEL_SEGMENTS[index])}
             autoSpin={spinParam === '1'}
           />
         </View>
@@ -312,6 +357,17 @@ export default function GiftsScreen() {
           <Button label={t('common.done')} onPress={() => setReward(null)} full />
         </View>
       </Sheet>
+
+      {CoinDropReward && pour ? (
+        <CoinDropReward
+          amount={pour.amount}
+          from={pour.from}
+          wallet={pour.wallet}
+          wobble={wobble}
+          onAbsorb={() => setPending(0)}
+          onDone={() => setPour(null)}
+        />
+      ) : null}
     </Screen>
   );
 }

@@ -2393,9 +2393,9 @@ export const useAppStore = create<AppState>()(
           daily: { ...s.daily, lastLoginDay: today, checkInDay: day, checkInAmount: amount },
           wallet: creditFree(s.wallet, amount, today),
           ledger: log(s.ledger, amount, 'daily'),
-          // The owner asked for no check-in popup (2026-10-09): the shells arrive quietly,
-          // and History shows them. Setting `dailyReward: { amount, day }` here brings the
-          // Today sheet (DailyRewardSheet) back.
+          // The Today sheet is back (owner, 2026-11-07, replacing the quiet check-in of 10-09):
+          // its Collect pours the day's shells into the wallet (Coin Drop Reward).
+          dailyReward: { amount, day },
         }));
         return amount;
       },
@@ -4097,7 +4097,11 @@ function serverCheckIn(set: Setter, attempt = 0) {
       checkedInDay = today;
       applyServerWallet(set, result.wallet);
       if (result.amount > 0) {
-        set((s) => ({ ledger: log(s.ledger, result.amount, 'daily'), daily: { ...s.daily, checkInAmount: result.amount } }));
+        set((s) => ({
+          ledger: log(s.ledger, result.amount, 'daily'),
+          daily: { ...s.daily, checkInAmount: result.amount },
+          dailyReward: { amount: result.amount, day: result.day },
+        }));
       }
     });
 }
