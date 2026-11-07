@@ -37,9 +37,9 @@ const CHIP_DONE = isDark ? 'rgba(48,209,88,0.20)' : '#E3F7EF';
 const DONE_EDGE = '#1E9E78';
 
 const MASCOT = 236;
-/** The mascot art is 5:6 of its width; its paws rest this far down over the card's top edge. */
-const MASCOT_H = (MASCOT * 200) / 240;
-const PAW_OVERLAP = 24;
+/** The mascot art is 212:240 of its width; its paws (the bottom ~40 units) rest half over the card's top edge. */
+const MASCOT_H = (MASCOT * 212) / 240;
+const PAW_OVERLAP = 20;
 /** Shells that fly per collect, how far apart they leave, and each one's flight. */
 const FLOCK = 5;
 const STAGGER = 75;
@@ -229,6 +229,8 @@ export function DailyRewardSheet() {
   const longDate = new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
   const date = longDate.charAt(0).toLocaleUpperCase(i18n.language) + longDate.slice(1);
   const done = today - 1 + (got ? 1 : 0);
+  // A margin, not padding, under the card: the mascot's absolute `bottom` then counts it plainly.
+  const bottomGap = Math.max(insets.bottom, 12) + 10;
 
   return (
     <Modal visible={!!reward} transparent animationType="none" statusBarTranslucent onRequestClose={close}>
@@ -270,10 +272,24 @@ export function DailyRewardSheet() {
 
         <View style={styles.flex} />
 
-        <View style={[styles.stage, { paddingBottom: Math.max(insets.bottom, 12) + 10 }]}>
+        <View style={styles.stage}>
           {/* Room above the card for the mascot, which is drawn after the card so its paws sit on top. */}
           <View style={{ height: MASCOT_H - PAW_OVERLAP }} />
-          <View style={styles.card} onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}>
+          {/* The body peeks from behind the card's edge; its paws are drawn after the card, on top. */}
+          {cardHeight > 0 ? (
+            <Animated.View
+              ref={mascotBox}
+              pointerEvents="none"
+              style={[styles.mascot, { bottom: bottomGap + cardHeight - PAW_OVERLAP }, mascotStyle]}
+              onLayout={() =>
+                mascotBox.current?.measureInWindow((x, y, w, h) => {
+                  mascotCenter.current = { x: x + w / 2, y: y + h * 0.6 };
+                })
+              }>
+              <LiveMascot size={MASCOT} part="body" joy={joy} lookX={lookX} lookY={lookY} />
+            </Animated.View>
+          ) : null}
+          <View style={[styles.card, { marginBottom: bottomGap }]} onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}>
             <View style={styles.cardHead}>
               <Txt style={styles.cardTitle}>{t('dailyReward.title')}</Txt>
               <Txt style={styles.cardCount}>{`${done}/${DAILY_CHECK_IN.length}`}</Txt>
@@ -328,16 +344,8 @@ export function DailyRewardSheet() {
           </View>
 
           {cardHeight > 0 ? (
-            <Animated.View
-              ref={mascotBox}
-              pointerEvents="none"
-              style={[styles.mascot, { bottom: Math.max(insets.bottom, 12) + 10 + cardHeight - PAW_OVERLAP }, mascotStyle]}
-              onLayout={() =>
-                mascotBox.current?.measureInWindow((x, y, w, h) => {
-                  mascotCenter.current = { x: x + w / 2, y: y + h * 0.63 };
-                })
-              }>
-              <LiveMascot size={MASCOT} joy={joy} lookX={lookX} lookY={lookY} />
+            <Animated.View pointerEvents="none" style={[styles.mascot, { bottom: bottomGap + cardHeight - PAW_OVERLAP }, mascotStyle]}>
+              <LiveMascot size={MASCOT} part="paws" />
             </Animated.View>
           ) : null}
         </View>

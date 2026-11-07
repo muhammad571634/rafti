@@ -13,9 +13,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Defs, Ellipse, LinearGradient, Path, Stop } from 'react-native-svg';
 
-/** The art's box: the mascot's head and paws, as in `assets/brand/sigmazam-peek.png`. */
+/** The art's box: the mascot's head and paws, as in `assets/brand/sigmazam-peek.png` (paws whole). */
 const VB_W = 240;
-const VB_H = 200;
+const VB_H = 212;
 
 const INK = '#4A2618';
 const EYES = [
@@ -26,13 +26,18 @@ const EYE_RX = 10;
 const EYE_RY = 12.5;
 
 export interface LiveMascotProps {
-  /** Width in points; the height follows (5:6 of it). */
+  /** Width in points; the height follows (212:240 of it). */
   size: number;
   /** 0 = its calm smile, 1 = laughing with happy eyes. */
   joy?: SharedValue<number>;
   /** Where it looks, each from -1 to 1 (x right, y down). */
   lookX?: SharedValue<number>;
   lookY?: SharedValue<number>;
+  /**
+   * Draw only one layer, so a screen can put the body behind an edge and the paws in front of it
+   * (both in the same box, same place). Default: the whole mascot.
+   */
+  part?: 'body' | 'paws';
 }
 
 /**
@@ -41,7 +46,7 @@ export interface LiveMascotProps {
  * The body, tuft, blush and paws are one SVG; the eyes and mouth are layers over it, moved by
  * transforms and opacity only. Reduced motion: no blinking (the face still answers `joy`).
  */
-export function LiveMascot({ size, joy, lookX, lookY }: LiveMascotProps) {
+export function LiveMascot({ size, joy, lookX, lookY, part }: LiveMascotProps) {
   const s = size / VB_W;
   const height = VB_H * s;
   const reduced = useReducedMotion();
@@ -82,6 +87,21 @@ export function LiveMascot({ size, joy, lookX, lookY }: LiveMascotProps) {
   }));
 
   const box = { width: size, height };
+  const paws = (
+    <>
+      <Ellipse cx={62} cy={190} rx={30} ry={20} fill="#FDE8D6" stroke="#EAC4A4" strokeWidth={1.5} />
+      <Ellipse cx={178} cy={190} rx={30} ry={20} fill="#FDE8D6" stroke="#EAC4A4" strokeWidth={1.5} />
+    </>
+  );
+  if (part === 'paws') {
+    return (
+      <View style={box} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none">
+        <Svg width={size} height={height} viewBox={`0 0 ${VB_W} ${VB_H}`}>
+          {paws}
+        </Svg>
+      </View>
+    );
+  }
   return (
     <View style={box} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none">
       <Svg width={size} height={height} viewBox={`0 0 ${VB_W} ${VB_H}`}>
@@ -95,7 +115,7 @@ export function LiveMascot({ size, joy, lookX, lookY }: LiveMascotProps) {
             <Stop offset="1" stopColor="#E8733B" />
           </LinearGradient>
         </Defs>
-        <Path d="M24,200 C18,120 58,48 120,46 C182,44 224,118 216,200 Z" fill="url(#body)" />
+        <Path d="M24,212 C18,120 58,48 120,46 C182,44 224,118 216,212 Z" fill="url(#body)" />
         <Path
           d="M30,132 C36,70 86,34 138,40 C176,44 206,30 236,2 C238,40 222,84 186,98 C152,110 118,84 84,92 C60,98 44,112 30,132 Z"
           fill="url(#tuft)"
@@ -104,8 +124,7 @@ export function LiveMascot({ size, joy, lookX, lookY }: LiveMascotProps) {
         <Path d="M135,104 Q146,98 157,104" stroke="#8A5A40" strokeWidth={2.4} strokeLinecap="round" fill="none" />
         <Ellipse cx={70} cy={150} rx={14} ry={8} fill="#F29C8A" opacity={0.45} />
         <Ellipse cx={172} cy={148} rx={14} ry={8} fill="#F29C8A" opacity={0.45} />
-        <Ellipse cx={62} cy={190} rx={30} ry={20} fill="#FDE8D6" stroke="#EAC4A4" strokeWidth={1.5} />
-        <Ellipse cx={178} cy={190} rx={30} ry={20} fill="#FDE8D6" stroke="#EAC4A4" strokeWidth={1.5} />
+        {part === 'body' ? null : paws}
       </Svg>
 
       {EYES.map((eye, i) => (
