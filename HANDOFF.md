@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z126. Find coded in the playful skin; seen on the A51 (2026-11-07, Claude 1). NEXT: Us in the playful skin, then Today
+
+- Owner looked at the four-tab prototype again and said: code Find now, care for palette, type and icons, logic untouched (questions later), senior quality: fast, stable, no crashes.
+- Theme: `worldHue(series)` (`WorldHue`: front fill, deeper back, ink; light and dark; sand for creations / unknown worlds), `playful.dash` and `playful.well` for empty seats.
+- Find (`f2c3e8e`, `52ba819`): cream ground, Nunito title, apricot create button, white search field, Everyone / Him / Her as a chip track with a white thumb (inline `WhoSwitch`; the shared `Segmented` is untouched), new characters as tall scene cards (74 % of the page, max 300 pt, 1.24 tall) with a tilted sun "New" sticker and the clear glass "Say hi" with a hand, family seats (filled: ring in `friendColor`, empty: dashed circle with +, in `family-row.tsx`), worlds as folders (`WorldFolder`, memo: back panel + tab, three faces as tilted cards, front with name and head count; a press fans the cards up and out with Reanimated springs on the UI thread, Reduce Motion aware), Talk now faces ringed in white, recent searches as chips, result cards. A folder card without a picture (user creations, a broken file via `onError`) shows the name's initial on the friend's hue. No Android elevation on folder cards (iOS shadow only).
+- A51 (Russian UI, OTA Android-only `74dbfbdb`): title, search, Who, Hugo Lind's card with "Новинка" and "Поздороваться", empty family seats, 8 world folders incl. "Мои творения" with initials, "Начать диалог" faces, search mode with recent faces. Not seen: the fan on press (needs a finger), dark mode.
+- Checks: tsc 0, npm test 667/667.
+
+Still to do:
+1. Us → Today in the playful skin per `docs/main-tabs-inventory.md`, each on the A51.
+2. Owner has questions about the tabs' logic; change logic only after them.
+3. From 0z121: second reader on migration b7, then the owner applies it.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z125. Chats coded in the playful skin; seen on the A51 (2026-11-07, Claude 1). NEXT: Find in the playful skin (worlds as folders), then Us, then Today
 
 - Tokens (`src/theme/colors.ts`, exported from `@/theme`): `playful` (ground cream #FBF6EE / #1A1613, ink, chip, chipOn, round, card, group mint, Streams plum, red) and `friendHues` (8 light/dark `{fill, ink}` pairs from 0z124 step 1); `friendColor(characterId)` picks one with `friendHueIndex` (`src/lib/friend-color.ts`, pure FNV-1a, 4 tests). Use `friendColor` for a friend's ring and colour on Find and Us too, so a friend keeps one hue everywhere.
