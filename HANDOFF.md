@@ -1,5 +1,43 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z135. Chain audit, part 1: the friend knows the hour and what you set up together; an alarm tells its friend (2026-11-07, Claude 1). NEXT: the owner deploys the server, then "Continue exactly here" below
+
+- **The product's first job (owner, 2026-11-07)**: talking with a character must feel like talking with a real person, in chat and in voice; characters behave like people (character, moods, opinions, carry a conversation); memory is part of it; everything set up with a friend (a plan from Us' +, a diary page, a board note, an alarm that friend wakes you with) is tied to that friend: they remember it, talk about it, and pushes follow it. Setting these up must be easy to understand. Saved in `.agents/rules/project-memory.md` §4.
+- **Owner's ask this block**: audit every flow chain end to end, also the ones first taken from BIMOBIMO's APK (`rafti-research/teardown/bimobimo-teardown.md`) and from Character.AI (`docs/character-ai-teardown.md`); find how each works and how to make it better; decide as the senior RN dev and change what is needed; every flow must work like a chain.
+- **Chain map (code)**:
+  - Plan: Us + (`src/components/us/publish-sheet.tsx`) -> `PlanSheet` -> `addSchedule` -> a moment + the friend says first (`planAddedCue`) -> `runTimers`: reminder 10 min before (`planRemindCue`) and "how did it go?" after (`planFollowUpCue`) in their chat -> `src/notifications/plan.ts` schedules both as pushes while the app is closed -> morning brief (`src/lib/brief.ts`) and Today's Date widget.
+  - Diary: Us + -> `/diary/write?characterId=` (starts shared with that friend, 0z128) -> the friend writes back; `diaryMemoryLine` puts it in memory.
+  - Board: Us + -> `/board/write?characterId=` -> costs shells -> the friend replies on the board.
+  - Alarm: `/alarms/edit` -> `saveAlarm` -> `src/notifications/alarms.ts` (real Android alarms) -> ring -> wake chain (`ringAlarm`, reply to wake).
+  - Chat-side "threads" (`src/ai/thread-prompt.ts`): what the user says in chat with a future; the model opens / moves / settles them and plans its own texts.
+- **Found and fixed (`044eca0`)**:
+  1. A chat or call reply had no clock (first texts and the memory pass did): a friend could not tell morning from night, and threads asked the model for ISO times without a "now".
+  2. A plan made on Us reached the friend only as the line they said when it was added; the reply prompt never listed plans or the alarms a friend wakes you with, so tomorrow's coffee was forgotten once that line scrolled away.
+  3. Saving an alarm with a friend said nothing in their chat (a plan does).
+  4. Thread times were written in UTC, without the user's offset.
+  - Now: `ChatPromptInput` has `clock` (now + UTC offset) and `together` (plans with this friend from yesterday on, alarms they wake you with). Turn-tier parts `clock` ("IT IS NOW: Saturday 2026-11-07 18:20 where they are (UTC+05:00, evening)") and `together` (`src/ai/together-prompt.ts`); thread lines on the same clock. The app sends both on chat and call replies (`src/lib/together.ts`); the server cleans them (`cleanClock`, `cleanTogether` in `server/src/app.ts`). A new alarm with a friend, or a new time / days / friend, makes that friend say so first (`alarmSetCue`; stock line reuses `planAdded`, no new strings).
+- **Not live yet**: the prompt parts need the server deploy (old servers ignore the new fields, nothing breaks meanwhile). The alarm line works now (client only). OTA Android-only `97e3c777`. Nothing of this block was checked on the A51 yet (the session ended as the device test began).
+- Checks: app tsc 0 in `src`, npm test 729/729; server tsc 0, server npm test 76/76 (run in the main checkout, which has `server/node_modules`).
+
+**Continue exactly here (next session):**
+1. Ask the owner to deploy the server, from `C:\Users\joray\BIMOBIMO`: `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`; then `curl https://sigmazam-api.fly.dev/health` must be 200.
+2. On the A51 (SDK adb only; REA's adb drops the phone): (a) set an alarm with a friend -> that friend says it in their chat; (b) Us + -> Plan with a friend for later today -> the friend answers; then in chat ask "when is our plan?" -> they know it (needs the deploy); (c) write "good morning" at night -> they know the hour. Delete the test plan and alarm afterwards (they are the owner's phone).
+3. Chain audit, part 2, one chain at a time, each checked on the A51:
+   - Alarm setup made easy (owner): study iOS Clock / Sleep and https://nativecook.dev/blocks/island-sleep-dial/ (owner sent it; ideas only, no port), then make `/alarms/edit` understandable at a glance (who wakes you, when, which days, voice or reply-to-wake).
+   - Us + -> plan sheet, diary write, board write: clear steps, the friend picked, what happens next shown.
+   - Memory: does the memory pass keep plans, diary pages and board notes as facts the friend can bring back (`src/ai/memory-pass.ts`, `memory-guard.ts`)?
+   - Compare with BIMOBIMO (`rafti-research/teardown/bimobimo-teardown.md` §3.3 chat, §3.4 chat "+", §3.8 Us, §3.9 Date, §3.10 diary) and Character.AI (`docs/character-ai-teardown.md`): list what they do better in these chains, adopt the good parts (structure and logic only, never their art or text).
+   - Pushes when the model is on (`src/notifications/written.ts`): the plan / alarm pushes read like the friend and match what they said in chat.
+4. Then character human-likeness (prompts, moods, opinions, conversation); the full 90-scenario eval waits for the paid model key (`docs/road-to-launch.md`).
+
+Still to do (carried over):
+1. Owner will judge the tab switch himself, maybe on a newer phone; the opacity-only experiment is on the local branch `exp/headless-tabs` (`dd1cb48`, not pushed, never run on a device).
+2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
+3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan with the friend's face.
+4. Widgets next steps in `docs/today-widgets.md`.
+5. From 0z121: second reader on migration b7, then the owner applies it.
+6. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z134. Tab switch profiled with atrace: the switch now starts at the tap, one frame (2026-11-07, Claude 1). NEXT: owner's next ask
 
 - Owner: every screen change should be smooth and easy like other apps. The 17:47 alarm was the owner's own (ignore it).
