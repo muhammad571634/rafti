@@ -1,26 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient as Gradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+import Svg, { Circle } from 'react-native-svg';
 
-import {
-  AuroraGlass,
-  CharacterAvatar,
-  EmptyState,
-  InsetGroup,
-  moduleTile,
-  PressableScale,
-  Screen,
-  SFIcon,
-  Txt,
-  UserAvatar,
-} from '@/components/ui';
+import { CharacterAvatar, EmptyState, moduleTile, PressableScale, Screen, SFIcon, ShellIcon, Txt, UserAvatar } from '@/components/ui';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
-import { SharePill } from '@/components/share-card-sheet';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
@@ -33,28 +22,52 @@ import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, isDark, radius, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
-/** Story-row avatar and the moment art: the top is generous, the timeline light. */
-const STORY = 58;
+/** The friend picker's faces, and the ring of their own hue round the chosen one. */
+const STORY = 56;
+const STORY_RING = 3;
+const STORY_GAP = 2;
 /** The picture at the end of a photo moment. */
 const PHOTO_THUMB = 40;
-/** The level ring (Fitness-style, canvas "Us 2" variant B): its size, stroke and circumference. */
-const RING = 104;
-const RING_STROKE = 12;
-const RING_R = (RING - RING_STROKE) / 2 - 2;
+/** A moment's round icon; the timeline's thread runs through their centres. */
+const MOMENT_ICON = 40;
+/** The level ring on the bond card: its size, stroke and circumference. */
+const RING = 92;
+const RING_STROKE = 10;
+const RING_R = (RING - RING_STROKE) / 2 - 1;
 const RING_C = 2 * Math.PI * RING_R;
-const PAIR = 34;
-/** Mint from light to deep, brighter in dark mode. */
-const RING_FILL = isDark ? ['#7CF0D8', '#3CCFB4'] : ['#3CCFB4', '#1FA88F'];
-const RING_TRACK = isDark ? 'rgba(95,224,196,0.18)' : 'rgba(31,168,143,0.16)';
+const PAIR = 32;
+const WHITE = '#FFFFFF';
+
+/**
+ * The bond card's mint (the bond's own colour, design-style §10): a soft gradient with ink on it,
+ * deep in dark mode with white. The ring and the figures' tiles are drawn to read on it.
+ */
+const BOND = isDark
+  ? {
+      fill: ['#1D5A47', '#163F3A'] as const,
+      ink: WHITE,
+      track: 'rgba(255,255,255,0.16)',
+      arc: '#5FE0C4',
+      tile: 'rgba(255,255,255,0.10)',
+      flame: systemColors.orange,
+    }
+  : {
+      fill: ['#C9F3E1', '#A8E9CF'] as const,
+      ink: '#1F1A17',
+      track: 'rgba(255,255,255,0.6)',
+      arc: '#1E9E78',
+      tile: 'rgba(255,255,255,0.7)',
+      flame: '#E8730C',
+    };
 
 /**
  * Each moment kind as an iOS-style icon: a system-colour circle with a white SF Symbol (an
- * Ionicon off iPhone). The 3D clay art is gone from Us (owner, 2026-10-17). Modules wear their
- * own colour and glyph (`moduleTile`), the same as on Today; a level-up is the bond's mint.
+ * Ionicon off iPhone). Modules wear their own colour and glyph (`moduleTile`), the same as on
+ * Today; a level-up is the bond's mint.
  */
 const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }> = {
   met: { ios: 'sparkles', icon: 'sparkles', fill: systemColors.purple },
@@ -81,7 +94,11 @@ const FILTERS = {
 } satisfies Record<string, MomentKind[]>;
 type FilterKey = keyof typeof FILTERS | 'all';
 
-/** [Us]: one bond at a time — how long, how close, what's next and what you've shared. */
+/**
+ * [Us]: one bond at a time — how long, how close, what's next and what you've shared. The playful
+ * skin (design-style §10, the approved four-tab prototype): cream ground, friends ringed in their
+ * own hue, the bond as a mint card with its level ring, the week as chips, moments on a thread.
+ */
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -168,31 +185,35 @@ export default function UsScreen() {
       scaleTo={0.9}
       accessibilityRole="button"
       accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
-      onPress={() => router.push('/notifications')}>
-      <AuroraGlass style={styles.add}>
-        <Ionicons name="notifications-outline" size={21} color={colors.text} />
-      </AuroraGlass>
+      onPress={() => router.push('/notifications')}
+      style={[styles.round, styles.roundSoft]}>
+      <Ionicons name="notifications-outline" size={21} color={playful.ink} />
       {unread > 0 ? (
         <View style={styles.badge} pointerEvents="none">
-          <Txt style={styles.badgeText}>{unread > 99 ? '99+' : unread}</Txt>
+          <Txt style={styles.badgeText} maxFontSizeMultiplier={1.2}>
+            {unread > 99 ? '99+' : unread}
+          </Txt>
         </View>
       ) : null}
     </PressableScale>
   );
 
   const addButton = (
-    <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)}>
-      <AuroraGlass prominent style={styles.add}>
-        <Ionicons name="add" size={24} color={colors.textOnPrimary} />
-      </AuroraGlass>
+    <PressableScale
+      scaleTo={0.9}
+      accessibilityRole="button"
+      accessibilityLabel={t('us.add')}
+      onPress={() => setPublishOpen(true)}
+      style={[styles.round, styles.roundAccent]}>
+      <Ionicons name="add" size={24} color={colors.textOnPrimary} />
     </PressableScale>
   );
 
   if (!selected) {
     return (
-      <Screen background="aurora">
+      <Screen background={playful.ground}>
         <View style={styles.head}>
-          <Txt style={[styles.title, styles.grow]} accessibilityRole="header">
+          <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
             {t('us.title')}
           </Txt>
           {bell}
@@ -215,10 +236,9 @@ export default function UsScreen() {
   const filterKeys = ['all', ...filters] as FilterKey[];
 
   return (
-    // On the aurora (canvas "Us 2", variant B): glass controls, solid cards, a Fitness-style level ring.
-    <Screen background="aurora">
+    <Screen background={playful.ground}>
       <View style={styles.head}>
-        <Txt style={[styles.title, styles.grow]} accessibilityRole="header">
+        <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
           {t('us.title')}
         </Txt>
         {bell}
@@ -239,11 +259,11 @@ export default function UsScreen() {
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 onPress={() => setSelectedId(c.id)}>
-                {/* A story-style ring with air around the face marks the bond on screen. */}
-                <View style={[styles.ring, active ? styles.ringOn : styles.ringOff]}>
+                {/* The chosen bond wears a ring of the friend's own hue, the same as on Chats. */}
+                <View style={[styles.storyRing, active && { borderColor: friendColor(c.id).fill }]}>
                   <CharacterAvatar character={c} size={STORY} />
                 </View>
-                <Txt style={[styles.pickName, active && styles.pickActive]} lines={1}>
+                <Txt style={[styles.pickName, active && styles.pickActive]} lines={1} maxFontSizeMultiplier={1.3}>
                   {shortName(displayName(c, r))}
                 </Txt>
               </PressableScale>
@@ -252,7 +272,7 @@ export default function UsScreen() {
         </ScrollView>
 
         {/* The bond at a glance: the level ring, days and title, then three figures; it opens the chat. */}
-        <View style={styles.hero}>
+        <Gradient colors={BOND.fill} start={{ x: 0, y: 0 }} end={{ x: 0.7, y: 1 }} style={styles.bond}>
           <PressableScale
             scaleTo={0.99}
             disabled={!conversation}
@@ -263,28 +283,32 @@ export default function UsScreen() {
               <LevelRing progress={progress} level={relationship.level} label={t('us.ringLevel')} />
               <View style={styles.grow}>
                 <View style={styles.daysLine}>
-                  <Txt style={styles.days}>{days}</Txt>
-                  <Txt style={styles.daysLabel}>{t('us.daysShort', { count: days })}</Txt>
+                  <Txt style={styles.days} maxFontSizeMultiplier={1.2}>
+                    {days}
+                  </Txt>
+                  <Txt style={styles.daysLabel} maxFontSizeMultiplier={1.3}>
+                    {t('us.daysShort', { count: days })}
+                  </Txt>
                 </View>
-                <Txt style={styles.levelText} lines={1}>
+                <Txt style={styles.levelText} lines={2} maxFontSizeMultiplier={1.3}>
                   {phrase(relationship.levelTitle)}
                 </Txt>
-                <Txt style={styles.levelMeta} lines={1}>
+                <Txt style={styles.levelMeta} lines={1} maxFontSizeMultiplier={1.3}>
                   {t('us.toLevel', {
                     count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
                     level: relationship.level + 1,
                   })}
                 </Txt>
               </View>
-              <View style={styles.pair}>
-                <UserAvatar user={user} size={PAIR} />
-                <CharacterAvatar character={character} size={PAIR} ring ringColor={aurora.card} style={styles.overlap} />
-              </View>
+            </View>
+            <View style={styles.pair} pointerEvents="none">
+              <UserAvatar user={user} size={PAIR} style={styles.pairFace} />
+              <CharacterAvatar character={character} size={PAIR} style={[styles.pairFace, styles.overlap]} />
             </View>
 
             <View style={styles.stats}>
               <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-              <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
+              <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} flame />
               <Stat
                 value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
                 label={t('us.statMet')}
@@ -292,8 +316,8 @@ export default function UsScreen() {
             </View>
           </PressableScale>
 
-          {/* The system Share symbol opens the bond's card (HIG Activity views): one quiet control, a
-              sibling of the chat button above so VoiceOver reaches it on its own. */}
+          {/* Share opens the bond's card (HIG Activity views): a sibling of the chat button above so
+              VoiceOver reaches it on its own; what a share pays today rides on it. */}
           <PressableScale
             style={styles.share}
             scaleTo={0.97}
@@ -301,23 +325,32 @@ export default function UsScreen() {
             accessibilityRole="button"
             accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
             onPress={() => setSharing(true)}>
-            <SharePill label={t('common.share')} reward={reward} />
+            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={playful.chipOnText} />
+            <Txt style={styles.shareText} maxFontSizeMultiplier={1.3}>
+              {t('common.share')}
+            </Txt>
+            {reward ? (
+              <View style={styles.reward}>
+                <Txt style={styles.rewardText} maxFontSizeMultiplier={1.2}>{`+${reward}`}</Txt>
+                <ShellIcon size={14} />
+              </View>
+            ) : null}
           </PressableScale>
-        </View>
+        </Gradient>
 
-        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} style={styles.card} />
+        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />
 
-        <Txt style={styles.sectionLabel}>{day === today ? t('common.today') : dayTitle(day, i18n.language)}</Txt>
-        <InsetGroup style={styles.group}>
+        <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          {day === today ? t('common.today') : dayTitle(day, i18n.language)}
+        </Txt>
+        <View style={styles.card}>
           {dayPlans.length === 0 ? (
             // The day is free: one quiet line, and one tap plans something.
             <View style={styles.free}>
-              <Txt style={[styles.rowText, styles.grow]} color={aurora.textMuted}>
-                {t('us.nothingPlanned')}
-              </Txt>
+              <Txt style={[styles.freeText, styles.grow]}>{t('us.nothingPlanned')}</Txt>
               <PressableScale style={styles.planPill} scaleTo={0.94} accessibilityRole="button" onPress={() => setPlanOpen(true)}>
-                <Ionicons name="add" size={15} color={colors.brandText} />
-                <Txt style={styles.planPillText} color={colors.brandText}>
+                <Ionicons name="add" size={16} color={colors.brandText} />
+                <Txt style={styles.planPillText} maxFontSizeMultiplier={1.3}>
                   {t('us.plan')}
                 </Txt>
               </PressableScale>
@@ -352,40 +385,39 @@ export default function UsScreen() {
               );
             })
           )}
-        </InsetGroup>
+        </View>
 
-        <Txt style={styles.sectionLabel}>{t('us.moments')}</Txt>
+        <Txt style={styles.sectionBig} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          {t('us.moments')}
+        </Txt>
         {filters.length > 1 ? (
-          // A glass segmented control on the aurora; it scrolls sideways when every kind has moments.
-          <AuroraGlass style={styles.segmentGlass}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.segment}>
-              {filterKeys.map((key) => {
-                const on = activeFilter === key;
-                return (
-                  <PressableScale
-                    key={key}
-                    scaleTo={0.96}
-                    accessibilityRole="tab"
-                    accessibilityState={{ selected: on }}
-                    onPress={() => setFilter(key)}
-                    style={[styles.segmentItem, filterKeys.length <= 4 && styles.segmentFill, on && styles.segmentOn]}>
-                    <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{t(`us.filter.${key}`)}</Txt>
-                  </PressableScale>
-                );
-              })}
-            </ScrollView>
-          </AuroraGlass>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pills} accessibilityRole="tablist">
+            {filterKeys.map((key) => {
+              const on = activeFilter === key;
+              return (
+                <PressableScale
+                  key={key}
+                  scaleTo={0.95}
+                  dimOnPress={false}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: on }}
+                  onPress={() => setFilter(key)}
+                  style={[styles.pill, on && styles.pillOn]}>
+                  <Txt style={[styles.pillText, on && styles.pillTextOn]} maxFontSizeMultiplier={1.3}>
+                    {t(`us.filter.${key}`)}
+                  </Txt>
+                </PressableScale>
+              );
+            })}
+          </ScrollView>
         ) : null}
         {timeline.length === 0 ? (
           <Txt style={styles.hint}>{t('us.noMoments')}</Txt>
         ) : (
-          <InsetGroup style={styles.group}>
+          <View style={styles.moments}>
             {shownMoments.map((moment, i) => {
               const photo = moment.photoId ? photos.find((p) => p.id === moment.photoId) : undefined;
-              const last = i === shownMoments.length - 1 && timeline.length <= visibleMoments;
+              const last = i === shownMoments.length - 1;
               return (
                 <MomentRow
                   key={moment.id}
@@ -421,16 +453,17 @@ export default function UsScreen() {
               );
             })}
             {timeline.length > visibleMoments ? (
-              <Pressable
-                style={({ pressed }) => [styles.showMore, pressed && styles.pressed]}
+              <PressableScale
+                style={styles.showMore}
+                scaleTo={0.95}
                 accessibilityRole="button"
                 onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
-                <Txt style={styles.rowText} color={colors.brandText}>
+                <Txt style={styles.showMoreText} maxFontSizeMultiplier={1.3}>
                   {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
                 </Txt>
-              </Pressable>
+              </PressableScale>
             ) : null}
-          </InsetGroup>
+          </View>
         )}
       </ScrollView>
 
@@ -468,19 +501,21 @@ function dayTitle(key: string, locale: string) {
 function TimeTile({ time }: { time?: string }) {
   if (!time) {
     return (
-      <View style={[styles.momentIcon, { backgroundColor: MOMENT_STYLE.plan.fill }]}>
+      <View style={[styles.planIcon, { backgroundColor: MOMENT_STYLE.plan.fill }]}>
         <SFIcon ios="calendar" icon="calendar" size={16} color={colors.white} />
       </View>
     );
   }
   return (
     <View style={styles.timeTile}>
-      <Txt style={styles.time}>{time}</Txt>
+      <Txt style={styles.time} maxFontSizeMultiplier={1.3}>
+        {time}
+      </Txt>
     </View>
   );
 }
 
-/** One moment: a system-colour icon (no 3D art here, owner 2026-10-17), the line, when. */
+/** One moment on the thread: its kind's coloured circle, the line, when (and the photo, if any). */
 function MomentRow({
   kind,
   text,
@@ -504,40 +539,36 @@ function MomentRow({
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={`${text}, ${when}`}
       onPress={onPress}>
+      {/* The thread to the next moment, from under this circle. */}
+      {last ? null : <View style={styles.thread} pointerEvents="none" />}
       <View style={[styles.momentIcon, { backgroundColor: look.fill }]}>
-        <SFIcon ios={look.ios} icon={look.icon} size={16} color={colors.white} />
+        <SFIcon ios={look.ios} icon={look.icon} size={19} color={colors.white} />
       </View>
-      <View style={[styles.momentBody, !last && styles.line]}>
-        <Txt style={[styles.momentText, styles.grow]} lines={2}>
-          {text}
-        </Txt>
-        <Txt style={styles.when}>{when}</Txt>
+      <Txt style={[styles.momentText, styles.grow]} lines={2}>
+        {text}
+      </Txt>
+      <View style={styles.momentEnd}>
         {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
+        <Txt style={styles.when}>{when}</Txt>
       </View>
     </Pressable>
   );
 }
 
-/** Closeness as a Fitness-style ring: a mint arc over a faint track, the level in the middle. */
+/** Closeness as a ring: the bond's deep mint over a light track, the level big in the middle. */
 function LevelRing({ progress, level, label }: { progress: number; level: number; label: string }) {
   const shown = Math.max(0, Math.min(1, progress));
   return (
     <View style={styles.levelRing}>
       <Svg width={RING} height={RING} style={styles.ringSvg}>
-        <Defs>
-          <LinearGradient id="levelRing" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={RING_FILL[0]} />
-            <Stop offset="1" stopColor={RING_FILL[1]} />
-          </LinearGradient>
-        </Defs>
-        <Circle cx={RING / 2} cy={RING / 2} r={RING_R} fill="none" stroke={RING_TRACK} strokeWidth={RING_STROKE} />
+        <Circle cx={RING / 2} cy={RING / 2} r={RING_R} fill="none" stroke={BOND.track} strokeWidth={RING_STROKE} />
         {shown > 0 ? (
           <Circle
             cx={RING / 2}
             cy={RING / 2}
             r={RING_R}
             fill="none"
-            stroke="url(#levelRing)"
+            stroke={BOND.arc}
             strokeWidth={RING_STROKE}
             strokeLinecap="round"
             strokeDasharray={`${RING_C * shown} ${RING_C}`}
@@ -545,170 +576,192 @@ function LevelRing({ progress, level, label }: { progress: number; level: number
         ) : null}
       </Svg>
       <View style={styles.ringLabel}>
-        <Txt style={styles.ringCaption}>{label}</Txt>
-        <Txt style={styles.ringLevel}>{level}</Txt>
+        <Txt style={styles.ringCaption} lines={1} maxFontSizeMultiplier={1.2}>
+          {label}
+        </Txt>
+        <Txt style={styles.ringLevel} maxFontSizeMultiplier={1.2}>
+          {level}
+        </Txt>
       </View>
     </View>
   );
 }
 
-function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
+/** One figure on the bond card, in its own light tile; the streak carries a flame. */
+function Stat({ value, label, flame }: { value: string; label: string; flame?: boolean }) {
   return (
-    <View style={[styles.stat, divided && styles.statDivided]}>
-      <Txt style={styles.statValue} color={colors.text}>
-        {value}
+    <View style={styles.stat}>
+      <View style={styles.statLine}>
+        {flame ? <Ionicons name="flame" size={15} color={BOND.flame} /> : null}
+        <Txt style={styles.statValue} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
+          {value}
+        </Txt>
+      </View>
+      <Txt style={styles.statLabel} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.2}>
+        {label}
       </Txt>
-      <Txt style={styles.statLabel}>{label}</Txt>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  grow: { flex: 1 },
+  grow: { flex: 1, minWidth: 0 },
   head: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     gap: space.sm,
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
     paddingBottom: space.xs,
   },
-  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4 },
-  add: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  // The red count on the bell, ringed in the ground colour so it reads as cut out of the glass.
+  title: { fontFamily: fonts.playful, fontSize: 36, lineHeight: 44, letterSpacing: -0.4, color: playful.ink },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  roundSoft: { backgroundColor: playful.round },
+  // The screen's one apricot action (design-style §10).
+  roundAccent: { backgroundColor: colors.primaryFill },
+  // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
   badge: {
     position: 'absolute',
-    top: -3,
-    right: -3,
-    minWidth: 18,
-    height: 18,
+    top: -4,
+    right: -5,
+    minWidth: 20,
+    height: 20,
     paddingHorizontal: 5,
-    borderRadius: 9,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemColors.red,
+    backgroundColor: playful.red,
     borderWidth: 2,
-    borderColor: aurora.base,
+    borderColor: playful.ground,
   },
-  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '700', color: colors.white },
-  picker: { gap: space.sm + 2, paddingHorizontal: space.lg, paddingTop: space.lg, paddingBottom: space.xs },
-  pick: { alignItems: 'center', gap: 7, width: STORY + 6 },
-  // The chosen bond: a tint ring with the aurora showing between it and the face; the rest a faint light ring.
-  ring: { padding: 2.5, borderRadius: radius.pill, borderWidth: 2.5, borderColor: 'transparent' },
-  ringOn: { borderColor: aurora.tint },
-  ringOff: { padding: 0, margin: 2.5, borderWidth: 2.5, borderColor: aurora.ring },
-  pickName: { fontSize: 12, color: aurora.textMuted },
-  pickActive: { fontWeight: '600', color: colors.text },
-  // Solid cards on the aurora, with a soft shadow on iPhone.
-  card: {
-    borderRadius: 22,
-    backgroundColor: aurora.card,
-    shadowColor: aurora.shadow,
-    shadowOpacity: isDark ? 0.35 : 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
+  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '800', color: WHITE },
+  picker: { gap: 12, paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xs },
+  pick: { alignItems: 'center', gap: 5, width: STORY + (STORY_RING + STORY_GAP) * 2 },
+  // A ring with a gap of ground round the face; only the chosen bond's is coloured.
+  storyRing: {
+    padding: STORY_GAP,
+    borderWidth: STORY_RING,
+    borderRadius: STORY / 2 + STORY_RING + STORY_GAP,
+    borderColor: 'transparent',
   },
-  group: {
-    borderRadius: 18,
-    backgroundColor: aurora.card,
-    shadowColor: aurora.shadow,
-    shadowOpacity: isDark ? 0.35 : 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  hero: {
-    marginHorizontal: space.lg,
-    marginTop: 18,
-    padding: space.lg,
-    borderRadius: 22,
-    backgroundColor: aurora.card,
-    shadowColor: aurora.shadow,
-    shadowOpacity: isDark ? 0.35 : 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  together: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+  pickName: { fontFamily: fonts.playfulBold, fontSize: 12, color: colors.textSecondary },
+  pickActive: { fontFamily: fonts.playful, color: playful.ink },
+  // No elevation: the bond card is flat colour, like the folders and bubbles.
+  bond: { marginHorizontal: 14, marginTop: 14, padding: space.lg, borderRadius: 30 },
+  together: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: PAIR * 2 - 10 },
   levelRing: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
   // The arc starts at twelve o'clock.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
-  ringLabel: { alignItems: 'center' },
-  ringCaption: { fontSize: 12, fontWeight: '600', color: aurora.textMuted },
-  ringLevel: { fontSize: 30, lineHeight: 32, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] },
-  pair: { flexDirection: 'row', alignSelf: 'flex-start' },
-  overlap: { marginLeft: -12 },
-  daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  days: { fontSize: 34, lineHeight: 38, fontWeight: '700', letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
-  daysLabel: { fontSize: 15, color: aurora.textMuted },
-  levelText: { marginTop: 3, fontSize: 15, fontWeight: '600' },
-  levelMeta: { marginTop: 3, fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
-  // Three figures under a hairline, split by hairlines (Health's summary rows).
-  stats: {
+  ringLabel: { alignItems: 'center', maxWidth: RING - RING_STROKE * 2 - 4 },
+  ringCaption: { fontFamily: fonts.playfulBold, fontSize: 11, lineHeight: 14, color: BOND.ink },
+  ringLevel: { fontFamily: fonts.playful, fontSize: 34, lineHeight: 38, color: BOND.ink, fontVariant: ['tabular-nums'] },
+  pair: { position: 'absolute', top: 0, right: 0, flexDirection: 'row' },
+  pairFace: { borderWidth: 2.5, borderColor: WHITE, borderRadius: PAIR / 2 + 2.5 },
+  overlap: { marginLeft: -10 },
+  daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
+  days: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: BOND.ink, fontVariant: ['tabular-nums'] },
+  daysLabel: { fontFamily: fonts.playfulBold, fontSize: 15, color: BOND.ink },
+  levelText: { marginTop: 2, fontFamily: fonts.playful, fontSize: 16, lineHeight: 20, color: BOND.ink },
+  levelMeta: { marginTop: 2, fontSize: 12.5, color: BOND.ink, fontVariant: ['tabular-nums'] },
+  stats: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  stat: { flex: 1, alignItems: 'center', gap: 1, paddingVertical: 10, paddingHorizontal: 6, borderRadius: 18, backgroundColor: BOND.tile },
+  statLine: { flexDirection: 'row', alignItems: 'center', gap: 3, maxWidth: '100%' },
+  statValue: { fontFamily: fonts.playful, fontSize: 19, lineHeight: 24, color: BOND.ink, fontVariant: ['tabular-nums'] },
+  statLabel: { fontSize: 11, lineHeight: 14, color: BOND.ink },
+  // The share action: an ink pill the card's width, today's reward on a light chip.
+  share: {
+    marginTop: 12,
+    minHeight: 46,
+    borderRadius: 23,
     flexDirection: 'row',
-    marginTop: space.lg,
-    paddingTop: space.md,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: aurora.separator,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: playful.chipOn,
   },
-  stat: { flex: 1, alignItems: 'center', gap: 2 },
-  statDivided: {
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: aurora.separator,
+  shareText: { fontFamily: fonts.playful, fontSize: 15.5, color: playful.chipOnText },
+  reward: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    height: 24,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    backgroundColor: isDark ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.18)',
   },
-  statValue: { fontSize: 20, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  statLabel: { fontSize: 12, color: aurora.textMuted },
-  sectionLabel: {
-    marginTop: 22,
-    marginBottom: 6,
-    marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
-    color: aurora.textMuted,
-    textTransform: 'uppercase',
+  rewardText: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: playful.chipOnText },
+  section: {
+    marginTop: 20,
+    marginBottom: 8,
+    marginHorizontal: 18,
+    fontFamily: fonts.playful,
+    fontSize: 17,
+    lineHeight: 22,
+    color: playful.ink,
   },
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  free: { minHeight: 52, flexDirection: 'row', alignItems: 'center', paddingLeft: space.lg, paddingRight: space.sm },
+  sectionBig: {
+    marginTop: 24,
+    marginBottom: 10,
+    marginHorizontal: 18,
+    fontFamily: fonts.playful,
+    fontSize: 21,
+    lineHeight: 26,
+    color: playful.ink,
+  },
+  card: { marginHorizontal: 14, borderRadius: 22, backgroundColor: playful.card, overflow: 'hidden' },
+  rowText: { fontSize: 16, letterSpacing: -0.3, color: playful.ink },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  pressed: { opacity: 0.6 },
+  free: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: space.lg, paddingRight: 10 },
+  freeText: { fontSize: 15, color: colors.textSecondary },
   planPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    height: 34,
-    paddingLeft: space.sm + 2,
-    paddingRight: space.md + 2,
-    borderRadius: 17,
-    backgroundColor: colors.primarySofter,
+    height: 36,
+    paddingLeft: 10,
+    paddingRight: 14,
+    borderRadius: 18,
+    backgroundColor: colors.primarySoft,
   },
-  planPillText: { fontSize: 15, fontWeight: '600' },
-  // The card's width, under the three figures.
-  share: { marginTop: space.md },
+  planPillText: { fontFamily: fonts.playful, fontSize: 14, color: colors.brandText },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  planBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
+  planBody: { flex: 1, minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
+  planIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   timeTile: { minWidth: 48, justifyContent: 'center' },
-  time: { fontSize: 17, fontWeight: '600', fontVariant: ['tabular-nums'] },
+  time: { fontFamily: fonts.playful, fontSize: 17, color: playful.ink, fontVariant: ['tabular-nums'] },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  remindText: { fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
-  segmentGlass: { height: 36, marginHorizontal: space.lg, marginBottom: space.sm + 2, borderRadius: 18, padding: 3 },
-  segment: { flexGrow: 1 },
-  segmentItem: { paddingHorizontal: space.md, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
-  segmentFill: { flex: 1 },
-  segmentOn: {
-    backgroundColor: aurora.glassOn,
-    shadowColor: colors.black,
-    shadowOpacity: 0.12,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
+  remindText: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  pills: { gap: 8, paddingHorizontal: space.lg, paddingBottom: 4 },
+  pill: {
+    minHeight: 34,
+    paddingHorizontal: 14,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: playful.chip,
   },
-  segmentText: { fontSize: 13, fontWeight: '500', color: colors.text },
-  segmentTextOn: { fontWeight: '700' },
-  hint: { marginHorizontal: space.lg * 2, fontSize: 15, color: aurora.textMuted },
-  moment: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  momentIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  momentBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg },
-  momentText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2 },
-  when: { fontSize: 13, color: aurora.textMuted },
+  pillOn: { backgroundColor: playful.chipOn },
+  pillText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: playful.ink },
+  pillTextOn: { color: playful.chipOnText },
+  hint: { marginTop: space.sm, marginHorizontal: 18, fontSize: 15, color: colors.textSecondary },
+  // Moments on a thread, straight on the cream (the prototype's timeline).
+  moments: { paddingHorizontal: 14, paddingTop: 6 },
+  moment: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: MOMENT_ICON + 18, paddingVertical: 9 },
+  thread: {
+    position: 'absolute',
+    left: MOMENT_ICON / 2 - 1,
+    top: 9 + MOMENT_ICON,
+    bottom: -9,
+    width: 2,
+    borderRadius: 1,
+    backgroundColor: playful.dash,
+  },
+  momentIcon: { width: MOMENT_ICON, height: MOMENT_ICON, borderRadius: MOMENT_ICON / 2, alignItems: 'center', justifyContent: 'center' },
+  momentText: { fontSize: 14.5, lineHeight: 19, color: playful.ink },
+  momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  when: { fontSize: 12, color: colors.textSecondary },
   thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
-  showMore: { minHeight: 48, justifyContent: 'center', paddingHorizontal: space.lg },
+  showMore: { alignSelf: 'center', minHeight: 44, paddingHorizontal: space.lg, justifyContent: 'center' },
+  showMoreText: { fontFamily: fonts.playful, fontSize: 14, color: colors.brandText },
 });

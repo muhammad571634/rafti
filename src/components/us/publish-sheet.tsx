@@ -1,18 +1,23 @@
-import { Ionicons } from '@expo/vector-icons';
+import type { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { moduleTile, SFIcon, Sheet, Txt } from '@/components/ui';
-import { colors, space, systemColors } from '@/theme';
+import { PressableScale, SFIcon, Sheet, Txt } from '@/components/ui';
+import { fonts, isDark } from '@/theme';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
 
-/** iOS-style icons (approved prototype `UsAdd.dc.html`): Calendar red, then Diary and Board in their Today colours. */
+const INK = isDark ? '#FFFFFF' : '#1F1A17';
+
+/**
+ * Three big soft tiles (the four-tab prototype): a plan in apricot, a diary page in paper, a board
+ * note in sky; each a light tint with ink on it (deep tints with white in dark mode).
+ */
 const OPTIONS: { kind: PublishKind; ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
-  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: systemColors.red },
-  { kind: 'diary', ...moduleTile('diary') },
-  { kind: 'board', ...moduleTile('board') },
+  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: isDark ? '#4A2E1E' : '#FFE6D4' },
+  { kind: 'diary', ios: 'book.closed.fill', icon: 'book', fill: isDark ? '#3E3226' : '#F3E2D2' },
+  { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: isDark ? '#163A44' : '#CFF2FA' },
 ];
 
 /** The [Us] "+": add a plan, write a diary page or pin a note on the board. */
@@ -31,25 +36,25 @@ export function PublishSheet({
   const { t } = useTranslation();
   return (
     <Sheet visible={visible} onClose={onClose} title={t('us.add')}>
-      <View style={styles.group}>
-        {OPTIONS.map(({ kind, ios, icon, fill }, i) => (
-          <Pressable
+      <View style={styles.tiles}>
+        {OPTIONS.map(({ kind, ios, icon, fill }) => (
+          <PressableScale
             key={kind}
+            scaleTo={0.97}
             onPress={() => onPick(kind)}
             accessibilityRole="button"
             accessibilityLabel={`${t(`us.publishKind.${kind}`)}, ${t(`us.publishHint.${kind}`, { name })}`}
-            style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
-            <View style={[styles.icon, { backgroundColor: fill }]}>
-              <SFIcon ios={ios} icon={icon} size={16} color={colors.white} />
+            style={[styles.tile, { backgroundColor: fill }]}>
+            <View style={styles.icon}>
+              <SFIcon ios={ios} icon={icon} size={22} color={INK} />
             </View>
-            <View style={[styles.body, i < OPTIONS.length - 1 && styles.line]}>
-              <View style={styles.text}>
-                <Txt style={styles.title}>{t(`us.publishKind.${kind}`)}</Txt>
-                <Txt style={styles.hint}>{t(`us.publishHint.${kind}`, { name })}</Txt>
-              </View>
-              <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+            <View style={styles.text}>
+              <Txt style={styles.title} maxFontSizeMultiplier={1.3}>
+                {t(`us.publishKind.${kind}`)}
+              </Txt>
+              <Txt style={styles.hint}>{t(`us.publishHint.${kind}`, { name })}</Txt>
             </View>
-          </Pressable>
+          </PressableScale>
         ))}
       </View>
     </Sheet>
@@ -57,13 +62,17 @@ export function PublishSheet({
 }
 
 const styles = StyleSheet.create({
-  group: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  icon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  body: { flex: 1, minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  text: { flex: 1, gap: 1 },
-  title: { fontSize: 17, letterSpacing: -0.4 },
-  hint: { fontSize: 13, color: colors.textSecondary },
+  tiles: { gap: 10 },
+  tile: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: 22 },
+  icon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+  },
+  text: { flex: 1, gap: 2 },
+  title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: INK },
+  hint: { fontSize: 13, lineHeight: 17, color: INK },
 });
