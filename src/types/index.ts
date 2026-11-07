@@ -546,7 +546,7 @@ export interface CallRecord {
   missed: boolean;
 }
 
-export type MemorySource = 'chat' | 'diary' | 'call' | 'manual';
+export type MemorySource = 'chat' | 'diary' | 'call' | 'manual' | 'board';
 /** Whose memory it is, the Memories tabs (canvas `MemTabs.dc.html`): your story together, them, you. */
 export type MemoryAbout = 'story' | 'them' | 'you';
 /** A chat line kept word for word (long press, Pin to Memories). */

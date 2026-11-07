@@ -17,6 +17,7 @@ import { BOARD_STYLES, boardStyle, Stationery } from '@/components/board/station
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CharacterAvatar, GlassButton, glassStyle, InsetGroup, PressableScale, Screen, Sheet, ShellIcon, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, space } from '@/theme';
@@ -63,8 +64,14 @@ export default function BoardWriteScreen() {
     if (!to) return;
     const result = postBoardNote(to.id, text, style);
     if (result === 'noShells') return setPaywall(shellCosts.boardNote);
-    // Back to where the note was started (Us or the board); the answer arrives in chat.
-    if (result === 'ok') router.back();
+    // Straight to their chat: the answer comes there in a few seconds, so the user sees what
+    // the note set going (owner, 2026-11-07: every chain shows what happens next).
+    if (result === 'ok') {
+      haptic.success();
+      const conversation = useAppStore.getState().conversations.find((c) => c.characterId === to.id);
+      if (conversation) router.replace({ pathname: '/chat/[id]', params: { id: conversation.id } });
+      else router.back();
+    }
   };
 
   const ready = !!text.trim() && !!to;

@@ -5,7 +5,7 @@ import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/d
 import { Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { CharacterAvatar, Sheet, ShellIcon, Toggle, Txt } from '@/components/ui';
+import { CharacterAvatar, PressableScale, Sheet, ShellIcon, Toggle, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
@@ -127,7 +127,7 @@ export function PlanSheet({
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('us.newPlan')} onDone={submit} doneDisabled={!title.trim()} avoidKeyboard>
+    <Sheet visible={visible} onClose={onClose} title={t('us.newPlan')} avoidKeyboard>
       <View style={styles.group}>
         <TextInput
           value={title}
@@ -198,18 +198,27 @@ export function PlanSheet({
       </View>
 
       {character ? (
-        <View style={styles.footerRow}>
-          <Txt style={[styles.footer, styles.footerText]}>
-            {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
-          </Txt>
-          {cost ? (
-            <View style={styles.cost} accessibilityLabel={`${cost} ${t('common.shells')}`}>
-              <ShellIcon size={14} />
-              <Txt style={styles.costText}>{cost}</Txt>
-            </View>
-          ) : null}
-        </View>
+        <Txt style={styles.footer}>
+          {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
+        </Txt>
       ) : null}
+
+      {/* One big action with its price, as on the alarm screens (owner, 2026-11-07). */}
+      <PressableScale
+        onPress={submit}
+        disabled={!title.trim()}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !title.trim() }}
+        accessibilityLabel={cost ? `${t('chat.setup.add')}, ${cost} ${t('common.shells')}` : t('chat.setup.add')}
+        style={[styles.cta, !title.trim() && styles.ctaOff]}>
+        <Txt style={styles.ctaText}>{t('chat.setup.add')}</Txt>
+        {cost ? (
+          <View style={styles.cost}>
+            <ShellIcon size={15} />
+            <Txt style={styles.costText}>{cost}</Txt>
+          </View>
+        ) : null}
+      </PressableScale>
 
       {/* The app's own calendar for a later day (the time keeps the system picker). */}
       <CalendarPopover
@@ -282,8 +291,19 @@ const styles = StyleSheet.create({
   timePill: { height: 34, paddingHorizontal: space.md, borderRadius: 8, backgroundColor: colors.primarySofter, justifyContent: 'center' },
   timeText: { fontSize: 17, fontVariant: ['tabular-nums'] },
   footer: { marginTop: space.sm, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary },
-  footerRow: { flexDirection: 'row', alignItems: 'flex-start' },
-  footerText: { flex: 1, marginRight: 0 },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: space.sm, marginRight: space.lg },
-  costText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  cta: {
+    height: 56,
+    borderRadius: 28,
+    marginTop: space.lg,
+    marginHorizontal: space.lg,
+    backgroundColor: colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.sm,
+  },
+  ctaOff: { opacity: 0.45 },
+  ctaText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(42,26,18,0.12)' },
+  costText: { fontSize: 15, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
 });

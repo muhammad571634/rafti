@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { PressableScale, SFIcon, Sheet, Txt } from '@/components/ui';
+import { PressableScale, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
+import { shellCosts } from '@/mock';
 import { fonts, isDark } from '@/theme';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
 
 const INK = isDark ? '#FFFFFF' : '#1F1A17';
+
+/** What each costs, on its tile, before the tap (a diary page is free). */
+const COST: Record<PublishKind, number> = { plan: shellCosts.planSetup, diary: 0, board: shellCosts.boardNote };
 
 /**
  * Three big soft tiles (the four-tab prototype): a plan in apricot, a diary page in paper, a board
@@ -45,7 +49,7 @@ export function PublishSheet({
             scaleTo={0.97}
             onPress={() => onPick(kind)}
             accessibilityRole="button"
-            accessibilityLabel={`${t(`us.publishKind.${kind}`)}, ${hint(kind)}`}
+            accessibilityLabel={[t(`us.publishKind.${kind}`), hint(kind), COST[kind] ? `${COST[kind]} ${t('common.shells')}` : ''].filter(Boolean).join(', ')}
             style={[styles.tile, { backgroundColor: fill }]}>
             <View style={styles.icon}>
               <SFIcon ios={ios} icon={icon} size={22} color={INK} />
@@ -56,6 +60,12 @@ export function PublishSheet({
               </Txt>
               <Txt style={styles.hint}>{hint(kind)}</Txt>
             </View>
+            {COST[kind] ? (
+              <View style={styles.cost}>
+                <ShellIcon size={14} />
+                <Txt style={styles.costText}>{COST[kind]}</Txt>
+              </View>
+            ) : null}
           </PressableScale>
         ))}
       </View>
@@ -77,4 +87,14 @@ const styles = StyleSheet.create({
   text: { flex: 1, gap: 2 },
   title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: INK },
   hint: { fontSize: 13, lineHeight: 17, color: INK },
+  cost: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 14,
+    backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+  },
+  costText: { fontSize: 14, fontWeight: '700', color: INK, fontVariant: ['tabular-nums'] },
 });

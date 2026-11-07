@@ -3727,6 +3727,10 @@ export const useAppStore = create<AppState>()(
           ],
         }));
         if (crisis) answerCrisisInChat(set, get, characterId);
+        // They remember what you pinned for them, as a diary page they read (`diaryMemoryLine`
+        // keeps its first sentence and never a crisis line).
+        const line = diaryMemoryLine(clean);
+        if (line) get().addMemory(characterId, line, 'board');
         get().addIntimacy(characterId, INTIMACY.boardNote);
         addMoment(set, characterId, 'board');
         setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
