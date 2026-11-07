@@ -5581,7 +5581,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     lines.forEach((line, i) => {
       at += delays[i];
       const last = i === lines.length - 1;
-      setTimeout(() => {
+      bubbleLater(() => {
         if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
         if (i === 0 && withVoice) {
           appendMessage(set, get, conversationId, {
@@ -6595,6 +6595,37 @@ const replyingUntil = new Map<string, number>();
 const replyEpoch = new Map<string, number>();
 /** Replies waiting a beat for the next text (src/lib/reply-batch.ts). */
 const replyBatch = replyBatcher();
+
+/**
+ * Bubbles of replies on their way, in order. Android stops JS timers while the app is in the
+ * background, so a reply paced bubble by bubble would wait there until the user came back, with no
+ * banner (seen on the A51, 0z140). Away, a reply arrives whole at once; going away, the waiting
+ * batch is sent and what is on its way arrives, so the banner can tell them (`announceIncoming`).
+ */
+const onTheirWay = new Map<number, () => void>();
+let wayCount = 0;
+function bubbleLater(run: () => void, ms: number) {
+  if (AppLife.currentState !== 'active') {
+    run();
+    return;
+  }
+  const id = ++wayCount;
+  const handle = setTimeout(() => {
+    onTheirWay.delete(id);
+    run();
+  }, ms);
+  onTheirWay.set(id, () => {
+    clearTimeout(handle);
+    run();
+  });
+}
+AppLife.addEventListener('change', (state) => {
+  if (state === 'active') return;
+  replyBatch.flush();
+  const runs = [...onTheirWay.values()];
+  onTheirWay.clear();
+  runs.forEach((run) => run());
+});
 
 /** Takes back the replies still on their way to a chat (a rewind, an edit, a cleared chat), and one still waiting. */
 function cancelReplies(set: Setter, conversationId: string) {

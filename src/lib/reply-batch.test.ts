@@ -67,6 +67,19 @@ describe('back-to-back messages get one reply (backend-plan §12.8)', () => {
     assert.deepEqual(sent, [1]);
   });
 
+  it('sends every waiting batch at once when the app goes to the background', () => {
+    const { clock, advance } = fakeClock();
+    const sent: string[] = [];
+    const batch = replyBatcher(clock);
+    batch.queue('c1', 1, () => sent.push('c1'));
+    batch.queue('c2', 1, () => sent.push('c2'));
+    batch.composing('c2', true);
+    batch.flush();
+    assert.deepEqual(sent, ['c1', 'c2']);
+    advance(BATCH_MAX_MS);
+    assert.deepEqual(sent, ['c1', 'c2'], 'nothing twice');
+  });
+
   it('answers a beat after they clear the field without sending', () => {
     const { clock, advance } = fakeClock();
     const sent: number[] = [];

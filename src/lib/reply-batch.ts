@@ -44,6 +44,8 @@ export interface ReplyBatcher {
   take(chatId: string): number;
   /** Whether a reply is waiting in this chat. */
   waiting(chatId: string): boolean;
+  /** Sends every waiting batch now (the app went to the background, where timers sleep). */
+  flush(): void;
 }
 
 export function replyBatcher(clock: BatchClock = realClock): ReplyBatcher {
@@ -86,5 +88,13 @@ export function replyBatcher(clock: BatchClock = realClock): ReplyBatcher {
       return batch.gain;
     },
     waiting: (chatId) => batches.has(chatId),
+    flush() {
+      typing.clear();
+      for (const [chatId, batch] of [...batches]) {
+        clock.clear(batch.handle);
+        batches.delete(chatId);
+        batch.send(batch.gain);
+      }
+    },
   };
 }

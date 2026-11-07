@@ -15,8 +15,9 @@ import { inQuietHours } from './plan';
  * It goes with the red unread count: only a message that adds to it announces itself.
  *
  * A reply that comes in several bubbles is one announcement: the sound plays on the first and rests
- * for `SOUND_REST_MS`; the banner waits until the bubbles stop (`BANNER_SETTLE_MS`) and shows the
- * last. Quiet hours keep both quiet (messages wait for the morning, as the planned pushes do).
+ * for `SOUND_REST_MS`. Away, a reply's bubbles arrive together (timers sleep in the background, so
+ * the store lands them at once) and the banner shows the last, once per chat. Quiet hours keep both
+ * quiet (messages wait for the morning, as the planned pushes do).
  */
 
 export interface Incoming {
@@ -33,7 +34,6 @@ export interface Incoming {
 }
 
 const SOUND_REST_MS = 6_000;
-const BANNER_SETTLE_MS = 2_000;
 /** A message older than this when it lands was already announced (a push line coming into the chat). */
 const FRESH_MS = 60_000;
 /** The banner's id: one per chat, so a newer message takes the old one's place. */
@@ -62,7 +62,9 @@ export const MESSAGE_SOUND = hasMessageSound ? 'message.wav' : 'default';
 
 let player: AudioPlayer | null = null;
 let lastSound = 0;
-const banners = new Map<string, ReturnType<typeof setTimeout>>();
+/** Away: the newest message per chat, posted once the bubbles landing together are in (a microtask: timers sleep there). */
+const waiting = new Map<string, Incoming>();
+let posting = false;
 
 function chime() {
   const now = Date.now();
@@ -106,14 +108,15 @@ export function announceIncoming(message: Incoming, settings: AppSettings, muted
     return;
   }
   // Several bubbles of one reply: one banner, with the last of them.
-  clearTimeout(banners.get(message.conversationId));
-  banners.set(
-    message.conversationId,
-    setTimeout(() => {
-      banners.delete(message.conversationId);
-      void banner(message, settings.notificationPreview).catch(() => {});
-    }, BANNER_SETTLE_MS),
-  );
+  waiting.set(message.conversationId, message);
+  if (posting) return;
+  posting = true;
+  void Promise.resolve().then(() => {
+    posting = false;
+    const all = [...waiting.values()];
+    waiting.clear();
+    all.forEach((m) => void banner(m, settings.notificationPreview).catch(() => {}));
+  });
 }
 
 /** Back in the app: the banners of messages now on screen go, as Telegram clears them. */
