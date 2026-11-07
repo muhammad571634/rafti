@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z128. Us' logic: a bounded timeline, moments that lead somewhere, a diary page that reaches the friend (2026-11-07, Claude 1). NEXT: Today in the playful skin
+
+- Owner asked how Us' moments timeline should behave (grow forever? only to read?) and how "+" (plan, diary page, board note) should work, and handed the decisions over.
+- Found and fixed (`55ea430`, `75ef70f`, tests):
+  - Moments were saved uncapped under the one AsyncStorage key that loses the whole save past ~2 MB on Android. `capMoments` (`src/lib/storage-caps.ts`) keeps every milestone (met, levels, chapters, photos) and each friend's newest 150 everyday moments in the save.
+  - Only photo moments did anything on tap. `momentTarget` (`src/lib/moment-groups.ts`): secret note → `/secret-note/{id}`, board → `/board`, diary → `/diary`, call → `/call-history`, date → `/dating?partner=`, quiz → `/quiz/{id}`, met / level / chapter → the friend's profile; a plan stays (its day is on the calendar above). Tappable rows show a chevron. A51: a level row opened Hana's profile.
+  - The diary page from Us opened private, so the friend never read it. Us now passes the friend; `diary/write` starts shared with them (still switchable to "only me"; only a chatting friend can be the reader), the + sheet's hint reads "Let {name} read it" (`diary.shareWith`, no new strings). A51: Hana ticked.
+- Already right, left as is: a plan makes the friend answer in chat, remind before, follow up after, shows on Today's date widget, in the morning brief and in pushes (the push planner re-plans from state, so a removed plan's push goes too); a board note costs shells, goes to the chosen friend and gets their reply.
+- Checks: tsc 0, npm test 677/677. OTA Android-only `d71ec379`.
+
+Still to do:
+1. Today in the playful skin per `docs/main-tabs-inventory.md` (hero kept as approved), on the A51.
+2. Owner has questions about the tabs' logic.
+3. From 0z121: second reader on migration b7, then the owner applies it.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z127. Us coded in the playful skin; same-day note moments fold into one row (2026-11-07, Claude 1). NEXT: Today in the playful skin (hero kept as approved)
 
 - Owner: fix any logic / architecture that is not senior React Native on my own, as I go ("o'zing to'g'rilab ketishing mumkin"); still ask before product changes.
