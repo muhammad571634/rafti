@@ -3478,6 +3478,7 @@ export const useAppStore = create<AppState>()(
         } else if (offer.kind === 'plan') {
           madeId = get().addSchedule({ characterId, title: offer.title, date: offer.date, time: offer.time, whenLabel: '', quiet: true });
           if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
+          if (madeId) linkPlanThread(set, get, characterId, madeId, offer, replaces);
         }
         if (!madeId) return false;
         mark({ madeId });
@@ -5624,6 +5625,33 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     return;
   }
   deliver(standIn());
+}
+
+/**
+ * A plan set from the chat and the thread the same reply opened about it ("Dişçi randevusu", 0z136)
+ * are one thing: the thread takes the plan's id, so "it's off" drops the plan, and the plan's own
+ * "how did it go?" stands down when the thread asks it. The thread is the one the changed plan had,
+ * else an open one of this friend without a plan, within 3 hours of it or opened in the last 15 min.
+ */
+function linkPlanThread(set: Setter, get: Getter, characterId: string, scheduleId: string, offer: SetupOffer, replaces?: string) {
+  const now = Date.now();
+  const at = offer.time ? new Date(`${offer.date}T${offer.time}:00`).getTime() : NaN;
+  const thread = get()
+    .threads.filter(
+      (t) =>
+        t.characterId === characterId &&
+        t.status === 'open' &&
+        ((replaces && t.scheduleId === replaces) ||
+          (!t.scheduleId &&
+            ((t.happensAt && !Number.isNaN(at) && Math.abs(Date.parse(t.happensAt) - at) <= 3 * 3_600_000) || now - Date.parse(t.createdAt) < 15 * 60_000))),
+    )
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))[0];
+  if (!thread) return;
+  const asksAfter = thread.touches.some((x) => !x.sent && x.phase === 'after');
+  set((s) => ({
+    threads: s.threads.map((t) => (t.id === thread.id ? { ...t, scheduleId } : t)),
+    schedules: asksAfter ? s.schedules.map((x) => (x.id === scheduleId ? { ...x, followedUp: true } : x)) : s.schedules,
+  }));
 }
 
 /**
