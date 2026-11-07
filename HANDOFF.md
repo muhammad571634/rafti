@@ -20,7 +20,7 @@
 - **Server deploy (owner)**, from `C:\Users\joray\BIMOBIMO`: chat box `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`; Terminal panel: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`.
 
 Still to do:
-1. Owner's new ask (2026-11-07): when a friend's message arrives and the user is not in that chat (app closed or another screen), our own short minimalist sound, tied to the red unread count (0z140).
+1. Message sound + Telegram-like banner: paused, see 0z140 (server push is the real fix).
 2. On the A51: the user-side card with its title (after OTA `a19e81e7`); an alarm with Hana from the editor -> card + her line; delete it -> cancel card + her question.
 3. Back from Us after a Done card's jump should return to the chat (consider opening the plan in a sheet over the chat instead of switching tabs).
 4. Everything in 0z136 / 0z135 "Still to do".
