@@ -3,12 +3,13 @@
  * with the user's name in pen, the wax seal), and the card on its way out, landing, and turning over to the note.
  * Paper and linen carry their own grain (two small shaders), so nothing reads as a flat fill.
  *
- * From Native Cook's block unchanged but for the words: handwriting is a Skia paragraph in Caveat (any script falls
- * back to the system's face, as a fixed Latin font could not), and a long note steps its size down to fit the card.
+ * From Native Cook's block unchanged but for the words. Handwriting (their note on the card's back, the user's name on
+ * the pocket) is written over the canvas by `EnvelopeWriting` in React Native text, which writes any script; Skia
+ * could not load the handwriting face on the A51.
  */
 import {
-  Blur, Canvas, Circle, Group, LinearGradient, matchFont, Oval, Paragraph, Path, RadialGradient, Rect, RoundedRect, Shader, Skia,
-  type SkTypefaceFontProvider, Text, TextAlign, useFont, useFonts, vec,
+  Blur, Canvas, Circle, Group, LinearGradient, matchFont, Oval, Path, RadialGradient, Rect, RoundedRect, Shader, Skia,
+  Text, useFont, vec,
 } from '@shopify/react-native-skia';
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
@@ -28,15 +29,6 @@ const UI = FONT_FILES.uiBold;
 /** Printed on the card: Sigmazam's letterpress in the bookshop's place. */
 const PRESS = { name: 'Sigmazam', line: 'A NOTE, SEALED BY HAND', label: 'SECRET NOTE' } as const;
 
-/** Handwriting in pen, laid out as a paragraph so any script is written (Caveat, then the system's face). */
-function handParagraph(fonts: SkTypefaceFontProvider, text: string, size: number, width: number, align = TextAlign.Left) {
-  const p = Skia.ParagraphBuilder.Make({ textAlign: align }, fonts)
-    .pushStyle({ color: Skia.Color(COLORS.pen), fontFamilies: [FONTS.hand], fontSize: size, heightMultiplier: 1.12 })
-    .addText(text)
-    .build();
-  p.layout(width);
-  return p;
-}
 
 /** Linen: a fine weave, slow mottling, a lamp from the upper left and a vignette. */
 const LINEN = Skia.RuntimeEffect.Make(`
@@ -123,6 +115,39 @@ export function frameOf(v: EnvelopeValues, reduced: boolean) {
   return { now, p, fly, after, reset, resetOut, resetIn, page, drop, flipT, breath, tilt0: c.at >= 0 ? c.tilt0 : v.tilt.get() };
 }
 
+type Frame = ReturnType<typeof frameOf>;
+
+/**
+ * The envelope's pose from the frame (the block's, moved here so the written layer over the canvas follows it):
+ * the 2 pt float while sealed, the settle as the flap opens, the drop away, and the fade on a reset.
+ */
+export function envPoseOf(f: Frame, reduced: boolean) {
+  'worklet';
+  const still = 1 - clamp01(f.p / 0.05);
+  const float = reduced ? 0 : AMBIENT.floatPt * Math.sin((2 * Math.PI * f.now) / AMBIENT.floatMs) * still;
+  const d = f.reset > 0 ? 0 : f.drop;
+  const settle = f.reset > 0 ? 0 : 16 * clamp01(f.p / OPEN.flapShare);
+  return { dy: settle + d * d * 520 + float, scale: f.reset > 0 ? 0.96 + 0.04 * f.resetIn : 1, opacity: f.reset > 0 ? f.resetIn : 1 - f.drop };
+}
+
+/** The card's pose from the frame: inside, lifted by the finger, its flight with the arc, and the heavy turn. */
+export function cardPoseOf(f: Frame, envTop: number, finalTop: number) {
+  'worklet';
+  const out = f.reset > 0 ? 0 : clamp01((f.p - OPEN.flapShare) / (1 - OPEN.flapShare));
+  const insideY = envTop + 16 * clamp01(f.p / OPEN.flapShare) * (f.reset > 0 ? 0 : 1) + 18 + (CH * LAYOUT.cardInScale) / 2 - out * OPEN.cardRise;
+  const finalY = finalTop + CH / 2;
+  const k = f.fly;
+  const arc = -36 * Math.sin(Math.PI * k);
+  const turn = easeOutBack(f.flipT, REVEAL.flipBack);
+  return {
+    y: insideY + (finalY - insideY) * k + arc,
+    s: (LAYOUT.cardInScale + (1 - LAYOUT.cardInScale) * easeInOut(k)) * (1 + REVEAL.flipLift * Math.sin(Math.PI * clamp01(f.flipT))),
+    rot: f.tilt0 * (1 - k),
+    flip: turn * Math.PI,
+    front: f.after >= 0 && f.reset === 0,
+  };
+}
+
 function flapPath() {
   const tip = EH * LAYOUT.flapTip;
   return Skia.PathBuilder.Make()
@@ -181,27 +206,16 @@ function CardFront({ stamp }: { stamp: string }) {
   );
 }
 
-/** The card's back: their note in blue ink, and the day small in the corner. */
-function CardBack({ note, stamp, fonts }: { note: string; stamp: string; fonts: SkTypefaceFontProvider | null }) {
+/** The card's back: the paper and the day small in the corner. Their note is written over it (`EnvelopeWriting`). */
+function CardBack({ stamp }: { stamp: string }) {
   const small = useFont(UI, 9);
   const amount = useFont(SERIF, 22);
-  // The block wrote five short lines at 25 pt; a longer note steps down until it fits under the corner mark.
-  const room = { w: CW - 52 - 44, h: CH - 44 - 22 };
-  const para = useMemo(() => {
-    if (!fonts) return null;
-    for (const size of [25, 22, 19, 17, 15]) {
-      const p = handParagraph(fonts, note, size, room.w);
-      if (p.getHeight() <= room.h || size === 15) return p;
-    }
-    return null;
-  }, [fonts, note, room.w, room.h]);
   return (
     <Group>
       <RoundedRect x={-CW / 2} y={-CH / 2} width={CW} height={CH} r={LAYOUT.cardR} color={COLORS.card} />
       <Group clip={{ rect: { x: -CW / 2, y: -CH / 2, width: CW, height: CH }, rx: LAYOUT.cardR, ry: LAYOUT.cardR }}>
         <Group transform={[{ translateX: -CW / 2 }, { translateY: -CH / 2 }]}><Grain w={CW} h={CH} seed={77} /></Group>
       </Group>
-      {para && <Group opacity={0.92}><Paragraph paragraph={para} x={-CW / 2 + 26} y={-CH / 2 + 22} width={room.w} /></Group>}
       {amount && <Text text={stamp} x={CW / 2 - 22 - amount.getTextWidth(stamp)} y={-CH / 2 + 34} font={amount} color={COLORS.letterpress} />}
       {small && <Text text={PRESS.name.toUpperCase()} x={CW / 2 - 22 - small.getTextWidth(PRESS.name.toUpperCase())} y={-CH / 2 + 48} font={small} color={COLORS.cardMute} />}
       <RoundedRect x={-CW / 2 + 0.5} y={-CH / 2 + 0.5} width={CW - 1} height={CH - 1} r={LAYOUT.cardR} color={COLORS.cardEdge} style="stroke" strokeWidth={1} />
@@ -248,30 +262,15 @@ function Seal({ split, initial }: { split: { get(): number }; initial: string })
 }
 
 export function EnvelopeScene({ v, width, height, reduced, lay, content }: { v: EnvelopeValues; width: number; height: number; reduced: boolean; lay: ScreenLayout; content: EnvelopeContent }) {
-  const fonts = useFonts({ [FONTS.hand]: [FONT_FILES.hand] });
-  // Their name for the user, in pen on the pocket's lower right (the block's "for Sam").
-  const addressee = useMemo(() => (fonts ? handParagraph(fonts, content.to, 30, EW - 48, TextAlign.Right) : null), [fonts, content.to]);
   const envTop = lay.envTop;
   const finalTop = lay.cardTop;
   const ex = (width - EW) / 2;
   const frame = useDerivedValue(() => frameOf(v, reduced));
-  // Ambient: the sealed envelope rises and settles 2 pt on the table's air; still while it is being opened.
-  const float = useDerivedValue(() => {
-    const f = frame.get();
-    if (reduced) return 0;
-    const still = 1 - clamp01(f.p / 0.05);
-    return AMBIENT.floatPt * Math.sin((2 * Math.PI * f.now) / AMBIENT.floatMs) * still;
-  });
   const envTransform = useDerivedValue(() => {
-    const f = frame.get();
-    const d = f.reset > 0 ? 0 : f.drop;
-    const settle = f.reset > 0 ? 0 : 16 * clamp01(f.p / OPEN.flapShare);
-    return [{ translateX: ex }, { translateY: envTop + settle + d * d * 520 + float.get() }, { scale: f.reset > 0 ? 0.96 + 0.04 * f.resetIn : 1 }];
+    const e = envPoseOf(frame.get(), reduced);
+    return [{ translateX: ex }, { translateY: envTop + e.dy }, { scale: e.scale }];
   });
-  const envOpacity = useDerivedValue(() => {
-    const f = frame.get();
-    return f.reset > 0 ? f.resetIn : 1 - f.drop;
-  });
+  const envOpacity = useDerivedValue(() => envPoseOf(frame.get(), reduced).opacity);
   const angle = useDerivedValue(() => {
     const f = frame.get();
     if (f.reset > 0) return 0;
@@ -292,22 +291,7 @@ export function EnvelopeScene({ v, width, height, reduced, lay, content }: { v: 
   const flapFront = useDerivedValue(() => (angle.get() < 90 ? 1 : 0));
   // Past 90° the inside of the flap shows, its liner up, standing above the envelope.
   const flapBack = useDerivedValue(() => (angle.get() >= 90 ? 1 : 0));
-  const cardPose = useDerivedValue(() => {
-    const f = frame.get();
-    const out = f.reset > 0 ? 0 : clamp01((f.p - OPEN.flapShare) / (1 - OPEN.flapShare));
-    const insideY = envTop + 16 * clamp01(f.p / OPEN.flapShare) * (f.reset > 0 ? 0 : 1) + 18 + (CH * LAYOUT.cardInScale) / 2 - out * OPEN.cardRise;
-    const finalY = finalTop + CH / 2;
-    const k = f.fly;
-    const arc = -36 * Math.sin(Math.PI * k);
-    const turn = easeOutBack(f.flipT, REVEAL.flipBack);
-    return {
-      y: insideY + (finalY - insideY) * k + arc,
-      s: (LAYOUT.cardInScale + (1 - LAYOUT.cardInScale) * easeInOut(k)) * (1 + REVEAL.flipLift * Math.sin(Math.PI * clamp01(f.flipT))),
-      rot: f.tilt0 * (1 - k),
-      flip: turn * Math.PI,
-      front: f.after >= 0 && f.reset === 0,
-    };
-  });
+  const cardPose = useDerivedValue(() => cardPoseOf(frame.get(), envTop, finalTop));
   const cardTransform = useDerivedValue(() => [
     { translateX: width / 2 }, { translateY: cardPose.get().y }, { rotate: (cardPose.get().rot * Math.PI) / 180 }, { scale: cardPose.get().s },
     { perspective: 1100 }, { rotateY: cardPose.get().flip },
@@ -362,7 +346,6 @@ export function EnvelopeScene({ v, width, height, reduced, lay, content }: { v: 
           </Path>
           <Path path={POCKET} color={COLORS.crease} style="stroke" strokeWidth={2}><Blur blur={1.6} /></Path>
           <Grain w={EW} h={EH} seed={3} />
-          {addressee && <Group opacity={0.9}><Paragraph paragraph={addressee} x={24} y={EH - 28 - (addressee.getLineMetrics()[0]?.baseline ?? 24)} width={EW - 48} /></Group>}
         </Group>
         <Group opacity={flapFront} transform={flapTransform}>
           <Path path={FLAP} color="rgba(60,40,10,0.22)" transform={[{ translateY: 3 }]}><Blur blur={4} /></Path>
@@ -388,7 +371,7 @@ export function EnvelopeScene({ v, width, height, reduced, lay, content }: { v: 
       </Group>
       <Group opacity={frontOpacity} transform={cardTransform}>
         <Group opacity={faceUp}><CardFront stamp={content.stamp} /></Group>
-        <Group opacity={faceDown} transform={[{ scaleX: -1 }]}><CardBack note={content.note} stamp={content.stamp} fonts={fonts} /></Group>
+        <Group opacity={faceDown} transform={[{ scaleX: -1 }]}><CardBack stamp={content.stamp} /></Group>
       </Group>
     </Canvas>
   );

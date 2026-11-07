@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnUI } from 'react-native-worklets';
 
 import { EnvelopeScene, frameOf } from './envelope-scene';
+import { EnvelopeWriting } from './envelope-writing';
 import { HEADLINE, POLISH, REDUCED_MS, RESET, REVEAL } from './motion';
 import { COLORS, FONT_FILES, FONTS, LAYOUT, screenLayout, type EnvelopeContent } from './theme';
 import { PHASE, useEnvelope, type EnvelopeValues, type Haptic } from './use-envelope';
@@ -94,8 +95,7 @@ function Screen({ width, height, reduced, autoPlay, content, onDone }: { width: 
   // The headlines wait for the wide face, so they never flash in the fallback font.
   const [fontReady] = useFonts({
     [FONTS.serif]: FONT_FILES.serif,
-    [FONTS.ui]: FONT_FILES.ui,
-    [FONTS.uiBold]: FONT_FILES.uiBold,
+    [FONTS.hand]: FONT_FILES.hand,
   });
   const [phase, setPhase] = useState<number>(PHASE.sealed);
   const onHaptic = useCallback((k: Haptic) => HAPTIC[k](), []);
@@ -148,6 +148,7 @@ function Screen({ width, height, reduced, autoPlay, content, onDone }: { width: 
       <GestureDetector gesture={pan}>
         <View style={styles.root} collapsable={false}>
           <EnvelopeScene v={v} width={width} height={height} reduced={reduced} lay={lay} content={content} />
+          <EnvelopeWriting v={v} width={width} reduced={reduced} lay={lay} note={GIFT.note} to={GIFT.to} />
           <View pointerEvents="none" accessible={sealed} accessibilityRole="button" accessibilityLabel={GIFT.sealedLabel}
             accessibilityHint={GIFT.hint} onAccessibilityTap={() => ui(() => { 'worklet'; input.open(); })}
             style={[styles.envA11y, { left: (width - LAYOUT.envW) / 2, top: lay.envTop }]} />
@@ -201,7 +202,7 @@ function Screen({ width, height, reduced, autoPlay, content, onDone }: { width: 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLORS.table },
   envA11y: { position: 'absolute', width: LAYOUT.envW, height: LAYOUT.envH },
-  kicker: { position: 'absolute', left: LAYOUT.side, right: LAYOUT.side, fontFamily: FONTS.ui, fontSize: 11, lineHeight: 16, letterSpacing: 1.6, color: COLORS.mute, textTransform: 'uppercase' },
+  kicker: { position: 'absolute', left: LAYOUT.side, right: LAYOUT.side, fontWeight: '500', fontSize: 11, lineHeight: 16, letterSpacing: 1.6, color: COLORS.mute, textTransform: 'uppercase' },
   headlineBox: { position: 'absolute', left: LAYOUT.side, right: LAYOUT.side },
   headlineLine: { flexDirection: 'row' },
   // Instrument Serif's caps and ascenders reach above its line box on iOS: the line is set 4 pt taller than the size.
@@ -212,15 +213,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: 'rgba(243,236,223,0.04)',
   },
   chevron: { width: 9, height: 9, borderLeftWidth: 1.75, borderTopWidth: 1.75, borderColor: COLORS.ink, transform: [{ rotate: '45deg' }], marginTop: 4 },
-  openText: { color: COLORS.ink, fontFamily: FONTS.ui, fontSize: 15, letterSpacing: -0.1 },
+  // No negative tracking: Android under-measures a custom face with it and cut "Kapağı kaldır".
+  openText: { color: COLORS.ink, fontWeight: '500', fontSize: 15 },
   title: {
     position: 'absolute', left: LAYOUT.side, right: LAYOUT.side, color: COLORS.ink, fontSize: LAYOUT.title,
     lineHeight: LAYOUT.titleLine, fontFamily: FONTS.serif, letterSpacing: -0.4,
   },
   message: { position: 'absolute', left: LAYOUT.side, right: LAYOUT.side, alignItems: 'center' },
-  messageText: { color: COLORS.ink, fontFamily: FONTS.ui, fontSize: 15, lineHeight: 20, textAlign: 'center' },
-  messageSub: { color: COLORS.mute, fontFamily: FONTS.ui, fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 4 },
+  messageText: { color: COLORS.ink, fontWeight: '500', fontSize: 15, lineHeight: 20, textAlign: 'center' },
+  messageSub: { color: COLORS.mute, fontWeight: '500', fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 4 },
   ctaWrap: { position: 'absolute', left: LAYOUT.side, right: LAYOUT.side },
   cta: { height: LAYOUT.buttonH, borderRadius: LAYOUT.buttonH / 2, backgroundColor: COLORS.cta, alignItems: 'center', justifyContent: 'center' },
-  ctaText: { color: COLORS.ctaInk, fontFamily: FONTS.uiBold, fontSize: 16, letterSpacing: -0.2 },
+  ctaText: { color: COLORS.ctaInk, fontWeight: '600', fontSize: 16 },
 });
