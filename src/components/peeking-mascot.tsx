@@ -25,6 +25,8 @@ const HEADROOM = 24;
 interface PeekingMascotProps {
   /** Width of the art; the height follows its aspect. */
   width?: number;
+  /** Bump it to make the mascot hop once, as on a tap but silent (a reward just landed). */
+  cheer?: number;
 }
 
 /**
@@ -33,7 +35,7 @@ interface PeekingMascotProps {
  * when tapped. Only the mascot moves; the sheet itself still appears at once. With
  * reduced motion it simply sits there. Place it as the first child of a sheet card.
  */
-export function PeekingMascot({ width = 150 }: PeekingMascotProps) {
+export function PeekingMascot({ width = 150, cheer = 0 }: PeekingMascotProps) {
   const height = width / BRAND_ASPECT.peek;
   const pawDrop = height * PAW_DROP;
   const reduceMotion = useReducedMotion();
@@ -66,8 +68,7 @@ export function PeekingMascot({ width = 150 }: PeekingMascotProps) {
     };
   }, [height, reduceMotion, rise, squash]);
 
-  const onTap = () => {
-    haptic.tap();
+  const jump = () => {
     if (reduceMotion) return;
     hop.value = withSequence(
       withTiming(-HEADROOM + 6, { duration: 130, easing: Easing.out(Easing.quad) }),
@@ -75,6 +76,15 @@ export function PeekingMascot({ width = 150 }: PeekingMascotProps) {
     );
     squash.value = withSequence(withTiming(1.06, { duration: 130 }), withSpring(1, { damping: 8, stiffness: 220 }));
   };
+  const onTap = () => {
+    haptic.tap();
+    jump();
+  };
+  useEffect(() => {
+    if (cheer > 0) jump();
+    // Only a new cheer hops; `jump` is rebuilt every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cheer]);
 
   const artStyle = useAnimatedStyle(() => ({
     transform: [
