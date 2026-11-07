@@ -37,6 +37,9 @@ const CHIP_DONE = isDark ? 'rgba(48,209,88,0.20)' : '#E3F7EF';
 const DONE_EDGE = '#1E9E78';
 
 const MASCOT = 236;
+/** The mascot art is 5:6 of its width; its paws rest this far down over the card's top edge. */
+const MASCOT_H = (MASCOT * 200) / 240;
+const PAW_OVERLAP = 24;
 /** Shells that fly per collect, how far apart they leave, and each one's flight. */
 const FLOCK = 5;
 const STAGGER = 75;
@@ -80,6 +83,7 @@ export function DailyRewardSheet() {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const chime = useRef<AudioPlayer | null>(null);
   const mascotCenter = useRef<Point | null>(null);
+  const [cardHeight, setCardHeight] = useState(0);
 
   const root = useRef<ViewInstance>(null);
   const todayCell = useRef<ViewInstance>(null);
@@ -222,7 +226,8 @@ export function DailyRewardSheet() {
     transform: [{ scale: 0.6 + 0.4 * check.get() }],
   }));
 
-  const date = new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
+  const longDate = new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
+  const date = longDate.charAt(0).toLocaleUpperCase(i18n.language) + longDate.slice(1);
   const done = today - 1 + (got ? 1 : 0);
 
   return (
@@ -266,18 +271,9 @@ export function DailyRewardSheet() {
         <View style={styles.flex} />
 
         <View style={[styles.stage, { paddingBottom: Math.max(insets.bottom, 12) + 10 }]}>
-          <Animated.View
-            ref={mascotBox}
-            style={[styles.mascot, mascotStyle]}
-            onLayout={() =>
-              mascotBox.current?.measureInWindow((x, y, w, h) => {
-                mascotCenter.current = { x: x + w / 2, y: y + h * 0.63 };
-              })
-            }>
-            <LiveMascot size={MASCOT} joy={joy} lookX={lookX} lookY={lookY} />
-          </Animated.View>
-
-          <View style={styles.card}>
+          {/* Room above the card for the mascot, which is drawn after the card so its paws sit on top. */}
+          <View style={{ height: MASCOT_H - PAW_OVERLAP }} />
+          <View style={styles.card} onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}>
             <View style={styles.cardHead}>
               <Txt style={styles.cardTitle}>{t('dailyReward.title')}</Txt>
               <Txt style={styles.cardCount}>{`${done}/${DAILY_CHECK_IN.length}`}</Txt>
@@ -330,6 +326,20 @@ export function DailyRewardSheet() {
               <ShellIcon size={22} />
             </Pressable>
           </View>
+
+          {cardHeight > 0 ? (
+            <Animated.View
+              ref={mascotBox}
+              pointerEvents="none"
+              style={[styles.mascot, { bottom: Math.max(insets.bottom, 12) + 10 + cardHeight - PAW_OVERLAP }, mascotStyle]}
+              onLayout={() =>
+                mascotBox.current?.measureInWindow((x, y, w, h) => {
+                  mascotCenter.current = { x: x + w / 2, y: y + h * 0.63 };
+                })
+              }>
+              <LiveMascot size={MASCOT} joy={joy} lookX={lookX} lookY={lookY} />
+            </Animated.View>
+          ) : null}
         </View>
 
         {flight ? (
@@ -391,13 +401,13 @@ const styles = StyleSheet.create({
   walletText: { fontSize: 16, fontWeight: '700', color: INK, fontVariant: ['tabular-nums'] },
   round: { width: 40, height: 40, borderRadius: 20, backgroundColor: GLASS, alignItems: 'center', justifyContent: 'center' },
   heading: { alignItems: 'center', marginTop: 18, paddingHorizontal: 24 },
-  date: { fontSize: 14, fontWeight: '600', color: INK_SOFT, textTransform: 'capitalize' },
-  day: { marginTop: 4, fontFamily: fonts.display, fontSize: 50, lineHeight: 58, color: INK, letterSpacing: -0.5, textAlign: 'center' },
+  date: { fontSize: 14, fontWeight: '600', color: INK_SOFT },
+  day: { marginTop: 4, fontFamily: fonts.playful, fontSize: 50, lineHeight: 58, color: INK, letterSpacing: -0.5, textAlign: 'center' },
   prize: { marginTop: 2, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  prizeText: { fontFamily: fonts.display, fontSize: 30, lineHeight: 36, color: INK },
-  stage: { paddingHorizontal: 10 },
+  prizeText: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: INK },
+  stage: { paddingHorizontal: 10, position: 'relative' },
   // The paws rest on the card's top edge.
-  mascot: { alignSelf: 'center', marginBottom: -22, zIndex: 2, elevation: 7 },
+  mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2, elevation: 8 },
   card: {
     backgroundColor: colors.surface,
     borderRadius: 34,
@@ -411,7 +421,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 },
-  cardTitle: { fontFamily: fonts.display, fontSize: 17, color: colors.text },
+  cardTitle: { fontFamily: fonts.playfulBold, fontSize: 17, color: colors.text },
   cardCount: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   week: { flexDirection: 'row', gap: 6 },
   dayCol: { flex: 1, alignItems: 'center', gap: 6 },
@@ -419,7 +429,7 @@ const styles = StyleSheet.create({
   chip: { width: '100%', aspectRatio: 1 / 1.15, borderRadius: radius.md, backgroundColor: CHIP, alignItems: 'center', justifyContent: 'center' },
   chipToday: { backgroundColor: CHIP_TODAY, borderWidth: 2.5, borderColor: isDark ? colors.text : INK },
   chipDone: { backgroundColor: CHIP_DONE, borderWidth: 2.5, borderColor: DONE_EDGE },
-  chipAmount: { fontFamily: fonts.display, fontSize: 14, color: colors.text },
+  chipAmount: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.text },
   chipFace: { position: 'absolute' },
   ring: { width: 16, height: 16, borderRadius: 8, borderWidth: 2, borderColor: colors.border },
   surprise: { position: 'absolute', bottom: 4, fontSize: 10, fontWeight: '700', color: colors.textSecondary },
@@ -427,6 +437,6 @@ const styles = StyleSheet.create({
   cta: { height: 54, borderRadius: 27, backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   ctaOff: { opacity: 0.55 },
   ctaPressed: { transform: [{ scale: 0.97 }] },
-  ctaText: { fontFamily: fonts.display, fontSize: 18, color: colors.textOnPrimary },
+  ctaText: { fontFamily: fonts.playfulBold, fontSize: 18, color: colors.textOnPrimary },
   flying: { position: 'absolute', left: 0, top: 0, width: SHELL, height: SHELL },
 });

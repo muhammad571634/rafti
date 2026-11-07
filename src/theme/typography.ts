@@ -8,6 +8,12 @@ export const fonts = {
   display: 'Fredoka_700Bold',
   displaySemi: 'Fredoka_600SemiBold',
   body: Platform.select({ ios: 'System', default: 'sans-serif' }),
+  /**
+   * Nunito (OFL): the playful layer's heavy rounded titles (design-style §10). Unlike Fredoka it
+   * has Cyrillic and Vietnamese, so a Russian 'День 7' stays in one face; other scripts fall back.
+   */
+  playful: 'Nunito_900Black',
+  playfulBold: 'Nunito_800ExtraBold',
   /** Caveat (OFL): the handwriting on diary pages and diary covers. */
   hand: 'Caveat_600SemiBold',
 } as const;

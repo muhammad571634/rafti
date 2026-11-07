@@ -1,5 +1,6 @@
 import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
+import { Nunito_800ExtraBold, Nunito_900Black } from '@expo-google-fonts/nunito';
 import { Stack, useRootNavigationState, useRouter, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
@@ -27,7 +28,7 @@ SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
-  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold });
+  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold, Nunito_800ExtraBold, Nunito_900Black });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
   useThemeReload();
