@@ -106,6 +106,38 @@ export function featuredFriend(
   return undefined;
 }
 
+type FeaturedInputs = {
+  characters: Character[];
+  relationships: Record<string, Relationship>;
+  conversations: Conversation[];
+  messages: Record<string, Message[]>;
+};
+let featured: { inputs: FeaturedInputs; friend: HeroFriend | undefined } | undefined;
+
+/**
+ * `featuredFriend` for a store state, worked out once per change of its four inputs however many
+ * parts of Today ask (the hero, the Calls, Photos and Bond widgets). Use it as a store selector.
+ */
+export function featuredFriendOf(s: FeaturedInputs): HeroFriend | undefined {
+  const last = featured?.inputs;
+  if (
+    featured &&
+    last &&
+    last.characters === s.characters &&
+    last.relationships === s.relationships &&
+    last.conversations === s.conversations &&
+    last.messages === s.messages
+  ) {
+    return featured.friend;
+  }
+  const friend = featuredFriend(s.characters, s.relationships, s.conversations, s.messages);
+  featured = {
+    inputs: { characters: s.characters, relationships: s.relationships, conversations: s.conversations, messages: s.messages },
+    friend,
+  };
+  return friend;
+}
+
 /**
  * Their newest written line for the card, as said out loud (narration only when there is nothing
  * else), and when it came. None when a helpline card sits near it or after it: a hard moment does

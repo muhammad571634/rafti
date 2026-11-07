@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type LayoutRectangle, ScrollView, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -19,10 +19,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
-import { featuredFriend, heroTopHeight, TodayHero } from '@/components/today-hero';
+import { featuredFriendOf, heroTopHeight, TodayHero } from '@/components/today-hero';
 import { FoldingLogo } from '@/components/today/folding-logo';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
-import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
+import { LiveWidget } from '@/components/today/widget-models';
+import { WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, widgetLabel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
   CharacterAvatar,
@@ -125,7 +126,6 @@ export default function HomeScreen() {
   const today = useDayKey();
   const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
-  const models = useWidgetModels();
 
   const [editing, setEditing] = useState(false);
   /** The slot the gallery fills; null while it is closed. */
@@ -133,10 +133,8 @@ export default function HomeScreen() {
   const rects = useRef<LayoutRectangle[]>([]);
 
   const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
-  const hero = useMemo(
-    () => featuredFriend(characters, relationships, conversations, messages),
-    [characters, relationships, conversations, messages],
-  );
+  // Worked out once per store change and shared with the widgets that show the same friend.
+  const hero = useAppStore(featuredFriendOf);
 
   // Coming back in the morning: pages written overnight should be waiting here.
   useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
@@ -189,24 +187,33 @@ export default function HomeScreen() {
   }, [slots]);
   const firstEmpty = slots.indexOf(null);
 
-  const remove = (i: number) => setSlots(slots.map((k, j) => (j === i ? null : k)));
+  // Stable handlers, so a filled slot (memo) re-renders only when its own widget or edit mode changes,
+  // never because Today re-rendered for an unread chat or the scroll.
+  const remove = useCallback((i: number) => setSlots(slots.map((k, j) => (j === i ? null : k))), [slots, setSlots]);
   const place = (kind: WidgetKind) => {
     if (gallerySlot === null) return;
     setSlots(slots.map((k, j) => (j === gallerySlot ? kind : k)));
     setGallerySlot(null);
   };
   /** A widget dropped with its centre over another slot trades places with it. */
-  const drop = (from: number, dx: number, dy: number) => {
-    const r = rects.current[from];
-    if (!r) return;
-    const cx = r.x + r.width / 2 + dx;
-    const cy = r.y + r.height / 2 + dy;
-    const to = rects.current.findIndex((o) => o && cx >= o.x && cx <= o.x + o.width && cy >= o.y && cy <= o.y + o.height);
-    if (to < 0 || to === from) return;
-    const next = [...slots];
-    [next[from], next[to]] = [next[to], next[from]];
-    setSlots(next);
-  };
+  const drop = useCallback(
+    (from: number, dx: number, dy: number) => {
+      const r = rects.current[from];
+      if (!r) return;
+      const cx = r.x + r.width / 2 + dx;
+      const cy = r.y + r.height / 2 + dy;
+      const to = rects.current.findIndex((o) => o && cx >= o.x && cx <= o.x + o.width && cy >= o.y && cy <= o.y + o.height);
+      if (to < 0 || to === from) return;
+      const next = [...slots];
+      [next[from], next[to]] = [next[to], next[from]];
+      setSlots(next);
+    },
+    [slots, setSlots],
+  );
+  const keepRect = useCallback((i: number, r: LayoutRectangle) => {
+    rects.current[i] = r;
+  }, []);
+  const startEditing = useCallback(() => setEditing(true), []);
 
   // With a friend on the card, their picture runs from the screen's top, under the status bar or the
   // Dynamic Island, and this row sits on it as clear glass just below that safe area (owner,
@@ -333,12 +340,12 @@ export default function HomeScreen() {
                 key={`${kind}-${i}`}
                 index={i}
                 width={half}
-                model={models[kind]}
+                kind={kind}
                 editing={editing}
-                onLayout={(r) => (rects.current[i] = r)}
-                onStartEditing={() => setEditing(true)}
-                onReplace={() => setGallerySlot(i)}
-                onRemove={() => remove(i)}
+                onLayout={keepRect}
+                onStartEditing={startEditing}
+                onReplace={setGallerySlot}
+                onRemove={remove}
                 onDrop={drop}
               />
             ) : editing ? (
@@ -416,26 +423,29 @@ export default function HomeScreen() {
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')}>
         <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
           <View style={styles.galleryGrid} onLayout={(e) => setGalleryWidth(e.nativeEvent.layout.width)}>
-            {WIDGET_KINDS.map((kind) => {
-              const used = slots.includes(kind);
-              return (
-                <PressableScale
-                  key={kind}
-                  scaleTo={0.96}
-                  disabled={used}
-                  accessibilityRole="button"
-                  accessibilityLabel={models[kind].label}
-                  accessibilityState={{ disabled: used }}
-                  onPress={() => place(kind)}
-                  style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
-                  <WidgetView model={models[kind]} height={GALLERY_HEIGHT} preview />
-                  <View style={styles.galleryLabel}>
-                    <Txt style={styles.galleryLabelText}>{models[kind].label}</Txt>
-                    {used ? <Ionicons name="checkmark" size={15} color={colors.success} /> : null}
-                  </View>
-                </PressableScale>
-              );
-            })}
+            {/* Live previews only while the gallery is open: each one reads the store like a widget. */}
+            {gallerySlot !== null &&
+              WIDGET_KINDS.map((kind) => {
+                const used = slots.includes(kind);
+                const label = widgetLabel(kind, t);
+                return (
+                  <PressableScale
+                    key={kind}
+                    scaleTo={0.96}
+                    disabled={used}
+                    accessibilityRole="button"
+                    accessibilityLabel={label}
+                    accessibilityState={{ disabled: used }}
+                    onPress={() => place(kind)}
+                    style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
+                    <LiveWidget kind={kind} height={GALLERY_HEIGHT} preview />
+                    <View style={styles.galleryLabel}>
+                      <Txt style={styles.galleryLabelText}>{label}</Txt>
+                      {used ? <Ionicons name="checkmark" size={15} color={colors.success} /> : null}
+                    </View>
+                  </PressableScale>
+                );
+              })}
           </View>
         </ScrollView>
       </Sheet>
@@ -460,12 +470,12 @@ function SoftGlass({ style, children }: { style?: StyleProp<ViewStyle>; children
 /**
  * One filled slot. In edit mode it jiggles, wears a "−", opens the gallery on a tap and can be
  * dragged onto another slot; out of it, the widget works as itself and a long press starts
- * editing.
+ * editing. Memo: Today's handlers are stable and take the slot's index.
  */
-function Slot({
+const Slot = memo(function Slot({
   index,
   width,
-  model,
+  kind,
   editing,
   onLayout,
   onStartEditing,
@@ -475,12 +485,12 @@ function Slot({
 }: {
   index: number;
   width: number;
-  model: WidgetModel;
+  kind: WidgetKind;
   editing: boolean;
-  onLayout: (r: LayoutRectangle) => void;
+  onLayout: (index: number, r: LayoutRectangle) => void;
   onStartEditing: () => void;
-  onReplace: () => void;
-  onRemove: () => void;
+  onReplace: (index: number) => void;
+  onRemove: (index: number) => void;
   onDrop: (from: number, dx: number, dy: number) => void;
 }) {
   const { t } = useTranslation();
@@ -535,12 +545,12 @@ function Slot({
 
   return (
     <GestureDetector gesture={drag}>
-      <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(e.nativeEvent.layout)}>
+      <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(index, e.nativeEvent.layout)}>
         {/* In edit mode a long press still has a handler: without one, the finger that just started
             editing would also open the gallery as it lifts (A51 2026-11-05). */}
-        <WidgetView
-          model={model}
-          onPress={editing ? onReplace : undefined}
+        <LiveWidget
+          kind={kind}
+          onPress={editing ? () => onReplace(index) : undefined}
           onLongPress={
             editing
               ? noop
@@ -555,8 +565,8 @@ function Slot({
             scaleTo={0.88}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel={t('home.widget.remove', { name: model.label })}
-            onPress={onRemove}
+            accessibilityLabel={t('home.widget.remove', { name: widgetLabel(kind, t) })}
+            onPress={() => onRemove(index)}
             style={styles.minus}>
             <Ionicons name="remove" size={16} color={playful.ink} />
           </PressableScale>
@@ -564,7 +574,7 @@ function Slot({
       </Animated.View>
     </GestureDetector>
   );
-}
+});
 
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
