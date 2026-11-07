@@ -37,7 +37,9 @@ ourselves to, then the rules that keep us inside them, then how to measure.
    timer for that moment (`useWakeAt`) and refreshes on return to the foreground; no polling.
 6. **Memo where props are stable.** Handlers passed to rows and slots are `useCallback` and take the
    row's index, so a parent's re-render does not reach them.
-7. **No Android elevation on cards that overlap others** (it lifts them over later siblings) and no
+7. **Tab bars switch at the tap.** No press-scale on tab items: it redraws the window before the
+   switch (iOS and Material bars do not shrink either).
+8. **No Android elevation on cards that overlap others** (it lifts them over later siblings) and no
    live blur on Android (a full-screen layer per glass shape per frame).
 
 ## 3. Measure (lowest phone first)
@@ -58,3 +60,4 @@ the GPU percentiles. `framestats` gives per-frame UI, draw and GPU times.
 | 2026-11-07 (0z131) | Today, untouched 5 s | 320 frames, 78-92 % janky, 50th 32 ms, GPU 12-13 ms per frame (the hero's breath) | 0 frames |
 | 2026-11-07 (0z131) | Today, six scrolls | 41 % janky, 90th 32 ms | 19 % janky, 90th 28 ms |
 | 2026-11-07 (0z131) | 12 tab switches (warm) | median frame 40 ms (tab bar rebuilt on every tap) | median 25-29 ms; worst 130-150 ms (new screen appearing, open) |
+| 2026-11-07 (0z134) | 12 tab switches (warm) | each tap: ~100-200 ms of full-window press-shrink frames, then one 130-150 ms frame | 12 frames in all, one 130-150 ms frame per switch (no press shrink); attached see-through tabs + fade tried: worse, reverted |

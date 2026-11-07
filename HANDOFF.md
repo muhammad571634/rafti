@@ -1,5 +1,23 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z134. Tab switch profiled with atrace: the switch now starts at the tap, one frame (2026-11-07, Claude 1). NEXT: owner's next ask
+
+- Owner: every screen change should be smooth and easy like other apps. The 17:47 alarm was the owner's own (ignore it).
+- atrace on the A51 (`atrace -b 4096 -t 9 -a com.sigmazam.app gfx view input sched am`, parser in this session's scratchpad `parse_trace.py`): a tab tap first ran the tab item's press shrink, which redrew the whole 1080x2400 window for ~100-200 ms, then one heavy frame (`MountItemDispatcher::mountViews` 25-50 ms + first draw of the new screen; 106 ms on Us).
+- Kept (`e916209` part): tab items and Find are plain `Pressable`s, the switch starts at the tap as on iOS / Material bars. Now 12 switches render exactly 12 frames (one per switch, 130-150 ms); tap to new screen went from ~250-330 ms to ~140 ms.
+- Tried and reverted (`7840064`): inactive tabs attached as see-through layers (`detachInactiveScreens={false}` + a 180 ms fade-in with a hardware layer). Worse on the A51 (90th percentile 65 -> 133-150 ms; the fade re-recorded the hierarchy each frame) and the 25-40 ms mount stayed, so the mount is not the fragment detach.
+- Still open: what the 25-40 ms mount on a switch is (React commit on focus); needs a React / Hermes profile, then the new screen's first draw (images). iPhone uses the system tab bar, not affected.
+- Checks: tsc 0 in `src`, npm test 710/710. OTA Android-only `599126b8` (tried), `ec9c6c1d` (kept state).
+
+Still to do:
+1. Find the 25-40 ms mount on a tab switch with a React Profiler / Hermes trace; then the first draw.
+2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
+3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan with the friend's face.
+4. Widgets next steps in `docs/today-widgets.md`.
+5. Owner has more questions about the tabs' logic.
+6. From 0z121: second reader on migration b7, then the owner applies it.
+7. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z133. The tab bar: approved playful look, a real unread count (iPhone had none), back to top on re-tap (2026-11-07, Claude 1). NEXT: owner's next ask
 
 - Owner: improve the tab bar, judge its design, own ideas welcome. Findings: the Android/web bar was still the aurora bar (orange tint on a near-invisible white capsule) although the approved four-tab prototype (0z124) drew it playful; on iPhone the NativeTabs badge had no text, and a badge without text is not drawn, so iPhone showed no unread mark at all; tapping the current tab did nothing (iOS scrolls to the top).
@@ -9,7 +27,6 @@
 - Checks: tsc 0 in `src`, npm test 710/710.
 
 Still to do:
-1. Why an alarm rang at 17:47 with a morning line (who set it: the owner, a friend's wake-up, a snooze?).
 2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
 3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan / alarm with the friend's face.
 4. Tab switch: the new screen's first frames take 130-150 ms on the A51; profile with systrace.
