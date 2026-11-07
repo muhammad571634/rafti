@@ -333,6 +333,29 @@ export default function HomeScreen() {
           </View>
         ) : null}
 
+        {/* What is waiting for you sits together at the top: the chats, then the day's sealed note
+            (Today prototype 0z131; it used to come after the widgets and was easy to miss). */}
+        {note && noteFrom ? (
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.todo.note', { name: noteName })}
+            onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
+            style={[styles.noteRow, unread.length === 0 && styles.noteFirst]}>
+            {/* The envelope as a line in ink on a sun squircle (four-tab prototype). */}
+            <View style={styles.noteIcon}>
+              <ModuleLine name="note" size={24} color={playful.sunInk} />
+            </View>
+            <View style={styles.flex}>
+              <Txt style={styles.noteTitle} lines={1}>
+                {t('home.todo.note', { name: noteName })}
+              </Txt>
+              <Txt style={styles.noteSealed}>{t('home.widget.sealed')}</Txt>
+            </View>
+            <CharacterAvatar character={noteFrom} size={36} />
+          </PressableScale>
+        ) : null}
+
         <View style={styles.widgets}>
           {slots.map((kind, i) =>
             kind ? (
@@ -364,27 +387,6 @@ export default function HomeScreen() {
             ) : null,
           )}
         </View>
-
-        {note && noteFrom ? (
-          <PressableScale
-            scaleTo={0.98}
-            accessibilityRole="button"
-            accessibilityLabel={t('home.todo.note', { name: noteName })}
-            onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
-            style={styles.noteRow}>
-            {/* The envelope as a line in ink on a sun squircle (four-tab prototype). */}
-            <View style={styles.noteIcon}>
-              <ModuleLine name="note" size={24} color={playful.sunInk} />
-            </View>
-            <View style={styles.flex}>
-              <Txt style={styles.noteTitle} lines={1}>
-                {t('home.todo.note', { name: noteName })}
-              </Txt>
-              <Txt style={styles.noteSealed}>{t('home.widget.sealed')}</Txt>
-            </View>
-            <CharacterAvatar character={noteFrom} size={36} />
-          </PressableScale>
-        ) : null}
 
         <View style={styles.tiles}>
           {tiles.map((tile) => {
@@ -669,6 +671,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
   },
+  // Straight under the picture when no chat is waiting.
+  noteFirst: { marginTop: space.lg },
   noteTitle: { fontSize: 15.5, fontFamily: fonts.playful, color: playful.ink },
   noteSealed: { fontSize: 12.5, color: colors.textSecondary },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },

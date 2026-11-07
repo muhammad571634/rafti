@@ -75,6 +75,8 @@ export interface WidgetModel {
   /** How many lines the title may take (a plan's name: two); on iOS it shrinks a little before it is cut. */
   titleLines?: number;
   line: string;
+  /** A small face before `line`: who the plan is with, who wakes you (the top row keeps one button only). */
+  lineFace?: Character;
   /** How many lines `line` may take (Bond's "7 to the next level" runs long in Russian): one by default. */
   lineLines?: number;
   /** What comes after the main thing, as list rows with a small face each (the next plans, more alarms). */
@@ -102,6 +104,8 @@ export interface WidgetButton {
   glyph: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
   label: string;
   onPress: () => void;
+  /** `go`: the one thing to do now, white on green (call back a missed call). */
+  tone?: 'go';
 }
 
 /** The sizes words step down through to fit (`FitText`); the last is the floor, then they are cut. */
@@ -202,7 +206,14 @@ export function WidgetView({
           <View style={[styles.bar, { width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%` }]} />
         </View>
       ) : null}
-      {model.pill || !model.line ? null : (
+      {model.pill || !model.line ? null : model.lineFace ? (
+        <View style={styles.lineRow}>
+          <CharacterAvatar character={model.lineFace} size={18} />
+          <Txt variant="caption" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
+            {model.line}
+          </Txt>
+        </View>
+      ) : (
         <Txt variant="caption" color={sub} lines={model.lineLines ?? 1}>
           {model.line}
         </Txt>
@@ -296,8 +307,8 @@ export function WidgetView({
               accessibilityRole="button"
               accessibilityLabel={b.label}
               onPress={b.onPress}
-              style={[styles.button, onPhoto && styles.buttonOnPhoto]}>
-              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={18} color={ink} weight="medium" />
+              style={[styles.button, onPhoto && styles.buttonOnPhoto, b.tone === 'go' && styles.buttonGo]}>
+              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={18} color={b.tone === 'go' ? colors.white : ink} weight="medium" />
             </PressableScale>
           ))}
         </View>
@@ -407,6 +418,7 @@ const styles = StyleSheet.create({
   dayLetter: { width: 16, textAlign: 'center', fontSize: 12, lineHeight: 15, fontWeight: '700' },
   dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)' },
   afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  lineRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   afterDot: { width: 5, height: 5, borderRadius: 2.5, opacity: 0.5 },
   flexText: { flexShrink: 1 },
@@ -437,6 +449,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.75)',
   },
+  buttonGo: { backgroundColor: systemColors.green },
   // Clear glass on a picture (the clear-glass rule), never a white disc.
   buttonOnPhoto: { backgroundColor: 'rgba(255,255,255,0.22)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.5)' },
   buttonsTop: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 },

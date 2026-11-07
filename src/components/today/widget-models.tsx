@@ -149,6 +149,7 @@ function useCallsModel(): WidgetModel {
                 glyph: { ios: 'phone.fill', icon: 'call' },
                 label: missedAt ? t('chat.callBack') : t('home.widget.call', { name: nameOf(caller) }),
                 onPress: () => router.push(`/call/${caller.id}`),
+                tone: missedAt ? ('go' as const) : undefined,
               },
               {
                 glyph: { ios: 'message.fill', icon: 'chatbubble' },
@@ -221,13 +222,14 @@ function useDateModel(): WidgetModel {
     return {
       kind: 'date',
       label: label('date'),
-      faces: planFriend ? [planFriend] : [],
+      faces: [],
       ...(plan
         ? {
             figure: plan.time ?? dayWord(k, plan.date),
             title: plan.title,
             titleLines: 2,
             line: [plan.time ? dayWord(k, plan.date) : '', planFriend && !nextPlan ? nameOf(planFriend) : ''].filter(Boolean).join(' · '),
+            lineFace: planFriend,
             list: nextPlan
               ? [{ face: byId.get(nextPlan.characterId), text: `${dayWord(k, nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` }]
               : undefined,
@@ -254,7 +256,6 @@ function useSleepModel(): WidgetModel {
     const [alarm, ...later] = order.alarms;
     const wakerOf = (a: (typeof order.alarms)[number]) => (a.characterId ? byId.get(a.characterId) : undefined);
     const waker = alarm ? wakerOf(alarm) : undefined;
-    const wakers = [...new Set(order.alarms.map(wakerOf).filter((c): c is Character => !!c))];
     // Two rows fit under the next alarm; any more fold into "+N" on the second.
     const rows: { face?: Character; text: string }[] = later.slice(0, later.length > 2 ? 1 : 2).map((a) => {
       const who = wakerOf(a);
@@ -266,7 +267,8 @@ function useSleepModel(): WidgetModel {
     return {
       kind: 'sleep',
       label: label('sleep'),
-      faces: wakers,
+      // Who wakes you sits beside the line; the others' faces are on their rows.
+      faces: [],
       ...(alarm
         ? {
             figure: hhmm(alarm.hour, alarm.minute),
@@ -276,6 +278,7 @@ function useSleepModel(): WidgetModel {
             line: waker
               ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(waker) })
               : alarm.label || t('home.widget.wakeUp'),
+            lineFace: waker,
           }
         : { title: label('sleep'), line: t('home.widget.setWake') }),
       onPress: () => (alarm ? router.push('/alarms') : router.push('/bedtime')),
