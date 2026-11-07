@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { EnvelopeLetter } from '@/components/envelope';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
@@ -29,8 +30,9 @@ export default function SecretNoteScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
+  const userName = useAppStore((s) => s.user.displayName);
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const notes = useAppStore((s) => s.notes);
@@ -42,6 +44,8 @@ export default function SecretNoteScreen() {
 
   const [paywall, setPaywall] = useState<number | null>(null);
   const [justOpened, setJustOpened] = useState(false);
+  // Their note arrives as a sealed letter the user opens (Native Cook's Envelope Gift Reveal, builds with Skia).
+  const [letter, setLetter] = useState(false);
 
   const rawNote = useMemo(() => notes.find((n) => n.characterId === characterId), [notes, characterId]);
   const note = rawNote ? localSecretNote(rawNote) : undefined;
@@ -81,7 +85,28 @@ export default function SecretNoteScreen() {
   const exchange = () => {
     const result = exchangeNote(note.id);
     if (result === 'noShells') setPaywall(shellCosts.secretNote);
-    if (result === 'ok') setJustOpened(true);
+    if (result === 'ok') {
+      setJustOpened(true);
+      if (EnvelopeLetter) setLetter(true);
+    }
+  };
+
+  // The letter's words, in the user's language.
+  const day = new Date(note.date);
+  const firstName = name.split(' ')[0];
+  const envelope = {
+    kicker: `${t('secretNote.envelopeFrom', { name: firstName })} · ${day.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' })}`,
+    headline: t('secretNote.envelopeHeadline'),
+    title: t('secretNote.fromWithLove', { name: firstName }),
+    to: userName,
+    initial: Array.from(firstName)[0]?.toUpperCase() ?? '',
+    note: note.theirNote ?? '',
+    stamp: `${String(day.getDate()).padStart(2, '0')}.${String(day.getMonth() + 1).padStart(2, '0')}`,
+    caption: `“${note.prompt}”`,
+    captionSub: day.toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }),
+    cta: t('common.done'),
+    hint: t('secretNote.liftFlap'),
+    sealedLabel: t('secretNote.sealedTitle', { name }),
   };
 
   return (
@@ -104,7 +129,12 @@ export default function SecretNoteScreen() {
 
           <GroupLabel>{t('secretNote.theirNote', { name })}</GroupLabel>
           <View style={[styles.card, styles.pad]}>
-            {exchanged ? (
+            {exchanged && EnvelopeLetter ? (
+              // Opened notes are read again as the letter they came in.
+              <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityHint={t('secretNote.liftFlap')} onPress={() => setLetter(true)}>
+                <Txt style={styles.noteText}>{note.theirNote}</Txt>
+              </PressableScale>
+            ) : exchanged ? (
               <>
                 {justOpened ? <Anim name="loveLetter" size={120} loop={false} style={styles.letter} /> : null}
                 <Txt style={styles.noteText}>{note.theirNote}</Txt>
@@ -182,6 +212,7 @@ export default function SecretNoteScreen() {
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
+      {EnvelopeLetter && letter && note.theirNote ? <EnvelopeLetter content={envelope} onDone={() => setLetter(false)} /> : null}
     </Screen>
   );
 }

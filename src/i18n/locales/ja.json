@@ -738,7 +738,11 @@
     "sealedTitle": "{{name}}のメモは封印されています",
     "sealedHint": "メモを交換すると開きます",
     "yourNote": "あなたのメモ",
-    "swap": "メモを交換する"
+    "swap": "メモを交換する",
+    "envelopeFrom": "{{name}}より",
+    "envelopeHeadline": "あなたへの\n手紙",
+    "liftFlap": "封を開ける",
+    "fromWithLove": "{{name}}より、\n心をこめて"
   },
   "store": {
     "title": "ストア",

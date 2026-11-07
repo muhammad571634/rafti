@@ -738,7 +738,11 @@
     "sealedTitle": "{{name}}의 쪽지가 밀봉되어 있습니다",
     "sealedHint": "쪽지를 교환하면 열립니다",
     "yourNote": "나의 쪽지",
-    "swap": "쪽지 교환하기"
+    "swap": "쪽지 교환하기",
+    "envelopeFrom": "보낸 사람: {{name}}",
+    "envelopeHeadline": "당신에게\n온 편지",
+    "liftFlap": "봉투 열기",
+    "fromWithLove": "마음을 담아,\n{{name}}"
   },
   "store": {
     "title": "상점",

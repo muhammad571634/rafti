@@ -758,7 +758,11 @@
     "sealedTitle": "O recado de {{name}} está lacrado",
     "sealedHint": "Ele se abre quando vocês trocarem recados",
     "yourNote": "Seu recado",
-    "swap": "Trocar recados"
+    "swap": "Trocar recados",
+    "envelopeFrom": "De {{name}}",
+    "envelopeHeadline": "Algo\npara você",
+    "liftFlap": "Abra a aba",
+    "fromWithLove": "De {{name}},\ncom carinho"
   },
   "store": {
     "title": "Loja",

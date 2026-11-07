@@ -758,7 +758,11 @@
     "sealedTitle": "Le mot de {{name}} est scellé",
     "sealedHint": "Il s'ouvrira lors de votre échange de mots",
     "yourNote": "Votre mot",
-    "swap": "Échanger les mots"
+    "swap": "Échanger les mots",
+    "envelopeFrom": "De {{name}}",
+    "envelopeHeadline": "Un petit mot\npour toi",
+    "liftFlap": "Soulève le rabat",
+    "fromWithLove": "De {{name}},\navec tendresse"
   },
   "store": {
     "title": "Boutique",

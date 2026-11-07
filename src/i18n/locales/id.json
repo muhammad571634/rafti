@@ -738,7 +738,11 @@
     "sealedTitle": "Catatan {{name}} masih tersegel",
     "sealedHint": "Catatan akan terbuka saat kamu bertukar catatan",
     "yourNote": "Catatanmu",
-    "swap": "Tukar catatan"
+    "swap": "Tukar catatan",
+    "envelopeFrom": "Dari {{name}}",
+    "envelopeHeadline": "Sesuatu\nuntukmu",
+    "liftFlap": "Buka lipatannya",
+    "fromWithLove": "Dari {{name}},\ndengan sayang"
   },
   "store": {
     "title": "Toko",

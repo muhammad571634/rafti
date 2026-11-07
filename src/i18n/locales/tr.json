@@ -758,7 +758,11 @@
     "sealedTitle": "{{name}} notu mühürlü",
     "sealedHint": "Notları değiş tokuş ettiğinizde açılır",
     "yourNote": "Senin notun",
-    "swap": "Notları değiş tokuş et"
+    "swap": "Notları değiş tokuş et",
+    "envelopeFrom": "Gönderen: {{name}}",
+    "envelopeHeadline": "Sana\nbir şey var",
+    "liftFlap": "Kapağı kaldır",
+    "fromWithLove": "Sevgiyle,\n{{name}}"
   },
   "store": {
     "title": "Mağaza",
