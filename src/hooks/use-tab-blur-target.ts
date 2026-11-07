@@ -2,9 +2,9 @@ import { createContext, useContext, type RefObject } from 'react';
 import type { ViewInstance } from 'react-native';
 
 /**
- * The current tab screen's BlurTargetView, which the Android tab bar blurs. The tab layout
- * wraps each screen in one; a screen that needs its own (Chats, for its menus) takes this ref
- * for it instead, because a target nested in another leaves the outer one blank.
+ * A BlurTargetView ref a tab layout may hand its screens. None does today: the Android tab bar
+ * draws a frosted fill, not a live blur (0z131), so Chats falls back to its own target for its
+ * menus. Kept so a future live-blur bar can hand one down without touching the screens.
  */
 export const TabBlurTarget = createContext<RefObject<ViewInstance | null> | null>(null);
 

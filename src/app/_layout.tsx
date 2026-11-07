@@ -78,6 +78,12 @@ export default function RootLayout() {
           <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
           {/* A swipe must not end a date by accident; the close button asks first. */}
           <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
+          {/* iOS 26 swipes back from anywhere on a screen (native default, like Telegram). These
+              screens swipe sideways themselves (a reply's versions, the diary's pages), both ways,
+              so they go back from the edge only, as on iOS 18; the sideways swipe stays theirs. */}
+          <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
+          <Stack.Screen name="group/[id]/index" options={{ fullScreenGestureEnabled: false }} />
+          <Stack.Screen name="diary/mine" options={{ fullScreenGestureEnabled: false }} />
         </Stack>
         <AlarmRuntime />
         <OnboardingGate />
