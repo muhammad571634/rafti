@@ -518,6 +518,9 @@ export const playful = isDark
       plumInk: '#FFFFFF',
       /** The red count chip (Unread) and the LIVE chip. */
       red: systemColors.red,
+      /** Today's "Waiting for you" bubble and the sealed note's envelope, and what reads on them. */
+      sun: '#8A6400',
+      sunInk: '#FFFFFF',
     }
   : {
       ground: '#FBF6EE',
@@ -533,6 +536,8 @@ export const playful = isDark
       plum: '#2B2140',
       plumInk: '#FFFFFF',
       red: systemColors.red,
+      sun: '#FFC93C',
+      sunInk: '#1F1A17',
     };
 
 /** A fill and the text that reads on it (WCAG 4.5 or more, docs/main-tabs-inventory.md). */

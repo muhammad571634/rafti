@@ -16,6 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriend, heroTopHeight, TodayHero } from '@/components/today-hero';
@@ -24,13 +25,13 @@ import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { useWidgetModels, WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, WidgetView, type WidgetModel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import {
-  AuroraGlass,
   CharacterAvatar,
-  FrostIcon,
   ModuleLine,
+  moduleTile,
   PressableScale,
   Screen,
   Sheet,
+  SymbolTile,
   Txt,
   UserAvatar,
   type ModuleKey,
@@ -40,7 +41,7 @@ import { clipName, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, fonts, hitSlop, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
@@ -79,16 +80,21 @@ const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
 const CAPSULE = 40;
 /** The wordmark art's height inside its capsule: the lone mascot fills the circle as your face fills yours, the word reads at ~19 pt. */
 const LOGO_IN_CAPSULE = 34;
+/** "Waiting for you" is a speech bubble; its tail hangs from the bottom-left like Chats' bubbles. */
+const TAIL_W = 26;
+const TAIL_H = 12;
+/** The white ring round each waiting face, so overlapping faces stay apart on the sun. */
+const FACE_RING = 'rgba(255,255,255,0.9)';
 const noop = () => {};
 
 /**
- * The Today hub on the aurora ground, built from HIG Widgets ("prefer dynamic information that
- * changes throughout the day"; "choose between automatically displaying content and letting
- * people customize"): one top row with the Sigmazam wordmark and your mascot
- * with your name (six letters, the profile shows it whole), the friend you
- * talked with last, one "Waiting for you" row while chats are unread, the user's four widgets,
- * a sealed note when one is ready (that friend leaves one a day), then every module no widget stands in for as an app-icon
- * tile, so all ten stay one tap away.
+ * The Today hub on the playful cream ground (four-tab prototype), built from HIG Widgets ("prefer
+ * dynamic information that changes throughout the day"; "choose between automatically displaying
+ * content and letting people customize"): one top row with the Sigmazam wordmark and your mascot
+ * with your name (six letters, the profile shows it whole), the friend you talked with last, a
+ * sun-yellow "Waiting for you" bubble while chats are unread, the user's four widgets in their
+ * module tints, a sealed note when one is ready (that friend leaves one a day), then every module
+ * no widget stands in for as an app-icon tile in its own colour, so all ten stay one tap away.
  *
  * Edit like the iPhone Home Screen: a long press on a widget or "Edit" makes the widgets jiggle
  * (still under Reduce Motion), "−" empties a slot, "+" or an empty slot opens the widget
@@ -144,26 +150,43 @@ export default function HomeScreen() {
     }, [hydrated, heroId, today, leaveDailyNote]),
   );
 
-  const unread = [...conversations]
-    .filter((c) => c.unreadCount > 0)
-    .sort((a, b) => Date.parse(b.lastMessageAt) - Date.parse(a.lastMessageAt))
-    .flatMap((c) => {
-      const character = charactersById.get(c.characterId);
-      return character ? [{ conversation: c, character }] : [];
-    });
+  // Sorted once per change of the chats, not on every render (scrolling sets state).
+  const unread = useMemo(
+    () =>
+      conversations
+        .filter((c) => c.unreadCount > 0)
+        .sort((a, b) => Date.parse(b.lastMessageAt) - Date.parse(a.lastMessageAt))
+        .flatMap((c) => {
+          const character = charactersById.get(c.characterId);
+          return character ? [{ conversation: c, character }] : [];
+        }),
+    [conversations, charactersById],
+  );
   // Chats waiting, not messages: the same count the names show and Chats' Unread filter carries.
   const unreadCount = unread.length;
   const names = unread.slice(0, 3).map((f) => shortName(displayName(f.character, relationships[f.character.id])));
   const namesLine =
     names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${t('home.and')} ${names[names.length - 1]}`;
 
-  const chatOf = (characterId: string) => messages[conversations.find((c) => c.characterId === characterId)?.id ?? ''] ?? [];
-  const note = notes.find((n) => n.status === 'ready' && charactersById.has(n.characterId) && !helplineToday(chatOf(n.characterId)));
+  // The first ready note whose friend is not on a helpline day; each friend's chat is looked up
+  // once through a map instead of scanning every conversation per note.
+  const note = useMemo(() => {
+    const chatIdOf = new Map<string, string>();
+    for (const c of conversations) if (!chatIdOf.has(c.characterId)) chatIdOf.set(c.characterId, c.id);
+    return notes.find(
+      (n) =>
+        n.status === 'ready' &&
+        charactersById.has(n.characterId) &&
+        !helplineToday(messages[chatIdOf.get(n.characterId) ?? ''] ?? []),
+    );
+  }, [notes, conversations, messages, charactersById]);
   const noteFrom = note ? charactersById.get(note.characterId) : undefined;
   const noteName = noteFrom ? shortName(displayName(noteFrom, relationships[noteFrom.id])) : '';
 
-  const covered = new Set(slots.flatMap((k) => (k && WIDGET_MODULE[k] ? [WIDGET_MODULE[k]] : [])));
-  const tiles = TILES.filter((tile) => !covered.has(tile.key));
+  const tiles = useMemo(() => {
+    const covered = new Set(slots.flatMap((k) => (k && WIDGET_MODULE[k] ? [WIDGET_MODULE[k]] : [])));
+    return TILES.filter((tile) => !covered.has(tile.key));
+  }, [slots]);
   const firstEmpty = slots.indexOf(null);
 
   const remove = (i: number) => setSlots(slots.map((k, j) => (j === i ? null : k)));
@@ -189,7 +212,7 @@ export default function HomeScreen() {
   // Dynamic Island, and this row sits on it as clear glass just below that safe area (owner,
   // 2026-11-03, prototype B); the status bar turns dark again once the picture has scrolled away.
   const onPhoto = !!hero;
-  const Glass = onPhoto ? PhotoGlass : AuroraGlass;
+  const Glass = onPhoto ? PhotoGlass : SoftGlass;
   const heroBottom = hero ? heroTopHeight(windowHeight, insets.top) : 0;
   // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
   const bar = (
@@ -208,7 +231,7 @@ export default function HomeScreen() {
               accessibilityLabel={t('home.widget.add')}
               onPress={() => setGallerySlot(firstEmpty)}>
               <Glass style={styles.round}>
-                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : colors.text} />
+                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : playful.ink} />
               </Glass>
             </PressableScale>
           ) : null}
@@ -239,7 +262,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <Screen background="aurora" edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
+    <Screen background={playful.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         onTouchStart={hideWelcome}
@@ -258,44 +281,49 @@ export default function HomeScreen() {
         )}
 
         {unread.length > 0 ? (
-          <PressableScale
-            scaleTo={0.98}
-            accessibilityRole="button"
-            accessibilityLabel={`${t('home.waiting')}, ${namesLine}, ${unreadCount}`}
-            // One friend waiting opens their chat; several open Chats on Unread, where they all are.
-            onPress={() =>
-              unread.length === 1
-                ? router.push(`/chat/${unread[0].conversation.id}`)
-                : router.navigate({ pathname: '/(tabs)/chat', params: { filter: 'unread' } })
-            }
-            style={[styles.card, styles.waiting]}>
-            <View style={styles.faces}>
-              {unread.slice(0, 3).map((f, i) => (
-                <CharacterAvatar
-                  key={f.character.id}
-                  character={f.character}
-                  size={36}
-                  ring
-                  ringColor={colors.surface}
-                  style={i > 0 && styles.overlap}
-                />
-              ))}
-            </View>
-            <View style={styles.flex}>
-              <Txt style={styles.rowTitle} lines={1}>
-                {t('home.waiting')}
-              </Txt>
-              <Txt variant="caption" color={aurora.textMuted} lines={1}>
-                {namesLine}
-              </Txt>
-            </View>
-            <View style={styles.count}>
-              <Txt variant="caption" color={colors.white}>
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </Txt>
-            </View>
-            <Ionicons name="chevron-forward" size={16} color={aurora.textMuted} />
-          </PressableScale>
+          // The tail hangs below the bubble, so the wrapper keeps room for it under the bubble.
+          <View style={styles.waitingWrap}>
+            <PressableScale
+              scaleTo={0.98}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('home.waiting')}, ${namesLine}, ${unreadCount}`}
+              // One friend waiting opens their chat; several open Chats on Unread, where they all are.
+              onPress={() =>
+                unread.length === 1
+                  ? router.push(`/chat/${unread[0].conversation.id}`)
+                  : router.navigate({ pathname: '/(tabs)/chat', params: { filter: 'unread' } })
+              }
+              style={styles.waiting}>
+              <View style={styles.faces}>
+                {unread.slice(0, 3).map((f, i) => (
+                  <CharacterAvatar
+                    key={f.character.id}
+                    character={f.character}
+                    size={38}
+                    ring
+                    ringColor={FACE_RING}
+                    style={i > 0 && styles.overlap}
+                  />
+                ))}
+              </View>
+              <View style={styles.flex}>
+                <Txt style={styles.waitingTitle} lines={1}>
+                  {t('home.waiting')}
+                </Txt>
+                <Txt style={styles.waitingNames} lines={1}>
+                  {namesLine}
+                </Txt>
+              </View>
+              <View style={styles.count}>
+                <Txt style={styles.countText} maxFontSizeMultiplier={1.2}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Txt>
+              </View>
+              <Svg width={TAIL_W} height={TAIL_H} viewBox={`0 0 ${TAIL_W} ${TAIL_H}`} style={styles.tail} pointerEvents="none">
+                <Path fill={playful.sun} d="M0 0 L26 0 C17 3 9 7 5 12 C5 7 3 3 0 0 Z" />
+              </Svg>
+            </PressableScale>
+          </View>
         ) : null}
 
         <View style={styles.widgets}>
@@ -322,9 +350,9 @@ export default function HomeScreen() {
                 onPress={() => setGallerySlot(i)}
                 onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
                 style={[styles.slot, styles.empty, { width: half }]}>
-                <AuroraGlass style={styles.round}>
-                  <Ionicons name="add" size={24} color={colors.text} />
-                </AuroraGlass>
+                <SoftGlass style={styles.round}>
+                  <Ionicons name="add" size={24} color={playful.ink} />
+                </SoftGlass>
               </PressableScale>
             ) : null,
           )}
@@ -336,20 +364,18 @@ export default function HomeScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('home.todo.note', { name: noteName })}
             onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
-            style={[styles.card, styles.noteRow]}>
-            {/* The envelope as a thin black line, like the tiles below (owner, 2026-11-05). */}
+            style={styles.noteRow}>
+            {/* The envelope as a line in ink on a sun squircle (four-tab prototype). */}
             <View style={styles.noteIcon}>
-              <ModuleLine name="note" size={24} />
+              <ModuleLine name="note" size={24} color={playful.sunInk} />
             </View>
             <View style={styles.flex}>
-              <Txt style={styles.rowTitle} lines={1}>
+              <Txt style={styles.noteTitle} lines={1}>
                 {t('home.todo.note', { name: noteName })}
               </Txt>
-              <Txt variant="caption" color={aurora.textMuted}>
-                {t('home.widget.sealed')}
-              </Txt>
+              <Txt style={styles.noteSealed}>{t('home.widget.sealed')}</Txt>
             </View>
-            <CharacterAvatar character={noteFrom} size={34} />
+            <CharacterAvatar character={noteFrom} size={36} />
           </PressableScale>
         ) : null}
 
@@ -364,7 +390,7 @@ export default function HomeScreen() {
                 accessibilityLabel={t(TILE_LABEL[tile.key])}
                 onPress={() => router.push(tile.route as never)}
                 style={styles.tileCell}>
-                <FrostIcon name={tile.key} size={TILE} />
+                <SymbolTile {...moduleTile(tile.key)} size={TILE} />
                 {badge ? (
                   <View style={styles.badge}>
                     <Txt style={styles.badgeText}>1</Txt>
@@ -380,9 +406,9 @@ export default function HomeScreen() {
 
         {editing ? null : (
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(true)} style={styles.editWrap}>
-            <AuroraGlass style={styles.edit}>
+            <SoftGlass style={styles.edit}>
               <Txt style={styles.editText}>{t('home.widget.edit')}</Txt>
-            </AuroraGlass>
+            </SoftGlass>
           </PressableScale>
         )}
       </ScrollView>
@@ -404,7 +430,7 @@ export default function HomeScreen() {
                   style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
                   <WidgetView model={models[kind]} height={GALLERY_HEIGHT} preview />
                   <View style={styles.galleryLabel}>
-                    <Txt variant="smallStrong">{models[kind].label}</Txt>
+                    <Txt style={styles.galleryLabelText}>{models[kind].label}</Txt>
                     {used ? <Ionicons name="checkmark" size={15} color={colors.success} /> : null}
                   </View>
                 </PressableScale>
@@ -421,16 +447,21 @@ export default function HomeScreen() {
   );
 }
 
-/**
- * One filled slot. In edit mode it jiggles, wears a "−", opens the gallery on a tap and can be
- * dragged onto another slot; out of it, the widget works as itself and a long press starts
- * editing.
- */
 /** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
 function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
   return <View style={[style, styles.photoGlass]}>{children}</View>;
 }
 
+/** A soft ink wash on the cream: the round buttons and pills of the playful skin (`playful.round`). */
+function SoftGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
+  return <View style={[style, styles.softGlass]}>{children}</View>;
+}
+
+/**
+ * One filled slot. In edit mode it jiggles, wears a "−", opens the gallery on a tap and can be
+ * dragged onto another slot; out of it, the widget works as itself and a long press starts
+ * editing.
+ */
 function Slot({
   index,
   width,
@@ -527,7 +558,7 @@ function Slot({
             accessibilityLabel={t('home.widget.remove', { name: model.label })}
             onPress={onRemove}
             style={styles.minus}>
-            <Ionicons name="remove" size={16} color={colors.text} />
+            <Ionicons name="remove" size={16} color={playful.ink} />
           </PressableScale>
         ) : null}
       </Animated.View>
@@ -551,36 +582,39 @@ const styles = StyleSheet.create({
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
   me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  meName: { fontSize: 15, fontWeight: '600', color: colors.text },
+  meName: { fontSize: 15, fontWeight: '600', color: playful.ink },
   photoName: { color: colors.onMedia },
   photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  softGlass: { backgroundColor: playful.round },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: colors.text },
-  doneText: { fontSize: 17, fontWeight: '600', color: colors.textOnInk },
-  card: { backgroundColor: colors.surface },
+  done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: playful.chipOn },
+  doneText: { fontSize: 17, fontFamily: fonts.playfulBold, color: playful.chipOnText },
+  waitingWrap: { marginHorizontal: space.lg, marginTop: space.lg, paddingBottom: TAIL_H - 2 },
   waiting: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    height: 64,
-    borderRadius: 20,
-    paddingLeft: space.md,
-    paddingRight: 14,
+    minHeight: 64,
+    borderRadius: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
+    gap: 12,
+    backgroundColor: playful.sun,
   },
+  tail: { position: 'absolute', left: 30, bottom: -(TAIL_H - 1) },
   faces: { flexDirection: 'row' },
   overlap: { marginLeft: -12 },
-  rowTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  waitingTitle: { fontSize: 16, fontFamily: fonts.playful, color: playful.sunInk },
+  waitingNames: { fontSize: 12.5, fontWeight: '600', color: playful.sunInk },
   count: {
-    minWidth: 24,
-    height: 24,
+    minWidth: 26,
+    height: 26,
     paddingHorizontal: 7,
-    borderRadius: 12,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemColors.red,
+    backgroundColor: playful.chipOn,
   },
+  countText: { fontSize: 13, fontWeight: '800', color: playful.chipOnText },
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
   // The width comes from the screen (`half`), so two always fit.
   slot: { height: WIDGET_HEIGHT },
@@ -588,11 +622,12 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: colors.borderStrong,
+    borderColor: playful.dash,
+    backgroundColor: playful.well,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // iOS's grey remove badge in the corner of a jiggling widget.
+  // The remove badge in the corner of a jiggling widget.
   minus: {
     position: 'absolute',
     left: -7,
@@ -602,22 +637,30 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderStrong,
+    backgroundColor: playful.card,
+    borderWidth: 1,
+    borderColor: playful.dash,
   },
-  // iOS's tertiary fill on the white row: a soft grey squircle the line glyph sits in.
-  noteIcon: { width: 46, height: 46, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(120,120,128,0.12)' },
+  noteIcon: { width: 48, height: 48, borderRadius: 15, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.sun },
+  // A white card on the cream; the soft shadow is iOS-only (Android elevation draws over later siblings).
   noteRow: {
     marginHorizontal: space.lg,
     marginTop: space.md,
-    height: 76,
-    borderRadius: 22,
+    minHeight: 72,
+    borderRadius: 24,
+    paddingVertical: 12,
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
+    gap: 12,
+    backgroundColor: playful.card,
+    shadowColor: '#281E14',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
   },
+  noteTitle: { fontSize: 15.5, fontFamily: fonts.playful, color: playful.ink },
+  noteSealed: { fontSize: 12.5, color: colors.textSecondary },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
@@ -630,19 +673,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 5,
     borderWidth: 2,
-    borderColor: aurora.base,
+    borderColor: playful.ground,
     backgroundColor: systemColors.red,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: { fontSize: 11, fontWeight: '700', color: colors.white },
-  tileLabel: { fontSize: 11, fontWeight: '500', color: colors.text },
+  tileLabel: { fontSize: 11, fontFamily: fonts.playfulBold, color: playful.ink },
   editWrap: { alignSelf: 'center', marginTop: space.xl },
   edit: { height: 40, paddingHorizontal: 20, borderRadius: 20, justifyContent: 'center' },
-  editText: { fontSize: 15, fontWeight: '600', color: colors.text },
+  editText: { fontSize: 15, fontFamily: fonts.playfulBold, color: playful.ink },
   gallery: { maxHeight: 560 },
   galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingBottom: space.lg },
   galleryItem: { width: '47%', gap: space.sm },
   used: { opacity: 0.45 },
   galleryLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 4 },
+  galleryLabelText: { fontSize: 14, fontFamily: fonts.playfulBold, color: colors.text },
 });
