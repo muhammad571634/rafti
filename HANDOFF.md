@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z142. Pro's monthly shells come from the server; minutes checked (2026-11-07, Claude 1). NEXT: owner deploys the server, then reopen the app twice: the balance should jump by 5,000
+
+- **Owner's ask**: Pro yearly is on but the balance stays at 27; Pro gives 5,000 shells a month. Also: are call minutes right, and the shells at the top of the chat.
+- **Found**: the plan lived only on the phone. `subscribe` (a test purchase, no billing yet) paid the month's shells into the phone's copy of the wallet; the wallet lives on the server, which refuses grants it has no rule for, so the next sync put 25 back. The server's `subscriptions` table existed but nothing wrote it.
+- **Built (`e3b1c24`)**: the server pays a paid plan's shells on every `GET /v1/wallet` when a 30-day period is unpaid (`payPlanShells`, `shellGrant`, ledger key `plan:<period start>`, so it books once; a trial pays none, guarded by status). `POST /v1/subscription/test` records a plan without a store for `TEST_SUBSCRIBERS` (fly.toml [env]: the owner's A51 account `9d8d2e57…`, found read-only in Supabase: 25 shells, last update 22:45). The app stops paying plan shells itself when the server wallet is on; `planToServer` sends the plan once per term (on subscribe and on every open, `wallet.planOnServer`). OTA `4ee6947d`. road-to-launch item 7: billing only writes `subscriptions`; remove the test path before launch.
+- **Minutes**: the call history matches: today's 7 calls total 3:49, "176 of 180 left"; voice replies 112 of 120. Minutes are still counted on the phone only (the server does not enforce them, road-to-launch item 4).
+- Header: the chat header already shows the balance (shell pill) and the call button; nothing changed there.
+- Also seen: the server's Gemini free quota ran out at 22:45 (429), so replies showed Not Delivered, as designed.
+- Checks: app tsc 0, npm test 766/766; server tsc 0, 78/78. Money change: needs a second reader before any store build.
+
 ### 0z141. Characters feel human: model-read turns, a feeling that carries over, BEING A PERSON rules (2026-11-07, Claude 1). NEXT: owner deploys the server; then try a few chats on the A51
 
 - **Owner's ask**: talking with a character must feel like talking with a real person (the product's first job).
