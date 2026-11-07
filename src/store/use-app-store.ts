@@ -183,6 +183,7 @@ import {
   photoQuota,
   minutesLeft,
   PLANS,
+  onPaidPlan,
   rollSubscription,
   shellGrant,
   startSubscription,
@@ -2383,6 +2384,8 @@ export const useAppStore = create<AppState>()(
           serverCheckIn(set);
           return 0;
         }
+        // The check-in's shells are for free users only (owner, 2026-11-07): a paid plan has its own.
+        if (onPaidPlan(get().wallet.subscription, Date.now())) return 0;
         const today = todayKey();
         const { daily } = get();
         const { day, claimed } = checkInStatus(daily, today);

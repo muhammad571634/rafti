@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { canRing, consumePhoto, hasPro, photoQuota, photosLeft, PLANS, shellGrant, startSubscription, TRIAL } from './plans';
+import { canRing, consumePhoto, hasPro, onPaidPlan, photoQuota, photosLeft, PLANS, shellGrant, startSubscription, TRIAL } from './plans';
 
 const NOW = Date.parse('2026-10-13T08:00:00.000Z');
 const DAY = 86_400_000;
@@ -86,5 +86,19 @@ describe('hasPro: Bedtime and the other Pro-only features', () => {
     assert.equal(hasPro(startSubscription('pro', NOW), NOW), true);
     assert.equal(hasPro(startSubscription('proAnnual', NOW), NOW), true);
     assert.equal(hasPro(startSubscription('proAnnual', NOW, true), NOW), true);
+  });
+});
+
+describe('onPaidPlan: who the daily check-in skips', () => {
+  it('skips Basic and Pro, keeps free users and trials', () => {
+    assert.equal(onPaidPlan(undefined, NOW), false);
+    assert.equal(onPaidPlan(startSubscription('proAnnual', NOW, true), NOW), false);
+    assert.equal(onPaidPlan(startSubscription('basic', NOW), NOW), true);
+    assert.equal(onPaidPlan(startSubscription('pro', NOW), NOW + 10 * DAY), true);
+  });
+  it('counts a plan set not to renew only until its term ends', () => {
+    const ending = { ...startSubscription('basic', NOW), willRenew: false };
+    assert.equal(onPaidPlan(ending, NOW + 29 * DAY), true);
+    assert.equal(onPaidPlan(ending, NOW + 31 * DAY), false);
   });
 });

@@ -285,6 +285,16 @@ export function shellGrant(
   return { amount: PLANS[live.plan].shells, periodStart };
 }
 
+/**
+ * On a paid plan right now (a trial does not count): the daily check-in's shells are for free
+ * users only (owner, 2026-11-07), since a plan pays 2,000-5,000 shells a month and a trial pays
+ * none. The server's `wallet_check_in` keeps the same rule (migration b7).
+ */
+export function onPaidPlan(sub: Subscription | undefined, now: number) {
+  const live = rollSubscription(sub, now);
+  return !!live && live.status !== 'trial';
+}
+
 /** What the user is on right now, for labels: the plan, a trial, or nothing. */
 export function planStatus(sub: Subscription | undefined, now: number) {
   const live = rollSubscription(sub, now);
