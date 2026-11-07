@@ -17,7 +17,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { planStart } from '@/lib/schedule';
 import { dateFromKey, dayKey, FREE_SPINS_PER_DAY, levelForIntimacy } from '@/mock';
 import { checkInStatus, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleColors, systemColors } from '@/theme';
+import { colors, fonts, isDark, moduleColors, moduleTints, systemColors } from '@/theme';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -437,11 +437,15 @@ export function WidgetView({
   // Photos is `photo`; Bond is the only widget with no module tile.
   const key = WIDGET_MODULE[model.kind] ?? 'bond';
   const tone = moduleColors[key];
-  // A picture keeps its scrim and white words; every other widget is frosted, ink on milk
-  // (owner, 2026-11-04: muted like an iOS widget, not a saturated block).
+  // A picture keeps its scrim and white words; every other widget wears its module's light tint
+  // with ink on it (the playful skin, four-tab prototype). The line under a title stays full ink:
+  // a faded ink fails contrast on every tint.
   const onPhoto = model.photo != null;
   const ink = onPhoto ? colors.white : colors.text;
-  const sub = onPhoto ? SUB : aurora.textMuted;
+  const sub = onPhoto ? SUB : colors.text;
+  const tint = moduleTints[key] ?? moduleTints.bond;
+  // The board widget is a note pinned up: a little tilt and a strip of tape.
+  const pinned = model.kind === 'board' && !onPhoto;
   const buttons = model.buttons ?? [];
   // In edit mode (or the gallery) a tap belongs to the card, so its buttons do nothing.
   const inert = preview || !!onPress;
@@ -487,7 +491,7 @@ export function WidgetView({
         <View style={styles.days}>
           {model.days.map((d, i) =>
             d.label != null ? (
-              <Txt key={i} style={[styles.dayLetter, { color: d.on ? ink : aurora.textMuted, opacity: d.on ? 1 : 0.55 }]}>
+              <Txt key={i} style={[styles.dayLetter, { color: ink, opacity: d.on ? 1 : 0.45 }]}>
                 {d.label}
               </Txt>
             ) : (
@@ -562,7 +566,8 @@ export function WidgetView({
   );
 
   return (
-    <View style={[styles.card, !onPhoto && styles.frost, { height }]}>
+    <View style={[styles.card, !onPhoto && { backgroundColor: tint }, pinned && styles.pinned, { height }]}>
+      {pinned ? <View style={styles.tape} pointerEvents="none" /> : null}
       {onPhoto ? (
         <>
           <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
@@ -666,12 +671,18 @@ const SUB = 'rgba(255,255,255,0.85)';
 
 const styles = StyleSheet.create({
   card: { borderRadius: 28, overflow: 'hidden' },
-  // Milk the aurora shows through, a bright top rim and a fine edge, as the glass controls have.
-  frost: {
-    backgroundColor: aurora.frost,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: aurora.glassEdge,
-    borderTopColor: aurora.frostRim,
+  // Flat colour, no elevation: Android would lift the card over the "−" badge and its neighbours.
+  pinned: { transform: [{ rotate: '-1.6deg' }] },
+  tape: {
+    position: 'absolute',
+    top: 0,
+    alignSelf: 'center',
+    width: 54,
+    height: 12,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
+    backgroundColor: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.7)',
+    zIndex: 1,
   },
   fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
@@ -690,14 +701,14 @@ const styles = StyleSheet.create({
   // in the gallery's narrow card, Russian, A51 2026-11-05).
   figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
   // The number is the widget's headline (a clock's time, a balance): large, tight, heavy.
-  figure: { flexShrink: 1, fontSize: 36, lineHeight: 40, fontWeight: '800', letterSpacing: -1 },
+  figure: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 36, lineHeight: 42, letterSpacing: -0.5 },
   unit: { flexShrink: 1, fontSize: 15, fontWeight: '600' },
-  title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
+  title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22 },
   // Under a number: what it is for (a plan's name), up to two lines.
   subtitle: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2 },
   days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
   dayLetter: { width: 16, textAlign: 'center', fontSize: 12, lineHeight: 15, fontWeight: '700' },
-  dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: 'rgba(120,120,128,0.24)' },
+  dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)' },
   afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   afterDot: { width: 5, height: 5, borderRadius: 2.5, opacity: 0.5 },
@@ -708,19 +719,26 @@ const styles = StyleSheet.create({
   twin: { position: 'absolute', top: 0, left: 0, right: 0, opacity: 0 },
   // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
   // stays, no colour added inside).
-  track: { height: 8, borderRadius: 4, marginTop: 8, marginBottom: 6, backgroundColor: 'rgba(120,120,128,0.18)', overflow: 'hidden' },
+  track: {
+    height: 8,
+    borderRadius: 4,
+    marginTop: 8,
+    marginBottom: 6,
+    backgroundColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.7)',
+    overflow: 'hidden',
+  },
   bar: { height: 8, borderRadius: 4, backgroundColor: colors.text },
   person: { flex: 1, alignItems: 'center', paddingTop: 0 },
-  personName: { marginTop: 6, fontSize: 15, lineHeight: 19, fontWeight: '700' },
+  personName: { marginTop: 6, fontFamily: fonts.playful, fontSize: 16, lineHeight: 20 },
   personLine: { fontSize: 12, lineHeight: 15, fontWeight: '500' },
-  // iOS's tertiary fill: a soft grey circle on milk in light and dark alike.
+  // A soft white circle on the tint (the prototype's buttons), a faint one on a deep tint.
   button: {
     width: BUTTON,
     height: BUTTON,
     borderRadius: BUTTON / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(120,120,128,0.16)',
+    backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.75)',
   },
   // Clear glass on a picture (the clear-glass rule), never a white disc.
   buttonOnPhoto: { backgroundColor: 'rgba(255,255,255,0.22)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.5)' },

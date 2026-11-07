@@ -1,4 +1,4 @@
-export { aurora, friendColor, friendHues, playful, worldHue, moduleColors, moduleFills, storeColors, systemColors, colors, isDark, nightColors, sleepColors, palette, gradients, gradientStops, avatarGradients } from './colors';
+export { aurora, friendColor, friendHues, playful, worldHue, moduleTints, moduleColors, moduleFills, storeColors, systemColors, colors, isDark, nightColors, sleepColors, palette, gradients, gradientStops, avatarGradients } from './colors';
 export type { ColorToken, Hue, WorldHue } from './colors';
 export { type, fonts, weight } from './typography';
 export type { TypeVariant } from './typography';

@@ -1,5 +1,24 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z129. Today in the playful skin: half done, session stopped by the owner (2026-11-07, Claude 1). NEXT: finish `src/app/(tabs)/index.tsx` exactly as below
+
+- Owner said "Ha, Bugun ekrani" (code Today in the playful skin; standing rule: fix weak logic as you go). Prototype: https://claude.ai/artifact/ML6J9csLoh3ZVHMMrncrvg (Today phone; CSS `.waiting`, `.wd.*`, `.note`, `.apps`, `.editbtn`). The hero (`TodayHero`, `featuredFriend`) stays exactly as approved.
+- Done and committed in this block: `moduleTints` in `src/theme/colors.ts` (each module's light tint, deep in dark mode, exported from `@/theme`); `src/components/today/widgets.tsx`: every non-photo widget wears its module tint instead of the milk frost, the line under a title is full ink, titles / big figures / a contact's name in Nunito, white soft buttons, day dots and progress track on the tint, the board widget tilted -1.6° with a strip of tape. Not yet seen on the A51.
+- **Continue exactly here** (`src/app/(tabs)/index.tsx`, nothing edited yet; write the whole file in one Write so Metro never reloads half of it):
+  1. `Screen background={playful.ground}` instead of `"aurora"`; replace `AuroraGlass` with a `SoftGlass` (View with `playful.round`) for the no-hero top row, the empty slot's "+" and the Edit pill; Done pill `playful.chipOn` / `chipOnText` in Nunito.
+  2. "Waiting for you" → a sun-yellow (#FFC93C) speech bubble, radius 26, an SVG tail bottom-left (as Chats' bubbles), faces 38 with white rings, title Nunito 900 16 ink, names 12.5/600 ink, an ink count circle with white figure, no chevron. Keep its tap logic (one chat → that chat; several → Chats on Unread).
+  3. Sealed note row → white card radius 24, envelope `ModuleLine note` in ink on a sun-yellow 48 pt squircle, title Nunito, "Sealed" in `colors.textSecondary`.
+  4. App tiles → `SymbolTile {...moduleTile(key)} size={TILE}` (module colour, white glyph) instead of `FrostIcon`; labels Nunito ExtraBold 11; the Gifts badge ring `playful.ground`.
+  5. Empty slot dashed border `playful.dash`; the "−" badge `playful.card` with `playful.dash` edge; gallery labels Nunito.
+  6. Remove every `aurora.*` use on this screen. Then tsc, npm test, OTA Android-only, A51 check (Today with and without unread, Edit jiggle, gallery), HANDOFF + `docs/flows.md`, then report to the owner in short Uzbek.
+- Logic review of Today still to do while there (owner rule): look for needless work per render (e.g. `chatOf` scans conversations per note; `unread` sorts every render) and fix with memo where it matters.
+
+Still to do:
+1. Finish Today (above), on the A51.
+2. Owner has questions about the tabs' logic.
+3. From 0z121: second reader on migration b7, then the owner applies it.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z128. Us' logic: a bounded timeline, moments that lead somewhere, a diary page that reaches the friend (2026-11-07, Claude 1). NEXT: Today in the playful skin
 
 - Owner asked how Us' moments timeline should behave (grow forever? only to read?) and how "+" (plan, diary page, board note) should work, and handed the decisions over.

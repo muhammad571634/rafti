@@ -571,6 +571,41 @@ export const friendHues: readonly Hue[] = isDark
 /** A character's own hue, the same on every screen (`friendHueIndex`). */
 export const friendColor = (characterId: string): Hue => friendHues[friendHueIndex(characterId, friendHues.length)];
 
+/**
+ * Today's widgets in the playful skin (four-tab prototype): each module's own light tint with ink
+ * on it, deep tints with white in dark mode. Hues follow `moduleFills`, so a widget, its tile and
+ * its Us moment read as one thing.
+ */
+export const moduleTints: Record<string, string> = isDark
+  ? {
+      calls: '#1E3A26',
+      diary: '#3A2E22',
+      date: '#4A1F2B',
+      sleep: '#26254A',
+      store: '#4A2E1E',
+      photo: '#1D2D4A',
+      contacts: '#2E2E33',
+      gifts: '#4A2220',
+      radio: '#37244A',
+      board: '#163A44',
+      bond: '#163F3A',
+      note: '#4A3E10',
+    }
+  : {
+      calls: '#CDEFD6',
+      diary: '#EFE3D3',
+      date: '#FFD9E2',
+      sleep: '#DCDBF8',
+      store: '#FFE3CF',
+      photo: '#D6E6FF',
+      contacts: '#E6E6EA',
+      gifts: '#FFDAD7',
+      radio: '#EEDCFA',
+      board: '#C9EEF9',
+      bond: '#CBF2E9',
+      note: '#FFF0B8',
+    };
+
 /** A world's folder on Find: the front and its text, and the back panel with the tab (a shade deeper). */
 export interface WorldHue extends Hue {
   back: string;
