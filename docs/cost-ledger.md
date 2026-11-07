@@ -33,6 +33,7 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 6 | Photos: image tokens on the reply that sees them, plus the photo note | not measured yet | measure |
 | 7 | Voice: ElevenLabs speech per character, transcription of voice notes, voice calls (one reply per turn plus speech) | not measured yet; the biggest unknown | measure before pricing voice (`docs/road-to-launch.md`) |
 | 8 | Group chats: one reply per member who speaks | ~one reply each | |
+| 10 | A cancelled plan or wake-up makes the friend ask what happened (0z139, `setupCancelledCue`) | one moment (~$0.001) per cancel, at most one per friend per 2 minutes; the setup card in the history adds ~25 tokens per reply while it is in the window | in; the cancel is free to the user (the plan's price already paid) |
 | 9 | Fixed: Fly.io API ~$4 a month, Supabase (free tier now), EAS updates and builds, Apple $99 a year, domain | fixed per month | in `docs/road-to-launch.md` |
 
 ## What one shell is worth, and what setting things up costs (0z136)

@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z139. Setups from Us / Alarms live in the friend's chat; a cancel makes the friend ask (2026-11-07, Claude 1). NEXT: owner deploys the server; the chat sound (owner's new ask) is being built (0z140)
+
+- **0z138 leftovers done on the A51**: the stale test threads closed in Keeping in mind (two dentist threads, the deleted Wednesday basketball). Plan deletion rechecked: a plan set from a Hana chat card, deleted on Us -> the card faded. Found: a thread had the same text twice at one moment ("Good luck" x2 16:00) -> `extendThread` skips a text already waiting within `minGapMs`.
+- **Owner's ask**: everything set up with a friend outside the chat (plans, alarms) must show in that chat, the friend must know and answer at once; also when the user deletes / cancels it ("what happened, why"), so the talk goes on.
+- **Built (`4184581`, `d387c08`)**: one path `setupInChat` (store): a plan from Us' +, an alarm with a friend from the editor, a change of either, or a cancel (plan still ahead, alarm still on) puts a setup card on the user's side of that friend's chat (`SetupOffer.from: 'app'`, `cancelled`); a change marks the card it changes (faded), a cancel strikes it through with a grey x. The friend's word comes under it: the existing plan / alarm cues and new `setupCancelledCue` (one per friend per 2 min). The model reads these cards in the history in their place (`setupHistoryText` via `messageText`, needs the server deploy); the friend's own offers stay in `offerLines`. A change made from a chat card stays quiet (`removeSchedule(id, { quiet })`). `together` wake-ups now say when each rings next and which comes first (todo 2 of 0z136 done). Stock cancel line (model off) in all 14 content locales. Cost: ledger row 10.
+- **Seen on the A51 (OTA `266fdc36`, then `a19e81e7`)**: Us + -> "Kahve" tomorrow 22:00 -> the card on the user's side in Hana's chat and her answer ("22:00 coffee at night? ... noted, don't be late"); deleted on Us -> cancel card, Hana: "you deleted our coffee time from the plans, what's up?". The card's title column had no width on the right side -> fixed (`d387c08`), not rechecked on the phone yet. The alarm path (editor set / delete) not tapped on the phone yet.
+- Found, not changed: tapping a Done card opens the Us tab, and back from Us goes to Today, not the chat (tab switch from a stack screen). Hana once said "your dentist tomorrow" about a Monday plan on Saturday (old thread, now closed).
+- Checks: tsc 0, npm test 762/762, check:locales, check:content; server tsc 0, 76/76.
+- **Server deploy (owner)**, from `C:\Users\joray\BIMOBIMO`: chat box `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`; Terminal panel: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`.
+
+Still to do:
+1. Owner's new ask (2026-11-07): when a friend's message arrives and the user is not in that chat (app closed or another screen), our own short minimalist sound, tied to the red unread count (0z140).
+2. On the A51: the user-side card with its title (after OTA `a19e81e7`); an alarm with Hana from the editor -> card + her line; delete it -> cancel card + her question.
+3. Back from Us after a Done card's jump should return to the chat (consider opening the plan in a sheet over the chat instead of switching tabs).
+4. Everything in 0z136 / 0z135 "Still to do".
+
 ### 0z136. Set up an alarm or a plan from the chat; 0z135 seen on the A51 (2026-11-07, Claude 1). NEXT: the owner deploys the server, then check the card on the A51
 
 - **0z135 on the A51** (server v20 deployed by the owner, OTA `97e3c777` after two restarts): (a) an alarm with Hana -> she said it in her chat ("22:10'da seni uyandırmamı istedin"); (c) "günaydın" at 19:12 -> "Günaydın mı? Saat akşam yediyi geçti" and she named her 07:24 alarm. Small gap: she has 07:24 and 22:10 and named only 07:24; the `together` alarm lines could say which rings next (todo below). Test alarm: the first one was deleted; the second (22:10 today, Hana, once) is still on the owner's phone: delete it after it rings or with a swipe.
