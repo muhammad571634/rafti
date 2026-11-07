@@ -4342,17 +4342,29 @@ function planToServer(set: Setter, get: Getter) {
     .then((answer) => {
       walletCallsOut--;
       if (!answer) return;
-      set((s) => ({ wallet: { ...s.wallet, planOnServer: sub.termStart } }));
+      // A new plan on the server is a new period there, paid at once: the history says so here too.
+      const paid = sub.status !== 'trial' && answer.subscription?.status === 'active';
+      const period = shellGrant(sub, undefined, Date.now())?.periodStart;
+      set((s) => ({
+        wallet: { ...s.wallet, planOnServer: sub.termStart, ...(paid && period ? { planShellsPeriod: period } : {}) },
+        ledger: paid ? log(s.ledger, PLANS[sub.plan].shells, 'plan') : s.ledger,
+      }));
       if (walletCallsOut === 0) applyServerWallet(set, answer.wallet);
     });
 }
 
 /** Pays the plan's monthly shells once per period (`shellGrant`); they never burn. The server pays them when the wallet is there. */
 function payPlanShells(set: Setter, get: Getter) {
-  if (serverWalletOn(get)) return;
   const { wallet } = get();
   const due = shellGrant(wallet.subscription, wallet.planShellsPeriod, Date.now());
   if (!due) return;
+  // With the wallet on the server, the server pays (on the wallet read that follows); here only the
+  // history row, once the server knows the plan (`planToServer`).
+  if (serverWalletOn(get)) {
+    if (wallet.planOnServer !== wallet.subscription?.termStart) return;
+    set((s) => ({ wallet: { ...s.wallet, planShellsPeriod: due.periodStart }, ledger: log(s.ledger, due.amount, 'plan') }));
+    return;
+  }
   set((s) => ({
     wallet: { ...s.wallet, shells: s.wallet.shells + due.amount, planShellsPeriod: due.periodStart },
     ledger: log(s.ledger, due.amount, 'plan'),
