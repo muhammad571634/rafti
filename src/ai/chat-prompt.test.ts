@@ -335,4 +335,10 @@ describe('chatParts: setting things up from the chat (0z136)', () => {
   it('is left out of a call, which has no card to tap', () => {
     assert.equal(rules('call')?.text ?? '', '');
   });
+  it('tells the friend where its offers stand, in the turn tier', () => {
+    const card = { id: 'k', conversationId: 'c', author: 'them', kind: 'system', card: 'setup', createdAt: '2026-11-07T14:33:00.000Z', setup: { kind: 'alarm', title: '', date: '2026-11-08', time: '07:00', repeat: [] } } as const;
+    const offers = chatParts({ character: kai, user: sam, messages: [card as never] }).find((p) => p.name === 'offers');
+    assert.equal(offers?.tier, 'turn');
+    assert.match(offers?.text ?? '', /07:00: not set yet/);
+  });
 });

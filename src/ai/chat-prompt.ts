@@ -20,7 +20,7 @@ import { REPLY_SHAPE, turnLines } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
-import { SETUP_RULES_LINES } from './setup-prompt';
+import { offerLines, SETUP_RULES_LINES } from './setup-prompt';
 import { clockLines, togetherLines, type ChatClock, type Together } from './together-prompt';
 
 /**
@@ -194,6 +194,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // "Wake me at 7": the friend offers a real alarm or plan, a card under the reply makes it. Not
     // on a call: the reply is spoken there, with no card to tap.
     part('setupRules', 'global', input.mode === 'call' ? [] : SETUP_RULES_LINES),
+    part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),

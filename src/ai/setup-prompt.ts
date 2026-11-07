@@ -1,4 +1,4 @@
-import type { SetupOffer } from '@/types';
+import type { Message, SetupOffer } from '@/types';
 
 /**
  * Setting things up from the chat (0z136): "wake me at 7", "put our coffee on Saturday on the plans".
@@ -12,6 +12,8 @@ export const SETUP_RULES_LINES = [
   '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in their language","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once. A plan may leave "time" out.',
   '- They confirm it with one tap on a card under your reply, so say in your own words that you will do it; do not say it is already done.',
   '- If the day or the hour is unclear, ask first and leave "setup" out. One per reply; leave it out when nothing is asked.',
+  '- When they change one you offered (another hour or day: "no, 8:30 instead"), add "change":true: it replaces your last offer of that kind, set or not, so it stays one alarm or one plan. A second, separate one has no "change".',
+  '- YOUR OFFERS (below, when there are any) says which ones they set, which still wait for their tap and which they turned down; never talk as if one is set when it is not.',
 ];
 
 const TITLE_MAX = 40;
@@ -47,7 +49,38 @@ export function cleanSetup(value: unknown): SetupOffer | undefined {
     date,
     ...(time ? { time } : {}),
     ...(kind === 'alarm' ? { repeat } : {}),
+    ...(v.change === true ? { change: true } : {}),
   };
+}
+
+/** Where an offer stands, in the words the model reads. */
+function offerState(card: Partial<SetupOffer>) {
+  if (card.replaced === true) return 'replaced by a newer offer';
+  if (typeof card.madeId === 'string' && card.madeId) return 'they set it';
+  if (card.declined === true) return 'they said not now';
+  return 'not set yet, the card waits for their tap';
+}
+
+/**
+ * The setup cards in the chat's window and where each stands (turn tier), so the friend never
+ * says "two alarms?" about an offer that was never set. Cards are not in the history itself.
+ */
+export function offerLines(messages: readonly Message[]): string[] {
+  const offers = messages
+    .filter((m) => m.card === 'setup')
+    .slice(-4)
+    .flatMap((m) => {
+      const offer = cleanSetup(m.setup);
+      return offer && m.setup ? [{ offer, state: offerState(m.setup) }] : [];
+    });
+  if (!offers.length) return [];
+  return [
+    'YOUR OFFERS IN THIS CHAT (cards under your replies; only they can set them), oldest first:',
+    ...offers.map(({ offer: o, state }) => {
+      const days = o.repeat?.length ? `, repeats on weekdays ${o.repeat.join(',')}` : '';
+      return `- ${o.kind} ${JSON.stringify(o.title)} ${o.date}${o.time ? ` ${o.time}` : ''}${days}: ${state}`;
+    }),
+  ];
 }
 
 const dayKeyOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

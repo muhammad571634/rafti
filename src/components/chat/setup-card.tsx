@@ -24,9 +24,10 @@ export function SetupCard({ message }: { message: Message }) {
   if (!offer || offer.declined) return null;
 
   const alarm = offer.kind === 'alarm';
-  const made = !!offer.madeId;
+  // A set one that a newer offer changed stands for nothing now: faded, no check.
+  const made = !!offer.madeId && !offer.replaced;
   // A plan whose hour has passed, or an alarm whose day has, can no longer be set: no buttons.
-  const open = !made && setupUsable(offer, new Date());
+  const open = !made && !offer.replaced && setupUsable(offer, new Date());
   const [hh, mm] = (offer.time ?? '').split(':').map(Number);
   const shown = offer.time ? alarmTime(hh, mm) : null;
   const clock = shown ? (shown.period ? `${shown.time} ${t(`alarms.${shown.period}`)}` : shown.time) : null;

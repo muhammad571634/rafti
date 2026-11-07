@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { parseModelReply } from './reply-style';
-import { cleanSetup, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
+import { cleanSetup, offerLines, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
 
 // Saturday, Nov 7 2026, 19:10 on the phone's clock.
 const NOW = new Date(2026, 10, 7, 19, 10);
@@ -81,5 +81,35 @@ describe('the reply carries the offer', () => {
     const rules = SETUP_RULES_LINES.join('\n');
     assert.match(rules, /never on your own/);
     assert.match(rules, /one tap/);
+  });
+});
+
+describe('a change and where each offer stands (0z136, seen on the A51)', () => {
+  const card = (setup: Record<string, unknown>, id: string) =>
+    ({ id, conversationId: 'c', author: 'them', kind: 'system', card: 'setup', setup, createdAt: '2026-11-07T14:33:00.000Z' }) as never;
+
+  it('keeps "change" only when it is exactly true', () => {
+    assert.equal(cleanSetup({ kind: 'alarm', title: '', date: '2026-11-08', time: '08:30', change: true })?.change, true);
+    assert.equal(cleanSetup({ kind: 'alarm', title: '', date: '2026-11-08', time: '08:30', change: 'yes' })?.change, undefined);
+  });
+
+  it('names every card in the window with where it stands, oldest first', () => {
+    const lines = offerLines([
+      { id: 'm1', conversationId: 'c', author: 'me', kind: 'text', text: 'wake me at 7', createdAt: '2026-11-07T14:33:00.000Z' } as never,
+      card({ kind: 'alarm', title: 'Sabah işi', date: '2026-11-08', time: '07:00', repeat: [], replaced: true }, 'm2'),
+      card({ kind: 'alarm', title: 'Sabah işi', date: '2026-11-08', time: '08:30', repeat: [], madeId: 'alarm_1' }, 'm3'),
+      card({ kind: 'plan', title: 'Kahve', date: '2026-11-14' }, 'm4'),
+      card({ kind: 'plan', title: 'Sinema', date: '2026-11-15', declined: true }, 'm5'),
+    ]);
+    assert.equal(lines.length, 5);
+    assert.match(lines[1], /alarm "Sabah işi" 2026-11-08 07:00: replaced/);
+    assert.match(lines[2], /08:30: they set it/);
+    assert.match(lines[3], /plan "Kahve" 2026-11-14: not set yet/);
+    assert.match(lines[4], /they said not now/);
+  });
+
+  it('says nothing without cards, and skips a broken one', () => {
+    assert.deepEqual(offerLines([]), []);
+    assert.deepEqual(offerLines([card({ kind: 'alarm', date: 'soon' }, 'm1')]), []);
   });
 });

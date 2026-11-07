@@ -3445,7 +3445,7 @@ export const useAppStore = create<AppState>()(
       answerSetup: (conversationId, messageId, yes) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         const offer = get().messages[conversationId]?.find((m) => m.id === messageId)?.setup;
-        if (!conversation || !offer || offer.madeId || offer.declined) return false;
+        if (!conversation || !offer || offer.madeId || offer.declined || offer.replaced) return false;
         const mark = (patch: Partial<SetupOffer>) =>
           set((s) => ({
             messages: {
@@ -3457,6 +3457,8 @@ export const useAppStore = create<AppState>()(
           mark({ declined: true });
           return true;
         }
+        // A change of an alarm or plan already set: that one moves instead of a second one appearing.
+        const replaces = offer.replacesId;
         if (!setupUsable(offer, new Date())) return false;
         const characterId = conversation.characterId;
         const character = get().characters.find((c) => c.id === characterId);
@@ -3465,15 +3467,30 @@ export const useAppStore = create<AppState>()(
         let madeId: string | undefined;
         if (offer.kind === 'alarm' && offer.time) {
           const [hour, minute] = offer.time.split(':').map(Number);
+          const old = replaces ? get().alarms.find((a) => a.id === replaces) : undefined;
           madeId = get().saveAlarm(
-            { hour, minute, repeat: offer.repeat ?? [], label: offer.title, characterId, voice: !!character.voiceReady, sound: 'morningTide', replyToWake: true, snooze: true },
+            old
+              ? { ...old, hour, minute, repeat: offer.repeat ?? [], label: offer.title || old.label, id: old.id }
+              : { hour, minute, repeat: offer.repeat ?? [], label: offer.title, characterId, voice: !!character.voiceReady, sound: 'morningTide', replyToWake: true, snooze: true },
             { quiet: true },
           );
         } else if (offer.kind === 'plan') {
           madeId = get().addSchedule({ characterId, title: offer.title, date: offer.date, time: offer.time, whenLabel: '', quiet: true });
+          if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
         }
         if (!madeId) return false;
         mark({ madeId });
+        // The card of the one it changed no longer stands for anything set.
+        if (replaces) {
+          set((s) => ({
+            messages: {
+              ...s.messages,
+              [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
+                m.id !== messageId && m.setup?.madeId === replaces ? { ...m, setup: { ...m.setup, replaced: true } } : m,
+              ),
+            },
+          }));
+        }
         return true;
       },
 
@@ -5444,9 +5461,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         // It shows word by word, as a streamed reply would (`src/lib/reveal.ts`).
         markFresh(message.id);
         appendMessage(set, get, conversationId, message);
-        if (last && setup && setupUsable(setup, new Date())) {
-          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'setup', setup, createdAt: new Date().toISOString() }, { quiet: true });
-        }
+        if (last && setup && setupUsable(setup, new Date())) appendSetupCard(set, get, conversationId, setup);
         if (last && noteVoice && voiceBack != null) {
           appendMessage(
             set,
@@ -5534,6 +5549,30 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     return;
   }
   deliver(standIn());
+}
+
+/**
+ * A setup card under the friend's reply. A change ("no, 8:30 instead") takes the place of their
+ * last offer of that kind: a card still waiting loses its buttons, and one already set is moved
+ * when the new one is set (`replacesId`), so it stays one alarm or one plan.
+ */
+function appendSetupCard(set: Setter, get: Getter, conversationId: string, offer: SetupOffer) {
+  let next: SetupOffer = { ...offer };
+  if (offer.change) {
+    const prev = (get().messages[conversationId] ?? []).findLast(
+      (m) => m.card === 'setup' && m.setup?.kind === offer.kind && !m.setup.replaced && !m.setup.declined,
+    );
+    if (prev?.setup?.madeId) next = { ...next, replacesId: prev.setup.madeId };
+    else if (prev?.setup) {
+      set((s) => ({
+        messages: {
+          ...s.messages,
+          [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === prev.id && m.setup ? { ...m, setup: { ...m.setup, replaced: true } } : m)),
+        },
+      }));
+    }
+  }
+  appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'setup', setup: next, createdAt: new Date().toISOString() }, { quiet: true });
 }
 
 /** One of their world's events while it is on: a date happens inside it. */

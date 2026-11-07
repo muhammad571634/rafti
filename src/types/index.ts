@@ -1123,6 +1123,12 @@ export interface SetupOffer {
   time?: string;
   /** Alarms: weekdays it repeats, 0 = Sunday; empty = once. */
   repeat?: number[];
+  /** The model changes its last offer of this kind ("no, 8:30 instead"): one alarm, not two. */
+  change?: boolean;
+  /** The alarm or plan this one changes once set (the earlier offer was already set). */
+  replacesId?: string;
+  /** A newer offer took this one's place: no buttons any more. */
+  replaced?: boolean;
   madeId?: string;
   declined?: boolean;
 }
