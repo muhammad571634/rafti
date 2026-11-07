@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z118. "Closer": the level-up as a moment with the friend (2026-11-07, Claude 1). NEXT: owner plays it (Profile → Development → Play a level-up) and names the next block
+
+- Owner, after seeing 0z117's coin drop ("juda oddiy... qolsin"): the app must **sell emotion** through its screens; Native Cook prompts are references only, never 1:1; simple but "ultra". Saved as Claude memory `sell-emotion`. Owner's Pinterest pin (a Duolingo sky with parting clouds) and its feed as inspiration; logged-out Pinterest shows no feed and Mobbin needs a paid plan, so only the pin itself was used.
+- Built (`5fae6dd`, `ebcd2d1`): `src/components/level-up/` on Native Cook's Level Up Takeover engine (one clock, closed-form springs, sunburst, confetti physics, shine), remade around the friend: the chat goes dark to their picture, blurred, one warm point of light; it bursts, the picture comes into focus, their face springs out in a white bezel while the bond's mint ring fills, hearts and paper fly, a four-note chime (`assets/sounds/level-up.wav`, earshot `mallet/up4`, clean, top note on the burst, follows the silent switch) and a success haptic; the level rolls over, the stage's name, "{name} feels a little closer to you", and "Opened up: {chapter}" when the level opens a story beat (or "New relationships unlocked" at a new stage). Reduced motion: fades only. Old builds keep `LevelUpModal` (`src/lib/skia-ready.ts`, shared with the coin drop).
+- Profile → Development: "Play a level-up" (newest chat, its current level) and "Show the daily check-in" (English in all 14 locales, like the other dev rows).
+- A51 (OTA `3805bef0`, Turkish UI): dark room with the light, then Hana's scene clear, face, ring, rays, hearts, "Seviye 6", "Arkadaştan fazlası", the chapter line. Fixed on the way: the chip cut "Sev 4" to "Sev".
+- Checks: tsc 0, npm test 661/661, check:locales and check:content pass.
+
+Still to do:
+1. Hana's avatar (`assets/avatars/c_hana.png`, black hair, apron) is not the woman in her scene (purple hair, painter); the chat header shows the same mismatch. Art question for the owner / the redraw.
+2. Arc chapter titles are English in every locale ("The prize at nine" in Turkish UI): translate the arc beats.
+3. `eas update` for all platforms fails in Metro ("Cannot read properties of undefined (reading 'get')", iOS or web export); Android-only (`--platform android`) publishes. Find it before the iOS build.
+4. Next Native Cook block (owner's prompt): Envelope Gift Reveal for Secret Note, built emotion-first.
+
 ### 0z117. Coin Drop Reward: shells poured into the wallet; the daily sheet is back; APK 1.1.0 (2026-11-07, Claude 1). NEXT: owner installs APK 1.1.0 and tries the wheel and the check-in
 
 - Owner: reviewed nativecook.dev/blocks (766 React Native block prompts, free, commercial use allowed, prompts not to be shared or committed; the shortlist is in Claude's memory `nativecook-blocks`). Owner pastes the React Native prompt of the block we pick; we adapt it. Owner: a new APK is fine whenever a block or new work needs one ("o'ylab o'tirma"). Direction: keep the iOS base, polish it with current trends.
