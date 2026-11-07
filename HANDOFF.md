@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z127. Us coded in the playful skin; same-day note moments fold into one row (2026-11-07, Claude 1). NEXT: Today in the playful skin (hero kept as approved)
+
+- Owner: fix any logic / architecture that is not senior React Native on my own, as I go ("o'zing to'g'rilab ketishing mumkin"); still ask before product changes.
+- Us (`7ca6fca`): cream ground, Nunito title, soft bell with red count, apricot "+", friend picker ringed in `friendColor` when chosen, the bond as a flat mint gradient card (level ring in deep mint, days, stage, next level, both faces top right, three figures in light tiles with a flame on the streak, an ink Share pill with today's "+5 🐚"), the day's plans on a white card with an apricot Plan pill, moment filters as pills, moments as coloured circles on a thread straight on the cream. `PlanCalendar`: white card, Nunito month, days as soft chips, the picked one apricot, plan dot inside. `PublishSheet`: three big tiles (plan apricot, diary paper, board sky). `SharePill` itself is untouched (chat reply controls use it).
+- Fix (`3ba03a9`): six "Exchanged secret notes" of one day were six rows. `src/lib/moment-groups.ts` `groupMoments` (pure, 5 tests) folds a same-day run of secretNote / board / diary into one row with an ink "×N" chip; calls, plans, photos, levels keep a row each; paging and filters count rows. Photo moments use a memoised id map instead of scanning all photos per row.
+- A51 (Russian UI, OTA Android-only `2be06cfa`): header, picker, mint card, Share +5, week chips with today apricot, "Ничего не запланировано" + План, thread with ×2, the + sheet tiles. Not seen: month view, dark mode.
+- Checks: tsc 0, npm test 672/672.
+
+Still to do:
+1. Today in the playful skin per `docs/main-tabs-inventory.md` (hero = `featuredFriend`, kept as approved), on the A51.
+2. Owner has questions about the tabs' logic.
+3. From 0z121: second reader on migration b7, then the owner applies it.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z126. Find coded in the playful skin; seen on the A51 (2026-11-07, Claude 1). NEXT: Us in the playful skin, then Today
 
 - Owner looked at the four-tab prototype again and said: code Find now, care for palette, type and icons, logic untouched (questions later), senior quality: fast, stable, no crashes.
