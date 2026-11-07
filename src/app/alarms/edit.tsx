@@ -9,13 +9,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NIGHT_SWITCH, NIGHT_WHEEL } from '@/components/alarms/night';
 import { TimeWheel } from '@/components/alarms/time-wheel';
 import { useRadioClips } from '@/components/radio/use-clips';
-import { CharacterAvatar, Txt } from '@/components/ui';
+import { PaywallSheet } from '@/components/paywall-sheet';
+import { CharacterAvatar, ShellIcon, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { dayNames, repeatText, uses12Hour } from '@/lib/alarm-format';
 import { ALARM_SOUNDS } from '@/lib/alarms';
 import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
-import { useAppStore } from '@/store/use-app-store';
+import { alarmSetupCost, useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
 import type { Alarm, AlarmSound, Character } from '@/types';
 
@@ -42,6 +43,10 @@ export default function AlarmEditScreen() {
   const conversations = useAppStore((s) => s.conversations);
   const blockedIds = useAppStore((s) => s.blockedIds);
   const saveAlarm = useAppStore((s) => s.saveAlarm);
+  const alarms = useAppStore((s) => s.alarms);
+  const wallet = useAppStore((s) => s.wallet);
+  const spendShells = useAppStore((s) => s.spendShells);
+  const [paywall, setPaywall] = useState<number | null>(null);
   const deleteAlarm = useAppStore((s) => s.deleteAlarm);
   const h12 = uses12Hour();
 
@@ -87,8 +92,12 @@ export default function AlarmEditScreen() {
   // Opened from a link there is nothing to go back to: land on the list instead.
   const close = () => (router.canGoBack() ? router.back() : router.replace('/alarms'));
 
+  // A friend who wakes you costs what the wake-up talk costs (`alarmSetupCost`), as from the chat.
+  const cost = alarmSetupCost(alarms, draft, existing?.id);
   const save = () => {
+    if (cost && wallet.shells < cost) return setPaywall(cost);
     saveAlarm({ ...draft, id: existing?.id });
+    if (cost && draft.characterId) spendShells(cost, 'setup', draft.characterId);
     // The first alarm asks for notifications; where they cannot run the list still works.
     void allowAlarms();
     close();
@@ -114,7 +123,7 @@ export default function AlarmEditScreen() {
         <Txt variant="bodyStrong" color={night.text} style={styles.navTitle}>
           {title}
         </Txt>
-        {page === 'main' ? <NavButton label={t('alarms.save')} strong onPress={save} /> : <View style={styles.navSpacer} />}
+        {page === 'main' ? <NavButton label={t('alarms.save')} strong onPress={save} cost={cost} /> : <View style={styles.navSpacer} />}
       </View>
 
       <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xxl }]} keyboardShouldPersistTaps="handled">
@@ -250,17 +259,30 @@ export default function AlarmEditScreen() {
           </>
         ) : null}
       </ScrollView>
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
     </View>
   );
 }
 
-function NavButton({ label, onPress, strong, chevron }: { label: string; onPress: () => void; strong?: boolean; chevron?: boolean }) {
+function NavButton({ label, onPress, strong, chevron, cost }: { label: string; onPress: () => void; strong?: boolean; chevron?: boolean; cost?: number }) {
+  const { t } = useTranslation();
   return (
-    <Pressable onPress={onPress} hitSlop={10} style={styles.navButton} accessibilityRole="button">
+    <Pressable
+      onPress={onPress}
+      hitSlop={10}
+      style={styles.navButton}
+      accessibilityRole="button"
+      accessibilityLabel={cost ? `${label}, ${cost} ${t('common.shells')}` : label}>
       {chevron ? <Ionicons name="chevron-back" size={20} color={night.primary} /> : null}
       <Txt variant={strong ? 'bodyStrong' : 'body'} color={night.primary}>
         {label}
       </Txt>
+      {cost ? <ShellIcon size={15} /> : null}
+      {cost ? (
+        <Txt variant="bodyStrong" color={night.primary}>
+          {cost}
+        </Txt>
+      ) : null}
     </Pressable>
   );
 }

@@ -111,7 +111,7 @@ const bearer = (header: string | undefined) => header?.match(/^Bearer\s+(\S+)$/i
 /** The most one spend or grant may move: anything bigger is a bug or an attack. */
 const MAX_SPEND = 1000;
 const MAX_GRANT = 5000;
-const SPEND_REASONS = new Set<LedgerReason>(['chat', 'voice', 'photo', 'note', 'board', 'date', 'photoBooth', 'voiceClone', 'portrait', 'stream', 'call', 'topUp', 'radio', 'other']);
+const SPEND_REASONS = new Set<LedgerReason>(['chat', 'voice', 'photo', 'note', 'board', 'date', 'photoBooth', 'voiceClone', 'portrait', 'stream', 'call', 'topUp', 'setup', 'radio', 'other']);
 const GRANT_REASONS = new Set<LedgerReason>(['purchase', 'quest', 'invite', 'plan', 'membership', 'share', 'ad', 'other']);
 /** Earnings that land in today's free bucket and burn at midnight (src/economy/shells.ts). */
 const FREE_GRANTS = new Set<LedgerReason>(['ad', 'share']);

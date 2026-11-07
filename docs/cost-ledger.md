@@ -35,6 +35,22 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 8 | Group chats: one reply per member who speaks | ~one reply each | |
 | 9 | Fixed: Fly.io API ~$4 a month, Supabase (free tier now), EAS updates and builds, Apple $99 a year, domain | fixed per month | in `docs/road-to-launch.md` |
 
+## What one shell is worth, and what setting things up costs (0z136)
+
+One shell after the store's cut (15%): Basic $9.99 / 2,000 shells ≈ **$0.0042**; Pro $29.99 / 5,000 ≈
+$0.0051; packs $0.0107-0.0198. A message costs 1 shell and ~$0.0019 with its share of the memory pass,
+so even the cheapest shell (Basic) keeps about half as margin.
+
+Owner, 2026-11-07: setting up plans and alarms with a friend makes the model work later, so it costs
+more than a message, priced honestly (`src/economy/setup-cost.ts`, same price from every screen):
+
+| Action | Calls it brings | Model cost | Price | Note |
+|---|---|---|---|---|
+| Plan with a friend (Us or a chat card) | reminder, luck before, "how did it go?" (~3 moments / thread texts) | ~$0.003 | **3 shells** (Basic value ~$0.0126) | moving it is free |
+| Alarm a friend wakes you with, new or new time / days / friend | the "alarm set" line, the wake-up talk on the first ring | ~$0.002 | **2 shells** (~$0.0084) | melody-only, label, sound, on / off: free |
+| A repeating alarm's later rings | wake-up talk each ring (the reply that turns it off is free to the user) | ~$0.002 a ring, ~$0.06 a month for a daily alarm | not charged | accepted as a retention cost; recheck with real ring counts |
+| "Wake me up" idea under a thread text (`threadIdea`) | as an alarm | ~$0.002 | not charged yet | small door, recheck |
+
 ## Rules for keeping it honest
 
 - A new prompt part says its tier: `global` (same for everyone, cached), `chat` (per friend), `turn`

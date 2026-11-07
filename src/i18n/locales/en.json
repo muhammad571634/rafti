@@ -1742,6 +1742,7 @@
       "photo": "Photo to {{name}}",
       "note": "Secret note with {{name}}",
       "board": "Board note to {{name}}",
+      "setup": "Alarm or plan with {{name}}",
       "date": "Date with {{name}}",
       "photoBooth": "Photo booth",
       "voiceClone": "Character voice",

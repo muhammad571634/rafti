@@ -1709,6 +1709,7 @@
       "photo": "Foto ke {{name}}",
       "note": "Catatan rahasia dengan {{name}}",
       "board": "Catatan papan ke {{name}}",
+      "setup": "Alarm atau rencana dengan {{name}}",
       "date": "Kencan dengan {{name}}",
       "photoBooth": "Stan foto",
       "voiceClone": "Suara karakter",

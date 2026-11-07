@@ -1709,6 +1709,7 @@
       "photo": "{{name}}에게 사진 전송",
       "note": "{{name}}와(과)의 비밀 쪽지",
       "board": "{{name}}에게 남긴 게시판 메모",
+      "setup": "{{name}}와(과)의 알람 또는 일정",
       "date": "{{name}}와(과)의 데이트",
       "photoBooth": "포토부스 촬영",
       "voiceClone": "캐릭터 목소리 복제",

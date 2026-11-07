@@ -1709,6 +1709,7 @@
       "photo": "Ảnh gửi {{name}}",
       "note": "Lời nhắn bí mật với {{name}}",
       "board": "Ghi chú trên bảng gửi {{name}}",
+      "setup": "Báo thức hoặc kế hoạch với {{name}}",
       "date": "Hẹn hò với {{name}}",
       "photoBooth": "Buồng chụp ảnh",
       "voiceClone": "Giọng nhân vật",

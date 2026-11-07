@@ -9,6 +9,7 @@ import type {
   ScheduleItem,
 } from '@/types';
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP } from '@/economy/shells';
+import { ALARM_SETUP_SHELLS, PLAN_SETUP_SHELLS } from '@/economy/setup-cost';
 
 import { dayKey, daysAgo, hoursAgo, minutesAgo } from './time';
 
@@ -52,6 +53,9 @@ export const shellCosts = {
   secretNote: 3,
   boardNote: 2,
   characterVoiceClone: 60,
+  /** A plan or an alarm with a friend: priced on the texts it makes them write (`src/economy/setup-cost.ts`). */
+  planSetup: PLAN_SETUP_SHELLS,
+  alarmSetup: ALARM_SETUP_SHELLS,
 } as const;
 
 // The check-in ladder and the wheel live in src/economy/shells.ts, which the server imports too.

@@ -1709,6 +1709,7 @@
       "photo": "傳送相片給{{name}}",
       "note": "與{{name}}互換秘密便籤",
       "board": "給{{name}}張貼留言便籤",
+      "setup": "與{{name}}的鬧鐘或計畫",
       "date": "與{{name}}共赴約會",
       "photoBooth": "拍照館合影消費",
       "voiceClone": "角色專屬語音複製",

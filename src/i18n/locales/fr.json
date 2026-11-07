@@ -1742,6 +1742,7 @@
       "photo": "Photo envoyée à {{name}}",
       "note": "Mot secret avec {{name}}",
       "board": "Mot épinglé pour {{name}}",
+      "setup": "Réveil ou projet avec {{name}}",
       "date": "Rendez-vous avec {{name}}",
       "photoBooth": "Photomaton",
       "voiceClone": "Voix du personnage",

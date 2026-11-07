@@ -1742,6 +1742,7 @@
       "photo": "Foto a {{name}}",
       "note": "Nota secreta con {{name}}",
       "board": "Nota en mural para {{name}}",
+      "setup": "Alarma o plan con {{name}}",
       "date": "Cita con {{name}}",
       "photoBooth": "Cabina de fotos",
       "voiceClone": "Voz de personaje",

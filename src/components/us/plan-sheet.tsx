@@ -5,7 +5,7 @@ import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/d
 import { Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { CharacterAvatar, Sheet, Toggle, Txt } from '@/components/ui';
+import { CharacterAvatar, Sheet, ShellIcon, Toggle, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
@@ -51,6 +51,7 @@ export function PlanSheet({
   day,
   character,
   onSubmit,
+  cost,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -59,6 +60,8 @@ export function PlanSheet({
   /** The friend the plan is with; they send the reminder */
   character?: Character;
   onSubmit: (plan: NewPlan) => void;
+  /** Shells it costs, shown under the form (`shellCosts.planSetup`). */
+  cost?: number;
 }) {
   const friendName = useFriendName();
   const { t, i18n } = useTranslation();
@@ -195,9 +198,17 @@ export function PlanSheet({
       </View>
 
       {character ? (
-        <Txt style={styles.footer}>
-          {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
-        </Txt>
+        <View style={styles.footerRow}>
+          <Txt style={[styles.footer, styles.footerText]}>
+            {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
+          </Txt>
+          {cost ? (
+            <View style={styles.cost} accessibilityLabel={`${cost} ${t('common.shells')}`}>
+              <ShellIcon size={14} />
+              <Txt style={styles.costText}>{cost}</Txt>
+            </View>
+          ) : null}
+        </View>
       ) : null}
 
       {/* The app's own calendar for a later day (the time keeps the system picker). */}
@@ -271,4 +282,8 @@ const styles = StyleSheet.create({
   timePill: { height: 34, paddingHorizontal: space.md, borderRadius: 8, backgroundColor: colors.primarySofter, justifyContent: 'center' },
   timeText: { fontSize: 17, fontVariant: ['tabular-nums'] },
   footer: { marginTop: space.sm, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary },
+  footerRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  footerText: { flex: 1, marginRight: 0 },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: space.sm, marginRight: space.lg },
+  costText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
 });

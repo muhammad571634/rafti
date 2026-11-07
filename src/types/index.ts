@@ -898,6 +898,8 @@ export type LedgerReason =
   | 'membership'
   | 'call'
   | 'topUp'
+  /** An alarm or a plan set up with a friend (`shellCosts.planSetup`, `alarmSetup`). */
+  | 'setup'
   | 'plan'
   | 'radio'
   | 'quest'

@@ -125,6 +125,8 @@ import { briefLine } from '@/mock/brief';
 import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
 import { setupUsable } from '@/ai/setup-prompt';
+import { alarmSetupCost } from '@/economy/setup-cost';
+export { alarmSetupCost };
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
@@ -851,7 +853,7 @@ interface AppState {
    * The user's answer to a setup card in the chat (`src/ai/setup-prompt.ts`): Set makes the alarm
    * or the plan with this friend, No puts the card away. False when it cannot be made any more.
    */
-  answerSetup: (conversationId: string, messageId: string, yes: boolean) => boolean;
+  answerSetup: (conversationId: string, messageId: string, yes: boolean) => 'ok' | 'noShells' | 'gone';
   /** Sends due plan reminders and "how did it go?" messages, and answers board notes. Safe to call often. */
   runTimers: () => void;
   /** Ends a couple quiz: the score lands in chat as a card, they react, closeness grows. */
@@ -3446,7 +3448,7 @@ export const useAppStore = create<AppState>()(
       answerSetup: (conversationId, messageId, yes) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         const offer = get().messages[conversationId]?.find((m) => m.id === messageId)?.setup;
-        if (!conversation || !offer || offer.madeId || offer.declined || offer.replaced) return false;
+        if (!conversation || !offer || offer.madeId || offer.declined || offer.replaced) return 'gone';
         const mark = (patch: Partial<SetupOffer>) =>
           set((s) => ({
             messages: {
@@ -3456,14 +3458,17 @@ export const useAppStore = create<AppState>()(
           }));
         if (!yes) {
           mark({ declined: true });
-          return true;
+          return 'ok';
         }
         // A change of an alarm or plan already set: that one moves instead of a second one appearing.
         const replaces = offer.replacesId;
-        if (!setupUsable(offer, new Date())) return false;
+        if (!setupUsable(offer, new Date())) return 'gone';
         const characterId = conversation.characterId;
         const character = get().characters.find((c) => c.id === characterId);
-        if (!character) return false;
+        if (!character) return 'gone';
+        // Priced as from Us or the Alarms screen; moving one already paid for is free.
+        const cost = replaces ? 0 : offer.kind === 'alarm' ? shellCosts.alarmSetup : shellCosts.planSetup;
+        if (cost && get().wallet.shells < cost) return 'noShells';
         // Quiet: the friend already said so in the reply the card came with.
         let madeId: string | undefined;
         if (offer.kind === 'alarm' && offer.time) {
@@ -3480,7 +3485,8 @@ export const useAppStore = create<AppState>()(
           if (madeId && replaces && get().schedules.some((x) => x.id === replaces)) get().removeSchedule(replaces);
           if (madeId) linkPlanThread(set, get, characterId, madeId, offer, replaces);
         }
-        if (!madeId) return false;
+        if (!madeId) return 'gone';
+        if (cost) get().spendShells(cost, 'setup', characterId);
         mark({ madeId });
         // The card of the one it changed no longer stands for anything set.
         if (replaces) {
@@ -3493,7 +3499,7 @@ export const useAppStore = create<AppState>()(
             },
           }));
         }
-        return true;
+        return 'ok';
       },
 
       runTimers: () => {

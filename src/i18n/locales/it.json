@@ -1742,6 +1742,7 @@
       "photo": "Foto a {{name}}",
       "note": "Nota segreta con {{name}}",
       "board": "Nota in bacheca per {{name}}",
+      "setup": "Sveglia o piano con {{name}}",
       "date": "Appuntamento con {{name}}",
       "photoBooth": "Cabina fotografica",
       "voiceClone": "Voce del personaggio",

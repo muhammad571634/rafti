@@ -1742,6 +1742,7 @@
       "photo": "Foto para {{name}}",
       "note": "Recado secreto com {{name}}",
       "board": "Recado no mural para {{name}}",
+      "setup": "Alarme ou plano com {{name}}",
       "date": "Encontro com {{name}}",
       "photoBooth": "Cabine de fotos",
       "voiceClone": "Voz do personagem",

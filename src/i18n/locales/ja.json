@@ -1709,6 +1709,7 @@
       "photo": "{{name}}への写真送信",
       "note": "{{name}}との秘密のメモ",
       "board": "{{name}}への掲示板メモ",
+      "setup": "{{name}}とのアラームか予定",
       "date": "{{name}}とのデート",
       "photoBooth": "フォトブース",
       "voiceClone": "キャラクターボイス",

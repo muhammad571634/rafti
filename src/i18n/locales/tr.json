@@ -1742,6 +1742,7 @@
       "photo": "{{name}} için fotoğraf",
       "note": "{{name}} ile gizli not",
       "board": "{{name}} için pano notu",
+      "setup": "{{name}} ile alarm ya da plan",
       "date": "{{name}} ile buluşma",
       "photoBooth": "Fotoğraf kabini",
       "voiceClone": "Karakter sesi",

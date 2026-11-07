@@ -1742,6 +1742,7 @@
       "photo": "Foto an {{name}}",
       "note": "Geheimnotiz mit {{name}}",
       "board": "Pinnwand-Notiz an {{name}}",
+      "setup": "Wecker oder Plan mit {{name}}",
       "date": "Date mit {{name}}",
       "photoBooth": "Fotobox",
       "voiceClone": "Figurenstimme",

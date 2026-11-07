@@ -1,13 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { setupUsable } from '@/ai/setup-prompt';
-import { Button, PressableScale, Txt } from '@/components/ui';
+import { PaywallSheet } from '@/components/paywall-sheet';
+import { Button, PressableScale, ShellIcon, Txt } from '@/components/ui';
 import { alarmTime, repeatText } from '@/lib/alarm-format';
 import { haptic } from '@/lib/haptics';
 import { dateFromKey, dayKeyFromToday, todayKey } from '@/mock/time';
+import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, shadows, space } from '@/theme';
 import type { Message } from '@/types';
@@ -21,6 +24,7 @@ export function SetupCard({ message }: { message: Message }) {
   const router = useRouter();
   const answerSetup = useAppStore((s) => s.answerSetup);
   const friendId = useAppStore((s) => s.conversations.find((c) => c.id === message.conversationId)?.characterId);
+  const [paywall, setPaywall] = useState<number | null>(null);
   const offer = message.setup;
   if (!offer || offer.declined) return null;
 
@@ -42,8 +46,12 @@ export function SetupCard({ message }: { message: Message }) {
           : dateFromKey(offer.date).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' });
   const title = offer.title || t('alarms.defaultLabel');
 
+  // What Set costs: a change of one already paid for is free (`answerSetup`).
+  const cost = offer.replacesId ? 0 : alarm ? shellCosts.alarmSetup : shellCosts.planSetup;
   const set = () => {
-    if (answerSetup(message.conversationId, message.id, true)) haptic.success();
+    const result = answerSetup(message.conversationId, message.id, true);
+    if (result === 'ok') haptic.success();
+    else if (result === 'noShells') setPaywall(cost);
     else haptic.error();
   };
   const no = () => {
@@ -87,10 +95,26 @@ export function SetupCard({ message }: { message: Message }) {
         {open ? (
           <View style={styles.actions}>
             <Button label={t('chat.setup.notNow')} variant="soft" size="sm" onPress={no} style={styles.action} />
-            <Button label={t(alarm ? 'chat.setup.set' : 'chat.setup.add')} size="sm" onPress={set} style={styles.action} />
+            <Button
+              label={t(alarm ? 'chat.setup.set' : 'chat.setup.add')}
+              size="sm"
+              onPress={set}
+              style={styles.action}
+              right={
+                cost ? (
+                  <View style={styles.price} accessibilityLabel={`${cost} ${t('common.shells')}`}>
+                    <ShellIcon size={14} />
+                    <Txt variant="smallStrong" color={colors.textOnPrimary}>
+                      {cost}
+                    </Txt>
+                  </View>
+                ) : undefined
+              }
+            />
           </View>
         ) : null}
       </View>
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
     </View>
   );
 }
@@ -113,4 +137,5 @@ const styles = StyleSheet.create({
   when: { marginTop: 2, fontVariant: ['tabular-nums'] },
   actions: { flexDirection: 'row', gap: space.sm },
   action: { flex: 1 },
+  price: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: space.xs },
 });

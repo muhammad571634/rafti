@@ -10,6 +10,7 @@ import Svg, { Circle } from 'react-native-svg';
 
 import { CharacterAvatar, EmptyState, moduleTile, PressableScale, Screen, SFIcon, ShellIcon, Txt, UserAvatar } from '@/components/ui';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { PaywallSheet } from '@/components/paywall-sheet';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
@@ -21,7 +22,7 @@ import { localCharacter } from '@/i18n/content';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { groupMoments, momentTarget } from '@/lib/moment-groups';
 import { reminderAt } from '@/lib/schedule';
-import { dateFromKey, levelForIntimacy } from '@/mock';
+import { dateFromKey, levelForIntimacy, shellCosts } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
@@ -119,6 +120,9 @@ export default function UsScreen() {
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
   const addSchedule = useAppStore((s) => s.addSchedule);
+  const spendShells = useAppStore((s) => s.spendShells);
+  const wallet = useAppStore((s) => s.wallet);
+  const [paywall, setPaywall] = useState<number | null>(null);
 
   const today = useDayKey();
   const [day, setDay] = useState(today);
@@ -197,7 +201,13 @@ export default function UsScreen() {
 
   const submitPlan = (plan: NewPlan) => {
     if (!selected) return;
-    addSchedule({ characterId: selected.character.id, ...plan });
+    // A plan with a friend costs what the texts about it cost (`shellCosts.planSetup`), as from the chat.
+    if (wallet.shells < shellCosts.planSetup) {
+      setPlanOpen(false);
+      setPaywall(shellCosts.planSetup);
+      return;
+    }
+    if (addSchedule({ characterId: selected.character.id, ...plan })) spendShells(shellCosts.planSetup, 'setup', selected.character.id);
     setPlanOpen(false);
     setDay(plan.date);
   };
@@ -506,7 +516,9 @@ export default function UsScreen() {
         day={day}
         character={selected?.character}
         onSubmit={submitPlan}
+        cost={shellCosts.planSetup}
       />
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
       <BondShareSheet
         visible={sharing}
         onClose={() => setSharing(false)}
