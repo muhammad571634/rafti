@@ -89,7 +89,7 @@ export function SetupCard({ message }: { message: Message }) {
 
   return (
     <View style={[styles.wrap, mine && styles.wrapMine]}>
-      <View style={[styles.card, !open && !made && styles.faded]}>
+      <View style={[styles.card, mine && styles.cardMine, !open && !made && styles.faded]}>
         {made ? (
           <PressableScale onPress={show} accessibilityRole="button" accessibilityLabel={`${title}, ${day}${clock ? `, ${clock}` : ''}, ${t('chat.setup.done')}`}>
             {body}
@@ -130,6 +130,8 @@ const styles = StyleSheet.create({
   // Set up by them on Us or in Alarms: on their side, like their own messages.
   wrapMine: { alignItems: 'flex-end', paddingLeft: space.xxl, paddingRight: space.md },
   struck: { textDecorationLine: 'line-through' },
+  // Right-aligned, a card sizes to its content and the title column would get no width.
+  cardMine: { width: '100%' },
   card: {
     maxWidth: 320,
     gap: space.md,
