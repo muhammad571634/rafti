@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { setupUsable } from '@/ai/setup-prompt';
+import { PlanDetailSheet } from '@/components/chat/plan-detail-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { Button, PressableScale, ShellIcon, Txt } from '@/components/ui';
 import { alarmTime, repeatText } from '@/lib/alarm-format';
@@ -25,8 +26,8 @@ export function SetupCard({ message }: { message: Message }) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const answerSetup = useAppStore((s) => s.answerSetup);
-  const friendId = useAppStore((s) => s.conversations.find((c) => c.id === message.conversationId)?.characterId);
   const [paywall, setPaywall] = useState<number | null>(null);
+  const [planOpen, setPlanOpen] = useState(false);
   const offer = message.setup;
   if (!offer || offer.declined) return null;
 
@@ -64,9 +65,10 @@ export function SetupCard({ message }: { message: Message }) {
   };
   const show = () => {
     if (!offer.madeId) return;
+    haptic.tap();
     if (alarm) router.push({ pathname: '/alarms/edit', params: { id: offer.madeId } });
-    // Us on this friend and the plan's day, where the plan sits.
-    else router.push({ pathname: '/(tabs)/us', params: { friend: friendId ?? '', day: offer.date, at: String(Date.now()) } });
+    // The plan opens over the chat (0z143): switching to the Us tab lost the way back to this chat.
+    else setPlanOpen(true);
   };
 
   const body = (
@@ -120,6 +122,7 @@ export function SetupCard({ message }: { message: Message }) {
         ) : null}
       </View>
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+      {!alarm ? <PlanDetailSheet planId={planOpen ? (offer.madeId ?? null) : null} onClose={() => setPlanOpen(false)} /> : null}
     </View>
   );
 }
