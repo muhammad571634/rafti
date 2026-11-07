@@ -55,4 +55,6 @@ the GPU percentiles. `framestats` gives per-frame UI, draw and GPU times.
 
 | Date | Screen | Before | After |
 |---|---|---|---|
-| 2026-11-07 (0z131) | Today, untouched 5 s | 320 frames, 78-92 % janky, 50th 32 ms, GPU 12-13 ms per frame (the hero's breath) | see HANDOFF 0z131 |
+| 2026-11-07 (0z131) | Today, untouched 5 s | 320 frames, 78-92 % janky, 50th 32 ms, GPU 12-13 ms per frame (the hero's breath) | 0 frames |
+| 2026-11-07 (0z131) | Today, six scrolls | 41 % janky, 90th 32 ms | 19 % janky, 90th 28 ms |
+| 2026-11-07 (0z131) | 12 tab switches (warm) | median frame 40 ms (tab bar rebuilt on every tap) | median 25-29 ms; worst 130-150 ms (new screen appearing, open) |
