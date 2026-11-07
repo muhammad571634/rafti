@@ -10,7 +10,7 @@
 - Checks: tsc 0 in `src`, npm test 710/710. OTA Android-only `a4e6bdbb`, `6a11be01`, `c6367e8a`, `1773a6c3`.
 
 Still to do:
-1. Today's look "ultra", matching our earlier designs and clearer (owner allowed): HTML prototype first, grounded in the references above, then code.
+1. Today's look "ultra" = simple and clear like iOS, in our own playful skin, fit for an AI companion (owner, later the same day: not Apple's design, not more decoration). Prototype for the owner's word: https://claude.ai/artifact/6tYCFRyhcRAWGyb5sN6TbJ (Design canvas: `Main` = Today with the waiting chats and the sealed note together at the top, one widget shape for all, call back in green; `States` = each of the eleven widgets waiting / usual / empty with what a tap opens). Code only after the owner approves; source in this session's scratchpad `ultra/project/`.
 2. Widgets next steps in `docs/today-widgets.md` (mood by state, play in place on Radio, sentence lines, Bond milestones).
 3. Tab switch: the new screen's first frames take 130-150 ms on the A51 (UI thread 50-60 ms); profile the screen attach.
 4. On the first iPhone: swipe back from mid-screen on most screens; in a chat, a sideways swipe on a reply's versions must not go back.
