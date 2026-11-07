@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z117. Coin Drop Reward: shells poured into the wallet; the daily sheet is back; APK 1.1.0 (2026-11-07, Claude 1). NEXT: owner installs APK 1.1.0 and tries the wheel and the check-in
+
+- Owner: reviewed nativecook.dev/blocks (766 React Native block prompts, free, commercial use allowed, prompts not to be shared or committed; the shortlist is in Claude's memory `nativecook-blocks`). Owner pastes the React Native prompt of the block we pick; we adapt it. Owner: a new APK is fine whenever a block or new work needs one ("o'ylab o'tirma"). Direction: keep the iOS base, polish it with current trends.
+- Built (`684c600`): Native Cook's Coin Drop Reward in `src/components/coin-drop/` (source read from their public repo: one Skia shader ray-marches the coin, the drop and the blend). Recoloured apricot with a raised scallop shell instead of their P; every timing, spring, gesture, haptic, reduced-motion path and a11y label kept; their missions page and autoPlay loop left out. Used for (1) the lucky wheel's prize on Gifts: the coin pops from the wheel into a toast and pours into the header's shell capsule (it shows the old balance until the drop lands, then wobbles, "+N"); (2) the daily check-in: owner asked to bring the Today sheet back ("ko'rinmaydi... chiqadigan qilib qo'yish kerak"), so `dailyReward` is set again on both check-in paths (local and server); its Collect pours today's shells into a wallet pill in the sheet's head, then the sheet closes.
+- Skia 2.14.0 is a new native module: `index.ts` requires the component only when `RNSkiaModule` is registered, otherwise the old prize sheet / plain close stays. `app.json` version 1.1.0 (new runtime: OTAs from now on need the 1.1.0 APK).
+- Checks: tsc 0, npm test 661/661. No new strings (uses `gifts.won`, `dailyReward.collectAmount`; the sheet's "Day N of 7" pill gave way to the wallet).
+
+Still to do:
+1. EAS preview build 1.1.0, install on the A51, try: a spin (pop, pull, flick, tap, wait 3 s), the check-in sheet on a new day, reduced motion; watch the shader's frame rate on the A51.
+2. App Store preview shots (2026-11-07, in OneDrive\Pictures): owner says good for now; revisit and add the rest of the set later.
+3. Next Native Cook block after the owner's word: Level Up Takeover (bond level-up), then Envelope Gift Reveal (Secret Note).
+
 ### 0z116. The widgets tried on the A51; the heart opens Dating; a booth photo with you in it (2026-11-05, Claude 1). NEXT: owner tries the booth and the widgets
 
 - Owner: the A51 is plugged in, check on the phone everything done above. Then, mid-check: (1) the booth's camera "does not work": in BIMOBIMO the user stood beside the character in the phone's camera, ours only re-printed the friend's art; (2) the heart (Date) card went into the plan's chat, so there was no way left to set up a date.
