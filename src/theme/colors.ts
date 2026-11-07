@@ -1,5 +1,7 @@
 import { Appearance } from 'react-native';
 
+import { friendHueIndex } from '../lib/friend-color';
+
 /**
  * Sigmazam palette — soft peach and mint, built around the Sigmazam mascot.
  * Raw values live in `palette`; screens should only use the semantic `colors` map
@@ -488,6 +490,80 @@ export const gradientStops = {
   pictureScrim: [0, 0.2, 0.4, 0.66, 1] as const,
   pictureEdge: [0, 0.38, 1] as const,
 } as const;
+
+/**
+ * The playful layer's ground and controls (design-style §10, owner 2026-11-07): warm cream instead
+ * of the aurora on the four main tabs (warm near-black in dark mode), ink pills, soft chips.
+ */
+export const playful = isDark
+  ? {
+      ground: '#1A1613',
+      ink: '#FFFFFF',
+      /** A pill or chip that is off. */
+      chip: 'rgba(255,255,255,0.10)',
+      /** A pill that is on, and its text. */
+      chipOn: '#FFFFFF',
+      chipOnText: '#1F1A17',
+      /** Round top-bar buttons. */
+      round: 'rgba(255,255,255,0.10)',
+      card: '#2A2420',
+      /** A group's bubble: one soft mint for every group. */
+      group: { fill: '#1D5A47', ink: '#FFFFFF' },
+      /** Streams' own tile in the pencil sheet. */
+      plum: '#3A2C55',
+      plumInk: '#FFFFFF',
+      /** The red count chip (Unread) and the LIVE chip. */
+      red: systemColors.red,
+    }
+  : {
+      ground: '#FBF6EE',
+      ink: '#1F1A17',
+      chip: '#F3EEE6',
+      chipOn: '#1F1A17',
+      chipOnText: '#FFFFFF',
+      round: 'rgba(31,26,23,0.07)',
+      card: '#FFFFFF',
+      group: { fill: '#BDEBD7', ink: '#1F1A17' },
+      plum: '#2B2140',
+      plumInk: '#FFFFFF',
+      red: systemColors.red,
+    };
+
+/** A fill and the text that reads on it (WCAG 4.5 or more, docs/main-tabs-inventory.md). */
+export interface Hue {
+  fill: string;
+  ink: string;
+}
+
+const INK = '#1F1A17';
+/**
+ * The eight friend hues: a friend's bubble in Chats, their ring on pinned faces and on Us. Light
+ * ones carry ink (the blue carries white); the dark-mode set is deeper, all with white.
+ */
+export const friendHues: readonly Hue[] = isDark
+  ? [
+      { fill: '#9E3B32', ink: '#FFFFFF' },
+      { fill: '#8A6400', ink: '#FFFFFF' },
+      { fill: '#9A4F12', ink: '#FFFFFF' },
+      { fill: '#2456B8', ink: '#FFFFFF' },
+      { fill: '#5E4BA0', ink: '#FFFFFF' },
+      { fill: '#1D7356', ink: '#FFFFFF' },
+      { fill: '#9A3E62', ink: '#FFFFFF' },
+      { fill: '#16707F', ink: '#FFFFFF' },
+    ]
+  : [
+      { fill: '#FF6B5B', ink: INK },
+      { fill: '#FFC93C', ink: INK },
+      { fill: '#FF9A3C', ink: INK },
+      { fill: '#2563EB', ink: '#FFFFFF' },
+      { fill: '#C7B2F5', ink: INK },
+      { fill: '#8FE0C0', ink: INK },
+      { fill: '#FFB0C8', ink: INK },
+      { fill: '#FFE07A', ink: INK },
+    ];
+
+/** A character's own hue, the same on every screen (`friendHueIndex`). */
+export const friendColor = (characterId: string): Hue => friendHues[friendHueIndex(characterId, friendHues.length)];
 
 /** Deterministic pastel pair for an avatar with no image yet. */
 export const avatarGradients = [
