@@ -103,6 +103,24 @@ export default function ProfileScreen() {
   const unblockCharacter = useAppStore((s) => s.unblockCharacter);
   const blocked = characters.filter((c) => blockedIds.includes(c.id));
 
+  // Development: see the moments without waiting for them. The level-up plays over the newest chat
+  // at its friend's current level; the check-in sheet comes up on Today with the day's last amount.
+  const playLevelUp = () => {
+    const s = useAppStore.getState();
+    const convo = [...s.conversations]
+      .filter((c) => s.relationships[c.characterId])
+      .sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt))[0];
+    if (!convo) return;
+    const rel = s.relationships[convo.characterId];
+    useAppStore.setState({ levelUp: { characterId: convo.characterId, level: Math.max(1, rel.level), levelTitle: rel.levelTitle } });
+    router.push(`/chat/${convo.id}`);
+  };
+  const showCheckIn = () => {
+    const s = useAppStore.getState();
+    useAppStore.setState({ dailyReward: { amount: s.daily.checkInAmount ?? 10, day: Math.max(1, s.daily.checkInDay) } });
+    router.navigate('/');
+  };
+
   // Read again on return from Profile → Language.
   const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
   useFocusEffect(useCallback(() => setSavedLang(getSavedLocaleSync()), []));
@@ -400,6 +418,8 @@ export default function ProfileScreen() {
             <SettingsRow title={t('profile.welcomeTest')} icon="hand-left" fill={FILL.grey} meta={lastWelcomeCheck()} onPress={() => rewindAwayClock(2 * AWAY_MS)} />
             {/* The first launch's hello, without clearing the app's data. */}
             <SettingsRow title={t('profile.helloTest')} icon="moon" fill={FILL.grey} onPress={() => setHello(true)} />
+            <SettingsRow title={t('profile.levelUpTest')} icon="heart" fill={FILL.grey} onPress={playLevelUp} />
+            <SettingsRow title={t('profile.checkInTest')} icon="gift" fill={FILL.grey} onPress={showCheckIn} />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <SettingsRow title={t('profile.serverAccount')} icon="cloud" fill={FILL.grey} meta={accountStatus} onPress={() => void checkAccount()} />
             {/* B1.2: shells are spent and earned on the server; turning it on loads the server's wallet. */}

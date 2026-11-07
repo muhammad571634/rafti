@@ -1694,7 +1694,9 @@
     "inviteOffer": "Пригласить +{{count}}",
     "versionRow": "Версия",
     "welcomeTest": "Test the welcome back",
-    "helloTest": "Play the first hello"
+    "helloTest": "Play the first hello",
+    "levelUpTest": "Play a level-up",
+    "checkInTest": "Show the daily check-in"
   },
   "errors": {
     "generic": "Что-то пошло не так.",

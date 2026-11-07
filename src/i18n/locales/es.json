@@ -1632,7 +1632,9 @@
     "inviteOffer": "Invita +{{count}}",
     "versionRow": "Versión",
     "welcomeTest": "Test the welcome back",
-    "helloTest": "Play the first hello"
+    "helloTest": "Play the first hello",
+    "levelUpTest": "Play a level-up",
+    "checkInTest": "Show the daily check-in"
   },
   "errors": {
     "generic": "Algo salió mal.",

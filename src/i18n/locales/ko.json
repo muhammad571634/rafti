@@ -1601,7 +1601,9 @@
     "inviteOffer": "초대 시 +{{count}}",
     "versionRow": "버전",
     "welcomeTest": "Test the welcome back",
-    "helloTest": "Play the first hello"
+    "helloTest": "Play the first hello",
+    "levelUpTest": "Play a level-up",
+    "checkInTest": "Show the daily check-in"
   },
   "errors": {
     "generic": "문제가 발생했습니다.",

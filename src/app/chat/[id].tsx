@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
+import { LevelUpTakeover } from '@/components/level-up';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
 import { IntroCard } from '@/components/chat/intro-card';
@@ -632,11 +633,20 @@ export default function ChatRoomScreen() {
         />
       </BlurTargetView>
 
-      <LevelUpModal
-        event={levelUp?.characterId === character.id ? levelUp : null}
-        characterName={name}
-        onClose={dismissLevelUp}
-      />
+      {LevelUpTakeover ? (
+        <LevelUpTakeover
+          event={levelUp?.characterId === character.id ? levelUp : null}
+          character={character}
+          characterName={name}
+          onClose={dismissLevelUp}
+        />
+      ) : (
+        <LevelUpModal
+          event={levelUp?.characterId === character.id ? levelUp : null}
+          characterName={name}
+          onClose={dismissLevelUp}
+        />
+      )}
 
       <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} />
 

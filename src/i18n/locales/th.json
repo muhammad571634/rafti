@@ -1601,7 +1601,9 @@
     "inviteOffer": "เชิญเพื่อน +{{count}}",
     "versionRow": "เวอร์ชัน",
     "welcomeTest": "Test the welcome back",
-    "helloTest": "Play the first hello"
+    "helloTest": "Play the first hello",
+    "levelUpTest": "Play a level-up",
+    "checkInTest": "Show the daily check-in"
   },
   "errors": {
     "generic": "เกิดข้อผิดพลาดขึ้นบางอย่าง",
