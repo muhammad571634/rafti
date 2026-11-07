@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -48,7 +48,9 @@ export default function DiaryWriteScreen() {
   const [marks, setMarks] = useState<Mark[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [mood, setMood] = useState<DiaryMood>('soft');
-  const [shareWith, setShareWith] = useState<string | undefined>(undefined);
+  // Opened from a friend's page on Us, the page is theirs to read unless the user picks "only me".
+  const { characterId: forFriend } = useLocalSearchParams<{ characterId?: string }>();
+  const [shareWith, setShareWith] = useState<string | undefined>(typeof forFriend === 'string' ? forFriend : undefined);
   const [datesOpen, setDatesOpen] = useState(false);
   const [paperHeight, setPaperHeight] = useState(0);
 
@@ -77,7 +79,8 @@ export default function DiaryWriteScreen() {
       body: body.trim(),
       mood,
       images,
-      sharedWithCharacterId: shareWith,
+      // Only a friend the user chats with can read it (a stale or unknown id shares with no one).
+      sharedWithCharacterId: reader?.id,
       accentIndex: MOODS.indexOf(mood),
     });
     router.back();

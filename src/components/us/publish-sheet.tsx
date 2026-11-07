@@ -34,6 +34,8 @@ export function PublishSheet({
   name: string;
 }) {
   const { t } = useTranslation();
+  // The diary page from here goes to this friend, so its hint says so (the diary's own words).
+  const hint = (kind: PublishKind) => (kind === 'diary' ? t('diary.shareWith', { name }) : t(`us.publishHint.${kind}`, { name }));
   return (
     <Sheet visible={visible} onClose={onClose} title={t('us.add')}>
       <View style={styles.tiles}>
@@ -43,7 +45,7 @@ export function PublishSheet({
             scaleTo={0.97}
             onPress={() => onPick(kind)}
             accessibilityRole="button"
-            accessibilityLabel={`${t(`us.publishKind.${kind}`)}, ${t(`us.publishHint.${kind}`, { name })}`}
+            accessibilityLabel={`${t(`us.publishKind.${kind}`)}, ${hint(kind)}`}
             style={[styles.tile, { backgroundColor: fill }]}>
             <View style={styles.icon}>
               <SFIcon ios={ios} icon={icon} size={22} color={INK} />
@@ -52,7 +54,7 @@ export function PublishSheet({
               <Txt style={styles.title} maxFontSizeMultiplier={1.3}>
                 {t(`us.publishKind.${kind}`)}
               </Txt>
-              <Txt style={styles.hint}>{t(`us.publishHint.${kind}`, { name })}</Txt>
+              <Txt style={styles.hint}>{hint(kind)}</Txt>
             </View>
           </PressableScale>
         ))}

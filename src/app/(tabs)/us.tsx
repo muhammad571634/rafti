@@ -176,6 +176,8 @@ export default function UsScreen() {
   const pickPublish = (kind: PublishKind) => {
     setPublishOpen(false);
     if (kind === 'plan') setPlanOpen(true);
+    // From a friend's page the diary page is for them: they read it, write back and remember it.
+    else if (kind === 'diary' && selected) router.push({ pathname: '/diary/write', params: { characterId: selected.character.id } });
     else if (kind === 'diary') router.push('/diary/write');
     else if (selected) router.push({ pathname: '/board/write', params: { characterId: selected.character.id } });
   };
