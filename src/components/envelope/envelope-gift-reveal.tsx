@@ -172,7 +172,8 @@ function Screen({ width, height, reduced, autoPlay, content, onDone }: { width: 
           accessibilityRole="button" accessibilityLabel={GIFT.hint}>
           {({ pressed }) => <Animated.View style={[styles.open, pressStyle(pressed)]}>
             <View style={styles.chevron} />
-            <Text style={styles.openText}>{GIFT.hint}</Text>
+            {/* Measured again once Inter is in, so a longer hint ("Kapağı kaldır") is never cut. */}
+            <Text key={fontReady ? 'inter' : 'system'} style={styles.openText} numberOfLines={1}>{GIFT.hint}</Text>
           </Animated.View>}
         </Pressable>
       </Animated.View>

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { EnvelopeLetter } from '@/components/envelope';
+import { EnvelopeLetter, type EnvelopeContent } from '@/components/envelope';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
@@ -45,7 +45,7 @@ export default function SecretNoteScreen() {
   const [paywall, setPaywall] = useState<number | null>(null);
   const [justOpened, setJustOpened] = useState(false);
   // Their note arrives as a sealed letter the user opens (Native Cook's Envelope Gift Reveal, builds with Skia).
-  const [letter, setLetter] = useState(false);
+  const [letter, setLetter] = useState<EnvelopeContent | null>(null);
 
   const rawNote = useMemo(() => notes.find((n) => n.characterId === characterId), [notes, characterId]);
   const note = rawNote ? localSecretNote(rawNote) : undefined;
@@ -87,7 +87,7 @@ export default function SecretNoteScreen() {
     if (result === 'noShells') setPaywall(shellCosts.secretNote);
     if (result === 'ok') {
       setJustOpened(true);
-      if (EnvelopeLetter) setLetter(true);
+      if (EnvelopeLetter) setLetter(envelope);
     }
   };
 
@@ -131,7 +131,7 @@ export default function SecretNoteScreen() {
           <View style={[styles.card, styles.pad]}>
             {exchanged && EnvelopeLetter ? (
               // Opened notes are read again as the letter they came in.
-              <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityHint={t('secretNote.liftFlap')} onPress={() => setLetter(true)}>
+              <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityHint={t('secretNote.liftFlap')} onPress={() => setLetter(envelope)}>
                 <Txt style={styles.noteText}>{note.theirNote}</Txt>
               </PressableScale>
             ) : exchanged ? (
@@ -212,7 +212,7 @@ export default function SecretNoteScreen() {
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
-      {EnvelopeLetter && letter && note.theirNote ? <EnvelopeLetter content={envelope} onDone={() => setLetter(false)} /> : null}
+      {EnvelopeLetter && letter ? <EnvelopeLetter content={letter} onDone={() => setLetter(null)} /> : null}
     </Screen>
   );
 }
