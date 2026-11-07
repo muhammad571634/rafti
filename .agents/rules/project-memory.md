@@ -21,7 +21,8 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
 - **Never drop side asks**: Every unfinished owner request in a session goes into the current `HANDOFF.md` block under `Still to do`.
 
 ## 3. UI, Design & Expo Live-Reload Workflow
-- **Direct to code, no preview pictures**: Since 2026-10-30, skip HTML/canvas prototypes and UI preview screenshots unless the owner explicitly asks for one. Build working code following Apple HIG (`developer.apple.com/design`) and `docs/design-style.md` ("calm cards"), pass checks, commit, and push.
+- **Prototype first for the playful redesigns (owner, 2026-11-07)**: each redesigned screen (design-style §10) gets an HTML prototype the owner approves before code.
+- **Direct to code, no preview pictures** (everything else): Since 2026-10-30, skip HTML/canvas prototypes and UI preview screenshots unless the owner explicitly asks for one. Build working code following Apple HIG (`developer.apple.com/design`) and `docs/design-style.md` ("calm cards"), pass checks, commit, and push.
 - **Visual rules**:
   - Minimal text UI: headings, numbers, and icons only — no helper subtitles on screens.
   - Photo cards keep a dark scrim + clear see-through glass buttons (never solid white buttons or opaque frosted capsules covering character art).
