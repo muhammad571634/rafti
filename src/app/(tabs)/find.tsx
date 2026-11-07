@@ -38,7 +38,7 @@ import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, playful, space, TAB_BAR_HEIGHT, worldHue } from '@/theme';
+import { colors, fonts, friendColor, playful, space, TAB_BAR_HEIGHT, worldHue } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
 
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
@@ -532,6 +532,10 @@ function FolderCard({
   fan: SharedValue<number>;
 }) {
   const spot = CARDS[index];
+  // A creation's photo can be gone from the phone: fall back to its initial, as avatars do.
+  const [broken, setBroken] = useState(false);
+  const source = broken ? undefined : imageOf(character);
+  const hue = friendColor(character.id);
   const cardHeight = Math.round((size * 4) / 3);
   const move = useAnimatedStyle(() => ({
     transform: [
@@ -544,7 +548,23 @@ function FolderCard({
     <Animated.View
       pointerEvents="none"
       style={[styles.folderCard, { left: spot.left * width, top: spot.top * height, width: size, height: cardHeight }, move]}>
-      <Image source={imageOf(character)} style={styles.folderImage} contentFit="cover" transition={120} recyclingKey={character.id} />
+      {source ? (
+        <Image
+          source={source}
+          style={styles.folderImage}
+          contentFit="cover"
+          transition={120}
+          recyclingKey={character.id}
+          onError={() => setBroken(true)}
+        />
+      ) : (
+        // A creation without a picture yet: its initial on the friend's own hue, never a blank card.
+        <View style={[styles.folderImage, styles.folderInitial, { backgroundColor: hue.fill }]}>
+          <Txt style={[styles.folderInitialText, { color: hue.ink }]} maxFontSizeMultiplier={1}>
+            {character.name.trim().charAt(0).toUpperCase() || '?'}
+          </Txt>
+        </View>
+      )}
     </Animated.View>
   );
 }
@@ -857,6 +877,8 @@ const styles = StyleSheet.create({
     ...softShadow,
   },
   folderImage: { flex: 1, borderRadius: 8 },
+  folderInitial: { alignItems: 'center', justifyContent: 'center' },
+  folderInitialText: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36 },
   folderFront: {
     position: 'absolute',
     left: 0,
