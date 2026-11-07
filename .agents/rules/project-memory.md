@@ -53,6 +53,7 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
 - **Cloud API (`https://sigmazam-api.fly.dev`, Fly app `sigmazam-api`, Tokyo `nrt`)**:
   - Do not run `flyctl deploy` directly. Commit and push server changes, then give the owner:
     `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+    The leading `!` works only in the Claude chat box. In the app's Terminal panel (PowerShell) it is a parse error (owner hit it 2026-11-07), so always give the terminal form too, without `!`: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only` (same for `node scripts/apply-migration.mjs`).
   - Probe deployment health with `/health` (`200`) or unauthenticated route checks (`401`), never paid model calls.
 - **Supabase Cloud (`yhelqgpwputlayawwtne`, Tokyo `ap-northeast-1`)**:
   - Never run `supabase start` or local Docker stack (keep Docker Desktop installed, just stopped).
