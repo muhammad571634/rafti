@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient as Gradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -19,7 +19,7 @@ import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
-import { groupMoments } from '@/lib/moment-groups';
+import { groupMoments, momentTarget } from '@/lib/moment-groups';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, levelForIntimacy } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
@@ -425,6 +425,7 @@ export default function UsScreen() {
           <View style={styles.moments}>
             {shownMoments.map(({ moment, count }, i) => {
               const photo = moment.photoId ? photoById.get(moment.photoId) : undefined;
+              const target = momentTarget(moment);
               const last = i === shownMoments.length - 1;
               return (
                 <MomentRow
@@ -457,7 +458,8 @@ export default function UsScreen() {
                       />
                     ) : undefined
                   }
-                  onPress={photo ? () => router.push({ pathname: '/photo/[id]', params: { id: photo.id } }) : undefined}
+                  // Every moment but a plan opens the place it happened (`momentTarget`).
+                  onPress={target ? () => router.push(target as Href) : undefined}
                 />
               );
             })}
@@ -569,6 +571,7 @@ function MomentRow({
       <View style={styles.momentEnd}>
         {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
         <Txt style={styles.when}>{when}</Txt>
+        {onPress ? <Ionicons name="chevron-forward" size={14} color={colors.textFaint} /> : null}
       </View>
     </Pressable>
   );
@@ -782,7 +785,7 @@ const styles = StyleSheet.create({
   momentTextShrink: { flexShrink: 1 },
   times: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: playful.chipOn },
   timesText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: playful.chipOnText },
-  momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   when: { fontSize: 12, color: colors.textSecondary },
   thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
   showMore: { alignSelf: 'center', minHeight: 44, paddingHorizontal: space.lg, justifyContent: 'center' },

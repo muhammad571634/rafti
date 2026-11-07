@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import type { LedgerEntry, Message } from '@/types';
+import type { LedgerEntry, Message, Moment } from '@/types';
 
-import { capLedger, capMessages } from './storage-caps';
+import { capLedger, capMessages, capMoments } from './storage-caps';
 
 const T0 = Date.parse('2026-10-13T08:00:00.000Z');
 
@@ -41,5 +41,34 @@ describe('capLedger: newest history lines only', () => {
   it('keeps the first entries of a newest-first list', () => {
     const ledger = Array.from({ length: 5 }, (_, i) => ({ id: `l${i}` })) as LedgerEntry[];
     assert.deepEqual(capLedger(ledger, 3).map((e) => e.id), ['l0', 'l1', 'l2']);
+  });
+});
+
+describe('capMoments: a long bond never outgrows the save', () => {
+  const moment = (characterId: string, kind: Moment['kind'], i: number): Moment => ({
+    id: `${characterId}_${kind}_${i}`,
+    characterId,
+    kind,
+    createdAt: new Date(T0 + i * 60_000).toISOString(),
+  });
+
+  it('leaves a short timeline untouched (same array)', () => {
+    const list = [moment('hana', 'met', 0), moment('hana', 'secretNote', 1)];
+    assert.equal(capMoments(list, 5), list);
+  });
+
+  it("keeps each friend's newest everyday moments and every milestone, in order", () => {
+    const list = [
+      moment('hana', 'met', 0),
+      ...Array.from({ length: 6 }, (_, i) => moment('hana', 'secretNote', i + 1)),
+      moment('hana', 'levelUp', 7),
+      moment('hana', 'photo', 8),
+      moment('kai', 'call', 9),
+    ];
+    const kept = capMoments(list, 3);
+    assert.deepEqual(
+      kept.map((m) => m.id),
+      ['hana_met_0', 'hana_secretNote_4', 'hana_secretNote_5', 'hana_secretNote_6', 'hana_levelUp_7', 'hana_photo_8', 'kai_call_9'],
+    );
   });
 });

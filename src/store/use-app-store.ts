@@ -101,7 +101,7 @@ import {
 import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodAt, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
 import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
-import { capLedger, capMessages } from '@/lib/storage-caps';
+import { capLedger, capMessages, capMoments } from '@/lib/storage-caps';
 import type { MemorySyncState } from '@/lib/memory-sync';
 import { resetMemorySync, startMemorySync } from '@/store/memory-sync';
 import { messagesInDb, resetMessages, restoreMessages } from '@/store/message-sync';
@@ -3888,7 +3888,7 @@ export const useAppStore = create<AppState>()(
         notes: s.notes,
         ledger: capLedger(s.ledger),
         calls: s.calls,
-        moments: s.moments,
+        moments: capMoments(s.moments),
         schedules: s.schedules,
         care: s.care,
         pushOutbox: s.pushOutbox,

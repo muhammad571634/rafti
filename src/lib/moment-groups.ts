@@ -40,3 +40,34 @@ export function groupMoments(sorted: readonly Moment[]): MomentRow[] {
   }
   return rows;
 }
+
+/**
+ * Where a moment leads: the place it happened, so the timeline is a way back into the bond and not
+ * just a list to read. A plan has none: its day is on the calendar right above the timeline.
+ */
+export function momentTarget(moment: Moment): string | undefined {
+  const id = encodeURIComponent(moment.characterId);
+  switch (moment.kind) {
+    case 'photo':
+      return moment.photoId ? `/photo/${encodeURIComponent(moment.photoId)}` : undefined;
+    case 'secretNote':
+      return `/secret-note/${id}`;
+    case 'board':
+      return '/board';
+    case 'diary':
+      return '/diary';
+    case 'call':
+      return '/call-history';
+    case 'dating':
+      return `/dating?partner=${id}`;
+    case 'quiz':
+      return `/quiz/${id}`;
+    // How you met, each level and each opened chapter are the bond's story, told on their profile.
+    case 'met':
+    case 'levelUp':
+    case 'arc':
+      return `/character/${id}`;
+    case 'plan':
+      return undefined;
+  }
+}

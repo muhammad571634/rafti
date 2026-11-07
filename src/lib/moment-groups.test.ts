@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import type { Moment, MomentKind } from '../types';
-import { groupMoments } from './moment-groups';
+import { groupMoments, momentTarget } from './moment-groups';
 
 let n = 0;
 /** A moment at a local time on 2026-11-dd. */
@@ -57,5 +57,26 @@ describe("Us' moment rows", () => {
 
   it('gives nothing for nothing', () => {
     assert.deepEqual(groupMoments([]), []);
+  });
+});
+
+describe('where a moment leads', () => {
+  it('opens the place it happened', () => {
+    assert.equal(momentTarget(at('secretNote', 7, 9)), '/secret-note/hana');
+    assert.equal(momentTarget(at('board', 7, 9)), '/board');
+    assert.equal(momentTarget(at('diary', 7, 9)), '/diary');
+    assert.equal(momentTarget(at('call', 7, 9)), '/call-history');
+    assert.equal(momentTarget(at('dating', 7, 9)), '/dating?partner=hana');
+    assert.equal(momentTarget(at('quiz', 7, 9)), '/quiz/hana');
+    assert.equal(momentTarget(at('photo', 7, 9, { photoId: 'p 1' })), '/photo/p%201');
+  });
+
+  it("tells the bond's story on the profile", () => {
+    for (const kind of ['met', 'levelUp', 'arc'] as const) assert.equal(momentTarget(at(kind, 7, 9)), '/character/hana');
+  });
+
+  it('leaves a plan and a photo without a picture where they are', () => {
+    assert.equal(momentTarget(at('plan', 7, 9)), undefined);
+    assert.equal(momentTarget(at('photo', 7, 9)), undefined);
   });
 });
