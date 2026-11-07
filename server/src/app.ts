@@ -823,7 +823,9 @@ export function createApp(
       // `crisis`: the app shows the helpline card with the reply (src/ai/safety.ts).
       // `setup`: an alarm or plan the user asked for, shown as a card to confirm; never on a call or after a crisis.
       const setup = input.mode === 'call' || crisis ? undefined : reply.setup;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, voice, model: result.model ?? provider.name, ms });
+      // `threads`: what the friend will follow up on; the app applies it on the phone's clock. Never after a crisis.
+      const threads = crisis ? undefined : reply.threads;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

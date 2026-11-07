@@ -78,7 +78,7 @@ export default function NotificationsScreen() {
       case 'missedCall':
         return conversation ? { pathname: '/chat/[id]', params: { id: conversation.id } } : '/call-history';
       case 'plan':
-        return '/(tabs)/us';
+        return item.characterId ? { pathname: '/(tabs)/us', params: { friend: item.characterId, at: String(Date.now()) } } : '/(tabs)/us';
       case 'levelUp':
         return { pathname: '/character/[id]', params: { id: item.characterId! } };
       case 'boardReply':

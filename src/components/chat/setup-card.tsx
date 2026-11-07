@@ -20,6 +20,7 @@ export function SetupCard({ message }: { message: Message }) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const answerSetup = useAppStore((s) => s.answerSetup);
+  const friendId = useAppStore((s) => s.conversations.find((c) => c.id === message.conversationId)?.characterId);
   const offer = message.setup;
   if (!offer || offer.declined) return null;
 
@@ -52,7 +53,8 @@ export function SetupCard({ message }: { message: Message }) {
   const show = () => {
     if (!offer.madeId) return;
     if (alarm) router.push({ pathname: '/alarms/edit', params: { id: offer.madeId } });
-    else router.push('/(tabs)/us');
+    // Us on this friend and the plan's day, where the plan sits.
+    else router.push({ pathname: '/(tabs)/us', params: { friend: friendId ?? '', day: offer.date, at: String(Date.now()) } });
   };
 
   const body = (

@@ -8,6 +8,7 @@ import type { GroupPromptInput } from './group-reply';
 import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
 import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
 import { cleanSetup } from './setup-prompt';
+import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
@@ -180,8 +181,8 @@ export const serverMemories = {
 export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -203,6 +204,7 @@ export async function serverReply(
     photos: reply?.photos,
     voice: signs.length ? kept.map((k) => k.sig) : undefined,
     setup: reply?.crisis === true ? undefined : cleanSetup(reply?.setup),
+    threads: reply?.crisis === true ? undefined : cleanThreadOps(reply?.threads),
   };
 }
 

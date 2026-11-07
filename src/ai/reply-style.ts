@@ -4,6 +4,7 @@ import type { Emotion, SetupOffer } from '@/types';
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
 import { cleanSetup } from './setup-prompt';
+import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
 
 /**
  * Reply style and length in the prompt (Character.AI's "Personalization": response length and
@@ -92,6 +93,8 @@ export interface ModelReply {
   photos?: string[];
   /** An alarm or a plan the user asked it to set up (`src/ai/setup-prompt.ts`). */
   setup?: SetupOffer;
+  /** What it will follow up on, move or settle (`src/ai/thread-prompt.ts`), times on the user's clock. */
+  threads?: ThreadOps;
 }
 
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
@@ -99,13 +102,14 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown };
+      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
       if (bubbles.length) {
         const photos = cleanPhotoNotes(data.photos);
         const setup = cleanSetup(data.setup);
+        const threads = cleanThreadOps(data.threads);
         return {
           bubbles,
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
@@ -113,6 +117,7 @@ export function parseModelReply(raw: string): ModelReply {
           ...(data.crisis === true ? { crisis: true } : {}),
           ...(photos ? { photos } : {}),
           ...(setup ? { setup } : {}),
+          ...(hasThreadOps(threads) ? { threads } : {}),
         };
       }
     } catch {

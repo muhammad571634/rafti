@@ -3,7 +3,7 @@ import { part, type PromptPart } from './prompt-layout';
 import { characterParts } from './rules';
 import { temperOf } from '../lib/temper';
 import type { TouchDraft } from '../lib/threads';
-import type { Character, Message, Relationship, Thread, ThreadOutcome, Touch, TouchPhase, User } from '@/types';
+import type { Character, Message, Relationship, Thread, ThreadKind, ThreadOutcome, Touch, TouchPhase, User } from '@/types';
 
 /**
  * The model's side of open threads (`src/lib/threads.ts`): no topic list and no wording on our
@@ -21,7 +21,7 @@ export const THREAD_RULES_LINES = [
   '- For each thread decide when you would text and why: the evening before ("eve": sleep early, offer to wake them), before it ("before": luck), at leaving time ("leave"), after it ("after": how did it go?), a check on a task ("check"), a goal they set ("goal": every few days, cheer, never scold). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then. A small thing may need none.',
   '- When the user says how it went or that it is off, settle the thread. When the time moves, move it.',
   '- Now and then (at most once a day) give a small real-life quest ("quest"): a few minutes, easy to start, away from the screen, from their life (a walk, the sky, a friend to message). Never preach; they can always say no.',
-  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"ISO time or null","touches":[{"at":"ISO time","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"ISO","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Leave it out when nothing changed.',
+  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"YYYY-MM-DDTHH:MM or null","touches":[{"at":"YYYY-MM-DDTHH:MM","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"YYYY-MM-DDTHH:MM","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Every time on their clock (IT IS NOW), no time zone. Leave it out when nothing changed.',
   'REAL LIFE: you care about their life away from the screen (sleep, food, friends, outdoors). When they have been here a long time or it is late, you may suggest a break or sleep, in your own way, and accept what they choose.',
 ];
 
@@ -52,50 +52,73 @@ export function threadLines(threads: readonly Thread[], utcOffsetMin = 0) {
   ];
 }
 
+/**
+ * The model's thread changes. Times are wall-clock strings on the user's clock ("2026-11-08T15:00"):
+ * the server cannot know the phone's zone, so the app turns them into moments (`wallToIso`).
+ */
 export interface ThreadOps {
-  add: { about: string; quote: string; happensAt?: string; touches: TouchDraft[] }[];
+  add: { kind: ThreadKind; about: string; quote: string; happensAt?: string; touches: TouchDraft[] }[];
   move: { id: string; happensAt?: string; touches: TouchDraft[] }[];
   close: { id: string; outcome: ThreadOutcome }[];
 }
 
 const PHASES: readonly TouchPhase[] = ['before', 'leave', 'eve', 'after', 'check', 'goal', 'quest'];
 const OUTCOMES: readonly ThreadOutcome[] = ['good', 'bad', 'done', 'off'];
+const KINDS: readonly ThreadKind[] = ['follow', 'plan', 'goal', 'quest'];
+/** Per reply, so a runaway answer cannot flood the friend's plans. */
+const OPS_MAX = 4;
 
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
-const iso = (v: unknown) => {
-  const s = str(v);
-  return s && !Number.isNaN(Date.parse(s)) ? new Date(s).toISOString() : undefined;
+/**
+ * A time as the user's clock shows it, "YYYY-MM-DDTHH:MM", or undefined. A zone the model added
+ * anyway is dropped: every time in the prompt is on their clock, so that is what it meant.
+ */
+export const wallTime = (v: unknown) => {
+  const m = str(v).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})/);
+  if (!m || Number(m[2]) > 23 || Number(m[3]) > 59) return undefined;
+  const day = new Date(`${m[1]}T12:00:00Z`);
+  return !Number.isNaN(day.getTime()) && day.toISOString().startsWith(m[1]) ? `${m[1]}T${m[2]}:${m[3]}` : undefined;
 };
+/** A wall-clock time on this device's clock as a moment (ISO); the app runs this, not the server. */
+export const wallToIso = (wall: string) => new Date(`${wall}:00`).toISOString();
+
 const drafts = (v: unknown): TouchDraft[] =>
-  (Array.isArray(v) ? v : []).flatMap((x) => {
-    const at = iso(x?.at);
+  (Array.isArray(v) ? v : []).slice(0, OPS_MAX).flatMap((x) => {
+    const at = wallTime(x?.at);
     const phase = PHASES.find((p) => p === x?.phase);
-    const why = str(x?.why);
+    const why = str(x?.why).slice(0, 160);
     return at && phase && why ? [{ at, phase, why }] : [];
   });
 
-/** The `threads` field of the model's JSON reply; anything malformed is dropped, never guessed. */
-export function parseThreadOps(raw: string): ThreadOps {
+/** The model's `threads` field; anything malformed is dropped, never guessed. The server and the app both run it. */
+export function cleanThreadOps(value: unknown): ThreadOps {
   const empty: ThreadOps = { add: [], move: [], close: [] };
-  let threads: Record<string, unknown> | undefined;
-  try {
-    threads = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '{}')?.threads;
-  } catch {
-    return empty;
-  }
-  if (!threads || typeof threads !== 'object') return empty;
-  const list = (key: string) => (Array.isArray(threads![key]) ? (threads![key] as Record<string, unknown>[]) : []);
+  if (!value || typeof value !== 'object') return empty;
+  const threads = value as Record<string, unknown>;
+  const list = (key: string) => (Array.isArray(threads[key]) ? (threads[key] as Record<string, unknown>[]).filter((x) => x && typeof x === 'object').slice(0, OPS_MAX) : []);
   return {
     add: list('add').flatMap((x) => {
       const about = str(x.about);
-      return about ? [{ about: about.slice(0, 60), quote: str(x.quote).slice(0, 160), happensAt: iso(x.happensAt), touches: drafts(x.touches) }] : [];
+      const kind = KINDS.find((k) => k === x.kind) ?? 'follow';
+      return about ? [{ kind, about: about.slice(0, 60), quote: str(x.quote).slice(0, 160), happensAt: wallTime(x.happensAt), touches: drafts(x.touches) }] : [];
     }),
-    move: list('move').flatMap((x) => (str(x.id) ? [{ id: str(x.id), happensAt: iso(x.happensAt), touches: drafts(x.touches) }] : [])),
+    move: list('move').flatMap((x) => (str(x.id) ? [{ id: str(x.id).slice(0, 40), happensAt: wallTime(x.happensAt), touches: drafts(x.touches) }] : [])),
     close: list('close').flatMap((x) => {
       const outcome = OUTCOMES.find((o) => o === x.outcome);
-      return str(x.id) && outcome ? [{ id: str(x.id), outcome }] : [];
+      return str(x.id) && outcome ? [{ id: str(x.id).slice(0, 40), outcome }] : [];
     }),
   };
+}
+
+export const hasThreadOps = (ops: ThreadOps) => ops.add.length + ops.move.length + ops.close.length > 0;
+
+/** The `threads` field of the model's raw JSON reply (`cleanThreadOps`). */
+export function parseThreadOps(raw: string): ThreadOps {
+  try {
+    return cleanThreadOps(JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '{}')?.threads);
+  } catch {
+    return { add: [], move: [], close: [] };
+  }
 }
 
 const PHASE_TEXT: Record<TouchPhase, string> = {

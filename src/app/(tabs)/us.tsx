@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient as Gradient } from 'expo-linear-gradient';
-import { type Href, useRouter, useScrollToTop } from 'expo-router';
+import { type Href, useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
@@ -139,6 +139,15 @@ export default function UsScreen() {
   );
 
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  // Opened for one friend and day (a plan set from the chat, a plan in Notifications): the tab stays
+  // mounted, so each open carries `at` and is applied once, while rendering (no effect, no flash).
+  const opened = useLocalSearchParams<{ friend?: string; day?: string; at?: string }>();
+  const [openedAt, setOpenedAt] = useState<string | undefined>(undefined);
+  if (opened.at && opened.at !== openedAt) {
+    setOpenedAt(opened.at);
+    if (opened.friend) setSelectedId(opened.friend);
+    if (opened.day && /^\d{4}-\d{2}-\d{2}$/.test(opened.day)) setDay(opened.day);
+  }
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
   // Moments pile up for as long as a bond lasts; render them a page at a time.
   const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });

@@ -111,7 +111,7 @@ import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, l
 import { addCare, careCue, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
 import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
 import { askedOnce, askReach, isAskReach, shouldAskToReach, sittingCount } from '@/lib/reach-ask';
-import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches } from '@/lib/threads';
+import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches, type TouchDraft } from '@/lib/threads';
 import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
 import { temperOf } from '@/lib/temper';
 import { BRIEF_REACH, morningBrief } from '@/lib/brief';
@@ -125,6 +125,7 @@ import { briefLine } from '@/mock/brief';
 import { dayLine, moodOf } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
 import { setupUsable } from '@/ai/setup-prompt';
+import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
 import { familyHello, lifeLine } from '@/mock/kin';
 import { creditFree, expiryBooked, oneExpiryPerMidnight, PAID_SHARES_PER_DAY, SHARE_REWARD } from '@/economy/shells';
@@ -4980,6 +4981,75 @@ function noteThreads(
   return { thread, change: 'new' };
 }
 
+/**
+ * The model's thread changes from its reply (`src/ai/thread-prompt.ts`), with the model on: it opens
+ * threads on what the user said that has a future, moves them and settles them, in any language.
+ * Times come on the user's clock and become moments here; `THREAD_RULES` still decide which texts
+ * may go (`ruleTouches`). A time the user set themselves stays; a model quest pays once a day at most.
+ * The chat shows the first change under the user's message, so a wrong guess is one tap to fix.
+ */
+function applyModelThreads(set: Setter, get: Getter, conversationId: string, characterId: string, ops: ThreadOps) {
+  const now = new Date();
+  const moment = (wall?: string) => (wall ? wallToIso(wall) : undefined);
+  const placed = (list: readonly TouchDraft[]) => list.map((d) => ({ ...d, at: wallToIso(d.at) }));
+  const mine = (id: string) => get().threads.find((t) => t.id === id && t.characterId === characterId && t.status === 'open');
+  let noted: { threadId: string; change: NoteChange } | null = null;
+
+  for (const op of ops.close) {
+    const thread = mine(op.id);
+    // A goal goes on whatever one day was like; only "stop" ends it.
+    if (!thread || (thread.kind === 'goal' && op.outcome !== 'off')) continue;
+    settleThread(set, get, thread, op.outcome);
+    noted ??= { threadId: thread.id, change: 'settled' };
+  }
+
+  for (const op of ops.move) {
+    const thread = mine(op.id);
+    if (!thread) continue;
+    const happensAt = thread.userSet ? undefined : moment(op.happensAt);
+    if (happensAt && happensAt !== thread.happensAt) {
+      const at = new Date(happensAt);
+      const time = `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
+      set((s) => ({
+        threads: thread.happensAt ? moveThread(s.threads, thread.id, happensAt, now) : s.threads.map((t) => (t.id === thread.id ? { ...t, happensAt } : t)),
+        // The plan it came with moves too, and its reminder is due again.
+        schedules: thread.scheduleId
+          ? s.schedules.map((x) => (x.id === thread.scheduleId ? { ...x, date: dayKey(at), time, reminded: false, remindAt: undefined } : x))
+          : s.schedules,
+      }));
+      noted ??= { threadId: thread.id, change: 'moved' };
+    }
+    if (op.touches.length) set((s) => ({ threads: extendThread(s.threads, thread.id, placed(op.touches), now) }));
+  }
+
+  for (const op of ops.add) {
+    if (op.kind === 'quest' && get().daily.questDay === dayKey(now)) continue;
+    const id = uid('th');
+    const happensAt = moment(op.happensAt);
+    const touches = ruleTouches(placed(op.touches), id, now, happensAt);
+    if (!touches.length) continue;
+    const thread: Thread = {
+      id,
+      characterId,
+      kind: op.kind,
+      about: op.about,
+      quote: op.quote,
+      createdAt: now.toISOString(),
+      happensAt,
+      touches,
+      status: 'open',
+      ...(op.kind === 'quest' ? { reward: QUEST_REWARD } : {}),
+    };
+    set((s) => ({
+      threads: addThread(pruneThreads(s.threads, now), thread),
+      ...(op.kind === 'quest' ? { daily: { ...s.daily, questDay: dayKey(now) } } : {}),
+    }));
+    noted ??= { threadId: id, change: 'new' };
+  }
+
+  if (noted) markNoted(set, conversationId, noted.threadId, noted.change);
+}
+
 /** What the chat shows under the user's message: the thread it opened, moved or settled (their newest by default). */
 function markNoted(set: Setter, conversationId: string, threadId: string, change: NoteChange, messageId?: string) {
   set((s) => {
@@ -5251,7 +5321,8 @@ function answerText(
   // Threads: anything with a future becomes one, and a word on how it went settles the last one
   // asked about. The server's model does both from the chat (`src/ai/thread-prompt.ts`); the mock
   // only notices shapes and keeps the user's words. A crisis never becomes a thread.
-  const noted = crisis || answered ? null : noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
+  // With the model on, its reply carries the thread changes (`applyModelThreads`), in any language.
+  const noted = crisis || answered || modelOn(get) ? null : noteThreads(set, get, conversation.characterId, text, plan, scheduleId);
   // The chat shows what they took from it under the message, so a wrong guess is one tap to fix.
   if (noted) markNoted(set, conversationId, noted.thread.id, noted.change);
   const planThread = noted?.change === 'new' ? noted.thread : null;
@@ -5545,6 +5616,10 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
       deliver(reply.lines, reply.setup);
+      // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
+      if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
+        applyModelThreads(set, get, conversationId, character.id, reply.threads);
+      }
     });
     return;
   }

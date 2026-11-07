@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 
 import { parseModelReply } from './reply-style';
 import { cleanSetup, offerLines, SETUP_RULES_LINES, setupUsable } from './setup-prompt';
+import { cleanThreadOps, hasThreadOps, wallTime, wallToIso } from './thread-prompt';
 
 // Saturday, Nov 7 2026, 19:10 on the phone's clock.
 const NOW = new Date(2026, 10, 7, 19, 10);
@@ -111,5 +112,45 @@ describe('a change and where each offer stands (0z136, seen on the A51)', () => 
   it('says nothing without cards, and skips a broken one', () => {
     assert.deepEqual(offerLines([]), []);
     assert.deepEqual(offerLines([card({ kind: 'alarm', date: 'soon' }, 'm1')]), []);
+  });
+});
+
+describe('the model’s threads reach the app (0z136: they were paid for and never read)', () => {
+  it('keeps times on the user clock and drops a zone the model added', () => {
+    const ops = cleanThreadOps({
+      add: [
+        { kind: 'plan', about: 'Sinema', quote: 'yarın 15te sinemaya', happensAt: '2026-11-08T15:00:00Z', touches: [{ at: '2026-11-08 14:00', phase: 'before', why: 'iyi seyirler' }] },
+        { kind: 'nonsense', about: 'Exam', quote: '', happensAt: null, touches: [] },
+        { quote: 'no about' },
+      ],
+      move: [{ id: 'th_1', happensAt: '2026-11-08T25:00' }],
+      close: [{ id: 'th_2', outcome: 'good' }, { id: 'th_3', outcome: 'maybe' }],
+    });
+    assert.equal(ops.add.length, 2);
+    assert.equal(ops.add[0].happensAt, '2026-11-08T15:00');
+    assert.equal(ops.add[0].touches[0].at, '2026-11-08T14:00');
+    assert.equal(ops.add[1].kind, 'follow', 'an unknown kind is a plain follow-up');
+    assert.equal(ops.move[0].happensAt, undefined, 'hour 25 is dropped');
+    assert.deepEqual(ops.close, [{ id: 'th_2', outcome: 'good' }]);
+  });
+
+  it('caps a runaway answer and reads nothing from junk', () => {
+    const many = Array.from({ length: 9 }, (_, i) => ({ about: `t${i}`, touches: [] }));
+    assert.equal(cleanThreadOps({ add: many }).add.length, 4);
+    assert.equal(hasThreadOps(cleanThreadOps('x')), false);
+    assert.equal(wallTime('soon'), undefined);
+    assert.equal(wallTime('2026-02-30T10:00'), undefined);
+  });
+
+  it('a wall time is read on the device clock', () => {
+    const at = new Date(wallToIso('2026-11-08T15:00'));
+    assert.equal(at.getHours(), 15);
+    assert.equal(at.getDate(), 8);
+  });
+
+  it('the reply carries them beside the bubbles, only when there are any', () => {
+    const reply = parseModelReply('{"messages":["ok"],"threads":{"close":[{"id":"th_9","outcome":"done"}]}}');
+    assert.deepEqual(reply.threads?.close, [{ id: 'th_9', outcome: 'done' }]);
+    assert.equal(parseModelReply('{"messages":["ok"],"threads":{}}').threads, undefined);
   });
 });

@@ -7,13 +7,13 @@ import type { Message, SetupOffer } from '@/types';
  * without that tap, so a wrong guess costs nothing. Same reply, same call: no extra model work.
  */
 export const SETUP_RULES_LINES = [
-  'SETTING THINGS UP: you can set a real alarm that wakes them with your voice, or put a plan with you on your shared plans in the app.',
-  '- Only when they ask you to (wake me, remind me, put it on our plans) or clearly say yes to your offer; never on your own.',
-  '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in their language","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once. A plan may leave "time" out.',
+  'SETTING THINGS UP: you can set a real alarm that wakes them with your voice, or put a plan on your plans together in the app: anything they will do (with you, with friends, alone: a film, an exam, a trip); you then remind them before it and ask how it went after.',
+  '- Only when they ask you to (wake me, remind me, add it to the plans) or clearly say yes to your offer; never on your own. When they ask, do it in this same reply.',
+  '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in their language","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). Always write the hour they said into "time" ("at 15" = "15:00"); leave "time" out only for a plan with no hour named. "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once.',
   '- They confirm it with one tap on a card under your reply, so say in your own words that you will do it; do not say it is already done.',
   '- If the day or the hour is unclear, ask first and leave "setup" out. One per reply; leave it out when nothing is asked.',
   '- When they change one you offered (another hour or day: "no, 8:30 instead"), add "change":true: it replaces your last offer of that kind, set or not, so it stays one alarm or one plan. A second, separate one has no "change".',
-  '- YOUR OFFERS (below, when there are any) says which ones they set, which still wait for their tap and which they turned down; never talk as if one is set when it is not.',
+  '- What is really set is only what SET UP TOGETHER lists. YOUR OFFERS (below, when there are any) says where each of your cards stands; one that is not set does not exist yet: never mention it as an alarm or plan they have.',
 ];
 
 const TITLE_MAX = 40;
@@ -58,7 +58,7 @@ function offerState(card: Partial<SetupOffer>) {
   if (card.replaced === true) return 'replaced by a newer offer';
   if (typeof card.madeId === 'string' && card.madeId) return 'they set it';
   if (card.declined === true) return 'they said not now';
-  return 'not set yet, the card waits for their tap';
+  return 'not set yet, the card waits for their tap (it does not exist until they tap)';
 }
 
 /**
