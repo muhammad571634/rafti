@@ -7,7 +7,7 @@ import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { seeingLines } from './photo-prompt';
 import { ownDayParts } from './own-day';
 import { layoutPrompt, part } from './prompt-layout';
-import { followsUser, languageCue, userLines } from './reply-language';
+import { followsUser, followUserLanguage, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE } from './reply-style';
 import { groupParts } from './rules';
@@ -54,8 +54,13 @@ export function groupTurns({ character, others, user, persona, messages }: TurnI
 export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
   const { character, others, user, relationship, replyLanguage, persona, lore, messages } = input;
   const own = messages.filter((m: Message) => m.author === 'me' || m.characterId === character.id);
+  // Once the user has written here, the cached REPLY LANGUAGE names no language: a group's lines
+  // from several people read as "unclear", and the phone's language named there won over the
+  // user's own words (0z145: a Russian phone got Russian answers to English). The turn's
+  // `languageCue` quotes their words, or names the phone's language before they write.
+  const language = followsUser(replyLanguage) && userLines(messages).length ? followUserLanguage(user.locale, { named: false }) : replyLanguage;
   return [
-    ...groupParts(character, others, user, relationship, replyLanguage, persona, lore),
+    ...groupParts(character, others, user, relationship, language, persona, lore),
     part('groupForm', 'chat', [
       'In the chat, what the others write starts with their name. You write only your own words, with no name in front.',
       'Text the way people do in a group: short, and most of the time one message. Do not open every line with someone’s name: use a name only when it is not clear who you mean.',

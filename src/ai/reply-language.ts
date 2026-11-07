@@ -32,8 +32,8 @@ export function languageName(tag: string): string {
  * on every launch), else English. It stays put in the cached chat tier; `languageCue` repeats it in
  * the turn tier with their own latest words.
  */
-export function followUserLanguage(phoneLocale?: string): string {
-  const phone = phoneLocale?.trim() ? `${languageName(phoneLocale.trim())} (their phone's language)` : 'English';
+export function followUserLanguage(phoneLocale?: string, { named = true }: { named?: boolean } = {}): string {
+  const phone = !named ? "their phone's language" : phoneLocale?.trim() ? `${languageName(phoneLocale.trim())} (their phone's language)` : 'English';
   return `${FOLLOW}; before they have written, or when it is unclear, ${phone}. Never mix languages.`;
 }
 

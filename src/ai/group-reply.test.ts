@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import type { Character, Message, User } from '@/types';
 
 import { cleanGroupLines, groupHelloCue, groupReplyParts, groupTurns, layoutGroupReply } from './group-reply';
+import { followUserLanguage } from './reply-language';
 
 const base = { handle: '@x', bio: 'Bio.', category: 'school', accentIndex: 0, voiceReady: false, tags: ['calm'], greeting: 'Hi.' };
 const ronan = { ...base, id: 'c_ronan', name: 'Ronan Vale', series: 'Velvet District' } as unknown as Character;
@@ -62,5 +63,17 @@ describe('what the model wrote', () => {
 
   it('drops a line written for someone else', () => {
     assert.deepEqual(cleanGroupLines(['Isolde: Darling.', 'Isolde Valcour: Quite.', 'Isolde is lying.'], ronan, [isolde]), ['Isolde is lying.']);
+  });
+});
+
+describe('the group follows the user’s own words, not the phone (0z145)', () => {
+  const ru = { displayName: 'Sukut', locale: 'ru-RU' } as User;
+  const say = (text: string): Message => ({ id: text, conversationId: 'g', author: 'me', kind: 'text', text, createdAt: '2026-11-07T19:37:00.000Z' });
+  const language = (messages: Message[]) => groupReplyParts({ character: isolde, others: [ronan], user: ru, messages, replyLanguage: followUserLanguage('ru-RU') }).find((p) => p.name === 'language')!.text;
+  it('names no language in the cached part once they have written', () => {
+    assert.doesNotMatch(language([say('what did you two do today?')]), /Russian/);
+  });
+  it('names the phone’s language before they write', () => {
+    assert.match(language([]), /Russian/);
   });
 });
