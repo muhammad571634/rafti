@@ -5,12 +5,14 @@ import { messageText } from '../lib/story-continuity';
 import type { ChatPromptInput } from './chat-prompt';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { seeingLines } from './photo-prompt';
+import { ownDayParts } from './own-day';
 import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE } from './reply-style';
 import { groupParts } from './rules';
 import { CRISIS_CUE } from './safety';
+import { clockLines } from './together-prompt';
 
 /**
  * One member's next message in a group chat: one model call per member who answers, each in their
@@ -63,6 +65,9 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('openers', 'turn', openerLines(own)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
+    // The hour, and what this member already said of their own day (0z145): the same day as in their own chat.
+    part('clock', 'turn', clockLines(input.clock)),
+    ...ownDayParts(input.ownDay, input.clock),
     part('languageNow', 'turn', followsUser(replyLanguage) ? languageCue(userLines(messages), user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),

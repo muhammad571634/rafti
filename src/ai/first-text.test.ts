@@ -5,7 +5,7 @@ import type { Character, Thread, User } from '@/types';
 
 import { cleanFirstText, firstTextParts, type FirstTextRequest } from './first-text';
 import { joinParts } from './prompt-layout';
-import { TOUCH_SHAPE } from './thread-prompt';
+import { parseTouchReply, TOUCH_SHAPE } from './thread-prompt';
 
 const kai = { id: 'c_kai', name: 'Kai Arden', handle: '@k', bio: 'Swim-team ace.', category: 'school', accentIndex: 0, voiceReady: false, isOfficial: true, greeting: 'Hey.', tags: ['cheerful'] } as Character;
 const sam = { id: 'u1', displayName: 'Sam', locale: 'en-US' } as User;
@@ -65,5 +65,26 @@ describe('first texts (B1.4a): one request shape for the four kinds', () => {
     const long = Array.from({ length: 100 }, (_, i) => line('me', `line ${i}`));
     const clean = cleanFirstText({ kind: 'day', input: { ...requests[2].input, today: long } });
     assert.equal((clean?.input as { today: unknown[] }).today.length, 40);
+  });
+});
+
+describe('first texts read the friend\'s own day (0z145)', () => {
+  const ownDay = { today: [{ at: '2026-10-28T06:00:00.000Z', text: 'early swim practice' }] };
+  it('every kind carries the notes and the rule', () => {
+    for (const request of requests) {
+      const text = joinParts(firstTextParts({ ...request, input: { ...request.input, ownDay } } as FirstTextRequest));
+      assert.ok(text.includes('- 06:00 early swim practice'), request.kind);
+      assert.ok(text.includes('YOUR OWN DAY:'), request.kind);
+    }
+  });
+  it('the server keeps a good ownDay and drops a broken one', () => {
+    const good = cleanFirstText(JSON.parse(JSON.stringify({ ...requests[0], input: { ...requests[0].input, ownDay } })));
+    assert.deepEqual(good?.input.ownDay, ownDay);
+    const bad = cleanFirstText(JSON.parse(JSON.stringify({ ...requests[0], input: { ...requests[0].input, ownDay: { today: 'x' } } })));
+    assert.equal(bad?.input.ownDay, undefined);
+  });
+  it('the answer brings the day field, never on a skip', () => {
+    assert.deepEqual(parseTouchReply('{"messages":["morning! just out of the pool"],"day":["swam at 7"]}').day, ['swam at 7']);
+    assert.equal(parseTouchReply('{"skip":true,"messages":[],"day":["swam"]}').day, undefined);
   });
 });

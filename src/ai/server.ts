@@ -266,14 +266,14 @@ export async function serverStreamLine(request: StreamLineRequest, accessToken?:
 }
 
 /** One group member's next message in their own voice, or null (off, busy or slow: the caller writes the stand-in). */
-export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[] } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[] }>(
+export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; day?: string[] } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; day?: unknown }>(
     '/v1/chat/group',
     withOptionalToken(accessToken, input),
     GROUP_REPLY_TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos } : null;
+  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day) } : null;
 }
 
 /** What a friend writes on a screen of its own (src/ai/writes.ts), or null (off, busy, slow or a broken answer). */
@@ -289,8 +289,8 @@ export async function serverWrite<K extends WriteKind>(request: WriteRequest & {
 export async function serverFirstText(
   request: FirstTextRequest,
   accessToken?: string | null,
-): Promise<{ skip: boolean; lines: string[]; ideas: { label: string; text: string }[] } | null> {
-  const reply = await call<{ skip?: boolean; lines?: unknown[]; ideas?: { label?: unknown; text?: unknown }[] }>(
+): Promise<{ skip: boolean; lines: string[]; ideas: { label: string; text: string }[]; day?: string[] } | null> {
+  const reply = await call<{ skip?: boolean; lines?: unknown[]; ideas?: { label?: unknown; text?: unknown }[]; day?: unknown }>(
     '/v1/ai/first-text',
     {
       method: 'POST',
@@ -303,5 +303,6 @@ export async function serverFirstText(
   const lines = (reply.lines ?? []).filter((line): line is string => typeof line === 'string' && !!line.trim());
   // The answer comes over the network, so only strings count as a reply's words.
   const ideas = (reply.ideas ?? []).flatMap((idea) => (typeof idea?.label === 'string' && typeof idea.text === 'string' ? [{ label: idea.label, text: idea.text }] : []));
-  return { skip: reply.skip === true || !lines.length, lines, ideas };
+  const skip = reply.skip === true || !lines.length;
+  return { skip, lines, ideas, ...(skip ? {} : { day: cleanDayNotes(reply.day) }) };
 }

@@ -1,7 +1,9 @@
 import type { DayLog, DayNote } from '@/types';
 
 import { part, type PromptPart } from './prompt-layout';
-import { wallClock } from './thread-prompt';
+
+/** A time as the user's clock shows it ("2026-11-08 09:10"); the same as `wallClock` in thread-prompt, kept here so the two files do not import each other. */
+const wallClock = (iso: string, utcOffsetMin: number) => new Date(Date.parse(iso) + utcOffsetMin * 60_000).toISOString().slice(0, 16).replace('T', ' ');
 
 /**
  * The friend's own day (0z144, "characters feel human"): a person who texted at noon that they

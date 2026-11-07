@@ -1,5 +1,6 @@
 import { modePart } from './modes';
 import { part, type PromptPart } from './prompt-layout';
+import { cleanDayNotes } from './own-day';
 import { characterParts } from './rules';
 import { temperOf } from '../lib/temper';
 import type { TouchDraft } from '../lib/threads';
@@ -179,6 +180,8 @@ export interface TouchReply {
   skip: boolean;
   lines: string[];
   ideas: { label: string; text: string }[];
+  /** New things the friend said of their own day (`src/ai/own-day.ts`). */
+  day?: string[];
 }
 
 /** Reads the model's text-first JSON; a broken answer is a skip, never a half-written text. */
@@ -190,7 +193,9 @@ export function parseTouchReply(raw: string): TouchReply {
       .map((x: { label?: unknown; text?: unknown }) => ({ label: str(x?.label).slice(0, 24), text: str(x?.text) }))
       .filter((x: { label: string; text: string }) => x.label && x.text)
       .slice(0, 3);
-    return { skip: json.skip === true || !lines.length, lines, ideas };
+    const skip = json.skip === true || !lines.length;
+    const day = skip ? [] : cleanDayNotes(json.day);
+    return { skip, lines, ideas, ...(day.length ? { day } : {}) };
   } catch {
     return { skip: true, lines: [], ideas: [] };
   }

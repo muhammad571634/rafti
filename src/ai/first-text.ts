@@ -1,6 +1,7 @@
 import { briefParts, type BriefInput } from './brief-prompt';
 import { dayAskParts, type DayAskInput } from './day-prompt';
 import { momentParts, type MomentInput } from './moment-prompt';
+import { cleanOwnDay, ownDayParts, type OwnDay } from './own-day';
 import { part, type PromptPart } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { touchParts, type TouchInput } from './thread-prompt';
@@ -16,7 +17,8 @@ import { worldNewsParts, type WorldNewsInput } from './world-news-prompt';
  */
 export type FirstTextKind = 'thread' | 'brief' | 'day' | 'week' | 'world' | 'moment';
 
-type Wire<T> = Omit<T, 'now'> & { now: string };
+/** `ownDay`: what the friend already said of their own day (0z145), the same day as in their chat. */
+type Wire<T> = Omit<T, 'now'> & { now: string; ownDay?: OwnDay };
 
 export type FirstTextRequest =
   | { kind: 'thread'; input: Wire<TouchInput> }
@@ -37,19 +39,20 @@ export function firstTextParts(request: FirstTextRequest): PromptPart[] {
   const now = new Date(request.input.now);
   const lines = request.kind === 'day' ? request.input.today : request.kind === 'week' ? [] : request.input.recent;
   const cue = part('languageNow', 'turn', followsUser(request.input.replyLanguage) ? languageCue(userLines(lines), request.input.user.locale) : []);
+  const own = ownDayParts(request.input.ownDay, { now: request.input.now, utcOffsetMin: request.input.utcOffsetMin ?? 0 });
   switch (request.kind) {
     case 'thread':
-      return [...touchParts({ ...request.input, now }), cue];
+      return [...touchParts({ ...request.input, now }), ...own, cue];
     case 'brief':
-      return [...briefParts({ ...request.input, now }), cue];
+      return [...briefParts({ ...request.input, now }), ...own, cue];
     case 'day':
-      return [...dayAskParts({ ...request.input, now }), cue];
+      return [...dayAskParts({ ...request.input, now }), ...own, cue];
     case 'week':
-      return [...weekParts({ ...request.input, now }), cue];
+      return [...weekParts({ ...request.input, now }), ...own, cue];
     case 'world':
-      return [...worldNewsParts({ ...request.input, now }), cue];
+      return [...worldNewsParts({ ...request.input, now }), ...own, cue];
     case 'moment':
-      return [...momentParts({ ...request.input, now }), cue];
+      return [...momentParts({ ...request.input, now }), ...own, cue];
   }
 }
 
@@ -73,6 +76,9 @@ export function cleanFirstText(body: unknown): FirstTextRequest | null {
   // UTC+14 is the furthest any clock runs from UTC.
   const offset = input.utcOffsetMin;
   if (offset !== undefined && !(Number.isInteger(offset) && Math.abs(offset as number) <= 14 * 60)) delete input.utcOffsetMin;
+  const ownDay = cleanOwnDay(input.ownDay);
+  if (ownDay) input.ownDay = ownDay;
+  else delete input.ownDay;
   const lines = (key: string) => (Array.isArray(input[key]) ? { [key]: (input[key] as unknown[]).slice(-MAX_LINES) } : null);
 
   switch (body.kind as FirstTextKind) {

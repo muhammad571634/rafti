@@ -122,3 +122,22 @@ describe('the reply prompt and the reply', () => {
     assert.equal(parseModelReply('{"messages":["hey"]}').day, undefined);
   });
 });
+
+describe('a group member reads their own day and the hour (0z145)', () => {
+  it('the group prompt has the clock and the notes', async () => {
+    const { layoutGroupReply } = await import('./group-reply');
+    const hana = { id: 'c1', name: 'Hana', tags: [] } as unknown as Character;
+    const kai = { id: 'c2', name: 'Kai', tags: [] } as unknown as Character;
+    const layout = layoutGroupReply({
+      character: hana,
+      others: [kai],
+      user: { id: 'u', displayName: 'Sam', locale: 'en-US' } as User,
+      messages: [{ id: 'm', conversationId: 'g', author: 'me', kind: 'text', text: 'what are you two up to?', createdAt: '2026-11-08T13:00:00.000Z' }],
+      clock: { now: '2026-11-08T13:00:00.000Z', utcOffsetMin: 300 },
+      ownDay: { today: [{ at: '2026-11-08T04:10:00.000Z', text: 'overslept' }] },
+    });
+    const text = JSON.stringify(layout);
+    assert.ok(text.includes('18:00'));
+    assert.ok(text.includes('- 09:10 overslept'));
+  });
+});

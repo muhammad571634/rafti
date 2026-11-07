@@ -2174,7 +2174,8 @@ export const useAppStore = create<AppState>()(
           for (const push of todo) {
             const conversationId = get().conversations.find((c) => c.characterId === push.characterId)?.id;
             if (!conversationId || !push.line) continue;
-            const reply = await serverFirstText(momentRequest(get, conversationId, pushCue(push.line, comebackDays(push), writesIdeas(push)), push.at), token);
+            // Read only: a push written ahead may never go out, so its words are not kept as the friend's day.
+            const reply = await serverFirstText(withOwnDay(get, momentRequest(get, conversationId, pushCue(push.line, comebackDays(push), writesIdeas(push)), push.at)), token);
             // Busy: the plan goes out with what is written, and the next open tries again.
             if (!reply) {
               pushWritingPausedUntil = Date.now() + PUSH_WRITING_PAUSE_MS;
@@ -3157,6 +3158,7 @@ export const useAppStore = create<AppState>()(
             .catch(() => null);
           if (!reply) break;
           crisis ||= reply.crisis;
+          if (reply.day?.length) keepOwnDay(set, characterId, reply.day);
           // Spoken words only; a line that was all narration keeps its plain words rather than vanish.
           const lines = reply.lines.map((line) => speechOnly(line) || plainText(line)).filter(Boolean);
           if (lines.length) {
@@ -4544,7 +4546,7 @@ function writeFirst(
   if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: true } }));
   const asked = Date.now();
   void accessToken()
-    .then((token) => serverFirstText(request, token))
+    .then((token) => serverFirstText(withOwnDay(get, request), token))
     .then((reply) => {
       if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
       // The chat (or the whole account) was deleted meanwhile: nothing to write into.
@@ -4562,9 +4564,17 @@ function writeFirst(
         }, wait);
         return;
       }
-      if (!reply.skip) send(reply.lines);
-      else if (onSkip === 'scripted') send([scripted]);
+      if (!reply.skip) {
+        send(reply.lines);
+        if (reply.day?.length) keepOwnDay(set, request.input.character.id, reply.day);
+      } else if (onSkip === 'scripted') send([scripted]);
     });
+}
+
+/** A first text reads the friend's own day as their chat does (0z145): today on the clock it is written for. */
+function withOwnDay(get: Getter, request: FirstTextRequest): FirstTextRequest {
+  const ownDay = ownDayOf(get().relationships[request.input.character.id]?.ownDay, dayKey(new Date(request.input.now)));
+  return ownDay ? ({ ...request, input: { ...request.input, ownDay } } as FirstTextRequest) : request;
 }
 
 /** The model writes a friend's words right now; otherwise the stock lines play. */
@@ -6185,6 +6195,9 @@ function groupInput(state: AppState, group: GroupChat, turn: GroupTurn, said: re
     lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
     messages,
     cue: turn.cue,
+    // The hour, and the member's own day as their one-to-one chat keeps it (0z145).
+    clock: chatClock(),
+    ownDay: ownDayOf(state.relationships[character.id]?.ownDay, todayKey()),
   };
 }
 
@@ -6224,6 +6237,7 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
         appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
       }
       rememberPhotos(set, groupId, photos, reply.photos);
+      if (reply.day?.length) keepOwnDay(set, turn.characterId, reply.day);
       said.push(...reply.lines.map((line) => memberText(groupId, turn.characterId, line)));
       scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines: reply.lines }]);
       if (reply.crisis) return;

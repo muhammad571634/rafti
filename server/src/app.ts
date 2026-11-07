@@ -776,6 +776,9 @@ export function createApp(
       messages: raw.messages.slice(-MAX_MESSAGES),
       replyLanguage: replyLanguageOf({ ...raw, user }),
       cue: Array.isArray(raw.cue) ? raw.cue.filter((l) => typeof l === 'string').slice(0, 8) : undefined,
+      // The hour and what this member already said of their own day (0z145).
+      clock: cleanClock(raw.clock),
+      ownDay: cleanOwnDay(raw.ownDay),
     };
     const userId = signedIn(c);
     const started = Date.now();
@@ -796,7 +799,7 @@ export function createApp(
       console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}`);
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: lines, crisis, photos: reply.photos, model: result.model ?? provider.name });
+      return c.json({ messages: lines, crisis, photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
       console.error('[group] failed', error);
