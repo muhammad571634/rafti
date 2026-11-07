@@ -199,7 +199,7 @@ export default function AlarmEditScreen() {
             </Txt>
           </View>
         </Animated.View>
-        <Animated.View entering={FadeIn.delay(400)} style={styles.momentDone}>
+        <Animated.View entering={FadeIn.delay(400)} style={[styles.momentDone, { bottom: insets.bottom + space.lg }]}>
           <PressableScale onPress={close} accessibilityRole="button" style={styles.doneButton}>
             <Txt variant="bodyStrong" color={night.text}>
               {t('alarms.done')}
@@ -261,7 +261,8 @@ export default function AlarmEditScreen() {
                   onPress={() => setWheel((w) => !w)}
                   accessibilityRole="button"
                   accessibilityLabel={clock}
-                  accessibilityState={{ expanded: wheel }}>
+                  accessibilityState={{ expanded: wheel }}
+                  style={styles.timeBox}>
                   <Txt style={styles.bigTime} maxFontSizeMultiplier={1.2}>
                     {shown.time}
                     {shown.period ? <Txt style={styles.period}>{` ${t(`alarms.${shown.period}`)}`}</Txt> : null}
@@ -522,6 +523,8 @@ const styles = StyleSheet.create({
   bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: FACE_ON / 2, backgroundColor: night.primary },
   timeCard: { marginHorizontal: space.lg, borderRadius: 28, backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+  // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
+  timeBox: { minWidth: 196, alignItems: 'center' },
   bigTime: { fontFamily: fonts.display, fontSize: 72, lineHeight: 84, color: night.text, fontVariant: ['tabular-nums'] },
   period: { fontFamily: fonts.display, fontSize: 24, color: night.textSecondary },
   round: { width: 44, height: 44, borderRadius: 22, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
@@ -581,6 +584,6 @@ const styles = StyleSheet.create({
   },
   momentBell: { width: 148, height: 148, borderRadius: 74, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
   momentTime: { fontFamily: fonts.display, fontSize: 84, lineHeight: 96, color: night.text, fontVariant: ['tabular-nums'] },
-  momentDone: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.xxl },
+  momentDone: { position: 'absolute', left: space.lg, right: space.lg },
   doneButton: { height: 56, borderRadius: 28, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
 });

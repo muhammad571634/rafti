@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,19 +7,25 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { NIGHT_SWITCH } from '@/components/alarms/night';
-import { Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
-import { alarmLine, alarmTime, uses12Hour } from '@/lib/alarm-format';
+import { CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
+import { weekdayNames } from '@/lib/calendar';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, sleepColors as night, space, systemColors } from '@/theme';
-import type { Alarm } from '@/types';
+import { colors, fonts, sleepColors as night, space, systemColors } from '@/theme';
+import type { Alarm, Character } from '@/types';
+
+/** The next alarm's face, as the picked face in the editor; a row's face is smaller. */
+const HERO_FACE = 84;
+const ROW_FACE = 52;
 
 /**
- * Wake-up alarms, for every plan (Bedtime → Alarms), in Bedtime's navy and the iOS Clock look
- * (2026-10-22, coded straight at the owner's word): a large title, a card with the next alarm,
- * who wakes you and how long until it rings, then one inset list with the big time, who and
- * when, and a switch. "+" adds one, a tap edits it, a swipe to the left deletes it.
+ * Wake-up alarms, in the same look as the editor (owner, 2026-11-07: "make the list match the new
+ * alarm screen, ultra"; no prototype at his word). On Bedtime's navy: the next alarm as one big card
+ * (who wakes you, the time, how long until it rings; a tap opens it), then each alarm as its own
+ * card with the friend's face, the time, its days and a switch; a swipe to the left deletes one.
+ * One big button adds an alarm.
  */
 export default function AlarmsScreen() {
   const insets = useSafeAreaInsets();
@@ -31,16 +36,16 @@ export default function AlarmsScreen() {
   const relationships = useAppStore((s) => s.relationships);
   const setAlarmEnabled = useAppStore((s) => s.setAlarmEnabled);
   const deleteAlarm = useAppStore((s) => s.deleteAlarm);
-  // The name the user calls them ("Mom"), as the chat header shows it.
-  const nameFor = (id?: string) => {
-    const character = characters.find((c) => c.id === id);
-    return character ? displayName(character, relationships[character.id]) : undefined;
-  };
   const h12 = uses12Hour();
+  // Monday first, as the editor; the store keeps 0 = Sunday.
+  const weekdays = useMemo(() => weekdayNames(i18n.language).map((name, i) => ({ name: name.slice(0, 2), day: (i + 1) % 7 })), [i18n.language]);
+
+  const friendOf = (id?: string) => characters.find((c) => c.id === id);
+  // The name the user calls them ("Mom"), as the chat header shows it.
+  const nameOf = (c?: Character) => (c ? displayName(c, relationships[c.id]) : undefined);
 
   const sorted = [...alarms].sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute));
-
-  // The soonest enabled alarm, for the card on top.
+  // The soonest alarm that is on, for the card on top.
   const next = useMemo(() => {
     const now = new Date();
     return alarms
@@ -50,152 +55,152 @@ export default function AlarmsScreen() {
   }, [alarms]);
 
   const add = () => router.push('/alarms/edit');
+  const open = (alarm: Alarm) => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } });
+  const clock = (a: Pick<Alarm, 'hour' | 'minute'>) => {
+    const { time, period } = alarmTime(a.hour, a.minute, h12);
+    return { time, period: period ? t(`alarms.${period}`) : null };
+  };
 
   return (
     <Screen background={night.bg} statusBarStyle="light">
-      <Header
-        tint={night.text}
-        right={
-          <PressableScale scaleTo={0.88} onPress={add} accessibilityRole="button" accessibilityLabel={t('alarms.add')} style={styles.add}>
-            <Ionicons name="add" size={26} color={night.brandText} />
-          </PressableScale>
-        }
-      />
+      <Header tint={night.text} />
       <Txt style={styles.title} accessibilityRole="header">
         {t('alarms.title')}
       </Txt>
 
       {sorted.length === 0 ? (
         <View style={styles.empty}>
-          <View style={styles.emptyIcon}>
-            <Ionicons name="alarm-outline" size={34} color={night.brandText} />
+          <View style={styles.emptyBell}>
+            <Ionicons name="alarm" size={56} color={night.textOnPrimary} />
           </View>
           <Txt style={styles.emptyText}>{t('alarms.empty')}</Txt>
-          <Button label={t('alarms.add')} onPress={add} />
         </View>
       ) : (
-        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space.huge, gap: 22 }} showsVerticalScrollIndicator={false}>
-          <NextCard next={next} h12={h12} />
-          <View style={styles.list}>
-            {sorted.map((alarm, i) => (
-              <AlarmRow
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          {next ? (
+            <PressableScale
+              onPress={() => open(next.a)}
+              scaleTo={0.98}
+              accessibilityRole="button"
+              accessibilityLabel={[t('alarms.next'), clock(next.a).time, until(t, next.at)].join(', ')}
+              style={styles.hero}>
+              <Face friend={friendOf(next.a.characterId)} size={HERO_FACE} ring />
+              <View style={styles.heroText}>
+                <Txt style={styles.heroLabel}>{t('alarms.next').toUpperCase()}</Txt>
+                <Txt style={styles.heroTime} maxFontSizeMultiplier={1.2}>
+                  {clock(next.a).time}
+                  {clock(next.a).period ? <Txt style={styles.heroPeriod}>{` ${clock(next.a).period}`}</Txt> : null}
+                </Txt>
+                <View style={styles.until}>
+                  <Ionicons name="moon" size={14} color={night.primary} />
+                  <Txt style={styles.untilText}>{until(t, next.at)}</Txt>
+                </View>
+              </View>
+            </PressableScale>
+          ) : (
+            <View style={[styles.hero, styles.heroOff]}>
+              <Ionicons name="moon" size={20} color={night.textSecondary} />
+              <Txt style={styles.untilText}>{t('alarms.noneOn')}</Txt>
+            </View>
+          )}
+
+          {sorted.map((alarm) => {
+            const friend = friendOf(alarm.characterId);
+            const { time, period } = clock(alarm);
+            const title = alarm.label || nameOf(friend) || t('alarms.defaultLabel');
+            return (
+              <ReanimatedSwipeable
                 key={alarm.id}
-                alarm={alarm}
-                last={i === sorted.length - 1}
-                h12={h12}
-                line={alarmLine(t, alarm, nameFor(alarm.characterId), i18n.language)}
-                onOpen={() => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } })}
-                onToggle={(on) => setAlarmEnabled(alarm.id, on)}
-                onDelete={() => deleteAlarm(alarm.id)}
-              />
-            ))}
-          </View>
+                friction={2}
+                rightThreshold={40}
+                containerStyle={styles.swipe}
+                renderRightActions={() => (
+                  <Pressable style={styles.delete} onPress={() => deleteAlarm(alarm.id)} accessibilityRole="button" accessibilityLabel={t('alarms.deleteAlarm')}>
+                    <Ionicons name="trash" size={22} color={colors.white} />
+                    <Txt style={styles.deleteText}>{t('alarms.delete')}</Txt>
+                  </Pressable>
+                )}>
+                <View style={styles.card}>
+                  <Pressable
+                    style={[styles.cardBody, !alarm.enabled && styles.off]}
+                    onPress={() => open(alarm)}
+                    accessibilityRole="button"
+                    accessibilityLabel={[period ? `${time} ${period}` : time, title].join(', ')}>
+                    <Face friend={friend} size={ROW_FACE} />
+                    <View style={styles.cardText}>
+                      <Txt style={styles.time} maxFontSizeMultiplier={1.2}>
+                        {time}
+                        {period ? <Txt style={styles.period}>{` ${period}`}</Txt> : null}
+                      </Txt>
+                      {alarm.repeat.length ? (
+                        <View style={styles.days}>
+                          {weekdays.map(({ name, day }) => {
+                            const on = alarm.repeat.includes(day);
+                            return (
+                              <Txt key={day} style={[styles.day, on && styles.dayOn]}>
+                                {name}
+                              </Txt>
+                            );
+                          })}
+                        </View>
+                      ) : null}
+                      <Txt style={styles.line} lines={1}>
+                        {title}
+                      </Txt>
+                    </View>
+                  </Pressable>
+                  <Switch
+                    value={alarm.enabled}
+                    onValueChange={(v) => {
+                      haptic.toggle(v);
+                      setAlarmEnabled(alarm.id, v);
+                    }}
+                    accessibilityLabel={t('alarms.toggle', { time: period ? `${time} ${period}` : time })}
+                    {...NIGHT_SWITCH}
+                  />
+                </View>
+              </ReanimatedSwipeable>
+            );
+          })}
         </ScrollView>
       )}
+
+      <View style={[styles.footer, { paddingBottom: insets.bottom + space.md }]}>
+        <PressableScale onPress={add} accessibilityRole="button" style={styles.cta}>
+          <Ionicons name="add" size={24} color={night.textOnPrimary} />
+          <Txt style={styles.ctaText} maxFontSizeMultiplier={1.2}>
+            {t('alarms.add')}
+          </Txt>
+        </PressableScale>
+      </View>
     </Screen>
   );
 }
 
-/** The next alarm: its time, how long until it rings and who will wake you. */
-function NextCard({ next, h12 }: { next?: { a: Alarm; at: Date }; h12: boolean }) {
-  const { t } = useTranslation();
-  const friend = useAppStore((s) => s.characters.find((c) => c.id === next?.a.characterId));
-
-  if (!next) {
-    return (
-      <View style={[styles.next, styles.nextOff]}>
-        <Ionicons name="moon-outline" size={20} color={night.textSecondary} />
-        <Txt style={styles.nextOffText}>{t('alarms.noneOn')}</Txt>
-      </View>
-    );
-  }
-
-  const { time, period } = alarmTime(next.a.hour, next.a.minute, h12);
-  const mins = Math.max(1, Math.round((next.at.getTime() - Date.now()) / 60_000));
-  const until = mins < 60 ? t('alarms.inMinutes', { m: mins }) : t('alarms.inTime', { h: Math.floor(mins / 60), m: mins % 60 });
-
-  return (
-    <LinearGradient colors={['#232A5C', night.surface]} style={styles.next}>
-      <View style={styles.nextHead}>
-        <Ionicons name="alarm" size={16} color={night.brandText} />
-        <Txt style={styles.nextLabel}>{t('alarms.next')}</Txt>
-      </View>
-      <View style={styles.nextBody}>
-        <View style={styles.flex}>
-          <View style={styles.timeLine}>
-            <Txt style={styles.nextTime}>{time}</Txt>
-            {period ? <Txt style={styles.nextPeriod}>{t(`alarms.${period}`)}</Txt> : null}
-          </View>
-          <Txt style={styles.nextUntil}>{until}</Txt>
-        </View>
-        {friend ? <CharacterAvatar character={friend} size={52} ring ringColor="rgba(255,255,255,0.85)" /> : null}
-      </View>
-    </LinearGradient>
-  );
+/** "in 8 h 30 min" until a ring. */
+function until(t: (key: string, options?: Record<string, unknown>) => string, at: Date) {
+  const mins = Math.max(1, Math.round((at.getTime() - Date.now()) / 60_000));
+  return mins < 60 ? t('alarms.inMinutes', { m: mins }) : t('alarms.inTime', { h: Math.floor(mins / 60), m: String(mins % 60).padStart(2, '0') });
 }
 
-function AlarmRow({
-  alarm,
-  last,
-  h12,
-  line,
-  onOpen,
-  onToggle,
-  onDelete,
-}: {
-  alarm: Alarm;
-  last: boolean;
-  h12: boolean;
-  line: string;
-  onOpen: () => void;
-  onToggle: (on: boolean) => void;
-  onDelete: () => void;
-}) {
-  const { t } = useTranslation();
-  const { time, period } = alarmTime(alarm.hour, alarm.minute, h12);
-  const tone = alarm.enabled ? night.text : night.textFaint;
-
+/** Who wakes you: their face, or a bell for a melody-only alarm. Radii in numbers (Android draws 999 square). */
+function Face({ friend, size, ring }: { friend?: Character; size: number; ring?: boolean }) {
+  const pad = ring ? 3 : 0;
+  const border = ring ? 3 : 0;
   return (
-    <ReanimatedSwipeable
-      friction={2}
-      rightThreshold={40}
-      renderRightActions={() => (
-        <Pressable style={styles.delete} onPress={onDelete} accessibilityRole="button" accessibilityLabel={t('alarms.deleteAlarm')}>
-          <Txt style={styles.deleteText}>{t('alarms.delete')}</Txt>
-        </Pressable>
-      )}>
-      <View style={styles.row}>
-        <Pressable
-          style={styles.rowBody}
-          onPress={onOpen}
-          accessibilityRole="button"
-          accessibilityLabel={[period ? `${time} ${t(`alarms.${period}`)}` : time, line].join(', ')}>
-          <View style={styles.timeLine}>
-            <Txt style={[styles.time, { color: tone }]}>{time}</Txt>
-            {period ? <Txt style={[styles.period, { color: tone }]}>{t(`alarms.${period}`)}</Txt> : null}
-          </View>
-          <Txt style={[styles.line, { color: alarm.enabled ? night.textSecondary : night.textFaint }]} lines={1}>
-            {line}
-          </Txt>
-        </Pressable>
-        <Switch
-          value={alarm.enabled}
-          onValueChange={(v) => {
-            haptic.toggle(v);
-            onToggle(v);
-          }}
-          accessibilityLabel={t('alarms.toggle', { time: `${time}${period ? ` ${t(`alarms.${period}`)}` : ''}` })}
-          {...NIGHT_SWITCH}
-        />
-        {last ? null : <View style={styles.divider} />}
-      </View>
-    </ReanimatedSwipeable>
+    <View style={[ring && styles.ring, { padding: pad, borderWidth: border, borderRadius: size / 2 + pad + border }]}>
+      {friend ? (
+        <CharacterAvatar character={friend} size={size} />
+      ) : (
+        <View style={[styles.bell, { width: size, height: size, borderRadius: size / 2 }]}>
+          <Ionicons name="musical-notes" size={size * 0.42} color={night.textOnPrimary} />
+        </View>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  add: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   title: {
     paddingHorizontal: space.lg,
     paddingBottom: space.md,
@@ -205,40 +210,35 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     color: night.text,
   },
-  next: { marginHorizontal: space.lg, padding: 18, borderRadius: 24, gap: 10 },
-  nextOff: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: night.surface },
-  nextOffText: { fontSize: 15, color: night.textSecondary },
-  nextHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  nextLabel: { fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: night.brandText, textTransform: 'uppercase' },
-  nextBody: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  nextTime: { fontSize: 56, lineHeight: 62, fontWeight: '200', letterSpacing: -1, color: night.text, fontVariant: ['tabular-nums'] },
-  nextPeriod: { fontSize: 22, fontWeight: '300', color: night.text },
-  nextUntil: { fontSize: 15, color: night.textSecondary },
-  list: { marginHorizontal: space.lg, borderRadius: 14, overflow: 'hidden', backgroundColor: night.surface },
-  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.lg, backgroundColor: night.surface },
-  divider: {
-    position: 'absolute',
-    left: space.lg,
-    right: 0,
-    bottom: 0,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: night.border,
-  },
-  rowBody: { flex: 1, gap: 2 },
-  timeLine: { flexDirection: 'row', alignItems: 'baseline', gap: 2 },
-  time: { fontSize: 46, lineHeight: 52, fontWeight: '300', letterSpacing: -1, fontVariant: ['tabular-nums'] },
-  period: { fontSize: 22, fontWeight: '400' },
-  line: { fontSize: 15 },
-  delete: { width: 88, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center' },
-  deleteText: { fontSize: 17, fontWeight: '600', color: colors.white },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingBottom: space.huge },
-  emptyIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: night.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: { fontSize: 17, fontWeight: '600', color: night.text },
+  scroll: { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.sm + 2 },
+  hero: { flexDirection: 'row', alignItems: 'center', gap: space.lg, padding: space.lg, borderRadius: 28, backgroundColor: night.surface, marginBottom: space.sm },
+  heroOff: { gap: space.sm, paddingVertical: space.lg },
+  heroText: { flex: 1, gap: 2 },
+  heroLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.6, color: night.primary },
+  heroTime: { fontFamily: fonts.display, fontSize: 56, lineHeight: 64, color: night.text, fontVariant: ['tabular-nums'] },
+  heroPeriod: { fontFamily: fonts.display, fontSize: 20, color: night.textSecondary },
+  until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  untilText: { fontSize: 15, color: night.textSecondary },
+  ring: { borderColor: night.primary },
+  bell: { backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  swipe: { borderRadius: 22, overflow: 'hidden' },
+  card: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: night.surface },
+  cardBody: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md },
+  off: { opacity: 0.45 },
+  cardText: { flex: 1, gap: 2 },
+  time: { fontFamily: fonts.display, fontSize: 38, lineHeight: 44, color: night.text, fontVariant: ['tabular-nums'] },
+  period: { fontFamily: fonts.display, fontSize: 16, color: night.textSecondary },
+  days: { flexDirection: 'row', gap: 6 },
+  day: { fontSize: 12, fontWeight: '600', color: night.textFaint },
+  dayOn: { color: night.primary, fontWeight: '800' },
+  line: { fontSize: 14, color: night.textSecondary },
+  delete: { width: 96, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  deleteText: { fontSize: 13, fontWeight: '600', color: colors.white },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.lg, paddingBottom: space.huge },
+  emptyBell: { width: 120, height: 120, borderRadius: 60, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  emptyText: { fontSize: 20, fontWeight: '700', color: night.text },
+  footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
+  cta: { height: 56, borderRadius: 28, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  // System bold, as in the editor: the words come in every script.
+  ctaText: { fontSize: 18, fontWeight: '700', color: night.textOnPrimary },
 });
