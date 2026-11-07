@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   prizeText: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: INK },
   stage: { paddingHorizontal: 10, position: 'relative' },
   // The paws rest on the card's top edge.
-  mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2, elevation: 8 },
+  mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2 },
   card: {
     backgroundColor: colors.surface,
     borderRadius: 34,
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 10 },
-    elevation: 6,
+    // No Android elevation: it lifts the card above the later-drawn mascot and hides its paws (A51).
   },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 },
   cardTitle: { fontFamily: fonts.playfulBold, fontSize: 17, color: colors.text },
