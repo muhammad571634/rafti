@@ -29,7 +29,7 @@ const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
  * the success haptic lands. Showing words during the glide drew them over the card below.
  */
 const OPEN_AT = 340;
-const WORDS_AT = OPEN_AT + 300;
+const WORDS_AT = OPEN_AT + 400;
 
 /**
  * The sealed row: lock + "Their note is sealed" + hint. The screen shows it before the swap; the

@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z120. Our own motion from now on; Secret Note's open moment (2026-11-07, Claude 1). NEXT: owner swaps a note on the phone; then the next screen to polish with our own motion (daily check-in first)
+
+- Owner: the envelope is not needed (already reverted in `496fc05`); keep our existing screens and polish them; **make the animations ourselves, in Apple iOS manner**; Remotion / HyperFrames may be used if useful. The 0z119 "1:1 port" rule is over: Native Cook blocks are ideas only. Written to shared memory (`.agents/rules/project-memory.md`, section 3) and Claude memory (`sell-emotion`, `nativecook-blocks`). Remotion / HyperFrames make videos (promo, App Store preview), not in-app motion; in-app stays Reanimated + haptics + our Lottie.
+- Built (`d1f8ab2`, `0ca5b04`, this block): `src/components/secret-note/opened-note.tsx` (`SealedRow`, `OpenedNote`). On the swap: the lock turns open (spring 460 ms, damping 0.55) at the sealed size; at 340 ms the card glides to the note's size (`LinearTransition` 320 ms ease-in-out on the cards and the label) with the words hidden; at 740 ms the words rise (440 ms ease-out), a mint edge breathes once, the love-letter Lottie plays (its 120 pt room kept from the start) and one success haptic lands. The done line rises in. Reduced motion: crossfade. A note opened earlier shows plain.
+- A51 (OTA, Android only; Turkish UI), screen-recorded at 10 fps: round 1 the card grew empty and the words drew over the card below during the glide; fixed by the beat order; round 2 right, a faint 0.1 s touch left, words moved 100 ms later (not re-recorded). Testing spent 9 of the owner's shells on three swaps (Hana).
+- Checks: tsc 0, npm test 661/661. Also ran `npm install`: Skia from 0z117 was missing in this checkout's node_modules (lock unchanged).
+
+Still to do:
+1. Owner swaps a note on the phone and says yes or what to change.
+2. Daily check-in: polish with our own motion (not a Native Cook copy), replacing 0z119 item 1.
+3. Earlier ports (coin drop on Gifts, Closer) keep working; reshape them in our own manner only if the owner asks.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro (Android-only works).
+
 ### 0z119. Secret Note's letter (Native Cook Envelope Gift Reveal, 1:1); SafeMoment (2026-11-07, Claude 1). NEXT: the daily check-in, rebuilt 1:1 from Coin Drop Reward's own page — brief: `docs/agent-tasks/native-cook-blocks.md`
 
 - Tools for the next session (in the repo now): `scripts/native-cook-fetch.mjs` (a block's source from their public repo) and `scripts/a51.mjs` (reload, deep link, tap by text, swipe, screenshot on the A51).
