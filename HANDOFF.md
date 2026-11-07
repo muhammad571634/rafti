@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z130. Today finished in the playful skin, seen on the A51 (2026-11-07, Claude 1). NEXT: owner's questions on the tabs' logic
+
+- Done as 0z129 listed (`86fac33`): `Screen background={playful.ground}`; `SoftGlass` (`playful.round`) replaces `AuroraGlass` for the no-hero top row, the empty slot's + and the Edit pill; Done = `playful.chipOn` / `chipOnText` in Nunito ExtraBold. "Waiting for you" = sun bubble (`playful.sun` / `sunInk`, new tokens, light #FFC93C / ink, dark #8A6400 / white), radius 26, SVG tail bottom-left (Chats' path), faces 38 with white rings, Nunito 900 title, ink count, no chevron; tap logic unchanged. Sealed note = white card radius 24 (iOS-only shadow), envelope line on a 48 pt sun squircle. Tiles = `SymbolTile {...moduleTile(key)}`, labels Nunito ExtraBold 11, Gifts badge ring `playful.ground`. Empty slot dashed `playful.dash` on `playful.well`; "−" on `playful.card` with a `playful.dash` edge; gallery labels Nunito. No `aurora.*` left on this screen.
+- Logic review (owner rule): the unread list (filter + sort) and the ready note were rebuilt on every render (scrolling sets state); both are `useMemo` now, the note finds each friend's chat through one map instead of scanning conversations per note; the tile filter is memoised on the slots.
+- A51 (Russian UI, OTA Android-only `713c81e8`): cream ground, tinted widgets, the board widget with tape, coloured tiles with Nunito labels, Edit pill; Edit mode with white "−" badges and jiggle, a removed widget leaves a dashed slot and its module returns as a tile, the gallery with Nunito labels, Sleep put back, Done. Not seen: the Waiting bubble and the note row (no unread chat and no ready note on the phone at the time), dark mode.
+- Checks: tsc 0 in `src` (the worktree run also reports one error inside `phosphor-react-native`'s own source, only because node_modules is found two folders up), npm test 677/677.
+- Session note: this session opened in a desktop-app worktree cut from `main` (the old redesign line), not from `local-work`. The branch was reset to `origin/local-work` before any edit and pushed with `git push origin HEAD:local-work`; the main checkout was ff-pulled. Owner: the "worktree" switch when starting a session is not harmful, but for this project leave it off, so the session works on `local-work` directly.
+
+Still to do:
+1. See the Waiting bubble and the sealed note row on the A51 when they next show (and dark mode once).
+2. Owner has questions about the tabs' logic.
+3. From 0z121: second reader on migration b7, then the owner applies it.
+4. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z129. Today in the playful skin: half done, session stopped by the owner (2026-11-07, Claude 1). NEXT: finish `src/app/(tabs)/index.tsx` exactly as below
 
 - Owner said "Ha, Bugun ekrani" (code Today in the playful skin; standing rule: fix weak logic as you go). Prototype: https://claude.ai/artifact/ML6J9csLoh3ZVHMMrncrvg (Today phone; CSS `.waiting`, `.wd.*`, `.note`, `.apps`, `.editbtn`). The hero (`TodayHero`, `featuredFriend`) stays exactly as approved.
