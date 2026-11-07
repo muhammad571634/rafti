@@ -6,16 +6,7 @@ import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, {
-  cancelAnimation,
-  Easing,
-  FadeIn,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
@@ -41,9 +32,6 @@ const PORTRAIT_FOCUS: ImageContentPosition = { left: '50%', top: '35%' };
 const FOCUS = { scene: { left: '62%', top: '30%' }, tall: TALL_FOCUS, face: PORTRAIT_FOCUS } as const;
 /** Lines before theirs that a helpline card may sit in and still hold the card back. */
 const BEFORE = 4;
-/** One slow breath of the picture, in and then out: the friend is there, not a poster. */
-const BREATH_MS = 7000;
-const BREATH_SCALE = 1.045;
 /** Their unread line types in once a session, as if said now. */
 const TYPING_MS = 1400;
 const typedIn = new Set<string>();
@@ -158,10 +146,10 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
 
 /**
  * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): about half the
- * screen of their picture, breathing slowly and lit for the user's hour; name with days and level
+ * screen of their picture, still and lit for the user's hour; name with days and level
  * (the bond's progress as a line under it); their newest line in dark glass, typed in first while
  * it is unread; a "Message" field under it. The whole card is one button that opens the chat; the
- * field is a cue, not a second control. Reduce Motion: no breath, no typing.
+ * field is a cue, not a second control. Reduce Motion: no typing.
  */
 export function TodayHero({
   friend,
@@ -192,18 +180,11 @@ export function TodayHero({
   const position = framing === 'scene' ? sceneFocus(character.id, width / height) : FOCUS[framing];
 
   const still = useReducedMotion();
-  const breath = useSharedValue(0);
   const [hour, setHour] = useState(() => new Date().getHours());
-  // Breathes only while Today is on screen; the light is read again on each visit.
-  useFocusEffect(
-    useCallback(() => {
-      setHour(new Date().getHours());
-      if (still) return;
-      breath.value = withRepeat(withTiming(1, { duration: BREATH_MS, easing: Easing.inOut(Easing.sin) }), -1, true);
-      return () => cancelAnimation(breath);
-    }, [still, breath]),
-  );
-  const breathing = useAnimatedStyle(() => ({ transform: [{ scale: 1 + breath.value * (BREATH_SCALE - 1) }] }));
+  // The light is read again on each visit. The picture holds still: its slow "breath" (0z107) redrew
+  // half the screen every frame while Today was open, 12-13 ms of GPU per frame on a Galaxy A51 with
+  // nothing moving, so scrolls and tab switches missed their frames (0z131, owner: keep it still).
+  useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
   const light = dayLight(hour);
 
   const lineKey = line ? `${conversation.id}|${line.at}` : undefined;
@@ -228,14 +209,12 @@ export function TodayHero({
         .filter(Boolean)
         .join(', ')}
       onPress={onPress}>
-      <Animated.View style={[StyleSheet.absoluteFill, breathing]}>
-        <Image
-          source={typeof image === 'string' ? { uri: image } : image}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={position}
-        />
-      </Animated.View>
+      <Image
+        source={typeof image === 'string' ? { uri: image } : image}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        contentPosition={position}
+      />
       {light !== 'day' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[light] }]} /> : null}
       <LinearGradient colors={gradients.heroTopScrim} locations={gradientStops.heroTopScrim} style={StyleSheet.absoluteFill} />
 
