@@ -300,15 +300,19 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
         </Animated.View>
 
         {/* the level, rolling over to the new number */}
-        <Animated.View pointerEvents="none" style={[styles.levelChip, { top: levelTop, left: width / 2 - 36 }, chipStyle]}>
+        <Animated.View pointerEvents="none" style={[styles.levelRow, { top: levelTop }, chipStyle]}>
+          <View style={styles.levelChip}>
           <Ionicons name="heart" size={12} color={palette.mint500} />
           <View style={styles.levelRoll}>
+            {/* The wider of the two words sizes the slot ("Lv 9" → "Lv 10", "Sev 4" in Turkish). */}
+            <Txt style={[styles.levelText, styles.sizer]}>{t('home.hero.level', { level: event.level })}</Txt>
             <Animated.View style={[styles.levelSlot, oldLevel]}>
               <Txt style={styles.levelText}>{t('home.hero.level', { level: Math.max(0, event.level - 1) })}</Txt>
             </Animated.View>
             <Animated.View style={[styles.levelSlot, newLevel]}>
               <Txt style={styles.levelText}>{t('home.hero.level', { level: event.level })}</Txt>
             </Animated.View>
+          </View>
           </View>
         </Animated.View>
 
@@ -375,19 +379,20 @@ const styles = StyleSheet.create({
   },
   face: { width: FACE, height: FACE, borderRadius: FACE / 2, overflow: 'hidden', backgroundColor: palette.apricot100 },
   shine: { position: 'absolute', top: -FACE / 2, width: FACE * 0.45, height: FACE * 2 },
+  levelRow: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   levelChip: {
-    position: 'absolute',
-    width: 72,
     height: 28,
+    paddingLeft: 10,
+    paddingRight: 12,
     borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
+    gap: 5,
     backgroundColor: colors.white,
     boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
   },
-  levelRoll: { height: 18, minWidth: 38, overflow: 'hidden' },
+  levelRoll: { height: 18, overflow: 'hidden', justifyContent: 'center' },
+  sizer: { opacity: 0 },
   levelSlot: { position: 'absolute', left: 0, right: 0, height: 18, justifyContent: 'center' },
   levelText: { fontSize: 13, lineHeight: 16, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] },
   words: { position: 'absolute', left: 32, right: 32 },
