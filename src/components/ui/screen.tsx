@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useIsFocused, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StatusBar } from 'expo-status-bar';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
@@ -33,10 +33,14 @@ export function Screen({
   backdrop,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
+  // Only the screen on top sets the status bar. Tabs stay mounted, and the status bar follows the
+  // last StatusBar mounted, so Today's light icons on its picture turned dark after a visit to
+  // Chats or Find (A51, 0z131). Unmounted on blur, mounted again on focus, it is always the last.
+  const focused = useIsFocused();
 
   return (
     <View style={styles.root}>
-      <StatusBar style={statusBarStyle} />
+      {focused ? <StatusBar style={statusBarStyle} /> : null}
       {background === 'aurora' ? (
         <AuroraBackground />
       ) : typeof background === 'string' ? (
