@@ -10,7 +10,7 @@
 - Checks: tsc 0 in `src`, npm test 710/710. OTA Android-only `599126b8` (tried), `ec9c6c1d` (kept state).
 
 Still to do:
-1. Find the 25-40 ms mount on a tab switch with a React Profiler / Hermes trace; then the first draw.
+1. Owner will judge the tab switch himself, maybe on a newer phone (the A51 is 5-6 years old); leave the code as it is until he answers. Found meanwhile: react-native-screens shows a tab either by a fragment detach / attach or, with detaching off, by `display: none` on the whole screen; both re-lay out the screen, which is the 25-50 ms mount. An experiment where a switch only flips two views' opacity (expo-router/ui `Tabs` + `TabSlot renderFn`, two `TabList`s) is on the local branch `exp/headless-tabs` (`dd1cb48`, not pushed, never run on a device): measure with `dumpsys gfxinfo` and atrace before merging.
 2. On the first iPhone: the red count badge on Chats; swipe back from mid-screen; a reply's sideways swipe must not go back.
 3. See on the A51 when they occur: the note under the bubble, a missed call in green, a plan with the friend's face.
 4. Widgets next steps in `docs/today-widgets.md`.
