@@ -203,6 +203,20 @@ export interface Relationship {
   mood?: Mood;
   /** An arc beat just opened (its level): their next reply brings it up, then this clears. */
   arcDue?: number;
+  /** What they said of their own day: today and the last day before it (`src/ai/own-day.ts`). */
+  ownDay?: DayLog[];
+}
+
+/** One thing a friend said of their own day: when (ISO, UTC) and a few words. */
+export interface DayNote {
+  at: string;
+  text: string;
+}
+
+/** One day of a friend's notes; `date` is the user's day key ("2026-11-08"). */
+export interface DayLog {
+  date: string;
+  notes: DayNote[];
 }
 
 /**

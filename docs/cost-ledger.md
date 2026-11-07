@@ -34,6 +34,7 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 7 | Voice: ElevenLabs speech per character, transcription of voice notes, voice calls (one reply per turn plus speech) | not measured yet; the biggest unknown | measure before pricing voice (`docs/road-to-launch.md`) |
 | 8 | Group chats: one reply per member who speaks | ~one reply each | |
 | 10 | A cancelled plan or wake-up makes the friend ask what happened (0z139, `setupCancelledCue`) | one moment (~$0.001) per cancel, at most one per friend per 2 minutes; the setup card in the history adds ~25 tokens per reply while it is in the window | in; the cancel is free to the user (the plan's price already paid) |
+| 11 | The friend's own day (0z144, `src/ai/own-day.ts`) | ~195 tokens of rules in the global tier (cached once #1 works), ~15 tokens of reminder plus ~10 per kept note (at most 10 today + one line for the last day) in the turn tier, and a `day` field of ~15-25 output tokens on replies that tell of the friend's day; no extra call. Probe 2026-11-08 (`gemini-3.1-flash-lite`, Hana, no history): in 3,776-3,802, out 91-120 with the field | in; prompt part live after the server deploy |
 | 9 | Fixed: Fly.io API ~$4 a month, Supabase (free tier now), EAS updates and builds, Apple $99 a year, domain | fixed per month | in `docs/road-to-launch.md` |
 
 ## What one shell is worth, and what setting things up costs (0z136)

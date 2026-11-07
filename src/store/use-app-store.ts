@@ -44,6 +44,7 @@ import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
 import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
 import { chatClock, togetherWith } from '@/lib/together';
+import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import {
   askToReachCue,
   birthdayCue,
@@ -3109,12 +3110,14 @@ export const useAppStore = create<AppState>()(
           threads: state.threads.filter((t) => t.characterId === characterId),
           clock: chatClock(),
           together: togetherWith(state, characterId, todayKey()),
+          ownDay: ownDayOf(bond.ownDay, todayKey()),
           cue: [...callCue(placedBy, said), ...(spokenCue(messages) ?? [])],
         };
         const reply = await accessToken()
           .then((token) => serverReply(input, token))
           .catch(() => null);
         if (!reply) return { lines: null, crisis: false };
+        if (reply.day?.length) keepOwnDay(set, characterId, reply.day);
         // Captions say only what is spoken, as a voice will: narration has no place on a call. Each
         // line keeps its words as the server wrote them and their signature, for the voice.
         // `crisis` is the server's check; the reply is already the safe one.
@@ -5540,6 +5543,11 @@ function rememberPhotos(set: Setter, chatId: string, photos: readonly PreparedPh
   }));
 }
 
+/** New things the friend said of their own day (0z144): kept on today's page of their days for the next replies. */
+function keepOwnDay(set: Setter, characterId: string, notes: readonly string[]) {
+  updateRelationship(set, characterId, (r) => ({ ownDay: addDayNotes(r.ownDay, notes, new Date(), todayKey()) }));
+}
+
 function scheduleReply(set: Setter, get: Getter, conversationId: string, request: ReplyRequest) {
   const { text, lines: given, gain, chips, ideas, reach, avoid, off, trigger = 'message', steer, cue, photo } = request;
   const state = get();
@@ -5704,6 +5712,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // Us reached the friend only as the line they said when it was added, and a reply had no clock.
       clock: chatClock(),
       together: togetherWith(state, character.id, todayKey()),
+      // What they already said of their own day (0z144), so it stays true reply after reply.
+      ownDay: ownDayOf(bond.ownDay, todayKey()),
       // An array is ↻'s earlier versions; a single line is the old answer to an edited message.
       redo: Array.isArray(avoid) ? avoid : undefined,
       redoOff: off,
@@ -5723,6 +5733,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
       if (!reply) return failReply(set, conversationId, request);
       rememberPhotos(set, conversationId, photos, reply.photos);
+      if (reply.day?.length) keepOwnDay(set, character.id, reply.day);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
       deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined);

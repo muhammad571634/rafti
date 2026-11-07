@@ -7,6 +7,7 @@ import type { FirstTextRequest } from './first-text';
 import type { GroupPromptInput } from './group-reply';
 import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
 import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
+import { cleanDayNotes } from './own-day';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { EMOTIONS } from './reply-style';
@@ -193,8 +194,8 @@ export const serverMemories = {
 export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; emotion?: Emotion; intensity?: number } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; emotion?: unknown; intensity?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; emotion?: Emotion; intensity?: number } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; emotion?: unknown; intensity?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -217,6 +218,8 @@ export async function serverReply(
     voice: signs.length ? kept.map((k) => k.sig) : undefined,
     setup: reply?.crisis === true ? undefined : cleanSetup(reply?.setup),
     threads: reply?.crisis === true ? undefined : cleanThreadOps(reply?.threads),
+    // New things the friend said of their own day (0z144): kept for the next replies.
+    day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day),
     // How the friend feels after this reply, in the model's own reading (0z141): it carries into the next one.
     ...(EMOTIONS.includes(reply?.emotion as Emotion)
       ? { emotion: reply?.emotion as Emotion, intensity: typeof reply?.intensity === 'number' ? Math.min(1, Math.max(0, reply.intensity)) : 0.5 }

@@ -17,6 +17,7 @@ import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
+import { ownDayParts, type OwnDay } from './own-day';
 import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
@@ -163,6 +164,8 @@ export interface ChatPromptInput {
   clock?: ChatClock;
   /** Plans and wake-ups the two of them set up in the app (`togetherLines`). */
   together?: Together;
+  /** What the friend already said of their own day, today and the day before (`src/ai/own-day.ts`). */
+  ownDay?: OwnDay;
 }
 
 /** The parts of one reply's prompt, every tier; the history comes from `chatTurns`. */
@@ -207,6 +210,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('clock', 'turn', clockLines(input.clock)),
     part('together', 'turn', togetherLines(input.together, input.clock)),
     ...threadParts(input.threads ?? [], input.clock?.utcOffsetMin),
+    // The friend's own day (0z144): what they already said they did today stays true reply after reply.
+    ...ownDayParts(input.ownDay, input.clock),
     // "Wake me at 7": the friend offers a real alarm or plan, a card under the reply makes it. Not
     // on a call: the reply is spoken there, with no card to tap.
     part('setupRules', 'global', input.mode === 'call' ? [] : SETUP_RULES_LINES),

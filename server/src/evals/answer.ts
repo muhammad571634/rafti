@@ -141,6 +141,7 @@ function promptOf(s: EvalScenario): { layout: PromptLayout; read: (raw: string) 
           plan,
           // As the app sends it (0z135): the user's clock, here UTC.
           clock: { now: EVAL_NOW, utcOffsetMin: 0 },
+          ownDay: s.setup?.ownDay,
         },
       };
     }

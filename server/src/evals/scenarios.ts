@@ -3,6 +3,7 @@ import type { ReplyPrefs } from '../../../src/lib/reply-engine/types.ts';
 import type { Emotion, TouchPhase, User } from '../../../src/types/index.ts';
 import type { Check } from './checks.ts';
 import type { ChatImage } from '../../../src/ai/photo-prompt.ts';
+import type { OwnDay } from '../../../src/ai/own-day.ts';
 import { RED_BALL } from './photo-fixture.ts';
 
 /**
@@ -42,6 +43,8 @@ export interface Setup {
   images?: readonly ChatImage[];
   /** How the character felt at the end of their last reply, this many minutes before `EVAL_NOW` (0z141). */
   mood?: { emotion: Emotion; intensity: number; minutesAgo: number };
+  /** What the character already said of their own day (0z144), as the app sends it. */
+  ownDay?: OwnDay;
 }
 
 interface Base {
@@ -902,6 +905,36 @@ export const SCENARIOS: readonly EvalScenario[] = [
     expect: [ASSISTANT, { kind: 'words', max: 50 }],
     rubric:
       'Erik, a scarred hockey captain of few words, answers with concrete things from his own day in his world (practice, the team, an injury, food), briefly and in his terse voice; not a generic "not much, you?".',
+  },
+  {
+    id: 'human-own-day-keeps',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: {
+      level: 4,
+      ownDay: {
+        today: [
+          { at: '2026-10-28T07:30:00.000Z', text: 'overslept, missed the morning bus' },
+          { at: '2026-10-28T14:00:00.000Z', text: 'spilled ink on the commission, redoing it' },
+        ],
+      },
+    },
+    chat: [['me', 'heyy how was your day?']],
+    expect: [ASSISTANT, { kind: 'words', max: 60 }],
+    rubric:
+      'Hana tells of her day as YOUR DAY SO FAR has it (she overslept and missed the bus; ink spilled on a commission she is redoing): she may add something new that fits, but never a different morning or a calm, easy day that contradicts it. Brief, in her own voice.',
+  },
+  {
+    id: 'human-own-day-yesterday',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 4, ownDay: { today: [], before: { date: '2026-10-27', notes: ['gallery opening downtown', 'sold a small canvas'] } } },
+    chat: [['me', 'wait how did the gallery thing go yesterday??']],
+    expect: [ASSISTANT, { kind: 'words', max: 60 }],
+    rubric:
+      'Hana remembers yesterday as YOUR LAST DAY has it: the gallery opening, and that she sold a small canvas; she answers with feeling and a concrete detail, never "what gallery thing?" or a story that contradicts it.',
   },
 
   // Repetition: the guard and the prompt keep replies new.

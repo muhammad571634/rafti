@@ -3,6 +3,7 @@ import type { Emotion, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
+import { cleanDayNotes } from './own-day';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
 
@@ -67,6 +68,8 @@ export interface ModelReply {
   setup?: SetupOffer;
   /** What it will follow up on, move or settle (`src/ai/thread-prompt.ts`), times on the user's clock. */
   threads?: ThreadOps;
+  /** New things it said about its own day, a few words each (`src/ai/own-day.ts`). */
+  day?: string[];
 }
 
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
@@ -74,7 +77,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown };
+      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -82,6 +85,7 @@ export function parseModelReply(raw: string): ModelReply {
         const photos = cleanPhotoNotes(data.photos);
         const setup = cleanSetup(data.setup);
         const threads = cleanThreadOps(data.threads);
+        const day = cleanDayNotes(data.day);
         return {
           bubbles,
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
@@ -90,6 +94,7 @@ export function parseModelReply(raw: string): ModelReply {
           ...(photos ? { photos } : {}),
           ...(setup ? { setup } : {}),
           ...(hasThreadOps(threads) ? { threads } : {}),
+          ...(day.length ? { day } : {}),
         };
       }
     } catch {

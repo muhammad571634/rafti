@@ -3,6 +3,7 @@ import { bodyLimit } from 'hono/body-limit';
 
 import { CHAT_MODES, type ChatMode, type ChatPromptInput } from '../../src/ai/chat-prompt.ts';
 import { cleanClock, cleanTogether } from '../../src/ai/together-prompt.ts';
+import { cleanOwnDay } from '../../src/ai/own-day.ts';
 import {
   buildDraftPrompt,
   buildFieldPrompt,
@@ -828,6 +829,8 @@ export function createApp(
       // The user's clock and what they set up with this friend (0z135); malformed ones are dropped.
       clock: cleanClock(input.clock),
       together: cleanTogether(input.together),
+      // What the friend already said of their own day (0z144).
+      ownDay: cleanOwnDay(input.ownDay),
     };
 
     // Who is asking, looked up while the model writes: the reply never waits on it, and a missing or
@@ -871,7 +874,9 @@ export function createApp(
       const setup = input.mode === 'call' || crisis ? undefined : reply.setup;
       // `threads`: what the friend will follow up on; the app applies it on the phone's clock. Never after a crisis.
       const threads = crisis ? undefined : reply.threads;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, voice, model: result.model ?? provider.name, ms });
+      // `day`: new things the friend said of their own day; the app keeps them for the next replies.
+      const day = crisis ? undefined : reply.day;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);
