@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z119. Secret Note's letter (Native Cook Envelope Gift Reveal, 1:1); SafeMoment (2026-11-07, Claude 1). NEXT: the daily check-in, rebuilt 1:1 from Coin Drop Reward's own page
+
+- Owner: the ported animations did not look like the prompts' blocks; from now on **bring each block's animation over 1:1**, change only our mascot, icons, names and colours, polish the rest to fit; make everything "ultra"; the daily check-in is still the old sheet with a small drop: redo it. Then: "make something that always works and never falls over".
+- Built (`0827ffb` … this block): `src/components/envelope/` = the block's `use-envelope.ts` and `motion.ts` unchanged, its scene and screen line for line; only the words are ours (`EnvelopeContent`): the friend's initial in the wax, the user's name on the pocket, Sigmazam's letterpress and the day on the card's face, their note on its back, four new strings in all 14 locales (`secretNote.envelopeFrom`, `envelopeHeadline`, `liftFlap`, `fromWithLove`). Shown when notes are swapped; an opened note is read again as the letter by tapping it. The letter keeps a snapshot of its words (today's new question replaced the note under it and closed the letter).
+- On the A51 Skia could not load the handwriting face (Caveat: `useFonts` and `useTypeface` both null) and its paragraph drew nothing, so handwriting is React Native text over the canvas (`envelope-writing.tsx`), posed each frame from the scene's own worklets (`cardPoseOf`, `envPoseOf`): seen turning over with the card, "İnatçı, kırılgan, dürüst." and "Sukut" in Caveat. Inter in RN text cut "Bitti" on Android: the letter's UI text is the system face; Instrument Serif stays for the headline and title.
+- `src/components/safe-moment.tsx`: the coin pour, the level-up and the letter are wrapped; a render error closes the moment (prize lands, level-up dismissed, letter closed) instead of the app.
+- Checks: tsc 0, npm test 661/661, check:locales pass. OTA `5dfa43ac` (Android only, see 0z118 item 3). Testing spent 6 of the owner's shells on two swaps.
+
+Still to do:
+1. Daily check-in "ultra": rebuild it 1:1 on Coin Drop Reward's page (wallet pill, the day's ways to earn as mission rows with the coin, the week's stamps, the toast in the open space), shells for points.
+2. Every earlier port gets the same 1:1 pass where it drifted (coin drop on Gifts, Closer).
+
 ### 0z118. "Closer": the level-up as a moment with the friend (2026-11-07, Claude 1). NEXT: owner plays it (Profile → Development → Play a level-up) and names the next block
 
 - Owner, after seeing 0z117's coin drop ("juda oddiy... qolsin"): the app must **sell emotion** through its screens; Native Cook prompts are references only, never 1:1; simple but "ultra". Saved as Claude memory `sell-emotion`. Owner's Pinterest pin (a Duolingo sky with parting clouds) and its feed as inspiration; logged-out Pinterest shows no feed and Mobbin needs a paid plan, so only the pin itself was used.
