@@ -104,7 +104,50 @@ export function parseModelReply(raw: string): ModelReply {
   return { bubbles };
 }
 
-/** Talk promises no narration: strip any the writer slipped in anyway. */
+/** Talk promises no narration: strip any the writer slipped in anyway. Texting splits a paragraph into bubbles (`splitBubbles`). */
 export function enforceStyle(bubbles: readonly string[], style: ReplyPrefs['style']) {
-  return style === 'talk' ? bubbles.map(speechOnly).filter(Boolean) : [...bubbles];
+  const kept = style === 'talk' ? bubbles.map(speechOnly).filter(Boolean) : [...bubbles];
+  return style === 'story' ? kept : splitBubbles(kept);
+}
+
+/** A bubble wider than this reads as a paragraph on a phone (about three lines; `widthOf`). */
+export const BUBBLE_MAX_CHARS = 140;
+const BUBBLES_MAX = 4;
+/** Kana, CJK ideographs, Hangul and full-width forms: each takes about two Latin letters of the line. */
+const WIDE = /[ᄀ-ᇿ぀-ヿ㐀-鿿가-힯＀-￯]/g;
+/** How much of a line a text takes, in Latin letters. */
+const widthOf = (text: string) => text.length + (text.match(WIDE) ?? []).length;
+/** Sentences of scripts without spaces join without one. */
+const joinSentences = (a: string, b: string) => (/[。！？]["'»”’)\]]*$/.test(a) ? `${a}${b}` : `${a} ${b}`);
+/** Sentence ends in any script: . ! ? … and the full-width 。！？, with closing quotes or brackets. */
+const SENTENCE = /[^.!?…。！？]+(?:[.!?…。！？]+["'»”’)\]]*\s*|$)/g;
+
+/**
+ * Texting, as people do it (owner, 2026-11-07: long bubbles tire people): a bubble that runs past
+ * `BUBBLE_MAX_CHARS` is cut at sentence ends into a few short ones, in any language. Narration in
+ * *asterisks* is never cut in the middle; a single long sentence stays whole. At most
+ * `BUBBLES_MAX` bubbles in all, the rest joined to the last.
+ */
+export function splitBubbles(bubbles: readonly string[]): string[] {
+  const out: string[] = [];
+  for (const bubble of bubbles) {
+    if (widthOf(bubble) <= BUBBLE_MAX_CHARS) {
+      out.push(bubble);
+      continue;
+    }
+    const sentences = (bubble.match(SENTENCE) ?? [bubble]).map((s) => s.trim()).filter(Boolean);
+    let current = '';
+    for (const sentence of sentences) {
+      const next = current ? joinSentences(current, sentence) : sentence;
+      // Keep an open *action* with the words after it, and never leave a bubble shorter than a few words.
+      const openAction = (current.match(/\*/g)?.length ?? 0) % 2 === 1;
+      if (current && widthOf(next) > BUBBLE_MAX_CHARS && !openAction && widthOf(current) >= 24) {
+        out.push(current);
+        current = sentence;
+      } else current = next;
+    }
+    if (current) out.push(current);
+  }
+  if (out.length <= BUBBLES_MAX) return out;
+  return [...out.slice(0, BUBBLES_MAX - 1), out.slice(BUBBLES_MAX - 1).join(' ')];
 }

@@ -11,6 +11,7 @@ export const SETUP_RULES_LINES = [
   '- Only when they ask you to (wake me, remind me, add it to the plans) or clearly say yes to your offer; never on your own. When they ask, do it in this same reply.',
   '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in their language","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). Always write the hour they said into "time" ("at 15" = "15:00"); leave "time" out only for a plan with no hour named. "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once.',
   '- They confirm it with one tap on a card under your reply, so say in your own words that you will do it; do not say it is already done.',
+  '- The card exists only if "setup" is in your JSON. Whenever you agree to add or set something, "setup" goes in that same reply, every time (seen: "noted, I added it" with no field, so nothing was set and they had to ask twice).',
   '- If the day or the hour is unclear, ask first and leave "setup" out. One per reply; leave it out when nothing is asked.',
   '- When they change one you offered (another hour or day: "no, 8:30 instead"), add "change":true: it replaces your last offer of that kind, set or not, so it stays one alarm or one plan. A second, separate one has no "change".',
   '- What is really set is only what SET UP TOGETHER lists. YOUR OFFERS (below, when there are any) says where each of your cards stands; one that is not set does not exist yet: never mention it as an alarm or plan they have.',

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { carriedMood, humanTurnLines, turnRhythm } from './human-turn';
+import { carriedMood, humanTurnLines, lengthLine, textSize, turnRhythm } from './human-turn';
 import type { HistoryTurn } from './prompt-layout';
 
 const turn = (role: HistoryTurn['role'], text: string): HistoryTurn => ({ role, text });
@@ -47,5 +47,21 @@ describe('this turn’s hints when the model writes (0z141)', () => {
     const text = humanTurnLines({ turns: [turn('user', 'k'), turn('assistant', 'Fine then.'), turn('user', 'ok')], silence: true }).join('\n');
     assert.match(text, /went quiet/);
     assert.doesNotMatch(text, /going flat/);
+  });
+});
+
+describe('the size of a reply (owner, 2026-11-07: "short" still came back as paragraphs)', () => {
+  it('counts words in any script, two characters a word where there are no spaces', () => {
+    assert.equal(textSize('мне сегодня грустно'), 3);
+    assert.equal(textSize('你今天吃饭了吗'), 4);
+    assert.equal(textSize(''), 0);
+  });
+
+  it('gives the model a number: short stays short, auto follows them, story is prose', () => {
+    assert.match(lengthLine({ style: 'mix', length: 'short' }, []), /About 18 words in all, in up to 2 bubbles/);
+    assert.match(lengthLine({ style: 'talk', length: 'auto' }, [turn('user', 'ok')]), /About 10 words in all, in one bubble/);
+    assert.match(lengthLine({ style: 'mix', length: 'auto' }, [turn('user', 'word '.repeat(80))]), /About 40 words/);
+    assert.match(lengthLine({ style: 'story', length: 'auto' }, []), /prose/);
+    assert.match(humanTurnLines({ turns: [], prefs: { style: 'mix', length: 'short' } }).join('\n'), /Never a paragraph/);
   });
 });

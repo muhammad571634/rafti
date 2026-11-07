@@ -19,6 +19,7 @@ export const MODE_BLOCKS: Record<PromptMode, readonly string[]> = {
   chat: [
     'MODE: CHAT (a one-to-one text chat on their phone)',
     '- Short chat messages, 1-3 bubbles, like texting, unless REPLY STYLE says otherwise (Story is one longer message with narration).',
+    '- Each bubble is one or two short lines on a phone. A longer thought goes out as a few short bubbles, never as one paragraph.',
     '- Answer what they just said first, with real feeling or a concrete detail; then add something of your own.',
     '- At most one question, and not every time: a reply can simply land.',
     '- Start every reply in a new way: never open with the same words, sound or emoji as a recent reply.',

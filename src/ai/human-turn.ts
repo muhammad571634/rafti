@@ -1,3 +1,4 @@
+import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { Mood } from '@/types';
 
 import type { HistoryTurn } from './prompt-layout';
@@ -66,11 +67,42 @@ export interface HumanTurnInput {
   silence?: boolean;
   /** The mode asks nothing (bedtime): no word about questions. */
   noQuestions?: boolean;
+  /** The chat's reply style and length (`replyPrefs`): the size this turn aims at. */
+  prefs?: ReplyPrefs;
+}
+
+/**
+ * About how many words a text holds, in any script: words between spaces, and for scripts written
+ * without spaces (Chinese, Japanese, Thai) about two characters a word.
+ */
+export function textSize(text: string) {
+  const dense = (text.match(DENSE) ?? []).length;
+  const spaced = text.replace(DENSE, ' ').trim();
+  return (spaced ? spaced.split(/\s+/).length : 0) + Math.ceil(dense / 2);
+}
+
+/** Kana, CJK ideographs and Thai: written without spaces between words (Korean has spaces). */
+const DENSE = /[぀-ヿ㐀-鿿฀-๿]/g;
+
+/**
+ * The size of this reply as a number the model can keep (owner, 2026-11-07: "short" still came back
+ * as paragraphs; long replies tire people and cost output). Short: a line or two. Auto: about as much
+ * as they wrote, a little more, never a wall. Long: fuller, still in short bubbles. Story is prose.
+ */
+export function lengthLine(prefs: ReplyPrefs | undefined, turns: readonly HistoryTurn[]): string {
+  const style = prefs?.style ?? 'mix';
+  const length = prefs?.length ?? 'auto';
+  if (style === 'story') return length === 'short' ? '- Keep it to about 50 words.' : length === 'long' ? '- About 150 words of prose.' : '- About 90 words of prose.';
+  const theirs = [...turns].reverse().find((t) => t.role === 'user');
+  const said = theirs ? textSize(theirs.text) : 8;
+  const words = length === 'short' ? 18 : length === 'long' ? 60 : Math.min(40, Math.max(10, Math.round(said * 1.2 + 8)));
+  const bubbles = words <= 14 ? 1 : words <= 30 ? 2 : 3;
+  return `- About ${words} words in all, in ${bubbles === 1 ? 'one bubble' : `up to ${bubbles} bubbles`}; each bubble one or two short lines, like a text. Never a paragraph.`;
 }
 
 /** This turn's hints, last in the prompt, in place of the stand-in planner's. */
-export function humanTurnLines({ turns, mood, now, silence, noQuestions }: HumanTurnInput): string[] {
-  const lines: string[] = [];
+export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs }: HumanTurnInput): string[] {
+  const lines: string[] = [lengthLine(prefs, turns)];
   const at = now ? Date.parse(now) : NaN;
   const carried = Number.isNaN(at) ? null : carriedMood(mood, at);
   if (carried) {

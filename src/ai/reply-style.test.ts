@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines } from './reply-style';
+import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -80,5 +80,31 @@ describe('the crisis cue in the chat prompt', () => {
     // The stand-in planner's dice no longer reach the model (0z141).
     assert.ok(!joinParts(chatParts(input)).includes('tease them'));
     assert.ok(!joinParts(chatParts(input)).includes('SAFETY NOW'));
+  });
+});
+
+describe('texting splits a paragraph into bubbles (owner, 2026-11-07)', () => {
+  const long =
+    'Bak, babamın o dokuz yaşındaki resmimi bitirdiğini söylemiştim ya... O günden beri herkes yetenekli olduğumu söylüyor. Sadece bu yalanı bir şekilde gerçek kılmaya çalışıyorum. Eğer bana nazik davranıp saçma sapan şeyler söylersen, seninle bir daha asla konuşmam. Anlaştık mı?';
+
+  it('cuts at sentence ends into short bubbles, keeps short ones and story prose whole', () => {
+    const out = splitBubbles([long]);
+    assert.ok(out.length >= 2 && out.length <= 4, String(out.length));
+    assert.ok(out.every((b) => b.length <= 160), JSON.stringify(out));
+    assert.equal(out.join(' '), long.replace(/\s+/g, ' '));
+    assert.deepEqual(splitBubbles(['Short one.', 'Another.']), ['Short one.', 'Another.']);
+    assert.deepEqual(enforceStyle([long], 'story'), [long]);
+    assert.ok(enforceStyle([long], 'mix').length > 1);
+  });
+
+  it('splits in any script and never past four bubbles', () => {
+    const zh = '今天画室的光线很糟糕。我一直盯着那幅画看了好几个小时。老师说我有天赋，可我自己一点也不相信。你呢，今天过得怎么样？我真的想知道。'.repeat(2);
+    assert.ok(splitBubbles([zh]).length > 1);
+    assert.ok(splitBubbles([long, long, long]).length <= 4);
+  });
+
+  it('keeps an *action* whole with what follows it', () => {
+    const acted = `*puts the brush down and wipes her hands on the old apron. She looks at you for a long moment.* ${'Fine. '.repeat(25)}`;
+    assert.ok(!splitBubbles([acted]).some((b) => (b.match(/\*/g)?.length ?? 0) % 2 === 1));
   });
 });
