@@ -21,8 +21,9 @@ import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { daysBetween, relativeStamp, shortName } from '@/lib/format';
 import { groupMoments, momentTarget } from '@/lib/moment-groups';
+import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { reminderAt } from '@/lib/schedule';
-import { dateFromKey, levelForIntimacy, shellCosts } from '@/mock';
+import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
@@ -184,7 +185,20 @@ export default function UsScreen() {
     () => schedules.filter((x) => x.characterId === selected?.character.id),
     [schedules, selected],
   );
-  const planDays = useMemo(() => new Set(plans.map((x) => x.date)), [plans]);
+  // The wake-ups this friend gives you sit on their day too (owner, 2026-11-07: "I set it in the
+  // chat, why is it not on Us?"); they stay alarms (no plan reminders), a tap opens the alarm.
+  const alarms = useAppStore((s) => s.alarms);
+  const friendAlarms = useMemo(() => alarms.filter((a) => a.enabled && a.characterId === selected?.character.id), [alarms, selected]);
+  const dayAlarms = useMemo(
+    () => friendAlarms.filter((a) => ringsOnDay(a, day, new Date())).sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute)),
+    [friendAlarms, day],
+  );
+  // A dot for a one-time wake-up's day; a repeating one would dot every week.
+  const planDays = useMemo(() => {
+    const days = new Set(plans.map((x) => x.date));
+    for (const a of friendAlarms) if (!a.repeat.length) days.add(dayKey(nextAlarmAt(a, new Date())));
+    return days;
+  }, [plans, friendAlarms]);
   const dayPlans = useMemo(
     () => plans.filter((x) => x.date === day).sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '')),
     [plans, day],
@@ -378,7 +392,25 @@ export default function UsScreen() {
           {day === today ? t('common.today') : dayTitle(day, i18n.language)}
         </Txt>
         <View style={styles.card}>
-          {dayPlans.length === 0 ? (
+          {dayAlarms.map((alarm, i) => (
+            <PressableScale
+              key={alarm.id}
+              scaleTo={0.98}
+              dimOnPress={false}
+              accessibilityRole="button"
+              accessibilityLabel={`${clock(new Date(2000, 0, 1, alarm.hour, alarm.minute))}, ${alarm.label || t('alarms.defaultLabel')}`}
+              onPress={() => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } })}
+              style={styles.planRow}>
+              <TimeTile time={clock(new Date(2000, 0, 1, alarm.hour, alarm.minute))} />
+              <View style={[styles.planBody, (i < dayAlarms.length - 1 || dayPlans.length > 0) && styles.line]}>
+                <Txt style={[styles.rowText, styles.grow]} lines={2}>
+                  {alarm.label || t('alarms.defaultLabel')}
+                </Txt>
+                <Ionicons name="alarm" size={18} color={colors.textSecondary} />
+              </View>
+            </PressableScale>
+          ))}
+          {dayPlans.length === 0 && dayAlarms.length === 0 ? (
             // The day is free: one quiet line, and one tap plans something.
             <View style={styles.free}>
               <Txt style={[styles.freeText, styles.grow]}>{t('us.nothingPlanned')}</Txt>

@@ -22,6 +22,18 @@ export function nextAlarmAt(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat'>, no
   return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, alarm.hour, alarm.minute, 0, 0);
 }
 
+/**
+ * Whether the alarm rings on that day (YYYY-MM-DD, local): a repeating one on its weekdays, a
+ * one-time one on the day of its next ring. Us lists a friend's wake-ups on the day they ring.
+ */
+export function ringsOnDay(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat' | 'enabled'>, day: string, now: Date): boolean {
+  if (!alarm.enabled) return false;
+  const [y, m, d] = day.split('-').map(Number);
+  if (alarm.repeat.length) return alarm.repeat.includes(new Date(y, m - 1, d).getDay());
+  const next = nextAlarmAt(alarm, now);
+  return next.getFullYear() === y && next.getMonth() === m - 1 && next.getDate() === d;
+}
+
 /** Every ring within the next `days` days: one for a one-time alarm, up to `days` for a repeating one. */
 export function ringsWithin(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat'>, now: Date, days = SCHEDULE_DAYS): Date[] {
   if (alarm.repeat.length === 0) return [nextAlarmAt(alarm, now)];
