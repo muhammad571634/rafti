@@ -29,6 +29,10 @@ type Draft = Omit<Alarm, 'id' | 'createdAt' | 'enabled'>;
 const FACE_ON = 84;
 const FACE = 56;
 const STEP_MIN = 15;
+const DEFAULT_HOUR = 7;
+/** The ring's padding and border around a face; its radius is set in numbers (Android draws 999 square). */
+const RING_PAD = 3;
+const RING_BORDER = 3;
 /** How long the "set" moment stays before the sheet closes by itself. */
 const SET_MOMENT_MS = 2600;
 
@@ -79,12 +83,12 @@ export default function AlarmEditScreen() {
       const { id: _id, createdAt: _c, enabled: _e, ...rest } = existing;
       return rest;
     }
-    const now = new Date();
     const clipFriend = fromClip ? friends.find((f) => f.id === fromClipFriend) : undefined;
     const friend = clipFriend ?? friends.find((f) => f.voiceReady) ?? friends[0];
     return {
-      hour: now.getHours(),
-      minute: now.getMinutes(),
+      // A wake-up starts at a morning hour, not at whatever the clock says now ("in 23 h 59 min").
+      hour: DEFAULT_HOUR,
+      minute: 0,
       repeat: [],
       label: '',
       characterId: friend?.id,
@@ -102,8 +106,6 @@ export default function AlarmEditScreen() {
   // The friend's clips that can wake the user: the ones they made with them, and open gifts.
   const friendClips = [...mine, ...gifts].filter((c) => !c.locked && c.character.id === draft.characterId);
   const wakeClip = draft.voice ? friendClips.find((c) => c.id === draft.clipId) : undefined;
-  // The picked friend first in the row, so they never sit off-screen.
-  const row = friend ? [friend, ...friends.filter((f) => f.id !== friend.id)] : friends;
 
   const pick = (c: Character | undefined) => {
     haptic.selection();
@@ -232,16 +234,24 @@ export default function AlarmEditScreen() {
               {t('alarms.who').toUpperCase()}
             </Txt>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
-              {row.map((c) => (
-                <Face key={c.id} name={friendName(c, true)} on={c.id === draft.characterId} onPress={() => pick(c)}>
-                  <CharacterAvatar character={c} size={c.id === draft.characterId ? FACE_ON : FACE} />
+              {/* The picked friend first, then melody only (easy to reach with many friends), then the rest. */}
+              {friend ? (
+                <Face name={friendName(friend, true)} on onPress={() => pick(friend)}>
+                  <CharacterAvatar character={friend} size={FACE_ON} />
                 </Face>
-              ))}
+              ) : null}
               <Face name={t('alarms.melodyOnly')} on={melody} onPress={() => pick(undefined)}>
                 <View style={[styles.bell, melody ? styles.bellOn : null]}>
                   <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? night.textOnPrimary : night.textSecondary} />
                 </View>
               </Face>
+              {friends
+                .filter((c) => c.id !== friend?.id)
+                .map((c) => (
+                  <Face key={c.id} name={friendName(c, true)} on={false} onPress={() => pick(c)}>
+                    <CharacterAvatar character={c} size={FACE} />
+                  </Face>
+                ))}
             </ScrollView>
 
             <View style={styles.timeCard}>
@@ -421,7 +431,7 @@ function untilText(t: (key: string, options?: Record<string, unknown>) => string
 function Face({ name, on, onPress, children }: { name: string; on: boolean; onPress: () => void; children: React.ReactNode }) {
   return (
     <PressableScale onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={name} style={styles.face}>
-      <View style={[styles.faceRing, on && styles.faceRingOn]}>{children}</View>
+      <View style={[styles.faceRing, on && styles.faceRingOn, { borderRadius: ((on ? FACE_ON : FACE) + RING_PAD * 2 + (on ? RING_BORDER * 2 : 0)) / 2 }]}>{children}</View>
       <Txt style={[styles.faceName, on && styles.faceNameOn]} lines={1} maxFontSizeMultiplier={1.2}>
         {name}
       </Txt>
@@ -504,8 +514,8 @@ const styles = StyleSheet.create({
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
   face: { alignItems: 'center', gap: 6, minWidth: 56 },
-  faceRing: { borderRadius: 999, padding: 3 },
-  faceRingOn: { borderWidth: 3, borderColor: night.primary },
+  faceRing: { padding: RING_PAD },
+  faceRingOn: { borderWidth: RING_BORDER, borderColor: night.primary },
   faceName: { fontSize: 13, color: night.textSecondary, maxWidth: 84, textAlign: 'center' },
   faceNameOn: { fontWeight: '700', color: night.text },
   bell: { width: FACE, height: FACE, borderRadius: FACE / 2, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
@@ -550,7 +560,8 @@ const styles = StyleSheet.create({
   lead: { flexDirection: 'row', alignItems: 'center', gap: space.md, flexShrink: 1 },
   footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
   cta: { height: 56, borderRadius: 28, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  ctaText: { fontFamily: fonts.display, fontSize: 19, color: night.textOnPrimary },
+  // System bold, not Fredoka: the button's words come in every script (Fredoka has Latin only).
+  ctaText: { fontSize: 18, fontWeight: '700', color: night.textOnPrimary },
   price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(42,26,18,0.12)' },
   priceText: { fontSize: 15, fontWeight: '700', color: night.textOnPrimary },
   moment: { alignItems: 'center', justifyContent: 'center' },
