@@ -123,7 +123,7 @@ export default function AlarmEditScreen() {
         <Txt variant="bodyStrong" color={night.text} style={styles.navTitle}>
           {title}
         </Txt>
-        {page === 'main' ? <NavButton label={t('alarms.save')} strong onPress={save} cost={cost} /> : <View style={styles.navSpacer} />}
+        {page === 'main' ? <NavButton label={t('alarms.save')} strong onPress={save} /> : <View style={styles.navSpacer} />}
       </View>
 
       <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xxl }]} keyboardShouldPersistTaps="handled">
@@ -154,6 +154,15 @@ export default function AlarmEditScreen() {
               />
               <SwitchCell label={t('alarms.snooze')} value={draft.snooze} onChange={(snooze) => set({ snooze })} last />
             </Group>
+            {cost ? (
+              // What Save costs, as an iOS group footer: the friend's wake-up talk (`alarmSetupCost`).
+              <View style={styles.cost} accessible accessibilityLabel={`${t('alarms.save')}: ${cost} ${t('common.shells')}`}>
+                <ShellIcon size={14} />
+                <Txt variant="caption" color={night.textMuted}>
+                  {cost}
+                </Txt>
+              </View>
+            ) : null}
             {existing ? (
               <Group>
                 <Pressable style={[styles.cell, styles.last]} onPress={remove} accessibilityRole="button">
@@ -264,25 +273,13 @@ export default function AlarmEditScreen() {
   );
 }
 
-function NavButton({ label, onPress, strong, chevron, cost }: { label: string; onPress: () => void; strong?: boolean; chevron?: boolean; cost?: number }) {
-  const { t } = useTranslation();
+function NavButton({ label, onPress, strong, chevron }: { label: string; onPress: () => void; strong?: boolean; chevron?: boolean }) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={10}
-      style={styles.navButton}
-      accessibilityRole="button"
-      accessibilityLabel={cost ? `${label}, ${cost} ${t('common.shells')}` : label}>
+    <Pressable onPress={onPress} hitSlop={10} style={styles.navButton} accessibilityRole="button">
       {chevron ? <Ionicons name="chevron-back" size={20} color={night.primary} /> : null}
       <Txt variant={strong ? 'bodyStrong' : 'body'} color={night.primary}>
         {label}
       </Txt>
-      {cost ? <ShellIcon size={15} /> : null}
-      {cost ? (
-        <Txt variant="bodyStrong" color={night.primary}>
-          {cost}
-        </Txt>
-      ) : null}
     </Pressable>
   );
 }
@@ -375,6 +372,7 @@ const styles = StyleSheet.create({
     backgroundColor: night.surface,
     overflow: 'hidden',
   },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 4, marginHorizontal: space.lg + space.lg, marginTop: -space.sm },
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   cell: {
     flexDirection: 'row',
