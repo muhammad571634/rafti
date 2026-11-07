@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { AuroraGlass, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { FAMILY_LABELS, type FamilyLabel } from '@/lib/kin';
-import { aurora, colors, shadows, space } from '@/theme';
+import { colors, fonts, friendColor, playful, space } from '@/theme';
 import type { Character } from '@/types';
 
 export interface FamilySeat {
@@ -15,9 +15,9 @@ export interface FamilySeat {
 }
 
 /**
- * Find's "Who do you miss?" (approved prototype, 2026-10-26): the eight family roles as circles,
- * a little smaller than Talk now's faces. A filled one is their face and the name the user gave
- * and opens the chat; an empty one is a glass + under the role and asks who it will be.
+ * Find's "Who do you miss?" (approved prototype, 2026-10-26; playful skin 2026-11-07): the eight
+ * family roles as circles. A filled one is their face in a ring of their own hue and the name the
+ * user gave, and opens the chat; an empty one is a dashed circle with a + and asks who it will be.
  */
 export function FamilyRow({
   seats,
@@ -40,13 +40,20 @@ export function FamilyRow({
           onPress={() => (who ? onOpen(who.character) : onChoose(role))}
           style={styles.seat}>
           {who ? (
-            <CharacterAvatar character={who.character} size={64} style={shadows.card} />
+            <View style={[styles.ring, { borderColor: friendColor(who.character.id).fill }]}>
+              <CharacterAvatar character={who.character} size={FACE} />
+            </View>
           ) : (
-            <AuroraGlass style={styles.empty}>
-              <Ionicons name="add" size={26} color={aurora.tint} />
-            </AuroraGlass>
+            <View style={styles.empty}>
+              <Ionicons name="add" size={26} color={playful.ink} />
+            </View>
           )}
-          <Txt style={[styles.label, !who && styles.labelEmpty]} lines={2} adjustsFontSizeToFit minimumFontScale={0.8}>
+          <Txt
+            style={[styles.label, !who && styles.labelEmpty]}
+            lines={2}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
+            maxFontSizeMultiplier={1.3}>
             {who ? who.name : phrase(role)}
           </Txt>
         </PressableScale>
@@ -59,10 +66,27 @@ export function FamilyRow({
 export const familySeats = (holder: (role: FamilyLabel) => FamilySeat['who']): FamilySeat[] =>
   FAMILY_LABELS.map((role) => ({ role, who: holder(role) }));
 
+/** The face inside a filled seat; ring and gap bring the seat to SEAT across, as an empty one. */
+const FACE = 54;
+const RING = 3;
+const GAP = 2;
+const SEAT = FACE + (RING + GAP) * 2;
+
 const styles = StyleSheet.create({
   row: { paddingHorizontal: space.lg, gap: 12 },
-  seat: { width: 70, alignItems: 'center', gap: space.sm },
-  empty: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
-  label: { fontSize: 13, lineHeight: 16, fontWeight: '600', textAlign: 'center', color: colors.text },
-  labelEmpty: { color: aurora.textMuted },
+  seat: { width: 70, alignItems: 'center', gap: 6 },
+  ring: { padding: GAP, borderWidth: RING, borderRadius: SEAT / 2 },
+  empty: {
+    width: SEAT,
+    height: SEAT,
+    borderRadius: SEAT / 2,
+    borderWidth: 2.5,
+    borderStyle: 'dashed',
+    borderColor: playful.dash,
+    backgroundColor: playful.well,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, textAlign: 'center', color: playful.ink },
+  labelEmpty: { color: colors.textSecondary },
 });

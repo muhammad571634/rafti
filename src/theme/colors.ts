@@ -506,6 +506,10 @@ export const playful = isDark
       chipOnText: '#1F1A17',
       /** Round top-bar buttons. */
       round: 'rgba(255,255,255,0.10)',
+      /** A dashed outline: an empty seat or slot waiting to be filled. */
+      dash: 'rgba(255,255,255,0.28)',
+      /** Inside an empty seat. */
+      well: 'rgba(255,255,255,0.06)',
       card: '#2A2420',
       /** A group's bubble: one soft mint for every group. */
       group: { fill: '#1D5A47', ink: '#FFFFFF' },
@@ -522,6 +526,8 @@ export const playful = isDark
       chipOn: '#1F1A17',
       chipOnText: '#FFFFFF',
       round: 'rgba(31,26,23,0.07)',
+      dash: 'rgba(31,26,23,0.22)',
+      well: 'rgba(255,255,255,0.5)',
       card: '#FFFFFF',
       group: { fill: '#BDEBD7', ink: '#1F1A17' },
       plum: '#2B2140',
@@ -564,6 +570,37 @@ export const friendHues: readonly Hue[] = isDark
 
 /** A character's own hue, the same on every screen (`friendHueIndex`). */
 export const friendColor = (characterId: string): Hue => friendHues[friendHueIndex(characterId, friendHues.length)];
+
+/** A world's folder on Find: the front and its text, and the back panel with the tab (a shade deeper). */
+export interface WorldHue extends Hue {
+  back: string;
+}
+
+const worldHuesLight: Record<string, WorldHue> = {
+  'Seaside Academy': { fill: '#7CC4F5', back: '#6BA9D3', ink: INK },
+  'Moonlit Realm': { fill: '#B9A4F0', back: '#9F8DCE', ink: INK },
+  'NEON TIDE': { fill: '#FF7AB6', back: '#DB699D', ink: INK },
+  'Tidepool Café': { fill: '#FFD25C', back: '#DBB54F', ink: INK },
+  'Velvet District': { fill: '#FF6B5B', back: '#DB5C4E', ink: INK },
+  'Gilded Empire': { fill: '#FFB347', back: '#DB9A3D', ink: INK },
+  'Ice & Arena': { fill: '#8EDBD0', back: '#7ABCB3', ink: INK },
+};
+const worldHuesDark: Record<string, WorldHue> = {
+  'Seaside Academy': { fill: '#1F5F8B', back: '#194C6F', ink: '#FFFFFF' },
+  'Moonlit Realm': { fill: '#4B3C99', back: '#3C307A', ink: '#FFFFFF' },
+  'NEON TIDE': { fill: '#9A2F6B', back: '#7B2656', ink: '#FFFFFF' },
+  'Tidepool Café': { fill: '#8A6400', back: '#6E5000', ink: '#FFFFFF' },
+  'Velvet District': { fill: '#9E3B32', back: '#7E2F28', ink: '#FFFFFF' },
+  'Gilded Empire': { fill: '#93560F', back: '#76450C', ink: '#FFFFFF' },
+  'Ice & Arena': { fill: '#16707F', back: '#125A66', ink: '#FFFFFF' },
+};
+/** User creations and any world without its own colour: warm sand. */
+const otherWorld: WorldHue = isDark
+  ? { fill: '#4A403A', back: '#3B332E', ink: '#FFFFFF' }
+  : { fill: '#E4DCD2', back: '#C4BDB5', ink: INK };
+
+/** The folder colours of the worlds (the four-tab prototype), each with ink that reads on it. */
+export const worldHue = (series: string): WorldHue => (isDark ? worldHuesDark : worldHuesLight)[series] ?? otherWorld;
 
 /** Deterministic pastel pair for an avatar with no image yet. */
 export const avatarGradients = [
