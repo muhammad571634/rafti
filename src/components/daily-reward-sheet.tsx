@@ -2,10 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, type ViewInstance } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 import Animated, {
   Easing,
-  FadeInDown,
+  type SharedValue,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -70,6 +70,8 @@ export function DailyRewardSheet() {
   const lift = useSharedValue(0);
   const check = useSharedValue(0);
   const mint = useSharedValue(0);
+  /** The week's entrance clock, 0 → 1; each day rises on its own slice (see `RiseIn`). */
+  const appear = useSharedValue(reduced ? 1 : 0);
 
   useEffect(() => {
     if (!reward) return;
@@ -77,6 +79,10 @@ export function DailyRewardSheet() {
     const player = createAudioPlayer(require('@/assets/sounds/shells-in.wav'));
     player.volume = 0.7;
     chime.current = player;
+    if (!reduced) {
+      appear.set(0);
+      appear.set(withDelay(120, withTiming(1, { duration: RISE_TOTAL, easing: Easing.linear })));
+    }
     return () => {
       timers.current.forEach(clearTimeout);
       timers.current = [];
@@ -179,12 +185,7 @@ export function DailyRewardSheet() {
             const now = day === today;
             const cellAmount = now && reward ? reward.amount : base;
             return (
-              <Animated.View
-                key={day}
-                ref={now ? todayCell : undefined}
-                entering={reduced ? undefined : FadeInDown.delay(140 + index * 40).duration(300).easing(EASE_OUT).withInitialValues({ transform: [{ translateY: 10 }] })}
-                style={[styles.cell, now && styles.cellNow]}
-                accessibilityRole="text">
+              <RiseIn key={day} index={index} appear={appear} cellRef={now ? todayCell : undefined} style={[styles.cell, now && styles.cellNow]}>
                 {now ? <Animated.View pointerEvents="none" style={[styles.mintFill, mintStyle]} /> : null}
                 <Txt variant="tiny" color={colors.textSecondary}>
                   {t('dailyReward.dayShort', { day })}
@@ -206,7 +207,7 @@ export function DailyRewardSheet() {
                     {isSurpriseDay(day) ? '+' : ''}
                   </Txt>
                 )}
-              </Animated.View>
+              </RiseIn>
             );
           })}
         </View>
@@ -238,6 +239,40 @@ export function DailyRewardSheet() {
 }
 
 const SHELL = 22;
+/** Each day rises over RISE ms, the next one RISE_GAP ms after it. */
+const RISE = 300;
+const RISE_GAP = 40;
+const RISE_TOTAL = RISE + RISE_GAP * (DAILY_CHECK_IN.length - 1);
+
+/**
+ * A day of the week rising into place on the shared entrance clock. Layout `entering` animations
+ * inside the sheet's Modal stuck at opacity 0 on the A51 from the third day on (2026-11-07), so this
+ * is a plain animated style: nothing can leave a day hidden, since the clock ends at 1.
+ */
+function RiseIn({
+  index,
+  appear,
+  cellRef,
+  style,
+  children,
+}: {
+  index: number;
+  appear: SharedValue<number>;
+  cellRef?: React.Ref<ViewInstance>;
+  style: StyleProp<ViewStyle>;
+  children: React.ReactNode;
+}) {
+  const rise = useAnimatedStyle(() => {
+    const local = Math.min(1, Math.max(0, (appear.get() * RISE_TOTAL - index * RISE_GAP) / RISE));
+    const t = 1 - (1 - local) ** 3;
+    return { opacity: t, transform: [{ translateY: 10 * (1 - t) }] };
+  });
+  return (
+    <Animated.View ref={cellRef} style={[style, rise]} accessibilityRole="text">
+      {children}
+    </Animated.View>
+  );
+}
 
 /** One shell's flight: out of today's cell with a small fan, over a soft arc, shrinking into the wallet. */
 function FlyingShell({ index, from, to }: { index: number; from: Point; to: Point }) {
