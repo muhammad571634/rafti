@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z122. Playful on iOS: the new main yardstick; prototype of three screens (2026-11-07, Claude 1). NEXT: owner's word on the prototype, then code screen 1 (daily check-in)
+
+- Owner: the app should feel like a game, alive, never boring, but stay on Apple's iOS base; every screen except Today (for now). References: their Pinterest pins (a full-yellow mood check-in with a big cartoon face; chats as coloured speech bubbles; saved items as coloured folders). Not 1:1, inspiration at a simple level. Then: **prototype first** for these redesigns (this overrides the 10-30 "no preview pictures" rule for the playful work). Owner also shared their Pinterest (pin 435512226491061144, signed in in their Chrome) to draw inspiration from freely; pins stay references, never shipped (App Store 5.2.1).
+- Written down: `docs/design-style.md` §10 (the playful layer, outranks §1 and §8 where they disagree; order: check-in → Chats bubbles → Find worlds as folders → the rest, Today last), shared memory section 3, Claude memory `playful-on-ios`.
+- Built: `src/components/mascot/live-mascot.tsx` (`LiveMascot`: the mascot drawn in SVG from `sigmazam-peek.png`, eyes and mouth as layers: blinks, looks via `lookX`/`lookY`, `joy` turns the smile into a laugh with happy eyes; `MiniMascot` for the week row). Not used by any screen yet.
+- Prototype: https://claude.ai/artifact/6d9vspTiYepubbMLUfts71 (source in the session scratchpad `proto2/`; also served at localhost:8790 in the app's browser pane for this session). Three phones, Russian copy as on the A51: (1) daily check-in full yellow, "День 7", "+55", the mascot peeking over a white card with the week of mini mascot faces, eyes follow the pointer, blinks; "Забрать" flies five shells to the wallet (77 → 132), the mascot laughs and hops, today turns mint, a soft chime; (2) Chats as coloured bubbles with tails, faces, unread badges, Ezra typing; (3) worlds as coloured folders with three character cards peeking out, tap fans them out. Checked in the browser pane before and after Collect.
+
+Still to do:
+1. Owner's word on the prototype (what to keep, change, colours); then code screen 1 with `LiveMascot`, then 2 and 3 each after its prototype is approved.
+2. From 0z121: second reader on migration b7, then the owner applies it.
+3. Open from 0z118: Hana's avatar vs her scene; arc chapter titles in English; `eas update` for all platforms fails in Metro.
+
 ### 0z121. Daily check-in: our own collect moment; check-in shells for free users only (2026-11-07, Claude 1). NEXT: second reader on migration b7, then the owner applies it; owner names the next screen to polish
 
 - Built (`a96a6c8`, `31fbc78`): `src/components/daily-reward-sheet.tsx` without the Coin Drop port (Gifts keeps it). The week rises day by day on one shared clock (`RiseIn`; layout `entering` left days at opacity 0 inside the sheet's Modal in one A51 shot, the owner saw all days on theirs; the clock cannot leave a day hidden). Collect: today's +N lifts, five shells fly on an arc (560 ms each, 70 ms apart) into the wallet pill, which swells per landing while the number counts up (selection haptic each); on the last: kalimba note `assets/sounds/shells-in.wav` (earshot: rank z 3.79 for "soft warm premium chime", reads as a real kalimba z 4.6; the bank's `mallet/flourish` read as an 8-bit beep z 3.05 and was dropped), success haptic, mint fill and a springing check in today's cell, mascot hop (`PeekingMascot cheer`), close after 900 ms. Reduced motion: in place.

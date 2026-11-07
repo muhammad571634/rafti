@@ -193,3 +193,30 @@ intro keeps its own three taps (approved, timed to the motion).
 Every screen on the map follows this style since 2026-10-24; `docs/design-audit.md` has the latest
 review and what is still open. A screen the user approved is changed only when the user asks for
 that change.
+
+## 10. The playful layer (owner, 2026-11-07)
+
+The app should feel like a game, alive and never boring, **without leaving Apple's iOS base**
+(HIG navigation, native tabs and sheets, legibility, reduced motion). That is the main yardstick
+from now on, for every screen except Today (left as it is for now). Owner's references: Pinterest
+pins of playful apps (a full-yellow mood check-in with a big cartoon face; chats as coloured speech
+bubbles; saved items as coloured folders with pictures peeking out). We take the manner, never the
+pins' art or words.
+
+- **One idea per screen, made big.** A heavy rounded title (Fredoka, `fonts.display`), one hero
+  (the friend's face, our mascot, a big number), one main action.
+- **Bold colour where it means something.** A moment may own the whole screen in one bright colour
+  (the daily check-in is warm yellow). Lists may give each friend or world its own colour (chats
+  as coloured bubbles, worlds as coloured folders). Text on colour stays dark ink and readable.
+- **Living faces.** The mascot is drawn in code (`src/components/mascot/`) so it can blink, look at
+  the finger, laugh and hop; friends' faces stay their art. Our own art only, every character reads
+  as an adult.
+- **Motion with a reason**, our own, iOS manner (springs, one haptic per action, real sound checked
+  with earshot). Celebrations may take the screen; everyday controls stay quick and quiet.
+- This section outranks §1 and §8 where they disagree (bold colour fields, a full-colour moment
+  screen); everything else in this file still holds.
+
+Order (one at a time, each seen on the A51 before the next): 1. daily check-in (full yellow screen,
+live mascot); 2. Chats list as coloured bubbles; 3. Find's worlds as coloured folders; then the
+other screens, Today last and only when the owner says.
+
