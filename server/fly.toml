@@ -7,6 +7,9 @@ primary_region = "nrt"
 [env]
   PORT = "8080"
   HOST = "0.0.0.0"
+  # Accounts that may start a plan with no store behind it until billing exists (0z142): the owner's
+  # A51. Remove before the store launch (docs/road-to-launch.md, launch checklist).
+  TEST_SUBSCRIBERS = "9d8d2e57-5f10-4132-a4e3-adc6d7b30ba1"
 
 [http_service]
   internal_port = 8080

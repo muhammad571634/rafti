@@ -26,7 +26,7 @@ const speech = config.elevenlabs.apiKey
       charsPerDay: config.elevenlabs.charsPerDay,
     }
   : null;
-const app = createApp(provider, { timeoutMs: config.timeoutMs, voiceProvider, speech, db, client, devGrants: config.devGrants });
+const app = createApp(provider, { timeoutMs: config.timeoutMs, voiceProvider, speech, db, client, devGrants: config.devGrants, testSubscribers: config.testSubscribers });
 
 serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => {
   console.log(`Sigmazam API on http://${config.host}:${info.port}`);

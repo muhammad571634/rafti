@@ -936,6 +936,8 @@ export interface Wallet {
   boughtShells?: boolean;
   /** Start of the plan period whose monthly shells were already paid (`shellGrant`). */
   planShellsPeriod?: string;
+  /** The term start the server already knows this plan by (0z142): it pays the plan's shells from then on. */
+  planOnServer?: string;
 }
 
 export interface User {

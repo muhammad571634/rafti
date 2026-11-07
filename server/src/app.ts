@@ -47,7 +47,8 @@ import {
   WHEEL_SEGMENTS,
   WHEEL_WEIGHTS,
 } from '../../src/economy/shells.ts';
-import type { LedgerReason, MemoryItem } from '../../src/types/index.ts';
+import type { LedgerReason, MemoryItem, PlanId } from '../../src/types/index.ts';
+import { PLANS, shellGrant } from '../../src/economy/plans.ts';
 import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-prompt.ts';
 import { cleanClip, CLIP_CHARS_MAX, parseTranscript, transcribeLayout } from '../../src/ai/voice-prompt.ts';
 import { chatReply } from './chat-reply.ts';
@@ -58,6 +59,9 @@ import { lineSigner } from './speech/sign.ts';
 import { speechOnly } from '../../src/lib/reply-engine/narration.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
 import { MODEL_LIMITS, windowBudget, windowLimiter, type ModelLimits } from './rate-limit.ts';
+
+/** The plans a test subscription may name (`PLANS`). */
+const PLAN_IDS = Object.keys(PLANS) as PlanId[];
 
 /**
  * Until each chat's language lock is stored, the reply follows what the user writes, and before
@@ -329,6 +333,8 @@ export function createApp(
     db?: Db | null;
     client?: ClientConfig | null;
     devGrants?: boolean;
+    /** User ids that may start a plan with no store behind it (`TEST_SUBSCRIBERS`, before billing). */
+    testSubscribers?: readonly string[];
     limits?: Partial<ModelLimits>;
   },
 ) {
@@ -478,7 +484,47 @@ export function createApp(
 
   // The wallet (B1.2): the server keeps the balance, the free bucket and the ledger; the app keeps a
   // cache. Money moves only through the SQL functions (supabase/migrations/*_b1_wallet.sql).
-  app.get('/v1/wallet', (c) => wallet(c, (userId) => db!.walletState(userId)));
+  app.get('/v1/wallet', (c) =>
+    wallet(c, async (userId) => {
+      await payPlanShells(userId);
+      return db!.walletState(userId);
+    }),
+  );
+
+  /**
+   * A plan's monthly shells (0z142): the server pays them, once per 30-day period of a paid plan
+   * (`shellGrant`; a trial pays none), keyed `plan:<period start>` so a second read or a race books
+   * nothing more. Before, the phone added them to its own copy and the next sync took them back.
+   */
+  async function payPlanShells(userId: string) {
+    const sub = await db!.currentSubscription?.(userId);
+    // The row is the store's word: a trial pays nothing, whatever its dates (no rolling it into a paid term here).
+    if (!sub || sub.status === 'trial') return;
+    const grant = shellGrant({ ...sub, usage: { periodStart: sub.termStart, callSeconds: 0, voiceSeconds: 0 } }, undefined, Date.now());
+    if (!grant || grant.amount <= 0) return;
+    await db!.walletCredit(userId, { amount: grant.amount, reason: 'plan', key: `plan:${grant.periodStart}`, free: false });
+  }
+
+  // A plan with no store behind it, before billing (RevenueCat will write `subscriptions` from the
+  // stores' webhooks): only the accounts in `TEST_SUBSCRIBERS`, or a laptop server with DEV_GRANTS.
+  app.post('/v1/subscription/test', async (c) => {
+    if (!db?.startTestSubscription) return c.json({ error: 'noDatabase' }, 503);
+    const token = bearer(c.req.header('authorization'));
+    const userId = token ? await db.userIdFromToken(token) : null;
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    if (!opts.devGrants && !opts.testSubscribers?.includes(userId)) {
+      console.info(`[subscription] test plan refused for ${userId}`);
+      return c.json({ error: 'off' }, 403);
+    }
+    const body = await readJson(c);
+    const plan = body?.plan as PlanId;
+    if (!PLAN_IDS.includes(plan) || (body?.trial !== undefined && typeof body.trial !== 'boolean')) return c.json({ error: 'badInput' }, 400);
+    return wallet(c, async (id) => {
+      await db.startTestSubscription!(id, plan, body?.trial === true, new Date());
+      await payPlanShells(id);
+      return { wallet: await db.walletState(id), subscription: await db.currentSubscription!(id) };
+    });
+  });
 
   app.post('/v1/wallet/spend', async (c) => {
     const body = await readJson(c);

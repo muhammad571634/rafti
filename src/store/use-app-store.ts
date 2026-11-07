@@ -2404,6 +2404,8 @@ export const useAppStore = create<AppState>()(
         // shells arrive quietly a moment later, as they do here.
         if (serverWalletOn(get)) {
           serverCheckIn(set);
+          // A plan the server does not know yet (bought before 0z142): it learns it, and pays from then on.
+          planToServer(set, get);
           return 0;
         }
         // The check-in's shells are for free users only (owner, 2026-11-07): a paid plan has its own.
@@ -2520,6 +2522,7 @@ export const useAppStore = create<AppState>()(
         if (callSeconds > 0) logSeconds(set, callSeconds, trial ? 'trial' : 'membership');
         // The first month's shells come right away; the trial brings none.
         payPlanShells(set, get);
+        planToServer(set, get);
       },
 
       topUpMinutes: (kind) => {
@@ -4324,8 +4327,29 @@ function applyServerWallet(set: Setter, wallet: WalletState) {
   }));
 }
 
-/** Pays the plan's monthly shells once per period (`shellGrant`); they never burn. */
+/**
+ * The plan on the server (0z142): with the wallet there, the server pays the monthly shells (the
+ * phone's own payment came back out on the next sync). Before billing it takes a plan with no store
+ * behind it only from test accounts; any other account is refused and keeps the phone's minutes.
+ * Once per term: `planOnServer` holds the term start the server knows.
+ */
+function planToServer(set: Setter, get: Getter) {
+  const sub = get().wallet.subscription;
+  if (!serverWalletOn(get) || !sub || get().wallet.planOnServer === sub.termStart) return;
+  walletCallsOut++;
+  void withAccount((token) => serverWallet.testPlan(token, { plan: sub.plan, trial: sub.status === 'trial' }))
+    .catch(() => null)
+    .then((answer) => {
+      walletCallsOut--;
+      if (!answer) return;
+      set((s) => ({ wallet: { ...s.wallet, planOnServer: sub.termStart } }));
+      if (walletCallsOut === 0) applyServerWallet(set, answer.wallet);
+    });
+}
+
+/** Pays the plan's monthly shells once per period (`shellGrant`); they never burn. The server pays them when the wallet is there. */
 function payPlanShells(set: Setter, get: Getter) {
+  if (serverWalletOn(get)) return;
   const { wallet } = get();
   const due = shellGrant(wallet.subscription, wallet.planShellsPeriod, Date.now());
   if (!due) return;

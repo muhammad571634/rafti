@@ -1,11 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
+import { PLANS, TRIAL } from '../../../src/economy/plans.ts';
+
 import {
   WalletError,
   type BootstrapInput,
   type BootstrapResult,
   type CheckInResult,
   type Db,
+  type LiveSubscription,
   type MemoriesState,
   type MessagesPage,
   type ShareResult,
@@ -103,6 +106,43 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       });
       const paid = wallet.shells > before.shells ? amount : 0;
       return { amount: paid, left: Math.max(0, perDay - used - (paid ? 1 : 0)), wallet };
+    },
+
+    async currentSubscription(userId): Promise<LiveSubscription | null> {
+      const { data, error } = await client
+        .from('subscriptions')
+        .select('plan_id, status, term_start, will_renew')
+        .eq('user_id', userId)
+        .in('status', ['trial', 'active', 'grace'])
+        .gt('term_end', new Date().toISOString())
+        .order('term_end', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw new Error(`subscriptions: ${error.message}`);
+      if (!data) return null;
+      return { plan: data.plan_id, status: data.status === 'trial' ? 'trial' : 'active', termStart: new Date(data.term_start).toISOString(), willRenew: data.will_renew };
+    },
+
+    async startTestSubscription(userId, plan, trial, now) {
+      const ended = await client
+        .from('subscriptions')
+        .update({ status: 'expired', will_renew: false, updated_at: now.toISOString() })
+        .eq('user_id', userId)
+        .eq('store', 'test')
+        .in('status', ['trial', 'active', 'grace']);
+      if (ended.error) throw new Error(`subscriptions: ${ended.error.message}`);
+      const days = trial ? TRIAL.days : PLANS[plan].termDays;
+      const { error } = await client.from('subscriptions').insert({
+        user_id: userId,
+        plan_id: trial ? TRIAL.plan : plan,
+        store: 'test',
+        original_tx_id: `test:${userId}:${now.getTime()}`,
+        status: trial ? 'trial' : 'active',
+        term_start: now.toISOString(),
+        term_end: new Date(now.getTime() + days * 86_400_000).toISOString(),
+        will_renew: true,
+      });
+      if (error) throw new Error(`subscriptions: ${error.message}`);
     },
 
     async syncMessages(userId, { droppedChats, deletedIds, upserts }) {

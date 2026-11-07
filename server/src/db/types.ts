@@ -13,6 +13,7 @@ import type {
   SpinResult,
   WalletState,
 } from '../../../src/ai/session-types.ts';
+import type { PlanId } from '../../../src/types/index.ts';
 
 export type {
   BootstrapInput,
@@ -44,6 +45,14 @@ export class WalletError extends Error {
  * The database behind the API (backend-plan §1.4: every provider sits behind an interface).
  * Supabase today (`supabase.ts`); tests pass a fake.
  */
+/** A subscription as the plan rules read it (`src/economy/plans.ts`). */
+export interface LiveSubscription {
+  plan: PlanId;
+  status: 'trial' | 'active';
+  termStart: string;
+  willRenew: boolean;
+}
+
 export interface Db {
   name: string;
   /** The signed-in user behind an access token, or null when the token is not valid. */
@@ -62,6 +71,12 @@ export interface Db {
   walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
   /** A shared card: `amount` free shells for each of the first `perDay` shares of the user's day, then nothing. */
   walletShare(userId: string, rules: { amount: number; perDay: number }): Promise<ShareResult>;
+
+  // Plans (0z142): the server holds the subscription and pays its monthly shells (`payPlanShells` in app.ts).
+  /** The live subscription (trial, active or grace, before its term ends); null when none. */
+  currentSubscription?(userId: string): Promise<LiveSubscription | null>;
+  /** A plan with no store behind it (allow-listed testers, before billing): the user's earlier test plans end. */
+  startTestSubscription?(userId: string, plan: PlanId, trial: boolean, now: Date): Promise<void>;
 
   // The chats (B1.3b, supabase/migrations/*_b1_message_sync.sql).
   /** One sync, all or nothing; answers the user's newest `seq`. */

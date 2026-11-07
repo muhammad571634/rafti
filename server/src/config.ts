@@ -62,6 +62,11 @@ export const config = {
    */
   devGrants: process.env.DEV_GRANTS === '1',
   /**
+   * Accounts (user ids, comma-separated) that may start a plan with no store behind it, before
+   * billing exists (0z142): the owner's test phone. Everyone else needs a store purchase.
+   */
+  testSubscribers: (process.env.TEST_SUBSCRIBERS ?? '').split(',').map((id) => id.trim()).filter(Boolean),
+  /**
    * The character's voice on calls (ElevenLabs). Without `ELEVENLABS_API_KEY` calls show captions
    * only. The default voices are ElevenLabs' stock ones until each character gets a voice picked by
    * ear (`ELEVENLABS_VOICES`, a JSON object of character id → voice id). `ELEVENLABS_PRICE_PER_1K`

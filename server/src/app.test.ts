@@ -10,6 +10,7 @@ import {
   type BootstrapInput,
   type BootstrapResult,
   type Db,
+  type LiveSubscription,
   type MemoriesState,
   type MemorySyncRequest,
   type MessageSyncRequest,
@@ -510,6 +511,44 @@ describe('the wallet API', () => {
       { amount: 560, reason: 'purchase', key: 'grant:p1', free: false },
       { amount: 10, reason: 'ad', key: 'grant:a1', free: true },
     ]);
+  });
+
+  it('pays a paid plan’s monthly shells once per 30-day period, keyed by its start; a trial pays none (0z142)', async () => {
+    const credits: unknown[] = [];
+    let sub: LiveSubscription | null = { plan: 'proAnnual', status: 'active', termStart: new Date(Date.now() - 45 * 86_400_000).toISOString(), willRenew: true };
+    const app = createApp(null, {
+      timeoutMs: 1000,
+      db: makeDb({ currentSubscription: async () => sub, walletCredit: async (_user, request) => (credits.push(request), state), walletState: async () => state }),
+    });
+    assert.equal((await call(app, '/v1/wallet')).status, 200);
+    const second = new Date(Date.parse(sub.termStart) + 30 * 86_400_000).toISOString();
+    assert.deepEqual(credits, [{ amount: 5000, reason: 'plan', key: `plan:${second}`, free: false }]);
+    sub = { ...sub, status: 'trial' };
+    await call(app, '/v1/wallet');
+    sub = null;
+    await call(app, '/v1/wallet');
+    assert.equal(credits.length, 1, 'no shells for a trial or no plan');
+  });
+
+  it('starts a test plan only for listed accounts, then pays its first month', async () => {
+    const started: unknown[] = [];
+    let sub: LiveSubscription | null = null;
+    const db = makeDb({
+      startTestSubscription: async (_user, plan, trial) => {
+        started.push({ plan, trial });
+        sub = { plan, status: trial ? 'trial' : 'active', termStart: '2026-11-07T18:00:00.000Z', willRenew: true };
+      },
+      currentSubscription: async () => sub,
+      walletCredit: async () => state,
+      walletState: async () => state,
+    });
+    assert.equal((await call(createApp(null, { timeoutMs: 1000, db }), '/v1/subscription/test', { plan: 'pro' })).status, 403);
+    const app = createApp(null, { timeoutMs: 1000, db, testSubscribers: ['user-1'] });
+    assert.equal((await call(app, '/v1/subscription/test', { plan: 'gold' })).status, 400);
+    const res = await call(app, '/v1/subscription/test', { plan: 'proAnnual' });
+    assert.equal(res.status, 200);
+    assert.deepEqual(((await res.json()) as { subscription: LiveSubscription }).subscription.plan, 'proAnnual');
+    assert.deepEqual(started, [{ plan: 'proAnnual', trial: false }]);
   });
 });
 

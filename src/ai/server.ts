@@ -10,7 +10,7 @@ import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { EMOTIONS } from './reply-style';
-import type { Emotion } from '@/types';
+import type { Emotion, PlanId } from '@/types';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
@@ -118,6 +118,16 @@ export const serverWallet = {
   checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
   spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
   share: (accessToken: string) => call<ShareResult>('/v1/wallet/share', post(accessToken, {}), 8000),
+  /**
+   * A plan with no store behind it, before billing (0z142): the server records it for allow-listed
+   * test accounts and pays its monthly shells itself. Null when refused (any other account).
+   */
+  testPlan: (accessToken: string, request: { plan: PlanId; trial: boolean }) =>
+    call<{ wallet: WalletState; subscription: { plan: PlanId; status: 'trial' | 'active'; termStart: string } | null }>(
+      '/v1/subscription/test',
+      post(accessToken, request),
+      8000,
+    ),
 };
 
 /**
