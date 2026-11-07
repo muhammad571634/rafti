@@ -1,11 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Redirect, Tabs } from 'expo-router';
-import { memo, type ReactNode } from 'react';
+import { Redirect, Tabs, useIsFocused } from 'expo-router';
+import { memo, useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { cancelAnimation, Easing, runOnJS, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PressableScale, SFIcon, Txt } from '@/components/ui';
+import { SFIcon, Txt } from '@/components/ui';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
 import { colors, playful, space } from '@/theme';
 
@@ -30,6 +31,8 @@ const ICONS: Record<string, { off: Pick<Icon, 'ios' | 'icon'>; on: Pick<Icon, 'i
 const BAR = 62;
 /** How far above the bar the content starts to fade. */
 const FADE_ABOVE = 28;
+/** The incoming tab's fade (Material "fade through" for navigation bars: about 200 ms, ease out). */
+const SCENE_FADE_MS = 180;
 
 /**
  * Android and web. iOS uses the system tab bar instead (`_layout.ios.tsx`), Liquid Glass on
@@ -42,13 +45,61 @@ export default function TabsLayout() {
   if (gate === 'loading') return null;
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
+  // Tabs stay attached and the ones not shown are see-through (TabScene): detaching ran a fragment
+  // transaction on every switch, 37-50 ms of mounting on the UI thread on a Galaxy A51 (atrace,
+  // 0z134), and Android skips drawing a view at opacity 0, so the hidden tabs cost no frames.
   return (
-    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <PlayfulTabBar {...props} />}>
+    <Tabs
+      detachInactiveScreens={false}
+      screenOptions={{ headerShown: false, sceneStyle: styles.clearScene }}
+      screenLayout={({ children }) => <TabScene>{children}</TabScene>}
+      tabBar={(props) => <PlayfulTabBar {...props} />}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="chat" />
       <Tabs.Screen name="us" />
       <Tabs.Screen name="find" />
     </Tabs>
+  );
+}
+
+/**
+ * One tab's screen. Shown, it paints the cream ground at once and its content fades in over it
+ * (UI thread, a hardware layer only while fading, so the fade is a cheap texture blend); hidden, it
+ * is see-through, takes no touches and is hidden from TalkBack. Reduce Motion: no fade.
+ */
+function TabScene({ children }: { children: ReactNode }) {
+  const focused = useIsFocused();
+  const still = useReducedMotion();
+  const opacity = useSharedValue(0);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    cancelAnimation(opacity);
+    if (!focused) {
+      opacity.value = 0;
+      return;
+    }
+    if (still) {
+      opacity.value = 1;
+      return;
+    }
+    setFading(true);
+    opacity.value = withTiming(1, { duration: SCENE_FADE_MS, easing: Easing.out(Easing.cubic) }, (done) => {
+      if (done) runOnJS(setFading)(false);
+    });
+  }, [focused, still, opacity]);
+
+  const fade = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  return (
+    <View
+      style={[styles.scene, focused && styles.sceneShown]}
+      pointerEvents={focused ? 'auto' : 'none'}
+      importantForAccessibility={focused ? 'auto' : 'no-hide-descendants'}
+      accessibilityElementsHidden={!focused}>
+      <Animated.View style={[styles.scene, fade]} renderToHardwareTextureAndroid={fading}>
+        {children}
+      </Animated.View>
+    </View>
   );
 }
 
@@ -68,7 +119,9 @@ function Floating({ style, children }: { style: StyleProp<ViewStyle>; children: 
  * carries the number of chats waiting, the same number Today's bubble and Chats' Unread pill show.
  * Content fades out under the bar instead of showing through the navigation bar area (the iOS 26
  * scroll edge effect, as a plain gradient). Tapping the current tab again scrolls it to the top
- * (`useScrollToTop` in each tab), as on iOS.
+ * (`useScrollToTop` in each tab), as on iOS. A tab switches the moment it is tapped, with no press
+ * animation: iOS and Material tab bars do not shrink, and the shrink redrew the whole window for
+ * ~200 ms before the switch began (atrace, 0z134).
  */
 function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   const { t } = useTranslation();
@@ -118,10 +171,8 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
 
         {find ? (
           <Floating style={styles.round}>
-            <PressableScale
+            <Pressable
               style={styles.roundPress}
-              scaleTo={0.92}
-              dimOnPress={false}
               accessibilityRole="tab"
               accessibilityLabel={t('tabs.find')}
               accessibilityState={{ selected: find.focused }}
@@ -130,7 +181,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
               <View collapsable={false} style={[styles.roundInner, find.focused && styles.on]}>
                 <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? playful.chipOnText : playful.ink} />
               </View>
-            </PressableScale>
+            </Pressable>
           </Floating>
         ) : null}
       </View>
@@ -158,10 +209,8 @@ const TabItem = memo(function TabItem({
 }) {
   const tint = focused ? playful.chipOnText : playful.tabOff;
   return (
-    <PressableScale
+    <Pressable
       style={[styles.item, focused && styles.on]}
-      scaleTo={0.94}
-      dimOnPress={false}
       accessibilityRole="tab"
       accessibilityLabel={a11yLabel}
       accessibilityState={{ selected: focused }}
@@ -179,11 +228,15 @@ const TabItem = memo(function TabItem({
       <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
         {label}
       </Txt>
-    </PressableScale>
+    </Pressable>
   );
 });
 
 const styles = StyleSheet.create({
+  // The navigator's own scene background would stay opaque under a hidden tab.
+  clearScene: { backgroundColor: 'transparent' },
+  scene: { flex: 1 },
+  sceneShown: { backgroundColor: playful.ground },
   fade: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   wrap: {
     position: 'absolute',
