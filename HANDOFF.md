@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z150. Alarm with a friend checked on the A51; no Melody face; one brand peach (2026-11-08, Claude 1). NEXT: owner's next task
+
+- **0z139 Still to do 2 done on the A51**: an alarm with Hana from the editor -> the card on the user's side ("Будильник · Завтра 07:00") and her line; deleted -> the card faded with an x and she asked whether the plans changed. Both times she named an older **07:24** wake-up (the owner has one, now off) for the new 07:00 one. Not reproduced in a probe (0 of 3), but seen twice: `alarmSetCue` and `setupCancelledCue` now name the time and say older ones in memory or the chat are older; probe with a strong 07:24 memory: 3 of 3 right.
+- **Owner: no "Melody" face** in the alarm editor: it shows only with no friend to pick or when editing a wake-up made without one (`melodyChoice`).
+- **Owner: one brand colour**, the alarm editor's on colour `#FFC497` (apricot300, "orange, a bit lighter"): `primary`, `primaryFill`, the store's tint and the button gradient in both themes; the deep Claude-like `#EF8A4E` is gone from the UI. Small peach text and icons on a light ground use `brandText` = new `apricot800` `#A8531F` (28 icon / text uses moved to it). The chat menu's preview bubble now matches your real bubble. Left as is: the Store module's hue (`moduleColors.store`, a white glyph needs a deeper fill) and the confetti.
+- **Owner heard the in-app message sound (0z140) working**, also while the alarm was being tested.
+- Checks: app tsc 0, npm test 811/811. OTA `01a1b9e6`.
+
 ### 0z149. Create a character as one clear chain, in the main tabs' look (2026-11-08, Claude 1). NEXT: owner tries making a character on the phone; then the owner's next task
 
 - **Owner's asks**: make the create screens easy and logical as a chain, robust, and in our designs; then "not toy-like: truly beautiful, a little Apple iOS, the rest one design merged from Chats, Today, Us, Find; always work like this" (recorded in `.agents/rules/project-memory.md` §3 and `docs/design-style.md` §10). Character.AI's creation chain was the model.
