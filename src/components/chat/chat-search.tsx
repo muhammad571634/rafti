@@ -6,14 +6,15 @@ import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
+import { searchMessages } from '@/lib/chat-search';
 import { relativeStamp } from '@/lib/format';
-import { colors, space } from '@/theme';
+import { colors, fonts, playful, space } from '@/theme';
 import type { Message } from '@/types';
 
 /**
  * "Search History": find a line in a chat or a group, voice-note transcripts included. iOS
- * search (approved prototype `Search.dc.html`): the field and Cancel on top, results in an
- * inset group; `onOpen` goes back to the chat at that message.
+ * search in the four tabs' look (0z153): a white round field and Cancel on the cream ground, results
+ * in one white card; `onOpen` goes back to the chat at that message.
  */
 export function ChatSearch({
   messages,
@@ -32,17 +33,11 @@ export function ChatSearch({
   const [query, setQuery] = useState('');
   const needle = query.trim();
 
-  const results = useMemo(() => {
-    const q = needle.toLowerCase();
-    if (q.length < 2 || !messages) return [];
-    return messages
-      .filter((m) => (m.text ?? m.transcript ?? '').toLowerCase().includes(q))
-      .slice()
-      .reverse();
-  }, [messages, needle]);
+  // A voice reply is a note plus the same words as text: it shows once (`searchMessages`).
+  const results = useMemo(() => searchMessages(messages, needle), [messages, needle]);
 
   return (
-    <Screen background={colors.bg}>
+    <Screen background={playful.ground}>
       <View style={styles.top}>
         <View style={styles.field}>
           <Ionicons name="search" size={17} color={colors.textSecondary} />
@@ -63,7 +58,7 @@ export function ChatSearch({
           ) : null}
         </View>
         <Pressable onPress={() => router.back()} hitSlop={8} accessibilityRole="button">
-          <Txt style={styles.cancel} color={colors.brandText}>
+          <Txt style={styles.cancel} color={playful.ink}>
             {t('common.cancel')}
           </Txt>
         </Pressable>
@@ -154,29 +149,29 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: space.sm },
   field: {
     flex: 1,
-    height: 40,
+    height: 46,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    backgroundColor: colors.surfaceAlt,
+    gap: 8,
+    paddingHorizontal: 14,
+    borderRadius: 23,
+    backgroundColor: playful.card,
   },
   input: { flex: 1, padding: 0, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  cancel: { fontSize: 17, letterSpacing: -0.4 },
-  count: { marginTop: 18, marginBottom: 6, marginHorizontal: space.lg * 2, fontSize: 13, color: colors.textSecondary },
+  cancel: { fontFamily: fonts.playfulBold, fontSize: 16 },
+  count: { marginTop: 20, marginBottom: 8, marginHorizontal: space.lg + 6, fontFamily: fonts.playfulBold, fontSize: 15, color: colors.textSecondary },
   row: {
     marginHorizontal: space.lg,
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: space.md,
-    paddingLeft: space.lg,
-    paddingTop: space.md,
-    backgroundColor: colors.surface,
+    paddingLeft: 16,
+    paddingTop: 14,
+    backgroundColor: playful.card,
   },
-  rowFirst: { borderTopLeftRadius: 14, borderTopRightRadius: 14 },
-  rowLast: { borderBottomLeftRadius: 14, borderBottomRightRadius: 14 },
-  body: { flex: 1, gap: 2, paddingRight: space.lg, paddingBottom: space.md },
+  rowFirst: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+  rowLast: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
+  body: { flex: 1, gap: 2, paddingRight: 18, paddingBottom: 14 },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   head: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   name: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },

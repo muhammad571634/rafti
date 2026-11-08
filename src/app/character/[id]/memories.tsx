@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { type ComponentProps, type ReactNode, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
@@ -7,27 +7,15 @@ import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {
-  Button,
-  Divider,
-  EmptyState,
-  GlassBar,
-  GlassButton,
-  LargeTitle,
-  PressableScale,
-  Screen,
-  Sheet,
-  SystemSegmented,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+import { PeachButton, SoftSegmented, TitleTop, TopButton } from '@/components/character/kit';
+import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
 import { relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, isDark, radius, space, type } from '@/theme';
+import { bottomRoom, colors, fonts, isDark, palette, playful, radius, space, type } from '@/theme';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
 /** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
@@ -37,10 +25,10 @@ const LOCKED_LINES: [number, number][] = [
   [74, 52],
 ];
 
-/** Each tab's colour in the bar and its legend: three mints, darkest first (canvas `MemTabs.dc.html`). */
+/** Each tab's colour in the bar and its legend: three shades of the one peach, deepest first (0z153). */
 const TAB_COLORS: Record<MemoryAbout, string> = isDark
-  ? { story: colors.bondOnMedia, them: colors.bondText, you: colors.accent }
-  : { story: colors.bondText, them: colors.bond, you: colors.bondOnMedia };
+  ? { story: palette.apricot300, them: palette.apricot500, you: palette.apricot700 }
+  : { story: palette.apricot800, them: palette.apricot500, you: palette.apricot300 };
 
 export default function MemoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -48,6 +36,7 @@ export default function MemoriesScreen() {
 
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const memories = useAppStore((s) => s.memories);
   const wallet = useAppStore((s) => s.wallet);
@@ -65,8 +54,6 @@ export default function MemoriesScreen() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [unlocking, setUnlocking] = useState(false);
-  // Past the large title, the bar shows it (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(44);
 
   // Without a plan 20 stay open (pinned first, then the newest); the rest are locked.
   const full = hasFullMemory(wallet.subscription, Date.now());
@@ -119,13 +106,13 @@ export default function MemoriesScreen() {
         : { symbol: { ios: 'bookmark.fill', icon: 'bookmark' }, title: t('memories.empty'), hint: t('memories.emptyHint') };
 
   return (
-    // iOS look (approved prototype `MemTabs.dc.html`): grey ground, glass bar, large title, a bar
-    // of the three tabs, then the chosen tab's memories under grey headings.
-    <Screen background={colors.bg}>
-      <GlassBar
+    // The four tabs' look (0z153): cream ground, a heavy title by round buttons, the meter as a white
+    // card, a soft switch of the three tabs, then the chosen tab's memories in white cards.
+    <Screen background={playful.ground}>
+      <TitleTop
         title={t('memories.title')}
-        scrolled={scrolled}
-        right={<GlassButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
+        onBack={() => router.back()}
+        right={<TopButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
       />
 
       <FlatList
@@ -133,12 +120,8 @@ export default function MemoriesScreen() {
         keyExtractor={(group) => group.key}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
         ListHeaderComponent={
           <>
-            <LargeTitle>{t('memories.title')}</LargeTitle>
-            <View style={styles.listTop} />
             <Meter
               counts={counts}
               labels={tabLabel}
@@ -146,12 +129,13 @@ export default function MemoriesScreen() {
               locked={locked.length}
               full={full}
             />
-            <SystemSegmented
-              options={MEMORY_TABS.map((value) => ({ value, label: tabLabel[value] }))}
-              value={tab}
-              onChange={setTab}
-              style={styles.tabs}
-            />
+            <View style={styles.tabs}>
+              <SoftSegmented
+                options={MEMORY_TABS.map((value) => ({ value, label: tabLabel[value] }))}
+                value={tab}
+                onChange={setTab}
+              />
+            </View>
           </>
         }
         renderItem={({ item: group }) => (
@@ -190,8 +174,8 @@ export default function MemoriesScreen() {
 
       {locked.length > 0 ? (
         <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
-          <Button label={t('memories.unlock')} size="lg" full onPress={() => setUnlocking(true)} />
-          <Txt variant="caption" color={colors.textMuted} center>
+          <PeachButton label={t('memories.unlock')} icon="lock-open" onPress={() => setUnlocking(true)} />
+          <Txt variant="caption" color={colors.textSecondary} center>
             {t('memories.unlockCaption', { price: PLANS.basic.price })}
           </Txt>
         </View>
@@ -275,7 +259,7 @@ function Meter({
   return (
     <View style={styles.meter}>
       <View style={styles.meterHead}>
-        <Txt variant="bodyStrong" style={[styles.flex, styles.figure]}>
+        <Txt style={[styles.flex, styles.meterTitle]} maxFontSizeMultiplier={1.3}>
           {full ? t('memories.allOpenCount', { count: total }) : t('memories.open', { count: total, limit: FREE_MEMORY_LIMIT })}
         </Txt>
         {locked > 0 ? (
@@ -312,7 +296,7 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
   return (
     <View style={styles.locked}>
       <View style={styles.lockedHead}>
-        <Ionicons name="lock-closed" size={12} color={colors.textSecondary} />
+        <Ionicons name="lock-closed" size={14} color={colors.textSecondary} />
         <Txt style={styles.lockedTitle}>{t('memories.locked', { count: memories.length })}</Txt>
       </View>
       <View style={styles.lockedBox}>
@@ -437,7 +421,7 @@ function MemoryRow({
                 {relativeStamp(memory.createdAt)}
               </Txt>
             </View>
-            {memory.pinned ? <Ionicons name="pin" size={16} color={colors.textSecondary} style={styles.pin} /> : null}
+            {memory.pinned ? <Ionicons name="pin" size={16} color={colors.brandText} style={styles.pin} /> : null}
           </View>
         </Pressable>
       </ReanimatedSwipeable>
@@ -456,24 +440,23 @@ function SwipeActions({ progress, children }: { progress: SharedValue<number>; c
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  list: { paddingBottom: space.huge },
-  listTop: { height: 14 },
-  tabs: { marginHorizontal: space.lg, marginTop: space.lg },
+  list: { paddingTop: space.xs, paddingBottom: space.huge },
+  tabs: { marginHorizontal: space.lg, marginTop: 14 },
   groupTitle: {
-    marginTop: 18,
-    marginBottom: 6,
-    paddingHorizontal: space.xxxl,
-    fontSize: 13,
+    marginTop: 22,
+    marginBottom: 8,
+    paddingHorizontal: space.lg + 6,
+    fontFamily: fonts.playfulBold,
+    fontSize: 15,
     color: colors.textSecondary,
-    textTransform: 'uppercase',
   },
   // Rows share one white card: the first rounds its top, the last its bottom.
-  rowWrap: { marginHorizontal: space.lg, backgroundColor: colors.surface, overflow: 'hidden' },
-  rowFirst: { borderTopLeftRadius: 14, borderTopRightRadius: 14 },
-  rowLast: { borderBottomLeftRadius: 14, borderBottomRightRadius: 14 },
-  memory: { paddingLeft: space.lg, backgroundColor: colors.surface },
-  memoryPressed: { backgroundColor: colors.surfaceAlt },
-  memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: space.md, paddingRight: space.lg },
+  rowWrap: { marginHorizontal: space.lg, backgroundColor: playful.card, overflow: 'hidden' },
+  rowFirst: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+  rowLast: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
+  memory: { paddingLeft: 18, backgroundColor: playful.card },
+  memoryPressed: { backgroundColor: playful.chip },
+  memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 14, paddingRight: 18 },
   memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   memoryText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
   quote: { fontStyle: 'italic' },
@@ -493,32 +476,33 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     ...type.body,
   },
-  meter: { marginHorizontal: space.lg, padding: space.lg, paddingTop: 14, paddingBottom: space.md, borderRadius: 14, backgroundColor: colors.surface },
+  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: 24, backgroundColor: playful.card },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  meterTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink, fontVariant: ['tabular-nums'] },
   figure: { fontVariant: ['tabular-nums'] },
-  // The tabs' shares sit side by side with a hairline gap, on the grey track.
-  track: { flexDirection: 'row', gap: 2, height: 8, marginTop: 10, borderRadius: 4, backgroundColor: colors.track, overflow: 'hidden' },
+  // The tabs' shares sit side by side with a hairline gap, on the soft track.
+  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: 5, backgroundColor: playful.chip, overflow: 'hidden' },
   fill: { height: '100%' },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 9 },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  dot: { width: 8, height: 8, borderRadius: 4 },
-  legendText: { fontSize: 13, color: colors.textSecondary },
-  locked: { gap: 6, paddingHorizontal: space.lg, paddingTop: 22 },
-  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: space.lg },
-  lockedTitle: { fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase' },
-  lockedBox: { borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
-  lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.md },
+  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 10 },
+  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  dot: { width: 9, height: 9, borderRadius: 5 },
+  legendText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.textSecondary },
+  locked: { gap: 8, paddingHorizontal: space.lg, paddingTop: 22 },
+  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 6 },
+  lockedTitle: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.textSecondary },
+  lockedBox: { borderRadius: 24, backgroundColor: playful.card, overflow: 'hidden' },
+  lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 62, paddingHorizontal: 18 },
   lockTile: {
     width: 36,
     height: 36,
-    borderRadius: radius.sm + 1,
-    backgroundColor: colors.surfaceAlt,
+    borderRadius: 18,
+    backgroundColor: playful.chip,
     alignItems: 'center',
     justifyContent: 'center',
   },
   lines: { flex: 1, gap: space.xs + 2 },
-  line: { height: 9, borderRadius: radius.pill, backgroundColor: colors.surfaceAlt },
-  bar: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md, backgroundColor: colors.bg },
+  line: { height: 9, borderRadius: radius.pill, backgroundColor: playful.chip },
+  bar: { gap: space.sm, paddingTop: space.md, backgroundColor: playful.ground },
   sheetHead: { alignItems: 'center', gap: space.md, marginTop: space.xs },
   lockArt: {
     width: 56,

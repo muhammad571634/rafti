@@ -28,6 +28,9 @@
         ]
       }
     },
+    "androidNavigationBar": {
+      "enforceContrast": false
+    },
     "android": {
       "package": "com.sigmazam.app",
       "adaptiveIcon": {

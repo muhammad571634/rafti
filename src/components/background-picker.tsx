@@ -1,15 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Picture } from '@/components/chat/chat-ground';
-import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { SoftSegmented, TitleTop } from '@/components/character/kit';
+import { glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
-import { colors, gradients, gradientStops, space } from '@/theme';
+import { colors, fonts, gradients, gradientStops, playful, space } from '@/theme';
 
 type BackgroundCollection = 'classic' | 'art';
 type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
@@ -18,8 +20,8 @@ const COLUMNS = 3;
 const GAP = 10;
 
 /**
- * The chat background, iOS style (approved prototype `Background.dc.html`): a large title, a
- * preview with the chat's own bubbles and glass field, an iOS segmented control, then tiles.
+ * The chat background in the four tabs' look (0z153): a heavy title by a round back button, a
+ * preview with the chat's own bubbles and glass field, a soft segmented switch, then tiles.
  * A tap picks the background (`onPick`); one-to-one chats and group chats both use it. A one-to-one
  * chat passes the character's `portrait`, its default: it sits on its own row above Classic and Art
  * (owner, 2026-11-03: their picture is not one of the wallpapers), the way back after trying one.
@@ -39,6 +41,7 @@ export function BackgroundPicker({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const router = useRouter();
 
   // Cream is every chat's ground (owner, 2026-11-08); their picture is a row of its own to pick.
   const fallback = CREAM_BG;
@@ -49,8 +52,6 @@ export function BackgroundPicker({
   const [collection, setCollection] = useState<BackgroundCollection>(() =>
     chatArtBackgroundsById[backgroundId] ? 'art' : 'classic',
   );
-  // Past the large title, the bar shows it (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(44);
   const tileWidth = (width - space.lg * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
   const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
@@ -62,8 +63,8 @@ export function BackgroundPicker({
   ];
 
   return (
-    <Screen background={colors.bg}>
-      <GlassBar title={t('background.title')} scrolled={scrolled} />
+    <Screen background={playful.ground}>
+      <TitleTop title={t('background.title')} onBack={() => router.back()} />
       <FlatList
         key={collection}
         data={data}
@@ -73,13 +74,9 @@ export function BackgroundPicker({
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}
         showsVerticalScrollIndicator={false}
         initialNumToRender={COLUMNS * 3}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        // Title, preview and the Classic / Art switch scroll away with the tiles (iOS large title).
+        // The preview and the Classic / Art switch scroll away with the tiles.
         ListHeaderComponent={
           <View style={styles.head}>
-            <LargeTitle>{t('background.title')}</LargeTitle>
-
             <View style={[styles.preview, { height: previewHeight }]} accessibilityLabel={t('background.preview')}>
               {onPortrait ? (
                 <>
@@ -122,27 +119,14 @@ export function BackgroundPicker({
                 </View>
                 {onPortrait ? (
                   <View style={styles.portraitCheck}>
-                    <Ionicons name="checkmark" size={14} color={colors.white} />
+                    <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} />
                   </View>
                 ) : null}
               </PressableScale>
             ) : null}
 
-            {/* iOS segmented control: a grey track, the chosen side as a raised white pill. */}
-            <View style={styles.segment} accessibilityRole="tablist">
-              {tabs.map((tab) => {
-                const on = collection === tab.value;
-                return (
-                  <Pressable
-                    key={tab.value}
-                    onPress={() => setCollection(tab.value)}
-                    accessibilityRole="tab"
-                    accessibilityState={{ selected: on }}
-                    style={[styles.segmentItem, on && styles.segmentOn]}>
-                    <Txt style={[styles.segmentText, on && styles.segmentTextOn]}>{tab.label}</Txt>
-                  </Pressable>
-                );
-              })}
+            <View style={styles.segment}>
+              <SoftSegmented options={tabs} value={collection} onChange={setCollection} />
             </View>
           </View>
         }
@@ -168,7 +152,7 @@ export function BackgroundPicker({
                 <View pointerEvents="none" style={[styles.tileBorder, selected && styles.tileBorderSelected]} />
                 {selected ? (
                   <View style={styles.check}>
-                    <Ionicons name="checkmark" size={14} color={colors.white} />
+                    <Ionicons name="checkmark" size={15} color={colors.textOnPrimary} />
                   </View>
                 ) : null}
               </View>
@@ -185,13 +169,14 @@ export function BackgroundPicker({
 
 const styles = StyleSheet.create({
   preview: {
-    marginTop: 14,
+    marginTop: space.xs,
     marginHorizontal: space.lg,
-    borderRadius: 22,
+    borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderStrong,
+    backgroundColor: playful.chip,
+    // The cream wallpaper on the cream ground: a soft rim keeps the preview a card.
+    borderWidth: 1.5,
+    borderColor: playful.dash,
   },
   // The chat's own bubble colours and tails, so the preview reads like the chat.
   previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
@@ -207,44 +192,32 @@ const styles = StyleSheet.create({
     gap: space.md,
     marginTop: space.lg,
     marginHorizontal: space.lg,
-    padding: space.sm,
-    paddingRight: space.md,
-    borderRadius: 18,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.surface,
+    padding: 10,
+    paddingRight: space.lg,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    backgroundColor: playful.card,
   },
-  portraitRowOn: { borderWidth: 2, borderColor: colors.primary },
-  portraitThumb: { width: 44, height: 58, borderRadius: 10, backgroundColor: colors.surfaceAlt },
+  portraitRowOn: { borderColor: colors.primary },
+  portraitThumb: { width: 46, height: 60, borderRadius: 14, backgroundColor: playful.chip },
   portraitCopy: { flex: 1, gap: 2 },
-  portraitTitle: { fontSize: 17, fontWeight: '600' },
+  portraitTitle: { fontFamily: fonts.playful, fontSize: 18, lineHeight: 23, color: playful.ink },
   portraitName: { fontSize: 13, color: colors.textSecondary },
   portraitCheck: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary },
-  segment: {
-    flexDirection: 'row',
-    height: 36,
-    marginTop: space.lg,
-    marginHorizontal: space.lg,
-    padding: 2,
-    borderRadius: 18,
-    backgroundColor: colors.surfaceAlt,
-  },
-  segmentItem: { flex: 1, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  segmentOn: { backgroundColor: colors.surface, ...glassStyle, borderWidth: 0 },
-  segmentText: { fontSize: 15, fontWeight: '500', color: colors.text },
-  segmentTextOn: { fontWeight: '600' },
+  segment: { marginTop: space.lg, marginHorizontal: space.lg },
   scroll: { paddingHorizontal: space.lg },
   // The header spans the screen; the list's gutter is pulled back for it.
   head: { marginHorizontal: -space.lg, marginBottom: space.lg },
   row: { gap: GAP, marginBottom: space.md },
-  tile: { borderRadius: 16, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
+  tile: { borderRadius: 18, overflow: 'hidden', backgroundColor: playful.chip },
   tileBorder: {
     ...StyleSheet.absoluteFill,
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderStrong,
   },
-  tileBorderSelected: { borderWidth: 2.5, borderColor: colors.primary },
+  tileBorderSelected: { borderWidth: 3, borderColor: colors.primary },
   check: {
     position: 'absolute',
     right: space.sm,
@@ -256,5 +229,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tileName: { marginTop: 6, fontSize: 12, color: colors.textSecondary },
+  tileName: { marginTop: 6, fontFamily: fonts.playfulBold, fontSize: 12.5, color: colors.textSecondary },
 });

@@ -44,6 +44,60 @@ export function ProfileTop({ title, showTitle, onBack, right }: { title: string;
   );
 }
 
+/** A tool screen's top (Memories, Background): a round back button, a heavy title and a right button. */
+export function TitleTop({ title, onBack, right }: { title: string; onBack: () => void; right?: ReactNode }) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.top}>
+      <PressableScale onPress={onBack} scaleTo={0.88} hitSlop={hitSlop} accessibilityRole="button" accessibilityLabel={t('a11y.back')} style={styles.round}>
+        <Ionicons name="chevron-back" size={24} color={playful.ink} style={styles.backGlyph} />
+      </PressableScale>
+      {/* A long title shrinks to fit rather than being cut. */}
+      <Txt style={styles.bigTitle} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header" maxFontSizeMultiplier={1.2}>
+        {title}
+      </Txt>
+      {right}
+    </View>
+  );
+}
+
+/** Two or three choices on a soft track, the chosen one a white pill (Find's who-switch). */
+export function SoftSegmented<T extends string>({
+  options,
+  value,
+  onChange,
+  accessibilityLabel,
+}: {
+  options: readonly { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+  accessibilityLabel?: string;
+}) {
+  return (
+    <View style={styles.segments} accessibilityRole="tablist" accessibilityLabel={accessibilityLabel}>
+      {options.map((option) => {
+        const on = option.value === value;
+        return (
+          <Pressable
+            key={option.value}
+            onPress={() => {
+              if (on) return;
+              haptic.selection();
+              onChange(option.value);
+            }}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: on }}
+            style={[styles.segment, on && styles.segmentOn]}>
+            <Txt style={[styles.segmentText, on && styles.segmentTextOn]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
+              {option.label}
+            </Txt>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 /** A round head button with an icon, or a short word ("Edit") in a pill of the same height. */
 export function TopButton({ icon, label, accessibilityLabel, onPress }: { icon?: keyof typeof Ionicons.glyphMap; label?: string; accessibilityLabel: string; onPress: () => void }) {
   return (
@@ -287,27 +341,7 @@ export function ChoiceRow<T extends string>({
   return (
     <View style={[styles.choice, !last && styles.rowLine]}>
       <Txt style={styles.rowText}>{label}</Txt>
-      <View style={styles.segments} accessibilityRole="tablist" accessibilityLabel={label}>
-        {options.map((option) => {
-          const on = option.value === value;
-          return (
-            <Pressable
-              key={option.value}
-              onPress={() => {
-                if (on) return;
-                haptic.selection();
-                onChange(option.value);
-              }}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              style={[styles.segment, on && styles.segmentOn]}>
-              <Txt style={[styles.segmentText, on && styles.segmentTextOn]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
-                {option.label}
-              </Txt>
-            </Pressable>
-          );
-        })}
-      </View>
+      <SoftSegmented options={options} value={value} onChange={onChange} accessibilityLabel={label} />
     </View>
   );
 }
@@ -363,6 +397,7 @@ const styles = StyleSheet.create({
   pill: { paddingHorizontal: 16 },
   pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
   backGlyph: { marginLeft: -2 },
+  bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: playful.ink },
   topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: playful.ink },
   hidden: { opacity: 0 },
   face: { marginHorizontal: SIDE, borderRadius: 30, overflow: 'hidden' },
