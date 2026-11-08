@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z172. A light / dark switch keeps the user's place (2026-11-09, Claude 1). NEXT: see "Still to do"
+
+- **Owner's ask**: carry on (0z168 item 5: colours are module constants picked once by `isDark`, a theme flip reloads the app).
+- **Decision**: a full move to live colours means a theme context and new styles in about 180 `StyleSheet`s; expo-router's `Color` only names system colours (iOS) and Material ones (Android), not our palette, so it cannot carry the navy, apricot and friend hues. Not worth the risk before launch. What users felt was the reload dropping them on Today (a chat at sunset, coming back to the app in the other theme); that is fixed instead.
+- **Built**: `useThemeReload` saves the open tab and the screens above it (from the navigation container's root state, inside expo-router's `__root` slot) before `reloadAppAsync`; `useThemeRestore` reopens them after the relaunch while the launch cover is still up (pushed once, 450 ms to settle), so the user lands where they were with the same back path. A call, an alarm ring and onboarding are never reopened (the stack is cut there); a saved place is good for 60 s; someone not past onboarding stays there. Pure part with tests: `src/lib/theme-restore.ts`.
+- **Seen on the A51** (OTA, switch with `cmd uimode night`): Chats → Erik's chat → (a call screen) → switch to light → the app reloads into Erik's chat, back → Chats, back → Today. The first OTA missed the `__root` slot and landed on Today; fixed and tested. Phone left in light mode, as it was.
+- Checks: tsc 0, npm test 851/851.
+
+Still to do:
+1. See Bedtime's whispering state and the filled wake-up card on a Pro account (0z170).
+2. Light mode of the frame editor and both quizzes (0z169 item 2).
+3. Live colours (no reload at all) stay a post-launch project: a theme context plus styles built from it, screen by screen.
+
 ### 0z171. Flow audit on the A51: every chain walked, one back path fixed (2026-11-08, Claude 1). NEXT: see "Still to do"
 
 - **Owner's ask** (0z168 item 3): "chains and architecture must work well"; walk every chain on the A51 against the navigation laws (push vs sheet, back never re-enters a finished state).

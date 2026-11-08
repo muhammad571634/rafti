@@ -13,7 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
 import { Button, Mascot, Txt } from '@/components/ui';
-import { useThemeReload } from '@/hooks/use-theme-reload';
+import { useThemeReload, useThemeRestore } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
 import { startAwayClock } from '@/lib/away-clock';
 import { useAppStore } from '@/store/use-app-store';
@@ -121,9 +121,11 @@ function OnboardingGate() {
     if (navReady && hydrated && blocked) router.replace('/onboarding');
   }, [navReady, hydrated, blocked, router]);
 
+  // After a theme reload the screens the user had open come back under the cover first.
+  const restored = useThemeRestore(navReady && hydrated, onboarded);
   // The splash goes once saved data is in and the right first screen is underneath, so launch
   // goes straight from the splash to content, without a blank cover in between.
-  const released = hydrated && !blocked;
+  const released = hydrated && !blocked && restored;
   useEffect(() => {
     if (released) SplashScreen.hideAsync().catch(() => {});
   }, [released]);
