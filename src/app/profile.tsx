@@ -522,7 +522,7 @@ export default function ProfileScreen() {
         </View>
       </Sheet>
 
-      <Sheet visible={blockedOpen} onClose={() => setBlockedOpen(false)} title={t('safety.blocked')}>
+      <Sheet visible={blockedOpen} onClose={() => setBlockedOpen(false)} title={t('safety.blocked')} scroll>
         <View style={styles.sheetList}>
           {blocked.map((character, index) => (
             <View key={character.id}>

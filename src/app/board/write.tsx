@@ -173,7 +173,7 @@ export default function BoardWriteScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <Sheet visible={picking} onClose={() => setPicking(false)} title={t('board.to')}>
+      <Sheet visible={picking} onClose={() => setPicking(false)} title={t('board.to')} scroll>
         <View style={styles.people}>
           {friends.map((c, i) => {
             const on = c.id === toId;

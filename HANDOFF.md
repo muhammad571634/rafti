@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z155. Group info and New group in the merged design; long sheets scroll; "clean chain" rule (2026-11-08, Claude 1). NEXT: queue item 2, your profile + Edit profile (0z154 queue), unless the owner picks memory quality first
+
+- **Owner's ask**: "0z154 davom et" -> queue item 1 (memory quality left in Still to do, the owner did not pick it). Mid-task: the owner found an "Add a friend" sheet taller than the screen and said "fix it too; agents must not make such errors: clean code, clean design, clean chain". Recorded in `.agents/rules/project-memory.md` §3 (worst-case chain on the A51 before calling a screen done).
+- **Built** (`0a9d5fb` + this commit): kit gets `GroupFace` (the groups' mint card, stacked faces over a centred Nunito name and the "N AI characters · made date" line, column layout so a two-line name never touches the faces), `FaceRow` / `FaceGlyph` / `PickMark` (face-led rows in white cards, the peach pick disc), `TopButton` `peach` + `disabled`. `FriendRow` now renders `FaceRow` (also used by lore edit and new stream; those two not opened on the phone). Group info: cream ground, `ProfileTop` (name fades in), Edit pill -> rename sheet, three round quick actions (Call, Add off at 3/3, Search), "Members · n of 3" card with face rows and a peach "Add a friend" row while there is room, Background, Mute, red Delete; member and rename sheets unchanged. New group: `TitleTop` with Create as a peach pill once two are picked, name card ("optional" on the right), friends card, cost footer.
+- **Fixed on the way**: (1) New group: the first pick made the faces row appear and pushed the list down, so a quick second tap landed on the wrong row (seen on the A51: Hana picked, then unpicked by the tap meant for Zarek). Three seats are always shown now (dashed empty seats, `playful.dash` / `well`). (2) Sheets listing every friend had no cap: group info's Add a friend (the owner's find), the board's "To", dating's partner pick and the blocked list now use `Sheet scroll` (a scan of all sheets that map over data without a ScrollView; the rest list fixed short options).
+- **Seen on the A51** (OTAs `01a1ba85`, `01a1ba88`, `01a1ba8d`, `01a1ba92`, Turkish): group info (mint card, 3/3 with Add greyed and no add row, member sheet), New group (seats, Hana + Zarek picked without a jump, peach Oluştur, "Hana & Zarek" placeholder; left without creating), board "Kime" sheet with 16 friends: capped and scrolls. The owner used the phone at the same time (Alisa joined Вельветный квартал at 14:40, a group "Hana, Zarek & Maniki" with a call at 14:50); not from my taps.
+- Checks: tsc 0, npm test 821/821, check:locales. No new strings.
+
+Still to do:
+1. From 0z153: next APK build shows cream under the nav buttons; memory quality ("Your life" keeps raw chat lines); memory row hairline.
+2. Queue (0z154): 2 your profile + Edit profile, 3 Notifications, 4 Call history, 5 Store / My plan / Shell history, 6 small ones.
+3. Sheet in scroll mode scrolls its title away with the list (languages did so before); a fixed header for long sheets would be nicer.
+
 ### 0z154. NEXT SESSION STARTS HERE: move the remaining screens to the merged design, one at a time (2026-11-08, Claude 1)
 
 - **Done so far** (each seen on the A51, details in 0z152 / 0z153): character profile, chat settings, Memories, chat search, chat background. Shared parts for every next screen: `src/components/character/kit.tsx` (`TitleTop`, `ProfileTop`, `TopButton`, `FaceCard`, `GlassPill`, `QuickAction` / `QuickRow`, `PeachButton`, `Group`, `LinkRow`, `SwitchRow`, `DangerRow`, `ChoiceRow`, `SoftSegmented`, `BondHead` / `BondTrack`, `CardRound`, `profileStyles`). Reuse them; add to the kit rather than copying.

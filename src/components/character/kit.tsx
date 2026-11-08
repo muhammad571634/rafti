@@ -145,29 +145,23 @@ export function TopButton({
  * stacked faces in the middle, the name and a line under it in the mint's ink.
  */
 export function GroupFace({ members, name, line }: { members: Character[]; name: string; line?: string }) {
-  const { width: screen } = useWindowDimensions();
-  const height = Math.round(Math.min((screen - SIDE * 2) * 0.74, 300));
   return (
-    <View style={[styles.face, { height, backgroundColor: playful.group.fill }]}>
-      <View style={styles.faceAvatar}>
-        <GroupAvatar members={members} size={120} ringColor={playful.group.fill} />
-      </View>
-      <View style={styles.faceFoot}>
-        <Txt
-          style={[styles.faceName, { color: playful.group.ink }]}
-          lines={2}
-          adjustsFontSizeToFit
-          minimumFontScale={0.7}
-          maxFontSizeMultiplier={1.2}
-          accessibilityRole="header">
-          {name}
+    <View style={[styles.face, styles.groupFace, { backgroundColor: playful.group.fill }]}>
+      <GroupAvatar members={members} size={112} ringColor={playful.group.fill} />
+      <Txt
+        style={[styles.faceName, styles.groupName, { color: playful.group.ink }]}
+        lines={2}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+        maxFontSizeMultiplier={1.2}
+        accessibilityRole="header">
+        {name}
+      </Txt>
+      {line ? (
+        <Txt style={[styles.faceLine, styles.groupLine, { color: playful.group.ink }]} lines={2} maxFontSizeMultiplier={1.3}>
+          {line}
         </Txt>
-        {line ? (
-          <Txt style={[styles.faceLine, { color: playful.group.ink }]} lines={1} maxFontSizeMultiplier={1.3}>
-            {line}
-          </Txt>
-        ) : null}
-      </View>
+      ) : null}
     </View>
   );
 }
@@ -532,6 +526,9 @@ const styles = StyleSheet.create({
   topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: playful.ink },
   hidden: { opacity: 0 },
   face: { marginHorizontal: SIDE, borderRadius: 30, overflow: 'hidden' },
+  groupFace: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 26, paddingBottom: 22 },
+  groupName: { marginTop: 14, textAlign: 'center' },
+  groupLine: { marginTop: 4, textAlign: 'center' },
   scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '58%' },
   faceAvatar: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingBottom: 70 },
   topLeft: { position: 'absolute', top: 14, left: 14 },

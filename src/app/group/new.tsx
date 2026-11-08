@@ -33,12 +33,9 @@ export default function NewGroupScreen() {
   const full = picked.length >= GROUP_MAX;
   const ready = picked.length >= GROUP_MIN;
   // The name a group gets when the field is left empty.
-  const fallback = groupTitle(
-    friends.filter((f) => picked.includes(f.character.id)).map((f) => shortName(f.name)),
-  );
+  const fallback = groupTitle(friends.filter((f) => picked.includes(f.character.id)).map((f) => shortName(f.name)));
 
-  const toggle = (id: string) =>
-    setPicked((list) => (list.includes(id) ? list.filter((x) => x !== id) : list.length < GROUP_MAX ? [...list, id] : list));
+  const toggle = (id: string) => setPicked((list) => (list.includes(id) ? list.filter((x) => x !== id) : list.length < GROUP_MAX ? [...list, id] : list));
 
   const create = () => {
     const id = createGroup(picked, name);
@@ -85,10 +82,19 @@ export default function NewGroupScreen() {
           contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag">
-          {/* Who is in so far; a tap takes them out again (iOS Messages' "To:" faces). */}
-          {pickedFriends.length > 0 ? (
-            <View style={styles.faces}>
-              {pickedFriends.map((f) => (
+          {/* Who is in so far, in GROUP_MAX seats that are always there, so the list below never
+              jumps under the finger when the first friend is picked; a tap on a face takes them
+              out again (iOS Messages' "To:" faces). */}
+          <View style={styles.faces}>
+            {Array.from({ length: GROUP_MAX }, (_, i) => {
+              const f = pickedFriends[i];
+              if (!f)
+                return (
+                  <View key={`seat-${i}`} style={styles.face} accessible={false}>
+                    <View style={styles.seat} />
+                  </View>
+                );
+              return (
                 <PressableScale
                   key={f.character.id}
                   scaleTo={0.92}
@@ -106,9 +112,9 @@ export default function NewGroupScreen() {
                     {shortName(f.name)}
                   </Txt>
                 </PressableScale>
-              ))}
-            </View>
-          ) : null}
+              );
+            })}
+          </View>
 
           <Group title={t('group.nameLabel')} right={<Txt style={styles.optional}>{t('group.optional')}</Txt>}>
             <TextInput
@@ -147,8 +153,14 @@ export default function NewGroupScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  faces: { flexDirection: 'row', gap: space.lg, paddingHorizontal: space.lg + space.xs, paddingTop: space.sm, paddingBottom: space.xs },
-  face: { alignItems: 'center', gap: 6, width: 68 },
+  faces: {
+    flexDirection: 'row',
+    gap: space.lg,
+    paddingHorizontal: space.lg + space.xs,
+    paddingTop: space.sm,
+    paddingBottom: space.xs,
+  },
+  face: { alignItems: 'center', gap: 6, width: 68, minHeight: 86 },
   unpick: {
     position: 'absolute',
     top: -2,
@@ -163,6 +175,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   faceName: { fontSize: 13, fontWeight: '600', color: playful.ink },
+  // An empty seat: the dashed ring the playful layer uses for a slot waiting to be filled.
+  seat: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: playful.dash,
+    backgroundColor: playful.well,
+  },
   optional: { fontSize: 13, color: colors.textSecondary },
-  input: { minHeight: 54, paddingHorizontal: 18, paddingBottom: 4, color: colors.text, ...type.body, fontSize: 17 },
+  input: {
+    minHeight: 54,
+    paddingHorizontal: 18,
+    paddingBottom: 4,
+    color: colors.text,
+    ...type.body,
+    fontSize: 17,
+  },
 });

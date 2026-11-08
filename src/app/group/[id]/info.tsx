@@ -75,7 +75,7 @@ export default function GroupInfoScreen() {
   const [adding, setAdding] = useState(false);
   const [member, setMember] = useState<Character | null>(null);
   // Past the group's face and name, the bar shows the name (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(260);
+  const { scrolled, onScroll } = useScrolledPast(220);
 
   const members = useMemo(
     () => (group?.memberIds ?? []).flatMap((m) => characters.find((c) => c.id === m) ?? []),
@@ -236,7 +236,8 @@ export default function GroupInfoScreen() {
         />
       </Sheet>
 
-      <Sheet visible={adding} onClose={() => setAdding(false)} title={t('group.addMemberTitle')}>
+      {/* Every friend can be on this list: never taller than the screen, it scrolls. */}
+      <Sheet visible={adding} onClose={() => setAdding(false)} title={t('group.addMemberTitle')} scroll>
         {addable.length ? (
           <View style={styles.ways}>
             {addable.map((friend, i) => (

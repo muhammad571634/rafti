@@ -293,7 +293,7 @@ export default function DatingScreen() {
         ) : null}
       </ScrollView>
 
-      <Sheet visible={choosing} onClose={() => setChoosing(false)} title={t('dating.choosePartner')}>
+      <Sheet visible={choosing} onClose={() => setChoosing(false)} title={t('dating.choosePartner')} scroll>
         <View style={styles.people}>
           {known.map((c) => (
             <PressableScale
