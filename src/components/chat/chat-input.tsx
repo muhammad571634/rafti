@@ -337,7 +337,8 @@ export function ChatInput({
                       haptic
                       accessibilityLabel={t('a11y.send')}
                       style={[styles.action, styles.send]}>
-                      <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+                      {/* A voice note goes with an arrow; the paper plane is for written words (owner, 2026-11-08). */}
+                      <Ionicons name="arrow-up" size={25} color={colors.textOnPrimary} />
                     </PressableScale>
                   </>
                 ) : (
