@@ -800,7 +800,7 @@ export default function ChatRoomScreen() {
         }}
       />
 
-      {shared ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} lines={shared} /> : null}
+      {shared ? <ShareSheet visible={sharing} onClose={() => setSharing(false)} character={character} /> : null}
       </ChatGroundProvider>
     </Screen>
   );

@@ -2599,5 +2599,27 @@
       "ticking-clock": "Contra el reloj",
       "arranged-marriage": "Matrimonio concertado"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Dime la verdad. ¿Qué piensas de mí de verdad?",
+      "a": "¿Sinceramente? Eres a quien primero quiero contarle todo.",
+      "hook": "Hay algo que nunca he dicho en voz alta.",
+      "tail": "Vale, ahí va. Desde ese primer chat, yo…"
+    },
+    "s2": {
+      "you": "¿Te puedo contar un secreto?",
+      "a": "Solo si yo te cuento el mío primero.",
+      "hook": "Por ti le sonrío al móvil.",
+      "tail": "Y ayer casi te digo que yo…"
+    },
+    "s3": {
+      "you": "¿Por qué siempre respondes tan rápido?",
+      "a": "Porque tus mensajes son lo mejor de mi día.",
+      "hook": "No te rías, pero los he guardado todos.",
+      "tail": "Anoche volví a leer uno, ese en el que tú…"
+    },
+    "typing": "{{name}} sigue escribiendo… abre Sigmazam para leerlo",
+    "store": "Gratis en el App Store"
   }
 }

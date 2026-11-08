@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z158. The chat's Share is a 9:16 story poster with FOMO lines (2026-11-08, Claude 1). NEXT: owner sends one to Telegram to check it is sharp; then the Store group (queue) unless the owner picks
+
+- **Owner's pick**: canvas B (https://claude.ai/artifact/EJDVhf2eeR8RXzfo2Aw61w, "Chat, but beautiful") without the Level / days chips; the bottom says it is free on the App Store; nothing from the real chat for now: the poster's exchange is ready FOMO lines; every language.
+- **Built**: `ChatPoster` (`src/components/chat/chat-poster.tsx`): a fixed 360x640 view on fixed light paper (same in dark mode): cream with two soft blobs, their face (online dot), Nunito name, "AI · mood", the user's peach line, their white line, their bold hook with a fading tail (pale text + a white gradient over the line's end), typing dots, "{name} is still typing… open Sigmazam to read it", then a white band with the Sigmazam logo, an ink "Free on the App Store" pill (text only, no Apple badge art) and the peeking mascot. Three exchanges (`sharePoster.s1..s3`: you / a / hook / tail, picked at random each time the sheet opens), `typing`, `store`, in all 14 locales (Russian uses `{g:female|male}`, filled with the friend's gender via `fill`); test `src/i18n/share-poster.test.ts`. `ShareCardSheet` takes `poster` (the child is the whole picture, shown scaled from its top left, captured at `pixels`) and an optional `hint`; `shareImage(view, fallback, size)` passes the size to `captureRef`, so the picture is always 1080x1920. The chat's `ShareSheet` now takes only the character (the pill under the newest reply still shows as before). Us bond share and the date sheet unchanged.
+- **Seen on the A51** (OTA `01a1bad9`, Turkish): Hana → Share pill → "Resim olarak paylaş" with the poster (s3: "Neden hep bu kadar hızlı cevap veriyorsun?" … "Hana hâlâ yazıyor…", "App Store'da ücretsiz"); Paylaş opened Android's share sheet with the picture (Telegram, Instagram listed); closed without sending. Closing the system sheet still paid the day's +5 shells (old behaviour: the sheet cannot tell a cancel from a share).
+- Cost: none (drawn on the phone). Checks: tsc 0, npm test 840/840, check:locales, check:content.
+
+Still to do:
+1. Owner: send one poster to Telegram / Instagram stories and say if it is sharp and right.
+2. Later (owner): take a real line from the chat, a Save button on Android (media-library module, next APK), the same frame for the Us bond card and the date polaroid.
+
 ### 0z157. Date polaroid share; the chat's share card checked, a story-poster redesign proposed (2026-11-08, Claude 1). NEXT: owner picks whether to prototype the share poster (2-3 variants) before code
 
 - **Owner's ask**: the date's end screen Share sent only text; make the picture go, and think about sending the result to other characters. Then (cost question) recorded in `docs/cost-ledger.md` row 14.

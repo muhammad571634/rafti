@@ -2599,5 +2599,27 @@
       "ticking-clock": "Contra o relógio",
       "arranged-marriage": "Casamento arranjado"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Fala a verdade. O que você realmente pensa de mim?",
+      "a": "Sinceramente? Você é a primeira pessoa pra quem eu quero contar tudo.",
+      "hook": "Tem uma coisa que eu nunca disse em voz alta.",
+      "tail": "Tá, lá vai. Desde aquela primeira conversa, eu…"
+    },
+    "s2": {
+      "you": "Posso te contar um segredo?",
+      "a": "Só se eu puder contar o meu primeiro.",
+      "hook": "Por sua causa eu fico sorrindo pro celular.",
+      "tail": "E ontem eu quase te disse que eu…"
+    },
+    "s3": {
+      "you": "Por que você sempre responde tão rápido?",
+      "a": "Porque suas mensagens são a melhor parte do meu dia.",
+      "hook": "Não ri, mas eu guardei todas.",
+      "tail": "Ontem à noite reli uma, aquela em que você…"
+    },
+    "typing": "{{name}} ainda está digitando… abra o Sigmazam para ler",
+    "store": "Grátis na App Store"
   }
 }

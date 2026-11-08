@@ -2599,5 +2599,27 @@
       "ticking-clock": "A ticking clock",
       "arranged-marriage": "Arranged marriage"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Be honest. What do you really think of me?",
+      "a": "Honestly? You're the first one I want to tell everything to.",
+      "hook": "There's something I've never said out loud.",
+      "tail": "Okay, here goes. Since that first chat, I…"
+    },
+    "s2": {
+      "you": "Can I tell you a secret?",
+      "a": "Only if I get to tell you mine first.",
+      "hook": "You're the reason I smile at my phone.",
+      "tail": "And yesterday I almost told you that I…"
+    },
+    "s3": {
+      "you": "Why do you always answer so fast?",
+      "a": "Because your messages are the best part of my day.",
+      "hook": "Don't laugh, but I kept every one of them.",
+      "tail": "Last night I read one again, the one where you…"
+    },
+    "typing": "{{name}} is still typing… open Sigmazam to read it",
+    "store": "Free on the App Store"
   }
 }

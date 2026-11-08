@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
+import { StyleSheet, useWindowDimensions, View, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { AuroraBackground, BrandArt, Button, ShellIcon, SFIcon, Sheet, Txt } from '@/components/ui';
@@ -31,16 +31,25 @@ export function ShareCardSheet({
   onClose,
   hint,
   fallback,
+  poster,
   children,
 }: {
   visible: boolean;
   onClose: () => void;
-  hint: string;
+  hint?: string;
   fallback: string;
+  /**
+   * The child is the whole picture (a story poster, `ChatPoster`): drawn at its own fixed size,
+   * shown scaled to fit the sheet, captured at `pixels`. Without it the card is the aurora frame.
+   */
+  poster?: { width: number; height: number; pixels: { width: number; height: number } };
   children: ReactNode;
 }) {
   const { t } = useTranslation();
+  const { width: screenW, height: screenH } = useWindowDimensions();
   const card = useRef<ViewInstance>(null);
+  // The poster fits the sheet's width and leaves room for the title and the button.
+  const scale = poster ? Math.min(1, (screenW - SHEET_SIDES) / poster.width, (screenH - SHEET_CHROME) / poster.height) : 1;
   const reward = useAppStore((s) => shareReward(s.daily));
   const rewardShare = useAppStore((s) => s.rewardShare);
   const [busy, setBusy] = useState(false);
@@ -48,7 +57,7 @@ export function ShareCardSheet({
 
   const share = async () => {
     setBusy(true);
-    const shared = await shareImage(card, fallback);
+    const shared = await shareImage(card, fallback, poster?.pixels);
     const amount = shared ? await rewardShare() : 0;
     setBusy(false);
     if (!shared) return;
@@ -63,11 +72,24 @@ export function ShareCardSheet({
 
   return (
     <Sheet visible={visible} onClose={onClose} title={t('common.shareAsPicture')} scroll>
-      <Txt variant="small" color={colors.textSecondary} center style={styles.hint}>
-        {hint}
-      </Txt>
+      {hint ? (
+        <Txt variant="small" color={colors.textSecondary} center style={styles.hint}>
+          {hint}
+        </Txt>
+      ) : null}
 
-      {/* Captured as the picture: collapsable={false} keeps the view real on Android. */}
+      {poster ? (
+        // The picture is the poster at its own size; the box around it only shows it smaller.
+        <View style={[styles.posterBox, { width: poster.width * scale, height: poster.height * scale }]}>
+          <View
+            ref={card}
+            collapsable={false}
+            style={[styles.posterCard, { width: poster.width, height: poster.height, transform: [{ scale }] }]}>
+            {children}
+          </View>
+        </View>
+      ) : (
+      /* Captured as the picture: collapsable={false} keeps the view real on Android. */
       <View ref={card} collapsable={false} style={styles.card}>
         <AuroraBackground />
         {children}
@@ -79,6 +101,7 @@ export function ShareCardSheet({
         </View>
         <BrandArt name="peek" width={PEEK_WIDTH} style={styles.peek} />
       </View>
+      )}
 
       <Button
         label={t('common.share')}
@@ -139,7 +162,14 @@ export function SharePill({
   );
 }
 
+/** The sheet's sides (its inset and padding) and its title, gaps and Share button, for the poster's fit. */
+const SHEET_SIDES = 2 * (space.md + space.xl);
+const SHEET_CHROME = 300;
+
 const styles = StyleSheet.create({
+  posterBox: { alignSelf: 'center', borderRadius: radius.xl, borderCurve: 'continuous', overflow: 'hidden' },
+  // Scaled from its top left corner so it sits in the box.
+  posterCard: { transformOrigin: 'top left' },
   hint: { marginTop: -space.sm, marginBottom: space.lg, paddingHorizontal: space.sm },
   // Concentric with the sheet: its 38pt corner less the 16pt inset.
   card: { borderRadius: radius.xl, borderCurve: 'continuous', overflow: 'hidden' },

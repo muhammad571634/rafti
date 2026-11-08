@@ -2559,5 +2559,27 @@
       "ticking-clock": "Thời gian có hạn",
       "arranged-marriage": "Hôn nhân sắp đặt"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Nói thật đi. Cậu thật sự nghĩ gì về mình?",
+      "a": "Thật nhé? Cậu là người đầu tiên mình muốn kể mọi chuyện.",
+      "hook": "Có một điều mình chưa từng nói thành lời.",
+      "tail": "Được rồi, mình nói đây. Từ lần nhắn tin đầu tiên, mình…"
+    },
+    "s2": {
+      "you": "Mình kể cậu nghe một bí mật nhé?",
+      "a": "Chỉ khi mình được kể bí mật của mình trước.",
+      "hook": "Vì cậu mà mình cứ nhìn điện thoại rồi cười.",
+      "tail": "Hôm qua mình suýt nữa đã nói với cậu là mình…"
+    },
+    "s3": {
+      "you": "Sao lúc nào cậu cũng trả lời nhanh thế?",
+      "a": "Vì tin nhắn của cậu là phần vui nhất trong ngày của mình.",
+      "hook": "Đừng cười nhé, mình giữ lại hết đấy.",
+      "tail": "Tối qua mình đọc lại một tin, cái tin mà cậu…"
+    },
+    "typing": "{{name}} vẫn đang nhập… mở Sigmazam để đọc tiếp",
+    "store": "Miễn phí trên App Store"
   }
 }

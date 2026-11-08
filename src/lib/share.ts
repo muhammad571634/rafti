@@ -34,12 +34,14 @@ const canShareImage =
 
 /**
  * Shares `view` as a PNG through the system share sheet (iOS's has Save Image), or `fallback` as
- * text where the picture cannot be made. Resolves false when nothing was shared.
+ * text where the picture cannot be made; `size` sets the picture's pixels. Resolves false when
+ * nothing was shared.
  */
-export async function shareImage(view: RefObject<ViewInstance | null>, fallback: string) {
+export async function shareImage(view: RefObject<ViewInstance | null>, fallback: string, size?: { width: number; height: number }) {
   if (!canShareImage) return shareText(fallback);
   try {
-    const uri = await captureRef(view, { format: 'png', quality: 1, result: 'tmpfile' });
+    // A fixed `size` (a story poster's 1080 x 1920) keeps the picture sharp wherever it is posted.
+    const uri = await captureRef(view, { format: 'png', quality: 1, result: 'tmpfile', ...(size ?? {}) });
     // Required here, not imported: the module throws on load where its native half is missing.
     const Sharing: typeof import('expo-sharing') = require('expo-sharing');
     await Sharing.shareAsync(uri, { mimeType: 'image/png', UTI: 'public.png' });

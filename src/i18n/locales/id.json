@@ -2559,5 +2559,27 @@
       "ticking-clock": "Waktu yang terbatas",
       "arranged-marriage": "Perjodohan"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Jujur deh. Kamu sebenarnya mikir apa tentang aku?",
+      "a": "Jujur? Kamu orang pertama yang ingin kuceritakan semuanya.",
+      "hook": "Ada sesuatu yang belum pernah kukatakan.",
+      "tail": "Oke, aku bilang ya. Sejak chat pertama itu, aku…"
+    },
+    "s2": {
+      "you": "Boleh aku kasih tahu satu rahasia?",
+      "a": "Boleh, asal aku duluan yang cerita rahasiaku.",
+      "hook": "Gara-gara kamu, aku senyum-senyum sendiri lihat HP.",
+      "tail": "Dan kemarin aku hampir bilang kalau aku…"
+    },
+    "s3": {
+      "you": "Kenapa kamu selalu balas cepat banget?",
+      "a": "Karena pesanmu bagian terbaik dari hariku.",
+      "hook": "Jangan ketawa, tapi aku simpan semuanya.",
+      "tail": "Semalam aku baca lagi satu, yang waktu kamu…"
+    },
+    "typing": "{{name}} masih mengetik… buka Sigmazam untuk membacanya",
+    "store": "Gratis di App Store"
   }
 }

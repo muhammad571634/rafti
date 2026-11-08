@@ -2599,5 +2599,27 @@
       "ticking-clock": "Compte à rebours",
       "arranged-marriage": "Mariage arrangé"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Sois honnête. Tu penses quoi de moi, vraiment ?",
+      "a": "Honnêtement ? C'est à toi que j'ai envie de tout raconter en premier.",
+      "hook": "Il y a quelque chose que je n'ai jamais dit à voix haute.",
+      "tail": "Bon, je me lance. Depuis notre premier message, je…"
+    },
+    "s2": {
+      "you": "Je peux te dire un secret ?",
+      "a": "Seulement si je te dis le mien d'abord.",
+      "hook": "C'est à cause de toi que je souris à mon téléphone.",
+      "tail": "Et hier, j'ai failli te dire que je…"
+    },
+    "s3": {
+      "you": "Pourquoi tu réponds toujours si vite ?",
+      "a": "Parce que tes messages sont le meilleur moment de ma journée.",
+      "hook": "Ne ris pas, mais je les ai tous gardés.",
+      "tail": "Hier soir, j'en ai relu un, celui où tu…"
+    },
+    "typing": "{{name}} écrit encore… ouvre Sigmazam pour le lire",
+    "store": "Gratuit sur l'App Store"
   }
 }

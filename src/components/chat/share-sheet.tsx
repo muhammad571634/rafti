@@ -1,73 +1,36 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
 
-import { MessageBubble } from '@/components/chat/message-bubble';
-import { runOf } from '@/components/chat/runs';
+import { ChatPoster, POSTER_H, POSTER_PIXELS, POSTER_SCRIPTS, POSTER_W } from '@/components/chat/chat-poster';
 import { ShareCardSheet } from '@/components/share-card-sheet';
-import { CharacterAvatar, Txt } from '@/components/ui';
-import { colors, radius, space } from '@/theme';
-import type { Character, Message } from '@/types';
+import { currentMood, temperamentFor } from '@/lib/reply-engine';
+import { displayName, useAppStore } from '@/store/use-app-store';
+import type { Character } from '@/types';
 
-const FACE = 44;
-
-/** The line as the chat first drew it: no reaction, tone, receipt or edit note, and its own reveal id so it shows whole. */
-const plain = (m: Message): Message => ({ ...m, id: `share:${m.id}`, reaction: undefined, tone: undefined, editedAt: undefined, failed: undefined });
+const POSTER = { width: POSTER_W, height: POSTER_H, pixels: POSTER_PIXELS };
 
 /**
- * Share under their newest reply: the card is the chat and nothing else (owner, 2026-10-30): their
- * round face and name, then the thread up to their newest line, as many as six lines in the chat's
- * own bubbles and runs on a white panel (`shareLines` picks them), over the Sigmazam foot.
+ * Share under their newest reply: a 9:16 story poster of this friend (canvas B, owner 2026-11-08):
+ * their face, name and mood, a short FOMO exchange in the app's language (nothing from the real chat
+ * for now, owner), their last line cut off and "still typing", over the Sigmazam band with "Free on
+ * the App Store" and the peeking mascot. One of `POSTER_SCRIPTS` exchanges, picked each time it opens.
  */
-export function ShareSheet({
-  visible,
-  onClose,
-  character,
-  lines,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  character: Character;
-  lines: Message[];
-}) {
+export function ShareSheet({ visible, onClose, character }: { visible: boolean; onClose: () => void; character: Character }) {
   const { t } = useTranslation();
-  const said = lines.map((m) => (m.kind !== 'text' ? null : m.author === 'them' ? `${character.name}: ${m.text}` : m.text));
-  const shown = lines.map(plain);
+  const relationship = useAppStore((s) => s.relationships[character.id]);
+  const name = displayName(character, relationship);
+  const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
+  // A new exchange each time the sheet opens; it stays put while it is open.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const script = useMemo(() => 1 + Math.floor(Math.random() * POSTER_SCRIPTS), [visible]);
 
   return (
     <ShareCardSheet
       visible={visible}
       onClose={onClose}
-      hint={t('chat.shareHint', { name: character.name })}
-      fallback={[...said.filter(Boolean), t('app.name')].join('\n\n')}>
-      <View style={styles.head}>
-        <CharacterAvatar character={character} size={FACE} />
-        <Txt variant="h3" lines={1} style={styles.name}>
-          {character.name}
-        </Txt>
-      </View>
-
-      {/* Content on the aurora stays solid (design-style §1): the bubbles sit on it as in a plain chat. */}
-      <View style={styles.panel}>
-        {shown.map((m, i) => {
-          const run = runOf(shown, i);
-          return (
-            <MessageBubble key={m.id} message={m} character={character} showAvatar={run.runStart} runEnd={run.runEnd} animate={false} />
-          );
-        })}
-      </View>
+      poster={POSTER}
+      fallback={[t('sharePoster.typing', { name: name.split(' ')[0] || name }), t('sharePoster.store'), t('app.name')].join('\n\n')}>
+      <ChatPoster character={character} name={name} mood={t(`chat.mood.${mood}`)} script={script} />
     </ShareCardSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.lg },
-  name: { flex: 1 },
-  panel: {
-    marginHorizontal: space.md,
-    paddingTop: space.md,
-    paddingBottom: space.xs,
-    borderRadius: radius.lg,
-    borderCurve: 'continuous',
-    backgroundColor: colors.surface,
-  },
-});

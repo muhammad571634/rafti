@@ -2599,5 +2599,27 @@
       "ticking-clock": "Il tempo stringe",
       "arranged-marriage": "Matrimonio combinato"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Dimmi la verità. Cosa pensi davvero di me?",
+      "a": "Sinceramente? Sei la prima persona a cui voglio raccontare tutto.",
+      "hook": "C'è una cosa che non ho mai detto ad alta voce.",
+      "tail": "Va bene, te lo dico. Dalla nostra prima chat, io…"
+    },
+    "s2": {
+      "you": "Posso dirti un segreto?",
+      "a": "Solo se prima ti dico il mio.",
+      "hook": "È colpa tua se sorrido al telefono.",
+      "tail": "E ieri stavo quasi per dirti che io…"
+    },
+    "s3": {
+      "you": "Perché rispondi sempre così in fretta?",
+      "a": "Perché i tuoi messaggi sono la parte più bella della mia giornata.",
+      "hook": "Non ridere, ma li ho conservati tutti.",
+      "tail": "Ieri sera ne ho riletto uno, quello in cui tu…"
+    },
+    "typing": "{{name}} sta ancora scrivendo… apri Sigmazam per leggerlo",
+    "store": "Gratis sull'App Store"
   }
 }

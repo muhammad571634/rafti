@@ -2599,5 +2599,27 @@
       "ticking-clock": "Zamana karşı",
       "arranged-marriage": "Görücü usulü evlilik"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Dürüst ol. Benim hakkımda gerçekten ne düşünüyorsun?",
+      "a": "Dürüst mü? Her şeyi ilk anlatmak istediğim kişi sensin.",
+      "hook": "Hiç yüksek sesle söylemediğim bir şey var.",
+      "tail": "Tamam, söylüyorum. O ilk sohbetten beri ben…"
+    },
+    "s2": {
+      "you": "Sana bir sır verebilir miyim?",
+      "a": "Ancak önce ben kendiminkini anlatırsam.",
+      "hook": "Senin yüzünden telefona bakıp gülümsüyorum.",
+      "tail": "Dün de az kalsın sana söyleyecektim, ben…"
+    },
+    "s3": {
+      "you": "Neden hep bu kadar hızlı cevap veriyorsun?",
+      "a": "Çünkü mesajların günümün en güzel kısmı.",
+      "hook": "Gülme ama hepsini sakladım.",
+      "tail": "Dün gece birini yeniden okudum, hani sen…"
+    },
+    "typing": "{{name}} hâlâ yazıyor… okumak için Sigmazam'ı aç",
+    "store": "App Store'da ücretsiz"
   }
 }

@@ -2599,5 +2599,27 @@
       "ticking-clock": "Die Zeit läuft",
       "arranged-marriage": "Arrangierte Ehe"
     }
+  },
+  "sharePoster": {
+    "s1": {
+      "you": "Sei ehrlich. Was denkst du wirklich über mich?",
+      "a": "Ehrlich? Dir will ich als Erstes alles erzählen.",
+      "hook": "Da ist etwas, das ich noch nie laut gesagt habe.",
+      "tail": "Okay, ich sag es. Seit unserem ersten Chat …"
+    },
+    "s2": {
+      "you": "Darf ich dir ein Geheimnis verraten?",
+      "a": "Nur wenn ich dir zuerst meins verraten darf.",
+      "hook": "Wegen dir lächle ich mein Handy an.",
+      "tail": "Und gestern hätte ich dir fast gesagt, dass ich …"
+    },
+    "s3": {
+      "you": "Warum antwortest du immer so schnell?",
+      "a": "Weil deine Nachrichten das Schönste an meinem Tag sind.",
+      "hook": "Lach nicht, aber ich habe jede einzelne aufgehoben.",
+      "tail": "Gestern Nacht habe ich eine wieder gelesen, die, in der du …"
+    },
+    "typing": "{{name}} schreibt noch … öffne Sigmazam, um es zu lesen",
+    "store": "Kostenlos im App Store"
   }
 }
