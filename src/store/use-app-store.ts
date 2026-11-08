@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
+import { canPayShare } from '@/lib/share-outcome';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
 import { greeters } from '@/lib/greeters';
@@ -673,7 +674,8 @@ interface AppState {
   /** The wheel's result, drawn by the server when the wallet lives there (Profile → Server wallet). */
   spinWheel: () => Promise<{ index: number; reward: number } | null>;
   /** A card went out through the share sheet: the shells it paid, 0 once today's paid shares are used. */
-  rewardShare: () => Promise<number>;
+  /** Pays a share that went somewhere (`ShareOutcome` posted); `key` names the card, which pays once a day. */
+  rewardShare: (key?: string) => Promise<number>;
   /** Development (B1.2): reads the wallet from the server and takes it as the truth. */
   syncServerWallet: () => Promise<void>;
   /**
@@ -2490,9 +2492,12 @@ export const useAppStore = create<AppState>()(
         return { index, reward };
       },
 
-      rewardShare: async () => {
+      rewardShare: async (key) => {
         const today = todayKey();
         const paid = sharesPaid(get().daily, today);
+        // The same card (a friend's chat, a bond) pays once a day, whatever the daily cap says.
+        if (!canPayShare(paidKeysToday(get().daily, today), key)) return 0;
+        const keys = key ? [...paidKeysToday(get().daily, today), key] : paidKeysToday(get().daily, today);
 
         // With the wallet on the server, the server keeps the daily cap and pays; the count here
         // only tells the share buttons whether to show "+5".
@@ -2501,7 +2506,7 @@ export const useAppStore = create<AppState>()(
           if (!result) return 0;
           applyServerWallet(set, result.wallet);
           set((s) => ({
-            daily: { ...s.daily, shareDay: today, sharesPaid: PAID_SHARES_PER_DAY - result.left },
+            daily: { ...s.daily, shareDay: today, sharesPaid: PAID_SHARES_PER_DAY - result.left, sharePaidKeys: result.amount > 0 ? keys : paidKeysToday(s.daily, today) },
             ledger: result.amount > 0 ? log(s.ledger, result.amount, 'share') : s.ledger,
           }));
           return result.amount;
@@ -2510,7 +2515,7 @@ export const useAppStore = create<AppState>()(
         if (paid >= PAID_SHARES_PER_DAY) return 0;
         get().expireFreeShells();
         set((s) => ({
-          daily: { ...s.daily, shareDay: today, sharesPaid: paid + 1 },
+          daily: { ...s.daily, shareDay: today, sharesPaid: paid + 1, sharePaidKeys: keys },
           wallet: creditFree(s.wallet, SHARE_REWARD, today),
           ledger: log(s.ledger, SHARE_REWARD, 'share'),
         }));
@@ -4220,10 +4225,12 @@ export const memoryAccess = (memories: MemoryItem[], wallet: Wallet, characterId
   splitMemories(memories, characterId, hasFullMemory(wallet.subscription, now));
 
 const sharesPaid = (daily: DailyState, today: string) => (daily.shareDay === today ? (daily.sharesPaid ?? 0) : 0);
+const paidKeysToday = (daily: DailyState, today: string) => (daily.shareDay === today ? (daily.sharePaidKeys ?? []) : []);
 
 /** What sharing a card pays now: `SHARE_REWARD` while today's paid shares last, then 0. */
-export const shareReward = (daily: DailyState, today = todayKey()) =>
-  sharesPaid(daily, today) < PAID_SHARES_PER_DAY ? SHARE_REWARD : 0;
+/** What sharing `key`'s card would pay now: 0 once today's paid shares are used or that card paid today. */
+export const shareReward = (daily: DailyState, key?: string, today = todayKey()) =>
+  sharesPaid(daily, today) < PAID_SHARES_PER_DAY && canPayShare(paidKeysToday(daily, today), key) ? SHARE_REWARD : 0;
 
 /** Quick creates left today on the user's plan. */
 export const quickCreatesToday = (use: QuickCreateUse | undefined, wallet: Wallet, today = todayKey()) =>

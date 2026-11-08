@@ -155,8 +155,8 @@ export function ReplyControls({
           hitSlop={TALL}
           accessibilityRole="button"
           accessibilityLabel={shareReward ? `${t('common.share')}, +${shareReward} ${t('common.shells')}` : t('common.share')}>
-          {/* With the version stepper the row is full: the shell alone says it pays. */}
-          <SharePill reward={shareReward} amount={count <= 1} />
+          {/* Owner 2026-11-08: a round peach share button only; what it pays shows in the sheet. */}
+          <SharePill reward={0} />
         </PressableScale>
       ) : null}
     </View>

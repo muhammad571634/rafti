@@ -259,7 +259,7 @@ export default function ChatRoomScreen() {
   // Share under their newest reply: your line and theirs on a picture card.
   // The thread a share card shows (as many as six lines); null while their reply has no words yet.
   const shared = useMemo(() => (typing ? null : shareLines(data)), [data, typing]);
-  const reward = useAppStore((s) => shareReward(s.daily));
+  const reward = useAppStore((s) => shareReward(s.daily, character ? `chat:${character.id}` : undefined));
   const [sharing, setSharing] = useState(false);
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);

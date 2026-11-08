@@ -70,6 +70,15 @@ export function ChatPoster({ character, name, mood, script }: { character: Chara
           <Txt style={styles.mood} lines={1} maxFontSizeMultiplier={1}>
             {`${t('chat.aiShort')} · ${mood}`}
           </Txt>
+          {/* Where they live: a character of the Sigmazam app (owner 2026-11-08), as an app tile and its name. */}
+          <View style={styles.badge}>
+            <View style={styles.appTile}>
+              <Image source={BRAND.wink} style={styles.appMascot} contentFit="contain" accessible={false} />
+            </View>
+            <Txt style={styles.badgeText} lines={1} maxFontSizeMultiplier={1}>
+              {t('sharePoster.badge')}
+            </Txt>
+          </View>
         </View>
       </View>
 
@@ -141,7 +150,25 @@ const styles = StyleSheet.create({
   headText: { flex: 1, minWidth: 0, gap: 2 },
   name: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 34, color: PAPER.ink },
   mood: { fontSize: 13, fontWeight: '600', color: PAPER.soft },
-  thread: { position: 'absolute', left: 16, right: 16, top: 136, gap: 8 },
+  badge: {
+    alignSelf: 'flex-start',
+    maxWidth: '100%',
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 28,
+    paddingLeft: 4,
+    paddingRight: 11,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: PAPER.rim,
+    backgroundColor: PAPER.card,
+  },
+  appTile: { width: 20, height: 20, borderRadius: 6, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: PAPER.peach },
+  appMascot: { width: 18, height: 18 },
+  badgeText: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 12, color: PAPER.ink },
+  thread: { position: 'absolute', left: 16, right: 16, top: 150, gap: 8 },
   bubble: { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22 },
   mine: { alignSelf: 'flex-end', maxWidth: 280, borderBottomRightRadius: 6, backgroundColor: PAPER.peach },
   theirs: {

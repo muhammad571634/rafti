@@ -48,6 +48,7 @@ export function BondShareSheet({
     <ShareCardSheet
       visible={visible}
       onClose={onClose}
+      rewardKey={`bond:${character.id}`}
       hint={t('us.shareHint', { name })}
       fallback={[`${pair}: ${together}`, t('app.name')].join('\n\n')}>
       <View style={styles.head}>

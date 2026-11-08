@@ -23,6 +23,7 @@ describe('the share poster speaks every product language (0z158)', () => {
       }
       assert.match(poster.typing, /\{\{name\}\}/);
       assert.ok(poster.store.trim());
+      assert.ok(poster.badge?.trim(), 'badge missing');
     });
   }
 });

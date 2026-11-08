@@ -131,7 +131,7 @@ export default function UsScreen() {
   const [planOpen, setPlanOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>('all');
   const [sharing, setSharing] = useState(false);
-  const reward = useAppStore((s) => shareReward(s.daily));
+  const reward = useAppStore((s) => shareReward(s.daily, selectedId ? `bond:${selectedId}` : undefined));
   const unread = useInboxUnread();
 
   const bonds = useMemo(

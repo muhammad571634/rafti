@@ -1030,6 +1030,8 @@ export interface DailyState {
   /** The day `sharesPaid` counts: shared cards that paid shells (`PAID_SHARES_PER_DAY` a day). */
   shareDay?: string;
   sharesPaid?: number;
+  /** Which cards paid on `shareDay` (`chat:<id>`, `bond:<id>`): each pays once a day. */
+  sharePaidKeys?: string[];
   /** Messages sent today, for the members' fair-use limit */
   messagesDay?: string;
   messagesSent?: number;

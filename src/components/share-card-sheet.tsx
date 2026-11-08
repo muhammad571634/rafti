@@ -23,8 +23,9 @@ const PAID_MS = 800;
  * what the card is for, then the card on the aurora, its own content over the Sigmazam wordmark and
  * tagline with the mascot peeking up from the bottom corner. Share sends the card as a picture
  * through the system sheet (Save Image lives there on iOS), or `fallback` as text where a picture
- * cannot be made; ×, the scrim or Back closes it. The day's first shares pay a few shells
- * (`SHARE_REWARD`, owner 2026-10-30): the button shows "+5" while they do, and a ✓ when one paid.
+ * cannot be made; ×, the scrim or Back closes it. A share that went somewhere pays a few shells
+ * (`SHARE_REWARD`, `PAID_SHARES_PER_DAY`, each card once a day; `shareImage` tells: owner 2026-11-08,
+ * never for a cancel or a save): the button shows "+5" while it would, and a ✓ when one paid.
  */
 export function ShareCardSheet({
   visible,
@@ -32,11 +33,14 @@ export function ShareCardSheet({
   hint,
   fallback,
   poster,
+  rewardKey,
   children,
 }: {
   visible: boolean;
   onClose: () => void;
   hint?: string;
+  /** The card's name for the daily pay (`chat:<id>`, `bond:<id>`): each card pays once a day. */
+  rewardKey?: string;
   fallback: string;
   /**
    * The child is the whole picture (a story poster, `ChatPoster`): drawn at its own fixed size,
@@ -50,17 +54,19 @@ export function ShareCardSheet({
   const card = useRef<ViewInstance>(null);
   // The poster fits the sheet's width and leaves room for the title and the button.
   const scale = poster ? Math.min(1, (screenW - SHEET_SIDES) / poster.width, (screenH - SHEET_CHROME) / poster.height) : 1;
-  const reward = useAppStore((s) => shareReward(s.daily));
+  const reward = useAppStore((s) => shareReward(s.daily, rewardKey));
   const rewardShare = useAppStore((s) => s.rewardShare);
   const [busy, setBusy] = useState(false);
   const [paid, setPaid] = useState(false);
 
   const share = async () => {
     setBusy(true);
-    const shared = await shareImage(card, fallback, poster?.pixels);
-    const amount = shared ? await rewardShare() : 0;
+    const outcome = await shareImage(card, fallback, poster?.pixels);
+    // Shells only for a picture that went somewhere (owner 2026-11-08), never for a cancel or a save.
+    const amount = outcome === 'posted' ? await rewardShare(rewardKey) : 0;
     setBusy(false);
-    if (!shared) return;
+    // A cancel leaves the sheet open to try again.
+    if (outcome === 'dismissed' || outcome === 'failed') return;
     if (!amount) return onClose();
     haptic.success();
     setPaid(true);

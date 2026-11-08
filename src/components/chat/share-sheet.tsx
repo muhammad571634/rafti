@@ -29,6 +29,7 @@ export function ShareSheet({ visible, onClose, character }: { visible: boolean; 
       visible={visible}
       onClose={onClose}
       poster={POSTER}
+      rewardKey={`chat:${character.id}`}
       fallback={[t('sharePoster.typing', { name: name.split(' ')[0] || name }), t('sharePoster.store'), t('app.name')].join('\n\n')}>
       <ChatPoster character={character} name={name} mood={t(`chat.mood.${mood}`)} script={script} />
     </ShareCardSheet>
