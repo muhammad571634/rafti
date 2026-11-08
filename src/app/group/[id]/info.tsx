@@ -27,7 +27,7 @@ import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, playful, space, type } from '@/theme';
+import { colors, space, systemGround, type } from '@/theme';
 import type { Character } from '@/types';
 
 const NAME_MAX = 40;
@@ -84,7 +84,7 @@ export default function GroupInfoScreen() {
 
   if (!group || !groupId) {
     return (
-      <Screen background={playful.ground}>
+      <Screen background={systemGround.ground}>
         <TitleTop title={t('group.info')} onBack={() => router.back()} />
         <Txt style={styles.missing}>{t('group.notFound')}</Txt>
       </Screen>
@@ -136,8 +136,8 @@ export default function GroupInfoScreen() {
   ];
 
   return (
-    // The merged look (0z155), twin of chat settings: cream ground, the group's mint card, white cards.
-    <Screen background={playful.ground}>
+    // The merged look (0z155), twin of chat settings: Apple's white ground, the group's mint card, white cards.
+    <Screen background={systemGround.ground}>
       <ProfileTop
         title={title}
         showTitle={scrolled}

@@ -15,7 +15,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, fonts, isDark, palette, playful, radius, space, type } from '@/theme';
+import { bottomRoom, colors, fonts, isDark, palette, radius, space, systemGround, type } from '@/theme';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
 /** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
@@ -106,9 +106,9 @@ export default function MemoriesScreen() {
         : { symbol: { ios: 'bookmark.fill', icon: 'bookmark' }, title: t('memories.empty'), hint: t('memories.emptyHint') };
 
   return (
-    // The four tabs' look (0z153): cream ground, a heavy title by round buttons, the meter as a white
+    // The four tabs' look (0z153): Apple's white ground, a heavy title by round buttons, the meter as a white
     // card, a soft switch of the three tabs, then the chosen tab's memories in white cards.
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <TitleTop
         title={t('memories.title')}
         onBack={() => router.back()}
@@ -451,11 +451,11 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   // Rows share one white card: the first rounds its top, the last its bottom.
-  rowWrap: { marginHorizontal: space.lg, backgroundColor: playful.card, overflow: 'hidden' },
+  rowWrap: { marginHorizontal: space.lg, backgroundColor: systemGround.card, overflow: 'hidden' },
   rowFirst: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
   rowLast: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
-  memory: { paddingLeft: 18, backgroundColor: playful.card },
-  memoryPressed: { backgroundColor: playful.chip },
+  memory: { paddingLeft: 18, backgroundColor: systemGround.card },
+  memoryPressed: { backgroundColor: systemGround.fill },
   memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 14, paddingRight: 18 },
   memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   memoryText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
@@ -476,12 +476,12 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     ...type.body,
   },
-  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: 24, backgroundColor: playful.card },
+  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: 24, backgroundColor: systemGround.card },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink, fontVariant: ['tabular-nums'] },
+  meterTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label, fontVariant: ['tabular-nums'] },
   figure: { fontVariant: ['tabular-nums'] },
   // The tabs' shares sit side by side with a hairline gap, on the soft track.
-  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: 5, backgroundColor: playful.chip, overflow: 'hidden' },
+  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: 5, backgroundColor: systemGround.fill, overflow: 'hidden' },
   fill: { height: '100%' },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 10 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -490,19 +490,19 @@ const styles = StyleSheet.create({
   locked: { gap: 8, paddingHorizontal: space.lg, paddingTop: 22 },
   lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 6 },
   lockedTitle: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.textSecondary },
-  lockedBox: { borderRadius: 24, backgroundColor: playful.card, overflow: 'hidden' },
+  lockedBox: { borderRadius: 24, backgroundColor: systemGround.card, overflow: 'hidden' },
   lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 62, paddingHorizontal: 18 },
   lockTile: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
     alignItems: 'center',
     justifyContent: 'center',
   },
   lines: { flex: 1, gap: space.xs + 2 },
-  line: { height: 9, borderRadius: radius.pill, backgroundColor: playful.chip },
-  bar: { gap: space.sm, paddingTop: space.md, backgroundColor: playful.ground },
+  line: { height: 9, borderRadius: radius.pill, backgroundColor: systemGround.fill },
+  bar: { gap: space.sm, paddingTop: space.md, backgroundColor: systemGround.ground },
   sheetHead: { alignItems: 'center', gap: space.md, marginTop: space.xs },
   lockArt: {
     width: 56,

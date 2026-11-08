@@ -40,7 +40,7 @@ import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, playful, radius, space, type } from '@/theme';
+import { colors, radius, space, systemGround, type } from '@/theme';
 import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -191,8 +191,8 @@ export default function CharacterSettingsScreen() {
   const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
 
   return (
-    // The four tabs' look (0z152): cream ground, their picture as Find's photo card, white cards.
-    <Screen background={playful.ground}>
+    // The four tabs' look (0z152): Apple's white ground, their picture as Find's photo card, white cards.
+    <Screen background={systemGround.ground}>
       <ProfileTop
         title={name}
         showTitle={scrolled}

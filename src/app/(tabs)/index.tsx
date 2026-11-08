@@ -629,9 +629,9 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.chipOn,
+    backgroundColor: systemGround.label,
   },
-  countText: { fontSize: 13, fontWeight: '800', color: playful.chipOnText },
+  countText: { fontSize: 13, fontWeight: '800', color: systemGround.ground },
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
   // The width comes from the screen (`half`), so two always fit.
   slot: { height: WIDGET_HEIGHT },

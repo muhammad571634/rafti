@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z165. The other screens on Apple's system ground; the chat keeps its cream (2026-11-08, Claude 1). NEXT: owner looks at them on the phone
+
+- **Owner's ask**: carry the white ground to the remaining screens; mid-way: "leave the chat, go to the other screens". A started change of every chat's default ground to white (a v16 store migration, the picker's default) was reverted unsent.
+- **Built**: profile, edit profile, a friend's page, memories, chat settings (`src/app/character/[id]/*` with `src/components/character/kit.tsx`), create a character with its kit and quick create, new group, group info and the date share sheet read `systemGround` (same mapping as 0z164: ground, grey cards, label ink, Apple fill for chips and round buttons, label-colour on-chips, dash / well; the share sheet's box is the grey card). The floating tab bar: at night Apple's bar material `rgba(28,28,30,0.94)` and secondary label for off tabs (was warm brown); by day a black pill and Apple's secondary label; its badge ring is `colors.surface`; the search glyph and iOS native tabs' tint are the label colour. Today's count chip on the sun bubble is the label colour. Stale "cream" comments reworded.
+- **Still cream on purpose** (owner): the chat screen (`chat-header`, `chat-input`, a group chat's header ring), Chat background's default and the Cream wallpaper (`src/mock/misc.ts`), so `playful.ground` / `round` stay for them.
+- **Not seen on the A51**: the owner was on the phone (OTA `01a1bbf8` published). Checks: tsc 0, npm test.
+
+Still to do:
+1. Look at these screens on the A51, light and dark: profile (your capsule on Today), edit profile, a friend's page (a face on Us), memories, chat settings, create (Find's +), new group (Chats' pencil), group info.
+
 ### 0z164. Chats, Us and Find on Apple's system ground (2026-11-08, Claude 1). NEXT: the remaining cream screens when the owner says
 
 - **Owner's ask**: after Today (0z163), carry option B to Chats, Us and Find.

@@ -7,7 +7,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { colors, fonts, playful, space, systemColors } from '@/theme';
+import { colors, fonts, space, systemColors, systemGround } from '@/theme';
 
 /**
  * The create screen's parts in the playful skin (design-style §10, 0z149): the cream ground, a
@@ -21,7 +21,7 @@ export function CreateHead({ title, onBack, right }: { title: string; onBack: ()
   return (
     <View style={styles.head}>
       <PressableScale onPress={onBack} scaleTo={0.9} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('common.back')} style={styles.round}>
-        <Ionicons name="chevron-back" size={22} color={playful.ink} />
+        <Ionicons name="chevron-back" size={22} color={systemGround.label} />
       </PressableScale>
       {/* A long title ("Редактировать персонажа") shrinks to fit rather than being cut. */}
       <Txt style={[styles.title, styles.grow]} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
@@ -175,7 +175,7 @@ export function Rewrite({ label, busy, disabled, onPress }: { label: string; bus
 }
 
 /** A small round icon button inside a card (shuffle, remove). */
-export function SmallRound({ icon, label, onPress, color = playful.ink }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void; color?: string }) {
+export function SmallRound({ icon, label, onPress, color = systemGround.label }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void; color?: string }) {
   return (
     <Pressable onPress={onPress} hitSlop={8} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [styles.rewrite, styles.soft, pressed && styles.pressed]}>
       <Ionicons name={icon} size={17} color={color} />
@@ -220,7 +220,7 @@ export function BottomBar({
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]} pointerEvents="box-none">
-      <LinearGradient colors={playful.groundFade} style={styles.fade} pointerEvents="none" />
+      <LinearGradient colors={systemGround.groundFade} style={styles.fade} pointerEvents="none" />
       <View style={styles.barBody}>
         {error ? (
           <Animated.View entering={FadeIn.duration(160)}>
@@ -259,12 +259,12 @@ export const BOTTOM_BAR_SPACE = 170;
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.round },
-  title: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: playful.ink },
-  card: { marginHorizontal: space.lg, marginTop: 14, padding: space.lg, borderRadius: 24, backgroundColor: playful.card, borderWidth: 2, borderColor: 'transparent' },
+  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  title: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: systemGround.label },
+  card: { marginHorizontal: space.lg, marginTop: 14, padding: space.lg, borderRadius: 24, backgroundColor: systemGround.card, borderWidth: 2, borderColor: 'transparent' },
   cardProblem: { borderColor: systemColors.red },
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  cardTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
+  cardTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
   problem: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
   problemText: { flex: 1, fontSize: 14, fontWeight: '600', color: systemColors.red },
   field: { marginTop: space.sm },
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
     borderRadius: 14,
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
     fontSize: 17,
     lineHeight: 22,
     letterSpacing: -0.3,
@@ -285,21 +285,21 @@ const styles = StyleSheet.create({
   },
   pair: { flexDirection: 'row', gap: space.md },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, borderRadius: 19, backgroundColor: playful.chip },
-  chipOn: { backgroundColor: playful.chipOn },
-  chipText: { fontFamily: fonts.playfulBold, fontSize: 14.5, color: playful.ink },
-  chipTextOn: { color: playful.chipOnText },
+  chip: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, borderRadius: 19, backgroundColor: systemGround.fill },
+  chipOn: { backgroundColor: systemGround.label },
+  chipText: { fontFamily: fonts.playfulBold, fontSize: 14.5, color: systemGround.label },
+  chipTextOn: { color: systemGround.ground },
   rewrite: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
-  soft: { backgroundColor: playful.chip },
+  soft: { backgroundColor: systemGround.fill },
   pressed: { opacity: 0.6 },
   off: { opacity: 0.4 },
   disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: space.sm },
   // Reads as a card title: the closed card is its own section.
-  disclosureText: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
-  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: playful.ground },
+  disclosureText: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
+  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: systemGround.ground },
   // The ground fades in above the bar; behind it the ground is solid, so nothing shows through.
   fade: { position: 'absolute', left: 0, right: 0, top: -28, height: 28 },
-  barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm, backgroundColor: playful.ground },
+  barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm, backgroundColor: systemGround.ground },
   cta: {
     height: 56,
     borderRadius: 28,
@@ -310,12 +310,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryFill,
   },
   // Off: a solid soft fill, never see-through.
-  ctaOff: { backgroundColor: playful.chip },
+  ctaOff: { backgroundColor: systemGround.fill },
   ctaTextOff: { color: colors.textFaint },
   // System bold: the button's words come in every script.
   ctaText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
   caption: { textAlign: 'center', fontSize: 13, color: colors.textSecondary },
-  secondary: { height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
-  secondaryText: { fontFamily: fonts.playfulBold, fontSize: 16, color: playful.ink },
+  secondary: { height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  secondaryText: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
   error: { textAlign: 'center', fontSize: 14, fontWeight: '600', color: systemColors.red },
 });

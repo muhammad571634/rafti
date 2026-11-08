@@ -10,11 +10,11 @@ import { portraitOf } from '@/components/chat/chat-ground';
 import { GroupAvatar } from '@/components/group-avatar';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors, fonts, friendColor, hitSlop, playful, space, systemColors } from '@/theme';
+import { colors, fonts, friendColor, hitSlop, playful, space, systemColors, systemGround } from '@/theme';
 import type { Character } from '@/types';
 
 /**
- * A friend's profile and chat settings in the four tabs' look (design-style §10, 0z152): the cream
+ * A friend's profile and chat settings in the four tabs' look (design-style §10, 0z152): the ground
  * ground, round head buttons, their picture as Find's photo card (radius 30, bottom scrim, white
  * Nunito name, clear glass), white radius-24 cards with heavy titles, big round quick actions and
  * one peach button. Switches stay the app's `Toggle`, choices a soft segmented control.
@@ -30,7 +30,7 @@ export function ProfileTop({ title, showTitle, onBack, right }: { title: string;
   return (
     <View style={styles.top}>
       <PressableScale onPress={onBack} scaleTo={0.88} hitSlop={hitSlop} accessibilityRole="button" accessibilityLabel={t('a11y.back')} style={styles.round}>
-        <Ionicons name="chevron-back" size={24} color={playful.ink} style={styles.backGlyph} />
+        <Ionicons name="chevron-back" size={24} color={systemGround.label} style={styles.backGlyph} />
       </PressableScale>
       <Txt
         style={[styles.topTitle, !showTitle && styles.hidden]}
@@ -51,7 +51,7 @@ export function TitleTop({ title, onBack, right }: { title: string; onBack: () =
   return (
     <View style={styles.top}>
       <PressableScale onPress={onBack} scaleTo={0.88} hitSlop={hitSlop} accessibilityRole="button" accessibilityLabel={t('a11y.back')} style={styles.round}>
-        <Ionicons name="chevron-back" size={24} color={playful.ink} style={styles.backGlyph} />
+        <Ionicons name="chevron-back" size={24} color={systemGround.label} style={styles.backGlyph} />
       </PressableScale>
       {/* A long title shrinks to fit rather than being cut. */}
       <Txt style={styles.bigTitle} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header" maxFontSizeMultiplier={1.2}>
@@ -119,7 +119,7 @@ export function TopButton({
   onPress: () => void;
 }) {
   const on = peach && !disabled;
-  const ink = disabled ? colors.textFaint : on ? colors.textOnPrimary : playful.ink;
+  const ink = disabled ? colors.textFaint : on ? colors.textOnPrimary : systemGround.label;
   return (
     <PressableScale
       onPress={onPress}
@@ -278,7 +278,7 @@ export function QuickAction({
       accessibilityLabel={accessibilityLabel ?? (badge ? `${label}, ${badge}` : label)}
       style={[styles.quick, disabled && styles.off]}>
       <View style={styles.quickRound}>
-        <Ionicons name={icon} size={25} color={playful.ink} />
+        <Ionicons name={icon} size={25} color={systemGround.label} />
         {badge ? (
           <View style={styles.badge}>
             <Txt style={styles.badgeText} maxFontSizeMultiplier={1.2}>
@@ -592,7 +592,7 @@ export function BondTrack({ progress }: { progress: number }) {
 export function CardRound({ icon, accessibilityLabel, onPress }: { icon: keyof typeof Ionicons.glyphMap; accessibilityLabel: string; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} hitSlop={8} accessibilityRole="button" accessibilityLabel={accessibilityLabel} style={({ pressed }) => [styles.cardRound, pressed && styles.rowPressed]}>
-      <Ionicons name={icon} size={19} color={playful.ink} />
+      <Ionicons name={icon} size={19} color={systemGround.label} />
     </Pressable>
   );
 }
@@ -609,14 +609,14 @@ export const profileStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: SIDE, paddingTop: space.xs, paddingBottom: space.sm },
-  round: { minWidth: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.round },
+  round: { minWidth: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   roundSpace: { width: ROUND },
   pill: { paddingHorizontal: 16 },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
   pillPeach: { backgroundColor: colors.primaryFill },
   backGlyph: { marginLeft: -2 },
-  bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: playful.ink },
-  topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: playful.ink },
+  bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: systemGround.label },
+  topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: systemGround.label },
   hidden: { opacity: 0 },
   face: { marginHorizontal: SIDE, borderRadius: 30, overflow: 'hidden' },
   groupFace: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 26, paddingBottom: 22 },
@@ -649,8 +649,8 @@ const styles = StyleSheet.create({
   quickRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18, paddingHorizontal: SIDE + space.sm },
   quickCenter: { justifyContent: 'center', gap: 36 },
   quick: { width: 76, alignItems: 'center', gap: 7 },
-  quickRound: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.card },
-  quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, color: playful.ink },
+  quickRound: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
+  quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
   badge: {
     position: 'absolute',
     top: -2,
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     backgroundColor: colors.primaryFill,
     borderWidth: 2,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -670,12 +670,12 @@ const styles = StyleSheet.create({
   peach: { height: 56, marginHorizontal: SIDE, borderRadius: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.primaryFill },
   // System bold: the button's words come in every script.
   peachText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
-  group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: 24, backgroundColor: playful.card, overflow: 'hidden' },
+  group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: 24, backgroundColor: systemGround.card, overflow: 'hidden' },
   groupHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 4 },
-  groupTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
+  groupTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
   row: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18 },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  rowPressed: { backgroundColor: playful.chip },
+  rowPressed: { backgroundColor: systemGround.fill },
   // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
   rowText: { fontSize: 17, letterSpacing: -0.4 },
   meta: { flexShrink: 1, maxWidth: '50%', color: colors.textSecondary },
@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
   rowPill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: colors.primarySofter },
   rowPillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.brandText },
   progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
-  progressFigure: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink, fontVariant: ['tabular-nums'] },
+  progressFigure: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label, fontVariant: ['tabular-nums'] },
   trackTight: { marginBottom: 0 },
   progressHint: { marginHorizontal: 18, marginTop: 10, marginBottom: 16, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },
@@ -692,19 +692,19 @@ const styles = StyleSheet.create({
   pick: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: colors.borderStrong },
   pickOn: { borderWidth: 0, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   choice: { gap: 10, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
-  segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: playful.chip },
+  segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: systemGround.fill },
   segment: { flex: 1, minHeight: 36, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
   segmentOn: {
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
   },
   segmentText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  segmentTextOn: { color: playful.ink },
+  segmentTextOn: { color: systemGround.label },
   bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
   heart: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
-  bondTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
+  bondTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
   bondLine: { fontSize: 13, lineHeight: 18, fontWeight: '600', color: colors.textSecondary },
-  track: { height: 8, marginHorizontal: 18, marginTop: 14, marginBottom: 16, borderRadius: 4, backgroundColor: playful.chip, overflow: 'hidden' },
+  track: { height: 8, marginHorizontal: 18, marginTop: 14, marginBottom: 16, borderRadius: 4, backgroundColor: systemGround.fill, overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: colors.primaryFill },
-  cardRound: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  cardRound: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
 });

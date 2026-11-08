@@ -8,7 +8,7 @@ import { IDEA_MAX, SPARKS, SPARKS_MAX, type Spark } from '@/ai/character-draft';
 import { DRAFT_MS } from '@/ai/character-studio';
 import { PressableScale, Txt } from '@/components/ui';
 import { ROLES } from '@/lib/create-character';
-import { colors, fonts, playful, space, systemColors } from '@/theme';
+import { colors, fonts, space, systemColors, systemGround } from '@/theme';
 import type { CharacterRole } from '@/types';
 
 import { Card, Chip, ChipGroup, SmallRound } from './kit';
@@ -102,7 +102,7 @@ export function ContinueCard({ name, onContinue, onDrop }: { name: string; onCon
       <Card>
         <View style={styles.continueRow}>
           <View style={styles.continueIcon}>
-            <Ionicons name="document-text" size={20} color={playful.ink} />
+            <Ionicons name="document-text" size={20} color={systemGround.label} />
           </View>
           <Txt style={[styles.continueText, styles.grow]} lines={2}>
             {name ? t('createCharacter.flow.continueNamed', { name }) : t('createCharacter.flow.continue')}
@@ -185,23 +185,23 @@ function StepMark({ state }: { state: 'done' | 'now' | 'later' }) {
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   // Find's section title.
-  ask: { marginTop: space.md, marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: playful.ink },
+  ask: { marginTop: space.md, marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: systemGround.label },
   idea: { minHeight: 112, fontSize: 18, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
   count: { textAlign: 'right', fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   continueRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  continueIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
-  continueText: { fontFamily: fonts.playfulBold, fontSize: 16, color: playful.ink },
+  continueIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  continueText: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
   continueButtons: { flexDirection: 'row', gap: space.sm, marginTop: space.md },
-  smallButton: { flex: 1, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
-  smallOn: { backgroundColor: playful.chipOn },
-  smallText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
-  smallTextOn: { color: playful.chipOnText },
+  smallButton: { flex: 1, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  smallOn: { backgroundColor: systemGround.label },
+  smallText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
+  smallTextOn: { color: systemGround.ground },
   writing: { alignItems: 'stretch', paddingTop: space.xxl },
   portraitBox: { alignSelf: 'center', width: 140, height: 140, alignItems: 'center', justifyContent: 'center' },
   // A ring with one bright arc, turning: the iOS activity feel, at portrait size.
   portraitRing: { position: 'absolute', width: 140, height: 140, borderRadius: 70, borderWidth: 4, borderColor: colors.primarySofter, borderTopColor: colors.primary },
-  portrait: { width: 120, height: 120, borderRadius: 60, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.card },
-  writingTitle: { alignSelf: 'center', marginTop: space.xl, marginBottom: space.xs, fontFamily: fonts.playful, fontSize: 24, lineHeight: 30, color: playful.ink },
+  portrait: { width: 120, height: 120, borderRadius: 60, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
+  writingTitle: { alignSelf: 'center', marginTop: space.xl, marginBottom: space.xs, fontFamily: fonts.playful, fontSize: 24, lineHeight: 30, color: systemGround.label },
   step: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 46 },
   stepText: { flex: 1, fontSize: 17, letterSpacing: -0.3, color: colors.text },
   stepLater: { color: colors.textSecondary },

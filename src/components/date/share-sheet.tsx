@@ -11,7 +11,7 @@ import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { shareImage } from '@/lib/share';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, playful, space, systemColors } from '@/theme';
+import { colors, space, systemColors, systemGround } from '@/theme';
 
 const FACE = 60;
 
@@ -127,5 +127,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ways: { borderRadius: 16, overflow: 'hidden', backgroundColor: playful.ground },
+  ways: { borderRadius: 16, overflow: 'hidden', backgroundColor: systemGround.card },
 });

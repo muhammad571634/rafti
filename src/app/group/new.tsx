@@ -11,7 +11,7 @@ import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt } from '@/comp
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, playful, space, type } from '@/theme';
+import { colors, space, systemGround, type } from '@/theme';
 
 /** What the user may call a group. */
 const NAME_MAX = 40;
@@ -44,7 +44,7 @@ export default function NewGroupScreen() {
 
   if (friends.length < GROUP_MIN) {
     return (
-      <Screen background={playful.ground}>
+      <Screen background={systemGround.ground}>
         <TitleTop title={t('group.newGroup')} onBack={() => router.back()} />
         <EmptyState
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
@@ -60,9 +60,9 @@ export default function NewGroupScreen() {
   const pickedFriends = friends.filter((f) => picked.includes(f.character.id));
 
   return (
-    // The merged look (0z155): cream ground, a heavy title with Create beside it (peach once two
+    // The merged look (0z155): Apple's white ground, a heavy title with Create beside it (peach once two
     // friends are picked), white cards for the name and the friends.
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <TitleTop
         title={t('group.newGroup')}
         onBack={() => router.back()}
@@ -169,12 +169,12 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
     backgroundColor: colors.textSecondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  faceName: { fontSize: 13, fontWeight: '600', color: playful.ink },
+  faceName: { fontSize: 13, fontWeight: '600', color: systemGround.label },
   // An empty seat: the dashed ring the playful layer uses for a slot waiting to be filled.
   seat: {
     width: 60,
@@ -182,8 +182,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: playful.dash,
-    backgroundColor: playful.well,
+    borderColor: systemGround.dash,
+    backgroundColor: systemGround.well,
   },
   optional: { fontSize: 13, color: colors.textSecondary },
   input: {

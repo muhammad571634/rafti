@@ -28,12 +28,12 @@ import { heightLabel } from '@/lib/character-facts';
 import { daysBetween, shortName } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, playful, space } from '@/theme';
+import { colors, fonts, space, systemGround } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
 /**
  * Discovery -> profile -> "Add friend" is the reference app's way in: adding a character opens a
- * chat that starts with their greeting. In the four tabs' look (0z152): the cream ground, their
+ * chat that starts with their greeting. In the four tabs' look (0z152): Apple's white ground, their
  * picture as Find's photo card with the name on it, one peach action, and white cards below.
  */
 export default function CharacterProfileScreen() {
@@ -81,7 +81,7 @@ export default function CharacterProfileScreen() {
   };
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <ProfileTop
         title={name}
         showTitle={scrolled}
@@ -292,11 +292,11 @@ const styles = StyleSheet.create({
   bold: { fontWeight: '700' },
   words: { paddingHorizontal: space.xl, paddingTop: 18, paddingBottom: 18, alignItems: 'center' },
   // Their own words come in every script: the system face, heavy.
-  tagline: { fontSize: 19, lineHeight: 25, fontWeight: '800', letterSpacing: -0.4, color: playful.ink },
+  tagline: { fontSize: 19, lineHeight: 25, fontWeight: '800', letterSpacing: -0.4, color: systemGround.label },
   bio: { marginTop: 8, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
   tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
-  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: 16, justifyContent: 'center', backgroundColor: playful.chip },
-  tagText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: playful.ink },
+  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: 16, justifyContent: 'center', backgroundColor: systemGround.fill },
+  tagText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: systemGround.label },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   aboutStory: { paddingHorizontal: 18, paddingTop: 8, paddingBottom: 14, gap: 4 },
   aboutRow: { paddingHorizontal: 18, paddingVertical: 12, gap: 2 },
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   aboutValue: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
   storyList: { paddingTop: 4 },
   storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 12 },
-  storyIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  storyIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   storyIconOpen: { backgroundColor: colors.primarySofter },
   storyLocked: { color: colors.textSecondary },
   progress: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },

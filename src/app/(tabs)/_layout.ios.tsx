@@ -3,7 +3,7 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useTranslation } from 'react-i18next';
 
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
-import { playful } from '@/theme';
+import { playful, systemGround } from '@/theme';
 
 /**
  * iOS: the system tab bar, Liquid Glass on iOS 26 and later (approved prototype
@@ -24,7 +24,7 @@ export default function TabsLayout() {
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
   return (
-    <NativeTabs tintColor={playful.ink} labelStyle={{ fontWeight: '700' }} badgeBackgroundColor={playful.red}>
+    <NativeTabs tintColor={systemGround.label} labelStyle={{ fontWeight: '700' }} badgeBackgroundColor={playful.red}>
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.home')}</NativeTabs.Trigger.Label>

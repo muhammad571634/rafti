@@ -218,9 +218,9 @@ pins' art or words.
 
 - **Beautiful, not toy-like (owner, 2026-11-08), for every new or changed screen from now on.** "A
   little Apple iOS, the rest one design merged from Chats, Today, Us and Find." So a screen takes the
-  four tabs' parts as they are: the cream ground (`playful.ground`), the heavy rounded title
-  (`fonts.playful`, 28-36) by a round 40-44 head button, white cards with radius 24
-  (`playful.card`), soft chips that turn ink when on (`playful.chip` / `chipOn`), Find's photo card
+  four tabs' parts as they are: Apple's system ground (`systemGround.ground`), the heavy rounded title
+  (`fonts.playful`, 28-36) by a round 40-44 head button, secondary-grey cards with radius 24
+  (`systemGround.card`), Apple-fill chips that turn the label colour when on, Find's photo card
   (radius 30, bottom scrim, white Nunito name, clear glass button), friend hues for a face without a
   picture, and iOS for structure (one main action, sheets, native inputs). Not a cartoon: no mascot
   speech bubbles or toy art on working screens. The create screen (0z149) is the first built this way.
@@ -232,7 +232,10 @@ pins' art or words.
   night, Apple's label colours, Apple's fill for chips and round buttons (an "on" chip is the
   label colour), the segmented control's thumb is `systemColors.thumb`. Flat cards (no shadow).
   All four tabs have it (Today 0z163, Chats, Us, Find 0z164, with Chats' search and Us' plan
-  calendar); the remaining `playful.ground` screens next; `playful.ground` goes once all have moved.
+  calendar), and so do the profile, edit profile, a friend's page, memories and settings, create
+  a character, new group, group info and the date share sheet (0z165); the floating tab bar uses
+  Apple's bar material and labels. The chat screen itself keeps its cream ground, header and field
+  (owner, 2026-11-08: "leave the chat"), as does the Cream wallpaper.
   Friend hues, widget colours, the sun bubble and module tiles keep their colours (colour that means
   something). Still missing app-wide: Increase Contrast variants (HIG asks for them).
 - **A photo card with words on it puts the friend on the trailing side (owner, 2026-11-08, every

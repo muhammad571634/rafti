@@ -131,7 +131,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
               onPress={() => open(find.route.key, find.focused)}>
               {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
               <View collapsable={false} style={[styles.roundInner, find.focused && styles.on]}>
-                <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? playful.tabOnText : playful.ink} />
+                <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? playful.tabOnText : systemGround.label} />
               </View>
             </Pressable>
           </Floating>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: playful.card,
+    borderColor: colors.surface,
     backgroundColor: playful.red,
     alignItems: 'center',
     justifyContent: 'center',

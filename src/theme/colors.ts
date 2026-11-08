@@ -568,8 +568,8 @@ export const playful = isDark
       tabOn: palette.apricot300,
       tabOnText: palette.peachInk,
       /** The floating tab bar's fill, a tab that is off, and the fade under the bar. */
-      bar: 'rgba(42,36,32,0.95)',
-      tabOff: 'rgba(255,255,255,0.62)',
+      bar: 'rgba(28,28,30,0.94)',
+      tabOff: 'rgba(235,235,245,0.6)',
       groundFade: ['rgba(26,22,19,0)', 'rgba(26,22,19,0.94)'] as const,
     }
   : {
@@ -588,10 +588,10 @@ export const playful = isDark
       red: systemColors.red,
       sun: '#FFC93C',
       sunInk: '#1F1A17',
-      tabOn: '#1F1A17',
+      tabOn: '#000000',
       tabOnText: '#FFFFFF',
-      bar: 'rgba(255,255,255,0.95)',
-      tabOff: 'rgba(31,26,23,0.6)',
+      bar: 'rgba(255,255,255,0.94)',
+      tabOff: 'rgba(60,60,67,0.6)',
       groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
     };
 

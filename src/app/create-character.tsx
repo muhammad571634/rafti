@@ -48,7 +48,7 @@ import {
 } from '@/lib/create-character';
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, fonts, playful, space, systemColors } from '@/theme';
+import { avatarGradients, colors, fonts, space, systemColors, systemGround } from '@/theme';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
@@ -188,7 +188,7 @@ export default function CreateCharacterScreen() {
 
   if (editId && !editing) {
     return (
-      <Screen background={playful.ground}>
+      <Screen background={systemGround.ground}>
         <CreateHead title={t('errors.notFound')} onBack={() => router.back()} />
       </Screen>
     );
@@ -557,7 +557,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const title = editing ? t('createCharacter.editTitle') : t('createCharacter.title');
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <CreateHead title={title} onBack={back} />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {phase === 'writing' ? (
@@ -702,7 +702,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
             <Card title={label('voice')} problem={problemText('voice')} onLayout={at('voice')}>
               <ChipGroup>
                 {ownVoice || (editing && !editing.voicePreset) ? (
-                  <Chip label={label('flow.ownVoice')} on={ownVoice} onPress={() => set({ preset: undefined })} icon={<Ionicons name="mic" size={15} color={ownVoice ? playful.chipOnText : playful.ink} />} />
+                  <Chip label={label('flow.ownVoice')} on={ownVoice} onPress={() => set({ preset: undefined })} icon={<Ionicons name="mic" size={15} color={ownVoice ? systemGround.ground : systemGround.label} />} />
                 ) : null}
                 {VOICES.map((v) => (
                   <Chip key={v} label={t(`createCharacter.voices.${v}`)} on={!ownVoice && form.preset === v} onPress={() => set({ preset: v })} />
@@ -858,7 +858,7 @@ function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number
   const name = form.name.trim();
   const greeting = (form.greeting.trim() || t('createCharacter.defaultGreeting', { name })).replace(/\{\{user\}\}/g, you);
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <View style={styles.meet}>
         <Animated.View entering={ZoomIn.springify().damping(14)} style={styles.meetFace}>
           {form.imageUri ? (
@@ -921,17 +921,17 @@ const styles = StyleSheet.create({
   toggleText: { fontSize: 15, lineHeight: 20, color: colors.text },
   fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginTop: space.sm, marginBottom: 6 },
   subLabel: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  dialog: { minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 22, color: colors.text },
+  dialog: { minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: systemGround.fill, fontSize: 16, lineHeight: 22, color: colors.text },
   inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
   inlineActionText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.brandText },
   lines: { marginTop: space.sm },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 21, color: colors.text },
+  lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: systemGround.fill, fontSize: 16, lineHeight: 21, color: colors.text },
   meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
   meetFace: { width: MEET, height: MEET, borderRadius: MEET / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   meetInitial: { fontFamily: fonts.playful, fontSize: 56, lineHeight: 66, color: colors.white },
-  meetTitle: { textAlign: 'center', fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: playful.ink },
+  meetTitle: { textAlign: 'center', fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: systemGround.label },
   // Their first message as the chat shows theirs: a white bubble.
-  meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: playful.card },
+  meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: systemGround.card },
   meetBubbleText: { fontSize: 17, lineHeight: 23, color: colors.text },
 });

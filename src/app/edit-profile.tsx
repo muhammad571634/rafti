@@ -19,7 +19,7 @@ import {
 } from '@/lib/profile';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, playful, space, systemColors } from '@/theme';
+import { colors, fonts, space, systemColors, systemGround } from '@/theme';
 import type { Pronouns } from '@/types';
 
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
@@ -37,7 +37,7 @@ const FILL = {
 type Field = 'name' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about';
 
 /**
- * What the characters know about the user, in the merged look (0z156): cream ground, a heavy title,
+ * What the characters know about the user, in the merged look (0z156): Apple's white ground, a heavy title,
  * the photo, how full the profile is, then white cards. Every row saves on its own sheet, so there
  * is no "Save changes" to forget.
  */
@@ -71,7 +71,7 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <TitleTop title={t('editProfile.title')} onBack={() => router.back()} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
@@ -208,8 +208,8 @@ const CAMERA = 34;
 
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: space.sm, paddingTop: space.xs, paddingBottom: space.xs },
-  // A white ring lifts the photo off the cream.
-  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: playful.card },
+  // A white ring lifts the photo off the ground.
+  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: systemGround.card },
   camera: {
     position: 'absolute',
     right: 0,
@@ -221,15 +221,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.primaryFill,
     borderWidth: 3,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
   },
   error: { fontSize: 13, color: colors.danger },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 18, paddingTop: 10, paddingBottom: 18 },
-  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: 18, justifyContent: 'center', backgroundColor: playful.chip },
+  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: 18, justifyContent: 'center', backgroundColor: systemGround.fill },
   chipPressed: { opacity: 0.7 },
-  chipText: { fontFamily: fonts.playfulBold, fontSize: 14, color: playful.ink },
+  chipText: { fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
   add: { width: 52, alignItems: 'center', paddingHorizontal: 0, backgroundColor: colors.primarySofter },
   about: { minHeight: 54, paddingHorizontal: 18, paddingTop: 8, paddingBottom: 18, justifyContent: 'center', alignItems: 'flex-start' },
-  aboutPressed: { backgroundColor: playful.chip },
+  aboutPressed: { backgroundColor: systemGround.fill },
   aboutText: { fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text },
 });

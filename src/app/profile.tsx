@@ -42,7 +42,7 @@ import { countMessages } from '@/store/message-db';
 import { syncMemories } from '@/store/memory-sync';
 import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/store/message-sync';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, moduleFills, playful, space, storeColors, systemColors } from '@/theme';
+import { colors, fonts, moduleFills, space, storeColors, systemColors, systemGround } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -68,7 +68,7 @@ const FILL = {
 };
 
 /**
- * Who you are, in the merged look (0z156; was the aurora page of 2026-10-21): cream ground, your
+ * Who you are, in the merged look (0z156; was the aurora page of 2026-10-21): Apple's white ground, your
  * mascot or photo, the full name and handle, shells and plan as two white cards, how full the
  * profile is, then white cards of rows with soft ink glyphs, and Delete account apart at the end.
  * Notifications live under the bell on Us.
@@ -269,7 +269,7 @@ export default function ProfileScreen() {
   const completeTitle = percent < 100 ? t('profile.completeTitle') : t('profile.editProfile');
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <ProfileTop title={user.displayName} showTitle={scrolled} onBack={() => router.back()} />
 
       <ScrollView
@@ -287,7 +287,7 @@ export default function ProfileScreen() {
               <UserAvatar user={user} size={AVATAR} />
             </View>
             <View style={styles.camera} pointerEvents="none">
-              <Ionicons name="camera-outline" size={17} color={playful.ink} />
+              <Ionicons name="camera-outline" size={17} color={systemGround.label} />
             </View>
           </PressableScale>
           {/* The whole name here; Today shows only the first six letters. */}
@@ -501,8 +501,8 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', paddingHorizontal: space.xl, paddingTop: space.xs },
-  // A white ring lifts the photo off the cream.
-  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: playful.card },
+  // A white ring lifts the photo off the ground.
+  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: systemGround.card },
   camera: {
     position: 'absolute',
     right: 0,
@@ -512,19 +512,19 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     borderWidth: 3,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
   },
-  name: { marginTop: 14, fontFamily: fonts.playful, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, textAlign: 'center', color: playful.ink },
+  name: { marginTop: 14, fontFamily: fonts.playful, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, textAlign: 'center', color: systemGround.label },
   handle: { marginTop: 2, fontSize: 15, color: colors.textSecondary },
   tiles: { flexDirection: 'row', gap: space.md, marginHorizontal: space.lg, marginTop: 22 },
-  tile: { flex: 1, minWidth: 0, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 4, borderRadius: 24, backgroundColor: playful.card },
+  tile: { flex: 1, minWidth: 0, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 4, borderRadius: 24, backgroundColor: systemGround.card },
   tileHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   tileLabel: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 13, color: colors.textSecondary },
-  tileValue: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, color: playful.ink, fontVariant: ['tabular-nums'] },
-  tilePill: { alignSelf: 'flex-start', maxWidth: '100%', height: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: playful.chip },
-  tilePillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: playful.ink },
+  tileValue: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  tilePill: { alignSelf: 'flex-start', maxWidth: '100%', height: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: systemGround.fill },
+  tilePillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
   peachPill: { backgroundColor: colors.primarySofter },
   peachInk: { color: colors.brandText },
   violetPill: { backgroundColor: storeColors.violetSoft },
