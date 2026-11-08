@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z171. Flow audit on the A51: every chain walked, one back path fixed (2026-11-08, Claude 1). NEXT: see "Still to do"
+
+- **Owner's ask** (0z168 item 3): "chains and architecture must work well"; walk every chain on the A51 against the navigation laws (push vs sheet, back never re-enters a finished state).
+- **Walked on the A51** (hardware back after every step): Today: the note, Calls, Sleep (now Bedtime), Store (body: shell history, +: the Store), Date, the six tiles (Diary, Photos, Contacts, Gifts, Radio, Board), each back to Today at the same scroll. Store: + to the Store, the history clock, back, back. Chats: a chat, its + panel (the first back closes the panel, the second leaves the chat), back. Us: the bond card (Hana's chat), + Plan sheet and the Add sheet (back closes each sheet first). Find: a world, a friend's profile, Message, back, back. Onboarding as a link after it is done lands on Today (0z169). Android back on a non-first tab goes to Today (first-route tabs).
+- **Fixed**: a profile's Message used `dismissTo`, which replaces the profile when that chat is not in the stack, so Find → profile → Message → back skipped the profile. `useOpenChat` (`src/hooks/use-open-chat.ts`) goes back to the chat when it is already under the profile, else pushes it; early access opens the chat the same way. Seen on the A51 (OTA `01a1bc7e`): chat → back → profile → back → the world.
+- No other defect found. Checks: tsc 0, npm test 846/846.
+
+Still to do:
+1. See Bedtime's whispering state and the filled wake-up card on a Pro account (0z170).
+2. Move module colour constants to live semantic colours (`Color` from expo-router), `systemGround` first (0z168 item 5).
+3. Light mode of the frame editor and both quizzes (0z169 item 2).
+
 ### 0z170. Bedtime redesigned (approved prototype); the Sleep card opens it (2026-11-08, Claude 1). NEXT: the flow audit (0z169 item 1)
 
 - **Owner's asks**: the Sleep card's body opened the old Bedtime while its + opened the new alarm editor: "fix the logic"; Bedtime is still needed (whispers, the timer, the little animation) but in the new look. Prototype https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c, owner: "Yes, code it". UXKIN needs a paid plan the owner cannot buy: use Apple HIG and real apps on the A51 instead.

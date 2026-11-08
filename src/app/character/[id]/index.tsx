@@ -24,6 +24,7 @@ import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
 import { isActiveMemory } from '@/economy/memory-limit';
+import { useOpenChat } from '@/hooks/use-open-chat';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
@@ -55,7 +56,8 @@ export default function CharacterProfileScreen() {
   const addFriend = useAppStore((s) => s.addFriend);
   const locale = useAppStore((s) => s.user.locale);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
-  const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
+  const openChatOnce = useOpenChat();
+  const early = useEarlyAccess(openChatOnce);
   // Past the face card, the top row shows the name.
   const { scrolled, onScroll } = useScrolledPast(360);
 
@@ -78,8 +80,8 @@ export default function CharacterProfileScreen() {
   const openChat = () => {
     if (locked) return early.add(character);
     const conversationId = conversation?.id ?? addFriend(character.id);
-    // Chat → settings → profile → Message goes back to that chat, not a second copy of it.
-    router.dismissTo(`/chat/${conversationId}`);
+    // Back to that chat when it is under this profile, else on top of it (`useOpenChat`).
+    openChatOnce(conversationId);
   };
 
   return (
