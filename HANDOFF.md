@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z157. Date polaroid share; the chat's share card checked, a story-poster redesign proposed (2026-11-08, Claude 1). NEXT: owner picks whether to prototype the share poster (2-3 variants) before code
+
+- **Owner's ask**: the date's end screen Share sent only text; make the picture go, and think about sending the result to other characters. Then (cost question) recorded in `docs/cost-ledger.md` row 14.
+- **Built** (code commit before this block): Share opens `DateShareSheet` (`src/components/date/share-sheet.tsx`): the user's other friends' faces (a tap: `sendDatePhoto` puts the polaroid in that chat as a picture message, 1 shell, reason `photo`; they answer via `datePhotoCue`, stock `datePhotoReply` with the model off, 14 content files) and "Share as a picture" (`shareImage` of the polaroid on a cream ground). The polaroid renders in the chat (`Message.dateId`, `DatePhotoMessage`). Tests for the cue. **Not checked on the A51** (a date spends shells and writes the owner's data; owner said the date share is not essential, keep it simple).
+- **Chat share card, seen on the A51** (Hana, 15:49): ~2.9x the screen's height (6 lines incl. a voice note and a cut-off sticker, 72%-wide bubbles), old aurora colours; the owner sent one to Telegram: very long and blurry (Telegram downscales). Proposal told to the owner: a 9:16 story poster at 1080x1920 (never longer), their big picture on top with name and mood, one strong line of their reply as a big quote with the user's line small above it, a half-hidden last line as the hook (FOMO), only real numbers (days together, level), the Sigmazam logo, tagline and the peeking mascot at the bottom with "{name} on Sigmazam"; no invite code (owner: no); one frame for chat, Us bond and the date polaroid; Android save needs a media-library module (next APK).
+
+Still to do:
+1. Owner: approve a prototype of the share poster (then code `ShareCardSheet` into the story frame, captured at a fixed size).
+2. Date share: try it on the A51 when the owner is fine spending a date.
+3. From 0z156: coloured icons for chat settings / group info (owner to say), Account / Privacy / Terms stubs, queue (Store group next unless the owner picks).
+
 ### 0z156. Your profile and Edit profile in the merged design, with their coloured icons (2026-11-08, Claude 1). NEXT: queue item 3, Notifications + their settings (0z154 queue)
 
 - **Owner's ask**: "Ha, boshla" (queue item 2). After the first pass (soft ink glyphs on chip circles) the owner said: "too plain, colourless, only text, nothing draws the eye; bring back the coloured icons; do the rest of the screens like this too". Recorded in `.agents/rules/project-memory.md` §3 ("Colour, not just text").
