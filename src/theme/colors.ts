@@ -536,15 +536,26 @@ export const systemGround = isDark
       barSolid: 'rgba(255,255,255,0.96)',
     };
 
+/** A feature's signature look: its fill and glyph colour, a tint, its words on the ground, its hero card's gradient. */
+export interface Look {
+  strong: string;
+  soft: string;
+  text: string;
+  hero: readonly [string, string];
+}
+
+const look = (strong: string, text: string, hero: readonly [string, string]): Look => ({ strong, soft: `${strong}${isDark ? '33' : '1F'}`, text, hero });
+
 /**
- * A feature's signature colour on the system ground (design-style §10, feature screens; HIG Color:
+ * Each feature's signature colour on the system ground (design-style §10, feature screens; HIG Color:
  * a brand colour in the content layer): its home-screen tile's hue as one hero card, the screen's
  * buttons and chips. Shells keep the Store's apricot, Plans the Pro gradient (`gradients.pro`).
  */
 export const signature = {
-  gifts: isDark
-    ? { strong: systemColors.red, soft: 'rgba(255,69,58,0.2)', text: '#FF6961', hero: ['#FF5E57', '#B3261E'] as const }
-    : { strong: systemColors.red, soft: 'rgba(255,59,48,0.12)', text: '#D70015', hero: ['#FF6B5B', '#FF3B30'] as const },
+  gifts: look(systemColors.red, isDark ? '#FF6961' : '#D70015', isDark ? ['#FF5E57', '#B3261E'] : ['#FF6B5B', '#FF3B30']),
+  radio: look(systemColors.purple, isDark ? '#DA8FFF' : '#8944AB', isDark ? ['#B05CF0', '#6A2BB0'] : ['#C77DFF', '#8E3FD6']),
+  board: look(systemColors.cyan, isDark ? '#70D7FF' : '#0071A4', isDark ? ['#4FC3F7', '#1A6FA0'] : ['#5AC8FA', '#1E9BD7']),
+  photo: look(systemColors.blue, isDark ? '#409CFF' : '#0062CC', isDark ? ['#3D8BFF', '#1550B8'] : ['#4FA3FF', '#0A6CFF']),
   shells: { hero: isDark ? (['#FFC497', '#F79E63'] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#3A1A06' },
 };
 

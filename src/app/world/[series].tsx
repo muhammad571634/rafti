@@ -18,7 +18,7 @@ import { localCharacter, localized } from '@/i18n/content';
 import { chapterAt, chapterState, isEventOn, worldJoinedAt } from '@/lib/world-story';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, isDark, space, systemColors } from '@/theme';
+import { colors, isDark, space, systemColors, systemGround } from '@/theme';
 import type { Character, CharacterGender, WorldEvent, WorldStory } from '@/types';
 
 type Who = CharacterGender | 'everyone';
@@ -32,7 +32,7 @@ const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.65)'] as const;
  * A whole world from Find, like an artist page in Apple Music: its first face's scene
  * full-bleed with the world's name, how many live there and "Surprise me", then who you are here
  * and this week's chapter (docs/worlds-plan.md §3.3), Everyone / Him / Her and everyone in it as one
- * list on the aurora ground, then its events and how its people stand with each other. A row opens
+ * list on Apple's white ground in grey cards (design-style §10), then its events and how its people stand with each other. A row opens
  * the profile; the trailing "+" adds the friend, a mint tick shows one already made. The search
  * button opens a field that filters this list only (HIG Search fields: an inline field when search
  * applies to one view). The story sits in rows of short text (HIG Lists and tables: "prefer
@@ -100,7 +100,7 @@ export default function WorldScreen() {
   };
 
   return (
-    <Screen background="aurora" edgeToEdge statusBarStyle={edge && !isDark ? 'dark' : 'light'}>
+    <Screen background={systemGround.ground} edgeToEdge statusBarStyle={edge && !isDark ? 'dark' : 'light'}>
       <ScrollView
         onScroll={onScroll}
         scrollEventThrottle={32}
@@ -155,7 +155,6 @@ export default function WorldScreen() {
 
         {searchOpen ? (
           <SearchBar
-            tone="aurora"
             autoFocus
             value={query}
             onChangeText={setQuery}
@@ -164,7 +163,6 @@ export default function WorldScreen() {
           />
         ) : null}
         <Segmented
-          tone="aurora"
           options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
           value={who}
           onChange={setWho}
@@ -459,8 +457,8 @@ const styles = StyleSheet.create({
     marginHorizontal: space.lg,
     marginTop: space.md,
     padding: space.lg,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
+    borderRadius: 22,
+    backgroundColor: systemGround.card,
   },
   firstCard: { marginTop: space.lg },
   flush: { padding: 0, overflow: 'hidden' },
@@ -527,11 +525,11 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: aurora.base,
+    backgroundColor: systemGround.ground,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: aurora.separator,
+    borderBottomColor: colors.borderStrong,
   },
-  edgeButton: { backgroundColor: aurora.glass, borderColor: aurora.glassEdge },
+  edgeButton: { backgroundColor: systemGround.fill, borderColor: 'transparent' },
   bar: {
     position: 'absolute',
     left: space.lg,
@@ -555,8 +553,8 @@ const styles = StyleSheet.create({
   list: {
     marginHorizontal: space.lg,
     marginTop: space.lg,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
+    borderRadius: 22,
+    backgroundColor: systemGround.card,
     overflow: 'hidden',
   },
   row: { flexDirection: 'row', alignItems: 'center' },
@@ -575,7 +573,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: systemGround.fill,
   },
   tick: {
     width: 32,

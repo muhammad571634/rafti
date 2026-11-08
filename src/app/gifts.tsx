@@ -1,15 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { CoinDropReward, type Point, wobbleAt } from '@/components/coin-drop';
+import { featureStyles, HeroCard, RoundButton, TintCapsule } from '@/components/feature/feature-kit';
 import { LuckyWheel } from '@/components/lucky-wheel';
 import { PeekingMascot } from '@/components/peeking-mascot';
 import { GroupLabel } from '@/components/plans/store-look';
@@ -161,9 +161,7 @@ export default function GiftsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
         <View style={styles.bar}>
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()} style={styles.round}>
-            <Ionicons name="chevron-back" size={22} color={systemGround.label} style={styles.backIcon} />
-          </PressableScale>
+          <RoundButton icon="chevron-back" accessibilityLabel={t('common.back')} onPress={() => router.back()} />
           <Animated.View ref={capsuleBox} style={[styles.capsule, capsuleStyle]}>
             <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
               <View ref={shellMark}>
@@ -176,7 +174,7 @@ export default function GiftsScreen() {
         <LargeTitle>{t('gifts.title')}</LargeTitle>
 
         {/* The day's check-in: the screen's one card in the Gifts tile's red, the mascot over its edge. */}
-        <LinearGradient colors={signature.gifts.hero} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.checkIn}>
+        <HeroCard look={signature.gifts} style={styles.checkIn}>
           <PeekingMascot width={PEEK_WIDTH} />
           <View style={styles.checkInHead}>
             <Txt style={styles.checkInTitle} lines={1}>
@@ -223,7 +221,7 @@ export default function GiftsScreen() {
               );
             })}
           </View>
-        </LinearGradient>
+        </HeroCard>
 
         <View style={styles.labelRow}>
           <GroupLabel>{t('gifts.wheel')}</GroupLabel>
@@ -231,7 +229,7 @@ export default function GiftsScreen() {
             <Txt style={styles.statusText}>{spinStatus}</Txt>
           </View>
         </View>
-        <View ref={wheelCard} style={[styles.card, styles.wheel]}>
+        <View ref={wheelCard} style={[featureStyles.card, styles.wheel]}>
           <LuckyWheel
             size={wheelSize}
             disabled={!canSpin}
@@ -253,19 +251,19 @@ export default function GiftsScreen() {
             <Ionicons name="information-circle-outline" size={20} color={systemGround.secondaryLabel} />
           </PressableScale>
         </View>
-        <View style={styles.card}>
+        <View style={featureStyles.card}>
           <WayRow
             tile={WAY_TILES.invite}
             title={t('gifts.inviteTitle')}
             subtitle={t('gifts.inviteSub', { count: INVITE_REWARD, done: invited, total: INVITES_PER_WEEK })}
-            action={<Capsule label={t('gifts.inviteNow')} onPress={invite} />}
+            action={<TintCapsule look={signature.gifts} label={t('gifts.inviteNow')} onPress={invite} />}
             line
           />
           {/* Sharing tells people about Sigmazam but pays nothing (owner, 2026-10-22). */}
-          <WayRow tile={WAY_TILES.share} title={t('gifts.shareTitle')} action={<Capsule label={t('gifts.share')} onPress={share} />} />
+          <WayRow tile={WAY_TILES.share} title={t('gifts.shareTitle')} action={<TintCapsule look={signature.gifts} label={t('gifts.share')} onPress={share} />} />
         </View>
 
-        <View style={[styles.card, styles.codeRow]}>
+        <View style={[featureStyles.card, styles.codeRow]}>
           <View style={styles.codeTile}>
             <SFIcon ios="gift.fill" icon="gift" size={17} color={colors.white} />
           </View>
@@ -409,31 +407,6 @@ function WayRow({
   );
 }
 
-/** A way row's capsule button in the Gifts red. */
-function Capsule({
-  label,
-  onPress,
-  disabled,
-  loading,
-}: {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-}) {
-  return (
-    <PressableScale
-      scaleTo={0.94}
-      accessibilityRole="button"
-      accessibilityState={{ disabled: !!disabled, busy: !!loading }}
-      disabled={disabled || loading}
-      onPress={onPress}
-      style={[styles.capsuleButton, disabled && styles.capsuleOff]}>
-      {loading ? <ActivityIndicator size="small" color={signature.gifts.text} /> : <Txt style={styles.capsuleButtonText}>{label}</Txt>}
-    </PressableScale>
-  );
-}
-
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
 const PEEK_ROOM = 40;
@@ -449,15 +422,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  backIcon: { marginLeft: -2 },
   capsule: { height: 40, borderRadius: 20, backgroundColor: systemGround.fill },
   capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
   capsuleText: { fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
-  card: { marginHorizontal: space.lg, borderRadius: 22, backgroundColor: systemGround.card },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   // Room above for the mascot peeking over the card.
-  checkIn: { marginHorizontal: space.lg, marginTop: PEEK_ROOM + space.lg, borderRadius: 26, paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
+  checkIn: { marginTop: PEEK_ROOM + space.lg, borderRadius: 26, paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
   checkInHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: 4 },
   checkInTitle: { flexShrink: 1, fontSize: 13, fontWeight: '700', letterSpacing: 0.3, textTransform: 'uppercase', color: colors.white },
   checkInDay: { fontSize: 13, fontWeight: '600', color: colors.white, opacity: 0.85 },
@@ -502,17 +472,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: colors.borderStrong,
   },
-  capsuleButton: {
-    minWidth: 64,
-    height: 32,
-    paddingHorizontal: 14,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: signature.gifts.soft,
-  },
-  capsuleOff: { opacity: 0.5 },
-  capsuleButtonText: { fontSize: 15, fontWeight: '700', color: signature.gifts.text },
   codeRow: { marginTop: 22, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
   codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.strong },
   codeLabel: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },

@@ -12,9 +12,9 @@ import { useTakeSelfie } from '@/components/photo-booth/take-selfie';
 import { dropSelfie } from '@/lib/booth-selfies';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
-import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
+import { FeatureBar } from '@/components/feature/feature-kit';
+import { BUY_BAR_SPACE, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import {
-  AuroraGlass,
   Button,
   CharacterAvatar,
   LargeTitle,
@@ -33,7 +33,7 @@ import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space } from '@/theme';
+import { colors, signature, space, systemGround } from '@/theme';
 import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
@@ -41,7 +41,6 @@ const SWATCH = 56;
 const GUTTER = space.lg;
 const CARD_PAD = 14;
 /** The preview's and the thumbnails' backing: iOS secondary fill on the white card. */
-const WELL = colors.well;
 /** Room under the content for the meter above the shoot button. */
 const METER_SPACE = 44;
 /** Long enough for the Pro sheet to finish closing before the camera opens. */
@@ -61,9 +60,9 @@ interface FrameChoice {
  * A photo together with one friend: pick who and a style, then shoot. Pictures are Pro only
  * (30 a period, 3 on the trial) and never sold for shells (backend-plan §15.10); each adds
  * closeness and a moment on Us. The picture is drawn on the phone from the friend's art
- * (`BoothPicture`), kept in "Your photos", and goes to their chat only with Send. iOS look on
- * the aurora (2026-10-22, coded at the owner's word): a preview card, friends, frames, styles as
- * a segmented control, and the Store's bar with pictures left above the shoot button.
+ * (`BoothPicture`), kept in "Your photos", and goes to their chat only with Send. A feature screen
+ * on Apple's white ground in Photos' blue (design-style §10): a grey preview card, friends, frames,
+ * styles as a segmented control, and the buy bar with pictures left above the blue shoot button.
  */
 export default function PhotoBoothScreen() {
   const insets = useSafeAreaInsets();
@@ -193,29 +192,26 @@ export default function PhotoBoothScreen() {
   }, [locked]);
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom + (quota ? METER_SPACE : 0) }}>
-        <View style={styles.bar}>
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-            </AuroraGlass>
-          </PressableScale>
-          {quota ? (
-            <AuroraGlass style={styles.capsule}>
-              <View style={styles.capsuleInner} accessible accessibilityLabel={t('photoBooth.picturesLeft', { count: quota.left })}>
-                <SFIcon ios="camera.fill" icon="camera" size={16} color={colors.text} />
+        <FeatureBar
+          backLabel={t('common.back')}
+          onBack={() => router.back()}
+          right={
+            quota ? (
+              <View style={styles.capsule} accessible accessibilityLabel={t('photoBooth.picturesLeft', { count: quota.left })}>
+                <SFIcon ios="camera.fill" icon="camera" size={16} color={systemGround.label} />
                 <Txt style={styles.capsuleText}>{quota.left}</Txt>
               </View>
-            </AuroraGlass>
-          ) : (
-            <View style={styles.proPill}>
-              <Txt style={styles.proPillText}>{t('plans.name.pro')}</Txt>
-            </View>
-          )}
-        </View>
+            ) : (
+              <View style={styles.proPill}>
+                <Txt style={styles.proPillText}>{t('plans.name.pro')}</Txt>
+              </View>
+            )
+          }
+        />
         <LargeTitle>{t('photoBooth.title')}</LargeTitle>
 
         <View style={[styles.card, styles.previewCard]}>
@@ -317,7 +313,7 @@ export default function PhotoBoothScreen() {
                   )}
                   {f.locked ? (
                     <View style={styles.lock}>
-                      <Ionicons name="lock-closed" size={13} color={colors.text} />
+                      <Ionicons name="lock-closed" size={13} color={systemGround.label} />
                     </View>
                   ) : null}
                 </View>
@@ -334,7 +330,7 @@ export default function PhotoBoothScreen() {
             style={styles.frameChoice}
             onPress={() => router.push('/frame/edit')}>
             <View style={[styles.frameBox, styles.frameNew]}>
-              <Ionicons name="add" size={24} color={aurora.tint} />
+              <Ionicons name="add" size={24} color={signature.photo.strong} />
             </View>
             <Txt style={styles.choiceLabel} center>
               {t('frames.make')}
@@ -345,7 +341,6 @@ export default function PhotoBoothScreen() {
 
         <GroupLabel>{t('photoBooth.styles')}</GroupLabel>
         <Segmented
-          tone="aurora"
           options={STYLES.map((key) => ({ value: key, label: t(`photoBooth.styleNames.${key}`) }))}
           value={style}
           onChange={pickStyle}
@@ -379,18 +374,20 @@ export default function PhotoBoothScreen() {
         ) : null}
       </ScrollView>
 
-      {/* The Store's bar: pictures left above the button, or the Pro lock in it. */}
+      {/* The buy bar in Photos' blue: pictures left above the button, or the Pro lock in it. */}
       <StoreBuyBar
         label={quota && quota.left <= 0 ? t('photoBooth.backOn', { date: planDate(quota.resetsAt) }) : t('photoBooth.shoot')}
         caption={quota ? undefined : t('photoBooth.withPro')}
         disabled={!partner || shooting || (quota != null && quota.left <= 0)}
         onPress={shoot}
+        system
+        look={signature.photo}
         left={
           quota ? (
             // The shutter: this button opens the camera.
-            quota.left > 0 ? <Ionicons name="camera" size={19} color={STORE.ctaInk} /> : undefined
+            quota.left > 0 ? <Ionicons name="camera" size={19} color={colors.white} /> : undefined
           ) : (
-            <Ionicons name="lock-closed" size={17} color={STORE.ctaInk} />
+            <Ionicons name="lock-closed" size={17} color={colors.white} />
           )
         }>
         {quota ? (
@@ -474,37 +471,27 @@ export default function PhotoBoothScreen() {
 }
 
 const styles = StyleSheet.create({
-  bar: {
-    height: 44,
-    paddingHorizontal: GUTTER,
-    paddingTop: space.xs,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
-  capsule: { height: 40, borderRadius: 20 },
-  capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
-  capsuleText: { fontSize: 15, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
+  capsule: { height: 40, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14, backgroundColor: systemGround.fill },
+  capsuleText: { fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
   proPill: { height: 28, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: STORE.violetSoft },
   proPillText: { fontSize: 15, fontWeight: '700', color: STORE.violetInk },
-  card: { marginHorizontal: GUTTER, borderRadius: 24, backgroundColor: aurora.card, ...CARD_SHADOW },
+  card: { marginHorizontal: GUTTER, borderRadius: 24, backgroundColor: systemGround.card },
   previewCard: { marginTop: 18, padding: CARD_PAD, gap: 12 },
-  preview: { borderRadius: 16, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  // The picture's stage: the white ground set into the grey card.
+  preview: { borderRadius: 16, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   tilt: { transform: [{ rotate: '-2.5deg' }] },
   send: { position: 'absolute', top: space.sm, left: space.sm },
   caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md, paddingHorizontal: 2 },
-  captionTitle: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  muted15: { fontSize: 15, color: aurora.textMuted },
+  captionTitle: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
+  muted15: { fontSize: 15, color: systemGround.secondaryLabel },
   partners: { gap: 14, paddingHorizontal: GUTTER },
   partner: { width: 60, alignItems: 'center', gap: 6 },
   ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
-  ringOn: { borderColor: aurora.tint },
-  choiceLabel: { fontSize: 13, color: aurora.textMuted },
-  choiceLabelOn: { fontWeight: '700', color: colors.text },
+  ringOn: { borderColor: signature.photo.strong },
+  choiceLabel: { fontSize: 13, color: systemGround.secondaryLabel },
+  choiceLabelOn: { fontWeight: '700', color: systemGround.label },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, maxWidth: '45%', fontSize: 13, color: aurora.textMuted },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, maxWidth: '45%', fontSize: 13, color: systemGround.secondaryLabel },
   frames: { gap: 10, paddingHorizontal: GUTTER },
   frameChoice: { width: 72, alignItems: 'center', gap: 6 },
   frameBox: {
@@ -513,32 +500,31 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 2.5,
     borderColor: 'transparent',
-    backgroundColor: aurora.card,
+    backgroundColor: systemGround.card,
     alignItems: 'center',
     justifyContent: 'center',
-    ...CARD_SHADOW,
   },
-  frameBoxOn: { borderColor: aurora.tint },
-  frameNew: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: aurora.tint, backgroundColor: 'transparent', shadowOpacity: 0 },
+  frameBoxOn: { borderColor: signature.photo.strong },
+  frameNew: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: signature.photo.strong, backgroundColor: 'transparent' },
   dim: { opacity: 0.6 },
   lock: {
     position: 'absolute',
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: aurora.card,
+    backgroundColor: systemGround.ground,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   styles: { marginHorizontal: GUTTER },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: CARD_PAD },
-  thumb: { borderRadius: 12, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center' },
+  thumb: { borderRadius: 12, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
   lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
   meter: { gap: 6, marginBottom: 4 },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterLeft: { flex: 1, fontSize: 15, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
-  meterReset: { fontSize: 13, color: aurora.textMuted },
-  track: { height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: colors.track },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: aurora.tint },
+  meterLeft: { flex: 1, fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  meterReset: { fontSize: 13, color: systemGround.secondaryLabel },
+  track: { height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: systemGround.fill },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: signature.photo.strong },
 });

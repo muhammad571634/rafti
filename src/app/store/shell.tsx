@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +6,7 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { featureStyles, HeroCard, RoundButton } from '@/components/feature/feature-kit';
 import { PlanPicker } from '@/components/plans/plan-picker';
 import {
   BUY_BAR_SPACE,
@@ -99,12 +99,8 @@ export default function StoreScreen() {
   const header = (
     <>
       <View style={styles.bar}>
-        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()} style={styles.round}>
-          <Ionicons name="chevron-back" size={22} color={systemGround.label} style={styles.backIcon} />
-        </PressableScale>
-        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')} style={styles.round}>
-          <SFIcon ios="clock.arrow.circlepath" icon="time-outline" size={20} color={systemGround.label} />
-        </PressableScale>
+        <RoundButton icon="chevron-back" accessibilityLabel={t('common.back')} onPress={() => router.back()} />
+        <RoundButton icon="time-outline" ios="clock.arrow.circlepath" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')} />
       </View>
       <LargeTitle>{t('store.title')}</LargeTitle>
       <Segmented
@@ -225,7 +221,7 @@ function ShellsTab({
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
         {header}
 
-        <LinearGradient colors={signature.shells.hero} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.balance}>
+        <HeroCard look={signature.shells} style={styles.balance}>
           <ShellIcon size={44} />
           <View style={styles.balanceAmount}>
             <Txt style={styles.balanceValue}>{wallet.shells.toLocaleString('en-US')}</Txt>
@@ -235,10 +231,10 @@ function ShellsTab({
             <Ionicons name="gift-outline" size={16} color={signature.shells.heroInk} />
             <Txt style={styles.freeText}>{t('common.free')}</Txt>
           </PressableScale>
-        </LinearGradient>
+        </HeroCard>
 
         <GroupLabel>{t('store.choose')}</GroupLabel>
-        <View style={styles.card} accessibilityRole="radiogroup">
+        <View style={featureStyles.card} accessibilityRole="radiogroup">
           {all.map((offer, i) => (
             <PackRow
               key={offer.pack.id}
@@ -252,7 +248,7 @@ function ShellsTab({
         </View>
 
         <GroupLabel>{t('store.costs')}</GroupLabel>
-        <View style={styles.card}>
+        <View style={featureStyles.card}>
           {COSTS.map((cost, i) => (
             <View key={cost.key} style={[styles.costRow, i < COSTS.length - 1 && styles.costLine]}>
               <IconTile fill={cost.fill}>
@@ -394,17 +390,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  backIcon: { marginLeft: -2 },
   tabs: { marginHorizontal: space.lg, marginTop: 12 },
   balance: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    marginHorizontal: space.lg,
     marginTop: 22,
     padding: space.lg,
-    borderRadius: 24,
   },
   balanceAmount: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6 },
   balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: signature.shells.heroInk, fontVariant: ['tabular-nums'] },
@@ -420,12 +412,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.55)',
   },
   freeText: { fontSize: 15, fontWeight: '700', color: signature.shells.heroInk },
-  card: {
-    marginHorizontal: space.lg,
-    borderRadius: 22,
-    overflow: 'hidden',
-    backgroundColor: systemGround.card,
-  },
   packRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: space.lg },
   stack: { width: 46, height: 40 },
   stackShell: { position: 'absolute' },

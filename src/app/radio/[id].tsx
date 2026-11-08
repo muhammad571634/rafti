@@ -14,14 +14,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
+import { RoundButton } from '@/components/feature/feature-kit';
+import { CARD_SHADOW } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
-import { AuroraGlass, CharacterAvatar, characterImage, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, characterImage, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
+import { bottomRoom, colors, friendAccent, isDark, space, systemColors, systemGround } from '@/theme';
 
 const COVER = 240;
 
@@ -38,10 +39,10 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 }
 
 /**
- * Clip player (F27), as Music's Now Playing on the aurora (2026-10-22, coded at the owner's
- * word): the friend's picture as the cover, the title, the words in a card with the line being
- * said in ink, then the progress and the controls. The user's own clips can go to the chat with
- * that friend, or be deleted.
+ * Clip player (F27), as Music's Now Playing: the friend's picture as the cover, the title, the
+ * words in a card with the line being said in ink, then the progress and the controls. A thing
+ * from a friend, so it wears their accent (design-style §10, a friend's space) on Apple's white
+ * ground. The user's own clips can go to the chat with that friend, or be deleted.
  */
 export default function ClipPlayerScreen() {
   const { t } = useTranslation();
@@ -91,17 +92,11 @@ export default function ClipPlayerScreen() {
   }, [playing, reduced, breath]);
   const coverStyle = useAnimatedStyle(() => ({ transform: [{ scale: breath.value }] }));
 
-  const back = (
-    <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-      <AuroraGlass style={styles.round}>
-        <Ionicons name="chevron-down" size={22} color={colors.text} />
-      </AuroraGlass>
-    </PressableScale>
-  );
+  const back = <RoundButton icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
 
   if (!clip || clip.locked) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <View style={styles.bar}>{back}</View>
         <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('common.backToRadio')} onAction={() => router.back()} />
       </Screen>
@@ -112,6 +107,7 @@ export default function ClipPlayerScreen() {
   const current = loaded ? lineAt(clip.lines, elapsed) : -1;
   const image = characterImage(clip.character);
   const progress = clip.durationSec ? Math.min(1, elapsed / clip.durationSec) : 0;
+  const accent = friendAccent(clip.character.id);
 
   const send = () => {
     if (!shareRadioClip(clip.id)) return;
@@ -134,25 +130,19 @@ export default function ClipPlayerScreen() {
     );
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <View style={styles.bar}>
         {back}
         <View style={styles.barRight}>
           {/* The clip as a wake-up voice: a new alarm with this friend and this clip. */}
-          <PressableScale
-            scaleTo={0.9}
-            accessibilityRole="button"
+          <RoundButton
+            icon="alarm"
             accessibilityLabel={t('radio.wakeWith')}
-            onPress={() => router.push({ pathname: '/alarms/edit', params: { characterId: clip.character.id, clipId: clip.id } })}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="alarm" size={20} color={colors.text} />
-            </AuroraGlass>
-          </PressableScale>
+            onPress={() => router.push({ pathname: '/alarms/edit', params: { characterId: clip.character.id, clipId: clip.id } })}
+          />
           {clip.mine ? (
-            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.delete')} onPress={remove}>
-              <AuroraGlass style={styles.round}>
-                <Ionicons name="trash" size={19} color={systemColors.red} />
-              </AuroraGlass>
+            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.delete')} onPress={remove} style={styles.round}>
+              <Ionicons name="trash" size={19} color={systemColors.red} />
             </PressableScale>
           ) : null}
         </View>
@@ -170,7 +160,7 @@ export default function ClipPlayerScreen() {
           <Txt style={styles.title} center accessibilityRole="header">
             {clip.title}
           </Txt>
-          <Txt style={styles.by} center>
+          <Txt style={[styles.by, { color: accent.strong }]} center>
             {clip.mine ? t('radio.madeBy', { name: clip.name }) : t('radio.from', { name: clip.name })}
           </Txt>
         </View>
@@ -187,7 +177,7 @@ export default function ClipPlayerScreen() {
       <View style={[styles.controls, { paddingBottom: bottomRoom(insets.bottom, space.lg) + space.sm }]}>
         <View style={styles.meter}>
           <View style={styles.track}>
-            <View style={[styles.fill, { width: `${Math.round(progress * 100)}%` }]} />
+            <View style={[styles.fill, { backgroundColor: accent.strong, width: `${Math.round(progress * 100)}%` }]} />
           </View>
           <View style={styles.times}>
             <Txt style={styles.clock}>{duration(elapsed)}</Txt>
@@ -200,24 +190,21 @@ export default function ClipPlayerScreen() {
             onPress={() => player.play('clip', clip.id, clip.durationSec)}
             scaleTo={0.9}
             accessibilityRole="button"
-            accessibilityLabel={t('radio.replay')}>
-            <AuroraGlass style={styles.side}>
-              <Ionicons name="refresh" size={24} color={colors.text} />
-            </AuroraGlass>
+            accessibilityLabel={t('radio.replay')}
+            style={[styles.side, styles.sideFill]}>
+            <Ionicons name="refresh" size={24} color={systemGround.label} />
           </PressableScale>
           <PressableScale
             onPress={() => player.toggle('clip', clip.id, clip.durationSec)}
             scaleTo={0.92}
             accessibilityRole="button"
             accessibilityLabel={t(playing ? 'radio.pause' : 'radio.play', { title: clip.title })}
-            style={styles.main}>
+            style={[styles.main, { backgroundColor: accent.strong }]}>
             <Ionicons name={playing ? 'pause' : 'play'} size={32} color={colors.white} style={!playing && styles.playNudge} />
           </PressableScale>
           {clip.mine && hasChat ? (
-            <PressableScale onPress={send} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.send')}>
-              <AuroraGlass style={styles.side}>
-                <Ionicons name="paper-plane" size={22} color={colors.text} />
-              </AuroraGlass>
+            <PressableScale onPress={send} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.send')} style={[styles.side, styles.sideFill]}>
+              <Ionicons name="paper-plane" size={22} color={systemGround.label} />
             </PressableScale>
           ) : (
             <View style={styles.side} />
@@ -244,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   barRight: { flexDirection: 'row', gap: space.sm },
   body: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: 22 },
   head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg },
@@ -254,32 +241,32 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
     marginBottom: 18,
-    backgroundColor: aurora.card,
+    backgroundColor: systemGround.card,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: aurora.shadow,
+    shadowColor: '#000',
     shadowOpacity: isDark ? 0.5 : 0.22,
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },
   },
-  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
-  by: { fontSize: 17, color: STORE.tint, fontWeight: '600' },
-  words: { gap: 10, padding: 18, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
-  line: { fontSize: 17, lineHeight: 23, color: aurora.textMuted, opacity: 0.75 },
-  lineNow: { fontSize: 20, lineHeight: 26, fontWeight: '700', color: colors.text, opacity: 1 },
+  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label },
+  by: { fontSize: 17, fontWeight: '600' },
+  words: { gap: 10, padding: 18, borderRadius: 22, backgroundColor: systemGround.card },
+  line: { fontSize: 17, lineHeight: 23, color: systemGround.secondaryLabel },
+  lineNow: { fontSize: 20, lineHeight: 26, fontWeight: '700', color: systemGround.label },
   controls: { gap: 18, paddingHorizontal: space.xl, paddingTop: space.md },
   meter: { gap: 6 },
-  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: aurora.separator },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: aurora.tint },
+  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: systemGround.fill },
+  fill: { height: '100%', borderRadius: 3 },
   times: { flexDirection: 'row', justifyContent: 'space-between' },
-  clock: { fontSize: 12, fontWeight: '600', color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  clock: { fontSize: 12, fontWeight: '600', color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   buttons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   side: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  sideFill: { backgroundColor: systemGround.fill },
   main: {
     width: 76,
     height: 76,
     borderRadius: 38,
-    backgroundColor: aurora.tint,
     alignItems: 'center',
     justifyContent: 'center',
     ...CARD_SHADOW,
@@ -295,8 +282,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 18,
     borderRadius: 22,
-    backgroundColor: aurora.card,
+    backgroundColor: systemGround.card,
     ...CARD_SHADOW,
   },
-  toastText: { fontSize: 15, fontWeight: '600', color: colors.text },
+  toastText: { fontSize: 15, fontWeight: '600', color: systemGround.label },
 });

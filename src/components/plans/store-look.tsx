@@ -5,7 +5,7 @@ import { Platform, type StyleProp, StyleSheet, View, type ViewStyle } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors, systemGround } from '@/theme';
+import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors, systemGround, type Look } from '@/theme';
 
 /** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
 export const STORE = storeColors;
@@ -79,6 +79,7 @@ export function StoreBuyBar({
   left,
   children,
   system,
+  look,
 }: {
   label: string;
   caption?: string;
@@ -90,6 +91,8 @@ export function StoreBuyBar({
   children?: React.ReactNode;
   /** Over Apple's system ground (the Store) rather than the aurora. */
   system?: boolean;
+  /** The button in a feature's own colour (Radio, Photo Booth) rather than the Store's apricot. */
+  look?: Look;
 }) {
   const insets = useSafeAreaInsets();
   const fill = system ? (Platform.OS === 'ios' ? systemGround.bar : systemGround.barSolid) : Platform.OS === 'ios' ? STORE.bar : STORE.barSolid;
@@ -106,9 +109,9 @@ export function StoreBuyBar({
         disabled={disabled}
         accessibilityRole="button"
         accessibilityState={{ disabled: !!disabled }}
-        style={[styles.cta, disabled && styles.ctaOff]}>
+        style={[styles.cta, look && { backgroundColor: look.strong }, disabled && styles.ctaOff]}>
         {left}
-        <Txt style={[styles.ctaText, disabled && styles.ctaTextOff]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+        <Txt style={[styles.ctaText, look && styles.ctaTextOnLook, disabled && styles.ctaTextOff]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
           {label}
         </Txt>
       </PressableScale>
@@ -161,6 +164,7 @@ const styles = StyleSheet.create({
   // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent.
   ctaOff: { backgroundColor: systemColors.fill },
   ctaText: { flexShrink: 1, fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  ctaTextOnLook: { color: colors.white },
   ctaTextOff: { color: colors.textFaint },
   caption: { fontSize: 13, color: aurora.textMuted },
 });

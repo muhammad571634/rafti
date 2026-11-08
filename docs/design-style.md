@@ -254,7 +254,11 @@ pins' art or words.
   2. *Feature screens* (Gifts, Store, Plans, then Radio, Board, Photo Booth, Streams, worlds): white
      ground, one hero card in the feature's signature colour (`signature` in `src/theme/colors.ts`:
      Gifts red, Shells apricot; Plans keeps `gradients.pro`), the screen's capsules and chips in it,
-     everything else grey cards. The aurora goes from each as it moves.
+     everything else grey cards. The aurora goes from each as it moves. Build them from the shared
+     kit `src/components/feature/feature-kit.tsx` (`FeatureBar`, `RoundButton`, `HeroCard`,
+     `TintCapsule`, `featureStyles.card`) and `StoreBuyBar` with `system` and the feature's `look`;
+     never a screen's own copy of a round button or card. Done: Gifts, Store, Radio (list, Make a
+     clip; a clip's player wears the friend's accent), Board, Photo Booth, a world's page.
   3. *Lists and settings*: Apple's grouped ground with white cards and coloured tiles (already so).
   4. *Moments* (calls, alarm ring, bedtime, date, onboarding, launch, level-up): full-bleed dark or
      picture colour, as they are.

@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z167. Radio, Board, Photo Booth and a world's page on the white ground; one shared feature kit (2026-11-08, Claude 1). NEXT: a friend's memories / photos / notes in their accent, then the last aurora screens
+
+- **Owner's asks**: carry the families to the next screens; and "if the logic or architecture is half-done or wrong, fix it on the way: it must be the right architecture".
+- **Architecture fixed on the way**: every feature screen had its own copy of the round head button, the grey card, the capsule button and the buy bar fill (Gifts, Store, Radio x3, Board, Photo Booth). They now share `src/components/feature/feature-kit.tsx`: `RoundButton` (SF Symbol on iPhone), `FeatureBar`, `HeroCard` (the feature's gradient, no clip so a mascot may peek over), `TintCapsule`, `featureStyles.card`. `signature` became one `Look` per feature built by `look(strong, text, hero)` (gifts red, radio purple, board cyan, photo blue; shells' apricot hero), `Look` exported from `@/theme`. `StoreBuyBar` takes `look` for a feature-coloured button (white words) besides `system`.
+- **Built**: Radio (white ground, Make a clip as the purple hero card, grey cards, purple play dots and New pills, a white mini player bar); a clip's player (white ground, the friend's accent on "From …", the track and the play button: a thing from a friend wears their colour); Make a clip (purple ring, Add line, the purple Record button on a white bar); Board (white ground, round back and +, papers with a neutral shadow, the answered mark in cyan); Photo Booth (grey preview card with a white stage, Photos' blue ring, frame outline, meter and the blue shoot button); a world's page (white ground, grey cards, plain search and segmented control, fill buttons on the scroll edge). Gifts and the Store moved onto the kit with no visible change.
+- **Seen on the A51** (OTA `01a1bc37`, light and dark): Radio, Kai's clip (his orange), Make a clip, Board, Photo Booth (top and scrolled), Gifts; Seaside Academy's page (light). Checks: tsc 0, npm test 844/844.
+
+Still to do:
+1. Family 1: a friend's memories, photos (`photo/[id]`), secret note, quiz and lore pages inside `FriendAccent`.
+2. The remaining aurora screens: `my-plan`, `frame/edit`, `quiz/*`, `secret-note/[id]`, `store/ledger`, `contacts`, `onboarding` (moment: keeps its own ground), then remove `AuroraBackground` and the aurora tokens once nothing uses them.
+3. From 0z166: a friend's profile page and a tall / user photo on the face card not seen on the A51.
+
 ### 0z166. Screen families: a friend's space in their colour; Gifts and the Store on the white ground (2026-11-08, Claude 1). NEXT: the next feature screens (Radio, Board, Photo Booth, Streams, worlds) the same way, when the owner says
 
 - **Owner's asks**: the remaining screens must not all be white or colourless; follow developer.apple.com/design; check the real screens on the phone, not the code; whole pages, not only their tops; the Plans tab too. Canvas of whole pages, light and dark, drawn from the A51's scrolled screens: https://claude.ai/artifact/8sbnvkhWAM8C9rQgK7ioXB (Hana's chat settings, Gifts, Store Shells, Store Plans, notification settings). Owner: "code it like the prototype, clean, senior".
