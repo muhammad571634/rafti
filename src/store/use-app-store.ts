@@ -45,6 +45,7 @@ import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } fro
 import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite } from '@/ai/server';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
+import { mayReact } from '@/ai/react';
 import {
   askToReachCue,
   birthdayCue,
@@ -5604,7 +5605,7 @@ function markTheirReaction(set: Setter, conversationId: string, react: string) {
   set((s) => {
     const lines = s.messages[conversationId];
     const at = lines?.findLastIndex((m) => m.author === 'me' && m.kind !== 'system' && !m.card);
-    if (!lines || at == null || at < 0) return s;
+    if (!lines || at == null || at < 0 || !mayReact(lines.slice(0, at + 1))) return s;
     const next = [...lines];
     next[at] = { ...next[at], theirReaction: react };
     return { messages: { ...s.messages, [conversationId]: next } };

@@ -25,7 +25,21 @@ export function cleanReact(value: unknown): React | undefined {
  * Near the end, where the model looks last: with the cached rule alone a light model reacted to news
  * and jokes but passed over sweet words and sad news (probe, 2026-11-08).
  */
-export const REACT_TURN_LINE = 'Their latest message: sweet to you, a real joke, big news, sad news of theirs, or a plan you like? Then put "react" on it; otherwise leave it out.';
+export const REACT_TURN_LINE =
+  'Judge only their latest message itself, not the ones before it: is it sweet to you, a real joke, big news, sad news of theirs, or a plan you like? Then put "react" on it. A question or small talk gets none.';
+
+/** Messages of the user's a reaction needs between it and the last one (seen on the A51: news, then "what are you up to?" got hyped twice). */
+const REACT_GAP = 2;
+
+/**
+ * May the friend's sticker go on the user's newest line? Not when one of the user's lines just
+ * before it already got one: a person does not react to every message, and a light model let good
+ * news colour the next small talk too. Pure, so `node --test` can load it.
+ */
+export function mayReact(lines: readonly { author: string; theirReaction?: string; kind?: string; card?: string }[]): boolean {
+  const mine = lines.filter((m) => m.author === 'me' && m.kind !== 'system' && !m.card);
+  return !mine.slice(-1 - REACT_GAP, -1).some((m) => !!m.theirReaction);
+}
 
 /** The standing rule, cached with the other rules, and its reminder; a call is spoken, so it reacts with nothing. */
 export const reactParts = (spoken: boolean): PromptPart[] => [

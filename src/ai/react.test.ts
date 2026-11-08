@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { cleanReact, REACT_RULES_LINES, reactParts, REACTS } from './react';
+import { cleanReact, mayReact, REACT_RULES_LINES, reactParts, REACTS } from './react';
 import { parseModelReply } from './reply-style';
 
 describe('the friend reacts to your message', () => {
@@ -25,5 +25,20 @@ describe('the friend reacts to your message', () => {
   it('asks for it in a written chat, never on a call', () => {
     assert.equal(reactParts(false)[0].text, REACT_RULES_LINES.join(String.fromCharCode(10)));
     assert.equal(reactParts(true)[0].text, '');
+  });
+});
+
+describe('mayReact', () => {
+  const me = (theirReaction?: string) => ({ author: 'me', kind: 'text', ...(theirReaction ? { theirReaction } : {}) });
+  const them = { author: 'them', kind: 'text' };
+  it('lets the first one through', () => {
+    assert.equal(mayReact([them, me()]), true);
+  });
+  it('holds back right after a reaction', () => {
+    assert.equal(mayReact([me('hyped'), them, me()]), false);
+    assert.equal(mayReact([me('hyped'), them, me(), them, me()]), false);
+  });
+  it('lets one through again after two plain lines', () => {
+    assert.equal(mayReact([me('hyped'), them, me(), them, me(), them, me()]), true);
   });
 });
