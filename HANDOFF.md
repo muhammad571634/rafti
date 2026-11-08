@@ -6,7 +6,12 @@
 - **Built**: `OWN_DAY_WRITES` (note, diaryReply, dateRound) read the clock (`clockLines`) and the friend's own day (`ownDayParts`) and may answer with a `day` field (`writeDayNotes`); the route returns `{ result, day }`. A diary page gets that day's own notes (`DiaryDay.own`, "YOUR OWN DAY YESTERDAY") and writes none (the day is over). Quizzes leave it out. A stream line reads the speaker's clock and own day after THIS LINE (`streamLineParts(..., { clock, ownDay })`) and returns `day` (`streamDayNotes`). The app sends `clock` + `ownDay` from `writeBase` and the stream request; `writeWithModel` and the stream runner keep the notes (`keepOwnDay`). `serverWrite` / `serverStreamLine` now return `{ result, day }` / `{ line, day }`.
 - **Probe** (`gemini-3.1-flash-lite`, Hana, Sunday 18:30, "overslept, missed the bus" + "spilled ink" kept, 10 calls): every kind built on the notes (note: "the mess at noon", stream: "a disaster with my canvas today", diary page kept "gallery opening, sold a small canvas"). First shape hint ("and day when it says something new") made the model note things the text never said (2 notes on a diary answer that only spoke of the user's report); "only what this text itself says" -> 0 invented notes in 4.
 - Not yet: a memory-pass catch for days the model forgot to note.
-- Checks: app tsc 0, npm test 799/799; server tsc 0, 78/78.
+- Checks: app tsc 0, npm test 799/799; server tsc 0, 78/78. OTA `01a1b97d` (android; the app sends clock + own day, harmless before the deploy).
+- **OTA platforms**: `eas update` without `--platform` exports web too, and the web export's static render (`app.json` web.output "static") fails ("Cannot read properties of undefined (reading 'get')" in `@expo/router-server` render). `--platform ios` exports fine (checked 2026-11-08, 16 MB Hermes bundle). Use `--platform android` now; add `--platform ios` with the first iOS build. The web failure only matters if a web build is ever wanted.
+
+Still to do:
+1. Owner: deploy the server (0z146).
+2. On the A51 after the deploy: English message in a group -> English answer (0z145 language fix); a secret note, a date round and a stream that build on the friend's day.
 
 ### 0z145. The friend's own day in groups, group calls and first texts; groups know the hour (2026-11-08, Claude 1). NEXT: owner deploys the server; then a group chat and a first text on the A51
 
