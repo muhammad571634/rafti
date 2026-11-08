@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z154. NEXT SESSION STARTS HERE: move the remaining screens to the merged design, one at a time (2026-11-08, Claude 1)
+
+- **Done so far** (each seen on the A51, details in 0z152 / 0z153): character profile, chat settings, Memories, chat search, chat background. Shared parts for every next screen: `src/components/character/kit.tsx` (`TitleTop`, `ProfileTop`, `TopButton`, `FaceCard`, `GlassPill`, `QuickAction` / `QuickRow`, `PeachButton`, `Group`, `LinkRow`, `SwitchRow`, `DangerRow`, `ChoiceRow`, `SoftSegmented`, `BondHead` / `BondTrack`, `CardRound`, `profileStyles`). Reuse them; add to the kit rather than copying.
+- **The look** (owner: simple, minimal, easy, clear): cream `playful.ground`, round 44 head buttons, heavy Nunito title (28) or the name fading in, white radius-24 cards (`playful.card`) with Nunito 20 titles, rows 54+ tall, soft segmented switches, one peach action (`colors.primaryFill`), peach shades instead of other accents, `brandText` for small peach glyphs, few words. Keep every element, route, confirm, sheet and a11y label (looks change, never drop or rewire). New strings in all 14 locales.
+- **Queue agreed with the owner** (in this order; owner picks if they say otherwise):
+  0. Owner to choose first: **memory quality** (0z153 Still to do 2: the memory pass keeps raw user lines like "Да да хаха" as facts under "Your life") or go straight to 1.
+  1. **Group info** (`src/app/group/[id]/info.tsx`) + **New group** (`src/app/group/new.tsx`): the twin of chat settings.
+  2. **Your profile** (`src/app/profile.tsx`, aurora now) + **Edit profile** (`src/app/edit-profile.tsx`).
+  3. **Notifications** (`src/app/notifications/index.tsx`) + their settings (`notifications/settings.tsx`).
+  4. **Call history** (`src/app/call-history.tsx`).
+  5. **Store / My plan / Shell history** (`store/shell.tsx`, `my-plan.tsx`, `store/ledger.tsx`): money, careful; no price or flow change.
+  6. Small ones in one batch: personas (`personas/*`), world books (`lore/*`), Kept in mind (`mind.tsx`), scenes (`scenes/*`), language (`language.tsx`), contacts.
+  - **Not without the owner's word**: diary (approved Heartbeat), bedtime and alarms (night look), call screens (on the picture), onboarding.
+- **Per screen**: claim it in `.agents/now.md`, code straight (no prototype), tsc + npm test + check:locales, OTA `--platform android`, open it on the A51 (Android SDK adb; the owner may be using the phone, keep taps short), commit only your paths, a HANDOFF block, a flows row.
+- **Open from 0z153**: the next APK build should show cream under the Android nav buttons (`androidNavigationBar.enforceContrast: false` in app.json); memory row hairlines sometimes drop a pixel.
+
 ### 0z153. Memories, chat search and chat background in the merged design (2026-11-08, Claude 1). NEXT: Group info (+ New group) in the same look (owner's queue, 0z153 reply)
 
 - **Owner's ask**: which screens are left for the simple merged look; owner picked Memories first. Queue told to the owner: 1 Memories (+ search, background) done; 2 Group info + New group; 3 your profile + Edit profile; 4 Notifications + settings; 5 Call history; 6 Store / My plan / Shell history (money, careful); then the small ones (personas, world books, Kept in mind, scenes, language). Not touched without the owner: diary (approved), bedtime / alarms (night look), call screens, onboarding.
