@@ -13,6 +13,7 @@ import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
 import { GroupLabel, IconTile, ProGradient, ProPill, STORE } from '@/components/plans/store-look';
 import { Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -105,7 +106,7 @@ export default function MyPlanScreen() {
       : withCalls
         ? t('plans.resetNote', { date: planDate(calls.resetsAt ?? status.renewsAt) })
         : t('plans.shellsNote', {
-            amount: PLANS[status.plan].shells.toLocaleString('en-US'),
+            amount: count(PLANS[status.plan].shells),
             date: planDate(calls.resetsAt ?? status.renewsAt),
           });
 
@@ -183,7 +184,7 @@ export default function MyPlanScreen() {
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.chatRow')}</Txt>
                 <View style={styles.value}>
-                  <Txt style={styles.valueText}>{wallet.shells.toLocaleString('en-US')}</Txt>
+                  <Txt style={styles.valueText}>{count(wallet.shells)}</Txt>
                   <ShellIcon size={16} />
                 </View>
               </View>

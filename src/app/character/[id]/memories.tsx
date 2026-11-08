@@ -11,7 +11,7 @@ import { FriendAccent, PeachButton, SoftSegmented, TitleTop, TopButton, useFrien
 import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
-import { relativeStamp, shortName } from '@/lib/format';
+import { count, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
@@ -212,7 +212,7 @@ export default function MemoriesScreen() {
           <View style={styles.perks}>
             {[
               t('memories.allOpen'),
-              t('plans.shellsMonth', { amount: PLANS.basic.shells.toLocaleString('en-US') }),
+              t('plans.shellsMonth', { amount: count(PLANS.basic.shells) }),
             ].map((perk) => (
               <View key={perk} style={styles.perk}>
                 <Ionicons name="checkmark" size={17} color={colors.text} />

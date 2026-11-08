@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LiveMascot, MiniMascot } from '@/components/mascot/live-mascot';
 import { PressableScale, ShellIcon, Txt } from '@/components/ui';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -248,7 +249,7 @@ export function DailyRewardSheet() {
             <View ref={shellMark}>
               <ShellIcon size={20} />
             </View>
-            <Txt style={styles.walletText}>{wallet.toLocaleString('en-US')}</Txt>
+            <Txt style={styles.walletText}>{count(wallet)}</Txt>
           </Animated.View>
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.close')} onPress={close} hitSlop={8}>
             <View style={styles.round}>

@@ -9,6 +9,11 @@ export function clockTime(iso: string) {
   return clockText(new Date(iso), getCalendars()[0]?.uses24hourClock ?? true, i18n.language);
 }
 
+/** "6,729" / "6.729" / "6 729": a count (shells, prices in shells) grouped the way the screen language writes it. */
+export function count(n: number) {
+  return n.toLocaleString(i18n.language);
+}
+
 /** "0:06" — voice bubble and call timer. */
 export function duration(totalSeconds: number) {
   const m = Math.floor(totalSeconds / 60);

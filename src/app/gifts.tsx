@@ -25,6 +25,7 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
 import { shareText } from '@/lib/share';
@@ -167,7 +168,7 @@ export default function GiftsScreen() {
               <View ref={shellMark}>
                 <ShellIcon size={18} />
               </View>
-              <Txt style={styles.capsuleText}>{Math.max(0, shells - pending).toLocaleString('en-US')}</Txt>
+              <Txt style={styles.capsuleText}>{count(Math.max(0, shells - pending))}</Txt>
             </View>
           </Animated.View>
         </View>

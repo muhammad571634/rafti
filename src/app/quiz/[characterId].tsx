@@ -28,7 +28,7 @@ import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { askSelfQuiz, displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, moduleFills, space, systemColors, systemGround } from '@/theme';
+import { colors, friendAccent, hitSlop, isDark, moduleFills, space, systemColors, systemGround } from '@/theme';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -188,9 +188,8 @@ export default function QuizScreen() {
             accessibilityLabel={t('quizHome.selfPlay', { name })}
             style={[styles.card, styles.selfCard]}
             onPress={() => (modelIsOn() ? void ask({ id: selfRun.id, title: selfRun.title }) : start(selfRun))}>
-            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? systemGround.fill }]}>
-              {/* The world's pastel, quieter in dark mode (HIG Dark Mode: dimmer colours). */}
-              {isDark ? <View style={styles.heroShade} /> : null}
+            {/* The world's pastel by day; at night a shaded pastel turns grey, so the friend's own accent, dimmed (HIG Dark Mode). */}
+            <View style={[styles.selfHero, { backgroundColor: isDark ? `${friendAccent(character.id).strong}4D` : (world?.tint ?? systemGround.fill) }]}>
               <CharacterAvatar character={character} size={64} ring ringColor={systemGround.card} />
               {world ? (
                 <View style={styles.worldPill}>
@@ -456,7 +455,6 @@ const styles = StyleSheet.create({
   card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: systemGround.card },
   selfCard: { marginTop: 20 },
   selfHero: { height: 116, flexDirection: 'row', alignItems: 'flex-end', padding: 14 },
-  heroShade: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.55)' },
   worldPill: {
     position: 'absolute',
     top: 12,

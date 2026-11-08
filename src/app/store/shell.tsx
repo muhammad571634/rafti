@@ -32,6 +32,7 @@ import {
   Txt,
 } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -224,7 +225,7 @@ function ShellsTab({
         <HeroCard look={signature.shells} style={styles.balance}>
           <ShellIcon size={44} />
           <View style={styles.balanceAmount}>
-            <Txt style={styles.balanceValue}>{wallet.shells.toLocaleString('en-US')}</Txt>
+            <Txt style={styles.balanceValue}>{count(wallet.shells)}</Txt>
             <Txt style={styles.balanceUnit}>{t('store.shellsUnit')}</Txt>
           </View>
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => router.push('/gifts')} style={styles.freePill}>
@@ -275,7 +276,7 @@ function ShellsTab({
       </ScrollView>
 
       <StoreBuyBar
-        label={t('store.buy', { amount: selected.total.toLocaleString('en-US'), price: selected.pack.price })}
+        label={t('store.buy', { amount: count(selected.total), price: selected.pack.price })}
         caption={t(Platform.OS === 'ios' ? 'store.paidApple' : 'store.paidGoogle')}
         onPress={() => buy(selected)}
       />
@@ -316,7 +317,7 @@ function PackRow({
 
   const detail =
     pack.bonus > 0
-      ? `${pack.shells.toLocaleString('en-US')} + ${t('store.bonusFree', { count: pack.bonus })}`
+      ? `${count(pack.shells)} + ${t('store.bonusFree', { count: pack.bonus })}`
       : t('store.shellsUnit');
 
   return (
@@ -327,13 +328,13 @@ function PackRow({
       accessibilityState={{ checked: selected }}
       // react-native-web reads the ARIA prop; native reads accessibilityState.
       aria-checked={selected}
-      accessibilityLabel={`${t('store.shellCount', { amount: total.toLocaleString('en-US') })}, ${pack.price}${tag ? `, ${tag.label}` : ''}`}
+      accessibilityLabel={`${t('store.shellCount', { amount: count(total) })}, ${pack.price}${tag ? `, ${tag.label}` : ''}`}
       style={styles.packRow}>
       <Radio on={selected} />
       <ShellStack count={stack} />
       <View style={styles.packBody}>
         <View style={styles.packAmount}>
-          <Txt style={styles.packTotal}>{total.toLocaleString('en-US')}</Txt>
+          <Txt style={styles.packTotal}>{count(total)}</Txt>
           <Txt style={styles.muted13} lines={2}>
             {detail}
           </Txt>

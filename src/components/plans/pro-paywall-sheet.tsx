@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Button, CharacterAvatar, ModuleIcon, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -75,7 +76,7 @@ export function ProPaywallSheet({
             ? t('plans.newCharacters')
             : t('plans.photosMonth', { count: PLANS.proAnnual.photos }),
           t('plans.callsPerk', { time: planTime(t, PLANS.proAnnual.callSeconds) }),
-          t('plans.shellsMonth', { amount: PLANS.proAnnual.shells.toLocaleString('en-US') }),
+          t('plans.shellsMonth', { amount: count(PLANS.proAnnual.shells) }),
         ].map((perk) => (
           <View key={perk} style={styles.perk}>
             <Ionicons name="checkmark" size={17} color={colors.text} />

@@ -1941,9 +1941,9 @@
     "pattern": "Pola",
     "patterns": {
       "none": "Polos",
-      "dots": "Titik-titik",
-      "stripes": "Garis-garis",
-      "check": "Kotak-kotak"
+      "dots": "Titik",
+      "stripes": "Garis",
+      "check": "Kotak"
     },
     "stickers": "Stiker",
     "upTo": "hingga 2",

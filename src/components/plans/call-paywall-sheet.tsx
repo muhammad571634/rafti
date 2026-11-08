@@ -7,7 +7,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Anim, Button, CharacterAvatar, PressableScale, Sheet, Txt } from '@/components/ui';
 import { PLANS, TRIAL } from '@/economy/plans';
-import { duration, shortName } from '@/lib/format';
+import { count, duration, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { localCharacter } from '@/i18n/content';
@@ -127,7 +127,7 @@ export function CallPaywallSheet({
           bedtime ? t('plans.bedtime') : null,
           t('plans.callsPerk', { time: planTime(t, PLANS.proAnnual.callSeconds) }),
           bedtime ? null : t('plans.voicePerk', { time: planTime(t, PLANS.proAnnual.voiceSeconds) }),
-          t('plans.shellsMonth', { amount: PLANS.proAnnual.shells.toLocaleString('en-US') }),
+          t('plans.shellsMonth', { amount: count(PLANS.proAnnual.shells) }),
         ]
           .filter((perk): perk is string => perk != null)
           .map((perk) => (

@@ -68,8 +68,8 @@ export function ProPill() {
 
 /**
  * The bar pinned to a screen's bottom: the one buy button and the line under it, over Apple's
- * ground. iOS blurs what scrolls under it; Android, which has no cheap blur here, gets a nearly
- * solid fill so the line stays readable. `look` puts the button in a feature's own colour.
+ * ground. iOS blurs what scrolls under it; Android, which has no cheap blur here, gets a solid
+ * fill so the line stays readable. `look` puts the button in a feature's own colour.
  */
 export function StoreBuyBar({
   label,
@@ -158,8 +158,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: STORE.cta,
   },
-  // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent.
-  ctaOff: { backgroundColor: systemColors.fill },
+  // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent. Opaque, so
+  // the rows scrolling under the bar never show through the button.
+  ctaOff: { backgroundColor: systemGround.fillSolid },
   ctaText: { flexShrink: 1, fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
   ctaTextOnLook: { color: colors.white },
   ctaTextOff: { color: colors.textFaint },

@@ -3,6 +3,7 @@ import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import { endOneStop } from './one-stop';
 import de from './locales/de.json';
 import en from './locales/en.json';
 import es from './locales/es.json';
@@ -132,6 +133,12 @@ export function isAutomaticLocale(): boolean {
   return savedLocale === null;
 }
 
+const oneStop = {
+  type: 'postProcessor' as const,
+  name: 'oneStop',
+  process: (value: string) => endOneStop(value),
+};
+
 export async function initI18n() {
   if (initialised) return i18n;
   initialised = true;
@@ -140,13 +147,14 @@ export async function initI18n() {
   savedLocaleLoaded = true;
 
   installPluralRules();
-  await i18n.use(initReactI18next).init({
+  await i18n.use(initReactI18next).use(oneStop).init({
     resources,
     lng: savedLocale ?? deviceLocale(),
     fallbackLng: FALLBACK_LOCALE,
     compatibilityJSON: 'v4',
     interpolation: { escapeValue: false },
     returnNull: false,
+    postProcess: [oneStop.name],
   });
 
   return i18n;

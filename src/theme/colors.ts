@@ -515,9 +515,11 @@ export const systemGround = isDark
       /** Inside an empty slot. */
       well: 'rgba(118,118,128,0.12)',
       groundFade: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.94)'] as const,
-      /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), nearly solid on Android. */
+      /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), solid on Android (no blur, so rows would ghost through). */
       bar: 'rgba(0,0,0,0.72)',
-      barSolid: 'rgba(0,0,0,0.94)',
+      barSolid: '#000000',
+      /** `fill` made opaque (systemGray5) for a control on a see-through bar: a disabled button. */
+      fillSolid: '#2C2C2E',
     }
   : {
       ground: '#FFFFFF',
@@ -529,7 +531,8 @@ export const systemGround = isDark
       well: 'rgba(118,118,128,0.06)',
       groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as const,
       bar: 'rgba(255,255,255,0.78)',
-      barSolid: 'rgba(255,255,255,0.96)',
+      barSolid: '#FFFFFF',
+      fillSolid: '#E5E5EA',
     };
 
 /** A feature's signature look: its fill and glyph colour, a tint, its words on the ground, its hero card's gradient. */

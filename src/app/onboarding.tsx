@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -86,7 +86,18 @@ const NO_PHOTO: [string, string] = ['#A5ABB8', '#858A96'];
  * of cards, notifications (only while the system has not decided; one button that opens the system
  * prompt), and a welcome gift. It ends in the first chat, where the new friend has already written.
  */
-export default function OnboardingScreen() {
+/**
+ * Onboarding is a one-way door: a link to it (`sigmazam://onboarding`) after it is done lands on
+ * the tabs instead of starting over. Read once on mount, so finishing here (which sets
+ * `onboardedAt` and then navigates on its own) never races this redirect.
+ */
+export default function OnboardingRoute() {
+  const [done] = useState(() => !!useAppStore.getState().user.onboardedAt);
+  if (done) return <Redirect href="/(tabs)" />;
+  return <OnboardingScreen />;
+}
+
+function OnboardingScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();

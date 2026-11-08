@@ -8,6 +8,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { PLAN_PORTRAITS, QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
+import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
@@ -31,7 +32,6 @@ const PLAN_ROWS: PlanId[] = ['proAnnual', 'pro', 'basic'];
 const COLUMN = 64;
 const GUTTER = 16;
 
-const count = new Intl.NumberFormat('en-US');
 
 export interface PlanBought {
   plan: PlanId;
@@ -116,11 +116,11 @@ export function PlanPicker({
     { key: 'calls', value: shortTime(t, pro.callSeconds), label: t('plans.compare.calls'), glyph: { ios: 'phone.fill', icon: 'call' } },
     { key: 'voice', value: shortTime(t, pro.voiceSeconds), label: t('plans.compare.voice'), glyph: { ios: 'waveform', icon: 'pulse' } },
     { key: 'photos', value: String(pro.photos), label: t('plans.compare.photos'), glyph: { ios: 'camera.fill', icon: 'camera' } },
-    { key: 'shells', value: count.format(pro.shells), label: t('plans.compare.shells'), glyph: 'shell' },
+    { key: 'shells', value: count(pro.shells), label: t('plans.compare.shells'), glyph: 'shell' },
   ];
 
   const rows: CompareRow[] = [
-    { key: 'shells', fill: moduleFills.store, glyph: 'shell', basic: count.format(basic.shells), pro: count.format(pro.shells) },
+    { key: 'shells', fill: moduleFills.store, glyph: 'shell', basic: count(basic.shells), pro: count(pro.shells) },
     { key: 'calls', fill: moduleFills.calls, glyph: MODULE_GLYPH.calls, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
     { key: 'voice', fill: systemColors.pink, glyph: { ios: 'waveform', icon: 'pulse' }, basic: time(basic.voiceSeconds), pro: time(pro.voiceSeconds) },
     {

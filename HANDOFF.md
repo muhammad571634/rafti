@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z169. Dark mode and German / Russian worst case on the feature screens; onboarding a one-way door (2026-11-08, Claude 1). NEXT: the flow audit (item 3 below), then the `Color` move
+
+- **Owner's asks**: carry on from HANDOFF; and (again) use skills, plugins, MCPs and connectors whenever they fit, switching them on myself or asking the owner. Loaded this session: `appllama-app-design-skill`, `break-ui`, `mobile-app-design:ios-review` (the owner installed Mobile App Design, Design and react-native-best-practices). The UXKIN MCP asked for sign-in; its tools (`find_ui_references`, `get_journey`) showed up late in the session, so use them for the flow audit.
+- **Seen on the A51** (dark mode, then German and Russian; OTA `01a1bc5a`, Android only): Gifts, Store, My plan, Radio, Board, Photo Booth, frame editor, couple quiz, world quiz, contacts, Hana's memories and profile, secret note. Phone put back to English and light.
+- **Fixed**:
+  - Store buy bar: on Android the bar was 94% black and the disabled button a see-through grey, so the plan rows ghosted through "Your current plan". `systemGround.barSolid` is now opaque and the disabled button uses the new opaque `systemGround.fillSolid` (systemGray5). Radio's mini player shares `barSolid`.
+  - Couple quiz hero: at night the world's pastel under a 55% black shade read as plain grey; it now takes the friend's accent at 30% (`friendAccent`), the pastel stays by day.
+  - Numbers: 12 places printed counts with `toLocaleString('en-US')` ("2,000" in German); one `count()` in `src/lib/format.ts` groups them in the screen language ("2.000", "2 000"). Plan picker's own `Intl.NumberFormat('en-US')` too. Prices stay USD until StoreKit.
+  - "… am 8. Dez.." : an i18next post-processor (`src/i18n/one-stop.ts`, tested) folds exactly two stops into one for every string and language; "..." stays.
+  - Frame editor pattern segments: Russian "Однотонный" shrank to a tiny font; now "Простой". Indonesian "Titik-titik / Garis-garis / Kotak-kotak" shortened to "Titik / Garis / Kotak".
+  - Onboarding is a one-way door for links too: `sigmazam://onboarding` after onboarding lands on Today (`Redirect`, read once on mount so finishing never races it). Checked on the A51.
+  - Dead code: the unused `aurora` tones of `Segmented` and `SearchBar` are gone. Aurora remains only on onboarding and the share card picture (both brand moments), so the tokens stay for now.
+- **Flow audit, started**: profile → Message uses `dismissTo` (pops to the open chat, else replaces the profile), world → chat and Today widgets push; Store buy stays on the Store. No defect found yet; not walked end to end on the phone.
+- **OTA note**: `eas update` without `--platform android` fails in the web export (known, HANDOFF line on OTA platforms).
+- Checks: tsc 0, npm test 846/846, check:locales pass.
+
+**Next session starts here** (in order):
+1. Flow audit on the A51 with UXKIN references (`get_journey` for onboarding / paywall / settings): Today → widget → screen → back; Find → world → profile → chat → back; Store → buy → back; Android back on every sheet.
+2. Light mode of the frame editor and both quizzes not looked at this session (dark was).
+3. Move module colour constants to live semantic colours (`Color` from expo-router), `systemGround` first (from 0z168).
+
 ### 0z168. The last aurora screens on the white ground; one buy bar; skills, plugins and MCPs from now on (2026-11-08, Claude 1). NEXT: read the "Next session starts here" list below
 
 - **Owner's asks**: carry on with the remaining screens; fix weak logic or architecture on the way; and (said with frustration) "use skills, plugins and MCPs to the maximum: switch on when needed, off when not". I had redesigned a dozen screens without loading a UI skill. Rule now in `.agents/rules/project-memory.md` §2 and Claude's memory: check skills / plugins / MCPs at the start of every task. This session then loaded `appllama-app-design-skill`, `expo-native-ui` and `break-ui`, and offered three plugins to install (owner decides): **Mobile App Design (iOS)** (UXKIN: real iOS journeys, for flows), **Design** (Anthropic: critique, accessibility, UX copy), **react-native-best-practices**. Appllama's own MCP is not in the registry.
