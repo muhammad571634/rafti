@@ -25,7 +25,7 @@ import {
   UserAvatar,
   useScrolledPast,
 } from '@/components/ui';
-import { FirstHello } from '@/components/onboarding/first-hello';
+import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
 import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
@@ -493,9 +493,7 @@ export default function ProfileScreen() {
       </Sheet>
 
       <Modal visible={hello} animationType="none" statusBarTranslucent onRequestClose={() => setHello(false)}>
-        <Screen background="aurora">
-          <FirstHello onDone={() => setHello(false)} />
-        </Screen>
+        <GlassIconOrbit onStart={() => setHello(false)} />
       </Modal>
     </Screen>
   );

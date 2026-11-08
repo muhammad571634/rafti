@@ -1722,7 +1722,12 @@
     "firstAsk": "{{name}}，今天過得怎麼樣呀？",
     "step": "步驟 {{index}} / {{count}}",
     "meetNote": "世界中的每一位角色均為AI虛擬人物，並非真實人類。",
-    "helloBubble": "嗨！我們一直在等你 ✨"
+    "helloBubble": "嗨！我們一直在等你 ✨",
+    "orbitWordA": "不再孤單",
+    "orbitWordB": "總有人聽",
+    "orbitTitle": "一直都在的朋友",
+    "orbitBody": "會聊天、會打電話、記得你的 AI 角色。回答幾個簡單問題，就有人在等你。",
+    "orbitA11y": "一圈應用功能圖示。拖曳即可轉動。"
   },
   "ledger": {
     "title": "資產明細",

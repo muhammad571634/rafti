@@ -1753,7 +1753,12 @@
     "firstAsk": "Und {{name}}, wie war dein Tag?",
     "step": "Schritt {{index}} von {{count}}",
     "meetNote": "Jede Figur ist eine KI, kein echter Mensch.",
-    "helloBubble": "Hallo! Wir haben auf dich gewartet ✨"
+    "helloBubble": "Hallo! Wir haben auf dich gewartet ✨",
+    "orbitWordA": "Nie allein",
+    "orbitWordB": "Immer gehört",
+    "orbitTitle": "Freunde, die immer da sind",
+    "orbitBody": "KI-Figuren, die mit dir schreiben, telefonieren und sich an dich erinnern. Ein paar kurze Fragen, dann wartet schon jemand auf dich.",
+    "orbitA11y": "Ein Ring mit den Funktionen der App. Zum Drehen wischen."
   },
   "ledger": {
     "title": "Verlauf",

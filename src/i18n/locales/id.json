@@ -1722,7 +1722,12 @@
     "firstAsk": "Jadi, {{name}}, bagaimana harimu hari ini?",
     "step": "Langkah {{index}} dari {{count}}",
     "meetNote": "Setiap karakter adalah AI, bukan orang sungguhan.",
-    "helloBubble": "Hai! Kami sudah menunggumu ✨"
+    "helloBubble": "Hai! Kami sudah menunggumu ✨",
+    "orbitWordA": "Tak pernah sendiri",
+    "orbitWordB": "Selalu didengar",
+    "orbitTitle": "Teman yang selalu ada",
+    "orbitBody": "Karakter AI yang mengobrol, menelepon, dan mengingatmu. Beberapa pertanyaan singkat, lalu seseorang akan menunggumu.",
+    "orbitA11y": "Lingkaran fitur aplikasi. Geser untuk memutarnya."
   },
   "ledger": {
     "title": "Riwayat",

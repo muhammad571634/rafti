@@ -1722,7 +1722,12 @@
     "firstAsk": "{{name}} ơi, ngày hôm nay của bạn thế nào?",
     "step": "Bước {{index}} / {{count}}",
     "meetNote": "Mỗi nhân vật đều là AI, không phải người thật.",
-    "helloBubble": "Xin chào! Bọn mình đợi bạn mãi ✨"
+    "helloBubble": "Xin chào! Bọn mình đợi bạn mãi ✨",
+    "orbitWordA": "Không cô đơn",
+    "orbitWordB": "Luôn được lắng nghe",
+    "orbitTitle": "Những người bạn luôn ở đây",
+    "orbitBody": "Nhân vật AI biết nhắn tin, gọi điện và nhớ về bạn. Vài câu hỏi nhanh, rồi sẽ có người chờ bạn.",
+    "orbitA11y": "Vòng tròn các tính năng của ứng dụng. Kéo để xoay."
   },
   "ledger": {
     "title": "Lịch sử",

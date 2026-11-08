@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z161. Onboarding's first screen is Native Cook's Glass Icon Orbit with our icons and the mascot (2026-11-08, Claude 1). NEXT: the 1-2 s launch animation on every cold start (owner's ask, same orbit cut short)
+
+- **Owner's asks**: the old first hello (character faces lighting up, shell burst) looked cheap; no character faces; the first seconds must say it is an AI companion app and feel "you are not alone, you are happy here, nobody hurts you here". Then the owner handed over Native Cook's Glass Icon Orbit (prompt + video) and said: use its own code (free blocks, not 1:1 ideas only this time), keep the black ground, swap in our icons coloured for black, mascot out of the middle at the end, then the onboarding questions. Also asked: a 1-3 s animation on every app open (like BIMOBIMO): not built yet.
+- **Built**: `src/components/onboarding/glass-icon-orbit.tsx`, ported from `react-native/src/blocks/onboarding/glass-icon-orbit/GlassIconOrbit.tsx` (Native-Cook/native-cook; the repo has no LICENSE file, the site gives the blocks free with an integration prompt; owner's call). Kept: black ground, violet glow, 9 s loop, ring maths (8 x 68 pt, radius 92 to 250, tilt 68, focal 520), dark glass tiles with gradient rims, easing, drag to spin with a 2 s pause, reduced motion (still frame), layout. Changed: the neon path icons are our clay icons (bubbles, calls, date, diary, alarm, photo, gift, music) drawn as Skia images, each tile's rim coloured to suit; the centre's warm glow; after the three typing dots the winking mascot hops out of the centre tile (6.2-6.8 s) instead of the arrow, and sinks with it; the Sigmazam logo top left, the language chip top right; words "Never alone" / "Always heard", title "Friends who are always here", body (AI characters who chat, call and remember you), "Let's start" and the legal line, all 14 locales (gender-neutral where the language allows). Onboarding's intro step renders it; Profile's dev row "Play the first hello" opens it; the old `first-hello.tsx` is deleted. Skia was already in the APK (Coin Drop, level-up), so no new build.
+- **Seen on the A51** (OTA `01a1bb14`, Turkish, via the dev row): ring with our icons, "Asla yalnız değil", "Hep dinlenir", gather, dots, the mascot out of the tile, the ring reopening; "Hadi başlayalım" closed it.
+- Checks: tsc 0, npm test 844/844, check:locales.
+
+Still to do:
+1. Launch animation on every cold start (owner): the orbit's gather + mascot hop cut to ~1.5 s over the native splash, played while data loads, not on resume.
+2. Owner to try the real first run (a fresh install or Clear data) when convenient: language chip, Let's start, then the questions.
+
 ### 0z160. Share pays only for a real share; one poster frame; Us shares a full-picture poster (2026-11-08, Claude 1). NEXT: owner tries a real share to Instagram / Telegram from the chat and from Us
 
 - **Owner's asks**: (1) no +5 shells for just pressing Share; pay for posting it somewhere, with limits; (2) the chat's share button a round peach icon only, the +5 shown inside the sheet; (3) the poster must say it is a chat with a character of the Sigmazam app, with the tagline; (4) Us' share (days, streak, first met, intimacy) on the poster too, in canvas C (the friend's big picture).

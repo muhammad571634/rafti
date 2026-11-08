@@ -18,7 +18,6 @@ import {
 import Animated, {
   Easing,
   Extrapolation,
-  FadeIn,
   FadeInRight,
   FadeInUp,
   interpolate,
@@ -41,9 +40,8 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
-import { ICONS } from '@/assets/icons/registry';
 import { LockPreview } from '@/components/notifications/lock-preview';
-import { FirstHello } from '@/components/onboarding/first-hello';
+import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
@@ -106,8 +104,6 @@ export default function OnboardingScreen() {
   );
 
   const [step, setStep] = useState<Step>('intro');
-  // The first hello has played (or was tapped through): its last frame stays, Start comes up.
-  const [played, setPlayed] = useState(false);
   // HIG Entering data: what the system already knows is not asked again.
   const [askPush, setAskPush] = useState(true);
   const asked = useRef(false);
@@ -199,30 +195,25 @@ export default function OnboardingScreen() {
   );
 
   if (step === 'intro') {
-    // HIG Onboarding: the splash opens onboarding, so it ends on the one thing to do next.
+    // HIG Onboarding: the first screen says what the app is and ends on the one thing to do next.
+    // Native Cook's Glass Icon Orbit, ported with our icons and the mascot (owner, 2026-11-08).
     return (
-      <Screen background="aurora">
-        <FirstHello atEnd={played} onDone={() => setPlayed(true)} />
-        {played ? (
-          <>
-            {SUPPORTED_LOCALES.length > 1 ? (
-              <Animated.View entering={FadeIn.duration(300)} style={[styles.top, styles.topEnd, { top: insets.top }]}>
-                <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)}>
-                  <AuroraGlass style={styles.lang}>
-                    <Txt style={styles.langText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
-                    <Ionicons name="chevron-down" size={13} color={aurora.textMuted} />
-                  </AuroraGlass>
-                </PressableScale>
-              </Animated.View>
-            ) : null}
-            <Animated.View entering={FadeInUp.duration(360)} style={[styles.introFooter, { paddingBottom: bottomRoom(insets.bottom, space.lg) + 6 }]}>
-              <Cta label={t('onboarding.start')} onPress={next} />
-              <Txt style={styles.caption}>{t('onboarding.legal')}</Txt>
-            </Animated.View>
-          </>
-        ) : null}
+      <>
+        <GlassIconOrbit
+          onStart={next}
+          top={
+            SUPPORTED_LOCALES.length > 1 ? (
+              <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)}>
+                <View style={styles.langDark}>
+                  <Txt style={styles.langDarkText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
+                  <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.7)" />
+                </View>
+              </PressableScale>
+            ) : null
+          }
+        />
         {languageSheet}
-      </Screen>
+      </>
     );
   }
 
@@ -695,8 +686,19 @@ const styles = StyleSheet.create({
   title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
   body: { fontSize: 17, lineHeight: 22, color: aurora.textMuted },
   hello: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  topEnd: { position: 'absolute', top: 0, left: 0, right: 0, justifyContent: 'flex-end' },
-  introFooter: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, gap: space.sm },
+  // The language chip on the orbit's black ground (dark glass, white words).
+  langDark: {
+    height: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    paddingHorizontal: space.md,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.25)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+  },
+  langDarkText: { fontSize: 13, fontWeight: '600', color: '#FFFFFF' },
   card: { borderRadius: 26, backgroundColor: aurora.card, ...CARD_SHADOW },
   wheelWrap: { marginTop: 88 },
   peek: { position: 'absolute', right: 18, top: -82, width: PEEK_W, height: PEEK_W / BRAND_ASPECT.peek },

@@ -1753,7 +1753,12 @@
     "firstAsk": "Alors {{name}}, comment s'est passée votre journée ?",
     "step": "Étape {{index}} sur {{count}}",
     "meetNote": "Chaque personnage est une IA, pas une vraie personne.",
-    "helloBubble": "Bonjour ! On vous attendait ✨"
+    "helloBubble": "Bonjour ! On vous attendait ✨",
+    "orbitWordA": "Quelqu’un est là",
+    "orbitWordB": "On t’écoute",
+    "orbitTitle": "Des amis toujours là",
+    "orbitBody": "Des personnages IA qui discutent, appellent et se souviennent de toi. Quelques questions rapides, et quelqu’un t’attendra.",
+    "orbitA11y": "Un anneau des fonctions de l’app. Fais glisser pour le tourner."
   },
   "ledger": {
     "title": "Historique",
