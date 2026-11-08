@@ -5599,6 +5599,18 @@ function ensureOpinions(set: Setter, get: Getter, characterId: string) {
     });
 }
 
+/** The friend's sticker goes on the user's latest message in the chat (one at a time, the newest wins). */
+function markTheirReaction(set: Setter, conversationId: string, react: string) {
+  set((s) => {
+    const lines = s.messages[conversationId];
+    const at = lines?.findLastIndex((m) => m.author === 'me' && m.kind !== 'system' && !m.card);
+    if (!lines || at == null || at < 0) return s;
+    const next = [...lines];
+    next[at] = { ...next[at], theirReaction: react };
+    return { messages: { ...s.messages, [conversationId]: next } };
+  });
+}
+
 function keepOwnDay(set: Setter, characterId: string, notes: readonly string[]) {
   updateRelationship(set, characterId, (r) => ({ ownDay: addDayNotes(r.ownDay, notes, new Date(), todayKey()) }));
 }
@@ -5791,6 +5803,9 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       if (!reply) return failReply(set, conversationId, request);
       rememberPhotos(set, conversationId, photos, reply.photos);
       if (reply.day?.length) keepOwnDay(set, character.id, reply.day);
+      // Their sticker on what the user just said, before the bubbles land (owner, 2026-11-08: alive).
+      // Only an answer to a new message: ↻ and steers would put it on again.
+      if (reply.react && trigger === 'message' && avoid == null && !steer) markTheirReaction(set, conversationId, reply.react);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
       deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined);

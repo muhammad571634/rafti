@@ -484,7 +484,8 @@
       "sad": "Un peu de tristesse",
       "annoyed": "D'humeur grognon"
     },
-    "aiShort": "IA"
+    "aiShort": "IA",
+    "theyReacted": "Réaction : {{name}}"
   },
   "paywall": {
     "title": "Plus de coquillages",

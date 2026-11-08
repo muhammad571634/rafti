@@ -470,7 +470,8 @@
       "sad": "Agak sedih",
       "annoyed": "Agak kesal"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "Reaksi: {{name}}"
   },
   "paywall": {
     "title": "Kerang habis",

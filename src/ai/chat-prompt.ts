@@ -18,6 +18,7 @@ import { openerLines, repeatCue } from './repetition';
 import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
+import { reactParts } from './react';
 import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE } from './safety';
 import { characterParts } from './rules';
@@ -215,6 +216,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // "Wake me at 7": the friend offers a real alarm or plan, a card under the reply makes it. Not
     // on a call: the reply is spoken there, with no card to tap.
     part('setupRules', 'global', input.mode === 'call' ? [] : SETUP_RULES_LINES),
+    // A sticker on their latest message now and then (owner, 2026-11-08: alive); none on a call.
+    ...reactParts(input.mode === 'call'),
     part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),

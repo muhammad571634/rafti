@@ -470,7 +470,8 @@
       "sad": "Hơi buồn",
       "annoyed": "Hơi khó chịu"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "Cảm xúc: {{name}}"
   },
   "paywall": {
     "title": "Hết vỏ sò",

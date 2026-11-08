@@ -484,7 +484,8 @@
       "sad": "A little sad",
       "annoyed": "A bit annoyed"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "Their reaction: {{name}}"
   },
   "paywall": {
     "title": "Out of shells",

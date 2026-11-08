@@ -286,6 +286,8 @@ export interface Message {
   muted?: boolean;
   /** The user's reaction to this message: a Rafti sticker name (see REACTION_STICKERS) */
   reaction?: string;
+  /** The friend's sticker on the user's own message, put there with their reply (`src/ai/react.ts`). */
+  theirReaction?: string;
   /** 👍 👎 on their reply, kept on its first line; the friend never sees it (`src/lib/reply-rating.ts`). */
   rating?: 'up' | 'down';
   /** Why a reply was marked down (`OffReason`). */

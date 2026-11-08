@@ -470,7 +470,8 @@
       "sad": "有點難過",
       "annoyed": "有點不爽"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "回應：{{name}}"
   },
   "paywall": {
     "title": "貝殼不足",

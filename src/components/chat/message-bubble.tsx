@@ -5,7 +5,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
@@ -136,7 +136,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
   // With a double tap the wrapper carries the width cap, so the held area fills it.
-  const holdStyle = [styles.holdable, (column || !!onDoubleTap) && styles.wide, message.reaction ? styles.withReaction : null];
+  const holdStyle = [styles.holdable, (column || !!onDoubleTap) && styles.wide, message.reaction || (mine && message.theirReaction) ? styles.withReaction : null];
   const inner = (
     <>
       {message.kind === 'image' && message.photoId ? (
@@ -166,8 +166,15 @@ export const MessageBubble = memo(function MessageBubble({
         <ReactionSticker
           name={message.reaction as ReactionName}
           play="still"
-          style={[styles.reaction, mine ? styles.reactionMine : styles.reactionTheirs]}
+          // Your own sticker on your line steps to the other corner when theirs is on it.
+          style={[styles.reaction, mine ? (message.theirReaction ? styles.reactionTheirs : styles.reactionMine) : styles.reactionTheirs]}
         />
+      ) : null}
+      {mine && message.theirReaction && message.theirReaction in REACTION_STICKERS ? (
+        // Their sticker on what you said (owner, 2026-11-08: alive): it pops in as it lands.
+        <Animated.View entering={ZoomIn.springify().damping(12)} style={[styles.reaction, styles.reactionMine]} accessible accessibilityLabel={t('chat.theyReacted', { name: t(`chat.reactions.${message.theirReaction}`) })}>
+          <ReactionSticker name={message.theirReaction as ReactionName} play="still" style={styles.reactionFill} />
+        </Animated.View>
       ) : null}
     </>
   );
@@ -669,6 +676,7 @@ const styles = StyleSheet.create({
   // The sticker carries its own white die-cut rim, so it needs no chip behind it.
   reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
   reactionMine: { left: -space.xs },
+  reactionFill: { width: 30, height: 30 },
   reactionTheirs: { right: -space.xs },
   // A pinned line's mark, on the corner away from the tail (canvas `MenuPin.dc.html`).
   pinBadge: {

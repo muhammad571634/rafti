@@ -484,7 +484,8 @@
       "sad": "Com um pouco de tristeza",
       "annoyed": "De mau humor"
     },
-    "aiShort": "IA"
+    "aiShort": "IA",
+    "theyReacted": "Reação: {{name}}"
   },
   "paywall": {
     "title": "Sem conchas",

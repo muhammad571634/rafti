@@ -901,7 +901,9 @@ export function createApp(
       const threads = crisis ? undefined : reply.threads;
       // `day`: new things the friend said of their own day; the app keeps them for the next replies.
       const day = crisis ? undefined : reply.day;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, voice, model: result.model ?? provider.name, ms });
+      // `react`: a sticker the friend put on the user's latest message; never after a crisis or on a call.
+      const react = crisis || input.mode === 'call' ? undefined : reply.react;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

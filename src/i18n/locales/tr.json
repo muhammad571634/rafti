@@ -484,7 +484,8 @@
       "sad": "Biraz üzgün",
       "annoyed": "Biraz sinirli"
     },
-    "aiShort": "YZ"
+    "aiShort": "YZ",
+    "theyReacted": "Tepki: {{name}}"
   },
   "paywall": {
     "title": "Kabuklar bitti",

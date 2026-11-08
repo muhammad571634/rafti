@@ -484,7 +484,8 @@
       "sad": "Etwas traurig",
       "annoyed": "Etwas genervt"
     },
-    "aiShort": "KI"
+    "aiShort": "KI",
+    "theyReacted": "Reaktion: {{name}}"
   },
   "paywall": {
     "title": "Keine Muscheln mehr",

@@ -484,7 +484,8 @@
       "sad": "Un po’ di tristezza",
       "annoyed": "Di cattivo umore"
     },
-    "aiShort": "IA"
+    "aiShort": "IA",
+    "theyReacted": "Reazione: {{name}}"
   },
   "paywall": {
     "title": "Conchiglie esaurite",

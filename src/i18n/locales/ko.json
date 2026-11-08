@@ -470,7 +470,8 @@
       "sad": "조금 슬픔",
       "annoyed": "조금 언짢음"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "반응: {{name}}"
   },
   "paywall": {
     "title": "조개가 부족합니다",

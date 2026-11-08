@@ -470,7 +470,8 @@
       "sad": "ちょっと寂しい",
       "annoyed": "ちょっとムッとしてる"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "リアクション: {{name}}"
   },
   "paywall": {
     "title": "シェルが不足しています",

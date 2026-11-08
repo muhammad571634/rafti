@@ -470,7 +470,8 @@
       "sad": "เศร้านิดๆ",
       "annoyed": "หงุดหงิดนิดๆ"
     },
-    "aiShort": "AI"
+    "aiShort": "AI",
+    "theyReacted": "รีแอคชัน: {{name}}"
   },
   "paywall": {
     "title": "เปลือกหอยหมดแล้ว",
