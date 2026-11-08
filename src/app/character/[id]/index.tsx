@@ -1,23 +1,23 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
-  Button,
-  CharacterAvatar,
-  GlassBar,
-  GlassButton,
-  Header,
-  InsetGroup,
-  InsetRow,
-  PressableScale,
-  Screen,
-  SFIcon,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+  BondHead,
+  BondTrack,
+  FaceCard,
+  GlassPill,
+  Group,
+  LinkRow,
+  PeachButton,
+  profileStyles,
+  ProfileTop,
+  QuickAction,
+  QuickRow,
+  TopButton,
+} from '@/components/character/kit';
+import { Header, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { opensToAllAt } from '@/economy/early-access';
@@ -25,16 +25,16 @@ import { isActiveMemory } from '@/economy/memory-limit';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
-import { daysBetween } from '@/lib/format';
+import { daysBetween, shortName } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, fonts, playful, space } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
 /**
- * Discovery -> profile -> "Add friend" is the reference app's way in: adding a
- * character opens a chat that starts with their greeting. The profile sits on the
- * plain canvas: a centred portrait, one apricot action, and quiet rows below.
+ * Discovery -> profile -> "Add friend" is the reference app's way in: adding a character opens a
+ * chat that starts with their greeting. In the four tabs' look (0z152): the cream ground, their
+ * picture as Find's photo card with the name on it, one peach action, and white cards below.
  */
 export default function CharacterProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -54,8 +54,8 @@ export default function CharacterProfileScreen() {
   const locale = useAppStore((s) => s.user.locale);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
   const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
-  // Past the avatar and name, the bar shows the name (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(150);
+  // Past the face card, the top row shows the name.
+  const { scrolled, onScroll } = useScrolledPast(360);
 
   if (!character) {
     return (
@@ -68,6 +68,7 @@ export default function CharacterProfileScreen() {
   const isFriend = !!conversation;
   const voiceReady = character.voiceReady;
   const shown = localCharacter(character);
+  const name = displayName(character, relationship);
 
   const locked = !isFriend && early.locked(character);
   const opensAt = opensToAllAt(character);
@@ -80,19 +81,19 @@ export default function CharacterProfileScreen() {
   };
 
   return (
-    // iOS contact poster (approved prototype `Profile.dc.html`): grey ground, glass bar, inset cards.
-    <Screen background={colors.bg}>
-      <GlassBar
-        title={displayName(character, relationship)}
-        scrolled={scrolled}
+    <Screen background={playful.ground}>
+      <ProfileTop
+        title={name}
+        showTitle={scrolled}
+        onBack={() => router.back()}
         right={
           isFriend ? (
-            <GlassButton
+            <TopButton
               icon="ellipsis-horizontal"
               accessibilityLabel={t('characterProfile.settings')}
               onPress={() => router.dismissTo(`/character/${character.id}/settings`)}
             />
-          ) : null
+          ) : undefined
         }
       />
 
@@ -100,52 +101,31 @@ export default function CharacterProfileScreen() {
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.huge }]}>
-        <View style={styles.hero}>
-          <CharacterAvatar character={character} size={112} />
-          <View style={styles.nameRow}>
-            <Txt style={styles.name} center lines={2}>
-              {displayName(character, relationship)}
-            </Txt>
-            {/* Store rule: an AI character is marked as one. */}
-            <View style={styles.aiMark} accessibilityLabel={t('safety.ai')}>
-              <Txt style={styles.aiText}>{t('safety.ai')}</Txt>
-            </View>
-          </View>
-          <Txt style={styles.handle} center>
-            {character.handle}
-            {character.series ? ` · ${phrase(character.series)}` : ''}
-          </Txt>
-          {shown.worldRole ? (
-            <Txt style={styles.handle} center>
-              {shown.worldRole}
-            </Txt>
-          ) : null}
-          {locked ? (
-            <Txt variant="caption" color={colors.textSecondary} center style={styles.bold}>
-              {t('find.proFirst')}
-            </Txt>
-          ) : null}
-          {character.review === 'pending' ? (
-            <Txt variant="caption" color={colors.textSecondary} center>
-              {t('createCharacter.inReview')}
-            </Txt>
-          ) : null}
-          {voiceReady ? (
-            <View style={styles.voice}>
-              {/* SF Symbols' own pulse on iPhone: the voice is alive. */}
-              <SFIcon
-                ios="waveform"
-                icon="pulse"
-                size={14}
-                color={colors.bondText}
-                animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }}
+        contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
+        <FaceCard
+          tall
+          character={character}
+          name={name}
+          // Store rule: an AI character is marked as one.
+          nameBadge={<GlassPill label={t('safety.ai')} accessibilityLabel={t('safety.ai')} />}
+          lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.worldRole]}
+          topLeft={
+            voiceReady ? (
+              <GlassPill
+                label={t('find.voiceReady')}
+                icon={
+                  // SF Symbols' own pulse on iPhone: the voice is alive.
+                  <SFIcon ios="waveform" icon="pulse" size={14} color={colors.onMedia} animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }} />
+                }
               />
-              <Txt style={styles.voiceText} color={colors.bondText}>
-                {t('find.voiceReady')}
-              </Txt>
-            </View>
-          ) : null}
+            ) : undefined
+          }
+        />
+
+        {locked ? <Txt style={[profileStyles.caption, styles.bold]}>{t('find.proFirst')}</Txt> : null}
+        {character.review === 'pending' ? <Txt style={profileStyles.caption}>{t('createCharacter.inReview')}</Txt> : null}
+
+        <View style={styles.words}>
           {shown.tagline ? (
             <Txt style={styles.tagline} center>
               {shown.tagline}
@@ -155,68 +135,39 @@ export default function CharacterProfileScreen() {
             {shown.bio}
           </Txt>
           {shown.tags.length > 0 ? (
-            <Txt style={styles.tags} center>
-              {shown.tags.join(' · ')}
-            </Txt>
-          ) : null}
-        </View>
-
-        <View style={styles.actions}>
-          <Button
-            label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
-            variant="primary"
-            size="lg"
-            full
-            onPress={openChat}
-            left={
-              <Ionicons
-                name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
-                size={18}
-                color={colors.textOnPrimary}
-              />
-            }
-          />
-          {locked && opensAt != null ? (
-            <Txt variant="caption" color={colors.textSecondary} center>
-              {t('newCharacters.opensOn', { date: planDate(opensAt) })}
-            </Txt>
-          ) : null}
-          {isFriend ? (
-            <View style={styles.pair}>
-              <PressableScale
-                scaleTo={0.95}
-                disabled={!voiceReady}
-                onPress={() => router.push(`/call/${character.id}`)}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: !voiceReady }}
-                accessibilityLabel={t('characterProfile.call')}
-                style={[styles.tile, !voiceReady && styles.off]}>
-                <SFIcon ios="phone.fill" icon="call" size={22} color={colors.brandText} />
-                <Txt style={styles.tileLabel} color={colors.brandText}>
-                  {t('characterSettings.quickCall')}
-                </Txt>
-              </PressableScale>
-              <PressableScale
-                scaleTo={0.95}
-                onPress={() => router.push(`/secret-note/${character.id}`)}
-                accessibilityRole="button"
-                accessibilityLabel={t('characterProfile.secretNote')}
-                style={styles.tile}>
-                <SFIcon ios="envelope" icon="mail-outline" size={22} color={colors.brandText} />
-                <Txt style={styles.tileLabel} color={colors.brandText}>
-                  {t('characterProfile.secretNote')}
-                </Txt>
-              </PressableScale>
+            <View style={styles.tags}>
+              {shown.tags.map((tag) => (
+                <View key={tag} style={styles.tag}>
+                  <Txt style={styles.tagText} maxFontSizeMultiplier={1.3}>
+                    {tag}
+                  </Txt>
+                </View>
+              ))}
             </View>
           ) : null}
-          {!voiceReady ? (
-            <Txt variant="caption" color={colors.textSecondary} center>
-              {t('characterProfile.voiceTraining')}
-            </Txt>
-          ) : null}
         </View>
 
-        <AboutCard character={shown} locale={locale} />
+        <PeachButton
+          label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
+          icon={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
+          onPress={openChat}
+        />
+        {locked && opensAt != null ? <Txt style={profileStyles.caption}>{t('newCharacters.opensOn', { date: planDate(opensAt) })}</Txt> : null}
+        {isFriend ? (
+          <QuickRow center>
+            <QuickAction
+              icon="call"
+              label={t('characterSettings.quickCall')}
+              accessibilityLabel={t('characterProfile.call')}
+              disabled={!voiceReady}
+              onPress={() => router.push(`/call/${character.id}`)}
+            />
+            <QuickAction icon="mail" label={t('characterProfile.secretNote')} onPress={() => router.push(`/secret-note/${character.id}`)} />
+          </QuickRow>
+        ) : null}
+        {!voiceReady ? <Txt style={profileStyles.caption}>{t('characterProfile.voiceTraining')}</Txt> : null}
+
+        <AboutCard character={shown} name={shortName(name)} locale={locale} />
 
         <StoryCard character={shown} level={relationship?.level ?? 0} />
 
@@ -235,9 +186,9 @@ export default function CharacterProfileScreen() {
 
 /**
  * Their story and facts in one white card (`src/mock/character-profiles.ts`), as the chat's first
- * card shows them: age and height, the story, then what they love and can't stand.
+ * card shows them: the story, then the dynamic, age and height, what they love and can't stand.
  */
-function AboutCard({ character, locale }: { character: Character; locale: string }) {
+function AboutCard({ character, name, locale }: { character: Character; name: string; locale: string }) {
   const { t } = useTranslation();
   const rows = [
     character.trope ? { key: 'dynamic', label: t('world.dynamic'), value: t(`world.tropes.${character.trope}`) } : null,
@@ -249,20 +200,20 @@ function AboutCard({ character, locale }: { character: Character; locale: string
   if (!character.backstory && !rows.length) return null;
 
   return (
-    <InsetGroup style={styles.about}>
+    <Group title={t('intro.open', { name })}>
       {character.backstory ? (
-        <View style={[styles.aboutStory, rows.length > 0 && styles.aboutLine]}>
+        <View style={[styles.aboutStory, rows.length > 0 && styles.line]}>
           <Txt style={styles.aboutLabel}>{t('intro.story')}</Txt>
           <Txt style={styles.aboutText}>{character.backstory}</Txt>
         </View>
       ) : null}
       {rows.map((row, i) => (
-        <View key={row.key} style={[styles.aboutRow, i < rows.length - 1 && styles.aboutLine]}>
+        <View key={row.key} style={[styles.aboutRow, i < rows.length - 1 && styles.line]}>
           <Txt style={styles.aboutLabel}>{row.label}</Txt>
           <Txt style={styles.aboutValue}>{row.value}</Txt>
         </View>
       ))}
-    </InsetGroup>
+    </Group>
   );
 }
 
@@ -275,27 +226,26 @@ function StoryCard({ character, level }: { character: Character; level: number }
   const beats = character.arc?.beats;
   if (!beats?.length) return null;
   return (
-    <InsetGroup style={styles.about}>
-      <View style={[styles.storyHead, styles.aboutLine]}>
-        <Txt style={styles.aboutLabel} accessibilityRole="header">
-          {t('world.story')}
-        </Txt>
+    <Group title={t('world.story')}>
+      <View style={styles.storyList}>
+        {beats.map((beat, i) => {
+          const open = level >= beat.atLevel;
+          return (
+            <View key={beat.atLevel} style={[styles.storyRow, i < beats.length - 1 && styles.line]}>
+              <View style={[styles.storyIcon, open && styles.storyIconOpen]}>
+                <SFIcon
+                  ios={open ? 'key.fill' : 'lock.fill'}
+                  icon={open ? 'key' : 'lock-closed'}
+                  size={15}
+                  color={open ? colors.brandText : colors.textFaint}
+                />
+              </View>
+              <Txt style={[styles.aboutValue, styles.grow, !open && styles.storyLocked]}>{open ? beat.title : t('world.level', { level: beat.atLevel })}</Txt>
+            </View>
+          );
+        })}
       </View>
-      {beats.map((beat, i) => {
-        const open = level >= beat.atLevel;
-        return (
-          <View key={beat.atLevel} style={[styles.storyRow, i < beats.length - 1 && styles.aboutLine]}>
-            <SFIcon
-              ios={open ? 'key.fill' : 'lock.fill'}
-              icon={open ? 'key' : 'lock-closed'}
-              size={16}
-              color={open ? systemColors.pink : colors.textFaint}
-            />
-            <Txt style={[styles.aboutValue, styles.grow, !open && styles.storyLocked]}>{open ? beat.title : t('world.level', { level: beat.atLevel })}</Txt>
-          </View>
-        );
-      })}
-    </InsetGroup>
+    </Group>
   );
 }
 
@@ -315,104 +265,49 @@ function BondCard({
   const maxed = relationship.intimacy >= relationship.nextLevelAt;
 
   return (
-    <InsetGroup style={styles.bond}>
-      <View style={styles.bondHead}>
-        <View style={styles.bondHeart}>
-          {/* One SF Symbols bounce when the card appears (iPhone). */}
-          <SFIcon ios="heart.fill" icon="heart" size={16} color={colors.bond} animation={{ effect: { type: 'bounce' } }} />
-        </View>
-        <View style={styles.grow}>
-          <Txt style={styles.bondTitle} lines={1}>
-            {t('characterProfile.levelLine', { level: relationship.level, title: phrase(relationship.levelTitle) })}
+    <Group>
+      <BondHead
+        // One SF Symbols bounce when the card appears (iPhone).
+        heart={<SFIcon ios="heart.fill" icon="heart" size={18} color={colors.brandText} animation={{ effect: { type: 'bounce' } }} />}
+        title={t('characterProfile.levelLine', { level: relationship.level, title: phrase(relationship.levelTitle) })}
+        line={`${t('us.streak', { count: relationship.streakDays })} · ${t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}`}
+        end={
+          <Txt style={styles.progress}>
+            {maxed
+              ? t('us.intimacy', { count: relationship.intimacy })
+              : t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
           </Txt>
-          <Txt style={styles.bondLine}>
-            {t('us.streak', { count: relationship.streakDays })}
-            {' · '}
-            {t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}
-          </Txt>
-        </View>
-        <Txt style={styles.bondLine}>
-          {maxed
-            ? t('us.intimacy', { count: relationship.intimacy })
-            : t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
-        </Txt>
-      </View>
-      <View style={styles.track}>
-        <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
-      </View>
+        }
+      />
+      <BondTrack progress={progress} />
       <View style={styles.bondFoot}>
-        <InsetRow
-          label={t('characterProfile.memories')}
-          meta={memoryCount > 0 ? String(memoryCount) : undefined}
-          chevron
-          last
-          onPress={onMemories}
-        />
+        <LinkRow label={t('characterProfile.memories')} meta={memoryCount > 0 ? String(memoryCount) : undefined} onPress={onMemories} last />
       </View>
-    </InsetGroup>
+    </Group>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: space.huge },
-  hero: { alignItems: 'center', paddingTop: space.xs, paddingHorizontal: space.xl },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
-  name: { flexShrink: 1, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
-  aiMark: { height: 20, paddingHorizontal: 7, borderRadius: 6, backgroundColor: colors.surfaceAlt, justifyContent: 'center' },
-  aiText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
-  handle: { marginTop: 2, fontSize: 15, color: colors.textSecondary },
+  grow: { flex: 1, minWidth: 0 },
   bold: { fontWeight: '700' },
-  voice: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 6 },
-  voiceText: { fontSize: 13, fontWeight: '500' },
-  tagline: { marginTop: 10, fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4 },
-  bio: { marginTop: 10, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
-  about: { marginTop: 22 },
-  aboutStory: { paddingHorizontal: space.lg, paddingVertical: 12, gap: 4 },
-  aboutRow: { paddingHorizontal: space.lg, paddingVertical: 11, gap: 2 },
-  aboutLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  storyHead: { paddingHorizontal: space.lg, paddingVertical: 11 },
-  storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: 12 },
-  storyLocked: { color: colors.textSecondary },
-  aboutLabel: { fontSize: 13, color: colors.textSecondary },
-  aboutText: { fontSize: 15, lineHeight: 21 },
+  words: { paddingHorizontal: space.xl, paddingTop: 18, paddingBottom: 18, alignItems: 'center' },
+  // Their own words come in every script: the system face, heavy.
+  tagline: { fontSize: 19, lineHeight: 25, fontWeight: '800', letterSpacing: -0.4, color: playful.ink },
+  bio: { marginTop: 8, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
+  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: 16, justifyContent: 'center', backgroundColor: playful.chip },
+  tagText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: playful.ink },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  aboutStory: { paddingHorizontal: 18, paddingTop: 8, paddingBottom: 14, gap: 4 },
+  aboutRow: { paddingHorizontal: 18, paddingVertical: 12, gap: 2 },
+  aboutLabel: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  aboutText: { fontSize: 15, lineHeight: 22 },
   aboutValue: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
-  tags: { marginTop: space.sm, fontSize: 13, color: colors.textSecondary },
-  actions: { marginTop: 20, gap: space.sm, paddingHorizontal: space.lg },
-  pair: { flexDirection: 'row', gap: space.sm },
-  tile: {
-    flex: 1,
-    height: 62,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  tileLabel: { fontSize: 12, fontWeight: '500' },
-  off: { opacity: 0.45 },
-  bond: { marginTop: 22 },
-  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: 14 },
-  bondHeart: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.bondSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bondTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
-  bondLine: { fontSize: 13, color: colors.textSecondary },
-  grow: { flex: 1 },
-  track: {
-    height: 6,
-    marginLeft: space.lg + 30 + space.md,
-    marginRight: space.lg,
-    marginTop: space.md,
-    marginBottom: 14,
-    borderRadius: 3,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
-  },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
+  storyList: { paddingTop: 4 },
+  storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 12 },
+  storyIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  storyIconOpen: { backgroundColor: colors.primarySofter },
+  storyLocked: { color: colors.textSecondary },
+  progress: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
   bondFoot: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
 });

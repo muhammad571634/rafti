@@ -3,25 +3,26 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Button, Header, ListRow, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import {
-  Button,
-  CharacterAvatar,
-  GlassBar,
-  GlassButton,
-  Header,
-  IconButton,
-  ListRow,
-  PressableScale,
-  Screen,
-  Sheet,
-  SystemSegmented,
-  Toggle,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+  BondHead,
+  BondTrack,
+  CardRound,
+  ChoiceRow,
+  DangerRow,
+  FaceCard,
+  Group,
+  LinkRow,
+  profileStyles,
+  ProfileTop,
+  QuickAction,
+  QuickRow,
+  SwitchRow,
+  TopButton,
+} from '@/components/character/kit';
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import { phrase } from '@/i18n';
 import { FAMILY_LABELS } from '@/lib/kin';
@@ -34,12 +35,12 @@ import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { booksFor } from '@/lib/lorebook';
 import { personaFor, personaList } from '@/lib/personas';
-import { replyPrefs } from '@/lib/reply-engine';
+import { currentMood, replyPrefs, temperamentFor } from '@/lib/reply-engine';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, type } from '@/theme';
+import { colors, playful, radius, space, type } from '@/theme';
 import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -107,7 +108,7 @@ export default function CharacterSettingsScreen() {
   const [closenessOpen, setClosenessOpen] = useState(false);
   const [labelOpen, setLabelOpen] = useState(false);
   // Past the avatar and name, the bar shows the name (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(150);
+  const { scrolled, onScroll } = useScrolledPast(220);
 
   if (!character) {
     return (
@@ -186,18 +187,21 @@ export default function CharacterSettingsScreen() {
     { key: 'reset', label: t('characterSettings.reset') },
     { key: 'block', label: t('characterSettings.blockName', { name: shortName(name) }) },
   ];
+  // How they feel right now, as under their name in the chat; it fades back to their usual self.
+  const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
 
   return (
-    // iOS contact card (approved prototype `Info.dc.html`): grouped white cards on the grey ground.
-    <Screen background={colors.bg}>
-      <GlassBar
+    // The four tabs' look (0z152): cream ground, their picture as Find's photo card, white cards.
+    <Screen background={playful.ground}>
+      <ProfileTop
         title={name}
-        scrolled={scrolled}
+        showTitle={scrolled}
+        onBack={() => router.back()}
         right={
           // Only the user's own characters can be edited; seed ones get a nickname below.
           own ? (
-            <GlassButton label={t('common.edit')} accessibilityLabel={t('characterSettings.editCharacter')} onPress={() => run('editCharacter')} />
-          ) : null
+            <TopButton label={t('common.edit')} accessibilityLabel={t('characterSettings.editCharacter')} onPress={() => run('editCharacter')} />
+          ) : undefined
         }
       />
 
@@ -205,46 +209,21 @@ export default function CharacterSettingsScreen() {
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <View style={styles.identity}>
-          <CharacterAvatar character={character} size={112} />
-          <Txt style={styles.name} lines={1} accessibilityRole="header">
-            {name}
-          </Txt>
-          <View style={styles.caption}>
-            <Txt style={styles.captionText}>{t('chat.aiCharacter')}</Txt>
-            {relationship ? (
-              <>
-                <View style={styles.captionDot} />
-                <Txt style={styles.captionText}>
-                  {t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) })}
-                </Txt>
-              </>
-            ) : null}
-          </View>
-        </View>
+        contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
+        <FaceCard
+          character={character}
+          name={name}
+          lines={[
+            `${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`,
+            relationship ? t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) }) : null,
+          ]}
+        />
 
-        <View style={styles.quick}>
+        <QuickRow>
           {quick.map((q) => (
-            <PressableScale
-              key={q.key}
-              scaleTo={0.95}
-              onPress={() => run(q.key)}
-              accessibilityRole="button"
-              accessibilityLabel={q.badge ? `${q.label}, ${q.badge}` : q.label}
-              style={styles.quickTile}>
-              <Ionicons name={q.icon} size={22} color={colors.brandText} />
-              <Txt style={styles.quickLabel} color={colors.brandText} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-                {q.label}
-              </Txt>
-              {q.badge ? (
-                <View style={styles.badge}>
-                  <Txt style={styles.badgeText}>{q.badge > 99 ? '99+' : q.badge}</Txt>
-                </View>
-              ) : null}
-            </PressableScale>
+            <QuickAction key={q.key} icon={q.icon} label={q.label} badge={q.badge} onPress={() => run(q.key)} />
           ))}
-        </View>
+        </QuickRow>
 
         {relationship ? (
           <RelationshipCard
@@ -258,7 +237,7 @@ export default function CharacterSettingsScreen() {
         ) : null}
 
         {/* The former "Chat settings" sheet, inline as on iOS. */}
-        <View style={styles.card}>
+        <Group>
           <SwitchRow
             label={t('characterSettings.voiceReplies')}
             value={relationship?.voiceReplies ?? true}
@@ -276,14 +255,12 @@ export default function CharacterSettingsScreen() {
             onChange={(v) => setSetting('chatAnimation', v)}
             last
           />
-        </View>
+        </Group>
         {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
-        {!hasPlan && character.voiceReady ? (
-          <Txt style={styles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt>
-        ) : null}
+        {!hasPlan && character.voiceReady ? <Txt style={profileStyles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt> : null}
 
         {/* How their replies read (Character.AI's response style and length); the next reply follows. */}
-        <View style={styles.card}>
+        <Group>
           <ChoiceRow
             label={t('characterSettings.replyStyle')}
             options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
@@ -297,9 +274,9 @@ export default function CharacterSettingsScreen() {
             onChange={(length) => setReplyPrefs(character.id, { length })}
             last
           />
-        </View>
+        </Group>
 
-        <View style={styles.card}>
+        <Group>
           {conversation ? (
             <LinkRow
               label={t('personas.youAre')}
@@ -329,21 +306,13 @@ export default function CharacterSettingsScreen() {
             }}
             last
           />
-        </View>
+        </Group>
 
-        <View style={styles.card}>
+        <Group>
           {danger.map((d, i) => (
-            <Pressable
-              key={d.key}
-              onPress={() => run(d.key)}
-              accessibilityRole="button"
-              style={({ pressed }) => [styles.row, i < danger.length - 1 && styles.rowLine, pressed && styles.rowPressed]}>
-              <Txt style={styles.rowText} color={colors.danger}>
-                {d.label}
-              </Txt>
-            </Pressable>
+            <DangerRow key={d.key} label={d.label} last={i === danger.length - 1} onPress={() => run(d.key)} />
           ))}
-        </View>
+        </Group>
       </ScrollView>
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')} avoidKeyboard>
@@ -456,81 +425,10 @@ export default function CharacterSettingsScreen() {
   );
 }
 
-/** A row with the app's switch (`Toggle`): the iOS green track and white thumb on both platforms. */
-function SwitchRow({
-  label,
-  value,
-  disabled,
-  last,
-  onChange,
-}: {
-  label: string;
-  value: boolean;
-  disabled?: boolean;
-  last?: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <View style={[styles.row, !last && styles.rowLine, disabled && styles.disabled]}>
-      <Txt style={[styles.rowText, styles.flex]}>{label}</Txt>
-      <Toggle
-        value={value}
-        disabled={disabled}
-        onChange={onChange}
-        accessibilityLabel={label}
-      />
-    </View>
-  );
-}
-
-/** A setting with two or three choices: its name over iOS's segmented control. */
-function ChoiceRow<T extends string>({
-  label,
-  options,
-  value,
-  last,
-  onChange,
-}: {
-  label: string;
-  options: readonly { value: T; label: string }[];
-  value: T;
-  last?: boolean;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <View style={[styles.choice, !last && styles.rowLine]} accessibilityLabel={label}>
-      <Txt style={styles.rowText}>{label}</Txt>
-      <SystemSegmented
-        options={options}
-        value={value}
-        onChange={(v: T) => {
-          if (v === value) return;
-          haptic.selection();
-          onChange(v);
-        }}
-      />
-    </View>
-  );
-}
-
 /** The world books row's value: the one book's name, how many there are, or none. */
 function loreMeta(books: Lorebook[], t: TFunction) {
   if (books.length === 1) return books[0].name;
   return books.length ? t('lore.bookCount', { count: books.length }) : t('characterSettings.none');
-}
-
-function LinkRow({ label, meta, last, onPress }: { label: string; meta?: string; last?: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={meta ? `${label}, ${meta}` : label}
-      style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && styles.rowPressed]}>
-      <Txt style={[styles.rowText, styles.flex]}>{label}</Txt>
-      {meta ? <Txt style={[styles.rowText, styles.meta]}>{meta}</Txt> : null}
-      <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
-    </Pressable>
-  );
 }
 
 /** Level, stage, progress to the next level and the label you chose. */
@@ -554,30 +452,19 @@ function RelationshipCard({
   const maxed = level >= MAX_LEVEL;
 
   return (
-    <View style={styles.bond}>
-      <View style={styles.bondHead}>
-        <View style={styles.bondHeart}>
-          <Ionicons name="heart" size={16} color={colors.bond} />
-        </View>
-        <View style={styles.flex}>
-          <Txt style={styles.bondTitle}>{title}</Txt>
-          <Txt style={styles.bondLine}>
-            {t('closeness.level', { level })}
-            {' · '}
-            {maxed
-              ? t('closeness.max')
-              : t('closeness.toNext', { count: Math.max(0, nextLevelAt - intimacy), level: level + 1 })}
-          </Txt>
-        </View>
-        <IconButton icon="information-circle-outline" size={22} color={colors.textSecondary} accessibilityLabel={t('closeness.title')} onPress={onInfo} />
-      </View>
-      <View style={styles.track}>
-        <View style={[styles.fill, { width: `${Math.round(Math.min(1, progress) * 100)}%` }]} />
-      </View>
+    <Group>
+      <BondHead
+        title={title}
+        line={`${t('closeness.level', { level })} · ${
+          maxed ? t('closeness.max') : t('closeness.toNext', { count: Math.max(0, nextLevelAt - intimacy), level: level + 1 })
+        }`}
+        end={<CardRound icon="information" accessibilityLabel={t('closeness.title')} onPress={onInfo} />}
+      />
+      <BondTrack progress={progress} />
       <View style={styles.bondRow}>
         <LinkRow label={t('closeness.relationship')} meta={label ?? t('closeness.pickShort')} onPress={onPick} last />
       </View>
-    </View>
+    </Group>
   );
 }
 
@@ -621,73 +508,10 @@ function LabelRow({
 }
 
 const styles = StyleSheet.create({
-  identity: { alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.xs },
-  name: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
-  caption: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
-  captionText: { fontSize: 15, color: colors.textSecondary },
-  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
-  quick: { flexDirection: 'row', gap: space.sm, marginTop: 22, paddingHorizontal: space.lg },
-  quickTile: {
-    flex: 1,
-    height: 62,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  quickLabel: { fontSize: 12, fontWeight: '500', letterSpacing: -0.1 },
-  badge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    minWidth: 18,
-    height: 18,
-    paddingHorizontal: 5,
-    borderRadius: 9,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeText: { fontSize: 11, fontWeight: '600', color: colors.textSecondary },
-  // iOS inset grouped list: white cards 16pt in, rows 44pt+, hairlines between rows.
-  card: { marginTop: 22, marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
-  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
-  choice: { gap: 10, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 14 },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  rowPressed: { backgroundColor: colors.surfaceAlt },
-  // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
-  meta: { color: colors.textSecondary },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg + space.lg, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  bond: { marginTop: 22, marginHorizontal: space.lg, paddingTop: 14, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
-  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg, paddingRight: space.xs },
-  bondHeart: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.bondSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bondTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
-  bondLine: { fontSize: 13, color: colors.textSecondary },
-  track: {
-    height: 6,
-    marginLeft: space.lg + 30 + space.md,
-    marginRight: space.lg,
-    marginTop: space.md,
-    marginBottom: 14,
-    borderRadius: 3,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
-  },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: colors.bond },
   bondRow: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
   labelScroll: { maxHeight: 460 },
   labelHint: { marginBottom: space.sm },
   locked: { opacity: 0.5 },
-  flex: { flex: 1 },
   input: {
     height: 48,
     paddingHorizontal: space.md,
@@ -697,5 +521,4 @@ const styles = StyleSheet.create({
     ...type.body,
   },
   hint: { marginTop: space.sm, marginBottom: space.lg },
-  disabled: { opacity: 0.45 },
 });
