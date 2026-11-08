@@ -360,7 +360,7 @@ export default function OnboardingScreen() {
                       style={({ pressed }) => [styles.choice, pressed && styles.choicePressed]}>
                       <View style={[styles.choiceBody, i < GENDERS.length - 1 && styles.choiceLine]}>
                         <Txt style={styles.choiceText}>{t(g.label)}</Txt>
-                        {pronouns === g.value ? <Ionicons name="checkmark" size={22} color={colors.primary} /> : null}
+                        {pronouns === g.value ? <Ionicons name="checkmark" size={22} color={colors.brandText} /> : null}
                       </View>
                     </Pressable>
                   ))}

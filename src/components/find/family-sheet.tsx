@@ -104,7 +104,7 @@ export function FamilySheet({
                   <Txt style={styles.rowText} lines={1}>
                     {c.name}
                   </Txt>
-                  {c.id === pick ? <Ionicons name="checkmark-circle" size={22} color={colors.primary} /> : null}
+                  {c.id === pick ? <Ionicons name="checkmark-circle" size={22} color={colors.brandText} /> : null}
                 </Pressable>
               ))}
             </View>
@@ -115,7 +115,7 @@ export function FamilySheet({
           accessibilityRole="button"
           onPress={onCreate}
           style={({ pressed }) => [styles.box, styles.row, styles.create, pressed && styles.pressed]}>
-          <Ionicons name="add-circle" size={22} color={colors.primary} />
+          <Ionicons name="add-circle" size={22} color={colors.brandText} />
           <Txt style={[styles.rowText, styles.createText]}>{t('family.createOwn')}</Txt>
         </Pressable>
       </ScrollView>

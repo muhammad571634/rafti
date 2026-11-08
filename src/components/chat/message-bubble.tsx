@@ -485,7 +485,7 @@ function WeekCard({ week }: { week: WeekStats }) {
         <View style={styles.weekRow}>
           {stats.map((x) => (
             <View key={x.icon} style={styles.weekStat}>
-              <Ionicons name={x.icon} size={20} color={colors.primary} />
+              <Ionicons name={x.icon} size={20} color={colors.brandText} />
               <Txt style={styles.weekValue}>{x.value}</Txt>
             </View>
           ))}

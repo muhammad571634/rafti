@@ -80,7 +80,7 @@ function Row({ title, hint, on, last, onPress }: { title: string; hint?: string;
             </Txt>
           ) : null}
         </View>
-        {on ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+        {on ? <Ionicons name="checkmark" size={20} color={colors.brandText} /> : null}
       </View>
     </Pressable>
   );

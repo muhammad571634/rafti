@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
   tilePill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center' },
   tilePillText: { fontSize: 13, fontWeight: '700' },
   peachPill: { backgroundColor: isDark ? '#3A2416' : '#FFF0E4' },
-  peachInk: { color: isDark ? '#FFB27A' : '#C96A32' },
+  peachInk: { color: colors.brandText },
   violetPill: { backgroundColor: storeColors.violetSoft },
   violetInk: { color: storeColors.violetInk },
   complete: {

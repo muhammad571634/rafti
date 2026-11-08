@@ -209,7 +209,7 @@ export default function DiaryScreen() {
         onPress={() => setCalendarOpen(true)}>
         <Ionicons name="calendar-outline" size={16} color={colors.text} />
         <Txt variant="smallStrong">{shortDate(day)}</Txt>
-        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={13} color={colors.primary} />
+        <Ionicons name={calendarOpen ? 'chevron-up' : 'chevron-down'} size={13} color={colors.brandText} />
       </PressableScale>
 
       <View style={styles.middle}>

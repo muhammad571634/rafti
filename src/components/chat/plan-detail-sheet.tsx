@@ -70,7 +70,7 @@ export function PlanDetailSheet({ planId, onClose }: { planId: string | null; on
               </Txt>
             </View>
             <View style={[styles.row, remindAhead && styles.line]}>
-              <Ionicons name="calendar" size={20} color={colors.primary} />
+              <Ionicons name="calendar" size={20} color={colors.brandText} />
               <Txt style={[styles.label, styles.grow]}>{day}</Txt>
               {plan.time ? <Txt style={styles.clock}>{plan.time}</Txt> : null}
             </View>

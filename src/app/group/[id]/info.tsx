@@ -182,7 +182,7 @@ export default function GroupInfoScreen() {
               accessibilityState={{ disabled: !!q.off }}
               accessibilityLabel={q.label}
               style={[styles.quickTile, q.off && styles.off]}>
-              <Ionicons name={q.icon} size={22} color={colors.primary} />
+              <Ionicons name={q.icon} size={22} color={colors.brandText} />
               <Txt style={styles.quickLabel} color={colors.brandText}>
                 {q.label}
               </Txt>
@@ -222,7 +222,7 @@ export default function GroupInfoScreen() {
               accessibilityLabel={t('group.addMember')}
               onPress={() => setAdding(true)}>
               <View style={styles.addIcon}>
-                <Ionicons name="add" size={20} color={colors.primary} />
+                <Ionicons name="add" size={20} color={colors.brandText} />
               </View>
               <View style={styles.memberBody}>
                 <Txt style={styles.memberName} color={colors.brandText}>

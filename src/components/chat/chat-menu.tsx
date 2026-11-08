@@ -172,10 +172,11 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 12, color: aurora.textMuted },
   lines: { padding: 14, gap: 6 },
   bubble: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 18 },
-  mine: { alignSelf: 'flex-end', maxWidth: '72%', backgroundColor: isDark ? '#E07B3A' : '#EF8A4E' },
+  // The preview shows your bubble as the chat does.
+  mine: { alignSelf: 'flex-end', maxWidth: '72%', backgroundColor: colors.bubbleSelf },
   theirs: { alignSelf: 'flex-start', maxWidth: '76%', backgroundColor: colors.bubbleOther },
   bubbleText: { fontSize: 16, lineHeight: 21, color: colors.text },
-  mineText: { color: colors.white },
+  mineText: { color: colors.bubbleSelfText },
   menu: {
     width: 250,
     borderRadius: 22,

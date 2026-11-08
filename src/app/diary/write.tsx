@@ -107,7 +107,7 @@ export default function DiaryWriteScreen() {
             <Txt style={styles.dateText} color={colors.brandText}>
               {shortDate(date)}
             </Txt>
-            <Ionicons name="chevron-down" size={11} color={colors.primary} />
+            <Ionicons name="chevron-down" size={11} color={colors.brandText} />
           </View>
         </PressableScale>
         <PressableScale
@@ -294,7 +294,7 @@ function ReaderOption({
         <Txt style={styles.optionText} lines={1}>
           {label}
         </Txt>
-        {selected ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+        {selected ? <Ionicons name="checkmark" size={20} color={colors.brandText} /> : null}
       </View>
     </Pressable>
   );

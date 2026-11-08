@@ -80,7 +80,7 @@ export function SceneBar({ title, onSkip, onEnd }: { title: string; onSkip?: () 
       {/* ⏩ opens the time skip with the scene's next moment first. */}
       {onSkip ? (
         <PressableScale onPress={onSkip} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('scenes.skipAhead')} hitSlop={10} style={styles.sceneEnd}>
-          <Ionicons name="play-forward" size={17} color={colors.primary} />
+          <Ionicons name="play-forward" size={17} color={colors.brandText} />
         </PressableScale>
       ) : null}
       <PressableScale onPress={onEnd} scaleTo={0.94} accessibilityRole="button" accessibilityLabel={t('scenes.end')} hitSlop={10} style={styles.sceneEnd}>

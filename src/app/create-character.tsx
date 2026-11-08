@@ -732,7 +732,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
                   />
                   {editing ? (
                     <Pressable onPress={addFromChat} accessibilityRole="button" style={styles.inlineAction}>
-                      <Ionicons name="chatbubbles" size={16} color={colors.primary} />
+                      <Ionicons name="chatbubbles" size={16} color={colors.brandText} />
                       <Txt style={styles.inlineActionText}>{label('addFromChat')}</Txt>
                     </Pressable>
                   ) : null}
@@ -843,7 +843,7 @@ function Lines({
       ))}
       {lines.length < max ? (
         <Pressable onPress={() => onChange([...lines, ''])} accessibilityRole="button" style={styles.inlineAction}>
-          <Ionicons name="add-circle" size={18} color={colors.primary} />
+          <Ionicons name="add-circle" size={18} color={colors.brandText} />
           <Txt style={styles.inlineActionText}>{addLabel}</Txt>
         </Pressable>
       ) : null}
@@ -923,7 +923,7 @@ const styles = StyleSheet.create({
   subLabel: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
   dialog: { minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 22, color: colors.text },
   inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
-  inlineActionText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.primary },
+  inlineActionText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.brandText },
   lines: { marginTop: space.sm },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
   lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 21, color: colors.text },

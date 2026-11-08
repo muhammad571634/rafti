@@ -108,5 +108,5 @@ const styles = StyleSheet.create({
   title: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
   topic: { marginTop: 2, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
   meta: { fontSize: 15, color: colors.textSecondary },
-  live: { color: colors.primary, fontWeight: '600' },
+  live: { color: colors.brandText, fontWeight: '600' },
 });

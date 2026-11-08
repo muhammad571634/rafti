@@ -192,7 +192,7 @@ export default function BoardWriteScreen() {
                   <Txt style={styles.personName} lines={1}>
                     {displayName(c, relationships[c.id])}
                   </Txt>
-                  {on ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+                  {on ? <Ionicons name="checkmark" size={20} color={colors.brandText} /> : null}
                 </View>
               </Pressable>
             );

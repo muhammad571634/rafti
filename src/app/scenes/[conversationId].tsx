@@ -76,7 +76,7 @@ export default function ScenesScreen() {
         {running && conversation ? (
           <InsetGroup style={styles.first}>
             <View style={[styles.row, styles.line]}>
-              <Ionicons name="film" size={18} color={colors.primary} />
+              <Ionicons name="film" size={18} color={colors.brandText} />
               <Txt style={styles.title} lines={1}>
                 {running.title}
               </Txt>
@@ -154,7 +154,7 @@ function SceneRow({ scene, last, onPress, onEdit }: { scene: Scene; last?: boole
       </Pressable>
       {onEdit ? (
         <Pressable onPress={onEdit} accessibilityRole="button" accessibilityLabel={t('scenes.edit')} style={[styles.edit, !last && styles.line]}>
-          <Ionicons name="create-outline" size={20} color={colors.primary} />
+          <Ionicons name="create-outline" size={20} color={colors.brandText} />
         </Pressable>
       ) : null}
     </View>

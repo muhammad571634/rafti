@@ -148,7 +148,7 @@ export function WritingSteps() {
       <View style={styles.portraitBox}>
         <Animated.View style={[styles.portraitRing, ringStyle]} />
         <Animated.View style={[styles.portrait, faceStyle]}>
-          <Ionicons name="sparkles" size={44} color={colors.primary} />
+          <Ionicons name="sparkles" size={44} color={colors.brandText} />
         </Animated.View>
       </View>
       <Txt style={styles.writingTitle} maxFontSizeMultiplier={1.3}>

@@ -169,7 +169,7 @@ export function Rewrite({ label, busy, disabled, onPress }: { label: string; bus
       accessibilityLabel={label}
       accessibilityState={{ busy, disabled: !!disabled }}
       style={({ pressed }) => [styles.rewrite, pressed && styles.pressed, disabled && styles.off]}>
-      {busy ? <ActivityIndicator size="small" color={colors.primary} /> : <Ionicons name="sparkles" size={16} color={colors.primary} />}
+      {busy ? <ActivityIndicator size="small" color={colors.brandText} /> : <Ionicons name="sparkles" size={16} color={colors.brandText} />}
     </Pressable>
   );
 }

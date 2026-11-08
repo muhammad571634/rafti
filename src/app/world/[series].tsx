@@ -384,7 +384,7 @@ function WorldFoot({ world, people, canGroup, onGroup }: { world: World; people:
       {canGroup ? (
         <View style={[styles.card, styles.flush]}>
           <PressableScale scaleTo={0.99} accessibilityRole="button" onPress={onGroup} style={styles.groupRow}>
-            <SFIcon ios="person.2.fill" icon="people" size={20} color={colors.primary} />
+            <SFIcon ios="person.2.fill" icon="people" size={20} color={colors.brandText} />
             <Txt style={[styles.groupLabel, styles.flex]}>{t('world.crew')}</Txt>
             <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
           </PressableScale>

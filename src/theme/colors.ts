@@ -18,6 +18,8 @@ export const palette = {
   apricot500: '#F79E63',
   apricot600: '#EF8A4E',
   apricot700: '#C96A32',
+  /** The brand's ink: peach text and small icons on a light ground, readable (owner 2026-11-08). */
+  apricot800: '#A8531F',
   /** Text and icons on a peach fill: white would vanish on it. */
   peachInk: '#6A2F0C',
 
@@ -99,13 +101,15 @@ const lightColors = {
   /** Text or icon on an ink fill (unread count, ticked box, selected segment). */
   textOnInk: palette.white,
 
-  // Brand: `primary` marks icons, rings and dots; `primaryFill` is the soft button fill.
-  primary: palette.apricot600,
-  primaryFill: palette.apricot400,
+  // Brand (owner, 2026-11-08): one peach, #FFC497, the alarm editor's on colour, for buttons, the
+  // chosen state, dots and rings in both themes; never the deep Claude-like orange (#EF8A4E). Small
+  // peach text and icons on a light ground use `brandText`, the same hue made readable.
+  primary: palette.apricot300,
+  primaryFill: palette.apricot300,
   primarySoft: palette.apricot100,
   primarySofter: palette.apricot50,
   // Tinted text: a step darker than `primary` so it reads on white (3.8:1 vs 2.5:1).
-  brandText: palette.apricot700,
+  brandText: palette.apricot800,
 
   // Accent (Secret Note / relationship)
   accent: palette.mint500,
@@ -291,8 +295,8 @@ const auroraLight = {
   separator: 'rgba(60,60,67,0.16)',
   /** Tint of the soft shadow under cards and glass on the aurora (black in dark mode). */
   shadow: '#3C285A',
-  /** Unread dots and "typing…" on the aurora. */
-  tint: '#EF8A4E',
+  /** Unread dots and "typing…" on the aurora: the brand's ink (owner 2026-11-08). */
+  tint: palette.apricot800 as string,
   /** The pinned chat's bubble ("Race you…", the typing dots). */
   bubble: 'rgba(255,255,255,0.9)',
   /** The light ring round a pinned avatar. */
@@ -436,8 +440,8 @@ export const storeColors = isDark
     }
   : {
       ring: 'rgba(60,60,67,0.3)',
-      tint: palette.apricot700,
-      onTint: palette.white,
+      tint: palette.apricot300,
+      onTint: palette.peachInk,
       faint: '#AEAEB2',
       peachSoft: palette.apricot100,
       peachInk: '#A8531F',
@@ -458,7 +462,7 @@ export const storeColors = isDark
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 export const gradients = {
   /** The primary button: peach, lighter at the top. */
-  primary: ['#FFD3B1', '#FFB37A'] as const,
+  primary: [palette.apricot200, palette.apricot300] as const,
   call: ['#A9D3F5', '#8FB0C8', '#7E8E9A'] as const,
   /** The wake-up alarm's ringing screen: sunrise. */
   wake: ['#F6C89F', '#E9A27E', '#B9739A'] as const,

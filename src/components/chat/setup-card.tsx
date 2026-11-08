@@ -74,7 +74,7 @@ export function SetupCard({ message }: { message: Message }) {
   const body = (
     <View style={styles.row}>
       <View style={[styles.icon, { backgroundColor: alarm ? colors.primarySoft : colors.primarySofter }]}>
-        <Ionicons name={alarm ? 'alarm' : 'calendar'} size={22} color={colors.primary} />
+        <Ionicons name={alarm ? 'alarm' : 'calendar'} size={22} color={colors.brandText} />
       </View>
       <View style={styles.what}>
         <Txt variant="bodyStrong" numberOfLines={1} style={cancelled && styles.struck}>

@@ -191,7 +191,7 @@ export default function CharacterProfileScreen() {
                 accessibilityState={{ disabled: !voiceReady }}
                 accessibilityLabel={t('characterProfile.call')}
                 style={[styles.tile, !voiceReady && styles.off]}>
-                <SFIcon ios="phone.fill" icon="call" size={22} color={colors.primary} />
+                <SFIcon ios="phone.fill" icon="call" size={22} color={colors.brandText} />
                 <Txt style={styles.tileLabel} color={colors.brandText}>
                   {t('characterSettings.quickCall')}
                 </Txt>
@@ -202,7 +202,7 @@ export default function CharacterProfileScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('characterProfile.secretNote')}
                 style={styles.tile}>
-                <SFIcon ios="envelope" icon="mail-outline" size={22} color={colors.primary} />
+                <SFIcon ios="envelope" icon="mail-outline" size={22} color={colors.brandText} />
                 <Txt style={styles.tileLabel} color={colors.brandText}>
                   {t('characterProfile.secretNote')}
                 </Txt>
