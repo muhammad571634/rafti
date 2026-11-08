@@ -18,7 +18,7 @@ const THEIRS_INSET = 36;
 /** The reactions capsule, the menu's rows and the room between the lifted bubble and both. */
 const REACT_H = 62;
 const REACT_W = 6 * 50 + 5 * 2 + 14;
-const MENU_W = 250;
+const MENU_W = 280;
 const ROW_H = 44;
 const GROUP_GAP = 8;
 const GAP = 10;
@@ -202,7 +202,7 @@ function MenuRow({
       accessibilityRole="menuitem"
       accessibilityLabel={label}
       style={({ pressed }) => [styles.row, line && styles.rowLine, pressed && styles.rowPressed]}>
-      <Txt style={styles.rowText} color={tint}>
+      <Txt style={styles.rowText} color={tint} lines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
         {label}
       </Txt>
       <Ionicons name={icon} size={19} color={tint} />
@@ -229,19 +229,21 @@ const styles = StyleSheet.create({
   inset: { marginLeft: THEIRS_INSET },
   at: { position: 'absolute' },
   // The held line, lifted a little off the blur.
-  lifted: { overflow: 'hidden', borderRadius: 19, ...shadows.raised },
+  // No shadow: Android draws elevation through a see-through bubble as a pale box.
+  lifted: { overflow: 'hidden', borderRadius: 19 },
   menu: {
-    width: 250,
+    width: MENU_W,
     borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: isDark ? 'rgba(37,37,39,0.96)' : 'rgba(249,249,249,0.97)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.glassLine,
   },
-  row: { height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.lg },
+  row: { height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: space.lg },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowPressed: { backgroundColor: colors.glassActive },
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
+  // One line: a long label ("Закрепить в Воспоминаниях") shrinks a little rather than wrap.
+  rowText: { flexShrink: 1, fontSize: 17, letterSpacing: -0.4 },
   // iOS sets the destructive action apart with a thicker gap.
   gap: { height: space.sm, backgroundColor: isDark ? 'rgba(0,0,0,0.35)' : 'rgba(60,60,67,0.08)' },
 });
