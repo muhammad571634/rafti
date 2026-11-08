@@ -479,6 +479,8 @@ export const gradients = {
   portraitCardScrim: ['rgba(15,18,32,0.45)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.2)', 'rgba(15,18,32,0.86)'] as const,
   /** The Today picture from the screen's top: dark under the status bar and top row, clear on the face, dark under the words. */
   heroTopScrim: ['rgba(15,18,32,0.55)', 'rgba(15,18,32,0)', 'rgba(15,18,32,0.12)', 'rgba(15,18,32,0.9)'] as const,
+  /** Shade on the hero's leading side, where the name and their line sit; the friend stands clear on the trailing side. */
+  heroSideScrim: ['rgba(15,18,32,0.5)', 'rgba(15,18,32,0)'] as const,
   /**
    * Top to bottom over an Art wallpaper in a chat: dark under the header, the picture clear, then
    * dark under the conversation, the controls and the composer. Stops: `gradientStops`.
@@ -495,9 +497,39 @@ export const gradientStops = {
   heroScrim: [0, 0.45, 0.7] as const,
   portraitCardScrim: [0, 0.24, 0.4, 1] as const,
   heroTopScrim: [0, 0.22, 0.46, 1] as const,
+  heroSideScrim: [0, 0.62] as const,
   pictureScrim: [0, 0.2, 0.4, 0.66, 1] as const,
   pictureEdge: [0, 0.38, 1] as const,
 } as const;
+
+/**
+ * Apple's "system" grounds (HIG Color, iOS: primary for the view, secondary for the content grouped
+ * on it), the owner's pick for the main tabs (2026-11-08, option B): a white view with
+ * secondary-grey cards, black with #1C1C1E at night. Today first; Chats, Us and Find follow.
+ */
+export const systemGround = isDark
+  ? {
+      ground: '#000000',
+      card: '#1C1C1E',
+      label: '#FFFFFF',
+      secondaryLabel: 'rgba(235,235,245,0.6)',
+      fill: systemColors.fill,
+      /** A dashed outline: an empty slot waiting to be filled. */
+      dash: 'rgba(235,235,245,0.3)',
+      /** Inside an empty slot. */
+      well: 'rgba(118,118,128,0.12)',
+      groundFade: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.94)'] as const,
+    }
+  : {
+      ground: '#FFFFFF',
+      card: '#F2F2F7',
+      label: '#000000',
+      secondaryLabel: 'rgba(60,60,67,0.6)',
+      fill: systemColors.fill,
+      dash: 'rgba(60,60,67,0.29)',
+      well: 'rgba(118,118,128,0.06)',
+      groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as const,
+    };
 
 /**
  * The playful layer's ground and controls (design-style §10, owner 2026-11-07): warm cream instead

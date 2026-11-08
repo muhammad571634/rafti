@@ -20,10 +20,13 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, radius, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
-/** About half the screen (owner, 2026-11-03: bigger, like Replika), so the modules still start on it. */
-const SHARE = 0.54;
-const MIN_HEIGHT = 380;
-const MAX_HEIGHT = 520;
+/**
+ * Where their face lands across the card: the friend stands on the trailing side, the name and their
+ * line read on the leading side (owner, 2026-11-08, for every character).
+ */
+const FACE_AT = 0.68;
+/** A tall or square picture has no width to slide: it is drawn this much wider than the card instead. */
+const WIDE = 2 * FACE_AT;
 /** Tall scenes (assets/portraits) keep the face in their upper third. */
 const TALL_FOCUS: ImageContentPosition = { left: '50%', top: '18%' };
 /** Portraits are square with the face in the upper middle. */
@@ -36,13 +39,16 @@ const BEFORE = 4;
 const TYPING_MS = 1400;
 const typedIn = new Set<string>();
 
-/** The card's height for a screen this tall. */
-export const heroHeight = (windowHeight: number) => Math.round(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, windowHeight * SHARE)));
 /** Room for Today's top row over the picture: 44 pt plus the room the wordmark's mascot rises into. */
 const BAR = 56;
 const BOTTOM_RADIUS = 32;
-/** The picture from the screen's top edge (owner, 2026-11-03, prototype B): the status bar and the top row sit on it. */
-export const heroTopHeight = (windowHeight: number, topInset: number) => heroHeight(windowHeight) + topInset + BAR;
+/**
+ * The picture runs from the screen's top edge (the status bar and the top row sit on it) to the
+ * screen's middle, on every phone (owner, 2026-11-08).
+ */
+export const heroTopHeight = (windowHeight: number) => Math.round(windowHeight / 2);
+/** Their line's longest run for the room under the top row, so it never climbs into that row. */
+const lineCap = (room: number) => (room >= 300 ? 4 : room >= 260 ? 3 : 2);
 
 /** The light over their picture follows the user's hour, the way Replika's room does. */
 export function dayLight(hour: number): 'dawn' | 'day' | 'evening' | 'night' {
@@ -176,8 +182,11 @@ export function TodayHero({
   const progress = levelForIntimacy(relationship.intimacy).progress;
 
   const { width, height: windowHeight } = useWindowDimensions();
-  const height = heroTopHeight(windowHeight, topInset);
-  const position = framing === 'scene' ? sceneFocus(character.id, width / height) : FOCUS[framing];
+  const height = heroTopHeight(windowHeight);
+  const lines = lineCap(height - topInset - BAR);
+  // A wide scene slides its face to FACE_AT; a tall or square one is drawn wider, centred there.
+  const scene = framing === 'scene';
+  const position = scene ? sceneFocus(character.id, width / height, FACE_AT) : FOCUS[framing];
 
   const still = useReducedMotion();
   const [hour, setHour] = useState(() => new Date().getHours());
@@ -211,12 +220,19 @@ export function TodayHero({
       onPress={onPress}>
       <Image
         source={typeof image === 'string' ? { uri: image } : image}
-        style={StyleSheet.absoluteFill}
+        style={scene ? StyleSheet.absoluteFill : [styles.wide, { width: width * WIDE }]}
         contentFit="cover"
         contentPosition={position}
       />
       {light !== 'day' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[light] }]} /> : null}
       <LinearGradient colors={gradients.heroTopScrim} locations={gradientStops.heroTopScrim} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={gradients.heroSideScrim}
+        locations={gradientStops.heroSideScrim}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
 
       <View style={styles.bottom}>
         <View style={styles.who}>
@@ -250,7 +266,7 @@ export function TodayHero({
               {relativeStamp(line.at)}
             </Txt>
             <View style={styles.bubble}>
-              <Txt style={styles.lineText} color={colors.onMedia} lines={4}>
+              <Txt style={styles.lineText} color={colors.onMedia} lines={lines}>
                 {line.text}
               </Txt>
             </View>
@@ -283,7 +299,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceAlt,
   },
   header: { position: 'absolute', left: 0, right: 0 },
-  who: { alignItems: 'flex-start', gap: 6, marginBottom: 2 },
+  wide: { position: 'absolute', left: 0, top: 0, bottom: 0 },
+  // The leading side: the friend keeps the trailing side clear.
+  who: { maxWidth: '72%', alignItems: 'flex-start', gap: 6, marginBottom: 2 },
   name: { maxWidth: '100%', fontSize: 30, lineHeight: 35, fontWeight: '800', letterSpacing: -0.6 },
   // Clear glass on the photo (HIG Materials: the clear variant is for rich media).
   chip: {
@@ -314,7 +332,7 @@ const styles = StyleSheet.create({
   when: { paddingLeft: space.xs, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
   // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
   bubble: {
-    maxWidth: '86%',
+    maxWidth: '76%',
     paddingHorizontal: 13,
     paddingVertical: space.sm,
     borderRadius: 18,

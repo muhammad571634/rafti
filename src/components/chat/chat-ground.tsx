@@ -44,11 +44,14 @@ export function portraitOf(character: Character, aspect: number): Picture | unde
   return undefined;
 }
 
-/** Where a wide scene sits in a frame `aspect` (width / height) wide, so their face is mid-frame. */
-export function sceneFocus(characterId: string, aspect: number): ImageContentPosition {
+/**
+ * Where a wide scene sits in a frame `aspect` (width / height) wide, so their face lands at `at` of
+ * the frame's width (0 leading, 1 trailing; mid-frame by default), as near as the picture allows.
+ */
+export function sceneFocus(characterId: string, aspect: number, at = 0.5): ImageContentPosition {
   const face = SCENE_FACE[characterId] ?? 0.62;
-  // Cover fills the height and crops the sides; an object-position of `left` puts `face` mid-frame.
-  const left = aspect > 0 && aspect < SCENE_ASPECT ? (face * SCENE_ASPECT - aspect / 2) / (SCENE_ASPECT - aspect) : 0.5;
+  // Cover fills the height and crops the sides; an object-position of `left` slides `face` to `at`.
+  const left = aspect > 0 && aspect < SCENE_ASPECT ? (face * SCENE_ASPECT - at * aspect) / (SCENE_ASPECT - aspect) : 0.5;
   return { top: '30%', left: `${Math.round(Math.min(1, Math.max(0, left)) * 100)}%` };
 }
 

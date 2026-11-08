@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z163. Today on Apple's system ground; the hero ends mid-screen with the friend on the trailing side (2026-11-08, Claude 1). NEXT: the same ground on Chats, Us, Find (owner's order)
+
+- **Owner's asks**: the cream ground reads plain; make it premium, modern, minimal iOS from HIG Color (https://developer.apple.com/design/human-interface-guidelines/color), Today first, then the four tabs, the rest later. Canvas https://claude.ai/artifact/HwDsRzuUqxVJ5G3UY5gSgH (now cream, A grouped grey, B system white, C warm neutral, light and dark): owner picked **B**. Also: the hero picture must end at the screen's vertical middle on every phone (it was ~60/40), without breaking what is on it; the character's face and body on the right, name and info on the left, for every character from now on.
+- **Built**: `systemGround` (`src/theme/colors.ts`, exported from `@/theme`): HIG "system" set: ground white / black, card `#F2F2F7` / `#1C1C1E`, Apple label and secondary label, `systemColors.fill`, dash, well, ground fade. Today (`src/app/(tabs)/index.tsx`) reads it for the ground, the note card (flat, the iOS-only shadow gone), round buttons, Edit, Done, empty slots, the remove badge, tile labels, the badge ring; the sun bubble, widget hues and module tiles keep their colours. The tab bar's fade follows the open tab (Today's white, the others' cream until they move). Hero (`src/components/today-hero.tsx`): `heroTopHeight(windowHeight)` = half the window (status bar and top row on the picture); their line's run is capped by the room left (`lineCap`: 4, 3 or 2 lines) so it never climbs into the top row on a small phone; `FACE_AT` 0.68: wide scenes slide the face there (`sceneFocus(id, aspect, at)`, new `at` parameter, chat grounds keep mid-frame), tall and square pictures are drawn 1.36x wider centred there; the name block 72% and the bubble 76% wide on the leading side, over a new side scrim (`gradients.heroSideScrim`).
+- **Seen on the A51** (OTA `01a1bbe2`, Turkish, light and dark): the hero ends at 1200 of 2400 px, Hana on the right, name, chips and her 4-line line on the left; white ground with grey note card, widgets and tiles as before; dark: black with `#1C1C1E` cards, peach tab. Checks: tsc 0.
+- Rules written: design-style §10 (system ground, friend on the trailing side), project memory §3.
+
+Still to do:
+1. Chats, Us, Find onto `systemGround` (owner's next step), then the other `playful.ground` screens (character, memories, settings, create-character, edit-profile), then retire `playful.ground`.
+2. Not seen: a tall or square hero (a user-made character's photo) and a small phone (iPhone SE height) for `lineCap`.
+3. App-wide: Increase Contrast colour variants (HIG asks for them; no support in the theme yet).
+
 ### 0z162. A short launch intro on every cold start (2026-11-08, Claude 1). NEXT: the black native splash with the next APK; then a launch-time pass
 
 - **Owner's ask** (0z161 Still to do 1): a 1-3 s animation on every app open, like BIMOBIMO, from the onboarding orbit (which the owner saw and approved as it is; it stays untouched). Then, seeing it: "why is it still slow, the cream screen first, then the animation?"

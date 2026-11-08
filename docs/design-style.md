@@ -225,6 +225,20 @@ pins' art or words.
   picture, and iOS for structure (one main action, sheets, native inputs). Not a cartoon: no mascot
   speech bubbles or toy art on working screens. The create screen (0z149) is the first built this way.
 
+- **Apple's system ground replaces the cream (owner, 2026-11-08, option B of the canvas
+  https://claude.ai/artifact/HwDsRzuUqxVJ5G3UY5gSgH).** HIG Color, iOS: the "system" set, primary for
+  the view, secondary for content grouped on it. `systemGround` in `src/theme/colors.ts`: white
+  ground with `#F2F2F7` cards and Apple's fill for round buttons and pills, black with `#1C1C1E` at
+  night, Apple's label colours. Flat cards (no shadow). Today has it (0z163); Chats, Us and Find
+  next, then the remaining `playful.ground` screens; `playful.ground` goes once all have moved.
+  Friend hues, widget colours, the sun bubble and module tiles keep their colours (colour that means
+  something). Still missing app-wide: Increase Contrast variants (HIG asks for them).
+- **A photo card with words on it puts the friend on the trailing side (owner, 2026-11-08, every
+  character).** The face lands at 0.68 of the card's width (`sceneFocus(id, aspect, at)` with each
+  scene's `SCENE_FACE`; a tall or square picture is drawn 1.36x wider, centred there); the name, chips
+  and their line sit on the leading side with a side scrim (`gradients.heroSideScrim`). Today's hero
+  runs from the screen's top edge to its middle on every phone (`heroTopHeight`).
+
 Order (one at a time, each seen on the A51 before the next): 1. daily check-in (full yellow screen,
 live mascot); 2. Chats list as coloured bubbles; 3. Find's worlds as coloured folders; then the
 other screens, Today last and only when the owner says.

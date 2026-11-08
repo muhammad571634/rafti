@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SFIcon, Txt } from '@/components/ui';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
-import { colors, playful, space } from '@/theme';
+import { colors, playful, space, systemGround } from '@/theme';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -89,12 +89,14 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   const tabs = state.routes.map((route, index) => ({ route, focused: state.index === index }));
   const find = tabs.find(({ route }) => route.name === 'find');
   const bottom = insets.bottom + space.md;
+  // The fade under the bar melts into the open tab's ground (Today is on Apple's white already).
+  const onToday = tabs.some(({ route, focused }) => focused && route.name === 'index');
 
   // The same views on every switch: only the old and new tab's capsule change.
   return (
     <>
       <LinearGradient
-        colors={playful.groundFade}
+        colors={onToday ? systemGround.groundFade : playful.groundFade}
         pointerEvents="none"
         style={[styles.fade, { height: bottom + BAR + FADE_ABOVE }]}
       />

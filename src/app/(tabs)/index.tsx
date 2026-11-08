@@ -42,7 +42,7 @@ import { clipName, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, hitSlop, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, fonts, hitSlop, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
@@ -224,7 +224,7 @@ export default function HomeScreen() {
   // 2026-11-03, prototype B); the status bar turns dark again once the picture has scrolled away.
   const onPhoto = !!hero;
   const Glass = onPhoto ? PhotoGlass : SoftGlass;
-  const heroBottom = hero ? heroTopHeight(windowHeight, insets.top) : 0;
+  const heroBottom = hero ? heroTopHeight(windowHeight) : 0;
   // One row: the wordmark takes what the buttons leave, so it fits from the smallest Android to a Pro Max.
   const bar = (
     <View style={styles.bar}>
@@ -242,7 +242,7 @@ export default function HomeScreen() {
               accessibilityLabel={t('home.widget.add')}
               onPress={() => setGallerySlot(firstEmpty)}>
               <Glass style={styles.round}>
-                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : playful.ink} />
+                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : systemGround.label} />
               </Glass>
             </PressableScale>
           ) : null}
@@ -273,7 +273,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <Screen background={playful.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
+    <Screen background={systemGround.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
@@ -386,7 +386,7 @@ export default function HomeScreen() {
                 onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
                 style={[styles.slot, styles.empty, { width: half }]}>
                 <SoftGlass style={styles.round}>
-                  <Ionicons name="add" size={24} color={playful.ink} />
+                  <Ionicons name="add" size={24} color={systemGround.label} />
                 </SoftGlass>
               </PressableScale>
             ) : null,
@@ -469,7 +469,7 @@ function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; childre
   return <View style={[style, styles.photoGlass]}>{children}</View>;
 }
 
-/** A soft ink wash on the cream: the round buttons and pills of the playful skin (`playful.round`). */
+/** Apple's fill on the white ground: the round buttons and pills off the picture. */
 function SoftGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
   return <View style={[style, styles.softGlass]}>{children}</View>;
 }
@@ -575,7 +575,7 @@ const Slot = memo(function Slot({
             accessibilityLabel={t('home.widget.remove', { name: widgetLabel(kind, t) })}
             onPress={() => onRemove(index)}
             style={styles.minus}>
-            <Ionicons name="remove" size={16} color={playful.ink} />
+            <Ionicons name="remove" size={16} color={systemGround.label} />
           </PressableScale>
         ) : null}
       </Animated.View>
@@ -599,13 +599,13 @@ const styles = StyleSheet.create({
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
   me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  meName: { fontSize: 15, fontWeight: '600', color: playful.ink },
+  meName: { fontSize: 15, fontWeight: '600', color: systemGround.label },
   photoName: { color: colors.onMedia },
   photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
-  softGlass: { backgroundColor: playful.round },
+  softGlass: { backgroundColor: systemGround.fill },
   round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: playful.chipOn },
-  doneText: { fontSize: 17, fontFamily: fonts.playfulBold, color: playful.chipOnText },
+  done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: systemGround.label },
+  doneText: { fontSize: 17, fontFamily: fonts.playfulBold, color: systemGround.ground },
   waitingWrap: { marginHorizontal: space.lg, marginTop: space.lg, paddingBottom: TAIL_H - 2 },
   waiting: {
     minHeight: 64,
@@ -639,8 +639,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: playful.dash,
-    backgroundColor: playful.well,
+    borderColor: systemGround.dash,
+    backgroundColor: systemGround.well,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -654,12 +654,12 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     borderWidth: 1,
-    borderColor: playful.dash,
+    borderColor: systemGround.dash,
   },
   noteIcon: { width: 48, height: 48, borderRadius: 15, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.sun },
-  // A white card on the cream; the soft shadow is iOS-only (Android elevation draws over later siblings).
+  // A secondary-grey card on the white ground, flat like Apple's grouped content.
   noteRow: {
     marginHorizontal: space.lg,
     marginTop: space.md,
@@ -670,16 +670,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: playful.card,
-    shadowColor: '#281E14',
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
+    backgroundColor: systemGround.card,
   },
   // Straight under the picture when no chat is waiting.
   noteFirst: { marginTop: space.lg },
-  noteTitle: { fontSize: 15.5, fontFamily: fonts.playful, color: playful.ink },
-  noteSealed: { fontSize: 12.5, color: colors.textSecondary },
+  noteTitle: { fontSize: 15.5, fontFamily: fonts.playful, color: systemGround.label },
+  noteSealed: { fontSize: 12.5, color: systemGround.secondaryLabel },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
@@ -692,16 +688,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 5,
     borderWidth: 2,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
     backgroundColor: systemColors.red,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: { fontSize: 11, fontWeight: '700', color: colors.white },
-  tileLabel: { fontSize: 11, fontFamily: fonts.playfulBold, color: playful.ink },
+  tileLabel: { fontSize: 11, fontFamily: fonts.playfulBold, color: systemGround.label },
   editWrap: { alignSelf: 'center', marginTop: space.xl },
   edit: { height: 40, paddingHorizontal: 20, borderRadius: 20, justifyContent: 'center' },
-  editText: { fontSize: 15, fontFamily: fonts.playfulBold, color: playful.ink },
+  editText: { fontSize: 15, fontFamily: fonts.playfulBold, color: systemGround.label },
   gallery: { maxHeight: 560 },
   galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingBottom: space.lg },
   galleryItem: { width: '47%', gap: space.sm },
