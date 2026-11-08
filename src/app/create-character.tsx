@@ -667,8 +667,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
               <Field label={label('quirk')} value={form.quirk} onChange={(quirk) => set({ quirk })} placeholder={label('quirkPlaceholder')} max={QUIRK_MAX} multiline rows={2} action={sparkle('quirk', label('quirk'))} />
             </Card>
 
-            <Card title={label('flow.firstMessage')} onLayout={at('first')}>
-              <Field label={label('greeting')} value={form.greeting} onChange={(greeting) => set({ greeting })} placeholder={label('greetingPlaceholder')} max={GREETING_MAX} multiline rows={3} action={sparkle('greeting', label('greeting'))} />
+            <Card title={label('flow.firstMessage')} right={sparkle('greeting', label('greeting'))} onLayout={at('first')}>
+              <Field label={label('greeting')} hideLabel value={form.greeting} onChange={(greeting) => set({ greeting })} placeholder={label('greetingPlaceholder')} max={GREETING_MAX} multiline rows={3} />
               <Field label={label('opening')} value={form.opening} onChange={(opening) => set({ opening })} placeholder={label('openingPlaceholder')} max={OPENING_MAX} action={sparkle('opening', label('opening'))} />
               <Lines
                 label={t('createCharacter.moreGreetings', { count: form.greetings.length, max: MORE_GREETINGS_MAX })}
@@ -761,8 +761,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
             disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
             error={error}
             onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}
+            caption={quickLeft === 0 ? t('createCharacter.quick.limit', { max: quickMax }) : t('createCharacter.quick.left', { count: quickLeft, max: quickMax })}
             secondary={{
-              label: `${t('createCharacter.quick.manual')} · ${quickLeft === 0 ? t('createCharacter.quick.limit', { max: quickMax }) : t('createCharacter.quick.left', { count: quickLeft, max: quickMax })}`,
+              label: t('createCharacter.quick.manual'),
               onPress: () => {
                 setError(null);
                 setChecked(false);
@@ -776,7 +777,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
             busy={creating}
             disabled={busy != null || (!!editing && !changed)}
             caption={t('createCharacter.privateNote')}
-            error={error ?? (checked && problems.length ? t(`createCharacter.problems.${problems[0]}`) : null)}
+            error={error}
             onPress={() => void submit()}
           />
         ) : null}

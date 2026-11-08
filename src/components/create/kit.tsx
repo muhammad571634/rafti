@@ -81,8 +81,11 @@ export function Field({
   keyboardType,
   action,
   rows = 3,
+  hideLabel,
 }: {
   label: string;
+  /** The card's title already says it (the first message): the label stays for screen readers only. */
+  hideLabel?: boolean;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -94,11 +97,13 @@ export function Field({
 }) {
   return (
     <View style={styles.field}>
-      <View style={styles.fieldHead}>
-        <Txt style={[styles.label, styles.grow]}>{label}</Txt>
-        {multiline && value.length > max * 0.8 ? <Txt style={styles.count}>{`${value.length}/${max}`}</Txt> : null}
-        {action}
-      </View>
+      {hideLabel ? null : (
+        <View style={styles.fieldHead}>
+          <Txt style={[styles.label, styles.grow]}>{label}</Txt>
+          {multiline && value.length > max * 0.8 ? <Txt style={styles.count}>{`${value.length}/${max}`}</Txt> : null}
+          {action}
+        </View>
+      )}
       <TextInput
         value={value}
         onChangeText={onChange}
@@ -228,26 +233,27 @@ export function BottomBar({
           accessibilityRole="button"
           accessibilityLabel={label}
           accessibilityState={{ disabled: !!(disabled || busy), busy: !!busy }}
-          style={[styles.cta, (disabled || busy) && styles.ctaOff]}>
+          style={[styles.cta, disabled && !busy && styles.ctaOff]}>
           {busy ? <ActivityIndicator color={colors.textOnPrimary} /> : left}
-          <Txt style={styles.ctaText} maxFontSizeMultiplier={1.2}>
+          <Txt style={[styles.ctaText, disabled && !busy && styles.ctaTextOff]} maxFontSizeMultiplier={1.2}>
             {label}
           </Txt>
         </PressableScale>
         {secondary ? (
-          <Pressable onPress={secondary.onPress} accessibilityRole="button" hitSlop={6} style={styles.secondary}>
-            <Txt style={styles.secondaryText}>{secondary.label}</Txt>
-          </Pressable>
-        ) : caption ? (
-          <Txt style={styles.caption}>{caption}</Txt>
+          <PressableScale onPress={secondary.onPress} scaleTo={0.97} accessibilityRole="button" style={styles.secondary}>
+            <Txt style={styles.secondaryText} maxFontSizeMultiplier={1.2}>
+              {secondary.label}
+            </Txt>
+          </PressableScale>
         ) : null}
+        {caption ? <Txt style={styles.caption}>{caption}</Txt> : null}
       </View>
     </View>
   );
 }
 
 /** How much room the bar takes, so a scroll ends above it. */
-export const BOTTOM_BAR_SPACE = 150;
+export const BOTTOM_BAR_SPACE = 170;
 
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
@@ -287,10 +293,12 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.6 },
   off: { opacity: 0.4 },
   disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: space.sm },
-  disclosureText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  // Reads as a card title: the closed card is its own section.
+  disclosureText: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0 },
-  fade: { position: 'absolute', left: 0, right: 0, top: -28, bottom: 0 },
-  barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm },
+  // The ground fades in above the bar; behind it the ground is solid, so nothing shows through.
+  fade: { position: 'absolute', left: 0, right: 0, top: -28, height: 28 },
+  barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm, backgroundColor: playful.ground },
   cta: {
     height: 56,
     borderRadius: 28,
@@ -300,11 +308,13 @@ const styles = StyleSheet.create({
     gap: space.sm,
     backgroundColor: colors.primaryFill,
   },
-  ctaOff: { opacity: 0.5 },
+  // Off: a solid soft fill, never see-through.
+  ctaOff: { backgroundColor: playful.chip },
+  ctaTextOff: { color: colors.textFaint },
   // System bold: the button's words come in every script.
   ctaText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
   caption: { textAlign: 'center', fontSize: 13, color: colors.textSecondary },
-  secondary: { alignSelf: 'center', minHeight: 36, justifyContent: 'center', paddingHorizontal: space.md },
-  secondaryText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  secondary: { height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  secondaryText: { fontFamily: fonts.playfulBold, fontSize: 16, color: playful.ink },
   error: { textAlign: 'center', fontSize: 14, fontWeight: '600', color: systemColors.red },
 });
