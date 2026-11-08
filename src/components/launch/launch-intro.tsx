@@ -12,34 +12,32 @@ import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { drawOrbit, easeOutBack, easeOutCubic, seg, SMALL_R, type OrbitStage } from '@/components/onboarding/glass-icon-orbit';
 import { useAppStore } from '@/store/use-app-store';
 
-// The few seconds of every cold start (owner, 2026-11-08: "a 1-3 s animation on every app open"):
-// onboarding's Glass Icon Orbit cut short. The splash fades into black, the small ring of our
-// features spins in and is drawn into the centre tile, the friend types, the mascot springs out with
-// the logo under it, and the whole cover fades onto the app that loaded underneath meanwhile.
-// Not on a resume (it mounts once per launch), not before onboarding (onboarding opens with the full
-// orbit), not under Reduce Motion, and it gives way at once to anything a launch opened elsewhere (a
-// tapped push, a ringing alarm, an incoming call). A tap skips it.
+// Cold-start intro: onboarding's orbit cut short. The ring gathers into the centre tile, the dots
+// type, the mascot springs out over the logo, and the cover fades onto the first screen, which
+// loads underneath meanwhile. Once per launch (never on a resume); skipped under Reduce Motion;
+// gives way to any launch that lands off the tabs (onboarding, a tapped push, an alarm, a call).
 //
 // Timeline (seconds):
-//  -0.35-0.00  (under the native splash's fade) the ring fades in on black, spinning
-//   0.12-0.55  the tiles are drawn into the middle (ease-in cubic)
-//   0.35-0.65  the centre tile grows in (ease-out back)
-//   0.65-0.95  its three dots bounce once (typing)
-//   0.95-1.40  the mascot springs out (the onboarding hop, a little quicker); the logo fades up
-//   1.65-1.95  the cover fades away
-const RING_IN = 0.2;
-/**
- * The clock starts this far below 0: the native splash takes about 0.3 s to fade after the first frame
- * (A51, 2026-11-08), so the ring is already there, spinning, when it is gone.
- */
+//  -0.35-0.00  the ring fades in, spinning (under the native splash's fade-out)
+//   0.12-0.55  the ring is drawn into the middle
+//   0.35-0.65  the centre tile grows in
+//   0.65-0.95  typing dots
+//   0.95-1.40  the mascot springs out; the logo fades up
+//   1.65-1.95  the cover fades away (held while the app is still loading)
 const LEAD = 0.35;
+const RING_IN = 0.2;
 const TYPE_AT = 0.65;
 const JUMP_AT = 0.95;
 const JUMP_END = 1.4;
 const FADE_AT = 1.65;
 const END = 1.95;
-/** A skip (tap, or a launch that opened elsewhere) fades over this long. */
+const FADE = END - FADE_AT;
+/** Fade length of a skip. */
 const QUICK = 0.18;
+/** Longest the cover waits for the app. */
+const HOLD_LIMIT = 8;
+/** Longest frame step; past it a stall is cut rather than jumped over. */
+const MAX_STEP = 0.25;
 
 function launchStage(r: number): OrbitStage {
   'worklet';
@@ -56,16 +54,7 @@ function launchStage(r: number): OrbitStage {
   };
 }
 
-/** How long the cover may wait for the app before it lets go anyway (matches the splash's limit). */
-const HOLD_LIMIT = 8;
-/** The cover's fade once the app is ready after the intro has reached its end. */
-const FADE = END - FADE_AT;
-
-/**
- * Mounted once at the root, from the very first render (before fonts, words and saved data are
- * in), so the intro plays while the app loads instead of after it. `ready` is the root's own
- * readiness (fonts, i18n); the intro also waits for saved data, then fades onto the first screen.
- */
+/** Mounted at the root from the first render; `ready` is the root's fonts and i18n. */
 export function LaunchIntro({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
   const [done, setDone] = useState(reduced);
@@ -80,31 +69,23 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
   const cx = width / 2;
   const cy = height * 0.45;
   const hydrated = useAppStore((s) => s.hydrated);
-  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
   const ringing = useAppStore((s) => s.wake?.state === 'ringing');
   const segments = useSegments();
   const settled = ready && hydrated;
-  // Before onboarding (it opens with the full orbit), or a launch that a tapped push, an alarm or a
-  // call took elsewhere: give way at once.
-  const elsewhere = segments.length > 0 && segments[0] !== '(tabs)';
-  const away = settled && (!onboarded || elsewhere || ringing);
+  const away = settled && ((segments.length > 0 && segments[0] !== '(tabs)') || ringing);
 
   const clock = useSharedValue(-LEAD);
-  // Where the fade starts and ends: FADE_AT-END, held back while the app is not ready, or
-  // now-now+QUICK after a skip.
   const fadeFrom = useSharedValue(FADE_AT);
   const fadeTo = useSharedValue(END);
   const open = useSharedValue(false);
   const finished = useSharedValue(false);
 
   useFrameCallback((info) => {
-    // Real time, so a launch that drops frames (the UI thread is busy mounting the first screen
-    // underneath) skips frames instead of slowing the intro down; only a stall over 0.25 s is cut.
-    const dt = Math.min((info.timeSincePreviousFrame ?? 0) / 1000, 0.25);
-    const now = clock.get() + dt;
+    // Real time: a janky start drops frames instead of slowing the intro down.
+    const now = clock.get() + Math.min((info.timeSincePreviousFrame ?? 0) / 1000, MAX_STEP);
     clock.set(now);
-    if (!open.get() && now > HOLD_LIMIT) open.set(true);
-    // The app is not there yet: the mascot keeps bobbing and the fade waits.
+    if (now > HOLD_LIMIT) open.set(true);
+    // Until the app is ready the mascot keeps bobbing and the fade waits.
     if (!open.get() && now >= fadeFrom.get()) {
       fadeFrom.set(now);
       fadeTo.set(now + FADE);
@@ -115,27 +96,26 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
     }
   }, true);
 
-  // The intro is drawn over the splash's colour, so the native splash can go at once.
+  // The cover is drawn, so the native splash can go.
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {});
   }, []);
 
-  const skip = () => {
+  const skip = useCallback(() => {
     open.set(true);
     const now = clock.get();
     if (now + QUICK >= fadeTo.get()) return;
     fadeFrom.set(now);
     fadeTo.set(now + QUICK);
-  };
+  }, [open, clock, fadeFrom, fadeTo]);
 
   useEffect(() => {
     if (away) skip();
     else if (settled) open.set(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [away, settled]);
-  // Sent to the background mid-intro: it is over (it never comes back on a resume).
+  }, [away, settled, skip, open]);
+
   useEffect(() => {
-    const sub = AppState.addEventListener('change', (state) => state !== 'active' && onDone());
+    const sub = AppState.addEventListener('change', (state) => state === 'background' && onDone());
     return () => sub.remove();
   }, [onDone]);
 
@@ -147,12 +127,9 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
     return recorder.finishRecordingAsPicture();
   }, [width, height, cx, cy, mascot]);
 
-  // Black from the first frame: the native splash fades into it (measured on the A51, 2026-11-08:
-  // a cream cover kept the splash's look for up to a second while the first frames came slowly).
   const coverStyle = useAnimatedStyle(() => ({ opacity: 1 - seg(clock.get(), fadeFrom.get(), fadeTo.get()) }));
   const logoStyle = useAnimatedStyle(() => {
-    const r = clock.get();
-    const up = easeOutCubic(seg(r, 1.05, 1.4));
+    const up = easeOutCubic(seg(clock.get(), 1.05, 1.4));
     return { opacity: up, transform: [{ translateY: (1 - up) * 10 }] };
   });
 

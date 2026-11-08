@@ -97,7 +97,12 @@ const PATHS: Record<string, { d: string; stroke: boolean }[]> = {
   spark: [{ d: 'M32 10 C34 26 38 30 54 32 C38 34 34 38 32 54 C30 38 26 34 10 32 C26 30 30 26 32 10 Z', stroke: false }],
 };
 
-export function clamp01(x: number) {
+/** The icon paths, parsed once. */
+const SK_PATHS = Object.fromEntries(
+  Object.entries(PATHS).map(([kind, parts]) => [kind, parts.map((part) => ({ path: Skia.Path.MakeFromSVGString(part.d), stroke: part.stroke }))]),
+);
+
+function clamp01(x: number) {
   'worklet';
   return Math.min(1, Math.max(0, x));
 }
@@ -120,9 +125,8 @@ export function easeOutBack(x: number) {
 }
 
 /**
- * One frame of the orbit: ring radius and tilt, the ring's opacity, the centre tile's size, the
- * mascot's hop (0-1) and sink, seconds into the typing dots and seconds since the mascot landed
- * (both 0 or less when not under way). The onboarding loop and the launch intro each make their own.
+ * One frame of the orbit: ring radius, tilt and opacity, the centre tile's size, the mascot's hop
+ * (0-1) and sink, seconds into the typing dots and seconds since the mascot landed (0 when not under way).
  */
 export type OrbitStage = { radius: number; tilt: number; ringAlpha: number; centre: number; jump: number; sink: number; typing: number; settled: number };
 
@@ -195,12 +199,12 @@ function drawIcon(c: SkCanvas, k: number, x: number, y: number, s: number, alpha
   'worklet';
   const icon = ICONS[k];
   drawTileBody(c, x, y, s, icon.rim, alpha);
-  const parts = PATHS[icon.kind];
+  const parts = SK_PATHS[icon.kind];
   c.save();
   c.translate(x, y);
   c.scale(s / 64, s / 64);
   for (let n = 0; n < parts.length; n++) {
-    const path = Skia.Path.MakeFromSVGString(parts[n].d);
+    const path = parts[n].path;
     if (!path) continue;
     const p = Skia.Paint();
     p.setAntiAlias(true);
