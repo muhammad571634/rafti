@@ -15,9 +15,9 @@ import {
   type DraftInput,
   type FieldContext,
 } from '../../src/ai/character-draft.ts';
-import { parseStreamLine, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
+import { parseStreamLine, streamDayNotes, streamLineParts, type StreamLineRequest } from '../../src/ai/content-prompts.ts';
 import { cleanFirstText, firstTextParts } from '../../src/ai/first-text.ts';
-import { cleanWrite, parseWrite, WRITE_MODE, writeParts } from '../../src/ai/writes.ts';
+import { cleanWrite, parseWrite, WRITE_MODE, writeDayNotes, writeParts } from '../../src/ai/writes.ts';
 import { cleanGroupLines, layoutGroupReply, type GroupPromptInput } from '../../src/ai/group-reply.ts';
 import { cleanMemoryPass, memoryPassParts, parseMemoryPass } from '../../src/ai/memory-pass.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
@@ -295,6 +295,8 @@ export function cleanStreamLine(body: Record<string, unknown> | null): StreamLin
     topic: topic.trim(),
     said: lines,
     turn: { index: index as number, total: total as number },
+    clock: cleanClock(body?.clock),
+    ownDay: cleanOwnDay(body?.ownDay),
   };
 }
 
@@ -699,11 +701,21 @@ export function createApp(
     if (!provider) return c.json({ error: 'noModel' }, 503);
     const request = cleanStreamLine(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
-    const { input, other, topic, said, turn } = request;
+    const { input, other, topic, said, turn, clock, ownDay } = request;
     const user = { ...input.user, locale: input.user.locale || 'en-US' };
     const persona = { ...input, user, replyLanguage: replyLanguageOf({ ...input, user }) };
-    const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn));
-    return modelCall(c, 'stream', layout, (text) => ({ line: parseStreamLine(text, input.character.name) }), 'stream');
+    const layout = layoutPrompt(streamLineParts(persona, other, topic, said, turn, { clock, ownDay }));
+    return modelCall(
+      c,
+      'stream',
+      layout,
+      (text) => {
+        const line = parseStreamLine(text, input.character.name);
+        const day = line ? streamDayNotes(text) : [];
+        return { line, ...(day.length ? { day } : {}) };
+      },
+      'stream',
+    );
   });
 
   // What a friend writes on a screen of its own (src/ai/writes.ts): a note, a diary page, a quiz, a
@@ -714,7 +726,17 @@ export function createApp(
     if (!request) return c.json({ error: 'badInput' }, 400);
     const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
     request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
-    return modelCall(c, request.kind, layoutPrompt(writeParts(request)), (text) => ({ result: parseWrite(request, text) }), WRITE_MODE[request.kind]);
+    return modelCall(
+      c,
+      request.kind,
+      layoutPrompt(writeParts(request)),
+      (text) => {
+        const result = parseWrite(request, text);
+        const day = result ? writeDayNotes(request, text) : [];
+        return { result, ...(day.length ? { day } : {}) };
+      },
+      WRITE_MODE[request.kind],
+    );
   });
 
   // What a voice message says, so the chat reads it as words. The clip is only passed on to the

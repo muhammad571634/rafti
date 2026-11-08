@@ -4643,6 +4643,9 @@ export function writeBase(characterId: string, screen = false) {
     },
     recent: messages.filter((m) => !m.pending).slice(-12).map(({ author, card, text, transcript }) => ({ author, card, text, transcript })),
     memory: { pinned: memories.filter((m) => m.pinned), facts: memories.filter((m) => !m.pinned), summary: conversation?.summary },
+    // A note, a diary answer and a date round happen in the friend's day (`OWN_DAY_WRITES`).
+    clock: chatClock(),
+    ownDay: ownDayOf(state.relationships[characterId]?.ownDay, todayKey()),
   };
 }
 
@@ -4651,12 +4654,16 @@ const WRITE_RETRY_MS = 3000;
 /** The model is on: the screen plays its words, and says so when it is busy, never stock lines. */
 export const modelIsOn = () => modelOn(useAppStore.getState);
 
-/** Asks the model to write it; a busy model is asked once more. Null: still busy. */
+/** Asks the model to write it; a busy model is asked once more. Null: still busy. What it told of the friend's own day is kept. */
 export async function writeWithModel<K extends WriteKind>(request: WriteRequest & { kind: K }): Promise<WriteResults[K] | null> {
-  const first = await serverWrite<K>(request, await accessToken());
-  if (first) return first;
-  await new Promise((done) => setTimeout(done, WRITE_RETRY_MS));
-  return serverWrite<K>(request, await accessToken());
+  let written = await serverWrite<K>(request, await accessToken());
+  if (!written) {
+    await new Promise((done) => setTimeout(done, WRITE_RETRY_MS));
+    written = await serverWrite<K>(request, await accessToken());
+  }
+  if (!written) return null;
+  if (written.day.length) keepOwnDay(useAppStore.setState, request.input.character.id, written.day);
+  return written.result;
 }
 
 /** This week's quiz about themselves: the one already written, else the model writes it. Null: busy. */
@@ -4727,7 +4734,9 @@ function writePagesWithModel(set: Setter, get: Getter, due: { day: DayTogether; 
           const text = messageText(m);
           return text ? [{ mine: m.author === 'them', text }] : [];
         });
-    void writeWithModel({ ...base, kind: 'diary', day: { lines, dateTitle: day.dateTitle, heavy: day.heavy } }).then((page) => {
+    // What they said of their own day that day, so the page tells the same day (0z146).
+    const own = state.relationships[day.characterId]?.ownDay?.find((l) => l.date === day.day)?.notes.map((n) => n.text);
+    void writeWithModel({ ...base, kind: 'diary', day: { lines, dateTitle: day.dateTitle, heavy: day.heavy, ...(own?.length ? { own } : {}) } }).then((page) => {
       if (!page) return;
       const id = `cdp_${day.characterId}_${date}`;
       set((s) =>
@@ -6326,13 +6335,17 @@ function runStream(set: Setter, get: Getter, streamId: string) {
       topic: stream.topic,
       said: stream.lines.map((l) => ({ name: nameOf(l.characterId), text: l.text })),
       turn: { index, total: stream.target },
+      clock: chatClock(),
+      ownDay: ownDayOf(state.relationships[speaker]?.ownDay, todayKey()),
     };
     const started = Date.now();
     const ask = (again: boolean) =>
       void accessToken()
         .then((token) => serverStreamLine(request, token))
-        .then((line) => {
+        .then((said) => {
           if (!live()) return;
+          if (said?.day.length) keepOwnDay(set, speaker, said.day);
+          const line = said?.line;
           if (line) land(line, Math.max(0, typingMs(line) - (Date.now() - started)));
           else if (again) setTimeout(() => live() && ask(false), STREAM_RETRY_MS);
           // Still busy: the stream pauses with the round's lines kept, never a stock line in their voice.

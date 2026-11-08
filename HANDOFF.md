@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z146. The friend's own day on screens of their own and in streams (2026-11-08, Claude 1). NEXT: owner deploys the server; then a secret note, a date and a stream on the A51
+
+- **Seen first**: 0z145 is live (Fly v31, ~09:30). Group language on the A51 not rechecked yet (the owner was using the phone).
+- **Built**: `OWN_DAY_WRITES` (note, diaryReply, dateRound) read the clock (`clockLines`) and the friend's own day (`ownDayParts`) and may answer with a `day` field (`writeDayNotes`); the route returns `{ result, day }`. A diary page gets that day's own notes (`DiaryDay.own`, "YOUR OWN DAY YESTERDAY") and writes none (the day is over). Quizzes leave it out. A stream line reads the speaker's clock and own day after THIS LINE (`streamLineParts(..., { clock, ownDay })`) and returns `day` (`streamDayNotes`). The app sends `clock` + `ownDay` from `writeBase` and the stream request; `writeWithModel` and the stream runner keep the notes (`keepOwnDay`). `serverWrite` / `serverStreamLine` now return `{ result, day }` / `{ line, day }`.
+- **Probe** (`gemini-3.1-flash-lite`, Hana, Sunday 18:30, "overslept, missed the bus" + "spilled ink" kept, 10 calls): every kind built on the notes (note: "the mess at noon", stream: "a disaster with my canvas today", diary page kept "gallery opening, sold a small canvas"). First shape hint ("and day when it says something new") made the model note things the text never said (2 notes on a diary answer that only spoke of the user's report); "only what this text itself says" -> 0 invented notes in 4.
+- Not yet: a memory-pass catch for days the model forgot to note.
+- Checks: app tsc 0, npm test 799/799; server tsc 0, 78/78.
+
 ### 0z145. The friend's own day in groups, group calls and first texts; groups know the hour (2026-11-08, Claude 1). NEXT: owner deploys the server; then a group chat and a first text on the A51
 
 - **Built**: group replies (`groupReplyParts`) and every first text (`firstTextParts`: thread texts, morning brief, evening ask, week recap, world news, moments) read `ownDayParts`; the group prompt also got `clockLines` (before, a group member did not know the hour). The group route cleans `clock` / `ownDay` and returns `day`; `parseTouchReply` reads `day` (never on a skip). The app sends `ownDay` from `groupInput` (group chat and group call) and `withOwnDay` (first texts, on the day the text is written for), and keeps the notes from a group reply, a group call turn and a first text that was sent (`keepOwnDay`). A push written ahead reads the day but adds nothing (it may never go out).

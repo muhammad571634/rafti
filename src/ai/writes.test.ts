@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 import { cleanFirstText, firstTextParts } from './first-text';
 import { birthdayCue } from './moment-prompt';
 import { joinParts } from './prompt-layout';
-import { cleanWrite, parseWrite, writeParts, type WriteRequest } from './writes';
+import { cleanWrite, parseWrite, writeDayNotes, writeParts, type WriteRequest } from './writes';
 
 const kai = { id: 'c_kai', name: 'Kai Arden', series: 'Seaside Academy', bio: 'Swims at dawn.', gender: 'male', tags: ['kind'] } as unknown as Character;
 const sam = { displayName: 'Sam', locale: 'ru-RU' } as User;
@@ -118,5 +118,55 @@ describe('a moment: a text because of something in the app', () => {
 
   it('needs a cue', () => {
     assert.equal(cleanFirstText({ ...request, input: { ...request.input, cue: [] } }), null);
+  });
+});
+
+describe('the friend’s own day on screens of its own (0z146)', () => {
+  const clock = { now: '2026-11-08T08:30:00.000Z', utcOffsetMin: 300 };
+  const ownDay = { today: [{ at: '2026-11-08T04:10:00.000Z', text: 'spilled ink on a canvas' }], before: { date: '2026-11-07', notes: ['gallery opening'] } };
+
+  it('a note, a diary answer and a date round read the day and the hour', () => {
+    const requests: WriteRequest[] = [
+      { kind: 'note', input, question: 'What made you smile?', clock, ownDay },
+      { kind: 'diaryReply', input, entry: 'A long day.', clock, ownDay },
+      { kind: 'dateRound', input, date, soFar: [], clock, ownDay },
+    ];
+    for (const request of requests) {
+      const prompt = joinParts(writeParts(request));
+      assert.match(prompt, /YOUR DAY SO FAR[\s\S]*09:10 spilled ink on a canvas/, request.kind);
+      assert.match(prompt, /YOUR LAST DAY \(yesterday\): gallery opening\./, request.kind);
+      assert.match(prompt, /IT IS NOW: Sunday 2026-11-08 13:30/, request.kind);
+      assert.match(prompt, /"day"/, request.kind);
+    }
+  });
+
+  it('a quiz and a diary page leave the live day out', () => {
+    for (const request of [
+      { kind: 'quizPicks', input, title: 'Mornings', questions, clock, ownDay },
+      { kind: 'diary', input, day: { lines: [] }, clock, ownDay },
+    ] as WriteRequest[]) {
+      const prompt = joinParts(writeParts(request));
+      assert.doesNotMatch(prompt, /YOUR DAY SO FAR|YOUR OWN DAY:/, request.kind);
+    }
+  });
+
+  it('a diary page tells the same day the friend told', () => {
+    const prompt = joinParts(writeParts({ kind: 'diary', input, day: { lines: [], own: ['overslept', 'band practice ran late'] } }));
+    assert.match(prompt, /YOUR OWN DAY YESTERDAY .*: overslept; band practice ran late\./);
+    const cleaned = cleanWrite({ kind: 'diary', input, day: { lines: [], own: ['  overslept ', 7, ''] } });
+    assert.deepEqual(cleaned?.kind === 'diary' && cleaned.day.own, ['overslept']);
+  });
+
+  it('keeps new notes of the day only where the day is live', () => {
+    const raw = '{"note":"Tea.","day":["walked to the market"," walked to the market "]}';
+    assert.deepEqual(writeDayNotes({ kind: 'note', input, question: 'Q?' }, raw), ['walked to the market']);
+    assert.deepEqual(writeDayNotes({ kind: 'selfQuiz', input, week: '2026-W45' }, raw), []);
+    assert.deepEqual(writeDayNotes({ kind: 'note', input, question: 'Q?' }, '{"note":"Tea."}'), []);
+  });
+
+  it('the server cleans the clock and the day it is sent', () => {
+    const cleaned = cleanWrite({ kind: 'note', input, question: 'Q?', clock: { now: 'soon', utcOffsetMin: 300 }, ownDay: { today: [{ at: 'x', text: 'y' }] } });
+    assert.equal(cleaned?.clock, undefined);
+    assert.equal(cleaned?.ownDay, undefined);
   });
 });

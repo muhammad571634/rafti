@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { buildStreamLinePrompt, streamLineParts } from '../ai/content-prompts';
+import { buildStreamLinePrompt, streamDayNotes, streamLineParts } from '../ai/content-prompts';
 import { layoutPrompt } from '../ai/prompt-layout';
 import { mockStreamLine } from '../mock/streams';
 import type { Character, Stream, User } from '@/types';
@@ -109,7 +109,7 @@ describe('the model’s line', () => {
     const opening = buildStreamLinePrompt({ character: kai, user }, castor, 'Pizza', [], { index: 0, total: 8 });
     assert.match(opening, /you just met/);
     assert.match(opening, /You open/);
-    assert.doesNotMatch(opening, /SO FAR|last line/);
+    assert.doesNotMatch(opening, /\nSO FAR:|last line for now/);
   });
 
   it('caches the speaker’s persona and the stream for every line, and sends what was said after it', () => {
@@ -121,6 +121,18 @@ describe('the model’s line', () => {
     assert.deepEqual(third.system, first.system);
     assert.match(first.system.at(-1)?.text ?? '', /MODE: STREAM[\s\S]*\n\nYou are talking with Theo Lancaster/);
     assert.match(third.turn, /^THIS LINE:\n- React to what Theo Lancaster just said[\s\S]*SO FAR:\nTheo Lancaster: Pineapple\./);
+  });
+
+  it('a line happens in the speaker’s own day, and keeps what is new of it (0z146)', () => {
+    const kai = { id: 'c_kai', name: 'Kai Arden', bio: 'Swimmer.', greeting: 'Hi.', tags: [], series: 'Seaside Academy' } as unknown as Character;
+    const theo = { id: 'c_theo', name: 'Theo Lancaster', series: 'Seaside Academy' } as unknown as Character;
+    const user = { displayName: 'Sam', locale: 'en-US' } as User;
+    const clock = { now: '2026-11-08T08:30:00.000Z', utcOffsetMin: 300 };
+    const ownDay = { today: [{ at: '2026-11-08T03:00:00.000Z', text: 'swam at dawn, cold water' }] };
+    const prompt = layoutPrompt(streamLineParts({ character: kai, user }, theo, 'Pizza', [], { index: 0, total: 8 }, { clock, ownDay }));
+    assert.match(prompt.turn, /IT IS NOW: Sunday 2026-11-08 13:30[\s\S]*08:00 swam at dawn, cold water/);
+    assert.deepEqual(streamDayNotes('{"line":"Hi","day":["ate pizza at noon"]}'), ['ate pizza at noon']);
+    assert.deepEqual(streamDayNotes('not json'), []);
   });
 });
 

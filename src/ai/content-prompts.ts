@@ -3,9 +3,11 @@ import type { PersonaView } from '@/lib/personas';
 import type { ActiveScene, Character, Relationship, User } from '@/types';
 
 import { modePart, type PromptMode } from './modes';
+import { cleanDayNotes, ownDayParts, type OwnDay } from './own-day';
 import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
 import { characterParts } from './rules';
+import { clockLines, type ChatClock } from './together-prompt';
 
 /**
  * What every prompt besides chat starts from: the same persona (`characterParts`: rules, world, bio,
@@ -36,7 +38,8 @@ const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in t
  * One line of a stream (src/lib/streams.ts): the speaker's own persona prompt, then who they talk
  * with, the topic and that the user only watches (the same for the whole stream, so cached with the
  * persona), then this line's place and what was said so far. One call per line, so each voice stays
- * its own, as in group chats. `turn.total` is where this round ends.
+ * its own, as in group chats. `turn.total` is where this round ends. `day` (0z146): the user's clock
+ * and the speaker's own day so far, so a stream happens in the same day as their chat.
  */
 export function streamLineParts(
   input: PersonaInput,
@@ -44,6 +47,7 @@ export function streamLineParts(
   topic: string,
   said: { name: string; text: string }[],
   turn: { index: number; total: number },
+  day?: { clock?: ChatClock; ownDay?: OwnDay },
 ): PromptPart[] {
   const watcher = input.persona?.name ?? input.user.displayName;
   // Characters from one world know each other already (backend-plan §12.3, world.knows).
@@ -64,8 +68,10 @@ export function streamLineParts(
       ...(said.length ? ['', 'SO FAR:', ...said.map((line) => `${line.name}: ${line.text}`)] : []),
       '',
       JSON_ONLY,
-      'Shape: {"line":""}',
+      'Shape: {"line":""} (and "day": only what this text itself says that is new of your own day)',
     ]),
+    part('clock', 'turn', clockLines(day?.clock)),
+    ...ownDayParts(day?.ownDay, day?.clock),
   ];
 }
 
@@ -81,6 +87,8 @@ export interface StreamLineRequest {
   topic: string;
   said: { name: string; text: string }[];
   turn: { index: number; total: number };
+  clock?: ChatClock;
+  ownDay?: OwnDay;
 }
 
 /** The longest stream line kept: one or two short sentences, with room to spare. */
@@ -105,6 +113,15 @@ export function parseStreamLine(raw: string, speaker: string): string | null {
     .replace(/^"(.*)"$/s, '$1')
     .trim();
   return text ? text.slice(0, STREAM_LINE_MAX) : null;
+}
+
+/** New things of the speaker's own day in a stream line's answer, or none. */
+export function streamDayNotes(raw: string): string[] {
+  try {
+    return cleanDayNotes(JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? '')?.day);
+  } catch {
+    return [];
+  }
 }
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

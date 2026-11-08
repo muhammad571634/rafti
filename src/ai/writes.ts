@@ -4,8 +4,10 @@ import type { DateMood, DiaryMood, MemoryItem, Message } from '@/types';
 import { factLines, pinnedLines } from './chat-prompt';
 import { personaParts, type PersonaInput } from './content-prompts';
 import type { PromptMode } from './modes';
+import { cleanDayNotes, cleanOwnDay, DAY_NOTES_MAX, ownDayParts, type OwnDay } from './own-day';
 import { part, type PromptPart } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
+import { cleanClock, clockLines, type ChatClock } from './together-prompt';
 
 /**
  * What a friend writes besides chat, on a screen of its own: a secret note, a diary page, their side
@@ -36,6 +38,8 @@ export interface DiaryDay {
   dateTitle?: string;
   /** The user may have been in danger that day: the page stays gentle and quotes nothing. */
   heavy?: boolean;
+  /** What the friend said of their own day that day (`src/ai/own-day.ts`), so the page tells the same day. */
+  own?: string[];
 }
 
 export interface DatePlan {
@@ -60,6 +64,9 @@ interface Base {
   /** Their latest lines: the language to write in and, for a note, the mood between them. */
   recent?: readonly WriteLine[];
   memory?: { pinned?: readonly MemoryItem[]; facts?: readonly MemoryItem[]; summary?: string };
+  /** The user's clock and the friend's own day so far (0z146): only the kinds in `OWN_DAY_WRITES` read them. */
+  clock?: ChatClock;
+  ownDay?: OwnDay;
 }
 
 export type WriteRequest = Base &
@@ -86,6 +93,14 @@ export interface WriteResults {
   dateRound: DateRound;
 }
 
+/**
+ * The writes that happen in the friend's day, now (0z146): a note on today's question, an answer to
+ * the user's diary page, a round of a date. They read the friend's own day as true and add what is
+ * new to it ("day" in the answer), like a chat reply. A diary page tells a day already over (it gets
+ * that day's notes in `DiaryDay.own`), and quizzes are games about tastes, not the day.
+ */
+export const OWN_DAY_WRITES: ReadonlySet<WriteKind> = new Set<WriteKind>(['note', 'diaryReply', 'dateRound']);
+
 export const WRITE_MODE: Record<WriteKind, PromptMode> = {
   note: 'secretNote',
   diary: 'diary',
@@ -105,18 +120,19 @@ function taskLines(request: WriteRequest): string[] {
   const { name } = request.input.character;
   switch (request.kind) {
     case 'note':
-      return [`TODAY'S QUESTION: ${request.question}`, 'You each write a note and neither reads the other until both are written. Write yours.', JSON_ONLY, 'Shape: {"note":""}'];
+      return [`TODAY'S QUESTION: ${request.question}`, 'You each write a note and neither reads the other until both are written. Write yours.', JSON_ONLY, 'Shape: {"note":""} (and "day": only what this text itself says that is new of your own day)'];
     case 'diary':
       return [
         ...(request.day.dateTitle ? [`Yesterday the two of you went on a date: ${request.day.dateTitle}.`] : []),
         ...(request.day.lines.length ? ['YESTERDAY IN YOUR CHAT:', ...request.day.lines.map((l) => `${l.mine ? 'You' : 'They'}: ${l.text}`)] : []),
         ...(request.day.heavy ? ['Yesterday was heavy for them. Stay gentle, quote nothing they said, and hope they have someone near them too.'] : []),
+        ...(request.day.own?.length ? [`YOUR OWN DAY YESTERDAY (you told them; it happened, keep to it): ${request.day.own.join('; ')}.`] : []),
         "TASK: Write today's page of your diary, about yesterday.",
         JSON_ONLY,
         'Shape: {"mood":"excited|happy|soft|tired|blue","paragraphs":["",""]}',
       ];
     case 'diaryReply':
-      return [`They shared a page of their own diary with you:\n"${request.entry}"`, 'TASK: Write back: one or two short sentences, as someone who just read it. It is a small note, not a chat: no question is needed.', JSON_ONLY, 'Shape: {"reply":""}'];
+      return [`They shared a page of their own diary with you:\n"${request.entry}"`, 'TASK: Write back: one or two short sentences, as someone who just read it. It is a small note, not a chat: no question is needed.', JSON_ONLY, 'Shape: {"reply":""} (and "day": only what this text itself says that is new of your own day)'];
     case 'quizPicks':
       return [
         `TASK: You are playing a quiz with the user, "${request.title}". Each of you answers without seeing the other's answer. Pick what you would really pick, as yourself.`,
@@ -153,7 +169,7 @@ function taskLines(request: WriteRequest): string[] {
         `"choices" are three things the user could do or say, written from their side: their own words, or what they do, with you by name ("Let's go to the pier.", "Take ${name.split(" ")[0]}'s hand."). Short, each a real choice, none of them obviously the right one.`,
         'Each choice has "reply", what you do or say back (one or two short sentences, written the same way), and "hearts", 0 to 3, how much you would honestly like it. Vary the order: the best one is not always first.',
         JSON_ONLY,
-        'Shape: {"line":"","choices":[{"text":"","reply":"","hearts":0},{"text":"","reply":"","hearts":0},{"text":"","reply":"","hearts":0}]}',
+        'Shape: {"line":"","choices":[{"text":"","reply":"","hearts":0},{"text":"","reply":"","hearts":0},{"text":"","reply":"","hearts":0}]} (and "day": only what this text itself says that is new of your own day; the date itself is part of it)',
       ];
     }
   }
@@ -181,6 +197,7 @@ export function writeParts(request: WriteRequest): PromptPart[] {
           ]),
         ]
       : []),
+    ...(OWN_DAY_WRITES.has(request.kind) ? [part('clock', 'turn', clockLines(request.clock)), ...ownDayParts(request.ownDay, request.clock)] : []),
     part('recent', 'turn', request.kind === 'note' && recent.length ? ['THE CHAT LATELY:', ...recent] : []),
     part('task', 'turn', taskLines(request)),
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(request.recent ?? []), input.user.locale) : []),
@@ -279,6 +296,11 @@ export function parseWrite(request: WriteRequest, raw: string): WriteResults[Wri
   }
 }
 
+/** New things of the friend's own day in a write's answer (`OWN_DAY_WRITES` only): a few short notes, or none. */
+export function writeDayNotes(request: WriteRequest, raw: string): string[] {
+  return OWN_DAY_WRITES.has(request.kind) ? cleanDayNotes(jsonOf(raw)?.day) : [];
+}
+
 const MAX_RECENT = 12;
 const MAX_DAY_LINES = 40;
 const MAX_QUESTIONS = 12;
@@ -300,6 +322,8 @@ export function cleanWrite(body: unknown): WriteRequest | null {
     input: input as unknown as PersonaInput,
     recent: Array.isArray(body.recent) ? (body.recent as WriteLine[]).slice(-MAX_RECENT) : undefined,
     memory: isObject(body.memory) ? (body.memory as Base['memory']) : undefined,
+    clock: cleanClock(body.clock),
+    ownDay: cleanOwnDay(body.ownDay),
   };
   switch (body.kind as WriteKind) {
     case 'note': {
@@ -310,7 +334,8 @@ export function cleanWrite(body: unknown): WriteRequest | null {
       const day = body.day;
       if (!isObject(day) || !Array.isArray(day.lines)) return null;
       const lines = day.lines.filter((l): l is DiaryDay['lines'][number] => isObject(l) && typeof l.text === 'string').slice(-MAX_DAY_LINES).map((l) => ({ mine: l.mine === true, text: shortText(l.text) }));
-      return { ...base, kind: 'diary', day: { lines, dateTitle: shortText(day.dateTitle, 80) || undefined, heavy: day.heavy === true } };
+      const own = (Array.isArray(day.own) ? day.own : []).filter((n): n is string => typeof n === 'string' && !!n.trim()).slice(-DAY_NOTES_MAX).map((n) => shortText(n.trim(), 80));
+      return { ...base, kind: 'diary', day: { lines, dateTitle: shortText(day.dateTitle, 80) || undefined, heavy: day.heavy === true, ...(own.length ? { own } : {}) } };
     }
     case 'diaryReply': {
       const entry = shortText(body.entry, 4000);

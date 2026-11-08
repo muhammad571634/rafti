@@ -259,10 +259,10 @@ export async function serverTranscribe(clip: VoiceClip, accessToken?: string | n
   return typeof reply?.text === 'string' ? { text: reply.text, language: cleanLanguage(reply.language) } : null;
 }
 
-/** The next stream line in the speaker's voice (B1.4b), or null (off, busy, slow or no usable line). */
-export async function serverStreamLine(request: StreamLineRequest, accessToken?: string | null): Promise<string | null> {
-  const reply = await call<{ line?: string | null }>('/v1/streams/line', withOptionalToken(accessToken, request), STREAM_LINE_TIMEOUT_MS);
-  return typeof reply?.line === 'string' && reply.line.trim() ? reply.line : null;
+/** The next stream line in the speaker's voice (B1.4b) and anything new of their own day, or null (off, busy, slow or no usable line). */
+export async function serverStreamLine(request: StreamLineRequest, accessToken?: string | null): Promise<{ line: string; day: string[] } | null> {
+  const reply = await call<{ line?: string | null; day?: unknown }>('/v1/streams/line', withOptionalToken(accessToken, request), STREAM_LINE_TIMEOUT_MS);
+  return typeof reply?.line === 'string' && reply.line.trim() ? { line: reply.line, day: cleanDayNotes(reply.day) } : null;
 }
 
 /** One group member's next message in their own voice, or null (off, busy or slow: the caller writes the stand-in). */
@@ -276,10 +276,13 @@ export async function serverGroupReply(input: GroupPromptInput, accessToken?: st
   return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day) } : null;
 }
 
-/** What a friend writes on a screen of its own (src/ai/writes.ts), or null (off, busy, slow or a broken answer). */
-export async function serverWrite<K extends WriteKind>(request: WriteRequest & { kind: K }, accessToken?: string | null): Promise<WriteResults[K] | null> {
-  const reply = await call<{ result?: WriteResults[K] | null }>('/v1/ai/write', withOptionalToken(accessToken, request), WRITE_TIMEOUT_MS);
-  return reply?.result ?? null;
+/**
+ * What a friend writes on a screen of its own (src/ai/writes.ts) and anything new of their own day
+ * it told (`OWN_DAY_WRITES`), or null (off, busy, slow or a broken answer).
+ */
+export async function serverWrite<K extends WriteKind>(request: WriteRequest & { kind: K }, accessToken?: string | null): Promise<{ result: WriteResults[K]; day: string[] } | null> {
+  const reply = await call<{ result?: WriteResults[K] | null; day?: unknown }>('/v1/ai/write', withOptionalToken(accessToken, request), WRITE_TIMEOUT_MS);
+  return reply?.result ? { result: reply.result, day: cleanDayNotes(reply.day) } : null;
 }
 
 /**
