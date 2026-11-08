@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z170. Bedtime redesigned (approved prototype); the Sleep card opens it (2026-11-08, Claude 1). NEXT: the flow audit (0z169 item 1)
+
+- **Owner's asks**: the Sleep card's body opened the old Bedtime while its + opened the new alarm editor: "fix the logic"; Bedtime is still needed (whispers, the timer, the little animation) but in the new look. Prototype https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c, owner: "Yes, code it". UXKIN needs a paid plan the owner cannot buy: use Apple HIG and real apps on the A51 instead.
+- **Logic**: the Sleep card's body always opens Bedtime (before: Alarms when an alarm was on, else Bedtime); its + opens a new alarm. Bedtime's wake-up card shows the next alarm (time, who, "in 8 h 03 min") and opens the alarms list; with none on, a dashed "Set a wake-up" card opens the editor.
+- **Bedtime** (`src/app/bedtime.tsx`, rewritten): the sleeping mascot on the moon (its breath, Zzz and sparkles kept) with the picked friend's face on it, "Sleep with Hana", who as a row of faces (all one size, the ring's room reserved, so a pick never moves the row), the timer as a big number with -/+ (5 to 120 min), the wake-up card, one "Sleep together" button (moon; lock without Pro). Whispering: a pill with the friend and the voice wave, the ring emptying around the rocking moon, the countdown, Stop and Pause / Resume, the next wake-up as a pill. The Who and Timer sub-pages and the settings-style rows are gone.
+- **Kit**: `src/components/alarms/night-kit.tsx` (`NightFace`, `NightRound`, `untilText`) replaces the copies in the alarm editor and the alarms list; the editor looks the same (checked on the A51).
+- **Seen on the A51** (OTA `01a1bc6e`): the card body opens Bedtime, + opens Add Alarm, two quick taps on a face, the timer at both ends (120 / 5 min), the wake-up card to the editor and back (state kept), Sleep together to the Pro sheet. Not seen: the whispering state (needs Pro on this account) and the wake-up card with an alarm on (the owner's alarms are all off; left as they are).
+- Checks: tsc 0, npm test 846/846.
+
+Still to do:
+1. The flow audit from 0z169 (Today, Find, Store, Android back on sheets).
+2. See the whispering state and the filled wake-up card on a Pro account.
+
 ### 0z169. Dark mode and German / Russian worst case on the feature screens; onboarding a one-way door (2026-11-08, Claude 1). NEXT: the flow audit (item 3 below), then the `Color` move
 
 - **Owner's asks**: carry on from HANDOFF; and (again) use skills, plugins, MCPs and connectors whenever they fit, switching them on myself or asking the owner. Loaded this session: `appllama-app-design-skill`, `break-ui`, `mobile-app-design:ios-review` (the owner installed Mobile App Design, Design and react-native-best-practices). The UXKIN MCP asked for sign-in; its tools (`find_ui_references`, `get_journey`) showed up late in the session, so use them for the flow audit.

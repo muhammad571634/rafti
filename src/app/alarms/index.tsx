@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { NIGHT_SWITCH } from '@/components/alarms/night';
+import { untilText } from '@/components/alarms/night-kit';
 import { CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
@@ -82,7 +83,7 @@ export default function AlarmsScreen() {
               onPress={() => open(next.a)}
               scaleTo={0.98}
               accessibilityRole="button"
-              accessibilityLabel={[t('alarms.next'), clock(next.a).time, until(t, next.at)].join(', ')}
+              accessibilityLabel={[t('alarms.next'), clock(next.a).time, untilText(t, next.at.getTime() - Date.now())].join(', ')}
               style={styles.hero}>
               <Face friend={friendOf(next.a.characterId)} size={HERO_FACE} ring />
               <View style={styles.heroText}>
@@ -93,7 +94,7 @@ export default function AlarmsScreen() {
                 </Txt>
                 <View style={styles.until}>
                   <Ionicons name="moon" size={14} color={night.primary} />
-                  <Txt style={styles.untilText}>{until(t, next.at)}</Txt>
+                  <Txt style={styles.untilText}>{untilText(t, next.at.getTime() - Date.now())}</Txt>
                 </View>
               </View>
             </PressableScale>
@@ -175,12 +176,6 @@ export default function AlarmsScreen() {
       </View>
     </Screen>
   );
-}
-
-/** "in 8 h 30 min" until a ring. */
-function until(t: (key: string, options?: Record<string, unknown>) => string, at: Date) {
-  const mins = Math.max(1, Math.round((at.getTime() - Date.now()) / 60_000));
-  return mins < 60 ? t('alarms.inMinutes', { m: mins }) : t('alarms.inTime', { h: Math.floor(mins / 60), m: String(mins % 60).padStart(2, '0') });
 }
 
 /** Who wakes you: their face, or a bell for a melody-only alarm. Radii in numbers (Android draws 999 square). */

@@ -1,13 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
-import { ValueWheel, type WheelTone } from '@/components/alarms/time-wheel';
+import { NightFace, NightRound, untilText } from '@/components/alarms/night-kit';
 import { SleepingMascot } from '@/components/bedtime/sleeping-mascot';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
@@ -16,25 +15,24 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { callClock } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, radius, sleepColors as night, space } from '@/theme';
-import type { Character } from '@/types';
+import { bottomRoom, fonts, radius, sleepColors as night, space, systemColors } from '@/theme';
+import type { Alarm, Character } from '@/types';
 
-/** Sleep timer choices on the wheel, in minutes. */
+/** Sleep timer steps for -/+, in minutes. */
 const TIMERS = [5, 10, 15, 20, 30, 45, 60, 90, 120];
-const RING = 220;
-const STROKE = 8;
-const WHEEL_TONE: WheelTone = { text: night.text, near: night.textSecondary, far: night.textFaint, band: 'rgba(255,255,255,0.10)' };
-
-type Page = 'main' | 'who' | 'timer';
+const FACE = 58;
+const STROKE = 10;
 
 /**
- * "Sleep Together" in the iOS Sleep look (owner's pick B, 2026-10-14; prototype
- * https://claude.ai/artifact/RfCUeQ3bdF7PvBiadS9zd3): a large title on the night palette, a
- * header card, grouped rows (Who, Sleep timer, Wake-up → Alarms) and one button. While the
- * friend whispers, an iOS Timer ring empties with Stop and Pause. Whispers are Pro only
- * (backend-plan §15.10) and never use voice-reply minutes; Alarms open for every plan.
- * Colours come from `sleepColors`, Bedtime's own navy in both themes.
+ * Bedtime, the night's own screen (owner-approved prototype 0z170,
+ * https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c): the mascot asleep on the moon with the
+ * friend who whispers, who as a row of faces, the sleep timer as a big number with -/+, the next
+ * wake-up as a card (tap: the alarms; none: set one), one big button. While the friend whispers, a
+ * ring empties around the rocking moon with the countdown, Stop and Pause. Whispers are Pro only
+ * (backend-plan §15.10) and never use voice-reply minutes; alarms open for every plan. Colours come
+ * from `sleepColors`, the night's navy in both themes, shared with the alarms.
  */
 export default function BedtimeScreen() {
   const friendName = useFriendName();
@@ -42,9 +40,9 @@ export default function BedtimeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
-  // Sizes that let the whispering screen fit any phone without scrolling.
-  const artFit = Math.round(Math.min(210, Math.max(104, height * 0.17)));
-  const ringFit = Math.round(Math.min(RING, Math.max(150, height * 0.24)));
+  // The moon fits any phone: the setup scrolls, the whispering screen never does.
+  const artSize = Math.round(Math.min(196, Math.max(132, height * 0.22)));
+  const ringSize = Math.round(Math.min(290, Math.max(200, height * 0.34)));
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -57,30 +55,16 @@ export default function BedtimeScreen() {
   );
 
   const [readerId, setReaderId] = useState(known[0]?.id);
-  const [minutes, setMinutes] = useState(20);
+  const [step, setStep] = useState(TIMERS.indexOf(20));
   const [left, setLeft] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [locked, setLocked] = useState(false);
-  const [page, setPage] = useState<Page>('main');
 
+  const minutes = TIMERS[step];
   const reader = known.find((c) => c.id === readerId);
   const running = left != null;
   const name = reader ? friendName(reader, true) : '';
-
-  // The next alarm, shown on the Alarms row and under the ring.
-  const nextAlarm = useMemo(() => {
-    const now = new Date();
-    return alarms
-      .filter((a) => a.enabled)
-      .map((a) => ({ a, at: nextAlarmAt(a, now) }))
-      .sort((x, y) => x.at.getTime() - y.at.getTime())[0]?.a;
-  }, [alarms]);
-  const nextAlarmText = nextAlarm
-    ? (() => {
-        const { time, period } = alarmTime(nextAlarm.hour, nextAlarm.minute, uses12Hour());
-        return period ? `${time} ${t(`alarms.${period}`)}` : time;
-      })()
-    : null;
+  const wake = useNextWake(alarms, characters);
 
   useEffect(() => {
     if (left == null || paused) return;
@@ -93,171 +77,194 @@ export default function BedtimeScreen() {
     return () => clearTimeout(tick);
   }, [left, paused]);
 
-  const start = () => {
-    if (!reader) return;
-    if (!pro) return setLocked(true);
+  const begin = () => {
     setPaused(false);
     setLeft(minutes * 60);
   };
-
+  const start = () => {
+    if (!reader) return;
+    haptic.tap();
+    if (!pro) return setLocked(true);
+    begin();
+  };
   const stop = () => {
+    haptic.tap();
     setLeft(null);
     setPaused(false);
   };
+  const nudge = (by: number) => {
+    const next = Math.max(0, Math.min(TIMERS.length - 1, step + by));
+    if (next !== step) haptic.selection();
+    setStep(next);
+  };
+
+  const wakeLine = wake ? `${wake.who ? friendName(wake.who, true) : wake.alarm.label || t('home.widget.wakeUp')} · ${untilText(t, wake.at.getTime() - Date.now())}` : '';
 
   return (
     <Screen background={night.bg} statusBarStyle="light">
       <Header
         tint={night.text}
-        onBack={page === 'main' ? undefined : () => setPage('main')}
         right={
-          !pro && page === 'main' ? (
+          !pro && !running ? (
             <View style={styles.proPill}>
-              <Txt variant="smallStrong" color={night.brandText}>
-                {t('plans.name.pro')}
-              </Txt>
+              <Txt style={styles.proText}>{t('plans.name.pro')}</Txt>
             </View>
           ) : null
         }
       />
-      <Txt variant="h1" color={night.text} style={styles.title} accessibilityRole="header">
-        {page === 'who' ? t('bedtime.who') : page === 'timer' ? t('bedtime.setTimer') : t('bedtime.title')}
-      </Txt>
 
-      {/* While whispering, everything fits one screen: the card, the ring, Stop and Pause at the bottom. */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={!(page === 'main' && running)}
-        contentContainerStyle={[styles.scroll, page === 'main' && running && styles.fit]}>
-        {page === 'main' ? (
-          <>
-            <LinearGradient colors={['#232A5C', night.surface]} style={[styles.hero, running && styles.heroFit]}>
-              <SleepingMascot size={running ? artFit : 210} whispering={running && !paused} />
-              <View style={styles.heroText}>
+      {running ? (
+        <View style={[styles.whisperPage, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
+          <View style={styles.whisperPill}>
+            {reader ? <CharacterAvatar character={reader} size={26} /> : null}
+            <Txt style={styles.whisperName} lines={1}>
+              {t('bedtime.whispering', { name })}
+            </Txt>
+            {paused ? null : <Anim name="voiceWave" size={22} tint={night.primary} />}
+          </View>
+
+          <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
+            <SleepingMascot size={Math.round(ringSize * 0.6)} whispering={!paused} />
+          </TimerRing>
+
+          <Txt style={styles.countdown} accessibilityLabel={t('bedtime.remaining', { time: callClock(left ?? 0) })}>
+            {callClock(left ?? 0)}
+          </Txt>
+
+          <View style={styles.controls}>
+            <PressableScale onPress={stop} scaleTo={0.94} style={[styles.control, styles.controlGrey]} accessibilityRole="button" accessibilityLabel={t('bedtime.stop')}>
+              <View style={styles.stopGlyph} />
+            </PressableScale>
+            <PressableScale
+              onPress={() => {
+                haptic.tap();
+                setPaused((p) => !p);
+              }}
+              scaleTo={0.94}
+              style={[styles.control, styles.controlWarm]}
+              accessibilityRole="button"
+              accessibilityLabel={paused ? t('bedtime.resume') : t('bedtime.pause')}>
+              <Ionicons name={paused ? 'play' : 'pause'} size={30} color={night.textOnPrimary} />
+            </PressableScale>
+          </View>
+
+          <View style={styles.flex} />
+          {wake ? (
+            <View style={styles.wakePill} accessibilityLabel={`${t('bedtime.wakeUp')}, ${wake.time}, ${wakeLine}`}>
+              {wake.who ? <CharacterAvatar character={wake.who} size={26} /> : <Ionicons name="alarm" size={18} color={systemColors.green} />}
+              <Txt style={styles.wakePillTime}>{wake.time}</Txt>
+              {wake.who ? (
+                <Txt style={styles.wakePillName} lines={1}>
+                  {friendName(wake.who, true)}
+                </Txt>
+              ) : null}
+            </View>
+          ) : null}
+        </View>
+      ) : (
+        <>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+            <Txt style={styles.title} accessibilityRole="header">
+              {t('bedtime.title')}
+            </Txt>
+
+            <View style={styles.hero}>
+              <View style={{ width: artSize, height: artSize }}>
+                <SleepingMascot size={artSize} whispering={false} />
                 {reader ? (
-                  <>
-                    <Txt style={styles.heroTitle} center>
-                      {t('bedtime.sleepWith', { name })}
-                    </Txt>
-                    <Txt style={styles.heroLine} center>
-                      {t('bedtime.what')}
-                    </Txt>
-                  </>
-                ) : (
-                  <Txt style={styles.heroLine} center>
-                    {t('bedtime.noVoices')}
-                  </Txt>
-                )}
-              </View>
-            </LinearGradient>
-
-            {running ? (
-              <TimerRing
-                left={left ?? 0}
-                total={minutes * 60}
-                alarm={nextAlarmText}
-                reader={reader}
-                name={name}
-                paused={paused}
-                onStop={stop}
-                onPause={() => setPaused((p) => !p)}
-                size={ringFit}
-              />
-            ) : (
-              <>
-                {known.length > 0 ? (
-                  <View style={styles.group}>
-                    <Row
-                      lead={reader ? <CharacterAvatar character={reader} size={28} /> : null}
-                      label={t('bedtime.who')}
-                      value={reader ? friendName(reader) : ''}
-                      onPress={() => setPage('who')}
-                    />
-                    <Row
-                      lead={<Tile icon="timer-outline" color={night.primary} />}
-                      label={t('bedtime.setTimer')}
-                      value={t('radio.minutes', { count: minutes })}
-                      onPress={() => setPage('timer')}
-                      last
-                    />
+                  <View style={styles.badge}>
+                    <CharacterAvatar character={reader} size={58} />
                   </View>
                 ) : null}
+              </View>
+              <Txt style={styles.heroTitle} center lines={2}>
+                {reader ? t('bedtime.sleepWith', { name }) : t('bedtime.noVoices')}
+              </Txt>
+            </View>
 
-                <Txt variant="caption" color={night.textSecondary} style={styles.groupTitle}>
-                  {t('bedtime.wakeUp').toUpperCase()}
-                </Txt>
-                <View style={styles.group}>
-                  <Row
-                    lead={<Tile icon="alarm-outline" color={night.success} />}
-                    label={t('alarms.entry')}
-                    value={nextAlarmText ?? ''}
-                    onPress={() => router.push('/alarms')}
-                    last
-                  />
+            {known.length > 1 ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
+                {known.map((c) => (
+                  <NightFace
+                    key={c.id}
+                    name={friendName(c, true)}
+                    on={c.id === readerId}
+                    size={FACE}
+                    steady
+                    onPress={() => {
+                      if (c.id !== readerId) haptic.selection();
+                      setReaderId(c.id);
+                    }}>
+                    <CharacterAvatar character={c} size={FACE} />
+                  </NightFace>
+                ))}
+              </ScrollView>
+            ) : null}
+
+            {reader ? (
+              <View style={styles.timerCard} accessibilityLabel={`${t('bedtime.setTimer')}, ${t('radio.minutes', { count: minutes })}`}>
+                <NightRound icon="remove" label={t('bedtime.setTimer')} onPress={() => nudge(-1)} size={52} />
+                <View style={styles.timerValue}>
+                  <Ionicons name="timer-outline" size={22} color={night.textSecondary} />
+                  <Txt style={styles.timerText} lines={1} maxFontSizeMultiplier={1.2}>
+                    {t('radio.minutes', { count: minutes })}
+                  </Txt>
                 </View>
-              </>
-            )}
-          </>
-        ) : null}
+                <NightRound icon="add" label={t('bedtime.setTimer')} onPress={() => nudge(1)} size={52} />
+              </View>
+            ) : null}
 
-        {page === 'who' ? (
-          <View style={styles.group}>
-            {known.map((c, i) => (
-              <Pressable
-                key={c.id}
-                style={[styles.row, i === known.length - 1 && styles.last]}
-                onPress={() => {
-                  setReaderId(c.id);
-                  setPage('main');
-                }}
+            {wake ? (
+              <PressableScale
+                onPress={() => router.push('/alarms')}
+                scaleTo={0.98}
+                style={styles.wakeCard}
                 accessibilityRole="button"
-                accessibilityState={{ selected: c.id === readerId }}>
-                <CharacterAvatar character={c} size={28} />
-                <Txt variant="body" color={night.text} style={styles.flex}>
-                  {friendName(c)}
+                accessibilityLabel={`${t('bedtime.wakeUp')}, ${wake.time}, ${wakeLine}`}>
+                <View style={styles.wakeTile}>
+                  <Ionicons name="alarm" size={24} color={night.white} />
+                </View>
+                <View style={styles.flex}>
+                  <Txt style={styles.wakeTime}>{wake.time}</Txt>
+                  <Txt style={styles.wakeLine} lines={1}>
+                    {wakeLine}
+                  </Txt>
+                </View>
+                {wake.who ? <CharacterAvatar character={wake.who} size={36} /> : null}
+                <Ionicons name="chevron-forward" size={18} color={night.textFaint} />
+              </PressableScale>
+            ) : (
+              <PressableScale
+                onPress={() => router.push('/alarms/edit')}
+                scaleTo={0.98}
+                style={[styles.wakeCard, styles.wakeEmpty]}
+                accessibilityRole="button"
+                accessibilityLabel={t('home.widget.setWake')}>
+                <View style={[styles.wakeTile, styles.wakeTileSoft]}>
+                  <Ionicons name="alarm-outline" size={24} color={systemColors.green} />
+                </View>
+                <Txt style={[styles.flex, styles.wakeSet]} lines={1}>
+                  {t('home.widget.setWake')}
                 </Txt>
-                {c.id === readerId ? <Ionicons name="checkmark" size={20} color={night.brandText} /> : null}
-              </Pressable>
-            ))}
-          </View>
-        ) : null}
+                <View style={styles.plus}>
+                  <Ionicons name="add" size={22} color={night.textOnPrimary} />
+                </View>
+              </PressableScale>
+            )}
+          </ScrollView>
 
-        {page === 'timer' ? (
-          <View style={styles.wheelBox}>
-            <ValueWheel
-              label={t('bedtime.setTimer')}
-              values={TIMERS.map((m) => t('radio.minutes', { count: m }))}
-              index={Math.max(0, TIMERS.indexOf(minutes))}
-              onChange={(i) => setMinutes(TIMERS[i])}
-              tone={WHEEL_TONE}
+          <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
+            <Button
+              label={t('bedtime.start')}
+              size="lg"
+              onPress={start}
+              disabled={!reader}
+              full
+              left={<Ionicons name={pro ? 'moon' : 'lock-closed'} size={18} color={night.textOnPrimary} />}
             />
           </View>
-        ) : null}
-      </ScrollView>
-
-      {page === 'main' && !running ? (
-        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
-          <Button
-            label={t('bedtime.start')}
-            size="lg"
-            onPress={start}
-            disabled={!reader}
-            full
-            left={pro ? undefined : <Ionicons name="lock-closed" size={17} color={night.textOnPrimary} />}
-          />
-          <Txt variant="caption" color={night.textSecondary} center>
-            {pro ? t('bedtime.stopsAfter', { count: minutes }) : t('bedtime.withPro')}
-          </Txt>
-        </View>
-      ) : null}
-
-      {page === 'main' && running ? (
-        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
-          <Txt variant="caption" color={night.textSecondary} center>
-            {t('bedtime.fades')}
-          </Txt>
-        </View>
-      ) : null}
+        </>
+      )}
 
       {reader ? (
         <CallPaywallSheet
@@ -268,8 +275,7 @@ export default function BedtimeScreen() {
           onClose={() => setLocked(false)}
           onStarted={() => {
             setLocked(false);
-            setPaused(false);
-            setLeft(minutes * 60);
+            begin();
           }}
         />
       ) : null}
@@ -277,188 +283,127 @@ export default function BedtimeScreen() {
   );
 }
 
-/** The iOS Timer face: a ring that empties, the countdown, the next alarm, Stop and Pause. */
-function TimerRing({
-  left,
-  total,
-  alarm,
-  reader,
-  name,
-  paused,
-  onStop,
-  onPause,
-  size,
-}: {
-  left: number;
-  total: number;
-  alarm: string | null;
-  reader?: Character;
-  name: string;
-  paused: boolean;
-  onStop: () => void;
-  onPause: () => void;
-  size: number;
-}) {
+/** The next alarm that rings, who wakes you with it, and its time as the phone writes it. */
+function useNextWake(alarms: Alarm[], characters: Character[]) {
   const { t } = useTranslation();
+  return useMemo(() => {
+    const now = new Date();
+    const next = alarms
+      .filter((a) => a.enabled)
+      .map((a) => ({ alarm: a, at: nextAlarmAt(a, now) }))
+      .sort((x, y) => x.at.getTime() - y.at.getTime())[0];
+    if (!next) return null;
+    const { time, period } = alarmTime(next.alarm.hour, next.alarm.minute, uses12Hour());
+    return {
+      ...next,
+      time: period ? `${time} ${t(`alarms.${period}`)}` : time,
+      who: next.alarm.characterId ? characters.find((c) => c.id === next.alarm.characterId) : undefined,
+    };
+  }, [alarms, characters, t]);
+}
+
+/** The iOS Timer ring: it empties as the time runs out, the rocking moon inside. */
+function TimerRing({ size, share, children }: { size: number; share: number; children: React.ReactNode }) {
   const r = (size - STROKE) / 2;
   const length = 2 * Math.PI * r;
-  const share = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
-
+  const kept = Math.max(0, Math.min(1, share));
   return (
-    <View style={styles.timer}>
-      <View style={[styles.ring, { width: size, height: size }]}>
-        <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
-          <Circle cx={size / 2} cy={size / 2} r={r} stroke={night.border} strokeWidth={STROKE} fill="none" />
-          <Circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            stroke={night.brandText}
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={`${length} ${length}`}
-            strokeDashoffset={length * (1 - share)}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          />
-        </Svg>
-        <Txt color={night.text} style={[styles.clock, size < 200 && styles.clockSmall]}>
-          {callClock(left)}
-        </Txt>
-        {alarm ? (
-          <Txt variant="small" color={night.textSecondary} style={styles.ringAlarm}>
-            {`⏰ ${alarm}`}
-          </Txt>
-        ) : null}
-      </View>
-
-      <View style={styles.whisper}>
-        {reader ? <CharacterAvatar character={reader} size={24} /> : null}
-        <Txt variant="small" color={night.text}>
-          {t('bedtime.whispering', { name })}
-        </Txt>
-        {paused ? null : <Anim name="voiceWave" size={24} tint={night.textSecondary} />}
-      </View>
-
-      <View style={styles.circles}>
-        <PressableScale
-          onPress={onStop}
-          scaleTo={0.94}
-          style={[styles.circle, styles.circleGrey]}
-          accessibilityRole="button"
-          accessibilityLabel={t('bedtime.stop')}>
-          <Txt variant="bodyStrong" color={night.text}>
-            {t('bedtime.stop')}
-          </Txt>
-        </PressableScale>
-        <PressableScale
-          onPress={onPause}
-          scaleTo={0.94}
-          style={[styles.circle, styles.circleWarm]}
-          accessibilityRole="button"
-          accessibilityLabel={paused ? t('bedtime.resume') : t('bedtime.pause')}>
-          <Txt variant="bodyStrong" color={night.brandText}>
-            {paused ? t('bedtime.resume') : t('bedtime.pause')}
-          </Txt>
-        </PressableScale>
-      </View>
+    <View style={[styles.ring, { width: size, height: size }]}>
+      <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
+        <Circle cx={size / 2} cy={size / 2} r={r} stroke={night.surfaceAlt} strokeWidth={STROKE} fill="none" />
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke={night.primary}
+          strokeWidth={STROKE}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={`${length} ${length}`}
+          strokeDashoffset={length * (1 - kept)}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </Svg>
+      {children}
     </View>
-  );
-}
-
-function Tile({ icon, color }: { icon: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-  return (
-    <View style={[styles.tile, { backgroundColor: color }]}>
-      <Ionicons name={icon} size={17} color={night.white} />
-    </View>
-  );
-}
-
-function Row({
-  lead,
-  label,
-  value,
-  onPress,
-  last,
-}: {
-  lead?: React.ReactNode;
-  label: string;
-  value: string;
-  onPress: () => void;
-  last?: boolean;
-}) {
-  return (
-    <Pressable
-      style={[styles.row, last && styles.last]}
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={value ? `${label}, ${value}` : label}>
-      {lead}
-      <Txt variant="body" color={night.text} style={styles.flex}>
-        {label}
-      </Txt>
-      {value ? (
-        <Txt variant="body" color={night.textSecondary} lines={1}>
-          {value}
-        </Txt>
-      ) : null}
-      <Ionicons name="chevron-forward" size={16} color={night.textFaint} />
-    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  title: { paddingHorizontal: space.lg, paddingBottom: space.md },
   scroll: { gap: space.lg, paddingBottom: space.xl },
-  fit: { flexGrow: 1, paddingBottom: space.sm },
-  heroFit: { paddingTop: 18, paddingBottom: 16 },
-  proPill: {
-    height: 28,
-    justifyContent: 'center',
-    marginRight: space.sm,
-    paddingHorizontal: space.sm + 2,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: night.primarySoft,
-    backgroundColor: night.primarySofter,
-  },
-  // One large card with the sleeping mascot (canvas "BedtimeMascot", owner-approved 2026-10-22).
-  hero: {
-    alignItems: 'center',
+  title: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 34, lineHeight: 42, color: night.text },
+  proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: 15, backgroundColor: night.primarySofter },
+  proText: { fontFamily: fonts.playfulBold, fontSize: 14, color: night.brandText },
+  hero: { alignItems: 'center', gap: space.lg, marginTop: space.xs },
+  badge: { position: 'absolute', right: -10, bottom: -10, padding: 3, borderRadius: 32, backgroundColor: night.primary },
+  heroTitle: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 26, lineHeight: 32, color: night.text },
+  faces: { flexGrow: 1, justifyContent: 'center', gap: space.md, paddingHorizontal: space.lg },
+  timerCard: {
     marginHorizontal: space.lg,
-    paddingTop: 28,
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-    borderRadius: 28,
-  },
-  heroText: { marginTop: 22, alignItems: 'center', gap: 4 },
-  heroTitle: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: 0.2, color: night.text },
-  heroLine: { fontSize: 15, lineHeight: 20, color: night.textSecondary },
-  group: { marginHorizontal: space.lg, borderRadius: 11, overflow: 'hidden', backgroundColor: night.surface },
-  groupTitle: { marginHorizontal: space.lg * 2, marginBottom: -space.sm, letterSpacing: 0.4 },
-  row: {
+    height: 92,
+    paddingHorizontal: 14,
+    borderRadius: 26,
+    borderCurve: 'continuous',
+    backgroundColor: night.surface,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    minHeight: 48,
-    paddingHorizontal: space.md + 2,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: night.border,
+    justifyContent: 'space-between',
   },
-  last: { borderBottomWidth: 0 },
-  tile: { width: 28, height: 28, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
-  wheelBox: { marginHorizontal: space.lg, paddingVertical: space.md, borderRadius: 11, backgroundColor: night.surface },
-  timer: { flex: 1, alignItems: 'center', gap: space.lg, paddingTop: space.sm },
+  timerValue: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  timerText: { fontFamily: fonts.display, fontSize: 36, lineHeight: 44, color: night.text, fontVariant: ['tabular-nums'] },
+  wakeCard: {
+    marginHorizontal: space.lg,
+    minHeight: 78,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.md,
+    borderRadius: 26,
+    borderCurve: 'continuous',
+    backgroundColor: night.surface,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  // An empty slot waiting to be filled: a dashed outline (systemGround.dash's role on the navy).
+  wakeEmpty: { backgroundColor: 'transparent', borderWidth: 2, borderStyle: 'dashed', borderColor: 'rgba(163,168,200,0.35)' },
+  wakeTile: { width: 46, height: 46, borderRadius: 14, borderCurve: 'continuous', backgroundColor: systemColors.green, alignItems: 'center', justifyContent: 'center' },
+  wakeTileSoft: { backgroundColor: 'rgba(52,199,89,0.18)' },
+  wakeTime: { fontFamily: fonts.display, fontSize: 26, lineHeight: 32, color: night.text, fontVariant: ['tabular-nums'] },
+  wakeLine: { fontSize: 14, fontWeight: '700', color: night.textSecondary },
+  wakeSet: { fontFamily: fonts.playfulBold, fontSize: 18, color: night.text },
+  plus: { width: 36, height: 36, borderRadius: 18, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  bar: { paddingHorizontal: space.lg, paddingTop: space.md },
+  // While whispering everything fits one screen: the friend, the ring, the time, Stop and Pause.
+  whisperPage: { flex: 1, alignItems: 'center', gap: space.xl, paddingTop: space.sm },
+  whisperPill: {
+    maxWidth: '86%',
+    height: 38,
+    paddingLeft: 6,
+    paddingRight: 14,
+    borderRadius: radius.pill,
+    backgroundColor: night.well,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+  },
+  whisperName: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 15, color: night.text },
   ring: { alignItems: 'center', justifyContent: 'center' },
-  clock: { fontSize: 52, lineHeight: 60, fontWeight: '200', fontVariant: ['tabular-nums'] },
-  clockSmall: { fontSize: 42, lineHeight: 50 },
-  ringAlarm: { position: 'absolute', bottom: 56 },
-  whisper: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  // Stop and Pause sit at the bottom of the screen, as on the iOS Timer.
-  circles: { marginTop: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch', paddingHorizontal: space.xxl },
-  circle: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
-  circleGrey: { backgroundColor: night.border },
-  circleWarm: { backgroundColor: night.primarySoft },
-  bar: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md },
+  countdown: { fontFamily: fonts.display, fontSize: 56, lineHeight: 64, color: night.text, fontVariant: ['tabular-nums'] },
+  controls: { flexDirection: 'row', gap: 44 },
+  control: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
+  controlGrey: { backgroundColor: night.well },
+  controlWarm: { backgroundColor: night.primary },
+  stopGlyph: { width: 22, height: 22, borderRadius: 5, backgroundColor: night.text },
+  wakePill: {
+    height: 40,
+    paddingLeft: 8,
+    paddingRight: 16,
+    borderRadius: 20,
+    backgroundColor: night.well,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+  },
+  wakePillTime: { fontFamily: fonts.display, fontSize: 16, color: night.text, fontVariant: ['tabular-nums'] },
+  wakePillName: { flexShrink: 1, fontSize: 15, fontWeight: '700', color: night.textSecondary },
 });

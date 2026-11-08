@@ -8,6 +8,7 @@ import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NIGHT_WHEEL } from '@/components/alarms/night';
+import { FACE, FACE_ON, NightFace as Face, NightRound as RoundButton, untilText } from '@/components/alarms/night-kit';
 import { TimeWheel } from '@/components/alarms/time-wheel';
 import { useRadioClips } from '@/components/radio/use-clips';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -25,14 +26,8 @@ import type { Alarm, AlarmSound, Character } from '@/types';
 type Page = 'main' | 'sound';
 type Draft = Omit<Alarm, 'id' | 'createdAt' | 'enabled'>;
 
-/** The friend you picked is big, the others wait beside them (owner-approved prototype, 0z137). */
-const FACE_ON = 84;
-const FACE = 56;
 const STEP_MIN = 15;
 const DEFAULT_HOUR = 7;
-/** The ring's padding and border around a face; its radius is set in numbers (Android draws 999 square). */
-const RING_PAD = 3;
-const RING_BORDER = 3;
 /** How long the "set" moment stays before the sheet closes by itself. */
 const SET_MOMENT_MS = 2600;
 
@@ -242,12 +237,12 @@ export default function AlarmEditScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
               {/* The picked friend first, then melody only where it is offered, then the rest. */}
               {friend ? (
-                <Face name={friendName(friend, true)} on onPress={() => pick(friend)}>
+                <Face name={friendName(friend, true)} on size={FACE_ON} onPress={() => pick(friend)}>
                   <CharacterAvatar character={friend} size={FACE_ON} />
                 </Face>
               ) : null}
               {melodyChoice ? (
-                <Face name={t('alarms.melodyOnly')} on={melody} onPress={() => pick(undefined)}>
+                <Face name={t('alarms.melodyOnly')} on={melody} size={melody ? FACE_ON : FACE} onPress={() => pick(undefined)}>
                   <View style={[styles.bell, melody ? styles.bellOn : null]}>
                     <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? night.textOnPrimary : night.textSecondary} />
                   </View>
@@ -256,7 +251,7 @@ export default function AlarmEditScreen() {
               {friends
                 .filter((c) => c.id !== friend?.id)
                 .map((c) => (
-                  <Face key={c.id} name={friendName(c, true)} on={false} onPress={() => pick(c)}>
+                  <Face key={c.id} name={friendName(c, true)} on={false} size={FACE} onPress={() => pick(c)}>
                     <CharacterAvatar character={c} size={FACE} />
                   </Face>
                 ))}
@@ -430,32 +425,6 @@ export default function AlarmEditScreen() {
   );
 }
 
-/** "in 8 h 30 min" until the next ring. */
-function untilText(t: (key: string, options?: Record<string, unknown>) => string, ms: number) {
-  const minutes = Math.max(1, Math.round(ms / 60_000));
-  const h = Math.floor(minutes / 60);
-  return h ? t('alarms.inTime', { h, m: String(minutes % 60).padStart(2, '0') }) : t('alarms.inMinutes', { m: minutes });
-}
-
-function Face({ name, on, onPress, children }: { name: string; on: boolean; onPress: () => void; children: React.ReactNode }) {
-  return (
-    <PressableScale onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={name} style={styles.face}>
-      <View style={[styles.faceRing, on && styles.faceRingOn, { borderRadius: ((on ? FACE_ON : FACE) + RING_PAD * 2 + (on ? RING_BORDER * 2 : 0)) / 2 }]}>{children}</View>
-      <Txt style={[styles.faceName, on && styles.faceNameOn]} lines={1} maxFontSizeMultiplier={1.2}>
-        {name}
-      </Txt>
-    </PressableScale>
-  );
-}
-
-function RoundButton({ icon, label, onPress }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; onPress: () => void }) {
-  return (
-    <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={label} hitSlop={6} style={styles.round}>
-      <Ionicons name={icon} size={22} color={night.text} />
-    </PressableScale>
-  );
-}
-
 function NavButton({ label, onPress, strong, chevron }: { label: string; onPress: () => void; strong?: boolean; chevron?: boolean }) {
   return (
     <Pressable onPress={onPress} hitSlop={10} style={styles.navButton} accessibilityRole="button">
@@ -522,11 +491,6 @@ const styles = StyleSheet.create({
   scroll: { gap: space.lg, paddingTop: space.sm },
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
-  face: { alignItems: 'center', gap: 6, minWidth: 56 },
-  faceRing: { padding: RING_PAD },
-  faceRingOn: { borderWidth: RING_BORDER, borderColor: night.primary },
-  faceName: { fontSize: 13, color: night.textSecondary, maxWidth: 84, textAlign: 'center' },
-  faceNameOn: { fontWeight: '700', color: night.text },
   bell: { width: FACE, height: FACE, borderRadius: FACE / 2, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
   bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: FACE_ON / 2, backgroundColor: night.primary },
   timeCard: { marginHorizontal: space.lg, borderRadius: 28, backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
@@ -535,7 +499,6 @@ const styles = StyleSheet.create({
   timeBox: { minWidth: 196, alignItems: 'center' },
   bigTime: { fontFamily: fonts.display, fontSize: 72, lineHeight: 84, color: night.text, fontVariant: ['tabular-nums'] },
   period: { fontFamily: fonts.display, fontSize: 24, color: night.textSecondary },
-  round: { width: 44, height: 44, borderRadius: 22, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
   until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   days: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: space.lg },
   day: { width: 44, height: 44, borderRadius: 22, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },

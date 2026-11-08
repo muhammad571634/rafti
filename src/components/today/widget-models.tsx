@@ -281,7 +281,9 @@ function useSleepModel(): WidgetModel {
             lineFace: waker,
           }
         : { title: label('sleep'), line: t('home.widget.setWake') }),
-      onPress: () => (alarm ? router.push('/alarms') : router.push('/bedtime')),
+      // The card is the night: its body opens Bedtime (whose wake-up card leads on to the alarms),
+      // its + a new alarm (owner, 0z170: the body once went to Bedtime only while no alarm was on).
+      onPress: () => router.push('/bedtime'),
       buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: () => router.push('/alarms/edit') }],
     };
   }, [k, order]);
