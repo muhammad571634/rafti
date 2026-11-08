@@ -23,7 +23,8 @@ export function CreateHead({ title, onBack, right }: { title: string; onBack: ()
       <PressableScale onPress={onBack} scaleTo={0.9} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('common.back')} style={styles.round}>
         <Ionicons name="chevron-back" size={22} color={playful.ink} />
       </PressableScale>
-      <Txt style={[styles.title, styles.grow]} lines={1} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+      {/* A long title ("Редактировать персонажа") shrinks to fit rather than being cut. */}
+      <Txt style={[styles.title, styles.grow]} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
         {title}
       </Txt>
       {right}
