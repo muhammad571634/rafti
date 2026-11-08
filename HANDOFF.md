@@ -1,6 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z151. Chat screen: easier to write, see and use (prototype) (2026-11-08, Claude 1). NEXT: owner approves the prototype; then code it
+### 0z151. Chat screen: easier to write, see and use (2026-11-08, Claude 1). NEXT: check it on the A51 (adb was not connected); then their own reaction on your line
+
+- **Owner approved** canvas v1 for the "+" panel, mic and long-press screens, with v3's chat (cream, calm, alive). **Built** (`a960840`, OTA `01a1ba1a`, android): cream default (`bg_cream`, store v15 moves the portrait default, group default too; Chat background keeps their picture, Classic, Art; "Cream" in Classic); their bubble white + `bubbleOtherRim`, yours `apricot300`; `ChatHeader` (one-to-one and group): round 46 back and call, face with an online dot, Nunito name, caption "AI character · {mood}" (`currentMood`, `chat.mood.*`, 14 locales, gender-neutral) or "typing…"; shells left the header (as in v3); composer 54 white + and field, peach `PaperPlaneTilt` bold; a mic tap records hands free in the field (trash in the "+" place, red dot, clock, wave, send), a hold slides left to cancel or up to lock (`HoldMic.onLock`); `AttachMenu` is a white 3x3 panel under the composer in the keyboard's place ("+" turns into x, field focus closes it, Voice gone); `MessageMenu` lifts a held text line where it was (`BubbleAnchor` from `measureInWindow`, `HeldBubble`), reactions over, menu under, clamped to the screen; double tap = love (both chats); "Read" shows their 14pt face (one-to-one only, `readFace`).
+- Not seen on the phone yet: the lifted menu's position on Android edge-to-edge, the lock pill, the panel with the keyboard going down.
+- Checks: tsc 0, npm test 811/811, check:locales, check:content.
 
 - **Owner's ask**: make the one-to-one chat easy to write in, read and use, in the merged design; remember every part: the composer's "+" (10 items), a tap on the mic (opens a sheet that still says "hold"), the hold-to-record mic, and the long-press menu (reactions + Copy / Pin / Report / Delete). The profile of a character comes after.
 - **Prototype** (design canvas, 5 screens, Uzbek notes under each): https://claude.ai/artifact/8jy39gxpczKFA6sUiXbXtw
@@ -14,8 +18,10 @@
 - Code read for it: `src/app/chat/[id].tsx`, `chat-input.tsx`, `attach-menu.tsx`, `hold-mic.tsx`, `voice-sheet.tsx`, `message-menu.tsx`, `reply-controls.tsx`. Nothing changed in code yet.
 
 Still to do:
-1. Owner: approve or correct the prototype; then code it (the menu change touches `message-menu.tsx`: it needs the held bubble's position from `MessageBubble`'s long press).
-2. Then the character profile screen in the same manner.
+1. Check every state on the A51 (OTA `01a1ba1a`): cream chat, header mood / typing, "+" panel, mic tap and hold + lock, long press on short and long lines near the top and bottom, double tap, Read face.
+2. Their own reaction on your line (v3's heart): a reply field from the model (server prompt + parse + `Message` field + deploy).
+3. Then the character profile screen in the same manner.
+4. Owner (optional): the six reactions could get a more creative look later.
 
 ### 0z150. Alarm with a friend checked on the A51; no Melody face; one brand peach (2026-11-08, Claude 1). NEXT: owner's next task
 
