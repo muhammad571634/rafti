@@ -19,8 +19,9 @@ Gates: the published text is true only when all of these hold. Until then it is 
    the domain), and the country whose law applies.
 5. A lawyer reads it (road-to-launch item 8), including GDPR (EU/UK) and CCPA (California) wording
    for the markets in `marketing/playbook.md`.
-6. The site hosts it, and Profile → Privacy and the onboarding line link to it
-   (`src/app/profile.tsx`; the buttons do nothing today).
+6. The site hosts it, and Profile → Privacy and the onboarding line link to it: set
+   `LEGAL_URLS` in `src/ai/safety.ts` (the Privacy and Terms rows appear in Profile only once a URL
+   is set, since 0z173).
 7. Voice replies (ElevenLabs), payments (Apple, Google, RevenueCat) and server pushes (Firebase)
    are not in the app yet. Add each one here when it ships.
 

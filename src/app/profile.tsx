@@ -7,7 +7,7 @@ import { Linking, Modal, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import * as Updates from 'expo-updates';
-import { SUPPORT_EMAIL } from '@/ai/safety';
+import { LEGAL_URLS, SUPPORT_EMAIL } from '@/ai/safety';
 import { connectAccount, deleteServerAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
 import { DangerRow, Group, LinkRow, ProfileTop, ProgressCard, SwitchRow } from '@/components/character/kit';
@@ -58,7 +58,6 @@ const FILL = {
   haptics: systemColors.pink,
   grey: systemColors.gray,
   support: systemColors.green,
-  account: systemColors.indigo,
   privacy: systemColors.cyan,
   terms: systemColors.brown,
   plan: systemColors.purple,
@@ -66,6 +65,17 @@ const FILL = {
   lore: systemColors.indigo,
   mind: systemColors.orange,
 };
+
+/** The legal rows that have a published page to open (`LEGAL_URLS`). */
+const legalRows = (
+  [
+    ['privacy', 'lock-closed'],
+    ['terms', 'document-text'],
+  ] as const
+).flatMap(([key, icon]) => {
+  const url = LEGAL_URLS[key];
+  return url ? [{ key, url, icon: icon as IoniconName }] : [];
+});
 
 /**
  * Who you are, in the merged look (0z156; was the aurora page of 2026-10-21): Apple's white ground, your
@@ -262,9 +272,9 @@ export default function ProfileScreen() {
       ? [{ key: 'blocked', label: t('safety.blocked'), icon: 'hand-left' as IoniconName, fill: FILL.grey, meta: String(blocked.length), onPress: () => setBlockedOpen(true) }]
       : []),
     { key: 'support', label: t('safety.support'), icon: 'mail' as IoniconName, fill: FILL.support, onPress: () => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`) },
-    { key: 'account', label: t('profile.account'), icon: 'person' as IoniconName, fill: FILL.account, onPress: () => {} },
-    { key: 'privacy', label: t('profile.privacy'), icon: 'lock-closed' as IoniconName, fill: FILL.privacy, onPress: () => {} },
-    { key: 'terms', label: t('profile.terms'), icon: 'document-text' as IoniconName, fill: FILL.terms, onPress: () => {} },
+    // Privacy and terms open the published pages; no row until they are online (`LEGAL_URLS`).
+    // Account (sign-in) waits for Sign in with Apple, so it has no row yet either.
+    ...legalRows.map(({ key, url, icon }) => ({ key, label: t(`profile.${key}`), icon, fill: FILL[key], onPress: () => void Linking.openURL(url) })),
   ];
   const completeTitle = percent < 100 ? t('profile.completeTitle') : t('profile.editProfile');
 

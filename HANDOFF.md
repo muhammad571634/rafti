@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z173. Safety audit before strangers: report, block, delete, user-made characters (2026-11-09, Claude 1). NEXT: the server's moderation check (item 1 below)
+
+- **Owner's ask**: check report, block and moderation of user-made characters before launch (road-to-launch item 8).
+- **Holds** (walked on the A51 where safe, nothing sent or blocked): a character's message → hold → Copy / Pin / **Report** / Delete; Report opens "What's wrong?" (harmful, too sexual, not like them, something else); a report goes to `/v1/reports` with the lines before it, kept on the server (`b3_reports` migration), 400/413 never retried. **Block** in a friend's chat settings asks first ("Your chat, memories and plans with them are deleted") and lists in Profile → Blocked; cancelled on the A51. **Delete account** at the bottom of Profile (server deletion). 18+ gate in onboarding. Crisis line card. User-made characters stay private (`SHARING_OPEN = false` in `create-character.tsx`): no UGC reaches other people, so Apple 1.2 / Play UGC rules for shared content do not apply yet; the AI draft refuses real people, owned characters, minors and explicit ideas (`character-draft.ts`).
+- **Fixed**: Profile's Account, Privacy and Terms rows did nothing. Account is gone until sign-in exists; Privacy and Terms show only when `LEGAL_URLS` (`src/ai/safety.ts`) has the published page, which waits for the domain and the gates in `docs/legal/privacy-policy.md` (gate 6 updated). Seen on the A51 (OTA): Support, Version, Delete account.
+- Checks: tsc 0, npm test 851/851.
+
+Still to do:
+1. **Gap, before strangers**: `SAFETY_LAYERS` (`src/ai/rules.ts`) says the server classifies each user message and each reply; it does not. Only the system prompt guards, plus Google's own always-on CSAM block; no `safetySettings` are sent to Gemini. Plan: an output check on `/v1/chat/reply` and `/v1/chat/group` (Gemini `safetySettings` for sexually explicit and dangerous content at a threshold that keeps flirting open, or a free moderation call), tested both ways with the free keys on the content-balance scenarios, then a second reader (safety rule) and a deploy. Until then the comment overstates.
+2. Support mail goes to `support@sigmazam.app`, which bounces until the domain exists; Google Play's Data safety form also needs a web page for account deletion. Both wait for the domain.
+3. The 0z172 list (Bedtime whispering on Pro, the nav bar note, live colours later).
+
 ### 0z172. A light / dark switch keeps the user's place (2026-11-09, Claude 1). NEXT: see "Still to do"
 
 - **Owner's ask**: carry on (0z168 item 5: colours are module constants picked once by `isDark`, a theme flip reloads the app).

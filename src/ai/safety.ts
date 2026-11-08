@@ -10,6 +10,14 @@ export const HELPLINE_URL = 'https://findahelpline.com';
 /** Placeholder until Sigmazam has a real support inbox; shown in Profile → Support. */
 export const SUPPORT_EMAIL = 'support@sigmazam.app';
 
+/**
+ * Where the published privacy policy and terms live (the site, once `sigmazam.app` is bought).
+ * Null until then: Profile shows no row that does nothing. The texts are drafts in `docs/legal/`
+ * and may not be published before their gates hold (privacy-policy.md, "Gates"); both stores need
+ * these links before submission.
+ */
+export const LEGAL_URLS: { privacy: string | null; terms: string | null } = { privacy: null, terms: null };
+
 const CRISIS_PATTERNS = [
   /\b(kill|hurt|harm|cut)\s+my\s*self\b/,
   /\bsuicid/,
