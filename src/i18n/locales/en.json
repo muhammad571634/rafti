@@ -483,7 +483,8 @@
       "worried": "A bit worried",
       "sad": "A little sad",
       "annoyed": "A bit annoyed"
-    }
+    },
+    "aiShort": "AI"
   },
   "paywall": {
     "title": "Out of shells",

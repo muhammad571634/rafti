@@ -1,23 +1,16 @@
 import { Image, type ImageContentPosition, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createContext, useContext } from 'react';
-import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { colors, gradients, gradientStops } from '@/theme';
 import type { Character } from '@/types';
 
 export { PORTRAIT_BG } from '@/mock';
 
-/**
- * On a picture the conversation starts this far down the screen, so the face at the top stays in
- * view (the owner's chat prototype, 2026-11-03); with the keyboard up it takes the room up to the
- * header.
- */
-const PICTURE_SHARE = 0.36;
-/** The soft edge where the conversation ends on a picture. */
+/** The soft edge where the conversation slides under the header on a picture. */
 export const PICTURE_EDGE = 56;
 
 /** Wide scenes are 16:9. */
@@ -84,15 +77,12 @@ export function PictureGround({ picture }: { picture: Picture }) {
 }
 
 /**
- * Where the conversation starts on a picture: under the header (`headerRoom`, with any bar under
- * it), and lower while the keyboard is down so the face at the top shows. Hooks: call it before
- * any early return.
+ * Where the conversation starts on a picture: right under the header (`headerRoom`, with any bar
+ * under it). The owner (2026-11-08): the whole screen is the conversation, never cut at its middle;
+ * the picture shows behind the lines. Hooks: call it before any early return.
  */
 export function usePictureListTop(onPicture: boolean, headerRoom: number) {
-  const { height } = useWindowDimensions();
-  const keyboardUp = useKeyboardVisible();
-  if (!onPicture) return 0;
-  return keyboardUp ? headerRoom : Math.max(headerRoom, Math.round(height * PICTURE_SHARE));
+  return onPicture ? headerRoom : 0;
 }
 
 /** iOS has no fading edge on a list: a soft dark valley where the conversation ends instead. */

@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
-import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
+import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { LevelUpTakeover } from '@/components/level-up';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
 import { currentMood, temperamentFor } from '@/lib/reply-engine/mood';
@@ -630,11 +630,8 @@ export default function ChatRoomScreen() {
             typing ? (
               <CaptionText strong>{t('chatList.typing')}</CaptionText>
             ) : (
-              <>
-                <CaptionText>{t('chat.aiCharacter')}</CaptionText>
-                <CaptionDot />
-                <CaptionText>{t(`chat.mood.${mood}`)}</CaptionText>
-              </>
+              // One line, cut only at its end: the short "AI" keeps the mood readable in long languages.
+              <CaptionText>{`${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`}</CaptionText>
             )
           }
           missedCall={missedToday}

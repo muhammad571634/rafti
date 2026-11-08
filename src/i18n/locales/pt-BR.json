@@ -483,7 +483,8 @@
       "worried": "Com um pouco de preocupação",
       "sad": "Com um pouco de tristeza",
       "annoyed": "De mau humor"
-    }
+    },
+    "aiShort": "IA"
   },
   "paywall": {
     "title": "Sem conchas",

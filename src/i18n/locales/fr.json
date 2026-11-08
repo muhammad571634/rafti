@@ -483,7 +483,8 @@
       "worried": "Un peu d'inquiétude",
       "sad": "Un peu de tristesse",
       "annoyed": "D'humeur grognon"
-    }
+    },
+    "aiShort": "IA"
   },
   "paywall": {
     "title": "Plus de coquillages",

@@ -246,7 +246,8 @@ export function ChatInput({
           value={value}
           onChangeText={setValue}
           onFocus={onFieldFocus}
-          placeholder={placeholder}
+          // The voice row lies over the field (see-through on a picture): no placeholder under it.
+          placeholder={voiceBusy || voice.notice ? '' : placeholder}
           placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
           style={[styles.input, onPhoto && styles.photoInput]}
           multiline
@@ -327,7 +328,7 @@ export function ChatInput({
                 {handsFree ? (
                   <>
                     <View style={styles.voiceWave}>
-                      <Anim name="voiceWave" size={28} tint={systemColors.red} />
+                      <Anim name="voiceWave" size={40} tint={systemColors.red} />
                     </View>
                     <PressableScale
                       onPress={() => voice.finish(true)}
@@ -336,7 +337,7 @@ export function ChatInput({
                       haptic
                       accessibilityLabel={t('a11y.send')}
                       style={[styles.action, styles.send]}>
-                      <Ionicons name="arrow-up" size={24} color={colors.textOnPrimary} />
+                      <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
                     </PressableScale>
                   </>
                 ) : (

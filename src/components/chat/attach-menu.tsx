@@ -67,7 +67,7 @@ export function AttachMenu({
               <View style={[styles.icon, { backgroundColor: item.fill }]}>
                 <Ionicons name={item.icon} size={26} color={colors.white} />
               </View>
-              <Txt style={styles.label} center lines={1}>
+              <Txt style={styles.label} center lines={2}>
                 {t(`chat.attachments.${item.key}`)}
               </Txt>
             </PressableScale>
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   panel: {
     marginTop: space.sm,
     paddingTop: space.xl,
-    paddingHorizontal: space.lg,
-    gap: space.xl,
+    paddingHorizontal: space.md,
+    gap: space.lg,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     backgroundColor: colors.surface,
@@ -95,5 +95,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.sm },
   item: { flex: 1, alignItems: 'center', gap: space.sm },
   icon: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
-  label: { fontSize: 13, fontWeight: '600', color: colors.text },
+  // Two lines, so a long name ("Секретная записка") is never cut.
+  label: { fontSize: 13, lineHeight: 16, minHeight: 32, fontWeight: '600', color: colors.text },
 });
