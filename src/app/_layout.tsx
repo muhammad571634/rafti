@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
+import { LaunchIntro } from '@/components/launch/launch-intro';
 import { Button, Mascot, Txt } from '@/components/ui';
 import { useThemeReload } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
@@ -47,48 +48,54 @@ export default function RootLayout() {
     return () => clearTimeout(timer);
   }, [ready]);
 
-  if (!ready) return null;
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.bg },
-            animation: 'slide_from_right',
-          }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
-          <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
-          <Stack.Screen name="group/[id]/call" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
-          <Stack.Screen
-            name="call/incoming/[id]"
-            options={{ animation: 'fade', presentation: 'fullScreenModal', gestureEnabled: false }}
-          />
-          <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="personas/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="scenes/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="lore/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="lore/entry" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="streams/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
-          <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
-          <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
-          {/* A swipe must not end a date by accident; the close button asks first. */}
-          <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
-          {/* iOS 26 swipes back from anywhere on a screen (native default, like Telegram). These
-              screens swipe sideways themselves (a reply's versions, the diary's pages), both ways,
-              so they go back from the edge only, as on iOS 18; the sideways swipe stays theirs. */}
-          <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
-          <Stack.Screen name="group/[id]/index" options={{ fullScreenGestureEnabled: false }} />
-          <Stack.Screen name="diary/mine" options={{ fullScreenGestureEnabled: false }} />
-        </Stack>
-        <AlarmRuntime />
-        <OnboardingGate />
-      </SafeAreaProvider>
+      {ready ? <AppRoot /> : null}
+      {/* From the first render, so it plays while fonts, words and saved data load. */}
+      <LaunchIntro ready={ready} />
     </GestureHandlerRootView>
+  );
+}
+
+function AppRoot() {
+  return (
+    <SafeAreaProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.bg },
+          animation: 'slide_from_right',
+        }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="group/[id]/call" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
+        <Stack.Screen
+          name="call/incoming/[id]"
+          options={{ animation: 'fade', presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
+        <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="personas/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="scenes/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="lore/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="lore/entry" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="streams/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
+        <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
+        {/* A swipe must not end a date by accident; the close button asks first. */}
+        <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
+        {/* iOS 26 swipes back from anywhere on a screen (native default, like Telegram). These
+            screens swipe sideways themselves (a reply's versions, the diary's pages), both ways,
+            so they go back from the edge only, as on iOS 18; the sideways swipe stays theirs. */}
+        <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
+        <Stack.Screen name="group/[id]/index" options={{ fullScreenGestureEnabled: false }} />
+        <Stack.Screen name="diary/mine" options={{ fullScreenGestureEnabled: false }} />
+      </Stack>
+      <AlarmRuntime />
+      <OnboardingGate />
+    </SafeAreaProvider>
   );
 }
 

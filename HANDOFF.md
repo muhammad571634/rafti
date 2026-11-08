@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z162. A short launch intro on every cold start (2026-11-08, Claude 1). NEXT: the black native splash with the next APK; then a launch-time pass
+
+- **Owner's ask** (0z161 Still to do 1): a 1-3 s animation on every app open, like BIMOBIMO, from the onboarding orbit (which the owner saw and approved as it is; it stays untouched). Then, seeing it: "why is it still slow, the cream screen first, then the animation?"
+- **Built**: `src/components/launch/launch-intro.tsx` (`LaunchIntro`), drawn with the orbit's own code: `glass-icon-orbit.tsx` now exports `drawOrbit(canvas, OrbitStage, ...)` and the easing helpers; its loop builds its stage with `stageAt(t)` (same numbers, the dots and the bob read `typing` / `settled` from the stage; onboarding looks the same). The launch's own stage: the cover turns from the splash's colour to black (0.2 s), the small ring spins in and is drawn into the centre tile (0.12-0.55), the tile grows (0.35-0.65), the dots bounce once (0.65-0.95), the mascot springs out (0.95-1.4) with the Sigmazam logo fading up under the tile, the cover fades at 1.65-1.95. It is mounted in the root layout from the very first render (outside the fonts / i18n gate, which moved into `AppRoot`), hides the native splash at once, and holds on the bobbing mascot until fonts, i18n and saved data are in (8 s cap), so it plays while the app loads. It gives way within 0.18 s to onboarding (not onboarded: onboarding opens with the full orbit), a launch a push / alarm / call took off the tabs, or a ringing alarm; a tap skips; Reduce Motion skips it; going to the background ends it; a resume never shows it (mounted once per launch).
+- **Seen on the A51** (OTAs `01a1bb2b`, `01a1bb2e`, screen recordings of cold starts): ring, gather, dots, mascot out, logo, fade onto Today. The cream splash went from ~3 s to ~2.4 s. Why the rest stays: logcat shows `Running "main"` ~1 s after the tap (process start + loading the 16 MB bundle) and the first JS frame ~1 s after that (module start-up of the whole app, every route file evaluated). JS cannot draw before that, so it is the native splash (cream, no image).
+- Checks: tsc 0, npm test 844/844, check:locales.
+
+Still to do:
+1. Next APK: the native splash black (`app.json` expo-splash-screen `backgroundColor` and `dark.backgroundColor` `#000000`, maybe the small ring or the logo as its image) and, in the same change, the intro cover's start colour (`from` in `launch-intro.tsx`, now `colors.bg` to match the cream splash) to black, so the wait reads as the intro's start.
+2. Launch-time pass (JS start-up ~1 s on the A51): measure with logcat / Hermes profile, then lazy-load what the first screen does not need (13 of 14 locale JSONs, 1.6 MB, are imported eagerly in `src/i18n/index.ts`; heavy screen modules).
+
 ### 0z161. Onboarding's first screen is Native Cook's Glass Icon Orbit with our icons and the mascot (2026-11-08, Claude 1). NEXT: the 1-2 s launch animation on every cold start (owner's ask, same orbit cut short)
 
 - **Owner's asks**: the old first hello (character faces lighting up, shell burst) looked cheap; no character faces; the first seconds must say it is an AI companion app and feel "you are not alone, you are happy here, nobody hurts you here". Then the owner handed over Native Cook's Glass Icon Orbit (prompt + video) and said: use its own code (free blocks, not 1:1 ideas only this time), keep the black ground, swap in our icons coloured for black, mascot out of the middle at the end, then the onboarding questions. Also asked: a 1-3 s animation on every app open (like BIMOBIMO): not built yet.
@@ -9,7 +20,7 @@
 - Checks: tsc 0, npm test 844/844, check:locales.
 
 Still to do:
-1. Launch animation on every cold start (owner): the orbit's gather + mascot hop cut to ~1.5 s over the native splash, played while data loads, not on resume.
+1. Done in 0z162: launch animation on every cold start.
 2. Owner to try the real first run (a fresh install or Clear data) when convenient: language chip, Let's start, then the questions.
 
 ### 0z160. Share pays only for a real share; one poster frame; Us shares a full-picture poster (2026-11-08, Claude 1). NEXT: owner tries a real share to Instagram / Telegram from the chat and from Us

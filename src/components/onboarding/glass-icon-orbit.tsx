@@ -40,7 +40,7 @@ import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 /** Seconds. */
 export const LOOP = 9;
 const TILE = 68;
-const SMALL_R = 92;
+export const SMALL_R = 92;
 const BIG_R = 250;
 const FOCAL = 520;
 const HOLD = 2;
@@ -97,11 +97,11 @@ const PATHS: Record<string, { d: string; stroke: boolean }[]> = {
   spark: [{ d: 'M32 10 C34 26 38 30 54 32 C38 34 34 38 32 54 C30 38 26 34 10 32 C26 30 30 26 32 10 Z', stroke: false }],
 };
 
-function clamp01(x: number) {
+export function clamp01(x: number) {
   'worklet';
   return Math.min(1, Math.max(0, x));
 }
-function seg(t: number, a: number, b: number) {
+export function seg(t: number, a: number, b: number) {
   'worklet';
   return clamp01((t - a) / (b - a));
 }
@@ -109,18 +109,25 @@ function easeInOutCubic(x: number) {
   'worklet';
   return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 }
-function easeOutCubic(x: number) {
+export function easeOutCubic(x: number) {
   'worklet';
   return 1 - Math.pow(1 - x, 3);
 }
-function easeOutBack(x: number) {
+export function easeOutBack(x: number) {
   'worklet';
   const k = 1.6;
   return 1 + (k + 1) * Math.pow(x - 1, 3) + k * Math.pow(x - 1, 2);
 }
 
-/** Ring radius and tilt, gather (tiles drawn in), centre tile size and the mascot's hop. */
-function stageAt(t: number) {
+/**
+ * One frame of the orbit: ring radius and tilt, the ring's opacity, the centre tile's size, the
+ * mascot's hop (0-1) and sink, seconds into the typing dots and seconds since the mascot landed
+ * (both 0 or less when not under way). The onboarding loop and the launch intro each make their own.
+ */
+export type OrbitStage = { radius: number; tilt: number; ringAlpha: number; centre: number; jump: number; sink: number; typing: number; settled: number };
+
+/** The onboarding loop's stage at t seconds into the LOOP. */
+function stageAt(t: number): OrbitStage {
   'worklet';
   const swell = easeInOutCubic(seg(t, 1.2, 2.4));
   const gather = Math.pow(seg(t, 4.2, 5.1), 3);
@@ -131,7 +138,9 @@ function stageAt(t: number) {
   const sink = 1 - easeInOutCubic(seg(t, 7.8, 8.5));
   const centre = easeOutBack(seg(t, 4.5, 5.1)) * sink;
   const jump = seg(t, JUMP_AT, JUMP_END);
-  return { radius, tilt, ringAlpha, centre, jump, sink };
+  const typing = t > 5.1 && t < JUMP_AT ? t - 5.1 : 0;
+  const settled = t > JUMP_END ? t - JUMP_END : 0;
+  return { radius, tilt, ringAlpha, centre, jump, sink, typing, settled };
 }
 
 function rimPaint(x: number, y: number, s: number, rim: readonly string[], alpha: number) {
@@ -207,8 +216,9 @@ function drawIcon(c: SkCanvas, k: number, x: number, y: number, s: number, alpha
   c.restore();
 }
 
-function drawCentre(c: SkCanvas, cx: number, cy: number, size: number, jump: number, sink: number, t: number, mascot: SkImage | null) {
+function drawCentre(c: SkCanvas, cx: number, cy: number, st: OrbitStage, mascot: SkImage | null) {
   'worklet';
+  const { centre: size, jump, sink } = st;
   if (size <= 0.01) return;
   const s = 92 * size;
   const halo = Skia.Paint();
@@ -226,7 +236,7 @@ function drawCentre(c: SkCanvas, cx: number, cy: number, size: number, jump: num
   const dots = clamp01(1 - jump * 4);
   if (dots > 0) {
     for (let i = 0; i < 3; i++) {
-      const bounce = t > 5.1 && t < JUMP_AT ? Math.max(0, Math.sin((t - 5.1 - i * 0.12) * Math.PI * 2.8)) * 7 : 0;
+      const bounce = st.typing > 0 ? Math.max(0, Math.sin((st.typing - i * 0.12) * Math.PI * 2.8)) * 7 : 0;
       const x = cx + (i - 1) * 16 * k;
       const y = cy + 6 * k - bounce * k;
       ink.setAlphaf(dots);
@@ -241,7 +251,7 @@ function drawCentre(c: SkCanvas, cx: number, cy: number, size: number, jump: num
     const land = seg(jump, 0.7, 1);
     const squash = jump < 1 ? Math.sin(Math.PI * land) * 0.1 : 0;
     const stretch = jump < 0.7 ? Math.sin((Math.PI * jump) / 0.7) * 0.08 : 0;
-    const idle = t > JUMP_END ? Math.sin((t - JUMP_END) * Math.PI * 2 * 1.2) * 3 : 0;
+    const idle = st.settled > 0 ? Math.sin(st.settled * Math.PI * 2 * 1.2) * 3 : 0;
     const h = MASCOT * size * (1 + stretch - squash);
     const w = MASCOT * (mascot.width() / mascot.height()) * size * (1 - stretch * 0.6 + squash);
     // Its feet rest on the tile's top edge, so the whole body shows above it.
@@ -250,9 +260,9 @@ function drawCentre(c: SkCanvas, cx: number, cy: number, size: number, jump: num
   }
 }
 
-function drawOrbit(c: SkCanvas, t: number, spin: number, cx: number, cy: number, mascot: SkImage | null) {
+/** The whole orbit for one stage: glow, ring (back to front), centre tile, dots and mascot. */
+export function drawOrbit(c: SkCanvas, st: OrbitStage, spin: number, cx: number, cy: number, mascot: SkImage | null) {
   'worklet';
-  const st = stageAt(t);
   // Violet glow behind the ring.
   const g = Skia.Paint();
   g.setAntiAlias(true);
@@ -278,7 +288,7 @@ function drawOrbit(c: SkCanvas, t: number, spin: number, cx: number, cy: number,
       drawIcon(c, it.k, it.x - it.s / 2, it.y - it.s / 2, it.s, st.ringAlpha);
     }
   }
-  drawCentre(c, cx, cy, st.centre, st.jump, st.sink, t, mascot);
+  drawCentre(c, cx, cy, st, mascot);
 }
 
 type Props = {
@@ -357,7 +367,7 @@ export function GlassIconOrbit({ autoPlay = true, onStart, top }: Props) {
   const picture = useDerivedValue(() => {
     const recorder = Skia.PictureRecorder();
     const canvas = recorder.beginRecording(Skia.XYWHRect(0, 0, width, height));
-    drawOrbit(canvas, clock.get(), spin.get(), cx, cy, mascot);
+    drawOrbit(canvas, stageAt(clock.get()), spin.get(), cx, cy, mascot);
     return recorder.finishRecordingAsPicture();
   }, [width, height, cx, cy, mascot]);
 
