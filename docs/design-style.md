@@ -229,8 +229,10 @@ pins' art or words.
   https://claude.ai/artifact/HwDsRzuUqxVJ5G3UY5gSgH).** HIG Color, iOS: the "system" set, primary for
   the view, secondary for content grouped on it. `systemGround` in `src/theme/colors.ts`: white
   ground with `#F2F2F7` cards and Apple's fill for round buttons and pills, black with `#1C1C1E` at
-  night, Apple's label colours. Flat cards (no shadow). Today has it (0z163); Chats, Us and Find
-  next, then the remaining `playful.ground` screens; `playful.ground` goes once all have moved.
+  night, Apple's label colours, Apple's fill for chips and round buttons (an "on" chip is the
+  label colour), the segmented control's thumb is `systemColors.thumb`. Flat cards (no shadow).
+  All four tabs have it (Today 0z163, Chats, Us, Find 0z164, with Chats' search and Us' plan
+  calendar); the remaining `playful.ground` screens next; `playful.ground` goes once all have moved.
   Friend hues, widget colours, the sun bubble and module tiles keep their colours (colour that means
   something). Still missing app-wide: Increase Contrast variants (HIG asks for them).
 - **A photo card with words on it puts the friend on the trailing side (owner, 2026-11-08, every

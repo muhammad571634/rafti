@@ -6,7 +6,7 @@ import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import { PressableScale, Txt } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey } from '@/mock';
-import { colors, fonts, playful, radius, space } from '@/theme';
+import { colors, fonts, radius, space, systemGround } from '@/theme';
 
 export interface PlanCalendarProps {
   /** Selected day key */
@@ -61,10 +61,10 @@ export function PlanCalendar({ value, onChange, today, marked, onAdd, style }: P
         {open ? (
           <>
             <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.prevMonth')} onPress={() => shift(-1)}>
-              <Ionicons name="chevron-back" size={18} color={playful.ink} />
+              <Ionicons name="chevron-back" size={18} color={systemGround.label} />
             </PressableScale>
             <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.nextMonth')} onPress={() => shift(1)}>
-              <Ionicons name="chevron-forward" size={18} color={playful.ink} />
+              <Ionicons name="chevron-forward" size={18} color={systemGround.label} />
             </PressableScale>
           </>
         ) : null}
@@ -133,11 +133,11 @@ const styles = StyleSheet.create({
     paddingTop: space.xs,
     paddingBottom: 12,
     borderRadius: 26,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.xs, marginBottom: 4 },
   toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.xs, minHeight: 44 },
-  month: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: playful.ink, textTransform: 'capitalize' },
+  month: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: systemGround.label, textTransform: 'capitalize' },
   // No fill, so the box itself is the 44pt tap target.
   nav: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   add: {
@@ -160,11 +160,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
   dayOut: { backgroundColor: 'transparent' },
   daySelected: { backgroundColor: colors.primaryFill },
-  dayText: { fontFamily: fonts.playful, fontSize: 16, lineHeight: 20, color: playful.ink, fontVariant: ['tabular-nums'] },
+  dayText: { fontFamily: fonts.playful, fontSize: 16, lineHeight: 20, color: systemGround.label, fontVariant: ['tabular-nums'] },
   dayToday: { color: colors.brandText },
   dayTextSelected: { color: colors.textOnPrimary },
   dot: { position: 'absolute', bottom: 5, width: 5, height: 5, borderRadius: 3, backgroundColor: 'transparent' },

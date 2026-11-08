@@ -25,7 +25,7 @@ import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
 import type { MomentKind } from '@/types';
 
 const MOMENT_PAGE = 20;
@@ -99,7 +99,7 @@ type FilterKey = keyof typeof FILTERS | 'all';
 
 /**
  * [Us]: one bond at a time — how long, how close, what's next and what you've shared. The playful
- * skin (design-style §10, the approved four-tab prototype): cream ground, friends ringed in their
+ * skin (design-style §10, the approved four-tab prototype): Apple's white ground, friends ringed in their
  * own hue, the bond as a mint card with its level ring, the week as chips, moments on a thread.
  */
 export default function UsScreen() {
@@ -234,7 +234,7 @@ export default function UsScreen() {
       accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
       onPress={() => router.push('/notifications')}
       style={[styles.round, styles.roundSoft]}>
-      <Ionicons name="notifications-outline" size={21} color={playful.ink} />
+      <Ionicons name="notifications-outline" size={21} color={systemGround.label} />
       {unread > 0 ? (
         <View style={styles.badge} pointerEvents="none">
           <Txt style={styles.badgeText} maxFontSizeMultiplier={1.2}>
@@ -258,7 +258,7 @@ export default function UsScreen() {
 
   if (!selected) {
     return (
-      <Screen background={playful.ground}>
+      <Screen background={systemGround.ground}>
         <View style={styles.head}>
           <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
             {t('us.title')}
@@ -283,7 +283,7 @@ export default function UsScreen() {
   const filterKeys = ['all', ...filters] as FilterKey[];
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <View style={styles.head}>
         <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
           {t('us.title')}
@@ -373,7 +373,7 @@ export default function UsScreen() {
             accessibilityRole="button"
             accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
             onPress={() => setSharing(true)}>
-            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={playful.chipOnText} />
+            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={systemGround.ground} />
             <Txt style={styles.shareText} maxFontSizeMultiplier={1.3}>
               {t('common.share')}
             </Txt>
@@ -696,9 +696,9 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.xs,
   },
-  title: { fontFamily: fonts.playful, fontSize: 36, lineHeight: 44, letterSpacing: -0.4, color: playful.ink },
+  title: { fontFamily: fonts.playful, fontSize: 36, lineHeight: 44, letterSpacing: -0.4, color: systemGround.label },
   round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  roundSoft: { backgroundColor: playful.round },
+  roundSoft: { backgroundColor: systemGround.fill },
   // The screen's one apricot action (design-style §10).
   roundAccent: { backgroundColor: colors.primaryFill },
   // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
@@ -714,7 +714,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: playful.red,
     borderWidth: 2,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
   },
   badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '800', color: WHITE },
   picker: { gap: 12, paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xs },
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   pickName: { fontFamily: fonts.playfulBold, fontSize: 12, color: colors.textSecondary },
-  pickActive: { fontFamily: fonts.playful, color: playful.ink },
+  pickActive: { fontFamily: fonts.playful, color: systemGround.label },
   // No elevation: the bond card is flat colour, like the folders and bubbles.
   bond: { marginHorizontal: 14, marginTop: 14, padding: space.lg, borderRadius: 30 },
   together: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: PAIR * 2 - 10 },
@@ -759,9 +759,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: playful.chipOn,
+    backgroundColor: systemGround.label,
   },
-  shareText: { fontFamily: fonts.playful, fontSize: 15.5, color: playful.chipOnText },
+  shareText: { fontFamily: fonts.playful, fontSize: 15.5, color: systemGround.ground },
   reward: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -771,7 +771,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: isDark ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.18)',
   },
-  rewardText: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: playful.chipOnText },
+  rewardText: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: systemGround.ground },
   section: {
     marginTop: 20,
     marginBottom: 8,
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.playful,
     fontSize: 17,
     lineHeight: 22,
-    color: playful.ink,
+    color: systemGround.label,
   },
   sectionBig: {
     marginTop: 24,
@@ -788,10 +788,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.playful,
     fontSize: 21,
     lineHeight: 26,
-    color: playful.ink,
+    color: systemGround.label,
   },
-  card: { marginHorizontal: 14, borderRadius: 22, backgroundColor: playful.card, overflow: 'hidden' },
-  rowText: { fontSize: 16, letterSpacing: -0.3, color: playful.ink },
+  card: { marginHorizontal: 14, borderRadius: 22, backgroundColor: systemGround.card, overflow: 'hidden' },
+  rowText: { fontSize: 16, letterSpacing: -0.3, color: systemGround.label },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
   pressed: { opacity: 0.6 },
   free: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: space.lg, paddingRight: 10 },
@@ -811,7 +811,7 @@ const styles = StyleSheet.create({
   planBody: { flex: 1, minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
   planIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   timeTile: { minWidth: 48, justifyContent: 'center' },
-  time: { fontFamily: fonts.playful, fontSize: 17, color: playful.ink, fontVariant: ['tabular-nums'] },
+  time: { fontFamily: fonts.playful, fontSize: 17, color: systemGround.label, fontVariant: ['tabular-nums'] },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   remindText: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   pills: { gap: 8, paddingHorizontal: space.lg, paddingBottom: 4 },
@@ -821,13 +821,13 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
-  pillOn: { backgroundColor: playful.chipOn },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: playful.ink },
-  pillTextOn: { color: playful.chipOnText },
+  pillOn: { backgroundColor: systemGround.label },
+  pillText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: systemGround.label },
+  pillTextOn: { color: systemGround.ground },
   hint: { marginTop: space.sm, marginHorizontal: 18, fontSize: 15, color: colors.textSecondary },
-  // Moments on a thread, straight on the cream (the prototype's timeline).
+  // Moments on a thread, straight on the ground (the prototype's timeline).
   moments: { paddingHorizontal: 14, paddingTop: 6 },
   moment: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: MOMENT_ICON + 18, paddingVertical: 9 },
   thread: {
@@ -837,14 +837,14 @@ const styles = StyleSheet.create({
     bottom: -9,
     width: 2,
     borderRadius: 1,
-    backgroundColor: playful.dash,
+    backgroundColor: systemGround.dash,
   },
   momentIcon: { width: MOMENT_ICON, height: MOMENT_ICON, borderRadius: MOMENT_ICON / 2, alignItems: 'center', justifyContent: 'center' },
   momentLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  momentText: { fontSize: 14.5, lineHeight: 19, color: playful.ink },
+  momentText: { fontSize: 14.5, lineHeight: 19, color: systemGround.label },
   momentTextShrink: { flexShrink: 1 },
-  times: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: playful.chipOn },
-  timesText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: playful.chipOnText },
+  times: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: systemGround.label },
+  timesText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: systemGround.ground },
   momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   when: { fontSize: 12, color: colors.textSecondary },
   thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },

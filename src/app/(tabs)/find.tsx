@@ -39,7 +39,7 @@ import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, playful, space, TAB_BAR_HEIGHT, worldHue } from '@/theme';
+import { colors, fonts, friendColor, space, systemColors, systemGround, TAB_BAR_HEIGHT, worldHue } from '@/theme';
 import type { Character, CharacterGender } from '@/types';
 
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
@@ -63,7 +63,7 @@ const imageOf = (c: Character) => {
 };
 
 /**
- * Discovery on the playful cream (design-style §10, the approved four-tab prototype), built as iOS's
+ * Discovery on Apple's white ground (design-style §10, the approved four-tab prototype), built as iOS's
  * search tab landing page (HIG Search fields: a search field on top, suggestions and categories
  * before typing): the big rounded title with the apricot create button, the search field, Everyone /
  * Him / Her, a paging row of new characters as big scene cards, the family seats, the worlds as
@@ -195,7 +195,7 @@ export default function FindScreen() {
   const folderWidth = Math.floor((page - space.lg * 2 - space.md) / 2);
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       {searching ? null : (
         <View style={styles.head}>
           <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
@@ -230,7 +230,7 @@ export default function FindScreen() {
             accessibilityLabel={t('find.closeSearch')}
             onPress={closeSearch}
             style={[styles.round, styles.close]}>
-            <Ionicons name="close" size={22} color={playful.ink} />
+            <Ionicons name="close" size={22} color={systemGround.label} />
           </PressableScale>
         ) : null}
       </View>
@@ -740,7 +740,7 @@ function Recent({
                 accessibilityLabel={term}
                 onPress={() => onSearch(term)}
                 style={styles.chip}>
-                <Ionicons name="search" size={13} color={playful.ink} />
+                <Ionicons name="search" size={13} color={systemGround.label} />
                 <Txt style={styles.chipText} lines={1} maxFontSizeMultiplier={1.3}>
                   {term}
                 </Txt>
@@ -785,7 +785,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     lineHeight: 44,
     letterSpacing: -0.4,
-    color: playful.ink,
+    color: systemGround.label,
   },
   round: {
     width: 44,
@@ -796,7 +796,7 @@ const styles = StyleSheet.create({
   },
   // The screen's one apricot action (design-style §10).
   create: { backgroundColor: colors.primaryFill },
-  close: { backgroundColor: playful.round },
+  close: { backgroundColor: systemGround.fill },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -811,12 +811,12 @@ const styles = StyleSheet.create({
     marginTop: space.md,
     padding: 3,
     borderRadius: 19,
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
   whoSegment: { flex: 1, minHeight: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
-  whoOn: { backgroundColor: playful.card, ...softShadow },
+  whoOn: { backgroundColor: systemColors.thumb, ...softShadow },
   whoText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  whoTextOn: { color: playful.ink },
+  whoTextOn: { color: systemGround.label },
   sectionRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
@@ -827,7 +827,7 @@ const styles = StyleSheet.create({
     marginHorizontal: space.lg,
   },
   sectionRowFirst: { marginTop: 0 },
-  section: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: playful.ink },
+  section: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: systemGround.label },
   sectionCount: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
   featuredRow: { paddingHorizontal: space.lg, gap: space.md },
   feature: { borderRadius: 30, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
@@ -879,7 +879,7 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     borderWidth: 3,
     borderColor: WHITE,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     ...softShadow,
   },
   folderImage: { flex: 1, borderRadius: 8 },
@@ -901,30 +901,30 @@ const styles = StyleSheet.create({
   folderCountText: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15 },
   faces: { paddingHorizontal: space.lg, gap: space.lg },
   face: { width: 76, alignItems: 'center', gap: 6 },
-  faceName: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: playful.ink },
+  faceName: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: systemGround.label },
   topHit: {
     marginHorizontal: space.lg,
     padding: 14,
     borderRadius: 24,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
   },
   topOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 14 },
-  topName: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 25, color: playful.ink },
+  topName: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 25, color: systemGround.label },
   topButton: {
     height: 38,
     paddingHorizontal: space.lg,
     borderRadius: 19,
     justifyContent: 'center',
-    backgroundColor: playful.chipOn,
+    backgroundColor: systemGround.label,
   },
-  topButtonText: { fontFamily: fonts.playful, fontSize: 14, color: playful.chipOnText },
+  topButtonText: { fontFamily: fonts.playful, fontSize: 14, color: systemGround.ground },
   list: {
     marginHorizontal: space.lg,
     borderRadius: 24,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     overflow: 'hidden',
   },
   row: {
@@ -945,7 +945,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderStrong,
   },
-  rowName: { fontFamily: fonts.playfulBold, fontSize: 16, color: playful.ink },
+  rowName: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
   viewed: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -963,9 +963,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
-  chipText: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 14, color: playful.ink },
+  chipText: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
   worldThumb: { width: 72, height: 44, borderRadius: 10 },
   worldLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dot: { width: 8, height: 8, borderRadius: 4 },

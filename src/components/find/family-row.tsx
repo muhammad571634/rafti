@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { FAMILY_LABELS, type FamilyLabel } from '@/lib/kin';
-import { colors, fonts, friendColor, playful, space } from '@/theme';
+import { colors, fonts, friendColor, space, systemGround } from '@/theme';
 import type { Character } from '@/types';
 
 export interface FamilySeat {
@@ -45,7 +45,7 @@ export function FamilyRow({
             </View>
           ) : (
             <View style={styles.empty}>
-              <Ionicons name="add" size={26} color={playful.ink} />
+              <Ionicons name="add" size={26} color={systemGround.label} />
             </View>
           )}
           <Txt
@@ -82,11 +82,11 @@ const styles = StyleSheet.create({
     borderRadius: SEAT / 2,
     borderWidth: 2.5,
     borderStyle: 'dashed',
-    borderColor: playful.dash,
-    backgroundColor: playful.well,
+    borderColor: systemGround.dash,
+    backgroundColor: systemGround.well,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, textAlign: 'center', color: playful.ink },
+  label: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, textAlign: 'center', color: systemGround.label },
   labelEmpty: { color: colors.textSecondary },
 });

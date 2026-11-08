@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z164. Chats, Us and Find on Apple's system ground (2026-11-08, Claude 1). NEXT: the remaining cream screens when the owner says
+
+- **Owner's ask**: after Today (0z163), carry option B to Chats, Us and Find.
+- **Built**: those screens read `systemGround` instead of the cream layer: ground, cards, label ink, Apple's fill for off chips, the search field and round buttons, an "on" chip in the label colour with the ground's colour on it (black on white, white on black at night), dash and well for empty seats; Find's Everyone / Him / Her thumb is `systemColors.thumb` (white, `#636366` at night) on the fill track. Colours that mean something stay: friend hues, the group mint, Streams' plum, the red counts. Chats' search screen and Us' plan calendar moved too; Find's family row as well. The tab bar's fade is white on every tab now (the per-tab switch from 0z163 is gone). Stale "cream" comments reworded.
+- **Seen on the A51** (OTA `01a1bbed`, light and dark): Chats (white, black All chip, coloured bubbles), Us (bond card, calendar, Today's empty plan), Find (search field, segmented control, featured cards, family row); at night black with `#1C1C1E` cards and peach tab. Checks: tsc 0, npm test 844/844.
+
+Still to do:
+1. The other `playful.ground` screens (character page, memories, character settings, create-character, edit-profile, and components using `playful.*`: chat header / input, background picker, character and create kits, date share sheet), then retire `playful.ground` / `card` / `chip` / `round` / `ink` (the tab bar's own tokens stay).
+2. From 0z163: a tall or square hero and a small phone not seen; Increase Contrast app-wide.
+
 ### 0z163. Today on Apple's system ground; the hero ends mid-screen with the friend on the trailing side (2026-11-08, Claude 1). NEXT: the same ground on Chats, Us, Find (owner's order)
 
 - **Owner's asks**: the cream ground reads plain; make it premium, modern, minimal iOS from HIG Color (https://developer.apple.com/design/human-interface-guidelines/color), Today first, then the four tabs, the rest later. Canvas https://claude.ai/artifact/HwDsRzuUqxVJ5G3UY5gSgH (now cream, A grouped grey, B system white, C warm neutral, light and dark): owner picked **B**. Also: the hero picture must end at the screen's vertical middle on every phone (it was ~60/40), without breaking what is on it; the character's face and body on the right, name and info on the left, for every character from now on.

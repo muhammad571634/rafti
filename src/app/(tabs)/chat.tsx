@@ -30,7 +30,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, friendHues, playful, space, systemColors, TAB_BAR_HEIGHT, type Hue } from '@/theme';
+import { colors, fonts, friendColor, friendHues, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT, type Hue } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
 
 /** A face inside a bubble, and the white ring round it. */
@@ -49,7 +49,7 @@ const TAIL_H = 12;
 const ROW_GAP = TAIL_H + 6;
 /** One swipe action: a full-height coloured column with its glyph and label. */
 const ACTION = 70;
-/** The cream between the actions strip and the bubble once it is open. */
+/** The ground between the actions strip and the bubble once it is open. */
 const ACTION_GAP = 6;
 /** The width under a row for this many actions, with the gap to the bubble. */
 const actionsWidth = (count: number) => count * ACTION + ACTION_GAP;
@@ -124,7 +124,7 @@ interface RowActions {
 }
 
 /**
- * Every chat and group as coloured speech bubbles on the playful cream (design-style §10, the
+ * Every chat and group as coloured speech bubbles on Apple's white ground (design-style §10, the
  * approved four-tab prototype): Edit, search and new chat on top; the big rounded title; All /
  * Unread / Groups as pills; pinned chats as faces ringed in their friend's colour; then one bubble
  * per chat in the friend's own hue, tails turning left and right. Search opens from the magnifier
@@ -340,7 +340,7 @@ export default function ChatListScreen() {
   );
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         <View style={styles.topBar}>
           {items.length > 0 && !searching ? (
@@ -368,7 +368,7 @@ export default function ChatListScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={t('common.search')}
                   style={styles.roundButton}>
-                  <Ionicons name="search" size={19} color={playful.ink} />
+                  <Ionicons name="search" size={19} color={systemGround.label} />
                 </PressableScale>
               ) : null}
               <PressableScale
@@ -382,7 +382,7 @@ export default function ChatListScreen() {
                   height={20}
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke={playful.ink}
+                  stroke={systemGround.label}
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round">
@@ -653,18 +653,18 @@ function PinnedTile({
           {item.kind === 'chat' ? (
             <CharacterAvatar character={item.character} size={PINNED_AVATAR} />
           ) : (
-            <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={playful.ground} />
+            <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={systemGround.ground} />
           )}
         </View>
         {typing ? (
           <View style={styles.pinnedTyping} pointerEvents="none">
-            <TypingDots color={playful.ink} />
+            <TypingDots color={systemGround.label} />
           </View>
         ) : unread ? (
           <View style={styles.pinnedDot} pointerEvents="none" />
         ) : editing ? null : (
           <View style={styles.pinMark} pointerEvents="none">
-            <Ionicons name="pin" size={11} color={playful.chipOnText} />
+            <Ionicons name="pin" size={11} color={systemGround.ground} />
           </View>
         )}
         <Txt style={[styles.pinnedName, unread && styles.pinnedNameUnread]} lines={1} maxFontSizeMultiplier={1.3}>
@@ -678,7 +678,7 @@ function PinnedTile({
           accessibilityRole="button"
           accessibilityLabel={`${t('chatList.unpin')}, ${item.name}`}
           style={styles.unpinBadge}>
-          <Ionicons name="remove" size={14} color={playful.ink} />
+          <Ionicons name="remove" size={14} color={systemGround.label} />
         </Pressable>
       ) : null}
     </View>
@@ -696,7 +696,7 @@ interface SwipeActionSpec {
 /**
  * The actions under a bubble: full-height coloured columns in one strip with the bubble's corners.
  * The strip fades in as the bubble starts to slide, so a closed bubble's round corners show only
- * cream; the glyphs grow with the slide (`progress`), so the reveal follows the finger.
+ * ground; the glyphs grow with the slide (`progress`), so the reveal follows the finger.
  */
 function SwipeActions({
   actions,
@@ -1004,18 +1004,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 18,
     justifyContent: 'center',
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
-  editPillOn: { backgroundColor: playful.chipOn },
-  editText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
-  editTextOn: { color: playful.chipOnText },
+  editPillOn: { backgroundColor: systemGround.label },
+  editText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
+  editTextOn: { color: systemGround.ground },
   roundButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.round,
+    backgroundColor: systemGround.fill,
   },
   title: {
     marginTop: 2,
@@ -1024,7 +1024,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     lineHeight: 44,
     letterSpacing: -0.4,
-    color: playful.ink,
+    color: systemGround.label,
   },
   searchRow: {
     marginTop: 4,
@@ -1049,11 +1049,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: playful.chip,
+    backgroundColor: systemGround.fill,
   },
-  pillOn: { backgroundColor: playful.chipOn },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 14, color: playful.ink },
-  pillTextOn: { color: playful.chipOnText },
+  pillOn: { backgroundColor: systemGround.label },
+  pillText: { fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
+  pillTextOn: { color: systemGround.ground },
   redCount: {
     minWidth: 20,
     height: 18,
@@ -1070,7 +1070,7 @@ const styles = StyleSheet.create({
     marginBottom: space.sm,
     fontFamily: fonts.playful,
     fontSize: 15,
-    color: playful.ink,
+    color: systemGround.label,
   },
   // Pinned chats: one row of ringed faces that scrolls sideways when there are many.
   pinnedRow: { paddingHorizontal: space.lg, paddingTop: 2, gap: 14 },
@@ -1080,7 +1080,7 @@ const styles = StyleSheet.create({
     padding: PINNED_GAP,
     borderWidth: PINNED_RING,
     borderRadius: PINNED_AVATAR / 2 + PINNED_GAP + PINNED_RING,
-    backgroundColor: playful.ground,
+    backgroundColor: systemGround.ground,
   },
   pinMark: {
     position: 'absolute',
@@ -1091,7 +1091,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.chipOn,
+    backgroundColor: systemGround.label,
   },
   pinnedTyping: {
     position: 'absolute',
@@ -1101,7 +1101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     borderRadius: 10,
     justifyContent: 'center',
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
   },
   pinnedDot: {
     position: 'absolute',
@@ -1111,14 +1111,14 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: 8,
     borderWidth: 2.5,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
     backgroundColor: playful.red,
   },
   pinnedName: {
     maxWidth: PINNED_AVATAR + 14,
     fontFamily: fonts.playfulBold,
     fontSize: 12,
-    color: playful.ink,
+    color: systemGround.label,
   },
   pinnedNameUnread: { fontFamily: fonts.playful },
   unpinBadge: {
@@ -1130,16 +1130,16 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     borderWidth: 2,
-    borderColor: playful.ground,
+    borderColor: systemGround.ground,
   },
   dots: { flexDirection: 'row', alignItems: 'center' },
   // The gap under a bubble is padding, so its tail stays inside the list cell (Android clips
   // offscreen cells to their bounds).
   rowWrap: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingBottom: ROW_GAP },
   removeCell: { width: 40, alignItems: 'center', justifyContent: 'center' },
-  // No fill and no clip: the cream shows round the bubble and its tail can hang below.
+  // No fill and no clip: the ground shows round the bubble and its tail can hang below.
   swipe: { flex: 1 },
   // No elevation: a shadowed card on Android draws over what follows it (check-in lesson).
   bubble: {
@@ -1196,12 +1196,12 @@ const styles = StyleSheet.create({
     height: 120,
     marginHorizontal: space.lg,
     borderRadius: BUBBLE_RADIUS,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
   },
-  caughtUpText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  caughtUpText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
   // The pencil's sheet: three big coloured tiles.
   ways: { gap: 10 },
   way: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: 22 },

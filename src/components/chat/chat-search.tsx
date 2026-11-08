@@ -8,12 +8,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
 import { searchMessages } from '@/lib/chat-search';
 import { relativeStamp } from '@/lib/format';
-import { colors, fonts, playful, space } from '@/theme';
+import { colors, fonts, space, systemGround } from '@/theme';
 import type { Message } from '@/types';
 
 /**
  * "Search History": find a line in a chat or a group, voice-note transcripts included. iOS
- * search in the four tabs' look (0z153): a white round field and Cancel on the cream ground, results
+ * search in the four tabs' look (0z153): a white round field and Cancel on the white ground, results
  * in one white card; `onOpen` goes back to the chat at that message.
  */
 export function ChatSearch({
@@ -37,7 +37,7 @@ export function ChatSearch({
   const results = useMemo(() => searchMessages(messages, needle), [messages, needle]);
 
   return (
-    <Screen background={playful.ground}>
+    <Screen background={systemGround.ground}>
       <View style={styles.top}>
         <View style={styles.field}>
           <Ionicons name="search" size={17} color={colors.textSecondary} />
@@ -58,7 +58,7 @@ export function ChatSearch({
           ) : null}
         </View>
         <Pressable onPress={() => router.back()} hitSlop={8} accessibilityRole="button">
-          <Txt style={styles.cancel} color={playful.ink}>
+          <Txt style={styles.cancel} color={systemGround.label}>
             {t('common.cancel')}
           </Txt>
         </Pressable>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 14,
     borderRadius: 23,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
   },
   input: { flex: 1, padding: 0, fontSize: 17, letterSpacing: -0.4, color: colors.text },
   cancel: { fontFamily: fonts.playfulBold, fontSize: 16 },
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     gap: space.md,
     paddingLeft: 16,
     paddingTop: 14,
-    backgroundColor: playful.card,
+    backgroundColor: systemGround.card,
   },
   rowFirst: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
   rowLast: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },

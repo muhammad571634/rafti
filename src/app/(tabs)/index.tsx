@@ -89,7 +89,7 @@ const FACE_RING = 'rgba(255,255,255,0.9)';
 const noop = () => {};
 
 /**
- * The Today hub on the playful cream ground (four-tab prototype), built from HIG Widgets ("prefer
+ * The Today hub on Apple's white ground (four-tab prototype), built from HIG Widgets ("prefer
  * dynamic information that changes throughout the day"; "choose between automatically displaying
  * content and letting people customize"): one top row with the Sigmazam wordmark and your mascot
  * with your name (six letters, the profile shows it whole), the friend you talked with last, a
