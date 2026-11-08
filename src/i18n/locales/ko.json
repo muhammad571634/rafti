@@ -2581,6 +2581,7 @@
     },
     "typing": "{{name}} 님이 아직 입력 중… Sigmazam에서 확인하세요",
     "store": "App Store에서 무료",
-    "badge": "Sigmazam 캐릭터"
+    "badge": "Sigmazam 캐릭터",
+    "talkTo": "Sigmazam에서 {{name}}와 대화해 보세요"
   }
 }

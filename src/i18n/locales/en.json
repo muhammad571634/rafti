@@ -2621,6 +2621,7 @@
     },
     "typing": "{{name}} is still typing… open Sigmazam to read it",
     "store": "Free on the App Store",
-    "badge": "Sigmazam character"
+    "badge": "Sigmazam character",
+    "talkTo": "Talk to {{name}} on Sigmazam"
   }
 }

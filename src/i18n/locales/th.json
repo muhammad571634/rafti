@@ -2581,6 +2581,7 @@
     },
     "typing": "{{name}} ยังพิมพ์อยู่… เปิด Sigmazam เพื่ออ่านต่อ",
     "store": "ฟรีบน App Store",
-    "badge": "ตัวละครจาก Sigmazam"
+    "badge": "ตัวละครจาก Sigmazam",
+    "talkTo": "คุยกับ {{name}} บน Sigmazam"
   }
 }

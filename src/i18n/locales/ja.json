@@ -2581,6 +2581,7 @@
     },
     "typing": "{{name}}はまだ入力中… 続きはSigmazamで",
     "store": "App Storeで無料",
-    "badge": "Sigmazamのキャラクター"
+    "badge": "Sigmazamのキャラクター",
+    "talkTo": "Sigmazamで{{name}}と話そう"
   }
 }

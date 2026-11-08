@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ChatPoster, POSTER_H, POSTER_PIXELS, POSTER_SCRIPTS, POSTER_W } from '@/components/chat/chat-poster';
+import { ChatPoster, POSTER_SCRIPTS } from '@/components/chat/chat-poster';
+import { POSTER } from '@/components/share/poster-frame';
 import { ShareCardSheet } from '@/components/share-card-sheet';
 import { currentMood, temperamentFor } from '@/lib/reply-engine';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import type { Character } from '@/types';
 
-const POSTER = { width: POSTER_W, height: POSTER_H, pixels: POSTER_PIXELS };
 
 /**
  * Share under their newest reply: a 9:16 story poster of this friend (canvas B, owner 2026-11-08):

@@ -2581,6 +2581,7 @@
     },
     "typing": "{{name}} masih mengetik… buka Sigmazam untuk membacanya",
     "store": "Gratis di App Store",
-    "badge": "Karakter Sigmazam"
+    "badge": "Karakter Sigmazam",
+    "talkTo": "Ngobrol dengan {{name}} di Sigmazam"
   }
 }

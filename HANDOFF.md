@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z160. Share pays only for a real share; one poster frame; Us shares a full-picture poster (2026-11-08, Claude 1). NEXT: owner tries a real share to Instagram / Telegram from the chat and from Us
+
+- **Owner's asks**: (1) no +5 shells for just pressing Share; pay for posting it somewhere, with limits; (2) the chat's share button a round peach icon only, the +5 shown inside the sheet; (3) the poster must say it is a chat with a character of the Sigmazam app, with the tagline; (4) Us' share (days, streak, first met, intimacy) on the poster too, in canvas C (the friend's big picture).
+- **Built**: `src/lib/share-outcome.ts` (+ tests): iOS reads the share sheet's result (`Share.share({ url })`: completed and which app; Save to Photos, Copy, Print, Files are `kept`, no pay); Android has no result, so a share pays only when the user stayed in the picked app `ANDROID_AWAY_MS` (4 s; a cancel returns at once). `shareImage` returns the outcome; `ShareCardSheet` pays only `posted` (`rewardShare(rewardKey)`), keeps the sheet open on a cancel. Limits: the server's 3 paid shares a day (5 shells each, free bucket) plus each card once a day (`chat:<id>`, `bond:<id>`, `DailyState.sharePaidKeys`, client side). `SharePill` under a reply is icon only. `PosterFrame` (`src/components/share/poster-frame.tsx`) holds the head (face, name, AI · mood, "Sigmazam character" badge), the body slot and the band (logo, `app.tagline`, "Free on the App Store", peeking mascot); `ChatPoster` uses it. Us' `BondShareSheet` is a full-bleed poster: `portraitOf` picture (friend hue + face without one), scrims, head + glass badge, you & them faces, "Sukut & Hana", days big, intimacy / streak / first met as glass tiles, a cream pill with the logo, "Talk to {name} on Sigmazam", the App Store pill and the winking mascot. New strings `sharePoster.badge`, `sharePoster.talkTo` (14 locales).
+- **Seen on the A51** (OTAs `01a1bae9`.., `01a1baf0`, Turkish, light): round peach share button; chat poster with the badge and "En Sevdiğin Karakterle"; Paylaş then Back at once: the sheet stayed open, nothing paid; Us → Paylaş: the full-picture poster (469 samimiyet, 7 günlük seri, 30 Eki ilk tanışma). The +5 chip did not show today: the day's 3 paid shares were used (tests and the owner's Telegram shares).
+- **Not verified**: the iOS path (no iPhone); a real Android share that pays (needs sending to someone). Checks: tsc 0, npm test 844/844, check:locales.
+
+Still to do:
+1. Owner: share one poster from the chat and one from Us to a real app; check sharpness and that +5 comes only then (tomorrow, when the day's cap resets).
+2. Next APK: a native chooser callback on Android (which app was picked) to replace the 4 s guess.
+3. The friends' faces on the Us poster sit over the portrait's face on tall portraits: owner's taste call if it should move.
+
 ### 0z159. Dark mode: the tab bar's chosen tab is the brand peach (2026-11-08, Claude 1). NEXT: owner's next task (0z158 Still to do 1 waits on the owner)
 
 - **Owner's ask** (phone in night mode): the chosen tab's capsule was white at night; use the brand peach of the + on Us and Find; light mode stays the ink pill.

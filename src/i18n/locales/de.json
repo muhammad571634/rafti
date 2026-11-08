@@ -2621,6 +2621,7 @@
     },
     "typing": "{{name}} schreibt noch … öffne Sigmazam, um es zu lesen",
     "store": "Kostenlos im App Store",
-    "badge": "Sigmazam-Figur"
+    "badge": "Sigmazam-Figur",
+    "talkTo": "Schreib mit {{name}} auf Sigmazam"
   }
 }

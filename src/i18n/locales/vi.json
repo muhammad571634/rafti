@@ -2581,6 +2581,7 @@
     },
     "typing": "{{name}} vẫn đang nhập… mở Sigmazam để đọc tiếp",
     "store": "Miễn phí trên App Store",
-    "badge": "Nhân vật trên Sigmazam"
+    "badge": "Nhân vật trên Sigmazam",
+    "talkTo": "Trò chuyện với {{name}} trên Sigmazam"
   }
 }

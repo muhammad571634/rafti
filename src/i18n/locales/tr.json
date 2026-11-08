@@ -2621,6 +2621,7 @@
     },
     "typing": "{{name}} hâlâ yazıyor… okumak için Sigmazam'ı aç",
     "store": "App Store'da ücretsiz",
-    "badge": "Sigmazam karakteri"
+    "badge": "Sigmazam karakteri",
+    "talkTo": "{{name}} ile Sigmazam'da konuş"
   }
 }
