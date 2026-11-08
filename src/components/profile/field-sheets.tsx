@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { Button, Chip, PressableScale, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
-import { INTEREST_OPTIONS, MAX_INTERESTS, birthdayKey, daysInMonth } from '@/lib/profile';
+import { INTEREST_OPTIONS, MAX_INTERESTS, birthdayKey, daysInMonth, monthNames } from '@/lib/profile';
 import { colors, radius, space, type } from '@/theme';
 
 /** One text field and Save. Cleared to the saved value each time it opens. */
@@ -101,10 +101,6 @@ export function OptionSheet<T extends string>({
   );
 }
 
-const MONTHS = Array.from({ length: 12 }, (_, i) =>
-  new Date(2000, i, 1).toLocaleString('en', { month: 'short' }),
-);
-
 /** Month and day only: the year is the one from the 18+ gate and is not edited here. */
 export function BirthdaySheet({
   visible,
@@ -118,7 +114,9 @@ export function BirthdaySheet({
   onSave: (value: string) => void;
   onClose: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Month names in the app's language (they were always English).
+  const months = useMemo(() => monthNames(i18n.language), [i18n.language]);
   const [month, setMonth] = useState<number | null>(null);
   const [day, setDay] = useState<number | null>(null);
 
@@ -132,9 +130,9 @@ export function BirthdaySheet({
   const days = month ? daysInMonth(month) : 31;
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('editProfile.birthday')}>
+    <Sheet visible={visible} onClose={onClose} title={t('editProfile.birthday')} scroll>
       <View style={styles.months}>
-        {MONTHS.map((label, i) => (
+        {months.map((label, i) => (
           <Chip
             key={label}
             label={label}
@@ -213,7 +211,8 @@ export function InterestsSheet({
     <Sheet
       visible={visible}
       onClose={onClose}
-      title={t('editProfile.interests', { count: picked.length, max: MAX_INTERESTS })}>
+      title={t('editProfile.interests', { count: picked.length, max: MAX_INTERESTS })}
+      scroll>
       <View style={styles.options}>
         {INTEREST_OPTIONS.map((interest) => (
           <Chip

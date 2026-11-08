@@ -1,12 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Group, LinkRow, ProgressCard, TitleTop } from '@/components/character/kit';
 import { BirthdaySheet, InterestsSheet, OptionSheet, TextFieldSheet } from '@/components/profile/field-sheets';
-import { GlassBar, IconRow, InsetGroup, PressableScale, Screen, Txt, UserAvatar, useScrolledPast } from '@/components/ui';
+import { PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
 import {
   ABOUT_MAX,
   JOB_MAX,
@@ -17,13 +19,13 @@ import {
 } from '@/lib/profile';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { colors, fonts, playful, space, systemColors } from '@/theme';
 import type { Pronouns } from '@/types';
 
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const PRONOUNS: Pronouns[] = ['she', 'he', 'they'];
-const AVATAR = 104;
-/** iOS system colours for the Settings-style row icons. */
+const AVATAR = 112;
+/** iOS system colours for the rows' icon tiles (owner 2026-11-08: keep the coloured icons). */
 const FILL = {
   name: systemColors.blue,
   pronouns: systemColors.purple,
@@ -35,16 +37,16 @@ const FILL = {
 type Field = 'name' | 'pronouns' | 'birthday' | 'job' | 'interests' | 'about';
 
 /**
- * What the characters know about the user, as an iOS Settings page on the grouped grey ground:
- * the photo, how full the profile is, then inset groups. Every row saves on its own sheet, so
- * there is no "Save changes" to forget.
+ * What the characters know about the user, in the merged look (0z156): cream ground, a heavy title,
+ * the photo, how full the profile is, then white cards. Every row saves on its own sheet, so there
+ * is no "Save changes" to forget.
  */
 export default function EditProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const router = useRouter();
   const user = useAppStore((s) => s.user);
   const updateProfile = useAppStore((s) => s.updateProfile);
-  const { scrolled, onScroll } = useScrolledPast(AVATAR);
 
   const [open, setOpen] = useState<Field | null>(null);
   const [photoError, setPhotoError] = useState(false);
@@ -52,6 +54,7 @@ export default function EditProfileScreen() {
 
   const interests = user.interests ?? [];
   const percent = profileCompletion(user);
+  const interestsTitle = t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS });
 
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -68,75 +71,57 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <Screen background={colors.bg}>
-      <GlassBar title={t('editProfile.title')} scrolled={scrolled} />
+    <Screen background={playful.ground}>
+      <TitleTop title={t('editProfile.title')} onBack={() => router.back()} />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
         <View style={styles.hero}>
-          <PressableScale
-            onPress={() => void pickPhoto()}
-            scaleTo={0.95}
-            accessibilityRole="button"
-            accessibilityLabel={t('editProfile.photo')}>
-            <UserAvatar user={user} size={AVATAR} />
+          <PressableScale onPress={() => void pickPhoto()} scaleTo={0.95} accessibilityRole="button" accessibilityLabel={t('editProfile.photo')}>
+            <View style={styles.ring}>
+              <UserAvatar user={user} size={AVATAR} />
+            </View>
             <View style={styles.camera} pointerEvents="none">
-              <Ionicons name="camera" size={16} color={colors.white} />
+              <Ionicons name="camera" size={17} color={colors.textOnPrimary} />
             </View>
           </PressableScale>
-          {photoError ? (
-            <Txt style={styles.error}>{t('editProfile.photoTooLarge')}</Txt>
-          ) : null}
+          {photoError ? <Txt style={styles.error}>{t('editProfile.photoTooLarge')}</Txt> : null}
         </View>
 
-        <InsetGroup style={styles.meter}>
-          <View style={styles.meterTop} accessible accessibilityLabel={`${t('editProfile.title')}, ${percent}%`}>
-            <Txt style={styles.meterTitle}>{t('editProfile.title')}</Txt>
-            <Txt style={styles.meterPercent}>{percent}%</Txt>
-          </View>
-          <View style={styles.track}>
-            <View style={[styles.fill, { width: `${percent}%` }]} />
-          </View>
-        </InsetGroup>
+        <ProgressCard title={percent < 100 ? t('profile.completeTitle') : t('editProfile.title')} percent={percent} />
 
-        <Txt style={styles.sectionLabel}>{t('editProfile.basics')}</Txt>
-        <InsetGroup>
-          <IconRow icon="person" fill={FILL.name} title={t('editProfile.name')} meta={user.displayName} onPress={() => setOpen('name')} />
-          <IconRow
+        <Group title={t('editProfile.basics')}>
+          <LinkRow icon="person" fill={FILL.name} label={t('editProfile.name')} meta={user.displayName} onPress={() => setOpen('name')} />
+          <LinkRow
             icon="chatbubble-ellipses"
             fill={FILL.pronouns}
-            title={t('editProfile.pronouns')}
+            label={t('editProfile.pronouns')}
             meta={user.pronouns && t(`editProfile.pronounOptions.${user.pronouns}`)}
             onPress={() => setOpen('pronouns')}
           />
-          <IconRow
+          <LinkRow
             icon="gift"
             fill={FILL.birthday}
-            title={t('editProfile.birthday')}
-            meta={birthdayLabel(user.birthday)}
+            label={t('editProfile.birthday')}
+            meta={birthdayLabel(user.birthday, i18n.language)}
             onPress={() => setOpen('birthday')}
           />
           {/* The 18+ answer from onboarding; read-only. */}
-          {user.birthYear ? (
-            <IconRow icon="calendar" fill={FILL.born} title={t('editProfile.born')} meta={String(user.birthYear)} />
-          ) : null}
-          <IconRow icon="briefcase" fill={FILL.job} title={t('editProfile.job')} meta={user.job} onPress={() => setOpen('job')} last />
-        </InsetGroup>
+          {user.birthYear ? <LinkRow icon="calendar" fill={FILL.born} label={t('editProfile.born')} meta={String(user.birthYear)} /> : null}
+          <LinkRow icon="briefcase" fill={FILL.job} label={t('editProfile.job')} meta={user.job} onPress={() => setOpen('job')} last />
+        </Group>
 
-        <Txt style={styles.sectionLabel}>{t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })}</Txt>
-        <InsetGroup>
-          <View style={styles.pills}>
+        <Group title={interestsTitle}>
+          <View style={styles.chips}>
             {interests.map((interest) => (
               <Pressable
                 key={interest}
                 onPress={() => setOpen('interests')}
                 accessibilityRole="button"
                 accessibilityLabel={phrase(interest)}
-                style={({ pressed }) => [styles.pill, pressed && styles.pressed]}>
-                <Txt style={styles.pillText}>{phrase(interest)}</Txt>
+                style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}>
+                <Txt style={styles.chipText} maxFontSizeMultiplier={1.3}>
+                  {phrase(interest)}
+                </Txt>
               </Pressable>
             ))}
             {interests.length < MAX_INTERESTS ? (
@@ -144,28 +129,29 @@ export default function EditProfileScreen() {
                 scaleTo={0.94}
                 onPress={() => setOpen('interests')}
                 accessibilityRole="button"
-                accessibilityLabel={t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })}
-                style={[styles.pill, styles.add]}>
+                accessibilityLabel={interestsTitle}
+                style={[styles.chip, styles.add]}>
                 <Ionicons name="add" size={20} color={colors.brandText} />
               </PressableScale>
             ) : null}
           </View>
-        </InsetGroup>
+        </Group>
 
-        <Txt style={styles.sectionLabel}>{t('editProfile.about')}</Txt>
-        <InsetGroup>
+        <Group title={t('editProfile.about')}>
           <Pressable
             onPress={() => setOpen('about')}
             accessibilityRole="button"
             accessibilityLabel={t('editProfile.about')}
-            style={({ pressed }) => [styles.about, pressed && styles.pressed]}>
+            style={({ pressed }) => [styles.about, pressed && styles.aboutPressed]}>
             {user.about ? (
               <Txt style={styles.aboutText}>{user.about}</Txt>
             ) : (
-              <Ionicons name="add" size={22} color={colors.brandText} />
+              <View style={[styles.chip, styles.add]}>
+                <Ionicons name="add" size={20} color={colors.brandText} />
+              </View>
             )}
           </Pressable>
-        </InsetGroup>
+        </Group>
       </ScrollView>
 
       <TextFieldSheet
@@ -218,45 +204,32 @@ export default function EditProfileScreen() {
   );
 }
 
-const CAMERA = 32;
+const CAMERA = 34;
 
 const styles = StyleSheet.create({
-  hero: { alignItems: 'center', gap: space.sm, paddingTop: space.sm, paddingBottom: space.xs },
+  hero: { alignItems: 'center', gap: space.sm, paddingTop: space.xs, paddingBottom: space.xs },
+  // A white ring lifts the photo off the cream.
+  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: playful.card },
   camera: {
     position: 'absolute',
-    right: -2,
-    bottom: 2,
+    right: 0,
+    bottom: 4,
     width: CAMERA,
     height: CAMERA,
     borderRadius: CAMERA / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
-    borderWidth: 2,
-    borderColor: colors.bg,
+    backgroundColor: colors.primaryFill,
+    borderWidth: 3,
+    borderColor: playful.ground,
   },
-  error: { fontSize: 13, color: systemColors.red },
-  meter: { marginTop: 22, paddingHorizontal: space.lg, paddingVertical: 14 },
-  meterTop: { flexDirection: 'row', alignItems: 'center' },
-  meterTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  meterPercent: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
-  track: { height: 6, marginTop: 10, borderRadius: 3, overflow: 'hidden', backgroundColor: systemColors.fill },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: systemColors.green },
-  sectionLabel: {
-    marginTop: 22,
-    marginBottom: 6,
-    marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-  },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },
-  pill: { height: 34, paddingHorizontal: 14, borderRadius: 17, justifyContent: 'center', backgroundColor: systemColors.fill },
-  pillText: { fontSize: 15, letterSpacing: -0.2, color: colors.text },
-  add: { width: 52, alignItems: 'center', paddingHorizontal: 0 },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  about: { minHeight: 50, paddingHorizontal: space.lg, paddingVertical: 14, justifyContent: 'center', alignItems: 'flex-start' },
-  aboutText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  error: { fontSize: 13, color: colors.danger },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 18, paddingTop: 10, paddingBottom: 18 },
+  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: 18, justifyContent: 'center', backgroundColor: playful.chip },
+  chipPressed: { opacity: 0.7 },
+  chipText: { fontFamily: fonts.playfulBold, fontSize: 14, color: playful.ink },
+  add: { width: 52, alignItems: 'center', paddingHorizontal: 0, backgroundColor: colors.primarySofter },
+  about: { minHeight: 54, paddingHorizontal: 18, paddingTop: 8, paddingBottom: 18, justifyContent: 'center', alignItems: 'flex-start' },
+  aboutPressed: { backgroundColor: playful.chip },
+  aboutText: { fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text },
 });

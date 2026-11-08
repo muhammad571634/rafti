@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z156. Your profile and Edit profile in the merged design, with their coloured icons (2026-11-08, Claude 1). NEXT: queue item 3, Notifications + their settings (0z154 queue)
+
+- **Owner's ask**: "Ha, boshla" (queue item 2). After the first pass (soft ink glyphs on chip circles) the owner said: "too plain, colourless, only text, nothing draws the eye; bring back the coloured icons; do the rest of the screens like this too". Recorded in `.agents/rules/project-memory.md` §3 ("Colour, not just text").
+- **Built**: kit `LinkRow` takes `icon` + `fill` (iOS-coloured rounded tile, white glyph), `pill` (peach soft), `end` (a switch instead of the chevron) and an optional `onPress` (plain line, the version); `SwitchRow` takes `icon` + `fill`; new `ProgressCard` (heavy title, percent, peach track, hint, optional press). Your profile: cream ground, `ProfileTop` (name fades in), avatar in a white ring with a camera badge -> Edit profile, Nunito name + handle, shells and plan as white radius-24 cards (peach "Get more", the plan's violet diamond and "Manage" pill kept), "Complete your profile" card -> Edit profile, rows in white cards with the same colours as before (gifts, personas, kept in mind, world books, language, chat animations, haptics; dev group grey; blocked, support, account, privacy, terms, version), red Delete account card; delete and blocked sheets unchanged. Edit profile: `TitleTop`, photo in a white ring with a peach camera, progress card ("Complete your profile" under 100%, it repeated the screen's name), Basics with coloured rows, Interests as soft chips with a peach +, About.
+- **Fixed on the way**: the birthday's months were always English (the sheet's chips and the row's value): `monthNames(locale)` / `birthdayLabel(birthday, locale)` in `src/lib/profile.ts` (3 tests); on the Turkish A51: Oca ... Ara. The birthday and interests sheets are `scroll` (never taller than the screen). An unused `i18n` in profile removed.
+- **Seen on the A51** (OTAs `01a1ba9f`, `01a1baa6`, Turkish): profile top to bottom (tiles 5030 / Pro, 43% card, coloured rows, dev rows, Sürüm 1.1.0, Hesabı sil -> the confirm card -> İptal; nothing deleted), Edit profile (coloured Basics, Doğum günü sheet with Turkish months, İlgi alanları sheet with 24 chips; closed without saving). A synthetic fast swipe then tap once left Store over Edit profile (Store opened, nothing bought); a plain tap opens exactly one screen (checked twice).
+- Checks: tsc 0, npm test 824/824, check:locales. No new strings.
+
+Still to do:
+1. Owner to say: chat settings and group info rows are icon-less words; give them coloured tiles too (same kit props)?
+2. Account, Privacy and Terms rows still do nothing on tap (old stubs; need the hosted pages / an account screen, after the domain).
+3. Queue (0z154): 3 Notifications, 4 Call history, 5 Store / My plan / Shell history, 6 small ones. From 0z153: nav-bar cream on the next APK, memory quality, memory row hairline.
+
 ### 0z155. Group info and New group in the merged design; long sheets scroll; "clean chain" rule (2026-11-08, Claude 1). NEXT: queue item 2, your profile + Edit profile (0z154 queue), unless the owner picks memory quality first
 
 - **Owner's ask**: "0z154 davom et" -> queue item 1 (memory quality left in Still to do, the owner did not pick it). Mid-task: the owner found an "Add a friend" sheet taller than the screen and said "fix it too; agents must not make such errors: clean code, clean design, clean chain". Recorded in `.agents/rules/project-memory.md` §3 (worst-case chain on the A51 before calling a screen done).

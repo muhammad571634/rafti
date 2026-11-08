@@ -10,7 +10,7 @@ import { portraitOf } from '@/components/chat/chat-ground';
 import { GroupAvatar } from '@/components/group-avatar';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors, fonts, friendColor, hitSlop, playful, space } from '@/theme';
+import { colors, fonts, friendColor, hitSlop, playful, space, systemColors } from '@/theme';
 import type { Character } from '@/types';
 
 /**
@@ -332,22 +332,98 @@ export function Group({ title, right, children }: { title?: string; right?: Reac
   );
 }
 
-/** A row that opens something: label, its value and a chevron. */
-export function LinkRow({ label, meta, last, onPress }: { label: string; meta?: string; last?: boolean; onPress: () => void }) {
+/**
+ * A row's coloured tile (iOS Settings, owner 2026-11-08: the plain ink glyphs read colourless): a
+ * rounded square in its own colour with a white glyph.
+ */
+function RowIcon({ icon, fill }: { icon: keyof typeof Ionicons.glyphMap; fill?: string }) {
+  return (
+    <View style={[styles.rowIcon, { backgroundColor: fill ?? systemColors.gray }]}>
+      <Ionicons name={icon} size={19} color={colors.white} />
+    </View>
+  );
+}
+
+/**
+ * A row that opens something: an optional soft glyph, the label, a peach pill or its value, then a
+ * chevron. `end` replaces the chevron (a switch in a dev row); without `onPress` it is a plain line
+ * (the version).
+ */
+export function LinkRow({
+  label,
+  meta,
+  icon,
+  fill,
+  pill,
+  end,
+  last,
+  onPress,
+}: {
+  label: string;
+  meta?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+  /** The icon tile's colour. */
+  fill?: string;
+  pill?: string;
+  end?: ReactNode;
+  last?: boolean;
+  onPress?: () => void;
+}) {
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={meta ? `${label}, ${meta}` : label}
-      style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && styles.rowPressed]}>
-      <Txt style={[styles.rowText, styles.grow]}>{label}</Txt>
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={[label, pill, meta].filter(Boolean).join(', ')}
+      style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && onPress ? styles.rowPressed : null]}>
+      {icon ? <RowIcon icon={icon} fill={fill} /> : null}
+      <Txt style={[styles.rowText, styles.grow]} lines={icon ? 1 : undefined}>
+        {label}
+      </Txt>
+      {pill ? (
+        <View style={styles.rowPill}>
+          <Txt style={styles.rowPillText} lines={1} maxFontSizeMultiplier={1.2}>
+            {pill}
+          </Txt>
+        </View>
+      ) : null}
       {meta ? (
         <Txt style={[styles.rowText, styles.meta]} lines={1}>
           {meta}
         </Txt>
       ) : null}
-      <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+      {end ?? (onPress ? <Ionicons name="chevron-forward" size={16} color={colors.textFaint} /> : null)}
     </Pressable>
+  );
+}
+
+/** How full something is (your profile): a heavy title and the percent, a peach track, a hint under it. */
+export function ProgressCard({ title, percent, hint, onPress }: { title: string; percent: number; hint?: string; onPress?: () => void }) {
+  const body = (
+    <>
+      <View style={styles.progressHead}>
+        <Txt style={[styles.groupTitle, styles.grow]} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.3}>
+          {title}
+        </Txt>
+        <Txt style={styles.progressFigure} maxFontSizeMultiplier={1.3}>
+          {percent}%
+        </Txt>
+        {onPress ? <Ionicons name="chevron-forward" size={16} color={colors.textFaint} /> : null}
+      </View>
+      <View style={[styles.track, hint ? styles.trackTight : null]}>
+        <View style={[styles.fill, { width: `${Math.round(Math.min(100, Math.max(0, percent)))}%` }]} />
+      </View>
+      {hint ? <Txt style={styles.progressHint}>{hint}</Txt> : null}
+    </>
+  );
+  return onPress ? (
+    <PressableScale onPress={onPress} scaleTo={0.98} accessibilityRole="button" accessibilityLabel={`${title}, ${percent}%`} style={styles.group}>
+      {body}
+    </PressableScale>
+  ) : (
+    <View style={styles.group} accessible accessibilityLabel={`${title}, ${percent}%`}>
+      {body}
+    </View>
   );
 }
 
@@ -428,9 +504,26 @@ export function PickMark({ on }: { on: boolean }) {
 }
 
 /** A row with the app's switch. */
-export function SwitchRow({ label, value, disabled, last, onChange }: { label: string; value: boolean; disabled?: boolean; last?: boolean; onChange: (v: boolean) => void }) {
+export function SwitchRow({
+  label,
+  icon,
+  fill,
+  value,
+  disabled,
+  last,
+  onChange,
+}: {
+  label: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+  fill?: string;
+  value: boolean;
+  disabled?: boolean;
+  last?: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <View style={[styles.row, !last && styles.rowLine, disabled && styles.off]}>
+      {icon ? <RowIcon icon={icon} fill={fill} /> : null}
       <Txt style={[styles.rowText, styles.grow]}>{label}</Txt>
       <Toggle value={value} disabled={disabled} onChange={onChange} accessibilityLabel={label} />
     </View>
@@ -586,6 +679,13 @@ const styles = StyleSheet.create({
   // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
   rowText: { fontSize: 17, letterSpacing: -0.4 },
   meta: { flexShrink: 1, maxWidth: '50%', color: colors.textSecondary },
+  rowIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  rowPill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: colors.primarySofter },
+  rowPillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.brandText },
+  progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
+  progressFigure: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink, fontVariant: ['tabular-nums'] },
+  trackTight: { marginBottom: 0 },
+  progressHint: { marginHorizontal: 18, marginTop: 10, marginBottom: 16, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },
   faceRowMeta: { marginTop: 1, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   faceGlyph: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },

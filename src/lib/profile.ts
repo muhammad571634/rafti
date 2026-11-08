@@ -51,11 +51,17 @@ export function profileCompletion(user: User) {
 }
 
 /** "03-14" -> "Mar 14". */
-export function birthdayLabel(birthday: string | undefined) {
+/** "MM-DD" as the app's language writes a short date ("Nov 8", "8 Kas", "8. Nov."). */
+export function birthdayLabel(birthday: string | undefined, locale = 'en') {
   if (!birthday) return undefined;
   const [month, day] = birthday.split('-').map(Number);
-  const name = new Date(2000, month - 1, 1).toLocaleString('en', { month: 'short' });
-  return `${name} ${day}`;
+  if (!month || !day) return undefined;
+  return new Date(2000, month - 1, day).toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+}
+
+/** The twelve short month names in the app's language, January first (the birthday sheet). */
+export function monthNames(locale = 'en') {
+  return Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1).toLocaleDateString(locale, { month: 'short' }));
 }
 
 export function birthdayKey(month: number, day: number) {
