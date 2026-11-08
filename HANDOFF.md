@@ -7,8 +7,9 @@
 - **Probe** (`gemini-3.1-flash-lite`, Hana, Turkish chat, temperature 0.2, 12 calls): first try wrote the notes in Turkish and restated the list; with the rule after the language line, English; a chat with nothing of her day restated the list ("overslept", "missed the bus") until the server drops what the list has: then none 2/2. With market, tea and tonight's painting said: 2-3 new notes 2/2; the user's gym and yesterday's gallery never taken.
 - Checks: app tsc 0, npm test 803/803; server tsc 0, 78/78. OTA `01a1b999` (android; sends the day's notes to the pass, harmless before the deploy).
 
-Still to do:
-1. Owner: deploy the server (0z147).
+- **Seen after the deploy (Fly v34, A51 10:23-10:28, Hana, Turkish)**: four short questions about her day; the pass ran at 05:26Z (`[memory] in=3637 out=354`, before the catch a pass was in=2029). Her answers held one day: brushes all morning (said at 09:34), the signature campaign, the sea light in the studio, tea, the unfinished canvas tonight; asked again "what did you do this morning?" -> "fought with the brushes, tried to catch that light over the sea". The pass's own notes are not visible on the release APK (private store), only through her answers.
+
+Still to do: none from this block.
 
 ### 0z146. The friend's own day on screens of their own and in streams (2026-11-08, Claude 1). NEXT: owner deploys the server; then a secret note, a date and a stream on the A51
 
