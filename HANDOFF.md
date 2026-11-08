@@ -5,7 +5,7 @@
 - **Why**: a reply notes its own day in a "day" field, but the light model leaves it out now and then (4-5 of 6 with the cached rule alone, 0z144); what is not noted is forgotten once the line leaves the window.
 - **Built**: when the pass's new lines have some of the friend's from today, the app sends today's notes (`MemoryPassRequest.ownDay`); the prompt then dates each new line on the user's clock, lists the day so far and asks, after the language line, for what the friend's own lines of today tell that the list lacks, in English (`ownDayCatchLines`). `parseMemoryPass(raw, ids, ownDay)` keeps `day` minus what the list already says (`newDayNotes`); the app keeps it (`keepOwnDay`). No catch: the prompt is as before.
 - **Probe** (`gemini-3.1-flash-lite`, Hana, Turkish chat, temperature 0.2, 12 calls): first try wrote the notes in Turkish and restated the list; with the rule after the language line, English; a chat with nothing of her day restated the list ("overslept", "missed the bus") until the server drops what the list has: then none 2/2. With market, tea and tonight's painting said: 2-3 new notes 2/2; the user's gym and yesterday's gallery never taken.
-- Checks: app tsc 0, npm test 803/803; server tsc 0, 78/78.
+- Checks: app tsc 0, npm test 803/803; server tsc 0, 78/78. OTA `01a1b999` (android; sends the day's notes to the pass, harmless before the deploy).
 
 Still to do:
 1. Owner: deploy the server (0z147).
