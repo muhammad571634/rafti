@@ -6653,12 +6653,17 @@ async function runMemoryPass(set: Setter, get: Getter, conversationId: string) {
     lines,
     now: new Date().toISOString(),
     utcOffsetMin: -new Date().getTimezoneOffset(),
+    // The own-day catch (0z147): only when the friend said something today, so a note lands on its day.
+    ...(lines.some((l) => l.author === 'them' && dayKey(l.at) === todayKey())
+      ? { ownDay: ownDayOf(state.relationships[character.id]?.ownDay, todayKey())?.today.map((n) => n.text) ?? [] }
+      : {}),
   };
   memoryRunning.add(conversationId);
   const result = await accessToken()
     .then((token) => serverMemoryPass(request, token))
     .finally(() => memoryRunning.delete(conversationId));
   if (!result) return;
+  if (request.ownDay && result.day?.length) keepOwnDay(set, character.id, result.day);
   set((s) => ({
     memories: applyMemoryPass(s.memories, character.id, result, new Date(), () => uid('mem')),
     conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, memoryMark: lastId, summary: result.summary ?? c.summary } : c)),

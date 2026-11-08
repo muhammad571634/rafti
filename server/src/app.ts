@@ -669,7 +669,7 @@ export function createApp(
     const request = cleanMemoryPass(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
     const ids = new Set(request.facts.map((f) => f.id));
-    return modelCall(c, 'memory', layoutPrompt(memoryPassParts(request)), (text) => parseMemoryPass(text, ids), undefined, 0.2);
+    return modelCall(c, 'memory', layoutPrompt(memoryPassParts(request)), (text) => parseMemoryPass(text, ids, request.ownDay), undefined, 0.2);
   });
 
   // Quick create (B1.4b, backend-plan §12.17): the whole character from the creator's idea. The idea

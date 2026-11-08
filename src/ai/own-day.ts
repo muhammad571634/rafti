@@ -49,6 +49,9 @@ const told = (note: string, notes: readonly string[]) => {
   });
 };
 
+/** The notes that say something `known` does not (a note whose words are all in one known note is not new). */
+export const newDayNotes = (notes: readonly string[], known: readonly string[]) => notes.filter((n) => !told(n, known));
+
 /** The model's `day` field: a few short notes, or none. The server and the app both run it. */
 export function cleanDayNotes(value: unknown): string[] {
   if (!Array.isArray(value)) return [];

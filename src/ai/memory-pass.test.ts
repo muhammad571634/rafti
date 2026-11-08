@@ -61,3 +61,29 @@ describe('the memory pass (B2)', () => {
     assert.equal(cleanMemoryPass({ ...request, character: {} }), null);
   });
 });
+
+describe('the own-day catch (0z147)', () => {
+  const withDay = { ...request, utcOffsetMin: 300, ownDay: ['overslept, missed the bus'] };
+
+  it('dates the new lines, lists the day so far and asks for what is missing', () => {
+    const text = joinParts(memoryPassParts(withDay));
+    assert.match(text, /NEW SINCE LAST TIME:\n\[2026-10-28 15:00\] Sam: my beagle/);
+    assert.match(text, /KAI ARDEN'S OWN DAY, NOTED SO FAR TODAY \(2026-10-28\):\n- overslept, missed the bus/);
+    assert.match(text, /"day":\["few words"\]\}$/m);
+  });
+
+  it('stays out when the app asks for no catch', () => {
+    const text = joinParts(memoryPassParts(request));
+    assert.doesNotMatch(text, /OWN DAY|"day"|\[2026-/);
+  });
+
+  it('reads the notes from the answer and cleans what the app sends', () => {
+    assert.deepEqual(parseMemoryPass('{"ops":[],"day":["painted the pier at dawn","painted the pier at dawn"]}', new Set()).day, ['painted the pier at dawn']);
+    assert.equal(parseMemoryPass('{"ops":[]}', new Set()).day, undefined);
+    // A restated list is not new.
+    assert.deepEqual(parseMemoryPass('{"ops":[],"day":["overslept","missed the bus","tea at the studio"]}', new Set(), ['overslept, missed the bus']).day, ['tea at the studio']);
+    assert.equal(parseMemoryPass('{"ops":[],"day":["missed the bus"]}', new Set(), ['overslept, missed the bus']).day, undefined);
+    assert.deepEqual(cleanMemoryPass({ ...withDay, ownDay: [' a  b ', 3, ''] })?.ownDay, ['a b']);
+    assert.equal(cleanMemoryPass(request)?.ownDay, undefined);
+  });
+});

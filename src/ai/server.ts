@@ -249,8 +249,10 @@ export const serverStudio = {
 
 /** The memory pass (B2): what to remember from the new lines, or null (off, busy, slow); the next pass tries again. */
 export async function serverMemoryPass(request: MemoryPassRequest, accessToken?: string | null): Promise<MemoryPassResult | null> {
-  const reply = await call<MemoryPassResult>('/v1/memory/pass', withOptionalToken(accessToken, request), MEMORY_PASS_TIMEOUT_MS);
-  return reply && Array.isArray(reply.ops) ? { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops } : null;
+  const reply = await call<Omit<MemoryPassResult, 'day'> & { day?: unknown }>('/v1/memory/pass', withOptionalToken(accessToken, request), MEMORY_PASS_TIMEOUT_MS);
+  if (!reply || !Array.isArray(reply.ops)) return null;
+  const day = cleanDayNotes(reply.day);
+  return { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops, ...(day.length ? { day } : {}) };
 }
 
 /** What a voice message says: the words ('' when none were made out) and their language, or null (off, busy, slow or a broken answer). */
