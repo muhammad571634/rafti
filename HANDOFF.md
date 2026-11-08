@@ -10,8 +10,9 @@
 
 Still to do:
 1. See Bedtime's whispering state and the filled wake-up card on a Pro account (0z170).
-2. Light mode of the frame editor and both quizzes (0z169 item 2).
-3. Live colours (no reload at all) stay a post-launch project: a theme context plus styles built from it, screen by screen.
+2. Done 2026-11-09: the frame editor, the couple quiz and the world quiz in light mode on the A51, scrolled; nothing to fix (the frame stickers are frame art, not UI icons, so they stay).
+3. Native, next APK: a theme switch while a call screen is open left Android's nav bar grey (the call's dark bar style) after the reload, until the next cold start; not seen on a plain switch. If it shows up again, re-apply the bar style on `onConfigurationChanged` or add `expo-navigation-bar` with the build.
+4. Live colours (no reload at all) stay a post-launch project: a theme context plus styles built from it, screen by screen.
 
 ### 0z171. Flow audit on the A51: every chain walked, one back path fixed (2026-11-08, Claude 1). NEXT: see "Still to do"
 
