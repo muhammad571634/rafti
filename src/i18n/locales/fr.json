@@ -1175,8 +1175,10 @@
         "explicit": "Respectez nos règles de contenu",
         "realPerson": "Les personnages ne peuvent pas être des personnes réelles",
         "owned": "Créez un personnage original, pas tiré d'une série ou d'un jeu",
-        "format": "Une erreur est survenue. Réessayez"
-      }
+        "format": "Une erreur est survenue. Réessayez",
+        "busy": "Occupé pour l’instant. Réessaie dans un moment"
+      },
+      "ask": "Qui veux-tu rencontrer ?"
     },
     "sparks": {
       "gentleStubborn": "Doux mais obstiné",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "Ce que vous diriez en premier",
     "addStarter": "Ajouter une réplique",
     "rewrite": "Réécrire {{field}}",
-    "remove": "Retirer"
+    "remove": "Retirer",
+    "flow": {
+      "continue": "Reprendre ton personnage ?",
+      "continueNamed": "Reprendre {{name}} ?",
+      "open": "Reprendre",
+      "startOver": "Recommencer",
+      "addPhoto": "Ajouter une photo",
+      "changePhoto": "Changer la photo",
+      "firstMessage": "Premier message",
+      "more": "Plus de détails",
+      "ownVoice": "Sa propre voix",
+      "meet": "Voici {{name}}",
+      "startChat": "Commencer à discuter",
+      "discardTitle": "Abandonner les modifications ?",
+      "discard": "Abandonner",
+      "keepEditing": "Continuer à modifier"
+    }
   },
   "dating": {
     "title": "Rendez-vous",

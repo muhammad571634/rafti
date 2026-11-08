@@ -1,97 +1,68 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as DocumentPicker from 'expo-document-picker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 
-import {
-  actionOf,
-  chatToDefinition,
-  checkIdea,
-  type CharacterDraft,
-  type DraftField,
-  definitionToText,
-  type Spark,
-  textToDefinition,
-} from '@/ai/character-draft';
+import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
-import { Pill, QuickIdea, RewriteButton, SectionHead, WritingSteps } from '@/components/create/quick-create';
+import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, Rewrite, SmallRound } from '@/components/create/kit';
+import { ContinueCard, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
-import {
-  Anim,
-  GlassBar,
-  IconRow,
-  InsetGroup,
-  LargeTitle,
-  PressableScale,
-  Screen,
-  Segmented,
-  ShellIcon,
-  Toggle,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+import { PressableScale, Screen, Toggle, Txt } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
-import { haptic } from '@/lib/haptics';
+import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { clearCreation, loadCreation, saveCreation } from '@/lib/create-draft-storage';
+import { type CreateForm, type CreateSection, firstProblemSection, hasContent, problemsBySection, sameForm } from '@/lib/create-flow';
 import {
+  BACKSTORY_MAX,
   BIO_MAX,
   checkCreation,
   DEFINITION_MAX,
   GENDERS,
   GREETING_MAX,
-  LOOK_MAX,
-  OPENING_MAX,
-  QUIRK_MAX,
-  BACKSTORY_MAX,
   heightOf,
-  thingsOf,
-  THING_MAX,
-  THINGS_MAX,
-  MAX_SAMPLES,
+  LOOK_MAX,
   MAX_TRAITS,
   MORE_GREETINGS_MAX,
   NAME_MAX,
+  OPENING_MAX,
+  QUIRK_MAX,
   reviewAfterEdit,
   ROLES,
   STARTER_MAX,
   STARTERS_MAX,
   STYLES,
   TAGLINE_MAX,
+  THING_MAX,
+  THINGS_MAX,
+  thingsOf,
   TRAITS,
   VOICES,
   type VoiceChoice,
 } from '@/lib/create-character';
-import { shellCosts } from '@/mock';
+import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
-import type {
-  Character,
-  CharacterCategory,
-  CharacterGender,
-  CharacterRole,
-  SpeakingStyle,
-  VoicePreset,
-} from '@/types';
+import { colors, fonts, friendColor, playful, space, systemColors } from '@/theme';
+import type { Character, CharacterCategory, CharacterRole } from '@/types';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
-
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
-const MAX_SAMPLE_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-/** How long the mock voice clone "trains"; the server job replaces it. */
-const CLONE_MS = 1400;
+/** How long typing waits before the unfinished character is kept on the phone. */
+const SAVE_AFTER_MS = 600;
+const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.68)'] as const;
 
-interface Sample {
-  name: string;
-  uri: string;
-  size?: number;
-}
+/**
+ * Sharing a creation in Find is off until moderation exists (business-plan §12, decision 4: no UGC
+ * market at launch; audit 2026-10-13). While false every creation is saved private.
+ */
+const SHARING_OPEN = false;
 
 /** Non-empty lines, trimmed; undefined when none are left, so the field is cleared. */
 const cleanList = (list: string[]) => {
@@ -99,41 +70,116 @@ const cleanList = (list: string[]) => {
   return kept.length > 0 ? kept : undefined;
 };
 
-/**
- * Sharing a creation in Find is off until moderation exists (business-plan §12, decision 4: no UGC
- * market at launch; audit 2026-10-13). While false the "Who sees them" choice is hidden and every
- * creation is saved private. Turn it on together with the server review queue.
- */
-const SHARING_OPEN = false;
+/** A blank new character. */
+const BLANK: CreateForm = {
+  photoRights: false,
+  name: '',
+  tagline: '',
+  age: '',
+  traits: [],
+  style: 'casual',
+  role: 'friend',
+  bio: '',
+  look: '',
+  quirk: '',
+  greeting: '',
+  opening: '',
+  greetings: [],
+  definition: '',
+  starters: [],
+  height: '',
+  backstory: '',
+  likes: '',
+  dislikes: '',
+  opinions: [],
+  preset: 'warm',
+  category: 'original',
+};
+
+/** A character the user made, as the form holds it. */
+function formOf(c: Character): CreateForm {
+  return {
+    imageUri: c.avatarUri,
+    photoRights: !!c.avatarUri,
+    name: c.name,
+    tagline: c.tagline ?? '',
+    gender: c.gender,
+    age: c.age != null ? String(c.age) : '',
+    traits: c.tags.filter(isTrait),
+    style: c.speakingStyle ?? 'casual',
+    role: c.role ?? 'friend',
+    bio: c.bio,
+    look: c.look ?? '',
+    quirk: c.quirk ?? '',
+    greeting: c.greeting,
+    opening: c.opening ?? '',
+    greetings: c.greetings ?? [],
+    definition: c.definition ?? '',
+    starters: c.starters ?? [],
+    height: c.heightCm != null ? String(c.heightCm) : '',
+    backstory: c.backstory ?? '',
+    likes: (c.likes ?? []).join(', '),
+    dislikes: (c.dislikes ?? []).join(', '),
+    opinions: c.opinions ?? [],
+    preset: c.voicePreset,
+    category: c.category,
+  };
+}
+
+/** A written draft as the form holds it; the photo and its rights stay as they were. */
+const fromDraft = (form: CreateForm, d: CharacterDraft): CreateForm => ({
+  ...form,
+  name: d.name,
+  tagline: d.tagline,
+  gender: d.gender,
+  age: String(d.age),
+  traits: d.tags.filter(isTrait).slice(0, MAX_TRAITS),
+  style: d.speakingStyle,
+  role: d.role,
+  bio: d.bio,
+  look: d.look,
+  quirk: d.quirk,
+  greeting: d.greeting,
+  opening: d.opening,
+  greetings: d.greetings,
+  definition: d.definition,
+  starters: d.starters,
+  height: d.heightCm != null ? String(d.heightCm) : '',
+  backstory: d.backstory,
+  likes: d.likes.join(', '),
+  dislikes: d.dislikes.join(', '),
+  opinions: d.opinions,
+  preset: d.voicePreset,
+});
 
 /**
- * F15: make your own character. Structure from BIMOBIMO (photo, voice clips, persona,
- * greeting, visibility) plus what character apps share as a standard: traits, a
- * speaking style, what they are to you, and a stock voice when there are no clips.
- * Every creation is an adult; the photo and a cloned voice need the creator's word
- * that they have the right to use them. Public ones wait for review.
+ * Make your own character (F15), as one chain (0z149, owner: "very easy to use, and everything
+ * inside really works"; Character.AI's creation chain, teardown §11):
  *
- * Character.AI's creation chain (D70, teardown §11): a new character starts as an idea with up
- * to three sparks; the draft comes back into this same form for review, and ✦ writes any one
- * field again. Their looks can stand in for a photo (the picture is drawn from them). The form
- * also carries a tagline, more openings, a private sample dialog and the user's first lines.
+ * 1. The idea: a line or two, up to three sparks, what they are to you. "Write them" (a free draft
+ *    a day by plan) or "Fill in myself".
+ * 2. The draft being written (busy: say so and stay on the idea, never a stock draft).
+ * 3. One review page of cards: their picture and name on top (Find's photo card), then Basics,
+ *    Personality, First message, Their story, Voice and More details. ✦ writes any field again.
+ *    Create checks the whole page and takes the user to the first card that needs something.
+ * 4. "Meet them": their face and first message, then the chat.
  *
- * `?id=<character>` opens the same form to edit a character the user made: every field
- * starts filled, the rights already given stand until the photo or the voice clips
- * change, keeping a cloned voice costs nothing, and a public character goes back to
- * review when what others see changes.
+ * Back walks the chain back (review → idea → out). An unfinished new character is kept on the phone
+ * as it is typed (`create-draft-storage.ts`) and offered again on the next visit. `?id=` edits a
+ * character the user made: the same page, Save, and a question before changes are dropped.
+ * Looks follow design-style §10 "beautiful, not toy-like": the four main tabs' parts on iOS.
  */
 export default function CreateCharacterScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
   const editing = useAppStore((s) => (editId ? s.characters.find((c) => c.id === editId && !c.isOfficial) : undefined));
 
   if (editId && !editing) {
     return (
-      <Screen background={colors.bg}>
-        <GlassBar />
-        <LargeTitle>{t('errors.notFound')}</LargeTitle>
+      <Screen background={playful.ground}>
+        <CreateHead title={t('errors.notFound')} onBack={() => router.back()} />
       </Screen>
     );
   }
@@ -141,172 +187,174 @@ export default function CreateCharacterScreen() {
   return <CharacterForm key={editing?.id ?? 'new'} editing={editing} />;
 }
 
+type Phase = 'idea' | 'writing' | 'form' | 'meet';
+
 function CharacterForm({ editing }: { editing?: Character }) {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
+  const navigation = useNavigation();
+  const keyboardUp = useKeyboardVisible();
   const addCharacter = useAppStore((s) => s.addCharacter);
   const ownWorlds = useAppStore((s) => s.lorebooks);
   const setLoreLink = useAppStore((s) => s.setLoreLink);
   const updateCharacter = useAppStore((s) => s.updateCharacter);
-  const spendShells = useAppStore((s) => s.spendShells);
-  const shells = useAppStore((s) => s.wallet.shells);
   const locale = useAppStore((s) => s.user.locale);
-  /** Development: the server's model writes the draft and the ✦ fields (B1.4b). */
   const realAi = useAppStore((s) => !!s.settings.realAi);
   const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates, s.wallet));
   const takeQuickCreate = useAppStore((s) => s.takeQuickCreate);
   const payForPortrait = useAppStore((s) => s.payForPortrait);
   const subscription = useAppStore((s) => s.wallet.subscription);
+  const shells = useAppStore((s) => s.wallet.shells);
   const quickMax = quickCreatesPerDay(subscription, Date.now());
   // Today's drafts are used up but a bigger plan writes more: the button offers one.
   const quickUpsell = quickLeft === 0 && createTier(subscription, Date.now()) !== 'pro';
-  const { scrolled, onScroll } = useScrolledPast(40);
-  /** The mock voice training; leaving the screen cancels it, and nothing is charged. */
-  const training = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  /** Drafts and fields arrive after a wait; one that lands after leaving is dropped. */
+  const language = baseLanguage(locale);
+
+  const [phase, setPhase] = useState<Phase>(editing ? 'form' : 'idea');
+  const initial = useMemo(() => (editing ? formOf(editing) : BLANK), [editing]);
+  const [form, setForm] = useState<CreateForm>(initial);
+  const set = useCallback((patch: Partial<CreateForm>) => setForm((f) => ({ ...f, ...patch })), []);
+
+  const [idea, setIdea] = useState('');
+  const [sparks, setSparks] = useState<Spark[]>([]);
+  const [ideaRole, setIdeaRole] = useState<CharacterRole | undefined>();
+  const [ideaProblem, setIdeaProblem] = useState<string | null>(null);
+  /** A kept, unfinished character offered on the idea page. */
+  const [kept, setKept] = useState<CreateForm | null>(null);
+  const [busy, setBusy] = useState<DraftField | null>(null);
+  const asked = useRef<Partial<Record<DraftField, number>>>({});
+  const [error, setError] = useState<string | null>(null);
+  /** After the first Create tap, each card shows what it still needs. */
+  const [checked, setChecked] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [ownWorld, setOwnWorld] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [paywall, setPaywall] = useState<number | null>(null);
+  const [made, setMade] = useState<{ characterId: string; conversationId: string } | null>(null);
+
+  /** Drafts and fields arrive after a wait; one that lands after leaving, or after Back, is dropped. */
+  const run = useRef(0);
   const alive = useRef(true);
   useEffect(
     () => () => {
       alive.current = false;
-      clearTimeout(training.current);
     },
     [],
   );
 
-  /** A new character starts as an idea; editing opens the form. */
-  const [mode, setMode] = useState<'idea' | 'writing' | 'form'>(editing ? 'form' : 'idea');
-  const [idea, setIdea] = useState('');
-  const [sparks, setSparks] = useState<Spark[]>([]);
-  const [ideaRole, setIdeaRole] = useState<CharacterRole | undefined>();
-  /** The field ✦ is writing now, and how many times each was asked (every ask is a new take). */
-  const [busy, setBusy] = useState<DraftField | null>(null);
-  const asked = useRef<Partial<Record<DraftField, number>>>({});
+  // A new character: offer the one left unfinished last time.
+  useEffect(() => {
+    if (editing) return;
+    void loadCreation().then((saved) => {
+      if (alive.current && saved) setKept(saved.form);
+    });
+  }, [editing]);
 
-  /** The character already has a cloned voice (made with clips, not a stock voice). */
-  const hasTrainedVoice = !!editing && !editing.voicePreset;
-  /** Tags the form has no chip for (seed or server tags): kept as they are on save. */
-  const [otherTags] = useState(() => (editing?.tags ?? []).filter((tag) => !isTrait(tag)));
+  // Keep the unfinished new character as it is typed (Android may close the app behind the user).
+  useEffect(() => {
+    if (editing || phase !== 'form') return;
+    const timer = setTimeout(() => void saveCreation(form), SAVE_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, [editing, form, phase]);
 
-  const [imageUri, setImageUri] = useState<string | undefined>(editing?.avatarUri);
-  const [photoRights, setPhotoRights] = useState(!!editing?.avatarUri);
-  const [name, setName] = useState(editing?.name ?? '');
-  const [tagline, setTagline] = useState(editing?.tagline ?? '');
-  const [gender, setGender] = useState<CharacterGender | undefined>(editing?.gender);
-  const [age, setAge] = useState(editing?.age != null ? String(editing.age) : '');
-  const [category, setCategory] = useState<CharacterCategory>(editing?.category ?? 'original');
-  /** A world the user made (a book of theirs, `src/lib/lorebook.ts`) the new character lives in. */
-  const [ownWorld, setOwnWorld] = useState<string | null>(null);
-  const [traits, setTraits] = useState<string[]>(() => (editing?.tags ?? []).filter(isTrait));
-  const [style, setStyle] = useState<SpeakingStyle>(editing?.speakingStyle ?? 'casual');
-  const [role, setRole] = useState<CharacterRole>(editing?.role ?? 'friend');
-  const [bio, setBio] = useState(editing?.bio ?? '');
-  const [look, setLook] = useState(editing?.look ?? '');
-  const [greeting, setGreeting] = useState(editing?.greeting ?? '');
-  const [opening, setOpening] = useState(editing?.opening ?? '');
-  const [quirk, setQuirk] = useState(editing?.quirk ?? '');
-  const [greetings, setGreetings] = useState<string[]>(editing?.greetings ?? []);
-  /** The sample dialog with its slots (`{{char}}:`); the editor shows names instead. */
-  const [definition, setDefinition] = useState(editing?.definition ?? '');
-  const [starters, setStarters] = useState<string[]>(editing?.starters ?? []);
-  /** The chat's first card (D110): height in cm, their story, loves and can't stand as "a, b, c". */
-  const [height, setHeight] = useState(editing?.heightCm != null ? String(editing.heightCm) : '');
-  const [backstory, setBackstory] = useState(editing?.backstory ?? '');
-  const [likes, setLikes] = useState((editing?.likes ?? []).join(', '));
-  // What they think (0z148): written by the draft, never shown here, kept on edits.
-  const [opinions, setOpinions] = useState<string[]>(editing?.opinions ?? []);
-  const [dislikes, setDislikes] = useState((editing?.dislikes ?? []).join(', '));
-  const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>(hasTrainedVoice ? 'clone' : 'preset');
-  const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
-  const [samples, setSamples] = useState<Sample[]>([]);
-  const [voiceConsent, setVoiceConsent] = useState(hasTrainedVoice);
-  const [isPublic, setIsPublic] = useState(SHARING_OPEN && editing?.visibility === 'public');
-  const [creating, setCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [paywall, setPaywall] = useState<number | null>(null);
-
-  const language = baseLanguage(locale);
-  const dialogLabels = { char: name.trim() || t('createCharacter.dialogChar'), other: t('createCharacter.dialogOther') };
-
-  const keepsTrainedVoice = voiceMode === 'clone' && hasTrainedVoice && samples.length === 0;
-  const voice: VoiceChoice | null = keepsTrainedVoice
-    ? { kind: 'trained' }
-    : voiceMode === 'clone'
-      ? { kind: 'clone', samples: samples.length }
-      : preset
-        ? { kind: 'preset', preset }
-        : null;
-  // Only a new clone is paid for.
-  const cost = voiceMode === 'clone' && !keepsTrainedVoice ? shellCosts.characterVoiceClone : 0;
-  // A new character without a photo gets a picture drawn from their looks (once, at Create): free
-  // from a plan's allowance, else `PORTRAIT_SHELLS` (owner, 2026-10-25). Off until the image server runs.
-  const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !imageUri && !!look.trim();
-  const totalCost = cost + (drawsPortrait ? portraitPrice(subscription, Date.now()) : 0);
-  const problems = checkCreation({
-    name,
-    age,
-    bio,
-    greeting,
-    hasPhoto: !!imageUri,
-    look,
-    more: [tagline, opening, quirk, ...greetings, definition, ...starters, backstory, likes, dislikes],
-    photoRights,
-    voice,
-    voiceConsent,
-  });
-
-  const toggleTrait = (trait: string) =>
-    setTraits((prev) =>
-      prev.includes(trait) ? prev.filter((x) => x !== trait) : prev.length < MAX_TRAITS ? [...prev, trait] : prev,
-    );
-
-  /** A written draft fills the form; nothing is saved until Create. */
-  const fill = (draft: CharacterDraft) => {
-    setName(draft.name);
-    setTagline(draft.tagline);
-    setAge(String(draft.age));
-    setGender(draft.gender);
-    setTraits(draft.tags.filter(isTrait).slice(0, MAX_TRAITS));
-    setStyle(draft.speakingStyle);
-    setRole(draft.role);
-    setVoiceMode('preset');
-    setPreset(draft.voicePreset);
-    setBio(draft.bio);
-    setLook(draft.look);
-    setGreeting(draft.greeting);
-    setOpening(draft.opening);
-    setQuirk(draft.quirk);
-    setGreetings(draft.greetings);
-    setDefinition(draft.definition);
-    setStarters(draft.starters);
-    setHeight(draft.heightCm != null ? String(draft.heightCm) : '');
-    setBackstory(draft.backstory);
-    setLikes(draft.likes.join(', '));
-    setDislikes(draft.dislikes.join(', '));
-    setOpinions(draft.opinions);
+  const scroll = useRef<ScrollViewInstance>(null);
+  const sectionY = useRef<Partial<Record<CreateSection, number>>>({});
+  const at = (section: CreateSection) => (e: { nativeEvent: { layout: { y: number } } }) => {
+    sectionY.current[section] = e.nativeEvent.layout.y;
   };
+
+  /** A cloned voice made before (no stock voice): kept until a stock one is picked. */
+  const ownVoice = !!editing && !editing.voicePreset && !form.preset;
+  const voice: VoiceChoice | null = ownVoice ? { kind: 'trained' } : form.preset ? { kind: 'preset', preset: form.preset } : null;
+  const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !form.imageUri && !!form.look.trim();
+  const totalCost = drawsPortrait ? portraitPrice(subscription, Date.now()) : 0;
+  const problems = checkCreation({
+    name: form.name,
+    age: form.age,
+    bio: form.bio,
+    greeting: form.greeting,
+    hasPhoto: !!form.imageUri,
+    look: form.look,
+    more: [form.tagline, form.opening, form.quirk, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes],
+    photoRights: form.photoRights,
+    voice,
+    voiceConsent: true,
+    needsPicture: PORTRAITS_AVAILABLE,
+  });
+  const shown = checked ? problemsBySection(problems) : {};
+  const problemText = (section: CreateSection) => (shown[section] ? t(`createCharacter.problems.${shown[section]}`) : null);
+  const changed = editing ? !sameForm(form, initial) : false;
+
+  const leave = useCallback(() => {
+    if (router.canGoBack()) router.back();
+    else router.replace('/');
+  }, [router]);
+
+  /** Back walks the chain back: writing → idea, a new character's page → idea (kept), idea → out; an edit asks first. */
+  const back = useCallback(() => {
+    if (phase === 'meet') {
+      if (made) router.replace(`/chat/${made.conversationId}`);
+      return;
+    }
+    if (phase === 'writing') {
+      run.current += 1;
+      return setPhase('idea');
+    }
+    if (phase === 'form' && !editing) {
+      void saveCreation(form);
+      if (hasContent(form)) setKept(form);
+      setError(null);
+      return setPhase('idea');
+    }
+    if (phase === 'form' && editing && changed) {
+      return Alert.alert(t('createCharacter.flow.discardTitle'), undefined, [
+        { text: t('createCharacter.flow.keepEditing'), style: 'cancel' },
+        { text: t('createCharacter.flow.discard'), style: 'destructive', onPress: leave },
+      ]);
+    }
+    leave();
+  }, [phase, editing, changed, form, leave, made, router, t]);
+
+  // Android's back button walks the same chain.
+  useFocusEffect(
+    useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        back();
+        return true;
+      });
+      return () => sub.remove();
+    }, [back]),
+  );
+  // iOS's swipe back would skip the chain: only the idea page (and an untouched edit) may be swiped away.
+  useEffect(() => {
+    navigation.setOptions({ gestureEnabled: editing ? !changed : phase === 'idea' });
+  }, [navigation, editing, changed, phase]);
 
   const writeDraft = async () => {
     const ideaProblems = checkIdea(idea, sparks);
-    if (ideaProblems.length > 0) return setError(t(`createCharacter.quick.problems.${ideaProblems[0]}`));
+    if (ideaProblems.length > 0) return setIdeaProblem(t(`createCharacter.quick.problems.${ideaProblems[0]}`));
     if (quickLeft === 0) return setError(t('createCharacter.quick.limit', { max: quickMax }));
+    setIdeaProblem(null);
     setError(null);
-    setMode('writing');
+    setPhase('writing');
+    const mine = ++run.current;
     const result = await requestDraft({ idea, sparks, role: ideaRole, language }, realAi);
-    if (!alive.current) return;
+    if (!alive.current || run.current !== mine) return;
     if (!result.ok) {
-      setMode('idea');
+      setPhase('idea');
       haptic.error();
-      return setError(t(`createCharacter.quick.problems.${result.problem}`));
+      return setIdeaProblem(t(`createCharacter.quick.problems.${result.problem}`));
     }
     // Only a draft that came back counts against today's free ones.
     takeQuickCreate();
-    fill(result.draft);
-    setMode('form');
+    setForm((f) => fromDraft(f, result.draft));
+    setChecked(false);
+    setKept(null);
+    setPhase('form');
     haptic.success();
   };
 
-  /** ✦: one field written again from what the form holds now. Free, and not counted. */
+  /** ✦: one field written again from what the page holds now. Free, and not counted. */
   const rewrite = async (field: DraftField) => {
     if (busy) return;
     setBusy(field);
@@ -315,28 +363,71 @@ function CharacterForm({ editing }: { editing?: Character }) {
     asked.current[field] = attempt;
     const value = await requestField(
       field,
-      { name, tagline, bio, look, greeting, quirk, backstory, role, speakingStyle: style, tags: traits, gender, age: Number(age) || undefined },
+      {
+        name: form.name,
+        tagline: form.tagline,
+        bio: form.bio,
+        look: form.look,
+        greeting: form.greeting,
+        quirk: form.quirk,
+        backstory: form.backstory,
+        role: form.role,
+        speakingStyle: form.style,
+        tags: form.traits,
+        gender: form.gender,
+        age: Number(form.age) || undefined,
+        likes: thingsOf(form.likes),
+        dislikes: thingsOf(form.dislikes),
+      },
       language,
       attempt,
       realAi,
     );
     if (!alive.current) return;
     setBusy(null);
-    if (value == null) return setError(t('createCharacter.quick.problems.format'));
+    if (value == null) {
+      haptic.error();
+      return setError(t('createCharacter.quick.problems.busy'));
+    }
     const text = Array.isArray(value) ? value.join('\n') : value;
     const list = Array.isArray(value) ? value : [value];
-    if (field === 'tagline') setTagline(text);
-    else if (field === 'bio') setBio(text);
-    else if (field === 'look') setLook(text);
-    else if (field === 'greeting') setGreeting(text);
-    else if (field === 'opening') setOpening(text);
-    else if (field === 'quirk') setQuirk(text);
-    else if (field === 'greetings') setGreetings(list);
-    else if (field === 'starters') setStarters(list);
-    else if (field === 'backstory') setBackstory(text);
-    else if (field === 'likes') setLikes(list.join(', '));
-    else if (field === 'dislikes') setDislikes(list.join(', '));
-    else setDefinition(text);
+    const patch: Partial<CreateForm> =
+      field === 'tagline'
+        ? { tagline: text }
+        : field === 'bio'
+          ? { bio: text }
+          : field === 'look'
+            ? { look: text }
+            : field === 'greeting'
+              ? { greeting: text }
+              : field === 'opening'
+                ? { opening: text }
+                : field === 'quirk'
+                  ? { quirk: text }
+                  : field === 'greetings'
+                    ? { greetings: list }
+                    : field === 'starters'
+                      ? { starters: list }
+                      : field === 'backstory'
+                        ? { backstory: text }
+                        : field === 'likes'
+                          ? { likes: list.join(', ') }
+                          : field === 'dislikes'
+                            ? { dislikes: list.join(', ') }
+                            : field === 'opinions'
+                              ? { opinions: list }
+                              : { definition: text };
+    set(patch);
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.9, allowsEditing: true, aspect: [4, 5] });
+    const asset = result.canceled ? undefined : result.assets[0];
+    if (!asset) return;
+    if ((asset.fileSize ?? 0) > MAX_IMAGE_BYTES) return setError(t('createCharacter.imageTooLarge'));
+    setError(null);
+    // A new picture needs its own rights check.
+    set({ imageUri: asset.uri, photoRights: false });
   };
 
   /** Character.AI's "insert a chat": the latest lines of your chat with them join the sample dialog. */
@@ -347,547 +438,347 @@ function CharacterForm({ editing }: { editing?: Character }) {
     const lines = (conversation ? (s.messages[conversation.id] ?? []) : [])
       .filter((m) => m.kind === 'text' && !m.card && m.text)
       .map((m) => ({ author: m.author, text: m.text ?? '' }));
-    const next = chatToDefinition(definition, lines);
+    const next = chatToDefinition(form.definition, lines);
     if (next.added === 0) return setError(t('createCharacter.dialogNoChat'));
     setError(null);
-    setDefinition(next.definition);
+    set({ definition: next.definition });
     haptic.success();
   };
 
-  const pickSamples = async () => {
-    if (samples.length >= MAX_SAMPLES) return;
-    const result = await DocumentPicker.getDocumentAsync({
-      type: ['audio/*', 'video/*'],
-      multiple: true,
-      copyToCacheDirectory: true,
-    });
-    if (result.canceled) return;
-
-    const oversized = result.assets.find((a) => (a.size ?? 0) > MAX_SAMPLE_BYTES);
-    setError(oversized ? t('createCharacter.tooLarge', { name: oversized.name }) : null);
-
-    const accepted = result.assets
-      .filter((a) => (a.size ?? 0) <= MAX_SAMPLE_BYTES)
-      .map((a) => ({ name: a.name, uri: a.uri, size: a.size }));
-    setSamples((prev) => [...prev, ...accepted].slice(0, MAX_SAMPLES));
-    // New clips make a new voice; the word given for the old one does not cover them.
-    if (editing && accepted.length > 0) setVoiceConsent(false);
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 0.9,
-      allowsEditing: true,
-      aspect: [1, 1],
-    });
-    const asset = result.canceled ? undefined : result.assets[0];
-    if (!asset) return;
-    if ((asset.fileSize ?? 0) > MAX_IMAGE_BYTES) return setError(t('createCharacter.imageTooLarge'));
-    setError(null);
-    setImageUri(asset.uri);
-    // A new picture needs its own rights check.
-    if (editing) setPhotoRights(false);
-  };
-
-  /** What the form says about the character; creating and saving write the same fields. */
+  /** What the page says about the character; creating and saving write the same fields. */
   const fields = () => {
-    const clean = name.trim();
+    const clean = form.name.trim();
     return {
       name: clean,
-      tagline: tagline.trim() || undefined,
-      bio: bio.trim() || t('createCharacter.defaultBio', { traits: traits.join(', ') || t('createCharacter.styles.casual') }),
-      look: look.trim() || undefined,
-      category,
-      gender,
-      avatarUri: imageUri,
-      greeting: greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
-      opening: actionOf(opening) || undefined,
-      quirk: quirk.trim() || undefined,
-      greetings: cleanList(greetings),
-      definition: definition.trim() || undefined,
-      starters: cleanList(starters),
-      heightCm: heightOf(height),
-      backstory: backstory.trim() || undefined,
-      likes: thingsOf(likes),
-      dislikes: thingsOf(dislikes),
+      tagline: form.tagline.trim() || undefined,
+      bio: form.bio.trim() || t('createCharacter.defaultBio', { traits: form.traits.join(', ') || t('createCharacter.styles.casual') }),
+      look: form.look.trim() || undefined,
+      category: form.category,
+      gender: form.gender,
+      avatarUri: form.imageUri,
+      greeting: form.greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
+      opening: actionOf(form.opening) || undefined,
+      quirk: form.quirk.trim() || undefined,
+      greetings: cleanList(form.greetings),
+      definition: form.definition.trim() || undefined,
+      starters: cleanList(form.starters),
+      heightCm: heightOf(form.height),
+      backstory: form.backstory.trim() || undefined,
+      likes: thingsOf(form.likes),
+      dislikes: thingsOf(form.dislikes),
       // Left out when none, so an edit never wipes the ones filled in later (`ensureOpinions`).
-      ...(opinions.length ? { opinions } : {}),
-      tags: [...traits, ...otherTags],
-      age: Number(age),
-      speakingStyle: style,
-      role,
-      voicePreset: voiceMode === 'preset' ? preset : undefined,
-      visibility: isPublic ? ('public' as const) : ('private' as const),
+      ...(form.opinions.length ? { opinions: form.opinions } : {}),
+      tags: [...form.traits, ...(editing?.tags ?? []).filter((tag) => !isTrait(tag))],
+      age: Number(form.age),
+      speakingStyle: form.style,
+      role: form.role,
+      voicePreset: ownVoice ? undefined : form.preset,
+      visibility: 'private' as const,
     };
   };
 
-  const save = (character: Character) => {
-    const next = fields();
-    const same = (a?: string[], b?: string[]) => (a ?? []).join('\n') === (b ?? []).join('\n');
-    // The sample dialog and the looks stay private; everything else here is on their card or chat.
-    const seenByOthers =
-      next.name !== character.name ||
-      next.tagline !== character.tagline ||
-      next.bio !== character.bio ||
-      next.greeting !== character.greeting ||
-      next.opening !== character.opening ||
-      !same(next.greetings, character.greetings) ||
-      !same(next.starters, character.starters) ||
-      next.backstory !== character.backstory ||
-      !same(next.likes, character.likes) ||
-      !same(next.dislikes, character.dislikes) ||
-      next.avatarUri !== character.avatarUri;
-    updateCharacter(character.id, { ...next, review: reviewAfterEdit(character, isPublic, seenByOthers) });
-    setCreating(false);
-    router.back();
-  };
-
-  const submit = () => {
-    if (problems.length > 0) return setError(t(`createCharacter.problems.${problems[0]}`));
-    // Checked now so the paywall shows at once; charged only when the voice or picture is actually made.
+  const submit = async () => {
+    if (problems.length > 0) {
+      setChecked(true);
+      haptic.error();
+      const section = firstProblemSection(problems);
+      const y = section ? sectionY.current[section] : undefined;
+      if (y != null) scroll.current?.scrollTo({ y: Math.max(0, y - space.md), animated: true });
+      return;
+    }
     if (totalCost > 0 && shells < totalCost) return setPaywall(totalCost);
-
+    setError(null);
+    if (editing) {
+      const next = fields();
+      const same = (a?: string[], b?: string[]) => (a ?? []).join('\n') === (b ?? []).join('\n');
+      // The sample dialog and the looks stay private; everything else here is on their card or chat.
+      const seenByOthers =
+        next.name !== editing.name ||
+        next.tagline !== editing.tagline ||
+        next.bio !== editing.bio ||
+        next.greeting !== editing.greeting ||
+        next.opening !== editing.opening ||
+        !same(next.greetings, editing.greetings) ||
+        !same(next.starters, editing.starters) ||
+        next.backstory !== editing.backstory ||
+        !same(next.likes, editing.likes) ||
+        !same(next.dislikes, editing.dislikes) ||
+        next.avatarUri !== editing.avatarUri;
+      updateCharacter(editing.id, { ...next, review: reviewAfterEdit(editing, SHARING_OPEN && editing.visibility === 'public', seenByOthers) });
+      haptic.success();
+      return leave();
+    }
     setCreating(true);
-    const finish = async () => {
-      if (cost > 0 && !spendShells(cost, 'voiceClone')) {
-        setCreating(false);
-        return setPaywall(cost);
-      }
-      if (editing) return save(editing);
-      // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
-      let avatarUri = imageUri;
-      if (drawsPortrait) {
-        const drawn = await requestPortrait(look);
-        if (!alive.current) return;
-        if (drawn && payForPortrait()) avatarUri = drawn;
-      }
-      const { characterId, conversationId } = addCharacter({
-        ...fields(),
-        avatarUri,
-        handle: '@you',
-        series: 'My Creations',
-        accentIndex: Math.floor(Math.random() * 6),
-        voiceReady: true,
-        isOfficial: false,
-        review: isPublic ? 'pending' : undefined,
-      });
-      if (ownWorld) setLoreLink(ownWorld, characterId, true);
-      setCreating(false);
-      router.replace(`/chat/${conversationId}`);
-    };
-    // A new cloned voice trains first (a server job later); anything else is ready now.
-    if (cost > 0) training.current = setTimeout(() => void finish(), CLONE_MS);
-    else void finish();
+    // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
+    let avatarUri = form.imageUri;
+    if (drawsPortrait) {
+      const drawn = await requestPortrait(form.look);
+      if (!alive.current) return;
+      if (drawn && payForPortrait()) avatarUri = drawn;
+    }
+    const ids = addCharacter({
+      ...fields(),
+      avatarUri,
+      handle: '@you',
+      series: 'My Creations',
+      accentIndex: Math.floor(Math.random() * 6),
+      voiceReady: true,
+      isOfficial: false,
+    });
+    if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
+    void clearCreation();
+    setCreating(false);
+    setMade(ids);
+    setPhase('meet');
+    haptic.success();
   };
 
+  const label = (key: string) => t(`createCharacter.${key}`);
   const rewriteLabel = (field: string) => t('createCharacter.rewrite', { field: field.toLowerCase() });
+  const sparkle = (field: DraftField, name: string) => <Rewrite label={rewriteLabel(name)} busy={busy === field} disabled={busy != null && busy !== field} onPress={() => void rewrite(field)} />;
+  const hue = friendColor(form.name.trim() || 'new');
+  const dialogLabels = { char: form.name.trim() || t('createCharacter.dialogChar'), other: t('createCharacter.dialogOther') };
+
+  if (phase === 'meet' && made) {
+    return <MeetMoment form={form} onOpen={() => router.replace(`/chat/${made.conversationId}`)} />;
+  }
+
+  const title = editing ? t('createCharacter.editTitle') : t('createCharacter.title');
 
   return (
-    // An iOS form (Contacts' New Contact): inset groups on the grouped grey ground, the Store's bar below.
-    <Screen background={colors.bg}>
-      <GlassBar title={t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')} scrolled={scrolled} />
-
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior="padding"
-        keyboardVerticalOffset={90}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
-          keyboardShouldPersistTaps="handled">
-          <LargeTitle>{t(editing ? 'createCharacter.editTitle' : 'createCharacter.title')}</LargeTitle>
-
-          {mode === 'idea' ? (
+    <Screen background={playful.ground}>
+      <CreateHead title={title} onBack={back} />
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        {phase === 'writing' ? (
+          <WritingSteps />
+        ) : phase === 'idea' ? (
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
+            {kept ? (
+              <ContinueCard
+                name={kept.name.trim()}
+                onContinue={() => {
+                  setForm(kept);
+                  setKept(null);
+                  setChecked(false);
+                  setPhase('form');
+                }}
+                onDrop={() => {
+                  setKept(null);
+                  setForm(BLANK);
+                  void clearCreation();
+                }}
+              />
+            ) : null}
             <QuickIdea
               idea={idea}
-              onIdea={setIdea}
+              onIdea={(v) => {
+                setIdea(v);
+                if (ideaProblem) setIdeaProblem(null);
+              }}
               sparks={sparks}
               onSparks={setSparks}
               role={ideaRole}
               onRole={setIdeaRole}
-              onManual={() => {
-                setError(null);
-                setMode('form');
-              }}
+              problem={ideaProblem}
             />
-          ) : mode === 'writing' ? (
-            <WritingSteps />
-          ) : (
-            <>
-              <View style={styles.hero}>
-                <PressableScale
-                  onPress={pickImage}
-                  scaleTo={0.95}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('createCharacter.uploadImage')}>
-                  <View style={styles.photo}>
-                    {imageUri ? (
-                      <Image source={{ uri: imageUri }} style={styles.fillImage} contentFit="cover" />
-                    ) : (
-                      <Ionicons name="person" size={52} color={colors.white} />
-                    )}
-                  </View>
-                  <View style={styles.camera} pointerEvents="none">
-                    <Ionicons name="camera" size={16} color={colors.white} />
-                  </View>
-                </PressableScale>
-              </View>
-              {imageUri ? (
-                <InsetGroup>
-                  <ConsentRow label={t('createCharacter.photoRights')} value={photoRights} onChange={setPhotoRights} />
-                </InsetGroup>
+          </ScrollView>
+        ) : (
+          <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
+            {/* Their picture and name, as Find shows a character: tap to choose a photo. */}
+            <View onLayout={at('who')}>
+              <PressableScale onPress={() => void pickImage()} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={[styles.hero, { backgroundColor: hue.fill }]}>
+                {form.imageUri ? (
+                  <>
+                    <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+                    <LinearGradient colors={SCRIM} style={styles.heroScrim} />
+                  </>
+                ) : (
+                  <Txt style={[styles.initial, { color: hue.ink }]} maxFontSizeMultiplier={1}>
+                    {(form.name.trim()[0] ?? '?').toUpperCase()}
+                  </Txt>
+                )}
+                <View style={styles.heroFoot}>
+                  <Txt style={[styles.heroName, !form.imageUri && { color: hue.ink }]} lines={1} maxFontSizeMultiplier={1.2}>
+                    {form.name.trim() || label('namePlaceholder')}
+                  </Txt>
+                  {form.tagline.trim() ? (
+                    <Txt style={[styles.heroLine, !form.imageUri && { color: hue.ink, opacity: 0.75 }]} lines={2}>
+                      {form.tagline}
+                    </Txt>
+                  ) : null}
+                </View>
+                <View style={[styles.photoButton, !form.imageUri && styles.photoButtonOnHue]}>
+                  <Ionicons name="camera" size={16} color={form.imageUri ? colors.onMedia : hue.ink} />
+                  <Txt style={[styles.photoButtonText, !form.imageUri && { color: hue.ink }]}>{label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}</Txt>
+                </View>
+              </PressableScale>
+            </View>
+
+            <Card title={label('basics')} problem={problemText('who')}>
+              <Field label={label('name')} value={form.name} onChange={(name) => set({ name })} placeholder={label('namePlaceholder')} max={NAME_MAX} />
+              <Field label={label('tagline')} value={form.tagline} onChange={(tagline) => set({ tagline })} placeholder={label('taglinePlaceholder')} max={TAGLINE_MAX} action={sparkle('tagline', label('tagline'))} />
+              <FieldPair>
+                <View style={styles.flex}>
+                  <Field label={label('age')} value={form.age} onChange={(v) => set({ age: v.replace(/[^0-9]/g, '') })} placeholder="18+" max={3} keyboardType="number-pad" />
+                </View>
+                <View style={styles.flex}>
+                  <Field label={label('height')} value={form.height} onChange={(v) => set({ height: v.replace(/[^0-9]/g, '') })} placeholder={label('heightPlaceholder')} max={3} keyboardType="number-pad" />
+                </View>
+              </FieldPair>
+              <ChipGroup label={label('gender')}>
+                {GENDERS.map((g) => (
+                  <Chip key={g} label={t(`find.who.${g}`)} on={form.gender === g} onPress={() => set({ gender: form.gender === g ? undefined : g })} />
+                ))}
+              </ChipGroup>
+              <Field label={label('look')} value={form.look} onChange={(look) => set({ look })} placeholder={label('lookPlaceholder')} max={LOOK_MAX} multiline rows={2} action={sparkle('look', label('look'))} />
+              {form.imageUri ? (
+                <View style={styles.toggleRow}>
+                  <Txt style={[styles.toggleText, styles.flex]}>{label('photoRights')}</Txt>
+                  <Toggle value={form.photoRights} onChange={(photoRights) => set({ photoRights })} onColor={systemColors.green} accessibilityLabel={label('photoRights')} />
+                </View>
               ) : null}
+            </Card>
 
-              <GroupLabel>{t('createCharacter.basics')}</GroupLabel>
-              <InsetGroup>
-                <View style={[styles.formRow, styles.line]}>
-                  <Txt style={styles.formLabel}>{t('createCharacter.name')}</Txt>
-                  <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder={t('createCharacter.namePlaceholder')}
-                    placeholderTextColor={colors.textFaint}
-                    style={styles.formInput}
-                    maxLength={NAME_MAX}
-                    accessibilityLabel={t('createCharacter.name')}
-                  />
-                </View>
-                <View style={[styles.formRow, styles.rowWithIcon, styles.line]}>
-                  <Txt style={styles.formLabel}>{t('createCharacter.tagline')}</Txt>
-                  <TextInput
-                    value={tagline}
-                    onChangeText={setTagline}
-                    placeholder={t('createCharacter.taglinePlaceholder')}
-                    placeholderTextColor={colors.textFaint}
-                    style={styles.formInput}
-                    maxLength={TAGLINE_MAX}
-                    accessibilityLabel={t('createCharacter.tagline')}
-                  />
-                  <RewriteButton label={rewriteLabel(t('createCharacter.tagline'))} busy={busy === 'tagline'} onPress={() => void rewrite('tagline')} />
-                </View>
-                <View style={[styles.formRow, styles.line]}>
-                  <Txt style={styles.formLabel}>{t('createCharacter.age')}</Txt>
-                  <TextInput
-                    value={age}
-                    onChangeText={(v) => setAge(v.replace(/[^0-9]/g, ''))}
-                    placeholder="18+"
-                    placeholderTextColor={colors.textFaint}
-                    keyboardType="number-pad"
-                    style={styles.formInput}
-                    maxLength={3}
-                    accessibilityLabel={t('createCharacter.age')}
-                  />
-                </View>
-                <View style={[styles.formRow, styles.line]}>
-                  <Txt style={styles.formLabel}>{t('createCharacter.height')}</Txt>
-                  <TextInput
-                    value={height}
-                    onChangeText={(v) => setHeight(v.replace(/[^0-9]/g, ''))}
-                    placeholder={t('createCharacter.heightPlaceholder')}
-                    placeholderTextColor={colors.textFaint}
-                    keyboardType="number-pad"
-                    style={styles.formInput}
-                    maxLength={3}
-                    accessibilityLabel={t('createCharacter.height')}
-                  />
-                </View>
-                <View style={styles.formRow}>
-                  <Txt style={styles.formLabel}>{t('createCharacter.gender')}</Txt>
-                  <View style={styles.genders}>
-                    {GENDERS.map((g) => (
-                      <Pill key={g} label={t(`find.who.${g}`)} active={gender === g} onPress={() => setGender(gender === g ? undefined : g)} />
-                    ))}
-                  </View>
-                </View>
-              </InsetGroup>
-
-              <GroupLabel>
-                {`${t('createCharacter.personality')} · ${t('createCharacter.traitsCount', { count: traits.length, max: MAX_TRAITS })}`}
-              </GroupLabel>
-              <InsetGroup style={styles.pills}>
-                {TRAITS.map((trait) => (
-                  <Pill
-                    key={trait}
-                    label={t(`createCharacter.traitNames.${trait}`)}
-                    active={traits.includes(trait)}
-                    onPress={() => toggleTrait(trait)}
-                  />
-                ))}
-              </InsetGroup>
-
-              <GroupLabel>{t('createCharacter.style')}</GroupLabel>
-              <InsetGroup style={styles.pills}>
-                {STYLES.map((s) => (
-                  <Pill key={s} label={t(`createCharacter.styles.${s}`)} active={style === s} onPress={() => setStyle(s)} />
-                ))}
-              </InsetGroup>
-
-              <GroupLabel>{t('createCharacter.role')}</GroupLabel>
-              <InsetGroup style={styles.pills}>
+            <Card title={label('personality')} problem={problemText('personality')} onLayout={at('personality')}>
+              <ChipGroup label={t('createCharacter.traitsCount', { count: form.traits.length, max: MAX_TRAITS })}>
+                {TRAITS.map((trait) => {
+                  const on = form.traits.includes(trait);
+                  return (
+                    <Chip
+                      key={trait}
+                      label={t(`createCharacter.traitNames.${trait}`)}
+                      on={on}
+                      onPress={() => set({ traits: on ? form.traits.filter((x) => x !== trait) : form.traits.length < MAX_TRAITS ? [...form.traits, trait] : form.traits })}
+                    />
+                  );
+                })}
+              </ChipGroup>
+              <ChipGroup label={label('role')}>
                 {ROLES.map((r) => (
-                  <Pill key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => setRole(r)} />
+                  <Chip key={r} label={t(`createCharacter.roles.${r}`)} on={form.role === r} onPress={() => set({ role: r })} />
                 ))}
-              </InsetGroup>
+              </ChipGroup>
+              <ChipGroup label={label('style')}>
+                {STYLES.map((s) => (
+                  <Chip key={s} label={t(`createCharacter.styles.${s}`)} on={form.style === s} onPress={() => set({ style: s })} />
+                ))}
+              </ChipGroup>
+              <Field label={label('persona')} value={form.bio} onChange={(bio) => set({ bio })} placeholder={label('personaPlaceholder')} max={BIO_MAX} multiline rows={4} action={sparkle('bio', label('persona'))} />
+              <Field label={label('quirk')} value={form.quirk} onChange={(quirk) => set({ quirk })} placeholder={label('quirkPlaceholder')} max={QUIRK_MAX} multiline rows={2} action={sparkle('quirk', label('quirk'))} />
+            </Card>
 
-              <GroupLabel>{t('createCharacter.story')}</GroupLabel>
-              <InsetGroup>
-                <Area
-                  label={t('createCharacter.persona')}
-                  value={bio}
-                  onChange={setBio}
-                  placeholder={t('createCharacter.personaPlaceholder')}
-                  max={BIO_MAX}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.persona'))} busy={busy === 'bio'} onPress={() => void rewrite('bio')} />}
-                />
-                <Area
-                  label={t('createCharacter.backstory')}
-                  value={backstory}
-                  onChange={setBackstory}
-                  placeholder={t('createCharacter.backstoryPlaceholder')}
-                  max={BACKSTORY_MAX}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.backstory'))} busy={busy === 'backstory'} onPress={() => void rewrite('backstory')} />}
-                />
-                <Area
-                  label={t('createCharacter.look')}
-                  value={look}
-                  onChange={setLook}
-                  placeholder={t('createCharacter.lookPlaceholder')}
-                  max={LOOK_MAX}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.look'))} busy={busy === 'look'} onPress={() => void rewrite('look')} />}
-                />
-                <Area
-                  label={t('createCharacter.quirk')}
-                  value={quirk}
-                  onChange={setQuirk}
-                  placeholder={t('createCharacter.quirkPlaceholder')}
-                  max={QUIRK_MAX}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.quirk'))} busy={busy === 'quirk'} onPress={() => void rewrite('quirk')} />}
-                />
-                <Area
-                  label={t('intro.loves')}
-                  value={likes}
-                  onChange={setLikes}
-                  placeholder={t('createCharacter.likesPlaceholder')}
-                  max={THINGS_MAX * (THING_MAX + 2)}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('intro.loves'))} busy={busy === 'likes'} onPress={() => void rewrite('likes')} />}
-                />
-                <Area
-                  label={t('intro.cantStand')}
-                  value={dislikes}
-                  onChange={setDislikes}
-                  placeholder={t('createCharacter.dislikesPlaceholder')}
-                  max={THINGS_MAX * (THING_MAX + 2)}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('intro.cantStand'))} busy={busy === 'dislikes'} onPress={() => void rewrite('dislikes')} />}
-                />
-                <Area
-                  label={t('createCharacter.opening')}
-                  value={opening}
-                  onChange={setOpening}
-                  placeholder={t('createCharacter.openingPlaceholder')}
-                  max={OPENING_MAX}
-                  line
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.opening'))} busy={busy === 'opening'} onPress={() => void rewrite('opening')} />}
-                />
-                <Area
-                  label={t('createCharacter.greeting')}
-                  value={greeting}
-                  onChange={setGreeting}
-                  placeholder={t('createCharacter.greetingPlaceholder')}
-                  max={GREETING_MAX}
-                  action={<RewriteButton label={rewriteLabel(t('createCharacter.greeting'))} busy={busy === 'greeting'} onPress={() => void rewrite('greeting')} />}
-                />
-              </InsetGroup>
-
-              <SectionHead label={t('createCharacter.moreGreetings', { count: greetings.length, max: MORE_GREETINGS_MAX })}>
-                <RewriteButton label={rewriteLabel(t('createCharacter.addGreeting'))} busy={busy === 'greetings'} onPress={() => void rewrite('greetings')} />
-              </SectionHead>
-              <LineList
-                lines={greetings}
-                onChange={setGreetings}
+            <Card title={label('flow.firstMessage')} onLayout={at('first')}>
+              <Field label={label('greeting')} value={form.greeting} onChange={(greeting) => set({ greeting })} placeholder={label('greetingPlaceholder')} max={GREETING_MAX} multiline rows={3} action={sparkle('greeting', label('greeting'))} />
+              <Field label={label('opening')} value={form.opening} onChange={(opening) => set({ opening })} placeholder={label('openingPlaceholder')} max={OPENING_MAX} action={sparkle('opening', label('opening'))} />
+              <Lines
+                label={t('createCharacter.moreGreetings', { count: form.greetings.length, max: MORE_GREETINGS_MAX })}
+                lines={form.greetings}
+                onChange={(greetings) => set({ greetings })}
                 max={MORE_GREETINGS_MAX}
                 size={GREETING_MAX}
-                multiline
-                placeholder={t('createCharacter.greetingPlaceholder')}
-                addLabel={t('createCharacter.addGreeting')}
+                placeholder={label('greetingPlaceholder')}
+                addLabel={label('addGreeting')}
+                action={sparkle('greetings', label('addGreeting'))}
               />
+            </Card>
 
-              <SectionHead label={t('createCharacter.dialog')}>
-                <Ionicons name="lock-closed" size={13} color={colors.textSecondary} accessibilityLabel={t('createCharacter.privateNote')} />
-                <RewriteButton label={rewriteLabel(t('createCharacter.dialog'))} busy={busy === 'dialog'} onPress={() => void rewrite('dialog')} />
-              </SectionHead>
-              <InsetGroup>
-                <TextInput
-                  value={definitionToText(definition, dialogLabels)}
-                  onChangeText={(text) => setDefinition(textToDefinition(text, dialogLabels))}
-                  placeholder={t('createCharacter.dialogPlaceholder', dialogLabels)}
-                  placeholderTextColor={colors.textFaint}
-                  style={[styles.areaInput, styles.dialogInput, editing ? styles.line : null]}
-                  maxLength={DEFINITION_MAX}
-                  multiline
-                  textAlignVertical="top"
-                  accessibilityLabel={t('createCharacter.dialog')}
-                />
-                {editing ? (
-                  <IconRow icon="chatbubbles" fill={systemColors.green} title={t('createCharacter.addFromChat')} last onPress={addFromChat} />
+            <Card title={label('story')} onLayout={at('story')}>
+              <Field label={label('backstory')} value={form.backstory} onChange={(backstory) => set({ backstory })} placeholder={label('backstoryPlaceholder')} max={BACKSTORY_MAX} multiline rows={3} action={sparkle('backstory', label('backstory'))} />
+              <Field label={t('intro.loves')} value={form.likes} onChange={(likes) => set({ likes })} placeholder={label('likesPlaceholder')} max={THINGS_MAX * (THING_MAX + 2)} multiline rows={2} action={sparkle('likes', t('intro.loves'))} />
+              <Field label={t('intro.cantStand')} value={form.dislikes} onChange={(dislikes) => set({ dislikes })} placeholder={label('dislikesPlaceholder')} max={THINGS_MAX * (THING_MAX + 2)} multiline rows={2} action={sparkle('dislikes', t('intro.cantStand'))} />
+            </Card>
+
+            <Card title={label('voice')} problem={problemText('voice')} onLayout={at('voice')}>
+              <ChipGroup>
+                {ownVoice || (editing && !editing.voicePreset) ? (
+                  <Chip label={label('flow.ownVoice')} on={ownVoice} onPress={() => set({ preset: undefined })} icon={<Ionicons name="mic" size={15} color={ownVoice ? playful.chipOnText : playful.ink} />} />
                 ) : null}
-              </InsetGroup>
-
-              <SectionHead label={t('createCharacter.starters', { count: starters.length, max: STARTERS_MAX })}>
-                <RewriteButton label={rewriteLabel(t('createCharacter.addStarter'))} busy={busy === 'starters'} onPress={() => void rewrite('starters')} />
-              </SectionHead>
-              <LineList
-                lines={starters}
-                onChange={setStarters}
-                max={STARTERS_MAX}
-                size={STARTER_MAX}
-                placeholder={t('createCharacter.starterPlaceholder')}
-                addLabel={t('createCharacter.addStarter')}
-              />
-
-              <GroupLabel>{t('createCharacter.voice')}</GroupLabel>
-              <Segmented
-                style={styles.segmented}
-                options={[
-                  { value: 'preset', label: t('createCharacter.voicePreset') },
-                  { value: 'clone', label: t('createCharacter.voiceClone', { count: shellCosts.characterVoiceClone }) },
-                ]}
-                value={voiceMode}
-                onChange={setVoiceMode}
-              />
-
-              {voiceMode === 'preset' ? (
-                // A picker list, iOS style: the chosen voice gets the tint check; the wave plays on it.
-                <InsetGroup style={styles.groupGap}>
-                  {VOICES.map((v, i) => (
-                    <Pressable
-                      key={v}
-                      onPress={() => setPreset(v)}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: preset === v }}
-                      style={({ pressed }) => [styles.voiceRow, pressed && styles.pressed]}>
-                      <Anim name="voiceWave" size={24} tint={preset === v ? colors.primary : colors.textFaint} />
-                      <View style={[styles.voiceBody, i < VOICES.length - 1 && styles.line]}>
-                        <Txt style={styles.rowText}>{t(`createCharacter.voices.${v}`)}</Txt>
-                        {preset === v ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
-                      </View>
-                    </Pressable>
-                  ))}
-                </InsetGroup>
-              ) : (
-                <>
-                  <InsetGroup style={styles.groupGap}>
-                    <IconRow
-                      icon="mic"
-                      fill={systemColors.indigo}
-                      title={t('createCharacter.addClips')}
-                      meta={samples.length > 0 ? t('createCharacter.samples', { count: samples.length }) : undefined}
-                      last={samples.length === 0}
-                      onPress={samples.length < MAX_SAMPLES ? () => void pickSamples() : undefined}
-                    />
-                    {samples.map((sample, index) => (
-                      <View key={`${sample.uri}-${index}`} style={[styles.sampleRow, index < samples.length - 1 && styles.line]}>
-                        <Ionicons name="musical-note" size={16} color={colors.textSecondary} />
-                        <Txt style={[styles.sampleName, styles.flex]} lines={1}>
-                          {sample.name}
-                        </Txt>
-                        <PressableScale
-                          hitSlop={14}
-                          scaleTo={0.85}
-                          accessibilityLabel={t('a11y.removeClip')}
-                          onPress={() => setSamples((prev) => prev.filter((_, i) => i !== index))}>
-                          <Ionicons name="remove-circle" size={22} color={systemColors.red} />
-                        </PressableScale>
-                      </View>
-                    ))}
-                  </InsetGroup>
-                  <Txt style={styles.footer}>{t('createCharacter.uploadVoicesBox')}</Txt>
-                  <InsetGroup style={styles.groupGap}>
-                    <ConsentRow label={t('createCharacter.voiceConsent')} value={voiceConsent} onChange={setVoiceConsent} />
-                  </InsetGroup>
-                </>
-              )}
-
-              {!editing && ownWorlds.length ? (
-                <>
-                  <GroupLabel>{t('find.worlds')}</GroupLabel>
-                  <InsetGroup style={styles.pills}>
-                    {ownWorlds.map((book) => (
-                      <Pill
-                        key={book.id}
-                        label={book.name}
-                        active={ownWorld === book.id}
-                        onPress={() => setOwnWorld((id) => (id === book.id ? null : book.id))}
-                      />
-                    ))}
-                  </InsetGroup>
-                </>
-              ) : null}
-
-              <GroupLabel>{t('find.category')}</GroupLabel>
-              <InsetGroup style={styles.pills}>
-                {CATEGORIES.map((key) => (
-                  <Pill key={key} label={t(`find.categories.${key}`)} active={category === key} onPress={() => setCategory(key)} />
+                {VOICES.map((v) => (
+                  <Chip key={v} label={t(`createCharacter.voices.${v}`)} on={!ownVoice && form.preset === v} onPress={() => set({ preset: v })} />
                 ))}
-              </InsetGroup>
+              </ChipGroup>
+            </Card>
 
-              {SHARING_OPEN ? (
-                <>
-                  <GroupLabel>{t('createCharacter.visibility')}</GroupLabel>
-                  <Segmented
-                    style={styles.segmented}
-                    options={[
-                      { value: 'private', label: t('createCharacter.private') },
-                      { value: 'public', label: t('createCharacter.public') },
-                    ]}
-                    value={isPublic ? 'public' : 'private'}
-                    onChange={(v) => setIsPublic(v === 'public')}
+            <Card onLayout={at('more')}>
+              <Disclosure label={label('flow.more')} open={moreOpen} onPress={() => setMoreOpen((o) => !o)} />
+              {moreOpen ? (
+                <Animated.View entering={FadeInDown.duration(200)}>
+                  <View style={styles.fieldHead}>
+                    <Txt style={[styles.subLabel, styles.flex]}>{label('dialog')}</Txt>
+                    <Ionicons name="lock-closed" size={13} color={colors.textSecondary} accessibilityLabel={label('privateNote')} />
+                    {sparkle('dialog', label('dialog'))}
+                  </View>
+                  <TextInput
+                    value={definitionToText(form.definition, dialogLabels)}
+                    onChangeText={(text) => set({ definition: textToDefinition(text, dialogLabels) })}
+                    placeholder={t('createCharacter.dialogPlaceholder', dialogLabels)}
+                    placeholderTextColor={colors.textFaint}
+                    style={styles.dialog}
+                    maxLength={DEFINITION_MAX}
+                    multiline
+                    textAlignVertical="top"
+                    accessibilityLabel={label('dialog')}
                   />
-                </>
+                  {editing ? (
+                    <Pressable onPress={addFromChat} accessibilityRole="button" style={styles.inlineAction}>
+                      <Ionicons name="chatbubbles" size={16} color={colors.primary} />
+                      <Txt style={styles.inlineActionText}>{label('addFromChat')}</Txt>
+                    </Pressable>
+                  ) : null}
+                  <Lines
+                    label={t('createCharacter.starters', { count: form.starters.length, max: STARTERS_MAX })}
+                    lines={form.starters}
+                    onChange={(starters) => set({ starters })}
+                    max={STARTERS_MAX}
+                    size={STARTER_MAX}
+                    placeholder={label('starterPlaceholder')}
+                    addLabel={label('addStarter')}
+                    action={sparkle('starters', label('addStarter'))}
+                  />
+                  {!editing && ownWorlds.length ? (
+                    <ChipGroup label={t('find.worlds')}>
+                      {ownWorlds.map((book) => (
+                        <Chip key={book.id} label={book.name} on={ownWorld === book.id} onPress={() => setOwnWorld((x) => (x === book.id ? null : book.id))} />
+                      ))}
+                    </ChipGroup>
+                  ) : null}
+                  <ChipGroup label={t('find.category')}>
+                    {CATEGORIES.map((key) => (
+                      <Chip key={key} label={t(`find.categories.${key}`)} on={form.category === key} onPress={() => set({ category: key })} />
+                    ))}
+                  </ChipGroup>
+                </Animated.View>
               ) : null}
-            </>
-          )}
-        </ScrollView>
+            </Card>
+          </ScrollView>
+        )}
 
-        {/* The Store's bar: the one button, then one line on what happens next. */}
-        {mode === 'idea' ? (
-          <StoreBuyBar
+        {/* One button at the bottom; it hides while typing so the field stays in view. */}
+        {phase === 'idea' && !keyboardUp ? (
+          <BottomBar
             label={quickUpsell ? t('createCharacter.quick.more') : t('createCharacter.quick.write')}
             left={<Ionicons name="sparkles" size={18} color={colors.textOnPrimary} />}
             disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
-            caption={
-              quickLeft === 0
-                ? t('createCharacter.quick.limit', { max: quickMax })
-                : t('createCharacter.quick.left', { count: quickLeft, max: quickMax })
-            }
-            onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}>
-            {error ? <Txt style={styles.error}>{error}</Txt> : null}
-          </StoreBuyBar>
-        ) : mode === 'form' ? (
-          <StoreBuyBar
-            label={
-              creating
-                ? t('createCharacter.creating')
-                : editing && totalCost === 0
-                  ? t('createCharacter.save')
-                  : totalCost > 0
-                    ? t('createCharacter.create', { count: totalCost })
-                    : t('createCharacter.createFree')
-            }
-            left={totalCost > 0 && !creating ? <ShellIcon size={18} /> : undefined}
-            disabled={creating || busy != null}
-            caption={t(isPublic ? 'createCharacter.reviewNote' : 'createCharacter.privateNote')}
-            onPress={submit}>
-            {error ? <Txt style={styles.error}>{error}</Txt> : null}
-          </StoreBuyBar>
+            error={error}
+            onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}
+            secondary={{
+              label: `${t('createCharacter.quick.manual')} · ${quickLeft === 0 ? t('createCharacter.quick.limit', { max: quickMax }) : t('createCharacter.quick.left', { count: quickLeft, max: quickMax })}`,
+              onPress: () => {
+                setError(null);
+                setChecked(false);
+                setPhase('form');
+              },
+            }}
+          />
+        ) : phase === 'form' && !keyboardUp ? (
+          <BottomBar
+            label={editing ? t('createCharacter.save') : totalCost > 0 ? t('createCharacter.create', { count: totalCost }) : t('createCharacter.createFree')}
+            busy={creating}
+            disabled={busy != null || (!!editing && !changed)}
+            caption={t('createCharacter.privateNote')}
+            error={error ?? (checked && problems.length ? t(`createCharacter.problems.${problems[0]}`) : null)}
+            onPress={() => void submit()}
+          />
         ) : null}
       </KeyboardAvoidingView>
 
@@ -896,69 +787,35 @@ function CharacterForm({ editing }: { editing?: Character }) {
   );
 }
 
-/** A labelled text area in a form group, with an optional control (✦) at the label's end. */
-function Area({
-  label,
-  value,
-  onChange,
-  placeholder,
-  max,
-  line,
-  action,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  max: number;
-  line?: boolean;
-  action?: React.ReactNode;
-}) {
-  return (
-    <View style={[styles.area, line && styles.line]}>
-      <View style={styles.areaHead}>
-        <Txt style={[styles.areaLabel, styles.flex]}>{label}</Txt>
-        {action}
-      </View>
-      <TextInput
-        value={value}
-        onChangeText={onChange}
-        placeholder={placeholder}
-        placeholderTextColor={colors.textFaint}
-        style={styles.areaInput}
-        maxLength={max}
-        multiline
-        textAlignVertical="top"
-        accessibilityLabel={label}
-      />
-    </View>
-  );
-}
-
 /** Up to `max` short lines (more openings, first lines): each can be removed; a row adds the next. */
-function LineList({
+function Lines({
+  label,
   lines,
   onChange,
   max,
   size,
-  multiline,
   placeholder,
   addLabel,
+  action,
 }: {
+  label: string;
   lines: string[];
   onChange: (lines: string[]) => void;
   max: number;
   size: number;
-  multiline?: boolean;
   placeholder: string;
   addLabel: string;
+  action?: React.ReactNode;
 }) {
   const { t } = useTranslation();
-  const canAdd = lines.length < max;
   return (
-    <InsetGroup>
+    <View style={styles.lines}>
+      <View style={styles.fieldHead}>
+        <Txt style={[styles.subLabel, styles.flex]}>{label}</Txt>
+        {action}
+      </View>
       {lines.map((line, index) => (
-        <View key={index} style={[styles.lineRow, (index < lines.length - 1 || canAdd) && styles.line]}>
+        <View key={index} style={styles.lineRow}>
           <TextInput
             value={line}
             onChangeText={(text) => onChange(lines.map((l, i) => (i === index ? text : l)))}
@@ -966,96 +823,101 @@ function LineList({
             placeholderTextColor={colors.textFaint}
             style={[styles.lineInput, styles.flex]}
             maxLength={size}
-            multiline={multiline}
+            multiline
             accessibilityLabel={placeholder}
           />
-          <PressableScale
-            hitSlop={14}
-            scaleTo={0.85}
-            accessibilityLabel={t('createCharacter.remove')}
-            onPress={() => onChange(lines.filter((_, i) => i !== index))}>
-            <Ionicons name="remove-circle" size={22} color={systemColors.red} />
-          </PressableScale>
+          <SmallRound icon="close" label={t('createCharacter.remove')} onPress={() => onChange(lines.filter((_, i) => i !== index))} color={colors.textSecondary} />
         </View>
       ))}
-      {canAdd ? (
-        <Pressable
-          onPress={() => onChange([...lines, ''])}
-          accessibilityRole="button"
-          style={({ pressed }) => [styles.lineRow, pressed && styles.pressed]}>
-          <Ionicons name="add-circle" size={22} color={systemColors.green} />
-          <Txt style={styles.rowText}>{addLabel}</Txt>
+      {lines.length < max ? (
+        <Pressable onPress={() => onChange([...lines, ''])} accessibilityRole="button" style={styles.inlineAction}>
+          <Ionicons name="add-circle" size={18} color={colors.primary} />
+          <Txt style={styles.inlineActionText}>{addLabel}</Txt>
         </Pressable>
       ) : null}
-    </InsetGroup>
-  );
-}
-
-/** The creator's word on rights and consent: the line, then the platform's own switch. */
-function ConsentRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <View style={styles.consent}>
-      <Txt style={[styles.consentText, styles.flex]}>{label}</Txt>
-      <Toggle value={value} onChange={onChange} onColor={systemColors.green} accessibilityLabel={label} />
     </View>
   );
 }
 
-const PHOTO = 112;
-const CAMERA = 32;
+/** "Meet them": their face, their name and the first thing they will say, then the chat. */
+function MeetMoment({ form, onOpen }: { form: CreateForm; onOpen: () => void }) {
+  const { t } = useTranslation();
+  const you = useAppStore((s) => s.user.displayName);
+  const name = form.name.trim();
+  const hue = friendColor(name || 'new');
+  const greeting = (form.greeting.trim() || t('createCharacter.defaultGreeting', { name })).replace(/\{\{user\}\}/g, you);
+  return (
+    <Screen background={playful.ground}>
+      <View style={styles.meet}>
+        <Animated.View entering={ZoomIn.springify().damping(14)} style={[styles.meetFace, { backgroundColor: hue.fill }]}>
+          {form.imageUri ? (
+            <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
+          ) : (
+            <Txt style={[styles.meetInitial, { color: hue.ink }]} maxFontSizeMultiplier={1}>
+              {(name[0] ?? '?').toUpperCase()}
+            </Txt>
+          )}
+        </Animated.View>
+        <Animated.View entering={FadeIn.delay(220).duration(260)}>
+          <Txt style={styles.meetTitle} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+            {t('createCharacter.flow.meet', { name })}
+          </Txt>
+        </Animated.View>
+        <Animated.View entering={FadeInDown.delay(420).duration(280)} style={styles.meetBubble}>
+          <Txt style={styles.meetBubbleText} lines={5}>
+            {greeting}
+          </Txt>
+        </Animated.View>
+      </View>
+      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={18} color={colors.textOnPrimary} />} />
+    </Screen>
+  );
+}
+
+const HERO_H = 300;
+const MEET = 148;
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  hero: { alignItems: 'center', paddingTop: space.md, paddingBottom: space.lg },
-  photo: {
-    width: PHOTO,
-    height: PHOTO,
-    borderRadius: PHOTO / 2,
-    // iOS Contacts' empty photo: a grey disc with a white figure.
-    backgroundColor: systemColors.gray2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  camera: {
+  flex: { flex: 1, minWidth: 0 },
+  // Find's featured card: radius 30, a scrim at the foot, the name in heavy rounded white.
+  hero: { height: HERO_H, marginHorizontal: space.lg, marginTop: space.sm, borderRadius: 30, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' },
+  heroScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
+  initial: { fontFamily: fonts.playful, fontSize: 112, lineHeight: 128, marginTop: -40 },
+  heroFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 18 },
+  heroName: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: colors.onMedia },
+  heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, fontWeight: '600', color: colors.onMediaMuted },
+  // Clear glass on a photo (Find's "Say hi"); on a colour, the same shape a shade over it.
+  photoButton: {
     position: 'absolute',
-    right: -2,
-    bottom: 2,
-    width: CAMERA,
-    height: CAMERA,
-    borderRadius: CAMERA / 2,
+    top: 14,
+    right: 14,
+    height: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primary,
-    borderWidth: 2,
-    borderColor: colors.bg,
+    gap: 6,
+    backgroundColor: colors.onMediaGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
   },
-  fillImage: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  rowText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  formRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, marginLeft: space.lg, paddingRight: space.lg },
-  // A row that ends in a 44pt ✦ keeps its right edge where the text fields end.
-  rowWithIcon: { paddingRight: space.xs, gap: space.xs },
-  formLabel: { width: 72, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  formInput: { flex: 1, minHeight: 48, fontSize: 17, letterSpacing: -0.4, color: colors.text, textAlign: 'right' },
-  genders: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: space.sm },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },
-  area: { marginLeft: space.lg, paddingRight: space.lg, paddingBottom: 6 },
-  areaHead: { flexDirection: 'row', alignItems: 'center', minHeight: 40, marginRight: -space.md },
-  areaLabel: { fontSize: 13, color: colors.textSecondary },
-  areaInput: { minHeight: 72, paddingTop: 4, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  dialogInput: { minHeight: 132, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 12 },
-  lineRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, marginLeft: space.lg, paddingRight: space.lg },
-  lineInput: { minHeight: 44, paddingVertical: 10, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  segmented: { marginHorizontal: space.lg },
-  groupGap: { marginTop: space.md },
-  voiceRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  voiceBody: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
-  sampleRow: { minHeight: 46, flexDirection: 'row', alignItems: 'center', gap: space.sm, marginLeft: space.lg, paddingRight: space.lg },
-  sampleName: { fontSize: 15, color: colors.text },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  consent: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: 10 },
-  consentText: { fontSize: 15, lineHeight: 20, letterSpacing: -0.2, color: colors.text },
-  error: { fontSize: 13, textAlign: 'center', color: systemColors.red },
+  photoButtonOnHue: { backgroundColor: 'rgba(255,255,255,0.35)', borderColor: 'transparent' },
+  photoButtonText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.onMedia },
+  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.md },
+  toggleText: { fontSize: 15, lineHeight: 20, color: colors.text },
+  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginTop: space.sm, marginBottom: 6 },
+  subLabel: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
+  dialog: { minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 22, color: colors.text },
+  inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
+  inlineActionText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.primary },
+  lines: { marginTop: space.sm },
+  lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
+  lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 21, color: colors.text },
+  meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
+  meetFace: { width: MEET, height: MEET, borderRadius: MEET / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  meetInitial: { fontFamily: fonts.playful, fontSize: 64, lineHeight: 76 },
+  meetTitle: { textAlign: 'center', fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: playful.ink },
+  // Their first message as the chat shows theirs: a white bubble.
+  meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: playful.card },
+  meetBubbleText: { fontSize: 17, lineHeight: 23, color: colors.text },
 });

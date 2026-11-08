@@ -267,7 +267,8 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
   ].join('\n');
 }
 
-export type DraftProblem = 'format' | 'realPerson' | 'owned' | 'minors' | 'explicit';
+/** `busy`: the model did not answer (the app only; the server never says it). */
+export type DraftProblem = 'format' | 'busy' | 'realPerson' | 'owned' | 'minors' | 'explicit';
 export type DraftResult = { ok: true; draft: CharacterDraft } | { ok: false; problem: DraftProblem };
 
 const REFUSALS: Record<string, DraftProblem> = {

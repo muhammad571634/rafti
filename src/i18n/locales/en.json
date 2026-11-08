@@ -1175,8 +1175,10 @@
         "explicit": "Keep it within our content rules",
         "realPerson": "Characters can't be real people",
         "owned": "Make them your own, not someone from a show or a game",
-        "format": "That didn't work. Try again"
-      }
+        "format": "That didn't work. Try again",
+        "busy": "Busy right now. Try again in a moment"
+      },
+      "ask": "Who do you want to meet?"
     },
     "sparks": {
       "gentleStubborn": "Gentle, stubborn",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "Something you might say first",
     "addStarter": "Add a line",
     "rewrite": "Write {{field}} again",
-    "remove": "Remove"
+    "remove": "Remove",
+    "flow": {
+      "continue": "Continue your character?",
+      "continueNamed": "Continue {{name}}?",
+      "open": "Continue",
+      "startOver": "Start over",
+      "addPhoto": "Add photo",
+      "changePhoto": "Change photo",
+      "firstMessage": "First message",
+      "more": "More details",
+      "ownVoice": "Their own voice",
+      "meet": "Meet {{name}}",
+      "startChat": "Start chatting",
+      "discardTitle": "Discard changes?",
+      "discard": "Discard",
+      "keepEditing": "Keep editing"
+    }
   },
   "dating": {
     "title": "Dating",

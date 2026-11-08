@@ -1,65 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { StyleSheet, TextInput, View } from 'react-native';
+import Animated, { Easing, FadeIn, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
 
 import { IDEA_MAX, SPARKS, SPARKS_MAX, type Spark } from '@/ai/character-draft';
 import { DRAFT_MS } from '@/ai/character-studio';
-import { GroupLabel, STORE } from '@/components/plans/store-look';
-import { IconRow, InsetGroup, PressableScale, Txt } from '@/components/ui';
+import { PressableScale, Txt } from '@/components/ui';
 import { ROLES } from '@/lib/create-character';
-import { aurora, colors, space, systemColors } from '@/theme';
+import { colors, fonts, playful, space, systemColors } from '@/theme';
 import type { CharacterRole } from '@/types';
 
+import { Card, Chip, ChipGroup, SmallRound } from './kit';
+
 /**
- * Quick create's parts of the create screen (Character.AI's creation chain, teardown §11): the
- * idea with its sparks, the steps while the draft is written, and the ✦ that writes one field
- * of the form again. The look is the form's own (an iOS grouped form); the design pass comes later.
+ * Quick create's parts of the create screen (Character.AI's creation chain, teardown §11), in the
+ * main tabs' look (0z149, design-style §10 "beautiful, not toy-like"): the idea in a white card
+ * with its sparks and role as soft chips, and a calm portrait that breathes while the draft is
+ * written. `Pill` stays for the other forms that use it.
  */
 
-/** One choice as a capsule: system grey, or the Store's tint when chosen. */
+/** One choice as a soft capsule, ink when chosen (personas, lore, streams). */
 export function Pill({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
-  return (
-    <PressableScale
-      onPress={onPress}
-      scaleTo={0.94}
-      dimOnPress={false}
-      accessibilityRole="button"
-      accessibilityState={{ selected: active }}
-      style={[styles.pill, active && styles.pillOn]}>
-      <Txt style={[styles.pillText, active && styles.pillTextOn]}>{label}</Txt>
-    </PressableScale>
-  );
-}
-
-/** A group label with a control at its end (✦, shuffle). */
-export function SectionHead({ label, children }: { label: string; children?: React.ReactNode }) {
-  return (
-    <View style={styles.head}>
-      <Txt style={[styles.headText, styles.flex]}>{label}</Txt>
-      {children}
-    </View>
-  );
-}
-
-/** ✦: write this field again. A spinner while it is being written. */
-export function RewriteButton({ label, busy, disabled, onPress }: { label: string; busy: boolean; disabled?: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled || busy}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ busy, disabled: !!disabled }}
-      style={styles.icon}>
-      {busy ? (
-        <ActivityIndicator size="small" color={colors.primary} />
-      ) : (
-        <Ionicons name="sparkles" size={18} color={disabled ? colors.textFaint : colors.primary} />
-      )}
-    </Pressable>
-  );
+  return <Chip label={label} on={active} onPress={onPress} />;
 }
 
 /** Six sparks on show: the picked ones first, the rest from the shuffled page. */
@@ -69,7 +32,7 @@ function shownSparks(picked: readonly Spark[], page: number) {
   return [...picked, ...[...rest.slice(from), ...rest.slice(0, from)].slice(0, Math.max(0, 6 - picked.length))];
 }
 
-/** The idea: a sentence or two, up to three sparks and, if they like, what the character is to them. */
+/** The idea: a sentence or two, up to three sparks and, if they like, what they are to you. */
 export function QuickIdea({
   idea,
   onIdea,
@@ -77,7 +40,7 @@ export function QuickIdea({
   onSparks,
   role,
   onRole,
-  onManual,
+  problem,
 }: {
   idea: string;
   onIdea: (idea: string) => void;
@@ -85,18 +48,20 @@ export function QuickIdea({
   onSparks: (sparks: Spark[]) => void;
   role?: CharacterRole;
   onRole: (role?: CharacterRole) => void;
-  onManual: () => void;
+  problem?: string | null;
 }) {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const toggle = (spark: Spark) =>
-    onSparks(
-      sparks.includes(spark) ? sparks.filter((s) => s !== spark) : sparks.length < SPARKS_MAX ? [...sparks, spark] : sparks,
-    );
+    onSparks(sparks.includes(spark) ? sparks.filter((s) => s !== spark) : sparks.length < SPARKS_MAX ? [...sparks, spark] : sparks);
 
   return (
     <>
-      <InsetGroup style={styles.first}>
+      <Txt style={styles.ask} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        {t('createCharacter.quick.ask')}
+      </Txt>
+
+      <Card problem={problem}>
         <TextInput
           value={idea}
           onChangeText={onIdea}
@@ -109,40 +74,56 @@ export function QuickIdea({
           accessibilityLabel={t('createCharacter.quick.idea')}
         />
         <Txt style={styles.count}>{`${idea.length}/${IDEA_MAX}`}</Txt>
-      </InsetGroup>
+      </Card>
 
-      <SectionHead label={t('createCharacter.quick.sparks', { count: sparks.length, max: SPARKS_MAX })}>
-        <Pressable
-          onPress={() => setPage((p) => p + 1)}
-          accessibilityRole="button"
-          accessibilityLabel={t('createCharacter.quick.shuffle')}
-          style={styles.icon}>
-          <Ionicons name="shuffle" size={20} color={colors.textSecondary} />
-        </Pressable>
-      </SectionHead>
-      <InsetGroup style={styles.pills}>
-        {shownSparks(sparks, page).map((spark) => (
-          <Pill key={spark} label={t(`createCharacter.sparks.${spark}`)} active={sparks.includes(spark)} onPress={() => toggle(spark)} />
-        ))}
-      </InsetGroup>
-
-      <GroupLabel>{t('createCharacter.role')}</GroupLabel>
-      <InsetGroup style={styles.pills}>
-        {ROLES.map((r) => (
-          <Pill key={r} label={t(`createCharacter.roles.${r}`)} active={role === r} onPress={() => onRole(role === r ? undefined : r)} />
-        ))}
-      </InsetGroup>
-
-      <InsetGroup style={styles.gap}>
-        <IconRow icon="create-outline" fill={systemColors.gray} title={t('createCharacter.quick.manual')} last onPress={onManual} />
-      </InsetGroup>
+      <Card>
+        <ChipGroup
+          label={t('createCharacter.quick.sparks', { count: sparks.length, max: SPARKS_MAX })}
+          right={<SmallRound icon="shuffle" label={t('createCharacter.quick.shuffle')} onPress={() => setPage((p) => p + 1)} />}>
+          {shownSparks(sparks, page).map((spark) => (
+            <Chip key={spark} label={t(`createCharacter.sparks.${spark}`)} on={sparks.includes(spark)} onPress={() => toggle(spark)} />
+          ))}
+        </ChipGroup>
+        <ChipGroup label={t('createCharacter.role')}>
+          {ROLES.map((r) => (
+            <Chip key={r} label={t(`createCharacter.roles.${r}`)} on={role === r} onPress={() => onRole(role === r ? undefined : r)} />
+          ))}
+        </ChipGroup>
+      </Card>
     </>
+  );
+}
+
+/** A kept, unfinished character offered back: continue it or start again. */
+export function ContinueCard({ name, onContinue, onDrop }: { name: string; onContinue: () => void; onDrop: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <Animated.View entering={FadeIn.duration(200)}>
+      <Card>
+        <View style={styles.continueRow}>
+          <View style={styles.continueIcon}>
+            <Ionicons name="document-text" size={20} color={playful.ink} />
+          </View>
+          <Txt style={[styles.continueText, styles.grow]} lines={2}>
+            {name ? t('createCharacter.flow.continueNamed', { name }) : t('createCharacter.flow.continue')}
+          </Txt>
+        </View>
+        <View style={styles.continueButtons}>
+          <PressableScale onPress={onContinue} scaleTo={0.96} accessibilityRole="button" style={[styles.smallButton, styles.smallOn]}>
+            <Txt style={[styles.smallText, styles.smallTextOn]}>{t('createCharacter.flow.open')}</Txt>
+          </PressableScale>
+          <PressableScale onPress={onDrop} scaleTo={0.96} accessibilityRole="button" style={styles.smallButton}>
+            <Txt style={styles.smallText}>{t('createCharacter.flow.startOver')}</Txt>
+          </PressableScale>
+        </View>
+      </Card>
+    </Animated.View>
   );
 }
 
 const STEPS = ['who', 'talk', 'picture', 'last'] as const;
 
-/** While the draft is written: a glowing portrait and four steps ticking off over `DRAFT_MS`. */
+/** While the draft is written: an empty portrait breathes, its ring turning, and four steps tick off over `DRAFT_MS`. */
 export function WritingSteps() {
   const { t } = useTranslation();
   const still = useReducedMotion();
@@ -152,61 +133,80 @@ export function WritingSteps() {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  const glow = useSharedValue(0);
+  const breath = useSharedValue(0);
+  const turn = useSharedValue(0);
   useEffect(() => {
-    if (!still) glow.value = withRepeat(withTiming(1, { duration: 700 }), -1, true);
-  }, [glow, still]);
-  const glowStyle = useAnimatedStyle(() => ({ opacity: 0.6 + glow.value * 0.4, transform: [{ scale: 0.96 + glow.value * 0.04 }] }));
+    if (still) return;
+    breath.value = withRepeat(withTiming(1, { duration: 1100 }), -1, true);
+    turn.value = withRepeat(withTiming(1, { duration: 2400, easing: Easing.linear }), -1, false);
+  }, [breath, turn, still]);
+  const faceStyle = useAnimatedStyle(() => ({ transform: [{ scale: 0.96 + breath.value * 0.04 }] }));
+  const ringStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.value * 360}deg` }] }));
 
   return (
     <View style={styles.writing}>
-      <Animated.View style={[styles.portrait, glowStyle]}>
-        <Ionicons name="sparkles" size={40} color={colors.white} />
-      </Animated.View>
-      <Txt style={styles.writingTitle}>{t('createCharacter.quick.writing')}</Txt>
-      <InsetGroup style={styles.steps}>
+      <View style={styles.portraitBox}>
+        <Animated.View style={[styles.portraitRing, ringStyle]} />
+        <Animated.View style={[styles.portrait, faceStyle]}>
+          <Ionicons name="sparkles" size={44} color={colors.primary} />
+        </Animated.View>
+      </View>
+      <Txt style={styles.writingTitle} maxFontSizeMultiplier={1.3}>
+        {t('createCharacter.quick.writing')}
+      </Txt>
+      <Card>
         {STEPS.map((key, i) => (
-          <View key={key} style={[styles.step, i < STEPS.length - 1 && styles.line]}>
-            {i < step ? (
-              <Ionicons name="checkmark-circle" size={22} color={systemColors.green} />
-            ) : i === step ? (
-              <ActivityIndicator size="small" color={colors.textSecondary} style={styles.stepMark} />
-            ) : (
-              <View style={styles.stepMark}>
-                <View style={styles.stepDot} />
-              </View>
-            )}
+          <View key={key} style={styles.step}>
+            <StepMark state={i < step ? 'done' : i === step ? 'now' : 'later'} />
             <Txt style={[styles.stepText, i > step && styles.stepLater]}>{t(`createCharacter.quick.steps.${key}`)}</Txt>
           </View>
         ))}
-      </InsetGroup>
+      </Card>
     </View>
   );
 }
 
+function StepMark({ state }: { state: 'done' | 'now' | 'later' }) {
+  const pop = useSharedValue(state === 'done' ? 1 : 0.6);
+  useEffect(() => {
+    if (state === 'done') pop.value = withSpring(1, { damping: 9, stiffness: 260 });
+  }, [pop, state]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }] }));
+  if (state === 'done') {
+    return (
+      <Animated.View style={[styles.mark, styles.markDone, style]}>
+        <Ionicons name="checkmark" size={16} color={colors.white} />
+      </Animated.View>
+    );
+  }
+  return <View style={[styles.mark, state === 'now' ? styles.markNow : styles.markLater]} />;
+}
+
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },
-  pill: { height: 34, paddingHorizontal: 14, borderRadius: 17, justifyContent: 'center', backgroundColor: systemColors.fill },
-  pillOn: { backgroundColor: STORE.tint },
-  pillText: { fontSize: 15, letterSpacing: -0.2, color: colors.text },
-  pillTextOn: { fontWeight: '600', color: STORE.onTint },
-  // Matches GroupLabel, with room for a 44pt control at the end.
-  head: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: 10, marginLeft: space.lg * 2, marginRight: space.sm },
-  headText: { fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: aurora.textMuted, textTransform: 'uppercase' },
-  icon: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  idea: { minHeight: 112, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  count: { paddingHorizontal: space.lg, paddingBottom: 10, textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  first: { marginTop: 14 },
-  gap: { marginTop: space.xxl },
-  writing: { alignItems: 'center', paddingTop: space.huge },
-  portrait: { width: 112, height: 112, borderRadius: 56, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primaryFill },
-  writingTitle: { marginTop: 26, fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: 0.3, color: colors.text },
-  steps: { alignSelf: 'stretch', marginTop: 28 },
-  step: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, marginLeft: space.lg, paddingRight: space.lg },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  stepMark: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
-  stepDot: { width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: colors.track },
-  stepText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  grow: { flex: 1, minWidth: 0 },
+  // Find's section title.
+  ask: { marginTop: space.md, marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: playful.ink },
+  idea: { minHeight: 112, fontSize: 18, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
+  count: { textAlign: 'right', fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  continueRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  continueIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  continueText: { fontFamily: fonts.playfulBold, fontSize: 16, color: playful.ink },
+  continueButtons: { flexDirection: 'row', gap: space.sm, marginTop: space.md },
+  smallButton: { flex: 1, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.chip },
+  smallOn: { backgroundColor: playful.chipOn },
+  smallText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  smallTextOn: { color: playful.chipOnText },
+  writing: { alignItems: 'stretch', paddingTop: space.xxl },
+  portraitBox: { alignSelf: 'center', width: 140, height: 140, alignItems: 'center', justifyContent: 'center' },
+  // A ring with one bright arc, turning: the iOS activity feel, at portrait size.
+  portraitRing: { position: 'absolute', width: 140, height: 140, borderRadius: 70, borderWidth: 4, borderColor: colors.primarySofter, borderTopColor: colors.primary },
+  portrait: { width: 120, height: 120, borderRadius: 60, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.card },
+  writingTitle: { alignSelf: 'center', marginTop: space.xl, marginBottom: space.xs, fontFamily: fonts.playful, fontSize: 24, lineHeight: 30, color: playful.ink },
+  step: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 46 },
+  stepText: { flex: 1, fontSize: 17, letterSpacing: -0.3, color: colors.text },
   stepLater: { color: colors.textSecondary },
+  mark: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  markDone: { backgroundColor: systemColors.green },
+  markNow: { borderWidth: 3, borderColor: colors.primary },
+  markLater: { borderWidth: 2, borderColor: colors.track },
 });

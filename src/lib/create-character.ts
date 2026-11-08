@@ -99,6 +99,8 @@ export interface CreationInput {
   /** "I made this image or have the right to use it, and it is not a real person." */
   photoRights: boolean;
   voice: VoiceChoice | null;
+  /** Without a photo the picture is drawn from their looks, so the looks are needed; false while nothing draws (0z149). */
+  needsPicture?: boolean;
   /** "This is my voice, or I have the speaker's permission." Needed for a cloned voice. */
   voiceConsent: boolean;
 }
@@ -145,7 +147,7 @@ export function checkCreation(input: CreationInput): CreationProblem[] {
   const text = [input.name, input.bio, input.greeting, input.look ?? '', ...(input.more ?? [])].join(' ');
 
   if (!input.name.trim()) problems.push('name');
-  if (!input.hasPhoto && !input.look?.trim()) problems.push('photo');
+  if (!input.hasPhoto && input.needsPicture !== false && !input.look?.trim()) problems.push('photo');
   else if (input.hasPhoto && !input.photoRights) problems.push('photoRights');
   if (!Number.isInteger(age) || age < MIN_AGE || age > 120) problems.push('age');
   if (!input.voice) problems.push('voice');

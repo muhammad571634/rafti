@@ -1149,8 +1149,10 @@
         "explicit": "コンテンツガイドラインを守ってください",
         "realPerson": "実在の人物を作成することはできません",
         "owned": "既存の作品ではなくオリジナルのキャラクターを作成してください",
-        "format": "生成に失敗しました。もう一度お試しください"
-      }
+        "format": "生成に失敗しました。もう一度お試しください",
+        "busy": "ただいま混み合っています。少し待ってからもう一度"
+      },
+      "ask": "どんな人に会いたい？"
     },
     "sparks": {
       "gentleStubborn": "優しくて頑固",
@@ -1182,7 +1184,23 @@
     "starterPlaceholder": "最初に言いそうな言葉",
     "addStarter": "一言を追加",
     "rewrite": "{{field}}を再生成",
-    "remove": "削除"
+    "remove": "削除",
+    "flow": {
+      "continue": "キャラクターの続きを作る？",
+      "continueNamed": "{{name}}の続きを作る？",
+      "open": "続ける",
+      "startOver": "最初から",
+      "addPhoto": "写真を追加",
+      "changePhoto": "写真を変更",
+      "firstMessage": "最初のメッセージ",
+      "more": "詳しい設定",
+      "ownVoice": "本人の声",
+      "meet": "{{name}}に会おう",
+      "startChat": "チャットを始める",
+      "discardTitle": "変更を破棄しますか？",
+      "discard": "破棄",
+      "keepEditing": "編集を続ける"
+    }
   },
   "dating": {
     "title": "デート",

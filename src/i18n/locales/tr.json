@@ -1175,8 +1175,10 @@
         "explicit": "İçerik kurallarımıza uygun tutun",
         "realPerson": "Karakterler gerçek kişiler olamaz",
         "owned": "Bir dizi veya oyundan değil, kendi karakterin olsun",
-        "format": "İşlem başarısız oldu. Tekrar dene"
-      }
+        "format": "İşlem başarısız oldu. Tekrar dene",
+        "busy": "Şu an meşgul. Birazdan tekrar dene"
+      },
+      "ask": "Kiminle tanışmak istersin?"
     },
     "sparks": {
       "gentleStubborn": "Nazik ama inatçı",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "İlk olarak söyleyebileceğin bir şey",
     "addStarter": "Cümle ekle",
     "rewrite": "{{field}} alanını yeniden yaz",
-    "remove": "Kaldır"
+    "remove": "Kaldır",
+    "flow": {
+      "continue": "Karaktere devam edilsin mi?",
+      "continueNamed": "{{name}} ile devam edilsin mi?",
+      "open": "Devam et",
+      "startOver": "Baştan başla",
+      "addPhoto": "Fotoğraf ekle",
+      "changePhoto": "Fotoğrafı değiştir",
+      "firstMessage": "İlk mesaj",
+      "more": "Daha fazla ayrıntı",
+      "ownVoice": "Kendi sesi",
+      "meet": "{{name}} ile tanış",
+      "startChat": "Sohbete başla",
+      "discardTitle": "Değişiklikler silinsin mi?",
+      "discard": "Sil",
+      "keepEditing": "Düzenlemeye devam et"
+    }
   },
   "dating": {
     "title": "Buluşma",

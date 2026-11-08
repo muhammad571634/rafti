@@ -1149,8 +1149,10 @@
         "explicit": "請遵守社群內容規範",
         "realPerson": "角色不可為真實存在的公眾人物",
         "owned": "請保持原創，切勿直接照搬影視或遊戲現有角色",
-        "format": "生成過程發生小意外，請重試一次"
-      }
+        "format": "生成過程發生小意外，請重試一次",
+        "busy": "目前忙碌中，請稍後再試"
+      },
+      "ask": "你想認識誰？"
     },
     "sparks": {
       "gentleStubborn": "看似溫柔，骨子裡很倔強",
@@ -1182,7 +1184,23 @@
     "starterPlaceholder": "你最初可能會對他們說的話",
     "addStarter": "新增一句對白",
     "rewrite": "重新撰寫{{field}}",
-    "remove": "移除"
+    "remove": "移除",
+    "flow": {
+      "continue": "要繼續你的角色嗎？",
+      "continueNamed": "要繼續 {{name}} 嗎？",
+      "open": "繼續",
+      "startOver": "重新開始",
+      "addPhoto": "新增照片",
+      "changePhoto": "更換照片",
+      "firstMessage": "第一則訊息",
+      "more": "更多細節",
+      "ownVoice": "自己的聲音",
+      "meet": "認識一下 {{name}}",
+      "startChat": "開始聊天",
+      "discardTitle": "要捨棄變更嗎？",
+      "discard": "捨棄",
+      "keepEditing": "繼續編輯"
+    }
   },
   "dating": {
     "title": "約會",

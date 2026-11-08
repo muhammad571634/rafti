@@ -1175,8 +1175,10 @@
         "explicit": "Mantenha o conteúdo dentro das nossas regras",
         "realPerson": "Personagens não podem ser pessoas reais",
         "owned": "Crie algo original, não copie de séries ou jogos",
-        "format": "Não deu certo. Tente novamente"
-      }
+        "format": "Não deu certo. Tente novamente",
+        "busy": "Ocupado agora. Tente de novo em instantes"
+      },
+      "ask": "Quem você quer conhecer?"
     },
     "sparks": {
       "gentleStubborn": "Gentil e teimoso",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "Algo que você diria primeiro",
     "addStarter": "Adicionar fala",
     "rewrite": "Reescrever {{field}}",
-    "remove": "Remover"
+    "remove": "Remover",
+    "flow": {
+      "continue": "Continuar seu personagem?",
+      "continueNamed": "Continuar {{name}}?",
+      "open": "Continuar",
+      "startOver": "Começar de novo",
+      "addPhoto": "Adicionar foto",
+      "changePhoto": "Trocar foto",
+      "firstMessage": "Primeira mensagem",
+      "more": "Mais detalhes",
+      "ownVoice": "Voz própria",
+      "meet": "Conheça {{name}}",
+      "startChat": "Começar a conversar",
+      "discardTitle": "Descartar alterações?",
+      "discard": "Descartar",
+      "keepEditing": "Continuar editando"
+    }
   },
   "dating": {
     "title": "Encontros",

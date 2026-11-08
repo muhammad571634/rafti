@@ -1175,8 +1175,10 @@
         "explicit": "Halte dich an unsere Inhaltsregeln",
         "realPerson": "Figuren dürfen keine echten Personen sein",
         "owned": "Erschaffe ein Original, keine Kopie aus Serien oder Spielen",
-        "format": "Das hat nicht geklappt. Versuche es erneut"
-      }
+        "format": "Das hat nicht geklappt. Versuche es erneut",
+        "busy": "Gerade beschäftigt. Versuch es gleich noch mal"
+      },
+      "ask": "Wen möchtest du kennenlernen?"
     },
     "sparks": {
       "gentleStubborn": "Sanft, aber stur",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "Was du zuerst sagen könntest",
     "addStarter": "Satz hinzufügen",
     "rewrite": "{{field}} neu verfassen",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "flow": {
+      "continue": "Mit deinem Charakter weitermachen?",
+      "continueNamed": "Mit {{name}} weitermachen?",
+      "open": "Weiter",
+      "startOver": "Neu anfangen",
+      "addPhoto": "Foto hinzufügen",
+      "changePhoto": "Foto ändern",
+      "firstMessage": "Erste Nachricht",
+      "more": "Mehr Details",
+      "ownVoice": "Eigene Stimme",
+      "meet": "Das ist {{name}}",
+      "startChat": "Chat starten",
+      "discardTitle": "Änderungen verwerfen?",
+      "discard": "Verwerfen",
+      "keepEditing": "Weiter bearbeiten"
+    }
   },
   "dating": {
     "title": "Dating",

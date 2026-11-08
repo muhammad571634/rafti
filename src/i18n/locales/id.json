@@ -1149,8 +1149,10 @@
         "explicit": "Harap tetap patuhi aturan konten kami",
         "realPerson": "Karakter tidak boleh berupa orang sungguhan",
         "owned": "Buat orisinal milikmu, bukan dari acara TV atau game",
-        "format": "Itu tidak berhasil. Coba lagi"
-      }
+        "format": "Itu tidak berhasil. Coba lagi",
+        "busy": "Sedang sibuk. Coba lagi sebentar lagi"
+      },
+      "ask": "Kamu ingin bertemu siapa?"
     },
     "sparks": {
       "gentleStubborn": "Lembut, keras kepala",
@@ -1182,7 +1184,23 @@
     "starterPlaceholder": "Sesuatu yang mungkin kamu katakan pertama kali",
     "addStarter": "Tambah kalimat",
     "rewrite": "Tulis ulang {{field}}",
-    "remove": "Hapus"
+    "remove": "Hapus",
+    "flow": {
+      "continue": "Lanjutkan karaktermu?",
+      "continueNamed": "Lanjutkan {{name}}?",
+      "open": "Lanjutkan",
+      "startOver": "Mulai ulang",
+      "addPhoto": "Tambah foto",
+      "changePhoto": "Ganti foto",
+      "firstMessage": "Pesan pertama",
+      "more": "Detail lainnya",
+      "ownVoice": "Suaranya sendiri",
+      "meet": "Kenalan dengan {{name}}",
+      "startChat": "Mulai mengobrol",
+      "discardTitle": "Buang perubahan?",
+      "discard": "Buang",
+      "keepEditing": "Lanjut mengedit"
+    }
   },
   "dating": {
     "title": "Kencan",

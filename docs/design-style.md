@@ -216,6 +216,15 @@ pins' art or words.
 - This section outranks §1 and §8 where they disagree (bold colour fields, a full-colour moment
   screen); everything else in this file still holds.
 
+- **Beautiful, not toy-like (owner, 2026-11-08), for every new or changed screen from now on.** "A
+  little Apple iOS, the rest one design merged from Chats, Today, Us and Find." So a screen takes the
+  four tabs' parts as they are: the cream ground (`playful.ground`), the heavy rounded title
+  (`fonts.playful`, 28-36) by a round 40-44 head button, white cards with radius 24
+  (`playful.card`), soft chips that turn ink when on (`playful.chip` / `chipOn`), Find's photo card
+  (radius 30, bottom scrim, white Nunito name, clear glass button), friend hues for a face without a
+  picture, and iOS for structure (one main action, sheets, native inputs). Not a cartoon: no mascot
+  speech bubbles or toy art on working screens. The create screen (0z149) is the first built this way.
+
 Order (one at a time, each seen on the A51 before the next): 1. daily check-in (full yellow screen,
 live mascot); 2. Chats list as coloured bubbles; 3. Find's worlds as coloured folders; then the
 other screens, Today last and only when the owner says.

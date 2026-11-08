@@ -1175,8 +1175,10 @@
         "explicit": "Mantén el contenido dentro de nuestras reglas",
         "realPerson": "Los personajes no pueden ser personas reales",
         "owned": "Créalo a tu gusto, no lo copies de series o juegos",
-        "format": "No funcionó. Inténtalo de nuevo"
-      }
+        "format": "No funcionó. Inténtalo de nuevo",
+        "busy": "Ocupado ahora. Inténtalo en un momento"
+      },
+      "ask": "¿A quién quieres conocer?"
     },
     "sparks": {
       "gentleStubborn": "Dulce pero obstinado",
@@ -1208,7 +1210,23 @@
     "starterPlaceholder": "Algo que le dirías al principio",
     "addStarter": "Agregar frase",
     "rewrite": "Reescribir {{field}}",
-    "remove": "Quitar"
+    "remove": "Quitar",
+    "flow": {
+      "continue": "¿Seguir con tu personaje?",
+      "continueNamed": "¿Seguir con {{name}}?",
+      "open": "Seguir",
+      "startOver": "Empezar de nuevo",
+      "addPhoto": "Añadir foto",
+      "changePhoto": "Cambiar foto",
+      "firstMessage": "Primer mensaje",
+      "more": "Más detalles",
+      "ownVoice": "Su propia voz",
+      "meet": "Te presento a {{name}}",
+      "startChat": "Empezar a chatear",
+      "discardTitle": "¿Descartar cambios?",
+      "discard": "Descartar",
+      "keepEditing": "Seguir editando"
+    }
   },
   "dating": {
     "title": "Citas",

@@ -1149,8 +1149,10 @@
         "explicit": "Giữ nội dung trong quy tắc của chúng tôi",
         "realPerson": "Nhân vật không thể là người thật",
         "owned": "Hãy biến họ thành nhân vật của riêng bạn, không phải từ phim hay trò chơi",
-        "format": "Không thành công. Hãy thử lại"
-      }
+        "format": "Không thành công. Hãy thử lại",
+        "busy": "Đang bận. Thử lại sau giây lát nhé"
+      },
+      "ask": "Bạn muốn gặp ai?"
     },
     "sparks": {
       "gentleStubborn": "Dịu dàng, bướng bỉnh",
@@ -1182,7 +1184,23 @@
     "starterPlaceholder": "Điều bạn có thể nói trước",
     "addStarter": "Thêm câu mở lời",
     "rewrite": "Viết lại {{field}}",
-    "remove": "Xóa"
+    "remove": "Xóa",
+    "flow": {
+      "continue": "Tiếp tục nhân vật của bạn?",
+      "continueNamed": "Tiếp tục {{name}}?",
+      "open": "Tiếp tục",
+      "startOver": "Làm lại từ đầu",
+      "addPhoto": "Thêm ảnh",
+      "changePhoto": "Đổi ảnh",
+      "firstMessage": "Tin nhắn đầu tiên",
+      "more": "Thêm chi tiết",
+      "ownVoice": "Giọng riêng",
+      "meet": "Làm quen với {{name}}",
+      "startChat": "Bắt đầu trò chuyện",
+      "discardTitle": "Bỏ các thay đổi?",
+      "discard": "Bỏ",
+      "keepEditing": "Tiếp tục sửa"
+    }
   },
   "dating": {
     "title": "Hẹn hò",
