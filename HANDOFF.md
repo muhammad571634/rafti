@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z159. Dark mode: the tab bar's chosen tab is the brand peach (2026-11-08, Claude 1). NEXT: owner's next task (0z158 Still to do 1 waits on the owner)
+
+- **Owner's ask** (phone in night mode): the chosen tab's capsule was white at night; use the brand peach of the + on Us and Find; light mode stays the ink pill.
+- **Built**: `playful.tabOn` / `tabOnText` (dark: `apricot300` #FFC497 with `peachInk` #6A2F0C, light: ink #1F1A17 with white) for the tab pill, its glyph and label, and the round Find button (`src/app/(tabs)/_layout.tsx`). iOS uses native tabs (untouched). Other ink-when-on chips (Chats' All / Unread / Groups filter) still turn white at night: not asked.
+- **Seen on the A51 in dark mode** (OTA `01a1bae1`, Russian): Сегодня, Чаты and the round search, each peach with dark ink when chosen. Checks: tsc 0.
+
 ### 0z158. The chat's Share is a 9:16 story poster with FOMO lines (2026-11-08, Claude 1). NEXT: owner sends one to Telegram to check it is sharp; then the Store group (queue) unless the owner picks
 
 - **Owner's pick**: canvas B (https://claude.ai/artifact/EJDVhf2eeR8RXzfo2Aw61w, "Chat, but beautiful") without the Level / days chips; the bottom says it is free on the App Store; nothing from the real chat for now: the poster's exchange is ready FOMO lines; every language.

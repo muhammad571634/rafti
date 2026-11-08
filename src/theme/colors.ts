@@ -529,6 +529,12 @@ export const playful = isDark
       /** Today's "Waiting for you" bubble and the sealed note's envelope, and what reads on them. */
       sun: '#8A6400',
       sunInk: '#FFFFFF',
+      /**
+       * The tab bar's chosen tab: the brand peach of the + buttons on Us and Find (owner 2026-11-08:
+       * the white pill read harsh at night); light mode keeps the ink pill.
+       */
+      tabOn: palette.apricot300,
+      tabOnText: palette.peachInk,
       /** The floating tab bar's fill, a tab that is off, and the fade under the bar. */
       bar: 'rgba(42,36,32,0.95)',
       tabOff: 'rgba(255,255,255,0.62)',
@@ -550,6 +556,8 @@ export const playful = isDark
       red: systemColors.red,
       sun: '#FFC93C',
       sunInk: '#1F1A17',
+      tabOn: '#1F1A17',
+      tabOnText: '#FFFFFF',
       bar: 'rgba(255,255,255,0.95)',
       tabOff: 'rgba(31,26,23,0.6)',
       groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
