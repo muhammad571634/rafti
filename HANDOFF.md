@@ -7,7 +7,7 @@
 - **Chat share card, seen on the A51** (Hana, 15:49): ~2.9x the screen's height (6 lines incl. a voice note and a cut-off sticker, 72%-wide bubbles), old aurora colours; the owner sent one to Telegram: very long and blurry (Telegram downscales). Proposal told to the owner: a 9:16 story poster at 1080x1920 (never longer), their big picture on top with name and mood, one strong line of their reply as a big quote with the user's line small above it, a half-hidden last line as the hook (FOMO), only real numbers (days together, level), the Sigmazam logo, tagline and the peeking mascot at the bottom with "{name} on Sigmazam"; no invite code (owner: no); one frame for chat, Us bond and the date polaroid; Android save needs a media-library module (next APK).
 
 Still to do:
-1. Owner: approve a prototype of the share poster (then code `ShareCardSheet` into the story frame, captured at a fixed size).
+1. Owner: pick a share poster variant on the canvas https://claude.ai/artifact/EJDVhf2eeR8RXzfo2Aw61w (A quote poster: their picture on top, the strongest line big, the rest half hidden; B chat but beautiful: 3 wide bubbles, "still typing"; C full-bleed story: their picture behind everything, big white quote, a cream Sigmazam pill with the winking mascot). Then code `ShareCardSheet` into that 9:16 frame, captured at 1080x1920.
 2. Date share: try it on the A51 when the owner is fine spending a date.
 3. From 0z156: coloured icons for chat settings / group info (owner to say), Account / Privacy / Terms stubs, queue (Store group next unless the owner picks).
 
