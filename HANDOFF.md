@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z149. Create a character as one clear chain, in the main tabs' look (2026-11-08, Claude 1). NEXT: owner tries making a character on the phone; then the owner's next task
+
+- **Owner's asks**: make the create screens easy and logical as a chain, robust, and in our designs; then "not toy-like: truly beautiful, a little Apple iOS, the rest one design merged from Chats, Today, Us, Find; always work like this" (recorded in `.agents/rules/project-memory.md` §3 and `docs/design-style.md` §10). Character.AI's creation chain was the model.
+- **Built** (`create-character.tsx`, `components/create/kit.tsx`, `quick-create.tsx`, `lib/create-flow.ts`, `lib/create-draft-storage.ts`): idea -> writing -> one review page of cards -> meet moment -> chat (flows F15b). Fixed on the way: a busy model gave a stock draft or ✦ field unseen (now "Busy right now"); the voice clone charged 60 shells for a mock training (hidden until a real clone exists); looks were required with no picture drawn (`needsPicture: PORTRAITS_AVAILABLE`); the page's colour did not match the chat avatar (one accent for page, meet moment and the saved character); a long Russian title was cut (shrinks to fit). Strings in 14 locales (`createCharacter.flow.*`, `quick.ask`, `quick.problems.busy`).
+- **Seen on the A51** (OTAs `01a1b9c8` .. `01a1b9d7`): idea "A night shift baker..." + a spark -> the real model wrote "Алиса Ветрова" (`[quickCreate]` 4.5 s) -> the page -> Create -> meet moment with her first message (Sukut filled in) -> chat with her first card, opening and first lines. Empty Create -> back to the top, Basics ringed red. By hand: name "Mira Test" -> back -> "Continue Mira Test?", also after force-stopping the app; Start over cleared it. Edit: same avatar as the chat, Save off until a change, back after a change asks (discard kept the name), ✦ on the tagline wrote a new one (`[draftField]` 3.9 s).
+- Left on the owner's phone: the test character "Алиса Ветрова" (delete it from her profile if not wanted).
+- Checks: app tsc 0, npm test 811/811, check:locales, check:content; server tsc 0, 78/78.
+
+Still to do:
+1. With pictures drawn again (`PORTRAITS_AVAILABLE`), looks become required without a photo; with a real voice clone, bring back the clone option.
+
 ### 0z148. Characters the user makes hold opinions of their own (2026-11-08, Claude 1). NEXT: owner deploys the server; then make a character on the A51 and argue with it
 
 - **Owner's ask**: next human-likeness step (0z141 Still to do 2). Mid-task the owner said: do not write opinions for the 55 official characters (they may remake the cast); make it ready for characters users create.
