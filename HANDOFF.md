@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z151. Chat screen: easier to write, see and use (prototype) (2026-11-08, Claude 1). NEXT: owner approves the prototype; then code it
+
+- **Owner's ask**: make the one-to-one chat easy to write in, read and use, in the merged design; remember every part: the composer's "+" (10 items), a tap on the mic (opens a sheet that still says "hold"), the hold-to-record mic, and the long-press menu (reactions + Copy / Pin / Report / Delete). The profile of a character comes after.
+- **Prototype** (design canvas, 5 screens, Uzbek notes under each): https://claude.ai/artifact/8jy39gxpczKFA6sUiXbXtw
+  1. Chat at rest: unchanged layout (portrait ground, glass header, composer).
+  2. "+" panel: a white card in the keyboard's place, 3x3 tiles (Photo, Secret note, Diary / Date, Truth or dare, Couple quiz / Scene, Time skip, Daily calls); "Voice" leaves the menu (the mic covers it); "+" turns into x, the chat stays in view.
+  3. Mic: a tap records at once inside the composer (trash, red dot + timer, wave, peach send), no `VoiceSheet`; a hold keeps push-to-talk with slide left to cancel and slide up to lock (hands free, same as a tap); Not delivered keeps retry + trash.
+  4-5. Long press: the held bubble lifts in place (iOS), reactions above it, the menu under it; theirs: Copy, Why?, Pin to memories, Report | Rewind to here, Delete; yours: Copy, Edit, Pin | Delete. Rows that do not apply are left out.
+- Code read for it: `src/app/chat/[id].tsx`, `chat-input.tsx`, `attach-menu.tsx`, `hold-mic.tsx`, `voice-sheet.tsx`, `message-menu.tsx`, `reply-controls.tsx`. Nothing changed in code yet.
+
+Still to do:
+1. Owner: approve or correct the prototype; then code it (the menu change touches `message-menu.tsx`: it needs the held bubble's position from `MessageBubble`'s long press).
+2. Then the character profile screen in the same manner.
+
 ### 0z150. Alarm with a friend checked on the A51; no Melody face; one brand peach (2026-11-08, Claude 1). NEXT: owner's next task
 
 - **0z139 Still to do 2 done on the A51**: an alarm with Hana from the editor -> the card on the user's side ("Будильник · Завтра 07:00") and her line; deleted -> the card faded with an x and she asked whether the plans changed. Both times she named an older **07:24** wake-up (the owner has one, now off) for the new 07:00 one. Not reproduced in a probe (0 of 3), but seen twice: `alarmSetCue` and `setupCancelledCue` now name the time and say older ones in memory or the chat are older; probe with a strong 07:24 memory: 3 of 3 right.
