@@ -51,6 +51,12 @@ export interface Character {
   /** A few things they love and can't stand, shown on the chat's first card and the profile. */
   likes?: string[];
   dislikes?: string[];
+  /**
+   * What they think, a few short opinions they would argue for (0z148): model-only, never shown.
+   * Creations get them from the draft or a later fill; the official cast has none yet (the owner may
+   * remake the cast, 2026-11-08).
+   */
+  opinions?: string[];
   /** Where they come from and what they want now, in a few sentences (third person). */
   backstory?: string;
   /** User creations (F15): what the creator set; the server prompt uses all of it. */

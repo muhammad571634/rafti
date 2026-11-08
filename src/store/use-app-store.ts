@@ -42,7 +42,7 @@ import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverWallet, serverWrite } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite } from '@/ai/server';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import {
@@ -2203,6 +2203,8 @@ export const useAppStore = create<AppState>()(
         const characterId = uid('c');
         set((s) => ({ characters: [{ ...character, id: characterId }, ...s.characters] }));
         const conversationId = get().addFriend(characterId);
+        // Made by hand, with no draft: the model writes what they think (0z148).
+        ensureOpinions(set, get, characterId);
         return { characterId, conversationId };
       },
 
@@ -5563,6 +5565,30 @@ function rememberPhotos(set: Setter, chatId: string, photos: readonly PreparedPh
 }
 
 /** New things the friend said of their own day (0z144): kept on today's page of their days for the next replies. */
+/** Characters whose opinions were asked for this session, so a busy model is asked once. */
+const opinionsAsked = new Set<string>();
+
+/**
+ * A creation's opinions (0z148, model-only): a draft writes them, a character made by hand or before
+ * 0z148 has none, so the model writes them once from what the creator wrote. The official cast has
+ * none yet (the owner may remake it); a reply works without them.
+ */
+function ensureOpinions(set: Setter, get: Getter, characterId: string) {
+  const state = get();
+  const character = state.characters.find((c) => c.id === characterId);
+  if (!character || character.isOfficial || character.opinions?.length || opinionsAsked.has(characterId) || !modelOn(get)) return;
+  opinionsAsked.add(characterId);
+  const { name, tagline, bio, age, gender, speakingStyle, role, tags, greeting, quirk, backstory, likes, dislikes } = character;
+  const context = { name, tagline, bio, age, gender, speakingStyle, role, tags, greeting, quirk, backstory, likes, dislikes };
+  void accessToken()
+    .then((token) => serverStudio.field('opinions', context, 'English', token))
+    .then((value) => {
+      const opinions = Array.isArray(value) ? value : [];
+      if (!opinions.length) return;
+      set((s) => ({ characters: s.characters.map((c) => (c.id === characterId && !c.isOfficial && !c.opinions?.length ? { ...c, opinions } : c)) }));
+    });
+}
+
 function keepOwnDay(set: Setter, characterId: string, notes: readonly string[]) {
   updateRelationship(set, characterId, (r) => ({ ownDay: addDayNotes(r.ownDay, notes, new Date(), todayKey()) }));
 }
@@ -5708,6 +5734,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   // tier's daily cap, a slow answer) says so under the user's line with a way to try again, as iOS
   // Messages does, instead of passing the stand-in off as their reply.
   if (modelTurn && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
+    // A creation from before 0z148 gets its opinions for the next replies.
+    ensureOpinions(set, get, character.id);
     const messages = ctx.history.filter((m) => !m.pending);
     const input = {
       character,

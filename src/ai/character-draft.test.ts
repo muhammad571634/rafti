@@ -287,3 +287,27 @@ describe('checkCreation with quick-create fields', () => {
     assert.deepEqual(checkCreation({ ...base, hasPhoto: false, look: 'x', more: ['a high school senior'] }), ['minors']);
   });
 });
+
+describe('what a creation thinks (0z148)', () => {
+  it('the draft asks for opinions and keeps up to three, checked like the rest', () => {
+    assert.match(buildDraftPrompt({ idea: 'A lighthouse keeper', sparks: [], language: 'English' }), /opinions: 3 opinions they really hold[\s\S]*"opinions":\[\]/);
+    const result = parseDraft(JSON.stringify({ ...good, opinions: ['Storms are better than sunny days.', 'Storms are better than sunny days.', 'Tea fixes most things.', 'Gulls are smarter than people think.', 'A fourth one.'] }));
+    assert.ok(result.ok);
+    assert.deepEqual(result.draft.opinions, ['Storms are better than sunny days.', 'Tea fixes most things.', 'Gulls are smarter than people think.']);
+    assert.deepEqual(parseDraft(JSON.stringify({ ...good, opinions: ['Being nude is natural.'] })), { ok: false, problem: 'explicit' });
+  });
+
+  it('one later fill writes them from what the creator wrote', () => {
+    const prompt = buildFieldPrompt('opinions', { name: 'Mira', bio: 'I keep the lighthouse.', likes: ['storms'], dislikes: ['tourists'] }, 'English');
+    assert.match(prompt, /Loves: storms[\s\S]*Can't stand: tourists[\s\S]*opinions: 3 opinions/);
+    assert.deepEqual(parseField('opinions', '{"values":["Tourists ruin quiet places."]}'), ['Tourists ruin quiet places.']);
+    assert.equal(parseField('opinions', '{"values":[]}'), null);
+  });
+
+  it('the persona carries them, and leaves the line out when there are none', () => {
+    const user = { displayName: 'Sam', locale: 'en-US' } as User;
+    const mira = { id: 'c_mira', name: 'Mira', bio: 'Keeper.', greeting: 'Hi.', tags: ['calm'], isOfficial: false } as unknown as Character;
+    assert.match(buildCharacterPrompt({ ...mira, opinions: ['Storms beat sunshine.', 'Tea fixes most things.'] }, user), /What you think \(your own views;[^)]*\): Storms beat sunshine\. Tea fixes most things\./);
+    assert.doesNotMatch(buildCharacterPrompt(mira, user), /What you think/);
+  });
+});

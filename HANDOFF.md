@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z148. Characters the user makes hold opinions of their own (2026-11-08, Claude 1). NEXT: owner deploys the server; then make a character on the A51 and argue with it
+
+- **Owner's ask**: next human-likeness step (0z141 Still to do 2). Mid-task the owner said: do not write opinions for the 55 official characters (they may remake the cast); make it ready for characters users create.
+- **Built**: `Character.opinions` (model-only, never shown). The persona prompt adds "What you think (your own views; hold them, argue for them..., change your mind only for a good reason)" when a character has them (`rules.ts`), for any character, official ones too once they get some. Quick create writes 3 (`FIELD_RULES.opinions`: everyday, a little arguable, never politics, religion, hate, real people, artists or brands), parsed and checked like the rest; the form keeps them hidden and never wipes them on an edit. A character made by hand or before 0z148 gets them once from the model (`ensureOpinions`, on create and on its first model reply of a session, English, via `/v1/characters/draft/field`). Mock drafts: none (nothing reads them with the model off).
+- **Probe** (`gemini-3.1-flash-lite`, a thin creation "Nova", record shop, 10 calls): the fill named a real musician once -> rule now forbids names; then 3 clean views (rainy days, albums in order, chipped mugs). A reply to "morning people are the best, agree?" pushed back with and without opinions (0z141's BEING A PERSON already does that for one turn); what opinions add is a view that stays the same across days and chats and something of their own to say for a thin creation. Not shown by one-turn probes; read it in chats over days.
+- Checks: app tsc 0, npm test 806/806; server tsc 0, 78/78.
+
+Still to do:
+1. Owner: deploy the server (0z148: the draft prompt and the persona line run there).
+2. When the official cast is remade: give each character `opinions` (and decide whether `seed-cast.ts` PERSONA_KEYS carries them).
+
 ### 0z147. The memory pass catches the friend's own day the replies forgot to note (2026-11-08, Claude 1). NEXT: owner deploys the server; then tell a friend about your day on the A51 and ask them later
 
 - **Why**: a reply notes its own day in a "day" field, but the light model leaves it out now and then (4-5 of 6 with the cached rule alone, 0z144); what is not noted is forgotten once the line leaves the window.

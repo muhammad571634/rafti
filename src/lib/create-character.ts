@@ -30,6 +30,9 @@ export const BACKSTORY_MAX = 400;
 /** Loves and can't stand: a few short things each. */
 export const THINGS_MAX = 4;
 export const THING_MAX = 40;
+/** A character's opinions (model-only): how many, and the longest one. */
+export const OPINIONS_MAX = 3;
+export const OPINION_MAX = 120;
 /** A height the form keeps; anything outside is left out. */
 export const HEIGHT_MIN = 140;
 export const HEIGHT_MAX = 220;

@@ -225,6 +225,8 @@ export function mockDraft(input: DraftInput, genderParam?: CharacterGender): Cha
     backstory: fill(pickSeeded(v.backstories, `${seed}|story`), {}, gender),
     likes: some(v.likes, `${seed}|likes`, 4).map((l) => fill(l, {}, gender)),
     dislikes: some(v.dislikes, `${seed}|dislikes`, 3).map((d) => fill(d, {}, gender)),
+    // Opinions are for the model only: with the model off nothing reads them.
+    opinions: [],
     heightCm: (gender === 'male' ? 175 : 160) + (hashSeed(`${seed}|height`) % 14),
   };
 }
@@ -298,5 +300,7 @@ export function mockFieldReply(field: DraftField, character: FieldContext, attem
       return JSON.stringify({ values: some(v.likes, `${name}|${attempt}`, 4).map((l) => fill(l, {}, gender)) });
     case 'dislikes':
       return JSON.stringify({ values: some(v.dislikes, `${name}|${attempt}`, 3).map((d) => fill(d, {}, gender)) });
+    case 'opinions':
+      return JSON.stringify({ values: [] });
   }
 }

@@ -213,6 +213,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [height, setHeight] = useState(editing?.heightCm != null ? String(editing.heightCm) : '');
   const [backstory, setBackstory] = useState(editing?.backstory ?? '');
   const [likes, setLikes] = useState((editing?.likes ?? []).join(', '));
+  // What they think (0z148): written by the draft, never shown here, kept on edits.
+  const [opinions, setOpinions] = useState<string[]>(editing?.opinions ?? []);
   const [dislikes, setDislikes] = useState((editing?.dislikes ?? []).join(', '));
   const [voiceMode, setVoiceMode] = useState<'preset' | 'clone'>(hasTrainedVoice ? 'clone' : 'preset');
   const [preset, setPreset] = useState<VoicePreset | undefined>(editing?.voicePreset);
@@ -281,6 +283,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     setBackstory(draft.backstory);
     setLikes(draft.likes.join(', '));
     setDislikes(draft.dislikes.join(', '));
+    setOpinions(draft.opinions);
   };
 
   const writeDraft = async () => {
@@ -408,6 +411,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
       backstory: backstory.trim() || undefined,
       likes: thingsOf(likes),
       dislikes: thingsOf(dislikes),
+      // Left out when none, so an edit never wipes the ones filled in later (`ensureOpinions`).
+      ...(opinions.length ? { opinions } : {}),
       tags: [...traits, ...otherTags],
       age: Number(age),
       speakingStyle: style,

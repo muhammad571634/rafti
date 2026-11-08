@@ -20,6 +20,8 @@ import {
   HEIGHT_MAX,
   HEIGHT_MIN,
   THING_MAX,
+  OPINION_MAX,
+  OPINIONS_MAX,
   THINGS_MAX,
   TRAITS,
   VOICES,
@@ -108,6 +110,8 @@ export interface CharacterDraft {
   backstory: string;
   likes: string[];
   dislikes: string[];
+  /** What they think (0z148): model-only, never shown on the form. */
+  opinions: string[];
   heightCm?: number;
 }
 
@@ -156,7 +160,8 @@ export type DraftField =
   | 'starters'
   | 'backstory'
   | 'likes'
-  | 'dislikes';
+  | 'dislikes'
+  | 'opinions';
 
 /** One rule per field, shared by the whole-draft and the single-field prompt. */
 const FIELD_RULES: Record<DraftField, string> = {
@@ -173,6 +178,7 @@ const FIELD_RULES: Record<DraftField, string> = {
   backstory: `backstory: where they come from and what they want now, 2-3 sentences, third person, max ${BACKSTORY_MAX} characters.`,
   likes: `likes: ${THINGS_MAX} small, concrete things they love (a food, a place, a habit), a few words each, max ${THING_MAX} characters each.`,
   dislikes: `dislikes: 2-3 small things they can't stand, harmless and a little funny, a few words each, max ${THING_MAX} characters each.`,
+  opinions: `opinions: ${OPINIONS_MAX} opinions they really hold and would argue for, the way a person does: about everyday things, taste, people or their world, a little arguable ("Cold pizza is better than hot."). Never politics, religion or anything hateful; no real people, artists or brands by name. One short sentence each, max ${OPINION_MAX} characters.`,
 };
 
 /** Every field one "write it for me" may ask for (the server checks requests against it). */
@@ -191,6 +197,7 @@ const FIELD_SHAPES: Record<DraftField, string> = {
   backstory: '{"value":""}',
   likes: '{"values":[]}',
   dislikes: '{"values":[]}',
+  opinions: '{"values":[]}',
 };
 
 /** One call that writes the whole character from the idea. */
@@ -221,9 +228,10 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${FIELD_RULES.backstory}`,
     `- ${FIELD_RULES.likes}`,
     `- ${FIELD_RULES.dislikes}`,
+    `- ${FIELD_RULES.opinions}`,
     `- heightCm: their height in centimetres, ${HEIGHT_MIN}-${HEIGHT_MAX}, fitting the look.`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[]}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[],"opinions":[]}',
   ].join('\n');
 }
 
@@ -241,6 +249,8 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
     character.greeting && `First message: ${character.greeting}`,
     character.quirk && `Quirk: ${character.quirk}`,
     character.backstory && `Story: ${character.backstory}`,
+    character.likes?.length && `Loves: ${character.likes.join(', ')}`,
+    character.dislikes?.length && `Can't stand: ${character.dislikes.join(', ')}`,
   ].filter(Boolean);
   return [
     CREATION_RULES,
@@ -301,6 +311,7 @@ export function parseDraft(raw: string): DraftResult {
     backstory: clip(text(data.backstory), BACKSTORY_MAX),
     likes: lines(data.likes, THING_MAX, THINGS_MAX),
     dislikes: lines(data.dislikes, THING_MAX, THINGS_MAX),
+    opinions: lines(data.opinions, OPINION_MAX, OPINIONS_MAX),
     ...(typeof data.heightCm === 'number' && data.heightCm >= HEIGHT_MIN && data.heightCm <= HEIGHT_MAX
       ? { heightCm: Math.round(data.heightCm) }
       : {}),
@@ -320,6 +331,7 @@ export function parseDraft(raw: string): DraftResult {
       draft.backstory,
       ...draft.likes,
       ...draft.dislikes,
+      ...draft.opinions,
     ].join(' '),
   );
   return problems.length > 0 ? { ok: false, problem: problems[0] } : { ok: true, draft };
@@ -361,6 +373,9 @@ export function parseField(field: DraftField, raw: string): string | string[] | 
     case 'likes':
     case 'dislikes':
       value = lines(data.values, THING_MAX, THINGS_MAX);
+      break;
+    case 'opinions':
+      value = lines(data.values, OPINION_MAX, OPINIONS_MAX);
       break;
     case 'dialog':
       value = definitionFromDialog(data.dialog);

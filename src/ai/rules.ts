@@ -186,6 +186,8 @@ export function characterParts(
   if (character.backstory) personaLines.push(`Your story: ${character.backstory}`);
   if (character.likes?.length) personaLines.push(`You love: ${character.likes.join(', ')}`);
   if (character.dislikes?.length) personaLines.push(`You can't stand: ${character.dislikes.join(', ')}`);
+  // What they think (0z148): a view of their own to argue for, so they do not just agree with everything.
+  if (character.opinions?.length) personaLines.push(`What you think (your own views; hold them, argue for them when they come up, change your mind only for a good reason): ${character.opinions.join(' ')}`);
   personaLines.push(...personaStoryLines(character));
   // The creator's sample dialog (quick create, docs/character-ai-teardown.md §11): how they
   // talk, with other people, so none of it reads as something this user said.
