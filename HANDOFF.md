@@ -21,7 +21,7 @@
 
 Still to do:
 1. Done on the A51 except: a very long line near the top held (clamp), a group chat's "+" panel and double tap.
-2. Their own reaction on your line (v3's heart): a reply field from the model (server prompt + parse + `Message` field + deploy).
+2. Done in code (`013046e`): the friend's sticker on your line (`src/ai/react.ts`: global rule + turn reminder, `react` field, `Message.theirReaction`, pops onto your bubble). Probe 5/5 right, 0/4 on small talk. **Owner: deploy the server**, then check on the A51 (send "I got the job!" and a "what are you up to?"). Groups do not react yet.
 3. Then the character profile screen in the same manner.
 4. Owner (optional): the six reactions could get a more creative look later.
 
